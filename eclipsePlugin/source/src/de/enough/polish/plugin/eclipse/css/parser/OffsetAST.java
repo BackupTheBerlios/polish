@@ -39,7 +39,7 @@ import antlr.CommonAST;
  */
 public class OffsetAST extends CommonAST {
 
-    private int offset;
+    private int offset = 0;
     
     
     

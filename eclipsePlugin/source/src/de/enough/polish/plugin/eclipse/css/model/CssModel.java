@@ -81,9 +81,12 @@ public class CssModel {
 		String inputString = this.document.get();
 		StringReader stringReader = new StringReader(inputString);
 		//DataInputStream dataInputStream = new DataInputStream();
+		
 		this.lexer = new CssLexer(stringReader);
-		this.parser = new CssParser(this.lexer);
-		this.parser.setASTNodeClass("de.enough.polish.plugin.eclipse.css.parser.OffsetAST");
+        this.lexer.setTokenObjectClass("de.enough.polish.plugin.eclipse.css.parser.OffsetToken");
+
+        this.parser = new CssParser(this.lexer);
+        this.parser.setASTNodeClass("de.enough.polish.plugin.eclipse.css.parser.OffsetAST");
 		
 		try {
             this.parser.styleSheet();
@@ -100,7 +103,7 @@ public class CssModel {
         
         OffsetWalker offsetWalker = new OffsetWalker();
         try {
-            offsetWalker.styleSheet(this.astRoot.getFirstChild());
+            offsetWalker.styleSheet(this.astRoot);
             System.out.println("Walker finished.");
         } catch (RecognitionException exception) {
             CssEditorPlugin.log("INTERNAL:DEBUG:CssModel.reconcile():Parse Error in Tree walker.",exception);

@@ -55,6 +55,7 @@ public class Runner {
             return;
         }
         CssLexer lexer = new CssLexer(input);
+        lexer.setTokenObjectClass("de.enough.polish.plugin.eclipse.css.parser.OffsetToken");
 
         CssParser parser = new CssParser(lexer);
         parser.setASTNodeClass("de.enough.polish.plugin.eclipse.css.parser.OffsetAST");

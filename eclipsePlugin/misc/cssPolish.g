@@ -10,6 +10,7 @@ class CssLexer extends Lexer;
 options {
     charVocabulary = '\3'..'\377';
     genHashLines=true;
+    
 }
 
 {
@@ -28,36 +29,18 @@ public void tab(){
 	this.offset = this.offset + 4;
 }
 
-    protected Token makeToken(int t) {
-        Token token = super.makeToken(t);
-        if (token != Token.badToken) {
-            ((OffsetToken)token).setOffset(this.offset);
-        }
-        return token;
+protected Token makeToken(int t) {
+    Token token = super.makeToken(t);
+    if (token != Token.badToken) {
+        ((OffsetToken)token).setOffset(this.offset);
     }
-     //FIXME: try to set members of inputState.
-     /*
-      public void consume() throws CharStreamException {
-        if (inputState.guessing == 0) {
-            char c = LA(1);
-            if (caseSensitive) {
-                append(c);
-            }
-            else {
-                // use input.LA(), not LA(), to get original case
-                // CharScanner.LA() would toLower it.
-                append(inputState.input.LA(1));
-            }
-            if (c == '\t') {
-                tab();
-            }
-            else {
-                inputState.column++;
-            }
-        }
-        inputState.input.consume();
-    }
-    */
+    return token;
+}
+
+public void consume() throws CharStreamException {
+	super.consume();
+	this.offset = this.offset + 1;
+}
 public void panic(String s) {
     System.err.println("CharScanner: Panic:"+s);
 }
@@ -115,6 +98,7 @@ SECTION : ;
 protected
 STYLE_SHEET : ;
 
+
 // #################################################################
 // Parser
 
@@ -124,7 +108,6 @@ options{
 	genHashLines=true;
 	ASTLabelType = "OffsetAST";
 }
-
 {
 public boolean isExtendToken(Token e) {
     return "extends".equalsIgnoreCase(e.getText());
@@ -132,28 +115,29 @@ public boolean isExtendToken(Token e) {
 }
 
 styleSheet
-	:  ((ML_COMMENT)? styleSection)+ EOF! {#styleSheet = #([STYLE_SHEET,"StyleSheet"],#styleSheet); /*styleSheet_AST.setOffset(((OffsetAST)styleSheet_AST.getFirstChild()).getOffset());*/}
+	:  ((ML_COMMENT)? styleSection)+ EOF! {#styleSheet = #([STYLE_SHEET,"StyleSheet"],#styleSheet); } //{styleSheet_AST.setOffset(((OffsetAST)styleSheet_AST.getFirstChild()).getOffset());
 	;
 	
 styleSection
-	: styleName:NAME  (e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (name:NAME! (section:sectionBody[#name] | attributeValuePair:attributeValueBody[#name]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);/*styleSection_AST.setOffset(styleName.getLine());*/}
+	: styleName:NAME {}(e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (sectionOrAttributeName:NAME! {sectionOrAttributeName_AST.setOffset(((OffsetToken)sectionOrAttributeName).getOffset());} (section:sectionBody[#sectionOrAttributeName] | attributeValuePair:attributeValueBody[#sectionOrAttributeName]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);styleSection_AST.setOffset(((OffsetToken)styleName).getOffset());}
 	;
 
-sectionBody[AST sectionName]
-	: L_CURLY_BRACKET! (attributeName:NAME! attributeValueBody[#attributeName])* R_CURLY_BRACKET! {#sectionBody = #([SECTION,"Section"],#sectionName,#sectionBody);}
+sectionBody[OffsetAST sectionName]
+	: L_CURLY_BRACKET! (attributeName:NAME! attributeValueBody[#attributeName])* R_CURLY_BRACKET! {sectionBody_AST.setOffset(sectionName.getOffset());#sectionBody = #([SECTION,"Section"],#sectionName,#sectionBody);}
 	;
 	
-attributeValueBody[AST attributeName]
-	: string:ARBITRARY_STRING {#attributeValueBody = #([ATTRIBUTE_VALUE_PAIR,"AttributeValuePair"], #attributeName, #string);} // try to rename to attributeValuePair
+attributeValueBody[OffsetAST attributeName]
+	: string:ARBITRARY_STRING {attributeValueBody_AST.setOffset(attributeName.getOffset());#attributeValueBody = #([ATTRIBUTE_VALUE_PAIR,"AttributeValuePair"], #attributeName, #string);} // try to rename to attributeValuePair
 	; 
 
 
 // #################################################################
-// Tree Grammar
+// Tree Grammar, we are dealing with AST nodes here.
 
 class OffsetWalker extends TreeParser;
 options{
 	k = 2;
+	ASTLabelType = "OffsetAST";
 }
 
 styleSheet
@@ -161,14 +145,14 @@ styleSheet
 	;
 
 styleSection
-	: #(STYLE_SECTION a:NAME (NAME)? (att | section)+) {System.out.println("Test:"+a);}
+	: #(STYLE_SECTION name:NAME (NAME)? (att | section)+) {System.out.println("StyleSectionOffset:"+name.getOffset());}
 	;
 
 section
-	: #(SECTION NAME (att)+)
+	: #(SECTION name:NAME (att)+) {System.out.println("SectionOffset:"+name.getOffset());}
 	;
 
 att
-	: #(ATTRIBUTE_VALUE_PAIR name:NAME ARBITRARY_STRING) {System.out.println(name.getLine());}
+	: #(ATTRIBUTE_VALUE_PAIR name:NAME ARBITRARY_STRING) {System.out.println("AttributeOffset:"+name.getOffset());}
 	;
 	
