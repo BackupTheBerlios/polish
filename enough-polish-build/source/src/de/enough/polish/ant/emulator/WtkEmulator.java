@@ -157,7 +157,7 @@ public class WtkEmulator extends Emulator {
 		
 		// add the -Xheapsize-parameter:
 		String heapSizeStr = device.getCapability("polish.HeapSize");
-		if (heapSizeStr != null) {
+		if ((heapSizeStr != null) && !("dynamic".equals(heapSizeStr))) {
 			long bytes = ConvertUtil.convertToBytes( heapSizeStr );
 			argumentsList.add("-Xheapsize:" + bytes );
 		}

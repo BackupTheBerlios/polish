@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.2-pre2" />
-	  <property name="VersionMessage" value="Welcome to J2ME Polish 1.2! " />
+	  <property name="Version" value="1.2-pre3" />
+	  <property name="VersionMessage" value="Welcome to third preview of J2ME Polish 1.2! " />
 	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
 
   <path id="thirdparty">
@@ -217,18 +217,18 @@
 		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,LICENSE.txt,Readme.txt" />
 	</copy>
 	<copy todir="tmp/import">
-		<fileset dir="import" includes="jdom.jar,proguard.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar" />
+		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar" />
 		<fileset dir="dist" includes="*.jar" />
 	</copy>
 	<!-- copy sample application -->
 	<mkdir dir="tmp/src" />
 	<copy todir="tmp/src">
-		<fileset dir="../enough-polish-example/source/src" includes="**/*.java" />
+		<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
 	</copy>
 	<copy todir="tmp/" >
 		<fileset dir="setup" />
-		<fileset dir="../enough-polish-example" includes="resources/**/*.css,resources/**/*.png" />
-		<fileset dir="../enough-polish-example" includes="resources2**/*.css,resources2/**/*.png" />
+		<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
+		<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
 	</copy>
 	<!-- copy source of J2ME Polish -->
 	<mkdir dir="tmp/j2mepolish-src/build" />

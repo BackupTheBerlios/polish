@@ -76,7 +76,7 @@
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
-			jarName="${polish.vendor}-${polish.name}-example.jar" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar" 
 			jarUrl="${deploy-url}${polish.jarName}"
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 
@@ -86,7 +86,7 @@
 		<!-- Nokia/3650 and the 6600 phones, but when the test-property is set to false, -->
 		<!-- the second deviceRequirements will be used instead. -->
 		<deviceRequirements if="test">
-			<requirement name="Identifier" value="Nokia/3650, Nokia/6600" />
+			<requirement name="Identifier" value="Generic/midp1" />
 		</deviceRequirements>
 		<deviceRequirements unless="test">
 			<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
@@ -100,15 +100,13 @@
 			 -->
 		</deviceRequirements>
 	    <!-- build settings -->
-		<!-- Here you can set the resDir attribute to "resources2" 
-		     for an alternative design.
+		<!-- 
 		 -->
 		<build
 			symbols="ExampleSymbol, AnotherExample"
 			imageLoadStrategy="foreground"
 			fullscreen="menu"
 			usePolishGui="true"
-			resDir="resources"
 			workDir="${dir.work}"
 		>
 			<!-- midlets definition -->
@@ -123,6 +121,28 @@
 				<variable name="update-url" value="http://www.enough.de/update" />
 				<variable name="title" value="J2ME Polish" />
 			</variables>
+			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
+			<resources
+				dir="resources"
+				defaultexcludes="yes"
+				excludes="readme.txt"
+			>
+				<!-- you can add resources based on complex criterias: -->
+				<fileset 
+					dir="resources/multimedia" 
+					includes="*.wav" 
+					if="polish.audio.wav" 
+				/>
+				<fileset 
+					dir="resources/multimedia" 
+					includes="*.mid" 
+					if="polish.audio.midi and not polish.audio.wav" 
+				/>
+				<!-- add the localization element for created localized
+				     versions of your application: -->
+				<localization locales="de_DE, en_US" unless="test" />
+				<localization locales="en_US" if="test" />
+			</resources>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator unless="test" enable="true" name="ProGuard" />
 			<!-- debug settings: only include debug setting when the test-property is true -->

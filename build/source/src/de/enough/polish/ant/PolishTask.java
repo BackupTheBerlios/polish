@@ -792,8 +792,12 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
 			TextFile file = new TextFile( baseDir, fileName, lastModificationTime, this.resourceUtil );
-			if ( fileName.endsWith("StyleSheet.java") && fileName.startsWith("de")) {
-				this.styleSheetSourceFile = file;
+			if (fileName.startsWith("de")) {
+				if ( fileName.endsWith("StyleSheet.java")) {
+					this.styleSheetSourceFile = file;
+				} else if ( fileName.endsWith("Locale.java")) {
+					this.localeSourceFile = file;
+				}
 			}
 			files[i] = file;
 		}
@@ -1576,23 +1580,7 @@ public class PolishTask extends ConditionalTask {
 	private void runEmulator( Device device, Locale locale ) {
 		if ( this.emulatorSetting.isActive(this.project) ) {
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-			HashMap infoProperties = new HashMap();
-			infoProperties.put( "polish.identifier", device.getIdentifier() );
-			infoProperties.put( "polish.name", device.getName() );
-			infoProperties.put( "polish.vendor", device.getVendorName() );
-			infoProperties.put( "polish.version", this.infoSetting.getVersion() );
-			String jarName = this.infoSetting.getJarName();
-			jarName = PropertyUtil.writeProperties(jarName, infoProperties);
-			infoProperties.put( "polish.jarName", jarName );
-			String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
-			infoProperties.put( "polish.jadName", jadName );
-			String destDir = this.buildSetting.getDestDir().getAbsolutePath();
-			infoProperties.put( "polish.destDir", destDir );
-			String jadPath = destDir + File.separatorChar + jadName;
-			infoProperties.put( "polish.jadPath", jadPath );
-			String jarPath = destDir + File.separatorChar + jarName;
-			infoProperties.put( "polish.jarPath", jarPath );
-			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, infoProperties, this.project, evaluator, this.wtkHome);
+			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), this.project, evaluator, this.wtkHome);
 			if (emulator != null) {
 				if (this.runningEmulators == null) {
 					this.runningEmulators = new ArrayList();

@@ -95,7 +95,7 @@
             <parsable targetfile="$INSTALL_PATH/sample/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/sample/.classpath" type="shell" /> 
         </pack>
-        <pack name="External Device Database" required="no" preselected="no" >
+        <pack name="External Device Database" required="no" preselected="yes" >
             <description>The files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot;. These are only necessary if you want to add your own device-definitions or modify existing ones.</description>
             <file src="devices.xml" targetdir="$INSTALL_PATH"/>
             <file src="vendors.xml" targetdir="$INSTALL_PATH"/>

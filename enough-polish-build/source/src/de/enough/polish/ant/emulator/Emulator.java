@@ -227,13 +227,13 @@ public abstract class Emulator extends Thread {
 	 *  
 	 * @param setting the setting
 	 * @param device the current device
-	 * @param infoProperties the info properties for the parameter-values
+	 * @param variables the variables for the parameter-values
 	 * @param project the ant-project to which this emulator belongs to 
 	 * @param evaluator a boolean evaluator for the parameter-conditions
 	 * @param wtkHome the home directory of the wireless toolkit
 	 * @return true when an emulator could be detected
 	 */
-	public static Emulator createEmulator(Device device, EmulatorSetting setting, HashMap infoProperties, Project project, BooleanEvaluator evaluator, String wtkHome ) {
+	public static Emulator createEmulator(Device device, EmulatorSetting setting, Map variables, Project project, BooleanEvaluator evaluator, String wtkHome ) {
 		String className = setting.getEmulatorClassName();
 		if (className == null) {
 			className = device.getCapability("polish.Emulator.Class");
@@ -264,10 +264,10 @@ public abstract class Emulator extends Thread {
 		}
 		Hashtable antProperties = project.getProperties();
 		HashMap capabilities = device.getCapabilities();
-		HashMap properties = new HashMap( antProperties.size() + infoProperties.size() + capabilities.size() );
+		HashMap properties = new HashMap( antProperties.size() + variables.size() + capabilities.size() );
 		properties.putAll( antProperties );
 		properties.putAll( capabilities );
-		properties.putAll( infoProperties );
+		properties.putAll( variables );
 		boolean okToStart = emulator.init(device, setting, properties, project, evaluator, wtkHome);
 		if (!okToStart) {
 			return null;
