@@ -59,9 +59,9 @@ public class InfoSetting {
 	public static final String MIDLET_DESCRIPTION = "MIDlet-Description"; // J & M
 	public static final String MIDLET_INFO_URL = "MIDlet-Info-URL"; // J & M
 	public static final String MIDLET_DATA_SIZE = "MIDlet-Data-Size"; // J & M
-	public static final String MIDLET_DELETE_CONFIRM = "MIDlet-Delete-Confirm"; // M?
-	public static final String MIDLET_DELETE_NOTIFY = "MIDlet-Delete-Notify"; // M?
-	public static final String MIDLET_INSTALL_NOTIFY = "MIDlet-Install-Notify"; // M?
+	public static final String MIDLET_DELETE_CONFIRM = "MIDlet-Delete-Confirm"; // J & M
+	public static final String MIDLET_DELETE_NOTIFY = "MIDlet-Delete-Notify"; // J & M
+	public static final String MIDLET_INSTALL_NOTIFY = "MIDlet-Install-Notify"; // J & M
 
 	public static final String MIDLET_PERMISSIONS = "MIDlet-Permissions"; // J & M 	
 	public static final String MIDLET_OPTIONAL_PERMISSIONS = "MIDlet-Permissions-Opt"; // J & M
@@ -128,7 +128,9 @@ public class InfoSetting {
 	 * @param deleteConfirm The deleteConfirm to set.
 	 */
 	public void setDeleteConfirm(String deleteConfirm) {
-		this.manifestAttributes.add( new Variable( MIDLET_DELETE_CONFIRM, deleteConfirm ));
+		Variable var = new Variable( MIDLET_DELETE_CONFIRM, deleteConfirm );
+		this.manifestAttributes.add( var );
+		this.jadAttributes.add( var );
 		this.deleteConfirm = deleteConfirm;
 	}
 
@@ -145,6 +147,7 @@ public class InfoSetting {
 	public void setDeleteNotify(String deleteNotify) {
 		Variable var = new Variable( MIDLET_DELETE_NOTIFY, deleteNotify );
 		this.manifestAttributes.add( var );
+		this.jadAttributes.add( var );
 		this.deleteNotify = deleteNotify;
 	}
 
@@ -215,6 +218,7 @@ public class InfoSetting {
 	public void setInstallNotify(String installNotify) {
 		Variable var = new Variable( MIDLET_INSTALL_NOTIFY, installNotify );
 		this.manifestAttributes.add( var );
+		this.jadAttributes.add( var );
 		this.installNotify = installNotify;
 	}
 
