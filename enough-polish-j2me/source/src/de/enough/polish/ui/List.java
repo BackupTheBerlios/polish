@@ -451,7 +451,7 @@ public class List extends Screen implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart)
 	{
-		this.choiceGroup.insert( elementNum, stringPart, imagePart, null );
+		this.choiceGroup.set( elementNum, stringPart, imagePart, null );
 	}
 
 	/**
@@ -469,7 +469,7 @@ public class List extends Screen implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
-		this.choiceGroup.insert( elementNum, stringPart, imagePart, elementStyle );
+		this.choiceGroup.set( elementNum, stringPart, imagePart, elementStyle );
 	}
 
 	/**
