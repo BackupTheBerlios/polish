@@ -32,6 +32,8 @@ import org.eclipse.jdt.internal.ui.text.AbstractJavaScanner;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
  * <p></p>
@@ -45,12 +47,38 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
 
+    /**
+     * <p></p>
+     *
+     * <p>Copyright Enough Software 2005</p>
+     * <pre>
+     * history
+     *        Apr 5, 2005 - ricky creation
+     * </pre>
+     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+     */
+    public class PropertyChangeListener implements IPropertyChangeListener {
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+         */
+        public void propertyChange(PropertyChangeEvent event) {
+            System.out.println("polishScanner.PropertyChangeListener.propertyChange:"+event.getProperty()+".old:"+event.getOldValue().getClass()+".new:"+event.getNewValue().getClass());
+            //TODO: Take care for the token cache.
+        }
+
+    }
     // TODO: Have to understand the difference between PartitionType, ContentType and PositionType.
     // Maybe JAVA_PARTITIONING should have a sibling like POLISH_PARTITIONING.
     
-    private String[] tokenProperties = {IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT,
+    private String[] tokenProperties = {
+            IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT,
             IJavaColorConstants.JAVA_KEYWORD,
-            IJavaColorConstants.JAVA_STRING};
+            IJavaColorConstants.JAVA_STRING,
+            IJavaColorConstants.JAVA_METHOD_NAME};
+    private IPropertyChangeListener propertyChangeListener;
+    
+    
     
     /**
      * @param colorManager
@@ -59,6 +87,9 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
     public PolishSingleLineCommentScanner(IColorManager colorManager, IPreferenceStore preferenceStore) {
         super(colorManager,preferenceStore);
         initialize(); // This is needed because the super constructor does not call it !
+        //TODO: Register this object at the preferenceStore to listen for property changes.
+        this.propertyChangeListener = new PropertyChangeListener();
+        preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
     }
 
     /* (non-Javadoc)
@@ -75,9 +106,10 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         System.out.println("PolishSingleLineCommentScanner.createRules():enter.this:"+this);
 
         PolishDirectiveRule rule = new PolishDirectiveRule();
-        rule.setDefaultToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
+        rule.setCommentToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
         rule.setDirectiveToken(getToken(IJavaColorConstants.JAVA_KEYWORD));
         rule.setNameToken(getToken(IJavaColorConstants.JAVA_STRING));
+        rule.setMethodToken(getToken(IJavaColorConstants.JAVA_METHOD_NAME));
         setDefaultReturnToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
         
         List rules = new ArrayList();

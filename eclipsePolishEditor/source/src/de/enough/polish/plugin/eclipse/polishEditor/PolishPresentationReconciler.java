@@ -47,16 +47,18 @@ public class PolishPresentationReconciler extends JavaPresentationReconciler {
          * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
          */
         public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
-            // TODO ricky implement inputDocumentAboutToBeChanged
-            
+            /*
+             * 
+             */
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
          */
         public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-            // TODO ricky implement inputDocumentChanged
-            
+            /*
+             * 
+             */
         }
         
     }

@@ -52,35 +52,42 @@ public class PolishDirectiveRule implements IRule {
     private Matcher matcher;
     private Pattern pattern;
     
+    // TODO: Rename and organize in a more general fashion.
     private IToken defaultToken;
+    private IToken commentToken;
     private IToken directiveToken;
     private IToken nameToken;
+    private IToken methodToken; //black for methods.
     
     private String REG_EX_PATTERN =
-        "(//#def)" + "|" + //1
-        "(//#else)" + "|" + //2
-        "(//#ifdef)" + "|" + //3 // Order is important: beware that the longer sequence is before the shorter one if both have same prefix.
-        "(//#if)" + "|" + //4
-        "(//#elif)" + "|" + //5
-        "(//#endif)" + "|" + //6
-        "(//#debug)" + "|" + //7
-        "(//#=)" + "|" + //8
-        "([a-zA-Z\\.]+)" + "|" + //9
-        "(//)" + "|" + //10
-        "([ ]+)" + "|" + //11
-        "(\\$\\{|\\})" //12
+        "(//#def|//#else|//#ifdef|//#if|//#elif|//#endif|//#debug|//#style)" + "|" +
+        "(//#=)" + "|" +
+        "(//# )" + "|" +
+        "(private|public|protected|final|static|boolean|int|float|double|true|false|void)" + "|" +
+        "(//)" + "|" +
+        "(\\$\\{|\\})" + "|" +
+        "([ 	]+)" + "|" +
+        "([a-zA-Z\\.]+)" + "|" +
+        "(\\(|\\)|;|=)" //TODO: Differentiate into CLB,CRB and distinquish states.
+        //"(\\\")" // FIXME: Does this work?
         ;
     
     public static final int DIRECTIVE_SYMBOL = 1;
     public static final int ASSIGNMENT_SYMBOL = 2;
-    public static final int NAME_SYMBOL = 4;
-    public static final int COMMENT_SYMBOL = 8;
-    public static final int FUNCTION_SYMBOL = 16;
+    public static final int POLISH_COMMENT_SYMBOL = 3;
+    public static final int JAVA_KEYWORD_SYMBOL = 4;
+    public static final int JAVA_COMMENT_SYMBOL = 5;
+    public static final int FUNCTION_SYMBOL = 6;
+    public static final int NAME_SYMBOL = 8;
+    public static final int PUNCTATION_SYMBOL = 9;
+    
     
     private int state;
-    public static final int COMMENT_STATE = 1;
-    public static final int DIRECTIVE_STATE = 2;
-    public static final int ASSIGNMENT_STATE = 4;
+    public static final int IGNORE_STATE = 1;
+    public static final int POLISH_STATE = 2;
+    public static final int JAVA_STATE = 3;
+    public static final int JAVA_POLISH_STATE = 4;
+    public static final int STRING_STATE = 5;
     
     private boolean isInState(int stateToTest) {
         return (this.state & stateToTest) == stateToTest;
@@ -90,9 +97,9 @@ public class PolishDirectiveRule implements IRule {
         this.state = this.state | stateToAdd;
     }
     
-    private void removeState(int stateToRemove) {
-        this.state = this.state & ~stateToRemove;
-    }
+//    private void removeState(int stateToRemove) {
+//        this.state = this.state & ~stateToRemove;
+//    }
     
     private void setState(int stateToSet) {
         this.state = stateToSet;
@@ -102,9 +109,10 @@ public class PolishDirectiveRule implements IRule {
         this.matcher = this.pattern.matcher("");
     }
     
-    public void setDefaultToken(IToken token) {
+    public void setCommentToken(IToken token) {
         Assert.isNotNull(token);
-        this.defaultToken = token;
+        this.commentToken = token;
+        this.defaultToken = this.commentToken; //FIXME: This is evil. Rip it apart and establish a Map.
     }
     
     public void setDirectiveToken(IToken token) {
@@ -117,6 +125,11 @@ public class PolishDirectiveRule implements IRule {
         this.nameToken = token;
     }
    
+    public void setMethodToken(IToken token) {
+        Assert.isNotNull(token);
+        this.methodToken = token;
+    }
+    
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
      */
@@ -127,7 +140,7 @@ public class PolishDirectiveRule implements IRule {
         Assert.isNotNull(this.nameToken);
         
         
-        int c =  Integer.MIN_VALUE;
+        int c; //int c =  Integer.MIN_VALUE; // Clean initialization.
         int readCount = 0; // number of times read was called.
         this.delimiters = scanner.getLegalLineDelimiters();
 
@@ -160,6 +173,13 @@ public class PolishDirectiveRule implements IRule {
 			return Token.UNDEFINED;
 		}
 		//System.out.println("AAA matched something.");
+		
+		if(isInState(JAVA_STATE)) {
+		    this.defaultToken = this.methodToken;
+		}
+		if(isInState(POLISH_STATE)) {
+		    this.defaultToken = this.commentToken;
+		}
 		IToken token = this.defaultToken;
 		
 //		We have something and is at the offset. Find out what it is.
@@ -176,35 +196,67 @@ public class PolishDirectiveRule implements IRule {
 				    scanner.read();
 				}
 				
+				
+				
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
-				if(1 <= i && i <= 8) { 
-				    //System.out.println("AAA token generated:directive.");
-				    this.state = DIRECTIVE_STATE;
+				if(i == DIRECTIVE_SYMBOL) { 
+				    System.out.println("AAA direvtiveSymbol.");
+				    setState(POLISH_STATE);
 				    token = this.directiveToken;
+				    //this.defaultToken = this.commentToken;
+				    break;
 				}
-//				else if(8 <= i && i <= 8) {
-//				    //System.out.println("AAA token generated:name.");
-//				    this.state = (DIRECTIVE_STATE | ASSIGNMENT_STATE);
-//				    token = this.directiveToken;
-//				}
-				else if(9 <= i && i <= 9) {
-				    //System.out.println("AAA token generated:name.");
-				    if(isInState(DIRECTIVE_STATE)) { // Color only names within a polish directive.
+				if(i == NAME_SYMBOL) {
+				    System.out.println("AAA nameSymbol.");
+				    if(isInState(POLISH_STATE)) { // Color only names within a polish directive.
 				        token = this.nameToken;
 				    }
-//				    if(isInState(ASSIGNMENT_STATE)) {
-//				        if(value.)
-//				    }
+				    if(isInState(JAVA_STATE)) {
+				        token = this.methodToken;
+				    }
+				    break;
 				}
-				else if(10 <= i && i <= 10) {
-				    this.state = COMMENT_STATE;  
+				if(i == JAVA_COMMENT_SYMBOL) {
+				    System.out.println("AAA javaCommentSymbol.");
+				    setState(IGNORE_STATE);
+				    //this.defaultToken = this.commentToken;
+				    break;
 				}
-				else if(12 <= i && i <= 12) {
-				    if(isInState(DIRECTIVE_STATE)) {
+				if(i == FUNCTION_SYMBOL) {
+				    System.out.println("AAA functionSymbol.");
+				    if(isInState(POLISH_STATE)) {
 				        token = this.directiveToken;
 				    }
+				    break;
 				}
-				
+				if(i == POLISH_COMMENT_SYMBOL) {
+				    System.out.println("AAA polishCommentSymbol.");
+				    setState(JAVA_STATE);
+				    token = this.directiveToken;
+				    //this.defaultToken = this.methodToken;
+				    break;
+				}
+				if(i == ASSIGNMENT_SYMBOL) {
+				    System.out.println("AAA AssignmentSymbol.");
+				    setState(POLISH_STATE);
+				    addState(JAVA_STATE);
+				    token = this.directiveToken;
+				    //this.defaultToken = this.methodToken;
+				    break;
+				}
+				if(i == JAVA_KEYWORD_SYMBOL) {
+				    if(isInState(JAVA_STATE)) {
+				        token = this.directiveToken;
+				    }
+				    break;
+				}
+				if(i == PUNCTATION_SYMBOL) {
+				    if(isInState(JAVA_STATE)) {
+				        token = this.methodToken;
+				    }
+				}
+				// TODO: AddString handling
+				System.out.println("PolishDirectiveRule.evaluate(...):Symbol not processed:"+value+"X.i:"+i);
 				break;
 			}
 		}
