@@ -130,6 +130,7 @@ public class PropertyUtilTest extends TestCase {
 	public void testFunctions() {
 		HashMap properties = new HashMap();
 		properties.put( "polish.HeapSize", "200kb");
+		properties.put( "polish.Message", "Hello World");
 		
 		String result = PropertyUtil.writeProperties( "${ bytes(polish.HeapSize) }", properties );
 		assertEquals( "204800", result );
@@ -143,6 +144,11 @@ public class PropertyUtilTest extends TestCase {
 		result = PropertyUtil.writeProperties( "${ mb(polish.HeapSize) }M", properties );
 		assertEquals( "0.1953125M", result );
 		
+		result = PropertyUtil.writeProperties( "${ uppercase(polish.Message) }", properties );
+		assertEquals( "HELLO WORLD", result );
+
+		result = PropertyUtil.writeProperties( "${ lowercase(polish.Message) }", properties );
+		assertEquals( "hello world", result );
 	}
 	
 }
