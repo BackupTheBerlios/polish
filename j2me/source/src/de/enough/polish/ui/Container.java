@@ -603,6 +603,10 @@ public class Container extends Item {
 		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
 		//#endif
+			if (!(this.isLayoutCenter || this.isLayoutRight)) {
+				// adjust the right border:
+				rightBorder = leftBorder + this.contentWidth;
+			}
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,

@@ -56,6 +56,11 @@ public class AnimationThread extends Thread {
 	//#else
 		public final static int ANIMATION_INTERVAL = 100;
 	//#endif
+		//#ifdef polish.animationInterval:defined
+		//#=private final static int SLEEP_INTERVAL = ${polish.sleepInterval};
+	//#else
+		private final static int SLEEP_INTERVAL = 500;
+	//#endif
 	
 	/**
 	 * Creates a new animation thread.
@@ -81,12 +86,12 @@ public class AnimationThread extends Thread {
 					} else {
 						animationCounter++;
 						if (animationCounter > 10) {
-							sleeptime = 1000;
+							sleeptime = SLEEP_INTERVAL;
 							animationCounter = 0;
 						}
 					}
 				} else {
-					sleeptime = 1000;
+					sleeptime = SLEEP_INTERVAL;
 				}
 			} catch (InterruptedException e) {
 				// ignore

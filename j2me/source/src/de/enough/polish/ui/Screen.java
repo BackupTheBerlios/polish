@@ -379,6 +379,11 @@ public abstract class Screen
 			if (this.background != null) {
 				animated = this.background.animate();
 			}
+			//#ifdef tmp.menuFullScreen
+				if (this.menuOpened) {
+					animated = animated | this.menuContainer.animate();
+				} else
+			//#endif
 			if (this.container != null) {
 				animated = animated | this.container.animate();
 			}

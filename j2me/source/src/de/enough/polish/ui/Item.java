@@ -1283,9 +1283,11 @@ public abstract class Item extends Object
 	 */
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		// initialise this item if necessary:
+		int availableWidth = rightBorder - leftBorder;
 		if (!this.isInitialised) {
-			init( rightBorder - x, rightBorder - leftBorder );
+			init( rightBorder - x, availableWidth );
 		}
+		
 		// set coordinates of this item:
 		this.xLeftPos = leftBorder;
 		this.yTopPos = y;
@@ -1312,33 +1314,14 @@ public abstract class Item extends Object
 		//#ifdef polish.useAfterStyle
 			rightBorder -= this.afterWidth;
 		//#endif
-		
+
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
-		boolean doCenter = this.isLayoutCenter;
-		if ( doCenter) {
-			int itemSpace = rightBorder - leftBorder;
-			if (itemSpace > this.itemWidth) {
-				/*
-				if (this.isLayoutExpand) {
-					System.out.println( this.style.name + ": centering item by " + ((itemSpace - this.itemWidth) / 2)+ " pixels, event though LAYOUT_EXPAND is set!");
-				}
-				*/
-				//System.out.println("itemSpace=" + itemSpace + "  itemWidth=" + this.itemWidth + "  x-increase=" + ((itemSpace - this.itemWidth) / 2));
-				x+= (itemSpace - this.itemWidth) / 2;
-				doCenter = false;
-			}
-		}
-		boolean doRightAlign = this.isLayoutRight;
-		if ( doRightAlign ) {
-			int itemSpace = rightBorder - leftBorder;
-			if (itemSpace > this.itemWidth) {
-				/*
-				if (this.isLayoutExpand) {
-					System.out.println( this.style.name + ": right aligning item by " + (itemSpace - this.itemWidth)+ " pixels, event though LAYOUT_EXPAND is set!");
-				}
-				*/
-				x+= itemSpace - this.itemWidth;
-			}
+		if ( this.isLayoutCenter  && availableWidth > this.itemWidth) {
+			x += (availableWidth - this.itemWidth) / 2;
+		} else if ( this.isLayoutRight && availableWidth > this.itemWidth) {
+			// adjust the x-position so that the item is painted up to
+			// the right border (when it starts at x):
+			x += availableWidth - this.itemWidth;
 		}
 		// paint background:
 		x += this.marginLeft;
@@ -1384,21 +1367,7 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
-		// align content positions:
-		if ( doCenter ) {
-			int contentSpace = rightBorder - this.marginRight - this.borderWidth 
-					- this.paddingRight - contX;
-			if (contentSpace > this.contentWidth) {
-				contX += (contentSpace - this.contentWidth ) / 2;				
-			}
-		} else if ( doRightAlign ) {
-			int contentSpace = rightBorder - this.marginRight - this.borderWidth 
-					- this.paddingRight - contX;
-			if (contentSpace > this.contentWidth) {
-				contX += contentSpace - this.contentWidth;				
-			}
-		}
-		
+
 		// paint content:
 		this.contentX = contX;
 		this.contentY = contY;

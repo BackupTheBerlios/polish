@@ -25,6 +25,8 @@
  */
 package de.enough.polish.ui;
 
+import de.enough.polish.util.BitMapFont;
+import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.TextUtil;
 
 import javax.microedition.lcdui.Font;
@@ -47,7 +49,10 @@ public class StringItem extends Item
 	private String[] textLines;
 	protected int textColor;
 	protected Font font;
-	//private boolean isSingleLine;
+	//#ifdef polish.css.font-bitmap
+		protected BitMapFont bitMapFont;
+		protected BitMapFontViewer bitMapFontViewer;
+	//#endif
 
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
@@ -233,6 +238,17 @@ public class StringItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.text != null) {
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFontViewer != null) {
+					if (this.isLayoutCenter) {
+						x = leftBorder + (rightBorder - leftBorder) / 2;
+					} else if (this.isLayoutRight) {
+						x = rightBorder;
+					}
+					this.bitMapFontViewer.paint(g, x, y );
+					return;
+				}
+			//#endif
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			int lineHeight = this.font.getHeight() + this.paddingVertical; 
@@ -240,20 +256,15 @@ public class StringItem extends Item
 			if (this.isLayoutCenter) {
 				centerX = leftBorder + (rightBorder - leftBorder) / 2;
 			}
-			//System.out.println("StringItem-centerX=" + centerX );
 			for (int i = 0; i < this.textLines.length; i++) {
 				String line = this.textLines[i];
 				// adjust the painting according to the layout:
 				if (this.isLayoutRight) {
 					g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 				} else if (this.isLayoutCenter) {
-					//if (i == 0) {
-					//	g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
-					//} else {
-						g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
-					//}
+					g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
 				} else {
-					// left layout
+					// left layout (default)
 					g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
 				}
 				x = leftBorder;
@@ -274,10 +285,24 @@ public class StringItem extends Item
 			this.contentWidth = 0;
 			return;
 		}
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				int orientation = Graphics.LEFT;
+				if (this.isLayoutCenter) {
+					orientation = Graphics.HCENTER;
+				} else if (this.isLayoutRight) {
+					orientation = Graphics.RIGHT;
+				}
+				this.bitMapFontViewer = this.bitMapFont.getViewer( this.text );
+				this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
+				this.contentHeight = this.bitMapFontViewer.getHeight();
+				this.contentWidth = this.bitMapFontViewer.getWidth();
+				return;
+			}
+		//#endif
 		String[] lines = TextUtil.split(this.text, this.font, firstLineWidth, lineWidth);
 		int fontHeight = this.font.getHeight();
-		this.contentHeight = (lines.length * fontHeight)
-						   + ((lines.length -1) * this.paddingVertical);
+		this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
 		int maxWidth = 0;
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
@@ -298,6 +323,15 @@ public class StringItem extends Item
 		super.setStyle(style);
 		this.textColor = style.fontColor;
 		this.font = style.font;
+		//#ifdef polish.css.font-bitmap
+			String bitMapUrl = style.getProperty("font-bitmap");
+			if (bitMapUrl != null) {
+				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
+			} else {
+				this.bitMapFont = null;
+				this.bitMapFontViewer = null;
+			}
+		//#endif
 	}
 
 	//#ifdef polish.useDynamicStyles

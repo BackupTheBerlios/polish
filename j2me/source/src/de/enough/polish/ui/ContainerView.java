@@ -42,6 +42,12 @@ public abstract class ContainerView {
 	protected int contentWidth;
 	protected int contentHeight;
 	protected int focusedIndex;
+	/** 
+	 * isShown will be set to false whenever the corresponding container is 
+	 * not shown anymore. This can be used for (re)-starting animations
+	 * when a table is shown again. 
+	 */
+	protected boolean isShown;
 
 	/**
 	 * Creates a new view
@@ -166,6 +172,10 @@ public abstract class ContainerView {
 			}
 		}
 		return null;
+	}
+	
+	public boolean animate() {
+		return false;
 	}
 
 }
