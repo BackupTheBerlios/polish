@@ -27,8 +27,6 @@ package de.enough.polish.jar;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
@@ -37,6 +35,7 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.PackageSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.util.LoggerThread;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.TextUtil;
 
@@ -90,10 +89,7 @@ public class ExternalPackager extends Packager {
 				info = info.substring( info.indexOf( File.separatorChar ));
 			}
 			info += ": ";
-			LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info );
-			errorLog.start();
-			LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info );
-			outputLog.start();
+			LoggerThread.log(process, info);
 			int result = process.waitFor();
 			if (result != 0) {
 				System.err.println( "Call to external packager was: ");
@@ -108,41 +104,6 @@ public class ExternalPackager extends Packager {
 			throw new BuildException("External packager was interrupted.");
 		}
 		
-	}
-
-	class LoggerThread extends Thread {
-		private final InputStream input;
-		private final PrintStream output;
-		private final String header;
-
-		public LoggerThread( InputStream input, PrintStream output, String header ) {
-			this.input = input;
-			this.output = output;
-			this.header = header;
-		}
-		
-		public void run() {
-			StringBuffer log = new StringBuffer( 300 );
-			log.append(this.header);
-			int startPos = this.header.length();
-			int c;
-			
-			try {
-				while ((c = this.input.read() ) != -1) {
-					if (c == '\n') {
-						String logMessage = log.toString();
-						this.output.println( logMessage );
-						log.delete( startPos,  log.length() );
-					}  else if (c != '\r') {
-						log.append((char) c);
-					}
-				}
-				this.input.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Unable to log: " + e.toString() );
-			}
-		}
 	}
 
 }

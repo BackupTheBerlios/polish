@@ -27,6 +27,7 @@ package de.enough.polish.util;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +76,19 @@ public final class FileUtil {
 		}
 		in.close();
 		return (String[]) lines.toArray( new String[ lines.size() ]);
+	}
+
+	/**
+	 * Writes (and creates) a text file.
+	 * 
+	 * @param file the file to which the text should be written
+	 * @param lines the text lines of the file in a collection with String-values
+	 * @throws IOException when there is an input/output error during the saving
+	 */
+	public static void writeTextFile(File file, Collection lines) 
+	throws IOException 
+	{
+		writeTextFile( file, (String[]) lines.toArray( new String[ lines.size() ]));
 	}
 
 	/**
