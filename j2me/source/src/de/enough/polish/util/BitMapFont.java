@@ -63,6 +63,7 @@ public final class BitMapFont {
 	private BitMapFont( String fontUrl ) {
 		super();
 		this.fontUrl = fontUrl;
+		//#debug
 		System.out.println("Creating bitmap font " + fontUrl );
 	}
 	
@@ -82,6 +83,8 @@ public final class BitMapFont {
 					return null;
 				}
 				DataInputStream dataIn = new DataInputStream( in );
+				//#debug
+				System.out.println("BitMapFont: There are " + dataIn.available() + " bytes available in the stream.");
 				this.hasMixedCase = dataIn.readBoolean();
 				String map = dataIn.readUTF();
 				this.characterMap = map;
@@ -99,7 +102,9 @@ public final class BitMapFont {
 				//#ifdef polish.midp2
 					this.fontImage = Image.createImage( in );
 				//#else
-					int pngLength = in.available();
+					int pngLength = dataIn.available();
+					//#debug
+					System.out.println("BitMapFont: There are " + pngLength + " bytes available in the stream.");
 					byte[] pngBuffer = new byte[ pngLength ];
 					// defensive loading of the buffer, since
 					// not all implementations do read the full

@@ -1694,9 +1694,10 @@ implements CommandListener
 	}
 	
 	//#ifdef tmp.directInput
-	private void insertCharacter() {
+	private synchronized void insertCharacter() {
+		char insertChar = this.caretChar;
 		//#debug
-		System.out.println("TextField: inserting character " + this.caretChar );
+		System.out.println("TextField: inserting character " + insertChar );
 		String myText;
 		int width;
 		if (this.isPassword) {
@@ -1717,23 +1718,23 @@ implements CommandListener
 					width = this.caretViewer.getWidth();
 				} else {
 			//#endif
-					width = this.font.charWidth(this.caretChar);
+					width = this.font.charWidth(insertChar);
 			//#ifdef polish.css.font-bitmap
 				}
 			//#endif
 		}
 		this.caretX += width;
 		if (myText == null) {
-			myText = "" + this.caretChar;
+			myText = "" + insertChar;
 		} else {
 			myText = myText.substring( 0, this.caretPosition )
-				+ this.caretChar + myText.substring( this.caretPosition );
+				+ insertChar + myText.substring( this.caretPosition );
 		}
 		this.caretPosition++;
 		this.caretColumn++;
 		if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
-				&& this.caretChar == ' ') 
-			|| ( this.caretChar == '.' )) 
+				&& insertChar == ' ') 
+			|| ( insertChar == '.' )) 
 		{
 			this.nextCharUppercase = true;
 		} else {
@@ -1911,7 +1912,8 @@ implements CommandListener
 						}
 						
 					}
-					if (currentLength < this.maxSize && 
+					if ( this.inputMode != MODE_NUMBERS 
+							&& currentLength < this.maxSize && 
 							((keyCode >= Canvas.KEY_NUM0 && 
 							keyCode <= Canvas.KEY_NUM9)
 							|| (keyCode == Canvas.KEY_POUND ) 
