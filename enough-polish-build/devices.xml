@@ -107,7 +107,6 @@
 		<groups>Series40</groups>
 		<capability name="OS" value="Symbian"/>
 		<capability name="ScreenSize" value="128x128"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -122,9 +121,9 @@
 		<capability name="OS" value="Symbian"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="wmapi, mmapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />
@@ -140,7 +139,7 @@
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi32, amr" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 	</device>
@@ -154,7 +153,7 @@
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi32, amr" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 	</device>
@@ -168,7 +167,7 @@
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi32, amr" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 	</device>
@@ -182,7 +181,7 @@
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi32, amr" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 	</device>
@@ -196,7 +195,7 @@
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi32, amr" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 	</device>
@@ -210,7 +209,8 @@
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, mp4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="8 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 	</device>
@@ -224,7 +224,8 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi24, amr, mp3, rmf, mp4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi24, amr, mp3, rmf" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="12 MB" />
 		<capability name="usePolishTitle" value="true"/>
 	</device>
@@ -240,7 +241,8 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
         <capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, rmf, mp4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="16 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 		<capability name="usePolishTitle" value="true"/>
@@ -255,10 +257,37 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, mp4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="32 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="4" />
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/K500i, Sony-Ericsson/F500i</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering</features>
+		<capability name="ScreenSize" value="28x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
+		<capability name="HeapSize" value="12 MB" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="Region" value="EMEA,AP" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="850,1800,1900" />
+	</device>
+
+	<device
+		extends="Sony-Ericsson/K500i">
+		<identifier>Sony-Ericsson/K500c</identifier>
+		<capability name="Region" value="China" />
 	</device>
 	
 	<device>
@@ -270,7 +299,8 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, mp4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="6 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="4" />
@@ -285,8 +315,8 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3" />
-		<capability name="VideoFormat" value="mpeg-4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="32 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="8" />
@@ -302,8 +332,8 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, rmf, au, wav" />
-		<capability name="VideoFormat" value="mpeg-4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf, au, wav" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="64 MB" />
 		<capability name="DRM" value="forward lock" />
 		<capability name="CameraZoom" value="0" />
@@ -2259,6 +2289,11 @@
 		extends="Motorola/V600">
 		<identifier>Vodafone/Motorola-V600</identifier>
 		<capability name="JavaPackage" value="VSCL, VSCL-1.1.0"/>
+	</device>
+
+	<device
+		extends="Sony-Ericsson/K500i">
+		<identifier>Vodafone/Sony-Ericsson-F500i</identifier>
 	</device>
 	
 </devices>

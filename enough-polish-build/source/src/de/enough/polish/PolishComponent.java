@@ -118,8 +118,12 @@ public class PolishComponent {
 			for (int i = 0; i < definedFeatures.length; i++) {
 				addFeature( definedFeatures[i] );
 			}
+			if (this.featuresAsString != null) {
+				this.featuresAsString += ", " + featureDefinition;
+			} else {
+				this.featuresAsString = featureDefinition;
+			}
 		}
-		this.featuresAsString = featureDefinition;
 	}
 
 	/**
@@ -153,10 +157,19 @@ public class PolishComponent {
 		}
 		
 		// 2. set all features (overwriting will do no harm):
-		Set feats = component.getFeatures().keySet();
+		Set feats = component.features.keySet();
 		for (Iterator iter = feats.iterator(); iter.hasNext();) {
 			String feature = (String) iter.next();
 			this.features.put( feature, Boolean.TRUE );
+		}
+		
+		// 3. set the features-string:
+		if (component.featuresAsString != null) {
+			if (this.featuresAsString != null) {
+				this.featuresAsString += ", " + component.featuresAsString;
+			} else {
+				this.featuresAsString = component.featuresAsString;
+			}
 		}
 	}
 	
