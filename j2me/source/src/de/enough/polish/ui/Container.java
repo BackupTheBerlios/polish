@@ -1111,7 +1111,7 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style originalStyle) {
-		if ( this.itemsList.size() == 0) {
+		if ( this.itemsList.size() == 0 || this.focusedIndex == -1) {
 			super.defocus( originalStyle );
 		} else {
 			this.isFocused = false;
