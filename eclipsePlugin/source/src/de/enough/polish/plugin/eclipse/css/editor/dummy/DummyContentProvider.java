@@ -42,7 +42,7 @@ import de.enough.polish.plugin.eclipse.css.model.dummy.DummyParent;
  * history
  *        Feb 24, 2005 - ricky creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class DummyContentProvider implements ITreeContentProvider,ISelectionChangedListener {
 

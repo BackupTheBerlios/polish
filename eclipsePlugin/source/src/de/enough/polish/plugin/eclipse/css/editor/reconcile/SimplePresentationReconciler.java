@@ -36,7 +36,7 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
  * history
  *        Mar 1, 2005 - ricky creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class SimplePresentationReconciler extends PresentationReconciler {
 /*
