@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.0-RC4";
+	private static final String VERSION = "1.0-RC5";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -143,6 +143,7 @@ public class PolishTask extends ConditionalTask {
 	 * @throws BuildException when the build failed.
 	 */
 	public void execute() throws BuildException {
+		System.out.println("J2ME Polish " + VERSION );
 		if (!isActive()) {
 			return;
 		}
@@ -151,9 +152,7 @@ public class PolishTask extends ConditionalTask {
 		selectDevices();
 		int numberOfDevices = this.devices.length;
 		if (numberOfDevices > 1) {
-			System.out.println("J2ME Polish " + VERSION + ": processing [" + numberOfDevices + "] devices...");
-		} else {
-			System.out.println("J2ME Polish " + VERSION );
+			System.out.println("Processing [" + numberOfDevices + "] devices...");
 		}
 		boolean obfuscate = this.buildSetting.doObfuscate();
 		for ( int i=0; i<numberOfDevices; i++) {
@@ -187,6 +186,7 @@ public class PolishTask extends ConditionalTask {
 	 * Checks the settings of this task.
 	 */
 	private void checkSettings() {
+		//System.out.println( this.project.getBaseDir().getAbsolutePath() );
 		if (this.infoSetting == null) {
 			throw new BuildException("Nested element [info] is required.");
 		}
@@ -200,6 +200,24 @@ public class PolishTask extends ConditionalTask {
 		Midlet[] midlets = this.buildSetting.getMidlets(); 
 		if (midlets == null || midlets.length == 0) {
 			throw new BuildException("Midlets need to be defined in the build section with either <midlets> or <midlet>.");
+		}
+		// now check if the midlets do exist:
+		for (int i = 0; i < midlets.length; i++) {
+			Midlet midlet = midlets[i];
+			String fileName = TextUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
+			boolean midletFound = false;
+			File[] sources = this.buildSetting.getSourceDirs();
+			for (int j = 0; j < sources.length; j++) {
+				String sourceDirPath = sources[i].getAbsolutePath();
+				File midletFile = new File( sourceDirPath + File.separator + fileName );
+				if (midletFile.exists()) {
+					midletFound = true;
+					break;
+				}
+			}
+			if (!midletFound) {
+				throw new BuildException("The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.");
+			}
 		}
 		// check if the ant-property WTK_HOME has been set:
 		//e.g. with: <property name="wtk.home" value="c:\Java\wtk-1.0.4"/>
@@ -218,7 +236,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			File preverifyFile = new File( preverifyPath );
 			if (preverifyFile.exists()) {
-				this.buildSetting.setPreverify( preverifyFile );
+				this.buildSetting.setPreverify( preverifyFile.getAbsolutePath() );
 			} else {
 				// probably the wtk.home path is wrong:
 				File file = new File( this.wtkHome );
@@ -339,18 +357,19 @@ public class PolishTask extends ConditionalTask {
 		} else {
 			// the J2ME Polish sources need to be loaded from the jar-file:
 			long lastModificationTime = 0;
-			File jarFile = new File("import/enough-j2mepolish-build.jar");
+			File jarFile = new File( this.buildSetting.getApiDir().getAbsolutePath() 
+					+ File.separator + "enough-j2mepolish-build.jar");
 			if (jarFile.exists()) {
 				lastModificationTime = jarFile.lastModified();
 			} else {
-				jarFile = new File("lib/enough-j2mepolish-build.jar");
+				jarFile = new File("import/enough-j2mepolish-build.jar");
 				if (jarFile.exists()) {
 					lastModificationTime = jarFile.lastModified();
 				}
 			}
 			this.polishSourceDir = new File("src");
 			try {
-				String[] fileNames = this.resourceUtil.readTextFile("build/j2mepolish.index.txt");
+				String[] fileNames = this.resourceUtil.readTextFile( ".", "build/j2mepolish.index.txt");
 				this.polishSourceFiles = getTextFiles( "src", fileNames, lastModificationTime );
 			} catch (IOException e) {
 				throw new BuildException("Unable to load the J2ME source files from enough-j2mepolish-build.jar: " + e.getMessage(), e );
@@ -936,11 +955,17 @@ public class PolishTask extends ConditionalTask {
 				+ File.separatorChar + "preverfied" );
 		device.setPreverifyDir( preverifyDir ); 
 		*/
+		String cldc = null;
+		if (device.isCldc10()) {
+			cldc = "-cldc1.0";
+		} else {
+			cldc = "-nonative";
+		}
 		String[] commands = new String[] {
 			preverify.getAbsolutePath(), 
 			"-classpath", classPath,
 			"-d", device.getClassesDir(), // destination-dir - default is ./output
-			"-cldc",
+			cldc,
 			device.getClassesDir()
 		};
 		StringBuffer commandBuffer = new StringBuffer();

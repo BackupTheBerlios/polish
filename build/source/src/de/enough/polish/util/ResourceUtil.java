@@ -51,15 +51,16 @@ public final class ResourceUtil {
 	 * Opens the specified resource.
 	 * The caller needs to ensure that the resource is closed.
 	 * 
+	 * @param baseDir the base directory
 	 * @param url the url to the resource, a '/'-separated path
 	 * @return the InputStream for the specified resource.
 	 * @throws FileNotFoundException when the specified resource could not be found
 	 */
-	public final InputStream open( String url ) 
+	public final InputStream open( String baseDir, String url ) 
 	throws FileNotFoundException 
 	{
 		// check if url points to an existing file:
-		File file = new File( url );
+		File file = new File( baseDir + File.separator + url );
 		if (file.exists()) {
 			try {
 				return new FileInputStream( file );
@@ -70,7 +71,10 @@ public final class ResourceUtil {
 		}
 		InputStream in = this.classLoader.getResourceAsStream(url);
 		if (in == null) {
-			throw new FileNotFoundException("unable to open resource [" + url + "]: resource not found.");
+			in = this.classLoader.getResourceAsStream( baseDir + "/" + url);
+			if (in == null) {
+				throw new FileNotFoundException("unable to open resource [" + url + "]: resource not found.");
+			}
 		}
 		return in;
 	}
@@ -84,10 +88,10 @@ public final class ResourceUtil {
 	 * @throws FileNotFoundException when the specified resource could not be found
 	 * @throws IOException when the resource could not be read
 	 */
-	public String[] readTextFile(String url ) 
+	public String[] readTextFile(String baseDir, String url ) 
 	throws FileNotFoundException, IOException 
 	{
-		InputStream is = open( url );
+		InputStream is = open( baseDir, url );
 		ArrayList lines = new ArrayList();
 		BufferedReader in = new BufferedReader( new InputStreamReader(is));
 		String line;

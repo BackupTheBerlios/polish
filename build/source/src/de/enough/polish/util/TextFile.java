@@ -113,7 +113,7 @@ public class TextFile {
 	{
 		if (this.content == null ) {
 			if (this.resourceUtil != null) {
-				this.content = this.resourceUtil.readTextFile( this.baseDir + "/" + this.fileName );
+				this.content = this.resourceUtil.readTextFile( this.baseDir, this.fileName );
 			} else {
 				this.content = FileUtil.readTextFile( this.file );
 			}

@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.0-RC4" />
-	  <property name="VersionMessage" value="Welcome to the fourth Release Candidate of J2ME Polish 1.0!" />
+	  <property name="Version" value="1.0-RC5" />
+	  <property name="VersionMessage" value="Welcome to the fifth Release Candidate of J2ME Polish 1.0!" />
 	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
 
   <path id="thirdparty">
@@ -236,7 +236,8 @@
 	<mkdir dir="tmp/doc/javadoc/build" />
 	<mkdir dir="tmp/doc/javadoc/j2me" />
 	<copy todir="tmp/doc" >
-		<fileset dir="setup" includes="javadoc.html,Complete_Guide_to_J2ME_Polish.pdf" />
+		<fileset dir="setup" includes="javadoc.html" />
+		<fileset dir="../enough-polish-website/site/source/downloads" includes="Complete_Guide_to_J2ME_Polish.pdf" />			
 	</copy>
 	<javadoc 
 	    	destdir="tmp/doc/javadoc/build" 
@@ -287,6 +288,7 @@
 		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
 		<variable name="Author" value="Robert Virkus" />
 		<variable name="basedir" value="" />
+		<variable name="newsbasedir" value="http://www.j2mepolish.org/" />
 		<variable name="index.h1" value="h1index" />
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />

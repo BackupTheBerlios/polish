@@ -76,6 +76,7 @@ public class Device extends PolishComponent {
 	public static final String BITS_PER_PIXEL = "polish.BitsPerPixel";
 
 	public static final String JAVA_PLATFORM = "polish.JavaPlatform";
+	public static final String JAVA_CONFIGURATION = "polish.JavaConfiguration";
 
 	public static final String JAVA_PROTOCOL = "polish.JavaProtocol";
 
@@ -127,6 +128,8 @@ public class Device extends PolishComponent {
 	private int numberOfChangedFiles;
 
 	private String[] classPaths;
+
+	private boolean isCldc10;
 
 
 	public Device(String identifier) {
@@ -253,8 +256,30 @@ public class Device extends PolishComponent {
 			groupNamesList.add("midp2");
 			groupsList.add(groupManager.getGroup("midp2", true));
 		} else {
-			System.out.println("Warning: device [" + this.identifier
+			System.err.println("Warning: device [" + this.identifier
 					+ "] supports unknown JavaPlatform [" + midp + "].");
+		}
+		String cldc = getCapability( JAVA_CONFIGURATION );
+		if (cldc != null) {
+			cldc = cldc.toUpperCase();
+			if ("CLDC/1.0".equals( cldc)) {
+				addFeature("cldc1.0");
+				groupNamesList.add("cldc1.0");
+				groupsList.add(groupManager.getGroup("cldc1.0", true));
+				this.isCldc10 = true;
+			} else if ("CLDC/1.1".equals( cldc)) {
+				addFeature("cldc1.1");
+				groupNamesList.add("cldc1.1");
+				groupsList.add(groupManager.getGroup("cldc1.1", true));
+				this.isCldc10 = false;
+			} else {
+				System.err.println("Warning: the device [" + this.identifier + 
+						"] supports the unknown JavaConfiguration [" + cldc + ".");
+			}
+ 
+		} else {
+			System.err.println("Warning: the device [" + this.identifier 
+					+ "] has no JavaConfiguration defined.");
 		}
 		String supportsPolishGuiText = definition
 				.getAttributeValue("supportsPolishGui");
@@ -537,6 +562,15 @@ public class Device extends PolishComponent {
 	 */
 	public String[] getClassPaths() {
 		return this.classPaths;
+	}
+	
+	/**
+	 * Determines whether this device supports the CLDC/1.0 or the CLDC/1.1 standard.
+	 * 
+	 * @return true when this device supports the CLDC/1.0 standard.
+	 */
+	public boolean isCldc10() {
+		return this.isCldc10;
 	}
 
 }

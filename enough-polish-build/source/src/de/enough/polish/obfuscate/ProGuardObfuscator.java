@@ -114,6 +114,16 @@ public class ProGuardObfuscator extends Obfuscator {
 		try {
 			proGuard.execute();
 		} catch (IOException e) {
+			// check if all preserve-classes are found:
+			for (int i = 0; i < preserve.length; i++) {
+				String className = preserve[i];
+				String fileName = TextUtil.replace( className, '.', File.separatorChar ) + ".java";
+				File file = new File( device.getSourceDir() + File.separator + fileName );
+				if (!file.exists()) {
+					System.err.println("WARNING: the MIDlet or class [" + className + "] was not found: [" + file.getAbsolutePath() + "] does not exist.");
+					System.err.println("Please check your <midlet>-setting in the file [build.xml].");
+				}
+			}
 			throw new BuildException("ProGuard was unable to obfuscate: " + e.getMessage(), e );
 		}
 	}

@@ -28,7 +28,6 @@
 	<vendor>
 		<name>Nokia</name>
 		<features></features>
-		<capability name="colors.focus" value="0x0022DD" />
 	</vendor>
 	
 	<vendor>
@@ -38,6 +37,7 @@
 	
 	<vendor>
 		<name>Motorola</name>
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<features></features>
 	</vendor>
 	
@@ -108,6 +108,16 @@
 	
 	<vendor>
 		<name>Research In Motion</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Toshiba</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>TTPCom</name>
 		<features></features>
 	</vendor>
 	

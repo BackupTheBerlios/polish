@@ -25,7 +25,7 @@
 <property name="wtk.home" value="%{WTK_HOME}" />
 	
 <!-- Definition of the J2ME Polish task:                      -->
-<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="import/enough-j2mepolish-build.jar:import/jdom.jar:import/proguard.jar:import/retroguard.jar"/>
+<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="import/enough-j2mepolish-build.jar:import/jdom.jar:import/proguard.jar"/>
 
 	
 <!-- build targets, each target can be called via "ant [name]", 

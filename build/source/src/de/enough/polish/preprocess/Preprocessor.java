@@ -366,6 +366,14 @@ public class Preprocessor {
 	throws BuildException 
 	{
 		boolean changed = false;
+		if (this.lineProcessors != null) {
+			for (int i = 0; i < this.lineProcessors.length; i++) {
+				LineProcessor processor = this.lineProcessors[i];
+				processor.processClass(lines, className);
+				lines.reset();
+			}
+			changed = changed || lines.hasChanged();
+		}
 		try {
 			while (lines.next()) {
 				String line = lines.getCurrent();
@@ -382,14 +390,6 @@ public class Preprocessor {
 		} catch (BuildException e) {
 			reset();
 			throw e;
-		}
-		if (this.lineProcessors != null) {
-			for (int i = 0; i < this.lineProcessors.length; i++) {
-				LineProcessor processor = this.lineProcessors[i];
-				lines.reset();
-				processor.processClass(lines, className);
-			}
-			changed = changed || lines.hasChanged();
 		}
 		if (changed) {
 			return CHANGED;

@@ -77,6 +77,7 @@ public class BuildSetting {
 	private ArrayList sourceDirs;
 	private File polishDir;
 	private JadAttributes jadAttributes;
+	private boolean defaultMidpPathUsed = true;
 	
 	/**
 	 * Creates a new build setting.
@@ -85,13 +86,15 @@ public class BuildSetting {
 	 */
 	public BuildSetting( Project project ) {
 		this.project = project;
-		this.workDir = new File("build");
-		this.destDir = new File("dist");
-		this.apiDir = new File("import");
-		this.resDir = new File ("resources");
+		this.workDir = new File( project.getBaseDir().getAbsolutePath() + File.separator
+				+ "build");
+		this.destDir = new File( project.getBaseDir().getAbsolutePath() + File.separator
+				+ "dist");
+		this.apiDir = getFile("import");
+		this.resDir = getFile ("resources");
 		this.sourceDirs = new ArrayList();
-		this.midp1Path = new File( "import/midp1.jar" );
-		this.midp2Path = new File( "import/midp2.jar" );
+		this.midp1Path = getFile( "import/midp1.jar" );
+		this.midp2Path = getFile( "import/midp2.jar" );
 		this.imageLoadStrategy = IMG_LOAD_FOREGROUND;
 		this.resourceUtil = new ResourceUtil( this.getClass().getClassLoader() );
 	}
@@ -270,8 +273,9 @@ public class BuildSetting {
 	 * 
 	 * @param workDir The working directory to set.
 	 */
-	public void setWorkDir(File workDir) {
-		this.workDir = workDir;
+	public void setWorkDir(String workPath) {
+		File newWorkDir = new File( this.project.getBaseDir().getAbsolutePath() + File.separator + workPath );
+		this.workDir = newWorkDir;
 	}
 	
 	/**
@@ -292,10 +296,11 @@ public class BuildSetting {
 	/**
 	 * Sets the destination directory. Defaults to "./dist".
 	 * 
-	 * @param destDir The destination directory.
+	 * @param destPath The path of the destination directory.
 	 */
-	public void setDestDir( File destDir ) {
-		this.destDir = destDir;
+	public void setDestDir( String destPath ) {
+		File newDestDir = getFile( destPath );
+		this.destDir = newDestDir;
 	}
 	
 	/**
@@ -319,35 +324,37 @@ public class BuildSetting {
 	 * Resources include pictures, texts, etc. as well as the CSS-files 
 	 * containing the design information. 
 	 * 
-	 * @param resDir The directory containing the resources.
+	 * @param resPath The directory containing the resources.
 	 */
-	public void setResDir( File resDir ) {
-		if (!resDir.exists()) {
-			throw new BuildException("The resource directory [" + resDir.getAbsolutePath() + 
+	public void setResDir( String resPath ) {
+		File newResDir = getFile( resPath );
+		if (!newResDir.exists()) {
+			throw new BuildException("The resource directory [" + newResDir.getAbsolutePath() + 
 					"] does not exist. Please correct the attribute [resDir] " +
 					"of the <build> element.");
 		}
-		this.resDir = resDir;
+		this.resDir = newResDir;
 	}
 	
 	/**
 	 * Sets the directory containing the J2ME source code of polish.
 	 * 
-	 * @param polishDir the directory containing the J2ME source code of polish.
+	 * @param polishPath the directory containing the J2ME source code of polish.
 	 */
-	public void setPolishDir( File polishDir ) {
-		if (!polishDir.exists()) {
-			throw new BuildException("The J2ME Polish source directory [" + polishDir.getAbsolutePath() + 
+	public void setPolishDir( String polishPath ) {
+		File newPolishDir = getFile( polishPath );
+		if (!newPolishDir.exists()) {
+			throw new BuildException("The J2ME Polish source directory [" + newPolishDir.getAbsolutePath() + 
 					"] does not exist. " +
 					"Please correct the [polishDir] attribute of the <build> element.");
 		}
-		String actualSourcePath = polishDir.getAbsolutePath() + File.separator
+		String actualSourcePath = newPolishDir.getAbsolutePath() + File.separator
 				+ "src";
 		File actualSourceDir = new File( actualSourcePath );
 		if ( actualSourceDir.exists()) {
-			polishDir = actualSourceDir;
+			newPolishDir = actualSourceDir;
 		}
-		this.polishDir = polishDir;
+		this.polishDir = newPolishDir;
 	}
 	
 	/**
@@ -377,7 +384,7 @@ public class BuildSetting {
 		}
 		for (int i = 0; i < paths.length; i++) {
 			String path = paths[i];
-			File dir = new File( path );
+			File dir = getFile( path );
 			if (!dir.exists()) {
 				throw new BuildException("The source directory [" + path + "] does not exist. " +
 						"Please correct the attribute [sourceDir] of the <build> element.");
@@ -394,22 +401,23 @@ public class BuildSetting {
 	public File[] getSourceDirs() {
 		if (this.sourceDirs.size() == 0) {
 			// add default directory: either source/src, scr or source:
-			File src = new File("source/src");
+			File src = getFile("source/src");
 			if (src.exists()) {
 				this.sourceDirs.add( src );
 			} else {
-				src = new File("src");
+				src = getFile("src");
 				if (src.exists()) {
 					this.sourceDirs.add( src );
 				} else {
-					src = new File("source");
+					src = getFile("source");
 					if (src.exists()) {
 						this.sourceDirs.add( src );
 					} else {
 						throw new BuildException("Did not find any of the default " +
 								"source directories [source/src], [src] or [source]. " +
 								"Please specify the [sourceDir]-attribute of the " +
-								"<build> element.");
+								"<build> element. " +
+								"Base-directory is [" + this.project.getBaseDir().getAbsolutePath() + "].");
 					}
 				}
 			}
@@ -434,13 +442,14 @@ public class BuildSetting {
 	/**
 	 * Sets the path to the apis.xml file.
 	 * 
-	 * @param apis the apis.xml file
+	 * @param apisPath the path to the apis.xml file
 	 */
-	public void setApis( File apis ) {
-		if (!apis.exists()) {
-			throw new BuildException("The [apis]-attribute of the <build> element points to a non existing file: [" + apis.getAbsolutePath() + "].");
+	public void setApis( String apisPath ) {
+		File newApis = getFile( apisPath );
+		if (!newApis.exists()) {
+			throw new BuildException("The [apis]-attribute of the <build> element points to a non existing file: [" + newApis.getAbsolutePath() + "].");
 		}
-		this.apis = apis;		
+		this.apis = newApis;		
 	}
 
 	/**
@@ -456,13 +465,18 @@ public class BuildSetting {
 	/**
 	 * Sets the directory which contains device specific libraries
 	 * 
-	 * @param apiDir The directory which contains device specific libraries. Defaults to "./import"
+	 * @param apiPath The directory which contains device specific libraries. Defaults to "./import"
 	 */
-	public void setApiDir(File apiDir) {
-		if (!apiDir.exists()) {
-			throw new BuildException("The [apiDir]-attribute of the <build> element points to a non existing directory: [" + apiDir.getAbsolutePath() + "].");
+	public void setApiDir(String apiPath) {
+		File newApiDir = getFile( apiPath );
+		if (!newApiDir.exists()) {
+			throw new BuildException("The [apiDir]-attribute of the <build> element points to a non existing directory: [" + newApiDir.getAbsolutePath() + "].");
 		}
-		this.apiDir = apiDir;
+		this.apiDir = newApiDir;
+		if (this.defaultMidpPathUsed) {
+			this.midp1Path = new File( newApiDir.getAbsolutePath() + File.separator + "midp1.jar" );
+			this.midp2Path = new File( newApiDir.getAbsolutePath() + File.separator + "midp2.jar" );
+		}
 	}
 	
 	/**
@@ -477,13 +491,16 @@ public class BuildSetting {
 	}
 	
 	/**
+	 * Sets the path to the device.xml file.
+	 * 
 	 * @param devices The path to the devices.xml
 	 */
-	public void setDevices(File devices) {
-		if (!devices.exists()) {
-			throw new BuildException("The [devices]-attribute of the <build> element points to a non existing file: [" + devices.getAbsolutePath() + "].");
+	public void setDevices(String devicesPath) {
+		File newDevices = getFile( devicesPath );
+		if (!newDevices.exists()) {
+			throw new BuildException("The [devices]-attribute of the <build> element points to a non existing file: [" + newDevices.getAbsolutePath() + "].");
 		}
-		this.devices = devices;
+		this.devices = newDevices;
 	}
 	
 	/**
@@ -498,13 +515,16 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * @param groups The groups to set.
+	 * Sets the path to the groups.xml file
+	 * 
+	 * @param groupsPath The path to the groups.xml file
 	 */
-	public void setGroups(File groups) {
-		if (!groups.exists()) {
-			throw new BuildException("The [groups]-attribute of the <build> element points to a non existing file: [" + groups.getAbsolutePath() + "].");
+	public void setGroups(String groupsPath) {
+		File newGroups = getFile( groupsPath );
+		if (!newGroups.exists()) {
+			throw new BuildException("The [groups]-attribute of the <build> element points to a non existing file: [" + newGroups.getAbsolutePath() + "].");
 		}
-		this.groups = groups;
+		this.groups = newGroups;
 	}
 
 	/**
@@ -521,13 +541,16 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * @param vendors The vendors.xml file
+	 * Sets the path to the vendors.xml file
+	 * 
+	 * @param vendorsPath The path to the vendors.xml file
 	 */
-	public void setVendors(File vendors) {
-		if (!vendors.exists()) {
-			throw new BuildException("The [vendors]-attribute of the <build> element points to a non existing file: [" + vendors.getAbsolutePath() + "].");
+	public void setVendors(String vendorsPath) {
+		File newVendors = getFile( vendorsPath );
+		if (!newVendors.exists()) {
+			throw new BuildException("The [vendors]-attribute of the <build> element points to a non existing file: [" + newVendors.getAbsolutePath() + "].");
 		}
-		this.vendors = vendors;
+		this.vendors = newVendors;
 	}
 
 	/**
@@ -547,11 +570,13 @@ public class BuildSetting {
 	 *  
 	 * @param midp1Path The path to the MIDP/1.0-api-file
 	 */
-	public void setMidp1Path( File midp1Path ) {
-		if (!midp1Path.exists()) {
-			throw new BuildException("Invalid path to the MIDP/1.0-API: [" + midp1Path.getAbsolutePath() + "] (File not found).");
+	public void setMidp1Path( String midp1PathStr ) {
+		File newMidp1Path = getFile( midp1PathStr );
+		if (!newMidp1Path.exists()) {
+			throw new BuildException("Invalid path to the MIDP/1.0-API: [" + newMidp1Path.getAbsolutePath() + "] (File not found).");
 		}
-		this.midp1Path = midp1Path;
+		this.midp1Path = newMidp1Path;
+		this.defaultMidpPathUsed = false;
 	}
 
 	/**
@@ -573,14 +598,16 @@ public class BuildSetting {
 	 *  
 	 * @param midp2Path The path to the MIDP/2.0-api-file
 	 */
-	public void setMidp2Path( File midp2Path ) {
-		if (!midp2Path.exists()) {
-			throw new BuildException("Invalid path to the MIDP/2.0-API: [" + midp2Path.getAbsolutePath() + "] (File not found).");
+	public void setMidp2Path( String midp2PathStr ) {
+		File newMidp2Path = getFile( midp2PathStr );
+		if (!newMidp2Path.exists()) {
+			throw new BuildException("Invalid path to the MIDP/2.0-API: [" + newMidp2Path.getAbsolutePath() + "] (File not found).");
 		}
-		this.midp2Path = midp2Path;
+		this.midp2Path = newMidp2Path;
 		if (this.midp1Path == null) {
-			this.midp1Path = midp2Path;
+			this.midp1Path = newMidp2Path;
 		}
+		this.defaultMidpPathUsed = false;
 	}
 
 	/**
@@ -590,11 +617,17 @@ public class BuildSetting {
 		return this.symbols;
 	}
 	
-	public void setPreverify( File preverify ) {
-		if (!preverify.exists()) {
-			throw new BuildException("The path to the preverify-tool is invalid: [" + preverify.getAbsolutePath() + "] points to a non-existing file. Please correct the [preverify] attribute of the <build> element.");
+	/**
+	 * Sets the path to the preverify executable.
+	 * 
+	 * @param preverifyPath the path to the preverify executable.
+	 */
+	public void setPreverify( String preverifyPath ) {
+		File newPreverify = getFile( preverifyPath );
+		if (!newPreverify.exists()) {
+			throw new BuildException("The path to the preverify-tool is invalid: [" + newPreverify.getAbsolutePath() + "] points to a non-existing file. Please correct the [preverify] attribute of the <build> element.");
 		}
-		this.preverify = preverify;
+		this.preverify = newPreverify;
 	}
 	
 	public File getPreverify() {
@@ -697,7 +730,21 @@ public class BuildSetting {
 				throw new BuildException("Unable to open [" + file.getAbsolutePath() + "]: " + e.getMessage(), e );
 			}
 		}
-		return this.resourceUtil.open( name );
+		return this.resourceUtil.open( this.project.getBaseDir().getAbsolutePath(), name );
+	}
+	
+	/**
+	 * Resolves the given path and returns a file handle for that path.
+	 * 
+	 * @param path the relative or absolute path, e.g. "resources2"
+	 * @return the file handle for the path
+	 */
+	private File getFile( String path ) {
+		File file = new File( this.project.getBaseDir().getAbsolutePath() + File.separator + path );
+		if (!file.exists()) {
+			file = new File( path );
+		}
+		return file;
 	}
 
 	

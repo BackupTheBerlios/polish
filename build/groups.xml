@@ -38,6 +38,7 @@
 		<parent>Nokia-UI</parent>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="128x128" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</group>
 
 	<group>
@@ -45,16 +46,19 @@
 		<parent>Nokia-UI</parent>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="176x208" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</group>
 
 	<group>
 		<name>Series80</name>
 		<parent>Nokia-UI</parent>
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
 	</group>
 	
 	<group>
 		<name>Series90</name>
 		<parent>Nokia-UI</parent>
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</group>
 		
 </groups>
