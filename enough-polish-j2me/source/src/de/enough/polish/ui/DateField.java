@@ -553,7 +553,9 @@ implements CommandListener
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-				|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)) {
+				|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+				|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+				|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
 			return false;
 		}
 		showDateForm();

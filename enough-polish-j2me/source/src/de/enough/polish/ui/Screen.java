@@ -108,6 +108,8 @@ public abstract class Screen
 		// the call will be ignored.
 		private long showNotifyTime;
 	//#endif
+	private Item subTitle;
+	protected int subTitleHeight;
 	protected int titleHeight;
 	protected Background background;
 	protected Border border;
@@ -181,7 +183,7 @@ public abstract class Screen
 	private StringItem infoItem;
 	/** determines whether the info text should be shown */
 	private boolean showInfoItem;
-	private int infoHeight;
+	protected int infoHeight;
 	//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInPaint
 		//#define tmp.fullScreenInPaint
 		private boolean isInFullScreenMode;
@@ -318,7 +320,7 @@ public abstract class Screen
 
 		if (this.container != null) {
 			this.container.screen = this;
-			this.container.setVerticalDimensions( 0, this.screenHeight - this.titleHeight );
+			this.container.setVerticalDimensions( 0, this.screenHeight - (this.titleHeight  + this.subTitleHeight + this.infoHeight ) );
 		}
 		
 		// start the animmation thread if necessary: 
@@ -429,7 +431,9 @@ public abstract class Screen
 		this.style = style;
 		this.background = style.background;
 		this.border = style.border;
-		this.container.setStyle(style, true);
+		if (this.container != null) {
+			this.container.setStyle(style, true);
+		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
 		//#ifdef polish.css.scrollindicator-color
 			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
@@ -552,16 +556,20 @@ public abstract class Screen
 					tHeight = this.titleHeight;
 				}
 			//#endif
+			if (this.subTitle != null) {
+				this.subTitle.paint( 0, tHeight, 0, this.screenWidth, g );
+				tHeight += this.subTitleHeight;
+			}
 			if (this.showInfoItem) {
 				this.infoItem.paint( 0, tHeight, 0, this.screenWidth, g );
-				tHeight += this.infoItem.itemHeight;
+				tHeight += this.infoHeight;
 			}
 			// protect the title, ticker and the full-screen-menu area:
 			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
 			g.translate( 0, tHeight );
 			// paint content:
 			//System.out.println("starting to paint content of screen");
-			paintScreen( g);
+			paintScreen( g );
 			//System.out.println("done painting content of screen");
 			
 			g.translate( 0, - tHeight );
@@ -811,7 +819,7 @@ public abstract class Screen
 			this.titleHeight = 0;
 		}
 		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
+			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
 		}
 		if (this.isInitialised && isShown()) {
 			repaint();
@@ -844,7 +852,7 @@ public abstract class Screen
 			this.showInfoItem = true;
 		}
 		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
+			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
 		}
 	}
 
@@ -1404,7 +1412,7 @@ public abstract class Screen
 		//#endif
 		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
 		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
+			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 		}
 	}
 	//#endif
@@ -1458,5 +1466,26 @@ public abstract class Screen
 		}
 		//#debug warn
 		System.out.println("Screen: unable to focus item (did not find it in the container) " + item);
+	}
+	
+	/**
+	 * Sets the subtitle element.
+	 * The subtitle is drawn directly below of the title (above the info-item, if there
+	 * is any) and is always shown (unless it is null).
+	 * 
+	 * @param subTitle the new subtitle element.
+	 */
+	protected void setSubTitle( Item subTitle ) {
+		this.subTitle = subTitle;
+		if (subTitle == null) {
+			this.subTitleHeight = 0;
+		} else {
+			//#ifdef polish.ScreenWidth:defined
+				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
+			//#else
+				this.subTitleHeight = subTitle.getItemHeight(getWidth(), getWidth());
+			//#endif
+		}
+		System.out.println("SUBTITLE_HEIGHT=" + this.subTitleHeight);
 	}
 }
