@@ -66,6 +66,7 @@ round-rect, simple, pulsating, image, shadow, circle
 polish.css
 Dynamic Style
 Static Style
+View Type::viewtype
 
 #####################################
 ## Java                            ##

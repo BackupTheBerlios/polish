@@ -170,6 +170,11 @@ With the &lt;build&gt;-section the actual build process is controlled:
  	 <td>No</td>
 	 <td>Defines whether J2ME Polish should preverify the compiled classes as well. This is needed for using J2ME Polish as a compiler for the EclipseME plugin. Possible values are &quot;true&quot; or &quot;false&quot;. The preverifying is deactivated (&quot;false&quot;) by default.
 	 </td>
+	<tr>
+	 <td>encoding</td>
+ 	 <td>No</td>
+	 <td>The encoding for the generated JAD and MANIFEST files, this defaults to &quot;UTF8&quot; like the standard mandates.
+	 </td>
 	</tr>
 	</table>
 	<h2 id="nested">Nested Elements</h2>
@@ -304,7 +309,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	<tr><td>locales</td>
  	 <td>No</td>
-	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested <localization>-element can be used.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
+	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested &lt;localization&gt;-element can be used.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
 	 </td>
 	</tr>
 	</table>
@@ -348,6 +353,16 @@ With the &lt;build&gt;-section the actual build process is controlled:
  	 <td>No</td>
 	 <td>The file which contains the translations. This defaults to &quot;messages.txt&quot;.</td>
 	</tr>
+	<tr>
+	 <td>dynamic</td>
+ 	 <td>No</td>
+	 <td>Defines whether dynamic translations should be enabled. Dynamic translations can be changed during runtime but require additional resources. This defaults to &quot;false&quot;.</td>
+	</tr>
+	<tr>
+	 <td>default</td>
+ 	 <td>No</td>
+	 <td>The default localization - this makes only sense when dynamic translations are enabled.</td>
+	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
 	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this localization to be used.</td>
@@ -355,6 +370,219 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>unless</td>
  	 <td>No</td>
 	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this localization to be used.</td>
+	</tr>
+	</table>
+
+	<h3 id="compiler">&lt;compiler&gt;</h3>
+	<p>
+	The optional &lt;compiler&gt;-element can be used for specifying any compiler-arguments. J2ME Polish normally calls the Java compiler normally with the appropriate classpath as well as bootclasspath for the current target device. In some cases you might want to adjust the compiler settings, however, so you can use the nested &lt;compiler&gt;-element. Along to all attributes of the standard &lt;javac&gt;-task, the &lt;compiler&gt;-element also supports the &quot;if&quot; and &quot;unless&quot; attributes for selecting to appropriate compiler setting:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>localization-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>srcdir</td>
+ 	 <td>No</td>
+	 <td>Location of the java files, which defaults to the temporary directory to which the preprocessed files are written.</td>
+	</tr>
+	<tr>
+	 <td>destdir</td>
+ 	 <td>No</td>
+	 <td>Location to store the class files. This defaults to the temporary build directory into which class files are written before they are obfuscated.</td>
+	</tr>
+	<tr>
+	 <td>includes</td>
+ 	 <td>No</td>
+	 <td>Comma- or space-separated list of files (may be specified using wildcard patterns) that must be included; all .java files are included when omitted.</td>
+	</tr>
+	<tr>
+	 <td>includesfile</td>
+ 	 <td>No</td>
+	 <td>The name of a file that contains a list of files to include (may be specified using wildcard patterns).</td>
+	</tr>
+	<tr>
+	 <td>excludes</td>
+ 	 <td>No</td>
+	 <td>Comma- or space-separated list of files (may be specified using wildcard patterns) that must be excluded; no files (except default excludes) are excluded when omitted.</td>
+	</tr>
+	<tr>
+	 <td>excludesfile</td>
+ 	 <td>No</td>
+	 <td>The name of a file that contains a list of files to exclude (may be specified using wildcard patterns).</td>
+	</tr>
+	<tr>
+	 <td>classpath</td>
+ 	 <td>No</td>
+	 <td>The classpath to use. J2ME Polish includes all supported libraries of the current target device by default.</td>
+	</tr>
+	<tr>
+	 <td>classpathref</td>
+ 	 <td>No</td>
+	 <td>The classpath to use, given as a reference to a path defined elsewhere.</td>
+	</tr>
+	<tr>
+	 <td>sourcepath</td>
+ 	 <td>No</td>
+	 <td>The sourcepath to use; defaults to the value of the srcdir attribute. To suppress the sourcepath switch, use sourcepath=&quot;&quot;.</td>
+	</tr>
+	<tr>
+	 <td>sourcepathref</td>
+ 	 <td>No</td>
+	 <td>The sourcepath to use, given as a reference to a path defined elsewhere.</td>
+	</tr>
+	<tr>
+	 <td>bootclasspath</td>
+ 	 <td>No</td>
+	 <td>Location of bootstrap class files. J2ME Polish uses either the platform specific library files for the bootclasspath, e.g. midp1.jar or midp2-cldc11.jar.</td>
+	</tr>
+	<tr>
+	 <td>bootclasspathref</td>
+ 	 <td>No</td>
+	 <td>Location of bootstrap class files, given as a reference to a path defined elsewhere.</td>
+	</tr>
+	<tr>
+	 <td>extdirs</td>
+ 	 <td>No</td>
+	 <td>Location of installed extensions.</td>
+	</tr>
+	<tr>
+	 <td>encoding</td>
+ 	 <td>No</td>
+	 <td>Encoding of source files. (Note: gcj doesn't support this option yet.)</td>
+	</tr>
+	<tr>
+	 <td>nowarn</td>
+ 	 <td>No</td>
+	 <td>Indicates whether the -nowarn switch should be passed to the compiler; defaults to off.</td>
+	</tr>
+	<tr>
+	 <td>debug</td>
+ 	 <td>No</td>
+	 <td>Indicates whether source should be compiled with debug information; defaults to off. If set to off, -g:none will be passed on the command line for compilers that support it (for other compilers, no command line argument will be used). If set to true, the value of the debuglevel attribute determines the command line argument. J2ME Polish only enables the debugging when the &lt;debug&gt;-element is active for the current target device.</td>
+	</tr>
+	<tr>
+	 <td>debuglevel</td>
+ 	 <td>No</td>
+	 <td>Keyword list to be appended to the -g command-line switch. This will be ignored by all implementations except modern and classic(ver &gt;= 1.2). Legal values are none or a comma-separated list of the following keywords: lines, vars, and source. If debuglevel is not specified, by default, nothing will be appended to -g. If debug is not turned on, this attribute will be ignored. </td>
+	</tr>
+	<tr>
+	 <td>optimize</td>
+ 	 <td>No</td>
+	 <td>Indicates whether source should be compiled with optimization; defaults to off.</td>
+	</tr>
+	<tr>
+	 <td>deprecation</td>
+ 	 <td>No</td>
+	 <td>Indicates whether source should be compiled with deprecation information; defaults to off.</td>
+	</tr>
+	<tr>
+	 <td>target</td>
+ 	 <td>No</td>
+	 <td>Generate class files for specific VM version (e.g., 1.1 or 1.2). J2ME Polish uses 1.2 by default when the WTK 2.x is used. The target can also be set with the &quot;javacTarget&quot;-attribute of the &lt;build&gt;-element.</td>
+	</tr>
+	<tr>
+	 <td>verbose</td>
+ 	 <td>No</td>
+	 <td>Asks the compiler for verbose output; defaults to no.</td>
+	</tr>
+	<tr>
+	 <td>depend</td>
+ 	 <td>No</td>
+	 <td>Enables dependency-tracking for compilers that support this (jikes and classic).</td>
+	</tr>
+	<tr>
+	 <td>includeAntRuntime</td>
+ 	 <td>No</td>
+	 <td>Whether to include the Ant run-time libraries in the classpath; defaults to false.</td>
+	</tr>
+	<tr>
+	 <td>includeJavaRuntime</td>
+ 	 <td>No</td>
+	 <td>Whether to include the default run-time libraries from the executing VM in the classpath; defaults to no.</td>
+	</tr>
+	<tr>
+	 <td>fork</td>
+ 	 <td>No</td>
+	 <td>Whether to execute javac using the JDK compiler externally; defaults to no.</td>
+	</tr>
+	<tr>
+	 <td>executable</td>
+ 	 <td>No</td>
+	 <td>Complete path to the javac executable to use in case of fork=&quot;yes&quot;. Defaults to the compiler of the Java version that is currently running Ant. Ignored if fork=&quot;no&quot;. Since Ant 1.6 this attribute can also be used to specify the path to the executable when using jikes, jvc, gcj or sj.</td>
+	</tr>
+	<tr>
+	 <td>memoryInitialSize</td>
+ 	 <td>No</td>
+	 <td>The initial size of the memory for the underlying VM, if javac is run externally; ignored otherwise. Defaults to the standard VM memory setting. (Examples: 83886080, 81920k, or 80m)</td>
+	</tr>
+	<tr>
+	 <td>memoryMaximumSize</td>
+ 	 <td>No</td>
+	 <td>The maximum size of the memory for the underlying VM, if javac is run externally; ignored otherwise. Defaults to the standard VM memory setting. (Examples: 83886080, 81920k, or 80m)</td>
+	</tr>
+	<tr>
+	 <td>failonerror</td>
+ 	 <td>No</td>
+	 <td>Indicates whether the build will continue even if there are compilation errors; defaults to true.</td>
+	</tr>
+	<tr>
+	 <td>source</td>
+ 	 <td>No</td>
+	 <td>Value of the -source command-line switch; will be ignored by all implementations prior to javac1.4 (or modern when Ant is not running in a 1.3 VM) and jikes.  If you use this attribute together with jikes, you must make sure that your version of jikes supports the -source switch. Legal values are 1.3, 1.4 and 1.5 - by default, the &quot;1.3&quot; source switch will be used.</td>
+	</tr>
+	<tr>
+	 <td>compiler</td>
+ 	 <td>No</td>
+	 <td>The compiler implementation to use. If this attribute is not set, the value of the build.compiler property, if set, will be used. Otherwise, the default compiler for the current VM will be used.</td>
+	</tr>
+	<tr>
+	 <td>listfiles</td>
+ 	 <td>No</td>
+	 <td>Indicates whether the source files to be compiled will be listed; defaults to no.</td>
+	</tr>
+	<tr>
+	 <td>tempdir</td>
+ 	 <td>No</td>
+	 <td>Where Ant should place temporary files. This is only used if the task is forked and the command line args length exceeds 4k.</td>
+	</tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this compiler-setting to be used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this compiler-setting to be used.</td>
+	</tr>
+	</table>
+
+	<h4 id="compiler-compilerargs">The &lt;compilerargs&gt; Subelement</h4>
+	<p>
+	You can specify additional command line arguments for the compiler with nested &lt;compilerarg&gt; elements. These elements are specified like Command-line Arguments but have an additional attribute that can be used to enable arguments only if a given compiler implementation will be used.
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>compilerargs-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>value</td>
+ 	 <td>Either value, line, file or path</td>
+	 <td>A single command-line argument; can contain space characters.</td>
+	</tr>
+	<tr>
+	 <td>line</td>
+ 	 <td>Either value, line, file or path</td>
+	 <td>A single command-line argument; cannot contain space characters.</td>
+	</tr>
+	<tr><td>file</td>
+ 	 <td>Either value, line, file or path</td>
+	 <td>The name of a file as a single command-line argument; will be replaced with the absolute filename of the file.</td>
+	</tr>
+	<tr><td>path</td>
+ 	 <td>Either value, line, file or path</td>
+	 <td>A string that will be treated as a path-like string as a single command-line argument; you can use ; or : as path separators and Ant will convert it to the platform's local conventions.</td>
+	</tr>
+	<tr><td>compiler</td>
+ 	 <td>No</td>
+	 <td>Only pass the specified argument if the chosen compiler implementation matches the value of this attribute.</td>
 	</tr>
 	</table>
 	
@@ -450,10 +678,10 @@ If you want to use ProGuard as an obfuscator, please make sure that the proguard
 </p><p>
 You can use ProGuard by setting the name-attribute of the &lt;obfuscator&gt;-element to &quot;ProGuard&quot;.
 </p><p>
-ProGuard 3.x offers an additional optimization of the bytecode, which is enabled by default. The optimization can be disabled by setting the &quot;optimize&quot;-parameter to &quot;false&quot;:
+ProGuard 3.x offers an additional optimization of the bytecode, which is disabled by default. The optimization can be enabled by setting the &quot;optimize&quot;-parameter to &quot;true&quot;:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
-	&lt;parameter name=&quot;optimize&quot; value=&quot;false&quot; /&gt;
+	&lt;parameter name=&quot;optimize&quot; value=&quot;true&quot; /&gt;
 &lt;/obfuscator&gt;
 </pre></p><p>
 A text-file which lists all renaming operations is written to build/[vendor]/[device]/[locale]/obfuscation-map.txt. This file is useful if you get exceptions in the obfuscated application.
@@ -764,10 +992,26 @@ The JAD-attributes can filtered and sorted using the &lt;jadFilter&gt; subelemen
 </pre>
 </p>
 <p>
-The &lt;jadFilter&gt; element contains all allowed attribute names in the desired order and separated by commas. Following syntax is used:
+The &lt;jadfilter&gt; element contains all allowed attribute names in the desired order and separated by commas. You can use different filters by using the &quot;if&quot; or &quot;unless&quot; attributes:
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>jadFilter-attribute&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>jadFilter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true so that this filter is used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false so that this filter is used.</td>
+	</tr>
+	</table>
+<p>
+Inside of the &lt;jadfilter&gt; element you can specify all allowed JAD-attributes in the desired order and separated by commas. Following syntax is used:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>jadFilter-Text&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
  	 <td><code>MIDlet-Name</code></td>
 	 <td>The complete name of a required attribute.</td>
@@ -801,10 +1045,27 @@ The manifest filter element can be used to sort and filter manifest attributes. 
 &lt;/manifestFilter&gt;
 </pre>
 </p><p>
-The &lt;manifestFilter&gt; element contains all allowed attribute names in the desired order and separated by commas. Following syntax is used:		
+The &lt;manifestFilter&gt; element contains all allowed attribute names in the desired order and separated by commas. You can use different filters by using the &quot;if&quot; or &quot;unless&quot; attributes:
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>Filter&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>manifestFilter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true so that this filter is used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false so that this filter is used.</td>
+	</tr>
+	</table>
+
+<p>
+Inside of the &lt;manifestFilter &gt; element you can specify all allowed MANIFEST-attributes in the desired order and separated by commas. Following syntax is used:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>manifestFilter-Text&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
  	 <td><code>MIDlet-Name</code></td>
 	 <td>The complete name of a required attribute.</td>

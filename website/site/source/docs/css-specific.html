@@ -102,16 +102,22 @@ The image background uses an image for painting the background. This background 
 	 <td>Yes</td>
 	 <td>The URL of the image, e.g. &quot;url( background.png )&quot;</td>
 	</tr>
+	<tr><td>anchor</td>
+	 <td>No</td>
+	 <td>The anchor of the image - when not specified the image will be centered (&quot;horizontal-center | vertical-center&quot;). You can use a combination of &quot;top&quot;, &quot;vertical-center&quot; (=&quot;vcenter&quot;), &quot;bottom&quot; and &quot;left&quot;, &quot;horizontal-center&quot; (= &quot;hcenter&quot; = &quot;center&quot;), &quot;right&quot;. E.g. &quot;top | left&quot;.</td>
+	</tr>
 	<tr><td>repeat</td>
 	 <td>No</td>
 	 <td>Either &quot;repeat&quot;, &quot;no-repeat&quot;, &quot;repeat-x&quot; or &quot;repeat-y&quot;. Determines whether the background should be repeated, repeated horizontally or repeated vertically. Default is no repeat.</td>
 	</tr>
 	</table>
 <p>
-A background image, which should not be repeated will be centered automatically. The following style uses the image &quot;bg.png&quot; as a background:
+The following style uses the image &quot;gradient.png&quot; as a background:
 <pre>
 .myStyle {
-	background-image: url( bg.png );
+	background-image: url( gradient.png );
+	background-anchor: top | center;
+	background-color: rgb( 69, 81, 77 );
 }
 </pre></p><p>
 This style uses the image &quot;heart.png&quot; as a repeated background:
@@ -546,6 +552,24 @@ The explicit list of column-widths results in the usage of those widths.</td>
 	 will be used as titles. The title will be updated with each new selection.
 	 </td>
 	</tr>
+	<tr>
+	 <td>foreground-image</td>
+	 <td>No</td>
+	 <td>The URL of a image that should be painted at the very front of the screen, e.g. &quot;url( mascot.png )&quot;.
+	 </td>
+	</tr>
+	<tr>
+	 <td>foreground-x</td>
+	 <td>No</td>
+	 <td>The x-position of the foreground image in pixels from the the left border.
+	 </td>
+	</tr>
+	<tr>
+	 <td>foreground-y</td>
+	 <td>No</td>
+	 <td>The y-position of the foreground image in pixels from the the top border.
+	 </td>
+	</tr>
 	
 </table>
 <p>
@@ -708,6 +732,112 @@ listitem {
 	icon-image-align: top;
 }
 </pre></p>
+
+<h2 id="viewtypes">View Types</h2>
+<p>
+View-types can be used for animating Forms, Lists, ChoiceGroups or even menus. 
+There are several view-types available, which are usually defined in a screen-style, e.g.:
+<pre>
+.mainScreen {
+	padding-left: 5;
+	padding-right: 5;
+	view-type: dropping;
+}
+</pre></p>
+<p>
+You can use either a (predefined) name of the view-type or the fully qualified 
+class-name of that type, which needs to extend the 
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/ContainerView.html" target="_blank">de.enough.polish.ui.ContainerView</a> class. 
+</p>
+<h3 id="viewtype-dropping">Dropping View</h3>
+<p>
+The dropping view shows an animation of dropping and bouncing items. 
+It is activated by specifying the &quot;dropping&quot; view-type and supports following additional attributes:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>droppingview-speed</td>
+	 <td>No</td>
+	 <td>The speed in pixels per animation-step. The default speed is 10.</td>
+	</tr>
+	<tr>
+	 <td>droppingview-repeat-animation</td>
+	 <td>No</td>
+	 <td>Defines whether the animation should be repeated each time the screen is shown. Possible values are &quot;true&quot; and &quot;false&quot;. This defaults to &quot;false&quot;.</td>
+	</tr>
+	<tr>
+	 <td>droppingview-maximum</td>
+	 <td>No</td>
+	 <td>The maximum bouncing-height in pixels. This defaults to 30.</td>
+	</tr>
+	<tr>
+	 <td>droppingview-damping</td>
+	 <td>No</td>
+	 <td>The value by which the maximum is decreased for each following item. By having a damping, the top items seem to bounce higher than lower ones. The default damping is 10.</td>
+	</tr>
+	<tr>
+	 <td>droppingview-maxperiode</td>
+	 <td>No</td>
+	 <td>The maximum allowed number of bounces. This defaults to 5.</td>
+	</tr>
+	<tr>
+	 <td></td>
+	 <td>No</td>
+	 <td></td>
+	</tr>
+</table>
+<p>
+<pre>
+.mainScreen {
+	padding-left: 5;
+	padding-right: 5;
+	<b>view-type: dropping;
+	droppingview-speed: 15;
+	droppingview-damping: 5;
+	droppingview-maxperiode: 2;</b>
+}
+</pre></p>
+<h3 id="viewtype-shuffle">Shuffle View</h3>
+<p>
+The shuffle view animates the items by moving them from the left and right side into their final target-position. It is activated by specifying the &quot;shuffle&quot; view-type and supports following additional attributes:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>shuffleview-speed</td>
+	 <td>No</td>
+	 <td>The speed in pixels per animation-step. The default speed is 10.</td>
+	</tr>
+	<tr>
+	 <td>shuffleview-repeat-animation</td>
+	 <td>No</td>
+	 <td>Defines whether the animation should be repeated each time the screen is shown. Possible values are &quot;true&quot; and &quot;false&quot;. This defaults to &quot;false&quot;.</td>
+	</tr>
+</table>
+<p><pre>
+.mainScreen {
+	padding-left: 5;
+	padding-right: 5;
+	<b>view-type: shuffle;
+	shuffleview-speed: 15;</b>
+}
+</pre></p>
+<h3 id="viewtype-midp2">MIDP/2.0 View</h3>
+<p>
+The MIDP/2.0 view arranges the items just like the MIDP/2.0 
+standard encourages it: the items are all lined up into one row until there is 
+not enough space anymore or until an item with a 
+&quot;newline-after&quot; or &quot;newline-before&quot; layout is inserted.  
+It is activated by specifying the &quot;midp2&quot; view-type and supports no additional attributes.
+<pre>
+.mainScreen {
+	padding-left: 5;
+	padding-right: 5;
+	<b>view-type: midp2;</b>
+}
+</pre></p>
+
 <h2 id="stringitem">The StringItem: Text, Hyperlink or Button</h2>
 <p>
 Texts have no specific attributes, but the padding-vertical attribute has a special meaning:
@@ -1219,5 +1349,277 @@ The following example increases the bottom margin to 3 pixels:
 </pre>
 </p>
 -->
+
+<h2 id="extendedmenubar">The Extended Menu Bar</h2>
+<p>
+You can use the extended menu bar in cases when the design possibilities of the normal menu bar are not sufficient for you. In contrast to the normal menu bar, the extended menu bar is a full blown item and can, therefore, be designed just like any other item. The price for using the extended menu bar is to have an additional 2 kb class file in your JAR.
+</p><p>
+For using the extended menu-bar instead of the normal one, you need to set the &quot;polish.MenuBar.useExtendedMenuBar&quot; preprocessing variable to &quot;true&quot; in the &lt;variables&gt;-section of the build.xml file:
+<pre>
+&lt;variables&gt;
+	&lt;variable 
+		name=&quot;polish.MenuBar.useExtendedMenuBar&quot; 
+		value=&quot;true&quot; 
+	/&gt;
+&lt;/variables&gt;
+</pre></p><p>
+The menu bar can be designed using the predefined styles &quot;menubar&quot;, &quot;leftcommand&quot; and &quot;rightcommand&quot;:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Style&nbsp;&nbsp;</th><th>Description</th></tr>
+	<tr>
+	 <td>menubar</td>
+	 <td>This design of the menu-bar itself.</td>
+	</tr>
+	<tr>
+	 <td>leftcommand</td>
+	 <td>Designs the left command (&quot;Options&quot;, &quot;Select&quot; and user-defined commands). Accepts all attributes of the IconItem.</td>
+	</tr>
+	<tr>
+	 <td>rightcommand</td>
+	 <td>Designs the right command (&quot;Cancel&quot; and user-defined BACK or CANCEL commands). Accepts all attributes of the IconItem.</td>
+	</tr>
+</table>
+<p>The menubar-style offers following additional attributes:</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>menubar-options-image</td>
+	 <td>No</td>
+	 <td>Defines the image-URL for the options-image of the extended menubar.</td>
+	</tr>
+	<tr>
+	 <td>menubar-select-image</td>
+	 <td>No</td>
+	 <td>Defines the image-URL for the select-image of the extended menubar.</td>
+	</tr>
+	<tr>
+	 <td>menubar-cancel-image</td>
+	 <td>No</td>
+	 <td>Defines the image-URL for the cancel-image of the extended menubar.</td>
+	</tr>
+	<tr>
+	 <td>menubar-show-image-and-text</td>
+	 <td>No</td>
+	 <td>Determines whether the text should be shown as well in the menubar, when an image has been defined for the corresponding action. Defaults to &quot;false&quot;.</td>
+	</tr>
+</table>
+<p>
+The following example demonstrates the design of the extended menu-bar:
+<pre>
+menubar {
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 2;
+	margin-right: 2;
+	padding: 0;
+	background: none;
+	menubar-options-image: url( options.png );
+	/*
+	menubar-select-image: url( checked.png );
+	menubar-cancel-image: url( cancel.png );
+	menubar-show-image-and-text: true;
+	*/
+}
+
+leftcommand {
+	padding-horizontal: 4;
+	padding-bottom: 0;
+	font-color: fontColor;
+	font-style: bold;
+	background: none;
+}
+
+rightcommand {
+	padding-horizontal: 4;
+	padding-bottom: 0;
+	font-color: fontColor;
+	font-style: bold;
+	background: none;
+}
+</pre></p>
+<h2 id="tabbedform">Tabbed Form</h2>
+<p>
+The tabbed form can be designed like any Form and accepts the very same CSS-attributes. Additionally the predefined styles &quot;tabbar&quot;, &quot;activetab&quot; and &quot;inactivetab&quot; can be used to design the additional elements of a tabbed form.
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Style&nbsp;&nbsp;</th><th>Description</th></tr>
+	<tr>
+	 <td>tabbar</td>
+	 <td>This style designs the tab-bar of a TabbedForm.</td>
+	</tr>
+	<tr>
+	 <td>activetab</td>
+	 <td>Designs the currently active tab of a TabbedForm.</td>
+	</tr>
+	<tr>
+	 <td>inactivetab</td>
+	 <td>Designs all tabs but the currently selected one of a TabbedForm.</td>
+	</tr>
+</table>
+<p>
+You can set the color of the scrolling indicator within the tabbar-style with the tabbar-scrolling-indicator-color attribute:
+<pre>
+tabbar {
+	background-color: white;
+	layout: expand;
+	padding-bottom: 0;
+	tabbar-scrolling-indicator-color: black;
+}
+
+activetab {
+	background-type: round-tab;
+	background-color: silver;
+	background-arc: 8;
+	font-color: white;
+	padding-left: 10;
+	padding-right: 8;
+}
+
+inactivetab {
+	padding-left: 6;
+	padding-right: 4;
+	margin-left: 2;
+	margin-right: 2;
+	background-type: round-tab;
+	background-color: gray;
+	background-arc: 8;
+	font-color: silver;
+}
+</pre></p>
+<p>
+The <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/TabbedForm.html" target="_blank">de.enough.polish.ui.TabbedForm</a>
+ supports all Form methods and some additional methods for handling the
+tabs:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Method&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>TabbedForm( String title, String[] tabNames, Image[] tabImages )</td>
+	 <td>
+<code>
+//#style myTabbedForm<br />
+TabbedForm form = new TabbedForm( "Hello", new String[] {"First Tab", "another tab"}, null );
+</code>
+	 </td>
+	 <td>Creates a new TabbedForm.</td>
+	</tr>
+	<tr>
+	 <td>append( int tabIndex, Item item )</td>
+	 <td>
+<code>
+form.append( 2, myStringItem );
+</code>
+	 </td>
+	 <td>Adds the item to the specified tab. The first tab has got the index 0.</td>
+	</tr>
+	<tr>
+	 <td>set( int tabIndex, int itemIndex, Item item )</td>
+	 <td>
+<code>
+form.set( 2, 1, myStringItem );
+</code>
+	 </td>
+	 <td>Sets the item to the specified index on the given tab. </td>
+	</tr>
+	<tr>
+	 <td>delete( int tabIndex, Item item )</td>
+	 <td>
+<code>
+form.delete( 2, myStringItem );
+</code>
+	 </td>
+	 <td>Deletes the given item from the specified tab.</td>
+	</tr>
+
+</table>
+
+<p>
+The following listing demonstrates the usage of the TabbedForm:
+<pre>
+package de.enough.polish.demo;
+
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.DateField;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.StringItem;
+import javax.microedition.lcdui.TextField;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemStateListener;
+
+import de.enough.polish.ui.TabbedForm;
+
+public class TabbedFormDemo implements ItemStateListener {
+	
+
+	private TextField nameField;
+
+	public TabbedFormDemo(  DemoMidlet midlet, Display display, Command returnCmd ) {
+		String[] tabNames = new String[]{ &quot;Input&quot;, &quot;Choice&quot;, 
+			&quot;Connection&quot;, &quot;Test&quot;, &quot;Settings&quot;, 
+			&quot;Internet&quot; };
+		//#style tabbedScreen
+		TabbedForm form = new TabbedForm(&quot;TabbedDemo&quot;, tabNames, null );
+		//#style label
+		StringItem label = new StringItem( null, &quot;name:&quot; );
+		form.append( 0, label );
+		//#style input
+		this.nameField = new TextField( null, &quot;Robert&quot;, 
+			30, TextField.ANY | TextField.INITIAL_CAPS_WORD );
+		form.append(0, this.nameField);
+		//#style label
+		label = new StringItem( null, &quot;birthday:&quot; );
+		form.append( 0, label );
+		//#style input
+		DateField birthdate = new DateField( null, DateField.DATE );
+		form.append( 0, birthdate );
+		
+		//#style label
+		label = new StringItem(null, &quot;What kind of animals do you like:&quot;);
+		form.append( 1, label );
+		//#style multipleChoice
+		ChoiceGroup choice = new ChoiceGroup( null, Choice.MULTIPLE );
+		//#style choiceItem
+		choice.append(&quot;dogs&quot;, null);
+		//#style choiceItem
+		choice.append(&quot;cats&quot;, null);
+		//#style choiceItem
+		choice.append(&quot;birds&quot;, null);
+		form.append(1, choice);
+		
+		//#style label
+		label = new StringItem(null, &quot;Connection:&quot;);
+		form.append( 2, label );
+		//#style multipleChoice
+		choice = new ChoiceGroup( null, Choice.MULTIPLE );
+		//#style choiceItem
+		choice.append(&quot;ISDN&quot;, null);
+		//#style choiceItem
+		choice.append(&quot;DSL&quot;, null);
+		//#style choiceItem
+		choice.append(&quot;Cable&quot;, null);
+		form.append(2, choice);
+		
+
+		
+		form.addCommand(returnCmd);
+		form.setCommandListener(midlet);
+		form.setItemStateListener( this );
+		display.setCurrentItem( choice );
+	}
+
+	public void itemStateChanged(Item item) {
+		if (item instanceof TextField) {
+			TextField field = (TextField) item;
+			System.out.println(&quot;Item State Changed: &quot; + field.getString() );
+		} else {
+			System.out.println(&quot;Item State Changed: &quot; + item );
+		}
+	}
+}
+</pre>
+</p>
 
 <%include end.txt %>

@@ -24,6 +24,8 @@ are actually directly embedded into the source-code, so in most cases a
 localized application has absolutely no overhead at all compared to a 
 non-localized application - both in size as well as in performance. 
 </p><p>
+You can also enable dynamic translations that can be changed during the runtime of the application. In that case any String-keys are converted into simple integer-keys during the preprocessing phase so that translations can be retrieved as fast as possible.
+</p><p>
 The localization framework extends the concepts of the 
 <a href="resource-assembling.html">resource assembling</a>, 
 so that you can for example provide one Nokia specific resource for each 
@@ -138,6 +140,29 @@ Only for the third method a call to the Locale class is actually made, but in th
 the former String key &quot;messages.Introduction&quot; is transformed to a 
 simple integer, thus saving valuable bytes as well as ensuring a fast 
 retrieval of the resource in question. 
+</p>
+<h3 id="dynamictranslations">Dynamic Translations</h3>
+<p>
+You can also use dynamic translations that can be changed during the runtime of your application. You have to activate dynamic translations by setting the &quot;dynamic&quot;-attribute of the &lt;localization&gt;-element to &quot;true&quot;:
+<pre>
+&lt;resources
+	dir=&quot;resources&quot;
+	excludes=&quot;*.txt&quot;
+&gt;
+	&lt;localization 
+		dynamic=&quot;true&quot;
+		default=&quot;en&quot;
+		locales=&quot;de, en, fr_CA&quot; 
+	/&gt;
+&lt;/resources&gt;
+</pre></p>
+<p>
+You can now use the Locale class normally, the only difference to using static translations is that the translations are not embedded into your source-code but rather retrieved dynamically from the Locale class. For allowing a fast performance J2ME Polish converts all String-based keys into simple integer-values, so that only a minimal overhead is present. 
+</p><p>
+You can change the translations by calling 
+<code>Locale.loadTranslations( String url )</code>. For each supported locale J2ME Polish generates a <code>[locale-name].loc</code> file, 
+e.g. &quot;de.loc&quot;, &quot;en.loc&quot; or &quot;fr_CA.loc&quot;. 
+You can switch to the German translation by calling <code>Locale.loadTranslations( &quot;/de.loc&quot; )</code>, for example. Don't forget the slash character '/' at the start of the URL.
 </p>
 <h3 id="definingtranslations">Defining Translations</h3>
 <p>

@@ -114,9 +114,9 @@ Instead of using such nested requirements, you can also use the &quot;Term&quot;
 <pre>
 &lt;deviceRequirements&gt;
 	&lt;requirement name=&quot;Term&quot; 
-	value=&quot;(polish.BitsPerPixel &gt;= 4) &amp;&amp; 
-	((polish.api.nokia-ui &amp;&amp; polish.api.mmapi) 
-	     || (polish.api.mmapi &amp;&amp; polish.midp2))&quot; /&gt;
+	value=&quot;(polish.BitsPerPixel &gt;= 4) and 
+		((polish.api.nokia-ui and polish.api.mmapi) 
+		or (polish.api.mmapi and polish.midp2))&quot; /&gt;
 &lt;/deviceRequirements&gt;
 </pre>
 </p>
@@ -188,7 +188,7 @@ J2ME Polish provides several requirements that can be used &quot;out of the box&
 	<tr><td>Term</td>
 	 <td>A preprocessing term that needs to be fulfilled by the device. You can use this flexible requirement just like the //#if-preprocessing directive in your source code. 
 	 <br/><code>&lt;requirement name=&quot;Term&quot; 
-value=&quot;polish.mmapi &amp;&amp; !polish.isVirtual &amp;&amp; (polish.Vendor != Nokia)&quot; /&gt;</code></td>
+value=&quot;polish.mmapi and !polish.isVirtual and (polish.Vendor != Nokia)&quot; /&gt;</code></td>
 	</tr>
 	</table>
 	<p><br/><br/><br/><br/><br/>&nbsp;</p>

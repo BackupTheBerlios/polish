@@ -383,21 +383,18 @@ The left column will be 40 pixels wide, whereas the right column will use 100 pi
 
 <h3 id="howto-gui-apply">How to Apply the J2ME Polish GUI for Existing Applications</h3>
 <p>
-If an existing application should be &quot;polished up&quot; one should start with using 
-<a href="css-styles.html">dynamic styles</a> 
-(like &quot;form&quot;, &quot;list&quot;, &quot;listitem&quot;, &quot;choicegroup&quot; etc). 
-Define these styles in the &quot;resources/polish.css&quot; file and play around a bit:
+If an existing application should be &quot;polished up&quot; you should insert 
+<a href="directives.html#preprocessing-styles">#style preprocessing directives</a> within the 
+application to allow a fine grained design:
 <pre>
-form {
-	padding: 5;
-	background-color: yellow;
-	columns: 2;
-	columns-width: 40, 100;
-}
-</pre></p>
+//#style mainScreen
+List mainScreen = new List( "Main Menu", List.IMPLICIT );
+
+//#style mainScreenItem
+mainScreen.append( "Start Game", null );
+</pre>
+</p>
 <p>
-In the next step you should insert <a href="directives.html#preprocessing-styles">#style preprocessing directives</a> within the 
-application to allow a finer grained design and to save some memory and runtime overhead. 
 You need to use <a href="css-styles.html">static styles</a> then in the &quot;polish.css&quot; file. 
 Static styles can have almost any alphanumerical name and need to start with a dot:
 <pre>
@@ -406,6 +403,11 @@ Static styles can have almost any alphanumerical name and need to start with a d
 	background-color: yellow;
 	columns: 2;
 	columns-width: 40, 100;
+}
+.mainScreenItem {
+	background-color: black;
+	font-color: white;
+	icon-image: url( main%INDEX%.png );
 }
 </pre></p>
 <p>
