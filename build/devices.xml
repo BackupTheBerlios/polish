@@ -2108,6 +2108,16 @@
 
 <!-- Samsung devices -->
 	<device>
+		<identifier>Samsung/A700</identifier>
+		<capability name="ScreenSize" value="178x220"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="VideoFormat" value="3gpp, 3gpp2, h.263, mpeg-4, real-video" />
+		<capability name="SoundFormat" value="qcelp, aac, amr" />
+	</device>
+
+	<device>
 		<identifier>Samsung/SCH-X130</identifier>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="2"/>

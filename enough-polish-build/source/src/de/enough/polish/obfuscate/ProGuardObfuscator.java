@@ -1,5 +1,5 @@
 /*
- * Created on 22-Feb-2004 at 12:49:27.
+ * Created on 2-Sept-2004 at 12:49:27.
  *
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
@@ -41,13 +41,13 @@ import proguard.ProGuard;
 import proguard.classfile.ClassConstants;
 
 /**
- * <p>Is used to obfuscate code with the ProGuard obfuscator.</p>
+ * <p>Is used to obfuscate code with the ProGuard 3.x obfuscator.</p>
  * <p>For details of ProGuard, please refer to http://proguard.sourceforge.net/.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        22-Feb-2004 - rob creation
+ *        2-Sept-2004 - rob creation
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
@@ -72,29 +72,27 @@ public class ProGuardObfuscator extends Obfuscator {
 		Configuration cfg = new Configuration();
 		
 		// set libraries:
-		cfg.libraryJars  = getPath( bootClassPath.toString() );
+		cfg.libraryJars  = getPath( bootClassPath.toString(), false );
 		String[] apiPaths = device.getClassPaths();
 		for (int i = 0; i < apiPaths.length; i++) {
-			cfg.libraryJars.addAll( getPath( apiPaths[i] ) );
+			cfg.libraryJars.addAll( getPath( apiPaths[i], false ) );
 		}
-		
-        cfg.inJars = getPath( sourceFile );
-        cfg.outJars = getPath( targetFile );
+		cfg.allowAccessModification = true;
+		cfg.programJars = getPath( sourceFile, false );
+		cfg.programJars.addAll( getPath( targetFile, true ) );
 
         // do not obfuscate the <keep> classes and the defined midlets:
-        cfg.keepClassFileOptions = new ArrayList( preserve.length );
+        cfg.keep = new ArrayList( preserve.length );
         for (int i = 0; i < preserve.length; i++) {
 			String className = TextUtil.replace( preserve[i], '.', '/');
 			//System.out.println("\npreservering: " + className );
-	        cfg.keepClassFileOptions.add(
-	        		new KeepClassFileOption(
+	        cfg.keep.add(
+	        		new ClassSpecification(
         				ClassConstants.INTERNAL_ACC_PUBLIC,
 	                    0,
 	                    className,
 	                    null,
-	                    null,
 	                    true,
-	                    false,
 	                    false));
 		}
         // some devices do not support mixed-case class names:
@@ -129,25 +127,27 @@ public class ProGuardObfuscator extends Obfuscator {
 	 * Converts the path of the given file to a proguard.ClassPath
 	 * 
 	 * @param file The file for which a class path should be retrieved.
+	 * @param isOutput true when this path specifies the output-jar.
 	 * @return The classpath of the given file
 	 */
-	private ClassPath getPath(File file ) {
-		return getPath( file.getAbsolutePath() );
+	private ClassPath getPath(File file, boolean isOutput ) {
+		return getPath( file.getAbsolutePath(), isOutput );
 	}
 
 	/**
 	 * Converts the given file path to a proguard.ClassPath
      * 
 	 * @param path The path as a String
+	 * @param isOutput true when this path specifies the output-jar.
 	 * @return The path as a proguard-ClassPath
      */
-    private ClassPath getPath(String path)
+    private ClassPath getPath(String path, boolean isOutput)
     {
         ClassPath classPath = new ClassPath();
         String[] elements = TextUtil.split( path, File.pathSeparatorChar );
         for (int i = 0; i < elements.length; i++) {
         	ClassPathEntry entry =
-                new ClassPathEntry( elements[i]);
+                new ClassPathEntry( elements[i], isOutput );
 
             classPath.add(entry);
 		}

@@ -173,6 +173,13 @@
 		>
 		<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java" />
 	</indexWriter>
+	<!-- compile the legacy code -->
+	<javac 
+		srcdir="source/legacy"
+		destdir="bin/classes" >
+		<classpath path="bin/classes:import/proguard2.jar" />
+	</javac>
+		
 	<!-- create the binary build distribution -->
 	<jar destfile="dist/enough-j2mepolish-build.jar"
 	     basedir="bin/classes"

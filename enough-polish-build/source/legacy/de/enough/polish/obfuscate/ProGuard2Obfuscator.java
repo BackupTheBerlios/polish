@@ -1,5 +1,5 @@
 /*
- * Created on 2-Sept-2004 at 12:49:27.
+ * Created on 22-Feb-2004 at 12:49:27.
  *
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
@@ -41,23 +41,23 @@ import proguard.ProGuard;
 import proguard.classfile.ClassConstants;
 
 /**
- * <p>Is used to obfuscate code with the ProGuard 3.x obfuscator.</p>
+ * <p>Is used to obfuscate code with the ProGuard obfuscator, version 2.x.</p>
  * <p>For details of ProGuard, please refer to http://proguard.sourceforge.net/.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        2-Sept-2004 - rob creation
+ *        22-Feb-2004 - rob creation
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class ProGuardObfuscator extends Obfuscator {
+public class ProGuard2Obfuscator extends Obfuscator {
 	
 
 	/**
 	 * Creates a new pro guard obfuscator.
 	 */
-	public ProGuardObfuscator() {
+	public ProGuard2Obfuscator() {
 		super();
 	}
 	
@@ -67,32 +67,34 @@ public class ProGuardObfuscator extends Obfuscator {
 	public void obfuscate(Device device, File sourceFile, File targetFile, String[] preserve, Path bootClassPath) 
 	throws BuildException 
 	{
-		System.out.println("Starting obfuscation with ProGuard.");
+		System.out.println("Starting obfuscation with ProGuard 2.x.");
 		// create the configuration for ProGuard:
 		Configuration cfg = new Configuration();
 		
 		// set libraries:
-		cfg.libraryJars  = getPath( bootClassPath.toString(), false );
+		cfg.libraryJars  = getPath( bootClassPath.toString() );
 		String[] apiPaths = device.getClassPaths();
 		for (int i = 0; i < apiPaths.length; i++) {
-			cfg.libraryJars.addAll( getPath( apiPaths[i], false ) );
+			cfg.libraryJars.addAll( getPath( apiPaths[i] ) );
 		}
-		cfg.allowAccessModification = true;
-		cfg.programJars = getPath( sourceFile, false );
-		cfg.programJars.addAll( getPath( targetFile, true ) );
+		
+        cfg.inJars = getPath( sourceFile );
+        cfg.outJars = getPath( targetFile );
 
         // do not obfuscate the <keep> classes and the defined midlets:
-        cfg.keep = new ArrayList( preserve.length );
+        cfg.keepClassFileOptions = new ArrayList( preserve.length );
         for (int i = 0; i < preserve.length; i++) {
 			String className = TextUtil.replace( preserve[i], '.', '/');
 			//System.out.println("\npreservering: " + className );
-	        cfg.keep.add(
-	        		new ClassSpecification(
+	        cfg.keepClassFileOptions.add(
+	        		new KeepClassFileOption(
         				ClassConstants.INTERNAL_ACC_PUBLIC,
 	                    0,
 	                    className,
 	                    null,
+	                    null,
 	                    true,
+	                    false,
 	                    false));
 		}
         // some devices do not support mixed-case class names:
@@ -107,7 +109,7 @@ public class ProGuardObfuscator extends Obfuscator {
         ProGuard proGuard = new ProGuard( cfg );
 		try {
 			proGuard.execute();
-			System.out.println("ProGuard has successfully finished obfuscation.");
+			System.out.println("ProGuard 2.x has successfully finished obfuscation.");
 		} catch (IOException e) {
 			// check if all preserve-classes are found:
 			for (int i = 0; i < preserve.length; i++) {
@@ -119,7 +121,7 @@ public class ProGuardObfuscator extends Obfuscator {
 					System.err.println("Please check your <midlet>-setting in the file [build.xml].");
 				}
 			}
-			throw new BuildException("ProGuard was unable to obfuscate: " + e.getMessage(), e );
+			throw new BuildException("ProGuard 2.x was unable to obfuscate: " + e.getMessage(), e );
 		}
 	}
 	
@@ -127,27 +129,25 @@ public class ProGuardObfuscator extends Obfuscator {
 	 * Converts the path of the given file to a proguard.ClassPath
 	 * 
 	 * @param file The file for which a class path should be retrieved.
-	 * @param isOutput true when this path specifies the output-jar.
 	 * @return The classpath of the given file
 	 */
-	private ClassPath getPath(File file, boolean isOutput ) {
-		return getPath( file.getAbsolutePath(), isOutput );
+	private ClassPath getPath(File file ) {
+		return getPath( file.getAbsolutePath() );
 	}
 
 	/**
 	 * Converts the given file path to a proguard.ClassPath
      * 
 	 * @param path The path as a String
-	 * @param isOutput true when this path specifies the output-jar.
 	 * @return The path as a proguard-ClassPath
      */
-    private ClassPath getPath(String path, boolean isOutput)
+    private ClassPath getPath(String path)
     {
         ClassPath classPath = new ClassPath();
         String[] elements = TextUtil.split( path, File.pathSeparatorChar );
         for (int i = 0; i < elements.length; i++) {
         	ClassPathEntry entry =
-                new ClassPathEntry( elements[i], isOutput );
+                new ClassPathEntry( elements[i]);
 
             classPath.add(entry);
 		}

@@ -106,6 +106,8 @@ public class PolishTask extends ConditionalTask {
 	private JavaExtension[] javaExtensions;
 
 	private CssAttributesManager cssAttributesManager;
+
+	private PolishLogger polishLogger;
 	
 	/**
 	 * Creates a new empty task 
@@ -606,6 +608,35 @@ public class PolishTask extends ConditionalTask {
 				System.err.println("Warning: unable to create temporary lock file: " + e.toString() );
 			}
 		}
+		
+		// set J2ME Polish specific logger,
+		// this logger will show the original source-code positions
+		// and remove some verbose logging from ProGuard etc:
+		Vector buildListeners = this.project.getBuildListeners();
+		BuildLogger logger = null;
+		for (Iterator iter = buildListeners.iterator(); iter.hasNext();) {
+			BuildListener listener = (BuildListener) iter.next();
+			if (listener instanceof BuildLogger) {
+				logger = (BuildLogger) listener;
+				break;
+			}			
+		}
+		if (logger != null) {
+			// prepare the classPathTranslations-Map:
+			HashMap classPathTranslationsMap = new HashMap(); 
+			for (int i=0; i < this.sourceFiles.length; i++) {
+				TextFile[] files = this.sourceFiles[i];
+				for (int j = 0; j < files.length; j++) {
+					TextFile file = files[j];
+					classPathTranslationsMap.put( file.getFileName(), file.getFile().getAbsolutePath() );
+				}
+			}
+			this.polishLogger = new PolishLogger(logger, classPathTranslationsMap );
+			this.project.addBuildListener( this.polishLogger );
+			this.project.removeBuildListener(logger);
+		} else {
+			System.err.println("Warning: unable to replace Ant-logger. Compile errors will point to the preprocessed files instead of the original sources.");
+		}
 	}
 
 	/**
@@ -1036,12 +1067,35 @@ public class PolishTask extends ConditionalTask {
 			javac.setClasspath( new Path(this.project, device.getClassPath() ) );
 		}
 		// start compile:
+		if (this.polishLogger != null) {
+			this.polishLogger.setCompileMode( true );
+		}
 		try {
 			javac.execute();
 		} catch (BuildException e) {
-			System.out.println("If an error occured in the J2ME Polish packages, please try a clean rebuild - e.g. [ant clean] and then [ant].");
-			System.out.println("Alternatively you might need to define where to find the device-APIs. Following classpath has been used: [" + device.getClassPath() + "].");
-			throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
+			if (this.polishLogger != null) {
+				this.polishLogger.setCompileMode(false);
+				if (this.polishLogger.isInternalCompilationError()) {
+					System.out.println("An internal class of J2ME Polish could not be compiled. " +
+							"Please try a clean rebuild by either calling \"ant clean j2mepolish\"" +
+							" or by removing the working directory \"" 
+							+ this.buildSetting.getWorkDir().getAbsolutePath() + "\".");
+					System.out.println("When an API-class was not found, you might need " +
+							"to define where to find the device-APIs. Following classpath " +
+							"has been used: [" + device.getClassPath() + "].");
+					throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
+				} else {
+					System.out.println("When an API-class was not found, you might need to define where to find the device-APIs. Following classpath has been used: [" + device.getClassPath() + "].");
+					throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
+				}
+			} else {
+				System.out.println("If an error occured in the J2ME Polish packages, please try a clean rebuild - e.g. [ant clean] and then [ant].");
+				System.out.println("Alternatively you might need to define where to find the device-APIs. Following classpath has been used: [" + device.getClassPath() + "].");
+				throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
+			}
+		}
+		if (this.polishLogger != null) {
+			this.polishLogger.setCompileMode( false );
 		}
 		
 	}
@@ -1054,6 +1108,9 @@ public class PolishTask extends ConditionalTask {
 	 */
 	private void obfuscate( Device device ) {
 		System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
+		if (this.polishLogger != null) {
+			this.polishLogger.setObfuscateMode( true );
+		}
 		Path bootPath;
 		if (device.isMidp1()) {
 			bootPath = this.midp1BootClassPath;
@@ -1105,6 +1162,10 @@ public class PolishTask extends ConditionalTask {
 			JarUtil.unjar( destFile,  targetDir  );
 		} catch (IOException e) {
 			throw new BuildException("Unable to prepare the obfuscation-jar: " + e.getMessage(), e );
+		}
+		
+		if (this.polishLogger != null) {
+			this.polishLogger.setObfuscateMode( false );
 		}
 	}
 
