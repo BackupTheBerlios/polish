@@ -42,6 +42,8 @@ import java.util.zip.CRC32;
  */
 public final class JarUtil {
 	
+	private final static boolean IS_WINDOWS = (File.separatorChar == '\\');
+	
 	/**
 	 * Writes all files of the given directory to the specified jar-file.
 	 * 
@@ -101,6 +103,9 @@ public final class JarUtil {
 			}
 		} else {
 			String entryName = file.getAbsolutePath().substring(sourceDirLength);
+			if (IS_WINDOWS) {
+					entryName = TextUtil.replace( entryName, '\\', '/' );
+			}
 			JarEntry entry = new JarEntry( entryName );
 			out.putNextEntry(entry);
 			// read file:
