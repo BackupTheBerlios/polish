@@ -78,7 +78,7 @@ import de.enough.polish.util.Debug;
  * 
  */
 public abstract class Screen 
-//#if polish.useFullScreen && polish.midp2  && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
+//#if polish.useFullScreen && (polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts)  && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
 	//#define tmp.fullScreen
 	//# extends Canvas
 //#elif polish.useFullScreen && polish.classes.fullscreen:defined
@@ -203,7 +203,7 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
+		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint || polish.Bugs.needsNokiaUiForSystemAlerts)
 			//#if tmp.fullScreen && polish.midp2
 				super.setFullScreenMode( true );
 			//#endif			
@@ -1502,7 +1502,7 @@ public abstract class Screen
 	}
 	
 	
-	//#ifdef polish.midp2
+	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	protected void sizeChanged(int width, int height) {
 		//#ifdef tmp.menuFullScreen
 			this.fullScreenHeight = height;
