@@ -30,7 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * <p></p>
+ * <p>The baseclass for all nodes within an AST. Caution: You are resoponsible to link a child proberly
+ * to its parent, so call setParent on the child and addChild on the parent.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -46,6 +47,8 @@ abstract public class ASTNode {
 	protected List problems; // TODO: This will be a list of IMarkers. //TODO: rename to syntaxproblems.
 	//protected CssToken startToken; // Mixing the layers? But a ASTNode have to know to which Token it belongs.
 	//TODO: We need the source range, too.
+	protected int offset;
+	
 	public ASTNode(){
 		this.parent = null;
 		this.children = new ArrayList();
@@ -71,6 +74,9 @@ abstract public class ASTNode {
 		this.parent = parent;
 	}
 	
+	public void addChild(ASTNode child){
+		this.children.add(child);
+	}
 	
 	/**
 	 * @return Returns the children.
@@ -103,13 +109,17 @@ abstract public class ASTNode {
 
 		Iterator iterator = this.problems.iterator();
 		Problem problem;
+		boolean cutLastChar = false;
 		while(iterator.hasNext()){
 			problem = (Problem) iterator.next();
 			result.append("(");
 			result.append(problem);
 			result.append("),");
+			cutLastChar = true;
 		}
-		result.deleteCharAt(result.length()-1);
+		if(cutLastChar){
+			result.deleteCharAt(result.length()-1);
+		}
 		return result.toString();
 	}
 
@@ -128,4 +138,11 @@ abstract public class ASTNode {
 	}
 	*/
 	
+	
+	public int getOffset() {
+		return this.offset;
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
 }

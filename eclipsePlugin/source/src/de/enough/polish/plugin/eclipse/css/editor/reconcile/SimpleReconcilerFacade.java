@@ -78,7 +78,9 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 		 */
 		public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
 			System.out.println("DEBUG:SimpleReconcilerFacade.Listener.inputDocumentChanged():enter.");
-			
+			SimpleReconcilerFacade.this.cssModel.setDocument(newInput);
+			SimpleReconcilerFacade.this.cssModel.reconcile(null);
+			reconcilePresentation();
 		}
 
 		/* (non-Javadoc)

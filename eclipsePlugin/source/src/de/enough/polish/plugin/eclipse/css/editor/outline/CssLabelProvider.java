@@ -25,9 +25,9 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.outline;
 
-import net.percederberg.grammatica.parser.Node;
-
 import org.eclipse.jface.viewers.LabelProvider;
+
+import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 
 /**
  * <p></p>
@@ -42,11 +42,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 public class CssLabelProvider extends LabelProvider{
 
 	public String getText(Object object){
-		if( ! (object instanceof Node)){
+		if( ! (object instanceof ASTNode)){
 			return "NoLabel for "+object;
 		}
-		Node node = (Node)object;
-		return node.getName();
+		ASTNode node = (ASTNode)object;
+		return node.toString();
 	}
 	
 	

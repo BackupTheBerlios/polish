@@ -65,4 +65,15 @@ public class StyleSection extends Section {
 	}
 	
 	
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(this.sectionName);
+		//buffer.append(this.offset);
+		if(this.parentStyle != null &&  (! this.parentStyle.equals(""))){
+			buffer.append(" (");
+			buffer.append(this.parentStyle);
+			buffer.append(")");
+		}
+		return buffer.toString();
+	}
 }

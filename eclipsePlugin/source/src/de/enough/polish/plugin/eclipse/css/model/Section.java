@@ -37,7 +37,7 @@ package de.enough.polish.plugin.eclipse.css.model;
  */
 public class Section extends ASTNode {
 
-	private String sectionName;
+	protected String sectionName;
 	
 	public Section(){
 		super();

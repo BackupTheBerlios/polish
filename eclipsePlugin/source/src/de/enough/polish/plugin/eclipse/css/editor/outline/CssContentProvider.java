@@ -25,13 +25,15 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.outline;
 
-import net.percederberg.grammatica.parser.Node;
-
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 
+import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.IModelListener;
 
@@ -48,13 +50,15 @@ import de.enough.polish.plugin.eclipse.css.model.IModelListener;
 public class CssContentProvider implements ITreeContentProvider,ISelectionChangedListener,IModelListener {
 
 	//ASTNode rootParent;
-	private Viewer currentViewer;
+	private Viewer treeViewer;
+	private ISourceViewer sourceViewer;
 	private CssModel cssModel;
 	
-	public CssContentProvider(CssModel cssModel){
+	public CssContentProvider(CssModel cssModel, ISourceViewer sourceViewer){
 		//this.rootParent = null;
 		this.cssModel = cssModel;
 		this.cssModel.addModelListener(this);
+		this.sourceViewer = sourceViewer;
 	}
 	
 	
@@ -74,14 +78,14 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		System.out.println("DEBUG:CssContentProvider.inputChanged(): enter");
 		if(viewer != null){
-			this.currentViewer = viewer;
+			this.treeViewer = viewer;
 			System.out.println("DEBUG:CssContentProvider.inputChanged():oldInput:"+oldInput);
 			System.out.println("DEBUG:CssContentProvider.inputChanged():newInput:"+ ((newInput != null) ? newInput.getClass().toString() : "null"));
 			//this.rootParent = (ASTNode)newInput;
 			if(newInput instanceof CssModel){
 				this.cssModel = (CssModel)newInput;
 			}
-			//this.currentViewer.addSelectionChangedListener(this);
+			this.treeViewer.addSelectionChangedListener(this);
 		}
 	}
 	
@@ -149,6 +153,8 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
 	public Object[] getChildren(Object parentElement) {
+		
+		/*// Stuff for the parsetree Node.
 		System.out.println("DEBUG:CssContentProvider.getChildren():enter.");
 		if( ! hasChildren(parentElement)){
 			return new Node[]{};
@@ -161,40 +167,45 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 			result[i] = node.getChildAt(i);
 		}
 		return result;
-		/*
+		*/
+		//Stuff for the AST.
 		System.out.println("DEBUG:CssContentProvider.getChildren():entered");
 		System.out.println("DEBUG:CssContentProvider.getChildren():parentElement:"+parentElement);
-		Object[] result = null;
+		Object[] result = new Object[]{};
 		if(parentElement instanceof ASTNode){
 			result = ((ASTNode)parentElement).getChildren().toArray();
 		}
 		return result;
-		*/
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
 	public Object getParent(Object element) {
+		/*// Stuff for the parsetree Node.
 		System.out.println("DEBUG:CssContentProvider.getParent():enter.");
 		if( ! (element instanceof Node)){
 			return null;
 		}
 		return ((Node)element).getParent();
-		/*
+		*/
+		
+		// Stuff for the AST.
 		ASTNode result = null;
 		if(element instanceof ASTNode){
 			result = ((ASTNode)element).getParent();
 		}
 		return result;
-		*/
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
 	public boolean hasChildren(Object element) {
-		System.out.println("DEBUG:CssContentProvider.hasChildren():enter.");
+		/*// Stuff for the parsetree Node.
+		 System.out.println("DEBUG:CssContentProvider.hasChildren():enter.");
 		if( ! (element instanceof Node)){
 			return false;
 		}
@@ -205,48 +216,35 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 		else{
 			return false;
 		}
-		/*
+		*/
+		// Stuff for the AST.
 		if(element instanceof ASTNode){
 			ASTNode astNode = (ASTNode)element;
 			return ! astNode.getChildren().isEmpty();
 		}
 		return false;
-		*/
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 	 */
 	public Object[] getElements(Object inputElement) {
+		/*// Stuff for the parsetree Node.
 		System.out.println("DEBUG:CssContentProvider.getElements():enter.");
 		if(inputElement instanceof CssModel){
 			return new Node[]{((CssModel)inputElement).getRootNode()}; //Until now we assume that getRootNode is always non null.
 		}
 		return new Node[]{};
-		/*
-		if( ! (inputElement instanceof Node)){
-			return new Node[]{};
-		}
-		Node node = (Node)inputElement;
-		if(node.getId() != PolishCssConstants.STYLESHEET){
-			return new Node[]{};
-		}
-		int childCount = node.getChildCount();
-		Node[] result = new Node[childCount];
-		for(int i = 0; i < childCount; i++){
-			result[i] = node.getChildAt(i);
-		}
-		return result;
 		*/
-		/*
-		System.out.println("DEBUG:CssContentProvider.getelements():entered");
-		System.out.println("DEBUG:CssContentProvider.getChildren():inputElement"+inputElement);
+//		 Stuff for the AST.
+		System.out.println("DEBUG:CssContentProvider.getElements():entered");
+		System.out.println("DEBUG:CssContentProvider.getChildren():inputElement:"+inputElement);
 		
-		if(inputElement instanceof StyleSheet){
-			return ((StyleSheet)inputElement).getChildren().toArray();
+		if(inputElement instanceof CssModel){
+			return ((CssModel)inputElement).getRoot().getChildren().toArray();
 		}
-		return null;
-		*/
+		return new Object[]{};
 	}
 
 
@@ -254,8 +252,34 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
+		
 		System.out.println("DEBUG:CssContentProvider.selectionChanged():enter.");
-		System.out.println("DEBUG:CssContentProvider.selectionChanged():event:"+event);
+		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+		Object[] selectionArray = selection.toArray();
+		if(selectionArray == null){
+			return;
+		}
+		for(int i = 0; i < selectionArray.length;i++){
+			System.out.println(selectionArray[i].getClass());
+		}
+		
+		if(this.sourceViewer == null){
+			System.out.println("DEBUG:CssContentProvider.selectionChanged():sourceViewer: is null.");
+			return;
+		}
+		ASTNode firstASTNode = (ASTNode)selection.getFirstElement();
+		if(firstASTNode == null){
+			System.out.println("DEBUG:CssContentProvider.selectionChanged():no first selected item.");
+			return;
+		}
+		try {
+			this.sourceViewer.setTopIndex(this.cssModel.getDocument().getLineOfOffset(firstASTNode.getOffset()));
+			//System.out.println("DEBUG:CssContentProvider.selectionChanged():selection:");
+		} catch (BadLocationException exception) {
+			System.out.println("DEBUG:CssContentProvider.selectionChanged():the offset is messed up.");
+		}
+		 
+		 
 		
 	}
 
@@ -264,8 +288,8 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
 	 */
 	public void modelChanged() {
-		this.currentViewer.refresh();
-		
+		System.out.println("DEBUG:CssContentProvider.modelChanged().enter.");
+		this.treeViewer.refresh();
 	}
 
 }
