@@ -55,8 +55,9 @@ public final class CastUtil {
 			return ((Boolean)value).booleanValue();
 		}
 		String valueStr = value.toString();
-		return ( ("true".equals(valueStr))
-			  || ("yes".equals(valueStr)) );
+		return ( ("true".equalsIgnoreCase(valueStr))
+			  || ("yes".equalsIgnoreCase(valueStr)) 
+			  || ("on".equalsIgnoreCase(valueStr)) );
 	}
 	
 	/**

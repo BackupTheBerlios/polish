@@ -27,7 +27,6 @@ package de.enough.polish.util;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,9 +34,12 @@ import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+
 
 
 
@@ -150,6 +152,20 @@ public final class SwingUtil {
 			frame.setIconImage(image);
 		}
 	}
+	
+	/**
+	 * @param url
+	 * @param button
+	 * @param packageClass
+	 */
+	public static void setImageIcon(String url, JButton button, Class packageClass) {
+		Image image = SwingUtil.loadIcon(url, packageClass );
+		if (image != null) {
+			button.setIcon( new ImageIcon( image )  );
+		}
+
+	}
+
 
 	class CustomFileFilter extends FileFilter {
 		private final String lowerCaseType;
@@ -171,5 +187,6 @@ public final class SwingUtil {
 			return this.lowerCaseType;
 		}	
 	}
+
 
 }

@@ -43,8 +43,6 @@ import java.io.IOException;
  * 		<li><b>image</b>: the image url, e.g. url( bg.png ) or none</li>
  * 		<li><b>color</b>: the background color, should the image
  * 							be smaller than the actual background-area. Or "transparent".</li>
- * 		<li><b>repeat</b>: defines whether the image should be repeated. Either "no-repeat",
- * 				"repeat", "repeat-x" or "repeat-y".</li>
  * 		<li><b>anchor</b>: The anchor of the image, either  "left", "right", 
  * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
  * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center".
@@ -67,14 +65,9 @@ extends Background
 implements ImageConsumer
 //#endif
 {
-	public static final int NO_REPEAT = -1;
-	public static final int REPEAT = 1;
-	public static final int REPEAT_X = 2;
-	public static final int REPEAT_Y = 3;
 	
 	private Image image;
 	private final int color;
-	private final int repeatMode;
 	private boolean isLoaded;
 	private String imageUrl;
 	private final int anchor;
@@ -85,15 +78,12 @@ implements ImageConsumer
 	 * 
 	 * @param color the background color or Item.TRANSPARENT
 	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
-	 * @param repeatMode indicates whether the background image should
-	 *        be repeated, either ImageBackground.NO_REPEAT, REPEAT, REPEAT_X or REPEAT_Y
 	 * @param anchor the anchor of the image, either  "left", "right", 
 	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
 	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
 	 */
-	public ImageBackground( int color, String imageUrl, int repeatMode, int anchor ) {
+	public ImageBackground( int color, String imageUrl, int anchor ) {
 		this.color = color;
-		this.repeatMode = repeatMode;
 		this.imageUrl = imageUrl;
 		this.anchor = anchor;
 		this.doCenter = ( anchor == (Graphics.VCENTER | Graphics.HCENTER) );
@@ -128,53 +118,22 @@ implements ImageConsumer
 			g.fillRect( x, y, width + 1, height + 1 );
 		}
 		if (this.image != null) {
-			if (this.repeatMode == NO_REPEAT) {
-				if (this.doCenter) {
-					int centerX = x + (width / 2);
-					int centerY = y + (height / 2);
-					g.drawImage(this.image, centerX, centerY, Graphics.HCENTER | Graphics.VCENTER );
-				} else {
-					if ( (this.anchor & Graphics.HCENTER) == Graphics.HCENTER) {
-						x += (width / 2);
-					} else if ( (this.anchor & Graphics.RIGHT) == Graphics.RIGHT) {
-						x += width;
-					}
-					if ( (this.anchor & Graphics.VCENTER) == Graphics.VCENTER) {
-						y += (height / 2);
-					} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
-						y += height;
-					}
-					g.drawImage(this.image, x, y, this.anchor );
-				}
+			if (this.doCenter) {
+				int centerX = x + (width / 2);
+				int centerY = y + (height / 2);
+				g.drawImage(this.image, centerX, centerY, Graphics.HCENTER | Graphics.VCENTER );
 			} else {
-				int imgWidth = this.image.getWidth();
-				int imgHeight = this.image.getHeight();
-				int imgX = x;
-				int imgY = y;
-				int xStop = x + width;
-				int yStop = y + height;
-				if (this.repeatMode == REPEAT ) {					
-					while (imgY < yStop ) {
-						while ( imgX < xStop ) {
-							g.drawImage(this.image, imgX, imgY, Graphics.LEFT | Graphics.TOP );
-							imgX += imgWidth;
-						}
-						imgY += imgHeight;
-						imgX = x;
-					}
-				} else if (this.repeatMode == REPEAT_X) {
-					int centerY = y + (height / 2);
-					while ( imgX < xStop ) {
-						g.drawImage(this.image, imgX, centerY, Graphics.LEFT | Graphics.VCENTER );
-						imgX += imgWidth;
-					}
-				} else {
-					// repeatMode == REPEAT_Y
-					while (imgY < yStop ) {
-						g.drawImage(this.image, imgX, imgY, Graphics.LEFT | Graphics.TOP );
-						imgY += imgHeight;
-					}
+				if ( (this.anchor & Graphics.HCENTER) == Graphics.HCENTER) {
+					x += (width / 2);
+				} else if ( (this.anchor & Graphics.RIGHT) == Graphics.RIGHT) {
+					x += width;
 				}
+				if ( (this.anchor & Graphics.VCENTER) == Graphics.VCENTER) {
+					y += (height / 2);
+				} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
+					y += height;
+				}
+				g.drawImage(this.image, x, y, this.anchor );
 			}
 		}
 	}

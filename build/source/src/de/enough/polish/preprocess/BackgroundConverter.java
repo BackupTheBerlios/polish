@@ -154,6 +154,18 @@ public abstract class BackgroundConverter extends Converter {
 	public int parseInt( String name, String value) {
 		return parseInt( this.styleName, "background", name, value );
 	}
+	
+	/**
+	 * Parses the given boolean value.
+	 * 
+	 * @param name the name of the field
+	 * @param value the boolean value as a String
+	 * @return the boolean value
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public boolean parseBoolean(String name, String value) {
+		return parseBoolean( this.styleName, "background", name, value );
+	}
 		
 	/**
 	 * Parses the given float.

@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -95,6 +96,21 @@ public class Converter {
 			throw new BuildException("Unable to parse the field [" + groupName + "-" + name + "] with the value [" + value + "] from the style [" + styleName + "]: " + e.getMessage(), e );
 		}
 	}
+	
+	/**
+	 * Parses the given boolean value.
+	 * 
+	 * @param styleName the style name
+	 * @param groupName the name of the group
+	 * @param name the name of the field
+	 * @param value the boolean value as a String
+	 * @return the boolean value.
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public boolean parseBoolean(String styleName, String groupName, String name, String value) {
+		return CastUtil.getBoolean( value );
+	}
+
 	
 	/**
 	 * Parses the given number which can be a percentage value.

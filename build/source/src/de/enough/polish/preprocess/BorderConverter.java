@@ -133,6 +133,19 @@ public abstract class BorderConverter extends Converter {
 	}
 	
 	/**
+	 * Parses the given boolean value.
+	 * 
+	 * @param name the name of the field
+	 * @param value the boolean value as a String
+	 * @return the boolean value
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public boolean parseBoolean(String name, String value) {
+		return parseBoolean( this.styleName, "border", name, value );
+	}
+	
+	
+	/**
 	 * Parses the given float.
 	 * 
 	 * @param name the name of the field

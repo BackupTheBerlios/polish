@@ -46,11 +46,13 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 	
 	private static final HashMap REPEAT_TYPES = new HashMap();
 	static {
-		REPEAT_TYPES.put("repeat", BACKGROUNDS_PACKAGE + "ImageBackground.REPEAT");
-		REPEAT_TYPES.put("no-repeat", BACKGROUNDS_PACKAGE + "ImageBackground.NO_REPEAT");
-		REPEAT_TYPES.put("none", BACKGROUNDS_PACKAGE + "ImageBackground.NO_REPEAT");
-		REPEAT_TYPES.put("repeat-x", BACKGROUNDS_PACKAGE + "ImageBackground.REPEAT_X");
-		REPEAT_TYPES.put("repeat-y", BACKGROUNDS_PACKAGE + "ImageBackground.REPEAT_Y");
+		REPEAT_TYPES.put("repeat", BACKGROUNDS_PACKAGE + "TiledImageBackground.REPEAT");
+		REPEAT_TYPES.put("no-repeat", "");
+		REPEAT_TYPES.put("none", "");
+		REPEAT_TYPES.put("repeat-x", BACKGROUNDS_PACKAGE + "TiledImageBackground.REPEAT_X");
+		REPEAT_TYPES.put("repeat-y", BACKGROUNDS_PACKAGE + "TiledImageBackground.REPEAT_Y");
+		REPEAT_TYPES.put("repeat-horizontal", BACKGROUNDS_PACKAGE + "TiledImageBackground.REPEAT_X");
+		REPEAT_TYPES.put("repeat-vertical", BACKGROUNDS_PACKAGE + "TiledImageBackground.REPEAT_Y");
 	}
 	
 	/**
@@ -71,14 +73,38 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 		String imageUrl = (String) background.get("image");
 		imageUrl = getUrl( imageUrl );
 		String repeat = (String) background.get("repeat");
-		if (repeat == null) {
-			repeat = BACKGROUNDS_PACKAGE + "ImageBackground.NO_REPEAT";
-		} else {
+		int paddingVertical = 0;
+		int paddingHorizontal = 0;
+		boolean overlap = false;
+		if (repeat != null) {
 			String rep = (String) REPEAT_TYPES.get( repeat );
 			if (rep == null) {
 				throw new BuildException("Invalid CSS: the repeat-type [" + repeat +"] is not supported by the image background.");
 			}
-			repeat = rep;
+			if (rep.length() > 1) {
+				repeat = rep;
+			} else {
+				repeat = null;
+			}
+			int padding = 0;
+			String paddingStr = (String) background.get("padding");
+			if (paddingStr != null) {
+				padding = parseInt( "padding", paddingStr );
+			}
+			paddingVertical = padding;
+			paddingStr = (String) background.get("padding-vertical");
+			if (paddingStr != null) {
+				paddingVertical = parseInt( "padding-vertical", paddingStr );
+			}
+			paddingHorizontal = padding;
+			paddingStr = (String) background.get("padding-horizontal");
+			if (paddingStr != null) {
+				paddingHorizontal = parseInt( "padding-horizontal", paddingStr );
+			}
+			String overlapStr = (String) background.get("overlap");
+			if (overlapStr != null) {
+				overlap = parseBoolean( "overlap", overlapStr );
+			}
 		}
 		String anchor = (String) background.get("anchor");
 		if (anchor != null) {
@@ -86,7 +112,14 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 		} else {
 			anchor = "Graphics.HCENTER | Graphics.VCENTER";
 		}
-		return "new " + BACKGROUNDS_PACKAGE + "ImageBackground( " 
-				+ this.color + ", \"" + imageUrl + "\", " + repeat + ", " + anchor + " )";
+		if (repeat == null) {
+			// return default image background:
+			return "new " + BACKGROUNDS_PACKAGE + "ImageBackground( " 
+			+ this.color + ", \"" + imageUrl + "\", " + anchor + " )";
+		} else {
+			return "new " + BACKGROUNDS_PACKAGE + "TiledImageBackground( " 
+			+ this.color + ", \"" + imageUrl + "\", " + repeat + ", " + anchor + ", " + paddingHorizontal + ", " + paddingVertical + ", " + overlap + " )";
+		}
 	}
+
 }
