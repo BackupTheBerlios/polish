@@ -108,6 +108,7 @@ public class DashoObfuscator extends Obfuscator {
 			}
 			File script = createScriptFile( device, sourceFile, targetFile, preserve, bootClassPath );
 			if (false) {
+				// direct invocation does not seem to work
 				this.dashoMainMethod.invoke(null, new Object[]{ new String[]{ script.getAbsolutePath() }} );
 			}
 			// invoke DashO from the commandline:
@@ -343,7 +344,7 @@ public class DashoObfuscator extends Obfuscator {
 	public void setConstantPoolTag(String constantPoolTag) {
 		this.constantPoolTag = constantPoolTag;
 	}
-	public void setEnableFlowEncryption(boolean enableFlowEncryption) {
+	public void setEnableFlowObfuscation(boolean enableFlowEncryption) {
 		this.enableFlowEncryption = enableFlowEncryption;
 	}
 	public void setEnableOptimization(boolean enableOptimization) {

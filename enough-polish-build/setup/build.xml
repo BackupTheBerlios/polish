@@ -26,6 +26,7 @@
 <!-- The polish.home property should point to the directory   -->
 <!-- containing the J2ME Polish installation.                 -->
 <property name="polish.home" value="%{INSTALL_PATH}" />
+	
 <!-- The siemens.home, nokia.home and motorola.home-          -->
 <!-- properties can be necessary when their emulators         -->
 <!-- should be started.                                       -->
@@ -161,7 +162,9 @@
 			</resources>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator unless="test" enable="true" name="ProGuard" >
+				<!--
 				<parameter name="optimize" value="false" />
+				-->
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" enable="true" showLogOnError="true" verbose="true" level="error">
