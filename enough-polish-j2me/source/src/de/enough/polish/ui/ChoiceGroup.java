@@ -1132,13 +1132,46 @@ implements Choice
 
 	/**
 	 * Sets the select command for this choice group.
-	 * This will be ignored unless this group has the type IMPLICIT.
 	 *
 	 * @param command the new select command
 	 */
 	protected void setSelectCommand(Command command) {
 		this.selectCommand = command;
 	}
+	
+	
+	//#ifndef tmp.suppressAllCommands
+	/**
+	 * Sets the command for selecting this (and opening this POPUP) choicegroup.
+	 * This implementation only works like described when not all ChoiceGroup command are deactivated
+	 * by specifying the <variable name="polish.ChoiceGroup.suppressMarkCommands" value="true"/>
+	 * and <variable name="polish.ChoiceGroup.suppressSelectCommand" value="true"/>
+	 * preprocessing variables. When all commands are deactivated by the mentioned preprocessing variables,
+	 * the implementation of Item is used instead.
+	 * 
+	 * @param cmd the new command for selecting this choice group
+	 */
+	public void setDefaultCommand(Command cmd) {
+		//#ifndef tmp.suppressAllCommands
+			if (this.choiceType == MULTIPLE) {
+				//#ifndef tmp.suppressMarkCommands
+					removeCommand( MARK_COMMAND );
+				//#endif
+			} else {
+				//#ifndef tmp.suppressSelectCommand
+					removeCommand( List.SELECT_COMMAND );
+					if (this.selectCommand != null) {
+						removeCommand( this.selectCommand );
+					}
+				//#endif
+			}
+			this.itemCommandListener = this;
+		//#endif
+		addCommand( cmd );
+		this.selectCommand = cmd;
+		this.itemCommandListener = this;
+	}
+	//#endif
 	
 	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
@@ -1221,11 +1254,11 @@ implements Choice
 	 */
 	public void commandAction(Command c, Item item) {
 		//#if tmp.allowSelectCommand && tmp.allowMarkCommands
-		if (c == List.SELECT_COMMAND || c == MARK_COMMAND) {
+		if (c == List.SELECT_COMMAND || c == MARK_COMMAND || c == this.selectCommand  ) {
 		//#elif tmp.allowSelectCommand
-			//# if (c == List.SELECT_COMMAND) {
+			//# if (c == List.SELECT_COMMAND || c == this.selectCommand ) {
 		//#elif tmp.allowMarkCommands
-			//# if (c == MARK_COMMAND) {
+			//# if (c == MARK_COMMAND || c == this.selectCommand ) {
 		//#else
 			//#message Invalid combination of suppressed commands for a ChoiceGroup!
 			//# if (false) {

@@ -25,6 +25,7 @@
  */
 package de.enough.polish.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,8 +84,6 @@ public final class BitMapFont {
 					return null;
 				}
 				DataInputStream dataIn = new DataInputStream( in );
-				//#debug
-				System.out.println("BitMapFont: There are " + dataIn.available() + " bytes available in the stream.");
 				this.hasMixedCase = dataIn.readBoolean();
 				String map = dataIn.readUTF();
 				this.characterMap = map;
@@ -102,6 +101,17 @@ public final class BitMapFont {
 				//#ifdef polish.midp2
 					this.fontImage = Image.createImage( in );
 				//#else
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					byte[] pngBuffer = new byte[ 3 * 1024 ];
+					int read;
+					while ( (read = in.read(pngBuffer, 0, pngBuffer.length)) != -1) {
+						out.write(pngBuffer, 0, read );
+					}
+					pngBuffer = out.toByteArray();
+					out = null;
+					this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
+					/*
+					 * in.available() always returns 0 on Nokia and Motorola devices
 					int pngLength = dataIn.available();
 					//#debug
 					System.out.println("BitMapFont: There are " + pngLength + " bytes available in the stream.");
@@ -110,19 +120,8 @@ public final class BitMapFont {
 					// not all implementations do read the full
 					// buffer in in.read( byte[] ):
 					dataIn.readFully(pngBuffer);
-					/*
-					int offset = 0;
-					int read = 0;
-					while (offset < pngLength) {
-						read = in.read( pngBuffer, offset, pngLength - offset );
-						if (read == -1) {
-							break;
-						} else {
-							offset += read;
-						}
-					}
+					this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
 					*/
-					this.fontImage = Image.createImage(pngBuffer, 0, pngLength);
 				//#endif
 				this.fontHeight = this.fontImage.getHeight();
 				this.fontUrl = null;

@@ -1948,7 +1948,8 @@ implements CommandListener
 						}
 						newCharacter = alphabet.charAt( this.characterIndex );
 						if ( this.inputMode == MODE_UPPERCASE 
-								|| this.nextCharUppercase ) {
+								|| this.nextCharUppercase ) 
+						{
 							newCharacter = Character.toUpperCase(newCharacter);
 						}
 						//#ifdef polish.css.font-bitmap
