@@ -844,16 +844,18 @@ public class Container extends Item {
 				continue;
 			}
 			// the pressed item has been found:
-			if (item.appearanceMode != Item.PLAIN) {
+			if ((item.appearanceMode != Item.PLAIN) && (i != this.focusedIndex)) {
+				// only focus the item when it has not been focused already:
 				focus(i, item);
 				// let the item also handle the pointer-pressing event:
 				if (!item.handlePointerPressed( x , y )) {
 					// simulate a FIRE keypress event:
-					handleKeyPressed( -1, Canvas.FIRE );
+					//handleKeyPressed( -1, Canvas.FIRE );
 				}
 				return true;			
 			} else {
 				return item.handlePointerPressed( x , y );
+						//|| item.handleKeyPressed( -1, Canvas.FIRE ) );
 			}
 		}
 		return false;

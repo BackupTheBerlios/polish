@@ -922,8 +922,6 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int, int)
 	 */
 	protected void pointerPressed(int x, int y) {
-		//#debug
-		Debug.debug("PointerPressed at " + x + ", " + y );
 		try {
 			//#ifdef tmp.menuFullScreen
 				// check if one of the command buttons has been pressed:
@@ -935,6 +933,7 @@ public abstract class Screen
 							callCommandListener(this.menuSingleRightCommand );
 						}
 						repaint();
+						return;
 					} else if (x <= this.menuLeftCommandX){
 						// assume that the left command has been pressed:
 						if (this.menuSingleLeftCommand != null) {
@@ -943,6 +942,7 @@ public abstract class Screen
 							this.menuOpened = true;
 						}
 						repaint();
+						return;
 					}
 				} else if (this.menuOpened) {
 					this.menuOpened = false;
@@ -958,14 +958,22 @@ public abstract class Screen
 			//#endif
 			// let the screen handle the pointer pressing:
 			//#ifdef tmp.usingTitle
-				if (handlePointerPressed( x, y - this.titleHeight)) {
+				boolean processed = handlePointerPressed( x, y - this.titleHeight);
+				if (processed) {
 					repaint();
 				}
 			//#else
-				if (handlePointerPressed( x, y )) {
+				//# boolean processed = handlePointerPressed( x, y );
+				if (processed) {
 					repaint();
 				}
 			//#endif
+			
+			//#mdebug
+				if (!processed) {
+					Debug.debug("PointerPressed at " + x + ", " + y + " not processed.");					
+				}
+			//#enddebug
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("PointerPressed at " + x + "," + y + " resulted in exception", e );

@@ -939,6 +939,25 @@ implements ImageConsumer
 			return false;
 		}
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int x, int y) {
+		if (this.isIndefinite || !this.isInteractive) {
+			return false;
+		}
+		int val = this.value;
+		if (val < this.maxValue) {
+			setValue( ++val );
+		} else {
+			setValue( 0 );
+		}
+		return true;
+	}
+	//#endif
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */

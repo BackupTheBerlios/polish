@@ -909,12 +909,37 @@ public class ChoiceGroup extends Container implements Choice
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		if (this.isPopup && this.isPopupClosed) {
-			this.isPopupClosed = false;
+		//#ifndef polish.usePopupItem
+			super.handlePointerPressed(x, y);
+			//# return handleKeyPressed( -1, Canvas.FIRE ); 
+		//#else
+			if (!this.isPopup) {
+				super.handlePointerPressed(x, y);
+				return handleKeyPressed( -1, Canvas.FIRE ); 
+			}
+			if (this.isPopupClosed) {
+				focus( this.selectedIndex );
+				this.isPopupClosed = false;
+			} else {
+				// select item at x,y and close this popup:
+				// an item within this container was selected:
+				Item[] myItems = getItems();
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
+					if (y < item.yTopPos  || y > item.yBottomPos || x < item.xLeftPos || x > item.xRightPos) {
+						// this item is not in the range:
+						continue;
+					}
+					// found out the item:
+					setSelectedIndex(i, true);
+					notifyStateChanged();
+					break;
+				}
+				this.isPopupClosed = true;
+			}
+			requestInit();
 			return true;
-		} else {
-			return super.handlePointerPressed(x, y);
-		}
+		//#endif
 	}	
 	//#endif
 
@@ -933,11 +958,15 @@ public class ChoiceGroup extends Container implements Choice
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style originalStyle) {
-		if (this.isPopup && this.isPopupClosed) {
-			this.popupItem.setStyle( originalStyle );
+		if (this.isPopup) {
+			if (this.isPopupClosed) {
+				this.popupItem.setStyle( originalStyle );
+			} else {
+				this.isPopupClosed = true;
+				requestInit();
+			}
 			setStyle( originalStyle );
 		} else {
-			this.isPopupClosed = true;
 			super.defocus(originalStyle);
 		}
 	}
