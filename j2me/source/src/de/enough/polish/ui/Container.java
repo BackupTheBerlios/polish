@@ -328,7 +328,7 @@ public class Container extends Item {
 	 * @param item the item which should be focused
 	 */
 	public void focus( int index, Item item ) {
-		if (index == this.focusedIndex) {
+		if (index == this.focusedIndex && item.isFocused) {
 			// ignore the focusing of the same element:
 			return;
 		}
@@ -393,6 +393,8 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#initItem( int, int )
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
+		//#debug
+		System.out.println("intialising content for " + getClass().getName() + ": autofocus=" + this.focusFirstElement);
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
 		
@@ -404,7 +406,7 @@ public class Container extends Item {
 				return;
 			}
 		//#endif
-
+			
 		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
 		//#endif
@@ -422,6 +424,8 @@ public class Container extends Item {
 					hasFocusableItem = true;
 				}
 				if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
+					//#debug
+					System.out.println("autofocusing element " + i);
 					focus( i, item );
 					height = item.getItemHeight( firstLineWidth, lineWidth );
 					width = item.getItemWidth( firstLineWidth, lineWidth );

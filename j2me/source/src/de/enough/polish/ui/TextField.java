@@ -648,8 +648,8 @@ implements CommandListener
 		private static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
 		private static final int MODE_UPPERCASE = 2;
 		private static final int MODE_NUMBERS = 3;
-		//#ifdef polish.TextField.changeModeKey:defined
-			//#= private static final int KEY_CHANGE_MODE = ${polish.TextField.changeModeKey};
+		//#ifdef polish.key.ChangeInputModeKey:defined
+			//#= private static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
 		//#else
 			private static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
@@ -663,7 +663,12 @@ implements CommandListener
 		private int caretRow; // the current row of the caret, 0 is the first row
 		private int caretX;
 		private int caretY;
+		private int caretWidth;
 		private String originalRowText;
+		
+		//#ifdef polish.css.textfield-show-length
+			private boolean showLength;
+		//#endif
 
 		private int lastKey; // the last key which has been pressed
 		private long lastInputTime; // the last time a key has been pressed
@@ -722,7 +727,7 @@ implements CommandListener
 		//#ifdef polish.TextField.charactersKeyStar:defined
 			//#= private static final String charactersKeyStar = "${polish.TextField.charactersKeyStar}";
 		//#else
-			private static final String charactersKeyStar = null;
+			private static final String charactersKeyStar = ".,!?:/@_-+";
 		//#endif
 		//#ifdef polish.TextField.charactersKeyPound:defined
 			//#= private static final String charactersKeyPound = "${polish.TextField.charactersKeyPound}";
@@ -735,12 +740,10 @@ implements CommandListener
 		private boolean isEmail;
 
 		private String caretRowFirstPart;
-
 		private String caretRowLastPart;
-
 		private int caretRowLastPartWidth;
 
-		private int caretWidth;
+		private int rowHeight;
 	//#endif
 
 	/**
@@ -1143,7 +1146,7 @@ implements CommandListener
 			if ((constraints & NUMERIC) == NUMERIC) {
 				this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
-				updateInputMode( MODE_NUMBERS );
+				updateInfo();
 			}
 			if ((constraints & EMAILADDR) == EMAILADDR) {
 				this.isEmail = true;
@@ -1207,7 +1210,6 @@ implements CommandListener
 						centerX = leftBorder + (rightBorder - leftBorder) / 2;
 					}
 					if (this.text != null) {
-						int lineHeight = this.font.getHeight() + this.paddingVertical; 
 						for (int i = 0; i < this.textLines.length; i++) {
 							if (i == this.caretRow) {
 								if (this.isLayoutRight) {
@@ -1268,7 +1270,7 @@ implements CommandListener
 								}
 							}
 							x = leftBorder;
-							y += lineHeight;
+							y += this.rowHeight;
 						} // for each line
 					} else if ( this.showCaret ) {
 						// this.text == null: paint only caret:
@@ -1344,6 +1346,16 @@ implements CommandListener
 			this.originalHeight = this.contentHeight;
 		}
 		//#if tmp.directInput
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFontViewer != null) {
+					this.rowHeight = this.bitMapFontViewer.getFontHeigth() + this.paddingVertical;
+				} else {
+					this.rowHeight = this.font.getHeight() + this.paddingVertical;
+				}
+			//#else
+				this.rowHeight = this.font.getHeight() + this.paddingVertical;
+			//#endif
+			
 			if (this.textLines != null) {
 				// init the original text-lines with spaces and line-breaks:
 				boolean updateCaretPosition = false;
@@ -1394,7 +1406,7 @@ implements CommandListener
 							updateCaretPosition = true;
 							this.caretColumn -= line.length();
 							this.caretRow++;
-							this.caretY += this.font.getHeight() + this.paddingVertical;
+							this.caretY += this.rowHeight;
 							// (the textLine will be updated in the next loop)
 						}
 					}
@@ -1409,7 +1421,7 @@ implements CommandListener
 					this.caretRow = this.realTextLines.length - 1;
 					this.originalRowText = this.realTextLines[ this.caretRow ];
 					this.caretColumn = this.originalRowText.length();
-					this.caretY = (this.font.getHeight() + this.paddingVertical) * (this.realTextLines.length - 1);
+					this.caretY = this.rowHeight * (this.realTextLines.length - 1);
 					this.caretX = this.font.stringWidth( this.originalRowText );
 					this.textLines[ this.textLines.length -1 ] += " "; 
 				} else {
@@ -1421,12 +1433,20 @@ implements CommandListener
 					this.originalRowText = null;
 				}		
 			}
+			// set the internal information so that big TextBoxes can still be scrolled
+			// correctly:
+			if (this.caretRow > 0) {
+				this.internalX = 0;
+				this.internalY = this.caretRow * this.rowHeight;
+				this.internalWidth = this.contentWidth;
+				this.internalHeight = this.rowHeight;
+			}
 			/*
 			System.out.println("init content");
 			checkCaretPosition();
 			*/
 			this.screen = getScreen();
-			updateInputMode( this.inputMode );
+			updateInfo();
 		//#endif
 	}
 
@@ -1559,7 +1579,15 @@ implements CommandListener
 				this.editingCaretChar = this.caretChar;
 			}
 		//#endif
-		this.caretWidth = this.font.charWidth( this.caretChar );
+		//#if polish.css.textfield-show-length && tmp.directInput
+			Boolean showBool = style.getBooleanProperty("textfield-show-length");
+			if (showBool != null) {
+				this.showLength = showBool.booleanValue();
+			}
+		//#endif
+		//#if tmp.directInput	
+			this.caretWidth = this.font.charWidth( this.caretChar );
+		//#endif
 	}
 	
 	//#ifdef tmp.directInput
@@ -1601,10 +1629,10 @@ implements CommandListener
 	//#endif
 
 	//#ifdef tmp.directInput
-	private void updateInputMode( int mode ) {
+	private void updateInfo() {
 		if (this.screen != null && this.isFocused) {
 			String modeStr;
-			switch (mode) {
+			switch (this.inputMode) {
 				case MODE_LOWERCASE:
 					modeStr = "abc";
 					break;
@@ -1617,12 +1645,14 @@ implements CommandListener
 				default:
 					modeStr = "123";
 			}
-			if (this.screen.infoItem == null) {
-				//#style info, default
-				this.screen.infoItem = new StringItem( null, null );
-			}
-			this.screen.showInfoItem = true;
-			this.screen.infoItem.setText( modeStr );
+			//#ifdef polish.css.textfield-show-length
+				if (this.showLength) {
+					int length = (this.text == null) ? 0 : this.text.length();
+					modeStr = length + " | " + modeStr;
+				}
+			//#endif
+			this.screen.setInfo( modeStr );
+			
 		}
 	}
 	//#endif
@@ -1631,6 +1661,9 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
+		if (!this.isFocused) {
+			return false;
+		}
 		long currentTime = System.currentTimeMillis();
 		//#ifdef tmp.directInput
 			if (this.caretChar != this.editingCaretChar) {
@@ -1676,9 +1709,12 @@ implements CommandListener
 						if (this.inputMode > MODE_NUMBERS) {
 							this.inputMode = MODE_LOWERCASE;
 						}
-						updateInputMode( this.inputMode );
+						updateInfo();
 						if (this.caretChar != this.editingCaretChar) {
 							insertCharacter();
+						}
+						if (this.inputMode == MODE_FIRST_UPPERCASE) {
+							this.nextCharUppercase = true;
 						}
 						return true;
 					}
@@ -1713,9 +1749,10 @@ implements CommandListener
 						}
 						this.lastInputTime = System.currentTimeMillis();
 						char newCharacter;
+						int alphabetLength = alphabet.length();
 						if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
 							this.characterIndex++;
-							if (this.characterIndex >= alphabet.length()) {
+							if (this.characterIndex >= alphabetLength) {
 								this.characterIndex = 0;
 							}
 						} else {
@@ -1733,6 +1770,9 @@ implements CommandListener
 						}
 						this.caretWidth = this.font.charWidth( newCharacter );
 						this.caretChar = newCharacter;
+						if (alphabetLength == 1) {
+							insertCharacter();
+						}
 						return true;
 					}
 					boolean characterInserted = false;
@@ -1774,6 +1814,11 @@ implements CommandListener
 										} else {
 											this.text= myText;
 										}
+										//#ifdef polish.css.textfield-show-length
+											if (this.showLength) {
+												updateInfo();
+											}
+										//#endif
 										/*
 										System.out.println("backspace in last row");
 										checkCaretPosition();
@@ -1798,7 +1843,7 @@ implements CommandListener
 									line = line.substring( 0, line.length() -1 );
 									this.caretColumn = line.length();
 									this.caretX = this.font.stringWidth(line);
-									this.caretY -= (this.font.getHeight() + this.paddingVertical );
+									this.caretY -= this.rowHeight;
 									setString( myText );
 									if (getScreen() instanceof Form) {
 										notifyStateChanged();
@@ -1826,7 +1871,7 @@ implements CommandListener
 						} 
 						// restore the text-line:
 						this.caretRow--;
-						this.caretY -= this.font.getHeight() + this.paddingVertical;
+						this.caretY -= this.rowHeight;
 						String fullLine = this.realTextLines[ this.caretRow ];
 						this.originalRowText = fullLine;
 						String line;
@@ -1842,6 +1887,7 @@ implements CommandListener
 						this.caretPosition -= fullLine.length() - line.length();
 						this.caretRowLastPart = fullLine.substring( this.caretColumn );
 						this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
+						this.internalY = this.caretRow * this.rowHeight;
 						return true;
 					} else if (gameAction == Canvas.DOWN) {
 						//#ifdef polish.css.font-bitmap
@@ -1860,7 +1906,7 @@ implements CommandListener
 							lastLineLength++;
 						}
 						this.caretRow++;	
-						this.caretY += this.font.getHeight() + this.paddingVertical;
+						this.caretY += this.rowHeight;
 						
 						String nextLine = this.realTextLines[ this.caretRow ];
 						this.originalRowText = nextLine;
@@ -1877,6 +1923,7 @@ implements CommandListener
 						this.caretPosition += firstPart.length();
 						this.caretRowLastPart = nextLine.substring( this.caretColumn );
 						this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
+						this.internalY = this.caretRow * this.rowHeight;
 						return true;
 					} else if (gameAction == Canvas.LEFT) {
 						if (this.caretColumn > 0) {
@@ -1903,7 +1950,7 @@ implements CommandListener
 							this.originalRowText = prevLine;
 							this.caretColumn = prevLine.length();
 							this.caretX = this.font.stringWidth(prevLine);
-							this.caretY -= this.font.getHeight() + this.paddingVertical;
+							this.caretY -= this.rowHeight;
 							this.caretRowFirstPart = prevLine;
 							this.caretRowLastPart = "";
 							this.caretRowLastPartWidth = 0;
@@ -1940,7 +1987,7 @@ implements CommandListener
 								this.caretRowLastPart = lastPart;
 								this.caretRowLastPartWidth = this.font.stringWidth( lastPart );
 							}
-							this.caretY += this.font.getHeight() + this.paddingVertical;
+							this.caretY += this.rowHeight;
 							return true;
 						} else if (characterInserted) {
 							//System.out.println("right after character insertion");
@@ -1984,8 +2031,12 @@ implements CommandListener
 				return false;
 			}
 		//#endif
-		if ( keyCode >= Canvas.KEY_NUM0 
-			&& keyCode <= Canvas.KEY_NUM9) 
+		if ( (keyCode >= Canvas.KEY_NUM0 
+			&& keyCode <= Canvas.KEY_NUM9)
+			//#ifdef polish.key.ClearKey:defined
+				//#= || (keyCode == ${polish.key.ClearKey})
+			//#endif
+			|| (gameAction == Canvas.FIRE) )
 		{	
 			showTextBox();
 		}
@@ -2045,7 +2096,7 @@ implements CommandListener
 	//#ifdef tmp.directInput
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
-		this.screen.showInfoItem = false;
+		this.screen.setInfo(null);
 	}
 	//#endif
 

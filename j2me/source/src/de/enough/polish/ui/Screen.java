@@ -164,9 +164,10 @@ public abstract class Screen
 		private boolean showTitleOrMenu = true;
 	//#endif
 	/** an info text which is shown e.g. when some content is added to textfields */
-	protected StringItem infoItem;
+	private StringItem infoItem;
 	/** determines whether the info text should be shown */
-	protected boolean showInfoItem;
+	private boolean showInfoItem;
+	private int infoHeight;
 	
 	/**
 	 * Creates a new screen
@@ -624,7 +625,7 @@ public abstract class Screen
 	protected void paintScreen( Graphics g ) {
 		int y = 0;
 		int containerHeight = this.container.getItemHeight( this.screenWidth, this.screenWidth);
-		int availableHeight = this.screenHeight - this.titleHeight;
+		int availableHeight = this.screenHeight - (this.titleHeight + this.infoHeight);
 		this.paintScrollIndicator = false; // defaults to false
 		if (containerHeight > availableHeight ) {
 			this.paintScrollIndicator = true;
@@ -700,13 +701,42 @@ public abstract class Screen
 			this.titleHeight = 0;
 		}
 		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - this.titleHeight );
+			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
 		}
 		if (this.isInitialised && isShown()) {
 			repaint();
 		}
 	}
 	//#endif
+	
+	/**
+	 * Sets the information which should be shown to the user.
+	 * The info is shown below the title (if any) and can be designed
+	 * using the predefined style "info".
+	 * At the moment this feature is only used by the TextField implementation,
+	 * when the direct input mode is enabled.
+	 * A repaint is not triggered automatically by calling this method.
+	 * 
+	 * @param infoText the text which will be shown to the user
+	 */
+	public void setInfo( String infoText ) {
+		if (this.infoItem == null) {
+			//#style info, default
+			this.infoItem = new StringItem( null, infoText );
+		} else {
+			this.infoItem.setText( infoText );
+		}
+		if (infoText == null) {
+			this.infoHeight = 0;
+			this.showInfoItem = false;
+		} else {
+			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
+			this.showInfoItem = true;
+		}
+		if (this.container != null) {
+			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
+		}
+	}
 
 	//#ifndef polish.skipTicker
 	/**
