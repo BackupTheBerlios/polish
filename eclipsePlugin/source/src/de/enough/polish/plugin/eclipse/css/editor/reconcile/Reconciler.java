@@ -30,12 +30,17 @@ import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.source.ISharedTextColors;
 
+import antlr.RecognitionException;
+
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.IModelListener;
+import de.enough.polish.plugin.eclipse.css.parser.OffsetAST;
+import de.enough.polish.plugin.eclipse.css.parser.PresentationWalker;
 
 /**
  * <p>Reconciles the viewer presentation, the underlying document and the domain model.</p>
@@ -53,6 +58,9 @@ public class Reconciler implements IReconciler{
 	protected CssModel cssModel;
 	private TextListener textListener;
 	private ModelListener modelListener;
+	private ISharedTextColors colors;
+	
+	
 	class TextListener implements ITextInputListener, ITextListener{
 		
 		/* (non-Javadoc)
@@ -98,6 +106,7 @@ public class Reconciler implements IReconciler{
 		this.textListener = new TextListener();
 		this.modelListener = new ModelListener();
 		this.cssModel.addModelListener(this.modelListener);
+		this.colors = colors;
 	}
 	
 	/* (non-Javadoc)
@@ -134,22 +143,22 @@ public class Reconciler implements IReconciler{
 	}
 
 	protected void reconcilePresentation(){
-		/*
-	    IDocument document = this.cssModel.getDocument();
-		if(document == null){
-			return;
-		}
 		
+	    OffsetAST root = this.cssModel.getAstRoot();
+	    if(root == null) {
+	        return;
+	    }
 		TextPresentation textPresentation = new TextPresentation();
-		PresentationAnalyzer presentationAnalyzer = new PresentationAnalyzer(textPresentation,document,this.colors);
+		PresentationWalker presentationWalker = new PresentationWalker(); // pull out as field.
+		presentationWalker.configure(textPresentation,this.colors);
 		try {
-			presentationAnalyzer.analyze(this.cssModel.getRootNode());
-			//traverseRootNodeAddTextPresentation(this.cssModel.getRootNode(),document,textPresentation);
-		} catch (ParserLogException exception) {
-			System.out.println("ERROR:Reconciler.reconcilePresentation():presentationAnalyzer throw exception.exception:"+exception.getMessage());
-		}
-		this.textViewer.changeTextPresentation(textPresentation,false);
-		*/
+            presentationWalker.styleSheet(root);
+        } catch (RecognitionException exception) {
+            System.out.println("Reconciler.reconcilePresentation():Parse error of AST");
+            return;
+        }
+		this.textViewer.changeTextPresentation(textPresentation,true);
+		
 	}
 	
 	protected void reconcileModel(){

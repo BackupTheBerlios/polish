@@ -27,7 +27,7 @@ public void setTabWidth(int tabWidth){
 	
 public void tab(){
 	setColumn(getColumn()+4); //TODO: Acquire the concrete tabwidth from the PropertyStore.
-	//this.i = this.i + 4;
+	//this.i = this.i + 4; // I do not know we this must not be active to get the offset counting to work.
 }
 
 // TODO:Optimize token handling. remove line, column and text information. Provide only offset and length.
@@ -35,9 +35,6 @@ protected Token makeToken(int t) {
     Token token = super.makeToken(t);
     if (token != Token.badToken) {
         ((OffsetToken)token).setOffset(this.offset);
-        //System.out.print("makeToken():"+this.offset+":");
-        //System.out.println(token.getType());
-        
         this.offset = this.offset + i;
         this.i = 0;
         
@@ -140,7 +137,7 @@ styleSheet
 	;
 	
 styleSection
-	: styleName:NAME {configure(styleName_AST,styleName);} (e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (sectionOrAttributeName:NAME! {sectionOrAttributeName_AST.setOffset(((OffsetToken)sectionOrAttributeName).getOffset());} (section:sectionBody[#sectionOrAttributeName] | attributeValuePair:attributeValueBody[#sectionOrAttributeName]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);styleSection_AST.setOffset(((OffsetToken)styleName).getOffset());}
+	: styleName:NAME {configure(styleName_AST,styleName);} (e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (sectionOrAttributeName:NAME! {configure(sectionOrAttributeName_AST,sectionOrAttributeName);} (section:sectionBody[#sectionOrAttributeName] | attributeValuePair:attributeValueBody[#sectionOrAttributeName]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);configure(styleSection_AST,styleName);}
 	;
 
 sectionBody[OffsetAST sectionName]

@@ -41,6 +41,7 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.IModelListener;
 import de.enough.polish.plugin.eclipse.css.parser.CssLexerTokenTypes;
+import de.enough.polish.plugin.eclipse.css.parser.OffsetAST;
 
 /**
  * <p></p>
@@ -75,11 +76,11 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 			if(selection == null){
 				return;
 			}
-			AST firstSelectedNode = (AST)selection.getFirstElement(); //FIXME: Convert to AST !!
+			OffsetAST firstSelectedNode = (OffsetAST)selection.getFirstElement();
 			if(firstSelectedNode == null){
 				return;
 			}
-			this.editor.setCaretToOffset(this.editor.getCssModel().getOffsetFromAST(firstSelectedNode));
+			this.editor.setCaretToOffset(firstSelectedNode.getOffset());
 			this.editor.doActivate();
 		}
 	}
@@ -183,11 +184,20 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	private Object[] getSectionChildren(AST section) {
 	    ArrayList result = new ArrayList();
 	    AST sibling = section.getFirstChild();
+	    if(sibling == null) {
+	        return result.toArray();
+	    }
+	    sibling = sibling.getNextSibling(); // skip the name child.
+	    while(sibling != null) {
+	        result.add(sibling);
+	        sibling = sibling.getNextSibling();
+	    }
+	    /*
 	    for(int i = 1; i < section.getNumberOfChildren(); i++) {
 	        result.add(sibling);
 	        sibling = sibling.getNextSibling();
 	    }
-	    
+	    */
 	    return result.toArray();
 	}
 	    
@@ -238,7 +248,7 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
 	 */
 	public void modelChanged() {
-		System.out.println("DEBUG:CssContentProvider.modelChanged().enter.");
+		//System.out.println("DEBUG:CssContentProvider.modelChanged().enter.");
 		this.treeViewer.refresh();
 	}
 

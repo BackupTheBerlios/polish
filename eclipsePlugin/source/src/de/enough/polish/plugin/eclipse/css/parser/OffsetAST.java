@@ -40,7 +40,7 @@ import antlr.CommonAST;
 public class OffsetAST extends CommonAST {
 
     private int offset = 0;
-    
+    private int length = 0;
     
     
     public int getOffset() {
@@ -51,4 +51,11 @@ public class OffsetAST extends CommonAST {
         this.offset = offset;
     }
     
+    
+    public int getLength() {
+        return this.length;}
+
+    public void setLength(int length) {
+        this.length = length;
+    }
 }

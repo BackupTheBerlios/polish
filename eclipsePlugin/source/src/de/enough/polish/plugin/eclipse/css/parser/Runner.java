@@ -78,8 +78,10 @@ public class Runner {
         /*
         DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
         dumpASTVisitor.visit(astRoot);
-
-		*/
+        
+        OffsetVisitor offsetvisitor = new OffsetVisitor();
+        offsetvisitor.visit(astRoot.getFirstChild());
+        */
         OffsetWalker offsetWalker = new OffsetWalker();
         try {
             offsetWalker.styleSheet(astRoot);
@@ -87,7 +89,7 @@ public class Runner {
         } catch (RecognitionException exception) {
             System.out.println("INTERNAL:DEBUG:CssModel.reconcile():Parse Error in Tree walker."+exception);
         }
-       
+        
       }
     
     /**

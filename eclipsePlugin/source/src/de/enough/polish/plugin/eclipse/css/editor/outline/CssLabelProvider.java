@@ -28,8 +28,6 @@ package de.enough.polish.plugin.eclipse.css.editor.outline;
 import org.eclipse.jface.viewers.LabelProvider;
 
 import de.enough.polish.plugin.eclipse.css.parser.CssLexerTokenTypes;
-import de.enough.polish.plugin.eclipse.css.parser.OffsetAST;
-
 import antlr.collections.AST;
 
 /**
@@ -50,17 +48,27 @@ public class CssLabelProvider extends LabelProvider{
 		}
 		AST node = (AST)object;
 		
+		// TODO: Hardcoding is dangerous. Maybe it is possible to have not well formed ASTs and then
+		// this static access to non existent children will result in a bang.
 		switch(node.getType()) {
 			case(CssLexerTokenTypes.ATTRIBUTE_VALUE_PAIR):
-			    AST attributeName = node.getFirstChild();
-			    return ( attributeName != null?attributeName.toString()+((OffsetAST)attributeName).getOffset():null);
+			    return computeAttributeValuePairName(node);
 			case(CssLexerTokenTypes.SECTION):
-			    return node.getFirstChild().toString()+((OffsetAST)node).getOffset();
+			    return computeSectionName(node);
 			case(CssLexerTokenTypes.STYLE_SECTION):
 			    return computeStyleSectionName(node);
 		}
-		// Fallback.
+		// Fallback. Sould not happen.
 		return node.toString();
+	}
+	
+	private String computeAttributeValuePairName(AST attributeValuePair) {
+	    AST attributeName = attributeValuePair.getFirstChild();
+	    return ( attributeName != null?attributeName.toString():"");
+	}
+	
+	private String computeSectionName(AST section) {
+	    return section.getFirstChild().toString();
 	}
 	
 	// Be strict and asume incomplete AST.
@@ -72,7 +80,6 @@ public class CssLabelProvider extends LabelProvider{
 	    }
 	    result.append(child.toString());
 	    child = child.getNextSibling();
-	    result.append(((OffsetAST)child).getOffset());
 	    if(child != null && child.getType() == CssLexerTokenTypes.NAME){
 	        result.append(" (");
 	        result.append(child.toString());  

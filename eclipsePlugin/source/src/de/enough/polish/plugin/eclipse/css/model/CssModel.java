@@ -30,15 +30,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-import antlr.RecognitionException;
-import antlr.collections.AST;
 import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
 import de.enough.polish.plugin.eclipse.css.parser.CssLexer;
 import de.enough.polish.plugin.eclipse.css.parser.CssParser;
-import de.enough.polish.plugin.eclipse.css.parser.OffsetWalker;
+import de.enough.polish.plugin.eclipse.css.parser.OffsetAST;
 
 /**
  * <p>Encapsulates the css model (domain model) and provides methods to deal with changes
@@ -62,7 +59,7 @@ public class CssModel {
 
     private CssLexer lexer;
     private CssParser parser;
-    private AST astRoot;
+    private OffsetAST astRoot;
     CssEditorPlugin plugin = CssEditorPlugin.getDefault();
     
 	
@@ -83,7 +80,7 @@ public class CssModel {
 		//DataInputStream dataInputStream = new DataInputStream();
 		
 		this.lexer = new CssLexer(stringReader);
-        this.lexer.setTokenObjectClass("de.enough.polish.plugin.eclipse.css.parser.OffsetToken");
+		this.lexer.setTokenObjectClass("de.enough.polish.plugin.eclipse.css.parser.OffsetToken");
 
         this.parser = new CssParser(this.lexer);
         this.parser.setASTNodeClass("de.enough.polish.plugin.eclipse.css.parser.OffsetAST");
@@ -94,13 +91,15 @@ public class CssModel {
 		catch(Exception exception) {
 		    CssEditorPlugin.log("INTERNAL:DEBUG:CssModel.reconcile():Parse error.",exception);
 		}
-        this.astRoot = this.parser.getAST();
+        this.astRoot = (OffsetAST)this.parser.getAST();
 
         if(this.astRoot == null) {
             System.out.println("CssModel.reconcile():No AST generated.");
             return;
         }
+        fireModelChangedEvent();
         
+        /*
         OffsetWalker offsetWalker = new OffsetWalker();
         try {
             offsetWalker.styleSheet(this.astRoot);
@@ -109,10 +108,9 @@ public class CssModel {
             CssEditorPlugin.log("INTERNAL:DEBUG:CssModel.reconcile():Parse Error in Tree walker.",exception);
         }
         
-        /*DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
+        DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
         dumpASTVisitor.visit(this.astRoot);
-        */
-		fireModelChangedEvent();
+		*/
 	}
 	
 	
@@ -138,7 +136,6 @@ public class CssModel {
 	}
 	
 	
-
 	public void setDocument(IDocument document){
 		this.document = document;
 	}
@@ -149,39 +146,13 @@ public class CssModel {
 	}
 	
 	
-	public AST getAstRoot() {
+	public OffsetAST getAstRoot() {
 	    return this.astRoot;
     }
 
-    public void setAstRoot(AST astRoot) {
+    public void setAstRoot(OffsetAST astRoot) {
         this.astRoot = astRoot;
     }
 
-    /**
-     * @param firstSelectedNode
-     * @return the offset within the document from the given AST. -1 if an error occured.
-     */
-    public int getOffsetFromAST(AST firstSelectedNode) {
-        if(this.document == null) {
-            return -1;
-        }
-        int result = -1;
-        // We have a nonterminal node, get the line from the first terminal node.
-        if(firstSelectedNode.getLine() == 0) {
-            AST child = firstSelectedNode.getFirstChild();
-            if(child == null) { // We have a nonterminal as leaf, that should not happen.
-                
-                return -1;
-            }
-        }
-        try {
-            int lineOffset = this.document.getLineOffset(firstSelectedNode.getLine());
-            result = lineOffset + firstSelectedNode.getColumn();
-            this.document.get(result,1); // Check if computed offset is valid by trying to retrieve it from the document.
-        } catch (BadLocationException exception) {
-            CssEditorPlugin.log("INTERNAL:ERROR:CssModel.getOffsetFromAST():Wrong line parameter to document.getLineOffset():"+firstSelectedNode.getLine(),exception);
-            return -1;
-        }
-        return result;
-    }
+ 
 }
