@@ -28,7 +28,7 @@
 <groups>
 	<group>
 		<name>Nokia-UI</name>
-		<features>supportSpriteTransformation, hasCommandKeyEvents</features>
+		<features>supportSpriteTransformation, hasCommandKeyEvents, isDoubleBuffered</features>
 		<capability name="classes.fullscreen" value="com.nokia.mid.ui.FullCanvas" />
 		<capability name="JavaPackage" value="nokia-ui" />
 		<capability name="key.LeftSoftKey" value="-6" />
@@ -40,10 +40,14 @@
 		<parent>Nokia-UI</parent>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="128x128" />
+		<capability name="CanvasSize" value="128x96" />
 		<capability name="FullCanvasSize" value="128x128" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
+		<capability name="Font.small" value="9" />
+		<capability name="Font.medium" value="12" />
+		<capability name="Font.large" value="16" />
 	</group>
 
 	<group>
@@ -53,6 +57,9 @@
 		<capability name="ScreenSize" value="176x208" />
 		<capability name="FullCanvasSize" value="176x208" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="Font.small" value="14" />
+		<capability name="Font.medium" value="15" />
+		<capability name="Font.large" value="19" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
 		<capability name="Emulator.Skin.2" value="Series_60_MIDP_SDK_2_1" />

@@ -358,6 +358,9 @@
 		<capability name="key.LeftSoftKey" value="-7"/>
 		<capability name="key.RightSoftKey" value="-6"/>
 		<capability name="Bugs" value="fullScreenInPaint, drawRgbOrigin" />
+		<capability name="Font.small" value="15" />
+		<capability name="Font.medium" value="18" />
+		<capability name="Font.large" value="22" />
 	</device>
 	
 	<device>
@@ -384,6 +387,9 @@
 		<capability name="Emulator.Skin" value="SonyEricsson_K700" />
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose" />
+		<capability name="Font.small" value="15" />
+		<capability name="Font.medium" value="18" />
+		<capability name="Font.large" value="22" />
 	</device>
 
 	<device>
@@ -486,7 +492,10 @@
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="Emulator.Skin" value="SonyEricsson_P910" />
 		<capability name="Bugs" value="fullScreenInPaint, NoSpriteRotation, DisplayGetColor, drawRgbOrigin" />
-	</device>	
+		<capability name="Font.small" value="15" />
+		<capability name="Font.medium" value="18" />
+		<capability name="Font.large" value="22" />
+	</device>
 	
 <!-- Motorola devices -->
 
@@ -1674,6 +1683,9 @@
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="2" />
+		<capability name="Font.small" value="15" />
+		<capability name="Font.medium" value="16" />
+		<capability name="Font.large" value="21" />
 	</device>
 	
 	<device>
@@ -1816,7 +1828,7 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, jtwi" />
 		<capability name="VideoFormat" value="3gpp, h.263" />
 		<capability name="SoundFormat" value="midi, amr, mp3, aac" />
 		<capability name="HeapSize" value="512kb" />
@@ -1825,6 +1837,8 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Nokia_6230_MIDP_Concept_SDK_Beta_0_2" />
+		<capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/midi, audio/sp-midi" />
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
 	</device>
 	
 	<device>
@@ -2461,21 +2475,36 @@
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/S65</identifier>
-		<features>hasCommandKeyEvents, hasCamera</features>
+		<features>hasCommandKeyEvents, hasCamera, isDoubleBuffered</features>
 		<capability name="ScreenSize" value="132x176"/>
+		<capability name="CanvasSize" value="132x176"/>
+		<capability name="FullCanvasSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, jtwi, 3dapi, locationapi, btapi" />
+		<capability name="JavaPackage" value="wmapi, mmapi1.1, jtwi, 3dapi, locationapi, btapi, m3gapi, siemens-color-game, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
-		<capability name="VideoFormat" value="mpeg-4" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="MaxJarSize" value="350kb" />
 		<capability name="HeapSize" value="1.5 MB" />
 		<capability name="StorageSize" value="11 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="key.MiddleSoftKey" value="-26" />
+		<capability name="key.ReturnKey" value="-12" />
+		<capability name="key.ClearKey" value="-12" />
 		<capability name="CameraResolution" value="1280x960" />	
+		<capability name="Font.small" value="12" />
+		<capability name="Font.medium" value="15" />
+		<capability name="Font.large" value="23" />
+		<capability name="Capture" value="video, audio" />
+		<capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
+		<capability name="mmapi.protocol.https" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
+		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq" />
+		<capability name="mmapi.protocol.capture" value="audio/amr, video/3gpp, image/jpeg" />
+		
 	</device>
 	
 	<device
@@ -2927,6 +2956,7 @@
 		<capability name="MaxJarSize" value="100 kb" /> 
 		<capability name="Network" value="GPRS" /> 
 		<capability name="Region" value="Europe" /> 
+		<capability name="Bugs" value="inaccessibleFirstRow" />
 	</device> 
  
 	<device> 
@@ -2946,6 +2976,7 @@
 		<capability name="MaxJarSize" value="100 kb" /> 
 		<capability name="Network" value="GPRS" /> 
 		<capability name="Region" value="North America" /> 
+		<capability name="Bugs" value="inaccessibleFirstRow" />
 	</device> 
  
 	<device> 
@@ -2965,6 +2996,7 @@
 		<capability name="MaxJarSize" value="100 kb" /> 
 		<capability name="Network" value="GPRS" /> 
 		<capability name="Region" value="Europe, CIS, South East Asia" /> 
+		<capability name="Bugs" value="inaccessibleFirstRow" />
 	</device> 
  
 	<device> 
@@ -2984,6 +3016,7 @@
 		<capability name="MaxJarSize" value="100 kb" /> 
 		<capability name="Network" value="GPRS" /> 
 		<capability name="Region" value="North America" /> 
+		<capability name="Bugs" value="inaccessibleFirstRow" />
 	</device> 
  
 	<device> 
@@ -3022,6 +3055,7 @@
 		<capability name="MaxJarSize" value="100 kb" /> 
 		<capability name="Network" value="GPRS" /> 
 		<capability name="Region" value="Europe, CIS" /> 
+		<capability name="Bugs" value="inaccessibleFirstRow" />
 	</device> 
  
 	<device> 
@@ -3079,6 +3113,7 @@
 		<capability name="MaxJarSize" value="100 kb" /> 
 		<capability name="Network" value="GPRS" /> 
 		<capability name="Region" value="North America" /> 
+		<capability name="Bugs" value="inaccessibleFirstRow" />
 	</device> 
  
 	<device> 
@@ -3356,9 +3391,9 @@
 		<capability name="Frequency" value="900, 1800, 1900" /> 
         </device> 
  
-        <device 
-                extends="Samsung/SGH-E100"> 
+        <device> 
 		<identifier>Samsung/E100A</identifier> 
+		<parent>Samsung/SGH-E100</parent>
 		<capability name="Region" value="Singapore, Malaysia" /> 
         </device> 
  
@@ -3410,26 +3445,26 @@
         </device> 
  
         <device> 
-		<identifier>Samsung/SGH-E630</identifier> 
-		<features>hasCommandKeys</features> 
-		<capability name="ScreenSize" value="128x160"/> 
-		<capability name="FullCanvasSize" value="128x160"/> 
-		<capability name="MenuBarHeight" value="20" /> 
-		<capability name="BitsPerPixel" value="16"/> 
-		<capability name="JavaPlatform" value="MIDP/1.0" /> 
-		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
-		<capability name="JavaPackage" value="wmapi" /> 
-		<capability name="SoundFormat" value="mmf" /> 
-		<capability name="PolyphonicVoices" value="40" /> 
-		<capability name="ImageFormat" value="png" /> 
-		<capability name="HeapSize" value="550 kb" /> 
-		<capability name="MaxJarSize" value="180 kb" /> 
-		<capability name="Region" value="Europe" /> 
-		<capability name="Network" value="GSM, GPRS" /> 
-		<capability name="Frequency" value="900, 1800, 1900" /> 
+			<identifier>Samsung/SGH-E630</identifier> 
+			<features>hasCommandKeys</features> 
+			<capability name="ScreenSize" value="128x160"/> 
+			<capability name="FullCanvasSize" value="128x160"/> 
+			<capability name="MenuBarHeight" value="20" /> 
+			<capability name="BitsPerPixel" value="16"/> 
+			<capability name="JavaPlatform" value="MIDP/1.0" /> 
+			<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+			<capability name="JavaPackage" value="wmapi" /> 
+			<capability name="SoundFormat" value="mmf" /> 
+			<capability name="PolyphonicVoices" value="40" /> 
+			<capability name="ImageFormat" value="png" /> 
+			<capability name="HeapSize" value="550 kb" /> 
+			<capability name="MaxJarSize" value="180 kb" /> 
+			<capability name="Region" value="Europe" /> 
+			<capability name="Network" value="GSM, GPRS" /> 
+			<capability name="Frequency" value="900, 1800, 1900" /> 
         </device> 
  
-        <device> 
+	<device> 
 		<identifier>Samsung/SGH-E700</identifier> 
 		<features>hasCommandKeys</features> 
 		<capability name="ScreenSize" value="128x160"/> 
@@ -3446,21 +3481,22 @@
 		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
 		<capability name="Network" value="GSM, GPRS" /> 
 		<capability name="Frequency" value="900, 1800, 1900" /> 
-        </device> 
+		<capability name="Bugs" value="inaccessibleFirstRow, umlautsInSmallFont" />
+	</device> 
  
-        <device 
-                extends="Samsung/SGH-E700"> 
+	<device> 
 		<identifier>Samsung/E700A</identifier> 
+		<parent>Samsung/SGH-E700</parent>
 		<capability name="Region" value="Singapore, Malaysia" /> 
-        </device> 
+	</device> 
  
-        <device 
-                extends="Samsung/SGH-E700"> 
+	<device> 
 		<identifier>Samsung/E708</identifier> 
+		<parent>Samsung/SGH-E700</parent>
 		<capability name="Region" value="China" /> 
-        </device> 
+	</device> 
  
-        <device> 
+	<device> 
 		<identifier>Samsung/SGH-E800</identifier> 
 		<features>hasCommandKeys</features> 
 		<capability name="ScreenSize" value="128x160"/> 
@@ -3478,21 +3514,21 @@
 		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
 		<capability name="Network" value="GSM, GPRS" /> 
 		<capability name="Frequency" value="900, 1800, 1900" /> 
-        </device> 
+	</device> 
  
-        <device 
-                extends="Samsung/SGH-E800"> 
+	<device> 
 		<identifier>Samsung/E800C</identifier> 
+		<parent>Samsung/SGH-E800</parent>
 		<capability name="Region" value="Singapore, Malaysia" /> 
-        </device> 
+	</device> 
  
-        <device 
-                extends="Samsung/SGH-E800"> 
+	<device> 
 		<identifier>Samsung/E808</identifier> 
+		<parent>Samsung/SGH-E800</parent>
 		<capability name="Region" value="China" /> 
-        </device> 
+	</device> 
  
-        <device> 
+	<device> 
 		<identifier>Samsung/SGH-E820</identifier> 
 		<features>hasCommandKeys</features> 
 		<capability name="ScreenSize" value="128x160"/> 
@@ -3509,7 +3545,8 @@
 		<capability name="Region" value="Europe" /> 
 		<capability name="Network" value="GSM, GPRS" /> 
 		<capability name="Frequency" value="900, 1800, 1900" /> 
-        </device> 
+		<capability name="Bugs" value="umlautsInSmallFont" />
+	</device> 
  
         <device> 
 		<identifier>Samsung/SGH-X100</identifier> 

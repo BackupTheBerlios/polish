@@ -107,7 +107,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.3c";
+	private static final String VERSION = "1.2.3d";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -1242,7 +1242,13 @@ public class PolishTask extends ConditionalTask {
 					throw new BuildException("Unable to process MIDlet [" + className + "]: startApp method is not opened with '{': line [" + (++lineIndex) + "].");
 				}
 				line  = sourceCode.getCurrent();
-				sourceCode.setCurrent("de.enough.polish.ui.StyleSheet.display = javax.microedition.lcdui.Display.getDisplay( this );"
+				String displayVar;
+				if (this.useDefaultPackage) {
+					displayVar = "StyleSheet.display";
+				} else {
+					displayVar = "de.enough.polish.ui.StyleSheet.display";
+				}
+				sourceCode.setCurrent( displayVar + " = javax.microedition.lcdui.Display.getDisplay( this );"
 						+ line );
 				return;
 			}

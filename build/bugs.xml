@@ -91,9 +91,22 @@
 		<area>ui</area>
 		<solution>Call the Runtime.getRuntime().gc()-method in your paint(Graphics g)-methods.</solution>
 	</bug>
+	<bug>
+		<name>inaccessibleFirstRow</name>
+		<area>ui</area>
+		<description>The first top row of pixels is not accsessible for developers. Painting the whole screen with a fullsize image will result in the last row of pixels out of screen. </description>
+		<solution></solution>
+	</bug>
+	<bug>
+		<name>umlautsInSmallFont</name>
+		<area>ui</area>
+		<description>Some special characters are not displayed correctly in small fonts.</description>
+		<solution>Using medium, large or bitmap fonts.</solution>
+	</bug>
 	<!--
 	<bug>
 		<name></name>
+		<area></area>
 		<description></description>
 		<solution></solution>
 	</bug>
