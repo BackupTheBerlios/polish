@@ -215,7 +215,6 @@ public class Converter {
 				buffer.append(" | ");
 			}
 		}
-		buffer.append(",");
 		return buffer.toString();
 	}
 	

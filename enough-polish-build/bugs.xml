@@ -133,6 +133,13 @@
 		</description>
 		<solution>Use the com.nokia.mid.ui.FullCanvas instead for having a fullscreen mode. The J2ME Polish GUI obviously does this automatically when this error is present.</solution>
 	</bug>
+
+	<bug>
+		<name>stringWidthLineBreak</name>
+		<area>ui</area>
+		<description>The Font.stringWidth( String ) method disregards any characters after a line-break character (\n).</description>
+		<solution>When calculating the complete width of a string with line-breaks, you need to split the string at the line-breaks first and then add up the widths of the single parts.</solution>
+	</bug>
 	
 	<!--
 	<bug>

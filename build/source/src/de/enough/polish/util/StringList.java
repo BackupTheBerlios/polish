@@ -255,6 +255,23 @@ public class StringList {
 	public void setArray(String[] newLines) {
 		this.hasChanged = true;
 		this.lines = newLines;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getPrevious() {
+		if (this.currentIndex <= 0) {
+			throw new ArrayIndexOutOfBoundsException("StringList: next() has to be called at least twive before getPrevious() can be called.");
+		}
+		return this.lines[ this.currentIndex - 1 ];
+	}	
+
+	/**
+	 * @return
+	 */
+	public String getNext() {
+		return this.lines[ this.currentIndex + 1 ];
 	}	
 
 }

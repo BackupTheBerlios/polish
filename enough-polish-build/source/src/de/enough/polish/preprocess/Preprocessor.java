@@ -194,12 +194,21 @@ public class Preprocessor {
 	 * 
 	 * @param preprocessor the additional preprocessor
 	 */
-	public void addCustomPreprocessors(CustomPreprocessor preprocessor) {
+	public void addCustomPreprocessor(CustomPreprocessor preprocessor) {
+		//System.out.println("Adding custom preprocessor [" + preprocessor.getClass().getName() + "]");
+		if (this.customPreprocessors == null) {
+			this.customPreprocessors = new CustomPreprocessor[] { preprocessor };
+			return;
+		}
 		CustomPreprocessor[] processors = new CustomPreprocessor[ this.customPreprocessors.length + 1];
 		processors[ this.customPreprocessors.length] = preprocessor;
 		System.arraycopy(this.customPreprocessors, 0, processors, 0, this.customPreprocessors.length);
-		this.customPreprocessors = processors;
-																 
+		this.customPreprocessors = processors;												 
+	}
+	
+	public void clearCustomPreprocessors() {
+		//System.out.println("Clearing custom preprocessors");
+		this.customPreprocessors = null;
 	}
 
 	/**

@@ -137,7 +137,9 @@ public class TextFile {
 	 * @param content the content of this text file.
 	 */
 	public void setContent(String[] content) {
+		//System.out.println("TextFile [" + this.fileName + "] content is now set");
 		this.content = content;
+		throw new RuntimeException();
 	}
 
 	/**
@@ -213,6 +215,7 @@ public class TextFile {
 	throws IOException 
 	{
 		if (update) {
+			//System.out.println("TextFile [" + this.fileName + "] is now UPDATED");
 			this.content = lines;
 			this.baseDir = targetDir;
 			updateFile();

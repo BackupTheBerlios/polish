@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
+import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.preprocess.CssAttribute;
 import de.enough.polish.preprocess.CssAttributesManager;
 import de.enough.polish.preprocess.CustomPreprocessor;
@@ -81,8 +82,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	
 	
 
-	public void init(Preprocessor processor) {
-		super.init(processor);
+	public void init(Preprocessor processor, PreprocessorSetting setting ) {
+		super.init(processor, setting );
 		this.idGenerator = new IntegerIdGenerator();
 		this.cssAttributesManager = processor.getCssAttributesManager();
 		//boolean allowAllCssAttributes = "true".equals( processor.getVariable("xxx.allowAllAttributes") );
@@ -216,6 +217,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		if (!this.isUsingPolishGui) {
 			return;
 		}
+		//System.out.println("PolishPreprocessor: processing class " + className );
 		while (lines.next() ) {
 			// check for ticker:
 			String line = lines.getCurrent();
@@ -240,18 +242,17 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			if (startPos != -1) {
 				int endPos = line.indexOf( ')', startPos );
 				if (endPos == -1) {
-					throw new BuildException ("Invalid style-usage in class [" 
-							+ className + "] at line [" + lines.getCurrentIndex()
-							+ "]: style.getProperty( \"name\" ); always needs to be on a single line. "
+					throw new BuildException ( getErrorStart(className, lines) + ": Invalid style-usage: "
+							+ "style.getProperty( \"name\" ); always needs to be on a single line. "
 							+ " This line is invalid: " + line );
 				}
 				
 				String property = line.substring( startPos + methodName.length(),
 						endPos ).trim();
+				//System.out.println("last line: " + lines.getPrevious() + "\ncurrent=" + lines.getCurrent() + "\nnext = " + lines.getNext() );
 				if (property.charAt(0) != '"' || property.charAt( property.length() - 1) != '"') {
-					throw new BuildException ("Invalid style-usage in class [" 
-							+ className + "] at line [" + lines.getCurrentIndex()
-							+ "]: style.getProperty( \"name\" ); always needs to use the property-name directly (not a variable). "
+					throw new BuildException (getErrorStart(className, lines) + ": Invalid style-usage: "
+							+ "style.getProperty( \"name\" ); always needs to use the property-name directly (not a variable). "
 							+ " This line is invalid: " + line );
 				}
 				String key = property.substring( 1, property.length() - 1);
@@ -263,6 +264,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					continue;
 				}
 				line = StringUtil.replace( line, property, "" + id );
+				//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");
 				lines.setCurrent( line );
 				continue;
 			}

@@ -108,7 +108,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.4";
+	private static final String VERSION = "1.2.4a";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -183,6 +183,8 @@ public class PolishTask extends ConditionalTask {
 	private String polishHomePath;
 
 	private File polishHomeDir;
+
+	private ArrayList customPreprocessors;
 	
 
 	
@@ -575,18 +577,20 @@ public class PolishTask extends ConditionalTask {
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
-		// init line processors:
+		// init custom preprocessors:
+		this.customPreprocessors = new ArrayList();
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
-		CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
+		//CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
 		// add the polish custom processor:
 		CustomPreprocessor customProcessor = new PolishPreprocessor();
-		customProcessor.init(this.preprocessor);
-		processors[0] = customProcessor;
+		customProcessor.init(this.preprocessor, null);
+		this.customPreprocessors.add( customProcessor );
+		//processors[0] = customProcessor;
 		for (int i = 0; i < settings.length; i++) {
 			PreprocessorSetting setting = settings[i];
-			processors[ i + 1] = CustomPreprocessor.getInstance(setting, this.preprocessor, getProject() );
+			customProcessor = CustomPreprocessor.getInstance(setting, this.preprocessor, getProject() );
+			this.customPreprocessors.add( customProcessor );
 		}
-		this.preprocessor.setCustomPreprocessors( processors );
 		
 		//	initialise the preprocessing-source-directories:
 		DirectoryScanner dirScanner = new DirectoryScanner();
@@ -814,7 +818,7 @@ public class PolishTask extends ConditionalTask {
 			PreprocessorSetting setting = new PreprocessorSetting();
 			setting.setClass( className );
 			this.translationPreprocessor = (TranslationPreprocessor) CustomPreprocessor.getInstance(setting, this.preprocessor, getProject());
-			this.preprocessor.addCustomPreprocessors( this.translationPreprocessor );
+			this.customPreprocessors.add( this.translationPreprocessor );
 			if (this.localeSourceFile == null) {
 				throw new BuildException("Unable to find [de.enough.polish.util.Locale.java] in the path, please set the \"polishDir\"-attribute of the <build>-element correctly.");
 			}
@@ -1055,6 +1059,17 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+			// add custom preprocessors
+			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+			CustomPreprocessor[] preprocessors = (CustomPreprocessor[]) this.customPreprocessors.toArray( new CustomPreprocessor[ this.customPreprocessors.size() ] );
+			this.preprocessor.clearCustomPreprocessors();
+			for (int i = 0; i < preprocessors.length; i++) {
+				CustomPreprocessor processor = preprocessors[i];
+				PreprocessorSetting setting = processor.getSetting();
+				if (setting == null || setting.isActive( evaluator, getProject() ) ) {
+					this.preprocessor.addCustomPreprocessor(processor);
+				}
+			}
 			
 			// get the last modfication time of the build.xml file
 			// so that it can be checked whether there are any changes at all:
@@ -1198,6 +1213,7 @@ public class PolishTask extends ConditionalTask {
 		// preprocess each file in that source-dir:
 		for (int j = 0; j < files.length; j++) {
 			TextFile file = files[j];
+			//System.out.println("processing [" + file.getFileName() + "]");
 			// check if file needs to be preprocessed at all:
 			long sourceLastModified = file.lastModified();
 			File targetFile = file.getTargetFile(baseDirectory, this.useDefaultPackage );

@@ -50,6 +50,7 @@
 		<capability name="Font.large" value="16" />
 		<capability name="Font.medium.oldFirmware" value="16" />
 		<capability name="Font.large.oldFirmware" value="23" />
+		<capability name="Bugs" value="stringWidthLineBreak" />
 	</group>
 
 	<group>

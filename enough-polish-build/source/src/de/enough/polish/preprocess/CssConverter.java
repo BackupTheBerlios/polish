@@ -585,6 +585,12 @@ public class CssConverter extends Converter {
 						value = StringUtil.replace( value, " ", "" );
 						int starPos = value.indexOf('*');
 						if (starPos != -1) {
+							if (starPos < value.length() - 1 ) {
+								value = value.substring( 0, starPos ) + "-1" + value.substring( starPos + 1 );
+							} else {
+								value = value.substring( 0, starPos ) + "-1";
+							}
+							/*
 							String screenWidthStr = device.getCapability("ScreenWidth");
 							if (screenWidthStr != null) {
 								int screenWidth = Integer.parseInt( screenWidthStr );
@@ -609,6 +615,7 @@ public class CssConverter extends Converter {
 								}
 								value = buffer.toString();
 							}
+							*/
 						}
 					}
 					if (key.endsWith("style")) {

@@ -60,6 +60,7 @@ public abstract class CustomPreprocessor {
 	protected StyleSheet currentStyleSheet;
 	private ArrayList directives;
 	protected Locale currentLocale;
+	private PreprocessorSetting setting;
 
 	/**
 	 * Creates a new line-preprocessor.
@@ -77,9 +78,11 @@ public abstract class CustomPreprocessor {
 	 * parent-preprocessor.
 	 * 
 	 * @param processor the parent-preprocessor for this custom preprocessor
+	 * @param setting
 	 */
-	public void init( Preprocessor processor ) {
+	public void init( Preprocessor processor, PreprocessorSetting setting ) {
 		this.preprocessor = processor;
+		this.setting = setting;
 		this.booleanEvaluator = processor.getBooleanEvaluator();
 	}
 	
@@ -203,7 +206,7 @@ public abstract class CustomPreprocessor {
 					PopulateUtil.populate( lineProcessor, setting.getParameters(), project.getBaseDir() );
 				}
 			}
-			lineProcessor.init( preprocessor );
+			lineProcessor.init( preprocessor, setting );
 			return lineProcessor;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -261,6 +264,10 @@ public abstract class CustomPreprocessor {
 	 */
 	protected String getErrorStart(String className, StringList lines) {
 		return className + " line [" + (lines.getCurrentIndex() + 1) + "]: ";
+	}
+	
+	public PreprocessorSetting getSetting() {
+		return this.setting;
 	}
 	
 	class Directive {
