@@ -434,7 +434,7 @@
 	<device>
 		<identifier>Sony-Ericsson/P910, Sony-Ericsson/P910i, Sony-Ericsson/P910c, Sony-Ericsson/P910a</identifier>
 		<groups></groups>
-		<features>hasCamera, hasVideo, hasPointerEvents</features>
+		<features>hasCamera, hasVideo, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="208x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi" />

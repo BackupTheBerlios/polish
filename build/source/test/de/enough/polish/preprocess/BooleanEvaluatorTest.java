@@ -495,5 +495,30 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( evaluator.evaluate(expression, "MyClass", 103 ));
 		
 	}
+	
+	public void testIdentifier() {
+		HashMap symbols = new HashMap();
+		symbols.put( "polish.audio.mp3", Boolean.TRUE );
+		symbols.put( "polish.audio.midi", Boolean.TRUE );
+		symbols.put( "test2", Boolean.TRUE );
+		symbols.put( "sym-1", Boolean.TRUE );
+		symbols.put( "sym-2", Boolean.TRUE );
+		symbols.put( "var-1:defined", Boolean.TRUE );
+		symbols.put( "polish.Identifier.Nokia/6600", Boolean.TRUE );
+		HashMap variables = new HashMap();
+		variables.put("polish.Memory", "100 kb");
+		variables.put("polish.HeapSize", "1mb");
+		variables.put("polish.BitsPerPixel", "8");
+		variables.put("polish.Vendor", "Nokia");
+		variables.put("polish.Identifier", "Nokia/6600");
+		variables.put("polish.Name", "6600");
+		
+		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
+		assertFalse(evaluator.evaluate("polish.Identifier == Nokia/Series60", "build.xml", 0));
+		assertTrue( evaluator.evaluate("polish.Identifier == Nokia/6600", "build.xml", 0));
+		assertFalse(evaluator.evaluate("polish.Identifier.Nokia/Series60", "build.xml", 0));
+		assertTrue( evaluator.evaluate("polish.Identifier.Nokia/6600", "build.xml", 0));
+		System.out.println("identifier test passed");
+	}
 
 }

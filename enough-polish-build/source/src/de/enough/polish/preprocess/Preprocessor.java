@@ -265,6 +265,7 @@ public class Preprocessor {
 			}
 		}
 		this.symbols = symbols;
+		this.temporarySymbols.clear();
 		this.booleanEvaluator.setEnvironment(symbols, this.variables);
 	}
 	
