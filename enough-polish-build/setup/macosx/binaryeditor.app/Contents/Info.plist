@@ -33,6 +33,8 @@
 	<string>BinaryEditor</string>
 	<key>CFBundleIconFile</key>
 	<string>BinaryEditor.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>de.enough.polish.dataeditor.DataEditor</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

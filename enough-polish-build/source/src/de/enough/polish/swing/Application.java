@@ -25,6 +25,8 @@
  */
 package de.enough.polish.swing;
 
+import java.io.File;
+
 /**
  * <p>Is used for integrating a swing application.</p>
  * <p>copyright Enough Software 2004</p>
@@ -40,5 +42,5 @@ public interface Application {
 	public void about();
 	public void preferences();
 	public void openApplication();
-	public void openDocument();
+	public void openDocument( File file );
 }

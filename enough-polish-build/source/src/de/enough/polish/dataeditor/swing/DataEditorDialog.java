@@ -120,7 +120,6 @@ implements ActionListener
 		contentPane.setLayout( new BorderLayout() );
 		contentPane.add( new JScrollPane( editorPanel ), BorderLayout.CENTER );
 		contentPane.add( buttonPanel, BorderLayout.SOUTH );
-		
 		int width = cols * 40;
 		if (width < 250) {
 			width = 250;
@@ -130,6 +129,7 @@ implements ActionListener
 			height = 100;
 		}
 		setSize( width, height);
+		//pack();
 	}
 
 

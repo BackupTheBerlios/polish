@@ -143,6 +143,7 @@ implements ActionListener
 		contentPane.add( okCancelPanel );
 		
 		setSize( 500, 550 );
+		//pack();
 	}
 
 	/* (non-Javadoc)

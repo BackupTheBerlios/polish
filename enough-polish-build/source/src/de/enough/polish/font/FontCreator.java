@@ -85,12 +85,13 @@ implements ActionListener
 		super.addWindowListener( new MyWindowListener() );
 		setSize( 900, 600 );
 		Container contentPane = getContentPane();
-		this.scrollPane = new JScrollPane( new JLabel("Please open any true type font."));
+		this.scrollPane = new JScrollPane( new JLabel("Please open any true type font or drag it here."));
 		contentPane.add( this.scrollPane );
 		this.statusBar = new JLabel(" ");
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		SwingUtil.setImageIcon(this, "icons/font.png");
 		updateTitle();
+		//pack();
 	}
 	
 	/**
@@ -322,7 +323,20 @@ implements ActionListener
 			save();
 		}
 	}
+	
+	
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.swing.Application#openDocument(java.io.File)
+	 */
+	public void openDocument(File file) {
+		try {
+			openTrueTypeFont( file );
+		} catch (IOException e) {
+			this.statusBar.setText("Unable to load font: " + e.toString() );
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * @throws IOException
 	 * 
@@ -330,16 +344,20 @@ implements ActionListener
 	private void openTrueTypeFont() throws IOException {
 		File file = openFile(".ttf", true);
 		if (file != null) {
-			this.trueTypeViewer = new TrueTypeFontViewer( file );	
-			Container contentPane = getContentPane();
-			contentPane.remove( this.scrollPane );
-			this.scrollPane = new JScrollPane( this.trueTypeViewer );
-			contentPane.add( this.scrollPane );
-			this.statusBar.setText("Loaded TTF font " + file.getName() );
-			this.fontFile = file;
-			this.bitMapFontFile = null;
-			updateTitle();
+			openTrueTypeFont( file );
 		}
+	}
+	
+	private void openTrueTypeFont( File file ) throws IOException {
+		this.trueTypeViewer = new TrueTypeFontViewer( file );	
+		Container contentPane = getContentPane();
+		contentPane.remove( this.scrollPane );
+		this.scrollPane = new JScrollPane( this.trueTypeViewer );
+		contentPane.add( this.scrollPane );
+		this.statusBar.setText("Loaded TTF font " + file.getName() );
+		this.fontFile = file;
+		this.bitMapFontFile = null;
+		updateTitle();
 	}
 
 	public void quit() {

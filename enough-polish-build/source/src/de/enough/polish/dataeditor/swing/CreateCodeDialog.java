@@ -88,6 +88,7 @@ public class CreateCodeDialog extends JDialog implements ActionListener {
 		contentPane.add( this.okButton );
 		
 		setSize( 300, 200 );
+		//pack();
 	}
 	
 	public String getClassName() {

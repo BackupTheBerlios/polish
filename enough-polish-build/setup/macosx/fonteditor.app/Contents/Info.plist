@@ -33,6 +33,8 @@
 	<string>FontEditor</string>
 	<key>CFBundleIconFile</key>
 	<string>FontEditor.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>de.enough.polish.font.FontCreator</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

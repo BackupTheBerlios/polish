@@ -25,7 +25,17 @@
  */
 package de.enough.polish.swing;
 
+import java.awt.Component;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -52,6 +62,7 @@ implements Application
 	protected boolean isMacOsX;
 	protected NativeIntegration nativeIntegration;
 	protected String applicationName;
+	protected final ApplicationDropListener applicationDropListener;
 	
 	public SwingApplication( String title, boolean systemExitOnQuit ) {
 		super( title );
@@ -60,7 +71,14 @@ implements Application
 		this.isMacOsX = (System.getProperty("mrj.version") != null);
 		loadNativeIntegration();
 
-
+		// accept drop-events:
+		this.applicationDropListener = new ApplicationDropListener();
+		new DropTarget( this,  this.applicationDropListener );
+		//new DropTarget( getRootPane(), this.applicationDropListener );
+	}
+	
+	protected void registerDropTarget( Component component ) {
+		new DropTarget( component,  this.applicationDropListener );
 	}
 
 	/**
@@ -89,7 +107,7 @@ implements Application
 	}
 	
 	protected String getAboutText() {
-		return this.applicationName + ": made by Enough Software.";
+		return this.applicationName + ": (c) 2004, Enough Software.";
 	}
 	
 	protected JScrollPane createScrollPane( JComponent component ) {
@@ -148,16 +166,53 @@ implements Application
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.swing.Application#openDocument()
+	 * @see de.enough.polish.swing.Application#openDocument( File )
 	 */
-	public void openDocument() {
+	public void openDocument( File file ) {
 		// can be implemented by sub class
 		System.out.println("open document: not supported.");
 	}
 	
 	
 	
+	class ApplicationDropListener extends DropTargetAdapter {
+
+		/* (non-Javadoc)
+		 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
+		 */
+		public void drop(DropTargetDropEvent event) {
+			final Transferable transferable = event.getTransferable(); 
+			if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+				event.acceptDrop(DnDConstants.ACTION_COPY);
+				try {
+					final List files = (List)transferable.getTransferData( DataFlavor.javaFileListFlavor);
+					// load files in background:
+					( new OpenFilesThread( files ) ).start();
+					// Signal transfer success.
+					event.dropComplete(true);
+				} catch (Exception e) {
+					// Signal transfer failure.
+					event.dropComplete(false); 
+				}
+			} else {
+				event.rejectDrop();
+			} 
+		}
+		
+	}
 	
+	class OpenFilesThread extends Thread {
+		private final List files;
+		public OpenFilesThread( List files ) {
+			this.files = files;
+		}
+		public void run() {
+			for (Iterator iter = this.files.iterator(); iter.hasNext();) {
+				File file = (File) iter.next();
+				openDocument( file );
+			}
+		}
+	}
 	
 
 }

@@ -130,6 +130,7 @@ implements ActionListener
 			height = 200;
 		}
 		setSize( 500, height );
+		//pack();
 	}
 
 	/* (non-Javadoc)

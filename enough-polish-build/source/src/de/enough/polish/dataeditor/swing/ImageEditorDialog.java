@@ -100,7 +100,6 @@ implements ActionListener
 		int width = 400;
 		int height = 100;
 		if (image != null) {
-			System.out.println("Image is there...");
 			this.imageViewer.setIcon( new ImageIcon( image ) );
 			width = image.getWidth() + 100;
 			height = image.getHeight() + 100;

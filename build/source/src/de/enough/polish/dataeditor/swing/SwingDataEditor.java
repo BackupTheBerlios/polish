@@ -122,7 +122,7 @@ implements DataEditorUI, ActionListener
 	 * @param doSystemExit true when the editor should call System.exit() whewn quitting.
 	 */
 	public SwingDataEditor( File definition, File data, boolean doSystemExit  ) {
-		super("DataEditor", doSystemExit);
+		super("BinaryEditor", doSystemExit);
 		this.doSystemExit = doSystemExit;
 		setJMenuBar( createMenuBar() );
 		super.addWindowListener( new MyWindowListener() );
@@ -130,6 +130,7 @@ implements DataEditorUI, ActionListener
 		DataEntry entry = new DataEntry( "noname", DataType.BYTE );
 		this.dataManager.addDataEntry( entry );
 		setSize( 900, 600 );
+		//pack();
 		this.descriptionField = new JTextField();
 		this.descriptionField.addActionListener( this );
 		this.extensionField = new JTextField();
@@ -139,6 +140,7 @@ implements DataEditorUI, ActionListener
 		this.dataTableModel = new DataTableModel( this.dataManager, this );
 		this.dataView = new DataView( this, this.dataTableModel, this.dataManager );
 		this.dataView.setPreferredScrollableViewportSize(new Dimension(900, 550));
+		registerDropTarget( this.dataView );
 		JScrollPane scrollPane = createScrollPane(this.dataView);
 		Container contentPane = getContentPane();
 		contentPane.setLayout( new BorderLayout() );
@@ -504,7 +506,21 @@ implements DataEditorUI, ActionListener
 		File file = openFile( ".definition", true );
 		openDefinition( file );
 	}
+	
+	
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.swing.Application#openDocument(java.io.File)
+	 */
+	public void openDocument(File file) {
+		//this.statusBar.setText("Opening file " + file.getName() );
+		if ( this.definitionFile == null || file.getName().endsWith(".definition")) {
+			openDefinition( file );
+		} else {
+			openData( file );
+		}
+	}
+	
 	public void openDefinition( File file ) {
 		if (file != null) {
 			try {
@@ -519,6 +535,7 @@ implements DataEditorUI, ActionListener
 				this.statusBar.setText("Loaded " + file.getName() );
 				this.createCodeDialog = null;
 			} catch (Exception e) {
+				this.statusBar.setText("Unable to load data: " + e );
 				showErrorMessage( e );
 			}
 		}
@@ -566,6 +583,7 @@ implements DataEditorUI, ActionListener
 				updateTitle();
 				this.statusBar.setText("Loaded " + file.getName() );
 			} catch (Exception e) {
+				this.statusBar.setText("Unable to load data: " + e );
 				showErrorMessage( e );
 			}
 		}

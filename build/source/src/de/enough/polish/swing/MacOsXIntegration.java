@@ -25,6 +25,8 @@
  */
 package de.enough.polish.swing;
 
+import java.io.File;
+
 import javax.swing.JMenu;
 
 import com.apple.eawt.ApplicationEvent;
@@ -60,9 +62,11 @@ implements ApplicationListener
 	 */
 	public void init(Application parentApplication, String applicationName) {
 		this.parent = parentApplication;
+		/* has no effect anyhow 
 		if (applicationName != null ) {
 			System.setProperty("Xdock:name", applicationName );
 		}
+		*/
 		// move menu to screenbar:
 		System.setProperty( "apple.laf.useScreenMenuBar", "true");
 		System.setProperty( "com.apple.macos.useScreenMenuBar", "true");
@@ -93,7 +97,8 @@ implements ApplicationListener
 	 * @see com.apple.eawt.ApplicationListener#handleOpenFile(com.apple.eawt.ApplicationEvent)
 	 */
 	public void handleOpenFile(ApplicationEvent event) {
-		this.parent.openDocument();
+		File file = new File( event.getFilename() );
+		this.parent.openDocument( file );
 		event.setHandled( true );
 	}
 
