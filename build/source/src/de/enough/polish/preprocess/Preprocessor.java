@@ -1177,7 +1177,7 @@ public class Preprocessor {
 	private boolean processMdebug(String argument, StringList lines, String className) 
 	throws BuildException
 	{
-		lines.next();
+		boolean hasNext = lines.next();
 		boolean debug = false;
 		boolean changed = false;
 		if (this.enableDebug) {
@@ -1192,7 +1192,7 @@ public class Preprocessor {
 		if (verboseDebug) {
 			insertVerboseDebugInfo( lines, className );
 		}
-		while ( lines.next() ) {
+		while ( hasNext ) {
 			String line = lines.getCurrent();
 			String trimmedLine = line.trim();
 			if (trimmedLine.startsWith("//#enddebug")) {
@@ -1205,6 +1205,7 @@ public class Preprocessor {
 			} else {
 				changed = changed | commentLine( line, trimmedLine, lines );
 			}
+			hasNext = lines.next();
 		}
 		if (! endTagFound ) {
 			throw new BuildException(

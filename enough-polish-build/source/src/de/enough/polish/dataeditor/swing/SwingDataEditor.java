@@ -59,7 +59,6 @@ import de.enough.polish.dataeditor.DataEditorUI;
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
-import de.enough.polish.swing.NativeIntegration;
 import de.enough.polish.swing.SwingApplication;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.SwingUtil;
@@ -125,7 +124,6 @@ implements DataEditorUI, ActionListener
 	public SwingDataEditor( File definition, File data, boolean doSystemExit  ) {
 		super("DataEditor", doSystemExit);
 		this.doSystemExit = doSystemExit;
-		NativeIntegration integration = null;
 		setJMenuBar( createMenuBar() );
 		super.addWindowListener( new MyWindowListener() );
 		this.dataManager = new DataManager();

@@ -9,8 +9,8 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>definition</string>
-				<string>data</string>
+				<string>ttf</string>
+				<string>bmf</string>
 				<string>*</string>
 			</array>
 			<key>CFBundleTypeMIMETypes</key>
@@ -18,7 +18,7 @@
 				<string>text/plain</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>de.enough.polish.DataDefinition</string>
+			<string>de.enough.polish.BitMapFont</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>****</string>
@@ -30,13 +30,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string> BinaryEditor</string>
+	<string>FontEditor</string>
 	<key>CFBundleIconFile</key>
-	<string>BinaryEditor.icns</string>
+	<string>FontEditor.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>BinaryEditor</string>
+	<string>FontEditor</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
@@ -49,11 +49,11 @@
 	<dict>
 		<key>ClassPath</key>
 		<array>
-			<string>$JAVAROOT/jdom.jar</string>
-			<string>$JAVAROOT/enough-polish-binaryeditor.jar</string>
+			<string>%{INSTALL_PATH}/import/enough-j2mepolish-build.jar</string>
+			<string>%{INSTALL_PATH}/import/jdom.jar</string>
 		</array>
 		<key>MainClass</key>
-		<string>de.enough.polish.dataeditor.swing.SwingDataEditor</string>
+		<string>de.enough.polish.font.FontCreator</string>
 		<key>JVMVersion</key>
 		<string>1.4+</string>
 		<key>Properties</key>
@@ -61,7 +61,7 @@
 			<key>apple.laf.useScreenMenuBar</key>
 			<string>true</string>
 			<key>com.apple.mrj.application.apple.menu.about.name</key>
-			<string>BinaryEditor</string>
+			<string>FontEditor</string>
 			<key>com.apple.mrj.application.growbox.intrudes</key>
 			<string>false</string>
 		</dict>

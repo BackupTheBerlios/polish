@@ -25,7 +25,8 @@
 	classpath="${izpack.dir}/lib/compiler.jar"
 	classname="com.izforge.izpack.ant.IzPackTask"/>
 <taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
-	
+<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
+<taskdef resource="proguard/ant/task.properties" classpath="import/proguard.jar" />	
 
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
@@ -217,6 +218,97 @@
 	</zip>
 </target>
 	
+<target name="macstandalone" 
+		description="creates the standalone packages for Mac OS X."
+		depends="bin-dist"
+		>
+		<delete dir="tmp" />
+		<mkdir dir="tmp/macosx/tmp" />
+		<copy todir="tmp/macosx" >
+			<fileset dir="setup/macosx" excludes="**/CVS/**" />
+		</copy>
+		<mkdir dir="tmp/macosx/binaryeditor.app/Contents/Resources/Java" />
+		<mkdir dir="tmp/macosx/fonteditor.app/Contents/Resources/Java" />
+		<!-- generate the binary editor-application: -->
+		<genjar 
+			jarfile="dist/enough-j2mepolish-editor.jar"
+			destdir="tmp/macosx/tmp">
+			<class name="de.enough.polish.font.FontCreator" />
+			<class name="de.enough.polish.dataeditor.swing.SwingDataEditor" />
+			<class name="de.enough.polish.swing.MacOsXIntegration" />
+			<classpath>
+			    <pathelement location="import/jdom.jar"/>
+			    <pathelement location="import/AppleJavaExtensions.jar"/>
+			    <pathelement location="dist/enough-j2mepolish-build.jar"/>
+			</classpath>
+			<classfilter>
+				<exclude name="com.apple." />
+			</classfilter>
+		</genjar>
+		<delete dir="tmp/macosx/tmp" />
+	<!--
+	-->
+		<proguard>
+	  		-libraryjars ${java.home}/lib/rt.jar
+	  		-libraryjars import/AppleJavaExtensions.jar
+	  		-injars      dist/enough-j2mepolish-editor.jar
+	  		-outjars     tmp/macosx/binaryeditor.app/Contents/Resources/Java/enough-j2mepolish-binaryeditor.jar
+
+	  		-keep class de.enough.polish.dataeditor.swing.SwingDataEditor {
+		    	public static void main(java.lang.String[]);
+			}
+			-keep class de.enough.polish.swing.MacOsXIntegration
+			-keep class org.apache.xerces.parsers.SAXParser
+			
+			-allowaccessmodification
+			-defaultpackage
+			-overloadaggressively
+		</proguard>
+		<!-- generate the font editor-application: -->
+	<!--
+		<delete dir="tmp/macosx/tmp" />
+		<mkdir dir="tmp/macosx/tmp" />
+	-->
+	<!--
+		<genjar 
+			jarfile="tmp/macosx/fonteditor.app/Contents/Resources/Java/enough-j2mepolish-fonteditor.jar"
+			destdir="tmp/macosx/tmp">
+			<class name="de.enough.polish.font.FontCreator" />
+			<class name="de.enough.polish.swing.MacOsXIntegration" />
+			<classpath>
+			    <pathelement location="import/jdom.jar"/>
+			    <pathelement location="import/AppleJavaExtensions.jar"/>
+			    <pathelement location="dist/enough-j2mepolish-build.jar"/>
+			</classpath>
+			<classfilter>
+				<exclude name="com.apple." />
+			</classfilter>
+		</genjar>
+	-->
+		<proguard>
+  			-libraryjars ${java.home}/lib/rt.jar
+  			-libraryjars import/AppleJavaExtensions.jar
+	  		-injars      dist/enough-j2mepolish-editor.jar
+  			-outjars     tmp/macosx/fonteditor.app/Contents/Resources/Java/enough-j2mepolish-fonteditor.jar
+
+			-keep class de.enough.polish.font.FontCreator {
+		    	public static void main(java.lang.String[]);
+			}
+	  		-keep class de.enough.polish.dataeditor.swing.SwingDataEditor {
+		    	public static void main(java.lang.String[]);
+			}
+			-keep class de.enough.polish.swing.MacOsXIntegration
+			-keep class org.apache.xerces.parsers.SAXParser
+		
+			-allowaccessmodification
+			-defaultpackage
+			-overloadaggressively
+		</proguard>
+	<!--
+		<delete dir="tmp/macosx/tmp" />
+	-->
+	</target>
+	
 <target name="installer" 
 		 depends="bin-dist"
 		 description="creates the j2mepolish-installer." 
@@ -232,13 +324,19 @@
 		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar" />
 		<fileset dir="dist" includes="*.jar" />
 	</copy>
+	<!-- copy mac os x standalone applications -->
+	<mkdir dir="tmp/macosx" />
+	<copy todir="tmp/macosx" >
+		<fileset dir="setup/macosx" excludes="**/CVS/**" />
+	</copy>
 	<!-- copy sample application -->
 	<mkdir dir="tmp/src" />
 	<copy todir="tmp/src">
 		<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
 	</copy>
-	<copy todir="tmp/" >
-		<fileset dir="setup" />
+	<copy todir="tmp/" 
+		>
+		<fileset dir="setup" excludes="**/macosx/**" />
 		<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
 		<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
 	</copy>

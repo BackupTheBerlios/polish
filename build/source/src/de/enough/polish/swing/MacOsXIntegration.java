@@ -135,6 +135,5 @@ implements ApplicationListener
 		this.parent.about();
 		event.setHandled( true );
 	}
-
-
+	
 }
