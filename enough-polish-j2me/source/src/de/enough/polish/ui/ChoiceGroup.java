@@ -503,8 +503,18 @@ implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
-		ChoiceItem item = new ChoiceItem( stringPart, imagePart, this.choiceType, elementStyle );
-		set(elementNum, item);
+		ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
+		item.setText( stringPart );
+		if (imagePart != null) {
+			item.setImage(imagePart);
+		}
+		if (elementStyle != null) {
+			item.setStyle(elementStyle);
+		}
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 
 	/**

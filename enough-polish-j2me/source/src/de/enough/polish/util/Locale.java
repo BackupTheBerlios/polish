@@ -25,6 +25,9 @@
  */
 package de.enough.polish.util;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,8 +44,27 @@ import java.util.Date;
  */
 public final class Locale {
 	
-	private static short[][] parameterOrders;
-	private static String[][] values;
+	private static short[][] multipleParameterOrders;
+	private static String[][] multipleParameterTranslations;
+	//#ifdef polish.i18n.useDynamicTranslations
+		private static String[] plainTranslations;
+		private static String[] singleParameterTranslationsStart;
+		private static String[] singleParameterTranslationsEnd;
+		static {
+			try {
+				//#if polish.locale:defined
+					//#= loadTranslations( "/${polish.locale}.loc" );
+				//#else
+					loadTranslations( "/default.loc" );
+				//#endif
+			} catch (IOException e ) {
+				//#debug error
+				System.out.println("Unable to load default translations" + e );
+			}
+			
+		}
+	//#endif
+		
 	
 	// do not change the following line!
 //$$IncludeLocaleDefinitionHere$$//
@@ -84,33 +106,43 @@ public final class Locale {
 	}
 	//#endif
 
-	//#ifdef polish.i18n.hasDynamicTranslations
+	//#ifdef polish.i18n.useDynamicTranslations
 	/**
 	 * Retrieves the translation for the specified key.
 	 * 
 	 * @param key the key, e.g. "labels.StartGame"
-	 * @return the translation, e.g. "Start Game" or "Spiel starten"
+	 * @return the translation, e.g. "Start Game" or "Spiel starten", null when the key was not found
 	 */
+	//#if false
 	public static final String get( String key ) {
-		// all simple translations are actually directly embedded into the source-code,
-		// so this method does not need to be implemenented at all:
-		return null;
+		int keyId = 0;
+	//#else
+		//# public static final String get( int keyId ) {
+	//#endif
+		// all simple translations are usually directly embedded into the source-code,
+		// so this method does only need to be implemenented when dynamic translations are used:
+		return plainTranslations[ keyId ];
 	}
 	//#endif
 	
-	//#ifdef polish.i18n.hasDynamicTranslations
+	//#ifdef polish.i18n.useDynamicTranslations
 	/**
 	 * Retrieves the translation for the specified key.
 	 * 
 	 * @param key the key, e.g. "labels.WelcomeUser"
 	 * @param parameter the parameter, e.g. "Peter"
-	 * @return the translation, e.g. "Hello Peter!" or "Hallo Peter!"
+	 * @return the translation, e.g. "Hello Peter!" or "Hallo Peter!", null when the key was not found
 	 * @throws NullPointerException when the given parameter is null.
 	 */
+	//#if false
 	public static final String get( String key, String parameter ) {
+		int keyId = 0;
+	//#else
+		//# public static final String get( int keyId, String parameter ) {
+	//#endif
 		// all simple translations are usually directly embedded into the source-code,
-		// but there can be dynamic keys as well:
-		return null;
+		// so this method does only need to be implemenented when dynamic translations are used:
+		return singleParameterTranslationsStart[keyId] + parameter + singleParameterTranslationsEnd[keyId];
 	}
 	//#endif
 	
@@ -140,7 +172,7 @@ public final class Locale {
 		// CHECK: There could be more or less parameters than expected, e.g.
 		// "hello {2}, you are a {0}"???
 		// --> some parameters can be ignored
-		final short[] reorder = parameterOrders[ keyId ];
+		final short[] reorder = multipleParameterOrders[ keyId ];
 		final String[] reorderedParameters;
 		if (reorder != null) {
 			reorderedParameters = new String[ reorder.length ];
@@ -151,7 +183,7 @@ public final class Locale {
 			reorderedParameters = parameters;
 		}
 		// Now merge the value with the reordered parameters:
-		final String[] valueChunks = values[ keyId ];
+		final String[] valueChunks = multipleParameterTranslations[ keyId ];
 		final StringBuffer result = new StringBuffer();
 		for (int i = 0; i < reorderedParameters.length; i++) {
 			String value = valueChunks[i];
@@ -274,6 +306,61 @@ public final class Locale {
 		//#endif	
 		return buffer.toString();
 	}
+
+	//#ifdef polish.i18n.useDynamicTranslations
+	public static void loadTranslations( String url ) 
+	throws IOException 
+	{
+		InputStream is = url.getClass().getResourceAsStream( url );
+		if (is == null) {
+			throw new IOException();
+		}
+		loadTranslations( new DataInputStream( is ) );
+	}
+	//#endif
+
+	//#ifdef polish.i18n.useDynamicTranslations
+	public static void loadTranslations( DataInputStream in ) 
+	throws IOException 
+	{
+		// read plain translations without any parameters:
+		int numberOfPlainTranslations = in.readInt();
+		String[] plainTs = new String[ numberOfPlainTranslations ];
+		for (int i = 0; i < numberOfPlainTranslations; i++) {
+			plainTs[i] = in.readUTF();
+		}
+		plainTranslations = plainTs;
+		
+		// read single parameter translations:
+		int numberOfSingleParameterTranslations = in.readInt();
+		String[] singleParamsTsStart = new String[ numberOfSingleParameterTranslations ];
+		String[] singleParamsTsEnd = new String[ numberOfSingleParameterTranslations ];
+		for (int i = 0; i < numberOfSingleParameterTranslations; i++) {
+			singleParamsTsStart[i] = in.readUTF();
+			singleParamsTsEnd[i] = in.readUTF();
+		}
+		singleParameterTranslationsStart = singleParamsTsStart;
+		singleParameterTranslationsEnd = singleParamsTsEnd;
+
+		// read translations with several parameters:
+		int numberOfMultipleParametersTranslations = in.readInt();
+		String[][] translationChunks = new String[ numberOfMultipleParametersTranslations ][];
+		short[][] orders = new short[ numberOfMultipleParametersTranslations ][];
+		for (int i = 0; i < numberOfMultipleParametersTranslations; i++) {
+			int numberOfChunks = in.readUnsignedByte();
+			short[] chunkOrders = new short[ numberOfChunks ];
+			String[] chunkValues = new String[ numberOfChunks ];
+			for (int j = 0; j < numberOfChunks; j++) {
+				chunkOrders[j] = (short) in.readUnsignedByte();
+				chunkValues[j] = in.readUTF();
+			}
+			translationChunks[i] = chunkValues;
+			orders[i] = chunkOrders;
+		}
+		multipleParameterOrders = orders;
+		multipleParameterTranslations = translationChunks;	
+	}
+	//#endif
 
 	
 }

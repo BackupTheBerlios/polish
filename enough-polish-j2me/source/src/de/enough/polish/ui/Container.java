@@ -201,6 +201,9 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container: setting item " + index );
 		item.parent = this;
+		if (index == this.focusedIndex) {
+			this.itemStyle = item.focus( this.focusedStyle );
+		}
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();
