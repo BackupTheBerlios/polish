@@ -1266,6 +1266,12 @@ public class Preprocessor {
 	 * @return true when the current line was changed
 	 */
 	private boolean convertSystemOut(StringList lines) {
+		String debugCall;
+		if (this.useDefaultPackage) {
+			debugCall = "de.enough.polish.util.Debug.debug(";
+		} else {
+			debugCall = "Debug.debug(";
+		}
 		String line = lines.getCurrent();
 		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
 		if (matcher.find()) {
@@ -1277,15 +1283,13 @@ public class Preprocessor {
 				String secondArgument = argument.substring( plusPos + 1 ).trim();
 				if (secondArgument.indexOf('"') != -1 && secondArgument.charAt(0) != '"') {
 					// the '+' was in the middle of a string, e.g. " bla + blubb "
-					line = "de.enough.polish.util.Debug.debug(" 
-						+ argument; 					
+					line = debugCall + argument; 					
 				} else {
-					line = "de.enough.polish.util.Debug.debug(" 
+					line = debugCall  
 						+ firstArgument + ", " + secondArgument;
 				}
 			} else {
-				line = "de.enough.polish.util.Debug.debug(" 
-					+ argument; 
+				line = debugCall + argument; 
 			}
 			lines.setCurrent( line );
 			return true;
@@ -1308,8 +1312,13 @@ public class Preprocessor {
 	 * @param className the name of the class
 	 */
 	private void insertVerboseDebugInfo( StringList lines, String className ) {
-		String debugVerbose = "de.enough.polish.util.Debug.debug(System.currentTimeMillis() + "
-			+ "\" - " + className 
+		String debugVerbose;
+		if (this.useDefaultPackage) {
+			debugVerbose = "de.enough.polish.util.Debug.debug(System.currentTimeMillis() + "; 
+		} else {
+			debugVerbose = "Debug.debug(System.currentTimeMillis() + "; 
+		}
+		debugVerbose +=  "\" - " + className 
 			+ " line " + (lines.getCurrentIndex() + 1 - lines.getNumberOfInsertedLines()) 
 			+ "\" );";
 		lines.prev();

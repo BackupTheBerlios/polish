@@ -75,5 +75,13 @@ public class Filter {
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
 	}
+	
+	public void setClass( String className ) {
+		setPattern( className );
+	}
+	
+	public void setPackage( String packageName ) {
+		setPattern( packageName + ".*" );
+	}
 
 }

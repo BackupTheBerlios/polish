@@ -103,6 +103,9 @@ public final class ConvertUtil {
 	 *         -1 will be returned.
 	 */
 	public final static long convertToBytes(String value) {
+		if (value == null || value.startsWith("polish.")) {
+			return -1;
+		}
 		value = value.trim().toLowerCase();		
 		if ("dynamic".equals(value)) {
 			return -1;
@@ -156,6 +159,9 @@ public final class ConvertUtil {
 	 */
 	public final static double convertToKiloBytes(String value) {
 		double bytes = convertToBytes( value );
+		if (bytes == -1) {
+			return -1D;
+		}
 		return bytes / KILO_BYTES;
 	}
 
@@ -167,6 +173,9 @@ public final class ConvertUtil {
 	 */
 	public final static double convertToMegaBytes(String value) {
 		double bytes = convertToBytes( value );
+		if (bytes == -1) {
+			return -1D;
+		}
 		return bytes / MEGA_BYTES;
 	}
 
@@ -178,6 +187,9 @@ public final class ConvertUtil {
 	 */
 	public final static double convertToGigaBytes(String value) {
 		double bytes = convertToBytes( value );
+		if (bytes == -1) {
+			return -1D;
+		}
 		return bytes / GIGA_BYTES;
 	}
 	

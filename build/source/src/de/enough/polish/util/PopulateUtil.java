@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -134,6 +135,44 @@ public final class PopulateUtil {
 				file = new File( baseDir.getAbsolutePath() + File.separator + value );
 			}
 			method.invoke(object, new Object[]{ file } );
+		}
+	}
+	
+	
+	/**
+	 * Retrieves the value of the specified int-field of the given object.
+	 * 
+	 * @param object the object that holds the field
+	 * @param fieldName the name of the field
+	 * @return the field
+	 * @throws NoSuchFieldException
+	 */
+	public static int getIntField( Object object, String fieldName ) throws NoSuchFieldException {
+		try {
+			Field field = null;
+			Class instanceClass = object.getClass();
+			while (field == null) {
+				try {
+					field = instanceClass.getDeclaredField( fieldName );
+				} catch (NoSuchFieldException e) {
+					instanceClass = instanceClass.getSuperclass();
+					if (instanceClass == null) {
+						throw e;
+					}
+					//System.out.println("trying parent class [" + instanceClass.getName() + "]");
+				}
+			}
+			field.setAccessible(true);
+			return field.getInt(object);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to access field [" + fieldName + "]: " + e.toString() );
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to access field [" + fieldName + "]: " + e.toString() );
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to access field [" + fieldName + "]: " + e.toString() );
 		}
 	}
 

@@ -86,7 +86,7 @@
 		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
 		description="The position of the image relative to the text."
 		default="left"
-		values="left,right,top,bottom"
+		values="left,right,top,bottom,center"
 		id="7"
 	/>
 
