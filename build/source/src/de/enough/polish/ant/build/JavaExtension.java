@@ -26,7 +26,7 @@
 package de.enough.polish.ant.build;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Java;
@@ -81,7 +81,7 @@ public class JavaExtension extends Java {
 	 * @param device the current device
 	 * @param variables the variables for the current device
 	 */
-	public void execute( Device device, HashMap variables ){
+	public void execute( Device device, Map variables ){
 		if (this.message != null) {
 			String msg = PropertyUtil.writeProperties(this.message, variables);
 			System.out.println( msg );

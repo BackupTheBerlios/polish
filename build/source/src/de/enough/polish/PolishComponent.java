@@ -204,9 +204,9 @@ public class PolishComponent {
 	 * The values defined by a variable can be retrieved by calling 
 	 * <code>String value = (String) map.get("variable-name")</code>.
 	 * 
-	 * <p>Variables can be named in different ways:
+	 * <p>Variables which are defined in the device-database all start with "polish.":
 	 * <ul>
-	 * 	<li><b>polish.variable-name</b>: this is the recommended way to check for a variable.
+	 * 	<li><b>polish.variable-name</b>: 
 	 * 				The variables starting with "polish" can be defined by  the project, the vendor, 
 	 * 				group or device used. They also can be overriden by specific settings.
 	 * 			    For example a color "color.focus" could be defined in the project and
@@ -214,19 +214,13 @@ public class PolishComponent {
 	 * 			 	return the device definition while "project.color " would return the original 
 	 * 				project definition, when the application is preprocessed for that
 	 * 				device.</li>
-	 * 	<li><b>project.variable-name</b>: this name can be used to check for variables which
-	 * 				need to be defined in the project itself.</li>
-	 * 	<li><b>vendor.variable-name</b>: this name can be used to check for variables which
-	 * 				need to be defined in the current manufacturer definition (e.g. Nokia) itself.</li>
-	 * 	<li><b>group.variable-name</b>: this name can be used to check for variables which
-	 * 				need to be defined in the current groups (e.g. Series 60) itself.</li>
-	 * 	<li><b>device.variable-name</b>: this name can be used to check for variables which
-	 * 				need to be defined in the current device itself.</li>
 	 * </ul>
 	 * </p>
 	 * @return a HashMap containing all names of the defined variables as the keys.
 	 */
 	public HashMap getCapabilities() {
+		//HashMap copy = new HashMap( this.capabilities.size() + 20 );
+		//copy.putAll( this.capabilities );
 		return new HashMap( this.capabilities );
 	}
 	

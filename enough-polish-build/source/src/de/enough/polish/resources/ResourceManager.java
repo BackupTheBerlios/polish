@@ -41,6 +41,7 @@ import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.preprocess.CssReader;
+import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.StyleSheet;
 import de.enough.polish.util.FileUtil;
 
@@ -277,12 +278,21 @@ public class ResourceManager {
 		}
 	}
 	
-	public TranslationManager getTranslationManager( Device device, Locale locale, Map variables ) 
+	/**
+	 * Retrieves the manager of translations.
+	 * 
+	 * @param device the current device
+	 * @param locale the current locale (not null)
+	 * @param preprocessor the preprocessor
+	 * @return the translation manager
+	 * @throws IOException when a messages-files could not be read
+	 */
+	public TranslationManager getTranslationManager( Device device, Locale locale, Preprocessor preprocessor) 
 	throws IOException
 	{
 		return new TranslationManager( device, 
 				locale, 
-				variables, 
+				preprocessor, 
 				getResourceDirs(device, locale), 
 				this.localizationSetting );
 	}

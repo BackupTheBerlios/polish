@@ -89,7 +89,7 @@ public class PolishTask extends ConditionalTask {
 	private String[] preserveClasses;
 	private StyleSheet styleSheet;
 	private ImportConverter importConverter;
-	private TextFile styleSheetFile;
+	private TextFile styleSheetSourceFile;
 	private ResourceUtil resourceUtil;
 	private String wtkHome;
 	private HashMap midletClassesByName;
@@ -122,6 +122,10 @@ public class PolishTask extends ConditionalTask {
 	private Locale[] supportedLocales;
 
 	private TranslationPreprocessor translationPreprocessor;
+
+	private TextFile localeSourceFile;
+
+	private StringList localeCode;
 
 	
 	/**
@@ -530,7 +534,7 @@ public class PolishTask extends ConditionalTask {
 			dirScanner.scan();
 			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles() );
 		}
-		if (this.buildSetting.usePolishGui() && this.styleSheetFile == null) {
+		if (this.buildSetting.usePolishGui() && this.styleSheetSourceFile == null) {
 			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the [polishDir] attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
 		}
 		
@@ -696,6 +700,9 @@ public class PolishTask extends ConditionalTask {
 			setting.setClass("de.enough.polish.preprocess.custom.TranslationPreprocessor");
 			this.translationPreprocessor = (TranslationPreprocessor) CustomPreprocessor.getInstance(setting, this.preprocessor, this.project);
 			this.preprocessor.addCustomPreprocessors( this.translationPreprocessor );
+			if (this.localeSourceFile == null) {
+				throw new BuildException("Unable to find [de.enough.polish.util.Locale.java] in the path, please set the \"polishDir\"-attribute of the <build>-element correctly.");
+			}
 		}
 		
 		//check if there has been an error at the last run:
@@ -756,8 +763,12 @@ public class PolishTask extends ConditionalTask {
 			String fileName = fileNames[i];
 			try {
 				TextFile file = new TextFile( baseDir.getAbsolutePath(), fileName );
-				if (fileName.endsWith("StyleSheet.java") && fileName.startsWith("de")) {
-					this.styleSheetFile = file;
+				if (fileName.startsWith("de")) {
+					if (fileName.endsWith("StyleSheet.java")) {
+						this.styleSheetSourceFile = file;
+					} else if (fileName.endsWith("Locale.java")) {
+						this.localeSourceFile = file;
+					} 
 				}
 				files[i] = file;
 			} catch (FileNotFoundException e) {
@@ -782,7 +793,7 @@ public class PolishTask extends ConditionalTask {
 			String fileName = fileNames[i];
 			TextFile file = new TextFile( baseDir, fileName, lastModificationTime, this.resourceUtil );
 			if ( fileName.endsWith("StyleSheet.java") && fileName.startsWith("de")) {
-				this.styleSheetFile = file;
+				this.styleSheetSourceFile = file;
 			}
 			files[i] = file;
 		}
@@ -835,6 +846,7 @@ public class PolishTask extends ConditionalTask {
 			this.preprocessor.addVariable( "polish.vendor", device.getVendorName() );
 			this.preprocessor.addVariable( "polish.version", this.infoSetting.getVersion() );
 			long lastLocaleModification = 0;
+			TranslationManager translationManager = null;
 			// set localization-variables:
 			if (locale != null) {
 				this.preprocessor.addVariable("polish.locale", locale.toString() );
@@ -842,7 +854,7 @@ public class PolishTask extends ConditionalTask {
 				this.preprocessor.addVariable("polish.country", locale.getCountry() );
 				
 				// load localized messages, this also sets localized variables automatically:
-				TranslationManager translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor.getVariables() );
+				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
 			}
@@ -850,9 +862,12 @@ public class PolishTask extends ConditionalTask {
 			String jarName = this.infoSetting.getJarName();
 			jarName = PropertyUtil.writeProperties(jarName, this.preprocessor.getVariables());
 			this.preprocessor.addVariable( "polish.jarName", jarName );
+			String jarPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jarName;
+			this.preprocessor.addVariable( "polish.jarPath", jarPath );
 			String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
 			this.preprocessor.addVariable( "polish.jadName", jadName );
-			
+			String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
+			this.preprocessor.addVariable( "polish.jadPath", jadPath );
 			// set conditional variables:
 			if (this.conditionalVariables != null) {
 				// add variables which fulfill the conditions: 
@@ -901,7 +916,7 @@ public class PolishTask extends ConditionalTask {
 			// but only when the polish GUI should be used:
 			if (usePolishGui) {
 				// check if the CSS declarations have changed since the last run:
-				File targetFile = new File( targetDir + File.separatorChar + this.styleSheetFile.getFileName() );				
+				File targetFile = new File( targetDir + File.separatorChar + this.styleSheetSourceFile.getFileName() );				
 				boolean cssIsNew = (!targetFile.exists())
 					|| ( lastCssModification > targetFile.lastModified() )
 					|| ( buildXmlLastModified > targetFile.lastModified() );
@@ -909,7 +924,7 @@ public class PolishTask extends ConditionalTask {
 					//System.out.println("CSS is new and the style sheet will be generated.");
 					if (this.styleSheetCode == null) {
 						// the style sheet has not been preprocessed:
-						this.styleSheetCode = new StringList( this.styleSheetFile.getContent() );
+						this.styleSheetCode = new StringList( this.styleSheetSourceFile.getContent() );
 						String className = "de.enough.polish.ui.StyleSheet";
 						this.preprocessor.preprocess( className, this.styleSheetCode );
 					}
@@ -921,12 +936,34 @@ public class PolishTask extends ConditionalTask {
 							this.preprocessor.getStyleSheet(),
 							device,
 							this.preprocessor ); 				
-					this.styleSheetFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
+					this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
 					this.numberOfChangedFiles++;
 				//} else {
 				//	System.out.println("CSSS is not new - last CSS modification == " + lastCssModification + " <= StyleSheet.java.lastModified() == " + targetFile.lastModified() );
 				}
 				
+			}
+			// now check if the de.enough.polish.util.Locale.java needs to be rewritten:
+			if (locale != null) {
+				File targetFile = new File( targetDir + File.separatorChar + this.localeSourceFile.getFileName() );				
+				boolean localizationIsNew = (!targetFile.exists())
+					|| ( lastLocaleModification > targetFile.lastModified() )
+					|| ( buildXmlLastModified > targetFile.lastModified() );
+				if (localizationIsNew) {
+					//System.out.println("Localization is new and the Locale.java will be generated.");
+					if (this.localeCode == null) {
+						// the style sheet has not been preprocessed:
+						this.localeCode = new StringList( this.localeSourceFile.getContent() );
+						String className = "de.enough.polish.util.Locale";
+						this.preprocessor.preprocess( className, this.localeCode );
+					}
+					
+					// now insert the localozation data for this device
+					// into the Locale.java source-code:
+					translationManager.processLocaleCode( this.localeCode );
+					this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
+					this.numberOfChangedFiles++;
+				}
 			}
 			device.setNumberOfChangedFiles( this.numberOfChangedFiles );
 		} catch (FileNotFoundException e) {
@@ -994,8 +1031,10 @@ public class PolishTask extends ConditionalTask {
 				int result = this.preprocessor.preprocess( className, sourceCode );
 				// only think about saving when the file should not be skipped 
 				// and when it is not the StyleSheet.java file:
-				if (file == this.styleSheetFile ) {
+				if (file == this.styleSheetSourceFile ) {
 					this.styleSheetCode = sourceCode;
+				} else if (file == this.localeSourceFile) {
+					this.localeCode = sourceCode;
 				} else  if (result != Preprocessor.SKIP_FILE) {
 					if (!isInPolishPackage) {
 						sourceCode.reset();
@@ -1369,7 +1408,7 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes();
+		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.preprocessor.getVariables() );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute attribute = jadAttributes[i];
 			if (useAttributesFilter) {
@@ -1447,7 +1486,7 @@ public class PolishTask extends ConditionalTask {
 			attributesByName = new HashMap();
 		}
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getJadAttributes();
+		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.preprocessor.getVariables() );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute var  = jadAttributes[i];
 			if (useAttributesFilter) {
@@ -1518,16 +1557,6 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale
 	 */
 	private void callExtensions( Device device, Locale locale ) {
-		HashMap infoProperties = new HashMap();
-		infoProperties.put( "polish.identifier", device.getIdentifier() );
-		infoProperties.put( "polish.name", device.getName() );
-		infoProperties.put( "polish.vendor", device.getVendorName() );
-		infoProperties.put( "polish.version", this.infoSetting.getVersion() );
-		String jarName = this.infoSetting.getJarName();
-		jarName = PropertyUtil.writeProperties(jarName, infoProperties);
-		infoProperties.put( "polish.jarName", jarName );
-		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
-		infoProperties.put( "polish.jadName", jadName );
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		
 		for (int i = 0; i < this.javaExtensions.length; i++) {
@@ -1535,7 +1564,7 @@ public class PolishTask extends ConditionalTask {
 			if (extension.isActive( evaluator )) {
 				System.out.println("Executing <java> extension for device [" + device.getIdentifier() + "]." );
 				// now call the extension:
-				extension.execute(device, infoProperties);
+				extension.execute(device, this.preprocessor.getVariables());
 			}
 		}
 	}

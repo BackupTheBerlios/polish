@@ -28,6 +28,8 @@ package de.enough.polish.preprocess.custom;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 
@@ -56,6 +58,10 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	private IntegerIdGenerator idGenerator;
 	private boolean isPopupUsed;
 	private File popupFile;
+	protected static final String SET_TICKER_STR = "([\\.|\\s]|^)setTicker\\s*\\(.+\\)";
+	protected static final String GET_TICKER_STR = "([\\.|\\s]|^)getTicker\\s*\\(\\s*\\)";
+	protected static final Pattern SET_TICKER_PATTERN = Pattern.compile( SET_TICKER_STR );
+	protected static final Pattern GET_TICKER_PATTERN = Pattern.compile( GET_TICKER_STR );
 
 	/**
 	 * Creates a new uninitialised PolishLineProcessor 
@@ -227,30 +233,46 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				continue;
 			}
 			
-			startPos = line.indexOf(".getTicker"); 
+			startPos = line.indexOf("getTicker"); 
 			if ( startPos != -1) {
 				int commentPos = line.indexOf("//");
 				if (commentPos != -1 && commentPos < startPos) {
 					continue;
 				}
-				line = line.substring(0, startPos)
-					+ ".getPolishTicker"
-					+ line.substring( startPos + 10 );
-				this.isTickerUsed = true;
-				lines.setCurrent( line );
+				Matcher matcher = GET_TICKER_PATTERN.matcher( line );
+				boolean matchFound = false;
+				while (matcher.find()) {
+					matchFound = true;
+					String group = matcher.group();
+					String replacement = TextUtil.replace( group, "getTicker", "getPolishTicker");
+					line = TextUtil.replace( line, group, replacement );
+				}
+				if (matchFound) {
+					this.isTickerUsed = true;
+					lines.setCurrent( line );					
+				}
 				continue;
 			}
-			startPos = line.indexOf(".setTicker");
+			startPos = line.indexOf("setTicker");
 			if ( startPos != -1) {
+				//System.out.println("setTicker found in line " + line );
 				int commentPos = line.indexOf("//");
 				if (commentPos != -1 && commentPos < startPos) {
 					continue;
 				}
-				line = line.substring(0, startPos)
-					+ ".setPolishTicker"
-					+ line.substring( startPos + 10 );
-				this.isTickerUsed = true;
-				lines.setCurrent( line );
+				Matcher matcher = SET_TICKER_PATTERN.matcher( line );
+				boolean matchFound = false;
+				while (matcher.find()) {
+					matchFound = true;
+					String group = matcher.group();
+					String replacement = TextUtil.replace( group, "setTicker", "setPolishTicker");
+					line = TextUtil.replace( line, group, replacement );
+				}
+				if (matchFound) {
+					this.isTickerUsed = true;
+					lines.setCurrent( line );
+					//System.out.println( "line is now " + line );
+				}
 				continue;
 			}
 			

@@ -31,6 +31,7 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.Attribute;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * <p>Represents the info-section of a polish project.</p>
@@ -340,19 +341,33 @@ public class InfoSetting {
 	/**
 	 * Retrieves all manifest attributes for the JAR file.
 	 * 
-	 * @return a Variable array containing all defined attributes for the JAR-Manifest.
+	 * @param variables the variables which might contain more specific attribute values
+	 * @return an Attribute array containing all defined attributes for the JAR-Manifest.
 	 */
-	public Attribute[] getManifestAttributes() {
-		return (Attribute[]) this.manifestAttributes.toArray( new Attribute[ this.manifestAttributes.size() ] );
+	public Attribute[] getManifestAttributes( Map variables ) {
+		return getAttributes( this.manifestAttributes, variables );
 	}
 
 	/**
 	 * Retrieves all attributes for the JAD file.
 	 * 
-	 * @return a Variable array containing all defined attributes for the JAD-file.
+	 * @param variables the variables which might contain more specific attribute values
+	 * @return an Attribute array containing all defined attributes for the JAD-file.
 	 */
-	public Attribute[] getJadAttributes() {
-		return (Attribute[]) this.jadAttributes.toArray( new Attribute[ this.jadAttributes.size() ] );
+	public Attribute[] getJadAttributes( Map variables ) {
+		return getAttributes( this.jadAttributes, variables );
+	}
+	
+	private Attribute[] getAttributes( ArrayList list, Map variables ) {
+		Attribute[] attributes = (Attribute[]) list.toArray( new Attribute[ list.size() ] );
+		for (int i = 0; i < attributes.length; i++) {
+			Attribute attribute = attributes[i];
+			String variableValue = (String) variables.get( attribute.getName() );
+			if (variableValue != null) {
+				attributes[i] = new Attribute( attribute.getName(), variableValue );
+			}
+		}
+		return attributes;
 	}
 	
 	/**

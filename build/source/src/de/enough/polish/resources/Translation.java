@@ -60,7 +60,7 @@ public class Translation {
 	private String oneValueEnd;
 	private int[] parameterIndices;
 	private String[] valueChunks;
-	private int id;
+	private int id = -1;
 
 	/**
 	 * 
@@ -78,7 +78,7 @@ public class Translation {
 			numberOfParameters++;
 		}
 		matcher.reset();
-		System.out.println("value: [" + value + "]  number of references: " + numberOfParameters );
+		//System.out.println("value: [" + value + "]  number of references: " + numberOfParameters );
 		if (numberOfParameters == 0) {
 			this.type = PLAIN;
 		} else if (numberOfParameters == 1) {

@@ -119,7 +119,7 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 							line = TextUtil.replace( line, call, translation.getQuotedValue( parameter ) );
 						} else {
 							// replace String-key with integer-ID to save valueable size:
-							String id = "" + translation.getId();
+							String id = "" + (translation.getId() - 1);
 							String quotedKey = '"' + key + '"';
 							String callReplacement = TextUtil.replace( call, quotedKey, id );
 							line = TextUtil.replace( line, call, callReplacement );

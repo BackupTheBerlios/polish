@@ -306,6 +306,7 @@ public class Preprocessor {
 	 */
 	public void setVariables(HashMap variables) {
 		this.variables = variables;
+		this.temporaryVariables.clear();
 		this.booleanEvaluator.setEnvironment(this.symbols, variables);
 	}
 	
