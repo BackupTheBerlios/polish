@@ -31,7 +31,6 @@ import de.enough.polish.util.Debug;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 
-import java.util.Hashtable;
 
 /**
  * <p>Style defines the design of any widget.</p>
@@ -46,11 +45,12 @@ import java.util.Hashtable;
  */
 public class Style
 //#if (polish.useBeforeStyle || polish.useAfterStyle) && polish.images.backgroundLoad
-//#define tmp.imageConsumer
-implements ImageConsumer
+	//#define tmp.imageConsumer
+	implements ImageConsumer
 //#endif
 {
-	
+	public final static Boolean TRUE = new Boolean( true );
+	public final static Boolean FALSE = new Boolean( false );
 	//#ifdef polish.useDynamicStyles
 		/**
 		 * The name of this style. The name is only accessible when
@@ -115,11 +115,8 @@ implements ImageConsumer
 
 	public final int layout;
 	
-	//#ifdef false
-		private Hashtable properties;
-	//#else
-		//# protected Hashtable properties;
-	//#endif
+	private final short[] attributeKeys;
+	private final Object[] attributeValues;
 
 	/**
 	 * Creates a new Style.
@@ -144,6 +141,8 @@ implements ImageConsumer
 	 * @param afterUrl the URL of the after element. This is inserted after items
 	 *            with this style.
 	 * @param name the name of this style. Is only used when dynamic styles are used.
+	 * @param attributeKeys the integer-IDs of any additional attributes. Can be null.
+	 * @param attributeValues the values of any additional attributes. Can be null.
 	 * 			
 	 */
 	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
@@ -160,6 +159,8 @@ implements ImageConsumer
 			//#ifdef polish.useDynamicStyles
 			, String name
 			//#endif
+			, short[] attributeKeys
+			, Object[] attributeValues
 			) 
 	{
 		this.marginLeft = marginLeft;
@@ -214,8 +215,17 @@ implements ImageConsumer
 		//#ifdef polish.useDynamicStyles
 		this.name = name;
 		//#endif
+		this.attributeValues = attributeValues;
+		this.attributeKeys = attributeKeys;
+		//#ifdef false
+			// this is only used, so that the IDE does not complain about unused code:
+			getProperty( -1 );
+			getIntProperty( -1 );
+			getBooleanProperty( -1 );
+		//#endif
 	}
-		
+	
+	//#ifdef false
 	/**
 	 * Retrieves a non-standard property of this style.
 	 * 
@@ -223,12 +233,83 @@ implements ImageConsumer
 	 * @return the value of this property. If none has been defined, null will be returned.
 	 */
 	public String getProperty( String propName ) {
-		if (this.properties == null) {
+		return propName;
+	}
+	//#endif
+
+	//#ifdef false
+	/**
+	 * Retrieves a non-standard integer property of this style.
+	 * 
+	 * @param propName the name of the property
+	 * @return the value of this property as an Integer object. If none has been defined, null will be returned.
+	 */
+	public Integer getIntProperty( String propName ) {
+		return new Integer( 0 );
+	}
+	//#endif
+	
+	//#ifdef false
+	/**
+	 * Retrieves a non-standard boolean property of this style.
+	 * 
+	 * @param propName the name of the property
+	 * @return the value of this property as an Boolean object. If none has been defined, null will be returned.
+	 */
+	public Boolean getBooleanProperty( String propName ) {
+		return new Boolean( false );
+	}
+	//#endif
+
+	//#ifdef false
+		private String getProperty( int key ) {
+	//#else
+		//# public String getProperty( int key ) {
+	//#endif
+		if (this.attributeKeys == null) {
 			return null;
 		}
-		return (String) this.properties.get( propName );
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				return this.attributeValues[i].toString();
+			}
+		}
+		return null;
 	}
 
+	//#ifdef false
+		private Integer getIntProperty( int key ) {
+	//#else
+		//# public Integer getIntProperty( int key ) {
+	//#endif
+		if (this.attributeKeys == null) {
+			return null;
+		}
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				return (Integer) this.attributeValues[i];
+			}
+		}
+		return null;
+	}
+	
+	//#ifdef false
+		private Boolean getBooleanProperty( int key ) {
+	//#else
+		//# public Boolean getBooleanProperty( int key ) {
+	//#endif
+		if (this.attributeKeys == null) {
+			return null;
+		}
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				return (Boolean) this.attributeValues[i];
+			}
+		}
+		return null;
+	}
+	
+	
 	//#ifdef tmp.imageConsumer
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)

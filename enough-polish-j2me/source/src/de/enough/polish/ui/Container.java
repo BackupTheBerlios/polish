@@ -305,26 +305,49 @@ public class Container extends Item {
 		if (this.focusedItem != null) {
 			this.focusedItem.defocus(this.itemStyle);
 		}
-		// save style of the to be focused item:
+		// save style of the to be focused item and focus the item:
 		this.itemStyle = item.focus( this.focusedStyle );
+		
 		this.focusedIndex = index;
 		this.focusedItem = item;
-		if (this.isInitialised) {
+		if (this.yTopPos != this.yBottomPos) {
 			// this container has been painted already,
 			// so the dimensions are known.
-			int itemYTop = item.yTopPos;
-			int itemYBottom = item.yBottomPos;
+			if (item.internalX != -9999) {
+				this.internalX =  item.contentX - this.contentX + item.internalX;
+				this.internalWidth = item.internalWidth;
+				this.internalY = item.contentY - this.contentY + item.internalY;
+				this.internalHeight = item.internalHeight;
+			} else {
+				this.internalX = item.xLeftPos - this.contentX;
+				this.internalWidth = item.itemWidth;
+				this.internalY = item.yTopPos - this.contentY;
+				this.internalHeight = item.itemHeight;
+			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
+				int itemYTop = item.yTopPos;
+				int itemYBottom = item.yBottomPos;
+				int difference = 0;
 				if (itemYBottom > this.yBottom) {
 					// this item is too low:
-					this.yOffset -= ( itemYBottom - this.yBottom );
-					//System.out.println("adjusting yOffset: itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+					difference = this.yBottom - itemYBottom; 
+					//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+					if ( itemYTop + difference < this.yTop) {
+						difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
+						//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop );
+					}
 				} else if (itemYTop < this.yTop) {
 					// this item is too high:
-					this.yOffset += ( this.yTop - itemYTop ); 
+					difference = this.yTop - itemYTop; 
+					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
 				}
-			} else {
+				//System.out.println("focus:: difference: " + difference + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
+				this.yOffset += difference;
+			}
+			/*
+			else {
+				//TODO check if this is needed at all - we have the internal coordinates now, after all...
 				// this container might be embedded in another one:
 				if (this.parent != null && this.parent instanceof Container) {
 					Container container = (Container) this.parent;
@@ -339,8 +362,14 @@ public class Container extends Item {
 							container.yOffset += ( container.yTop - itemYTop ); 
 						}
 					}
+					if ( item.internalY + item.internalHeight > container.yBottom) {
+						container.yOffset -= ( item.internalY + item.internalHeight - this.yBottom );
+					} else if ( item.internalY < container.yTop ) {
+						container.yOffset += ( container.yTop - item.internalY ); 
+					}
 				}
 			}
+			*/
 		}
 		this.isInitialised = false;
 	}
@@ -478,7 +507,6 @@ public class Container extends Item {
 		// paints all items,
 		// the layout will be done according to this containers'
 		// layout or according to the items layout, when specified.
-
 		// adjust vertical start for scrolling:
 		y += this.yOffset;
 		Item[] myItems = this.items;
@@ -528,7 +556,15 @@ public class Container extends Item {
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		if (this.focusedItem != null) {
-			if ( this.focusedItem.handleKeyPressed(keyCode, gameAction) ) {
+			Item item = this.focusedItem;
+			if ( item.handleKeyPressed(keyCode, gameAction) ) {
+				if (this.enableScrolling && item.internalX != -9999) {
+					if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
+						this.yOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+					} else if ( item.contentY + item.internalY < this.yTop ) {
+						this.yOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+					}
+				}
 				return true;
 			}
 			
@@ -657,9 +693,9 @@ public class Container extends Item {
 		//#endif
 		this.columnsSetting = NO_COLUMNS;
 		//#ifdef polish.css.columns
-			String columns = style.getProperty("columns");
+			Integer columns = style.getIntProperty("columns");
 			if (columns != null) {
-				this.numberOfColumns = Integer.parseInt( columns );
+				this.numberOfColumns = columns.intValue();
 				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
 				//#ifdef polish.css.columns-width
 				String width = style.getProperty("columns-width");

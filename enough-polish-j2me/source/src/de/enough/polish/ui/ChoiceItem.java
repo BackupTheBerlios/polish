@@ -275,9 +275,9 @@ public class ChoiceItem extends IconItem
 				}
 			//#endif
 			//#ifdef polish.css.choice-color
-				String colorStr = style.getProperty("choice-color");
-				if (colorStr != null) {
-					this.boxColor = Integer.parseInt( colorStr );
+				Integer color = style.getIntProperty("choice-color");
+				if (color != null) {
+					this.boxColor = color.intValue();
 				}
 			//#endif
 		} // if draw box

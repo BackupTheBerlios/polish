@@ -837,15 +837,30 @@ public class ChoiceGroup extends Container implements Choice
 					if (this.isPopupClosed) {
 						this.isPopupClosed = false;
 						focus( this.selectedIndex );
+						// recalculate the internal positions of the selected choice:
+						Item item = this.items[ this.selectedIndex ];
+						if (item.yTopPos != item.yBottomPos) {
+							// okay, this item has been painted alrady: 
+							this.internalY = (item.itemHeight + this.paddingVertical) * this.selectedIndex;
+							this.internalHeight = item.itemHeight;
+							this.internalX = 0;
+							this.internalWidth = item.itemWidth;
+						} else {
+							this.internalX = 0;
+							this.internalY = 0;
+							this.internalHeight = this.itemHeight + 20;
+							this.internalWidth = this.itemWidth;
+						}
 					} else {
 						this.isPopupClosed = true;
 						setSelectedIndex(this.focusedIndex, true);
+						this.internalX = -9999;
 					}
 					requestInit();
 				} else {
 					setSelectedIndex(this.focusedIndex, true);
 				}
-				if (this.choiceType != IMPLICIT) {
+				if (this.choiceType != IMPLICIT && !(this.isPopup && !this.isPopupClosed)) {
 					notifyStateChanged();
 				}
 				return true;
@@ -1002,15 +1017,15 @@ public class ChoiceGroup extends Container implements Choice
 				}
 			//#endif
 			//#ifdef polish.css.popup-color
-				String colorStr = style.getProperty("popup-color");
-				if (colorStr != null) {
-					this.popupColor = Integer.parseInt( colorStr );
+				Integer color = style.getIntProperty("popup-color");
+				if (color != null) {
+					this.popupColor = color.intValue();
 				}
 			//#endif
 			//#ifdef polish.css.popup-background-color
-				colorStr = style.getProperty("popup-background-color");
-				if (colorStr != null) {
-					this.popupBackgroundColor = Integer.parseInt( colorStr );
+				Integer bgColor = style.getIntProperty("popup-background-color");
+				if (bgColor != null) {
+					this.popupBackgroundColor = bgColor.intValue();
 				}
 			//#endif
 		}

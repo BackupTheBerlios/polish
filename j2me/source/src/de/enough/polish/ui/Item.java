@@ -641,10 +641,20 @@ public abstract class Item extends Object
 	protected boolean isLayoutCenter;
 	protected boolean isLayoutExpand;
 	protected boolean isLayoutRight;
+	// the current positions of this item:
 	protected int xLeftPos;
 	protected int yTopPos;
 	protected int xRightPos;
 	protected int yBottomPos;
+	// the current positions of this item's content:
+	protected int contentX;
+	protected int contentY;
+	// the current positions of an internal element relative to the content origin 
+	// which should be visible:
+	protected int internalX = - 9999;
+	protected int internalY;
+	protected int internalWidth;
+	protected int internalHeight;
 	protected boolean isFocused;
 	
 	//#ifdef polish.useBeforeStyle
@@ -1332,21 +1342,21 @@ public abstract class Item extends Object
 			this.background.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
 		}
 		
-		int contentX = x + this.borderWidth + this.paddingLeft;
-		int contentY = y + this.borderWidth + this.paddingTop;
-		int originalContentY = contentY;
+		int contX = x + this.borderWidth + this.paddingLeft;
+		int contY = y + this.borderWidth + this.paddingTop;
+		int originalContentY = contY;
 		
 		// paint before element:
 		//#ifdef polish.useBeforeStyle
 			if (this.beforeImage != null) {
-				int beforeY = contentY;
+				int beforeY = contY;
 				if ( this.beforeHeight < this.contentHeight) {
 					beforeY += (this.contentHeight - this.beforeHeight) / 2;
 				} else {
-					contentY += (this.beforeHeight - this.contentHeight) / 2;
+					contY += (this.beforeHeight - this.contentHeight) / 2;
 				}
-				g.drawImage(this.beforeImage, contentX, beforeY, Graphics.TOP | Graphics.LEFT );
-				contentX += this.beforeWidth;
+				g.drawImage(this.beforeImage, contX, beforeY, Graphics.TOP | Graphics.LEFT );
+				contX += this.beforeWidth;
 			}
 		//#endif
 		
@@ -1360,7 +1370,7 @@ public abstract class Item extends Object
 					//#ifdef polish.useBeforeStyle
 					if (this.afterHeight > this.beforeHeight) {
 					//#endif
-						contentY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
+						contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
 					//#ifdef polish.useBeforeStyle
 					}
 					//#endif
@@ -1372,16 +1382,16 @@ public abstract class Item extends Object
 		// align content positions:
 		if ( doCenter ) {
 			int contentSpace = rightBorder - this.marginRight - this.borderWidth 
-					- this.paddingRight - contentX;
+					- this.paddingRight - contX;
 			if (contentSpace > this.contentWidth) {
-				contentX += (contentSpace - this.contentWidth ) / 2;				
+				contX += (contentSpace - this.contentWidth ) / 2;				
 			}
 		}
 		if ( doRightAlign ) {
 			int contentSpace = rightBorder - this.marginRight - this.borderWidth 
-					- this.paddingRight - contentX;
+					- this.paddingRight - contX;
 			if (contentSpace > this.contentWidth) {
-				contentX += contentSpace - this.contentWidth;				
+				contX += contentSpace - this.contentWidth;				
 			}
 		}
 		// set coordinates of this item:
@@ -1389,8 +1399,11 @@ public abstract class Item extends Object
 		this.yTopPos = y;
 		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
 		this.yBottomPos = y + this.itemHeight;
+		
 		// paint content:
-		paintContent( contentX, contentY, leftBorder, rightBorder, g );
+		this.contentX = contX;
+		this.contentY = contY;
+		paintContent( contX, contY, leftBorder, rightBorder, g );
 				
 		// paint border:
 		if (this.border != null) {
@@ -1635,6 +1648,12 @@ public abstract class Item extends Object
 			if (scr != null) {
 				scr.setItemCommands(this);
 			}
+		}
+		// when an item is focused, it usually grows bigger, so
+		// increase the bottom position a bit:
+		if (this.yTopPos != this.yBottomPos) {
+			this.yBottomPos += 5;
+			this.itemHeight += 5;
 		}
 		return oldStyle;
 	}

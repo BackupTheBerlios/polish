@@ -817,49 +817,49 @@ implements ImageConsumer
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		//#ifdef polish.css.gauge-color
-			String colorStr = style.getProperty("gauge-color");
-			if (colorStr != null) {
-				this.color = Integer.parseInt( colorStr );
+			Integer gaugeColor = style.getIntProperty("gauge-color");
+			if (gaugeColor != null) {
+				this.color = gaugeColor.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-width
-			String widthStr = style.getProperty( "gauge-width");
-			if (widthStr != null) {
-				this.preferredWidth = Integer.parseInt( widthStr );
+			Integer width = style.getIntProperty( "gauge-width");
+			if (width != null) {
+				this.preferredWidth = width.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-height
-			String heightStr = style.getProperty( "gauge-height");
-			if (heightStr != null) {
-				this.preferredHeight = Integer.parseInt( heightStr );
+			Integer height = style.getIntProperty( "gauge-height");
+			if (height != null) {
+				this.preferredHeight = height.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-mode
 			String modeStr = style.getProperty( "gauge-mode");
 			if (modeStr != null) {
-				if ("continuous".equals(modeStr)) {
-					this.mode = MODE_CONTINUOUS;
-				} else {
+				if ("chunked".equals(modeStr)) {
 					this.mode = MODE_CHUNKED;
+				} else {
+					this.mode = MODE_CONTINUOUS;
 				}
 			}
 		//#endif
 		//#ifdef polish.css.gauge-gap-color
-			String gapColorStr = style.getProperty( "gauge-gap-color");
-			if (gapColorStr != null) {
-				this.gapColor = Integer.parseInt( gapColorStr );
+			Integer gapColorInt = style.getIntProperty( "gauge-gap-color");
+			if (gapColorInt != null) {
+				this.gapColor = gapColorInt.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-gap-width
-			String gapWidthStr = style.getProperty( "gauge-gap-width");
-			if (gapWidthStr != null) {
-				this.gapWidth = Integer.parseInt( gapWidthStr );
+			Integer gapWidthInt = style.getIntProperty( "gauge-gap-width");
+			if (gapWidthInt != null) {
+				this.gapWidth = gapWidthInt.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-chunk-width
-			String chunkWidthStr = style.getProperty( "gauge-chunk-width");
-			if (chunkWidthStr != null) {
-				this.chunkWidth = Integer.parseInt( chunkWidthStr );
+			Integer chunkWidthInt = style.getIntProperty( "gauge-chunk-width");
+			if (chunkWidthInt != null) {
+				this.chunkWidth = chunkWidthInt.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-image
@@ -875,7 +875,7 @@ implements ImageConsumer
 		//#endif
 		if (this.maxValue != INDEFINITE) {
 			//#ifdef polish.css.gauge-show-value
-				String showValueStr = style.getProperty("gauge-show-value");
+				Boolean showValueStr = style.getBooleanProperty("gauge-show-value");
 				if (showValueStr != null) {
 					if ("true".equals(showValueStr)) {
 						this.showValue = true;

@@ -1070,15 +1070,15 @@ implements CommandListener
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		//#ifdef polish.css.textfield-width
-			String widthStr = style.getProperty("textfield-width");
-			if (widthStr != null) {
-				this.minimumWidth = Integer.parseInt( widthStr );
+			Integer width = style.getIntProperty("textfield-width");
+			if (width != null) {
+				this.minimumWidth = width.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.textfield-height
-			String heightStr = style.getProperty("textfield-height");
-			if (heightStr != null) {
-				this.minimumHeight = Integer.parseInt( heightStr );
+			Integer height = style.getIntProperty("textfield-height");
+			if (height != null) {
+				this.minimumHeight = height.intValue();
 			}
 		//#endif
 	}

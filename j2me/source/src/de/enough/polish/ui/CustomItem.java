@@ -95,10 +95,10 @@ import javax.microedition.lcdui.Graphics;
  * of the content area and the size of the total area of the
  * <code>Item</code> as reported by the Item size methods
  * 
- * <A HREF="../../../javax/microedition/lcdui/Item.html#getMinimumHeight()"><CODE>Item.getMinimumHeight</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Item.html#getMinimumWidth()"><CODE>Item.getMinimumWidth</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Item.html#getPreferredHeight()"><CODE>Item.getPreferredHeight</CODE></A>, and
- * <A HREF="../../../javax/microedition/lcdui/Item.html#getPreferredWidth()"><CODE>Item.getPreferredWidth</CODE></A>.</p>
+ * <A HREF="../../../de/enough/polish/ui/Item.html#getMinimumHeight()"><CODE>Item.getMinimumHeight</CODE></A>,
+ * <A HREF="../../../de/enough/polish/ui/Item.html#getMinimumWidth()"><CODE>Item.getMinimumWidth</CODE></A>,
+ * <A HREF="../../../de/enough/polish/ui/Item.html#getPreferredHeight()"><CODE>Item.getPreferredHeight</CODE></A>, and
+ * <A HREF="../../../de/enough/polish/ui/Item.html#getPreferredWidth()"><CODE>Item.getPreferredWidth</CODE></A>.</p>
  * 
  * <p>The implementation may disregard sizing information returned from a
  * <code>CustomItem</code> if it exceeds limits imposed by the
@@ -474,11 +474,9 @@ public abstract class CustomItem extends Item
 	//#endif
 	/** the font which is set in each paint() method */
 	private static final Font DEFAULT_FONT = Font.getDefaultFont();
-	private int[] visRect_inout;
+	private int[] visRect_inout = new int[4];
 	private int clipHeight;
 	private int clipWidth;
-	private int contentX;
-	private int contentY;
 
 
 	/**
@@ -1069,7 +1067,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected void traverseOut()
 	{
-		//TODO implement traverseOut
+		// the default implentation does nothing
 	}
 
 	/**
@@ -1221,14 +1219,12 @@ public abstract class CustomItem extends Item
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) 
 	{
-		this.contentX = x;
-		this.contentY = y;
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		this.clipWidth = g.getClipWidth();
 		this.clipHeight = g.getClipHeight();
 		// set the clip-area, so that the implementation cannot paint over the content area:
-		g.setClip( x, y, this.contentWidth, this.contentHeight );
+		g.clipRect( x, y, this.contentWidth, this.contentHeight );
 		// translate the graphics origin:
 		g.translate( x, y );
 		
@@ -1268,9 +1264,16 @@ public abstract class CustomItem extends Item
 		if (gameAction == Canvas.UP || gameAction == Canvas.LEFT ||
 				gameAction == Canvas.DOWN || gameAction == Canvas.RIGHT ) 
 		{
+			this.visRect_inout[0] = 0;
+			this.visRect_inout[1] = 0;
+			this.visRect_inout[2] = this.contentWidth;
+			this.visRect_inout[3] = this.contentHeight;
 			boolean isTraversed = traverse(gameAction, this.clipWidth, this.clipHeight, this.visRect_inout);
 			if (isTraversed) {
-				//TODO rob shift the returned highlighted area so that it is visible
+				this.internalX = this.visRect_inout[0];
+				this.internalY = this.visRect_inout[1];
+				this.internalWidth = this.visRect_inout[2];
+				this.internalHeight = this.visRect_inout[3];
 				return true;
 			}
 		}
