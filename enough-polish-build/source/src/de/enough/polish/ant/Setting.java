@@ -58,14 +58,28 @@ public class Setting extends ConditionalElement {
 	 * @param var the parameter with a [name] and a [value] attribute.
 	 */
 	public void addConfiguredParameter( Variable var ) {
-		if (var.getName() == null) {
-			throw new BuildException("Invalid parameter: please specify the attribute [name] for each <parameter> element.");
-		}
-		if (var.getValue() == null) {
-			throw new BuildException("Invalid parameter: please specify the attribute [value] for each <parameter> element.");
-		}
 		if (this.parameters == null) {
 			this.parameters = new ArrayList();
+		}
+		if (var.containsMultipleVariables()) {
+			String ifCondition = var.getIfCondition();
+			String unlessCondition = var.getUnlessCondition();
+			String type = var.getType();
+			Variable[] variables = var.loadVariables();
+			for (int i = 0; i < variables.length; i++) {
+				Variable variable = variables[i];
+				variable.setIf( ifCondition );
+				variable.setUnless(unlessCondition);
+				variable.setType(type);
+				this.parameters.add( variable );
+			}
+		} else {
+			if (var.getName() == null) {
+				throw new BuildException("Invalid parameter: please specify the attribute [name] for each <parameter> element.");
+			}
+			if (var.getValue() == null) {
+				throw new BuildException("Invalid parameter: please specify the attribute [value] for each <parameter> element.");
+			}
 		}
 		this.parameters.add( var );
 	}

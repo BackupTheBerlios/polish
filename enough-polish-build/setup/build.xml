@@ -167,6 +167,21 @@
 			</java>	
 			-->
 		</build>
+		
+		<!-- execution of emulator(s) -->
+		<emulator
+			wait="true"
+			trace="class"
+			securityDomain="trusted"
+			enableProfiler="true"
+			enableMemoryMonitor="true"
+			enableNetworkMonitor="true"
+			>
+			<!--
+			<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
+			-->
+		</emulator>
+	
 	</j2mepolish>
 </target>
 

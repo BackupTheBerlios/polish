@@ -47,7 +47,7 @@ implements DeviceFilter
 {
 	
 	//private String value;
-	protected String propertyName;
+	protected final String propertyName;
 	
 
 	/**
@@ -58,7 +58,11 @@ implements DeviceFilter
 	 */
 	public Requirement( String value, String propertyName ) {
 		//this.value = value;
-		this.propertyName = "polish." + propertyName;
+		if (!propertyName.startsWith("polish.")) {
+			this.propertyName = "polish." + propertyName;
+		} else {
+			this.propertyName = propertyName;
+		}
 	}
 	
 	/**

@@ -1,0 +1,172 @@
+/*
+ * Created on 05-Sep-2004 at 21:19:40.
+ * 
+ * Copyright (c) 2004 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+package de.enough.polish.util;
+
+import java.util.HashMap;
+
+
+/**
+ * <p>Converts units like MB, kb, etc.</p>
+ *
+ * <p>copyright Enough Software 2004</p>
+ * <pre>
+ * history
+ *        05-Sep-2004 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public final class ConvertUtil {
+	
+	private static final long BYTES = 1;
+	private static final long KILO_BYTES = 1024;
+	private static final long MEGA_BYTES = 1024 * KILO_BYTES;
+	private static final long GIGA_BYTES = 1024 * MEGA_BYTES;
+	private static final Long BYTES_KEY = new Long( BYTES );
+	private static final Long KILO_BYTES_KEY = new Long( KILO_BYTES );
+	private static final Long MEGA_BYTES_KEY = new Long( MEGA_BYTES );
+	private static final Long GIGA_BYTES_KEY = new Long( GIGA_BYTES );
+	private static final HashMap UNITS  = new HashMap();
+	static {
+		UNITS.put("bytes", BYTES_KEY);
+		UNITS.put("b", BYTES_KEY);
+		UNITS.put("kilobytes", KILO_BYTES_KEY);
+		UNITS.put("kb", KILO_BYTES_KEY);
+		UNITS.put("megabytes", MEGA_BYTES_KEY);
+		UNITS.put("mb", MEGA_BYTES_KEY);
+		UNITS.put("gigabytes", GIGA_BYTES_KEY);
+		UNITS.put("gb", GIGA_BYTES_KEY);
+	}
+
+	public final static Object convert( String value, String targetUnit ) 
+	{
+		Object target = UNITS.get( targetUnit ); 
+		if (target == null) {
+			throw new IllegalArgumentException("The target-unit [" + targetUnit + "] is not supported.");
+		}
+		if (target == BYTES_KEY) {
+			return new Long( convertToBytes( value ) );
+		} else if (target == KILO_BYTES_KEY) {
+			return new Double( convertToKiloBytes( value ) );
+		} else if (target == MEGA_BYTES_KEY) {
+			return new Double( convertToMegaBytes( value ) );
+		} else if (target == GIGA_BYTES_KEY) {
+			return new Double( convertToGigaBytes( value ) );
+		}
+		throw new IllegalArgumentException("The target-unit [" + targetUnit + "] is not supported.");
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	public final static long convertToBytes(String value) {
+		value = value.trim().toLowerCase();		
+		int splitPos = value.indexOf(' ');
+		if (splitPos == -1) {
+			splitPos = value.indexOf('\t');
+		}
+		double valueNumber;
+		String valueString = null;
+		String valueUnit;
+		if (splitPos != -1) {
+			valueString = value.substring(0, splitPos).trim();
+			valueUnit = value.substring( splitPos + 1 ).trim();
+		} else {
+			// check number char by char:
+			char[] valueChars = value.toCharArray();
+			StringBuffer buffer = new StringBuffer( value.length() );
+			int pos = 0;
+			for (pos = 0; pos < valueChars.length; pos++) {
+				char c = valueChars[pos];
+				if ( Character.isDigit( c ) || (c == '.' ) ) {
+					buffer.append( c );
+				} else {
+					break;
+				}
+			}
+			valueString = buffer.toString();
+			valueUnit = value.substring( pos ).trim();
+		}
+		if (valueString.length() == 0) {
+			throw new IllegalArgumentException("Unable to parse the memory-value [" + value + "]: no numbers found!");
+		}
+		if (valueString.indexOf('.') == -1) {
+			valueNumber = Integer.parseInt( valueString );
+		} else {
+			valueNumber = Double.parseDouble( valueString );
+		}
+		Long unitMultiply = (Long) UNITS.get(valueUnit);
+		if (unitMultiply == null) {
+			throw new IllegalArgumentException("Invalid memory-value [" + value +"] / unit [" + valueUnit + "] found: please specify a valid unit (kb, mb etc).");
+		}
+		return (long) (valueNumber * unitMultiply.longValue());		
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	public final static double convertToKiloBytes(String value) {
+		double bytes = convertToBytes( value );
+		return bytes / KILO_BYTES;
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	public final static double convertToMegaBytes(String value) {
+		double bytes = convertToBytes( value );
+		return bytes / MEGA_BYTES;
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	public final static double convertToGigaBytes(String value) {
+		double bytes = convertToBytes( value );
+		return bytes / GIGA_BYTES;
+	}
+	
+	/**
+	 * Converts the given object to a String.
+	 * In contrast to Double.toString() etc a trailing ".0" will be removed
+	 * from the String-representation of the value.
+	 * 
+	 * @param value the value
+	 * @return the string representation of that value
+	 */
+	public final static String toString( Object value ) {
+		String valueStr = value.toString();
+		if (valueStr.endsWith(".0")) {
+			return valueStr.substring(0, valueStr.length() - 2);
+		} else {
+			return valueStr;
+		}
+	}
+	
+}

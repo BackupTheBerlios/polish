@@ -256,7 +256,7 @@
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="Network" value="GSM, GPRS, HSCSD"/>
 		<capability name="Frequency" value="900,1800,1900"/>
-		<capability name="EmulatorSkin" value="SonyEricsson_P900"/>
+		<capability name="Emulator.Skin" value="SonyEricsson_P900"/>
 	</device>
 	
 	<device>
@@ -2018,6 +2018,10 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="wmapi" />
+		<capability name="MaxJarSize" value="128 kb" />
+		<capability name="StorageSize" value="1.5 MB" />
+		<capability name="ImageFormat" value="png, gif, jpg, agif, bmp" />
+		<capability name="SoundFormat" value="midi, sp-midi, iMelody, amr" />
 	</device>
 
 	<device>

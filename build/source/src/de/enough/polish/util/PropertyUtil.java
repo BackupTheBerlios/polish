@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 public final class PropertyUtil {
 
 	static final Pattern PROPERTY_PATTERN = 
-		Pattern.compile("\\$\\{\\s*(\\w|\\.|-)+\\s*\\}"); // == \$\{\s*(\w|\.|-)+\s*\}
+		Pattern.compile("\\$\\{\\s*(\\w|\\.|-|\\)|\\()+\\s*\\}"); // == \$\{\s*(\w|\.|-)+\s*\}
 	
 	/**
 	 * Inserts the property-values in a string with property-definitions.
@@ -69,7 +69,7 @@ public final class PropertyUtil {
 	 *             the full property-name is inserted instead (e.g. "${ property-name }").  
 	 * @throws IllegalArgumentException when a property-value was not found and needsToBeDefined is true.
 	 */
-	public static String writeProperties( String input, Map properties, boolean needsToBeDefined ) {
+	public final static String writeProperties( String input, Map properties, boolean needsToBeDefined ) {
 		Matcher matcher = PROPERTY_PATTERN.matcher( input );
 		boolean propertyFound = matcher.find();
 		if (!propertyFound) {
@@ -84,7 +84,22 @@ public final class PropertyUtil {
 			// append property:
 			String group = matcher.group(); // == ${ property.name }
 			String property = group.substring( 2, group.length() -1 ).trim(); // == property.name
-			Object value = properties.get( property );
+			Object value;
+			// the property-name can also include a convert-function, e.g. bytes( polish.HeapSize )
+			int functionStart = property.indexOf('(');
+			if (functionStart != -1) {
+				int functionEnd = property.indexOf(')', functionStart);
+				if (functionEnd == -1) {
+					throw new IllegalArgumentException("The function [" + property + "] needs a closing paranthesis in input [" + input + "].");
+				}
+				String function = property.substring(0, functionStart).trim();
+				property = property.substring( functionStart + 1, functionEnd ).trim();
+				String originalValue = (String)properties.get( property );
+				Object intermediateValue = ConvertUtil.convert( originalValue, function);
+				value = ConvertUtil.toString(intermediateValue);
+			} else {
+				value = properties.get( property );
+			}
 			if (value == null) {
 				if (needsToBeDefined) {
 					throw new IllegalArgumentException("property " + group + " is not defined.");

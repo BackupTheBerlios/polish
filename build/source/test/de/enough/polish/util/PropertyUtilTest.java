@@ -118,12 +118,31 @@ public class PropertyUtilTest extends TestCase {
 		result = PropertyUtil.writeProperties( "   ${ test1};", properties, true );
 		assertEquals( "   T1;", result );
 		
+		
 		try {
 			result = PropertyUtil.writeProperties( "12${test1}34${  test4 }5${ test2  }67${      test3}8", properties, true );
 			fail("writeProperties() should fail when a property is not defined and argument needsToBeDefined==true.");
 		} catch (IllegalArgumentException e) {
 			// expected behaviour!
 		}
+	}
+	
+	public void testFunctions() {
+		HashMap properties = new HashMap();
+		properties.put( "polish.HeapSize", "200kb");
+		
+		String result = PropertyUtil.writeProperties( "${ bytes(polish.HeapSize) }", properties );
+		assertEquals( "204800", result );
+
+		result = PropertyUtil.writeProperties( "hallo${ b(polish.HeapSize) }bytes", properties );
+		assertEquals( "hallo204800bytes", result );
+
+		result = PropertyUtil.writeProperties( "${ kilobytes(polish.HeapSize) }K", properties );
+		assertEquals( "200K", result );
+		
+		result = PropertyUtil.writeProperties( "${ mb(polish.HeapSize) }M", properties );
+		assertEquals( "0.1953125M", result );
+		
 	}
 	
 }
