@@ -3,8 +3,13 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor;
 
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import de.enough.polish.plugin.eclipse.css.editor.outline.CssOutlinePage;
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
 
 
 /**
@@ -13,10 +18,14 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 public class CssEditor extends TextEditor{
 
 	CssOutlinePage cssOutlinePage;
-	
+	// The facede for the model.
+	CssModel cssModel;
+	IDocument document;
 	
 	public CssEditor(){
 		setSourceViewerConfiguration(new CssSourceViewerConfiguration(this,getSharedColors()));
+		//this.document = getDocumentProvider().getDocument(getEditorInput());
+		//this.document.addDocumentListener(new SimpleDocumentListener());
 	}
 	
 	public Object getAdapter(Class requiredClass) {
@@ -27,5 +36,18 @@ public class CssEditor extends TextEditor{
 			return this.cssOutlinePage;
 		}
 		return super.getAdapter(requiredClass);
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+	 */
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		//TODO: This shows us that the DocumentListener ist called after the presentation reconciler
+		// and before the reconciler... Dont think, swallow.
+		this.document = getDocumentProvider().getDocument(getEditorInput());
+		this.document.addDocumentListener(new SimpleDocumentListener());
 	}
 }

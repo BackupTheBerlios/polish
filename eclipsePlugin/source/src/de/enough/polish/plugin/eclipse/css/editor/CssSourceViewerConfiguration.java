@@ -7,6 +7,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -21,12 +23,23 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 
+import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleDamagerRepairer;
+import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleReconcilingStrategy;
+
 
 /**
  * @author rickyn
  */
 public class CssSourceViewerConfiguration extends SourceViewerConfiguration{
 		
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getReconciler(org.eclipse.jface.text.source.ISourceViewer)
+	 */
+	public IReconciler getReconciler(ISourceViewer sourceViewer) {
+		MonoReconciler monoReconciler = new MonoReconciler(new SimpleReconcilingStrategy(),true);
+		monoReconciler.install(sourceViewer);
+		return monoReconciler;
+	}
 	CssEditor editor;
 	ISharedTextColors colors;
 	
@@ -35,6 +48,8 @@ public class CssSourceViewerConfiguration extends SourceViewerConfiguration{
 		this.colors = colors;
 	}
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
 	 */
@@ -42,7 +57,8 @@ public class CssSourceViewerConfiguration extends SourceViewerConfiguration{
 			ISourceViewer sourceViewer) {
 		
 		PresentationReconciler reconciler = new PresentationReconciler();
-		DefaultDamagerRepairer damagerRepairer =  new DefaultDamagerRepairer(getPartionScanner());
+		
+		DefaultDamagerRepairer damagerRepairer =  new SimpleDamagerRepairer(getPartionScanner());
 		reconciler.setDamager(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
 		return reconciler;		

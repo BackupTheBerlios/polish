@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 12:22:24 PM.
+ * Created on Feb 24, 2005 at 10:12:30 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,9 +23,11 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
+package de.enough.polish.plugin.eclipse.css.editor.outline;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 
@@ -39,13 +41,29 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssLabelProvider extends LabelProvider{
+public class CssOutlinePage extends ContentOutlinePage {
 
-	public String getText(Object object){
-		if(object instanceof ASTNode){
-			return ((ASTNode)object).toString();
-		}
-		return "NoName";
+	//FIXME: We need our own model here
+	public CssOutlinePage(){
+		super();
 	}
-
+	
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+		
+		CssContentProvider cssContentProvider = new CssContentProvider();
+		
+		TreeViewer viewer= getTreeViewer();
+		viewer.setContentProvider(cssContentProvider);
+		viewer.setLabelProvider(new CssLabelProvider());
+		viewer.addSelectionChangedListener(this);
+		ASTNode rootNode = cssContentProvider.initialInput();
+		viewer.setInput(rootNode);
+	}
+	
+	/*
+	public void setInput(IEditorInput editorInput){
+		System.out.println("setInput");
+	}
+	*/
 }

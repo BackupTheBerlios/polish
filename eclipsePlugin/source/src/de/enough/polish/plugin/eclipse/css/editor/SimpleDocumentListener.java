@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 10:12:30 AM.
+ * Created on Feb 28, 2005 at 5:42:51 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -25,11 +25,8 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor;
 
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocumentListener;
 
 /**
  * <p></p>
@@ -37,33 +34,24 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssOutlinePage extends ContentOutlinePage {
+public class SimpleDocumentListener implements IDocumentListener {
 
-	//FIXME: We need our own model here
-	public CssOutlinePage(){
-		super();
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
+	 */
+	public void documentAboutToBeChanged(DocumentEvent event) {
+		// TODO ricky implement documentAboutToBeChanged
 	}
-	
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		
-		CssContentProvider cssContentProvider = new CssContentProvider();
-		
-		TreeViewer viewer= getTreeViewer();
-		viewer.setContentProvider(cssContentProvider);
-		viewer.setLabelProvider(new CssLabelProvider());
-		viewer.addSelectionChangedListener(this);
-		ASTNode rootNode = cssContentProvider.initialInput();
-		viewer.setInput(rootNode);
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
+	 */
+	public void documentChanged(DocumentEvent event) {
+		System.out.println("DEBUG:SimpleDocumentListener.documentChanged:enter.");
 	}
-	
-	/*
-	public void setInput(IEditorInput editorInput){
-		System.out.println("setInput");
-	}
-	*/
+
 }
