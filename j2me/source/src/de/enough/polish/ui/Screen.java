@@ -443,7 +443,9 @@ public abstract class Screen
 						y = this.titleHeight; 
 						this.menuContainer.setVerticalDimensions(y, this.screenHeight);
 					}
+					g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
 					this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
+				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 				} 
 				// clear menu-bar:
 				if (this.menuBarColor != Item.TRANSPARENT) {
