@@ -197,6 +197,10 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					methodName = "style.getBooleanProperty(";
 					startPos = line.indexOf(methodName);
 				}
+				if (startPos == -1) {
+					methodName = "style.getObjectProperty(";
+					startPos = line.indexOf(methodName);
+				}
 			}
 			if (startPos != -1) {
 				int endPos = line.indexOf( ')', startPos );

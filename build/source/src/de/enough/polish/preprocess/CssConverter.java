@@ -98,6 +98,15 @@ public class CssConverter extends Converter {
 		LAYOUTS.put( "vexpand", "Item.LAYOUT_VEXPAND" );
 		LAYOUTS.put( "vertical-expand", "Item.LAYOUT_VEXPAND" );
 	}
+	private static final HashMap VIEW_TYPES = new HashMap();
+	static {
+		VIEW_TYPES.put( "table", "de.enough.polish.ui.containerviews.TableView");
+		VIEW_TYPES.put( "TableView", "de.enough.polish.ui.containerviews.TableView");
+		VIEW_TYPES.put( "dropping", "de.enough.polish.ui.containerviews.DroppingView");
+		VIEW_TYPES.put( "DroppingView", "de.enough.polish.ui.containerviews.DroppingView");
+		VIEW_TYPES.put( "plain", "none");
+		VIEW_TYPES.put( "normal", "none");
+	}
 	private ArrayList referencedStyles;
 	private AbbreviationsGenerator abbreviationGenerator;
 	private CssAttributesManager attributesManager;
@@ -592,6 +601,19 @@ public class CssConverter extends Converter {
 							valueList.append( "Style.FALSE" );
 						} else {
 							throw new BuildException("Invalid CSS Code: invalid value for the boolean attribute [" + attributeName + "]:  use either [true]/[yes] or [false]/[no].");
+						}
+					} else if (attributeType == CssAttribute.OBJECT) {
+						if (groupName.equals("view") && key.equals("type") ) {
+							String translatedViewType = (String) VIEW_TYPES.get( value );
+							if (translatedViewType == null ) {
+								// the value represents a full class:
+								valueList.append("new ").append( value ).append("()");
+							} else if ("none".equals( translatedViewType)) {
+								valueList.append("null");
+							} else {
+								// a standard view is used:
+								valueList.append("new ").append( translatedViewType ).append("()");
+							}
 						}
 					} else {
 						throw new BuildException("Error while processing CSS code. Encountered unknown attributes-type [" + attributeType + "]: please report this error to j2mepolish@enough.de.");

@@ -39,15 +39,17 @@ import javax.microedition.lcdui.Graphics;
  */
 public abstract class ContainerView {
 	
+	protected int yOffset;
 	protected int contentWidth;
 	protected int contentHeight;
 	protected int focusedIndex;
-	/** 
-	 * isShown will be set to false whenever the corresponding container is 
-	 * not shown anymore. This can be used for (re)-starting animations
-	 * when a table is shown again. 
-	 */
-	protected boolean isShown;
+	/** this field is set automatically, so that subclasses can use it for referencing the parent-container */
+	protected Container parentContainer;
+	protected boolean restartAnimation;
+	protected int paddingVertical;
+	protected int paddingHorizontal;
+	protected boolean focusFirstElement;
+	protected int appearanceMode;
 
 	/**
 	 * Creates a new view
@@ -110,10 +112,14 @@ public abstract class ContainerView {
 	/**
 	 * Sets the style for this view.
 	 * The style can include additional parameters for the view.
+	 * Subclasses should call super.setStyle(style) first.
 	 * 
 	 * @param style the style
 	 */
-	protected abstract void setStyle( Style style );
+	protected void setStyle( Style style ) {
+		this.paddingHorizontal = style.paddingHorizontal;
+		this.paddingVertical = style.paddingVertical;
+	}
 	
 	/**
 	 * Retrieves the next focusable item.
@@ -174,8 +180,21 @@ public abstract class ContainerView {
 		return null;
 	}
 	
+	/**
+	 * Animates this view.
+	 * 
+	 * @return true when the view was actually animated.
+	 */
 	public boolean animate() {
 		return false;
+	}
+
+	/**
+	 * Notifies this view that it is about to be shown (again).
+	 * The default implementation just sets the restartAnimation-field to true.
+	 */
+	public void showNotify() {
+		this.restartAnimation = true;
 	}
 
 }

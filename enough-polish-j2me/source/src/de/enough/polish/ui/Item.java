@@ -593,7 +593,7 @@ public abstract class Item extends Object
 	protected Border border;
 	protected Style style;
 	protected int itemWidth;
-	protected int itemHeight;
+	public int itemHeight;
 	protected int paddingLeft;
 	protected int paddingTop;
 	protected int paddingRight;
@@ -611,7 +611,8 @@ public abstract class Item extends Object
 	protected int borderWidth;
 	protected int backgroundWidth;
 	protected int backgroundHeight;
-	protected int appearanceMode;
+	/** The appearance mode of this item, either PLAIN or one of the interactive modes BUTTON, HYPERLINK or INTERACTIVE. */
+	public int appearanceMode;
 	/**
 	 * The screen to which this item belongs to.
 	 */

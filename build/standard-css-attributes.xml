@@ -271,5 +271,12 @@
 		appliesTo="Font, BitMapFont"
 		description="Defines which bitmap (bmf) font should be used."
 	/>
+
+	<attribute
+		name="view-type"
+		type="object"
+		appliesTo="Form, List, ChoiceGroup, Container"
+		description="Defines which view should be used for showing the items of a Form, List, etc."
+	/>
 	
 </attributes>

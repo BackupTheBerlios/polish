@@ -222,6 +222,7 @@ public class Style
 			getProperty( -1 );
 			getIntProperty( -1 );
 			getBooleanProperty( -1 );
+			getObjectProperty( -1 );
 		//#endif
 	}
 	
@@ -230,12 +231,25 @@ public class Style
 	 * Retrieves a non-standard property of this style.
 	 * 
 	 * @param propName the name of the property
-	 * @return the value of this property. If none has been defined, null will be returned.
+	 * @return the value of this property as a String. If none has been defined, null will be returned.
 	 */
 	public String getProperty( String propName ) {
 		return propName;
 	}
 	//#endif
+	
+	//#ifdef false
+	/**
+	 * Retrieves a non-standard property of this style.
+	 * 
+	 * @param propName the name of the property
+	 * @return the value of this property. If none has been defined, null will be returned.
+	 */
+	public Object getObjectProperty( String propName ) {
+		return propName;
+	}
+	//#endif
+
 
 	//#ifdef false
 	/**
@@ -276,6 +290,23 @@ public class Style
 		}
 		return null;
 	}
+		
+	//#ifdef false
+		private Object getObjectProperty( int key ) {
+	//#else
+		//# public Object getObjectProperty( int key ) {
+	//#endif
+		if (this.attributeKeys == null) {
+			return null;
+		}
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				return this.attributeValues[i];
+			}
+		}
+		return null;
+	}
+
 
 	//#ifdef false
 		private Integer getIntProperty( int key ) {

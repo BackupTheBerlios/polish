@@ -86,6 +86,9 @@ public class Container extends Item {
 	private int yBottom;
 	protected int yOffset;
 	private int focusedTopMargin;
+	//#ifdef polish.css.view-type
+		private ContainerView view;
+	//#endif
 	
 	/**
 	 * Creates a new empty container.
@@ -324,7 +327,7 @@ public class Container extends Item {
 	 * @param index the position
 	 * @param item the item which should be focused
 	 */
-	protected void focus( int index, Item item ) {
+	public void focus( int index, Item item ) {
 		// first defocus the last focused item:
 		if (this.focusedItem != null) {
 			this.focusedItem.defocus(this.itemStyle);
@@ -388,6 +391,16 @@ public class Container extends Item {
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
+		
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.initContent(this, firstLineWidth, lineWidth);
+				this.contentWidth = this.view.contentWidth;
+				this.contentHeight = this.view.contentHeight;
+				return;
+			}
+		//#endif
+
 		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
 		//#endif
@@ -599,6 +612,12 @@ public class Container extends Item {
 		// layout or according to the items layout, when specified.
 		// adjust vertical start for scrolling:
 		y += this.yOffset;
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.paintContent(x, y, leftBorder, rightBorder, g);
+				return;
+			}
+		//#endif
 		Item[] myItems = this.items;
 		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
@@ -856,6 +875,14 @@ public class Container extends Item {
 				//TODO rob allow definition of the "fill-policy"
 			}
 		//#endif
+		//#ifdef polish.css.view-type
+			this.view = (ContainerView) style.getObjectProperty("view-type");
+			if (this.view != null) {
+				this.view.parentContainer = this;
+				this.view.focusFirstElement = this.focusFirstElement;
+				this.view.setStyle(style);
+			}
+		//#endif
 	}
 
 	/**
@@ -943,6 +970,11 @@ public class Container extends Item {
 			if (this.focusedItem.background != null) {
 				animated = animated | this.focusedItem.background.animate();
 			}
+			//#ifdef polish.css.view-type
+				if ( this.view != null ) {
+					animated = animated | this.view.animate();
+				}
+			//#endif
 			return animated;
 		} else {
 			return false;
@@ -959,6 +991,11 @@ public class Container extends Item {
 	 */
 	protected void showNotify()
 	{
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.showNotify();
+			}
+		//#endif
 		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];

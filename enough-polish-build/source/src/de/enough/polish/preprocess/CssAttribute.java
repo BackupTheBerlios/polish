@@ -47,6 +47,7 @@ public class CssAttribute {
 	public final static int COLOR = 2;
 	public final static int BOOLEAN = 3;
 	public final static int STYLE = 4;
+	public static final int OBJECT = 6;
 	
 	private final String name;
 	private final int type;
@@ -78,6 +79,8 @@ public class CssAttribute {
 				this.type = STYLE;
 			} else if ("string".equals( typeStr )){
 				this.type = STRING;
+			} else if ("object".equals( typeStr )){
+				this.type = OBJECT;
 			} else {
 				throw new BuildException("The CSS-attribute-type [" + typeStr + "] is not supported. It needs to be either [integer], [color], [boolean], [style] or [string].");
 			}
