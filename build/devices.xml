@@ -260,6 +260,7 @@
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="Network" value="GSM, GPRS, HSCSD"/>
 		<capability name="Frequency" value="900,1800,1900"/>
+		<capability name="Emulator.Skin" value="SonyEricsson_P800"/>
 	</device>
 	
 	<device>
@@ -1005,7 +1006,72 @@
 
 	
 <!-- Nokia devices -->
-
+	<device>
+		<identifier>Nokia/6670</identifier>
+		<groups>Series60</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 7.0s "/>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, mp3, aac, realaudio" />
+		<capability name="HeapSize" value="8 MB" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="40 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="GSM, CSD, GPRS, HSCSD" />
+		<capability name="CameraResolution" value="1 MP" />
+		<capability name="CameraZoom" value="4" />
+	</device>
+	
+	<device>
+		<identifier>Nokia/7270</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="ClosedFlipScreenSize" value="96x65"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, jtwi, pdaapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4" />
+		<capability name="SoundFormat" value="midi, midi40, amr, nb-amr, mp3, aac" />
+		<capability name="HeapSize" value="1 MB" />
+		<capability name="MaxJarSize" value="128 kb" />
+		<capability name="StorageSize" value="32 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="GSM, CSD, GPRS, HSCSD, EGPRS" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="0" />
+	</device>
+	
+	<device>
+		<identifier>Nokia/9300</identifier>
+		<groups>Series80</groups>
+		<features></features>
+		<capability name="OS" value="Symbian OS 7.0s"/>
+		<capability name="ScreenSize" value="640x200"/>
+		<capability name="ClosedFlipScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realmedia" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, wav, mp3, aac" />
+		<capability name="HeapSize" value="20 MB" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="80 MB" />
+		<capability name="DRM" value="OMA Forward-Lock" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="GSM, GPRS, HSCSD, EGPRS" />
+	</device>
+	
 	<device>
 		<identifier>Nokia/3587</identifier>
 		<groups>Series40</groups>

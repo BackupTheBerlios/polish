@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.2-pre3" />
-	  <property name="VersionMessage" value="Welcome to third preview of J2ME Polish 1.2! " />
+	  <property name="Version" value="1.2" />
+	  <property name="VersionMessage" value="Welcome to J2ME Polish 1.2! " />
 	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
 
   <path id="thirdparty">
@@ -217,7 +217,7 @@
 		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,LICENSE.txt,Readme.txt" />
 	</copy>
 	<copy todir="tmp/import">
-		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar" />
+		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar,siemens-color-game-api.jar" />
 		<fileset dir="dist" includes="*.jar" />
 	</copy>
 	<!-- copy sample application -->
