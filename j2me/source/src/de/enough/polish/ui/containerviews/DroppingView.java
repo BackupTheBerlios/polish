@@ -82,7 +82,6 @@ public class DroppingView extends ContainerView {
 			int lineWidth) 
 	{
 		Item[] myItems = parent.getItems();
-		this.yAdjustments = new int[ myItems.length ];
 		int myContentWidth = 0;
 		int myContentHeight = 0;
 		boolean hasFocusableItem = false;
@@ -115,6 +114,7 @@ public class DroppingView extends ContainerView {
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;
 		if (!this.animationInitialised) {
+			this.yAdjustments = new int[ myItems.length ];
 			initAnimation(myItems, this.yAdjustments);
 		}
 	}
@@ -160,6 +160,30 @@ public class DroppingView extends ContainerView {
 				this.repeatAnimation = repeat.booleanValue();
 			} else {
 				this.repeatAnimation = false;
+			}
+		//#endif
+		//#ifdef polish.css.droppingview-damping
+			Integer dampingInt = style.getIntProperty("droppingview-damping");
+			if (dampingInt != null) {
+				this.damping = dampingInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.droppingview-maximum
+			Integer maxInt = style.getIntProperty("droppingview-maximum");
+			if (maxInt != null) {
+				this.startMaximum = maxInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.droppingview-speed
+			Integer speedInt = style.getIntProperty("droppingview-speed");
+			if (speedInt != null) {
+				this.speed = speedInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.droppingview-maxperiode
+			Integer periodeInt = style.getIntProperty("droppingview-maxperiode");
+			if (periodeInt != null) {
+				this.maxPeriode = periodeInt.intValue();
 			}
 		//#endif
 	}

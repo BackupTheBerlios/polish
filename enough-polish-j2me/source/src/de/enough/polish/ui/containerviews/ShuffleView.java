@@ -1,6 +1,6 @@
 //#condition polish.usePolishGui
 /*
- * Created on 13-Nov-2004 at 20:52:55.
+ * Created on 18-Nov-2004 at 20:52:55.
  * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
@@ -36,42 +36,30 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Shows the items in a normal list. During the beginning an animation is shown, in which the items fall into their place.</p>
+ * <p>Shows the items in a normal list. During the beginning an animation is shown, in which the items are moved horizontally from left and right into their position.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        13-Nov-2004 - rob creation
+ *        18-Nov-2004 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class DroppingView extends ContainerView {
+public class ShuffleView extends ContainerView {
 	
-	private final static int START_MAXIMUM = 30;
-	private final static int MAX_PERIODE = 5;
-	private final static int DEFAULT_DAMPING = 10;
 	private final static int SPEED = 10;
-	private boolean isDownwardsAnimation;
-	private int damping = DEFAULT_DAMPING;
-	private int currentPeriode;
-	private int maxPeriode = MAX_PERIODE;
-	private int currentMaximum;
-	private int startMaximum = START_MAXIMUM;
 	private int speed = SPEED;
 	private boolean animationInitialised;
-	
-	
-
 	private boolean isAnimationRunning;
-	private int[] yAdjustments;
+	private int[] xAdjustments;
 	
-	//#ifdef polish.css.droppingview-repeat-animation
+	//#ifdef polish.css.shuffleview-repeat-animation
 		private boolean repeatAnimation;
 	//#endif
 	/**
 	 * Creates new DroppingView
 	 */
-	public DroppingView() {
+	public ShuffleView() {
 		super();
 	}
 
@@ -114,8 +102,8 @@ public class DroppingView extends ContainerView {
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;
 		if (!this.animationInitialised) {
-			this.yAdjustments = new int[ myItems.length ];
-			initAnimation(myItems, this.yAdjustments);
+			this.xAdjustments = new int[ myItems.length ];
+			initAnimation(myItems, this.xAdjustments);
 		}
 	}
 
@@ -128,10 +116,8 @@ public class DroppingView extends ContainerView {
 		Item[] myItems = this.parentContainer.getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
-			// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
-			// since after every item a line break will be done.
-			int adjustedY = y - this.yAdjustments[i];
-			item.paint(x, adjustedY, leftBorder, rightBorder, g);
+			int xAdjustment = this.xAdjustments[i];
+			item.paint(x - xAdjustment, y, leftBorder - xAdjustment, rightBorder - xAdjustment, g);
 			y += item.itemHeight + this.paddingVertical;
 		}
 	}
@@ -154,44 +140,26 @@ public class DroppingView extends ContainerView {
 	 */
 	protected void setStyle(Style style) {
 		super.setStyle(style);
-		//#ifdef polish.css.droppingview-repeat-animation
-			Boolean repeat = style.getBooleanProperty("droppingview-repeat-animation");
+		//#ifdef polish.css.shuffleview-repeat-animation
+			Boolean repeat = style.getBooleanProperty("shuffleview-repeat-animation");
 			if (repeat != null) {
 				this.repeatAnimation = repeat.booleanValue();
 			} else {
 				this.repeatAnimation = false;
 			}
 		//#endif
-		//#ifdef polish.css.droppingview-damping
-			Integer dampingInt = style.getIntProperty("droppingview-damping");
-			if (dampingInt != null) {
-				this.damping = dampingInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.droppingview-maximum
-			Integer maxInt = style.getIntProperty("droppingview-maximum");
-			if (maxInt != null) {
-				this.startMaximum = maxInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.droppingview-speed
-			Integer speedInt = style.getIntProperty("droppingview-speed");
+		//#ifdef polish.css.shuffleview-speed
+			Integer speedInt = style.getIntProperty("shuffleview-speed");
 			if (speedInt != null) {
 				this.speed = speedInt.intValue();
 			}
 		//#endif
-		//#ifdef polish.css.droppingview-maxperiode
-			Integer periodeInt = style.getIntProperty("droppingview-maxperiode");
-			if (periodeInt != null) {
-				this.maxPeriode = periodeInt.intValue();
-			}
-		//#endif
 	}
 	
-	//#ifdef polish.css.droppingview-repeat-animation
+	//#ifdef polish.css.shuffleview-repeat-animation
 	public void showNotify() {
-		if (this.repeatAnimation && this.yAdjustments != null) {
-			initAnimation( this.parentContainer.getItems(), this.yAdjustments );
+		if (this.repeatAnimation && this.xAdjustments != null) {
+			initAnimation( this.parentContainer.getItems(), this.xAdjustments );
 		}
 	}	
 	//#endif
@@ -200,15 +168,15 @@ public class DroppingView extends ContainerView {
 	 * Initialises the animation.
 	 *  
 	 * @param items the items.
-	 * @param yValues the y-adjustment-values
+	 * @param xValues the x-adjustment-values
 	 */
-	private void initAnimation(Item[] items, int[] yValues) {
-		this.isDownwardsAnimation = true;
-		this.currentMaximum = this.startMaximum * -1;
-		this.currentPeriode = 0;
-		for (int i = 0; i < yValues.length; i++ ) {
-			yValues[i] = this.contentHeight; 
+	private void initAnimation(Item[] items, int[] xValues) {
+		int factor = 1;
+		for (int i = 0; i < xValues.length; i++ ) {
+			xValues[i] = this.contentWidth * factor;
+			factor *= -1;
 		}
+		
 		this.isAnimationRunning = true;
 		this.animationInitialised = true;
 	}
@@ -221,50 +189,26 @@ public class DroppingView extends ContainerView {
 	 */
 	public boolean animate() {
 		if (this.isAnimationRunning) {
-			boolean startNextPeriode = true;
-			int max = this.currentMaximum;
-			if (this.isDownwardsAnimation) {
-				for (int i = 0; i < this.yAdjustments.length; i++ ) {
-					int y = this.yAdjustments[i] ;
-					if (y > max) {
-						y -= this.speed;
-						if (y < max) {
-							y = max;
-						}
-						startNextPeriode = false;
+			
+			int counter = 0;
+			for (int i = 0; i < this.xAdjustments.length; i++ ) {
+				int x = this.xAdjustments[i];
+				if ( x < 0 ) {
+					x += this.speed;
+					if ( x > 0 ) {
+						x = 0;
 					}
-					max += this.damping;
-					if (max > 0) {
-						max = 0;
+				} else if ( x > 0 ) {
+					x -= this.speed;
+					if ( x < 0 ) {
+						x = 0;
 					}
-					this.yAdjustments[i] = y;
-				}
-			} else {
-				for (int i = 0; i < this.yAdjustments.length; i++ ) {
-					int y = this.yAdjustments[i];
-					if (y < max) {
-						y += this.speed;
-						if (y > max) {
-							y = max;
-						} 
-						startNextPeriode = false;
-					}
-					max -= this.damping;
-					if (max < 0) {
-						max = 0;
-					}
-					this.yAdjustments[i] = y;
-				}
-			}
-			if (startNextPeriode) {
-				this.currentPeriode ++;
-				if ((this.currentPeriode < this.maxPeriode) && (this.currentMaximum != 0)) {
-					this.currentMaximum = (this.currentMaximum * -2) / 3;
-					this.isDownwardsAnimation = !this.isDownwardsAnimation;
 				} else {
-					this.isAnimationRunning = false;
+					counter++;
 				}
+				this.xAdjustments[i] = x;
 			}
+			this.isAnimationRunning = ( counter < this.xAdjustments.length );
 			return true;
 		} else {
 			return false;
