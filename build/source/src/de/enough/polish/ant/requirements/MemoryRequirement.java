@@ -25,6 +25,8 @@
  */
 package de.enough.polish.ant.requirements;
 
+import org.apache.tools.ant.BuildException;
+
 import de.enough.polish.Device;
 
 /**
@@ -49,7 +51,11 @@ public class MemoryRequirement extends Requirement {
 	 */
 	public MemoryRequirement(String value, String propertyName) {
 		super(value, propertyName);
-		this.matcher = new MemoryMatcher( value ); 
+		try {
+			this.matcher = new MemoryMatcher( value );
+		} catch (NumberFormatException e) {
+			throw new BuildException("Unable to create memory-requirement for value [" + value + "]: " + e );
+		}
 	}
 
 	/* (non-Javadoc)

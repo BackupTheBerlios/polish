@@ -110,15 +110,15 @@ implements DeviceFilter
 		Class reqClass = null;
 		if (type != null) {
 			if (type.equalsIgnoreCase("Size")) {
-				return new SizeRequirement( name, value );
+				return new SizeRequirement( value, name  );
 			} else if (type.equalsIgnoreCase("Int")) {
-				return new IntRequirement( name, value );
+				return new IntRequirement( value, name  );
 			} else if (type.equalsIgnoreCase("String")) {
-				return new StringRequirement( name, value );
+				return new StringRequirement( value, name  );
 			} else if (type.equalsIgnoreCase("Version")) {
-				return new VersionRequirement( name, value );
+				return new VersionRequirement( value, name  );
 			} else if (type.equalsIgnoreCase("Memory")) {
-				return new MemoryRequirement( name, value );
+				return new MemoryRequirement( value, name );
 			} else {
 				try {
 					reqClass = Class.forName( type );

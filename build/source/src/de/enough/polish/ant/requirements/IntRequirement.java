@@ -25,6 +25,8 @@
  */
 package de.enough.polish.ant.requirements;
 
+import org.apache.tools.ant.BuildException;
+
 import de.enough.polish.Device;
 
 /**
@@ -42,12 +44,18 @@ public class IntRequirement extends Requirement {
 	private IntegerMatcher matcher;
 	
 	/**
-	 * @param value
-	 * @param propertyName
+	 * Creates a new integer requirement.
+	 * 
+	 * @param value the value
+	 * @param propertyName the name of the property
 	 */
 	public IntRequirement(String value, String propertyName) {
 		super(value, propertyName);
-		this.matcher = new IntegerMatcher( value );
+		try {
+			this.matcher = new IntegerMatcher( value );
+		} catch (NumberFormatException e) {
+			throw new BuildException("Unable to create int-requirement for value [" + value + "]: " + e );
+		}
 	}
 
 	/* (non-Javadoc)
