@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.1.1";
+	private static final String VERSION = "1.2";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -73,7 +73,10 @@ public class PolishTask extends ConditionalTask {
 	private File[] sourceDirs;
 	private TextFile[][] sourceFiles;
 	private Path midp1BootClassPath;
-	private Path midp2BootClassPath;	
+	private Path midp2BootClassPath;
+	private String javacTarget;
+	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
+	private String sourceCompatibility = "1.3";
 	private Obfuscator[] obfuscators;
 	private boolean doObfuscate;
 	private String[] preserveClasses;
@@ -587,6 +590,9 @@ public class PolishTask extends ConditionalTask {
 		// get the java-extension:
 		this.javaExtensions = this.buildSetting.getJavaExtensions();
 		
+		// get the javac-settings:
+		this.javacTarget = this.buildSetting.getJavacTarget();
+		
 		//check if there has been an error at the last run:
 		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separator + "error.lock");
@@ -1011,8 +1017,9 @@ public class PolishTask extends ConditionalTask {
 		Javac javac = new Javac();
 		javac.setProject( this.project );
 		javac.setTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
-		//javac.target=1.1 is needed for the preverification:
-		javac.setTarget("1.1");
+		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
+		javac.setTarget( this.javacTarget );
+		javac.setSource( this.sourceCompatibility );
 		File targetDir = new File( targetDirName );
 		if (!targetDir.exists()) {
 			targetDir.mkdirs();

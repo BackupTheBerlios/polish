@@ -135,5 +135,15 @@
 		<name>Vodafone</name>
 		<features>isOperator</features>
 	</vendor>
+
+	<vendor>
+		<name>Sendo</name>
+		<features>isOperator</features>
+	</vendor>
+
+	<vendor>
+		<name>BenQ</name>
+		<features>isOperator</features>
+	</vendor>
 	
 </vendors>

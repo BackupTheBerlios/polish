@@ -1,4 +1,4 @@
-<!-- 
+	<!-- 
 	devices.xml defines all known devices. 
 	You can add or change the existing specifications and
 	use the changed settings in the code.
@@ -84,7 +84,7 @@
 		<capability name="OS" value="Symbian"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 	</device>
 
@@ -96,7 +96,7 @@
 		<capability name="OS" value="Symbian"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 	</device>
 
@@ -219,7 +219,9 @@
 		<identifier>Sony-Ericsson/P800, Sony-Ericsson/P802</identifier>
 		<groups></groups>
 		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, needsManualMenu</features>
+		<capability name="OS" value="Symbian 7.0"/>
 		<capability name="ScreenSize" value="208x320"/>
+		<capability name="ClosedFlipScreenSize" value="208x144"/>
         <capability name="CanvasSize" value="208x253"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
@@ -228,16 +230,21 @@
 		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="12 MB" />
 		<capability name="usePolishTitle" value="true"/>
+		<capability name="CameraResolution" value="640x480"/>
+		<capability name="Network" value="GSM, GPRS, HSCSD"/>
+		<capability name="Frequency" value="900,1800,1900"/>
 	</device>
 	
 	<device>
 		<identifier>Sony-Ericsson/P900, Sony-Ericsson/P908</identifier>
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasPointerEvents, hasPointerMotionEvents, needsManualMenu</features>
+		<capability name="OS" value="Symbian 7.0"/>
 		<capability name="ScreenSize" value="208x320"/>
+		<capability name="ClosedFlipScreenSize" value="208x208"/>
         <capability name="CanvasSize" value="208x253"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
         <capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
@@ -246,6 +253,9 @@
 		<capability name="HeapSize" value="16 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
 		<capability name="usePolishTitle" value="true"/>
+		<capability name="CameraResolution" value="640x480"/>
+		<capability name="Network" value="GSM, GPRS, HSCSD"/>
+		<capability name="Frequency" value="900,1800,1900"/>
 	</device>
 	
 	<device>
@@ -268,7 +278,7 @@
 		<identifier>Sony-Ericsson/K500i, Sony-Ericsson/F500i</identifier>
 		<groups></groups>
 		<features>hasCamera, hasVideo, doubleBuffering</features>
-		<capability name="ScreenSize" value="28x160"/>
+		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -489,8 +499,8 @@
 		<capability name="MaxSockets.udp" value="10" />
 		<capability name="JavaPackage" value="wmapi, mmapi, 3d-api" />
 		<capability name="ImageFormat" value="png, jpeg, gif" />
-		<capability name="SoundFormat" value="midi, mp3, wav, amr, TONE Sequence" />
-		<capability name="VideoFormat" value="mp4, 3gpp" />
+		<capability name="SoundFormat" value="midi, mp3, wav, amr, Tone Sequence" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 	</device>
 
 	<device>
@@ -549,6 +559,19 @@
 		<capability name="ImageFormat" value="png, jpeg" />
 		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
 		<capability name="CameraResolution" value="vga" />
+	</device>
+	
+	<device>
+		<identifier>Motorola/A920,Motorola/A925</identifier>
+		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
+		<capability name="OS" value="Symbian 7.0/UIQ" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="208x320" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="8 MB" />
+\		<capability name="Network" value="GSM, GPRS, HSCSD" />
+		<capability name="Frequency" value="900, 1800, 1900" />
 	</device>
 	
 	<device>
@@ -956,6 +979,40 @@
 <!-- Nokia devices -->
 
 	<device>
+		<identifier>Nokia/3587</identifier>
+		<groups>Series40</groups>
+		<features></features>
+		<capability name="ScreenSize" value="96x65"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi16" />
+		<capability name="Region" value="Americas" />
+		<capability name="Network" value="CDMA" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6651</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPackage" value="mmapi, wmapi" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="300kb" />
+		<capability name="StorageSize" value="8 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Americas" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="0" />
+		<capability name="Network" value="GSM, GPRS, HSCSD, WCDMA" />
+	</device>
+
+	<device>
 		<identifier>Nokia/6170</identifier>
 		<groups>Series40</groups>
 		<features>hasCamera</features>
@@ -964,7 +1021,7 @@
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="VideoFormat" value="3GPP, h.263, mpeg-4" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4" />
 		<capability name="SoundFormat" value="midi, midi40, amr, nb-amr" />
 		<capability name="HeapSize" value="512 kb" />
 		<capability name="MaxJarSize" value="128kb" />
@@ -984,7 +1041,7 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="VideoFormat" value="3GPP, h.263, Real Media, mpeg-4" />
+		<capability name="VideoFormat" value="3gpp, h.263, Real Media, mpeg-4" />
 		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, real audio, aac" />
 		<capability name="HeapSize" value="28 MB" />
 		<capability name="MaxJarSize" value="dynamic" />
@@ -1005,7 +1062,7 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pda-api, 3dapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="VideoFormat" value="3GPP, h.263, Real Media, mpeg-4" />
+		<capability name="VideoFormat" value="3gpp, h.263, Real Media, mpeg-4" />
 		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, real audio, aac" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="dynamic" />
@@ -1024,7 +1081,7 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi,amr,wav" />
 		<capability name="HeapSize" value="16 MB" />
 		<capability name="MaxJarSize" value="4 MB" />
@@ -1039,7 +1096,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP, MPEG-4, RealVideo" />
+		<capability name="VideoFormat" value="3gpp, mpeg-4, RealVideo" />
 		<capability name="SoundFormat" value="midi, True Tones,  WAV,  MP3, AAC, RealAudio" />
 		<capability name="HeapSize" value="8 MB" />
 		<capability name="MaxJarSize" value="dynamic" />
@@ -1056,7 +1113,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP, MPEG-4, RealVideo" />
+		<capability name="VideoFormat" value="3gpp, mpeg-4, RealVideo" />
 		<capability name="SoundFormat" value="midi, True Tones, MP3, AAC" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="dynamic" />
@@ -1073,7 +1130,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
@@ -1090,7 +1147,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
@@ -1105,9 +1162,9 @@
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, True Tones" />
 		<capability name="HeapSize" value="3mb" />
 		<capability name="MaxJarSize" value="dynamic" />
@@ -1124,7 +1181,7 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
@@ -1140,7 +1197,7 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr,  WAV, MP3, AAC" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
@@ -1155,7 +1212,7 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
@@ -1187,7 +1244,7 @@
 		<capability name="JavaPackage" value="nokia-ui" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, mp3, aac" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="3" />
@@ -1202,7 +1259,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pda-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP,  MPEG-4, RealVideo" />
+		<capability name="VideoFormat" value="3gpp,  mpeg-4, RealVideo" />
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, wav, mp3, aac" />
 		<capability name="HeapSize" value="20mb" />
 		<capability name="MaxJarSize" value="dynamic" />
@@ -1222,7 +1279,7 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />
@@ -1239,8 +1296,8 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP, MPEG-4, RealVideo" />
-		<capability name="SoundFormat" value="midi, amr, WAV, MP3, AAC, RealAudio" />
+		<capability name="VideoFormat" value="3gpp, mpeg-4, RealVideo" />
+		<capability name="SoundFormat" value="midi, amr, wav, mp3, aac, RealAudio" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="CameraResolution" value="vga" />
@@ -1251,12 +1308,14 @@
 		<identifier>Nokia/6230</identifier>
 		<groups>Series40</groups>
 		<features>hasCamera</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP" />
-		<capability name="SoundFormat" value="midi, amr, MP3, AAC" />
+		<capability name="VideoFormat" value="3gpp" />
+		<capability name="SoundFormat" value="midi, amr, mp3, aac" />
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />
 		<capability name="CameraResolution" value="vga" />
@@ -1269,9 +1328,9 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="WMAPI, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />
@@ -1291,6 +1350,20 @@
 		<capability name="MaxJarSize" value="64kb" />
 		<capability name="CameraResolution" value="cif" />
 		<capability name="CameraZoom" value="0" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6310i</identifier>
+		<groups>Nokia-UI</groups>
+		<capability name="ScreenSize" value="96x65"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="143kb" />
+		<capability name="MaxJarSize" value="30kb" />
+		<capability name="StorageSize" value="178kb" />
+		<capability name="Region" value="Europe,Africa,Asia-Pacific,Americas" />
+		<capability name="Network" value="GSM, GPRS, HSCSD" />
 	</device>
 	
 	<device>
@@ -1347,7 +1420,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP, mpeg-4" />
+		<capability name="VideoFormat" value="3gpp, mpeg-4" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="200kb" />
 		<capability name="MaxJarSize" value="64kb" />
@@ -1363,7 +1436,7 @@
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="230kb" />
 		<capability name="MaxJarSize" value="64kb" />
@@ -1377,9 +1450,9 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="WMAPI, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="VideoFormat" value="3GPP" />
+		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr, mp3, aac" />
 		<capability name="HeapSize" value="1MB" />
 		<capability name="MaxJarSize" value="348kb" />
@@ -1393,7 +1466,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI" />
+		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="210kb" />
@@ -1407,7 +1480,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI" />
+		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="210kb" />
@@ -1424,6 +1497,67 @@
 		<capability name="HeapSize" value="200kb" />
 		<capability name="MaxJarSize" value="64kb" />
 	</device>
+
+	<device>
+		<identifier>Nokia/6560</identifier>
+		<groups>Nokia-UI</groups>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi4" />
+		<capability name="HeapSize" value="214kb" />
+		<capability name="MaxJarSize" value="64kb" />
+		<capability name="StorageSize" value="389kb" />
+		<capability name="Region" value="Americas" />
+		<capability name="Network" value="CSD" />
+	</device>
+
+	<device>
+		<identifier>Nokia/3560,Nokia/3520</identifier>
+		<groups>Nokia-UI</groups>
+		<capability name="ScreenSize" value="96x65"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="200kb" />
+		<capability name="MaxJarSize" value="64kb" />
+		<capability name="StorageSize" value="600kb" />
+		<capability name="Region" value="Americas" />
+		<capability name="Network" value="CSD" />
+		<capability name="Frequency" value="800" />
+	</device>
+
+	<device>
+		<identifier>Nokia/3410</identifier>
+		<groups>Nokia-UI</groups>
+		<capability name="ScreenSize" value="96x65"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="HeapSize" value="164kb" />
+		<capability name="MaxJarSize" value="50kb" />
+		<capability name="StorageSize" value="150kb" />
+		<capability name="Region" value="Europe,Africa,Asia-Pacific" />
+		<capability name="Network" value="GSM" />
+	</device>
+
+	<device>
+		<identifier>Nokia/3590</identifier>
+		<groups>Nokia-UI</groups>
+		<capability name="ScreenSize" value="96x65"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="140kb" />
+		<capability name="MaxJarSize" value="30kb" />
+		<capability name="StorageSize" value="230kb" />
+		<capability name="SoundFormat" value="midi,midi4" />
+		<capability name="Region" value="Americas" />
+		<capability name="Network" value="CSD,GPRS" />
+		<capability name="Frequency" value="850,1900" />
+	</device>
 	
 	<device>
 		<identifier>Nokia/7250i</identifier>
@@ -1431,7 +1565,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI" />
+		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1445,7 +1579,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="wmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi, true tones, mp3, aac" />
 		<capability name="HeapSize" value="370kb" />
@@ -1458,7 +1592,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI" />
+		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="235kb" />
@@ -1472,7 +1606,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI" />
+		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1484,7 +1618,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="WMAPI" />
+		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1683,7 +1817,7 @@
 		<identifier>Siemens/C65</identifier>
 		<capability name="ScreenSize" value="130x130"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, location-api" />
+		<capability name="JavaPackage" value="wmapi, location-api, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
@@ -1713,7 +1847,7 @@
 		<identifier>Siemens/CX65</identifier>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, location-api" />
+		<capability name="JavaPackage" value="wmapi, mmapi, location-api, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
@@ -1773,7 +1907,7 @@
 		<identifier>Siemens/M65</identifier>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
@@ -1789,7 +1923,7 @@
 		<identifier>Siemens/S65</identifier>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, jsr-185, 3dapi, locationapi, btapi" />
+		<capability name="JavaPackage" value="wmapi, mmapi, jtwi, 3dapi, locationapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
@@ -2261,6 +2395,42 @@
 		<capability name="HeapSize" value="512 kb" />
 		<capability name="CameraResolution" value="640x480" />
 		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
+	</device>
+
+<!-- Sendo devices -->
+	
+	<device>
+		<identifier>Sendo/X</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<groups>Series60</groups>
+		<capability name="OS" value="Symbian 6.1"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi, btapi" />
+		<capability name="CameraResolution" value="640x480" />
+		<capability name="HeapSize" value="12 MB"/>
+		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
+	</device>
+	
+<!-- BenQ devices -->
+	
+	<device>
+		<identifier>BenQ/P30</identifier>
+		<features>doubleBuffering, hasCamera, hasPointerEvents</features>
+		<groups></groups>
+		<capability name="OS" value="Symbian 7.0"/>
+		<capability name="ScreenSize" value="208x320"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="CameraResolution" value="640x480" />
+		<capability name="HeapSize" value="12 MB"/>
+		<capability name="Network" value="GSM, GPRS, HSCSD"/>
 		<capability name="Frequency" value="900, 1800, 1900"/>
 	</device>
 	

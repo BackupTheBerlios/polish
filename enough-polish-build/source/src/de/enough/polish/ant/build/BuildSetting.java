@@ -52,6 +52,8 @@ public class BuildSetting {
 	
 	public final static String IMG_LOAD_BACKGROUND = "images.backgroundLoad";
 	public final static String IMG_LOAD_FOREGROUND = "images.directLoad";
+	public final static String TARGET_1_1 = "1.1";
+	public final static String TARGET_1_2 = "1.2";
 	
 	private DebugSetting debugSetting;
 	private MidletSetting midletSetting; 
@@ -87,6 +89,7 @@ public class BuildSetting {
 	private String polishHomePath;
 	private String projectBasePath;
 	private ArrayList javaTasks;
+	private String javacTarget;
 	
 	/**
 	 * Creates a new build setting.
@@ -97,7 +100,7 @@ public class BuildSetting {
 		this.polishHomePath = project.getProperty( "polish.home" );
 		if (this.polishHomePath != null) {
 			this.polishHomePath += File.separatorChar;
-		}
+		} 
 		this.projectBasePath = project.getBaseDir().getAbsolutePath() + File.separator;
 		this.project = project;
 		this.workDir = new File( this.projectBasePath + "build");
@@ -937,4 +940,58 @@ public class BuildSetting {
 		}
 	}
 
+	/**
+	 * Retrieves the target to which the java-sources should be compiled.
+	 * When a specific target has been set, that one will be used.
+	 * Otherwise a target will dynamically be created:
+	 * <ul>
+	 * <li>when a WTK-version smaller than 2.0 is used, the "1.1" target will be used;</li>
+	 * <li>when the OS is Mac OS X, the "1.1" target will be used;</li>
+	 * <li>in all other cases the "1.2" target is used.</li>
+	 * </ul>
+	 * 
+	 * @return Returns the javac-target.
+	 */
+	public String getJavacTarget() {
+		if (this.javacTarget != null) {
+			return this.javacTarget;
+		} else {
+			// check for OS X:
+			String osName = "OS-Name: " + System.getProperty("os.name");
+			if (osName.equals("Mac OS X")) {
+				return TARGET_1_1;
+			}
+			// check for WTK version < 2.0:
+			String wtkHomePath = this.project.getProperty("wtk.home");
+			if (wtkHomePath != null) {
+				if ((wtkHomePath.indexOf('1') != -1) && 
+				(wtkHomePath.indexOf("1.") != -1 
+						|| wtkHomePath.indexOf("WTK1") != -1
+						|| wtkHomePath.indexOf("1_") != -1)) 
+				{
+					return TARGET_1_1;
+				}
+			}
+						
+			// return default:
+			return TARGET_1_2;
+		}
+	}
+	
+	/**
+	 * Sets the target to which the java-sources should be compiled.
+	 * Should be either "1.1" or "1.2".
+	 * 
+	 * @param javacTarget The javac-target to set.
+	 */
+	public void setJavacTarget(String javacTarget) {
+		if (javacTarget.equals( TARGET_1_1)) {
+			this.javacTarget = TARGET_1_1;
+		} else if (javacTarget.equals( TARGET_1_2)) {
+			this.javacTarget = TARGET_1_2;
+		} else {
+			this.javacTarget = javacTarget;
+		}
+	}
+	
 }
