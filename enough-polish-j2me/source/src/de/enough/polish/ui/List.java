@@ -402,7 +402,7 @@ public class List extends Screen implements Choice
 	public int append( String stringPart, Image imagePart, Style elementStyle )
 	{
 		int number = this.choiceGroup.append( stringPart, imagePart, elementStyle );
-		if (number == 1) {
+		if (number == 0) {
 			if (this.listType == IMPLICIT ) {
 				addCommand( SELECT_COMMAND );
 			} else {
