@@ -1063,14 +1063,18 @@ implements CommandListener
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		String widthStr = style.getProperty("textfield-width");
-		if (widthStr != null) {
-			this.minimumWidth = Integer.parseInt( widthStr );
-		}
-		String heightStr = style.getProperty("textfield-height");
-		if (heightStr != null) {
-			this.minimumHeight = Integer.parseInt( heightStr );
-		}
+		//#ifdef polish.css.textfield-width
+			String widthStr = style.getProperty("textfield-width");
+			if (widthStr != null) {
+				this.minimumWidth = Integer.parseInt( widthStr );
+			}
+		//#endif
+		//#ifdef polish.css.textfield-height
+			String heightStr = style.getProperty("textfield-height");
+			if (heightStr != null) {
+				this.minimumHeight = Integer.parseInt( heightStr );
+			}
+		//#endif
 	}
 	
 	/* (non-Javadoc)

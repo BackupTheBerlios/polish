@@ -816,68 +816,88 @@ implements ImageConsumer
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		String colorStr = style.getProperty("gauge-color");
-		if (colorStr != null) {
-			this.color = Integer.parseInt( colorStr );
-		}
-		String widthStr = style.getProperty( "gauge-width");
-		if (widthStr != null) {
-			this.preferredWidth = Integer.parseInt( widthStr );
-		}
-		String heightStr = style.getProperty( "gauge-height");
-		if (heightStr != null) {
-			this.preferredHeight = Integer.parseInt( heightStr );
-		}
-		String modeStr = style.getProperty( "gauge-mode");
-		if (modeStr != null) {
-			if ("continuous".equals(modeStr)) {
-				this.mode = MODE_CONTINUOUS;
-			} else {
-				this.mode = MODE_CHUNKED;
+		//#ifdef polish.css.gauge-color
+			String colorStr = style.getProperty("gauge-color");
+			if (colorStr != null) {
+				this.color = Integer.parseInt( colorStr );
 			}
-		}
-		String gapColorStr = style.getProperty( "gauge-gap-color");
-		if (gapColorStr != null) {
-			this.gapColor = Integer.parseInt( gapColorStr );
-		}
-		String gapWidthStr = style.getProperty( "gauge-gap-width");
-		if (gapWidthStr != null) {
-			this.gapWidth = Integer.parseInt( gapWidthStr );
-		}
-		String chunkWidthStr = style.getProperty( "gauge-chunk-width");
-		if (chunkWidthStr != null) {
-			this.chunkWidth = Integer.parseInt( chunkWidthStr );
-		}
-		String imageStr = style.getProperty( "gauge-image");
-		if (imageStr != null) {
-			try {
-				this.image = StyleSheet.getImage( imageStr, this, false );
-			} catch (IOException e) {
-				//#debug error
-				Debug.debug("unable to load gauge-image [" + imageStr + "]: " + e.getMessage(), e );
+		//#endif
+		//#ifdef polish.css.gauge-width
+			String widthStr = style.getProperty( "gauge-width");
+			if (widthStr != null) {
+				this.preferredWidth = Integer.parseInt( widthStr );
 			}
-		}
-		if (this.maxValue != INDEFINITE) {
-			String showValueStr = style.getProperty("gauge-show-value");
-			if (showValueStr != null) {
-				if ("true".equals(showValueStr)) {
-					this.showValue = true;
+		//#endif
+		//#ifdef polish.css.gauge-height
+			String heightStr = style.getProperty( "gauge-height");
+			if (heightStr != null) {
+				this.preferredHeight = Integer.parseInt( heightStr );
+			}
+		//#endif
+		//#ifdef polish.css.gauge-mode
+			String modeStr = style.getProperty( "gauge-mode");
+			if (modeStr != null) {
+				if ("continuous".equals(modeStr)) {
+					this.mode = MODE_CONTINUOUS;
 				} else {
-					this.showValue = false;					
+					this.mode = MODE_CHUNKED;
 				}
 			}
+		//#endif
+		//#ifdef polish.css.gauge-gap-color
+			String gapColorStr = style.getProperty( "gauge-gap-color");
+			if (gapColorStr != null) {
+				this.gapColor = Integer.parseInt( gapColorStr );
+			}
+		//#endif
+		//#ifdef polish.css.gauge-gap-width
+			String gapWidthStr = style.getProperty( "gauge-gap-width");
+			if (gapWidthStr != null) {
+				this.gapWidth = Integer.parseInt( gapWidthStr );
+			}
+		//#endif
+		//#ifdef polish.css.gauge-chunk-width
+			String chunkWidthStr = style.getProperty( "gauge-chunk-width");
+			if (chunkWidthStr != null) {
+				this.chunkWidth = Integer.parseInt( chunkWidthStr );
+			}
+		//#endif
+		//#ifdef polish.css.gauge-image
+			String imageStr = style.getProperty( "gauge-image");
+			if (imageStr != null) {
+				try {
+					this.image = StyleSheet.getImage( imageStr, this, false );
+				} catch (IOException e) {
+					//#debug error
+					Debug.debug("unable to load gauge-image [" + imageStr + "]: " + e.getMessage(), e );
+				}
+			}
+		//#endif
+		if (this.maxValue != INDEFINITE) {
+			//#ifdef polish.css.gauge-show-value
+				String showValueStr = style.getProperty("gauge-show-value");
+				if (showValueStr != null) {
+					if ("true".equals(showValueStr)) {
+						this.showValue = true;
+					} else {
+						this.showValue = false;					
+					}
+				}
+			//#endif
 			if (style.font != null) {
 				this.font = style.font;
 			}
 			this.fontColor = style.fontColor;
-			String valuePositionStr =  style.getProperty( "gauge-value-align" );
-			if (valuePositionStr != null) {
-				if ("right".equals(valuePositionStr)) {
-					this.isValueLeft = false;
-				} else {
-					this.isValueLeft = true;
+			//#ifdef polish.css.gauge-value-align
+				String valuePositionStr =  style.getProperty( "gauge-value-align" );
+				if (valuePositionStr != null) {
+					if ("right".equals(valuePositionStr)) {
+						this.isValueLeft = false;
+					} else {
+						this.isValueLeft = true;
+					}
 				}
-			}
+			//#endif
 		}
 	}
 

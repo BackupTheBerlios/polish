@@ -437,14 +437,18 @@ implements CommandListener
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		String widthStr = style.getProperty("datefield-width");
-		if (widthStr != null) {
-			this.minimumWidth = Integer.parseInt( widthStr );
-		}
-		String heightStr = style.getProperty("datefield-height");
-		if (heightStr != null) {
-			this.minimumHeight = Integer.parseInt( heightStr );
-		}
+		//#ifdef polish.css.datefield-width
+			String widthStr = style.getProperty("datefield-width");
+			if (widthStr != null) {
+				this.minimumWidth = Integer.parseInt( widthStr );
+			}
+		//#endif
+		//#ifdef polish.css.datefield-height
+			String heightStr = style.getProperty("datefield-height");
+			if (heightStr != null) {
+				this.minimumHeight = Integer.parseInt( heightStr );
+			}
+		//#endif
 	}
 	
 	/* (non-Javadoc)

@@ -901,18 +901,24 @@ public class ChoiceGroup extends Container implements Choice
 	public void setStyle(Style style, boolean ignoreBackground) {
 		super.setStyle(style, ignoreBackground);
 		if (this.isPopup && this.popupItem.image == null ) {
-			String url = style.getProperty("popup-image");
-			if (url != null ) {
-				this.popupItem.setImage( url );
-			}
-			String colorStr = style.getProperty("popup-color");
-			if (colorStr != null) {
-				this.popupColor = Integer.parseInt( colorStr );
-			}
-			colorStr = style.getProperty("popup-background-color");
-			if (colorStr != null) {
-				this.popupBackgroundColor = Integer.parseInt( colorStr );
-			}
+			//#ifdef polish.css.popup-image
+				String url = style.getProperty("popup-image");
+				if (url != null ) {
+					this.popupItem.setImage( url );
+				}
+			//#endif
+			//#ifdef polish.css.popup-color
+				String colorStr = style.getProperty("popup-color");
+				if (colorStr != null) {
+					this.popupColor = Integer.parseInt( colorStr );
+				}
+			//#endif
+			//#ifdef polish.css.popup-background-color
+				colorStr = style.getProperty("popup-background-color");
+				if (colorStr != null) {
+					this.popupBackgroundColor = Integer.parseInt( colorStr );
+				}
+			//#endif
 		}
 	}
 }

@@ -180,33 +180,37 @@ implements ImageConsumer
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		String align = style.getProperty("icon-image-align");
-		if (align == null) {
-			// keep align setting
-		} else if ("left".equals(align)) {
-			this.imageAlign = Graphics.LEFT;
-		} else if ("right".equals(align)) {
-			this.imageAlign = Graphics.RIGHT;
-		} else if ("top".equals(align)) {
-			this.imageAlign = Graphics.TOP;
-		} else if ("bottom".equals(align)) {
-			this.imageAlign = Graphics.BOTTOM;
-		} else {
-			this.imageAlign = DEFAULT_ALIGN;
-		}
-		if (this.image == null) {
-			String imageName = style.getProperty("icon-image");
-			if (imageName != null) {
-				if (this.parent instanceof Container) {
-					imageName = ((Container) this.parent).parseIndexUrl( imageName, this );
-				}
-				try {
-					setImage( StyleSheet.getImage(imageName, this, false) );
-				} catch (IOException e) {
-					//#debug error
-					Debug.debug("unable to load image [" + imageName + "]", e);
-				}
+		//#ifdef polish.css.icon-image-align
+			String align = style.getProperty("icon-image-align");
+			if (align == null) {
+				// keep align setting
+			} else if ("left".equals(align)) {
+				this.imageAlign = Graphics.LEFT;
+			} else if ("right".equals(align)) {
+				this.imageAlign = Graphics.RIGHT;
+			} else if ("top".equals(align)) {
+				this.imageAlign = Graphics.TOP;
+			} else if ("bottom".equals(align)) {
+				this.imageAlign = Graphics.BOTTOM;
+			} else {
+				this.imageAlign = DEFAULT_ALIGN;
 			}
+		//#endif
+		if (this.image == null) {
+			//#ifdef polish.css.icon-image
+				String imageName = style.getProperty("icon-image");
+				if (imageName != null) {
+					if (this.parent instanceof Container) {
+						imageName = ((Container) this.parent).parseIndexUrl( imageName, this );
+					}
+					try {
+						setImage( StyleSheet.getImage(imageName, this, false) );
+					} catch (IOException e) {
+						//#debug error
+						Debug.debug("unable to load image [" + imageName + "]", e);
+					}
+				}
+			//#endif
 		}
 	}
 

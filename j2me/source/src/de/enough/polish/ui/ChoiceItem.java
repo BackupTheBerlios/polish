@@ -252,7 +252,7 @@ implements ImageConsumer
 					this.selected = StyleSheet.getImage( selectedName, this, true );
 				} catch (IOException e) {
 					//#debug error
-					Debug.debug("Unable to load image [" + selectedName + "]: " + e.getMessage() , e );
+					Debug.debug("Unable to load image [" + selectedName + "]" , e );
 				}
 			}
 			String plainName = style.getProperty( type + "-plain");
@@ -271,10 +271,12 @@ implements ImageConsumer
 					}
 				}
 			}
-			String colorStr = style.getProperty("choice-color");
-			if (colorStr != null) {
-				this.boxColor = Integer.parseInt( colorStr );
-			}
+			//#ifdef polish.css.choice-color
+				String colorStr = style.getProperty("choice-color");
+				if (colorStr != null) {
+					this.boxColor = Integer.parseInt( colorStr );
+				}
+			//#endif
 		} // if draw box
 	}
 	

@@ -612,44 +612,50 @@ public class Container extends Item {
 			this.border = null;
 			this.borderWidth = 0;
 		}
-		String focused = style.getProperty("focused-style");
-		if (focused != null) {
-			Style focStyle = StyleSheet.getStyle( focused );
-			if (focStyle != null) {
-				this.focusedStyle = focStyle;
-			}
-		}
-		this.columnsSetting = NO_COLUMNS;
-		String columns = style.getProperty("columns");
-		if (columns != null) {
-			this.numberOfColumns = Integer.parseInt( columns );
-			String width = style.getProperty("columns-width");
-			this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-			if (width != null) {
-				if ("equal".equals(width)) {
-					this.columnsSetting = EQUAL_WIDTH_COLUMNS;
-				} else if ("normal".equals(width)) {
-					//this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-				} else {
-					// these are pixel settings.
-					String[] widths = TextUtil.split( width, ',');
-					if (widths.length != this.numberOfColumns) {
-						// this is an invalid setting!
-						this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-						//#debug warn
-						System.out.println("Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
-					} else {
-						this.columnsSetting = STATIC_WIDTH_COLUMNS;
-						this.columnsWidths = new int[ this.numberOfColumns ];
-						for (int i = 0; i < widths.length; i++) {
-							this.columnsWidths[i] = Integer.parseInt( widths[i] );
-						}
-						this.columnsSetting = STATIC_WIDTH_COLUMNS;
-					}					
+		//#ifdef polish.css.focused-style
+			String focused = style.getProperty("focused-style");
+			if (focused != null) {
+				Style focStyle = StyleSheet.getStyle( focused );
+				if (focStyle != null) {
+					this.focusedStyle = focStyle;
 				}
 			}
-			//TODO rob allow definition of the "fill-policy"
-		}
+		//#endif
+		this.columnsSetting = NO_COLUMNS;
+		//#ifdef polish.css.columns
+			String columns = style.getProperty("columns");
+			if (columns != null) {
+				this.numberOfColumns = Integer.parseInt( columns );
+				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+				//#ifdef polish.css.columns-width
+				String width = style.getProperty("columns-width");
+				if (width != null) {
+					if ("equal".equals(width)) {
+						this.columnsSetting = EQUAL_WIDTH_COLUMNS;
+					} else if ("normal".equals(width)) {
+						//this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+					} else {
+						// these are pixel settings.
+						String[] widths = TextUtil.split( width, ',');
+						if (widths.length != this.numberOfColumns) {
+							// this is an invalid setting!
+							this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+							//#debug warn
+							System.out.println("Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
+						} else {
+							this.columnsSetting = STATIC_WIDTH_COLUMNS;
+							this.columnsWidths = new int[ this.numberOfColumns ];
+							for (int i = 0; i < widths.length; i++) {
+								this.columnsWidths[i] = Integer.parseInt( widths[i] );
+							}
+							this.columnsSetting = STATIC_WIDTH_COLUMNS;
+						}					
+					}
+				}
+				//#endif
+				//TODO rob allow definition of the "fill-policy"
+			}
+		//#endif
 	}
 
 	/**

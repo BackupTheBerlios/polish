@@ -837,24 +837,24 @@ public abstract class Item extends Object
 		this.marginTop = style.marginTop;
 		this.marginBottom = style.marginBottom;
 		//#ifdef polish.useBeforeStyle
-		if (style.before != null) {
-			this.beforeWidth = style.beforeWidth + this.paddingHorizontal;
-			this.beforeHeight = style.beforeHeight;
-		} else {
-			this.beforeWidth = 0;
-			this.beforeHeight = 0;
-		}
-		this.beforeImage = style.before;
+			if (style.before != null) {
+				this.beforeWidth = style.beforeWidth + this.paddingHorizontal;
+				this.beforeHeight = style.beforeHeight;
+			} else {
+				this.beforeWidth = 0;
+				this.beforeHeight = 0;
+			}
+			this.beforeImage = style.before;
 		//#endif
 		//#ifdef polish.useAfterStyle
-		if (style.after != null) {
-			this.afterWidth = style.afterWidth + this.paddingHorizontal;
-			this.afterHeight = style.afterHeight;
-		} else {
-			this.afterWidth = 0;
-			this.afterHeight = 0;
-		}
-		this.afterImage = style.after;
+			if (style.after != null) {
+				this.afterWidth = style.afterWidth + this.paddingHorizontal;
+				this.afterHeight = style.afterHeight;
+			} else {
+				this.afterWidth = 0;
+				this.afterHeight = 0;
+			}
+			this.afterImage = style.after;
 		//#endif
 	}
 	

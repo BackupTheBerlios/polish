@@ -159,10 +159,12 @@ public class Ticker extends Item
 	public void setStyle(Style style) {
 		this.font = style.font;
 		this.textColor = style.fontColor;
-		String stepStr = style.getProperty("ticker-step");
-		if (stepStr != null) {
-			this.step = Integer.parseInt( stepStr );
-		}
+		//#ifdef polish.css.ticker-step
+			String stepStr = style.getProperty("ticker-step");
+			if (stepStr != null) {
+				this.step = Integer.parseInt( stepStr );
+			}
+		//#endif
 		super.setStyle(style);
 	}
 
