@@ -68,6 +68,7 @@ public class DisplayInfoCollector extends InfoCollector {
         	System.out.println("Unable to load NokiaFullCanvasTest" + e);
         }
         try {
+        	Class.forName("javax.microedition.pki.Certificate");
         	//#if polish.useDefaultPackage
         		String className = "Midp2FullCanvasTest";
         	//#else
@@ -83,6 +84,7 @@ public class DisplayInfoCollector extends InfoCollector {
         	//#debug error
         	System.out.println("Unable to load Midp2FullCanvasTest" + e);
         }
+        addInfo( "Canvas.isDoubleBuffered: ", "" + canvas.isDoubleBuffered() );
         
         Font font = Font.getDefaultFont();
         addInfo("Default-Font-Height: ", "" + font.getHeight() );

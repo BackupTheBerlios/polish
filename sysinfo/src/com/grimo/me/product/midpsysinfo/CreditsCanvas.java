@@ -27,7 +27,7 @@ public class CreditsCanvas extends Canvas {
 	private final static int MARGIN = 1;
 	private final static int BACKGROUND_COLOR = 0;
 	private final static int TITLE_COLOR = 0xFFFFFF;
-	private final static int TEXT_COLOR = 0xFFFF00;
+	private final static int TEXT_COLOR = 0xff9933;
 	
 	private final Image backgroundImage;
     private int yOffset;

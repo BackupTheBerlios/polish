@@ -43,6 +43,8 @@ public class MultiMediaInfoCollector extends InfoCollector {
 	        
             Class.forName("javax.microedition.media.Manager");
             addInfo( "MMAPI present:", "yes" );
+            addInfo("microedition.media.version: ",  getInfo(System.getProperty("microedition.media.version")) );
+            addInfo("streamable.contents: ",  getInfo(System.getProperty("streamable.contents")) );
             
             String[] supportedProtocols = ProtocolsInfo.getSupportedProtocols(null);
             

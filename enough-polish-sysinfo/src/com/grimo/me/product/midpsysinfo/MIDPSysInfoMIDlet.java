@@ -20,12 +20,14 @@ public class MIDPSysInfoMIDlet
 extends MIDlet
 implements CommandListener
 {
+	/*
     private final Command displayInfoCmd = new Command(Locale.get("cmd.display"), Command.SCREEN, 1);
     private final Command soundInfoCmd = new Command(Locale.get("cmd.multimedia"), Command.SCREEN, 2);
     private final Command systemInfoCmd = new Command(Locale.get("cmd.system"), Command.SCREEN, 3);
     private final Command gameControlsInfoCmd = new Command(Locale.get("cmd.keys"), Command.SCREEN, 4);
     private final Command arithmeticBenchmarkCmd = new Command(Locale.get("cmd.arithmeticBenchmark"), Command.SCREEN, 6);
     private final Command creditsCmd = new Command(Locale.get("cmd.credits"), Command.SCREEN, 6);
+    */
     private final Command exitCmd = new Command(Locale.get("cmd.exit"), Command.EXIT, 10);
     private final Command backCmd = new Command(Locale.get("cmd.back"), Command.BACK, 1);
     
@@ -71,12 +73,14 @@ implements CommandListener
 	}
 	
 	private void setCommands( Displayable disp) {
+		/*
     	disp.addCommand( this.displayInfoCmd );
     	disp.addCommand( this.soundInfoCmd );
     	disp.addCommand( this.systemInfoCmd );
     	disp.addCommand( this.gameControlsInfoCmd );
     	disp.addCommand( this.arithmeticBenchmarkCmd );
     	disp.addCommand( this.creditsCmd );
+    	*/
     	if (disp == this.mainMenu) {
         	disp.addCommand( this.exitCmd );
     	} else {
@@ -97,42 +101,30 @@ implements CommandListener
 		if (cmd == List.SELECT_COMMAND && disp == this.mainMenu) {
 			switch( this.mainMenu.getSelectedIndex() ) {
 				case 0:
-					cmd = this.displayInfoCmd;
-					break;
+					show( Locale.get("title.display"), new DisplayInfoCollector() );
+					return;
 				case 1:
-					cmd = this.soundInfoCmd;
-					break;
+					show( Locale.get("title.multimedia"), new MultiMediaInfoCollector() );
+					return;
 				case 2:
-					cmd = this.systemInfoCmd;
-					break;
+					show( Locale.get("title.system"), new SystemInfoCollector() );
+					return;
 				case 3:
-					cmd = this.gameControlsInfoCmd;
-					break;
+					show( Locale.get("title.keys"), new KeysInfoCollector() );
+					return;
 				case 4:
-					cmd = this.arithmeticBenchmarkCmd;
-					break;
+					show( Locale.get("title.arithmeticBenchmark"), new ArithmeticBenchmarkInfoCollector() );
+					return;
 				case 5:
-					cmd = this.creditsCmd;
-					break;
+					show( new CreditsCanvas() );
+					return;
 				case 6:
 					cmd = this.exitCmd;
-					break;
+					return;
 			}
 		}
 		if (cmd == this.backCmd ) {
 			this.display.setCurrent( this.mainMenu );
-		} else if (cmd == this.displayInfoCmd) {
-			show( Locale.get("title.display"), new DisplayInfoCollector() );
-		} else if (cmd ==  this.soundInfoCmd ) {
-			show( Locale.get("title.multimedia"), new MultiMediaInfoCollector() );
-		} else if (cmd ==  this.systemInfoCmd ) {
-			show( Locale.get("title.system"), new SystemInfoCollector() );
-		} else if (cmd ==  this.gameControlsInfoCmd ) {
-			show( Locale.get("title.keys"), new KeysInfoCollector() );
-		} else if (cmd ==  this.arithmeticBenchmarkCmd ) {
-			show( Locale.get("title.arithmeticBenchmark"), new ArithmeticBenchmarkInfoCollector() );
-		} else if (cmd ==  this.creditsCmd ) {
-			show( new CreditsCanvas() );
 		} else if (cmd == this.exitCmd) {
 			destroyApp( true );
 			notifyDestroyed();

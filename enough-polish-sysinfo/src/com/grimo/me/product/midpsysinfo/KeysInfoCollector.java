@@ -73,6 +73,7 @@ implements DynamicTestView
         
         
         try {
+        	Class.forName("javax.microedition.pki.Certificate");
         	//#if polish.useDefaultPackage
         		String className = "Midp2FullCanvasTest";
         	//#else

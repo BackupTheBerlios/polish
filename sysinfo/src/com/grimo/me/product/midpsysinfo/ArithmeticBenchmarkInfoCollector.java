@@ -161,7 +161,7 @@ implements Runnable
         long before;
         long after;
         int times = NUMBER_OF_OPS * 100;
-        addInfo("Devision: ", "deviding " + times + " integers");
+        addInfo("Division: ", "dividing " + times + " integers");
         
         before = System.currentTimeMillis();
         for ( int i = 0; i < NUMBER_OF_OPS; i++){
