@@ -249,25 +249,35 @@ implements CommandListener
 		// set date:
 		if (date == null ) {
 			if (this.mode == DATE) {
-				//#if polish.DateFormat == us
+				//#if polish.DateFieldEmptyText:defined
+					//#= this.text = "${polish.DateFieldEmptyText}";
+				//#elif polish.DateFormat == us || polish.DateFormat == mdy
 					this.text = "MM-DD-YYYY";
 				//#elif polish.DateFormat == de
 					this.text = "TT.MM.JJJJ";
 				//#elif polish.DateFormat == fr
 					this.text = "JJ/MM/AAAA";
+				//#elif polish.DateFormat == dmy
+					this.text = "DD-MM-YYYY";
 				//#else
+					// default to ymd
 					this.text = "YYYY-MM-DD";
 				//#endif
 			} else if (this.mode == TIME) {
 				this.text = "hh:mm";
 			} else {
-				//#if polish.DateFormat == us
+				//#if polish.DateFieldEmptyText:defined
+					//# this.text = "${polish.DateFieldEmptyText} hh:mm";
+				//#elif polish.DateFormat == us || polish.DateFormat == mdy
 					this.text = "MM-DD-YYYY hh:mm";
 				//#elif polish.DateFormat == de
 					this.text = "TT.MM.JJJJ hh:mm";
 				//#elif polish.DateFormat == fr
 					this.text = "JJ/MM/AAAA hh:mm";
+				//#elif polish.DateFormat == dmy
+					this.text = "DD-MM-YYYY hh:mm";
 				//#else
+					// default to ymd
 					this.text = "YYYY-MM-DD hh:mm";				
 				//#endif
 			}
@@ -318,14 +328,63 @@ implements CommandListener
 					buffer.append( ++month )
 					    .append("/");
 					buffer.append( year );
-				//#else
-					buffer.append( year )
-					      .append("-");
+				//#elif polish.DateFormat == mdy
 					if (month < 9) {
 						buffer.append('0');
 					}
 					buffer.append( ++month )
-				          .append("-");
+					//#if polish.DateFormatSeparator:defined
+						//#= .append("${polish.DateFormatSeparator}");
+					//#else
+					        .append("-");
+					//#endif
+					if (day < 10) {
+						buffer.append( '0' );
+					}
+					buffer.append( day )
+					//#if polish.DateFormatSeparator:defined
+						//#= .append("${polish.DateFormatSeparator}");
+					//#else
+					        .append("-");
+					//#endif
+					buffer.append( year );
+				//#elif polish.DateFormat == dmy
+					if (day < 10) {
+						buffer.append( '0' );
+					}
+					buffer.append( day )
+					//#if polish.DateFormatSeparator:defined
+						//#= .append("${polish.DateFormatSeparator}");
+					//#else
+					        .append("-");
+					//#endif
+					if (month < 9) {
+						buffer.append('0');
+					}
+					buffer.append( ++month )
+					//#if polish.DateFormatSeparator:defined
+						//#= .append("${polish.DateFormatSeparator}");
+					//#else
+					        .append("-");
+					//#endif
+					buffer.append( year );
+				//#else
+					// default to YMD
+					buffer.append( year )
+					//#if polish.DateFormatSeparator:defined
+						//#= .append("${polish.DateFormatSeparator}");
+					//#else
+					        .append("-");
+					//#endif
+					if (month < 9) {
+						buffer.append('0');
+					}
+					buffer.append( ++month )
+					//#if polish.DateFormatSeparator:defined
+						//#= .append("${polish.DateFormatSeparator}");
+					//#else
+					        .append("-");
+					//#endif
 					if (day < 10) {
 						buffer.append( '0' );
 					}
