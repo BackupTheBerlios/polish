@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.0-RC7";
+	private static final String VERSION = "1.0";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -363,7 +363,7 @@ public class PolishTask extends ConditionalTask {
 			PreprocessorSetting setting = settings[i];
 			processors[ i + 1] = CustomPreprocessor.getInstance(setting, this.preprocessor, this.project );
 		}
-		this.preprocessor.setLineProcessors( processors );
+		this.preprocessor.setCustomPreprocessors( processors );
 		
 		//	initialise the preprocessing-source-directories:
 		DirectoryScanner dirScanner = new DirectoryScanner();
@@ -571,16 +571,12 @@ public class PolishTask extends ConditionalTask {
 			this.preprocessor.setSymbols( device.getFeatures() );
 			this.preprocessor.setVariables( device.getCapabilities() );
 			if (this.conditionalVariables != null) {
+				// add variables which fulfill the conditions: 
 				BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 				for (int i = 0; i < this.conditionalVariables.length; i++) {
 					Variable var = this.conditionalVariables[i];
 					if (var.isConditionFulfilled( evaluator, this.project )) {
-						//System.out.println("ACCEPTING VAR " + var.getName());
 						device.addDirectCapability(var.getName(), var.getValue() );
-					/*
-					} else {
-						System.out.println("REJECTING VAR " + var.getName());
-					*/
 					}
 				}
 				// reset symbols and variables,
@@ -614,6 +610,8 @@ public class PolishTask extends ConditionalTask {
 			this.preprocessor.notifyPolishPackageStart();
 			// now process the J2ME package files:
 			processSourceDir(this.polishSourceDir, this.polishSourceFiles, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, true);
+			// notify preprocessor about the end of preprocessing:
+			this.preprocessor.notifyDeviceEnd( device, usePolishGui );
 			
 			
 			// now all files have been preprocessed.
@@ -690,7 +688,8 @@ public class PolishTask extends ConditionalTask {
 			// when only the CSS files have changed
 			boolean saveInAnyCase =  ( !targetFile.exists() )
 					 || ( sourceLastModified > targetLastModified )
-					 || ( buildXmlLastModified > targetLastModified ); 
+					 || ( buildXmlLastModified > targetLastModified )
+					 || ( this.preprocessor.isInPreprocessQueue( file.getFileName() ) ); 
 			boolean preprocess = ( saveInAnyCase )
 					 || ( lastCssModification > targetLastModified);
 			if (   preprocess ) {
@@ -1187,19 +1186,18 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		
-		// add user-defined attributes:
+		// add user-defined attributes, but only
+		// when these attributes are filtered:
+		if (useAttributesFilter) {
 		Variable[] attributes = this.buildSetting.getJadAttributes();
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		for (int i = 0; i < attributes.length; i++) {
 			Variable var = attributes[i];
 			if (var.isConditionFulfilled(evaluator, this.project)) {
 				String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
-				if (useAttributesFilter) {
-					attributesByName.put( var.getName(), new Variable(var.getName(), value ) );
-				} else {
-					jad.addAttribute( var.getName(), value );
-				}
+				attributesByName.put( var.getName(), new Variable(var.getName(), value ) );
 			}
+		}
 		}
 		
 		//add polish version:
@@ -1217,8 +1215,7 @@ public class PolishTask extends ConditionalTask {
 		File manifestFile = new File( device.getClassesDir() 
 				+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
 		try {
-			FileUtil.writeTextFile( manifestFile, jad.getContent() );
-			
+			FileUtil.writeTextFile( manifestFile, jad.getContent() );		
 			JarUtil.jar(classesDir, jarFile, true );
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -106,6 +106,25 @@ public class Converter {
 	}
 	
 	/**
+	 * Parse the given number into a float.
+	 * 
+	 * @param styleName the style name
+	 * @param groupName the name of the group
+	 * @param name the name of the field
+	 * @param value the float value as a String. 
+	 * @return the resulting float value
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public float parseFloat( String styleName, String groupName, String name, String value ) { 
+		try {
+			return Float.parseFloat( value );
+		} catch (NumberFormatException e) {
+			throw new BuildException("Unable to parse the field [" + groupName + "-" + name + "] with the value [" + value + "] from the style [" + styleName + "]: " + e.getMessage(), e );
+		}
+		
+	}
+	
+	/**
 	 * Extracts the correct url from the given resource URL.
 	 * 
 	 * @param url the URL of the resource, e.g. "url( myPic.png )"

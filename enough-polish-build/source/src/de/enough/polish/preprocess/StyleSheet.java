@@ -101,6 +101,8 @@ public class StyleSheet {
 	private HashMap cssPreprocessingSymbols;
 
 	private HashMap cssAttributes;
+
+	private HashMap attributesAbbreviations;
 	
 	/**
 	 * Creates a new empty style sheet
@@ -650,5 +652,24 @@ public class StyleSheet {
 			getCssPreprocessingSymbols( device );
 		}
 		return (this.cssAttributes.get( name ) != null);
+	}
+
+	/**
+	 * Sets the abbreviations for CSS attributes.
+	 * @param map a HashMap containing all abbreviations.
+	 */
+	public void setAttributesAbbreviations(HashMap map) {
+		this.attributesAbbreviations = map;
+	}
+	
+	/**
+	 * Retrieves the abbreviation for the given attribute.
+	 * 
+	 * @param name the name of the attribute
+	 * @return either the found abbreviation or null when the attribute
+	 * 	was not used in the preprocessed source code.
+	 */
+	public String getAttributeAbbreviation( String name ) {
+		return (String) this.attributesAbbreviations.get( name );
 	}
 }

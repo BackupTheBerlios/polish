@@ -39,7 +39,7 @@ import de.enough.polish.util.PopulateUtil;
 import de.enough.polish.util.StringList;
 
 /**
- * <p>Processes single lines of source-code.</p>
+ * <p>Preprocesses the source-code ni a user-defined manner.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
@@ -59,7 +59,7 @@ public abstract class CustomPreprocessor {
 	private ArrayList directives;
 
 	/**
-	 * Creates a new line-processor.
+	 * Creates a new line-preprocessor.
 	 * The actual initialisation work is done in the init()-method.
 	 * 
 	 * @see #init(Preprocessor)
@@ -68,13 +68,20 @@ public abstract class CustomPreprocessor {
 		// no initialisation work done
 	}
 	
+	/**
+	 * Initialises this custom preprocessor.
+	 * The default implementation set the boolean evaluator and the
+	 * parent-preprocessor.
+	 * 
+	 * @param processor the parent-preprocessor for this custom preprocessor
+	 */
 	public void init( Preprocessor processor ) {
 		this.preprocessor = processor;
 		this.booleanEvaluator = processor.getBooleanEvaluator();
 	}
 	
 	/**
-	 * Notifies the processor that from now on source code from the J2ME Polish package is processed.
+	 * Notifies the preprocessor that from now on source code from the J2ME Polish package is processed.
 	 * This will last until the notifyDevice(...)-method is called.
 	 */
 	public void notifyPolishPackageStart() {
@@ -82,7 +89,7 @@ public abstract class CustomPreprocessor {
 	}
 		
 	/**
-	 * Notifies this processor about a new device for which code is preprocessed.
+	 * Notifies this preprocessor about a new device for which code is preprocessed.
 	 * The default implementation set the currentDevice, currentStyleSheet
 	 * and isUsingPolishGui and resets the isInJ2MEPolishPackage instance variables.
 	 *  
@@ -94,6 +101,16 @@ public abstract class CustomPreprocessor {
 		this.isUsingPolishGui = usesPolishGui;
 		this.currentStyleSheet = this.preprocessor.getStyleSheet();
 		this.isInJ2MEPolishPackage = false;
+	}
+	
+	/**
+	 * Notifies this preprocessor about the end of the preprocessing step for the given device
+	 * 
+	 * @param device the device which preprocessing step has been finished
+	 * @param usesPolishGui true when the J2ME Polish GUI is used for new device
+	 */
+	public void notifyDeviceEnd( Device device, boolean usesPolishGui  ) {
+		// do nothing
 	}
 	
 	/**
@@ -151,12 +168,12 @@ public abstract class CustomPreprocessor {
 	}
 	
 	/**
-	 * Loads a line processor subclass.
+	 * Loads a custom preprocessor subclass.
 	 * 
-	 * @param setting the definition of the line processor 
+	 * @param setting the definition of the line preprocessor 
 	 * @param preprocessor the preprocessor
 	 * @param project the Ant project
-	 * @return the initialised line processor
+	 * @return the initialised custom preprocessor
 	 * @throws BuildException when the defined class could not be instantiated
 	 */
 	public static CustomPreprocessor getInstance( PreprocessorSetting setting, 

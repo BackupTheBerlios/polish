@@ -131,4 +131,16 @@ public abstract class BorderConverter extends Converter {
 		return parseInt( this.styleName, "border", name, value );
 	}
 	
+	/**
+	 * Parses the given float.
+	 * 
+	 * @param name the name of the field
+	 * @param value the float value as a String
+	 * @return the float value.
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public float parseFloat( String name, String value) {
+		return parseFloat( this.styleName, "border", name, value );
+	}
+
 }

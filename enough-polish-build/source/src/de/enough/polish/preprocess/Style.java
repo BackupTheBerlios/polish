@@ -50,6 +50,7 @@ public class Style {
 	private String parentName;
 	private String styleName;
 	private boolean isDynamic;
+	private String abbreviation;
 
 	
 	public Style( String selector, String styleName, boolean isDynamic, String parent, CssBlock cssBlock ) {
@@ -326,5 +327,23 @@ public class Style {
 			}
 		}
 		return (String[]) attributes.toArray( new String[ attributes.size() ] );
+	}
+
+	/**
+	 * Retrieves the abbreviation of this style.
+	 * 
+	 * @return the abbreviation of this style
+	 */
+	public String getAbbreviation() {
+		return this.abbreviation;
+	}
+	
+	/**
+	 * Sets the abbreviation of this style.
+	 * 
+	 * @param abbreviation the new abbreviation of this style
+	 */
+	public void setAbbreviation( String abbreviation ) {
+		this.abbreviation = abbreviation;
 	}
 }

@@ -60,6 +60,16 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/jsr185</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi" />
+		<capability name="SoundFormat" value="midi, amr" />
+	</device>
 	
 <!-- virtuell devices -->
 <!-- These devices do not actually exist, but they share the common
@@ -249,7 +259,7 @@
 	</device>
 	
 	<device>
-		<identifier>Sony-Ericsson/Z500</identifier>
+		<identifier>Sony-Ericsson/Z500a, Sony-Ericsson/Z500i</identifier>
 		<groups></groups>
 		<features>hasCamera, hasVideo</features>
 		<capability name="ScreenSize" value="128x160"/>
@@ -264,7 +274,7 @@
 	</device>
 		
 	<device>
-		<identifier>Sony-Ericsson/S700</identifier>
+		<identifier>Sony-Ericsson/S700i, Sony-Ericsson/S700c</identifier>
 		<groups></groups>
 		<features>hasCamera, hasVideo</features>
 		<capability name="ScreenSize" value="240x320"/>
@@ -272,14 +282,30 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, mp4, 3gp" />
+		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3" />
+		<capability name="VideoFormat" value="mpeg-4, 3gp" />
 		<capability name="HeapSize" value="32 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="8" />
 		<capability name="CameraResolution" value="1.3 MP" />
 	</device>
 	
-	
+	<device>
+		<identifier>Sony-Ericsson/P910i, Sony-Ericsson/P910c, Sony-Ericsson/P910a</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo</features>
+		<capability name="ScreenSize" value="208x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, rmf, au, wav" />
+		<capability name="VideoFormat" value="mpeg-4, 3gp" />
+		<capability name="HeapSize" value="64 MB" />
+		<capability name="DRM" value="forward lock" />
+		<capability name="CameraZoom" value="0" />
+		<capability name="CameraResolution" value="1.3 MP" />
+	</device>	
 	
 <!-- Motorola devices -->
 	<device>
@@ -792,6 +818,46 @@
 	</device>
 	
 <!-- Nokia devices -->
+
+	<device>
+		<identifier>Nokia/6170</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3GPP, h.263, mpeg-4" />
+		<capability name="SoundFormat" value="midi, midi40, amr, nb-amr" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="128kb" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Americas, Asia-Pacific" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="0" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6260</identifier>
+		<groups>Series60</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 7.0s"/>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="VideoFormat" value="3GPP, h.263, Real Media, mpeg-4" />
+		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, real audio, aac" />
+		<capability name="HeapSize" value="28 MB" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="4.6 MB" />
+		<capability name="DRM" value="forward lock" />
+		<capability name="Region" value="Europe, Africa, Americas, Asia-Pacific" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="0" />
+	</device>
 	
 	<device>
 		<identifier>Nokia/6630</identifier>
@@ -1303,7 +1369,7 @@
 	<device>
 		<identifier>Nokia/6100</identifier>
 		<groups>Series40</groups>
-		<capability name="ScreenSize" value="128x160"/>
+		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />

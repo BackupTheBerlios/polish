@@ -72,7 +72,7 @@ public class Preprocessor {
 	public static final int SKIP_FILE = 8;
 	
 	public static final Pattern DIRECTIVE_PATTERN = 
-		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+)");
+		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+)");
 
 	private DebugManager debugManager;
 	private File destinationDir;
@@ -91,9 +91,10 @@ public class Preprocessor {
 	private BooleanEvaluator booleanEvaluator;
 	private StyleSheet styleSheet;
 	private boolean usePolishGui;
-	private CustomPreprocessor[] lineProcessors;
+	private CustomPreprocessor[] customPreprocessors;
 	protected static final Pattern SYSTEM_PRINT_PATTERN = Pattern.compile(
 				"System.(out|err).print(ln)?\\s*\\(" );
+	private HashMap preprocessQueue;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -131,6 +132,7 @@ public class Preprocessor {
 		this.newExtension = newExt;
 		this.booleanEvaluator = new BooleanEvaluator( symbols, variables );
 		this.destinationDir = destinationDir;
+		this.preprocessQueue = new HashMap();
 		
 		this.withinIfDirectives = new HashMap();
 		this.withinIfDirectives.put( "elifdef", Boolean.TRUE );
@@ -151,10 +153,16 @@ public class Preprocessor {
 		this.supportedDirectives.put( "include", Boolean.TRUE );
 		this.supportedDirectives.put( "define", Boolean.TRUE );
 		this.supportedDirectives.put( "undefine", Boolean.TRUE );
+		this.supportedDirectives.put( "message", Boolean.TRUE );
 	}
 	
-	public void setLineProcessors( CustomPreprocessor[] lineProcessors ) {
-		this.lineProcessors = lineProcessors;	
+	/**
+	 * Sets the custom preprocessors which allow a finer grained control of the preprocessing phase.
+	 *  
+	 * @param customPreprocessors an array of custom preprocessors 
+	 */
+	public void setCustomPreprocessors( CustomPreprocessor[] customPreprocessors ) {
+		this.customPreprocessors = customPreprocessors;	
 	}
 
 	/**
@@ -162,9 +170,9 @@ public class Preprocessor {
 	 * This will last until the notifyDevice(...)-method is called.
 	 */
 	public void notifyPolishPackageStart() {
-		if (this.lineProcessors != null) {
-			for (int i = 0; i < this.lineProcessors.length; i++) {
-				CustomPreprocessor processor = this.lineProcessors[i];
+		if (this.customPreprocessors != null) {
+			for (int i = 0; i < this.customPreprocessors.length; i++) {
+				CustomPreprocessor processor = this.customPreprocessors[i];
 				processor.notifyPolishPackageStart();
 			}
 		}
@@ -172,21 +180,34 @@ public class Preprocessor {
 	
 	
 	/**
-	 * Notifies this processor about a new device for which code is preprocessed.
-	 * The default implementation set the currentDevice, currentStyleSheet
-	 * and isUsingPolishGui and resets the isInJ2MEPolishPackage instance variables.
+	 * Notifies this preprocessor about a new device for which code is preprocessed.
 	 *  
 	 * @param device the new device
 	 * @param usesPolishGui true when the J2ME Polish GUI is used for the new device
 	 */
 	public void notifyDevice( Device device, boolean usesPolishGui ) {
-		if (this.lineProcessors != null) {
-			for (int i = 0; i < this.lineProcessors.length; i++) {
-				CustomPreprocessor processor = this.lineProcessors[i];
+		if (this.customPreprocessors != null) {
+			for (int i = 0; i < this.customPreprocessors.length; i++) {
+				CustomPreprocessor processor = this.customPreprocessors[i];
 				processor.notifyDevice(device, usesPolishGui);
 			}
 		}
 	}	
+	
+	/**
+	 * Notifies this preprocessor about the end of preprocessing for the given device.
+	 * 
+	 * @param device the new device
+	 * @param usesPolishGui true when the J2ME Polish GUI is used for the new device
+	 */
+	public void notifyDeviceEnd(Device device, boolean usesPolishGui) {
+		if (this.customPreprocessors != null) {
+			for (int i = 0; i < this.customPreprocessors.length; i++) {
+				CustomPreprocessor processor = this.customPreprocessors[i];
+				processor.notifyDeviceEnd(device, usesPolishGui);
+			}
+		}
+	}
 	
 	/**
 	 * Sets the direcotry to which the preprocessed files should be copied to.
@@ -366,9 +387,9 @@ public class Preprocessor {
 	throws BuildException 
 	{
 		boolean changed = false;
-		if (this.lineProcessors != null) {
-			for (int i = 0; i < this.lineProcessors.length; i++) {
-				CustomPreprocessor processor = this.lineProcessors[i];
+		if (this.customPreprocessors != null) {
+			for (int i = 0; i < this.customPreprocessors.length; i++) {
+				CustomPreprocessor processor = this.customPreprocessors[i];
 				processor.processClass(lines, className);
 				lines.reset();
 			}
@@ -475,6 +496,8 @@ public class Preprocessor {
 			changed = processDebug( argument, lines, className );
 		} else if ("mdebug".equals( command) ) {
 			changed = processMdebug( argument, lines, className );
+		} else if ("message".equals( command) ) {
+			changed = processMessage( argument, lines, className );
 		} else {
 			return checkInvalidDirective( className, lines, line, command, argument );
 		}
@@ -933,6 +956,23 @@ public class Preprocessor {
 	}
 
 	/**
+	 * Processes the #message command.
+	 * 
+	 * @param argument the message which should be printed out
+	 * @param lines the source code
+	 * @param className the name of the source file
+	 * @return true when changes were made
+	 * @throws BuildException when the preprocessing fails
+	 */
+	private boolean processMessage(String argument, StringList lines, String className) 
+	throws BuildException
+	{
+		argument = PropertyUtil.writeProperties( argument, this.variables);
+		System.out.println("MESSAGE: " + argument );
+		return false;
+	}
+	
+	/**
 	 * Processes the #debug command.
 	 * 
 	 * @param argument the debug-level if defined
@@ -1142,6 +1182,34 @@ public class Preprocessor {
 	 */
 	public String getVariable(String name) {
 		return (String) this.variables.get(name);
+	}
+
+	/**
+	 * Determines whether the given file is in the preprocess queue.
+	 * 
+	 * @param fileName the name of the file, e.g. "de/enough/polish/ui/Screen.java"
+	 * @return true when the given file is in the queue
+	 */
+	public boolean isInPreprocessQueue(String fileName) {
+		return (this.preprocessQueue.get( fileName ) != null);
+	}
+	
+	/**
+	 * Adds the file to the preprocessing queue
+	 * 
+	 * @param fileName the name of the file
+	 */
+	public void addToPreprocessQueue( String fileName ) {
+		this.preprocessQueue.put( fileName, Boolean.TRUE );
+	}
+	
+	/**
+	 * Removes the file from the preprocessing queue
+	 * 
+	 * @param fileName the name of the file
+	 */
+	public void removeFromPreprocessQueue( String fileName ) {
+		this.preprocessQueue.remove( fileName );
 	}
 
 

@@ -165,9 +165,9 @@ public class Device extends PolishComponent {
 		addCapability(NAME, this.name);
 		addCapability( "polish.name", this.name );
 		addCapability(VENDOR, this.vendorName);
-		addCapability( "polish.vendor", this.name );
+		addCapability( "polish.vendor", this.vendorName );
 		addCapability(IDENTIFIER, this.identifier);
-		addCapability( "polish.identifier", this.name );
+		addCapability( "polish.identifier", this.identifier );
 
 		// load capabilities and features:
 		loadCapabilities(definition, this.identifier, "devices.xml");

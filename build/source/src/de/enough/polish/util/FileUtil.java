@@ -27,6 +27,7 @@ package de.enough.polish.util;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * <p>Provides some often used methods for handling files.</p>
@@ -80,7 +81,7 @@ public final class FileUtil {
 	 * 
 	 * @param file the file to which the text should be written
 	 * @param lines the text lines of the file
-	 * @throws IOException
+	 * @throws IOException when there is an input/output error during the saving
 	 */
 	public static void writeTextFile(File file, String[] lines) 
 	throws IOException 
@@ -160,6 +161,61 @@ public final class FileUtil {
 			in.close();
 			out.close();
 		}
+	}
+	
+	/**
+	 * Writes the properties which are defined in the given HashMap into a textfile.
+	 * The notation in the file will be [name]=[value]\n for each defined property.
+	 * 
+	 * @param file the file which should be created or overwritten
+	 * @param properties the properties which should be written. The
+	 * 	keys and values of the properties need to be Strings.
+	 * @throws IOException when there is an input/output error during the saving
+	 */
+	public static void writePropertiesFile( File file, HashMap properties ) 
+	throws IOException 
+	{
+		Object[] keys = properties.keySet().toArray();
+		String[] lines = new String[ keys.length ];
+		for (int i = 0; i < lines.length; i++) {
+			String key = (String) keys[i];
+			String value = (String) properties.get( key );
+			lines[i] = key.toString() + "=" + value.toString();
+		}
+		writeTextFile( file, lines );
+	}
+
+	/**
+	 * Reads a properties file.
+	 * The notation of the file needs to be 
+	 * "[name]=[value]\n"
+	 * for each defined property.
+	 * 
+	 * @param file the file containing the properties
+	 * @return a hashmap containing all properties found in the file
+	 * @throws FileNotFoundException when the file was not found
+	 * @throws IOException when file could not be read.
+	 * @throws IllegalArgumentException when the line does not contain a property
+	 */
+	public static HashMap readPropertiesFile( File file ) 
+	throws FileNotFoundException, IOException 
+	{
+		String[] lines = readTextFile( file );
+		HashMap map = new HashMap();
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i];
+			int equalsPos = line.indexOf('=');
+			if (equalsPos == -1) {
+				throw new IllegalArgumentException("The line [" + line 
+						+ "] of the file [" + file.getAbsolutePath() 
+						+ "] contains an invalid property definition: " +
+								"missing equals-sign (\"=\")." );
+			}
+			String key = line.substring(0, equalsPos );
+			String value = line.substring( equalsPos + 1);
+			map.put( key, value );
+		}
+		return map;
 	}
 	
 }

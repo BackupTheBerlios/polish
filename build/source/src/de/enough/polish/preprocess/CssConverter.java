@@ -26,6 +26,7 @@
 package de.enough.polish.preprocess;
 
 import de.enough.polish.Device;
+import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextUtil;
 
@@ -52,6 +53,9 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "roundrect", "de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter");
 		BACKGROUND_TYPES.put( "round-rect", "de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter");
 		BACKGROUND_TYPES.put( "pulsating", "de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter");
+		BACKGROUND_TYPES.put( "pulsating-circle", "de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter");
+		BACKGROUND_TYPES.put( "pulsating-circles", "de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter");
+		BACKGROUND_TYPES.put( "circle", "de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter");
 	}
 	private static final HashMap BORDER_TYPES = new HashMap();
 	static {
@@ -60,6 +64,7 @@ public class CssConverter extends Converter {
 		BORDER_TYPES.put( "right-bottom-shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
 		BORDER_TYPES.put( "shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
 		BORDER_TYPES.put( "round-rect", "de.enough.polish.preprocess.borders.RoundRectBorderConverter");
+		BORDER_TYPES.put( "circle", "de.enough.polish.preprocess.borders.CircleBorderConverter");
 	}
 	private static HashMap LAYOUTS = new HashMap();
 	static {
@@ -89,6 +94,7 @@ public class CssConverter extends Converter {
 		LAYOUTS.put( "vertical-expand", "Item.LAYOUT_VEXPAND" );
 	}
 	private ArrayList referencedStyles;
+	private AbbreviationsGenerator abbreviationGenerator;
 	
 	/**
 	 * Creates a new CSS converter
@@ -103,6 +109,7 @@ public class CssConverter extends Converter {
 								   Device device,
 								   Preprocessor preprocessor ) 
 	{
+		this.abbreviationGenerator = null;
 		// search for the position to include the style-sheet definitions:
 		int index = -1;
 		while (sourceCode.next()) {
@@ -204,7 +211,9 @@ public class CssConverter extends Converter {
 				if (style.getSelector().equals("label")) {
 					isLabelStyleReferenced = true;
 				}
-				processStyle( style, codeList, styleSheet, device );
+				if (!styleSheet.isUsed(style.getSelector())) {
+					processStyle( style, codeList, styleSheet, device );
+				}
 			}
 		}
 		
@@ -245,7 +254,11 @@ public class CssConverter extends Converter {
 			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
 			for (int i = 0; i < styles.length; i++) {
 				Style style = styles[i];
-				codeList.add("\t\tstylesByName.put( \"" + style.getSelector() + "\", " + style.getStyleName() + "Style );");
+				String name = style.getAbbreviation();
+				if (name == null) {
+					name = style.getSelector();
+				}
+				codeList.add("\t\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
 			}
 			codeList.add("\t}");
 		}
@@ -432,6 +445,7 @@ public class CssConverter extends Converter {
 		String[] groupNames = style.getGroupNames();
 		if (groupNames.length > 0) {
 			codeList.add("\tstatic {");
+			codeList.add( "\t\t" + styleName + "Style.properties = new Hashtable();" );
 			for (int i = 0; i < groupNames.length; i++) {
 				String groupName = groupNames[i];
 				group = style.getGroup(groupName);
@@ -443,45 +457,51 @@ public class CssConverter extends Converter {
 					StringBuffer line = new StringBuffer();
 					line.append("\t\t")
 						.append( styleName )
-						.append("Style.addProperty( \"" );
+						.append("Style.properties.put( \"" );
 					String key = (String) iter.next();
 					String value = (String) group.get( key );
+					String attributeName;
 					if (key.equals(groupName)) {
-						line.append( groupName );
+						attributeName = groupName;
 					} else {
-						line.append( groupName )
-							.append("-")
-							.append(key);
-						// process columns-width value:
-						// remove all spaces and check for the star-value (e.g. "20, *"):
-						if (key.equals("width") && groupName.equals("columns")) {
-							value = TextUtil.replace( value, " ", "" );
-							int starPos = value.indexOf('*');
-							if (starPos != -1) {
-								String screenWidthStr = device.getCapability("ScreenWidth");
-								if (screenWidthStr != null) {
-									int screenWidth = Integer.parseInt( screenWidthStr );
-									String[] valueChunks = TextUtil.split( value, ',' );
-									int combinedWidth = 0;
-									int starIndex = -1;
-									for (int j = 0; j < valueChunks.length; j++) {
-										String widthStr = valueChunks[j];
-										if ("*".equals( widthStr)) {
-											starIndex = j;
-										} else {
-											combinedWidth += Integer.parseInt( widthStr );
-										}
+						attributeName = groupName + "-" + key;
+					}
+					String attributeAbbreviation = styleSheet.getAttributeAbbreviation(attributeName);
+					if (attributeAbbreviation == null) {
+						System.err.println("Warning: CSS-attribute [" + attributeName + "] is not supported. Please check your [polish.css] file(s).");
+						line.append( attributeName );
+					} else {
+						line.append( attributeAbbreviation );
+					}
+					// process columns-width value:
+					// remove all spaces and check for the star-value (e.g. "20, *"):
+					if (key.equals("width") && groupName.equals("columns")) {
+						value = TextUtil.replace( value, " ", "" );
+						int starPos = value.indexOf('*');
+						if (starPos != -1) {
+							String screenWidthStr = device.getCapability("ScreenWidth");
+							if (screenWidthStr != null) {
+								int screenWidth = Integer.parseInt( screenWidthStr );
+								String[] valueChunks = TextUtil.split( value, ',' );
+								int combinedWidth = 0;
+								int starIndex = -1;
+								for (int j = 0; j < valueChunks.length; j++) {
+									String widthStr = valueChunks[j];
+									if ("*".equals( widthStr)) {
+										starIndex = j;
+									} else {
+										combinedWidth += Integer.parseInt( widthStr );
 									}
-									valueChunks[ starIndex ] = "" + ( screenWidth - combinedWidth);
-									StringBuffer buffer = new StringBuffer();
-									for (int j = 0; j < valueChunks.length; j++) {
-										buffer.append( valueChunks[j] );
-										if (j != valueChunks.length -1) {
-											buffer.append(',');
-										}
-									}
-									value = buffer.toString();
 								}
+								valueChunks[ starIndex ] = "" + ( screenWidth - combinedWidth);
+								StringBuffer buffer = new StringBuffer();
+								for (int j = 0; j < valueChunks.length; j++) {
+									buffer.append( valueChunks[j] );
+									if (j != valueChunks.length -1) {
+										buffer.append(',');
+									}
+								}
+								value = buffer.toString();
 							}
 						}
 					}
@@ -545,18 +565,21 @@ public class CssConverter extends Converter {
 		if (reference.charAt(0) == '.') {
 			reference = reference.substring( 1 );
 		}
-		if (!styleSheet.isUsed(reference)) {
-			Style style = styleSheet.getStyle(reference);
-			if (style == null) {
-				throw new BuildException("Invalid CSS: the style-reference to [" + value + "] in style [" + parent.getSelector() + "] refers to a non-existing style.");
-			}
-			// add it to the list of referenced styles, 
-			// but only when it has not been added before:
-			if (! this.referencedStyles.contains(style)) {
-				this.referencedStyles.add( style );
-			}
+		if (this.abbreviationGenerator == null) {
+			this.abbreviationGenerator = new AbbreviationsGenerator();
 		}
-		return reference;
+		String abbreviation = this.abbreviationGenerator.getAbbreviation(reference, true );
+		Style style = styleSheet.getStyle(reference);
+		if (style == null) {
+			throw new BuildException("Invalid CSS: the style-reference to [" + value + "] in style [" + parent.getSelector() + "] refers to a non-existing style.");
+		}
+		style.setAbbreviation( abbreviation );
+		// add it to the list of referenced styles, 
+		// but only when it has not been added before:
+		if (! this.referencedStyles.contains(style)) {
+			this.referencedStyles.add( style );
+		}
+		return abbreviation;
 	}
 
 
