@@ -714,7 +714,7 @@
 		<identifier>Motorola/C370, Motorola/C450</identifier>
 		<features>doubleBuffering</features>
 		<capability name="OS" value="Motorola" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="96x65" />
 		<capability name="BitsPerPixel" value="12" />
 		<capability name="HeapSize" value="1 mb" />
@@ -734,7 +734,7 @@
 		<identifier>Motorola/C550</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="OS" value="Motorola" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="96x65" />
 		<capability name="BitsPerPixel" value="12" />
 		<capability name="HeapSize" value="1 mb" />
