@@ -85,7 +85,9 @@ public final class TextUtil {
 	 */
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
+			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth );
+			return new String[]{ value };
 		}
 		boolean hasLineBreaks = (value.indexOf('\n') != -1);
 		int completeWidth = font.stringWidth(value);
