@@ -70,7 +70,7 @@ public final class PopulateUtil {
 			Class[] parameterTypes = method.getParameterTypes();
 			if (parameterTypes.length == 1) {
 				Class parameterType = parameterTypes[0];
-				if (parameterType == String.class || parameterType == File.class) {
+				if (parameterType == String.class || parameterType == File.class || parameterType == Boolean.TYPE ) {
 					methodsByName.put( method.getName(), method );
 				}
 			}
@@ -118,11 +118,15 @@ public final class PopulateUtil {
 			throw new IllegalArgumentException("To use the parameter [" 
 					+ name + "] the class [" + object.getClass().getName() 
 					+ "] needs to specify the method " + methodName 
-					+ "(String) or " + methodName + "(File). " );
+					+ "(String), " + methodName 
+					+ "(boolean) or " + methodName + "(File). " );
 		}
 		Class paramType = method.getParameterTypes()[0];
 		if (paramType == String.class) {
 			method.invoke(object, new Object[]{ value } );
+		} else if (paramType == Boolean.TYPE ) {
+			Boolean argument = new Boolean( CastUtil.getBoolean(value) );
+			method.invoke(object, new Object[]{ argument } );
 		} else {
 			File file = new File( value );
 			if (!file.isAbsolute()) {
