@@ -203,6 +203,22 @@ public class DataEntry {
 		}
 	}
 	
+	public int getColumns() {
+		if (this.countTerm == null) {
+			return 1;
+		} else {
+			return this.countTerm.getColumns();
+		}
+	}
+
+	public int getRows() {
+		if (this.countTerm == null) {
+			return this.count;
+		} else {
+			return this.countTerm.getRows();
+		}
+	}
+
 	public String getCountAsString() {
 		if (this.countTerm != null) {
 			return this.countTerm.toString();

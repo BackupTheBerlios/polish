@@ -49,6 +49,7 @@ extends AbstractTableModel
 	
 	private final DataManager dataManager;
 	private final SwingDataEditor parentFrame;
+	private boolean dataChanged;
 
 	/**
 	 * @param dataManager
@@ -127,9 +128,14 @@ extends AbstractTableModel
 	 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		if (aValue == null) {
+			this.dataChanged = true;
+			return;
+		}
 		DataEntry entry = this.dataManager.getDataEntry( rowIndex );
+
 		String strValue = aValue.toString();
-		System.out.println("Setting value [" + strValue + "] for column [" + columnIndex + "].");
+		//System.out.println("Setting value [" + strValue + "] for column [" + columnIndex + "].");
 		try {
 			switch ( columnIndex ) {
 				case 0: 
@@ -169,6 +175,7 @@ extends AbstractTableModel
 						entry.setDataAsString( values );
 					}
 			}
+			this.dataChanged = true;
 			fireTableDataChanged();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -206,5 +213,10 @@ extends AbstractTableModel
 		JOptionPane.showMessageDialog( this.parentFrame, message, "Error", JOptionPane.ERROR_MESSAGE );
 	}
 	
+	public boolean isDataChanged() {
+		return this.dataChanged;
+	}
+
+
 
 }

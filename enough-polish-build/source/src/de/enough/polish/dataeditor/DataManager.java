@@ -372,4 +372,21 @@ public class DataManager {
 		return buffer.toString();
 	}
 
+	/**
+	 * Retrieves possible operants for a count-term for the specified data entry.\
+	 *  
+	 * @param index the index of the entry for which operants are searched
+	 * @return an array of possible operants, can be empty but not null
+	 */
+	public DataEntry[] getCountOperants(int index) {
+		ArrayList operants = new ArrayList( index );
+		for (int i = 0; i < index; i++) {
+			DataEntry entry = (DataEntry) this.entries.get( i );
+			if (entry.getCount() == 1) {
+				operants.add( entry );
+			}
+		}
+		return (DataEntry[]) operants.toArray( new DataEntry[ operants.size() ]);
+	}
+
 }

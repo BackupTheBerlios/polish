@@ -189,5 +189,26 @@ public class CountTerm {
 		return this.operants;
 	}
 
+	/**
+	 * @return the number of columns for this term
+	 */
+	public int getColumns() {
+		if ((this.operation != OPERATION_MULTIPLY) || (this.operants.length != 2)) {
+			return 1;
+		}
+		DataEntry columnsEntry = this.operants[0];
+		return columnsEntry.getDataAsInt();
+	}
+
+	/**
+	 * @return the number of rows for this term
+	 */
+	public int getRows() {
+		if ((this.operation != OPERATION_MULTIPLY) || (this.operants.length != 2)) {
+			return calculateCount();
+		}
+		DataEntry rowsEntry = this.operants[1];
+		return rowsEntry.getDataAsInt();
+	}
 
 }

@@ -68,6 +68,7 @@ public class CreateCodeDialog extends JDialog implements ActionListener {
 		this.packageNameField = new JTextField( packageName );
 		this.classNameField = new JTextField( className );
 		this.okButton = new JButton("Generate Code");
+		this.okButton.setMnemonic('G');
 		this.okButton.addActionListener( this );
 		
 		JPanel packageNamePanel = new JPanel( new GridLayout(1, 2) );

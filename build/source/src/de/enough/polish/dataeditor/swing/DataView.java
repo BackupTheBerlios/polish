@@ -27,6 +27,7 @@ package de.enough.polish.dataeditor.swing;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
@@ -47,17 +48,19 @@ public class DataView extends JTable {
 
 
 	/**
+	 * @param parentFrame
 	 * @param dataModel
 	 * @param manager
 	 */
-	public DataView(DataTableModel dataModel, DataManager manager ) {
+	public DataView(JFrame parentFrame, DataTableModel dataModel, DataManager manager ) {
 		super(dataModel);
 		TableColumnModel colModel = getColumnModel();
 		colModel.getColumn( 0 ).setPreferredWidth( 60 ); // name
 		colModel.getColumn( 1 ).setPreferredWidth( 20 ); // count
 		colModel.getColumn( 2 ).setPreferredWidth( 60 ); // type
 		colModel.getColumn( 3 ).setPreferredWidth( 240 ); // data
-		
+		colModel.getColumn( 1 ).setCellEditor( new CountCellEditor( parentFrame, manager ));
+		colModel.getColumn( 3 ).setCellEditor( new DataCellEditor( parentFrame, manager ));
 		updateTypes( manager );
 	}
 	

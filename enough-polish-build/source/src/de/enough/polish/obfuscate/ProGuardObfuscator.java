@@ -102,6 +102,14 @@ public class ProGuardObfuscator extends Obfuscator {
 
         // overload names with different return types:
         cfg.overloadAggressively = true;
+        
+        // optimize the resulting byte-code:
+        cfg.optimize = true;
+        
+        // shrink the code:
+        cfg.shrink = true;
+        
+        cfg.printMapping = device.getBaseDir() + File.separator + "obfuscation-map.txt";
 
         // move all classes to the root package:
         cfg.defaultPackage = "";		

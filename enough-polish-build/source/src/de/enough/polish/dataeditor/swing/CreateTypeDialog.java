@@ -108,7 +108,9 @@ implements ActionListener
 		addDeletePanel.add( this.addTypeButton );
 		addDeletePanel.add( this.deleteTypeButton );
 		this.okButton.addActionListener( this );
+		this.okButton.setMnemonic('O');
 		this.cancelButton.addActionListener( this );
+		this.cancelButton.setMnemonic('C');
 		JPanel okCancelPanel = new JPanel( new GridLayout(1, 2) );
 		okCancelPanel.add( this.okButton );
 		okCancelPanel.add( this.cancelButton );

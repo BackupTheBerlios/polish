@@ -113,7 +113,7 @@ implements ActionListener
 		setSize( 900, 600 );
 		// add data-view:
 		this.dataTableModel = new DataTableModel( this.dataManager, this );
-		this.dataView = new DataView( this.dataTableModel, this.dataManager );
+		this.dataView = new DataView( this, this.dataTableModel, this.dataManager );
 		this.dataView.setPreferredScrollableViewportSize(new Dimension(900, 550));
 		JScrollPane scrollPane = new JScrollPane(this.dataView);
 		Container contentPane = getContentPane();
@@ -535,6 +535,14 @@ implements ActionListener
 	}
 
 	private void quit() {
+		if (this.dataTableModel.isDataChanged()) {
+			int result = JOptionPane.showConfirmDialog( this, "Should the changed data be saved before exiting?", "Changed Data", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE );
+			if (result == JOptionPane.CANCEL_OPTION) {
+				return;
+			} else if (result == JOptionPane.YES_OPTION) {
+				saveAll();
+			}
+		}
 		saveSettings();
 		System.exit( 0 );
 	}

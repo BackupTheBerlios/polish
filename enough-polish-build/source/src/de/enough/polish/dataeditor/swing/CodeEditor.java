@@ -79,7 +79,9 @@ implements ActionListener, ClipboardOwner
 		this.editor = new JEditorPane( "text/plain", code );
 		this.copyToClipboardButton = new JButton("Copy to Clipboard");
 		this.copyToClipboardButton.addActionListener( this );
+		this.copyToClipboardButton.setMnemonic('C');
 		this.saveButton = new JButton("Save");
+		this.saveButton.setMnemonic('S');
 		this.saveButton.addActionListener( this );
 		JScrollPane scrollPane = new JScrollPane( this.editor );
 		Container contentPane = this.getContentPane();
