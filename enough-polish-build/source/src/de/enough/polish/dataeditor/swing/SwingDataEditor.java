@@ -86,6 +86,10 @@ implements ActionListener
 	private final DataTableModel dataTableModel;
 	private final DataView dataView;
 	private File currentDirectory = new File(".");
+	private JMenuItem menuGenerateCode;
+	
+	private CreateCodeDialog createCodeDialog;
+	private Image icon;
 	
 
 	/**
@@ -109,9 +113,9 @@ implements ActionListener
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		updateTitle();
 		
-		Image icon = getToolkit().createImage("binaryeditor.png");
-		if (icon != null) {
-			this.setIconImage( icon );
+		this.icon = getToolkit().createImage("binaryeditor.png");
+		if (this.icon != null) {
+			this.setIconImage( this.icon );
 		}
 		
 		
@@ -122,13 +126,14 @@ implements ActionListener
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add( createFileMenu() );
 		menuBar.add( createEditMenu() );
+		menuBar.add( createCodeMenu() );
 		return menuBar;
 	}
 	
 	
 
+
 	/**
-	 * @param menuBar
 	 * @return
 	 */
 	private JMenu createFileMenu() {
@@ -162,7 +167,7 @@ implements ActionListener
 		this.menuOpenDefinition = item;
 		menu.addSeparator();
 		item = new JMenuItem( "Save Data", 'd' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'S', Event.CTRL_MASK + Event.SHIFT_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'S', Event.ALT_MASK + Event.SHIFT_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuSaveData = item;
@@ -185,7 +190,7 @@ implements ActionListener
 	}
 	
 	private JMenu createEditMenu() {
-		// create file-menu:
+		// create edit-menu:
 		JMenu menu = new JMenu( "Edit" );
 		menu.setMnemonic('e');
 		JMenuItem item = new JMenuItem( "Add Entry", 'a' );
@@ -216,6 +221,20 @@ implements ActionListener
 		return menu;
 	}
 	
+	/**
+	 * @return
+	 */
+	private JMenu createCodeMenu() {
+		// create edit-menu:
+		JMenu menu = new JMenu( "Code" );
+		menu.setMnemonic('c');
+		JMenuItem item = new JMenuItem( "Generate Code", 'g' );
+		item.setAccelerator( KeyStroke.getKeyStroke( 'G', Event.CTRL_MASK ));
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuGenerateCode = item;
+		return menu;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -251,6 +270,8 @@ implements ActionListener
 				moveUpDataEntry();
 			} else if (source == this.menuAddType ) {
 				addDataType();
+			} else if (source == this.menuGenerateCode ) {
+				generateCode();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -258,6 +279,33 @@ implements ActionListener
 		}
 	}
 	
+	/**
+	 * 
+	 */
+	private void generateCode() {
+		if (this.createCodeDialog == null) {
+			String className = "DataClass";
+			if (this.definitionFile != null) {
+				String fileName = this.definitionFile.getName();
+				fileName = fileName.substring(0,1).toUpperCase() + fileName.substring( 1 );
+				int index = fileName.lastIndexOf('.');
+				if (index != -1) {
+					className = fileName.substring( 0, index );
+				} else {
+					className = fileName;
+				}
+			}
+			this.createCodeDialog = new CreateCodeDialog( this, "Generate Code", "com.company.data", className );
+		}
+		this.createCodeDialog.setVisible( true );
+		if (this.createCodeDialog.okPressed()) {
+			String className = this.createCodeDialog.getClassName();
+			String code = this.dataManager.generateJavaCode( this.createCodeDialog.getPackageName(), className );
+			CodeEditor codeEditor = new CodeEditor( className + ".java", code, this.icon );
+			codeEditor.setVisible(true);
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -396,6 +444,7 @@ implements ActionListener
 				this.definitionFile = file;
 				updateTitle();
 				this.statusBar.setText("Loaded " + file.getName() );
+				this.createCodeDialog = null;
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}

@@ -27,6 +27,7 @@ package de.enough.polish.dataeditor;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.jdom.Element;
 
@@ -229,60 +230,60 @@ public class DataType {
 	
 	public byte[] parseDataString( String value ) {
 		switch (this.type) {
-		case BYTE_ID: 
-			return new byte[] { Byte.parseByte( value ) };
-		case SHORT_ID:
-			short shortValue = Short.parseShort(value);
-			byte[] data = new byte[ 2 ];
-			data[0] = (byte) (shortValue & 0x00FF);
-			data[1] = (byte) ((shortValue >>> 8) & 0x00FF);
-			return data; 
-		case INTEGER_ID:
-			int intValue = Integer.parseInt(value);
-			data = new byte[ 2 ];
-			data[0] = (byte) (intValue & 0x00FF);
-			data[1] = (byte) (intValue >>> 8 );
-			return data; 
-		case LONG_ID:
-			long longValue = Long.parseLong(value);
-			data = new byte[ 4 ];
-			data[0] = (byte) (longValue & 0x000000FF);
-			data[1] = (byte) ((longValue >>> 8) & 0x0000FF);
-			data[2] = (byte) ((longValue >>> 16) & 0x00FF);
-			data[3] = (byte) (longValue >>> 24);
-			return data;
-		case BOOLEAN_ID:
-			if ("true".equals( value )) {
-				return new byte[]{ 1 };
-			} else {
-				return new byte[]{ 0 };
-			}
-		case ASCII_STRING_ID:
-			int stringLength = value.length();
-			if (stringLength > 255 ) {
-				throw new IllegalArgumentException("The ASCII-String \"" + value + "\" has too many characters: maximum is 255 - this string has [" + stringLength + "] characters.");
-			}
-			//System.out.println("getting bytes data for string [" + value + "] with a length of " + stringLength );
-			data = new byte[ stringLength + 1];
-			data[0] = (byte) stringLength;
-			byte[] charData = value.getBytes();
-			System.arraycopy( charData, 0, data, 1, stringLength );
-			return data;
-		case USER_DEFINED_ID:
-			data = new byte[ this.numberOfBytes ];
-			String[] subvalues = TextUtil.split( value, ", ");
-			int startIndex = 0;
-			for (int i = 0; i < this.subtypes.length; i++) {
-				DataType dataType = this.subtypes[i];
-				String subvalue = subvalues[i];
-				byte[] subData = dataType.parseDataString( subvalue );
-				System.arraycopy(subData, 0, data, startIndex,  dataType.numberOfBytes );
-				startIndex += dataType.numberOfBytes; 
-			}
-			return data;
-		default: 
-			throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
-	}
+			case BYTE_ID: 
+				return new byte[] { Byte.parseByte( value ) };
+			case SHORT_ID:
+				short shortValue = Short.parseShort(value);
+				byte[] data = new byte[ 2 ];
+				data[0] = (byte) (shortValue & 0x00FF);
+				data[1] = (byte) ((shortValue >>> 8) & 0x00FF);
+				return data; 
+			case INTEGER_ID:
+				int intValue = Integer.parseInt(value);
+				data = new byte[ 2 ];
+				data[0] = (byte) (intValue & 0x00FF);
+				data[1] = (byte) (intValue >>> 8 );
+				return data; 
+			case LONG_ID:
+				long longValue = Long.parseLong(value);
+				data = new byte[ 4 ];
+				data[0] = (byte) (longValue & 0x000000FF);
+				data[1] = (byte) ((longValue >>> 8) & 0x0000FF);
+				data[2] = (byte) ((longValue >>> 16) & 0x00FF);
+				data[3] = (byte) (longValue >>> 24);
+				return data;
+			case BOOLEAN_ID:
+				if ("true".equals( value )) {
+					return new byte[]{ 1 };
+				} else {
+					return new byte[]{ 0 };
+				}
+			case ASCII_STRING_ID:
+				int stringLength = value.length();
+				if (stringLength > 255 ) {
+					throw new IllegalArgumentException("The ASCII-String \"" + value + "\" has too many characters: maximum is 255 - this string has [" + stringLength + "] characters.");
+				}
+				//System.out.println("getting bytes data for string [" + value + "] with a length of " + stringLength );
+				data = new byte[ stringLength + 1];
+				data[0] = (byte) stringLength;
+				byte[] charData = value.getBytes();
+				System.arraycopy( charData, 0, data, 1, stringLength );
+				return data;
+			case USER_DEFINED_ID:
+				data = new byte[ this.numberOfBytes ];
+				String[] subvalues = TextUtil.split( value, ", ");
+				int startIndex = 0;
+				for (int i = 0; i < this.subtypes.length; i++) {
+					DataType dataType = this.subtypes[i];
+					String subvalue = subvalues[i];
+					byte[] subData = dataType.parseDataString( subvalue );
+					System.arraycopy(subData, 0, data, startIndex,  dataType.numberOfBytes );
+					startIndex += dataType.numberOfBytes; 
+				}
+				return data;
+			default: 
+				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
+		}
 	}
 
 	/**
@@ -353,6 +354,177 @@ public class DataType {
 	public boolean isDynamic() {
 		return this.isDynamic;
 	}
-
+	
+	public String getJavaType() {
+		switch (this.type) {
+			case BYTE_ID:
+				return "byte";
+			case SHORT_ID:
+				return "short";
+			case INTEGER_ID:
+				return "int";
+			case LONG_ID:
+				return "long";
+			case BOOLEAN_ID:
+				return "boolean";
+			case ASCII_STRING_ID:
+				return "String";
+			case USER_DEFINED_ID:
+				return this.name;
+			default: 
+				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
+		}
+	}
+	
+	public void addInstanceDeclaration( int count, String paramName, StringBuffer buffer ) {
+		buffer.append("\tpublic final ");
+		buffer.append( getJavaType() );
+		if ( count != 1) {
+			buffer.append("[]");
+		}
+		buffer.append(' ').append( paramName ).append(";\n");
+	}
+	
+	/**
+	 * Adds the Java code to load this type.
+	 * The input-streams name is "in".
+	 * 
+	 * @param count the number of instances which should be loaded, can either
+	 *  			be a number or a term like "rows * cells".
+	 * @param paramName the name of the parameter
+	 * @param buffer the string buffer to which the code should be added.
+	 */
+	public void addCode( String count, String paramName, StringBuffer buffer ) {
+		boolean isArray = !("1".equals( count ));
+		switch (this.type) {
+			case BYTE_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new byte[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (byte) in.read();\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = (byte) in.read();\n");
+				}
+				break;
+			case SHORT_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new short[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (short) (in.read() | (in.read() << 8));\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = (short) (in.read() | (in.read() << 8));\n");
+				}
+				break;
+			case INTEGER_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new int[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.read() | (in.read() << 8) | (in.read() << 16) | (in.read() << 24);\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = in.read() | (in.read() << 8) | (in.read() << 16) | (in.read() << 24);\n");
+				}
+				break;
+			case LONG_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new long[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.read() | (in.read() << 8) | (in.read() << 16) | (in.read() << 24) | (in.read() << 32) | (in.read() << 40) | (in.read() << 48) | (in.read() << 56) );\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = (long) (((long) in.read()) | (in.read() << 8) | (in.read() << 16) | (in.read() << 24) | (in.read() << 32) | (in.read() << 40) | (in.read() << 48) | (in.read() << 56) );\n");
+				}
+				break;
+			case BOOLEAN_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new boolean[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (in.read() != 0);\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = (in.read() != 0);\n");
+				}
+				break;
+			case ASCII_STRING_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new String[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append( "\t\t\tint ").append( paramName ).append("Length = in.read();\n");
+					buffer.append( "\t\t\tbyte[] ").append( paramName ).append("Buffer");
+					buffer.append( " = new byte[" ).append( paramName ).append("Length ];\n");
+					buffer.append("\t\t\tin.read( ").append( paramName ).append("Buffer").append(" );\n");
+					buffer.append( "\t\tthis." ).append( paramName ).append("[i]");
+					buffer.append(" = new String(" ).append( paramName ).append("Buffer );\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tint ").append( paramName ).append("Length = in.read();\n");
+					buffer.append( "\t\tbyte[] ").append( paramName ).append("Buffer");
+					buffer.append( " = new byte[" ).append( paramName ).append("Length ];\n");
+					buffer.append("\t\tin.read( ").append( paramName ).append("Buffer").append(" );\n");
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new String(" ).append( paramName ).append("Buffer );\n");
+				}
+				break;
+			case USER_DEFINED_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new ").append( this.name ).append("[ ").append( count ).append("];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append( paramName ).append("[i] = new ")
+						.append( this.name ).append( "( in );\n" );
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append("\t\tthis.").append( paramName )
+						.append( " = new ").append( this.name ).append( "( in );\n" );
+				}
+				break;
+			default: 
+				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
+		}
+	}
+	
+	public void addInternalClass( Map implementedTypes, StringBuffer buffer ) {
+		if (this.type != USER_DEFINED_ID ) {
+			// this is not a user-defined type:
+			return;
+		}
+		if ( implementedTypes.get( this.name ) != null ) {
+			// the type was implemented already:
+			return;
+		}
+		buffer.append( "public class " ).append( this.name ).append( " {\n ");
+		// add field-declarations:
+		String paramName = this.name.substring(0,1).toLowerCase() + this.name.substring( 1 );
+		for (int i = 0; i < this.subtypes.length; i++) {
+			DataType subtype = this.subtypes[ i ];
+			subtype.addInstanceDeclaration( 1, paramName + i, buffer );
+		}
+		// add constructor:
+		buffer.append("\tpublic ").append( this.name ).append("( InputStream in )\n")
+			.append("\tthrows IOException\n\t{\n");
+		// add initialisation code:
+		for (int i = 0; i < this.subtypes.length; i++) {
+			DataType subtype = this.subtypes[ i ];
+			subtype.addCode( "1", paramName + i, buffer );
+		}
+		// close constructor and class:
+		buffer.append("\t} // end of constructor \n");
+		buffer.append("} // end of inner class\n\n");
+		// register this inner class:
+		implementedTypes.put( this.name, Boolean.TRUE );
+	}
 
 }

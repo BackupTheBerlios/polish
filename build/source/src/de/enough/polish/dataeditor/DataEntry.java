@@ -319,4 +319,12 @@ public class DataEntry {
 		buffer.append("\" />");
 		return buffer.toString();
 	}	
+	
+	public void addInstanceDeclaration( StringBuffer buffer ) {
+		this.type.addInstanceDeclaration(getCount(), this.name, buffer);
+	}
+	
+	public void addCode( StringBuffer buffer ) {
+		this.type.addCode(getCountAsString(), this.name, buffer);
+	}
 }
