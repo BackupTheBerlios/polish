@@ -963,6 +963,17 @@ public abstract class Screen
 						int focusedIndex = this.menuContainer.getFocusedIndex();
 						Command cmd = (Command) this.menuCommands.get( focusedIndex );
 						callCommandListener( cmd );						
+					} else {
+						//#ifdef tmp.useTitle
+							y -= this.titleHeight;
+						//#endif
+						int focusedIndex = this.menuContainer.getFocusedIndex();
+						Item item = this.menuContainer.get( focusedIndex );
+						if (y > item.yTopPos  && y < item.yBottomPos
+								&& x > item.xLeftPos && x < item.xRightPos) {
+							Command cmd = (Command) this.menuCommands.get( focusedIndex );
+							callCommandListener( cmd );	
+						}
 					}
 					repaint();
 					return;

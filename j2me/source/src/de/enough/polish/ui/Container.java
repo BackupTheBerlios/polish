@@ -853,10 +853,12 @@ public class Container extends Item {
 				// only focus the item when it has not been focused already:
 				focus(i, item);
 				// let the item also handle the pointer-pressing event:
+				item.handlePointerPressed( x , y );
+				/*
 				if (!item.handlePointerPressed( x , y )) {
 					// simulate a FIRE keypress event:
 					//handleKeyPressed( -1, Canvas.FIRE );
-				}
+				}*/
 				return true;			
 			} else {
 				return item.handlePointerPressed( x , y );
