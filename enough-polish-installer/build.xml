@@ -38,17 +38,27 @@
  </target>
 
 <target name="bin-dist" depends="init">
-	
+	<delete dir="bin/classes" />
+	<mkdir dir="bin/classes" />
+	<!-- compile the classes -->
+	<echo message="compiling" />
+	<javac classpath="import/installer.jar"
+		srcdir="source/src"
+		destdir="bin/classes"
+	/>
 	<!-- create and copy the jar file for the ChooseLicensePanel -->
+	<echo message="creating jar" />
 	<jar destfile="${izpack.dir}/bin/panels/ChooseLicensePanel.jar"
 	     basedir="bin/classes"
-		 includes="ChooseLicensePanel.java"
+		 includes="**/ChooseLicensePanel.class"
 		 index="false"
 	     >
 	</jar>
 	<!-- copy the single ChooseLicensePanel class -->
+	<echo message="copying class-file" />
 	<copy file="bin/classes/com/izforge/izpack/panels/ChooseLicensePanel.class" 
-	      todir="${izpack.dir}/bin/panels/ChooseLicensePanel"/>
+	      todir="${izpack.dir}/bin/panels/ChooseLicensePanel/com/izforge/izpack/panels"/>
+	<echo message="done." />
 </target>
 			
 <target name="clean" depends="init">
