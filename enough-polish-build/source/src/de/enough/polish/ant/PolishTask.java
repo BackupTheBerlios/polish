@@ -453,8 +453,10 @@ public class PolishTask extends ConditionalTask {
 				this.polishHomePath = dir.getAbsolutePath();
 			}
 			this.polishHomePath += File.separatorChar;
+			this.polishHomeDir = new File( this.polishHomePath );
+		} else {
+			this.polishHomeDir = new File( "." );
 		}
-		this.polishHomeDir = new File( this.polishHomePath );
 		
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
