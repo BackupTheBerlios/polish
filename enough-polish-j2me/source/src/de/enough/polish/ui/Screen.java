@@ -158,6 +158,9 @@ public abstract class Screen
 	private int scrollIndicatorX; // left x position of scroll indicator
 	private int scrollIndicatorY; // top y position of scroll indicator
 	private int scrollIndicatorWidth; // width and height of the indicator
+	//#if tmp.usingTitle || tmp.menuFullScreen
+		private boolean showTitleOrMenu = true;
+	//#endif
 	
 	/**
 	 * Creates a new screen
@@ -431,14 +434,13 @@ public abstract class Screen
 				//#endif
 			}
 			
+			int tHeight = 0;
 			//#ifdef tmp.usingTitle
 				// paint title:
-				if (this.title != null) {
+				if (this.title != null && this.showTitleOrMenu) {
 					this.title.paint(0, 0, 0, this.screenWidth, g);
+					tHeight = this.titleHeight;
 				}
-				int tHeight = this.titleHeight;
-			//#else
-				//# int tHeight = 0;
 			//#endif
 			// protect the title, ticker and the full-screen-menu area:
 			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
@@ -485,59 +487,61 @@ public abstract class Screen
 					this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
 				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 				} 
-				// clear menu-bar:
-				if (this.menuBarColor != Item.TRANSPARENT) {
-					g.setColor( this.menuBarColor );
-					g.fillRect(0, this.originalScreenHeight, this.screenWidth,  this.menuBarHeight );
-				}
-				if (this.menuContainer != null && this.menuContainer.size() > 0) {
-					String menuText = null;
-					if (this.menuOpened) {
-						//#ifdef polish.command.select:defined
-							//#= menuText = "${polish.command.select}";
-						//#else
-							menuText = "Select";
-						//#endif
-					} else {
-						if (this.menuSingleLeftCommand != null) {
-							menuText = this.menuSingleLeftCommand.getLabel();
-						} else {
-							//#ifdef polish.command.options:defined
-								//#= menuText = "${polish.command.options}";
+				if (this.showTitleOrMenu || this.menuOpened) {
+					// clear menu-bar:
+					if (this.menuBarColor != Item.TRANSPARENT) {
+						g.setColor( this.menuBarColor );
+						g.fillRect(0, this.originalScreenHeight, this.screenWidth,  this.menuBarHeight );
+					}
+					if (this.menuContainer != null && this.menuContainer.size() > 0) {
+						String menuText = null;
+						if (this.menuOpened) {
+							//#ifdef polish.command.select:defined
+								//#= menuText = "${polish.command.select}";
 							//#else
-								menuText = "Options";				
+								menuText = "Select";
+							//#endif
+						} else {
+							if (this.menuSingleLeftCommand != null) {
+								menuText = this.menuSingleLeftCommand.getLabel();
+							} else {
+								//#ifdef polish.command.options:defined
+									//#= menuText = "${polish.command.options}";
+								//#else
+									menuText = "Options";				
+								//#endif
+							}
+						}
+						//#ifdef polish.hasPointerEvents
+							this.menuLeftCommandX = 2 + this.menuFont.stringWidth( menuText );
+						//#endif
+						g.setColor( this.menuFontColor );
+						g.setFont( this.menuFont );
+						g.drawString(menuText, 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
+						if ( this.menuOpened ) {
+							// draw cancel string:
+							//#ifdef polish.command.cancel:defined
+								//#= menuText = "${polish.command.cancel}";
+							//#else
+								menuText = "Cancel";
+							//#endif
+							g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+							//#ifdef polish.hasPointerEvents
+								this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
 							//#endif
 						}
 					}
-					//#ifdef polish.hasPointerEvents
-						this.menuLeftCommandX = 2 + this.menuFont.stringWidth( menuText );
-					//#endif
-					g.setColor( this.menuFontColor );
-					g.setFont( this.menuFont );
-					g.drawString(menuText, 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
-					if ( this.menuOpened ) {
-						// draw cancel string:
-						//#ifdef polish.command.cancel:defined
-							//#= menuText = "${polish.command.cancel}";
-						//#else
-							menuText = "Cancel";
-						//#endif
+					if (this.menuSingleRightCommand != null && !this.menuOpened) {
+						g.setColor( this.menuFontColor );
+						g.setFont( this.menuFont );
+						String menuText = this.menuSingleRightCommand.getLabel();
 						g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
 						//#ifdef polish.hasPointerEvents
-							this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
+							this.menuRightCommandX = this.screenWidth - 2 
+								- this.menuFont.stringWidth( menuText );
 						//#endif
 					}
-				}
-				if (this.menuSingleRightCommand != null && !this.menuOpened) {
-					g.setColor( this.menuFontColor );
-					g.setFont( this.menuFont );
-					String menuText = this.menuSingleRightCommand.getLabel();
-					g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
-					//#ifdef polish.hasPointerEvents
-						this.menuRightCommandX = this.screenWidth - 2 
-							- this.menuFont.stringWidth( menuText );
-					//#endif
-				}
+				} // if this.showTitleOrMenu || this.menuOpened
 			//#endif
 			// paint scroll-indicator in the middle of the menu:
 			if (this.paintScrollIndicator) {
@@ -1133,7 +1137,32 @@ public abstract class Screen
 	//#endif
 	
 	
-	/**
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#setFullScreenMode(boolean)
+	 */
+	public void setFullScreenMode(boolean enable) {
+		//#if polish.midp2 && !tmp.fullScreen
+			super.setFullScreenMode(enable);
+		//#endif
+	    //#if tmp.usingTitle || tmp.menuFullScreen
+			this.showTitleOrMenu = !enable;
+		//#endif
+		//#ifdef tmp.menuFullScreen
+			if (enable) {
+				this.screenHeight = this.fullScreenHeight;
+			} else {
+				this.screenHeight = this.originalScreenHeight;
+				//#if tmp.usingTitle
+					//this.screenHeight = this.originalScreenHeight - this.titleHeight;
+				//#else
+					//this.screenHeight = this.originalScreenHeight;
+				//#endif
+			}
+		//#endif
+		repaint();
+	}
+	
+/**
 	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
 	 *
 	 * <p>copyright Enough Software 2004</p>

@@ -424,6 +424,17 @@ public abstract class GameCanvas
 		}
 	}
 	//#endif
+	
+	//#if polish.midp1 && !tmp.extendsPolishScreen	
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#setFullScreenMode(boolean)
+	 */
+	public void setFullScreenMode(boolean enable) {
+		// ignore call
+			
+	}
+	//#endif
+
 		
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
