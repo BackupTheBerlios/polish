@@ -146,9 +146,7 @@ public class HtmlExporterTask extends Task {
 			writePlatformOverview();
 			Requirements requirements = new Requirements();
 			requirements.addConfiguredRequirement( new Variable("JavaPlatform", "MIDP/1.0" ));
-			System.out.println("devices.length=" + devices.length);
 			Device[] filteredDevices = requirements.filterDevices(devices);
-			System.out.println("filtered.length=" + filteredDevices.length);
 	 		process("MIDP/1.0 Devices", "midp1.html", filteredDevices, indexGenerator, 
 					"The following devices support the MIDP/1.0 standard.", "platform");
 
@@ -157,7 +155,19 @@ public class HtmlExporterTask extends Task {
 			filteredDevices = requirements.filterDevices(devices);
 			process("MIDP/2.0 Devices", "midp2.html", filteredDevices, indexGenerator, 
 					"The following devices support the MIDP/2.0 standard.", "platform");			
-		} catch (IOException e) {
+
+			requirements = new Requirements();
+			requirements.addConfiguredRequirement( new Variable("JavaConfiguration", "CLDC/1.0" ));
+			filteredDevices = requirements.filterDevices(devices);
+			process("CLDC/1.0 Devices", "cldc10.html", filteredDevices, indexGenerator, 
+					"The following devices support the CLDC/1.0 configuration.", "platform");			
+
+			requirements = new Requirements();
+			requirements.addConfiguredRequirement( new Variable("JavaConfiguration", "CLDC/1.1" ));
+			filteredDevices = requirements.filterDevices(devices);
+			process("CLDC/1.1 Devices", "cldc11.html", filteredDevices, indexGenerator, 
+					"The following devices support the CLDC/1.1 configuration.", "platform");			
+	} catch (IOException e) {
 			throw new BuildException("unable to init manager: " + e.getMessage(), e );
 		} catch (JDOMException e) {
 			throw new BuildException("unable to init manager: " + e.getMessage(), e );
@@ -284,9 +294,13 @@ public class HtmlExporterTask extends Task {
 		lines.add("");
 		lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">Device by APIs</h1>" );
-		lines.add( "<p>Following Platform are supported by J2ME devices:</p><ul>");
+		lines.add( "<p>Following platforms are supported by J2ME devices:</p><ul>");
 		lines.add("<li><a href=\"midp1.html\">MIDP/1.0</a></li>");
 		lines.add("<li><a href=\"midp2.html\">MIDP/2.0</a></li>");
+		lines.add("</ul>");
+		lines.add( "<p>Following configurations are supported by J2ME devices:</p><ul>");
+		lines.add("<li><a href=\"cldc10.html\">CLDC/1.0</a></li>");
+		lines.add("<li><a href=\"cldc11.html\">CLDC/1.1</a></li>");
 		lines.add("</ul>");
 		// add the end:
 		lines.add("<%include end.txt %>");
