@@ -580,10 +580,13 @@ public abstract class Screen
 	}
 	//#endif
 		
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
+	/**
+	 * Handles key events.
+	 * 
+	 * WARNING: When this method should be overwritten, one need
+	 * to ensure that super.keyPressed( int ) is called!
 	 */
-	protected final void keyPressed(int keyCode) {
+	protected void keyPressed(int keyCode) {
 		try {
 			int gameAction = getGameAction(keyCode);
 			//#ifdef tmp.menuFullScreen

@@ -30,9 +30,6 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.Screen;
-import de.enough.polish.ui.Style;
-
 /**
  * The GameCanvas class provides the basis for a game user interface.
  * 
@@ -94,7 +91,7 @@ import de.enough.polish.ui.Style;
  * @since MIDP 2.0
  */
 public class GameCanvas
-extends Screen
+extends Canvas
 {
 	/**
 	 * The bit representing the UP key.  This constant has a value of
@@ -199,19 +196,8 @@ extends Screen
 	 * 
 	 * @param suppressKeyEvents - true to suppress the regular key event mechanism for game keys, otherwise false.
 	 */
-	protected GameCanvas(boolean suppressKeyEvents)
-	{
-		this( suppressKeyEvents, null );
-	}
-	
-	/**
-	 * Creates a new GameCanvas with an associated CSS style.
-	 * 
-	 * @param suppressKeyEvents true when no keyEvents should be generated
-	 * @param style the CSS style for this screen
-	 */
-	protected GameCanvas( boolean suppressKeyEvents, Style style ) {
-		super( null, style );
+	protected GameCanvas( boolean suppressKeyEvents ) {
+		super();
 		int width = getWidth();
 		int height = getHeight();
 		this.bufferedImage = Image.createImage( width, height );
@@ -353,7 +339,7 @@ extends Screen
 	 * @throws NullPointerException if g is null
 	 * @see Canvas#paint(Graphics) in class Canvas
 	 */
-	public void paintScreen( Graphics g)
+	public void paint( Graphics g)
 	{
 		g.setClip(0, 0, getWidth(), getHeight() );
 		g.drawImage(this.currentImage, 0, 0, Graphics.TOP | Graphics.LEFT );
@@ -386,11 +372,7 @@ extends Screen
 		this.currentImageGraphics.setClip(x, y, width, height);
 		this.currentImageGraphics.drawImage(this.bufferedImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		this.currentImageGraphics.setClip(0, 0, this.canvasWidth, this.canvasHeight );
-		//#ifdef polish.useFullScreen && polish.api.nokia-ui
-			requestRepaint();
-		//#else
-			repaint();
-		//#endif
+		repaint();
 	}
 
 	/**
@@ -411,26 +393,14 @@ extends Screen
 	public void flushGraphics()
 	{
 		this.currentImageGraphics.drawImage(this.bufferedImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-		//#ifdef polish.useFullScreen && polish.api.nokia-ui
-			requestRepaint();
-		//#else
-			repaint();
-		//#endif
+		repaint();
 	}
 
-	//#ifdef polish.useDynamicStyles	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#createCssSelector()
+	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
-	protected String createCssSelector() {
-		return "gamecanvas";
-	}
-	//#endif
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)
-	 */
-	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+	protected void keyPressed(int keyCode) {
+		int gameAction = getGameAction(keyCode);
 		int state = this.keyStates;
 		switch (gameAction) {
 			case Canvas.UP:
@@ -470,7 +440,6 @@ extends Screen
 				state |= GAME_D_PRESSED;
 				break;
 		}
-		return true;
 	}
 		
 	/* (non-Javadoc)
