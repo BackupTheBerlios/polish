@@ -307,7 +307,7 @@ import javax.microedition.lcdui.Displayable;
  * @since MIDP 1.0
  */
 public class TextField extends StringItem
-implements CommandListener
+implements CommandListener, ItemCommandListener
 {
 	/**
 	 * The user is allowed to enter any text.
@@ -590,6 +590,16 @@ implements CommandListener
 	 * 
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
+	//#ifdef polish.command.delete:defined
+		//#= private static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 0 );
+	//#else
+		private static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 0 ); 
+	//#endif
+	//#ifdef polish.command.clear:defined
+		//#= private static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 0 );
+	//#else
+		private static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 1 ); 
+	//#endif
 	
 	private int maxSize;
 	private int constraints;
@@ -602,6 +612,7 @@ implements CommandListener
 	private boolean isPassword;
 	private long lastCaretSwitch;
 	private boolean enableDirectInput;
+	private ItemCommandListener additionalItemCommandListener;
 
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
@@ -678,6 +689,11 @@ implements CommandListener
 				this.enableDirectInput = true;
 			}
 		//#endif
+			
+		// add default text field item-commands:
+		this.addCommand(DELETE_CMD);
+		this.addCommand(CLEAR_CMD);
+		this.itemCommandListener = this;
 	}
 	
 	/**
@@ -1182,6 +1198,25 @@ implements CommandListener
 			}
 		}
 		StyleSheet.display.setCurrent( this.screen );
+	}
+	
+	public void setItemCommandListener(ItemCommandListener l) {
+		this.additionalItemCommandListener = l;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
+	 */
+	public void commandAction(Command cmd, Item item) {
+		if ( cmd == DELETE_CMD ) {
+			if (this.text != null && this.text.length() > 0) {
+				setString( this.text.substring(0, this.text.length() - 1));
+			}
+		} else if ( cmd == CLEAR_CMD ) {
+			setString( null );
+		} else if ( this.additionalItemCommandListener != null ) {
+			this.additionalItemCommandListener.commandAction(cmd, item);
+		}
 	}
 	
 }
