@@ -111,7 +111,11 @@ public final class StyleSheet {
 		}
 		//#ifdef polish.images.directLoad
 			// when images should be loaded directly, try to do so now:
-			Image image = Image.createImage( url );
+			//#ifdef polish.classes.ImageLoader:defined
+				//#= Image image = ${polish.classes.ImageLoader}.loadImage( url );
+			//#else
+				Image image = Image.createImage( url );
+			//#endif
 			if (cache) {
 				if (imagesByName == null ) {
 					imagesByName = new Hashtable();

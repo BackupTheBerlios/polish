@@ -64,7 +64,11 @@ public class ImageTask extends TimerTask {
 		//#debug
 		Debug.debug( "ImageTask: loading image [" + this.url + "].");
 		try {
-			Image image = Image.createImage( this.url );
+			//#ifdef polish.classes.ImageLoader:defined
+				//#= Image image = ${polish.classes.ImageLoader}.loadImage( this.url );
+			//#else
+				Image image = Image.createImage( this.url );
+			//#endif
 			//#ifdef polish.images.backgroundLoad
 			StyleSheet.notifyImageConsumers(this.url, image);
 			//#endif

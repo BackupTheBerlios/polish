@@ -1230,11 +1230,11 @@ public abstract class Screen
 				}
 			//#endif
 			
-			//#mdebug
+			//#ifdef polish.debug.debug
 				if (!processed) {
 					Debug.debug("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
-			//#enddebug
+			//#endif
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("PointerPressed at " + x + "," + y + " resulted in exception", e );
