@@ -167,8 +167,7 @@ implements ImageConsumer
 					y += (height - totalHeight);
 				}
 				if ( (this.anchor & Graphics.HCENTER) == Graphics.HCENTER) {
-					x += (width - totalWidth) / 2;
-					
+					x += (width - totalWidth) / 2;					
 				} else if ( (this.anchor & Graphics.RIGHT) == Graphics.RIGHT) {
 					x += (width - totalWidth);
 				}
@@ -183,6 +182,11 @@ implements ImageConsumer
 					imgX = x;
 				}
 			} else if (this.repeatMode == REPEAT_X) {
+				if ( (this.anchor & Graphics.HCENTER) == Graphics.HCENTER) {
+					x += ((width - totalWidth) / 2) + ((imgWidth - this.paddingHorizontal) / 2);					
+				} else if ( (this.anchor & Graphics.RIGHT) == Graphics.RIGHT) {
+					x += (width - totalWidth) + (imgWidth - this.paddingHorizontal);
+				}
 				if ( (this.anchor & Graphics.VCENTER) == Graphics.VCENTER) {
 					y += (height / 2);
 				} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
@@ -198,6 +202,11 @@ implements ImageConsumer
 					x += (width / 2);
 				} else if ( (this.anchor & Graphics.RIGHT) == Graphics.RIGHT) {
 					x += width;
+				}
+				if ( (this.anchor & Graphics.VCENTER) == Graphics.VCENTER) {
+					y += ((height - totalHeight) / 2) + ((imgHeight - this.paddingVertical) / 2);
+				} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
+					y += (height - totalHeight) + (imgHeight - this.paddingVertical);
 				}
 				for (int i = 0; i <= numberOfYRepeats; i++) {
 					g.drawImage(this.image, x, y, this.anchor );
