@@ -58,7 +58,7 @@ public class CssTokenizerTest extends TestCase {
 	public void setUp(){
 		System.out.println("CssTokenizerTest.setUp().enter.");
 		
-		String cssFile = "/Users/ricky/workspace/enough-polish-plugin-eclipse/misc/example.css";
+		String cssFile = "misc/example.css";
 		
 		BufferedReader bufferedReader;
 		this.input = "";

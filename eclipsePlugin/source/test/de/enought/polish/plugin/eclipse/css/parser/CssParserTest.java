@@ -58,8 +58,8 @@ public class CssParserTest extends TestCase {
 	public void setUp(){
 		System.out.println("CssTokenizerTest.setUp().enter.");
 		
-		String cssFile = "/Users/ricky/workspace/enough-polish-plugin-eclipse/misc/example.css";
-		
+		//String cssFile = "/Users/ricky/workspace/enough-polish-plugin-eclipse/misc/example.css";
+		String cssFile = "misc/example.css";
 		BufferedReader bufferedReader;
 		String input = "";
 		File file = new File(cssFile);

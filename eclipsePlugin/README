@@ -23,6 +23,7 @@ TODO (CssEditor)
 ROADMAP
 
  - css editor with syntax highlighting, outline, color choosing and code completion.
+ - translation highlighter for messages.txt and messages_??.txt.
  - Builder for polish projects together with wizards for a new polish project.
  - polish editor with code assistent for preprocessor actions.
  
