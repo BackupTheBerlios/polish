@@ -1487,7 +1487,7 @@
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
+		<capability name="JavaPackage" value="mmapi, wmapi, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="VideoFormat" value="3gpp, h.263" />

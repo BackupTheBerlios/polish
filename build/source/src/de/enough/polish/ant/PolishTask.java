@@ -965,7 +965,11 @@ public class PolishTask extends ConditionalTask {
 			long lastLocaleModification = 0;
 			TranslationManager translationManager = null;
 			// set localization-variables:
-			if (locale != null) {
+			if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
+				if (locale == null) {
+					locale = this.localizationSetting.getDefaultLocale();
+					this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
+				}
 				this.preprocessor.addVariable("polish.locale", locale.toString() );
 				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
 				this.preprocessor.addVariable("polish.country", locale.getCountry() );
@@ -974,15 +978,6 @@ public class PolishTask extends ConditionalTask {
 				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
-			} else if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
-				locale = this.localizationSetting.getDefaultLocale();
-				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
-				this.translationPreprocessor.setTranslationManager( translationManager );
-				lastLocaleModification = translationManager.getLastModificationTime();
-				this.preprocessor.addVariable("polish.locale", locale.toString() );
-				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
-				this.preprocessor.addVariable("polish.country", locale.getCountry() );
-				this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
 			}
 			// set info-variables:
 			String jarName = this.infoSetting.getJarName();

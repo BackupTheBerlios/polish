@@ -97,7 +97,7 @@
 		<name>3D API</name>
 		<description>The Mobile 3D Graphics API provides 3D functions for J2ME.
 		</description>
-		<names>3d, 3d-api,3dapi, JSR-184, JSR184</names>
+		<names>3d, 3d-api,3dapi, JSR-184, JSR184, m3g, m3gapi</names>
 		<symbol>3dapi</symbol>
 		<files>j2me-3dapi.jar, m3g.jar, jsr184.jar</files>
 		<path>import/m3g.jar</path>

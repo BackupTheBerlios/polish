@@ -49,7 +49,7 @@ import java.util.ArrayList;
 public class WriteFileListTask extends Task {
 	
 	private File target;
-	private ArrayList fileSets;
+	private final ArrayList fileSets;
 	
 	/**
 	 * Creates a new empty task

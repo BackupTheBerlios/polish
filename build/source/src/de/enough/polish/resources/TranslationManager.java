@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.LocalizationSetting;
@@ -65,23 +66,26 @@ public class TranslationManager
 implements Comparator
 {
 	
-	private final Map translationsByKey;
-	private final Locale locale;
-	private final Device device;
-	private final LocalizationSetting localizationSetting;
-	private final Preprocessor preprocessor;
-	private long lastModificationTime;
-	private final List multipleParametersTranslations;
-	private final boolean isDynamic;
-	private IntegerIdGenerator idGeneratorMultipleParameters;
-	private IntegerIdGenerator idGeneratorSingleParameter;
-	private IntegerIdGenerator idGeneratorPlain;
-	private ArrayList singleParameterTranslations;
-	private ArrayList plainTranslations;
+	protected final Map translationsByKey;
+	protected final Map preprocessingVariablesByKey;
+	protected final Locale locale;
+	protected final Device device;
+	protected final LocalizationSetting localizationSetting;
+	protected final Preprocessor preprocessor;
+	protected long lastModificationTime;
+	protected final List multipleParametersTranslations;
+	protected final boolean isDynamic;
+	protected IntegerIdGenerator idGeneratorMultipleParameters;
+	protected IntegerIdGenerator idGeneratorSingleParameter;
+	protected IntegerIdGenerator idGeneratorPlain;
+	protected ArrayList singleParameterTranslations;
+	protected ArrayList plainTranslations;
+	protected final Project project;
 
 	/**
 	 * Creates a new manager for translations.
 	 * 
+	 * @param project the current Ant project
 	 * @param device the current device
 	 * @param locale the current locale
 	 * @param preprocessor the preprocessor which manages variables and symbols.
@@ -89,15 +93,17 @@ implements Comparator
 	 * @param localizationSetting the localization setting
 	 * @throws IOException when resources could not be loaded
 	 */
-	public TranslationManager(Device device, Locale locale, Preprocessor preprocessor, File[] resourceDirs, LocalizationSetting localizationSetting )
+	public TranslationManager(Project project, Device device, Locale locale, Preprocessor preprocessor, File[] resourceDirs, LocalizationSetting localizationSetting )
 	throws IOException
 	{
+		this.project = project;
 		this.localizationSetting = localizationSetting;
 		this.isDynamic = localizationSetting.isDynamic();
 		this.locale = locale;
 		this.device = device;
 		this.preprocessor = preprocessor;
 		this.translationsByKey = new HashMap();
+		this.preprocessingVariablesByKey = new HashMap();
 		this.multipleParametersTranslations = new ArrayList();
 		this.singleParameterTranslations = new ArrayList();
 		this.plainTranslations = new ArrayList();
@@ -268,21 +274,22 @@ implements Comparator
 			// then add it as a variable to the preprocessor:
 			boolean variableFound = false;
 			if (key.startsWith("polish.")) {
-				this.preprocessor.addVariable(key, value );
+				//this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			} else if (key.startsWith("var:")) {
 				key = key.substring( "var:".length() );
-				this.preprocessor.addVariable(key, value );
+				//this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			} else if (key.startsWith("variable:")) {
 				key = key.substring( "variable:".length() );
-				this.preprocessor.addVariable(key, value );
+				//this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			} else if (key.startsWith("MIDlet-")) {
-				this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			}
 			if ( variableFound ) {
+				this.preprocessor.addVariable(key, value );
+				this.preprocessingVariablesByKey.put( key, value );
 				// create final translation:
 				Translation translation = new Translation( key, value, 
 						false, null, null, null );
@@ -326,6 +333,7 @@ implements Comparator
 	 * @throws IOException when a translations-file could not be loaded
 	 */
 	private Map loadRawTranslations( File[] resourceDirs ) throws IOException {
+		//System.out.println("Loading translations for locale " + this.locale);
 		// load the translations by following scheme:
 		// first load the base-translations:
 		// resources
@@ -374,6 +382,7 @@ implements Comparator
 				if (messagesFile.lastModified() > this.lastModificationTime) {
 					this.lastModificationTime = messagesFile.lastModified();
 				}
+				//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
 				FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
 			}
 			if (languageFileName != null) {
@@ -383,6 +392,7 @@ implements Comparator
 					if (messagesFile.lastModified() > this.lastModificationTime) {
 						this.lastModificationTime = messagesFile.lastModified();
 					}
+					//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
 					FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
 				}
 			}
@@ -392,6 +402,7 @@ implements Comparator
 				if (messagesFile.lastModified() > this.lastModificationTime) {
 					this.lastModificationTime = messagesFile.lastModified();
 				}
+				//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
 				FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
 			}
 		}
@@ -682,6 +693,7 @@ implements Comparator
 	throws IOException
 	{
 		File file = new File( targetDir, dynamicLocale.toString() + ".loc" );
+		//System.out.println("Writing translations to " + file.getAbsolutePath() );
 		DataOutputStream out = new DataOutputStream( new FileOutputStream( file ) );
 		// plain translations:
 		Translation[] translations = getPlainTranslations();
@@ -689,6 +701,7 @@ implements Comparator
 		out.writeInt( translations.length );
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];
+			//System.out.println( i + "=" + translation.getValue() );
 			out.writeUTF( translation.getValue() );
 		}
 		// translations with a single parameter:
@@ -726,6 +739,15 @@ implements Comparator
 	 */
 	public Locale getLocale() {
 		return this.locale;
+	}
+
+	/**
+	 * Retrieves all preprocessing variables that have been defined
+	 * 
+	 * @return all preprocessing variables that have been defined
+	 */
+	public Map getPreprocessingVariables() {
+		return this.preprocessingVariablesByKey;
 	}
 
 }

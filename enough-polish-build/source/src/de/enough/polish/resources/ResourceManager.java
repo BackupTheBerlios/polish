@@ -452,7 +452,10 @@ public class ResourceManager {
 	throws IOException
 	{
 		this.preprocessor = currentPreprocessor;
-		if (this.translationManager == null || !this.translationManager.getLocale().equals( locale ) ) {
+		if (!this.localizationSetting.isDynamic()  
+				|| this.translationManager == null  
+				|| !this.translationManager.getLocale().equals( locale ) ) 
+		{
 			this.translationManager = 
 				createTranslationManager( device, 
 						locale, 
@@ -460,6 +463,8 @@ public class ResourceManager {
 						getResourceDirs(device, locale), 
 						this.localizationSetting ); 
 		}
+		// resetting preprocessing variables:
+		currentPreprocessor.addVariables( this.translationManager.getPreprocessingVariables() );
 		return this.translationManager;
 	}
 
@@ -481,20 +486,17 @@ public class ResourceManager {
 		if (className != null) {
 			try {
 				Class managerClass = Class.forName( className );
-				Constructor constructor = managerClass.getConstructor( new Class[]{ Device.class, Locale.class, Preprocessor.class, File[].class, LocalizationSetting.class} );
-				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ device, locale, currentPreprocessor, resourceDirs, setting} );
+				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, Locale.class, Preprocessor.class, File[].class, LocalizationSetting.class} );
+				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, currentPreprocessor, resourceDirs, setting} );
 				return manager;
 			} catch (Exception e) {
 				//just return a normal translation manager
 				e.printStackTrace();
-				return new TranslationManager( device, 
-						locale, 
-						currentPreprocessor, 
-						resourceDirs, 
-						this.localizationSetting );
+				throw new BuildException("The translation manager [" + className + "] could not be found, please adjust your <localization>-translationManager-setting.");
 			}
 		} else {
-			return new TranslationManager( device, 
+			return new TranslationManager( this.project,
+				device, 
 				locale, 
 				currentPreprocessor, 
 				getResourceDirs(device, locale), 
