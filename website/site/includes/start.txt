@@ -151,6 +151,12 @@
 		<%endif %>
 		<%ifdef inLicensingSection %>
 			<div id="currentLink"><a href="<%= basedir %>licenses.html">Licensing</a></div>
+			<%ifdef inLicensingSection.order %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>licensing/order1.html">Order</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>licensing/order1.html">Order</a></div>
+			<%endif %>
+			
 		<%else %>
 			<a href="<%= basedir %>licenses.html">Licensing</a><br/>
 		<%endif %>

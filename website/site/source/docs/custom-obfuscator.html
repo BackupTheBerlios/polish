@@ -6,9 +6,10 @@
 
 	<div id="content">
 <h1 id="top">Integrating a Custom Obfuscator</h1>
+<%index %>
 <p>
 For integrating another obfuscator, you need to first create a class which extends the 
-de.enough.polish.obfuscate.Obfuscator class. Secondly you need to integrate your 
+<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/obfuscate/Obfuscator.html" target="_blank">de.enough.polish.obfuscate.Obfuscator</a> class. Secondly you need to integrate your 
 obfuscator in the &quot;build.xml&quot; file.
 </p>
 
@@ -18,7 +19,9 @@ Create a new project in your IDE and set the classpath so that it includes the &
 </p>
 <h2 id="creating">Creating the Obfuscator Class</h2>
 <p>
-Create a new class which extends de.enough.polish.obfuscate.Obfuscator and implement the &quot;obfuscate&quot; method:
+Create a new class which extends 
+<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/obfuscate/Obfuscator.html" target="_blank">de.enough.polish.obfuscate.Obfuscator</a>
+ and implement the &quot;obfuscate&quot; method:
 <pre>
 	/**
 	 * Obfuscates a jar-file for the given device.
@@ -90,5 +93,11 @@ For the using the above parameter, the obfuscator needs to implement either the
 public method <code>setScriptFile( File file )</code> or the public method 
 <code>setScriptFile( String value )</code>. When a method with a File-parameter is used, relative file paths are resolved relative to the location of the build.xml file (or to be more precise relative to the project.getBaseDir() location). The file given as a parameter in the set-method uses an absolute path in that case.
 </p>
+
+<h2 id="javadoc">JavaDoc Resources</h2>
+<p>Please refer to these JavaDoc resources for detailed information:</p>
+<ul>
+	<li><b>Obfuscator</b>: <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/obfuscate/Obfuscator.html" target="_blank">de.enough.polish.obfuscate.Obfuscator</a></li>
+</ul>
 
 <%include end.txt %>

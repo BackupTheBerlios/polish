@@ -7,16 +7,19 @@
 	<div id="content">
 
 <h1 id="top">Adding a Custom Background</h1>
+<%index %>
 <p>
 For adding a new background, please create a new project called &quot;background-project&quot; and make sure that the files &quot;enough-j2mepolish-build.jar&quot;, &quot;enough-j2mepolish-client.jar&quot; and the &quot;midp2.jar&quot; are on the classpath of the project. These files can be found in the &quot;import&quot; folder of the J2ME&nbsp;Polish installation directory.
 </p><p>
 Each background needs two implementation classes: one class for the client-side which is responsible for the actual painting and another one for the server-side which is responsible for creating the client-background-class and reading the parameters from the CSS definitions.
 </p><p>
 As an example we create and integrate an animated background, which paints a &quot;pulsating&quot; circle.
+Please note that this background is now directly available in J2ME Polish from version 1.0 onwards.
 </p>
 <h2 id="client">Creating the Client-Side Background-Class</h2>
 <p>
-For using a new background, just create a new class which extends the de.enough.polish.ui.Background class.
+For using a new background, just create a new class which extends the 
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/Background.html" target="_blank">de.enough.polish.ui.Background</a> class.
 </p><p>
 We are starting with a simple background, which paints a filled out circle. For the constructor we only need one parameter - the desired color of the circle:
 <pre>
@@ -91,9 +94,12 @@ public class PulsatingCircleBackground extends Background {
 </pre></p><p>
 The implementation uses the field &quot;currentDiameter&quot;, which is either decreased or increased in each run of the animate()-method. The constructor now has two additional parameters: the minimum diameter and the maximum diameter for the circle.
 </p>
+
 <h2 id="server">Creating the Server-Side Background-Class</h2>
 <p>
-For converting CSS-style information into the appropriate background object, we need to implement a converter class which extends de.enough.polish.preprocess.BackgroundConverter.
+For converting CSS-style information into the appropriate background object, we need to 
+implement a converter class which extends 
+<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/preprocess/BackgroundConverter.html" target="_blank">de.enough.polish.preprocess.BackgroundConverter</a>.
 </p><p>
 This class reads the provided CSS information and creates the source-code for creating a new instance:
 <pre>
@@ -143,7 +149,8 @@ public class PulsatingCircleBackgroundConverter extends BackgroundConverter {
 }
 </pre></p><p>
  
-In the method &quot;createNewStatement&quot; we read the provided values from the HashMap. To parse these values we can the helper-method parseInt( String attributeName, String attributeValue ), parseColor( String colorValue ) and getUrl( String url ). 
+In the method &quot;createNewStatement&quot; we read the provided values from the HashMap. To parse these values we can the helper-method 
+parseInt( String attributeName, String attributeValue ), parseFloat( String attributeName, String attributeValue ), parseColor( String colorValue ) and getUrl( String url ). 
 </p><p>
 In our example we want to use the attribute &quot;color&quot;, &quot;min-diameter&quot; and &quot;max-diameter&quot;. The color value is parsed by the super-class already and can be accessed with &quot;this.color&quot;. In case no color has been defined, the background color defaults to white. When a required value is missing or a value is set wrong, we throw a BuildException explaining the details of what went wrong. When everything is okay, we return a String in which a new instance of our background is created.
 </p><p>
@@ -200,5 +207,12 @@ Now we can build the application by calling Ant to check the result:
 <img src="../images/screenshot-custom-background-circle1.png" width="204" height="276" alt="The custom background in action."/>
 <img src="../images/screenshot-custom-background-circle2.png" width="200" height="269" alt="Now with a big diameter."/>
 </p>
+
+<h2 id="javadoc">JavaDoc Resources</h2>
+<p>Please refer to these JavaDoc resources for detailed information:</p>
+<ul>
+	<li><b>Background</b>: <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/Background.html" target="_blank">de.enough.polish.ui.Background</a></li>
+	<li><b>BackgroundConverter</b>: <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/preprocess/BackgroundConverter.html" target="_blank">de.enough.polish.preprocess.BackgroundConverter</a></li>
+</ul>
 
 <%include end.txt %>

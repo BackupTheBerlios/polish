@@ -18,6 +18,7 @@ Symbol
 #define, #undefine
 #=
 #include
+#message
 
 
 #####################################
@@ -56,7 +57,7 @@ Design
 CSS, background, border, Style, font, label
 layout, color, margin, padding, after, before
 type
-round-rect, simple, pulsating, image, shadow
+round-rect, simple, pulsating, image, shadow, circle
 polish.css
 
 

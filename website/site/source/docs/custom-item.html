@@ -7,9 +7,10 @@
 	<div id="content">
 
 <h1 id="top">Adding a Custom Item By Extending CustomItem</h1>
+<%index %>
 <p>
 You can integrate custom items to J2ME&nbsp;Polish by extending the 
-javax.microedition.lcdui.CustomItem class. 
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/CustomItem.html" target="_blank">javax.microedition.lcdui.CustomItem</a> class. 
 </p>
 <h2 id="initialisation">Initialisation</h2>
 <p>
@@ -119,4 +120,11 @@ The setStyle()-method will be called before the preferred content width and heig
 <p>
 Background and border settings will be enforced by J2ME&nbsp;Polish, the CustomItem merely needs to paint its contents.
 </p>
+
+<h2 id="javadoc">JavaDoc Resources</h2>
+<p>Please refer to these JavaDoc resources for detailed information:</p>
+<ul>
+	<li><b>CustomItem</b>: <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/CustomItem.html" target="_blank">de.enough.polish.ui.CustomItem</a></li>
+</ul>
+
 <%include end.txt %>

@@ -7,16 +7,23 @@
 	<div id="content">
 
 <h1 id="top">Adding a Custom Border</h1>
+<%index %>
 <p>
-Adding a custom border requires the same steps as for creating a custom background. Instead of extending the Background class, we need to extend the de.enough.polish.ui.Border class. For the server-side the de.enough.polish.preprocess.BorderConverter needs to be extended.
+Adding a custom border requires the same steps as for creating a custom background. 
+Instead of extending the Background class, we need to extend the 
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/Border.html" target="_blank">de.enough.polish.ui.Border</a>
+ class. For the server-side the 
+ <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/preprocess/BorderConverter.html" target="_blank">de.enough.polish.preprocess.BorderConverter</a> needs to be extended.
 </p><p>
 Please note that borders currently do not support the animate()-method, so if you want to use animated borders, you need to implement them with a Background class.
 </p><p>
 For this example we create a project called &quot;border-project&quot; and add the files &quot;enough-j2mepolish-build.jar&quot;, &quot;enough-j2mepolish-client.jar&quot; and the &quot;midp2.jar&quot; to the classpath of the project. These files can be found in the &quot;import&quot; folder of the J2ME&nbsp;Polish installation directory.
+Please note that this border is now directly available in J2ME Polish from version 1.0 onwards.
 </p>
 <h2 id="client">Creating the Client-Side Border-Class</h2>
 <p>
-We create a border which should draw a round border around items. The color, width and stroke-style of the border should be customizable:
+We create a border which should draw a round border around items. The color, width and 
+stroke-style of the border should be customizable:
 <pre>
 //#condition polish.usePolishGui
 
@@ -107,7 +114,8 @@ public class CircleBorderConverter extends BorderConverter {
 </pre></p><p>
 The BorderConverter already parses the color and width of the border. The color defaults to black and the width defaults to 1. So we only need to parse the desired stroke-style. Unless &quot;dotted&quot; is defined, we assume that the Graphics.SOLID stroke-style should be used. 
 </p><p>
-There are some helper methods for parsing the CSS-attributes: parseInt( String attributeName, String attributeValue ), parseColor( String colorValue ) and getUrl( String url ).
+There are some helper methods for parsing the CSS-attributes: 
+parseInt( String attributeName, String attributeValue ), parseFloat( String attributeName, String attributeValue ), parseColor( String colorValue ) and getUrl( String url ).
 </p><p>
 We included the #condition &quot;false&quot;, so that this file is never included in the J2ME application. This is useful when the same source folder is used for the client-background-class as well as the server-background-class.
 </p>
@@ -161,5 +169,13 @@ Now we can build the application by calling Ant to check the result:
 <br/>
 <img src="../images/screenshot-custom-border-circle.png" width="198" height="270" alt="The custom border in action." />
 </p>
+
+<h2 id="javadoc">JavaDoc Resources</h2>
+<p>Please refer to these JavaDoc resources for detailed information:</p>
+<ul>
+	<li><b>Border</b>: <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/Border.html" target="_blank">de.enough.polish.ui.Border</a></li>
+	<li><b>BorderConverter</b>: <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/preprocess/BorderConverter.html" target="_blank">de.enough.polish.preprocess.BorderConverter</a></li>
+</ul>
+
 
 <%include end.txt %>

@@ -6,6 +6,7 @@
 
 	<div id="content">
 <h1 id="top">Creating and Using Custom Preprocessing Directives</h1>
+<%index %>
 <p>
 You can easily use your own preprocessing directives by extending the de.enough.polish.preprocess.CustomPreprocessor 
 class and by integrating your preprocessor with the &lt;preprocessor&gt;-element 
@@ -20,7 +21,7 @@ Also include the &quot;ant.jar&quot; file from your Ant-installation into the cl
 </p>
 <h2 id="create">Creating the Preprocessor Class</h2>
 <p>
-Create a new class which extends de.enough.polish.preprocess.CustomPreprocessor. 
+Create a new class which extends <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/preprocess/CustomPreprocessor.html" target="_blank">de.enough.polish.preprocess.CustomPreprocessor</a>. 
 </p>
 <h3 id="register">Using the registerDirective()-Method</h3>
 <p>
@@ -148,5 +149,11 @@ For the using the above parameter, the preprocessor needs to implement either th
 public method setScriptFile( File file ) or the public method setScriptFile( String value ). 
 When a method with a File-parameter is used, relative file paths are resolved relative to the location of the build.xml file (or to be more precise relative to the project.getBaseDir() location). The file given as a parameter in the set-method uses an absolute path in that case.
 </p>
+
+<h2 id="javadoc">JavaDoc Resources</h2>
+<p>Please refer to these JavaDoc resources for detailed information:</p>
+<ul>
+	<li><b>CustomPreprocessor</b>: <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/preprocess/CustomPreprocessor.html" target="_blank">de.enough.polish.preprocess.CustomPreprocessor</a></li>
+</ul>
 
 <%include end.txt %>

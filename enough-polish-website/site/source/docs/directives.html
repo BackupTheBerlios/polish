@@ -14,7 +14,7 @@ J2ME&nbsp;Polish supports all directives of the antenna preprocessor (antenna.so
 by the way. So if you migrate from antenna, you can keep your preprocessing directives.   
 </p>
 
-<h2 id="ifdef">Checking a Single Symbol with #ifdef, #ifndef, #else, #elifdef, #elifndef and #endif</h2>
+<h2 id="preprocessing-ifdef">Checking a Single Symbol with #ifdef, #ifndef, #else, #elifdef, #elifndef and #endif</h2>
 <p>
 Single symbols can be checked easily with the #ifdef directive:
 <pre>
@@ -103,7 +103,8 @@ included into the sub-sections as well:
 The #ifdef directive and its related directives are faster to process than the more complex 
 #if directives.
 </p>
-<h2 id="if">Check Several Symbols and Variables with #if, #else, #elif and #endif</h2>
+
+<h2 id="preprocessing-if">Check Several Symbols and Variables with #if, #else, #elif and #endif</h2>
 <p>
 With each #ifdef directive only a single symbol can be checked. With the #if and #elif 
 directives, however, complex terms containing several symbols and variables can be evaluated:
@@ -233,7 +234,7 @@ Nokia == Nokia = true<br/>
 	</tr>
 </table>
 
-<h2 id="hiding">Hiding Code</h2>
+<h2 id="preprocessing-hiding">Hiding Code</h2>
 <p>
 Code sections can be temporarily commented out, to avoid problems in the IDE. A typical problem are several return statements:
 <pre>
@@ -248,7 +249,7 @@ Code sections can be temporarily commented out, to avoid problems in the IDE. A 
 In this example the first return statement is hidden with a &quot;//# &quot; directive. When the first #ifdef directive is true, the corresponding code will be made visible again. The space after the # sign is important for the correct handling of such comments.
 </p>
 
-<h2 id="debug">Debugging with #debug, #mdebug and #enddebug</h2>
+<h2 id="preprocessing-debug">Debugging with #debug, #mdebug and #enddebug</h2>
 <p>
 To include debugging information in a J2ME application is not without problems. The main problem is that any debugging slows down an application unnecessarily. Another problem is that nobody wants the debugging information in an application which should be deployed &quot;in the wild&quot;. With J2ME&nbsp;Polish debugging statements can be included into the applications without having the above disadvantages. 
 The #debug directive is used to include a single line of debugging information:
@@ -280,7 +281,7 @@ System.out.println("unable to load something: " + e.getMessage() );
 	 <td>Marks the end of the #mdebug section.</td>
 </table>
 
-<h3>Debug Levels</h3>
+<h3 id="levels">Debug Levels</h3>
 <p>
 Following debug levels are predefined:
 &quot;debug&quot;, &quot;info&quot;, &quot;warn&quot;, &quot;error&quot; and &quot;fatal&quot;. The specific level for a class can be defined with the <debug> element of the J2ME&nbsp;Polish-task:
@@ -304,7 +305,7 @@ callComplexMethod();
 System.out.println("complex method took [" + (System.currentTimeMilis() - startTime) + "] ms.");
 </pre></p>
 
-<h3>The Debug Utility Class</h3>
+<h3 id="debug-class">The Debug Utility Class</h3>
 <p>
 The utility class <code>de.enough.polish.util.Debug</code> can be used for debugging. It is especially useful for the GUI debugging mode, which can be enabled in the build.xml by setting the &quot;useGui&quot; attribute of the <debug>-element to true:
 <pre>
@@ -384,7 +385,7 @@ only that the message will always be logged.
 	</tr>
 </table>
 
-<h2 id="variables">Using Variables with #=</h2>
+<h2 id="preprocessing-variables">Using Variables with #=</h2>
 <p>
 You can add the contents of variables with the #= directive:
 <pre>
@@ -403,7 +404,7 @@ The name of the variable needs to be surrounded by a ${}, just like referring to
 Variables can be defined in the &lt;variables&gt;-element in the build.xml. Other variables are defined in the devices.xml, vendors.xml and groups.xml by the capabilities of the devices, vendors and groups.
 </p>
 
-<h2 id="styles">Setting CSS Styles with #style</h2>
+<h2 id="preprocessing-styles">Setting CSS Styles with #style</h2>
 <p>
 CSS styles are used for the design of the application. The styles are defined in the file polish.css in the resources folder of the project. The developer can control which styles are used for specific Items by using the #style directive:
 <pre>
@@ -503,7 +504,7 @@ super( "Menu" );
 	 <td>Use the #style directive before a List-constructor or before calling super() in subclass-constructors.</td>
 	</tr>
 </table>
-<h2 id="condition">Exclude or Include Complete Files with #condition</h2>
+<h2 id="preprocessing-condition">Exclude or Include Complete Files with #condition</h2>
 <p>
 The #condition directive can be used to prevent the usage of complete files, when a condition is not met:
 <pre>
@@ -559,7 +560,7 @@ You can later just use the defined variable normally:
 	</tr>
 </table>
 
-<h2 id="include">Inserting Code Fragments with #include</h2>
+<h2 id="preprocessing-include">Inserting Code Fragments with #include</h2>
 <p>
 You can insert complete code fragments with the #include directive:
 <pre>
@@ -567,4 +568,28 @@ You can insert complete code fragments with the #include directive:
 </pre></p><p>
 Within the file-name you can use all defined variables. A useful variable is especially &quot;polish.source&quot;, which points the base directory of the file, which is currently preprocessed. I you use only relative names, please bear in mind, that the base directory is the root of your project (or to be more precise: the directory which contains the build.xml file).
 </p>
+
+<h2 id="preprocessing-message">Analyzing the Preprocessing-Phase with #message</h2>
+<p>
+Sometimes the preprocessing itself is rather complex. The #message directive can help to understand the process by printing out messages during the build-process:
+<pre>
+//#if !basicInput && (polish.hasPointerEvents || polish.mouseSupported)
+	//#define tmp.complexInput
+	//#message complex input is enabled
+//#else
+	//#message complex input is disabled
+//#endif
+</pre></p><p>
+Within each message any variables can be used. If a variable is not defined, the variable-definition will be included in the message.
+<pre>
+//#message using the update-url ${update-url}.
+</pre></p><p>
+The above example results in the message 
+&quot;MESSAGE: using the update-url http://update.company.com.&quot; being given out, when the variable 
+&quot;update-url&quot; has the value &quot;http://update.company.com&quot;. When this variable is not defined, 
+the message &quot;MESSAGE: using the update-url ${update-url}.&quot; 
+will be printed out instead.
+</p>
+
+
 <%include end.txt %>

@@ -83,6 +83,7 @@ The following example uses a different horizontal arc diameter:
 	background-arc-width: 10;
 }
 </pre></p>
+
 <h3 id="imagebackground">Image Background</h3>
 <p>
 The image background uses an image for painting the background. This background type is used by default when no type is set and the &quot;background-image&quot; attribute is set. The background supports  following attributes:
@@ -120,6 +121,37 @@ This style uses the image &quot;heart.png&quot; as a repeated background:
 	background-repeat: repeat;
 }
 </pre></p>
+
+<h3 id="circlebackground">Circle Background</h3>
+<p>
+The circle background paints a circular or elliptical background. It supports following attributes:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>type</td>
+	 <td>Yes</td>
+	 <td>The type needs to be &quot;circle&quot;.</td>
+	</tr>
+	<tr><td>color</td>
+	 <td>No</td>
+	 <td>The color of the background, either the name of the color or a direct definition. Defaults to white.</td>
+	</tr>
+	<tr><td>diameter</td>
+	 <td>No</td>
+	 <td>With the &quot;diameter&quot; attribute it can be ensured that always a circle and never an ellipse is painted. The diameter then defines the diameter of the circle.</td>
+	</tr>
+	</table>
+<p>
+The following example uses a green circle background with a diameter of 20 pixels:
+<pre>
+.myStyle {
+	background-type: circle;
+	background-color: green;
+	background-diameter: 20;
+}
+</pre></p>
+
+
 <h3 id="pulsatingbackground">Pulsating Background</h3>
 <p>
 The pulsating background animates the color of the background. 
@@ -164,6 +196,86 @@ The following style starts with a white background and stops with a yellow backg
 		repeat: false;
 		back-and-forth: false;
 	}
+}
+</pre></p>
+
+<h3 id="pulsatingcirclebackground">Pulsating Circle Background</h3>
+<p>
+The pulsating circle background paints a circular or background which size constantly increases and decreases. It supports following attributes:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>type</td>
+	 <td>Yes</td>
+	 <td>The type needs to be &quot;pulsating-circle&quot;.</td>
+	</tr>
+	<tr><td>color</td>
+	 <td>No</td>
+	 <td>The color of the background, either the name of the color or a direct definition. Defaults to white.</td>
+	</tr>
+	<tr><td>min-diameter</td>
+	 <td>Yes</td>
+	 <td>The minimum diameter of the circle.</td>
+	</tr>
+	<tr><td>max-diameter</td>
+	 <td>Yes</td>
+	 <td>The maximum diameter of the circle.</td>
+	</tr>
+	</table>
+<p>
+The following example uses a green pulsating circle background with a minimum diameter of 20 pixels and a maximum diameter of 40 pixels:
+<pre>
+.myStyle {
+	background-type: pulsating-circle;
+	background-color: green;
+	background-min-diameter: 20;
+	background-max-diameter: 40;
+}
+</pre></p>
+
+<h3 id="pulsatingcirclesbackground">Pulsating Circles Background</h3>
+<p>
+The pulsating circles background paints an animated background of ever-growing circles. It supports following attributes:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>type</td>
+	 <td>Yes</td>
+	 <td>The type needs to be &quot;pulsating-circles&quot;.</td>
+	</tr>
+	<tr><td>first-color</td>
+	 <td>Yes</td>
+	 <td>The first circle-color, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr><td>second-color</td>
+	 <td>Yes</td>
+	 <td>The second circle-color, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr><td>min-diameter</td>
+	 <td>Yes</td>
+	 <td>The minimum diameter of the circle.</td>
+	</tr>
+	<tr><td>max-diameter</td>
+	 <td>Yes</td>
+	 <td>The maximum diameter of the circle.</td>
+	</tr>
+	<tr><td>circles-number</td>
+	 <td>Yes</td>
+	 <td>The number of circles which should be painted.</td>
+	</tr>
+	<tr><td>step</td>
+	 <td>No</td>
+	 <td>The number of pixels each circle should grow in each animation phase. Float-values like &quot;1.5&quot; are also allowed. This defaults to &quot;1&quot; pixel.</td>
+	</tr>
+	</table>
+<p>
+The following example uses a green pulsating circle background with a minimum diameter of 20 pixels and a maximum diameter of 40 pixels:
+<pre>
+.myStyle {
+	background-type: pulsating-circle;
+	background-color: green;
+	background-min-diameter: 20;
+	background-max-diameter: 40;
 }
 </pre></p>
 
@@ -279,11 +391,47 @@ The following example uses a green shadow border:
 <pre>
 .myStyle {
 	border-type: shadow;
-	border-color: purple;
+	border-color: green;
 	border-width: 2;
 	border-offset: 2;
 }
 </pre></p>
+
+<h3 id="circleborder">Circle Border</h3>
+<p>
+The circle border paints a round or elliptical border and supports following attributes:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>type</td>
+	 <td>Yes</td>
+	 <td>The border-type needs to be &quot;circle&quot;.</td>
+	</tr>
+	<tr><td>color</td>
+	 <td>No</td>
+	 <td>The color of the border, either the name of the color or a direct definition. Defaults to black.</td>
+	</tr>
+	<tr><td>width</td>
+	 <td>No</td>
+	 <td>The width of the border in pixels. Defaults to 1.</td>
+	</tr>
+	<tr><td>stroke-style</td>
+	 <td>No</td>
+	 <td>Either &quot;solid&quot; or &quot;dotted&quot;. Defines the painting style of the border. Defaults to &quot;solid&quot;.</td>
+	</tr>
+</table>
+<p>
+The following example uses a green circle border with a two pixel wide dotted line:
+<pre>
+.myStyle {
+	border-type: circle;
+	border-color: green;
+	border-width: 2;
+	border-stroke-style: dotted;
+}
+</pre></p>
+
+
 <h2 id="screens">Screens: List, Form and TextBox</h2>
 <h3>Predefined Styles for Lists, Forms and TextBoxes</h3>
 <p>
