@@ -886,8 +886,6 @@ implements CommandListener
 					buffer.append('*');
 				}
 				text = buffer.toString();
-			} else {
-				this.passwordText = null;
 			}
 		}
 		setText(text);
@@ -925,7 +923,11 @@ implements CommandListener
 		if (this.text == null) {
 			return 0;
 		}
-		char[] textArray = this.text.toCharArray();
+		String txt = this.text;
+		if (this.isPassword) {
+			txt = this.passwordText;
+		}
+		char[] textArray = txt.toCharArray();
 		System.arraycopy(textArray, 0, data, 0, textArray.length );
 		return textArray.length;
 	}
@@ -999,8 +1001,12 @@ implements CommandListener
 	 */
 	public void insert( String src, int position)
 	{
-		String start = this.text.substring( 0, position );
-		String end = this.text.substring( position );
+		String txt = this.text;
+		if (this.isPassword) {
+			txt = this.passwordText;
+		}
+		String start = txt.substring( 0, position );
+		String end = txt.substring( position );
 		setString( start + src + end );
 	}
 
@@ -1055,8 +1061,12 @@ implements CommandListener
 	 */
 	public void delete(int offset, int length)
 	{
-		String start = this.text.substring(0, offset );
-		String end = this.text.substring( offset + length );
+		String txt = this.text;
+		if (this.isPassword) {
+			txt = this.passwordText;
+		}
+		String start = txt.substring(0, offset );
+		String end = txt.substring( offset + length );
 		setString( start + end );
 	}
 
@@ -1090,13 +1100,17 @@ implements CommandListener
 		if ((this.text != null && maxSize < this.text.length()) || (maxSize < 1)) {
 			throw new IllegalArgumentException();
 		}
-		if (this.midpTextBox != null) {
-			this.maxSize = this.midpTextBox.setMaxSize(maxSize);
-			return this.maxSize;
-		} else {
-			this.maxSize = maxSize;
-			return maxSize;
-		}
+		//#if ! tmp.forceDirectInput
+			if (this.midpTextBox != null) {
+				this.maxSize = this.midpTextBox.setMaxSize(maxSize);
+				return this.maxSize;
+			} else {
+		//#endif
+				this.maxSize = maxSize;
+				return maxSize;
+		//#if ! tmp.forceDirectInput
+			}
+		//#endif
 	}
 
 	/**
@@ -1212,6 +1226,13 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		if (!this.isFocused) {
+			if (this.isPassword) {
+				System.out.println("calling super-paint content for this.text=[" + this.text + "]");
+			}
+			super.paintContent(x, y, leftBorder, rightBorder, g);
+			return;
+		}
 		//#ifdef tmp.directInput
 			//#ifdef tmp.allowDirectInput
 				if (this.isFocused && this.enableDirectInput) {
@@ -1446,7 +1467,7 @@ implements CommandListener
 				} // for each line
 				this.realTextLines = realLines;
 			}
-			int textLength = this.text == null ? 0 : this.text.length();
+			int textLength = (this.text == null ? 0 : this.text.length());
 			if (!this.caretPositionHasBeenSet || this.caretPosition > textLength ) {
 				this.caretPositionHasBeenSet = true;
 				if (this.text != null) {
@@ -1726,7 +1747,7 @@ implements CommandListener
 	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
 	private void updateInfo() {
 		//#debug
-		System.out.println("update info: " + this.text + " this.showLength=" + this.showLength );
+		System.out.println("update info: " + this.text );
 		if (this.screen == null) {
 			this.screen = getScreen();
 		}
@@ -2018,6 +2039,11 @@ implements CommandListener
 							return true;
 						}
 					} else if ( gameAction == Canvas.RIGHT ) {
+						//#ifdef polish.debug.debug
+						if (this.isPassword) {
+							System.out.println("originalRowText=" + this.originalRowText );
+						}
+						//#endif
 						if (characterInserted) {
 							//System.out.println("right but character inserted");
 							return true;
@@ -2182,9 +2208,9 @@ implements CommandListener
 				this.caretRowLastPart = end;
 				this.caretRowLastPartWidth = this.font.stringWidth(end);
 				if (this.isPassword) {
-					this.passwordText = myText; 
+					setString( myText );
 				} else {
-					this.text= myText;
+					this.text = myText;
 				}
 				/*
 				System.out.println("backspace in last row");
@@ -2297,7 +2323,7 @@ implements CommandListener
 		}
 	//#endif
 		
-	//#ifdef tmp.directInput
+	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		if (this.screen != null) {
@@ -2306,7 +2332,7 @@ implements CommandListener
 	}
 	//#endif
 	
-	//#ifdef tmp.directInput
+	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
 	protected Style focus(Style focusedStyle) {
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {

@@ -183,6 +183,7 @@ public abstract class Screen
 	private boolean showInfoItem;
 	private int infoHeight;
 	//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInPaint
+		//#define tmp.fullScreenInPaint
 		private boolean isInFullScreenMode;
 	//#endif
 	
@@ -195,7 +196,7 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint
+		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
 			//#if tmp.fullScreen && polish.midp2
 				super.setFullScreenMode( true );
 			//#endif			
@@ -372,7 +373,9 @@ public abstract class Screen
 				// this is needed on Sony Ericsson for example,
 				// since the fullscreen mode is not resumed automatically
 				// when the previous screen was in the "normal" mode:
-				super.setFullScreenMode( true );
+				//#if ! tmp.fullScreenInPaint
+					super.setFullScreenMode( true );
+				//#endif
 			//#endif
 		} catch (Exception e) {
 			//#debug error
@@ -505,7 +508,7 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public final void paint(Graphics g) {
-		//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInPaint
+		//#if tmp.fullScreenInPaint
 			if (!this.isInFullScreenMode) {
 				super.setFullScreenMode( true );
 				this.isInFullScreenMode = true;
@@ -1448,6 +1451,8 @@ public abstract class Screen
 	public void focus(Item item) {
 		int index = this.container.itemsList.indexOf(item);
 		if (index != -1) {
+			//#debug
+			System.out.println("Screen: focusing item " + index );
 			this.container.focus( index, item );
 			return;
 		}

@@ -188,6 +188,8 @@ public class StringItem extends Item
 	 */
 	public void setText( String text)
 	{
+		//#debug
+		System.out.println("StringItem: setText( \"" + text + "\" )");
 		this.text = text;
 		if (text == null) {
 			this.textLines = null;
@@ -330,6 +332,9 @@ public class StringItem extends Item
 			String bitMapUrl = style.getProperty("font-bitmap");
 			if (bitMapUrl != null) {
 				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
+			} else {
+				this.bitMapFont = null;
+				this.bitMapFontViewer = null;
 			}
 		//#endif
 	}

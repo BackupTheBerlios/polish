@@ -331,7 +331,17 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item ) {
 		//#debug
-		System.out.println("Focusing item " + index );
+		System.out.println("Container: Focusing item " + index );
+		
+		if (this.autoFocusEnabled  && !this.isInitialised) {
+			// setting the index for automatically focusing the appropriate item
+			// during the initialisation:
+			//#debug
+			System.out.println("Container: Setting autofocus-index to " + index );
+			this.autoFocusIndex = index;
+			return;
+		}
+		
 		if (index == this.focusedIndex && item.isFocused) {
 			// ignore the focusing of the same element:
 			return;
@@ -342,7 +352,7 @@ public class Container extends Item {
 				this.focusedItem.defocus(this.itemStyle);
 			} else {
 				//#debug error
-				System.out.println("Unable to defocus item - no previous style found.");
+				System.out.println("Container: Unable to defocus item - no previous style found.");
 				this.focusedItem.defocus( StyleSheet.defaultStyle );
 			}
 		}
@@ -351,7 +361,7 @@ public class Container extends Item {
 		//#ifdef polish.debug.error
 			if (this.itemStyle == null) {
 				//#debug error 
-				System.out.println("Unable to retrieve style of item " + item.getClass().getName() );
+				System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
 			}
 		//#endif
 		
@@ -410,7 +420,7 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("intialising content for " + getClass().getName() + ": autofocus=" + this.autoFocusEnabled);
+		System.out.println("Container: intialising content for " + getClass().getName() + ": autofocus=" + this.autoFocusEnabled);
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length) {
@@ -443,11 +453,11 @@ public class Container extends Item {
 				}
 				if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 					//#debug
-					System.out.println("autofocusing element " + i);
+					System.out.println("Container: autofocusing element " + i);
+					this.autoFocusEnabled = false;
 					focus( i, item );
 					height = item.getItemHeight( firstLineWidth, lineWidth );
 					width = item.getItemWidth( firstLineWidth, lineWidth );
-					this.autoFocusEnabled = false;
 				}
 				if (width > myContentWidth) {
 					myContentWidth = width; 
@@ -514,11 +524,11 @@ public class Container extends Item {
 				// without loosing the style information:
 				if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 					//#debug
-					System.out.println("Autofocusing item " + i );
+					System.out.println("Container: Autofocusing item " + i );
+					this.autoFocusEnabled = false;
 					focus( i, item );
 					height = item.getItemHeight( availableWidth, availableWidth );
 					width = item.getItemWidth( availableWidth, availableWidth );
-					this.autoFocusEnabled = false;
 				}
 				
 				if (height > maxRowHeight) {
@@ -897,7 +907,7 @@ public class Container extends Item {
 							// this is an invalid setting!
 							this.columnsSetting = NORMAL_WIDTH_COLUMNS;
 							//#debug warn
-							System.out.println("Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
+							System.out.println("Container: Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
 						} else {
 							this.columnsSetting = STATIC_WIDTH_COLUMNS;
 							this.columnsWidths = new int[ this.numberOfColumns ];
@@ -927,7 +937,7 @@ public class Container extends Item {
 											myScreen.getWidth() - combinedWidth;
 									} else {
 										//#debug warn
-										System.out.println("Unable to process '*'-columns-width");
+										System.out.println("Container: Unable to process '*'-columns-width");
 									}
 								}
 							//#endif
@@ -951,7 +961,7 @@ public class Container extends Item {
 					viewType.setStyle(style);
 				} catch (Exception e) {
 					//#debug error
-					System.out.println("Unable to init view-type " + e );
+					System.out.println("Container: Unable to init view-type " + e );
 				}
 			}
 			this.view = viewType;
