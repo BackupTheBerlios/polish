@@ -55,7 +55,8 @@ public final class StyleSheet {
 	//#ifdef false
 		public static Style defaultStyle = null;
 		public static Style focusedStyle = null;
-		public static Style labelStyle; 
+		public static Style labelStyle = null; 
+		public static Style menuStyle = null;
 		private static Hashtable stylesByName = new Hashtable();
 	//#endif
 	

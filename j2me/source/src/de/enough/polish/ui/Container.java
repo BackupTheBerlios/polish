@@ -799,17 +799,14 @@ public class Container extends Item {
 			this.borderWidth = 0;
 		}
 		//#ifdef polish.css.focused-style
-			String focused = style.getProperty("focused-style");
+			Style focused = (Style) style.getObjectProperty("focused-style");
 			if (focused != null) {
-				Style focStyle = StyleSheet.getStyle( focused );
-				if (focStyle != null) {
-					this.focusedStyle = focStyle;
-					this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
-					if (focStyle.border != null) {
-						this.focusedTopMargin += focStyle.border.borderWidth;
-					} else if (focStyle.background != null) {
-						this.focusedTopMargin += focStyle.background.borderWidth;
-					}
+				this.focusedStyle = focused;
+				this.focusedTopMargin = focused.marginTop + focused.paddingTop;
+				if (focused.border != null) {
+					this.focusedTopMargin += focused.border.borderWidth;
+				} else if (focused.background != null) {
+					this.focusedTopMargin += focused.background.borderWidth;
 				}
 			}
 		//#endif
@@ -876,12 +873,21 @@ public class Container extends Item {
 			}
 		//#endif
 		//#ifdef polish.css.view-type
-			this.view = (ContainerView) style.getObjectProperty("view-type");
-			if (this.view != null) {
-				this.view.parentContainer = this;
-				this.view.focusFirstElement = this.focusFirstElement;
-				this.view.setStyle(style);
+			ContainerView viewType = (ContainerView) style.getObjectProperty("view-type");
+			if (viewType != null) {
+				try {
+					if (viewType.parentContainer != null) {
+						viewType = (ContainerView) viewType.getClass().newInstance();
+					}
+					viewType.parentContainer = this;
+					viewType.focusFirstElement = this.focusFirstElement;
+					viewType.setStyle(style);
+				} catch (Exception e) {
+					//#debug error
+					System.out.println("Unable to init view-type " + e );
+				}
 			}
+			this.view = viewType;
 		//#endif
 	}
 

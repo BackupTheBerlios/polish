@@ -129,11 +129,9 @@ public class DroppingView extends ContainerView {
 		super.setStyle(style);
 	}
 	
-	
 
 	public boolean animate() {
 		if (this.restartAnimation) {
-			System.out.println("Starting animation of dropping view.");
 			for (int i = 0; i < this.yAdjustments.length; i++ ) {
 				this.yAdjustments[i] = this.contentHeight; 
 			}

@@ -87,6 +87,9 @@ public abstract class Screen
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
 		protected StringItem title;
+		//#ifdef polish.css.title-style
+			private Style titleStyle;
+		//#endif
 		//#ifdef polish.Vendor.Motorola
 			private boolean ignoreMotorolaTitleCall;
 		//#endif
@@ -231,10 +234,11 @@ public abstract class Screen
 			}
 		//#endif
 		//#ifdef tmp.menuFullScreen
-			Style menustyle = StyleSheet.getStyle("menu");
-			if (menustyle == null) {
-				menustyle = this.style; 
-			}
+			//#ifdef polish.css.style.menu
+				Style menustyle = StyleSheet.menuStyle;
+			//#else
+				//# Style menustyle = this.style;
+			//#endif
 			if (menustyle != null) {
 				Integer colorInt = null;
 				if (this.style != null) {
@@ -360,6 +364,17 @@ public abstract class Screen
 			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
 			if (scrollIndicatorColorInt != null) {
 				this.scrollIndicatorColor = scrollIndicatorColorInt.intValue();
+			}
+		//#endif
+		//#if tmp.usingTitle && polish.css.title-style
+			this.titleStyle = (Style) style.getObjectProperty("title-style");
+			if (this.titleStyle != null && this.title != null) {
+				this.title.setStyle(this.titleStyle);
+				//#ifdef polish.ScreenWidth:defined
+					//#= this.titleHeight = this.title.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
+				//#else
+					this.titleHeight = this.title.getItemHeight( getWidth(), getWidth() );
+				//#endif
 			}
 		//#endif
 	}
@@ -655,6 +670,11 @@ public abstract class Screen
 		if (s != null) {
 			//#style title, default
 			this.title = new StringItem( null, s );
+			//#ifdef polish.css.title-style
+				if (this.titleStyle != null) {
+					this.title.setStyle( this.titleStyle );
+				}
+			//#endif
 			// the Nokia 6600 has an amazing bug - when trying to refer the
 			// field screenWidth, it returns 0 in setTitle(). Obviously this works
 			// in other phones and in the simulator, but not on the Nokia 6600.
