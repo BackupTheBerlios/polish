@@ -55,18 +55,19 @@ public class WrapperObfuscator extends Obfuscator {
 	private Method obfuscateMethod;
 
 	/**
-	 * 
-	 * @param setting
-	 * @param project
-	 * @param libraryDir
-	 * @param libraryManager
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
-	 * @throws ClassNotFoundException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
+	 * Creates a new wrapper for external obfuscators.
+	 *  
+	 * @param setting the setting of this obfuscator
+	 * @param project the Ant project
+	 * @param libraryDir the default directory for libraries
+	 * @param libraryManager the mananger of libraries 
+	 * @throws NoSuchMethodException when the wrapped obfuscator could not be loaded
+	 * @throws SecurityException when the wrapped obfuscator could not be loaded
+	 * @throws ClassNotFoundException when the wrapped obfuscator could not be loaded
+	 * @throws InstantiationException when the wrapped obfuscator could not be loaded
+	 * @throws IllegalAccessException when the wrapped obfuscator could not be loaded
+	 * @throws InvocationTargetException when the wrapped obfuscator could not be loaded
+	 * @throws IllegalArgumentException when the wrapped obfuscator could not be loaded
 	 */
 	public WrapperObfuscator( ObfuscatorSetting setting, Project project, File libraryDir, LibraryManager libraryManager ) 
 	throws SecurityException, NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {

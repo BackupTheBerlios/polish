@@ -84,6 +84,8 @@ public class BuildSetting {
 	private AttributesFilter jadAttributesFilter;
 	private AttributesFilter manifestAttributesFilter;
 	private File[] binaryLibraries;
+	private String polishHomePath;
+	private String projectBasePath;
 	
 	/**
 	 * Creates a new build setting.
@@ -91,16 +93,23 @@ public class BuildSetting {
 	 * @param project The corresponding ant-project.
 	 */
 	public BuildSetting( Project project ) {
+		this.polishHomePath = project.getProperty( "polish.home" );
+		if (this.polishHomePath != null) {
+			this.polishHomePath += File.separatorChar;
+		}
+		this.projectBasePath = project.getBaseDir().getAbsolutePath() + File.separator;
 		this.project = project;
-		this.workDir = new File( project.getBaseDir().getAbsolutePath() + File.separator
-				+ "build");
-		this.destDir = new File( project.getBaseDir().getAbsolutePath() + File.separator
-				+ "dist");
+		this.workDir = new File( this.projectBasePath + "build");
+		this.destDir = new File( this.projectBasePath + "dist");
 		this.apiDir = getFile("import");
 		this.resDir = getFile ("resources");
 		this.sourceDirs = new ArrayList();
 		this.midp1Path = getFile( "import/midp1.jar" );
 		this.midp2Path = getFile( "import/midp2.jar" );
+		this.apis = getFile("apis.xml");
+		this.vendors = getFile("vendors.xml");
+		this.groups = getFile("groups.xml");
+		this.devices = getFile("devices.xml");
 		this.imageLoadStrategy = IMG_LOAD_FOREGROUND;
 		this.resourceUtil = new ResourceUtil( this.getClass().getClassLoader() );
 	}
@@ -767,7 +776,7 @@ public class BuildSetting {
 	private InputStream getResource(File file, String name) 
 	throws FileNotFoundException 
 	{
-		if (file != null ) {
+		if (file != null && file.exists() ) {
 			try {
 				return new FileInputStream( file );
 			} catch (FileNotFoundException e) {
@@ -784,7 +793,10 @@ public class BuildSetting {
 	 * @return the file handle for the path
 	 */
 	private File getFile( String path ) {
-		File file = new File( this.project.getBaseDir().getAbsolutePath() + File.separator + path );
+		File file = new File( this.projectBasePath + path );
+		if (!file.exists()) {
+			file = new File( this.polishHomePath + path );
+		}
 		if (!file.exists()) {
 			file = new File( path );
 		}

@@ -4,8 +4,9 @@
 	<field type="staticText" txt="${ VersionMessage } " />
 	<divider alignment="top"/>
 	<field type="staticText" txt="J2ME Polish consists of an build-tool and an optional J2ME GUI which can be designed using the web-standard CSS. " />
-	<field type="staticText" txt="Find more information about J2ME Polish at " />
-	<field type="staticText" txt="www.j2mepolish.org. " />
+	<field type="staticText" txt="" />
+	<field type="staticText" txt="Find more information about J2ME Polish at www.j2mepolish.org." />
+	<field type="staticText" txt="" />
 	<divider alignment="top"/>
 	<field type="staticText" txt="Copyright 2003, 2004 Enough Software " />
 </panel>

@@ -86,6 +86,10 @@ public class RetroGuardObfuscator extends Obfuscator {
         	this.logBuffer.clear();
         	AntClassLoader antClassLoader = new AntClassLoader( this.project, bootClassPath );
         	antClassLoader.addPathElement( this.libDir.getAbsolutePath() + File.separator + "retroguard.jar");
+        	String polishHomeProperty = this.project.getProperty("polish.home");
+        	if (polishHomeProperty != null) {
+            	antClassLoader.addPathElement( polishHomeProperty + File.separator + "import" + File.separator + "retroguard.jar");
+        	}
     		String[] apiPaths = device.getClassPaths();
     		for (int i = 0; i < apiPaths.length; i++) {
 				antClassLoader.addPathElement( apiPaths[i] );

@@ -53,6 +53,7 @@ public class Library {
 	private String defaultPath;
 	private String wtkLibPath;
 	private String projectLibPath;
+	private String polishLibPath;
 	private String path;
 	private boolean isInitialised;
 	private Hashtable antProperties;
@@ -63,13 +64,19 @@ public class Library {
 	 * @param antProperties all properties which have been defined in Ant
 	 * @param wtkLibPath the path to the lib-folder of the wireless toolkit
 	 * @param projectLibPath the path to the lib-folder of the current project
+	 * @param polishLibPath the path to the "import" folder of the J2ME Polish installation
 	 * @param definition the xml definition of this library
 	 * @throws InvalidComponentException when the given api definition has errors
 	 */
-	public Library( Hashtable antProperties, String wtkLibPath, String projectLibPath, Element definition) 
+	public Library( Hashtable antProperties, 
+			String wtkLibPath, 
+			String projectLibPath,
+			String polishLibPath,
+			Element definition) 
 	throws InvalidComponentException 
 	{
 		this.wtkLibPath = wtkLibPath;
+		this.polishLibPath = polishLibPath;
 		this.projectLibPath = projectLibPath;
 		this.fullName = definition.getChildTextTrim( "name");
 		if (this.fullName == null) {
@@ -140,6 +147,14 @@ public class Library {
 				if (libFile.exists()) {
 					this.path = libFile.getAbsolutePath();
 					return;
+				}
+				if (this.polishLibPath != null) {
+					// look in the J2ME Polish installation:
+					libFile = new File( this.polishLibPath + fileName );
+					if (libFile.exists()) {
+						this.path = libFile.getAbsolutePath();
+						return;
+					}		
 				}
 				// look in the wtk:
 				libFile = new File( this.wtkLibPath + fileName );

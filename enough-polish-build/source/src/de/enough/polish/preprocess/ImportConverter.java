@@ -67,6 +67,7 @@ public final class ImportConverter {
 		toPolish.put( "javax.microedition.lcdui.ItemCommandListener", "de.enough.polish.ui.ItemCommandListener");
 		toPolish.put( "javax.microedition.lcdui.ItemStateListener", "de.enough.polish.ui.ItemStateListener");
 		toPolish.put( "javax.microedition.lcdui.List", "de.enough.polish.ui.List");
+		toPolish.put( "javax.microedition.lcdui.Screen", "de.enough.polish.ui.Screen");
 		toPolish.put( "javax.microedition.lcdui.Spacer", "de.enough.polish.ui.Spacer");
 		toPolish.put( "javax.microedition.lcdui.StringItem", "de.enough.polish.ui.StringItem");
 		toPolish.put( "javax.microedition.lcdui.Style", "de.enough.polish.ui.Style");

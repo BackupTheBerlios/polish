@@ -26,10 +26,24 @@
     
     <!-- 
         The gui preferences indication.
-        Sets the installer window to 640x480. It will not be able to change the size.
+        Sets the installer window to 800x480. It will be able to change the size.
     -->
-    <guiprefs width="640" height="480" resizable="yes"/>
-    
+	<guiprefs width="800" height="480" resizable="yes">
+    	<laf name="metouia">
+        	<os family="unix" />
+        	<os family="windows" />
+        	<os family="macosx" />
+    	</laf>
+	<!--
+    	<laf name="metouia">
+        	<os family="unix" />
+    	</laf>
+    	<laf name="looks">
+        	<os family="windows" />
+        	<param name="variant" value="extwin" />
+    	</laf>
+    -->
+	</guiprefs>    
     <!-- 
         The locale section.
         Only use the English locale at the moment.

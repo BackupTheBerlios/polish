@@ -23,20 +23,36 @@
 <!-- The wtk.home property should point to the directory      -->
 <!-- containing the Wireless Toolkit.                         -->
 <property name="wtk.home" value="%{WTK_HOME}" />
+<!-- The polish.home property should point to the directory   -->
+<!-- containing the J2ME Polish installation.                 -->
+<property name="polish.home" value="%{INSTALL_PATH}" />
 	
 <!-- Definition of the J2ME Polish task:                      -->
-<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="import/enough-j2mepolish-build.jar:import/jdom.jar:import/proguard.jar"/>
+<taskdef name="j2mepolish" 
+	classname="de.enough.polish.ant.PolishTask" 
+	classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar:${polish.home}/import/proguard.jar"/>
 
 	
 <!-- build targets, each target can be called via "ant [name]", 
-	 e.g. "ant clean", "ant notest j2mepolish" or just "ant" for calling the default-target -->
+	 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
 
-<target name="test" >
+<target name="setdeploy" 
+	description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish"
+	>
+	<property name="deploy-url" value="http://www.company.com/download/" />
+</target>
+	
+<target name="test" 
+	description="Call this target first to skip the obfucation step, e.g. ant test j2mepolish"
+	>
 	<property name="test" value="true" />
+	<property name="dir.work" value="build/test" />
 </target>
 		
 <target name="init">
   	<property name="test" value="false" />
+	<property name="dir.work" value="build/real" />
+	<property name="deploy-url" value="" />
 </target>
  
 <!-- In this target the J2ME Polish task is used.             -->
@@ -61,7 +77,7 @@
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
 			jarName="${polish.vendor}-${polish.name}-example.jar" 
-			jarUrl="${polish.jarName}"
+			jarUrl="${deploy-url}${polish.jarName}"
 		    copyright="Copyright 2004 Enough Software. All rights reserved."
 		    deleteConfirm="Do you really want to kill me?" 
 			/>
@@ -89,10 +105,11 @@
 		 -->
 		<build
 			symbols="ExampleSymbol, AnotherExample"
-			imageLoadStrategy="background"
+			imageLoadStrategy="foreground"
 			fullscreen="menu"
 			usePolishGui="true"
 			resDir="resources"
+			workDir="${dir.work}"
 			>
 			<!-- midlets definition -->
 			<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />

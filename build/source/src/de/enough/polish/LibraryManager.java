@@ -49,6 +49,7 @@ public class LibraryManager {
 	
 	private String wtkLibPath;
 	private String projectLibPath;
+	private String polishLibPath;
 	private HashMap libraries = new HashMap();
 	private HashMap resolvedClassPaths = new HashMap();
 	private HashMap resolvedLibraryPaths = new HashMap();
@@ -83,6 +84,10 @@ public class LibraryManager {
 		this.antProperties = antProperties;
 		this.projectLibPath = projectLibPath;
 		this.wtkLibPath = wtkHomePath + File.separatorChar + "lib" + File.separatorChar;
+		String polishHomeProperty = (String) antProperties.get("polish.home");
+		if (polishHomeProperty != null) {
+			this.polishLibPath = polishHomeProperty + File.separatorChar + "import" + File.separatorChar;
+		}
 		loadLibraries( is );
 	}
 
@@ -105,7 +110,7 @@ public class LibraryManager {
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
-			Library lib = new Library( this.antProperties, this.wtkLibPath, this.projectLibPath, definition );
+			Library lib = new Library( this.antProperties, this.wtkLibPath, this.projectLibPath, this.polishLibPath, definition );
 			Library existingLib = (Library) this.libraries.get( lib.getSymbol() ); 
 			if ( existingLib != null ) {
 				throw new InvalidComponentException("The library [" + lib.getFullName() 

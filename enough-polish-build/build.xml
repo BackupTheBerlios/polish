@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.1-pre1" />
-	  <property name="VersionMessage" value="Welcome to J2ME Polish 1.0.1!" />
+	  <property name="Version" value="1.1" />
+	  <property name="VersionMessage" value="Welcome to J2ME Polish 1.1! " />
 	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
 
   <path id="thirdparty">
@@ -12,8 +12,6 @@
         <include name="*.jar"/>
       </fileset>
   </path>
-  <!-- needed polish settings -->
-  <property name="polish.preverify" location="/home/enough/dev/WTK2.1/bin/preverify" />
 
 <!-- task definitions -->
 
@@ -21,9 +19,10 @@
 <taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
 <taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:import/jdom.jar"/>
-<taskdef name="izpack" classpath="import/compiler.jar"
-	         classname="com.izforge.izpack.ant.IzPackTask"/>
-	<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
+<taskdef name="izpack" 
+	classpath="${izpack.dir}/lib/compiler.jar"
+	classname="com.izforge.izpack.ant.IzPackTask"/>
+<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
 	
 
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
@@ -350,9 +349,17 @@
 </target>
 	
 <target name="izpack" >
+	<!-- update installation settings -->
+	<propertyWriter srcfile="setup/install.xml"
+		            destfile="tmp/install.xml" />
+	<propertyWriter srcfile="setup/UserInputSpec.xml"
+		            destfile="tmp/userInputSpec.xml" />
+	<propertyWriter srcfile="setup/Readme.txt"
+		            destfile="tmp/Readme.txt" />
+	<!-- create installation file -->
 	<izpack input="tmp/install.xml"
 	        output="dist/j2mepolish-${Version}.jar"
-	        installerType="standard-kunststoff"
+	        installerType="standard"
 	        basedir="tmp"
         izPackDir="${izpack.dir}"
 	/>

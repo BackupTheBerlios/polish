@@ -152,6 +152,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		if (this.isPopupUsed || this.popupFile.exists()) {
 			this.preprocessor.addSymbol( "polish.usePopupItem" );
 			if (!this.popupFile.exists()) {
+				this.preprocessor.addToPreprocessQueue("de/enough/polish/ui/ChoiceGroup.java");
+				this.preprocessor.addToPreprocessQueue("de\\enough\\polish\\ui\\ChoiceGroup.java");
 				try {
 					this.popupFile.createNewFile();
 				} catch (IOException e) {
@@ -161,6 +163,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			}			
 		} else {
 			this.preprocessor.removeSymbol( "polish.usePopupItem" );
+			this.preprocessor.removeFromPreprocessQueue("de/enough/polish/ui/ChoiceGroup.java");
+			this.preprocessor.removeFromPreprocessQueue("de\\enough\\polish\\ui\\ChoiceGroup.java");
 		}
 	}
 
