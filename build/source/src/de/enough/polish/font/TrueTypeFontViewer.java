@@ -57,6 +57,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
+import de.enough.polish.swing.StatusBar;
 import de.enough.polish.util.StringUtil;
 
 
@@ -103,14 +104,14 @@ implements ActionListener
 	private final JButton updateCharacterSpacingButton;
 	private BufferedImage externalImage;
 	private int characterSpacing = 0;
-	private final JLabel statusBar;
+	private final StatusBar statusBar;
 
 	/**
 	 * @param fontFile
 	 * @param statusBar
 	 * @throws IOException
 	 */
-	public TrueTypeFontViewer( File fontFile, JLabel statusBar ) throws IOException {
+	public TrueTypeFontViewer( File fontFile, StatusBar statusBar ) throws IOException {
 		super();
 		
 		this.statusBar = statusBar;
@@ -288,7 +289,7 @@ implements ActionListener
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.statusBar.setText("Unable to perform action: " + e.toString() );
+			this.statusBar.warn("Unable to perform action: " + e.toString() );
 		}
 	}
 

@@ -152,6 +152,19 @@
 	</device>
 
 	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/midp2</identifier>
+		<features>isVirtual, hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="OS" value="Symbian"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="VideoFormat" value="3gpp" />
+		<capability name="SoundFormat" value="midi, amr" />
+	</device>
+
+	<device
 		supportsPolishGui="false" >
 		<identifier>Nokia/Series40</identifier>
 		<features>isVirtual</features>
@@ -4093,19 +4106,16 @@
 	<device>
 		<identifier>Qtek/XDAII</identifier>
 		<groups></groups>
-		<features>hasCamera, hasVideo, hasPointerEvents, hasCommandKeyEvents</features>
+		<features>hasCamera, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="os" value="Windows Mobile 2003" />
 		<capability name="ScreenSize" value="240x320"/>
-		<capability name="BitsPerPixel" value="18"/>
+		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf, au, wav" />
-		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
 		<capability name="HeapSize" value="64 MB" />
 		<capability name="DRM" value="forward lock" />
 		<capability name="CameraZoom" value="0" />
-		<capability name="Emulator.Skin" value="SonyEricsson_P910" />
-		<capability name="Bugs" value="fullScreenInPaint, NoSpriteRotation, DisplayGetColor, drawRgbOrigin"/>
 	</device> 
 </devices>

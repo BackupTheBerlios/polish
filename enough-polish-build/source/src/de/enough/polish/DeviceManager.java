@@ -50,7 +50,10 @@ import java.util.*;
 public class DeviceManager {
 
 	private Device[] devices;
-	private HashMap devicesByIdentifier;
+	private final HashMap devicesByIdentifier;
+	private final VendorManager vendorManager;
+	private final DeviceGroupManager groupManager;
+	private final LibraryManager libraryManager;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
@@ -67,6 +70,10 @@ public class DeviceManager {
 	public DeviceManager( VendorManager vendorManager, DeviceGroupManager groupManager, LibraryManager libraryManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
+		this.devicesByIdentifier = new HashMap();
+		this.groupManager = groupManager;
+		this.libraryManager = libraryManager;
+		this.vendorManager = vendorManager;
 		loadDevices( vendorManager, groupManager, libraryManager, devicesIS );
 		devicesIS.close();
 	}
@@ -92,8 +99,7 @@ public class DeviceManager {
 		SAXBuilder builder = new SAXBuilder( false );
 		Document document = builder.build( devicesIS );
 		ArrayList devicesList = new ArrayList();
-		HashMap devicesMap = new HashMap();
-		this.devicesByIdentifier = devicesMap;
+		HashMap devicesMap = this.devicesByIdentifier;
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
@@ -144,6 +150,66 @@ public class DeviceManager {
 	 */
 	public Device getDevice(String identifier) {
 		return (Device) this.devicesByIdentifier.get( identifier );
+	}
+	
+	/**
+	 * Retrieves all known vendors.
+	 * 
+	 * @return an array with all known vendors
+	 */
+	public Vendor[] getVendors() {
+		return this.vendorManager.getVendors();		
+	}
+
+	/**
+	 * Retrieves all vendors that used by the given devices.
+	 * 
+	 * @param filteredDevices the devices that are searched for vendors
+	 * @return an array with all vendors of the given devices
+	 */
+	public Vendor[] getVendors( Device[] filteredDevices ) {
+		HashMap list = new HashMap();
+		for (int i = 0; i < filteredDevices.length; i++) {
+			Device device = filteredDevices[i];
+			Vendor vendor = (Vendor) device.parent;
+			list.put( vendor.identifier, vendor );
+		}
+		return (Vendor[]) list.values().toArray( new Vendor[ list.size() ] );		
+	}
+	
+	/**
+	 * Gets all devices of the specified vendor.
+	 * 
+	 * @param vendor the vendor
+	 * @return an array of device-definitions of that vendor.
+	 */
+	public Device[] getDevices( Vendor vendor ) {
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < this.devices.length; i++) {
+			Device device = this.devices[i];
+			if ( device.parent == vendor ) {
+				list.add( device );
+			}
+		}
+		return (Device[]) list.toArray( new Device[ list.size() ] );
+	}
+	
+	/**
+	 * Gets all devices of the specified vendor.
+	 * 
+	 * @param filteredDevices the devices that are searched for vendors
+	 * @param vendor the vendor
+	 * @return an array of device-definitions of that vendor.
+	 */
+	public Device[] getDevices( Device[] filteredDevices, Vendor vendor ) {
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < filteredDevices.length; i++) {
+			Device device = filteredDevices[i];
+			if ( device.parent == vendor ) {
+				list.add( device );
+			}
+		}
+		return (Device[]) list.toArray( new Device[ list.size() ] );
 	}
 
 

@@ -177,7 +177,7 @@ extends AbstractTableModel
 			fireTableDataChanged();
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.parentFrame.setStatusBar("Unable to set value: " + e.toString() );
+			this.parentFrame.setStatusBarWarning( "Unable to set value: " + e.toString() );
 		}
 	}
 

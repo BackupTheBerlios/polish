@@ -41,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import de.enough.polish.dataeditor.swing.SwingDataEditor;
+import de.enough.polish.swing.StatusBar;
 import de.enough.polish.swing.SwingApplication;
 import de.enough.polish.util.SwingUtil;
 
@@ -66,7 +67,7 @@ implements ActionListener
 	private JMenuItem menuOpenTrueTypeFont;
 	//private JMenuItem menuOpenBitMapFont;
 	private JMenuItem menuOpenImage;
-	private JLabel statusBar;
+	private final StatusBar statusBar;
 	private JScrollPane scrollPane;
 	private File currentDirectory = new File(".");
 	private File bitMapFontFile;
@@ -85,7 +86,7 @@ implements ActionListener
 		Container contentPane = getContentPane();
 		this.scrollPane = new JScrollPane( new JLabel("Please open any true type font or drag it here."));
 		contentPane.add( this.scrollPane );
-		this.statusBar = new JLabel(" ");
+		this.statusBar = new StatusBar();
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		SwingUtil.setImageIcon(this, "icons/font.png");
 		updateTitle();
@@ -236,7 +237,7 @@ implements ActionListener
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.statusBar.setText( event.getActionCommand() + " failed: " + e.toString() );
+			this.statusBar.warn( event.getActionCommand() + " failed: " + e.toString() );
 		}	
 	}
 	
@@ -276,7 +277,7 @@ implements ActionListener
 		File file = openFile( ".png", true );
 		if (file != null) {
 			this.trueTypeViewer.setImage( file );
-			this.statusBar.setText( "Loaded " + file.getName() );
+			this.statusBar.message( "Loaded " + file.getName() );
 		}
 	}
 
@@ -289,7 +290,7 @@ implements ActionListener
 			File file = openFile( ".png", false );
 			if (file != null) {
 				this.trueTypeViewer.savePngFile(file);
-				this.statusBar.setText( "saved " + file.getName() );
+				this.statusBar.message( "saved " + file.getName() );
 			}
 		}
 	}
@@ -306,7 +307,7 @@ implements ActionListener
 		if (this.trueTypeViewer != null) {
 			this.trueTypeViewer.saveBitMapFont( this.bitMapFontFile );
 			updateTitle();
-			this.statusBar.setText( "saved " + this.bitMapFontFile.getName() + " (" + this.bitMapFontFile.length() + " bytes)" );
+			this.statusBar.message( "saved " + this.bitMapFontFile.getName() + " (" + this.bitMapFontFile.length() + " bytes)" );
 		}
 	}
 
@@ -331,7 +332,7 @@ implements ActionListener
 		try {
 			openTrueTypeFont( file );
 		} catch (IOException e) {
-			this.statusBar.setText("Unable to load font: " + e.toString() );
+			this.statusBar.warn("Unable to load font: " + e.toString() );
 			e.printStackTrace();
 		}
 	}
@@ -352,7 +353,7 @@ implements ActionListener
 		contentPane.remove( this.scrollPane );
 		this.scrollPane = new JScrollPane( this.trueTypeViewer );
 		contentPane.add( this.scrollPane );
-		this.statusBar.setText("Loaded TTF font " + file.getName() );
+		this.statusBar.message("Loaded TTF font " + file.getName() );
 		this.fontFile = file;
 		this.bitMapFontFile = null;
 		updateTitle();

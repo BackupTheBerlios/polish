@@ -57,6 +57,7 @@ import de.enough.polish.dataeditor.DataEditorUI;
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
+import de.enough.polish.swing.StatusBar;
 import de.enough.polish.swing.SwingApplication;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.SwingUtil;
@@ -90,7 +91,7 @@ implements DataEditorUI, ActionListener
 	private JMenuItem menuMoveUpEntry;
 	private JMenuItem menuMoveDownEntry;
 	private JMenuItem menuAddType;
-	private final JLabel statusBar;
+	private final StatusBar statusBar;
 	private final JTextField descriptionField;
 	private final JTextField extensionField;
 	private File definitionFile;
@@ -151,7 +152,7 @@ implements DataEditorUI, ActionListener
 		definitionPanel.add( extensionPanel );
 		contentPane.add( definitionPanel, BorderLayout.NORTH );
 		contentPane.add( scrollPane, BorderLayout.CENTER );
-		this.statusBar = new JLabel(" ");
+		this.statusBar = new StatusBar();
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		updateTitle();
 		
@@ -328,7 +329,7 @@ implements DataEditorUI, ActionListener
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.statusBar.setText( event.getActionCommand() + " failed: " + e.toString() );
+			this.statusBar.warn( event.getActionCommand() + " failed: " + e.toString() );
 		}
 	}
 	
@@ -472,7 +473,7 @@ implements DataEditorUI, ActionListener
 			this.dataManager.setDescription( this.descriptionField.getText() );
 			this.dataManager.setExtension( this.extensionField.getText() );
 			this.dataManager.saveDefinition(this.definitionFile);
-			this.statusBar.setText( "saved " + this.definitionFile.getName() );
+			this.statusBar.message( "saved " + this.definitionFile.getName() );
 			updateTitle();
 		} catch (Exception e) {
 			showErrorMessage( e );
@@ -490,7 +491,7 @@ implements DataEditorUI, ActionListener
 				this.dataManager.setExtension( this.extensionField.getText() );
 				this.dataManager.saveDefinition( file );
 				this.definitionFile = file;
-				this.statusBar.setText("saved " + file.getName() );
+				this.statusBar.message("saved " + file.getName() );
 				updateTitle();
 			} catch (Exception e) {
 				showErrorMessage( e );
@@ -528,10 +529,10 @@ implements DataEditorUI, ActionListener
 				this.descriptionField.setText( this.dataManager.getDescription() );
 				this.extensionField.setText( this.dataManager.getExtension() );
 				updateTitle();
-				this.statusBar.setText("Loaded " + file.getName() );
+				this.statusBar.message("Loaded " + file.getName() );
 				this.createCodeDialog = null;
 			} catch (Exception e) {
-				this.statusBar.setText("Unable to load data: " + e );
+				this.statusBar.warn("Unable to load data: " + e );
 				showErrorMessage( e );
 			}
 		}
@@ -544,7 +545,7 @@ implements DataEditorUI, ActionListener
 		}
 		try {
 			this.dataManager.saveData( this.dataFile );
-			this.statusBar.setText("saved " + this.dataFile.getName()  + " (" + this.dataFile.length() + " bytes)");
+			this.statusBar.message("saved " + this.dataFile.getName()  + " (" + this.dataFile.length() + " bytes)");
 			updateTitle();
 		} catch (Exception e) {
 			showErrorMessage( e );
@@ -557,7 +558,7 @@ implements DataEditorUI, ActionListener
 			try {
 				this.dataManager.saveData(file);
 				this.dataFile = file;
-				this.statusBar.setText("saved " + file.getName() + " (" + file.length() + " bytes)");
+				this.statusBar.message("saved " + file.getName() + " (" + file.length() + " bytes)");
 				updateTitle();
 			} catch (Exception e) {
 				showErrorMessage( e );
@@ -577,9 +578,9 @@ implements DataEditorUI, ActionListener
 				this.dataFile = file;
 				this.dataTableModel.refresh( this.dataView );
 				updateTitle();
-				this.statusBar.setText("Loaded " + file.getName() );
+				this.statusBar.message("Loaded " + file.getName() );
 			} catch (Exception e) {
-				this.statusBar.setText("Unable to load data: " + e );
+				this.statusBar.warn("Unable to load data: " + e );
 				showErrorMessage( e );
 			}
 		}
@@ -755,10 +756,20 @@ implements DataEditorUI, ActionListener
 	 * 
 	 * @param message the message which should be shown on the status bar
 	 */
-	public void setStatusBar(String message) {
-		this.statusBar.setText( message );
+	public void setStatusBarMessage(String message) {
+		this.statusBar.message( message );
 	}
 
+	/**
+	 * Sets the status bar message.
+	 * 
+	 * @param message the message which should be shown on the status bar
+	 */
+	public void setStatusBarWarning(String message) {
+		this.statusBar.warn( message );
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.dataeditor.DataEditorUI#signalChangedData()
 	 */

@@ -34,6 +34,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -343,6 +344,46 @@ public final class FileUtil {
     
         // The directory is now empty so delete it
         return file.delete();
+	}
+	
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @return a map containing all properties that could be read from the input stream
+	 * @throws IOException when reading from the input stream fails
+	 */
+	public static Map readProperties(InputStream in) throws IOException {
+		Map map = new HashMap();
+		readProperties(in, '=', '#', map );
+		return map;
+	}
+	
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the char separating key and value
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @throws IOException when reading from the input stream fails
+	 */
+	public static void readProperties(InputStream in, char delimiter, char comment, Map properties ) throws IOException {
+		BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
+		String line;
+		while ( (line = reader.readLine()) != null) {
+			if (line.length() == 0 || line.charAt(0) == comment) {
+				continue;
+			}
+			int delimiterPos = line.indexOf( delimiter );
+			if (delimiterPos == -1) {
+				continue;
+			}
+			String key = line.substring( 0, delimiterPos ).trim();
+			String value = line.substring( delimiterPos + 1 );
+			properties.put( key, value );
+		}
+		in.close();
 	}
 	
 }

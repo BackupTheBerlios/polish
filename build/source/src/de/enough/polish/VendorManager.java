@@ -101,4 +101,13 @@ public class VendorManager {
 	public Vendor getVendor( String name ) {
 		return (Vendor) this.vendors.get( name );
 	}
+
+	/**
+	 * Retrieves all known vendors.
+	 * 
+	 * @return an array with all known vendors
+	 */
+	public Vendor[] getVendors() {
+		return (Vendor[]) this.vendors.values().toArray( new Vendor[ this.vendors.size() ] );
+	}
 }
