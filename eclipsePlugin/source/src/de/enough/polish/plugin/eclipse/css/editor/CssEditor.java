@@ -65,7 +65,7 @@ public class CssEditor extends TextEditor{
 	public Object getAdapter(Class requiredClass) {
 		if (IContentOutlinePage.class.equals(requiredClass)) {
 			if (this.cssOutlinePage == null) {
-				this.cssOutlinePage = new CssOutlinePage(this.cssModel,getSourceViewer());
+				this.cssOutlinePage = new CssOutlinePage(this.cssModel,getSourceViewer(),this);
 			}
 			return this.cssOutlinePage;
 		}

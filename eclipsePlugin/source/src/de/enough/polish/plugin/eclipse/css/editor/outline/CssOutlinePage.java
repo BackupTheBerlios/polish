@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+import de.enough.polish.plugin.eclipse.css.editor.CssEditor;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 
 /**
@@ -44,14 +45,16 @@ import de.enough.polish.plugin.eclipse.css.model.CssModel;
  */
 public class CssOutlinePage extends ContentOutlinePage {
 
-	CssModel cssModel;
-	ISourceViewer sourceViewer;
+	private CssModel cssModel;
+	private ISourceViewer sourceViewer;
+	private CssEditor editor;
 	
 	//FIXME: We need our own model here
-	public CssOutlinePage(CssModel cssModel, ISourceViewer sourceViewer){
+	public CssOutlinePage(CssModel cssModel, ISourceViewer sourceViewer, CssEditor editor){
 		super();
 		this.cssModel = cssModel;
 		this.sourceViewer = sourceViewer;
+		this.editor = editor;
 	}
 	
 	public void createControl(Composite parent) {
@@ -61,7 +64,7 @@ public class CssOutlinePage extends ContentOutlinePage {
 			System.out.println("DEBUG:CssOutlinePage.createControl():parent.isDisposed():true");
 		}
 		
-		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel,this.sourceViewer);
+		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel,this.sourceViewer,this.editor);
 		
 		TreeViewer viewer= getTreeViewer();
 		viewer.setContentProvider(cssContentProvider);

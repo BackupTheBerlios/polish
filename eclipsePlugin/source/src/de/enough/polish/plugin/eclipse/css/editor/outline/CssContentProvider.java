@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 
+import de.enough.polish.plugin.eclipse.css.editor.CssEditor;
 import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.IModelListener;
@@ -51,13 +52,15 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 
 	//ASTNode rootParent;
 	private Viewer treeViewer;
-	private ISourceViewer sourceViewer;
+	private CssEditor editor;
 	private CssModel cssModel;
+	private ISourceViewer sourceViewer;
 	
-	public CssContentProvider(CssModel cssModel, ISourceViewer sourceViewer){
+	public CssContentProvider(CssModel cssModel,ISourceViewer sourceViewer, CssEditor editor){
 		//this.rootParent = null;
 		this.cssModel = cssModel;
 		this.cssModel.addModelListener(this);
+		this.editor = editor;
 		this.sourceViewer = sourceViewer;
 	}
 	
@@ -273,7 +276,11 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 			return;
 		}
 		try {
-			this.sourceViewer.setTopIndex(this.cssModel.getDocument().getLineOfOffset(firstASTNode.getOffset()));
+			int newOffset = firstASTNode.getOffset();
+			int newLine = this.cssModel.getDocument().getLineOfOffset(newOffset);
+			this.editor.getSite().getPage().activate(this.editor);
+			this.sourceViewer.setTopIndex(newLine);
+			this.sourceViewer.getTextWidget().setCaretOffset(newOffset);
 			//System.out.println("DEBUG:CssContentProvider.selectionChanged():selection:");
 		} catch (BadLocationException exception) {
 			System.out.println("DEBUG:CssContentProvider.selectionChanged():the offset is messed up.");
