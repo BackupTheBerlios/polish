@@ -108,38 +108,52 @@ implements Comparator
 			// maybe the dateformat needs to be changed:
 			if (dateFormat.length() == 2) {
 				String separator = preprocessor.getVariable("polish.DateFormatSeparator");
+				String emptyText = preprocessor.getVariable("polish.DateFormatEmptyText");
 				if ("de".equals(dateFormat)) {
 					dateFormat = "dmy";
 					if (separator == null) {
 						separator = ".";
+					}
+					if (emptyText == null) {
+						emptyText = "TT.MM.JJJJ";
 					}
 				} else if ("fr".equals(dateFormat)) {
 					dateFormat = "dmy";
 					if (separator == null) {
 						separator = "/";
 					}
+					if (emptyText == null) {
+						emptyText = "JJ/MM/AAAA";
+					}
 				} else if ("us".equals(dateFormat)) {
 					dateFormat = "mdy";
 					if (separator == null) {
 						separator = "-";
 					}
+					if (emptyText == null) {
+						emptyText = "MM-DD-YYYY";
+					}
 				}
 				preprocessor.addVariable( "polish.DateFormat", dateFormat );
 				preprocessor.addVariable( "polish.DateFormatSeparator", separator );
+				preprocessor.addVariable( "polish.DateFormatEmptyText", emptyText );
 			}
 		} else {
 			String language = locale.getLanguage();
 			if ("de".equals(language)) {
 				preprocessor.addVariable( "polish.DateFormat", "dmy" );
 				preprocessor.addVariable( "polish.DateFormatSeparator", "." );
+				preprocessor.addVariable( "polish.DateFormatEmptyText", "TT.MM.JJJJ" );
 			} else if ("fr".equals(language)) {
 				preprocessor.addVariable( "polish.DateFormat", "dmy" );
 				preprocessor.addVariable( "polish.DateFormatSeparator", "." );
+				preprocessor.addVariable( "polish.DateFormatEmptyText", "JJ/MM/AAAA" );
 			} else {
 				String country = locale.getCountry();
 				if ("US".equals(country)) {
 					preprocessor.addVariable( "polish.DateFormat", "mdy" );
 					preprocessor.addVariable( "polish.DateFormatSeparator", "-" );
+					preprocessor.addVariable( "polish.DateFormatEmptyText", "MM-DD-YYYY" );
 				}
 			}
 		}
