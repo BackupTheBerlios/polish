@@ -97,7 +97,7 @@ public abstract class Screen
 		//#endif
 		//#ifdef polish.Vendor.Motorola
 			//#define tmp.ignoreMotorolaTitleCall
-			private boolean ignoreMotorolaTitleCall;
+			private boolean ignoreMotorolaTitleCall = true;
 		//#endif
 	//#endif
 	//#ifdef polish.Vendor.Siemens
@@ -443,6 +443,9 @@ public abstract class Screen
 		if (this.container != null) {
 			this.container.hideNotify();
 		}
+		//#ifdef tmp.ignoreMotorolaTitleCall
+			this.ignoreMotorolaTitleCall = true;
+		//#endif
 	}
 	
 	/**
@@ -825,11 +828,12 @@ public abstract class Screen
 		//#debug
 		System.out.println("Setting title " + s );
 		//#ifdef tmp.ignoreMotorolaTitleCall
-			if (this.ignoreMotorolaTitleCall) {
-				this.ignoreMotorolaTitleCall = false;
-				return;
-			} else {
-				this.ignoreMotorolaTitleCall = true;
+			if (s == null) {
+				if (this.ignoreMotorolaTitleCall) {
+					this.ignoreMotorolaTitleCall = false;
+					return;
+				}
+				//return;
 			}
 		//#endif
 		if (s != null) {
