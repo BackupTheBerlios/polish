@@ -72,6 +72,11 @@ public final class SwingUtil {
 		}
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
+			if (!open && extension != null) {
+				if (!selectedFile.getName().endsWith(extension)) {
+					selectedFile = new File( selectedFile.getAbsolutePath() + extension );
+				}
+			}
 			return selectedFile;
 		} else {
 			return null;

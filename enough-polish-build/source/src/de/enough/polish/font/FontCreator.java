@@ -72,6 +72,10 @@ implements ActionListener
 	private JLabel statusBar;
 	private JScrollPane scrollPane;
 	private File currentDirectory = new File(".");
+	private File bitMapFontFile;
+	private File fontFile;
+	private TrueTypeFontViewer trueTypeViewer;
+	private JMenuItem menuSavePngImageAs;
 
 	/**
 	 * 
@@ -82,7 +86,7 @@ implements ActionListener
 		super.addWindowListener( new MyWindowListener() );
 		setSize( 900, 600 );
 		Container contentPane = getContentPane();
-		this.scrollPane = new JScrollPane( new JLabel("Please open either a true type font, a bitmap font or an image."));
+		this.scrollPane = new JScrollPane( new JLabel("Please open any true type font."));
 		contentPane.add( this.scrollPane );
 		this.statusBar = new JLabel(" ");
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
@@ -93,14 +97,21 @@ implements ActionListener
 	 * 
 	 */
 	private void updateTitle() {
-		this.setTitle("J2ME Polish: Font Creator");
+		String title =  "J2ME Polish: BitMapFont Creator";
+		if (this.fontFile != null) {
+			title += ": " + this.fontFile.getName();
+			if (this.bitMapFontFile != null) {
+				title += " = " + this.bitMapFontFile.getName();
+			}
+		}
+		this.setTitle( title );
 	}
 
 	private JMenuBar createMenuBar() {
 		// create menu-bar:
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add( createFileMenu() );
-		menuBar.add( createEditMenu() );
+		//menuBar.add( createEditMenu() );
 		return menuBar;
 	}
 	
@@ -115,19 +126,25 @@ implements ActionListener
 		menu.add( item );
 		this.menuSave = item;
 
-		item = new JMenuItem( "Save As", 'A' );
+		item = new JMenuItem( "Save As...", 'A' );
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuSaveAs = item;
 
+		item = new JMenuItem( "Save PNG Image As...", 'P' );
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuSavePngImageAs = item;
+
 		menu.addSeparator();
 
 		item = new JMenuItem( "Open True-Type-Font", 't' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'T', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'O', Event.CTRL_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenTrueTypeFont = item;
 
+		/*
 		item = new JMenuItem( "Open Bit-Map-Font", 'b' );
 		item.setAccelerator( KeyStroke.getKeyStroke( 'B', Event.CTRL_MASK ));
 		item.addActionListener( this );
@@ -139,7 +156,8 @@ implements ActionListener
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenImage = item;
-
+		*/
+		
 		menu.addSeparator();
 
 		item = new JMenuItem( "Quit", 'q' );
@@ -199,7 +217,13 @@ implements ActionListener
 				quit();
 			} else if ( source == this.menuOpenTrueTypeFont ) {
 				openTrueTypeFont();
-			}
+			} else if ( source == this.menuSave ) {
+				save();
+			} else if ( source == this.menuSaveAs ) {
+				saveAs();
+			} else if ( source == this.menuSavePngImageAs ) {
+				savePngImageAs();
+			} 
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.statusBar.setText( event.getActionCommand() + " failed: " + e.toString() );
@@ -212,16 +236,59 @@ implements ActionListener
 	 * @throws IOException
 	 * 
 	 */
+	private void savePngImageAs() throws IOException {
+		if (this.trueTypeViewer != null) {
+			File file = openFile( ".bmf", false );
+			if (file != null) {
+				this.trueTypeViewer.savePngFile(file);
+				this.statusBar.setText( "saved " + file.getName() );
+			}
+		}
+	}
+
+	/**
+	 * Saves the current font.
+	 * @throws IOException
+	 */
+	private void save() throws IOException {
+		if (this.bitMapFontFile == null) {
+			saveAs();
+			return;
+		}
+		if (this.trueTypeViewer != null) {
+			this.trueTypeViewer.saveBitMapFont( this.bitMapFontFile );
+			updateTitle();
+		}
+	}
+
+	/**
+	 * Saves the current font under a new name.
+	 * @throws IOException
+	 */
+	private void saveAs() throws IOException {
+		File file = openFile( ".bmf", false );
+		if (file != null) {
+			this.bitMapFontFile = file;
+			save();
+		}
+	}
+
+	/**
+	 * @throws IOException
+	 * 
+	 */
 	private void openTrueTypeFont() throws IOException {
-		File fontFile = openFile(".ttf", true);
-		if (fontFile != null) {
-			TrueTypeFontViewer viewer = new TrueTypeFontViewer( fontFile );
-			JLabel label = new JLabel("Hallo Welt");
-			label.setFont( viewer.getFont() );
+		File file = openFile(".ttf", true);
+		if (file != null) {
+			this.trueTypeViewer = new TrueTypeFontViewer( file );	
 			Container contentPane = getContentPane();
 			contentPane.remove( this.scrollPane );
-			this.scrollPane = new JScrollPane( label );
+			this.scrollPane = new JScrollPane( this.trueTypeViewer );
 			contentPane.add( this.scrollPane );
+			this.statusBar.setText("Loaded TTF font " + file.getName() );
+			this.fontFile = file;
+			this.bitMapFontFile = null;
+			updateTitle();
 		}
 	}
 
@@ -235,7 +302,7 @@ implements ActionListener
 	 * @return
 	 */
 	private File openFile(String extension, boolean open ) {
-		File selectedFile = SwingUtil.openFile( extension, open, this.currentDirectory = new File("."), this );
+		File selectedFile = SwingUtil.openFile( extension, open, this.currentDirectory, this );
 		if (selectedFile != null) {
 			this.currentDirectory = selectedFile.getParentFile();
 		} 
