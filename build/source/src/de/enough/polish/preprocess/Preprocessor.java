@@ -749,7 +749,14 @@ public class Preprocessor {
 			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1) 
 					+ ": found invalid #define directive: the symbol [false] cannot be defined.");
 		}
-		this.symbols.put( argument, Boolean.TRUE );
+		int equalsIndex = argument.indexOf('=');
+		if (equalsIndex != -1) {
+			String name = argument.substring(0, equalsIndex).trim();
+			String value = argument.substring( equalsIndex + 1).trim();
+			this.variables.put( name, value );
+		} else {
+			this.symbols.put( argument, Boolean.TRUE );
+		}
 	}
 
 	/**
@@ -767,7 +774,10 @@ public class Preprocessor {
 			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1) 
 					+ ": found invalid #undefine directive: the symbol [true] cannot be defined.");
 		}
-		this.symbols.remove( argument );
+		Object symbol = this.symbols.remove( argument );
+		if (symbol == null) {
+			this.variables.remove( argument );
+		}
 	}
 
 	/**
