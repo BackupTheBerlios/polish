@@ -94,6 +94,14 @@ public abstract class Screen
 			private boolean ignoreMotorolaTitleCall;
 		//#endif
 	//#endif
+	//#ifdef polish.Vendor.Siemens
+		// Siemens sometimes calls hideNotify directly
+		// after showNotify for some reason.
+		// So hideNotify checks how long the screen
+		// has been shown - if not long enough,
+		// the call will be ignored.
+		private long showNotifyTime;
+	//#endif
 	protected int titleHeight;
 	protected Background background;
 	protected Border border;
@@ -304,12 +312,15 @@ public abstract class Screen
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	protected void showNotify() {
+		//#debug
+		System.out.println("showNotify " + this );
 		try {
 			if (!this.isInitialised) {
 				init();
 			}
 			// register this screen:
 			StyleSheet.currentScreen = this;
+			
 			// inform all root items that they belong to this screen
 			// and that they will be shown soon:
 			Item[] items = getRootItems();
@@ -334,12 +345,29 @@ public abstract class Screen
 			//#debug error
 			Debug.debug("error while calling showNotify", e );
 		}
+		//#ifdef polish.Vendor.Siemens
+			this.showNotifyTime = System.currentTimeMillis();
+		//#endif
 	}
 	
 	/**
 	 * Unregisters this screen and notifies all items that they will not be shown anymore.
 	 */
 	protected void hideNotify() {
+		//#ifdef polish.Vendor.Siemens
+			// Siemens sometimes calls hideNotify directly
+			// after showNotify for some reason.
+			// So hideNotify checks how long the screen
+			// has been shown - if not long enough,
+			// the call will be ignored:
+			if (System.currentTimeMillis() - this.showNotifyTime < 500) {
+				//#debug
+				System.out.println("Ignoring hideNotify on Siemens");
+				return;
+			}
+		//#endif
+		//#debug
+		System.out.println("hideNotify " + this);
 		// un-register this screen:
 		if (StyleSheet.currentScreen == this) {
 			StyleSheet.currentScreen = null;
@@ -506,13 +534,14 @@ public abstract class Screen
 			// paint menu in full-screen mode:
 			//#ifdef tmp.menuFullScreen
 				if (this.menuOpened) {
+					tHeight -= this.infoHeight;
 					int menuHeight = this.menuContainer.getItemHeight(this.menuMaxWidth, this.menuMaxWidth);
 					int y = this.originalScreenHeight - menuHeight;
-					if (y < this.titleHeight) {
+					if (y < tHeight) {
 						this.paintScrollIndicator = true;
 						this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
 						this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - this.titleHeight);
-						y = this.titleHeight; 
+						y = tHeight; 
 						this.menuContainer.setVerticalDimensions(y, this.screenHeight);
 					} else {
 						this.paintScrollIndicator = false;

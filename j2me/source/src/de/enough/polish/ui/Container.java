@@ -71,7 +71,8 @@ public class Container extends Item {
 	
 	protected ArrayList itemsList;
 	protected Item[] items;
-	protected boolean focusFirstElement;
+	protected boolean autoFocusEnabled;
+	protected int autoFocusIndex;
 	protected Style focusedStyle;
 	protected Style itemStyle;
 	protected Item focusedItem;
@@ -122,7 +123,7 @@ public class Container extends Item {
 	public Container(String label, boolean focusFirstElement, Style style, int yTop, int yBottom ) {
 		super( label, LAYOUT_DEFAULT, INTERACTIVE, style );
 		this.itemsList = new ArrayList();
-		this.focusFirstElement = focusFirstElement;
+		this.autoFocusEnabled = focusFirstElement;
 		if (this.focusedStyle == null) {
 			Style focStyle = StyleSheet.focusedStyle;
 			this.focusedStyle = focStyle;
@@ -234,7 +235,7 @@ public class Container extends Item {
 				}
 			}
 			if (!focusSet) {
-				this.focusFirstElement = true;
+				this.autoFocusEnabled = true;
 			}
 		} else if (index < this.focusedIndex) {
 			this.focusedIndex--;
@@ -271,7 +272,7 @@ public class Container extends Item {
 		this.itemsList.clear();
 		this.items = null;
 		if (this.focusedIndex != -1) {
-			this.focusFirstElement = true;
+			this.autoFocusEnabled = true;
 			this.focusedIndex = -1;
 		}
 		this.yOffset = 0;
@@ -328,16 +329,30 @@ public class Container extends Item {
 	 * @param item the item which should be focused
 	 */
 	public void focus( int index, Item item ) {
+		//#debug
+		System.out.println("Focusing item " + index );
 		if (index == this.focusedIndex && item.isFocused) {
 			// ignore the focusing of the same element:
 			return;
 		}
 		// first defocus the last focused item:
 		if (this.focusedItem != null) {
-			this.focusedItem.defocus(this.itemStyle);
+			if (this.itemStyle != null) {
+				this.focusedItem.defocus(this.itemStyle);
+			} else {
+				//#debug error
+				System.out.println("Unable to defocus item - no previous style found.");
+				this.focusedItem.defocus( StyleSheet.defaultStyle );
+			}
 		}
 		// save style of the to be focused item and focus the item:
 		this.itemStyle = item.focus( this.focusedStyle );
+		//#ifdef polish.debug.error
+			if (this.itemStyle == null) {
+				//#debug error 
+				System.out.println("Unable to retrieve style of item " + item.getClass().getName() );
+			}
+		//#endif
 		
 		this.focusedIndex = index;
 		this.focusedItem = item;
@@ -394,10 +409,12 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("intialising content for " + getClass().getName() + ": autofocus=" + this.focusFirstElement);
+		System.out.println("intialising content for " + getClass().getName() + ": autofocus=" + this.autoFocusEnabled);
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
-		
+		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length) {
+			this.autoFocusIndex = 0;
+		}
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
 				this.view.initContent(this, firstLineWidth, lineWidth);
@@ -423,13 +440,13 @@ public class Container extends Item {
 				if (item.appearanceMode != PLAIN) {
 					hasFocusableItem = true;
 				}
-				if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
+				if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 					//#debug
 					System.out.println("autofocusing element " + i);
 					focus( i, item );
 					height = item.getItemHeight( firstLineWidth, lineWidth );
 					width = item.getItemWidth( firstLineWidth, lineWidth );
-					this.focusFirstElement = false;
+					this.autoFocusEnabled = false;
 				}
 				if (width > myContentWidth) {
 					myContentWidth = width; 
@@ -494,11 +511,13 @@ public class Container extends Item {
 				
 				// now the item should have a style, so it can be safely focused
 				// without loosing the style information:
-				if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
+				if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
+					//#debug
+					System.out.println("Autofocusing item " + i );
 					focus( i, item );
 					height = item.getItemHeight( availableWidth, availableWidth );
 					width = item.getItemWidth( availableWidth, availableWidth );
-					this.focusFirstElement = false;
+					this.autoFocusEnabled = false;
 				}
 				
 				if (height > maxRowHeight) {
@@ -626,7 +645,10 @@ public class Container extends Item {
 				return;
 			}
 		//#endif
-		Item[] myItems = this.items;
+		Item[] myItems;
+		synchronized (this.itemsList) {
+			myItems = this.items;
+		}
 		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
 		//#endif
@@ -763,12 +785,20 @@ public class Container extends Item {
 		}
 		Item item = null;
 		boolean allowCycle = this.enableScrolling;
-		if (!forwardFocus && allowCycle) {
-			// when you scroll to the top and
-			// there is still space, do
-			// scroll first before cycling to the
-			// last item:
-			allowCycle = (this.yOffset == 0);
+		if (allowCycle) {
+			if (forwardFocus) {
+				// when you scroll to the bottom and
+				// there is still space, do
+				// scroll first before cycling to the
+				// first item:
+				allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
+			} else {
+				// when you scroll to the top and
+				// there is still space, do
+				// scroll first before cycling to the
+				// last item:
+				allowCycle = (this.yOffset == 0);
+			}
 		}
 		while (true) {
 			if (forwardFocus) {
@@ -916,7 +946,7 @@ public class Container extends Item {
 						viewType = (ContainerView) viewType.getClass().newInstance();
 					}
 					viewType.parentContainer = this;
-					viewType.focusFirstElement = this.focusFirstElement;
+					viewType.focusFirstElement = this.autoFocusEnabled;
 					viewType.setStyle(style);
 				} catch (Exception e) {
 					//#debug error
