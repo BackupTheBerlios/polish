@@ -892,6 +892,7 @@
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="key.SelectSoftKey" value="-20" />
+		<capability name="IconSize" value="15x15" />
 	</device>
 
 	<device>
@@ -1097,6 +1098,7 @@
 		<capability name="DRM" value="Forward Lock" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
+		<capability name="IconSize" value="15x15" />
 	</device>
 	
 	<device>

@@ -86,14 +86,14 @@ public class DataEntry {
 		return result;
 	}
 	
-	public void setDataAsString( String dataStr ) {
+	protected void setDataAsString( String dataStr ) {
 		if (this.count != 1) {
 			throw new IllegalStateException("Cannot set data as String for a DataEntry with a count different than one (" + this.count + ")" );
 		}
 		setDataAsString( new String[]{ dataStr } );
 	}
 
-	public void setDataAsString( String[] dataStr ) {
+	protected void setDataAsString( String[] dataStr ) {
 		if (dataStr.length != this.count ) {
 			throw new IllegalArgumentException("The to-be-set data has a different count [" + dataStr.length + "] than the allowed number [" + this.count + "].");
 		}
@@ -103,7 +103,7 @@ public class DataEntry {
 		notifyDependentEntries();
 	}
 
-	public void setCount( int count ) {
+	protected void setCount( int count ) {
 		if (count == this.count) {
 			// ignore the setting of the same count:
 			return;
@@ -124,7 +124,7 @@ public class DataEntry {
 		}
 	}
 	
-	public void setCount( CountTerm term ) {
+	protected void setCount( CountTerm term ) {
 		if (this.countTerm != null) {
 			DataEntry[] parents = this.countTerm.getOperants();
 			for (int i = 0; i < parents.length; i++) {
@@ -145,7 +145,7 @@ public class DataEntry {
 	 * @param value either a number or a count term
 	 * @param manager
 	 */
-	public void setCount(String value, DataManager manager ) {
+	protected void setCount(String value, DataManager manager ) {
 		try {
 			int intValue = Integer.parseInt( value );
 			setCount( intValue );
@@ -156,7 +156,7 @@ public class DataEntry {
 		}
 	}
 	
-	public void updateCount() {
+	protected void updateCount() {
 		if (this.countTerm != null) {
 			CountTerm term = this.countTerm;
 			setCount( this.countTerm.calculateCount() );
@@ -170,7 +170,7 @@ public class DataEntry {
 	 * @param in the input stream for reading data
 	 * @throws IOException when the data could not be loaded
 	 */
-	public void loadData( DataInputStream in ) 
+	protected void loadData( DataInputStream in ) 
 	throws IOException 
 	{
 		for (int i = 0; i < this.count; i++) {
@@ -179,11 +179,11 @@ public class DataEntry {
 		notifyDependentEntries();
 	}
 	
-	public void setName( String name ) {
+	protected void setName( String name ) {
 		this.name = name;
 	}
 	
-	public void setType( DataType type ) {
+	protected void setType( DataType type ) {
 		this.type = type;
 		this.data = new Object[ this.count ];
 		for (int i = 0; i < this.count; i++) {

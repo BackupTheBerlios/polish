@@ -53,6 +53,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
+import de.enough.polish.dataeditor.DataEditorUI;
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
@@ -71,7 +72,7 @@ import de.enough.polish.util.SwingUtil;
  */
 public class SwingDataEditor 
 extends JFrame
-implements ActionListener
+implements DataEditorUI, ActionListener
 {
 	private JMenuItem menuNewDefinition;	
 	private JMenuItem menuOpenDefinition;
@@ -128,6 +129,7 @@ implements ActionListener
 		}
 		
 		loadSettings();
+		this.dataManager.registerUI( this );
 	}
 	
 	private JMenuBar createMenuBar() {
@@ -456,6 +458,7 @@ implements ActionListener
 				this.dataView.updateTypes(this.dataManager);
 				this.dataTableModel.refresh( this.dataView );
 				this.definitionFile = file;
+				this.dataFile = null;
 				updateTitle();
 				this.statusBar.setText("Loaded " + file.getName() );
 				this.createCodeDialog = null;
@@ -474,7 +477,6 @@ implements ActionListener
 		}
 		try {
 			this.dataManager.saveData( this.dataFile );
-			this.dataTableModel.resetDataChanged();
 			this.statusBar.setText("saved " + this.dataFile.getName() );
 			updateTitle();
 		} catch (Exception e) {
@@ -490,7 +492,6 @@ implements ActionListener
 				this.dataFile = file;
 				this.statusBar.setText("saved " + file.getName() );
 				updateTitle();
-				this.dataTableModel.resetDataChanged();
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
@@ -525,19 +526,24 @@ implements ActionListener
 	}
 	
 	private void updateTitle() {
+		String title;
 		if (this.definitionFile != null) {
 			if (this.dataFile != null) {
-				setTitle("J2ME Polish: Binary Data Editor: " + this.definitionFile.getName() + " - " + this.dataFile.getName() );
+				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName() + " - " + this.dataFile.getName();
 			} else {
-				setTitle("J2ME Polish: Binary Data Editor: " + this.definitionFile.getName() );
+				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName();
 			}
 		} else {
-			setTitle("J2ME Polish: Binary Data Editor");
+			title = "J2ME Polish: Binary Data Editor";
 		}
+		if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
+			title += " *";
+		}
+		setTitle( title );
 	}
 
 	private void quit() {
-		if (this.dataTableModel.isDataChanged()) {
+		if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
 			int result = JOptionPane.showConfirmDialog( this, "Should the changed data be saved before exiting?", "Changed Data", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE );
 			if (result == JOptionPane.CANCEL_OPTION) {
 				return;
@@ -678,6 +684,34 @@ implements ActionListener
 	 */
 	public void setStatusBar(String message) {
 		this.statusBar.setText( message );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.dataeditor.DataEditorUI#signalChangedData()
+	 */
+	public void signalChangedData() {
+		updateTitle();		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.dataeditor.DataEditorUI#signalChangedDefinition()
+	 */
+	public void signalChangedDefinition() {
+		updateTitle();		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.dataeditor.DataEditorUI#signalUnchangedData()
+	 */
+	public void signalUnchangedData() {
+		updateTitle();		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.dataeditor.DataEditorUI#signalUnchangedDefinition()
+	 */
+	public void signalUnchangedDefinition() {
+		updateTitle();		
 	}
 
 }

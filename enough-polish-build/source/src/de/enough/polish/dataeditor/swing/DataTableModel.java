@@ -49,7 +49,6 @@ extends AbstractTableModel
 	
 	private final DataManager dataManager;
 	private final SwingDataEditor parentFrame;
-	private boolean dataChanged;
 
 	/**
 	 * @param dataManager
@@ -129,7 +128,6 @@ extends AbstractTableModel
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (aValue == null) {
-			this.dataChanged = true;
 			return;
 		}
 		DataEntry entry = this.dataManager.getDataEntry( rowIndex );
@@ -139,22 +137,22 @@ extends AbstractTableModel
 		try {
 			switch ( columnIndex ) {
 				case 0: 
-					entry.setName( strValue );
+					this.dataManager.setEntryName( strValue, entry );
 					break;
 				case 1: 
-					entry.setCount( strValue, this.dataManager );
+					this.dataManager.setCountAsString(strValue, entry);
 					break;
 				case 2:
 					strValue = strValue.substring(0, strValue.lastIndexOf(' '));
 					DataType type = this.dataManager.getDataType( strValue );
-					entry.setType(type);
+					this.dataManager.setEntryType(type, entry);
 					break;
 				case 3:
 					if (entry.getCount() == 0) {
 						showErrorMessage("Unable to set data-value: count is 0.");
 						return;
 					} else if (entry.getCount() == 1) {
-						entry.setDataAsString( strValue );
+						this.dataManager.setDataAsString(strValue, entry);
 					} else {
 						String[] values = new String[ entry.getCount() ];
 						int startPos = strValue.indexOf( '[' );
@@ -172,10 +170,9 @@ extends AbstractTableModel
 							//System.out.println("values[" + i +"] = " + values[i] );
 							startPos = strValue.indexOf('[', endPos );
 						}
-						entry.setDataAsString( values );
+						this.dataManager.setDataAsString(values, entry);
 					}
 			}
-			this.dataChanged = true;
 			fireTableDataChanged();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -213,17 +210,5 @@ extends AbstractTableModel
 		JOptionPane.showMessageDialog( this.parentFrame, message, "Error", JOptionPane.ERROR_MESSAGE );
 	}
 	
-	public boolean isDataChanged() {
-		return this.dataChanged;
-	}
-
-	/**
-	 * 
-	 */
-	public void resetDataChanged() {
-		this.dataChanged = false;
-	}
-
-
 
 }

@@ -63,6 +63,9 @@ public class DataManager {
 	private final Map typesByName;
 	private final ArrayList entries;
 	private final Map entriesByName;
+	private DataEditorUI gui;
+	private boolean definitionDirtyFlag;
+	private boolean dataDirtyFlag;
 
 	/**
 	 * 
@@ -107,6 +110,10 @@ public class DataManager {
 			DataEntry entry = new DataEntry( entryElement, this );
 			addDataEntry( entry );
 		}
+		this.definitionDirtyFlag = false;
+		if (this.gui != null) {
+			this.gui.signalUnchangedDefinition();
+		}
 	}
 	
 	public void saveDefinition( File file )
@@ -133,6 +140,10 @@ public class DataManager {
 		linesList.add( "</data-definition>" );
 		String[] lines = (String[]) linesList.toArray( new String[ linesList.size() ] );
 		FileUtil.writeTextFile( file, lines );
+		this.definitionDirtyFlag = false;
+		if (this.gui != null) {
+			this.gui.signalUnchangedDefinition();
+		}
 	}
 	
 
@@ -149,6 +160,10 @@ public class DataManager {
 			}
 		}
 		out.close();
+		this.dataDirtyFlag = false;
+		if (this.gui != null) {
+			this.gui.signalUnchangedData();
+		}
 	}
 
 	public void loadData( File file )
@@ -161,19 +176,44 @@ public class DataManager {
 			DataEntry entry = dataEntries[i];
 			entry.loadData(in);
 		}
+		this.dataDirtyFlag = false;
+		if (this.gui != null) {
+			this.gui.signalUnchangedData();
+		}
+	}
+	
+	private void definitionChanged() {
+		if (! this.definitionDirtyFlag) {
+			this.definitionDirtyFlag = true;
+			if (this.gui != null) {
+				this.gui.signalChangedDefinition();
+			}
+		}
+	}
+	
+	private void dataChanged() {
+		if (! this.dataDirtyFlag ) {
+			this.dataDirtyFlag = true;
+			if (this.gui != null) {
+				this.gui.signalChangedData();
+			}
+		}
 	}
 	
 	public void addDataEntry( DataEntry entry ) {
 		this.entries.add( entry );
 		this.entriesByName.put( entry.getName(), entry );
+		definitionChanged();
 	}
 
 	public void insertDataEntry( int index, DataEntry entry ) {
 		this.entries.add( index , entry );
+		definitionChanged();
 	}
 	
 	public boolean removeDataEntry( DataEntry entry ) {
 		this.entriesByName.remove( entry.getName() );
+		definitionChanged();
 		return this.entries.remove( entry );
 	}
 	
@@ -181,6 +221,7 @@ public class DataManager {
 		DataEntry entry = (DataEntry) this.entries.remove(index);
 		if (entry != null) {
 			this.entriesByName.remove( entry.getName() );
+			definitionChanged();
 		}
 		return entry;
 	}
@@ -387,6 +428,48 @@ public class DataManager {
 			}
 		}
 		return (DataEntry[]) operants.toArray( new DataEntry[ operants.size() ]);
+	}
+	
+	/**
+	 * Register the user interface.
+	 * 
+	 * @param dataEditorUI the GUI implementation
+	 */
+	public void registerUI( DataEditorUI dataEditorUI ) {
+		this.gui = dataEditorUI;
+	}
+	
+	public boolean isDataChanged() {
+		return this.dataDirtyFlag;
+	}
+	
+	public boolean isDefinitionChanged() {
+		return this.definitionDirtyFlag;
+	}
+	
+	public void setDataAsString( String data, DataEntry entry ) {
+		entry.setDataAsString(data);
+		dataChanged();
+	}
+
+	public void setDataAsString( String[] data, DataEntry entry ) {
+		entry.setDataAsString(data);
+		dataChanged();
+	}
+	
+	public void setCountAsString( String count, DataEntry entry ) {
+		entry.setCount(count, this);
+		definitionChanged();
+	}
+	
+	public void setEntryName( String name, DataEntry entry ) {
+		entry.setName(name);
+		definitionChanged();
+	}
+	
+	public void setEntryType( DataType type, DataEntry entry ) {
+		entry.setType(type);
+		definitionChanged();
 	}
 
 }

@@ -116,7 +116,7 @@ implements TableCellEditor, ActionListener
 			this.editor.setVisible(true);
 			if (this.editor.okPressed()) {
 				String[] data = this.editor.getData();
-				entry.setDataAsString( data );
+				this.manager.setDataAsString( data, entry );
 			}
 			fireEditingStopped();
 		}

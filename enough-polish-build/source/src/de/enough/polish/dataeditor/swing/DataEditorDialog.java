@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import de.enough.polish.dataeditor.DataEntry;
@@ -117,7 +118,7 @@ implements ActionListener
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout( new BorderLayout() );
-		contentPane.add( editorPanel, BorderLayout.CENTER );
+		contentPane.add( new JScrollPane( editorPanel ), BorderLayout.CENTER );
 		contentPane.add( buttonPanel, BorderLayout.SOUTH );
 		
 		int width = cols * 40;
