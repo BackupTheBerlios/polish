@@ -235,7 +235,8 @@ public class CssConverter extends Converter {
 		
 		// check if fullscreen mode is enabled with menu:
 		if ((preprocessor.hasSymbol("polish.useMenuFullScreen") 
-			&& (device.getCapability("polish.classes.fullscreen") != null))
+			&& ((device.getCapability("polish.classes.fullscreen") != null) 
+					|| (device.isMidp2() && preprocessor.hasSymbol("polish.hasCommandKeyEvents") ) ))
 			|| preprocessor.hasSymbol("polish.needsManualMenu") 
 			) {
 			if (styleSheet.getStyle("menu" ) == null) {

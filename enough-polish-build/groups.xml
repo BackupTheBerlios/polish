@@ -28,11 +28,11 @@
 <groups>
 	<group>
 		<name>Nokia-UI</name>
-		<features>supportSpriteTransformation</features>
+		<features>supportSpriteTransformation, hasCommandKeyEvents</features>
 		<capability name="classes.fullscreen" value="com.nokia.mid.ui.FullCanvas" />
 		<capability name="JavaPackage" value="nokia-ui" />
-		<capability name="key.LeftSoftButton" value="-6" />
-		<capability name="key.RightSoftButton" value="-7" />
+		<capability name="key.LeftSoftKey" value="-6" />
+		<capability name="key.RightSoftKey" value="-7" />
 	</group>
 
 	<group>

@@ -24,9 +24,7 @@
  */
 package de.enough.polish.ui;
 
-//#if polish.useFullScreen && polish.api.nokia-ui 
-	import com.nokia.mid.ui.FullCanvas;
-//#endif
+
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Debug;
 
@@ -76,7 +74,10 @@ import javax.microedition.lcdui.*;
  * 
  */
 public abstract class Screen 
-//#if polish.useFullScreen && polish.classes.fullscreen:defined
+//#if polish.useFullScreen && polish.midp2  && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
+	//#define tmp.fullScreen
+	//# extends Canvas
+//#elif polish.useFullScreen && polish.classes.fullscreen:defined
 	//#define tmp.fullScreen
 	//#= extends ${polish.classes.fullscreen}
 //#else
@@ -87,7 +88,9 @@ public abstract class Screen
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
 		protected StringItem title;
-		protected String titleText;
+		//#ifdef polish.Vendor.Motorola
+			private boolean ignoreMotorolaTitleCall;
+		//#endif
 	//#endif
 	protected int titleHeight;
 	protected Background background;
@@ -109,8 +112,18 @@ public abstract class Screen
 		private long lastPaintTime;
 		private boolean repaintRequested;
 	//#endif
-	//#if (polish.useMenuFullScreen && polish.classes.fullscreen:defined) || polish.needsManualMenu
+	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
+		//#ifdef polish.key.LeftSoftKey:defined
+			//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
+		//#else
+			private final static int LEFT_SOFT_KEY = -6;
+		//#endif
+		//#ifdef polish.key.RightSoftKey:defined
+			//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
+		//#else
+			private final static int RIGHT_SOFT_KEY = -7;
+		//#endif
 		private Command menuSingleLeftCommand;
 		private Command menuSingleRightCommand;
 		private Container menuContainer;
@@ -152,11 +165,11 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if tmp.usingTitle
-			this.titleText = title;
-		//#else
-			setTitle( title );
+		System.out.println("Title:" + title);
+		//#if tmp.fullScreen && polish.midp2
+			super.setFullScreenMode( true );
 		//#endif
+			
 		// get the screen dimensions:
 		// this is a bit complicated, since Nokia's FullCanvas fucks
 		// up when calling super.getHeight(), so we need to use hardcoded values...
@@ -193,6 +206,8 @@ public abstract class Screen
 		//#ifndef tmp.menuFullScreen
 			super.setCommandListener(this.cmdListener);
 		//#endif
+		
+		setTitle( title );
 	}
 		
 	/**
@@ -201,10 +216,6 @@ public abstract class Screen
 	public void init() {
 		if (this.style != null) {
 			setStyle( this.style );
-		}
-		if (this.container != null) {
-			this.container.screen = this;
-			this.container.setVerticalDimensions( 0, this.screenHeight - this.titleHeight );
 		}
 		//#ifdef polish.useDynamicStyles
 			// check if this screen has got a style:
@@ -248,18 +259,24 @@ public abstract class Screen
 			this.scrollIndicatorWidth = this.menuBarHeight;
 			this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
 			this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+		//#elif polish.vendor.Siemens
+			// set the position of scroll indicator for Siemens devices 
+			// on the left side, so that the menu-indicator is visible:
+			this.scrollIndicatorWidth = 12;
+			this.scrollIndicatorX = 0;
+			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#else
 			// set position of scroll indicator:
 			this.scrollIndicatorWidth = 12;
 			this.scrollIndicatorX = this.screenWidth - this.scrollIndicatorWidth;
-			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth;
+			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
 
-		// set the title:
-		//#ifdef tmp.usingTitle
-			setTitle( this.titleText );
-		//#endif
-
+		if (this.container != null) {
+			this.container.screen = this;
+			this.container.setVerticalDimensions( 0, this.screenHeight - this.titleHeight );
+		}
+		
 		// start the animmation thread if necessary: 
 		if (StyleSheet.animationThread == null) {
 			StyleSheet.animationThread = new AnimationThread();
@@ -608,9 +625,14 @@ public abstract class Screen
 	 */
 	public void setTitle( String s)
 	{
-		if (!this.isInitialised) {
-			this.titleText = s;
-		}
+		//#ifdef polish.vendor.Motorola
+			if (this.ignoreMotorolaTitleCall) {
+				this.ignoreMotorolaTitleCall = false;
+				return;
+			} else {
+				this.ignoreMotorolaTitleCall = true;
+			}
+		//#endif
 		if (s != null) {
 			//#style title, default
 			this.title = new StringItem( null, s );
@@ -691,14 +713,11 @@ public abstract class Screen
 		//#if polish.debug.error
 		try {
 		//#endif
-		//#ifdef polish.debug.debug
 			//#debug
 			Debug.debug("keyPressed: [" + keyCode + "].");
-		//#endif
 			int gameAction = getGameAction(keyCode);
 			//#if tmp.menuFullScreen
-				//#if polish.api.nokia-ui
-				if (keyCode == FullCanvas.KEY_SOFTKEY1) {
+				if (keyCode == LEFT_SOFT_KEY) {
 					if ( this.menuSingleLeftCommand != null) {
 						callCommandListener( this.menuSingleLeftCommand );
 						return;
@@ -713,20 +732,16 @@ public abstract class Screen
 							gameAction = Canvas.FIRE;
 						}
 					}
-				} else if (keyCode == FullCanvas.KEY_SOFTKEY2) {
+				} else if (keyCode == RIGHT_SOFT_KEY) {
 					if (!this.menuOpened && this.menuSingleRightCommand != null) {
 						callCommandListener( this.menuSingleRightCommand );
 						return;
 					}
 				}
-				//#endif
 				if (this.menuOpened) {
-					//#ifdef polish.api.nokia-ui
-					if (keyCode == FullCanvas.KEY_SOFTKEY2 ) {
+					if (keyCode == RIGHT_SOFT_KEY ) {
 						this.menuOpened = false;
-					} else  
-					//#endif
-						if ( gameAction == Canvas.FIRE ) {
+					} else if ( gameAction == Canvas.FIRE ) {
 						int focusedIndex = this.menuContainer.getFocusedIndex();
 						Command cmd = (Command) this.menuCommands.get( focusedIndex );
 						this.menuOpened = false;

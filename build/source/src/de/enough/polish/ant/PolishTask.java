@@ -62,7 +62,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.2";
+	private static final String VERSION = "1.2.3";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -398,15 +398,6 @@ public class PolishTask extends ConditionalTask {
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());
 		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
 			this.polishProject.addFeature("useDebugGui");
-		}
-		FullScreenSetting fullScreenSetting = this.buildSetting.getFullScreenSetting();
-		if (fullScreenSetting != null) {
-			if (fullScreenSetting.isMenu()) {
-				this.polishProject.addFeature("useMenuFullScreen");
-				this.polishProject.addFeature("useFullScreen");
-			} else if (fullScreenSetting.isEnabled()) {
-				this.polishProject.addFeature("useFullScreen");
-			}
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {
@@ -892,6 +883,26 @@ public class PolishTask extends ConditionalTask {
 					Variable var = this.conditionalVariables[i];
 					if (var.isConditionFulfilled( evaluator, this.project )) {
 						this.preprocessor.addVariable(var.getName(), var.getValue() );
+					}
+				}
+			}
+			// now set the full-screen-settings:
+			String value = this.preprocessor.getVariable("polish.FullScreen");
+			if (value != null) {
+				if ("menu".equalsIgnoreCase(value)) {
+					this.preprocessor.addSymbol("polish.useMenuFullScreen");
+					this.preprocessor.addSymbol("polish.useFullScreen");					
+				} else if ("yes".equalsIgnoreCase( value ) || "true".equalsIgnoreCase(value)) {
+					this.preprocessor.addSymbol("polish.useFullScreen");					
+				}
+			} else {
+				FullScreenSetting fullScreenSetting = this.buildSetting.getFullScreenSetting();
+				if (fullScreenSetting != null) {
+					if (fullScreenSetting.isMenu()) {
+						this.preprocessor.addSymbol("polish.useMenuFullScreen");
+						this.preprocessor.addSymbol("polish.useFullScreen");
+					} else if (fullScreenSetting.isEnabled()) {
+						this.preprocessor.addSymbol("polish.useFullScreen");
 					}
 				}
 			}
