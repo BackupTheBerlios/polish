@@ -703,7 +703,10 @@ implements Choice
 				}
 			//#endif
 		}
-		repaint();
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 
 	/**
@@ -766,7 +769,10 @@ implements Choice
 			}
 			setSelectedIndex( index, true );
 		}
-		repaint();
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 
 	/**
@@ -1183,6 +1189,7 @@ implements Choice
 			//#ifdef polish.css.popup-image
 				String url = style.getProperty("popup-image");
 				if (url != null ) {
+					System.out.println("setting popup-image...");
 					this.popupItem.setImage( url );
 				}
 			//#endif

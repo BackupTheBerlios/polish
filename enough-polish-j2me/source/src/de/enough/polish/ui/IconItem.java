@@ -159,11 +159,15 @@ implements ImageConsumer
 				//System.out.println("x: " + x + "  centerX: " + centerX );
 				g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
 				y += this.imageHeight;
-			} else {
-				// imageAlign == Graphics.BOTTOM
+			} else if (this.imageAlign == Graphics.BOTTOM ){
 				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
 				int bottomY = y + this.contentHeight;
 				g.drawImage(this.image, centerX, bottomY, Graphics.BOTTOM | Graphics.HCENTER );
+			} else {
+				// imageAlign == Graphics.HCENTER | Graphics.VCENTER 
+				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
+				int centerY = y + this.contentHeight / 2;
+				g.drawImage(this.image, centerX, centerY,  Graphics.HCENTER | Graphics.VCENTER);
 			}
 		}
 		super.paintContent(x, y, leftBorder, rightBorder, g);
@@ -193,6 +197,7 @@ implements ImageConsumer
 					case 1: this.imageAlign = Graphics.RIGHT; break; 
 					case 2: this.imageAlign = Graphics.TOP; break; 
 					case 3: this.imageAlign = Graphics.BOTTOM; break; 
+					case 4: this.imageAlign = Graphics.HCENTER | Graphics.VCENTER; break; 
 				}
 			}
 		//#endif
@@ -240,10 +245,12 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)
 	 */
 	public void setImage(String name, Image image) {
-		this.isInitialised = false;
 		this.image = image;
 		//System.out.println("image [" + name + "] has been set.");
-		repaint();
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 	//#endif
 	

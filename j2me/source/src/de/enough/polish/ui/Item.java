@@ -973,6 +973,7 @@ public abstract class Item extends Object
 	 * have changed and they need an immediate refresh. 
 	 */
 	protected void repaint() {
+		//System.out.println("repaint called by class " + getClass().getName() );
 		if (this.parent instanceof Container) {
 			((Container) this.parent).isInitialised = false;
 		}
@@ -990,6 +991,7 @@ public abstract class Item extends Object
 	 * When the item already has been initialised, a repaint() is requested, too.
 	 */
 	protected void requestInit() {
+		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
 		Item p = this.parent;
 		while ( p != null) {
 			p.isInitialised = false;
