@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
 
-import de.enough.polish.Variable;
+import de.enough.polish.Attribute;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -77,17 +77,17 @@ public class AttributesFilter {
 	 * @return an array of attributes in the correct order,
 	 *         not all given attributes are guaranteed to be included.
 	 */
-	public Variable[] filterAttributes( HashMap attributesMap ) {
+	public Attribute[] filterAttributes( HashMap attributesMap ) {
 		ArrayList attributesList = new ArrayList();
 		for (int i = 0; i < this.filterElements.size(); i++) {
 			FilterElement filter = (FilterElement) this.filterElements.get( i );
-			Variable[] attributes = filter.extractAttributes(attributesMap);
+			Attribute[] attributes = filter.extractAttributes(attributesMap);
 			for (int j = 0; j < attributes.length; j++) {
-				Variable attribute = attributes[j];
+				Attribute attribute = attributes[j];
 				attributesList.add( attribute );
 			}
 		}
-		return (Variable[]) attributesList.toArray( new Variable[ attributesList.size() ] );
+		return (Attribute[]) attributesList.toArray( new Attribute[ attributesList.size() ] );
 	}
 	
 	/**
@@ -139,21 +139,21 @@ public class AttributesFilter {
 		 *        The map contains the attributes by its name.
 		 * @return the found attributes for this filter in the correct order
 		 */
-		public Variable[] extractAttributes( HashMap map ) {
+		public Attribute[] extractAttributes( HashMap map ) {
 			if (this.isRequired) { 
-				Variable attribute = (Variable) map.remove( this.definition );
+				Attribute attribute = (Attribute) map.remove( this.definition );
 				if (attribute == null) {
 					throw new BuildException("The required JAD or MANIFEST attribute [" 
 							+ this.definition + "] was not found. " +
 							"Either adjust your filter-settings or add this attribute.");
 				}
-				return new Variable[]{ attribute };
+				return new Attribute[]{ attribute };
 			} else if (this.isOptional) {
-				Variable attribute = (Variable) map.remove( this.definition );
+				Attribute attribute = (Attribute) map.remove( this.definition );
 				if (attribute == null) {
-					return new Variable[0];
+					return new Attribute[0];
 				} else {
-					return new Variable[]{ attribute };					
+					return new Attribute[]{ attribute };					
 				}
 			} else if (this.isPattern) {
 				// get all attributes which start with the specified sequence:
@@ -167,18 +167,18 @@ public class AttributesFilter {
 				}
 				names = (String[]) foundAttributes.toArray( new String[ foundAttributes.size() ]);
 				Arrays.sort( names );
-				Variable[] attributes = new Variable[ names.length ];
+				Attribute[] attributes = new Attribute[ names.length ];
 				for (int i = 0; i < attributes.length; i++) {
-					attributes[i] = (Variable) map.remove( names[i] );
+					attributes[i] = (Attribute) map.remove( names[i] );
 				}
 				return attributes;
 			} else {
 				// just return the remaining attributes:
 				String[] names = (String[]) map.keySet().toArray( new String[ map.size() ]);
 				Arrays.sort( names );
-				Variable[] attributes = new Variable[ names.length ];
+				Attribute[] attributes = new Attribute[ names.length ];
 				for (int i = 0; i < attributes.length; i++) {
-					attributes[i] = (Variable) map.remove( names[i] );
+					attributes[i] = (Attribute) map.remove( names[i] );
 				}
 				return attributes;				
 			}

@@ -203,9 +203,9 @@ public class BuildSetting {
 	}
 
 	
-	public Variable[] getJadAttributes() {
+	public Attribute[] getJadAttributes() {
 		if (this.jadAttributes == null) {
-			return new Variable[0];
+			return new Attribute[0];
 		} else {
 			return this.jadAttributes.getAttributes();
 		}
@@ -835,7 +835,7 @@ public class BuildSetting {
 	 *         not all given attributes are guaranteed to be included.
 	 * @throws NullPointerException when there is no JAD-attribute filter.
 	 */
-	public Variable[] filterJadAttributes( HashMap attributesMap ) {
+	public Attribute[] filterJadAttributes( HashMap attributesMap ) {
 		return this.jadAttributesFilter.filterAttributes(attributesMap);
 	}
 	
@@ -857,7 +857,7 @@ public class BuildSetting {
 	 *         not all given attributes are guaranteed to be included.
 	 * @throws NullPointerException when there is no MANIFEST-attribute filter.
 	 */
-	public Variable[] filterManifestAttributes( HashMap attributesMap ) {
+	public Attribute[] filterManifestAttributes( HashMap attributesMap ) {
 		return this.manifestAttributesFilter.filterAttributes(attributesMap);
 	}
 	

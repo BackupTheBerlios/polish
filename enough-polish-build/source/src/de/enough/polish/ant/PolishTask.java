@@ -1222,13 +1222,14 @@ public class PolishTask extends ConditionalTask {
 		if ( !this.infoSetting.getlicense().equals(test)) {
 			throw new BuildException("Encountered invalid license.");
 		}
-		//create manifest:
+		
+		// create manifest:
 		Jad jad = new Jad();
 		boolean useAttributesFilter = this.buildSetting.hasManifestAttributesFilter();
 		HashMap attributesByName = null;
 		if (useAttributesFilter) {
 			attributesByName = new HashMap();
-			attributesByName.put( "Manifest-Version", new Variable( "Manifest-Version", "1.0" ) ); 
+			attributesByName.put( "Manifest-Version", new Attribute( "Manifest-Version", "1.0" ) ); 
 		} else {
 			jad.addAttribute( "Manifest-Version", "1.0" );
 		}
@@ -1238,7 +1239,7 @@ public class PolishTask extends ConditionalTask {
 			midp = InfoSetting.MIDP2;
 		}
 		if (useAttributesFilter) {
-			attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Variable(InfoSetting.MICRO_EDITION_PROFILE, midp) );
+			attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Attribute(InfoSetting.MICRO_EDITION_PROFILE, midp) );
 		} else {
 			jad.addAttribute( InfoSetting.MICRO_EDITION_PROFILE, midp );
 		}
@@ -1249,18 +1250,18 @@ public class PolishTask extends ConditionalTask {
 			config = InfoSetting.CLDC1_1;
 		}
 		if (useAttributesFilter) {
-			attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Variable(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
+			attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
 		} else {
 			jad.addAttribute( InfoSetting.MICRO_EDITION_CONFIGURATION, config );
 		}
 
 		// add info attributes:
-		Variable[] jadAttributes = this.infoSetting.getManifestAttributes();
+		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes();
 		for (int i = 0; i < jadAttributes.length; i++) {
-			Variable var = jadAttributes[i];
+			Attribute var = jadAttributes[i];
 			String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
 			if (useAttributesFilter) {
-				attributesByName.put( var.getName(), new  Variable(var.getName(), value ) );
+				attributesByName.put( var.getName(), new  Attribute(var.getName(), value ) );
 			} else {
 				jad.addAttribute( var.getName(), value );
 			}
@@ -1271,7 +1272,7 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < midletInfos.length; i++) {
 			String info = midletInfos[i];
 			if (useAttributesFilter) {
-				attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Variable(InfoSetting.NMIDLET + (i+1), info ) );
+				attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Attribute(InfoSetting.NMIDLET + (i+1), info ) );
 			} else {
 				jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
 			}
@@ -1279,16 +1280,20 @@ public class PolishTask extends ConditionalTask {
 		
 		// add user-defined attributes, but only
 		// when these attributes are filtered:
-		if (useAttributesFilter) {
-		Variable[] attributes = this.buildSetting.getJadAttributes();
+		// add user-defined attributes:
+		Attribute[] attributes = this.buildSetting.getJadAttributes();
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		for (int i = 0; i < attributes.length; i++) {
-			Variable var = attributes[i];
-			if (var.isConditionFulfilled(evaluator, this.project)) {
-				String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
-				attributesByName.put( var.getName(), new Variable(var.getName(), value ) );
+			Attribute attribute = attributes[i];
+			if (attribute.targetsManifest() && attribute.isConditionFulfilled(evaluator, this.project)) {
+				if (useAttributesFilter) {
+					attributesByName.put(attribute.getName(),
+							new Attribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) ) );
+					
+				} else {
+					jad.addAttribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) );
+				}
 			}
-		}
 		}
 		
 		//add polish version:
@@ -1338,13 +1343,13 @@ public class PolishTask extends ConditionalTask {
 		if (useAttributesFilter) {
 			attributesByName = new HashMap();
 		}
-		//add info attributes:
-		Variable[] jadAttributes = this.infoSetting.getJadAttributes();
+		// add info attributes:
+		Attribute[] jadAttributes = this.infoSetting.getJadAttributes();
 		for (int i = 0; i < jadAttributes.length; i++) {
-			Variable var  = jadAttributes[i];
+			Attribute var  = jadAttributes[i];
 			if (useAttributesFilter) {
 				attributesByName.put( var.getName(), 
-					new Variable(var.getName(), PropertyUtil.writeProperties( var.getValue(), infoProperties)) );
+					new Attribute(var.getName(), PropertyUtil.writeProperties( var.getValue(), infoProperties)) );
 			} else {
 				jad.addAttribute( var.getName() , PropertyUtil.writeProperties( var.getValue(), infoProperties) );
 			}
@@ -1356,7 +1361,7 @@ public class PolishTask extends ConditionalTask {
 			String info = midletInfos[i];
 			if (useAttributesFilter) {
 				attributesByName.put( InfoSetting.NMIDLET + (i+1), 
-						new Variable(InfoSetting.NMIDLET + (i+1), info) );
+						new Attribute(InfoSetting.NMIDLET + (i+1), info) );
 			} else {
 				jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
 			}
@@ -1366,20 +1371,20 @@ public class PolishTask extends ConditionalTask {
 		long size = device.getJarFile().length();
 		if (useAttributesFilter) {
 			attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
-					new Variable( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
+					new Attribute( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
 		} else {
 			jad.addAttribute(  InfoSetting.MIDLET_JAR_SIZE, "" + size );
 		}
 		
 		// add user-defined attributes:
-		Variable[] attributes = this.buildSetting.getJadAttributes();
+		Attribute[] attributes = this.buildSetting.getJadAttributes();
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		for (int i = 0; i < attributes.length; i++) {
-			Variable attribute = attributes[i];
-			if (attribute.isConditionFulfilled(evaluator, this.project)) {
+			Attribute attribute = attributes[i];
+			if (attribute.targetsJad() && attribute.isConditionFulfilled(evaluator, this.project)) {
 				if (useAttributesFilter) {
 					attributesByName.put(attribute.getName(),
-							new Variable( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) ) );
+							new Attribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) ) );
 					
 				} else {
 					jad.addAttribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) );
@@ -1389,7 +1394,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// sort and filter the JAD attributes if requested:
 		if (useAttributesFilter) {
-			Variable[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName);
+			Attribute[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName);
 			jad.setAttributes( filteredAttributes );
 		}
 		

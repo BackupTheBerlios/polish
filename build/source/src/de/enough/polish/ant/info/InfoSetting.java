@@ -28,7 +28,7 @@ package de.enough.polish.ant.info;
 
 import org.apache.tools.ant.BuildException;
 
-import de.enough.polish.Variable;
+import de.enough.polish.Attribute;
 
 import java.util.ArrayList;
 
@@ -128,7 +128,7 @@ public class InfoSetting {
 	 * @param deleteConfirm The deleteConfirm to set.
 	 */
 	public void setDeleteConfirm(String deleteConfirm) {
-		Variable var = new Variable( MIDLET_DELETE_CONFIRM, deleteConfirm );
+		Attribute var = new Attribute( MIDLET_DELETE_CONFIRM, deleteConfirm );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.deleteConfirm = deleteConfirm;
@@ -145,7 +145,7 @@ public class InfoSetting {
 	 * @param deleteNotify The deleteNotify to set.
 	 */
 	public void setDeleteNotify(String deleteNotify) {
-		Variable var = new Variable( MIDLET_DELETE_NOTIFY, deleteNotify );
+		Attribute var = new Attribute( MIDLET_DELETE_NOTIFY, deleteNotify );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.deleteNotify = deleteNotify;
@@ -162,7 +162,7 @@ public class InfoSetting {
 	 * @param description The description to set.
 	 */
 	public void setDescription(String description) {
-		Variable var = new Variable( MIDLET_DESCRIPTION, description );
+		Attribute var = new Attribute( MIDLET_DESCRIPTION, description );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.description = description;
@@ -182,7 +182,7 @@ public class InfoSetting {
 		if (!icon.startsWith("/")) {
 			icon = "/" + icon;
 		}
-		Variable var = new Variable( MIDLET_ICON, icon );
+		Attribute var = new Attribute( MIDLET_ICON, icon );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.icon = icon;
@@ -199,7 +199,7 @@ public class InfoSetting {
 	 * @param infoUrl The infoUrl to set.
 	 */
 	public void setInfoUrl(String infoUrl) {
-		Variable var = new Variable( MIDLET_INFO_URL, infoUrl );
+		Attribute var = new Attribute( MIDLET_INFO_URL, infoUrl );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.infoUrl = infoUrl;
@@ -216,7 +216,7 @@ public class InfoSetting {
 	 * @param installNotify The installNotify to set.
 	 */
 	public void setInstallNotify(String installNotify) {
-		Variable var = new Variable( MIDLET_INSTALL_NOTIFY, installNotify );
+		Attribute var = new Attribute( MIDLET_INSTALL_NOTIFY, installNotify );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.installNotify = installNotify;
@@ -261,7 +261,7 @@ public class InfoSetting {
 	 * @param jarUrl The jarUrl to set.
 	 */
 	public void setJarUrl(String jarUrl) {
-		Variable var = new Variable( MIDLET_JAR_URL, jarUrl);
+		Attribute var = new Attribute( MIDLET_JAR_URL, jarUrl);
 		this.jadAttributes.add( var );
 		this.jarUrl = jarUrl;
 	}
@@ -277,7 +277,7 @@ public class InfoSetting {
 	 * @param name The name of this project.
 	 */
 	public void setName(String name) {
-		Variable var = new Variable( MIDLET_NAME, name );
+		Attribute var = new Attribute( MIDLET_NAME, name );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.name = name;
@@ -298,7 +298,7 @@ public class InfoSetting {
 		if (info.getName() == null) {
 			throw new BuildException("The <vendorInfo> Element needs to define the attribute [name].");
 		}
-		Variable var = new Variable( MIDLET_VENDOR, info.getName() );
+		Attribute var = new Attribute( MIDLET_VENDOR, info.getName() );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		
@@ -310,7 +310,7 @@ public class InfoSetting {
 	}
 	
 	public void setVendorName( String vendorName ) {
-		Variable var = new Variable( MIDLET_VENDOR, vendorName );
+		Attribute var = new Attribute( MIDLET_VENDOR, vendorName );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.vendorName = vendorName;
@@ -331,7 +331,7 @@ public class InfoSetting {
 	 * @param dataSize the size which this midlet needs for the storage of data
 	 */
 	public void setDataSize(String dataSize) {
-		Variable var = new Variable( MIDLET_DATA_SIZE, dataSize );
+		Attribute var = new Attribute( MIDLET_DATA_SIZE, dataSize );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.dataSize = dataSize;
@@ -342,8 +342,8 @@ public class InfoSetting {
 	 * 
 	 * @return a Variable array containing all defined attributes for the JAR-Manifest.
 	 */
-	public Variable[] getManifestAttributes() {
-		return (Variable[]) this.manifestAttributes.toArray( new Variable[ this.manifestAttributes.size() ] );
+	public Attribute[] getManifestAttributes() {
+		return (Attribute[]) this.manifestAttributes.toArray( new Attribute[ this.manifestAttributes.size() ] );
 	}
 
 	/**
@@ -351,8 +351,8 @@ public class InfoSetting {
 	 * 
 	 * @return a Variable array containing all defined attributes for the JAD-file.
 	 */
-	public Variable[] getJadAttributes() {
-		return (Variable[]) this.jadAttributes.toArray( new Variable[ this.jadAttributes.size() ] );
+	public Attribute[] getJadAttributes() {
+		return (Attribute[]) this.jadAttributes.toArray( new Attribute[ this.jadAttributes.size() ] );
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public class InfoSetting {
 	 * @param version The version to set.
 	 */
 	public void setVersion(String version) {
-		Variable var = new Variable( MIDLET_VERSION, version );
+		Attribute var = new Attribute( MIDLET_VERSION, version );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 		this.version = version;
@@ -419,7 +419,7 @@ public class InfoSetting {
 	 * 			e.g. "javax.microedition.io.Connector.http"
 	 */
 	public void setOptionalPermissions(String optionalPermissions) {
-		Variable var = new Variable( MIDLET_OPTIONAL_PERMISSIONS, optionalPermissions );
+		Attribute var = new Attribute( MIDLET_OPTIONAL_PERMISSIONS, optionalPermissions );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 	}
@@ -431,7 +431,7 @@ public class InfoSetting {
 	 * 			e.g. "javax.microedition.io.Connector.http"
 	 */
 	public void setPermissions(String permissions) {
-		Variable var = new Variable( MIDLET_PERMISSIONS, permissions );
+		Attribute var = new Attribute( MIDLET_PERMISSIONS, permissions );
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 	}
