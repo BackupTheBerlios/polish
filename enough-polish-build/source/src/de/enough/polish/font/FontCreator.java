@@ -46,7 +46,7 @@ import javax.swing.KeyStroke;
 import de.enough.polish.util.SwingUtil;
 
 /**
- * <p></p>
+ * <p>An utility for creating bitmap-font-files, which can be used by the J2ME Polish client classes.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
@@ -64,8 +64,8 @@ implements ActionListener
 	private JMenuItem menuQuit;
 	private JMenuItem menuSaveAs;
 	private JMenuItem menuOpenTrueTypeFont;
-	private JMenuItem menuOpenBitMapFont;
-	private JMenuItem menuOpenImage;
+	//private JMenuItem menuOpenBitMapFont;
+	//private JMenuItem menuOpenImage;
 	private JLabel statusBar;
 	private JScrollPane scrollPane;
 	private File currentDirectory = new File(".");
@@ -87,6 +87,7 @@ implements ActionListener
 		contentPane.add( this.scrollPane );
 		this.statusBar = new JLabel(" ");
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
+		SwingUtil.setImageIcon(this, "icons/font.png");
 		updateTitle();
 	}
 	

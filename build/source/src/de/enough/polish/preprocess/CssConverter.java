@@ -366,7 +366,7 @@ public class CssConverter extends Converter {
 	 */
 	private void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device) {
 		String styleName = style.getStyleName();
-		//System.out.println("processing style " + name + ": " + style.toString() );
+		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style:
 		codeList.add( STANDALONE_MODIFIER + "Style " + styleName + "Style = new Style (");
 		// process the margins:
@@ -392,7 +392,23 @@ public class CssConverter extends Converter {
 		}
 		// process the content-font:
 		group = style.removeGroup("font");
+		String bitMapFontUrl = null;
 		if ( group != null ) {
+			// if a bitmap-font is defined,
+			// add a extended (string) attribute:
+			bitMapFontUrl = (String) group.get("bitmap");
+			if (bitMapFontUrl != null) {
+				if (!bitMapFontUrl.endsWith(".bmf")) {
+					bitMapFontUrl += ".bmf";
+				}
+				if (bitMapFontUrl.charAt(0) != '/') {
+					bitMapFontUrl = "/" + bitMapFontUrl;
+				}
+				HashMap bitMapFontGroup = new HashMap(1);
+				bitMapFontGroup.put("bitmap", bitMapFontUrl );
+				style.addGroup( "font", bitMapFontGroup );
+				System.out.println("adding bitmap-font " + bitMapFontUrl);
+			}
 			processFont( group, "font", style, codeList, styleSheet, false );
 		} else {
 			codeList.add("\t\tdefaultFontColor,\t// font-color is not defined");

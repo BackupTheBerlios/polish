@@ -3,10 +3,12 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.2.3" />
-	  <property name="VersionMessage" value="Welcome to J2ME Polish 1.2.3! " />
-	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
-
+	<property name="Version" value="1.2.3" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.3! " />
+	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
+	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
+	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
+	
   <path id="thirdparty">
     <fileset dir="import">
         <include name="*.jar"/>
@@ -188,10 +190,20 @@
 	     >
 		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
 		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
+		<fileset dir="setup" includes="icons/*.*" />
 	</jar>
+	<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
+	<mkdir dir="../enough-polish-j2me/bin/preverified" />
+	<exec executable="${wtk.home}/bin/preverify">
+		<arg line="-classpath"/>
+		<arg line="import/midp2.jar"/>
+		<arg line="-d"/>
+		<arg line="../enough-polish-j2me/bin/preverified"/>
+		<arg line="../enough-polish-j2me/bin/classes"/>
+	</exec>
 	<!-- create the binary J2ME distribution -->
 	<jar destfile="dist/enough-j2mepolish-client.jar"
-	     basedir="../enough-polish-j2me/bin/classes"
+	     basedir="../enough-polish-j2me/bin/preverified"
 		 excludes="**/*.html"
 		 index="true"
 	     >

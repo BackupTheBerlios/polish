@@ -96,6 +96,7 @@ implements ActionListener
 	private final JCheckBox optionPunctuation;
 	private final JCheckBox optionNumbers;
 	private final JCheckBox optionSpace;
+	private final JCheckBox optionAntiAliasing;
 
 	/**
 	 * @param fontFile
@@ -133,6 +134,8 @@ implements ActionListener
 			this.optionSpace = new JCheckBox("Space");
 			this.optionSpace.setSelected( true );
 			this.optionSpace.addActionListener( this );
+			this.optionAntiAliasing = new JCheckBox("use Anti-Aliasing");
+			this.optionAntiAliasing.addActionListener( this );
 			
 			// adding items:
 			setLayout( new BorderLayout() );
@@ -144,13 +147,19 @@ implements ActionListener
 			sizePanel.setBorder( new EtchedBorder( EtchedBorder.LOWERED ) );
 			add( sizePanel, BorderLayout.NORTH );
 			add( this.imageLabel, BorderLayout.CENTER );
-			JPanel inputPanel = new JPanel( new GridLayout( 6, 1));
-			inputPanel.add( this.optionUppercase );
-			inputPanel.add( this.optionLowercase );
-			inputPanel.add( this.optionPunctuation );
-			inputPanel.add( this.optionNumbers );
-			inputPanel.add( this.optionSpace );
-			inputPanel.add( this.characterMap );
+			JPanel inputOptionsPanel = new JPanel( new GridLayout( 5, 1));
+			inputOptionsPanel.add( this.optionUppercase );
+			inputOptionsPanel.add( this.optionLowercase );
+			inputOptionsPanel.add( this.optionPunctuation );
+			inputOptionsPanel.add( this.optionNumbers );
+			inputOptionsPanel.add( this.optionSpace );
+			JPanel optionsPanel = new JPanel( new GridLayout( 1, 2));
+			optionsPanel.setBorder( new EtchedBorder( EtchedBorder.LOWERED ) );
+			optionsPanel.add( inputOptionsPanel );
+			optionsPanel.add( this.optionAntiAliasing );
+			JPanel inputPanel = new JPanel( new BorderLayout());
+			inputPanel.add( optionsPanel, BorderLayout.CENTER );
+			inputPanel.add( this.characterMap, BorderLayout.SOUTH );
 			add( inputPanel , BorderLayout.SOUTH );
 			updateImage();
 		} catch (FontFormatException e) {
@@ -182,6 +191,8 @@ implements ActionListener
 			this.derivedFont = this.basicFont.deriveFont(size);
 			updateImage();
 		} else if (source == this.characterMap) {
+			updateImage();
+		} else if (source == this.optionAntiAliasing) {
 			updateImage();
 		} else if (source == this.colorButton) {
 			this.currentColor = JColorChooser.showDialog(this, "Font-Color", this.currentColor);
@@ -298,12 +309,15 @@ implements ActionListener
 		if (text.length() == 0) {
 			return null;
 		}
+		boolean useAntiAliasing = this.optionAntiAliasing.isSelected();
 		// use dummy buffer for get a render context:
 		BufferedImage image =
 		    new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = image.createGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		if (useAntiAliasing) {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 		                    RenderingHints.VALUE_ANTIALIAS_ON);
+		}
 		FontRenderContext fc = g.getFontRenderContext();
 		Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
 		double height = bounds.getHeight();
@@ -315,8 +329,10 @@ implements ActionListener
 		Color transparent = new Color( 1, 1, 1, 0 );
 		g.setBackground( transparent );
 		g.clearRect(0, 0, (int) width, (int) height );
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+		if (useAntiAliasing) {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		                    RenderingHints.VALUE_ANTIALIAS_ON);
+		}
 		g.setFont( this.derivedFont );
 		g.setColor( this.currentColor );
 		g.drawString(text,0,(int)-bounds.getY());

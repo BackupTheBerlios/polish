@@ -304,6 +304,10 @@ public class DataType {
 				} else {
 					return 1;
 				}
+			case ASCII_STRING_ID:
+				return ((String)data).length();
+			case UTF_STRING_ID:
+				return ((String)data).length();
 			default: 
 				throw new IllegalStateException( "The data-type [" + this.name + "] cannot be used for calculations.");
 		}	

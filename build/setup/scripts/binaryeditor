@@ -1,4 +1,5 @@
 #!/bin/bash
-
+# switching to the folder:
+cd "%{INSTALL_PATH}/bin"
 # starting the binary data editor:
 java -classpath $CLASSPATH:../import/enough-j2mepolish-build.jar:../import/jdom.jar de.enough.polish.dataeditor.swing.SwingDataEditor

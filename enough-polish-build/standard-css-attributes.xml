@@ -264,5 +264,12 @@
 		description="Defines whether a list should show the text of the list-items in the title instead on the screen."
 		default="false"
 	/>
+
+	<attribute
+		name="font-bitmap"
+		type="string"
+		appliesTo="Font, BitMapFont"
+		description="Defines which bitmap (bmf) font should be used."
+	/>
 	
 </attributes>

@@ -123,7 +123,7 @@ implements DataEditorUI, ActionListener
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		updateTitle();
 		
-		this.icon = getToolkit().createImage("binaryeditor.png");
+		this.icon = SwingUtil.loadIcon( "icons/binaryeditor.png" );
 		if (this.icon != null) {
 			this.setIconImage( this.icon );
 		}

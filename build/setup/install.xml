@@ -107,12 +107,21 @@
             <file src="doc" targetdir="$INSTALL_PATH"/> <!-- Reccursive adding -->
         </pack>
         <pack name="Tools" required="no" preselected="yes">
-            <description>General stand-alone tools for J2ME development, e.g. the binary data editor.</description>
-            <file src="../setup/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
-            <file src="../setup/binaryeditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
-            <file src="../setup/bin" targetdir="$INSTALL_PATH" />
+            <description>General stand-alone tools for J2ME development, e.g. the binary data editor or an editor for creating bitmap-fonts.</description>
+            <file src="../setup/scripts/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
+            <file src="../setup/scripts/binaryeditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
+            <file src="../setup/scripts/fonteditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
+            <file src="../setup/scripts/fonteditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
+            <file src="../setup/bin/level.definition" targetdir="$INSTALL_PATH/bin" />
+            <file src="../setup/bin/level1.data" targetdir="$INSTALL_PATH/bin" />
+            <file src="../setup/bin/readme.txt" targetdir="$INSTALL_PATH/bin" />
             <!-- mark Unix shell skripts as executable: -->
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor" stage="never" os="unix" />
+            <executable targetfile="$INSTALL_PATH/bin/fonteditor" stage="never" os="unix" />
+            <parsable targetfile="$INSTALL_PATH/bin/binaryeditor" type="shell"  os="unix" /> 
+            <parsable targetfile="$INSTALL_PATH/bin/binaryeditor.bat" type="shell" os="windows" /> 
+            <parsable targetfile="$INSTALL_PATH/bin/fonteditor" type="shell"  os="unix" /> 
+            <parsable targetfile="$INSTALL_PATH/bin/fonteditor.bat" type="shell" os="windows" /> 
         </pack>
         <pack name="Sources" required="no" preselected="no">
             <description>The sources of J2ME Polish. These are useful if you want to extend J2ME Polish.</description>

@@ -25,11 +25,15 @@
  */
 package de.enough.polish.util;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
+import java.net.URL;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+
 
 
 /**
@@ -82,23 +86,54 @@ public final class SwingUtil {
 			return null;
 		}
 	}
+	
+	/**
+	 * Loads an image from within a jar.
+	 * 
+	 * @param fileName the image path. 
+	 * @return an initialised image-icon or null, when no image could be found.
+	 */
+	public static Image loadIcon( String fileName ) {
+        URL url = ClassLoader.getSystemResource(fileName);
+        if (url == null) {
+        	System.out.println("unable to locate [" + fileName + "].");
+        	return null;
+        }
+        return Toolkit.getDefaultToolkit().createImage(url);
+	}
+	
+	/**
+	 * Provides an easy way to set the icon of a JFrame.
+	 * When the image could not be loaded, nothing will be changed.
+	 * 
+	 * @param frame the frame which should have an icon
+	 * @param fileName the path of the icon
+	 */
+	public static void setImageIcon( JFrame frame, String fileName ) {
+		Image image = loadIcon( fileName );
+		if (image != null) {
+			frame.setIconImage(image);
+		}
+	}
 
 	class CustomFileFilter extends FileFilter {
-		String type;
+		private final String lowerCaseType;
+		private final String upperCaseType;
 		public CustomFileFilter( String type ) {
-			this.type = type;
+			this.lowerCaseType = type.toLowerCase();
+			this.upperCaseType = type.toUpperCase();
 		}
 		/* (non-Javadoc)
 		 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
 		 */
 		public boolean accept(File f) {
-			return (f.isDirectory() || f.getName().endsWith( this.type ));
+			return (f.isDirectory() || f.getName().endsWith( this.lowerCaseType ) || f.getName().endsWith(this.upperCaseType));
 		}
 		/* (non-Javadoc)
 		 * @see javax.swing.filechooser.FileFilter#getDescription()
 		 */
 		public String getDescription() {
-			return this.type;
+			return this.lowerCaseType;
 		}	
 	}
 
