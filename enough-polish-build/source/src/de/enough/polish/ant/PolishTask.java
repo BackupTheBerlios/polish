@@ -1582,15 +1582,8 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// create manifest:
-		Jad jad = new Jad( this.preprocessor.getVariables() );
-		boolean useAttributesFilter = this.buildSetting.hasManifestAttributesFilter();
-		HashMap attributesByName = null;
-		if (useAttributesFilter) {
-			attributesByName = new HashMap();
-			attributesByName.put( "Manifest-Version", new Attribute( "Manifest-Version", "1.0" ) ); 
-		} else {
-			jad.addAttribute( "Manifest-Version", "1.0" );
-		}
+		HashMap attributesByName = new HashMap();
+		attributesByName.put( "Manifest-Version", new Attribute( "Manifest-Version", "1.0" ) ); 
 		// set MicroEdition-Profile:
 		String profile = this.infoSetting.getProfile();
 		if (profile == null) {			
@@ -1600,11 +1593,7 @@ public class PolishTask extends ConditionalTask {
 				profile = InfoSetting.MIDP1;
 			}
 		}
-		if (useAttributesFilter) {
-			attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Attribute(InfoSetting.MICRO_EDITION_PROFILE, profile) );
-		} else {
-			jad.addAttribute( InfoSetting.MICRO_EDITION_PROFILE, profile );
-		}
+		attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Attribute(InfoSetting.MICRO_EDITION_PROFILE, profile) );
 
 		// set MicroEdition-Configuration:
 		String config = this.infoSetting.getConfiguration();
@@ -1615,32 +1604,20 @@ public class PolishTask extends ConditionalTask {
 				config = InfoSetting.CLDC1_0;
 			}
 		}
-		if (useAttributesFilter) {
-			attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
-		} else {
-			jad.addAttribute( InfoSetting.MICRO_EDITION_CONFIGURATION, config );
-		}
+		attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
 
 		// add info attributes:
 		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.preprocessor.getVariables() );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute attribute = jadAttributes[i];
-			if (useAttributesFilter) {
-				attributesByName.put( attribute.getName(), attribute );
-			} else {
-				jad.addAttribute( attribute );
-			}
+			attributesByName.put( attribute.getName(), attribute );
 		}
 		
 		// add build properties - midlet infos:
 		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
 		for (int i = 0; i < midletInfos.length; i++) {
 			String info = midletInfos[i];
-			if (useAttributesFilter) {
-				attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Attribute(InfoSetting.NMIDLET + (i+1), info ) );
-			} else {
-				jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
-			}
+			attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Attribute(InfoSetting.NMIDLET + (i+1), info ) );
 		}
 		
 		// add user-defined attributes:
@@ -1649,28 +1626,18 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
 			if (attribute.targetsManifest() && attribute.isConditionFulfilled(evaluator, this.project)) {
-				if (useAttributesFilter) {
-					attributesByName.put(attribute.getName(),
-							attribute );
-					
-				} else {
-					jad.addAttribute( attribute );
-				}
+				attributesByName.put(attribute.getName(),attribute );
 			}
 		}
 		
 		//add polish version:
-		if (useAttributesFilter) {
-			attributesByName.put( "Polish-Version", new Variable("Polish-Version", VERSION ) );
-		} else {
-			jad.addAttribute( "Polish-Version", VERSION );
-		}
+		attributesByName.put( "Polish-Version", new Attribute("Polish-Version", VERSION ) );
 		
 		// sort and filter the attributes if this is requested:
-		if (useAttributesFilter) {
-			Variable[] manifestAttributes = this.buildSetting.filterManifestAttributes(attributesByName);
-			jad.setAttributes(manifestAttributes);
-		}
+		Variable[] manifestAttributes = this.buildSetting.filterManifestAttributes( attributesByName, this.preprocessor.getBooleanEvaluator() );
+		Jad jad = new Jad( this.preprocessor.getVariables() );
+		jad.setAttributes(manifestAttributes);
+		
 		File manifestFile = new File( device.getClassesDir() 
 				+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
 		try {
@@ -1698,44 +1665,27 @@ public class PolishTask extends ConditionalTask {
 	 */
 	private void jad(Device device, Locale locale) {		
 		// now create the JAD file:
-		Jad jad = new Jad( this.preprocessor.getVariables() );
-		HashMap attributesByName = null;
-		boolean useAttributesFilter = this.buildSetting.hasJadAttributesFilter();
-		if (useAttributesFilter) {
-			attributesByName = new HashMap();
-		}
+		HashMap attributesByName = new HashMap();
 		// add info attributes:
 		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.preprocessor.getVariables() );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute var  = jadAttributes[i];
-			if (useAttributesFilter) {
-				attributesByName.put( var.getName(), 
+			attributesByName.put( var.getName(), 
 					new Attribute(var.getName(), var.getValue() ) );
-			} else {
-				jad.addAttribute( var );
-			}
 		}
 		
 		// add build properties - midlet infos:
 		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
 		for (int i = 0; i < midletInfos.length; i++) {
 			String info = midletInfos[i];
-			if (useAttributesFilter) {
-				attributesByName.put( InfoSetting.NMIDLET + (i+1), 
+			attributesByName.put( InfoSetting.NMIDLET + (i+1), 
 						new Attribute(InfoSetting.NMIDLET + (i+1), info) );
-			} else {
-				jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
-			}
 		}
 		
 		// add size of jar:
 		long size = device.getJarFile().length();
-		if (useAttributesFilter) {
-			attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
+		attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
 					new Attribute( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
-		} else {
-			jad.addAttribute(  InfoSetting.MIDLET_JAR_SIZE, "" + size );
-		}
 		
 		// add user-defined attributes:
 		Attribute[] attributes = this.buildSetting.getJadAttributes();
@@ -1743,21 +1693,15 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
 			if (attribute.targetsJad() && attribute.isConditionFulfilled(evaluator, this.project)) {
-				if (useAttributesFilter) {
-					attributesByName.put(attribute.getName(),
-							new Attribute( attribute.getName(), attribute.getValue() ) );
-					
-				} else {
-					jad.addAttribute( attribute );
-				}
+				attributesByName.put(attribute.getName(),
+						new Attribute( attribute.getName(), attribute.getValue() ) );
 			}
 		}
 		
 		// sort and filter the JAD attributes if requested:
-		if (useAttributesFilter) {
-			Attribute[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName);
-			jad.setAttributes( filteredAttributes );
-		}
+		Attribute[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName, this.preprocessor.getBooleanEvaluator() );
+		Jad jad = new Jad( this.preprocessor.getVariables() );
+		jad.setAttributes( filteredAttributes );
 		
 		String jadPath = this.preprocessor.getVariable("polish.jadPath");
 		File jadFile = new File( jadPath );

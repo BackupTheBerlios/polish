@@ -44,6 +44,7 @@ import de.enough.polish.util.PropertyUtil;
  */
 public class Jad {
 	
+	
 	private ArrayList attributes;
 	private Map properties;
 

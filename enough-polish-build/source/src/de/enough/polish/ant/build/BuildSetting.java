@@ -57,6 +57,13 @@ public class BuildSetting {
 	public final static String TARGET_1_1 = "1.1";
 	public final static String TARGET_1_2 = "1.2";
 	
+	private static final String DEFAULT_JAD_FILTER_PATTERN = "MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
+	private static final String DEFAULT_MANIFEST_FILTER_PATTERN = "Manifest-Version, MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
+	
+	private final AttributesFilter defaultJadFilter;
+	private final AttributesFilter defaultManifestFilter;
+
+	
 	private DebugSetting debugSetting;
 	private MidletSetting midletSetting; 
 	private ArrayList obfuscatorSettings;
@@ -86,8 +93,8 @@ public class BuildSetting {
 	private JadAttributes jadAttributes;
 	private boolean defaultMidpPathUsed = true;
 	private ArrayList preprocessors;
-	private AttributesFilter jadAttributesFilter;
-	private AttributesFilter manifestAttributesFilter;
+	private ArrayList jadAttributesFilters;
+	private ArrayList manifestAttributesFilters;
 	private File[] binaryLibraries;
 	private String polishHomePath;
 	private String projectBasePath;
@@ -132,6 +139,10 @@ public class BuildSetting {
 		this.devices = getFile("devices.xml");
 		this.imageLoadStrategy = IMG_LOAD_FOREGROUND;
 		this.resourceUtil = new ResourceUtil( this.getClass().getClassLoader() );
+		
+		this.defaultJadFilter = new AttributesFilter( DEFAULT_JAD_FILTER_PATTERN );
+		this.defaultManifestFilter = new AttributesFilter( DEFAULT_MANIFEST_FILTER_PATTERN );
+
 	}
 	
 	public void addConfiguredObfuscator( ObfuscatorSetting setting ) {
@@ -180,12 +191,18 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredManifestFilter( AttributesFilter filter ) {
-		this.manifestAttributesFilter = filter;
+		if (this.manifestAttributesFilters == null) {
+			this.manifestAttributesFilters = new ArrayList();
+		}
+		this.manifestAttributesFilters.add( filter );
 	}
 		
 	public void addConfiguredJad( JadAttributes attributes ) {
+		if (this.jadAttributesFilters == null) {
+			this.jadAttributesFilters = new ArrayList();
+		}
 		this.jadAttributes = attributes;
-		this.jadAttributesFilter = attributes.getFilter();
+		this.jadAttributesFilters =  attributes.getFilters();
 	}
 	
 	public void addConfiguredPackager( PackageSetting setting ) {
@@ -954,8 +971,8 @@ public class BuildSetting {
 	 * 
 	 * @return true when there is a filter defined.
 	 */
-	public boolean hasJadAttributesFilter() {
-		return (this.jadAttributesFilter != null);
+	public boolean hasUserDefinedJadAttributesFilter() {
+		return (this.jadAttributesFilters != null);
 	}
 
 	/**
@@ -963,12 +980,22 @@ public class BuildSetting {
 	 * 
 	 * @param attributesMap a hash map containing the available attributes
 	 *        with the attribute-names as keys.
+	 * @param evaluator the evaluator for getting the correct filter
 	 * @return an array of attributes in the correct order,
 	 *         not all given attributes are guaranteed to be included.
 	 * @throws NullPointerException when there is no JAD-attribute filter.
 	 */
-	public Attribute[] filterJadAttributes( HashMap attributesMap ) {
-		return this.jadAttributesFilter.filterAttributes(attributesMap);
+	public Attribute[] filterJadAttributes( HashMap attributesMap, BooleanEvaluator evaluator ) {
+		if (this.jadAttributesFilters != null) {
+			AttributesFilter[] filters = (AttributesFilter[]) this.jadAttributesFilters.toArray( new AttributesFilter[ this.jadAttributesFilters.size() ]);
+			for (int i = 0; i < filters.length; i++) {
+				AttributesFilter filter = filters[i];
+				if (filter.isActive(evaluator, this.project)) {
+					return filter.filterAttributes(attributesMap);
+				}
+			}
+		} 
+		return this.defaultJadFilter.filterAttributes(attributesMap);
 	}
 	
 	/**
@@ -976,8 +1003,8 @@ public class BuildSetting {
 	 * 
 	 * @return true when there is a filter defined.
 	 */
-	public boolean hasManifestAttributesFilter() {
-		return (this.manifestAttributesFilter != null);
+	public boolean hasUserDefinedManifestAttributesFilter() {
+		return (this.manifestAttributesFilters != null);
 	}
 
 	/**
@@ -985,12 +1012,22 @@ public class BuildSetting {
 	 * 
 	 * @param attributesMap a hash map containing the available attributes
 	 *        with the attribute-names as keys.
+	 * @param evaluator the boolean evaluator for getting the correct filter
 	 * @return an array of attributes in the correct order,
 	 *         not all given attributes are guaranteed to be included.
 	 * @throws NullPointerException when there is no MANIFEST-attribute filter.
 	 */
-	public Attribute[] filterManifestAttributes( HashMap attributesMap ) {
-		return this.manifestAttributesFilter.filterAttributes(attributesMap);
+	public Attribute[] filterManifestAttributes( HashMap attributesMap, BooleanEvaluator evaluator ) {
+		if (this.manifestAttributesFilters != null) {
+			AttributesFilter[] filters = (AttributesFilter[]) this.manifestAttributesFilters.toArray( new AttributesFilter[ this.manifestAttributesFilters.size() ]);
+			for (int i = 0; i < filters.length; i++) {
+				AttributesFilter filter = filters[i];
+				if (filter.isActive(evaluator, this.project)) {
+					return filter.filterAttributes(attributesMap);
+				}
+			}
+		} 
+		return this.defaultManifestFilter.filterAttributes(attributesMap);
 	}
 	
 	/**

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Attribute;
+import de.enough.polish.ant.ConditionalElement;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -45,23 +46,40 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AttributesFilter {
+public class AttributesFilter
+extends ConditionalElement
+{
 	
 	ArrayList filterElements;
 
 	/**
-	 * Creates a new unitialised attributs filter.
+	 * Creates a new unitialised attributes filter.
 	 */
 	public AttributesFilter() {
 		// initialisation is done with the setter methods
 	}
 	
+	/**
+	 * Creates a new attributes filter.
+	 * 
+	 * @param filterText the text specifying what elements should be included in what order
+	 */
+	public AttributesFilter( String filterText ) {
+		addText( filterText );
+	}
+
+	
+	/**
+	 * Adds the contents of the corresponding <jadFilter> or <manifestFilter> to this filter-setting.
+	 * 
+	 * @param text the text specifying what elements should be included in what order
+	 */
 	public void addText( String text ) {
 		String[] definitions = StringUtil.splitAndTrim( text, ',' );
 		this.filterElements = new ArrayList( definitions.length );
 		for (int i = 0; i < definitions.length; i++) {
 			String definition = definitions[i];
-			FilterElement element = new FilterElement( definition );
+			FilterElement element = new FilterElement( text, definition );
 			if (element.isRest && (i != definitions.length - 1) ) {
 				throw new BuildException("The attribute-element [" + definition 
 						+ "] can only be placed at the end of the attributes-filter-list.");
@@ -112,6 +130,7 @@ public class AttributesFilter {
 		/**
 		 * Creates a new filter.
 		 * 
+		 * @param text the complete text that can be used for indicating errors to the user 
 		 * @param definition the definition of the attribute:
 		 * 		either the name (for required attributes), 
 		 * 		the name followed by a question-mark (for optional attributes),
@@ -119,7 +138,7 @@ public class AttributesFilter {
 		 * 		starting with the specified sequence),
 		 * 		or just a star for specifying any other attributes.
 		 */
-		public FilterElement( String definition ) {
+		public FilterElement( String text, String definition ) {
 			if (definition.endsWith("?")) {
 				this.isOptional = true;
 				this.definition = definition.substring(0, definition.length() -1 );
@@ -131,6 +150,13 @@ public class AttributesFilter {
 			} else {
 				this.isRequired = true;
 				this.definition = definition;
+			}
+			if ( (this.definition != null)
+					&& ((this.definition.indexOf(' ') != -1) 
+							|| (this.definition.indexOf('?') != -1)  
+							|| (this.definition.indexOf('*') != -1) )) 
+			{
+				throw new BuildException("Invalid jad- or manifest-filter setting, probably just a comma is missing in the element [" + definition + "] - the complete text is [" + text + "].");
 			}
 		}
 		

@@ -37,7 +37,7 @@ import de.enough.polish.Attribute;
 public class JadAttributes {
 
 	private ArrayList list;
-	private AttributesFilter filter;
+	private ArrayList filters;
 
 	/**
 	 * Creates a new list 
@@ -69,19 +69,22 @@ public class JadAttributes {
 	}
 	
 	public void addConfiguredFilter( AttributesFilter filterSetting ) {
-		this.filter = filterSetting;
+		addConfiguredJadFilter(filterSetting);
 	}
 
 	public void addConfiguredJadFilter( AttributesFilter filterSetting ) {
-		this.filter = filterSetting;
+		if ( this.filters == null ) {
+			this.filters = new ArrayList();
+		}
+		this.filters.add( filterSetting );
 	}
 
 	public Attribute[] getAttributes(){
 		return (Attribute[]) this.list.toArray( new Attribute[ this.list.size() ] );
 	}
 	
-	public AttributesFilter getFilter() {
-		return this.filter;
+	public ArrayList getFilters() {
+		return this.filters;
 	}
 
 }
