@@ -85,6 +85,15 @@ public class TextFile {
 		this.lastModified = lastModificationTime;
 		this.filePath = filePath;
 		this.baseDir = baseDir;
+		int index = this.filePath.lastIndexOf( '/' );
+		if (index == -1) {
+			index = this.filePath.lastIndexOf( '\\' );
+		}
+		if (index == -1) {
+			this.fileName = this.filePath;
+		} else {
+			this.fileName = this.filePath.substring( index + 1 );
+		}
 	}
 
 	/**

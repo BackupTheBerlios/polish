@@ -943,10 +943,12 @@ public class PolishTask extends ConditionalTask {
 			// adjust polish.classes.ImageLoader in case the default package is used:
 			if (this.useDefaultPackage) {
 				String imageLoaderClass = this.preprocessor.getVariable("polish.classes.ImageLoader");
-				int classStartIndex = imageLoaderClass.lastIndexOf('.');
-				if (classStartIndex != -1) {
-					imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
-					this.preprocessor.addVariable("polish.classes.ImageLoader", imageLoaderClass );
+				if (imageLoaderClass != null) {
+					int classStartIndex = imageLoaderClass.lastIndexOf('.');
+					if (classStartIndex != -1) {
+						imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
+						this.preprocessor.addVariable("polish.classes.ImageLoader", imageLoaderClass );
+					}
 				}
 			}
 			// get the last modfication time of the build.xml file

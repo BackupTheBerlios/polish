@@ -138,7 +138,7 @@ public final class ImportConverter {
 				"import javax.microedition.lcdui.Graphics; " +
 				"import javax.microedition.lcdui.Image";
 		this.completeMidp2 = this.defaultPackageCompleteMidp2 +
-				"; import de.enough.polish.ui.*;";
+				"; import de.enough.polish.ui.*";
 		
 		// init import statements to translate from the polish- to the J2ME-GUI:
 		HashMap toJavax = new HashMap();
