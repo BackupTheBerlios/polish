@@ -177,8 +177,8 @@ public abstract class Screen
 			//#ifdef polish.needsManualMenu
 				this.fullScreenHeight = getHeight();
 			//#else
-				//#ifdef polish.ScreenHeight:defined
-					//#= this.fullScreenHeight = ${ polish.ScreenHeight };
+				//#ifdef polish.FullCanvasHeight:defined
+					//#= this.fullScreenHeight = ${ polish.FullCanvasHeight };
 				//#else
 					//# this.fullScreenHeight = getHeight();
 				//#endif
@@ -307,6 +307,9 @@ public abstract class Screen
 			if (this.container != null) {
 				this.container.showNotify();
 			}
+			//#ifdef polish.vendor.Motorola
+				this.ignoreMotorolaTitleCall = true;
+			//#endif
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("error while calling showNotify", e );
@@ -976,6 +979,8 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int, int)
 	 */
 	protected void pointerPressed(int x, int y) {
+		//#debug
+		System.out.println("PointerPressed at " + x + ", " + y );
 		try {
 			// check for scroll-indicator:
 			if (  this.paintScrollIndicator &&
