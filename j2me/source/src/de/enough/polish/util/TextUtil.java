@@ -92,13 +92,13 @@ public final class TextUtil {
 		}
 		boolean hasLineBreaks = (value.indexOf('\n') != -1);
 		int completeWidth = font.stringWidth(value);
-		if ( completeWidth <= firstLineWidth ) {
+		if ( completeWidth <= firstLineWidth && !hasLineBreaks ) {
 			// the given string fits on the first line:
-			if (hasLineBreaks) {
-				return split( value, '\n');
-			} else {
-				return new String[]{ value };
-			}
+			//if (hasLineBreaks) {
+			//	return split( "complete/linebreaks:" + completeWidth + "> " + value, '\n');
+			//} else {
+				return new String[]{  value };
+			//}
 		}
 		// the given string does not fit on the first line:
 		ArrayList lines = new ArrayList();
@@ -120,7 +120,7 @@ public final class TextUtil {
 					}
 					completeWidth = font.stringWidth(line);
 					if (completeWidth <= firstLineWidth ) {
-						lines.add( line);						
+						lines.add( line );						
 					} else {
 						TextUtil.split(line, font, completeWidth, firstLineWidth, lineWidth, lines);
 					}
@@ -155,8 +155,45 @@ public final class TextUtil {
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{
-		try {
 		char[] valueChars = value.toCharArray();
+		int startPos = 0;
+		int lastSpacePos = -1;
+		int lastSpacePosLength = 0;
+		int currentLineWidth = 0;
+		for (int i = 0; i < valueChars.length; i++) {
+			char c = valueChars[i];
+			currentLineWidth += font.charWidth( c );
+			if (c == '\n') {
+				list.add( new String( valueChars, startPos, i - startPos ) );
+				lastSpacePos = -1;
+				startPos = i+1;
+				currentLineWidth = 0;
+				firstLineWidth = lineWidth; 
+				i = startPos;
+			} else if (currentLineWidth >= firstLineWidth ) {
+				if ( lastSpacePos == -1 ) {
+					i--;
+					list.add( new String( valueChars, startPos, i - startPos ) );
+					startPos =  i;
+					currentLineWidth = 0;
+				} else {
+					currentLineWidth -= lastSpacePosLength;
+					list.add( new String( valueChars, startPos, lastSpacePos - startPos ) );
+					startPos =  lastSpacePos + 1;
+					lastSpacePos = -1;
+				}
+				firstLineWidth = lineWidth; 
+			} else if (c == ' ' || c == '\t') {
+				lastSpacePos = i;
+				lastSpacePosLength = currentLineWidth;
+			}
+			
+		} 
+		// add tail:
+		list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
+		
+		/*
+		try {
 		int widthPerChar = (completeWidth * 100) / valueChars.length;
 		int startIndex = 0;
 		while (true) {
@@ -190,6 +227,7 @@ public final class TextUtil {
 			e.printStackTrace();
 			System.out.println("complete width=" + completeWidth + " number of chars=" + value.length());
 		}
+		*/
 	}
 
 }
