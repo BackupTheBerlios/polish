@@ -96,7 +96,9 @@ public abstract class Screen
 	protected int screenHeight;
 	private int originalScreenHeight;
 	protected int screenWidth;
-	private Ticker ticker;
+	//#ifndef polish.skipTicker
+		private Ticker ticker;
+	//#endif
 	protected String cssSelector;
 	private ForwardCommandListener cmdListener;
 	protected Container container;
@@ -291,9 +293,11 @@ public abstract class Screen
 			if (this.gauge != null) {
 				animated = animated | this.gauge.animate();
 			}
-			if (this.ticker != null) {
-				animated = animated | this.ticker.animate();
-			}
+			//#ifndef polish.skipTicker
+				if (this.ticker != null) {
+					animated = animated | this.ticker.animate();
+				}
+			//#endif
 			//#if polish.useFullScreen && polish.api.nokia-ui 
 			if (animated || this.repaintRequested) {
 				this.repaintRequested = false;
@@ -357,10 +361,12 @@ public abstract class Screen
 			//#else
 			 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
 			//#endif
-			 	
+			 
+			//#ifndef polish.skipTicker
 			if (this.ticker != null) {
 				this.ticker.paint( 0, this.screenHeight, 0, this.screenWidth, g );
 			}
+			//#endif
 			
 			// paint border:
 			if (this.border != null) {
@@ -503,6 +509,7 @@ public abstract class Screen
 	}
 	//#endif
 
+	//#ifndef polish.skipTicker
 	/**
 	 * Set a ticker for use with this Screen, replacing any previous ticker.
 	 * If null, removes the ticker object
@@ -530,7 +537,9 @@ public abstract class Screen
 			repaint();
 		}
 	}
+	//#endif
 	
+	//#ifndef polish.skipTicker
 	/**
 	 * Gets the ticker used by this Screen.
 	 * 
@@ -540,6 +549,7 @@ public abstract class Screen
 	{
 		return this.ticker;
 	}
+	//#endif
 		
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)

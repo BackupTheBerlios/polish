@@ -49,7 +49,7 @@ implements CommandListener
 	public static final Command RETURN_COMMAND = new Command( "return", Command.SCREEN, 1 );
 	private static final ArrayList MESSAGES = new ArrayList( 100 );
 	private static Displayable returnDisplayable;
-	private static Display display;
+	private static Display midletDisplay;
 	private static javax.microedition.lcdui.TextBox textBox;
 	
 	/**
@@ -107,7 +107,7 @@ implements CommandListener
 			MESSAGES.remove( 0 );
 		}
 		if (Debug.textBox != null) {
-			Debug.textBox.insert( message + "\n", 0 );
+			addMessages();
 		}
 		//#if polish.showLogOnError && polish.usePolishGui 
 			if (exception != null) {
@@ -163,17 +163,30 @@ implements CommandListener
 			return;
 		}
 		Debug.returnDisplayable = display.getCurrent();
-		Debug.display = display;
-		Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 255, javax.microedition.lcdui.TextField.ANY );
-		Debug.textBox.setMaxSize( Debug.textBox.getMaxSize() );
-		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
-		for (int i = 0; i < messages.length; i++) {
-			String message = messages[i] + "\n";
-			Debug.textBox.insert( message, 0 );
-		}
+		Debug.midletDisplay = display;
+		Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
+		int maxSize = Debug.textBox.getMaxSize();
+		Debug.textBox.setMaxSize( maxSize );
+		addMessages();
 		Debug.textBox.addCommand(RETURN_COMMAND);
 		Debug.textBox.setCommandListener( new Debug() );
 		display.setCurrent( Debug.textBox );
+	}
+	
+	private static final void addMessages() {
+		StringBuffer buffer = new StringBuffer();
+		int maxSize = Debug.textBox.getMaxSize();
+		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
+		int i = messages.length - 1; 
+		while (buffer.length() < maxSize && i >= 0 ) {
+			buffer.append( messages[i])
+				.append( '\n' );
+			i--;
+		}
+		if ( buffer.length() >= maxSize) {
+			buffer.delete(maxSize - 1, buffer.length() );
+		}
+		Debug.textBox.setString( buffer.toString() );
 	}
 
 	/* (non-Javadoc)
@@ -181,8 +194,8 @@ implements CommandListener
 	 */
 	public void commandAction(Command cmd, Displayable screen) {
 		Debug.textBox = null;
-		Display disp = Debug.display;
-		Debug.display = null;
+		Display disp = Debug.midletDisplay;
+		Debug.midletDisplay = null;
 		Displayable returnDisp = Debug.returnDisplayable;
 		Debug.returnDisplayable = null;
 		disp.setCurrent( returnDisp );
