@@ -108,8 +108,12 @@
         </pack>
         <pack name="Tools" required="no" preselected="yes">
             <description>General stand-alone tools for J2ME development, e.g. the binary data editor or an editor for creating bitmap-fonts.</description>
-            <file src="macosx/binaryeditor.app" targetdir="$INSTALL_PATH/bin" os="Mac OS X" />
-            <file src="macosx/fonteditor.app" targetdir="$INSTALL_PATH/bin" os="Mac OS X" />
+            <file src="macosx/binaryeditor.app" targetdir="$INSTALL_PATH/bin">
+            	<os name="Mac OS X" />
+            </file>
+            <file src="macosx/fonteditor.app" targetdir="$INSTALL_PATH/bin" >
+            	<os name="Mac OS X" />
+            </file>
             <file src="../setup/scripts/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
             <file src="../setup/scripts/binaryeditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
             <file src="../setup/scripts/fonteditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
@@ -122,21 +126,29 @@
             <!-- mark Unix shell skripts as executable: -->
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor" stage="never" os="unix" />
             <executable targetfile="$INSTALL_PATH/bin/fonteditor" stage="never" os="unix" />
-            <executable targetfile="$INSTALL_PATH/bin/binaryeditor" stage="never" os="unix" />
-            <executable targetfile="$INSTALL_PATH/bin/fonteditor.app/Contents/MacOS/FontEditor" stage="never" os="Mac OS X" />
-            <executable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/MacOS/BinaryEditor" stage="never" os="Mac OS X" />
+            <executable targetfile="$INSTALL_PATH/bin/fonteditor.app/Contents/MacOS/FontEditor" stage="never" >
+            	<os name="Mac OS X" />
+            </executable>
+            <executable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/MacOS/BinaryEditor" stage="never">
+            	<os name="Mac OS X" />
+            </executable>            
             <parsable targetfile="$INSTALL_PATH/bin/binaryeditor" type="shell"  os="unix" /> 
             <parsable targetfile="$INSTALL_PATH/bin/binaryeditor.bat" type="shell" os="windows" /> 
             <parsable targetfile="$INSTALL_PATH/bin/fonteditor" type="shell"  os="unix" /> 
             <parsable targetfile="$INSTALL_PATH/bin/fonteditor.bat" type="shell" os="windows" /> 
-            <parsable targetfile="$INSTALL_PATH/bin/fonteditor.app/Contents/Info.plist" type="shell" os="Mac OS X" />
-            <parsable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/Info.plist" type="shell" os="Mac OS X" />
+            <parsable targetfile="$INSTALL_PATH/bin/fonteditor.app/Contents/Info.plist" type="shell">
+            	<os name="Mac OS X" />
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/Info.plist" type="shell">
+            	<os name="Mac OS X" />
+            </parsable>
         </pack>
         <pack name="Sources" required="no" preselected="no">
             <description>The sources of J2ME Polish. These are useful if you want to extend J2ME Polish.</description>
             <file src="j2mepolish-src" targetdir="$INSTALL_PATH"/>
         </pack>
-        <pack name="OS X: JadUtil.jar" required="no" preselected="yes" os="Mac OS X">
+        <pack name="OS X: JadUtil.jar" required="no" preselected="yes">
+        	<os name="Mac OS X" />
             <description>The Jad utility is needed for signing MIDlets on Mac OS X platforms.</description>
             <file src="../setup/JadTool.jar" targetdir="$INSTALL_PATH/bin"/>
         </pack>

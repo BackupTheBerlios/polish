@@ -167,9 +167,9 @@ implements DataEditorUI, ActionListener
 			loadSettings();			
 		} else {
 			openDefinition( definition );
-		}
-		if (data != null) {
-			openData( data );
+			if (data != null) {
+				openData( data );
+			}
 		}
 		this.dataManager.registerUI( this );
 	}
@@ -724,11 +724,15 @@ implements DataEditorUI, ActionListener
 			File file = new File( args[0] );
 			if (file.exists()) {
 				definitionFile = file;
+			} else {
+				System.out.println("definition-file does not exist: " + args[0]);
 			}
 			if (args.length > 1) {
 				file = new File( args[1] );
 				if (file.exists()) {
 					dataFile = file;
+				} else {
+					System.out.println("data-file does not exist: " + args[1]);
 				}
 			}
 		}
