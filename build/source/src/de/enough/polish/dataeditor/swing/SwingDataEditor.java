@@ -105,12 +105,25 @@ implements DataEditorUI, ActionListener
 	private CreateCodeDialog createCodeDialog;
 	private Image icon;
 	private String packageName;
+	private final boolean doSystemExit;
 	
-
 	/**
+	 * Creates a new empty data editor with a swing GUI. 
 	 */
 	public SwingDataEditor( ) {
+		this( null, null, true );
+	}
+
+	/**
+	 * Creates a new empty data editor with a swing GUI.
+	 *  
+	 * @param definition the definition file. Is ignored if null.
+	 * @param data the data file. Is ignored if null.
+	 * @param doSystemExit true when the editor should call System.exit() whewn quitting.
+	 */
+	public SwingDataEditor( File definition, File data, boolean doSystemExit  ) {
 		super();
+		this.doSystemExit = doSystemExit;
 		setJMenuBar( createMenuBar() );
 		super.addWindowListener( new MyWindowListener() );
 		this.dataManager = new DataManager();
@@ -148,8 +161,14 @@ implements DataEditorUI, ActionListener
 		if (this.icon != null) {
 			this.setIconImage( this.icon );
 		}
-		
-		loadSettings();
+		if ( definition == null ) {
+			loadSettings();			
+		} else {
+			openDefinition( definition );
+		}
+		if (data != null) {
+			openData( data );
+		}
 		this.dataManager.registerUI( this );
 	}
 	
@@ -484,6 +503,10 @@ implements DataEditorUI, ActionListener
 
 	private void openDefinition() {
 		File file = openFile( ".definition", true );
+		openDefinition( file );
+	}
+
+	public void openDefinition( File file ) {
 		if (file != null) {
 			try {
 				this.dataManager.loadDefinition(file);
@@ -499,11 +522,9 @@ implements DataEditorUI, ActionListener
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
-		} else {
-			System.out.println("no file selected.");
 		}
 	}
-	
+
 	private void saveData() {
 		if (this.dataFile == null) {
 			saveDataAs();
@@ -534,6 +555,10 @@ implements DataEditorUI, ActionListener
 	
 	private void openData() {
 		File file = openFile( this.extensionField.getText(), true );
+		openData( file );
+	}
+
+	public void openData( File file) {
 		if (file != null) {
 			try {
 				this.dataManager.loadData(file);
@@ -546,7 +571,7 @@ implements DataEditorUI, ActionListener
 			}
 		}
 	}
-	
+
 	/**
 	 * @param extension
 	 * @return
@@ -596,7 +621,12 @@ implements DataEditorUI, ActionListener
 			}
 		}
 		saveSettings();
-		System.exit( 0 );
+		if (this.doSystemExit) {
+			System.exit( 0 );
+		} else {
+			setVisible( false );
+		}
+		
 	}
 	
 	private void saveSettings() {
@@ -669,7 +699,21 @@ implements DataEditorUI, ActionListener
 	}
 	
 	public static void main(String[] args) {
-		SwingDataEditor editor = new SwingDataEditor();
+		File definitionFile = null;
+		File dataFile = null;
+		if (args.length > 0) {
+			File file = new File( args[0] );
+			if (file.exists()) {
+				definitionFile = file;
+			}
+			if (args.length > 1) {
+				file = new File( args[1] );
+				if (file.exists()) {
+					dataFile = file;
+				}
+			}
+		}
+		SwingDataEditor editor = new SwingDataEditor( definitionFile, dataFile, true );
 		editor.setVisible( true );
 	}
 

@@ -44,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
+import de.enough.polish.dataeditor.swing.SwingDataEditor;
 import de.enough.polish.util.SwingUtil;
 
 /**
@@ -74,6 +75,7 @@ implements ActionListener
 	private File fontFile;
 	private TrueTypeFontViewer trueTypeViewer;
 	private JMenuItem menuSavePngImageAs;
+	private JMenuItem menuOpenInDataEditor;
 
 	/**
 	 * 
@@ -157,6 +159,12 @@ implements ActionListener
 		menu.add( item );
 		this.menuOpenImage = item;
 		
+		item = new JMenuItem( "Open in Data Editor", 'e' );
+		item.setAccelerator( KeyStroke.getKeyStroke( 'E', Event.CTRL_MASK ));
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuOpenInDataEditor = item;
+
 		menu.addSeparator();
 
 		item = new JMenuItem( "Quit", 'q' );
@@ -224,6 +232,8 @@ implements ActionListener
 				savePngImageAs();
 			}  else if ( source == this.menuOpenImage ) {
 				openImage();
+			} else if ( source == this.menuOpenInDataEditor ) {
+				openInDataEditor();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -233,6 +243,28 @@ implements ActionListener
 	
 	
 	
+	/**
+	 * @throws IOException
+	 * 
+	 */
+	private void openInDataEditor() 
+	throws IOException 
+	{
+		File definitionFile = new File( "bmf.definition");
+		if (!definitionFile.exists()) {
+			JOptionPane.showMessageDialog(this, "Unable to locate the \"bmf.definition\" file. This should be in the same directory as the fonteditor-start-script.");
+			return;
+		}
+		save();
+		if (this.bitMapFontFile == null) {
+			JOptionPane.showMessageDialog(this, "You need to save the bitmap-font-file first.");
+			return;
+		}
+		SwingDataEditor editor = new SwingDataEditor( definitionFile, this.bitMapFontFile, false );
+		editor.setVisible( true );
+		
+	}
+
 	/**
 	 * Opens an image and sets this as data to the current viewer.
 	 * @throws IOException

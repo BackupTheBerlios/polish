@@ -534,10 +534,10 @@ public class DataType {
 					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( in );\n");
 					buffer.append("\t\t//#else\n");
-					buffer.append( "\t\t\ttint " ).append( paramName ).append("Available = in.available();\n");
-					buffer.append( "\t\t\ttbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
-					buffer.append( "\t\t\ttin.read(" ).append( paramName ).append("Buffer );\n");
-					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Available = in.available();\n");
+					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
+					buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
+					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
 					buffer.append("\t\t//#endif\n");
 					buffer.append("\t\t}\n");
@@ -546,10 +546,10 @@ public class DataType {
 					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append(" = javax.microedition.lcdui.Image.createImage( in );\n");
 					buffer.append("\t\t//#else\n");
-					buffer.append( "\t\t\ttint " ).append( paramName ).append("Available = in.available();\n");
-					buffer.append( "\t\t\ttbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
-					buffer.append( "\t\t\ttin.read(" ).append( paramName ).append("Buffer );\n");
-					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Available = in.available();\n");
+					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
+					buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
+					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append(" = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
 					buffer.append("\t\t//#endif\n");
 				}

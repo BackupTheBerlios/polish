@@ -229,7 +229,7 @@
 		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,LICENSE.txt,Readme.txt" />
 	</copy>
 	<copy todir="tmp/import">
-		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar,siemens-color-game-api.jar" />
+		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar,siemens-color-game-api.jar,siemens-extension-api.jar" />
 		<fileset dir="dist" includes="*.jar" />
 	</copy>
 	<!-- copy sample application -->
