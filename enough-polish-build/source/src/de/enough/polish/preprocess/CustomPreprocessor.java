@@ -25,6 +25,10 @@
  */
 package de.enough.polish.preprocess;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
@@ -52,6 +56,7 @@ public abstract class CustomPreprocessor {
 	protected boolean isInJ2MEPolishPackage;
 	protected Device currentDevice;
 	protected StyleSheet currentStyleSheet;
+	private ArrayList directives;
 
 	/**
 	 * Creates a new line-processor.
@@ -93,11 +98,57 @@ public abstract class CustomPreprocessor {
 	
 	/**
 	 * Processes the given class.
+	 * The default implementation searches for the registered directives
+	 * and calls the appropriate methods upon findings.
 	 * 
 	 * @param lines the source code of the class
 	 * @param className the name of the class
+	 * @see #registerDirective(String)
 	 */
-	public abstract void processClass( StringList lines, String className );
+	public void processClass( StringList lines, String className ) {
+		if (this.directives == null) {
+			return;
+		}
+		Directive[] myDirectives = (Directive[]) this.directives.toArray( new Directive[ this.directives.size()]);
+		while (lines.next()) {
+			String line = lines.getCurrent();
+			for (int i = 0; i < myDirectives.length; i++) {
+				Directive directive = myDirectives[i];
+				if (line.indexOf( directive.directive ) != -1) {
+					try {
+						// a registered preprocessing directive has been found:
+						// call the appropriate method:
+						directive.method.invoke(this, new Object[]{ line, lines, className });
+						// now check if the directive has been removed:
+						if (line == lines.getCurrent()) {
+							// the line has not been changed
+							lines.setCurrent("// removed custom directive " + directive );
+						}
+						// break the for-loop:
+						break;
+					} catch (BuildException e) {
+						throw e;
+					} catch (InvocationTargetException e) {
+						if (e.getCause() instanceof BuildException) {
+							throw (BuildException) e.getCause();
+						} else {
+							e.printStackTrace();
+							throw new BuildException("Unable to process directive [" 
+									+ directive.directive + "] in line [" + line 
+									+ "] of class [" + className + "] at line [" 
+									+ (lines.getCurrentIndex() + 1) + "]: " + e.toString() );
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new BuildException("Unable to process directive [" 
+								+ directive.directive + "] in line [" + line 
+								+ "] of class [" + className + "] at line [" 
+								+ (lines.getCurrentIndex() + 1) + "]: " + e.toString() );
+					}
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Loads a line processor subclass.
@@ -128,6 +179,56 @@ public abstract class CustomPreprocessor {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to load preprocessor [" + setting.getClassName() + "]: " + e.toString() );
+		}
+	}
+	
+	/**
+	 * Adds a directive which is searched for in the preprocessed source codes.
+	 * Whenever the directive is found, the appropriate method process[directive-name] is
+	 * called.
+	 * When for example the preprocessing directive "//#hello" should be processed,
+	 * the subclass needs to implement the method 
+	 * processHello( String line, StringList lines, String className ).
+	 * <pre>
+	 * registerDirective("hello");
+	 * // is the same like
+	 * registerDirective("//#hello");
+	 * </pre> 
+	 *  
+	 * @param directive the preprocessing directive which should be found.
+	 *        The directive needs to contain at least 2 characters (apart from
+	 * 		  the beginning "//#"). The "//#" beginning is added when not specified.
+	 * @throws BuildException when the corresponding method could not be found.
+	 */
+	protected void registerDirective( String directive ) throws BuildException {
+		String methodName = directive;
+		if (directive.startsWith("//#")) {
+			methodName = directive.substring(3);
+		} else {
+			directive = "//#" + directive;
+		}
+		methodName = "process" + Character.toUpperCase( methodName.charAt(0)) + methodName.substring( 1 );
+		try {
+			Method method = getClass().getMethod( methodName, new Class[]{ String.class, StringList.class, String.class } );
+			if (this.directives == null) {
+				this.directives = new ArrayList();
+			}
+			this.directives.add( new Directive( directive, method ));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to register directive [" + directive + "]: method [" + methodName + "] could not be accessed: " + e.toString(), e );
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to register directive [" + directive + "]: method [" + methodName + "] could not be found: " + e.toString(), e );
+		}
+	}
+	
+	class Directive {
+		String directive;
+		Method method;
+		public Directive( String directive, Method method ) {
+			this.directive = directive;
+			this.method = method;
 		}
 	}
 

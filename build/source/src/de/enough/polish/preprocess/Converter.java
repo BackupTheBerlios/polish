@@ -126,5 +126,15 @@ public class Converter {
 		return url;
 	}
 	
+	/**
+	 * Parses the given color.
+	 * 
+	 * @param value the color, e.g. "rgb( 12, 12, 12 )" or "red"
+	 * @return the color in a hexdecimal representation.
+	 */
+	public String parseColor( String value ) {
+		return this.colorConverter.parseColor(value);
+	}
+
 	
 }

@@ -39,10 +39,14 @@ import javax.microedition.lcdui.Graphics;
  * When the width had to be adjusted, the custom item will be notified again with
  * the setSize(width. height)-method.
  * 
- * <br/><b>Traversal</b><br/>
+ * <br/><br/><b>Traversal</b><br/>
  * When the custom item gains the focus for the first time, the traverse-method
  * will be called with the CustomItem.NONE direction.
  * Subsequent calls will include the direction (either Canvas.UP, DOWN, LEFT or RIGHT).
+ * 
+ * <br/><br/><b>Interaction Modes</b><br/>
+ * The J2ME Polish implementation supports the interaction modes KEY_PRESS,  
+ * TRAVERSE_HORIZONTAL and TRAVERSE_VERTICAL.
  * </p>
  * 
  * <p>Subclasses are responsible for their visual
@@ -358,7 +362,8 @@ import javax.microedition.lcdui.Graphics;
  * track of its own highlighted and
  * unhighlighted state.</p>
  * 
- * <p>The fonts used should be retrieved from <A HREF="../../../javax/microedition/lcdui/Font.html#getFont(int)"><CODE>Font.getFont(int)</CODE></A>.
+ * <p>The fonts used should be retrieved from 
+ * <A HREF="../../../javax/microedition/lcdui/Font.html#getFont(int)"><CODE>Font.getFont(int)</CODE></A>.
  * This will allow them to match the fonts used by other items
  * on the device for a consistent visual appearance. </p>
  * <HR>

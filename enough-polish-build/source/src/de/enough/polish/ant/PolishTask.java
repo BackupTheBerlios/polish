@@ -170,6 +170,7 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("Successfully processed [" + numberOfDevices + "] devices.");
 			}
 		} catch (BuildException e) {
+			//e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -574,10 +575,12 @@ public class PolishTask extends ConditionalTask {
 				for (int i = 0; i < this.conditionalVariables.length; i++) {
 					Variable var = this.conditionalVariables[i];
 					if (var.isConditionFulfilled( evaluator, this.project )) {
-						System.out.println("ACCEPTING VAR " + var.getName());
+						//System.out.println("ACCEPTING VAR " + var.getName());
 						device.addDirectCapability(var.getName(), var.getValue() );
+					/*
 					} else {
 						System.out.println("REJECTING VAR " + var.getName());
+					*/
 					}
 				}
 				// reset symbols and variables,
@@ -1071,7 +1074,7 @@ public class PolishTask extends ConditionalTask {
 	}
 
 	/**
-	 * Jars the code.
+	 * Jars the code and assembles the resources for the application.
 	 * 
 	 * @param device The device for which the code should be jared.
 	 */
@@ -1113,12 +1116,6 @@ public class PolishTask extends ConditionalTask {
 		} catch (IOException e) {
 			throw new BuildException("Unable to copy resources from [" + resourceDir + "]: " + e.getMessage(), e );
 		}
-		/*
-		Jar jarTask = new Jar();
-		jarTask.setProject( this.project );
-		jarTask.setTaskName( getTaskName() + "-jar-" + device.getIdentifier() );
-		jarTask.setBasedir( classesDir );
-		*/
 		// retrieve the name of the jar-file:
 		HashMap infoProperties = new HashMap();
 		infoProperties.put( "polish.identifier", device.getIdentifier() );
@@ -1212,6 +1209,7 @@ public class PolishTask extends ConditionalTask {
 			jad.addAttribute( "Polish-Version", VERSION );
 		}
 		
+		// sort and filter the attributes if this is requested:
 		if (useAttributesFilter) {
 			Variable[] manifestAttributes = this.buildSetting.filterManifestAttributes(attributesByName);
 			jad.setAttributes(manifestAttributes);
@@ -1300,7 +1298,8 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		}
-
+		
+		// sort and filter the JAD attributes if requested:
 		if (useAttributesFilter) {
 			Variable[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName);
 			jad.setAttributes( filteredAttributes );

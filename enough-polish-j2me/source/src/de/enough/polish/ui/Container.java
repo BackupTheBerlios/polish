@@ -782,7 +782,11 @@ public class Container extends Item {
 	public boolean animate() {
 		// just animate the currently focused item:
 		if (this.focusedItem != null) {
-			return this.focusedItem.animate();
+			boolean animated = this.focusedItem.animate();
+			if (this.focusedItem.background != null) {
+				animated = animated | this.focusedItem.background.animate();
+			}
+			return animated;
 		} else {
 			return false;
 		}

@@ -1554,10 +1554,14 @@ public abstract class Item extends Object
 	 * yields in a faster GUI and is recommended. When in a style-sheet
 	 * dynamic styles are used, e.g. "Form>p", than the selector of the
 	 * item is needed.
+	 * <br/>
 	 * This abstract method needs only be implemented, when dynamic styles
 	 * are used: #ifdef polish.useDynamicStyles
+	 * <br/>
+	 * The returned selector needs to be in lower case. 
 	 * 
 	 * @return the appropriate CSS selector for this item.
+	 * 			The selector needs to be in lower case.
 	 */
 	protected abstract String createCssSelector();	
 	//#endif

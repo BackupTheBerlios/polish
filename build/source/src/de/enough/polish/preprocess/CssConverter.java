@@ -649,6 +649,7 @@ public class CssConverter extends Converter {
 			return;
 		}
 		String type = (String) group.get("type");
+		String originalType = type;
 		if (type == null) {
 			type = "simple";
 		} else {
@@ -656,7 +657,7 @@ public class CssConverter extends Converter {
 		}
 		String className = (String) BORDER_TYPES.get(type);
 		if (className == null) {
-			className = type;
+			className = originalType;
 		}
 		try {
 			BorderConverter creator =  (BorderConverter) Class.forName(className).newInstance();
@@ -704,6 +705,7 @@ public class CssConverter extends Converter {
 			return;
 		}
 		String type = (String) group.get("type");
+		String originalType = type;
 		if (type == null) {
 			// this should be a simple background:
 			String imageUrl = (String) group.get("image");
@@ -726,7 +728,7 @@ public class CssConverter extends Converter {
 		}
 		String className = (String) BACKGROUND_TYPES.get(type);
 		if (className == null) {
-			className = type;
+			className = originalType;
 		}
 		try {
 			BackgroundConverter creator =  (BackgroundConverter) Class.forName(className).newInstance();
