@@ -1,7 +1,7 @@
 /*
  * Created on 09-Nov-2004 at 11:11:52.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -36,7 +36,8 @@ import de.enough.polish.preprocess.StyleSheet;
 /**
  * <p>Creates source code for instantiating a BorderedRoundRectOpeningBackground.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        09-Nov-2004 - rob creation

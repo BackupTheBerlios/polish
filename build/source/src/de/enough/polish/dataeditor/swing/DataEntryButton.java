@@ -1,7 +1,7 @@
 /*
  * Created on 02-Nov-2004 at 01:33:04.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,8 @@ import de.enough.polish.dataeditor.DataEntry;
 /**
  * <p>A button which has a corresponding data entry.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        02-Nov-2004 - rob creation

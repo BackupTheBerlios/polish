@@ -1,7 +1,7 @@
 /*
  * Created on 31-Oct-2004 at 20:29:10.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -39,7 +39,8 @@ import javax.swing.filechooser.FileFilter;
 /**
  * <p>Provides some often used methods for Swing applications.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        31-Oct-2004 - rob creation

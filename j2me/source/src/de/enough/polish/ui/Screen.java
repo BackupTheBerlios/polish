@@ -1348,7 +1348,8 @@ public abstract class Screen
 	/**
 	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
 	 *
-	 * <p>copyright Enough Software 2004</p>
+	 * <p>Copyright Enough Software 2004, 2005</p>
+
 	 * <pre>
 	 * history
 	 *        09-Jun-2004 - rob creation
@@ -1376,5 +1377,23 @@ public abstract class Screen
 			}
 		}
 		
+	}
+	
+	/**
+	 * Focuses the specified item.
+	 * 
+	 * @param item the item which is already shown on this screen.
+	 */
+	public void focus(Item item) {
+		Item[] items = this.container.getItems();
+		for (int i = 0; i < items.length; i++) {
+			Item item2 = items[i];
+			if (item2 == item) {
+				this.container.focus( i, item );
+				return;
+			}
+		}
+		//#debug warn
+		System.out.println("Screen: unable to focus item (did not find it in the container) " + item);
 	}
 }

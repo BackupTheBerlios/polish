@@ -1,7 +1,7 @@
 /*
  * Created on 09-Nov-2004 at 00:32:59.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,8 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Is used for a performant showing of String with a bitmap font.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        09-Nov-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 16-Jan-2004 at 12:04:15.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,8 @@ import java.util.Set;
 /**
  * <p>Represents a StyleSheet for a specific application.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        16-Jan-2004 - rob creation

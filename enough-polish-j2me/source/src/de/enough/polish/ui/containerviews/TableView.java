@@ -2,7 +2,7 @@
 /*
  * Created on Oct 27, 2004 at 8:05:08 PM.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,8 @@ import de.enough.polish.ui.Style;
 
 /**
  * <p>Shows a tabluar view of items.</p>
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        Oct 27, 2004 - rob creation

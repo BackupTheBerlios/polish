@@ -1,7 +1,7 @@
 /*
  * Created on 01-Sep-2004 at 10:55:54.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,8 @@ import junit.framework.TestCase;
 /**
  * <p>Tests the LayerManager implementation</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        01-Sep-2004 - rob creation

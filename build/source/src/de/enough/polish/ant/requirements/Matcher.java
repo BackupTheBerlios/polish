@@ -1,7 +1,7 @@
 /*
  * Created on 24-Jan-2004 at 14:56:31.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,8 @@ package de.enough.polish.ant.requirements;
 /**
  * <p>A class used for comparing a requirement-value with a device-property.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        24-Jan-2004 - rob creation

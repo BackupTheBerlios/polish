@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,8 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Launches an emulator from the command line.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        01.10.2004 - rob creation

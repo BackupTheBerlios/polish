@@ -1,7 +1,7 @@
 /*
  * Created on 09-Nov-2004 at 21:31:25.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -49,7 +49,8 @@ import de.enough.polish.util.SwingUtil;
 /**
  * <p>An utility for creating bitmap-font-files, which can be used by the J2ME Polish client classes.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        09-Nov-2004 - rob creation

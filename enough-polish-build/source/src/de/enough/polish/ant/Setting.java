@@ -1,7 +1,7 @@
 /*
  * Created on 16-Jul-2004 at 03:39:27.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,7 +34,8 @@ import de.enough.polish.Variable;
 /**
  * <p>A base class for settings which accept parameters.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        16-Jul-2004 - rob creation

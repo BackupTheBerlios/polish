@@ -1,7 +1,7 @@
 /*
  * Created on 19-Aug-2004 at 15:21:38.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -40,7 +40,8 @@ import org.jdom.input.SAXBuilder;
 /**
  * <p>Manages all CSS attribute definitions loaded from [standard-css-attributes.xml] and [custom-css-aatributes.xml].</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        19-Aug-2004 - rob creation

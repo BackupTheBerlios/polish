@@ -1,7 +1,7 @@
 /*
  * Created on 19-Aug-2004 at 16:51:02.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,8 @@ import java.util.Map;
  * <p>
  * This saves some memory and processing time.
  * </p> 
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        19-Aug-2004 - rob creation

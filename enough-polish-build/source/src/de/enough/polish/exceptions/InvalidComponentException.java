@@ -1,7 +1,7 @@
 /*
  * Created on 16-Feb-2004 at 19:35:53.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,8 @@ package de.enough.polish.exceptions;
 /**
  * <p>Is thrown when a defintion of a polish-component (device, vendor, group) contains errors.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        16-Feb-2004 - rob creation

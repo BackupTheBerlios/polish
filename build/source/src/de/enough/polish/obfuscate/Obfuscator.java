@@ -1,7 +1,7 @@
 /*
  * Created on 22-Feb-2004 at 12:16:08.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -40,7 +40,8 @@ import java.io.File;
  * <p>An obfuscator is used to obfuscate and shrink the code.</p>
  * <p>This class is used to handle any external obfuscator.</p>
  * 
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        22-Feb-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 23-Feb-2004 at 14:30:33.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,8 @@ package de.enough.polish.ant.build;
 /**
  * <p>Represents a class which should be obfuscated.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        23-Feb-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on Dec 3, 2004 at 6:11:09 PM.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,7 +29,8 @@ import javax.swing.JMenu;
 
 /**
  * <p>Integrates the underlying operating system, especially Mac OS X.</p>
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        Dec 3, 2004 - rob creation

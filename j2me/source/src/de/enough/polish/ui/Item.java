@@ -27,6 +27,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -1688,6 +1689,24 @@ public abstract class Item extends Object
 	protected void hideNotify()
 	{
 		//default implementation does nothing
+	}
+	
+	/**
+	 * Shows the screen to which item belongs to and focusses this item.
+	 * This method is the equivalent to display.setCurrentItem( item ).
+	 * 
+	 * @param display the display of the MIDlet.
+	 */
+	public void show( Display display ) {
+		Screen myScreen = getScreen();
+		if ( myScreen == null ) {
+			//#debug warn
+			System.out.println("Unable to show this item, since the screen is not known.");
+			return;
+		}
+		
+		myScreen.focus( this );
+		display.setCurrent( myScreen );
 	}
 
 }

@@ -1,7 +1,7 @@
 /*
  * Created on 30-Oct-2004 at 18:30:13.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,8 @@ import javax.swing.JTextField;
 /**
  * <p>Asks the user for the package-name as well as the class-name for the to-be-generated Java code.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        30-Oct-2004 - rob creation

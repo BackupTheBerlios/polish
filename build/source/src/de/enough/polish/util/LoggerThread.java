@@ -1,7 +1,7 @@
 /*
  * Created on 05-Nov-2004 at 20:59:18.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,8 @@ import java.io.PrintStream;
 /**
  * <p>Can be used to log the output of any stream, e.g. of an external process.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        05-Nov-2004 - rob creation

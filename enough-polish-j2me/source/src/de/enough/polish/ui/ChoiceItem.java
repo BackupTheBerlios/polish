@@ -2,7 +2,7 @@
 /*
  * Created on 05-May-2004 at 15:11:20.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,8 @@ import java.io.IOException;
 /**
  * <p>Paints a single item of a choice group.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        05-May-2004 - rob creation

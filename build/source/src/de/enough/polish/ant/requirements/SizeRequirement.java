@@ -1,7 +1,7 @@
 /*
  * Created on 10-Feb-2004 at 22:38:46.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,7 +34,8 @@ import org.apache.tools.ant.BuildException;
  * <p>Selects devices by the size of specific features.</p>
  * <p>The size-based capability needs to be defined as "11x22" etc.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        10-Feb-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 02-Nov-2004 at 22:32:12.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -47,7 +47,8 @@ import de.enough.polish.Device;
 /**
  * <p>Obfuscates classes using the LGPL yGuard obfuscator library.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        02-Nov-2004 - rob creation
@@ -146,7 +147,8 @@ implements ObfuscationListener
 	/**
 	 * <p>The logger stream.</p>
 	 *
-	 * <p>copyright Enough Software 2004</p>
+	 * <p>Copyright Enough Software 2004, 2005</p>
+
 	 * <pre>
 	 * history
 	 *        02-Nov-2004 - rob creation

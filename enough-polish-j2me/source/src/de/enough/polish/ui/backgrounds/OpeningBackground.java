@@ -2,7 +2,7 @@
 /*
  * Created on 04-Nov-2004 at 18:54:23.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,8 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Paints a background which expands to its full size whenever the background is moved.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        04-Nov-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 11-Jul-2004 at 20:02:55.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -43,7 +43,8 @@ import de.enough.polish.util.StringList;
 /**
  * <p>Loads a custom preprocessor from a different classpath.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        11-Jul-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 26-Jul-2004 at 14:17:43.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -42,7 +42,8 @@ import de.enough.polish.preprocess.StyleSheet;
  * 	always a circle will be painted.</li>
  * </ul>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        26-Jul-2004 - rob creation

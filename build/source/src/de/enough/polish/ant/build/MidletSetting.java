@@ -1,7 +1,7 @@
 /*
  * Created on 22-Jan-2003 at 14:31:40.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,8 @@ import java.util.*;
 /**
  * <p>Manages all midlets of a specific project.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        22-Jan-2003 - rob creation
@@ -82,7 +83,8 @@ public class MidletSetting {
 	
 	/**
 	 * <p>Is used to sort midlets.</p>
-	 * <p>copyright Enough Software 2004</p>
+	 * <p>Copyright Enough Software 2004, 2005</p>
+
 	 * <pre>
 	 * history
 	 *        18-Feb-2004 - rob creation

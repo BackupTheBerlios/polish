@@ -1,7 +1,7 @@
 /*
  * Created on 08-Aug-2004 at 15:20:19.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,8 @@ import de.enough.polish.util.PropertyUtil;
  * <p>Is used for integrating the <java> element into the <buid> task. </p>
  * <p>The included arguments can use J2ME Polish variables in their values.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        08-Aug-2004 - rob creation

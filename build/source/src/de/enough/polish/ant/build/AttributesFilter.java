@@ -1,7 +1,7 @@
 /*
  * Created on 15-Jul-2004 at 02:45:52.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,8 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Sorts JAD or MANIFEST attributes in a user-specific way.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        15-Jul-2004 - rob creation
@@ -93,7 +94,8 @@ public class AttributesFilter {
 	/**
 	 * <p>A filter element is responsible for extracting the specified attribute(s) in the correct order.</p>
 	 *
-	 * <p>copyright Enough Software 2004</p>
+	 * <p>Copyright Enough Software 2004, 2005</p>
+
 	 * <pre>
 	 * history
 	 *        15-Jul-2004 - rob creation

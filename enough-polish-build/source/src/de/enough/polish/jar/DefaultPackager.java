@@ -1,7 +1,7 @@
 /*
  * Created on 02-Nov-2004 at 15:33:16.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -39,7 +39,8 @@ import de.enough.polish.util.JarUtil;
 /**
  * <p>Uses the internal J2ME Polish functions to create a jar-file.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        02-Nov-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 23-May-2004 at 22:20:13.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,8 @@ import java.util.*;
 /**
  * <p>Manages the libraries of devices.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        23-May-2004 - rob creation

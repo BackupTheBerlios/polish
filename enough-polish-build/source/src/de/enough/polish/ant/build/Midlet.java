@@ -1,7 +1,7 @@
 /*
  * Created on 22-Jan-2003 at 14:33:39.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,8 @@ import de.enough.polish.ant.Setting;
 /**
  * <p>Represents a midlet.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        22-Jan-2003 - rob creation

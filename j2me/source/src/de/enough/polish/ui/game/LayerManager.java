@@ -2,7 +2,7 @@
 //only include this file for midp1-devices:
 //#condition (polish.midp1 && ! polish.api.siemens-color-game-api) || (polish.usePolishGameApi == true)
 /*
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *

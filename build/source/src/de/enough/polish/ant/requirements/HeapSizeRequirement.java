@@ -1,7 +1,7 @@
 /*
  * Created on 16-Feb-2004 at 14:41:21.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,8 @@ import de.enough.polish.Device;
 /**
  * <p>Selects a device by the available memory for the heap.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        16-Feb-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 08-Oct-2004 at 15:37:17.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,8 @@ package de.enough.polish.stacktrace;
 /**
  * <p>Is thrown when a necessary decompiler is not installed.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        08-Oct-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on Dec 3, 2004 at 7:02:08 PM.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,7 +29,8 @@ import java.io.File;
 
 /**
  * <p>Is used for integrating a swing application.</p>
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        Dec 3, 2004 - rob creation

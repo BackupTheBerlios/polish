@@ -1,7 +1,7 @@
 /*
  * Created on 24-Feb-2004 at 16:35:32.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,8 @@ import java.util.zip.CRC32;
 /**
  * <p>Methods for the fast and simple creation of jar files.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        24-Feb-2004 - rob creation

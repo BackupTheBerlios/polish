@@ -1,7 +1,7 @@
 /*
  * Created on 04-Sep-2004 at 18:49:18.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -48,7 +48,8 @@ import de.enough.polish.util.PropertyUtil;
 /**
  * <p>Excutes an emulator.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        04-Sep-2004 - rob creation

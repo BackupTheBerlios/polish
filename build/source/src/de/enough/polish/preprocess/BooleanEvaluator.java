@@ -1,7 +1,7 @@
 /*
  * Created on 18-Jan-2004 at 10:14:15.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,8 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Evaluates boolean expressions based on defined (or undefined) symbols and the operators &&, ||, ! and ^.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        18-Jan-2003 - rob creation

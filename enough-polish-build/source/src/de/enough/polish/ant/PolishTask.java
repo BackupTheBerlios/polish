@@ -1,7 +1,7 @@
 /*
  * Created on 21-Jan-2003 at 15:15:56.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -25,8 +25,45 @@
  */
 package de.enough.polish.ant;
 
-import de.enough.polish.*;
-import de.enough.polish.ant.build.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildListener;
+import org.apache.tools.ant.BuildLogger;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Javac;
+import org.apache.tools.ant.types.Path;
+import org.jdom.JDOMException;
+
+import de.enough.polish.Attribute;
+import de.enough.polish.Device;
+import de.enough.polish.DeviceGroupManager;
+import de.enough.polish.DeviceManager;
+import de.enough.polish.LibraryManager;
+import de.enough.polish.PolishProject;
+import de.enough.polish.Variable;
+import de.enough.polish.VendorManager;
+import de.enough.polish.ant.build.BuildSetting;
+import de.enough.polish.ant.build.FullScreenSetting;
+import de.enough.polish.ant.build.JavaExtension;
+import de.enough.polish.ant.build.Midlet;
+import de.enough.polish.ant.build.ObfuscatorSetting;
+import de.enough.polish.ant.build.PreprocessorSetting;
+import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
@@ -34,27 +71,33 @@ import de.enough.polish.emulator.Emulator;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
-import de.enough.polish.preprocess.*;
+import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.preprocess.CssAttributesManager;
+import de.enough.polish.preprocess.CssConverter;
+import de.enough.polish.preprocess.CssReader;
+import de.enough.polish.preprocess.CustomPreprocessor;
+import de.enough.polish.preprocess.DebugManager;
+import de.enough.polish.preprocess.ImportConverter;
+import de.enough.polish.preprocess.Preprocessor;
+import de.enough.polish.preprocess.StyleSheet;
 import de.enough.polish.preprocess.custom.PolishPreprocessor;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
 import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
-import de.enough.polish.util.*;
-
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.Path;
-import org.jdom.JDOMException;
-
-import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.JarUtil;
+import de.enough.polish.util.PropertyUtil;
+import de.enough.polish.util.ResourceUtil;
+import de.enough.polish.util.StringList;
+import de.enough.polish.util.TextFile;
+import de.enough.polish.util.TextFileManager;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Manages a J2ME project from the preprocessing to the packaging and obfuscation.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        21-Jan-2003 - rob creation
@@ -1709,7 +1752,8 @@ public class PolishTask extends ConditionalTask {
 	/**
 	 * <p>Accepts only non CSS-files.</p>
 	 *
-	 * <p>copyright Enough Software 2004</p>
+	 * <p>Copyright Enough Software 2004, 2005</p>
+
 	 * <pre>
 	 * history
 	 *        19-Feb-2004 - rob creation

@@ -1,7 +1,7 @@
 /*
  * Created on 22-Jan-2003 at 15:37:27.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,8 @@ package de.enough.polish.ant.build;
 /**
  * <p>Represents the settings for the use of full-screen-classes.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        22-Jan-2003 - rob creation

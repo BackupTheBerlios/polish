@@ -1,7 +1,7 @@
 /*
  * Created on 15-Jan-2004 at 16:08:33.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,8 @@ import org.jdom.Element;
  * Also a group can belong do other groups.
  * </p>
  * 
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        15-Jan-2004 - rob creation

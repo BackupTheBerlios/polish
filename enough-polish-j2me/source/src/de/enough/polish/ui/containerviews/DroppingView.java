@@ -2,7 +2,7 @@
 /*
  * Created on 13-Nov-2004 at 20:52:55.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,8 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Shows the items in a normal list. During the beginning an animation is shown, in which the items fall into their place.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        13-Nov-2004 - rob creation

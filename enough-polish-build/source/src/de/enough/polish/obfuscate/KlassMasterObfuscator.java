@@ -1,7 +1,7 @@
 /*
  * Created on 03-Nov-2004 at 17:42:25.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,8 @@ import de.enough.polish.util.FileUtil;
 /**
  * <p>Allows the obfuscation using the Zelix Klass Master WTK plugin.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        03-Nov-2004 - rob creation

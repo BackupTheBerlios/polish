@@ -1,7 +1,7 @@
 /*
  * Created on 26-Jan-2004 at 08:26:38.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,8 @@ import org.apache.tools.ant.Task;
 /**
  * <p>A task which execution can be triggered and stopped with if and unless parameters.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        26-Jan-2004 - rob creation

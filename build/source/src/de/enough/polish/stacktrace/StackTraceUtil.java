@@ -1,7 +1,7 @@
 /*
  * Created on 08-Oct-2004 at 15:22:52.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,8 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Translates the stacktrace given by J2ME emulators to a normal error message stating the line-number and the source-code file.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        08-Oct-2004 - rob creation

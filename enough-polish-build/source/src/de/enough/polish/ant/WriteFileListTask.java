@@ -1,7 +1,7 @@
 /*
  * Created on 15-Apr-2004 at 16:01:30.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,8 @@ import java.util.ArrayList;
  * <p>Writes the list of included files to the specified text-file.</p>
  * <p>This tasks accepts an arbitrary number of nested file names.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        15-Apr-2004 - rob creation

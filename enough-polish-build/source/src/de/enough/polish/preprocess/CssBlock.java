@@ -1,7 +1,7 @@
 /*
  * Created on 02-Mar-2004 at 15:39:55.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,8 @@ import java.util.HashMap;
  * <p>A block can consist of a single style or of the 
  *   colors, borders, backgrounds or fonts-definition.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        02-Mar-2004 - rob creation

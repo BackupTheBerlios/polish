@@ -1,7 +1,7 @@
 /*
  * Created on 05-Nov-2004 at 15:57:47.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,8 @@ package de.enough.polish.dataeditor;
 /**
  * <p>GUI implementations should implement and register this interface, so that the data-model can notify the GUI about events.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        05-Nov-2004 - rob creation

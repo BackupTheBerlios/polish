@@ -1,7 +1,7 @@
 /*
  * Created on 13-Nov-2004 at 15:17:01.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -50,7 +50,8 @@ import de.enough.polish.util.SwingUtil;
 /**
  * <p>Shows an image-viewer which allows to save the image externally and to load it from an external source.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        13-Nov-2004 - rob creation

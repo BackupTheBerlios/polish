@@ -1,7 +1,7 @@
 /*
  * Created on 10-Mar-2004 at 15:54:41.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,7 +34,8 @@ import java.util.HashMap;
 /**
  * <p>Creates the source code for a simple border.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        10-Mar-2004 - rob creation

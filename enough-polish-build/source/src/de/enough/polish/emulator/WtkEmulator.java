@@ -1,7 +1,7 @@
 /*
  * Created on 05-Sep-2004 at 15:35:23.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -42,7 +42,8 @@ import de.enough.polish.util.FileUtil;
 /**
  * <p>Is responsible for configuring and starting any WTK-based emulator.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        05-Sep-2004 - rob creation

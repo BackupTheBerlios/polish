@@ -1,7 +1,7 @@
 /*
  * Created on Dec 3, 2004 at 7:08:43 PM.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -45,7 +45,8 @@ import javax.swing.JScrollPane;
 
 /**
  * <p>Base class for standalong swing applications.</p>
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        Dec 3, 2004 - rob creation

@@ -2,7 +2,7 @@
 /*
  * Created on 04-Apr-2004 at 21:30:32.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -49,7 +49,8 @@ import java.io.IOException;
  * </ul>
  * </p>
  * 
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        04-Apr-2004 - rob creation

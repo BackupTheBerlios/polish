@@ -1,7 +1,7 @@
 /*
  * Created on 21-Jun-2004 at 13:05:20.
  * 
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -43,7 +43,8 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Makes some standard preprocessing like the determination whether the Ticker-class is used etc.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        21-Jun-2004 - rob creation
@@ -62,9 +63,13 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	protected static final String GET_TICKER_STR = "([\\.|\\s]|^)getTicker\\s*\\(\\s*\\)";
 	protected static final Pattern SET_TICKER_PATTERN = Pattern.compile( SET_TICKER_STR );
 	protected static final Pattern GET_TICKER_PATTERN = Pattern.compile( GET_TICKER_STR );
+	
+	//protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\([\\w|\\.]+\\s*\\)";
+	protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\(.+\\)";
+	protected static final Pattern SET_CURRENT_ITEM_PATTERN = Pattern.compile( SET_CURRENT_ITEM_STR );
 
 	/**
-	 * Creates a new uninitialised PolishLineProcessor 
+	 * Creates a new uninitialised PolishPreprocessor 
 	 */
 	public PolishPreprocessor() {
 		super();
@@ -279,6 +284,31 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				}
 				continue;
 			}
+			
+			startPos = line.indexOf("setCurrentItem");
+			if ( startPos != -1) {
+				//System.out.println("setCurrentItem found in line " + line );
+				int commentPos = line.indexOf("//");
+				if (commentPos != -1 && commentPos < startPos) {
+					continue;
+				}
+				Matcher matcher = SET_CURRENT_ITEM_PATTERN.matcher( line );
+				if (matcher.find()) {
+					String group = matcher.group();
+					//System.out.println("group = [" + group + "]");
+					int parenthesisPos = group.indexOf('(');
+					String displayVar = group.substring(0, parenthesisPos);
+					int dotPos = displayVar.lastIndexOf('.');
+					displayVar = displayVar.substring( 0, dotPos ).trim();
+					String itemVar = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
+					String replacement = itemVar + ".show( " + displayVar + " )"; 
+					//System.out.println("replacement = [" + replacement + "].");
+					line = TextUtil.replace( line, group, replacement );
+					//System.out.println("line = [" + line + "]");
+					lines.setCurrent( line );
+				}
+				continue;
+			}			
 			
 			// check for Choice.POPUP:
 			startPos = line.indexOf(".POPUP");

@@ -1,7 +1,7 @@
 /*
  * Created on 15-Apr-2004 at 11:01:05.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,8 @@ import java.util.ArrayList;
 /**
  * <p>Loads resources either from the disk or from the jar file.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        15-Apr-2004 - rob creation

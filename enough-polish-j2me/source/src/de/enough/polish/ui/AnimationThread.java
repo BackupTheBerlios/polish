@@ -2,7 +2,7 @@
 /*
  * Created on 15-Mar-2004 at 10:52:57.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -42,7 +42,8 @@ import de.enough.polish.util.Debug;
  *  sets the interval to 200 ms. When not specified, the default interval
  *  of 100 ms will be used. 
  * </p>
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        15-Mar-2004 - rob creation

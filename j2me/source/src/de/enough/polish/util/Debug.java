@@ -1,7 +1,7 @@
 /*
  * Created on 20-Jan-2003 at 15:05:18.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -36,7 +36,8 @@ import javax.microedition.lcdui.StringItem;
 /**
  * <p>Is used for debugging of information.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        20-Jan-2003 - rob creation

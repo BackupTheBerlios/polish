@@ -1,7 +1,7 @@
 /*
  * Created on 10-Mar-2004 at 11:15:57.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,8 @@ import org.apache.tools.ant.BuildException;
 /**
  * <p>Base class for several Creator classes.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        10-Mar-2004 - rob creation

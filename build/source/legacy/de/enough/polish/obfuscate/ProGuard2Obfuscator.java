@@ -1,7 +1,7 @@
 /*
  * Created on 22-Feb-2004 at 12:49:27.
  *
- * Copyright (c) 2004 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -44,7 +44,8 @@ import proguard.classfile.ClassConstants;
  * <p>Is used to obfuscate code with the ProGuard obfuscator, version 2.x.</p>
  * <p>For details of ProGuard, please refer to http://proguard.sourceforge.net/.</p>
  *
- * <p>copyright Enough Software 2004</p>
+ * <p>Copyright Enough Software 2004, 2005</p>
+
  * <pre>
  * history
  *        22-Feb-2004 - rob creation
