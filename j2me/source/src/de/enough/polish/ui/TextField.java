@@ -24,14 +24,12 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Displayable;
-
-import de.enough.polish.util.TextUtil;
 
 /**
  * A <code>TextField</code> is an editable text component that may be
@@ -883,9 +881,13 @@ implements CommandListener
 				this.passwordText = null;
 			}
 		}
-		//TODO rob check text-value
-		System.out.println("Setting text " + text);
 		setText(text);
+		//#ifdef tmp.directInput
+			if ((text == null || text.length() == 0) && this.inputMode == MODE_FIRST_UPPERCASE) {
+				this.nextCharUppercase = true;
+			}
+		//#endif
+
 		//#ifndef tmp.forceDirectInput
 			if (this.midpTextBox != null) {
 				if (this.isPassword) {
@@ -1147,14 +1149,17 @@ implements CommandListener
 			if ((constraints & NUMERIC) == NUMERIC) {
 				this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
-				updateInfo();
 			}
 			if ((constraints & EMAILADDR) == EMAILADDR) {
 				this.isEmail = true;
 			}
 			if ((constraints & INITIAL_CAPS_WORD) == INITIAL_CAPS_WORD) {
 				this.inputMode = MODE_FIRST_UPPERCASE;
+				this.nextCharUppercase = true;
 			}
+			//#if polish.TextField.showInputInfo != false
+				updateInfo();
+			//#endif
 		//#endif
 
 	}
@@ -1453,7 +1458,7 @@ implements CommandListener
 			checkCaretPosition();
 			*/
 			this.screen = getScreen();
-			System.out.println("firstpart=" + this.caretRowFirstPart + "   lastPart=" + this.caretRowLastPart);
+			//System.out.println("firstpart=" + this.caretRowFirstPart + "   lastPart=" + this.caretRowLastPart);
 		//#endif
 	}
 
@@ -1637,7 +1642,7 @@ implements CommandListener
 	}
 	//#endif
 
-	//#ifdef tmp.directInput
+	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
 	private void updateInfo() {
 		if (this.screen == null) {
 			this.screen = getScreen();
@@ -1714,7 +1719,6 @@ implements CommandListener
 		//#endif
 		//#if tmp.allowDirectInput
 			if (this.enableDirectInput) {
-				System.out.println("Direct Input is allowed!");
 		//#endif
 				//#ifdef tmp.directInput
 					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric) {
@@ -1722,12 +1726,16 @@ implements CommandListener
 						if (this.inputMode > MODE_NUMBERS) {
 							this.inputMode = MODE_LOWERCASE;
 						}
-						updateInfo();
+						//#if polish.TextField.showInputInfo != false
+							updateInfo();
+						//#endif
 						if (this.caretChar != this.editingCaretChar) {
 							insertCharacter();
 						}
 						if (this.inputMode == MODE_FIRST_UPPERCASE) {
 							this.nextCharUppercase = true;
+						} else {
+							this.nextCharUppercase = false;
 						}
 						return true;
 					}
@@ -2030,7 +2038,7 @@ implements CommandListener
 				} else {
 					this.text= myText;
 				}
-				//#ifdef polish.css.textfield-show-length
+				//#if polish.css.textfield-show-length && (polish.TextField.showInputInfo != false)
 					if (this.showLength) {
 						updateInfo();
 					}
@@ -2150,7 +2158,9 @@ implements CommandListener
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {
 		//#endif
-				updateInfo();
+				//#if polish.TextField.showInputInfo != false
+					updateInfo();
+				//#endif
 		//#ifdef tmp.allowDirectInput
 			}
 		//#endif

@@ -270,7 +270,7 @@ public class Container extends Item {
 	 */
 	public void clear() {
 		this.itemsList.clear();
-		this.items = null;
+		this.items = new Item[0];
 		if (this.focusedIndex != -1) {
 			this.autoFocusEnabled = true;
 			this.focusedIndex = -1;
