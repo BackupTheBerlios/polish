@@ -51,6 +51,9 @@ public class Style {
 	private String styleName;
 	private boolean isDynamic;
 	private String abbreviation;
+	private boolean isReferenced;
+	private boolean hasReferences;
+	private ArrayList referencedStyles;
 
 	
 	public Style( String selector, String styleName, boolean isDynamic, String parent, CssBlock cssBlock ) {
@@ -345,5 +348,64 @@ public class Style {
 	 */
 	public void setAbbreviation( String abbreviation ) {
 		this.abbreviation = abbreviation;
+	}
+	
+	/**
+	 * Retrieves the names of styles which are referenced by the this style.
+	 * 
+	 * @return an array with names of referenced styles. Can be empty but not null.
+	 */
+	public String[] getReferencedStyleNames() {
+		ArrayList referencedNames = new ArrayList();
+		String[] groupNames = getGroupNames();
+		for (int i = 0; i < groupNames.length; i++) {
+			String groupName = groupNames[i];
+			HashMap group = getGroup(groupName);
+			String[] attributesNames = (String[]) group.keySet().toArray( new String[ group.size() ]);
+			for (int j = 0; j < attributesNames.length; j++) {
+				String attributeName = attributesNames[j];
+				if ("style".equals(attributeName) && !("font".equals(groupName))) {
+					referencedNames.add( group.get( attributeName ));
+				}
+			}
+		}
+		return (String[]) referencedNames.toArray( new String[ referencedNames.size() ]);
+	}
+	
+	public void setIsReferenced( boolean isReferenced ) {
+		this.isReferenced = isReferenced;
+	}
+	
+	public boolean isReferenced() {
+		return this.isReferenced;
+	}
+	
+	public void setHasReferences( boolean hasReferences ) {
+		this.hasReferences = hasReferences;
+	}
+	
+	public boolean hasReferences() {
+		return this.hasReferences;
+	}
+
+	/**
+	 * Adds a referenced style.
+	 * 
+	 * @param referencedStyle the style which is referenced by this style
+	 */
+	public void addReferencedStyle(Style referencedStyle) {
+		if (this.referencedStyles == null) {
+			this.referencedStyles = new ArrayList();
+		}
+		this.referencedStyles.add( referencedStyle );
+		this.hasReferences = true;
+	}
+	
+	public Style[] getReferencedStyles() {
+		if (this.referencedStyles == null) {
+			return new Style[0];
+		} else {
+			return (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ]);
+		}
 	}
 }

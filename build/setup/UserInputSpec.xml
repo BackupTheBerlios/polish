@@ -24,15 +24,14 @@
 		<spec txt="Path to Wireless Toolkit:"		        
 		      type="directory" 
               result="directory">
-		  <choice value="/opt/WTK21" os="unix" />
-		  <choice value="/opt/WTK20" os="unix" />
-		  <choice value="/opt/WTK104" os="unix" />
-		  <choice value="~/WTK21" os="unix" />
-		  <choice value="~/WTK20" os="unix" />
-		  <choice value="~/WTK104" os="unix" />
+		  <choice value="C:\WTK22" os="windows" />
 		  <choice value="C:\WTK21" os="windows" />
 		  <choice value="C:\WTK20" os="windows" />
 		  <choice value="C:\WTK104" os="windows" />
+		  <choice value="/opt/WTK22" os="unix" />
+		  <choice value="/opt/WTK21" os="unix" />
+		  <choice value="/opt/WTK20" os="unix" />
+		  <choice value="/opt/WTK104" os="unix" />
   		</spec>
 	</field>
 	<space/>

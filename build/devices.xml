@@ -1591,7 +1591,7 @@
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="SoundFormat" value="midi, amr" />
+		<capability name="SoundFormat" value="wav, true tones" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />

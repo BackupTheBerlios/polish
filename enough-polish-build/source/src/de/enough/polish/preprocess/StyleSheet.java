@@ -229,15 +229,188 @@ public class StyleSheet {
 	public String[] getUsedStyleNames() {
 		return (String[]) this.usedStyles.keySet().toArray( new String[ this.usedStyles.size() ] );
 	}
+
+	/**
+	 * Retrieves a list of all used or referenced styles.
+	 * 
+	 * @param defaultStyleNames an array with styles which are needed by default, e.g. "menu" in the fullscreen-mode.
+	 * @return an array of styles, can be empty but not null 
+	 */
+	public Style[] getUsedAndReferencedStyles(final String[] defaultStyleNames ) {
+		final ArrayList stylesList = new ArrayList();
+		final ArrayList finalStylesList = new ArrayList();
+		final HashMap referencedStylesByName = new HashMap();
+		
+		// fill internal style list:
+		// used styles:
+		final String[] usedStyleNames = getUsedStyleNames();
+		for (int i = 0; i < usedStyleNames.length; i++) {
+			String styleName = usedStyleNames[i];
+			Style style = getStyle( styleName );
+			stylesList.add( style );
+			markReferences(style, referencedStylesByName);
+		}
+		// default styles:
+		for (int i = 0; i < defaultStyleNames.length; i++) {
+			String styleName = defaultStyleNames[i];
+			Style style = getStyle( styleName );
+			if (style != null && !stylesList.contains(style)) {
+				//System.out.println("adding default style " + style.getSelector());
+				stylesList.add( style );
+				markReferences(style, referencedStylesByName);
+			}
+		}
+		// dynamic styles:
+		if (this.containsDynamicStyles) {
+			Style[] dynamicStyles = getDynamicStyles();
+			for (int i = 0; i < dynamicStyles.length; i++) {
+				Style style = dynamicStyles[i];
+				if (!stylesList.contains(style)) {
+					stylesList.add( style );
+					markReferences(style, referencedStylesByName);
+				}
+			}
+		}
+		
+		// add all referenced styles to stylesList:
+		Collection referencedStyles = referencedStylesByName.values();
+		for (Iterator iter = referencedStyles.iterator(); iter.hasNext();) {
+			Style style = (Style) iter.next();
+			if (!stylesList.contains(style)) {
+				stylesList.add( style );
+			}
+		}
+		// first batch: add styles which have no references themselves and are not referenced:
+		//System.out.println("1. Batch");
+		Style[] tmpStyles = (Style[]) stylesList.toArray( new Style[ stylesList.size() ]);
+		for (int i = 0; i < tmpStyles.length; i++) {
+			Style style = tmpStyles[i];
+			if (!( style.isReferenced() || style.hasReferences() )) {
+				//System.out.println( style.getSelector());
+				finalStylesList.add( style );
+				stylesList.remove( style );
+			}
+		}
+		
+		//System.out.println("2. Batch");
+		// second batch: add styles which are referenced, but have no references themselves:
+		tmpStyles = (Style[]) stylesList.toArray( new Style[ stylesList.size() ]);
+		for (int i = 0; i < tmpStyles.length; i++) {
+			Style style = tmpStyles[i];
+			if (( style.isReferenced() && !style.hasReferences() )) {
+				//System.out.println( style.getSelector());
+				finalStylesList.add( style );
+				stylesList.remove( style );
+			}
+		}
+		
+		//System.out.println("3. Batch");
+		// third batch: add styles which are referenced and do have references themselves:
+		tmpStyles = (Style[]) stylesList.toArray( new Style[ stylesList.size() ]);
+		ArrayList sortedList = new ArrayList();
+		for (int i = 0; i < tmpStyles.length; i++) {
+			Style style = tmpStyles[i];
+			if (( style.isReferenced())) {
+				//System.out.println( style.getSelector());
+				sortedList.add( style );
+				stylesList.remove( style );
+			}
+		}
+		if (sortedList.size() > 1) {
+			sortReferencedStyles( finalStylesList, sortedList );
+		} else {
+			finalStylesList.addAll( sortedList );
+		}
+		
+		// fourth batch: add all remaining styles:
+		finalStylesList.addAll( stylesList );
+		/*System.out.println("4. Batch");
+		tmpStyles = (Style[]) stylesList.toArray( new Style[ stylesList.size() ]);
+		for (int i = 0; i < tmpStyles.length; i++) {
+			Style style = tmpStyles[i];
+			System.out.println( style.getSelector());
+		}
+		*/
+		
+		return (Style[]) finalStylesList.toArray( new Style[ finalStylesList.size() ]);
+	}
+	
 	
 	/**
-	 * Removes all style-definitions
-	public void clear() {
-		this.isInitialised = false;
-		this.styles.clear();
-	}
+	 * Sorts the styles references and adds them to the stored list.
+	 * 
+	 * @param storedStyles list of already stored styles
+	 * @param unsortedStyles list with unsorted styles which have references to other styles.
 	 */
-	
+	private void sortReferencedStyles(ArrayList storedStyles, ArrayList unsortedStyles) {
+		// try to sort for max. unsortedStyles.size() times: 
+		for (int i = unsortedStyles.size() - 1; i >= 0; i-- ) {
+			Style[] unsortStyles = (Style[]) unsortedStyles.toArray( new Style[unsortedStyles.size()] );
+			for (int j = 0; j < unsortStyles.length; j++) {
+				Style style = unsortStyles[j];
+				boolean addStyle = true;
+				Style[] referencedStyles = style.getReferencedStyles();
+				for (int k = 0; k < referencedStyles.length; k++) {
+					Style referencedStyle = referencedStyles[k];
+					if (!storedStyles.contains(referencedStyle)) {
+						addStyle = false;
+						break;
+					}
+				}
+				if (addStyle) {
+					//System.out.println("adding sorted style: " + style.getSelector());
+					storedStyles.add( style );
+					unsortedStyles.remove( style );
+				}
+			}
+			if (unsortedStyles.size() == 0) {
+				return;
+			}
+		}
+		if (unsortedStyles.size() != 0) {
+			StringBuffer message = new StringBuffer();
+			message.append( "Unable to resolve Style references: the following styles have circular references: " );
+			Style[] unsortStyles = (Style[]) unsortedStyles.toArray( new Style[unsortedStyles.size()] );
+			for (int j = 0; j < unsortStyles.length; j++) {
+				Style style = unsortStyles[j];
+				message.append( style.getSelector() );
+				if (j != unsortStyles.length - 1) {
+					message.append(", ");
+				}
+			}
+			message.append(". Please check your [polish.css] file.");
+			throw new BuildException( message.toString() );
+		}
+	}
+
+	/**
+	 * Marks styles as either referencing or referenced.
+	 * 
+	 * @param style the parent style
+	 * @param referencedStylesByName a map in which referenced styles are marked
+	 */
+	private void markReferences(Style style, HashMap referencedStylesByName) {
+		String[] references = style.getReferencedStyleNames();
+		for (int i = 0; i < references.length; i++) {
+			String referencedStyleName = references[i].toLowerCase();
+			if (referencedStyleName.charAt(0) == '.') {
+				referencedStyleName = referencedStyleName.substring( 1 );
+			}
+			Style referencedStyle = getStyle( referencedStyleName );
+			if (referencedStyle != null) {
+				//System.out.println("style " + style.getSelector() + " references " + referencedStyleName );
+				style.addReferencedStyle( referencedStyle );
+				referencedStyle.setIsReferenced(true);
+				Style reference = (Style) referencedStylesByName.get( referencedStyleName );
+				if (reference == null) {
+					// this style has not been referenced before
+					referencedStylesByName.put( referencedStyleName, referencedStyle );
+					markReferences( referencedStyle, referencedStylesByName );
+				}
+			}
+		}
+	}
+
 	/**
 	 * Adds a CSS block to this style sheet.
 	 * A CSS block contains either a style or the colors, fonts,

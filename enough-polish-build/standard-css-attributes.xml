@@ -41,6 +41,14 @@
 		description="The name of the style for the title of the corresponding Screen."
 		default="title"
 	/>
+
+	<attribute
+		name="label-style"
+		type="style"
+		appliesTo="Item"
+		description="The name of the style for the label of the corresponding Item."
+		default="label"
+	/>
 	
 	<attribute
 		name="columns"

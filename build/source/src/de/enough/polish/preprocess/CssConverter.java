@@ -207,6 +207,38 @@ public class CssConverter extends Converter {
 				codeList, styleSheet, device );
 		
 		
+		// now add all other static and referenced styles:
+		ArrayList defaultStyleNames = new ArrayList();
+		defaultStyleNames.add( "default");
+		defaultStyleNames.add( "label");
+		defaultStyleNames.add( "focused");
+		// check if fullscreen mode is enabled with menu:
+		if ((preprocessor.hasSymbol("polish.useMenuFullScreen") 
+			&& ((device.getCapability("polish.classes.fullscreen") != null) 
+					|| (device.isMidp2() && preprocessor.hasSymbol("polish.hasCommandKeyEvents") ) ))
+			|| preprocessor.hasSymbol("polish.needsManualMenu") 
+			) 
+		{
+			defaultStyleNames.add( "menu");
+			defaultStyleNames.add( "menuitem");
+		}
+		
+		String[] defaultNames = (String[]) defaultStyleNames.toArray( new String[ defaultStyleNames.size() ]);
+		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames);
+		boolean isLabelStyleReferenced = false;
+		codeList.add("\t//static and referenced styles:");
+		for (int i = 0; i < styles.length; i++) {
+			Style style = styles[i];
+			if (!"default".equals(style.getSelector())) {
+				if ("label".equals(style.getSelector())) {
+					isLabelStyleReferenced = true;
+				}
+				processStyle( style, codeList, styleSheet, device );
+			}
+		}
+		codeList.add( STANDALONE_MODIFIER + "String lic=\"" + test +"\";");
+		
+		/*
 		String[] styleNames = styleSheet.getUsedStyleNames();
 		//System.out.println("processing [" + styleNames.length + "] styles.");
 		int insertIndexForReferencedStyles = codeList.size();
@@ -221,12 +253,12 @@ public class CssConverter extends Converter {
 		codeList.add( STANDALONE_MODIFIER + "String lic=\"" + test +"\";");
 		
 		// process referenced styles:
-		Style[] styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
+		styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
 		boolean isLabelStyleReferenced = false;
 		if (styles.length > 0) {
 			ArrayList referencedCode = new ArrayList();
 			referencedCode.add("\t//referenced styles:");
-			for (int i = 0; i < styles.length; i++) {
+			for (int i = styles.length -1; i >= 0; i--) {
 				Style style = styles[i];
 				if (style.getSelector().equals("label")) {
 					isLabelStyleReferenced = true;
@@ -237,18 +269,20 @@ public class CssConverter extends Converter {
 			}
 			codeList.addAll( insertIndexForReferencedStyles, referencedCode );
 		}
+		*/
 		
 		// check if label-style has been defined:
-		if (!(styleSheet.isUsed("label") || isLabelStyleReferenced)) {
-			if (styleSheet.getStyle("label" ) == null) {
+		if (!isLabelStyleReferenced) {
+			//if (styleSheet.getStyle("label" ) == null) {
 				codeList.add( STANDALONE_MODIFIER + "Style labelStyle = defaultStyle; // no specific label-style has been defined");
-			} else {
+			/*} else {
 				processStyle( styleSheet.getStyle("label" ), codeList, styleSheet, device );
-			}
+			}*/
 		}
 		
 		
 		// check if fullscreen mode is enabled with menu:
+		/*
 		if ((preprocessor.hasSymbol("polish.useMenuFullScreen") 
 			&& ((device.getCapability("polish.classes.fullscreen") != null) 
 					|| (device.isMidp2() && preprocessor.hasSymbol("polish.hasCommandKeyEvents") ) ))
@@ -261,6 +295,7 @@ public class CssConverter extends Converter {
 				this.referencedStyles.add(styleSheet.getStyle("menu" ));
 			}
 		}
+		*/
 		
 		// process dynamic styles:
 		if (styleSheet.containsDynamicStyles()) {
@@ -268,10 +303,11 @@ public class CssConverter extends Converter {
 			Style[] dynamicStyles = styleSheet.getDynamicStyles(); 
 			for (int i = 0; i < dynamicStyles.length; i++) {
 				Style style = dynamicStyles[i];
-				processStyle( style, codeList, styleSheet, device );
+				//processStyle( style, codeList, styleSheet, device );
 				this.referencedStyles.add( style );
 			}
 		}
+		
 		
 		// register referenced and dynamic styles:
 		codeList.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
@@ -295,8 +331,8 @@ public class CssConverter extends Converter {
 		if (focusedStyle == null) {
 			System.out.println("Warning: CSS-Style [focused] not found, now using the default style instead. If you use Forms or Lists, you should define the style [focused].");
 			codeList.add( STANDALONE_MODIFIER + "Style focusedStyle = defaultStyle;\t// the focused-style is not defined.");
-		} else {
-			processStyle( focusedStyle, codeList, styleSheet, device );
+		//} else {
+		//	processStyle( focusedStyle, codeList, styleSheet, device );
 		}
 		
 		// generate general warnings and hints:
