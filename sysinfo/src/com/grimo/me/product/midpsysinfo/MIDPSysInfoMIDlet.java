@@ -41,6 +41,7 @@ implements CommandListener
     	this.mainMenu.append( Locale.get("cmd.display"), null);
     	this.mainMenu.append(Locale.get("cmd.multimedia"), null);
     	this.mainMenu.append(Locale.get("cmd.system"), null);
+    	this.mainMenu.append(Locale.get("cmd.libraries"), null);
     	this.mainMenu.append(Locale.get("cmd.keys"), null);
     	this.mainMenu.append(Locale.get("cmd.arithmeticBenchmark"), null);
     	this.mainMenu.append(Locale.get("cmd.credits"), null);
@@ -113,15 +114,18 @@ implements CommandListener
 					show( Locale.get("title.system"), new SystemInfoCollector() );
 					return;
 				case 3:
-					show( Locale.get("title.keys"), new KeysInfoCollector() );
+					show( Locale.get("title.libraries"), new LibrariesInfoCollector() );
 					return;
 				case 4:
-					show( Locale.get("title.arithmeticBenchmark"), new ArithmeticBenchmarkInfoCollector() );
+					show( Locale.get("title.keys"), new KeysInfoCollector() );
 					return;
 				case 5:
-					show( new CreditsCanvas() );
+					show( Locale.get("title.arithmeticBenchmark"), new ArithmeticBenchmarkInfoCollector() );
 					return;
 				case 6:
+					show( new CreditsCanvas() );
+					return;
+				case 7:
 					cmd = this.exitCmd;
 					break;
 			}

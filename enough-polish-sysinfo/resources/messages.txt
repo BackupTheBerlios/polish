@@ -3,6 +3,7 @@ title.credits=Credits
 title.display=Display
 title.multimedia=Multimedia
 title.system=System
+title.libraries=APIs
 title.keys=Keys
 title.arithmeticBenchmark=Arithmetic Benchmark
 
@@ -10,6 +11,7 @@ cmd.credits=Credits Info
 cmd.display=Display Info
 cmd.multimedia=Multimedia Info
 cmd.system=System Info
+cmd.libraries=APIs Info
 cmd.keys=Keys Info
 cmd.arithmeticBenchmark=Arithmetic Benchmark
 cmd.credits=Credits
