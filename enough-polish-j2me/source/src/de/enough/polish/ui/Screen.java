@@ -96,6 +96,7 @@ public abstract class Screen
 			private Style titleStyle;
 		//#endif
 		//#ifdef polish.Vendor.Motorola
+			//#define tmp.ignoreMotorolaTitleCall
 			private boolean ignoreMotorolaTitleCall;
 		//#endif
 	//#endif
@@ -364,7 +365,7 @@ public abstract class Screen
 			if (this.container != null) {
 				this.container.showNotify();
 			}
-			//#ifdef polish.vendor.Motorola
+			//#if tmp.ignoreMotorolaTitleCall
 				this.ignoreMotorolaTitleCall = true;
 			//#endif
 			//#if tmp.fullScreen && polish.midp2
@@ -774,7 +775,7 @@ public abstract class Screen
 	{
 		//#debug
 		System.out.println("Setting title " + s );
-		//#ifdef polish.vendor.Motorola
+		//#ifdef tmp.ignoreMotorolaTitleCall
 			if (this.ignoreMotorolaTitleCall) {
 				this.ignoreMotorolaTitleCall = false;
 				return;
