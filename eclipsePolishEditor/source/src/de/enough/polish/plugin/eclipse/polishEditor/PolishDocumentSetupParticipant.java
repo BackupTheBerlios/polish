@@ -27,6 +27,7 @@ package de.enough.polish.plugin.eclipse.polishEditor;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.rules.DefaultPartitioner;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -49,19 +50,24 @@ public class PolishDocumentSetupParticipant implements IDocumentSetupParticipant
     // TODO: This will not work because // will match before //# is checked. What a pitty
     // but this extension concept is useless if you do nat have more control, e.g. order of calling.
     
-    private IToken successToken = new Token(IPolishConstants.DIRECTIVE_PARTITION);
+    private IToken successToken = new Token(IPolishContentTypes.POLISH_PARTITIONING);
     
     /* (non-Javadoc)
      * @see org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument)
      */
     public void setup(IDocument document) {
+        
         System.out.println("PolishDocumentSetupParticipant.setup():enter.");
         //TODO: The partitionScanner is different to the normal ruleBasedScanner.
         // Figure out what is wrong. We have a memory error. Again. Where does the EOF come frome?
         RuleBasedPartitionScanner scanner = new RuleBasedPartitionScanner();
         SingleLineRule rule = new SingleLineRule("//#","",this.successToken);
         scanner.setPredicateRules(new IPredicateRule[]{rule});
-        document.setDocumentPartitioner(new DefaultPartitioner(scanner,new String[] {IPolishConstants.DIRECTIVE_PARTITION}));
+  
+   	    DefaultPartitioner polishPartitioner = new DefaultPartitioner(scanner,new String[] {IPolishConstants.DIRECTIVE_PARTITION});
+   	    IDocumentExtension3 documentExtension= (IDocumentExtension3) document;
+   	    documentExtension.setDocumentPartitioner(IPolishContentTypes.POLISH_PARTITIONING,polishPartitioner);
+        polishPartitioner.connect(document);
     }
 
 }

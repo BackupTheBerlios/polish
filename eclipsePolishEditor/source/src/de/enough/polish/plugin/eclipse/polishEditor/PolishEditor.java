@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 
 
 
+
 /**
  * <p>This editor is heavily inspired by the ajdt plugin.</p>
  *
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.Composite;
 public class PolishEditor extends CompilationUnitEditor {
     
     
+     
     public void createPartControl(Composite parent){
         System.out.println("PolishEditor.createPartControl():enter.");
         IPreferenceStore preferenceStore = this.getPreferenceStore();
@@ -54,7 +56,13 @@ public class PolishEditor extends CompilationUnitEditor {
         PolishSourceViewerConfiguration polishSourceViewerConfiguration;
         polishSourceViewerConfiguration =  new PolishSourceViewerConfiguration(colorManager,preferenceStore,this,IJavaPartitions.JAVA_PARTITIONING);
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
-        
         super.createPartControl(parent);
+        
+        
+        
+        
+        
     }
+    
+    
 }

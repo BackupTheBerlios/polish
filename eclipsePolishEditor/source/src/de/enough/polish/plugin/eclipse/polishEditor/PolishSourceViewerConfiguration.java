@@ -28,8 +28,14 @@ package de.enough.polish.plugin.eclipse.polishEditor;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.rules.RuleBasedScanner;
+import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -46,27 +52,104 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class PolishSourceViewerConfiguration extends JavaSourceViewerConfiguration {
 
+    class DocumentListener implements IDocumentListener{
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
+         */
+        public void documentAboutToBeChanged(DocumentEvent event) {
+            /*
+             * 
+             */
+            
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
+         */
+        public void documentChanged(DocumentEvent event) {
+           
+            IDocument document = event.getDocument();
+            if( ! (document instanceof IDocumentExtension3)) {
+                System.out.println("DocumentListener.documentChanged():document is not instance of IDocumentExtension3");
+                return;
+            }
+            IDocumentExtension3 documentExtension3 = (IDocumentExtension3) document;
+            System.out.println("DocumentListener.documentChanged():partions:");
+            String[] partitions = documentExtension3.getPartitionings();
+            for(int i = 0; i < partitions.length; i++) {
+                System.out.print(partitions[i]+" ");
+            }
+            System.out.println();
+            
+        }
+        
+    }
+    
+    
+    class TextInputListener implements ITextInputListener{
+
+        DocumentListener documentListener = new DocumentListener();
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+         */
+        public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
+            /*
+             * 
+             */
+       }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+         */
+        public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
+            System.out.println("PolishEditor.TextInputListener.inputDocumentChanged():enter.newInput:"+newInput);
+            if(oldInput != null) {
+                oldInput.removeDocumentListener(this.documentListener);
+            }
+            if(newInput != null) {
+                newInput.addDocumentListener(this.documentListener);
+            }
+        }
+        
+    }
+
+    
     //private PolishTextTools polishTextTools;
     private PolishSingleLineCommentScanner polishSingleLineCommentScanner;
     
 	public PolishSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
 		super(colorManager,preferenceStore,editor,partitioning);
-		//this.polishTextTools = new PolishTextTools(preferenceStore);
 		this.polishSingleLineCommentScanner = new PolishSingleLineCommentScanner(colorManager,preferenceStore);
 	}
-
-	
 	
 	
     public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
         System.out.println("PolishSourceViewerConfiguration.getPresentationReconciler():enter.");
-        return super.getPresentationReconciler(sourceViewer);
+        sourceViewer.addTextInputListener(new TextInputListener());
+        
+        PresentationReconciler presentationReconciler = (PresentationReconciler)super.getPresentationReconciler(sourceViewer);
+        DefaultDamagerRepairer defaultDamagerRepairer = new DefaultDamagerRepairer(getPolishSingleLineCommentScanner());
+        // TODO: track down the use of IJavaPartitions.
+        presentationReconciler.setDamager(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
+        presentationReconciler.setRepairer(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
+        return presentationReconciler;
     }
+    
+    public PolishSingleLineCommentScanner getPolishSingleLineCommentScanner() {
+        	return this.polishSingleLineCommentScanner;
+    }
+    
+    
+    
+    /*
     protected RuleBasedScanner getSinglelineCommentScanner() {
         System.out.println("PolishSourceViewerConfiguration.getSinglelineCommentScanner():enter.");
         //return this.polishTextTools.getSinglelineCommentScanner();
         return this.polishSingleLineCommentScanner;
     }
+    */
     
 	/*// DO NOT USE: the super constructor will use this method which return an not initialzed value (null).
 	protected IColorManager getColorManager() {
@@ -74,4 +157,15 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 	}
 	*/
 
+    // Register the content type for polish directives at the end of the java content types.
+    public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+        String[] originalConfiguredContentTypes = super.getConfiguredContentTypes(sourceViewer);
+        String[] newlyConfiguredContentTypes = new String[originalConfiguredContentTypes.length + 1];
+        
+        System.arraycopy(originalConfiguredContentTypes,0,newlyConfiguredContentTypes,0,originalConfiguredContentTypes.length);
+        
+        newlyConfiguredContentTypes[newlyConfiguredContentTypes.length - 1] = IPolishContentTypes.POLISH_DIRECTIVE;
+        
+        return newlyConfiguredContentTypes;
+    }
 }

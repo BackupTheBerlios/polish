@@ -1,5 +1,5 @@
 /*
- * Created on Apr 1, 2005 at 6:30:47 PM.
+ * Created on Apr 4, 2005 at 12:42:58 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -31,13 +31,12 @@ package de.enough.polish.plugin.eclipse.polishEditor;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Apr 1, 2005 - ricky creation
+ *        Apr 4, 2005 - ricky creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public interface IPolishConstants {
-
-    String DIRECTIVE_PARTITION = "__polishDirective_partitioning";
+public interface IPolishContentTypes {
     
-
+    String POLISH_PARTITIONING = "__plolish_partitioning";
+    String POLISH_DIRECTIVE = "__polish_directive";
 }

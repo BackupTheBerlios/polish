@@ -73,13 +73,17 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
      */
     protected List createRules() {
         System.out.println("PolishSingleLineCommentScanner.createRules():enter.this:"+this);
-        List rules = new ArrayList();
+
         PolishDirectiveRule rule = new PolishDirectiveRule();
         rule.setDefaultToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
         rule.setDirectiveToken(getToken(IJavaColorConstants.JAVA_KEYWORD));
         rule.setNameToken(getToken(IJavaColorConstants.JAVA_STRING));
-        rules.add(rule);
+        
         setDefaultReturnToken(getToken(IJavaColorConstants.JAVA_STRING));
+        
+        List rules = new ArrayList();
+        rules.add(rule);
+        
         return rules;
     }
 }
