@@ -110,6 +110,7 @@ public class BuildSetting {
 	private PackageSetting packageSetting;
 	private ArrayList compilers;
 	private String encoding = DEFAULT_ENCODING;
+	private boolean doPreverify = true;
 	
 	/**
 	 * Creates a new build setting.
@@ -809,6 +810,13 @@ public class BuildSetting {
 	 * @param preverifyPath the path to the preverify executable.
 	 */
 	public void setPreverify( String preverifyPath ) {
+		if ( "true".equalsIgnoreCase(preverifyPath) || "yes".equalsIgnoreCase( preverifyPath)) {
+			this.doPreverify = true;
+			return;
+		} else if ( "false".equalsIgnoreCase(preverifyPath) || "no".equalsIgnoreCase( preverifyPath)) {
+			this.doPreverify = false;
+			return;
+		}
 		File newPreverify = getFile( preverifyPath );
 		if (!newPreverify.exists()) {
 			throw new BuildException("The path to the preverify-tool is invalid: [" + newPreverify.getAbsolutePath() + "] points to a non-existing file. Please correct the [preverify] attribute of the <build> element.");
@@ -818,6 +826,10 @@ public class BuildSetting {
 	
 	public File getPreverify() {
 		return this.preverify;
+	}
+	
+	public boolean doPreverify() {
+		return this.doPreverify;
 	}
 
 	/**

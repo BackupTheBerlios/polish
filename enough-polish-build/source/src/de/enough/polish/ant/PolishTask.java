@@ -343,7 +343,9 @@ public class PolishTask extends ConditionalTask {
 		if (this.doObfuscate) {
 			obfuscate( device, locale );
 		}
-		preverify( device, locale );
+		if (this.buildSetting.doPreverify()) {
+			preverify( device, locale );
+		}
 		jar( device, locale );
 		jad( device, locale );
 		if (hasExtensions) {

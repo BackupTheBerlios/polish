@@ -156,10 +156,8 @@ implements DataEditorUI, ActionListener
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		updateTitle();
 		
-		this.icon = SwingUtil.loadIcon( "icons/binaryeditor.png" );
-		if (this.icon != null) {
-			this.setIconImage( this.icon );
-		}
+		setIcon( "icons/binaryeditor.png" );
+		
 		if ( definition == null ) {
 			loadSettings();			
 		} else {

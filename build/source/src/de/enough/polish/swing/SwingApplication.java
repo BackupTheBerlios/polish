@@ -26,6 +26,7 @@
 package de.enough.polish.swing;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -43,6 +44,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+
+import de.enough.polish.util.SwingUtil;
 
 
 /**
@@ -87,6 +91,19 @@ implements Application
 		registerWindowListener();
 	}
 	
+	/**
+	 * Sets the icon for this application.
+	 * When the icon was not found, nothing is changed.
+	 * 
+	 * @param url the URL of the icon
+	 */
+	public void setIcon( String url ) {
+		Image icon = SwingUtil.loadIcon( url );
+		if ( icon != null ) {
+			this.setIconImage( icon );
+		}
+	}
+	
 	protected void registerDropTarget( Component component ) {
 		new DropTarget( component,  this.applicationDropListener );
 	}
@@ -100,13 +117,44 @@ implements Application
 			if (nativeIntegrationClass != null) {
 				this.nativeIntegration = (NativeIntegration) nativeIntegrationClass.newInstance();
 				this.nativeIntegration.init( this, this.applicationName );
+				return;
 			}
 		} catch (Exception e) {
 			System.err.println("Unable to load native integration: " + e );
 			e.printStackTrace();
 		}
+		// okay, no native integration found, so at least set the native look and feel:
+		setLookAndFeel();
 	}
 	
+	
+	/**
+	 * Sets the look and feel of this application.
+	 * Subclasses can override the setting of the "native" look and feel.
+	 */
+	protected void setLookAndFeel() {
+		String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
+		if (lookAndFeel == null) {
+			return;
+		}
+	    try {
+	        UIManager.setLookAndFeel(lookAndFeel);
+	        System.out.println("Set the look and feel: " + lookAndFeel );
+	    } catch (Exception e) {
+	    	System.err.println("Unable to set the native look and feel: " + e.toString() );
+	    	e.printStackTrace();
+	    }
+	}
+
+	/**
+	 * Retrieves the look and feel that should be set.
+	 * Subclasses can override this method for using another L&F.
+	 * 
+	 * @return the system's look and feel class name, when null is returned no look and feel will be set.
+	 */
+	protected String getLookAndFeel() {
+		return UIManager.getSystemLookAndFeelClassName();
+	}
 	
 	protected Class getNativeIntegrationClass() throws ClassNotFoundException {
 		if (this.isMacOsX) {
@@ -202,6 +250,7 @@ implements Application
 	 * Registers a standard window listener that in turns calls quit when the main window is closed.
 	 */
 	protected void registerWindowListener() {
+		setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
 		super.addWindowListener( new MyWindowListener() );		
 	}
 	
