@@ -96,13 +96,8 @@ public class ProGuardObfuscator extends Obfuscator {
 	                    false,
 	                    false));
 		}
-        // The preverify tool seems to unpack the resulting class files,
-        // so we must not use mixed-case class names on Windows:
-        if (File.separatorChar == '\\') {
-        	cfg.useMixedCaseClassNames = false;
-        } else {
-        	cfg.useMixedCaseClassNames = true;
-        }
+        // some devices do not support mixed-case class names:
+        cfg.useMixedCaseClassNames = false;
 
         // overload names with different return types:
         cfg.overloadAggressively = true;

@@ -23,10 +23,10 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess.lineprocessors;
+package de.enough.polish.preprocess.custom;
 
 import de.enough.polish.Device;
-import de.enough.polish.preprocess.LineProcessor;
+import de.enough.polish.preprocess.CustomProcessor;
 import de.enough.polish.util.StringList;
 
 /**
@@ -39,14 +39,14 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PolishLineProcessor extends LineProcessor {
+public class PolishProcessor extends CustomProcessor {
 	
 	private boolean isTickerUsed;
 
 	/**
 	 * Creates a new uninitialised PolishLineProcessor 
 	 */
-	public PolishLineProcessor() {
+	public PolishProcessor() {
 		super();
 	}
 
@@ -73,6 +73,9 @@ public class PolishLineProcessor extends LineProcessor {
 	 * @see de.enough.polish.preprocess.LineProcessor#processClass(de.enough.polish.util.StringList, java.lang.String)
 	 */
 	public void processClass(StringList lines, String className) {
+		if (!this.isUsingPolishGui) {
+			return;
+		}
 		while (lines.next() ) {
 			String line = lines.getCurrent();
 			int startPos = line.indexOf(".getTicker"); 

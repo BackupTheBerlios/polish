@@ -25,11 +25,9 @@
  */
 package de.enough.polish.ant;
 
-import de.enough.polish.Variable;
+import java.util.ArrayList;
 
-import java.util.*;
-import java.util.HashMap;
-import java.util.Iterator;
+import de.enough.polish.Variable;
 
 /**
  * <p>Represents a Java Application Description file.</p>
@@ -43,31 +41,24 @@ import java.util.Iterator;
  */
 public class Jad {
 	
-	private HashMap attributes;
+	private ArrayList attributes;
 
 	/**
 	 * Creates a new empty JAD
 	 */
 	public Jad() {
-		this.attributes = new HashMap();
+		this.attributes = new ArrayList();
 	}
 	
 	public void addAttribute( String name, String value ) {
 		if (!name.endsWith(":")) {
 			name += ':';
 		}
-		this.attributes.put( name, value );
+		this.attributes.add( name + " " + value );
 	}
 	
 	public String[] getContent() {
-		String[] lines = new String[ this.attributes.size() ];
-		Set set = this.attributes.keySet();
-		int i = 0;
-		for (Iterator iter = set.iterator(); iter.hasNext();) {
-			String key = (String) iter.next();
-			lines[i] = key + " " + this.attributes.get( key );
-			i++;
-		}
+		String[] lines = (String[]) this.attributes.toArray( new String[ this.attributes.size() ] );
 		return lines;
 	}
 

@@ -78,6 +78,7 @@ public class BuildSetting {
 	private File polishDir;
 	private JadAttributes jadAttributes;
 	private boolean defaultMidpPathUsed = true;
+	private ArrayList preprocessors;
 	
 	/**
 	 * Creates a new build setting.
@@ -143,6 +144,24 @@ public class BuildSetting {
 	
 	public void addConfiguredJad( JadAttributes attributes ) {
 		this.jadAttributes = attributes;
+	}
+	
+	public void addConfiguredPreprocessor( PreprocessorSetting preprocessor ) {
+		if (preprocessor.getClassName() == null) {
+			throw new BuildException("Invalid <preprocessor> element: please define the attribute \"class\" for each preprocessor.");
+		}
+		if (this.preprocessors == null) {
+			this.preprocessors = new ArrayList();
+		}
+		this.preprocessors.add( preprocessor );
+	}
+	
+	public PreprocessorSetting[] getPreprocessors() {
+		if (this.preprocessors == null) { 
+			return new PreprocessorSetting[0];
+		} else {
+			return (PreprocessorSetting[]) this.preprocessors.toArray( new PreprocessorSetting[ this.preprocessors.size()]);
+		}
 	}
 	
 	public Attribute[] getJadAttributes() {
@@ -271,7 +290,7 @@ public class BuildSetting {
 	/**
 	 * Sets the working directory. Defaults to "./build".
 	 * 
-	 * @param workDir The working directory to set.
+	 * @param workPath The working directory to set.
 	 */
 	public void setWorkDir(String workPath) {
 		File newWorkDir = new File( this.project.getBaseDir().getAbsolutePath() + File.separator + workPath );
@@ -493,7 +512,7 @@ public class BuildSetting {
 	/**
 	 * Sets the path to the device.xml file.
 	 * 
-	 * @param devices The path to the devices.xml
+	 * @param devicesPath The path to the devices.xml
 	 */
 	public void setDevices(String devicesPath) {
 		File newDevices = getFile( devicesPath );
@@ -568,7 +587,7 @@ public class BuildSetting {
 	/**
 	 * Sets the path to the api-file of the MIDP/1.0 environment
 	 *  
-	 * @param midp1Path The path to the MIDP/1.0-api-file
+	 * @param midp1PathStr The path to the MIDP/1.0-api-file
 	 */
 	public void setMidp1Path( String midp1PathStr ) {
 		File newMidp1Path = getFile( midp1PathStr );
@@ -596,7 +615,7 @@ public class BuildSetting {
 	 * When the midp1Path is not defined, it will use the same
 	 * api-path as the given MIDP/2.0 environment.
 	 *  
-	 * @param midp2Path The path to the MIDP/2.0-api-file
+	 * @param midp2PathStr The path to the MIDP/2.0-api-file
 	 */
 	public void setMidp2Path( String midp2PathStr ) {
 		File newMidp2Path = getFile( midp2PathStr );

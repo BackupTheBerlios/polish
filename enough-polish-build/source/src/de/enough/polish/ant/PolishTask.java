@@ -32,7 +32,7 @@ import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
-import de.enough.polish.preprocess.lineprocessors.PolishLineProcessor;
+import de.enough.polish.preprocess.custom.PolishProcessor;
 import de.enough.polish.util.*;
 
 import org.apache.tools.ant.*;
@@ -147,30 +147,37 @@ public class PolishTask extends ConditionalTask {
 		if (!isActive()) {
 			return;
 		}
-		checkSettings();
-		initProject();
-		selectDevices();
-		int numberOfDevices = this.devices.length;
-		if (numberOfDevices > 1) {
-			System.out.println("Processing [" + numberOfDevices + "] devices...");
-		}
-		boolean obfuscate = this.buildSetting.doObfuscate();
-		for ( int i=0; i<numberOfDevices; i++) {
-			Device device = this.devices[i];
-			preprocess( device );
-			compile( device );
-			if (obfuscate) {
-				obfuscate( device );
+		try {
+			checkSettings();
+			initProject();
+			selectDevices();
+			int numberOfDevices = this.devices.length;
+			if (numberOfDevices > 1) {
+				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
-			preverify( device );
-			jar( device );
-			jad( device );
-		}
-		test();
-		deploy();
-		finishProject();
-		if (numberOfDevices > 1) {
-			System.out.println("Successfully processed [" + numberOfDevices + "] devices.");
+			boolean obfuscate = this.buildSetting.doObfuscate();
+			for ( int i=0; i<numberOfDevices; i++) {
+				Device device = this.devices[i];
+				preprocess( device );
+				compile( device );
+				if (obfuscate) {
+					obfuscate( device );
+				}
+				preverify( device );
+				jar( device );
+				jad( device );
+			}
+			test();
+			deploy();
+			finishProject();
+			if (numberOfDevices > 1) {
+				System.out.println("Successfully processed [" + numberOfDevices + "] devices.");
+			}
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to execute J2ME Polish task: " + e.toString(), e );
 		}
 	}
 
@@ -337,10 +344,21 @@ public class PolishTask extends ConditionalTask {
 		} catch (InvalidComponentException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		}
+		
+		// create preprocessor:
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
-		LineProcessor lineProcessor = new PolishLineProcessor();
+		// init line processors:
+		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
+		CustomProcessor[] processors = new CustomProcessor[ settings.length + 1];
+		// add the default line processor:
+		CustomProcessor lineProcessor = new PolishProcessor();
 		lineProcessor.init(this.preprocessor);
-		this.preprocessor.setLineProcessors( new LineProcessor[]{ lineProcessor } );
+		processors[0] = lineProcessor;
+		for (int i = 0; i < settings.length; i++) {
+			PreprocessorSetting setting = settings[i];
+			processors[ i + 1] = CustomProcessor.getInstance(setting, this.preprocessor, this.project );
+		}
+		this.preprocessor.setLineProcessors( processors );
 		
 		//	initialise the preprocessing-source-directories:
 		DirectoryScanner dirScanner = new DirectoryScanner();
@@ -957,7 +975,7 @@ public class PolishTask extends ConditionalTask {
 		*/
 		String cldc = null;
 		if (device.isCldc10()) {
-			cldc = "-cldc1.0";
+			cldc = "-cldc";
 		} else {
 			cldc = "-nonative";
 		}
@@ -1069,15 +1087,23 @@ public class PolishTask extends ConditionalTask {
 		//create manifest:
 		try {
 			Manifest manifest = new Manifest();
-			Manifest.Attribute polishVersion = new Manifest.Attribute("Polish-Version", VERSION );
-			manifest.addConfiguredAttribute( polishVersion  );
+			
+			// set MicroEdition-Profile:
 			String midp = InfoSetting.MIDP1;
 			if (device.isMidp2()) {
 				midp = InfoSetting.MIDP2;
 			}
 			Manifest.Attribute meProfile = new Manifest.Attribute( InfoSetting.MICRO_EDITION_PROFILE, midp );
 			manifest.addConfiguredAttribute(meProfile);
-			
+
+			// set MicroEdition-Configuration:
+			String config = InfoSetting.CLDC1_0;
+			if (!device.isCldc10()) {
+				config = InfoSetting.CLDC1_1;
+			}
+			Manifest.Attribute meConfiguration = new Manifest.Attribute( InfoSetting.MICRO_EDITION_CONFIGURATION, config );
+			manifest.addConfiguredAttribute(meConfiguration);
+
 			// add info attributes:
 			Variable[] jadAttributes = this.infoSetting.getManifestAttributes();
 			for (int i = 0; i < jadAttributes.length; i++) {
@@ -1086,6 +1112,15 @@ public class PolishTask extends ConditionalTask {
 				Manifest.Attribute attribute = new Manifest.Attribute(var.getName(), value );
 				manifest.addConfiguredAttribute( attribute  );
 			}
+			
+			// add build properties - midlet infos:
+			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
+			for (int i = 0; i < midletInfos.length; i++) {
+				String info = midletInfos[i];
+				Manifest.Attribute attribute = new Manifest.Attribute(InfoSetting.NMIDLET + (i+1), info );
+				manifest.addConfiguredAttribute( attribute  );
+			}
+			
 			// add user-defined attributes:
 			Attribute[] attributes = this.buildSetting.getJadAttributes();
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
@@ -1098,13 +1133,10 @@ public class PolishTask extends ConditionalTask {
 					manifest.addConfiguredAttribute( attribute  );
 				}
 			}
-			// add build properties - midlet infos:
-			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
-			for (int i = 0; i < midletInfos.length; i++) {
-				String info = midletInfos[i];
-				Manifest.Attribute attribute = new Manifest.Attribute(InfoSetting.NMIDLET + (i+1), info );
-				manifest.addConfiguredAttribute( attribute  );
-			}
+			
+			//add polish version:
+			Manifest.Attribute polishVersion = new Manifest.Attribute("Polish-Version", VERSION );
+			manifest.addConfiguredAttribute( polishVersion  );
 			jarTask.addConfiguredManifest( manifest );
 		} catch (ManifestException e) {
 			e.printStackTrace();
@@ -1132,11 +1164,24 @@ public class PolishTask extends ConditionalTask {
 		// now create the JAD file:
 		System.out.println("creating JAD for device [" + device.getIdentifier() + "].");
 		Jad jad = new Jad();
+		//add info attributes:
 		Variable[] jadAttributes = this.infoSetting.getJadAttributes();
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Variable var =jadAttributes[i];
 			jad.addAttribute( var.getName() , PropertyUtil.writeProperties( var.getValue(), infoProperties) );
 		}
+		
+		// add build properties - midlet infos:
+		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
+		for (int i = 0; i < midletInfos.length; i++) {
+			String info = midletInfos[i];
+			jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
+		}
+		
+		// add size of jar:
+		//TODO check if File.length changes after the file has been changed.
+		long size = device.getJarFile().length();
+		jad.addAttribute(  InfoSetting.MIDLET_JAR_SIZE, "" + size );
 		
 		// add user-defined attributes:
 		Attribute[] attributes = this.buildSetting.getJadAttributes();
@@ -1149,16 +1194,6 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 
-		// add build properties - midlet infos:
-		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
-		for (int i = 0; i < midletInfos.length; i++) {
-			String info = midletInfos[i];
-			jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
-		}
-		// add size of jar:
-		//TODO check if File.length changes after the file has been changed.
-		long size = device.getJarFile().length();
-		jad.addAttribute(  InfoSetting.MIDLET_JAR_SIZE, "" + size );
 		
 		String jadName = PropertyUtil.writeProperties( jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad", infoProperties );
 		File jadFile = new File( this.buildSetting.getDestDir().getAbsolutePath() + File.separatorChar + jadName );

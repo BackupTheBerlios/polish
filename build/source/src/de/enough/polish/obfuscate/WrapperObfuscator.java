@@ -1,6 +1,6 @@
 /*
- * Created on 20-Feb-2004 at 21:15:33.
- *
+ * Created on 11-Jul-2004 at 21:13:02.
+ * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -23,54 +23,42 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ant;
+package de.enough.polish.obfuscate;
 
-import java.util.ArrayList;
+import java.io.File;
 
-import de.enough.polish.Variable;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.Path;
+
+import de.enough.polish.Device;
 
 /**
- * <p>Represents a Java Application Description file.</p>
+ * <p>Loads and embeds an obfuscator with a different classpath.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        20-Feb-2004 - rob creation
+ *        11-Jul-2004 - rob creation
  * </pre>
- * @author Robert Virkus, robert@enough.de
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Jad {
-	
-	private ArrayList attributes;
+public class WrapperObfuscator extends Obfuscator {
 
 	/**
-	 * Creates a new empty JAD
-	 */
-	public Jad() {
-		this.attributes = new ArrayList();
-	}
-	
-	public void addAttribute( String name, String value ) {
-		if (!name.endsWith(":")) {
-			name += ':';
-		}
-		this.attributes.add( name + " " + value );
-	}
-	
-	public String[] getContent() {
-		String[] lines = (String[]) this.attributes.toArray( new String[ this.attributes.size() ] );
-		return lines;
-	}
-
-	/**
-	 * Adds several variables to this JAD file.
 	 * 
-	 * @param vars The variables which should be added.
 	 */
-	public void addAttributes(Variable[] vars) {
-		for (int i = 0; i < vars.length; i++) {
-			Variable var = vars[i];
-			addAttribute( var.getName(), var.getValue() );
-		}
+	public WrapperObfuscator() {
+		super();
+		// TODO enough implement WrapperObfuscator
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.obfuscate.Obfuscator#obfuscate(de.enough.polish.Device, java.io.File, java.io.File, java.lang.String[], org.apache.tools.ant.types.Path)
+	 */
+	public void obfuscate(Device device, File sourceFile, File targetFile,
+			String[] preserve, Path bootClassPath) throws BuildException {
+		// TODO enough implement obfuscate
+
+	}
+
 }

@@ -25,7 +25,12 @@
  */
 package de.enough.polish.preprocess;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+
 import de.enough.polish.Device;
+import de.enough.polish.ant.build.PreprocessorSetting;
+import de.enough.polish.preprocess.custom.WrapperProcessor;
 import de.enough.polish.util.StringList;
 
 /**
@@ -38,7 +43,7 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class LineProcessor {
+public abstract class CustomProcessor {
 
 	protected Preprocessor preprocessor;
 	protected BooleanEvaluator booleanEvaluator;
@@ -53,7 +58,7 @@ public abstract class LineProcessor {
 	 * 
 	 * @see #init(Preprocessor)
 	 */
-	public LineProcessor() {
+	public CustomProcessor() {
 		// no initialisation work done
 	}
 	
@@ -92,5 +97,35 @@ public abstract class LineProcessor {
 	 * @param className the name of the class
 	 */
 	public abstract void processClass( StringList lines, String className );
+	
+	/**
+	 * Loads a line processor subclass.
+	 * 
+	 * @param setting the definition of the line processor 
+	 * @param preprocessor the preprocessor
+	 * @param project the Ant project
+	 * @return the initialised line processor
+	 * @throws BuildException when the defined class could not be instantiated
+	 */
+	public static CustomProcessor getInstance( PreprocessorSetting setting, 
+			Preprocessor preprocessor,
+			Project project ) 
+	throws BuildException
+	{
+		try {
+			CustomProcessor lineProcessor = null;
+			if (setting.getClassPath() != null) {
+				System.out.println("loading line processor from path " + setting.getClassPath().getAbsolutePath() );
+				lineProcessor = new WrapperProcessor( setting, preprocessor, project );
+			} else {
+				lineProcessor = (CustomProcessor) Class.forName( setting.getClassName() ).newInstance();
+			}
+			lineProcessor.init( preprocessor );
+			return lineProcessor;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to load preprocessor [" + setting.getClassName() + "]: " + e.toString() );
+		}
+	}
 
 }

@@ -44,6 +44,7 @@ import java.util.Set;
 public final class ImportConverter {
 	
 	private HashMap polishToMidp1;
+	private HashMap polishToMidp2;
 	private HashMap midp1ToPolish;
 	private HashMap midp2ToPolish;
 	private String[] completeMidp1;
@@ -124,6 +125,14 @@ public final class ImportConverter {
 			String key = (String) iter.next();
 			toJavax.put( toPolish.get(key), key );
 		}
+		this.polishToMidp2 = new HashMap( toJavax );
+		// add game-API for MIDP/1.0 devices:
+		toJavax.put( "javax.microedition.lcdui.game.GameCanvas", "de.enough.polish.ui.game.GameCanvas");
+		toJavax.put( "javax.microedition.lcdui.game.Layer", "de.enough.polish.ui.game.Layer");
+		toJavax.put( "javax.microedition.lcdui.game.LayerManager", "de.enough.polish.ui.game.LayerManager");
+		toJavax.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite");
+		toJavax.put( "javax.microedition.lcdui.game.TiledLayer", "de.enough.polish.ui.game.TiledLayer");
+		toJavax.put( "javax.microedition.lcdui.game.*", "de.enough.polish.ui.game.*");
 		this.polishToMidp1 = toJavax;
 	}
 	
@@ -137,6 +146,20 @@ public final class ImportConverter {
 	 *         otherwise false is returned.
 	 */
 	public boolean processImports( boolean usePolishGui, boolean isMidp1, StringList sourceCode ) {
+		HashMap translations;
+		if (usePolishGui) {
+			if (isMidp1) {
+				translations = this.midp1ToPolish;
+			} else {
+				translations = this.midp2ToPolish;
+			}
+		} else {
+			if (isMidp1) {
+				translations = this.polishToMidp1;
+			} else {
+				translations = this.polishToMidp2;
+			}
+		}
 		// go through the code and search for import statements:
 		boolean changed = false;
 		while (sourceCode.next()) {
@@ -144,10 +167,6 @@ public final class ImportConverter {
 			if (line.startsWith("import ")) {
 				String importContent = line.substring( 7, line.length() -1 ).trim();
 				if ( usePolishGui ) {
-					HashMap translations = this.midp1ToPolish;
-					if (!isMidp1) {
-						translations = this.midp2ToPolish;
-					}
 					// translate import statements from javax.microedition.lcdui to polish:
 					String replacement = (String) translations.get(importContent);
 					if ( replacement != null) {
@@ -171,7 +190,7 @@ public final class ImportConverter {
 					}
 				} else {
 					// translate import statements from polish to javax.microedition.lcdui:
-					String replacement = (String) this.polishToMidp1.get(importContent);
+					String replacement = (String) translations.get(importContent);
 					if ( replacement != null) {
 						changed = true;
 						sourceCode.setCurrent("import " + replacement + ";");

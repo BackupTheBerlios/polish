@@ -83,6 +83,7 @@ public final class ResourceUtil {
 	/**
 	 * Reads the specified text file and returns its content.
 	 * 
+	 * @param baseDir the base directory containing the resource
 	 * @param url the URL to the text file.
 	 * @return a String array with the content of the specified file.
 	 * @throws FileNotFoundException when the specified resource could not be found

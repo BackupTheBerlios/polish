@@ -1,6 +1,6 @@
 /*
- * Created on 20-Feb-2004 at 21:15:33.
- *
+ * Created on 11-Jul-2004 at 17:43:41.
+ * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -23,54 +23,46 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ant;
+package de.enough.polish.ant.build;
 
-import java.util.ArrayList;
-
-import de.enough.polish.Variable;
+import java.io.File;
 
 /**
- * <p>Represents a Java Application Description file.</p>
+ * <p>Is used for defining additional user-defined preprocessors.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        20-Feb-2004 - rob creation
+ *        11-Jul-2004 - rob creation
  * </pre>
- * @author Robert Virkus, robert@enough.de
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Jad {
+public class PreprocessorSetting {
 	
-	private ArrayList attributes;
+	private String className;
+	private File classPath;
 
 	/**
-	 * Creates a new empty JAD
+	 * Creates a new empty preprocessor setting.
 	 */
-	public Jad() {
-		this.attributes = new ArrayList();
+	public PreprocessorSetting() {
+		// initialisation is done via the setter methods
 	}
 	
-	public void addAttribute( String name, String value ) {
-		if (!name.endsWith(":")) {
-			name += ':';
-		}
-		this.attributes.add( name + " " + value );
+	public void setClass( String className ) {
+		this.className = className;
 	}
 	
-	public String[] getContent() {
-		String[] lines = (String[]) this.attributes.toArray( new String[ this.attributes.size() ] );
-		return lines;
+	public String getClassName() {
+		return this.className;
+	}
+	
+	public void setClassPath( File classPath ) {
+		this.classPath = classPath;
+	}
+	
+	public File getClassPath() {
+		return this.classPath;
 	}
 
-	/**
-	 * Adds several variables to this JAD file.
-	 * 
-	 * @param vars The variables which should be added.
-	 */
-	public void addAttributes(Variable[] vars) {
-		for (int i = 0; i < vars.length; i++) {
-			Variable var = vars[i];
-			addAttribute( var.getName(), var.getValue() );
-		}
-	}
 }

@@ -61,12 +61,16 @@ public class InfoSetting {
 	public static final String MIDLET_DELETE_CONFIRM = "MIDlet-Delete-Confirm"; // M?
 	public static final String MIDLET_DELETE_NOTIFY = "MIDlet-Delete-Notify"; // M?
 	public static final String MIDLET_INSTALL_NOTIFY = "MIDlet-Install-Notify"; // M?
+
+	public static final String MIDLET_PERMISSIONS = "MIDlet-Permissions"; // J & M 	
+	public static final String MIDLET_OPTIONAL_PERMISSIONS = "MIDlet-Permissions-Opt"; // J & M
 	
 	// For a list of Midlet-N attributes see 
 	// http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html#wp21956
 	public static final String NMIDLET = "MIDlet-";
 	
-	public static final String CLDC1 = "CLDC-1.0";
+	public static final String CLDC1_0 = "CLDC-1.0";
+	public static final String CLDC1_1 = "CLDC-1.1";
 	public static final String MIDP1 = "MIDP-1.0";
 	public static final String MIDP2 = "MIDP-2.0";
 	private  static final String GPL_LICENSE = "GPL";
@@ -95,7 +99,6 @@ public class InfoSetting {
 	 */
 	public InfoSetting() {
 		this.manifestAttributes = new ArrayList();
-		this.manifestAttributes.add( new Variable( MICRO_EDITION_CONFIGURATION, CLDC1 ));
 		this.jadAttributes = new ArrayList();
 	}
 
@@ -402,6 +405,30 @@ public class InfoSetting {
 	 */
 	public void setJarName( String jarName ) {
 		this.jarName = jarName;
+	}
+
+	/**
+	 * Sets the optional permissions of this application.
+	 * 
+	 * @param optionalPermissions The permissions which are useful for this application to work, 
+	 * 			e.g. "javax.microedition.io.Connector.http"
+	 */
+	public void setOptionalPermissions(String optionalPermissions) {
+		Variable var = new Variable( MIDLET_OPTIONAL_PERMISSIONS, optionalPermissions );
+		this.manifestAttributes.add( var );
+		this.jadAttributes.add( var );
+	}
+	
+	/**
+	 * Sets the permissions of this application.
+	 * 
+	 * @param permissions The permissions which are needed for this application to work, 
+	 * 			e.g. "javax.microedition.io.Connector.http"
+	 */
+	public void setPermissions(String permissions) {
+		Variable var = new Variable( MIDLET_PERMISSIONS, permissions );
+		this.manifestAttributes.add( var );
+		this.jadAttributes.add( var );
 	}
 	
 	/**

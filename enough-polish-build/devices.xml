@@ -90,7 +90,8 @@
 		<capability name="SoundFormat" value="midi, amr" />
 	</device>
 
-	<device>
+	<device
+		supportsPolishGui="false" >
 		<identifier>Nokia/Series40</identifier>
 		<features>isVirtual</features>
 		<groups>Series40</groups>
