@@ -201,7 +201,7 @@
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,build.xml" />
 		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,custom-css-attributes.xml" />
-		<fileset dir="import" includes="midp2-cldc11.jar" />
+		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar" />
 	</zip>
 </target>
 	

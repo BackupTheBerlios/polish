@@ -1,4 +1,4 @@
-Please copy the jar-files into the "import"-folder of your J2ME installation directory.
+Please copy all jar-files into the "import"-folder of your J2ME installation directory.
 
 The provided "build.xml" needs to be adjusted:
 - the "wtk.home" property needs to point to the installation directory of
@@ -13,5 +13,5 @@ might want to copy the relevant files (devices.xml, vendors.xml,
 groups.xml and apis.xml) to the installation directory of J2ME Polish as well.
 
 Please copy the provided custom-css-attributes.xml to the J2ME Polish installation 
-directory. This file deines CSS attributes of your own CustomItems.
+directory. This file defines CSS attributes of your own CustomItems.
 

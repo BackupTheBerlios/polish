@@ -1296,8 +1296,8 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3gpp" />
-		<capability name="SoundFormat" value="midi, True Tones" />
+		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi24, True Tones, amr, wb-amr" />
 		<capability name="HeapSize" value="3mb" />
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="CameraResolution" value="vga" />
@@ -2163,7 +2163,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="siemens-color-game-api, mmapi, wmapi, nokia-ui" />
+		<capability name="JavaPackage" value="siemens-color-game-api, mmapi, wmapi, nokia-ui, btapi" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, amr" />
 		<capability name="VideoFormat" value="3gpp" />
 		<capability name="StorageSize" value="2 MB" />

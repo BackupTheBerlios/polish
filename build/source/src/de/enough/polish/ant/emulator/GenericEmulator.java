@@ -68,6 +68,27 @@ public class GenericEmulator extends Emulator {
 			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Did not find the capability [Emulator.Executable] in the [devices.xml] file.");
 			return false;
 		}
+		// setting of default values for ${siemens.home} and ${nokia.home}, when
+		// these are not defined:
+		Object siemensHome = properties.get("siemens.home");
+		if ((siemensHome == null) && (File.separatorChar == '\\')) {
+			String siemensHomePath = "C:\\siemens";
+			if (new File(siemensHomePath).exists()) {
+				properties.put("siemens.home", siemensHomePath );
+			}
+		}
+		Object nokiaHome = properties.get("nokia.home");
+		if (nokiaHome == null) {
+			String nokiaHomePath;
+			if (File.separatorChar == '\\') {
+				nokiaHomePath = "C:\\Nokia";
+			} else {
+				nokiaHomePath = System.getProperty("user.home") + "/Nokia";
+			}
+			if (new File(nokiaHomePath).exists()) {
+				properties.put("nokia.home", nokiaHomePath);
+			}
+		}
 		execStr = PropertyUtil.writeProperties( execStr, properties );
 		if (execStr.indexOf("${") != -1) {
 			int propStart = execStr.indexOf("${");

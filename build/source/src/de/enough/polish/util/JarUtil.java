@@ -151,19 +151,22 @@ public final class JarUtil {
 		for (; enum.hasMoreElements();) {
 			JarEntry entry = (JarEntry) enum.nextElement();
 			if (!entry.isDirectory()) {
-				String path = targetPath + entry.getName();
-				File file = new File( path );
-				if (!file.getParentFile().exists()) {
-					file.getParentFile().mkdirs();
+				// do not copy anything from the package cache:
+				if (entry.getName().indexOf("package cache") == -1) {
+					String path = targetPath + entry.getName();
+					File file = new File( path );
+					if (!file.getParentFile().exists()) {
+						file.getParentFile().mkdirs();
+					}
+					FileOutputStream out = new FileOutputStream( file);
+					InputStream in = input.getInputStream(entry);
+					int read;
+					while ( (read = in.read( buffer )) != -1) {
+						out.write( buffer, 0, read );
+					}
+					in.close();
+					out.close();
 				}
-				FileOutputStream out = new FileOutputStream( file);
-				InputStream in = input.getInputStream(entry);
-				int read;
-				while ( (read = in.read( buffer )) != -1) {
-					out.write( buffer, 0, read );
-				}
-				in.close();
-				out.close();
 			}
 		}
 		

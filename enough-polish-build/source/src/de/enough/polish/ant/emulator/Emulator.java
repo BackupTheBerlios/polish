@@ -257,7 +257,7 @@ public abstract class Emulator extends Thread {
 			emulatorClass = Class.forName( className );
 		} catch (ClassNotFoundException e) {
 			// okay, try to add this package in front if it:
-			System.out.println("did not find class " + className );
+			// System.out.println("did not find class " + className );
 			try {
 				emulatorClass = Class.forName( "de.enough.polish.ant.emulator." + className );
 			} catch (ClassNotFoundException e2) {

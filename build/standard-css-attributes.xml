@@ -249,4 +249,12 @@
 		default="2"
 	/>
 	
+	<attribute
+		name="scrollindicator-color"
+		type="color"
+		appliesTo="Screen, List, Form"
+		description="The color of the item which indicates that the user can scroll the current screen."
+		default="black"
+	/>
+	
 </attributes>

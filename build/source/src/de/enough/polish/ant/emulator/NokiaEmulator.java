@@ -105,7 +105,20 @@ public class NokiaEmulator extends WtkEmulator {
 		}
 		String nokiaHomePath = (String) properties.get("nokia.home");
 		if (nokiaHomePath == null) {
-			nokiaHomePath = "C:\\Nokia";
+			if (File.separatorChar == '\\') {
+				nokiaHomePath = "C:\\Nokia";
+			} else {
+				nokiaHomePath = System.getProperty("user.home") + "/Nokia";
+			}
+			File home = new File( nokiaHomePath );
+			if (!home.exists()) {
+				System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: Please define the ${nokia.home}-property in your build.xml. The default path [" + nokiaHomePath + "] does not exist.");
+			}
+		} else {
+			File home = new File( nokiaHomePath );
+			if (!home.exists()) {
+				System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: Please adjust the ${nokia.home}-property in your build.xml. The path [" + nokiaHomePath + "] does not exist.");
+			}
 		}
 		this.nokiaHome = nokiaHomePath;
 		return super.init(device, setting, properties, project, evaluator, wtkHome);
