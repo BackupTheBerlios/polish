@@ -926,6 +926,15 @@ public class PolishTask extends ConditionalTask {
 			// check if the polish gui is used at all:
 			boolean usePolishGui = this.buildSetting.usePolishGui()
 				  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui());
+			if (!usePolishGui) {
+				// check if a preprocessing variable is set for using the Polish GUI:
+				value = this.preprocessor.getVariable("polish.usePolishGui");
+				if (value != null) {
+					if ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) || "always".equalsIgnoreCase(value)) {
+						usePolishGui = true;					
+					}
+				}
+			}
 			this.preprocessor.setUsePolishGui(usePolishGui);
 			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;

@@ -954,6 +954,9 @@ public class Preprocessor {
 		String style = null;
 		for (int i = 0; i < styles.length; i++) {
 			String name = styles[i].toLowerCase();
+			if (name.charAt(0) == '.') {
+				name = name.substring( 1 );
+			}
 			if (this.styleSheet.isDefined(name)) {
 				style = name;
 				break;

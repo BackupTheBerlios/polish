@@ -149,10 +149,20 @@ public class Converter {
 	 * Parses the given color.
 	 * 
 	 * @param value the color, e.g. "rgb( 12, 12, 12 )" or "red"
-	 * @return the color in a hexdecimal representation.
+	 * @return the color in a hexadecimal representation.
 	 */
 	public String parseColor( String value ) {
 		return this.colorConverter.parseColor(value);
+	}
+	
+	/**
+	 * Determines whether the given color has a defined alpha channel.
+	 * 
+	 * @param color the color as a hexadecimal value
+	 * @return true when the color has an alpha channel defined.
+	 */
+	public boolean isAlphaColor( String color ) {
+		return this.colorConverter.isAlphaColor( color );
 	}
 
 	

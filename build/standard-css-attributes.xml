@@ -244,6 +244,14 @@
 	/>
 
 	<attribute
+		name="textfield-direct-input"
+		type="boolean"
+		appliesTo="TextField, TextBox"
+		description="Defines whether input should be done with with J2ME Polish only instead of with the native input-system of the underlying OS."
+		default="false"
+	/>
+
+	<attribute
 		name="datefield-width"
 		type="integer"
 		appliesTo="DateField"
@@ -293,6 +301,62 @@
 		type="object"
 		appliesTo="Form, List, ChoiceGroup, Container"
 		description="Defines which view should be used for showing the items of a Form, List, etc."
+	/>
+
+	<attribute
+		name="droppingview-repeat-animation"
+		type="boolean"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="Defines whether the animation should be repeated each time the screen is shown."
+		default="false"
+	/>
+
+	<attribute
+		name="droppingview-speed"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="Defines the speed in pixels per animation-step of the falling items."
+		default="10"
+	/>
+	
+	<attribute
+		name="droppingview-maximum"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="Defines the maximum bouncing height of the falling items."
+		default="30"
+	/>
+	
+	<attribute
+		name="droppingview-damping"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="The value by which the maximum is decreased for each following item. By having a damping, the top items seem to bounce higher than lower ones."
+		default="10"
+	/>
+	
+	<attribute
+		name="droppingview-maxperiode"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="The maximum allowed number of bounces."
+		default="5"
+	/>
+	
+	<attribute
+		name="shuffleview-repeat-animation"
+		type="boolean"
+		appliesTo="Container, Form, List, ChoiceGroup, The shuffle view-type"
+		description="Defines whether the animation should be repeated each time the screen is shown."
+		default="false"
+	/>
+
+	<attribute
+		name="shuffleview-speed"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The shuffle view-type"
+		description="Defines the speed in pixels per animation-step of the items."
+		default="10"
 	/>
 	
 </attributes>

@@ -100,8 +100,8 @@ public class CssConverter extends Converter {
 	}
 	private static final HashMap VIEW_TYPES = new HashMap();
 	static {
-		VIEW_TYPES.put( "table", "de.enough.polish.ui.containerviews.TableView");
-		VIEW_TYPES.put( "TableView", "de.enough.polish.ui.containerviews.TableView");
+		VIEW_TYPES.put( "shuffle", "de.enough.polish.ui.containerviews.ShuffleView");
+		VIEW_TYPES.put( "ShuffleView", "de.enough.polish.ui.containerviews.ShuffleView");
 		VIEW_TYPES.put( "dropping", "de.enough.polish.ui.containerviews.DroppingView");
 		VIEW_TYPES.put( "DroppingView", "de.enough.polish.ui.containerviews.DroppingView");
 		VIEW_TYPES.put( "plain", "none");

@@ -264,6 +264,10 @@ public class ColorConverterTest extends TestCase {
 			//System.out.println( e.getMessage() );
 			// expected behaviour
 		}
+		
+		definition = "argb( 40, 20, 121, 8)";
+		value = colors.parseColor(definition);
+		assertEquals( "0xAARRGGBB".length(), value.length() );
 	}
 	
 }

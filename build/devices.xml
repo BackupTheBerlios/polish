@@ -345,6 +345,7 @@
 		<capability name="CameraZoom" value="4" />
 		<capability name="Emulator.Skin" value="SonyEricsson_K700" />
 		<capability name="DebugInterface" value="KDWP" />
+		<capability name="Bugs" value="drawRgbOrigin" />
 	</device>
 
 	<device>

@@ -62,8 +62,8 @@
 		</description>
 		<names>3d, 3d-api,3dapi, JSR-184, JSR184</names>
 		<symbol>3dapi</symbol>
-		<files>j2me-3dapi.jar</files>
-		<path>import/j2me-3dapi.jar</path>
+		<files>j2me-3dapi.jar, m3g.jar, jsr184.jar</files>
+		<path>import/m3g.jar</path>
 	</api>
 
 	<api>

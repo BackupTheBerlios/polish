@@ -204,10 +204,10 @@ public class ColorConverter {
 			if (number > 0xFF || number < 0 ) {
 				throw new BuildException("Invalid color definition in CSS: [" + definition + "] is not a valid RGB value. Allowed is [rgb(rrr,ggg,bbb)], e.g. [rgb(128, 255, 0)]. The value [" + numberStr + "] is invalid." );
 			}
-			if ( number < 0x1F) {
+			String hexNumber = Integer.toHexString(number) ;
+			if (hexNumber.length() < 2) {
 				buffer.append( '0' );
 			}
-			String hexNumber = Integer.toHexString(number) ;
 			buffer.append( hexNumber);
 		}
 		return buffer.toString();
@@ -228,6 +228,16 @@ public class ColorConverter {
 			String color = (String) map.get(colorName);
 			this.tempColors.put( colorName, parseColor( color ));
 		}
+	}
+
+	/**
+	 * Determines whether the given color has a defined alpha channel.
+	 * 
+	 * @param color the color as a hexadecimal value
+	 * @return true when the color has an alpha channel defined.
+	 */
+	public boolean isAlphaColor( String color ) {
+		return (color.length() > "0xRRGGBB".length() && !color.startsWith("0xff"));
 	}
 	
 }

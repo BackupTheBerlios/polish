@@ -54,12 +54,18 @@ public class SimpleBackgroundConverter extends BackgroundConverter {
 	 * @see de.enough.polish.preprocess.BackgroundConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
 	protected String createNewStatement(HashMap background, Style style, StyleSheet styleSheet) throws BuildException {
+		boolean hasAlphaColor = isAlphaColor(this.color);
 		if (this.hasBorder ) {
 			return "new " + BACKGROUNDS_PACKAGE + "BorderedSimpleBackground( " 
 					+ this.color + ", " + this.borderColor + ", " + this.borderWidth + ")";
 		} else {
-			return "new " + BACKGROUNDS_PACKAGE + "SimpleBackground( " 
+			if (hasAlphaColor) {
+				return "new " + BACKGROUNDS_PACKAGE + "TranslucentSimpleBackground( " 
+						+ this.color + ")";
+			} else {
+				return "new " + BACKGROUNDS_PACKAGE + "SimpleBackground( " 
 					+ this.color + ")";
+			}
 		}
 	}
 }
