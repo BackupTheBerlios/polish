@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	<property name="Version" value="1.2.4" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.4! " />
+	<property name="Version" value="1.2.5-preview" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.5-preview! " />
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />

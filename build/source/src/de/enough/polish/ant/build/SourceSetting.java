@@ -51,6 +51,14 @@ public class SourceSetting extends Setting {
 		super();
 	}
 	
+	/**
+	 * Creates a new source setting.
+	 * @param dir the directory containing source files
+	 */
+	public SourceSetting( File dir ) {
+		super();
+		this.dir = dir;
+	}
 
 	public File getDir() {
 		return this.dir;

@@ -92,7 +92,7 @@ public class BuildSetting {
 	private final Project project;
 	private boolean includeAntProperties;
 	private ResourceUtil resourceUtil;
-	private ArrayList sourceDirs;
+	private final ArrayList sourceSettings;
 	private File polishDir;
 	private JadAttributes jadAttributes;
 	private boolean defaultMidpPathUsed = true;
@@ -136,7 +136,7 @@ public class BuildSetting {
 		this.destDir = new File( this.projectBasePath + "dist");
 		this.apiDir = getFile("import");
 		this.resDir = getFile ("resources");
-		this.sourceDirs = new ArrayList();
+		this.sourceSettings = new ArrayList();
 		this.midp1Path = getFile( "import/midp1.jar" );
 		this.midp2Path = getFile( "import/midp2.jar" );
 		this.midp2Cldc11Path = getFile( "import/midp2-cldc11.jar" );
@@ -231,9 +231,12 @@ public class BuildSetting {
 			SourceSetting[] sources = setting.getSources();
 			for (int i = 0; i < sources.length; i++) {
 				SourceSetting source = sources[i];
+				this.sourceSettings.add( source );
+				/*
 				if (source.isActive(this.project)) {
 					this.sourceDirs.add( source.getDir() );
 				}
+				*/
 			}
 		}
 	}
@@ -560,7 +563,7 @@ public class BuildSetting {
 				throw new BuildException("The source directory [" + path + "] does not exist. " +
 						"Please correct the attribute [sourceDir] of the <build> element.");
 			}
-			this.sourceDirs.add( dir );
+			this.sourceSettings.add( new SourceSetting( dir ) );
 		}
 	}
 	
@@ -569,20 +572,20 @@ public class BuildSetting {
 	 * 
 	 * @return an arrray with at least one source directory.
 	 */
-	public File[] getSourceDirs() {
-		if (this.sourceDirs.size() == 0) {
+	public SourceSetting[] getSourceSettings() {
+		if (this.sourceSettings.size() == 0) {
 			// add default directory: either source/src, scr or source:
 			File src = getFile("source/src", false );
 			if (src.exists()) {
-				this.sourceDirs.add( src );
+				this.sourceSettings.add( new SourceSetting( src  ) );
 			} else {
 				src = getFile("src", false );
 				if (src.exists()) {
-					this.sourceDirs.add( src );
+					this.sourceSettings.add( new SourceSetting( src  ) );
 				} else {
 					src = getFile("source", false);
 					if (src.exists()) {
-						this.sourceDirs.add( src );
+						this.sourceSettings.add( new SourceSetting( src ) );
 					} else {
 						throw new BuildException("Did not find any of the default " +
 								"source directories [source/src], [src] or [source]. " +
@@ -593,8 +596,8 @@ public class BuildSetting {
 				}
 			}
 		}
-		File[] dirs = (File[]) this.sourceDirs.toArray( new File[ this.sourceDirs.size()]);
-		return dirs;
+		SourceSetting[] settings = (SourceSetting[]) this.sourceSettings.toArray( new SourceSetting[ this.sourceSettings.size()]);
+		return settings;
 	}
 	
 	/**

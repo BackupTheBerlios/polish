@@ -66,6 +66,7 @@ import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PostCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.ant.build.ResourceSetting;
+import de.enough.polish.ant.build.SourceSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
@@ -110,7 +111,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.4a<preview>";
+	private static final String VERSION = "1.2.5<preview>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -124,7 +125,8 @@ public class PolishTask extends ConditionalTask {
 	/** the actual devices which are supported by this project */
 	private Device[] devices;
 	private Preprocessor preprocessor;
-	private File[] sourceDirs;
+	//private File[] sourceDirs;
+	private SourceSetting[] sourceSettings;
 	private TextFile[][] sourceFiles;
 	private Path midp1BootClassPath;
 	private Path midp2BootClassPath;
@@ -191,6 +193,7 @@ public class PolishTask extends ConditionalTask {
 	private boolean doPostCompile;
 
 	private PostCompiler[] postCompilers;
+
 	
 
 	
@@ -401,14 +404,15 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>.");
 		}
 		// now check if the midlets do exist:
-		File[] sources = this.buildSetting.getSourceDirs();
+		SourceSetting[] sources = this.buildSetting.getSourceSettings();
 		if (!this.buildSetting.useDefaultPackage()) {
 			for (int i = 0; i < midlets.length; i++) {
 				Midlet midlet = midlets[i];
 				String fileName = StringUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
 				boolean midletFound = false;
 				for (int j = 0; j < sources.length; j++) {
-					File sourceDir = sources[j];
+					SourceSetting setting = sources[j]; 
+					File sourceDir = setting.getDir();
 					String sourceDirPath = sourceDir.getAbsolutePath();
 					File midletFile = new File( sourceDirPath + File.separator + fileName );
 					if (midletFile.exists()) {
@@ -604,9 +608,10 @@ public class PolishTask extends ConditionalTask {
 		//	initialise the preprocessing-source-directories:
 		DirectoryScanner dirScanner = new DirectoryScanner();
 		dirScanner.setIncludes( new String[]{"**/*.java"} );
-		File[] dirs = this.buildSetting.getSourceDirs();
-		this.sourceDirs = new File[ dirs.length];
-		this.sourceFiles = new TextFile[ dirs.length][];
+		this.sourceSettings = this.buildSetting.getSourceSettings();
+		//File[] dirs = this.buildSetting.getSourceDirs();
+		//this.sourceDirs = new File[ dirs.length];
+		this.sourceFiles = new TextFile[ this.sourceSettings.length][];
 		TextFileManager textFileManager = new TextFileManager();
 		this.preprocessor.setTextFileManager(textFileManager);
 		if (this.buildSetting.getPolishDir() != null) {
@@ -638,12 +643,13 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// load the normal source files:
-		for (int i = 0; i < dirs.length; i++) {
-			File dir = dirs[i];
+		for (int i = 0; i < this.sourceSettings.length; i++) {
+			SourceSetting setting = this.sourceSettings[i];
+			File dir = setting.getDir();
 			if (!dir.exists()) {
 				throw new BuildException("The source-directory [" + dir.getAbsolutePath() + "] does not exist. Please check your settings in the [sourceDir] attribute of the <build> element.");
 			}
-			this.sourceDirs[i] = dir; 
+			//this.sourceDirs[i] = dir; 
 			dirScanner.setBasedir(dir);
 			dirScanner.scan();
 			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles(), textFileManager );
@@ -1123,10 +1129,13 @@ public class PolishTask extends ConditionalTask {
 			this.preprocessor.notifyDevice(device, usePolishGui);
 			this.preprocessor.notifyLocale( locale );
 			// preprocess each source file:
-			for (int i = 0; i < this.sourceDirs.length; i++) {
-				File sourceDir = this.sourceDirs[i];
-				TextFile[] files = this.sourceFiles[i];
-				processSourceDir(sourceDir, files, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
+			for (int i = 0; i < this.sourceSettings.length; i++) {
+				SourceSetting setting = this.sourceSettings[i];
+				if (setting.isActive(evaluator, getProject())) {
+					File sourceDir = setting.getDir();
+					TextFile[] files = this.sourceFiles[i];
+					processSourceDir(sourceDir, files, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
+				}
 			} // for each source folder
 			this.preprocessor.notifyPolishPackageStart();
 			// now process the J2ME package files:
@@ -1833,7 +1842,17 @@ public class PolishTask extends ConditionalTask {
 	private void runEmulator( Device device, Locale locale ) {
 		if ( this.emulatorSetting.isActive(getProject()) ) {
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), getProject(), evaluator, this.wtkHome, this.sourceDirs );
+			Project antProject = getProject();
+			// get currently active source directories:
+			ArrayList sourceDirsList = new ArrayList();
+			for (int i = 0; i < this.sourceSettings.length; i++) {
+				SourceSetting setting = this.sourceSettings[i];
+				if (setting.isActive(evaluator, antProject)) {
+					sourceDirsList.add( setting.getDir() );
+				}
+			}
+			File[] sourceDirs = (File[]) sourceDirsList.toArray( new File[ sourceDirsList.size() ] );
+			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), getProject(), evaluator, this.wtkHome, sourceDirs );
 			if (emulator != null) {
 				if (this.runningEmulators == null) {
 					this.runningEmulators = new ArrayList();
