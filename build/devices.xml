@@ -1673,11 +1673,11 @@
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
-		<capability name="VideoFormat" value="3gpp, H.263" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
 		<capability name="SoundFormat" value="midi, amr, mp3, aac" />
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />

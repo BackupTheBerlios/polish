@@ -147,6 +147,13 @@ public class PolishTask extends ConditionalTask {
 		if (setting.getlicense() == null) {
 			throw new BuildException("The nested element <info> requires the attribute [license] with either \"GPL\" for open source software or the commercial license, which can be obtained at http://www.j2mepolish.org.");
 		}
+		if (setting.getVendorName() == null) {
+			throw new BuildException("The nested element <info> requires the attribute [vendor] which defines the name of the vendor providing the application.");
+		}
+		if (setting.getVersion() == null) {
+			throw new BuildException("The nested element <info> requires the attribute [version] which defines the version of this application, e.g. \"1.2.3\".");
+		}
+		setting.setDefaultJarUrl();
 		this.infoSetting = setting;
 	}
 	
@@ -322,7 +329,7 @@ public class PolishTask extends ConditionalTask {
 		// check the nested element of <build>:
 		Midlet[] midlets = this.buildSetting.getMidlets(); 
 		if (midlets == null || midlets.length == 0) {
-			throw new BuildException("Midlets need to be defined in the build section with either <midlets> or <midlet>.");
+			throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>.");
 		}
 		// now check if the midlets do exist:
 		File[] sources = this.buildSetting.getSourceDirs();

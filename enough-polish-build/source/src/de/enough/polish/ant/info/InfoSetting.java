@@ -241,7 +241,11 @@ public class InfoSetting {
 	 * @return Returns the URL of the jar-file.
 	 */
 	public String getJarUrl() {
-		return this.jarUrl;
+		if (this.jarUrl == null) {
+			return this.jarName;
+		} else {
+			return this.jarUrl;
+		}
 	}
 
 	/**
@@ -476,6 +480,15 @@ public class InfoSetting {
 			} catch (Exception e) {
 				throw new BuildException("Invalid license: [" + license +"]. Please use either the GPL license or obtain a commercial license from Enough Software at www.j2mepolish.org.");
 			}
+		}
+	}
+	
+	/**
+	 * Sets the jarName as the default jarUrl but only when no jarUrl has been specified.
+	 */
+	public void setDefaultJarUrl() {
+		if (this.jarUrl == null) {
+			setJarUrl( this.jarName );
 		}
 	}
 }

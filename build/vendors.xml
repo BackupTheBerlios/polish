@@ -29,7 +29,7 @@
 		<name>Nokia</name>
 		<features></features>
 		<capability name="key.ClearKey" value="-8" />
-		<capability name="key.ChangeInputModeKey" value="45" />
+		<capability name="key.ChangeInputModeKey" value="35" />
 	</vendor>
 	
 	<vendor>

@@ -91,7 +91,12 @@ public class RoundRectOpeningBackgroundConverter extends BackgroundConverter {
 		} else {
 			arcWidth = arc;
 		}
-		
+		if (this.borderColor == null) {
+			this.borderColor = "0x000000";
+		}
+		if (this.borderWidth == null) {
+			this.borderWidth = "1";
+		}
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("new ")
 		  .append( BACKGROUNDS_PACKAGE )
