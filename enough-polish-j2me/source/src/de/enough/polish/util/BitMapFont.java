@@ -99,8 +99,20 @@ public final class BitMapFont {
 					this.fontImage = Image.createImage( in );
 				//#else
 					int pngLength = in.available();
-					byte[] pngBuffer = new byte[ pngLength ]; 
-					in.read( pngBuffer );
+					byte[] pngBuffer = new byte[ pngLength ];
+					// defensive loading of the buffer, since
+					// not all implementations do read the full
+					// buffer in in.read( byte[] ):
+					int offset = 0;
+					int read = 0;
+					while (offset < pngLength) {
+						read = in.read( pngBuffer, offset, pngLength - offset );
+						if (read == -1) {
+							break;
+						} else {
+							offset += read;
+						}
+					}
 					this.fontImage = Image.createImage(pngBuffer, 0, pngLength);
 				//#endif
 				this.fontHeight = this.fontImage.getHeight();
@@ -109,6 +121,7 @@ public final class BitMapFont {
 				//#debug error
 				System.out.println("Unable to load bitmap-font [" + this.fontUrl + "]" + e);
 				return null;
+			//#ifndef polish.Bugs.ImageIOStreamAutoClose
 			} finally {
 				try { 
 					in.close();
@@ -116,6 +129,7 @@ public final class BitMapFont {
 					//#debug error
 					System.out.println("Unable to close bitmap-font stream" + e);
 				}
+			//#endif
 			}
 		}
 		//int imageWidth = this.fontImage.getWidth();

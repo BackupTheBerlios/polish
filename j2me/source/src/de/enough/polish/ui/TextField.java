@@ -31,6 +31,11 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+//#ifdef polish.css.font-bitmap
+	import de.enough.polish.util.BitMapFontViewer;
+//#endif
+
+
 /**
  * A <code>TextField</code> is an editable text component that may be
  * placed into
@@ -617,6 +622,10 @@ implements CommandListener
 	//#endif
 	private char editingCaretChar = '|';
 	private char caretChar = '|';
+	//#ifdef polish.css.font-bitmap
+		private BitMapFontViewer editingCaretViewer;
+		private BitMapFontViewer caretViewer;
+	//#endif
 	private boolean showCaret;
 	private long lastCaretSwitch;
 	private int originalWidth; // the content width according to the text
@@ -1209,6 +1218,16 @@ implements CommandListener
 			//#else
 				//# if (this.isFocused ) {
 			//#endif
+					//#ifdef polish.css.font-bitmap
+					if (this.bitMapFont != null) {
+						//System.out.println("Using bitmap-font");
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						if (this.showCaret) {
+							this.caretViewer.paint( x + this.caretX, y + this.caretY, g);
+						}
+					} else {
+						//System.out.println("bitmapfont is NULL!");
+					//#endif
 					g.setFont( this.font );
 					g.setColor( this.textColor );
 					int centerX = 0;
@@ -1292,6 +1311,9 @@ implements CommandListener
 							g.drawChar( this.caretChar, x, y, Graphics.TOP | Graphics.LEFT );
 						}
 					}
+					//#ifdef polish.css.font-bitmap
+					}
+					//#endif
 					return;
 				} else { // this is either not focused or no direct input is enabled:
 					super.paintContent(x, y, leftBorder, rightBorder, g);	
@@ -1428,13 +1450,24 @@ implements CommandListener
 			if (!this.caretPositionHasBeenSet || this.caretPosition > textLength ) {
 				this.caretPositionHasBeenSet = true;
 				if (this.text != null) {
-					this.caretPosition = this.text.length();
-					this.caretRow = this.realTextLines.length - 1;
-					this.originalRowText = this.realTextLines[ this.caretRow ];
-					this.caretColumn = this.originalRowText.length();
-					this.caretY = this.rowHeight * (this.realTextLines.length - 1);
-					this.caretX = this.font.stringWidth( this.originalRowText );
-					this.textLines[ this.textLines.length -1 ] += " "; 
+					//#ifdef polish.css.font-bitmap
+					if (this.textLines != null) { 
+					//#endif
+						this.caretPosition = this.text.length();
+						this.caretRow = this.realTextLines.length - 1;
+						this.originalRowText = this.realTextLines[ this.caretRow ];
+						this.caretColumn = this.originalRowText.length();
+						this.caretY = this.rowHeight * (this.realTextLines.length - 1);
+						this.caretX = this.font.stringWidth( this.originalRowText );
+						this.textLines[ this.textLines.length -1 ] += " "; 
+					//#ifdef polish.css.font-bitmap
+					} else {
+						// a bitmap-font is used:
+						this.caretPosition = this.text.length();
+						this.caretX = this.bitMapFontViewer.getWidth();
+						this.caretY = this.bitMapFontViewer.getHeight() - this.bitMapFontViewer.getFontHeigth();
+					}
+					//#endif
 				} else {
 					this.caretPosition = 0;
 					this.caretRow = 0;
@@ -1573,7 +1606,6 @@ implements CommandListener
 			Boolean useDirectInputBool = style.getBooleanProperty("textfield-direct-input");
 			if (useDirectInputBool != null) {
 				this.enableDirectInput = useDirectInputBool.booleanValue();
-				System.out.println("Enabling direct input: " + this.enableDirectInput);
 			}
 		//#endif
 		//#ifdef polish.css.textfield-caret-color
@@ -1597,24 +1629,60 @@ implements CommandListener
 				this.showLength = showBool.booleanValue();
 			}
 		//#endif
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				this.editingCaretViewer = this.bitMapFont.getViewer("" + this.editingCaretChar);
+				this.caretViewer = this.editingCaretViewer;
+				//#ifdef polish.debug.error
+				if (this.editingCaretViewer.getWidth() == 0) {
+					System.out.println("Warning bitmap-char for editing char [" + this.editingCaretChar + "] does not exit.");
+				}
+				//#endif
+			}
+		//#endif
 		//#if tmp.directInput	
-			this.caretWidth = this.font.charWidth( this.caretChar );
+			//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				this.caretWidth = this.caretViewer.getWidth();
+			} else {
+			//#endif
+				this.caretWidth = this.font.charWidth( this.caretChar );
+			//#ifdef polish.css.font-bitmap
+			}
+			//#endif
 		//#endif
 	}
 	
 	//#ifdef tmp.directInput
 	private void insertCharacter() {
-		//System.out.println("inserting character " + this.caretChar );
+		//#debug
+		System.out.println("TextField: inserting character " + this.caretChar );
 		String myText;
+		int width;
 		if (this.isPassword) {
 			myText = this.passwordText;
-			int width = this.font.charWidth('*');
-			this.caretX += width;
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFont != null) {
+					width = this.bitMapFont.getViewer("*").getWidth();
+				} else {
+			//#endif
+					width = this.font.charWidth('*');
+			//#ifdef polish.css.font-bitmap
+				}
+			//#endif
 		} else {
 			myText = this.text;
-			int width = this.font.charWidth(this.caretChar);
-			this.caretX += width;
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFont != null) {
+					width = this.caretViewer.getWidth();
+				} else {
+			//#endif
+					width = this.font.charWidth(this.caretChar);
+			//#ifdef polish.css.font-bitmap
+				}
+			//#endif
 		}
+		this.caretX += width;
 		if (myText == null) {
 			myText = "" + this.caretChar;
 		} else {
@@ -1632,7 +1700,15 @@ implements CommandListener
 			this.nextCharUppercase = false;
 		}
 		this.caretChar = this.editingCaretChar;
-		this.caretWidth = this.font.charWidth(this.caretChar);
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				this.caretViewer = this.editingCaretViewer;
+			} else {
+		//#endif
+				this.caretWidth = this.font.charWidth(this.caretChar);
+		//#ifdef polish.css.font-bitmap
+			}
+		//#endif
 		setString( myText );
 		if (getScreen() instanceof Form) {
 			notifyStateChanged();
@@ -1745,6 +1821,11 @@ implements CommandListener
 								keyCode <= Canvas.KEY_NUM9) ) 
 						{
 							this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+							//#ifdef polish.css.font-bitmap
+								if (this.bitMapFont != null) {
+									this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
+								}
+							//#endif
 							insertCharacter();
 							return true;
 						}
@@ -1788,7 +1869,15 @@ implements CommandListener
 								|| this.nextCharUppercase ) {
 							newCharacter = Character.toUpperCase(newCharacter);
 						}
-						this.caretWidth = this.font.charWidth( newCharacter );
+						//#ifdef polish.css.font-bitmap
+						if (this.bitMapFont != null) {
+							this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
+						} else {
+						//#endif
+							this.caretWidth = this.font.charWidth( newCharacter );
+						//#ifdef polish.css.font-bitmap
+						}
+						//#endif
 						this.caretChar = newCharacter;
 						if (alphabetLength == 1) {
 							insertCharacter();
@@ -1819,7 +1908,7 @@ implements CommandListener
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFontViewer != null) {
 								// a bitmap-font is used
-								//TODO calculate caret-position with bitmap-fonts
+								return false;
 							}
 						//#endif
 						// this TextField has a normal font:
@@ -1850,7 +1939,7 @@ implements CommandListener
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFontViewer != null) {
 								// a bitmap-font is used
-								//TODO calculate caret-position with bitmap-fonts
+								return false;
 							}
 						//#endif
 						if (this.caretRow >= this.textLines.length - 1) {
@@ -1883,6 +1972,13 @@ implements CommandListener
 						this.internalY = this.caretRow * this.rowHeight;
 						return true;
 					} else if (gameAction == Canvas.LEFT) {
+						//#ifdef polish.css.font-bitmap
+							if (this.bitMapFontViewer != null) {
+								// a bitmap-font is used
+								// delete last character:
+								return deleteCurrentChar();
+							}
+						//#endif
 						if (this.caretColumn > 0) {
 							this.caretPosition--;
 							this.caretColumn--;
@@ -1918,6 +2014,12 @@ implements CommandListener
 							//System.out.println("right but character inserted");
 							return true;
 						}
+						//#ifdef polish.css.font-bitmap
+							if (this.bitMapFontViewer != null) {
+								// a bitmap-font is used
+								return false;
+							}
+						//#endif
 						if (this.caretColumn < this.originalRowText.length() ) {
 							//System.out.println("right not in last column");
 							this.caretColumn++;
@@ -2011,9 +2113,31 @@ implements CommandListener
 	private boolean deleteCurrentChar() {
 		if (this.caretChar != this.editingCaretChar) {
 			this.caretChar = this.editingCaretChar;
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFont != null) {
+					this.caretViewer = this.editingCaretViewer;
+				}
+			//#endif
 			this.caretWidth = this.font.charWidth(this.editingCaretChar);
 			return true;
 		}
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				String myText;
+				if (this.isPassword) {
+					myText = this.passwordText; 
+				} else {
+					myText = this.text;
+				}
+				if (myText != null && myText.length() > 0) {
+					this.caretColumn--;
+					setString( myText.substring( 0, myText.length() - 1 ));
+					return true;
+				} else {
+					return false;
+				}
+			}
+		//#endif
 		boolean isLastRow = (this.caretRow == this.realTextLines.length - 1);
 		if (this.caretColumn > 0) {
 			this.caretColumn--;

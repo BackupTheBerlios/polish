@@ -330,9 +330,6 @@ public class StringItem extends Item
 			String bitMapUrl = style.getProperty("font-bitmap");
 			if (bitMapUrl != null) {
 				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
-			} else {
-				this.bitMapFont = null;
-				this.bitMapFontViewer = null;
 			}
 		//#endif
 	}

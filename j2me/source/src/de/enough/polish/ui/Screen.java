@@ -1296,8 +1296,9 @@ public abstract class Screen
 			this.originalScreenHeight = this.screenHeight;
 		//#else
 			this.screenHeight = height;
+			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
-		this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
 		if (this.container != null) {
 			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
 		}
