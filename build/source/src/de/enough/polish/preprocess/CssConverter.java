@@ -57,6 +57,7 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "pulsating-circle", "de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter");
 		BACKGROUND_TYPES.put( "pulsating-circles", "de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter");
 		BACKGROUND_TYPES.put( "circle", "de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter");
+		BACKGROUND_TYPES.put( "opening", "de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter");
 	}
 	private static final HashMap BORDER_TYPES = new HashMap();
 	static {

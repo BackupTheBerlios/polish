@@ -25,9 +25,17 @@
  */
 package de.enough.polish.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.jar.*;
+import java.util.HashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
 
 /**
@@ -170,6 +178,40 @@ public final class JarUtil {
 			}
 		}
 		
+	}
+
+	/**
+	 * Reads the package-names from the given jar-file.
+	 * 
+	 * @param jarFile the jar file
+	 * @return an array with all found package-names
+	 * @throws IOException when the jar-file could not be read
+	 */
+	public static String[] getPackageNames(File jarFile) 
+	throws IOException 
+	{
+		HashMap packageNames = new HashMap();
+		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+		Enumeration enum = input.entries();
+		for (; enum.hasMoreElements();) {
+			JarEntry entry = (JarEntry) enum.nextElement();
+			String name = entry.getName();
+			if (name.endsWith(".class")) {
+				int endPos = name.lastIndexOf('/');
+				boolean isWindows = false;
+				if (endPos == -1) {
+					endPos = name.lastIndexOf('\\');
+					isWindows = true;
+				}
+				name = name.substring( 0, endPos );
+				name = name.replace('/', '.');
+				if (isWindows) {
+					name = name.replace('\\', '.');
+				}
+				packageNames.put( name, name );
+			}
+		}
+		return (String[]) packageNames.values().toArray( new String[ packageNames.size() ] );
 	}
 	
 }

@@ -55,6 +55,7 @@ import proguard.classfile.ClassConstants;
  */
 public class ProGuardObfuscator extends Obfuscator {
 	
+	private boolean doOptimize;
 
 	/**
 	 * Creates a new pro guard obfuscator.
@@ -104,7 +105,7 @@ public class ProGuardObfuscator extends Obfuscator {
         cfg.overloadAggressively = true;
         
         // optimize the resulting byte-code:
-        cfg.optimize = true;
+        cfg.optimize = this.doOptimize;
         
         // shrink the code:
         cfg.shrink = true;
@@ -162,6 +163,10 @@ public class ProGuardObfuscator extends Obfuscator {
             classPath.add(entry);
 		}
         return classPath;
+    }
+    
+    public void setOptimize( boolean optimize ) {
+    	this.doOptimize = optimize;
     }
 
 }

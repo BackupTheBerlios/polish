@@ -104,25 +104,19 @@ public abstract class WtkPluginObfuscator extends Obfuscator {
 				jadFile = createTemporaryJadFile( device, sourceFile, preserve, projectDir );
 			}
 			// create classpath-string
-			StringBuffer classPathBuffer = new StringBuffer();
-			String[] classPaths = device.getClassPaths();
-			for (int i = 0; i < classPaths.length; i++) {
-				classPathBuffer.append( classPaths[i] );
-				classPathBuffer.append( File.pathSeparatorChar );
-			}
-			String bootPath = bootClassPath.toString();
-			System.out.println("Using bootpath " + bootPath );
-			classPathBuffer.append( bootPath );
+			String classPath = getClassPath(device, bootClassPath);
 			// create a script file:
-			createScriptFile( device, jadFile, projectDir, classPathBuffer.toString(), preserve );
+			createScriptFile( device, jadFile, projectDir, classPath, preserve );
 			// run the obfuscator:
-			runObfuscator(targetFile, this.wtkBinPath, this.wtkLibPath, sourceFile.getAbsolutePath(), projectPath, classPathBuffer.toString(), bootPath );
+			runObfuscator(targetFile, this.wtkBinPath, this.wtkLibPath, sourceFile.getAbsolutePath(), projectPath, classPath, bootClassPath.toString() );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to obfuscate: " + e.toString(), e );
 		}
 	}
 	
+
+
 	/**
 	 * Creates a script file if necessary.
 	 * The default implementation just calls the same method on the obfuscator plugin.
@@ -130,8 +124,8 @@ public abstract class WtkPluginObfuscator extends Obfuscator {
 	 * 
 	 * @param jadFile the file containing the JAD
 	 * @param projectDir the current base directory
-	 * @param preserve
-	 * @param classPath
+	 * @param preserve array with class-names which should be spared from obfuscation
+	 * @param classPath the complete class path
 	 */
 	protected void createScriptFile( Device device, File jadFile, File projectDir, String classPath, String[] preserve )
 	throws IOException

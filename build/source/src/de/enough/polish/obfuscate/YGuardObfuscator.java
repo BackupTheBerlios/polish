@@ -74,6 +74,7 @@ implements ObfuscationListener
 			String[] preserve, Path bootClassPath) 
 	throws BuildException 
 	{
+		System.out.println("Obfuscating with the yGuard library.");
 		try {
 			// set class resolver for this device:
 			Cl.setClassResolver( new J2MEPolishClassResolver( this.project, device, bootClassPath, sourceFile ) );
@@ -111,7 +112,7 @@ implements ObfuscationListener
 			e.printStackTrace();
 			throw new BuildException("yGuard was unable to obfuscate: " + e.toString(), e );
 		}
-
+		System.out.println("Obfuscating finished successfully.");
 	}
 
 	/* (non-Javadoc)

@@ -162,4 +162,23 @@ public abstract class Obfuscator {
 		this.libDir = lbDir;
 		this.libraryManager = lbManager;
 	}
+	
+	/**
+	 * Builds the classpath for the given device and its boot class path.
+	 * 
+	 * @param device the device
+	 * @param bootClassPath the classpath for the base, e.g. midp1.jar 
+	 * @return a OS-dependent string with the complete classpath
+	 */
+	protected static final String getClassPath(Device device, Path bootClassPath) {
+		String bootPath = bootClassPath.toString();
+		StringBuffer classPathBuffer = new StringBuffer();
+		String[] classPaths = device.getClassPaths();
+		for (int i = 0; i < classPaths.length; i++) {
+			classPathBuffer.append( classPaths[i] );
+			classPathBuffer.append( File.pathSeparatorChar );
+		}
+		classPathBuffer.append( bootPath );
+		return classPathBuffer.toString();
+	}
 }
