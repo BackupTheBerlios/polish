@@ -194,6 +194,43 @@
 		<capability name="MaxJarSize" value="128kb" />
 	</device>
 		
+	<device
+		supportsPolishGui="true" >
+		<identifier>Siemens/midp1</identifier>
+		<features>isVirtual, hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="OS" value="Siemens"/>
+		<!--
+		<capability name="JavaPackage" value="siemens-color-game-api, siemens-extension-api" />
+		-->
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="key.MiddleSoftKey" value="-26" />
+	</device>
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/midp2</identifier>
+		<features>isVirtual, hasCommandKeyEvents, isDoubleBuffered</features>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, mmapi1.1, jtwi, siemens-color-game, siemens-extension-api" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="key.MiddleSoftKey" value="-26" />
+		<capability name="key.ReturnKey" value="-12" />
+		<capability name="key.ClearKey" value="-12" />
+		<capability name="Font.small" value="12" />
+		<capability name="Font.medium" value="15" />
+		<capability name="Font.large" value="23" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
+	</device>
+
 <!-- Sony-Ericsson devices -->
 	<device>
 		<identifier>Sony-Ericsson/T610, Sony-Ericsson/T618</identifier>
@@ -2356,6 +2393,7 @@
 		<capability name="MaxJarSize" value="70kb" />
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="120kb" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device>
@@ -2371,6 +2409,7 @@
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="375kb" />
 		<capability name="Emulator.Skin" value="C55" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device>
@@ -2385,6 +2424,7 @@
 		<capability name="MaxJarSize" value="70kb" />
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="120kb" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device>
@@ -2399,6 +2439,7 @@
 		<capability name="MaxJarSize" value="70kb" />
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="120kb" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 
 	<device>
@@ -2416,6 +2457,7 @@
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="Emulator.Class" value="SiemensEmulator" />
 		<capability name="Emulator.Skin" value="C60" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
@@ -2432,6 +2474,7 @@
 		<capability name="MaxJarSize" value="350kb" />
 		<capability name="StorageSize" value="11MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 
 	<device
@@ -2448,6 +2491,7 @@
 		<capability name="StorageSize" value="1.5MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="Emulator.Skin" value="CF62" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
@@ -2468,6 +2512,7 @@
 		<capability name="Emulator.Skin" value="CX65" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 
 	<device>
@@ -2482,6 +2527,7 @@
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="HeapSize" value="150 kb" />
 		<capability name="StorageSize" value="200kb" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device>
@@ -2497,6 +2543,7 @@
 		<capability name="HeapSize" value="150 kb" />
 		<capability name="StorageSize" value="200kb" />
 		<capability name="Emulator.Skin" value="M50" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
@@ -2514,6 +2561,7 @@
 		<capability name="StorageSize" value="1.6 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="Emulator.Skin" value="M55" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
@@ -2533,6 +2581,7 @@
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
@@ -2567,7 +2616,7 @@
 		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq" />
 		<capability name="mmapi.protocol.capture" value="audio/amr, video/3gpp, image/jpeg" />
-		
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
@@ -2584,6 +2633,7 @@
 		<capability name="HeapSize" value="760 kb" />
 		<capability name="StorageSize" value="1.8 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 
 	<device>
@@ -2599,6 +2649,7 @@
 		<capability name="HeapSize" value="365 kb" />
 		<capability name="StorageSize" value="1 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 
 	<device>
@@ -2615,6 +2666,7 @@
 		<capability name="StorageSize" value="1.6 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="Emulator.Skin" value="SL55" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device>
@@ -2633,11 +2685,13 @@
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
 		<capability name="CameraResolution" value="640x480" />
+		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device 
 		supportsPolishGui="true">
 		<identifier>Siemens/SX1</identifier>
+		<capability name="OS" value="Symbian"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />

@@ -201,7 +201,7 @@ public class HtmlExporterTask extends Task {
 		System.out.println("Creating " + fileName);
 		ArrayList lines = new ArrayList();
 		lines.add("<%define inDevicesSection %>");
-		lines.add("<%set title = J2ME Polish: " + device.getIdentifier() +" %>");
+		lines.add("<%set title = J2ME Polish: " + device.getIdentifier() +" J2ME Specification %>");
 		lines.add("<%set basedir = ../../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");

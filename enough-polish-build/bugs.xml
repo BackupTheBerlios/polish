@@ -115,6 +115,15 @@
 		<description>The javax.microedition.lcdui.DateField always returns the initial value, even when the value has been changed by the user.</description>
 		<solution>Use the J2ME Polish GUI (which assumes a &quot;true&quot; polish.DateField.directInputMode when this error is present).</solution>
 	</bug>
+	<bug>
+		<name>layerManagerSetViewWindow</name>
+		<area>game</area>
+		<description>The setViewWindow( viewX, viewY, viewWidth, viewHeight ) method moves all layers in the manager instead of setting the view window.</description>
+		<solution>Don't set the view window's viewX and viewY coordinates  when this bug is present and adjust the paint-call of the layer-manager: 
+		 instead of calling layerManager.paint( g, x, y ) call layerManager.paint( g, x - viewX, y - viewY ).
+		</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>
