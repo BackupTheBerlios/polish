@@ -428,6 +428,17 @@ public class Container extends Item {
 		}
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
+				if (this.autoFocusEnabled) {
+					//#debug
+					System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
+					this.autoFocusEnabled = false;
+					if (this.autoFocusIndex < myItems.length ) {
+						Item item = myItems [ this.autoFocusIndex ];
+						if (item.appearanceMode != Item.PLAIN) {
+							focus( this.autoFocusIndex, item );		
+						}
+					}
+				}
 				this.view.initContent(this, firstLineWidth, lineWidth);
 				this.contentWidth = this.view.contentWidth;
 				this.contentHeight = this.view.contentHeight;
@@ -1076,6 +1087,11 @@ public class Container extends Item {
 			//#endif
 			return animated;
 		} else {
+			//#ifdef polish.css.view-type
+				if ( this.view != null ) {
+					return this.view.animate();
+				}
+			//#endif
 			return false;
 		}
 	}
