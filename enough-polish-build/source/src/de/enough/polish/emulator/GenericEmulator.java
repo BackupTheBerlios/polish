@@ -136,4 +136,10 @@ public class GenericEmulator extends Emulator {
 		return runtime.exec( this.arguments );
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.emulator.Emulator#getArguments()
+	 */
+	public String[] getArguments() {
+		return this.arguments;
+	}
 }

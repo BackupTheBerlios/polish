@@ -97,6 +97,15 @@ public abstract class Emulator extends Thread {
 	public abstract Process startEmulator() throws IOException;
 	
 	/**
+	 * Retrieves the arguments which were used to start the emulator.
+	 * This is used when an emulator could not be started, so that 
+	 * the user has a chance to correct any setup errors etc.
+	 * 
+	 * @return an array with the arguments for starting the emulator.
+	 */
+	public abstract String[] getArguments();
+	
+	/**
 	 * Sets the minimum settings.
 	 * 
 	 * @param device the device which is emulated
@@ -129,6 +138,14 @@ public abstract class Emulator extends Thread {
 				outputLog.start();
 				int result = process.waitFor();
 				System.out.println("Emulator finished with result code [" + result + "]." );
+				if (result != 0) {
+					String[] arguments = getArguments();
+					System.out.println("Emulator-arguments were:");
+					for (int i = 0; i < arguments.length; i++) {
+						String argument = arguments[i];
+						System.out.println( argument );
+					}
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

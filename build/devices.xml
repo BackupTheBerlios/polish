@@ -258,6 +258,7 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x182"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
@@ -326,6 +327,7 @@
 		<groups>Nokia-UI</groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
@@ -350,6 +352,7 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
@@ -384,6 +387,7 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
@@ -406,6 +410,7 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
@@ -471,7 +476,8 @@
 		<features>hasPointerEvents, doubleBuffering</features>
 		<capability name="OS" value="Linux" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="ScreenSize" value="320x240" />
+		<capability name="ScreenSize" value="240x320" />
+		<capability name="CanvasSize" value="240x244" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="1 mb" />
 		<capability name="MaxJarSize" value="1 mb" />
@@ -634,6 +640,8 @@
 		<capability name="ImageFormat" value="png, jpeg, gif" />
 		<capability name="SoundFormat" value="midi, mp3, wav, amr, Tone Sequence" />
 		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.3/bin/emulator.exe" />
+		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;${polish.midlet.class}" />
 	</device>
 
 	<device>
@@ -643,6 +651,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="ScreenSize" value="128x128" />
+		<capability name="FullCanvasSize" value="128x116" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="1.8 MB" />
@@ -652,6 +661,8 @@
 		<capability name="MaxSockets" value="4" />
 		<capability name="JavaPackage" value="wmapi, mmapi, phonebook" />
 		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/C380.props" />
 	</device>
 	
 	<device>
@@ -660,7 +671,9 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="ScreenSize" value="128x128" />
+		<capability name="ScreenSize" value="176x204" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x187" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -705,7 +718,7 @@
 		<capability name="ScreenSize" value="208x320" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="8 MB" />
-\		<capability name="Network" value="GSM, GPRS, HSCSD" />
+		<capability name="Network" value="GSM, GPRS, HSCSD" />
 		<capability name="Frequency" value="900, 1800, 1900" />
 	</device>
 	
@@ -738,6 +751,8 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="ScreenSize" value="240x320" />
+		<capability name="FullCanvasSize" value="240x320" />
+		<capability name="CanvasSize" value="240x308" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="1.5 MB" />
 		<capability name="StorageSize" value="24 MB" />
@@ -751,6 +766,10 @@
 		<capability name="Region" value="Europe, Middle-East, Asia-Pacific, Americas" />
 		<capability name="Network" value="GSM, UMTS" />
 		<capability name="Frequency" value="900, 1800, 1900, WCDMA 2100" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.3/bin/jblend.exe" />
+		<capability name="Emulator.Arguments" value="-Xdescriptor:${polish.jadPath};;-Xdevice:E1000" />
 	</device>
 		
 	<device>
@@ -759,7 +778,9 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="ScreenSize" value="128x128" />
+		<capability name="ScreenSize" value="220x176" />
+		<capability name="FullCanvasSize" value="220x160" />
+		<capability name="CanvasSize" value="220x143" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -782,6 +803,8 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="CanvasSize" value="176x203" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -794,7 +817,7 @@
 		<capability name="SoundFormat" value="midi, wav, amr, aac, mp3" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/A630.props" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/A845.props" />
 	</device>	
 		
 	<device>
@@ -803,6 +826,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="128x128" />
+		<capability name="FullCanvasSize" value="128x116" />
+		<capability name="CanvasSize" value="128x99" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="1.8 MB" />
@@ -825,6 +850,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="128x128" />
+		<capability name="FullCanvasSize" value="128x116" />
+		<capability name="CanvasSize" value="128x99" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="1.8 MB" />
@@ -850,6 +877,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x187" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -937,6 +966,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="120x160" />
+		<capability name="FullCanvasSize" value="120x148" />
+		<capability name="CanvasSize" value="120x131" />
 		<capability name="BitsPerPixel" value="12" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -960,6 +991,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x182" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -985,6 +1018,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x182" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -1010,7 +1045,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
-		<capability name="CanvasSize" value="176x204" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x182" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -1037,7 +1073,8 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
-		<capability name="CanvasSize" value="176x204" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x182" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />

@@ -119,6 +119,9 @@ public final class StackTraceUtil {
 					}
 					//System.out.println("found method in line [" + i + "]: " + line );
 					int start = i + this.linesFromMethodStart;
+					if (start > lines.length) {
+						start = i;
+					}
 					int toAdd = 10;
 					if (this.linesFromMethodStart > 20) {
 						toAdd = this.linesFromMethodStart/2;

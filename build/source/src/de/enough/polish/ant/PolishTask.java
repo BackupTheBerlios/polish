@@ -434,6 +434,8 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		
+		// add primary midlet-class-definition:
+		this.polishProject.addDirectCapability("polish.midlet.class", this.buildSetting.getMidletClassNames()[0] );
 		// create LibraryManager:
 		try {
 			this.libraryManager = new LibraryManager( this.project.getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
