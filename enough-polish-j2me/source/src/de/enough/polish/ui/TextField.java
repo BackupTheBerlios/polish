@@ -1176,6 +1176,8 @@ implements CommandListener
 			if ((constraints & NUMERIC) == NUMERIC) {
 				this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
+			} else {
+				this.isNumeric = false;
 			}
 			if ((constraints & DECIMAL) == DECIMAL) {
 				//this.isNumeric = true;
@@ -1833,7 +1835,7 @@ implements CommandListener
 		//#endif
 				//#ifdef tmp.directInput
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) {
+						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric) {
 							if (this.inputMode == MODE_NUMBERS) {
 								this.inputMode = MODE_LOWERCASE;
 							} else {

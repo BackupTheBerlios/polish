@@ -111,6 +111,19 @@ implements CommandListener
 	private javax.microedition.lcdui.Form form;
 
 	private Calendar calendar;
+	
+	//#if (polish.DateField.useDirectInput == true) || polish.Bugs.dateFieldBroken
+		//#define forceDirectInput
+		private int currentField;
+		private int focusedColor;
+		private int focusedXStart;
+		private int focusedXEnd;
+		private char caretChar = '|';
+		private int caretPosition;
+		private int caretX;
+		//private Field[] inputFields;
+	//#else
+	//#endif
 
 	/**
 	 * Creates a <code>DateField</code> object with the specified
