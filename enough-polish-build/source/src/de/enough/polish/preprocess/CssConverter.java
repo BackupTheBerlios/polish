@@ -617,7 +617,7 @@ public class CssConverter extends Converter {
 					} else if (value.startsWith("style(")) {
 						value = getStyleReference( value, style, styleSheet );
 					}					
-					if (attributeType == CssAttribute.STRING) {
+					if (attributeType == CssAttribute.STRING || attributeType == CssAttribute.CHAR) {
 						valueList.append('"')
 						.append( value )
 						.append('"');

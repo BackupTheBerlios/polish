@@ -252,6 +252,29 @@
 	/>
 
 	<attribute
+		name="textfield-caret-color"
+		type="color"
+		appliesTo="TextField, TextBox"
+		description="Defines the color of the caret. This defaults to the color of the text (font-color)."
+	/>
+
+	<attribute
+		name="textfield-caret-char"
+		type="char"
+		appliesTo="TextField, TextBox"
+		description="Defines the character which is used to indicate the possible editing. The default character is |."
+		default="|"
+	/>
+
+	<attribute
+		name="textfield-show-length"
+		type="boolean"
+		appliesTo="TextField, TextBox"
+		description="Defines whether the current length of the input should be shown."
+		default="false"
+	/>
+
+	<attribute
 		name="datefield-width"
 		type="integer"
 		appliesTo="DateField"

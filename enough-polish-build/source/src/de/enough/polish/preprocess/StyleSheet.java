@@ -73,6 +73,7 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("label", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menu", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menuitem", Boolean.TRUE );
+		PSEUDO_CLASSES.put("info", Boolean.TRUE );
 	}
 	private final static CssBlock DEFAULT_STYLE = new CssBlock( 
 			"default {"

@@ -47,6 +47,7 @@ public class CssAttribute {
 	public final static int COLOR = 2;
 	public final static int BOOLEAN = 3;
 	public final static int STYLE = 4;
+	public static final int CHAR = 5;
 	public static final int OBJECT = 6;
 	
 	private final String name;
@@ -79,6 +80,8 @@ public class CssAttribute {
 				this.type = STYLE;
 			} else if ("string".equals( typeStr )){
 				this.type = STRING;
+			} else if ("char".equals( typeStr )){
+				this.type = CHAR;
 			} else if ("object".equals( typeStr )){
 				this.type = OBJECT;
 			} else {
@@ -170,6 +173,10 @@ public class CssAttribute {
 				return;
 			} else {
 				throw new BuildException( "Invalid CSS: the attribute [" + this.name + "] needs to be eiter \"true\" or \"false\" - the given value \"" + value + "\" is not supported."  );
+			}
+		} else if (this.type == CHAR) {
+			if (value.length() != 1) {
+				throw new BuildException( "Invalid CSS: the attribute [" + this.name + "] needs to be a character - the given value \"" + value + "\" is not supported."  );
 			}
 		}
 		if (this.allowedValues == null) {
