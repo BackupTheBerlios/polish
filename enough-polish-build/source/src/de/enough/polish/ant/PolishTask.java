@@ -29,6 +29,8 @@ import de.enough.polish.*;
 import de.enough.polish.ant.build.*;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.ant.run.Emulator;
+import de.enough.polish.ant.run.EmulatorSetting;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
@@ -57,11 +59,12 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2-pre2";
+	private static final String VERSION = "1.2-pre3";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
 	private Requirements deviceRequirements;
+	private EmulatorSetting emulatorSetting;
 	
 	/** the project settings */ 
 	private PolishProject polishProject;
@@ -108,6 +111,8 @@ public class PolishTask extends ConditionalTask {
 	private CssAttributesManager cssAttributesManager;
 
 	private PolishLogger polishLogger;
+	private ArrayList runningEmulators;
+
 	
 	/**
 	 * Creates a new empty task 
@@ -143,6 +148,16 @@ public class PolishTask extends ConditionalTask {
 	public BuildSetting createBuild() {
 		this.buildSetting = new BuildSetting( this.project );
 		return this.buildSetting;
+	}
+	
+	/**
+	 * Creates and adds a new run-setting for this project.
+	 * 
+	 * @return the new runsetting.
+	 */
+	public EmulatorSetting createEmulator() {
+		this.emulatorSetting = new EmulatorSetting( this.project );
+		return this.emulatorSetting;
 	}
 	
 	/**
@@ -186,6 +201,9 @@ public class PolishTask extends ConditionalTask {
 				if (hasExtensions) {
 					callExtensions( device );
 				}
+				if (this.emulatorSetting != null) {
+					runEmulator( device );
+				}
 				if (numberOfDevices > 1) {
 					// print an empty as a separator between different devices: 
 					System.out.println();
@@ -203,6 +221,25 @@ public class PolishTask extends ConditionalTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to execute J2ME Polish task: " + e.toString(), e );
+		}
+		if (this.runningEmulators != null) {
+			System.out.println("Waiting for emulators...");
+			while (this.runningEmulators.size() > 0) {
+				Emulator[] emulators = (Emulator[]) this.runningEmulators.toArray( new Emulator[ this.runningEmulators.size() ]);
+				for (int i = 0; i < emulators.length; i++) {
+					Emulator emulator = emulators[i];
+					if (emulator.isFinished()) {
+						this.runningEmulators.remove( emulator );
+					}					
+				}
+				if (this.runningEmulators.size() > 0) {
+					try {
+						Thread.sleep( 2000 );
+					} catch (InterruptedException e1) {
+						// ignore
+					}
+				}
+			}
 		}
 	}
 
@@ -1490,7 +1527,12 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
-	
+	/**
+	 * Calls java-extension.
+	 * These can be used for example to sign the MIDlet.
+	 * 
+	 * @param device the current device
+	 */
 	private void callExtensions( Device device ) {
 		HashMap infoProperties = new HashMap();
 		infoProperties.put( "polish.identifier", device.getIdentifier() );
@@ -1511,6 +1553,41 @@ public class PolishTask extends ConditionalTask {
 				// now call the extension:
 				extension.execute(device, infoProperties);
 			}
+		}
+	}
+	
+	/**
+	 * Launches the emulator if the user wants to.
+	 * 
+	 * @param device the current device.
+	 */
+	private void runEmulator( Device device ) {
+		if ( this.emulatorSetting.isActive(this.project) ) {
+			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+			HashMap infoProperties = new HashMap();
+			infoProperties.put( "polish.identifier", device.getIdentifier() );
+			infoProperties.put( "polish.name", device.getName() );
+			infoProperties.put( "polish.vendor", device.getVendorName() );
+			infoProperties.put( "polish.version", this.infoSetting.getVersion() );
+			String jarName = this.infoSetting.getJarName();
+			jarName = PropertyUtil.writeProperties(jarName, infoProperties);
+			infoProperties.put( "polish.jarName", jarName );
+			String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
+			infoProperties.put( "polish.jadName", jadName );
+			String destDir = this.buildSetting.getDestDir().getAbsolutePath();
+			infoProperties.put( "polish.destDir", destDir );
+			String jadPath = destDir + File.separatorChar + jadName;
+			infoProperties.put( "polish.jadPath", jadPath );
+			String jarPath = destDir + File.separatorChar + jarName;
+			infoProperties.put( "polish.jarPath", jarPath );
+			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, infoProperties, this.project, evaluator, this.wtkHome);
+			if (emulator != null) {
+				if (this.runningEmulators == null) {
+					this.runningEmulators = new ArrayList();
+				}
+				this.runningEmulators.add( emulator );
+			}
+			
 		}
 	}
 	

@@ -256,6 +256,7 @@
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="Network" value="GSM, GPRS, HSCSD"/>
 		<capability name="Frequency" value="900,1800,1900"/>
+		<capability name="EmulatorSkin" value="SonyEricsson_P900"/>
 	</device>
 	
 	<device>
