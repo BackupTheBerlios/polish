@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import proguard.shrink.UsedClassFileFilter;
-
 import de.enough.polish.Device;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextFileManager;

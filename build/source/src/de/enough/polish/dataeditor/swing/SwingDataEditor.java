@@ -33,8 +33,6 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -106,7 +104,6 @@ implements DataEditorUI, ActionListener
 	private CreateCodeDialog createCodeDialog;
 	private Image icon;
 	private String packageName;
-	private final boolean doSystemExit;
 	
 	/**
 	 * Creates a new empty data editor with a swing GUI. 
@@ -124,9 +121,7 @@ implements DataEditorUI, ActionListener
 	 */
 	public SwingDataEditor( File definition, File data, boolean doSystemExit  ) {
 		super("BinaryEditor", doSystemExit);
-		this.doSystemExit = doSystemExit;
 		setJMenuBar( createMenuBar() );
-		super.addWindowListener( new MyWindowListener() );
 		this.dataManager = new DataManager();
 		DataEntry entry = new DataEntry( "noname", DataType.BYTE );
 		this.dataManager.addDataEntry( entry );
@@ -640,16 +635,10 @@ implements DataEditorUI, ActionListener
 				saveAll();
 			}
 		}
-		saveSettings();
-		if (this.doSystemExit) {
-			System.exit( 0 );
-		} else {
-			setVisible( false );
-		}
-		
+		super.quit();
 	}
 	
-	private void saveSettings() {
+	protected void saveSettings() {
 		if (this.definitionFile != null) {
 			ArrayList lines = new ArrayList();
 			// save start of file:
@@ -741,37 +730,7 @@ implements DataEditorUI, ActionListener
 		editor.setVisible( true );
 	}
 
-	
-	class MyWindowListener implements WindowListener {
-		public void windowActivated(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowClosed(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowClosing(WindowEvent e) {
-			quit();
-		}
-
-		public void windowDeactivated(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowDeiconified(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowIconified(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowOpened(WindowEvent e) {
-			// ignore
-		}
-	}
-	
+		
 	class CustomFileFilter extends FileFilter {
 		String type;
 		public CustomFileFilter( String type ) {

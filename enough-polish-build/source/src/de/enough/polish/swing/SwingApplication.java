@@ -33,6 +33,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +82,9 @@ implements Application
 		this.applicationDropListener = new ApplicationDropListener();
 		new DropTarget( this,  this.applicationDropListener );
 		//new DropTarget( getRootPane(), this.applicationDropListener );
+		
+		//register window listener:
+		registerWindowListener();
 	}
 	
 	protected void registerDropTarget( Component component ) {
@@ -112,7 +117,7 @@ implements Application
 	}
 	
 	protected String getAboutText() {
-		return this.applicationName + ": (c) 2004, Enough Software.";
+		return this.applicationName + ": (c) 2005, Enough Software.";
 	}
 	
 	protected JScrollPane createScrollPane( JComponent component ) {
@@ -136,15 +141,26 @@ implements Application
 		return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.swing.Application#quit()
+	/**
+	 * Quits the application and calls saveSettings() first.
+	 * 
+	 * @see #saveSettings()
 	 */
 	public void quit() {
+		saveSettings();
 		if (this.systemExitOnQuit) {
 			System.exit(0);
 		} else {
 			setVisible( false );
 		}
+	}
+
+	/**
+	 * Saves the settings of the application.
+	 * The default implementation does nothing.
+	 */
+	protected void saveSettings() {
+		// ignore...
 	}
 
 	/* (non-Javadoc)
@@ -178,6 +194,13 @@ implements Application
 		System.out.println("open document: not supported.");
 	}
 	
+	
+	/**
+	 * Registers a standard window listener that in turns calls quit when the main window is closed.
+	 */
+	protected void registerWindowListener() {
+		super.addWindowListener( new MyWindowListener() );		
+	}
 	
 	
 	class ApplicationDropListener extends DropTargetAdapter {
@@ -218,6 +241,37 @@ implements Application
 			}
 		}
 	}
+	
+	class MyWindowListener implements WindowListener {
+		public void windowActivated(WindowEvent e) {
+			// ignore
+		}
+
+		public void windowClosed(WindowEvent e) {
+			// ignore
+		}
+
+		public void windowClosing(WindowEvent e) {
+			quit();
+		}
+
+		public void windowDeactivated(WindowEvent e) {
+			// ignore
+		}
+
+		public void windowDeiconified(WindowEvent e) {
+			// ignore
+		}
+
+		public void windowIconified(WindowEvent e) {
+			// ignore
+		}
+
+		public void windowOpened(WindowEvent e) {
+			// ignore
+		}
+	}
+
 	
 
 }

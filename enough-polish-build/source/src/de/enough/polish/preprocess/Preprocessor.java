@@ -618,6 +618,12 @@ public class Preprocessor {
 	throws BuildException
 	{
 		boolean conditionFulfilled = hasSymbol( argument );
+		if (!conditionFulfilled && argument.indexOf(' ') != -1) {
+			throw new BuildException(
+					className + " line " + (lines.getCurrentIndex() + 1) 
+					+ ": unable to process #ifdef-directive with several arguments [" + argument 
+					+ "] in line [" + lines.getCurrent() + "]." );
+		}
 		return processIfVariations( conditionFulfilled, lines, className );
 	}
 
@@ -634,6 +640,12 @@ public class Preprocessor {
 	throws BuildException
 	{
 		boolean conditionFulfilled = !hasSymbol( argument );
+		if (conditionFulfilled && argument.indexOf(' ') != -1) {
+			throw new BuildException(
+					className + " line " + (lines.getCurrentIndex() + 1) 
+					+ ": unable to process #ifndef-directive with several arguments [" + argument 
+					+ "] in line [" + lines.getCurrent() + "]." );
+		}
 		return processIfVariations( conditionFulfilled, lines, className );
 	}
 	
@@ -695,7 +707,13 @@ public class Preprocessor {
 					conditionFulfilled = false;
 				} else {
 					String symbol = trimmedLine.substring( 10 ).trim();
-					conditionFulfilled = (this.symbols.get( symbol ) != null);
+					conditionFulfilled = hasSymbol( symbol );
+					if (!conditionFulfilled && symbol.indexOf(' ') != -1) {
+						throw new BuildException(
+								className + " line " + (lines.getCurrentIndex() + 1) 
+								+ ": unable to process #elifdef-directive with several arguments [" + symbol 
+								+ "] in line [" + lines.getCurrent() + "]." );
+					}
 				}
 			} else if (trimmedLine.startsWith("//#elifndef")
 					&& (this.ifDirectiveCount == currentIfDirectiveCount)) {
@@ -707,7 +725,13 @@ public class Preprocessor {
 					conditionFulfilled = false;
 				} else {
 					String symbol = trimmedLine.substring( 11 ).trim();
-					conditionFulfilled = (this.symbols.get( symbol ) == null);
+					conditionFulfilled = !hasSymbol( symbol );
+					if (conditionFulfilled && symbol.indexOf(' ') != -1) {
+						throw new BuildException(
+								className + " line " + (lines.getCurrentIndex() + 1) 
+								+ ": unable to process #elifndef-directive with several arguments [" + symbol 
+								+ "] in line [" + lines.getCurrent() + "]." );
+					}
 				}
 			} else if (trimmedLine.startsWith("//#elif") 
 					&& (this.ifDirectiveCount == currentIfDirectiveCount)) {

@@ -29,8 +29,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -83,7 +81,6 @@ implements ActionListener
 	public FontCreator() {
 		super("FontEditor", true );
 		setJMenuBar( createMenuBar() );
-		super.addWindowListener( new MyWindowListener() );
 		setSize( 900, 600 );
 		Container contentPane = getContentPane();
 		this.scrollPane = new JScrollPane( new JLabel("Please open any true type font or drag it here."));
@@ -361,10 +358,6 @@ implements ActionListener
 		updateTitle();
 	}
 
-	public void quit() {
-		//saveSettings();
-		System.exit( 0 );
-	}
 	
 	/**
 	 * @param extension
@@ -378,33 +371,4 @@ implements ActionListener
 		return selectedFile;
 	}
 	
-	class MyWindowListener implements WindowListener {
-		public void windowActivated(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowClosed(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowClosing(WindowEvent e) {
-			quit();
-		}
-
-		public void windowDeactivated(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowDeiconified(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowIconified(WindowEvent e) {
-			// ignore
-		}
-
-		public void windowOpened(WindowEvent e) {
-			// ignore
-		}
-	}
 }
