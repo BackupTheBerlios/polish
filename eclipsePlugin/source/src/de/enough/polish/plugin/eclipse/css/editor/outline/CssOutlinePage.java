@@ -67,6 +67,7 @@ public class CssOutlinePage extends ContentOutlinePage {
 		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel,this.sourceViewer,this.editor);
 		
 		TreeViewer viewer= getTreeViewer();
+
 		viewer.setContentProvider(cssContentProvider);
 		viewer.setLabelProvider(new CssLabelProvider());
 		viewer.addSelectionChangedListener(this);

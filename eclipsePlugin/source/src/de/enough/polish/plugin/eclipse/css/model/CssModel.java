@@ -117,10 +117,13 @@ public class CssModel {
 		// Parse.
 		try {
 			this.parser = new PolishCssParser(new StringReader(inputString));
+			this.rootNode = null;
 			this.rootNode = this.parser.parse();
-			this.treePrinter.analyze(this.rootNode);
-			this.astBuilder.analyze(this.rootNode,this.document);
 			System.out.println("DEBUG:CssModel.reconcile():no parsing errors !!");
+			this.treePrinter.analyze(this.rootNode);
+			this.rootAST = new StyleSheet();
+			this.astBuilder.setRoot(this.rootAST);
+			this.astBuilder.analyze(this.rootNode,this.document);
 		} catch (ParserCreationException exception) {
 			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
 		} catch (ParserLogException exception) {

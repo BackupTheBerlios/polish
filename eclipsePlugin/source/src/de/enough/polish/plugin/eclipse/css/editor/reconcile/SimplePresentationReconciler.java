@@ -104,4 +104,35 @@ public class SimplePresentationReconciler implements IPresentationReconciler /* 
 		TextPresentation textPresentation = new TextPresentation();
 		this.viewer.changeTextPresentation(textPresentation,false);
 	}
+	
+	/*
+	private ITokenScanner getPartionScanner(){
+		RuleBasedScanner scanner = new RuleBasedScanner();
+		IRule[] rules = new IRule[2];
+		
+		rules[0] = createCommentRule();
+		rules[1] = createStyleNameRule();
+		
+		scanner.setRules(rules);
+		return scanner;	
+	}
+	
+	private IRule createCommentRule(){
+		
+		IToken commentToken = new Token(new TextAttribute(this.colors.getColor(new RGB(200,100,100)),null,SWT.BOLD));
+		*///MultiLineRule commentRule = new MultiLineRule("/*","*/",commentToken);
+		/*return commentRule;
+	}
+	
+
+	private IRule createStyleNameRule(){
+		
+		IToken styleNameToken = new Token(new TextAttribute(this.colors.getColor(new RGB(0,200,000)),null,SWT.BOLD));
+		// FIXME: Eclipse is a mess. If the first string of SingleLineRule is empty or null,
+		// a noninformative error message appears "An error occured while opening the editor."
+		// without log messages or anything. Conclusion: The predefined rules are too limited.
+		SingleLineRule styleNameRule = new SingleLineRule(" ","{",styleNameToken);
+		return styleNameRule;
+	}
+	*/
 }

@@ -33,13 +33,11 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
 import de.enough.polish.plugin.eclipse.css.editor.outline.CssOutlinePage;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
-import de.enough.polish.plugin.eclipse.css.parser.CssParser;
-import de.enough.polish.plugin.eclipse.css.parser.CssTokenizer;
 
 
 /**
- * <p></p>
- *
+ * <p>CssEditor for J2ME Polish CSS files.</p>
+ * 
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
@@ -50,10 +48,9 @@ import de.enough.polish.plugin.eclipse.css.parser.CssTokenizer;
 public class CssEditor extends TextEditor{
 
 	CssOutlinePage cssOutlinePage;
-	// The facede for the model.
 	CssModel cssModel;
-	CssParser parser;
-	CssTokenizer tokenzier;
+	//CssParser parser;
+	//CssTokenizer tokenzier;
 	IDocument document;
 	
 	public CssEditor(){
@@ -62,6 +59,10 @@ public class CssEditor extends TextEditor{
 		CssEditorPlugin.getDefault().setEditor(this);
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
 	public Object getAdapter(Class requiredClass) {
 		if (IContentOutlinePage.class.equals(requiredClass)) {
 			if (this.cssOutlinePage == null) {
@@ -82,11 +83,5 @@ public class CssEditor extends TextEditor{
 	 */
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
-		//TODO: This shows us that the DocumentListener ist called after the presentation reconciler
-		// and before the reconciler... Dont think, swallow.
-		//this.document = getDocumentProvider().getDocument(getEditorInput());
-		//this.document.addDocumentListener(new SimpleDocumentListener());
-		//CssEditorPlugin.getDefault().setEditor(this);
-		//this.cssModel = new CssModel(this.document);
 	}
 }

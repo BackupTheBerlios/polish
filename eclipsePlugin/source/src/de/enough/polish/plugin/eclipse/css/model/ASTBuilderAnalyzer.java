@@ -57,7 +57,9 @@ public class ASTBuilderAnalyzer extends PolishCssAnalyzer {
 		this.rootAST = rootAST;
 	}
 	
-	
+	public void setRoot(ASTNode rootAST){
+		this.rootAST = rootAST;
+	}
 
 	
 	public Node analyze(Node node, IDocument newDocument) throws ParserLogException {

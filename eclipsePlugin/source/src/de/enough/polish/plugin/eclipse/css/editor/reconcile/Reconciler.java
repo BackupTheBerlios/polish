@@ -33,9 +33,6 @@ import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.presentation.IPresentationDamager;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.source.ISharedTextColors;
@@ -56,14 +53,14 @@ import de.enough.polish.plugin.eclipse.css.parser.PresentationAnalyzer;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class SimpleReconcilerFacade implements IPresentationReconciler, IReconciler{
+public class Reconciler implements IReconciler{
 
 	private ITextViewer textViewer;
 	private CssModel cssModel;
-	private Listener listener;
+	private TextListener listener;
 	private ISharedTextColors colors;
 
-	class Listener implements ITextInputListener, ITextListener{
+	class TextListener implements ITextInputListener, ITextListener{
 		
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
@@ -78,8 +75,8 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 		 */
 		public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
 			System.out.println("DEBUG:SimpleReconcilerFacade.Listener.inputDocumentChanged():enter.");
-			SimpleReconcilerFacade.this.cssModel.setDocument(newInput);
-			SimpleReconcilerFacade.this.cssModel.reconcile(null);
+			Reconciler.this.cssModel.setDocument(newInput);
+			Reconciler.this.cssModel.reconcile(null);
 			reconcilePresentation();
 		}
 
@@ -87,15 +84,15 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 		 * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
 		 */
 		public void textChanged(TextEvent event) {
-			SimpleReconcilerFacade.this.cssModel.reconcile(event);
+			Reconciler.this.cssModel.reconcile(event);
 			reconcilePresentation();
 		}
 	}
 	
 	
-	public SimpleReconcilerFacade(CssModel cssModel,ISharedTextColors colors){
+	public Reconciler(CssModel cssModel,ISharedTextColors colors){
 		this.cssModel = cssModel;
-		this.listener = new Listener();
+		this.listener = new TextListener();
 		this.colors = colors;
 		
 	}
@@ -121,21 +118,6 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 		System.out.println("DEBUG:SimpleReconcilerFacade.uninstall():enter.");	
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#getDamager(java.lang.String)
-	 */
-	public IPresentationDamager getDamager(String contentType) {
-		System.out.println("DEBUG:SimpleReconcilerFacade.getDamager().enter.");
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#getRepairer(java.lang.String)
-	 */
-	public IPresentationRepairer getRepairer(String contentType) {
-		System.out.println("DEBUG:SimpleReconcilerFacade.getRepairer().enter.");
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.reconciler.IReconciler#getReconcilingStrategy(java.lang.String)

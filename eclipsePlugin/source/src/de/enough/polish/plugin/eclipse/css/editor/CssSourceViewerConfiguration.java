@@ -25,19 +25,18 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor;
 
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
-import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleReconcilerFacade;
+import de.enough.polish.plugin.eclipse.css.editor.reconcile.Reconciler;
 
 
 
 
 /**
- * <p></p>
+ * <p>Configures the source viewer of the editor to our own reconciler.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -50,69 +49,18 @@ public class CssSourceViewerConfiguration extends SourceViewerConfiguration{
 	
 	CssEditor editor;
 	ISharedTextColors colors;
-	SimpleReconcilerFacade simpleReconcilerFacade;
+	Reconciler simpleReconcilerFacade;
 	
 	CssSourceViewerConfiguration(CssEditor editor, ISharedTextColors colors){
 		this.editor = editor;
 		this.colors = colors;
-		this.simpleReconcilerFacade = new SimpleReconcilerFacade(this.editor.getCssModel(),colors);
+		this.simpleReconcilerFacade = new Reconciler(this.editor.getCssModel(),colors);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getReconciler(org.eclipse.jface.text.source.ISourceViewer)
 	 */
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
-		this.simpleReconcilerFacade.install(sourceViewer);
-		//MonoReconciler reconciler = new SimpleReconciler(new SimpleReconcilingStrategy(this.editor.getCssModel()),true);
-		//reconciler.install(sourceViewer); //TODO: Obscured program flow: The caller (SourceTextViewer) will call getReconciler().install(this).
 		return this.simpleReconcilerFacade;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
-	 */
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-		this.simpleReconcilerFacade.install(sourceViewer);
-		//IPresentationReconciler presentationReconciler = new SimplePresentationReconciler(this.editor.getCssModel());
-		/*
-		DefaultDamagerRepairer damagerRepairer =  new SimpleDamagerRepairer(getPartionScanner());
-		presentationReconciler.setDamager(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
-		presentationReconciler.setRepairer(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
-		*/
-		return this.simpleReconcilerFacade;		
-	}
-
-	
-	// **************************************************************
-	// Stuff for the PresentationReconciler
-	/*
-	private ITokenScanner getPartionScanner(){
-		RuleBasedScanner scanner = new RuleBasedScanner();
-		IRule[] rules = new IRule[2];
-		
-		rules[0] = createCommentRule();
-		rules[1] = createStyleNameRule();
-		
-		scanner.setRules(rules);
-		return scanner;	
-	}
-	
-	private IRule createCommentRule(){
-		
-		IToken commentToken = new Token(new TextAttribute(this.colors.getColor(new RGB(200,100,100)),null,SWT.BOLD));
-		*///MultiLineRule commentRule = new MultiLineRule("/*","*/",commentToken);
-		/*return commentRule;
-	}
-	
-
-	private IRule createStyleNameRule(){
-		
-		IToken styleNameToken = new Token(new TextAttribute(this.colors.getColor(new RGB(0,200,000)),null,SWT.BOLD));
-		// FIXME: Eclipse is a mess. If the first string of SingleLineRule is empty or null,
-		// a noninformative error message appears "An error occured while opening the editor."
-		// without log messages or anything. Conclusion: The predefined rules are too limited.
-		SingleLineRule styleNameRule = new SingleLineRule(" ","{",styleNameToken);
-		return styleNameRule;
-	}
-	*/
 }

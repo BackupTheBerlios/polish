@@ -47,17 +47,13 @@ import java.util.*;
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class CssEditorPlugin extends AbstractUIPlugin {
-	//The shared instance.
 	private static CssEditorPlugin plugin;
-	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	private BundleContext bundleContext;
+	
 	private CssEditor editor;
 	
 	
-	/**
-	 * The constructor.
-	 */
 	public CssEditorPlugin() {
 		super();
 		plugin = this;
@@ -134,8 +130,9 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 				URL url = new URL(iconDirectoryURL, iconNames[i]);
 				imageDescriptor = ImageDescriptor.createFromURL(url);
 			} catch (MalformedURLException e) {
-				// should not happen
+				// We miss some icons.
 				imageDescriptor = ImageDescriptor.getMissingImageDescriptor();
+				System.out.println("ERROR:CssEditorPlugin.initializeImageRegistry():Icon not found.Exception:"+e.getMessage());
 			}
 			reg.put(iconNames[i],imageDescriptor);
 		}
@@ -143,12 +140,17 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	}
 
 	/**
+	 * Set the editor instance of the plugin.
 	 * @param editor
 	 */
 	public void setEditor(CssEditor editor) {
 		this.editor = editor;
 	}
 	
+	/**
+	 * Get the editor instance of the plugin.
+	 * @return CssEditor the editor instance.
+	 */
 	public CssEditor getEditor(){
 		return this.editor;
 	}
