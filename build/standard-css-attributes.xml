@@ -389,6 +389,34 @@
 		description="Defines the color of the scrolling indicator of the tabbar."
 		default="white"
 	/>
+
+	<attribute
+		name="menubar-select-image"
+		type="string"
+		appliesTo="MenuBar"
+		description="Defines the image-URL for the select-image of the extended menubar."
+	/>
 	
+	<attribute
+		name="menubar-cancel-image"
+		type="string"
+		appliesTo="MenuBar"
+		description="Defines the image-URL for the cancel-image of the extended menubar."
+	/>
+
+	<attribute
+		name="menubar-options-image"
+		type="string"
+		appliesTo="MenuBar"
+		description="Defines the image-URL for the options-image of the extended menubar."
+	/>
+
+	<attribute
+		name="menubar-show-image-and-text"
+		type="boolean"
+		appliesTo="MenuBar"
+		description="Determines whether the text should be shown as well in the menubar, when an image has been defined for the corresponding action."
+		default="false"
+	/>
 	
 </attributes>

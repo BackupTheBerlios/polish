@@ -54,8 +54,8 @@
 		<capability name="FullCanvasSize" value="176x208" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
-		<capability name="Emulator.Skin" value="Series_60_MIDP_SDK_2_1" />
-		<capability name="Emulator.Skin.2" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
+		<capability name="Emulator.Skin" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
+		<capability name="Emulator.Skin.2" value="Series_60_MIDP_SDK_2_1" />
 		<capability name="Emulator.Skin.3" value="Series_60_MIDP_SDK_2_1_Beta" />
 	</group>
 

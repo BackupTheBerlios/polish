@@ -71,6 +71,8 @@ public class Device extends PolishComponent {
 
 	public static final String CANVAS_HEIGHT = "polish.CanvasHeigth";
 
+	public static final String FULL_CANVAS_SIZE = "polish.FullCanvasSize";
+
 	public static final String BITS_PER_PIXEL = "polish.BitsPerPixel";
 
 	public static final String JAVA_PLATFORM = "polish.JavaPlatform";
@@ -318,6 +320,23 @@ public class Device extends PolishComponent {
 			System.err.println("Warning: the device [" + this.identifier 
 					+ "] has no JavaConfiguration defined.");
 		}
+		
+		String screenSize = getCapability( SCREEN_SIZE );
+		if (screenSize != null) {
+			groupNamesList.add("ScreenSize." + screenSize);
+			groupsList.add(groupManager.getGroup("ScreenSize." + screenSize, true));
+		}
+		String canvasSize = getCapability( CANVAS_SIZE );
+		if (canvasSize != null) {
+			groupNamesList.add("CanvasSize." + canvasSize);
+			groupsList.add(groupManager.getGroup("CanvasSize." + canvasSize, true));
+		}
+		String fullCanvasSize = getCapability( FULL_CANVAS_SIZE );
+		if (fullCanvasSize != null) {
+			groupNamesList.add("FullCanvasSize." + fullCanvasSize);
+			groupsList.add(groupManager.getGroup("FullCanvasSize." + fullCanvasSize, true));
+		}
+		
 		String supportsPolishGuiText = definition.getAttributeValue("supportsPolishGui");
 		if (supportsPolishGuiText != null) {
 			supportsPolishGuiText = supportsPolishGuiText.toLowerCase();
@@ -384,6 +403,8 @@ public class Device extends PolishComponent {
 					+ bitsPerPixelStr, true));
 
 		}
+		
+		
 		
 		// add all devices which do not support sprite-transformations
 		// and which do not support the MIDP/2.0 standard to the
