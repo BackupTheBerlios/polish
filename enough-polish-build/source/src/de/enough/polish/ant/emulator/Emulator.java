@@ -335,7 +335,7 @@ public abstract class Emulator extends Thread {
 								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs);
 								if (stackTrace != null) {
 									if (stackTrace.couldBeResolved()) {
-										this.output.println( stackTrace.getSourceCodeMessage() );
+										this.output.println( this.header + stackTrace.getSourceCodeMessage() );
 									} else {
 										this.output.println( this.header + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
 									}

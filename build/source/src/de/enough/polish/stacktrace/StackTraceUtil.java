@@ -50,6 +50,9 @@ import de.enough.polish.util.TextUtil;
 public final class StackTraceUtil {
 	private final static String STACK_TRACE_PATTERN_STR = "at\\s+[\\w|\\.]+\\(\\+\\d+\\)";
 	private final static Pattern STACK_TRACE_PATTERN = Pattern.compile( STACK_TRACE_PATTERN_STR );
+	private final static String METHOD_PATTERN_STR = "([public|private]protected]\\s+)?\\w+s*\\w+\\s*\\(";
+	private final static Pattern METHOD_PATTERN = Pattern.compile( METHOD_PATTERN_STR ); 
+	
 	
 	private String sourceCodeLine;
 	private String decompiledCodeSnippet;
@@ -68,7 +71,7 @@ public final class StackTraceUtil {
 		// try to find the method-call which is in the error-message:
 		String[] methodLines = parseMethod( lines, methodName, offset );
 		if (methodLines.length == 0) {
-			System.out.println("Unable to find decompiled method-call.");
+			//System.out.println("Unable to find decompiled method-call.");
 			return null;
 		}
 		// now try to find the original source-code-line:
@@ -96,7 +99,6 @@ public final class StackTraceUtil {
 		if (this.linesFromMethodStart < 1) {
 			this.linesFromMethodStart = 1;
 		}
-		methodName = " " + methodName + "(";
 		//System.out.println("searching for source-code [" + sourceCode + "] in method [" + methodName + "].");
 		CodeSequence codeSequence = new CodeSequence( sourceCode );
 		try {
@@ -106,6 +108,14 @@ public final class StackTraceUtil {
 			for (int i = 0; i < lines.length; i++) {
 				String line = lines[i];
 				if (line.indexOf(methodName) != -1) {
+					Matcher matcher = METHOD_PATTERN.matcher(line);
+					char firstChar = line.trim().charAt(0);
+					if ( (firstChar == '*')
+							|| (firstChar == '/')
+							|| (!matcher.find()) 
+							|| (matcher.group().startsWith("return")) ) {
+						continue;
+					}
 					//System.out.println("found method in line [" + i + "]: " + line );
 					int start = i + this.linesFromMethodStart;
 					int toAdd = 10;
@@ -127,6 +137,21 @@ public final class StackTraceUtil {
 					}
 					if (sourceFilePos != -1) {
 						break;
+					} else {
+						// try again from the method-start until [start]:
+						for (int j = i+1; j < start; j++) {
+							line = lines[j];
+							if ( codeSequence.matches( line ) ) {
+								sourceFilePos = j;
+								preprocessedSourceCodeLine = line.trim();
+								break;
+							}						
+						}
+						if (sourceFilePos != -1) {
+							break;
+						//} else {						
+						//	System.out.println("unable to call from lines " + (i+1) + " to " + end ) ;
+						}
 					}
 				}
 			}
@@ -140,16 +165,16 @@ public final class StackTraceUtil {
 				File dir = sourceDirs[i];
 				File originalFile = new File( dir.getAbsolutePath() + File.separatorChar + javaFileName );
 				if (originalFile.exists()) {
-					return originalFile.getAbsolutePath() + ":" + (sourceFilePos + 1) + ": \n\t\t" + preprocessedSourceCodeLine;
+					return  "   = " + originalFile.getAbsolutePath() + ":" + (sourceFilePos + 1) + ": \n\t\t" + preprocessedSourceCodeLine;
 				}
 			}
 			// did not find original file:
-			// now return the reference to the source class file:
+			// now return the reference to the preprocessed source class file:
 			int separatorPos = javaFileName.lastIndexOf( File.separatorChar );
 			if (separatorPos != -1) {
 				javaFileName = javaFileName.substring( separatorPos + 1 );
 			}
-			return javaFileName + ":" + (sourceFilePos + 1) + ":\t" + preprocessedSourceCodeLine;
+			return "   = " + javaFileName + ":" + (sourceFilePos + 1) + ":\n\t\t" + preprocessedSourceCodeLine;
 		} catch (FileNotFoundException e) {
 			System.out.println("Unable to resolve stacktrace: did not find source file [" + preprocessedSourcePath + "].");
 			return null;
@@ -214,7 +239,7 @@ public final class StackTraceUtil {
 				if (isInMethod) {
 					if (firstChar == '{') {
 						parenthesisCount++;
-					} else if (firstChar == '}') {
+					} else if (firstChar == '}' || "} else".equals(trimmedLine)) {
 						parenthesisCount--;
 						if (parenthesisCount == 0 ) {
 							if (offsetFound) {
@@ -312,9 +337,11 @@ public final class StackTraceUtil {
 				if (!Character.isJavaIdentifierPart(c)) {
 					int count = i - lastDelimiterPos; 
 					if (count > 1) {
-						String chunk = new String( chars, lastDelimiterPos, count );
-						//System.out.println("chunk: [" + chunk + "]." );
-						chunksList.add( chunk );
+						String chunk = new String( chars, lastDelimiterPos, count ).trim();
+						if (chunk.length() > 0) {
+							//System.out.println("chunk: [" + chunk + "]." );
+							chunksList.add( chunk );
+						}
 					}
 					lastDelimiterPos = i + 1;
 				}
@@ -330,9 +357,15 @@ public final class StackTraceUtil {
 			int newPos;
 			for (int i = 0; i < this.chunks.length; i++) {
 				String chunk = this.chunks[i];
-				if ( (newPos = line.indexOf( chunk)) >= minPos ) {
+				if ( (newPos = line.indexOf( chunk, minPos)) != -1 ) {
 					minPos = newPos + chunk.length();
 				} else {
+					/* 
+					if (minPos > 0) {
+						System.out.println("line does not match: " + line );
+						System.out.println("min pos is: " + minPos + " actualPos: " + newPos + " chunk: " + chunk + " index: " + i );
+					}
+					*/
 					return false;
 				}
 			}
