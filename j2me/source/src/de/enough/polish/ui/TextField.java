@@ -1793,7 +1793,7 @@ implements CommandListener
 			//#next key
 		//#endif
 		//#if tmp.allowDirectInput
-			if (this.enableDirectInput) {
+			//# if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
 					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric) {
@@ -2064,11 +2064,15 @@ implements CommandListener
 					}
 				//#endif
 		//#if tmp.allowDirectInput
-			}
+			//# }
 		//#endif
 		//#ifndef polish.hasPointerEvents
 			if (this.enableDirectInput) {
-				int currentLength = (this.text == null ? 0 : this.text.length());
+				//#if !tmp.forceDirectInput
+					//# int currentLength = (this.text == null ? 0 : this.text.length());
+				//#else
+					currentLength = (this.text == null ? 0 : this.text.length());
+				//#endif
 				if (currentLength != this.maxSize && 
 						keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
