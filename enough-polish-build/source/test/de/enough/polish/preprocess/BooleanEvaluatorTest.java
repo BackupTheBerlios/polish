@@ -383,7 +383,8 @@ public class BooleanEvaluatorTest extends TestCase {
 		variables.put("polish.Screen.Width", "100");
 		variables.put("polish.Screen.Height", "80");
 		variables.put("polish.BitsPerPixel", "8");
-		
+		variables.put("polish.Identifier", "Nokia/6600");
+	
 		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
 		String term = "polish.BitsPerPixel >=  8";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
@@ -420,6 +421,10 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );		
 		term = "polish.Screen.Width <  180";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );		
+		
+		// try identifier names:
+		term = "polish.Identifier ==  Nokia/6600";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
 	}
 
 }

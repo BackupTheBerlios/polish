@@ -58,7 +58,7 @@ public class BooleanEvaluator {
 	public static final int GREATER_EQUALS = 8;
 	public static final int LESSER_EQUALS = 9;
 
-	private static final String SYMBOL = "(\\w|-|:|\\.)+"; 
+	private static final String SYMBOL = "(\\w|-|:|\\.|/)+"; 
 	protected static final Pattern SYMBOL_PATTERN = Pattern.compile( SYMBOL ); 
 	private static final String OPERATOR = "(&&|\\^|\\|\\||==|>=|<=|>|<)"; 
 	protected static final Pattern OPERATOR_PATTERN = Pattern.compile( OPERATOR ); 
