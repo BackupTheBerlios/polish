@@ -276,6 +276,7 @@ public class Sprite
 	private int frameHeight;
 	private int frameWidth;
 	private int rawFrameCount;
+	private boolean isSingleFrame;
 	private int transformedRefX;
 	private int transformedRefY;
 	private int numberOfColumns;
@@ -402,6 +403,7 @@ public class Sprite
 			this.transformedCollisionY = s.transformedCollisionY;
 			this.transformedCollisionWidth = s.transformedCollisionWidth;
 			this.transformedCollisionHeight = s.transformedCollisionHeight;
+			this.isSingleFrame = s.isSingleFrame;
 		//#endif
 	}
 
@@ -680,6 +682,10 @@ public class Sprite
 	 */
 	public final void paint( Graphics g)
 	{
+		if (this.isSingleFrame && this.transform == 0) {
+			g.drawImage( this.image, this.xPosition, this.yPosition, Graphics.TOP | Graphics.LEFT );
+			return;
+		}
 		//#ifdef polish.api.nokia-ui
 			// just draw and rotate the current frame:
 			DirectGraphics dg = DirectUtils.getDirectGraphics( g );
@@ -826,6 +832,7 @@ public class Sprite
 
 		int oldRawFrameCount = this.rawFrameCount;
 		this.rawFrameCount = this.numberOfColumns * rows;
+		this.isSingleFrame = (this.rawFrameCount == 1);
 		if (this.rawFrameCount < oldRawFrameCount) {
 			this.frameSequenceIndex = 0;
 			// set default frame sequence:

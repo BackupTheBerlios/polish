@@ -274,19 +274,40 @@ public class LayerManager extends Object
 	 */
 	public void paint( Graphics g, int x, int y)
 	{
+		int minX, minY, maxX, maxY;
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
 		if (this.isViewWindowSet) {
 			g.setClip( x, y, this.viewWidth, this.viewHeight );
+			minX = this.viewX;
+			maxX = minX + this.viewWidth;
+			minY = this.viewY;
+			maxY = minY + this.viewHeight;
+		} else {
+			minX = x;
+			maxX = x + clipWidth;
+			minY = y;
+			maxY = y + clipHeight;
 		}
 		// translate the graphic origin:
 		g.translate( x - this.viewX, y - this.viewY );
-		int lastIndex = this.size -1;
-		for (int i = lastIndex; i >= 0; i--) {
+		for (int i = this.size-1; i >= 0; i--) {
 			Layer layer = this.layers[ i ];
 			if (layer.isVisible) {
+				int layerX = layer.getX();
+				int layerY = layer.getY();
+				int layerWidth = layer.getWidth();
+				int layerHeight = layer.getHeight();
+				if (layerX + layerWidth < minX
+						|| layerX > maxX
+						|| layerY + layerHeight < minY
+						|| layerY > maxY ) 
+				{
+					// the layer is not in the visible area:
+					continue;
+				}
 				layer.paint( g );
 			}
 		}
