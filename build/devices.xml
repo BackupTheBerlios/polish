@@ -834,9 +834,35 @@
 		<capability name="SoundFormat" value="midi, wav, amr" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/E398.props" />
-		<capability name="key.LeftSoftKey" value="-20" />
-		<capability name="key.RightSoftKey" value="-21" />
-		<capability name="key.MiddleSoftKey" value="-22" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.MiddleSoftKey" value="-23" />
+	</device>
+
+	<device>
+		<identifier>Motorola/E398Emulator</identifier>
+		<features>doubleBuffering</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="176x204" />
+		<capability name="FullCanvasSize" value="176x204" />
+		<capability name="CanvasSize" value="176x187" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="800 kb" />
+		<capability name="StorageSize" value="5 MB" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="MaxRecordStoreSize" value="64 kb" />
+		<capability name="JavaProtocol" value="udp, http, serial, socket" />
+		<capability name="MaxSockets" value="4" />
+		<capability name="JavaPackage" value="wmapi, mmapi, phonebook" />
+		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="SoundFormat" value="midi, wav, amr" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/E398.props" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
+		<capability name="key.MiddleSoftKey" value="23" />
 	</device>
 
 	<device>
