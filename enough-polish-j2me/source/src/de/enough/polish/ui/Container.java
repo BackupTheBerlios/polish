@@ -158,6 +158,8 @@ public class Container extends Item {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public void add( Item item ) {
+		item.yTopPos = item.yBottomPos = 0;
+		item.internalX = -9999;
 		item.parent = this;
 		this.itemsList.add( item );
 		if (this.isInitialised) {
@@ -177,8 +179,8 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public void add( int index, Item item ) {
-		//#debug
-		System.out.println("Container: adding item " + index );
+		item.yTopPos = item.yBottomPos = 0;
+		item.internalX = -9999;
 		item.parent = this;
 		this.itemsList.add( index, item );
 		if (this.isInitialised) {
@@ -228,16 +230,18 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container: removing item " + index );
 		Item removedItem = (Item) this.itemsList.remove(index);
-		int removedItemHeight = removedItem.itemHeight;
 		// adjust y-positions of following items:
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
+			item.internalX = -9999;
+			item.yTopPos = item.yBottomPos = 0;
+			/*
+			 int removedItemHeight = removedItem.itemHeight;
 			if (item.yTopPos != item.yBottomPos) {
 				item.yTopPos -= removedItemHeight;
 				item.yBottomPos -= removedItemHeight;
-				item.internalX = -9999;
-			}
+			}*/
 		}
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
@@ -831,6 +835,9 @@ public class Container extends Item {
 	 * @return true when the focus could be moved to either the next or the previous item.
 	 */
 	private boolean shiftFocus(boolean forwardFocus, int steps ) {
+		if ( this.items == null ) {
+			return false;
+		}
 		int i = this.focusedIndex + steps;
 		if (i > this.items.length) {
 			i = this.items.length - 2;

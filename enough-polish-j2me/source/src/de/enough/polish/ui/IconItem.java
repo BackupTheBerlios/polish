@@ -64,7 +64,7 @@ implements ImageConsumer
 {
 	
 	Image image;
-	private int imageAlign;
+	private int imageAlign = Graphics.LEFT;
 	private int imageHeight;
 	private int imageWidth;
 	private int yAdjust;
