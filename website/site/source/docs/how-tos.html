@@ -408,17 +408,9 @@ attributes which are different, this makes subsequent changes easier.
 
 <h3 id="howto-gui-differentdesigns">How to Apply Different Designs to One Application</h3>
 <p>
-You can alter the appearance of an application easily by using different resources like 
-images, sound files and design-definitions. You can use one application source code for 
-creating several different applications with this technique. The &quot;resDir&quot;-attribute 
-of the <build>-element in the &quot;build.xml&quot; file defaults to the &quot;resources&quot; 
-folder, but you can change this to any other folder. 
-</p>
-<p>
-Best practice is to create one Ant-&lt;target&gt; for each end-application in the 
-&quot;build.xml&quot; file. In each target the 
-&lt;j2mepolish&gt;-task is copied and changes are made to the &quot;resDir&quot;- 
-and the &quot;workDir&quot;-attributes of the &lt;build&gt;-element:
+You can alter the appearance of an application easily by using different resources like images, sound files and design-definitions. You can use one application source code for creating several different applications with this technique. The &quot;dir&quot;-attribute of the &lt;resources&gt;-element in the &quot;build.xml&quot; file defaults to the &quot;resources&quot; folder, but you can change this to any other folder. Alternatively you can also set the &quot;resDir&quot;-attribute of the &lt;build&gt;-element, when no &lt;resources&gt;-element is used.
+</p><p>
+Best practice is to create one Ant-&lt;target&gt; for each end-application in the &quot;build.xml&quot; file. In each target the &lt;j2mepolish&gt;-task is copied and changes are made to the &quot;dir&quot;-attribute of the &lt;resources&gt;-element and to the &quot;workDir&quot;-attributes of the &lt;build&gt;-element:
 <pre>
 &lt;target name=&quot;girlgame&quot; &gt;
 	&lt;j2mepolish&gt;
@@ -427,9 +419,11 @@ and the &quot;workDir&quot;-attributes of the &lt;build&gt;-element:
 		[...] /&gt;
 		&lt;deviceRequirements &gt; [...]
 		&lt;build
-		 resDir=&quot;resources/girl&quot;
 		 workDir=&quot;build/girl&quot;
 		 [...]
+			&lt;resources
+		 		dir=&quot;resources/girl&quot;
+			/&gt;
 		 &gt;
 		[...] 
 		&lt;/build&gt;
@@ -446,6 +440,9 @@ and the &quot;workDir&quot;-attributes of the &lt;build&gt;-element:
 		 workDir=&quot;build/boy&quot;
 		 [...]
 		 &gt;
+		&lt;resources
+			dir=&quot;resources/boy&quot;
+		/&gt;
 		[...] 
 		&lt;variable name=&quot;player-width&quot; value=&quot;12&quot; &gt;
 		&lt;variable name=&quot;player-height&quot; value=&quot;12&quot; &gt;
@@ -480,14 +477,10 @@ Sprite player = new Sprite( playerImage, width, height );
 </pre></p>
 
 <h3 id="howto-gui-commandlabels">How to Change the Labels of Standard-Commands and Menu-Labels</h3>
-<p>The labels of the standard commands &quot;OK&quot;, &quot;Cancel&quot;, &quot;Select&quot; and &quot;Options&quot; can changed by defining these variables:
+<p>The labels of the standard menu-commands  can be changed by setting variables 
+either in the <a href="build-build.html#variables">build.xml</a> file or within the 
+localization-<a href="localization.html#localization-gui">messages.tx</a>t file.
 </p>
-<ul>
-  <li>polish.command.ok</li>
-  <li>polish.command.cancel</li>
-  <li>polish.command.select</li>
-  <li>polish.command.options</li>
-</ul>
 <p>
 This example changes the &quot;Cancel&quot; command to &quot;Abbruch&quot; (German for cancel):
 <pre>
@@ -495,6 +488,9 @@ This example changes the &quot;Cancel&quot; command to &quot;Abbruch&quot; (Germ
 	&lt;variable name=&quot;polish.command.cancel&quot; value=&quot;Abbruch&quot;/&gt;
 &lt;/variables&gt;
 </pre></p>
+<p>
+Please refer to the <a href="localization.html#localization-gui">localization documentation</a> for more information.
+</p>
 
 <h3 id="activatinggui">How to Enable or Disable the Usage of the GUI for a Specific Device</h3>
 <p>
@@ -511,6 +507,9 @@ Open devices.xml and search the device in question. Now set the &quot;supportsPo
 	&lt;!-- and so on --&gt;
 &lt;/device&gt;
 </pre>
+</p>
+<p>
+You can also override the settings in the device-database by setting the &quot;usePolishGui&quot;-attribute of the <a href="build-build.html">&lt;build&gt;-element</a> to &quot;always&quot;. In that case the GUI will be used for all devices, regardless of the settings in the device database.
 </p>
 
 <h2 id="trouble">Trouble Shooting</h2>

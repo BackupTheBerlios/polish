@@ -400,6 +400,20 @@ One can specify another-style by using the &quot;label-style&quot;-attribute:
 	background-color: yellow;
 }
 </pre>
+<p>
+It is often advisable to use separate items for labels and contents. In that way you can get a clean design by using a table, in which all labels are placed on the left side and all input-fields etc on the right side. 
+Tables are defined by using the <a href="css-specific.html#screens">&quot;columns&quot;-attribute</a> of the corresponding screen.
+</p>
+<p>
+When you want to have a line-break after each label, just add the &quot;newline-after&quot;-value to the layout:
+<pre>
+label {
+	font-style: bold;
+	font-color: green;
+	background: none;
+	layout: left | newline-after;
+}
+</pre></p>
 
 <h2 id="backgroundsandborders">Backgrounds and Borders</h2>
 <p>

@@ -3,16 +3,25 @@
 	<%index %>
 <%endif %>
 
+<h2 id="1.2.2">J2ME Polish 1.2.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-10-05</h2>
+<p>
+	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.2.html">J2ME Polish 1.2.2</a> 
+	brings many improvements, some bugfixes and an updated documentation.
+	Nokia, Siemens and Motorola emulators can be started automatically, 
+	a new scrolling indicator shows when a screen
+	can be scrolled and more. Updating is recommended!
+</p>
+
 <h2 id="1.2.1">J2ME Polish 1.2.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-09-27</h2>
 <p>
-	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.1.html">J2ME Polish 1.2.1</a> 
+	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.2.html">J2ME Polish 1.2.1</a> 
 	fixes the broken inclusion of binary libraries. An update is recommended
 	when the &quot;binaryLibraries&quot;-attribute is used.
 </p>
 
 <h2 id="1.2">J2ME Polish 1.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-09-24</h2>
 <p>
-	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.1.html">J2ME Polish 1.2</a> 
+	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.2.html">J2ME Polish 1.2</a> 
 	is now available with a whole range of new features:
 	<br />
 	full localization/internationalization support, emulators can be started
@@ -28,8 +37,8 @@
 	has published an article series explaining the porting of MIDP/2.0
 	games to MIDP/1.0 games with J2ME Polish:
 	<br />
-	<a href="http://www.mobilegd.com/article78.html" target="_blank">J2ME Polish - Introduction and Installation</a><br />
-	<a href="http://www.mobilegd.com/article77.html" target="_blank">Porting MIDP 2.0 Games to MIDP 1.0 Platforms with J2ME Polish</a>	
+	<a href="http://www.mobilegd.com/article77.html" target="_blank">J2ME Polish - Introduction and Installation</a><br />
+	<a href="http://www.mobilegd.com/article78.html" target="_blank">Porting MIDP 2.0 Games to MIDP 1.0 Platforms with J2ME Polish</a>	
 </p>
 
 
