@@ -255,8 +255,8 @@ public class BooleanEvaluator {
 					//System.out.println( var + " == " + lastVar + " = " + result);
 				} else {
 					// this is either >, <, >= or <= - so a numerical comparison is required
-					int numVar = 0;
-					int numLastVar = 0;
+					int numVar = -1;
+					int numLastVar = -1;
 					try {
 						try {
 							numVar = CastUtil.getInt( var );
