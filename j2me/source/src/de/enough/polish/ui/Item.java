@@ -881,9 +881,9 @@ public abstract class Item extends Object
 			this.afterImage = style.after;
 		//#endif
 		//#ifdef polish.css.label-style
-			String labelStyleName = style.getProperty("label-style");
-			if (labelStyleName != null) {
-				this.labelStyle = StyleSheet.getStyle( labelStyleName );
+			Style labStyle = (Style) style.getObjectProperty("label-style");
+			if (labStyle != null) {
+				this.labelStyle = labStyle;
 			} else {
 				this.labelStyle = StyleSheet.labelStyle;
 			}

@@ -423,7 +423,7 @@ public class List extends Screen implements Choice
 		//#endif
 		int number = this.choiceGroup.append( stringPart, imagePart, elementStyle );
 		if (number == 0) {
-			if (this.listType == IMPLICIT ) {
+			if (this.listType == IMPLICIT && this.selectCommand != null ) {
 				addCommand( this.selectCommand );
 			} else {
 				setItemCommands(this.choiceGroup);
@@ -514,8 +514,8 @@ public class List extends Screen implements Choice
 		//#endif
 		this.choiceGroup.delete(elementNum);
 		if (this.choiceGroup.size() == 0 ) {
-			if (this.listType == IMPLICIT ) {
-				removeCommand( SELECT_COMMAND );
+			if (this.listType == IMPLICIT && this.selectCommand != null ) {
+				super.removeCommand( this.selectCommand );
 			} else {
 				removeItemCommands(this.choiceGroup);
 			}
@@ -535,8 +535,8 @@ public class List extends Screen implements Choice
 			}
 		//#endif
 		this.choiceGroup.deleteAll();
-		if (this.listType == IMPLICIT ) {
-			removeCommand( SELECT_COMMAND );
+		if (this.listType == IMPLICIT && this.selectCommand != null) {
+			super.removeCommand( this.selectCommand );
 		} else {
 			removeItemCommands(this.choiceGroup);
 		}
@@ -710,7 +710,9 @@ public class List extends Screen implements Choice
 	public void setSelectCommand( Command command)
 	{
 		if (this.listType == IMPLICIT) {
-			removeCommand( this.selectCommand );
+			if (this.selectCommand != null) {
+				super.removeCommand( this.selectCommand );
+			}
 			this.selectCommand = command;
 			if (this.choiceGroup.size() > 0) {
 				addCommand( command );
