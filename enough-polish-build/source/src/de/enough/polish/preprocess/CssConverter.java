@@ -449,7 +449,14 @@ public class CssConverter extends Converter {
 		String[] groupNames = style.getGroupNames();
 		if (groupNames.length > 0) {
 			codeList.add("\tstatic {");
-			codeList.add( "\t\t" + styleName + "Style.properties = new Hashtable();" );
+			// counting the number of special attributes:
+			int numberOfAttributes = 0;
+			for (int i = 0; i < groupNames.length; i++) {
+				String groupName = groupNames[i];
+				group = style.getGroup(groupName);
+				numberOfAttributes += group.size();
+			}
+			codeList.add( "\t\t" + styleName + "Style.properties = new Hashtable( " + numberOfAttributes + " );" );
 			for (int i = 0; i < groupNames.length; i++) {
 				String groupName = groupNames[i];
 				group = style.getGroup(groupName);

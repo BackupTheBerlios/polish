@@ -234,4 +234,31 @@ public class DebugManager {
 		return this.useGui;
 	}
 
+	/**
+	 * Creates the J2ME Polish debugging symbols for the specified class.
+	 * Example symbols are "polish.debug.info", "polish.debug.debug", "polish.debug.error".
+	 * 
+	 * @param className the name of the class
+	 * @return a String array with one preprocessing symbol for each supported debugging level.
+	 */
+	public String[] getDebuggingSymbols(String className) {
+		int level = getClassLevel( className );
+		switch (level) {
+			case DEBUG:
+				return new String[]{"polish.debug", "polish.debug.debug", "polish.debug.info", "polish.debug.warn", "polish.debug.warning", "polish.debug.error", "polish.debug.fatal", "polish.debug.user-defined"};
+			case INFO:
+				return new String[]{"polish.debug.info", "polish.debug.warn", "polish.debug.warning", "polish.debug.error", "polish.debug.fatal", "polish.debug.user-defined"};
+			case WARN:
+				return new String[]{"polish.debug.warn", "polish.debug.warning", "polish.debug.error", "polish.debug.fatal", "polish.debug.user-defined"};
+			case ERROR:
+				return new String[]{"polish.debug.error", "polish.debug.fatal", "polish.debug.user-defined"};
+			case FATAL:
+				return new String[]{"polish.debug.fatal", "polish.debug.user-defined"};
+			case USER_DEFINED:
+				return new String[]{"polish.debug.user-defined"};
+			default:
+				return new String[0];
+		}
+	}
+
 }

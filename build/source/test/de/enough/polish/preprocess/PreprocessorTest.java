@@ -600,7 +600,7 @@ public class PreprocessorTest extends TestCase {
 		StringList lines = new StringList( sourceLines );
 		int result = this.preprocessor.preprocess( "MyClass.java", lines );
 		assertEquals( Preprocessor.NOT_CHANGED, result );
-		assertTrue(  this.preprocessor.symbols.get("KNUDDEL") == null);
+		assertFalse(  this.preprocessor.hasSymbol("KNUDDEL"));
 		
 		sourceLines = new String[] {
 				"	//#ifdef test1XX ",
@@ -614,7 +614,7 @@ public class PreprocessorTest extends TestCase {
 		lines = new StringList( sourceLines );
 		result = this.preprocessor.preprocess( "MyClass.java", lines );
 		assertEquals( Preprocessor.CHANGED, result );
-		assertFalse(  this.preprocessor.symbols.get("KNUDDEL") == null);
+		assertTrue(  this.preprocessor.hasSymbol("KNUDDEL"));
 	}
 	
 	public void testUndefine() throws BuildException {
@@ -630,7 +630,7 @@ public class PreprocessorTest extends TestCase {
 		StringList lines = new StringList( sourceLines );
 		int result = this.preprocessor.preprocess( "MyClass.java", lines );
 		assertEquals( Preprocessor.NOT_CHANGED, result );
-		assertTrue(  this.preprocessor.symbols.get("test2") != null);
+		assertTrue(  this.preprocessor.hasSymbol("test2") );
 		
 		sourceLines = new String[] {
 				"	//#ifdef test1XX ",
@@ -644,7 +644,7 @@ public class PreprocessorTest extends TestCase {
 		lines = new StringList( sourceLines );
 		result = this.preprocessor.preprocess( "MyClass.java", lines );
 		assertEquals( Preprocessor.CHANGED, result );
-		assertFalse(  this.preprocessor.symbols.get("test2") != null);
+		assertFalse(  this.preprocessor.hasSymbol("test2") );
 	}
 	
 	

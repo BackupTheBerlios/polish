@@ -68,6 +68,16 @@ public class BooleanEvaluator {
 
 	private HashMap symbols;
 	private HashMap variables;
+	private Preprocessor preprocessor;
+
+	/**
+	 * Creates a new boolean evaluator.
+	 * 
+	 * @param preprocessor the parent preprocessor - must NOT be null
+	 */ 
+	public BooleanEvaluator( Preprocessor preprocessor ) {
+		this.preprocessor = preprocessor;
+	}
 
 	/**
 	 * Creates a new boolean evaluator.
@@ -172,7 +182,11 @@ public class BooleanEvaluator {
 			} else if ("false".equals( symbol)) {
 				symbolResult = false;
 			} else {
-				symbolResult = ( this.symbols.get( symbol ) != null );
+				if (this.preprocessor != null) {
+					symbolResult = this.preprocessor.hasSymbol( symbol );
+				} else {
+					symbolResult = ( this.symbols.get( symbol ) != null );
+				}
 			}
 			if (negate) {
 				symbolResult = !symbolResult;
@@ -193,7 +207,12 @@ public class BooleanEvaluator {
 			} else {
 				//System.out.println("comparing [" + lastSymbol + "] with [" + symbol + "].");
 				// this is either >, <, ==, >= or <=
-				String var  = (String) this.variables.get( symbol );
+				String var;
+				if (this.preprocessor != null) {
+					var  = this.preprocessor.getVariable( symbol );
+				} else {
+					var  = (String) this.variables.get( symbol );
+				}
 				if (var == null) {
 					var = symbol;
 				}

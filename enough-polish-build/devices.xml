@@ -499,6 +499,49 @@
 		<capability name="ImageFormat" value="png, jpeg" />
 		<capability name="SoundFormat" value="midi, wav, amr" />
 	</device>
+
+	<device>
+		<identifier>Motorola/V3</identifier>
+		<features>doubleBuffering,hasCamera</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="ExternalScreenSize" value="96x80" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="800 kb" />
+		<capability name="StorageSize" value="5 MB" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="MaxRecordStoreSize" value="64 kb" />
+		<capability name="JavaProtocol" value="udp, http, socket" />
+		<capability name="MaxSockets" value="4" />
+		<capability name="JavaPackage" value="wmapi, mmapi, phonebook" />
+		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
+		<capability name="CameraResolution" value="vga" />
+	</device>
+	
+	<device>
+		<identifier>Motorola/A1000</identifier>
+		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
+		<capability name="OS" value="Symbian 7.0/UIQ 2.1" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="208x320" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="16 MB" />
+		<capability name="StorageSize" value="24 MB" />
+		<capability name="MaxJarSize" value="24 MB" />
+		<capability name="MaxRecordStoreSize" value="24 MB" />
+		<capability name="JavaProtocol" value="udp, http, https, socket, server-socket, sms" />
+		<capability name="JavaPackage" value="wmapi, mmapi, bluetooth" />
+		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
+		<capability name="SoundFormat" value="mpeg-4" />
+		<capability name="Region" value="Europe, Middle-East, Asia-Pacific, Americas" />
+		<capability name="Network" value="GSM, UMTS" />
+		<capability name="Frequency" value="900, 1800, 1900, WCDMA 2100" />
+	</device>
 	
 	<device>
 		<identifier>Motorola/A630</identifier>
@@ -878,6 +921,7 @@
 		<capability name="MaxSockets.udp" value="3" />
 		<capability name="ImageFormat" value="png" />
 	</device>
+
 	
 <!-- Nokia devices -->
 

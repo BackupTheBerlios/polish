@@ -78,8 +78,12 @@ public class Preprocessor {
 	private File destinationDir;
 	/** holds all defined variables */
 	private HashMap variables;
+	/** holds all temporary defined variables */
+	private HashMap temporaryVariables;
 	/** holds all defined symbols */
-	HashMap symbols;
+	private HashMap symbols;
+	/** holds all temporary defined symbols */
+	private HashMap temporarySymbols;
 	private boolean backup;
 	private boolean indent;
 	boolean enableDebug;
@@ -127,10 +131,11 @@ public class Preprocessor {
 			symbols = new HashMap();
 		}
 		this.symbols = symbols;
+		this.temporaryVariables = new HashMap();
+		this.temporarySymbols = new HashMap();
 		this.backup = backup;
 		this.indent = indent;
 		this.newExtension = newExt;
-		this.booleanEvaluator = new BooleanEvaluator( symbols, variables );
 		this.destinationDir = destinationDir;
 		this.preprocessQueue = new HashMap();
 		
@@ -154,6 +159,9 @@ public class Preprocessor {
 		this.supportedDirectives.put( "define", Boolean.TRUE );
 		this.supportedDirectives.put( "undefine", Boolean.TRUE );
 		this.supportedDirectives.put( "message", Boolean.TRUE );
+		
+		this.booleanEvaluator = new BooleanEvaluator( this );
+
 	}
 	
 	/**
@@ -372,6 +380,8 @@ public class Preprocessor {
 	 * The internal state is reset to allow new preprocessing of other files. 
 	 */
 	public void reset() {
+		this.temporarySymbols.clear();
+		this.temporaryVariables.clear();
 		this.ifDirectiveCount = 0;
 	}
 
@@ -386,6 +396,22 @@ public class Preprocessor {
 	public int preprocess(String className, StringList lines) 
 	throws BuildException 
 	{
+		// clear the temporary variables and symbols:
+		this.temporarySymbols.clear();
+		this.temporaryVariables.clear();
+		
+		// set debugging preprocessing symbols:
+		if (this.debugManager != null) {
+			String[] debuggingSymbols = this.debugManager.getDebuggingSymbols( className );
+			for (int i = 0; i < debuggingSymbols.length; i++) {
+				String symbol = debuggingSymbols[i];
+				this.temporarySymbols.put( symbol, Boolean.TRUE );
+			}
+		}
+		// adding all normal variables and symbols to the temporary ones:
+		this.temporarySymbols.putAll( this.symbols );
+		this.temporaryVariables.putAll( this.variables );
+		
 		boolean changed = false;
 		if (this.customPreprocessors != null) {
 			for (int i = 0; i < this.customPreprocessors.length; i++) {
@@ -538,7 +564,7 @@ public class Preprocessor {
 	private boolean processIfdef(String argument, StringList lines, String className )
 	throws BuildException
 	{
-		boolean conditionFulfilled = (this.symbols.get( argument ) != null);
+		boolean conditionFulfilled = hasSymbol( argument );
 		return processIfVariations( conditionFulfilled, lines, className );
 	}
 
@@ -554,7 +580,7 @@ public class Preprocessor {
 	private boolean processIfndef(String argument, StringList lines, String className ) 
 	throws BuildException
 	{
-		boolean conditionFulfilled = (this.symbols.get( argument ) == null);
+		boolean conditionFulfilled = !hasSymbol( argument );
 		return processIfVariations( conditionFulfilled, lines, className );
 	}
 	
@@ -776,9 +802,9 @@ public class Preprocessor {
 		if (equalsIndex != -1) {
 			String name = argument.substring(0, equalsIndex).trim();
 			String value = argument.substring( equalsIndex + 1).trim();
-			this.variables.put( name, value );
+			this.temporaryVariables.put( name, value );
 		} else {
-			this.symbols.put( argument, Boolean.TRUE );
+			this.temporarySymbols.put( argument, Boolean.TRUE );
 		}
 	}
 
@@ -797,8 +823,10 @@ public class Preprocessor {
 			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1) 
 					+ ": found invalid #undefine directive: the symbol [true] cannot be defined.");
 		}
-		Object symbol = this.symbols.remove( argument );
+		Object symbol = this.temporarySymbols.remove( argument );
+		this.symbols.remove( argument );
 		if (symbol == null) {
+			this.temporaryVariables.remove( argument );
 			this.variables.remove( argument );
 		}
 	}
@@ -816,7 +844,7 @@ public class Preprocessor {
 	throws BuildException
 	{
 		try {
-			String line = PropertyUtil.writeProperties( argument, this.variables, true );
+			String line = PropertyUtil.writeProperties( argument, this.temporaryVariables, true );
 			lines.setCurrent( line );
 			return true;
 		} catch (IllegalArgumentException e) {
@@ -1171,7 +1199,8 @@ public class Preprocessor {
 	 * @return true when the symbol is defined
 	 */
 	public boolean hasSymbol(String symbol) {
-		return (this.symbols.get( symbol) != null);
+		return ((this.temporarySymbols.get( symbol) != null) 
+				|| (this.symbols.get( symbol) != null));
 	}
 
 	/**
@@ -1181,7 +1210,11 @@ public class Preprocessor {
 	 * @return the value of the variable
 	 */
 	public String getVariable(String name) {
-		return (String) this.variables.get(name);
+		String var = (String) this.temporaryVariables.get(name);
+		if (var == null) {
+			var = (String) this.variables.get(name);
+		}
+		return var;
 	}
 
 	/**
