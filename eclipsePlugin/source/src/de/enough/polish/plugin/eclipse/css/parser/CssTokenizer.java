@@ -143,7 +143,7 @@ public class CssTokenizer {
 	Matcher matcher;
 	
 	public CssTokenizer(CssModel cssModel){
-		this.document = cssModel.getDocument();
+		this.document = null; //cssModel.getDocument();
 		this.currentPos = 0;
 		this.stream = this.document.get();
 		//this.cssTokens = new ArrayList();

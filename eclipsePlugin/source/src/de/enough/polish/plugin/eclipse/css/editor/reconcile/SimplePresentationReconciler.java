@@ -25,7 +25,13 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.reconcile;
 
-import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.presentation.IPresentationDamager;
+import org.eclipse.jface.text.presentation.IPresentationReconciler;
+import org.eclipse.jface.text.presentation.IPresentationRepairer;
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
+import de.enough.polish.plugin.eclipse.css.model.IModelListener;
 
 
 /**
@@ -38,16 +44,64 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class SimplePresentationReconciler extends PresentationReconciler {
-/*
- * 
- * <p></p>
- *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        Mar 1, 2005 - ricky creation
- * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
- */
+public class SimplePresentationReconciler implements IPresentationReconciler /* extends PresentationReconciler*/ {
+
+	private ITextViewer viewer;
+	private ModelListener modelListener;
+	private CssModel cssModel;
+	
+	private class ModelListener implements IModelListener{
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
+		 */
+		public void modelChanged() {
+			System.out.println("DEBUG:ModelListener.modelChanged():enter.");
+			updateViewer();
+		}
+		
+	}
+	
+	public SimplePresentationReconciler(CssModel cssModel){
+		this.modelListener = new ModelListener();
+		this.cssModel = cssModel;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#install(org.eclipse.jface.text.ITextViewer)
+	 */
+	public void install(ITextViewer newViewer) {
+		System.out.println("DEBUG:SimplePresentationReconciler.install().enter.");
+		this.viewer = newViewer;
+		this.cssModel.addModelListener(this.modelListener);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#uninstall()
+	 */
+	public void uninstall() {
+		System.out.println("DEBUG:SimplePresentationReconciler.uninstall().enter.");
+		//super.uninstall();
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#getDamager(java.lang.String)
+	 */
+	public IPresentationDamager getDamager(String contentType) {
+		System.out.println("DEBUG:SimplePresentationReconciler.getDamager().enter.");
+		
+		return null;
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#getRepairer(java.lang.String)
+	 */
+	public IPresentationRepairer getRepairer(String contentType) {
+		System.out.println("DEBUG:SimplePresentationReconciler.getRepairer().enter.");
+		return null;
+	}
+	
+	public void updateViewer(){
+		TextPresentation textPresentation = new TextPresentation();
+		this.viewer.changeTextPresentation(textPresentation,false);
+	}
 }

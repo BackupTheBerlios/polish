@@ -25,12 +25,24 @@
  */
 package de.enough.polish.plugin.eclipse.css.model;
 
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import net.percederberg.grammatica.parser.Node;
+import net.percederberg.grammatica.parser.ParserCreationException;
+import net.percederberg.grammatica.parser.ParserLogException;
+
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.reconciler.DirtyRegion;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.internal.misc.Assert;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import de.enough.polish.plugin.eclipse.css.parser.CssToken;
+import de.enough.polish.plugin.eclipse.css.parser.PolishCssParser;
 
 /**
  * <p>Encapsulates the css model (domain model) and provides methods to deal with changes
@@ -45,15 +57,21 @@ import de.enough.polish.plugin.eclipse.css.parser.CssToken;
  */
 public class CssModel {
 
+	private List modelListeners;
+	
 	private ASTNode root;
+	private Node rootNode;
 	private List tokenList;
 	//FIXME: Put the IDocument also in the model. So we have raw input, symbols and semantic symbols in one place.
-	private IDocument document;
+	private IDocumentProvider documentProvider;
+	private IEditorInput editorInput;
 	
-	public CssModel(IDocument document){
+	private PolishCssParser parser;
+	
+	public CssModel(){
 		this.root = new StyleSheet();
 		this.tokenList = new ArrayList();
-		this.document = document;
+		this.modelListeners = new ArrayList();
 	}
 	
 	public ASTNode getRoot(){
@@ -81,16 +99,92 @@ public class CssModel {
 		this.tokenList.add(cssToken);
 	}
 	
+
 	/**
-	 * @return Returns the document.
+	 * Reconcile the model to the changed document.
+	 * @param dirtyRegion
+	 * @param subRegion
 	 */
-	public IDocument getDocument() {
-		return this.document;
+	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
+		System.out.println("DEBUG:CssModel.reconcile():enter.");
+		IDocument document = this.documentProvider.getDocument(this.editorInput);
+		if(document == null){
+			System.out.println("DEBUG:CssModel.reconcile():document is null.");
+			return;
+		}
+		// Parse.
+		try {
+			this.parser = new PolishCssParser(new StringReader(document.get()));
+			this.rootNode = this.parser.parse();
+			System.out.println("DEBUG:CssModel.reconcile():no parsing errors !!");
+		} catch (ParserCreationException exception) {
+			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
+		} catch (ParserLogException exception) {
+			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
+		}
+		fireModelChangedEvent();
+	}
+	
+	/**
+	 * Is called when the model has changed because of a change in the document.
+	 */
+	private void fireModelChangedEvent() {
+		Iterator iterator = this.modelListeners.iterator();
+		IModelListener listener;
+		while(iterator.hasNext()){
+			listener = (IModelListener) iterator.next();
+			listener.modelChanged();
+		}
+		
+	}
+
+	public void addModelListener(IModelListener listener){
+		Assert.isNotNull(listener);
+		this.modelListeners.add(listener);
+	}
+	
+	public void removeModelListener(IModelListener listener){
+		Assert.isNotNull(listener);
+		this.modelListeners.remove(listener);
+	}
+	
+	
+	/**
+	 * @return Returns the documentProvider.
+	 */
+	public IDocumentProvider getDocumentProvider() {
+		return this.documentProvider;
 	}
 	/**
-	 * @param document The document to set.
+	 * @param documentProvider The documentProvider to set.
 	 */
-	public void setDocument(IDocument document) {
-		this.document = document;
+	public void setDocumentProvider(IDocumentProvider documentProvider) {
+		this.documentProvider = documentProvider;
+	}
+	/**
+	 * @return Returns the editorInput.
+	 */
+	public IEditorInput getEditorInput() {
+		return this.editorInput;
+	}
+	/**
+	 * @param editorInput The editorInput to set.
+	 */
+	public void setEditorInput(IEditorInput editorInput) {
+		this.editorInput = editorInput;
+	}
+	
+	
+	/**
+	 * @return Returns the rootNode.
+	 */
+	public Node getRootNode() {
+		return this.rootNode;
+	}
+	/**
+	 * @param rootNode The rootNode to set.
+	 */
+	public void setRootNode(Node rootNode) {
+		this.rootNode = rootNode;
 	}
 }

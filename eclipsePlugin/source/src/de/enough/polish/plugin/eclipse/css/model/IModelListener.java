@@ -1,5 +1,5 @@
 /*
- * Created on Feb 28, 2005 at 5:42:51 PM.
+ * Created on Mar 7, 2005 at 2:02:17 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,10 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
-
-import org.eclipse.jface.text.DocumentEvent;
-import org.eclipse.jface.text.IDocumentListener;
+package de.enough.polish.plugin.eclipse.css.model;
 
 /**
  * <p></p>
@@ -34,24 +31,15 @@ import org.eclipse.jface.text.IDocumentListener;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 28, 2005 - ricky creation
+ *        Mar 7, 2005 - ricky creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class SimpleDocumentListener implements IDocumentListener {
+public interface IModelListener {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
+	/**
+	 * 
 	 */
-	public void documentAboutToBeChanged(DocumentEvent event) {
-		System.out.println("DEBUG:SimpleDocumentListener.documentAboutToBeChanged:enter.");
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
-	 */
-	public void documentChanged(DocumentEvent event) {
-		System.out.println("DEBUG:SimpleDocumentListener.documentChanged:enter.");
-	}
+	void modelChanged();
 
 }

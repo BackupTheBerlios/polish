@@ -57,13 +57,15 @@ public class CssEditor extends TextEditor{
 	IDocument document;
 	
 	public CssEditor(){
+		this.cssModel = new CssModel();
 		setSourceViewerConfiguration(new CssSourceViewerConfiguration(this,getSharedColors()));
+		CssEditorPlugin.getDefault().setEditor(this);
 	}
 	
 	public Object getAdapter(Class requiredClass) {
 		if (IContentOutlinePage.class.equals(requiredClass)) {
 			if (this.cssOutlinePage == null) {
-				this.cssOutlinePage = new CssOutlinePage();
+				this.cssOutlinePage = new CssOutlinePage(this.cssModel);
 			}
 			return this.cssOutlinePage;
 		}
@@ -80,11 +82,13 @@ public class CssEditor extends TextEditor{
 	 */
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
+		this.cssModel.setDocumentProvider(getDocumentProvider());
+		this.cssModel.setEditorInput(getEditorInput());
 		//TODO: This shows us that the DocumentListener ist called after the presentation reconciler
 		// and before the reconciler... Dont think, swallow.
-		this.document = getDocumentProvider().getDocument(getEditorInput());
-		this.document.addDocumentListener(new SimpleDocumentListener());
-		CssEditorPlugin.getDefault().setEditor(this);
-		this.cssModel = new CssModel(this.document);
+		//this.document = getDocumentProvider().getDocument(getEditorInput());
+		//this.document.addDocumentListener(new SimpleDocumentListener());
+		//CssEditorPlugin.getDefault().setEditor(this);
+		//this.cssModel = new CssModel(this.document);
 	}
 }

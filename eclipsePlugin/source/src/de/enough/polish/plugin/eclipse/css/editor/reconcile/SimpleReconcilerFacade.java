@@ -59,7 +59,7 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#uninstall()
 	 */
 	public void uninstall() {
-		System.out.println("SimpleReconcilerFacade.uninstall().enter.");
+		System.out.println("DEBUG:SimpleReconcilerFacade.uninstall().enter.");
 		
 	}
 
@@ -67,7 +67,7 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#getDamager(java.lang.String)
 	 */
 	public IPresentationDamager getDamager(String contentType) {
-		System.out.println("SimpleReconcilerFacade.getDamager().enter.");
+		System.out.println("DEBUG:SimpleReconcilerFacade.getDamager().enter.");
 		return null;
 	}
 
@@ -75,7 +75,7 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#getRepairer(java.lang.String)
 	 */
 	public IPresentationRepairer getRepairer(String contentType) {
-		System.out.println("SimpleReconcilerFacade.getRepairer().enter.");
+		System.out.println("DEBUG:SimpleReconcilerFacade.getRepairer().enter.");
 		return null;
 	}
 
@@ -83,7 +83,7 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 	 * @see org.eclipse.jface.text.reconciler.IReconciler#getReconcilingStrategy(java.lang.String)
 	 */
 	public IReconcilingStrategy getReconcilingStrategy(String contentType) {
-		System.out.println("SimpleReconcilerFacade.getReconcilingStrategy().enter.");
+		System.out.println("DEBUG:SimpleReconcilerFacade.getReconcilingStrategy().enter.");
 		return null;
 	}
 

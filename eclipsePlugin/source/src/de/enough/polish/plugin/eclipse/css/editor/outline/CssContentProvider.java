@@ -30,9 +30,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 import de.enough.polish.plugin.eclipse.css.model.AttributeValuePair;
 import de.enough.polish.plugin.eclipse.css.model.Comment;
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.Section;
 import de.enough.polish.plugin.eclipse.css.model.StyleSection;
 import de.enough.polish.plugin.eclipse.css.model.StyleSheet;
@@ -49,11 +49,13 @@ import de.enough.polish.plugin.eclipse.css.model.StyleSheet;
  */
 public class CssContentProvider implements ITreeContentProvider,ISelectionChangedListener {
 
-	ASTNode rootParent;
+	//ASTNode rootParent;
 	Viewer currentViewer;
+	CssModel cssModel;
 	
-	public CssContentProvider(){
-		this.rootParent = null;
+	public CssContentProvider(CssModel cssModel){
+		//this.rootParent = null;
+		this.cssModel = cssModel;
 	}
 	
 	
@@ -62,7 +64,7 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	 */
 	public void dispose() {
 		// FIXME: Danger. Please implement disposable on the model for proper finalization.
-		this.rootParent = null;
+		//this.rootParent = null;
 
 	}
 
@@ -76,7 +78,10 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 			this.currentViewer = viewer;
 			System.out.println("DEBUG:CssContentProvider.inputChanged():oldInput:"+oldInput);
 			System.out.println("DEBUG:CssContentProvider.inputChanged():newInput:"+ ((newInput != null) ? newInput.getClass().toString() : "null"));
-			this.rootParent = (ASTNode)newInput;
+			//this.rootParent = (ASTNode)newInput;
+			if(newInput instanceof CssModel){
+				this.cssModel = (CssModel)newInput;
+			}
 			this.currentViewer.addSelectionChangedListener(this);
 		}
 	}
@@ -144,6 +149,8 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
 	public Object[] getChildren(Object parentElement) {
+		return null;
+		/*
 		System.out.println("DEBUG:CssContentProvider.getChildren():entered");
 		System.out.println("DEBUG:CssContentProvider.getChildren():parentElement:"+parentElement);
 		Object[] result = null;
@@ -151,34 +158,43 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 			result = ((ASTNode)parentElement).getChildren().toArray();
 		}
 		return result;
+		*/
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
 	public Object getParent(Object element) {
+		return null;
+		/*
 		ASTNode result = null;
 		if(element instanceof ASTNode){
 			result = ((ASTNode)element).getParent();
 		}
 		return result;
+		*/
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
 	public boolean hasChildren(Object element) {
+		return false;
+		/*
 		if(element instanceof ASTNode){
 			ASTNode astNode = (ASTNode)element;
 			return ! astNode.getChildren().isEmpty();
 		}
 		return false;
+		*/
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 	 */
 	public Object[] getElements(Object inputElement) {
+		return new String[]{"ELEMENTS"};
+		/*
 		System.out.println("DEBUG:CssContentProvider.getelements():entered");
 		System.out.println("DEBUG:CssContentProvider.getChildren():inputElement"+inputElement);
 		
@@ -186,6 +202,7 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 			return ((StyleSheet)inputElement).getChildren().toArray();
 		}
 		return null;
+		*/
 	}
 
 
@@ -193,7 +210,7 @@ public class CssContentProvider implements ITreeContentProvider,ISelectionChange
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
-		System.out.println("DEBUG:CssContentProvider.selectionChanged(): enter");
+		System.out.println("DEBUG:CssContentProvider.selectionChanged():enter.");
 		System.out.println("DEBUG:CssContentProvider.selectionChanged():event:"+event);
 		
 	}

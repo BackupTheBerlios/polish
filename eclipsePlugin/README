@@ -27,3 +27,6 @@ ROADMAP
  - Builder for polish projects together with wizards for a new polish project.
  - polish editor with code assistent for preprocessor actions.
  
+
+TOMORROW
+Decide if rootNode or cssModel should be input to viewer. Build a AST from the syntax tree. 

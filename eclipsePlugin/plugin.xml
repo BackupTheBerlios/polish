@@ -11,6 +11,9 @@
       <library name="CssEditor.jar">
          <export name="*"/>
       </library>
+      <library name="lib/grammatica-1.4.jar">
+         <export name="*"/>
+      </library>
    </runtime>
 
    <requires>

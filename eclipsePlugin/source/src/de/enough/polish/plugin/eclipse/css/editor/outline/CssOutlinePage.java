@@ -29,8 +29,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
-import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
 
 /**
  * <p></p>
@@ -44,23 +43,31 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  */
 public class CssOutlinePage extends ContentOutlinePage {
 
+	CssModel cssModel;
+	
 	//FIXME: We need our own model here
-	public CssOutlinePage(){
+	public CssOutlinePage(CssModel cssModel){
 		super();
+		this.cssModel = cssModel;
 	}
 	
 	public void createControl(Composite parent) {
 		super.createControl(parent);
+		System.out.println("DEBUG:CssOutlinePage.createControl():enter.");
+		if(parent.isDisposed()){
+			System.out.println("DEBUG:CssOutlinePage.createControl():parent.isDisposed():true");
+		}
 		
-		CssContentProvider cssContentProvider = new CssContentProvider();
+		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel);
 		
 		TreeViewer viewer= getTreeViewer();
 		viewer.setContentProvider(cssContentProvider);
 		viewer.setLabelProvider(new CssLabelProvider());
 		viewer.addSelectionChangedListener(this);
 		//ASTNode rootNode = cssContentProvider.initialInput();
-		ASTNode rootNode = CssEditorPlugin.getDefault().getEditor().getCssModel().getRoot();
-		viewer.setInput(rootNode);
+		//ASTNode rootNode = CssEditorPlugin.getDefault().getEditor().getCssModel().getRoot();
+		//viewer.setInput(rootNode);
+		viewer.setInput("INITAL INPUT FOR VIEWER");
 	}
 	
 	/*
