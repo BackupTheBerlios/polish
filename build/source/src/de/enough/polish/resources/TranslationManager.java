@@ -28,9 +28,11 @@ package de.enough.polish.resources;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -98,6 +100,48 @@ implements Comparator
 		}
 		this.idGenerator = new IntegerIdGenerator( idsMap );
 		processRawTranslations( rawTranslations );
+		
+		// now set DateFormat variables according to current locale:
+		String dateFormat = preprocessor.getVariable("polish.DateFormat"); 
+		if ( dateFormat != null) {
+			// maybe the dateformat needs to be changed:
+			if (dateFormat.length() == 2) {
+				String separator = preprocessor.getVariable("polish.DateFormatSeparator");
+				if ("de".equals(dateFormat)) {
+					dateFormat = "dmy";
+					if (separator == null) {
+						separator = ".";
+					}
+				} else if ("fr".equals(dateFormat)) {
+					dateFormat = "dmy";
+					if (separator == null) {
+						separator = "/";
+					}
+				} else if ("us".equals(dateFormat)) {
+					dateFormat = "mdy";
+					if (separator == null) {
+						separator = "-";
+					}
+				}
+				preprocessor.addVariable( "polish.DateFormat", dateFormat );
+				preprocessor.addVariable( "polish.DateFormatSeparator", separator );
+			}
+		} else {
+			String language = locale.getLanguage();
+			if ("de".equals(language)) {
+				preprocessor.addVariable( "polish.DateFormat", "dmy" );
+				preprocessor.addVariable( "polish.DateFormatSeparator", "." );
+			} else if ("fr".equals(language)) {
+				preprocessor.addVariable( "polish.DateFormat", "dmy" );
+				preprocessor.addVariable( "polish.DateFormatSeparator", "." );
+			} else {
+				String country = locale.getCountry();
+				if ("US".equals(country)) {
+					preprocessor.addVariable( "polish.DateFormat", "mdy" );
+					preprocessor.addVariable( "polish.DateFormatSeparator", "-" );
+				}
+			}
+		}
 	}
 	
 	/**
@@ -208,15 +252,28 @@ implements Comparator
 		Map rawTranslations = new HashMap();
 		// load general resources:
 		String messagesFileName = File.separator + this.localizationSetting.getMessagesFileName();
-		String alternativeFileName;
-		int splitPos = messagesFileName.indexOf('.');
+		String localeFileName;
+		int splitPos = messagesFileName.lastIndexOf('.');
 		if (splitPos != -1) {
-			alternativeFileName = messagesFileName.substring(0, splitPos)
+			localeFileName = messagesFileName.substring(0, splitPos)
 				+ "_"
 				+ this.locale.toString()
 				+ messagesFileName.substring(splitPos);
 		} else {
-			alternativeFileName = messagesFileName + this.locale.toString();
+			localeFileName = messagesFileName + this.locale.toString();
+		}
+		String languageFileName = null;
+		if (this.locale.getCountry().length() > 0) {
+			// okay, this locale has also a country defined,
+			// so we need to look at the language-resources as well:
+			if (splitPos != -1) {
+				languageFileName = messagesFileName.substring(0, splitPos)
+					+ "_"
+					+ this.locale.getLanguage()
+					+ messagesFileName.substring(splitPos);
+			} else {
+				languageFileName = messagesFileName + this.locale.getLanguage();
+			}
 		}
 		for (int i = 0; i < resourceDirs.length; i++) {
 			File dir = resourceDirs[i];
@@ -229,7 +286,17 @@ implements Comparator
 				}
 				FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
 			}
-			messagesFile = new File( dirPath + alternativeFileName );
+			if (languageFileName != null) {
+				messagesFile = new File( dirPath + languageFileName );
+				if (messagesFile.exists()) {
+					//System.out.println("Loading translations from " + messagesFile.getAbsolutePath() );
+					if (messagesFile.lastModified() > this.lastModificationTime) {
+						this.lastModificationTime = messagesFile.lastModified();
+					}
+					FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
+				}
+			}
+			messagesFile = new File( dirPath + localeFileName );
 			if (messagesFile.exists()) {
 				//System.out.println("Loading translations from " + messagesFile.getAbsolutePath() );
 				if (messagesFile.lastModified() > this.lastModificationTime) {
@@ -279,6 +346,8 @@ implements Comparator
 		if (!insertionPointFound) {
 			throw new BuildException("Unable to modify [de.enough.polish.util.Locale.java]: insertion point not found!");
 		}
+		// now include the static local specific fields:
+		insertFields( code );
 	}
 
 	/**
@@ -291,6 +360,10 @@ implements Comparator
 		ArrayList lines = new ArrayList();
 		Translation[] complexTranslations = getTranslationsWithSeveralValues();
 		int numberOfTranslations = complexTranslations.length;
+		if (numberOfTranslations == 0) {
+			// no need to init an empty array:
+			return; 
+		}
 		lines.add("\tstatic {");
 		lines.add("\t\tparameterOrders = new short[" + numberOfTranslations + "][];");
 		lines.add("\t\tvalues = new String[" + numberOfTranslations + "][];");
@@ -388,4 +461,32 @@ implements Comparator
 		return t1.getId() - t2.getId();
 	}
 
+	/**
+	 * Inserts the static fields of the Locale class.
+	 * 
+	 * @param code the source code, the code should be inserted into the current position.
+	 */
+	private void insertFields(StringList code) {
+		code.insert( "\tpublic static final String LANGUAGE = \"" + this.locale.getLanguage() + "\";");
+		code.insert( "\tpublic static final String DISPLAY_LANGUAGE = \"" + this.locale.getDisplayLanguage(this.locale) + "\";");
+		String country = this.locale.getCountry();
+		if (country.length() > 0) {
+			code.insert( "\tpublic static final String COUNTRY = \"" + this.locale.getCountry() + "\";");
+			code.insert( "\tpublic static final String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
+			NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
+			Currency currency = format.getCurrency();
+			String currencySymbol = currency.getSymbol(this.locale);
+			String currencyCode = currency.getCurrencyCode();
+			code.insert( "\tpublic static final String CURRENCY_SYMBOL = \"" + currencySymbol + "\";");
+			code.insert( "\tpublic static final String CURRENCY_CODE = \"" + currencyCode + "\";");
+		} else {
+			// no country is defined:
+			code.insert( "\tpublic static final String COUNTRY = null;");
+			code.insert( "\tpublic static final String DISPLAY_COUNTRY = null;");
+			code.insert( "\tpublic static final String CURRENCY_SYMBOL = null;");
+			code.insert( "\tpublic static final String CURRENCY_CODE = null;");
+		}
+	}
+
 }
+

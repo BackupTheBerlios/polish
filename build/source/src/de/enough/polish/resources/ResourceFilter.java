@@ -106,6 +106,7 @@ public class ResourceFilter {
 		ArrayList list  = new ArrayList( fileNames.length );
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
+			//System.out.println("filter: checking " + fileName );
 			if (this.excludesByName.get(fileName) != null) {
 				// this file should not be included: 
 				continue;
@@ -128,6 +129,7 @@ public class ResourceFilter {
 				}
 			}
 			if (include) {
+				//System.out.println("filter: adding " + fileName );
 				// okay, this file should really be included:
 				list.add( fileName );
 			}

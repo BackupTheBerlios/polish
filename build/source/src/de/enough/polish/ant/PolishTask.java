@@ -1233,9 +1233,7 @@ public class PolishTask extends ConditionalTask {
 		} catch (IOException e) {
 			throw new BuildException("Unable to prepare the obfuscation-jar: " + e.getMessage(), e );
 		}
-		//System.out.println("Jaring took " + ( System.currentTimeMillis() - time) + " ms.");
-		
-		
+		//System.out.println("Jaring took " + ( System.currentTimeMillis() - time) + " ms.");	
 		
 		File destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separatorChar + "dest.jar");
@@ -1268,7 +1266,7 @@ public class PolishTask extends ConditionalTask {
 				// when the directory for extracting the obfuscated files
 				// exists, delete it so that no old classes are remaining
 				// in it:
-				targetDir.delete();
+				FileUtil.delete( targetDir );
 			}
 			JarUtil.unjar( destFile,  targetDir  );
 		} catch (IOException e) {

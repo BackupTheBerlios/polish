@@ -25,6 +25,9 @@
  */
 package de.enough.polish.util;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * <p>Is used for internationalisation.</p>
  *
@@ -44,6 +47,31 @@ public final class Locale {
 //$$IncludeLocaleDefinitionHere$$//
 	
 	//#ifdef false
+	/** The ISO language code, e.g. "en" for English. */
+	public static final String LANGUAGE = "en";
+	/** 
+	 * The ISO country code, e.g. "US" for USA 
+	 * This is null when no country is defined in the current locale.
+	 */
+	public static final String COUNTRY = "US";
+	/** The localized language name, e.g. "English" or "Deutsch" */
+	public static final String DISPLAY_LANGUAGE = "English";
+	/** 
+	 * The localized country name, e.g. "United States" or "Deutschland".
+	 * This is null when no country is defined in the current locale.
+	 */
+	public static final String DISPLAY_COUNTRY = "United States";
+	/** 
+	 * The symbol of the currency, e.g. "$" or "€".
+	 * This is null when no country is defined in the current locale.
+	 */
+	public static final String CURRENCY_SYMBOL = "$";
+	/** 
+	 * The international three letter code of the currency, e.g. "USD" or "EUR".
+	 * This is null when no country is defined in the current locale.
+	 */
+	public static final String CURRENCY_CODE = "USD";
+	
 	private Locale() {
 		// no instantiation allowed
 	}
@@ -131,6 +159,113 @@ public final class Locale {
 		
 		// return result:
 		return result.toString();
+	}
+	
+	/**
+	 * Formats the given date to the current locale's format.
+	 * This method just calls the formatDate-method with a new Date instance.
+	 * 
+	 * @param time the time in milliseconds after 1.1.1970 GMT.
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the date is null
+	 * @see #formatDate(Date)
+	 */
+	public static String formatDate( long time ) {		
+		return formatDate( new Date( time ) );
+	}
+	
+	/**
+	 * Formats the given date to the current locale's format.
+	 * This method just calls the formatDate-method with a new Calendar instance.
+	 * 
+	 * @param date the date
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the date is null
+	 * @see #formatDate(Calendar)
+	 */
+	public static String formatDate( Date date ) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return formatDate( calendar );
+	}
+	
+	/**
+	 * Formats the given calendar to the current locale's format.
+	 * Use this method for best efficiency.
+	 * 
+	 * @param calendar the calendar which holds the date
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static String formatDate( Calendar calendar ) {
+		StringBuffer buffer = new StringBuffer(10);
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get( Calendar.MONTH );
+		int day = calendar.get( Calendar.DAY_OF_MONTH );
+		//TODO rob set DateFormat variable in TranslationManager
+		//#if polish.DateFormat == mdy
+			if (month < 9) {
+				buffer.append('0');
+			}
+			buffer.append( ++month )
+			//#if polish.DateFormatSeparator:defined
+				//#= .append("${polish.DateFormatSeparator}");
+			//#else
+			        .append("-");
+			//#endif
+			if (day < 10) {
+				buffer.append( '0' );
+			}
+			buffer.append( day )
+			//#if polish.DateFormatSeparator:defined
+				//#= .append("${polish.DateFormatSeparator}");
+			//#else
+			        .append("-");
+			//#endif
+			buffer.append( year );
+		//#elif polish.DateFormat == dmy
+			if (day < 10) {
+				buffer.append( '0' );
+			}
+			buffer.append( day )
+			//#if polish.DateFormatSeparator:defined
+				//#= .append("${polish.DateFormatSeparator}");
+			//#else
+			        .append("-");
+			//#endif
+			if (month < 9) {
+				buffer.append('0');
+			}
+			buffer.append( ++month )
+			//#if polish.DateFormatSeparator:defined
+				//#= .append("${polish.DateFormatSeparator}");
+			//#else
+			        .append("-");
+			//#endif
+			buffer.append( year );
+		//#else
+			// default to YMD
+			buffer.append( year )
+			//#if polish.DateFormatSeparator:defined
+				//#= .append("${polish.DateFormatSeparator}");
+			//#else
+			        .append("-");
+			//#endif
+			if (month < 9) {
+				buffer.append('0');
+			}
+			buffer.append( ++month )
+			//#if polish.DateFormatSeparator:defined
+				//#= .append("${polish.DateFormatSeparator}");
+			//#else
+			        .append("-");
+			//#endif
+			if (day < 10) {
+				buffer.append( '0' );
+			}
+			buffer.append( day );
+		//#endif	
+		return buffer.toString();
 	}
 
 	

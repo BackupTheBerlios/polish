@@ -95,8 +95,37 @@ public class ResourceManager {
 		// creates resources-filter:
 		this.resourceFilter = new ResourceFilter( setting.getExcludes(), DEFAULT_EXCLUDES, setting.useDefaultExcludes() );
 		if (this.localizationSetting != null) {
-			this.resourceFilter.addExclude( this.localizationSetting.getMessagesFileName() );
-			//TODO add messages_de.txt etc!
+			String messagesFileName = this.localizationSetting.getMessagesFileName() ;
+			this.resourceFilter.addExclude( messagesFileName );
+			// add filters for messages_de.txt etc! 
+			int splitPos = messagesFileName.lastIndexOf('.');
+			String start = null;
+			String end = null;
+			if (splitPos != -1) {
+				start = messagesFileName.substring(0, splitPos) + "_";
+				end = messagesFileName.substring(splitPos);
+			}
+			Locale[] locales = this.localizationSetting.getSupportedLocales();
+			for (int i = 0; i < locales.length; i++) {
+				Locale locale = locales[i];
+				if (splitPos != -1) {
+					this.resourceFilter.addExclude( start + locale.toString() + end );
+					//System.out.println("excluding [" + start + locale.toString() + end + "]");
+				} else {
+					this.resourceFilter.addExclude(messagesFileName + locale.toString() );
+				}
+				if (locale.getCountry().length() > 0) {
+					// okay, this locale has also a country defined,
+					// so we need to look at the language-resources as well:
+					if (splitPos != -1) {
+						this.resourceFilter.addExclude( start + locale.getLanguage() + end );
+						//System.out.println("excluding [" + start + locale.getLanguage() + end + "]");
+					} else {
+						this.resourceFilter.addExclude(messagesFileName + locale.getLanguage() );
+					}
+				}
+
+			}
 		}
 		
 	}
