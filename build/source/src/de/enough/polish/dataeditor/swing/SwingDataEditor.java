@@ -36,7 +36,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -50,6 +49,7 @@ import javax.swing.filechooser.FileFilter;
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
+import de.enough.polish.util.SwingUtil;
 
 /**
  * <p>Provides a swing-based GUI for the binary data editor.</p>
@@ -501,25 +501,11 @@ implements ActionListener
 	 * @return
 	 */
 	private File openFile(String extension, boolean open ) {
-		JFileChooser fileChooser = new JFileChooser( this.currentDirectory );
-		if (extension != null) {
-			fileChooser.setFileFilter( new CustomFileFilter( extension ) );
-		}
-		int result;
-		if (open) {
-			result = fileChooser.showOpenDialog( this );
-		} else {
-			result = fileChooser.showSaveDialog( this );
-		}
-		if (result == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = fileChooser.getSelectedFile();
-			if (selectedFile != null) {
-				this.currentDirectory = selectedFile.getParentFile();
-			} 
-			return selectedFile;
-		} else {
-			return null;
-		}
+		File selectedFile = SwingUtil.openFile( extension, open, this.currentDirectory, this );
+		if (selectedFile != null) {
+			this.currentDirectory = selectedFile.getParentFile();
+		} 
+		return selectedFile;
 	}
 	
 	private void updateTitle() {

@@ -199,7 +199,7 @@ public class DataType {
 				int intValue = CastUtil.toUnsignedInt(data[0]) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
 				return Integer.toString(intValue);
 			case LONG_ID:
-				long longValue = CastUtil.toUnsignedInt(data[0]) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
+				long longValue = (CastUtil.toUnsignedInt(data[0])) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | ((long)CastUtil.toUnsignedInt(data[3]) << 24) | ((long)CastUtil.toUnsignedInt(data[4]) << 32) | ((long)CastUtil.toUnsignedInt(data[5]) << 40) | ((long)CastUtil.toUnsignedInt(data[6]) << 48) | ((long)data[7] << 56);
 				return Long.toString(longValue);
 			case BOOLEAN_ID:
 				if (data[0] == 0) {
@@ -240,17 +240,23 @@ public class DataType {
 				return data; 
 			case INTEGER_ID:
 				int intValue = Integer.parseInt(value);
-				data = new byte[ 2 ];
-				data[0] = (byte) (intValue & 0x00FF);
-				data[1] = (byte) (intValue >>> 8 );
+				data = new byte[ 4 ];
+				data[0] = (byte) (intValue & 0x000000FF);
+				data[1] = (byte) ((intValue >>> 8) & 0x0000FF);
+				data[2] = (byte) ((intValue >>> 16) & 0x00FF);
+				data[3] = (byte) (intValue >>> 24);
 				return data; 
 			case LONG_ID:
 				long longValue = Long.parseLong(value);
-				data = new byte[ 4 ];
-				data[0] = (byte) (longValue & 0x000000FF);
-				data[1] = (byte) ((longValue >>> 8) & 0x0000FF);
-				data[2] = (byte) ((longValue >>> 16) & 0x00FF);
-				data[3] = (byte) (longValue >>> 24);
+				data = new byte[ 8 ];
+				data[0] = (byte) ( longValue         & 0x00000000000000FF);
+				data[1] = (byte) ((longValue >>> 8)  & 0x000000000000FF);
+				data[2] = (byte) ((longValue >>> 16) & 0x0000000000FF);
+				data[3] = (byte) ((longValue >>> 24) & 0x00000000FF);
+				data[4] = (byte) ((longValue >>> 32) & 0x000000FF);
+				data[5] = (byte) ((longValue >>> 40) & 0x0000FF);
+				data[6] = (byte) ((longValue >>> 48) & 0x00FF);
+				data[7] = (byte) ( longValue >>> 56);
 				return data;
 			case BOOLEAN_ID:
 				if ("true".equals( value )) {
@@ -308,7 +314,7 @@ public class DataType {
 				int intValue = CastUtil.toUnsignedInt( data[0] ) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
 				return intValue;
 			case LONG_ID:
-				long longValue = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24) ;
+				long longValue =  CastUtil.toUnsignedInt( data[0] ) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (CastUtil.toUnsignedInt(data[2]) << 24);
 				return (int) longValue;
 			case BOOLEAN_ID:
 				if (data[0] == 0) {
@@ -438,11 +444,11 @@ public class DataType {
 					buffer.append( "\t\tthis." ).append( paramName );
 					buffer.append(" = new long[ ").append( count ).append("];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
-					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.read() | (in.read() << 8) | (in.read() << 16) | (in.read() << 24) | (in.read() << 32) | (in.read() << 40) | (in.read() << 48) | (in.read() << 56) );\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.read() | (in.read() << 8) | (in.read() << 16) | ((long)in.read() << 24) | ((long)in.read() << 32) | ((long)in.read() << 40) | ((long)in.read() << 48) | ((long)in.read() << 56);\n");
 					buffer.append("\t\t}\n");
 				} else {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = (long) (((long) in.read()) | (in.read() << 8) | (in.read() << 16) | (in.read() << 24) | (in.read() << 32) | (in.read() << 40) | (in.read() << 48) | (in.read() << 56) );\n");
+					buffer.append(" = in.read() | (in.read() << 8) | (in.read() << 16) | ((long)in.read() << 24) | ((long)in.read() << 32) | ((long)in.read() << 40) | ((long)in.read() << 48) | ((long)in.read() << 56);\n");
 				}
 				break;
 			case BOOLEAN_ID:
