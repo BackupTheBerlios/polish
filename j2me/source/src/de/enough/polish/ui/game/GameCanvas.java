@@ -217,8 +217,6 @@ public abstract class GameCanvas
 		//#else
 			super();
 		//#endif
-		//#debug info
-		System.out.println("GameCanvas init");
 		//#if tmp.useFullScreen && polish.ScreenWidth:defined
 			//#= int width = ${polish.ScreenWidth};
 		//#else
@@ -233,8 +231,6 @@ public abstract class GameCanvas
 		// create image buffer:	
 		this.bufferedImage = Image.createImage( width, height );
 		
-		//#debug info
-		System.out.println("GameCanvas init finished");
 	}
 
 	/**

@@ -152,8 +152,6 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#debug info
-		System.out.println("Screen Init");
 		//#if tmp.usingTitle
 			this.titleText = title;
 		//#else
@@ -195,8 +193,6 @@ public abstract class Screen
 		//#ifndef tmp.menuFullScreen
 			super.setCommandListener(this.cmdListener);
 		//#endif
-		//#debug info
-		System.out.println("Screen Init Finished");
 	}
 		
 	/**
