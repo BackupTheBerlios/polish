@@ -194,6 +194,18 @@ public class BuildSetting {
 		this.preprocessors.add( preprocessor );
 	}
 	
+	public void addConfiguredSources( SourcesSetting setting ) {
+		if (setting.isActive( this.project ) ) {
+			SourceSetting[] sources = setting.getSources();
+			for (int i = 0; i < sources.length; i++) {
+				SourceSetting source = sources[i];
+				if (source.isActive(this.project)) {
+					this.sourceDirs.add( source.getDir() );
+				}
+			}
+		}
+	}
+	
 	
 	public PreprocessorSetting[] getPreprocessors() {
 		if (this.preprocessors == null) { 
@@ -347,7 +359,7 @@ public class BuildSetting {
 		if (this.midletSetting == null) {
 			return null;
 		}
-		return this.midletSetting.getMidlets();
+		return this.midletSetting.getMidlets( this.project );
 	}
 
 	/**
@@ -781,7 +793,7 @@ public class BuildSetting {
 	 * 		The first midlet is also the first element in the returned array.
 	 */
 	public String[] getMidletClassNames() {
-		Midlet[] midlets = this.midletSetting.getMidlets();
+		Midlet[] midlets = getMidlets();
 		String[] midletClassNames = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
 			midletClassNames[i] = midlets[i].getClassName();
@@ -799,7 +811,7 @@ public class BuildSetting {
 	 * 		The first midlet is also the first element in the returned array.
 	 */
 	public String[] getMidletInfos( String defaultIcon ) {
-		Midlet[] midlets = this.midletSetting.getMidlets();
+		Midlet[] midlets = getMidlets();
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
 			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon );

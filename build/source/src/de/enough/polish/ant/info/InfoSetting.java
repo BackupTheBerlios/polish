@@ -470,6 +470,9 @@ public class InfoSetting {
 	public void setLicense(String license) {
 		if ("GPL".equalsIgnoreCase(license)) {
 			this.license = GPL_LICENSE;
+		} else if ("%{J2ME_POLISH_LICENSE}".equalsIgnoreCase(license)) {
+			System.err.println("Warning: your license-setting [" + license + "] is invalid, it seems like an incorrect installation of J2ME Polish... Using now GPL license instead.");
+			this.license = GPL_LICENSE;
 		} else {
 			if (license.length() != 12) {
 				throw new BuildException("Invalid license: [" + license +"]. Please use either the GPL license or obtain a commercial license from Enough Software at www.j2mepolish.org");

@@ -25,6 +25,8 @@
  */
 package de.enough.polish.ant.build;
 
+import de.enough.polish.ant.Setting;
+
 /**
  * <p>Represents a midlet.</p>
  *
@@ -35,7 +37,7 @@ package de.enough.polish.ant.build;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class Midlet {
+public class Midlet extends Setting {
 	
 	public int number;
 	public String className;
