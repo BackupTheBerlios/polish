@@ -212,7 +212,7 @@
 	<!-- create the update zip file containing the jars -->
 	<zip destfile="dist/j2mepolish-${Version}.zip">
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
-		<fileset dir="setup" includes="Update.txt,build.xml" />
+		<fileset dir="setup" includes="Update.txt,menu/build.xml" />
 		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml" />
 		<!--
 		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
@@ -317,6 +317,8 @@
 	>
 	<delete dir="tmp" />
 	<mkdir dir="tmp/import" />
+	<mkdir dir="tmp/menu" />
+	<mkdir dir="tmp/sysinfo" />
 	<!-- copy the installation files -->
 	<!-- copy the core files of J2ME Polish -->
 	<copy todir="tmp/" >
@@ -332,16 +334,27 @@
 		<fileset dir="setup/macosx" excludes="**/CVS/**" />
 	</copy>
 	<!-- copy sample application -->
-	<mkdir dir="tmp/src" />
-	<copy todir="tmp/src">
+	<mkdir dir="tmp/menu/src" />
+	<copy todir="tmp/menu/src">
 		<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
 	</copy>
-	<copy todir="tmp/" 
+	<copy todir="tmp/menu/" 
 		>
-		<fileset dir="setup" excludes="**/macosx/**" />
+		<fileset dir="setup/menu" excludes="**/macosx/**" />
 		<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
 		<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
 		<fileset dir="../enough-polish-example-localization" includes="resources3/**/*.*" excludes="CVS"/>
+	</copy>
+	<!-- copy sysinfo application -->
+	<mkdir dir="tmp/sysinfo/src" />
+	<copy todir="tmp/sysinfo/src">
+		<fileset dir="../enough-polish-sysinfo/src" includes="**/*.java" />
+	</copy>
+	<copy todir="tmp/sysinfo/" 
+		>
+		<fileset dir="../enough-polish-sysinfo" includes="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO" />
+		<fileset dir="setup/sysinfo" excludes="**/macosx/**" />
+		<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
 	</copy>
 	<!-- copy source of J2ME Polish -->
 	<mkdir dir="tmp/j2mepolish-src/build" />

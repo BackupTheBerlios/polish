@@ -45,7 +45,6 @@ import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.types.Path;
 import org.jdom.JDOMException;
 
@@ -58,6 +57,7 @@ import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.VendorManager;
 import de.enough.polish.ant.build.BuildSetting;
+import de.enough.polish.ant.build.CompilerTask;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.Midlet;
@@ -90,9 +90,9 @@ import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
+import de.enough.polish.util.StringUtil;
 import de.enough.polish.util.TextFile;
 import de.enough.polish.util.TextFileManager;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages a J2ME project from the preprocessing to the packaging and obfuscation.</p>
@@ -1296,20 +1296,23 @@ public class PolishTask extends ConditionalTask {
 				throw new BuildException("Unable to copy binary class files: " + e.toString() + ". Please report this error to j2mepolish@enough.de.", e );
 			}
 		}
-		
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		// init javac task:
-		Javac javac = new Javac();
-		javac.setProject( this.project );
-		javac.setTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
+		CompilerTask compiler = this.buildSetting.getCompiler(evaluator);
+		compiler.setProject( this.project );
+		if (!compiler.isTaskNameSet()) {
+			compiler.setDirectTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
+		}
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
-		javac.setTarget( this.javacTarget );
-		//if (this.javacTarget == BuildSetting.TARGET_1_1) {
-			// -source == 1.3 is apparently always needed for J2SE 1.5
-			javac.setSource( this.sourceCompatibility );
-		//}
-		if (this.buildSetting.isDebugEnabled()) {
-			javac.setDebug(true);
-			javac.setDebugLevel("lines,vars,source");
+		if (!compiler.isTargetSet()) {
+			compiler.setDirectTarget( this.javacTarget );
+		}
+		// -source == 1.3 is apparently always needed for J2SE 1.5
+		if (!compiler.isSourceSet()) {
+			compiler.setDirectSource( this.sourceCompatibility );
+		}
+		if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
+			compiler.setDirectDebug(true);
 		}
 		File targetDir;
 		if ( this.buildSetting.isInCompilerMode() && ! this.buildSetting.doPreverifyInCompilerMode()) { // && !this.doObfuscate is not needed
@@ -1320,27 +1323,38 @@ public class PolishTask extends ConditionalTask {
 		if (!targetDir.exists()) {
 			targetDir.mkdirs();
 		}
-		javac.setDestdir( targetDir );
-		javac.setSrcdir(new Path( this.project,  device.getSourceDir() ) );
+		if (!compiler.isDestDirSet()) {
+			compiler.setDirectDestdir( targetDir );
+		}
+		if (!compiler.isSourceDirSet()) {
+			compiler.setDirectSrcdir(new Path( this.project,  device.getSourceDir() ) );
+		}
 		//javac.setSourcepath(new Path( this.project,  "" ));
-		if (device.isMidp1()) {
-			javac.setBootclasspath(this.midp1BootClassPath);
-		} else {
-			if (device.isCldc10()) {
-				javac.setBootclasspath(this.midp2BootClassPath);
+		if (!compiler.isBootClassPathSet()) {
+			if (device.isMidp1()) {
+				compiler.setDirectBootclasspath(this.midp1BootClassPath);
 			} else {
-				javac.setBootclasspath(this.midp2Cldc11BootClassPath);
+				if (device.isCldc10()) {
+					compiler.setDirectBootclasspath(this.midp2BootClassPath);
+				} else {
+					compiler.setDirectBootclasspath(this.midp2Cldc11BootClassPath);
+				}
 			}
 		}
-		if (device.getClassPath() != null) {
-			javac.setClasspath( new Path(this.project, device.getClassPath() ) );
+		if ( !compiler.isClassPathSet()) {
+			String classPath = device.getClassPath(); 
+			if (classPath != null) {
+				compiler.setDirectClasspath( new Path(this.project, classPath ) );
+			} else {
+				compiler.setDirectClasspath( new Path(this.project, "" ) );
+			}
 		}
 		// start compile:
 		if (this.polishLogger != null) {
 			this.polishLogger.setCompileMode( true );
 		}
 		try {
-			javac.execute();
+			compiler.execute();
 		} catch (BuildException e) {
 			if (this.polishLogger != null) {
 				this.polishLogger.setCompileMode(false);

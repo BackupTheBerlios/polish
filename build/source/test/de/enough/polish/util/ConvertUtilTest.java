@@ -44,6 +44,12 @@ public class ConvertUtilTest extends TestCase {
 		super(name);
 	}
 	
+	public void testCharacterToUppercase() {
+		assertEquals( 'Ö', Character.toUpperCase('ö'));
+		assertEquals( 'Ä', Character.toUpperCase('ä'));
+		assertEquals( 'ß', Character.toUpperCase('ß'));
+	}
+	
 	public void testConvert() {
 		assertEquals( new Long(1024), ConvertUtil.convert("1024b", "bytes") );
 		assertEquals( new Long(1024), ConvertUtil.convert("1024b", "b") );

@@ -2071,6 +2071,8 @@
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="WMAPI, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
@@ -2192,7 +2194,6 @@
 		<identifier>Nokia/7250i</identifier>
 		<groups>Series40</groups>
 		<features>hasCamera</features>
-		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
@@ -2291,7 +2292,6 @@
 		<identifier>Nokia/7250</identifier>
 		<groups>Series40</groups>
 		<features>hasCamera</features>
-		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
@@ -2345,6 +2345,7 @@
 		<identifier>Nokia/3510i</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
+		<capability name="FullCanvasSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
@@ -3585,6 +3586,7 @@
 		<identifier>Samsung/SGH-E700</identifier> 
 		<features>hasCommandKeys</features> 
 		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x140"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="MenuBarHeight" value="20" /> 
 		<capability name="BitsPerPixel" value="16"/> 
@@ -3599,6 +3601,9 @@
 		<capability name="Network" value="GSM, GPRS" /> 
 		<capability name="Frequency" value="900, 1800, 1900" /> 
 		<capability name="Bugs" value="inaccessibleFirstRow, umlautsInSmallFont" />
+		<capability name="Font.small" value="8" />
+		<capability name="Font.medium" value="12" />
+		<capability name="Font.large" value="16" />
 	</device> 
  
 	<device> 
@@ -3617,6 +3622,7 @@
 		<identifier>Samsung/SGH-E800</identifier> 
 		<features>hasCommandKeys</features> 
 		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x140"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="MenuBarHeight" value="20" /> 
 		<capability name="BitsPerPixel" value="16"/> 
@@ -3631,6 +3637,9 @@
 		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
 		<capability name="Network" value="GSM, GPRS" /> 
 		<capability name="Frequency" value="900, 1800, 1900" /> 
+		<capability name="Font.small" value="8" />
+		<capability name="Font.medium" value="12" />
+		<capability name="Font.large" value="16" />
 	</device> 
  
 	<device> 

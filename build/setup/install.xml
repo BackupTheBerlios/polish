@@ -85,16 +85,26 @@
             -->
         </pack>
         <pack name="Sample Application" required="yes">
-            <description>A sample application which shows a simple menu and contains three different CSS designs. This can be used as a master for new projects.</description>
-            <file src="src" targetdir="$INSTALL_PATH/sample"/>
-            <file src="resources" targetdir="$INSTALL_PATH/sample"/>
-            <file src="resources2" targetdir="$INSTALL_PATH/sample"/>
-            <file src="resources3" targetdir="$INSTALL_PATH/sample"/>
-            <file src="../setup/.classpath" targetdir="$INSTALL_PATH/sample"/>
-            <file src="../setup/.project" targetdir="$INSTALL_PATH/sample"/>
-            <file src="../setup/build.xml" targetdir="$INSTALL_PATH/sample"/>
-            <parsable targetfile="$INSTALL_PATH/sample/build.xml" type="shell" /> 
-            <parsable targetfile="$INSTALL_PATH/sample/.classpath" type="shell" /> 
+            <description>A sample application that shows a simple menu and contains three different CSS designs. This can be used as a master for new projects.</description>
+            <file src="menu/src" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="menu/resources" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="menu/resources2" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="menu/resources3" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="../setup/menu/.classpath" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="../setup/menu/.project" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="../setup/menu/build.xml" targetdir="$INSTALL_PATH/samples/menu"/>
+            <parsable targetfile="$INSTALL_PATH/samples/menu/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/menu/.classpath" type="shell" /> 
+        </pack>
+        <pack name="MIDP SysInfo" required="no" preselected="yes">
+            <description>An application that checks the capabilities of your device. This application is based on Grimo Software's MIDP SysInfo MIDlet and is a co-effort of Grimo Software, Enough Software and Mark Schriejver.</description>
+            <file src="sysinfo/src" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="sysinfo/resources" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="../setup/sysinfo/.classpath" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="../setup/sysinfo/.project" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="../setup/sysinfo/build.xml" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/sysinfo/.classpath" type="shell" /> 
         </pack>
         <pack name="External Device Database" required="no" preselected="yes" >
             <description>The files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot;. These are necessary if you want to add your own device-definitions or modify existing ones.</description>

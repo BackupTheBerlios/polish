@@ -26,6 +26,7 @@
 package de.enough.polish.ant.build;
 
 import de.enough.polish.*;
+import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -77,7 +78,7 @@ public class BuildSetting {
 	private File midp2Path;
 	private File midp2Cldc11Path;
 	private File preverify;
-	private Project project;
+	private final Project project;
 	private boolean includeAntProperties;
 	private ResourceUtil resourceUtil;
 	private ArrayList sourceDirs;
@@ -98,6 +99,7 @@ public class BuildSetting {
 	private ResourceSetting resourceSetting;
 	private boolean alwaysUsePolishGui;
 	private PackageSetting packageSetting;
+	private ArrayList compilers;
 	
 	/**
 	 * Creates a new build setting.
@@ -212,6 +214,12 @@ public class BuildSetting {
 		}
 	}
 	
+	public void addConfiguredCompiler( CompilerTask task ) {
+		if (this.compilers == null) {
+			this.compilers = new ArrayList();
+		}
+		this.compilers.add( task );
+	}
 	
 	public PreprocessorSetting[] getPreprocessors() {
 		if (this.preprocessors == null) { 
@@ -1208,6 +1216,26 @@ public class BuildSetting {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Retrieves the appropriate compiler setting
+	 * 
+	 * @param evaluator the evaluator for boolean conditions 
+	 * @return a suitable compiler task
+	 */
+	public CompilerTask getCompiler( BooleanEvaluator evaluator ) {
+		if (this.compilers != null) {
+			CompilerTask[] tasks = (CompilerTask[]) this.compilers.toArray( new CompilerTask[this.compilers.size() ]);
+			for (int i = 0; i < tasks.length; i++) {
+				CompilerTask task = tasks[i];
+				if (task.isActive(evaluator, this.project)) {
+					//task.
+					return task;
+				}
+			}
+		}
+		return new CompilerTask();
 	}
 	
 }
