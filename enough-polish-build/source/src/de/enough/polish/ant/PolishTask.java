@@ -1093,9 +1093,16 @@ public class PolishTask extends ConditionalTask {
 		//time = System.currentTimeMillis();
 		//unjar destFile to build/obfuscated:
 		try {
-			String targetDir = device.getBaseDir() + File.separatorChar + "obfuscated";
-			device.setClassesDir(targetDir);
-			JarUtil.unjar( destFile, new File( targetDir )   );
+			String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
+			device.setClassesDir(targetPath);
+			File targetDir = new File( targetPath );
+			if (targetDir.exists()) {
+				// when the directory for extracting the obfuscated files
+				// exists, delete it so that no old classes are remaining
+				// in it:
+				targetDir.delete();
+			}
+			JarUtil.unjar( destFile,  targetDir  );
 		} catch (IOException e) {
 			throw new BuildException("Unable to prepare the obfuscation-jar: " + e.getMessage(), e );
 		}
