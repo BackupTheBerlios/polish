@@ -41,6 +41,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -416,5 +417,63 @@ public final class FileUtil {
 		}
 		out.close();
 	}
+
+	/**
+	 * Adds the given line to the specified textfile.
+	 *   
+	 * @param file the text file
+	 * @param line the line
+	 * @throws IOException
+	 */
+	public static void addLine(File file, String line )
+	throws IOException
+	{
+		if (file.exists()) {
+			String[] lines = readTextFile(file);
+			String[] newLines = new String[ lines.length + 1 ];
+			System.arraycopy( lines, 0, newLines, 0, lines.length );
+			newLines[ lines.length ] = line;
+			writeTextFile(file, newLines);
+		} else {
+			writeTextFile(file, new String[]{ line } );
+		}
+	}
+
+	/**
+	 * Retrieves all files from the given directory
+	 * 
+	 * @param dir the directory
+	 * @param extension the file extension
+	 * @param recursive true when subdirectories should also be read.
+	 * @return an String array with the file-names relative to the given directory that do have the given extension
+	 */
+	public static String[] filterDirectory(File dir, String extension, boolean recursive) {
+		ArrayList fileNamesList = new ArrayList();
+		filterDirectory( "", dir, extension, recursive, fileNamesList );
+		return (String[]) fileNamesList.toArray( new String[ fileNamesList.size() ] );
+	}
+	
+	/**
+	 * Retrieves all files from the given directory
+	 * 
+	 * @param dir the directory
+	 * @param extension the file extension
+	 * @param recursive true when subdirectories should also be read.
+	 */
+	private static void filterDirectory( String path, File dir, String extension, boolean recursive, List fileNamesList ) {
+		String[] names = dir.list();
+		for (int i = 0; i < names.length; i++) {
+			String name = names[i];
+			File file = new File( dir, name );
+			if (file.isDirectory()) {
+				if (recursive) {
+					filterDirectory(path + name + File.separatorChar, file, extension, recursive, fileNamesList );
+				}
+			} else if (name.endsWith(extension)) {
+				fileNamesList.add( path + name );
+			}
+		}
+	}
+
 	
 }

@@ -1466,6 +1466,12 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
+	/**
+	 * Postcompiles the project for the given device.
+	 * 
+	 * @param device The device for which the obfuscation should be done.
+	 * @param locale the current localization
+	 */
 	private void postCompile( Device device, Locale locale ) {
 		File classDir = new File( device.getClassesDir() );
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
@@ -1483,7 +1489,7 @@ public class PolishTask extends ConditionalTask {
 	 * Obfuscates the compiled source code.
 	 *  
 	 * @param device The device for which the obfuscation should be done.
-	 * @param locale
+	 * @param locale the current localization
 	 */
 	private void obfuscate( Device device, Locale locale ) {
 		if (this.polishLogger != null) {
@@ -1571,7 +1577,7 @@ public class PolishTask extends ConditionalTask {
 	 * Preverifies the compiled and a\obfuscated code.
 	 *  
 	 * @param device The device for which the preverification should be done.
-	 * @param locale
+	 * @param locale the current localization
 	 */
 	private void preverify( Device device, Locale locale ) {
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
