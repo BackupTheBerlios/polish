@@ -2522,329 +2522,985 @@
 	</device>
 
 <!-- Samsung devices -->
-	<device>
-		<identifier>Samsung/SGH-D500</identifier>
-		<features>hasCommandKeys, hasCamera</features>
-		<capability name="ScreenSize" value="176x220"/>
-		<capability name="FullCanvasSize" value="176x220"/>
-		<capability name="MenuBarHeight" value="23" />
-		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="wmapi, mmapi" />
-		<capability name="SoundFormat" value="mmf, midi, midi64, wav" />
-		<capability name="PolyphonicVoices" value="64" />
+
+	<device> 
+		<identifier>Samsung/Z100</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x177"/> 
+		<capability name="FullCanvasSize" value="176x177"/> 
+		<capability name="CanvasSize" value="176x161"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
 		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="560 kb" />
-		<capability name="MaxJarSize" value="300 kb" />
-		<capability name="StorageSize" value="80 MB" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="HeapSize" value="700 kb" />
+		<capability name="MaxJarSize" value="250 kb" /> 
+		<capability name="Network" value="UMTS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/Z105</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x177"/> 
+		<capability name="FullCanvasSize" value="176x177"/> 
+		<capability name="CanvasSize" value="176x161"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="700 kb" /> 
+		<capability name="MaxJarSize" value="250 kb" /> 
+		<capability name="Network" value="UMTS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
 	</device>
-
-	<device>
-		<identifier>Samsung/SGH-E100</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-		<capability name="MenuBarHeight" value="20" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="40" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="480 kb" />
-		<capability name="MaxJarSize" value="100 kb" />
-		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
+ 
+	<device> 
+		<identifier>Samsung/P730</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="CanvasSize" value="176x195"/> 
+		<capability name="MenuBarHeight" value="25" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="512 kb" /> 
+		<capability name="MaxJarSize" value="170 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/P735</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="CanvasSize" value="176x195"/> 
+		<capability name="MenuBarHeight" value="25" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="512 kb" /> 
+		<capability name="MaxJarSize" value="170 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
 	</device>
-	
-	<device
-		extends="Samsung/SGH-E100">
-		<identifier>Samsung/E100A</identifier>
-		<capability name="Region" value="Singapore, Malaysia" />
-	</device>
-
-	<device
-		extends="Samsung/SGH-E100">
-		<identifier>Samsung/E108</identifier>
-		<capability name="Region" value="China" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-E330</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-		<capability name="MenuBarHeight" value="20" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="wmapi" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="40" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="550 kb" />
-		<capability name="MaxJarSize" value="180 kb" />
-		<capability name="Region" value="Europe" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SGH-E600</identifier>
-		<features>hasCommandKeys, hasCamera</features>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="FullCanvasSize" value="128x128"/>
-		<capability name="CanvasSize" value="128x112"/>
-		<capability name="MenuBarHeight" value="16" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundForma" value="mmf, midi" />
-		<capability name="PolyphonicVoices" value="64" />
-		<capability name="HeapSize" value="256 kb" />
-		<capability name="MaxJarSize" value="100 kb" />
-		<capability name="Region" value="Europe, CIS" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-		<capability name="CameraResolution" value="vga" />
-		<capability name="key.ClearKey" value="-8" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-E630</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-		<capability name="MenuBarHeight" value="20" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="wmapi" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="40" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="550 kb" />
-		<capability name="MaxJarSize" value="180 kb" />
-		<capability name="Region" value="Europe" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-E700</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-		<capability name="MenuBarHeight" value="20" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="40" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="480 kb" />
-		<capability name="MaxJarSize" value="100 kb" />
-		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-	
-	<device
-		extends="Samsung/SGH-E700">
-		<identifier>Samsung/E700A</identifier>
-		<capability name="Region" value="Singapore, Malaysia" />
-	</device>
-		
-	<device
-		extends="Samsung/SGH-E700">
-		<identifier>Samsung/E708</identifier>
-		<capability name="Region" value="China" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SGH-E800</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-		<capability name="MenuBarHeight" value="20" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="wmapi" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="64" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="550 kb" />
-		<capability name="MaxJarSize" value="180 kb" />
-		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-	
-	<device
-		extends="Samsung/SGH-E800">
-		<identifier>Samsung/E800C</identifier>
-		<capability name="Region" value="Singapore, Malaysia" />
-	</device>
-		
-	<device
-		extends="Samsung/SGH-E800">
-		<identifier>Samsung/E808</identifier>
-		<capability name="Region" value="China" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SGH-E820</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-		<capability name="MenuBarHeight" value="20" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="64" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="550 kb" />
-		<capability name="MaxJarSize" value="180 kb" />
-		<capability name="Region" value="Europe" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-X100</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="FullCanvasSize" value="128x128"/>
-		<capability name="MenuBarHeight" value="18" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="wmapi" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="40" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="480 kb" />
-		<capability name="MaxJarSize" value="100 kb" />
-		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-	
-	<device
-		extends="Samsung/SGH-X100">
-		<identifier>Samsung/X100A</identifier>
-		<capability name="Region" value="Singapore, Malaysia" />
-	</device>
-		
-	<device
-		extends="Samsung/SGH-X100">
-		<identifier>Samsung/X108</identifier>
-		<capability name="Region" value="China" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-X600</identifier>
-		<features>hasCommandKeys</features>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="FullCanvasSize" value="128x128"/>
-		<capability name="MenuBarHeight" value="18" />
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="wmapi" />
-		<capability name="SoundFormat" value="mmf" />
-		<capability name="PolyphonicVoices" value="40" />
-		<capability name="ImageFormat" value="png" />
-		<capability name="HeapSize" value="480 kb" />
-		<capability name="MaxJarSize" value="100 kb" />
-		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
-		<capability name="Network" value="GSM, GPRS" />
-		<capability name="Frequency" value="900, 1800, 1900" />
-	</device>
-	
-	<device
-		extends="Samsung/SGH-X600">
-		<identifier>Samsung/X600A</identifier>
-		<capability name="Region" value="Singapore, Malaysia" />
-	</device>
-		
-	<device
-		extends="Samsung/SGH-X600">
-		<identifier>Samsung/X608</identifier>
-		<capability name="Region" value="China" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-A700</identifier>
-		<capability name="ScreenSize" value="178x220"/>
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="VideoFormat" value="3gpp, 3gpp2, h.263, mpeg-4, real-video" />
-		<capability name="SoundFormat" value="qcelp, aac, amr" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SCH-X130</identifier>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="BitsPerPixel" value="2"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SCH-X230</identifier>
-		<capability name="ScreenSize" value="120x160"/>
-		<capability name="BitsPerPixel" value="8"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SCH-X250</identifier>
-		<capability name="ScreenSize" value="120x160"/>
-		<capability name="BitsPerPixel" value="8"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SCH-X350</identifier>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="BitsPerPixel" value="2"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-	</device>
-
-	<device>
-		<identifier>Samsung/SGH-S100</identifier>
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SPH-N400</identifier>
-		<capability name="ScreenSize" value="128x96"/>
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-	</device>
-	
-	<device>
-		<identifier>Samsung/SPH-X4209</identifier>
-		<capability name="ScreenSize" value="128x160"/>
-		<!-- <capability name="BitsPerPixel" value="16"/> -->
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+ 
+	<device> 
+		<identifier>Samsung/E300</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="512 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe" /> 
+	</device> 
+ 
+ 
+	<device> 
+		<identifier>Samsung/E310</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="512 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E600</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E810</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="512 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe" /> 
+	</device> 
+ 
+ 
+	<device> 
+		<identifier>Samsung/D410</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="CanvasSize" value="176x204"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="170 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/D415</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="CanvasSize" value="176x204"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="170 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/D418</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="CanvasSize" value="176x204"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi64" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="170 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="China" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E400</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x144"/> 
+		<capability name="FullCanvasSize" value="128x144"/> 
+		<capability name="CanvasSize" value="128x128"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E418</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="170 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="China" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E710</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E715</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/P400</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS, South East Asia" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E105</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x140"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X105</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X450</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X458</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="China" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X430</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x143"/> 
+		<capability name="MenuBarHeight" value="17" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="South East Asia" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X427</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x140"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X426</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x140"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/X400</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS, South East Asia" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/C100</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="300 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, South East Asia" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/C110</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="300 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/D100</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="midi, midi40" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Italy, CIS" /> 
+	</device> 
+ 
+ 
+	<device extends="Samsung/D100"> 
+		<identifier>Samsung/D108</identifier> 
+		<capability name="Region" value="China" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/S300</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, South East Asia" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/S300M</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/S307</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma3" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+	</device> 
+ 
+ 
+	<device> 
+		<identifier>Samsung/S200</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x144"/> 
+		<capability name="FullCanvasSize" value="128x144"/> 
+		<capability name="CanvasSize" value="128x128"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma2" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="170 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Italy, CIS, South East Asia" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/S208</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x144"/> 
+		<capability name="FullCanvasSize" value="128x144"/> 
+		<capability name="CanvasSize" value="128x128"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma2" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="170 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="China" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/S100</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma2" /> 
+		<capability name="PolyphonicVoices" value="16" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="Europe, CIS, South Africa" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/S105</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="ma2" /> 
+		<capability name="PolyphonicVoices" value="16" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="180 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Network" value="GPRS" /> 
+		<capability name="Region" value="North America" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-D500</identifier> 
+		<features>hasCommandKeys, hasCamera</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="MenuBarHeight" value="23" /> 
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.1" /> 
+		<capability name="JavaPackage" value="wmapi, mmapi" /> 
+		<capability name="SoundFormat" value="mmf, midi, midi64, wav" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="560 kb" /> 
+		<capability name="MaxJarSize" value="300 kb" /> 
+		<capability name="StorageSize" value="80 MB" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+		<capability name="CameraResolution" value="1.3 MP" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E100</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="480 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-E100"> 
+		<identifier>Samsung/E100A</identifier> 
+		<capability name="Region" value="Singapore, Malaysia" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-E100"> 
+		<identifier>Samsung/E108</identifier> 
+		<capability name="Region" value="China" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E330</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="JavaPackage" value="wmapi" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="550 kb" /> 
+		<capability name="MaxJarSize" value="180 kb" /> 
+		<capability name="Region" value="Europe" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E600</identifier> 
+		<features>hasCommandKeys, hasCamera</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="CanvasSize" value="128x112"/> 
+		<capability name="MenuBarHeight" value="16" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundForma" value="mmf, midi" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="HeapSize" value="256 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Region" value="Europe, CIS" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+		<capability name="CameraResolution" value="vga" /> 
+		<capability name="key.ClearKey" value="-8" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E630</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="JavaPackage" value="wmapi" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="550 kb" /> 
+		<capability name="MaxJarSize" value="180 kb" /> 
+		<capability name="Region" value="Europe" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E700</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="480 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-E700"> 
+		<identifier>Samsung/E700A</identifier> 
+		<capability name="Region" value="Singapore, Malaysia" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-E700"> 
+		<identifier>Samsung/E708</identifier> 
+		<capability name="Region" value="China" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E800</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="JavaPackage" value="wmapi" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="550 kb" /> 
+		<capability name="MaxJarSize" value="180 kb" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-E800"> 
+		<identifier>Samsung/E800C</identifier> 
+		<capability name="Region" value="Singapore, Malaysia" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-E800"> 
+		<identifier>Samsung/E808</identifier> 
+		<capability name="Region" value="China" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-E820</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="MenuBarHeight" value="20" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="64" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="550 kb" /> 
+		<capability name="MaxJarSize" value="180 kb" /> 
+		<capability name="Region" value="Europe" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-X100</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="MenuBarHeight" value="18" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="JavaPackage" value="wmapi" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="480 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-X100"> 
+		<identifier>Samsung/X100A</identifier> 
+		<capability name="Region" value="Singapore, Malaysia" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-X100"> 
+		<identifier>Samsung/X108</identifier> 
+		<capability name="Region" value="China" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-X600</identifier> 
+		<features>hasCommandKeys</features> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="FullCanvasSize" value="128x128"/> 
+		<capability name="MenuBarHeight" value="18" /> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="JavaPackage" value="wmapi" /> 
+		<capability name="SoundFormat" value="mmf" /> 
+		<capability name="PolyphonicVoices" value="40" /> 
+		<capability name="ImageFormat" value="png" /> 
+		<capability name="HeapSize" value="480 kb" /> 
+		<capability name="MaxJarSize" value="100 kb" /> 
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" /> 
+		<capability name="Network" value="GSM, GPRS" /> 
+		<capability name="Frequency" value="900, 1800, 1900" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-X600"> 
+		<identifier>Samsung/X600A</identifier> 
+		<capability name="Region" value="Singapore, Malaysia" /> 
+        </device> 
+ 
+        <device 
+                extends="Samsung/SGH-X600"> 
+		<identifier>Samsung/X608</identifier> 
+		<capability name="Region" value="China" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SGH-A700</identifier> 
+		<capability name="ScreenSize" value="178x220"/> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+		<capability name="VideoFormat" value="3gpp, 3gpp2, h.263, mpeg-4, real-video" /> 
+		<capability name="SoundFormat" value="qcelp, aac, amr" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SCH-X130</identifier> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="BitsPerPixel" value="2"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SCH-X230</identifier> 
+		<capability name="ScreenSize" value="120x160"/> 
+		<capability name="BitsPerPixel" value="8"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SCH-X250</identifier> 
+		<capability name="ScreenSize" value="120x160"/> 
+		<capability name="BitsPerPixel" value="8"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+        </device> 
+ 
+        <device> 
+		<identifier>Samsung/SCH-X350</identifier> 
+		<capability name="ScreenSize" value="128x128"/> 
+		<capability name="BitsPerPixel" value="2"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+        </device> 
+ 
+	<device> 
+		<identifier>Samsung/SGH-S100</identifier> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/SPH-N400</identifier> 
+		<capability name="ScreenSize" value="128x96"/> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/SPH-X4209</identifier> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<!-- <capability name="BitsPerPixel" value="16"/> --> 
+		<capability name="JavaPlatform" value="MIDP/1.0" /> 
+		<capability name="JavaConfiguration" value="CLDC/1.0" /> 
 	</device>
 	
 
