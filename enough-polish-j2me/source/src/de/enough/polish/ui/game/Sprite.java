@@ -1059,22 +1059,12 @@ public class Sprite
 		if (!(this.isVisible && s.isVisible)) {
 			return false;
 		}
-		int cXStart = this.xPosition + this.transformedCollisionX;
-		int cXEnd = cXStart + this.transformedCollisionWidth;
-		int spriteCXStart = s.xPosition + s.transformedCollisionX;
-		int spriteCXEnd = spriteCXStart + s.transformedCollisionWidth;
-		if ((cXStart <= spriteCXStart && cXEnd >= spriteCXStart)
-		 || (cXStart >= spriteCXEnd && cXEnd <= spriteCXEnd) ) {
-			int cYStart = this.yPosition + this.transformedCollisionY;
-			int cYEnd = cYStart + this.transformedCollisionHeight;
-			int spriteCYStart = s.yPosition + s.transformedCollisionY;
-			int spriteCYEnd = spriteCYStart + s.transformedCollisionHeight;
-			if ((cYStart <= spriteCYStart && cYEnd >= spriteCYStart)
-					 || (cYStart >= spriteCYEnd && cYEnd <= spriteCYEnd) ) {
-				return true;
-			}			
-		}
-		return false;
+		int enemyX = s.xPosition + s.transformedCollisionX;
+		int enemyY = s.yPosition + s.transformedCollisionY; 
+		return collidesWith( enemyX, enemyY,
+				s.transformedCollisionWidth,
+				s.transformedCollisionHeight
+				);
 	}
 	//#endif
 
@@ -1202,21 +1192,23 @@ public class Sprite
 	 */
 	public final boolean collidesWith( Image img, int leftX, int topY, boolean pixelLevel)
 	{
-		int cXStart = this.xPosition + this.transformedCollisionX;
-		int cXEnd = cXStart + this.transformedCollisionWidth;
-		int imgXEnd = leftX + img.getWidth();
-		if ((cXStart <= leftX && cXEnd >= leftX)
-		 || (cXStart >= imgXEnd && cXEnd <= imgXEnd) ) {
-			int cYStart = this.yPosition + this.transformedCollisionY;
-			int cYEnd = cYStart + this.transformedCollisionHeight;
-			int imgYEnd = topY + img.getHeight();
-			if ((cYStart <= topY && cYEnd >= topY)
-					 || (cYStart >= imgYEnd && cYEnd <= imgYEnd) ) {
-				return true;
-			}			
-		}
-		return false;	
+		return collidesWith( leftX, topY, img.getWidth(), img.getHeight() );
 	}
 	//#endif
+	
+	private boolean collidesWith( int enemyX, int enemyY, int enemyWidth, int enemyHeight ) {
+		int cXStart = this.xPosition + this.transformedCollisionX;
+		int cXEnd = cXStart + this.transformedCollisionWidth;
+		int cYStart = this.yPosition + this.transformedCollisionY;
+		int cYEnd = cYStart + this.transformedCollisionHeight;
+		if (cYEnd < enemyY
+				|| cYStart > enemyY + enemyHeight
+				|| cXEnd < enemyX
+				|| cXStart > enemyX + enemyWidth ) 
+		{
+			return false;
+		}
+		return true;
+	}
 
 }
