@@ -644,11 +644,10 @@ implements CommandListener
 		//#else
 			private static final int INPUT_TIMEOUT = 1000;
 		//#endif
-		private static final int MODE_NORMAL = 0;
-		private static final int MODE_LOWERCASE = 1;
-		private static final int MODE_FIRST_UPPERCASE = 2; // only the first character should be written in uppercase
-		private static final int MODE_UPPERCASE = 3;
-		private static final int MODE_NUMBERS = 4;
+		private static final int MODE_LOWERCASE = 0;
+		private static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
+		private static final int MODE_UPPERCASE = 2;
+		private static final int MODE_NUMBERS = 3;
 		//#ifdef polish.TextField.changeModeKey:defined
 			//#= private static final int KEY_CHANGE_MODE = ${polish.TextField.changeModeKey};
 		//#else
@@ -673,7 +672,7 @@ implements CommandListener
 		//#ifdef polish.TextField.charactersKey1:defined
 			//#= private static final String charactersKey1 = "${polish.TextField.charactersKey1}";
 		//#else
-			private static final String charactersKey1 = ".,!:/@_-+1";
+			private static final String charactersKey1 = ".,!?:/@_-+1";
 		//#endif
 		//#ifdef polish.TextField.charactersKey2:defined
 			//#= private static final String charactersKey2 = "${polish.TextField.charactersKey2}";
@@ -734,6 +733,14 @@ implements CommandListener
 		private boolean caretPositionHasBeenSet;
 		private boolean isNumeric;
 		private boolean isEmail;
+
+		private String caretRowFirstPart;
+
+		private String caretRowLastPart;
+
+		private int caretRowLastPartWidth;
+
+		private int caretWidth;
 	//#endif
 
 	/**
@@ -1135,6 +1142,8 @@ implements CommandListener
 		//#ifdef tmp.directInput
 			if ((constraints & NUMERIC) == NUMERIC) {
 				this.isNumeric = true;
+				this.inputMode = MODE_NUMBERS;
+				updateInputMode( MODE_NUMBERS );
 			}
 			if ((constraints & EMAILADDR) == EMAILADDR) {
 				this.isEmail = true;
@@ -1185,8 +1194,104 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		super.paintContent(x, y, leftBorder, rightBorder, g);
-		if (this.showCaret) {
+		//#ifdef tmp.directInput
+			//#ifdef tmp.allowDirectInput
+				if (this.isFocused && this.enableDirectInput) {
+			//#else
+				//# if (this.isFocused ) {
+			//#endif
+					g.setFont( this.font );
+					g.setColor( this.textColor );
+					int centerX = 0;
+					if (this.isLayoutCenter) {
+						centerX = leftBorder + (rightBorder - leftBorder) / 2;
+					}
+					if (this.text != null) {
+						int lineHeight = this.font.getHeight() + this.paddingVertical; 
+						for (int i = 0; i < this.textLines.length; i++) {
+							if (i == this.caretRow) {
+								if (this.isLayoutRight) {
+									g.drawString( this.caretRowLastPart, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+									if (this.showCaret) {
+										//#ifdef polish.css.textfield-caret-color
+											g.setColor( this.caretColor );
+										//#endif
+										g.drawChar( this.caretChar, rightBorder - this.caretRowLastPartWidth, y, Graphics.TOP | Graphics.RIGHT );
+										//#ifdef polish.css.textfield-caret-color
+											g.setColor( this.textColor );
+										//#endif
+									}
+									g.drawString( this.caretRowFirstPart, rightBorder - this.caretRowLastPartWidth - this.caretX, y, Graphics.TOP | Graphics.RIGHT );
+								} else if (this.isLayoutCenter) {
+									int width = this.caretX + this.caretWidth + this.caretRowLastPartWidth;
+									int leftX = centerX - (width / 2);
+									g.drawString( this.caretRowFirstPart, leftX, y, Graphics.TOP | Graphics.LEFT );
+									leftX += this.caretX;
+									if (this.showCaret) {
+										//#ifdef polish.css.textfield-caret-color
+											g.setColor( this.caretColor );
+										//#endif
+										g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+										//#ifdef polish.css.textfield-caret-color
+											g.setColor( this.textColor );
+										//#endif
+									}
+									leftX += this.caretWidth;
+									g.drawString( this.caretRowLastPart, leftX, y, Graphics.TOP | Graphics.LEFT );
+								} else {
+									int leftX = x;
+									g.drawString( this.caretRowFirstPart, leftX, y, Graphics.TOP | Graphics.LEFT );
+									leftX += this.caretX;
+									if (this.showCaret) {
+										//#ifdef polish.css.textfield-caret-color
+											g.setColor( this.caretColor );
+										//#endif
+										g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+										//#ifdef polish.css.textfield-caret-color
+											g.setColor( this.textColor );
+										//#endif
+									}
+									leftX += this.caretWidth;
+									g.drawString( this.caretRowLastPart, leftX, y, Graphics.TOP | Graphics.LEFT );
+								}
+							} else {
+								// this a normal row in which no caret is shown:
+								String line = this.textLines[i];
+								// adjust the painting according to the layout:
+								if (this.isLayoutRight) {
+									g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+								} else if (this.isLayoutCenter) {
+									g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
+								} else {
+									// left layout (default)
+									g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
+								}
+							}
+							x = leftBorder;
+							y += lineHeight;
+						} // for each line
+					} else if ( this.showCaret ) {
+						// this.text == null: paint only caret:
+						//#ifdef polish.css.textfield-caret-color
+							g.setColor( this.caretColor );
+						//#endif
+						if (this.isLayoutRight) {
+							g.drawChar( this.caretChar, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+						} else if (this.isLayoutCenter) {
+							g.drawChar( this.caretChar, centerX, y, Graphics.TOP | Graphics.HCENTER );
+						} else {
+							// left layout (default)
+							g.drawChar( this.caretChar, x, y, Graphics.TOP | Graphics.LEFT );
+						}
+					}
+					return;
+				} else { // this is either not focused or no direct input is enabled:
+					super.paintContent(x, y, leftBorder, rightBorder, g);	
+				}
+		//#else
+			super.paintContent(x, y, leftBorder, rightBorder, g);
+		//#endif
+		if (this.showCaret && this.isFocused ) {
 			if (this.text == null) {
 				// when the text is null the appropriate font and color
 				// might not have been set, so set them now:
@@ -1198,40 +1303,22 @@ implements CommandListener
 			//#ifdef polish.css.textfield-caret-color
 				g.setColor( this.caretColor );
 			//#endif
-			//#ifdef tmp.allowDirectInput
-				if (this.enableDirectInput) {
-			//#endif
-				//#ifdef tmp.directInput
-					g.drawChar(this.caretChar, this.caretX + x, this.caretY + y, Graphics.TOP | Graphics.LEFT );
-					return;
-				//#endif
-			//#ifdef tmp.allowDirectInput
-				}
-			//#endif
+			
 			//#ifndef tmp.forceDirectInput
+				if (this.originalHeight > 0) {
+					y += this.originalHeight - this.font.getHeight();
+				}
 				if (this.isLayoutCenter) {
 					int centerX = leftBorder 
 						+ (rightBorder - leftBorder) / 2 
 						+ this.originalWidth / 2
 						+ 2;
-					if (this.originalHeight > 0) {
-						y += this.originalHeight - this.font.getHeight();
-					}
-					//#ifdef polish.css.textfield-caret-char
-						g.drawChar(this.caretChar, centerX, y, Graphics.TOP | Graphics.LEFT );
-					//#else
-						g.drawChar('|', centerX, y, Graphics.TOP | Graphics.LEFT );
-					//#endif
+					g.drawChar(this.caretChar, centerX, y, Graphics.TOP | Graphics.LEFT );
+				} else if (this.isLayoutRight){
+					g.drawChar(this.caretChar, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 				} else {
 					x += this.originalWidth + 2;
-					if (this.originalHeight > 0) {
-						y += this.originalHeight - this.font.getHeight();
-					}
-					//#ifdef polish.css.textfield-caret-char
-						g.drawChar(this.caretChar, x, y, Graphics.TOP | Graphics.LEFT );
-					//#else
-						g.drawChar('|', x, y, Graphics.TOP | Graphics.LEFT );
-					//#endif
+					g.drawChar(this.caretChar, x, y, Graphics.TOP | Graphics.LEFT );
 				}
 			//#endif
 		}
@@ -1261,7 +1348,8 @@ implements CommandListener
 				// init the original text-lines with spaces and line-breaks:
 				boolean updateCaretPosition = false;
 				int length = this.textLines.length;
-				this.realTextLines = new String[ length ];
+				String[] realLines = new String[ length ];
+				boolean hasBeenInitedBefore = (this.realTextLines != null);
 				int endOfLinePos = 0;
 				int maxPos = this.text.length();
 				for (int i = 0; i < length; i++) {
@@ -1274,14 +1362,32 @@ implements CommandListener
 							endOfLinePos++;
 						}
 					}
-					this.realTextLines[i] = line;
+					realLines[i] = line;
+					if (hasBeenInitedBefore 
+							&& (this.caretRow == i + 1) 
+							&&  (i < this.realTextLines.length) ) 
+					{
+						String prevLine = this.realTextLines[i];
+						if (prevLine.length() < line.length() ) {
+							int diff = line.length() - prevLine.length();
+							if ( this.caretColumn <= diff) {
+								//System.out.println("Adjusting caret row to previous line");
+								this.caretRow--;
+								this.caretColumn += prevLine.length();
+								this.caretX += this.font.stringWidth(prevLine);
+							}
+						}
+					}
 					if (i == this.caretRow) {
 						this.originalRowText = line;
 						if (this.caretColumn <= line.length() ) {
-							String firstPart = line.substring( 0, this.caretColumn );
-							this.textLines[ i ] = firstPart + " " + line.substring( this.caretColumn );
+							this.caretRowFirstPart = line.substring( 0, this.caretColumn );
+							this.caretRowLastPart = line.substring( this.caretColumn );
+							if (this.isLayoutRight || this.isLayoutCenter) {
+								this.caretRowLastPartWidth = this.font.stringWidth(this.caretRowLastPart);
+							}
 							if (updateCaretPosition) {
-								this.caretX = this.font.stringWidth(firstPart);
+								this.caretX = this.font.stringWidth(this.caretRowFirstPart);
 							}
 						} else {
 							// the caret-position has been shifted to the next row:
@@ -1292,7 +1398,8 @@ implements CommandListener
 							// (the textLine will be updated in the next loop)
 						}
 					}
-				}
+				} // for each line
+				this.realTextLines = realLines;
 			}
 			int textLength = this.text == null ? 0 : this.text.length();
 			if (!this.caretPositionHasBeenSet || this.caretPosition > textLength ) {
@@ -1314,13 +1421,39 @@ implements CommandListener
 					this.originalRowText = null;
 				}		
 			}
+			/*
+			System.out.println("init content");
+			checkCaretPosition();
+			*/
+			this.screen = getScreen();
+			updateInputMode( this.inputMode );
 		//#endif
 	}
+
+	/**
+	 * Checks the caret position - is only used during debugging.
+	private void checkCaretPosition() {
+		int cPos = 0;
+		for (int i = 0; i < this.realTextLines.length; i++) {
+			String line = this.realTextLines[i];
+			if (i == this.caretRow) {
+				cPos += this.caretColumn;
+				break;
+			}
+			cPos += line.length();
+		}
+		if (cPos != this.caretPosition) {
+			System.out.println("=============================");
+			System.out.println("Warning: this.caretPosition = " + this.caretPosition);
+			System.out.println("but it should be: " + cPos );
+			System.out.println("=============================");
+		}
+	}
+	 */
 
 	//#ifdef tmp.directInput
 	/**
 	 * Calculates the caret x and y positions.
-	 */
 	private void calculateCaretPosition() {
 		// calculate row, column, x and y position of the caret:
 		if (this.text == null) {
@@ -1376,6 +1509,7 @@ implements CommandListener
 			row++;
 		}
 	}
+	 */
 	//#endif
 	
 	//#ifdef polish.useDynamicStyles
@@ -1424,16 +1558,22 @@ implements CommandListener
 				this.caretChar = sign.charAt(0);
 				this.editingCaretChar = this.caretChar;
 			}
-		//#endif	
+		//#endif
+		this.caretWidth = this.font.charWidth( this.caretChar );
 	}
 	
 	//#ifdef tmp.directInput
 	private void insertCharacter() {
+		//System.out.println("inserting character " + this.caretChar );
 		String myText;
 		if (this.isPassword) {
 			myText = this.passwordText;
+			this.caretWidth = this.font.charWidth('*');
+			this.caretX += this.caretWidth;
 		} else {
 			myText = this.text;
+			this.caretWidth = this.font.charWidth( this.caretChar );
+			this.caretX += this.caretWidth;
 		}
 		if (myText == null) {
 			myText = "" + this.caretChar;
@@ -1443,9 +1583,9 @@ implements CommandListener
 		}
 		this.caretPosition++;
 		this.caretColumn++;
-		this.caretX += this.font.charWidth(this.caretChar);
-		if ( (this.inputMode == MODE_FIRST_UPPERCASE && this.caretChar == ' ') 
-				|| ( this.caretChar == '.' )) 
+		if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
+				&& this.caretChar == ' ') 
+			|| ( this.caretChar == '.' )) 
 		{
 			this.nextCharUppercase = true;
 		} else {
@@ -1456,9 +1596,37 @@ implements CommandListener
 		if (getScreen() instanceof Form) {
 			notifyStateChanged();
 		}
+		//checkCaretPosition();
 	}
 	//#endif
-	
+
+	//#ifdef tmp.directInput
+	private void updateInputMode( int mode ) {
+		if (this.screen != null && this.isFocused) {
+			String modeStr;
+			switch (mode) {
+				case MODE_LOWERCASE:
+					modeStr = "abc";
+					break;
+				case MODE_FIRST_UPPERCASE:
+					modeStr = "Abc";
+					break;
+				case MODE_UPPERCASE:
+					modeStr = "ABC";
+					break;
+				default:
+					modeStr = "123";
+			}
+			if (this.screen.infoItem == null) {
+				//#style info, default
+				this.screen.infoItem = new StringItem( null, null );
+			}
+			this.screen.showInfoItem = true;
+			this.screen.infoItem.setText( modeStr );
+		}
+	}
+	//#endif
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
@@ -1480,13 +1648,6 @@ implements CommandListener
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
-	 */
-	protected void defocus(Style originalStyle) {
-		super.defocus(originalStyle);
-		this.showCaret = false;
-	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
@@ -1510,17 +1671,29 @@ implements CommandListener
 			if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
-					if ( keyCode == KEY_CHANGE_MODE) {
+					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric) {
 						this.inputMode++;
 						if (this.inputMode > MODE_NUMBERS) {
-							this.inputMode = MODE_NORMAL;
+							this.inputMode = MODE_LOWERCASE;
 						}
+						updateInputMode( this.inputMode );
 						if (this.caretChar != this.editingCaretChar) {
 							insertCharacter();
 						}
 						return true;
 					}
 					int currentLength = (this.text == null ? 0 : this.text.length());
+					if (this.inputMode == MODE_NUMBERS) {
+						if (currentLength != this.maxSize && 
+								(keyCode >= Canvas.KEY_NUM0 && 
+								keyCode <= Canvas.KEY_NUM9) ) 
+						{
+							this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+							insertCharacter();
+							return true;
+						}
+						
+					}
 					if (currentLength != this.maxSize && 
 							((keyCode >= Canvas.KEY_NUM0 && 
 							keyCode <= Canvas.KEY_NUM9)
@@ -1558,16 +1731,21 @@ implements CommandListener
 								|| this.nextCharUppercase ) {
 							newCharacter = Character.toUpperCase(newCharacter);
 						}
+						this.caretWidth = this.font.charWidth( newCharacter );
 						this.caretChar = newCharacter;
 						return true;
+					}
+					boolean characterInserted = false;
+					char character = this.caretChar;
+					if (this.caretChar != this.editingCaretChar) {
+						insertCharacter();
+						characterInserted = true;
 					}
 					// allow backspace:
 					//#ifdef polish.key.ClearKey:defined
 						if (currentLength > 0) {
 							//#= if ((keyCode == ${polish.key.ClearKey})) {
-								if (this.caretChar != this.editingCaretChar) {
-									insertCharacter();
-								}
+								//System.out.println("backspace");
 								boolean isLastRow = (this.caretRow == this.realTextLines.length - 1);
 								if (this.caretColumn > 0) {
 									this.caretColumn--;
@@ -1577,7 +1755,6 @@ implements CommandListener
 									this.caretX = this.font.stringWidth(start);
 									this.originalRowText = start + end;
 									this.realTextLines[ this.caretRow ] = this.originalRowText;
-									this.textLines[ this.caretRow ] = start + " " + end;
 									String myText;
 									if (this.isPassword) {
 										myText = this.passwordText; 
@@ -1589,11 +1766,18 @@ implements CommandListener
 									if (!isLastRow) {
 										setString( myText );
 									} else {
+										this.caretRowFirstPart = start;
+										this.caretRowLastPart = end;
+										this.caretRowLastPartWidth = this.font.stringWidth(end);
 										if (this.isPassword) {
 											this.passwordText = myText; 
 										} else {
 											this.text= myText;
 										}
+										/*
+										System.out.println("backspace in last row");
+										checkCaretPosition();
+										*/
 									}
 									if (getScreen() instanceof Form) {
 										notifyStateChanged();
@@ -1609,8 +1793,6 @@ implements CommandListener
 									}
 									myText = myText.substring( 0, this.caretPosition )
 										+ myText.substring( this.caretPosition + 1);
-									// restore last line:
-									this.textLines[ this.caretRow ] = this.originalRowText;
 									this.caretRow--;
 									String line = this.realTextLines[ this.caretRow ];
 									line = line.substring( 0, line.length() -1 );
@@ -1626,12 +1808,10 @@ implements CommandListener
 							//# }
 						}				
 					//#endif
+					
 					// navigate the caret:
 					if (this.text == null) {
 						return false;
-					}
-					if (this.caretChar != this.editingCaretChar) {
-						insertCharacter();
 					}
 					if (gameAction == Canvas.UP) {
 						//#ifdef polish.css.font-bitmap
@@ -1645,7 +1825,6 @@ implements CommandListener
 							return false;
 						} 
 						// restore the text-line:
-						this.textLines[ this.caretRow ] = this.originalRowText;
 						this.caretRow--;
 						this.caretY -= this.font.getHeight() + this.paddingVertical;
 						String fullLine = this.realTextLines[ this.caretRow ];
@@ -1656,12 +1835,13 @@ implements CommandListener
 						} else {
 							line = fullLine;
 						}
-						
-						this.caretPosition -= this.caretColumn; 
+						this.caretRowFirstPart = line;
+						this.caretPosition -= this.caretColumn;
 						this.caretX = this.font.stringWidth( line );
 						this.caretColumn = line.length();
 						this.caretPosition -= fullLine.length() - line.length();
-						this.textLines[ this.caretRow ] = line + " " + fullLine.substring( this.caretColumn );
+						this.caretRowLastPart = fullLine.substring( this.caretColumn );
+						this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
 						return true;
 					} else if (gameAction == Canvas.DOWN) {
 						//#ifdef polish.css.font-bitmap
@@ -1673,30 +1853,37 @@ implements CommandListener
 						if (this.caretRow >= this.textLines.length - 1) {
 							return false;
 						} 
-						// restore the text-line:
+			
 						String lastLine = this.originalRowText;
-						this.textLines[ this.caretRow ] = lastLine;
-						this.caretRow++;
-						
+						int lastLineLength = lastLine.length();
+						if (characterInserted) {
+							lastLineLength++;
+						}
+						this.caretRow++;	
 						this.caretY += this.font.getHeight() + this.paddingVertical;
 						
-						String line = this.realTextLines[ this.caretRow ];
-						this.originalRowText = line;
-						if (this.caretColumn < line.length()) {
-							line = line.substring(0, this.caretColumn);
+						String nextLine = this.realTextLines[ this.caretRow ];
+						this.originalRowText = nextLine;
+						String firstPart;
+						if (this.caretColumn < nextLine.length()) {
+							firstPart = nextLine.substring(0, this.caretColumn);
+						} else {
+							firstPart = nextLine;
 						}
-						this.caretPosition += (lastLine.length() - this.caretColumn); 
-						this.caretX = this.font.stringWidth( line );
-						this.caretColumn = line.length();
-						this.caretPosition += line.length(); 
-						this.textLines[ this.caretRow ] = line + " " + this.originalRowText.substring( this.caretColumn );
+						this.caretRowFirstPart = firstPart;
+						this.caretPosition += (lastLineLength - this.caretColumn);
+						this.caretX = this.font.stringWidth( firstPart );
+						this.caretColumn = firstPart.length();
+						this.caretPosition += firstPart.length();
+						this.caretRowLastPart = nextLine.substring( this.caretColumn );
+						this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
 						return true;
-					}
-					if (gameAction == Canvas.LEFT) {
+					} else if (gameAction == Canvas.LEFT) {
 						if (this.caretColumn > 0) {
 							this.caretPosition--;
 							this.caretColumn--;
 							String firstPart;
+							int lastCaretX = this.caretX;
 							if (this.caretColumn == 0) {
 								this.caretX = 0;
 								firstPart = "";
@@ -1704,40 +1891,64 @@ implements CommandListener
 								firstPart = this.originalRowText.substring( 0, this.caretColumn );
 								this.caretX = this.font.stringWidth( firstPart );
 							} 
-							this.textLines[ this.caretRow ] = firstPart 
-								 + " " + this.originalRowText.substring( this.caretColumn );
+							this.caretRowFirstPart = firstPart;
+							this.caretRowLastPart = this.originalRowText.substring( this.caretColumn );
+							this.caretRowLastPartWidth += (lastCaretX - this.caretX );
 							return true;
 						} else if ( this.caretRow > 0) {
 							// this is just a visual line-break:
 							//this.caretPosition--;
-							// restore the text-line:
-							this.textLines[ this.caretRow ] = this.originalRowText;
 							this.caretRow--;
-							String line = this.realTextLines[ this.caretRow ];
-							this.originalRowText = line;
-							this.textLines[ this.caretRow ] += " "; 
-							this.caretColumn = line.length();
-							this.caretX = this.font.stringWidth(line);
+							String prevLine = this.realTextLines[ this.caretRow ];
+							this.originalRowText = prevLine;
+							this.caretColumn = prevLine.length();
+							this.caretX = this.font.stringWidth(prevLine);
 							this.caretY -= this.font.getHeight() + this.paddingVertical;
+							this.caretRowFirstPart = prevLine;
+							this.caretRowLastPart = "";
+							this.caretRowLastPartWidth = 0;
 							return true;
 						}
 					} else if ( gameAction == Canvas.RIGHT ) {
+						if (characterInserted) {
+							//System.out.println("right but character inserted");
+							return true;
+						}
 						if (this.caretColumn < this.originalRowText.length() ) {
+							//System.out.println("right not in last column");
 							this.caretColumn++;
 							this.caretPosition++;
 							String firstPart = this.originalRowText.substring(0, this.caretColumn);
 							this.caretX = this.font.stringWidth(firstPart);
-							this.textLines[ this.caretRow ] = firstPart + " " + this.originalRowText.substring( this.caretColumn );
+							this.caretRowFirstPart = firstPart;
+							String lastPart = this.originalRowText.substring( this.caretColumn );
+							this.caretRowLastPart = lastPart;
+							this.caretRowLastPartWidth = this.font.stringWidth( lastPart );
 							return true;
 						} else if (this.caretRow < this.realTextLines.length - 1) {
-							// restore the textline:
-							this.textLines[ this.caretRow ] = this.originalRowText;
+							//System.out.println("right in not the last row");
 							this.caretRow++;
 							this.originalRowText = this.realTextLines[ this.caretRow ];
-							this.textLines[ this.caretRow ] = " " + this.originalRowText;
-							this.caretX = 0;
-							this.caretColumn = 0;
+							if (characterInserted) {
+								this.caretX = this.font.charWidth(character);
+								this.caretColumn = 1;
+							} else {
+								this.caretRowFirstPart = ""; 
+								this.caretX = 0;
+								this.caretColumn = 0;
+								String lastPart = this.originalRowText.substring( this.caretColumn );
+								this.caretRowLastPart = lastPart;
+								this.caretRowLastPartWidth = this.font.stringWidth( lastPart );
+							}
 							this.caretY += this.font.getHeight() + this.paddingVertical;
+							return true;
+						} else if (characterInserted) {
+							//System.out.println("right after character insertion");
+							// a character has been inserted at the last column of the last row:
+							this.caretX += this.caretWidth;
+							this.caretRowFirstPart += character;
+							this.caretColumn++;
+							this.caretPosition++;
 							return true;
 						}
 					}
@@ -1781,46 +1992,6 @@ implements CommandListener
 		return true;
 	}
 	
-	/**
-	 * Recalculates the text using the realTextLines.
-	private void updateText() {
-		this.textLines = TextUtil.split( this.text, this.font, this.contentWidth, this.contentWidth );
-		int length = this.textLines.length;
-		this.realTextLines = new String[ length ];
-		int endOfLinePos = 0;
-		int maxPos = this.text.length();
-		boolean updateCaretPosition = false;
-		for (int i = 0; i < length; i++) {
-			String line = this.textLines[i];
-			endOfLinePos += line.length();
-			if (endOfLinePos < maxPos) {
-				char c = this.text.charAt( endOfLinePos );
-				if (c == ' ' || c == '\n') {
-					line += c;
-					endOfLinePos++;
-				}
-			}
-			this.realTextLines[i] = line;
-			if (i == this.caretRow) {
-				this.originalRowText = line;
-				if (this.caretColumn <= line.length() ) {
-					String firstPart = line.substring( 0, this.caretColumn );
-					this.textLines[ i ] = firstPart + " " + line.substring( this.caretColumn );
-					if (updateCaretPosition) {
-						this.caretX = this.font.stringWidth(firstPart);
-					}
-				} else {
-					// the caret-position has been shifted to the next row:
-					updateCaretPosition = true;
-					this.caretColumn -= line.length();
-					this.caretRow++;
-					this.caretY += this.font.getHeight() + this.paddingVertical;
-					// (the textLine will be updated in the next loop)
-				}
-			}
-		}
-	}
-	 */
 
 	/**
 	 * Shows the TextBox for entering texts.
@@ -1870,5 +2041,13 @@ implements CommandListener
 			}
 		}
 	//#endif
+		
+	//#ifdef tmp.directInput
+	protected void defocus(Style originalStyle) {
+		super.defocus(originalStyle);
+		this.screen.showInfoItem = false;
+	}
+	//#endif
+
 	
 }

@@ -163,6 +163,10 @@ public abstract class Screen
 	//#if tmp.usingTitle || tmp.menuFullScreen
 		private boolean showTitleOrMenu = true;
 	//#endif
+	/** an info text which is shown e.g. when some content is added to textfields */
+	protected StringItem infoItem;
+	/** determines whether the info text should be shown */
+	protected boolean showInfoItem;
 	
 	/**
 	 * Creates a new screen
@@ -467,6 +471,10 @@ public abstract class Screen
 					tHeight = this.titleHeight;
 				}
 			//#endif
+			if (this.showInfoItem) {
+				this.infoItem.paint( 0, tHeight, 0, this.screenWidth, g );
+				tHeight += this.infoItem.itemHeight;
+			}
 			// protect the title, ticker and the full-screen-menu area:
 			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
 			g.translate( 0, tHeight );
