@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with Foobar; if not, write to the Free Software
+ * along with J2ME Polish; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  * Commercial licenses are also available, please
@@ -25,15 +25,21 @@
 package de.enough.polish.ui;
 
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Debug;
+//#ifdef polish.Screen.imports:defined
+	//#include ${polish.Screen.imports}
+//#endif
 
 
 /**
@@ -193,6 +199,11 @@ public abstract class Screen
 		//#define tmp.fullScreenInPaint
 		private boolean isInFullScreenMode;
 	//#endif
+	//#ifdef polish.css.foreground-image
+		private Image foregroundImage;
+		private int foregroundX;
+		private int foregroundY;
+	//#endif
 	
 	/**
 	 * Creates a new screen
@@ -259,6 +270,14 @@ public abstract class Screen
 	private void init() {
 		//#debug
 		System.out.println("Initialising screen " + this );
+		boolean startAnimationThread = false;
+		if (StyleSheet.animationThread == null) {
+			StyleSheet.animationThread = new AnimationThread();
+			startAnimationThread = true;
+		}
+		//#ifdef polish.Screen.initCode:defined
+			//#include ${polish.Screen.initCode}
+		//#endif
 		if (this.style != null) {
 			setStyle( this.style );
 		}
@@ -276,7 +295,7 @@ public abstract class Screen
 				this.menuBarHeight = this.menuBar.getItemHeight( this.screenWidth, this.screenWidth );
 				this.scrollIndicatorWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
 				this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-				this.scrollIndicatorY = this.fullScreenHeight - (this.menuBarHeight - this.menuBar.marginBottom) + 1;
+				this.scrollIndicatorY = this.fullScreenHeight - this.menuBar.marginBottom + 1 - this.scrollIndicatorWidth;
 				//System.out.println("Screen.init: menuBarHeight=" + this.menuBarHeight + " scrollIndicatorWidth=" + this.scrollIndicatorWidth );
 			//#else
 				//#ifdef polish.css.style.menu
@@ -342,6 +361,31 @@ public abstract class Screen
 			this.scrollIndicatorX = this.screenWidth - this.scrollIndicatorWidth;
 			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
+			
+		//#ifdef polish.css.foreground-image
+			String foregroundImageUrl = this.style.getProperty("foreground-image");
+			if (foregroundImageUrl != null) {
+				try {
+					this.foregroundImage = StyleSheet.getImage(foregroundImageUrl, null,true);
+					//#ifdef polish.css.foreground-x
+						Integer xInteger = this.style.getIntProperty("foreground-x");
+						if (xInteger != null) {
+							this.foregroundX = xInteger.intValue();
+						}
+					//#endif
+					//#ifdef polish.css.foreground-y
+						Integer yInteger = this.style.getIntProperty("foreground-y");
+						if (yInteger != null) {
+							this.foregroundY = yInteger.intValue();
+						}
+					//#endif
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load foreground-image [" + foregroundImageUrl + "]: " + e);
+				}
+			}
+		//#endif
+
 
 		if (this.container != null) {
 			this.container.screen = this;
@@ -349,8 +393,7 @@ public abstract class Screen
 		}
 		
 		// start the animmation thread if necessary: 
-		if (StyleSheet.animationThread == null) {
-			StyleSheet.animationThread = new AnimationThread();
+		if (startAnimationThread) {
 			StyleSheet.animationThread.start();
 		}
 		this.isInitialised = true;
@@ -365,6 +408,9 @@ public abstract class Screen
 		//#debug
 		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialised);
 		try {
+			//#ifdef polish.Screen.showNotifyCode:defined
+				//#include ${polish.Screen.showNotifyCode}
+			//#endif
 			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
 				super.setFullScreenMode( true );
 				//#ifdef polish.FullCanvasHeight:defined
@@ -760,6 +806,11 @@ public abstract class Screen
 					//#endif
 				}
 			}
+			//#ifdef polish.css.foreground-image
+				if (this.foregroundImage != null) {
+					g.drawImage( this.foregroundImage, this.foregroundX, this.foregroundY, Graphics.TOP | Graphics.LEFT  );
+				}
+			//#endif
 		//#ifdef polish.debug.error
 		} catch (RuntimeException e) {
 			//#debug error
@@ -1591,4 +1642,9 @@ public abstract class Screen
 		//#debug
 		System.out.println("SUBTITLE_HEIGHT=" + this.subTitleHeight);
 	}
+	
+//#ifdef polish.Screen.additionalMethods:defined
+	//#include ${polish.Screen.additionalMethods}
+//#endif
+
 }

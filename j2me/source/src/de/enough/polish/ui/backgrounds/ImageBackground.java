@@ -17,7 +17,7 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with Foobar; if not, write to the Free Software
+ * along with J2ME Polish; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  * Commercial licenses are also available, please
@@ -45,6 +45,10 @@ import java.io.IOException;
  * 							be smaller than the actual background-area. Or "transparent".</li>
  * 		<li><b>repeat</b>: defines whether the image should be repeated. Either "no-repeat",
  * 				"repeat", "repeat-x" or "repeat-y".</li>
+ * 		<li><b>anchor</b>: The anchor of the image, either  "left", "right", 
+ * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+ * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center".
+ * 		</li>
  * 		<li><b></b>: </li>
  * </ul>
  * </p>
@@ -73,6 +77,8 @@ implements ImageConsumer
 	private final int repeatMode;
 	private boolean isLoaded;
 	private String imageUrl;
+	private final int anchor;
+	private final boolean doCenter;
 	
 	/**
 	 * Creates a new image background.
@@ -81,11 +87,16 @@ implements ImageConsumer
 	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
 	 * @param repeatMode indicates whether the background image should
 	 *        be repeated, either ImageBackground.NO_REPEAT, REPEAT, REPEAT_X or REPEAT_Y
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
 	 */
-	public ImageBackground( int color, String imageUrl, int repeatMode ) {
+	public ImageBackground( int color, String imageUrl, int repeatMode, int anchor ) {
 		this.color = color;
 		this.repeatMode = repeatMode;
 		this.imageUrl = imageUrl;
+		this.anchor = anchor;
+		this.doCenter = ( anchor == (Graphics.VCENTER | Graphics.HCENTER) );
 	}
 
 	//#ifdef polish.images.backgroundLoad
@@ -118,9 +129,23 @@ implements ImageConsumer
 		}
 		if (this.image != null) {
 			if (this.repeatMode == NO_REPEAT) {
-				int centerX = x + (width / 2);
-				int centerY = y + (height / 2);
-				g.drawImage(this.image, centerX, centerY, Graphics.HCENTER | Graphics.VCENTER );
+				if (this.doCenter) {
+					int centerX = x + (width / 2);
+					int centerY = y + (height / 2);
+					g.drawImage(this.image, centerX, centerY, Graphics.HCENTER | Graphics.VCENTER );
+				} else {
+					if ( (this.anchor & Graphics.HCENTER) == Graphics.HCENTER) {
+						x += (width / 2);
+					} else if ( (this.anchor & Graphics.RIGHT) == Graphics.RIGHT) {
+						x += width;
+					}
+					if ( (this.anchor & Graphics.VCENTER) == Graphics.VCENTER) {
+						y += (height / 2);
+					} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
+						y += height;
+					}
+					g.drawImage(this.image, x, y, this.anchor );
+				}
 			} else {
 				int imgWidth = this.image.getWidth();
 				int imgHeight = this.image.getHeight();
