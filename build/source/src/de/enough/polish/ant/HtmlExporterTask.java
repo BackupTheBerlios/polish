@@ -78,6 +78,8 @@ public class HtmlExporterTask extends Task {
 	private String databaseDir = "../enough-polish-build/";
 	private LibraryManager libraryManager;
 	private BugManager bugManager;
+
+	private DeviceManager deviceManager;
 	
 	/**
 	 * Creates a new uninitialised task
@@ -92,9 +94,9 @@ public class HtmlExporterTask extends Task {
 			this.libraryManager = new LibraryManager(getProject().getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
 			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"));
 			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml") ); 
-			DeviceManager deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, open("devices.xml") );
+			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, open("devices.xml") );
 			this.bugManager = new BugManager( getProject().getProperties(), open("bugs.xml"));
-			Device[] devices = deviceManager.getDevices();
+			Device[] devices = this.deviceManager.getDevices();
 			
 			// create detailed device pages:
 			for (int i = 0; i < devices.length; i++) {
@@ -102,7 +104,7 @@ public class HtmlExporterTask extends Task {
 				writeDevicePage( device );
 			}
 			
-			// sort by vedor and name:
+			// sort by vendor and name:
 			Arrays.sort( devices, new IdentifierComparator() );
 			process( "Devices by Vendor", "devices-vendor.html", 
 					devices, 
@@ -124,6 +126,7 @@ public class HtmlExporterTask extends Task {
 			String[] apis = (String[]) apisByName.keySet().toArray( new String[ apisByName.size()] );
 			Arrays.sort( apis );
 			String[] apiLinks = new String[ apis.length ];
+			
 		 	// get the devices for each api:
 			IndexGenerator indexGenerator = new NoIndexGenerator();
 			for (int i = 0; i < apis.length; i++) {
@@ -175,7 +178,10 @@ public class HtmlExporterTask extends Task {
 			requirements.addConfiguredRequirement( new Variable("JavaConfiguration", "CLDC/1.1" ));
 			filteredDevices = requirements.filterDevices(devices);
 			process("CLDC/1.1 Devices", "cldc11.html", filteredDevices, indexGenerator, 
-					"The following devices support the CLDC/1.1 configuration.", "platform");			
+					"The following devices support the CLDC/1.1 configuration.", "platform");	
+			
+			// write known issues:
+			writeKnownIssues();
 	} catch (IOException e) {
 			throw new BuildException("unable to init manager: " + e.getMessage(), e );
 		} catch (JDOMException e) {
@@ -185,6 +191,133 @@ public class HtmlExporterTask extends Task {
 		}
 	}
 	
+	/**
+	 * @throws IOException
+	 * 
+	 */
+	private void writeKnownIssues() 
+	throws IOException 
+	{
+		String fileName = "issues.html";
+		System.out.println("Creating " + fileName);
+		ArrayList lines = new ArrayList();
+		lines.add("<%define inDevicesSection %>");
+		lines.add("<%define inDevicesSection.issues %>");
+		lines.add("<%set title = J2ME Polish: Issues Database %>");
+		lines.add("<%set basedir = ../ %>");
+		lines.add("<%include start.txt %>" );
+		lines.add("");
+		lines.add("<div id=\"content\">" );
+		lines.add("<h1 id=\"top\">The Known Issues Database</h1>" );
+		lines.add("<%index %>");
+		lines.add( "<p>Some J2ME devices show unexpected behavior - this list provides an overview.</p>");
+		lines.add( "<p>Please <a href=\"mailto:j2mepolish@enough.de?subject=Known_Issue\">email</a> us updates or new known issues stating the area, the device, the description and the solution if possible.</p>");
+		String[] areas = this.bugManager.getAreas();
+		for (int i = 0; i < areas.length; i++) {
+			String area = areas[i];
+			lines.add("<h2 id=\"area-" + area + "\">" + area + "</h2>" );
+			lines.add("<p>");
+			Bug[] issues = this.bugManager.getBugsForArea(area);
+			for (int j = 0; j < issues.length; j++) {
+				Bug issue = issues[j];
+				String name = issue.getName();
+				lines.add("<a href=\"issue-" + name + ".html\">" + name + "</a><br />");
+			}
+		}
+		lines.add("</p>");
+
+		// add the end:
+		lines.add("<%include end.txt %>");
+		
+		// write the file:
+		String[] htmlCode = (String[] ) lines.toArray( new String[ lines.size() ] );
+		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );
+		
+		// now write the detailed description for each bug:
+		Bug[] issues = this.bugManager.getAllBugs();
+		for (int i = 0; i < issues.length; i++) {
+			Bug issue = issues[i];
+			writeKnowIssue( issue );
+		}
+	}
+
+	/**
+	 * @param issue
+	 * @throws IOException
+	 */
+	private void writeKnowIssue(Bug issue) throws IOException {
+		String name = issue.getName();
+		String fileName = "issue-" + name + ".html";
+		System.out.println("Creating " + fileName);
+		ArrayList lines = new ArrayList();
+		lines.add("<%define inDevicesSection %>");
+		lines.add("<%define inDevicesSection.issues %>");
+		lines.add("<%set title = J2ME Polish: Issues Database %>");
+		lines.add("<%set basedir = ../ %>");
+		lines.add("<%include start.txt %>" );
+		lines.add("");
+		lines.add("<div id=\"content\">" );
+		lines.add("<h1 id=\"top\">Known Issue: " + name + "</h1>" );
+		lines.add("<%index %>");
+		lines.add( "<p>Please <a href=\"mailto:j2mepolish@enough.de?subject=Issue-" + name + "\">email</a> us for updates of this known issue.</p>");
+		String[] areas = issue.getAreas();
+		if (areas.length == 1) {
+			lines.add("<h2 id=\"areas\">Area</h2>" );			
+		} else {
+			lines.add("<h2 id=\"areas\">Areas</h2>" );
+		}
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<p>");
+		for (int i = 0; i < areas.length; i++) {
+			String area = areas[i];
+			buffer.append( "<a href=\"issues.html#area-" ).append( area ).append("\">").append( area ).append("</a>");
+			if ( i < areas.length - 1  ) {
+				buffer.append(", ");
+			}
+		}
+		buffer.append("</p>");
+		lines.add( buffer.toString() );
+		lines.add("<h2 id=\"description\">Description</h2>" );
+		lines.add("<p>" + issue.getDescription() + "</p>");
+		lines.add("<h2 id=\"workaround\">Workaround</h2>" );
+		String solution = issue.getSolution();
+		if (solution != null && solution.length() > 1) {
+			lines.add("<p>" + solution + "</p>");			
+		} else {
+			lines.add("<p>No workaround known.</p>");
+		}
+		lines.add("<h2 id=\"preprocessing\">Preprocessing Access</h2>" );
+		lines.add("<p><pre>");
+		lines.add("//#ifdef polish.Bugs." + name );
+		lines.add("	// implement workaround");
+		lines.add("//#endif" );
+		lines.add("</pre></p>");
+		Device[] devices = issue.getDevices( this.deviceManager );
+		if (devices.length == 1) {
+			lines.add("<h2 id=\"devices\">Affected Device</h2>" );
+			
+		} else if (devices.length == 0 ) {
+			lines.add("<h2 id=\"devices\">Affected Devices</h2>" );
+			lines.add("<p>No devices affected.</p>" );
+		} else {
+			lines.add("<h2 id=\"devices\">Affected Devices</h2>" );
+		}
+		lines.add("<p>");
+		for (int i = 0; i < devices.length; i++) {
+			Device device = devices[i];
+			lines.add("<a href=\"" + device.getVendorName()  + "/" + device.getName() + ".html\">" + device.getIdentifier() + "</a><br />");
+			
+		}
+		lines.add("</p>");
+		
+		// add the end:
+		lines.add("<%include end.txt %>");
+		
+		// write the file:
+		String[] htmlCode = (String[] ) lines.toArray( new String[ lines.size() ] );
+		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );
+	}
+
 	/**
 	 * @param device
 	 * @throws IOException
@@ -595,11 +728,12 @@ public class HtmlExporterTask extends Task {
 			lines.add( "<tr><th>Issue " + (i + 1) + "</th><th>Area</th><th>Description</th></tr>" );
 			StringBuffer buffer = new StringBuffer();
 			buffer.append( "<tr class=\"" ).append( cssStyle ).append("\"><td>")
-			  .append( bug.getName() ).append("</td><td>");
+			  .append("<a href=\"../issue-" + bug.getName() + ".html\">")
+			  .append( bug.getName() ).append("</a></td><td>");
 			String[] areas = bug.getAreas();
 			for (int j = 0; j < areas.length; j++) {
 				String area = areas[j];
-				buffer.append( area );
+				buffer.append( "<a href=\"../issues.html#area-").append( area ).append("\">" ).append( area ).append("</a>");
 				if (j != areas.length -1 ) {
 					buffer.append( ", ");
 				}

@@ -27,6 +27,8 @@ package de.enough.polish;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -54,7 +56,8 @@ import de.enough.polish.util.StringUtil;
  */
 public class BugManager {
 	
-	private HashMap bugsList = new HashMap();
+	private final HashMap bugsByName = new HashMap();
+	private final HashMap areasMap = new HashMap();
 	//private Hashtable antProperties;
 
 	/**
@@ -93,13 +96,17 @@ public class BugManager {
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
 			Bug issue = new Bug( definition, this );
-			Bug existingIssue = (Bug) this.bugsList.get( issue.getName() ); 
+			Bug existingIssue = (Bug) this.bugsByName.get( issue.getName() ); 
 			if ( existingIssue != null ) {
 				throw new InvalidComponentException("The issue [" + issue.getName() 
 						+ "] defined twice. Please remove one in [bugs.xml].");
 			}
-
-			this.bugsList.put( issue.getName(), issue );
+			String[] areas = issue.getAreas();
+			for (int i = 0; i < areas.length; i++) {
+				String area = areas[i];
+				this.areasMap.put( area, Boolean.TRUE );
+			}
+			this.bugsByName.put( issue.getName(), issue );
 		}		
 	}
 	
@@ -121,13 +128,42 @@ public class BugManager {
 		Bug[] bugs = new Bug[ bugNames.length ];
 		for (int i = 0; i < bugNames.length; i++) {
 			String name = bugNames[i];
-			Bug bug = (Bug) this.bugsList.get( name );
+			Bug bug = (Bug) this.bugsByName.get( name );
 			if (bug == null) {
 				throw new InvalidComponentException("The device [" + device.getIdentifier() + "] uses the undefined issue [" + name + "]: check the \"Bugs\"-capability in [devices.xml].");
 			}
 			bugs[i] = bug;
 		}
 		
+		return bugs;
+	}
+
+	/**
+	 * Retrieves all areas of the listed bugs.
+	 * @return an array of all known areas
+	 */
+	public String[] getAreas() {
+		String[] areas = (String[]) this.areasMap.keySet().toArray( new String[ this.areasMap.size() ] );
+		Arrays.sort( areas );
+		return areas;
+	}
+	
+	
+	public Bug[] getAllBugs() {
+		return (Bug[]) this.bugsByName.values().toArray( new Bug[ this.bugsByName.size() ]);
+	}
+	
+	public Bug[] getBugsForArea( String area ) {
+		ArrayList bugsList = new ArrayList();
+		Bug[] bugs = getAllBugs();
+		Arrays.sort( bugs );
+		for (int i = 0; i < bugs.length; i++) {
+			Bug bug = bugs[i];
+			if ( bug.isInArea( area ) ) {
+				bugsList.add( bug );
+			}
+		}
+		bugs = (Bug[]) bugsList.toArray( new Bug[ bugsList.size() ]);
 		return bugs;
 	}
 }

@@ -131,7 +131,7 @@
 		 System screens are usually shown automatically when security sensitive operations are undertaken,
 		 e.g. sending a short message.
 		</description>
-		<solution>Use the com.nokia.mid.ui.FullCanvas instead for having a fullscreen mode. The J2ME Polish GUI obviously does this automatically when this error is present.</solution>
+		<solution>Use the com.nokia.mid.ui.FullCanvas instead for having a fullscreen mode. The J2ME Polish GUI does this automatically when this error is present.</solution>
 	</bug>
 
 	<bug>

@@ -25,6 +25,8 @@
  */
 package de.enough.polish;
 
+import java.util.ArrayList;
+
 import org.jdom.Element;
 
 import de.enough.polish.exceptions.InvalidComponentException;
@@ -63,6 +65,7 @@ public class Bug extends PolishComponent {
 		if (this.name == null) {
 			throw new InvalidComponentException("A bug listed in bugs.xml does not define its name. Please insert the <name> element into the file [bugs.xml] for this issue.");
 		}
+		this.identifier = this.name;
 		this.description = definition.getChildTextTrim( "description");
 		if (this.description == null) {
 			throw new InvalidComponentException("The bug [" + this.name + "] listed in bugs.xml does not define its description. Please insert the <description> element into the file [bugs.xml] for this issue.");
@@ -89,5 +92,52 @@ public class Bug extends PolishComponent {
 	}
 	public String getSolution() {
 		return this.solution;
+	}
+
+
+	/**
+	 * @param area
+	 * @return
+	 */
+	public boolean isInArea(String area) {
+		for (int i = 0; i < this.areas.length; i++) {
+			if (area.equals( this.areas[i] )) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @param manager
+	 * @return
+	 */
+	public Device[] getDevices(DeviceManager manager) {
+		ArrayList list = new ArrayList();
+		Device[] devices = manager.getDevices();
+		for (int i = 0; i < devices.length; i++) {
+			Device device = devices[i];
+			String bugsCapability = device.getCapability("polish.Bugs");
+			if (bugsCapability != null && bugsCapability.indexOf( this.name ) != -1) {
+				String[] bugs = StringUtil.splitAndTrim(bugsCapability, ',');
+				for (int j = 0; j < bugs.length; j++) {
+					String bugName = bugs[j];
+					if (this.name.equals(bugName)) {
+						list.add( device );
+						break;
+					}
+				}
+			}
+		}
+		return (Device[]) list.toArray( new Device[ list.size() ] );
+	}
+	
+	
+	public int compareTo(Object o) {
+		if (o instanceof Bug) {
+			return this.name.compareToIgnoreCase( ((Bug)o).name ); 
+		} else {
+			return 0;
+		}
 	}
 }
