@@ -55,13 +55,23 @@ public class Variables {
 	}
 	
 	public void addConfiguredVariable( Variable var ) {
-		if (var.getName() == null) {
-			throw new BuildException("Please check your variable definition, each variable needs to have the attribute [name]");
+		if (!var.containsMultipleVariables()) {
+			if (var.getName() == null) {
+				throw new BuildException("Please check your variable definition, each variable needs to have the attribute [name]");
+			}
+			if (var.getValue() == null) {
+				throw new BuildException("Please check your variable definition, each variable needs to have the attribute [value]");
+			}
+			this.variables.add( var );
+		} else {
+			Variable[] vars = var.loadVariables();
+			for (int i = 0; i < vars.length; i++) {
+				Variable variable = vars[i];
+				variable.setIf( var.getIfCondition() );
+				variable.setUnless( var.getUnlessCondition() );
+				this.variables.add( variable );
+			}
 		}
-		if (var.getValue() == null) {
-			throw new BuildException("Please check your variable definition, each variable needs to have the attribute [value]");
-		}
-		this.variables.add( var );
 	}
 	
 	public Variable[] getVariables() {

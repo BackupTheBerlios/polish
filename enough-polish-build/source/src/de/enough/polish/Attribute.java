@@ -25,8 +25,12 @@
  */
 package de.enough.polish;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -51,6 +55,7 @@ public class Attribute extends Variable {
 	 */
 	public Attribute() {
 		super();
+		this.xmlElementName = "<attribute>";
 	}
 
 	/**
@@ -97,4 +102,44 @@ public class Attribute extends Variable {
 	public boolean targetsManifest() {
 		return this.targetsManifest;
 	}
+	
+	/**
+	 * Loads all attribute-definitions from the specified file.
+	 * 
+	 * @return an array of variable definitions found in the specified file.
+	 */
+	public Attribute[] loadAttributes() {
+		try {
+			HashMap map = FileUtil.readPropertiesFile(this.file, ':');
+			Object[] keys = map.keySet().toArray();
+			Attribute[] variables = new Attribute[ keys.length ];
+			for (int i = 0; i < variables.length; i++) {
+				String key = (String) keys[i];
+				variables[i] = new Attribute( key, (String) map.get( key ) );
+			}
+			return variables;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to load " + this.xmlElementName + "-file [" + this.file.getAbsolutePath() + "]:" + e.toString(), e );
+		}
+	}
+
+	/**
+	 * Defines if this attribute targets the manifest.
+	 * 
+	 * @param targets true when this attribute targets the manifest.
+	 */
+	public void setTargetsManifest( boolean targets ) {
+		this.targetsManifest = targets;
+	}
+
+	/**
+	 * Defines if this attribute targets the jad.
+	 * 
+	 * @param targets true when this attribute targets the jad.
+	 */
+	public void setTargetsJad( boolean targets ) {
+		this.targetsJad = targets;
+	}
+
 }

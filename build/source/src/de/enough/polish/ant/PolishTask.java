@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2";
+	private static final String VERSION = "1.2-pre1";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -162,7 +162,9 @@ public class PolishTask extends ConditionalTask {
 			initProject();
 			selectDevices();
 			int numberOfDevices = this.devices.length;
-			if (numberOfDevices > 1) {
+			if (this.buildSetting.isInCompilerMode()) {
+				System.out.println("Using J2ME Polish as compiler...");
+			} else if (numberOfDevices > 1) {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
 			boolean hasExtensions = (this.javaExtensions.length > 0);
@@ -172,6 +174,11 @@ public class PolishTask extends ConditionalTask {
 				compile( device );
 				if (this.doObfuscate) {
 					obfuscate( device );
+				}
+				if (this.buildSetting.isInCompilerMode()) {
+					System.out.println();
+					System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
+					return;
 				}
 				preverify( device );
 				jar( device );
@@ -1051,7 +1058,12 @@ public class PolishTask extends ConditionalTask {
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
 		javac.setTarget( this.javacTarget );
 		javac.setSource( this.sourceCompatibility );
-		File targetDir = new File( targetDirName );
+		File targetDir;
+		if (this.buildSetting.isInCompilerMode() && !this.doObfuscate) {
+			targetDir = this.buildSetting.getCompilerDestDir();
+		} else {
+			targetDir = new File( targetDirName );
+		}
 		if (!targetDir.exists()) {
 			targetDir.mkdirs();
 		}
@@ -1148,11 +1160,16 @@ public class PolishTask extends ConditionalTask {
 		
 		
 		//time = System.currentTimeMillis();
-		//unjar destFile to build/obfuscated:
+		//unjar destFile to build/[vendor]/[name]/obfuscated:
 		try {
-			String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
-			device.setClassesDir(targetPath);
-			File targetDir = new File( targetPath );
+			File targetDir;
+			if (this.buildSetting.isInCompilerMode()) {
+				targetDir = this.buildSetting.getCompilerDestDir();
+			} else {
+				String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
+				device.setClassesDir(targetPath);
+				targetDir = new File( targetPath );
+			}
 			if (targetDir.exists()) {
 				// when the directory for extracting the obfuscated files
 				// exists, delete it so that no old classes are remaining
@@ -1346,8 +1363,6 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		
-		// add user-defined attributes, but only
-		// when these attributes are filtered:
 		// add user-defined attributes:
 		Attribute[] attributes = this.buildSetting.getJadAttributes();
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();

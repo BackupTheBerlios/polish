@@ -90,6 +90,8 @@ public class BuildSetting {
 	private String projectBasePath;
 	private ArrayList javaTasks;
 	private String javacTarget;
+	private boolean compilerMode;
+	private File compilerDestDir;
 	
 	/**
 	 * Creates a new build setting.
@@ -991,6 +993,55 @@ public class BuildSetting {
 			this.javacTarget = TARGET_1_2;
 		} else {
 			this.javacTarget = javacTarget;
+		}
+	}
+	
+	/**
+	 * Enables or disables the compiler-mode of J2ME Polish.
+	 * In the compiler mode only one device will be processed
+	 * and the execution will be aborted before the packaging is done.
+	 * 
+	 * @param enable true when the compiler-mode should be enabled.
+	 *        The mode is disabled by default.
+	 */
+	public void setCompilerMode( boolean enable ) {
+		this.compilerMode = enable;
+	}
+	
+	/**
+	 * Determines whether the compiler-mode of J2ME Polish is activated.
+	 * In the compiler mode only one device will be processed
+	 * and the execution will be aborted before the packaging is done.
+	 * The mode is disabled by default.
+	 * 
+	 * @return true when the compiler-mode should be enabled.
+	 */
+	public boolean isInCompilerMode() {
+		return this.compilerMode;
+	}
+	
+	/**
+	 * Sets the destination directory for compiled classes.
+	 * This setting is only used when the compiler-mode is activated.
+	 * 
+	 * @param destinationDir the target directory for compiled classes.
+	 *        The default directory is "bin/classes". 
+	 */
+	public void setCompilerDestDir( File destinationDir ) {
+		this.compilerDestDir = destinationDir;
+	}
+	
+	/**
+	 * Retrieves the target directory for compiled classes.
+	 * 
+	 * @return the target directory for compiled classes.
+	 *        The default directory is "bin/classes". 
+	 */
+	public File getCompilerDestDir() {
+		if (this.compilerDestDir == null) {
+			return new File( this.projectBasePath + "bin/classes" );
+		} else {
+			return this.compilerDestDir;
 		}
 	}
 	

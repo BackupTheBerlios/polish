@@ -199,20 +199,41 @@ public final class FileUtil {
 	public static HashMap readPropertiesFile( File file ) 
 	throws FileNotFoundException, IOException 
 	{
+		return readPropertiesFile(file, '=');
+	}
+	
+	/**
+	 * Reads a properties file.
+	 * The notation of the file needs to be 
+	 * "[name]=[value]\n"
+	 * for each defined property.
+	 * 
+	 * @param file the file containing the properties
+	 * @param delimiter the sign which is used for separating a property-name from a property-value.
+	 * @return a hashmap containing all properties found in the file
+	 * @throws FileNotFoundException when the file was not found
+	 * @throws IOException when file could not be read.
+	 * @throws IllegalArgumentException when the line does not contain a property
+	 */
+	public static HashMap readPropertiesFile( File file, char delimiter ) 
+	throws FileNotFoundException, IOException 
+	{
 		String[] lines = readTextFile( file );
 		HashMap map = new HashMap();
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
-			int equalsPos = line.indexOf('=');
-			if (equalsPos == -1) {
-				throw new IllegalArgumentException("The line [" + line 
-						+ "] of the file [" + file.getAbsolutePath() 
-						+ "] contains an invalid property definition: " +
-								"missing equals-sign (\"=\")." );
+			if (line.length() > 0 && line.charAt(0) != '#') {
+				int equalsPos = line.indexOf( delimiter );
+				if (equalsPos == -1) {
+					throw new IllegalArgumentException("The line [" + line 
+							+ "] of the file [" + file.getAbsolutePath() 
+							+ "] contains an invalid property definition: " +
+									"missing separater-character (\"" + delimiter + "\")." );
+				}
+				String key = line.substring(0, equalsPos );
+				String value = line.substring( equalsPos + 1);
+				map.put( key, value );
 			}
-			String key = line.substring(0, equalsPos );
-			String value = line.substring( equalsPos + 1);
-			map.put( key, value );
 		}
 		return map;
 	}

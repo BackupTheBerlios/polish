@@ -25,10 +25,16 @@
  */
 package de.enough.polish;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
+import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Variable provides the definition of a name-value pair.</p>
@@ -47,6 +53,8 @@ public class Variable {
 	private String type;
 	private String ifCondition;
 	private String unlessCondition;
+	protected String xmlElementName = "<variable>";
+	protected File file;
 
 	/**
 	 * Creates new uninitialised Variable
@@ -144,6 +152,49 @@ public class Variable {
 	 */
 	public boolean hasCondition(){
 		return (this.ifCondition != null || this.unlessCondition != null);
+	}
+	
+	/**
+	 * Sets the file which contains several variables.
+	 * 
+	 * @param file the file, which needs to exist.
+	 */
+	public void setFile( File file ) {
+		if (!file.exists()) {
+			throw new BuildException("Invalid build.xml: The [file]-attribute of a " + this.xmlElementName + "-element points to the non-existing file [" + file.getAbsolutePath() + "]. Please correct this [file]-attribute.");
+		}
+		this.file = file;
+	}
+	
+	/**
+	 * Determines whether this variable contains several variable-definitions.
+	 * This is the case when a [file]-attribute has been set.
+	 * 
+	 * @return true when this variable contains several variable-definitions.
+	 */
+	public boolean containsMultipleVariables() {
+		return (this.file != null);
+	}
+	
+	/**
+	 * Loads all variable-definitions from the specified file.
+	 * 
+	 * @return an array of variable definitions found in the specified file.
+	 */
+	public Variable[] loadVariables() {
+		try {
+			HashMap map = FileUtil.readPropertiesFile(this.file);
+			Object[] keys = map.keySet().toArray();
+			Variable[] variables = new Variable[ keys.length ];
+			for (int i = 0; i < variables.length; i++) {
+				String key = (String) keys[i];
+				variables[i] = new Variable( key, (String) map.get( key ) );
+			}
+			return variables;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to load " + this.xmlElementName + "-file [" + this.file.getAbsolutePath() + "]:" + e.toString(), e );
+		}
 	}
 
 	/**

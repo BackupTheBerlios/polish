@@ -47,13 +47,25 @@ public class JadAttributes {
 	}
 	
 	public void addConfiguredAttribute( Attribute attribute ) {
-		if (attribute.getName() == null) {
-			throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [name]");
+		if (!attribute.containsMultipleVariables()) {
+			if (attribute.getName() == null) {
+				throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [name]");
+			}
+			if (attribute.getValue() == null) {
+				throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [value]");
+			}
+			this.list.add( attribute );
+		} else {
+			Attribute[] attributes = attribute.loadAttributes();
+			for (int i = 0; i < attributes.length; i++) {
+				Attribute attr = attributes[i];
+				attr.setIf( attribute.getIfCondition() );
+				attr.setUnless( attribute.getUnlessCondition() );
+				attr.setTargetsManifest( attribute.targetsManifest()  );
+				attr.setTargetsJad( attribute.targetsJad() );
+				this.list.add( attr );
+			}
 		}
-		if (attribute.getValue() == null) {
-			throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [value]");
-		}
-		this.list.add( attribute );
 	}
 	
 	public void addConfiguredFilter( AttributesFilter filterSetting ) {
