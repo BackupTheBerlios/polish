@@ -1034,7 +1034,7 @@ public class BuildSetting {
 		} else {
 			// check for OS X:
 			String osName = "OS-Name: " + System.getProperty("os.name");
-			if (osName.equals("Mac OS X")) {
+			if (osName.indexOf("Mac OS X") != -1) {
 				return TARGET_1_1;
 			}
 			// check for WTK version < 2.0:
