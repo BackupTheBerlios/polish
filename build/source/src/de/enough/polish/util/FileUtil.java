@@ -298,5 +298,25 @@ public final class FileUtil {
 			}
 		}
 	}
-	
+
+	/**
+	 * Deletes a file or a directory.
+	 * 
+	 * @param file the file or directory which should be deleted.
+	 * @return true when the file could be deleted
+	 */
+	public static boolean delete(File file) {
+        if (file.isDirectory()) {
+            String[] children = file.list();
+            for (int i=0; i < children.length; i++) {            	
+                boolean success = delete(new File(file, children[i]));
+                if ( !success ) {
+                    return false;
+                }
+            }
+        }
+    
+        // The directory is now empty so delete it
+        return file.delete();
+	}
 }
