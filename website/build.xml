@@ -6,7 +6,7 @@
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/import/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="1.1" />
+<property name="Version" value="1.1.1" />
 	
 <target name="clean">
 	<property name="clean" value="true" />
@@ -75,6 +75,7 @@
 				<variable name="index.h1" value="h1index" />
 				<variable name="index.h2" value="h2index" />
 				<variable name="index.h3" value="h3index" />
+				<variable name="index.h4" value="h4index" />
 		</webprocessor>
 </target>
 	
@@ -97,6 +98,7 @@
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
 		<variable name="index.h4" value="h4index" />
+		<variable name="index.h5" value="h5index" />
 	</webprocessor>
 </target>
 

@@ -496,6 +496,23 @@ This example changes the &quot;Cancel&quot; command to &quot;Abbruch&quot; (Germ
 &lt;/variables&gt;
 </pre></p>
 
+<h3 id="activatinggui">How to Enable or Disable the Usage of the GUI for a Specific Device</h3>
+<p>
+2ME Polish's GUI is deactivated by default for some older devices like the first version of Nokia Series 40 models. 
+</p>
+<p>
+You can override this behavior by setting the &quot;supportsPolishGui&quot;-attribute of the device in question in the &quot;devices.xml&quot; file, which is located in installation folder of J2ME Polish. When the file is missing, re-run the installation and choose to install the &quot;external device database&quot; as well.</p>
+<p>
+Open devices.xml and search the device in question. Now set the &quot;supportsPolishGui&quot;-attribute: It needs to be true, when the device should support J2ME Polish's GUI.
+<pre>
+&lt;device
+	supportsPolishGui=&quot;false&quot; &gt;
+	&lt;identifier&gt;Nokia/Series40&lt;/identifier&gt;
+	&lt;!-- and so on --&gt;
+&lt;/device&gt;
+</pre>
+</p>
+
 <h2 id="trouble">Trouble Shooting</h2>
 <h3 id="trouble-subfolders">Using Subfolders for Resources</h3>
 <p>

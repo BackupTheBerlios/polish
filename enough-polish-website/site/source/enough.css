@@ -341,6 +341,13 @@ a:visited:hover {
 	font-size: x-small;
 }
 
+.h5index {
+	margin-left: 40px;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: x-small;
+}
+
+
 .keyword {
 	margin-bottom: 5px;
 	margin-right: 10px;

@@ -118,7 +118,28 @@ For reading the specific style settings, the method setStyle( Style ) needs to b
 The setStyle()-method will be called before the preferred content width and height is requested, when the CustomItem has a style associated with it.
 </p>
 <p>
-Background and border settings will be enforced by J2ME&nbsp;Polish, the CustomItem merely needs to paint its contents.
+Please note that the variable needs to be called &quot;style&quot; or needs to end with &quot;style&quot;, so that J2ME Polish can process all styles correctly. This is required, since instead of String-based attribute-names numerical short-values will be used in the actual code. This approach significantly reduces the runtime-performance and minimizes the heap-usage.
+</p>
+<p>
+There are 3 different ways to retrieve a property from a style:
+</p>
+<ul>
+	<li><i>style.getProperty( String name )</i> returns either a String representing that value or null when the property is not defined.</li>
+	<li><i>style.getIntProperty( String name )</i> returns either an Integer representing that value or null when the property is not defined. You can use this method only when you have registered the corresponding attribute in the file &quot;custom-css-attributes.xml&quot;. The attribute-type needs to be either &quot;integer&quot; or &quot;color&quot;.</li>
+	<li><i>style.getBooleanProperty( String name )</i> returns either a Boolean representing that value or null when the property is not defined. You can use this method only when you have registered the corresponding attribute in the file &quot;custom-css-attributes.xml&quot;. The attribute-type needs to be &quot;boolean&quot;.</li>
+</ul>
+<h2 id="backgroundandborders">Background and Borders</h2>
+<p>
+Background and border settings will be enforced by J2ME&nbsp;Polish, the CustomItem merely needs to 
+paint its contents.
+It is advisable, therefore, that a background is only painted, when the J2ME Polish-GUI is not used:
+<pre>
+//#ifndef polish.usePolishGui
+	// draw default background:
+	g.setColor( this.backgroundColor );
+	g.fillRect( 0, 0, this.width, this.height );
+//#endif
+</pre>
 </p>
 
 <h2 id="javadoc">JavaDoc Resources</h2>

@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload/>
 <author/>
 <email/>
@@ -146,5 +146,6 @@
 <item url="downloads/j2mepolish-1.0.1.html" />
 <item url="downloads/j2mepolish-1.1.html" />
 <item url="docs/how-tos.html" />
+<item url="downloads/j2mepolish-1.1.1.html" />
 </project>
 </webproject>
