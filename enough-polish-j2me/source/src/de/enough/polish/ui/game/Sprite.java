@@ -411,7 +411,7 @@ public class Sprite extends Layer
 	 */
 	public int getRefPixelX()
 	{
-		return this.refPixelX;
+		return this.transformedRefX + this.xPosition;
 	}
 
 	/**
@@ -423,7 +423,7 @@ public class Sprite extends Layer
 	 */
 	public int getRefPixelY()
 	{
-		return this.refPixelY;
+		return this.transformedRefY + this.yPosition;
 	}
 
 	/**
@@ -444,6 +444,7 @@ public class Sprite extends Layer
 	public void setFrame(int sequenceIndex)
 	{
 		this.frameSequenceIndex = sequenceIndex;
+		updateFrame();
 	}
 
 	/**
@@ -528,9 +529,6 @@ public class Sprite extends Layer
 	 * This depends on the frame-index as well as the current transformation.
 	 */
 	private void updateFrame() {
-		if (this.frameSequence == null) {
-			return;
-		}
 		int frameIndex = this.frameSequence[ this.frameSequenceIndex ];
 		int c = frameIndex % this.numberOfColumns;
 		int r = frameIndex / this.numberOfColumns;
@@ -738,6 +736,13 @@ public class Sprite extends Layer
 		int rows = image.getHeight() / frameHeight;
 		this.rawFrameCount = this.numberOfColumns * rows;
 		this.frameSequenceIndex = 0;
+		// set default frame sequence:
+		if (this.frameSequence == null) {
+			this.frameSequence = new int[ this.rawFrameCount ];
+			for (int i = 0; i < this.frameSequence.length; i++) {
+				this.frameSequence[i] = i;
+			}
+		}
 		this.column = 0;
 		this.row = 0;
 		this.collisionX = 0;
@@ -1034,18 +1039,23 @@ public class Sprite extends Layer
 		}
 		int cXStart = this.xPosition + this.transformedCollisionX;
 		int cXEnd = cXStart + this.transformedCollisionWidth;
-		int tileCXStart = t.xPosition + t.xPosition;
-		int tileCXEnd = tileCXStart + t.width;
-		if ((cXStart <= tileCXStart && cXEnd >= tileCXStart)
-		 || (cXStart >= tileCXEnd && cXEnd <= tileCXEnd) ) {
-			int cYStart = this.yPosition + this.transformedCollisionY;
-			int cYEnd = cYStart + this.transformedCollisionHeight;
-			int tileCYStart = t.yPosition + t.yPosition;
-			int tileCYEnd = tileCYStart + t.height;
-			if ((cYStart <= tileCYStart && cYEnd >= tileCYStart)
-					 || (cYStart >= tileCYEnd && cYEnd <= tileCYEnd) ) {
-				return true;
-			}			
+		int cYStart = this.yPosition + this.transformedCollisionY;
+		int cYEnd = cYStart + this.transformedCollisionHeight;
+		
+		int tileWidth = t.cellWidth;
+		int tileHeight = t.cellHeight;
+		int x = cXStart;
+		int y = cYStart;
+		while (x <= cXEnd) {
+			while (y <= cYEnd) {
+				int tile = t.getTileAt(x, y);
+				if (tile != 0) {
+					return true;
+				}
+				y += tileHeight;
+			}
+			y = cYStart;
+			x += tileWidth;
 		}
 		return false;
 	}

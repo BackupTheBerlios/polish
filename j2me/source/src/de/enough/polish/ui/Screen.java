@@ -205,12 +205,6 @@ public abstract class Screen
 			this.container.screen = this;
 			this.container.setVerticalDimensions( 0, this.screenHeight - this.titleHeight );
 		}
-		// inform all root items that they belong to this screen:
-		Item[] items = getRootItems();
-		for (int i = 0; i < items.length; i++) {
-			Item item = items[i];
-			item.screen = this;
-		}
 		//#ifdef polish.useDynamicStyles
 			// check if this screen has got a style:
 			if (this.style == null) {
@@ -266,13 +260,40 @@ public abstract class Screen
 	
 	
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#showNotify()
+	/**
+	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	protected void showNotify() {
+		if (!this.isInitialised) {
+			init();
+		}
 		// register this screen:
 		StyleSheet.currentScreen = this;
+		// inform all root items that they belong to this screen
+		// and that they will be shown soon:
+		Item[] items = getRootItems();
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			item.screen = this;
+			item.showNotify();
+		}
 	}
+	
+	/**
+	 * Unregisters this screen and notifies all items that they will not be shown anymore.
+	 */
+	protected void hideNotify() {
+		// un-register this screen:
+		if (StyleSheet.currentScreen == this) {
+			StyleSheet.currentScreen = null;
+		}
+		Item[] items = getRootItems();
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			item.hideNotify();
+		}
+	}
+	
 	/**
 	 * Sets the style of this screen.
 	 * 
@@ -344,9 +365,6 @@ public abstract class Screen
 			this.isInPaintMethod = true;
 		//#endif
 		try {
-			if (!this.isInitialised) {
-				init();
-			}
 			// paint background:
 			if (this.background != null) {
 				//#ifdef tmp.menuFullScreen

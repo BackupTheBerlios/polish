@@ -659,7 +659,7 @@ public abstract class Item extends Object
 		private Image afterImage;
 	//#endif
 	// label settings:
-	private Style labelStyle;
+	private Style labelStyle = StyleSheet.labelStyle;
 	private StringItem label;
 
 	private boolean useSingleRow;
@@ -873,8 +873,6 @@ public abstract class Item extends Object
 			String labelStyleName = style.getProperty("label-style");
 			if (labelStyleName != null) {
 				this.labelStyle = StyleSheet.getStyle( labelStyleName );
-			} else {
-				this.labelStyle = StyleSheet.labelStyle;
 			}
 		//#else
 			this.labelStyle = StyleSheet.labelStyle;
@@ -1459,6 +1457,11 @@ public abstract class Item extends Object
 			// label and content fit on one row:
 			this.itemWidth += labelWidth;
 			this.useSingleRow = true;
+			if (this.useSingleRow && this.label != null) {
+				if ((this.label.layout & LAYOUT_NEWLINE_AFTER) != 0) {
+					this.useSingleRow = false;
+				}
+			}
 			if ( cHeight + noneContentHeight < labelHeight ) {
 				cHeight = labelHeight - noneContentHeight;
 			}
@@ -1471,7 +1474,7 @@ public abstract class Item extends Object
 			this.itemWidth = lineWidth;
 		}
 		
-		this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight;
+		this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
 		this.backgroundHeight = cHeight
 							  + noneContentHeight
 							  - this.marginTop
@@ -1527,70 +1530,6 @@ public abstract class Item extends Object
 	 */
 	protected abstract void initContent(int firstLineWidth, int lineWidth);
 	
-	/*
-	 * Problem: values wie firstLineStart, lineStart und lineEnd
-	 * koennen erst eingerechnet werden, wenn das Item gemalt wird,
-	 * da insbesondere firstLineStart vorher nicht bekannt ist.
-	 * (getItemHeight(), getItemWidth())
-	 * Loesungen: 
-	 *    1. jedes Item beginnt in einer neuen Zeile (wie werden dann Tabellen gemalt)
-	 *    2. getHeight() getWidth() setzen isInitialised wieder zurueck
-	 *       (dann wird ein Item oft unnoetigt re-initialised)
-	 * 
-	 * Loesung beim paint:
-	 * Fallunterscheidung:
-	 * item ist breiter als verfuegbarer platz:
-	 * 		wenn kein Background und kein Border definiert ist:
-	 * 		- firstLineStart uebergeben, Rest wie ansonsten auch 
-	 *        (Berechnung der Bruchstellen, etc)
-	 *      wenn Background oder Border definiert ist:
-	 * 		- firstLineStart = lineStart, y = nextRowY
-	 * 
-	 * Allgemeines Problem: wie soll ein container seinen background
-	 * malen, ohne zuvor alle items vorher in der Luft gemalt zu haben?
-	 * - paint auf einem Image durchfuehren und dann (Teil) des Bildes malen 
-	 *   (wie muss das bild dann dimensioniert werden - eigentlich muesste die bildschirmgr;sse ausreichen!)
-	 * - wenn background definiert ist, dann nach dem ersten paint sofort
-	 *   ein repaint anfordern (lustig wenn mehrere container auf einem
-	 *   screen sind!)
-	 * - schon bei init alle startX und startY-Werte setzen und endX/endY auswerten;
-	 *   container koennte int[] xPositions und int[] yPositions fuehren,
-	 *   in der alle items eingetragen werden. Problem ist dann,
-	 *   wenn sich der Inhalt oder Style eines Items aendert:
-	 * 		- evtl. anstelle von "this.isInitialised=false" lieber
-	 *  	  Methode verwenden: void clearInitState() {
-	 * 			   this.isInitialised=false;
-	 * 				if (this.parent != null) {
-	 * 					this.parent.clearInitState();
-	 * 				}
-	 *			}
-	 *			Dann muessten also parent gesetzt werden, auch wenn keine dynamische styles
-	 *			verwendet werden.
-	 *		- wenn der focus weitergeschoben wird (und daher ein neuer
-	 *		  Style gesetzt wird), dann kann container selbst isInitialised
-	 *        auf false setzen. Schlauer waere es gegebenenfalls aber,
-	 * 		  nur das Item neu zu berechnen und die nachfolgenden
-	 * 		  x/yPositions dahingehend anzupassen - aber was ist mit 
-	 * 		  Content-Aenderungen (bei jedem erfolgreichen processKey( int, int )
-	 * 		  dieselbe Prozedur?)
-	 * 	
-	 * 
-	 * Rueckgabe: gerade beim Umbruechen kann der Aufrufer die
-	 * endX und endY Positionen nicht einfach errechnen, zB muss nicht die gesamte 
-	 * contentHeight eingerechnet werden, wenn dahinter noch Platz fuer das naechste 
-	 * Item ist.
-	 * 	- paintItem setzt endX und endY:
-	 * 		endY muss von Item nochmals angepasst werden (padding, margin und border)
-	 * 
-	 * Evtl wird's leichter wenn Items, die fuer den verbleibenden Platz
-	 * zu breit sind, auf eine neue Zeile anfangen - vielleicht auch nur,
-	 * wenn sie denn dann auf eine Zeile passen. Das wuerde aber gegen
-	 * das gewuenschte Verhalten im JavaDoc verstossen - nur Buttons
-	 * sollen nicht umgebrochen werden!
-	 * 
-	 * Focus: ein Item ist focusable wenn appearanceMode != PLAIN oder
-	 * 	wenn es sich um ein editierbares Item handelt (ChoiceGroup, TextBox, DateField)
-	 */
 	
 	/**
 	 * Paints the content of this item.
@@ -1684,6 +1623,10 @@ public abstract class Item extends Object
 	protected void defocus( Style originalStyle ) {
 		if (originalStyle != null) {
 			setStyle( originalStyle );
+		} else {
+			this.background = null;
+			this.border = null;
+			this.style = null;
 		}
 		this.isFocused = false;
 		// now remove any commands which are associated with this item:
@@ -1694,5 +1637,31 @@ public abstract class Item extends Object
 			}
 		}
 	}
-	
+
+	/**
+	 * Called by the system to notify the item that it is now at least
+	 * partially visible, when it previously had been completely invisible.
+	 * The item may receive <code>paint()</code> calls after
+	 * <code>showNotify()</code> has been called.
+	 * 
+	 * <p>The default implementation of this method does nothing.</p>
+	 */
+	protected void showNotify()
+	{
+		//default implementation does nothing
+	}
+
+	/**
+	 * Called by the system to notify the item that it is now completely
+	 * invisible, when it previously had been at least partially visible.  No
+	 * further <code>paint()</code> calls will be made on this item
+	 * until after a <code>showNotify()</code> has been called again.
+	 * 
+	 * <p>The default implementation of this method does nothing.</p>
+	 */
+	protected void hideNotify()
+	{
+		//default implementation does nothing
+	}
+
 }

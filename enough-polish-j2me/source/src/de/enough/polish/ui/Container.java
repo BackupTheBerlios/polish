@@ -787,4 +787,39 @@ public class Container extends Item {
 			return false;
 		}
 	}
+	
+	/**
+	 * Called by the system to notify the item that it is now at least
+	 * partially visible, when it previously had been completely invisible.
+	 * The item may receive <code>paint()</code> calls after
+	 * <code>showNotify()</code> has been called.
+	 * 
+	 * <p>The container implementation calls showNotify() on the embedded items.</p>
+	 */
+	protected void showNotify()
+	{
+		Item[] myItems = getItems();
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
+			item.showNotify();
+		}
+	}
+
+	/**
+	 * Called by the system to notify the item that it is now completely
+	 * invisible, when it previously had been at least partially visible.  No
+	 * further <code>paint()</code> calls will be made on this item
+	 * until after a <code>showNotify()</code> has been called again.
+	 * 
+	 * <p>The container implementation calls hideNotify() on the embedded items.</p>
+	 */
+	protected void hideNotify()
+	{
+		Item[] myItems = getItems();
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
+			item.hideNotify();
+		}
+	}
+
 }

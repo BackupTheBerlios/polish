@@ -154,8 +154,8 @@ public class TiledLayer extends Layer
 		//#define tmp.useBackBuffer
 		//#define tmp.splitTiles
 	//#endif
-	private int cellWidth;
-	private int cellHeight;
+	protected int cellWidth;
+	protected int cellHeight;
 	private int[][] grid;
 	//#ifdef tmp.splitTiles
 		private Image[] tiles;
@@ -357,7 +357,7 @@ public class TiledLayer extends Layer
 	 */
 	public void setAnimatedTile(int animatedTileIndex, int staticTileIndex)
 	{
-		if (staticTileIndex >= this.numberOfTiles ) {
+		if (staticTileIndex > this.numberOfTiles ) {
 			//#ifdef polish.debugVerbose
 				throw new IllegalArgumentException("invalid static tile index: " + staticTileIndex + " (there are only [" + this.numberOfTiles + "] tiles available.");
 			//#else
@@ -402,7 +402,7 @@ public class TiledLayer extends Layer
 	 */
 	public void setCell(int col, int row, int tileIndex)
 	{
-		if (tileIndex >= this.numberOfTiles ) {
+		if (tileIndex > this.numberOfTiles ) {
 			//#ifdef polish.debugVerbose
 				throw new IllegalArgumentException("invalid static tile index: " + tileIndex + " (there are only [" + this.numberOfTiles + "] tiles available.");
 			//#else
@@ -448,13 +448,15 @@ public class TiledLayer extends Layer
 	 */
 	public void fillCells(int col, int row, int numCols, int numRows, int tileIndex)
 	{
-		if (tileIndex >= this.numberOfTiles ) {
-			//#ifdef polish.debugVerbose
-				throw new IllegalArgumentException("invalid static tile index: " + tileIndex + " (there are only [" + this.numberOfTiles + "] tiles available.");
-			//#else
-				//# throw new IllegalArgumentException();
-			//#endif
-		}
+		//#ifndef polish.skipArgumentCheck
+			if (tileIndex > this.numberOfTiles) {
+				//#ifdef polish.debugVerbose
+					throw new IllegalArgumentException("invalid static tile index: " + tileIndex + " (there are only [" + this.numberOfTiles + "] tiles available.");
+				//#else
+					//# throw new IllegalArgumentException();
+				//#endif
+			}
+		//#endif
 		int endCols = col + numCols;
 		int endRows = row + numRows;
 		for (int i = col; i < endCols; i++ ) {
@@ -523,7 +525,10 @@ public class TiledLayer extends Layer
 	 * of the TiledLayer to be rendered.
 	 * <p>
 	 * If the TiledLayer's Image is mutable, the TiledLayer is rendered
-	 * using the current contents of the Image.
+	 * using the current contents of the Image, when the image has not been
+	 * split into single tiles
+	 *  (this is done when the "polish.splitTileImage" or the "polish.useTileBackBuffer" 
+	 * variable is set to true).
 	 * 
 	 * @param g the graphics object to draw the TiledLayer
 	 * @throws NullPointerException if g is null
@@ -531,6 +536,9 @@ public class TiledLayer extends Layer
 	 */
 	public final void paint( Graphics g)
 	{
+		if (!this.isVisible) {
+			return;
+		}
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
@@ -702,6 +710,28 @@ public class TiledLayer extends Layer
 		//#ifndef tmp.splitTiles
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		//#endif
+	}
+	
+	/**
+	 * Retrieves the tile at the given positions.
+	 * When the specified position is not within this
+	 * tiled layer, 0 is returned.
+	 * 
+	 * @param x the x position
+	 * @param y the y position
+	 * @return the tile index which is at the given position:
+	 * 		0 when there is no tile, a positive integer for a normal tile,
+	 *      a negative integer for an animated tile.
+	 */
+	protected int getTileAt( int x, int y) {
+		int column = (x - this.xPosition) / this.cellWidth;
+		int row = (y - this.yPosition) / this.cellHeight;
+		if (column < 0 || column >= this.gridColumns
+				|| row < 0 || row >= this.gridRows ) {
+			return 0;
+		} else {
+			return this.grid[column][row];
+		}
 	}
 
 }

@@ -74,7 +74,7 @@ public class AnimationThread extends Thread {
 			try {
 				Thread.sleep(sleeptime);
 				Screen screen = StyleSheet.currentScreen;
-				if (screen != null && screen.isShown()) {
+				if (screen != null ) {
 					if (screen.animate()) {
 						sleeptime = ANIMATION_INTERVAL;
 						animationCounter = 0;

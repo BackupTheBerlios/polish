@@ -1118,6 +1118,7 @@ implements CommandListener
 		if (this.midpTextBox == null) {
 			createTextBox();
 		}
+		this.screen = StyleSheet.currentScreen;
 		StyleSheet.display.setCurrent( this.midpTextBox );
 	}
 
@@ -1133,6 +1134,6 @@ implements CommandListener
 				notifyStateChanged();
 			}
 		}
-		StyleSheet.display.setCurrent( StyleSheet.currentScreen );
+		StyleSheet.display.setCurrent( this.screen );
 	}
 }

@@ -232,8 +232,10 @@ public class LayerManager extends Object
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
 		if (this.isViewWindowSet) {
-			g.setClip( x + this.viewX, y + this.viewY, this.viewWidth, this.viewHeight );
+			g.setClip( x, y, this.viewWidth, this.viewHeight );
 		}
+		// translate the graphic origin:
+		g.translate( x - this.viewX, y - this.viewY );
 		int lastIndex = this.layers.length -1;
 		for (int i = lastIndex; i >= 0; i--) {
 			Layer layer = this.layers[ i ];
@@ -241,6 +243,9 @@ public class LayerManager extends Object
 				layer.paint( g );
 			}
 		}
+		
+		// re-translate the graphic origin:
+		g.translate( -(x - this.viewX), -(y - this.viewY) );
 		// reset original clip:
 		if (this.isViewWindowSet) {
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
