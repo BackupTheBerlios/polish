@@ -279,45 +279,37 @@ public abstract class Screen
 		if (!this.isInitialised) {
 			return false;
 		}
-		//#ifdef polish.debugVerbose
-			try {
-		//#endif
-				
-		//TODO rob animate border
-		boolean animated = false;
-		if (this.background != null) {
-			animated = this.background.animate();
-		}
-		if (this.container != null) {
-			animated = animated | this.container.animate();
-		}
-		if (this.gauge != null) {
-			animated = animated | this.gauge.animate();
-		}
-		if (this.ticker != null) {
-			animated = animated | this.ticker.animate();
-		}
-		//#if polish.useFullScreen && polish.api.nokia-ui 
-		if (animated || this.repaintRequested) {
-			this.repaintRequested = false;
-		//#else
-			//# if (animated) {
-		//#endif
-			repaint();
-			return true;
-		} else {
-			return false;
-		}
-		//#ifdef polish.debugVerbose
-			} catch (Exception e) {
-				Debug.debug("animate() threw an exception", e );
-				//#ifdef polish.useDebugGui
-					// set the current screen to the debug-screen:
-					StyleSheet.display.setCurrent( Debug.getLogForm(true, this) );
-				//#endif
+		try {
+			//TODO rob animate border
+			boolean animated = false;
+			if (this.background != null) {
+				animated = this.background.animate();
+			}
+			if (this.container != null) {
+				animated = animated | this.container.animate();
+			}
+			if (this.gauge != null) {
+				animated = animated | this.gauge.animate();
+			}
+			if (this.ticker != null) {
+				animated = animated | this.ticker.animate();
+			}
+			//#if polish.useFullScreen && polish.api.nokia-ui 
+			if (animated || this.repaintRequested) {
+				this.repaintRequested = false;
+			//#else
+				//# if (animated) {
+			//#endif
+				repaint();
+				return true;
+			} else {
 				return false;
 			}
-		//#endif
+		} catch (Exception e) {
+			//#debug error
+			Debug.debug("animate() threw an exception", e );
+			return false;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -611,10 +603,6 @@ public abstract class Screen
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("keyPressed() threw an exception", e );
-			//#if polish.useDebugGui && polish.debugVerbose
-				// set the current screen to the debug-screen:
-				StyleSheet.display.setCurrent( Debug.getLogForm(true, this) );
-			//#endif
 		}
 	}
 		

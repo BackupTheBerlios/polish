@@ -25,12 +25,13 @@
  */
 package de.enough.polish.util;
 
-//#ifdef polish.useDebugGui
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.StringItem;
-//#endif
+
 
 /**
  * <p>Is used for debugging of information.</p>
@@ -42,20 +43,27 @@ import javax.microedition.lcdui.StringItem;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public final class Debug {
-	//#ifdef polish.useDebugGui
+public final class Debug
+implements CommandListener
+{
 	public static final Command RETURN_COMMAND = new Command( "return", Command.SCREEN, 1 );
 	private static final ArrayList MESSAGES = new ArrayList( 100 );
-	//#endif
+	private static Displayable returnDisplayable;
+	private static Display display;
+	private static javax.microedition.lcdui.TextBox textBox;
 	
 	/**
-	 * Prints the message or adds the message to the internal message list.
+	 * Prints a message.
 	 * 
-	 * @param time the time in ms.
-	 * @param message the message
+	 * @param message the message.
+	 * @param exception the exception or just an ordinary object
 	 */
-	public static final void debug( long time, String message ) {
-		debug( time + message );
+	public static final void debug( String message, Object exception ) {
+		if (exception instanceof Throwable) {
+			debug( message, (Throwable) exception );
+		} else {
+			debug( message + exception );
+		}
 	}
 	
 	/**
@@ -65,6 +73,15 @@ public final class Debug {
 	 */
 	public static final void debug( String message ) {
 		debug( message, null );
+	}
+	
+	/**
+	 * Logs the given exception.
+	 * 
+	 * @param exception the exception which was catched.
+	 */
+	public static final void debug( Throwable exception ) {
+		debug( "Error", exception );
 	}
 	
 	/**
@@ -78,22 +95,27 @@ public final class Debug {
 		if (exception != null) {
 			exception.printStackTrace();
 		}
-		//#ifdef polish.useDebugGui
-			// add message to list:
-			if (exception != null) {
-				message += ": " + exception.toString();
-				if (exception.getMessage() != null) {
-					message += ": " + exception.getMessage();
-				}
+		// add message to list:
+		if (exception != null) {
+			message += ": " + exception.toString();
+			if (exception.getMessage() != null) {
+				message += ": " + exception.getMessage();
 			}
-			MESSAGES.add( message );
-			if (MESSAGES.size() > 98) {
-				MESSAGES.remove( 0 );
+		}
+		MESSAGES.add( message );
+		if (MESSAGES.size() > 98) {
+			MESSAGES.remove( 0 );
+		}
+		if (Debug.textBox != null) {
+			Debug.textBox.insert( message + "\n", 0 );
+		}
+		//#if polish.showLogOnError && polish.usePolishGui 
+			if (exception != null) {
+				showLog( de.enough.polish.ui.StyleSheet.display );
 			}
 		//#endif
 	}
 		
-	//#ifdef polish.useDebugGui
 	/**
 	 * Retrieves a form with all the debugging messages.
 	 * 
@@ -101,6 +123,8 @@ public final class Debug {
 	 * @param listener the command listener for the created form
 	 * @return the form containing all the debugging messages so far.
 	 * @throws NullPointerException when the listener is null
+	 * @deprecated use showLogForm instead
+	 * @see #showLogForm(Display)
 	 */
 	public static final Form getLogForm( boolean reverseSort, CommandListener listener ) {
 		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
@@ -121,7 +145,48 @@ public final class Debug {
 		form.addCommand(RETURN_COMMAND);
 		return form;
 	}
-	//#endif
+	
+	/**
+	 * Shows the log with the current messages.
+	 * When new messages are added, the log will be updated.
+	 * The latest messages will be at the top.
+	 * 
+	 * @param display the display-variable for the current MIDlet.
+	 */
+	public static void showLog( Display display ) {
+		if (returnDisplayable != null) {
+			// the debug form is already shown!
+			return;
+		}
+		if (display == null) {
+			System.err.println("Unable to show log with null-Display.");
+			return;
+		}
+		Debug.returnDisplayable = display.getCurrent();
+		Debug.display = display;
+		Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 255, javax.microedition.lcdui.TextField.ANY );
+		Debug.textBox.setMaxSize( Debug.textBox.getMaxSize() );
+		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
+		for (int i = 0; i < messages.length; i++) {
+			String message = messages[i] + "\n";
+			Debug.textBox.insert( message, 0 );
+		}
+		Debug.textBox.addCommand(RETURN_COMMAND);
+		Debug.textBox.setCommandListener( new Debug() );
+		display.setCurrent( Debug.textBox );
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+	 */
+	public void commandAction(Command cmd, Displayable screen) {
+		Debug.textBox = null;
+		Display disp = Debug.display;
+		Debug.display = null;
+		Displayable returnDisp = Debug.returnDisplayable;
+		Debug.returnDisplayable = null;
+		disp.setCurrent( returnDisp );
+	}
 	
 }
 

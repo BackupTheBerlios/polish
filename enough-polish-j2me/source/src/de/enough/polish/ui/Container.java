@@ -60,6 +60,9 @@ import de.enough.polish.util.TextUtil;
  * @author Robert Virkus, robert@enough.de
  */
 public class Container extends Item {
+	//#if polish.css.columns || polish.useTable
+		//#define tmp.useTable
+	//#endif
 	
 	private static final int NO_COLUMNS = 0;
 	private static final int EQUAL_WIDTH_COLUMNS = 1;
@@ -329,7 +332,9 @@ public class Container extends Item {
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
+		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
+		//#endif
 			int myContentWidth = 0;
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
@@ -363,82 +368,86 @@ public class Container extends Item {
 			this.contentHeight = myContentHeight;
 			this.contentWidth = myContentWidth;
 			return;
-		} 
-		// columns are used
-		if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
-			int availableColumnWidth = (lineWidth 
-							- ((this.numberOfColumns -1) + this.paddingHorizontal))
-							/ this.numberOfColumns;
-			//System.out.println("available column width: " + availableColumnWidth );
-			this.columnsWidths = new int[ this.numberOfColumns ];
-			for (int i = 0; i < this.numberOfColumns; i++) {
-				this.columnsWidths[i] = availableColumnWidth;
-			}
+		//#ifdef tmp.useTable
 		}
-		this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
-		this.rowsHeights = new int[ this.numberOfRows ];
-		int maxRowHeight = 0;
-		int columnIndex = 0;
-		int rowIndex = 0;
-		int[] maxColumnWidths = new int[ this.numberOfColumns ];
-		boolean trackColumnWidths = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
-		int maxWidth = 0;
-		int myContentHeight = 0;
-		//System.out.println("starting init of " + myItems.length + " container items.");
-		for (int i=0; i< myItems.length; i++) {
-			Item item = myItems[i];
-			int availableWidth = this.columnsWidths[columnIndex];
-			//System.out.println("available with: " + availableWidth);
-			int width = item.getItemWidth( availableWidth, availableWidth );
-			//System.out.println("got item width");
-			int height = item.getItemHeight( availableWidth, availableWidth );
-			
-			// now the item should have a style, so it can be safely focused
-			// without loosing the style information:
-			if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-				focus( i, item );
-				height = item.getItemHeight( availableWidth, availableWidth );
-				width = item.getItemWidth( availableWidth, availableWidth );
-				this.focusFirstElement = false;
-			}
-			
-			if (height > maxRowHeight) {
-				maxRowHeight = height;
-			}
-			if (trackColumnWidths && width > maxColumnWidths[columnIndex ]) {
-				maxColumnWidths[ columnIndex ] = width;
-			}
-			if (width > maxWidth ) {
-				maxWidth = width;
-			}
-			columnIndex++;
-			if (columnIndex == this.numberOfColumns) {
-				//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
-				columnIndex = 0;
-				this.rowsHeights[rowIndex] = maxRowHeight;
-				myContentHeight += maxRowHeight + this.paddingVertical;
-				maxRowHeight = 0;
-				rowIndex++;
-			}
-		} // for each item
-		// now save the worked out dimensions:
-		if (this.columnsSetting == NORMAL_WIDTH_COLUMNS) {
-			this.columnsWidths = maxColumnWidths;
-		} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
-			if (!this.isLayoutExpand) {
-				for (int i = 0; i < this.columnsWidths.length; i++) {
-					this.columnsWidths[i] = maxWidth;
+		//#endif
+		
+		//#ifdef tmp.useTable
+			// columns are used
+			if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
+				int availableColumnWidth = (lineWidth 
+								- ((this.numberOfColumns -1) + this.paddingHorizontal))
+								/ this.numberOfColumns;
+				//System.out.println("available column width: " + availableColumnWidth );
+				this.columnsWidths = new int[ this.numberOfColumns ];
+				for (int i = 0; i < this.numberOfColumns; i++) {
+					this.columnsWidths[i] = availableColumnWidth;
 				}
 			}
-		} // otherwise the column widths are defined statically.
-		// set content height & width:
-		int myContentWidth = 0;
-		for (int i = 0; i < this.columnsWidths.length; i++) {
-			myContentWidth += this.columnsWidths[i] + this.paddingHorizontal;
-		}
-		this.contentWidth = myContentWidth;
-		this.contentHeight = myContentHeight;
-		System.out.println("done intialising container");
+			this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
+			this.rowsHeights = new int[ this.numberOfRows ];
+			int maxRowHeight = 0;
+			int columnIndex = 0;
+			int rowIndex = 0;
+			int[] maxColumnWidths = new int[ this.numberOfColumns ];
+			boolean trackColumnWidths = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
+			int maxWidth = 0;
+			int myContentHeight = 0;
+			//System.out.println("starting init of " + myItems.length + " container items.");
+			for (int i=0; i< myItems.length; i++) {
+				Item item = myItems[i];
+				int availableWidth = this.columnsWidths[columnIndex];
+				//System.out.println("available with: " + availableWidth);
+				int width = item.getItemWidth( availableWidth, availableWidth );
+				//System.out.println("got item width");
+				int height = item.getItemHeight( availableWidth, availableWidth );
+				
+				// now the item should have a style, so it can be safely focused
+				// without loosing the style information:
+				if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
+					focus( i, item );
+					height = item.getItemHeight( availableWidth, availableWidth );
+					width = item.getItemWidth( availableWidth, availableWidth );
+					this.focusFirstElement = false;
+				}
+				
+				if (height > maxRowHeight) {
+					maxRowHeight = height;
+				}
+				if (trackColumnWidths && width > maxColumnWidths[columnIndex ]) {
+					maxColumnWidths[ columnIndex ] = width;
+				}
+				if (width > maxWidth ) {
+					maxWidth = width;
+				}
+				columnIndex++;
+				if (columnIndex == this.numberOfColumns) {
+					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
+					columnIndex = 0;
+					this.rowsHeights[rowIndex] = maxRowHeight;
+					myContentHeight += maxRowHeight + this.paddingVertical;
+					maxRowHeight = 0;
+					rowIndex++;
+				}
+			} // for each item
+			// now save the worked out dimensions:
+			if (this.columnsSetting == NORMAL_WIDTH_COLUMNS) {
+				this.columnsWidths = maxColumnWidths;
+			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
+				if (!this.isLayoutExpand) {
+					for (int i = 0; i < this.columnsWidths.length; i++) {
+						this.columnsWidths[i] = maxWidth;
+					}
+				}
+			} // otherwise the column widths are defined statically.
+			// set content height & width:
+			int myContentWidth = 0;
+			for (int i = 0; i < this.columnsWidths.length; i++) {
+				myContentWidth += this.columnsWidths[i] + this.paddingHorizontal;
+			}
+			this.contentWidth = myContentWidth;
+			this.contentHeight = myContentHeight;
+		//#endif
 	}
 
 	
