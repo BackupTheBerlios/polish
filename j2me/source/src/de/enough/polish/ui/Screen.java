@@ -25,10 +25,15 @@
 package de.enough.polish.ui;
 
 
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Debug;
-
-import javax.microedition.lcdui.*;
 
 
 /**
@@ -1030,24 +1035,41 @@ public abstract class Screen
 			//#style menu, default
 			 this.menuContainer = new Container( true );
 		}
-		//#style menuitem, menu, default
-		StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
 		int type = cmd.getCommandType(); 
 		//#ifdef polish.key.ReturnKey:defined
 			if ( type == Command.BACK ) {
 				this.backCommand = cmd;
 			}
 		//#endif
-		if ( (this.menuSingleRightCommand == null)
-			&& (type == Command.BACK || type == Command.CANCEL ) ) 
+		if ( (type == Command.BACK || type == Command.CANCEL ) ) 
 		{
-			// this is a command for the right side of the menu:
-			this.menuSingleRightCommand = cmd;
-			if (isShown()) {
-				repaint();
+			if ( (this.menuSingleRightCommand == null)
+					|| (cmd.getPriority() < this.menuSingleRightCommand.getPriority())	)
+			{
+				// okay set the right menu command:
+				if (this.menuSingleRightCommand != null) {
+					// the right menu command is replaced by the new one,
+					// so insert the original one into the options-menu:
+					//#style menuitem, menu, default
+					StringItem menuItem = new StringItem( null, this.menuSingleRightCommand.getLabel(), Item.HYPERLINK );
+					this.menuContainer.add( menuItem );
+					if (this.menuContainer.size() == 1) {
+						this.menuSingleLeftCommand = this.menuSingleRightCommand;
+					} else {
+						this.menuSingleLeftCommand = null;
+					}
+					this.menuCommands.add( this.menuSingleRightCommand );
+				}					
+				// this is a command for the right side of the menu:
+				this.menuSingleRightCommand = cmd;
+				if (isShown()) {
+					repaint();
+				}
+				return;
 			}
-			return;
 		}
+		//#style menuitem, menu, default
+		StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
 		this.menuContainer.add( menuItem );
 		if (this.menuContainer.size() == 1) {
 			this.menuSingleLeftCommand = cmd;
@@ -1064,6 +1086,27 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
+		if (this.menuSingleRightCommand == cmd) {
+			this.menuSingleRightCommand = null;
+			//move another suitable command-item to the right-pos:
+			if (this.menuCommands != null) {
+				Command[] commands = (Command[]) this.menuCommands.toArray( new Command[ this.menuCommands.size()]);
+				for (int i = 0; i < commands.length; i++) {
+					Command command = commands[i];
+					int type = command.getCommandType(); 
+					if ( type == Command.BACK || type == Command.CANCEL ) {
+						this.menuContainer.remove( i );
+						this.menuCommands.remove( i );
+						this.menuSingleRightCommand = command;
+						break;
+					}
+				}
+			}
+			if (isShown()) {
+				repaint();
+			}
+			return;
+		}
 		if (this.menuCommands == null) {
 			return;
 		}
@@ -1075,8 +1118,6 @@ public abstract class Screen
 		if (this.menuSingleLeftCommand == cmd ) {
 			this.menuSingleLeftCommand = null;
 			this.menuContainer.remove(index);			
-		} else if (this.menuSingleRightCommand == cmd) {
-			this.menuSingleRightCommand = null;
 		} else {
 			this.menuContainer.remove(index);			
 		}
@@ -1385,13 +1426,10 @@ public abstract class Screen
 	 * @param item the item which is already shown on this screen.
 	 */
 	public void focus(Item item) {
-		Item[] items = this.container.getItems();
-		for (int i = 0; i < items.length; i++) {
-			Item item2 = items[i];
-			if (item2 == item) {
-				this.container.focus( i, item );
-				return;
-			}
+		int index = this.container.itemsList.indexOf(item);
+		if (index != -1) {
+			this.container.focus( index, item );
+			return;
 		}
 		//#debug warn
 		System.out.println("Screen: unable to focus item (did not find it in the container) " + item);

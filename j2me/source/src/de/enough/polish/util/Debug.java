@@ -236,19 +236,33 @@ implements CommandListener
 		display.setCurrent( Debug.textBox );
 	}
 	
+	/**
+	 * Adds all messages to the internal TextBox-Log.
+	 *
+	 */
 	private static final void addMessages() {
 		StringBuffer buffer = new StringBuffer();
 		int maxSize = Debug.textBox.getMaxSize();
 		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
-		int i = messages.length - 1; 
-		while (buffer.length() < maxSize && i >= 0 ) {
-			buffer.append( messages[i])
+		//#if polish.Debug.showLastMessageFirst != true
+			for (int i = 0; i < messages.length; i++) {
+				buffer.append( messages[i])
 				.append( '\n' );
-			i--;
-		}
-		if ( buffer.length() >= maxSize) {
-			buffer.delete(maxSize - 1, buffer.length() );
-		}
+			}
+			if ( buffer.length() >= maxSize) {
+				buffer.delete(0, maxSize -  buffer.length() );
+			}
+		//#else
+			int i = messages.length - 1; 
+			while (buffer.length() < maxSize && i >= 0 ) {
+				buffer.append( messages[i])
+					.append( '\n' );
+				i--;
+			}
+			if ( buffer.length() >= maxSize) {
+				buffer.delete(maxSize - 1, buffer.length() );
+			}
+		//#endif
 		Debug.textBox.setString( buffer.toString() );
 	}
 

@@ -68,14 +68,14 @@ public final class StyleSheet {
 	public static Display display;
 	public static AnimationThread animationThread;
 	//#ifdef polish.command.ok:defined
-		//#= public static final Command OK_CMD = new Command("${polish.command.ok}", Command.OK, 0 );
+		//#= public static final Command OK_CMD = new Command("${polish.command.ok}", Command.OK, 2 );
 	//#else
-		public static final Command OK_CMD = new Command("OK", Command.OK, 0 );
+		public static final Command OK_CMD = new Command("OK", Command.OK, 2 );
 	//#endif
 	//#ifdef polish.command.cancel:defined
-		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 1 );
+		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
 	//#else
-		public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 1 );
+		public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
 	//#endif
 
 	/**

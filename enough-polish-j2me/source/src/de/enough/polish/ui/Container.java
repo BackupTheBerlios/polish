@@ -158,10 +158,10 @@ public class Container extends Item {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public void add( Item item ) {
-		this.isInitialised = false;
 		item.parent = this;
 		this.itemsList.add( item );
 		if (this.isInitialised) {
+			this.isInitialised = false;
 			repaint();
 		}
 	}
@@ -177,10 +177,10 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public void add( int index, Item item ) {
-		this.isInitialised = false;
 		item.parent = this;
 		this.itemsList.add( index, item );
 		if (this.isInitialised) {
+			this.isInitialised = false;
 			repaint();
 		}
 	}
@@ -194,9 +194,9 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item set( int index, Item item ) {
-		this.isInitialised = false;
 		item.parent = this;
 		if (this.isInitialised) {
+			this.isInitialised = false;
 			repaint();
 		}
 		return (Item) this.itemsList.set( index, item );

@@ -603,14 +603,14 @@ implements CommandListener
 	public static final int CONSTRAINT_MASK = 0xFFFF;
 	//#ifndef tmp.suppressCommands
 		//#ifdef polish.command.delete:defined
-			//#= private static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 0 );
+			//#= private static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, 1 );
 		//#else
-			private static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 0 ); 
+			private static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
 		//#endif
 		//#ifdef polish.command.clear:defined
-			//#= private static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 0 );
+			//#= private static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 2 );
 		//#else
-			private static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 1 ); 
+			private static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
 		//#endif
 	//#endif
 	
