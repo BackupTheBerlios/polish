@@ -200,9 +200,11 @@ public class List extends Screen implements Choice
 	 * 
 	 * 
 	 */
-	//public static final Command SELECT_COMMAND = javax.microedition.lcdui.List.SELECT_COMMAND;
-	//TODO rob i18n cmd.list.select
-	public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 1 );
+	//#ifdef polish.command.select:defined
+		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.OK, 0 );
+	//#else
+		public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 1 );
+	//#endif
 
 	private Command selectCommand = SELECT_COMMAND;
 	private int listType;

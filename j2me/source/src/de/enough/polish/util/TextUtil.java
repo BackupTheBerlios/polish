@@ -80,7 +80,7 @@ public final class TextUtil {
 	 * @param value the string which should be splitted
 	 * @param font the font which is used to display the font
 	 * @param firstLineWidth the allowed width for the first line
-	 * @param lineWidth the allowed width for all other lines
+	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @return the array containing the substrings
 	 */
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
@@ -132,7 +132,7 @@ public final class TextUtil {
 	
 	/**
 	 * Splits the given string so that the substrings fit into the the given line-widths.
-	 * It is expected that the specified completeWidth > firstLineWidth.
+	 * It is expected that the specified lineWidth >= firstLineWidth.
 	 * The resulting substrings will be added to the given ArrayList.
 	 * When the complete string fits into the first line, it will be added
 	 * to the list.
@@ -145,7 +145,7 @@ public final class TextUtil {
 	 * @param font the font which is used to display the font
 	 * @param completeWidth the complete width of the given string for the specified font.
 	 * @param firstLineWidth the allowed width for the first line
-	 * @param lineWidth the allowed width for all other lines
+	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param list the list to which the substrings will be added.
 	 */
 	public static void split( String value, Font font, 
