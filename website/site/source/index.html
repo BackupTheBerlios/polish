@@ -10,8 +10,12 @@
 	<p><a href="news.html">more news...</a>.</p>
 	<h2>What is J2ME Polish?</h2>
 	<p>
-		J2ME Polish is a build tool based on Ant and an advanced GUI for creating
-		MIDP applications.<br/>
+		J2ME Polish is suite of tools, of which every one meets a definite need
+		of J2ME developers:  
+		<br />
+		Build-tools with an integrated device-database, 
+		a powerful GUI, 
+		a game-engine, a logging framework and a collection of utilities.
 	</p>
 		<table><tr>
 		<td><a class="imageLink" href="screenshots.html"><img src="images/screenshot-example-enough.png" alt="design example 1"  width="205" height="277"/></a></td>
@@ -20,43 +24,129 @@
 			designs. Have a look at the <a href="screenshots.html">screenshots-page</a>
 			for more examples and details.
 		</td>
-		</tr></table>
+		</tr>
+		</table>
+		<h3 id="build">Build Tools</h3>
+		<p>
+		The <a href="docs/build.html">build-tool</a> takes care for the common tasks of
+		preprocessing, compilation, obfuscation, preverification,
+		packaging and JAD-creation. Thanks to the integrated device
+		database, device-optimzation is easier than ever.
+		</p>
 		<ul>
-			<li><a href="docs/build.html"><b>Build Tools</b></a>: 
-				J2ME Polish compiles, preverifies, obfuscates and packages
-				your application. Preprocessing and JAD creation
-				are also done. J2ME Polish also contains a 
-				<a href="devices-overview.html">device database</a>, 
-				which can be extended easily and which can be used during
-				the preprocessing phase.
+			<li><b><a href="docs/build-deviceRequirements.html">Device Selection</a></b>:
+			Select the devices for which the application should be build.
+			This can be done explicitly by listing the devices or
+			implicitly by stating requirements for the devices (e.g.
+			&quot;use all devices which support the MIDP/2.0 standard or
+			the Mobile Media API&quot;).
 			</li>
-			<li><a href="docs/optimization.html"><b>Device Optimization</b></a>: 
-				Create standard MIDP applications
-				and let J2ME&nbsp;Polish do the optimization work for you -
-				automatically. 
+			<li><b><a href="docs/preprocessing.html">Preprocessing</a></b>:
+			Create faster, leaner and device optimized applications
+			with the power of J2ME Polish' preprocessing capabilities and the integrated
+			<a href="devices-overview.html">device database</a>. 
+			Check and use device specifications within 
+			your code without using hardcoded values or risking 
+			the portability of your application.
+			<br/>
+			You can use any device-capabilities which are defined
+			in the device database:
+<pre>
+//#if polish.api.mmapi || polish.midp2
+	import javax.microedition.javax.microedition.media.*;
+//#endif
+</pre>			
 			</li>
-			<li><a href="docs/css.html"><b>CSS Design</b></a>: Use the webstandard CSS for designing your
+			<li><b><a href="docs/build-build.html">Compilation &amp; Preverifying</a></b>:
+			J2ME Polish compiles and preverifies everything automatically.
+			No need to set APIs or the classpath or to define the float
+			support of CLDC/1.1-devices manually. 
+			<br />
+			Many APIs like the Mobile Media
+			API, the Wireless Messaging API, Nokia's User Interface API as well
+			as the MIDP/1.0 and MIDP/2.0 APIs are already included into
+			J2ME Polish for your convenience.
+			</li>
+			<li><b><a href="docs/build-build.html#obfuscator">Obfuscation</a></b>:
+			J2ME Polish has build-in support for the 
+			<a href="http://proguard.sourceforge.net" target="_blank">ProGuard</a> 
+			as well as the 
+			<a href="http://www.retrologic.com" target="_blank">RetroGuard</a>
+			obfuscator, which both shrink and
+			scramble your application code. Other obfuscators can be integrated easily.
+			</li>
+			<li><b><a href="docs/build-build.html#jad">JAR and JAD creation</a></b>: J2ME Polish packages
+			the application and creates the appropriate JAD file automatically.
+			Custom JAD-attributes can be set, of course.
+			</li>
+		</ul>
+		<h3 id="devicedatabase">Device Database</h3>
+		<p>J2ME Polish includes a <a href="devices-overview.html">device database</a>
+		with over 150 J2ME devices. This database delivers the data for the
+		powerful preprocessing capabilities of J2ME Polish. The database
+		can be easily extended and is updated regularily.
+		</p>
+		<h3 id="gui">The J2ME Polish GUI</h3>
+		<p>
+		J2ME Polish also offers a <a href="docs/css.html">powerful GUI</a> 
+		which works on MIDP/1.0 as well as on MIDP/2.0 devices and which can be designed
+		using simple CSS-textfiles, a technique which every webdesigner
+		masters.
+		</p>
+		<ul>
+			<li><a href="docs/css.html"><b>CSS Design</b></a>: Use the webstandard CSS 
+			for designing your
 				J2ME application. Simple text files control the
 				outer appearance of your application. Designers
-				can work independently of the programmers. The 
+				can work independently of the programmers at last! The 
 				design and all the content can be easiliy adjusted
 				for specific devices or device groups.
 			</li>
-			<li><a href="docs/utilities.html"><b>Utilities</b></a>: Use some often needed utilities which are not available in the J2ME
-				standard, e.g. the ArrayList or the debug tool.
+			<li><b>Standards Compliant</b>:
+			The J2ME Polish GUI is fully compliant to the MIDP/2.0 standard.
+			This means that you can use MIDP/2.0 features like a POPUP
+			ChoiceGroup on MIDP/1.0 devices as well.<br/>
+			Also the programmer does not need to learn a new API, and needs
+			to use only the standard MIDP for coding - 
+			J2ME Polish &quot;weaves&quot; the
+			necessary APIs during the build-process into the application.
 			</li>
-			<li><a href="docs/preprocessing.html"><b>Preprocessing</b></a>: 
-				Create faster, leaner and device optimized applications
-				with the power of J2ME Polish' preprocessing and the integrated
-				device database. Check and use device specifications within 
-				your code without using hardcoded values!</li>
-			<li><a href="docs/utilities.html#logging"><b>Logging Framework</b></a>: 
-			        Use the J2ME Polish logging framework with logging levels,
-				detailed information and have a look at the log even on the
-				device. And best of all: when it is not needed, the logging will
-				use no memory and no processing power at all!
+			<li><a href="docs/optimization.html"><b>Device Optimization</b></a>: 
+				Most optimizations are needed for the user
+				interface. Create standard MIDP applications
+				and let J2ME&nbsp;Polish do the optimization work for you -
+				automatically. 
+			</li>
+			<li><a href="docs/build-build.html#attributes"><b>Optional &amp; Controllable</b></a>:
+			The GUI can be turned off completely if desired and can be
+			controlled by simple switches in the &quot;build.xml&quot;.
+			By default the GUI is not used for very old devices which
+			have not the necessary capabilities for supporting the
+			J2ME Polish GUI.
+			</li>
+			<li><a href="docs/css.html"><b>Powerful</b></a>:
+			Use animated backgrounds, fullscreen canvases, designable
+			menu-bars and titles and more.
 			</li>
 		</ul>
+		<h3 id="gameengine">Game Engine</h3>
+		<p>
+		With J2ME Polish's <a href="docs/game-engine.html">game-engine</a> you 
+		can use the MIDP/2.0 game-API for MIDP/1.0 devices as well. With one
+		source code you can now deliver for all J2ME devices!
+		</p>
+		<h3 id="logging">Logging Framework</h3>
+		<p>
+		With the <a href="docs/utilities.html#logging">logging framework</a> 
+		simple System.out.println()-messages can be shown on real devices.
+		The framework allows a fine grained control like the popular log4j-framework
+		and can be disabled completely.
+		</p>
+		<h3 id="utilities">Utilities</h3>
+		<p>
+		Use some often needed <a href="docs/utilities.html">utilities</a> which are not 
+		available in the J2ME standard, e.g. the ArrayList or the text utility.
+		</p>
 	
 	<h2 id="status">Status</h2>
 	<p>J2ME Polish is a stable & complete build solution for J2ME.
@@ -64,6 +154,8 @@
 		(J2ME Polish <%= PolishVersion %>).
 	</p>
 	<h2 id="info">Open Source</h2>
+	<p>J2ME Polish is available under the Open Source license GPL as well as
+	under <a href="licenses.html">commercial licenses</a>.</p>
 	<table><tr>
 	<td width="30%" valign="top">
 		J2ME Polish is OSI Certified Open Source Software.

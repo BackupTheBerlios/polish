@@ -31,7 +31,7 @@ To use J2ME Polish, following components need to be installed:
 	<li>Java 2 Standard Edition SDK 1.4  or higher, 
 	<a href="http://java.sun.com/j2se/">http://java.sun.com/j2se/</a>
 	</li>
-	<li>Java Wireless Toolkit, 
+	<li>Java Wireless Toolkit 2.1 or higher, 
 	<a href="http://java.sun.com/products/j2mewtoolkit/index.html">http://java.sun.com/products/j2mewtoolkit/index.html</a>
 	</li>
 	<li>Favorite IDE, for example Eclipse 3.0, 
@@ -144,6 +144,33 @@ You can now build the sample application by right-clicking the &quot;build.xml&q
 You will find the created J2ME application files in the &quot;dist&quot; folder of your project, after you have switched to the &quot;File Browser&quot; view.
 </p>
 
+<h2 id="netbeans">Integrating J2ME Polish with NetBeans</h2>
+<p>For integrating J2ME Polish with NetBeans mount the directory into which you have
+installed J2ME Polish, right-click the &quot;build.xml&quot; file and choose &quot;Execute&quot;.
+</p>
+<ul>
+	<li><b>Create a New Project</b>: Go to &quot;Project&quot; -&gt; &quot;Project Manager&quot; 
+	and select &quot;New...&quot; and call the new project &quot;j2mepolish&quot;.
+	</li>
+	<li><b>Mounting the Filesysten</b>: Select &quot;File&quot; -&gt; &quot;Mount Filesystem...&quot; -&gt;
+	&quot;Local Directory&quot; and select the folder into which you have installed J2ME Polish.
+	<br/>Note: Don't navigate into the directory. Just select the J2ME Polish directory and click &quot;Finish&quot;.
+	 </li>
+	<li><b>Executing J2ME Polish</b>: Open the mounted file-system (switch to the file-system-window
+	by pressing &quot;Control-2&quot;), locate the file 
+	&quot;build.xml&quot;, right-click it and select &quot;Execute&quot;.
+	After the execution you will find the created applications in the &quot;dist&quot; folder.
+	</li>
+	<li><b>Mounting the Libraries</b>: Open the mounted file-system, open the &quot;import&quot; directory
+	and right-click the &quot;enough-j2mepolish-client&quot; jar and select &quot;Mount JAR&quot;.
+	Do the same with the libraries &quot;midp2&quot;, &quot;mmapi&quot;, &quot;nokia-ui&quot; and &quot;wmapi&quot;. 
+	</li>
+	<li><b>Open the Sample Application</b>: You can now change the sample application, if you
+	want to. You can find it in the &quot;src&quot; directory (in the package &quot;de.enough.polish.example&quot;).
+	</li>
+</ul>
+
+
 <h2 id="antsetup">Setup and Configuration of Ant</h2>
 <p>
 Ant only needs to be configured when it should be called from the command-line.
@@ -183,5 +210,42 @@ ant
 echo Now calling ant with the test-property set to true, so the build is faster:
 ant test j2mepolish
 </pre>
+</p>
+
+<h2 id="existing">Integrating J2ME Polish with an Existing Project</h2>
+<p>
+You can use J2ME Polish for any existing project by copying the file &quot;build.xml&quot; 
+as well as the folders &quot;import&quot; and &quot;resources&quot; to the root-folder of the
+project. You then need to adjust the &quot;build.xml&quot; and the 
+&quot;resources/polish.css&quot; files.
+</p>
+<p>Here are the required steps:
+</p>
+<ul>
+ <li>make sure you use the latest release (current release is J2ME Polish <%= PolishVersion %>).
+ </li>
+ <li>copy your sources to the &quot;src&quot; folder of your J2ME Polish installation (or copy the &quot;build.xml&quot;, the &quot;import&quot; folder and the &quot;resources&quot; folder to your project-root). 
+ </li>
+ <li>Adjust the &quot;build.xml&quot; file: you need to specify your MIDlet class in 
+ the &lt;midlet&gt; element. 
+ You might also want to adjust the &lt;deviceRequirements&gt; element, 
+ currently applications are build for 4 device-groups: 
+ <br/>1) Nokia Series 60 (&quot;Nokia/Series60&quot;), 
+ <br/>2) Nokia Series 60 with MIDP/2.0 (&quot;Nokia/Series60Midp2&quot;), 
+ <br/>3) Any MIDP/1.0 phone(&quot;Generic/midp1&quot;), 
+ <br/>4) Any MIDP/2.0 phone (&quot;Generic/midp2&quot;).
+ </li>
+ <li>If you want to use the J2ME Polish GUI, you need to make changes to the &quot;resources/polish.css&quot; file. 
+ <br/><b>Tip</b>: use dynamic styles like &quot;form&quot; and &quot;list&quot; for a start. 
+ </li>
+ <li>
+ If you do not want to use the J2ME Polish GUI, disable it by setting the &quot;usePolishGui&quot;-attribute of the &lt;build&gt;-element to &quot;false&quot;.
+ </li>
+ <li>Ensure that your <a href="#antsetup">Ant-setup</a> is correct, do you have set the JAVA_HOME environment variable?
+ </li>
+</ul>
+<p>If you have any problems, please drop me a line at 
+<a href="mailto:j2mepolish@enough.de">j2mepolish@enough.de</a> or at the
+<a href="../discussion.html">forums</a>.
 </p>
 <%include end.txt %>

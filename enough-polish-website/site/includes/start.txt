@@ -58,9 +58,9 @@
 		<%ifdef inDocumentationSection %>
 			<div id="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
 			<%ifdef inDocumentationSection.install %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation &amp; Integration</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation &amp; Integration</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.optimization %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/optimization.html">Optimization</a></div>
@@ -74,7 +74,8 @@
 				<a href="<%= basedir %>docs/build-info.html">Info Section</a><br/>
 				<a href="<%= basedir %>docs/build-deviceRequirements.html">Device Requirements Section</a><br/>
 				<a href="<%= basedir %>docs/build-build.html">Build Section</a><br/>
-				<a href="<%= basedir %>docs/build-example.html">Example</a>
+				<a href="<%= basedir %>docs/build-example.html">Example</a><br/>
+				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a><br/>
 				</p>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/build.html">Build</a></div>
@@ -94,6 +95,10 @@
 			<%endif %>
 			<%ifdef inDocumentationSection.preprocessing %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/directives.html">Directives</a><br/>
+				<a href="<%= basedir %>docs/variables.html">Variables &amp; Symbols</a>
+				</p>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
 			<%endif %>
@@ -101,6 +106,11 @@
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.gameengine %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>
 			<%endif %>
 			
 		<%else %>
@@ -142,7 +152,7 @@
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
 				<p class="thirdLevel">
 				<a href="<%= basedir %>devices/midp1.html">MIDP/1.0</a><br/>
-				<a href="<%= basedir %>devices/midp2.html">MIDP/2.0</a><br/>
+				<a href="<%= basedir %>devices/midp2.html">MIDP/2.0</a>
 				</p>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
@@ -153,7 +163,15 @@
 		<%endif %>
 		<%ifdef inDiscussionSection %>
 			<div id="currentLink"><a href="<%= basedir %>discussion.html">Discussion</a></div>
-			<div class="secondLevelLink"><a href="http://developer.berlios.de/forum/forum.php?forum_id=3780" target="_blank">Forum</a></div>
+			<%ifdef inDiscussionSection.forum %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>forums.html">Forums</a></div>
+				<p class="thirdLevel">
+					<a href="http://developer.berlios.de/forum/forum.php?forum_id=3780" target="_blank">BerliOS Forum (English)</a><br/>
+					<a href="http://www.j2meforum.com/viewforum.php?f=35" target="_blank">J2MeForum.com (deutsch)</a>
+				</p>
+			<%else %>
+				<div class="secondLevelLink"><a href="forums.html">Forums</a></div>
+			<%endif %>			
 			<div class="secondLevelLink"><a href="http://developer.berlios.de/mail/?group_id=1246" target="_blank">Mailing Lists</a></div>
 			<div class="secondLevelLink"><a href="http://developer.berlios.de/feature/?group_id=1246" target="_blank">Feature Request</a></div>
 			<div class="secondLevelLink"><a href="http://openfacts.berlios.de/index-en.phtml?title=J2ME%20Polish" target="_blank">Wiki</a></div>

@@ -1,0 +1,133 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.build %>
+<%set title = J2ME Polish: Documentation %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+	<div id="content">
+	<h1 id="top">Assembling of Resources</h1>
+	<p>
+	During the build process resources like images, sound files etc. are assembled for each device.
+	</p><p>
+Resources for all devices will be placed into the &quot;resources&quot; folder (when no other directory has been specified with the &quot;resDir&quot;-attribute of the &lt;build&gt;-element in the &quot;build.xml&quot; file).
+	</p><p>
+Resources for devices of specific vendors  can be placed into the &quot;resources/[vendor-name]&quot; folder, e.g. the &quot;resources/Nokia&quot; folder for Nokia devices. Resources for a specific device can be placed into the &quot;resources/[vendor-name]/[device-name]&quot; folder, e.g. the folder &quot;resources/Nokia/3650&quot; for Nokia/3650 devices. 
+	</p><p>
+For more general resources the groups can be used to which a device belongs to. High-color images can be be put into the &quot;resources/BitsPerColor.16+&quot; folder, for example. The groups can be used very efficiently to include only those resources which are actually relevant for a specific device. A device can belong to many different groups, which are defined either implicitly by the capabilities of that device (compare the section &quot;Device Capabilities&quot; on page 12) or explicitly by setting the &lt;groups&gt;-element of a device in the device-database.
+	</p><p>
+All resources will be copied to the root of the application and more specific resources will overwrite the common resources: If you have a picture named &quot;hello.png&quot; in the &quot;resources&quot; folder as well as in the &quot;resources/Nokia&quot; and in the &quot;resources/Nokia/6600&quot; folder, the version in the &quot;resources&quot; folder will be used for all non-Nokia devices, the version contained in the &quot;resources/Nokia&quot; folder will be used for all Nokia devices, but the image &quot;resources/Nokia/6600/hello.png&quot; will be used for the application which is build for the Nokia/6600 phone. 
+<br/>
+In the application code you can load this image as any other resource from the root: 
+<pre>
+Image.createImage( &quot;/hello.png&quot; );
+</pre>
+	</p><p>
+	The adjustments of designs for different devices is described in the 
+	<a href="css-groups.html">CSS-documentation</a>.
+	</p><p>
+For a complete list of groups for a specific device, please refer to the 
+<a href="../devices-overview.html">Device Database</a>.
+<br />Here are some examples:
+	</p>
+	
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Group</th><th>Type</th><th>Default Folder</th><th>Explanation</th></tr>
+	<tr>
+	 <td>midp1</td>
+	 <td>Platform</td>
+	 <td>resources/midp1</td>
+	 <td>When a device supports the MIDP/1.0 platform, resources for this device can be placed into the &quot;resources/midp1&quot; folder.</td>
+	</tr>
+	<tr>
+	 <td>midp2</td>
+	 <td>Platform</td>
+	 <td>resources/midp2</td>
+	 <td>For devices supporting the MIDP/2.0 platform.</td>
+	</tr>
+	<tr>
+	 <td>cldc1.0</td>
+	 <td>Configuration</td>
+	 <td>resources/cldc1.0</td>
+	 <td>For devices supporting the CLDC/1.0 configuration.</td>
+	</tr>
+	<tr>
+	 <td>cldc1.1</td>
+	 <td>Configuration</td>
+	 <td>resources/cldc1.1</td>
+	 <td>For devices supporting the CLDC/1.1 configuration.</td>
+	</tr>
+	<tr>
+	 <td>mmapi</td>
+	 <td>api</td>
+	 <td>resources/mmapi</td>
+	 <td>When a device supports the Mobile Media API, resources which need this API can be placed into the &quot;resources/mmapi&quot; folder.</td>
+	</tr>
+	<tr>
+	 <td>motorola-lwt</td>
+	 <td>api</td>
+	 <td>resources/motorola-lwt</td>
+	 <td>For devices which support Motorola's Lightweight Windowing Toolkit-API.</td>
+	</tr>
+	<tr>
+	 <td>nokia-ui</td>
+	 <td>api</td>
+	 <td>resourcesnokia-ui</td>
+	 <td>For devices which support Nokia's User Interface API.</td>
+	</tr>
+	<tr>
+	 <td>wav</td>
+	 <td>audio</td>
+	 <td>resources/wav</td>
+	 <td>For devices which support the WAV sound format.</td>
+	</tr>
+	<tr>
+	 <td>mp3</td>
+	 <td>audio</td>
+	 <td>resources/mp3</td>
+	 <td>For devices which support the MP3 sound format.</td>
+	</tr>
+	<tr>
+	 <td>amr</td>
+	 <td>audio</td>
+	 <td>resources/amr</td>
+	 <td>For devices which support the AMR sound format.</td>
+	</tr>
+	<tr>
+	 <td>midi</td>
+	 <td>audio</td>
+	 <td>resources/midi</td>
+	 <td>For devices which support the MIDI sound format.</td>
+	</tr>
+	<tr>
+	 <td>mpeg-4</td>
+	 <td>video</td>
+	 <td>resources/mpeg-4</td>
+	 <td>For devices which support the MPEG-4 video format.</td>
+	</tr>
+	<tr>
+	 <td>h.263</td>
+	 <td>video</td>
+	 <td>resources/h.263</td>
+	 <td>For devices which support the h.263 video format.</td>
+	</tr>
+	<tr>
+	 <td>3gpp</td>
+	 <td>video</td>
+	 <td>resources/3gpp</td>
+	 <td>For devices which support the 3GPP video format.</td>
+	</tr>
+	<tr>
+	 <td>BitsPerColor.12+</td>
+	 <td>colors</td>
+	 <td>resources/BitsPerColor.12+</td>
+	 <td>For devices with a color depth of at least 12 bits per color.</td>
+	</tr>
+	<tr>
+	 <td>BitsPerColor.16</td>
+	 <td>colors</td>
+	 <td>resources/BitsPerColor.16</td>
+	 <td>For devices with a color depth of exactly 16 bits per color.</td>
+	</tr>
+	</table>
+
+<%include end.txt %>

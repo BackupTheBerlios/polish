@@ -9,6 +9,7 @@
 	<%index %>
 	<p>
 Sometimes the design needs to be adapted to a specific device or a group of devices. You can easily use specific pictures, styles etcetera by using the appropriate sub folders of the &quot;resources&quot; folder.
+<br/>See also the general <a href="resource-assembling.html">resources assembling</a>.
 </p>
 <h2 id="hierarchy">The Hierarchy of the &quot;resources&quot; Folder</h2>
 <p>
@@ -24,6 +25,9 @@ Any existing resources will be overwritten by more specific resources:
  <li>Thirdly the group-specific resources will be used, e.g. &quot;resources/mmapi&quot;, &quot;resources/Series60&quot;, &quot;resources/BitsPerPixel.8+&quot; or &quot;resources/BitsPerPixe.16&quot;.</li>
  <li>The resources and settings in the device specific folder will overwrite all other resources and settings. The device specific folder is for example the folder &quot;resources/Nokia/6600&quot; for the Nokia/6600 phone or the folder &quot;resources/Samsung/E700&quot; for Samsung's E700.</li>
 </ol>
+<p>All resources will be copied into the root of the application, so if you want to access 
+an image called &quot;my-imgage.png&quot; you need to load it with the path &quot;/my-image.png&quot; in the
+source code.</p>
 <p>
 When you add the polish.css file for a specific vendor, group or device, you do not 
 need to repeat all styles and attributes from the more basic settings. You need to 
@@ -63,18 +67,22 @@ settings in &quot;resources/Nokia/6600/polish.css&quot;:
 <h2 id="groups">Groups</h2>
 <p>
 Every device can have explicit and implicit groups. Explicit groups are stated by the 
-&lt;groups&gt; element of the device in the file devices.xml1. Implicit groups are defined 
+&lt;groups&gt; element of the device in the file devices.xml. Implicit groups are defined 
 by the capabilities of the device: Each supported API results in an implicit group and the 
 BitsPerPixel capability results in several groups.
 </p>
-<h3 id="apigroups">API- and Java-Platform-Groups</h3>
+<h3 id="platformgroups">Java-Platform-Groups</h3>
+<p>When a device supports the MIDP/1.0 standard, it belongs to the &quot;midp1&quot; group.</p>
+<p>When a device supports the MIDP/2.0 standard, it belongs to the &quot;midp2&quot; group.</p>
+<h3 id="configurationgroups">Java-Configuration-Groups</h3>
+<p>When a device supports the CLDC/1.0 standard, it belongs to the &quot;cldc1.0&quot; group.</p>
+<p>When a device supports the CLDC/1.1 standard, it belongs to the &quot;cldc1.1&quot; group.</p>
+<h3 id="apigroups">API-Groups</h3>
 <p>
-A device can support different APIs and Java-platforms. 
-When the device supports the MIDP/1.0 standard, it belongs to the &quot;midp1&quot;-group, otherwise it belongs to the &quot;midp2&quot;-group. So you can specify the layout of MIDP/1.0 devices in &quot;resources/midp1/polish.css&quot;. And you can use specific images or other resources for MIDP/2.0 devices in the folder &quot;resources/midp2&quot;. The supported platform of a device can be specified in the devices.xml file with the <JavaPlatform> element. Alternatively this setting can be specified in the file groups.xml for specific groups.
-For each supported API an implicit group is created. 
+For each supported API the device belongs to a group with the name of that API (in lowercase).
 When the device supports the Mobile Media API (mmapi), it belongs to the &quot;mmapi&quot;-group. 
 When the device supports the Nokia-UI API, it belongs to the &quot;nokia-ui&quot; group. 
-The name of the implicit group is defined by the &lt;symbol&gt; element of the API in the file apis.xml.
+The name of the group is defined by the &lt;symbol&gt; element of the API in the file apis.xml.
 </p>
 <h3 id="bitsperpixelgroups">BitsPerPixel-Groups</h3>
 <p>

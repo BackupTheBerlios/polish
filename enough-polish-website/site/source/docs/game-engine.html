@@ -1,0 +1,35 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gameengine %>
+<%set title = J2ME Polish: Documentation %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+	<div id="content">
+	<h1 id="top">The MIDP/2.0-Compatible Game-Engine</h1>
+<p>
+Even though MIDP/2.0 is the future, the market is crowded with MIDP/1.0 devices. J2ME Polish offers a nifty solution for those developers who want to support both platforms with the advanced MIDP/2.0 technology. 
+<br/>All classes of the javax.microedition.lcdui.game-package can be used normally:
+</p>
+<ul>
+ <li><b>GameCanvas</b>: The GameCanvas class provides the basis for a game user interface.</li>
+ <li><b>Layer</b>: A Layer is an abstract class representing a visual element of a game.</li>
+ <li><b>LayerManager</b>: The LayerManager manages a series of Layers.</li>
+ <li><b>Sprite</b>: A Sprite is a basic visual element that can be rendered with one of several frames stored in an Image; different frames can be shown to animate the Sprite.</li>
+ <li><b>TiledLayer</b>: A TiledLayer is a visual element composed of a grid of cells that can be filled with a set of tile images.</li>
+</ul>
+<p>With this game-engine it is possible to program a game with one source code for MIDP/2.0 as well as MIDP/1.0 devices without changing anything within the source code! </p>
+
+<h2 id="howitworks">How It Works</h2>
+<p>
+The J2ME Polish build-tool identifies the usage of the MIDP/2.0 game API and &quot;weaves&quot; the necessary wrapper classes into the code. The obfuscation step then removes all unnecessary functionality to ensure that only the needed parts are actually included into the application.
+</p>
+
+<h2 id="limitations">Limitations</h2>
+<p>
+For technical reasons the collision detection works only with collision rectangles, which should be set tightly for Sprites therefore. A pixel-level collision detection is not supported.
+</p><p>
+When a class extends the GameCanvas class, it should call the super-implementations, when one of the methods keyPressed(int), keyReleased(int) or keyRepeated(int) is overridden.
+</p><p>
+The rotation of Sprites is currently only supported for Nokia devices, otherwise the rotation-setting will be ignored.
+</p>
+<%include end.txt %>

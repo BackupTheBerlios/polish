@@ -182,8 +182,8 @@ With the build-section the actual build process is controlled:
 	<tr><td>name</td>
  	 <td>No</td>
 	 <td>The name of the obfuscator which should be used. Defaults to <a href="http://proguard.sourceforge.net" target="_blank">&quot;ProGuard&quot;</a>. 
-	 Please consider the license agreement of the obfuscator. The ProGuard obfuscator is licensed under the GNU General Public License (GPL). 
-	 The <a href="http://www.retrologic.com" target="_blank">RetroGuard</a> obfuscator is licensed under the GNU Lesser General Public License (LGPL).</td>
+	 Possible values are at the moment either "ProGuard" or <a href="http://www.retrologic.com" target="_blank">"RetroGuard"</a>.
+	 </td>
 	</tr>
 	<tr><td>class</td>
  	 <td>No</td>
@@ -245,10 +245,10 @@ With the build-section the actual build process is controlled:
 	<p>
 	The optional &lt;debug&gt;-element controls the inclusion of debugging messages for specific classes or packages. The debugging messages will be activated or deactivated in the source code, so the performance will not be decreased, when the debugging is deactivated. 
 <pre>
-&lt;debug enable=&quot;true&quot; showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;/&gt;
-	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; //&gt;
-	&lt;filter pattern=&quot;com.company.package.MyClass&quot; level=&quot;debug&quot; //&gt;
-&lt;/debug/&gt;
+&lt;debug enable=&quot;true&quot; showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;&gt;
+	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; /&gt;
+	&lt;filter pattern=&quot;com.company.package.MyClass&quot; level=&quot;debug&quot; /&gt;
+&lt;/debug&gt;
 </pre></p><p>
 In the source code any debug messages must be accompanied by a //#debug-directive:
 <pre>

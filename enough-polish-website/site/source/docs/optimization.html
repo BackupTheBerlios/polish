@@ -6,7 +6,9 @@
 
 	<div id="content">
 	<h1 id="top">Device Optimization</h1>
-	<p>J2ME Polish includes a device database which revolutionizes the way
+	<%index %>
+	<p>J2ME Polish includes a <a href="../devices-overview.html">device database</a> 
+	which revolutionizes the way
 	applications are optimized for specific devices.
 	</p>
 	<p>Programmers need to create only standards compliant
@@ -14,7 +16,7 @@
 	device specific APIs to deliver the best possible user experience. 
 	Designers can easily adjust and change designs for specific devices
 	or device-groups, just by organizing the appropriate resources into
-	<a href="css-groups.html">folders</a>.
+	<a href="resource-assembling.html">folders</a>.
 	</p>
 	<h2 id="manual">Manual Optimization</h2>
 	<p>Manual device optimization is made easy with the device database and
@@ -70,9 +72,10 @@ public class MyCanvas
 </p>
 
 	<h2 id="database">Device Database</h2>
-	<p>J2ME Polish includes a device database in which the capabilities
-	   of the known devices are defined.
-	   The device-definitions are stored in following files:
+	<p>J2ME Polish includes a <a href="../devices-overview.html">device database</a> 
+	in which the capabilities
+	of the known devices are defined.
+	The device-definitions are stored in following files:
 	</p>
 	<ul>
 		<li>devices.xml: main file for the devices.</li>
@@ -83,4 +86,16 @@ public class MyCanvas
 	The structure of theses files is documented in the (almost)
 	<a href="../downloads/Complete_Guide_to_J2ME_Polish.pdf">Complete Guide to J2ME Polish</a>.
 	</p>
+	
+	<h2 id="resources">Resource Assembling</h2>
+	<p>It is easy to assemble resources for specific devices or device-groups.
+	How this is done is described in the <a href="resource-assembling.html">assembling resources</a>-documentation
+	and in the <a href="css-groups.html">designing for specific devices</a>-documentation.
+	</p>
+	
+	<h2 id="automatic">Automatic Optimization</h2>
+	<p>Most optimization tasks are needed for the user interface
+	of an application. The <a href="css.html">J2ME Polish GUI</a> adjusts automatically
+	to the specific capabilities of a device and removes the need
+	for work-intensive manual optimization.</p>
 <%include end.txt %>

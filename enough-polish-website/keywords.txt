@@ -9,6 +9,7 @@
 preprocessing
 debug, logging::debug
 Variable
+Symbol
 #debug, #mdebug, #enddebug
 #if, #else, #elif, #endif
 #ifdef, #ifndef, #elifdef, #elifndef
@@ -51,7 +52,7 @@ Ant
 ## CSS                             ##
 #####################################
 
-Design, resources
+Design
 CSS, background, border, Style, font, label
 layout, color, margin, padding, after, before
 type
@@ -85,10 +86,15 @@ JavaProtocol, SoundFormat, VideoFormat
 #####################################
 Eclipse
 JBuilder
+NetBeans
 
 #####################################
 ## Misc. Keywords                  ##
 #####################################
 
-Design, Installation, Update, Ant
+Design, Installation
+Integration::integrating
+Configuration, Update, Ant
 JAD, Manifest, JAR
+Discussion, Forum, Mailinglist, Feature, Wiki
+Resources, Assembling

@@ -6,7 +6,7 @@
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/import/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="1.0-RC4" />
+<property name="Version" value="1.0-RC5" />
 	
 <target name="init">
 	<!-- Create the time stamp -->
@@ -66,6 +66,7 @@
 		<variable name="LatestDownload" value="j2mepolish-${Version}.html" />
 		<variable name="Author" value="Robert Virkus" />
 		<variable name="basedir" value="" />
+		<variable name="newsbasedir" value="" />
 		<variable name="index.h1" value="h1index" />
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />

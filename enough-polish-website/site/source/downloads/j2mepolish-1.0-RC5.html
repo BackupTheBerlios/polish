@@ -1,36 +1,30 @@
 <%define inDownloadSection %>
 <%set basedir = ../ %>
-<%set title = J2ME Polish: Download 1.0 RC4 %>
+<%set title = J2ME Polish: Download 1.0 RC5 %>
 <%include start.txt %>
 
 	<div id="content">
-	<h1>J2ME Polish 1.0 RC4</h1>
+	<h1>J2ME Polish 1.0 RC5</h1>
 	<p>SCROLL DOWN FOR DOWNLOAD.</p>
-	<p>J2ME Polish 1.0 RC4 contains several bugfixes and improvements compared to the last release:
+	<p>J2ME Polish 1.0 RC5 contains several bugfixes and improvements compared to the last release:
 	</p>
 <ul>
-	<li><b>Bugfixes</b>: 
-		<br/>Calling setTitle(..) now works as well when a Screen has not been shown yet.
-		<br/>When GUI items are changed while the corresponding screen is shown, the
-		screen is updated immediately.
-		<br/>
-		</li>
-	<li><b>Device-Database</b>: Added two more virtual devices:
-		<br/>&quot;Generic/PlainMidp1&quot; represents a MIDP/1.0 device which does not support the J2ME Polish GUI,
-		<br/>&quot;Generic/PlainMidp2&quot; represents a MIDP/2.0 device which does not support the J2ME Polish GUI.
-		<br/>Also some other devices have been added: Alcatel, LG Electronics, Samsung, and more.
+	<li><b>MIDlets</b>: It is now checked whether the classes defined by the 
+	&lt;midlet&gt;-attribute do really exist.
 	</li>
-	<li><b>Label</b>: Labels are now handled independently and can have their own background, border and so on.
-		The new pre-defined style &quot;label&quot;  is now used for the 
-		default-design of labels.</li>
-	
-	<li><b>New Resource Groups</b>: A device now belongs to implicit groups for each
-	  supported audio of video format. When the device supports the MIDI format,
-	  you can use the folder &quot;resources/midi&quot; for example.</li>
+	<li><b>Integration</b>: On some setups J2ME Polish could not resolve relative paths
+	correctly. Now these paths are always resolved correctly. J2ME Polish integrates
+	now better with NetBeans and some other IDEs therefore.
+	<li><b>Device-Database</b>: Added Toshiba and TTPCom devices, the preprocessing
+	        symbols &quot;polish.cldc1.0&quot; and &quot;polish.cldc1.1&quot; can now be used.
+	</li>
+	<li><b>Preverification</b>: floating point calculations are now allowed
+	for CLDC/1.1 devices, but not for CLDC/1.0 devices.</li>
+	<li><b>Documentation</b>: the web and the PDF documentations have been improved to a great deal.</li>
 </ul>
 	<h2>Installation</h2>
 	<p>Depending on your system setup, please doubleclick the downloaded installer 
-	or call &quot;java -jar j2mepolish-1.0-RC4.jar&quot; on the command line to
+	or call &quot;java -jar j2mepolish-1.0-RC5.jar&quot; on the command line to
 	start the installation.</p>
 	<p>A complete instruction is available in the 
 	<a href="../docs/install.html">installation documentation</a>.</p>
@@ -108,8 +102,8 @@ Each version is given a distinguishing version number. If the Program specifies 
 	</p>
 	<h2>Download</h2>
 	<p>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.0-RC4.jar">I accept the above rules (download the full installer).</a><br/>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.0-RC4.zip">I accept the above rules (download only the update).</a><br/>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.0-RC5.jar">I accept the above rules (download the full installer).</a><br/>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.0-RC5.zip">I accept the above rules (download only the update).</a><br/>
 	   	<a href="../index.html">I do NOT accept the above rules.</a>
 	</p>
 <%include end.txt %>
