@@ -269,10 +269,10 @@ public class Container extends Item {
 		this.items = null;
 		if (this.focusedIndex != -1) {
 			this.focusFirstElement = true;
-			//this.focusedIndex = -1;
+			this.focusedIndex = -1;
 		}
+		this.yOffset = 0;
 		if (this.isInitialised) {
-			this.yOffset = 0;
 			this.isInitialised = false;
 			repaint();
 		}
@@ -563,6 +563,9 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		if (this.itemsList.size() == 0) {
+			return false;
+		}
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {

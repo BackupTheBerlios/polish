@@ -126,6 +126,9 @@ public abstract class Screen
 		//#endif
 		private Command menuSingleLeftCommand;
 		private Command menuSingleRightCommand;
+		//#ifdef polish.key.ReturnKey:defined
+			private Command backCommand;
+		//#endif
 		private Container menuContainer;
 		private ArrayList menuCommands;
 		private boolean menuOpened;
@@ -717,8 +720,16 @@ public abstract class Screen
 		//#endif
 			//#debug
 			Debug.debug("keyPressed: [" + keyCode + "].");
-			int gameAction = getGameAction(keyCode);
+			int gameAction = -1;
+			
 			//#if tmp.menuFullScreen
+				//#ifdef polish.key.ReturnKey:defined
+					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+							callCommandListener( this.backCommand );
+							repaint();
+							//# return;
+					//# }
+				//#endif
 				if (keyCode == LEFT_SOFT_KEY) {
 					if ( this.menuSingleLeftCommand != null) {
 						callCommandListener( this.menuSingleLeftCommand );
@@ -726,7 +737,8 @@ public abstract class Screen
 					} else {
 						if (!this.menuOpened 
 								&& this.menuContainer != null 
-								&&  this.menuContainer.size() != 0 ) {
+								&&  this.menuContainer.size() != 0 ) 
+						{
 							this.menuOpened = true;
 							repaint();
 							return;
@@ -739,6 +751,12 @@ public abstract class Screen
 						callCommandListener( this.menuSingleRightCommand );
 						return;
 					}
+				}
+				boolean doReturn = false;
+				if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
+					gameAction = getGameAction( keyCode );
+				} else {
+					doReturn = true;
 				}
 				if (this.menuOpened) {
 					if (keyCode == RIGHT_SOFT_KEY ) {
@@ -754,7 +772,13 @@ public abstract class Screen
 					repaint();
 					return;
 				}
+				if (doReturn) {
+					return;
+				}
 			//#endif
+			if (gameAction == -1) {
+				gameAction = getGameAction(keyCode);
+			}
 			boolean processed = handleKeyPressed(keyCode, gameAction);
 			//#ifdef polish.debug.debug
 				if (!processed) {
@@ -834,7 +858,7 @@ public abstract class Screen
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
-	public synchronized void addCommand(Command cmd) {
+	public void addCommand(Command cmd) {
 		if (this.menuCommands == null) {
 			this.menuCommands = new ArrayList( 6, 50 );
 			//#style menu, default
@@ -843,8 +867,14 @@ public abstract class Screen
 		//#style menuitem, menu, default
 		StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
 		int type = cmd.getCommandType(); 
+		//#ifdef polish.key.ReturnKey:defined
+			if ( type == Command.BACK ) {
+				this.backCommand = cmd;
+			}
+		//#endif
 		if ( (this.menuSingleRightCommand == null)
-			&& (type == Command.BACK || type == Command.CANCEL ) ) {
+			&& (type == Command.BACK || type == Command.CANCEL ) ) 
+		{
 			// this is a command for the right side of the menu:
 			this.menuSingleRightCommand = cmd;
 			if (isShown()) {

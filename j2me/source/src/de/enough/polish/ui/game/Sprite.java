@@ -376,6 +376,7 @@ public class Sprite
 			this.image = s.image;
 			this.frameWidth = s.frameWidth;
 			this.frameHeight = s.frameHeight;
+			this.numberOfColumns = s.numberOfColumns;
 			this.width = s.width;
 			this.height = s.height;
 			this.xPosition = s.xPosition;
@@ -837,7 +838,6 @@ public class Sprite
 			this.frameSequenceIndex = 0;
 			// set default frame sequence:
 			this.frameSequence = null;
-
 			this.column = 0;
 			this.row = 0;
 		} else {
@@ -858,14 +858,16 @@ public class Sprite
 		this.yPosition += oldRefY - this.transformedRefY;
 
 		//#ifdef polish.api.nokia-ui
-			this.nokiaFrame = DirectUtils.createImage( frameWidth, frameHeight, 0x00FFFFFF );
-			Graphics g = this.nokiaFrame.getGraphics();
-			// when creating an transparent image, one must not "touch"
-			// that image with an ordinary Graphics-object --- instead
-			// ALWAYS a DirectGraphics-object needs to be used. Sigh!
-			//g.drawImage(this.image, 0, 0, Graphics.TOP | Graphics.LEFT );
-			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
-			dg.drawImage(this.image, 0, 0, Graphics.TOP | Graphics.LEFT, 0 );
+			if (!this.isSingleFrame) {
+				this.nokiaFrame = DirectUtils.createImage( frameWidth, frameHeight, 0x00FFFFFF );
+				Graphics g = this.nokiaFrame.getGraphics();
+				// when creating an transparent image, one must not "touch"
+				// that image with an ordinary Graphics-object --- instead
+				// ALWAYS a DirectGraphics-object needs to be used. Sigh!
+				//g.drawImage(this.image, 0, 0, Graphics.TOP | Graphics.LEFT );
+				DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+				dg.drawImage(this.image, 0, 0, Graphics.TOP | Graphics.LEFT, 0 );
+			}
 			this.nokiaFrames = new Image[ this.rawFrameCount ];
 		//#endif
 	}
@@ -1011,9 +1013,6 @@ public class Sprite
 	public void setTransform(int transform)
 	{
 		this.transform = transform;
-		//#ifdef polish.api.nokia-ui
-			this.nokiaTransform = NOKIA_TRANSFORM_LOOKUP[transform];
-		//#endif
 
 		// computes tranformed* values and reposition the sprite.
 		int oldRefX = this.transformedRefX, oldRefY = this.transformedRefY;
@@ -1028,6 +1027,12 @@ public class Sprite
 					updateFrame();
 				}
 			//#endif
+		//#endif
+		//#ifdef polish.api.nokia-ui
+			this.nokiaTransform = NOKIA_TRANSFORM_LOOKUP[transform];
+			if (this.isSingleFrame) {
+				updateFrame();
+			}
 		//#endif
 	}
 

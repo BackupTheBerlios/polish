@@ -899,11 +899,14 @@ implements Choice, ItemCommandListener
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		if (this.itemsList.size() == 0) {
+			return false;
+		}
 		boolean processed = false;
 		//#ifdef polish.usePopupItem
 		if (!(this.isPopup && this.isPopupClosed)) {
 			processed = super.handleKeyPressed(keyCode, gameAction);
-		}		
+		}
 		if (!processed) {
 			if ( gameAction == Canvas.FIRE ) {
 				if (this.isMultiple) {
