@@ -62,7 +62,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2";
+	private static final String VERSION = "1.2.1";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
