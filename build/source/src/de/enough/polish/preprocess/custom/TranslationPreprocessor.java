@@ -51,7 +51,7 @@ import de.enough.polish.util.TextUtil;
 public class TranslationPreprocessor extends CustomPreprocessor {
 
 	private final static String STRING_PATTERN = "\\\"[\\w|-|_|:|\\.|\\s]+\\\"";
-	private final static String LOCALE_GET_PATTERN_STR = "Locale\\.get\\s*\\(\\s*" + STRING_PATTERN + "(\\s*\\,\\s*(\\w+|" + STRING_PATTERN + "))?\\s*\\)"; 
+	private final static String LOCALE_GET_PATTERN_STR = "Locale\\.get\\s*\\(\\s*" + STRING_PATTERN + "(\\s*\\,\\s*([\\w|\\.]+|" + STRING_PATTERN + "))?\\s*\\)"; 
 	protected final static Pattern LOCALE_GET_PATTERN = Pattern.compile( LOCALE_GET_PATTERN_STR );
 	
 	private TranslationManager translationManager;
