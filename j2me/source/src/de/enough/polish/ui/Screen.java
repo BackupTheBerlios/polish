@@ -266,18 +266,26 @@ public abstract class Screen
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	protected void showNotify() {
-		if (!this.isInitialised) {
-			init();
-		}
-		// register this screen:
-		StyleSheet.currentScreen = this;
-		// inform all root items that they belong to this screen
-		// and that they will be shown soon:
-		Item[] items = getRootItems();
-		for (int i = 0; i < items.length; i++) {
-			Item item = items[i];
-			item.screen = this;
-			item.showNotify();
+		try {
+			if (!this.isInitialised) {
+				init();
+			}
+			// register this screen:
+			StyleSheet.currentScreen = this;
+			// inform all root items that they belong to this screen
+			// and that they will be shown soon:
+			Item[] items = getRootItems();
+			for (int i = 0; i < items.length; i++) {
+				Item item = items[i];
+				item.screen = this;
+				item.showNotify();
+			}
+			if (this.container != null) {
+				this.container.showNotify();
+			}
+		} catch (Exception e) {
+			//#debug error
+			Debug.debug("error while calling showNotify", e );
 		}
 	}
 	
@@ -293,6 +301,9 @@ public abstract class Screen
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			item.hideNotify();
+		}
+		if (this.container != null) {
+			this.container.hideNotify();
 		}
 	}
 	
@@ -320,7 +331,6 @@ public abstract class Screen
 			return false;
 		}
 		try {
-			//TODO rob animate border
 			boolean animated = false;
 			if (this.background != null) {
 				animated = this.background.animate();
@@ -438,14 +448,20 @@ public abstract class Screen
 				if (this.menuContainer != null && this.menuContainer.size() > 0) {
 					String menuText = null;
 					if (this.menuOpened) {
-						//TODO rob internationalise cmd.selectMenu
-						menuText = "Select";
+						//#ifdef polish.command.select:defined
+							//#= menuText = "${polish.command.select}";
+						//#else
+							menuText = "Select";
+						//#endif
 					} else {
 						if (this.menuSingleLeftCommand != null) {
 							menuText = this.menuSingleLeftCommand.getLabel();
 						} else {
-							//TODO rob internationalise cmd.openMenu
-							menuText = "Options";				
+							//#ifdef polish.command.options:defined
+								//#= menuText = "${polish.command.options}";
+							//#else
+								menuText = "Options";				
+							//#endif
 						}
 					}
 					//#ifdef polish.hasPointerEvents
@@ -455,9 +471,12 @@ public abstract class Screen
 					g.setFont( this.menuFont );
 					g.drawString(menuText, 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
 					if ( this.menuOpened ) {
-						// draw select string:
-						//TODO rob internationalise cmd.cancelMenu
-						menuText = "Cancel";
+						// draw cancel string:
+						//#ifdef polish.command.cancel:defined
+							//#= menuText = "${polish.command.cancel}";
+						//#else
+							menuText = "Cancel";
+						//#endif
 						g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
 						//#ifdef polish.hasPointerEvents
 							this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
@@ -671,10 +690,6 @@ public abstract class Screen
 			//#endif
 			boolean processed = handleKeyPressed(keyCode, gameAction);
 			if (!processed) {
-				//TODO Screen could try to switch to the last screen when Canvas.LEFT 
-				// or Canvas.UP has been pressed. 
-				// It could use the StyleSheet.currentScreen variable
-				// for this purpose
 				//#debug
 				Debug.debug("unable to handle key [" + keyCode + "].");
 			}

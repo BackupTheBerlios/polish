@@ -270,7 +270,7 @@ public class Container extends Item {
 	 * @return an array of all items.
 	 */
 	public Item[] getItems() {
-		if (this.isInitialised) {
+		if (!this.isInitialised) {
 			return (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		} else {		
 			return this.items;

@@ -66,9 +66,16 @@ public final class StyleSheet {
 	public static Screen currentScreen;	
 	public static Display display;
 	public static AnimationThread animationThread;
-	//TODO rob i18n OK & Cancel commands
-	public static final Command OK_CMD = new Command("OK", Command.OK, 0 ); 
-	public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 1 );
+	//#ifdef polish.command.ok:defined
+		//#= public static final Command OK_CMD = new Command("${polish.command.ok}", Command.OK, 0 );
+	//#else
+		public static final Command OK_CMD = new Command("OK", Command.OK, 0 );
+	//#endif
+	//#ifdef polish.command.cancel:defined
+		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 1 );
+	//#else
+		public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 1 );
+	//#endif
 
 	/**
 	 * Retrieves the image with the given name.
