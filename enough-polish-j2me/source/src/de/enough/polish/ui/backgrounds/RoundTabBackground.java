@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Created on 24-Jan-2005 at 01:37:32.
  * 

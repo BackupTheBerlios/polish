@@ -274,6 +274,10 @@ public abstract class Screen
 		//#ifdef tmp.menuFullScreen
 			//#ifdef tmp.useExternalMenuBar
 				this.menuBarHeight = this.menuBar.getItemHeight( this.screenWidth, this.screenWidth );
+				this.scrollIndicatorWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
+				this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
+				this.scrollIndicatorY = this.fullScreenHeight - (this.menuBarHeight - this.menuBar.marginBottom) + 1;
+				//System.out.println("Screen.init: menuBarHeight=" + this.menuBarHeight + " scrollIndicatorWidth=" + this.scrollIndicatorWidth );
 			//#else
 				//#ifdef polish.css.style.menu
 					Style menustyle = StyleSheet.menuStyle;
@@ -300,23 +304,32 @@ public abstract class Screen
 				} else {
 					this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
 				}
-				//#if polish.Menu.MarginBottom:defined && polish.Menu.MarginTop:defined 
-					//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + ${polish.Menu.MarginTop};
-				//#elif polish.Menu.MarginBottom:defined 
-					//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + 2;
-				//#elif polish.Menu.MarginTop:defined 
-					//#= this.menuBarHeight = this.menuFont.getHeight() + 2 + ${polish.Menu.MarginTop};
-				//#else
-					this.menuBarHeight = this.menuFont.getHeight() + 2;
+				int localMenuBarHeight = this.menuFont.getHeight();
+				//#ifdef polish.Menu.PaddingBottom:defined
+					//#= localMenuBarHeight += ${polish.Menu.PaddingBottom};  
 				//#endif
+				//#ifdef polish.Menu.PaddingTop:defined
+					//#= localMenuBarHeight += ${polish.Menu.PaddingTop};  
+				//#endif
+				//#if !polish.Menu.PaddingBottom:defined && !polish.Menu.PaddingTop:defined
+					localMenuBarHeight += 2;
+				//#endif
+				this.scrollIndicatorWidth = localMenuBarHeight;
+				this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
+				this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+				//#ifdef polish.Menu.MarginBottom:defined 
+					//#= localMenuBarHeight += ${polish.Menu.MarginBottom};
+					//#= this.scrollIndicatorY -=  ${polish.Menu.MarginBottom};
+				//#endif
+				//#ifdef polish.Menu.MarginTop:defined 
+					//#= localMenuBarHeight += ${polish.Menu.MarginTop};
+				//#endif
+				this.menuBarHeight = localMenuBarHeight;
 			//#endif
 			int diff = this.originalScreenHeight - this.screenHeight;
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
 			this.screenHeight = this.originalScreenHeight - diff;
 			// set position of scroll indicator:
-			this.scrollIndicatorWidth = this.menuBarHeight;
-			this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-			this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
 		//#elif polish.vendor.Siemens
 			// set the position of scroll indicator for Siemens devices 
 			// on the left side, so that the menu-indicator is visible:

@@ -1237,10 +1237,15 @@ public class Sprite
 		int cXEnd = cXStart + this.transformedCollisionWidth;
 		int cYStart = this.yPosition + this.transformedCollisionY;
 		int cYEnd = cYStart + this.transformedCollisionHeight;
-		if (cYEnd < enemyY
-				|| cYStart > enemyY + enemyHeight
-				|| cXEnd < enemyX
-				|| cXStart > enemyX + enemyWidth ) 
+		/*
+		System.out.println("Sprite-Collision: this(" + cXStart + "," + cYStart + ", " + cXEnd + ", " + cYEnd + ")" );
+		System.out.println("Sprite-Collision: real(" + this.xPosition + "," + this.yPosition + ")" );
+		System.out.println("Sprite-Collision: enem(" + enemyX + "," + enemyY + ", " + (enemyX + enemyWidth) + ", " + (enemyY + enemyHeight) + ")" );
+		*/
+		if (cYEnd <= enemyY
+				|| cYStart >= enemyY + enemyHeight
+				|| cXEnd <= enemyX
+				|| cXStart >= enemyX + enemyWidth ) 
 		{
 			return false;
 		}

@@ -203,9 +203,9 @@ public class List extends Screen implements Choice
 	 * 
 	 */
 	//#ifdef polish.command.select:defined
-		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.ITEM, 1 );
+		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.ITEM, 10 );
 	//#else
-		public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 1 );
+		public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 10 );
 	//#endif
 
 	private Command selectCommand = SELECT_COMMAND;

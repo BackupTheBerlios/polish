@@ -27,9 +27,12 @@
 package de.enough.polish.ui;
 
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
 
@@ -62,7 +65,7 @@ public class MenuBar extends Item {
 	private final IconItem singleLeftCommandItem;
 	private Command singleRightCommand;
 	private final IconItem singleRightCommandItem;
-	private int menuY;
+	private int commandsContainerY;
 	private int topY;
 	private int commandsContainerWidth;
 	protected boolean isSoftKeyPressed;
@@ -70,6 +73,12 @@ public class MenuBar extends Item {
 	protected boolean canScrollDownwards; // indicator for parent screen
 	protected boolean canScrollUpwards; // indicator for parent screen
 	protected boolean paintScrollIndicator; // indicator for parent screen
+	private Image optionsImage;
+	private boolean showImageAndText;
+	private Image selectImage;
+	private Image cancelImage;
+	private int singleLeftCommandY;
+	private int singleRightCommandY;
 
 	/**
 	 * Creates a new menu bar\
@@ -95,8 +104,10 @@ public class MenuBar extends Item {
 		this.commandsContainer.screen = screen;
 		//#style rightcommand, default
 		this.singleRightCommandItem = new IconItem( null, null );
+		this.singleRightCommandItem.setImageAlign( Graphics.LEFT );
 		//#style leftcommand, default
 		this.singleLeftCommandItem = new IconItem( null, null );
+		this.singleLeftCommandItem.setImageAlign( Graphics.LEFT );
 	}
 
 	public void addCommand(Command cmd) {
@@ -106,6 +117,7 @@ public class MenuBar extends Item {
 		if (type == Command.BACK || type == Command.CANCEL) {
 			if (this.singleRightCommand == null) {
 				this.singleRightCommand = cmd;
+				this.singleRightCommandItem.setImage( (Image)null );
 				this.singleRightCommandItem.setText( cmd.getLabel() );
 				if (this.isInitialised) {
 					this.isInitialised = false;
@@ -265,9 +277,9 @@ public class MenuBar extends Item {
 			//System.out.println("setting vertical dimension: " + topMargin + ", " + (this.screen.screenHeight - topMargin) );
 			this.commandsContainerWidth = (this.screen.screenWidth * 2) / 3;
 			int containerHeight = this.commandsContainer.getItemHeight(this.commandsContainerWidth, this.commandsContainerWidth);
-			this.menuY = screenHeight - containerHeight;
-			if (this.menuY < titleHeight) {
-				this.menuY = titleHeight;
+			this.commandsContainerY = screenHeight - containerHeight;
+			if (this.commandsContainerY < titleHeight) {
+				this.commandsContainerY = titleHeight;
 			}
 			/*
 			int focusedIndex = this.commandsContainer.focusedIndex;
@@ -277,28 +289,70 @@ public class MenuBar extends Item {
 			this.canScrollUpwards = (this.commandsContainer.yOffset != 0);
 			this.canScrollDownwards = (this.commandsContainer.yOffset + containerHeight > screenHeight - titleHeight) && (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
 			this.paintScrollIndicator = this.canScrollUpwards || this.canScrollDownwards;
-			//#ifdef polish.command.select:defined
-				//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
-			//#else
-				this.singleLeftCommandItem.setText( "Select" );
-			//#endif
-			//#ifdef polish.command.cancel:defined
-				//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}";
-			//#else
-				this.singleRightCommandItem.setText( "Cancel" );
-			//#endif
+			if (this.selectImage != null) {
+				this.singleLeftCommandItem.setImage( this.selectImage );
+				if (this.showImageAndText) {
+					//#ifdef polish.command.select:defined
+						//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
+					//#else
+						this.singleLeftCommandItem.setText( "Select" );
+					//#endif
+				} else {
+					this.singleLeftCommandItem.setText( null );
+				}
+			} else {
+				this.singleLeftCommandItem.setImage( (Image)null );
+				//#ifdef polish.command.select:defined
+					//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
+				//#else
+					this.singleLeftCommandItem.setText( "Select" );
+				//#endif
+			}
+			if (this.cancelImage != null) {
+				this.singleRightCommandItem.setImage( this.cancelImage );
+				if (this.showImageAndText) {
+					//#ifdef polish.command.cancel:defined
+						//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}" );
+					//#else
+						this.singleRightCommandItem.setText( "Cancel" );
+					//#endif
+				} else {
+					this.singleRightCommandItem.setText( null );
+				}
+			} else {
+				//#ifdef polish.command.cancel:defined
+					//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}"  );
+				//#else
+					this.singleRightCommandItem.setText( "Cancel" );
+				//#endif
+			}
 		} else {
+			// the menu is closed
 			this.paintScrollIndicator = false;
 			if (this.singleRightCommand != null) {
 				this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+				this.singleRightCommandItem.setImage( (Image)null );
 			}
 			if (this.commandsList.size() > 0) {
-				//#ifdef polish.command.options:defined
-					//#= String menuText = "${polish.command.options}";
-				//#else
-					String menuText = "Options";				
-				//#endif
-				this.singleLeftCommandItem.setText(menuText);
+				if (this.optionsImage != null) {
+					this.singleLeftCommandItem.setImage( this.optionsImage );
+					if (this.showImageAndText) {
+						//#ifdef polish.command.options:defined
+							//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+						//#else
+							this.singleLeftCommandItem.setText( "Options" );				
+						//#endif
+					} else {
+						this.singleLeftCommandItem.setText( null );
+					}
+				} else {
+					this.singleLeftCommandItem.setImage( (Image)null );
+					//#ifdef polish.command.options:defined
+						//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+					//#else
+						this.singleLeftCommandItem.setText( "Options" );				
+					//#endif
+				}
 			}
 		}
 		int availableWidth = lineWidth / 2;
@@ -310,7 +364,11 @@ public class MenuBar extends Item {
 		if (this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth ) > height) {
 			height = this.singleRightCommandItem.itemHeight;
 		}
-		this.contentHeight = height;
+		if (height > this.contentHeight) {
+			this.contentHeight = height; 
+		}
+		this.singleLeftCommandY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
+		this.singleRightCommandY = this.contentHeight - this.singleRightCommandItem.itemHeight;
 		this.contentWidth = lineWidth;
 	}
 
@@ -323,24 +381,24 @@ public class MenuBar extends Item {
 			// paint opened menu:
 			g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
-			this.commandsContainer.paint(0, this.menuY, 0, this.commandsContainerWidth , g);
+			this.commandsContainer.paint(0, this.commandsContainerY, 0, this.commandsContainerWidth , g);
 			//#ifdef polish.FullCanvasSize:defined
 				//#= g.setClip(0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
 			//#else
 				//TODO rob check if resetting of clip really works
-				g.setClip(0, this.menuY, this.screen.screenWidth, this.screen.screenHeight );
+				g.setClip(0, this.commandsContainerY, this.screen.screenWidth, this.screen.screenHeight );
 			//#endif
 			// paint menu-bar:
-			this.singleLeftCommandItem.paint(x, y, leftBorder, rightBorder, g);
+			this.singleLeftCommandItem.paint(x, y + this.singleLeftCommandY, leftBorder, rightBorder, g);
 			x = rightBorder - this.singleRightCommandItem.itemWidth;
-			this.singleRightCommandItem.paint(x, y, leftBorder, rightBorder, g);
+			this.singleRightCommandItem.paint(x, y + this.singleRightCommandY, leftBorder, rightBorder, g);
 		} else {
 			if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
-				this.singleLeftCommandItem.paint(x, y, leftBorder, rightBorder, g);
+				this.singleLeftCommandItem.paint(x, y + this.singleLeftCommandY, leftBorder, rightBorder, g);
 			}
 			if (this.singleRightCommand != null) {
 				x = rightBorder - this.singleRightCommandItem.itemWidth;
-				this.singleRightCommandItem.paint(x, y, leftBorder, rightBorder, g);
+				this.singleRightCommandItem.paint(x, y + this.singleRightCommandY, leftBorder, rightBorder, g);
 			}
 		}
 	}
@@ -408,57 +466,121 @@ public class MenuBar extends Item {
 		return false;
 	}
 	
-	
+	//#ifdef polish.hasPointerEvents
 	protected boolean handlePointerPressed(int x, int y) {
 		// check if one of the command buttons has been pressed:
 		int leftCommandEndX = this.marginLeft + this.paddingLeft + this.singleLeftCommandItem.itemWidth;
 		int rightCommandStartX = this.screen.screenWidth - (this.marginRight + this.paddingRight + this.singleRightCommandItem.itemWidth);
-		System.out.println("MenuBar: handlePointerPressed( x=" + x + ", y=" + y + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
+		//System.out.println("MenuBar: handlePointerPressed( x=" + x + ", y=" + y + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (y > this.screen.screenHeight) {
-			System.out.println("menubar clicked");
+			//System.out.println("menubar clicked");
 			if (this.isOpened) {
 				if ( x < leftCommandEndX ) {
-					System.out.println("selecting command from opened menu");
+					//System.out.println("selecting command from opened menu");
 					Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
 					this.screen.callCommandListener(command);
 					this.isOpened = false;
 					this.isInitialised = false;
 				} else if ( x > rightCommandStartX ) {
-					System.out.println("closing menu");
+					//System.out.println("closing menu");
 					this.isOpened = false;
 					this.isInitialised = false;
 				}
 			} else if (this.singleLeftCommand != null 
 					&& x < leftCommandEndX) 
 			{
-				System.out.println("calling single left command");
+				//System.out.println("calling single left command");
 				this.screen.callCommandListener(this.singleLeftCommand);
 			} else if (this.singleRightCommand != null
 					&& x > rightCommandStartX) 
 			{
-				System.out.println("calling single right command");
+				//System.out.println("calling single right command");
 				this.screen.callCommandListener(this.singleRightCommand);
 			} else if (this.commandsList.size() > 0 
 					&& x < leftCommandEndX)
 			{
-				System.out.println("opening menu");
+				//System.out.println("opening menu");
 				this.isOpened = true;
 				this.isInitialised = false;
 			}
-			System.out.println("nothing was clicked...");
+			//System.out.println("nothing was clicked...");
 			return true;
 		// okay, y is above the menu bar, so let the commandContainer process the event:
 		} else if (this.isOpened) {
 			this.isOpened = false;
 			this.isInitialised = false;
 			// a menu-item could have been selected:
-			if (this.commandsContainer.handlePointerPressed( x, y )) {
+			if (x <= this.commandsContainer.xLeftPos + this.commandsContainerWidth 
+					&& y >= this.commandsContainerY ) 
+			{
+				
+				//boolean handled = this.commandsContainer.handlePointerPressed( x, y );
+				//System.out.println("handling pointer pressed in open menu at " + x + ", " + y + ": " + handled);
+				this.commandsContainer.handlePointerPressed( x, y );
 				int focusedIndex = this.commandsContainer.getFocusedIndex();
 				Command cmd = (Command) this.commandsList.get( focusedIndex );
 				this.screen.callCommandListener( cmd );						
+				return true;
 			}
-			return true;
 		}
 		return false;
+	}
+	//#endif
+	
+	
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		
+		//#ifdef polish.css.menubar-show-image-and-text
+			Boolean showImageAndTextBool = style.getBooleanProperty( "menubar-show-image-and-text" );
+			if (showImageAndTextBool != null) {
+				this.showImageAndText = showImageAndTextBool.booleanValue();
+			}
+		//#endif
+		//#ifdef polish.css.menubar-options-image
+			String optionsUrl = style.getProperty("menubar-options-image");
+			if (optionsUrl != null) {
+				try {
+					this.optionsImage = StyleSheet.getImage(optionsUrl, this, false);
+					int imageHeight = this.optionsImage.getHeight();
+					if (imageHeight > this.contentHeight) {
+						this.contentHeight = imageHeight;
+					}
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load options-image " + optionsUrl + e );
+				}
+			}
+		//#endif
+		//#ifdef polish.css.menubar-select-image
+			String selectUrl = style.getProperty("menubar-select-image");
+			if (selectUrl != null) {
+				try {
+					this.selectImage = StyleSheet.getImage(selectUrl, this, false);
+					int imageHeight = this.selectImage.getHeight();
+					if (imageHeight > this.contentHeight) {
+						this.contentHeight = imageHeight;
+					}
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load select-image " + selectUrl + e );
+				}
+			}
+		//#endif
+		//#ifdef polish.css.menubar-cancel-image
+			String cancelUrl = style.getProperty("menubar-cancel-image");
+			if (cancelUrl != null) {
+				try {
+					this.cancelImage = StyleSheet.getImage(cancelUrl, this, false);
+					int imageHeight = this.cancelImage.getHeight();
+					if (imageHeight > this.contentHeight) {
+						this.contentHeight = imageHeight;
+					}
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load cancel-image " + cancelUrl + e );
+				}
+			}
+		//#endif
 	}
 }
