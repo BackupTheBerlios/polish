@@ -48,17 +48,35 @@ import javax.microedition.lcdui.Image;
  */
 public class ChoiceGroup 
 extends Container 
-implements Choice, ItemCommandListener
+implements Choice
+//#if polish.ChoiceGroup.suppressMarkCommands == true
+	//#define tmp.suppressMarkCommands
+//#else
+	//#define tmp.allowMarkCommands
+//#endif
+//#if polish.ChoiceGroup.suppressSelectCommand == true
+	//#define tmp.suppressSelectCommand
+//#else
+	//#define tmp.allowSelectCommand
+//#endif
+
+//#if tmp.suppressMarkCommands && tmp.suppressSelectCommand
+	//#define tmp.suppressAllCommands
+//#else
+	, ItemCommandListener
+//#endif
 {
-	//#ifdef polish.command.mark:defined
-		//#= public static final Command MARK_COMMAND = new Command("${polish.command.mark}", Command.ITEM, 1 );
-	//#else
-		public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 1 );
-	//#endif
-	//#ifdef polish.command.mark:defined
-		//#= public static final Command UNMARK_COMMAND = new Command("${polish.command.unmark}", Command.ITEM, 2 );
-	//#else
-		public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 2 );
+	//#ifndef tmp.suppressMarkCommands
+		//#ifdef polish.command.mark:defined
+			//#= public static final Command MARK_COMMAND = new Command("${polish.command.mark}", Command.ITEM, 1 );
+		//#else
+			public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 1 );
+		//#endif
+		//#ifdef polish.command.mark:defined
+			//#= public static final Command UNMARK_COMMAND = new Command("${polish.command.unmark}", Command.ITEM, 2 );
+		//#else
+			public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 2 );
+		//#endif
 	//#endif
 	private int selectedIndex;
 	//private boolean isExclusive;
@@ -74,7 +92,9 @@ implements Choice, ItemCommandListener
 		private IconItem popupItem;
 		private boolean isPopupClosed;
 	//#endif
-	private ItemCommandListener additionalItemCommandListener;
+	//#ifndef tmp.suppressAllCommands
+		private ItemCommandListener additionalItemCommandListener;
+	//#endif
 	
 
 	/**
@@ -293,13 +313,19 @@ implements Choice, ItemCommandListener
 			}
 			append( stringElements[i], img, style );
 		}
-		if (choiceType == MULTIPLE) {
-			addCommand( MARK_COMMAND );
-			addCommand( UNMARK_COMMAND );
-		} else {
-			addCommand( List.SELECT_COMMAND );
-		}
-		this.itemCommandListener = this;
+		//#ifndef tmp.suppressAllCommands
+			if (choiceType == MULTIPLE) {
+				//#ifndef tmp.suppressMarkCommands
+					addCommand( MARK_COMMAND );
+					addCommand( UNMARK_COMMAND );
+				//#endif
+			} else {
+				//#ifndef tmp.suppressSelectCommand
+					addCommand( List.SELECT_COMMAND );
+				//#endif
+			}
+			this.itemCommandListener = this;
+		//#endif
 	}
 	
 	//#ifdef polish.usePopupItem
@@ -1158,11 +1184,21 @@ implements Choice, ItemCommandListener
 	}
 	//#endif
 
+	//#ifndef tmp.suppressAllCommands
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 	 */
 	public void commandAction(Command c, Item item) {
+		//#if tmp.allowSelectCommand && tmp.allowMarkCommands
 		if (c == List.SELECT_COMMAND || c == MARK_COMMAND) {
+		//#elif tmp.allowSelectCommand
+			//# if (c == List.SELECT_COMMAND) {
+		//#elif tmp.allowMarkCommands
+			//# if (c == MARK_COMMAND) {
+		//#else
+			//#message Invalid combination of suppressed commands for a ChoiceGroup!
+			//# if (false) {
+		//#endif
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, true );
 				//#ifdef polish.usePopupItem
@@ -1181,16 +1217,21 @@ implements Choice, ItemCommandListener
 					openPopup();				
 				}
 			//#endif
+		//#ifdef tmp.allowMarkCommands
 		} else if (c == UNMARK_COMMAND ) {
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, false );
 			}
+		//#endif
 		} else if (this.additionalItemCommandListener != null) {
 			this.additionalItemCommandListener.commandAction(c, item);
 		}
 	}
+	//#endif
 	
+	//#ifndef tmp.suppressAllCommands
 	public void setItemCommandListener(ItemCommandListener l) {
 		this.additionalItemCommandListener = l;
 	}
+	//#endif
 }

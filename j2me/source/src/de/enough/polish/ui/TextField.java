@@ -307,7 +307,12 @@ import javax.microedition.lcdui.Displayable;
  * @since MIDP 1.0
  */
 public class TextField extends StringItem
-implements CommandListener, ItemCommandListener
+implements CommandListener
+//#if polish.TextField.suppressCommands == true
+	//#define tmp.suppressCommands
+//#else
+	, ItemCommandListener
+//#endif
 {
 	/**
 	 * The user is allowed to enter any text.
@@ -590,15 +595,17 @@ implements CommandListener, ItemCommandListener
 	 * 
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
-	//#ifdef polish.command.delete:defined
-		//#= private static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 0 );
-	//#else
-		private static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 0 ); 
-	//#endif
-	//#ifdef polish.command.clear:defined
-		//#= private static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 0 );
-	//#else
-		private static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 1 ); 
+	//#ifndef tmp.suppressCommands
+		//#ifdef polish.command.delete:defined
+			//#= private static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 0 );
+		//#else
+			private static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 0 ); 
+		//#endif
+		//#ifdef polish.command.clear:defined
+			//#= private static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 0 );
+		//#else
+			private static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 1 ); 
+		//#endif
 	//#endif
 	
 	private int maxSize;
@@ -612,7 +619,9 @@ implements CommandListener, ItemCommandListener
 	private boolean isPassword;
 	private long lastCaretSwitch;
 	private boolean enableDirectInput;
-	private ItemCommandListener additionalItemCommandListener;
+	//#ifndef tmp.suppressCommands
+		private ItemCommandListener additionalItemCommandListener;
+	//#endif
 
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
@@ -690,10 +699,12 @@ implements CommandListener, ItemCommandListener
 			}
 		//#endif
 			
-		// add default text field item-commands:
-		this.addCommand(DELETE_CMD);
-		this.addCommand(CLEAR_CMD);
-		this.itemCommandListener = this;
+		//#ifndef tmp.suppressCommands
+			// add default text field item-commands:
+			this.addCommand(DELETE_CMD);
+			this.addCommand(CLEAR_CMD);
+			this.itemCommandListener = this;
+		//#endif
 	}
 	
 	/**
@@ -1200,23 +1211,27 @@ implements CommandListener, ItemCommandListener
 		StyleSheet.display.setCurrent( this.screen );
 	}
 	
-	public void setItemCommandListener(ItemCommandListener l) {
-		this.additionalItemCommandListener = l;
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
-	 */
-	public void commandAction(Command cmd, Item item) {
-		if ( cmd == DELETE_CMD ) {
-			if (this.text != null && this.text.length() > 0) {
-				setString( this.text.substring(0, this.text.length() - 1));
-			}
-		} else if ( cmd == CLEAR_CMD ) {
-			setString( null );
-		} else if ( this.additionalItemCommandListener != null ) {
-			this.additionalItemCommandListener.commandAction(cmd, item);
+	//#ifndef tmp.suppressCommands
+		public void setItemCommandListener(ItemCommandListener l) {
+			this.additionalItemCommandListener = l;
 		}
-	}
+	//#endif
+	
+	//#ifndef tmp.suppressCommands
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
+		 */
+		public void commandAction(Command cmd, Item item) {
+			if ( cmd == DELETE_CMD ) {
+				if (this.text != null && this.text.length() > 0) {
+					setString( this.text.substring(0, this.text.length() - 1));
+				}
+			} else if ( cmd == CLEAR_CMD ) {
+				setString( null );
+			} else if ( this.additionalItemCommandListener != null ) {
+				this.additionalItemCommandListener.commandAction(cmd, item);
+			}
+		}
+	//#endif
 	
 }
