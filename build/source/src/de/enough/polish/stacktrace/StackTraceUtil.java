@@ -49,11 +49,12 @@ import de.enough.polish.util.TextUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class StackTraceUtil {
-	private final static String STACK_TRACE_PATTERN_STR = "at\\s+[\\w|\\.]+\\(\\+\\d+\\)";
+	private final static String STACK_TRACE_PATTERN_STR = "at\\s+[\\w|\\.|<|>]+\\(\\+\\d+\\)";
 	private final static Pattern STACK_TRACE_PATTERN = Pattern.compile( STACK_TRACE_PATTERN_STR );
 	private final static String METHOD_PATTERN_STR = "([public|private]protected]\\s+)?\\w+s*\\w+\\s*\\(";
 	private final static Pattern METHOD_PATTERN = Pattern.compile( METHOD_PATTERN_STR ); 
-	
+	private final static String CONSTRUCTOR_PATTERN_STR = "([public|private]protected]\\s+)?\\w+s*\\(";
+	private final static Pattern CONSTRUCTOR_PATTERN = Pattern.compile( CONSTRUCTOR_PATTERN_STR );
 	
 	private String sourceCodeLine;
 	private String decompiledCodeSnippet;
@@ -69,25 +70,35 @@ public final class StackTraceUtil {
 	{
 		// decompile the class-code:
 		String[] lines = decompile( className, classPath, environmentProperties );
+		boolean searchForConstructor = false;
+		if ("<init>".equals( methodName )) {
+			searchForConstructor = true;
+			methodName = className;
+			int dotIndex = methodName.lastIndexOf('.');
+			if (dotIndex != -1) {
+				methodName = methodName.substring( dotIndex + 1);
+			}
+		}
 		// try to find the method-call which is in the error-message:
-		String[] methodLines = parseMethod( lines, methodName, offset );
+		String[] methodLines = parseMethod( lines, methodName, offset, searchForConstructor );
 		if (methodLines.length == 0) {
 			//System.out.println("Unable to find decompiled method-call.");
 			return null;
 		}
 		// now try to find the original source-code-line:
-		String sourceMessage = getSourceFilePosition( className, methodName, this.sourceCodeLine, preprocessedSourcePath, sourceDirs, environmentProperties );
+		String sourceMessage = getSourceFilePosition( className, methodName, searchForConstructor, this.sourceCodeLine, preprocessedSourcePath, sourceDirs, environmentProperties );
 		
 		return new BinaryStackTrace( message, sourceMessage, methodLines, this.decompiledCodeSnippet );
 	}
 
 	/**
+	 * @param searchForConstructor
 	 * @param string
 	 * @param sourceDirs
 	 * @return
 	 * @throws IOException
 	 */
-	private String getSourceFilePosition(String className, String methodName, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties) 
+	private String getSourceFilePosition(String className, String methodName, boolean searchForConstructor, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties) 
 	{
 		// first find the position in the preprocessed source code
 		// secondly find the original source-file in the provided source-files.
@@ -109,7 +120,12 @@ public final class StackTraceUtil {
 			for (int i = 0; i < lines.length; i++) {
 				String line = lines[i];
 				if (line.indexOf(methodName) != -1) {
-					Matcher matcher = METHOD_PATTERN.matcher(line);
+					Matcher matcher;
+					if (searchForConstructor) {
+						matcher = CONSTRUCTOR_PATTERN.matcher( line );
+					} else {
+						matcher = METHOD_PATTERN.matcher(line);
+					}
 					char firstChar = line.trim().charAt(0);
 					if ( (firstChar == '*')
 							|| (firstChar == '/')
@@ -193,9 +209,10 @@ public final class StackTraceUtil {
 	 * @param lines
 	 * @param methodName
 	 * @param offset
+	 * @param searchForConstructor
 	 * @return
 	 */
-	private String[] parseMethod(String[] lines, String methodName, String offset) {
+	private String[] parseMethod(String[] lines, String methodName, String offset, boolean searchForConstructor) {
 		ArrayList methodLines = new ArrayList();
 		String offsetKey = " " + offset + ":";
 		String methodKey = methodName.concat( "(" );
@@ -219,12 +236,12 @@ public final class StackTraceUtil {
 						// now save the actual code-snippet:
 						int codeStart = 0;
 						for (int j=i; j >= methodStart; --j ) {
-							String prevLine = lines[j]; 
-							if ( prevLine.indexOf('/') == -1) {
-								String trimmed = prevLine.trim();
-								if ( ( trimmed.length() > 1)
-										&& !"break;".equals(trimmed)
-										&& !"} else".equals(trimmed)
+							String prevLine = lines[j].trim();
+							boolean isComment = (prevLine.length() > 0) && (prevLine.charAt(0) == '/');
+							if ( !isComment ) {
+								if ( ( prevLine.length() > 1)
+										&& !"break;".equals(prevLine)
+										&& !"} else".equals(prevLine)
 										) {
 									codeStart = j;
 									break;
@@ -251,7 +268,9 @@ public final class StackTraceUtil {
 				if (isInMethod) {
 					if (firstChar == '{') {
 						parenthesisCount++;
-					} else if (firstChar == '}' || "} else".equals(trimmedLine)) {
+					} else if ( (firstChar == '}' && !"};".equals(trimmedLine) ) 
+							|| "} else".equals(trimmedLine)) 
+					{
 						parenthesisCount--;
 						if (parenthesisCount == 0 ) {
 							if (offsetFound) {
