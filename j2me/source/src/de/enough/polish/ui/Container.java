@@ -85,6 +85,7 @@ public class Container extends Item {
 	private int yTop;
 	private int yBottom;
 	private int yOffset;
+	private int focusedTopMargin;
 	
 	/**
 	 * Creates a new empty container.
@@ -120,7 +121,14 @@ public class Container extends Item {
 		this.itemsList = new ArrayList();
 		this.focusFirstElement = focusFirstElement;
 		if (this.focusedStyle == null) {
-			this.focusedStyle = StyleSheet.focusedStyle;
+			Style focStyle = StyleSheet.focusedStyle;
+			this.focusedStyle = focStyle;
+			this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
+			if (focStyle.border != null) {
+				this.focusedTopMargin += focStyle.border.borderWidth;
+			} else if (focStyle.background != null) {
+				this.focusedTopMargin += focStyle.background.borderWidth;
+			}
 		}
 		this.layout |= Item.LAYOUT_NEWLINE_BEFORE;
 		setVerticalDimensions(yTop, yBottom);
@@ -339,37 +347,21 @@ public class Container extends Item {
 					}
 				} else if (itemYTop < this.yTop) {
 					// this item is too high:
-					difference = this.yTop - itemYTop; 
+					//#if tmp.useTable
+						if ((index == 0) || (index < this.numberOfColumns) ) {
+					//#else
+						//# if (index == 0) {
+					//#endif
+						// scroll to the very top:
+						difference = -1 * this.yOffset;
+					} else {
+						difference = this.yTop - itemYTop + this.focusedTopMargin;
+					}
 					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
 				}
-				//System.out.println("focus:: difference: " + difference + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
+				//System.out.println("focus:: difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
 				this.yOffset += difference;
 			}
-			/*
-			else {
-				//TODO check if this is needed at all - we have the internal coordinates now, after all...
-				// this container might be embedded in another one:
-				if (this.parent != null && this.parent instanceof Container) {
-					Container container = (Container) this.parent;
-					if (container.enableScrolling) {
-						// Now adjust the scrolling of the parent:
-						if (itemYBottom > container.yBottom) {
-							// this item is too low:
-							container.yOffset -= ( itemYBottom - container.yBottom );
-							//System.out.println("adjusting yOffset: itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
-						} else if (itemYTop < container.yTop) {
-							// this item is too high:
-							container.yOffset += ( container.yTop - itemYTop ); 
-						}
-					}
-					if ( item.internalY + item.internalHeight > container.yBottom) {
-						container.yOffset -= ( item.internalY + item.internalHeight - this.yBottom );
-					} else if ( item.internalY < container.yTop ) {
-						container.yOffset += ( container.yTop - item.internalY ); 
-					}
-				}
-			}
-			*/
 		}
 		this.isInitialised = false;
 	}
@@ -688,6 +680,12 @@ public class Container extends Item {
 				Style focStyle = StyleSheet.getStyle( focused );
 				if (focStyle != null) {
 					this.focusedStyle = focStyle;
+					this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
+					if (focStyle.border != null) {
+						this.focusedTopMargin += focStyle.border.borderWidth;
+					} else if (focStyle.background != null) {
+						this.focusedTopMargin += focStyle.background.borderWidth;
+					}
 				}
 			}
 		//#endif
