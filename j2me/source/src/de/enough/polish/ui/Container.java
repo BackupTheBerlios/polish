@@ -405,7 +405,6 @@ public class Container extends Item {
 					hasFocusableItem = true;
 				}
 				if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-					//System.out.println("focusing item");
 					focus( i, item );
 					height = item.getItemHeight( firstLineWidth, lineWidth );
 					width = item.getItemWidth( firstLineWidth, lineWidth );

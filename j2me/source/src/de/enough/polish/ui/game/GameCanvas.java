@@ -93,7 +93,7 @@ import javax.microedition.lcdui.Image;
  * @since MIDP 2.0
  */
 public abstract class GameCanvas
-//#ifndef polish.classes.fullscreen:defined
+//#if !(polish.classes.fullscreen:defined || (polish.midp2 && ( !polish.useMenuFullScreen || polish.hasCommandKeyEvents)))
 		extends Canvas
 //#else
 	// a fullscreen class is available
@@ -217,14 +217,11 @@ public abstract class GameCanvas
 		//#else
 			super();
 		//#endif
-		//#if tmp.useFullScreen && polish.ScreenWidth:defined
-			//#= int width = ${polish.ScreenWidth};
+		//#if (tmp.useFullScreen || polish.midp2) && polish.FullCanvasSize:defined
+			//#= int width = ${polish.FullCanvasWidth};
+			//#= int height = ${polish.FullCanvasHeight};
 		//#else
 			int width = getWidth();
-		//#endif
-		//#if tmp.useFullScreen && polish.ScreenHeight:defined
-			//#= int height = ${polish.ScreenHeight};
-		//#else
 			int height = getHeight();
 		//#endif
 			
