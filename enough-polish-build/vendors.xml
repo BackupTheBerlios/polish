@@ -52,6 +52,9 @@
 		<name>Sony-Ericsson</name>
 		<features></features>
 		<capability name="Emulator.Class" value="SonyEricssonEmulator" />
+		<capability name="key.LeftSoftKey" value="-6" />
+		<capability name="key.RightSoftKey" value="-7" />
+		<capability name="key.ClearKey" value="-8" />
 	</vendor>
 	
 	<vendor>
