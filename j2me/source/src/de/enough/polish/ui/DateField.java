@@ -490,7 +490,7 @@ implements CommandListener
 	 */
 	private void showDateForm() {
 		if (this.midpDateField == null) {
-			this.midpDateField = new javax.microedition.lcdui.DateField( this.label, this.mode, this.timeZone );
+			this.midpDateField = new javax.microedition.lcdui.DateField( getLabel(), this.mode, this.timeZone );
 			this.midpDateField.setDate( this.date );
 			this.form = new javax.microedition.lcdui.Form( StyleSheet.currentScreen.getTitle() );
 			this.form.append( this.midpDateField );

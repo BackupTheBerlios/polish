@@ -975,6 +975,7 @@ public class Sprite extends Layer
 	 * 
 	 * @param s the Sprite to test for collision with
 	 * @param pixelLevel true to test for collision on a pixel-by-pixel basis, false to test using simple bounds checking.
+	 * 	      The J2ME Polish implementation does not support the pixel-level collision detection.
 	 * @return true if the two Sprites have collided, otherwise false
 	 * @throws NullPointerException if Sprite s is null
 	 */
@@ -1020,15 +1021,33 @@ public class Sprite extends Layer
 	 * a collision to be detected.
 	 * <P>
 	 * 
-	 * @param t - the TiledLayer to test for collision with
-	 * @param pixelLevel - true to test for collision on a pixel-by-pixel basis, false to test using simple bounds checking against non-empty cells.
+	 * @param t the TiledLayer to test for collision with
+	 * @param pixelLevel true to test for collision on a pixel-by-pixel basis, false to test using simple bounds checking against non-empty cells.
+	 * 	      The J2ME Polish implementation does not support the pixel-level collision detection.
 	 * @return true if this Sprite has collided with the TiledLayer, otherwise false
 	 * @throws NullPointerException - if t is null
 	 */
 	public final boolean collidesWith( TiledLayer t, boolean pixelLevel)
 	{
+		if (!(this.isVisible && t.isVisible)) {
+			return false;
+		}
+		int cXStart = this.xPosition + this.transformedCollisionX;
+		int cXEnd = cXStart + this.transformedCollisionWidth;
+		int tileCXStart = t.xPosition + t.xPosition;
+		int tileCXEnd = tileCXStart + t.width;
+		if ((cXStart <= tileCXStart && cXEnd >= tileCXStart)
+		 || (cXStart >= tileCXEnd && cXEnd <= tileCXEnd) ) {
+			int cYStart = this.yPosition + this.transformedCollisionY;
+			int cYEnd = cYStart + this.transformedCollisionHeight;
+			int tileCYStart = t.yPosition + t.yPosition;
+			int tileCYEnd = tileCYStart + t.height;
+			if ((cYStart <= tileCYStart && cYEnd >= tileCYStart)
+					 || (cYStart >= tileCYEnd && cYEnd <= tileCYEnd) ) {
+				return true;
+			}			
+		}
 		return false;
-		//TODO implement collidesWith
 	}
 
 	/**
@@ -1047,18 +1066,32 @@ public class Sprite extends Layer
 	 * The Sprite must be visible in order for a collision to be
 	 * detected.
 	 * <P>
+	 * The J2ME Polish implementation does not support the pixel-level collision detection.
 	 * 
-	 * @param image - the Image to test for collision
-	 * @param leftX - the horizontal location of the Image's upper left corner
-	 * @param topY - the vertical location of the Image's upper left corner
-	 * @param pixelLevel - true to test for collision on a pixel-by-pixel basis, false to test using simple bounds checking
+	 * @param img the Image to test for collision
+	 * @param leftX the horizontal location of the Image's upper left corner
+	 * @param topY the vertical location of the Image's upper left corner
+	 * @param pixelLevel true to test for collision on a pixel-by-pixel basis, false to test using simple bounds checking;
+	 * 	      The J2ME Polish implementation does not support the pixel-level collision detection.
 	 * @return true if this Sprite has collided with the Image, otherwise false
-	 * @throws NullPointerException - if image is null
+	 * @throws NullPointerException if image is null
 	 */
-	public final boolean collidesWith( Image image, int leftX, int topY, boolean pixelLevel)
+	public final boolean collidesWith( Image img, int leftX, int topY, boolean pixelLevel)
 	{
-		return false;
-		//TODO implement collidesWith
+		int cXStart = this.xPosition + this.transformedCollisionX;
+		int cXEnd = cXStart + this.transformedCollisionWidth;
+		int imgXEnd = leftX + img.getWidth();
+		if ((cXStart <= leftX && cXEnd >= leftX)
+		 || (cXStart >= imgXEnd && cXEnd <= imgXEnd) ) {
+			int cYStart = this.yPosition + this.transformedCollisionY;
+			int cYEnd = cYStart + this.transformedCollisionHeight;
+			int imgYEnd = topY + img.getHeight();
+			if ((cYStart <= topY && cYEnd >= topY)
+					 || (cYStart >= imgYEnd && cYEnd <= imgYEnd) ) {
+				return true;
+			}			
+		}
+		return false;	
 	}
 
 }

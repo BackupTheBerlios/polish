@@ -87,8 +87,11 @@ public abstract class Screen
 //#endif
 {
 	
-	protected StringItem title;
-	protected String titleText;
+	//#if tmp.fullScreen || polish.midp1
+		//#define tmp.usingTitle
+		protected StringItem title;
+		protected String titleText;
+	//#endif
 	protected int titleHeight;
 	protected Background background;
 	protected Border border;
@@ -179,7 +182,11 @@ public abstract class Screen
 		// creating standard container:
 		this.container = new Container( true );
 		this.container.screen = this;
-		this.titleText = title;
+		//#if tmp.fullScreen || polish.midp1
+			this.titleText = title;
+		//#else
+			setTitle( title );
+		//#endif
 		this.style = style;
 		this.cmdListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
@@ -229,9 +236,9 @@ public abstract class Screen
 				if (colorStr != null) {
 					this.menuBarColor = Integer.parseInt(colorStr);
 				}
-				this.menuFontColor = menuStyle.labelFontColor;
-				if (menuStyle.labelFont != null) {
-					this.menuFont = menuStyle.labelFont;
+				this.menuFontColor = menuStyle.fontColor;
+				if (menuStyle.font != null) {
+					this.menuFont = menuStyle.font;
 				} else {
 					this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );				
 				}			
@@ -245,7 +252,9 @@ public abstract class Screen
 		//#endif
 			
 		// set the title:
-		setTitle( this.titleText );
+		//#ifdef tmp.usingTitle
+			setTitle( this.titleText );
+		//#endif
 
 		// start the animmation thread if necessary: 
 		if (StyleSheet.animationThread == null) {
@@ -277,6 +286,12 @@ public abstract class Screen
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
 	}
 	
+	/**
+	 * Animates this Screen.
+	 * All embedded items are also animated.
+	 * 
+	 * @return true when at least one animated item needs a redraw/repaint.
+	 */
 	public boolean animate() {
 		if (!this.isInitialised) {
 			return false;
@@ -293,6 +308,11 @@ public abstract class Screen
 			if (this.gauge != null) {
 				animated = animated | this.gauge.animate();
 			}
+			//#ifdef tmp.usingTitle
+				if (this.title != null) {
+					animated = animated | this.title.animate();
+				}
+			//#endif
 			//#ifndef polish.skipTicker
 				if (this.ticker != null) {
 					animated = animated | this.ticker.animate();
@@ -342,19 +362,25 @@ public abstract class Screen
 					g.fillRect( 0, 0, this.screenWidth, this.screenHeight );
 				//#endif
 			}
-			// paint title:
-			if (this.title != null) {
-				this.title.paint(0, 0, 0, this.screenWidth, g);
-			}
+			
+			//#ifdef tmp.usingTitle
+				// paint title:
+				if (this.title != null) {
+					this.title.paint(0, 0, 0, this.screenWidth, g);
+				}
+				int tHeight = this.titleHeight;
+			//#else
+				//# int tHeight = 0;
+			//#endif
 			// protect the title, ticker and the full-screen-menu area:
-			g.setClip(0, this.titleHeight, this.screenWidth, this.screenHeight - this.titleHeight );
-			g.translate( 0, this.titleHeight );
+			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
+			g.translate( 0, tHeight );
 			// paint content:
 			//System.out.println("starting to paint content of screen");
 			paintScreen( g);
 			//System.out.println("done painting content of screen");
 			
-			g.translate( 0, -this.titleHeight );
+			g.translate( 0, - tHeight );
 			// allow painting outside of the screen again:
 			//#ifdef tmp.menuFullScreen
 			 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
@@ -450,7 +476,7 @@ public abstract class Screen
 		this.container.paint( 0, y, 0, this.screenWidth, g );
 	}
 	
-	//#if tmp.fullScreen || polish.midp1
+	//#ifdef tmp.usingTitle
 	/**
 	 * Gets the title of the Screen. 
 	 * Returns null if there is no title.
@@ -467,7 +493,7 @@ public abstract class Screen
 	}
 	//#endif
 
-	//#if tmp.fullScreen || polish.midp1
+	//#ifdef tmp.usingTitle
 	/**
 	 * Sets the title of the Screen. If null is given, removes the title.
 	 * 
@@ -481,6 +507,9 @@ public abstract class Screen
 	 */
 	public void setTitle( String s)
 	{
+		if (!this.isInitialised) {
+			this.titleText = s;
+		}
 		if (s != null) {
 			//#style title, default
 			this.title = new StringItem( null, s );
@@ -503,7 +532,7 @@ public abstract class Screen
 		if (this.container != null) {
 			this.container.setVerticalDimensions( 0,  this.screenHeight - this.titleHeight );
 		}
-		if (isShown()) {
+		if (this.isInitialised && isShown()) {
 			repaint();
 		}
 	}

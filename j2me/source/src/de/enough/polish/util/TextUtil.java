@@ -84,6 +84,9 @@ public final class TextUtil {
 	 * @return the array containing the substrings
 	 */
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
+		if (firstLineWidth <= 0 || lineWidth <= 0) {
+			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth );
+		}
 		boolean hasLineBreaks = (value.indexOf('\n') != -1);
 		int completeWidth = font.stringWidth(value);
 		if ( completeWidth <= firstLineWidth ) {
@@ -149,6 +152,7 @@ public final class TextUtil {
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{
+		try {
 		char[] valueChars = value.toCharArray();
 		int widthPerChar = (completeWidth * 100) / valueChars.length;
 		int startIndex = 0;
@@ -177,6 +181,11 @@ public final class TextUtil {
 				startIndex = i;
 			}
 			firstLineWidth = lineWidth;
+		}
+		} catch (ArithmeticException e) {
+			System.out.println("unable to split: " + e);
+			e.printStackTrace();
+			System.out.println("complete width=" + completeWidth + " number of chars=" + value.length());
 		}
 	}
 

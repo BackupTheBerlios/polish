@@ -247,8 +247,9 @@ public class StringItem extends Item
 					g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
 				} else {
 					// left layout
-					g.drawString( line, leftBorder, y, Graphics.TOP | Graphics.LEFT );
+					g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
 				}
+				x = leftBorder;
 				y += lineHeight;
 			}
 		}

@@ -46,7 +46,7 @@ import java.io.IOException;
  */
 public class ChoiceItem extends IconItem 
 //#ifdef polish.images.backgroundLoad
-implements ImageConsumer
+	implements ImageConsumer
 //#endif
 {
 	private static Image defaultRadioSelected;
@@ -68,8 +68,8 @@ implements ImageConsumer
 	/** defines whether the plain image should be drawn at all */ 
 	private boolean drawNoPlain;
 	//#ifdef polish.images.backgroundLoad
-	private String selectedImgName;
-	private String plainImgName;
+		private String selectedImgName;
+		private String plainImgName;
 	//#endif
 
 	/**
@@ -285,9 +285,6 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)
 	 */
 	public void setImage(String name, Image image) {
-		if (!this.drawBox) {
-			super.setImage( name, image );
-		}
 		if (!this.drawBox) {
 			super.setImage( name, image );
 		} else if (name.equals(this.selectedImgName)) {

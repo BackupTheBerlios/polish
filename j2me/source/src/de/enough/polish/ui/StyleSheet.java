@@ -48,13 +48,14 @@ public final class StyleSheet {
 	
 	private static Hashtable imagesByName;
 	//#ifdef polish.images.backgroundLoad
-	private static Hashtable scheduledImagesByName;
-	//private static final Boolean TRUE = new Boolean( true );
-	private static Timer timer;
+		private static Hashtable scheduledImagesByName;
+		//private static final Boolean TRUE = new Boolean( true );
+		private static Timer timer;
 	//#endif
 	//#ifdef false
-	public static final Style defaultStyle = null;
-	public static Style focusedStyle = null;
+		public static Style defaultStyle = null;
+		public static Style focusedStyle = null;
+		public static Style labelStyle; 
 	//#endif
 	private static Hashtable stylesByName = new Hashtable();
 	
@@ -62,13 +63,12 @@ public final class StyleSheet {
 	// do not change the following line!
 //$$IncludeStyleSheetDefinitionHere$$//
 		
-	public static Style currentStyle = defaultStyle;
 	public static Screen currentScreen;	
 	public static Display display;
 	public static AnimationThread animationThread;
 	//TODO rob i18n OK & Cancel commands
 	public static final Command OK_CMD = new Command("OK", Command.OK, 0 ); 
-	public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 1 ); 
+	public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 1 );
 
 	/**
 	 * Retrieves the image with the given name.

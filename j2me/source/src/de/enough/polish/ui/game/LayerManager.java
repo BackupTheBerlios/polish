@@ -88,7 +88,7 @@ public class LayerManager extends Object
 	private int viewWidth;
 	private int viewHeight;
 	private boolean isInitialised;
-	private boolean viewWindowSet;
+	private boolean isViewWindowSet;
 
 	/**
 	 * Creates a new LayerManager.</DL>
@@ -231,15 +231,15 @@ public class LayerManager extends Object
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
-		if (this.viewWindowSet) {
-			g.setClip( x, y, this.viewWidth, this.viewHeight );
+		if (this.isViewWindowSet) {
+			g.setClip( x + this.viewX, y + this.viewY, this.viewWidth, this.viewHeight );
 		}
 		for (int i = this.layers.length -1; i >= 0; i--) {
 			Layer layer = this.layers[ i ];
 			layer.paint( g );
 		}
 		// reset original clip:
-		if (this.viewWindowSet) {
+		if (this.isViewWindowSet) {
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
 	}
@@ -265,7 +265,7 @@ public class LayerManager extends Object
 	 */
 	public void setViewWindow(int x, int y, int width, int height)
 	{
-		this.viewWindowSet = true;
+		this.isViewWindowSet = true;
 		this.viewX = x;
 		this.viewY = y;
 		this.viewWidth = width;

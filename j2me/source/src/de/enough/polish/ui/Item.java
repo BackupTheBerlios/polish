@@ -25,12 +25,13 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.Debug;
-
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Debug;
 
 
 /**
@@ -591,11 +592,6 @@ public abstract class Item extends Object
 	protected Background background;
 	protected Border border;
 	protected Style style;
-	protected String label;
-	protected Font labelFont;
-	protected int labelColor;
-	protected int labelWidth;
-	protected int labelHeight;
 	protected int itemWidth;
 	protected int itemHeight;
 	protected int paddingLeft;
@@ -662,6 +658,11 @@ public abstract class Item extends Object
 		private int afterHeight;
 		private Image afterImage;
 	//#endif
+	// label settings:
+	private Style labelStyle;
+	private StringItem label;
+
+	private boolean useSingleRow;
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -685,9 +686,11 @@ public abstract class Item extends Object
 	 */
 	protected Item(String label, int layout, int appearanceMode, Style style) {
 		this.style = style;
-		this.label = label;
 		this.layout = layout;
 		this.appearanceMode = appearanceMode;
+		if (label != null && label.length() != 0) {
+			setLabel( label );
+		}
 		if (style == null) {
 			this.layout = layout;
 		} else {
@@ -709,7 +712,15 @@ public abstract class Item extends Object
 	 */
 	public void setLabel( String label)
 	{
-		this.label = label;
+		if (this.label == null) {
+			this.label = new StringItem( null, label, this.labelStyle );
+			this.label.parent = this;
+		}
+		this.label.setText( label );
+		if (this.isInitialised) {
+			repaint();
+		}
+		this.isInitialised = false;
 	}
 
 	/**
@@ -720,7 +731,11 @@ public abstract class Item extends Object
 	 */
 	public String getLabel()
 	{
-		return this.label;
+		if (this.label == null) {
+			return null;
+		} else {
+			return this.label.getText();
+		}
 	}
 
 	/**
@@ -815,8 +830,6 @@ public abstract class Item extends Object
 		} else {
 			this.isLayoutExpand = false;
 		}
-		this.labelFont = style.labelFont;
-		this.labelColor = style.labelFontColor;
 		this.background = style.background;
 		this.border = style.border;
 		if (this.border != null) {
@@ -856,6 +869,19 @@ public abstract class Item extends Object
 			}
 			this.afterImage = style.after;
 		//#endif
+		//#ifdef polish.css.label-style
+			String labelStyleName = style.getProperty("label-style");
+			if (labelStyleName != null) {
+				this.labelStyle = StyleSheet.getStyle( labelStyleName );
+			} else {
+				this.labelStyle = StyleSheet.labelStyle;
+			}
+		//#else
+			this.labelStyle = StyleSheet.labelStyle;
+		//#endif
+		if (this.label != null) {
+			this.label.setStyle( this.labelStyle );			
+		}
 	}
 	
 	/**
@@ -939,12 +965,6 @@ public abstract class Item extends Object
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
 			scr.repaint();
-			//TODO change back 
-			//#if polish.useFullScreen && polish.api.nokia-ui 
-				//scr.requestRepaint();
-			//#else
-				//scr.repaint();
-			//#endif
 		}
 	}
 	
@@ -953,13 +973,17 @@ public abstract class Item extends Object
 	 * All parents of this item are notified, too.
 	 * This method should be called when an item changes its size more than
 	 * usual.
+	 * When the item already has been initialised, a repaint() is requested, too.
 	 */
 	protected void requestInit() {
-		this.isInitialised = false;
 		Item p = this.parent;
 		while ( p != null) {
 			p.isInitialised = false;
 			p = p.parent;
+		}
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
 		}
 	}
 	
@@ -1258,7 +1282,19 @@ public abstract class Item extends Object
 		this.xRightPos = x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
 		this.yBottomPos = y + this.itemHeight;
 		
-		leftBorder += (this.marginLeft + this.borderWidth + this.paddingLeft + this.labelWidth);
+		
+		// paint label:
+		if (this.label != null) {
+			if (this.useSingleRow) {
+				this.label.paint( x, y, leftBorder, rightBorder - this.itemWidth, g );
+				x += this.label.itemWidth;
+			} else {
+				this.label.paint( x, y, leftBorder, rightBorder, g );
+				y += this.label.itemHeight;
+			}
+		}
+		
+		leftBorder += (this.marginLeft + this.borderWidth + this.paddingLeft);
 		//#ifdef polish.useBeforeStyle
 			leftBorder += this.beforeWidth;
 		//#endif
@@ -1306,45 +1342,37 @@ public abstract class Item extends Object
 		int contentY = y + this.borderWidth + this.paddingTop;
 		int originalContentY = contentY;
 		
-		// paint label:
-		if (this.label != null) {
-			g.setFont( this.labelFont );
-			g.setColor( this.labelColor );
-			g.drawString(this.label, contentX, contentY, Graphics.TOP | Graphics.LEFT );
-			contentX += this.labelWidth;
-		}
-		
 		// paint before element:
 		//#ifdef polish.useBeforeStyle
-		if (this.beforeImage != null) {
-			int beforeY = contentY;
-			if ( this.beforeHeight < this.contentHeight) {
-				beforeY += (this.contentHeight - this.beforeHeight) / 2;
-			} else {
-				contentY += (this.beforeHeight - this.contentHeight) / 2;
+			if (this.beforeImage != null) {
+				int beforeY = contentY;
+				if ( this.beforeHeight < this.contentHeight) {
+					beforeY += (this.contentHeight - this.beforeHeight) / 2;
+				} else {
+					contentY += (this.beforeHeight - this.contentHeight) / 2;
+				}
+				g.drawImage(this.beforeImage, contentX, beforeY, Graphics.TOP | Graphics.LEFT );
+				contentX += this.beforeWidth;
 			}
-			g.drawImage(this.beforeImage, contentX, beforeY, Graphics.TOP | Graphics.LEFT );
-			contentX += this.beforeWidth;
-		}
 		//#endif
 		
 		// paint after element:
 		//#ifdef polish.useAfterStyle
-		if (this.afterImage != null) {
-			int afterY = originalContentY;
-			if ( this.afterHeight < this.contentHeight) {
-				afterY += (this.contentHeight - this.afterHeight) / 2;
-			} else {
-				//#ifdef polish.useBeforeStyle
-				if (this.afterHeight > this.beforeHeight) {
-				//#endif
-					contentY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
-				//#ifdef polish.useBeforeStyle
+			if (this.afterImage != null) {
+				int afterY = originalContentY;
+				if ( this.afterHeight < this.contentHeight) {
+					afterY += (this.contentHeight - this.afterHeight) / 2;
+				} else {
+					//#ifdef polish.useBeforeStyle
+					if (this.afterHeight > this.beforeHeight) {
+					//#endif
+						contentY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
+					//#ifdef polish.useBeforeStyle
+					}
+					//#endif
 				}
-				//#endif
+				g.drawImage(this.afterImage, rightBorder, afterY, Graphics.TOP | Graphics.LEFT );
 			}
-			g.drawImage(this.afterImage, rightBorder, afterY, Graphics.TOP | Graphics.LEFT );
-		}
 		//#endif
 		
 		// paint content:
@@ -1385,38 +1413,35 @@ public abstract class Item extends Object
 		//#ifdef polish.useDynamicStyles
 			initStyle();
 		//#endif
+		int labelWidth = 0;
+		int labelHeight = 0;
 		if (this.label != null) {
-			if (this.labelFont == null ) {
-				this.labelFont = Font.getDefaultFont();
+			if (!this.label.isInitialised) {
+				this.label.init( firstLineWidth, lineWidth );
 			}
-			this.labelWidth = this.labelFont.stringWidth( this.label ) + this.paddingHorizontal;
-			this.labelHeight = this.labelFont.getHeight();
-		} else {
-			this.labelWidth = 0;
-			this.labelHeight = 0;
+			labelWidth = this.label.itemWidth;
+			labelHeight = this.label.itemHeight;
 		}
 		// calculate content width and content height:
-		int noneContentWidth = this.labelWidth 
-			 	+ this.marginLeft + this.borderWidth + this.paddingLeft 
+		int noneContentWidth =  
+			 	this.marginLeft + this.borderWidth + this.paddingLeft 
 				+ this.paddingRight + this.borderWidth + this.marginRight;
 		//#ifdef polish.useBeforeStyle
-		noneContentWidth += this.beforeWidth;
+			noneContentWidth += this.beforeWidth;
 		//#endif
 		//#ifdef polish.useAfterStyle
-		noneContentWidth += this.afterWidth;
+			noneContentWidth += this.afterWidth;
 		//#endif
+		/*
+		if (noneContentWidth >= firstLineWidth) {
+			System.out.println("INVALID NONE CONTENT WIDTH=" + noneContentWidth);
+		}
+		*/
 		int firstLineContentWidth = firstLineWidth - noneContentWidth;
 		int availableContentWidth = lineWidth - noneContentWidth;
 		// initialise content by subclass:
 		initContent( firstLineContentWidth, availableContentWidth );
-		if ( this.isLayoutExpand ) {
-			this.itemWidth = lineWidth;
-		} else {
-			this.itemWidth = noneContentWidth + this.contentWidth;
-			if (this.itemWidth > lineWidth) {
-				this.itemWidth = lineWidth;
-			}
-		}
+		this.itemWidth = noneContentWidth + this.contentWidth;
 		int cHeight = this.contentHeight;
 		//#ifdef polish.useBeforeStyle
 			if (this.contentHeight < this.beforeHeight) {
@@ -1428,14 +1453,30 @@ public abstract class Item extends Object
 				cHeight = this.afterHeight;
 			}
 		//#endif
-		if (cHeight < this.labelHeight) {
-			cHeight = this.labelHeight;
+		int noneContentHeight = this.marginTop + this.borderWidth + this.paddingTop 
+			  + this.paddingBottom + this.borderWidth + this.marginBottom;
+		if (this.itemWidth + labelWidth <= lineWidth) {
+			// label and content fit on one row:
+			this.itemWidth += labelWidth;
+			this.useSingleRow = true;
+			if ( cHeight + noneContentHeight < labelHeight ) {
+				cHeight = labelHeight - noneContentHeight;
+			}
+		} else {
+			cHeight += labelHeight;
 		}
+		if ( this.isLayoutExpand ) {
+			this.itemWidth = lineWidth;
+		} else if (this.itemWidth > lineWidth) {
+			this.itemWidth = lineWidth;
+		}
+		
 		this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight;
-		this.backgroundHeight = this.borderWidth + this.paddingTop 
-		 					  + cHeight 
-							  + this.paddingBottom + this.borderWidth;
-		this.itemHeight = this.backgroundHeight + this.marginTop + this.marginBottom;
+		this.backgroundHeight = cHeight
+							  + noneContentHeight
+							  - this.marginTop
+							  - this.marginBottom;
+		this.itemHeight = cHeight + noneContentHeight;
 		this.isInitialised = true;
 	}
 	

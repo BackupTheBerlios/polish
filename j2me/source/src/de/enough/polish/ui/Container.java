@@ -148,6 +148,9 @@ public class Container extends Item {
 		this.isInitialised = false;
 		item.parent = this;
 		this.itemsList.add( item );
+		if (this.isInitialised) {
+			repaint();
+		}
 	}
 
 	/**
@@ -164,6 +167,9 @@ public class Container extends Item {
 		this.isInitialised = false;
 		item.parent = this;
 		this.itemsList.add( index, item );
+		if (this.isInitialised) {
+			repaint();
+		}
 	}
 	
 	/**
@@ -177,6 +183,9 @@ public class Container extends Item {
 	public Item set( int index, Item item ) {
 		this.isInitialised = false;
 		item.parent = this;
+		if (this.isInitialised) {
+			repaint();
+		}
 		return (Item) this.itemsList.set( index, item );
 	}
 	
@@ -213,6 +222,9 @@ public class Container extends Item {
 				}
 			}
 		}
+		if (this.isInitialised) {
+			repaint();
+		}
 		return removedItem;
 	}
 	
@@ -225,6 +237,9 @@ public class Container extends Item {
 	 */
 	public boolean remove( Item item ) {
 		this.isInitialised = false;
+		if (this.isInitialised) {
+			repaint();
+		}
 		return this.itemsList.remove( item ); 
 	}
 	
@@ -234,6 +249,9 @@ public class Container extends Item {
 	public void clear() {
 		this.isInitialised = false;
 		this.itemsList.clear();
+		if (this.isInitialised) {
+			repaint();
+		}
 	}
 	
 	/**
@@ -252,10 +270,11 @@ public class Container extends Item {
 	 * @return an array of all items.
 	 */
 	public Item[] getItems() {
-		/* if (!this.isInitialised) {
-			init();
-		} */
-		return this.items;
+		if (this.isInitialised) {
+			return (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+		} else {		
+			return this.items;
+		}
 	}
 	
 	/**
@@ -365,6 +384,7 @@ public class Container extends Item {
 			} else {
 				this.appearanceMode = INTERACTIVE;
 			}
+		
 			this.contentHeight = myContentHeight;
 			this.contentWidth = myContentWidth;
 			return;
@@ -654,9 +674,36 @@ public class Container extends Item {
 						} else {
 							this.columnsSetting = STATIC_WIDTH_COLUMNS;
 							this.columnsWidths = new int[ this.numberOfColumns ];
+							//#ifdef polish.css.columns-width.star
+								int combinedWidth = 0;
+								int starIndex = -1;
+							//#endif
 							for (int i = 0; i < widths.length; i++) {
-								this.columnsWidths[i] = Integer.parseInt( widths[i] );
+								//#ifdef polish.css.columns-width.star
+									String widthStr = widths[i];
+									if ("*".equals( widthStr )) {
+										starIndex = i;
+									} else {
+										int w = Integer.parseInt( widthStr );
+										combinedWidth += w;
+										this.columnsWidths[i] = w;
+									}
+								//#else
+									this.columnsWidths[i] = Integer.parseInt( widths[i] );
+								//#endif
 							}
+							//#ifdef polish.css.columns-width.star
+								if (starIndex != -1) {
+									Screen myScreen = getScreen();
+									if (myScreen != null) {
+										this.columnsWidths[starIndex] = 
+											myScreen.getWidth() - combinedWidth;
+									} else {
+										//#debug warn
+										System.out.println("Unable to process '*'-columns-width");
+									}
+								}
+							//#endif
 							this.columnsSetting = STATIC_WIDTH_COLUMNS;
 						}					
 					}

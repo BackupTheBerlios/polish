@@ -52,58 +52,56 @@ implements ImageConsumer
 {
 	
 	//#ifdef polish.useDynamicStyles
-	/**
-	 * The name of this style. The name is only accessible when
-	 * the preprocessing-symbol polish.useDynamicStyles is defined.
-	 */
-	public String name;
+		/**
+		 * The name of this style. The name is only accessible when
+		 * the preprocessing-symbol polish.useDynamicStyles is defined.
+		 */
+		public String name;
 	//#endif
 	//#ifdef polish.useBeforeStyle
-	//#ifdef tmp.imageConsumer
-	private String beforeUrl;
-	//#endif
-	/**
-	 * The width of the before-element. This value can only be
-	 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
-	 */
-	public int beforeWidth;
-	/**
-	 * The height of the before-element. This value can only be
-	 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
-	 */
-	public int beforeHeight;
-	/**
-	 * The before-element. This value can only be
-	 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
-	 */
-	public Image before;
+		//#ifdef tmp.imageConsumer
+			private String beforeUrl;
+		//#endif
+		/**
+		 * The width of the before-element. This value can only be
+		 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
+		 */
+		public int beforeWidth;
+		/**
+		 * The height of the before-element. This value can only be
+		 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
+		 */
+		public int beforeHeight;
+		/**
+		 * The before-element. This value can only be
+		 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
+		 */
+		public Image before;
 	//#endif
 	//#ifdef polish.useAfterStyle
-	//#ifdef tmp.imageConsumer
-	private String afterUrl;
-	//#endif
-	/**
-	 * The width of the after-element. This value can only be
-	 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
-	 */
-	public int afterWidth;
-	/**
-	 * The height of the after-element. This value can only be
-	 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
-	 */
-	public int afterHeight;
-	/**
-	 * The after-element. This value can only be
-	 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
-	 */
-	public Image after;
+		//#ifdef tmp.imageConsumer
+			private String afterUrl;
+		//#endif
+		/**
+		 * The width of the after-element. This value can only be
+		 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
+		 */
+		public int afterWidth;
+		/**
+		 * The height of the after-element. This value can only be
+		 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
+		 */
+		public int afterHeight;
+		/**
+		 * The after-element. This value can only be
+		 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
+		 */
+		public Image after;
 	//#endif
 	public Background background;
 	public Border border;
 	public Font font;
 	public int fontColor;
-	public Font labelFont;
-	public int labelFontColor;
 	public int paddingLeft;
 	public int paddingTop;
 	public int paddingRight;
@@ -136,8 +134,6 @@ implements ImageConsumer
 	 * @param layout the layout for this style, e.g. Item.LAYOUT_CENTER
 	 * @param fontColor the color of the font
 	 * @param font the content-font for this style
-	 * @param labelFontColor the color for labels
-	 * @param labelFont the font for labels
 	 * @param background the background for this style
 	 * @param border the border for this style
 	 * @param beforeUrl the URL of the before element. This is inserted before items
@@ -150,7 +146,7 @@ implements ImageConsumer
 	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
 			int paddingLeft, int paddingRight, int paddingTop, int paddingBottom, int paddingVertical, int paddingHorizontal,
 			int layout,
-			int fontColor, Font font, int labelFontColor, Font labelFont, 
+			int fontColor, Font font,  
 			Background background, Border border 
 			//#ifdef polish.useBeforeStyle
 			, String beforeUrl
@@ -176,8 +172,6 @@ implements ImageConsumer
 		this.layout = layout;
 		this.fontColor = fontColor;
 		this.font = font;
-		this.labelFontColor = labelFontColor;
-		this.labelFont = labelFont;
 		this.background = background;
 		this.border = border;
 		//#ifdef polish.useBeforeStyle

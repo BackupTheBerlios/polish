@@ -434,7 +434,7 @@ implements ImageConsumer
 	 */
 	public javax.microedition.lcdui.Gauge getMidpGauge() {
 		if (this.midpGauge == null) {
-			this.midpGauge = new javax.microedition.lcdui.Gauge( this.label, this.isInteractive, this.maxValue, this.value ); 
+			this.midpGauge = new javax.microedition.lcdui.Gauge( getLabel(), this.isInteractive, this.maxValue, this.value ); 
 		}
 		return this.midpGauge;
 	}
