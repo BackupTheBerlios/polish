@@ -98,10 +98,14 @@ public final class ConvertUtil {
 	 * Converts the given memory value.
 	 * 
 	 * @param value the value, e.g. "200 kb"
-	 * @return the value in bytes as a long value
+	 * @return the value in bytes as a long value, when the value is "dynamic",
+	 *         -1 will be returned.
 	 */
 	public final static long convertToBytes(String value) {
 		value = value.trim().toLowerCase();		
+		if ("dynamic".equals(value)) {
+			return -1;
+		}
 		int splitPos = value.indexOf(' ');
 		if (splitPos == -1) {
 			splitPos = value.indexOf('\t');

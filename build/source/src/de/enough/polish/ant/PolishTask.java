@@ -765,9 +765,16 @@ public class PolishTask extends ConditionalTask {
 				TextFile file = new TextFile( baseDir.getAbsolutePath(), fileName );
 				if (fileName.startsWith("de")) {
 					if (fileName.endsWith("StyleSheet.java")) {
-						this.styleSheetSourceFile = file;
+						if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
+							|| 	"de\\enough\\polish\\ui\\StyleSheet.java".equals(fileName)) {
+							this.styleSheetSourceFile = file;
+						}
 					} else if (fileName.endsWith("Locale.java")) {
-						this.localeSourceFile = file;
+						if ("de/enough/polish/util/Locale.java".equals(fileName)
+								|| 	"de\\enough\\polish\\util\\Locale.java".equals(fileName)) {
+								this.styleSheetSourceFile = file;
+								this.localeSourceFile = file;
+						}
 					} 
 				}
 				files[i] = file;
@@ -793,11 +800,18 @@ public class PolishTask extends ConditionalTask {
 			String fileName = fileNames[i];
 			TextFile file = new TextFile( baseDir, fileName, lastModificationTime, this.resourceUtil );
 			if (fileName.startsWith("de")) {
-				if ( fileName.endsWith("StyleSheet.java")) {
-					this.styleSheetSourceFile = file;
-				} else if ( fileName.endsWith("Locale.java")) {
-					this.localeSourceFile = file;
-				}
+				if (fileName.endsWith("StyleSheet.java")) {
+					if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
+						|| 	"de\\enough\\polish\\ui\\StyleSheet.java".equals(fileName)) {
+						this.styleSheetSourceFile = file;
+					}
+				} else if (fileName.endsWith("Locale.java")) {
+					if ("de/enough/polish/util/Locale.java".equals(fileName)
+							|| 	"de\\enough\\polish\\util\\Locale.java".equals(fileName)) {
+							this.styleSheetSourceFile = file;
+							this.localeSourceFile = file;
+					}
+				} 
 			}
 			files[i] = file;
 		}
