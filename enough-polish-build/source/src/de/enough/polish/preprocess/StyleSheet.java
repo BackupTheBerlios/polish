@@ -75,6 +75,13 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("menu", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menuitem", Boolean.TRUE );
 		PSEUDO_CLASSES.put("info", Boolean.TRUE );
+		PSEUDO_CLASSES.put("tabbar", Boolean.TRUE );
+		PSEUDO_CLASSES.put("activetab", Boolean.TRUE );
+		PSEUDO_CLASSES.put("inactivetab", Boolean.TRUE );
+		PSEUDO_CLASSES.put("tab", Boolean.TRUE );
+		PSEUDO_CLASSES.put("menubar", Boolean.TRUE );
+		PSEUDO_CLASSES.put("rightcommand", Boolean.TRUE );
+		PSEUDO_CLASSES.put("leftcommand", Boolean.TRUE );
 	}
 	private final static CssBlock DEFAULT_STYLE = new CssBlock( 
 			"default {"

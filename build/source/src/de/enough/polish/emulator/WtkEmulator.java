@@ -151,6 +151,7 @@ public class WtkEmulator extends Emulator {
 					return false;
 				} else {
 					String originalSkin = xDevice;
+					System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
 					// check if there are other skins given:
 					int skinNumber = 2;
 					while (true) {
@@ -163,6 +164,7 @@ public class WtkEmulator extends Emulator {
 						if (skinFile.exists()) {
 							break;
 						}
+						System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
 					}
 					if (!skinFile.exists()) {
 						System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + originalSkin + "] for the device [" + device.getIdentifier() + "] is not installed.");

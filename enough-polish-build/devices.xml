@@ -739,6 +739,9 @@
 		<capability name="SoundFormat" value="midi, wav, amr" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/E398.props" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 
 	<device>
@@ -2295,8 +2298,6 @@
 		<capability name="MaxJarSize" value="350kb" />
 		<capability name="StorageSize" value="11MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
-		<capability name="key.LeftSoftKey" value="-1" />
-		<capability name="key.RightSoftKey" value="-4" />
 	</device>
 
 	<device
@@ -3943,7 +3944,7 @@
 		<capability name="OS" value="Symbian 6.1"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="wmapi, btapi" />
 		<capability name="CameraResolution" value="640x480" />

@@ -1027,8 +1027,12 @@ public class Preprocessor {
 			}
 			// append the style-parameter as the last argument:
 			StringBuffer buffer = new StringBuffer();
-			buffer.append( nextLine.substring(0, parenthesisPos ) )
-					.append( ", StyleSheet." )
+			buffer.append( nextLine.substring(0, parenthesisPos ) );
+			int openingParenthesisPos = nextLine.lastIndexOf('(');
+			if (openingParenthesisPos != parenthesisPos -1 ) {
+				buffer.append(", ");
+			} 
+			buffer.append( "StyleSheet." )
 					.append( style )
 					.append( "Style " )
 					.append( nextLine.substring( parenthesisPos ) );

@@ -382,4 +382,13 @@
 		default="10"
 	/>
 	
+	<attribute
+		name="tabbar-scrolling-indicator-color"
+		type="color"
+		appliesTo="Tabbar, TabbedForm"
+		description="Defines the color of the scrolling indicator of the tabbar."
+		default="white"
+	/>
+	
+	
 </attributes>

@@ -60,7 +60,8 @@ public class NokiaEmulator extends WtkEmulator {
 	 * @see de.enough.polish.ant.emulator.WtkEmulator#getEmulatorSkin(java.lang.String, java.lang.String)
 	 */
 	protected File getEmulatorSkin(String wtkHome, String xDevice  ) {
-		File skinFolder = new File( this.nokiaHome + "/Devices/" + xDevice );
+		//System.out.println("testing Nokia-Skin " + xDevice );
+		File skinFolder = new File( this.nokiaHome + File.separatorChar + "Devices" + File.separatorChar + xDevice );
 		if (!skinFolder.exists()) {
 			skinFolder = new File( this.nokiaHome + File.separatorChar + xDevice );
 		}
@@ -79,17 +80,9 @@ public class NokiaEmulator extends WtkEmulator {
 				execName = "emulator";
 			}
 		}
-		File executable;
-		if (File.separatorChar == '\\') {
-			executable = new File( this.nokiaHome + "\\Devices\\" + xDevice + "\\bin\\" + execName);
-			if (!executable.exists()) {
-				executable = new File( this.nokiaHome + "\\" + xDevice + "\\bin\\" + execName);
-			}
-		} else {
-			executable = new File( this.nokiaHome + "/Devices/" + xDevice + "/bin/" + execName);
-			if (!executable.exists()) {
-				executable = new File( this.nokiaHome + "/" + xDevice + "/bin/" + execName);
-			}
+		File executable = new File( this.nokiaHome + File.separatorChar + "Devices" + File.separatorChar + xDevice + File.separatorChar + "bin" + File.separatorChar + execName);
+		if (!executable.exists()) {
+			executable = new File( this.nokiaHome + File.separatorChar + xDevice + File.separatorChar + "bin" + File.separatorChar + execName);
 		}
 		return executable;
 	}

@@ -59,7 +59,7 @@
 </target>
 	
 <target name="test" 
-	description="Call this target first to skip the obfucation step, e.g. ant test j2mepolish"
+	description="Call this target first to skip the obfuscation step, e.g. ant test j2mepolish"
 	>
 	<property name="test" value="true" />
 	<property name="dir.work" value="build/test" />

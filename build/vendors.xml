@@ -36,6 +36,8 @@
 		<name>Siemens</name>
 		<features></features>
 		<capability name="Emulator.Class" value="SiemensEmulator" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
 	</vendor>
 	
 	<vendor>
