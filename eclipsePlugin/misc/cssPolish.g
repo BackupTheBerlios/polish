@@ -28,7 +28,36 @@ public void tab(){
 	this.offset = this.offset + 4;
 }
 
-
+    protected Token makeToken(int t) {
+        Token token = super.makeToken(t);
+        if (token != Token.badToken) {
+            ((OffsetToken)token).setOffset(this.offset);
+        }
+        return token;
+    }
+     //FIXME: try to set members of inputState.
+     /*
+      public void consume() throws CharStreamException {
+        if (inputState.guessing == 0) {
+            char c = LA(1);
+            if (caseSensitive) {
+                append(c);
+            }
+            else {
+                // use input.LA(), not LA(), to get original case
+                // CharScanner.LA() would toLower it.
+                append(inputState.input.LA(1));
+            }
+            if (c == '\t') {
+                tab();
+            }
+            else {
+                inputState.column++;
+            }
+        }
+        inputState.input.consume();
+    }
+    */
 public void panic(String s) {
     System.err.println("CharScanner: Panic:"+s);
 }
