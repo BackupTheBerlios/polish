@@ -28,8 +28,8 @@ public class CssToken {
 		super();
 		this.offset = offset;
 		this.length = length;
-		this.type = (type ==null)? type: "";
-		this.value = (value == null)? value: "";
+		this.type = (type !=null)? type: "";
+		this.value = (value != null)? value: "";
 	}
 	
 	/**
@@ -90,5 +90,19 @@ public class CssToken {
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public String toString(){
+		StringBuffer result = new StringBuffer();
+		result.append(this.offset);
+		result.append(":");
+		result.append(this.length);
+		result.append(":");
+		result.append(this.type);
+		result.append(":");
+		result.append("X");
+		result.append(this.value);
+		result.append("X");
+		return result.toString();
 	}
 }

@@ -24,6 +24,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 
 import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleDamagerRepairer;
+import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimplePresentationReconciler;
+import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleReconciler;
 import de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleReconcilingStrategy;
 
 
@@ -36,10 +38,11 @@ public class CssSourceViewerConfiguration extends SourceViewerConfiguration{
 	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getReconciler(org.eclipse.jface.text.source.ISourceViewer)
 	 */
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
-		MonoReconciler monoReconciler = new MonoReconciler(new SimpleReconcilingStrategy(),true);
-		monoReconciler.install(sourceViewer);
+		MonoReconciler monoReconciler = new SimpleReconciler(new SimpleReconcilingStrategy(),true);
+		//monoReconciler.install(sourceViewer); //TODO: Obscured program flow: The caller (SourceTextViewer) will call getReconciler().install(this).
 		return monoReconciler;
 	}
+	
 	CssEditor editor;
 	ISharedTextColors colors;
 	
@@ -56,12 +59,12 @@ public class CssSourceViewerConfiguration extends SourceViewerConfiguration{
 	public IPresentationReconciler getPresentationReconciler(
 			ISourceViewer sourceViewer) {
 		
-		PresentationReconciler reconciler = new PresentationReconciler();
+		PresentationReconciler presentationReconciler = new SimplePresentationReconciler();
 		
 		DefaultDamagerRepairer damagerRepairer =  new SimpleDamagerRepairer(getPartionScanner());
-		reconciler.setDamager(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
-		reconciler.setRepairer(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
-		return reconciler;		
+		presentationReconciler.setDamager(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
+		presentationReconciler.setRepairer(damagerRepairer,IDocument.DEFAULT_CONTENT_TYPE);
+		return presentationReconciler;		
 	}
 
 	

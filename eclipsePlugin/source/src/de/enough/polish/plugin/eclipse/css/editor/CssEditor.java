@@ -24,8 +24,7 @@ public class CssEditor extends TextEditor{
 	
 	public CssEditor(){
 		setSourceViewerConfiguration(new CssSourceViewerConfiguration(this,getSharedColors()));
-		//this.document = getDocumentProvider().getDocument(getEditorInput());
-		//this.document.addDocumentListener(new SimpleDocumentListener());
+		this.cssModel = new CssModel();
 	}
 	
 	public Object getAdapter(Class requiredClass) {
