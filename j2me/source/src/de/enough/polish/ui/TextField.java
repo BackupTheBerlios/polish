@@ -26,6 +26,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
@@ -1038,6 +1039,9 @@ implements CommandListener
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		super.initContent(firstLineWidth, lineWidth);
+		if (this.font == null) {
+			this.font = Font.getDefaultFont();
+		}
 		this.originalWidth = this.contentWidth;
 		this.originalHeight = this.contentHeight;
 		if (this.contentWidth < this.minimumWidth) {

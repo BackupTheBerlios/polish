@@ -478,23 +478,27 @@ public class Container extends Item {
 		// paints all items,
 		// the layout will be done according to this containers'
 		// layout or according to the items layout, when specified.
-		
+
 		// adjust vertical start for scrolling:
 		y += this.yOffset;
-		if (this.columnsSetting == NO_COLUMNS) {
-			for (int i = 0; i < this.items.length; i++) {
-				Item item = this.items[i];
+		Item[] myItems = this.items;
+		//#ifdef tmp.useTable
+		if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
+		//#endif
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
 				// since after every item a line break will be done.
 				item.paint(x, y, leftBorder, rightBorder, g);
 				y += item.itemHeight + this.paddingVertical;
 			}
+		//#ifdef tmp.useTable
 		} else {
 			x = leftBorder;
 			int columnIndex = 0;
 			int rowIndex = 0;
-			for (int i = 0; i < this.items.length; i++) {
-				Item item = this.items[i];
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
 				int columnWidth = this.columnsWidths[ columnIndex ];
 				item.paint(x, y, x, x + columnWidth, g);
 				x += columnWidth + this.paddingHorizontal;
@@ -507,6 +511,7 @@ public class Container extends Item {
 				}
 			}
 		}
+		//#endif
 	}
 
 	//#ifdef polish.useDynamicStyles

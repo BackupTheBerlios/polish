@@ -56,6 +56,10 @@ public class ArrayListTest extends TestCase {
 		assertEquals( 0, list.toArray().length );
 		list.add( this.o1 );
 		assertEquals( 1, list.size() );
+		Object[] objects = list.toArray();
+		assertEquals( 1, objects.length);
+		String[] strings = (String[]) list.toArray( new String[ list.size() ]);
+		assertEquals( 1, strings.length);
 		list.add( this.o2 );
 		assertEquals( 2, list.size() );
 		list.add( this.o3 );

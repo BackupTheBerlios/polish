@@ -100,16 +100,19 @@ public class GameCanvas
 	//#if (polish.GameCanvas.useFullScreen == false) || (polish.GameCanvas.useFullScreen == no)
 		//# extends Canvas
 	//#elif (polish.GameCanvas.useFullScreen == true) || (polish.GameCanvas.useFullScreen == yes)
+		//#define tmp.useFullScreen
 		//#= extends ${polish.classes.fullscreen}
 	//#elif (polish.GameCanvas.useFullScreen == menu) || ( polish.useFullScreen && polish.useMenuFullScreen ) 
 		// a menu should be used along with the full screen:
 		//#ifdef polish.usePolishGui
+			//#define tmp.useFullScreen
 			//#define tmp.extendsPolishScreen
 			//# extends de.enough.polish.ui.Screen
 		//#else
 			//# extends Canvas
 		//#endif
 	//#elif (polish.useFullScreen && !polish.useMenuFullScreen)
+		//#define tmp.useFullScreen
 		//#= extends ${polish.classes.fullscreen}
 	//#else
 		//# extends Canvas
@@ -215,7 +218,11 @@ public class GameCanvas
 			super();
 		//#endif
 		int width = getWidth();
-		int height = getHeight();
+		//#if tmp.useFullScreen && polish.ScreenHeight:defined
+			//#= int height = ${polish.ScreenHeight};
+		//#else
+			int height = getHeight();
+		//#endif
 		this.bufferedImage = Image.createImage( width, height );
 	}
 
@@ -427,4 +434,13 @@ public class GameCanvas
 	}
 	//#endif
 
+	//#ifdef tmp.extendsPolishScreen
+	//# public int getHeight() {
+		//# if ( this.menuBarHeight == 0 ) {
+		//# return this.screenHeight - javax.microedition.lcdui.Font.getDefaultFont().getHeight() - 2;
+	//# } else {
+		//# return this.screenHeight;
+	//# }
+	//# }
+	//#endif
 }

@@ -168,6 +168,9 @@ import javax.microedition.lcdui.Image;
  * manufacturers may choose to provide developers with information about
  * device-specific characteristics such as these.
  * <p>
+  * 
+ * @author Robert Virkus (original implementation)
+ * @author Thomas Boyer (optimizations)
  */
 public class Sprite extends Layer
 {
@@ -239,6 +242,16 @@ public class Sprite extends Layer
 	private int[] frameSequence;
 	private int transform;
 	//#ifdef polish.api.nokia-ui
+		private static final int[] NOKIA_TRANSFORM_LOOKUP = {
+			0,
+			DirectGraphics.FLIP_VERTICAL,
+			DirectGraphics.FLIP_HORIZONTAL,
+			DirectGraphics.ROTATE_180,
+			DirectGraphics.ROTATE_90 | DirectGraphics.FLIP_VERTICAL,
+			DirectGraphics.ROTATE_270,
+			DirectGraphics.ROTATE_90,
+			DirectGraphics.ROTATE_90 | DirectGraphics.FLIP_HORIZONTAL
+		};
 		private int nokiaTransform;
 		private Image nokiaFrame;
 		private Image[] nokiaFrames;
@@ -331,7 +344,10 @@ public class Sprite extends Layer
 		this.xPosition = s.xPosition;
 		this.yPosition = s.yPosition;
 		this.frameSequenceIndex = s.frameSequenceIndex;
-		this.frameSequence = s.frameSequence;
+		if (s.frameSequence != null) {
+			this.frameSequence = new int[s.frameSequence.length];
+			System.arraycopy(s.frameSequence, 0, this.frameSequence, 0, this.frameSequence.length);
+		}
 		this.refPixelX = s.refPixelX;
 		this.refPixelY = s.refPixelY;
 		this.transformedRefX = s.transformedRefX;
@@ -380,8 +396,7 @@ public class Sprite extends Layer
 	{
 		this.refPixelX = refX;
 		this.refPixelY = refY;
-		this.transformedRefX = refX;
-		this.transformedRefY = refY;
+		applyTransform();
 	}
 
 	/**
@@ -481,6 +496,8 @@ public class Sprite extends Layer
 	 */
 	public int getFrameSequenceLength()
 	{
+		if (this.frameSequence == null)
+			return this.rawFrameCount;
 		return this.frameSequence.length;
 	}
 
@@ -496,7 +513,7 @@ public class Sprite extends Layer
 	public void nextFrame()
 	{
 		this.frameSequenceIndex++;
-		if (this.frameSequenceIndex >= this.frameSequence.length ) {
+		if (this.frameSequenceIndex >= this.getFrameSequenceLength()) {
 			this.frameSequenceIndex = 0;
 		}
 		updateFrame();
@@ -515,7 +532,7 @@ public class Sprite extends Layer
 	{
 		this.frameSequenceIndex--;
 		if (this.frameSequenceIndex < 0 ) {
-			this.frameSequenceIndex = this.frameSequence.length - 1;
+			this.frameSequenceIndex = this.getFrameSequenceLength() - 1;
 		}
 		updateFrame();
 	}
@@ -525,7 +542,7 @@ public class Sprite extends Layer
 	 * This depends on the frame-index as well as the current transformation.
 	 */
 	private void updateFrame() {
-		int frameIndex = this.frameSequence[ this.frameSequenceIndex ];
+		int frameIndex = (this.frameSequence == null) ? this.frameSequenceIndex : this.frameSequence[this.frameSequenceIndex];
 		int c = frameIndex % this.numberOfColumns;
 		int r = frameIndex / this.numberOfColumns;
 		
@@ -609,6 +626,16 @@ public class Sprite extends Layer
 			// just draw and rotate the current frame:
 			DirectGraphics dg = DirectUtils.getDirectGraphics( g );
 			dg.drawImage(this.nokiaFrame, this.xPosition, this.yPosition, Graphics.TOP | Graphics.LEFT, this.nokiaTransform );
+			/*
+			 * uncomment this code for visualising the reference pixel 
+			 * and collision rectangle:
+			g.setColor( 0xFFFFFF );
+			g.drawLine( this.xPosition + this.transformedCollisionX, this.yPosition + this.transformedCollisionY, this.xPosition + this.transformedCollisionX + this.transformedCollisionWidth, this.yPosition + this.transformedCollisionY  );
+			g.drawLine( this.xPosition + this.transformedCollisionX, this.yPosition + this.transformedCollisionY, this.xPosition + this.transformedCollisionX, this.yPosition + this.transformedCollisionY + this.transformedCollisionHeight );
+			g.setColor( 0xFF0000 );
+			g.drawLine( this.xPosition + this.transformedRefX - 4, this.yPosition + this.transformedRefY, this.xPosition + this.transformedRefX + 4, this.yPosition + this.transformedRefY );
+			g.drawLine( this.xPosition + this.transformedRefX, this.yPosition + this.transformedRefY - 4, this.xPosition + this.transformedRefX, this.yPosition + this.transformedRefY + 4 );
+			*/
 		//#else
 			if (this.rawFrameCount == 1) {
 				g.drawImage( this.image, this.xPosition, this.yPosition, Graphics.TOP | Graphics.LEFT );							
@@ -657,11 +684,17 @@ public class Sprite extends Layer
 	 */
 	public void setFrameSequence(int[] sequence)
 	{
-		int[] newSequence = new int[ sequence.length ];
-		System.arraycopy( sequence, 0, newSequence, 0, sequence.length );
-		this.frameSequence = newSequence;
+		int frameIndex = 0;
+		this.frameSequence = null;
+
+		if (sequence != null) {
+			int[] newSequence = new int[ sequence.length ];
+			System.arraycopy( sequence, 0, newSequence, 0, sequence.length );
+			this.frameSequence = newSequence;
+			frameIndex = this.frameSequence[ 0 ];
+		}
+
 		this.frameSequenceIndex = 0;
-		int frameIndex = this.frameSequence[ 0 ];
 		this.column = frameIndex % this.numberOfColumns;
 		this.row = frameIndex / this.numberOfColumns;
 	}
@@ -725,36 +758,42 @@ public class Sprite extends Layer
 	{
 		this.image = image;
 		this.frameWidth = frameWidth;
-		this.width = frameWidth;
 		this.frameHeight = frameHeight;
-		this.height = frameHeight;
 		this.numberOfColumns = image.getWidth() / frameWidth;
 		int rows = image.getHeight() / frameHeight;
+
+		int oldRawFrameCount = this.rawFrameCount;
 		this.rawFrameCount = this.numberOfColumns * rows;
-		this.frameSequenceIndex = 0;
-		// set default frame sequence:
-		if (this.frameSequence == null) {
-			this.frameSequence = new int[ this.rawFrameCount ];
-			for (int i = 0; i < this.frameSequence.length; i++) {
-				this.frameSequence[i] = i;
-			}
+		if (this.rawFrameCount < oldRawFrameCount) {
+			this.frameSequenceIndex = 0;
+			// set default frame sequence:
+			this.frameSequence = null;
+
+			this.column = 0;
+			this.row = 0;
+		} else {
+			int frameIndex = (this.frameSequence == null) ? this.frameSequenceIndex : this.frameSequence[this.frameSequenceIndex];
+			this.column = frameIndex % this.numberOfColumns;
+			this.column = frameIndex / this.numberOfColumns;
 		}
-		this.column = 0;
-		this.row = 0;
+
 		this.collisionX = 0;
 		this.collisionY = 0;
 		this.collisionWidth = frameWidth;
 		this.collisionHeight = frameHeight;
-		this.transformedCollisionX = 0;
-		this.transformedCollisionY = 0;
-		this.transformedCollisionWidth = frameWidth;
-		this.transformedCollisionHeight = frameHeight;
+
+		// computes tranformed* values and reposition the sprite.
+		int oldRefX = this.transformedRefX, oldRefY = this.transformedRefY;
+		applyTransform();
+		this.xPosition += oldRefX - this.transformedRefX;
+		this.yPosition += oldRefY - this.transformedRefY;
+
 		//#ifdef polish.api.nokia-ui
 			this.nokiaFrame = DirectUtils.createImage( frameWidth, frameHeight, 0x00FFFFFF );
 			Graphics g = this.nokiaFrame.getGraphics();
 			// when creating an transparent image, one must not "touch"
 			// that image with an ordinary Graphics-object --- instead
-			// ALWAYS an DirectGraphics-object needs to be used. Sigh!
+			// ALWAYS a DirectGraphics-object needs to be used. Sigh!
 			//g.drawImage(this.image, 0, 0, Graphics.TOP | Graphics.LEFT );
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			dg.drawImage(this.image, 0, 0, Graphics.TOP | Graphics.LEFT, 0 );
@@ -787,10 +826,82 @@ public class Sprite extends Layer
 		this.collisionY = topY;
 		this.collisionWidth = cWidth;
 		this.collisionHeight = cHeight;
-		this.transformedCollisionX = leftX;
-		this.transformedCollisionY = topY;
-		this.transformedCollisionWidth = cWidth;
-		this.transformedCollisionHeight = cHeight;
+		this.applyTransform();
+	}
+
+	/*
+	 * Applies the current transformation to the collision rectangle and reference pixel.
+	 * 
+	 * Carefully look at the image in the "Sprite Transforms" section of the doc
+	 * and report the number values of the symbols next to each sample image.
+	 * We can notive the following:
+	 *  - "x = width - x" if transform is 2 or 3
+	 *    (that is, (transform & 2) != 0 and (transform & 4) == 0)
+	 *  - "y = height - y" if transform is 1 or 3
+	 *    (that is, (transform & 1) != 0 and (transform & 4) == 0)
+	 *  - width and height are switched if transform >= 4 (that is, (transform & 4) != 0)
+	 *  - "x = y" if transform is 4 or 6
+	 *    (that is, (transform & 1) == 0 and (transform & 4) != 0)
+	 *  - "y = x" if transform is 4 or 5
+	 *    (that is, (transform & 2) == 0 and (transform & 4) != 0)
+	 *  - "x = height - y" if transform is 5 or 7
+	 *    (that is, (transform & 1) != 0 and (transform & 4) != 0)
+	 *  - "y = width - x" if transform is 6 or 7
+	 *    (that is, (transform & 2) != 0 and (transform & 4) != 0)
+	 * 
+	 * So:
+	 *  - if (transform & 1) == 0, use "y", else use "height - y"
+	 *  - if (transform & 2) == 0, use "x", else use "width - x"
+	 *  - if (transform & 4) != 0, switch width and height, and x and y
+	 *    (after you've applied the previous rules for x and y computation)
+	 */
+	private void applyTransform() {
+		int refX, refY, colX, colY;
+		
+		// set the horizontal values:
+		if ((this.transform & 2) == 0) {
+			// Either TRANS_NONE, TRANS_MIRROR_ROT180, TRANS_MIRROR_ROT270 or TRANS_ROT90
+			refX = this.refPixelX;
+			colX = this.collisionX;
+		} else {
+			// Either TRANS_MIRROR, TRANS_ROT180, TRANS_ROT270 or TRANS_MIRROR_ROT90
+			refX = this.frameWidth - this.refPixelX;
+			colX = this.frameWidth - (this.collisionX + this.collisionWidth);
+		}
+		
+		// set the vertical values:
+		if ((this.transform & 1) == 0) {
+			// Either TRANS_NONE, TRANS_MIRROR, TRANS_MIRROR_ROT270 or TRANS_ROT270
+			refY = this.refPixelY;
+			colY = this.collisionY;
+		} else {
+			// Either TRANS_MIRROR_ROT180, TRANS_ROT180, TRANS_ROT90 or TRANS_MIRROR_ROT90
+			refY = this.frameHeight - this.refPixelY;
+			colY = this.frameHeight - (this.collisionY + this.collisionHeight);
+		}
+
+		if ((this.transform & 4) == 0) {
+			// Either TRANS_NONE, TRANS_MIRROR_ROT180, TRANS_MIRROR or TRANS_ROT180
+			this.width = this.frameWidth;
+			this.height = this.frameHeight;
+			this.transformedRefX = refX;
+			this.transformedRefY = refY;
+			this.transformedCollisionX = colX;
+			this.transformedCollisionY = colY;
+			this.transformedCollisionWidth = this.collisionWidth;
+			this.transformedCollisionHeight = this.collisionHeight;
+		} else {
+			// Either TRANS_MIRROR_ROT270, TRANS_ROT90, TRANS_ROT270 or TRANS_MIRROR_ROT90
+			// the vertical and horizontal values needs to be switched:
+			this.width = this.frameHeight;
+			this.height = this.frameWidth;
+			this.transformedRefX = refY;
+			this.transformedRefY = refX;
+			this.transformedCollisionX = colY;
+			this.transformedCollisionY = colX;
+			this.transformedCollisionWidth = this.collisionHeight;
+			this.transformedCollisionHeight = this.collisionWidth;
+		}
 	}
 
 	/**
@@ -829,118 +940,18 @@ public class Sprite extends Layer
 	 */
 	public void setTransform(int transform)
 	{
-		boolean switchHeightAndWidth = false;
-		int refX = 0;
-		int refY = 0;
-		switch (transform ) {
-			case TRANS_NONE:
-				//#debug
-				System.out.println("TRANS_NONE");
-				refX = this.refPixelX;
-				refY = this.refPixelY;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = 0;
-				//#endif
-				break;
-			case TRANS_MIRROR_ROT180:
-				//#debug
-				System.out.println("TRANS_MIRROR_ROT180");
-				refX = this.refPixelX;
-				refY = (this.frameHeight - 1) - this.refPixelY;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.FLIP_VERTICAL;
-				//#endif
-				break;
-			case TRANS_MIRROR:
-				//#debug
-				System.out.println("TRANS_MIRROR");
-				refX = (this.frameWidth - 1) - this.refPixelX;
-				refY = this.refPixelY;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.FLIP_HORIZONTAL;
-				//#endif
-				break;
-			case TRANS_ROT180:
-				//#debug
-				System.out.println("TRANS_ROT180");
-				refX = (this.frameWidth - 1) - this.refPixelX;
-				refY = (this.frameHeight - 1) - this.refPixelY;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.ROTATE_180;
-				//#endif
-				break;
-			case TRANS_MIRROR_ROT270:
-				//#debug
-				System.out.println("TRANS_MIRROR_ROT270");
-				refX = this.refPixelY;
-				refY = this.refPixelX;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.ROTATE_270 | DirectGraphics.FLIP_HORIZONTAL;
-				//#endif
-				switchHeightAndWidth = true;
-				break;
-			case TRANS_ROT90:
-				//#debug
-				System.out.println("TRANS_ROT90");
-				refX = (this.frameHeight - 1) - this.refPixelY;
-				refY = this.refPixelX;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.ROTATE_270;
-				//#endif
-				switchHeightAndWidth = true;
-				break;
-			case TRANS_ROT270:
-				//#debug
-				System.out.println("TRANS_ROT270");
-				refX = this.refPixelY; //(this.frameHeight - 1 ) - this.refPixelY;
-				refY = (this.frameWidth - 1 ) - this.refPixelX;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.ROTATE_90;
-				//#endif
-				switchHeightAndWidth = true;
-				break;
-			case TRANS_MIRROR_ROT90:
-				//#debug
-				System.out.println("TRANS_MIRROR_ROT90");
-				refX = (this.frameHeight - 1) - this.refPixelY;
-				refY = (this.frameWidth - 1) - this.refPixelX;
-				//#ifdef polish.api.nokia-ui
-					this.nokiaTransform = DirectGraphics.ROTATE_90 | DirectGraphics.FLIP_HORIZONTAL;
-				//#endif
-				switchHeightAndWidth = true;
-				break;
-			default:
-				//#ifdef polish.debugVerbose
-					throw new IllegalArgumentException("Invalid sprite transformation: " + transform );
-				//#else
-					//# throw new IllegalArgumentException();	
-				//#endif
-		}
-		int xDiff = this.transformedRefX - refX;
-		int yDiff = this.transformedRefY - refY;
-
-		this.transformedRefX = refX;
-		this.transformedRefY = refY;
-
-		this.xPosition += xDiff;
-		this.yPosition += yDiff;
-		
-		this.transformedCollisionX += xDiff;
-		this.transformedCollisionY += yDiff;
-		
-		if (switchHeightAndWidth) {
-			this.width = this.frameHeight;
-			this.height = this.frameWidth;
-			this.transformedCollisionWidth = this.collisionHeight;
-			this.transformedCollisionHeight = this.collisionWidth;
-		} else {
-			this.width = this.frameWidth;
-			this.height = this.frameHeight;
-			this.transformedCollisionWidth = this.collisionWidth;
-			this.transformedCollisionHeight = this.collisionHeight;
-		}
-		
 		this.transform = transform;
+
+		//#ifdef polish.api.nokia-ui
+			this.nokiaTransform = NOKIA_TRANSFORM_LOOKUP[transform];
+		//#endif
+
+		// computes tranformed* values and reposition the sprite.
+		int oldRefX = this.transformedRefX, oldRefY = this.transformedRefY;
+		applyTransform();
+		this.xPosition += oldRefX - this.transformedRefX;
+		this.yPosition += oldRefY - this.transformedRefY;
+
 		//#ifndef polish.api.nokia-ui
 			// when the nokia-ui is used the frame-dimensions do not need to be changed:
 			if (this.rawFrameCount > 1) {

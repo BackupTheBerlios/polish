@@ -118,7 +118,7 @@ public abstract class Screen
 		private boolean menuOpened;
 		private Font menuFont;
 		private int menuFontColor = 0;
-		private int menuBarHeight;
+		protected int menuBarHeight;
 		//#ifdef polish.ScreenWidth:defined
 			//#= private int menuMaxWidth = (  ${ polish.ScreenWidth } * 2 ) / 3;
 		//#else
@@ -379,7 +379,9 @@ public abstract class Screen
 		//#if polish.useFullScreen && polish.api.nokia-ui 
 			this.isInPaintMethod = true;
 		//#endif
+		//#ifdef polish.debug.error
 		try {
+		//#endif
 			// paint background:
 			if (this.background != null) {
 				//#ifdef tmp.menuFullScreen
@@ -497,21 +499,11 @@ public abstract class Screen
 					//#endif
 				}
 			//#endif
+		//#ifdef polish.debug.error
 		} catch (RuntimeException e) {
-			//#mdebug error
-				Debug.debug( "unable to paint screen", e );
-				if (true) {
-					return;
-				}
-			//#enddebug
+			//#debug error
+			Debug.debug( "unable to paint screen", e );
 		}
-		//#ifdef polish.hasPointerEvents
-			/*
-			g.setColor(0);
-			g.drawString("pointer=" + this.pointerX + ", " + this.pointerY , 10, 10, Graphics.LEFT | Graphics.TOP );
-			g.drawString("screen=" + this.screenWidth + "x" + this.screenHeight , 10, 30, Graphics.LEFT | Graphics.TOP );
-			g.drawString("commands=" + this.menuLeftCommandX + "," + this.menuRightCommandX, 10, 50, Graphics.LEFT | Graphics.TOP );
-			*/
 		//#endif
 		//#if polish.useFullScreen && polish.api.nokia-ui 
 			this.lastPaintTime = System.currentTimeMillis();
@@ -692,10 +684,12 @@ public abstract class Screen
 				}
 			//#endif
 			boolean processed = handleKeyPressed(keyCode, gameAction);
-			if (!processed) {
-				//#debug
-				Debug.debug("unable to handle key [" + keyCode + "].");
-			}
+			//#ifdef polish.debug.debug
+				if (!processed) {
+					//#debug
+					Debug.debug("unable to handle key [" + keyCode + "].");
+				}
+			//#endif
 			if (processed) {
 				//#if polish.useFullScreen && polish.api.nokia-ui
 					requestRepaint();
