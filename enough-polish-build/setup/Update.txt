@@ -1,6 +1,14 @@
-Please copy the jar-files into the "import"-folder of your J2ME projects.
+Please copy the jar-files into the "import"-folder of your J2ME installation directory.
 
-If you have installed the device database-files, you
+The provided "build.xml" needs to be adjusted:
+- the "wtk.home" property needs to point to the installation directory of
+  the Wireless Toolkit.
+- the "polish.home" property needs to point to the installation directory of
+  J2ME Polish.
+- the "license" attribute of the <build>-elements needs to be either "GPL" or
+  the commercial license key.
+
+If you have installed the external device database-files, you
 might want to copy the relevant files (devices.xml, vendors.xml, 
-groups.xml and apis.xml) to your project-root.
+groups.xml and apis.xml) to the installation directory of J2ME Polish as well.
 

@@ -17,7 +17,7 @@
     -->
     <info>
         <appname>J2ME Polish</appname>
-        <appversion>${ Version }</appversion>
+        <appversion>${Version}</appversion>
         <authors>
             <author name="Robert Virkus" email="info@enough.de"/>
         </authors>
@@ -32,17 +32,8 @@
     	<laf name="metouia">
         	<os family="unix" />
         	<os family="windows" />
-        	<os family="macosx" />
+        	<os family="osx" />
     	</laf>
-	<!--
-    	<laf name="metouia">
-        	<os family="unix" />
-    	</laf>
-    	<laf name="looks">
-        	<os family="windows" />
-        	<param name="variant" value="extwin" />
-    	</laf>
-    -->
 	</guiprefs>    
     <!-- 
         The locale section.
@@ -96,16 +87,21 @@
             <file src="import" targetdir="$INSTALL_PATH"/>
             <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="../LICENSE.txt" targetdir="$INSTALL_PATH"/>
+            <!--
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/build.xml" type="shell" /> 
+            -->
         </pack>
-        <pack name="Sample Application" required="no">
-            <description>A sample application which shows a simple menu and contains two different CSS designs.</description>
-            <file src="src" targetdir="$INSTALL_PATH"/>
-            <file src="resources" targetdir="$INSTALL_PATH"/>
-            <file src="resources2" targetdir="$INSTALL_PATH"/>
-            <file src="../setup/.classpath" targetdir="$INSTALL_PATH"/>
-            <file src="../setup/.project" targetdir="$INSTALL_PATH"/>
+        <pack name="Sample Application" required="yes">
+            <description>A sample application which shows a simple menu and contains two different CSS designs. This can be used as a master for new projects.</description>
+            <file src="src" targetdir="$INSTALL_PATH/sample"/>
+            <file src="resources" targetdir="$INSTALL_PATH/sample"/>
+            <file src="resources2" targetdir="$INSTALL_PATH/sample"/>
+            <file src="../setup/.classpath" targetdir="$INSTALL_PATH/sample"/>
+            <file src="../setup/.project" targetdir="$INSTALL_PATH/sample"/>
+            <file src="../setup/build.xml" targetdir="$INSTALL_PATH/sample"/>
+            <parsable targetfile="$INSTALL_PATH/sample/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/sample/.classpath" type="shell" /> 
         </pack>
         <pack name="External Device Database" required="no" preselected="no" >
             <description>The files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot;. These are only necessary if you want to add your own device-definitions or modify existing ones.</description>
@@ -121,6 +117,10 @@
         <pack name="Sources" required="no" preselected="no">
             <description>The sources of J2ME Polish. These are useful if you want to extend J2ME Polish.</description>
             <file src="j2mepolish-src" targetdir="$INSTALL_PATH"/>
+        </pack>
+        <pack name="OS X: JadUtil.jar" required="no" preselected="no">
+            <description>The Jad utility is needed for signing MIDlets on Mac OS X platforms.</description>
+            <file src="../setup/JadTool.jar" targetdir="$INSTALL_PATH/bin"/>
         </pack>
     </packs>
     

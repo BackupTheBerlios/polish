@@ -86,6 +86,7 @@ public class BuildSetting {
 	private File[] binaryLibraries;
 	private String polishHomePath;
 	private String projectBasePath;
+	private ArrayList javaTasks;
 	
 	/**
 	 * Creates a new build setting.
@@ -161,11 +162,7 @@ public class BuildSetting {
 	public void addConfiguredManifestFilter( AttributesFilter filter ) {
 		this.manifestAttributesFilter = filter;
 	}
-	
-	public Variable[] getVariables() {
-		return this.variables;
-	}
-	
+		
 	public void addConfiguredJad( JadAttributes attributes ) {
 		this.jadAttributes = attributes;
 		this.jadAttributesFilter = attributes.getFilter();
@@ -188,6 +185,20 @@ public class BuildSetting {
 			return (PreprocessorSetting[]) this.preprocessors.toArray( new PreprocessorSetting[ this.preprocessors.size()]);
 		}
 	}
+	
+	public JavaExtension createJava() {
+		if (this.javaTasks == null) {
+			this.javaTasks = new ArrayList();
+		}
+		JavaExtension java = new JavaExtension( this.project );
+		this.javaTasks.add( java );
+		return java;
+	}
+	
+	public Variable[] getVariables() {
+		return this.variables;
+	}
+
 	
 	public Variable[] getJadAttributes() {
 		if (this.jadAttributes == null) {
@@ -883,6 +894,19 @@ public class BuildSetting {
 	 */
 	public File[] getBinaryLibraries() {
 		return this.binaryLibraries;
+	}
+	
+	/**
+	 * Retrieves the extensions with a java-element.
+	 * 
+	 * @return an array of JavaExtension
+	 */
+	public JavaExtension[] getJavaExtensions() {
+		if (this.javaTasks == null) {
+			return new JavaExtension[0];
+		} else {
+			return (JavaExtension[]) this.javaTasks.toArray( new JavaExtension[ this.javaTasks.size() ]);
+		}
 	}
 		
 }

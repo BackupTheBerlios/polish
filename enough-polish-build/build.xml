@@ -192,7 +192,7 @@
 	<!-- create the zip file containing the jars -->
 	<zip destfile="dist/j2mepolish-${Version}.zip">
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
-		<fileset dir="setup" includes="Update.txt" />
+		<fileset dir="setup" includes="Update.txt,build.xml" />
 		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml" />
 	</zip>
 </target>

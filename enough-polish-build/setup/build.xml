@@ -132,8 +132,40 @@
 			</debug>
 			<!-- user defined JAD attributes can also be used: -->
 			<jad>
-				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.Vendor == Nokia" />
-			</jad>			
+				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
+			</jad>	
+			<!-- this is an example for signing MIDlets with J2ME Polish. -->
+			<!--
+			<java jar="${wtk.home}/bin/JadTool.jar" 
+			    fork="true" 
+			    failonerror="true" 
+			    if="polish.midp2" 
+				unless="test"
+				message="Adding signature for device ${polish.identifier}"
+				>
+				<arg line="-addjarsig"/>
+				<arg line="-keypass ${password}"/>
+				<arg line="-alias SignMIDlet"/>
+				<arg line="-keystore midlets.ks"/>
+				<arg line="-inputjad dist/${polish.jadName}"/>
+				<arg line="-outputjad dist/${polish.jadName}"/>
+				<arg line="-jarfile dist/${polish.jarName}"/>
+			</java>	
+			<java jar="${wtk.home}/bin/JadTool.jar" 
+				fork="true" 
+				failonerror="true" 
+				if="polish.midp2" 
+				unless="test"
+				message="Adding certificate for device ${polish.identifier}"
+				>
+				<arg line="-addcert"/>
+				<arg line="-alias SignMIDlet"/>
+				<arg line="-keystore midlets.ks"/>
+				<arg line="-inputjad dist/${polish.jadName}"/>
+				<arg line="-inputjad dist/${polish.jadName}"/>
+				<arg line="-outputjad dist/${polish.jadName}"/>
+			</java>	
+			-->
 		</build>
 	</j2mepolish>
 </target>

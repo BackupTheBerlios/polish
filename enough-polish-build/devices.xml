@@ -939,7 +939,7 @@
 	</device>
 	
 	<device>
-		<identifier>Nokia/N-Gage QD</identifier>
+		<identifier>Nokia/N-Gage_QD</identifier>
 		<groups>Series60</groups>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>

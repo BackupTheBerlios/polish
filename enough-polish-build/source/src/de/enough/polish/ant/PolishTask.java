@@ -99,6 +99,8 @@ public class PolishTask extends ConditionalTask {
 	private boolean binaryLibrariesUpdated;
 
 	private File binaryLibrariesDir;
+
+	private JavaExtension[] javaExtensions;
 	
 	/**
 	 * Creates a new empty task 
@@ -156,6 +158,7 @@ public class PolishTask extends ConditionalTask {
 			if (numberOfDevices > 1) {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
+			boolean hasExtensions = (this.javaExtensions.length > 0);
 			for ( int i=0; i<numberOfDevices; i++) {
 				Device device = this.devices[i];
 				preprocess( device );
@@ -166,6 +169,9 @@ public class PolishTask extends ConditionalTask {
 				preverify( device );
 				jar( device );
 				jad( device );
+				if (hasExtensions) {
+					callExtensions( device );
+				}
 			}
 			test();
 			deploy();
@@ -560,6 +566,9 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < midletClasses.length; i++) {
 			this.midletClassesByName.put( midletClasses[i], Boolean.TRUE );			
 		}
+		
+		// get the java-extension:
+		this.javaExtensions = this.buildSetting.getJavaExtensions();
 		
 		//check if there has been an error at the last run:
 		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()
@@ -1366,6 +1375,30 @@ public class PolishTask extends ConditionalTask {
 			FileUtil.writeTextFile(jadFile, jad.getContent() );
 		} catch (IOException e) {
 			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
+		}
+	}
+	
+	
+	private void callExtensions( Device device ) {
+		HashMap infoProperties = new HashMap();
+		infoProperties.put( "polish.identifier", device.getIdentifier() );
+		infoProperties.put( "polish.name", device.getName() );
+		infoProperties.put( "polish.vendor", device.getVendorName() );
+		infoProperties.put( "polish.version", this.infoSetting.getVersion() );
+		String jarName = this.infoSetting.getJarName();
+		jarName = PropertyUtil.writeProperties(jarName, infoProperties);
+		infoProperties.put( "polish.jarName", jarName );
+		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
+		infoProperties.put( "polish.jadName", jadName );
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		
+		for (int i = 0; i < this.javaExtensions.length; i++) {
+			JavaExtension extension = this.javaExtensions[i];
+			if (extension.isActive( evaluator )) {
+				System.out.println("Executing <java> extension for device [" + device.getIdentifier() + "]." );
+				// now call the extension:
+				extension.execute(device, infoProperties);
+			}
 		}
 	}
 	
