@@ -154,12 +154,14 @@
 
 	<vendor>
 		<name>Sendo</name>
-		<features>isOperator</features>
 	</vendor>
 
 	<vendor>
 		<name>BenQ</name>
-		<features>isOperator</features>
+	</vendor>
+	
+	<vendor>
+		<name>Palm</name>
 	</vendor>
 	
 </vendors>

@@ -1177,6 +1177,7 @@ public class Preprocessor {
 	private boolean processMdebug(String argument, StringList lines, String className) 
 	throws BuildException
 	{
+		lines.next();
 		boolean debug = false;
 		boolean changed = false;
 		if (this.enableDebug) {
@@ -1185,7 +1186,7 @@ public class Preprocessor {
 			}
 			debug = this.debugManager.isDebugEnabled( className, argument );
 		}
-		int startLine = lines.getCurrentIndex() + 1;
+		int startLine = lines.getCurrentIndex();
 		boolean endTagFound = false;
 		boolean verboseDebug = (debug && this.debugManager.isVerbose());
 		if (verboseDebug) {

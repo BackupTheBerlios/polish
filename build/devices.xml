@@ -447,6 +447,7 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="Emulator.Skin" value="SonyEricsson_P910" />
+		<capability name="Bugs" value="fullScreenInShowNotify" />
 	</device>	
 	
 <!-- Motorola devices -->
@@ -3834,5 +3835,18 @@
 		<identifier>Vodafone/Sony-Ericsson-F500i</identifier>
 	</device>	
 	
+	
+<!-- Palm devices -->
+	<device>
+		<identifier>Palm/TungstenC</identifier>
+		<groups></groups>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="PalmOS"/>
+		<capability name="ScreenSize" value="160x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
+	</device>
 	
 </devices>
