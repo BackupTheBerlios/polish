@@ -253,6 +253,8 @@ implements CommandListener
 					this.text = "MM-DD-YYYY";
 				//#elif polish.DateFormat == de
 					this.text = "TT.MM.JJJJ";
+				//#elif polish.DateFormat == fr
+					this.text = "JJ/MM/AAAA";
 				//#else
 					this.text = "YYYY-MM-DD";
 				//#endif
@@ -263,6 +265,8 @@ implements CommandListener
 					this.text = "MM-DD-YYYY hh:mm";
 				//#elif polish.DateFormat == de
 					this.text = "TT.MM.JJJJ hh:mm";
+				//#elif polish.DateFormat == fr
+					this.text = "JJ/MM/AAAA hh:mm";
 				//#else
 					this.text = "YYYY-MM-DD hh:mm";				
 				//#endif
