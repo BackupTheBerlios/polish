@@ -1028,7 +1028,7 @@ public class Sprite
 				}
 			//#endif
 		//#endif
-		//#ifdef polish.api.nokia-ui
+		//#if polish.api.nokia-ui && !polish.api.siemens-color-game-api
 			this.nokiaTransform = NOKIA_TRANSFORM_LOOKUP[transform];
 			if (this.isSingleFrame) {
 				updateFrame();

@@ -624,17 +624,6 @@ extends Layer
 		int xStart = this.xPosition + (firstColumn * this.cellWidth);
 		int yStart = this.yPosition + (firstRow * this.cellHeight);
 		
-		// check if the tiled layer is within the viewport at all:
-		// note: this should be done by the layer manager
-		/*
-		if (xStart > clipX + clipWidth
-			|| yStart > clipY + clipHeight
-			|| xStart + this.width < clipX
-			|| yStart + this.height < clipY )
-			{
-			return;
-		}
-		*/
 		 
 		int y = yStart;
 		int x = xStart;
@@ -665,7 +654,8 @@ extends Layer
 			} else if ( this.bufferFirstColumn != firstColumn 
 					|| this.bufferFirstRow != firstRow) 
 			{
-				//System.out.println("clearing backbuffer");
+				//#debug
+				System.out.println("clearing backbuffer");
 				clearBuffer = true;
 				this.bufferFirstColumn = firstColumn;
 				this.bufferFirstRow = firstRow;
