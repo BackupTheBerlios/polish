@@ -30,6 +30,10 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 
+import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
+import de.enough.polish.plugin.eclipse.css.parser.CssParser;
+import de.enough.polish.plugin.eclipse.css.parser.CssTokenizer;
+
 /**
  * <p>Sync editor input to domain model.</p>
  *
@@ -43,6 +47,8 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 public class SimpleReconcilingStrategy implements IReconcilingStrategy {
 
 	IDocument currentDocument;
+	CssParser parser;
+	CssTokenizer tokenizer;
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#setDocument(org.eclipse.jface.text.IDocument)
@@ -56,7 +62,12 @@ public class SimpleReconcilingStrategy implements IReconcilingStrategy {
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#reconcile(org.eclipse.jface.text.reconciler.DirtyRegion, org.eclipse.jface.text.IRegion)
 	 */
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		System.out.println("DEBUG:SimpleReconcilingStrategy().Reconciling.");
+		System.out.println("DEBUG:SimpleReconcilingStrategy.reconcile():enter.");
+		
+		this.parser = new CssParser(CssEditorPlugin.getDefault().getEditor().getCssModel());
+		this.tokenizer = new CssTokenizer(CssEditorPlugin.getDefault().getEditor().getCssModel());
+		this.tokenizer.tokenize();
+		this.parser.parseAll();
 	}
 
 	/* (non-Javadoc)

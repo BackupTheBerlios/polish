@@ -57,7 +57,7 @@ public class Section extends ASTNode {
 	/**
 	 * @return Returns the sectionName.
 	 */
-	public String getSectionName() {
+	public String getSectionName(){ 
 		return this.sectionName;
 	}
 	
@@ -69,6 +69,8 @@ public class Section extends ASTNode {
 	}
 	
 	public String toString(){
-		return this.sectionName;
+		return this.sectionName+"("+printProblems()+")";
 	}
 }
+	
+

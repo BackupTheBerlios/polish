@@ -48,6 +48,7 @@ public class SimpleReconciler extends MonoReconciler{
 		super(strategy, isIncremental);
 		
 	}
+	
 
 	
 }

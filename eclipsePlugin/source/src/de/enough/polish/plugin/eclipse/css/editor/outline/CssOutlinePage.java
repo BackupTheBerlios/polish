@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
 import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 
 /**
@@ -57,7 +58,8 @@ public class CssOutlinePage extends ContentOutlinePage {
 		viewer.setContentProvider(cssContentProvider);
 		viewer.setLabelProvider(new CssLabelProvider());
 		viewer.addSelectionChangedListener(this);
-		ASTNode rootNode = cssContentProvider.initialInput();
+		//ASTNode rootNode = cssContentProvider.initialInput();
+		ASTNode rootNode = CssEditorPlugin.getDefault().getEditor().getCssModel().getRoot();
 		viewer.setInput(rootNode);
 	}
 	

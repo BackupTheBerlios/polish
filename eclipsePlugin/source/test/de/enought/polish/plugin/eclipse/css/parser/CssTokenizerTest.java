@@ -6,6 +6,9 @@ import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.text.Document;
+
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.parser.CssToken;
 import de.enough.polish.plugin.eclipse.css.parser.CssTokenizer;
 import junit.framework.TestCase;
@@ -50,6 +53,7 @@ import junit.framework.TestCase;
 public class CssTokenizerTest extends TestCase {
 
 	String input;
+	CssModel cssModel;
 	
 	public void setUp(){
 		System.out.println("CssTokenizerTest.setUp().enter.");
@@ -73,10 +77,12 @@ public class CssTokenizerTest extends TestCase {
 			fail();
 			return;
 		}
+		
+		this.cssModel = new CssModel(new Document());
 	}
 	
 	public void XtestGetNext(){
-		CssTokenizer cssTokenizer = new CssTokenizer(this.input);
+		CssTokenizer cssTokenizer = new CssTokenizer(this.input,this.cssModel);
 		CssToken cssToken;
 		cssToken = cssTokenizer.getNextToken();
 		System.out.println(cssToken);
@@ -88,9 +94,10 @@ public class CssTokenizerTest extends TestCase {
 	
 	public void testTokenize(){
 		
-		CssTokenizer cssTokenizer = new CssTokenizer(this.input);
+		CssTokenizer cssTokenizer = new CssTokenizer(this.input,this.cssModel);
 		cssTokenizer.tokenize();
-		List cssTokens = cssTokenizer.getCssTokens();
+		//List cssTokens = cssTokenizer.getCssTokens();
+		List cssTokens = this.cssModel.getTokenList();
 		
 		System.out.println("CssTokenizerTest.testTokenize():enter.");
 		Iterator i = cssTokens.iterator();

@@ -5,8 +5,9 @@ package de.enough.polish.plugin.eclipse.css.parser;
 
 import org.eclipse.jface.text.IDocument;
 
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.regex.*;
 
@@ -18,6 +19,7 @@ import java.util.regex.*;
  */
 public class CssTokenizer {
 	
+	// We do not need the document here.
 	private IDocument document;
 	
 	/** The document as a string. */
@@ -27,7 +29,9 @@ public class CssTokenizer {
 	private int currentPos;
 	
 	/** The document as a list of tokens. */
-	private List cssTokens;
+	//private List cssTokens;
+	
+	CssModel cssModel;
 	
 	// Do not use groups in the patterns, it would break the group to type mapping.
 	public static String REGEX_NAME = "[a-zA-Z][a-zA-Z\\-_]*";
@@ -111,11 +115,12 @@ public class CssTokenizer {
 	
 	Matcher matcher;
 	
-	public CssTokenizer(IDocument document){
-		this.document = document;
+	public CssTokenizer(CssModel cssModel){
+		this.document = cssModel.getDocument();
 		this.currentPos = 0;
 		this.stream = this.document.get();
-		this.cssTokens = new ArrayList();
+		//this.cssTokens = new ArrayList();
+		this.cssModel = cssModel;
 		Pattern pattern = Pattern.compile(REGEX_CSS);
 		this.matcher = pattern.matcher(this.stream);
 		//TODO: Do reset from the outside when something changed in the input.
@@ -125,12 +130,14 @@ public class CssTokenizer {
 	/**
 	 * Constructor for easier testing.
 	 * @param stream
+	 * @param cssModel
 	 */
-	public CssTokenizer(String stream){
+	public CssTokenizer(String stream, CssModel cssModel){
 		this.document = null;
 		this.currentPos = 0;
 		this.stream = stream;
-		this.cssTokens = new ArrayList();
+		//this.cssTokens = new ArrayList();
+		this.cssModel = cssModel;
 		Pattern pattern = Pattern.compile(REGEX_CSS);
 		this.matcher = pattern.matcher(stream);
 		//TODO: Do reset from the outside when something changed in the input.
@@ -210,19 +217,20 @@ public class CssTokenizer {
 	
 	/**
 	 * Creates a list of tokens and returns it.
-	 * @return List
 	 */
-	public List tokenize(){
+	public void tokenize(){
 		CssToken cssToken;
 		cssToken = getNextToken();
 		//int i = 100; //Dont do this at home! Its for debugging invinite loops only.
 		while( ! ("EOF".equals(cssToken.getType())) /*&& (i > 0)*/){
-			this.cssTokens.add(cssToken);
+			//this.cssTokens.add(cssToken);
+			this.cssModel.addToken(cssToken);
 			cssToken = getNextToken();
 			//i--;
 		}
-		this.cssTokens.add(cssToken); // Put EOF also in the list.
-		return this.cssTokens;
+		//this.cssTokens.add(cssToken); // Put EOF also in the list.
+		this.cssModel.addToken(cssToken);
+		//return this.cssTokens;
 	}
 	
 	
@@ -237,15 +245,17 @@ public class CssTokenizer {
 	/**
 	 * @return Returns the cssTokens.
 	 */
-	public List getCssTokens() {
+	/*public List getCssTokens() {
 		return this.cssTokens;
 	}
+	*/
 	/**
 	 * @param cssTokens The cssTokens to set.
 	 */
-	public void setCssTokens(List cssTokens) {
+	/*public void setCssTokens(List cssTokens) {
 		this.cssTokens = cssTokens;
 	}
+	*/
 	
 	
 	/**
@@ -258,9 +268,10 @@ public class CssTokenizer {
 	/**
 	 * @param currentPos The currentPos to set.
 	 */
-	public void setCurrentPos(int currentPos) {
+	/*public void setCurrentPos(int currentPos) {
 		this.currentPos = currentPos;
 	}
+	*/
 	/**
 	 * @return Returns the document.
 	 */

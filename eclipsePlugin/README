@@ -9,12 +9,15 @@ Currently implemented is
 
 TODO (CssEditor)
 
-- Change old documentation style to new one. Esp. CssEditor and stuff created before 24.02.05.
-- design domain model with element/Parent/child relationship. Caution: special _element_ semantics.
+- design domain model with Parent/child relationship. Caution: special getElements() semantics. DONE
 - parse css file to domain model.
 - on input reconcile domain model.
 - on input reconcile presentation.
+- Change old documentation style to new one. Esp. CssEditor and stuff created before 24.02.05.
 - document everything.
+- code clean up:
+    - Some lists (e.g. ASTNode) get passed out to callers. Shield them behind domain getters.
+    - Rename name to identifer in the token realm.
 
 
 ROADMAP

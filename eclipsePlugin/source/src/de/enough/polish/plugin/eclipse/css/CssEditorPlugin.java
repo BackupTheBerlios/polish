@@ -5,6 +5,8 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.*;
 import org.osgi.framework.BundleContext;
 
+import de.enough.polish.plugin.eclipse.css.editor.CssEditor;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -18,6 +20,8 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	private BundleContext bundleContext;
+	private CssEditor editor;
+	
 	
 	/**
 	 * The constructor.
@@ -104,5 +108,16 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 			reg.put(iconNames[i],imageDescriptor);
 		}
 		
+	}
+
+	/**
+	 * @param editor
+	 */
+	public void setEditor(CssEditor editor) {
+		this.editor = editor;
+	}
+	
+	public CssEditor getEditor(){
+		return this.editor;
 	}
 }

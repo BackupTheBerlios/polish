@@ -25,6 +25,13 @@
  */
 package de.enough.polish.plugin.eclipse.css.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.text.IDocument;
+
+import de.enough.polish.plugin.eclipse.css.parser.CssToken;
+
 /**
  * <p>Encapsulates the css model (domain model) and provides methods to deal with changes
  * to the model and to manipulate the model itself.</p>
@@ -39,12 +46,51 @@ package de.enough.polish.plugin.eclipse.css.model;
 public class CssModel {
 
 	private ASTNode root;
+	private List tokenList;
+	//FIXME: Put the IDocument also in the model. So we have raw input, symbols and semantic symbols in one place.
+	private IDocument document;
 	
-	public CssModel(){
+	public CssModel(IDocument document){
 		this.root = new StyleSheet();
+		this.tokenList = new ArrayList();
+		this.document = document;
 	}
 	
 	public ASTNode getRoot(){
 		return this.root;
+	}
+	
+	public void setRoot(ASTNode root){
+		this.root = root;
+	}
+	/**
+	 * @return Returns the tokenList.
+	 */
+	public List getTokenList() {
+		return this.tokenList;
+	}
+	
+	/**
+	 * @param tokenList The tokenList to set.
+	 */
+	public void setTokenList(List tokenList) {
+		this.tokenList = tokenList;
+	}
+	
+	public void addToken(CssToken cssToken){
+		this.tokenList.add(cssToken);
+	}
+	
+	/**
+	 * @return Returns the document.
+	 */
+	public IDocument getDocument() {
+		return this.document;
+	}
+	/**
+	 * @param document The document to set.
+	 */
+	public void setDocument(IDocument document) {
+		this.document = document;
 	}
 }
