@@ -1158,15 +1158,6 @@ public class PolishTask extends ConditionalTask {
 		// set the class-path:
 		String[] classPaths = this.libraryManager.getClassPaths(device);
 		device.setClassPaths( classPaths );
-		/*
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < classPaths.length; i++) {
-			String path = classPaths[i];
-			buffer.append( path )
-			      .append( File.pathSeparatorChar );
-		}
-		device.setClassPath( buffer.toString() );
-		*/
 
 		// setting target directory:
 		String targetDirName = device.getBaseDir() + File.separatorChar + "classes";

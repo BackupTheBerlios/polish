@@ -60,7 +60,32 @@ public class SiemensEmulator extends WtkEmulator {
 	protected File getEmulatorSkin(String wtkHome, String xDevice) {
 		return new File( this.siemensHome + "\\emulators\\" + xDevice );
 	}
+	
+	
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.emulator.WtkEmulator#supportsPreferencesFile()
+	 */
+	protected boolean supportsPreferencesFile() {
+		return false;
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.emulator.WtkEmulator#supportsHeapsize()
+	 */
+	protected boolean supportsHeapsize() {
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.emulator.WtkEmulator#supportsSecurityDomain()
+	 */
+	protected boolean supportsSecurityDomain() {
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */

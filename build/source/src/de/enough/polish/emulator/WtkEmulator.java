@@ -65,6 +65,37 @@ public class WtkEmulator extends Emulator {
 	}
 	
 	/**
+	 * Indicates whether this emulator supports a standard preferences file and the "-Xprefs"-parameter.
+	 * Subclasses can override this method for adjustments.
+	 * 
+	 * @return true by default, subclasses can change this behavior.
+	 */
+	protected boolean supportsPreferencesFile() {
+		return true;
+	}
+	
+	
+	/**
+	 * Indicates whether this emulator supports "-Xdomain"-parameter.
+	 * Subclasses can override this method for adjustments.
+	 * 
+	 * @return true by default, subclasses can change this behavior.
+	 */
+	protected boolean supportsSecurityDomain() {
+		return true;
+	}
+
+	/**
+	 * Indicates whether this emulator supports "-Xheapsize"-parameter.
+	 * Subclasses can override this method for adjustments.
+	 * 
+	 * @return true by default, subclasses can change this behavior.
+	 */
+	protected boolean supportsHeapsize() {
+		return true;
+	}
+	
+	/**
 	 * Retrieves the folder which contains the emulator skin.
 	 * 
 	 * @param wtkHome the path to the Wireless Toolkit
@@ -167,54 +198,60 @@ public class WtkEmulator extends Emulator {
 		}
 		
 		// add the -Xprefs-parameter:
-		File preferences = setting.getPreferences();
-		boolean usingPreferencesFile = false;
-		if (preferences != null) {
-			if (preferences.exists()) {
-				argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
+		if (supportsPreferencesFile()) {
+			File preferences = setting.getPreferences();
+			boolean usingPreferencesFile = false;
+			if (preferences != null) {
+				if (preferences.exists()) {
+					argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
+					usingPreferencesFile = true;
+				} else {
+					System.err.println("Warning: unable to use preferences-file: the file [" + preferences.getAbsolutePath() + "] does not exist.");
+				}
+			}
+			if (getParameter("-Xprefs", parameters) != null) {
 				usingPreferencesFile = true;
-			} else {
-				System.err.println("Warning: unable to use preferences-file: the file [" + preferences.getAbsolutePath() + "] does not exist.");
+			}
+			if (!usingPreferencesFile && setting.writePreferencesFile()) {
+				// now write a preferences-file:
+				String[] lines = new String[ 8 ];
+				lines[0] = "kvem.memory.monitor.enable:" + setting.enableMemoryMonitor();
+				lines[1] = "kvem.profiler.enable:" + setting.enableProfiler();
+				boolean enableNetworkMonitor = setting.enableNetworkMonitor();
+				lines[2] = "kvem.netmon.comm.enable:" + enableNetworkMonitor;
+				lines[3] = "kvem.netmon.datagram.enable:" + enableNetworkMonitor;
+				lines[4] = "kvem.netmon.http.enable:" + enableNetworkMonitor;
+				lines[5] = "kvem.netmon.https.enable:" + enableNetworkMonitor;
+				lines[6] = "kvem.netmon.socket.enable:" + enableNetworkMonitor;
+				lines[7] = "kvem.netmon.ssl.enable:" + enableNetworkMonitor;
+				preferences = new File( device.getBaseDir() + File.separatorChar + "emulator.properties" );	
+				try {
+					FileUtil.writeTextFile(preferences, lines);
+					argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("Unable to set preferences-file for emulator: " + e.toString() );
+				}
+			} else if (setting.writePreferencesFile()) {
+				System.out.println("Warning: unable to enable any profiler/monitor, since a preferences-file is used.");
+			}
+		} // the device supports the -Xprefs parameter.
+		
+		if (supportsSecurityDomain()) {
+			// add the -Xdomain-parameter:
+			String securityDomain = setting.getSecurityDomain();
+			if (securityDomain != null) {
+				argumentsList.add("-Xdomain:" + securityDomain );
 			}
 		}
-		if (getParameter("-Xprefs", parameters) != null) {
-			usingPreferencesFile = true;
-		}
-		if (!usingPreferencesFile && setting.writePreferencesFile()) {
-			// now write a preferences-file:
-			String[] lines = new String[ 8 ];
-			lines[0] = "kvem.memory.monitor.enable:" + setting.enableMemoryMonitor();
-			lines[1] = "kvem.profiler.enable:" + setting.enableProfiler();
-			boolean enableNetworkMonitor = setting.enableNetworkMonitor();
-			lines[2] = "kvem.netmon.comm.enable:" + enableNetworkMonitor;
-			lines[3] = "kvem.netmon.datagram.enable:" + enableNetworkMonitor;
-			lines[4] = "kvem.netmon.http.enable:" + enableNetworkMonitor;
-			lines[5] = "kvem.netmon.https.enable:" + enableNetworkMonitor;
-			lines[6] = "kvem.netmon.socket.enable:" + enableNetworkMonitor;
-			lines[7] = "kvem.netmon.ssl.enable:" + enableNetworkMonitor;
-			preferences = new File( device.getBaseDir() + File.separatorChar + "emulator.properties" );	
-			try {
-				FileUtil.writeTextFile(preferences, lines);
-				argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Unable to set preferences-file for emulator: " + e.toString() );
+		
+		if (supportsHeapsize()) {
+			// add the -Xheapsize-parameter:
+			String heapSizeStr = device.getCapability("polish.HeapSize");
+			if ((heapSizeStr != null) && !("dynamic".equals(heapSizeStr))) {
+				long bytes = ConvertUtil.convertToBytes( heapSizeStr );
+				argumentsList.add("-Xheapsize:" + bytes );
 			}
-		} else if (setting.writePreferencesFile()) {
-			System.out.println("Warning: unable to enable any profiler/monitor, since a preferences-file is used.");
-		}
-		
-		// add the -Xdomain-parameter:
-		String securityDomain = setting.getSecurityDomain();
-		if (securityDomain != null) {
-			argumentsList.add("-Xdomain:" + securityDomain );
-		}
-		
-		// add the -Xheapsize-parameter:
-		String heapSizeStr = device.getCapability("polish.HeapSize");
-		if ((heapSizeStr != null) && !("dynamic".equals(heapSizeStr))) {
-			long bytes = ConvertUtil.convertToBytes( heapSizeStr );
-			argumentsList.add("-Xheapsize:" + bytes );
 		}
 		
 		//now add other user-defined parameters:

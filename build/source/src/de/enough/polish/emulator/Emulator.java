@@ -121,7 +121,6 @@ public abstract class Emulator extends Thread {
 		this.preprocessedSourcePath = device.getSourceDir();
 		this.sourceDirs = sourceDirs;
 	}
-	
 
 	
 	/* (non-Javadoc)
@@ -131,6 +130,7 @@ public abstract class Emulator extends Thread {
 		try {
 			Process process = startEmulator();
 			if (this.emulatorSetting.doWait()) {
+				long startTime = System.currentTimeMillis();
 				String info = this.emulatedDevice.getIdentifier() + ": ";
 				LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info );
 				errorLog.start();
@@ -138,7 +138,8 @@ public abstract class Emulator extends Thread {
 				outputLog.start();
 				int result = process.waitFor();
 				System.out.println("Emulator finished with result code [" + result + "]." );
-				if (result != 0) {
+				long usedTime = System.currentTimeMillis() - startTime;
+				if ((result != 0) || (usedTime < 2000) ) {
 					String[] arguments = getArguments();
 					System.out.println("Emulator-arguments were:");
 					for (int i = 0; i < arguments.length; i++) {
