@@ -12,11 +12,9 @@ With the &lt;build&gt;-section the actual build process is controlled:
 <pre>
 &lt;build
      symbols=&quot;ExampleSymbol, AnotherExample&quot;
-     imageLoadStrategy=&quot;background&quot;
+     imageLoadStrategy=&quot;foreground&quot;
      fullscreen=&quot;menu&quot;
      usePolishGui=&quot;true&quot;
-     preverify=&quot;/home/enough/dev/WTK2.1/bin/preverify&quot;
-     resDir=&quot;resources2&quot;
      &gt;
      &lt;!-- midlets definition --&gt;
      &lt;midlet class=&quot;de.enough.polish.example.MenuMidlet&quot; name=&quot;Example&quot; /&gt;
@@ -43,42 +41,64 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>build-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr><td>preverify</td>
- 	 <td>Yes</td>
-	 <td>The path to the preverify executable of the Wireless Toolkit. The program is usually within the &quot;bin&quot; folder of the Wireless Toolkit.</td>
-	</tr>
 	<tr><td>sourceDir</td>
  	 <td>No</td>
 	 <td>The path to the source directory. The default path is either &quot;source/src&quot;, &quot;source&quot; or &quot;src&quot;. You can define several paths by separating them with a colon ':' or a semicolon ';': 
 [path1]:[path2]</td>
 	</tr>
-	<tr><td>polishDir</td>
+	<tr><td>binaryLibraries or binaryLibrary</td>
  	 <td>No</td>
-	 <td>The directory containing the sources of J2ME Polish. Defaults to the enough-j2mepolish-build.jar.</td>
-	</tr>
-	<tr><td>binaryLibraries</td>
- 	 <td>No</td>
-	 <td>Either the name of the directory which contains binary-only libraries or the name(s) of the libraries. Several libraries can be separated by colons ':' or by semicolons ';'. When no path is defined, the libraries will be searched within the &quot;import&quot; folder by default.</td>
+	 <td>Either the name of the directory which contains binary-only libraries or the name(s) of the libraries. Several libraries can be separated by colons ':' or by semicolons ';'. When no path is defined, the libraries will be searched within the &quot;import&quot; folder by default.
+	 This mechanism can only be used for third party APIs, which are not available on the phone itself. Device-APIs are automatically included, after they have been defined in the <code>${j2mepolish.home}/apis.xml</code> file. Please compare the <a href="how-tos.html#howto-api">how-to about including APIs</a>.
+	 </td>
 	</tr>
 	<tr><td>symbols</td>
  	 <td>No</td>
 	 <td>Project specific symbols, e.g. &quot;showSplash&quot; which can be checked with &quot;//#ifdef showSplash&quot; in the source code. Several symbols need to be separated by comma.</td>
 	</tr>
-	<tr><td>javacTarget</td>
- 	 <td>No</td>
-	 <td>The target for the java-compiler. By default the &quot;1.2&quot; target is used, unless a WTK 1.x or Mac OS X is used, in which case the target &quot;1.1&quot; is used.</td>
-	</tr>
 	<tr><td>usePolishGui</td>
  	 <td>No</td>
-	 <td>Defines whether the J2ME Polish GUI should be used at all. Possible values are &quot;true&quot;/&quot;yes&quot;, &quot;false&quot;/&quot;no&quot; or &quot;always&quot;. When &quot;true&quot; is given the GUI will be used only for devices which have the necessary capabilities (e.g. a color depth of at least 8 bits). When &quot;always&quot; is given, the GUI will be used for all devices. Default value is &quot;true&quot;.</td>
+	 <td>Defines whether the J2ME Polish GUI should be used at all. Possible values are &quot;true&quot;/&quot;yes&quot;, &quot;false&quot;/&quot;no&quot; or &quot;always&quot;. When &quot;true&quot; is given the GUI will be used only for devices which have the recommended capabilities (e.g. a color depth of at least 8 bits). When &quot;always&quot; is given, the GUI will be used for all devices. Default value is &quot;true&quot;.</td>
 	</tr>
 	<tr><td>fullscreen</td>
  	 <td>No</td>
-	 <td>Defines whether the complete screen should be used for devices which support a full screen mode. Currently these include only devices which support the Nokia-UI API. Possible values are either &quot;no&quot;, &quot;yes&quot; and &quot;menu&quot;. With &quot;yes&quot; the complete screen is used but no commands are supported. With &quot;menu&quot; commands can be used as well. Default setting is &quot;no&quot;.</td>
+	 <td>Defines whether the complete screen should be used for devices which support 
+	 a full screen mode. Currently these include all MIDP/2.0 devices as well as devices, 
+	 which support the Nokia-UI API. Possible values are either &quot;no&quot;, &quot;yes&quot; and &quot;menu&quot;. With &quot;yes&quot; the complete screen is used but no commands are supported. With &quot;menu&quot; commands can be used as well. Default setting is &quot;no&quot;.
+	 <br />
+	 Alternatively the preprocessing-variable &quot;polish.FullScreen&quot; can be set. This allows a finer grained
+	 control, since variables can have conditions, e.g.:
+<pre>
+&lt;build
+	usePolishGui=&quot;true&quot;
+	fullscreen=&quot;menu&quot;
+&gt;
+  &lt;variables&gt;
+     &lt;variable 
+	name=&quot;polish.FullScreen&quot; 
+	value=&quot;yes&quot;
+	if=&quot;polish.vendor == Siemens&quot;
+     /&gt;
+  &lt;variables&gt;
+    [...]
+</pre>
+	 </td>
 	</tr>
 	<tr><td>imageLoadStrategy</td>
  	 <td>No</td>
 	 <td>The strategy for loading pictures. Possible values are either &quot;foreground&quot; or &quot;background&quot;. The &quot;foreground&quot; strategy loads images directly when they are requested. The &quot;background&quot; strategy loads the images in a background-thread. With the background strategy the felt performance of an application can be increased, but not all pictures might be shown right away when the user enters a screen. The definition of the imageLoadStrategy makes only sense when the J2ME&nbsp;Polish GUI is used (usePolishGui=&quot;true&quot;). Default strategy is &quot;foreground&quot;. When the &quot;foreground&quot; strategy is used, the preprocessing symbol &quot;polish.images.directLoad&quot; will be defined. When using the &quot;background&quot; strategy, the symbol &quot;polish.images.backgroundLoad&quot; is defined.</td>
+	</tr>
+	<tr><td>javacTarget</td>
+ 	 <td>No</td>
+	 <td>The target for the java-compiler. By default the &quot;1.2&quot; target is used, unless a WTK 1.x or Mac OS X is used, in which case the target &quot;1.1&quot; is used.</td>
+	</tr>
+	<tr><td>preverify</td>
+ 	 <td>No</td>
+	 <td>The path to the preverify executable of the Wireless Toolkit. The program is usually within the &quot;bin&quot; folder of the Wireless Toolkit. This can be used for defining a preverfying program different from the standard WTK program.</td>
+	</tr>
+	<tr><td>polishDir</td>
+ 	 <td>No</td>
+	 <td>The directory containing the sources of J2ME Polish. This is used by developers of the J2ME Polish GUI itself.</td>
 	</tr>
 	<tr><td>devices</td>
  	 <td>No</td>
@@ -130,6 +150,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>obfuscator</td>
  	 <td>No</td>
 	 <td>The name of the obfuscator. Defaults to <a href="http://proguard.sourceforge.net" target="_blank">&quot;ProGuard&quot;</a>. 
+	 Possible values are &quot;ProGuard&quot;, &quot;KlassMaster&quot;, &quot;YGuard&quot; or &quot;RetroGuard&quot;.
 	 Alternatively the nested element &quot;obfuscator&quot; can be used (see below).</td>
 	</tr>
 	</table>
@@ -291,7 +312,10 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>name</td>
  	 <td>No</td>
 	 <td>The name of the obfuscator which should be used. Defaults to <a href="http://proguard.sourceforge.net" target="_blank">&quot;ProGuard&quot;</a>. 
-	 Possible values are at the moment either "ProGuard" or <a href="http://www.retrologic.com" target="_blank">"RetroGuard"</a>.
+	 Possible values are at the moment either &quot;ProGuard&quot;, 
+	 <a href="http://www.zelix.com/" target="_blank">&quot;KlassMaster&quot;</a>
+	 <a href="http://www.yworks.de" target="_blank">&quot;YGuard&quot;</a>
+	  or <a href="http://www.retrologic.com" target="_blank">&quot;RetroGuard&quot;</a>.
 	 </td>
 	</tr>
 	<tr><td>class</td>
@@ -338,6 +362,110 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<p>
 	Several obfuscators can be combined just by specifying several &lt;obfuscator&gt; elements. When the &lt;keep&gt; subelement is used, it only needs to be specified on of the &lt;obfuscator&gt; elements. J2ME Polish will then use the obfuscated output of one obfuscator as input for the following obfuscator.
 	</p>
+	<h4 id="obfuscator-specific">Specific Obfuscator Settings</h4>
+	<h5 id="obfuscator-proguard">ProGuard</h5>
+	<p>
+ProGuard is an excellent obfuscator, shrinker and optimizer by Eric Lafortune. It is freely availabe under the GNU General Public License and can be downloaded from 
+<a href="http://proguard.sourceforge.net" target="_blank">http://proguard.sourceforge.net</a>. 
+</p><p>
+If you want to use ProGuard as an obfuscator, please make sure that the proguard.jar-file is listed in the classpath of the J2ME Polish task-definition (build.xml):
+<pre>
+&lt;taskdef name=&quot;j2mepolish&quot; 
+	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
+	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
+		${polish.home}/import/jdom.jar:
+		<b>${polish.home}/import/proguard.jar</b>&quot;/&gt;
+</pre>
+</p><p>
+You can use ProGuard by setting the name-attribute of the &lt;obfuscator&gt;-element to &quot;ProGuard&quot;.
+</p><p>
+ProGuard 3.x offers an additional optimization of the bytecode, which is enabled by default. The optimization can be disabled by setting the &quot;optimize&quot;-parameter to &quot;false&quot;:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
+	&lt;parameter name=&quot;optimize&quot; value=&quot;false&quot; /&gt;
+&lt;/obfuscator&gt;
+</pre></p><p>
+A text-file which lists all renaming operations is written to build/[vendor]/[device]/[locale]/obfuscation-map.txt. This file is useful if you get exceptions in the obfuscated application.
+</p>
+<h5 id="obfuscator-yguard">yGuard</h5>
+<p>
+The yGuard obfuscator by the yWorks GmbH is another interesting obfuscator and code-shrinker. J2ME Polish includes the library-classes, which are licensed under the GNU Lesser General Public License. The full obfuscator is freely available from 
+<a href="http://www.yworks.de" target="_blank">http://www.yworks.de</a>. 
+</p><p>
+If you want to use yGuard as an obfuscator, please make sure that either the yguard-lib.jar or the original yguard.jar is listed in the classpath of the J2ME Polish task-definition (build.xml):
+<pre>
+&lt;taskdef name=&quot;j2mepolish&quot; 
+	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
+	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
+		${polish.home}/import/jdom.jar:
+		<b>${polish.home}/import/yguard-lib.jar</b>&quot;/&gt;
+</pre></p><p>
+The yGuard obfuscator can be used by setting the name-attribute of the &lt;obfuscator&gt;-element to &quot;YGuard&quot;:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;YGuard&quot; /&gt;
+</pre></p>
+<h5 id="obfuscator-retroguard">RetroGuard</h5>
+<p>
+RetroGuard is the basis of both yGuard and ProGuard and was developed by Retrologic Systems/Mark Welsh. It is licensed under the GNU Lesser General Public License and is included in J2ME Polish by default. It can be downloaded from 
+<a href="http://www.retrologic.com" target="_blank">http://www.retrologic.com</a>. 
+</p><p>
+You can use RetroGuard just by setting the &quot;name&quot;-attribute to &quot;RetroGuard&quot;:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;RetroGuard&quot; /&gt;
+</pre>
+<p>
+<h5 id="obfuscator-klassmaster">Zelix KlassMaster</h5>
+<p>
+KlassMaster is a commercial obfuscator available from Zelix Pty Ltd. A free evaluation 
+version can be requested at 
+<a href="http://www.zelix.com" target="_blank">http://www.zelix.com</a>. 
+</p><p>
+The KlassMaster integration is based on the WTK-mechanism for calling obfuscators, therefore both the ZKM.jar as well as the kenv.zip needs to be on the classpath:
+<pre>
+&lt;taskdef name=&quot;j2mepolish&quot; 
+	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
+	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
+		${polish.home}/import/jdom.jar:
+		<b>${polish.home}/import/ZKM.jar:${wtk.home}/wtklib/kenv.zip</b>&quot;/&gt;
+</pre></p><p>
+The KlassMaster-integration allows several parameters to be set:
+</p>
+<ul>
+  <li><code>enableFlowObfuscation</code>: the flow-obfuscation increases the security of the application, but the application-size as well. It is deactivated by default, therefore. It can be activated by setting the enableFlowObfuscation-parameter to &quot;true&quot;.</li>
+  <li><code>ObfuscateFlowLevel</code>: The obfuscation-flow level can also be set directly, e.g. &quot;none&quot; or &quot;aggressive&quot;. This parameter takes precedent above the enableFlowObfuscation-parameter.</li>
+  <li><code>ScriptFile</code>: The file containing the full script can also be set. In that case please note that the source-jar-file is always the &quot;build/source.jar&quot; and the target-file is the &quot;build/dest.jar&quot;.</li>
+</ul>
+<p>
+The following example shows a possible invocation of KlassMaster:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;KlassMaster&quot; &gt;
+	&lt;parameter name=&quot;ObfuscateFlowLevel&quot; value=&quot;none&quot; /&gt;
+&lt;/obfuscator&gt;
+</pre>
+</p>
+<h5 id="obfuscator-jode">JODE</h5>
+<p>
+JODE is quite a powerful optimizer, shrinker and obfuscator by Jochen Hoenicke. It is licensed under the GNU General Public License and is available at http://jode.sourceforge.net free of charge.
+</p><p>
+If you want to use JODE, please make sure that the jode-jar-file is on the classpath:
+<pre>
+&lt;taskdef name=&quot;j2mepolish&quot; 
+	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
+	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
+		${polish.home}/import/jdom.jar:
+		<b>${polish.home}/import/Jode-1.1.2-pre1.jar</b>&quot;/&gt;
+</pre></p><p>
+JODE supports the &quot;ScriptFile&quot;-parameter which can be used to specify the obfuscator-script. Please note that the source-jar-file is always the &quot;build/source.jar&quot; and the target-file is the &quot;build/dest.jar&quot;:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;Jode&quot; &gt;
+	&lt;parameter name=&quot;ScriptFile&quot; value=&quot;obfuscate.jos&quot; /&gt;
+&lt;/obfuscator&gt;
+</pre></p><p>
+When no script-file-parameter is present, J2ME Polish will create a default script. 
+Depending on the application and environment, several problems ranging from 
+preverification/linking-errors to NullPointerExceptions in the JODE-API can occur.
+Maybe someone with more experience with JODE can provide help here - please get in touch with j2mepolish@enough.de.
+</p>
 	
 	<h3 id="variables">&lt;variables&gt;</h3>
 	<p>
@@ -726,5 +854,50 @@ The most important attributes of the &lt;java&gt;-element are:
  <a href="http://ant.apache.org/manual/CoreTasks/java.html" target="_blank">http://ant.apache.org/manual/CoreTasks/java.html</a>
  for more information about the &lt;java&gt;-element.
 </p>
+
+<h3 id="packager">&lt;packager&gt;</h3>
+<p>
+Usually the efficient internal J2ME Polish packager is used for creating the final application bundles. For using a different packaging-program, the &lt;packager&gt;-element can be used:
+</p>
+<p>
+<pre>
+&lt;packager
+	executable=&quot;jar&quot;
+	arguments=&quot;cvfM;;${polish.jarPath};;-C;;${polish.packageDir};;.&quot;
+/&gt;
+</pre>
+</p>
+<p>
+A possible alternative might be the Open Source tool &quot;7-Zip&quot;, which can create smaller files compared to the standard ZIP mechanism. This might result in problems on the actual device, though, so use with care. The 7-Zip tool can be obtained free of charge at 
+<a href="http://www.7-zip.org" target="_blank">http://www.7-zip.org</a>.
+</p>
+<p>
+The &lt;packager&gt;-element supports following attributes:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>packager-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>executable</td>
+ 	 <td>Yes, unless class is used</td>
+	 <td>The name of the program, e.g. &quot;jar&quot; or &quot;7za.exe&quot;.</td>
+	</tr>
+	<tr>
+	 <td>arguments</td>
+ 	 <td>Yes, unless class is used</td>
+	 <td>The arguments for the packager. Several arguments can be separated by using double-semicolons (;;). Any Ant-properties as well as J2ME Polish variables can be used. Often needed variables are:
+	 <ul>
+	 	<li><code>${polish.jarPath}</code>: the full path to the jar-file which should be created.</li>
+		<li><code>${polish.packageDir}</code>: the directory which contains the classes and the resources which should be &quot;jared&quot;.</li>
+	 </ul>
+	 </td>
+	</tr>
+	<tr>
+	 <td>class</td>
+ 	 <td>No</td>
+	 <td>The name of the class which extends the 
+	 <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/jar/Packager.html" target="_blank">de.enough.polish.jar.Packager</a>-class. This mechanism can be used for extending the packaging capabilities of J2ME Polish.
+In that case further parameters can be set using nested &lt;parameter&gt;-elements.</td>
+	</tr>
+</table>
 	
 <%include end.txt %>

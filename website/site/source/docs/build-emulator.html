@@ -61,6 +61,10 @@ The &lt;emulator&gt;-element is responsible for launching any emulators after th
  	 <td>No</td>
 	 <td>The file which contains the emulator-preferences. When such a file is used, the profiler and monitor settings are ignored. Please consult the documentation of the Wireless Toolkit for detailed information about the preferences file.</td>
 	</tr>
+	<tr><td>showDecompiledStackTrace</td>
+ 	 <td>No</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Determines whether a decompiled stack-trace should be shown, even when the source-code position of an exception could be be located. The automatic resolving of stack traces is discussed <a href="#emulator-stacktrace">below</a>.</td>
+	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
 	 <td>The Ant-property which needs to be &quot;true&quot; when the &lt;emulator&gt;-element should be executed.</td>
@@ -144,5 +148,32 @@ You should try to minimize the dependency on a specific system setup by using pr
 </p><p>
 Please inform the J2ME Polish community about any emulators you have integrated, so that other users can also benefit from your settings. Just send an email to <a href="mailto:j2mepolish@enough.de?subject=Emulator">j2mepolish@enough.de</a>. Thanks!
 </p>
-	
+
+<h2 id="emulator-stacktrace">Automatic Resolving of Stack Traces and Exceptions</h2>
+<p>
+J2ME Polish can resolve stack traces like <code>&quot;Exception at com.company.MyClass.doSomething(+200)&quot;</code> automatically, when the free &quot;jad&quot; decompiler is installed. This decompiler can be downloaded at <a href="http://www.kpdus.com/jad.html" target="_blank">http://www.kpdus.com/jad.html</a>. Please adjust the PATH environment variable, so that it includes the installation directory of jad or install the jad-excecutable (jad.exe or jad) to the &quot;${polish.home}/bin&quot; folder.
+</p><p>
+When jad is installed correctly, J2ME Polish will resolve stack traces automatically. Instead of seeing only the rather obscure stack trace <code>package.class.method(+instructionoffset)</code>,  an additional message giving the source-location as well as the faulty source code is printed out, e.g. <code>&quot;src/com/company/MyClass.java:97: int result = max / 0;&quot;</code>. If you execute J2ME Polish from within an IDE, you can click on such a message and then edit the faulty code directly.
+</p><p>
+In cases when J2ME Polish is not able to locate the position in the source code, an extract of the decompiled class-code will be shown instead. This extract will help you to identify the source of the error. The following fragment gives an example of a decompiled class code:
+<pre>
+            world.animate(System.currentTimeMillis() - lastCycleTime);
+    //   87  169:aload_0         
+    //   88  170:getfield        #13  &lt;Field World world&gt;
+    //   89  173:invokestatic    #17  &lt;Method long System.currentTimeMillis()&gt;
+    //   90  176:lload           4
+    //   91  178:lsub            
+    //   92  179:invokevirtual   #23  &lt;Method void World.animate(long)&gt;
+</pre>
+</p><p>
+In the first line the actual directive is given and in the following lines the binary equivalent compiled java code is listed. The second number from the left is the number which is given in the original error message (e.g. <code>package.class.method(+179)</code>).
+</p><p>
+When the &quot;showDecompiledStackTrace&quot;-attribute of the &lt;emulator&gt;-element is set to &quot;true&quot; or &quot;yes&quot;, a decompiled code fragment will be given out for each stack-trace, even when the source-code position could be located.
+</p><p>
+Please note that the source-code position can only be located, when the debugging-mode is activated. This is done by setting the &quot;enable&quot;-attribute of the <a href="build-build.html#debug">&lt;debug&gt;-element</a> to &quot;true&quot;. In the default-setup this is done when the &quot;test&quot;-target of the build.xml is called first: 
+<pre>
+&quot;ant test j2mepolish&quot;.
+</pre>
+</p>
+
 <%include end.txt %>

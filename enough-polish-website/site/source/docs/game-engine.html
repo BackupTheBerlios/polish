@@ -31,6 +31,8 @@ The J2ME Polish game-engine needs about 6 kb extra space in the resulting JAR pa
 For technical reasons the collision detection works only with collision rectangles, which should be set tightly for Sprites therefore. A pixel-level collision detection is not supported.
 </p><p>
 When a class extends the GameCanvas class, it should call the super-implementations, when one of the methods keyPressed(int), keyReleased(int) or keyRepeated(int) is overridden.
+When the "menu" fullscreen mode is used and the J2ME Polish GUI is used, subclasses of
+GameCanvas cannot override the paint()-method.
 </p><p>
 The transformation of Sprites is currently only supported for Nokia devices, otherwise the transformation-setting will be ignored.
 </p>
@@ -47,7 +49,8 @@ determine whether it should use a fullscreen-canvas. This behavior can be overri
 with defining the &quot;polish.GameCanvas.useFullScreen&quot; variable. 
 Allowed value are &quot;yes&quot;, &quot;no&quot; and &quot;menu&quot;. Please note that the &quot;menu&quot; 
 mode (which should be used when commands are added to the GameCanvas) 
-is only supported when the J2ME Polish GUI is used. 
+is only supported when the J2ME Polish GUI is used. Another limitation of the &quot;menu&quot; mode
+is that the paint()-method of the GameCanvas cannot be overridden.
 </p>
 <ul>
  <li><b>polish.GameCanvas.useFullScreen</b>: Defines whether the fullscreen mode is used, overrides the &quot;fullscreen&quot;-attribute of the &lt;build&gt;-element. Possible values are &quot;yes&quot;, &quot;no&quot; or &quot;menu&quot;.
@@ -57,6 +60,24 @@ is only supported when the J2ME Polish GUI is used.
 The following example enables the fullscreen mode for the GameCanvas:
 <pre>
 &lt;variable name=&quot;polish.GameCanvas.useFullScreen&quot; value=&quot;yes&quot; /&gt;
+</pre>
+</p>
+<p>
+This example shows how to override the paint()-method, even though the J2ME Polish GUI
+and the &quot;menu&quot; fullscreen mode is used:
+<pre>
+public class MyGameCanvas extends GameCanvas {
+  ...
+	//#if polish.usePolishGui &amp;&amp; polish.classes.fullscreen:defined
+		//# public void paintScreen( Graphics g)
+	//#else
+		public void paint( Graphics g)
+	//#endif
+	{
+	   // implement the paint method
+	   ...
+	}
+}
 </pre>
 </p>
 <h3 id="backbuffer">Backbuffer Optimization for the TiledLayer</h3>
@@ -146,7 +167,7 @@ In the following &lt;deviceRequirements&gt;-section the target-devices are selec
   &lt;requirement name=&quot;Identifier&quot; value=&quot;Nokia/Series60Midp2&quot; /&gt;
 &lt;/deviceRequirements&gt;
 </pre>
-</p>
+</p><p>
 The &lt;build&gt;-section controls the actual build process. For keeping this example easy, we choose not to use the GUI of J2ME Polish and set the &quot;usePolishGui&quot; attribute to &quot;false&quot;. We also need to adjust the &lt;midlet&gt;-subelement and enter the full name of our game-class:
 <pre>
 &lt;build
@@ -158,7 +179,7 @@ The &lt;build&gt;-section controls the actual build process. For keeping this ex
   &lt;midlet class=&quot;de.enough.polish.example.MenuMidlet&quot; name=&quot;Example&quot; /&gt;
 &lt;/build&gt;
 </pre>
-<p>
+</p><p>
 The &lt;build&gt;-section has many subelements and can automate many tasks from the inclusion of the debugging framework to the signing of the application. These settings are outside of the scope or this article, though. 
 </p>
 

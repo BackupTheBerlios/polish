@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
 <author/>
 <email/>
@@ -155,5 +155,6 @@
 <item modified_time="1095285267" url="docs/resources-overview.html" />
 <item modified_time="1096292319" url="downloads/j2mepolish-1.2.1.html" />
 <item modified_time="1097020512" url="downloads/j2mepolish-1.2.2.html" />
+<item url="downloads/j2mepolish-1.2.3.html" />
 </project>
 </webproject>
