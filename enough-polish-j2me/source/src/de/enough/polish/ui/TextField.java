@@ -1336,7 +1336,6 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
-		System.out.println("initialising content");
 		super.initContent(firstLineWidth, lineWidth);
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();

@@ -677,12 +677,10 @@ implements Choice
 			newSelected.select( true );
 			this.selectedIndex = elementNum;
 			if ( this.isInitialised ) {
-				System.out.println("focusing index " + elementNum );
 				focus( elementNum, newSelected );
 			} else {
 				this.autoFocusEnabled = true;
 				this.autoFocusIndex = elementNum;
-				System.out.println("Activating autofocus of " + elementNum );
 			}
 			//#ifdef polish.usePopupItem
 				if (this.isPopup) {
