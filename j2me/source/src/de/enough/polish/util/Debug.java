@@ -31,7 +31,9 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.StringItem;
-
+//#if polish.showLogOnError && polish.usePolishGui
+	import de.enough.polish.ui.StyleSheet;
+//#endif
 
 /**
  * <p>Is used for debugging of information.</p>
@@ -174,7 +176,7 @@ implements CommandListener
 		}
 		//#if polish.showLogOnError && polish.usePolishGui 
 			if (exception != null) {
-				showLog( de.enough.polish.ui.StyleSheet.display );
+				showLog( StyleSheet.display );
 			}
 		//#endif
 	}

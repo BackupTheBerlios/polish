@@ -26,7 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.Debug;
 
 /**
  * <p>Is used to animate Backgrounds, Borders and Items.</p>
@@ -98,7 +97,7 @@ public class AnimationThread extends Thread {
 				// ignore
 			} catch (Exception e) {
 				//#debug error
-				Debug.debug("unable to animate screen", e );
+				System.out.println("unable to animate screen" + e );
 			}
 		}
 	}

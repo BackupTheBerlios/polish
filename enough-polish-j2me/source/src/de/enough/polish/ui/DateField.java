@@ -191,17 +191,15 @@ implements CommandListener
 	
 	/**
 	 * Returns date value of this field. Returned value is
-	 * <code>null</code> if field
-	 * value is
-	 * not initialized. The date object is constructed according the rules of
+	 * <code>null</code> if field  value is not initialized. 
+	 * The date object is constructed according the rules of
 	 * locale specific calendaring system and defined time zone.
 	 * 
 	 * In <code>TIME</code> mode field the date components are set to
 	 * the &quot;zero
 	 * epoch&quot; value of January 1, 1970. If a date object that presents time
 	 * beyond one day from this &quot;zero epoch&quot; then this field
-	 * is in &quot;not
-	 * initialized&quot; state and this method returns <code>null</code>.
+	 * is in &quot;not initialized&quot; state and this method returns <code>null</code>.
 	 * 
 	 * In <code>DATE</code> mode field the time component of the calendar is set
 	 * to zero when

@@ -831,8 +831,12 @@ implements CommandListener
 			
 		//#ifndef tmp.suppressCommands
 			// add default text field item-commands:
-			this.addCommand(DELETE_CMD);
-			this.addCommand(CLEAR_CMD);
+			//#if polish.TextField.suppressDeleteCommand != true
+				this.addCommand(DELETE_CMD);
+			//#endif
+			//#if polish.TextField.suppressClearCommand != true
+				this.addCommand(CLEAR_CMD);
+			//#endif
 			this.itemCommandListener = this;
 		//#endif
 		//#ifdef tmp.directInput
@@ -1171,6 +1175,10 @@ implements CommandListener
 		//#ifdef tmp.directInput
 			if ((constraints & NUMERIC) == NUMERIC) {
 				this.isNumeric = true;
+				this.inputMode = MODE_NUMBERS;
+			}
+			if ((constraints & DECIMAL) == DECIMAL) {
+				//this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
 			}
 			if ((constraints & EMAILADDR) == EMAILADDR) {
@@ -1844,7 +1852,7 @@ implements CommandListener
 					}
 					int currentLength = (this.text == null ? 0 : this.text.length());
 					if (this.inputMode == MODE_NUMBERS) {
-						if (currentLength != this.maxSize && 
+						if (currentLength < this.maxSize && 
 								(keyCode >= Canvas.KEY_NUM0 && 
 								keyCode <= Canvas.KEY_NUM9) ) 
 						{
@@ -1859,7 +1867,7 @@ implements CommandListener
 						}
 						
 					}
-					if (currentLength != this.maxSize && 
+					if (currentLength < this.maxSize && 
 							((keyCode >= Canvas.KEY_NUM0 && 
 							keyCode <= Canvas.KEY_NUM9)
 							|| (keyCode == Canvas.KEY_POUND ) 
@@ -2106,7 +2114,7 @@ implements CommandListener
 				//#else
 					currentLength = (this.text == null ? 0 : this.text.length());
 				//#endif
-				if (currentLength != this.maxSize && 
+				if (currentLength < this.maxSize && 
 						keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
 				{	
