@@ -43,7 +43,7 @@ public class JadAttributes {
 		this.list = new ArrayList();
 	}
 	
-	public void addAttribute( Attribute attribute ) {
+	public void addConfiguredAttribute( Attribute attribute ) {
 		if (attribute.getName() == null) {
 			throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [name]");
 		}

@@ -291,4 +291,25 @@ public class Style {
 	public String getStyleName() {
 		return this.styleName;
 	}
+
+	/**
+	 * Retrieves the names of all defined attributes of this style.
+	 * 
+	 * @return a String array with all names of defined attributes.
+	 *         One attribute-name can appear several times.
+	 */
+	public String[] getDefinedAttributes() {
+		ArrayList attributes = new ArrayList();
+		String[] groupNames = getGroupNames();
+		for (int i = 0; i < groupNames.length; i++) {
+			String groupName = groupNames[i];
+			HashMap group = getGroup(groupName);
+			String[] attributesNames = (String[]) group.keySet().toArray( new String[ group.size() ]);
+			for (int j = 0; j < attributesNames.length; j++) {
+				String attributeName = attributesNames[j];
+				attributes.add( groupName + "-" + attributeName );
+			}
+		}
+		return (String[]) attributes.toArray( new String[ attributes.size() ] );
+	}
 }

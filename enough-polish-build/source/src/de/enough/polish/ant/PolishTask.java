@@ -507,27 +507,8 @@ public class PolishTask extends ConditionalTask {
 			if (usePolishGui) {
 				cssStyleSheet = loadStyleSheet( device );
 				lastCssModification = cssStyleSheet.lastModified();
-				this.preprocessor.setSyleSheet( cssStyleSheet );
-				if (cssStyleSheet.containsDynamicStyles()) {
-					this.preprocessor.addSymbol("polish.useDynamicStyles");
-				} else {
-					this.preprocessor.removeSymbol("polish.useDynamicStyles");
-				}
-				if (cssStyleSheet.containsBeforeStyle()) {
-					this.preprocessor.addSymbol("polish.useBeforeStyle");
-				} else {
-					this.preprocessor.removeSymbol("polish.useBeforeStyle");
-				}
-				if (cssStyleSheet.containsAfterStyle()) {
-					this.preprocessor.addSymbol("polish.useAfterStyle");
-				} else {
-					this.preprocessor.removeSymbol("polish.useAfterStyle");
-				}
-			} else {
-				this.preprocessor.removeSymbol("polish.useDynamicStyles");
-				this.preprocessor.removeSymbol("polish.useBeforeStyle");
-				this.preprocessor.removeSymbol("polish.useAfterStyle");
 			}
+			this.preprocessor.setSyleSheet( cssStyleSheet );
 			StringList styleSheetCode = null;
 			boolean usesTicker = false;
 			// preprocess each source file:
@@ -884,7 +865,7 @@ public class PolishTask extends ConditionalTask {
 		File sourceFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separatorChar + "source.jar");
 		//jar classes dir:
-		long time = System.currentTimeMillis();
+		//long time = System.currentTimeMillis();
 		try {
 			JarUtil.jar( new File( device.getClassesDir()), sourceFile, false );
 		} catch (IOException e) {
@@ -894,8 +875,8 @@ public class PolishTask extends ConditionalTask {
 		File destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separatorChar + "dest.jar");
 		this.obfuscator.obfuscate(device, sourceFile, destFile, this.preserveClasses, bootPath );
+		//time = System.currentTimeMillis();
 		//unjar destFile to build/obfuscated:
-		time = System.currentTimeMillis();
 		try {
 			String targetDir = device.getBaseDir() + File.separatorChar + "obfuscated";
 			device.setClassesDir(targetDir);

@@ -590,4 +590,26 @@ public class StyleSheet {
 	public boolean containsBeforeStyle() {
 		return this.containsBeforeStyle;
 	}
+
+	/**
+	 * Retrieves for a preprocessing-symbol for each defined CSS-attribute.
+	 * When the attribute ticker-step is defined, the preprocessing-symbol
+	 * "polish.css.ticker-step" will be defined.
+	 * 
+	 * @return a map containing all defined symbols as keys with each
+	 *        having a Boolean.TRUE as value.
+	 */
+	public HashMap getCssPreprocessingSymbols() {
+		HashMap symbols = new HashMap();
+		Style[] styles = getAllStyles();
+		for (int i = 0; i < styles.length; i++) {
+			Style style = styles[i];
+			String[] attributes = style.getDefinedAttributes();
+			for (int j = 0; j < attributes.length; j++) {
+				String attribute = attributes[j];
+				symbols.put( "polish.css." + attribute, Boolean.TRUE );
+			}
+		}
+		return symbols;
+	}
 }

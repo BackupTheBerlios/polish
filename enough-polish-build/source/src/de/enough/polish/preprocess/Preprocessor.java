@@ -993,6 +993,30 @@ public class Preprocessor {
 	 */
 	public void setSyleSheet(StyleSheet styleSheet) {
 		this.styleSheet = styleSheet;
+		if (styleSheet == null) {
+			removeSymbol("polish.useDynamicStyles");
+			removeSymbol("polish.useBeforeStyle");
+			removeSymbol("polish.useAfterStyle");			
+		} else {
+			// the style sheet is not null:
+			if (styleSheet.containsDynamicStyles()) {
+				addSymbol("polish.useDynamicStyles");
+			} else {
+				removeSymbol("polish.useDynamicStyles");
+			}
+			if (styleSheet.containsBeforeStyle()) {
+				addSymbol("polish.useBeforeStyle");
+			} else {
+				removeSymbol("polish.useBeforeStyle");
+			}
+			if (styleSheet.containsAfterStyle()) {
+				addSymbol("polish.useAfterStyle");
+			} else {
+				removeSymbol("polish.useAfterStyle");
+			}
+			// now set the CSS-symbols:
+			this.symbols.putAll( styleSheet.getCssPreprocessingSymbols() );
+		}
 	}
 	
 	/**
