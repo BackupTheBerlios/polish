@@ -662,8 +662,11 @@ implements CommandListener
 		if (label != null) {
 			this.title = label;
 		} else {
-			//TODO rob i18n default input title
-			this.title = "Input";
+			//#ifdef polish.title.input:defined
+				//#= this.title = "${polish.title.input}";
+			//#else
+				this.title = "Input";
+			//#endif
 		}
 		if ((constraints & PASSWORD) == PASSWORD) {
 			this.isPassword = true;

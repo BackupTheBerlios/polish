@@ -641,7 +641,9 @@ public abstract class Screen
 	 * to ensure that super.keyPressed( int ) is called!
 	 */
 	protected void keyPressed(int keyCode) {
+		//#if polish.debug.error
 		try {
+		//#endif
 			int gameAction = getGameAction(keyCode);
 			//#if tmp.menuFullScreen
 				//#if polish.api.nokia-ui
@@ -699,10 +701,12 @@ public abstract class Screen
 					repaint();
 				//#endif
 			}
+		//#if polish.debug.error
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("keyPressed() threw an exception", e );
 		}
+		//#endif
 	}
 		
 	//#ifdef polish.useDynamicStyles	

@@ -1292,6 +1292,7 @@ public abstract class Item extends Object
 			if (this.useSingleRow) {
 				this.label.paint( x, y, leftBorder, rightBorder - this.itemWidth, g );
 				x += this.label.itemWidth;
+				leftBorder += this.label.itemWidth;
 			} else {
 				this.label.paint( x, y, leftBorder, rightBorder, g );
 				y += this.label.itemHeight;
@@ -1386,8 +1387,7 @@ public abstract class Item extends Object
 			if (contentSpace > this.contentWidth) {
 				contX += (contentSpace - this.contentWidth ) / 2;				
 			}
-		}
-		if ( doRightAlign ) {
+		} else if ( doRightAlign ) {
 			int contentSpace = rightBorder - this.marginRight - this.borderWidth 
 					- this.paddingRight - contX;
 			if (contentSpace > this.contentWidth) {

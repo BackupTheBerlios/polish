@@ -236,7 +236,10 @@ public class StringItem extends Item
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			int lineHeight = this.font.getHeight() + this.paddingVertical; 
-			int centerX = leftBorder + (rightBorder - leftBorder) / 2;
+			int centerX = 0;
+			if (this.isLayoutCenter) {
+				centerX = leftBorder + (rightBorder - leftBorder) / 2;
+			}
 			//System.out.println("StringItem-centerX=" + centerX );
 			for (int i = 0; i < this.textLines.length; i++) {
 				String line = this.textLines[i];
@@ -244,7 +247,11 @@ public class StringItem extends Item
 				if (this.isLayoutRight) {
 					g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 				} else if (this.isLayoutCenter) {
-					g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
+					//if (i == 0) {
+					//	g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
+					//} else {
+						g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
+					//}
 				} else {
 					// left layout
 					g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
