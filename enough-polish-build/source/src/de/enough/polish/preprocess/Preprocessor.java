@@ -1268,9 +1268,9 @@ public class Preprocessor {
 	private boolean convertSystemOut(StringList lines) {
 		String debugCall;
 		if (this.useDefaultPackage) {
-			debugCall = "de.enough.polish.util.Debug.debug(";
-		} else {
 			debugCall = "Debug.debug(";
+		} else {
+			debugCall = "de.enough.polish.util.Debug.debug(";
 		}
 		String line = lines.getCurrent();
 		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
@@ -1298,7 +1298,7 @@ public class Preprocessor {
 		int stackTraceStart = line.indexOf(".printStackTrace()"); 
 		if ( stackTraceStart != -1) {
 			String exceptionVar = line.substring(0, stackTraceStart).trim();
-			lines.setCurrent( "de.enough.polish.util.Debug.debug(" + exceptionVar + ");");
+			lines.setCurrent( debugCall + exceptionVar + ");");
 			return true;
 		}
 		// the current line contained neither a system.out.println nor a e.printStackTrace():
@@ -1314,9 +1314,9 @@ public class Preprocessor {
 	private void insertVerboseDebugInfo( StringList lines, String className ) {
 		String debugVerbose;
 		if (this.useDefaultPackage) {
-			debugVerbose = "de.enough.polish.util.Debug.debug(System.currentTimeMillis() + "; 
-		} else {
 			debugVerbose = "Debug.debug(System.currentTimeMillis() + "; 
+		} else {
+			debugVerbose = "de.enough.polish.util.Debug.debug(System.currentTimeMillis() + "; 
 		}
 		debugVerbose +=  "\" - " + className 
 			+ " line " + (lines.getCurrentIndex() + 1 - lines.getNumberOfInsertedLines()) 
