@@ -875,13 +875,9 @@ implements ImageConsumer
 		//#endif
 		if (this.maxValue != INDEFINITE) {
 			//#ifdef polish.css.gauge-show-value
-				Boolean showValueStr = style.getBooleanProperty("gauge-show-value");
-				if (showValueStr != null) {
-					if ("true".equals(showValueStr)) {
-						this.showValue = true;
-					} else {
-						this.showValue = false;					
-					}
+				Boolean showValueBool = style.getBooleanProperty("gauge-show-value");
+				if (showValueBool != null) {
+					this.showValue = showValueBool.booleanValue();
 				}
 			//#endif
 			if (style.font != null) {

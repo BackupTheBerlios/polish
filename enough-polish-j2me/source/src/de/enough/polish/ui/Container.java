@@ -84,7 +84,7 @@ public class Container extends Item {
 	private boolean enableScrolling;
 	private int yTop;
 	private int yBottom;
-	private int yOffset;
+	protected int yOffset;
 	private int focusedTopMargin;
 	
 	/**
@@ -216,21 +216,27 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item remove( int index ) {
-		this.isInitialised = false;
 		Item removedItem = (Item) this.itemsList.remove(index);
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
 			// focus the first possible item:
+			boolean focusSet = false;
 			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				if (item.appearanceMode != PLAIN) {
 					focus( i, item );
+					focusSet = true;
 					break;
 				}
 			}
+			if (!focusSet) {
+				this.focusFirstElement = true;
+			}
 		}
+		this.yOffset = 0;
 		if (this.isInitialised) {
+			this.isInitialised = false;
 			repaint();
 		}
 		return removedItem;
@@ -244,20 +250,27 @@ public class Container extends Item {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public boolean remove( Item item ) {
-		this.isInitialised = false;
-		if (this.isInitialised) {
-			repaint();
+		int index = this.itemsList.indexOf(item);
+		if (index != -1) {
+			remove( index );
+			return true;
+		} else {
+			return false;
 		}
-		return this.itemsList.remove( item ); 
 	}
 	
 	/**
 	 * Removes all items from this container.
 	 */
 	public void clear() {
-		this.isInitialised = false;
 		this.itemsList.clear();
+		this.items = null;
+		if (this.focusedIndex != -1) {
+			this.focusFirstElement = true;
+		}
 		if (this.isInitialised) {
+			this.yOffset = 0;
+			this.isInitialised = false;
 			repaint();
 		}
 	}

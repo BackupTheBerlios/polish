@@ -1285,8 +1285,12 @@ public abstract class Item extends Object
 		// initialise this item if necessary:
 		if (!this.isInitialised) {
 			init( rightBorder - x, rightBorder - leftBorder );
-		}		
-		
+		}
+		// set coordinates of this item:
+		this.xLeftPos = leftBorder;
+		this.yTopPos = y;
+		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
+		this.yBottomPos = y + this.itemHeight;
 		// paint label:
 		if (this.label != null) {
 			if (this.useSingleRow) {
@@ -1394,11 +1398,6 @@ public abstract class Item extends Object
 				contX += contentSpace - this.contentWidth;				
 			}
 		}
-		// set coordinates of this item:
-		this.xLeftPos = leftBorder;
-		this.yTopPos = y;
-		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
-		this.yBottomPos = y + this.itemHeight;
 		
 		// paint content:
 		this.contentX = contX;
@@ -1472,15 +1471,17 @@ public abstract class Item extends Object
 			// label and content fit on one row:
 			this.itemWidth += labelWidth;
 			this.useSingleRow = true;
-			if (this.useSingleRow && this.label != null) {
-				if ((this.label.layout & LAYOUT_NEWLINE_AFTER) != 0) {
+			if (this.label != null) {
+				if ( (this.label.layout & LAYOUT_NEWLINE_AFTER) != 0 ) {
 					this.useSingleRow = false;
+					cHeight += labelHeight;
 				}
 			}
 			if ( cHeight + noneContentHeight < labelHeight ) {
 				cHeight = labelHeight - noneContentHeight;
 			}
 		} else {
+			this.useSingleRow = false;
 			cHeight += labelHeight;
 		}
 		if ( this.isLayoutExpand ) {
@@ -1488,13 +1489,21 @@ public abstract class Item extends Object
 		} else if (this.itemWidth > lineWidth) {
 			this.itemWidth = lineWidth;
 		}
-		
-		this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
-		this.backgroundHeight = cHeight
+		this.itemHeight = cHeight + noneContentHeight;
+		if (this.useSingleRow) {
+			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
+			this.backgroundHeight = cHeight
 							  + noneContentHeight
 							  - this.marginTop
 							  - this.marginBottom;
-		this.itemHeight = cHeight + noneContentHeight;
+		} else {
+			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight;
+			this.backgroundHeight = cHeight
+							  + noneContentHeight
+							  - this.marginTop
+							  - this.marginBottom
+							  - labelHeight;
+		}
 		this.isInitialised = true;
 	}
 	

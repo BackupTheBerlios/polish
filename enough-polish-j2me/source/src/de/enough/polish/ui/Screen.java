@@ -135,6 +135,13 @@ public abstract class Screen
 	protected Item gauge;
 	/** The currently focused items which has item-commands */
 	private Item focusedItem;
+	protected boolean paintScrollIndicator;
+	protected boolean paintScrollIndicatorUp;
+	protected boolean paintScrollIndicatorDown;
+	private int scrollIndicatorColor;
+	private int scrollIndicatorX; // left x position of scroll indicator
+	private int scrollIndicatorY; // top y position of scroll indicator
+	private int scrollIndicatorWidth; // width and height of the indicator
 
 	/**
 	 * Creates a new screen
@@ -175,11 +182,7 @@ public abstract class Screen
 			//#endif
 			this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
 		//#else
-			//#ifdef polish.CanvasHeight:defined
-				//#= this.screenHeight = ${ polish.CanvasHeight };
-			//#else
-				this.screenHeight = getHeight();
-			//#endif
+			this.screenHeight = getHeight();
 		//#endif
 		this.originalScreenHeight = this.screenHeight;
 		
@@ -248,6 +251,15 @@ public abstract class Screen
 			int diff = this.originalScreenHeight - this.screenHeight;
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
 			this.screenHeight = this.originalScreenHeight - diff;
+			// set position of scroll indicator:
+			this.scrollIndicatorWidth = this.menuBarHeight;
+			this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
+			this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+		//#else
+			// set position of scroll indicator:
+			this.scrollIndicatorWidth = 12;
+			this.scrollIndicatorX = this.screenWidth - this.scrollIndicatorWidth;
+			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth;
 		//#endif
 
 		// set the title:
@@ -321,6 +333,12 @@ public abstract class Screen
 		this.border = style.border;
 		this.container.setStyle(style, true);
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
+		//#ifdef polish.css.scrollindicator-color
+			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
+			if (scrollIndicatorColorInt != null) {
+				this.scrollIndicatorColor = scrollIndicatorColorInt.intValue();
+			}
+		//#endif
 	}
 	
 	/**
@@ -440,8 +458,13 @@ public abstract class Screen
 					int menuHeight = this.menuContainer.getItemHeight(this.menuMaxWidth, this.menuMaxWidth);
 					int y = this.originalScreenHeight - menuHeight;
 					if (y < this.titleHeight) {
+						this.paintScrollIndicator = true;
+						this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
+						this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - this.titleHeight);
 						y = this.titleHeight; 
 						this.menuContainer.setVerticalDimensions(y, this.screenHeight);
+					} else {
+						this.paintScrollIndicator = false;
 					}
 					g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
 					this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
@@ -501,6 +524,32 @@ public abstract class Screen
 					//#endif
 				}
 			//#endif
+			// paint scroll-indicator in the middle of the menu:
+			if (this.paintScrollIndicator) {
+				g.setColor( this.scrollIndicatorColor );
+				int x = this.scrollIndicatorX;
+				int y = this.scrollIndicatorY;
+				int width = this.scrollIndicatorWidth;
+				int halfWidth = width / 2;
+				if (this.paintScrollIndicatorUp) {
+					//#ifdef polish.midp2
+						g.fillTriangle(x, y + halfWidth-1, x + width, y + halfWidth-1, x + halfWidth, y );
+					//#else
+						g.drawLine( x, y + halfWidth-1, x + width, y + halfWidth-1 );
+						g.drawLine( x, y + halfWidth-1, x + halfWidth, y );
+						g.drawLine( x + width, y + halfWidth-1, x + halfWidth, y );
+					//#endif
+				}
+				if (this.paintScrollIndicatorDown) {
+					//#ifdef polish.midp2
+						g.fillTriangle(x, y + halfWidth+1, x + width, y + halfWidth+1, x + halfWidth, y + width );
+					//#else
+						g.drawLine( x, y + halfWidth+1, x + width, y + halfWidth+1 );
+						g.drawLine( x, y + halfWidth+1, x + halfWidth, y + width );
+						g.drawLine(x + width, y + halfWidth+1, x + halfWidth, y + width );
+					//#endif
+				}
+			}
 		//#ifdef polish.debug.error
 		} catch (RuntimeException e) {
 			//#debug error
@@ -515,18 +564,23 @@ public abstract class Screen
 	
 	/**
 	 * Paints the screen.
+	 * This method also needs to set the protected variables
+	 * paintScrollIndicator, paintScrollIndicatorUp and paintScrollIndicatorDown.
 	 * 
 	 * @param g the graphics on which the screen should be painted
 	 */
 	protected void paintScreen( Graphics g ) {
 		int y = 0;
-		if (this.isLayoutVCenter) {
-			int containerHeight = this.container.getItemHeight( this.screenWidth, this.screenWidth);
-			int availableHeight = this.screenHeight - this.titleHeight - containerHeight;
-			if (availableHeight > 0) {
-				y = (availableHeight / 2);
-			}
-		}
+		int containerHeight = this.container.getItemHeight( this.screenWidth, this.screenWidth);
+		int availableHeight = this.screenHeight - this.titleHeight;
+		this.paintScrollIndicator = false; // defaults to false
+		if (containerHeight > availableHeight ) {
+			this.paintScrollIndicator = true;
+			this.paintScrollIndicatorUp = (this.container.yOffset != 0);
+			this.paintScrollIndicatorDown = (this.container.yOffset + containerHeight > availableHeight);
+		} else if (this.isLayoutVCenter) {
+			y = ((availableHeight - containerHeight) / 2);
+		} 
 		this.container.paint( 0, y, 0, this.screenWidth, g );
 	}
 	
@@ -643,6 +697,10 @@ public abstract class Screen
 	protected void keyPressed(int keyCode) {
 		//#if polish.debug.error
 		try {
+		//#endif
+		//#ifdef polish.debug.debug
+			//#debug
+			Debug.debug("keyPressed: [" + keyCode + "].");
 		//#endif
 			int gameAction = getGameAction(keyCode);
 			//#if tmp.menuFullScreen
@@ -941,6 +999,32 @@ public abstract class Screen
 	 */
 	protected void pointerPressed(int x, int y) {
 		try {
+			// check for scroll-indicator:
+			if (  this.paintScrollIndicator &&
+					(x > this.scrollIndicatorX) &&
+					(y > this.scrollIndicatorY) &&
+					(x < this.scrollIndicatorX + this.scrollIndicatorWidth) &&
+					(y < this.scrollIndicatorY + this.scrollIndicatorWidth) ) 
+			{
+				// the scroll-indicator has been clicked:
+				int gameAction;
+				if ( (( !this.paintScrollIndicatorUp) || (y > this.scrollIndicatorY + this.scrollIndicatorWidth/2)) && this.paintScrollIndicatorDown) {
+					gameAction = Canvas.DOWN;
+				} else {
+					gameAction = Canvas.UP;
+				}
+				//#if tmp.menuFullScreen
+					if (this.menuOpened) {
+						this.menuContainer.handleKeyPressed( 0, gameAction );
+					} else {
+						handleKeyPressed( 0, gameAction );
+					}
+				//#else
+					handleKeyPressed( 0, gameAction );
+				//#endif
+				repaint();
+				return;
+			}
 			//#ifdef tmp.menuFullScreen
 				// check if one of the command buttons has been pressed:
 				if (y > this.screenHeight) {
