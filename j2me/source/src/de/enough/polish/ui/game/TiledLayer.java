@@ -156,7 +156,7 @@ public class TiledLayer extends Layer
 	//#endif
 	protected int cellWidth;
 	protected int cellHeight;
-	private int[][] grid;
+	private byte[][] grid;
 	//#ifdef tmp.splitTiles
 		private Image[] tiles;
 	//#else
@@ -165,7 +165,7 @@ public class TiledLayer extends Layer
 		private int[] tileYPositions;
 	//#endif
 	//#ifdef tmp.useBackBuffer
-		private int[][] bufferGrid;
+		private byte[][] bufferGrid;
 		private int bufferFirstColumn;
 		private int bufferFirstRow;
 		private int bufferLastColumn;
@@ -178,7 +178,7 @@ public class TiledLayer extends Layer
 			private int bufferTransparentColor = 0;
 		//#endif
 	//#endif
-	private int[] animatedTiles;
+	private byte[] animatedTiles;
 	private int animatedTilesLength;
 	private int numberOfTiles;
 	private int numberOfColumns;
@@ -220,7 +220,7 @@ public class TiledLayer extends Layer
 	 */
 	public TiledLayer(int columns, int rows, Image image, int tileWidth, int tileHeight)
 	{
-		this.grid = new int[ columns ] [ rows ];
+		this.grid = new byte[ columns ] [ rows ];
 		this.gridColumns = columns;
 		this.gridRows = rows;
 		this.width = columns * tileWidth;
@@ -335,13 +335,13 @@ public class TiledLayer extends Layer
 			//#endif
 		}
 		if (this.animatedTiles == null) {
-			this.animatedTiles = new int[4];
+			this.animatedTiles = new byte[4];
 		} else if (this.animatedTilesLength == this.animatedTiles.length) {
-			int[] newAnimatedTiles = new int[ this.animatedTilesLength * 2 ];
+			byte[] newAnimatedTiles = new byte[ this.animatedTilesLength * 2 ];
 			System.arraycopy( this.animatedTiles, 0, newAnimatedTiles, 0, this.animatedTilesLength);
 			this.animatedTiles = newAnimatedTiles;
 		}
-		this.animatedTiles[ this.animatedTilesLength ] = staticTileIndex;
+		this.animatedTiles[ this.animatedTilesLength ] = (byte) staticTileIndex;
 		this.animatedTilesLength++;
 		return -1 * this.animatedTilesLength;
 	}
@@ -365,7 +365,7 @@ public class TiledLayer extends Layer
 			//#endif
 		}
 		int animatedIndex = (-1 * animatedTileIndex) - 1;
-		this.animatedTiles[ animatedIndex ] = staticTileIndex;
+		this.animatedTiles[ animatedIndex ] = (byte) staticTileIndex;
 	}
 
 	/**
@@ -409,7 +409,7 @@ public class TiledLayer extends Layer
 				//# throw new IllegalArgumentException();
 			//#endif
 		}
-		this.grid[ col ][ row ] = tileIndex;
+		this.grid[ col ][ row ] = (byte) tileIndex;
 	}
 
 	/**
@@ -461,7 +461,7 @@ public class TiledLayer extends Layer
 		int endRows = row + numRows;
 		for (int i = col; i < endCols; i++ ) {
 			for (int j = row; j < endRows; j++) {
-				this.grid[ i ][ j ] = tileIndex;
+				this.grid[ i ][ j ] = (byte) tileIndex;
 			}
 		}
 	}
@@ -588,7 +588,7 @@ public class TiledLayer extends Layer
 		int y = yStart;
 		int x = xStart;
 		
-		int[][] gridTable = this.grid;
+		byte[][] gridTable = this.grid;
 		//#ifdef tmp.useBackBuffer
 			x = 0;
 			y = 0;
@@ -596,7 +596,7 @@ public class TiledLayer extends Layer
 			boolean clearBuffer = false;
 			if (this.bufferGrid == null) {
 				clearBuffer = true;
-				this.bufferGrid = new int[ this.gridColumns ][ this.gridRows ];
+				this.bufferGrid = new byte[ this.gridColumns ][ this.gridRows ];
 				this.bufferImage = Image.createImage( 
 					this.cellWidth * ((clipWidth / this.cellWidth) + 2),
 					this.cellHeight * ((clipHeight / this.cellHeight) + 2) );
@@ -624,7 +624,7 @@ public class TiledLayer extends Layer
 		// now paint the single tiles either directly to the screen
 		// or to the backbuffer:
 		for (int column = firstColumn; column < lastColumn; column++) {
-			int[] gridColumn = gridTable[column];
+			byte[] gridColumn = gridTable[column];
 			for (int row = firstRow; row < lastRow; row++) {
 				int cellIndex = gridColumn[row];
 				if (cellIndex != 0) {
@@ -676,7 +676,7 @@ public class TiledLayer extends Layer
 						//#endif
 					//#endif
 					//#ifdef tmp.useBackBuffer
-						this.bufferGrid[ column ][ row ] = tileIndex;
+						this.bufferGrid[ column ][ row ] = (byte) tileIndex;
 					//#endif
 				//#ifndef tmp.useBackBuffer
 					//# }
