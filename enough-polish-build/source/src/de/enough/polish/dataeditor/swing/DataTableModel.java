@@ -27,6 +27,7 @@ package de.enough.polish.dataeditor.swing;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import de.enough.polish.dataeditor.DataEntry;
@@ -186,9 +187,13 @@ extends AbstractTableModel
 
 
 	/**
-	 * 
+	 * Updates the view
+	 * @param view the view
 	 */
-	public void refresh() {
+	public void refresh( JTable view ) {
+		if ( view.isEditing() ) {
+			view.getCellEditor().cancelCellEditing();
+		}
 		fireTableDataChanged();
 	}
 	

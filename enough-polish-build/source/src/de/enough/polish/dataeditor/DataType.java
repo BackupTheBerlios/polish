@@ -63,6 +63,7 @@ public class DataType {
 	private final int type;
 	private final DataType[] subtypes;
 	private final int numberOfBytes;
+	private final boolean isDynamic;
 
 	/**
 	 * Creates a new simple type.
@@ -77,6 +78,7 @@ public class DataType {
 		this.numberOfBytes = numberOfBytes;
 		this.subtypes = null;
 		this.name = name;
+		this.isDynamic = (numberOfBytes == -1);
 	}
 
 	/**
@@ -90,12 +92,21 @@ public class DataType {
 		this.type = USER_DEFINED_ID;
 		this.subtypes = subtypes;
 		int bytes = 0;
+		boolean dynamic = false;
 		for (int i = 0; i < subtypes.length; i++) {
-			DataType dataType = subtypes[i];
-			bytes += dataType.numberOfBytes;
+			DataType subtype = subtypes[i];
+			bytes += subtype.numberOfBytes;
+			if (subtype.isDynamic) {
+				dynamic = true;
+			}
 		}
-		this.numberOfBytes = bytes;
 		this.name = name;
+		this.isDynamic = dynamic;
+		if (dynamic) {
+			this.numberOfBytes = -1; 
+		} else {
+			this.numberOfBytes = bytes;	
+		}
 	}
 	
 	/**
@@ -108,6 +119,7 @@ public class DataType {
 		List subtypesList = typeElement.getChildren("subtype");
 		int bytes = 0;
 		this.subtypes = new DataType[ subtypesList.size() ];
+		boolean dynamic = false;
 		int index = 0;
 		for (Iterator iter = subtypesList.iterator(); iter.hasNext();) {
 			Element subtypeElement = (Element) iter.next();
@@ -119,8 +131,16 @@ public class DataType {
 			this.subtypes[index] = subtype;
 			bytes += subtype.numberOfBytes;
 			index++;
+			if (subtype.isDynamic) {
+				dynamic = true;
+			}
 		}
-		this.numberOfBytes = bytes;
+		this.isDynamic = dynamic;
+		if (dynamic) {
+			this.numberOfBytes = -1; 
+		} else {
+			this.numberOfBytes = bytes;	
+		}
 	}
 
 	public int getType() {
@@ -292,6 +312,14 @@ public class DataType {
 	
 	public static DataType[] getDefaultTypes() {
 		return new DataType[]{ BYTE, SHORT, INTEGER, LONG, BOOLEAN, STRING };
+	}
+	
+	/**
+	 * Determines when this type has a dynamic (i.e. -1) length
+	 * @return true when this type is dynamic 
+	 */
+	public boolean isDynamic() {
+		return this.isDynamic;
 	}
 
 

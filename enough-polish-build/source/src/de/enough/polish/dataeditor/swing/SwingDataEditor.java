@@ -25,8 +25,11 @@
  */
 package de.enough.polish.dataeditor.swing;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Event;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -35,6 +38,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -68,8 +72,14 @@ implements ActionListener
 	private JMenuItem menuSaveDefinitionAs;
 	private JMenuItem menuSaveData;
 	private JMenuItem menuSaveDataAs;
+	private JMenuItem menuSaveAll;
 	private JMenuItem menuQuit;
 	private JMenuItem menuAddEntry;
+	private JMenuItem menuDeleteEntry;
+	private JMenuItem menuMoveUpEntry;
+	private JMenuItem menuMoveDownEntry;
+	private JMenuItem menuAddType;
+	private final JLabel statusBar;
 	private File definitionFile;
 	private File dataFile;
 	private final DataManager dataManager;
@@ -81,7 +91,7 @@ implements ActionListener
 	/**
 	 */
 	public SwingDataEditor( ) {
-		super( "J2ME Polish: Data Editor");
+		super();
 		setJMenuBar( createMenuBar() );
 		super.addWindowListener( new MyWindowListener() );
 		this.dataManager = new DataManager();
@@ -93,7 +103,18 @@ implements ActionListener
 		this.dataView = new DataView( this.dataTableModel, this.dataManager );
 		this.dataView.setPreferredScrollableViewportSize(new Dimension(900, 550));
 		JScrollPane scrollPane = new JScrollPane(this.dataView);
-		getContentPane().add( scrollPane );
+		Container contentPane = getContentPane();
+		contentPane.add( scrollPane );
+		this.statusBar = new JLabel(" ");
+		contentPane.add( this.statusBar, BorderLayout.SOUTH );
+		updateTitle();
+		
+		Image icon = getToolkit().createImage("binaryeditor.png");
+		if (icon != null) {
+			this.setIconImage( icon );
+		}
+		
+		
 	}
 	
 	private JMenuBar createMenuBar() {
@@ -119,8 +140,14 @@ implements ActionListener
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuNewDefinition = item;
-		item = new JMenuItem( "Save Definition", 's' );
+		item = new JMenuItem( "Save All", 'A' );
 		item.setAccelerator( KeyStroke.getKeyStroke( 'S', Event.CTRL_MASK ));
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuSaveAll = item;
+		menu.addSeparator();
+		item = new JMenuItem( "Save Definition", 's' );
+		item.setAccelerator( KeyStroke.getKeyStroke( 'S', Event.ALT_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuSaveDefinition = item;
@@ -166,6 +193,26 @@ implements ActionListener
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuAddEntry = item;
+		item = new JMenuItem( "Delete Entry", 't' );
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuDeleteEntry = item;
+		item = new JMenuItem( "Move Entry Down", 'd' );
+		item.setAccelerator( KeyStroke.getKeyStroke( 'D', Event.CTRL_MASK ));
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuMoveDownEntry = item;
+		item = new JMenuItem( "Move Entry Up", 'u' );
+		item.setAccelerator( KeyStroke.getKeyStroke( 'U', Event.CTRL_MASK ));
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuMoveUpEntry = item;
+		menu.addSeparator();
+		item = new JMenuItem( "Add Custom Type", 't' );
+		item.setAccelerator( KeyStroke.getKeyStroke( 'T', Event.CTRL_MASK + Event.SHIFT_MASK ));
+		item.addActionListener( this );
+		menu.add( item );
+		this.menuAddType = item;
 		return menu;
 	}
 	
@@ -174,12 +221,13 @@ implements ActionListener
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent event) {
-		System.out.println( event.getActionCommand() );
 		Object source = event.getSource();
 		if ( source == this.menuQuit ) {
 			quit();
 		} else if (source == this.menuNewDefinition ) {
 			newDefinition();
+		} else if (source == this.menuSaveAll ) {
+			saveAll();
 		} else if (source == this.menuOpenDefinition ) {
 			openDefinition();
 		} else if (source == this.menuSaveDefinition ) {
@@ -194,9 +242,85 @@ implements ActionListener
 			saveDataAs();
 		} else if (source == this.menuAddEntry ) {
 			addDataEntry();
+		} else if (source == this.menuDeleteEntry ) {
+			deleteDataEntry();
+		} else if (source == this.menuMoveDownEntry ) {
+			moveDownDataEntry();
+		} else if (source == this.menuMoveUpEntry ) {
+			moveUpDataEntry();
+		} else if (source == this.menuAddType ) {
+			addDataType();
 		}
 	}
 	
+	/**
+	 * 
+	 */
+	private void moveUpDataEntry() {
+		int row = this.dataView.getSelectedRow();
+		if (row != -1) {
+			if (this.dataManager.pushUpDataEntry(row)) {
+				this.dataTableModel.refresh( this.dataView );
+				this.dataView.setRowSelectionInterval(row - 1, row - 1 );
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void moveDownDataEntry() {
+		int row = this.dataView.getSelectedRow();
+		if (row != -1) {
+			if (this.dataManager.pushDownDataEntry(row)) {
+				this.dataTableModel.refresh( this.dataView );
+				this.dataView.setRowSelectionInterval(row + 1, row + 1 );
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void deleteDataEntry() {
+		int row = this.dataView.getSelectedRow();
+		if (row != -1) {
+			this.dataManager.removeDataEntry(row);
+			this.dataTableModel.refresh( this.dataView );
+			if (this.dataManager.getNumberOfEntries() > 0) {
+				this.dataView.setRowSelectionInterval(row -1, row -1);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void addDataType() {
+		CreateTypeDialog dialog = new CreateTypeDialog( this, "Add a custom type", this.dataManager );
+		dialog.show();
+		DataType newType = dialog.getDataType();
+		if (newType != null ) {
+			this.dataManager.addDataType(newType);
+			this.dataView.updateTypes(this.dataManager);
+			this.dataTableModel.refresh( this.dataView );
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void saveAll() {
+		if (this.definitionFile != null) {
+			saveDefinition();
+			saveData();
+		} else { 
+			saveDefinitionAs();
+			saveDataAs();
+		}
+		
+	}
+
 	/**
 	 * 
 	 */
@@ -204,7 +328,7 @@ implements ActionListener
 		this.dataManager.clear();
 		DataEntry entry = new DataEntry( "noname", DataType.BYTE );
 		this.dataManager.addDataEntry( entry );
-		this.dataTableModel.refresh();
+		this.dataTableModel.refresh( this.dataView );
 	}
 
 	/**
@@ -213,7 +337,11 @@ implements ActionListener
 	private void addDataEntry() {
 		DataEntry entry = new DataEntry( "noname", DataType.BYTE );
 		this.dataManager.addDataEntry( entry );
-		this.dataTableModel.refresh();
+		if (this.dataView.isEditing()) {
+			this.dataView.getCellEditor().stopCellEditing();
+		}
+		this.dataTableModel.refresh( this.dataView );
+		this.dataView.setRowSelectionInterval( this.dataManager.getNumberOfEntries() -1, this.dataManager.getNumberOfEntries() -1);
 	}
 
 	/**
@@ -226,6 +354,8 @@ implements ActionListener
 		} 
 		try {
 			this.dataManager.saveDefinition(this.definitionFile);
+			this.statusBar.setText( "saved " + this.definitionFile.getName() );
+			updateTitle();
 		} catch (Exception e) {
 			showErrorMessage( e );
 		}
@@ -243,6 +373,8 @@ implements ActionListener
 				}
 				this.dataManager.saveDefinition( file );
 				this.definitionFile = file;
+				this.statusBar.setText("saved " + file.getName() );
+				updateTitle();
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
@@ -255,8 +387,10 @@ implements ActionListener
 			try {
 				this.dataManager.loadDefinition(file);
 				this.dataView.updateTypes(this.dataManager);
-				this.dataTableModel.refresh();
+				this.dataTableModel.refresh( this.dataView );
 				this.definitionFile = file;
+				updateTitle();
+				this.statusBar.setText("Loaded " + file.getName() );
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
@@ -272,6 +406,8 @@ implements ActionListener
 		}
 		try {
 			this.dataManager.saveData( this.dataFile );
+			this.statusBar.setText("saved " + this.dataFile.getName() );
+			updateTitle();
 		} catch (Exception e) {
 			showErrorMessage( e );
 		}
@@ -283,6 +419,8 @@ implements ActionListener
 			try {
 				this.dataManager.saveData(file);
 				this.dataFile = file;
+				this.statusBar.setText("saved " + file.getName() );
+				updateTitle();
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
@@ -295,7 +433,9 @@ implements ActionListener
 			try {
 				this.dataManager.loadData(file);
 				this.dataFile = file;
-				this.dataTableModel.refresh();
+				this.dataTableModel.refresh( this.dataView );
+				updateTitle();
+				this.statusBar.setText("Loaded " + file.getName() );
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
@@ -327,8 +467,20 @@ implements ActionListener
 			return null;
 		}
 	}
+	
+	private void updateTitle() {
+		if (this.definitionFile != null) {
+			if (this.dataFile != null) {
+				setTitle("J2ME Polish: Binary Data Editor: " + this.definitionFile.getName() + " - " + this.dataFile.getName() );
+			} else {
+				setTitle("J2ME Polish: Binary Data Editor: " + this.definitionFile.getName() );
+			}
+		} else {
+			setTitle("J2ME Polish: Binary Data Editor");
+		}
+	}
 
-	public void quit() {
+	private void quit() {
 		System.exit( 0 );
 	}
 	

@@ -537,6 +537,9 @@
 		<capability name="MaxSockets.tcp" value="2" />
 		<capability name="MaxSockets.http" value="2" />
 		<capability name="MaxSockets.udp" value="3" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 
 	<device>
@@ -552,6 +555,9 @@
 		<capability name="MaxSockets.http" value="2" />
 		<capability name="MaxSockets.udp" value="3" />
 		<capability name="JavaPackage" value="serial" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -567,6 +573,9 @@
 		<capability name="MaxSockets.http" value="2" />
 		<capability name="MaxSockets.udp" value="11" />
 		<capability name="JavaPackage" value="Location API, File I/O, serial" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -582,6 +591,9 @@
 		<capability name="MaxSockets.http" value="2" />
 		<capability name="MaxSockets.udp" value="3" />
 		<capability name="JavaPackage" value="Polyphonic-MIDI, serial" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -597,6 +609,9 @@
 		<capability name="MaxSockets.http" value="4" />
 		<capability name="MaxSockets.udp" value="12" />
 		<capability name="JavaPackage" value="Motorola LWT, Look And Feel, Polyphonic-MIDI, File I/O, Call Initiation, Crypto, Lighting, Vibrator, Digital Camera" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -770,6 +785,8 @@
 		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.3/bin/jblend.exe" />
 		<capability name="Emulator.Arguments" value="-Xdescriptor:${polish.jadPath};;-Xdevice:E1000" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
 	</device>
 		
 	<device>
@@ -818,6 +835,9 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/A845.props" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.MiddleSoftKey" value="-23" />
 	</device>	
 		
 	<device>
@@ -869,6 +889,9 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V220.props" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.SelectSoftKey" value="-20" />
 	</device>
 
 	<device>
@@ -896,6 +919,9 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V80.props" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.SelectSoftKey" value="-20" />
 	</device>
 		
 	<device>
@@ -916,6 +942,9 @@
 		<capability name="MaxSockets.udp" value="4" />
 		<capability name="JavaPackage" value="Gaming, sms" />
 		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -958,6 +987,9 @@
 		<capability name="MaxSockets.udp" value="4" />
 		<capability name="JavaPackage" value="Gaming, sms" />
 		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -1131,6 +1163,9 @@
 		<capability name="MaxSockets.http" value="3" />
 		<capability name="MaxSockets.udp" value="3" />
 		<capability name="ImageFormat" value="png" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -1169,6 +1204,9 @@
 		<capability name="MaxSockets.http" value="3" />
 		<capability name="MaxSockets.udp" value="3" />
 		<capability name="ImageFormat" value="png" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -1188,6 +1226,9 @@
 		<capability name="MaxSockets.http" value="3" />
 		<capability name="MaxSockets.udp" value="3" />
 		<capability name="ImageFormat" value="png" />
+		<capability name="key.LeftSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-22" />
 	</device>
 	
 	<device>
@@ -2279,7 +2320,7 @@
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/S65</identifier>
-		<features>hasCommandKeyEvents</features>
+		<features>hasCommandKeyEvents, hasCamera</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, jtwi, 3dapi, locationapi, btapi" />
@@ -2293,6 +2334,7 @@
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="CameraResolution" value="1280x960" />	
 	</device>
 	
 	<device
@@ -2344,7 +2386,7 @@
 	
 	<device>
 		<identifier>Siemens/ST60</identifier>
-		<features>hasCommandKeyEvents</features>
+		<features>hasCommandKeyEvents, hasCamera</features>
 		<capability name="ScreenSize" value="120x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -2357,6 +2399,7 @@
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="CameraResolution" value="640x480" />
 	</device>
 	
 	<device 
@@ -2477,7 +2520,266 @@
 
 <!-- Samsung devices -->
 	<device>
-		<identifier>Samsung/A700</identifier>
+		<identifier>Samsung/SGH-D500</identifier>
+		<features>hasCommandKeys, hasCamera</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23" />
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="wmapi, mmapi" />
+		<capability name="SoundFormat" value="mmf, midi, midi64, wav" />
+		<capability name="PolyphonicVoices" value="64" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="560 kb" />
+		<capability name="MaxJarSize" value="300 kb" />
+		<capability name="StorageSize" value="80 MB" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+		<capability name="CameraResolution" value="1.3 MP" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-E100</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="MenuBarHeight" value="20" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="40" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="480 kb" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+	
+	<device
+		extends="Samsung/SGH-E100">
+		<identifier>Samsung/E100A</identifier>
+		<capability name="Region" value="Singapore, Malaysia" />
+	</device>
+
+	<device
+		extends="Samsung/SGH-E100">
+		<identifier>Samsung/E108</identifier>
+		<capability name="Region" value="China" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-E330</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="MenuBarHeight" value="20" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="40" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="550 kb" />
+		<capability name="MaxJarSize" value="180 kb" />
+		<capability name="Region" value="Europe" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SGH-E600</identifier>
+		<features>hasCommandKeys, hasCamera</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="CanvasSize" value="128x112"/>
+		<capability name="MenuBarHeight" value="16" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundForma" value="mmf, midi" />
+		<capability name="PolyphonicVoices" value="64" />
+		<capability name="HeapSize" value="256 kb" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="Region" value="Europe, CIS" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="key.ClearKey" value="-8" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-E630</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="MenuBarHeight" value="20" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="40" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="550 kb" />
+		<capability name="MaxJarSize" value="180 kb" />
+		<capability name="Region" value="Europe" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-E700</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="MenuBarHeight" value="20" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="40" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="480 kb" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+	
+	<device
+		extends="Samsung/SGH-E700">
+		<identifier>Samsung/E700A</identifier>
+		<capability name="Region" value="Singapore, Malaysia" />
+	</device>
+		
+	<device
+		extends="Samsung/SGH-E700">
+		<identifier>Samsung/E708</identifier>
+		<capability name="Region" value="China" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SGH-E800</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="MenuBarHeight" value="20" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="64" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="550 kb" />
+		<capability name="MaxJarSize" value="180 kb" />
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+	
+	<device
+		extends="Samsung/SGH-E800">
+		<identifier>Samsung/E800C</identifier>
+		<capability name="Region" value="Singapore, Malaysia" />
+	</device>
+		
+	<device
+		extends="Samsung/SGH-E800">
+		<identifier>Samsung/E808</identifier>
+		<capability name="Region" value="China" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SGH-E820</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="MenuBarHeight" value="20" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="64" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="550 kb" />
+		<capability name="MaxJarSize" value="180 kb" />
+		<capability name="Region" value="Europe" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-X100</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="MenuBarHeight" value="18" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="40" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="480 kb" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+	
+	<device
+		extends="Samsung/SGH-X100">
+		<identifier>Samsung/X100A</identifier>
+		<capability name="Region" value="Singapore, Malaysia" />
+	</device>
+		
+	<device
+		extends="Samsung/SGH-X100">
+		<identifier>Samsung/X108</identifier>
+		<capability name="Region" value="China" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-X600</identifier>
+		<features>hasCommandKeys</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="MenuBarHeight" value="18" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="SoundFormat" value="mmf" />
+		<capability name="PolyphonicVoices" value="40" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="480 kb" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="Region" value="Europe, CIS, South Africa, SE Asia" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+	</device>
+	
+	<device
+		extends="Samsung/SGH-X600">
+		<identifier>Samsung/X600A</identifier>
+		<capability name="Region" value="Singapore, Malaysia" />
+	</device>
+		
+	<device
+		extends="Samsung/SGH-X600">
+		<identifier>Samsung/X608</identifier>
+		<capability name="Region" value="China" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-A700</identifier>
 		<capability name="ScreenSize" value="178x220"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -2605,6 +2907,8 @@
 		<capability name="MaxPngSize" value="20 kb" />
 		<capability name="MaxJpegSize" value="20 kb" />
 		<capability name="MaxSmafSize" value="dynamic" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
 	</device>	
 
 	<device>
@@ -2624,6 +2928,8 @@
 		<capability name="MaxPngSize" value="20 kb" />
 		<capability name="MaxJpegSize" value="20 kb" />
 		<capability name="MaxSmafSize" value="dynamic" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
 	</device>	
 
 	<device
@@ -2645,6 +2951,30 @@
 		<capability name="MaxJpegSize" value="100 kb" />
 		<capability name="MaxSmafSize" value="50 kb" />
 		<capability name="DRM" value="Forward Lock" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
+	</device>	
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Sharp/TM100</identifier>
+		<features>hasCommandKeyEvents, hasCamera</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x260"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="MaxJarSize" value="200 kb" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4" />
+		<capability name="ImageFormat" value="jpg, png, bmp, wbmp, wpng, nva, gif" />
+		<capability name="SoundFormat" value="amr, smaf, midi, midi40, iMelody" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="4" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
 	</device>	
 
 
@@ -2843,17 +3173,7 @@
 	<device
 		extends="Sony-Ericsson/K500i">
 		<identifier>Vodafone/Sony-Ericsson-F500i</identifier>
-	</device>
-	
-	
-	<device
-		extends="Motorola/V600" >
-		<identifier>Motorola/EmulatorV600</identifier>
-		<features>isVirtual</features>
-		<capability name="key.LeftSoftKey" value="21" />
-		<capability name="key.RightSoftKey" value="22" />
-	</device>
-	
+	</device>	
 	
 	
 </devices>

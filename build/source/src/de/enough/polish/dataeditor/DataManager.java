@@ -286,4 +286,38 @@ public class DataManager {
 		return (DataType[]) list.toArray( new DataType[ list.size() ] );
 	}
 
+	/**
+	 * Moves the specified data entry one up.
+	 *  
+	 * @param index the index of the data entry
+	 * @return true when the entry could be pushed upwards
+	 */
+	public boolean pushUpDataEntry(int index) {
+		if ( index > 0 ) {
+			DataEntry entry = (DataEntry) this.entries.remove(index);
+			if (entry != null) {
+				this.entries.add( --index, entry );
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Moves the specified data entry one down.
+	 *  
+	 * @param index the index of the data entry
+	 * @return true when the entry could be pushed downwards
+	 */
+	public boolean pushDownDataEntry(int index) {
+		if ( index < this.entries.size() - 1 ) {
+			DataEntry entry = (DataEntry) this.entries.remove(index);
+			if (entry != null) {
+				this.entries.add( ++index, entry );
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
