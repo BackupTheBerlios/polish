@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.0-RC5";
+	private static final String VERSION = "1.0-RC6";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -74,7 +74,8 @@ public class PolishTask extends ConditionalTask {
 	private TextFile[][] sourceFiles;
 	private Path midp1BootClassPath;
 	private Path midp2BootClassPath;	
-	private Obfuscator obfuscator;
+	private Obfuscator[] obfuscators;
+	private boolean doObfuscate;
 	private String[] preserveClasses;
 	private StyleSheet styleSheet;
 	private ImportConverter importConverter;
@@ -86,18 +87,14 @@ public class PolishTask extends ConditionalTask {
 		Pattern.compile("\\s*void\\s+startApp\\s*\\(\\s*\\)");
 
 	private LibraryManager libraryManager;
-
 	private File errorLock;
-
 	private boolean lastRunFailed;
-
 	private StringList styleSheetCode;
-
 	private int numberOfChangedFiles;
-
 	private File polishSourceDir;
-
 	private TextFile[] polishSourceFiles;
+
+	private Variable[] conditionalVariables;
 	
 	/**
 	 * Creates a new empty task 
@@ -155,12 +152,11 @@ public class PolishTask extends ConditionalTask {
 			if (numberOfDevices > 1) {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
-			boolean obfuscate = this.buildSetting.doObfuscate();
 			for ( int i=0; i<numberOfDevices; i++) {
 				Device device = this.devices[i];
 				preprocess( device );
 				compile( device );
-				if (obfuscate) {
+				if (this.doObfuscate) {
 					obfuscate( device );
 				}
 				preverify( device );
@@ -282,7 +278,7 @@ public class PolishTask extends ConditionalTask {
 		if (isDebugEnabled) {
 			this.polishProject.addFeature("debugEnabled");
 		}
-		// add some specified features:
+		// aspecify some preprocessing symbols depending on the selected features:
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());
 		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
 			this.polishProject.addFeature("useDebugGui");
@@ -308,11 +304,17 @@ public class PolishTask extends ConditionalTask {
 		// add all variables from the build.xml:
 		Variable[] variables = this.buildSetting.getVariables();
 		if (variables != null) {
+			ArrayList conditionalVarsList = new ArrayList();
 			for (int i = 0; i < variables.length; i++) {
 				Variable var = variables[i];
 				//System.out.println("adding variable [" + var.getName() + "]." );
-				this.polishProject.addDirectCapability( var );
+				if (var.hasCondition()) {
+					conditionalVarsList.add( var );
+				} else {
+					this.polishProject.addDirectCapability( var );
+				}
 			}
+			this.conditionalVariables = (Variable[]) conditionalVarsList.toArray( new Variable[ conditionalVarsList.size() ]); 
 		}
 		// add all symbols from the build.xml:
 		String symbolDefinition = this.buildSetting.getSymbols();
@@ -414,15 +416,31 @@ public class PolishTask extends ConditionalTask {
 		this.midp1BootClassPath = new Path( this.project, this.buildSetting.getMidp1Path().getAbsolutePath());
 		this.midp2BootClassPath = new Path( this.project, this.buildSetting.getMidp2Path().getAbsolutePath());
 				
-		// init obfuscator:
-		ObfuscatorSetting obfuscatorSetting = this.buildSetting.getObfuscatorSetting();
-		if ((obfuscatorSetting != null) && (obfuscatorSetting.isEnabled())) {
-			String[] keepClasses = obfuscatorSetting.getPreserveClassNames();
-			String[] midletClasses = this.buildSetting.getMidletClassNames();
-			this.preserveClasses = new String[ keepClasses.length + midletClasses.length ];
-			System.arraycopy( keepClasses, 0, this.preserveClasses, 0,  keepClasses.length );
-			System.arraycopy( midletClasses, 0, this.preserveClasses, keepClasses.length, midletClasses.length  );
-			this.obfuscator = Obfuscator.getInstance( obfuscatorSetting, this.project, this.buildSetting.getApiDir(), this.libraryManager );
+		// init obfuscators:
+		if (this.buildSetting.doObfuscate()) {
+			ObfuscatorSetting[] obfuscatorSettings = this.buildSetting.getObfuscatorSettings();
+			ArrayList obfuscatorsList = new ArrayList();
+			String[] keepClasses = new String[0];
+			for (int i = 0; i < obfuscatorSettings.length; i++) {
+				ObfuscatorSetting obfuscatorSetting = obfuscatorSettings[i];
+				if (keepClasses == null && 
+						obfuscatorSetting.getPreserveClassNames().length != 0) {
+					keepClasses = obfuscatorSetting.getPreserveClassNames();
+				}
+				if ((obfuscatorSetting.isEnabled())) {
+					Obfuscator obfuscator = Obfuscator.getInstance( obfuscatorSetting, this.project, this.buildSetting.getApiDir(), this.libraryManager ); 
+					obfuscatorsList.add( obfuscator );
+				}
+				
+			}
+			this.doObfuscate = (obfuscatorsList.size() > 0);
+			if (this.doObfuscate) {
+				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
+				String[] midletClasses = this.buildSetting.getMidletClassNames();
+				this.preserveClasses = new String[ keepClasses.length + midletClasses.length ];
+				System.arraycopy( keepClasses, 0, this.preserveClasses, 0,  keepClasses.length );
+				System.arraycopy( midletClasses, 0, this.preserveClasses, keepClasses.length, midletClasses.length  );
+			}
 		}
 		
 		// init import manager:
@@ -548,8 +566,25 @@ public class PolishTask extends ConditionalTask {
 			device.setSourceDir(targetDir);
 			// initialise the preprocessor:
 			this.preprocessor.setTargetDir( targetDir );
+			// set conditional variables:
 			this.preprocessor.setSymbols( device.getFeatures() );
 			this.preprocessor.setVariables( device.getCapabilities() );
+			if (this.conditionalVariables != null) {
+				BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+				for (int i = 0; i < this.conditionalVariables.length; i++) {
+					Variable var = this.conditionalVariables[i];
+					if (var.isConditionFulfilled( evaluator, this.project )) {
+						System.out.println("ACCEPTING VAR " + var.getName());
+						device.addDirectCapability(var.getName(), var.getValue() );
+					} else {
+						System.out.println("REJECTING VAR " + var.getName());
+					}
+				}
+				// reset symbols and variables,
+				// since a conditional variable could have been set:
+				this.preprocessor.setSymbols( device.getFeatures() );
+				this.preprocessor.setVariables( device.getCapabilities() );
+			}
 			// get the last modfication time of the build.xml file
 			// so that it can be checked whether there are any changes at all:
 			File buildXml = new File( this.project.getBaseDir().getAbsolutePath() 
@@ -932,9 +967,10 @@ public class PolishTask extends ConditionalTask {
 		} else {
 			bootPath = this.midp2BootClassPath;
 		}
+		// create the initial jar-file: only include to class files,
+		// for accelerating the obfuscation:
 		File sourceFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separatorChar + "source.jar");
-		//jar classes dir:
 		//long time = System.currentTimeMillis();
 		try {
 			JarUtil.jar( new File( device.getClassesDir()), sourceFile, false );
@@ -942,9 +978,25 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("Unable to prepare the obfuscation-jar: " + e.getMessage(), e );
 		}
 		//System.out.println("Jaring took " + ( System.currentTimeMillis() - time) + " ms.");
+		
+		
+		
 		File destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separatorChar + "dest.jar");
-		this.obfuscator.obfuscate(device, sourceFile, destFile, this.preserveClasses, bootPath );
+		
+		// start the obfuscation:
+		int maxIndex = this.obfuscators.length - 1;
+		for (int i=0; i <= maxIndex ; i++ ) {
+			Obfuscator obfuscator = this.obfuscators[i];
+			obfuscator.obfuscate(device, sourceFile, destFile, this.preserveClasses, bootPath );
+			if ( i != maxIndex ) {
+				sourceFile = destFile;
+				destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
+						+ File.separatorChar + "dest" + (i + 1) + ".jar");
+			}
+		}
+		
+		
 		//time = System.currentTimeMillis();
 		//unjar destFile to build/obfuscated:
 		try {
@@ -1061,11 +1113,12 @@ public class PolishTask extends ConditionalTask {
 		} catch (IOException e) {
 			throw new BuildException("Unable to copy resources from [" + resourceDir + "]: " + e.getMessage(), e );
 		}
-		
+		/*
 		Jar jarTask = new Jar();
 		jarTask.setProject( this.project );
 		jarTask.setTaskName( getTaskName() + "-jar-" + device.getIdentifier() );
 		jarTask.setBasedir( classesDir );
+		*/
 		// retrieve the name of the jar-file:
 		HashMap infoProperties = new HashMap();
 		infoProperties.put( "polish.identifier", device.getIdentifier() );
@@ -1077,74 +1130,102 @@ public class PolishTask extends ConditionalTask {
 		infoProperties.put( "polish.jarName", jarName );
 		File jarFile = new File( this.buildSetting.getDestDir().getAbsolutePath() 
 						+ File.separatorChar + jarName );
-		if (!jarFile.getParentFile().exists()) {
-			jarFile.getParentFile().mkdirs();
-		}
 		device.setJarFile( jarFile );
-		jarTask.setDestFile( jarFile );
 		String test = this.polishProject.getCapability("polish.license");
 		if ( !this.infoSetting.getlicense().equals(test)) {
 			throw new BuildException("Encountered invalid license.");
 		}
 		//create manifest:
-		try {
-			Manifest manifest = new Manifest();
-			
-			// set MicroEdition-Profile:
-			String midp = InfoSetting.MIDP1;
-			if (device.isMidp2()) {
-				midp = InfoSetting.MIDP2;
-			}
-			Manifest.Attribute meProfile = new Manifest.Attribute( InfoSetting.MICRO_EDITION_PROFILE, midp );
-			manifest.addConfiguredAttribute(meProfile);
+		Jad jad = new Jad();
+		boolean useAttributesFilter = this.buildSetting.hasManifestAttributesFilter();
+		HashMap attributesByName = null;
+		if (useAttributesFilter) {
+			attributesByName = new HashMap();
+			attributesByName.put( "Manifest-Version", new Variable( "Manifest-Version", "1.0" ) ); 
+		} else {
+			jad.addAttribute( "Manifest-Version", "1.0" );
+		}
+		// set MicroEdition-Profile:
+		String midp = InfoSetting.MIDP1;
+		if (device.isMidp2()) {
+			midp = InfoSetting.MIDP2;
+		}
+		if (useAttributesFilter) {
+			attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Variable(InfoSetting.MICRO_EDITION_PROFILE, midp) );
+		} else {
+			jad.addAttribute( InfoSetting.MICRO_EDITION_PROFILE, midp );
+		}
 
-			// set MicroEdition-Configuration:
-			String config = InfoSetting.CLDC1_0;
-			if (!device.isCldc10()) {
-				config = InfoSetting.CLDC1_1;
-			}
-			Manifest.Attribute meConfiguration = new Manifest.Attribute( InfoSetting.MICRO_EDITION_CONFIGURATION, config );
-			manifest.addConfiguredAttribute(meConfiguration);
+		// set MicroEdition-Configuration:
+		String config = InfoSetting.CLDC1_0;
+		if (!device.isCldc10()) {
+			config = InfoSetting.CLDC1_1;
+		}
+		if (useAttributesFilter) {
+			attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Variable(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
+		} else {
+			jad.addAttribute( InfoSetting.MICRO_EDITION_CONFIGURATION, config );
+		}
 
-			// add info attributes:
-			Variable[] jadAttributes = this.infoSetting.getManifestAttributes();
-			for (int i = 0; i < jadAttributes.length; i++) {
-				Variable var = jadAttributes[i];
+		// add info attributes:
+		Variable[] jadAttributes = this.infoSetting.getManifestAttributes();
+		for (int i = 0; i < jadAttributes.length; i++) {
+			Variable var = jadAttributes[i];
+			String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
+			if (useAttributesFilter) {
+				attributesByName.put( var.getName(), new  Variable(var.getName(), value ) );
+			} else {
+				jad.addAttribute( var.getName(), value );
+			}
+		}
+		
+		// add build properties - midlet infos:
+		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
+		for (int i = 0; i < midletInfos.length; i++) {
+			String info = midletInfos[i];
+			if (useAttributesFilter) {
+				attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Variable(InfoSetting.NMIDLET + (i+1), info ) );
+			} else {
+				jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
+			}
+		}
+		
+		// add user-defined attributes:
+		Variable[] attributes = this.buildSetting.getJadAttributes();
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		for (int i = 0; i < attributes.length; i++) {
+			Variable var = attributes[i];
+			if (var.isConditionFulfilled(evaluator, this.project)) {
 				String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
-				Manifest.Attribute attribute = new Manifest.Attribute(var.getName(), value );
-				manifest.addConfiguredAttribute( attribute  );
-			}
-			
-			// add build properties - midlet infos:
-			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
-			for (int i = 0; i < midletInfos.length; i++) {
-				String info = midletInfos[i];
-				Manifest.Attribute attribute = new Manifest.Attribute(InfoSetting.NMIDLET + (i+1), info );
-				manifest.addConfiguredAttribute( attribute  );
-			}
-			
-			// add user-defined attributes:
-			Attribute[] attributes = this.buildSetting.getJadAttributes();
-			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-			for (int i = 0; i < attributes.length; i++) {
-				Attribute var = attributes[i];
-				String condition = var.getIf();
-				if (condition == null || evaluator.evaluate( condition, "build.xml", 0)) {
-					String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
-					Manifest.Attribute attribute = new Manifest.Attribute(var.getName(), value );
-					manifest.addConfiguredAttribute( attribute  );
+				if (useAttributesFilter) {
+					attributesByName.put( var.getName(), new Variable(var.getName(), value ) );
+				} else {
+					jad.addAttribute( var.getName(), value );
 				}
 			}
-			
-			//add polish version:
-			Manifest.Attribute polishVersion = new Manifest.Attribute("Polish-Version", VERSION );
-			manifest.addConfiguredAttribute( polishVersion  );
-			jarTask.addConfiguredManifest( manifest );
-		} catch (ManifestException e) {
-			e.printStackTrace();
-			throw new BuildException("Unable to create manifest: " + e.getMessage(), e );
 		}
-		jarTask.execute();
+		
+		//add polish version:
+		if (useAttributesFilter) {
+			attributesByName.put( "Polish-Version", new Variable("Polish-Version", VERSION ) );
+		} else {
+			jad.addAttribute( "Polish-Version", VERSION );
+		}
+		
+		if (useAttributesFilter) {
+			Variable[] manifestAttributes = this.buildSetting.filterManifestAttributes(attributesByName);
+			jad.setAttributes(manifestAttributes);
+		}
+		File manifestFile = new File( device.getClassesDir() 
+				+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
+		try {
+			FileUtil.writeTextFile( manifestFile, jad.getContent() );
+			
+			JarUtil.jar(classesDir, jarFile, true );
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
+		}
 		
 	}
 	
@@ -1166,36 +1247,64 @@ public class PolishTask extends ConditionalTask {
 		// now create the JAD file:
 		System.out.println("creating JAD for device [" + device.getIdentifier() + "].");
 		Jad jad = new Jad();
+		HashMap attributesByName = null;
+		boolean useAttributesFilter = this.buildSetting.hasJadAttributesFilter();
+		if (useAttributesFilter) {
+			attributesByName = new HashMap();
+		}
 		//add info attributes:
 		Variable[] jadAttributes = this.infoSetting.getJadAttributes();
 		for (int i = 0; i < jadAttributes.length; i++) {
-			Variable var =jadAttributes[i];
-			jad.addAttribute( var.getName() , PropertyUtil.writeProperties( var.getValue(), infoProperties) );
+			Variable var  = jadAttributes[i];
+			if (useAttributesFilter) {
+				attributesByName.put( var.getName(), 
+					new Variable(var.getName(), PropertyUtil.writeProperties( var.getValue(), infoProperties)) );
+			} else {
+				jad.addAttribute( var.getName() , PropertyUtil.writeProperties( var.getValue(), infoProperties) );
+			}
 		}
 		
 		// add build properties - midlet infos:
 		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
 		for (int i = 0; i < midletInfos.length; i++) {
 			String info = midletInfos[i];
-			jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
+			if (useAttributesFilter) {
+				attributesByName.put( InfoSetting.NMIDLET + (i+1), 
+						new Variable(InfoSetting.NMIDLET + (i+1), info) );
+			} else {
+				jad.addAttribute( InfoSetting.NMIDLET + (i+1), info );
+			}
 		}
 		
 		// add size of jar:
-		//TODO check if File.length changes after the file has been changed.
 		long size = device.getJarFile().length();
-		jad.addAttribute(  InfoSetting.MIDLET_JAR_SIZE, "" + size );
+		if (useAttributesFilter) {
+			attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
+					new Variable( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
+		} else {
+			jad.addAttribute(  InfoSetting.MIDLET_JAR_SIZE, "" + size );
+		}
 		
 		// add user-defined attributes:
-		Attribute[] attributes = this.buildSetting.getJadAttributes();
+		Variable[] attributes = this.buildSetting.getJadAttributes();
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		for (int i = 0; i < attributes.length; i++) {
-			Attribute attribute = attributes[i];
-			String condition = attribute.getIf();
-			if (condition == null || evaluator.evaluate( condition, "build.xml", 0)) {
-				jad.addAttribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) );
+			Variable attribute = attributes[i];
+			if (attribute.isConditionFulfilled(evaluator, this.project)) {
+				if (useAttributesFilter) {
+					attributesByName.put(attribute.getName(),
+							new Variable( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) ) );
+					
+				} else {
+					jad.addAttribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) );
+				}
 			}
 		}
 
+		if (useAttributesFilter) {
+			Variable[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName);
+			jad.setAttributes( filteredAttributes );
+		}
 		
 		String jadName = PropertyUtil.writeProperties( jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad", infoProperties );
 		File jadFile = new File( this.buildSetting.getDestDir().getAbsolutePath() + File.separatorChar + jadName );

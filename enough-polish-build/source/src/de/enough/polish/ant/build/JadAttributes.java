@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.Variable;
+
 /**
  * <p>Represents user-defined attributes for the JAD and the MANIFEST</p>
  * 
@@ -35,6 +37,7 @@ import org.apache.tools.ant.BuildException;
 public class JadAttributes {
 
 	private ArrayList list;
+	private AttributesFilter filter;
 
 	/**
 	 * Creates a new list 
@@ -43,7 +46,7 @@ public class JadAttributes {
 		this.list = new ArrayList();
 	}
 	
-	public void addConfiguredAttribute( Attribute attribute ) {
+	public void addConfiguredAttribute( Variable attribute ) {
 		if (attribute.getName() == null) {
 			throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [name]");
 		}
@@ -53,8 +56,16 @@ public class JadAttributes {
 		this.list.add( attribute );
 	}
 	
-	public Attribute[] getAttributes(){
-		return (Attribute[]) this.list.toArray( new Attribute[ this.list.size() ] );
+	public void addConfiguredFilter( AttributesFilter filterSetting ) {
+		this.filter = filterSetting;
+	}
+	
+	public Variable[] getAttributes(){
+		return (Variable[]) this.list.toArray( new Variable[ this.list.size() ] );
+	}
+	
+	public AttributesFilter getFilter() {
+		return this.filter;
 	}
 
 }

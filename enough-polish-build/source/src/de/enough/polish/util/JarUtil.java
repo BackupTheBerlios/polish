@@ -95,6 +95,11 @@ public final class JarUtil {
 	throws FileNotFoundException, IOException 
 	{
 		if (file.isDirectory()) {
+			if (file.getPath().endsWith("META-INF")) {
+				String entryName = file.getAbsolutePath().substring(sourceDirLength);
+				JarEntry entry = new JarEntry( entryName );
+				out.putNextEntry(entry);
+			}
 			File[] fileNames = file.listFiles();
 			for (int i = 0; i < fileNames.length; i++) {
 				addFile( fileNames[i], out, crc, sourceDirLength, buffer );

@@ -190,6 +190,7 @@ public class Device extends PolishComponent {
 				addComponent(group);
 				groupsList.add(group);
 				groupNamesList.add(groupName);
+				addFeature( "polish.group." + groupName );
 			}
 		}
 

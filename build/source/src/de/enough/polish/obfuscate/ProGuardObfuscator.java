@@ -67,6 +67,7 @@ public class ProGuardObfuscator extends Obfuscator {
 	public void obfuscate(Device device, File sourceFile, File targetFile, String[] preserve, Path bootClassPath) 
 	throws BuildException 
 	{
+		System.out.println("Starting obfuscation with ProGuard.");
 		// create the configuration for ProGuard:
 		Configuration cfg = new Configuration();
 		
@@ -108,6 +109,7 @@ public class ProGuardObfuscator extends Obfuscator {
         ProGuard proGuard = new ProGuard( cfg );
 		try {
 			proGuard.execute();
+			System.out.println("ProGuard has successfully finished obfuscation.");
 		} catch (IOException e) {
 			// check if all preserve-classes are found:
 			for (int i = 0; i < preserve.length; i++) {

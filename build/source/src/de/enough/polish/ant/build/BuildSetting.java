@@ -36,6 +36,7 @@ import java.io.*;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * <p>Represents the build settings of a polish J2ME project.</p>
@@ -54,7 +55,8 @@ public class BuildSetting {
 	
 	private DebugSetting debugSetting;
 	private MidletSetting midletSetting; 
-	private ObfuscatorSetting obfuscatorSetting;
+	private ArrayList obfuscatorSettings;
+	private boolean doObfuscate;
 	private File workDir;
 	private File apiDir;
 	private File destDir;
@@ -79,6 +81,8 @@ public class BuildSetting {
 	private JadAttributes jadAttributes;
 	private boolean defaultMidpPathUsed = true;
 	private ArrayList preprocessors;
+	private AttributesFilter jadAttributesFilter;
+	private AttributesFilter manifestAttributesFilter;
 	
 	/**
 	 * Creates a new build setting.
@@ -101,8 +105,14 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredObfuscator( ObfuscatorSetting setting ) {
+		if (this.obfuscatorSettings == null) {
+			this.obfuscatorSettings = new ArrayList();
+		}
 		if (setting.isActive(this.project)) {
-			this.obfuscatorSetting = setting;
+			this.obfuscatorSettings.add( setting );
+			if (setting.isEnabled()) {
+				this.doObfuscate = true;
+			}
 		}
 	}
 	
@@ -138,12 +148,17 @@ public class BuildSetting {
 		this.variables = vars.getVariables();
 	}
 	
+	public void addConfiguredManifestFilter( AttributesFilter filter ) {
+		this.manifestAttributesFilter = filter;
+	}
+	
 	public Variable[] getVariables() {
 		return this.variables;
 	}
 	
 	public void addConfiguredJad( JadAttributes attributes ) {
 		this.jadAttributes = attributes;
+		this.jadAttributesFilter = attributes.getFilter();
 	}
 	
 	public void addConfiguredPreprocessor( PreprocessorSetting preprocessor ) {
@@ -164,9 +179,9 @@ public class BuildSetting {
 		}
 	}
 	
-	public Attribute[] getJadAttributes() {
+	public Variable[] getJadAttributes() {
 		if (this.jadAttributes == null) {
-			return new Attribute[0];
+			return new Variable[0];
 		} else {
 			return this.jadAttributes.getAttributes();
 		}
@@ -687,10 +702,14 @@ public class BuildSetting {
 	}
 
 	/**
-	 * @return The obfuscator which should be used
+	 * @return The obfuscators which should be used
 	 */
-	public ObfuscatorSetting getObfuscatorSetting() {
-		return this.obfuscatorSetting;
+	public ObfuscatorSetting[] getObfuscatorSettings() {
+		if (this.obfuscatorSettings == null) {
+			return new ObfuscatorSetting[0];
+		} else { 
+			return (ObfuscatorSetting[]) this.obfuscatorSettings.toArray( new ObfuscatorSetting[ this.obfuscatorSettings.size() ] );
+		}
 	}
 	
 	/**
@@ -699,10 +718,9 @@ public class BuildSetting {
 	 * @param obfuscator The name of the obfuscator, e.g. "ProGuard" or "RetroGuard"
 	 */
 	public void setObfuscator( String obfuscator ) {
-		if (this.obfuscatorSetting == null) {
-			this.obfuscatorSetting = new ObfuscatorSetting();
-		}
-		this.obfuscatorSetting.setName( obfuscator );
+		ObfuscatorSetting setting = new ObfuscatorSetting();
+		setting.setName( obfuscator );
+		addConfiguredObfuscator( setting );
 	}
 	
 	/**
@@ -711,10 +729,7 @@ public class BuildSetting {
 	 * @return True when the jars should be obfuscated.
 	 */
 	public boolean doObfuscate() {
-		if (this.obfuscatorSetting == null) {
-			return false;
-		}
-		return this.obfuscatorSetting.isEnabled();
+		return this.doObfuscate;
 	}
 	
 	/**
@@ -723,10 +738,19 @@ public class BuildSetting {
 	 * @param obfuscate True when the jars should be obfuscated.
 	 */
 	public void setObfuscate( boolean obfuscate ) {
-		if (this.obfuscatorSetting == null) {
-			this.obfuscatorSetting = new ObfuscatorSetting();
+		if (obfuscate) {
+			if (this.obfuscatorSettings == null) {
+				this.obfuscatorSettings = new ArrayList();
+				ObfuscatorSetting setting = new ObfuscatorSetting();
+				setting.setEnable( true );
+				addConfiguredObfuscator(setting);
+			} else {
+				ObfuscatorSetting setting = (ObfuscatorSetting) this.obfuscatorSettings.get(0);
+				setting.setEnable(true);
+				this.doObfuscate = true;
+			}
+			
 		}
-		this.obfuscatorSetting.setEnable( obfuscate );
 	}
 
 	/**
@@ -766,5 +790,48 @@ public class BuildSetting {
 		return file;
 	}
 
+	/**
+	 * Determines whether there is a filter registered for JAD attributes
+	 * 
+	 * @return true when there is a filter defined.
+	 */
+	public boolean hasJadAttributesFilter() {
+		return (this.jadAttributesFilter != null);
+	}
+
+	/**
+	 * Filters the given JAD attributes.
+	 * 
+	 * @param attributesMap a hash map containing the available attributes
+	 *        with the attribute-names as keys.
+	 * @return an array of attributes in the correct order,
+	 *         not all given attributes are guaranteed to be included.
+	 * @throws NullPointerException when there is no JAD-attribute filter.
+	 */
+	public Variable[] filterJadAttributes( HashMap attributesMap ) {
+		return this.jadAttributesFilter.filterAttributes(attributesMap);
+	}
 	
+	/**
+	 * Determines whether there is a filter registered for manifest attributes
+	 * 
+	 * @return true when there is a filter defined.
+	 */
+	public boolean hasManifestAttributesFilter() {
+		return (this.manifestAttributesFilter != null);
+	}
+
+	/**
+	 * Filters the given manifest attributes.
+	 * 
+	 * @param attributesMap a hash map containing the available attributes
+	 *        with the attribute-names as keys.
+	 * @return an array of attributes in the correct order,
+	 *         not all given attributes are guaranteed to be included.
+	 * @throws NullPointerException when there is no MANIFEST-attribute filter.
+	 */
+	public Variable[] filterManifestAttributes( HashMap attributesMap ) {
+		return this.manifestAttributesFilter.filterAttributes(attributesMap);
+	}
+		
 }

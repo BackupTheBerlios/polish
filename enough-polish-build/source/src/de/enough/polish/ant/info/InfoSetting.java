@@ -25,9 +25,10 @@
  */
 package de.enough.polish.ant.info;
 
-import de.enough.polish.Variable;
 
 import org.apache.tools.ant.BuildException;
+
+import de.enough.polish.Variable;
 
 import java.util.ArrayList;
 

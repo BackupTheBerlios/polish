@@ -39,6 +39,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Obfuscates jar-files using the RetroGuard-obfuscator from Retrologic.</p>
@@ -75,6 +76,13 @@ public class RetroGuardObfuscator extends Obfuscator {
 			String[] preserve, Path bootClassPath) throws BuildException 
 	{
         try {
+    		System.out.println("Starting obfuscation with RetroGuard.");
+	        StringBuffer preserveBuffer = new StringBuffer();
+	        for (int i = 0; i < preserve.length; i++) {
+				preserveBuffer.append(".class " )
+							  .append( TextUtil.replace( preserve[i], '.', '/') )
+							  .append('\n');
+			}
         	this.logBuffer.clear();
         	AntClassLoader antClassLoader = new AntClassLoader( this.project, bootClassPath );
         	antClassLoader.addPathElement( this.libDir.getAbsolutePath() + File.separator + "retroguard.jar");
@@ -86,8 +94,8 @@ public class RetroGuardObfuscator extends Obfuscator {
         	Class guardDbClass = antClassLoader.forceLoadClass("COM.rl.obf.GuardDB");
         	Constructor guardDbConstructor = guardDbClass.getConstructor( new Class[]{ File.class} );
         	Class rgsEnumClass = antClassLoader.forceLoadClass("COM.rl.obf.RgsEnum");
-        	Constructor rgsEnumConstructor = rgsEnumClass.getConstructor( new Class[]{ InputStream.class });
-        	Object rgsEnum = rgsEnumConstructor.newInstance( new Object[]{new PreserveInputStream( preserve ) } );
+        	Constructor rgsEnumConstructor = rgsEnumClass.getConstructor( new Class[]{ String.class });
+        	Object rgsEnum = rgsEnumConstructor.newInstance( new Object[]{ preserveBuffer.toString() } );
         	Object database = guardDbConstructor.newInstance( new Object[]{ sourceFile } );
         	Method retain = guardDbClass.getMethod( "retain", new Class[]{ rgsEnumClass, PrintWriter.class} );
         	Method remapTo = guardDbClass.getMethod( "remapTo", new Class[]{ File.class, PrintWriter.class } );
@@ -106,6 +114,8 @@ public class RetroGuardObfuscator extends Obfuscator {
         	} finally {
         		close.invoke( database, new Object[0] );
         	}
+        	System.out.println("RetroGuard has successfully finished obfuscation.");
+        	//this.logBuffer.print();
         } catch (Exception e) {
         	System.out.println("RetroGuard-Log:\n");
         	this.logBuffer.print();
@@ -126,8 +136,9 @@ public class RetroGuardObfuscator extends Obfuscator {
 	        for (int i = 0; i < preserve.length; i++) {
 				preserveBuffer.append(".class " )
 							  .append( preserve[i] )
-							  .append('\n');
+							  .append( " protected\n");
 			}
+	        System.out.println("RETROGUARD PRESERVING: " + preserveBuffer.toString() );
 	        this.buffer = preserveBuffer.toString().getBytes();
 		}
 		

@@ -51,10 +51,7 @@ public class Jad {
 	}
 	
 	public void addAttribute( String name, String value ) {
-		if (!name.endsWith(":")) {
-			name += ':';
-		}
-		this.attributes.add( name + " " + value );
+		this.attributes.add( name + ": " + value );
 	}
 	
 	public String[] getContent() {
@@ -72,5 +69,15 @@ public class Jad {
 			Variable var = vars[i];
 			addAttribute( var.getName(), var.getValue() );
 		}
+	}
+
+	/**
+	 * Sets all attributes in one go.
+	 * 
+	 * @param sortedAttributes the attributes in the correct order. 
+	 */
+	public void setAttributes(Variable[] sortedAttributes ) {
+		this.attributes.clear();
+		addAttributes( sortedAttributes );
 	}
 }

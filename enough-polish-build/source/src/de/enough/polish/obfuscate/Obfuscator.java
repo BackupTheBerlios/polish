@@ -104,6 +104,7 @@ public abstract class Obfuscator {
 			} catch (BuildException e) {
 				throw e;
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new BuildException( "Unable to load obfuscator [" + setting.getClassName() + "]: " + e.getMessage(), e );
 			}
 		}
@@ -146,7 +147,7 @@ public abstract class Obfuscator {
 	 * @param lbDir the main library directory
 	 * @param lbManager the api manager 
 	 */
-	private void init(Project proj, File lbDir, LibraryManager lbManager) {
+	public void init(Project proj, File lbDir, LibraryManager lbManager) {
 		this.project = proj;
 		this.libDir = lbDir;
 		this.libraryManager = lbManager;
