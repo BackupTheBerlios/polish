@@ -1,7 +1,7 @@
 /*
  * Created on May 31, 2004
  * 
- * Copyright (c) 2004 Robert Virkus / enough software
+ * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -21,7 +21,7 @@
  * 
  * Commercial licenses are also available, please
  * refer to the accompanying LICENSE.txt or visit
- * www.enough.de/j2mepolish for details.
+ * http://www.j2mepolish.org for details.
  */
 package com.izforge.izpack.panels;
 import java.awt.*;
@@ -46,7 +46,7 @@ import com.izforge.izpack.util.MultiLineLabel;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ChooseLicensePanel extends IzPanel 
-implements KeyListener,  ChangeListener, DocumentListener {
+implements KeyListener, ChangeListener, DocumentListener {
 	
 	private final static int GPL = 1;
 	private final static int EVALUATION = 2;
