@@ -907,6 +907,9 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
+		if (this.menuCommands == null) {
+			return;
+		}
 		int index = this.menuCommands.indexOf(cmd);
 		if (index == -1) {
 			return;
