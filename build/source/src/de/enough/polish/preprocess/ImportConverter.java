@@ -59,24 +59,24 @@ public final class ImportConverter {
 	public ImportConverter() {
 		// init import statements to translate from the J2ME- to the polish-GUI:
 		HashMap toPolish = new HashMap();
-		toPolish.put( "javax.microedition.lcdui.Choice", "de.enough.polish.ui.Choice");
-		toPolish.put( "javax.microedition.lcdui.ChoiceGroup", "de.enough.polish.ui.ChoiceGroup");
-		toPolish.put( "javax.microedition.lcdui.CustomItem", "de.enough.polish.ui.CustomItem");
-		toPolish.put( "javax.microedition.lcdui.DateField", "de.enough.polish.ui.DateField");
-		toPolish.put( "javax.microedition.lcdui.Form", "de.enough.polish.ui.Form");
-		toPolish.put( "javax.microedition.lcdui.Gauge", "de.enough.polish.ui.Gauge");
-		toPolish.put( "javax.microedition.lcdui.ImageItem", "de.enough.polish.ui.ImageItem");
-		toPolish.put( "javax.microedition.lcdui.Item", "de.enough.polish.ui.Item");
-		toPolish.put( "javax.microedition.lcdui.ItemCommandListener", "de.enough.polish.ui.ItemCommandListener");
-		toPolish.put( "javax.microedition.lcdui.ItemStateListener", "de.enough.polish.ui.ItemStateListener");
-		toPolish.put( "javax.microedition.lcdui.List", "de.enough.polish.ui.List");
-		toPolish.put( "javax.microedition.lcdui.Screen", "de.enough.polish.ui.Screen");
-		toPolish.put( "javax.microedition.lcdui.Spacer", "de.enough.polish.ui.Spacer");
-		toPolish.put( "javax.microedition.lcdui.StringItem", "de.enough.polish.ui.StringItem");
-		toPolish.put( "javax.microedition.lcdui.Style", "de.enough.polish.ui.Style");
-		toPolish.put( "javax.microedition.lcdui.TextBox", "de.enough.polish.ui.TextBox");
-		toPolish.put( "javax.microedition.lcdui.TextField", "de.enough.polish.ui.TextField");
-		toPolish.put( "javax.microedition.lcdui.Ticker", "de.enough.polish.ui.Ticker");
+		toPolish.put( "javax.microedition.lcdui.Choice", "de.enough.polish.ui.Choice; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.ChoiceGroup", "de.enough.polish.ui.ChoiceGroup; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.CustomItem", "de.enough.polish.ui.CustomItem; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.DateField", "de.enough.polish.ui.DateField; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Form", "de.enough.polish.ui.Form; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Gauge", "de.enough.polish.ui.Gauge; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.ImageItem", "de.enough.polish.ui.ImageItem; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Item", "de.enough.polish.ui.Item; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.ItemCommandListener", "de.enough.polish.ui.ItemCommandListener; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.ItemStateListener", "de.enough.polish.ui.ItemStateListener; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.List", "de.enough.polish.ui.List; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Screen", "de.enough.polish.ui.Screen; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Spacer", "de.enough.polish.ui.Spacer; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.StringItem", "de.enough.polish.ui.StringItem; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Style", "de.enough.polish.ui.Style; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.TextBox", "de.enough.polish.ui.TextBox; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.TextField", "de.enough.polish.ui.TextField; import de.enough.polish.ui.StyleSheet");
+		toPolish.put( "javax.microedition.lcdui.Ticker", "de.enough.polish.ui.Ticker; import de.enough.polish.ui.StyleSheet");
 		this.midp2ToPolish = toPolish;
 		
 		this.siemensColorGameApiToPolish = new HashMap( toPolish );
@@ -87,11 +87,11 @@ public final class ImportConverter {
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet");
 		
 		this.polishToSiemensColorGameApi = new HashMap();
-		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas" );
-		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer" );
-		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager" );
-		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer" );
-		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite");
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas; import de.enough.polish.ui.StyleSheet" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer; import de.enough.polish.ui.StyleSheet" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager; import de.enough.polish.ui.StyleSheet" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer; import de.enough.polish.ui.StyleSheet" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet");
 		
 		toPolish = new HashMap( toPolish );
 		toPolish.put( "javax.microedition.lcdui.game.GameCanvas", "de.enough.polish.ui.game.GameCanvas; import de.enough.polish.ui.StyleSheet");
