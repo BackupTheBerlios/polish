@@ -391,6 +391,8 @@ public class Sprite
 			this.transform = s.transform;
 			//#ifdef polish.api.nokia-ui
 				this.nokiaTransform = s.nokiaTransform;
+				this.nokiaFrame = s.nokiaFrame;
+				this.nokiaFrames = s.nokiaFrames;
 			//#endif
 			this.collisionX = s.collisionX;
 			this.collisionY = s.collisionY;
