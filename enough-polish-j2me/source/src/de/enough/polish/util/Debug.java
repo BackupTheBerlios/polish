@@ -65,6 +65,74 @@ implements CommandListener
 			debug( message + exception );
 		}
 	}
+
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param message the message.
+	 * @param value the int value
+	 */
+	public static final void debug( String message, int value ) {
+		debug( message + value );
+	}
+	
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param message the message.
+	 * @param value the long value
+	 */
+	public static final void debug( String message, long value ) {
+		debug( message + value );
+	}
+
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param message the message.
+	 * @param value the short value
+	 */
+	public static final void debug( String message, short value ) {
+		debug( message + value );
+	}
+	
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param message the message.
+	 * @param value the byte value
+	 */
+	public static final void debug( String message, byte value ) {
+		debug( message + value );
+	}
+	
+	//#ifdef polish.cldc1.1
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param message the message.
+	 * @param value the float value
+	 */
+	public static final void debug( String message, float value ) {
+		debug( message + value );
+	}
+	//#endif
+	
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param message the message.
+	 * @param value the boolean value
+	 */
+	public static final void debug( String message, boolean value ) {
+		debug( message + value );
+	}
 	
 	/**
 	 * Prints the message or adds the message to the internal message list.
