@@ -96,6 +96,10 @@ public class StyleSheet {
 	private boolean containsDynamicStyles;
 	private boolean containsBeforeStyle;
 	private boolean containsAfterStyle;
+
+	private HashMap cssPreprocessingSymbols;
+
+	private HashMap cssAttributes;
 	
 	/**
 	 * Creates a new empty style sheet
@@ -600,16 +604,47 @@ public class StyleSheet {
 	 *        having a Boolean.TRUE as value.
 	 */
 	public HashMap getCssPreprocessingSymbols() {
-		HashMap symbols = new HashMap();
-		Style[] styles = getAllStyles();
-		for (int i = 0; i < styles.length; i++) {
-			Style style = styles[i];
-			String[] attributes = style.getDefinedAttributes();
-			for (int j = 0; j < attributes.length; j++) {
-				String attribute = attributes[j];
-				symbols.put( "polish.css." + attribute, Boolean.TRUE );
+		if (this.cssPreprocessingSymbols == null) {
+			HashMap symbols = new HashMap();
+			HashMap attributesByName = new HashMap();
+			Style[] myStyles = getAllStyles();
+			for (int i = 0; i < myStyles.length; i++) {
+				Style style = myStyles[i];
+				String[] attributes = style.getDefinedAttributes();
+				for (int j = 0; j < attributes.length; j++) {
+					String attribute = attributes[j];
+					symbols.put( "polish.css." + attribute, Boolean.TRUE );
+					attributesByName.put( attribute, Boolean.TRUE );
+				}
 			}
+			this.cssPreprocessingSymbols = symbols;
+			this.cssAttributes = attributesByName;
 		}
-		return symbols;
+		return this.cssPreprocessingSymbols;
+	}
+	
+	/**
+	 * Retrieves all defined css attributes in a map.
+	 * 
+	 * @return all defined css attributes in a map.
+	 */
+	public HashMap getCssAttributes() {
+		if (this.cssAttributes == null) {
+			getCssPreprocessingSymbols();
+		}
+		return this.cssAttributes;
+	}
+	
+	/**
+	 * Determines whether the given attribute is defined at all.
+	 * 
+	 * @param name the name of the css-attribute, e.g. "background-color"
+	 * @return true when the attribute is defined in this style-sheet.
+	 */
+	public boolean isCssAttributeDefined( String name ) {
+		if (this.cssAttributes == null) {
+			getCssPreprocessingSymbols();
+		}
+		return (this.cssAttributes.get( name ) != null);
 	}
 }

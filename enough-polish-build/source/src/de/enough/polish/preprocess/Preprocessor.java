@@ -25,6 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
+import de.enough.polish.Device;
 import de.enough.polish.PolishProject;
 import de.enough.polish.util.*;
 
@@ -90,6 +91,7 @@ public class Preprocessor {
 	private BooleanEvaluator booleanEvaluator;
 	private StyleSheet styleSheet;
 	private boolean usePolishGui;
+	private LineProcessor[] lineProcessors;
 	protected static final Pattern SYSTEM_PRINT_PATTERN = Pattern.compile(
 				"System.(out|err).print(ln)?\\s*\\(" );
 
@@ -150,7 +152,42 @@ public class Preprocessor {
 		this.supportedDirectives.put( "define", Boolean.TRUE );
 		this.supportedDirectives.put( "undefine", Boolean.TRUE );
 	}
+	
+	public void setLineProcessors( LineProcessor[] lineProcessors ) {
+		this.lineProcessors = lineProcessors;	
+	}
 
+	/**
+	 * Notifies the processor that from now on source code from the J2ME Polish package is processed.
+	 * This will last until the notifyDevice(...)-method is called.
+	 */
+	public void notifyPolishPackageStart() {
+		if (this.lineProcessors != null) {
+			for (int i = 0; i < this.lineProcessors.length; i++) {
+				LineProcessor processor = this.lineProcessors[i];
+				processor.notifyPolishPackageStart();
+			}
+		}
+	}
+	
+	
+	/**
+	 * Notifies this processor about a new device for which code is preprocessed.
+	 * The default implementation set the currentDevice, currentStyleSheet
+	 * and isUsingPolishGui and resets the isInJ2MEPolishPackage instance variables.
+	 *  
+	 * @param device the new device
+	 * @param usesPolishGui true when the J2ME Polish GUI is used for the new device
+	 */
+	public void notifyDevice( Device device, boolean usesPolishGui ) {
+		if (this.lineProcessors != null) {
+			for (int i = 0; i < this.lineProcessors.length; i++) {
+				LineProcessor processor = this.lineProcessors[i];
+				processor.notifyDevice(device, usesPolishGui);
+			}
+		}
+	}	
+	
 	/**
 	 * Sets the direcotry to which the preprocessed files should be copied to.
 	 * 
@@ -345,6 +382,14 @@ public class Preprocessor {
 		} catch (BuildException e) {
 			reset();
 			throw e;
+		}
+		if (this.lineProcessors != null) {
+			for (int i = 0; i < this.lineProcessors.length; i++) {
+				LineProcessor processor = this.lineProcessors[i];
+				lines.reset();
+				processor.processClass(lines, className);
+			}
+			changed = changed || lines.hasChanged();
 		}
 		if (changed) {
 			return CHANGED;
@@ -900,7 +945,6 @@ public class Preprocessor {
 		if (this.debugManager.isDebugEnabled( className, argument )) {
 			boolean verboseDebug = this.debugManager.isVerbose();
 			if (verboseDebug) {
-				//System.out.println("is verbose debug!");
 				insertVerboseDebugInfo( lines, className );
 			}
 			return (verboseDebug | uncommentLine( line, lines ) | convertSystemOut( lines ));
@@ -1013,7 +1057,7 @@ public class Preprocessor {
 			+ " line " + (lines.getCurrentIndex() + 1 - lines.getNumberOfInsertedLines()) 
 			+ "\" );";
 		lines.insert( debugVerbose );
-		lines.next();
+		//lines.next();
 	}
 	
 	/**

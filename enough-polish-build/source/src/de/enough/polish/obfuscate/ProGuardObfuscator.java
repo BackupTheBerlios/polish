@@ -67,9 +67,10 @@ public class ProGuardObfuscator extends Obfuscator {
 	public void obfuscate(Device device, File sourceFile, File targetFile, String[] preserve, Path bootClassPath) 
 	throws BuildException 
 	{
+		// create the configuration for ProGuard:
 		Configuration cfg = new Configuration();
-		// set libraries:
 		
+		// set libraries:
 		cfg.libraryJars  = getPath( bootClassPath.toString() );
 		String[] apiPaths = device.getClassPaths();
 		for (int i = 0; i < apiPaths.length; i++) {
@@ -96,8 +97,8 @@ public class ProGuardObfuscator extends Obfuscator {
 	                    false));
 		}
         // The preverify tool seems to unpack the resulting class files,
-        // so we must not use mixed-case class names on Windows.
-        if (File.pathSeparatorChar == '\\') {
+        // so we must not use mixed-case class names on Windows:
+        if (File.separatorChar == '\\') {
         	cfg.useMixedCaseClassNames = false;
         } else {
         	cfg.useMixedCaseClassNames = true;

@@ -1,5 +1,5 @@
 /*
- * Created on 12-Jun-2004 at 15:11:40.
+ * Created on 21-Jun-2004 at 13:05:20.
  * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
@@ -23,34 +23,56 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess;
+package de.enough.polish.preprocess.lineprocessors;
 
+import de.enough.polish.Device;
+import de.enough.polish.preprocess.LineProcessor;
 import de.enough.polish.util.StringList;
 
 /**
- * <p>Converts call from MIDP getTicker() and setTicker(...) to J2ME Polish getPolishTicker() and setPolishTicker().</p>
- * <p>This is needed because in MIDP/2.0 the Ticker-calls have been moved from the
- * Screen class to the Displayable-class.
- * </p>
+ * <p>Makes some standard preprocessing like the determination whether the Ticker-class is used etc.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        12-Jun-2004 - rob creation
+ *        21-Jun-2004 - rob creation
  * </pre>
- * @author Robert Virkus, robert@enough.de
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class TickerConverter {
+public class PolishLineProcessor extends LineProcessor {
+	
+	private boolean isTickerUsed;
 
 	/**
-	 * Converts all getTicker()- and setTicker()-calls to the J2ME Polish-equivalent.
-	 * 
-	 * @param lines the source-code
-	 * @return true when the source-code has been changed.
+	 * Creates a new uninitialised PolishLineProcessor 
 	 */
-	public static final boolean convertTickerCalls( StringList lines ) {
-		lines.reset();
-		boolean changed = false;
+	public PolishLineProcessor() {
+		super();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.LineProcessor#notifyDevice(de.enough.polish.Device, boolean)
+	 */
+	public void notifyDevice(Device device, boolean usesPolishGui) {
+		super.notifyDevice(device, usesPolishGui);
+		this.isTickerUsed = false;
+	}
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.LineProcessor#notifyPolishPackageStart()
+	 */
+	public void notifyPolishPackageStart() {
+		super.notifyPolishPackageStart();
+		if (this.isTickerUsed) {
+			this.preprocessor.removeSymbol("polish.skipTicker");
+		} else {
+			this.preprocessor.addSymbol("polish.skipTicker");
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.LineProcessor#processClass(de.enough.polish.util.StringList, java.lang.String)
+	 */
+	public void processClass(StringList lines, String className) {
 		while (lines.next() ) {
 			String line = lines.getCurrent();
 			int startPos = line.indexOf(".getTicker"); 
@@ -58,7 +80,7 @@ public final class TickerConverter {
 				line = line.substring(0, startPos)
 					+ ".getPolishTicker"
 					+ line.substring( startPos + 10 );
-				changed = true;
+				this.isTickerUsed = true;
 				lines.setCurrent( line );
 			}
 			startPos = line.indexOf(".setTicker");
@@ -66,11 +88,9 @@ public final class TickerConverter {
 				line = line.substring(0, startPos)
 					+ ".setPolishTicker"
 					+ line.substring( startPos + 10 );
-				changed = true;
+				this.isTickerUsed = true;
 				lines.setCurrent( line );
 			}
 		}
-		return changed;
 	}
-
 }

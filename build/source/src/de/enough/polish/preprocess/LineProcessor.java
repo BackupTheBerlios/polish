@@ -42,6 +42,10 @@ public abstract class LineProcessor {
 
 	protected Preprocessor preprocessor;
 	protected BooleanEvaluator booleanEvaluator;
+	protected boolean isUsingPolishGui;
+	protected boolean isInJ2MEPolishPackage;
+	protected Device currentDevice;
+	protected StyleSheet currentStyleSheet;
 
 	/**
 	 * Creates a new line-processor.
@@ -58,22 +62,35 @@ public abstract class LineProcessor {
 		this.booleanEvaluator = processor.getBooleanEvaluator();
 	}
 	
+	/**
+	 * Notifies the processor that from now on source code from the J2ME Polish package is processed.
+	 * This will last until the notifyDevice(...)-method is called.
+	 */
 	public void notifyPolishPackageStart() {
-		// default implementation does nothing
+		this.isInJ2MEPolishPackage = true;
+	}
+		
+	/**
+	 * Notifies this processor about a new device for which code is preprocessed.
+	 * The default implementation set the currentDevice, currentStyleSheet
+	 * and isUsingPolishGui and resets the isInJ2MEPolishPackage instance variables.
+	 *  
+	 * @param device the new device
+	 * @param usesPolishGui true when the J2ME Polish GUI is used for the new device
+	 */
+	public void notifyDevice( Device device, boolean usesPolishGui ) {
+		this.currentDevice = device;
+		this.isUsingPolishGui = usesPolishGui;
+		this.currentStyleSheet = this.preprocessor.getStyleSheet();
+		this.isInJ2MEPolishPackage = false;
 	}
 	
-	public void notifyClassStart( String className, StringList lines ) {
-		// default implementation does nothing
-	}
-	
-	public void notifyClassEnd( String className, StringList lines ) {
-		// default implementation does nothing		
-	}
-	
-	public void notifyDevice( Device device ) {
-		// default implementation does nothing
-	}
-	
-	public abstract String processLine( String line, StringList lines, String className );
+	/**
+	 * Processes the given class.
+	 * 
+	 * @param lines the source code of the class
+	 * @param className the name of the class
+	 */
+	public abstract void processClass( StringList lines, String className );
 
 }

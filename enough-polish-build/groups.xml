@@ -44,6 +44,7 @@
 		<name>Series60</name>
 		<parent>Nokia-UI</parent>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="ScreenSize" value="176x208" />
 	</group>
 
 	<group>

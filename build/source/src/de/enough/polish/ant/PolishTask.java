@@ -32,6 +32,7 @@ import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
+import de.enough.polish.preprocess.lineprocessors.PolishLineProcessor;
 import de.enough.polish.util.*;
 
 import org.apache.tools.ant.*;
@@ -89,6 +90,14 @@ public class PolishTask extends ConditionalTask {
 	private File errorLock;
 
 	private boolean lastRunFailed;
+
+	private StringList styleSheetCode;
+
+	private int numberOfChangedFiles;
+
+	private File polishSourceDir;
+
+	private TextFile[] polishSourceFiles;
 	
 	/**
 	 * Creates a new empty task 
@@ -243,6 +252,9 @@ public class PolishTask extends ConditionalTask {
 			this.polishProject.addFeature("showLogOnError");
 		}
 		this.polishProject.addCapability("license", this.infoSetting.getlicense() );
+		if (isDebugEnabled) {
+			this.polishProject.addFeature("debugEnabled");
+		}
 		// add some specified features:
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());
 		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
@@ -306,21 +318,22 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		}
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
-		
+		LineProcessor lineProcessor = new PolishLineProcessor();
+		lineProcessor.init(this.preprocessor);
+		this.preprocessor.setLineProcessors( new LineProcessor[]{ lineProcessor } );
 		
 		//	initialise the preprocessing-source-directories:
 		DirectoryScanner dirScanner = new DirectoryScanner();
 		dirScanner.setIncludes( new String[]{"**/*.java"} );
 		File[] dirs = this.buildSetting.getSourceDirs();
-		this.sourceDirs = new File[ dirs.length + 1];
-		this.sourceFiles = new TextFile[ dirs.length + 1][];
+		this.sourceDirs = new File[ dirs.length];
+		this.sourceFiles = new TextFile[ dirs.length][];
 		if (this.buildSetting.getPolishDir() != null) {
 			// there is an explicit J2ME Polish directory:
-			File polishDir = this.buildSetting.getPolishDir();
-			this.sourceDirs[ 0 ] = polishDir;
-			dirScanner.setBasedir(polishDir);
+			this.polishSourceDir = this.buildSetting.getPolishDir();
+			dirScanner.setBasedir(this.polishSourceDir);
 			dirScanner.scan();
-			this.sourceFiles[ 0 ] = getTextFiles( polishDir,  dirScanner.getIncludedFiles() );
+			this.polishSourceFiles = getTextFiles( this.polishSourceDir,  dirScanner.getIncludedFiles() );
 		} else {
 			// the J2ME Polish sources need to be loaded from the jar-file:
 			long lastModificationTime = 0;
@@ -333,10 +346,10 @@ public class PolishTask extends ConditionalTask {
 					lastModificationTime = jarFile.lastModified();
 				}
 			}
-			this.sourceDirs[ 0 ] = new File("src");
+			this.polishSourceDir = new File("src");
 			try {
 				String[] fileNames = this.resourceUtil.readTextFile("build/j2mepolish.index.txt");
-				this.sourceFiles[ 0 ] = getTextFiles( "src", fileNames, lastModificationTime );
+				this.polishSourceFiles = getTextFiles( "src", fileNames, lastModificationTime );
 			} catch (IOException e) {
 				throw new BuildException("Unable to load the J2ME source files from enough-j2mepolish-build.jar: " + e.getMessage(), e );
 			}
@@ -347,10 +360,10 @@ public class PolishTask extends ConditionalTask {
 			if (!dir.exists()) {
 				throw new BuildException("The source-directory [" + dir.getAbsolutePath() + "] does not exist. Please check your settings in the [sourceDir] attribute of the <build> element.");
 			}
-			this.sourceDirs[i+1] = dir; 
+			this.sourceDirs[i] = dir; 
 			dirScanner.setBasedir(dir);
 			dirScanner.scan();
-			this.sourceFiles[i+1] = getTextFiles( dir,  dirScanner.getIncludedFiles() );
+			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles() );
 		}
 		if (this.buildSetting.usesPolishGui() && this.styleSheetFile == null) {
 			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the [polishDir] attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
@@ -485,7 +498,7 @@ public class PolishTask extends ConditionalTask {
 	private void preprocess( Device device ) {
 		System.out.println("preprocessing for device [" +  device.getIdentifier() + "]." );
 		try {
-			int numberOfChangedFiles = 0;
+			this.numberOfChangedFiles = 0;
 			String targetDir = this.buildSetting.getWorkDir().getAbsolutePath() 
 				+ File.separatorChar + device.getVendorName() 
 				+ File.separatorChar + device.getName();
@@ -512,86 +525,18 @@ public class PolishTask extends ConditionalTask {
 				lastCssModification = cssStyleSheet.lastModified();
 			}
 			this.preprocessor.setSyleSheet( cssStyleSheet );
-			StringList styleSheetCode = null;
-			boolean usesTicker = false;
+			this.preprocessor.notifyDevice(device, usePolishGui);
 			// preprocess each source file:
 			for (int i = 0; i < this.sourceDirs.length; i++) {
 				File sourceDir = this.sourceDirs[i];
-				this.preprocessor.addVariable( "polish.source", sourceDir.getAbsolutePath() );
 				TextFile[] files = this.sourceFiles[i];
-				//System.out.println("current source dir: " + sourceDir );
-				// preprocess each file in that source-dir:
-				for (int j = 0; j < files.length; j++) {
-					TextFile file = files[j];
-					// check if file needs to be preprocessed at all:
-					long sourceLastModified = file.lastModified();
-					File targetFile = new File( targetDir
-							+ File.separatorChar + file.getFileName() );
-					long targetLastModified = targetFile.lastModified();
-					// preprocess this file, but only when there can
-					// be changes at all - this could be when
-					// 1. The preprocessed file does not yet exists
-					// 2. The source file has been modified since the last run
-					// 3. The build.xml has been modified since the last run
-					// 4. One of the polish.css files has been modified since the last run 
-					// when only the CSS files have changed
-					boolean saveInAnyCase =  ( !targetFile.exists() )
-							 || ( sourceLastModified > targetLastModified )
-							 || ( buildXmlLastModified > targetLastModified ); 
-					boolean preprocess = ( saveInAnyCase )
-							 || ( lastCssModification > targetLastModified);
-					if (   preprocess ) {
-						// preprocess this file:
-						StringList sourceCode = new StringList( file.getContent() );
-						// generate the class-name from the file-name:
-						String className = file.getFileName();
-						if (className.endsWith(".java")) {
-							className = className.substring(0, className.length() - 5 );
-							// in a jarfile the files always have a '/' as a path-seperator:
-							className = TextUtil.replace(className, '/', '.' );
-						}
-						className = TextUtil.replace(className, File.separatorChar, '.' );
-						// set the StyleSheet.display variable in all MIDlets
-						if ( (this.midletClassesByName.get( className ) != null) 
-								&& usePolishGui) {
-							insertDisplaySetting( className, sourceCode );
-							sourceCode.reset();
-						}
-						int result = this.preprocessor.preprocess( className, sourceCode );
-						// only think about saving when the file should not be skipped 
-						// and when it is not the StyleSheet.java file:
-						if (file == this.styleSheetFile ) {
-							styleSheetCode = sourceCode;
-						} else  if (result != Preprocessor.SKIP_FILE) {
-							sourceCode.reset();
-							// now replace the import statements:
-							boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode);
-							if (changed) {
-								result = Preprocessor.CHANGED;
-							}
-							// save modified file:
-							if ( ( saveInAnyCase ) 
-							  || (result == Preprocessor.CHANGED) ) 
-							{
-								// now process the getTicker() and setTicker() calls:
-								usesTicker = TickerConverter.convertTickerCalls(sourceCode);
-								//System.out.println( "preprocessed [" + className + "]." );
-								file.saveToDir(targetDir, sourceCode.getArray(), false );
-								numberOfChangedFiles++;
-							//} else {
-							//	System.out.println("not saving " + file.getFileName() );
-							}
-						//} else {
-						//	System.out.println("Skipping file " + file.getFileName() );
-						}
-					} // when preprocessing should be done.
-				} // for each file
+				processSourceDir(sourceDir, files, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
 			} // for each source folder
+			this.preprocessor.notifyPolishPackageStart();
+			// now process the J2ME package files:
+			processSourceDir(this.polishSourceDir, this.polishSourceFiles, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, true);
 			
-			if (usesTicker) {
-				//TODO rob add preprocessing symbol for J2ME Polish library,
-				// so that the ticker class can be removed completely
-			}
+			
 			// now all files have been preprocessed.
 			// Now the StyleSheet.java file needs to be written,
 			// but only when the polish GUI should be used:
@@ -603,28 +548,28 @@ public class PolishTask extends ConditionalTask {
 					|| ( buildXmlLastModified > targetFile.lastModified() );
 				if (cssIsNew) {
 					//System.out.println("CSS is new and the style sheet will be generated.");
-					if (styleSheetCode == null) {
+					if (this.styleSheetCode == null) {
 						// the style sheet has not been preprocessed:
-						styleSheetCode = new StringList( this.styleSheetFile.getContent() );
+						this.styleSheetCode = new StringList( this.styleSheetFile.getContent() );
 						String className = "de.enough.polish.ui.StyleSheet";
-						this.preprocessor.preprocess( className, styleSheetCode );
+						this.preprocessor.preprocess( className, this.styleSheetCode );
 					}
 					// now insert the CSS information for this device
 					// into the StyleSheet.java source-code:
 					CssConverter cssConverter = new CssConverter();
-					styleSheetCode.reset();
-					cssConverter.convertStyleSheet(styleSheetCode, 
+					this.styleSheetCode.reset();
+					cssConverter.convertStyleSheet(this.styleSheetCode, 
 							this.preprocessor.getStyleSheet(),
 							device,
 							this.preprocessor ); 				
-					this.styleSheetFile.saveToDir(targetDir, styleSheetCode.getArray(), false );
-					numberOfChangedFiles++;
+					this.styleSheetFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
+					this.numberOfChangedFiles++;
 				//} else {
 				//	System.out.println("CSSS is not new - last CSS modification == " + lastCssModification + " <= StyleSheet.java.lastModified() == " + targetFile.lastModified() );
 				}
 				
 			}
-			device.setNumberOfChangedFiles( numberOfChangedFiles );
+			device.setNumberOfChangedFiles( this.numberOfChangedFiles );
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new BuildException( e.getMessage() );
@@ -635,6 +580,87 @@ public class PolishTask extends ConditionalTask {
 			e.printStackTrace();
 			throw new BuildException( e.getMessage() );
 		}
+	}
+	
+	private void processSourceDir( File sourceDir, 
+									TextFile[] files, 
+									Device device, 
+									boolean usePolishGui, 
+									String targetDir, 
+									long buildXmlLastModified,  
+									long lastCssModification,
+									boolean isInPolishPackage)
+	throws IOException
+	{
+		this.preprocessor.addVariable( "polish.source", sourceDir.getAbsolutePath() );
+		//System.out.println("current source dir: " + sourceDir );
+		// preprocess each file in that source-dir:
+		for (int j = 0; j < files.length; j++) {
+			TextFile file = files[j];
+			// check if file needs to be preprocessed at all:
+			long sourceLastModified = file.lastModified();
+			File targetFile = new File( targetDir
+					+ File.separatorChar + file.getFileName() );
+			long targetLastModified = targetFile.lastModified();
+			// preprocess this file, but only when there can
+			// be changes at all - this could be when
+			// 1. The preprocessed file does not yet exists
+			// 2. The source file has been modified since the last run
+			// 3. The build.xml has been modified since the last run
+			// 4. One of the polish.css files has been modified since the last run 
+			// when only the CSS files have changed
+			boolean saveInAnyCase =  ( !targetFile.exists() )
+					 || ( sourceLastModified > targetLastModified )
+					 || ( buildXmlLastModified > targetLastModified ); 
+			boolean preprocess = ( saveInAnyCase )
+					 || ( lastCssModification > targetLastModified);
+			if (   preprocess ) {
+				// preprocess this file:
+				StringList sourceCode = new StringList( file.getContent() );
+				// generate the class-name from the file-name:
+				String className = file.getFileName();
+				if (className.endsWith(".java")) {
+					className = className.substring(0, className.length() - 5 );
+					// in a jarfile the files always have a '/' as a path-seperator:
+					className = TextUtil.replace(className, '/', '.' );
+				}
+				className = TextUtil.replace(className, File.separatorChar, '.' );
+				// set the StyleSheet.display variable in all MIDlets
+				if ( (this.midletClassesByName.get( className ) != null) 
+						&& usePolishGui) {
+					insertDisplaySetting( className, sourceCode );
+					sourceCode.reset();
+				}
+				int result = this.preprocessor.preprocess( className, sourceCode );
+				// only think about saving when the file should not be skipped 
+				// and when it is not the StyleSheet.java file:
+				if (file == this.styleSheetFile ) {
+					this.styleSheetCode = sourceCode;
+				} else  if (result != Preprocessor.SKIP_FILE) {
+					if (!isInPolishPackage) {
+						sourceCode.reset();
+						// now replace the import statements:
+						boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode);
+						if (changed) {
+							result = Preprocessor.CHANGED;
+						}
+					}
+					// save modified file:
+					if ( ( saveInAnyCase ) 
+					  || (result == Preprocessor.CHANGED) ) 
+					{
+						//System.out.println( "preprocessed [" + className + "]." );
+						file.saveToDir(targetDir, sourceCode.getArray(), false );
+						this.numberOfChangedFiles++;
+					//} else {
+					//	System.out.println("not saving " + file.getFileName() );
+					}
+				//} else {
+				//	System.out.println("Skipping file " + file.getFileName() );
+				}
+			} // when preprocessing should be done.
+		} // for each file
+		
 	}
 	
 	/**

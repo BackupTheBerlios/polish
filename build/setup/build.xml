@@ -56,13 +56,13 @@
 			license="%{J2ME_POLISH_LICENSE}"
 			name="J2ME Polish"
 			version="1.3.4"
-			description="A test project"
+			description="A sample project"
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
 			jarName="${polish.vendor}-${polish.name}-example.jar" 
 			jarUrl="${polish.jarName}"
-		    copyright="Copyright 2004 enough software. All rights reserved."
+		    copyright="Copyright 2004 Enough Software. All rights reserved."
 		    deleteConfirm="Do you really want to kill me?" 
 			/>
 		<!-- selection of supported devices -->
@@ -73,13 +73,15 @@
 			<requirement name="Identifier" value="Nokia/3650, Nokia/6600" />
 		</deviceRequirements>
 		<deviceRequirements unless="test">
+			<requirement name="Identifier" value="Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
+			<!-- on could use other devices for real builds, e.g. :
 			<or>
-				<requirement name="Identifier" value="Nokia/3650" />
 				<and>
 					<requirement name="JavaPackage" value="nokia-ui" />
 					<requirement name="BitsPerPixel" value="16+" />
 				</and>
 			</or>
+			 -->
 		</deviceRequirements>
 	    <!-- build settings -->
 		<!-- Here you can set the resDir attribute to "resources2" 
@@ -96,19 +98,25 @@
 			<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
-				<!-- an example variable:
+				<!-- example variables:
 				In your Java-code you can use the following snipet to use this variable:
 				//#= private static final String UPDATE_URL = "${ update-url }";
+				You can change the title of the sample application with the "title"-var.
 				-->
 				<variable name="update-url" value="http://www.enough.de/update" />
+				<variable name="title" value="J2ME Polish" />
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator unless="test" enable="true" name="ProGuard" />
 			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug if="test" enable="true" useGui="true" verbose="true" level="error">
+			<debug if="test" enable="true" showLogOnError="true" verbose="true" level="error">
 				<filter pattern="de.enough.polish.example.*" level="debug" />
 				<filter pattern="de.enough.polish.ui.*" level="warn" />
 			</debug>
+			<!-- user defined JAD attributes can also be used: -->
+			<jad>
+				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.Vendor == Nokia" />
+			</jad>			
 		</build>
 	</j2mepolish>
 </target>

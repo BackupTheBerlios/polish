@@ -279,6 +279,7 @@ public class PolishComponent {
 	 */
 	public void addDirectCapability(Variable capability) {
 		this.capabilities.put( capability.getName(), capability.getValue() );
+		this.features.put( capability.getName() + ":defined", capability.getValue() );
 	}
 	
 

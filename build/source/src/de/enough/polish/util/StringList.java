@@ -51,6 +51,7 @@ public class StringList {
 	private int startIndex = 0;
 	private int currentIndex = -1;
 	private int numberOfInsertedLines;
+	private boolean hasChanged;
 	
 	/**
 	 * Creates a new StringList.
@@ -93,6 +94,7 @@ public class StringList {
 	 */
 	public void setCurrent( String value ) {
 		this.lines[ this.currentIndex ] = value;
+		this.hasChanged = true;
 	}
 	
 	/**
@@ -110,6 +112,7 @@ public class StringList {
 	 * @param values the string array which should be inserted.
 	 */
 	public void insert( String[] values ) {
+		//TODO rob remove +1 in StringList.insert()!
 		this.numberOfInsertedLines += values.length;
 		String[] newLines = new String[ this.lines.length + values.length ];
 		// copy the lines up to the current position:
@@ -120,6 +123,7 @@ public class StringList {
 		System.arraycopy( this.lines, this.currentIndex+1, newLines, this.currentIndex + 1 + values.length, this.lines.length - (this.currentIndex+1) );
 		// set the new lines:
 		this.lines = newLines;
+		this.hasChanged = true;
 	}
 	
 	/**
@@ -140,6 +144,7 @@ public class StringList {
 	 */
 	public void set( int index, String value ) {
 		this.lines[index] = value;
+		this.hasChanged = true;
 	}
 	
 	/**
@@ -200,6 +205,7 @@ public class StringList {
 	 */
 	public void reset() {
 		this.currentIndex = this.startIndex - 1;
+		this.hasChanged = false;
 	}
 	
 	
@@ -220,6 +226,15 @@ public class StringList {
 	 */
 	public void setCurrentIndex(int index) {
 		this.currentIndex = index;
+	}
+
+	/**
+	 * Determines whether this list has been changed.
+	 * 
+	 * @return true when this list has been changed
+	 */
+	public boolean hasChanged() {
+		return this.hasChanged;
 	}	
 
 }

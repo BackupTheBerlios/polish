@@ -41,6 +41,60 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 	</device>
 	
+<!-- virtuell devices -->
+<!-- These devices do not actually exist, but they share the common
+     capabilities of their "class".	
+-->
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series60</identifier>
+		<groups>Series60</groups>
+		<capability name="OS" value="Symbian"/>
+		<capability name="JavaPackage" value="mmapi, wmapi" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="VideoFormat" value="3GPP" />
+		<capability name="SoundFormat" value="midi, amr" />
+	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series60Midp2</identifier>
+		<groups>Series60</groups>
+		<capability name="OS" value="Symbian"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="VideoFormat" value="3GPP" />
+		<capability name="SoundFormat" value="midi, amr" />
+	</device>
+
+	<device>
+		<identifier>Nokia/Series40</identifier>
+		<groups>Series40</groups>
+		<capability name="OS" value="Symbian"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="JavaPackage" value="Nokia-UI" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi" />
+		<capability name="HeapSize" value="200kb" />
+		<capability name="MaxJarSize" value="64kb" />
+	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series40Midp2</identifier>
+		<groups>Series40</groups>
+		<capability name="OS" value="Symbian"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="Nokia-UI, WMAPI, MMAPI" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="VideoFormat" value="3GPP" />
+		<capability name="SoundFormat" value="midi" />
+		<capability name="HeapSize" value="512kb" />
+		<capability name="MaxJarSize" value="128kb" />
+	</device>
+	
 <!-- Sony-Ericsson devices -->
 	<device>
 		<identifier>Sony-Ericsson/T610, Sony-Ericsson/T618</identifier>
@@ -1365,7 +1419,7 @@
 		<capability name="MaxJarSize" value="70kb" />
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="1.8MB" />
-		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 	</device>
 	
 	<device
@@ -1380,7 +1434,7 @@
 		<capability name="HeapSize" value="1.5MB" />
 		<capability name="MaxJarSize" value="350kb" />
 		<capability name="StorageSize" value="11MB" />
-		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 	</device>
 
 	<device
@@ -1395,7 +1449,7 @@
 		<capability name="MaxJarSize" value="70kb" />
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="1.5MB" />
-		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 	</device>
 	
 	<device
@@ -1411,13 +1465,157 @@
 		<capability name="MaxJarSize" value="350kb" />
 		<capability name="HeapSize" value="1.5 MB" />
 		<capability name="StorageSize" value="11MB" />
-		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 	</device>
 
+	<device>
+		<identifier>Siemens/M46</identifier>
+		<capability name="ScreenSize" value="101x64"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPackage" value="siemens-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi1" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="HeapSize" value="150 kb" />
+		<capability name="StorageSize" value="200kb" />
+	</device>
+	
+	<device>
+		<identifier>Siemens/M50, Siemens/MT50, Siemens/3138</identifier>
+		<capability name="ScreenSize" value="101x64"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPackage" value="siemens-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi1" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="HeapSize" value="150 kb" />
+		<capability name="StorageSize" value="200kb" />
+	</device>
+	
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/M55, Siemens/M56</identifier>
+		<capability name="ScreenSize" value="101x80"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, wav" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="HeapSize" value="560 kb" />
+		<capability name="StorageSize" value="1.6 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+	
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/M65</identifier>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
+		<capability name="VideoFormat" value="h263" />
+		<capability name="MaxJarSize" value="350kb" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="StorageSize" value="11 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+	
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/S65</identifier>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, jsr-185, 3dapi, locationapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
+		<capability name="VideoFormat" value="mpeg-4" />
+		<capability name="MaxJarSize" value="350kb" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="StorageSize" value="11 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+	
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/MC60</identifier>
+		<capability name="ScreenSize" value="101x80"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, wav" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="HeapSize" value="760 kb" />
+		<capability name="StorageSize" value="1.8 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+
+	<device>
+		<identifier>Siemens/S55, Siemens/S56, Siemens/S57</identifier>
+		<capability name="ScreenSize" value="101x80"/>
+		<capability name="BitsPerPixel" value="8"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, smaf" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="HeapSize" value="365 kb" />
+		<capability name="StorageSize" value="1 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+
+	<device>
+		<identifier>Siemens/SL55, Siemens/SL56</identifier>
+		<capability name="ScreenSize" value="101x80"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, smaf" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="HeapSize" value="365 kb" />
+		<capability name="StorageSize" value="1.6 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+	
+	<device>
+		<identifier>Siemens/ST60</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, smaf" />
+		<capability name="VideoFormat" value="mpeg-4, h263" />
+		<capability name="StorageSize" value="5 MB" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+	</device>
+	
 	<device 
 		supportsPolishGui="true">
 		<identifier>Siemens/SX1</identifier>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaPackage" value="nokia-ui-replacement" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, amr" />
+		<capability name="VideoFormat" value="3gpp" />
+		<capability name="StorageSize" value="2 MB" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 	</device>
+	
 </devices>

@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.0-RC1" />
-	  <property name="VersionMessage" value="Welcome to the first Release Candidate of J2ME Polish 1.0!" />
+	  <property name="Version" value="1.0-RC3" />
+	  <property name="VersionMessage" value="Welcome to the third Release Candidate of J2ME Polish 1.0!" />
 	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
 
   <path id="thirdparty">
