@@ -842,6 +842,20 @@ public class ChoiceGroup extends Container implements Choice
 	}
 	//#endif
 	
+	//#ifdef polish.usePopupItem
+	private void closePopup() {
+		this.isPopupClosed = true;
+		this.internalX = -9999;		
+		if (this.yOffset < 0) {
+			this.yOffset += (this.contentHeight - this.popupItem.contentHeight);
+			if (this.yOffset > 0 ) {
+				this.yOffset = 0;
+			}
+		}
+		requestInit();
+	}
+	//#endif
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
@@ -875,9 +889,8 @@ public class ChoiceGroup extends Container implements Choice
 							this.internalWidth = this.itemWidth;
 						}
 					} else {
-						this.isPopupClosed = true;
 						setSelectedIndex(this.focusedIndex, true);
-						this.internalX = -9999;
+						closePopup();
 					}
 					requestInit();
 				} else {
@@ -894,8 +907,7 @@ public class ChoiceGroup extends Container implements Choice
 						if (!this.isPopup || !this.isPopupClosed) {
 							setSelectedIndex( index, true );
 							if (this.isPopup) {
-								this.isPopupClosed = true;
-								requestInit();
+								closePopup();
 							}
 							if (this.choiceType != IMPLICIT) {
 								notifyStateChanged();
@@ -904,8 +916,7 @@ public class ChoiceGroup extends Container implements Choice
 						}
 					}
 				} else if (this.isPopup && (this.isPopupClosed == false)) {
-					this.isPopupClosed = true;
-					requestInit();
+					closePopup();
 					return true;
 				}
 			}
@@ -973,7 +984,7 @@ public class ChoiceGroup extends Container implements Choice
 					notifyStateChanged();
 					break;
 				}
-				this.isPopupClosed = true;
+				closePopup();
 			}
 			requestInit();
 			return true;
