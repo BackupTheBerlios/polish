@@ -3,6 +3,12 @@
 	<%index %>
 <%endif %>
 
+<h2 id="1.0rc7release">J2ME Polish 1.0 RC7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-20</h2>
+<p>The RC6 release created invalid JAR-files under Windows.
+Please update to <a href="<%= newsbasedir %>downloads/j2mepolish-1.0-RC7.html">RC7 release</a>
+now, when you develop under Windows.
+</p>
+
 <h2 id="1.0rc6release">J2ME Polish 1.0 RC6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-17</h2>
 <p>The 
 <a href="<%= newsbasedir %>downloads/j2mepolish-1.0-RC6.html">latest release candidate of Version 1.0</a> 
