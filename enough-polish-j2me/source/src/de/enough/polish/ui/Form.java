@@ -516,6 +516,25 @@ public class Form extends Screen
 		return this.container.size() - 1;
 	}
 	
+	/**
+	 * Adds an <code>Item</code> into the <code>Form</code>.  The newly
+	 * added <code>Item</code> becomes the last <code>Item</code> in the
+	 * <code>Form</code>, and the size of the <code>Form</code> grows
+	 * by one.
+	 * 
+	 * @param item - the Item to be added.
+	 * @param itemStyle
+	 * @return the assigned index of the Item
+	 * @throws IllegalStateException if the item is already owned by a container
+	 * @throws NullPointerException if item is null
+	 */
+	public int append( Item item, Style itemStyle )
+	{
+		item.setStyle( itemStyle );
+		this.container.add( item );
+		return this.container.size() - 1;
+	}
+
 	
 	/**
 	 * Adds an item consisting of one <code>String</code> to the

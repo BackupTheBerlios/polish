@@ -68,9 +68,6 @@ implements ImageConsumer
 	private int imageHeight;
 	private int imageWidth;
 	private int yAdjust;
-	//#ifdef polish.css.icon-image
-		private String imageUrl;
-	//#endif
 
 	/**
 	 * Creates a new icon.
@@ -204,20 +201,17 @@ implements ImageConsumer
 		//#ifdef polish.css.icon-image
 			String imageName = style.getProperty("icon-image");
 			if (imageName != null) {
-				if (!(imageName.equals(this.imageUrl))) {
-					this.imageUrl = imageName; 
-					if (this.parent instanceof Container) {
-						imageName = ((Container) this.parent).parseIndexUrl( imageName, this );
+				if (this.parent instanceof Container) {
+					imageName = ((Container) this.parent).parseIndexUrl( imageName, this );
+				}
+				try {
+					Image img = StyleSheet.getImage(imageName, this, true);
+					if (img != null) {
+						this.image = img;
 					}
-					try {
-						Image img = StyleSheet.getImage(imageName, this, true);
-						if (img != null) {
-							this.image = img;
-						}
-					} catch (IOException e) {
-						//#debug error
-						Debug.debug("unable to load image [" + imageName + "]", e);
-					}
+				} catch (IOException e) {
+					//#debug error
+					Debug.debug("unable to load image [" + imageName + "]", e);
 				}
 			}
 		//#endif

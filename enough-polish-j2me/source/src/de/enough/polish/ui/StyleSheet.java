@@ -46,7 +46,7 @@ import java.util.Timer;
  */
 public final class StyleSheet {
 	
-	private static Hashtable imagesByName;
+	protected static Hashtable imagesByName;
 	//#ifdef polish.images.backgroundLoad
 		private static Hashtable scheduledImagesByName;
 		//private static final Boolean TRUE = new Boolean( true );

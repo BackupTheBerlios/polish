@@ -1811,7 +1811,7 @@ implements CommandListener
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
-	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+	protected synchronized boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#ifndef tmp.directInput
 			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
 					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -1832,7 +1832,32 @@ implements CommandListener
 			//# if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
+					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) {
+							if (this.inputMode == MODE_NUMBERS) {
+								this.inputMode = MODE_LOWERCASE;
+							} else {
+								this.inputMode = MODE_NUMBERS;
+							}
+							//#if polish.TextField.showInputInfo != false
+								updateInfo();
+							//#endif
+							if (this.caretChar != this.editingCaretChar) {
+								insertCharacter();
+							}
+							if (this.inputMode == MODE_FIRST_UPPERCASE) {
+								this.nextCharUppercase = true;
+							} else {
+								this.nextCharUppercase = false;
+							}
+							//# return true;
+						//# }
+					//#endif
+					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+					//#else
 					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric) {
+					//#endif
 						this.inputMode++;
 						if (this.inputMode > MODE_NUMBERS) {
 							this.inputMode = MODE_LOWERCASE;

@@ -185,7 +185,8 @@ implements CommandListener
 			this.timeZone = timeZone;
 		} else {
 			this.timeZone = TimeZone.getDefault();
-		}		
+		}
+		setDate( null );
 	}
 	
 	
@@ -475,11 +476,7 @@ implements CommandListener
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		if (this.date == null) {
-			if (this.mode == TIME) {
-				setDate( new Date(0) );
-			} else {
-				setDate( new Date() );
-			}
+			setDate( null );
 		}
 		// init StringItem:
 		super.initContent(firstLineWidth, lineWidth);
@@ -566,7 +563,19 @@ implements CommandListener
 	private void showDateForm() {
 		if (this.midpDateField == null) {
 			this.midpDateField = new javax.microedition.lcdui.DateField( getLabel(), this.mode, this.timeZone );
-			this.midpDateField.setDate( this.date );
+			//#ifdef polish.Bugs.dateFieldAcceptsNoNullDate
+				if (this.date == null) {
+					if (this.mode == TIME) {
+						this.midpDateField.setDate( new Date(0) );
+					} else {
+						this.midpDateField.setDate( new Date() );
+					}
+				} else {
+					this.midpDateField.setDate( this.date );
+				}
+			//#else
+				this.midpDateField.setDate( this.date );
+			//#endif
 			this.form = new javax.microedition.lcdui.Form( StyleSheet.currentScreen.getTitle() );
 			this.form.append( this.midpDateField );
 			this.form.addCommand(StyleSheet.OK_CMD);
