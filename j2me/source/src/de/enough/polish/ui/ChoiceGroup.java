@@ -46,8 +46,20 @@ import javax.microedition.lcdui.Image;
  * @author Robert Virkus, robert@enough.de
  * @since MIDP 1.0
  */
-public class ChoiceGroup extends Container implements Choice
+public class ChoiceGroup 
+extends Container 
+implements Choice, ItemCommandListener
 {
+	//#ifdef polish.command.mark:defined
+		//#= public static final Command MARK_COMMAND = new Command("${polish.command.mark}", Command.ITEM, 1 );
+	//#else
+		public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 1 );
+	//#endif
+	//#ifdef polish.command.mark:defined
+		//#= public static final Command UNMARK_COMMAND = new Command("${polish.command.unmark}", Command.ITEM, 2 );
+	//#else
+		public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 2 );
+	//#endif
 	private int selectedIndex;
 	//private boolean isExclusive;
 	private boolean isMultiple;
@@ -62,6 +74,7 @@ public class ChoiceGroup extends Container implements Choice
 		private IconItem popupItem;
 		private boolean isPopupClosed;
 	//#endif
+	private ItemCommandListener additionalItemCommandListener;
 	
 
 	/**
@@ -280,6 +293,13 @@ public class ChoiceGroup extends Container implements Choice
 			}
 			append( stringElements[i], img, style );
 		}
+		if (choiceType == MULTIPLE) {
+			addCommand( MARK_COMMAND );
+			addCommand( UNMARK_COMMAND );
+		} else {
+			addCommand( List.SELECT_COMMAND );
+		}
+		this.itemCommandListener = this;
 	}
 	
 	//#ifdef polish.usePopupItem
@@ -469,6 +489,14 @@ public class ChoiceGroup extends Container implements Choice
 				} else if ( elementNum < this.selectedIndex ) {
 					this.selectedIndex--;
 				}
+			} else {
+		//#endif
+			if (this.selectedIndex == elementNum ) {
+				this.selectedIndex = -1;
+			} else if (elementNum < this.selectedIndex) {
+				this.selectedIndex--;
+			}
+		//#ifdef polish.usePopupItem
 			}
 		//#endif
 	}
@@ -615,29 +643,19 @@ public class ChoiceGroup extends Container implements Choice
 			if (selected == false) {
 				return; // ignore this call
 			}
-			ChoiceItem oldSelected = (ChoiceItem) this.itemsList.get( this.selectedIndex );
-			oldSelected.select( false );
+			if (this.selectedIndex != -1) {
+				ChoiceItem oldSelected = (ChoiceItem) this.itemsList.get( this.selectedIndex );
+				oldSelected.select( false );
+			}
 			ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
 			newSelected.select( true );
 			this.selectedIndex = elementNum;
 			focus( elementNum, newSelected );
 			//#ifdef polish.usePopupItem
-			if (this.isPopup) {
-				this.popupItem.setText( newSelected.getText() );
-			} else if (this.isImplicit) {
-			//#else
-				//# if (this.isImplicit) {
-			//#endif
-				// call command listener:
-				Screen scr = getScreen();
-				if (scr != null) {
-					Command selectCmd = this.selectCommand;
-					if (selectCmd == null) {
-						selectCmd = List.SELECT_COMMAND;
-					}
-					scr.callCommandListener( selectCmd );
+				if (this.isPopup) {
+					this.popupItem.setText( newSelected.getText() );
 				}
-			}
+			//#endif
 		}
 		repaint();
 	}
@@ -855,6 +873,27 @@ public class ChoiceGroup extends Container implements Choice
 		requestInit();
 	}
 	//#endif
+
+	//#ifdef polish.usePopupItem
+	private void openPopup() {
+		this.isPopupClosed = false;
+		focus( this.selectedIndex );
+		// recalculate the internal positions of the selected choice:
+		Item item = this.items[ this.selectedIndex ];
+		if (item.yTopPos != item.yBottomPos) {
+			// okay, this item has been painted alrady: 
+			this.internalY = (item.itemHeight + this.paddingVertical) * this.selectedIndex;
+			this.internalHeight = item.itemHeight;
+			this.internalX = 0;
+			this.internalWidth = item.itemWidth;
+		} else {
+			this.internalX = 0;
+			this.internalY = 0;
+			this.internalHeight = this.itemHeight + 20;
+			this.internalWidth = this.itemWidth;
+		}
+	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
@@ -866,28 +905,13 @@ public class ChoiceGroup extends Container implements Choice
 			processed = super.handleKeyPressed(keyCode, gameAction);
 		}		
 		if (!processed) {
-			if (gameAction == Canvas.FIRE) {
+			if ( gameAction == Canvas.FIRE ) {
 				if (this.isMultiple) {
 					ChoiceItem item = (ChoiceItem) this.focusedItem;
 					item.toggleSelect();
 				} else if (this.isPopup){
 					if (this.isPopupClosed) {
-						this.isPopupClosed = false;
-						focus( this.selectedIndex );
-						// recalculate the internal positions of the selected choice:
-						Item item = this.items[ this.selectedIndex ];
-						if (item.yTopPos != item.yBottomPos) {
-							// okay, this item has been painted alrady: 
-							this.internalY = (item.itemHeight + this.paddingVertical) * this.selectedIndex;
-							this.internalHeight = item.itemHeight;
-							this.internalX = 0;
-							this.internalWidth = item.itemWidth;
-						} else {
-							this.internalX = 0;
-							this.internalY = 0;
-							this.internalHeight = this.itemHeight + 20;
-							this.internalWidth = this.itemWidth;
-						}
+						openPopup();
 					} else {
 						setSelectedIndex(this.focusedIndex, true);
 						closePopup();
@@ -895,8 +919,21 @@ public class ChoiceGroup extends Container implements Choice
 					requestInit();
 				} else {
 					setSelectedIndex(this.focusedIndex, true);
+					if (this.isImplicit) {
+						// call command listener:
+						Screen scr = getScreen();
+						if (scr != null) {
+							Command selectCmd = this.selectCommand;
+							if (selectCmd == null) {
+								selectCmd = List.SELECT_COMMAND;
+							}
+							scr.callCommandListener( selectCmd );
+						}
+					}
 				}
-				if (this.choiceType != IMPLICIT && !(this.isPopup && !this.isPopupClosed)) {
+				if ( (this.choiceType != IMPLICIT) 
+						&& !(this.isPopup && !this.isPopupClosed)
+						&& (this.getScreen() instanceof Form) ) {
 					notifyStateChanged();
 				}
 				return true;
@@ -905,12 +942,25 @@ public class ChoiceGroup extends Container implements Choice
 					int index = keyCode - Canvas.KEY_NUM1;
 					if (index < this.itemsList.size()) {
 						if (!this.isPopup || !this.isPopupClosed) {
+							// either this is not a POPUP or the POPUP is opened:
 							setSelectedIndex( index, true );
 							if (this.isPopup) {
 								closePopup();
 							}
-							if (this.choiceType != IMPLICIT) {
+							if ( (this.choiceType != IMPLICIT) 
+									&& (this.getScreen() instanceof Form) ) {
 								notifyStateChanged();
+							}
+							if (this.isImplicit) {
+								// call command listener:
+								Screen scr = getScreen();
+								if (scr != null) {
+									Command selectCmd = this.selectCommand;
+									if (selectCmd == null) {
+										selectCmd = List.SELECT_COMMAND;
+									}
+									scr.callCommandListener( selectCmd );
+								}
 							}
 							return true;
 						}
@@ -925,27 +975,51 @@ public class ChoiceGroup extends Container implements Choice
 		// no popup item is used by this application:
 		processed = super.handleKeyPressed(keyCode, gameAction);
 		if (!processed) {
-			if (gameAction == Canvas.FIRE) {
+			if ((gameAction == Canvas.FIRE) && (this.focusedIndex != -1)) {
 				if (this.isMultiple) {
 					ChoiceItem item = (ChoiceItem) this.focusedItem;
 					item.toggleSelect();
 				} else {
 					setSelectedIndex(this.focusedIndex, true);
 				}
-				if (this.choiceType != IMPLICIT) {
+				if ( (this.choiceType != IMPLICIT) 
+						&& (this.getScreen() instanceof Form) ) 
+				{
 					notifyStateChanged();
 				}
-				return true;
-			} else {
-				if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
-					int index = keyCode - Canvas.KEY_NUM1;
-					if (index < this.itemsList.size()) {
-						setSelectedIndex( index, true );
-						if (this.choiceType != IMPLICIT) {
-							notifyStateChanged();
+				if (this.isImplicit) {
+					// call command listener:
+					Screen scr = getScreen();
+					if (scr != null) {
+						Command selectCmd = this.selectCommand;
+						if (selectCmd == null) {
+							selectCmd = List.SELECT_COMMAND;
 						}
-						return true;
+						scr.callCommandListener( selectCmd );
 					}
+				}
+				return true;
+			} else if ( (keyCode >= Canvas.KEY_NUM1) && (keyCode <= Canvas.KEY_NUM9) ) {
+				int index = keyCode - Canvas.KEY_NUM1;
+				if (index < this.itemsList.size()) {
+					setSelectedIndex( index, true );
+					if ((this.choiceType != IMPLICIT) 
+						&& (this.getScreen() instanceof Form) ) 
+					{
+						notifyStateChanged();
+					}
+					if (this.isImplicit) {
+						// call command listener:
+						Screen scr = getScreen();
+						if (scr != null) {
+							Command selectCmd = this.selectCommand;
+							if (selectCmd == null) {
+								selectCmd = List.SELECT_COMMAND;
+							}
+							scr.callCommandListener( selectCmd );
+						}
+					}
+					return true;
 				}
 			}
 		}
@@ -966,6 +1040,7 @@ public class ChoiceGroup extends Container implements Choice
 				super.handlePointerPressed(x, y);
 				return handleKeyPressed( -1, Canvas.FIRE ); 
 			}
+			// this is a popup-item:
 			if (this.isPopupClosed) {
 				focus( this.selectedIndex );
 				this.isPopupClosed = false;
@@ -981,7 +1056,9 @@ public class ChoiceGroup extends Container implements Choice
 					}
 					// found out the item:
 					setSelectedIndex(i, true);
-					notifyStateChanged();
+					if ( getScreen() instanceof Form) {
+						notifyStateChanged();
+					}
 					break;
 				}
 				closePopup();
@@ -1015,6 +1092,11 @@ public class ChoiceGroup extends Container implements Choice
 				requestInit();
 			}
 			setStyle( originalStyle );
+			// now remove any commands which are associated with this item:
+			Screen scr = getScreen();
+			if (scr != null) {
+				scr.removeItemCommands(this);
+			}
 		} else {
 			super.defocus(originalStyle);
 		}
@@ -1030,6 +1112,11 @@ public class ChoiceGroup extends Container implements Choice
 			Style original = this.style;
 			this.popupItem.setStyle( focusStyle );
 			setStyle( focusStyle );
+			// now remove any commands which are associated with this item:
+			Screen scr = getScreen();
+			if (scr != null) {
+				scr.setItemCommands(this);
+			}
 			return original;
 		} else {
 			return super.focus(focusStyle);
@@ -1065,4 +1152,40 @@ public class ChoiceGroup extends Container implements Choice
 		}
 	}
 	//#endif
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
+	 */
+	public void commandAction(Command c, Item item) {
+		if (c == List.SELECT_COMMAND || c == MARK_COMMAND) {
+			if (this.focusedIndex != -1) {
+				setSelectedIndex( this.focusedIndex, true );
+				//#ifdef polish.usePopupItem
+					if (this.isPopup) {
+						if (this.isPopupClosed) {
+							openPopup();
+						} else {
+							closePopup();
+						}
+						repaint();
+					}
+				//#endif
+			}
+			//#ifdef polish.usePopupItem
+				else if (this.isPopup && this.isPopupClosed) {
+					openPopup();				
+				}
+			//#endif
+		} else if (c == UNMARK_COMMAND ) {
+			if (this.focusedIndex != -1) {
+				setSelectedIndex( this.focusedIndex, false );
+			}
+		} else if (this.additionalItemCommandListener != null) {
+			this.additionalItemCommandListener.commandAction(c, item);
+		}
+	}
+	
+	public void setItemCommandListener(ItemCommandListener l) {
+		this.additionalItemCommandListener = l;
+	}
 }

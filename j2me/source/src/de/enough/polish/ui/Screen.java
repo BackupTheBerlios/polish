@@ -165,7 +165,6 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		System.out.println("Title:" + title);
 		//#if tmp.fullScreen && polish.midp2
 			super.setFullScreenMode( true );
 		//#endif
@@ -867,6 +866,9 @@ public abstract class Screen
 	 */
 	public void removeCommand(Command cmd) {
 		int index = this.menuCommands.indexOf(cmd);
+		if (index == -1) {
+			return;
+		}
 		this.menuCommands.remove(index);
 		if (this.menuSingleLeftCommand == cmd ) {
 			this.menuSingleLeftCommand = null;
@@ -1016,6 +1018,12 @@ public abstract class Screen
 						// assume that the left command has been pressed:
 						if (this.menuSingleLeftCommand != null) {
 							this.callCommandListener(this.menuSingleLeftCommand);
+						} else if (this.menuOpened ) {
+							// the "SELECT" command has been clicked:
+							int focusedIndex = this.menuContainer.getFocusedIndex();
+							Command cmd = (Command) this.menuCommands.get( focusedIndex );
+							callCommandListener( cmd );						
+							this.menuOpened = false;
 						} else {
 							this.menuOpened = true;
 						}

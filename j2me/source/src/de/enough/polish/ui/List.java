@@ -201,7 +201,7 @@ public class List extends Screen implements Choice
 	 * 
 	 */
 	//#ifdef polish.command.select:defined
-		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.OK, 0 );
+		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.ITEM, 1 );
 	//#else
 		public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 1 );
 	//#endif
@@ -332,9 +332,6 @@ public class List extends Screen implements Choice
 		this.choiceGroup = new ChoiceGroup( null, this.listType, stringElements, imageElements, style, true  );
 		this.choiceGroup.screen = this;
 		this.container = this.choiceGroup;
-		if (this.listType == IMPLICIT) {
-			addCommand( SELECT_COMMAND );
-		}
 	}
 		
 	/**
@@ -389,7 +386,7 @@ public class List extends Screen implements Choice
 	 */
 	public int append( String stringPart, Image imagePart)
 	{
-		return this.choiceGroup.append( stringPart, imagePart, null );
+		return append( stringPart, imagePart, null );
 	}
 	/**
 	 * Appends an element to the <code>List</code>.
@@ -403,7 +400,15 @@ public class List extends Screen implements Choice
 	 */
 	public int append( String stringPart, Image imagePart, Style elementStyle )
 	{
-		return this.choiceGroup.append( stringPart, imagePart, elementStyle );
+		int number = this.choiceGroup.append( stringPart, imagePart, elementStyle );
+		if (number == 1) {
+			if (this.listType == IMPLICIT ) {
+				addCommand( SELECT_COMMAND );
+			} else {
+				setItemCommands(this.choiceGroup);
+			}
+		}
+		return number;
 	}
 	
 	/**
@@ -475,13 +480,20 @@ public class List extends Screen implements Choice
 	/**
 	 * Deletes the element referenced by <code>elementNum</code>.
 	 * 
-	 * @param elementNum - the index of the element to be deleted
-	 * @throws IndexOutOfBoundsException - if elementNum is invalid
+	 * @param elementNum the index of the element to be deleted
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 * @see Choice#delete(int) in interface Choice
 	 */
 	public void delete(int elementNum)
 	{
-		this.container.remove(elementNum);
+		this.choiceGroup.delete(elementNum);
+		if (this.choiceGroup.size() == 0 ) {
+			if (this.listType == IMPLICIT ) {
+				removeCommand( SELECT_COMMAND );
+			} else {
+				removeItemCommands(this.choiceGroup);
+			}
+		}
 	}
 
 	/**
@@ -491,7 +503,12 @@ public class List extends Screen implements Choice
 	 */
 	public void deleteAll()
 	{
-		this.container.clear();
+		this.choiceGroup.deleteAll();
+		if (this.listType == IMPLICIT ) {
+			removeCommand( SELECT_COMMAND );
+		} else {
+			removeItemCommands(this.choiceGroup);
+		}
 	}
 
 	/**
@@ -511,7 +528,7 @@ public class List extends Screen implements Choice
 	 * Returns the index number of an element in the <code>List</code>
 	 * that is selected.
 	 * 
-	 * @return index of selected element, or -1 if none
+	 * @return index of selected element, or -1 if none is selected
 	 * @see Choice#getSelectedIndex() in interface Choice
 	 * @see #setSelectedIndex(int, boolean)
 	 */

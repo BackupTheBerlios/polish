@@ -269,6 +269,7 @@ public class Container extends Item {
 		this.items = null;
 		if (this.focusedIndex != -1) {
 			this.focusFirstElement = true;
+			//this.focusedIndex = -1;
 		}
 		if (this.isInitialised) {
 			this.yOffset = 0;
@@ -813,6 +814,12 @@ public class Container extends Item {
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
 			focus( this.focusedIndex, item );
 			this.isFocused = true;
+			if (item.commands == null && this.commands != null) {
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.setItemCommands(this);
+				}
+			}
 			return item.style;
 		}
 	}
@@ -827,6 +834,13 @@ public class Container extends Item {
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			this.isFocused = false;
+			// now remove any commands which are associated with this item:
+			if (item.commands == null && this.commands != null) {
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.removeItemCommands(this);
+				}
+			}
 		}
 	}
 	
