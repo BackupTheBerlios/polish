@@ -38,13 +38,11 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.source.ISharedTextColors;
 
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
+import de.enough.polish.plugin.eclipse.css.model.IModelListener;
 import de.enough.polish.plugin.eclipse.css.parser.PresentationAnalyzer;
 
 /**
- * <p>A facade for the presentationReconciler and the reconciler. This class will install and trigger
- * our own reconcilers to update the model and repair the screen. So we have full control over updates.</p>
- *<p>Another option is to subclass SourceViewer and get rid of the reconciling architecture in the heard of the application.
- *We need to control the sequence of calling of the reconcilers.</p>
+ * <p>Reconciles the viewer presentation, the underlying document and the domain model.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -56,8 +54,9 @@ import de.enough.polish.plugin.eclipse.css.parser.PresentationAnalyzer;
 public class Reconciler implements IReconciler{
 
 	private ITextViewer textViewer;
-	private CssModel cssModel;
-	private TextListener listener;
+	protected CssModel cssModel;
+	private TextListener textListener;
+	private ModelListener modelListener;
 	private ISharedTextColors colors;
 
 	class TextListener implements ITextInputListener, ITextListener{
@@ -66,17 +65,15 @@ public class Reconciler implements IReconciler{
 		 * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
 		 */
 		public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
-			System.out.println("DEBUG:SimpleReconcilerFacade.Listener.inputDocumentAboutToBeChanged():enter.");
-			
+			// Not needed.
 		}
 
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
 		 */
 		public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-			System.out.println("DEBUG:SimpleReconcilerFacade.Listener.inputDocumentChanged():enter.");
 			Reconciler.this.cssModel.setDocument(newInput);
-			Reconciler.this.cssModel.reconcile(null);
+			reconcileModel();
 			reconcilePresentation();
 		}
 
@@ -84,38 +81,54 @@ public class Reconciler implements IReconciler{
 		 * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
 		 */
 		public void textChanged(TextEvent event) {
-			Reconciler.this.cssModel.reconcile(event);
+		    // TODO: Use the TextEvent to finetune the reconciling process.
+			Reconciler.this.cssModel.reconcile();
 			reconcilePresentation();
 		}
 	}
 	
+	class ModelListener implements IModelListener{
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
+		 */
+		public void modelChanged() {
+			System.out.println("DEBUG:Reconciler.ModelListener.modelChanged().enter.");
+		}
+		
+	}
+
 	
 	public Reconciler(CssModel cssModel,ISharedTextColors colors){
 		this.cssModel = cssModel;
-		this.listener = new TextListener();
 		this.colors = colors;
-		
+		this.textListener = new TextListener();
+		this.modelListener = new ModelListener();
+		this.cssModel.addModelListener(this.modelListener);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#install(org.eclipse.jface.text.ITextViewer)
 	 */
 	public void install(ITextViewer viewer) {
-		// Beware that both interfaces have this method. So it will be called twice.
 		this.textViewer = viewer;
 		if( this.textViewer == null){
-			System.out.println("DEBUG:SimpleReconcilerFacade.install():viewer: is null.");
+			System.out.println("ERROR:Reconciler.install():viewer: is null.");
 			return;
 		}
-		this.textViewer.addTextInputListener(this.listener);
-		this.textViewer.addTextListener(this.listener);
+		this.textViewer.addTextInputListener(this.textListener);
+		this.textViewer.addTextListener(this.textListener);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#uninstall()
 	 */
 	public void uninstall() {
-		System.out.println("DEBUG:SimpleReconcilerFacade.uninstall():enter.");	
+		if(this.textViewer != null){
+			this.textViewer.removeTextInputListener(this.textListener);
+			this.textViewer.removeTextListener(this.textListener);
+		}
+		
 	}
 
 
@@ -123,11 +136,11 @@ public class Reconciler implements IReconciler{
 	 * @see org.eclipse.jface.text.reconciler.IReconciler#getReconcilingStrategy(java.lang.String)
 	 */
 	public IReconcilingStrategy getReconcilingStrategy(String contentType) {
-		System.out.println("DEBUG:SimpleReconcilerFacade.getReconcilingStrategy().enter.");
+		System.out.println("DEBUG:Reconciler.getReconcilingStrategy().enter.");
 		return null;
 	}
 
-	private void reconcilePresentation(){
+	protected void reconcilePresentation(){
 		IDocument document = this.cssModel.getDocument();
 		if(document == null){
 			return;
@@ -139,13 +152,18 @@ public class Reconciler implements IReconciler{
 			presentationAnalyzer.analyze(this.cssModel.getRootNode());
 			//traverseRootNodeAddTextPresentation(this.cssModel.getRootNode(),document,textPresentation);
 		} catch (ParserLogException exception) {
-			System.out.println("DFDSFDSJJ");
+			System.out.println("ERROR:Reconciler.reconcilePresentation():presentationAnalyzer throw exception.exception:"+exception.getMessage());
 		}
-		
-		//StyleRange styleRange = new StyleRange(0,100,this.colors.getColor(new RGB(125,125,0)),null);
-		//textPresentation.addStyleRange(styleRange);
 		this.textViewer.changeTextPresentation(textPresentation,false);
 	}
 	
+	protected void reconcileModel(){
+		this.cssModel.reconcile();
+	}
+	
+	
+	public void dispose(){
+		this.cssModel.removeModelListener(this.modelListener);
+	}
 	
 }

@@ -51,8 +51,6 @@ public class CssEditor extends TextEditor{
 
 	CssOutlinePage cssOutlinePage;
 	CssModel cssModel;
-	//CssParser parser;
-	//CssTokenizer tokenzier;
 	IDocument document;
 	
 	public CssEditor(){

@@ -39,7 +39,6 @@ import net.percederberg.grammatica.parser.ProductionPattern;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.TextEvent;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssParser;
 
@@ -58,35 +57,37 @@ public class CssModel {
 
 	private List modelListeners;
 	
-	private ASTNode rootAST;
-	private Node rootNode;
+	private ASTNode rootASTNode;
+	private Node rootParseNode;
 
+	// TODO: Decide if the CssModel or Reconciler should listen to changes.
+	// The CssModel could listen to the document, the Reconciler to its viewer.
+	
 	private IDocument document;
 	private TreePrinter treePrinter;
 	private PolishCssParser parser;
 	private ASTBuilderAnalyzer astBuilder;
 	
 	public CssModel(){
-		this.rootAST = new StyleSheet();
+		this.rootASTNode = new StyleSheet();
 		this.modelListeners = new ArrayList();
-		this.astBuilder = new ASTBuilderAnalyzer(this.rootAST);
+		this.astBuilder = new ASTBuilderAnalyzer(this.rootASTNode);
 		this.treePrinter = new TreePrinter(System.out);
 	}
 	
 	public ASTNode getRoot(){
 		
-		return this.rootAST;
+		return this.rootASTNode;
 	}
 	
 	public void setRoot(ASTNode root){
-		this.rootAST = root;
+		this.rootASTNode = root;
 	}
 
 	/**
 	 * Reconcile the model to the changed document.
-	 * @param textEvent
 	 */
-	public void reconcile(TextEvent textEvent) { //TODO: Determine how to use the event.
+	public void reconcile() {
 		
 		if(this.document == null){
 			System.out.println("DEBUG:CssModel.reconcile():document: is null.");
@@ -96,13 +97,13 @@ public class CssModel {
 		// Parse.
 		try {
 			this.parser = new PolishCssParser(new StringReader(inputString));
-			this.rootNode = null;
-			this.rootNode = this.parser.parse();
+			this.rootParseNode = null;
+			this.rootParseNode = this.parser.parse();
 			System.out.println("DEBUG:CssModel.reconcile():no parsing errors !!");
-			this.treePrinter.analyze(this.rootNode);
-			this.rootAST = new StyleSheet();
-			this.astBuilder.setRoot(this.rootAST);
-			this.astBuilder.analyze(this.rootNode,this.document);
+			this.treePrinter.analyze(this.rootParseNode);
+			this.rootASTNode = new StyleSheet();
+			this.astBuilder.setRoot(this.rootASTNode);
+			this.astBuilder.analyze(this.rootParseNode,this.document);
 		} catch (ParserCreationException exception) {
 			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
 		} catch (ParserLogException exception) {
@@ -151,15 +152,15 @@ public class CssModel {
 	 * @return Returns the rootNode.
 	 */
 	public Node getRootNode() {
-		if(this.rootNode == null){
-			this.rootNode = new Production(new ProductionPattern(PolishCssConstants.STYLESHEET,"RootStyleSheet"));
+		if(this.rootParseNode == null){
+			this.rootParseNode = new Production(new ProductionPattern(PolishCssConstants.STYLESHEET,"RootStyleSheet"));
 		}
-		return this.rootNode;
+		return this.rootParseNode;
 	}
 	
 
 	public void setRootNode(Node rootNode) {
-		this.rootNode = rootNode;
+		this.rootParseNode = rootNode;
 	}
 	
 	

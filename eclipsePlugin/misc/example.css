@@ -1,6 +1,5 @@
-
 colors {
-	pink:  rgb(248,39,186);
+	pink:rgb;
 	darkpink:  rgb(18h5,26,138);
 }
 
@@ -94,7 +93,7 @@ list {
 }
 
 listitem {
-	margin: 2; /* for the border of the focused style */
+	margin: 2;
 	padding: 2;
 	padding-vertical: 3;
 	padding-left: 3;

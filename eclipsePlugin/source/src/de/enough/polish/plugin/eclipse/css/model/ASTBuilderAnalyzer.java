@@ -28,7 +28,6 @@ package de.enough.polish.plugin.eclipse.css.model;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import net.percederberg.grammatica.parser.Node;
-import net.percederberg.grammatica.parser.ParserLogException;
 import net.percederberg.grammatica.parser.Token;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssAnalyzer;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
@@ -62,7 +61,7 @@ public class ASTBuilderAnalyzer extends PolishCssAnalyzer {
 	}
 
 	
-	public Node analyze(Node node, IDocument newDocument) throws ParserLogException {
+	public Node analyze(Node node, IDocument newDocument){
 		if(newDocument == null){
 			System.out.println("DEBUG:ASTBuilder.analyze():document: parameter is null.");
 			return null;
