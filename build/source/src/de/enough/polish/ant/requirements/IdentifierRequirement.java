@@ -40,7 +40,7 @@ import de.enough.polish.util.TextUtil;
  */
 public class IdentifierRequirement extends Requirement {
 
-	private StringMatcher matcher;
+	private final String[] identifiers;
 
 	/**
 	 * Creates a new identifier requirement.
@@ -49,15 +49,21 @@ public class IdentifierRequirement extends Requirement {
 	 */
 	public IdentifierRequirement(String value) {
 		super(value, "Identifier");
-		String[] vendors = TextUtil.split(value, ',');
-		this.matcher = new StringMatcher( vendors, true ); 
+		this.identifiers = TextUtil.split(value, ',');
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.build.Device, java.lang.String)
 	 */
 	protected boolean isMet(Device device, String property) {
-		return this.matcher.matches( property );
+		String deviceIdentifier = device.getIdentifier();
+		for (int i = 0; i < this.identifiers.length; i++) {
+			String identifier = this.identifiers[i];
+			if (identifier.equals( deviceIdentifier)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }
