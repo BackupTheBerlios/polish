@@ -92,13 +92,15 @@ public final class ImportConverter {
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager; import de.enough.polish.ui.StyleSheet" );
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer; import de.enough.polish.ui.StyleSheet" );
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet");
+		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.*", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet; import com.siemens.mp.color_game.GameCanvas; import com.siemens.mp.color_game.Layer; import com.siemens.mp.color_game.LayerManager; import com.siemens.mp.color_game.TiledLayer");
 
 		this.defaultPackageSiemensColorGameApiToPolish = new HashMap( toPolish );
 		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas" );
 		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer" );
 		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager" );
 		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer" );
-		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite");
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "");
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.*", "com.siemens.mp.color_game.GameCanvas; import com.siemens.mp.color_game.Layer; import com.siemens.mp.color_game.LayerManager; import com.siemens.mp.color_game.TiledLayer");
 
 		this.polishToSiemensColorGameApi = new HashMap();
 		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas; import de.enough.polish.ui.StyleSheet" );
@@ -106,6 +108,7 @@ public final class ImportConverter {
 		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager; import de.enough.polish.ui.StyleSheet" );
 		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer; import de.enough.polish.ui.StyleSheet" );
 		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet");
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.*", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet; import com.siemens.mp.color_game.GameCanvas; import com.siemens.mp.color_game.Layer; import com.siemens.mp.color_game.LayerManager; import com.siemens.mp.color_game.TiledLayer");
 		
 		toPolish = new HashMap( toPolish );
 		toPolish.put( "javax.microedition.lcdui.game.GameCanvas", "de.enough.polish.ui.game.GameCanvas; import de.enough.polish.ui.StyleSheet");

@@ -485,6 +485,8 @@ public class PolishTask extends ConditionalTask {
 		}
 		// create project settings:
 		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
+		this.polishProject.addDirectCapability("polish.version", VERSION);
+		this.polishProject.addDirectFeature( "polish.build" );
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
 			this.polishProject.addDirectCapability("polish.debug.Verbose", "enabled");

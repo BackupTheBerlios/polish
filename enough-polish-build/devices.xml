@@ -1165,19 +1165,26 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="ScreenSize" value="208x320" />
+		<capability name="CanvasSize" value="208x180" />
+		<capability name="FullCanvasSize" value="208x320" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="16 MB" />
 		<capability name="StorageSize" value="24 MB" />
 		<capability name="MaxJarSize" value="24 MB" />
 		<capability name="MaxRecordStoreSize" value="24 MB" />
 		<capability name="JavaProtocol" value="udp, http, https, socket, server-socket, sms" />
-		<capability name="JavaPackage" value="wmapi, mmapi, bluetooth" />
+		<capability name="JavaPackage" value="wmapi, mmapi, bluetooth, jtwi" />
 		<capability name="ImageFormat" value="png, jpeg" />
-		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
-		<capability name="SoundFormat" value="mpeg-4" />
+		<capability name="SoundFormat" value="midi, wav, amr" />
+		<capability name="VideoFormat" value="mpeg-4" />
 		<capability name="Region" value="Europe, Middle-East, Asia-Pacific, Americas" />
 		<capability name="Network" value="GSM, UMTS" />
 		<capability name="Frequency" value="900, 1800, 1900, WCDMA 2100" />
+		<capability name="mmapi.protocol.http" value="audio/wav, audio/midi, audio/amr" />
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/wav, audio/midi, audio/amr" />
+		<capability name="Font.small" value="10" />
+		<capability name="Font.medium" value="13" />
+		<capability name="Font.large" value="20" />
 	</device>
 
 	<device>

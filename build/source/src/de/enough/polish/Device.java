@@ -321,6 +321,10 @@ public class Device extends PolishComponent {
 					+ "] has no JavaConfiguration defined.");
 		}
 		
+		if ( hasFeature("polish.api.jtwi") ) {
+			addDirectFeature( "polish.jtwi" );
+		}
+		
 		String screenSize = getCapability( SCREEN_SIZE );
 		if (screenSize != null) {
 			groupNamesList.add("ScreenSize." + screenSize);
