@@ -160,7 +160,7 @@ implements ActionListener
 		menu.add( item );
 		this.menuOpenImage = item;
 		
-		item = new JMenuItem( "Open in Data Editor", 'e' );
+		item = new JMenuItem( "Open in Binary Editor", 'e' );
 		item.setAccelerator( KeyStroke.getKeyStroke( 'E', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
