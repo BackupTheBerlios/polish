@@ -1609,7 +1609,7 @@ public class PolishTask extends ConditionalTask {
 	private void runEmulator( Device device, Locale locale ) {
 		if ( this.emulatorSetting.isActive(this.project) ) {
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), this.project, evaluator, this.wtkHome);
+			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), this.project, evaluator, this.wtkHome, this.sourceDirs );
 			if (emulator != null) {
 				if (this.runningEmulators == null) {
 					this.runningEmulators = new ArrayList();

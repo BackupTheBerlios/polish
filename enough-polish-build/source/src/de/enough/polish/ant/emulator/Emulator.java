@@ -25,6 +25,7 @@
  */
 package de.enough.polish.ant.emulator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -38,6 +39,9 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.Device;
 import de.enough.polish.Variable;
 import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.stacktrace.BinaryStackTrace;
+import de.enough.polish.stacktrace.DecompilerNotInstalledException;
+import de.enough.polish.stacktrace.StackTraceUtil;
 import de.enough.polish.util.PropertyUtil;
 
 /**
@@ -55,6 +59,9 @@ public abstract class Emulator extends Thread {
 	private Device emulatedDevice;
 	private EmulatorSetting emulatorSetting;
 	private boolean isFinished = false;
+	private File[] sourceDirs;
+	private String preprocessedSourcePath;
+	private String classPath;
 	
 	/**
 	 * Creates a new emulator instance.
@@ -89,12 +96,17 @@ public abstract class Emulator extends Thread {
 	
 	/**
 	 * Sets the minimum settings.
+	 * 
 	 * @param device the device which is emulated
 	 * @param setting the settings for the emulator
+	 * @param sourceDirs the directories containing the original source files.
 	 */
-	private void setBasicSettings( Device device, EmulatorSetting setting ) {
+	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs ) {
 		this.emulatedDevice = device;
 		this.emulatorSetting = setting;
+		this.classPath = device.getClassesDir();
+		this.preprocessedSourcePath = device.getSourceDir();
+		this.sourceDirs = sourceDirs;
 	}
 	
 
@@ -236,9 +248,10 @@ public abstract class Emulator extends Thread {
 	 * @param project the ant-project to which this emulator belongs to 
 	 * @param evaluator a boolean evaluator for the parameter-conditions
 	 * @param wtkHome the home directory of the wireless toolkit
+	 * @param sourceDirs the directories containing the original source files.
 	 * @return true when an emulator could be detected
 	 */
-	public static Emulator createEmulator(Device device, EmulatorSetting setting, Map variables, Project project, BooleanEvaluator evaluator, String wtkHome ) {
+	public static Emulator createEmulator(Device device, EmulatorSetting setting, Map variables, Project project, BooleanEvaluator evaluator, String wtkHome, File[] sourceDirs ) {
 		String className = setting.getEmulatorClassName();
 		if (className == null) {
 			className = device.getCapability("polish.Emulator.Class");
@@ -283,68 +296,9 @@ public abstract class Emulator extends Thread {
 		if (!okToStart) {
 			return null;
 		}
-		emulator.setBasicSettings(device, setting);
+		emulator.setBasicSettings(device, setting, sourceDirs);
 		emulator.start();
 		return emulator;
-		/*
-		String executable = setting.getExecutable();
-		if (executable == null) {
-			executable = device.getCapability("polish.Emulator");
-		}
-		boolean useDefaultEmulator = false;
-		if (executable == null) {
-			useDefaultEmulator = true;
-			if (File.separatorChar == '/') {
-				executable = wtkHome + "bin/emulator";
-			} else {
-				executable = wtkHome + "bin/emulator.exe";
-			}
-		} else {
-			executable = PropertyUtil.writeProperties(executable, infoProperties, false );
-			executable = PropertyUtil.writeProperties(executable, project.getProperties(), false );
-			if (executable.indexOf("${") != -1) {
-				int startIndex = executable.indexOf("${") + 2;
-				int endIndex = executable.indexOf('}', startIndex );
-				String missingProperty = executable.substring( startIndex, endIndex );
-				System.out.println("Warning: the Ant-property [" + missingProperty + "] needs to be defined, so that the emulator [" + executable + "] can be started for the device [" + device.getIdentifier() + "].");
-				return null;
-			}
-		}
-		File execFile = new File( executable );
-		if (!execFile.exists()) {
-			System.out.println("Warning: unable to find the emulator [" + executable + "], now trying to start it as a command...");
-		}
-		// okay, now create the arguments:
-		ArrayList argumentsList = new ArrayList();
-		argumentsList.add( executable );
-		
-		if (useDefaultEmulator) {
-			String xDevice = device.getCapability("polish.EmulatorSkin");
-			if (xDevice != null) {
-				// test if this emulator exists:
-				File skinFile = new File(wtkHome + "wtklib/devices/" + xDevice );
-				if (!skinFile.exists()) {
-					System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + device.getIdentifier() + "] is not installed.");
-					return null;
-				}
-				argumentsList.add( "-Xdevice:" + xDevice );
-			} else {
-				System.out.println("Warning: found no emulator-skin/Xdevice-definition for device [" + device.getIdentifier() + "], now using the default emulator.");
-			}
-			
-			// add -Xdescriptor-parameter:
-			argumentsList.add("-Xdescriptor:" + infoProperties.get("polish.jadPath") );
-		}
-		
-		
-		
-		String[] arguments = (String[]) argumentsList.toArray(new String[argumentsList.size()]);
-		
-		/*Emulator emulator = new Emulator( device, arguments, setting );
-		emulator.start();
-		return emulator;
-		*/
-	
 	}
 	
 	class LoggerThread extends Thread {
@@ -365,10 +319,32 @@ public abstract class Emulator extends Thread {
 			int c;
 			
 			try {
+				boolean decompilerInstalled = true;
 				while ((c = this.input.read() ) != -1) {
 					if (c == '\n') {
-						this.output.println( log.toString() );
+						String logMessage = log.toString();
+						this.output.println( logMessage );
 						log.delete( startPos,  log.length() );
+						if (decompilerInstalled
+								&& (logMessage.indexOf('+') != -1) 
+								&& (logMessage.indexOf("at ") != -1)) {
+							try {
+								// this seems to be an error message like
+								// "   at de.enough.polish.ClassName(+263)"
+								// so try to use JAD for finding out the source code address:
+								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs);
+								if (stackTrace != null) {
+									if (stackTrace.couldBeResolved()) {
+										this.output.println( stackTrace.getSourceCodeMessage() );
+									} else {
+										this.output.println( this.header + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
+									}
+								}
+							} catch (DecompilerNotInstalledException e) {
+								this.output.println("Unable to translate stacktrace: " + e.getMessage() );
+								decompilerInstalled = false;
+							}
+						}
 					}  else if (c != '\r') {
 						log.append((char) c);
 					}
