@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin"
+   name="PolishEditor Plug-in"
+   version="1.0.0"
+   provider-name=""
+   class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin">
+
+   <runtime>
+      <library name="PolishEditor.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/antlr-2.7.5.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jface.text"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.editors">
+         
+		<editor
+         	id="de.enough.polish.plugin.eclipse.polishEditor.PolishEditor"
+         	name="Polish Editor"
+         	extensions="java"
+         	icon="icons/sample.gif"
+         	contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+         	class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditor">
+         </editor>
+    </extension>
+    <!--
+    <extension
+    		id="PolishDocumentSetupParticipant"
+		name="PolishDocumentSetupParticipant"
+		point="org.eclipse.core.filebuffers.documentSetup">
+		
+		<participant extensions="java"
+			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant">
+		</participant>
+	</extension>
+	-->
+</plugin>
