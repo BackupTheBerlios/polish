@@ -25,6 +25,9 @@
  */
 package de.enough.polish.dataeditor;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jdom.Element;
@@ -45,13 +48,14 @@ public class DataEntry {
 	private DataType type;
 	private int count;
 	private CountTerm countTerm;
-	private byte[] data;
+	private Object[] data;
 	private final ArrayList dependentEntries;
-	private int[] numbersOfBytes;
 
 	/**
-	 * @param name
-	 * @param type
+	 * Creates a new entry in a binary file.
+	 * 
+	 * @param name the name of the entry
+	 * @param type the data type
 	 * 
 	 */
 	public DataEntry( String name, DataType type ) {
@@ -76,28 +80,8 @@ public class DataEntry {
 
 	public String[] getDataAsString() {
 		String[] result = new String[ this.count ];
-		if (!this.type.isDynamic()) {
-			int numberOfBytes = this.type.getNumberOfBytes();
-			for (int i = 0; i < this.count; i++) {
-				byte[] dataPart = new byte[ numberOfBytes ];
-				System.arraycopy( this.data, i * numberOfBytes, dataPart, 0, numberOfBytes );
-				result[i] = this.type.toString( dataPart ); 
-			}
-		} else {
-			if (this.data == null) {
-				for (int i = 0; i < this.count; i++) {
-					result[i] = "null";
-				}
- 			} else {
- 				int bytes = 0;
- 				for (int i = 0; i < this.count; i++) {
- 					int numberOfBytes = this.numbersOfBytes[i];
- 					byte[] dataPart = new byte[ numberOfBytes ];
- 					System.arraycopy( this.data, bytes, dataPart, 0, numberOfBytes );
- 					result[i] = this.type.toString( dataPart );
- 					bytes += numberOfBytes;
- 				}
- 			}
+		for (int i = 0; i < this.count; i++) {
+			result[i] = this.type.toString( this.data[i] );
 		}
 		return result;
 	}
@@ -113,30 +97,8 @@ public class DataEntry {
 		if (dataStr.length != this.count ) {
 			throw new IllegalArgumentException("The to-be-set data has a different count [" + dataStr.length + "] than the allowed number [" + this.count + "].");
 		}
-		if (!this.type.isDynamic()) {
-			int numberOfBytes = this.type.getNumberOfBytes();
-			for (int i = 0; i < this.count; i++) {
-				byte[] dataPart = this.type.parseDataString( dataStr[i] );
-				System.arraycopy( dataPart, 0, this.data, i * numberOfBytes, numberOfBytes );
-			}
-		} else {
-			// this is a dynamic entry
-			int numberOfBytes = 0;
-			byte[][] dataParts = new byte[ this.count ][];
-			this.numbersOfBytes = new int[ this.count ];
-			for (int i = 0; i < this.count; i++) {
-				byte[] dataPart = this.type.parseDataString( dataStr[i] );
-				this.numbersOfBytes[i] = dataPart.length;
-				numberOfBytes += dataPart.length;
-				dataParts[i] = dataPart;
-			}
-			this.data = new byte[ numberOfBytes ];
-			int index = 0;
-			for (int i = 0; i < this.count; i++) {
-				byte[] dataPart = dataParts[i];
-				System.arraycopy( dataPart, 0, this.data, index, dataPart.length );
-				index += dataPart.length;
-			}
+		for (int i = 0; i < this.count; i++) {
+			this.data[i] = this.type.parseDataString( dataStr[i] ); 
 		}
 		notifyDependentEntries();
 	}
@@ -147,18 +109,18 @@ public class DataEntry {
 			return;
 		}
 		this.count = count;
-		if (!this.type.isDynamic()) {
-			byte[] newData = new byte[ this.type.getNumberOfBytes() * count ];
-			if (this.data == null || this.data.length == 0) {
-				this.data = newData;
-				return;
-			}
+		Object[] newData = new Object[ count ];
+		for (int i = 0; i < newData.length; i++) {
+			newData[i] = this.type.getDefaultValue();
+		}
+		if (this.data == null || this.data.length == 0) {
+			this.data = newData;
+			return;
+		} else {
 			int minLength = Math.min( newData.length, this.data.length );
 			System.arraycopy( this.data, 0, newData, 0, minLength );
 			this.data = newData;
 			this.countTerm = null;
-		} else {
-			this.data = null;
 		}
 	}
 	
@@ -203,26 +165,16 @@ public class DataEntry {
 	}
 		
 	/**
-	 * @param data
-	 * @param offset
+	 * Loads the data for this entry.
+	 * 
+	 * @param in the input stream for reading data
+	 * @throws IOException when the data could not be loaded
 	 */
-	public void setData(byte[] data, int offset) {
-		if (!this.type.isDynamic()) {
-			byte[] dataSection = new byte[ getNumberOfBytes() ];
-			System.arraycopy( data, offset, dataSection, 0 , dataSection.length );
-			this.data = dataSection;
-		} else {
-			// this is a dynamic type:
-			this.numbersOfBytes = new int[ this.count ];
-			int numberOfBytes = 0;
-			for (int i = 0; i < this.count; i++) {
-				int number = this.type.getNumberOfBytes( data, offset );
-				this.numbersOfBytes[i] = number;
-				numberOfBytes += number;
-			}
-			byte[] dataSection = new byte[ numberOfBytes ];
-			System.arraycopy( data, offset, dataSection, 0 , numberOfBytes );
-			this.data = dataSection;
+	public void loadData( DataInputStream in ) 
+	throws IOException 
+	{
+		for (int i = 0; i < this.count; i++) {
+			this.data[i] = this.type.loadData( in );
 		}
 		notifyDependentEntries();
 	}
@@ -233,10 +185,9 @@ public class DataEntry {
 	
 	public void setType( DataType type ) {
 		this.type = type;
-		if (type.isDynamic()) {
-			this.data = null;
-		} else {
-			this.data = new byte[ type.getNumberOfBytes() * this.count ];
+		this.data = new Object[ this.count ];
+		for (int i = 0; i < this.count; i++) {
+			this.data[i] = type.getDefaultValue();
 		}
 	}
 	
@@ -260,29 +211,20 @@ public class DataEntry {
 		}
 	}
 	
-	public int getNumberOfBytes() {
-		if (this.type.isDynamic()) {
-			if (this.numbersOfBytes == null) {
-				return 0;
-			} else {
-				int numberOfBytes = 0;
-				for (int i = 0; i < this.numbersOfBytes.length; i++) {
-					numberOfBytes += this.numbersOfBytes[i];
-				}
-				return numberOfBytes;
-			}
+	public String getCountAsCodeString() {
+		if (this.countTerm != null) {
+			return this.countTerm.toCodeString();
 		} else {
-			// this is a normal static type
-			return this.count * this.type.getNumberOfBytes();			
+			return "" + this.count;
 		}
 	}
 	
-	public byte[] getData() {
+	public Object getData() {
 		return this.data;
 	}
 	
 	public int getDataAsInt() {
-		return this.type.getIntRepresentation( this.data );
+		return this.type.getIntRepresentation( this.data[0] );
 	}
 	
 	public String getName() {
@@ -321,10 +263,18 @@ public class DataEntry {
 	}	
 	
 	public void addInstanceDeclaration( StringBuffer buffer ) {
-		this.type.addInstanceDeclaration(getCount(), this.name, buffer);
+		this.type.addInstanceDeclaration(getCountAsString(), this.name, buffer);
 	}
 	
 	public void addCode( StringBuffer buffer ) {
-		this.type.addCode(getCountAsString(), this.name, buffer);
+		this.type.addCode(getCountAsCodeString(), this.name, buffer);
+	}
+
+	public void saveData(DataOutputStream out) 
+	throws IOException
+	{
+		for (int i = 0; i < this.count; i++) {
+			this.type.saveData( this.data[i], out );
+		}
 	}
 }

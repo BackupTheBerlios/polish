@@ -110,6 +110,9 @@ implements ActionListener, ClipboardOwner
 		} else if ( source == this.saveButton ) {
 			File targetFile = SwingUtil.openFile( ".java", false, this.currentDirectory, this );
 			if (targetFile != null) {
+				if ( targetFile.getName().indexOf('.') == -1) {
+					targetFile = new File( targetFile.getAbsolutePath() + ".java" );
+				}
 				this.currentDirectory = targetFile.getParentFile();
 				String text = this.editor.getText();
 				try {

@@ -25,6 +25,8 @@
  */
 package de.enough.polish.dataeditor;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -138,12 +140,12 @@ public class DataManager {
 	throws IOException
 	{
 		this.dataName = file.getName();
-		FileOutputStream out = new FileOutputStream( file );
+		DataOutputStream out = new DataOutputStream( new FileOutputStream( file ) );
 		DataEntry[] dataEntries = getDataEntries();
 		for (int i = 0; i < dataEntries.length; i++) {
 			DataEntry entry = dataEntries[i];
-			if (entry.getNumberOfBytes() > 0) {
-				out.write( entry.getData() );
+			if (entry.getCount() > 0) {
+				entry.saveData( out );
 			}
 		}
 		out.close();
@@ -153,19 +155,11 @@ public class DataManager {
 	throws IOException
 	{
 		this.dataName = file.getName();
-		byte[] data = new byte[ (int) file.length() ];
-		FileInputStream in = new FileInputStream( file );
-		int length = in.read( data );
-		if (length != data.length ) {
-			throw new IllegalStateException("Unable to load data from [" + file.getAbsolutePath() + "]: mismatch of file.length and read data." );
-		}
-		in.close();
+		DataInputStream in = new DataInputStream( new FileInputStream( file ) );
 		DataEntry[] dataEntries = getDataEntries();
-		int offset = 0;
 		for (int i = 0; i < dataEntries.length; i++) {
 			DataEntry entry = dataEntries[i];
-			entry.setData( data, offset );
-			offset += entry.getNumberOfBytes();
+			entry.loadData(in);
 		}
 	}
 	
@@ -338,7 +332,8 @@ public class DataManager {
 		// add the constructor:
 		buffer.append("\n\tpublic ").append( className ).append("( String dataUrl )\n");
 		buffer.append("\tthrows IOException\n\t{\n");
-		buffer.append("\t\tInputStream in = getClass().getResourceAsStream( dataUrl );\n");
+		buffer.append("\t\tInputStream plainIn = getClass().getResourceAsStream( dataUrl );\n");
+		buffer.append("\t\tDataInputStream in = new DataInputStream( plainIn );\n");
 		// check if resource really exists:
 		buffer.append("\t\tif (in == null) {\n" )
 			.append("\t\t\tthrow new IllegalArgumentException(\"Unable to open resource [\" + dataUrl + \"]: resource not found: does it start with \\\"/\\\"?\");\n")

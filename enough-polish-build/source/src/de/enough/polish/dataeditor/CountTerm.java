@@ -116,6 +116,31 @@ public class CountTerm {
 	}
 
 	/**
+	 * @return
+	 */
+	public String toCodeString() {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < this.operants.length; i++ ) {
+			buffer.append( "this.").append( this.operants[i].getName() );
+			if (i != this.operants.length -1 ) {	
+				switch ( this.operation ) {
+					case OPERATION_ADD:
+						buffer.append(" + "); break;
+					case OPERATION_SUBTRACT:
+						buffer.append(" - "); break;
+					case OPERATION_MULTIPLY:
+						buffer.append(" * "); break;
+					case OPERATION_DEVIDE:
+						buffer.append(" / "); break;
+					default:
+						throw new IllegalStateException("The operation [" + this.operation + "] is not supported.");
+				}
+			}
+		}
+		return buffer.toString();
+	}
+	
+	/**
 	 * @param term
 	 * @param manager
 	 * @return
@@ -163,5 +188,6 @@ public class CountTerm {
 	public DataEntry[] getOperants() {
 		return this.operants;
 	}
+
 
 }

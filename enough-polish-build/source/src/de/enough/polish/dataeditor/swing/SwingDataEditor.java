@@ -35,6 +35,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,9 +49,14 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.SwingUtil;
 
 /**
@@ -90,6 +98,7 @@ implements ActionListener
 	
 	private CreateCodeDialog createCodeDialog;
 	private Image icon;
+	private String packageName;
 	
 
 	/**
@@ -118,7 +127,7 @@ implements ActionListener
 			this.setIconImage( this.icon );
 		}
 		
-		
+		loadSettings();
 	}
 	
 	private JMenuBar createMenuBar() {
@@ -176,7 +185,7 @@ implements ActionListener
 		menu.add( item );
 		this.menuSaveDataAs = item;
 		item = new JMenuItem( "Open Data", 'o' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'O', Event.CTRL_MASK + Event.SHIFT_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'O', Event.ALT_MASK + Event.SHIFT_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenData = item;
@@ -295,12 +304,17 @@ implements ActionListener
 					className = fileName;
 				}
 			}
-			this.createCodeDialog = new CreateCodeDialog( this, "Generate Code", "com.company.data", className );
+			String pack = "com.company.data";
+			if (this.packageName != null) {
+				pack = this.packageName;
+			}
+			this.createCodeDialog = new CreateCodeDialog( this, "Generate Code", pack, className );
 		}
 		this.createCodeDialog.setVisible( true );
 		if (this.createCodeDialog.okPressed()) {
 			String className = this.createCodeDialog.getClassName();
-			String code = this.dataManager.generateJavaCode( this.createCodeDialog.getPackageName(), className );
+			this.packageName = this.createCodeDialog.getPackageName();
+			String code = this.dataManager.generateJavaCode( this.packageName, className );
 			CodeEditor codeEditor = new CodeEditor( className + ".java", code, this.icon );
 			codeEditor.setVisible(true);
 		}
@@ -521,7 +535,70 @@ implements ActionListener
 	}
 
 	private void quit() {
+		saveSettings();
 		System.exit( 0 );
+	}
+	
+	private void saveSettings() {
+		if (this.definitionFile != null) {
+			ArrayList lines = new ArrayList();
+			// save start of file:
+			lines.add( "<!-- Settings of the J2ME Polish binary editor from " + (new Date()).toString() + " -->" );
+			lines.add( "<binaryeditor-settings>" );
+			lines.add( "\t<setting" );
+			lines.add( "\t\tdefinitionPath=\"" + this.definitionFile.getAbsolutePath() + "\"" );
+			if (this.dataFile != null) {
+				lines.add( "\t\tdataPath=\"" + this.dataFile.getAbsolutePath() + "\"" );
+			}
+			if (this.packageName != null) {
+				lines.add( "\t\tpackage=\"" + this.packageName + "\"" );
+			}
+			lines.add( "\t/>");
+			lines.add( "</binaryeditor-settings>");
+			try {
+				String[] textLines = (String[]) lines.toArray( new String[ lines.size() ] );
+				FileUtil.writeTextFile( new File(".binaryeditor.settings"), textLines );
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Unable to save settings: " + e.toString() );
+			}
+		}		
+	}
+	
+	private void loadSettings() {
+		try {
+			File settingsFile = new File(".binaryeditor.settings");
+			if (settingsFile.exists()) {
+				FileInputStream in = new FileInputStream( settingsFile );
+				SAXBuilder builder = new SAXBuilder( false );
+				Document document = builder.build( in );
+				Element setting = document.getRootElement().getChild("setting");
+				if (setting != null) {
+					String definitionPath = setting.getAttributeValue("definitionPath");
+					if (definitionPath != null) {
+						File defFile = new File( definitionPath );
+						if (defFile.exists()) {
+							this.dataManager.loadDefinition(defFile);
+							this.definitionFile = defFile;
+							this.currentDirectory = this.definitionFile.getParentFile();
+							String dataPath = setting.getAttributeValue("dataPath");
+							if (dataPath != null) {
+								File file = new File( dataPath );
+								if (file.exists()) {
+									this.dataManager.loadData(file);
+									this.dataFile = file;
+								}
+							}
+						}
+					}
+					this.packageName = setting.getAttributeValue("package");
+					updateTitle();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Unable to load the settings: " + e.toString() );
+		}
 	}
 	
 	private void showErrorMessage( Throwable exception ) {

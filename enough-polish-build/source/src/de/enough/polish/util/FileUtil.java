@@ -88,7 +88,7 @@ public final class FileUtil {
 	throws IOException 
 	{
 		File parentDir = file.getParentFile(); 
-		if (! parentDir.exists()) {
+		if ( (parentDir != null) && !parentDir.exists()) {
 			parentDir.mkdirs();
 		}
 		PrintWriter out = new PrintWriter(new FileWriter( file ) );

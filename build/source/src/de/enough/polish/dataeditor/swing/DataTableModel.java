@@ -139,7 +139,7 @@ extends AbstractTableModel
 					entry.setCount( strValue, this.dataManager );
 					break;
 				case 2:
-					strValue = strValue.substring(0, strValue.indexOf(' '));
+					strValue = strValue.substring(0, strValue.lastIndexOf(' '));
 					DataType type = this.dataManager.getDataType( strValue );
 					entry.setType(type);
 					break;

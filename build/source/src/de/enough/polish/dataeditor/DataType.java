@@ -25,6 +25,9 @@
  */
 package de.enough.polish.dataeditor;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,19 +50,25 @@ import de.enough.polish.util.TextUtil;
 public class DataType {
 	
 	public static final int BYTE_ID = 1;
-	public static final int SHORT_ID = 2;
-	public static final int INTEGER_ID = 3;
-	public static final int LONG_ID = 4;
-	public static final int ASCII_STRING_ID = 5;
-	public static final int BOOLEAN_ID = 6;
-	public static final int USER_DEFINED_ID = 7;
+	public static final int UNSIGNED_BYTE_ID = 2;
+	public static final int SHORT_ID = 4;
+	public static final int UNSIGNED_SHORT_ID = 5;
+	public static final int INTEGER_ID = 6;
+	public static final int LONG_ID = 7;
+	public static final int ASCII_STRING_ID = 8;
+	public static final int UTF_STRING_ID = 9;
+	public static final int BOOLEAN_ID = 10;
+	public static final int USER_DEFINED_ID = 11;
 
-	public static final DataType BYTE = new DataType("Byte", BYTE_ID, 1);
-	public static final DataType SHORT = new DataType("Short", SHORT_ID, 2);
-	public static final DataType INTEGER = new DataType("Integer", INTEGER_ID, 4);
-	public static final DataType LONG = new DataType("Long", LONG_ID, 8);
+	public static final DataType BYTE = new DataType("byte", BYTE_ID, 1);
+	public static final DataType UNSIGNED_BYTE = new DataType("unsigned byte", UNSIGNED_BYTE_ID, 1);
+	public static final DataType SHORT = new DataType("short", SHORT_ID, 2);
+	public static final DataType UNSIGNED_SHORT = new DataType("unsigned short", UNSIGNED_SHORT_ID, 2);
+	public static final DataType INTEGER = new DataType("int", INTEGER_ID, 4);
+	public static final DataType LONG = new DataType("long", LONG_ID, 8);
 	public static final DataType ASCII_STRING = new DataType("ASCII-String", ASCII_STRING_ID, -1);
-	public static final DataType BOOLEAN = new DataType("Boolean", BOOLEAN_ID, 1);
+	public static final DataType UTF_STRING = new DataType("UTF-String", UTF_STRING_ID, -1);
+	public static final DataType BOOLEAN = new DataType("boolean", BOOLEAN_ID, 1);
 
 	private final String name;
 	private final int type;
@@ -160,133 +169,105 @@ public class DataType {
 	public int getNumberOfBytes() {
 		return this.numberOfBytes;
 	}
-
-	/**
-	 * Retrieves the number of bytes for dynamic types, e.g. Strings
-	 * 
-	 * @param data the raw data
-	 * @param offset the offset where this dynamic type starts
-	 * @return the number of bytes for this type.
-	 */
-	public int getNumberOfBytes(byte[] data, int offset) {
-		if (this.type == ASCII_STRING_ID ) {
-			int numberOfChars = CastUtil.toUnsignedInt( data[ offset ] );
-			return (numberOfChars + 1);
-		} else if (this.type == USER_DEFINED_ID) {
-			int bytes = 0;
-			for (int i = 0; i < this.subtypes.length; i++) {
-				DataType subtype = this.subtypes[i];
-				if (subtype.isDynamic) {
-					bytes += subtype.getNumberOfBytes(data, offset + bytes);
-				} else {
-					bytes += subtype.numberOfBytes;
+	
+	public Object getDefaultValue() {
+		switch (this.type) {
+			case BYTE_ID: 
+				return new Byte( (byte)0 );
+			case UNSIGNED_BYTE_ID:
+				return new Short( (short)0 );
+			case SHORT_ID:
+				return new Short( (short)0 );
+			case UNSIGNED_SHORT_ID:
+				return new Integer( 0 );
+			case INTEGER_ID:
+				return new Integer( 0 );
+			case LONG_ID:
+				return new Long( 0 );
+			case BOOLEAN_ID:
+				return Boolean.FALSE;
+			case ASCII_STRING_ID:
+				return "";
+			case UTF_STRING_ID:
+				return "";
+			case USER_DEFINED_ID:
+				Object[] results = new Object[ this.subtypes.length ];
+				for (int i = 0; i < this.subtypes.length; i++) {
+					DataType dataType = this.subtypes[i];
+					results[i] = dataType.getDefaultValue();
 				}
-			}
-			return bytes;
-		} else {
-			throw new IllegalStateException("The type [" + this.name + "] is either not supported or not a dynamic type.");
+				return results;
+			default: 
+				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
 		}
 	}
 	
-	public String toString( byte[] data ) {
+	public String toString( Object data ) {
 		switch (this.type) {
-			case BYTE_ID: 
-				return Byte.toString( data[0] );
-			case SHORT_ID:
-				short shortValue = (short) ( CastUtil.toUnsignedInt(data[0]) |  (data[1] << 8));
-				return Short.toString(shortValue);
-			case INTEGER_ID:
-				int intValue = CastUtil.toUnsignedInt(data[0]) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
-				return Integer.toString(intValue);
-			case LONG_ID:
-				long longValue = (CastUtil.toUnsignedInt(data[0])) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | ((long)CastUtil.toUnsignedInt(data[3]) << 24) | ((long)CastUtil.toUnsignedInt(data[4]) << 32) | ((long)CastUtil.toUnsignedInt(data[5]) << 40) | ((long)CastUtil.toUnsignedInt(data[6]) << 48) | ((long)data[7] << 56);
-				return Long.toString(longValue);
-			case BOOLEAN_ID:
-				if (data[0] == 0) {
-					return "false";
-				} else {
-					return "true";
-				}
-			case ASCII_STRING_ID:
-				return new String( data, 1, CastUtil.toUnsignedInt(data[0]));
 			case USER_DEFINED_ID:
 				StringBuffer buffer = new StringBuffer();
-				int startIndex = 0;
+				Object[] datas = (Object[]) data;
 				for (int i = 0; i < this.subtypes.length; i++) {
-					DataType dataType = this.subtypes[i];
-					byte[] subData = new byte[ dataType.numberOfBytes ];
-					System.arraycopy(data, startIndex, subData, 0,  dataType.numberOfBytes );
-					startIndex += dataType.numberOfBytes; 
-					buffer.append( dataType.toString( subData ) );
+					DataType subtype = this.subtypes[i];
+					Object subData = datas[i];
+					buffer.append( subtype.toString( subData ) );
 					if (i != this.subtypes.length - 1) {
 						buffer.append(", ");
 					}
 				}
 				return buffer.toString();
 			default: 
-				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
+				return data.toString();
 		}
 	}
 	
-	public byte[] parseDataString( String value ) {
+	public Object parseDataString( String value ) {
 		switch (this.type) {
 			case BYTE_ID: 
-				return new byte[] { Byte.parseByte( value ) };
+				return new Byte( Byte.parseByte( value ) );
+			case UNSIGNED_BYTE_ID:
+				short unsignedByteValue = Short.parseShort(value);
+				if (unsignedByteValue > 255 || unsignedByteValue < 0) {
+					throw new IllegalArgumentException("Invalid value for unsigned byte: " + value + ". Allowed range is 0 to 255.");
+				} 
+				return new Short( unsignedByteValue );
 			case SHORT_ID:
-				short shortValue = Short.parseShort(value);
-				byte[] data = new byte[ 2 ];
-				data[0] = (byte) (shortValue & 0x00FF);
-				data[1] = (byte) ((shortValue >>> 8) & 0x00FF);
-				return data; 
+				return new Short( Short.parseShort(value) );
+			case UNSIGNED_SHORT_ID:
+				int unsignedShortValue = Integer.parseInt(value);
+				if (unsignedShortValue < 0 || unsignedShortValue > Short.MAX_VALUE + (-1* Short.MIN_VALUE)) {
+					throw new IllegalArgumentException("Invalid value for unsigned short: " + value + ". Allowed range is 0 to " + (Short.MAX_VALUE + (-1* Short.MIN_VALUE)) + ".");
+				}
+				return new Integer( unsignedShortValue );
 			case INTEGER_ID:
-				int intValue = Integer.parseInt(value);
-				data = new byte[ 4 ];
-				data[0] = (byte) (intValue & 0x000000FF);
-				data[1] = (byte) ((intValue >>> 8) & 0x0000FF);
-				data[2] = (byte) ((intValue >>> 16) & 0x00FF);
-				data[3] = (byte) (intValue >>> 24);
-				return data; 
+				return new Integer( Integer.parseInt(value) );
 			case LONG_ID:
-				long longValue = Long.parseLong(value);
-				data = new byte[ 8 ];
-				data[0] = (byte) ( longValue         & 0x00000000000000FF);
-				data[1] = (byte) ((longValue >>> 8)  & 0x000000000000FF);
-				data[2] = (byte) ((longValue >>> 16) & 0x0000000000FF);
-				data[3] = (byte) ((longValue >>> 24) & 0x00000000FF);
-				data[4] = (byte) ((longValue >>> 32) & 0x000000FF);
-				data[5] = (byte) ((longValue >>> 40) & 0x0000FF);
-				data[6] = (byte) ((longValue >>> 48) & 0x00FF);
-				data[7] = (byte) ( longValue >>> 56);
-				return data;
+				return new Long( Long.parseLong(value) );
 			case BOOLEAN_ID:
 				if ("true".equals( value )) {
-					return new byte[]{ 1 };
+					return Boolean.TRUE;
 				} else {
-					return new byte[]{ 0 };
+					return Boolean.FALSE;
 				}
 			case ASCII_STRING_ID:
-				int stringLength = value.length();
-				if (stringLength > 255 ) {
-					throw new IllegalArgumentException("The ASCII-String \"" + value + "\" has too many characters: maximum is 255 - this string has [" + stringLength + "] characters.");
+				if (value.length() > 255) {
+					throw new IllegalArgumentException("Max length of an ASCII String is 255 chars - the given value has " + value.length() + " chars.");
 				}
-				//System.out.println("getting bytes data for string [" + value + "] with a length of " + stringLength );
-				data = new byte[ stringLength + 1];
-				data[0] = (byte) stringLength;
-				byte[] charData = value.getBytes();
-				System.arraycopy( charData, 0, data, 1, stringLength );
-				return data;
+				return value;
+			case UTF_STRING_ID:
+				return value;
 			case USER_DEFINED_ID:
-				data = new byte[ this.numberOfBytes ];
 				String[] subvalues = TextUtil.split( value, ", ");
-				int startIndex = 0;
+				if (subvalues.length != this.subtypes.length) {
+					throw new IllegalArgumentException("Invalid count of subtypes.");
+				} 
+				Object[] results = new Object[ subvalues.length ];
 				for (int i = 0; i < this.subtypes.length; i++) {
 					DataType dataType = this.subtypes[i];
 					String subvalue = subvalues[i];
-					byte[] subData = dataType.parseDataString( subvalue );
-					System.arraycopy(subData, 0, data, startIndex,  dataType.numberOfBytes );
-					startIndex += dataType.numberOfBytes; 
+					results[i] = dataType.parseDataString( subvalue );
 				}
-				return data;
+				return results;
 			default: 
 				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
 		}
@@ -303,21 +284,22 @@ public class DataType {
 	 * @param data
 	 * @return
 	 */
-	public int getIntRepresentation(byte[] data) {
+	public int getIntRepresentation( Object data) {
 		switch (this.type) {
-			case BYTE_ID: 
-				return data[0];
+			case BYTE_ID:
+				return ((Byte)data).intValue();
+			case UNSIGNED_BYTE_ID:
+				return ((Short)data).intValue();
 			case SHORT_ID:
-				short shortValue = (short) ( CastUtil.toUnsignedInt( data[0] )  | (data[1] << 8));
-				return shortValue;
+				return ((Short)data).intValue();
+			case UNSIGNED_SHORT_ID:
+				return ((Integer)data).intValue();
 			case INTEGER_ID:
-				int intValue = CastUtil.toUnsignedInt( data[0] ) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
-				return intValue;
+				return ((Integer)data).intValue();
 			case LONG_ID:
-				long longValue =  CastUtil.toUnsignedInt( data[0] ) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (CastUtil.toUnsignedInt(data[2]) << 24);
-				return (int) longValue;
+				return ((Long)data).intValue();
 			case BOOLEAN_ID:
-				if (data[0] == 0) {
+				if (data == Boolean.FALSE) {
 					return 0;
 				} else {
 					return 1;
@@ -350,7 +332,7 @@ public class DataType {
 	}
 	
 	public static DataType[] getDefaultTypes() {
-		return new DataType[]{ BYTE, SHORT, INTEGER, LONG, BOOLEAN, ASCII_STRING };
+		return new DataType[]{ BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INTEGER, LONG, BOOLEAN, ASCII_STRING, UTF_STRING };
 	}
 	
 	/**
@@ -365,8 +347,12 @@ public class DataType {
 		switch (this.type) {
 			case BYTE_ID:
 				return "byte";
+			case UNSIGNED_BYTE_ID:
+				return "short";
 			case SHORT_ID:
 				return "short";
+			case UNSIGNED_SHORT_ID:
+				return "int";
 			case INTEGER_ID:
 				return "int";
 			case LONG_ID:
@@ -375,6 +361,8 @@ public class DataType {
 				return "boolean";
 			case ASCII_STRING_ID:
 				return "String";
+			case UTF_STRING_ID:
+				return "String";
 			case USER_DEFINED_ID:
 				return this.name;
 			default: 
@@ -382,10 +370,10 @@ public class DataType {
 		}
 	}
 	
-	public void addInstanceDeclaration( int count, String paramName, StringBuffer buffer ) {
+	public void addInstanceDeclaration( String count, String paramName, StringBuffer buffer ) {
 		buffer.append("\tpublic final ");
 		buffer.append( getJavaType() );
-		if ( count != 1) {
+		if ( !"1".equals(count) ) {
 			buffer.append("[]");
 		}
 		buffer.append(' ').append( paramName ).append(";\n");
@@ -406,67 +394,91 @@ public class DataType {
 			case BYTE_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new byte[ ").append( count ).append("];\n");
+					buffer.append(" = new byte[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
-					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (byte) in.read();\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readByte();\n");
 					buffer.append("\t\t}\n");
 				} else {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = (byte) in.read();\n");
+					buffer.append(" = in.readByte();\n");
+				}
+				break;
+			case UNSIGNED_BYTE_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new short[ ").append( count ).append(" ];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (short) in.readUnsignedByte();\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = (short) in.readUnsignedByte();\n");
 				}
 				break;
 			case SHORT_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new short[ ").append( count ).append("];\n");
+					buffer.append(" = new short[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
-					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (short) (in.read() | (in.read() << 8));\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readShort();\n");
 					buffer.append("\t\t}\n");
 				} else {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = (short) (in.read() | (in.read() << 8));\n");
+					buffer.append(" = in.readShort();\n");
+				}
+				break;
+			case UNSIGNED_SHORT_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new int[ ").append( count ).append(" ];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readUnsignedShort();\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = in.readUnsignedShort();\n");
 				}
 				break;
 			case INTEGER_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new int[ ").append( count ).append("];\n");
+					buffer.append(" = new int[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
-					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.read() | (in.read() << 8) | (in.read() << 16) | (in.read() << 24);\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readInt();\n");
 					buffer.append("\t\t}\n");
 				} else {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = in.read() | (in.read() << 8) | (in.read() << 16) | (in.read() << 24);\n");
+					buffer.append(" = in.readInt();\n");
 				}
 				break;
 			case LONG_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new long[ ").append( count ).append("];\n");
+					buffer.append(" = new long[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
-					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.read() | (in.read() << 8) | (in.read() << 16) | ((long)in.read() << 24) | ((long)in.read() << 32) | ((long)in.read() << 40) | ((long)in.read() << 48) | ((long)in.read() << 56);\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readLong();\n");
 					buffer.append("\t\t}\n");
 				} else {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = in.read() | (in.read() << 8) | (in.read() << 16) | ((long)in.read() << 24) | ((long)in.read() << 32) | ((long)in.read() << 40) | ((long)in.read() << 48) | ((long)in.read() << 56);\n");
+					buffer.append(" = in.readLong();\n");
 				}
 				break;
 			case BOOLEAN_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new boolean[ ").append( count ).append("];\n");
+					buffer.append(" = new boolean[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
-					buffer.append("\t\t\tthis.").append(paramName).append("[i] = (in.read() != 0);\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readBoolean();\n");
 					buffer.append("\t\t}\n");
 				} else {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = (in.read() != 0);\n");
+					buffer.append(" = in.readBoolean();\n");
 				}
 				break;
 			case ASCII_STRING_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new String[ ").append( count ).append("];\n");
+					buffer.append(" = new String[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
 					buffer.append( "\t\t\tint ").append( paramName ).append("Length = in.read();\n");
 					buffer.append( "\t\t\tbyte[] ").append( paramName ).append("Buffer");
@@ -484,10 +496,22 @@ public class DataType {
 					buffer.append(" = new String(" ).append( paramName ).append("Buffer );\n");
 				}
 				break;
+			case UTF_STRING_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new String[ ").append( count ).append(" ];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readUTF();\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = in.readUTF();\n");
+				}
+				break;
 			case USER_DEFINED_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
-					buffer.append(" = new ").append( this.name ).append("[ ").append( count ).append("];\n");
+					buffer.append(" = new ").append( this.name ).append("[ ").append( count ).append(" ];\n");
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
 					buffer.append("\t\t\tthis.").append( paramName ).append("[i] = new ")
 						.append( this.name ).append( "( in );\n" );
@@ -516,10 +540,10 @@ public class DataType {
 		String paramName = this.name.substring(0,1).toLowerCase() + this.name.substring( 1 );
 		for (int i = 0; i < this.subtypes.length; i++) {
 			DataType subtype = this.subtypes[ i ];
-			subtype.addInstanceDeclaration( 1, paramName + i, buffer );
+			subtype.addInstanceDeclaration( "1", paramName + i, buffer );
 		}
 		// add constructor:
-		buffer.append("\tpublic ").append( this.name ).append("( InputStream in )\n")
+		buffer.append("\tpublic ").append( this.name ).append("( DataInputStream in )\n")
 			.append("\tthrows IOException\n\t{\n");
 		// add initialisation code:
 		for (int i = 0; i < this.subtypes.length; i++) {
@@ -532,5 +556,106 @@ public class DataType {
 		// register this inner class:
 		implementedTypes.put( this.name, Boolean.TRUE );
 	}
+
+	/**
+	 * Loads data for this type from the given input stream
+	 * 
+	 * @param in the input stream
+	 * @return the read type-dependent value
+	 * @throws IOException when the data could not be read
+	 */
+	public Object loadData(DataInputStream in) 
+	throws IOException 
+	{
+		switch (this.type) {
+			case BYTE_ID:
+				return new Byte( in.readByte() );
+			case UNSIGNED_BYTE_ID:
+				return new Short( (short) in.readUnsignedByte() );
+			case SHORT_ID:
+				return new Short( in.readShort() );
+			case UNSIGNED_SHORT_ID:
+				return new Integer( in.readInt() );
+			case INTEGER_ID:
+				return new Integer( in.readInt() );
+			case LONG_ID:
+				return new Long( in.readLong() );
+			case BOOLEAN_ID:
+				if (in.readBoolean()) {
+					return Boolean.TRUE;
+				} else {
+					return Boolean.FALSE;
+				}
+			case ASCII_STRING_ID:
+				int length = CastUtil.toUnsignedInt( in.readByte() );
+				byte[] chars = new byte[ length ];
+				in.readFully(chars);
+				return new String( chars );
+			case UTF_STRING_ID:
+				return in.readUTF();
+			case USER_DEFINED_ID:
+				Object[] values = new Object[ this.subtypes.length ];
+				for (int i = 0; i < values.length; i++) {
+					DataType subtype = this.subtypes[i];
+					values[i] = subtype.loadData(in);
+				}
+				return values;
+			default: 
+				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
+		}
+	}
+
+	/**
+	 * Saves the data for this type.
+	 * 
+	 * @param value the value
+	 * @param out the data output stream
+	 * @throws IOException when the data could not be stored
+	 */
+	public void saveData(Object value, DataOutputStream out) 
+	throws IOException
+	{
+		switch (this.type) {
+			case BYTE_ID:
+				out.writeByte( ((Byte)value).byteValue() );
+				break;
+			case UNSIGNED_BYTE_ID:
+				out.writeByte( ((Short)value).shortValue() );
+				break;
+			case SHORT_ID:
+				out.writeShort( ((Short)value).shortValue() );
+				break;
+			case UNSIGNED_SHORT_ID:
+				out.writeInt( ((Integer)value).intValue() );
+				break;
+			case INTEGER_ID:
+				out.writeInt( ((Integer)value).intValue() );
+				break;
+			case LONG_ID:
+				out.writeLong( ((Long)value).longValue() );
+				break;
+			case BOOLEAN_ID:
+				out.writeBoolean( ((Boolean)value).booleanValue() );
+				break;
+			case ASCII_STRING_ID:
+				String str = (String) value;
+				out.writeByte( str.length() );
+				out.writeBytes(str);
+				break;
+			case UTF_STRING_ID:
+				str = (String) value;
+				out.writeUTF(str);
+				break;
+			case USER_DEFINED_ID:
+				Object[] values = (Object[]) value;
+				for (int i = 0; i < values.length; i++) {
+					DataType subtype = this.subtypes[i];
+					subtype.saveData(values[i], out);
+				}
+				break;
+			default: 
+				throw new IllegalStateException( "The type [" + this.name + "] is currently not supported.");
+			}
+		}
 
 }
