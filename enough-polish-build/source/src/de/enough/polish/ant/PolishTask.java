@@ -151,7 +151,9 @@ public class PolishTask extends ConditionalTask {
 		selectDevices();
 		int numberOfDevices = this.devices.length;
 		if (numberOfDevices > 1) {
-			System.out.println("Processing [" + numberOfDevices + "] devices...");
+			System.out.println("J2ME Polish " + VERSION + ": processing [" + numberOfDevices + "] devices...");
+		} else {
+			System.out.println("J2ME Polish " + VERSION );
 		}
 		boolean obfuscate = this.buildSetting.doObfuscate();
 		for ( int i=0; i<numberOfDevices; i++) {
@@ -381,7 +383,7 @@ public class PolishTask extends ConditionalTask {
 			this.preserveClasses = new String[ keepClasses.length + midletClasses.length ];
 			System.arraycopy( keepClasses, 0, this.preserveClasses, 0,  keepClasses.length );
 			System.arraycopy( midletClasses, 0, this.preserveClasses, keepClasses.length, midletClasses.length  );
-			this.obfuscator = Obfuscator.getInstance( obfuscatorSetting.getName(), obfuscatorSetting.getClassName() );
+			this.obfuscator = Obfuscator.getInstance( obfuscatorSetting.getName(), obfuscatorSetting.getClassName(), this.project, this.buildSetting.getApiDir(), this.libraryManager );
 		}
 		
 		// init import manager:

@@ -26,8 +26,10 @@
 package de.enough.polish.obfuscate;
 
 import de.enough.polish.Device;
+import de.enough.polish.LibraryManager;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 
 import java.io.File;
@@ -45,6 +47,10 @@ import java.io.File;
  */
 public abstract class Obfuscator {
 	
+	protected Project project;
+	protected LibraryManager libraryManager;
+	protected File libDir;
+
 	/**
 	 * Creates a new obfuscator.
 	 */
@@ -73,17 +79,22 @@ public abstract class Obfuscator {
 	 *        When null is given and no className is specified, 
 	 * 		  the GPL ProGuard will be used.
 	 * @param className The class name of the desired obfuscator.
+	 * @param project the Ant-project to which the obfuscator belongs to
+	 * @param libDir the main library directory
+	 * @param libraryManager the api manager 
 	 * @return The concrete obfuscator.
 	 * @throws BuildException when the preferred obfuscator or none obfuscator at all
 	 *         could be instantiated.
 	 */
-	public static final Obfuscator getInstance( String preferredObfuscator, String className )
+	public static final Obfuscator getInstance( String preferredObfuscator, String className, Project project, File libDir, LibraryManager libraryManager )
 	throws BuildException
 	{
 		if (className != null) {
 			try {
 				Class obfuscatorClass = Class.forName( className );
-				return (Obfuscator) obfuscatorClass.newInstance();	
+				Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
+				obfuscator.init( project, libDir, libraryManager );
+				return obfuscator;
 			} catch (ClassNotFoundException e) {
 				throw new BuildException( "Unable to load obfuscator [" + className + "]: " + e.getMessage(), e );
 			} catch (InstantiationException e) {
@@ -99,7 +110,9 @@ public abstract class Obfuscator {
 				Class obfuscatorClass = Class.forName( 
 							"de.enough.polish.obfuscate." 
 							+ obfuscatorName + "Obfuscator");
-				return (Obfuscator) obfuscatorClass.newInstance();	
+				Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
+				obfuscator.init( project, libDir, libraryManager );
+				return obfuscator;
 			} catch (ClassNotFoundException e) {
 				throw new BuildException( "Unable to load obfuscator [" + preferredObfuscator + "]: " + e.getMessage(), e );
 			} catch (InstantiationException e) {
@@ -114,10 +127,26 @@ public abstract class Obfuscator {
 			// or start the obfuscator complete externally?
 			Class.forName("proguard.ProGuard");
 			// okay, proguard found:
-			return new ProGuardObfuscator();
+			Obfuscator obfuscator = new ProGuardObfuscator();
+			obfuscator.init( project, libDir, libraryManager );
+			return obfuscator;
 		} catch (ClassNotFoundException e) {
 			// check for next obfuscator:
 		}
 		return null;
+	}
+
+	/**
+	 * Initialises this obfuscator.
+	 * The protected field project, libDir and libraryManager are set in the default implementation.
+	 * 
+	 * @param proj the Ant-project to which the obfuscator belongs to
+	 * @param lbDir the main library directory
+	 * @param lbManager the api manager 
+	 */
+	private void init(Project proj, File lbDir, LibraryManager lbManager) {
+		this.project = proj;
+		this.libDir = lbDir;
+		this.libraryManager = lbManager;
 	}
 }

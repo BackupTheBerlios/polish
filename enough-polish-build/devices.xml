@@ -32,12 +32,28 @@
 	<device
 		supportsPolishGui="true" >
 		<identifier>Generic/midp1</identifier>
+		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 	</device>
 
 	<device
+		supportsPolishGui="false" >
+		<identifier>Generic/PlainMidp1</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+	</device>
+	
+	<device
 		supportsPolishGui="true" >
 		<identifier>Generic/midp2</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+	</device>
+	
+	<device
+		supportsPolishGui="false" >
+		<identifier>Generic/PlainMidp2</identifier>
+		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 	</device>
 	
@@ -49,6 +65,7 @@
 	<device
 		supportsPolishGui="true" >
 		<identifier>Nokia/Series60</identifier>
+		<features>isVirtual</features>
 		<groups>Series60</groups>
 		<capability name="OS" value="Symbian"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
@@ -60,6 +77,7 @@
 	<device
 		supportsPolishGui="true" >
 		<identifier>Nokia/Series60Midp2</identifier>
+		<features>isVirtual</features>
 		<groups>Series60</groups>
 		<capability name="OS" value="Symbian"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
@@ -70,6 +88,7 @@
 
 	<device>
 		<identifier>Nokia/Series40</identifier>
+		<features>isVirtual</features>
 		<groups>Series40</groups>
 		<capability name="OS" value="Symbian"/>
 		<capability name="ScreenSize" value="128x128"/>
@@ -83,6 +102,7 @@
 	<device
 		supportsPolishGui="true" >
 		<identifier>Nokia/Series40Midp2</identifier>
+		<features>isVirtual</features>
 		<groups>Series40</groups>
 		<capability name="OS" value="Symbian"/>
 		<capability name="ScreenSize" value="128x128"/>

@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="import/ant.jar"/>
-	<classpathentry kind="lib" path="import/optional.jar"/>
 	<classpathentry kind="lib" path="import/junit.jar"/>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry output="bin/test" kind="src" path="source/test"/>
 	<classpathentry kind="lib" path="import/jdom.jar"/>
 	<classpathentry kind="lib" path="import/proguard.jar"/>
+	<classpathentry kind="lib" path="import/retroguard.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
