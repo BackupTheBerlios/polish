@@ -63,9 +63,16 @@ public class SpriteItem
 	 * @param animate true when this sprite should be animated
 	 */
 	public SpriteItem(String label, Sprite sprite, boolean animate ) {
-		this( label, sprite, animate, null );
+		//#ifdef polish.usePolishGui
+			this( label, sprite, animate, null );
+		//#else
+			//# super( label );
+			//# this.sprite = sprite;
+			//# this.animate = animate;
+	    //#endif
 	}
 
+	//#ifdef polish.usePolishGui	
 	/**
 	 * Creates a new sprite item.
 	 * 
@@ -83,6 +90,7 @@ public class SpriteItem
 		this.sprite = sprite;
 		this.animate = animate;
 	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.CustomItem#getMinContentWidth()
