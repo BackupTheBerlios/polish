@@ -1,0 +1,31 @@
+DEVEL TALK
+==========
+
+Its written in everywhere that you should use the MonoReconciler to update your model. How you update
+the view if your model changes is written nowhere. But we do know now, that you should _not_ do it from
+whithin a MonoReconciler because swt dont like changes which are triggered from outsite the display thread.
+Thats the stacktrace:
+
+org.eclipse.swt.SWTException: Invalid thread access
+	at org.eclipse.swt.SWT.error(SWT.java:2691)
+	at org.eclipse.swt.SWT.error(SWT.java:2616)
+	at org.eclipse.swt.SWT.error(SWT.java:2587)
+	at org.eclipse.swt.widgets.Widget.error(Widget.java:546)
+	at org.eclipse.swt.widgets.Widget.checkWidget(Widget.java:297)
+	at org.eclipse.swt.widgets.Tree.getSelection(Tree.java:631)
+	at org.eclipse.jface.viewers.TreeViewer.getSelection(TreeViewer.java:198)
+	at org.eclipse.jface.viewers.TreeViewer.setSelection(TreeViewer.java:252)
+	at org.eclipse.jface.viewers.AbstractTreeViewer.setSelectionToWidget(AbstractTreeViewer.java:1349)
+	at org.eclipse.jface.viewers.StructuredViewer.setSelectionToWidget(StructuredViewer.java:1136)
+	at org.eclipse.jface.viewers.StructuredViewer.preservingSelection(StructuredViewer.java:869)
+	at org.eclipse.jface.viewers.StructuredViewer.refresh(StructuredViewer.java:922)
+	at org.eclipse.jface.viewers.StructuredViewer.refresh(StructuredViewer.java:881)
+	at de.enough.polish.plugin.eclipse.css.editor.outline.CssContentProvider.modelChanged(CssContentProvider.java:263)
+	at de.enough.polish.plugin.eclipse.css.model.CssModel.fireModelChangedEvent(CssModel.java:140)
+	at de.enough.polish.plugin.eclipse.css.model.CssModel.reconcile(CssModel.java:129)
+	at de.enough.polish.plugin.eclipse.css.editor.reconcile.SimpleReconcilingStrategy.reconcile(SimpleReconcilingStrategy.java:65)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.process(MonoReconciler.java:71)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:204)
+	
+---
+

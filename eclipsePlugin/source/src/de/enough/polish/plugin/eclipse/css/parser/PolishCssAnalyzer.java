@@ -181,7 +181,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterLeftBrace(Token node) throws ParseException {
-    }
+    // Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -205,7 +206,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterRightBrace(Token node) throws ParseException {
-    }
+    	// Can be overwritten by clients.
+		}
 
     /**
      * Called when exiting a parse tree node.
@@ -229,7 +231,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterColon(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -253,7 +256,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterSemiColon(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -277,7 +281,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterComma(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -301,7 +306,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterVbar(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -326,7 +332,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterLeftRoundbrace(Token node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -353,7 +360,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterRightRoundbrace(Token node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -379,7 +387,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterString(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -403,7 +412,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterQuotedString(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -427,7 +437,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterImportant(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -452,7 +463,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterAnythingToSemicolon(Token node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -478,7 +490,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterExtends(Token node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -503,7 +516,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterStylesheet(Production node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -543,7 +557,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      * @throws ParseException if the node analysis discovered errors
      */
     protected void enterName(Production node) throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -582,7 +597,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterStyleSection(Production node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -623,7 +639,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterSectionBody(Production node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.
@@ -664,7 +681,8 @@ public abstract class PolishCssAnalyzer extends Analyzer {
      */
     protected void enterAttributeValueBody(Production node)
         throws ParseException {
-    }
+//    	 Can be overwritten by clients.
+    	}
 
     /**
      * Called when exiting a parse tree node.

@@ -25,17 +25,6 @@
  */
 package de.enought.polish.plugin.eclipse.css.parser;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.Iterator;
-
-import org.eclipse.jface.text.Document;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
-import de.enough.polish.plugin.eclipse.css.model.CssModel;
-import de.enough.polish.plugin.eclipse.css.parser.CssParser;
-import de.enough.polish.plugin.eclipse.css.parser.CssTokenizer;
 import junit.framework.TestCase;
 
 
@@ -51,7 +40,7 @@ import junit.framework.TestCase;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CssParserTest extends TestCase {
-	
+	/*
 	CssModel cssModel;
 	CssTokenizer tokenizer;
 	
@@ -101,5 +90,5 @@ public class CssParserTest extends TestCase {
 		System.out.println("<--"+root);
 	}
 
-
+*/
 }

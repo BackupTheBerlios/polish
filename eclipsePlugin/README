@@ -29,4 +29,4 @@ ROADMAP
  
 
 TOMORROW
-Decide if rootNode or cssModel should be input to viewer. Build a AST from the syntax tree. 
+Build an AST from the syntax tree. Clean up the code to make structures visible.

@@ -1,16 +1,5 @@
 package de.enought.polish.plugin.eclipse.css.parser;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.Iterator;
-import java.util.List;
-
-import org.eclipse.jface.text.Document;
-
-import de.enough.polish.plugin.eclipse.css.model.CssModel;
-import de.enough.polish.plugin.eclipse.css.parser.CssToken;
-import de.enough.polish.plugin.eclipse.css.parser.CssTokenizer;
 import junit.framework.TestCase;
 
 /*
@@ -51,7 +40,7 @@ import junit.framework.TestCase;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CssTokenizerTest extends TestCase {
-
+/*
 	String input;
 	CssModel cssModel;
 	
@@ -108,4 +97,5 @@ public class CssTokenizerTest extends TestCase {
 		System.out.println("CssTokenizerTest.testTokenize():# of tokens:"+cssTokens.size());
 		System.out.println("CssTokenizerTest.testTokenize():end.");
 	}
+	*/
 }

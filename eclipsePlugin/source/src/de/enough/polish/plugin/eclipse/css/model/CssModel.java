@@ -33,15 +33,18 @@ import java.util.List;
 import net.percederberg.grammatica.parser.Node;
 import net.percederberg.grammatica.parser.ParserCreationException;
 import net.percederberg.grammatica.parser.ParserLogException;
+import net.percederberg.grammatica.parser.Production;
+import net.percederberg.grammatica.parser.ProductionPattern;
 
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.reconciler.DirtyRegion;
+import org.eclipse.jface.text.TextEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.internal.misc.Assert;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import de.enough.polish.plugin.eclipse.css.parser.CssToken;
+import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssParser;
 
 /**
@@ -65,16 +68,18 @@ public class CssModel {
 	//FIXME: Put the IDocument also in the model. So we have raw input, symbols and semantic symbols in one place.
 	private IDocumentProvider documentProvider;
 	private IEditorInput editorInput;
-	
+	//private TreePrinter treePrinter;
 	private PolishCssParser parser;
 	
 	public CssModel(){
 		this.root = new StyleSheet();
 		this.tokenList = new ArrayList();
 		this.modelListeners = new ArrayList();
+		//this.treePrinter = new TreePrinter(System.out);
 	}
 	
 	public ASTNode getRoot(){
+		
 		return this.root;
 	}
 	
@@ -102,19 +107,27 @@ public class CssModel {
 
 	/**
 	 * Reconcile the model to the changed document.
-	 * @param dirtyRegion
-	 * @param subRegion
+	 * @param textEvent TODO
 	 */
-	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-		System.out.println("DEBUG:CssModel.reconcile():enter.");
-		IDocument document = this.documentProvider.getDocument(this.editorInput);
-		if(document == null){
-			System.out.println("DEBUG:CssModel.reconcile():document is null.");
+	public void reconcile(TextEvent textEvent) {
+		if(textEvent == null){
+			System.out.println("DEBUG:CssModel.reconcile():textEvent: is null.");
 			return;
 		}
+		DocumentEvent documentEvent = textEvent.getDocumentEvent();
+		if(documentEvent == null){
+			System.out.println("DEBUG:CssModel.reconcile():documentEvent: is null.");
+			return;
+		}
+		IDocument document = documentEvent.fDocument;
+		if(document == null){
+			System.out.println("DEBUG:CssModel.reconcile():document: is null.");
+			return;
+		}
+		String inputString = document.get();
 		// Parse.
 		try {
-			this.parser = new PolishCssParser(new StringReader(document.get()));
+			this.parser = new PolishCssParser(new StringReader(inputString));
 			this.rootNode = this.parser.parse();
 			System.out.println("DEBUG:CssModel.reconcile():no parsing errors !!");
 		} catch (ParserCreationException exception) {
@@ -123,6 +136,13 @@ public class CssModel {
 			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
 		}
 		fireModelChangedEvent();
+		/*try {
+			this.treePrinter.analyze(this.rootNode);
+		} catch (ParserLogException exception) {
+			// TODO ricky handle ParserLogException
+			System.out.println("DEBUG:CssModel.reconcile():treePrinter:Exception cought:"+exception.getMessage());
+		}
+		*/
 	}
 	
 	/**
@@ -179,6 +199,9 @@ public class CssModel {
 	 * @return Returns the rootNode.
 	 */
 	public Node getRootNode() {
+		if(this.rootNode == null){
+			this.rootNode = new Production(new ProductionPattern(PolishCssConstants.STYLESHEET,"RootStyleSheet"));
+		}
 		return this.rootNode;
 	}
 	/**
@@ -186,5 +209,13 @@ public class CssModel {
 	 */
 	public void setRootNode(Node rootNode) {
 		this.rootNode = rootNode;
+	}
+	
+	public IDocument getDocument(){
+		if((this.documentProvider == null) || (this.editorInput == null)){
+			return null;
+		}
+		IDocument document = this.documentProvider.getDocument(this.editorInput);
+		return document;	
 	}
 }

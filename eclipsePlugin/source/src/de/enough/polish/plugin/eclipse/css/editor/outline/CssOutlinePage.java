@@ -67,7 +67,7 @@ public class CssOutlinePage extends ContentOutlinePage {
 		//ASTNode rootNode = cssContentProvider.initialInput();
 		//ASTNode rootNode = CssEditorPlugin.getDefault().getEditor().getCssModel().getRoot();
 		//viewer.setInput(rootNode);
-		viewer.setInput("INITAL INPUT FOR VIEWER");
+		viewer.setInput(this.cssModel);
 	}
 	
 	/*

@@ -25,12 +25,23 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.reconcile;
 
+import net.percederberg.grammatica.parser.ParserLogException;
+
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextInputListener;
+import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
+import org.eclipse.jface.text.source.ISharedTextColors;
+
+import de.enough.polish.plugin.eclipse.css.model.CssModel;
+import de.enough.polish.plugin.eclipse.css.parser.PresentationAnalyzer;
 
 /**
  * <p>A facade for the presentationReconciler and the reconciler. This class will install and trigger
@@ -47,20 +58,65 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
  */
 public class SimpleReconcilerFacade implements IPresentationReconciler, IReconciler{
 
+	private ITextViewer textViewer;
+	private CssModel cssModel;
+	private Listener listener;
+	private ISharedTextColors colors;
+
+	class Listener implements ITextInputListener, ITextListener{
+		
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+		 */
+		public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
+			System.out.println("DEBUG:SimpleReconcilerFacade.Listener.inputDocumentAboutToBeChanged():enter.");
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+		 */
+		public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
+			System.out.println("DEBUG:SimpleReconcilerFacade.Listener.inputDocumentChanged():enter.");
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
+		 */
+		public void textChanged(TextEvent event) {
+			SimpleReconcilerFacade.this.cssModel.reconcile(event);
+			reconcilePresentation();
+		}
+	}
+	
+	
+	public SimpleReconcilerFacade(CssModel cssModel,ISharedTextColors colors){
+		this.cssModel = cssModel;
+		this.listener = new Listener();
+		this.colors = colors;
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#install(org.eclipse.jface.text.ITextViewer)
 	 */
 	public void install(ITextViewer viewer) {
 		// Beware that both interfaces have this method. So it will be called twice.
-		System.out.println("SimpleReconcilerFacade.install().enter.");
+		this.textViewer = viewer;
+		if( this.textViewer == null){
+			System.out.println("DEBUG:SimpleReconcilerFacade.install():viewer: is null.");
+			return;
+		}
+		this.textViewer.addTextInputListener(this.listener);
+		this.textViewer.addTextListener(this.listener);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.presentation.IPresentationReconciler#uninstall()
 	 */
 	public void uninstall() {
-		System.out.println("DEBUG:SimpleReconcilerFacade.uninstall().enter.");
-		
+		System.out.println("DEBUG:SimpleReconcilerFacade.uninstall():enter.");	
 	}
 
 	/* (non-Javadoc)
@@ -87,4 +143,71 @@ public class SimpleReconcilerFacade implements IPresentationReconciler, IReconci
 		return null;
 	}
 
+	private void reconcilePresentation(){
+		IDocument document = this.cssModel.getDocument();
+		if(document == null){
+			return;
+		}
+		
+		TextPresentation textPresentation = new TextPresentation();
+		PresentationAnalyzer presentationAnalyzer = new PresentationAnalyzer(textPresentation,document,this.colors);
+		try {
+			presentationAnalyzer.analyze(this.cssModel.getRootNode());
+			//traverseRootNodeAddTextPresentation(this.cssModel.getRootNode(),document,textPresentation);
+		} catch (ParserLogException exception) {
+			System.out.println("DFDSFDSJJ");
+		}
+		
+		//StyleRange styleRange = new StyleRange(0,100,this.colors.getColor(new RGB(125,125,0)),null);
+		//textPresentation.addStyleRange(styleRange);
+		this.textViewer.changeTextPresentation(textPresentation,false);
+	}
+	/*
+	private void traverseRootNodeAddTextPresentation(Node rootNode, IDocument document, TextPresentation textPresentation){
+		if(rootNode == null){
+			System.out.println("ERROR:SimpleReconcilerFacade.traerseRootNodeAddTextPresentation().rootNode:is null.");
+			return;
+		}
+		LinkedList remainingNodes = new LinkedList();
+		remainingNodes.addFirst(rootNode);
+		Node node;
+		while( ! remainingNodes.isEmpty()){
+			node = (Node)remainingNodes.getFirst();
+			System.out.println("BLA:"+remainingNodes);
+			remainingNodes.removeFirst();
+			createStyleRange(node,document,textPresentation);
+			int childCount = node.getChildCount();
+			for(int i = 0; i < childCount; i++){
+				remainingNodes.addFirst(rootNode.getChildAt(i));
+			}
+			
+		}
+	}
+*/
+	/**
+	 * @param node
+	 * @param textPresentation
+	 */
+	/*
+	private void createStyleRange(Node node, IDocument document, TextPresentation textPresentation) {
+		if(node.getId() == PolishCssConstants.NAME){
+			//TODO: We could change the token class to transport the position in addition to
+			// line and offset.
+			int position = -1;
+			int length = -1;
+			try {
+				position = document.getLineOffset(node.getStartLine()) + node.getStartColumn();
+				length = (document.getLineOffset(node.getEndLine()) + node.getEndColumn()) - position;
+				StyleRange styleRange = new StyleRange(position,length,this.colors.getColor(new RGB(100,0,0)),null);
+				textPresentation.addStyleRange(styleRange);
+			} catch (BadLocationException exception) {
+				System.out.println("ERROR:SimpleReconcilerFacade.createStyleRange():position and length beyond document.position:"+position+".length:"+length);
+			}
+			
+			
+		}
+		
+	}
+	*/
+	
 }

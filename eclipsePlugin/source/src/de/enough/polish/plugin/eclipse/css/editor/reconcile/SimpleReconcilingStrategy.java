@@ -62,7 +62,7 @@ public class SimpleReconcilingStrategy implements IReconcilingStrategy {
 	 */
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
 		System.out.println("DEBUG:SimpleReconcilingStrategy.reconcile():enter.");
-		this.cssModel.reconcile(dirtyRegion,subRegion);
+		this.cssModel.reconcile(null);
 	}
 
 	/* (non-Javadoc)
