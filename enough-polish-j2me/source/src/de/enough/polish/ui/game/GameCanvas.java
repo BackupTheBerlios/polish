@@ -88,11 +88,33 @@ import javax.microedition.lcdui.Image;
  * 
  * @author Robert Virkus (initial implementation)
  * @author Jan Peknik (Optimizations)
+ * @author Thomas Broyer (Optimizations)
  * 
  * @since MIDP 2.0
  */
 public class GameCanvas
-extends Canvas
+//#ifndef polish.classes.fullscreen:defined
+		extends Canvas
+//#else
+	// a fullscreen class is available
+	//#if (polish.GameCanvas.useFullScreen == false) || (polish.GameCanvas.useFullScreen == no)
+		//# extends Canvas
+	//#elif (polish.GameCanvas.useFullScreen == true) || (polish.GameCanvas.useFullScreen == yes)
+		//#= extends ${polish.classes.fullscreen}
+	//#elif (polish.GameCanvas.useFullScreen == menu) || ( polish.useFullScreen && polish.useMenuFullScreen ) 
+		// a menu should be used along with the full screen:
+		//#ifdef polish.usePolishGui
+			//#define tmp.extendsPolishScreen
+			//# extends de.enough.polish.ui.Screen
+		//#else
+			//# extends Canvas
+		//#endif
+	//#elif (polish.useFullScreen && !polish.useMenuFullScreen)
+		//#= extends ${polish.classes.fullscreen}
+	//#else
+		//# extends Canvas
+	//#endif
+//#endif
 {
 	/**
 	 * The bit representing the UP key.  This constant has a value of
@@ -153,22 +175,10 @@ extends Canvas
 	public static final int GAME_D_PRESSED = 0x1000;
 
 	private int keyStates;
+	private int releasedKeys;
 	private Image bufferedImage;
-	//private Image currentImage;
-	//private Graphics currentImageGraphics;
-	//private int canvasWidth;
-	//private int canvasHeight;
 	private int clipX, clipY, clipWidth, clipHeight;
 	private boolean setClip;
-	private boolean upPressed;
-	private boolean downPressed;
-	private boolean leftPressed;
-	private boolean rightPressed;
-	private boolean firePressed;
-	private boolean gameAPressed;
-	private boolean gameBPressed;
-	private boolean gameCPressed;
-	private boolean gameDPressed;
 
 	/**
 	 * Creates a new instance of a GameCanvas.  A new buffer is also created
@@ -199,16 +209,14 @@ extends Canvas
 	 * @param suppressKeyEvents - true to suppress the regular key event mechanism for game keys, otherwise false.
 	 */
 	protected GameCanvas( boolean suppressKeyEvents ) {
-		super();
+		//#ifdef tmp.extendsPolishScreen
+			//# super( null, null );
+		//#else
+			super();
+		//#endif
 		int width = getWidth();
 		int height = getHeight();
 		this.bufferedImage = Image.createImage( width, height );
-		/*
-		this.currentImage = Image.createImage( width, height );
-		this.currentImageGraphics = this.currentImage.getGraphics();
-		this.canvasWidth = width;
-		this.canvasHeight = height;
-		*/
 	}
 
 	/**
@@ -300,39 +308,15 @@ extends Canvas
 	 */
 	public int getKeyStates()
 	{
-		int newState = 0;
-		if (this.upPressed) {
-			newState |= UP_PRESSED;
-		}
-		if (this.downPressed) {
-			newState |= DOWN_PRESSED;
-		}
-		if (this.leftPressed) {
-			newState |= LEFT_PRESSED;
-		}
-		if (this.rightPressed) {
-			newState |= RIGHT_PRESSED;
-		}
-		if (this.firePressed) {
-			newState |= FIRE_PRESSED;
-		}
-		if (this.gameAPressed) {
-			newState |= GAME_A_PRESSED;
-		}
-		if (this.gameBPressed) {
-			newState |= GAME_B_PRESSED;
-		}
-		if (this.gameCPressed) {
-			newState |= GAME_C_PRESSED;
-		}
-		if (this.gameDPressed) {
-			newState |= GAME_D_PRESSED;
-		}
-		int state = this.keyStates;
-		this.keyStates = newState;
-		return state;
+		int states = this.keyStates;
+	    this.keyStates &= ~this.releasedKeys;
+	    this.releasedKeys = 0;
+	    return states;
 	}
 
+	//#ifdef tmp.extendsPolishScreen
+		//# public void paintScreen( Graphics g)
+	//#else
 	/**
 	 * Paints this GameCanvas.  By default, this method renders the
 	 * the off-screen buffer at (0,0).  Rendering of the buffer is
@@ -344,8 +328,8 @@ extends Canvas
 	 * @see Canvas#paint(Graphics) in class Canvas
 	 */
 	public void paint( Graphics g)
+	//#endif
 	{
-		//g.setClip(0, 0, getWidth(), getHeight() );
 		if (this.setClip) {
 			g.clipRect( this.clipX, this.clipY, this.clipWidth, this.clipHeight);
 			this.setClip = false;
@@ -377,11 +361,6 @@ extends Canvas
 	 */
 	public void flushGraphics(int x, int y, int width, int height)
 	{
-		/*
-		this.currentImageGraphics.setClip(x, y, width, height);
-		this.currentImageGraphics.drawImage(this.bufferedImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-		this.currentImageGraphics.setClip(0, 0, this.canvasWidth, this.canvasHeight );
-		*/
 		this.setClip = true;
 		this.clipX = x;
 		this.clipY = y;
@@ -408,90 +387,44 @@ extends Canvas
 	 */
 	public void flushGraphics()
 	{
-		//this.currentImageGraphics.drawImage(this.bufferedImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		repaint();
 		serviceRepaints();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
-	 */
+	//#ifdef tmp.extendsPolishScreen
+	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
+		if (gameAction != 0) {
+			int bit = 1 << gameAction;
+			this.keyStates |= bit;
+	        this.releasedKeys &= ~bit;
+		}
+		return false;
+	}
+	//#else
 	protected void keyPressed(int keyCode) {
 		int gameAction = getGameAction(keyCode);
-		switch (gameAction) {
-			case Canvas.UP:
-				this.upPressed = true;
-				this.keyStates |= UP_PRESSED;
-				break;
-			case Canvas.LEFT:
-				this.leftPressed = true;
-				this.keyStates |= LEFT_PRESSED;
-				break;
-			case Canvas.RIGHT:
-				this.rightPressed = true;
-				this.keyStates |= RIGHT_PRESSED;
-				break;
-			case Canvas.DOWN:
-				this.downPressed = true;
-				this.keyStates |= DOWN_PRESSED;
-				break;
-			case Canvas.FIRE:
-				this.firePressed = true;
-				this.keyStates |= FIRE_PRESSED;
-				break;
-			case Canvas.GAME_A:
-				this.gameAPressed = true;
-				this.keyStates |= GAME_A_PRESSED;
-				break;
-			case Canvas.GAME_B:
-				this.gameBPressed = true;
-				this.keyStates |= GAME_B_PRESSED;
-				break;
-			case Canvas.GAME_C:
-				this.gameCPressed = true;
-				this.keyStates |= GAME_C_PRESSED;
-				break;
-			case Canvas.GAME_D:
-				this.gameDPressed = true;
-				this.keyStates |= GAME_D_PRESSED;
-				break;
+		if (gameAction != 0) {
+			int bit = 1 << gameAction;
+			this.keyStates |= bit;
+	        this.releasedKeys &= ~bit;
 		}
 	}
+	//#endif
 		
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
 	protected void keyReleased(int keyCode) {
 		int gameAction = getGameAction(keyCode);
-		switch (gameAction) {
-			case Canvas.UP:
-				this.upPressed = false;
-				break;
-			case Canvas.LEFT:
-				this.leftPressed = false;
-				break;
-			case Canvas.RIGHT:
-				this.rightPressed = false;
-				break;
-			case Canvas.DOWN:
-				this.downPressed = false;
-				break;
-			case Canvas.FIRE:
-				this.firePressed = false;
-				break;
-			case Canvas.GAME_A:
-				this.gameAPressed = false;
-				break;
-			case Canvas.GAME_B:
-				this.gameBPressed = false;
-				break;
-			case Canvas.GAME_C:
-				this.gameCPressed = false;
-				break;
-			case Canvas.GAME_D:
-				this.gameDPressed = false;
-				break;
+		if (gameAction != 0) {
+			this.releasedKeys |= 1 << gameAction;
 		}
 	}
 	
+	//#if tmp.extendsPolishScreen &&  polish.useDynamicStyles	
+	protected String createCssSelector() {
+		return "gamecanvas";
+	}
+	//#endif
+
 }

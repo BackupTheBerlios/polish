@@ -307,9 +307,6 @@ import javax.microedition.lcdui.Displayable;
  */
 public class TextField extends StringItem
 implements CommandListener
-//#if polish.needsManualMenu && polish.midp2
-, javax.microedition.lcdui.ItemCommandListener
-//#endif
 {
 	/**
 	 * The user is allowed to enter any text.
@@ -595,12 +592,7 @@ implements CommandListener
 	
 	private int maxSize;
 	private int constraints;
-	//#if polish.needsManualMenu && polish.midp2
-		private javax.microedition.lcdui.Form midpForm;
-		private javax.microedition.lcdui.TextField midpTextField;
-	//#else
-		private javax.microedition.lcdui.TextBox midpTextBox;
-	//#endif
+	private javax.microedition.lcdui.TextBox midpTextBox;
 	private boolean showCaret;
 	private int originalWidth;
 	private int originalHeight;
@@ -682,29 +674,11 @@ implements CommandListener
 	 * Creates the TextBox used for the actual input mode.
 	 */
 	private void createTextBox() {
-		//#if polish.needsManualMenu && polish.midp2
-			this.midpForm = new javax.microedition.lcdui.Form( this.title );
-			this.midpTextField = new javax.microedition.lcdui.TextField( this.title, getText(), this.maxSize, this.constraints );
-			this.midpForm.append(this.midpTextField);
-			javax.microedition.lcdui.StringItem okButton = new javax.microedition.lcdui.StringItem( null, StyleSheet.OK_CMD.getLabel(), javax.microedition.lcdui.Item.BUTTON );
-			okButton.setDefaultCommand( StyleSheet.OK_CMD );
-			okButton.setItemCommandListener( this );
-			this.midpForm.append( okButton );
-			javax.microedition.lcdui.StringItem cancelButton = new javax.microedition.lcdui.StringItem( null, StyleSheet.CANCEL_CMD.getLabel(), javax.microedition.lcdui.Item.BUTTON );
-			cancelButton.setDefaultCommand( StyleSheet.CANCEL_CMD );
-			cancelButton.setItemCommandListener( this );
-			this.midpForm.append( cancelButton );
-			
-			this.midpForm.addCommand(StyleSheet.OK_CMD);
-			this.midpForm.addCommand(StyleSheet.CANCEL_CMD);
-			this.midpForm.setCommandListener( this );
-		//#else
-			this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, getText(), this.maxSize, this.constraints );
-			this.midpTextBox.addCommand(StyleSheet.OK_CMD);
-			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
-			this.midpTextBox.setCommandListener( this );
-		//#endif
-		
+		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, getText(), this.maxSize, this.constraints );
+		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
+		this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
+		this.midpTextBox.setCommandListener( this );
+	
 	}
 	
 	/**
@@ -748,23 +722,13 @@ implements CommandListener
 		}
 		//TODO rob check text-value
 		setText(text);
-		//#if polish.needsManualMenu && polish.midp2
-			if (this.midpTextField != null) {
-				if (this.isPassword) {
-					this.midpTextField.setString( this.passwordText );
-				} else {
-					this.midpTextField.setString( text );
-				}
+		if (this.midpTextBox != null) {
+			if (this.isPassword) {
+				this.midpTextBox.setString( this.passwordText );
+			} else {
+				this.midpTextBox.setString( text );
 			}
-		//#else
-			if (this.midpTextBox != null) {
-				if (this.isPassword) {
-					this.midpTextBox.setString( this.passwordText );
-				} else {
-					this.midpTextBox.setString( text );
-				}
-			}
-		//#endif
+		}
 	}
 
 	/**
@@ -948,23 +912,13 @@ implements CommandListener
 		if ((this.text != null && maxSize < this.text.length()) || (maxSize < 1)) {
 			throw new IllegalArgumentException();
 		}
-		//#if polish.needsManualMenu && polish.midp2
-			if (this.midpTextField != null) {
-				this.maxSize = this.midpTextField.setMaxSize(maxSize);
-				return this.maxSize;
-			} else {
-				this.maxSize = maxSize;
-				//# return maxSize;
-			}
-		//#else
-			if (this.midpTextBox != null) {
-				this.maxSize = this.midpTextBox.setMaxSize(maxSize);
-				return this.maxSize;
-			} else {
-				this.maxSize = maxSize;
-				return maxSize;
-			}
-		//#endif
+		if (this.midpTextBox != null) {
+			this.maxSize = this.midpTextBox.setMaxSize(maxSize);
+			return this.maxSize;
+		} else {
+			this.maxSize = maxSize;
+			return maxSize;
+		}
 	}
 
 	/**
@@ -991,15 +945,9 @@ implements CommandListener
 	 */
 	public int getCaretPosition()
 	{
-		//#if polish.needsManualMenu && polish.midp2
-			if (this.midpTextField != null) {
-				return this.midpTextField.getCaretPosition();
-			}
-		//#else
-			if (this.midpTextBox != null) {
-				return this.midpTextBox.getCaretPosition();
-			}
-		//#endif
+		if (this.midpTextBox != null) {
+			return this.midpTextBox.getCaretPosition();
+		}
 		return 0;
 	}
 
@@ -1047,17 +995,10 @@ implements CommandListener
 	public void setInitialInputMode( String characterSubset)
 	{
 		//#ifdef polish.midp2
-			//#if polish.needsManualMenu
-				if (this.midpTextField == null) {
-					createTextBox();
-				}
-				this.midpTextField.setInitialInputMode( characterSubset );
-			//#else
-				if (this.midpTextBox == null) {
-					createTextBox();
-				}
-				this.midpTextBox.setInitialInputMode( characterSubset );
-			//#endif
+			if (this.midpTextBox == null) {
+				createTextBox();
+			}
+			this.midpTextBox.setInitialInputMode( characterSubset );
 		//#endif
 	}
 
@@ -1176,50 +1117,26 @@ implements CommandListener
 	 * Shows the TextBox for entering texts.
 	 */
 	private void showTextBox() {
-		//#if polish.needsManualMenu && polish.midp2
-			if (this.midpForm == null) {
-				createTextBox();
-			}
-			this.screen = StyleSheet.currentScreen;
-			StyleSheet.display.setCurrent( this.midpForm );
-		//#else
-			if (this.midpTextBox == null) {
-				createTextBox();
-			}
-			this.screen = StyleSheet.currentScreen;
-			StyleSheet.display.setCurrent( this.midpTextBox );
-		//#endif
+		if (this.midpTextBox == null) {
+			createTextBox();
+		}
+		this.screen = StyleSheet.currentScreen;
+		StyleSheet.display.setCurrent( this.midpTextBox );
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable box) {
-		//#if polish.needsManualMenu && polish.midp2
-			if (cmd == StyleSheet.CANCEL_CMD) {
-				this.midpTextField.setString( this.text );
-			} else {
-				setString( this.midpTextField.getString() );
-				if ( this.screen instanceof Form) {
-					notifyStateChanged();
-				}
+		if (cmd == StyleSheet.CANCEL_CMD) {
+			this.midpTextBox.setString( this.text );
+		} else {
+			setString( this.midpTextBox.getString() );
+			if ( this.screen instanceof Form) {
+				notifyStateChanged();
 			}
-		//#else
-			if (cmd == StyleSheet.CANCEL_CMD) {
-				this.midpTextBox.setString( this.text );
-			} else {
-				setString( this.midpTextBox.getString() );
-				if ( this.screen instanceof Form) {
-					notifyStateChanged();
-				}
-			}
-		//#endif
+		}
 		StyleSheet.display.setCurrent( this.screen );
 	}
 	
-	//#if polish.needsManualMenu && polish.midp2
-	public void commandAction( Command command, javax.microedition.lcdui.Item item ) {
-		commandAction( command, this.midpForm );
-	}
-	//#endif
 }

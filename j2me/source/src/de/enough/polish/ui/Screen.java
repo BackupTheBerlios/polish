@@ -222,10 +222,13 @@ public abstract class Screen
 		//#ifdef tmp.menuFullScreen
 			Style menustyle = StyleSheet.getStyle("menu");
 			if (menustyle == null) {
-				menustyle = this.style;
+				menustyle = this.style; 
 			}
 			if (menustyle != null) {
-				String colorStr = this.style.getProperty("menubar-color");
+				String colorStr = null;
+				if (this.style != null) {
+					colorStr = this.style.getProperty("menubar-color");
+				}
 				if (colorStr == null) {
 					colorStr = menustyle.getProperty("menubar-color");
 				}
@@ -246,7 +249,7 @@ public abstract class Screen
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
 			this.screenHeight = this.originalScreenHeight - diff;
 		//#endif
-			
+
 		// set the title:
 		//#ifdef tmp.usingTitle
 			setTitle( this.titleText );
@@ -708,14 +711,14 @@ public abstract class Screen
 		
 	//#ifdef polish.useDynamicStyles	
 	/**
-	 * Retrieves the CSS selector for this item.
+	 * Retrieves the CSS selector for this screen.
 	 * The CSS selector is used for the dynamic assignment of styles -
-	 * that is the styles are assigned by the usage of the item and
+	 * that is the styles are assigned by the usage of the screen and
 	 * not by a predefined style-name.
-	 * With the #style preprocessing command styles are set fix, this method
+	 * With the #style preprocessing command styles are set in a static way, this method
 	 * yields in a faster GUI and is recommended. When in a style-sheet
 	 * dynamic styles are used, e.g. "form>p", than the selector of the
-	 * item is needed.
+	 * screen is needed.
 	 * This abstract method needs only be implemented, when dynamic styles
 	 * are used: #ifdef polish.useDynamicStyles
 	 * 

@@ -180,10 +180,10 @@ extends Layer
 		private int bufferLastRow;
 		private Image bufferImage;
 		private Graphics bufferGraphics;
-		//#ifdef polish.transparentTileColor:defined
-			//#= private int bufferTransparentColor = ${polish.transparentTileColor};
+		//#ifdef polish.TiledLayer.TransparentTileColor:defined
+			//#= private final int bufferTransparentColor = ${polish.TiledLayer.TransparentTileColor};
 		//#else
-			private int bufferTransparentColor = 0;
+			private final int bufferTransparentColor = 0;
 		//#endif
 	//#endif
 	//#ifdef polish.TiledLayer.GridType:defined
