@@ -53,6 +53,7 @@ public class EmulatorSetting extends Setting {
 	private boolean enableProfiler;
 	private boolean enableMemoryMonitor;
 	private boolean enableNetworkMonitor;
+	private boolean showDecompiledStackTrace;
 	
 	/**
 	 * Creates an empty uninitialised run setting.
@@ -224,4 +225,18 @@ public class EmulatorSetting extends Setting {
 		return this.writePreferencesFile;
 	}
 
+	/**
+	 * @return Returns true when the decompiled stacktrace should be shown for each resolved error, 
+	 * 		even when the source code position could be resolved. 
+	 */
+	public boolean showDecompiledStackTrace() {
+		return this.showDecompiledStackTrace;
+	}
+	/**
+	 * @param showDecompiledStackTrace true when the decompiled stacktrace should be shown for each resolved error, 
+	 * 		even when the source code position could be resolved.
+	 */
+	public void setShowDecompiledStackTrace(boolean showDecompiledStackTrace) {
+		this.showDecompiledStackTrace = showDecompiledStackTrace;
+	}
 }

@@ -399,11 +399,11 @@ public class BuildSetting {
 	/**
 	 * Sets the destination directory. Defaults to "./dist".
 	 * 
-	 * @param destPath The path of the destination directory.
+	 * @param destDir The destination directory.
 	 */
-	public void setDestDir( String destPath ) {
-		File newDestDir = getFile( destPath );
-		this.destDir = newDestDir;
+	public void setDestDir( File destDir ) {
+		//File newDestDir = getFile( destPath );
+		this.destDir = destDir;
 	}
 	
 	/**
@@ -883,6 +883,10 @@ public class BuildSetting {
 	 * @return the file handle for the path
 	 */
 	protected File getFile( String path ) {
+		File absolute = new File( path );
+		if (absolute.isAbsolute()) {
+			return absolute;
+		}
 		File file = new File( this.projectBasePath + path );
 		if (!file.exists()) {
 			file = new File( this.polishHomePath + path );
@@ -935,6 +939,17 @@ public class BuildSetting {
 	 */
 	public Attribute[] filterManifestAttributes( HashMap attributesMap ) {
 		return this.manifestAttributesFilter.filterAttributes(attributesMap);
+	}
+	
+	/**
+	 * Same as setBinaryLibraries
+	 * 
+	 * @param librariesStr the paths to either a jar-file, a zip-file or a directory 
+	 * 			containing class files, which are needed for the project.
+	 * 			Several libraries can be seperated with either a colon or a semicolon. 
+	 */
+	public void setBinaryLibrary( String librariesStr ) {
+		setBinaryLibraries(librariesStr);
 	}
 	
 	/**

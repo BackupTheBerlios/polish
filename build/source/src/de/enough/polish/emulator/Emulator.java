@@ -338,9 +338,12 @@ public abstract class Emulator extends Thread {
 								// so try to use JAD for finding out the source code address:
 								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs, Emulator.this.environmentProperties);
 								if (stackTrace != null) {
+									boolean showDecompiledStackTrace = true;
 									if (stackTrace.couldBeResolved()) {
 										this.output.println( this.header + stackTrace.getSourceCodeMessage() );
-									} else {
+										showDecompiledStackTrace = false;
+									} 
+									if (showDecompiledStackTrace || Emulator.this.emulatorSetting.showDecompiledStackTrace()){
 										this.output.println( this.header + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
 									}
 								}

@@ -220,7 +220,9 @@ public final class StackTraceUtil {
 							if ( prevLine.indexOf('/') == -1) {
 								String trimmed = prevLine.trim();
 								if ( ( trimmed.length() > 1)
-										&& !"break;".equals(trimmed)) {
+										&& !"break;".equals(trimmed)
+										&& !"} else".equals(trimmed)
+										) {
 									codeStart = j;
 									break;
 								}

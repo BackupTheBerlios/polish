@@ -1152,6 +1152,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// add binary class files, if there are any:
 		if (this.binaryLibrariesUpdated) {
+			System.out.println("copying binary libraries from [" + this.binaryLibrariesDir.getAbsolutePath() + "] to [" + targetDirName + "]");
 			try {
 				FileUtil.copyDirectoryContents( this.binaryLibrariesDir, targetDirName, true );
 			} catch (IOException e) {

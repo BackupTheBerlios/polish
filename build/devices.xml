@@ -163,13 +163,18 @@
 		<groups></groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
-		<capability name="HeapSize" value="2 MB" />
+		<capability name="HeapSize" value="256 kb" />
+		<capability name="VideoHeapSize" value="80 kb" />
+		<capability name="NativeUiHeapSize" value="150 kb" />
+		<capability name="StorageSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 	
 	<device>
@@ -177,27 +182,37 @@
 		<groups></groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
-		<capability name="HeapSize" value="2 MB" />
+		<capability name="HeapSize" value="256 kb" />
+		<capability name="VideoHeapSize" value="80 kb" />
+		<capability name="NativeUiHeapSize" value="150 kb" />
+		<capability name="StorageSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 	
-		<device>
+	<device>
 		<identifier>Sony-Ericsson/T628, Sony-Ericsson/T630</identifier>
 		<groups></groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
-		<capability name="HeapSize" value="2 MB" />
+		<capability name="HeapSize" value="256 kb" />
+		<capability name="VideoHeapSize" value="80 kb" />
+		<capability name="NativeUiHeapSize" value="150 kb" />
+		<capability name="StorageSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 
 	<device>
@@ -205,13 +220,18 @@
 		<groups></groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
-		<capability name="HeapSize" value="2 MB" />
+		<capability name="HeapSize" value="256 kb" />
+		<capability name="VideoHeapSize" value="80 kb" />
+		<capability name="NativeUiHeapSize" value="150 kb" />
+		<capability name="StorageSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 	
 	<device>
@@ -219,13 +239,18 @@
 		<groups></groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi32, amr" />
-		<capability name="HeapSize" value="2 MB" />
+		<capability name="HeapSize" value="256 kb" />
+		<capability name="VideoHeapSize" value="80 kb" />
+		<capability name="NativeUiHeapSize" value="150 kb" />
+		<capability name="StorageSize" value="2 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 	
 	<device>
@@ -233,13 +258,15 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="CanvasSize" value="176x182"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
 		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
-		<capability name="HeapSize" value="8 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="StorageSize" value="8 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 	</device>
 	
@@ -250,17 +277,19 @@
 		<capability name="OS" value="Symbian 7.0"/>
 		<capability name="ScreenSize" value="208x320"/>
 		<capability name="ClosedFlipScreenSize" value="208x144"/>
-        <capability name="CanvasSize" value="208x253"/>
+        <capability name="CanvasSize" value="208x172"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi24, amr, mp3, rmf" />
 		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
-		<capability name="HeapSize" value="12 MB" />
+		<capability name="StorageSize" value="12 MB" />
+		<capability name="HeapSize" value="8 MB" />
 		<capability name="usePolishTitle" value="true"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="Network" value="GSM, GPRS, HSCSD"/>
 		<capability name="Frequency" value="900,1800,1900"/>
+		<capability name="DRM" value="OMA-Forward Lock"/>
 		<capability name="key.LeftSoftKey" value="-7"/>
 		<capability name="key.RightSoftKey" value="-6"/>
 		<capability name="Emulator.Skin" value="SonyEricsson_P800"/>
@@ -293,34 +322,47 @@
 	</device>
 	
 	<device>
-		<identifier>Sony-Ericsson/K700i, Sony-Ericsson/K700c</identifier>
+		<identifier>Sony-Ericsson/K700, Sony-Ericsson/K700i, Sony-Ericsson/K700c</identifier>
 		<groups>Nokia-UI</groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
-		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
-		<capability name="HeapSize" value="32 MB" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, aac" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="StorageSize" value="40 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="4" />
 		<capability name="Emulator.Skin" value="SonyEricsson_K700" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/K500, Sony-Ericsson/K500i, Sony-Ericsson/F500i</identifier>
+		<identifier>Sony-Ericsson/K500, Sony-Ericsson/K500i, Sony-Ericsson/F500, Sony-Ericsson/F500i</identifier>
 		<groups></groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
-		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
-		<capability name="HeapSize" value="12 MB" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="10 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="4" />
 		<capability name="CameraResolution" value="vga" />
@@ -328,6 +370,7 @@
 		<capability name="Network" value="GSM, GPRS" />
 		<capability name="Frequency" value="850,1800,1900" />
 		<capability name="Emulator.Skin" value="SonyEricsson_F500i" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 
 	<device
@@ -341,16 +384,21 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
-		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
-		<capability name="HeapSize" value="6 MB" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, wav, aac, tone sequence" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="StorageSize" value="6 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="4" />
 		<capability name="Emulator.Skin" value="SonyEricsson_Z500" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 		
 	<device>
@@ -358,17 +406,23 @@
 		<groups></groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x266"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, 3d-api" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3" />
-		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
-		<capability name="HeapSize" value="32 MB" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, wav, tone sequence, aac" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="StorageSize" value="32 MB" />
 		<capability name="DRM" value="OMA Phase 1" />
 		<capability name="CameraZoom" value="8" />
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="Emulator.Skin" value="SonyEricsson_S700" />
+		<capability name="DebugInterface" value="KDWP" />
 	</device>
 	
 	<device>
@@ -377,7 +431,7 @@
 		<features>hasCamera, hasVideo</features>
 		<capability name="ScreenSize" value="208x320"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf, au, wav" />
@@ -2069,6 +2123,7 @@
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/C65</identifier>
+		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="130x130"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, location-api, jtwi" />
@@ -2079,6 +2134,8 @@
 		<capability name="MaxJarSize" value="350kb" />
 		<capability name="StorageSize" value="11MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
 	</device>
 
 	<device
@@ -2166,6 +2223,7 @@
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/M65</identifier>
+		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, jtwi" />
@@ -2177,6 +2235,8 @@
 		<capability name="HeapSize" value="1.5 MB" />
 		<capability name="StorageSize" value="11 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
 	</device>
 	
 	<device
@@ -2247,6 +2307,7 @@
 	
 	<device>
 		<identifier>Siemens/ST60</identifier>
+		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="120x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -2257,6 +2318,8 @@
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
 	</device>
 	
 	<device 
