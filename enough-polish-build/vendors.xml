@@ -120,5 +120,10 @@
 		<name>TTPCom</name>
 		<features></features>
 	</vendor>
+
+	<vendor>
+		<name>Mio</name>
+		<features></features>
+	</vendor>
 	
 </vendors>

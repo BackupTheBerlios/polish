@@ -217,5 +217,45 @@ public final class FileUtil {
 		}
 		return map;
 	}
+
+	/**
+	 * Copies the contents of a directory to the specified target directory.
+	 * 
+	 * @param directory the directory containing files
+	 * @param targetDirName the directory to which the files should be copied to
+	 * @param update is true when files should be only copied when the source files
+	 * 	are newer compared to the target files.
+	 * @throws IOException when a file could not be copied
+	 * @throws IllegalArgumentException when the directory is not a directory.
+	 */
+	public static void copyDirectoryContents(File directory, String targetDirName, boolean update)
+	throws IOException
+	{
+		if (!directory.isDirectory()) {
+			throw new IllegalArgumentException("Cannot copy contents of the file [" + directory.getAbsolutePath() + "]: specify a directory instead.");
+		}
+		String[] fileNames = directory.list();
+		for (int i = 0; i < fileNames.length; i++) {
+			String fileName = fileNames[i];
+			File file = new File( directory.getAbsolutePath() 
+					+ File.separatorChar + fileName );
+			if (file.isDirectory()) {
+				copyDirectoryContents( file, targetDirName + File.separatorChar + fileName, update );
+			}  else {
+				File targetFile = new File( targetDirName 
+						+ File.separatorChar + fileName  );
+				if (update) {
+					// update only when the source file is newer:
+					if ( (!targetFile.exists())
+						|| (file.lastModified() > targetFile.lastModified() )) {
+						copy( file, targetFile );
+					}
+				} else {
+					// copy the file in all cases:
+					copy( file, targetFile );
+				}
+			}
+		}
+	}
 	
 }

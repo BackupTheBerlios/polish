@@ -83,6 +83,7 @@ public class BuildSetting {
 	private ArrayList preprocessors;
 	private AttributesFilter jadAttributesFilter;
 	private AttributesFilter manifestAttributesFilter;
+	private File[] binaryLibraries;
 	
 	/**
 	 * Creates a new build setting.
@@ -832,6 +833,44 @@ public class BuildSetting {
 	 */
 	public Variable[] filterManifestAttributes( HashMap attributesMap ) {
 		return this.manifestAttributesFilter.filterAttributes(attributesMap);
+	}
+	
+	/**
+	 * Sets additional third party libraries which are only available in binary form.
+	 * 
+	 * @param librariesStr the paths to either a jar-file, a zip-file or a directory 
+	 * 			containing class files, which are needed for the project.
+	 * 			Several libraries can be seperated with either a colon or a semicolon. 
+	 */
+	public void setBinaryLibraries( String librariesStr ) {
+		String[] libraries = TextUtil.split(librariesStr, ':');
+		if (libraries.length == 1) {
+			libraries = TextUtil.split( librariesStr, ';' );
+		}
+		this.binaryLibraries = new File[ libraries.length ];
+		for (int i = 0; i < libraries.length; i++) {
+			String lib = libraries[i];
+			File file = getFile(lib);
+			if (!file.exists()) {
+				// check if the file resides in the api folder (usually "import"):
+				file = new File( this.apiDir.getAbsolutePath() 
+						+ File.separatorChar + lib );
+				if (!file.exists()) {
+					throw new BuildException("The binary library [" + lib + "] could not be found - please check your \"binaryLibraries\"-attribute of the <build> element: File not found: " + file.getAbsolutePath() );
+				}
+			}
+			this.binaryLibraries[i] = file;
+		}
+	}
+	
+	/**
+	 * Retrieves third party libraries which are only available in binary form.
+	 *  
+	 * @return An array of File to either a jar-file, a zip-file or a directory 
+	 * 			containing class files, which are needed for the project.
+	 */
+	public File[] getBinaryLibraries() {
+		return this.binaryLibraries;
 	}
 		
 }

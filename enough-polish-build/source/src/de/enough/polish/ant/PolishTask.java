@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.0.1";
+	private static final String VERSION = "1.1-pre1";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -95,6 +95,10 @@ public class PolishTask extends ConditionalTask {
 	private TextFile[] polishSourceFiles;
 
 	private Variable[] conditionalVariables;
+
+	private boolean binaryLibrariesUpdated;
+
+	private File binaryLibrariesDir;
 	
 	/**
 	 * Creates a new empty task 
@@ -279,7 +283,7 @@ public class PolishTask extends ConditionalTask {
 		if (isDebugEnabled) {
 			this.polishProject.addFeature("debugEnabled");
 		}
-		// aspecify some preprocessing symbols depending on the selected features:
+		// specify some preprocessing symbols depending on the selected features:
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());
 		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
 			this.polishProject.addFeature("useDebugGui");
@@ -398,6 +402,7 @@ public class PolishTask extends ConditionalTask {
 				throw new BuildException("Unable to load the J2ME source files from enough-j2mepolish-build.jar: " + e.getMessage(), e );
 			}
 		}
+		
 		// load the normal source files:
 		for (int i = 0; i < dirs.length; i++) {
 			File dir = dirs[i];
@@ -412,6 +417,90 @@ public class PolishTask extends ConditionalTask {
 		if (this.buildSetting.usesPolishGui() && this.styleSheetFile == null) {
 			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the [polishDir] attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
 		}
+		
+		// load third party binary libraries, if any.
+		// When there are third party libraries, they will all be extracted
+		// and copied to the build/binary folder for easier integration:
+		File[] binaryLibraries = this.buildSetting.getBinaryLibraries();
+		if (binaryLibraries != null) {
+			File targetDir = new File( this.buildSetting.getWorkDir().getAbsolutePath() +
+					File.separatorChar + "binary");
+			String cacheDirName = this.buildSetting.getWorkDir().getAbsolutePath() +
+				File.separatorChar + "binarycache" + File.separatorChar;
+			this.binaryLibrariesDir = targetDir;
+			for (int i = 0; i < binaryLibraries.length; i++) {
+				File lib = binaryLibraries[i];
+				if (lib.isDirectory()) {
+					// a directory can contain library-files (jar, zip) as well
+					// as plain class or resource files. Each library-file
+					// will be extracted whereas other files will just be copied
+					// to the build/binary folder. 
+					DirectoryScanner binaryScanner = new DirectoryScanner();
+					binaryScanner.setBasedir( lib );
+					// just include all files in the directory:
+					binaryScanner.scan();
+					String[] includedFiles = binaryScanner.getIncludedFiles();
+					for (int j = 0; j < includedFiles.length; j++) {
+						String fileName = includedFiles[j];
+						File file = new File( lib.getAbsolutePath()
+								+ File.separatorChar + fileName );
+						if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) {
+							// this is a library file:
+							// only extract it when the original is newer than the copy:
+							File cacheCopy = new File( cacheDirName + fileName );
+							if ( (!cacheCopy.exists())
+									|| (file.lastModified() > cacheCopy.lastModified())) {
+								this.binaryLibrariesUpdated = true;
+								try {
+									// copy the library to the cache:
+									FileUtil.copy(file, cacheCopy );
+									// unzip / unjar the content:
+									JarUtil.unjar(file, targetDir);
+								} catch (IOException e) {
+									e.printStackTrace();
+									throw new BuildException("Unable to extract the binary class files from the library [" + file.getAbsolutePath() + "]: " + e.toString(), e );
+								}
+								
+							}
+						} else {
+							// this is a normal class or resource file:
+							try {
+								File targetFile = new File( targetDir.getAbsolutePath()
+										+ File.separatorChar + fileName );
+								// copy the file only when it is newer
+								// than the existing copy: 
+								if ( (!targetFile.exists()) 
+										|| (file.lastModified() > targetFile.lastModified()) ) {
+									this.binaryLibrariesUpdated = true;
+									FileUtil.copy(file, targetFile);
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+								throw new BuildException("Unable to copy the binary class files from the library [" + lib.getAbsolutePath() + "]: " + e.toString(), e );
+							}
+						}
+					}
+				} else {
+					// this is a library (jar or zip) file:
+					// copy only when the original is newer than the cached copy: 
+					File cacheCopy = new File( cacheDirName + lib.getName() );
+					if ( (!cacheCopy.exists())
+							|| (lib.lastModified() > cacheCopy.lastModified())) {
+						try {
+							this.binaryLibrariesUpdated = true;
+							// copy the library to the cache:
+							FileUtil.copy(lib, cacheCopy );
+							// unzip / unjar the content:
+							JarUtil.unjar(lib, targetDir);
+						} catch (IOException e) {
+							e.printStackTrace();
+							throw new BuildException("Unable to extract the binary class files from the library [" + lib.getAbsolutePath() + "]: " + e.toString(), e );
+						}
+						
+					}
+				}
+			}
+		} // done preparing of binary libraries.
 		
 		// init boot class path:
 		this.midp1BootClassPath = new Path( this.project, this.buildSetting.getMidp1Path().getAbsolutePath());
@@ -870,49 +959,7 @@ public class PolishTask extends ConditionalTask {
 			      .append( File.pathSeparatorChar );
 		}
 		device.setClassPath( buffer.toString() );
-		
-		/*
-		String apisStr = device.getSupportedApisAsString();
-		if(apisStr == null) {
-			apisStr = "";
-		}  
-		// check if the class path has been resolved before:
-		String classPath = (String) this.apiPaths.get( apisStr );
-		if (classPath == null) {
-			String[] apis = device.getSupportedApis();
-			if (apis == null) {
-				apis = new String[0];
-			}
-			StringBuffer classPathBuffer = new StringBuffer();
-			Hashtable properties = this.project.getProperties(); 
-			for (int i = 0; i < apis.length; i++) {
-				String api = apis[i];
-				String path = (String) this.apiPaths.get( api );
-				if (path != null) {
-					classPathBuffer.append( ':' )
-							 .append( path );
-				} else {
-					path = (String) properties.get( "polish.api." + api );
-					if (path == null) {
-						path = this.apiDir.getAbsolutePath() + File.separatorChar + api + ".jar" 
-							 + File.pathSeparatorChar 
-							 + this.apiDir.getAbsolutePath() + File.separatorChar + api + ".zip";
-					}  
-					classPathBuffer.append( File.pathSeparatorChar )
-							 .append( path );
-					this.apiPaths.put( api, path );
-				}
-			} // for each api
-			if (apis.length > 0) {
-				classPath = classPathBuffer.toString().substring(1);
-				this.apiPaths.put(apisStr, classPath );
-			}
-		}
-		if (classPath != null) {
-			device.setClassPath(classPath);
-			//System.out.println( "using classpath [" + classPath.toString().substring(1) + "]." );
-		}
-		*/
+
 		// setting target directory:
 		String targetDirName = device.getBaseDir() + File.separatorChar + "classes";
 		device.setClassesDir( targetDirName );
@@ -922,6 +969,16 @@ public class PolishTask extends ConditionalTask {
 			return;			
 		}
 		System.out.println("compiling for device [" +  device.getIdentifier() + "]." );
+		
+		// add binary class files, if there are any:
+		if (this.binaryLibrariesUpdated) {
+			try {
+				FileUtil.copyDirectoryContents( this.binaryLibrariesDir, targetDirName, true );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to copy binary class files: " + e.toString() + ". Please report this error to j2mepolish@enough.de.", e );
+			}
+		}
 		
 		// init javac task:
 		Javac javac = new Javac();
