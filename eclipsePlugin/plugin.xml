@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="cssEditor.CssEditor"
+   name="CssEditor Plug-in"
+   version="1.0.0"
+   provider-name=""
+   class="cssEditor.CssEditorPlugin">
+
+   <runtime>
+      <library name="CssEditor.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+   </requires>
+   
+   <extension
+         point="org.eclipse.ui.editors">
+		<editor
+         	id="cssEditor.editor.CssEditor"
+         	name="Polish CSS-Editor"
+         	extensions="css"
+         	icon="icons/sample.gif"
+         	contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+         	class="cssEditor.editor.CssEditor">
+         </editor>
+    </extension>
+
+</plugin>
