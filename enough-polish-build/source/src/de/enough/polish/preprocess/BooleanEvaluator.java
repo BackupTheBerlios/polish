@@ -134,6 +134,7 @@ public class BooleanEvaluator {
 		expression = TextUtil.replace( expression, " and ", " && " );
 		expression = TextUtil.replace( expression, " or ", " || " );
 		expression = TextUtil.replace( expression, " not ", " !" );
+		expression = TextUtil.replace( expression, " xor ", " ^ " );
 		
 		// now extract each term:
 		Matcher matcher = TERM_PATTERN.matcher( expression );
