@@ -32,7 +32,7 @@ import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
-import de.enough.polish.preprocess.custom.PolishProcessor;
+import de.enough.polish.preprocess.custom.PolishPreprocessor;
 import de.enough.polish.util.*;
 
 import org.apache.tools.ant.*;
@@ -353,14 +353,14 @@ public class PolishTask extends ConditionalTask {
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
 		// init line processors:
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
-		CustomProcessor[] processors = new CustomProcessor[ settings.length + 1];
+		CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
 		// add the default line processor:
-		CustomProcessor lineProcessor = new PolishProcessor();
+		CustomPreprocessor lineProcessor = new PolishPreprocessor();
 		lineProcessor.init(this.preprocessor);
 		processors[0] = lineProcessor;
 		for (int i = 0; i < settings.length; i++) {
 			PreprocessorSetting setting = settings[i];
-			processors[ i + 1] = CustomProcessor.getInstance(setting, this.preprocessor, this.project );
+			processors[ i + 1] = CustomPreprocessor.getInstance(setting, this.preprocessor, this.project );
 		}
 		this.preprocessor.setLineProcessors( processors );
 		

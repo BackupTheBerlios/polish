@@ -91,7 +91,7 @@ public class Preprocessor {
 	private BooleanEvaluator booleanEvaluator;
 	private StyleSheet styleSheet;
 	private boolean usePolishGui;
-	private CustomProcessor[] lineProcessors;
+	private CustomPreprocessor[] lineProcessors;
 	protected static final Pattern SYSTEM_PRINT_PATTERN = Pattern.compile(
 				"System.(out|err).print(ln)?\\s*\\(" );
 
@@ -153,7 +153,7 @@ public class Preprocessor {
 		this.supportedDirectives.put( "undefine", Boolean.TRUE );
 	}
 	
-	public void setLineProcessors( CustomProcessor[] lineProcessors ) {
+	public void setLineProcessors( CustomPreprocessor[] lineProcessors ) {
 		this.lineProcessors = lineProcessors;	
 	}
 
@@ -164,7 +164,7 @@ public class Preprocessor {
 	public void notifyPolishPackageStart() {
 		if (this.lineProcessors != null) {
 			for (int i = 0; i < this.lineProcessors.length; i++) {
-				CustomProcessor processor = this.lineProcessors[i];
+				CustomPreprocessor processor = this.lineProcessors[i];
 				processor.notifyPolishPackageStart();
 			}
 		}
@@ -182,7 +182,7 @@ public class Preprocessor {
 	public void notifyDevice( Device device, boolean usesPolishGui ) {
 		if (this.lineProcessors != null) {
 			for (int i = 0; i < this.lineProcessors.length; i++) {
-				CustomProcessor processor = this.lineProcessors[i];
+				CustomPreprocessor processor = this.lineProcessors[i];
 				processor.notifyDevice(device, usesPolishGui);
 			}
 		}
@@ -368,7 +368,7 @@ public class Preprocessor {
 		boolean changed = false;
 		if (this.lineProcessors != null) {
 			for (int i = 0; i < this.lineProcessors.length; i++) {
-				CustomProcessor processor = this.lineProcessors[i];
+				CustomPreprocessor processor = this.lineProcessors[i];
 				processor.processClass(lines, className);
 				lines.reset();
 			}

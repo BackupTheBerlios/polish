@@ -35,8 +35,9 @@ import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.PreprocessorSetting;
-import de.enough.polish.preprocess.CustomProcessor;
+import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.Preprocessor;
+import de.enough.polish.util.PopulateUtil;
 import de.enough.polish.util.StringList;
 
 /**
@@ -49,7 +50,7 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class WrapperProcessor extends CustomProcessor {
+public class WrapperPreprocessor extends CustomPreprocessor {
 
 	private Object lineProcessor;
 	private Method processClassMethod;
@@ -73,7 +74,7 @@ public class WrapperProcessor extends CustomProcessor {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public WrapperProcessor( PreprocessorSetting setting, 
+	public WrapperPreprocessor( PreprocessorSetting setting, 
 			Preprocessor preprocessor,
 			Project project ) 
 	throws InstantiationException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException 
@@ -90,6 +91,12 @@ public class WrapperProcessor extends CustomProcessor {
     	// now init the line processor:
     	Method initMethod = lineProcessorClass.getMethod("init", new Class[]{ Preprocessor.class } );
     	initMethod.invoke( this.lineProcessor, new Object[]{ preprocessor } );
+
+    	// set parameters if there are any:
+		if (setting.hasParameters()) {
+			PopulateUtil.populate( this.lineProcessor, setting.getParameters(), project.getBaseDir() );
+		}
+    	
     	// retrives processing method:
     	this.processClassMethod = lineProcessorClass.getMethod("processClass", new Class[]{ StringList.class, String.class} );
     	// retrieve notify methods:

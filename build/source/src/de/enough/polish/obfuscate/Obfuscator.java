@@ -28,6 +28,7 @@ package de.enough.polish.obfuscate;
 import de.enough.polish.Device;
 import de.enough.polish.LibraryManager;
 import de.enough.polish.ant.build.ObfuscatorSetting;
+import de.enough.polish.util.PopulateUtil;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -96,6 +97,9 @@ public abstract class Obfuscator {
 					Class obfuscatorClass = Class.forName( setting.getClassName() );
 					Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
 					obfuscator.init( project, libDir, libraryManager );
+					if (setting.hasParameters()) {
+						PopulateUtil.populate( obfuscator, setting.getParameters(), project.getBaseDir() );
+					}
 					return obfuscator;
 				} else {
 					WrapperObfuscator obfuscator = new WrapperObfuscator( setting, project, libDir, libraryManager );
@@ -117,6 +121,9 @@ public abstract class Obfuscator {
 							+ obfuscatorName + "Obfuscator");
 				Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
 				obfuscator.init( project, libDir, libraryManager );
+				if (setting.hasParameters()) {
+					PopulateUtil.populate( obfuscator, setting.getParameters(), project.getBaseDir() );
+				}
 				return obfuscator;
 			} catch (ClassNotFoundException e) {
 				throw new BuildException( "Unable to load obfuscator [" + setting.getName() + "]: " + e.getMessage(), e );
@@ -132,6 +139,9 @@ public abstract class Obfuscator {
 			// okay, proguard found:
 			Obfuscator obfuscator = new ProGuardObfuscator();
 			obfuscator.init( project, libDir, libraryManager );
+			if (setting.hasParameters()) {
+				PopulateUtil.populate( obfuscator, setting.getParameters(), project.getBaseDir() );
+			}
 			return obfuscator;
 		} catch (ClassNotFoundException e) {
 			// check for next obfuscator:

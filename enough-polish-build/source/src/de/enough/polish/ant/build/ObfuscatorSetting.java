@@ -25,12 +25,12 @@
  */
 package de.enough.polish.ant.build;
 
-import de.enough.polish.ant.ConditionalElement;
+import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 
-import java.io.File;
-import java.util.ArrayList;
+import de.enough.polish.ant.Setting;
 
 /**
  * <p>Containts information about the obfuscator which should be used.</p>
@@ -45,7 +45,7 @@ import java.util.ArrayList;
  * @author Robert Virkus, robert@enough.de
  */
 public class ObfuscatorSetting 
-extends ConditionalElement 
+extends Setting 
 {
 	
 	private ArrayList keeps;

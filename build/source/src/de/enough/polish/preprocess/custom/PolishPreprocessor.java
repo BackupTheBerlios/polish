@@ -26,7 +26,7 @@
 package de.enough.polish.preprocess.custom;
 
 import de.enough.polish.Device;
-import de.enough.polish.preprocess.CustomProcessor;
+import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.util.StringList;
 
 /**
@@ -39,14 +39,14 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PolishProcessor extends CustomProcessor {
+public class PolishPreprocessor extends CustomPreprocessor {
 	
 	private boolean isTickerUsed;
 
 	/**
 	 * Creates a new uninitialised PolishLineProcessor 
 	 */
-	public PolishProcessor() {
+	public PolishPreprocessor() {
 		super();
 	}
 

@@ -37,6 +37,7 @@ import org.apache.tools.ant.types.Path;
 import de.enough.polish.Device;
 import de.enough.polish.LibraryManager;
 import de.enough.polish.ant.build.ObfuscatorSetting;
+import de.enough.polish.util.PopulateUtil;
 
 /**
  * <p>Loads and embeds an obfuscator with a different classpath.</p>
@@ -76,7 +77,6 @@ public class WrapperObfuscator extends Obfuscator {
 				new Path( project ),
 				true);
     	antClassLoader.addPathElement( setting.getClassPath().getAbsolutePath() );
-    	System.out.println("trying to load class " + setting.getClassName() );
     	Class obfuscatorClass = antClassLoader.loadClass( setting.getClassName() ); 
     	this.obfuscator = obfuscatorClass.newInstance();
     	// now init the line processor:
@@ -84,6 +84,10 @@ public class WrapperObfuscator extends Obfuscator {
     	initMethod.invoke( this.obfuscator, new Object[]{ project, libraryDir, libraryManager } );
     	// retrives processing method:
     	this.obfuscateMethod = obfuscatorClass.getMethod("obfuscate", new Class[]{ Device.class, File.class, File.class, String[].class, Path.class } );
+    	// set parameters if there are any:
+		if (setting.hasParameters()) {
+			PopulateUtil.populate( this.obfuscator, setting.getParameters(), project.getBaseDir() );
+		}
 	}
 
 	/* (non-Javadoc)

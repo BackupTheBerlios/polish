@@ -27,6 +27,8 @@ package de.enough.polish.ant.build;
 
 import java.io.File;
 
+import de.enough.polish.ant.Setting;
+
 /**
  * <p>Is used for defining additional user-defined preprocessors.</p>
  *
@@ -37,7 +39,7 @@ import java.io.File;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PreprocessorSetting {
+public class PreprocessorSetting extends Setting {
 	
 	private String className;
 	private File classPath;

@@ -30,7 +30,8 @@ import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.PreprocessorSetting;
-import de.enough.polish.preprocess.custom.WrapperProcessor;
+import de.enough.polish.preprocess.custom.WrapperPreprocessor;
+import de.enough.polish.util.PopulateUtil;
 import de.enough.polish.util.StringList;
 
 /**
@@ -43,7 +44,7 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class CustomProcessor {
+public abstract class CustomPreprocessor {
 
 	protected Preprocessor preprocessor;
 	protected BooleanEvaluator booleanEvaluator;
@@ -58,7 +59,7 @@ public abstract class CustomProcessor {
 	 * 
 	 * @see #init(Preprocessor)
 	 */
-	public CustomProcessor() {
+	public CustomPreprocessor() {
 		// no initialisation work done
 	}
 	
@@ -107,18 +108,20 @@ public abstract class CustomProcessor {
 	 * @return the initialised line processor
 	 * @throws BuildException when the defined class could not be instantiated
 	 */
-	public static CustomProcessor getInstance( PreprocessorSetting setting, 
+	public static CustomPreprocessor getInstance( PreprocessorSetting setting, 
 			Preprocessor preprocessor,
 			Project project ) 
 	throws BuildException
 	{
 		try {
-			CustomProcessor lineProcessor = null;
+			CustomPreprocessor lineProcessor = null;
 			if (setting.getClassPath() != null) {
-				System.out.println("loading line processor from path " + setting.getClassPath().getAbsolutePath() );
-				lineProcessor = new WrapperProcessor( setting, preprocessor, project );
+				lineProcessor = new WrapperPreprocessor( setting, preprocessor, project );
 			} else {
-				lineProcessor = (CustomProcessor) Class.forName( setting.getClassName() ).newInstance();
+				lineProcessor = (CustomPreprocessor) Class.forName( setting.getClassName() ).newInstance();
+				if (setting.hasParameters()) {
+					PopulateUtil.populate( lineProcessor, setting.getParameters(), project.getBaseDir() );
+				}
 			}
 			lineProcessor.init( preprocessor );
 			return lineProcessor;
