@@ -106,6 +106,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	public void notifyDeviceEnd(Device device, boolean usesPolishGui) 
 	{
 		super.notifyDeviceEnd(device, usesPolishGui);
+		if (!this.isUsingPolishGui) {
+			return;
+		}
 		
 		// write found abbreviations:
 		try {
@@ -122,6 +125,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 */
 	public void notifyPolishPackageStart() {
 		super.notifyPolishPackageStart();
+		if (!this.isUsingPolishGui) {
+			return;
+		}
 		
 		// set settings for usage of Ticker:
 		if (this.isTickerUsed || this.tickerFile.exists()) {
