@@ -596,6 +596,16 @@ public class Device extends PolishComponent {
 	 */
 	public void setClassPaths(String[] classPaths) {
 		this.classPaths = classPaths;
+		if (classPaths != null) {
+		StringBuffer buffer = new StringBuffer();
+			for (int i = 0; i < classPaths.length; i++) {
+				buffer.append( classPaths[i] );
+				if ( i != classPaths.length -1 ) {
+					buffer.append( File.pathSeparatorChar );
+				}
+			}
+			setClassPath( buffer.toString() );
+		}
 	}
 
 	/**

@@ -239,11 +239,19 @@ public class PolishComponent {
 		} else if (name.startsWith("HardwarePlatform.")) {
 			name = name.substring( 17 );
 		}
+		
+		if (!name.startsWith("polish.")) {
+			name = "polish." + name;
+		}
 		if ( (Device.JAVA_PACKAGE.equals(name) ) 
 				|| (Device.JAVA_PROTOCOL.equals(name)) 
 				|| (Device.VIDEO_FORMAT.equals(name))
 				|| (Device.SOUND_FORMAT.equals(name)) ) {
 			value = value.toLowerCase();
+			String existingValue = getCapability( name );
+			if (existingValue != null) {
+				value += "," + existingValue;
+			}
 		}
 		addSingleCapability( name, value );
 		
@@ -275,9 +283,6 @@ public class PolishComponent {
 	 * @param value the value of the capability
 	 */
 	private void addSingleCapability( String name, String value ) {
-		if (!name.startsWith("polish.")) {
-			name = "polish." + name;
-		}
 		this.capabilities.put( name, value );
 		this.features.put( name + ":defined", Boolean.TRUE );
 	}
