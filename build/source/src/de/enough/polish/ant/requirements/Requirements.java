@@ -25,12 +25,12 @@
  */
 package de.enough.polish.ant.requirements;
 
-import de.enough.polish.Device;
-import de.enough.polish.ant.ConditionalElement;
+import java.util.ArrayList;
 
 import org.apache.tools.ant.Project;
 
-import java.util.ArrayList;
+import de.enough.polish.Device;
+import de.enough.polish.ant.ConditionalElement;
 
 /**
  * <p>A list of requirements which each supported device needs to satisfy.</p>

@@ -56,4 +56,59 @@
 		<features></features>
 	</vendor>
 
+	<vendor>
+		<name>Alcatel</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>LG Electronics</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Sharp</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Sanyo</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Samsung</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Panasonic</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Casio</name>
+		<features></features>
+	</vendor>
+	
+	<vendor>
+		<name>Kyocera</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Hitachi</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
+		<name>Mitsubishi</name>
+		<features></features>
+	</vendor>
+	
+	<vendor>
+		<name>Research In Motion</name>
+		<features></features>
+	</vendor>
+	
 </vendors>

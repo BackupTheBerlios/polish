@@ -43,6 +43,7 @@ public class JavaPlatformRequirement extends Requirement {
 	
 	private String platformName;
 	private VersionMatcher platformVersion;
+	private String neededPlatform;
 
 	/**
 	 * Creates a new requirement for the java platform of a device.
@@ -50,7 +51,8 @@ public class JavaPlatformRequirement extends Requirement {
 	 * @param value The value of the platform
 	 */
 	public JavaPlatformRequirement(String value ) {
-		super(value, Device.JAVA_PLATFORM );
+		super(value, "JavaPlatform" );
+		this.neededPlatform = value;
 		int splitPos = value.indexOf('/');
 		if (splitPos == -1) {
 			throw new BuildException("The JavaPlatform requirement needs to specify the " +
@@ -65,6 +67,9 @@ public class JavaPlatformRequirement extends Requirement {
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device, java.lang.String)
 	 */
 	protected boolean isMet(Device device, String property) {
+		if (property.equals( this.neededPlatform)) {
+			return true;
+		}
 		int splitPos = property.indexOf('/');
 		if (splitPos == -1) {
 			return false;

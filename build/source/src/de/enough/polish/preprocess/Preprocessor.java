@@ -1074,9 +1074,10 @@ public class Preprocessor {
 	/**
 	 * Sets the style sheet.
 	 * 
+	 * @param device the current device
 	 * @param styleSheet the new style sheet
 	 */
-	public void setSyleSheet(StyleSheet styleSheet) {
+	public void setSyleSheet(StyleSheet styleSheet, Device device) {
 		this.styleSheet = styleSheet;
 		if (styleSheet == null) {
 			removeSymbol("polish.useDynamicStyles");
@@ -1100,7 +1101,7 @@ public class Preprocessor {
 				removeSymbol("polish.useAfterStyle");
 			}
 			// now set the CSS-symbols:
-			this.symbols.putAll( styleSheet.getCssPreprocessingSymbols() );
+			this.symbols.putAll( styleSheet.getCssPreprocessingSymbols( device ) );
 		}
 	}
 	

@@ -87,7 +87,16 @@
 		<path>import/j2me-pdaapi.jar</path>
 	</api>
 	
-	
+	<api>
+		<name>Motorola Lightweight Windowing Toolkit</name>
+		<description>
+		Motorola specific graphical user interface (GUI) extension for J2ME technology-enabled wireless phones.
+		</description>
+		<names>motorola-lwt, motorola lwt, lwt</names>
+		<symbol>motorola-lwt</symbol>
+		<files>motorola-lwt.jar</files>
+		<path>import/motorola-lwt.jar</path>
+	</api>
 
 <!--
 	You can use this block to define a new API

@@ -25,6 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
+import de.enough.polish.Device;
 import de.enough.polish.util.TextUtil;
 
 import org.apache.tools.ant.BuildException;
@@ -69,6 +70,7 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("focused", Boolean.TRUE );
 		PSEUDO_CLASSES.put("title", Boolean.TRUE );
 		PSEUDO_CLASSES.put("default", Boolean.TRUE );
+		PSEUDO_CLASSES.put("label", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menu", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menuitem", Boolean.TRUE );
 	}
@@ -76,9 +78,8 @@ public class StyleSheet {
 			"default {"
 			+ "font-color: black;"
 			+ "font-face: system;"
-			+ "font-style: bold;"
+			+ "font-style: plain;"
 			+ "font-size: medium;"
-			+ "background-color: white;"
 			+ "}"
 			);
 
@@ -295,7 +296,7 @@ public class StyleSheet {
 			if (selector.charAt(0) == '.') {
 				selector = selector.substring( 1 );
 				if (PSEUDO_CLASSES.get(selector) != null) { 
-					throw new BuildException("Invalid CSS code: The style [." + selector + "] uses a reserved name, please choose another one.");
+					throw new BuildException("Invalid CSS code: The style [." + selector + "] uses a reserved name, please choose another one or remove the leading dot of the name.");
 				}
 			} else {
 				// this could be a DYNAMIC style:
@@ -600,17 +601,18 @@ public class StyleSheet {
 	 * When the attribute ticker-step is defined, the preprocessing-symbol
 	 * "polish.css.ticker-step" will be defined.
 	 * 
+	 * @param device the current device
 	 * @return a map containing all defined symbols as keys with each
 	 *        having a Boolean.TRUE as value.
 	 */
-	public HashMap getCssPreprocessingSymbols() {
+	public HashMap getCssPreprocessingSymbols( Device device ) {
 		if (this.cssPreprocessingSymbols == null) {
 			HashMap symbols = new HashMap();
 			HashMap attributesByName = new HashMap();
 			Style[] myStyles = getAllStyles();
 			for (int i = 0; i < myStyles.length; i++) {
 				Style style = myStyles[i];
-				String[] attributes = style.getDefinedAttributes();
+				String[] attributes = style.getDefinedAttributes( device );
 				for (int j = 0; j < attributes.length; j++) {
 					String attribute = attributes[j];
 					symbols.put( "polish.css." + attribute, Boolean.TRUE );
@@ -626,11 +628,12 @@ public class StyleSheet {
 	/**
 	 * Retrieves all defined css attributes in a map.
 	 * 
+	 * @param device the current device
 	 * @return all defined css attributes in a map.
 	 */
-	public HashMap getCssAttributes() {
+	public HashMap getCssAttributes( Device device ) {
 		if (this.cssAttributes == null) {
-			getCssPreprocessingSymbols();
+			getCssPreprocessingSymbols( device );
 		}
 		return this.cssAttributes;
 	}
@@ -639,11 +642,12 @@ public class StyleSheet {
 	 * Determines whether the given attribute is defined at all.
 	 * 
 	 * @param name the name of the css-attribute, e.g. "background-color"
+	 * @param device the current device
 	 * @return true when the attribute is defined in this style-sheet.
 	 */
-	public boolean isCssAttributeDefined( String name ) {
+	public boolean isCssAttributeDefined( String name, Device device ) {
 		if (this.cssAttributes == null) {
-			getCssPreprocessingSymbols();
+			getCssPreprocessingSymbols( device );
 		}
 		return (this.cssAttributes.get( name ) != null);
 	}

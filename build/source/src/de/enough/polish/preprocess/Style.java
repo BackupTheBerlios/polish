@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.HashMap;
 import java.util.Set;
 
+import de.enough.polish.Device;
+
 /**
  * <p>Represents a CSS-style-definition.</p>
  *
@@ -295,10 +297,11 @@ public class Style {
 	/**
 	 * Retrieves the names of all defined attributes of this style.
 	 * 
+	 * @param device the current device
 	 * @return a String array with all names of defined attributes.
 	 *         One attribute-name can appear several times.
 	 */
-	public String[] getDefinedAttributes() {
+	public String[] getDefinedAttributes( Device device ) {
 		ArrayList attributes = new ArrayList();
 		String[] groupNames = getGroupNames();
 		for (int i = 0; i < groupNames.length; i++) {
@@ -310,7 +313,15 @@ public class Style {
 				if (groupName.equals(attributeName)) {
 					attributes.add( attributeName );
 				} else {
-					attributes.add( groupName + "-" + attributeName );
+					String fullName = groupName + "-" + attributeName;
+					// check if there is a "columns-width: 23, *;" kind of setting: 
+					if ("columns-width".equals(fullName)) {
+						String value = (String) group.get( attributeName );
+						if (value.indexOf('*') != -1 && device.getCapability("ScreenWidth") == null) {
+							attributes.add( "columns-width.star");
+						}
+					}
+					attributes.add( fullName );
 				}
 			}
 		}

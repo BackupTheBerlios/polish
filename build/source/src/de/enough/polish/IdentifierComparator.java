@@ -1,6 +1,6 @@
 /*
- * Created on 24-Jan-2004 at 18:05:57.
- *
+ * Created on 29-Jun-2004 at 21:37:39.
+ * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -23,29 +23,32 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ant.requirements;
+package de.enough.polish;
 
+import java.util.Comparator;
 
 /**
- * <p>Selects a device by its support of specific software-APIs.</p>
+ * <p>Compares two polish components by their identifier.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        24-Jan-2004 - rob creation
+ *        29-Jun-2004 - rob creation
  * </pre>
- * @author Robert Virkus, robert@enough.de
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public class JavaPackageRequirement extends StringRequirement {
+public class IdentifierComparator implements Comparator {
 
-
-	/**
-	 * Creates a new java package requirement.
-	 * 
-	 * @param value the needed apis seperated by comma.
+	/* (non-Javadoc)
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
-	public JavaPackageRequirement(String value) {
-		super(value, "api");
+	public int compare(Object o1, Object o2) {
+		if (!(o1 instanceof PolishComponent && o2 instanceof PolishComponent)) {
+			return 0;
+		}
+		PolishComponent c1 = (PolishComponent) o1;
+		PolishComponent c2 = (PolishComponent) o2;
+		return c1.identifier.compareTo( c2.identifier );
 	}
 
 }

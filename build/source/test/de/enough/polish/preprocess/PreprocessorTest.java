@@ -25,6 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
+import de.enough.polish.Device;
 import de.enough.polish.PolishProject;
 import de.enough.polish.util.StringList;
 
@@ -122,7 +123,7 @@ public class PreprocessorTest extends TestCase {
 		assertTrue( sheet.isDefined("weird"));
 		assertTrue( sheet.isDefined("funny"));
 		assertTrue( sheet.isDefined("crazy"));
-		this.preprocessor.setSyleSheet( sheet );
+		this.preprocessor.setSyleSheet( sheet, new Device("Nokia/3650") );
 	}
 
 	/* (non-Javadoc)

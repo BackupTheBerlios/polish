@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	  <property name="Version" value="1.0-RC3" />
-	  <property name="VersionMessage" value="Welcome to the third Release Candidate of J2ME Polish 1.0!" />
+	  <property name="Version" value="1.0-RC4" />
+	  <property name="VersionMessage" value="Welcome to the fourth Release Candidate of J2ME Polish 1.0!" />
 	  <property name="izpack.dir" value="/home/enough/dev/IzPack" />
 
   <path id="thirdparty">
@@ -20,6 +20,7 @@
 <taskdef name="polish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:import/jdom.jar:import/proguard.jar"/>
 <taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
 <taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
+<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:import/jdom.jar"/>
 <taskdef name="izpack" classpath="import/compiler.jar"
 	         classname="com.izforge.izpack.ant.IzPackTask"/>
 	<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
@@ -290,6 +291,23 @@
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
 	</webprocessor>
+	<!-- created & copy the device database -->
+	<deviceExport />
+	<webprocessor 
+		srcdir="../enough-polish-website/tmp"
+	 	includedir="../enough-polish-website/site/includes"
+		destdir="tmp/doc/html"
+		clean="false"
+		symbols="excludeDownload"
+		>
+		<variable name="PolishVersion" value="${Version}" />
+		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+		<variable name="Author" value="Robert Virkus" />
+		<variable name="basedir" value="" />
+		<variable name="index.h1" value="h1index" />
+		<variable name="index.h2" value="h2index" />
+		<variable name="index.h3" value="h3index" />
+	</webprocessor>
 	<!-- copy the documentation.html to the root -->
 	<webprocessor 
 		srcdir="../enough-polish-website/site/source"
@@ -344,6 +362,24 @@
 		keywordsFile="../enough-polish-website/keywords.txt"
 		excludes="downloads/**/*,download.html"
 		symbols="excludeDownload"
+		>
+		<variable name="PolishVersion" value="${Version}" />
+		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+		<variable name="Author" value="Robert Virkus" />
+		<variable name="basedir" value="" />
+		<variable name="index.h1" value="h1index" />
+		<variable name="index.h2" value="h2index" />
+		<variable name="index.h3" value="h3index" />
+	</webprocessor>
+</target>
+	
+<target name="device-export">
+	<deviceExport />
+	<webprocessor 
+		srcdir="../enough-polish-website/tmp"
+	 	includedir="../enough-polish-website/site/includes"
+		destdir="tmp/doc/html"
+		clean="false"
 		>
 		<variable name="PolishVersion" value="${Version}" />
 		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />

@@ -283,7 +283,7 @@
 		<capability name="SoftwarePlatform.JavaProtocol"
 				       value="UDP, TCP, SSL, HTTP, HTTPS, Serial" />
 		<capability name="SoftwarePlatform.JavaPackage"
-				       value="wmapi, mmapi, motorola-lwt, location-api, Look And Feel, Polyphonic MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Receive and Initiation, Recent calls, File I/O, Serial port, Crypto, Digital Camera, Java Menu MIDlet icon, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D" />
+				       value="wmapi, mmapi, motorola-lwt, location-api, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Receive and Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D" />
 		<capability name="SoftwarePlatform.HeapSize"
 				       value="1.15 MB" />
 		<capability name="StorageSize" value="2 MB" />
@@ -359,7 +359,7 @@
 		<capability name="MaxSockets.tcp" value="2" />
 		<capability name="MaxSockets.http" value="2" />
 		<capability name="MaxSockets.udp" value="3" />
-		<capability name="JavaPackage" value="PolyphonicMIDI, serial" />
+		<capability name="JavaPackage" value="Polyphonic-MIDI, serial" />
 	</device>
 	
 	<device>
@@ -374,7 +374,7 @@
 		<capability name="MaxSockets.tcp" value="7" />
 		<capability name="MaxSockets.http" value="4" />
 		<capability name="MaxSockets.udp" value="12" />
-		<capability name="JavaPackage" value="Motorola LWT, Look And Feel, PolyphonicMIDI, File I/O, Call Initiation, Crypto, Lighting, Vibrator, Digital Camera" />
+		<capability name="JavaPackage" value="Motorola LWT, Look And Feel, Polyphonic-MIDI, File I/O, Call Initiation, Crypto, Lighting, Vibrator, Digital Camera" />
 	</device>
 	
 	<device>
@@ -767,7 +767,7 @@
 		<capability name="MaxJarSize" value="200 kb" />
 		<capability name="MaxRecordStoreSize" value="63 kb" />
 		<capability name="JavaProtocol" value="udp, http, socket" />
-		<capability name="JavaPackage" value="LWT, Serial, Motorola-Camera, Motorola-MMS" />
+		<capability name="JavaPackage" value="motorola-LWT, Look and Feel, Serial, Motorola-Camera, Motorola-MMS" />
 		<capability name="MaxSockets" value="4" />
 		<capability name="MaxSockets.tcp" value="3" />
 		<capability name="MaxSockets.http" value="3" />
@@ -1024,7 +1024,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="WMAPI, MMAPI" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="VideoFormat" value="3GPP" />
 		<capability name="SoundFormat" value="midi" />
@@ -1040,7 +1040,6 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1054,7 +1053,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="210kb" />
@@ -1066,7 +1064,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="540kb" />
@@ -1078,7 +1075,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1090,7 +1087,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="230kb" />
@@ -1103,7 +1100,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="VideoFormat" value="3GPP, mpeg-4" />
 		<capability name="SoundFormat" value="midi, amr" />
@@ -1119,7 +1116,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="VideoFormat" value="3GPP" />
 		<capability name="SoundFormat" value="midi, amr" />
@@ -1135,7 +1132,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="WMAPI, MMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="VideoFormat" value="3GPP" />
 		<capability name="SoundFormat" value="midi, amr, mp3, aac" />
@@ -1151,7 +1148,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="HeapSize" value="210kb" />
@@ -1165,7 +1162,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="210kb" />
@@ -1177,7 +1174,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1190,7 +1186,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1204,7 +1200,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI, MMAPI" />
+		<capability name="JavaPackage" value="WMAPI, MMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi, true tones, mp3, aac" />
 		<capability name="HeapSize" value="370kb" />
@@ -1217,7 +1213,7 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="235kb" />
@@ -1231,7 +1227,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1243,7 +1239,7 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI, WMAPI" />
+		<capability name="JavaPackage" value="WMAPI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1255,7 +1251,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1267,7 +1262,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1279,7 +1273,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="HeapSize" value="200kb" />
 		<capability name="MaxJarSize" value="64kb" />
@@ -1291,7 +1284,6 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1305,7 +1297,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1318,7 +1309,6 @@
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="819kb" />
@@ -1332,7 +1322,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1344,7 +1333,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1356,7 +1344,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1368,7 +1355,6 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="Nokia-UI" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
@@ -1637,5 +1623,206 @@
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 	</device>
+	
+<!-- Alcatel devices -->
+	<device>
+		<identifier>Alcatel/One Touch 735i</identifier>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+	</device>
+
+	<device>
+		<identifier>Alcatel/One Touch 756</identifier>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi, wmapi-1.1, mmapi, jtwi, mmapi" />
+	</device>
+	
+<!-- Casio devices -->
+	<device>
+		<identifier>Casio/C452CA</identifier>
+		<capability name="ScreenSize" value="120x133"/>
+		<capability name="BitsPerPixel" value="8"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+<!-- Hitachi devices -->
+	<device>
+		<identifier>Hitachi/C3001H</identifier>
+		<capability name="ScreenSize" value="120x162"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+<!-- Kyocera devices -->
+	<device>
+		<identifier>Kyocera/C3002K</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+<!-- LG Electronics devices -->
+	<device>
+		<identifier>LG Electronics/C-nain 2000</identifier>
+		<capability name="ScreenSize" value="120x133"/>
+		<capability name="BitsPerPixel" value="8"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+	<device>
+		<identifier>LG Electronics/LX5350</identifier>
+		<capability name="ScreenSize" value="120x198"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+<!-- Mitsubishi devices -->
+	<device>
+		<identifier>Mitsubishi/J-D05</identifier>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+<!-- Panasonic devices -->
+	<device>
+		<identifier>Panasonic/C3003P</identifier>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+<!-- Research In Motion devices -->
+	<device>
+		<identifier>Research In Motion/BlackBerry 5810</identifier>
+		<capability name="ScreenSize" value="160x160"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+	<device>
+		<identifier>Research In Motion/BlackBerry 5820</identifier>
+		<capability name="ScreenSize" value="160x160"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+<!-- Samsung devices -->
+	<device>
+		<identifier>Samsung/SCH-X130</identifier>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SCH-X230</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="BitsPerPixel" value="8"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SCH-X250</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="BitsPerPixel" value="8"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SCH-X350</identifier>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+	<device>
+		<identifier>Samsung/SGH-S100</identifier>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SPH-N400</identifier>
+		<capability name="ScreenSize" value="128x96"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SPH-X4209</identifier>
+		<capability name="ScreenSize" value="128x160"/>
+		<!-- <capability name="BitsPerPixel" value="16"/> -->
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+
+<!-- Sanyo devices -->
+
+	<device>
+		<identifier>Sanyo/A3011SA</identifier>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Sanyo/SCP-4900</identifier>
+		<capability name="ScreenSize" value="120x96"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Sanyo/SCP-5300</identifier>
+		<capability name="ScreenSize" value="128x132"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	
+<!-- Sharp devices -->
+
+	<device>
+		<identifier>Sharp/J-SH07</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>	
+
+	<device>
+		<identifier>Sharp/J-SH08</identifier>
+		<capability name="ScreenSize" value="122x162"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>	
+	
 	
 </devices>

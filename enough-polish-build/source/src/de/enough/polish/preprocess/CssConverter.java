@@ -124,7 +124,6 @@ public class CssConverter extends Converter {
 		this.colorConverter.setTemporaryColors( styleSheet.getColors() );
 		// add the font-definitions:
 		boolean defaultFontDefined = false;
-		boolean defaultLabelDefined = false;
 		HashMap fonts = styleSheet.getFonts();
 		Set keys = fonts.keySet();
 		for (Iterator iter = keys.iterator(); iter.hasNext();) {
@@ -133,10 +132,6 @@ public class CssConverter extends Converter {
 				defaultFontDefined = true;
 				HashMap group = (HashMap) fonts.get( groupName );
 				processFont(group, groupName, null, codeList, styleSheet, true );
-			} else if ("label".equals(groupName)) {
-				defaultLabelDefined = true;
-				HashMap group = (HashMap) fonts.get( groupName );
-				processLabel(group, "default", null, codeList, styleSheet, true );
 			} else {
 				HashMap group = (HashMap) fonts.get( groupName );
 				processFont(group, groupName, null, codeList, styleSheet, true );
@@ -182,7 +177,7 @@ public class CssConverter extends Converter {
 		}
 		
 		// add the default style:
-		processDefaultStyle( defaultFontDefined, defaultLabelDefined, 
+		processDefaultStyle( defaultFontDefined,  
 				defaultBackgroundDefined, defaultBorderDefined,
 				codeList, styleSheet, device );
 		
@@ -201,13 +196,27 @@ public class CssConverter extends Converter {
 		
 		// process referenced styles:
 		Style[] styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
+		boolean isLabelStyleReferenced = false;
 		if (styles.length > 0) {
 			codeList.add("\t//referenced styles:");
 			for (int i = 0; i < styles.length; i++) {
 				Style style = styles[i];
+				if (style.getSelector().equals("label")) {
+					isLabelStyleReferenced = true;
+				}
 				processStyle( style, codeList, styleSheet, device );
 			}
 		}
+		
+		// check if label-style has been defined:
+		if (!(styleSheet.isUsed("label") || isLabelStyleReferenced)) {
+			if (styleSheet.getStyle("label" ) == null) {
+				codeList.add( STANDALONE_MODIFIER + "Style labelStyle = defaultStyle; // no specific label-style has been defined");
+			} else {
+				processStyle( styleSheet.getStyle("label" ), codeList, styleSheet, device );
+			}
+		}
+		
 		
 		// check if fullscreen mode is enabled with menu:
 		if (preprocessor.hasSymbol("polish.useMenuFullScreen") 
@@ -268,14 +277,13 @@ public class CssConverter extends Converter {
 	 * Processes the default style:
 	 * 
 	 * @param defaultFontDefined true when the default font has been defined already
-	 * @param defaultLabelDefined true when the default label has been defined already
 	 * @param defaultBackgroundDefined true when the default background has been defined already
 	 * @param defaultBorderDefined true when the default border has been defined already
 	 * @param codeList the list to which the declarations should be added
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
 	 */
-	private void processDefaultStyle(boolean defaultFontDefined, boolean defaultLabelDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device) {
+	private void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device) {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
@@ -285,15 +293,6 @@ public class CssConverter extends Converter {
 				codeList.add( STANDALONE_MODIFIER + "Font defaultFont = Font.getDefaultFont();");
 			} else {
 				processFont(group, "default", copy, codeList, styleSheet, true );
-			}
-		}
-		group = copy.getGroup("label");
-		if (!defaultLabelDefined) {
-			if (group == null) {
-				codeList.add( STANDALONE_MODIFIER + "int defaultLabelColor = 0x000000;");
-				codeList.add( STANDALONE_MODIFIER + "Font defaultLabel = Font.getDefaultFont();");
-			} else {
-				processLabel(group, "default", copy, codeList, styleSheet, true );
 			}
 		}
 		group = copy.getGroup("background");
@@ -373,14 +372,23 @@ public class CssConverter extends Converter {
 			codeList.add("\t\tdefaultFontColor,\t// font-color is not defined");
 			codeList.add("\t\tdefaultFont,");
 		}
-		// process the label-font:
-		group = style.removeGroup("label");
-		if ( group != null ) {
-			processLabel( group, "label", style, codeList, styleSheet, false );
-		} else {
-			codeList.add("\t\tdefaultLabelColor,\t// label-color is not defined");
-			codeList.add("\t\tdefaultLabel,");
+		
+		// process the content-font:
+		boolean removeLabelGroup = true;
+		group = style.getGroup("label");
+		if (group != null) {
+			String labelStyle = (String) group.get("style"); 
+			if ( labelStyle != null ) {
+				if (styleSheet.isDefined(labelStyle)) {
+					// okay this is a valid reference:
+					removeLabelGroup = false;
+				}
+			}
 		}
+		if (removeLabelGroup) {
+			style.removeGroup("label");			
+		}
+		
 		// process the background:
 		group = style.removeGroup("background");
 		if ( group != null ) {
@@ -437,14 +445,46 @@ public class CssConverter extends Converter {
 						.append( styleName )
 						.append("Style.addProperty( \"" );
 					String key = (String) iter.next();
+					String value = (String) group.get( key );
 					if (key.equals(groupName)) {
 						line.append( groupName );
 					} else {
 						line.append( groupName )
 							.append("-")
 							.append(key);
+						// process columns-width value:
+						// remove all spaces and check for the star-value (e.g. "20, *"):
+						if (key.equals("width") && groupName.equals("columns")) {
+							value = TextUtil.replace( value, " ", "" );
+							int starPos = value.indexOf('*');
+							if (starPos != -1) {
+								String screenWidthStr = device.getCapability("ScreenWidth");
+								if (screenWidthStr != null) {
+									int screenWidth = Integer.parseInt( screenWidthStr );
+									String[] valueChunks = TextUtil.split( value, ',' );
+									int combinedWidth = 0;
+									int starIndex = -1;
+									for (int j = 0; j < valueChunks.length; j++) {
+										String widthStr = valueChunks[j];
+										if ("*".equals( widthStr)) {
+											starIndex = j;
+										} else {
+											combinedWidth += Integer.parseInt( widthStr );
+										}
+									}
+									valueChunks[ starIndex ] = "" + ( screenWidth - combinedWidth);
+									StringBuffer buffer = new StringBuffer();
+									for (int j = 0; j < valueChunks.length; j++) {
+										buffer.append( valueChunks[j] );
+										if (j != valueChunks.length -1) {
+											buffer.append(',');
+										}
+									}
+									value = buffer.toString();
+								}
+							}
+						}
 					}
-					String value = (String) group.get( key );
 					if (key.endsWith("style")) {
 						value = getStyleReference( value, style, styleSheet );
 					} else if (key.endsWith("color")) {
@@ -698,24 +738,6 @@ public class CssConverter extends Converter {
 			e.printStackTrace();
 			throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
 		}		
-	}
-
-	/**
-	 * Adds a label definition.
-	 * 
-	 * @param group the label definition
-	 * @param groupName the name of this font - usually "font" or "labelFont"
-	 * @param style the style
-	 * @param codeList the array list into which generated code is written
-	 * @param styleSheet the parent style sheet
-	 * @param isStandalone true when a new public font-field should be created,
-	 *        otherwise the font will be embedded in a style instantiation. 
-	 */
-	private void processLabel(HashMap group, String groupName, Style style, 
-			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) 
-	{
-		//System.out.println("processing label: " + groupName +  " = " + group.toString() );
-		processFontOrLabel( "Label", group, groupName, style, codeList, styleSheet, isStandalone);
 	}
 
 	/**

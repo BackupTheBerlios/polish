@@ -210,4 +210,14 @@ public class LibraryManager {
 			return lib.getSymbol();
 		}
 	}
+
+	/**
+	 * Retrieves the specified library.
+	 * 
+	 * @param libName the name of the library
+	 * @return the library. When the library is not known, null is returned.
+	 */
+	public Library getLibrary(String libName) {
+		return (Library) this.libraries.get( libName );
+	}
 }

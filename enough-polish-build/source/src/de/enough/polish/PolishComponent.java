@@ -52,6 +52,7 @@ public class PolishComponent {
 	private HashMap features;
 	private HashMap capabilities;
 	private StyleSheet styleSheet;
+	private String featuresAsString;
 	
 	/**
 	 * Creates a new component.
@@ -118,6 +119,7 @@ public class PolishComponent {
 				addFeature( definedFeatures[i] );
 			}
 		}
+		this.featuresAsString = featureDefinition;
 	}
 
 	/**
@@ -299,7 +301,13 @@ public class PolishComponent {
 	 * @param feature the name of the feature
 	 */
 	public void addFeature( String feature ) {
-		this.features.put( "polish." + feature, Boolean.TRUE );
+		if (feature.length() == 0) {
+			return;
+		}
+		if (!feature.startsWith("polish.")) {
+			feature = "polish." + feature;
+		}
+		this.features.put( feature, Boolean.TRUE );
 	}
 	
 	/**
@@ -374,4 +382,13 @@ public class PolishComponent {
 	public void setStyleSheet(StyleSheet styleSheet) {
 		this.styleSheet = styleSheet;
 	}
-}
+	
+	/**
+	 * Retrieves the defined features of this component.
+	 * 
+	 * @return the features which have been set in the appropriate component.xml file
+	 */
+	public String getFeaturesAsString() {
+		return this.featuresAsString;
+	}
+	}

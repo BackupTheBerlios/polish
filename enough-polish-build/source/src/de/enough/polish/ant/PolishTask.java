@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.0.0-RC2";
+	private static final String VERSION = "1.0-RC4";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -526,7 +526,7 @@ public class PolishTask extends ConditionalTask {
 				cssStyleSheet = loadStyleSheet( device );
 				lastCssModification = cssStyleSheet.lastModified();
 			}
-			this.preprocessor.setSyleSheet( cssStyleSheet );
+			this.preprocessor.setSyleSheet( cssStyleSheet, device );
 			this.preprocessor.notifyDevice(device, usePolishGui);
 			// preprocess each source file:
 			for (int i = 0; i < this.sourceDirs.length; i++) {

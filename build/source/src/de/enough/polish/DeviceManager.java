@@ -112,6 +112,9 @@ public class DeviceManager {
 				String vendorName = chunks[0];
 				String deviceName = chunks[1];
 				Vendor vendor = vendorManager.getVendor( vendorName );
+				if (vendor == null) {
+					throw new InvalidComponentException("Invalid device-specification in [devices.xml]: Please specify the vendor [" + vendorName + "] in the file [vendors.xml].");
+				}
 				Device device = new Device( definition, identifier, deviceName, vendor, groupManager, libraryManager );
 				devicesByIdentifier.put( identifier, device );
 				devicesList.add( device );

@@ -45,7 +45,7 @@ public class JavaPackageRequirement extends StringRequirement {
 	 * @param value the needed apis seperated by comma.
 	 */
 	public JavaPackageRequirement(String value) {
-		super(value, "JavaPackage");
+		super(value, "api");
 	}
 
 }
