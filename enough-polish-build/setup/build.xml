@@ -83,7 +83,9 @@
 		description="This is the controller for the J2ME build process." 
 		>
 	<j2mepolish>
-	    <!-- general settings -->
+	    <!-- general settings, these settings basically form the JAD-attributes. -->
+	    <!-- Have a look at the <jad>-section for setting specialised attributes.
+	         You can also define localized attributes in the resources/messages.txt files -->
 		<info
 			license="%{J2ME_POLISH_LICENSE}"
 			name="J2ME Polish"
@@ -126,8 +128,9 @@
 		>
 			<!-- midlets definition -->
 			<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
-			<!-- project-wide variables - used for preprocessing  -->
-			<variables>
+			<!-- project-wide variables - used for preprocessing.  -->
+			<!-- You can set localized variables in the resources/messages.txt files as well.  -->
+			<variables includeAntProperties="true" >
 				<!-- example variables:
 				In your Java-code you can use the following snipet to use this variable:
 				//#= private static final String UPDATE_URL = "${ update-url }";
@@ -160,7 +163,7 @@
 				<localization locales="en_US" if="test" />
 			</resources>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPacakge="true" unless="test" >
+			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />

@@ -130,6 +130,7 @@ public class Device extends PolishComponent {
 	private String[] classPaths;
 
 	private boolean isCldc10;
+	private boolean isCldc11;
 
 
 
@@ -294,17 +295,20 @@ public class Device extends PolishComponent {
 				groupNamesList.add("cldc1.0");
 				groupsList.add(groupManager.getGroup("cldc1.0", true));
 				this.isCldc10 = true;
+				this.isCldc11 = false;
 			} else if ("CLDC/1.1".equals( cldc)) {
 				addFeature("cldc1.1");
 				groupNamesList.add("cldc1.1");
 				groupsList.add(groupManager.getGroup("cldc1.1", true));
 				this.isCldc10 = false;
+				this.isCldc11 = true;
 			} else if ("CLDC/1.0.4".equals( cldc)) {
 				addFeature("cldc1.0");
 				addFeature("cldc1.0.4");
 				groupNamesList.add("cldc1.0");
 				groupsList.add(groupManager.getGroup("cldc1.0", true));
 				this.isCldc10 = true;
+				this.isCldc11 = false;
 			} else {
 				System.err.println("Warning: the device [" + this.identifier + 
 						"] supports the unknown JavaConfiguration [" + cldc + ".");
@@ -629,6 +633,13 @@ public class Device extends PolishComponent {
 	 */
 	public boolean isCldc10() {
 		return this.isCldc10;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isCldc11() {
+		return this.isCldc11;
 	}
 
 }

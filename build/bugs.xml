@@ -32,11 +32,11 @@
 		</description>
 		<area>ui</area>
 		<solution>
-		Use the top-left 0,0 origin for devices with this bug:
-		//#ifdef polish.Bugs.drawRgbOrigin
-			x += g.getTranslateX();
-			y += g.getTranslateY();
-		//#endif
+		Use the top-left 0,0 origin for devices with this bug:\n
+		//#ifdef polish.Bugs.drawRgbOrigin\n
+			x += g.getTranslateX();\n
+			y += g.getTranslateY();\n
+		//#endif\n
 		g.drawRGB( rgbData, offset, scanlength, x, y, width, height, processAlpha);
 		</solution>
 	</bug>
@@ -60,6 +60,37 @@
 		<solution>Track the state of the fullscreen mode and set it in the paint method.
 		</solution>
 	</bug>
+	<bug>
+		<name>fullScreenInShowNotify</name>
+		<description>Calling the Canvas.setFullScreenMode(boolean) method results
+		in an error, unless it is called in the showNotify()-method.
+		</description>
+		<area>ui</area>
+		<solution>Set it the fullscreen mode in the showNotify() method.
+		</solution>
+	</bug>
+	<bug>
+		<name>NoSpriteRotation</name>
+		<description>The MIDP/2.0 Sprite Rotation does not work on this device.
+		</description>
+		<area>game, ui</area>
+	</bug>
+	<bug>
+		<name>DisplayGetColor</name>
+		<description>The MIDP/2.0 Display-method getColor( int specification ) does not work
+		on this device. This method is often used for CustomItems.
+		</description>
+		<area>ui</area>
+		<solution>Define and use your own colors for this device.</solution>
+	</bug>
+	<bug>
+		<name>needsGCinPaint</name>
+		<description>When you encounter a DISCONTINUED error on such a device,
+		you might need to call the garbage collection in each paint(Graphics g)-call.
+		</description>
+		<area>ui</area>
+		<solution>Call the Runtime.getRuntime().gc()-method in your paint(Graphics g)-methods.</solution>
+	</bug>
 	<!--
 	<bug>
 		<name></name>
@@ -67,4 +98,4 @@
 		<solution></solution>
 	</bug>
 	-->
-<bugs>
+</bugs>

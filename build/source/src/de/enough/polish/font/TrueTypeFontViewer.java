@@ -107,6 +107,7 @@ implements ActionListener
 
 	/**
 	 * @param fontFile
+	 * @param statusBar
 	 * @throws IOException
 	 */
 	public TrueTypeFontViewer( File fontFile, JLabel statusBar ) throws IOException {

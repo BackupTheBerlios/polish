@@ -30,15 +30,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jdom.JDOMException;
 
+import de.enough.polish.Bug;
+import de.enough.polish.BugManager;
 import de.enough.polish.Device;
 import de.enough.polish.DeviceGroupManager;
 import de.enough.polish.DeviceManager;
@@ -64,14 +68,17 @@ import de.enough.polish.util.TextUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class HtmlExporterTask extends Task {
-	
+	private static final String[] CSS_TABLE_ROW_CLASSES = new String[]{"oddRow", "evenRow" };
+
 	private String wtkHome = "/home/enough/dev/WTK2.1";
 	private String preverifyHome = this.wtkHome + "/bin/preverify";
 	private String targetDir = "../enough-polish-website/tmp/devices/";
 	private HashMap deviceLinks = new HashMap();
 	private Comparator caseInsensitiveComparator = new CaseInsensitiveComparator();
 	private String databaseDir = "../enough-polish-build/";
-
+	private LibraryManager libraryManager;
+	private BugManager bugManager;
+	
 	/**
 	 * Creates a new uninitialised task
 	 */
@@ -82,10 +89,11 @@ public class HtmlExporterTask extends Task {
 	public void execute() throws BuildException {
 		// create LibraryManager:
 		try {
-			LibraryManager libraryManager = new LibraryManager(this.project.getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
+			this.libraryManager = new LibraryManager(this.project.getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
 			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"));
 			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml") ); 
-			DeviceManager deviceManager = new DeviceManager( vendorManager, groupManager, libraryManager, open("devices.xml") );
+			DeviceManager deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, open("devices.xml") );
+			this.bugManager = new BugManager( this.project.getProperties(), open("bugs.xml"));
 			Device[] devices = deviceManager.getDevices();
 			
 			// create detailed device pages:
@@ -123,7 +131,7 @@ public class HtmlExporterTask extends Task {
 				Requirements requirements = new Requirements();
 				requirements.addConfiguredRequirement( new Variable("JavaPackage", api ));
 				Device[] filteredDevices = requirements.filterDevices(devices);
-				Library lib = libraryManager.getLibrary( api );
+				Library lib = this.libraryManager.getLibrary( api );
 				String fullApiName;
 				String introText = null;
 				if (lib != null) {
@@ -180,8 +188,11 @@ public class HtmlExporterTask extends Task {
 	/**
 	 * @param device
 	 * @throws IOException
+	 * @throws InvalidComponentException
 	 */
-	private void writeDevicePage(Device device) throws IOException {
+	private void writeDevicePage(Device device) 
+	throws IOException, InvalidComponentException 
+	{
 		String vendor = clean( device.getVendorName() );
 		String name = clean( device.getName() );
 		String fileName = vendor + "/" + name + ".html";
@@ -202,13 +213,17 @@ public class HtmlExporterTask extends Task {
 		if (device.hasFeature("polish.isVirtual")) {
 			lines.add( "<p>This device is a virtual device which combines several features of real devices. A virtual device represents a group of devices.</p>");
 		}
-		startTable( lines );
-		addDeviceInfo(lines, device, "oddRow", false);		
-		endTable( lines );
+		addDisplayCapabilities( lines, device );
+		addPlatformCapabilities( lines, device );
+		addMemoryCapabilities( lines, device );
+		addMultimediaCapabilities( lines, device );
+		addKeyCapabilities( lines, device );
+		addDeviceIssues( lines, device );
+		//addDeviceOverview(lines, device, "oddRow", false);		
 		String[] groups = device.getGroupNames();
 		if (groups != null && groups.length > 0) {
 			lines.add("<h2 id=\"groups\">Groups</h2>");
-			lines.add("<p>Groups can be used to compose the resources (like images or sound-files) for an application." +
+			lines.add("<p>Groups can be used to assemble the resources (like images or sound-files) for an application." +
 					"<br/>Have a look at the " +
 					"<a href=\"<%= basedir %>docs/resource-assembling.html\">documentation</a> for more info.</p>");
 			lines.add("<table class=\"borderedTable\"><tr><th>Group</th><th>Resource Folder</th></tr>");
@@ -279,6 +294,337 @@ public class HtmlExporterTask extends Task {
 		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );	
 	}
 
+	private void addDisplayCapabilities(ArrayList lines, Device device) {
+		String screenSize = device.getCapability("polish.ScreenSize");
+		String canvasSize = device.getCapability("polish.CanvasSize");
+		String fullCanvasSize = device.getCapability("polish.FullCanvasSize");
+		String bitsPerPixel = device.getCapability("polish.BitsPerPixel");
+		lines.add( "<h2 id=\"screen\">Display</h2>" );
+		lines.add("<table width=\"100%\" class=\"borderedTable\">");
+		lines.add( "<tr><th>Property</th><th>Value</th><th>Preprocessing Access</th></tr>" );
+		int row = 0;
+		String cssStyle;
+		if (screenSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Screen-Size (width x height)</td><td>" + screenSize + "</td><td>polish.ScreenSize, polish.ScreenWidth, polish.ScreenHeight</td></tr>" );
+		}
+		if (canvasSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Canvas-Size (width x height)</td><td>" + canvasSize + "</td><td>polish.CanvasSize, polish.CanvasWidth, polish.CanvasHeight</td></tr>" );
+		}
+		if (fullCanvasSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Canvas-Size in fullscreen mode</td><td>" + fullCanvasSize + "</td><td>polish.FullCanvasSize, polish.FullCanvasWidth, polish.FullCanvasHeight</td></tr>" );
+		}
+		if (bitsPerPixel != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			int bits = Integer.parseInt(bitsPerPixel);
+			int colors = (int) Math.pow( 2, bits);
+			NumberFormat formatter = NumberFormat.getInstance( Locale.ENGLISH );
+			String colorsStr = formatter.format(colors);
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Bits per Pixel</td><td>" + bitsPerPixel + "<br/>(" + colorsStr + " colors)</td><td>polish.BitsPerPixel</td></tr>" );
+		}
+		boolean hasPointerEvents = device.hasFeature("polish.hasPointerEvents");
+		String answer = hasPointerEvents ? "yes" : "no";
+		cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+		row++;
+		lines.add( "<tr class=\"" + cssStyle + "\"><td>Has Pointer Events (Stylus)</td><td>" + answer + "</td><td>polish.hasPointerEvents</td></tr>" );
+		
+		lines.add("</table>");
+		
+	}
+
+	private void addPlatformCapabilities(ArrayList lines, Device device) {
+		String platform = device.getCapability("polish.JavaPlatform");
+		String configuration = device.getCapability("polish.JavaConfiguration");
+		String apis = device.getSupportedApisAsString();
+		String os = device.getCapability("polish.OS");
+		lines.add( "<h2 id=\"platform\">Platform</h2>" );
+		lines.add("<table width=\"100%\" class=\"borderedTable\">");
+		lines.add( "<tr><th>Property</th><th>Value</th><th>Preprocessing Access</th></tr>" );
+		int row = 0;
+		String cssStyle;
+		cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+		row++;
+		lines.add( "<tr class=\"" + cssStyle + "\"><td>Vendor</td><td><a href=\"../devices-vendor.html#" + device.getVendorName() + "\">" + device.getVendorName() + "</a></td><td>polish.Vendor" );
+		if (os != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>OS</td><td>" + os + "</td><td>polish.OS" );
+		}
+		if (platform != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			String platformRow = "<tr class=\"" + cssStyle + "\"><td>Platform</td><td>"; 
+			if (device.isMidp1()) {
+				platformRow +=  "<a href=\"../midp1.html\">" + platform + "</a>";
+			} else if (device.isMidp2()) {
+				platformRow +=  "<a href=\"../midp2.html\">" + platform + "</a>";
+			} else {
+				platformRow += platform;
+			}
+			platformRow += "</td><td>polish.JavaPlatform";
+			if (device.isMidp1()) {
+				platformRow +=  ", polish.midp1</td></tr>";
+			} else if (device.isMidp2()) {
+				platformRow +=  ", polish.midp2</td></tr>";
+			} else {
+				platformRow +=  "</td></tr>";
+			}
+			lines.add( platformRow );
+		}
+		if (configuration != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			String platformRow = "<tr class=\"" + cssStyle + "\"><td>Configuration</td><td>";
+			if (device.isCldc10()) {
+				platformRow +=  "<a href=\"../cldc10.html\">" + configuration + "</a></td><td>polish.JavaConfiguration";
+			} else if (device.isCldc11()) {
+				platformRow +=  "<a href=\"../cldc11.html\">" + configuration + "</a></td><td>polish.JavaConfiguration";
+			} else {
+				platformRow +=  configuration + "</td><td>polish.JavaConfiguration";
+			}
+			if (device.isCldc10()) {
+				platformRow +=  ", polish.cldc1.0</td></tr>";
+			} else if (device.isCldc11()) {
+				platformRow +=  ", polish.cldc1.1</td></tr>";
+			} else {
+				platformRow +=  "</td></tr>";
+			}
+			lines.add( platformRow );
+		}
+
+		if (apis != null) {
+			String[] apiNames = TextUtil.splitAndTrim( apis, ',');
+			ArrayList apisList = new ArrayList( apiNames.length + 5 );
+			for (int i = 0; i < apiNames.length; i++) {
+				String apiName = apiNames[i];
+				String[] symbols = this.libraryManager.getSymbols(apiName);
+				if (symbols == null) {
+					apisList.add( apiName );
+				} else {
+					for (int j = 0; j < symbols.length; j++) {
+						String symbol = symbols[j];
+						apisList.add( symbol );
+					}
+				}
+			}
+			apiNames = (String[]) apisList.toArray( new String[ apisList.size() ]);
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			StringBuffer apisRow = new StringBuffer();
+			apisRow.append( "<tr class=\"" ).append( cssStyle )
+				.append("\"><td>Supported APIs</td><td>" );
+			StringBuffer preprocessingSymbols = new StringBuffer();
+			for (int i = 0; i < apiNames.length; i++) {
+				String apiName = apiNames[i];
+				apisRow.append( "<a href=\"../devices-" ).append( apiName ).append(".html\">")
+				   .append( apiName ).append("</a>");
+				preprocessingSymbols.append("polish.api.").append( apiName );
+				if (i != apiNames.length -1 ) {
+					apisRow.append(", ");
+					preprocessingSymbols.append(", ");
+				}
+			}
+			apisRow.append( "</td><td>polish.JavaPackage, " )
+				.append( preprocessingSymbols ).append("</td></tr>" );
+			lines.add( apisRow.toString() );
+		}
+		// does this device support the J2ME Polish GUI?
+		cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+		row++;
+		String support = "no";
+		if (device.supportsPolishGui()) {
+			support = "yes&nbsp;&nbsp;<img src=\"<%= basedir %>images/checked.png\" width=\"17\" height=\"17\" />";
+		}
+		lines.add( "<tr class=\"" + cssStyle + "\"><td>Meets the Recommended Capablities for the J2ME Polish GUI</td><td>" + support + "</td><td>--</td></tr>" );
+
+		lines.add("</table>");		
+	}
+
+	private void addMemoryCapabilities(ArrayList lines, Device device) {
+		String heapSize = device.getCapability("polish.HeapSize");
+		String maxJarSize = device.getCapability("polish.MaxJarSize");
+		String storageSize = device.getCapability("polish.StorageSize");
+		String maxRecordStoreSize = device.getCapability("polish.MaxRecordStoreSize");
+		String maxRecordSize = device.getCapability("polish.RMS.MaxRecordSize");
+		if (heapSize == null && maxJarSize == null && storageSize == null && maxRecordStoreSize == null && maxRecordSize == null) {
+			return;
+		}
+		lines.add( "<h2 id=\"memory\">Memory</h2>" );
+		lines.add("<table width=\"100%\" class=\"borderedTable\">");
+		lines.add( "<tr><th>Property</th><th>Value</th><th>Preprocessing Variable</th></tr>" );
+		int row = 0;
+		String cssStyle;
+		if (heapSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Heap-Size</td><td>" + heapSize + "</td><td>polish.HeapSize</td></tr>" );
+		}
+		if (maxJarSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Maximum Jar Size</td><td>" + maxJarSize + "</td><td>polish.MaxJarSize</td></tr>" );
+		}
+		if (storageSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Available Storage Size</td><td>" + storageSize + "</td><td>polish.StorageSize</td></tr>" );
+		}
+		if (maxRecordStoreSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Maximum Size of the Record-Store (RMS)</td><td>" + maxRecordStoreSize + "</td><td>polish.MaxRecordStoreSize</td></tr>" );
+		}
+		if (maxRecordSize != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Maximum Size of One Record (RMS)</td><td>" + maxRecordSize + "</td><td>polish.polish.RMS.MaxRecordSize</td></tr>" );
+		}
+		lines.add("</table>");		
+	}
+	
+	private void addMultimediaCapabilities(ArrayList lines, Device device) {
+		String soundFormat = device.getCapability("polish.SoundFormat");
+		String videoFormat = device.getCapability("polish.VideoFormat");
+		if (soundFormat == null && videoFormat == null ) {
+			return;
+		}
+		lines.add( "<h2 id=\"multimedia\">Multimedia</h2>" );
+		lines.add("<table width=\"100%\" class=\"borderedTable\">");
+		lines.add( "<tr><th>Property</th><th>Value</th><th>Preprocessing Access</th></tr>" );
+		int row = 0;
+		String cssStyle;
+		if (soundFormat != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			String[] formats = TextUtil.splitAndTrim(soundFormat.toLowerCase(), ',');
+			String rowText = "<tr class=\"" + cssStyle + "\"><td>Supported Audio Formats</td><td>" + soundFormat + "</td><td>polish.SoundFormat, ";
+			for (int i = 0; i < formats.length; i++) {
+				String format = formats[i];
+				rowText += "polish.audio." + format;
+				if (i != formats.length - 1) {
+					rowText += ", ";
+				}
+			}
+			rowText += "</td></tr>"; 
+			lines.add( rowText );
+		}
+		if (videoFormat != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			String[] formats = TextUtil.splitAndTrim(videoFormat.toLowerCase(), ',');
+			String rowText = "<tr class=\"" + cssStyle + "\"><td>Supported Video Formats</td><td>" + soundFormat + "</td><td>polish.VideoFormat, ";
+			for (int i = 0; i < formats.length; i++) {
+				String format = formats[i];
+				rowText += "polish.video." + format;
+				if (i != formats.length - 1) {
+					rowText += ", ";
+				}
+			}
+			rowText += "</td></tr>"; 
+			lines.add( rowText );
+		}
+		lines.add("</table>");		
+	}
+	
+	private void addKeyCapabilities(ArrayList lines, Device device) {
+		String leftSoftKey = device.getCapability("polish.key.LeftSoftKey");
+		String middleSoftKey = device.getCapability("polish.key.MiddleSoftKey");
+		String rightSoftKey = device.getCapability("polish.key.RightSoftKey");
+		String clearKey = device.getCapability("polish.key.ClearKey");
+		if (leftSoftKey == null && middleSoftKey == null && rightSoftKey == null && clearKey == null) {
+			return;
+		}
+		lines.add( "<h2 id=\"keys\">Keys</h2>" );
+		lines.add("<table width=\"100%\" class=\"borderedTable\">");
+		lines.add( "<tr><th>Key</th><th>Value</th><th>Preprocessing Variable</th></tr>" );
+		int row = 0;
+		String cssStyle;
+		if (leftSoftKey != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Left Soft Key</td><td>" + leftSoftKey+ "</td><td>polish.key.LeftSoftKey</td></tr>" );
+		}
+		if (middleSoftKey != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Middle Soft Key</td><td>" + middleSoftKey+ "</td><td>polish.key.MiddleSoftKey</td></tr>" );
+		}
+		if (rightSoftKey != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Right Soft Key</td><td>" + rightSoftKey+ "</td><td>polish.key.RightSoftKey</td></tr>" );
+		}
+		if (clearKey != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Clear Key</td><td>" + clearKey+ "</td><td>polish.key.ClearKey</td></tr>" );
+		}
+
+		lines.add("</table>");
+		
+	}
+
+
+	private void addDeviceIssues(ArrayList lines, Device device) 
+	throws InvalidComponentException 
+	{
+		Bug[] bugs = this.bugManager.getBugs(device);
+		if (bugs == null ) {
+			return;
+		}
+		lines.add( "<h2 id=\"issues\">Known Issues</h2>" );
+		lines.add("<table width=\"100%\" class=\"borderedTable\">");
+		int row = 0;
+		String cssStyle;
+		for (int i = 0; i < bugs.length; i++) {
+			Bug bug = bugs[i];
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr><th>Issue " + (i + 1) + "</th><th>Area</th><th>Description</th></tr>" );
+			StringBuffer buffer = new StringBuffer();
+			buffer.append( "<tr class=\"" ).append( cssStyle ).append("\"><td>")
+			  .append( bug.getName() ).append("</td><td>");
+			String[] areas = bug.getAreas();
+			for (int j = 0; j < areas.length; j++) {
+				String area = areas[j];
+				buffer.append( area );
+				if (j != areas.length -1 ) {
+					buffer.append( ", ");
+				}
+			}
+			buffer.append("</td><td>");
+			buffer.append( bug.getDescription() );
+			buffer.append("</td><td></tr>");
+			String solution = bug.getSolution();
+			if (solution != null) {
+				buffer.append( "\n<tr><th colspan=\"3\">Solution</td></tr>\n" );
+				buffer.append( "<tr class=\"" ).append( cssStyle ).append("\"><td colspan=\"3\">");
+				if (solution.indexOf("\\n") != -1) {
+					String[] solutionLines = TextUtil.splitAndTrim(solution, "\\n");
+					for (int j = 0; j < solutionLines.length; j++) {
+						buffer.append( solutionLines[j] ).append("<br/>\n");						
+					}
+					buffer.append("</td><td>");
+				} else {
+					buffer.append( solution ).append("</td></tr>");
+				}
+			}
+			buffer.append( "\n<tr><th colspan=\"3\">Preprocessing Symbol</td></tr>\n" );
+			buffer.append( "<tr class=\"" ).append( cssStyle ).append("\"><td colspan=\"3\">");
+			buffer.append( "polish.Bugs.").append( bug.getName() )
+				.append( "<br/>&nbsp;</td></tr>" ); 
+			lines.add( buffer.toString() );
+		}
+
+		lines.add("</table>");		
+	}
+	
 	/**
 	 * @throws IOException
 	 * 
@@ -392,7 +738,7 @@ public class HtmlExporterTask extends Task {
 			Device device = devices[i];
 			indexGenerator.update(device, lines);
 			String cssClass = cssRowClasses[ i % 2 ];
-			addDeviceInfo(lines, device, cssClass, true);
+			addDeviceOverview(lines, device, cssClass, true);
 		}
 		endTable( lines );
 		
@@ -412,7 +758,7 @@ public class HtmlExporterTask extends Task {
 		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );
 	}
 	
-	private void addDeviceInfo( ArrayList lines, Device device, String cssClass, boolean addDeviceLink ) {
+	private void addDeviceOverview( ArrayList lines, Device device, String cssClass, boolean addDeviceLink ) {
 		lines.add("<tr class=\"" + cssClass + "\">");
 		StringBuffer buffer = new StringBuffer();
 		buffer.append( "<td>" ).append( device.getVendorName() ).append( "</td><td>" );

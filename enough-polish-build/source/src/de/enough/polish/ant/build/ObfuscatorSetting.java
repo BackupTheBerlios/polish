@@ -76,7 +76,7 @@ extends Setting
 	}
 	
 	public void setEnable( boolean enable ) {
-		System.out.println("Deprecated: The <obfuscator>.enable-attribute is now deprecated (and \"true\" by default). Please use \"if\" and \"unless\" attributes for controlling the <obfuscator>-setting.");
+		System.out.println("Deprecation-Warning: The \"enable\" attribute of the <obfuscator> is now deprecated (and \"true\" by default). Please use \"if\" and \"unless\" attributes for controlling the <obfuscator>-setting.");
 		this.enable = enable;
 	}
 	

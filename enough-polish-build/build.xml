@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	<property name="Version" value="1.2.3a" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.3a! " />
+	<property name="Version" value="1.2.3b" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.3b! " />
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
@@ -189,7 +189,7 @@
 		 excludes="**/*.html"
 		 index="true"
 	     >
-		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
+		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
 		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 		<fileset dir="setup" includes="icons/*.*" />
 	</jar>
@@ -213,7 +213,7 @@
 	<zip destfile="dist/j2mepolish-${Version}.zip">
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,build.xml" />
-		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,custom-css-attributes.xml" />
+		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml" />
 		<!--
 		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
 		-->
@@ -320,7 +320,7 @@
 	<!-- copy the installation files -->
 	<!-- copy the core files of J2ME Polish -->
 	<copy todir="tmp/" >
-		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,LICENSE.txt,Readme.txt" />
+		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
 	</copy>
 	<copy todir="tmp/import">
 		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp2.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,midp2-cldc11.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar" />
