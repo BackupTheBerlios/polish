@@ -92,6 +92,7 @@ public class BuildSetting {
 	private ArrayList javaTasks;
 	private String javacTarget;
 	private boolean compilerMode;
+	private boolean compilerModePreverify;
 	private File compilerDestDir;
 	private ResourceSetting resourceSetting;
 	private boolean alwaysUsePolishGui;
@@ -1132,6 +1133,14 @@ public class BuildSetting {
 		} else {
 			return this.compilerDestDir;
 		}
+	}
+	
+	public void setCompilerModePreverify( boolean enable ) {
+		this.compilerModePreverify = enable;
+	}
+	
+	public boolean doPreverifyInCompilerMode() {
+		return this.compilerModePreverify;
 	}
 	
 }

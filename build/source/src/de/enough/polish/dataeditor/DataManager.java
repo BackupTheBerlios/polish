@@ -342,13 +342,29 @@ public class DataManager {
 		// check if resource really exists:
 		buffer.append("\t\tif (in == null) {\n" )
 			.append("\t\t\tthrow new IllegalArgumentException(\"Unable to open resource [\" + dataUrl + \"]: resource not found: does it start with \\\"/\\\"?\");\n")
-			.append("\t\t}\n");
+			.append("\t\t}\n")
+			.append("\t\ttry {\n");
 			
 		// add the loading of the data:
 		for (int i = 0; i < myEntries.length; i++) {
 			DataEntry entry = myEntries[i];
 			entry.addCode(buffer);
-		}		
+		}
+		// add exception handling:
+		buffer.append("\t\t} catch (IOException e) {\n")
+			.append("\t\t\tthrow e;\n")
+			.append("\t\t} catch (Exception e) {\n")
+			.append("\t\t\t//#debug error\n")
+			.append("\t\t\tSystem.out.println(\"Unable to load data\" + e);\n")
+			.append("\t\t\tthrow new IOException( e.toString() );\n")
+			.append("\t\t} finally {\n")
+			.append("\t\t\ttry {\n")
+			.append("\t\t\t\tin.close();\n")
+			.append("\t\t\t} catch (Exception e) {\n")
+			.append("\t\t\t\t//#debug error\n")
+			.append("\t\t\t\tSystem.out.println(\"Unable to close input stream\" + e);\n")
+			.append("\t\t\t}\n")
+			.append("\t\t}\n");
 		// add constructor-end:
 		buffer.append("\t} // end of constructor \n\n");
 		// add inner classes:

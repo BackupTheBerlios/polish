@@ -274,6 +274,9 @@ public class PolishTask extends ConditionalTask {
 			obfuscate( device, locale );
 		}
 		if (this.buildSetting.isInCompilerMode()) {
+			if (this.buildSetting.doPreverifyInCompilerMode()) {
+				preverify( device, locale );
+			}
 			finishProject();
 			System.out.println();
 			System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
