@@ -35,7 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import proguard.*;
+import proguard.ClassPath;
+import proguard.ClassPathEntry;
+import proguard.ClassSpecification;
 import proguard.Configuration;
 import proguard.ProGuard;
 import proguard.classfile.ClassConstants;

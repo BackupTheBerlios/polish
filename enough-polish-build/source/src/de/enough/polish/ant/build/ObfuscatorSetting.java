@@ -123,4 +123,22 @@ extends Setting
 		return preserves;
 	}
 
+	/**
+	 * Checks the settings of this obfuscator.
+	 * This method distinguishes between the different ProGuard-versions.
+	 * 
+	 * @param parent the parent <build> element.
+	 */
+	public void checkSettings(BuildSetting parent) {
+		if ("ProGuard".equals( this.name )) {
+			// check if ProGuard 3.x is available:
+			try {
+				Class.forName("proguard.ClassSpecification");
+			} catch (ClassNotFoundException e) {
+				// only ProGuard 2 is available:
+				this.name = "ProGuard2";
+			}
+		}
+	}
+
 }

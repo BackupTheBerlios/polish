@@ -128,6 +128,7 @@ public class BuildSetting {
 			this.obfuscatorSettings = new ArrayList();
 		}
 		if (setting.isActive(this.project)) {
+			setting.checkSettings( this );
 			this.obfuscatorSettings.add( setting );
 			if (setting.isEnabled()) {
 				this.doObfuscate = true;
@@ -862,7 +863,7 @@ public class BuildSetting {
 	 * @param path the relative or absolute path, e.g. "resources2"
 	 * @return the file handle for the path
 	 */
-	private File getFile( String path ) {
+	protected File getFile( String path ) {
 		File file = new File( this.projectBasePath + path );
 		if (!file.exists()) {
 			file = new File( this.polishHomePath + path );
