@@ -25,9 +25,7 @@
  */
 package de.enough.polish.ant.build;
 
-import java.io.File;
-
-import de.enough.polish.ant.Setting;
+import de.enough.polish.ant.ExtensionSetting;
 
 /**
  * <p>Is used for integrating custom post compilers.</p>
@@ -39,10 +37,8 @@ import de.enough.polish.ant.Setting;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PostCompilerSetting extends Setting {
+public class PostCompilerSetting extends ExtensionSetting {
 
-	private String className;
-	private File classPath;
 
 	/**
 	 * Creates a new setting
@@ -51,21 +47,7 @@ public class PostCompilerSetting extends Setting {
 		super();
 	}
 	
-	public void setClass( String className ) {
-		this.className = className;
-	}
-	
-	public String getClassName() {
-		return this.className;
-	}
-	
-	public void setClassPath( File classPath ) {
-		this.classPath = classPath;
-	}
-	
-	public File getClassPath() {
-		return this.classPath;
-	}
+
 
 
 }

@@ -31,8 +31,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
+import de.enough.polish.Extension;
 import de.enough.polish.ant.build.PostCompilerSetting;
-import de.enough.polish.util.PopulateUtil;
 
 /**
  * <p>Is the base class for any custom post compilers.</p>
@@ -48,10 +48,7 @@ import de.enough.polish.util.PopulateUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class PostCompiler {
-
-	protected PostCompilerSetting setting;
-	protected Project project;
+public abstract class PostCompiler extends Extension {
 
 	/**
 	 * Creates a new instance of a custom post compiler.
@@ -60,16 +57,6 @@ public abstract class PostCompiler {
 		super();
 	}
 	
-	/**
-	 * Sets the basic settings of this post compiler
-	 * 
-	 * @param postCompilerSetting the ant settings
-	 * @param antProject the current ant project
-	 */
-	public void init( PostCompilerSetting postCompilerSetting, Project antProject ) {
-		this.setting = postCompilerSetting;
-		this.project = antProject;
-	}
 	
 	/**
 	 * Retrieves a new PostCompiler
@@ -83,12 +70,7 @@ public abstract class PostCompiler {
 	throws BuildException
 	{
 		try {
-			Class postCompilerClass = Class.forName( postCompilerSetting.getClassName() );
-			PostCompiler postCompiler = (PostCompiler) postCompilerClass.newInstance();
-			postCompiler.init(postCompilerSetting, antProject);
-			if (postCompilerSetting.hasParameters()) {
-				PopulateUtil.populate( postCompiler, postCompilerSetting.getParameters(), antProject.getBaseDir() );
-			}
+			PostCompiler postCompiler = (PostCompiler) Extension.getInstance( postCompilerSetting, antProject );
 			return postCompiler;
 		} catch (ClassNotFoundException e) {
 			throw new BuildException("Unable to load post compiler class [" + postCompilerSetting.getClassName() + "]: " + e.toString(), e );
@@ -144,7 +126,7 @@ public abstract class PostCompiler {
 	 * @return the settings
 	 */
 	public PostCompilerSetting getSetting() {
-		return this.setting;
+		return (PostCompilerSetting) this.extensionSetting;
 	}
 
 }

@@ -25,9 +25,7 @@
  */
 package de.enough.polish.ant.build;
 
-import java.io.File;
-
-import de.enough.polish.ant.Setting;
+import de.enough.polish.ant.ExtensionSetting;
 
 /**
  * <p>Is used for defining additional user-defined preprocessors.</p>
@@ -40,11 +38,8 @@ import de.enough.polish.ant.Setting;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PreprocessorSetting extends Setting {
+public class PreprocessorSetting extends ExtensionSetting {
 	
-	private String className;
-	private File classPath;
-
 	/**
 	 * Creates a new empty preprocessor setting.
 	 */
@@ -52,20 +47,4 @@ public class PreprocessorSetting extends Setting {
 		// initialisation is done via the setter methods
 	}
 	
-	public void setClass( String className ) {
-		this.className = className;
-	}
-	
-	public String getClassName() {
-		return this.className;
-	}
-	
-	public void setClassPath( File classPath ) {
-		this.classPath = classPath;
-	}
-	
-	public File getClassPath() {
-		return this.classPath;
-	}
-
 }

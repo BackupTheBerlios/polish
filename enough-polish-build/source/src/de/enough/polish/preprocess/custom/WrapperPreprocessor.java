@@ -31,7 +31,6 @@ import java.lang.reflect.Method;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.PreprocessorSetting;
@@ -83,9 +82,8 @@ public class WrapperPreprocessor extends CustomPreprocessor {
     	AntClassLoader antClassLoader = new AntClassLoader(
     			getClass().getClassLoader(),
     			project,  
-				new Path( project ),
+    			setting.getClassPath(),
 				true);
-    	antClassLoader.addPathElement( setting.getClassPath().getAbsolutePath() );
     	Class lineProcessorClass = antClassLoader.loadClass( setting.getClassName() ); 
     	this.lineProcessor = lineProcessorClass.newInstance();
     	// now init the line processor:

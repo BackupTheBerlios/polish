@@ -34,9 +34,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
+import de.enough.polish.Extension;
 import de.enough.polish.ant.build.PreprocessorSetting;
-import de.enough.polish.preprocess.custom.WrapperPreprocessor;
-import de.enough.polish.util.PopulateUtil;
 import de.enough.polish.util.StringList;
 
 /**
@@ -50,7 +49,7 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class CustomPreprocessor {
+public abstract class CustomPreprocessor extends Extension {
 
 	protected Preprocessor preprocessor;
 	protected BooleanEvaluator booleanEvaluator;
@@ -66,7 +65,7 @@ public abstract class CustomPreprocessor {
 	 * Creates a new line-preprocessor.
 	 * The actual initialisation work is done in the init()-method.
 	 * 
-	 * @see #init(Preprocessor)
+	 * @see #init(Preprocessor, PreprocessorSetting )
 	 */
 	public CustomPreprocessor() {
 		// no initialisation work done
@@ -78,11 +77,11 @@ public abstract class CustomPreprocessor {
 	 * parent-preprocessor.
 	 * 
 	 * @param processor the parent-preprocessor for this custom preprocessor
-	 * @param setting
+	 * @param preprocessorSetting the settings of this preprocessor
 	 */
-	public void init( Preprocessor processor, PreprocessorSetting setting ) {
+	public void init( Preprocessor processor, PreprocessorSetting preprocessorSetting ) {
 		this.preprocessor = processor;
-		this.setting = setting;
+		this.setting = preprocessorSetting;
 		this.booleanEvaluator = processor.getBooleanEvaluator();
 	}
 	
@@ -197,17 +196,9 @@ public abstract class CustomPreprocessor {
 	throws BuildException
 	{
 		try {
-			CustomPreprocessor lineProcessor = null;
-			if (setting.getClassPath() != null) {
-				lineProcessor = new WrapperPreprocessor( setting, preprocessor, project );
-			} else {
-				lineProcessor = (CustomPreprocessor) Class.forName( setting.getClassName() ).newInstance();
-				if (setting.hasParameters()) {
-					PopulateUtil.populate( lineProcessor, setting.getParameters(), project.getBaseDir() );
-				}
-			}
-			lineProcessor.init( preprocessor, setting );
-			return lineProcessor;
+			CustomPreprocessor customProcessor = (CustomPreprocessor) Extension.getInstance( setting, project );
+			customProcessor.init( preprocessor, setting );
+			return customProcessor;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to load preprocessor [" + setting.getClassName() + "]: " + e.toString() );
