@@ -3,13 +3,30 @@
 	<%index %>
 <%endif %>
 
+<p class="newsdate">2005-01-20:</p>
+<h2 id="1.2.3c">J2ME Polish 1.2.3c</h2>
+<p>
+	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.3c.html">J2ME Polish 1.2.3c</a> 
+	fixes the &quot;useDefaultPackage&quot; - option of the &lt;obfuscator&gt; - element. 
+</p>
+
+<%ifdef news.showAll %>
+<p class="newsdate">2005-01-20:</p>
+<h2 id="1.2.3b">J2ME Polish 1.2.3b</h2>
+<p>
+	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.3b.html">J2ME Polish 1.2.3b</a> 
+	fixes some GUI-issues and brings the 
+	ability to move all classes to the default package. 
+</p>
+
 <p class="newsdate">2005-01-13:</p>
 <h2 id="1.2.3a">J2ME Polish 1.2.3a</h2>
 <p>
 	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.3a.html">J2ME Polish 1.2.3a</a> 
-	fixes some issues, contains new design possibilities and brings the 
-	ability to move all classes to the default package. 
+	fixes some issues, contains new design possibilities and introduces the 
+	&quot;useDefaultPackage&quot;-option for all obfuscators. 
 </p>
+<%endif %>
 
 <p class="newsdate">2004-12-20:</p>
 <h2 id="1.2.3">J2ME Polish 1.2.3</h2>

@@ -1,16 +1,76 @@
 <%define inDownloadSection %>
 <%set basedir = ../ %>
-<%set title = J2ME Polish: Download J2ME Polish 1.2.3a %>
+<%set title = J2ME Polish: Download J2ME Polish 1.2.3c %>
 <%include start.txt %>
 
 	<div id="content">
-	<h1>J2ME Polish 1.2.3 a</h1>
+	<h1>J2ME Polish 1.2.3c</h1>
 	<%index %>
-	<h2 id="improvements123">Improvements of J2ME Polish 1.2.3a</h2>
+	<h2 id="improvements123c">Improvements of J2ME Polish 1.2.3c</h2>
+	<p>
+	J2ME Polish 1.2.3c just fixes the broken &quot;useDefaultPackage&quot;-option of
+	the &lt;obfuscator&gt;-element. In case this option makes trouble in your project,
+	please make sure that you only use import-statements rather than using classes
+	fully qualified.</p>
+	<p>This example breaks (don't do it like this):
+	<pre>
+	public class MyClass extends com.company.package.MyOtherClass {
+	</pre></p>
+	<p>
+	This example works fine (do it like this):	
+	<pre>
+	import com.company.package.MyOtherClass;
+	
+	public class MyClass extends MyOtherClass {
+	</pre>
+	</p>
+	<h2 id="improvements123b">Improvements of J2ME Polish 1.2.3b</h2>
+	<p>
+	J2ME Polish 1.2.3b is a small update with following bugfixes and improvements:
+	</p>
+	<ul>
+	<li><b>sample build.xml</b>: 
+		The &quot;useDefaultPackage&quot;-attribute of the &lt;obfuscator&gt;-element
+		was spelled wrong in the sample application of the 1.2.3a release.
+		<hr />
+	</li>
+	<li><b>Display.setCurrentItem( Item )</b>: 
+		When Display.setCurrentItem( Item ) was called when the corresponding
+		screen was never shown before, the focused item did not always 
+		get the correct CSS-style.
+		<hr />
+	</li>
+	<li><b>TextField</b>: 
+		The PASSWORD TextField did not work properly when a default
+		value had been given and the direct input mode was used.
+		<hr />
+	</li>
+	<li><b>Motorola/Non-Fullscreen-Mode</b>: 
+		When the GUI was used for Motorola devices and the fullscreen
+		mode was deactivated, a compile error occurred.
+		<hr />
+	</li>
+	<li><b>Sony-Ericsson P910/Fullscreen-Mode</b>: 
+		The Sony-Ericsson P910 does crash, when Canvas.setFullScreenMode() 
+		is called somewhere else than in the paint()-method. This bug
+		is now circumvented by the J2ME Polish GUI.
+		<hr />
+	</li>
+	<li><b>Device Database</b>: 
+		The <a href="../devices-overview.html">device database</a> now offers a user friendly view of the most
+		important capabilities and known issues.
+		<hr />
+	</li>
+	<li><b>Thanks</b>: for this release go to
+		Philipp Stolze, Salvatore Pellegriti, Milosz Weckowski and Wuyad.
+		<hr />
+	</li>
+	</ul>
+	<h2 id="improvements123a">Improvements of J2ME Polish 1.2.3a</h2>
 	<p>
 	J2ME Polish 1.2.3a is a small update with following bugfixes and improvements:
 	</p>
-	<h3 id="bugfixes">Bug Fixes</h3>
+	<h3 id="bugfixes123a">Bug Fixes</h3>
 	<ul>
 	<li><b>Automatic Stacktrace Resolving</b>: 
 		Under Windows the automatic resolver of stacktraces got stuck when the 
@@ -31,7 +91,7 @@
 		Form.set() and Form.add() did not trigger a repaint.
 	</li>
 	</ul>
-	<h3 id="improvements">Improvements</h3>
+	<h3 id="improvements123a">Improvements</h3>
 	<ul>
 	<!--
 	<li><b>Menu Bar</b>: 
@@ -295,15 +355,17 @@ focused {
 
 <h2 id="download">Download</h2>
 	<p>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3a.jar">I accept the above rules (download the full installer: 7.571.292 bytes).</a><br/>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3a.zip">I accept the above rules (download only the update).</a><br/>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3c.jar">I accept the above rules 
+		(download the full installer: 7,679,445 bytes).</a><br/>
+		<a href="j2mepolish-1.2.3c-update.zip">I accept the above rules 
+		(download only the update: 824,012 bytes).</a><br/>
 	   	<a href="../index.html">I do NOT accept the above rules.</a><br />
-		Start the installation by calling <code>java -jar j2mepolish-1.2.3a.jar</code>
+		Start the installation by calling <code>java -jar j2mepolish-1.2.3c.jar</code>
 		from the commandline or by double-clicking the file.
 	</p>
 
 	<h2 id="installationproblems">Trouble Shooting</h2>
-	<p>The size of the full installer is 7.571.292 bytes.<br/>
+	<p>The size of the full installer is 7,679,445 bytes.<br/>
 	If you have installation problems, please make sure that you have downloaded
 	the complete package. You can start the installation either by double-clicking
 	the file or by calling &quot;java -jar j2mepolish-[version].jar&quot; from the commandline.
@@ -313,5 +375,8 @@ focused {
 	When you are having installation problems under Windows XP, please use the
 	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_06 or 1.5.x)</a>. 
 	</p>	
-
+	<p>
+	If you have trouble building your application, consider to set the &quot;JAVA_HOME&quot;
+	environment variable. Make sure to check out the <a href="../docs/install.html">installation guide</a>.
+	</p>	
 <%include end.txt %>
