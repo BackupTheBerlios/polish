@@ -177,6 +177,8 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public void add( int index, Item item ) {
+		//#debug
+		System.out.println("Container: adding item " + index );
 		item.parent = this;
 		this.itemsList.add( index, item );
 		if (this.isInitialised) {
@@ -194,6 +196,8 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item set( int index, Item item ) {
+		//#debug
+		System.out.println("Container: setting item " + index );
 		item.parent = this;
 		if (this.isInitialised) {
 			this.isInitialised = false;
@@ -221,12 +225,24 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item remove( int index ) {
+		//#debug
+		System.out.println("Container: removing item " + index );
 		Item removedItem = (Item) this.itemsList.remove(index);
+		int removedItemHeight = removedItem.itemHeight;
+		// adjust y-positions of following items:
+		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
+			if (item.yTopPos != item.yBottomPos) {
+				item.yTopPos -= removedItemHeight;
+				item.yBottomPos -= removedItemHeight;
+				item.internalX = -9999;
+			}
+		}
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
 			// focus the first possible item:
 			boolean focusSet = false;
-			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				if (item.appearanceMode != PLAIN) {
@@ -279,6 +295,7 @@ public class Container extends Item {
 		this.yOffset = 0;
 		if (this.isInitialised) {
 			this.isInitialised = false;
+			//this.yBottom = this.yTop = 0;
 			repaint();
 		}
 	}
@@ -343,6 +360,8 @@ public class Container extends Item {
 		}
 		
 		if (index == this.focusedIndex && item.isFocused) {
+			//#debug
+			System.out.println("Container: ignoring focusing of item " + index );
 			// ignore the focusing of the same element:
 			return;
 		}
@@ -1020,6 +1039,7 @@ public class Container extends Item {
 		if ( this.itemsList.size() == 0) {
 			return super.focus( this.focusedStyle );
 		} else {
+			this.isFocused = true;
 			if (this.focusedIndex == -1) {
 				// focus the first interactive item...
 				Item[] myItems = getItems();
@@ -1065,6 +1085,7 @@ public class Container extends Item {
 		if ( this.itemsList.size() == 0) {
 			super.defocus( originalStyle );
 		} else {
+			this.isFocused = false;
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			this.isFocused = false;

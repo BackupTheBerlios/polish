@@ -342,6 +342,10 @@ public class ChoiceItem extends IconItem
 		} else {
 			this.boxImage = this.plain;
 		}
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 	
 	/**

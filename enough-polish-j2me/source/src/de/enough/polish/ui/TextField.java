@@ -1859,9 +1859,15 @@ implements CommandListener
 					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric) {
 					//#endif
 						this.inputMode++;
-						if (this.inputMode > MODE_NUMBERS) {
-							this.inputMode = MODE_LOWERCASE;
-						}
+						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+							if (this.inputMode > MODE_UPPERCASE) {
+								this.inputMode = MODE_LOWERCASE;
+							}
+						//#else
+							if (this.inputMode > MODE_NUMBERS) {
+								this.inputMode = MODE_LOWERCASE;
+							}
+						//#endif
 						//#if polish.TextField.showInputInfo != false
 							updateInfo();
 						//#endif
@@ -2180,7 +2186,7 @@ implements CommandListener
 	 * 
 	 * @return true when a character could be deleted.
 	 */
-	private boolean deleteCurrentChar() {
+	private synchronized boolean deleteCurrentChar() {
 		if (this.caretChar != this.editingCaretChar) {
 			this.caretChar = this.editingCaretChar;
 			//#ifdef polish.css.font-bitmap

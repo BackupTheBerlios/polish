@@ -301,7 +301,17 @@ public class ImageItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.image != null) {
-			g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
+			if (this.isLayoutExpand) {
+				if (this.isLayoutCenter) {
+					g.drawImage( this.image, x + (rightBorder - x)/2 , y, Graphics.TOP | Graphics.HCENTER );
+				} else if (this.isLayoutRight) {
+					g.drawImage( this.image, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+				} else {
+					g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
+				}
+			} else {
+				g.drawImage( this.image, x, y, Graphics.TOP | Graphics.LEFT );
+			}
 		} else if (this.altText != null) {
 			g.setColor( this.textColor );
 			g.setFont( this.font );

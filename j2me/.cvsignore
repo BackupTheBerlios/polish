@@ -5,3 +5,4 @@ target
 maven.log
 velocity.log
 bin
+j2mepolish-src
