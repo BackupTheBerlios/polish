@@ -518,7 +518,7 @@ public class HtmlExporterTask extends Task {
 			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
 			row++;
 			String[] formats = TextUtil.splitAndTrim(videoFormat.toLowerCase(), ',');
-			String rowText = "<tr class=\"" + cssStyle + "\"><td>Supported Video Formats</td><td>" + soundFormat + "</td><td>polish.VideoFormat, ";
+			String rowText = "<tr class=\"" + cssStyle + "\"><td>Supported Video Formats</td><td>" + videoFormat + "</td><td>polish.VideoFormat, ";
 			for (int i = 0; i < formats.length; i++) {
 				String format = formats[i];
 				rowText += "polish.video." + format;
@@ -537,7 +537,8 @@ public class HtmlExporterTask extends Task {
 		String middleSoftKey = device.getCapability("polish.key.MiddleSoftKey");
 		String rightSoftKey = device.getCapability("polish.key.RightSoftKey");
 		String clearKey = device.getCapability("polish.key.ClearKey");
-		if (leftSoftKey == null && middleSoftKey == null && rightSoftKey == null && clearKey == null) {
+		String changeInputModeKey = device.getCapability("polish.key.ChangeInputModeKey");
+		if (leftSoftKey == null && middleSoftKey == null && rightSoftKey == null && clearKey == null && changeInputModeKey == null) {
 			return;
 		}
 		lines.add( "<h2 id=\"keys\">Keys</h2>" );
@@ -565,7 +566,12 @@ public class HtmlExporterTask extends Task {
 			row++;
 			lines.add( "<tr class=\"" + cssStyle + "\"><td>Clear Key</td><td>" + clearKey+ "</td><td>polish.key.ClearKey</td></tr>" );
 		}
-
+		if (changeInputModeKey != null) {
+			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
+			row++;
+			lines.add( "<tr class=\"" + cssStyle + "\"><td>Change Text-Input-Mode Key</td><td>" + changeInputModeKey+ "</td><td>polish.key.ChangeInputModeKey</td></tr>" );
+		}
+		
 		lines.add("</table>");
 		
 	}

@@ -106,7 +106,7 @@ import de.enough.polish.util.TextUtil;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.3b";
+	private static final String VERSION = "1.2.3c";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
