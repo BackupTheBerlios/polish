@@ -207,9 +207,7 @@ implements ImageConsumer
 					try {
 						Image img = StyleSheet.getImage(imageName, this, true);
 						if (img != null) {
-							this.isInitialised = false;
 							this.image = img;
-							repaint();
 						}
 					} catch (IOException e) {
 						//#debug error

@@ -28,7 +28,7 @@ package de.enough.polish.ui.backgrounds;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-//#ifdef polish.api.nokia-ui
+//#if polish.api.nokia-ui && !polish.midp2
 	import com.nokia.mid.ui.DirectGraphics;
 	import com.nokia.mid.ui.DirectUtils;
 //#endif
