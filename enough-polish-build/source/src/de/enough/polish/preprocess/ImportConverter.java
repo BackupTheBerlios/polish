@@ -25,12 +25,15 @@
  */
 package de.enough.polish.preprocess;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import de.enough.polish.Device;
 import de.enough.polish.util.StringList;
-
-import java.util.*;
-import java.util.HashMap;
-import java.util.Set;
+import de.enough.polish.util.TextFileManager;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Converts the import-statements to allow the parallel usage of the polish-gui and the standard java-gui.</p>
@@ -52,6 +55,8 @@ public final class ImportConverter {
 	private final HashMap polishToSiemensColorGameApi;
 	private final String completeMidp1;
 	private final String completeMidp2;
+	private final String defaultPackageCompleteMidp1;
+	private final String defaultPackageCompleteMidp2;
 	
 	/**
 	 * Creates a new import converter.
@@ -106,8 +111,8 @@ public final class ImportConverter {
 		// when javax.microedition.lcdui.* is imported, there are still
 		// some base classes which cannot be implemented by the polish framework,
 		// these have to be inserted as well:
-		this.completeMidp1 = 
-				"import javax.microedition.lcdui.CommandListener; " +
+		this.defaultPackageCompleteMidp1 = 
+				"javax.microedition.lcdui.CommandListener; " +
 				"import javax.microedition.lcdui.Alert; " +
 				"import javax.microedition.lcdui.AlertType; " + 
 				"import javax.microedition.lcdui.Canvas; " + 
@@ -116,12 +121,13 @@ public final class ImportConverter {
 				"import javax.microedition.lcdui.Displayable; " + 
 				"import javax.microedition.lcdui.Font; " +
 				"import javax.microedition.lcdui.Graphics; " +
-				"import javax.microedition.lcdui.Image; " +
-				"import de.enough.polish.ui.*;";
+				"import javax.microedition.lcdui.Image";
+		this.completeMidp1 = this.defaultPackageCompleteMidp1 +
+				"; import de.enough.polish.ui.*";
 		
 
-		this.completeMidp2 = 
-				"import javax.microedition.lcdui.CommandListener; " +
+		this.defaultPackageCompleteMidp2 = 
+				"javax.microedition.lcdui.CommandListener; " +
 				"import javax.microedition.lcdui.Alert; " +
 				"import javax.microedition.lcdui.AlertType; " +
 				"import javax.microedition.lcdui.Canvas; " + 
@@ -130,8 +136,9 @@ public final class ImportConverter {
 				"import javax.microedition.lcdui.Displayable; " +
 				"import javax.microedition.lcdui.Font; " +
 				"import javax.microedition.lcdui.Graphics; " +
-				"import javax.microedition.lcdui.Image; " +
-				"import de.enough.polish.ui.*;";
+				"import javax.microedition.lcdui.Image";
+		this.completeMidp2 = this.defaultPackageCompleteMidp2 +
+				"; import de.enough.polish.ui.*;";
 		
 		// init import statements to translate from the polish- to the J2ME-GUI:
 		HashMap toJavax = new HashMap();
@@ -199,39 +206,80 @@ public final class ImportConverter {
 			}
 		}
 		translations = addDynamicTranslations( translations, usePolishGui, isMidp1, device, preprocessor );
+		
+		boolean useDefaultPackage = preprocessor.useDefaultPackage();
+		//System.out.println("ImportConverter: useDefaultPackage=" + useDefaultPackage );
+		TextFileManager textFileManager = preprocessor.getTextFileManager();
+		
 		// go through the code and search for import statements:
 		boolean changed = false;
 		while (sourceCode.next()) {
 			String line = sourceCode.getCurrent().trim();
 			if (line.startsWith("import ")) {
 				String importContent = line.substring( 7, line.length() -1 ).trim();
+				String replacement = null;
 				if ( usePolishGui ) {
+					/*
 					if (!changed) {
 						sourceCode.setCurrent( line + " import de.enough.polish.ui.StyleSheet;");
 						changed = true;
 					}
+					*/
 					// translate import statements from javax.microedition.lcdui to polish:
-					String replacement = (String) translations.get(importContent);
-					if ( replacement != null) {
-						changed = true;
-						sourceCode.setCurrent("import " + replacement + ";");
-					} else if ("javax.microedition.lcdui.*".equals( importContent) ) {
+					replacement = (String) translations.get(importContent);
+					if ( replacement == null 
+							&& "javax.microedition.lcdui.*".equals( importContent) ) 
+					{
 						// check for the javax.microedition.lcdui.* import:
-						changed = true;
+						// changed = true;
 						// insert replacement:
-						if (isMidp1) {
-							sourceCode.setCurrent( this.completeMidp1 );
+						if (useDefaultPackage) {
+							if (isMidp1) {
+								//sourceCode.setCurrent( this.completeMidp1 );
+								replacement = this.defaultPackageCompleteMidp1;
+							} else {
+								//sourceCode.setCurrent( this.completeMidp2 );
+								replacement = this.defaultPackageCompleteMidp2;
+							}
 						} else {
-							sourceCode.setCurrent( this.completeMidp2 );
+							if (isMidp1) {
+								//sourceCode.setCurrent( this.completeMidp1 );
+								replacement = this.completeMidp1;
+							} else {
+								//sourceCode.setCurrent( this.completeMidp2 );
+								replacement = this.completeMidp2;
+							}
 						}
 					}
 				} else {
 					// translate import statements from polish to javax.microedition.lcdui:
-					String replacement = (String) translations.get(importContent);
-					if ( replacement != null) {
+					replacement = (String) translations.get(importContent);
+					/*if ( replacement != null) {
 						changed = true;
 						sourceCode.setCurrent("import " + replacement + ";");
 					}
+					*/
+				}
+				if ( useDefaultPackage ) {
+					if ( replacement != null ) {
+						if ( textFileManager.containsImport(replacement) ) {
+							sourceCode.setCurrent( "//" + line);
+						} else {
+							sourceCode.setCurrent("import " + replacement + ";");
+						}
+						changed = true;
+					} else {
+						if ( textFileManager.containsImport(importContent) ) {
+							sourceCode.setCurrent( "//" + line);
+							changed = true;
+						}						
+					}
+				} else if ( replacement != null ) {
+					changed = true;
+					sourceCode.setCurrent("import " + replacement + ";");
+				} else if ( usePolishGui && !changed ) {
+					changed = true;
+					sourceCode.setCurrent( line + " import de.enough.polish.ui.StyleSheet;");
 				}
 				
 			} else if (line.startsWith("public class ")) {
@@ -289,6 +337,121 @@ public final class ImportConverter {
 			}			
 		}
 		return newTranslations;
+	}
+
+	/**
+	 * Removes any usage of packages (as long as these exist within the source code).
+	 * 
+	 * @param list the source code
+	 * @param textFileManager the manager of source code files
+	 */
+	public void removeDirectPackages(StringList list, TextFileManager textFileManager) {
+		//System.out.println("removing direct packages....");
+		String[] lines = list.getArray();
+		/*
+		for (int i = 0; i < lines.length; i++) {
+			System.out.println( lines[i] );
+		}
+		System.out.println("=========================");
+		*/
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i];
+			line = TextUtil.replace( line, "de.enough.polish.ui.borders.", "" );
+			line = TextUtil.replace( line, "de.enough.polish.ui.backgrounds.", "" );
+			line = TextUtil.replace( line, "de.enough.polish.ui.containerviews.", "" );
+			lines[i] = line;
+			String[] packageNames = getPackages( line, textFileManager );
+			if (packageNames != null) {
+				for (int j = 0; j < packageNames.length; j++) {
+					String packageName = packageNames[j] + ".";
+					for (int k = i; k < lines.length; k++) {
+						line = lines[k];
+						lines[k] = TextUtil.replace( line, packageName, "" );
+					}
+				}
+			}			
+		}
+		/*
+		System.out.println("=========================");
+		System.out.println("=========================");
+		*/
+		list.setArray( lines );
+	}
+
+	/**
+	 * Retrieves all words with dots in the given line.
+	 * 
+	 * @param line the input
+	 * @param textFileManager the manager of source code files
+	 * @return an array with words with dots
+	 */
+	private String[] getPackages(String line, TextFileManager textFileManager) {
+		int dotIndex = line.indexOf('.');
+		if (dotIndex == -1) {
+			return null;
+		}
+		ArrayList packageNames = new ArrayList();
+		char[] chars = line.toCharArray();
+		while (dotIndex != -1 ) {
+			int startIndex = dotIndex - 1;
+			while ( startIndex > 0
+					&& (Character.isJavaIdentifierPart( chars[startIndex ] )
+						|| chars[startIndex] == '.' ))
+			{
+				startIndex--;
+			}
+			startIndex++;
+			int endIndex = dotIndex + 1;
+			int lastDotIndex = -1;
+			//System.out.println("tail:");
+			while ( endIndex < chars.length - 1 
+				&& (Character.isJavaIdentifierPart( chars[endIndex ] )
+						|| chars[endIndex] == '.' ) )
+			{
+				if ( chars[ endIndex ] == '.' ) {
+					lastDotIndex = endIndex;
+				}
+				//System.out.print( chars[endIndex ] );
+				endIndex++;
+			}
+			int length = lastDotIndex - startIndex;
+			if (lastDotIndex == -1 || length < 2) {
+				dotIndex = line.indexOf('.', dotIndex + 1);
+				continue;
+			}
+			//System.out.println( "\ncomplete line=[" + line + "] - length=" + line.length() );
+			String packageName = new String( chars, startIndex, length );
+			//System.out.println("testing package [" + packageName + "]");
+			boolean isPackage = textFileManager.containsPackage(packageName); 
+			if ( !isPackage ) {
+				// this could be a method or field as well:
+				lastDotIndex = packageName.lastIndexOf('.');
+				if ( lastDotIndex != -1 ) {
+					packageName = packageName.substring(0, lastDotIndex);
+					//System.out.println("testing package [" + packageName + "]");
+					isPackage = textFileManager.containsPackage( packageName );
+					/*
+					if ( !isPackage ) {
+						// this could be a method or field as well:
+						lastDotIndex = packageName.lastIndexOf('.');
+						if ( lastDotIndex != -1 ) {
+							packageName = packageName.substring(0, lastDotIndex);
+							//System.out.println("testing package [" + packageName + "]");
+							isPackage = textFileManager.containsPackage( packageName );
+						}
+					}
+					*/
+				}
+			}
+			if (isPackage) {
+				//System.out.println("adding package [" + packageName + "]");
+				packageNames.add( packageName );
+				dotIndex = line.indexOf('.', endIndex + 1);
+			} else {
+				dotIndex = line.indexOf('.', dotIndex + 1);
+			}
+		}
+		return (String[]) packageNames.toArray( new String[ packageNames.size() ] );
 	}
 	
 	

@@ -128,6 +128,11 @@ public class PolishTask extends ConditionalTask {
 
 	private StringList localeCode;
 	private Packager packager;
+	
+	// move all classes into the default package
+	// during the preprocessing phase:
+	private boolean useDefaultPackage;
+	
 
 	
 	/**
@@ -333,21 +338,23 @@ public class PolishTask extends ConditionalTask {
 		}
 		// now check if the midlets do exist:
 		File[] sources = this.buildSetting.getSourceDirs();
-		for (int i = 0; i < midlets.length; i++) {
-			Midlet midlet = midlets[i];
-			String fileName = TextUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
-			boolean midletFound = false;
-			for (int j = 0; j < sources.length; j++) {
-				File sourceDir = sources[j];
-				String sourceDirPath = sourceDir.getAbsolutePath();
-				File midletFile = new File( sourceDirPath + File.separator + fileName );
-				if (midletFile.exists()) {
-					midletFound = true;
-					break;
+		if (!this.buildSetting.useDefaultPackage()) {
+			for (int i = 0; i < midlets.length; i++) {
+				Midlet midlet = midlets[i];
+				String fileName = TextUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
+				boolean midletFound = false;
+				for (int j = 0; j < sources.length; j++) {
+					File sourceDir = sources[j];
+					String sourceDirPath = sourceDir.getAbsolutePath();
+					File midletFile = new File( sourceDirPath + File.separator + fileName );
+					if (midletFile.exists()) {
+						midletFound = true;
+						break;
+					}
 				}
-			}
-			if (!midletFound) {
-				throw new BuildException("The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.");
+				if (!midletFound) {
+					throw new BuildException("The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.");
+				}
 			}
 		}
 		// check if the ant-property WTK_HOME has been set:
@@ -483,6 +490,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// create preprocessor:
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
+		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		// init line processors:
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
 		CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
@@ -502,12 +510,14 @@ public class PolishTask extends ConditionalTask {
 		File[] dirs = this.buildSetting.getSourceDirs();
 		this.sourceDirs = new File[ dirs.length];
 		this.sourceFiles = new TextFile[ dirs.length][];
+		TextFileManager textFileManager = new TextFileManager();
+		this.preprocessor.setTextFileManager(textFileManager);
 		if (this.buildSetting.getPolishDir() != null) {
 			// there is an explicit J2ME Polish directory:
 			this.polishSourceDir = this.buildSetting.getPolishDir();
 			dirScanner.setBasedir(this.polishSourceDir);
 			dirScanner.scan();
-			this.polishSourceFiles = getTextFiles( this.polishSourceDir,  dirScanner.getIncludedFiles() );
+			this.polishSourceFiles = getTextFiles( this.polishSourceDir,  dirScanner.getIncludedFiles(), textFileManager );
 		} else {
 			// the J2ME Polish sources need to be loaded from the jar-file:
 			long lastModificationTime = 0;
@@ -524,7 +534,7 @@ public class PolishTask extends ConditionalTask {
 			this.polishSourceDir = new File("src");
 			try {
 				String[] fileNames = this.resourceUtil.readTextFile( ".", "build/j2mepolish.index.txt");
-				this.polishSourceFiles = getTextFiles( "src", fileNames, lastModificationTime );
+				this.polishSourceFiles = getTextFiles( "src", fileNames, lastModificationTime, textFileManager );
 			} catch (IOException e) {
 				throw new BuildException("Unable to load the J2ME source files from enough-j2mepolish-build.jar: " + e.getMessage(), e );
 			}
@@ -539,7 +549,7 @@ public class PolishTask extends ConditionalTask {
 			this.sourceDirs[i] = dir; 
 			dirScanner.setBasedir(dir);
 			dirScanner.scan();
-			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles() );
+			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles(), textFileManager );
 		}
 		if (this.buildSetting.usePolishGui() && this.styleSheetSourceFile == null) {
 			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the [polishDir] attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
@@ -654,6 +664,7 @@ public class PolishTask extends ConditionalTask {
 			this.doObfuscate = (obfuscatorsList.size() > 0);
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
+				this.useDefaultPackage = this.buildSetting.useDefaultPackage();
 				String[] midletClasses = this.buildSetting.getMidletClassNames();
 				if (keepClasses == null) {
 					keepClasses = new String[0];
@@ -748,7 +759,7 @@ public class PolishTask extends ConditionalTask {
 				TextFile[] files = this.sourceFiles[i];
 				for (int j = 0; j < files.length; j++) {
 					TextFile file = files[j];
-					classPathTranslationsMap.put( file.getFileName(), file.getFile().getAbsolutePath() );
+					classPathTranslationsMap.put( file.getFilePath(), file.getFile().getAbsolutePath() );
 				}
 			}
 			this.polishLogger = new PolishLogger(logger, classPathTranslationsMap );
@@ -764,15 +775,17 @@ public class PolishTask extends ConditionalTask {
 	 * 
 	 * @param baseDir The base directory.
 	 * @param fileNames The full names of the files.
+	 * @param textFileManager the manager for textfiles
 	 * @return an array of text-files
 	 */
-	private TextFile[] getTextFiles(File baseDir, String[] fileNames) 
+	private TextFile[] getTextFiles(File baseDir, String[] fileNames, TextFileManager textFileManager ) 
 	{
 		TextFile[] files = new TextFile[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
 			try {
 				TextFile file = new TextFile( baseDir.getAbsolutePath(), fileName );
+				textFileManager.addTextFile(file);
 				if (fileName.startsWith("de")) {
 					if (fileName.endsWith("StyleSheet.java")) {
 						if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
@@ -800,14 +813,16 @@ public class PolishTask extends ConditionalTask {
 	 * @param baseDir The base directory.
 	 * @param fileNames The full names of the files.
 	 * @param lastModificationTime the time of the last modification of the files
+	 * @param textFileManager the manager for textfiles
 	 * @return an array of text-files
 	 */
-	private TextFile[] getTextFiles(String baseDir, String[] fileNames, long lastModificationTime) 
+	private TextFile[] getTextFiles(String baseDir, String[] fileNames, long lastModificationTime, TextFileManager textFileManager) 
 	{
 		TextFile[] files = new TextFile[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
 			TextFile file = new TextFile( baseDir, fileName, lastModificationTime, this.resourceUtil );
+			textFileManager.addTextFile(file);
 			if (fileName.startsWith("de")) {
 				if (fileName.endsWith("StyleSheet.java")) {
 					if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
@@ -925,6 +940,15 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+			// adjust polish.classes.ImageLoader in case the default package is used:
+			if (this.useDefaultPackage) {
+				String imageLoaderClass = this.preprocessor.getVariable("polish.classes.ImageLoader");
+				int classStartIndex = imageLoaderClass.lastIndexOf('.');
+				if (classStartIndex != -1) {
+					imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
+					this.preprocessor.addVariable("polish.classes.ImageLoader", imageLoaderClass );
+				}
+			}
 			// get the last modfication time of the build.xml file
 			// so that it can be checked whether there are any changes at all:
 			File buildXml = new File( this.project.getBaseDir().getAbsolutePath() 
@@ -969,9 +993,11 @@ public class PolishTask extends ConditionalTask {
 			// now all files have been preprocessed.
 			// Now the StyleSheet.java file needs to be written,
 			// but only when the polish GUI should be used:
+			File baseDirectory = new File( targetDir );
 			if (usePolishGui) {
 				// check if the CSS declarations have changed since the last run:
-				File targetFile = new File( targetDir + File.separatorChar + this.styleSheetSourceFile.getFileName() );				
+				File targetFile =  this.styleSheetSourceFile.getTargetFile( baseDirectory, this.useDefaultPackage );
+					//new File( targetDir + File.separatorChar + this.styleSheetSourceFile.getFilePath() );				
 				boolean cssIsNew = (!targetFile.exists())
 					|| ( lastCssModification > targetFile.lastModified() )
 					|| ( buildXmlLastModified > targetFile.lastModified() );
@@ -991,7 +1017,14 @@ public class PolishTask extends ConditionalTask {
 							this.preprocessor.getStyleSheet(),
 							device,
 							this.preprocessor ); 				
-					this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
+					//this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
+					if (this.useDefaultPackage) {
+						this.styleSheetCode.reset();
+						this.importConverter.processImports(true, device.isMidp1(), this.styleSheetCode, device, this.preprocessor);
+						this.styleSheetCode.reset();
+						this.importConverter.removeDirectPackages( this.styleSheetCode, this.preprocessor.getTextFileManager() );
+					}
+					FileUtil.writeTextFile(targetFile, this.styleSheetCode.getArray());
 					this.numberOfChangedFiles++;
 				//} else {
 				//	System.out.println("CSSS is not new - last CSS modification == " + lastCssModification + " <= StyleSheet.java.lastModified() == " + targetFile.lastModified() );
@@ -1000,7 +1033,8 @@ public class PolishTask extends ConditionalTask {
 			}
 			// now check if the de.enough.polish.util.Locale.java needs to be rewritten:
 			if (locale != null) {
-				File targetFile = new File( targetDir + File.separatorChar + this.localeSourceFile.getFileName() );				
+				File targetFile =  this.localeSourceFile.getTargetFile( baseDirectory, this.useDefaultPackage );
+				//File targetFile = new File( targetDir + File.separatorChar + this.localeSourceFile.getFilePath() );				
 				boolean localizationIsNew = (!targetFile.exists())
 					|| ( lastLocaleModification > targetFile.lastModified() )
 					|| ( buildXmlLastModified > targetFile.lastModified() );
@@ -1016,7 +1050,12 @@ public class PolishTask extends ConditionalTask {
 					// now insert the localozation data for this device
 					// into the Locale.java source-code:
 					translationManager.processLocaleCode( this.localeCode );
-					this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
+					//this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
+					if (this.useDefaultPackage) {
+						this.localeCode.reset();
+						this.importConverter.processImports(true, device.isMidp1(), this.localeCode, device, this.preprocessor);
+					}
+					FileUtil.writeTextFile(targetFile, this.localeCode.getArray());
 					this.numberOfChangedFiles++;
 				}
 			}
@@ -1044,14 +1083,14 @@ public class PolishTask extends ConditionalTask {
 	throws IOException
 	{
 		this.preprocessor.addVariable( "polish.source", sourceDir.getAbsolutePath() );
+		File baseDirectory = new File( targetDir );
 		//System.out.println("current source dir: " + sourceDir );
 		// preprocess each file in that source-dir:
 		for (int j = 0; j < files.length; j++) {
 			TextFile file = files[j];
 			// check if file needs to be preprocessed at all:
 			long sourceLastModified = file.lastModified();
-			File targetFile = new File( targetDir
-					+ File.separatorChar + file.getFileName() );
+			File targetFile = file.getTargetFile(baseDirectory, this.useDefaultPackage );
 			long targetLastModified = targetFile.lastModified();
 			// preprocess this file, but only when there can
 			// be changes at all - this could be when
@@ -1063,14 +1102,14 @@ public class PolishTask extends ConditionalTask {
 			boolean saveInAnyCase =  ( !targetFile.exists() )
 					 || ( sourceLastModified > targetLastModified )
 					 || ( buildXmlLastModified > targetLastModified )
-					 || ( this.preprocessor.isInPreprocessQueue( file.getFileName() ) ); 
+					 || ( this.preprocessor.isInPreprocessQueue( file.getFilePath() ) ); 
 			boolean preprocess = ( saveInAnyCase )
 					 || ( lastCssModification > targetLastModified);
 			if (   preprocess ) {
 				// preprocess this file:
 				StringList sourceCode = new StringList( file.getContent() );
 				// generate the class-name from the file-name:
-				String className = file.getFileName();
+				String className = file.getFilePath();
 				if (className.endsWith(".java")) {
 					className = className.substring(0, className.length() - 5 );
 					// in a jarfile the files always have a '/' as a path-seperator:
@@ -1091,7 +1130,7 @@ public class PolishTask extends ConditionalTask {
 				} else if (file == this.localeSourceFile) {
 					this.localeCode = sourceCode;
 				} else  if (result != Preprocessor.SKIP_FILE) {
-					if (!isInPolishPackage) {
+					if (!isInPolishPackage || this.useDefaultPackage ) {
 						sourceCode.reset();
 						// now replace the import statements:
 						boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode, device, this.preprocessor );
@@ -1104,7 +1143,8 @@ public class PolishTask extends ConditionalTask {
 					  || (result == Preprocessor.CHANGED) ) 
 					{
 						//System.out.println( "preprocessed [" + className + "]." );
-						file.saveToDir(targetDir, sourceCode.getArray(), false );
+						//file.saveToDir(targetDir, sourceCode.getArray(), false );
+						FileUtil.writeTextFile(targetFile, sourceCode.getArray() );
 						this.numberOfChangedFiles++;
 					//} else {
 					//	System.out.println("not saving " + file.getFileName() );

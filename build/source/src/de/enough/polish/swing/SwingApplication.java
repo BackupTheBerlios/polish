@@ -58,6 +58,10 @@ extends JFrame
 implements Application
 {
 	
+	/**
+	 * <code>serialVersionUID</code> denotes the ID for serialization
+	 */
+	private static final long serialVersionUID = 1L;
 	protected boolean systemExitOnQuit;
 	protected boolean isMacOsX;
 	protected NativeIntegration nativeIntegration;

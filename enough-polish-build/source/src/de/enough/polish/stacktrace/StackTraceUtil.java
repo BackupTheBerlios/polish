@@ -55,6 +55,8 @@ public final class StackTraceUtil {
 	private final static Pattern METHOD_PATTERN = Pattern.compile( METHOD_PATTERN_STR ); 
 	private final static String CONSTRUCTOR_PATTERN_STR = "([public|private]protected]\\s+)?\\w+s*\\(";
 	private final static Pattern CONSTRUCTOR_PATTERN = Pattern.compile( CONSTRUCTOR_PATTERN_STR );
+	// needed for starting threads:
+	private final static StackTraceUtil INSTANCE = new StackTraceUtil();
 	
 	private String sourceCodeLine;
 	private String decompiledCodeSnippet;
@@ -70,6 +72,10 @@ public final class StackTraceUtil {
 	{
 		// decompile the class-code:
 		String[] lines = decompile( className, classPath, environmentProperties );
+		if ( lines == null) {
+			// class could not be found:
+			return null;
+		}
 		boolean searchForConstructor = false;
 		if ("<init>".equals( methodName )) {
 			searchForConstructor = true;
@@ -96,7 +102,10 @@ public final class StackTraceUtil {
 	 * @param className the name of the class
 	 * @param methodName the name of the method.
 	 * @param searchForConstructor when the <init>-method is looked for
+	 * @param sourceCode
+	 * @param preprocessedSourcePath
 	 * @param sourceDirs
+	 * @param environmentProperties
 	 * @return the original line in the source code
 	 */
 	private String getSourceFilePosition(String className, String methodName, boolean searchForConstructor, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties) 
@@ -211,7 +220,7 @@ public final class StackTraceUtil {
 	 * @param methodName
 	 * @param offset
 	 * @param searchForConstructor
-	 * @return
+	 * @return array of decompiled method lines
 	 */
 	private String[] parseMethod(String[] lines, String methodName, String offset, boolean searchForConstructor) {
 		ArrayList methodLines = new ArrayList();
@@ -302,13 +311,24 @@ public final class StackTraceUtil {
 	}
 
 	/**
+	 * Decompiles the given class.
+	 * 
 	 * @param className
 	 * @param classPath
-	 * @return
+	 * @param environmentProperties
+	 * @return array of decompiled lines of the class, null when the class is not found
+	 * @throws DecompilerNotInstalledException
 	 */
 	private static final String[] decompile(String className, String classPath, Map environmentProperties ) 
 	throws DecompilerNotInstalledException
 	{
+		className = TextUtil.replace( className, '.', File.separatorChar );
+		classPath = classPath + File.separatorChar + className + ".class";
+		File classFile = new File( classPath );
+		if (!classFile.exists()) {
+			//System.out.println("class " + className + " does not exist");
+			return null;
+		}
 		String jadExecutable = null;
 		String polishHome = (String) environmentProperties.get("polish.home");
 		if (polishHome != null) {
@@ -329,8 +349,6 @@ public final class StackTraceUtil {
 				jadExecutable = "jad";
 			}
 		}
-		className = TextUtil.replace( className, '.', File.separatorChar );
-		classPath = classPath + File.separatorChar + className + ".class";
 		String[] arguments = new String[]{jadExecutable, "-a", "-p", classPath };
 		try {
 			Process process = Runtime.getRuntime().exec(arguments);
@@ -338,17 +356,29 @@ public final class StackTraceUtil {
 			StringBuffer log = new StringBuffer( 300 );
 			int c;
 			InputStream input = process.getInputStream();
-			while ((c = input.read() ) != -1) {
+			// the error stream needs to be read, so that
+			// the process is not blocked under windows:
+			(INSTANCE.new EmptyInputStreamThread( process.getErrorStream() )).start();
+			//BufferedInputStream input = new BufferedInputStream( process.getInputStream() );
+			// using careful reading, because
+			// in windows the input.read() got stuck otherwise:
+			while ( (c = input.read() ) != -1 ) {
 				if (c == '\n') {
-					lines.add( log.toString() );
+					String line = log.toString();
+					//System.out.println("decompiled: " + line);
+					lines.add( line );
 					log.delete(0, log.length() );
 				}  else if (c != '\r') {
 					log.append((char) c);
+					//System.out.print( (char) c + "." );
+					//System.out.print( (char) c + "=" + c );
 				}
 			}
+			//System.out.println("done reading");
 			input.close();
 			return (String[]) lines.toArray( new String[ lines.size() ] );
 		} catch (IOException e) {
+			//e.printStackTrace();
 			throw new DecompilerNotInstalledException( "Unable to start the \"jad\"-decompiler: [" + e.toString() + "]. jad is available from http://www.kpdus.com/jad.html.");
 		}
 	}
@@ -374,6 +404,26 @@ public final class StackTraceUtil {
 		
 		StackTraceUtil utility = new StackTraceUtil();		
 		return utility.translateStackTrace(message, classPath, preprocessedSourcePath, sourceDirs, environmentProperties, className, methodName, offset);
+	}
+	
+	class EmptyInputStreamThread extends Thread {
+
+		private final InputStream input;
+		
+		public EmptyInputStreamThread( InputStream input ) {
+			this.input = input;
+		}
+		
+		public void run() {
+			try {
+				while ( this.input.read() != -1 ) {
+					// do nothing
+				}
+			} catch (IOException e) {
+				// ignore
+			}
+		}
+			
 	}
 	
 	class CodeSequence {

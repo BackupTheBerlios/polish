@@ -793,10 +793,18 @@ public class BuildSetting {
 	 * 		The first midlet is also the first element in the returned array.
 	 */
 	public String[] getMidletClassNames() {
+		boolean useDefaultPackage = useDefaultPackage();
 		Midlet[] midlets = getMidlets();
 		String[] midletClassNames = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
-			midletClassNames[i] = midlets[i].getClassName();
+			String className = midlets[i].getClassName();
+			if (useDefaultPackage) {
+				int dotIndex = className.lastIndexOf('.');
+				if (dotIndex != -1) {
+					className = className.substring( dotIndex + 1 );
+				}
+			}
+			midletClassNames[i] = className;
 		}
 		return midletClassNames;
 	}
@@ -811,10 +819,11 @@ public class BuildSetting {
 	 * 		The first midlet is also the first element in the returned array.
 	 */
 	public String[] getMidletInfos( String defaultIcon ) {
+		boolean useDefaultPackage = useDefaultPackage();
 		Midlet[] midlets = getMidlets();
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
-			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon );
+			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon, useDefaultPackage );
 		}
 		return midletInfos;
 	}
@@ -1162,6 +1171,26 @@ public class BuildSetting {
 	
 	public PackageSetting getPackageSetting() {
 		return this.packageSetting;
+	}
+
+	/**
+	 * Determines whether all classes should be moved into the default package ("").
+	 * 
+	 * @return true when all classes should be moved into the default package.
+	 */
+	public boolean useDefaultPackage() {
+		if (this.obfuscatorSettings == null) {
+			return false;
+		} else {
+			ObfuscatorSetting[] settings = getObfuscatorSettings();
+			for (int i = 0; i < settings.length; i++) {
+				ObfuscatorSetting setting = settings[i];
+				if (setting.useDefaultPackage()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 }

@@ -155,9 +155,9 @@ public final class JarUtil {
 		String targetPath = targetDir.getAbsolutePath() + File.separatorChar;
 		byte[] buffer = new byte[ 1024 * 1024 ];
 		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
-		Enumeration enum = input.entries();
-		for (; enum.hasMoreElements();) {
-			JarEntry entry = (JarEntry) enum.nextElement();
+		Enumeration enumeration = input.entries();
+		for (; enumeration.hasMoreElements();) {
+			JarEntry entry = (JarEntry) enumeration.nextElement();
 			if (!entry.isDirectory()) {
 				// do not copy anything from the package cache:
 				if (entry.getName().indexOf("package cache") == -1) {
@@ -192,9 +192,9 @@ public final class JarUtil {
 	{
 		HashMap packageNames = new HashMap();
 		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
-		Enumeration enum = input.entries();
-		for (; enum.hasMoreElements();) {
-			JarEntry entry = (JarEntry) enum.nextElement();
+		Enumeration enumeration = input.entries();
+		for (; enumeration.hasMoreElements();) {
+			JarEntry entry = (JarEntry) enumeration.nextElement();
 			String name = entry.getName();
 			if (name.endsWith(".class")) {
 				int endPos = name.lastIndexOf('/');

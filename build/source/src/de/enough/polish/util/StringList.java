@@ -244,6 +244,16 @@ public class StringList {
 	 */
 	public int size() {
 		return this.lines.length;
+	}
+
+	/**
+	 * Sets a new internal array.
+	 * 
+	 * @param newLines the new internal array
+	 */
+	public void setArray(String[] newLines) {
+		this.hasChanged = true;
+		this.lines = newLines;
 	}	
 
 }

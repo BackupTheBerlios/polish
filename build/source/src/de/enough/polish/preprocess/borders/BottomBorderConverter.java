@@ -1,6 +1,6 @@
 /*
- * Created on 08-Oct-2004 at 15:37:17.
- * 
+ * Created on 10-Mar-2004 at 15:54:41.
+ *
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -23,38 +23,38 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.stacktrace;
+package de.enough.polish.preprocess.borders;
+
+import de.enough.polish.preprocess.*;
+
+import org.apache.tools.ant.BuildException;
+
+import java.util.HashMap;
 
 /**
- * <p>Is thrown when a necessary decompiler is not installed.</p>
+ * <p>Creates the source code for a simple border.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        08-Oct-2004 - rob creation
+ *        10-Mar-2004 - rob creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Robert Virkus, robert@enough.de
  */
-public class DecompilerNotInstalledException extends Exception {
-
+public class BottomBorderConverter extends BorderConverter {
 	/**
-	 * ID for being serializable.
+	 * Creates a new simple border creator
 	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * @param message
-	 */
-	public DecompilerNotInstalledException(String message) {
-		super(message);
+	public BottomBorderConverter() {
+		super();
 	}
+	
 
-	/**
-	 * @param message
-	 * @param cause
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
-	public DecompilerNotInstalledException(String message, Throwable cause) {
-		super(message, cause);
+	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet) throws BuildException {
+		return "new " + BORDERS_PACKAGE + "BottomBorder( " + this.color 
+													+ ", " + this.width + ")";	
 	}
-
 }

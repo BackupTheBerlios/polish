@@ -70,6 +70,10 @@ public class CssConverter extends Converter {
 		BORDER_TYPES.put( "shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
 		BORDER_TYPES.put( "round-rect", "de.enough.polish.preprocess.borders.RoundRectBorderConverter");
 		BORDER_TYPES.put( "circle", "de.enough.polish.preprocess.borders.CircleBorderConverter");
+		BORDER_TYPES.put( "bottom", "de.enough.polish.preprocess.borders.BottomBorderConverter");
+		BORDER_TYPES.put( "top", "de.enough.polish.preprocess.borders.TopBorderConverter");
+		BORDER_TYPES.put( "left", "de.enough.polish.preprocess.borders.LeftBorderConverter");
+		BORDER_TYPES.put( "right", "de.enough.polish.preprocess.borders.RightBorderConverter");
 	}
 	private static HashMap LAYOUTS = new HashMap();
 	static {

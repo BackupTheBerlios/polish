@@ -42,6 +42,7 @@ import java.io.IOException;
 public class TextFile {
 	
 	private String fileName;
+	private String filePath;
 	private String baseDir;
 	private File file;
 	private long lastModified;
@@ -52,14 +53,14 @@ public class TextFile {
 	 * Creates a new text file.
 	 * 
 	 * @param baseDir The name of the source directory
-	 * @param fileName The name and relative path of the text file
+	 * @param filePath The name and relative path of the text file
 	 * @throws FileNotFoundException when the file does not exist.
 	 */
-	public TextFile( String baseDir, String fileName ) 
+	public TextFile( String baseDir, String filePath ) 
 	throws FileNotFoundException 
 	{
 		this.baseDir = baseDir;
-		this.fileName = fileName;
+		this.filePath = filePath;
 		updateFile();
 		this.lastModified = this.file.lastModified();
 		if (!this.file.exists()) {
@@ -71,26 +72,26 @@ public class TextFile {
 	 * Creates a new TextFile which can be loaded from the JAR file.
 	 *  
 	 * @param baseDir the directory within the jar file
-	 * @param fileName the name of the file
+	 * @param filePath the name of the file
 	 * @param lastModificationTime the modification time of the corresponding jar
 	 * @param resourceUtil the jar-loader utility
 	 */
 	public TextFile(String baseDir, 
-			String fileName, 
+			String filePath, 
 			long lastModificationTime, 
 			ResourceUtil resourceUtil) 
 	{
 		this.resourceUtil = resourceUtil;
 		this.lastModified = lastModificationTime;
-		this.fileName = fileName;
+		this.filePath = filePath;
 		this.baseDir = baseDir;
 	}
 
 	/**
 	 * @return Returns the name and relative path of this text file.
 	 */
-	public String getFileName() {
-		return this.fileName;
+	public String getFilePath() {
+		return this.filePath;
 	}
 	
 
@@ -113,7 +114,7 @@ public class TextFile {
 	{
 		if (this.content == null ) {
 			if (this.resourceUtil != null) {
-				this.content = this.resourceUtil.readTextFile( this.baseDir, this.fileName );
+				this.content = this.resourceUtil.readTextFile( this.baseDir, this.filePath );
 			} else {
 				this.content = FileUtil.readTextFile( this.file );
 			}
@@ -207,17 +208,65 @@ public class TextFile {
 			updateFile();
 			save();
 		} else {
-			File targetFile = new File( targetDir + File.separatorChar + this.fileName );
+			File targetFile = new File( targetDir + File.separatorChar + this.filePath );
 			FileUtil.writeTextFile(targetFile, lines);
 		}
-		
 	}
 
 	/**
 	 * Resets the file.
 	 */
 	private final void updateFile() {
-		this.file = new File( this.baseDir + File.separatorChar + this.fileName );
+		int index = this.filePath.lastIndexOf( '/' );
+		if (index == -1) {
+			index = this.filePath.lastIndexOf( '\\' );
+		}
+		if (index == -1) {
+			this.fileName = this.filePath;
+		} else {
+			this.fileName = this.filePath.substring( index + 1 );
+		}
+		this.file = new File( this.baseDir + File.separatorChar + this.filePath );
+	}
+
+	/**
+	 * Retrieves the target file for this text file (in a different folder).
+	 * 
+	 * @param baseDirectory the base directory for the target file
+	 * @param useDefaultPackage true when the target-file should be in the base-directory
+	 * @return the target file
+	 */
+	public File getTargetFile( File baseDirectory, boolean useDefaultPackage ) {
+		if (useDefaultPackage) {
+			//System.out.println("target-dir=" + new File( baseDirectory, this.fileName ) );
+			return new File( baseDirectory, this.fileName );
+		} else {
+			return new File( baseDirectory, this.filePath );
+		}
+	}
+
+	/**
+	 * Retrieves the name of this text file.
+	 * 
+	 * @return the name of this text file
+	 */
+	public String getFileName() {
+		return this.fileName;
+	}
+	
+	/**
+	 * Retrieves the name of the Java class which is defined by this source code.
+	 * 
+	 * @return the name of the Java class
+	 */
+	public String getClassName() {
+		if ( ! this.fileName.endsWith(".java")) {
+			return null;
+		}
+		String className = this.filePath.substring(0, this.filePath.length() - ".java".length()  );
+		className = className.replace( '/', '.');
+		className = className.replace( '\\', '.');
+		return className;
 	}
 
 }

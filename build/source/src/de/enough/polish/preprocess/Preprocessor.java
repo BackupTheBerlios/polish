@@ -43,6 +43,7 @@ import de.enough.polish.PolishProject;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.StringList;
+import de.enough.polish.util.TextFileManager;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -106,6 +107,8 @@ public class Preprocessor {
 	protected static final Pattern SYSTEM_PRINT_PATTERN = Pattern.compile(
 				"System.(out|err).print(ln)?\\s*\\(" );
 	private HashMap preprocessQueue;
+	private boolean useDefaultPackage;
+	private TextFileManager textFileManager;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -466,6 +469,12 @@ public class Preprocessor {
 						changed = true;
 					} else if (result == SKIP_FILE) {
 						return SKIP_FILE;
+					}
+				} else if (this.useDefaultPackage){
+					//line = line.trim();
+					if (line.startsWith("package ")) {
+						changed = true;
+						lines.setCurrent( "//" + line );
 					}
 				}
 			}
@@ -1403,6 +1412,34 @@ public class Preprocessor {
 	 */
 	protected String getErrorStart(String className, StringList lines) {
 		return className + " line [" + (lines.getCurrentIndex() + 1) + "]: ";
+	}
+
+	/**
+	 * Sets if all classes should be moved into the default package.
+	 * 
+	 * @param useDefaultPackage true when all classes should be moved
+	 *        into the default package
+	 */
+	public void setUseDefaultPackage(boolean useDefaultPackage ) {
+		this.useDefaultPackage = useDefaultPackage;
+	}
+
+	/**
+	 * Determines if all classes should be moved into the default package.
+	 * 
+	 * @return true when all classes should be moved
+	 *        into the default package
+	 */
+	public boolean useDefaultPackage() {
+		return this.useDefaultPackage;
+	}
+	
+	public void setTextFileManager( TextFileManager textFileManager ) {
+		this.textFileManager = textFileManager;
+	}
+	
+	public TextFileManager getTextFileManager() {
+		return this.textFileManager;
 	}
 
 }

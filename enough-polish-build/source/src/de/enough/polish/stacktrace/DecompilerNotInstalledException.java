@@ -38,6 +38,11 @@ package de.enough.polish.stacktrace;
 public class DecompilerNotInstalledException extends Exception {
 
 	/**
+	 * ID for being serializable.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * @param message
 	 */
 	public DecompilerNotInstalledException(String message) {

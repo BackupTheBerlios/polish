@@ -53,6 +53,8 @@ extends Setting
 	private String name;
 	private String className;
 	private File classPath;
+	private boolean useDefaultPackage;
+	private boolean renameMidlets;
 
 	/**
 	 * Creates a new empty obfuscator setting. 
@@ -141,4 +143,39 @@ extends Setting
 		}
 	}
 
+	/**
+	 * Determines whether the MIDlet classes should be renamed to short "A", "B", "C" etc.
+	 * 
+	 * @return Returns true when the midlet-classes should be renamed.
+	 */
+	public boolean renameMidlets() {
+		return this.renameMidlets;
+	}
+	
+	/**
+	 * Sets whether the midlet-classes should be renamed
+	 * 
+	 * @param renameMidlets true when the midlet-classes should be renamed.
+	 */
+	public void setRenameMidlets(boolean renameMidlets) {
+		this.renameMidlets = renameMidlets;
+	}
+	
+	/**
+	 * Determines whether all classes should be moved into the default package ("").
+	 * 
+	 * @return true when all classes should be moved into the default package.
+	 */
+	public boolean useDefaultPackage() {
+		return this.useDefaultPackage;
+	}
+	
+	/**
+	 * Sets whether all classes should be moved into the default package ("").
+	 * 
+	 * @param useDefaultPackage true when all classes should be moved into the default package.
+	 */
+	public void setUseDefaultPackage(boolean useDefaultPackage) {
+		this.useDefaultPackage = useDefaultPackage;
+	}
 }

@@ -75,6 +75,7 @@ public class DeviceManager {
 	 * 
 	 * @param vendorManager The manager of the device-manufacturers
 	 * @param groupManager The manager for device-groups.
+	 * @param libraryManager the manager for API libraries
 	 * @param devicesIS the InputStream containing the device definitions.
 	 * 			Usally this is the devices.xml file in the current directory.
 	 * @throws JDOMException when there are syntax errors in devices.xml
