@@ -56,5 +56,18 @@ public class IntegerTextField extends ActiveTextField {
 		setColumns(columns);
 	}
 
+	/**
+	 * @return
+	 */
+	public int getIntValue() {
+		return Integer.parseInt( getText() );
+	}
+
+	/**
+	 * @param value
+	 */
+	public void setIntValue( int value ) {
+		setText( "" + value );
+	}
 
 }

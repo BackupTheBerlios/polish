@@ -109,6 +109,35 @@ public abstract class PostCompiler {
 	public abstract void postCompile( File classesDir, Device device )
 	throws BuildException;
 	
+	
+	/**
+	 * Subclasses can override this method for setting a different bootclasspath for the current device.
+	 * This method is called before the application is compiled.
+	 * The default implementation returns the specified bootclasspath.
+	 * When several postcompilers try to change this path it can result in complications.
+	 * 
+	 * @param device the current device
+	 * @param bootClassPath the current bootclasspath
+	 * @return the appropriate bootclasspath for the current device, usually the same that has been given.
+	 */
+	public String verifyBootClassPath( Device device, String bootClassPath ) {
+		return bootClassPath;
+	}
+	
+	/**
+	 * Subclasses can override this method for setting a different classpath for the current device.
+	 * This method is called before the application is compiled.
+	 * The default implementation returns the specified classpath.
+	 * 
+	 * @param device the current device
+	 * @param classPath the current classpath
+	 * @return the appropriate classpath for the current device, usually the same that has been given.
+	 */
+	public String verifyClassPath( Device device, String classPath ) {
+		return classPath;
+	}
+
+	
 	/**
 	 * Retrieves the settings for this post compiler.
 	 * 

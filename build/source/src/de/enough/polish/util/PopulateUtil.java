@@ -144,7 +144,7 @@ public final class PopulateUtil {
 	 * 
 	 * @param object the object that holds the field
 	 * @param fieldName the name of the field
-	 * @return the field
+	 * @return the field value
 	 * @throws NoSuchFieldException when the field does not exist
 	 */
 	public static int getIntField( Object object, String fieldName ) 
@@ -160,11 +160,33 @@ public final class PopulateUtil {
 	}
 
 	/**
+	 * Retrieves the value of the specified boolean-field of the given object.
+	 * 
+	 * @param object the object that holds the field
+	 * @param fieldName the name of the field
+	 * @return the field value
+	 * @throws NoSuchFieldException when the field does not exist
+	 */
+	public static boolean getBooleanField(Object object, String fieldName ) 
+	throws NoSuchFieldException 
+	{
+	
+		Field field = getField( object, fieldName );
+		try {
+			return field.getBoolean(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException("unable to access field [" + fieldName + "]: " + e.toString() );
+		}
+	}
+
+	
+	/**
 	 * Retrieves the value of the specified String-field of the given object.
 	 * 
 	 * @param object the object that holds the field
 	 * @param fieldName the name of the field
-	 * @return the field
+	 * @return the field value
 	 * @throws NoSuchFieldException when the field does not exist
 	 */
 	public static String getStringField(Object object, String fieldName) 

@@ -1423,19 +1423,37 @@ public class PolishTask extends ConditionalTask {
 			compiler.setDirectSrcdir(new Path( getProject(),  device.getSourceDir() ) );
 		}
 		//javac.setSourcepath(new Path( getProject(),  "" ));
+		String classPath = device.getClassPath(); 
 		if (!compiler.isBootClassPathSet()) {
+			Path bootClassPath;
 			if (device.isMidp1()) {
-				compiler.setDirectBootclasspath(this.midp1BootClassPath);
+				 bootClassPath = this.midp1BootClassPath;
 			} else {
 				if (device.isCldc10()) {
-					compiler.setDirectBootclasspath(this.midp2BootClassPath);
+					bootClassPath = this.midp2BootClassPath;
 				} else {
-					compiler.setDirectBootclasspath(this.midp2Cldc11BootClassPath);
+					bootClassPath = this.midp2Cldc11BootClassPath;
 				}
 			}
+			// let postcompilers adjust the bootclasspath:
+			String path = bootClassPath.toString();
+			String originalBootClassPath = path;
+			Project antProject = getProject();
+			for (int i = 0; i < this.postCompilers.length; i++) {
+				PostCompiler postCompiler = this.postCompilers[i];
+				if (postCompiler.getSetting().isActive(evaluator, antProject)) {
+					path = postCompiler.verifyBootClassPath(device, path);
+					if ( classPath != null ) {
+						classPath = postCompiler.verifyClassPath(device, classPath);
+					}
+				}
+			}
+			if (path != originalBootClassPath) {
+				bootClassPath = new Path( antProject, path );
+			}
+			compiler.setDirectBootclasspath( bootClassPath );
 		}
 		if ( !compiler.isClassPathSet()) {
-			String classPath = device.getClassPath(); 
 			if (classPath != null) {
 				compiler.setDirectClasspath( new Path(getProject(), classPath ) );
 			} else {

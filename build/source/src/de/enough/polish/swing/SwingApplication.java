@@ -183,7 +183,7 @@ implements Application
 		return this.applicationName + ": (c) 2005, Enough Software.";
 	}
 	
-	protected JScrollPane createScrollPane( JComponent component ) {
+	public JScrollPane createScrollPane( JComponent component ) {
 		if (this.isMacOsX) {
 			return new JScrollPane(component,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
