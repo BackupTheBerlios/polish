@@ -79,6 +79,7 @@
             <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="../custom-css-attributes.xml" targetdir="$INSTALL_PATH"/>
             <file src="../LICENSE.txt" targetdir="$INSTALL_PATH"/>
+            <file src="custom-devices.xml" targetdir="$INSTALL_PATH"/>
             <!--
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/build.xml" type="shell" /> 

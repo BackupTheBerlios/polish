@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with Foobar; if not, write to the Free Software
+ * along with J2ME Polish; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  * Commercial licenses are also available, please
@@ -59,13 +59,13 @@ import de.enough.polish.util.StringUtil;
  */
 public class LibraryManager {
 	
-	private String wtkLibPath;
-	private String projectLibPath;
-	private String polishLibPath;
-	private HashMap libraries = new HashMap();
-	private HashMap resolvedClassPaths = new HashMap();
-	private HashMap resolvedLibraryPaths = new HashMap();
-	private Map antProperties;
+	private final String wtkLibPath;
+	private final String projectLibPath;
+	private final String polishLibPath;
+	private final HashMap libraries = new HashMap();
+	private final HashMap resolvedClassPaths = new HashMap();
+	private final HashMap resolvedLibraryPaths = new HashMap();
+	private final Map antProperties;
 
 	/**
 	 * Creates a new ApiManager.
@@ -99,6 +99,8 @@ public class LibraryManager {
 		String polishHomeProperty = (String) antProperties.get("polish.home");
 		if (polishHomeProperty != null) {
 			this.polishLibPath = polishHomeProperty + File.separatorChar + "import" + File.separatorChar;
+		} else {
+			this.polishLibPath = null;
 		}
 		loadLibraries( is );
 	}

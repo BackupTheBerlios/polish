@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with Foobar; if not, write to the Free Software
+ * along with J2ME Polish; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  * Commercial licenses are also available, please
@@ -61,6 +61,7 @@ import de.enough.polish.util.StringUtil;
 public class DeviceManager {
 
 	private Device[] devices;
+	private final ArrayList devicesList;
 	private final HashMap devicesByIdentifier;
 	private final VendorManager vendorManager;
 	private final DeviceGroupManager groupManager;
@@ -82,6 +83,7 @@ public class DeviceManager {
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		this.devicesByIdentifier = new HashMap();
+		this.devicesList = new ArrayList();
 		this.groupManager = groupManager;
 		this.libraryManager = libraryManager;
 		this.vendorManager = vendorManager;
@@ -109,7 +111,7 @@ public class DeviceManager {
 		}
 		SAXBuilder builder = new SAXBuilder( false );
 		Document document = builder.build( devicesIS );
-		ArrayList devicesList = new ArrayList();
+		
 		HashMap devicesMap = this.devicesByIdentifier;
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
@@ -138,10 +140,10 @@ public class DeviceManager {
 				}
 				Device device = new Device( definition, identifier, deviceName, vendor, grManager, libManager, this );
 				devicesMap.put( identifier, device );
-				devicesList.add( device );
+				this.devicesList.add( device );
 			}
 		}
-		this.devices = (Device[]) devicesList.toArray( new Device[ devicesList.size()]);
+		this.devices = (Device[]) this.devicesList.toArray( new Device[ this.devicesList.size()]);
 	}
 
 	/**
