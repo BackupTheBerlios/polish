@@ -49,6 +49,7 @@ import java.util.*;
 public class DeviceManager {
 
 	private Device[] devices;
+	private HashMap devicesByIdentifier;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
@@ -89,7 +90,8 @@ public class DeviceManager {
 		SAXBuilder builder = new SAXBuilder( false );
 		Document document = builder.build( devicesIS );
 		ArrayList devicesList = new ArrayList();
-		HashMap devicesByIdentifier = new HashMap();
+		HashMap devicesMap = new HashMap();
+		this.devicesByIdentifier = devicesMap;
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
@@ -102,7 +104,7 @@ public class DeviceManager {
 			String[] identifiers = TextUtil.splitAndTrim(identifierStr,',');
 			for (int i = 0; i < identifiers.length; i++) {
 				String identifier = identifiers[i];
-				if (devicesByIdentifier.get( identifier ) != null) {
+				if (devicesMap.get( identifier ) != null) {
 					throw new InvalidComponentException("The device [" + identifier + "] has been defined twice in [devices.xml]. Please remove one of those definitions.");
 				}
 				String[] chunks = TextUtil.split( identifier, '/');
@@ -115,8 +117,8 @@ public class DeviceManager {
 				if (vendor == null) {
 					throw new InvalidComponentException("Invalid device-specification in [devices.xml]: Please specify the vendor [" + vendorName + "] in the file [vendors.xml].");
 				}
-				Device device = new Device( definition, identifier, deviceName, vendor, groupManager, libraryManager );
-				devicesByIdentifier.put( identifier, device );
+				Device device = new Device( definition, identifier, deviceName, vendor, groupManager, libraryManager, this );
+				devicesMap.put( identifier, device );
 				devicesList.add( device );
 			}
 		}
@@ -130,6 +132,16 @@ public class DeviceManager {
 	 */
 	public Device[] getDevices() {
 		return this.devices;
+	}
+
+	/**
+	 * Retrieves a single device.
+	 * 
+	 *@param identifier the identifier of the device, eg Nokia/6600
+	 *@return the device or null when it is not known. 
+	 */
+	public Device getDevice(String identifier) {
+		return (Device) this.devicesByIdentifier.get( identifier );
 	}
 
 

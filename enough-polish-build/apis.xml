@@ -17,7 +17,7 @@
 		<description>The Mobile Media API provides
 			functionalities for playing and capturing sounds and videos.
 		</description>
-		<names>mmapi,mm-api, JSR-135</names>
+		<names>mmapi,mm-api, JSR-135, JSR135</names>
 		<symbol>mmapi</symbol>
 		<files>j2me-mmapi.jar, mma.zip</files>
 		<path>import/j2me-mmapi.jar</path>
@@ -28,7 +28,7 @@
 		<description>The Wireless Messaging API provides
 			functionalities for sending and receiving messages (SMS).
 		</description>
-		<names>wmapi,wm-api, JSR-120, wma</names>
+		<names>wmapi,wm-api, JSR-120, JSR120, wma</names>
 		<symbol>wmapi</symbol>
 		<files>j2me-wmapi.jar, wma.zip</files>
 		<path>import/j2me-wmapi.jar</path>
@@ -50,7 +50,7 @@
 		<description>The Bluetooth API provides
 			functionalities for data exchange with other bluetooth devices.
 		</description>
-		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-82</names>
+		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-82, JSR82</names>
 		<symbol>btapi</symbol>
 		<files>j2me-btapi.jar, bluetooth.zip</files>
 		<path>import/j2me-btapi.jar</path>
@@ -60,7 +60,7 @@
 		<name>3D API</name>
 		<description>The 3D API provides 3D functions for J2ME.
 		</description>
-		<names>3d, 3d-api,3dapi, JSR-184</names>
+		<names>3d, 3d-api,3dapi, JSR-184, JSR184</names>
 		<symbol>3dapi</symbol>
 		<files>j2me-3dapi.jar</files>
 		<path>import/j2me-3dapi.jar</path>
@@ -74,7 +74,7 @@
 		A JSR-185 compatible device supports the MMAPI and the WMAPI
 		as well as the MIDP/2.0 platform.
 		</description>
-		<names>JSR-185</names>
+		<names>JSR-185, JSR185</names>
 		<symbol>jsr-185</symbol>
 	</api>
 
@@ -82,7 +82,7 @@
 		<name>PDA API</name>
 		<description>The PDA-API defines optional packages for features that are commonly found on PDAs and other mobile devices in the J2ME space: one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
-		<names>pdaapi, pda-api, pim-api, fileconnection-api, JSR-75</names>
+		<names>pdaapi, pda-api, pim-api, fileconnection-api, JSR-75, JSR75</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
 		<path>import/j2me-pdaapi.jar</path>
@@ -99,6 +99,38 @@
 		<path>import/motorola-lwt.jar</path>
 	</api>
 
+	<api>
+		<name>Vodafone Service Class Library</name>
+		<description>
+		A JBlend extension for some devices of the Vodafone operator.
+		</description>
+		<names>VSCL</names>
+		<symbol>vscl</symbol>
+		<files>vscl.jar</files>
+		<path>import/vscl.jar</path>
+	</api>
+
+	<api>
+		<name>Vodafone Service Class Library 1.0.1</name>
+		<description>
+		A JBlend extension for some devices of the Vodafone operator.
+		</description>
+		<names>VSCL-1.0.1</names>
+		<symbol>vscl-1.0.1</symbol>
+		<files>vscl-1.0.1.jar</files>
+		<path>import/vscl-1.0.1.jar</path>
+	</api>
+	
+	<api>
+		<name>Vodafone Service Class Library 1.1.0</name>
+		<description>
+		A JBlend extension for some devices of the Vodafone operator.
+		</description>
+		<names>VSCL-1.1.0</names>
+		<symbol>vscl-1.1.0</symbol>
+		<files>vscl-1.1.0.jar</files>
+		<path>import/vscl-1.1.0.jar</path>
+	</api>
 <!--
 	You can use this block to define a new API
 	( remove these XML-comments ):

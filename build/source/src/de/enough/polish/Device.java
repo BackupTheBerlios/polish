@@ -151,12 +151,16 @@ public class Device extends PolishComponent {
 	 *            The manager for device-groups.
 	 * @param libraryManager
 	 *            the manager for device-specific APIs
+	 * @param deviceManager the manager for devices
 	 * @throws InvalidComponentException
 	 *             when the given definition has errors
 	 */
 	public Device(Element definition, String identifier, String deviceName,
 			Vendor vendor, DeviceGroupManager groupManager,
-			LibraryManager libraryManager) throws InvalidComponentException {
+			LibraryManager libraryManager,
+			DeviceManager deviceManager ) 
+	throws InvalidComponentException 
+	{
 		super(vendor);
 		this.identifier = identifier;
 		this.name = deviceName;
@@ -168,6 +172,16 @@ public class Device extends PolishComponent {
 		addCapability( "polish.vendor", this.vendorName );
 		addCapability(IDENTIFIER, this.identifier);
 		addCapability( "polish.identifier", this.identifier );
+		
+		// check if this device extends another one:
+		String extendsStr = definition.getAttributeValue("extends");
+		if (extendsStr != null) {
+			Device parentDevice = deviceManager.getDevice( extendsStr );
+			if (parentDevice == null) {
+				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + extendsStr + "] is not known. Make sure it is defined before this device.");
+			}
+			addComponent(parentDevice);
+		}
 
 		// load capabilities and features:
 		loadCapabilities(definition, this.identifier, "devices.xml");
@@ -285,8 +299,7 @@ public class Device extends PolishComponent {
 			System.err.println("Warning: the device [" + this.identifier 
 					+ "] has no JavaConfiguration defined.");
 		}
-		String supportsPolishGuiText = definition
-				.getAttributeValue("supportsPolishGui");
+		String supportsPolishGuiText = definition.getAttributeValue("supportsPolishGui");
 		if (supportsPolishGuiText != null) {
 			supportsPolishGuiText = supportsPolishGuiText.toLowerCase();
 			this.supportsPolishGui = CastUtil.getBoolean(supportsPolishGuiText);

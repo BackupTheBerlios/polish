@@ -125,5 +125,10 @@
 		<name>Mio</name>
 		<features></features>
 	</vendor>
+
+	<vendor>
+		<name>Vodafone</name>
+		<features>isOperator</features>
+	</vendor>
 	
 </vendors>

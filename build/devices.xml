@@ -721,6 +721,7 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
+		<capability name="CanvasSize" value="176x204" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -736,6 +737,7 @@
 		<capability name="SoundFormat" value="midi, wav, amr, mp3" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="DRM" value="Forward Lock" />
 	</device>
 	
 	<device>
@@ -744,6 +746,7 @@
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="176x220" />
+		<capability name="CanvasSize" value="176x204" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="800 kb" />
 		<capability name="StorageSize" value="5 MB" />
@@ -759,6 +762,7 @@
 		<capability name="SoundFormat" value="midi, wav, amr, mp3" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="DRM" value="Forward Lock" />
 	</device>
 	
 	<device>
@@ -1997,6 +2001,66 @@
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>	
 
+	<device>
+		<identifier>Sharp/GX10</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="CanvasSize" value="120x130"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="80 kb" />
+		<capability name="StorageSize" value="500 kb" />
+		<capability name="MaxRecordStoreSize" value="50 kb" />
+		<capability name="MaxApplicationQuantity" value="51" />
+		<capability name="ImageFormat" value="jpg, png" />
+		<capability name="SoundFormat" value="smaf, eva" />
+		<capability name="MaxPngSize" value="20 kb" />
+		<capability name="MaxJpegSize" value="20 kb" />
+		<capability name="MaxSmafSize" value="dynamic" />
+	</device>	
+
+	<device>
+		<identifier>Sharp/GX10i</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="CanvasSize" value="120x130"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="80 kb" />
+		<capability name="StorageSize" value="500 kb" />
+		<capability name="MaxRecordStoreSize" value="50 kb" />
+		<capability name="MaxApplicationQuantity" value="51" />
+		<capability name="ImageFormat" value="jpg, png" />
+		<capability name="SoundFormat" value="smaf, eva" />
+		<capability name="MaxPngSize" value="20 kb" />
+		<capability name="MaxJpegSize" value="20 kb" />
+		<capability name="MaxSmafSize" value="dynamic" />
+	</device>	
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Sharp/GX20</identifier>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x260"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="95 kb" />
+		<capability name="StorageSize" value="2 MB" />
+		<capability name="MaxRecordStoreSize" value="50 kb" />
+		<capability name="MaxApplicationQuantity" value="51" />
+		<capability name="ImageFormat" value="jpg, png" />
+		<capability name="SoundFormat" value="smaf, eva, midi" />
+		<capability name="MaxPngSize" value="100 kb" />
+		<capability name="MaxJpegSize" value="100 kb" />
+		<capability name="MaxSmafSize" value="50 kb" />
+		<capability name="DRM" value="Forward Lock" />
+	</device>	
+
+
 <!-- Toshiba devices -->
 
 	<device>
@@ -2054,5 +2118,32 @@
 		<capability name="Network" value="GSM, GPRS, EGSM"/>
 		<capability name="Frequency" value="900, 1800, 1900"/>
 	</device>	
+	
+<!-- Vodafone devices -->
+	<device
+		extends="Sharp/GX20">
+		<identifier>Vodafone/Sharp-GX20</identifier>
+		<capability name="JavaPackage" value="VSCL, VSCL-1.0.1"/>
+	</device>
+	<device
+		extends="Sharp/GX10i">
+		<identifier>Vodafone/Sharp-GX10i</identifier>
+		<capability name="JavaPackage" value="VSCL, VSCL-1.0.1"/>
+	</device>
+	<device
+		extends="Sharp/GX10">
+		<identifier>Vodafone/Sharp-GX10</identifier>
+		<capability name="JavaPackage" value="VSCL, VSCL-1.0.1"/>
+	</device>
+	<device
+		extends="Motorola/V525">
+		<identifier>Vodafone/Motorola-V525</identifier>
+		<capability name="JavaPackage" value="VSCL, VSCL-1.1.0"/>
+	</device>
+	<device
+		extends="Motorola/V600">
+		<identifier>Vodafone/Motorola-V600</identifier>
+		<capability name="JavaPackage" value="VSCL, VSCL-1.1.0"/>
+	</device>
 	
 </devices>
