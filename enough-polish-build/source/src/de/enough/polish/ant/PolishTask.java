@@ -1648,7 +1648,7 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
-			FileUtil.writeTextFile( manifestFile, jad.getContent() );
+			FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
 			this.packager.createPackage(classesDir, jarFile, device, evaluator, this.preprocessor.getVariables(), this.project );
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1707,7 +1707,7 @@ public class PolishTask extends ConditionalTask {
 		File jadFile = new File( jadPath );
 		try {
 			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
-			FileUtil.writeTextFile(jadFile, jad.getContent() );
+			FileUtil.writeTextFile(jadFile, jad.getContent(), this.buildSetting.getEncoding() );
 		} catch (IOException e) {
 			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
 		}

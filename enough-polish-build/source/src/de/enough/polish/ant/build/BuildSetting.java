@@ -60,6 +60,8 @@ public class BuildSetting {
 	private static final String DEFAULT_JAD_FILTER_PATTERN = "MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
 	private static final String DEFAULT_MANIFEST_FILTER_PATTERN = "Manifest-Version, MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
 	
+	private static final String DEFAULT_ENCODING = "UTF8";
+	
 	private final AttributesFilter defaultJadFilter;
 	private final AttributesFilter defaultManifestFilter;
 
@@ -107,6 +109,7 @@ public class BuildSetting {
 	private boolean alwaysUsePolishGui;
 	private PackageSetting packageSetting;
 	private ArrayList compilers;
+	private String encoding = DEFAULT_ENCODING;
 	
 	/**
 	 * Creates a new build setting.
@@ -1273,6 +1276,24 @@ public class BuildSetting {
 			}
 		}
 		return new CompilerTask();
+	}
+	
+	/**
+	 * Sets the encoding for the JAD, MANIFEST and compiler.
+	 * 
+	 * @param encoding the encoding, defaults to "UTF8"
+	 */
+	public void setEncoding( String encoding ) {
+		this.encoding = encoding;
+	}
+	
+	/**
+	 * Sets the encoding for the JAD, MANIFEST and compiler.
+	 * 
+	 * @return the encoding, defaults to "UTF8"
+	 */
+	public String getEncoding() {
+		return this.encoding;
 	}
 	
 }

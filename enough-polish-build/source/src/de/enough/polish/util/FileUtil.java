@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -384,6 +385,36 @@ public final class FileUtil {
 			properties.put( key, value );
 		}
 		in.close();
+	}
+
+	/**
+	 * Writes the given textlines into the specified file.
+	 * 
+	 * @param file the file to which the text should be written
+	 * @param lines the text lines of the file
+	 * @param encoding the encoding, e.g. "UTF8", null when the default encoding should be used
+	 * @throws IOException when there is an input/output error during the saving
+	 */
+	public static void writeTextFile(File file, String[] lines, String encoding) 
+	throws IOException 
+	{
+		
+		File parentDir = file.getParentFile(); 
+		if ( (parentDir != null) && !parentDir.exists()) {
+			parentDir.mkdirs();
+		}
+		
+		PrintWriter out;
+		if (encoding != null) {
+			out = new PrintWriter( new OutputStreamWriter( new FileOutputStream( file ), encoding ) );
+		} else {
+			out = new PrintWriter(new FileWriter( file )  );
+		}
+		
+		for (int i = 0; i < lines.length; i++) {
+			out.println( lines[i] );
+		}
+		out.close();
 	}
 	
 }
