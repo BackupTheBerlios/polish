@@ -100,6 +100,7 @@ To understand and control the build process, we need to have a closer look at th
 At first the J2MEPolish Ant-task needs to be defined with the &lt;taskdef&gt; construct. The Ant-property &quot;wtk.home&quot; points to the installation directory of the Wireless Toolkit. 
 </p><p>
 The J2MEPolish task has the three main-sections &quot;&lt;info&gt;&quot;, &quot;&lt;deviceRequirements&gt;&quot; and &quot;&lt;build&gt;&quot;. The &lt;info&gt;-element specifies some general information about the project like the name and the version. The &lt;deviceRequirements&gt;-element is used to select the devices for which the application should be builded. The &lt;build&gt;-element is the central controller of the actual build process. This element controls whether the J2MEPolish GUI should be used, what MIDlets are used, which obfuscators should be used, and so on. Here you can also define additional variables and symbols which can be used in the preprocessing step.
+You can also use the additional section &quot;&amp;lt;emulator&amp;gt;&quot; for launching any WTK-based emulators from within J2ME Polish.
 </p>
 <p>Find more information about the build.xml at following locations:</p>
 <ul>
@@ -110,7 +111,7 @@ The J2MEPolish task has the three main-sections &quot;&lt;info&gt;&quot;, &quot;
 
 <h2 id="design">Designing the Application with CSS</h2>
 <p>
-Even though the application just uses plain MIDP code, we can use the J2MEPolish GUI by setting the &quot;usePolishGui&quot;-attribute of the <build>-element to true (listing 2). J2MEPolish then &quot;weaves&quot; the necessary code and APIs into the application automatically. For specifying or changing the design, the file &quot;polish.css&quot; in the folder &quot;resources&quot; needs to be created or changed (listing 3). As you might have guessed, this file is integrated in the J2MEPolish distribution as well. 
+Even though the application just uses plain MIDP code, we can use the J2MEPolish GUI by setting the &quot;usePolishGui&quot;-attribute of the <build>-element to true (listing 2). J2MEPolish then &quot;weaves&quot; the necessary code and APIs into the application automatically. For specifying or changing the design, the file &quot;polish.css&quot; in the folder &quot;resources&quot; needs to be created or changed (listing 3). As you might have guessed, this file is included in the J2MEPolish distribution as well. 
 <br/><br/><b>Listing 3: polish.css</b>
 <pre>
 colors {

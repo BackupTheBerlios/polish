@@ -19,6 +19,9 @@ Symbol
 #=
 #include
 #message
+#todo
+#foreach
+#next::#foreach
 
 
 #####################################
@@ -45,6 +48,7 @@ Locale
 <midlet>::<midlet
 <obfuscator>::<obfuscator
 <filter>::<filter
+<emulator>::emulator
 wtk.home
 build.xml
 Ant

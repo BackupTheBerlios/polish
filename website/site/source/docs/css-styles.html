@@ -27,7 +27,12 @@ Following predefined styles are used:
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Style&nbsp;&nbsp;</th><th>Description</th></tr>
 	<tr><td>title</td>
-	 <td>The style of screen-titles. </td>
+	 <td>
+	 The style of screen-titles. For MIDP/2.0 devices the native implementation is used by default, unless the preprocessing variable &quot;polish.usePolishTitle&quot; is defined with &quot;true&quot;:
+	 <pre>
+&lt;variable name=&quot;polish.usePolishTitle&quot; value=&quot;true&quot; unless=&quot;polish.Vendor == Nokia&quot; /&gt;
+</pre>
+</td>
 	</tr>
 	<tr><td>focused</td>
 	 <td>The style of a currently focused item. This style is used in Lists, Forms and for Containers like the ChoiceGroup.</td>

@@ -237,13 +237,17 @@ Nokia == Nokia = true<br/>
 <p>
 Some variables have not only different values but also store them in different ways. An example are memory values like the HeapSize which is sometimes defined in kilobytes and sometimes in megabytes. In such situation functions can be used:
 <pre>
-//#if ${ bytes( polish.HeapSize ) } > 102400
+//#if ${ bytes( polish.HeapSize ) } &gt; 102400
 </pre></p><p>
-In the above example the heapsize is compared using the bytes-function. When a function should be used, a dollar-sign and curly parenthesizes needs to embrace the call. 
+In the above example the heapsize is compared using the <code>bytes</code>-function. When a function should be used, a dollar-sign and curly parenthesizes needs to embrace the call. 
+The <code>bytes</code>-function will return -1 when the given memory-value is &quot;dynamic&quot;, so it might be necessary to test for both values:
+<pre>
+//#if ( ${ bytes( polish.HeapSize ) } &gt; 102400 ) or (polish.HeapSize == dynamic)
+</pre>
 </p><p>
 Functions can also be used for fixed values:
 <pre>
-//#if ${ bytes( polish.HeapSize ) } > ${ bytes( 100 kb ) }
+//#if ${ bytes( polish.HeapSize ) } &gt; ${ bytes( 100 kb ) }
 </pre></p><p>
 You will find more information about using functions at the <a href="#variablefunctions">&quot;Using Variables&quot; section</a>.
 </p>
@@ -435,7 +439,7 @@ You can use functions like &quot;uppercase&quot; to change the values. A functio
 </p><p>
 When using function you do not necessarily need a variable - you can also use a direct value. This can be handy when handling with memory values for example:
 <pre>
-//#if ${ bytes( polish.HeapSize ) } > ${ bytes(100 kb) }
+//#if ${ bytes( polish.HeapSize ) } &gt; ${ bytes(100 kb) }
 </pre>
 </p><p>
 Following functions can be used:
@@ -443,7 +447,7 @@ Following functions can be used:
 <ul>
   <li><b>uppercase</b>: Translates the given value into uppercase. &quot;abc&quot; becomes &quot;ABC&quot; for example.</li>
   <li><b>lowercase</b>: Translates the given value into lowercase. &quot;ABC&quot; becomes &quot;abc&quot; for example.</li>
-  <li><b>bytes</b>: Calculates the number of bytes of the given memory value. &quot;1 kb&quot; becomes 1024 for example.</li>
+  <li><b>bytes</b>: Calculates the number of bytes of the given memory value. &quot;1 kb&quot; becomes 1024 for example. The memory-value &quot;dynamic&quot; results in -1. </li>
   <li><b>kilobytes</b>: Calculates the (double) number of kilobytes of the given memory value. The value will contain a point and decimal places. &quot;512 bytes&quot; becomes &quot;0.5&quot; for example, &quot;1024 bytes&quot; becomes &quot;1&quot; and so on.</li>
   <li><b>megabytes</b>: Calculates the (double) number of megabytes of the given memory value.</li>
   <li><b>gigabytes</b>: Calculates the (double) number of gigabytes of the given memory value.</li>
@@ -614,7 +618,7 @@ You can insert complete code fragments with the #include directive:
 Within the file-name you can use all defined variables. A useful variable is especially &quot;polish.source&quot;, which points the base directory of the file, which is currently preprocessed. I you use only relative names, please bear in mind, that the base directory is the root of your project (or to be more precise: the directory which contains the build.xml file).
 </p>
 
-<h2 id="preprocessing-message">Analyzing the Preprocessing-Phase with #message</h2>
+<h2 id="preprocessing-message">Analyzing the Preprocessing-Phase with #message and #todo</h2>
 <p>
 Sometimes the preprocessing itself is rather complex. The #message directive can help to understand the process by printing out messages during the build-process:
 <pre>
@@ -634,6 +638,39 @@ The above example results in the message
 &quot;update-url&quot; has the value &quot;http://update.company.com&quot;. When this variable is not defined, 
 the message &quot;MESSAGE: using the update-url ${update-url}.&quot; 
 will be printed out instead.
+</p>
+<p>
+The #todo directive works very similar like the #message directive, but it adds the name of the source-code and the line in which the #todo-directive is embedded before the actual message (e.g. &quot;TODO: MyMidlet line 12: Implement pauseApp()&quot;).
+</p>
+
+<h2 id="preprocessing-foreach">Handling Several Values in Variables with #foreach</h2>
+<p>
+The #foreach directive can be used for processing a variable which has several values separated by comma. An example is the &quot;polish.SoundFormat&quot;-variable which lists all supported audio-formats of a device, e.g. &quot;midi, amr, mp3&quot;. 
+</p><p>
+The #foreach directive defines a temporary loop-variable and ends with the &quot;#next [loop-var-name]&quot; directive:
+<pre>
+//#foreach [loop-var-name] in [variable-name]
+...[any directives and code]...
+//#next [loop-var-name]
+</pre>
+</p><p>
+The following example illustrates this:
+<pre>
+String format;
+//#foreach format in polish.SoundFormat
+	format = &quot;${ lowercase( format ) }&quot;;
+	System.out.println( &quot;The audio-format &quot; + format + &quot; is supported by this device.&quot; );
+//#next format
+</pre>
+</p><p>
+You can use any number and any kind of code and preprocessing directives within the #foreach-loop itself. So you can even use nested #foreach loops, for example. The code-fragment within the #foreach-loop will be copied into the preprocessed source-code as many time as there are values. In the above example it would be copied three times, since in the example three formats are supported. This copying process has two implications: 
+</p>
+<ol>
+<li>Any variables should be defined outside of the loop (but they can be set and used within the loop, of course), and</li>
+<li>When the application is debugged or compiled, breakpoints or errors can point to the wrong source-code lines.</li>
+</ol>
+<p>
+If you keep these implications in mind you have another powerful directive at your hand.
 </p>
 
 

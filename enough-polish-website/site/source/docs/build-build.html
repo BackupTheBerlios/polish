@@ -205,7 +205,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	<tr><td>defaultexcludes</td>
  	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Defines whether typical  files should not be copied in the application-jar-bundle during packaging. The default-files are for example &quot;polish.css&quot;, any backup-files (*.bak and *~) and the messages files used in the localization. These files are excluded by default.</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Defines whether typical  files should not be copied in the application-jar-bundle during packaging. The files &quot;polish.css&quot;, &quot;Thumbs.db&quot;, any backup-files (*.bak and *~) and the messages-files used in the localization are excluded by default.</td>
 	</tr>
 	<tr><td>excludes</td>
  	 <td>No</td>
@@ -364,12 +364,16 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>variable-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
- 	 <td>Yes</td>
+ 	 <td>Yes unless file is used</td>
 	 <td>The name of the variable.</td>
 	</tr>
 	<tr><td>value</td>
- 	 <td>Yes</td>
+ 	 <td>Yes unless file is used</td>
 	 <td>The value of the variable.</td>
+	</tr>
+	<tr><td>file</td>
+ 	 <td>No</td>
+	 <td>The file which contains several variable-definitions. In the file the variable-names and -values are separated by equals-signs (=). Empty lines and lines starting with a hash-mark (#) are ignored.</td>
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
@@ -381,7 +385,8 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	</table>
 	<p>
-	Variables which have been defined in this way can be included into the source code with the &quot;//#=&quot; preprocessing directive:
+	Variables which have been defined in this way can be included into the source code with the 
+	&quot;<code>//#=</code>&quot; preprocessing directive and can be checked with the &quot;<code>[variable-name]:defined</code>&quot; symbol:
 <pre>
 //#ifdef update-url:defined
 	//#= String url = &quot;${ update-url }&quot;;
@@ -389,6 +394,9 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	String url = &quot;http://www.default.com/update&quot;;
 //#endif
 </pre>
+	</p>
+	<p>
+	Variables can also be compared, please refer to the description of the <a href="directives.html#preprocessing-if">#if-directive</a> for more information.
 	</p>
 
 	<h3 id="debug">&lt;debug&gt;</h3>
@@ -488,12 +496,16 @@ Debug.debug( String message, Throwable exception ) method is called.
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>attribute-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
- 	 <td>Yes</td>
+ 	 <td>Yes unless file is used</td>
 	 <td>The name of the attribute, e.g. &quot;Nokia-MIDlet-Category&quot;</td>
 	</tr>
 	<tr><td>value</td>
- 	 <td>Yes</td>
+ 	 <td>Yes unless file is used</td>
 	 <td>The value of the attribute.</td>
+	</tr>
+	<tr><td>file</td>
+ 	 <td>No</td>
+	 <td>The file which contains several attribute-definitions. In the file the attribute-names and -values are separated by colons (:). Empty lines and lines starting with a hash-mark (#) are ignored.</td>
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
