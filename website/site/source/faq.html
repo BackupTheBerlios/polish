@@ -7,14 +7,36 @@
 	<%index %>
 	<h2 id="technical">Technical</h2>
 	<p class="questionText">Q: How much memory does J2ME Polish need?</p>
-	<p>A: J2ME Polish itself is a build-tool with an optional GUI and some
-	helper classes. If you just use the build-tool, no additional memory
-	is used. If you want to use the GUI the additional needed memory
+	<p>A: J2ME Polish itself is a build-tool with an optional GUI, some
+	helper classes and a MIDP/2.0 compatible game-engine. 
+	<br/>
+	If you just use the build-tool, no additional memory
+	is used. 
+	<br/>
+	If you want to use the GUI the additional needed memory
 	depends on what GUI features you actually use. 
 	The minimum library footprint starts around 15 kb (after obfuscation). 
 	For a full fledged application calculate up to 40 kb for the GUI.
 	Modern devices have a maximum jar size of several MBs, so the memory
-	used by the GUI is more or less negligable.</p>
+	used by the GUI is more or less negligable.
+	<br/>
+	The game-engine uses 5 to 6 kb.
+	</p>
+	<p class="questionText">Q: What third party software is used by J2ME Polish?</p>
+	<p>A: J2ME Polish uses following software:
+	</p>
+	<ul>
+		<li><a href="http://ant.apache.org" target="_blank">Ant</a> is the basis
+		for the build tools and is not included in the distribution.
+		</li>
+		<li><a href="http://www.jdom.org" target="_blank">JDom</a> is used for XML processing.
+		</li>
+		<li><a href="http://proguard.sourceforge.net/" target="_blank">ProGuard</a> is the default obfuscator.
+		</li>
+		<li><a href="http://www.retrologic.com/retroguard-main.html" target="_blank">RetroGuard</a> is another obfuscator
+		which is included in J2ME Polish.
+		</li>
+	</ul>
 	<h2 id="licensing">Licensing</h2>
 	<p class="questionText">Q: When can I buy a commercial license?</p>
 	<p>A: From June 15th 2004 onwards.</p>

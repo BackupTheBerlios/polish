@@ -22,6 +22,7 @@ Even though MIDP/2.0 is the future, the market is crowded with MIDP/1.0 devices.
 <h2 id="howitworks">How It Works</h2>
 <p>
 The J2ME Polish build-tool identifies the usage of the MIDP/2.0 game API and &quot;weaves&quot; the necessary wrapper classes into the code. The obfuscation step then removes all unnecessary functionality to ensure that only the needed parts are actually included into the application.
+The J2ME Polish game-engine needs about 6 kb extra space in the resulting JAR package.
 </p>
 
 <h2 id="limitations">Limitations</h2>
@@ -32,4 +33,57 @@ When a class extends the GameCanvas class, it should call the super-implementati
 </p><p>
 The rotation of Sprites is currently only supported for Nokia devices, otherwise the rotation-setting will be ignored.
 </p>
+
+<h2 id="optimizations">Optimizations</h2>
+<p>
+The TiledLayer implementation has several optional optimizations, which can be triggered 
+by defining specific <a href="build-build.html#variables">variables</a> in the &quot;build.xml&quot; file.
+</p>
+<h3 id="backbuffer">Backbuffer Optimization for the TiledLayer</h3>
+<p>
+The backbuffer optimization uses a buffer, to which the tiles are only painted when they have changed. This can result in a significant higher frames per second throughput, since the complete layer needs to be painted only seldomly.
+<br/>
+The drawback of the backbuffer optimization is that it uses more memory and that no transparent tiles can be used. So when memory is an issue or when the tiled layer is not used as the background, it is recommended not to use the backbuffer optimization.
+</p>
+<ul>
+ <li><b>polish.TiledLayer.useBackBuffer</b>: Defines whether the backbuffer optimization should be used, needs to be &quot;true&quot; to enable the optimization.</li>
+ <li><b>polish.TiledLayer.TransparentTileColor</b>: The color which is used for tiles which should transparent. This defaults to black.</li>
+</ul>
+<p>
+The following example enables the backbuffer optimization:
+<pre>
+&lt;variable name=&quot;polish.TiledLayer.TransparentTileColor&quot; value=&quot;0xD0D000&quot; /&gt;
+&lt;variable name=&quot;polish.TiledLayer.useBackBuffer&quot; value=&quot;true&quot; /&gt;
+</pre>
+</p>
+
+<h3 id="split">Splitting a TiledLayer-Image into Single Tiles</h3>
+<p>
+A tiled layer can be drawn significantly faster when the base image is split into single tiles. This optimization needs a bit more memory compared to a basic tiled layer. Also the transparency of tiles is lost when the device does not support the Nokia UI API (all Nokia devices do support this API).
+</p>
+<ul>
+ <li><b>polish.TiledLayer.splitImage</b>: Defines whether the base image of a TiledLayer should be split into single tiles. Needs to be &quot;true&quot; to enable this optimization.</li>
+</ul>
+<p>
+The following example enables the single tiles optimization:
+<pre>
+&lt;variable name=&quot;polish.TiledLayer.splitImage&quot; value=&quot;true&quot; /&gt;
+</pre>
+</p>
+<h3 id="gridtype">Defining the Grid Type of a TiledLayer</h3>
+<p>
+The J2ME Polish implementation uses a byte-grid, which significantly decrease the memory 
+footprint, but which also limits the number of different tiles to 128. 
+For cases where more different tiles are used, one can define the type to 
+either &quot;int&quot;, &quot;short&quot; or &quot;byte&quot;.
+</p>
+<ul>
+ <li><b>polish.TiledLayer.GridType</b>: Defines the type of the used grid in TiledLayer. This defaults to &quot;byte&quot;. Possible values are &quot;int&quot;, &quot;short&quot; or &quot;byte&quot;.</li>
+</ul>
+<p>
+The following example uses a short-grid, which allows the usage of 32767 different tiles instead of 128 different tiles:
+<pre>
+&lt;variable name=&quot;polish.TiledLayer.GridType&quot; value=&quot;short&quot; /&gt;
+</pre>
+
 <%include end.txt %>

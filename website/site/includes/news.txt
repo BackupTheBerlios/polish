@@ -3,6 +3,55 @@
 	<%index %>
 <%endif %>
 
+<h2 id="1.0rc6release">J2ME Polish 1.0 RC6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-17</h2>
+<p>The 
+<a href="<%= newsbasedir %>downloads/j2mepolish-1.0-RC6.html">latest release candidate of Version 1.0</a> 
+offers a bag full of improvements and bugfixes. If you use an earlier version,
+<a href="<%= newsbasedir %>downloads/j2mepolish-1.0-RC6.html">upgrade now</a>:
+<ul>
+	<li><b>Game-API</b>: Thanks to Jan Peknik the game engine is now much more optimized. 
+	Many bugfixes have been made and now MIDP/2.0 games can now be ported to MIDP/1.0 
+	platforms automatically by J2ME Polish.
+	</li>
+	<li><b>JAD- and Manifest-Attributes</b>: JAD- and MANIFEST-attributes are now always in the same order,
+	also the MicroEdition-Configuration attribute is now set correctly for CLDC/1.1 devices.
+	JAD-attributes can now be sorted and filtered with the new &lt;filter&gt;-sub-element
+	of the &lt;jad&gt;-element. Manifest-attributes can be filtered and sorted
+	with the new &lt;manifestFilter&gt;-element.
+	Info-Section: The &lt;info&gt;-element now accepts the additional
+	attributes &quot;permissions&quot; and &quot;optionalPermissions&quot;.
+	</li>
+	<li><b>Preverifying</b>: J2ME Polish now supports Wireless Toolkits earlier than
+	the current 2.1 release (again).
+	</li>
+	<li><b>Obfuscating</b>: 
+	Several obfuscators can now be combined and used together. 
+	Just define several &lt;obfuscator&gt;-elements
+	in the &lt;build&gt;-section. 
+	No mixed-case class-names are now used
+	under Unix anymore, since some devices have problems with such
+	JAR files.
+	The integration of RetroGuard had an error (it did obfuscate
+	all classes, even the MIDLet classes), which is now fixed.
+	Other obfuscators can now be integrated easier than ever.
+	</li>
+	<li><b>Preprocessing</b>: Any group to which a device belongs to can now be
+	checked with the &quot;polish.group.[group-name]&quot;
+	</pre>
+	One can extend the J2ME Polish preprocessing capabilities using
+	&lt;preprocessor&gt;-element now.
+	The #define directive can now be used for defining variables as well.
+	</li>
+	<li><b>GUI</b>: the GUI can now be extended with the CustomItem,
+	the integration of custom backgrounds and borders has been eased.
+	</li>
+	<li><b>Documentation</b>: The documentation received a major upgrade
+	with the introduction to J2ME Polish and the &quot;Extending J2ME Polish&quot;
+	documentation.
+	</li>
+</ul>
+<%ifdef news.showAll %>
+
 <h2 id="1.0rc5release">J2ME Polish 1.0 RC5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-06</h2>
 <p>J2ME Polish has matured (again ;-) with the 
 <a href="<%= newsbasedir %>downloads/j2mepolish-1.0-RC5.html">fifth release candidate</a> of version 1.0:</p>
@@ -19,8 +68,6 @@
 	<li><b>Preverification</b>: floating point calculations are now allowed
 	for CLDC/1.1 devices, but not for CLDC/1.0 devices.</li>
 </ul>
-
-<%ifdef news.showAll %>
 
 
 <h2 id="1.0rc4release">J2ME Polish 1.0 RC4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-01</h2>

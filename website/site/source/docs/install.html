@@ -31,7 +31,7 @@ To use J2ME Polish, following components need to be installed:
 	<li>Java 2 Standard Edition SDK 1.4  or higher, 
 	<a href="http://java.sun.com/j2se/">http://java.sun.com/j2se/</a>
 	</li>
-	<li>Java Wireless Toolkit 2.1 or higher, 
+	<li>Java Wireless Toolkit, 
 	<a href="http://java.sun.com/products/j2mewtoolkit/index.html">http://java.sun.com/products/j2mewtoolkit/index.html</a>
 	</li>
 	<li>Favorite IDE, for example Eclipse 3.0, 
@@ -62,6 +62,12 @@ Eclipse then automatically integrates all source-files and sets the classpath.
 You should find the sample application now in the Package-Explorer (package de.enough.polish.example). 
 </p><p>
 If the sources have not been integrated automatically, set the source-directory of the project to the &quot;src&quot; directory: Select &quot;Project&quot; -> &quot;Properties...&quot; -> &quot;Java Build Path&quot; -> &quot;Source&quot; and add the source-folder &quot;src&quot; there.
+</p><r>
+When the classpath was not set correctly, please include the following jar-files from the 
+&quot;import&quot; folder to your classpath: 
+<br/>import/midp2.jar, import/enough-j2mepolish-client.jar, import/mmapi.jar, import/nokia-ui.jar, import/wmapi.jar.
+<br/>Actually only the first two libraries are needed for the sample application, but when the others
+are included, future enhancements are easier to accomplish.
 </p><p>
 Optionally you can change the build-settings by
 modifying the file &quot;build.xml&quot; (which is located in the root of your project).

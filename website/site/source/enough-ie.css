@@ -162,7 +162,7 @@ a:link {
 
 
 a:hover {
-	font-weight: bold;
+	color: red;
 	text-decoration: underline;
 }
 
@@ -174,6 +174,12 @@ a:visited {
 	color: rgb(24,41,44);
 	text-decoration: underline;
 }
+
+a:visited:hover {
+	color: red;
+	text-decoration: underline;
+}
+
 
 .imageLink:link {
 	text-decoration: none;

@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload/>
 <author/>
 <email/>
@@ -125,5 +125,20 @@
 <item url="docs/variables.html" />
 <item url="docs/resource-assembling.html" />
 <item upload_time="" url="docs/game-engine.html" />
+<item url="downloads/j2mepolish-1.0-RC6.html" />
+<item url="contributors.html" />
+<item url="docs/introduction.html" />
+<item url="docs/javadoc.html" />
+<item url="docs/extending.html" />
+<item url="docs/custom-obfuscator.html" />
+<item url="docs/custom-preprocessor.html" />
+<item url="docs/custom-item.html" />
+<item url="docs/custom-background.html" />
+<item url="docs/custom-border.html" />
+<item url="images/favicon.gif" />
+<item url="images/javanet_button.gif" />
+<item url="images/screenshot-custom-background-circle1.png" />
+<item url="images/screenshot-custom-background-circle2.png" />
+<item url="images/screenshot-custom-border-circle.png" />
 </project>
 </webproject>

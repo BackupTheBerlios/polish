@@ -82,6 +82,16 @@ BitsPerPixel, color-depth::BitsPerPixel
 JavaProtocol, SoundFormat, VideoFormat
 
 #####################################
+## Game-Engine                     ##
+#####################################
+Game-Engine::game
+TiledLayer
+Sprite::game
+Layer::game
+LayerManager::game
+GameCanvas::game
+
+#####################################
 ## Java IDEs                       ##
 #####################################
 Eclipse
@@ -98,3 +108,8 @@ Configuration, Update, Ant
 JAD, Manifest, JAR
 Discussion, Forum, Mailinglist, Feature, Wiki
 Resources, Assembling
+Introduction
+Extending
+JavaDoc
+Documentation
+Customimizing:custom

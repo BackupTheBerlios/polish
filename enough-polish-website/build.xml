@@ -6,18 +6,25 @@
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/import/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="1.0-RC5" />
+<property name="Version" value="1.0-RC6" />
+	
+<target name="clean">
+	<property name="clean" value="true" />
+</target>
 	
 <target name="init">
 	<!-- Create the time stamp -->
     <tstamp/>
     <!-- Create distribution dirs -->
 	<mkdir dir="dist" />
+	<property name="clean" value="false" />
 </target>
 
 <target name="javadoc" >
+	<mkdir dir="dist/javadoc/j2me" />
+	<mkdir dir="dist/javadoc/build" />
 	<javadoc 
-	    	destdir="dist/javadoc" 
+	    	destdir="dist/javadoc/j2me" 
 	    	access="public" 
 	    	use="true" 
 	    	notree="false" 
@@ -31,7 +38,24 @@
 	    	packagenames="de.enough.*" 
 	    	sourcepath="../enough-polish-j2me/source/src" 
 	    	classpath="../enough-polish-j2me/bin/classes:import/midp2.jar" 
-	    	doctitle="The J2ME Polish Client Framework, Version ${ Version }"
+	    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
+	/>	
+	<javadoc 
+	    	destdir="dist/javadoc/build" 
+	    	access="public" 
+	    	use="true" 
+	    	notree="false" 
+	    	nonavbar="false" 
+	    	noindex="false" 
+	    	splitindex="true" 
+	    	author="true" 
+	    	version="true" 
+	    	nodeprecatedlist="false" 
+	    	nodeprecated="false" 
+	    	packagenames="de.enough.*" 
+	    	sourcepath="../enough-polish-build/source/src" 
+	    	classpath="../enough-polish-build/bin/classes:import/jdom.jar:import/ant.jar" 
+	    	doctitle="The J2ME Polish Build Framework, Version ${Version}"
 	/>	
 </target>
 	
@@ -47,6 +71,7 @@
 				<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
 				<variable name="Author" value="Robert Virkus" />
 				<variable name="basedir" value="" />
+				<variable name="javadocdir" value="" />
 				<variable name="index.h1" value="h1index" />
 				<variable name="index.h2" value="h2index" />
 				<variable name="index.h3" value="h3index" />
@@ -58,7 +83,7 @@
 		srcdir="site/source"
 	 	includedir="site/includes"
 		destdir="dist"
-		clean="false"
+		clean="${clean}"
 		update="atoz.html, documentation.html, index.html, news.html, download.html, docs/install.html"
 		keywordsFile="keywords.txt"
 		>
@@ -66,6 +91,7 @@
 		<variable name="LatestDownload" value="j2mepolish-${Version}.html" />
 		<variable name="Author" value="Robert Virkus" />
 		<variable name="basedir" value="" />
+		<variable name="javadocdir" value="" />
 		<variable name="newsbasedir" value="" />
 		<variable name="index.h1" value="h1index" />
 		<variable name="index.h2" value="h2index" />

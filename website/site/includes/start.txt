@@ -10,6 +10,7 @@
 	<%else %>
 		<title>J2ME Polish</title>
 	<%endif %>
+	<link rel="Shortcut Icon" href="<%= basedir %>images/favicon.gif" type="image/ico" />
 	<noscript>
 		<link href="<%= basedir %>enough.css" rel="stylesheet" type="text/css" />
 	</noscript>
@@ -39,6 +40,11 @@
 			<div id="currentLink"><a href="<%= basedir %>index.html">Overview</a></div>
 		<%else %>
 			<a href="<%= basedir %>index.html">Overview</a><br />
+		<%endif %>
+		<%ifdef inIntroductionSection %>
+			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
+		<%else %>
+			<a href="<%= basedir %>docs/introduction.html">Introduction</a><br />
 		<%endif %>
 		<%ifdef inNewsSection %>
 			<div id="currentLink"><a href="<%= basedir %>news.html">News</a></div>
@@ -112,6 +118,23 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.extending %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/custom-obfuscator.html">Obfuscator</a><br/>
+				<a href="<%= basedir %>docs/custom-preprocessor.html">Preprocessor</a><br/>
+				<a href="<%= basedir %>docs/custom-item.html">GUI: CustomItem</a><br/>
+				<a href="<%= basedir %>docs/custom-background.html">GUI: Background</a><br/>
+				<a href="<%= basedir %>docs/custom-border.html">GUI: Border</a>
+				</p>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.javadoc %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
+			<%endif %>
 			
 		<%else %>
 			<a href="<%= basedir %>documentation.html">Documentation</a><br/>
@@ -183,6 +206,11 @@
 			<div id="currentLink"><a href="<%= basedir %>contact.html">Contact</a></div>
 		<%else %>
 			<a href="<%= basedir %>contact.html">Contact</a><br/>
+		<%endif %>
+		<%ifdef inContributorSection %>
+			<div id="currentLink"><a href="<%= basedir %>contributors.html">Contributors</a></div>
+		<%else %>
+			<a href="<%= basedir %>contributors.html">Contributors</a><br/>
 		<%endif %>
 		<%ifdef inIndexSection %>
 			<div id="currentLink"><a href="<%= basedir %>atoz.html">Index</a></div>

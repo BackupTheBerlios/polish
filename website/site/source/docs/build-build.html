@@ -187,11 +187,20 @@ With the build-section the actual build process is controlled:
 	</tr>
 	<tr><td>class</td>
  	 <td>No</td>
-	 <td>The class which controls the obfuscator. Each class which extends <code>de.enough.polish.obfuscate.Obfuscator</code> can be used. With this mechanism third party obfuscators can be integrated easily.</td>
+	 <td>The class which controls the obfuscator. Each class which extends <code>de.enough.polish.obfuscate.Obfuscator</code> can be used. With this mechanism third 
+	 party obfuscators can be <a href="custom-obfuscator.html">integrated</a> easily.</td>
+	</tr>
+	<tr><td>classPath</td>
+ 	 <td>No</td>
+	 <td>The classpath for this obfuscator. This is useful for integrating a third party obfuscator.</td>
 	</tr>
 	</table>
 <p>
-	The &lt;obfuscator&gt; supports the subelement &lt;keep&gt;, which is used to define classes which are loaded dynamically (e.g. with Class.forName(...) ) and should not be obfuscated:
+	The &lt;obfuscator&gt; supports the subelements &lt;keep&gt; and &lt;parameter&gt;.
+	</p>
+	<h4 id="obfuscator-keep">The &lt;keep&gt; Subelement</h4>
+	<p>
+	The &lt;keep&gt;-element is used to define classes which are loaded dynamically (e.g. with Class.forName(...) ) and should not be obfuscated:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
 	&lt;keep class=&quot;com.company.dynamic.SomeDynamicClass&quot; /&gt;
@@ -201,12 +210,33 @@ With the build-section the actual build process is controlled:
 	</p>
 	<p>The used MIDlet classes do not need to be set with the &lt;keep&gt; element, since they are saved from obfuscation automatically.</p>
 	
+	<h4 id="obfuscator-parameter">The &lt;parameter&gt; Subelement</h4>
+	<p>
+	The &lt;parameter&gt;-element is used to specify parameters for the obfuscator. This can be useful for integrating third party obfuscators which require additional settings:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
+	&lt;keep class=&quot;com.company.dynamic.SomeDynamicClass&quot; /&gt;
+	&lt;keep class=&quot;com.company.dynamic.AnotherDynamicClass&quot; /&gt;
+	&lt;parameter name=&quot;scriptFile&quot; value=&quot;../scripts/obfuscate.script&quot; /&gt;
+&lt;/obfuscator&gt;
+</pre>
+	</p>
+	
+	<h4 id="obfuscator-combining">Combining Several Obfuscators</h4>
+	<p>
+	Several obfuscators can be combined just by specifying several &lt;obfuscator&gt; elements. When the &lt;keep&gt; subelement is used, it only needs to be specified on of the &lt;obfuscator&gt; elements. J2ME Polish will then use the obfuscated output of one obfuscator as input for the following obfuscator.
+	</p>
+	
 	<h3 id="variables">&lt;variables&gt;</h3>
 	<p>
 	The optional &lt;variables&gt;-element contains several variable definitions, which can be used for the preprocessing. This mechanism can be used for example to define configuration values:
 <pre>
 &lt;variables includeAntProperties=&quot;true&quot;&gt;
 	&lt;variable name=&quot;update-url&quot; value=&quot;http://www.enough.de/update&quot; /&gt;
+	&lt;variable name=&quot;polish.TiledLayer.splitImage&quot;
+		     value=&quot;true&quot; 
+		     if=&quot;polish.Vendor == Nokia&quot; /&gt;
+
 &lt;/variables&gt;
 </pre>
 </p>	
@@ -218,7 +248,7 @@ With the build-section the actual build process is controlled:
 	</tr>
 	</table>
 	<p>
-	The &lt;variables&gt;-element contains an arbitrary number of &lt;variable&gt;-elements, which define the actual variables. Each variable has the attributes name and value:
+	The &lt;variables&gt;-element contains an arbitrary number of &lt;variable&gt;-elements, which define the actual variables. Each variable needs the attributes name and value:
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>variable-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
@@ -228,6 +258,14 @@ With the build-section the actual build process is controlled:
 	<tr><td>value</td>
  	 <td>Yes</td>
 	 <td>The value of the variable.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this variable to be included.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this variable to be included.</td>
 	</tr>
 	</table>
 	<p>
@@ -327,7 +365,10 @@ Debug.debug( String message, Throwable exception ) method is called.
 &lt;jad&gt;
  &lt;attribute 	name=&quot;Nokia-MIDlet-Category&quot; 
  		value=&quot;Game&quot; 
-		if=&quot;polish.Vendor == Nokia&quot; /&gt;
+		if=&quot;polish.group.Series40&quot; /&gt;
+ &lt;attribute 	name=&quot;MIDlet-Push-1&quot; 
+ 		value=&quot;socket://:79, com.sun.example.SampleChat, *&quot; 
+		if=&quot;polish.midp2&quot; /&gt;
 &lt;/jad&gt;	
 </pre>
 </p>
@@ -343,9 +384,133 @@ Debug.debug( String message, Throwable exception ) method is called.
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>A complex term which needs to yield true when this attribute should be included for the current device. The if-term can contain all operators and symbols which are available int the preprocessing.</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this variable to be included.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this variable to be included.</td>
 	</tr>
 	</table>
 	<p>Attributes which are defined in this way can be loaded in the application with the MIDlet.getAppProperty( String name ) method, which needs the name of the attribute as an argument and returns the value of that argument. Often it is advisable to use the variable-mechanism of J2ME Polish instead, since such values are actually hard-coded into the application and are, therefore, much faster than the getAppProperty(...)-mechanism.</p>
-	
+
+	<h4 id="jad-sorting">Sorting and Filtering JAD attributes</h4>
+	<p>
+The JAD-attributes can filtered and sorted using the &lt;filter&gt; subelement:
+<pre>
+&lt;jad&gt;
+ &lt;attribute 
+	name=&quot;Nokia-MIDlet-Category&quot; 
+	value=&quot;Game&quot; 
+	if=&quot;polish.group.Series40&quot; 
+	/&gt;
+ &lt;filter&gt;
+	MIDlet-Name, MIDlet-Version, 
+	MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, 
+	MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
+	MIDlet-Data-Size?, MIDlet-*, *
+ &lt;/filter&gt;
+&lt;/jad&gt;
+</pre>
+</p>
+<p>
+The &lt;filter&gt; element contains all allowed attribute names in the desired order and separated by commas. Following syntax is used:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Filter&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>name</td>
+ 	 <td><code>MIDlet-Name</code></td>
+	 <td>The complete name of a required attribute.</td>
+	</tr>
+	<tr><td>name followed by a questionmark</td>
+ 	 <td><code>MIDlet-Icon?</code></td>
+	 <td>The complete name of an optional attribute.</td>
+	</tr>
+	<tr><td>beginning of a name followed by a star</td>
+ 	 <td><code>MIDlet-*</code></td>
+	 <td>All remaining attributes which names start with the given sequence will be included at this position.</td>
+	</tr>
+	<tr><td>start</td>
+ 	 <td><code>*</code></td>
+	 <td>All remaining attributes will be included at this position. A star can only positioned at the end of a filter.</td>
+	</tr>
+	</table>
+	<p>An overview about allowed attributes can be found at <a href="http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html" target="_blank">http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html</a>.
+	</p>
+
+<h3 id="manifestFilter">&lt;manifestFilter&gt;</h3>
+<p>
+The manifest filter element can be used to sort and filter manifest attributes. Please note that the first included attribute should always be the &quot;Manifest-Version&quot;-attribute. Otherwise the application will most likely not work:
+<pre>
+&lt;manifestFilter&gt;
+	Manifest-Version, MIDlet-Name, MIDlet-Version, MIDlet-Vendor,
+	MIDlet-1, MIDlet-2?, MIDlet-3?, MIDlet-4?, MIDlet-5?, 
+	MicroEdition-Profile, MicroEdition-Configuration,
+	MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
+	MIDlet-Data-Size?
+&lt;/manifestFilter&gt;
+</pre>
+</p><p>
+The &lt;manifestFilter&gt; element contains all allowed attribute names in the desired order and separated by commas. Following syntax is used:		
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Filter&nbsp;&nbsp;</th><th>Example&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>name</td>
+ 	 <td><code>MIDlet-Name</code></td>
+	 <td>The complete name of a required attribute.</td>
+	</tr>
+	<tr><td>name followed by a questionmark</td>
+ 	 <td><code>MIDlet-2?</code></td>
+	 <td>The complete name of an optional attribute.</td>
+	</tr>
+	<tr><td>beginning of a name followed by a star</td>
+ 	 <td><code>MIDlet-*</code></td>
+	 <td>All remaining attributes which names start with the given sequence will be included at this position.</td>
+	</tr>
+	<tr><td>start</td>
+ 	 <td><code>*</code></td>
+	 <td>All remaining attributes will be included at this position. A star can only positioned at the end of a filter.</td>
+	</tr>
+	</table>
+	<p>An overview about allowed attributes can be found at <a href="http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html" target="_blank">http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html</a>.
+	</p>
+
+<h3 id="preprocessor">&lt;preprocessor&gt;</h3>
+<p>
+The &lt;preprocessor&gt; element can be used to 
+<a href="custom-preprocessor.html">integrate</a> own or third party preprocessors. 
+This can be used for allowing new preprocessing directives for example.
+<pre>
+&lt;preprocessor
+	class=&quot;com.company.preprocess.MyPreprocessor&quot; 	
+	classPath=&quot;import/preprocessing.jar&quot; 	
+	&gt;
+ &lt;parameter 
+	name=&quot;scriptFile&quot; 
+	value=&quot;../scripts/preprocess.script&quot; 
+	/&gt;
+&lt;/preprocessor&gt;	
+</pre></p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>preprocessor-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>class</td>
+ 	 <td>Yes</td>
+	 <td>The class of the preprocessor.</td>
+	</tr>
+	 <td>classPath</td>
+ 	 <td>Yes</td>
+	 <td>The classpath for the preprocessor.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The name of the Ant-property, which needs to be &quot;true&quot; or &quot;yes&quot;, when this &lt;preprocessor&gt; element should be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The name of the Ant-property, which needs to be &quot;false&quot; or &quot;no&quot;, when this &lt;preprocessor &gt; element should be used..</td>
+	</tr>
+	</table>
+	<p>
+	The preprocessor can be configured using a number &lt;parameter&gt; subelements. Each &lt;parameter&gt; subelement needs to define the attributes &quot;name&quot; and &quot;value&quot;.
+	</p>
+
 <%include end.txt %>
