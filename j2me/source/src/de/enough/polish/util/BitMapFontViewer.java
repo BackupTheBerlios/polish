@@ -106,6 +106,11 @@ public class BitMapFontViewer {
 				currentLineWidth += characterWidth;
 			}
 		}
+		// store the width of the last-line: 
+		this.lineWidths[ linesIndex ] = currentLineWidth;
+		if ( currentLineWidth > maxLineWidth ) {
+			maxLineWidth = currentLineWidth;
+		}
 		this.numberOfLines = linesIndex + 1;
 		this.height = this.numberOfLines * (fontHeight + verticalPadding) - verticalPadding;
 		this.width = maxLineWidth;

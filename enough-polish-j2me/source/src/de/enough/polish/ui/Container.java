@@ -942,7 +942,7 @@ public class Container extends Item {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
 	 */
-	protected Style focus(Style focusStyle) {
+	protected Style focus(Style focusstyle) {
 		if ( this.itemsList.size() == 0) {
 			return super.focus( this.focusedStyle );
 		} else {
@@ -970,6 +970,16 @@ public class Container extends Item {
 					scr.setItemCommands(this);
 				}
 			}
+			// change the label-style of this container:
+			//#ifdef polish.css.label-style
+				if (this.label != null) {
+					Style labStyle = (Style) focusstyle.getObjectProperty("label-style");
+					if (labStyle != null) {
+						this.labelStyle = this.label.style;
+						this.label.setStyle( labStyle );
+					}
+				}
+			//#endif
 			return item.style;
 		}
 	}
@@ -991,6 +1001,12 @@ public class Container extends Item {
 					scr.removeItemCommands(this);
 				}
 			}
+			// change the label-style of this container:
+			//#ifdef polish.css.label-style
+				if (this.label != null && this.label.style != this.labelStyle) {
+					this.label.setStyle( this.labelStyle );
+				}
+			//#endif
 		}
 	}
 	

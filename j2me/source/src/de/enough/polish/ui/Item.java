@@ -670,8 +670,8 @@ public abstract class Item extends Object
 		private Image afterImage;
 	//#endif
 	// label settings:
-	private Style labelStyle = StyleSheet.labelStyle;
-	private StringItem label;
+	protected Style labelStyle = StyleSheet.labelStyle;
+	protected StringItem label;
 
 	private boolean useSingleRow;
 	
