@@ -284,9 +284,6 @@ public class PolishTask extends ConditionalTask {
 	private void execute(Device device, Locale locale, boolean hasExtensions) {
 		preprocess( device, locale );
 		compile( device );
-		if (this.doObfuscate) {
-			obfuscate( device, locale );
-		}
 		if (this.buildSetting.isInCompilerMode()) {
 			if (this.buildSetting.doPreverifyInCompilerMode()) {
 				preverify( device, locale );
@@ -295,6 +292,9 @@ public class PolishTask extends ConditionalTask {
 			System.out.println();
 			System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
 			return;
+		}
+		if (this.doObfuscate) {
+			obfuscate( device, locale );
 		}
 		preverify( device, locale );
 		jar( device, locale );
@@ -1237,7 +1237,7 @@ public class PolishTask extends ConditionalTask {
 			javac.setDebugLevel("lines,vars,source");
 		}
 		File targetDir;
-		if (this.buildSetting.isInCompilerMode() && !this.doObfuscate) {
+		if ( this.buildSetting.isInCompilerMode() && ! this.buildSetting.doPreverifyInCompilerMode()) { // && !this.doObfuscate is not needed
 			targetDir = this.buildSetting.getCompilerDestDir();
 		} else {
 			targetDir = new File( targetDirName );
@@ -1401,10 +1401,14 @@ public class PolishTask extends ConditionalTask {
 		} else {
 			cldc = "-nonative";
 		}
+		String destinationDir = device.getClassesDir();
+		if (this.buildSetting.isInCompilerMode()) {
+			destinationDir = this.buildSetting.getCompilerDestDir().getAbsolutePath();
+		}
 		String[] commands = new String[] {
 			preverify.getAbsolutePath(), 
 			"-classpath", classPath,
-			"-d", device.getClassesDir(), // destination-dir - default is ./output
+			"-d", destinationDir, // destination-dir - default is ./output
 			cldc,
 			device.getClassesDir()
 		};
