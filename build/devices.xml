@@ -2173,6 +2173,7 @@
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/S65</identifier>
+		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, jtwi, 3dapi, locationapi, btapi" />
@@ -2184,6 +2185,8 @@
 		<capability name="HeapSize" value="1.5 MB" />
 		<capability name="StorageSize" value="11 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
 	</device>
 	
 	<device

@@ -60,7 +60,7 @@
 
 	<attribute
 		name="icon-image-align"
-		type="string"
+		type="integer"
 		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
 		description="The position of the image relative to the text."
 		default="left"
@@ -165,7 +165,7 @@
 
 	<attribute
 		name="gauge-mode"
-		type="string"
+		type="integer"
 		appliesTo="Gauge"
 		description="In the continuous mode only the gauge-color will be used, whereas the chunked mode intersects the indicator in chunks. The setting is ignored when an image is provided."
 		default="chunked"
@@ -206,7 +206,7 @@
 
 	<attribute
 		name="gauge-value-align"
-		type="string"
+		type="integer"
 		appliesTo="Gauge"
 		description="Defines where the current value of the gauge should be displayed."
 		default="left"

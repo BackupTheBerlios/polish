@@ -496,6 +496,10 @@ public class CssConverter extends Converter {
 					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attribute != null) {
 						attributeType = attribute.getType();
+						attribute.checkValue(value);
+						if (attributeType == CssAttribute.INTEGER && attribute.hasFixValues()) {
+							value = Integer.toString( attribute.getValuePosition(value) );
+						}
 					} else {
 						// the attribute is not registered anywhere:
 						System.out.println("Recommendation: It is advised to register the CSS-attribute [" + attributeName + "] in the [custom-css-attributes.xml].");
@@ -551,7 +555,7 @@ public class CssConverter extends Converter {
 						.append('"');
 					} else if (attributeType == CssAttribute.COLOR 
 							|| attributeType == CssAttribute.INTEGER ) {
-						// check value:
+						// check integer value:
 						if (attributeType == CssAttribute.INTEGER ) {
 							try {
 								Integer.parseInt( value );

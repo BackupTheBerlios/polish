@@ -374,11 +374,11 @@ public class BuildSetting {
 	/**
 	 * Sets the working directory. Defaults to "./build".
 	 * 
-	 * @param workPath The working directory to set.
+	 * @param workDir The working directory to set.
 	 */
-	public void setWorkDir(String workPath) {
-		File newWorkDir = new File( this.project.getBaseDir().getAbsolutePath() + File.separator + workPath );
-		this.workDir = newWorkDir;
+	public void setWorkDir(File workDir) {
+		//File newWorkDir = new File( this.project.getBaseDir().getAbsolutePath() + File.separator + workPath );
+		this.workDir = workDir;
 	}
 	
 	/**

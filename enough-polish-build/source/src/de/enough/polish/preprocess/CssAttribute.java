@@ -170,7 +170,7 @@ public class CssAttribute {
 				return;
 			}
 		}
-		String message = "Invalid CSS: the attribute [" + this.name + "] needs one"
+		String message = "Invalid CSS: the attribute [" + this.name + "] needs to be one "
 					+ "of the following values: [";
 		for (int i = 0; i < this.allowedValues.length; i++) {
 			message += this.allowedValues[i];
@@ -202,5 +202,31 @@ public class CssAttribute {
 	 */
 	public String getDescription() {
 		return this.description;
+	}
+
+	/**
+	 * @return true when this CSS attribute has a fix list of allowed values
+	 */
+	public boolean hasFixValues() {
+		return (this.allowedValues != null);
+	}
+	
+	/**
+	 * Retrieves the position of the given value in list of allowed values.
+	 * 
+	 * @param value the value
+	 * @return the position, a value between 0 and the length of allowed values.
+	 *         When the value is invalid, -1 will be returned
+	 * @throws NullPointerException when no fix allowed values are defined
+	 * @see #hasFixValues()
+	 * @see #checkValue(String) 
+	 */
+	public int getValuePosition( String value ) {
+		for (int i = 0; i < this.allowedValues.length; i++) {
+			if (value.equals( this.allowedValues[i])) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }
