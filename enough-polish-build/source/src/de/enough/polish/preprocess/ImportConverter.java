@@ -43,12 +43,12 @@ import java.util.Set;
  */
 public final class ImportConverter {
 	
-	private HashMap polishToMidp1;
-	private HashMap polishToMidp2;
-	private HashMap midp1ToPolish;
-	private HashMap midp2ToPolish;
-	private String[] completeMidp1;
-	private String[] completeMidp2;
+	private final HashMap polishToMidp1;
+	private final HashMap polishToMidp2;
+	private final HashMap midp1ToPolish;
+	private final HashMap midp2ToPolish;
+	private final String completeMidp1;
+	private final String completeMidp2;
 	
 	/**
 	 * Creates a new import converter.
@@ -89,33 +89,32 @@ public final class ImportConverter {
 		// when javax.microedition.lcdui.* is imported, there are still
 		// some base classes which cannot be implemented by the polish framework,
 		// these have to be inserted as well:
-		this.completeMidp1 = new String[]{
-				"import javax.microedition.lcdui.CommandListener;",
-				"import javax.microedition.lcdui.Alert;",
-				"import javax.microedition.lcdui.AlertType;",
-				"import javax.microedition.lcdui.Canvas;",
-				"import javax.microedition.lcdui.Command;",
-				"import javax.microedition.lcdui.Display;",
-				"import javax.microedition.lcdui.Displayable;",
-				"import javax.microedition.lcdui.Font;",
-				"import javax.microedition.lcdui.Graphics;",
-				"import javax.microedition.lcdui.Image;",
-				"import de.enough.polish.ui.*;"
-		};
+		this.completeMidp1 = 
+				"import javax.microedition.lcdui.CommandListener; " +
+				"import javax.microedition.lcdui.Alert; " +
+				"import javax.microedition.lcdui.AlertType; " + 
+				"import javax.microedition.lcdui.Canvas; " + 
+				"import javax.microedition.lcdui.Command; " +
+				"import javax.microedition.lcdui.Display; " +
+				"import javax.microedition.lcdui.Displayable; " + 
+				"import javax.microedition.lcdui.Font; " +
+				"import javax.microedition.lcdui.Graphics; " +
+				"import javax.microedition.lcdui.Image; " +
+				"import de.enough.polish.ui.*;";
+		
 
-		this.completeMidp2 = new String[]{
-				"import javax.microedition.lcdui.CommandListener;",
-				"import javax.microedition.lcdui.Alert;",
-				"import javax.microedition.lcdui.AlertType;",
-				"import javax.microedition.lcdui.Canvas;",
-				"import javax.microedition.lcdui.Command;",
-				"import javax.microedition.lcdui.Display;",
-				"import javax.microedition.lcdui.Displayable;",
-				"import javax.microedition.lcdui.Font;",
-				"import javax.microedition.lcdui.Graphics;",
-				"import javax.microedition.lcdui.Image;",
-				"import de.enough.polish.ui.*;"
-		};
+		this.completeMidp2 = 
+				"import javax.microedition.lcdui.CommandListener; " +
+				"import javax.microedition.lcdui.Alert; " +
+				"import javax.microedition.lcdui.AlertType; " +
+				"import javax.microedition.lcdui.Canvas; " + 
+				"import javax.microedition.lcdui.Command; " +
+				"import javax.microedition.lcdui.Display; " +
+				"import javax.microedition.lcdui.Displayable; " +
+				"import javax.microedition.lcdui.Font; " +
+				"import javax.microedition.lcdui.Graphics; " +
+				"import javax.microedition.lcdui.Image; " +
+				"import de.enough.polish.ui.*;";
 		
 		// init import statements to translate from the polish- to the J2ME-GUI:
 		HashMap toJavax = new HashMap();
@@ -169,7 +168,7 @@ public final class ImportConverter {
 				String importContent = line.substring( 7, line.length() -1 ).trim();
 				if ( usePolishGui ) {
 					if (!changed) {
-						sourceCode.insert( "import de.enough.polish.ui.StyleSheet;");
+						sourceCode.setCurrent( line + " import de.enough.polish.ui.StyleSheet;");
 						changed = true;
 					}
 					// translate import statements from javax.microedition.lcdui to polish:
@@ -180,17 +179,11 @@ public final class ImportConverter {
 					} else if ("javax.microedition.lcdui.*".equals( importContent) ) {
 						// check for the javax.microedition.lcdui.* import:
 						changed = true;
-						// neutralise this import:
-						sourceCode.setCurrent( "// neutralised: " + importContent );
 						// insert replacement:
 						if (isMidp1) {
-							sourceCode.insert( this.completeMidp1 );
-							int index = sourceCode.getCurrentIndex() + this.completeMidp1.length;
-							sourceCode.setCurrentIndex( index );
+							sourceCode.setCurrent( this.completeMidp1 );
 						} else {
-							sourceCode.insert( this.completeMidp2 );
-							int index = sourceCode.getCurrentIndex() + this.completeMidp2.length;
-							sourceCode.setCurrentIndex( index );
+							sourceCode.setCurrent( this.completeMidp2 );
 						}
 					}
 				} else {
