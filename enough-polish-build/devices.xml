@@ -2187,7 +2187,7 @@
 		<identifier>Siemens/C60, Siemens/C61</identifier>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16" />
@@ -2223,7 +2223,7 @@
 		<identifier>Siemens/CF62</identifier>
 		<capability name="ScreenSize" value="130x130"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, cf62-led-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, cf62-led-api, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi32, wav" />
@@ -2288,7 +2288,7 @@
 		<identifier>Siemens/M55, Siemens/M56</identifier>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, wav" />
@@ -2306,7 +2306,7 @@
 		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, jtwi" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, jtwi, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
@@ -2344,7 +2344,7 @@
 		<identifier>Siemens/MC60</identifier>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, wav" />
@@ -2359,7 +2359,7 @@
 		<identifier>Siemens/S55, Siemens/S56, Siemens/S57</identifier>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="8"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, smaf" />
@@ -2374,7 +2374,7 @@
 		<identifier>Siemens/SL55, Siemens/SL56</identifier>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api" />
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api, siemens-extension-api" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, smaf" />

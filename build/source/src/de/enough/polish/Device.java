@@ -220,14 +220,19 @@ public class Device extends PolishComponent {
 					.splitAndTrim(this.supportedApisString, ',');
 			for (int i = 0; i < apis.length; i++) {
 				String api = apis[i].toLowerCase();
-				String symbol = libraryManager.getSymbol(api);
-				if (symbol == null) {
-					symbol = api;
+				Library library = libraryManager.getLibrary(api);
+				String symbol = api;
+				if (library != null) {
+					symbol = library.getSymbol();
 				}
 				apis[i] = symbol;
 				addFeature("api." + symbol);
 				groupNamesList.add(symbol);
 				groupsList.add(groupManager.getGroup(symbol, true));
+				// add any defined features and symbols of the api:
+				if (library != null) {
+					addComponent(library);
+				}
 			}
 			this.supportedApis = apis;
 		}

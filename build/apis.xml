@@ -142,6 +142,18 @@
 		<path>import/siemens-color-game-api.jar</path>
 	</api>
 
+	<api>
+		<name>Siemens Extension API</name>
+		<description>A collection of additional classes for Siemens MIDP/1.0 devices.
+		</description>
+		<names>siemens-extension-api</names>
+		<symbol>siemens-extension-api</symbol>
+		<features>supportsWMAPIWrapper</features>
+		<files>siemens-extension-api.jar</files>
+		<path>import/siemens-extension-api.jar</path>
+	</api>
+
+
 <!--
 	You can use this block to define a new API
 	( remove these XML-comments ):

@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class Library {
+public class Library extends PolishComponent {
 	
 	private String fullName;
 	private String description;
@@ -100,6 +100,16 @@ public class Library {
 		this.antProperties = antProperties;
 		// try and find this library only when it is used
 		// (compare method findPath())
+
+		String featuresStr = definition.getChildTextTrim("features");
+		if (featuresStr != null) {
+			String[] features = TextUtil.splitAndTrim(featuresStr, ',');
+			for (int i = 0; i < features.length; i++) {
+				String feature = features[i];
+				addFeature(feature);
+			}
+		}
+		loadCapabilities(definition, this.symbol, "apis.xml");
 	}
 	
 	/**

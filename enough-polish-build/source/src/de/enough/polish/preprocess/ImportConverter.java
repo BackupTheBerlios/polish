@@ -198,6 +198,7 @@ public final class ImportConverter {
 				translations = this.polishToMidp2;
 			}
 		}
+		translations = addDynamicTranslations( translations, usePolishGui, isMidp1, device, preprocessor );
 		// go through the code and search for import statements:
 		boolean changed = false;
 		while (sourceCode.next()) {
@@ -249,5 +250,47 @@ public final class ImportConverter {
 		}
 		return changed;
 	}
+
+	/**
+	 * Adds translations which depend on the current device. 
+	 * An example is the inclusion of the WMAPI-wrapper-API, 
+	 * which is only included on several conditions.
+	 * 
+	 * @param translations the basic translations
+	 * @param usePolishGui True when the polish-GUI should be used instead of the standard J2ME-GUI.
+	 * @param isMidp1 True when the MIDP/1-standard is supported, false when the MIDP/2-standard is supported.
+	 * @param sourceCode The source code
+	 * @param device the current device\
+	 * @param preprocessor the preprocessor with all variables and symbols
+	 * @return either the same translations map, when no changes are done, or
+	 * 	 a new modified map.
+	 */
+	private HashMap addDynamicTranslations(HashMap translations, boolean usePolishGui, boolean isMidp1, Device device, Preprocessor preprocessor) {
+		// by default do not change is applied:
+		HashMap newTranslations = translations;
+		// check for WMAPI-Wrapper:
+		boolean useWMAPIWrapper = preprocessor.hasSymbol("polish.useWMAPIWrapper")
+			&& !preprocessor.hasSymbol("polish.api.wmapi")
+			&& preprocessor.hasSymbol("polish.supportsWMAPIWrapper");
+		if (useWMAPIWrapper) {
+			newTranslations = new HashMap( translations );
+			newTranslations.put( "javax.wireless.messaging.*", "de.enough.polish.messaging.*");
+			newTranslations.put( "javax.wireless.messaging.Message", "de.enough.polish.messaging.Message");
+			newTranslations.put( "javax.wireless.messaging.BinaryMessage", "de.enough.polish.messaging.BinaryMessage");
+			newTranslations.put( "javax.wireless.messaging.TextMessage", "de.enough.polish.messaging.TextMessage");
+			newTranslations.put( "javax.wireless.messaging.MessageConnection", "de.enough.polish.messaging.MessageConnection");
+			newTranslations.put( "javax.wireless.messaging.MessageListener", "de.enough.polish.messaging.MessageListener");
+			newTranslations.put( "javax.wireless.messaging.MessageListener", "de.enough.polish.messaging.MessageListener");
+			newTranslations.put( "javax.microedition.io.Connector", "de.enough.polish.io.Connector");
+			// process javax.microedition.io.*:
+			if (isMidp1) {
+				newTranslations.put( "javax.microedition.io.*", "de.enough.polish.io.Connector; import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection");				
+			} else {
+				newTranslations.put( "javax.microedition.io.*", "de.enough.polish.io.Connector; import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection; import javax.microedition.io.PushRegistry; import javax.microedition.io.UDPDatagramConnection; import javax.microedition.io.ServerSocketConnection; import javax.microedition.io.SocketConnection; import javax.microedition.io.SecurityInfo; import javax.microedition.io.SecureConnection; import javax.microedition.io.HttpsConnection; import javax.microedition.io.CommConnection");				
+			}			
+		}
+		return newTranslations;
+	}
+	
 	
 }
