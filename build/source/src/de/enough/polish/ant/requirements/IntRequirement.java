@@ -51,6 +51,9 @@ public class IntRequirement extends Requirement {
 	 */
 	public IntRequirement(String value, String propertyName) {
 		super(value, propertyName);
+		if (this.needsToBeUndefined) {
+			return;
+		}
 		try {
 			this.matcher = new IntegerMatcher( value );
 		} catch (NumberFormatException e) {

@@ -51,6 +51,9 @@ public class MemoryRequirement extends Requirement {
 	 */
 	public MemoryRequirement(String value, String propertyName) {
 		super(value, propertyName);
+		if (this.needsToBeUndefined) {
+			return;
+		}
 		try {
 			this.matcher = new MemoryMatcher( value );
 		} catch (NumberFormatException e) {

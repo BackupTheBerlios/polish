@@ -48,6 +48,7 @@ implements DeviceFilter
 	
 	//private String value;
 	protected final String propertyName;
+	protected final boolean needsToBeUndefined;
 	
 
 	/**
@@ -63,6 +64,7 @@ implements DeviceFilter
 		} else {
 			this.propertyName = propertyName;
 		}
+		this.needsToBeUndefined = "undefined".equalsIgnoreCase( value );
 	}
 	
 	/**
@@ -83,8 +85,12 @@ implements DeviceFilter
 	 */
 	public boolean isMet( Device device ) {
 		String property = getProperty(device);
+		if (this.needsToBeUndefined) {
+			return (property == null);
+		}
 		if (property == null) {
 			return false;
+			
 		} else {
 			return isMet( device, property );
 		}
