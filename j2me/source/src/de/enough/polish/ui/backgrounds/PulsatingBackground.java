@@ -53,10 +53,10 @@ import javax.microedition.lcdui.Graphics;
  */
 public class PulsatingBackground extends Background {
 	private int currentColor;
-	private int[] colors;
+	private final int[] colors;
 	private int currentStep;
-	private boolean repeat;
-	private boolean backAndForth;
+	private final boolean repeat;
+	private final boolean backAndForth;
 	private boolean directionUp = true;
 	private boolean animationStopped;
 	

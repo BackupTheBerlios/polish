@@ -40,8 +40,8 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  */
 public class BottomRightShadowBorder extends Border {
-	private int color;
-	private int offset;
+	private final int color;
+	private final int offset;
 
 	/**
 	 * Creates a new border which is like a shadow which is seen on the bottom and on the right of the Item.

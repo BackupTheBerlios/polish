@@ -498,6 +498,7 @@ implements CommandListener
 			this.form.addCommand(StyleSheet.CANCEL_CMD);
 			this.form.setCommandListener( this );
 		}
+		this.screen = StyleSheet.currentScreen;
 		StyleSheet.display.setCurrent( this.form );
 	}
 
@@ -511,6 +512,6 @@ implements CommandListener
 			setDate( this.midpDateField.getDate() );
 			notifyStateChanged();
 		}
-		StyleSheet.display.setCurrent( StyleSheet.currentScreen );
+		StyleSheet.display.setCurrent( this.screen );
 	}
 }

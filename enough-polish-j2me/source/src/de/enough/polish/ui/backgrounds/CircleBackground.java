@@ -1,7 +1,7 @@
 //#condition polish.usePolishGui
 /*
- * Created on 06-Jan-2004 at 22:08:13.
- *
+ * Created on 26-Jul-2004 at 14:13:59.
+ * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -26,46 +26,60 @@
  */
 package de.enough.polish.ui.backgrounds;
 
-import de.enough.polish.ui.Background;
-
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Background;
+
 /**
- * <p>Paints a rectangle with round corners as a background.</p>
+ * <p>Paints a circular or elliptical background.</p>
+ * <p>Following CSS-attributes are supported:</p>
+ * <ul>
+ * 	<li><b>type<b>: the type of the background, needs to be "circle".</li>
+ * 	<li><b>color<b>: the color of the background, defaults to "white".</li>
+ * 	<li><b>diameter<b>: the diameter of the background, when defined
+ * 	always a circle will be painted.</li>
+ * </ul>
  *
- * @author Robert Virkus, robert@enough.de
+ * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        06-Jan-2004 - rob creation
+ *        26-Jul-2004 - rob creation
  * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public class RoundRectBackground 
-extends Background 
-{
+public class CircleBackground extends Background {
+
 	private final int color;
-	private final int arcWidth;
-	private final int arcHeight;
+	private final int diameter;
 
 	/**
-	 * Creates a new round rectangle background.
+	 * Creates a new circle background.
 	 * 
-	 * @param color the color of the background
-	 * @param arcWidth the horizontal diameter of the arc at the four corners
-	 * @param arcHeight the vertical diameter of the arc at the four corners
+	 * @param color the color of the background.
+	 * @param diameter the diameter of the background, when -1 this will
+	 *      be ignored, otherwise this will result in a centered circle
+	 *      (instead of an ellipse).
 	 */
-	public RoundRectBackground( int color, int arcWidth, int arcHeight) {
-		super();
+	public CircleBackground( int color, int diameter ) {
 		this.color = color;
-		this.arcWidth = arcWidth;
-		this.arcHeight = arcHeight;
+		this.diameter = diameter;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		if (this.diameter != -1) {
+			int centerX = x + width / 2;
+			int centerY = y + height / 2;
+			int offset = this.diameter / 2;
+			x = centerX - offset;
+			y = centerY - offset;		
+			width = this.diameter;
+			height = this.diameter;
+		}
 		g.setColor( this.color );
-		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
+		g.fillArc(x, y, width, height, 0, 360 );	
 	}
 
 }

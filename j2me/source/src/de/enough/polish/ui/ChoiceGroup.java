@@ -48,18 +48,20 @@ import javax.microedition.lcdui.Image;
  */
 public class ChoiceGroup extends Container implements Choice
 {
-	private static Image popupImage;
 	private int selectedIndex;
 	//private boolean isExclusive;
 	private boolean isMultiple;
-	private boolean isPopup;
 	private int choiceType;
 	private boolean isImplicit;
 	private Command selectCommand;
-	private int popupColor = 0;
-	private int popupBackgroundColor = 0xFFFFFF;
-	private IconItem popupItem;
-	private boolean isPopupClosed;
+	//#ifdef polish.usePopupItem
+		private static Image popupImage;
+		private boolean isPopup;
+		private int popupColor = 0;
+		private int popupBackgroundColor = 0xFFFFFF;
+		private IconItem popupItem;
+		private boolean isPopupClosed;
+	//#endif
 	
 
 	/**
@@ -242,6 +244,7 @@ public class ChoiceGroup extends Container implements Choice
 			//this.isExclusive = true;
 		} else if (choiceType == Choice.MULTIPLE) {
 			this.isMultiple = true;
+		//#ifdef polish.usePopupItem
 		} else if (choiceType == Choice.POPUP) {
 			this.isPopup = true;
 			this.isPopupClosed = true;
@@ -249,6 +252,7 @@ public class ChoiceGroup extends Container implements Choice
 			this.popupItem.setImageAlign( Graphics.RIGHT );
 			this.popupItem.setAppearanceMode( BUTTON );
 			this.popupItem.parent = this;
+		//#endif
 		} else if (choiceType == Choice.IMPLICIT && allowImplicit ) {
 			this.isImplicit = true;
 			this.focusFirstElement = true;
@@ -278,6 +282,7 @@ public class ChoiceGroup extends Container implements Choice
 		}
 	}
 	
+	//#ifdef polish.usePopupItem
 	/**
 	 * Creates or returns the default image for popup groups.
 	 * 
@@ -299,6 +304,7 @@ public class ChoiceGroup extends Container implements Choice
 		}
 		return popupImage;
 	}
+	//#endif
 
 	/**
 	 * Gets the <code>String</code> part of the element referenced by
@@ -592,9 +598,13 @@ public class ChoiceGroup extends Container implements Choice
 			newSelected.select( true );
 			this.selectedIndex = elementNum;
 			focus( elementNum, newSelected );
+			//#ifdef polish.usePopupItem
 			if (this.isPopup) {
 				this.popupItem.setText( newSelected.getText() );
 			} else if (this.isImplicit) {
+			//#else
+				//# if (this.isImplicit) {
+			//#endif
 				// call command listener:
 				Screen scr = getScreen();
 				if (scr != null) {
@@ -760,6 +770,7 @@ public class ChoiceGroup extends Container implements Choice
 		return font;
 	}
 
+	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -770,7 +781,9 @@ public class ChoiceGroup extends Container implements Choice
 			super.paintContent(x, y, leftBorder, rightBorder, g );
 		}
 	}
+	//#endif
 
+	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
@@ -795,6 +808,7 @@ public class ChoiceGroup extends Container implements Choice
 			}
 		}
 	}
+	//#endif
 
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
@@ -810,9 +824,10 @@ public class ChoiceGroup extends Container implements Choice
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		boolean processed = false;
+		//#ifdef polish.usePopupItem
 		if (!(this.isPopup && this.isPopupClosed)) {
 			processed = super.handleKeyPressed(keyCode, gameAction);
-		}
+		}		
 		if (!processed) {
 			if (gameAction == Canvas.FIRE) {
 				if (this.isMultiple) {
@@ -857,6 +872,35 @@ public class ChoiceGroup extends Container implements Choice
 				}
 			}
 		}
+		//#else
+		// no popup item is used by this application:
+		processed = super.handleKeyPressed(keyCode, gameAction);
+		if (!processed) {
+			if (gameAction == Canvas.FIRE) {
+				if (this.isMultiple) {
+					ChoiceItem item = (ChoiceItem) this.focusedItem;
+					item.toggleSelect();
+				} else {
+					setSelectedIndex(this.focusedIndex, true);
+				}
+				if (this.choiceType != IMPLICIT) {
+					notifyStateChanged();
+				}
+				return true;
+			} else {
+				if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
+					int index = keyCode - Canvas.KEY_NUM1;
+					if (index < this.itemsList.size()) {
+						setSelectedIndex( index, true );
+						if (this.choiceType != IMPLICIT) {
+							notifyStateChanged();
+						}
+						return true;
+					}
+				}
+			}
+		}
+		//#endif
 		return processed;
 	}
 
@@ -870,6 +914,7 @@ public class ChoiceGroup extends Container implements Choice
 		this.selectCommand = command;
 	}
 	
+	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
@@ -881,7 +926,9 @@ public class ChoiceGroup extends Container implements Choice
 			super.defocus(originalStyle);
 		}
 	}
-	
+	//#endif
+
+	//#ifdef polish.usePopupItem	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
 	 */
@@ -895,6 +942,9 @@ public class ChoiceGroup extends Container implements Choice
 			return super.focus(focusStyle);
 		}
 	}
+	//#endif
+	
+	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#setStyle(de.enough.polish.ui.Style, boolean)
 	 */
@@ -921,4 +971,5 @@ public class ChoiceGroup extends Container implements Choice
 			//#endif
 		}
 	}
+	//#endif
 }

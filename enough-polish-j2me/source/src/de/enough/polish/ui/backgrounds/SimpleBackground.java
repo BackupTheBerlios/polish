@@ -43,7 +43,7 @@ public class SimpleBackground
 extends Background 
 {
 	
-	private int color;
+	private final int color;
 
 	/**
 	 * Creates a new simple background.

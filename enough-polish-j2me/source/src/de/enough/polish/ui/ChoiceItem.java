@@ -102,6 +102,7 @@ public class ChoiceItem extends IconItem
 		this.isMultiple = (choiceType == Choice.MULTIPLE);
 	}
 	
+	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#createCssSelector()
 	 */
@@ -116,6 +117,7 @@ public class ChoiceItem extends IconItem
 			return "popup";
 		}
 	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
@@ -242,35 +244,36 @@ public class ChoiceItem extends IconItem
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		if (this.drawBox) {
-			String type = createCssSelector();
-			String selectedName = style.getProperty( type + "-selected");
-			if (selectedName != null) {
-				//#ifdef polish.images.backgroundLoad
-					this.selectedImgName = selectedName;
-				//#endif
-				try {
-					this.selected = StyleSheet.getImage( selectedName, this, true );
-				} catch (IOException e) {
-					//#debug error
-					Debug.debug("Unable to load image [" + selectedName + "]" , e );
+			//#ifdef polish.css.radiobox-selected
+				if (this.choiceType == Choice.EXCLUSIVE) {
+					loadImage( style.getProperty( "radiobox-selected"), false );
 				}
-			}
-			String plainName = style.getProperty( type + "-plain");
-			if (plainName != null) {
-				if ("none".equals(plainName)) {
-					this.drawNoPlain = true;
-				} else {
-					//#ifdef polish.images.backgroundLoad
-						this.plainImgName = plainName;
-					//#endif
-					try {
-						this.plain = StyleSheet.getImage( plainName, this, true );
-					} catch (IOException e) {
-						//#debug error
-						Debug.debug("Unable to load image [" + plainName + "]: " + e.getMessage() , e );
+			//#endif
+			//#ifdef polish.css.radiobox-plain
+				if (this.choiceType == Choice.EXCLUSIVE) {
+					String plainName = style.getProperty( "radiobox-plain");
+					if ("none".equals(plainName)) {
+						this.drawNoPlain = true;
+					} else {
+						loadImage( plainName, true );
 					}
 				}
-			}
+			//#endif
+			//#ifdef polish.css.checkbox-selected
+				if (this.choiceType == Choice.MULTIPLE) {
+					loadImage( style.getProperty( "checkbox-selected"), false );
+				}
+			//#endif
+			//#ifdef polish.css.checkbox-plain
+				if (this.choiceType == Choice.MULTIPLE) {
+					String plainName = style.getProperty( "checkbox-plain");
+					if ("none".equals(plainName)) {
+						this.drawNoPlain = true;
+					} else {
+						loadImage( plainName, true );
+					}
+				}
+			//#endif
 			//#ifdef polish.css.choice-color
 				String colorStr = style.getProperty("choice-color");
 				if (colorStr != null) {
@@ -278,6 +281,30 @@ public class ChoiceItem extends IconItem
 				}
 			//#endif
 		} // if draw box
+	}
+	
+	private void loadImage( String name, boolean isPlain ) {
+		if (name == null) {
+			return;
+		}
+		//#ifdef polish.images.backgroundLoad
+			if (isPlain) {
+				this.plainImgName = name;
+			} else {
+				this.selectedImgName = name;
+			}
+		//#endif
+		try {
+			if (isPlain) {
+				this.plain = StyleSheet.getImage( name, this, true );
+			} else {
+				this.selected = StyleSheet.getImage( name, this, true );
+			}
+		} catch (IOException e) {
+			//#debug error
+			Debug.debug("Unable to load image [" + name + "]" , e );
+		}
+		
 	}
 	
 	//#ifdef polish.images.backgroundLoad

@@ -215,12 +215,12 @@ public abstract class Screen
 			}
 		//#endif
 		//#ifdef tmp.menuFullScreen
-			Style menuStyle = StyleSheet.getStyle("menu");
-			if (menuStyle == null) {
-				menuStyle = this.style;
+			Style menustyle = StyleSheet.getStyle("menu");
+			if (menustyle == null) {
+				menustyle = this.style;
 			}
-			if (menuStyle != null) {
-				String colorStr = menuStyle.getProperty("menubar-color");
+			if (menustyle != null) {
+				String colorStr = menustyle.getProperty("menubar-color");
 				if (this.style != null) {
 					String localColorStr = this.style.getProperty("menubar-color");
 					if (localColorStr != null) {
@@ -230,9 +230,9 @@ public abstract class Screen
 				if (colorStr != null) {
 					this.menuBarColor = Integer.parseInt(colorStr);
 				}
-				this.menuFontColor = menuStyle.fontColor;
-				if (menuStyle.font != null) {
-					this.menuFont = menuStyle.font;
+				this.menuFontColor = menustyle.fontColor;
+				if (menustyle.font != null) {
+					this.menuFont = menustyle.font;
 				} else {
 					this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );				
 				}			

@@ -44,8 +44,8 @@ import javax.microedition.lcdui.Graphics;
  */
 public class BorderedSimpleBackground extends Background {
 	
-	private int color;
-	private int borderColor; 
+	private final int color;
+	private final int borderColor; 
 
 	/**
 	 * Creates a new simple background with a border.

@@ -56,7 +56,7 @@ implements ImageConsumer
 		 * The name of this style. The name is only accessible when
 		 * the preprocessing-symbol polish.useDynamicStyles is defined.
 		 */
-		public String name;
+		public final String name;
 	//#endif
 	//#ifdef polish.useBeforeStyle
 		//#ifdef tmp.imageConsumer
@@ -98,25 +98,28 @@ implements ImageConsumer
 		 */
 		public Image after;
 	//#endif
-	public Background background;
-	public Border border;
-	public Font font;
-	public int fontColor;
-	public int paddingLeft;
-	public int paddingTop;
-	public int paddingRight;
-	public int paddingBottom;
-	public int paddingVertical;
-	public int paddingHorizontal;
-	public int marginLeft;
-	public int marginTop;
-	public int marginRight;
-	public int marginBottom;
+	public final Background background;
+	public final Border border;
+	public final Font font;
+	public final int fontColor;
+	public final int paddingLeft;
+	public final int paddingTop;
+	public final int paddingRight;
+	public final int paddingBottom;
+	public final int paddingVertical;
+	public final int paddingHorizontal;
+	public final int marginLeft;
+	public final int marginTop;
+	public final int marginRight;
+	public final int marginBottom;
 
-	public int layout;
+	public final int layout;
 	
-	
-	private Hashtable properties;
+	//#ifdef false
+		private Hashtable properties;
+	//#else
+		//# protected Hashtable properties;
+	//#endif
 
 	/**
 	 * Creates a new Style.
@@ -212,22 +215,7 @@ implements ImageConsumer
 		this.name = name;
 		//#endif
 	}
-	
-	/**
-	 * Defines a non-standard property of this style.
-	 * For a CheckBox the check-image could be defined with:
-	 * <code>style.addProperty("img-checked", "/cb_checked.png");</code>
-	 * 
-	 * @param propName the name of the property
-	 * @param value the value of the property
-	 */
-	public void addProperty( String propName, Object value ) {
-		if (this.properties ==null) {
-			this.properties = new Hashtable();
-		}
-		this.properties.put( propName, value );
-	}
-	
+		
 	/**
 	 * Retrieves a non-standard property of this style.
 	 * 
@@ -235,7 +223,7 @@ implements ImageConsumer
 	 * @return the value of this property. If none has been defined, null will be returned.
 	 */
 	public String getProperty( String propName ) {
-		if (this.properties ==null) {
+		if (this.properties == null) {
 			return null;
 		}
 		return (String) this.properties.get( propName );

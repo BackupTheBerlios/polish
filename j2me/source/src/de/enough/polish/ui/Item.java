@@ -768,7 +768,7 @@ public abstract class Item extends Object
 	}
 
 	/**
-	 * Returns the appearance mode of the <code>ImageItem</code>.
+	 * Returns the appearance mode of this <code>Item</code>.
 	 * See <a href="Item.html#appearance">Appearance Modes</a>.
 	 * 
 	 * @return the appearance mode value, one of Item.PLAIN, Item.HYPERLINK, or Item.BUTTON
@@ -873,6 +873,8 @@ public abstract class Item extends Object
 			String labelStyleName = style.getProperty("label-style");
 			if (labelStyleName != null) {
 				this.labelStyle = StyleSheet.getStyle( labelStyleName );
+			} else {
+				this.labelStyle = StyleSheet.labelStyle;
 			}
 		//#else
 			this.labelStyle = StyleSheet.labelStyle;

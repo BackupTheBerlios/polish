@@ -68,8 +68,8 @@ implements ImageConsumer
 	public static final int REPEAT_Y = 3;
 	
 	private Image image;
-	private int color;
-	private int repeatMode;
+	private final int color;
+	private final int repeatMode;
 	
 	/**
 	 * Creates a new image background.

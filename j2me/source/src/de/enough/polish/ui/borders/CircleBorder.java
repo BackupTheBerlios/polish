@@ -1,7 +1,7 @@
 //#condition polish.usePolishGui
 /*
- * Created on 06-Jan-2004 at 22:36:37.
- *
+ * Created on 17-Jul-2004 at 15:31:50.
+ * 
  * Copyright (c) 2004 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -26,33 +26,38 @@
  */
 package de.enough.polish.ui.borders;
 
-import de.enough.polish.ui.Border;
-
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Border;
+
 /**
- * <p>Paints a plain border in one color.</p>
+ * <p>The CircleBorder paints a circle or elliptical border.</p>
+ * <p>Following CSS-attributes are supported:</p>
+ * <ul>
+ * 	<li><b>type<b>: the type of the border, needs to be "circle".</li>
+ * 	<li><b>color<b>: the color of the border, defaults to "black".</li>
+ * 	<li><b>width<b>: the width of the border, defaults to "1" pixel.</li>
+ * 	<li><b>stroke-style<b>: the stroke-style, either "dotted" or "solid". Defaults to "solid". </li>
+ * </ul>
  *
- * @author Robert Virkus, robert@enough.de
+ * <p>copyright Enough Software 2004</p>
  * <pre>
  * history
- *        06-Jan-2004 - rob creation
+ *        17-Jul-2004 - rob creation
  * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public class SimpleBorder extends Border {
+public class CircleBorder extends Border {
 
+	private final int strokeStyle;
 	private final int color;
+	private final int borderWidth;
 
-	/**
-	 * Creates a new simple border.
-	 * 
-	 * @param color the color of this border in RGB, e.g. 0xFFDD12
-	 * @param borderWidth the width of this border
-	 */
-	public SimpleBorder( int color, int borderWidth ) {
+	public CircleBorder( int color, int width, int strokeStyle ) {
 		super();
 		this.color = color;
-		this.borderWidth = borderWidth;
+		this.borderWidth = width;
+		this.strokeStyle = strokeStyle;
 	}
 
 	/* (non-Javadoc)
@@ -60,13 +65,20 @@ public class SimpleBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
-		g.drawRect( x, y, width, height );
+		boolean setStrokeStyle = (this.strokeStyle != Graphics.SOLID );
+		if (setStrokeStyle) {
+			g.setStrokeStyle( this.strokeStyle );
+		}
+		g.drawArc( x, y, width, height, 0, 360 );
 		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
-			while ( border > 0) {
-				g.drawRect( x+border, y+border, width - 2*border, height - 2*border );
-				border--;
+			int bw = this.borderWidth;
+			while (bw > 0) {
+				g.drawArc( x + bw, y + bw, width - 2*bw, height - 2*bw, 0, 360 );
+				bw--;
 			}
+		}
+		if (setStrokeStyle) {
+			g.setStrokeStyle( Graphics.SOLID );
 		}
 	}
 

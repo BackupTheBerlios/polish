@@ -41,7 +41,7 @@ import javax.microedition.lcdui.Graphics;
  */
 public class SimpleBorder extends Border {
 
-	private int color;
+	private final int color;
 
 	/**
 	 * Creates a new simple border.

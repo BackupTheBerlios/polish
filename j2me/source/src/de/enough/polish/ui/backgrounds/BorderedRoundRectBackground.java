@@ -44,10 +44,10 @@ import javax.microedition.lcdui.Graphics;
  */
 public class BorderedRoundRectBackground extends Background {
 
-	private int color;
-	private int arcWidth;
-	private int arcHeight;
-	private int borderColor; 
+	private final int color;
+	private final int arcWidth;
+	private final int arcHeight;
+	private final int borderColor; 
 
 	/**
 	 * Creates a new round rectangle background with a border.
