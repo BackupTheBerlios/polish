@@ -243,7 +243,13 @@ public abstract class Emulator extends Thread {
 		if (className == null) {
 			className = device.getCapability("polish.Emulator.Class");
 			if (className == null) {
-				className = WtkEmulator.class.getName();
+				Object executable = variables.get("polish.Emulator.Executable");
+				Object arguments =  variables.get("polish.Emulator.Arguments");
+				if (executable != null && arguments != null) {
+					className = GenericEmulator.class.getName();
+				} else {
+					className = WtkEmulator.class.getName();
+				}
 			}
 		}
 		Class emulatorClass = null;

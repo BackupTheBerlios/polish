@@ -41,6 +41,8 @@
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="128x128" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="Emulator.Class" value="NokiaEmulator" />
+		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 	</group>
 
 	<group>
@@ -49,18 +51,25 @@
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="ScreenSize" value="176x208" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="Emulator.Class" value="NokiaEmulator" />
+		<capability name="Emulator.Skin" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
+		<capability name="Emulator.Skin.2" value="Series_60_MIDP_SDK_2_1_Beta" />
 	</group>
 
 	<group>
 		<name>Series80</name>
 		<parent>Nokia-UI</parent>
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="Emulator.Class" value="NokiaEmulator" />
+		<capability name="Emulator.Skin" value="Series80_MIDP_SDK_1_0b" />
 	</group>
 	
 	<group>
 		<name>Series90</name>
 		<parent>Nokia-UI</parent>
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="Emulator.Class" value="NokiaEmulator" />
+		<capability name="Emulator.Skin" value="Series_90_MIDP_Concept_SDK_Beta_0_1" />
 	</group>
 		
 </groups>

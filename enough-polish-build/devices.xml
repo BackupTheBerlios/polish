@@ -381,6 +381,22 @@
 	
 <!-- Motorola devices -->
 	<device>
+		<identifier>Motorola/A760</identifier>
+		<features>hasPointerEvents, doubleBuffering</features>
+		<capability name="OS" value="Linux" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="ScreenSize" value="320x240" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="1 mb" />
+		<capability name="MaxJarSize" value="1 mb" />
+		<capability name="JavaProtocol" value="udp, http, https, ssl, socket" />
+		<capability name="ImageFormat" value="png, jpeg, gif" />
+		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.1/bin/emulator.exe" />
+		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;-deviceFile;;Resources/A760.props;;${polish.midlet.class}" />
+	</device>
+	
+	<device>
 		<identifier>
 			Motorola/i730
 		</identifier>
@@ -508,6 +524,8 @@
 		<capability name="JavaPackage" value="wmapi, mmapi, phonebook" />
 		<capability name="ImageFormat" value="png, jpeg" />
 		<capability name="SoundFormat" value="midi, wav, amr" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/C650.props" />
 	</device>
 	
 	<device>
@@ -567,6 +585,8 @@
 		<capability name="JavaPackage" value="wmapi, mmapi, phonebook" />
 		<capability name="ImageFormat" value="png, jpeg" />
 		<capability name="SoundFormat" value="midi, wav, amr" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/E398.props" />
 	</device>
 
 	<device>
@@ -643,6 +663,8 @@
 		<capability name="ImageFormat" value="png, jpeg" />
 		<capability name="SoundFormat" value="midi, wav, amr" />
 		<capability name="CameraResolution" value="vga" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/A630.props" />
 	</device>	
 	
 	<device>
@@ -663,6 +685,8 @@
 		<capability name="MaxSockets.udp" value="4" />
 		<capability name="JavaPackage" value="wmapi, mmapi, Phonebook" />
 		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V180.props" />
 	</device>
 	
 	<device>
@@ -686,6 +710,8 @@
 		<capability name="SoundFormat" value="midi, wav, amr" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V220.props" />
 	</device>
 
 	<device>
@@ -709,6 +735,8 @@
 		<capability name="SoundFormat" value="midi, wav, amr, mp3" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V80.props" />
 	</device>
 		
 	<device>
@@ -792,6 +820,8 @@
 		<capability name="JavaPackage" value="wmapi, mmapi, Phonebook" />
 		<capability name="ImageFormat" value="png, jpeg" />
 		<capability name="SoundFormat" value="midi, wav, amr" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/T725.props" />
 	</device>
 	
 	<device>
@@ -815,6 +845,8 @@
 		<capability name="SoundFormat" value="midi, wav, amr, mp3" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
 	</device>
 	
 	<device>
@@ -838,6 +870,8 @@
 		<capability name="SoundFormat" value="midi, wav, amr" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
 	</device>
 	
 	<device>
@@ -863,6 +897,8 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
 		<capability name="DRM" value="Forward Lock" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
 	</device>
 	
 	<device>
@@ -888,6 +924,8 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
 		<capability name="DRM" value="Forward Lock" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V600.props" />
 	</device>
 	
 	<device>
@@ -1403,17 +1441,18 @@
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
 		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr, mp3, aac" />
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Class" value="NokiaEmulator" />
+		<capability name="Emulator.Skin" value="Nokia_6230_MIDP_Concept_SDK_Beta_0_2" />
 	</device>
 	
 	<device>
@@ -1458,6 +1497,9 @@
 		<capability name="StorageSize" value="178kb" />
 		<capability name="Region" value="Europe,Africa,Asia-Pacific,Americas" />
 		<capability name="Network" value="GSM, GPRS, HSCSD" />
+		<capability name="Emulator.Class" value="GenericEmulator" />
+		<capability name="Emulator.Executable" value="java" />	
+		<capability name="Emulator.Arguments" value="-Demulator.home=${nokia.home}\Devices\Nokia_6310i_MIDP_SDK_v1_1;;-classpath;;${nokia.home}\Devices\Nokia_6310i_MIDP_SDK_v1_1\tools\emulator.jar;${nokia.home}\Devices\Nokia_6310i_MIDP_SDK_v1_1\lib\classes.zip;${polish.jarPath};;com.nokia.phone.sdk.Emulator;;-Xdescriptor;;${polish.jadPath}" />
 	</device>
 	
 	<device>
@@ -1552,6 +1594,9 @@
 		<capability name="MaxJarSize" value="348kb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Class" value="GenericEmulator" />
+		<capability name="Emulator.Executable" value="java" />	
+		<capability name="Emulator.Arguments" value="-Demulator.home=${nokia.home}\Devices\Nokia_7600_MIDP_Concept_SDK_Beta_0_2;;-classpath;;${nokia.home}\Devices\Nokia_7600_MIDP_Concept_SDK_Beta_0_2\bin\emulator.jar;${nokia.home}\Devices\Nokia_7600_MIDP_Concept_SDK_Beta_0_2\lib\classes.zip;${nokia.home}\Devices\Nokia_7600_MIDP_Concept_SDK_Beta_0_2\lib\ext\nokiaui.zip;${nokia.home}\Devices\Nokia_7600_MIDP_Concept_SDK_Beta_0_2\lib\ext\mma.zip;${nokia.home}\Devices\Nokia_7600_MIDP_Concept_SDK_Beta_0_2\lib\ext\wma.zip;${polish.jarPath};;com.nokia.phone.sdk.Emulator;;-Xdescriptor;;${polish.jadPath}" />
 	</device>
 	
 	<device>
@@ -1635,6 +1680,10 @@
 		<capability name="StorageSize" value="150kb" />
 		<capability name="Region" value="Europe,Africa,Asia-Pacific" />
 		<capability name="Network" value="GSM" />
+		<capability name="Emulator.Class" value="GenericEmulator" />
+		<capability name="Emulator.Executable" value="java" />	
+		<capability name="Emulator.Arguments" value="-Demulator.home=${nokia.home}\Devices\Nokia_3410_SDK_1_0;;-classpath;;${nokia.home}\Devices\Nokia_3410_SDK_1_0\tools\emulator.jar;${nokia.home}\Devices\Nokia_3410_SDK_1_0\lib\classes.zip;${polish.jarPath};;com.nokia.phone.sdk.Emulator;;-Xdescriptor;;${polish.jadPath}" />
+		<capability name="Emulator.Skin" value="Nokia_3410_SDK_1_0" />
 	</device>
 
 	<device>
@@ -1673,11 +1722,12 @@
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="wmapi, wmapi" />
+		<capability name="JavaPackage" value="wmapi, mmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi, true tones, mp3, aac" />
 		<capability name="HeapSize" value="370kb" />
 		<capability name="MaxJarSize" value="64kb" />
+		<capability name="Emulator.Skin" value="Nokia_3300_SDK_1_0" />
 	</device>
 	
 	<device>
@@ -1774,6 +1824,10 @@
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
 		<capability name="MaxJarSize" value="64kb" />
+		<capability name="Emulator.Class" value="GenericEmulator" />
+		<capability name="Emulator.Executable" value="java" />	
+		<capability name="Emulator.Arguments" value="-Demulator.home=${nokia.home}\Devices\Nokia_5100_SDK_1_0;;-classpath;;${nokia.home}\Devices\Nokia_5100_SDK_1_0\tools\emulator.jar;${nokia.home}\Devices\Nokia_5100_SDK_1_0\lib\classes.zip;${polish.jarPath};;com.nokia.phone.sdk.Emulator;;-Xdescriptor;;${polish.jadPath}" />
+		<capability name="Emulator.Skin" value="Nokia_5100_SDK_1_0" />	
 	</device>
 	
 	<device>
@@ -1810,6 +1864,10 @@
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
 		<capability name="MaxJarSize" value="64kb" />
+		<capability name="Emulator.Class" value="GenericEmulator" />
+		<capability name="Emulator.Executable" value="java" />	
+		<capability name="Emulator.Arguments" value="-Demulator.home=${nokia.home}\Devices\Nokia_3510i_MIDP_SDK_v1_0;;-classpath;;${nokia.home}\Devices\Nokia_3510i_MIDP_SDK_v1_0\tools\emulator.jar;${nokia.home}\Devices\Nokia_3510i_MIDP_SDK_v1_0\lib\classes.zip;${polish.jarPath};;com.nokia.phone.sdk.Emulator;;-Xdescriptor;;${polish.jadPath}" />
+		<capability name="Emulator.Skin" value="Nokia_3510i_MIDP_SDK_v1_0" />	
 	</device>
 	
 	<device>
@@ -1832,6 +1890,8 @@
 		<capability name="SoundFormat" value="midi" />
 		<capability name="HeapSize" value="200kb" />
 		<capability name="MaxJarSize" value="64kb" />
+		<capability name="Emulator.Class" value="NokiaEmulator" />
+		<capability name="Emulator.Skin" value="Nokia_7210_MIDP_SDK_v1_0" />	
 	</device>
 	
 <!-- Siemens devices -->
@@ -1861,6 +1921,7 @@
 		<capability name="MaxJarSize" value="70kb" />
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="375kb" />
+		<capability name="Emulator.Skin" value="C55" />
 	</device>
 	
 	<device>
@@ -1904,6 +1965,8 @@
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="1.8MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Emulator.Class" value="SiemensEmulator" />
+		<capability name="Emulator.Skin" value="C60" />
 	</device>
 	
 	<device
@@ -1934,6 +1997,7 @@
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="StorageSize" value="1.5MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Emulator.Skin" value="CF62" />
 	</device>
 	
 	<device
@@ -1950,6 +2014,7 @@
 		<capability name="HeapSize" value="1.5 MB" />
 		<capability name="StorageSize" value="11MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Emulator.Skin" value="CX65" />
 	</device>
 
 	<device>
@@ -1978,6 +2043,7 @@
 		<capability name="MaxObjectSize" value="16kb" />		
 		<capability name="HeapSize" value="150 kb" />
 		<capability name="StorageSize" value="200kb" />
+		<capability name="Emulator.Skin" value="M50" />
 	</device>
 	
 	<device
@@ -1994,6 +2060,7 @@
 		<capability name="HeapSize" value="560 kb" />
 		<capability name="StorageSize" value="1.6 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Emulator.Skin" value="M55" />
 	</device>
 	
 	<device
@@ -2072,6 +2139,7 @@
 		<capability name="HeapSize" value="365 kb" />
 		<capability name="StorageSize" value="1.6 MB" />
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="Emulator.Skin" value="SL55" />
 	</device>
 	
 	<device>

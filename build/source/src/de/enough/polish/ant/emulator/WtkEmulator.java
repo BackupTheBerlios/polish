@@ -50,13 +50,43 @@ import de.enough.polish.util.FileUtil;
  */
 public class WtkEmulator extends Emulator {
 
-	private String[] arguments;
+	protected String[] arguments;
+	protected boolean appendXdeviceArgument;
 	
 	/**
 	 * Creates a new emulator
 	 */
 	public WtkEmulator() {
 		super();
+		this.appendXdeviceArgument = true;
+	}
+	
+	/**
+	 * Retrieves the folder which contains the emulator skin.
+	 * 
+	 * @param wtkHome the path to the Wireless Toolkit
+	 * @param xDevice the name of the skin
+	 * @return the file which points to the folder containing the skin
+	 */
+	protected File getEmulatorSkin( String wtkHome, String xDevice ) {
+		return new File(wtkHome + "wtklib/devices/" + xDevice );
+	}
+	
+	/**
+	 * Retrieves the executable for the given device.
+	 * 
+	 * @param wtkHome the path to the Wireless Toolkit
+	 * @param xDevice the name of the skin
+	 * @return the file which points to the emulator-application
+	 */
+	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device device ) {
+		String executable = null;
+		if (File.separatorChar == '/') {
+			executable = wtkHome + "bin/emulator";
+		} else {
+			executable = wtkHome + "bin/emulator.exe";
+		}
+		return new File( executable );
 	}
 
 	/* (non-Javadoc)
@@ -66,20 +96,8 @@ public class WtkEmulator extends Emulator {
 			HashMap properties, Project project,
 			BooleanEvaluator evaluator, String wtkHome) 
 	{
-		String executable = null;
-		if (File.separatorChar == '/') {
-			executable = wtkHome + "bin/emulator";
-		} else {
-			executable = wtkHome + "bin/emulator.exe";
-		}
-		File execFile = new File( executable );
-		if (!execFile.exists()) {
-			System.out.println("Warning: unable to find the emulator [" + executable + "].");
-			return false;
-		}
 		// okay, now create the arguments:
 		ArrayList argumentsList = new ArrayList();
-		argumentsList.add( executable );
 		
 		Variable[] parameters = getParameters(setting, project, evaluator, properties);
 
@@ -91,15 +109,47 @@ public class WtkEmulator extends Emulator {
 		}
 		if (xDevice != null) {
 			// test if this emulator exists:
-			File skinFile = new File(wtkHome + "wtklib/devices/" + xDevice );
+			File skinFile = getEmulatorSkin(wtkHome, xDevice);
 			if (!skinFile.exists()) {
-				System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + device.getIdentifier() + "] is not installed.");
-				return false;
+				if (xDeviceParameterGiven) {
+					System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + device.getIdentifier() + "] is not installed.");
+					return false;
+				} else {
+					String originalSkin = xDevice;
+					// check if there are other skins given:
+					int skinNumber = 2;
+					while (true) {
+						xDevice = device.getCapability("polish.Emulator.Skin." + skinNumber);
+						if (xDevice == null) {
+							break;
+						}
+						skinNumber++;
+						skinFile = getEmulatorSkin(wtkHome, xDevice);
+						if (skinFile.exists()) {
+							break;
+						}
+					}
+					if (!skinFile.exists()) {
+						System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + originalSkin + "] for the device [" + device.getIdentifier() + "] is not installed.");
+						return false;
+					}
+				}
 			}
-			argumentsList.add( "-Xdevice:" + xDevice );
 		} else {
-			
 			System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + device.getIdentifier() + "], now using the default emulator.");
+		}
+		
+		// get emulator executable:
+		File execFile = getEmulatorExcecutable(wtkHome, xDevice, device );
+		String executable = execFile.getAbsolutePath();
+		if (!execFile.exists()) {
+			System.out.println("Warning: unable to find the emulator [" + executable + "].");
+			return false;
+		}
+		argumentsList.add( executable );
+		
+		if (this.appendXdeviceArgument && (xDevice != null)) {
+			argumentsList.add( "-Xdevice:" + xDevice );
 		}
 		
 		// add -Xdescriptor-parameter:
