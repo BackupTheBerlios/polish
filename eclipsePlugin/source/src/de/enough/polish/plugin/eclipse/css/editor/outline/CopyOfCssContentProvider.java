@@ -25,15 +25,11 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.outline;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
-
-import antlr.collections.AST;
 
 import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
 import de.enough.polish.plugin.eclipse.css.editor.CssEditor;
@@ -51,7 +47,7 @@ import de.enough.polish.plugin.eclipse.css.model.IModelListener;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class CssContentProvider implements ITreeContentProvider,IModelListener {
+public class CopyOfCssContentProvider implements ITreeContentProvider,IModelListener {
 
 	private Viewer treeViewer;
 	private CssModel cssModel;
@@ -74,7 +70,7 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 			if(selection == null){
 				return;
 			}
-			ASTNode firstSelectedNode = (ASTNode)selection.getFirstElement(); //FIXME: Convert to AST !!
+			ASTNode firstSelectedNode = (ASTNode)selection.getFirstElement();
 			if(firstSelectedNode == null){
 				return;
 			}
@@ -83,7 +79,7 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 		}
 	}
 	
-	public CssContentProvider(CssModel cssModel){
+	public CopyOfCssContentProvider(CssModel cssModel){
 		this.cssModel = cssModel;
 		this.cssModel.addModelListener(this);
 		this.selectionChangedListener = new SelectionChangedListener();
@@ -125,16 +121,12 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
 	public Object[] getChildren(Object parentElement) {
-	    if( ! (parentElement instanceof AST)) {
-	        return new Object[] {};
-	    }
-	    ArrayList result = new ArrayList();
-	    AST child = ((AST)parentElement).getFirstChild();
-	    while (child != null) {
-	        result.add(child);
-	        child = child.getNextSibling();
-	    }
-	    return result.toArray();
+		Object[] result = new Object[]{};
+		if(parentElement instanceof ASTNode){
+			result = ((ASTNode)parentElement).getChildren().toArray();
+		}
+		return result;
+		
 	}
 
 	/* (non-Javadoc)
@@ -142,9 +134,8 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	 */
 	public Object getParent(Object element) {
 		ASTNode result = null;
-		System.out.println("DEBUG:CssContentProvider.getParent():enter. But not implemented...");
-		if( ! (element instanceof AST)){
-			return null;
+		if(element instanceof ASTNode){
+			result = ((ASTNode)element).getParent();
 		}
 		return result;
 		
@@ -154,10 +145,11 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
 	public boolean hasChildren(Object element) {
-		if( ! (element instanceof AST)){
-			return false;
+		if(element instanceof ASTNode){
+			ASTNode astNode = (ASTNode)element;
+			return ! astNode.getChildren().isEmpty();
 		}
-		return ((AST)element).getNumberOfChildren() > 0;
+		return false;
 		
 	}
 
@@ -165,26 +157,12 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 	 */
 	public Object[] getElements(Object inputElement) {
-		if( ! (inputElement instanceof CssModel)){
-			return new Object[]{};
+		if(inputElement instanceof CssModel){
+			return ((CssModel)inputElement).getRoot().getChildren().toArray();
 		}
-		return getChildren(((CssModel)inputElement).getAstRoot());
+		return new Object[]{};
 	}
 
-	private Object[] getChildren(AST root) {
-        if(root == null) {
-            return null;
-        }
-        ArrayList result = new ArrayList();
-        AST child = root.getFirstChild();
-        while (child != null) {
-            result.add(child);
-            child = child.getNextSibling();
-        }
-        return result.toArray();
-    }
-
-	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
 	 */

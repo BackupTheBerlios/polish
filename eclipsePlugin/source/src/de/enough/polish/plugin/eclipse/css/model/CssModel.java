@@ -30,17 +30,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.percederberg.grammatica.TreePrinter;
 import net.percederberg.grammatica.parser.Node;
-import net.percederberg.grammatica.parser.ParserCreationException;
-import net.percederberg.grammatica.parser.ParserLogException;
 import net.percederberg.grammatica.parser.Production;
 import net.percederberg.grammatica.parser.ProductionPattern;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+
+import antlr.DumpASTVisitor;
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
+import antlr.collections.AST;
+import de.enough.polish.plugin.eclipse.css.parser.CssLexer;
+import de.enough.polish.plugin.eclipse.css.parser.CssParser;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
-import de.enough.polish.plugin.eclipse.css.parser.PolishCssParser;
 
 /**
  * <p>Encapsulates the css model (domain model) and provides methods to deal with changes
@@ -64,15 +67,24 @@ public class CssModel {
 	// The CssModel could listen to the document, the Reconciler to its viewer.
 	
 	private IDocument document;
-	private TreePrinter treePrinter;
-	private PolishCssParser parser;
-	private ASTBuilderAnalyzer astBuilder;
+	//private TreePrinter treePrinter;
+	//private PolishCssParser parser;
+	//private ASTBuilderAnalyzer astBuilder;
+
+    private CssLexer lexer;
+    private CssParser parser;
+    private AST astRoot;
+	
+	
+	
 	
 	public CssModel(){
 		this.rootASTNode = new StyleSheet();
 		this.modelListeners = new ArrayList();
-		this.astBuilder = new ASTBuilderAnalyzer(this.rootASTNode);
-		this.treePrinter = new TreePrinter(System.out);
+		//this.astBuilder = new ASTBuilderAnalyzer(this.rootASTNode);
+		//this.treePrinter = new TreePrinter(System.out);
+		
+        
 	}
 	
 	public ASTNode getRoot(){
@@ -94,7 +106,31 @@ public class CssModel {
 			return;
 		}
 		String inputString = this.document.get();
+		StringReader stringReader = new StringReader(inputString);
+		//DataInputStream dataInputStream = new DataInputStream();
+		this.lexer = new CssLexer(stringReader);
+		this.parser = new CssParser(this.lexer);
+		
+		try {
+            this.parser.styleSheet();
+        } catch (RecognitionException exception) {
+            // TODO ricky handle RecognitionException
+            exception.printStackTrace();
+        } catch (TokenStreamException exception) {
+            // TODO ricky handle TokenStreamException
+            exception.printStackTrace();
+        }
+        this.astRoot = this.parser.getAST();
+        if(this.astRoot == null) {
+            System.out.println("Runner.main():No AST generated.");
+            return;
+        }
+        DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
+        dumpASTVisitor.visit(this.astRoot);
+        
+		fireModelChangedEvent();
 		// Parse.
+		/*
 		try {
 			this.parser = new PolishCssParser(new StringReader(inputString));
 			this.rootParseNode = null;
@@ -110,7 +146,7 @@ public class CssModel {
 			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
 		}
 		fireModelChangedEvent();
-		
+		*/
 		
 	}
 	
@@ -172,4 +208,13 @@ public class CssModel {
 	public IDocument getDocument(){
 		return this.document;
 	}
+	
+	
+	public AST getAstRoot() {
+	    return this.astRoot;
+    }
+
+    public void setAstRoot(AST astRoot) {
+        this.astRoot = astRoot;
+    }
 }

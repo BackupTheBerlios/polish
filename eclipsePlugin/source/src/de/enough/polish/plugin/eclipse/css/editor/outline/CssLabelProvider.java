@@ -27,7 +27,7 @@ package de.enough.polish.plugin.eclipse.css.editor.outline;
 
 import org.eclipse.jface.viewers.LabelProvider;
 
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+import antlr.collections.AST;
 
 /**
  * <p></p>
@@ -42,10 +42,10 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 public class CssLabelProvider extends LabelProvider{
 
 	public String getText(Object object){
-		if( ! (object instanceof ASTNode)){
+		if( ! (object instanceof AST)){
 			return "NoLabel for "+object;
 		}
-		ASTNode node = (ASTNode)object;
+		AST node = (AST)object;
 		return node.toString();
 	}
 }

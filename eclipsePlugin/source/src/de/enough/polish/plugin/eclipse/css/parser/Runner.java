@@ -28,11 +28,11 @@ package de.enough.polish.plugin.eclipse.css.parser;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import antlr.collections.AST;
-import antlr.DumpASTVisitor;
 
 /**
  * <p></p>
@@ -56,11 +56,12 @@ public class Runner {
             return;
         }
         CssLexer lexer = new CssLexer(input);
+
         CssParser parser = new CssParser(lexer);
         
         
         try {
-            parser.stylesheet();
+            parser.styleSheet();
         } catch (RecognitionException exception) {
             // TODO ricky handle RecognitionException
             exception.printStackTrace();
@@ -70,9 +71,29 @@ public class Runner {
         }
         AST astRoot = parser.getAST();
         if(astRoot == null) {
+            System.out.println("Runner.main():No AST generated.");
             return;
         }
-        DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
-        dumpASTVisitor.visit(astRoot);
+        //DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
+        //dumpASTVisitor.visit(astRoot);
+        System.out.println("firstChild:"+astRoot.getNextSibling());
+        Object[] children = getChildren(astRoot);
+        for(int i = 0; i < astRoot.getNumberOfChildren(); i++) {
+            System.out.println(children[i]);
+        }
+        
       }
+    
+    private static Object[] getChildren(AST root) {
+        if(root == null) {
+            return null;
+        }
+        ArrayList result = new ArrayList();
+        AST child = root.getFirstChild();
+        while (child != null) {
+            result.add(child);
+            child = child.getNextSibling();
+        }
+        return result.toArray();
+    }
 }

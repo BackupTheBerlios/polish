@@ -2,6 +2,7 @@ header{
 package de.enough.polish.plugin.eclipse.css.parser;
 }
 
+
 // #################################################################
 // Lexer
 
@@ -9,7 +10,6 @@ class CssLexer extends Lexer;
 
 options {
     charVocabulary = '\3'..'\377';
-    genHashLines=true;
 }
 
 {
@@ -53,7 +53,6 @@ NAME : ('a'..'z'|'-'|'_'|'.'|'A'..'Z')+  // Need more allowed characters.
 ARBITRARY_STRING
 options {
   paraphrase = "a string";
- 
 } 
 	:  ':'! (options {greedy=false;} :.)* ';'!
     ;
@@ -66,22 +65,12 @@ WHITESPACE :	(' '
 		{ _ttype = Token.SKIP; }
 	;
 
-protected
-ATTRIBUTE_VALUE_PAIR : ;
-protected
-STYLE_SECTION : ;
-protected
-SECTION : ;
-protected
-STYLE_SHEET : ;
-
 // #################################################################
 // Parser
 
 class CssParser extends Parser;
 options{
 	buildAST=true;
-	genHashLines=true;
 }
 {
 public boolean isExtendToken(Token e) {
@@ -89,21 +78,21 @@ public boolean isExtendToken(Token e) {
 }
 }
 
-styleSheet
-	:  (styleSection)+ {#styleSheet = #([STYLE_SHEET,"StyleSheet"],#styleSheet);}
+stylesheet
+	: (styleSection)+
 	;
 	
 styleSection
-	: styleName:NAME (e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (name:NAME! (section:sectionBody[#name] | attributeValuePair:attributeValueBody[#name]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);}
+	: NAME (e:NAME {isExtendToken(e)}? NAME)? L_CURLY_BRACKET (NAME (sectionBody | attributeValueBody))* R_CURLY_BRACKET
 	;
 
-sectionBody[AST sectionName]
-	: L_CURLY_BRACKET! (attributeName:NAME! attributeValueBody[#attributeName])* R_CURLY_BRACKET! {#sectionBody = #([SECTION,"Section"],#sectionName,#sectionBody);}
+sectionBody
+	: L_CURLY_BRACKET (NAME attributeValueBody)* R_CURLY_BRACKET 
 	;
 	
-attributeValueBody[AST attributeName]
-	: string:ARBITRARY_STRING {#attributeValueBody = #([ATTRIBUTE_VALUE_PAIR,"AttributeValuePair"], #attributeName, #string);} // try to rename to attributeValuePair
-	; 
+attributeValueBody
+	: ARBITRARY_STRING
+	; // This needs work: We need another lexer state to parse a arbitrary string.
 
 // #################################################################
 // Tree Grammar
