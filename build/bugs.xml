@@ -30,6 +30,7 @@
 		<description>The Graphics.drawRGB(..) method does not use a translated origin, 
 		 but starts always at the top-left 0,0 origin.
 		</description>
+		<area>ui</area>
 		<solution>
 		Use the top-left 0,0 origin for devices with this bug:
 		//#ifdef polish.Bugs.drawRgbOrigin
@@ -45,6 +46,7 @@
 		the given input stream according to the specification. Devices with this
 		bug close the input stream.
 		</description>
+		<area>io</area>
 		<solution>Move any image which should be loaded from an input stream to 
 		the last position in the corresponding stream.
 		</solution>
@@ -54,6 +56,7 @@
 		<description>Calling the Canvas.setFullScreenMode(boolean) method results
 		in an error, unless it is called in the paint()-method.
 		</description>
+		<area>ui</area>
 		<solution>Track the state of the fullscreen mode and set it in the paint method.
 		</solution>
 	</bug>

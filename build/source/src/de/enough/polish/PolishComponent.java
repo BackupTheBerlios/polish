@@ -151,7 +151,8 @@ public class PolishComponent {
 			} else if ( (Device.JAVA_PACKAGE.equals(key) ) 
 					|| (Device.JAVA_PROTOCOL.equals(key)) 
 					|| (Device.VIDEO_FORMAT.equals(key))
-					|| (Device.SOUND_FORMAT.equals(key)) ) {
+					|| (Device.SOUND_FORMAT.equals(key)) 
+					|| (Device.BUGS.equals(key)) ) {
 				// add additional package/protocol definitions:
 				String newValue = currentValue + "," + componentValue;
 				addCapability(key, newValue);
