@@ -536,7 +536,30 @@ public class DataType {
 					buffer.append("\t\t//#else\n");
 					buffer.append( "\t\t\tint " ).append( paramName ).append("Available = in.available();\n");
 					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Offset = 0;\n");
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Read = 0;\n");
+					buffer.append( "\t\t\twhile (").append( paramName ).append( "Offset < ").append(paramName).append( "Available ) {\n");
+					buffer.append( "\t\t\t\t").append( paramName ).append( "Read = in.read( ").append(paramName).append( "Buffer, ").append( paramName ).append( "Offset, ").append( paramName ).append( "Available - ").append( paramName ).append("Offset );\n");
+					buffer.append( "\t\t\t\tif (").append( paramName ).append( "Read == -1 ) {\n");
+					buffer.append( "\t\t\t\t\tbreak;\n");
+					buffer.append( "\t\t\t\t} else { \n");
+					buffer.append( "\t\t\t\t\t").append( "Offset += ").append(paramName).append( "Read;\n" );
+					buffer.append( "\t\t\t\t}\n");
+					buffer.append( "\t\t\t}\n");
+					/*
+					int offset = 0;
+					int read = 0;
+					while (offset < pngLength) {
+						read = in.read( pngBuffer, offset, pngLength - offset );
+						if (read == -1) {
+							break;
+						} else {
+							offset += read;
+						}
+					}
+
 					buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
+					 */
 					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
 					buffer.append("\t\t//#endif\n");
@@ -548,7 +571,17 @@ public class DataType {
 					buffer.append("\t\t//#else\n");
 					buffer.append( "\t\t\tint " ).append( paramName ).append("Available = in.available();\n");
 					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
-					buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Offset = 0;\n");
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Read = 0;\n");
+					buffer.append( "\t\t\twhile (").append( paramName ).append( "Offset < ").append(paramName).append( "Available ) {\n");
+					buffer.append( "\t\t\t\t").append( paramName ).append( "Read = in.read( ").append(paramName).append( "Buffer, ").append( paramName ).append( "Offset, ").append( paramName ).append( "Available - ").append( paramName ).append("Offset );\n");
+					buffer.append( "\t\t\t\tif (").append( paramName ).append( "Read == -1 ) {\n");
+					buffer.append( "\t\t\t\t\tbreak;\n");
+					buffer.append( "\t\t\t\t} else { \n");
+					buffer.append( "\t\t\t\t\t").append( "Offset += ").append(paramName).append( "Read;\n" );
+					buffer.append( "\t\t\t\t}\n");
+					buffer.append( "\t\t\t}\n");
+					//buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
 					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append(" = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
 					buffer.append("\t\t//#endif\n");

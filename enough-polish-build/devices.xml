@@ -345,7 +345,7 @@
 		<capability name="CameraZoom" value="4" />
 		<capability name="Emulator.Skin" value="SonyEricsson_K700" />
 		<capability name="DebugInterface" value="KDWP" />
-		<capability name="Bugs" value="drawRgbOrigin" />
+		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose" />
 	</device>
 
 	<device>
@@ -1477,7 +1477,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="VideoFormat" value="3gpp, h.263, Real Media, mpeg-4" />
-		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, real audio, aac" />
+		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, realaudio, aac" />
 		<capability name="HeapSize" value="28 MB" />
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="StorageSize" value="4.6 MB" />
@@ -1498,7 +1498,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="VideoFormat" value="3gpp, h.263, Real Media, mpeg-4" />
-		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, real audio, aac" />
+		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, wb-amr, true tones, wav, mp3, realaudio, aac" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="StorageSize" value="10 MB" />
