@@ -245,7 +245,7 @@ public class StringItem extends Item
 					} else if (this.isLayoutRight) {
 						x = rightBorder;
 					}
-					this.bitMapFontViewer.paint(g, x, y );
+					this.bitMapFontViewer.paint( x, y, g );
 					return;
 				}
 			//#endif

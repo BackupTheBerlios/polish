@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="import/nokiaui.zip"/>
 	<classpathentry kind="lib" path="import/wma.zip"/>
 	<classpathentry kind="lib" path="import/midp2.jar"/>
+	<classpathentry kind="lib" path="import/siemens-extension-api.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -117,14 +117,14 @@ public class BitMapFontViewer {
 	/**
 	 * Paints this viewer on the screen.
 	 * 
-	 * @param g the graphics object
 	 * @param x the x-position for the text. 
 	 *          When the orientation is LEFT, x defines the left-border;
 	 *          when the orientation is RIGHT, x defines the rigth border;
 	 *          when the orientation is HCENTER, x defines the middle between left and right border.
 	 * @param y the top y-position of the first line.
+	 * @param g the graphics object
 	 */
-	public void paint( Graphics g, int x, int y ) {
+	public void paint( int x, int y, Graphics g ) {
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
