@@ -772,7 +772,6 @@ public class PolishTask extends ConditionalTask {
 					} else if (fileName.endsWith("Locale.java")) {
 						if ("de/enough/polish/util/Locale.java".equals(fileName)
 								|| 	"de\\enough\\polish\\util\\Locale.java".equals(fileName)) {
-								this.styleSheetSourceFile = file;
 								this.localeSourceFile = file;
 						}
 					} 
@@ -808,7 +807,6 @@ public class PolishTask extends ConditionalTask {
 				} else if (fileName.endsWith("Locale.java")) {
 					if ("de/enough/polish/util/Locale.java".equals(fileName)
 							|| 	"de\\enough\\polish\\util\\Locale.java".equals(fileName)) {
-							this.styleSheetSourceFile = file;
 							this.localeSourceFile = file;
 					}
 				} 
