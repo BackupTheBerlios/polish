@@ -39,5 +39,4 @@
          	class="de.enough.polish.plugin.eclipse.css.editor.CssEditor">
          </editor>
     </extension>
-
 </plugin>
