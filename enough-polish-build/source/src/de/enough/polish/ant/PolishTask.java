@@ -854,7 +854,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// get the packager for creating the final jar-file:
-		this.packager = Packager.getInstance( this.buildSetting.getPackageSetting() );
+		this.packager = Packager.getInstance( this.buildSetting.getPackageSetting(), getProject() );
 		
 		// check if there has been an error at the last run:
 		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()

@@ -33,6 +33,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
+import de.enough.polish.Extension;
 import de.enough.polish.ant.build.PackageSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 
@@ -47,9 +48,8 @@ import de.enough.polish.preprocess.BooleanEvaluator;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class Packager {
+public abstract class Packager extends Extension {
 	
-	protected PackageSetting setting;
 
 	/**
 	 * Creates a new packager
@@ -58,23 +58,12 @@ public abstract class Packager {
 		super();
 	}
 	
-	public final static Packager getInstance( PackageSetting setting ) {
+	public final static Packager getInstance( PackageSetting setting, Project antProject ) {
 		if (setting == null) {
 			return new DefaultPackager();
 		} else if ( setting.getClassName() != null) {
-			Class packagerClass;
 			try {
-				packagerClass = Class.forName( setting.getClassName() );
-			} catch (ClassNotFoundException e) {
-				try {
-					packagerClass = Class.forName( "de.enough.polish.jar." + setting.getClassName() );
-				} catch (ClassNotFoundException e2) {
-					throw new BuildException("Unable to load packager-class [" + setting.getClassName() + "]: class not found.");
-				} 
-			}
-			try {
-				Packager packager = (Packager) packagerClass.newInstance();
-				packager.init(setting);
+				Packager packager = (Packager) Extension.getInstance( setting, antProject );
 				return packager;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -90,15 +79,10 @@ public abstract class Packager {
 		}
 	}
 	
-	/**
-	 * Initialises this packager.
-	 * The default implementation just sets the protected field "setting".
-	 * 
-	 * @param packageSetting the setting
-	 */
-	protected void init( PackageSetting packageSetting ) {
-		this.setting = packageSetting;
+	public PackageSetting getSetting() {
+		return (PackageSetting) this.extensionSetting;
 	}
+
 	
 	/**
 	 * Creates a jar file from all the contents in the given directory.

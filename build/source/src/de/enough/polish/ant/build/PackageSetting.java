@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ant.build;
 
-import de.enough.polish.ant.Setting;
+import de.enough.polish.ant.ExtensionSetting;
 
 /**
  * <p>Allows the usage of different packagers for the project.</p>
@@ -38,11 +38,10 @@ import de.enough.polish.ant.Setting;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PackageSetting extends Setting {
+public class PackageSetting extends ExtensionSetting {
 	
 	private String executable;
 	private String arguments;
-	private String className;
 
 	/**
 	 * Creates a new package setting
@@ -66,13 +65,6 @@ public class PackageSetting extends Setting {
 		this.executable = executable;
 	}
 	
-	public void setClass( String className ) {
-		this.className = className;
-	}
-	
-	public String getClassName() {
-		return this.className;
-	}
 
 	/**
 	 * @return Returns the arguments.

@@ -60,7 +60,7 @@ public class ExternalPackager extends Packager {
 	 */
 	public ExternalPackager( PackageSetting setting ) {
 		super();
-		this.setting = setting;
+		this.extensionSetting = setting;
 	}
 
 	/* (non-Javadoc)
@@ -70,11 +70,12 @@ public class ExternalPackager extends Packager {
 			BooleanEvaluator evalator, Map variables, Project project)
 	throws IOException, BuildException 
 	{
+		PackageSetting setting = getSetting();
 		variables.put("polish.packageDir", sourceDir.getAbsolutePath() );
 		Map antProperties = project.getProperties();
-		String executable = PropertyUtil.writeProperties( this.setting.getExecutable(), antProperties );
+		String executable = PropertyUtil.writeProperties( setting.getExecutable(), antProperties );
 		executable = PropertyUtil.writeProperties( executable, variables );
-		String argumentsStr = PropertyUtil.writeProperties( this.setting.getArguments(), antProperties );
+		String argumentsStr = PropertyUtil.writeProperties( setting.getArguments(), antProperties );
 		argumentsStr = PropertyUtil.writeProperties( argumentsStr, variables );
 		String[] arguments = StringUtil.splitAndTrim( argumentsStr, ";;");
 		String[] parameters = new String[ arguments.length + 1 ];
