@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Created on 23-Jan-2005 at 19:04:14.
  * 
@@ -51,6 +52,9 @@ public class TabBar extends Item {
 	//#endif
 	
 	private int activeTabIndex;
+	//#ifdef polish.hasPointerEvents
+	protected int newActiveTabIndex;
+	//#endif
 	private int xOffset;
 	private int scrollArrowHeight = 10;
 	private int scrollArrowPadding = 2;
@@ -216,7 +220,6 @@ public class TabBar extends Item {
 	}
 	//#endif
 	
-	
 
 	public void setStyle(Style style) {
 		super.setStyle(style);
@@ -227,4 +230,34 @@ public class TabBar extends Item {
 			}
 		//#endif
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	protected boolean handlePointerPressed(int x, int y) {
+		//System.out.println( "pointer-pressed: " + x + ", " + y);
+		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding; 
+		if ( this.activeTabIndex > 0 && x <= scrollerWidth ) {
+			//System.out.println("left: x <= " + scrollerWidth );
+			this.newActiveTabIndex = this.activeTabIndex - 1;
+		} else if ( this.activeTabIndex < this.tabs.length -1 && x >= this.xRightPos - scrollerWidth) {
+			//System.out.println("right: x >= " + (this.xRightPos - scrollerWidth) );
+			this.newActiveTabIndex = this.activeTabIndex + 1;
+		} else {
+			int width = this.xOffset;
+			for (int i = 0; i < this.tabs.length; i++) {
+				ImageItem tab = this.tabs[i];
+				if ( x >= width && x <= width + tab.itemWidth) {
+					//System.out.println("i-1=" + i + ": x <= " + tab.xLeftPos + ", x <= " + tab.xRightPos );
+					this.newActiveTabIndex = i;
+					return true;
+				}
+				width += tab.itemWidth;
+			}
+			this.newActiveTabIndex = this.tabs.length - 1;
+		}
+		
+		return true;
+	}
+	//#endif
+	
+
 }

@@ -1227,9 +1227,6 @@ implements CommandListener
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (!this.isFocused) {
-			if (this.isPassword) {
-				System.out.println("calling super-paint content for this.text=[" + this.text + "]");
-			}
 			super.paintContent(x, y, leftBorder, rightBorder, g);
 			return;
 		}

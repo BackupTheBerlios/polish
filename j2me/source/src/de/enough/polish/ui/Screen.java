@@ -1331,7 +1331,7 @@ public abstract class Screen
 			//#endif
 			// let the screen handle the pointer pressing:
 			//#ifdef tmp.usingTitle
-				boolean processed = handlePointerPressed( x, y - this.titleHeight);
+				boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				if (processed) {
 					repaint();
 				}
