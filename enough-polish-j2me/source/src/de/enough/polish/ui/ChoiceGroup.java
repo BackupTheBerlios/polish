@@ -297,7 +297,7 @@ implements Choice
 		} else if (choiceType == Choice.POPUP) {
 			this.isPopup = true;
 			this.isPopupClosed = true;
-			this.popupItem = new IconItem( null, null, this.style );
+			this.popupItem = new IconItem( null, null, style );
 			this.popupItem.setImageAlign( Graphics.RIGHT );
 			this.popupItem.setAppearanceMode( BUTTON );
 			this.popupItem.parent = this;
@@ -927,11 +927,13 @@ implements Choice
 	private void closePopup() {
 		this.isPopupClosed = true;
 		int difference = this.popupOpenY - this.yTopPos;
-		if (difference > 0 && this.parent instanceof Container) {	
+		if (difference > 0 && (this.parent instanceof Container) && (((Container)this.parent).yOffset != 0) ) {	
+			//System.out.println("Closing popup: adjusting parent.offset from [" + (((Container)this.parent).yOffset) + "] to [" + (((Container)this.parent).yOffset + difference) + "].");
 			((Container)this.parent).yOffset += difference;
 		}
 		this.internalX = -9999;		
 		if (this.yOffset < 0) {
+			//System.out.println("Closing popup: adjusting ChoiceGroup.offset from [" + this.yOffset + "] to [" + (this.yOffset + (this.contentHeight - this.popupItem.contentHeight)) + "].");
 			this.yOffset += (this.contentHeight - this.popupItem.contentHeight);
 			if (this.yOffset > 0 ) {
 				this.yOffset = 0;
@@ -1234,11 +1236,13 @@ implements Choice
 	 */
 	public void setStyle(Style style, boolean ignoreBackground) {
 		super.setStyle(style, ignoreBackground);
+		if (this.isPopup && this.popupItem != null) {
+			this.popupItem.setStyle( style );
+		}
 		if (this.isPopup && this.popupItem.image == null ) {
 			//#ifdef polish.css.popup-image
 				String url = style.getProperty("popup-image");
 				if (url != null ) {
-					System.out.println("setting popup-image...");
 					this.popupItem.setImage( url );
 				}
 			//#endif

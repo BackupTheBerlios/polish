@@ -32,7 +32,6 @@ import javax.microedition.lcdui.Image;
 /**
  * An item that can contain an image.
  * 
- * An item that can contain an image.
  * 
  * <P> Each <code>ImageItem</code> object contains a reference to an
  * <A HREF="../../../javax/microedition/lcdui/Image.html"><CODE>Image</CODE></A> object.

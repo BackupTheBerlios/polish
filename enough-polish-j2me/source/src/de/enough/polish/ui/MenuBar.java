@@ -584,6 +584,27 @@ public class MenuBar extends Item {
 		//#endif
 	}
 	
+	
+	public boolean animate() {
+		boolean animated = false;
+		if (this.background != null) {
+			animated = animated | this.background.animate();
+		}
+		if (this.isOpened) {
+			animated = animated | this.commandsContainer.animate();
+		}
+		if (this.singleLeftCommandItem != null) {
+			animated = animated | this.singleLeftCommandItem.animate();
+		}
+		if (this.singleRightCommandItem != null) {
+			animated = animated | this.singleRightCommandItem.animate();
+		}
+		return animated;
+	}
+
+	
+	
+	
 //#ifdef polish.MenuBar.additionalMethods:defined
 	//#include ${polish.MenuBar.additionalMethods}
 //#endif

@@ -382,6 +382,7 @@ public class Container extends Item {
 				this.focusedItem.defocus( StyleSheet.defaultStyle );
 			}
 		}
+		
 		// save style of the to be focused item and focus the item:
 		this.itemStyle = item.focus( this.focusedStyle );
 		//#ifdef polish.debug.error
@@ -412,7 +413,10 @@ public class Container extends Item {
 				int itemYTop = item.yTopPos;
 				int itemYBottom = item.yBottomPos;
 				int difference = 0;
-				if (itemYBottom > this.yBottom) {
+				if (itemYTop == itemYBottom) {
+					//#debug
+					System.out.println("Container: unable to auto-scroll, item.yBottomPos == item.yTopPos");
+				} else if (itemYBottom > this.yBottom) {
 					// this item is too low:
 					difference = this.yBottom - itemYBottom; 
 					//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
@@ -434,7 +438,8 @@ public class Container extends Item {
 					}
 					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
 				}
-				//System.out.println("focus:: difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
+				//#debug
+				System.out.println("Container-focus:: difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
 				this.yOffset += difference;
 			}
 		}
@@ -535,6 +540,20 @@ public class Container extends Item {
 				this.columnsWidths = new int[ this.numberOfColumns ];
 				for (int i = 0; i < this.numberOfColumns; i++) {
 					this.columnsWidths[i] = availableColumnWidth;
+				}
+			} else {
+				int restWidth = 0;
+				int dynamicColumnIndex = -1;
+				for (int i = 0; i < this.numberOfColumns; i++) {
+					int w = this.columnsWidths[i];
+					if (w == -1) {
+						dynamicColumnIndex = i;
+					} else {
+						restWidth += w;
+					}
+				}
+				if (dynamicColumnIndex != -1) {
+					this.columnsWidths[ dynamicColumnIndex ] = lineWidth - restWidth;
 				}
 			}
 			this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
@@ -1122,9 +1141,11 @@ public class Container extends Item {
 		// just animate the currently focused item:
 		if (this.focusedItem != null) {
 			boolean animated = this.focusedItem.animate();
+			/*
 			if (this.focusedItem.background != null) {
 				animated = animated | this.focusedItem.background.animate();
 			}
+			*/
 			//#ifdef polish.css.view-type
 				if ( this.view != null ) {
 					animated = animated | this.view.animate();

@@ -1611,10 +1611,14 @@ public abstract class Item extends Object
 	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
+	 * The default implementation just animates the background if present.
 	 * 
 	 * @return true when this item has been animated.
 	 */
 	public boolean animate() {
+		if (this.background != null) {
+			return this.background.animate();
+		}
 		return false;
 	}
 

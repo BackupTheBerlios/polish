@@ -362,30 +362,6 @@ public abstract class Screen
 			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
 			
-		//#ifdef polish.css.foreground-image
-			String foregroundImageUrl = this.style.getProperty("foreground-image");
-			if (foregroundImageUrl != null) {
-				try {
-					this.foregroundImage = StyleSheet.getImage(foregroundImageUrl, null,true);
-					//#ifdef polish.css.foreground-x
-						Integer xInteger = this.style.getIntProperty("foreground-x");
-						if (xInteger != null) {
-							this.foregroundX = xInteger.intValue();
-						}
-					//#endif
-					//#ifdef polish.css.foreground-y
-						Integer yInteger = this.style.getIntProperty("foreground-y");
-						if (yInteger != null) {
-							this.foregroundY = yInteger.intValue();
-						}
-					//#endif
-				} catch (IOException e) {
-					//#debug error
-					System.out.println("Unable to load foreground-image [" + foregroundImageUrl + "]: " + e);
-				}
-			}
-		//#endif
-
 
 		if (this.container != null) {
 			this.container.screen = this;
@@ -526,6 +502,33 @@ public abstract class Screen
 				//#endif
 			}
 		//#endif
+			
+		//#ifdef polish.css.foreground-image
+			String foregroundImageUrl = this.style.getProperty("foreground-image");
+			if (foregroundImageUrl == null) {
+				this.foregroundImage = null;
+			} else {
+				try {
+					this.foregroundImage = StyleSheet.getImage(foregroundImageUrl, null,true);
+					//#ifdef polish.css.foreground-x
+						Integer xInteger = this.style.getIntProperty("foreground-x");
+						if (xInteger != null) {
+							this.foregroundX = xInteger.intValue();
+						}
+					//#endif
+					//#ifdef polish.css.foreground-y
+						Integer yInteger = this.style.getIntProperty("foreground-y");
+						if (yInteger != null) {
+							this.foregroundY = yInteger.intValue();
+						}
+					//#endif
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load foreground-image [" + foregroundImageUrl + "]: " + e);
+				}
+			}
+		//#endif
+
 	}
 	
 	/**
@@ -686,13 +689,13 @@ public abstract class Screen
 						if (y < tHeight) {
 							this.paintScrollIndicator = true;
 							this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
-							this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - tHeight);
+							this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.originalScreenHeight - tHeight);
 							y = tHeight; 
-							this.menuContainer.setVerticalDimensions(y, this.screenHeight);
+							this.menuContainer.setVerticalDimensions(y, this.originalScreenHeight);
 						} else {
 							this.paintScrollIndicator = false;
 						}
-						g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
+						g.setClip(0, tHeight, this.screenWidth, this.originalScreenHeight - tHeight );
 						this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
 					 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 					} 
