@@ -26,11 +26,17 @@
 package de.enough.polish.obfuscate;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
+import de.enough.polish.LibraryManager;
+import de.enough.polish.ant.build.ObfuscatorSetting;
 
 /**
  * <p>Loads and embeds an obfuscator with a different classpath.</p>
@@ -43,22 +49,63 @@ import de.enough.polish.Device;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class WrapperObfuscator extends Obfuscator {
+	
+	private Object obfuscator;
+	private Method obfuscateMethod;
 
 	/**
 	 * 
+	 * @param setting
+	 * @param project
+	 * @param libraryDir
+	 * @param libraryManager
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
 	 */
-	public WrapperObfuscator() {
+	public WrapperObfuscator( ObfuscatorSetting setting, Project project, File libraryDir, LibraryManager libraryManager ) 
+	throws SecurityException, NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		super();
-		// TODO enough implement WrapperObfuscator
+    	AntClassLoader antClassLoader = new AntClassLoader(
+    			getClass().getClassLoader(),
+    			project,  
+				new Path( project ),
+				true);
+    	antClassLoader.addPathElement( setting.getClassPath().getAbsolutePath() );
+    	System.out.println("trying to load class " + setting.getClassName() );
+    	Class obfuscatorClass = antClassLoader.loadClass( setting.getClassName() ); 
+    	this.obfuscator = obfuscatorClass.newInstance();
+    	// now init the line processor:
+    	Method initMethod = obfuscatorClass.getMethod("init", new Class[]{ Project.class, File.class, LibraryManager.class  } );
+    	initMethod.invoke( this.obfuscator, new Object[]{ project, libraryDir, libraryManager } );
+    	// retrives processing method:
+    	this.obfuscateMethod = obfuscatorClass.getMethod("obfuscate", new Class[]{ Device.class, File.class, File.class, String[].class, Path.class } );
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.obfuscate.Obfuscator#obfuscate(de.enough.polish.Device, java.io.File, java.io.File, java.lang.String[], org.apache.tools.ant.types.Path)
 	 */
 	public void obfuscate(Device device, File sourceFile, File targetFile,
-			String[] preserve, Path bootClassPath) throws BuildException {
-		// TODO enough implement obfuscate
-
+			String[] preserve, Path bootClassPath) 
+	throws BuildException {
+		try {
+			this.obfuscateMethod.invoke( this.obfuscator, new Object[]{ device, sourceFile, targetFile, preserve, bootClassPath } );
+		} catch (BuildException e) {
+			throw e;
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			if (e.getCause() instanceof BuildException) {
+				throw (BuildException) e.getCause();
+			} else {
+				throw new BuildException( "Unable to obfuscate: " + e.getCause(), e.getCause() );
+			}
+		} catch (Exception e) {
+			throw new BuildException( "Unable to obfuscate: " + e, e );
+		}
 	}
 
 }

@@ -288,11 +288,13 @@ public class PolishTask extends ConditionalTask {
 			this.polishProject.addFeature("useDebugGui");
 		}
 		FullScreenSetting fullScreenSetting = this.buildSetting.getFullScreenSetting();
-		if (fullScreenSetting.isMenu()) {
-			this.polishProject.addFeature("useMenuFullScreen");
-			this.polishProject.addFeature("useFullScreen");
-		} else if (fullScreenSetting.isEnabled()) {
-			this.polishProject.addFeature("useFullScreen");
+		if (fullScreenSetting != null) {
+			if (fullScreenSetting.isMenu()) {
+				this.polishProject.addFeature("useMenuFullScreen");
+				this.polishProject.addFeature("useFullScreen");
+			} else if (fullScreenSetting.isEnabled()) {
+				this.polishProject.addFeature("useFullScreen");
+			}
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {
@@ -420,7 +422,7 @@ public class PolishTask extends ConditionalTask {
 			this.preserveClasses = new String[ keepClasses.length + midletClasses.length ];
 			System.arraycopy( keepClasses, 0, this.preserveClasses, 0,  keepClasses.length );
 			System.arraycopy( midletClasses, 0, this.preserveClasses, keepClasses.length, midletClasses.length  );
-			this.obfuscator = Obfuscator.getInstance( obfuscatorSetting.getName(), obfuscatorSetting.getClassName(), this.project, this.buildSetting.getApiDir(), this.libraryManager );
+			this.obfuscator = Obfuscator.getInstance( obfuscatorSetting, this.project, this.buildSetting.getApiDir(), this.libraryManager );
 		}
 		
 		// init import manager:

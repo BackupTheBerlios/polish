@@ -27,6 +27,7 @@ package de.enough.polish.obfuscate;
 
 import de.enough.polish.Device;
 import de.enough.polish.LibraryManager;
+import de.enough.polish.ant.build.ObfuscatorSetting;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -78,7 +79,7 @@ public abstract class Obfuscator {
 	 * @param preferredObfuscator The name of the preferred obfuscator.
 	 *        When null is given and no className is specified, 
 	 * 		  the GPL ProGuard will be used.
-	 * @param className The class name of the desired obfuscator.
+	 * @param setting The obfuscator setting 
 	 * @param project the Ant-project to which the obfuscator belongs to
 	 * @param libDir the main library directory
 	 * @param libraryManager the api manager 
@@ -86,27 +87,30 @@ public abstract class Obfuscator {
 	 * @throws BuildException when the preferred obfuscator or none obfuscator at all
 	 *         could be instantiated.
 	 */
-	public static final Obfuscator getInstance( String preferredObfuscator, String className, Project project, File libDir, LibraryManager libraryManager )
+	public static final Obfuscator getInstance( ObfuscatorSetting setting, Project project, File libDir, LibraryManager libraryManager )
 	throws BuildException
 	{
-		if (className != null) {
+		if (setting.getClassName() != null) {
 			try {
-				Class obfuscatorClass = Class.forName( className );
-				Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
-				obfuscator.init( project, libDir, libraryManager );
-				return obfuscator;
-			} catch (ClassNotFoundException e) {
-				throw new BuildException( "Unable to load obfuscator [" + className + "]: " + e.getMessage(), e );
-			} catch (InstantiationException e) {
-				throw new BuildException( "Unable to instantiate obfuscator [" + className + "]: " + e.getMessage(), e );
-			} catch (IllegalAccessException e) {
-				throw new BuildException( "Unable to instantiate obfuscator [" + className + "]: " + e.getMessage(), e );
+				if (setting.getClassPath() == null) {
+					Class obfuscatorClass = Class.forName( setting.getClassName() );
+					Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
+					obfuscator.init( project, libDir, libraryManager );
+					return obfuscator;
+				} else {
+					WrapperObfuscator obfuscator = new WrapperObfuscator( setting, project, libDir, libraryManager );
+					return obfuscator;
+				}
+			} catch (BuildException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new BuildException( "Unable to load obfuscator [" + setting.getClassName() + "]: " + e.getMessage(), e );
 			}
 		}
-		if (preferredObfuscator != null) {
+		if (setting.getName() != null) {
 			try {
-				String obfuscatorName = preferredObfuscator.substring(0, 1).toUpperCase()
-							        + preferredObfuscator.substring( 1 );
+				String obfuscatorName = setting.getName().substring(0, 1).toUpperCase()
+							        + setting.getName().substring( 1 );
 				Class obfuscatorClass = Class.forName( 
 							"de.enough.polish.obfuscate." 
 							+ obfuscatorName + "Obfuscator");
@@ -114,17 +118,15 @@ public abstract class Obfuscator {
 				obfuscator.init( project, libDir, libraryManager );
 				return obfuscator;
 			} catch (ClassNotFoundException e) {
-				throw new BuildException( "Unable to load obfuscator [" + preferredObfuscator + "]: " + e.getMessage(), e );
+				throw new BuildException( "Unable to load obfuscator [" + setting.getName() + "]: " + e.getMessage(), e );
 			} catch (InstantiationException e) {
-				throw new BuildException( "Unable to instantiate obfuscator [" + preferredObfuscator + "]: " + e.getMessage(), e );
+				throw new BuildException( "Unable to instantiate obfuscator [" + setting.getName() + "]: " + e.getMessage(), e );
 			} catch (IllegalAccessException e) {
-				throw new BuildException( "Unable to instantiate obfuscator [" + preferredObfuscator + "]: " + e.getMessage(), e );
+				throw new BuildException( "Unable to instantiate obfuscator [" + setting.getName() + "]: " + e.getMessage(), e );
 			}
 		}
 		// check for default obfuscators:
 		try {
-			//TODO does the class really need to be on the classpath?
-			// or start the obfuscator complete externally?
 			Class.forName("proguard.ProGuard");
 			// okay, proguard found:
 			Obfuscator obfuscator = new ProGuardObfuscator();

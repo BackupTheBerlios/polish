@@ -167,6 +167,10 @@ public final class ImportConverter {
 			if (line.startsWith("import ")) {
 				String importContent = line.substring( 7, line.length() -1 ).trim();
 				if ( usePolishGui ) {
+					if (!changed) {
+						sourceCode.insert( "import de.enough.polish.ui.StyleSheet;");
+						changed = true;
+					}
 					// translate import statements from javax.microedition.lcdui to polish:
 					String replacement = (String) translations.get(importContent);
 					if ( replacement != null) {

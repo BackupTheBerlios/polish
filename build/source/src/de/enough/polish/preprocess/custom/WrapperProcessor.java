@@ -85,7 +85,6 @@ public class WrapperProcessor extends CustomProcessor {
 				new Path( project ),
 				true);
     	antClassLoader.addPathElement( setting.getClassPath().getAbsolutePath() );
-    	System.out.println("trying to load class " + setting.getClassName() );
     	Class lineProcessorClass = antClassLoader.loadClass( setting.getClassName() ); 
     	this.lineProcessor = lineProcessorClass.newInstance();
     	// now init the line processor:

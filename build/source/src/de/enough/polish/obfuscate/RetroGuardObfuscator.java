@@ -104,7 +104,7 @@ public class RetroGuardObfuscator extends Obfuscator {
         		db.remapTo(targetFile, log);
         		*/
         	} finally {
-		      close.invoke( database, new Object[0] );
+        		close.invoke( database, new Object[0] );
         	}
         } catch (Exception e) {
         	System.out.println("RetroGuard-Log:\n");

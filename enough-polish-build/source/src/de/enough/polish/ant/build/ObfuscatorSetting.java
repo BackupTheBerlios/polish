@@ -29,6 +29,7 @@ import de.enough.polish.ant.ConditionalElement;
 
 import org.apache.tools.ant.BuildException;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -51,6 +52,7 @@ extends ConditionalElement
 	private boolean enable;
 	private String name;
 	private String className;
+	private File classPath;
 
 	/**
 	 * Creates a new empty obfuscator setting. 
@@ -92,6 +94,14 @@ extends ConditionalElement
 	
 	public String getClassName() {
 		return this.className;
+	}
+	
+	public void setClassPath( File classPath ) {
+		this.classPath = classPath;
+	}
+	
+	public File getClassPath() {
+		return this.classPath;
 	}
 	
 	/**
