@@ -26,8 +26,10 @@
 package de.enough.polish.ant;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import de.enough.polish.Variable;
+import de.enough.polish.util.PropertyUtil;
 
 /**
  * <p>Represents a Java Application Description file.</p>
@@ -42,18 +44,43 @@ import de.enough.polish.Variable;
 public class Jad {
 	
 	private ArrayList attributes;
+	private Map properties;
 
 	/**
 	 * Creates a new empty JAD
+	 * 
+	 * @param properties a map of defined variables which can be used in the attribute-values.
 	 */
-	public Jad() {
+	public Jad(Map properties ) {
 		this.attributes = new ArrayList();
+		this.properties = properties;
 	}
 	
+	/**
+	 * Adds a single attribute to this Jad file.
+	 * 
+	 * @param var the variable with a defined name and value which should be added
+	 */
+	public void addAttribute( Variable var ) {
+		addAttribute( var.getName(), var.getValue() );
+	}
+	
+	/**
+	 * Adds a single attribute to this Jad file.
+	 * 
+	 * @param name the name
+	 * @param value the value which can contain variables like ${polish.jarName} etc
+	 */
 	public void addAttribute( String name, String value ) {
+		value = PropertyUtil.writeProperties(value, this.properties);
 		this.attributes.add( name + ": " + value );
 	}
 	
+	/**
+	 * Gets the whole JAD-file as a String-array.
+	 * 
+	 * @return all defined attributes and values in a string-array
+	 */
 	public String[] getContent() {
 		String[] lines = (String[]) this.attributes.toArray( new String[ this.attributes.size() ] );
 		return lines;

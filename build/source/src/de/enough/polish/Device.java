@@ -488,6 +488,11 @@ public class Device extends PolishComponent {
 		this.baseDir = baseDir;
 	}
 
+	/**
+	 * Retrieves the base directory for this device.
+	 * 
+	 * @return the base directory for this device, has not File.seperator in the end.
+	 */
 	public String getBaseDir() {
 		return this.baseDir;
 	}

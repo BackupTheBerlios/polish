@@ -85,7 +85,7 @@ public class ProGuardObfuscator extends Obfuscator {
         cfg.keep = new ArrayList( preserve.length );
         for (int i = 0; i < preserve.length; i++) {
 			String className = TextUtil.replace( preserve[i], '.', '/');
-			//System.out.println("\npreservering: " + className );
+			//System.out.println("\n PROGUARD: preservering: " + className );
 	        cfg.keep.add(
 	        		new ClassSpecification(
         				ClassConstants.INTERNAL_ACC_PUBLIC,

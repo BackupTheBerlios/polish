@@ -25,6 +25,7 @@
  */
 package de.enough.polish.ant;
 
+import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
 
 import org.apache.tools.ant.Project;
@@ -42,6 +43,12 @@ import org.apache.tools.ant.Project;
  *    element needs to have a reference to the ant-project.
  *    This can be done with the help of the create&lt;nested-element-name&gt; method.
  * </p>
+ * <p>
+ *    The if- and unless-conditions can now also refer to complex terms
+ *    and use J2ME Polish variables and symbols.
+ *    This has to be supported specifically by the implementation, though -
+ *    the implementation needs to call isActive( BooleanEvaluator ). 
+ * </p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
@@ -52,8 +59,8 @@ import org.apache.tools.ant.Project;
  */
 public class ConditionalElement {
 	
-	private String ifExpression;
-	private String unlessExpression;
+	private String ifCondition;
+	private String unlessCondition;
 
 	/** 
 	 * Creates a new conditional element.
@@ -68,7 +75,7 @@ public class ConditionalElement {
 	 * @param ifExpr the ant-property which needs to be defined 
 	 */
 	public void setIf(String ifExpr) {
-		this.ifExpression = ifExpr;
+		this.ifCondition = ifExpr;
 	}
 	
 	/**
@@ -77,7 +84,7 @@ public class ConditionalElement {
 	 * @param unlessExpr the ant-property which must not be defined 
 	 */
 	public void setUnless(String unlessExpr) {
-		this.unlessExpression = unlessExpr;
+		this.unlessCondition = unlessExpr;
 	}
 
 	/**
@@ -87,14 +94,55 @@ public class ConditionalElement {
 	 * @return true when this element is valid
 	 */
 	public boolean isActive( Project project ) {
-		if (this.unlessExpression != null) {
-			return ! CastUtil.getBoolean(project.getProperty(this.unlessExpression)); 
+		if (this.unlessCondition != null) {
+			return ! CastUtil.getBoolean(project.getProperty(this.unlessCondition)); 
 		}
-		if (this.ifExpression != null ) {
-			return CastUtil.getBoolean(project.getProperty(this.ifExpression)); 
+		if (this.ifCondition != null ) {
+			return CastUtil.getBoolean(project.getProperty(this.ifCondition)); 
 		}
 		return true;
 	}
 
+	/**
+	 * Checks if the conditions for this element are met.
+	 * 
+	 * @param evaluator the boolean evaluator with the settings for the current device
+	 * @param project the Ant project into which this variable is embedded
+	 * @return true when no condition has been specified 
+	 * 			or the specified conditions have been met.
+	 */
+	public boolean isActive(BooleanEvaluator evaluator, Project project) {
+		if (this.ifCondition != null) {
+			// first check if there is an Ant-attribute:
+			String antProperty = project.getProperty( this.ifCondition );
+			if (antProperty != null) {
+				boolean success = CastUtil.getBoolean(antProperty );
+				if (!success) {
+					return false;
+				}
+			} else {
+				boolean success = evaluator.evaluate( this.ifCondition, "build.xml", 0);
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		if (this.unlessCondition != null) {
+			// first check if there is an Ant-attribute:
+			String antProperty = project.getProperty( this.unlessCondition );
+			if (antProperty != null) {
+				boolean success = CastUtil.getBoolean(antProperty );
+				if (success) {
+					return false;
+				}
+			} else {
+				boolean success = evaluator.evaluate( this.ifCondition, "build.xml", 0);
+				if (success) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
 }

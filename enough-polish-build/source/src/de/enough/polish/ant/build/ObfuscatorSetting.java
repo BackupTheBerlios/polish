@@ -65,6 +65,7 @@ extends Setting
 		if (keep.getClassName() == null) {
 			throw new BuildException("The <keep> element needs to define the attribute [class]. Please check your <obfuscator> setting.");
 		}
+		System.out.println("OBFUSCATOR: ADDING KEEP: " + keep.getClassName() );
 		this.keeps.add( keep );
 	}
 	
@@ -102,6 +103,10 @@ extends Setting
 	
 	public File getClassPath() {
 		return this.classPath;
+	}
+	
+	public boolean hasKeepDefinitions() {
+		return (this.keeps.size() > 0);
 	}
 	
 	/**

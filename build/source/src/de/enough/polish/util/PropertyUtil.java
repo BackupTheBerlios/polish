@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 public final class PropertyUtil {
 
 	static final Pattern PROPERTY_PATTERN = 
-		Pattern.compile("\\$\\{\\s*(\\w|\\.|-|\\)|\\()+\\s*\\}"); // == \$\{\s*(\w|\.|-)+\s*\}
+		Pattern.compile("\\$\\{\\s*(\\w|\\.|-|\\)|\\(|\\s)+\\s*\\}"); // == \$\{\s*(\w|\.|-|\(|\)|\s)+\s*\}
 	
 	/**
 	 * Inserts the property-values in a string with property-definitions.
@@ -83,6 +83,8 @@ public final class PropertyUtil {
 			startPos = matcher.end();
 			// append property:
 			String group = matcher.group(); // == ${ property.name }
+											// or == ${ function( property.name ) }
+											// or == ${ function( fix.value ) }
 			String property = group.substring( 2, group.length() -1 ).trim(); // == property.name
 			Object value;
 			// the property-name can also include a convert-function, e.g. bytes( polish.HeapSize )
@@ -94,7 +96,11 @@ public final class PropertyUtil {
 				}
 				String function = property.substring(0, functionStart).trim();
 				property = property.substring( functionStart + 1, functionEnd ).trim();
-				String originalValue = (String)properties.get( property );
+				String originalValue = (String) properties.get( property );
+				if (originalValue == null) {
+					// when functions are used, fix values can be used, too: 
+					originalValue = property;
+				}
 				Object intermediateValue = ConvertUtil.convert( originalValue, function);
 				value = ConvertUtil.toString(intermediateValue);
 			} else {

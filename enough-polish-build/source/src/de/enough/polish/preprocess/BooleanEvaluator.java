@@ -26,6 +26,7 @@
 package de.enough.polish.preprocess;
 
 import de.enough.polish.util.CastUtil;
+import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.TextUtil;
 
 import org.apache.tools.ant.BuildException;
@@ -121,24 +122,38 @@ public class BooleanEvaluator {
 	public boolean evaluate( String expression, String fileName, int line ) 
 	throws BuildException 
 	{
-		// main loop: evaluate all simple expressions (without parenthesisses)
+		// main loop: extract all simple expressions (without parenthesisses) and 
+		// evaluate each of them.
+		
+		// first step: replace all properties:
+		expression = PropertyUtil.writeProperties(expression, this.variables);
+		// second step: replace " and " with && and " or " with ||
+		expression = TextUtil.replace( expression, " and ", " && " );
+		expression = TextUtil.replace( expression, " or ", " || " );
+		
+		// now extract each term:
 		Matcher matcher = TERM_PATTERN.matcher( expression );
-		boolean foundParenthesis = matcher.find(); 
-		while ( foundParenthesis ) {
-			String group = matcher.group();
-			String term = group.substring( 1, group.length() -1 ); // the term has no parenthesis
-			boolean result = evaluateTerm( term, fileName, line );
-			expression = TextUtil.replaceFirst( expression, group, "" + result );
-			
-			// find next "(...)" term:
-			foundParenthesis = matcher.find();
-			if (!foundParenthesis) {
-				matcher = TERM_PATTERN.matcher( expression );
+		try {
+			boolean foundParenthesis = matcher.find(); 
+			while ( foundParenthesis ) {
+				String group = matcher.group();
+				String term = group.substring( 1, group.length() -1 ); // the term has no parenthesis
+				boolean result = evaluateTerm( term, fileName, line );
+				expression = TextUtil.replaceFirst( expression, group, "" + result );
+				
+				// find next "(...)" term:
 				foundParenthesis = matcher.find();
+				if (!foundParenthesis) {
+					matcher = TERM_PATTERN.matcher( expression );
+					foundParenthesis = matcher.find();
+				}
 			}
+			// now the expression is simplified to a term without parenthesis:
+			return evaluateTerm( expression, fileName, line );
+		} catch (IndexOutOfBoundsException e) {
+			System.err.println("Error while evaluating expression [" + expression + "].");
+			throw e;
 		}
-		// now the expression is simplified to a term without parenthesis:
-		return evaluateTerm( expression, fileName, line );
 	}
 
 	/**

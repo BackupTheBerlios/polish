@@ -240,6 +240,17 @@ public abstract class CustomPreprocessor {
 		}
 	}
 	
+	/**
+	 * Creates the start of an error message:
+	 * 
+	 * @param className the name of the current class
+	 * @param lines the source code of that class
+	 * @return a typical error-message start like "MyClass.java line [12]: " 
+	 */
+	protected String getErrorStart(String className, StringList lines) {
+		return className + " line [" + (lines.getCurrentIndex() + 1) + "]: ";
+	}
+	
 	class Directive {
 		String directive;
 		Method method;

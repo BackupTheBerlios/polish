@@ -28,6 +28,7 @@ package de.enough.polish.util;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Provides some often used methods for handling files.</p>
@@ -171,7 +172,7 @@ public final class FileUtil {
 	 * @param properties the properties which should be written. 
 	 * @throws IOException when there is an input/output error during the saving
 	 */
-	public static void writePropertiesFile( File file, HashMap properties ) 
+	public static void writePropertiesFile( File file, Map properties ) 
 	throws IOException 
 	{
 		Object[] keys = properties.keySet().toArray();
@@ -218,8 +219,29 @@ public final class FileUtil {
 	public static HashMap readPropertiesFile( File file, char delimiter ) 
 	throws FileNotFoundException, IOException 
 	{
-		String[] lines = readTextFile( file );
+		
 		HashMap map = new HashMap();
+		readPropertiesFile( file, delimiter, map );
+		return map;
+	}
+
+	/**
+	 * Reads a properties file.
+	 * The notation of the file needs to be 
+	 * "[name]=[value]\n"
+	 * for each defined property.
+	 * 
+	 * @param file the file containing the properties
+	 * @param delimiter the sign which is used for separating a property-name from a property-value.
+	 * @param map the hash map to which the properties should be added 
+	 * @throws FileNotFoundException when the file was not found
+	 * @throws IOException when file could not be read.
+	 * @throws IllegalArgumentException when the line does not contain a property
+	 */
+	public static void readPropertiesFile( File file, char delimiter, Map map ) 
+	throws FileNotFoundException, IOException 
+	{
+		String[] lines = readTextFile( file );
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
 			if (line.length() > 0 && line.charAt(0) != '#') {
@@ -235,9 +257,8 @@ public final class FileUtil {
 				map.put( key, value );
 			}
 		}
-		return map;
 	}
-
+	
 	/**
 	 * Copies the contents of a directory to the specified target directory.
 	 * 

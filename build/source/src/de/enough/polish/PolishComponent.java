@@ -26,13 +26,15 @@
 package de.enough.polish;
 
 
-import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.preprocess.StyleSheet;
-import de.enough.polish.util.TextUtil;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.jdom.Element;
 
-import java.util.*;
+import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Provides common functionalities for PolishProject, Vendor, DeviceGroup and Device.</p>
@@ -51,7 +53,6 @@ public class PolishComponent {
 	protected boolean supportsPolishGui;
 	private HashMap features;
 	private HashMap capabilities;
-	private StyleSheet styleSheet;
 	private String featuresAsString;
 	
 	/**
@@ -381,21 +382,6 @@ public class PolishComponent {
 		return this.identifier;
 	}
 
-
-	
-	/**
-	 * @return Returns the StyleSheet of this component.
-	 */
-	public StyleSheet getStyleSheet() {
-		return this.styleSheet;
-	}
-	/**
-	 * @param styleSheet The StyleSheet to set.
-	 */
-	public void setStyleSheet(StyleSheet styleSheet) {
-		this.styleSheet = styleSheet;
-	}
-	
 	/**
 	 * Retrieves the defined features of this component.
 	 * 
@@ -404,4 +390,4 @@ public class PolishComponent {
 	public String getFeaturesAsString() {
 		return this.featuresAsString;
 	}
-	}
+}

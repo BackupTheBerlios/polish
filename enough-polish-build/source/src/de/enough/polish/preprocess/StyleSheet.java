@@ -100,7 +100,7 @@ public class StyleSheet {
 
 	private HashMap cssPreprocessingSymbols;
 	private HashMap cssAttributes;
-	private HashMap attributesIds;
+	private Map attributesIds;
 	
 	/**
 	 * Creates a new empty style sheet
@@ -658,7 +658,7 @@ public class StyleSheet {
 	 * 
 	 * @param idsByAttribute a HashMap containing all IDs
 	 */
-	public void setAttributesIds(HashMap idsByAttribute) {
+	public void setAttributesIds(Map idsByAttribute) {
 		this.attributesIds = idsByAttribute;
 	}
 	

@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Creates and stores integer-IDs instead of full string-sequences.</p>
@@ -42,7 +43,7 @@ import java.util.HashMap;
 public class IntegerIdGenerator {
 	
 	private int lastId;
-	private HashMap idsByKey;
+	private Map idsByKey;
 
 	/**
 	 * Creates a new integer ID generator.
@@ -58,7 +59,7 @@ public class IntegerIdGenerator {
 	 * 
 	 * @param idsMap the known IDs
 	 */
-	public IntegerIdGenerator( HashMap idsMap ) {
+	public IntegerIdGenerator( Map idsMap ) {
 		setIdsMap(idsMap);
 	}
 	
@@ -67,7 +68,7 @@ public class IntegerIdGenerator {
 	 *  
 	 * @return the map containing all abbreviations.
 	 */
-	public HashMap getIdsMap() {
+	public Map getIdsMap() {
 		return this.idsByKey;
 	}
 	
@@ -76,7 +77,7 @@ public class IntegerIdGenerator {
 	 * 
 	 * @param map a HashMap containing all IDs for full keywords 
 	 */
-	public void setIdsMap( HashMap map ) {
+	public void setIdsMap( Map map ) {
 		this.idsByKey = new HashMap( map.size() );
 		// find out the last used ID:
 		int maxId = 0;

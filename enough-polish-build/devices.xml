@@ -87,8 +87,18 @@
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="SoundFormat" value="midi, amr" />
 	</device>
-	
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/jtwi</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="SoundFormat" value="midi, amr" />
+	</device>	
 <!-- virtuell devices -->
+
 <!-- These devices do not actually exist, but they share the common
      capabilities of their "class".	
 -->
@@ -1926,8 +1936,8 @@
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, jtwi" />
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
 		<capability name="VideoFormat" value="h263" />
 		<capability name="MaxJarSize" value="350kb" />

@@ -25,18 +25,24 @@
  */
 package de.enough.polish.preprocess;
 
-import de.enough.polish.Device;
-import de.enough.polish.PolishProject;
-import de.enough.polish.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 
-import java.io.*;
-import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.enough.polish.Device;
+import de.enough.polish.PolishProject;
+import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.PropertyUtil;
+import de.enough.polish.util.StringList;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Preprocesses source code.</p>
@@ -174,6 +180,19 @@ public class Preprocessor {
 	}
 
 	/**
+	 * Adds a custom preprocesor to this preprocessor.
+	 * 
+	 * @param preprocessor the additional preprocessor
+	 */
+	public void addCustomPreprocessors(CustomPreprocessor preprocessor) {
+		CustomPreprocessor[] processors = new CustomPreprocessor[ this.customPreprocessors.length + 1];
+		processors[ this.customPreprocessors.length] = preprocessor;
+		System.arraycopy(this.customPreprocessors, 0, processors, 0, this.customPreprocessors.length);
+		this.customPreprocessors = processors;
+																 
+	}
+
+	/**
 	 * Notifies the processor that from now on source code from the J2ME Polish package is processed.
 	 * This will last until the notifyDevice(...)-method is called.
 	 */
@@ -300,8 +319,21 @@ public class Preprocessor {
 	 */
 	public void addVariable( String name, String value ) {
 		this.variables.put( name, value );
+		this.symbols.put( name + ":defined", Boolean.TRUE );
 	}
-	
+
+	/**
+	 * Removes a variable from this preprocessor
+	 * 
+	 * @param name the variable name
+	 */
+	public void removeVariable(String name) {
+		Object o = this.variables.remove( name );
+		if (o != null) {
+			this.symbols.remove( name + ":defined" );
+		}
+	}
+
 	/**
 	 * Adds all the variables to the existing variables.
 	 * When a variable already exists, it will be overwritten.
@@ -803,6 +835,7 @@ public class Preprocessor {
 			String name = argument.substring(0, equalsIndex).trim();
 			String value = argument.substring( equalsIndex + 1).trim();
 			this.temporaryVariables.put( name, value );
+			this.temporarySymbols.put( name + ":defined", Boolean.TRUE );
 		} else {
 			this.temporarySymbols.put( argument, Boolean.TRUE );
 		}
@@ -827,7 +860,9 @@ public class Preprocessor {
 		this.symbols.remove( argument );
 		if (symbol == null) {
 			this.temporaryVariables.remove( argument );
+			this.temporarySymbols.remove( argument + ":defined" );
 			this.variables.remove( argument );
+			this.symbols.remove( argument + ":defined" );
 		}
 	}
 
@@ -1245,5 +1280,14 @@ public class Preprocessor {
 		this.preprocessQueue.remove( fileName );
 	}
 
+	/**
+	 * Retrieves all defined variables.
+	 * Changes take effect on the preprocessor.
+	 * 
+	 * @return all defined variables
+	 */
+	public Map getVariables() {
+		return this.variables;
+	}
 
 }

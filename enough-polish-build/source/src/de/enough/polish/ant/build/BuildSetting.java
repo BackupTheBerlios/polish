@@ -93,6 +93,7 @@ public class BuildSetting {
 	private String javacTarget;
 	private boolean compilerMode;
 	private File compilerDestDir;
+	private ResourceSetting resourceSetting;
 	
 	/**
 	 * Creates a new build setting.
@@ -150,7 +151,7 @@ public class BuildSetting {
 	
 	public void addConfiguredFullscreen( FullScreenSetting setting ) {
 		if (this.fullScreenSetting != null) {
-			throw new BuildException("Please use either the attribute [fullscreen] or the nested element [fullscreen], but not both!");
+			throw new BuildException("Please use either the attribute \"fullscreen\" or the nested element <fullscreen>, but not both!");
 		}
 		this.fullScreenSetting = setting;
 	}
@@ -174,7 +175,7 @@ public class BuildSetting {
 		this.jadAttributes = attributes;
 		this.jadAttributesFilter = attributes.getFilter();
 	}
-	
+			
 	public void addConfiguredPreprocessor( PreprocessorSetting preprocessor ) {
 		if (preprocessor.getClassName() == null) {
 			throw new BuildException("Invalid <preprocessor> element: please define the attribute \"class\" for each preprocessor.");
@@ -184,6 +185,7 @@ public class BuildSetting {
 		}
 		this.preprocessors.add( preprocessor );
 	}
+	
 	
 	public PreprocessorSetting[] getPreprocessors() {
 		if (this.preprocessors == null) { 
@@ -202,6 +204,12 @@ public class BuildSetting {
 		return java;
 	}
 	
+	public ResourceSetting createResources() {
+		ResourceSetting setting = new ResourceSetting( this.project );
+		this.resourceSetting = setting;
+		return setting;
+	}
+	
 	public Variable[] getVariables() {
 		return this.variables;
 	}
@@ -213,6 +221,19 @@ public class BuildSetting {
 		} else {
 			return this.jadAttributes.getAttributes();
 		}
+	}
+	
+	/**
+	 * Retrieves the setting for resource handling.
+	 * 
+	 * @return the setting for resource handling.
+	 */
+	public ResourceSetting getResourceSetting() {
+		if (this.resourceSetting == null) {
+			this.resourceSetting = new ResourceSetting( this.project );
+			this.resourceSetting.setDir( getResDir() );
+		}
+		return this.resourceSetting;
 	}
 	
 	/**
@@ -373,7 +394,7 @@ public class BuildSetting {
 	 * 
 	 * @return The directory which contains the resources
 	 */
-	public File getResDir() {
+	private File getResDir() {
 		if (!this.resDir.exists()) {
 			this.resDir.mkdirs();
 		}
@@ -386,16 +407,20 @@ public class BuildSetting {
 	 * Resources include pictures, texts, etc. as well as the CSS-files 
 	 * containing the design information. 
 	 * 
-	 * @param resPath The directory containing the resources.
+	 * @param resDir The directory containing the resources.
 	 */
-	public void setResDir( String resPath ) {
-		File newResDir = getFile( resPath );
-		if (!newResDir.exists()) {
-			throw new BuildException("The resource directory [" + newResDir.getAbsolutePath() + 
-					"] does not exist. Please correct the attribute [resDir] " +
+	public void setResDir( File resDir ) {
+		if (this.resourceSetting != null) {
+			throw new BuildException("Please use either the \"resDir\"-attribute of the <build>-element or the <resources>-element, but not both.");
+		}
+		if (!resDir.exists()) {
+			throw new BuildException("The resource directory [" + resDir.getAbsolutePath() + 
+					"] does not exist. Please correct the attribute \"resDir\" " +
 					"of the <build> element.");
 		}
-		this.resDir = newResDir;
+		this.resDir = resDir;
+		this.resourceSetting = new ResourceSetting( this.project );
+		this.resourceSetting.setDir( resDir );
 	}
 	
 	/**

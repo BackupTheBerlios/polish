@@ -35,6 +35,9 @@ import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
 import de.enough.polish.preprocess.custom.PolishPreprocessor;
+import de.enough.polish.preprocess.custom.TranslationPreprocessor;
+import de.enough.polish.resources.ResourceManager;
+import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.*;
 
 import org.apache.tools.ant.*;
@@ -114,6 +117,12 @@ public class PolishTask extends ConditionalTask {
 	private PolishLogger polishLogger;
 	private ArrayList runningEmulators;
 
+	private ResourceManager resourceManager;
+
+	private Locale[] supportedLocales;
+
+	private TranslationPreprocessor translationPreprocessor;
+
 	
 	/**
 	 * Creates a new empty task 
@@ -184,29 +193,28 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
 			boolean hasExtensions = (this.javaExtensions.length > 0);
+			
 			for ( int i=0; i < numberOfDevices; i++) {
 				Device device = this.devices[i];
 				if (numberOfDevices > 1) {
 					System.out.println("Building application for [" + device.getIdentifier() + "] (" + (i+1) + "/" + numberOfDevices + "):");
 				}
-				preprocess( device );
-				compile( device );
-				if (this.doObfuscate) {
-					obfuscate( device );
-				}
-				if (this.buildSetting.isInCompilerMode()) {
-					System.out.println();
-					System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
-					return;
-				}
-				preverify( device );
-				jar( device );
-				jad( device );
-				if (hasExtensions) {
-					callExtensions( device );
-				}
-				if (this.emulatorSetting != null) {
-					runEmulator( device );
+				if (this.supportedLocales != null) {
+					for (int j = 0; j < this.supportedLocales.length; j++) {
+						Locale locale = this.supportedLocales[j];
+						System.out.println("Using locale [" + locale.toString() + "]...");
+						execute(device, locale, hasExtensions);
+						if (this.buildSetting.isInCompilerMode()) {
+							// return immediately in the compiler mode:
+							return;
+						}
+					}					
+				} else {
+					execute(device, null, hasExtensions);
+					if (this.buildSetting.isInCompilerMode()) {
+						// return immediately in the compiler mode:
+						return;
+					}
 				}
 				if (numberOfDevices > 1) {
 					// print an empty as a separator between different devices: 
@@ -244,6 +252,37 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+		}
+	}
+	
+
+	/**
+	 * Executes the sequence of J2ME Polish subtasks for the given device and locale.
+	 * 
+	 * @param device the current device
+	 * @param locale the current locale, can be null
+	 * @param hasExtensions true when there are <java>-extensions
+	 */
+	private void execute(Device device, Locale locale, boolean hasExtensions) {
+		preprocess( device, locale );
+		compile( device );
+		if (this.doObfuscate) {
+			obfuscate( device, locale );
+		}
+		if (this.buildSetting.isInCompilerMode()) {
+			finishProject();
+			System.out.println();
+			System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
+			return;
+		}
+		preverify( device, locale );
+		jar( device, locale );
+		jad( device, locale );
+		if (hasExtensions) {
+			callExtensions( device, locale );
+		}
+		if (this.emulatorSetting != null) {
+			runEmulator( device, locale );
 		}
 	}
 
@@ -588,11 +627,11 @@ public class PolishTask extends ConditionalTask {
 		if (this.buildSetting.doObfuscate()) {
 			ObfuscatorSetting[] obfuscatorSettings = this.buildSetting.getObfuscatorSettings();
 			ArrayList obfuscatorsList = new ArrayList();
-			String[] keepClasses = new String[0];
+			String[] keepClasses = null;
 			for (int i = 0; i < obfuscatorSettings.length; i++) {
 				ObfuscatorSetting obfuscatorSetting = obfuscatorSettings[i];
 				if (keepClasses == null && 
-						obfuscatorSetting.getPreserveClassNames().length != 0) {
+						obfuscatorSetting.hasKeepDefinitions()) {
 					keepClasses = obfuscatorSetting.getPreserveClassNames();
 				}
 				if ((obfuscatorSetting.isEnabled())) {
@@ -605,6 +644,9 @@ public class PolishTask extends ConditionalTask {
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
 				String[] midletClasses = this.buildSetting.getMidletClassNames();
+				if (keepClasses == null) {
+					keepClasses = new String[0];
+				}
 				this.preserveClasses = new String[ keepClasses.length + midletClasses.length ];
 				System.arraycopy( keepClasses, 0, this.preserveClasses, 0,  keepClasses.length );
 				System.arraycopy( midletClasses, 0, this.preserveClasses, keepClasses.length, midletClasses.length  );
@@ -616,7 +658,8 @@ public class PolishTask extends ConditionalTask {
 		
 		// init base style sheet:
 		if (this.buildSetting.usePolishGui()) {
-			File cssFile = new File( this.buildSetting.getResDir().getAbsolutePath() + File.separatorChar + "polish.css");
+			ResourceSetting resourceSetting = this.buildSetting.getResourceSetting();
+			File cssFile = new File( resourceSetting.getDir().getAbsolutePath() + File.separatorChar + "polish.css");
 			if (!cssFile.exists()) {
 				log("Unable to find polish.css at [" + cssFile.getAbsolutePath() + "] - you should create this file when you want to make most of the J2ME Polish GUI.", Project.MSG_WARN );
 				this.styleSheet = new StyleSheet();
@@ -643,6 +686,17 @@ public class PolishTask extends ConditionalTask {
 		
 		// get the javac-settings:
 		this.javacTarget = this.buildSetting.getJavacTarget();
+		
+		// get the resource manager:
+		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), this.project, this.preprocessor.getBooleanEvaluator() );
+		this.supportedLocales = this.resourceManager.getLocales();
+		if (this.supportedLocales != null) {
+			// add the preprocessor for translations:
+			PreprocessorSetting setting = new PreprocessorSetting();
+			setting.setClass("de.enough.polish.preprocess.custom.TranslationPreprocessor");
+			this.translationPreprocessor = (TranslationPreprocessor) CustomPreprocessor.getInstance(setting, this.preprocessor, this.project);
+			this.preprocessor.addCustomPreprocessors( this.translationPreprocessor );
+		}
 		
 		//check if there has been an error at the last run:
 		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()
@@ -756,35 +810,59 @@ public class PolishTask extends ConditionalTask {
 	 * Preprocesses the source code for all devices.
 	 * 
 	 * @param device The device for which the preprocessing should be done.
+	 * @param locale the current locale, can be null
 	 */
-	private void preprocess( Device device ) {
+	private void preprocess( Device device, Locale locale ) {
 		System.out.println("preprocessing for device [" +  device.getIdentifier() + "]." );
 		try {
 			this.numberOfChangedFiles = 0;
 			String targetDir = this.buildSetting.getWorkDir().getAbsolutePath() 
 				+ File.separatorChar + device.getVendorName() 
 				+ File.separatorChar + device.getName();
+			if (locale != null) {
+				targetDir += File.separatorChar + locale.toString();
+			}
 			device.setBaseDir( targetDir );
 			targetDir += File.separatorChar + "source";
 			device.setSourceDir(targetDir);
 			// initialise the preprocessor:
 			this.preprocessor.setTargetDir( targetDir );
-			// set conditional variables:
+			// set variables and symbols:
 			this.preprocessor.setSymbols( device.getFeatures() );
 			this.preprocessor.setVariables( device.getCapabilities() );
+			this.preprocessor.addVariable( "polish.identifier", device.getIdentifier() );
+			this.preprocessor.addVariable( "polish.name", device.getName() );
+			this.preprocessor.addVariable( "polish.vendor", device.getVendorName() );
+			this.preprocessor.addVariable( "polish.version", this.infoSetting.getVersion() );
+			long lastLocaleModification = 0;
+			// set localization-variables:
+			if (locale != null) {
+				this.preprocessor.addVariable("polish.locale", locale.toString() );
+				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
+				this.preprocessor.addVariable("polish.country", locale.getCountry() );
+				
+				// load localized messages, this also sets localized variables automatically:
+				TranslationManager translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor.getVariables() );
+				this.translationPreprocessor.setTranslationManager( translationManager );
+				lastLocaleModification = translationManager.getLastModificationTime();
+			}
+			// set info-variables:
+			String jarName = this.infoSetting.getJarName();
+			jarName = PropertyUtil.writeProperties(jarName, this.preprocessor.getVariables());
+			this.preprocessor.addVariable( "polish.jarName", jarName );
+			String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
+			this.preprocessor.addVariable( "polish.jadName", jadName );
+			
+			// set conditional variables:
 			if (this.conditionalVariables != null) {
 				// add variables which fulfill the conditions: 
 				BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 				for (int i = 0; i < this.conditionalVariables.length; i++) {
 					Variable var = this.conditionalVariables[i];
 					if (var.isConditionFulfilled( evaluator, this.project )) {
-						device.addDirectCapability(var.getName(), var.getValue() );
+						this.preprocessor.addVariable(var.getName(), var.getValue() );
 					}
 				}
-				// reset symbols and variables,
-				// since a conditional variable could have been set:
-				this.preprocessor.setSymbols( device.getFeatures() );
-				this.preprocessor.setVariables( device.getCapabilities() );
 			}
 			// get the last modfication time of the build.xml file
 			// so that it can be checked whether there are any changes at all:
@@ -795,11 +873,13 @@ public class PolishTask extends ConditionalTask {
 			boolean usePolishGui = this.buildSetting.usePolishGui()
 								  && device.supportsPolishGui();
 			this.preprocessor.setUsePolishGui(usePolishGui);
-			long lastCssModification = 0;
+			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;
 			if (usePolishGui) {
-				cssStyleSheet = loadStyleSheet( device );
-				lastCssModification = cssStyleSheet.lastModified();
+				cssStyleSheet = this.resourceManager.loadStyleSheet( this.styleSheet, device, locale );
+				if (cssStyleSheet.lastModified() > lastLocaleModification) {
+					lastCssModification = cssStyleSheet.lastModified();
+				}
 			}
 			this.preprocessor.setSyleSheet( cssStyleSheet, device );
 			this.preprocessor.notifyDevice(device, usePolishGui);
@@ -972,86 +1052,6 @@ public class PolishTask extends ConditionalTask {
 
 	}
 
-	/**
-	 * Reads the style sheet for the given device.
-	 * 
-	 * @param device the device
-	 * @return the style sheet for that device
-	 * @throws IOException when a sub-style sheet could not be loaded.
-	 */
-	private StyleSheet loadStyleSheet(Device device) throws IOException {
-		String resDir = this.buildSetting.getResDir().getAbsolutePath()
-						+ File.separator;
-		// initialise the CSS-style sheet:
-		long lastCssModification = this.styleSheet.lastModified();
-		
-		CssReader cssReader = new CssReader( this.styleSheet );
-		
-		// add the vendor style sheet:
-		Vendor vendor = device.getVendor();
-		StyleSheet sheet = vendor.getStyleSheet();
-		if ( sheet == null ) {
-			// CSS file has not been read yet:
-			File cssFile = new File( resDir + vendor.getIdentifier() 
-					+ File.separator + "polish.css");
-			if (cssFile.exists()) {
-				CssReader reader = new CssReader( this.styleSheet );
-				reader.add( cssFile );
-				sheet = reader.getStyleSheet();
-				vendor.setStyleSheet( sheet );
-			} else {
-				sheet = new StyleSheet();
-				vendor.setStyleSheet( sheet );
-			}
-		}
-		cssReader.add( sheet );
-		if (sheet.lastModified() > lastCssModification) {
-			lastCssModification = sheet.lastModified();
-		}
-		
-		// now add the CSS files of the groups:
-		DeviceGroup[] groups = device.getGroups();
-		for (int i = 0; i < groups.length; i++) {
-			DeviceGroup group = groups[i];
-			sheet = group.getStyleSheet();
-			if (sheet == null) {
-				File cssFile = new File( resDir + group.getIdentifier() 
-						+ File.separator + "polish.css");
-				if (cssFile.exists()) {
-					CssReader reader = new CssReader( this.styleSheet );
-					reader.add( cssFile );
-					sheet = reader.getStyleSheet();
-					group.setStyleSheet( sheet );
-				} else {
-					sheet = new StyleSheet();
-					group.setStyleSheet( sheet );
-				}
-			}
-			cssReader.add(sheet);
-			if (sheet.lastModified() > lastCssModification) {
-				lastCssModification = sheet.lastModified();
-			}
-		}
-		
-		// now add the style sheet of the device:
-		// CSS file has not been read yet:
-		File cssFile = new File( resDir + vendor.getIdentifier() 
-				+ File.separator + device.getName() + File.separator + "polish.css");
-		if (cssFile.exists()) {
-			CssReader reader = new CssReader( this.styleSheet );
-			reader.add( cssFile );
-			sheet = reader.getStyleSheet();
-			cssReader.add( sheet );
-		} else {
-			sheet = new StyleSheet();
-		}
-		if (sheet.lastModified() > lastCssModification) {
-			lastCssModification = sheet.lastModified();
-		}
-		sheet = cssReader.getStyleSheet();
-		sheet.setLastModified(lastCssModification);
-		return sheet;
-	}
 
 	/**
 	 * Compiles the source code.
@@ -1096,7 +1096,14 @@ public class PolishTask extends ConditionalTask {
 		javac.setTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
 		javac.setTarget( this.javacTarget );
-		javac.setSource( this.sourceCompatibility );
+		if (this.javacTarget == BuildSetting.TARGET_1_1) {
+			// -source == 1.3 is needed for J2SE 1.5, but only when target == 1.1
+			javac.setSource( this.sourceCompatibility );
+		}
+		if (this.buildSetting.isDebugEnabled()) {
+			javac.setDebug(true);
+			javac.setDebugLevel("lines,vars,source");
+		}
 		File targetDir;
 		if (this.buildSetting.isInCompilerMode() && !this.doObfuscate) {
 			targetDir = this.buildSetting.getCompilerDestDir();
@@ -1160,8 +1167,9 @@ public class PolishTask extends ConditionalTask {
 	 * Obfuscates the compiled source code.
 	 *  
 	 * @param device The device for which the obfuscation should be done.
+	 * @param locale
 	 */
-	private void obfuscate( Device device ) {
+	private void obfuscate( Device device, Locale locale ) {
 		System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( true );
@@ -1237,8 +1245,9 @@ public class PolishTask extends ConditionalTask {
 	 * Preverifies the compiled and a\obfuscated code.
 	 *  
 	 * @param device The device for which the preverification should be done.
+	 * @param locale
 	 */
-	private void preverify( Device device ) {
+	private void preverify( Device device, Locale locale ) {
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
 		File preverify = this.buildSetting.getPreverify();
 		String classPath;
@@ -1300,57 +1309,25 @@ public class PolishTask extends ConditionalTask {
 	}
 
 	/**
-	 * Jars the code and assembles the resources for the application.
+	 * Packages the code and assembles the resources for the application.
 	 * 
 	 * @param device The device for which the code should be jared.
+	 * @param locale the current locale, can be null
 	 */
-	private void jar( Device device ) {
+	private void jar( Device device, Locale locale ) {
 		System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 		File classesDir = new File( device.getClassesDir() );
-		//copy resources:
-		File resourceDir = this.buildSetting.getResDir();
-		String resourcePath = resourceDir.getAbsolutePath() + File.separatorChar; 
 		
-		FileFilter cssFilter =  new CssFileFilter();
 		try {
-			// 1. copy general resources:
-			File[] files = resourceDir.listFiles( cssFilter );
-			FileUtil.copy( files, classesDir );
-			// 2. copy vendor resources:
-			resourceDir = new File( resourcePath + device.getVendorName() );
-			if (resourceDir.exists()) {
-				files = resourceDir.listFiles( cssFilter );
-				FileUtil.copy( files, classesDir );
-			}
-			// 3. copy group resources:
-			String[] groups = device.getGroupNames();
-			for (int i = 0; i < groups.length; i++) {
-				String group = groups[i];
-				resourceDir = new File( resourcePath + group );
-				if (resourceDir.exists()) {
-					files = resourceDir.listFiles( cssFilter );
-					FileUtil.copy( files, classesDir );
-				}
-			}
-			// 4.: copy device resources:
-			resourceDir = new File( resourcePath + device.getVendorName() 
-								+ File.separatorChar + device.getName() );
-			if (resourceDir.exists()) {
-				files = resourceDir.listFiles( cssFilter );
-				FileUtil.copy( files, classesDir );
-			}
+			// copy resources:
+			this.resourceManager.copyResources(classesDir, device, locale);
 		} catch (IOException e) {
-			throw new BuildException("Unable to copy resources from [" + resourceDir + "]: " + e.getMessage(), e );
-		}
+			e.printStackTrace();
+			throw new BuildException("Unable to assemble resources: " + e.toString(), e );
+		}		
+
 		// retrieve the name of the jar-file:
-		HashMap infoProperties = new HashMap();
-		infoProperties.put( "polish.identifier", device.getIdentifier() );
-		infoProperties.put( "polish.name", device.getName() );
-		infoProperties.put( "polish.vendor", device.getVendorName() );
-		infoProperties.put( "polish.version", this.infoSetting.getVersion() );
-		String jarName = this.infoSetting.getJarName();
-		jarName = PropertyUtil.writeProperties(jarName, infoProperties);
-		infoProperties.put( "polish.jarName", jarName );
+		String jarName = this.preprocessor.getVariable("polish.jarName");
 		File jarFile = new File( this.buildSetting.getDestDir().getAbsolutePath() 
 						+ File.separatorChar + jarName );
 		device.setJarFile( jarFile );
@@ -1360,7 +1337,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// create manifest:
-		Jad jad = new Jad();
+		Jad jad = new Jad( this.preprocessor.getVariables() );
 		boolean useAttributesFilter = this.buildSetting.hasManifestAttributesFilter();
 		HashMap attributesByName = null;
 		if (useAttributesFilter) {
@@ -1394,12 +1371,11 @@ public class PolishTask extends ConditionalTask {
 		// add info attributes:
 		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes();
 		for (int i = 0; i < jadAttributes.length; i++) {
-			Attribute var = jadAttributes[i];
-			String value = PropertyUtil.writeProperties(var.getValue(), infoProperties);
+			Attribute attribute = jadAttributes[i];
 			if (useAttributesFilter) {
-				attributesByName.put( var.getName(), new  Attribute(var.getName(), value ) );
+				attributesByName.put( attribute.getName(), attribute );
 			} else {
-				jad.addAttribute( var.getName(), value );
+				jad.addAttribute( attribute );
 			}
 		}
 		
@@ -1422,10 +1398,10 @@ public class PolishTask extends ConditionalTask {
 			if (attribute.targetsManifest() && attribute.isConditionFulfilled(evaluator, this.project)) {
 				if (useAttributesFilter) {
 					attributesByName.put(attribute.getName(),
-							new Attribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) ) );
+							attribute );
 					
 				} else {
-					jad.addAttribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) );
+					jad.addAttribute( attribute );
 				}
 			}
 		}
@@ -1458,20 +1434,13 @@ public class PolishTask extends ConditionalTask {
 	 * Creates the JAD file for the given device.
 	 * 
 	 * @param device The device for which the JAD file should be created.
+	 * @param locale
 	 */
-	private void jad(Device device) {
-		HashMap infoProperties = new HashMap();
-		infoProperties.put( "polish.identifier", device.getIdentifier() );
-		infoProperties.put( "polish.name", device.getName() );
-		infoProperties.put( "polish.vendor", device.getVendorName() );
-		infoProperties.put( "polish.version", this.infoSetting.getVersion() );
-		String jarName = this.infoSetting.getJarName();
-		jarName = PropertyUtil.writeProperties(jarName, infoProperties);
-		infoProperties.put( "polish.jarName", jarName );
+	private void jad(Device device, Locale locale) {
 		
 		// now create the JAD file:
 		System.out.println("creating JAD for device [" + device.getIdentifier() + "].");
-		Jad jad = new Jad();
+		Jad jad = new Jad( this.preprocessor.getVariables() );
 		HashMap attributesByName = null;
 		boolean useAttributesFilter = this.buildSetting.hasJadAttributesFilter();
 		if (useAttributesFilter) {
@@ -1483,9 +1452,9 @@ public class PolishTask extends ConditionalTask {
 			Attribute var  = jadAttributes[i];
 			if (useAttributesFilter) {
 				attributesByName.put( var.getName(), 
-					new Attribute(var.getName(), PropertyUtil.writeProperties( var.getValue(), infoProperties)) );
+					new Attribute(var.getName(), var.getValue() ) );
 			} else {
-				jad.addAttribute( var.getName() , PropertyUtil.writeProperties( var.getValue(), infoProperties) );
+				jad.addAttribute( var );
 			}
 		}
 		
@@ -1518,10 +1487,10 @@ public class PolishTask extends ConditionalTask {
 			if (attribute.targetsJad() && attribute.isConditionFulfilled(evaluator, this.project)) {
 				if (useAttributesFilter) {
 					attributesByName.put(attribute.getName(),
-							new Attribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) ) );
+							new Attribute( attribute.getName(), attribute.getValue() ) );
 					
 				} else {
-					jad.addAttribute( attribute.getName(), PropertyUtil.writeProperties( attribute.getValue(), infoProperties) );
+					jad.addAttribute( attribute );
 				}
 			}
 		}
@@ -1532,7 +1501,7 @@ public class PolishTask extends ConditionalTask {
 			jad.setAttributes( filteredAttributes );
 		}
 		
-		String jadName = PropertyUtil.writeProperties( jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad", infoProperties );
+		String jadName = this.preprocessor.getVariable("polish.jadName");
 		File jadFile = new File( this.buildSetting.getDestDir().getAbsolutePath() + File.separatorChar + jadName );
 		try {
 			FileUtil.writeTextFile(jadFile, jad.getContent() );
@@ -1546,8 +1515,9 @@ public class PolishTask extends ConditionalTask {
 	 * These can be used for example to sign the MIDlet.
 	 * 
 	 * @param device the current device
+	 * @param locale
 	 */
-	private void callExtensions( Device device ) {
+	private void callExtensions( Device device, Locale locale ) {
 		HashMap infoProperties = new HashMap();
 		infoProperties.put( "polish.identifier", device.getIdentifier() );
 		infoProperties.put( "polish.name", device.getName() );
@@ -1574,8 +1544,9 @@ public class PolishTask extends ConditionalTask {
 	 * Launches the emulator if the user wants to.
 	 * 
 	 * @param device the current device.
+	 * @param locale
 	 */
-	private void runEmulator( Device device ) {
+	private void runEmulator( Device device, Locale locale ) {
 		if ( this.emulatorSetting.isActive(this.project) ) {
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 			HashMap infoProperties = new HashMap();
