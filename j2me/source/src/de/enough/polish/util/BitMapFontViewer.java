@@ -42,7 +42,6 @@ public class BitMapFontViewer {
 
 	private final Image image;
 	private final short[] xPositions;
-	private final short[] yPositions;
 	private final byte[] widths;
 	private final int completeWidth;
 	private final int fontHeight;
@@ -58,10 +57,9 @@ public class BitMapFontViewer {
 	 * @param fontHeight the height of the font
 	 * 
 	 */
-	public BitMapFontViewer(Image image, short[] xPositions, short[] yPositions, byte[] widths, int completeWidth, int fontHeight) {
+	public BitMapFontViewer(Image image, short[] xPositions, byte[] widths, int completeWidth, int fontHeight) {
 		this.image = image;
 		this.xPositions = xPositions;
-		this.yPositions = yPositions;
 		this.widths = widths;
 		this.completeWidth = completeWidth;
 		this.fontHeight = fontHeight;
@@ -73,16 +71,18 @@ public class BitMapFontViewer {
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
-		
 		for (int i = 0; i < this.xPositions.length; i++ ) {
 			int width = this.widths[i];
-			g.setClip( x, y, width, this.fontHeight);
-			g.drawImage( this.image, x - this.xPositions[i], y - this.yPositions[i], Graphics.TOP | Graphics.LEFT );
-			x += this.widths[i];
+			if (width == 0) {
+				continue;
+			}
+			g.clipRect( x, y, width, this.fontHeight );
+			g.drawImage( this.image, x - this.xPositions[i], y, Graphics.TOP | Graphics.LEFT );
+			x += width;
+			// reset clip:
+			g.setClip(clipX, clipY, clipWidth, clipHeight);
 		}
 		
-		// reset clip:
-		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
 	
 	public int getWidth() {

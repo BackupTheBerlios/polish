@@ -25,7 +25,9 @@
  */
 package de.enough.polish.util;
 
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.lcdui.Image;
 
@@ -41,31 +43,20 @@ import javax.microedition.lcdui.Image;
  */
 public final class BitMapFont {
 	
-	private String imageUrl;
+	private String fontUrl;
 	private Image fontImage;
-	private final boolean hasMixedCase;
-	private final byte[] characterWidths;
-	private final char[] characterMap;
-	private final int fontHeight;
-	//private int[] yPositions;
+	private boolean hasMixedCase;
+	private byte[] characterWidths;
+	private char[] characterMap;
+	private int fontHeight;
 
 	/**
-	 * @param imageUrl
-	 * @param characterMap
-	 * @param characterWidhts
-	 * @param fontHeight
+	 * @param fontUrl
 	 * @param hasMixedCase
 	 */
-	public BitMapFont( String imageUrl, String characterMap, byte[] characterWidhts, int fontHeight, boolean hasMixedCase ) {
+	public BitMapFont( String fontUrl ) {
 		super();
-		this.imageUrl = imageUrl;
-		this.hasMixedCase = hasMixedCase;
-		if (!hasMixedCase) {
-			characterMap = characterMap.toLowerCase();
-		}
-		this.characterMap = characterMap.toCharArray();
-		this.characterWidths = characterWidhts;
-		this.fontHeight = fontHeight;
+		this.fontUrl = fontUrl;
 	}
 	
 	/**
@@ -76,47 +67,69 @@ public final class BitMapFont {
 	 */
 	public BitMapFontViewer getViewer( String input ) {
 		if (this.fontImage == null) {
+			InputStream in = null;
 			try {
-				this.fontImage = Image.createImage( this.imageUrl );
-				this.imageUrl = null;
+				in = getClass().getResourceAsStream(this.fontUrl);
+				if (in == null) {
+					return null;
+				}
+				DataInputStream dataIn = new DataInputStream( in );
+				this.hasMixedCase = dataIn.readBoolean();
+				String map = dataIn.readUTF();
+				this.characterMap = map.toCharArray();
+				int length = map.length();
+				this.characterWidths = new byte[ length ];
+				for (int i = 0; i < length; i++ ) {
+					this.characterWidths[i] = dataIn.readByte();
+				}
+				this.fontImage = Image.createImage( in );
+				this.fontHeight = this.fontImage.getHeight();
+				this.fontUrl = null;
 			} catch (IOException e) {
 				//#debug error
-				System.out.println("Unable to load bitmap-font image [" + this.imageUrl + "]" + e);
+				System.out.println("Unable to load bitmap-font [" + this.fontUrl + "]" + e);
 				return null;
+			} finally {
+				try { 
+					in.close();
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to close bitmap-font stream" + e);
+				}
 			}
 		}
-		int imageWidth = this.fontImage.getWidth();
+		//int imageWidth = this.fontImage.getWidth();
 		// get the x/y-position and width for each character:
 		if (!this.hasMixedCase) {
 			input = input.toLowerCase();
 		}
 		int length = input.length();
 		short[] xPositions = new short[ length ];
-		short[] yPositions = new short[ length ];
+		//short[] yPositions = new short[ length ];
 		byte[] widths = new byte[ length ];
 		int completeWidth = 0;
 		for (int i = length - 1; i >= 0; i-- ) {
 			char inputCharacter = input.charAt(i);
 			short xPos = 0;
-			short yPos = 0;
+			//short yPos = 0;
 			for (int j = 0; j < this.characterMap.length; j++ ) {
 				char mapCharacter = this.characterMap[j];
 				byte width = this.characterWidths[ j ];
 				if ( inputCharacter == mapCharacter ) {
 					xPositions[ i ] = xPos;
 					widths[ i ] = width;
-					yPositions[ i ] = yPos;
+					//yPositions[ i ] = yPos;
 					completeWidth += width;
 					break;
 				}
 				xPos += width;
-				if (xPos >= imageWidth) {
-					xPos = 0;
-					yPos += this.fontHeight;
-				}
+				//if (xPos >= imageWidth) {
+				//	xPos = 0;
+					//yPos += this.fontHeight;
+				//}
 			}
 		}
-		return new BitMapFontViewer( this.fontImage, xPositions, yPositions, widths, completeWidth, this.fontHeight );
+		return new BitMapFontViewer( this.fontImage, xPositions, widths, completeWidth, this.fontHeight );
 	}
 
 }
