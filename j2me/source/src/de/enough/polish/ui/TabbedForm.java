@@ -184,6 +184,8 @@ public class TabbedForm extends Form {
 	 * @param tabIndex the index of the tab, the first tab has the index 0.
 	 */
 	public void setActiveTab( int tabIndex ) {
+		//#debug
+		System.out.println("Activating tab [" + tabIndex + "].");
 		if (this.container.isInitialised) {
 			this.container.defocus( this.container.style );
 		}
@@ -191,7 +193,14 @@ public class TabbedForm extends Form {
 		this.tabBar.setActiveTab(tabIndex);
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		tabContainer.setVerticalDimensions( 0, this.screenHeight - (this.titleHeight  + this.subTitleHeight + this.infoHeight ) );
-		tabContainer.focus( tabContainer.style );
+		if (!tabContainer.isInitialised) {
+			tabContainer.init( this.screenWidth, this.screenWidth );
+		}
+		if (tabContainer.appearanceMode != Item.PLAIN) {
+			//#debug
+			System.out.println("Focusing tab [" + tabIndex + "].");
+			tabContainer.focus( tabContainer.style );
+		}
 		this.container = tabContainer;
 		if (isShown()) {
 			repaint();

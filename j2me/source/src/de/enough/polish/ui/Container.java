@@ -473,6 +473,7 @@ public class Container extends Item {
 				this.view.initContent(this, firstLineWidth, lineWidth);
 				this.contentWidth = this.view.contentWidth;
 				this.contentHeight = this.view.contentHeight;
+				this.appearanceMode = this.view.appearanceMode;
 				return;
 			}
 		//#endif
