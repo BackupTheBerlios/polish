@@ -74,6 +74,7 @@ public class BuildSetting {
 	private boolean usePolishGui;
 	private File midp1Path;
 	private File midp2Path;
+	private File midp2Cldc11Path;
 	private File preverify;
 	private Project project;
 	private boolean includeAntProperties;
@@ -112,6 +113,7 @@ public class BuildSetting {
 		this.sourceDirs = new ArrayList();
 		this.midp1Path = getFile( "import/midp1.jar" );
 		this.midp2Path = getFile( "import/midp2.jar" );
+		this.midp2Cldc11Path = getFile( "import/midp2-cldc11.jar" );
 		this.apis = getFile("apis.xml");
 		this.vendors = getFile("vendors.xml");
 		this.groups = getFile("groups.xml");
@@ -652,6 +654,18 @@ public class BuildSetting {
 	}
 	
 	/**
+	 * Gets the path to the MIDP/2.0/CLDC/1.1-jar
+	 * 
+	 * @return the path to the API-file for MIDP/2.0 devices which support the CLDC/1.1 configuration
+	 */
+	public File getMidp2Cldc11Path() {
+		if (!this.midp2Cldc11Path.exists()) {
+			throw new BuildException("The default path to the MIDP/2.0 / CLDC/1.1-API [" + this.midp2Cldc11Path.getAbsolutePath() + "] points to a non-existing file. Please specify it with the [midp2Cldc11Path] attribute of the <build> element.");
+		}
+		return this.midp2Cldc11Path;
+	}
+	
+	/**
 	 * Sets the path to the api-file of the MIDP/2.0 environment.
 	 * When the midp1Path is not defined, it will use the same
 	 * api-path as the given MIDP/2.0 environment.
@@ -670,6 +684,21 @@ public class BuildSetting {
 		this.defaultMidpPathUsed = false;
 	}
 
+	/**
+	 * Sets the path to the api-file of the MIDP/2.0 / CLDC/1.1 environment.
+	 *  
+	 * @param midp2Cldc11PathStr The path to the MIDP/2.0-api-file
+	 */
+	public void setMidp2Cldc11Path( String midp2Cldc11PathStr ) {
+		File newMidp2Path = getFile( midp2Cldc11PathStr );
+		if (!newMidp2Path.exists()) {
+			throw new BuildException("Invalid path to the MIDP/2.0/CLDC/1.1-API: [" + newMidp2Path.getAbsolutePath() + "] (File not found).");
+		}
+		this.midp2Cldc11Path = newMidp2Path;
+		this.defaultMidpPathUsed = false;
+	}
+	
+	
 	/**
 	 * @return The user-defined symbols
 	 */

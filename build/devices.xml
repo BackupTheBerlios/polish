@@ -52,6 +52,14 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/Midp2Cldc11</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+	</device>
 	
 	<device
 		supportsPolishGui="false" >
@@ -60,6 +68,15 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
+
+	<device
+		supportsPolishGui="false" >
+		<identifier>Generic/PlainMidp2Cldc11</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+	</device>
+
 
 	<device
 		supportsPolishGui="true" >

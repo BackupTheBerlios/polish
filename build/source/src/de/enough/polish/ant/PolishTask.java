@@ -77,6 +77,7 @@ public class PolishTask extends ConditionalTask {
 	private TextFile[][] sourceFiles;
 	private Path midp1BootClassPath;
 	private Path midp2BootClassPath;
+	private Path midp2Cldc11BootClassPath;
 	private String javacTarget;
 	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
 	private String sourceCompatibility = "1.3";
@@ -183,8 +184,11 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
 			boolean hasExtensions = (this.javaExtensions.length > 0);
-			for ( int i=0; i<numberOfDevices; i++) {
+			for ( int i=0; i < numberOfDevices; i++) {
 				Device device = this.devices[i];
+				if (numberOfDevices > 1) {
+					System.out.println("Building application for [" + device.getIdentifier() + "] (" + (i+1) + "/" + numberOfDevices + "):");
+				}
 				preprocess( device );
 				compile( device );
 				if (this.doObfuscate) {
@@ -578,7 +582,8 @@ public class PolishTask extends ConditionalTask {
 		// init boot class path:
 		this.midp1BootClassPath = new Path( this.project, this.buildSetting.getMidp1Path().getAbsolutePath());
 		this.midp2BootClassPath = new Path( this.project, this.buildSetting.getMidp2Path().getAbsolutePath());
-				
+		this.midp2Cldc11BootClassPath = new Path( this.project, this.buildSetting.getMidp2Cldc11Path().getAbsolutePath());
+		
 		// init obfuscators:
 		if (this.buildSetting.doObfuscate()) {
 			ObfuscatorSetting[] obfuscatorSettings = this.buildSetting.getObfuscatorSettings();
@@ -1054,10 +1059,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the source code should be compiled.
 	 */
 	private void compile( Device device ) {
-		// SETTING OF CLASSPATH:
-		// check for each supported api, if the appropriate path-property
-		// has been set: mmapi = ${polish.api.mmapi}
-		// when this has not been defined, just look in the import-dir
+		// set the class-path:
 		String[] classPaths = this.libraryManager.getClassPaths(device);
 		device.setClassPaths( classPaths );
 		StringBuffer buffer = new StringBuffer();
@@ -1110,7 +1112,11 @@ public class PolishTask extends ConditionalTask {
 		if (device.isMidp1()) {
 			javac.setBootclasspath(this.midp1BootClassPath);
 		} else {
-			javac.setBootclasspath(this.midp2BootClassPath);
+			if (device.isCldc10()) {
+				javac.setBootclasspath(this.midp2BootClassPath);
+			} else {
+				javac.setBootclasspath(this.midp2Cldc11BootClassPath);
+			}
 		}
 		if (device.getClassPath() != null) {
 			javac.setClasspath( new Path(this.project, device.getClassPath() ) );
@@ -1164,7 +1170,11 @@ public class PolishTask extends ConditionalTask {
 		if (device.isMidp1()) {
 			bootPath = this.midp1BootClassPath;
 		} else {
-			bootPath = this.midp2BootClassPath;
+			if (device.isCldc10()) {
+				bootPath = this.midp2BootClassPath;
+			} else {
+				bootPath = this.midp2Cldc11BootClassPath;
+			}
 		}
 		// create the initial jar-file: only include to class files,
 		// for accelerating the obfuscation:
@@ -1235,7 +1245,11 @@ public class PolishTask extends ConditionalTask {
 		if (device.isMidp1()) {
 			classPath = this.midp1BootClassPath.toString();
 		} else {
-			classPath = this.midp2BootClassPath.toString();
+			if (device.isCldc10()) {
+				classPath = this.midp2BootClassPath.toString();
+			} else {
+				classPath = this.midp2Cldc11BootClassPath.toString();
+			}			
 		}
 		classPath += File.pathSeparatorChar + device.getClassPath();
 		/* File preverfyDir = new File( this.buildSetting.getWorkDir().getAbsolutePath()

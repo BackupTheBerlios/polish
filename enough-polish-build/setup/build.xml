@@ -176,6 +176,7 @@
 			enableProfiler="true"
 			enableMemoryMonitor="true"
 			enableNetworkMonitor="true"
+			if="test"
 			>
 			<!--
 			<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
