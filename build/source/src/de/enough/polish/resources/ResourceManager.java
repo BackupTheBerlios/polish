@@ -40,13 +40,13 @@ import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.LocalizationSetting;
+import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.requirements.SizeMatcher;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.preprocess.CssReader;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.StyleSheet;
-import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Is responsible for the assembling of resources like images and localization messages.</p>
@@ -74,6 +74,7 @@ public class ResourceManager {
 	private final SizeMatcher[] dynamicCanvasSizeMatchers;
 	private final File[] dynamicFullCanvasSizeDirs;
 	private final SizeMatcher[] dynamicFullCanvasSizeMatchers;
+	private final ResourceCopier resourceCopier;
 	private TranslationManager translationManager;
 	private Preprocessor preprocessor;
 
@@ -203,6 +204,10 @@ public class ResourceManager {
 			}
 		}
 		
+		// creating resource copier:
+		ResourceCopierSetting copierSetting = setting.getCopier(evaluator);
+		this.resourceCopier = ResourceCopier.getInstance( copierSetting, project );
+		
 	}
 	
 	/**
@@ -217,7 +222,8 @@ public class ResourceManager {
 	throws IOException 
 	{
 		File[] resources = getResources( device, locale );
-		FileUtil.copy(resources, targetDir);
+		//FileUtil.copy(resources, targetDir);
+		this.resourceCopier.copyResources(device, locale, resources, targetDir);
 		if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
 			saveDynamicTranslations( targetDir, device );
 		}

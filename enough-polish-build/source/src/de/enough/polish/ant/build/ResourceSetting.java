@@ -57,6 +57,7 @@ public class ResourceSetting extends Setting {
 	private String[] excludes = new String[0];
 	private String baseDir;
 	private Project project;
+	private ArrayList copierSettings;
 
 	/**
 	 * Creates a new empty Resource Setting.
@@ -81,6 +82,16 @@ public class ResourceSetting extends Setting {
 	
 	public void addConfiguredFileset( ResourcesFileSet fileSet ) {
 		this.fileSets.add( fileSet );
+	}
+	
+	public void addConfiguredCopier( ResourceCopierSetting setting ) {
+		if (setting.getClassName() == null) {
+			throw new BuildException("Invalid <copier>-element in build.xml: please specify the attribute \"class\"." );
+		}
+		if (this.copierSettings == null) {
+			this.copierSettings = new ArrayList();
+		}
+		this.copierSettings.add( setting );
 	}
 	
 	public void setDir( File dir ) {
@@ -161,6 +172,20 @@ public class ResourceSetting extends Setting {
 		}
 		ResourcesFileSet[] sets = (ResourcesFileSet[]) list.toArray( new ResourcesFileSet[list.size()] );
 		return sets;
+	}
+	
+	public ResourceCopierSetting getCopier( BooleanEvaluator evaluator ) {
+		if (this.copierSettings == null) {
+			return null;
+		}
+		ResourceCopierSetting[] settings = (ResourceCopierSetting[]) this.copierSettings.toArray( new ResourceCopierSetting[ this.copierSettings.size()]  );
+		for (int i = 0; i < settings.length; i++) {
+			ResourceCopierSetting setting = settings[i];
+			if (setting.isActive(evaluator, this.project)) {
+				return setting;
+			}
+		}
+		return null;
 	}
 
 

@@ -1438,20 +1438,22 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			// let postcompilers adjust the bootclasspath:
-			String path = bootClassPath.toString();
-			String originalBootClassPath = path;
-			Project antProject = getProject();
-			for (int i = 0; i < this.postCompilers.length; i++) {
-				PostCompiler postCompiler = this.postCompilers[i];
-				if (postCompiler.getSetting().isActive(evaluator, antProject)) {
-					path = postCompiler.verifyBootClassPath(device, path);
-					if ( classPath != null ) {
-						classPath = postCompiler.verifyClassPath(device, classPath);
+			if (this.doPostCompile) {
+				String path = bootClassPath.toString();
+				String originalBootClassPath = path;
+				Project antProject = getProject();
+				for (int i = 0; i < this.postCompilers.length; i++) {
+					PostCompiler postCompiler = this.postCompilers[i];
+					if (postCompiler.getSetting().isActive(evaluator, antProject)) {
+						path = postCompiler.verifyBootClassPath(device, path);
+						if ( classPath != null ) {
+							classPath = postCompiler.verifyClassPath(device, classPath);
+						}
 					}
 				}
-			}
-			if (path != originalBootClassPath) {
-				bootClassPath = new Path( antProject, path );
+				if (path != originalBootClassPath) {
+					bootClassPath = new Path( antProject, path );
+				}
 			}
 			compiler.setDirectBootclasspath( bootClassPath );
 		}
