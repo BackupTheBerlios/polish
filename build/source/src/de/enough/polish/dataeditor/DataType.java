@@ -535,34 +535,26 @@ public class DataType {
 					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( in );\n");
 					buffer.append("\t\t//#else\n");
-					buffer.append( "\t\t\tint " ).append( paramName ).append("Available = in.available();\n");
-					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
-					buffer.append( "\t\t\tint " ).append( paramName ).append("Offset = 0;\n");
-					buffer.append( "\t\t\tint " ).append( paramName ).append("Read = 0;\n");
-					buffer.append( "\t\t\twhile (").append( paramName ).append( "Offset < ").append(paramName).append( "Available ) {\n");
-					buffer.append( "\t\t\t\t").append( paramName ).append( "Read = in.read( ").append(paramName).append( "Buffer, ").append( paramName ).append( "Offset, ").append( paramName ).append( "Available - ").append( paramName ).append("Offset );\n");
-					buffer.append( "\t\t\t\tif (").append( paramName ).append( "Read == -1 ) {\n");
-					buffer.append( "\t\t\t\t\tbreak;\n");
-					buffer.append( "\t\t\t\t} else { \n");
-					buffer.append( "\t\t\t\t\t").append( "Offset += ").append(paramName).append( "Read;\n" );
-					buffer.append( "\t\t\t\t}\n");
-					buffer.append( "\t\t\t}\n");
 					/*
-					int offset = 0;
-					int read = 0;
-					while (offset < pngLength) {
-						read = in.read( pngBuffer, offset, pngLength - offset );
-						if (read == -1) {
-							break;
-						} else {
-							offset += read;
-						}
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					byte[] pngBuffer = new byte[ 3 * 1024 ];
+					int read;
+					while ( (read = in.read(pngBuffer, 0, pngBuffer.length)) != -1) {
+						out.write(pngBuffer, 0, read );
 					}
-
-					buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
-					 */
+					pngBuffer = out.toByteArray();
+					out = null;
+					this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
+					*/
+					buffer.append( "\t\t\tjava.io.ByteArrayOutputStream " ).append( paramName ).append("Out = new java.io.ByteArrayOutputStream();\n");
+					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ 3*1024 ];\n");
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Read;\n");
+					buffer.append( "\t\t\twhile ( (").append( paramName ).append( "Read = in.read( ").append(paramName).append( "Buffer, 0, ").append(paramName).append("Buffer.length) ) != -1 ) {\n");
+					buffer.append( "\t\t\t\t").append( paramName ).append( "Out.write( ").append(paramName).append( "Buffer, 0, ").append( paramName ).append( "Read );\n");
+					buffer.append( "\t\t\t}\n");
+					buffer.append( "\t\t\t" ).append( paramName ).append("Buffer = ").append( paramName ).append("Out.toByteArray();\n");
 					buffer.append( "\t\t\tthis." ).append( paramName );
-					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
+					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Buffer.length );\n");
 					buffer.append("\t\t//#endif\n");
 					buffer.append("\t\t}\n");
 				} else {
@@ -570,21 +562,15 @@ public class DataType {
 					buffer.append( "\t\t\tthis." ).append( paramName );
 					buffer.append(" = javax.microedition.lcdui.Image.createImage( in );\n");
 					buffer.append("\t\t//#else\n");
-					buffer.append( "\t\t\tint " ).append( paramName ).append("Available = in.available();\n");
-					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
-					buffer.append( "\t\t\tint " ).append( paramName ).append("Offset = 0;\n");
-					buffer.append( "\t\t\tint " ).append( paramName ).append("Read = 0;\n");
-					buffer.append( "\t\t\twhile (").append( paramName ).append( "Offset < ").append(paramName).append( "Available ) {\n");
-					buffer.append( "\t\t\t\t").append( paramName ).append( "Read = in.read( ").append(paramName).append( "Buffer, ").append( paramName ).append( "Offset, ").append( paramName ).append( "Available - ").append( paramName ).append("Offset );\n");
-					buffer.append( "\t\t\t\tif (").append( paramName ).append( "Read == -1 ) {\n");
-					buffer.append( "\t\t\t\t\tbreak;\n");
-					buffer.append( "\t\t\t\t} else { \n");
-					buffer.append( "\t\t\t\t\t").append( "Offset += ").append(paramName).append( "Read;\n" );
-					buffer.append( "\t\t\t\t}\n");
+					buffer.append( "\t\t\tjava.io.ByteArrayOutputStream " ).append( paramName ).append("Out = new java.io.ByteArrayOutputStream();\n");
+					buffer.append( "\t\t\tbyte[] " ).append( paramName ).append("Buffer = new byte[ 3*1024 ];\n");
+					buffer.append( "\t\t\tint " ).append( paramName ).append("Read;\n");
+					buffer.append( "\t\t\twhile ( (").append( paramName ).append( "Read = in.read( ").append(paramName).append( "Buffer, 0, ").append(paramName).append("Buffer.length) ) != -1 ) {\n");
+					buffer.append( "\t\t\t\t").append( paramName ).append( "Out.write( ").append(paramName).append( "Buffer, 0, ").append( paramName ).append( "Read );\n");
 					buffer.append( "\t\t\t}\n");
-					//buffer.append( "\t\t\tin.read(" ).append( paramName ).append("Buffer );\n");
+					buffer.append( "\t\t\t" ).append( paramName ).append("Buffer = ").append( paramName ).append("Out.toByteArray();\n");
 					buffer.append( "\t\t\tthis." ).append( paramName );
-					buffer.append(" = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
+					buffer.append(" = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Buffer.length );\n");
 					buffer.append("\t\t//#endif\n");
 				}
 				break;
@@ -655,7 +641,7 @@ public class DataType {
 			case SHORT_ID:
 				return new Short( in.readShort() );
 			case UNSIGNED_SHORT_ID:
-				return new Integer( in.readInt() );
+				return new Integer( in.readUnsignedShort() );
 			case INTEGER_ID:
 				return new Integer( in.readInt() );
 			case LONG_ID:
@@ -709,7 +695,7 @@ public class DataType {
 				out.writeShort( ((Short)value).shortValue() );
 				break;
 			case UNSIGNED_SHORT_ID:
-				out.writeInt( ((Integer)value).intValue() );
+				out.writeShort( ((Integer)value).intValue() );
 				break;
 			case INTEGER_ID:
 				out.writeInt( ((Integer)value).intValue() );

@@ -532,15 +532,15 @@ public class BuildSetting {
 	public File[] getSourceDirs() {
 		if (this.sourceDirs.size() == 0) {
 			// add default directory: either source/src, scr or source:
-			File src = getFile("source/src");
+			File src = getFile("source/src", false );
 			if (src.exists()) {
 				this.sourceDirs.add( src );
 			} else {
-				src = getFile("src");
+				src = getFile("src", false );
 				if (src.exists()) {
 					this.sourceDirs.add( src );
 				} else {
-					src = getFile("source");
+					src = getFile("source", false);
 					if (src.exists()) {
 						this.sourceDirs.add( src );
 					} else {
@@ -916,12 +916,23 @@ public class BuildSetting {
 	 * @return the file handle for the path
 	 */
 	protected File getFile( String path ) {
+		return getFile( path, true );
+	}
+	
+	/**
+	 * Resolves the given path and returns a file handle for that path.
+	 * 
+	 * @param path the relative or absolute path, e.g. "resources2"
+	 * @param tryPolishHomePath true when the file should also be searched in the polishHomePath 
+	 * @return the file handle for the path
+	 */
+	protected File getFile( String path, boolean tryPolishHomePath ) {
 		File absolute = new File( path );
 		if (absolute.isAbsolute()) {
 			return absolute;
 		}
 		File file = new File( this.projectBasePath + path );
-		if (!file.exists()) {
+		if (!file.exists() && tryPolishHomePath) {
 			file = new File( this.polishHomePath + path );
 		}
 		if (!file.exists()) {
