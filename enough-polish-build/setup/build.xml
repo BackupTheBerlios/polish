@@ -127,7 +127,7 @@
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
-				<!-- you can add resources based on complex criterias: -->
+				<!-- you can add resources based on complex criterias: 
 				<fileset 
 					dir="resources/multimedia" 
 					includes="*.wav" 
@@ -138,6 +138,7 @@
 					includes="*.mid" 
 					if="polish.audio.midi and not polish.audio.wav" 
 				/>
+				-->
 				<!-- add the localization element for created localized
 				     versions of your application: -->
 				<localization locales="de_DE, en_US" unless="test" />
