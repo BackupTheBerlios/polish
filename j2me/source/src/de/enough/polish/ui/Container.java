@@ -84,8 +84,8 @@ public class Container extends Item {
 	private int[] rowsHeights;
 	private int numberOfRows;
 	private boolean enableScrolling;
-	private int yTop;
-	private int yBottom;
+	int yTop;
+	int yBottom;
 	protected int yOffset;
 	private int focusedTopMargin;
 	//#ifdef polish.css.view-type
@@ -743,6 +743,20 @@ public class Container extends Item {
 				if (next != null) {
 					focus( this.view.focusedIndex, next );
 					return true;
+				} else if (this.enableScrolling) {
+					if (gameAction == Canvas.UP && this.yOffset < 0 ) {
+						this.yOffset += 10;
+						if (this.yOffset > 0 ) {
+							this.yOffset = 0;
+						}
+						return true;
+					}
+					if (gameAction == Canvas.DOWN
+							&& (this.itemHeight + this.yOffset > (this.yBottom - this.yTop)) ) 
+					{
+						this.yOffset -= 10;
+						return true;
+					}
 				}
 				return false;
 			}

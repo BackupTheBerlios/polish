@@ -507,13 +507,32 @@ public class Form extends Screen
 	 * 
 	 * @param item - the Item to be added.
 	 * @return the assigned index of the Item
-	 * @throws IllegalStateException - if the item is already owned by a container
-	 * @throws NullPointerException - if item is null
+	 * @throws IllegalStateException if the item is already owned by a container
+	 * @throws NullPointerException if item is null
 	 */
 	public int append( Item item)
 	{
 		this.container.add( item );
 		return this.container.size() - 1;
+	}
+	
+	
+	/**
+	 * Adds an item consisting of one <code>String</code> to the
+	 * <code>Form</code>. The effect of this method is identical to
+	 * <p>
+	 * <code>
+	 * append(new StringItem(null, str))
+	 * </code> </p>
+	 * 
+	 * @param str the String to be added
+	 * @param itemStyle the CSS style for this string
+	 * @return the assigned index of the Item
+	 * @throws NullPointerException if str is null
+	 */
+	public int append( String str, Style itemStyle )
+	{
+		return append( new StringItem(null, str, itemStyle) );
 	}
 
 	/**
@@ -534,6 +553,26 @@ public class Form extends Screen
 		return append( new StringItem(null, str) );
 	}
 
+	/**
+	 * Adds an item consisting of one <code>Image</code> to the
+	 * <code>Form</code>. The effect of
+	 * this method is identical to
+	 * 
+	 * <p> <code>
+	 * append(new ImageItem(null, img, ImageItem.LAYOUT_DEFAULT, null))
+	 * </code> </p>
+	 * 
+	 * @param img the image to be added
+	 * @param itemStyle the CSS style for this string
+	 * @return the assigned index of the Item
+	 * @throws NullPointerException if img is null
+	 */
+	public int append( Image img, Style itemStyle )
+	{
+		
+		return append(new ImageItem(null, img, Item.LAYOUT_DEFAULT, null, itemStyle));
+	}
+	
 	/**
 	 * Adds an item consisting of one <code>Image</code> to the
 	 * <code>Form</code>. The effect of

@@ -223,16 +223,17 @@ public class MIDP2LayoutView extends ContainerView {
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 				Graphics g) 
 	{
+		int startX = x;
 		for (int i = 0; i < this.allRows.size(); i++) {
 			ArrayList row = (ArrayList) this.allRows.get(i);
 			for (int j = 0; j < row.size(); j++) {
 				RowItem rowItem = (RowItem) row.get(j);
 				int xItem = x + rowItem.x;
-				rowItem.item
-						.paint(xItem, y + rowItem.y, Math
-								.max(leftBorder, xItem), Math.min(rightBorder,
-								xItem + rowItem.width), g);
+				rowItem.item.paint(xItem, y + rowItem.y, 
+						Math.max(leftBorder, xItem), 
+						Math.min(rightBorder, xItem + rowItem.width), g);
 			}
+			x = startX;
 		}
 	}
 	

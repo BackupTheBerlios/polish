@@ -637,7 +637,7 @@ public abstract class Screen
 						if (y < tHeight) {
 							this.paintScrollIndicator = true;
 							this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
-							this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - this.titleHeight);
+							this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - tHeight);
 							y = tHeight; 
 							this.menuContainer.setVerticalDimensions(y, this.screenHeight);
 						} else {
