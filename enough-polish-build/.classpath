@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="import/jdom.jar"/>
 	<classpathentry kind="lib" path="import/proguard.jar"/>
 	<classpathentry kind="lib" path="import/retroguard.jar"/>
+	<classpathentry kind="lib" path="import/yguard-lib.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
