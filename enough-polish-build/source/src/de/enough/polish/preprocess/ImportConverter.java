@@ -259,7 +259,6 @@ public final class ImportConverter {
 	 * @param translations the basic translations
 	 * @param usePolishGui True when the polish-GUI should be used instead of the standard J2ME-GUI.
 	 * @param isMidp1 True when the MIDP/1-standard is supported, false when the MIDP/2-standard is supported.
-	 * @param sourceCode The source code
 	 * @param device the current device\
 	 * @param preprocessor the preprocessor with all variables and symbols
 	 * @return either the same translations map, when no changes are done, or

@@ -57,7 +57,7 @@ public final class PopulateUtil {
 	 * @param object the object which should be populated.
 	 * @param parameters the parameters.
 	 * @param baseDir the base directory for the population.
-	 * @param throws IllegalArgumentException when a parameter has a syntax error
+	 * @throws  IllegalArgumentException when a parameter has a syntax error
 	 *        or when a needed method has not be found. 
 	 */
 	public final static void populate( Object object, Variable[] parameters, File baseDir ) {
@@ -102,7 +102,7 @@ public final class PopulateUtil {
 	 * @param baseDir the base directory for the population.
 	 * @param param the parameter
 	 * @param methodsByName the methods known of the object
-	 * @param throws IllegalArgumentException when a parameter has a syntax error
+	 * @throws IllegalArgumentException when a parameter has a syntax error
 	 *        or when a needed method has not be found. 
 	 * @throws InvocationTargetException when the method could not be called
 	 * @throws IllegalAccessException when the method could not be accessed

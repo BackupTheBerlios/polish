@@ -92,11 +92,12 @@ public final class StackTraceUtil {
 	}
 
 	/**
-	 * @param searchForConstructor
-	 * @param string
+	 * Retrieves the position of the decompiled code in the source code.
+	 * @param className the name of the class
+	 * @param methodName the name of the method.
+	 * @param searchForConstructor when the <init>-method is looked for
 	 * @param sourceDirs
-	 * @return
-	 * @throws IOException
+	 * @return the original line in the source code
 	 */
 	private String getSourceFilePosition(String className, String methodName, boolean searchForConstructor, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties) 
 	{

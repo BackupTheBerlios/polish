@@ -192,7 +192,7 @@ implements CommandListener
 	 * @return the form containing all the debugging messages so far.
 	 * @throws NullPointerException when the listener is null
 	 * @deprecated use showLogForm instead
-	 * @see #showLogForm(Display)
+	 * @see #showLog(Display)
 	 */
 	public static final Form getLogForm( boolean reverseSort, CommandListener listener ) {
 		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );

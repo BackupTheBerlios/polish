@@ -174,7 +174,7 @@ public class MessageConnection implements Connection
 	 * @param address - destination address for the new message
 	 * @return Message object for a given type of message
 	 * @throws java.lang.IllegalArgumentException - if the type parameters is not equal to the value of TEXT_MESSAGE, BINARY_MESSAGE or any other type value specified in a private or publicly standardized adapter specification that is supported by the implementation
-	 * @see newMessage(String type)
+	 * @see #newMessage(String type)
 	 */
 	public Message newMessage(String type, String address) {
 		if (type == TEXT_MESSAGE) {
@@ -199,7 +199,7 @@ public class MessageConnection implements Connection
 	 * @throws java.io.InterruptedIOException - if a timeout occurs while either trying to send the message or if this Connection object is closed during this send operation
 	 * @throws java.lang.NullPointerException - if the parameter is null
 	 * @throws java.lang.SecurityException - if the application does not have permission to send the message
-	 * @see receive()
+	 * @see #receive()
 	 */
 	public void send( Message msg) 
 	throws IOException, InterruptedIOException 
@@ -240,7 +240,7 @@ public class MessageConnection implements Connection
 	 * @throws java.io.IOException - if any of these situations occur:  there is an error while receiving a message this method is called while the connection is closed this method is called on a client mode MessageConnection
 	 * @throws java.io.InterruptedIOException - if this MessageConnection object is closed during this receive method call
 	 * @throws java.lang.SecurityException - if the application does not have permission to receive messages using the given port number
-	 * @see send(Message)
+	 * @see #send(Message)
 	 */
 	public Message receive() 
 	throws IOException, InterruptedIOException 

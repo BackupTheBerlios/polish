@@ -77,9 +77,6 @@ public abstract class Obfuscator {
 	/**
 	 * Instantiates an obfuscator.
 	 * 
-	 * @param preferredObfuscator The name of the preferred obfuscator.
-	 *        When null is given and no className is specified, 
-	 * 		  the GPL ProGuard will be used.
 	 * @param setting The obfuscator setting 
 	 * @param project the Ant-project to which the obfuscator belongs to
 	 * @param libDir the main library directory

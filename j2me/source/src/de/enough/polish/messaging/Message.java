@@ -66,7 +66,7 @@ public interface Message
 	 * obtain this <code>MessageConnection</code>.</p>
 	 * 
 	 * @return the address of this message, or null if the address is not set
-	 * @see setAddress(String)
+	 * @see #setAddress(String)
 	 */
 	public java.lang.String getAddress();
 
@@ -79,7 +79,7 @@ public interface Message
 	 * this <code>MessageConnection</code>. </p>
 	 * 
 	 * @param addr - address for the message
-	 * @see getAddress()
+	 * @see #getAddress()
 	 */
 	public void setAddress(java.lang.String addr);
 

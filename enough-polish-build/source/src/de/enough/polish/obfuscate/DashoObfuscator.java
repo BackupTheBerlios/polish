@@ -298,7 +298,7 @@ public class DashoObfuscator extends Obfuscator {
 	
 	/**
 	 * Tries to load the main()-method from either DashoPro.class or from DashoProEval.class
-	 * @throws ClassNotFoundException
+	 * @throws BuildException when the main class was not found.
 	 */
 	private void initDashOMainClass( ClassLoader classLoader)  {
 		try {

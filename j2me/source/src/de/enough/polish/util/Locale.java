@@ -104,7 +104,7 @@ public final class Locale {
 	 * @param key the key, e.g. "labels.WelcomeUser"
 	 * @param parameter the parameter, e.g. "Peter"
 	 * @return the translation, e.g. "Hello Peter!" or "Hallo Peter!"
-	 * @throws NullPointer when the given parameter is null.
+	 * @throws NullPointerException when the given parameter is null.
 	 */
 	public static final String get( String key, String parameter ) {
 		// all simple translations are usually directly embedded into the source-code,
@@ -124,7 +124,7 @@ public final class Locale {
 	 * 		String translation = Locale . get( "titles.boxing", params );
 	 * <pre>
 	 * @return the translation, e.g. "Peter vs Jordan" or "Peter gegen Jordan"
-	 * @throws NullPointer when the given parameters are null or if one of the given parameters is null.
+	 * @throws NullPointerException when the given parameters are null or if one of the given parameters is null.
 	 */
 	//#ifdef false
 	public static final String get( String key, String[] parameters ) {

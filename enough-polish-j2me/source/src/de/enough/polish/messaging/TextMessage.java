@@ -53,7 +53,7 @@ implements Message
 	 * Returns the message payload data as a <code>String</code>.
 	 * 
 	 * @return the payload of this message, or null if the payload for the message is not set
-	 * @see setPayloadText(java.lang.String)
+	 * @see #setPayloadText(java.lang.String)
 	 */
 	public String getPayloadText() {
 		return this.data;
@@ -64,7 +64,7 @@ implements Message
 	 * may be <code>null</code>.
 	 * 
 	 * @param data - payload data as a String
-	 * @see getPayloadText()
+	 * @see #getPayloadText()
 	 */
 	public void setPayloadText(String data) {
 		this.data = data;

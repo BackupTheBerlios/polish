@@ -161,10 +161,6 @@ implements Comparator
 	 * Processes the raw translations: create Translation-instances and insert variable-values.
 	 * 
 	 * @param rawTranslations the translations
-	 * @param device the current device
-	 * @param locale the current locale
-	 * @param idGenerator the generator for IDs
-	 * @return a map containing for each translation-key the corresponding Translation instance
 	 */
 	private void processRawTranslations(Map rawTranslations ) {
 		// the processing is actual done in two steps.
@@ -230,8 +226,7 @@ implements Comparator
 	/**
 	 * Loads the raw translation-messages for the given device and locale.
 	 * 
-	 * @param device the current device
-	 * @param locale the current locale, must not be null
+	 * @param resourceDirs the files containing the resources.
 	 * @return a map containing all translations
 	 * @throws IOException when a translations-file could not be loaded
 	 */

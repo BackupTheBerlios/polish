@@ -128,7 +128,7 @@ public abstract class ContainerView {
 	 * The index of the currently focused item can be retrieved with the focusedIndex-field.
 	 * 
 	 * @param items the available items
-	 * @param foward true when a following item should be looked for,
+	 * @param forward true when a following item should be looked for,
 	 *        false if a previous item should be looked for.
 	 * @param steps the number of steps which should be used (e.g. 2 in a table with two columns)
 	 * @param allowCircle true when either the first focusable or the last focusable element

@@ -49,7 +49,7 @@ implements Message
 	 * next call to <code>setPayloadData</code>.
 	 * 
 	 * @return the payload data of this message or null if the data has not been set
-	 * @see setPayloadData(byte[])
+	 * @see #setPayloadData(byte[])
 	 */
 	public byte[] getPayloadData() {
 		return this.data;
@@ -67,7 +67,7 @@ implements Message
 	 * </p>
 	 * 
 	 * @param data - payload data as a byte array
-	 * @see getPayloadData()
+	 * @see #getPayloadData()
 	 */
 	public void setPayloadData(byte[] data) {
 		this.data = data;

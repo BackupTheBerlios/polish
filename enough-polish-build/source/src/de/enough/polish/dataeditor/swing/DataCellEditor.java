@@ -41,7 +41,7 @@ import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
 
 /**
- * <p></p>
+ * <p>Invokes editors for specific datatypes in the DataView.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
@@ -63,10 +63,10 @@ implements TableCellEditor, ActionListener
 	private boolean useTextField;
 
 	/**
-	 * @param parentFrame
-	 * @param manager
-	 * @param defaultEditor
+	 * Creates a new data cell editor
 	 * 
+	 * @param parentFrame the parent
+	 * @param manager the manager for the binary data
 	 */
 	public DataCellEditor( JFrame parentFrame, DataManager manager) {
 		super();

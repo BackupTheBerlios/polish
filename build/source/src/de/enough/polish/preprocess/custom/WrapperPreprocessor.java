@@ -63,7 +63,6 @@ public class WrapperPreprocessor extends CustomPreprocessor {
 	 * @param setting the definition of the line processor 
 	 * @param preprocessor the preprocessor
 	 * @param project the Ant project
-	 * @return the initialised line processor
 	 * @throws InvocationTargetException when a method could not be loaded
 	 * @throws InstantiationException
 	 * @throws ClassNotFoundException
