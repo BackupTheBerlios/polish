@@ -28,7 +28,6 @@ package de.enough.polish.ui.game;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.util.ArrayList;
 
 /**
  * The LayerManager manages a series of Layers.
@@ -81,13 +80,12 @@ import de.enough.polish.util.ArrayList;
  */
 public class LayerManager extends Object
 {
-	private ArrayList layersList;
 	private Layer[] layers;
+	private int size;
 	private int viewX;
 	private int viewY;
 	private int viewWidth;
 	private int viewHeight;
-	private boolean isInitialised;
 	private boolean isViewWindowSet;
 
 	/**
@@ -97,7 +95,7 @@ public class LayerManager extends Object
 	 */
 	public LayerManager()
 	{
-		this.layersList = new ArrayList( 4, 50 );
+		this.layers = new Layer[ 5 ];
 	}
 
 	/**
@@ -114,8 +112,13 @@ public class LayerManager extends Object
 	 */
 	public void append( Layer l)
 	{
-		this.layersList.add( l );
-		this.isInitialised = false;
+		if (this.size == this.layers.length) {
+			Layer[] newLayers = new Layer[ this.size + 4 ];
+			System.arraycopy( this.layers, 0, newLayers, 0,  this.size );
+			this.layers = newLayers;
+		}
+		this.layers[ this.size ] = l;
+		this.size++;
 	}
 
 	/**
@@ -131,16 +134,39 @@ public class LayerManager extends Object
 	 */
 	public void insert( Layer l, int index)
 	{
-		this.layersList.remove(l);
-		this.layersList.add(index, l);
-		this.isInitialised = false;
-		//TODO rob check if insert( l, layersList.length() ) works
+		//#ifndef polish.skipArgumentCheck
+			if (index > this.size) {
+				//#ifdef polish.debugVerbose
+					throw new IndexOutOfBoundsException("unable to insert layer at index [" + index + "] when the size is [" + this.size + "]." );
+				//#else
+					//# throw new IndexOutOfBoundsException();
+				//#endif
+			}
+		//#endif
+		remove( l );
+		if (index > this.size) {
+			index = this.size;
+		}
+		Layer[] source = this.layers;
+		if (this.size == source.length || index == source.length) {
+			// the internal buffer needs to be increased:
+			Layer[] newLayers = new Layer[ this.size + 4 ];
+			System.arraycopy( this.layers, 0, newLayers, 0,  this.size );
+			source = newLayers;
+		}
+		
+		for (int i = this.size; i>index; i--) {
+			source[i] = source[ i-1 ];
+		}
+		source[index] = l;
+		this.layers = source;
+		this.size++;
 	}
 
 	/**
 	 * Gets the Layer with the specified index.
 	 * 
-	 * @param index the index of the desired Layer
+	 * @param index the index of the desired Layer, the first layer has the index 0
 	 * @return the Layer that has the specified index
 	 * @throws IndexOutOfBoundsException if the specified index is less than zero, 
 	 * 			or if it is equal to or greater than the number of Layers added to the 
@@ -148,7 +174,16 @@ public class LayerManager extends Object
 	 */
 	public Layer getLayerAt(int index)
 	{
-		return (Layer) this.layersList.get( index );
+		//#ifndef polish.skipArgumentCheck
+			if (index >= this.size) {
+				//#ifdef polish.debugVerbose
+					throw new IndexOutOfBoundsException("unable to get layer at [" + index + "] of LayerManager with a size of [" + this.size + "] layers.");
+				//#else
+					//# throw new IndexOutOfBoundsException();
+				//#endif
+			}
+		//#endif
+		return this.layers[ index ];
 	}
 
 	/**
@@ -158,7 +193,7 @@ public class LayerManager extends Object
 	 */
 	public int getSize()
 	{
-		return this.layersList.size();
+		return this.size;
 	}
 
 	/**
@@ -171,8 +206,23 @@ public class LayerManager extends Object
 	 */
 	public void remove( Layer l)
 	{
-		this.layersList.remove( l );
-		this.isInitialised = false;
+		Layer[] source = this.layers;
+		boolean layerFound = false;
+		for (int i = 0; i < this.size; i++) {
+			Layer layer = source[i];
+			if (layerFound) {
+				source[i] = source[ i + 1 ];
+			} else if (layer == l) {
+				layerFound = true;
+				this.size--;
+				if (i != this.size) {
+					source[i] = source[ i + 1 ];
+				}
+			}
+		}
+		if (layerFound) {
+			source[ this.size ] = null;
+		}
 	}
 
 	/**
@@ -224,9 +274,6 @@ public class LayerManager extends Object
 	 */
 	public void paint( Graphics g, int x, int y)
 	{
-		if (!this.isInitialised) {
-			this.layers = (Layer[]) this.layersList.toArray( new Layer[ this.layersList.size() ] );
-		}
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
@@ -236,7 +283,7 @@ public class LayerManager extends Object
 		}
 		// translate the graphic origin:
 		g.translate( x - this.viewX, y - this.viewY );
-		int lastIndex = this.layers.length -1;
+		int lastIndex = this.size -1;
 		for (int i = lastIndex; i >= 0; i--) {
 			Layer layer = this.layers[ i ];
 			if (layer.isVisible) {
