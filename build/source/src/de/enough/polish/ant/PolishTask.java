@@ -62,7 +62,7 @@ import java.util.regex.Pattern;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.1";
+	private static final String VERSION = "1.2.2";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -1151,10 +1151,10 @@ public class PolishTask extends ConditionalTask {
 		javac.setTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
 		javac.setTarget( this.javacTarget );
-		if (this.javacTarget == BuildSetting.TARGET_1_1) {
-			// -source == 1.3 is needed for J2SE 1.5, but only when target == 1.1
+		//if (this.javacTarget == BuildSetting.TARGET_1_1) {
+			// -source == 1.3 is apparently always needed for J2SE 1.5
 			javac.setSource( this.sourceCompatibility );
-		}
+		//}
 		if (this.buildSetting.isDebugEnabled()) {
 			javac.setDebug(true);
 			javac.setDebugLevel("lines,vars,source");
