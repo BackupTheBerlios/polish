@@ -30,6 +30,7 @@ implements CommandListener
     */
     private final Command exitCmd = new Command(Locale.get("cmd.exit"), Command.EXIT, 10);
     private final Command backCmd = new Command(Locale.get("cmd.back"), Command.BACK, 1);
+    private final Command selectCmd = new Command(Locale.get("cmd.select"), Command.OK, 1);
     
     
     private List mainMenu;
@@ -44,6 +45,7 @@ implements CommandListener
     	this.mainMenu.append(Locale.get("cmd.arithmeticBenchmark"), null);
     	this.mainMenu.append(Locale.get("cmd.credits"), null);
     	this.mainMenu.append(Locale.get("cmd.exit"), null);
+    	
     }
     
     public void startApp() {
@@ -82,6 +84,7 @@ implements CommandListener
     	disp.addCommand( this.creditsCmd );
     	*/
     	if (disp == this.mainMenu) {
+        	disp.addCommand( this.selectCmd );
         	disp.addCommand( this.exitCmd );
     	} else {
     		disp.addCommand( this.backCmd );
@@ -98,7 +101,7 @@ implements CommandListener
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
-		if (cmd == List.SELECT_COMMAND && disp == this.mainMenu) {
+		if ( (cmd == List.SELECT_COMMAND || cmd == this.selectCmd) && disp == this.mainMenu) {
 			switch( this.mainMenu.getSelectedIndex() ) {
 				case 0:
 					show( Locale.get("title.display"), new DisplayInfoCollector() );
@@ -120,7 +123,7 @@ implements CommandListener
 					return;
 				case 6:
 					cmd = this.exitCmd;
-					return;
+					break;
 			}
 		}
 		if (cmd == this.backCmd ) {
