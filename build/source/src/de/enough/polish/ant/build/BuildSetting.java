@@ -94,6 +94,7 @@ public class BuildSetting {
 	private boolean compilerMode;
 	private File compilerDestDir;
 	private ResourceSetting resourceSetting;
+	private boolean alwaysUsePolishGui;
 	
 	/**
 	 * Creates a new build setting.
@@ -248,8 +249,17 @@ public class BuildSetting {
 		this.symbols = symbols;
 	}
 	
-	public void setUsePolishGui( boolean usePolishGui ) {
-		this.usePolishGui = usePolishGui; 
+	public void setUsePolishGui( String usePolishGuiStr ) {
+		if ("always".equals(usePolishGuiStr)) {
+			this.usePolishGui = true;
+			this.alwaysUsePolishGui = true;
+		} else if ( "true".equalsIgnoreCase(usePolishGuiStr) || "yes".equalsIgnoreCase(usePolishGuiStr)) {
+			this.usePolishGui = true;
+			this.alwaysUsePolishGui = false;
+		} else {
+			this.usePolishGui = false;
+			this.alwaysUsePolishGui = false;
+		}
 	}
 		
 	/**
@@ -262,6 +272,15 @@ public class BuildSetting {
 	 */
 	public boolean usePolishGui() {
 		return this.usePolishGui;
+	}
+	
+	/**
+	 * Determines whether the J2ME Polish GUI should beused even for devices which do not "usually" support it.
+	 *  
+	 * @return true when the J2ME Polish GUI should be used for all devices
+	 */
+	public boolean alwaysUsePolishGui() {
+		return this.alwaysUsePolishGui;
 	}
 	
 	public void setImageLoadStrategy( String strategy ) {

@@ -902,7 +902,7 @@ public class PolishTask extends ConditionalTask {
 			long buildXmlLastModified = buildXml.lastModified();
 			// check if the polish gui is used at all:
 			boolean usePolishGui = this.buildSetting.usePolishGui()
-								  && device.supportsPolishGui();
+				  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui());
 			this.preprocessor.setUsePolishGui(usePolishGui);
 			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;
