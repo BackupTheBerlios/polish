@@ -48,39 +48,57 @@ public final class ConvertUtil {
 	private static final Long KILO_BYTES_KEY = new Long( KILO_BYTES );
 	private static final Long MEGA_BYTES_KEY = new Long( MEGA_BYTES );
 	private static final Long GIGA_BYTES_KEY = new Long( GIGA_BYTES );
-	private static final HashMap UNITS  = new HashMap();
-	static {
-		UNITS.put("bytes", BYTES_KEY);
-		UNITS.put("b", BYTES_KEY);
-		UNITS.put("kilobytes", KILO_BYTES_KEY);
-		UNITS.put("kb", KILO_BYTES_KEY);
-		UNITS.put("megabytes", MEGA_BYTES_KEY);
-		UNITS.put("mb", MEGA_BYTES_KEY);
-		UNITS.put("gigabytes", GIGA_BYTES_KEY);
-		UNITS.put("gb", GIGA_BYTES_KEY);
-	}
+	private static final String UPPERCASE = "uppercase";
+	private static final String LOWERCASE = "lowercase";
 
-	public final static Object convert( String value, String targetUnit ) 
-	{
-		Object target = UNITS.get( targetUnit ); 
-		if (target == null) {
-			throw new IllegalArgumentException("The target-unit [" + targetUnit + "] is not supported.");
-		}
-		if (target == BYTES_KEY) {
-			return new Long( convertToBytes( value ) );
-		} else if (target == KILO_BYTES_KEY) {
-			return new Double( convertToKiloBytes( value ) );
-		} else if (target == MEGA_BYTES_KEY) {
-			return new Double( convertToMegaBytes( value ) );
-		} else if (target == GIGA_BYTES_KEY) {
-			return new Double( convertToGigaBytes( value ) );
-		}
-		throw new IllegalArgumentException("The target-unit [" + targetUnit + "] is not supported.");
+	private static final HashMap FUNCTIONS  = new HashMap();
+	static {
+		FUNCTIONS.put("bytes", BYTES_KEY);
+		FUNCTIONS.put("b", BYTES_KEY);
+		FUNCTIONS.put("kilobytes", KILO_BYTES_KEY);
+		FUNCTIONS.put("kb", KILO_BYTES_KEY);
+		FUNCTIONS.put("megabytes", MEGA_BYTES_KEY);
+		FUNCTIONS.put("mb", MEGA_BYTES_KEY);
+		FUNCTIONS.put("gigabytes", GIGA_BYTES_KEY);
+		FUNCTIONS.put("gb", GIGA_BYTES_KEY);
+		FUNCTIONS.put(UPPERCASE, UPPERCASE );
+		FUNCTIONS.put(LOWERCASE, LOWERCASE );
 	}
 
 	/**
-	 * @param value
-	 * @return
+	 * Converts the given object according to the provided function.
+	 * 
+	 * @param value the value, e.g. "200 kb"
+	 * @param targetFunction, the function-name, e.g. "bytes"
+	 * @return the converted value, e.g. new Long( 204800 )
+	 */
+	public final static Object convert( String value, String targetFunction ) 
+	{
+		Object function = FUNCTIONS.get( targetFunction ); 
+		if (function == null) {
+			throw new IllegalArgumentException("The target-function [" + targetFunction + "] is not supported.");
+		}
+		if (function == BYTES_KEY) {
+			return new Long( convertToBytes( value ) );
+		} else if (function == KILO_BYTES_KEY) {
+			return new Double( convertToKiloBytes( value ) );
+		} else if (function == MEGA_BYTES_KEY) {
+			return new Double( convertToMegaBytes( value ) );
+		} else if (function == GIGA_BYTES_KEY) {
+			return new Double( convertToGigaBytes( value ) );
+		} else if (function == UPPERCASE) {
+			return value.toUpperCase();
+		} else if (function == LOWERCASE) {
+			return value.toLowerCase();
+		}
+		throw new IllegalArgumentException("The target-function [" + targetFunction + "] is not supported.");
+	}
+
+	/**
+	 * Converts the given memory value.
+	 * 
+	 * @param value the value, e.g. "200 kb"
+	 * @return the value in bytes as a long value
 	 */
 	public final static long convertToBytes(String value) {
 		value = value.trim().toLowerCase();		
@@ -118,7 +136,7 @@ public final class ConvertUtil {
 		} else {
 			valueNumber = Double.parseDouble( valueString );
 		}
-		Long unitMultiply = (Long) UNITS.get(valueUnit);
+		Long unitMultiply = (Long) FUNCTIONS.get(valueUnit);
 		if (unitMultiply == null) {
 			throw new IllegalArgumentException("Invalid memory-value [" + value +"] / unit [" + valueUnit + "] found: please specify a valid unit (kb, mb etc).");
 		}
@@ -126,8 +144,10 @@ public final class ConvertUtil {
 	}
 
 	/**
-	 * @param value
-	 * @return
+	 * Converts the given memory value.
+	 * 
+	 * @param value the value, e.g. "200 kb"
+	 * @return the value in kilobytes as a double value
 	 */
 	public final static double convertToKiloBytes(String value) {
 		double bytes = convertToBytes( value );
@@ -135,8 +155,10 @@ public final class ConvertUtil {
 	}
 
 	/**
-	 * @param value
-	 * @return
+	 * Converts the given memory value.
+	 * 
+	 * @param value the value, e.g. "200 kb"
+	 * @return the value in mega bytes as a double value
 	 */
 	public final static double convertToMegaBytes(String value) {
 		double bytes = convertToBytes( value );
@@ -144,8 +166,10 @@ public final class ConvertUtil {
 	}
 
 	/**
-	 * @param value
-	 * @return
+	 * Converts the given memory value.
+	 * 
+	 * @param value the value, e.g. "200 kb"
+	 * @return the value in giga bytes as a double value
 	 */
 	public final static double convertToGigaBytes(String value) {
 		double bytes = convertToBytes( value );
