@@ -47,27 +47,33 @@ public final class Locale {
 //$$IncludeLocaleDefinitionHere$$//
 	
 	//#ifdef false
-	/** The ISO language code, e.g. "en" for English. */
+	/** The ISO language code, 
+	 * e.g. "en" for English. */
 	public static final String LANGUAGE = "en";
 	/** 
-	 * The ISO country code, e.g. "US" for USA 
+	 * The ISO country code, 
+	 * e.g. "US" for USA 
 	 * This is null when no country is defined in the current locale.
 	 */
 	public static final String COUNTRY = "US";
-	/** The localized language name, e.g. "English" or "Deutsch" */
+	/** The localized language name, 
+	 * e.g. "English" or "Deutsch" */
 	public static final String DISPLAY_LANGUAGE = "English";
 	/** 
-	 * The localized country name, e.g. "United States" or "Deutschland".
+	 * The localized country name, 
+	 * e.g. "United States" or "Deutschland".
 	 * This is null when no country is defined in the current locale.
 	 */
 	public static final String DISPLAY_COUNTRY = "United States";
 	/** 
-	 * The symbol of the currency, e.g. "$" or "€".
+	 * The symbol of the currency, 
+	 * e.g. "$" or "&euro;".
 	 * This is null when no country is defined in the current locale.
 	 */
 	public static final String CURRENCY_SYMBOL = "$";
 	/** 
-	 * The international three letter code of the currency, e.g. "USD" or "EUR".
+	 * The international three letter code of the currency, 
+	 * e.g. "USD" or "EUR".
 	 * This is null when no country is defined in the current locale.
 	 */
 	public static final String CURRENCY_CODE = "USD";
