@@ -8,6 +8,7 @@ package com.grimo.me.product.midpsysinfo;
 
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -36,6 +37,7 @@ public class DisplayInfoCollector extends InfoCollector {
             	// do nothing
             }
         };
+        canvas.addCommand( new Command("DummyCommand", Command.SCREEN, 1 ));
         
         boolean isColor = display.isColor();
         int numColors = display.numColors();
@@ -50,17 +52,11 @@ public class DisplayInfoCollector extends InfoCollector {
         
         addInfo( "Canvas width: ", Integer.toString(canvas.getWidth()) );
         addInfo( "Canvas height: ", Integer.toString(canvas.getHeight()) );
-        
         try {
-        	Class.forName( "com.nokia.mid.ui.FullCanvas" );
-        	//#if polish.useDefaultPackage
-        		String className = "NokiaFullCanvasTest";
-        	//#else
-        		//# String className = "com.grimo.me.product.midpsysinfo.NokiaFullCanvasTest";
-        	//#endif
-        	Class testClass = Class.forName( className );
-        	DynamicTest test = (DynamicTest) testClass.newInstance();
-        	test.addTestResults( this );
+        	Class fullCanvasClass = Class.forName( "com.nokia.mid.ui.FullCanvas" );
+        	if (fullCanvasClass != null) {
+        		addNokiaFullCanvasTest();
+        	}
         } catch (Exception e) {
         	//#debug error
         	System.out.println("Unable to load NokiaFullCanvasTest" + e);
@@ -101,6 +97,27 @@ public class DisplayInfoCollector extends InfoCollector {
         addInfo("Medium-Font-Height (bold): ", "" + font.getHeight() );
         font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE );
         addInfo("Large-Font-Height (bold): ", "" + font.getHeight() );
+	}
+
+
+	private void addNokiaFullCanvasTest() {
+		try {
+        	Class.forName( "com.nokia.mid.ui.FullCanvas" );
+        	//#if polish.useDefaultPackage
+        		String className = "NokiaFullCanvasTest";
+        	//#else
+        		//# String className = "com.grimo.me.product.midpsysinfo.NokiaFullCanvasTest";
+        	//#endif
+        	Class testClass = Class.forName( className );
+        	DynamicTest test = (DynamicTest) testClass.newInstance();
+        	test.addTestResults( this );
+        } catch (Exception e) {
+        	//#debug error
+        	System.out.println("Unable to load NokiaFullCanvasTest" + e);
+        } catch (Error e) {
+        	//#debug error
+        	System.out.println("Unable to load NokiaFullCanvasTest" + e);
+        }
 	}
     
 }

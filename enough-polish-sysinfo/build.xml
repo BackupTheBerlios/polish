@@ -94,7 +94,7 @@
 				<keep class="Midp2FullCanvasTest" />
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug level="error" showLogOnError="true" verbose="true" >
+			<debug level="error" showLogOnError="true" verbose="true" if="test">
 				<filter level="debug" package="com.grimo.me.product.midpsysinfo"/>
 			</debug>
 			
