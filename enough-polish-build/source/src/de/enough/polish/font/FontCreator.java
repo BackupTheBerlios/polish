@@ -349,7 +349,7 @@ implements ActionListener
 	}
 	
 	private void openTrueTypeFont( File file ) throws IOException {
-		this.trueTypeViewer = new TrueTypeFontViewer( file );	
+		this.trueTypeViewer = new TrueTypeFontViewer( file, this.statusBar );	
 		Container contentPane = getContentPane();
 		contentPane.remove( this.scrollPane );
 		this.scrollPane = new JScrollPane( this.trueTypeViewer );

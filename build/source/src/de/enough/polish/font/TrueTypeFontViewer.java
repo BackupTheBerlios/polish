@@ -86,6 +86,7 @@ implements ActionListener
 	private Font derivedFont;
 	private float currentSize = 12F;
 	private final JTextField characterMap;
+	private final JButton updateCharacterMapButton;
 	private final JComboBox sizeChooser;
 	private final JTextField sizeTextField;
 	private final JButton colorButton;
@@ -97,14 +98,20 @@ implements ActionListener
 	private final JCheckBox optionNumbers;
 	private final JCheckBox optionSpace;
 	private final JCheckBox optionAntiAliasing;
+	private final JTextField characterSpacingField;
+	private final JButton updateCharacterSpacingButton;
 	private BufferedImage externalImage;
+	private int characterSpacing = 0;
+	private final JLabel statusBar;
 
 	/**
 	 * @param fontFile
 	 * @throws IOException
 	 */
-	public TrueTypeFontViewer( File fontFile ) throws IOException {
+	public TrueTypeFontViewer( File fontFile, JLabel statusBar ) throws IOException {
 		super();
+		
+		this.statusBar = statusBar;
 		
 		InputStream in = new FileInputStream( fontFile );
 		try {
@@ -112,6 +119,8 @@ implements ActionListener
 			this.derivedFont = this.basicFont.deriveFont( this.currentSize );
 			this.characterMap = new JTextField( STANDARD_TEXT );
 			this.characterMap.addActionListener( this );
+			this.updateCharacterMapButton = new JButton("set");
+			this.updateCharacterMapButton.addActionListener( this );
 			this.sizeChooser = new JComboBox( FONT_SIZES );
 			this.sizeChooser.setSelectedIndex( 5 );
 			this.sizeChooser.addActionListener( this );
@@ -137,6 +146,11 @@ implements ActionListener
 			this.optionSpace.addActionListener( this );
 			this.optionAntiAliasing = new JCheckBox("use Anti-Aliasing");
 			this.optionAntiAliasing.addActionListener( this );
+			this.characterSpacingField = new JTextField( 3 );
+			this.characterSpacingField.setText("0");
+			this.characterSpacingField.addActionListener( this );
+			this.updateCharacterSpacingButton = new JButton("set");
+			this.updateCharacterSpacingButton.addActionListener( this );
 			
 			// adding items:
 			setLayout( new BorderLayout() );
@@ -154,13 +168,23 @@ implements ActionListener
 			inputOptionsPanel.add( this.optionPunctuation );
 			inputOptionsPanel.add( this.optionNumbers );
 			inputOptionsPanel.add( this.optionSpace );
+			JPanel rightOptionsPanel = new JPanel( new BorderLayout());
+			rightOptionsPanel.add( this.optionAntiAliasing, BorderLayout.NORTH );
+			JPanel characterSpacingPanel = new JPanel( new BorderLayout() );
+			characterSpacingPanel.add( new JLabel("Character-Spacing:  "), BorderLayout.WEST );
+			characterSpacingPanel.add( this.characterSpacingField, BorderLayout.CENTER );
+			characterSpacingPanel.add( this.updateCharacterSpacingButton, BorderLayout.EAST );
+			rightOptionsPanel.add( characterSpacingPanel, BorderLayout.SOUTH );
 			JPanel optionsPanel = new JPanel( new GridLayout( 1, 2));
 			optionsPanel.setBorder( new EtchedBorder( EtchedBorder.LOWERED ) );
 			optionsPanel.add( inputOptionsPanel );
-			optionsPanel.add( this.optionAntiAliasing );
+			optionsPanel.add( rightOptionsPanel );
 			JPanel inputPanel = new JPanel( new BorderLayout());
 			inputPanel.add( optionsPanel, BorderLayout.CENTER );
-			inputPanel.add( this.characterMap, BorderLayout.SOUTH );
+			JPanel characterMapPanel = new JPanel( new BorderLayout() );
+			characterMapPanel.add( this.characterMap, BorderLayout.CENTER );
+			characterMapPanel.add( this.updateCharacterMapButton, BorderLayout.EAST );
+			inputPanel.add( characterMapPanel, BorderLayout.SOUTH );
 			add( inputPanel , BorderLayout.SOUTH );
 			updateImage();
 		} catch (FontFormatException e) {
@@ -179,82 +203,90 @@ implements ActionListener
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent event) {
-		Object source = event.getSource();
-		this.externalImage = null;
-		if (source == this.sizeChooser) {
-			int selectedIndex = this.sizeChooser.getSelectedIndex();
-			String fontSizeStr = FONT_SIZES[ selectedIndex ];
-			float size = Float.parseFloat( fontSizeStr );
-			this.derivedFont = this.basicFont.deriveFont(size);
-			this.sizeTextField.setText( fontSizeStr );
-			updateImage();
-		} else if (source == this.sizeTextField) {
-			float size = Float.parseFloat( this.sizeTextField.getText() );
-			this.derivedFont = this.basicFont.deriveFont(size);
-			updateImage();
-		} else if (source == this.characterMap) {
-			updateImage();
-		} else if (source == this.optionAntiAliasing) {
-			updateImage();
-		} else if (source == this.colorButton) {
-			this.currentColor = JColorChooser.showDialog(this, "Font-Color", this.currentColor);
-			this.colorButton.setBackground( this.currentColor );
-			updateImage();
-		} else if (source == this.optionUppercase ) {
-			String text = this.characterMap.getText();
-			if (!this.optionUppercase.isSelected()) {
-				text = TextUtil.replace(text, UPPERCASE, "" );
-			} else {
-				if (text.indexOf(UPPERCASE) == -1) {
-					text += UPPERCASE;
+		try {
+			Object source = event.getSource();
+			this.externalImage = null;
+			if (source == this.sizeChooser) {
+				int selectedIndex = this.sizeChooser.getSelectedIndex();
+				String fontSizeStr = FONT_SIZES[ selectedIndex ];
+				float size = Float.parseFloat( fontSizeStr );
+				this.derivedFont = this.basicFont.deriveFont(size);
+				this.sizeTextField.setText( fontSizeStr );
+				updateImage();
+			} else if (source == this.sizeTextField) {
+				float size = Float.parseFloat( this.sizeTextField.getText() );
+				this.derivedFont = this.basicFont.deriveFont(size);
+				updateImage();
+			} else if (source == this.characterSpacingField || source == this.updateCharacterSpacingButton) {
+				this.characterSpacing = Integer.parseInt( this.characterSpacingField.getText() );
+				updateImage();
+			} else if (source == this.characterMap || source == this.updateCharacterMapButton) {
+				updateImage();
+			} else if (source == this.optionAntiAliasing) {
+				updateImage();
+			} else if (source == this.colorButton) {
+				this.currentColor = JColorChooser.showDialog(this, "Font-Color", this.currentColor);
+				this.colorButton.setBackground( this.currentColor );
+				updateImage();
+			} else if (source == this.optionUppercase ) {
+				String text = this.characterMap.getText();
+				if (!this.optionUppercase.isSelected()) {
+					text = TextUtil.replace(text, UPPERCASE, "" );
+				} else {
+					if (text.indexOf(UPPERCASE) == -1) {
+						text += UPPERCASE;
+					}
 				}
-			}
-			this.characterMap.setText( text );
-			updateImage();
-		} else if (source == this.optionLowercase ) {
-			String text = this.characterMap.getText();
-			if (!this.optionLowercase.isSelected()) {
-				text = TextUtil.replace(text, LOWERCASE, "" );
-			} else {
-				if (text.indexOf(LOWERCASE) == -1) {
-					text += LOWERCASE;
+				this.characterMap.setText( text );
+				updateImage();
+			} else if (source == this.optionLowercase ) {
+				String text = this.characterMap.getText();
+				if (!this.optionLowercase.isSelected()) {
+					text = TextUtil.replace(text, LOWERCASE, "" );
+				} else {
+					if (text.indexOf(LOWERCASE) == -1) {
+						text += LOWERCASE;
+					}
 				}
-			}
-			this.characterMap.setText( text );
-			updateImage();
-		} else if (source == this.optionPunctuation ) {
-			String text = this.characterMap.getText();
-			if (!this.optionPunctuation.isSelected()) {
-				text = TextUtil.replace(text, PUNCTUATION, "" );
-			} else {
-				if (text.indexOf(PUNCTUATION) == -1) {
-					text += PUNCTUATION;
+				this.characterMap.setText( text );
+				updateImage();
+			} else if (source == this.optionPunctuation ) {
+				String text = this.characterMap.getText();
+				if (!this.optionPunctuation.isSelected()) {
+					text = TextUtil.replace(text, PUNCTUATION, "" );
+				} else {
+					if (text.indexOf(PUNCTUATION) == -1) {
+						text += PUNCTUATION;
+					}
 				}
-			}
-			this.characterMap.setText( text );
-			updateImage();
-		} else if (source == this.optionNumbers ) {
-			String text = this.characterMap.getText();
-			if (!this.optionNumbers.isSelected()) {
-				text = TextUtil.replace(text, NUMBERS, "" );
-			} else {
-				if (text.indexOf(NUMBERS) == -1) {
-					text += NUMBERS;
+				this.characterMap.setText( text );
+				updateImage();
+			} else if (source == this.optionNumbers ) {
+				String text = this.characterMap.getText();
+				if (!this.optionNumbers.isSelected()) {
+					text = TextUtil.replace(text, NUMBERS, "" );
+				} else {
+					if (text.indexOf(NUMBERS) == -1) {
+						text += NUMBERS;
+					}
 				}
-			}
-			this.characterMap.setText( text );
-			updateImage();
-		} else if (source == this.optionSpace ) {
-			String text = this.characterMap.getText();
-			if (!this.optionSpace.isSelected()) {
-				text = TextUtil.replace(text, SPACE, "" );
-			} else {
-				if (text.indexOf(SPACE) == -1) {
-					text += SPACE;
+				this.characterMap.setText( text );
+				updateImage();
+			} else if (source == this.optionSpace ) {
+				String text = this.characterMap.getText();
+				if (!this.optionSpace.isSelected()) {
+					text = TextUtil.replace(text, SPACE, "" );
+				} else {
+					if (text.indexOf(SPACE) == -1) {
+						text += SPACE;
+					}
 				}
+				this.characterMap.setText( text );
+				updateImage();
 			}
-			this.characterMap.setText( text );
-			updateImage();
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.statusBar.setText("Unable to perform action: " + e.toString() );
 		}
 	}
 
@@ -326,7 +358,7 @@ implements ActionListener
 		FontRenderContext fc = g.getFontRenderContext();
 		Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
 		double height = bounds.getHeight();
-		double width = bounds.getWidth();
+		double width = bounds.getWidth() + (text.length() * this.characterSpacing);
 		// now create real image:
 		//DirectColorModel colorModel = new DirectColorModel(8+8+8+1, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x01000000);
 		image = new BufferedImage( (int) width, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -340,7 +372,17 @@ implements ActionListener
 		}
 		g.setFont( this.derivedFont );
 		g.setColor( this.currentColor );
-		g.drawString(text,0,(int)-bounds.getY());
+		char[] characters = text.toCharArray();
+		int spacingStart = this.characterSpacing / 2;
+		//int spacingEnd = this.characterSpacing - spacingStart;
+		int y = (int)-bounds.getY();
+		int x = spacingStart;
+		for (int i = 0; i < characters.length; i++) {
+			g.drawChars(characters, i, 1, x, y );
+			bounds = this.derivedFont.getStringBounds(characters, i, i+1, fc);
+			x += (int) bounds.getWidth() + this.characterSpacing;
+		}
+		//g.drawString(text,0,(int)-bounds.getY());
 		return image;
 	}
 	
