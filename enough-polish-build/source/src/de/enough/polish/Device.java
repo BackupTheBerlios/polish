@@ -36,12 +36,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * <p>
- * Represents a J2ME device.
- * </p>
+ * <p>Represents a J2ME device.</p>
  * 
  * <p>
- * copyright Enough Software 2004
+ * copyright Enough Software 2004, 2005
  * </p>
  * 
  * <pre>
@@ -139,21 +137,14 @@ public class Device extends PolishComponent {
 	/**
 	 * Creates a new device.
 	 * 
-	 * @param definition
-	 *            the xml definition of this device.
-	 * @param identifier
-	 *            The identifier of this device.
-	 * @param deviceName
-	 *            The name of this device.
-	 * @param vendor
-	 *            The vendor (and "parent") of this device.
-	 * @param groupManager
-	 *            The manager for device-groups.
-	 * @param libraryManager
-	 *            the manager for device-specific APIs
+	 * @param definition the xml definition of this device.
+	 * @param identifier The identifier of this device.
+	 * @param deviceName The name of this device.
+	 * @param vendor The vendor (and "parent") of this device.
+	 * @param groupManager The manager for device-groups.
+	 * @param libraryManager the manager for device-specific APIs
 	 * @param deviceManager the manager for devices
-	 * @throws InvalidComponentException
-	 *             when the given definition has errors
+	 * @throws InvalidComponentException when the given definition has errors
 	 */
 	public Device(Element definition, String identifier, String deviceName,
 			Vendor vendor, DeviceGroupManager groupManager,
@@ -174,11 +165,14 @@ public class Device extends PolishComponent {
 		addCapability( "polish.identifier", this.identifier );
 		
 		// check if this device extends another one:
-		String extendsStr = definition.getAttributeValue("extends");
-		if (extendsStr != null) {
-			Device parentDevice = deviceManager.getDevice( extendsStr );
+		String parentIdentifier = definition.getChildTextTrim( "parent" );
+		if (parentIdentifier == null) {
+			parentIdentifier = definition.getAttributeValue("extends");
+		}
+		if (parentIdentifier != null) {
+			Device parentDevice = deviceManager.getDevice( parentIdentifier );
 			if (parentDevice == null) {
-				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + extendsStr + "] is not known. Make sure it is defined before this device.");
+				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + parentIdentifier + "] is not known. Make sure it is defined before this device.");
 			}
 			addComponent(parentDevice);
 		}
@@ -221,14 +215,22 @@ public class Device extends PolishComponent {
 			for (int i = 0; i < apis.length; i++) {
 				String api = apis[i].toLowerCase();
 				Library library = libraryManager.getLibrary(api);
-				String symbol = api;
+				String symbol;
+				String[] symbols;
 				if (library != null) {
 					symbol = library.getSymbol();
+					symbols = library.getSymbols();
+				} else {
+					symbol = api;
+					symbols = new String[]{ api };
 				}
 				apis[i] = symbol;
-				addFeature("api." + symbol);
-				groupNamesList.add(symbol);
-				groupsList.add(groupManager.getGroup(symbol, true));
+				for (int j = 0; j < symbols.length; j++) {
+					symbol = symbols[j];
+					addFeature("api." + symbol);
+					groupNamesList.add(symbol);
+					groupsList.add(groupManager.getGroup(symbol, true));
+				}
 				// add any defined features and symbols of the api:
 				if (library != null) {
 					addComponent(library);

@@ -1,4 +1,29 @@
-<!-- this file describes some often used libraries -->
+<!-- 
+	apis.xml describes some often used device libraries. 
+
+    Copyright (c) 2004, 2005 Robert Virkus / Enough Software
+
+    This file is part of J2ME Polish.
+
+    J2ME Polish is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    J2ME Polish is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Commercial licenses are also available, please
+    refer to the accompanying LICENSE.txt or visit
+    http://www.j2mepolish.org for details.
+
+-->
 <apis>
 
 	<api>
@@ -28,10 +53,22 @@
 		<description>The Wireless Messaging API provides
 			functionalities for sending and receiving messages (SMS).
 		</description>
-		<names>wmapi,wm-api, JSR-120, JSR120, wma</names>
+		<names>wmapi, wm-api, JSR-120, JSR120, wma, wmapi-1.1, wmapi1.1</names>
 		<symbol>wmapi</symbol>
 		<files>j2me-wmapi.jar, wma.zip</files>
 		<path>import/j2me-wmapi.jar</path>
+	</api>
+	
+	<api>
+		<name>Wireless Messaging API 2.0</name>
+		<description>The Wireless Messaging API 2.0 provides
+			functionalities for sending and receiving text and multimedia messages (SMS and MMS).
+		</description>
+		<names>wmapi2.0, wmapi2, JSR-205, JSR205</names>
+		<symbol>wmapi2.0</symbol>
+		<parent>wmapi</parent>
+		<files>j2me-wmapi-2.0.jar, wma_2_0.zip</files>
+		<path>import/j2me-wmapi-2.0.jar</path>
 	</api>
 	
 	<api>
@@ -115,6 +152,7 @@
 		A JBlend extension for some devices of the Vodafone operator.
 		</description>
 		<names>VSCL-1.0.1</names>
+		<parent>VSCL</parent>
 		<symbol>vscl-1.0.1</symbol>
 		<files>vscl-1.0.1.jar</files>
 		<path>import/vscl-1.0.1.jar</path>
@@ -126,6 +164,7 @@
 		A JBlend extension for some devices of the Vodafone operator.
 		</description>
 		<names>VSCL-1.1.0</names>
+		<parent>VSCL-1.0.1</parent>
 		<symbol>vscl-1.1.0</symbol>
 		<files>vscl-1.1.0.jar</files>
 		<path>import/vscl-1.1.0.jar</path>

@@ -46,10 +46,10 @@ import java.util.Hashtable;
  */
 public class Library extends PolishComponent {
 	
-	private String fullName;
-	private String description;
-	private String symbol;
-	private String[] names;
+	private final String fullName;
+	private final String description;
+	private final String symbol;
+	private final String[] names;
 	private String[] fileNames;
 	private String defaultPath;
 	private String wtkLibPath;
@@ -58,6 +58,7 @@ public class Library extends PolishComponent {
 	private String path;
 	private boolean isInitialised;
 	private Hashtable antProperties;
+	private final String[] symbols;
 
 	/**
 	 * Creates a new library.
@@ -67,13 +68,15 @@ public class Library extends PolishComponent {
 	 * @param projectLibPath the path to the lib-folder of the current project
 	 * @param polishLibPath the path to the "import" folder of the J2ME Polish installation
 	 * @param definition the xml definition of this library
+	 * @param manager the library manager
 	 * @throws InvalidComponentException when the given api definition has errors
 	 */
 	public Library( Hashtable antProperties, 
 			String wtkLibPath, 
 			String projectLibPath,
 			String polishLibPath,
-			Element definition) 
+			Element definition,
+			LibraryManager manager) 
 	throws InvalidComponentException 
 	{
 		this.wtkLibPath = wtkLibPath;
@@ -92,6 +95,22 @@ public class Library extends PolishComponent {
 		this.symbol = definition.getChildTextTrim( "symbol");
 		if (this.symbol == null) {
 			throw new InvalidComponentException("The api [" + this.fullName + "] does not define the preprocessing symbol for this library. Please insert the <symbol> element into the file [apis.xml] for this library.");
+		}
+		String parentLibraryName = definition.getChildTextTrim( "parent");
+		if (parentLibraryName != null) {
+			Library parentLib = manager.getLibrary(parentLibraryName);
+			if (parentLib == null) {
+				throw new InvalidComponentException("The library [" + this.fullName + "] extends the unknown library [" + parentLibraryName + "]. Please make sure that the parent-library is defined above in the file [apis.xml].");
+			}
+			String[] parentSymbols = parentLib.getSymbols();
+			this.symbols = new String[ parentSymbols.length + 1 ];
+			for (int i = 0; i < parentSymbols.length; i++) {
+				this.symbols[ i ] = parentSymbols[i];
+			}
+			this.symbols[ parentSymbols.length ] = this.symbol;
+			this.parent = parentLib; 
+		} else {
+			this.symbols = new String[]{ this.symbol };
 		}
 		String fileNamesString = definition.getChildTextTrim( "files");
 		if (fileNamesString != null) {
@@ -245,9 +264,17 @@ public class Library extends PolishComponent {
 		return this.names;
 	}
 	/**
+	 * @return Returns the symbols.
+	 */
+	public String[] getSymbols() {
+		return this.symbols;
+	}
+	
+	/**
 	 * @return Returns the symbol.
 	 */
 	public String getSymbol() {
 		return this.symbol;
 	}
+
 }

@@ -111,7 +111,7 @@ public class LibraryManager {
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
-			Library lib = new Library( this.antProperties, this.wtkLibPath, this.projectLibPath, this.polishLibPath, definition );
+			Library lib = new Library( this.antProperties, this.wtkLibPath, this.projectLibPath, this.polishLibPath, definition, this );
 			Library existingLib = (Library) this.libraries.get( lib.getSymbol() ); 
 			if ( existingLib != null ) {
 				throw new InvalidComponentException("The library [" + lib.getFullName() 
@@ -203,17 +203,17 @@ public class LibraryManager {
 	}
 
 	/**
-	 * Retrieves the symbol for the specified library.
+	 * Retrieves the symbols for the specified library.
 	 * 
 	 * @param libName the name of the library
-	 * @return the symbol for this library. When the library is not known, null is returned.
+	 * @return the symbols for this library. When the library is not known, null is returned.
 	 */
-	public String getSymbol(String libName) {
+	public String[] getSymbols(String libName) {
 		Library lib = (Library) this.libraries.get( libName );
 		if (lib == null) { 
 			return null;
 		} else {
-			return lib.getSymbol();
+			return lib.getSymbols();
 		}
 	}
 

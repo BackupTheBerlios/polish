@@ -3,7 +3,7 @@
 	You can add or change the existing specifications and
 	use the changed settings in the code.
 
-    Copyright (c) 2004 Robert Virkus / Enough Software
+    Copyright (c) 2004, 2005 Robert Virkus / Enough Software
 
     This file is part of J2ME Polish.
 
@@ -97,8 +97,18 @@
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
 		<capability name="SoundFormat" value="midi, amr" />
 	</device>	
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/wmapi20</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi,wmapi2.0,jtwi" />
+		<capability name="SoundFormat" value="midi, amr" />
+	</device>	
 	
-<!-- virtuell devices -->
+<!-- virtual devices -->
 
 <!-- These devices do not actually exist, but they share the common
      capabilities of their "class".	
@@ -330,7 +340,7 @@
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, aac" />
@@ -356,7 +366,7 @@
 		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -414,7 +424,7 @@
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, wmapi1.1, 3d-api" />
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -447,7 +457,7 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="Emulator.Skin" value="SonyEricsson_P910" />
-		<capability name="Bugs" value="fullScreenInShowNotify" />
+		<capability name="Bugs" value="fullScreenInPaint" />
 	</device>	
 	
 <!-- Motorola devices -->
@@ -1600,7 +1610,7 @@
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo" />
-		<capability name="SoundFormat" value="midi, midi24, True Tones, amr, wb-amr" />
+		<capability name="SoundFormat" value="midi, midi24, true tones, amr, wb-amr" />
 		<capability name="HeapSize" value="3mb" />
 		<capability name="MaxJarSize" value="dynamic" />
 		<capability name="CameraResolution" value="vga" />
@@ -2511,7 +2521,7 @@
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="wmapi, wmapi-1.1, mmapi, jtwi, mmapi" />
+		<capability name="JavaPackage" value="wmapi-1.1, mmapi, jtwi, mmapi" />
 	</device>
 	
 <!-- Casio devices -->
@@ -3880,6 +3890,18 @@
 		<capability name="StorageSize" value="4 MB" />
 	</device>
 
+	<device>
+		<identifier>Sagem/MyX8</identifier>
+		<features>doubleBuffering, hasCamera, hasVideo</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="StorageSize" value="4 MB" />
+		<capability name="CameraResolution" value="1.4 MP" />
+		<capability name="CameraZoom" value="8" />
+	</device>
 
 	<device>
 		<identifier>Sagem/MyV-75</identifier>
@@ -3890,7 +3912,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="HeapSize" value="512 kb" />
-		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi, wmapi-1.1" />
+		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi-1.1" />
 	</device>
 
 	<device>
@@ -3901,7 +3923,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi, wmapi-1.1" />
+		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi-1.1" />
 		<capability name="HeapSize" value="512 kb" />
 		<capability name="CameraResolution" value="640x480" />
 		<capability name="Network" value="GSM, GPRS"/>
@@ -3945,35 +3967,36 @@
 	</device>
 	
 <!-- Vodafone devices -->
-	<device
-		extends="Sharp/GX20">
+	<device>
 		<identifier>Vodafone/Sharp-GX20</identifier>
-		<capability name="JavaPackage" value="VSCL, VSCL-1.0.1"/>
+		<parent>Sharp/GX20</parent>
+		<capability name="JavaPackage" value="VSCL-1.0.1"/>
 	</device>
-	<device
-		extends="Sharp/GX10i">
+	<device>
 		<identifier>Vodafone/Sharp-GX10i</identifier>
-		<capability name="JavaPackage" value="VSCL, VSCL-1.0.1"/>
+		<parent>Sharp/GX10i</parent>
+		<capability name="JavaPackage" value="VSCL-1.0.1"/>
 	</device>
-	<device
-		extends="Sharp/GX10">
+	<device>
 		<identifier>Vodafone/Sharp-GX10</identifier>
-		<capability name="JavaPackage" value="VSCL, VSCL-1.0.1"/>
+		<parent>Sharp/GX10</parent>
+		<capability name="JavaPackage" value="VSCL-1.0.1"/>
 	</device>
-	<device
-		extends="Motorola/V525">
+	<device>
 		<identifier>Vodafone/Motorola-V525</identifier>
-		<capability name="JavaPackage" value="VSCL, VSCL-1.1.0"/>
+		<parent>Motorola/V525</parent>
+		<capability name="JavaPackage" value="VSCL-1.1.0"/>
 	</device>
-	<device
-		extends="Motorola/V600">
+	<device>
 		<identifier>Vodafone/Motorola-V600</identifier>
-		<capability name="JavaPackage" value="VSCL, VSCL-1.1.0"/>
+		<parent>Motorola/V525</parent>
+		<capability name="JavaPackage" value="VSCL-1.1.0"/>
 	</device>
 
 	<device
 		extends="Sony-Ericsson/K500i">
 		<identifier>Vodafone/Sony-Ericsson-F500i</identifier>
+		<parent>Sony-Ericsson/K500i</parent>
 	</device>	
 	
 	

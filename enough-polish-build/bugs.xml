@@ -1,0 +1,67 @@
+<!-- 
+	bugs.xml contains the definitions of bugs which are used in devices.xml. 
+
+    Copyright (c) 2004, 2005 Robert Virkus / Enough Software
+
+    This file is part of J2ME Polish.
+
+    J2ME Polish is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    J2ME Polish is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Commercial licenses are also available, please
+    refer to the accompanying LICENSE.txt or visit
+    http://www.j2mepolish.org for details.
+
+-->
+<bugs>
+	<bug>
+		<name>drawRgbOrigin</name>
+		<description>The Graphics.drawRGB(..) method does not use a translated origin, 
+		 but starts always at the top-left 0,0 origin.
+		</description>
+		<solution>
+		Use the top-left 0,0 origin for devices with this bug:
+		//#ifdef polish.Bugs.drawRgbOrigin
+			x += g.getTranslateX();
+			y += g.getTranslateY();
+		//#endif
+		g.drawRGB( rgbData, offset, scanlength, x, y, width, height, processAlpha);
+		</solution>
+	</bug>
+	<bug>
+		<name>ImageIOStreamAutoClose</name>
+		<description>The Image.createImage( InputStream in ) should not close
+		the given input stream according to the specification. Devices with this
+		bug close the input stream.
+		</description>
+		<solution>Move any image which should be loaded from an input stream to 
+		the last position in the corresponding stream.
+		</solution>
+	</bug>
+	<bug>
+		<name>fullScreenInPaint</name>
+		<description>Calling the Canvas.setFullScreenMode(boolean) method results
+		in an error, unless it is called in the paint()-method.
+		</description>
+		<solution>Track the state of the fullscreen mode and set it in the paint method.
+		</solution>
+	</bug>
+	<!--
+	<bug>
+		<name></name>
+		<description></description>
+		<solution></solution>
+	</bug>
+	-->
+<bugs>

@@ -45,7 +45,7 @@ import java.util.ArrayList;
  */
 public class DebugSetting extends ConditionalElement {
 	
-	private boolean enable;
+	private boolean enable = true;
 	private boolean verbose;
 	private boolean useGui;
 	private boolean showLogOnError;
@@ -78,6 +78,7 @@ public class DebugSetting extends ConditionalElement {
 	 * @param enable true when the debugging mode is enabled.
 	 */
 	public void setEnable(boolean enable) {
+		System.out.println("Deprecation-Warning: the \"enable\"-attribute of the <debug>-element should not be used any more and is now \"true\" by default. Please use \"if\" and \"unless\" for controlling the <debug>-element.");
 		this.enable = enable;
 	}
 

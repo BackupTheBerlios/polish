@@ -120,7 +120,6 @@
 		 -->
 		<build
 			symbols="ExampleSymbol, AnotherExample"
-			imageLoadStrategy="foreground"
 			fullscreen="menu"
 			usePolishGui="true"
 			workDir="${dir.work}"
@@ -161,14 +160,14 @@
 				<localization locales="en_US" if="test" />
 			</resources>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" unless="test" >
+			<obfuscator name="ProGuard" useDefaultPacakge="true" unless="test" >
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />
 				-->
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug if="test" enable="true" showLogOnError="true" verbose="true" level="error">
+			<debug if="test" showLogOnError="true" verbose="true" level="error">
 				<filter pattern="de.enough.polish.example.*" level="debug" />
 				<filter pattern="de.enough.polish.ui.*" level="warn" />
 			</debug>

@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	<property name="Version" value="1.2.3" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.3! " />
+	<property name="Version" value="1.2.3a" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.3a! " />
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
@@ -214,7 +214,9 @@
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,build.xml" />
 		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,custom-css-attributes.xml" />
+		<!--
 		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
+		-->
 	</zip>
 </target>
 	
