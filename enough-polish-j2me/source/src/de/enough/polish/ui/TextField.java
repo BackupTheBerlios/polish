@@ -1635,7 +1635,8 @@ implements CommandListener
 				this.caretViewer = this.editingCaretViewer;
 				//#ifdef polish.debug.error
 				if (this.editingCaretViewer.getWidth() == 0) {
-					System.out.println("Warning bitmap-char for editing char [" + this.editingCaretChar + "] does not exit.");
+					//#debug error
+					System.out.println("Warning: bitmap-char for editing char [" + this.editingCaretChar + "] does not exit.");
 				}
 				//#endif
 			}
@@ -1713,12 +1714,19 @@ implements CommandListener
 		if (getScreen() instanceof Form) {
 			notifyStateChanged();
 		}
+		//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+			if (this.showLength) {
+				updateInfo();
+			}
+		//#endif
 		//checkCaretPosition();
 	}
 	//#endif
 
 	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
 	private void updateInfo() {
+		//#debug
+		System.out.println("update info: " + this.text + " this.showLength=" + this.showLength );
 		if (this.screen == null) {
 			this.screen = getScreen();
 		}
@@ -2136,6 +2144,14 @@ implements CommandListener
 				if (myText != null && myText.length() > 0) {
 					this.caretColumn--;
 					setString( myText.substring( 0, myText.length() - 1 ));
+					//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+						if (this.showLength) {
+							updateInfo();
+						}
+				    //#endif
+					if (getScreen() instanceof Form) {
+						notifyStateChanged();
+					}
 					return true;
 				} else {
 					return false;
@@ -2170,16 +2186,16 @@ implements CommandListener
 				} else {
 					this.text= myText;
 				}
-				//#if polish.css.textfield-show-length && (polish.TextField.showInputInfo != false)
-					if (this.showLength) {
-						updateInfo();
-					}
-				//#endif
 				/*
 				System.out.println("backspace in last row");
 				checkCaretPosition();
 				*/
 			}
+			//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+				if (this.showLength) {
+					updateInfo();
+				}
+			//#endif
 			if (getScreen() instanceof Form) {
 				notifyStateChanged();
 			}
@@ -2201,6 +2217,11 @@ implements CommandListener
 			this.caretX = this.font.stringWidth(line);
 			this.caretY -= this.rowHeight;
 			setString( myText );
+			//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+				if (this.showLength) {
+					updateInfo();
+				}
+			//#endif
 			if (getScreen() instanceof Form) {
 				notifyStateChanged();
 			}

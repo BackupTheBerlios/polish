@@ -181,6 +181,9 @@ public abstract class Screen
 	/** determines whether the info text should be shown */
 	private boolean showInfoItem;
 	private int infoHeight;
+	//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInPaint
+		private boolean isInFullScreenMode;
+	//#endif
 	
 	/**
 	 * Creates a new screen
@@ -191,8 +194,10 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if tmp.fullScreen && polish.midp2 && !polish.Bugs.fullScreenInShowNotify
-			super.setFullScreenMode( true );
+		//#if polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint
+			//#if tmp.fullScreen && polish.midp2
+				super.setFullScreenMode( true );
+			//#endif			
 		//#endif
 			
 		// get the screen dimensions:
@@ -499,6 +504,20 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public final void paint(Graphics g) {
+		//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInPaint
+			if (!this.isInFullScreenMode) {
+				super.setFullScreenMode( true );
+				this.isInFullScreenMode = true;
+				//#ifdef polish.FullCanvasHeight:defined
+					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+				//#else
+					this.fullScreenHeight = getHeight();
+				//#endif
+				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+				this.originalScreenHeight = this.screenHeight;
+				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+			}
+		//#endif			
 		//#if polish.useFullScreen && polish.api.nokia-ui 
 			this.isInPaintMethod = true;
 		//#endif
