@@ -903,6 +903,20 @@ public class ChoiceGroup extends Container implements Choice
 		//#endif
 		return processed;
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int x, int y) {
+		if (this.isPopup && this.isPopupClosed) {
+			this.isPopupClosed = false;
+			return true;
+		} else {
+			return super.handlePointerPressed(x, y);
+		}
+	}	
+	//#endif
 
 	/**
 	 * Sets the select command for this choice group.
@@ -923,6 +937,7 @@ public class ChoiceGroup extends Container implements Choice
 			this.popupItem.setStyle( originalStyle );
 			setStyle( originalStyle );
 		} else {
+			this.isPopupClosed = true;
 			super.defocus(originalStyle);
 		}
 	}
@@ -943,7 +958,7 @@ public class ChoiceGroup extends Container implements Choice
 		}
 	}
 	//#endif
-	
+
 	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#setStyle(de.enough.polish.ui.Style, boolean)

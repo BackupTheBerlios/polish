@@ -82,12 +82,9 @@ public abstract class Screen
 //#else
 	extends Canvas
 //#endif
-//#if polish.debugVerbose && polish.useDebugGui
-	implements CommandListener
-//#endif
 {
 	
-	//#if tmp.fullScreen || polish.midp1
+	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
 		protected StringItem title;
 		protected String titleText;
@@ -112,7 +109,7 @@ public abstract class Screen
 		private long lastPaintTime;
 		private boolean repaintRequested;
 	//#endif
-	//#if polish.useMenuFullScreen && polish.classes.fullscreen:defined
+	//#if (polish.useMenuFullScreen && polish.classes.fullscreen:defined) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
 		private Command menuSingleLeftCommand;
 		private Command menuSingleRightCommand;
@@ -129,6 +126,10 @@ public abstract class Screen
 		//#endif
 		private int menuBarColor = 0xFFFFFF;
 		private int fullScreenHeight;
+		//#ifdef polish.hasPointerEvents
+			private int menuRightCommandX;
+			private int menuLeftCommandX;
+		//#endif
 	//#endif
 	/** The Gauge Item which should be animated by this screen */
 	protected Item gauge;
@@ -153,15 +154,24 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style ) {
 		super();
+		//#if tmp.usingTitle
+			this.titleText = title;
+		//#else
+			setTitle( title );
+		//#endif
 		// get the screen dimensions:
 		// this is a bit complicated, since Nokia's FullCanvas fucks
 		// up when calling super.getHeight(), so we need to use hardcoded values...
 		
 		//#ifdef tmp.menuFullScreen
-			//#ifdef polish.ScreenHeight:defined
-				//#= this.fullScreenHeight = ${ polish.ScreenHeight };
+			//#ifdef polish.needsManualMenu
+				this.fullScreenHeight = getHeight();
 			//#else
-				this.fullScreenHeight = super.getHeight();
+				//#ifdef polish.ScreenHeight:defined
+					//#= this.fullScreenHeight = ${ polish.ScreenHeight };
+				//#else
+					this.fullScreenHeight = getHeight();
+				//#endif
 			//#endif
 			this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
 		//#else
@@ -182,11 +192,6 @@ public abstract class Screen
 		// creating standard container:
 		this.container = new Container( true );
 		this.container.screen = this;
-		//#if tmp.fullScreen || polish.midp1
-			this.titleText = title;
-		//#else
-			setTitle( title );
-		//#endif
 		this.style = style;
 		this.cmdListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
@@ -220,12 +225,9 @@ public abstract class Screen
 				menustyle = this.style;
 			}
 			if (menustyle != null) {
-				String colorStr = menustyle.getProperty("menubar-color");
-				if (this.style != null) {
-					String localColorStr = this.style.getProperty("menubar-color");
-					if (localColorStr != null) {
-						colorStr = localColorStr;
-					}
+				String colorStr = this.style.getProperty("menubar-color");
+				if (colorStr == null) {
+					colorStr = menustyle.getProperty("menubar-color");
 				}
 				if (colorStr != null) {
 					this.menuBarColor = Integer.parseInt(colorStr);
@@ -407,9 +409,9 @@ public abstract class Screen
 			//#endif
 			 
 			//#ifndef polish.skipTicker
-			if (this.ticker != null) {
-				this.ticker.paint( 0, this.screenHeight, 0, this.screenWidth, g );
-			}
+			 	if (this.ticker != null) {
+			 		this.ticker.paint( 0, this.screenHeight, 0, this.screenWidth, g );
+			 	}
 			//#endif
 			
 			// paint border:
@@ -446,6 +448,9 @@ public abstract class Screen
 							menuText = "Options";				
 						}
 					}
+					//#ifdef polish.hasPointerEvents
+						this.menuLeftCommandX = 2 + this.menuFont.stringWidth( menuText );
+					//#endif
 					g.setColor( this.menuFontColor );
 					g.setFont( this.menuFont );
 					g.drawString(menuText, 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
@@ -454,12 +459,20 @@ public abstract class Screen
 						//TODO rob internationalise cmd.cancelMenu
 						menuText = "Cancel";
 						g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+						//#ifdef polish.hasPointerEvents
+							this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
+						//#endif
 					}
 				}
 				if (this.menuSingleRightCommand != null && !this.menuOpened) {
 					g.setColor( this.menuFontColor );
 					g.setFont( this.menuFont );
-					g.drawString(this.menuSingleRightCommand.getLabel(), this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+					String menuText = this.menuSingleRightCommand.getLabel();
+					g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+					//#ifdef polish.hasPointerEvents
+						this.menuRightCommandX = this.screenWidth - 2 
+							- this.menuFont.stringWidth( menuText );
+					//#endif
 				}
 			//#endif
 		} catch (RuntimeException e) {
@@ -470,11 +483,18 @@ public abstract class Screen
 				}
 			//#enddebug
 		}
+		//#ifdef polish.hasPointerEvents
+			/*
+			g.setColor(0);
+			g.drawString("pointer=" + this.pointerX + ", " + this.pointerY , 10, 10, Graphics.LEFT | Graphics.TOP );
+			g.drawString("screen=" + this.screenWidth + "x" + this.screenHeight , 10, 30, Graphics.LEFT | Graphics.TOP );
+			g.drawString("commands=" + this.menuLeftCommandX + "," + this.menuRightCommandX, 10, 50, Graphics.LEFT | Graphics.TOP );
+			*/
+		//#endif
 		//#if polish.useFullScreen && polish.api.nokia-ui 
 			this.lastPaintTime = System.currentTimeMillis();
 			this.isInPaintMethod = false;
 		//#endif
-		//TODO rob paint the ticker
 	}
 	
 	/**
@@ -607,7 +627,8 @@ public abstract class Screen
 	protected void keyPressed(int keyCode) {
 		try {
 			int gameAction = getGameAction(keyCode);
-			//#ifdef tmp.menuFullScreen
+			//#if tmp.menuFullScreen
+				//#if polish.api.nokia-ui
 				if (keyCode == FullCanvas.KEY_SOFTKEY1) {
 					if ( this.menuSingleLeftCommand != null) {
 						callCommandListener( this.menuSingleLeftCommand );
@@ -629,10 +650,14 @@ public abstract class Screen
 						return;
 					}
 				}
+				//#endif
 				if (this.menuOpened) {
+					//#ifdef polish.api.nokia-ui
 					if (keyCode == FullCanvas.KEY_SOFTKEY2 ) {
 						this.menuOpened = false;
-					} else  if ( gameAction == Canvas.FIRE ) {
+					} else  
+					//#endif
+						if ( gameAction == Canvas.FIRE ) {
 						int focusedIndex = this.menuContainer.getFocusedIndex();
 						Command cmd = (Command) this.menuCommands.get( focusedIndex );
 						this.menuOpened = false;
@@ -892,4 +917,78 @@ public abstract class Screen
 		
 	}
 
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int, int)
+	 */
+	protected void pointerPressed(int x, int y) {
+		//#debug
+		Debug.debug("PointerPressed at " + x + ", " + y );
+		try {
+			//#ifdef tmp.menuFullScreen
+				// check if one of the command buttons has been pressed:
+				if (y > this.screenHeight) {
+					if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
+						if (this.menuOpened) {
+							this.menuOpened = false;
+						} else if (this.menuSingleRightCommand != null) {
+							callCommandListener(this.menuSingleRightCommand );
+						}
+						repaint();
+					} else if (x <= this.menuLeftCommandX){
+						// assume that the left command has been pressed:
+						if (this.menuSingleLeftCommand != null) {
+							this.callCommandListener(this.menuSingleLeftCommand);
+						} else {
+							this.menuOpened = true;
+						}
+						repaint();
+					}
+				} else if (this.menuOpened) {
+					this.menuOpened = false;
+					// a menu-item could have been selected:
+					if (this.menuContainer.handlePointerPressed( x, y )) {
+						int focusedIndex = this.menuContainer.getFocusedIndex();
+						Command cmd = (Command) this.menuCommands.get( focusedIndex );
+						callCommandListener( cmd );						
+					}
+					repaint();
+					return;
+				}
+			//#endif
+			// let the screen handle the pointer pressing:
+			//#ifdef tmp.usingTitle
+				if (handlePointerPressed( x, y - this.titleHeight)) {
+					repaint();
+				}
+			//#else
+				if (handlePointerPressed( x, y )) {
+					repaint();
+				}
+			//#endif
+		} catch (Exception e) {
+			//#debug error
+			Debug.debug("PointerPressed at " + x + "," + y + " resulted in exception", e );
+		}
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the pressing of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * When the screen could handle the pointer pressing, it needs to 
+	 * return true.
+	 * The default implementation returns the result of calling the container's
+	 *  handlePointerPressed-method
+	 *  
+	 * @param x the x position of the pointer pressing
+	 * @param y the y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerPressed( int x, int y ) {
+		return this.container.handlePointerPressed(x, y);
+	}
+	//#endif
 }

@@ -825,5 +825,40 @@ public class Container extends Item {
 			item.hideNotify();
 		}
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int x, int y) {
+		if (y < this.yTopPos || y > this.yBottomPos 
+			|| x < this.xLeftPos || x > this.xRightPos) {
+			return false;
+		}
+		// an item within this container was selected:
+		Item[] myItems = getItems();
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
+			if (y < item.yTopPos  || y > item.yBottomPos || x < item.xLeftPos || x > item.xRightPos) {
+				// this item is not in the range:
+				continue;
+			}
+			// the pressed item has been found:
+			if (item.appearanceMode != Item.PLAIN) {
+				focus(i, item);
+				// let the item also handle the pointer-pressing event:
+				if (!item.handlePointerPressed( x , y )) {
+					// simulate a FIRE keypress event:
+					handleKeyPressed( -1, Canvas.FIRE );
+				}
+				return true;			
+			} else {
+				return item.handlePointerPressed( x , y );
+			}
+		}
+		return false;
+	}
+	//#endif
+
 
 }

@@ -467,16 +467,19 @@ public abstract class CustomItem extends Item
 	 */
 	protected static final int NONE = 0;
 
-	//following variables are implicitely defined by getter- or setter-methods:
 	//#ifdef polish.hasPointerEvents
 		private static final int INTERACTION_MODES = KEY_PRESS | POINTER_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
 	//#else
 		//# private static final int INTERACTION_MODES = KEY_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
 	//#endif
+	/** the font which is set in each paint() method */
+	private static final Font DEFAULT_FONT = Font.getDefaultFont();
 	private int[] visRect_inout;
 	private int clipHeight;
 	private int clipWidth;
-	private Font defaultFont = Font.getDefaultFont();
+	private int contentX;
+	private int contentY;
+
 
 	/**
 	 * Superclass constructor, provided so that the
@@ -1132,7 +1135,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected void pointerPressed(int x, int y)
 	{
-		//TODO implement pointerPressed
+		//default implementation doesn't do anything
 	}
 
 	/**
@@ -1155,7 +1158,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected void pointerReleased(int x, int y)
 	{
-		//TODO implement pointerReleased
+		//default implementation doesn't do anything
 	}
 
 	/**
@@ -1178,7 +1181,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected void pointerDragged(int x, int y)
 	{
-		//TODO implement pointerDragged
+		//default implementation doesn't do anything
 	}
 
 	//#ifdef polish.useDynamicStyles	
@@ -1218,6 +1221,8 @@ public abstract class CustomItem extends Item
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) 
 	{
+		this.contentX = x;
+		this.contentY = y;
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		this.clipWidth = g.getClipWidth();
@@ -1230,7 +1235,7 @@ public abstract class CustomItem extends Item
 		// set default graphics-values:
 		g.setColor( 0 );
 		g.setStrokeStyle( Graphics.SOLID );
-		g.setFont( this.defaultFont  );
+		g.setFont( DEFAULT_FONT  );
 		// now let the implementation paint the actual content:
 		this.paint(g, this.contentWidth, this.contentHeight );
 		
@@ -1276,4 +1281,31 @@ public abstract class CustomItem extends Item
 			return super.handleKeyPressed(keyCode, gameAction);
 		}
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been pressed at the specified position.
+	 * The default method translates the pointer-event into an artificial
+	 * pressing of the FIRE game-action, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param x the x position of the pointer pressing
+	 * @param y the y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerPressed( int x, int y ) {
+		// translate the coordinates to the origin of this custom-item:
+		x -= this.contentX;
+		y -= this.contentY;
+		if (x < 0 || y < 0 || x > this.contentWidth || y > this.contentHeight ) {
+			// the content area has not been clicked, so return false:
+			return false;
+		}
+		pointerPressed( x, y );
+		return (this.isInitialised == false);
+	}
+	//#endif
+
 }

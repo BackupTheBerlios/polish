@@ -1275,13 +1275,7 @@ public abstract class Item extends Object
 		// initialise this item if necessary:
 		if (!this.isInitialised) {
 			init( rightBorder - x, rightBorder - leftBorder );
-		}
-		// set coordinates of this item:
-		this.xLeftPos = x;
-		this.yTopPos = y;
-		this.xRightPos = x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
-		this.yBottomPos = y + this.itemHeight;
-		
+		}		
 		
 		// paint label:
 		if (this.label != null) {
@@ -1375,7 +1369,7 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
-		// paint content:
+		// align content positions:
 		if ( doCenter ) {
 			int contentSpace = rightBorder - this.marginRight - this.borderWidth 
 					- this.paddingRight - contentX;
@@ -1390,6 +1384,12 @@ public abstract class Item extends Object
 				contentX += contentSpace - this.contentWidth;				
 			}
 		}
+		// set coordinates of this item:
+		this.xLeftPos = leftBorder;
+		this.yTopPos = y;
+		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
+		this.yBottomPos = y + this.itemHeight;
+		// paint content:
 		paintContent( contentX, contentY, leftBorder, rightBorder, g );
 				
 		// paint border:
@@ -1591,6 +1591,24 @@ public abstract class Item extends Object
 		return false;
 	}
 
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been pressed at the specified position.
+	 * The default method translates the pointer-event into an artificial
+	 * pressing of the FIRE game-action, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param x the x position of the pointer pressing
+	 * @param y the y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerPressed( int x, int y ) {
+		return handleKeyPressed( -1, Canvas.FIRE );
+	}
+	//#endif
+	
 	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
