@@ -235,6 +235,15 @@ public class StringList {
 	 */
 	public boolean hasChanged() {
 		return this.hasChanged;
+	}
+
+	/**
+	 * Retrieves the size of this list.
+	 * 
+	 * @return the size of the internal String array
+	 */
+	public int size() {
+		return this.lines.length;
 	}	
 
 }

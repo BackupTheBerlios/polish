@@ -56,7 +56,12 @@ public abstract class Emulator extends Thread {
 	private EmulatorSetting emulatorSetting;
 	private boolean isFinished = false;
 	
-	
+	/**
+	 * Creates a new emulator instance.
+	 * The actual initialisation is done in the init-method.
+	 * 
+	 * @see #init(Device, EmulatorSetting, HashMap, Project, BooleanEvaluator, String)
+	 */
 	public Emulator() {
 		// no initialisation done here
 	}

@@ -56,7 +56,7 @@ import de.enough.polish.util.FileUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ResourceManager {
-	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak" };
+	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.bd" };
 	private final ResourceSetting resourceSetting;
 	private final Project project;
 	private final BooleanEvaluator booleanEvaluator;

@@ -28,6 +28,7 @@ package de.enough.polish.preprocess;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class Preprocessor {
 	public static final int SKIP_FILE = 8;
 	
 	public static final Pattern DIRECTIVE_PATTERN = 
-		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+)");
+		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+)");
 
 	private DebugManager debugManager;
 	private File destinationDir;
@@ -497,9 +498,12 @@ public class Preprocessor {
 			// this is not a preprocesssing directive:
 			return NOT_CHANGED;
 		}
+		int tabPos  = trimmedLine.indexOf('\t');
 		int spacePos = trimmedLine.indexOf(' ');
 		if (spacePos == -1) {
-			spacePos = trimmedLine.indexOf('\t');
+			spacePos = tabPos;
+		} else if ( (tabPos != -1) && (tabPos < spacePos) ) {
+			spacePos = tabPos;
 		}
 		
 		if (spacePos == -1) { // directive has no argument
@@ -557,6 +561,10 @@ public class Preprocessor {
 			changed = processMdebug( argument, lines, className );
 		} else if ("message".equals( command) ) {
 			changed = processMessage( argument, lines, className );
+		} else if ("todo".equals( command) ) {
+			changed = processTodo( argument, lines, className );
+		} else if ("foreach".equals( command) ) {
+			changed = processForeach( argument, lines, className );
 		} else {
 			return checkInvalidDirective( className, lines, line, command, argument );
 		}
@@ -567,6 +575,7 @@ public class Preprocessor {
 		}
 	}
 	
+
 	private int checkInvalidDirective( String className, StringList lines, String line, String command, String argument )
 	throws BuildException
 	{
@@ -1037,6 +1046,91 @@ public class Preprocessor {
 	}
 	
 	/**
+	 * Processes the #todo command.
+	 * 
+	 * @param argument the message which should be printed out
+	 * @param lines the source code
+	 * @param className the name of the source file
+	 * @return true when changes were made
+	 * @throws BuildException when the preprocessing fails
+	 */
+	private boolean processTodo(String argument, StringList lines, String className) {
+		argument = PropertyUtil.writeProperties( argument, this.variables);
+		System.out.println("TODO: " + getErrorStart(className, lines) +  argument );
+		return false;
+	}
+	
+	/**
+	 * Processes the #foreach command.
+	 * Example:
+	 * <pre>
+	 * //#foreach format in polish.SoundFormat
+	 *    //#= System.out.println( "Device supports the sound format: ${format}" );
+	 * //#next format
+	 * </pre>
+	 * 
+	 * @param argument the name of the loop-element and the variable which can have several values separated by commas.
+	 * @param lines the source code
+	 * @param className the name of the source file
+	 * @return true when changes were made
+	 * @throws BuildException when the preprocessing fails
+	 */
+	private boolean processForeach(String argument, StringList lines, String className) {
+		final int inPos = argument.indexOf(" in ");
+		if (inPos == -1) {
+			throw new BuildException( getErrorStart(className, lines) + " invalid #foreach directive: keyword \" in \" not found in [" + argument + "].");
+		}
+		final String loopVarName = argument.substring(0, inPos).trim();
+		final String varName = argument.substring( inPos + 4 ).trim();
+		
+		final String valueStr = (String) this.variables.get( varName );
+		final String endToken = "//#next " + loopVarName;
+		boolean changed =false;
+		if (valueStr == null) {
+			// okay, the variable is not defined at all,
+			// so skip all lines until the relevant #next:
+			while (lines.next()) {
+				String line = lines.getCurrent();
+				String trimmedLine = line.trim();
+				if (endToken.equals(trimmedLine)) {
+					break;
+				}
+				changed = commentLine(line, trimmedLine, lines);
+			}
+			return changed;
+		}
+		
+		// the variable is defined, so the loop can be processed normally:
+		final ArrayList innerLinesList = new ArrayList();
+		while (lines.next()) {
+			String line = lines.getCurrent();
+			String trimmedLine = line.trim();
+			if (endToken.equals(trimmedLine)) {
+				break;
+			}
+			innerLinesList.add( line );
+			commentLine(line, trimmedLine, lines);
+		}
+		int startIndex = lines.getCurrentIndex();
+		int insertionIndex = startIndex;
+		final String[] innerLines = (String[]) innerLinesList.toArray( new String[ innerLinesList.size() ] );
+		final String[] values = TextUtil.splitAndTrim( valueStr, ',' );
+		for (int i = 0; i < values.length; i++) {
+			final String value = values[i];
+			this.temporaryVariables.put( loopVarName, value );
+			final String[] copy = new String[ innerLines.length ];
+			System.arraycopy( innerLines, 0, copy, 0, innerLines.length);
+			for (int j = 0; j < copy.length; j++) {
+				copy[j] = PropertyUtil.writeProperties(copy[j], this.temporaryVariables );
+			}
+			lines.insert( copy );
+			insertionIndex += copy.length;
+			lines.setCurrentIndex( insertionIndex );
+		}
+		lines.setCurrentIndex( startIndex );
+		return true;
+	}	
+	/**
 	 * Processes the #debug command.
 	 * 
 	 * @param argument the debug-level if defined
@@ -1289,6 +1383,17 @@ public class Preprocessor {
 	 */
 	public Map getVariables() {
 		return this.variables;
+	}
+	
+	/**
+	 * Creates the start of an error message:
+	 * 
+	 * @param className the name of the current class
+	 * @param lines the source code of that class
+	 * @return a typical error-message start like "MyClass.java line [12]: " 
+	 */
+	protected String getErrorStart(String className, StringList lines) {
+		return className + " line [" + (lines.getCurrentIndex() + 1) + "]: ";
 	}
 
 }

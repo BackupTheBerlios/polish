@@ -25,15 +25,15 @@
  */
 package de.enough.polish.preprocess;
 
-import de.enough.polish.util.CastUtil;
-import de.enough.polish.util.PropertyUtil;
-import de.enough.polish.util.TextUtil;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.enough.polish.util.CastUtil;
+import de.enough.polish.util.PropertyUtil;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Evaluates boolean expressions based on defined (or undefined) symbols and the operators &&, ||, ! and ^.</p>
@@ -67,8 +67,8 @@ public class BooleanEvaluator {
 								       + "\\s*!?\\s*" + SYMBOL + "\\s*)+\\)";
 	protected static final Pattern TERM_PATTERN = Pattern.compile( TERM );
 
-	private HashMap symbols;
-	private HashMap variables;
+	private Map symbols;
+	private Map variables;
 	private Preprocessor preprocessor;
 
 	/**
@@ -87,7 +87,7 @@ public class BooleanEvaluator {
 	 * @param variables a map containing all defined variables
 	 * @throws NullPointerException when symbols or variables are null
 	 */ 
-	public BooleanEvaluator( HashMap symbols, HashMap variables ) {
+	public BooleanEvaluator( Map symbols, Map variables ) {
 		setEnvironment(symbols, variables);
 	}
 
@@ -98,7 +98,7 @@ public class BooleanEvaluator {
 	 * @param variables a map containing all defined variables
 	 * @throws NullPointerException when symbols or variables are null
 	 */
-	public void setEnvironment( HashMap symbols, HashMap variables ) {
+	public void setEnvironment( Map symbols, Map variables ) {
 		if (symbols == null) {
 			throw new NullPointerException("Got invalid symbols: [null].");
 		} 
@@ -126,6 +126,9 @@ public class BooleanEvaluator {
 		// evaluate each of them.
 		
 		// first step: replace all properties:
+		if (this.preprocessor != null) {
+			this.variables = this.preprocessor.getVariables();
+		}
 		expression = PropertyUtil.writeProperties(expression, this.variables);
 		// second step: replace " and " with && and " or " with ||
 		expression = TextUtil.replace( expression, " and ", " && " );
@@ -232,7 +235,12 @@ public class BooleanEvaluator {
 				if (var == null) {
 					var = symbol;
 				}
-				String lastVar = (String) this.variables.get( lastSymbol );
+				String lastVar;
+				if (this.preprocessor != null) {
+					lastVar = this.preprocessor.getVariable( lastSymbol );
+				} else {
+					lastVar = (String) this.variables.get( lastSymbol );
+				}
 				if (lastVar == null) {
 					lastVar = lastSymbol;
 				}
