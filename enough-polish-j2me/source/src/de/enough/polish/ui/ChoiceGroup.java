@@ -366,6 +366,12 @@ public class ChoiceGroup extends Container implements Choice
 	{
 		ChoiceItem item = new ChoiceItem( stringPart, imagePart, this.choiceType, elementStyle );
 		add( item );
+		//#ifdef polish.usePopupItem
+			if (this.isPopup && this.isPopupClosed && this.selectedIndex == -1) {
+				this.popupItem.setText( stringPart );
+				this.selectedIndex = 0;
+			}
+		//#endif
 		return this.itemsList.size() - 1;
 	}
 
@@ -449,6 +455,22 @@ public class ChoiceGroup extends Container implements Choice
 	public void delete(int elementNum)
 	{
 		remove(elementNum);
+		//#ifdef polish.usePopupItem
+			if (this.isPopup) {
+				if (this.selectedIndex == elementNum ) {
+					if (this.itemsList.size() > 0) {
+						this.selectedIndex = -1;
+						if (this.isPopupClosed) {
+							setSelectedIndex( 0, true );
+						}
+					} else {
+						this.selectedIndex = -1;
+					}
+				} else if ( elementNum < this.selectedIndex ) {
+					this.selectedIndex--;
+				}
+			}
+		//#endif
 	}
 
 	/**
@@ -459,6 +481,7 @@ public class ChoiceGroup extends Container implements Choice
 	public void deleteAll()
 	{
 		clear();
+		this.selectedIndex = -1;
 	}
 
 	
