@@ -55,8 +55,9 @@ public final class BitMapFont {
 	private int spaceIndex;
 
 	/**
-	 * @param fontUrl
-	 * @param hasMixedCase
+	 * Creates a new bitmap font.
+	 * 
+	 * @param fontUrl the url of the *.bmf file containing the font-specification.
 	 */
 	private BitMapFont( String fontUrl ) {
 		super();

@@ -328,6 +328,10 @@ public class Container extends Item {
 	 * @param item the item which should be focused
 	 */
 	public void focus( int index, Item item ) {
+		if (index == this.focusedIndex) {
+			// ignore the focusing of the same element:
+			return;
+		}
 		// first defocus the last focused item:
 		if (this.focusedItem != null) {
 			this.focusedItem.defocus(this.itemStyle);

@@ -264,5 +264,23 @@ public class BitMapFontViewer {
 		this.width = maxLineWidth;
 		this.height = this.numberOfLines * (this.fontHeight + paddingVertical) - paddingVertical;
 	}
+	
+	/**
+	 * Returns the height of used font.
+	 * 
+	 * @return the height of the bitmap-font in pixels.
+	 */
+	public int getFontHeigth() {
+		return this.fontHeight;
+	}
+	
+	/**
+	 * Retrieves the number of lines which are used to display the embedded text.
+	 *  
+	 * @return the number of lines.
+	 */
+	public int getNumberOfLines() {
+		return this.numberOfLines;
+	}
 
 }

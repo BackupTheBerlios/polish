@@ -46,7 +46,7 @@ import javax.microedition.lcdui.Graphics;
 public class StringItem extends Item
 {
 	protected String text;
-	private String[] textLines;
+	protected String[] textLines;
 	protected int textColor;
 	protected Font font;
 	//#ifdef polish.css.font-bitmap
@@ -189,6 +189,9 @@ public class StringItem extends Item
 	public void setText( String text)
 	{
 		this.text = text;
+		if (text == null) {
+			this.textLines = null;
+		}
 		requestInit();
 	}
 
