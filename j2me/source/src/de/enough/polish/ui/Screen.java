@@ -316,6 +316,12 @@ public abstract class Screen
 			//#ifdef polish.vendor.Motorola
 				this.ignoreMotorolaTitleCall = true;
 			//#endif
+			//#if tmp.fullScreen && polish.midp2
+				// this is needed on Sony Ericsson for example,
+				// since the fullscreen mode is not resumed automatically
+				// when the previous screen was in the "normal" mode:
+				super.setFullScreenMode( true );
+			//#endif
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("error while calling showNotify", e );
