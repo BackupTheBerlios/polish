@@ -45,7 +45,7 @@ public class TextUtilTest extends TestCase {
 	}
 	
 	public void testReplace() {
-		assertEquals( "abc.de.fg.", TextUtil.replace("abc/de/fg/", '/', '.') );
+		assertEquals( "abc.de.fg.", StringUtil.replace("abc/de/fg/", '/', '.') );
 	}
 
 }
