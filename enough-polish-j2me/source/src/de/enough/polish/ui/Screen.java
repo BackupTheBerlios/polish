@@ -95,7 +95,7 @@ public abstract class Screen
 	protected Style style;
 	protected int screenHeight;
 	private int originalScreenHeight;
-	protected int screenWidth;
+	protected final int screenWidth;
 	//#ifndef polish.skipTicker
 		private Ticker ticker;
 	//#endif
@@ -120,12 +120,12 @@ public abstract class Screen
 		private int menuFontColor = 0;
 		protected int menuBarHeight;
 		//#ifdef polish.ScreenWidth:defined
-			//#= private int menuMaxWidth = (  ${ polish.ScreenWidth } * 2 ) / 3;
+			//#= private final int menuMaxWidth = (  ${ polish.ScreenWidth } * 2 ) / 3;
 		//#else
-			private int menuMaxWidth = ( getWidth() * 2 ) / 3;
+			private final int menuMaxWidth = ( getWidth() * 2 ) / 3;
 		//#endif
 		private int menuBarColor = 0xFFFFFF;
-		private int fullScreenHeight;
+		private final int fullScreenHeight;
 		//#ifdef polish.hasPointerEvents
 			private int menuRightCommandX;
 			private int menuLeftCommandX;
@@ -142,25 +142,18 @@ public abstract class Screen
 	private int scrollIndicatorX; // left x position of scroll indicator
 	private int scrollIndicatorY; // top y position of scroll indicator
 	private int scrollIndicatorWidth; // width and height of the indicator
-
-	/**
-	 * Creates a new screen
-	 * 
-	 * @param title the Screen's title, or null for no title
-	 */
-	public Screen( String title)
-	{
-		this( title, null );
-	}
 	
 	/**
 	 * Creates a new screen
 	 * 
 	 * @param title the title, or null for no title
 	 * @param style the style of this screen
+	 * @param createDefaultContainer true when the default container should be created.
 	 */
-	public Screen( String title, Style style ) {
+	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
+		//#debug info
+		System.out.println("Screen Init");
 		//#if tmp.usingTitle
 			this.titleText = title;
 		//#else
@@ -177,7 +170,7 @@ public abstract class Screen
 				//#ifdef polish.ScreenHeight:defined
 					//#= this.fullScreenHeight = ${ polish.ScreenHeight };
 				//#else
-					this.fullScreenHeight = getHeight();
+					//# this.fullScreenHeight = getHeight();
 				//#endif
 			//#endif
 			this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
@@ -193,13 +186,17 @@ public abstract class Screen
 		//#endif
 						
 		// creating standard container:
-		this.container = new Container( true );
-		this.container.screen = this;
+		if (createDefaultContainer) {
+			this.container = new Container( true );
+			this.container.screen = this;
+		}
 		this.style = style;
 		this.cmdListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
 			super.setCommandListener(this.cmdListener);
 		//#endif
+		//#debug info
+		System.out.println("Screen Init Finished");
 	}
 		
 	/**
@@ -228,15 +225,15 @@ public abstract class Screen
 				menustyle = this.style; 
 			}
 			if (menustyle != null) {
-				String colorStr = null;
+				Integer colorInt = null;
 				if (this.style != null) {
-					colorStr = this.style.getProperty("menubar-color");
+					colorInt = this.style.getIntProperty("menubar-color");
 				}
-				if (colorStr == null) {
-					colorStr = menustyle.getProperty("menubar-color");
+				if (colorInt == null) {
+					colorInt = menustyle.getIntProperty("menubar-color");
 				}
-				if (colorStr != null) {
-					this.menuBarColor = Integer.parseInt(colorStr);
+				if (colorInt != null) {
+					this.menuBarColor = colorInt.intValue();
 				}
 				this.menuFontColor = menustyle.fontColor;
 				if (menustyle.font != null) {
@@ -960,38 +957,6 @@ public abstract class Screen
 	}
 	//#endif
 	
-	/**
-	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
-	 *
-	 * <p>copyright Enough Software 2004</p>
-	 * <pre>
-	 * history
-	 *        09-Jun-2004 - rob creation
-	 * </pre>
-	 * @author Robert Virkus, robert@enough.de
-	 */
-	class ForwardCommandListener implements CommandListener {
-		public CommandListener realCommandListener;
-
-		/* (non-Javadoc)
-		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
-		 */
-		public void commandAction(Command cmd, Displayable thisScreen) {
-			//check if the given command is from the currently focused item:
-			if ((Screen.this.focusedItem != null) && (Screen.this.focusedItem.itemCommandListener != null)) {
-				Item item = Screen.this.focusedItem;
-				if ( item.commands.contains(cmd)) {
-					item.itemCommandListener.commandAction(cmd, item);
-					return;
-				}
-			}
-			// now invoke the usual command listener:
-			if (this.realCommandListener != null) {
-				this.realCommandListener.commandAction(cmd, thisScreen);
-			}
-		}
-		
-	}
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
@@ -1112,4 +1077,38 @@ public abstract class Screen
 		return this.container.handlePointerPressed(x, y);
 	}
 	//#endif
+	
+	
+	/**
+	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
+	 *
+	 * <p>copyright Enough Software 2004</p>
+	 * <pre>
+	 * history
+	 *        09-Jun-2004 - rob creation
+	 * </pre>
+	 * @author Robert Virkus, robert@enough.de
+	 */
+	class ForwardCommandListener implements CommandListener {
+		public CommandListener realCommandListener;
+
+		/* (non-Javadoc)
+		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+		 */
+		public void commandAction(Command cmd, Displayable thisScreen) {
+			//check if the given command is from the currently focused item:
+			if ((Screen.this.focusedItem != null) && (Screen.this.focusedItem.itemCommandListener != null)) {
+				Item item = Screen.this.focusedItem;
+				if ( item.commands.contains(cmd)) {
+					item.itemCommandListener.commandAction(cmd, item);
+					return;
+				}
+			}
+			// now invoke the usual command listener:
+			if (this.realCommandListener != null) {
+				this.realCommandListener.commandAction(cmd, thisScreen);
+			}
+		}
+		
+	}
 }

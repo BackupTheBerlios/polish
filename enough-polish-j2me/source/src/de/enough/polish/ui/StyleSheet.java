@@ -56,8 +56,8 @@ public final class StyleSheet {
 		public static Style defaultStyle = null;
 		public static Style focusedStyle = null;
 		public static Style labelStyle; 
+		private static Hashtable stylesByName = new Hashtable();
 	//#endif
-	private static Hashtable stylesByName = new Hashtable();
 	
 	
 	// do not change the following line!

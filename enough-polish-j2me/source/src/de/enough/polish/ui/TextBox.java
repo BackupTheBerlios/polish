@@ -143,7 +143,7 @@ public class TextBox extends Screen
 	 */
 	public TextBox( String title, String text, int maxSize, int constraints, Style style)
 	{
-		super( title, style );
+		super( title, style, true );
 		this.textField = new TextField( null, text, maxSize, constraints, style );
 		if (title != null) {
 			this.textField.title = title;

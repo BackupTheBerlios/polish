@@ -92,7 +92,7 @@ import javax.microedition.lcdui.Image;
  * 
  * @since MIDP 2.0
  */
-public class GameCanvas
+public abstract class GameCanvas
 //#ifndef polish.classes.fullscreen:defined
 		extends Canvas
 //#else
@@ -213,17 +213,28 @@ public class GameCanvas
 	 */
 	protected GameCanvas( boolean suppressKeyEvents ) {
 		//#ifdef tmp.extendsPolishScreen
-			//# super( null, null );
+			//# super( null, null, false );
 		//#else
 			super();
 		//#endif
-		int width = getWidth();
+		//#debug info
+		System.out.println("GameCanvas init");
+		//#if tmp.useFullScreen && polish.ScreenWidth:defined
+			//#= int width = ${polish.ScreenWidth};
+		//#else
+			int width = getWidth();
+		//#endif
 		//#if tmp.useFullScreen && polish.ScreenHeight:defined
 			//#= int height = ${polish.ScreenHeight};
 		//#else
 			int height = getHeight();
 		//#endif
+			
+		// create image buffer:	
 		this.bufferedImage = Image.createImage( width, height );
+		
+		//#debug info
+		System.out.println("GameCanvas init finished");
 	}
 
 	/**
@@ -434,13 +445,4 @@ public class GameCanvas
 	}
 	//#endif
 
-	//#ifdef tmp.extendsPolishScreen
-	//# public int getHeight() {
-		//# if ( this.menuBarHeight == 0 ) {
-		//# return this.screenHeight - javax.microedition.lcdui.Font.getDefaultFont().getHeight() - 2;
-	//# } else {
-		//# return this.screenHeight;
-	//# }
-	//# }
-	//#endif
 }

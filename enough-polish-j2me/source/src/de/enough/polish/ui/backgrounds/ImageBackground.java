@@ -70,6 +70,8 @@ implements ImageConsumer
 	private Image image;
 	private final int color;
 	private final int repeatMode;
+	private boolean isLoaded;
+	private String imageUrl;
 	
 	/**
 	 * Creates a new image background.
@@ -82,12 +84,7 @@ implements ImageConsumer
 	public ImageBackground( int color, String imageUrl, int repeatMode ) {
 		this.color = color;
 		this.repeatMode = repeatMode;
-		try {
-			this.image = StyleSheet.getImage(imageUrl, this, false);
-		} catch (IOException e) {
-			//#debug error
-			Debug.debug( "unable to load image [" + imageUrl + "]: " + e.getMessage(), e );
-		}
+		this.imageUrl = imageUrl;
 	}
 
 	//#ifdef polish.images.backgroundLoad
@@ -104,6 +101,16 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		if (!this.isLoaded) {
+			try {
+				this.image = StyleSheet.getImage(this.imageUrl, this, false);
+			} catch (IOException e) {
+				//#debug error
+				Debug.debug( "unable to load image [" + this.imageUrl + "]", e );
+			}
+			this.imageUrl = null;
+			this.isLoaded = true;
+		}
 		if (this.color != Item.TRANSPARENT) {
 			g.setColor( this.color );
 			g.fillRect( x, y, width + 1, height + 1 );

@@ -317,7 +317,7 @@ public class List extends Screen implements Choice
 	 */
 	public List( String title, int listType, String[] stringElements, Image[] imageElements, Style style)
 	{
-		super( title, style );
+		super( title, style, false );
 		//#ifndef polish.skipArgumentCheck
 			if (listType != Choice.EXCLUSIVE && listType != Choice.MULTIPLE && listType != Choice.IMPLICIT ) {
 				//#ifdef polish.debugVerbose
@@ -330,8 +330,8 @@ public class List extends Screen implements Choice
 		this.listType = listType;
 		
 		this.choiceGroup = new ChoiceGroup( null, this.listType, stringElements, imageElements, style, true  );
+		this.choiceGroup.screen = this;
 		this.container = this.choiceGroup;
-		//this.container.screen = this;
 		if (this.listType == IMPLICIT) {
 			addCommand( SELECT_COMMAND );
 		}
