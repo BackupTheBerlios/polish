@@ -26,6 +26,8 @@
 package de.enough.polish.plugin.eclipse.css.editor;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -66,7 +68,7 @@ public class CssEditor extends TextEditor{
 	public Object getAdapter(Class requiredClass) {
 		if (IContentOutlinePage.class.equals(requiredClass)) {
 			if (this.cssOutlinePage == null) {
-				this.cssOutlinePage = new CssOutlinePage(this.cssModel,getSourceViewer(),this);
+				this.cssOutlinePage = new CssOutlinePage(this.cssModel);
 			}
 			return this.cssOutlinePage;
 		}
@@ -83,5 +85,27 @@ public class CssEditor extends TextEditor{
 	 */
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
+	}
+	
+	public void setFocus(){
+		super.setFocus();
+	}
+	
+	public void setCaretToOffset(int offset){
+		ISourceViewer sourceViewer = getSourceViewer();
+		if(sourceViewer == null){
+			return;
+		}
+		StyledText textWidget = sourceViewer.getTextWidget();
+		if(textWidget == null){
+			return;
+		}
+		textWidget.setCaretOffset(offset);
+		int line = textWidget.getLineAtOffset(offset);
+		textWidget.setTopIndex(line);
+	}
+	
+	public void doActivate(){
+		getSite().getPage().activate(this);
 	}
 }

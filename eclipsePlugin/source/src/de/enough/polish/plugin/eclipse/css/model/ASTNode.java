@@ -44,9 +44,7 @@ abstract public class ASTNode {
 	
 	protected ASTNode parent;
 	protected List children;
-	protected List problems; // TODO: This will be a list of IMarkers. //TODO: rename to syntaxproblems.
-	//protected CssToken startToken; // Mixing the layers? But a ASTNode have to know to which Token it belongs.
-	//TODO: We need the source range, too.
+	protected List problems;
 	protected int offset;
 	
 	public ASTNode(){
@@ -129,14 +127,6 @@ abstract public class ASTNode {
 	public boolean hasProblems() {
 		return  ! this.problems.isEmpty();
 	}
-	
-	/*
-	// TODO: Do we really want to bother the parser with regions in the document?
-	// We could also use offsets in the tokenList...
-	public void getProblemRegion(){
-		
-	}
-	*/
 	
 	
 	public int getOffset() {

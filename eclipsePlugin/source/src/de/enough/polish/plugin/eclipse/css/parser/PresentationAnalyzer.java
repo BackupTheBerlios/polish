@@ -59,11 +59,6 @@ public class PresentationAnalyzer extends PolishCssAnalyzer {
 	}
 	
 	
-	
-	
-	
-	
-	
 	protected Node exitStyleSection(Production node) throws ParseException {
 		Node childNode = node.getChildAt(0); // The first one is NAME.
 		childNode = node.getChildAt(0); // The first one is NAME.

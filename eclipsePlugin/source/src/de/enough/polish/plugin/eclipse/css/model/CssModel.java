@@ -37,10 +37,9 @@ import net.percederberg.grammatica.parser.ParserLogException;
 import net.percederberg.grammatica.parser.Production;
 import net.percederberg.grammatica.parser.ProductionPattern;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextEvent;
-import org.eclipse.ui.internal.misc.Assert;
-import de.enough.polish.plugin.eclipse.css.parser.CssToken;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
 import de.enough.polish.plugin.eclipse.css.parser.PolishCssParser;
 
@@ -61,7 +60,6 @@ public class CssModel {
 	
 	private ASTNode rootAST;
 	private Node rootNode;
-	private List tokenList;
 
 	private IDocument document;
 	private TreePrinter treePrinter;
@@ -70,7 +68,6 @@ public class CssModel {
 	
 	public CssModel(){
 		this.rootAST = new StyleSheet();
-		this.tokenList = new ArrayList();
 		this.modelListeners = new ArrayList();
 		this.astBuilder = new ASTBuilderAnalyzer(this.rootAST);
 		this.treePrinter = new TreePrinter(System.out);
@@ -84,30 +81,12 @@ public class CssModel {
 	public void setRoot(ASTNode root){
 		this.rootAST = root;
 	}
-	/**
-	 * @return Returns the tokenList.
-	 */
-	public List getTokenList() {
-		return this.tokenList;
-	}
-	
-	/**
-	 * @param tokenList The tokenList to set.
-	 */
-	public void setTokenList(List tokenList) {
-		this.tokenList = tokenList;
-	}
-	
-	public void addToken(CssToken cssToken){
-		this.tokenList.add(cssToken);
-	}
-	
 
 	/**
 	 * Reconcile the model to the changed document.
-	 * @param textEvent TODO
+	 * @param textEvent
 	 */
-	public void reconcile(TextEvent textEvent) {
+	public void reconcile(TextEvent textEvent) { //TODO: Determine how to use the event.
 		
 		if(this.document == null){
 			System.out.println("DEBUG:CssModel.reconcile():document: is null.");
@@ -134,6 +113,17 @@ public class CssModel {
 		
 	}
 	
+	public int getLineOfASTNode(ASTNode node){
+		int result = -1;
+		try {
+			result = this.document.getLineOfOffset(node.getOffset());
+		} catch (BadLocationException exception) {
+			System.out.println("DEBUG:CssContentProvider.selectionChanged():the offset is messed up.");
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * Is called when the model has changed because of a change in the document.
 	 */
@@ -148,12 +138,10 @@ public class CssModel {
 	}
 
 	public void addModelListener(IModelListener listener){
-		Assert.isNotNull(listener);
 		this.modelListeners.add(listener);
 	}
 	
 	public void removeModelListener(IModelListener listener){
-		Assert.isNotNull(listener);
 		this.modelListeners.remove(listener);
 	}
 	
@@ -168,24 +156,19 @@ public class CssModel {
 		}
 		return this.rootNode;
 	}
-	/**
-	 * @param rootNode The rootNode to set.
-	 */
+	
+
 	public void setRootNode(Node rootNode) {
 		this.rootNode = rootNode;
 	}
+	
 	
 	public void setDocument(IDocument document){
 		this.document = document;
 	}
 	
+	
 	public IDocument getDocument(){
-		/*if((this.documentProvider == null) || (this.editorInput == null)){
-			return null;
-		}
-		IDocument document = this.documentProvider.getDocument(this.editorInput);
-		return document;	
-		*/
 		return this.document;
 	}
 }

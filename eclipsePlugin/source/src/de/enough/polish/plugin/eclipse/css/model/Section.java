@@ -44,7 +44,6 @@ public class Section extends ASTNode {
 		this.sectionName = "";
 	}
 	
-	//TODO: maybe it is better to have a generic name for traversal methods...
 	public void addAttributeValuePair(AttributeValuePair attributeValuePair){
 		if(attributeValuePair == null){
 			System.out.println("ERROR:Section:addAttributeValuePair():Parameter attributeValuePair is null");

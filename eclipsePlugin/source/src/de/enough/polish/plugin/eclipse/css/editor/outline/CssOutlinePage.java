@@ -25,12 +25,10 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.outline;
 
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
-import de.enough.polish.plugin.eclipse.css.editor.CssEditor;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 
 /**
@@ -46,40 +44,32 @@ import de.enough.polish.plugin.eclipse.css.model.CssModel;
 public class CssOutlinePage extends ContentOutlinePage {
 
 	private CssModel cssModel;
-	private ISourceViewer sourceViewer;
-	private CssEditor editor;
 	
-	//FIXME: We need our own model here
-	public CssOutlinePage(CssModel cssModel, ISourceViewer sourceViewer, CssEditor editor){
+
+	public CssOutlinePage(CssModel cssModel){
 		super();
 		this.cssModel = cssModel;
-		this.sourceViewer = sourceViewer;
-		this.editor = editor;
 	}
 	
+	//TODO: Always check if parent is disposed when working in createControl. SWT isnt threatsafe but
+	// nevertheless you never know when something is not accessible any more...
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-		System.out.println("DEBUG:CssOutlinePage.createControl():enter.");
 		if(parent.isDisposed()){
 			System.out.println("DEBUG:CssOutlinePage.createControl():parent.isDisposed():true");
 		}
+		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel);
 		
-		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel,this.sourceViewer,this.editor);
-		
-		TreeViewer viewer= getTreeViewer();
-
+		TreeViewer viewer = getTreeViewer();
 		viewer.setContentProvider(cssContentProvider);
 		viewer.setLabelProvider(new CssLabelProvider());
-		viewer.addSelectionChangedListener(this);
-		//ASTNode rootNode = cssContentProvider.initialInput();
-		//ASTNode rootNode = CssEditorPlugin.getDefault().getEditor().getCssModel().getRoot();
-		//viewer.setInput(rootNode);
+		viewer.addSelectionChangedListener(this); //TODO: Why do we need this as a listener?
 		viewer.setInput(this.cssModel);
 	}
 	
-	/*
-	public void setInput(IEditorInput editorInput){
-		System.out.println("setInput");
+	public void dispose(){
+		super.dispose();
+		TreeViewer viewer = getTreeViewer();
+		viewer.removeSelectionChangedListener(this);
 	}
-	*/
 }

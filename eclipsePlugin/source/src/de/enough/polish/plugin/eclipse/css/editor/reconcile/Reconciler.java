@@ -146,52 +146,6 @@ public class Reconciler implements IReconciler{
 		//textPresentation.addStyleRange(styleRange);
 		this.textViewer.changeTextPresentation(textPresentation,false);
 	}
-	/*
-	private void traverseRootNodeAddTextPresentation(Node rootNode, IDocument document, TextPresentation textPresentation){
-		if(rootNode == null){
-			System.out.println("ERROR:SimpleReconcilerFacade.traerseRootNodeAddTextPresentation().rootNode:is null.");
-			return;
-		}
-		LinkedList remainingNodes = new LinkedList();
-		remainingNodes.addFirst(rootNode);
-		Node node;
-		while( ! remainingNodes.isEmpty()){
-			node = (Node)remainingNodes.getFirst();
-			System.out.println("BLA:"+remainingNodes);
-			remainingNodes.removeFirst();
-			createStyleRange(node,document,textPresentation);
-			int childCount = node.getChildCount();
-			for(int i = 0; i < childCount; i++){
-				remainingNodes.addFirst(rootNode.getChildAt(i));
-			}
-			
-		}
-	}
-*/
-	/**
-	 * @param node
-	 * @param textPresentation
-	 */
-	/*
-	private void createStyleRange(Node node, IDocument document, TextPresentation textPresentation) {
-		if(node.getId() == PolishCssConstants.NAME){
-			//TODO: We could change the token class to transport the position in addition to
-			// line and offset.
-			int position = -1;
-			int length = -1;
-			try {
-				position = document.getLineOffset(node.getStartLine()) + node.getStartColumn();
-				length = (document.getLineOffset(node.getEndLine()) + node.getEndColumn()) - position;
-				StyleRange styleRange = new StyleRange(position,length,this.colors.getColor(new RGB(100,0,0)),null);
-				textPresentation.addStyleRange(styleRange);
-			} catch (BadLocationException exception) {
-				System.out.println("ERROR:SimpleReconcilerFacade.createStyleRange():position and length beyond document.position:"+position+".length:"+length);
-			}
-			
-			
-		}
-		
-	}
-	*/
+	
 	
 }

@@ -48,14 +48,4 @@ public class CssLabelProvider extends LabelProvider{
 		ASTNode node = (ASTNode)object;
 		return node.toString();
 	}
-	
-	
-	/*
-	public String getText(Object object){
-		if(object instanceof ASTNode){
-			return ((ASTNode)object).toString();
-		}
-		return "NoName";
-	}
-*/
 }
