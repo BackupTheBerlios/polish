@@ -696,6 +696,7 @@ The following example shows the use of the gauge attributes:
 </pre><p>
 When the Gauge item is used with an indefinite range, the gauge-gap-color will be used to indicate the idle state. When the &quot;continuous running&quot; state is entered and an image has been specified, the image will &quot;fly&quot; from the left to the right of the indicator.
 </p>
+
 <h2 id="textfield">The TextField</h2>
 <p>
 A TextField is used to get user input. Currently the input is done with the use of the native functions, so that special input modes can be used (like T9). The TextField supports following additional attributes:
@@ -760,4 +761,17 @@ of the J2ME&nbsp;Polish task:
  <li><code>&lt;variable name=&quot;polish.DateFormat&quot; value=&quot;de&quot; /&gt;</code>: The German standard of DD.MM.YYYY is used, e.g. &quot;24.12.2004&quot;.</li>
  <li>All other settings: The ISO 8601 standard of YYYY-MM-DD is used, e.g. &quot;2004-12-24&quot;.</li>
 </ul>
+
+<h2 id="ticker">The Ticker</h2>
+<p>
+A Ticker scrolls a text over the current screen. In J2ME Polish the ticker is situated right above the menu-bar on the bottom of a screen. Following attribute is supported:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>ticker-step</td>
+	 <td>No</td>
+	 <td>The number of pixels by which the ticker is shifted at each update. Defaults to 2 pixels.</td>
+	</tr>
+</table>
+
 <%include end.txt %>

@@ -5,7 +5,7 @@
 <taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="0.9.2" />
+<property name="Version" value="1.0-RC3" />
 	
 <target name="init">
 	<!-- Create the time stamp -->

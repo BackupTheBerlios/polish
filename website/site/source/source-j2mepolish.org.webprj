@@ -1,0 +1,120 @@
+<!DOCTYPE webproject>
+<webproject>
+<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<upload/>
+<author/>
+<email/>
+<defaultDTD>-//W3C//DTD XHTML 1.0 Transitional//EN</defaultDTD>
+<item url="CVS/" />
+<item modified_time="1086986604" url="CVS/Entries" />
+<item modified_time="1086812110" url="CVS/Repository" />
+<item modified_time="1086812110" url="CVS/Root" />
+<item url="docs/" />
+<item url="docs/CVS/" />
+<item modified_time="1086813002" url="docs/CVS/Entries" />
+<item modified_time="1086812110" url="docs/CVS/Repository" />
+<item modified_time="1086812110" url="docs/CVS/Root" />
+<item modified_time="1086719673" url="docs/build-build.html" />
+<item modified_time="1086300395" url="docs/build-deviceRequirements.html" />
+<item modified_time="1086299989" url="docs/build-example.html" />
+<item modified_time="1086712625" url="docs/build.html" />
+<item modified_time="1086300380" url="docs/build-info.html" />
+<item modified_time="1086561316" url="docs/build-taskdef.html" />
+<item modified_time="1086719673" url="docs/css-common.html" />
+<item modified_time="1086300034" url="docs/css-extending.html" />
+<item modified_time="1087224832" url="docs/css-groups.html" />
+<item modified_time="1086300073" url="docs/css.html" />
+<item modified_time="1087243604" url="docs/css-specific.html" />
+<item modified_time="1086300049" url="docs/css-styles.html" />
+<item modified_time="1086300054" url="docs/css-syntax.html" />
+<item modified_time="1086084238" url="docs/.DS_Store" />
+<item modified_time="1087245461" url="docs/install.html" />
+<item modified_time="1086304182" url="docs/optimization.html" />
+<item modified_time="1087224892" url="docs/preprocessing.html" />
+<item modified_time="1086719277" url="docs/utilities.html" />
+<item url="downloads/" />
+<item url="downloads/CVS/" />
+<item modified_time="1086813002" url="downloads/CVS/Entries" />
+<item modified_time="1086812110" url="downloads/CVS/Repository" />
+<item modified_time="1086812110" url="downloads/CVS/Root" />
+<item modified_time="1086808246" url="downloads/Artikel.pdf" />
+<item modified_time="1087244286" url="downloads/Complete_Guide_to_J2ME_Polish_letter.pdf" />
+<item modified_time="1087244194" url="downloads/Complete_Guide_to_J2ME_Polish.pdf" />
+<item modified_time="1086084238" url="downloads/.DS_Store" />
+<item modified_time="1086217832" url="downloads/j2mepolish-0.7.0.html" />
+<item modified_time="1084203121" url="downloads/j2mepolish-0.7.0.zip" />
+<item modified_time="1086217800" url="downloads/j2mepolish-0.7.1.html" />
+<item modified_time="1084381163" url="downloads/j2mepolish-0.7.1.zip" />
+<item modified_time="1086217775" url="downloads/j2mepolish-0.7.2.html" />
+<item modified_time="1084450012" url="downloads/j2mepolish-0.7.2.zip" />
+<item modified_time="1086217745" url="downloads/j2mepolish-0.8.0.html" />
+<item modified_time="1084811634" url="downloads/j2mepolish-0.8.0.zip" />
+<item modified_time="1086217721" url="downloads/j2mepolish-0.8.1.html" />
+<item modified_time="1084960888" url="downloads/j2mepolish-0.8.1.zip" />
+<item modified_time="1086217692" url="downloads/j2mepolish-0.9.0.html" />
+<item modified_time="1085468128" url="downloads/j2mepolish-0.9.0.zip" />
+<item modified_time="1086807713" url="downloads/j2mepolish-0.9.1.html" />
+<item modified_time="1086809323" url="downloads/j2mepolish-0.9.1.zip" />
+<item modified_time="1086807706" url="downloads/j2mepolish-0.9.2.html" />
+<item modified_time="1086808928" url="downloads/j2mepolish-0.9.2.jar" />
+<item modified_time="1086808928" url="downloads/j2mepolish-0.9.2.zip" />
+<item modified_time="1087244399" url="downloads/j2mepolish-1.0-RC1.html" />
+<item modified_time="1087245689" url="downloads/j2mepolish-1.0-RC1.jar" />
+<item modified_time="1087245689" url="downloads/j2mepolish-1.0-RC1.zip" />
+<item modified_time="1084272146" url="downloads/resources-pink.zip" />
+<item modified_time="1084272212" url="downloads/resources-turtle.zip" />
+<item url="images/" />
+<item url="images/CVS/" />
+<item modified_time="1086813002" url="images/CVS/Entries" />
+<item modified_time="1086812110" url="images/CVS/Repository" />
+<item modified_time="1086812110" url="images/CVS/Root" />
+<item modified_time="1084452356" url="images/checked.png" />
+<item modified_time="1084144514" url="images/cssboxmodel.gif" />
+<item modified_time="1086008680" url="images/.DS_Store" />
+<item modified_time="1085315911" url="images/header.png" />
+<item modified_time="1083957972" url="images/j2mepolish-logo-big.png" />
+<item modified_time="1083958006" url="images/j2mepolish-logo-old.png" />
+<item modified_time="1084983489" url="images/j2mepolish-logo.png" />
+<item modified_time="1084983479" url="images/j2mepolish-logo.xcf" />
+<item modified_time="1085315194" url="images/logos.jpg" />
+<item modified_time="1083949288" url="images/logo-small.png" />
+<item modified_time="1085315566" url="images/logos.png" />
+<item modified_time="1084051119" url="images/screenshot-example-enough-menu.png" />
+<item modified_time="1084051057" url="images/screenshot-example-enough.png" />
+<item modified_time="1084050929" url="images/screenshot-example-pink-menu.png" />
+<item modified_time="1084050868" url="images/screenshot-example-pink.png" />
+<item modified_time="1084203740" url="images/screenshot-gauge-plain.png" />
+<item modified_time="1085054226" url="images/screenshot-input-line.png" />
+<item modified_time="1084993063" url="images/screenshot-input.png" />
+<item modified_time="1083949505" url="images/title-background.png" />
+<item modified_time="1086558569" url="atoz.html" />
+<item modified_time="1086717622" url="contact.html" />
+<item modified_time="1086806797" url="documentation.html" />
+<item modified_time="1087321782" url="download.html" />
+<item modified_time="1086496014" url=".DS_Store" />
+<item modified_time="1086560421" url="enough.css" />
+<item modified_time="1086720279" url="enough-ie.css" />
+<item modified_time="1086716331" url="faq.html" />
+<item modified_time="1087244495" url="index.html" />
+<item modified_time="1086807767" url="licenses.html" />
+<item modified_time="1086358868" url="news.html" />
+<item modified_time="1086977967" url="roadmap.html" />
+<item modified_time="1086217460" url="screenshot-application.html" />
+<item modified_time="1086718123" url="screenshots.html" />
+<item modified_time="1086217516" url="screenshots-pink.html" />
+<item modified_time="1086217555" url="screenshots-turtle.html" />
+<item modified_time="1087326251" url="source-j2mepolish.org.webprj" />
+<templates>templates/</templates>
+<toolbars>toolbars/</toolbars>
+<item url="licensing/" />
+<item upload_time="" url="licensing/commercial-license.de.html" />
+<item url="licensing/Order-Form-de.pdf" />
+<item url="licensing/Order-Form.pdf" />
+<item url="licensing/commercial-license.html" />
+<item url="downloads/j2mepolish-1.0-RC2.html" />
+<item url="downloads/j2mepolish-1.0-RC3.html" />
+<item url="downloads/j2mepolish-1.0-RC2.jar" />
+<item url="downloads/j2mepolish-1.0-RC2.zip" />
+<item url="images/osi-certified-120x100.png" />
+</project>
+</webproject>

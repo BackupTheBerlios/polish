@@ -6,6 +6,7 @@
 
 	<div id="content">
 	<h1 id="top">Installation</h1>
+	<%index %>
 	<p>For installing J2ME Polish <a href="../download.html">download</a> the
 	latest release and start the installation either by double-clicking the file or
 	by calling &quot;java -jar j2mepolish-<%= PolishVersion %>.jar&quot; from the command-line.
@@ -19,8 +20,8 @@
 	<br/>
 	To build the sample application, run the included build.xml from your
 	favorite Java IDE or call &quot;ant&quot; from the command-line. Call
-	&quot;ant notest j2mepolish&quot; to build and obfuscate the sample
-	application.
+	&quot;ant test j2mepolish&quot; to skip the obfuscation and to enable the
+	logging of the sample application.
 	</p>
 <h2 id="requirements">Requirements for Installing J2ME Polish</h2>
 <p>
@@ -43,7 +44,7 @@ To use J2ME Polish, following components need to be installed:
 	<a href="http://forum.nokia.com">http://forum.nokia.com</a>
 	</li>
 </ul>
-<h2 id="installation">Updating J2ME Polish</h2>
+<h2 id="updating">Updating J2ME Polish</h2>
 <p>
 When you want to update an existing installation, you do not need
 to re-install the whole package. For saving bandwidth you can download
@@ -58,6 +59,9 @@ To integrate J2ME Polish into Eclipse it is best to install J2ME Polish
 called &quot;myproject&quot; (or any other name). 
 Then start Eclipse and create a new project called &quot;myproject&quot;. 
 Eclipse then automatically integrates all source-files and sets the classpath. 
+You should find the sample application now in the Package-Explorer (package de.enough.polish.example). 
+</p><p>
+If the sources have not been integrated automatically, set the source-directory of the project to the &quot;src&quot; directory: Select &quot;Project&quot; -> &quot;Properties...&quot; -> &quot;Java Build Path&quot; -> &quot;Source&quot; and add the source-folder &quot;src&quot; there.
 </p><p>
 Optionally you can change the build-settings by
 modifying the file &quot;build.xml&quot; (which is located in the root of your project).
@@ -68,6 +72,8 @@ You can now create the JAR and JAD files by right-clicking the build.xml file, s
 You will find the JAR and JAD files then in the &quot;dist&quot; folder of the project.
 If you want to access them from within Eclipse, you might need to refresh your project:
 <br/>Right-click the project and select &quot;Refresh&quot;.
+</p><p>
+If the &quot;Run Ant...&quot; command is not shown, select the &quot;build.xml&quot; file, then open the Menu &quot;Run&quot; and select &quot;External Tools&quot; -&gt; &quot;Run as&quot; -&gt; &quot;Ant Build&quot;.
 </p><p>
 After you have installed J2ME Polish, you will find following structure in your project (assuming that your project is called &quot;myproject&quot; and your workspace &quot;workspace&quot;):
 </p>
@@ -120,5 +126,62 @@ After you have installed J2ME Polish, you will find following structure in your 
 </table>
 <p>
 Tip: You don't need the files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot;, since they are also contained in the jar-file &quot;enough-j2mepolish-build.jar&quot;. If you don't want to change them, you can delete them.
+</p>
+
+<h2 id="jbuilder">Integrating J2ME Polish into Borland's JBuilder</h2>
+<p>
+To integrate J2ME Polish into JBuilder it is best to install J2ME Polish (with the included sample application) into a new folder in your workspace called &quot;myproject&quot; (or any other name). Then start JBuilder and create a new project called &quot;myproject&quot;. 
+</p><p>
+In the project-dialog select the appropriate path and confirm the &quot;src&quot; folder as the main source-folder. Switch to the &quot;Required Libraries&quot; tab and select &quot;Add...&quot; and then &quot;New...&quot;. Enter &quot;MIDP-Development&quot; or similar as the name of the library and add the files &quot;enough-j2mepolish-client.jar&quot;, &quot;midp-2.jar&quot;, &quot;mmapi.jar&quot;, &quot;wmapi.jar&quot; and &quot;nokia-ui.jar&quot; to the library path. 
+</p><p>
+Note: only the &quot;midp-2.jar&quot; is actually needed by the sample application, but if you later want to explore the full possibilities of J2ME Polish you already have all important libraries included.
+</p><p>
+Now create the new project.
+</p><p>
+After the project has been created, you need to integrate the provided &quot;build.xml&quot; file: Select &quot;Wizard&quot; -&gt; &quot;Ant&quot; -&gt; &quot;Add...&quot; and select the file &quot;build.xml&quot; in the project-root. Now the &quot;build.xml&quot; is shown in the project-view. Important: you need to deactivate the Borland-compiler for building the actual applications: Right-click the &quot;build.xml&quot; file, select &quot;Properties...&quot; and de-select the &quot;Use Borland Java compiler&quot; check box. 
+</p><p>
+You can now build the sample application by right-clicking the &quot;build.xml&quot; file and selecting &quot;Make&quot;.
+You will find the created J2ME application files in the &quot;dist&quot; folder of your project, after you have switched to the &quot;File Browser&quot; view.
+</p>
+
+<h2 id="antsetup">Setup and Configuration of Ant</h2>
+<p>
+Ant only needs to be configured when it should be called from the command-line.
+Since Ant is integrated in every modern Java-IDE, you just need to right-click
+the &quot;build.xml&quot;-file in your IDE and choose &quot;Run Ant...&quot; (or similar).
+</p>
+<p>
+After you have downloaded and installed Ant (<a href="http://ant.apache.org" target="_blank">http://ant.apache.org</a>),
+you need to set your PATH-environment variable, so that the &quot;ant&quot;-command
+can be found. If you have installed Ant into &quot;C:\tools\ant&quot; then
+enter following command on your Windows-command-line (or your shell-script):
+<pre>
+SET PATH=%PATH%;C:\tools\ant\bin
+</pre>
+</p>
+<p>
+You can change the PATH variable permanently in the System-Settings of Windows 
+(Control Center -> System -> Advanced -> Environment variables).
+</p>
+<p>
+Now you need set the JAVA_HOME variable as well, e.g.:
+<pre>
+SET JAVA_HOME=C:\j2sdk1.4.2
+</pre>
+</p>
+<p>
+Under Unix/Linux/Mac OS X please use the &quot;export&quot; command instead of the &quot;SET&quot;
+command.
+</p>
+<p>
+Now you should be able to issue following calls from the command-line (make sure
+that you are in the J2ME Polish installation folder):
+<pre>
+echo Just calling ant to build and obfuscate the example:
+ant
+
+echo Now calling ant with the test-property set to true, so the build is faster:
+ant test j2mepolish
+</pre>
 </p>
 <%include end.txt %>

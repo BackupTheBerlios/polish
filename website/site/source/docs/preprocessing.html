@@ -122,14 +122,14 @@ The #ifdef directive and its related directives are faster to process than the m
 With each #ifdef directive only a single symbol can be checked. With the #if and #elif 
 directives, however, complex terms containing several symbols and variables can be evaluated:
 <pre>
-//#if useEnhancedInput && (polish.pointerSupported || polish.mouseSupported)
+//#if useEnhancedInput && (polish.hasPointerEvents || polish.mouseSupported)
 	doSomething();
 //#endif
 </pre><p>
 #if directives can also be nested and contain other preprocessing directives like the #ifdef directives.
 #if and #ifdef directives can also be mixed:
 <pre>
-//#if !basicInput && (polish.pointerSupported || polish.mouseSupported)
+//#if !basicInput && (polish.hasPointerEvents || polish.mouseSupported)
 	doSomething();
 	//#if polish.BitsPerPixel >= 8
 		doSomethingColorful();
@@ -372,18 +372,29 @@ Please make sure, that you have added the &quot;import/enough-j2mepolish-util.ja
 </p>
 
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>Debug Method/Debug Field&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>Debug Method&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>Debug.debug( String message )</td>
-	 <td>When the GUI debugging mode is activated, the given message-string will be added to the list of messages. Otherwise the message will be printed to the standard output via System.out.println(String).</td>
+	 <td>Same as
+<pre>
+//#debug
+System.out.println( message );
+</pre>
+only that the message will always be logged.
+	 </td>
 	</tr>
 	<tr><td>Debug.debug( String message, Throwable exception)</td>
-	 <td>When the GUI debugging mode is activated, the given message-string will be added to the list of messages. Otherwise the message and the stacktrace of the exception will be printed to the standard output.</td>
+	 <td>
+Same as 
+<pre>
+//#debug
+System.out.println( message + exception );
+</pre>
+only that the message will always be logged.
+	 </td>
 	</tr>
-	<tr><td>Debug.getLogForm( boolean reverse, CommandListener listener )</td>
-	 <td>Retrieves the Form which contains all log messages. When reverse is true, the last log message will be on the top of the form. This method is only available, when the GUI debugging mode is enabled.</td>
-	</tr>
-	<tr><td>Debug.RETURN_COMMAND</td>
-	 <td>The command which is always added the the logging form. This field is only available, when the GUI debugging mode is enabled.</td>
+	<tr><td>Debug.showLog( Display display )</td>
+	 <td>Shows the log containing all messages. When another message is added while the log is shown, the log will be updated.
+	 </td>
 	</tr>
 </table>
 
@@ -493,7 +504,7 @@ When in the above example the J2ME&nbsp;Polish GUI is not used (and thus the sym
 <p>
 You can temporarily define and undefine symbols as well. This can be used to evaluate a complex if-term only once and then referring a simple symbol instead of using the complex term again:
 <pre>
-//#if !basicInput && (polish.pointerSupported || polish.mouseSupported)
+//#if !basicInput && (polish.hasPointerEvents || polish.mouseSupported)
 	//#define tmp.complexInput
 //#endif
 </pre></p><p>

@@ -36,6 +36,7 @@ TextUtil
 <taskdef>::taskdef
 <info>::<info
 <build>::<build
+<jad>
 <j2mepolish>::<j2mepolish
 <deviceRequirement>::<deviceRequirement
 <midlet>::<midlet
@@ -77,11 +78,17 @@ JavaPlatform, ScreenSize, CanvasSize
 API, Nokia-UI-API::nokia-ui, JavaPackage,
 SoundFormat, VideoFormat
 BitsPerPixel, color-depth::BitsPerPixel
-JavaProtocol
+JavaProtocol, SoundFormat, VideoFormat
 
+#####################################
+## Java IDEs                       ##
+#####################################
+Eclipse
+JBuilder
 
 #####################################
 ## Misc. Keywords                  ##
 #####################################
 
-Design, Installation, Update
+Design, Installation, Update, Ant
+JAD, Manifest, JAR

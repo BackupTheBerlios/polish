@@ -245,7 +245,7 @@ With the build-section the actual build process is controlled:
 	<p>
 	The optional &lt;debug&gt;-element controls the inclusion of debugging messages for specific classes or packages. The debugging messages will be activated or deactivated in the source code, so the performance will not be decreased, when the debugging is deactivated. 
 <pre>
-&lt;debug enable=&quot;true&quot; useGui=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;/&gt;
+&lt;debug enable=&quot;true&quot; showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;/&gt;
 	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; //&gt;
 	&lt;filter pattern=&quot;com.company.package.MyClass&quot; level=&quot;debug&quot; //&gt;
 &lt;/debug/&gt;
@@ -257,6 +257,9 @@ System.out.println(&quot;initialization done.&quot;);
 or
 //#debug warn
 System.out.println(&quot;could not load something...&quot;);
+or
+//#debug error
+System.out.println("could not load something: " + e);
 </pre></p>
 <p>You will find more information about the debugging
 possibilities on the <a href="preprocessing.html#debug">preprocessing page</a>.
@@ -265,7 +268,8 @@ possibilities on the <a href="preprocessing.html#debug">preprocessing page</a>.
 	<tr><th>debug-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>enable</td>
  	 <td>No</td>
-	 <td>Either &quot;true&quot; or &quot;false&quot;. Debugging messages will only be included, when &quot;true&quot; is given. </td>
+	 <td>Either &quot;true&quot; or &quot;false&quot;. Debugging messages will only be included, when &quot;true&quot; is given. 
+	 When both enable and if are true, then the preprocessing symbol &quot;polish.debugEnabled&quot; will be defined.</td>
 	</tr>
 	<tr><td>level</td>
  	 <td>No</td>
@@ -279,9 +283,18 @@ possibilities on the <a href="preprocessing.html#debug">preprocessing page</a>.
 	In the verbose mode exceptions thrown by J2ME&nbsp;Polish will contain useful information. Also the key-handling and animation-handling will be monitored and error messages will be given out. 
 	 </td>
 	</tr>
-	<tr><td>useGui</td>
+	<tr><td>showLogOnError</td>
  	 <td>No</td>
-	 <td>Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; all debugging messages, which are passed to the tool de.enough.polish.util.Debug will be made available in a form. This can be used to show debugging messages on a real device. Defaults to &quot;false&quot;. When the visual mode is activated, the preprocessing symbol &quot;polish.useDebugGui&quot; will be defined.</td>
+	 <td>Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; 
+	 the log containing all logging-messages will be shown when an exception is logged.
+An exception is logged by printing out a message which is followed by a plus and the exception variable:
+<pre>
+//#debug error
+System.out.println(&quot;could not load something: &quot; + e);
+</pre>
+Alternatively the Debug-class of J2ME Polish can be used directly. Then the log will be shown when the 
+Debug.debug( String message, Throwable exception ) method is called.
+<br/>The log can only be shown automatically, when the J2ME Polish GUI is used.</td>
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
@@ -307,5 +320,32 @@ possibilities on the <a href="preprocessing.html#debug">preprocessing page</a>.
 	 <td>The debugging level for all classes with the specified pattern. Possible values are &quot;debug&quot;, &quot;info&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;fatal&quot; or a user-defined level.</td>
 	</tr>
 	</table>
-	</body>
+	
+	<h3 id="jad">&lt;jad&gt;</h3>
+	<p>With the <jad>-element user-defined attributes can be added to the JAD-file (Java Application Descriptor) as well as the MANIFEST-file which is contained in the created JAR-file. The <jad> element contains a number of <attribute>-sub-elements which define the actual attributes:
+<pre>
+&lt;jad&gt;
+ &lt;attribute 	name=&quot;Nokia-MIDlet-Category&quot; 
+ 		value=&quot;Game&quot; 
+		if=&quot;polish.Vendor == Nokia&quot; /&gt;
+&lt;/jad&gt;	
+</pre>
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>attribute-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>name</td>
+ 	 <td>Yes</td>
+	 <td>The name of the attribute, e.g. &quot;Nokia-MIDlet-Category&quot;</td>
+	</tr>
+	<tr><td>value</td>
+ 	 <td>Yes</td>
+	 <td>The value of the attribute.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>A complex term which needs to yield true when this attribute should be included for the current device. The if-term can contain all operators and symbols which are available int the preprocessing.</td>
+	</tr>
+	</table>
+	<p>Attributes which are defined in this way can be loaded in the application with the MIDlet.getAppProperty( String name ) method, which needs the name of the attribute as an argument and returns the value of that argument. Often it is advisable to use the variable-mechanism of J2ME Polish instead, since such values are actually hard-coded into the application and are, therefore, much faster than the getAppProperty(...)-mechanism.</p>
+	
 <%include end.txt %>

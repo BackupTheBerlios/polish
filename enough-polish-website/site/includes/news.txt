@@ -3,6 +3,66 @@
 	<%index %>
 <%endif %>
 
+<h2 id="1.0rc3release">J2ME Polish 1.0 RC3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-22</h2>
+<p>
+The <a href="downloads/j2mepolish-1.0-RC3.html">third release candidate</a> 
+of J2ME Polish 1.0 fixes a bug which occurred while obfuscating
+and preverifying on Windows platforms.
+</p>
+
+<h2 id="1.0rc2release">J2ME Polish 1.0 RC2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-21</h2>
+<p>
+The second release candidate <a href="downloads/j2mepolish-1.0-RC2.html">J2ME Polish 1.0 RC2</a> has been
+published today.
+<br />
+J2ME Polish 1.0 RC2 contains following improvements:
+</p>
+<ul>
+	<li><b>Bugfixes</b>: 
+		<br/>Using the &quot;polishDir&quot;-attribute of the &lt;build&gt;-element 
+		now works in Windows as well.
+		<br/>Resolved issues with TextField.
+		<br/>The game-engine now works well on normal MIDP/1.0 devices as well.
+		</li>
+	<li><b>Device-Database</b>: Added all mobile phones of Siemens and a couple of virtual devices:
+		<br/>&quot;Nokia/Series60&quot; represents a typical Series 60 phone,
+		<br/>&quot;Nokia/Series60Midp2&quot; represents a typical Series 60 phone with MIDP/2.0 support,
+		<br/>&quot;Nokia/Series40&quot; represents a typical Series 40 phone,
+		<br/>&quot;Nokia/Series40Midp2&quot; represents a typical Series 40 phone with MIDP/2.0 support,
+	</li>
+	
+	<li><b>User-defined JAD-Attributes</b> can now be included with 
+		the optional &lt;jad&gt;-element, which is embedded in the &lt;build&gt;-element.</li>
+	<li><b>Logging Framework</b> is now much easier with the showLogOnError-attribute. 
+	You can now use normal System.out.println() and view those messages on the actual device.</li>
+</ul>
+<p>
+Commercial licenses are now for <a href="licenses.html">sale</a>.
+</p>
+
+
+<%ifdef news.showAll %>
+<h2 id="1.0rc1release">J2ME Polish 1.0 RC1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-14</h2>
+<p>
+The first release candidate <a href="downloads/j2mepolish-1.0-RC1.html">J2ME Polish 1.0 RC1</a> has been
+published on schedule today.
+<br />
+J2ME Polish 1.0 contains following improvements:
+</p>
+<ul>
+	<li><b>Game-support for MIDP/1.0</b>: use the MIDP/2.0 game-API (javax.microedition.lcdui.game) now
+	     on MIDP/1.0 phones as well! All classes are available: GameCanvas, Sprite,
+	     TiledLayer, LayerManager and Layer!</li>
+	<li><b>Complete Item Support</b>: Now the last remaining Item has been implemented for
+	  J2ME Polish's GUI as well: Now you can design a Ticker with simple CSS-textfiles, too!</li>
+	<li><b>Device-Database update</b>: The integrated device database now
+	  contains all Nokia devices (Series 40, 60, 80 and 90!), all phones
+	  from Sony-Ericsson, and all Motorola phones! Optimization has never been easier!</li>
+</ul>
+<p>
+Commercial licenses for J2ME Polish can be obtained in a couple of days.
+</p>
+
 <h2 id="092release">J2ME Polish 0.9.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-09</h2>
 <p>
 <a href="downloads/j2mepolish-0.9.2.html">Version 0.9.2</a> now supports 
@@ -12,7 +72,6 @@ The new installer makes the installation process easier and includes the
 complete documentation as well as the source code of J2ME Polish.
 </p>
 
-<%ifdef news.showAll %>
 <h2 id="website">Website Relaunch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-09</h2>
 <p>
 A major update for the www.j2mepolish.org website brings a better 
