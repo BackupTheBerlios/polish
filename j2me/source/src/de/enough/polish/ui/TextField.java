@@ -1427,6 +1427,7 @@ implements CommandListener
 		//#endif	
 	}
 	
+	//#ifdef tmp.directInput
 	private void insertCharacter() {
 		String myText;
 		if (this.isPassword) {
@@ -1456,6 +1457,7 @@ implements CommandListener
 			notifyStateChanged();
 		}
 	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
