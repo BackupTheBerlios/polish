@@ -1,0 +1,199 @@
+/*
+ * Created on 23-Mar-2005 at 18:00:01.
+ * 
+ * Copyright (c) 2005 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+package de.enough.polish.ui.splash;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
+import de.enough.polish.util.TextUtil;
+
+/**
+ * <p>Provides a SplashScreen that intialises the real application in a background thread.</p>
+ *
+ * <p>Copyright Enough Software 2005</p>
+ * <pre>
+ * history
+ *        23-Mar-2005 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public class InitializerSplashScreen
+//#ifdef polish.classes.fullscreen:defined
+	//#= extends ${polish.classes.fullscreen}
+//#else
+	extends Canvas
+//#endif
+implements Runnable
+{
+
+	//#if polish.classes.ApplicationInitializer:defined
+		//#= private final ${ classname( polish.classes.ApplicationInitializer) } initializer;
+	//#else
+		private final ApplicationInitializer initializer;
+	//#endif
+		
+	private boolean isInitialized;
+	private Displayable nextScreen;
+	private final Display display;
+	//#ifdef polish.classes.SplashView:defined
+		//#= private final ${ classname( polish.classes.SplashView) } view;
+	//#else
+		private final Image image;
+		private final String readyMessage;
+		private final int messageColor;
+		private final int backgroundColor;
+	//#endif
+	//#if false
+		private final SplashView view;
+	//#endif
+
+	//#if !polish.classes.SplashView:defined
+	/**
+	 * Creates a new InitializerSplashScreen using the internal default view.
+	 * The message will be shown in the default font.
+	 * 
+	 * @param display the display responsible for switching screens
+	 * @param image the image that is shown in the center
+	 * @param backgroundColor the background color, e.g. white: 0xFFFFFF
+	 * @param readyMessage the message that is displayed when the application has been initialized
+	 * @param messageColor the color for the message, e.g. black: 0
+	 * @param initializer the application initializer that will be called in a background thread
+	 */
+	//#if polish.classes.ApplicationInitializer:defined
+		//#= public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ${ classname( polish.classes.ApplicationInitializer) } initializer )
+	//#else
+		public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ApplicationInitializer initializer )
+	//#endif
+	{
+		super();
+		this.display = display;
+		this.image = image;
+		this.backgroundColor = backgroundColor;
+		this.readyMessage = readyMessage;
+		this.messageColor = messageColor;
+		this.initializer = initializer;
+		Thread thread = new Thread( this );
+		thread.start();
+		//#if false
+			this.view = null;
+		//#endif
+	}
+	//#endif
+		
+	//#ifdef polish.classes.SplashView:defined
+		//#if polish.classes.ApplicationInitializer:defined
+			//#= public InitializerSplashScreen( Display display, ${ classname( polish.classes.SplashView) } view, ${ classname( polish.classes.ApplicationInitializer) } initializer )
+		//#else
+			//#= public InitializerSplashScreen( Display display, ${ classname( polish.classes.SplashView) } view, ApplicationInitializer initializer )
+		//#endif
+		//#if false
+			public InitializerSplashScreen( Display display, SplashView view, ApplicationInitializer initializer )
+		//#endif
+		{
+			this.view = view;
+			this.display = display;
+			this.initializer = initializer;
+			Thread thread = new Thread( this );
+			thread.start();
+			//#if false
+				this.image = null;
+				this.backgroundColor = 0;
+				this.readyMessage = null;
+				this.messageColor = 0;
+			//#endif
+			
+		}
+	//#endif
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
+	 */
+	protected void paint(Graphics g) {
+		//#ifdef polish.FullCanvasSize:defined
+			//#= int height = ${polish.FullCanvasHeight};
+			//#= int width = ${polish.FullCanvasWidth};
+		//#else
+			int height = getHeight();
+			int width = getWidth();
+		//#endif
+		//#ifdef polish.classes.SplashView:defined
+			this.view.paint( width, height, this.isInitialized, g);
+		//#else
+			g.setColor( this.backgroundColor );
+			g.fillRect( 0, 0, width, height );
+			g.drawImage(this.image,  width/2, height/2, Graphics.HCENTER | Graphics.VCENTER );
+			if (this.isInitialized) {
+				g.setColor( this.messageColor );
+				Font font = Font.getDefaultFont();
+				String[] lines = TextUtil.split( this.readyMessage, font, width - 10, width - 10 );
+				int y = height - ( lines.length * ( font.getHeight() + 1 ) );
+				for (int i = 0; i < lines.length; i++) {
+					String line = lines[i];
+					g.drawString( line, width/2, y, Graphics.TOP | Graphics.HCENTER );
+					y += font.getHeight() +  1;
+				}
+			}
+		//#endif
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run() {
+		try {
+			this.nextScreen = this.initializer.initApp();
+			//#if !polish.classes.SplashView:defined
+				if (this.readyMessage == null) {
+					this.display.setCurrent( this.nextScreen );
+					return;
+				}
+			//#endif
+			this.isInitialized = true;
+			repaint();
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to call initApp()" + e );
+		}
+	}
+	
+	
+
+	protected void keyPressed(int keyCode) {
+		if (this.isInitialized && this.nextScreen != null ) {
+			this.display.setCurrent( this.nextScreen );
+		}
+	}
+	
+	//#ifdef polish.hasPointerEvents
+	protected void pointerPressed(int x, int y) {
+		keyPressed( 0 );
+	}
+	//#endif
+}

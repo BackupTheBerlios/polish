@@ -58,8 +58,13 @@ public final class Locale {
 					loadTranslations( "/default.loc" );
 				//#endif
 			} catch (IOException e ) {
+				//#if polish.locale:defined
+					//#= String fileName = "/${polish.locale}.loc";
+				//#else
+					String fileName = "/default.loc";
+				//#endif
 				//#debug error
-				System.out.println("Unable to load default translations" + e );
+				System.out.println("Unable to load default translations from " + fileName + ": " + e );
 			}
 			
 		}

@@ -117,7 +117,7 @@ public abstract class Screen
 	private Item subTitle;
 	protected int subTitleHeight;
 	protected int titleHeight;
-	protected Background background;
+	private Background background;
 	protected Border border;
 	protected Style style;
 	protected int screenHeight;
@@ -129,8 +129,9 @@ public abstract class Screen
 	protected String cssSelector;
 	private ForwardCommandListener cmdListener;
 	protected Container container;
-	protected boolean isLayoutVCenter;
-	protected boolean isInitialised;
+	private boolean isLayoutVCenter;
+	private boolean isLayoutBottom;
+	private boolean isInitialised;
 	//#if polish.useFullScreen && polish.api.nokia-ui 
 		private boolean isInPaintMethod;
 		private long lastPaintTime;
@@ -177,12 +178,12 @@ public abstract class Screen
 		//#endif
 	//#endif
 	/** The Gauge Item which should be animated by this screen */
-	protected Item gauge;
+	Item gauge;
 	/** The currently focused items which has item-commands */
 	private Item focusedItem;
-	protected boolean paintScrollIndicator;
-	protected boolean paintScrollIndicatorUp;
-	protected boolean paintScrollIndicatorDown;
+	private boolean paintScrollIndicator;
+	private boolean paintScrollIndicatorUp;
+	private boolean paintScrollIndicatorDown;
 	private int scrollIndicatorColor;
 	private int scrollIndicatorX; // left x position of scroll indicator
 	private int scrollIndicatorY; // top y position of scroll indicator
@@ -485,6 +486,7 @@ public abstract class Screen
 			this.container.setStyle(style, true);
 		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
+		this.isLayoutBottom = (( style.layout & Item.LAYOUT_BOTTOM ) == Item.LAYOUT_BOTTOM);
 		//#ifdef polish.css.scrollindicator-color
 			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
 			if (scrollIndicatorColorInt != null) {
@@ -844,7 +846,9 @@ public abstract class Screen
 			this.paintScrollIndicatorDown = (this.container.yOffset + containerHeight > availableHeight);
 		} else if (this.isLayoutVCenter) {
 			y = ((availableHeight - containerHeight) / 2);
-		} 
+		} else if (this.isLayoutBottom) {
+			y = (availableHeight - containerHeight);
+		}
 		this.container.paint( 0, y, 0, this.screenWidth, g );
 	}
 	

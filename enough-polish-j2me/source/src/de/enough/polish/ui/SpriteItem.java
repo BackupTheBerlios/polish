@@ -53,22 +53,34 @@ public class SpriteItem
 {
 	
 	private final Sprite sprite;
-	private final boolean animate;
+	private final long animationInterval;
+	private final int defaultFrameIndex;
+	private final boolean repeatAnimation;
+	private boolean isFocused;
+	private int currentStep;
+	private int maxStep;
+	private long lastAnimationTime;
 
 	/**
 	 * Creates a new sprite item.
 	 * 
 	 * @param label the label of this item
 	 * @param sprite the sprite that should be painted
-	 * @param animate true when this sprite should be animated
+	 * @param animationInterval the interval in milliseconds for animating this item
+	 * @param defaultFrameIndex the frame that is shown when the SpriteItem is not focused 
+	 * @param repeatAnimation defines whether the animation should be repeated when the last frame
+	 *        of the frame-sequence has been reached. 
 	 */
-	public SpriteItem(String label, Sprite sprite, boolean animate ) {
+	public SpriteItem(String label, Sprite sprite, long animationInterval, int defaultFrameIndex, boolean repeatAnimation ) {
 		//#ifdef polish.usePolishGui
-			this( label, sprite, animate, null );
+			this( label, sprite, animationInterval, defaultFrameIndex, repeatAnimation, null );
 		//#else
 			//# super( label );
 			//# this.sprite = sprite;
-			//# this.animate = animate;
+			//# sprite.setFrame(defaultFrameIndex);
+			//# this.animationInterval = animationInterval;
+			//# this.defaultFrameIndex = defaultFrameIndex;
+			//# this.repeatAnimation = repeatAnimation;
 	    //#endif
 	}
 
@@ -78,17 +90,23 @@ public class SpriteItem
 	 * 
 	 * @param label the label of this item
 	 * @param sprite the sprite that should be painted
-	 * @param animate true when this sprite should be animated
+	 * @param animationInterval the interval in milliseconds for animating this item
+	 * @param defaultFrameIndex the frame that is shown when the SpriteItem is not focused 
+	 * @param repeatAnimation defines whether the animation should be repeated when the last frame
+	 *        of the frame-sequence has been reached. 
 	 * @param style the CSS style
 	 */
-	public SpriteItem(String label, Sprite sprite, boolean animate, Style style) {
+	public SpriteItem(String label, Sprite sprite, long animationInterval, int defaultFrameIndex, boolean repeatAnimation, Style style) {
 		//#ifdef polish.usePolishGui
 			//# super(label, style);
 		//#else
 			super( label );
 		//#endif
 		this.sprite = sprite;
-		this.animate = animate;
+		this.animationInterval = animationInterval;
+		this.defaultFrameIndex = defaultFrameIndex;
+		this.repeatAnimation = repeatAnimation;
+		sprite.setFrame(defaultFrameIndex);
 	}
 	//#endif
 
@@ -125,10 +143,39 @@ public class SpriteItem
 	 */
 	protected void paint(Graphics g, int w, int h) {
 		this.sprite.paint(g);
-		if (this.animate) {
-			this.sprite.nextFrame();
-			repaint();
-		}
 	}
 
+	//#ifdef polish.usePolishGui
+	public boolean animate() {
+		long time = System.currentTimeMillis();
+		if (  time - this.lastAnimationTime >= this.animationInterval ) {
+			this.lastAnimationTime = time;
+			if ( this.repeatAnimation || this.currentStep < this.maxStep ) {
+				this.sprite.nextFrame();
+				this.currentStep++;
+				return true;
+			}
+		}
+		return false;
+	}
+	//#endif
+	
+	
+
+	protected boolean traverse(int direction, int viewportWidth, int viewportHeight, int[] inoutRect) {
+		if (this.isFocused) {
+			return false;
+		} else {
+			this.currentStep = 0;
+			if (!this.repeatAnimation) {
+				this.maxStep = this.sprite.getFrameSequenceLength() - 1;
+			}
+			this.isFocused = true;
+			return true;
+		}
+	}
+	protected void traverseOut() {
+		this.isFocused = false;
+		this.sprite.setFrame( this.defaultFrameIndex );
+	}
 }
