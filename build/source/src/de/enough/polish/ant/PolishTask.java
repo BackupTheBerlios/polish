@@ -1379,13 +1379,13 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current locale, can be null
 	 */
 	private void jar( Device device, Locale locale ) {
-		System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 		File classesDir = new File( device.getClassesDir() );
 		
 		try {
 			// copy resources:
 			this.resourceManager.copyResources(classesDir, device, locale);
 		} catch (IOException e) {
+			System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 			e.printStackTrace();
 			throw new BuildException("Unable to assemble resources: " + e.toString(), e );
 		}		
@@ -1485,6 +1485,13 @@ public class PolishTask extends ConditionalTask {
 		File manifestFile = new File( device.getClassesDir() 
 				+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
 		try {
+			if (jarFile.exists()) {
+				boolean success = jarFile.delete();
+				if (!success) {
+					throw new BuildException("Unable to delete the existing JAR-file [" + jarFile.getAbsolutePath() + "], please call \"ant clean\" or remove the folder \"" + jarFile.getParent() + "\"-folder manually." );
+				}
+			}
+			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
 			FileUtil.writeTextFile( manifestFile, jad.getContent() );		
 			JarUtil.jar(classesDir, jarFile, true );
 		} catch (IOException e) {
@@ -1500,10 +1507,8 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the JAD file should be created.
 	 * @param locale
 	 */
-	private void jad(Device device, Locale locale) {
-		
+	private void jad(Device device, Locale locale) {		
 		// now create the JAD file:
-		System.out.println("creating JAD for device [" + device.getIdentifier() + "].");
 		Jad jad = new Jad( this.preprocessor.getVariables() );
 		HashMap attributesByName = null;
 		boolean useAttributesFilter = this.buildSetting.hasJadAttributesFilter();
@@ -1565,9 +1570,10 @@ public class PolishTask extends ConditionalTask {
 			jad.setAttributes( filteredAttributes );
 		}
 		
-		String jadName = this.preprocessor.getVariable("polish.jadName");
-		File jadFile = new File( this.buildSetting.getDestDir().getAbsolutePath() + File.separatorChar + jadName );
+		String jadPath = this.preprocessor.getVariable("polish.jadPath");
+		File jadFile = new File( jadPath );
 		try {
+			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
 			FileUtil.writeTextFile(jadFile, jad.getContent() );
 		} catch (IOException e) {
 			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
