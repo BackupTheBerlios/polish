@@ -71,7 +71,11 @@ public class JadAttributes {
 	public void addConfiguredFilter( AttributesFilter filterSetting ) {
 		this.filter = filterSetting;
 	}
-	
+
+	public void addConfiguredJadFilter( AttributesFilter filterSetting ) {
+		this.filter = filterSetting;
+	}
+
 	public Attribute[] getAttributes(){
 		return (Attribute[]) this.list.toArray( new Attribute[ this.list.size() ] );
 	}

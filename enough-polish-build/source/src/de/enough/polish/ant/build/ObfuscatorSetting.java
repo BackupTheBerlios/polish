@@ -50,7 +50,7 @@ extends Setting
 {
 	
 	private ArrayList keeps;
-	private boolean enable;
+	private boolean enable = true;
 	private String name;
 	private String className;
 	private File classPath;
@@ -76,6 +76,7 @@ extends Setting
 	}
 	
 	public void setEnable( boolean enable ) {
+		System.out.println("Deprecated: The <obfuscator>.enable-attribute is now deprecated (and \"true\" by default). Please use \"if\" and \"unless\" attributes for controlling the <obfuscator>-setting.");
 		this.enable = enable;
 	}
 	

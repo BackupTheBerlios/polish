@@ -161,8 +161,9 @@
 				<localization locales="en_US" if="test" />
 			</resources>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator unless="test" enable="true" name="ProGuard" >
+			<obfuscator name="ProGuard" unless="test" >
 				<!--
+				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />
 				-->
 			</obfuscator>
