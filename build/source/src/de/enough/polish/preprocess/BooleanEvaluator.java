@@ -58,10 +58,11 @@ public class BooleanEvaluator {
 	public static final int EQUALS = 7;
 	public static final int GREATER_EQUALS = 8;
 	public static final int LESSER_EQUALS = 9;
+	public static final int NOT_EQUALS = 10;
 
 	private static final String SYMBOL = "(\\w|-|:|\\.|/)+"; 
 	protected static final Pattern SYMBOL_PATTERN = Pattern.compile( SYMBOL ); 
-	private static final String OPERATOR = "(&&|\\^|\\|\\||==|>=|<=|>|<)"; 
+	private static final String OPERATOR = "(&&|\\^|\\|\\||==|>=|<=|>|<|!=)"; 
 	protected static final Pattern OPERATOR_PATTERN = Pattern.compile( OPERATOR ); 
 	private static final String TERM = "\\(\\s*!?\\s*" + SYMBOL + "\\s*(" + OPERATOR 
 								       + "\\s*!?\\s*" + SYMBOL + "\\s*)+\\)";
@@ -226,7 +227,7 @@ public class BooleanEvaluator {
 						+ "] (both symbol and term might be simplified)." );
 			} else {
 				//System.out.println("comparing [" + lastSymbol + "] with [" + symbol + "].");
-				// this is either >, <, ==, >= or <=
+				// this is either >, <, ==, >=, <= or !=
 				String var;
 				if (this.preprocessor != null) {
 					var  = this.preprocessor.getVariable( symbol );
@@ -247,6 +248,9 @@ public class BooleanEvaluator {
 				}
 				if ( operator == EQUALS ) {
 					result = var.equals( lastVar );
+					//System.out.println( var + " == " + lastVar + " = " + result);
+				} else if ( operator == NOT_EQUALS ) {
+					result = ! var.equals( lastVar );
 					//System.out.println( var + " == " + lastVar + " = " + result);
 				} else {
 					// this is either >, <, >= or <= - so a numerical comparison is required
@@ -314,6 +318,8 @@ public class BooleanEvaluator {
 					operator = GREATER_EQUALS;
 				} else if ("<=".equals( operatorSymbol)) {
 					operator = LESSER_EQUALS;
+				} else if ("!=".equals( operatorSymbol)) {
+					operator = NOT_EQUALS;
 				}
 			} else { // no more operator found:
 				operator = INVALID;

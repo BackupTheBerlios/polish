@@ -396,6 +396,12 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
 		term = "polish.BitsPerPixel <  8";
 		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
+		term = "polish.BitsPerPixel !=  8";
+		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
+		term = "polish.BitsPerPixel != 9";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+		term = "polish.BitsPerPixel != 7";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
 		// other way round of arguments:
 		term = "8 >=  polish.BitsPerPixel";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
@@ -421,10 +427,18 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );		
 		term = "polish.Screen.Width <  180";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );		
+		term = "polish.Screen.Width != 7";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );		
+		term = "polish.Screen.Width != 9";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );		
+		term = "polish.Screen.Width != 100";
+		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );		
 		
 		// try identifier names:
 		term = "polish.Identifier ==  Nokia/6600";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+		term = "polish.Identifier !=  Nokia/6600";
+		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
 	}
 	
 	
@@ -518,7 +532,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( evaluator.evaluate("polish.Identifier == Nokia/6600", "build.xml", 0));
 		assertFalse(evaluator.evaluate("polish.Identifier.Nokia/Series60", "build.xml", 0));
 		assertTrue( evaluator.evaluate("polish.Identifier.Nokia/6600", "build.xml", 0));
-		System.out.println("identifier test passed");
+		assertTrue(evaluator.evaluate("polish.Identifier != Nokia/Series60", "build.xml", 0));
 	}
 
 }
