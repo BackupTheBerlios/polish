@@ -243,7 +243,7 @@ public class DeviceManager {
 	public void loadCustomDevices(VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, File polishHomeDir, Project project) 
 	throws JDOMException, InvalidComponentException {
 		File file = new File( project.getBaseDir(), "custom-devices.xml");
-		if (!polishHomeDir.exists()) {
+		if (!file.exists() && (polishHomeDir != null) ) {
 			file = new File( polishHomeDir, "custom-devices.xml" );
 		}
 		if (file.exists()) {
