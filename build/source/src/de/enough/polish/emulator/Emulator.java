@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ant.emulator;
+package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +38,7 @@ import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
 import de.enough.polish.Variable;
+import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.stacktrace.BinaryStackTrace;
 import de.enough.polish.stacktrace.DecompilerNotInstalledException;
@@ -275,7 +276,7 @@ public abstract class Emulator extends Thread {
 			// okay, try to add this package in front if it:
 			// System.out.println("did not find class " + className );
 			try {
-				emulatorClass = Class.forName( "de.enough.polish.ant.emulator." + className );
+				emulatorClass = Class.forName( "de.enough.polish.emulator." + className );
 			} catch (ClassNotFoundException e2) {
 				System.err.println("Unable to load emulator-class [" + className + "]: " + e2.toString() );
 				return null;

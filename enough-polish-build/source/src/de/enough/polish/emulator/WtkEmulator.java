@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ant.emulator;
+package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +34,7 @@ import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
 import de.enough.polish.Variable;
+import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.ConvertUtil;
 import de.enough.polish.util.FileUtil;

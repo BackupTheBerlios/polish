@@ -27,10 +27,10 @@ package de.enough.polish.ant;
 
 import de.enough.polish.*;
 import de.enough.polish.ant.build.*;
-import de.enough.polish.ant.emulator.Emulator;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.emulator.Emulator;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
