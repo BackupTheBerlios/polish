@@ -1180,8 +1180,15 @@ public class PolishTask extends ConditionalTask {
 					className = StringUtil.replace(className, '/', '.' );
 				}
 				className = StringUtil.replace(className, File.separatorChar, '.' );
+				String adjustedClassName = className;
+				if (this.useDefaultPackage) {
+					int lastDotPos = className.lastIndexOf('.');
+					if (lastDotPos != -1) {
+						adjustedClassName = className.substring( lastDotPos + 1 );
+					}
+				}
 				// set the StyleSheet.display variable in all MIDlets
-				if ( (this.midletClassesByName.get( className ) != null) 
+				if ( (this.midletClassesByName.get( adjustedClassName ) != null) 
 						&& usePolishGui) {
 					insertDisplaySetting( className, sourceCode );
 					sourceCode.reset();
