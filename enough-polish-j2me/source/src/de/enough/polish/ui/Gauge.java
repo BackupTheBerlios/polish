@@ -322,7 +322,11 @@ implements ImageConsumer
 	 * @throws IllegalArgumentException if maxValue is not positive for interactive gauges
 	 * 												  or if maxValue is neither positive nor INDEFINITE for non-interactive gauges
 	 * 												  or if initialValue is not one of CONTINUOUS_IDLE, INCREMENTAL_IDLE, CONTINUOUS_RUNNING, or INCREMENTAL_UPDATING for a non-interactive gauge with indefinite range
-	 * @see #INDEFINITE, #CONTINUOUS_IDLE, #INCREMENTAL_IDLE, #CONTINUOUS_RUNNING, #INCREMENTAL_UPDATING
+	 * @see #INDEFINITE
+	 * @see #CONTINUOUS_IDLE
+	 * @see #INCREMENTAL_IDLE
+	 * @see #CONTINUOUS_RUNNING
+	 * @see #INCREMENTAL_UPDATING
 	 */
 	public Gauge( String label, boolean interactive, int maxValue, int initialValue)
 	{
@@ -362,7 +366,11 @@ implements ImageConsumer
 	 * @throws IllegalArgumentException if maxValue is not positive for interactive gauges
 	 * 												  or if maxValue is neither positive nor INDEFINITE for non-interactive gauges
 	 * 												  or if initialValue is not one of CONTINUOUS_IDLE, INCREMENTAL_IDLE, CONTINUOUS_RUNNING, or INCREMENTAL_UPDATING for a non-interactive gauge with indefinite range
-	 * @see #INDEFINITE, #CONTINUOUS_IDLE, #INCREMENTAL_IDLE, #CONTINUOUS_RUNNING, #INCREMENTAL_UPDATING
+	 * @see #INDEFINITE
+	 * @see #CONTINUOUS_IDLE
+	 * @see #INCREMENTAL_IDLE
+	 * @see #CONTINUOUS_RUNNING
+	 * @see #INCREMENTAL_UPDATING
 	 */
 	public Gauge( String label, boolean interactive, int maxValue, int initialValue, Style style )
 	{
@@ -457,7 +465,11 @@ implements ImageConsumer
 	 * 
 	 * @param value the new value
 	 * @throws IllegalArgumentException if value is not one of CONTINUOUS_IDLE,  INCREMENTAL_IDLE, CONTINUOUS_RUNNING, or INCREMENTAL_UPDATING for non-interactive gauges with indefinite range
-	 * @see #CONTINUOUS_IDLE, #INCREMENTAL_IDLE, #CONTINUOUS_RUNNING, #INCREMENTAL_UPDATING, #getValue()
+	 * @see #INDEFINITE
+	 * @see #CONTINUOUS_IDLE
+	 * @see #INCREMENTAL_IDLE
+	 * @see #CONTINUOUS_RUNNING
+	 * @see #INCREMENTAL_UPDATING
 	 */
 	public void setValue(int value)
 	{
@@ -624,7 +636,11 @@ implements ImageConsumer
 	 * between zero and the gauge's maximum value, inclusive.</p>
 	 * 
 	 * @return current value of the Gauge
-	 * @see #CONTINUOUS_IDLE,  #INCREMENTAL_IDLE, #CONTINUOUS_RUNNING, #INCREMENTAL_UPDATING, #setValue(int)
+	 * @see #INDEFINITE
+	 * @see #CONTINUOUS_IDLE
+	 * @see #INCREMENTAL_IDLE
+	 * @see #CONTINUOUS_RUNNING
+	 * @see #INCREMENTAL_UPDATING
 	 */
 	public int getValue()
 	{
@@ -666,7 +682,8 @@ implements ImageConsumer
 	 * 
 	 * @param maxValue the new maximum value
 	 * @throws IllegalArgumentException if maxValue is invalid
-	 * @see #INDEFINITE,  #getMaxValue()
+	 * @see #INDEFINITE
+	 * @see #getMaxValue()
 	 */
 	public void setMaxValue(int maxValue)
 	{
@@ -701,7 +718,8 @@ implements ImageConsumer
 	 * the gauge has indefinite range).</p>
 	 * 
 	 * @return the maximum value of the Gauge, or INDEFINITE
-	 * @see #INDEFINITE, #setMaxValue(int)
+	 * @see #INDEFINITE
+	 * @see #setMaxValue(int)
 	 */
 	public int getMaxValue()
 	{

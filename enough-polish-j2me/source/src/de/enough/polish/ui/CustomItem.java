@@ -1044,7 +1044,10 @@ public abstract class CustomItem extends Item
 	 * @param viewportHeight the height of the container's viewport
 	 * @param myVisRect_inout passes the visible rectangle into the method, and returns the updated traversal rectangle from the method
 	 * @return true if internal traversal had occurred, false if traversal should proceed out
-	 * @see #getInteractionModes(), #traverseOut(), #TRAVERSE_HORIZONTAL, #TRAVERSE_VERTICAL
+	 * @see #getInteractionModes()
+	 * @see #traverseOut()
+	 * @see #TRAVERSE_HORIZONTAL
+	 * @see #TRAVERSE_VERTICAL
 	 */
 	protected boolean traverse(int dir, int viewportWidth, int viewportHeight, int[] myVisRect_inout)
 	{
@@ -1063,7 +1066,10 @@ public abstract class CustomItem extends Item
 	 * should set its state to be unhighlighted and request a repaint.  (Note
 	 * that painting will not occur if the item is no longer visible.)
 	 * 
-	 * @see #getInteractionModes(),  #traverse(int, int, int, int[]), #TRAVERSE_HORIZONTAL, #TRAVERSE_VERTICAL
+	 * @see #getInteractionModes()
+	 * @see #traverse(int, int, int, int[])
+	 * @see #TRAVERSE_HORIZONTAL
+	 * @see #TRAVERSE_VERTICAL
 	 */
 	protected void traverseOut()
 	{

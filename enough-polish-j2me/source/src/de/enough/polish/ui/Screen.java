@@ -204,6 +204,7 @@ public abstract class Screen
 					//# this.fullScreenHeight = getHeight();
 				//#endif
 			//#endif
+			//TODO this.menuBarHeight is 0 during initialisation...
 			this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
 		//#else
 			this.screenHeight = getHeight();
@@ -233,7 +234,9 @@ public abstract class Screen
 	/**
 	 * Initialises this screen before it is painted for the first time.
 	 */
-	public void init() {
+	private void init() {
+		//#debug
+		System.out.println("Initialising screen " + this );
 		if (this.style != null) {
 			setStyle( this.style );
 		}
@@ -272,7 +275,15 @@ public abstract class Screen
 			} else {
 				this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
 			}
-			this.menuBarHeight = this.menuFont.getHeight() + 2;
+			//#if polish.Menu.MarginBottom:defined && polish.Menu.MarginTop:defined 
+				//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + ${polish.Menu.MarginTop};
+			//#elif polish.Menu.MarginBottom:defined 
+				//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + 2;
+			//#elif polish.Menu.MarginTop:defined 
+				//#= this.menuBarHeight = this.menuFont.getHeight() + 2 + ${polish.Menu.MarginTop};
+			//#else
+				this.menuBarHeight = this.menuFont.getHeight() + 2;
+			//#endif
 			int diff = this.originalScreenHeight - this.screenHeight;
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
 			this.screenHeight = this.originalScreenHeight - diff;
@@ -313,7 +324,7 @@ public abstract class Screen
 	 */
 	protected void showNotify() {
 		//#debug
-		System.out.println("showNotify " + this );
+		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialised);
 		try {
 			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
 				super.setFullScreenMode( true );
@@ -593,7 +604,16 @@ public abstract class Screen
 						//#endif
 						g.setColor( this.menuFontColor );
 						g.setFont( this.menuFont );
-						g.drawString(menuText, 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
+						//#ifdef polish.Menu.MarginLeft:defined
+							//#= int menuX = ${polish.Menu.MarginLeft};
+						//#else
+							int menuX = 2;
+						//#endif
+						//#ifdef polish.Menu.MarginTop:defined
+							//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
+						//#else
+							g.drawString(menuText, menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
+						//#endif
 						if ( this.menuOpened ) {
 							// draw cancel string:
 							//#ifdef polish.command.cancel:defined
@@ -601,7 +621,16 @@ public abstract class Screen
 							//#else
 								menuText = "Cancel";
 							//#endif
-							g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+							//#ifdef polish.Menu.MarginRight:defined
+								//#= menuX = ${polish.Menu.MarginRight};
+							//#elifdef polish.Menu.MarginLeft:defined
+								menuX = 2;
+							//#endif
+							//#ifdef polish.Menu.MarginTop:defined
+								//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+							//#else
+								g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+							//#endif
 							//#ifdef polish.hasPointerEvents
 								this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
 							//#endif
@@ -611,9 +640,18 @@ public abstract class Screen
 						g.setColor( this.menuFontColor );
 						g.setFont( this.menuFont );
 						String menuText = this.menuSingleRightCommand.getLabel();
-						g.drawString(menuText, this.screenWidth - 2, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+						//#ifdef polish.Menu.MarginRight:defined
+							//#= int menuX = ${polish.Menu.MarginRight};
+						//#else
+							int menuX = 2;
+						//#endif
+						//#ifdef polish.Menu.MarginTop:defined
+							//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+						//#else
+							g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+						//#endif
 						//#ifdef polish.hasPointerEvents
-							this.menuRightCommandX = this.screenWidth - 2 
+							this.menuRightCommandX = this.screenWidth - menuX 
 								- this.menuFont.stringWidth( menuText );
 						//#endif
 					}
@@ -829,6 +867,8 @@ public abstract class Screen
 	 * 
 	 * WARNING: When this method should be overwritten, one need
 	 * to ensure that super.keyPressed( int ) is called!
+	 * 
+	 * @param keyCode The code of the pressed key
 	 */
 	protected void keyPressed(int keyCode) {
 		//#if polish.debug.error
@@ -967,7 +1007,7 @@ public abstract class Screen
 	 * 
 	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
 	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
-	 * @return
+	 * @return true when the key-event was processed
 	 */
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		return this.container.handleKeyPressed(keyCode, gameAction);
@@ -1090,7 +1130,7 @@ public abstract class Screen
 				this.cmdListener.commandAction(cmd, this );
 			} catch (Exception e) {
 				//#debug error
-				Debug.debug("unable to process command [" + cmd.getLabel() + "]: " + e.getMessage(), e );
+				System.out.println("Screen: unable to process command [" + cmd.getLabel() + "]" + e  );
 			}
 		}
 	}

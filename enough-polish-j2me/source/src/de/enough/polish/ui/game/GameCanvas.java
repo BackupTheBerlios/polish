@@ -260,7 +260,8 @@ public abstract class GameCanvas
 	 * <p>
 	 * 
 	 * @return the Graphics object that renders to this GameCanvas'  off-screen buffer
-	 * @see #flushGraphics(), #flushGraphics(int, int, int, int)
+	 * @see #flushGraphics()
+	 * @see #flushGraphics(int, int, int, int)
 	 */
 	protected Graphics getGraphics()
 	{
@@ -315,7 +316,15 @@ public abstract class GameCanvas
 	 * <p>
 	 * 
 	 * @return An integer containing the key state information (one bit per  key), or 0 if the GameCanvas is not currently shown.
-	 * @see #UP_PRESSED, #DOWN_PRESSED, #LEFT_PRESSED, #RIGHT_PRESSED, #FIRE_PRESSED, #GAME_A_PRESSED, #GAME_B_PRESSED, #GAME_C_PRESSED, #GAME_D_PRESSED
+	 * @see #UP_PRESSED
+	 * @see #DOWN_PRESSED
+	 * @see #LEFT_PRESSED
+	 * @see #RIGHT_PRESSED
+	 * @see #FIRE_PRESSED
+	 * @see #GAME_A_PRESSED
+	 * @see #GAME_B_PRESSED
+	 * @see #GAME_C_PRESSED
+	 * @see #GAME_D_PRESSED
 	 */
 	public int getKeyStates()
 	{

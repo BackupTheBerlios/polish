@@ -103,6 +103,8 @@ public final class BitMapFont {
 					// defensive loading of the buffer, since
 					// not all implementations do read the full
 					// buffer in in.read( byte[] ):
+					dataIn.readFully(pngBuffer);
+					/*
 					int offset = 0;
 					int read = 0;
 					while (offset < pngLength) {
@@ -113,6 +115,7 @@ public final class BitMapFont {
 							offset += read;
 						}
 					}
+					*/
 					this.fontImage = Image.createImage(pngBuffer, 0, pngLength);
 				//#endif
 				this.fontHeight = this.fontImage.getHeight();

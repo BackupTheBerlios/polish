@@ -108,7 +108,10 @@ implements Choice
 	 * @param label the item's label (see Item)
 	 * @param choiceType EXCLUSIVE, MULTIPLE,  or POPUP
 	 * @throws IllegalArgumentException - if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP
-	 * @see Choice#EXCLUSIVE, Choice.MULTIPLE, Choice.IMPLICIT, Choice.POPUP
+	 * @see Choice#EXCLUSIVE 
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
 	 */
 	public ChoiceGroup( String label, int choiceType)
 	{
@@ -127,7 +130,10 @@ implements Choice
 	 * @param choiceType EXCLUSIVE, MULTIPLE,  or POPUP
 	 * @param style the CSS style for this item
 	 * @throws IllegalArgumentException if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP
-	 * @see Choice#EXCLUSIVE, Choice.MULTIPLE, Choice.IMPLICIT, Choice.POPUP
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
 	 */
 	public ChoiceGroup( String label, int choiceType, Style style)
 	{
@@ -173,7 +179,10 @@ implements Choice
 	 * @throws NullPointerException if stringElements is null or if the stringElements array contains any null elements
 	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
 	 *   			 or  if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP
-	 * @see Choice#EXCLUSIVE, Choice#MULTIPLE, Choice#IMPLICIT, Choice#POPUP
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
 	 */
 	public ChoiceGroup( String label, int choiceType, String[] stringElements, Image[] imageElements)
 	{
@@ -220,7 +229,10 @@ implements Choice
 	 * @throws NullPointerException if stringElements is null or if the stringElements array contains any null elements
 	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
 	 *   			 or  if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP
-	 * @see Choice#EXCLUSIVE, Choice#MULTIPLE, Choice#IMPLICIT, Choice#POPUP
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
 	 */
 	public ChoiceGroup( String label, int choiceType, String[] stringElements, Image[] imageElements, Style style )
 	{
@@ -268,7 +280,10 @@ implements Choice
 	 * @throws NullPointerException if stringElements is null or if the stringElements array contains any null elements
 	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
 	 *   			 or  if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP (unless allowImplicit is defined)
-	 * @see Choice#EXCLUSIVE, Choice#MULTIPLE, Choice#IMPLICIT, Choice#POPUP
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
 	 */
 	public ChoiceGroup( String label, int choiceType, String[] stringElements, Image[] imageElements, Style style, boolean allowImplicit )
 	{

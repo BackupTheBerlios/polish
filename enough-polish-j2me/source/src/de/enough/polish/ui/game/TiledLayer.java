@@ -432,7 +432,8 @@ extends Layer
 	 * @param tileIndex the index of tile to place in cell
 	 * @throws IndexOutOfBoundsException if there is no tile with index tileIndex
 	 *									 or if row or col is outside the bounds of the TiledLayer grid
-	 * @see #getCell(int, int), #fillCells(int, int, int, int, int)
+	 * @see #getCell(int, int)
+	 * @see #fillCells(int, int, int, int, int)
 	 */
 	public void setCell(int col, int row, int tileIndex)
 	{
@@ -463,7 +464,8 @@ extends Layer
 	 * @param row the row of cell to check
 	 * @return the index of tile in cell
 	 * @throws IndexOutOfBoundsException if row or col is outside the bounds of the TiledLayer grid
-	 * @see #setCell(int, int, int), #fillCells(int, int, int, int, int)
+	 * @see #setCell(int, int, int)
+	 * @see #fillCells(int, int, int, int, int)
 	 */
 	public int getCell(int col, int row)
 	{
@@ -484,7 +486,8 @@ extends Layer
 	 *									 or if there is no tile with index tileIndex
 	 * @throws IllegalArgumentException if numCols is less than zero
 	 *									or if numRows is less than zero
-	 * @see #setCell(int, int, int), #getCell(int, int)
+	 * @see #setCell(int, int, int)
+	 * @see #getCell(int, int)
 	 */
 	public void fillCells(int col, int row, int numCols, int numRows, int tileIndex)
 	{

@@ -118,9 +118,9 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the float value
 	 */
-	public static final void debug( String message, float value ) {
-		debug( message + value );
-	}
+	//# public static final void debug( String message, float value ) {
+	//# 	debug( message + value );
+	//# }
 	//#endif
 	
 	/**
@@ -161,14 +161,8 @@ implements CommandListener
 	public static final void debug( String message, Throwable exception ) {
 		System.out.println( message );
 		if (exception != null) {
-			exception.printStackTrace();
-		}
-		// add message to list:
-		if (exception != null) {
 			message += ": " + exception.toString();
-			if (exception.getMessage() != null) {
-				message += ": " + exception.getMessage();
-			}
+			exception.printStackTrace();
 		}
 		MESSAGES.add( message );
 		if (MESSAGES.size() > 98) {

@@ -62,7 +62,9 @@ public abstract class Layer extends Object
 	 * 
 	 * @param x the horizontal position
 	 * @param y the vertical position
-	 * @see #move(int, int),  #getX(), #getY()
+	 * @see #move(int, int)
+	 * @see #getX()
+	 * @see #getY()
 	 */
 	public void setPosition(int x, int y)
 	{
@@ -79,7 +81,9 @@ public abstract class Layer extends Object
 	 * 
 	 * @param dx the distance to move along horizontal axis (positive to the right, negative to the left)
 	 * @param dy the distance to move along vertical axis (positive down, negative up)
-	 * @see #setPosition(int, int), #getX(), #getY()
+	 * @see #setPosition(int, int)
+	 * @see #getX()
+	 * @see #getY()
 	 */
 	public void move(int dx, int dy)
 	{
@@ -93,7 +97,9 @@ public abstract class Layer extends Object
 	 * <p>
 	 * 
 	 * @return the Layer's horizontal position.
-	 * @see #getY(),  #setPosition(int, int), #move(int, int)
+	 * @see #getY()
+	 * @see #setPosition(int, int)
+	 * @see #move(int, int)
 	 */
 	public final int getX()
 	{
@@ -106,7 +112,9 @@ public abstract class Layer extends Object
 	 * <p>
 	 * 
 	 * @return the Layer's vertical position.
-	 * @see #getX(),  #setPosition(int, int), #move(int, int)
+	 * @see #getX()
+	 * @see #setPosition(int, int)
+	 * @see #move(int, int)
 	 */
 	public final int getY()
 	{

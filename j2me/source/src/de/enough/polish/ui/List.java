@@ -279,7 +279,9 @@ public class List extends Screen implements Choice
 	 * 		   or if the stringElements array contains any null elements
 	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
 	 *         or if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
-	 * @see Choice#EXCLUSIVE, Choice#MULTIPLE, Choice#IMPLICIT
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
 	 */
 	public List( String title, int listType, String[] stringElements, Image[] imageElements)
 	{
@@ -319,7 +321,9 @@ public class List extends Screen implements Choice
 	 * 		   or if the stringElements array contains any null elements
 	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
 	 *         or if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
-	 * @see Choice#EXCLUSIVE, Choice#MULTIPLE, Choice#IMPLICIT
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
 	 */
 	public List( String title, int listType, String[] stringElements, Image[] imageElements, Style style)
 	{

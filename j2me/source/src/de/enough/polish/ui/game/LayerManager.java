@@ -108,7 +108,8 @@ public class LayerManager extends Object
 	 * 
 	 * @param l the Layer to be added
 	 * @throws NullPointerException if the Layer is  null
-	 * @see #insert(Layer, int), #remove(Layer)
+	 * @see #insert(Layer, int)
+	 * @see #remove(Layer)
 	 */
 	public void append( Layer l)
 	{
@@ -130,7 +131,8 @@ public class LayerManager extends Object
 	 * @param index the index at which the new Layer is to be inserted
 	 * @throws NullPointerException if the Layer is null
 	 * @throws IndexOutOfBoundsException if the index is less than 0 or greater than the number of Layers already added to the this LayerManager
-	 * @see #append(Layer), #remove(Layer)
+	 * @see #append(Layer)
+	 * @see #remove(Layer)
 	 */
 	public void insert( Layer l, int index)
 	{
@@ -202,7 +204,8 @@ public class LayerManager extends Object
 	 * 
 	 * @param l the Layer to be removed
 	 * @throws NullPointerException if the specified Layer is null
-	 * @see #append(Layer), #insert(Layer, int)
+	 * @see #append(Layer)
+	 * @see #insert(Layer, int)
 	 */
 	public void remove( Layer l)
 	{

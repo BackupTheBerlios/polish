@@ -45,7 +45,7 @@ import de.enough.polish.ui.Style;
 
 public class TableView extends ContainerView {
 	
-	private int numberOfColumns = 2;
+	//private int numberOfColumns = 2;
 
 	/**
 	 * Creates a new table view.

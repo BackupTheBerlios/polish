@@ -432,7 +432,9 @@ public class Sprite
 	 * 
 	 * @param refX the horizontal location of the reference pixel, relative to the left edge of the un-transformed frame
 	 * @param refY the vertical location of the reference pixel, relative to the top edge of the un-transformed frame
-	 * @see #setRefPixelPosition(int, int), #getRefPixelX(), #getRefPixelY()
+	 * @see #setRefPixelPosition(int, int)
+	 * @see #getRefPixelX()
+	 * @see #getRefPixelY()
 	 */
 	public void defineReferencePixel(int refX, int refY)
 	{
@@ -447,7 +449,9 @@ public class Sprite
 	 * 
 	 * @param x the horizontal location at which to place the reference pixel
 	 * @param y the vertical location at which to place the reference pixel
-	 * @see #defineReferencePixel(int, int),  #getRefPixelX(), #getRefPixelY()
+	 * @see #defineReferencePixel(int, int)
+	 * @see #getRefPixelX()
+	 * @see #getRefPixelY()
 	 */
 	public void setRefPixelPosition(int x, int y)
 	{
@@ -464,7 +468,9 @@ public class Sprite
 	 * in the painter's coordinate system.
 	 * 
 	 * @return the horizontal location of the reference pixel
-	 * @see #defineReferencePixel(int, int),  #setRefPixelPosition(int, int), #getRefPixelY()
+	 * @see #defineReferencePixel(int, int)
+	 * @see #setRefPixelPosition(int, int)
+	 * @see #getRefPixelY()
 	 */
 	public int getRefPixelX()
 	{
@@ -476,7 +482,9 @@ public class Sprite
 	 * in the painter's coordinate system.
 	 * 
 	 * @return the vertical location of the reference pixel
-	 * @see #defineReferencePixel(int, int),  #setRefPixelPosition(int, int), #getRefPixelX()
+	 * @see #defineReferencePixel(int, int)
+	 * @see #setRefPixelPosition(int, int)
+	 * @see #getRefPixelX()
 	 */
 	public int getRefPixelY()
 	{
@@ -497,7 +505,8 @@ public class Sprite
 	 * @param sequenceIndex the index of of the desired entry in the frame  sequence
 	 * @throws IndexOutOfBoundsException if frameIndex is less than 0
 	 *									 or if frameIndex is equal to or greater than the length of the current frame sequence (or the number of raw frames for the default sequence)
-	 * @see #setFrameSequence(int[]), getFrame()
+	 * @see #setFrameSequence(int[])
+	 * @see #getFrame()
 	 */
 	public void setFrame(int sequenceIndex)
 	{
@@ -513,7 +522,8 @@ public class Sprite
 	 * not the index of the actual frame that is displayed.
 	 * 
 	 * @return the current index in the frame sequence
-	 * @see #setFrameSequence(int[]),  #setFrame(int)
+	 * @see #setFrameSequence(int[])
+	 * @see #setFrame(int)
 	 */
 	public final int getFrame()
 	{
@@ -563,7 +573,8 @@ public class Sprite
 	 * <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#nextFrame()"><CODE>nextFrame()</CODE></A> is called when at the end of the sequence,
 	 * this method will advance to the first entry in the sequence.
 	 * 
-	 * @see #setFrameSequence(int[]),  #prevFrame()
+	 * @see #setFrameSequence(int[])
+	 * @see #prevFrame()
 	 */
 	public void nextFrame()
 	{
@@ -583,7 +594,8 @@ public class Sprite
 	 * <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#prevFrame()"><CODE>prevFrame()</CODE></A> is called when at the start of the sequence,
 	 * this method will advance to the last entry in the sequence.
 	 * 
-	 * @see #setFrameSequence(int[]),  #nextFrame()
+	 * @see #setFrameSequence(int[])
+	 * @see #nextFrame()
 	 */
 	public void prevFrame()
 	{
@@ -747,7 +759,10 @@ public class Sprite
 	 * @param sequence an array of integers, where each integer represents a frame index
 	 * @throws ArrayIndexOutOfBoundsException if seq is non-null and any member of the array has a value less than 0 or greater than or equal to the number of frames as reported by getRawFrameCount()
 	 * @throws IllegalArgumentException if the array has less than 1 element
-	 * @see #nextFrame(), #prevFrame(), #setFrame(int), #getFrame()
+	 * @see #nextFrame()
+	 * @see #prevFrame()
+	 * @see #setFrame(int)
+	 * @see #getFrame()
 	 */
 	public void setFrameSequence(int[] sequence)
 	{
@@ -1008,7 +1023,14 @@ public class Sprite
 	 * 
 	 * @param transform the desired transform for this Sprite
 	 * @throws IllegalArgumentException if the requested transform is invalid
-	 * @see #TRANS_NONE, #TRANS_ROT90, #TRANS_ROT180, #TRANS_ROT270, #TRANS_MIRROR, #TRANS_MIRROR_ROT90, #TRANS_MIRROR_ROT180, #TRANS_MIRROR_ROT270
+	 * @see #TRANS_NONE
+	 * @see #TRANS_ROT90
+	 * @see #TRANS_ROT180
+	 * @see #TRANS_ROT270
+	 * @see #TRANS_MIRROR
+	 * @see #TRANS_MIRROR_ROT90
+	 * @see #TRANS_MIRROR_ROT180
+	 * @see #TRANS_MIRROR_ROT270
 	 */
 	public void setTransform(int transform)
 	{

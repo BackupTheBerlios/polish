@@ -300,7 +300,7 @@ public final class StyleSheet {
 	 * Retrieves a dynamic style for the given screen.
 	 * 
 	 * @param screen the screen for which a style should be retrieved
-	 * @return
+	 * @return the style for the given screen.
 	 */
 	public static Style getStyle(Screen screen) {
 		Style style = (Style) stylesByName.get( screen.cssSelector );

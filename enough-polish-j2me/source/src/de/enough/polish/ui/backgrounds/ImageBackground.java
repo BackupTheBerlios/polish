@@ -137,8 +137,9 @@ implements ImageConsumer
 						imgX = x;
 					}
 				} else if (this.repeatMode == REPEAT_X) {
+					int centerY = y + (height / 2);
 					while ( imgX < xStop ) {
-						g.drawImage(this.image, imgX, imgY, Graphics.LEFT | Graphics.TOP );
+						g.drawImage(this.image, imgX, centerY, Graphics.LEFT | Graphics.VCENTER );
 						imgX += imgWidth;
 					}
 				} else {

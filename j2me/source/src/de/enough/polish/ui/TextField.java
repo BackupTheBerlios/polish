@@ -1494,7 +1494,7 @@ implements CommandListener
 		//#endif
 	}
 
-	/**
+	/*
 	 * Checks the caret position - is only used during debugging.
 	private void checkCaretPosition() {
 		int cPos = 0;
@@ -1516,7 +1516,7 @@ implements CommandListener
 	 */
 
 	//#ifdef tmp.directInput
-	/**
+	/*
 	 * Calculates the caret x and y positions.
 	private void calculateCaretPosition() {
 		// calculate row, column, x and y position of the caret:

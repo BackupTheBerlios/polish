@@ -1093,7 +1093,8 @@ public abstract class Item extends Object
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
 	 * @return the preferred width of the Item
-	 * @see #getPreferredHeight(), #setPreferredSize(int, int)
+	 * @see #getPreferredHeight()
+	 * @see #setPreferredSize(int, int)
 	 * @since  MIDP 2.0
 	 */
 	public int getPreferredWidth()
@@ -1112,7 +1113,8 @@ public abstract class Item extends Object
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
 	 * @return the preferred height of the Item
-	 * @see #getPreferredWidth(), #setPreferredSize(int, int)
+	 * @see #getPreferredWidth()
+	 * @see #setPreferredSize(int, int)
 	 * @since  MIDP 2.0
 	 */
 	public int getPreferredHeight()
@@ -1143,7 +1145,8 @@ public abstract class Item extends Object
 	 * @param height - the value to which the height should be locked, or -1 to unlock
 	 * @throws IllegalArgumentException - if width or height is less than -1
 	 * @throws IllegalStateException - if this Item is contained within an Alert
-	 * @see #getPreferredHeight(), #getPreferredWidth()
+	 * @see #getPreferredHeight()
+	 * @see #getPreferredWidth()
 	 * @since  MIDP 2.0
 	 */
 	public void setPreferredSize(int width, int height)
