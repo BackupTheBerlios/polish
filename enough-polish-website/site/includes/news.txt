@@ -3,6 +3,39 @@
 	<%index %>
 <%endif %>
 
+<h2 id="1.0rc4release">J2ME Polish 1.0 RC4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-01</h2>
+<p>J2ME Polish has matured with the <a href="downloads/j2mepolish-1.0-RC4.html">fourth release candidate</a> of version 1.0:</p>
+<ul>
+	<li><b>Bugfixes</b>: 
+		<br/>Calling setTitle(..) now works as well when a Screen has not been shown yet.
+		<br/>When GUI items are changed while the corresponding screen is shown, the
+		screen is updated immediately.
+		<br/>
+		</li>
+	<li><b>Device-Database</b>: Added two more virtual devices:
+		<br/>&quot;Generic/PlainMidp1&quot; represents a MIDP/1.0 device which does not support the J2ME Polish GUI,
+		<br/>&quot;Generic/PlainMidp2&quot; represents a MIDP/2.0 device which does not support the J2ME Polish GUI.
+		<br/>Also some other devices have been added: Alcatel, LG Electronics, Samsung, and more.
+	</li>
+	<li><b>Label</b>: Labels are now handled independently and can have their own background, border and so on.
+		The new pre-defined style &quot;label&quot;  is now used for the 
+		default-design of labels.</li>
+	<li><b>New Resource Groups</b>: A device now belongs to implicit groups for each
+	  supported audio of video format. When the device supports the MIDI format,
+	  you can use the folder &quot;resources/midi&quot; for example.</li>
+	
+</ul>
+
+<%ifdef news.showAll %>
+
+<h2 id="discussion">Forum opened&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-01</h2>
+<p>Users can now <a href="discussion.html">discuss</a> on the forum, the mailing lists or the Wiki.</a>.</p>
+
+<h2 id="devices">Device Database&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-01</h2>
+<p>The devices contained in the integrated device database of J2ME Polish can now be 
+browsed online. Please have a look at the <a href="devices-overview.html">devices page</a>.
+</p>
+
 <h2 id="1.0rc3release">J2ME Polish 1.0 RC3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-22</h2>
 <p>
 The <a href="downloads/j2mepolish-1.0-RC3.html">third release candidate</a> 
@@ -40,8 +73,6 @@ J2ME Polish 1.0 RC2 contains following improvements:
 Commercial licenses are now for <a href="licenses.html">sale</a>.
 </p>
 
-
-<%ifdef news.showAll %>
 <h2 id="1.0rc1release">J2ME Polish 1.0 RC1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-06-14</h2>
 <p>
 The first release candidate <a href="downloads/j2mepolish-1.0-RC1.html">J2ME Polish 1.0 RC1</a> has been

@@ -3,9 +3,10 @@
 	default="website">
 
 <taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
+<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/import/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="1.0-RC3" />
+<property name="Version" value="1.0-RC4" />
 	
 <target name="init">
 	<!-- Create the time stamp -->
@@ -33,7 +34,25 @@
 	    	doctitle="The J2ME Polish Client Framework, Version ${ Version }"
 	/>	
 </target>
-		
+	
+<target name="device-export">
+		<deviceExport />
+		<webprocessor 
+				srcdir="../enough-polish-website/tmp"
+			 	includedir="../enough-polish-website/site/includes"
+				destdir="dist"
+				clean="false"
+				>
+				<variable name="PolishVersion" value="${Version}" />
+				<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+				<variable name="Author" value="Robert Virkus" />
+				<variable name="basedir" value="" />
+				<variable name="index.h1" value="h1index" />
+				<variable name="index.h2" value="h2index" />
+				<variable name="index.h3" value="h3index" />
+		</webprocessor>
+</target>
+	
 <target name="webprocessor"	>
 	<webprocessor 
 		srcdir="site/source"
@@ -53,7 +72,7 @@
 	</webprocessor>
 </target>
 
-<target name="website" depends="javadoc, webprocessor"	>
+<target name="website" depends="javadoc, device-export, webprocessor"	>
 		<echo message="www.j2mepolish.org created." />
 </target>
 

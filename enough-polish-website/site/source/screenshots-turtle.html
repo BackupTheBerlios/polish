@@ -43,16 +43,16 @@
    can be changed here. 
 */
 colors {
-	brown: #FF0011;
-	pink:  rgb(248,39,186);
-	darkpink:  rgb(185,26,138);
-	lightgray: #C9C9C9;
+	bgColor:  rgb(132,143,96);
+	brightBgColor:  rgb(238,241,229);
+	brightFontColor: rgb(238,241,229);
+	fontColor: rgb( 30, 85, 86 );
 }
 
 /* the menu style is a predefined style for
    designing the fullscreen-menu.
-   The label-settings (label-color,
-   label-face, label-style and label-size)
+   The font-settings (font-color,
+   font-face, font-style and font-size)
    are used to design the menu-texts
    (like Options, Select, or Cancel).
    With the focused-style attribute
@@ -67,13 +67,14 @@ menu {
 	padding: 2;
 	background {
 		type: round-rect;
-		color: white;
+		color: brightBgColor;
 		border-width: 2;
-		border-color: yellow;
+		border-color: bgColor;
 	}
 	focused-style: .menuFocused;
-	menubar-color: darkpink;
-	label-color: white;
+	font-color: brightFontColor;
+	font-style: bold;
+	menubar-color: transparent;
 }
 
 /* The menuItem style is a predefined style
@@ -98,8 +99,8 @@ menuItem {
    been defined in the menu style. 
 */
 .menuFocused extends .menuItem {
-	background-color: black;
-	font-color: white;
+	background-color: bgColor;
+	font-color: brightFontColor;
 	layout: left | horizontal-expand;
 	after: url(dot.png);
 }
@@ -116,14 +117,8 @@ title {
 	font-face: proportional;
 	font-size: large;
 	font-style: bold;
-	font-color: white;
-	background {
-		/*type: round-rect;
-		arc: 10; */
-		color: darkpink;
-		/*border-color: yellow;
-		border-width: 2;*/
-	}
+	font-color: brightFontColor;
+	background: none;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
 }
@@ -132,57 +127,43 @@ title {
    is used by lists, forms, choice-groups and so on.
    This style will be used for highlighting the currently
    focused item.
-   An interesting attribute is the &quot;after&quot; attribute which
-   results in the heart which is painted after the currently
-   focused item.
 */
 focused {
-	/* before: url(dot.png); */
-	padding: 3;
-	padding-left: 10;
-	padding-right: 5;
-	padding-horizontal: 10;
-	background-type: round-rect;
-	background-arc: 8;
-	background-color: pink;
-	border {
+	padding: 5;
+	background {
 		type: round-rect;
 		arc: 8;
-		color: yellow;
-		width: 2;
+		color: brightBgColor;
+		border-color: fontColor;
+		border-width: 2;
 	}
 	font {
 		style: bold;
-		color: black;
+		color: fontColor;
 		size: small;
 	}
-	layout: expand | left;
-	after: url(dot.png);
+	layout: expand | center;
 }
-
 /* The .mainScreen style is a static style, which
    is set in the MIDlet source-code with the //#style directive.
    If the source-code would not have defined this
    style, we could use the dynamic style &quot;list&quot; to design all
    list-screens. 
-   An interesting feature is the used background, which is 
-   animated. It starts with a white backgrounds which is
-   transformed in 30 steps to a pink one. After that the animation
-   is stopped.
+   An interesting attribute is the &quot;columns&quot; attribute which
+   is used to use a table with two columns instead of the default
+   layout.
 */
 .mainScreen {
 	padding: 5;
 	padding-left: 15;
 	padding-right: 15;
 	background {
-		type: pulsating; 
-		start-color: white;
-		end-color: pink;
-		steps: 30;
-		repeat: false;
-		back-and-forth: false;
+		color: transparent;
+		image: url( bg.png );
 	}
 	layout: horizontal-expand | horizontal-center | vertical-center;
+	columns: 2;
+	columns-width: equal;
 }
 
 /* The .mainCommand style is also a static style, which
@@ -196,17 +177,14 @@ focused {
 */
 .mainCommand {
 	margin: 2; /* for the missing border of the focussed style */
-	padding: 3;
-	padding-left: 10;
-	padding-right: 5;
-	padding-horizontal: 10;
+	padding: 5;
 	background: none;
-	font-color: white;
+	font-color: fontColor;
 	font-style: bold;
 	font-size: small;
-	layout: left;
-	icon-image: url( %INDEX%icon.png );
-	icon-image-align: left;
+	layout: center;
+	icon-image: url( icon%INDEX%.png );
+	icon-image-align: top;
 }
 </pre>
 	</p>

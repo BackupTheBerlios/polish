@@ -296,7 +296,7 @@ defines a half transparent red. For the argb-construct percentage values can be 
 Colors with alpha blending can be defined with hexadecimal or argb-definitions (see above). An alpha value of 0 results in fully transparent pixels, whereas the value FF (or 255 or 100%) results in fully opaque pixels. Some devices support values between 0 and FF, which results in transparent colors. Colors with a specified alpha channel can only be used by specific GUI items. Please refer to the documentation of the specific design attributes. 
 </p>
 
-<h2 id="fonts">Fonts and Labels</h2>
+<h2 id="fonts">Fonts</h2>
 <p>
 Many GUI Items have text elements, which can be designed with the font- or label-attributes.
 <br/>Both attribute-groups support the same attributes:
@@ -381,6 +381,25 @@ The same specification can also be written as follows:
 </p><p>
 In the font-definition the above face and size attributes can be skipped, since they only define the default behavior anyhow.
 </p>
+<h2 id="labels">Labels</h2>
+All GUI-Items can have a label, which is designed using the 
+<a href="css-styles.html#predefined">pre-defined style</a> &quot;label&quot;. 
+One can specify another-style by using the &quot;label-style&quot;-attribute:
+<pre>
+.myStyle {
+	font {
+		color: white;
+		style: bold;
+	}
+	label-style: myLabelStyle;
+}
+
+.myLabelStyle {
+	font-style: bold;
+	font-color: green;
+	background-color: yellow;
+}
+</pre>
 
 <h2 id="backgroundsandborders">Backgrounds and Borders</h2>
 <p>
