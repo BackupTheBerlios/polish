@@ -216,7 +216,6 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item remove( int index ) {
-		System.out.println("removing index " + index + " - focusedIndex=" + this.focusedIndex);
 		Item removedItem = (Item) this.itemsList.remove(index);
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
@@ -226,14 +225,12 @@ public class Container extends Item {
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				if (item.appearanceMode != PLAIN) {
-					System.out.println("focusing item " + i);
 					focus( i, item );
 					focusSet = true;
 					break;
 				}
 			}
 			if (!focusSet) {
-				System.out.println("unable to set new focus");
 				this.focusFirstElement = true;
 			}
 		} else if (index < this.focusedIndex) {

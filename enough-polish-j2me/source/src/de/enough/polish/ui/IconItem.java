@@ -62,7 +62,6 @@ implements ImageConsumer
 //#endif
 {
 	
-	private static final int DEFAULT_ALIGN = Graphics.LEFT;
 	Image image;
 	private int imageAlign;
 	private int imageHeight;
@@ -184,19 +183,16 @@ implements ImageConsumer
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		//#ifdef polish.css.icon-image-align
-			String align = style.getProperty("icon-image-align");
+			Integer align = style.getIntProperty("icon-image-align");
 			if (align == null) {
 				// keep align setting
-			} else if ("left".equals(align)) {
-				this.imageAlign = Graphics.LEFT;
-			} else if ("right".equals(align)) {
-				this.imageAlign = Graphics.RIGHT;
-			} else if ("top".equals(align)) {
-				this.imageAlign = Graphics.TOP;
-			} else if ("bottom".equals(align)) {
-				this.imageAlign = Graphics.BOTTOM;
 			} else {
-				this.imageAlign = DEFAULT_ALIGN;
+				switch (align.intValue()) {
+					case 0: this.imageAlign = Graphics.LEFT; break; 
+					case 1: this.imageAlign = Graphics.RIGHT; break; 
+					case 2: this.imageAlign = Graphics.TOP; break; 
+					case 3: this.imageAlign = Graphics.BOTTOM; break; 
+				}
 			}
 		//#endif
 		//#ifdef polish.css.icon-image

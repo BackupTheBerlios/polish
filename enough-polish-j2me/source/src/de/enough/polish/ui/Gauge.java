@@ -835,13 +835,13 @@ implements ImageConsumer
 			}
 		//#endif
 		//#ifdef polish.css.gauge-mode
-			String modeStr = style.getProperty( "gauge-mode");
-			if (modeStr != null) {
-				if ("chunked".equals(modeStr)) {
+			Integer modeInt = style.getIntProperty( "gauge-mode");
+			if (modeInt != null) {
+				if (modeInt.intValue() == 0) {
 					this.mode = MODE_CHUNKED;
 				} else {
 					this.mode = MODE_CONTINUOUS;
-				}
+				}					
 			}
 		//#endif
 		//#ifdef polish.css.gauge-gap-color
@@ -885,12 +885,12 @@ implements ImageConsumer
 			}
 			this.fontColor = style.fontColor;
 			//#ifdef polish.css.gauge-value-align
-				String valuePositionStr =  style.getProperty( "gauge-value-align" );
-				if (valuePositionStr != null) {
-					if ("right".equals(valuePositionStr)) {
-						this.isValueLeft = false;
-					} else {
+				Integer valuePositionInt =  style.getIntProperty( "gauge-value-align" );
+				if (valuePositionInt != null) {
+					if (valuePositionInt.intValue() == 0) {
 						this.isValueLeft = true;
+					} else {
+						this.isValueLeft = false;
 					}
 				}
 			//#endif
