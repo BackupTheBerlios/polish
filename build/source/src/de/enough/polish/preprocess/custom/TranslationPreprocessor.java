@@ -36,7 +36,7 @@ import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.resources.Translation;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.StringList;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Incorporates localized messages into the source code.</p>
@@ -108,7 +108,7 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 						throw new BuildException( getErrorStart(className, lines) + "Found no translation for key [" + key + "].");
 					}
 					if (translation.isPlain()) {
-						line = TextUtil.replace( line, call, translation.getQuotedValue() );
+						line = StringUtil.replace( line, call, translation.getQuotedValue() );
 					} else {
 						// there is at least one parameter:
 						int parameterStart = call.indexOf(',');
@@ -117,13 +117,13 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 						}
 						if (translation.hasOneParameter()) {
 							String parameter = call.substring( parameterStart + 1, call.length() - 1).trim();
-							line = TextUtil.replace( line, call, translation.getQuotedValue( parameter ) );
+							line = StringUtil.replace( line, call, translation.getQuotedValue( parameter ) );
 						} else {
 							// replace String-key with integer-ID to save valueable size:
 							String id = "" + (translation.getId() - 1);
 							String quotedKey = '"' + key + '"';
-							String callReplacement = TextUtil.replace( call, quotedKey, id );
-							line = TextUtil.replace( line, call, callReplacement );
+							String callReplacement = StringUtil.replace( call, quotedKey, id );
+							line = StringUtil.replace( line, call, callReplacement );
 						}
 					}
 				} // while matcher.find()

@@ -57,7 +57,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 
 /**
@@ -233,7 +233,7 @@ implements ActionListener
 			} else if (source == this.optionUppercase ) {
 				String text = this.characterMap.getText();
 				if (!this.optionUppercase.isSelected()) {
-					text = TextUtil.replace(text, UPPERCASE, "" );
+					text = StringUtil.replace(text, UPPERCASE, "" );
 				} else {
 					if (text.indexOf(UPPERCASE) == -1) {
 						text += UPPERCASE;
@@ -244,7 +244,7 @@ implements ActionListener
 			} else if (source == this.optionLowercase ) {
 				String text = this.characterMap.getText();
 				if (!this.optionLowercase.isSelected()) {
-					text = TextUtil.replace(text, LOWERCASE, "" );
+					text = StringUtil.replace(text, LOWERCASE, "" );
 				} else {
 					if (text.indexOf(LOWERCASE) == -1) {
 						text += LOWERCASE;
@@ -255,7 +255,7 @@ implements ActionListener
 			} else if (source == this.optionPunctuation ) {
 				String text = this.characterMap.getText();
 				if (!this.optionPunctuation.isSelected()) {
-					text = TextUtil.replace(text, PUNCTUATION, "" );
+					text = StringUtil.replace(text, PUNCTUATION, "" );
 				} else {
 					if (text.indexOf(PUNCTUATION) == -1) {
 						text += PUNCTUATION;
@@ -266,7 +266,7 @@ implements ActionListener
 			} else if (source == this.optionNumbers ) {
 				String text = this.characterMap.getText();
 				if (!this.optionNumbers.isSelected()) {
-					text = TextUtil.replace(text, NUMBERS, "" );
+					text = StringUtil.replace(text, NUMBERS, "" );
 				} else {
 					if (text.indexOf(NUMBERS) == -1) {
 						text += NUMBERS;
@@ -277,7 +277,7 @@ implements ActionListener
 			} else if (source == this.optionSpace ) {
 				String text = this.characterMap.getText();
 				if (!this.optionSpace.isSelected()) {
-					text = TextUtil.replace(text, SPACE, "" );
+					text = StringUtil.replace(text, SPACE, "" );
 				} else {
 					if (text.indexOf(SPACE) == -1) {
 						text += SPACE;

@@ -26,7 +26,7 @@
 package de.enough.polish.preprocess;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -494,17 +494,17 @@ public class StyleSheet {
 			if (KEYWORDS.get(selector) != null) {
 				throw new BuildException( "Invalid CSS code: The style-selector [" + selector + "] uses a reserved keyword, please choose another name.");
 			}
-			String styleName = TextUtil.replace( selector, '-', '_' );
+			String styleName = StringUtil.replace( selector, '-', '_' );
 			if (isDynamicStyle) {
-				selector = TextUtil.replace( selector, ".", "");
-				selector = TextUtil.replace( selector, '\t', ' ');
-				selector = TextUtil.replace( selector, " > ", ">");
-				selector = TextUtil.replace( selector, " > ", ">");
-				selector = TextUtil.replace( selector, " * ", "*");
-				selector = TextUtil.replace( selector, "  ", " ");
-				styleName = TextUtil.replace( selector, ' ', '_');
-				styleName = TextUtil.replace( styleName, ">", "__");
-				styleName = TextUtil.replace( styleName, "*", "___");
+				selector = StringUtil.replace( selector, ".", "");
+				selector = StringUtil.replace( selector, '\t', ' ');
+				selector = StringUtil.replace( selector, " > ", ">");
+				selector = StringUtil.replace( selector, " > ", ">");
+				selector = StringUtil.replace( selector, " * ", "*");
+				selector = StringUtil.replace( selector, "  ", " ");
+				styleName = StringUtil.replace( selector, ' ', '_');
+				styleName = StringUtil.replace( styleName, ">", "__");
+				styleName = StringUtil.replace( styleName, "*", "___");
 			}
 			// check style name for invalid characters:
 			if ( (styleName.indexOf('.') != -1 )

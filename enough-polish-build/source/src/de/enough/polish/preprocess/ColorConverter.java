@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -155,7 +155,7 @@ public class ColorConverter {
 				throw new BuildException("Invalid color definition in CSS: [" + definition + "] is not a valid RGB value. Allowed is [rgb(rrr,ggg,bbb)], e.g. [rgb(128, 255, 0)]." );
 			}
 			value = value.substring( 1, value.length() - 1 );
-			String[] numbers = TextUtil.splitAndTrim( value, ',');
+			String[] numbers = StringUtil.splitAndTrim( value, ',');
 			if (numbers.length != 3) {
 				throw new BuildException("Invalid color definition in CSS: [" + definition + "] is not a valid RGB value. Allowed is [rgb(rrr,ggg,bbb)], e.g. [rgb(128, 255, 0)]." );
 			}
@@ -167,7 +167,7 @@ public class ColorConverter {
 				throw new BuildException("Invalid color definition in CSS: [" + definition + "] is not a valid ARGB value. Allowed is [argb(aaa,rrr,ggg,bbb)], e.g. [rgb(128, 255, 0)]." );
 			}
 			value = value.substring( 1, value.length() - 1 );
-			String[] numbers = TextUtil.splitAndTrim( value, ',');
+			String[] numbers = StringUtil.splitAndTrim( value, ',');
 			if (numbers.length != 4) {
 				throw new BuildException("Invalid color definition in CSS: [" + definition + "] is not a valid ARGB value. Allowed is [argb(aaa,rrr,ggg,bbb)], e.g. [argb(128, 128, 255, 0)]." );
 			}

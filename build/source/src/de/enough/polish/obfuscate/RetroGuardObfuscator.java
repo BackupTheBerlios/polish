@@ -39,7 +39,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Obfuscates jar-files using the RetroGuard-obfuscator from Retrologic.</p>
@@ -81,7 +81,7 @@ public class RetroGuardObfuscator extends Obfuscator {
 	        StringBuffer preserveBuffer = new StringBuffer();
 	        for (int i = 0; i < preserve.length; i++) {
 				preserveBuffer.append(".class " )
-							  .append( TextUtil.replace( preserve[i], '.', '/') )
+							  .append( StringUtil.replace( preserve[i], '.', '/') )
 							  .append('\n');
 			}
         	this.logBuffer.clear();

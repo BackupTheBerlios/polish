@@ -54,7 +54,7 @@ import de.enough.polish.VendorManager;
 import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Exports the device database to a HTML format.</p>
@@ -87,7 +87,7 @@ public class HtmlExporterTask extends Task {
 	}
 	
 	public void execute() throws BuildException {
-		// create LibraryManager:
+		// load device database:
 		try {
 			this.libraryManager = new LibraryManager(this.project.getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
 			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"));
@@ -399,7 +399,7 @@ public class HtmlExporterTask extends Task {
 		}
 
 		if (apis != null) {
-			String[] apiNames = TextUtil.splitAndTrim( apis, ',');
+			String[] apiNames = StringUtil.splitAndTrim( apis, ',');
 			ArrayList apisList = new ArrayList( apiNames.length + 5 );
 			for (int i = 0; i < apiNames.length; i++) {
 				String apiName = apiNames[i];
@@ -502,7 +502,7 @@ public class HtmlExporterTask extends Task {
 		if (soundFormat != null) {
 			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
 			row++;
-			String[] formats = TextUtil.splitAndTrim(soundFormat.toLowerCase(), ',');
+			String[] formats = StringUtil.splitAndTrim(soundFormat.toLowerCase(), ',');
 			String rowText = "<tr class=\"" + cssStyle + "\"><td>Supported Audio Formats</td><td>" + soundFormat + "</td><td>polish.SoundFormat, ";
 			for (int i = 0; i < formats.length; i++) {
 				String format = formats[i];
@@ -517,7 +517,7 @@ public class HtmlExporterTask extends Task {
 		if (videoFormat != null) {
 			cssStyle = CSS_TABLE_ROW_CLASSES[ row % 2 ];
 			row++;
-			String[] formats = TextUtil.splitAndTrim(videoFormat.toLowerCase(), ',');
+			String[] formats = StringUtil.splitAndTrim(videoFormat.toLowerCase(), ',');
 			String rowText = "<tr class=\"" + cssStyle + "\"><td>Supported Video Formats</td><td>" + videoFormat + "</td><td>polish.VideoFormat, ";
 			for (int i = 0; i < formats.length; i++) {
 				String format = formats[i];
@@ -612,7 +612,7 @@ public class HtmlExporterTask extends Task {
 				buffer.append( "\n<tr><th colspan=\"3\">Solution</td></tr>\n" );
 				buffer.append( "<tr class=\"" ).append( cssStyle ).append("\"><td colspan=\"3\">");
 				if (solution.indexOf("\\n") != -1) {
-					String[] solutionLines = TextUtil.splitAndTrim(solution, "\\n");
+					String[] solutionLines = StringUtil.splitAndTrim(solution, "\\n");
 					for (int j = 0; j < solutionLines.length; j++) {
 						buffer.append( solutionLines[j] ).append("<br/>\n");						
 					}
@@ -694,8 +694,8 @@ public class HtmlExporterTask extends Task {
 	
 
 	private String clean( String fileName) {
-		fileName = TextUtil.replace( fileName, ' ', '_');
-		fileName = TextUtil.replace( fileName, '/', '_');
+		fileName = StringUtil.replace( fileName, ' ', '_');
+		fileName = StringUtil.replace( fileName, '/', '_');
 		return fileName;
 	}
 

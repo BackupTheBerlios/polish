@@ -37,7 +37,7 @@ import de.enough.polish.ant.build.PackageSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.LoggerThread;
 import de.enough.polish.util.PropertyUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Calls an external packager-tool.</p>
@@ -76,7 +76,7 @@ public class ExternalPackager extends Packager {
 		executable = PropertyUtil.writeProperties( executable, variables );
 		String argumentsStr = PropertyUtil.writeProperties( this.setting.getArguments(), antProperties );
 		argumentsStr = PropertyUtil.writeProperties( argumentsStr, variables );
-		String[] arguments = TextUtil.splitAndTrim( argumentsStr, ";;");
+		String[] arguments = StringUtil.splitAndTrim( argumentsStr, ";;");
 		String[] parameters = new String[ arguments.length + 1 ];
 		parameters[0] = executable;
 		System.arraycopy( arguments, 0, parameters, 1, arguments.length );

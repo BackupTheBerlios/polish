@@ -38,7 +38,7 @@ import java.util.ArrayList;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public final class TextUtil {
+public final class StringUtil {
 
 	/**
 	 * Replaces all search-strings in the given input.

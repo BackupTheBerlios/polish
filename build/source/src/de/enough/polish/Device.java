@@ -28,7 +28,7 @@ package de.enough.polish;
 import de.enough.polish.ant.requirements.MemoryMatcher;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.jdom.Element;
 
@@ -191,7 +191,7 @@ public class Device extends PolishComponent {
 		ArrayList groupsList = new ArrayList();
 		String groupsDefinition = definition.getChildTextTrim("groups");
 		if (groupsDefinition != null && groupsDefinition.length() > 0) {
-			String[] tempGroupNames = TextUtil.splitAndTrim(groupsDefinition, ',');
+			String[] tempGroupNames = StringUtil.splitAndTrim(groupsDefinition, ',');
 			for (int i = 0; i < tempGroupNames.length; i++) {
 				String groupName = tempGroupNames[i];
 				DeviceGroup group = groupManager.getGroup(groupName);
@@ -216,7 +216,7 @@ public class Device extends PolishComponent {
 		if (this.supportedApisString != null) {
 			//System.out.println(this.identifier + " found apis: [" +
 			// supportedApisStr + "].");
-			String[] apis = TextUtil
+			String[] apis = StringUtil
 					.splitAndTrim(this.supportedApisString, ',');
 			for (int i = 0; i < apis.length; i++) {
 				String api = apis[i].toLowerCase();
@@ -247,7 +247,7 @@ public class Device extends PolishComponent {
 		//set audio-support:
 		String soundFormatStr = getCapability(SOUND_FORMAT);
 		if (soundFormatStr != null ) {
-			String[] soundFormats = TextUtil.splitAndTrim(soundFormatStr.toLowerCase(), ',');
+			String[] soundFormats = StringUtil.splitAndTrim(soundFormatStr.toLowerCase(), ',');
 			for (int i = 0; i < soundFormats.length; i++) {
 				String format = soundFormats[i];
 				addFeature( "polish.audio." + format );
@@ -258,7 +258,7 @@ public class Device extends PolishComponent {
 		//set video-support:
 		String videoFormatStr = getCapability(VIDEO_FORMAT);
 		if (videoFormatStr != null ) {
-			String[] videoFormats = TextUtil.splitAndTrim(videoFormatStr.toLowerCase(), ',');
+			String[] videoFormats = StringUtil.splitAndTrim(videoFormatStr.toLowerCase(), ',');
 			for (int i = 0; i < videoFormats.length; i++) {
 				String format = videoFormats[i];
 				addFeature( "polish.video." + format );

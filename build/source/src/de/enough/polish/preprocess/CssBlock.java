@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -79,10 +79,10 @@ public class CssBlock {
 			}
 			String innerBlock = cssCode.substring( start, end + 1);
 			parseInnerBlock( innerBlock );
-			cssCode = TextUtil.replace( cssCode, innerBlock, "" );
+			cssCode = StringUtil.replace( cssCode, innerBlock, "" );
 		}
 		// now read the rest of the definitions:
-		String[] declarations = TextUtil.splitAndTrim(cssCode, ';');
+		String[] declarations = StringUtil.splitAndTrim(cssCode, ';');
 		for (int i = 0; i < declarations.length; i++) {
 			String declaration = declarations[i];
 			if (declaration.length() > 0) {
@@ -127,7 +127,7 @@ public class CssBlock {
 		int parenthesisPos = code.indexOf('{');
 		String blockName = code.substring(0, parenthesisPos ).trim() + '-';
 		String declarationBlock = code.substring( parenthesisPos + 1, code.length() -1 ).trim();
-		String[] declarations = TextUtil.splitAndTrim( declarationBlock, ';' );
+		String[] declarations = StringUtil.splitAndTrim( declarationBlock, ';' );
 		try {
 			for (int i = 0; i < declarations.length; i++) {
 				String declaration = declarations[i];

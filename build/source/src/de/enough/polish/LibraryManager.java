@@ -54,7 +54,7 @@ public class LibraryManager {
 	private HashMap libraries = new HashMap();
 	private HashMap resolvedClassPaths = new HashMap();
 	private HashMap resolvedLibraryPaths = new HashMap();
-	private Hashtable antProperties;
+	private Map antProperties;
 
 	/**
 	 * Creates a new ApiManager.
@@ -68,7 +68,7 @@ public class LibraryManager {
 	 * @throws IOException when apis.xml could not be read
 	 * @throws InvalidComponentException when an api definition has errors
 	 */
-	public LibraryManager( Hashtable antProperties, String projectLibPath, String wtkHomePath, String preverifyPath, InputStream is) 
+	public LibraryManager( Map antProperties, String projectLibPath, String wtkHomePath, String preverifyPath, InputStream is) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		if (wtkHomePath == null) {

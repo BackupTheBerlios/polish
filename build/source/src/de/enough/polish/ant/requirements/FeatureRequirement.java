@@ -26,7 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Selects a device by one of several of its features.</p>
@@ -51,7 +51,7 @@ public class FeatureRequirement extends Requirement {
 	 */
 	public FeatureRequirement(String value ) {
 		super(value, "Features");
-		this.features = TextUtil.splitAndTrim( value, ',');
+		this.features = StringUtil.splitAndTrim( value, ',');
 	}
 
 	/* (non-Javadoc)

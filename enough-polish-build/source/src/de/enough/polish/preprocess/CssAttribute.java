@@ -28,7 +28,7 @@ package de.enough.polish.preprocess;
 import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents a non-standard CSS attribute.</p>
@@ -93,7 +93,7 @@ public class CssAttribute {
 		}
 		String allowedValuesStr = definition.getAttributeValue("values");
 		if (allowedValuesStr != null) {
-			this.allowedValues = TextUtil.splitAndTrim( allowedValuesStr, ',' );
+			this.allowedValues = StringUtil.splitAndTrim( allowedValuesStr, ',' );
 		} else {
 			this.allowedValues = null;
 		}

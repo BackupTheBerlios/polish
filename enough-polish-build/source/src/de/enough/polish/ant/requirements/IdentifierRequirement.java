@@ -26,7 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Selects a device by its identifier.</p>
@@ -50,7 +50,7 @@ public class IdentifierRequirement extends Requirement {
 	 */
 	public IdentifierRequirement(String value) {
 		super(value, "Identifier");
-		this.identifiers = TextUtil.splitAndTrim(value, ',');
+		this.identifiers = StringUtil.splitAndTrim(value, ',');
 	}
 
 	/* (non-Javadoc)

@@ -35,7 +35,7 @@ import org.apache.tools.ant.types.Path;
 import de.enough.polish.Device;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Obfuscates the MIDlet using the free JODE obfuscator.</p>
@@ -112,10 +112,10 @@ public class JodeObfuscator extends Obfuscator {
 		appendPath( sourceFile.getAbsolutePath(), buffer );
 		lines.add( buffer.toString() );
 		// set the target file:
-		lines.add( "dest = \"" +  TextUtil.replace( targetFile.getAbsolutePath(), "\\", "\\\\" ) + "\"" );
+		lines.add( "dest = \"" +  StringUtil.replace( targetFile.getAbsolutePath(), "\\", "\\\\" ) + "\"" );
 		// create a file which provides the translations for the obfuscated files:
 		File obfuscationMapFile = new File( tempScriptFile.getParentFile(), "obfuscation-map.txt");
-		lines.add( "revtable = \"" +  TextUtil.replace( obfuscationMapFile.getAbsolutePath(), "\\", "\\\\" ) + "\"" );
+		lines.add( "revtable = \"" +  StringUtil.replace( obfuscationMapFile.getAbsolutePath(), "\\", "\\\\" ) + "\"" );
 		// strip all unnecessary information:
 		lines.add( "strip = \"unreach\",\"source\",\"lvt\",\"lnt\",\"inner\"");
 		// specify the packages which should be included into the target-jar:
@@ -177,7 +177,7 @@ public class JodeObfuscator extends Obfuscator {
 		buffer.append( '"' ); 
 		if (File.separatorChar == '\\' ) {
 			// we have a windows-environment:
-			path = TextUtil.replace( path, "\\", "\\\\" );
+			path = StringUtil.replace( path, "\\", "\\\\" );
 		}
 		buffer.append( path ).append('"');
 	}

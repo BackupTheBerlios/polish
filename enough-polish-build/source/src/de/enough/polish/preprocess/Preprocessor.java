@@ -44,7 +44,7 @@ import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextFileManager;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Preprocesses source code.</p>
@@ -380,7 +380,7 @@ public class Preprocessor {
 		// set source directory:
 		this.variables.put( "polish.source", sourceDir.getAbsolutePath() );
 		String className = fileName.substring(0, fileName.indexOf('.'));
-		className = TextUtil.replace( className, "/", "." );
+		className = StringUtil.replace( className, "/", "." );
 		int result = preprocess( className, lines );
 		if (result == SKIP_FILE) {
 			return false;
@@ -622,7 +622,7 @@ public class Preprocessor {
 			throw new BuildException(
 					className + " line " + (lines.getCurrentIndex() + 1) 
 					+ ": unable to process #ifdef-directive with several arguments [" + argument 
-					+ "] in line [" + lines.getCurrent() + "]." );
+					+ "]  - you probably want to use the #if-directive instead." );
 		}
 		return processIfVariations( conditionFulfilled, lines, className );
 	}
@@ -644,7 +644,7 @@ public class Preprocessor {
 			throw new BuildException(
 					className + " line " + (lines.getCurrentIndex() + 1) 
 					+ ": unable to process #ifndef-directive with several arguments [" + argument 
-					+ "] in line [" + lines.getCurrent() + "]." );
+					+ "] - you probably want to use the #if-directive instead." );
 		}
 		return processIfVariations( conditionFulfilled, lines, className );
 	}
@@ -985,7 +985,7 @@ public class Preprocessor {
 					+ ": unable to process #style directive: no style-sheet found. Please create [resources/polish.css].");
 		}
 		// get the style-name:
-		String[] styles = TextUtil.splitAndTrim(styleNames, ',');
+		String[] styles = StringUtil.splitAndTrim(styleNames, ',');
 		String style = null;
 		for (int i = 0; i < styles.length; i++) {
 			String name = styles[i].toLowerCase();
@@ -1156,7 +1156,7 @@ public class Preprocessor {
 		int startIndex = lines.getCurrentIndex();
 		int insertionIndex = startIndex;
 		final String[] innerLines = (String[]) innerLinesList.toArray( new String[ innerLinesList.size() ] );
-		final String[] values = TextUtil.splitAndTrim( valueStr, ',' );
+		final String[] values = StringUtil.splitAndTrim( valueStr, ',' );
 		for (int i = 0; i < values.length; i++) {
 			final String value = values[i];
 			this.temporaryVariables.put( loopVarName, value );

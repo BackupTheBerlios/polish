@@ -91,7 +91,7 @@ import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextFile;
 import de.enough.polish.util.TextFileManager;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages a J2ME project from the preprocessing to the packaging and obfuscation.</p>
@@ -384,7 +384,7 @@ public class PolishTask extends ConditionalTask {
 		if (!this.buildSetting.useDefaultPackage()) {
 			for (int i = 0; i < midlets.length; i++) {
 				Midlet midlet = midlets[i];
-				String fileName = TextUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
+				String fileName = StringUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
 				boolean midletFound = false;
 				for (int j = 0; j < sources.length; j++) {
 					File sourceDir = sources[j];
@@ -490,7 +490,7 @@ public class PolishTask extends ConditionalTask {
 		// add all symbols from the build.xml:
 		String symbolDefinition = this.buildSetting.getSymbols();
 		if (symbolDefinition != null) {
-			String[] symbols = TextUtil.splitAndTrim( symbolDefinition, ',' );
+			String[] symbols = StringUtil.splitAndTrim( symbolDefinition, ',' );
 			for (int i = 0; i < symbols.length; i++) {
 				this.polishProject.addDirectFeature( symbols[i] );
 			}
@@ -1158,9 +1158,9 @@ public class PolishTask extends ConditionalTask {
 				if (className.endsWith(".java")) {
 					className = className.substring(0, className.length() - 5 );
 					// in a jarfile the files always have a '/' as a path-seperator:
-					className = TextUtil.replace(className, '/', '.' );
+					className = StringUtil.replace(className, '/', '.' );
 				}
-				className = TextUtil.replace(className, File.separatorChar, '.' );
+				className = StringUtil.replace(className, File.separatorChar, '.' );
 				// set the StyleSheet.display variable in all MIDlets
 				if ( (this.midletClassesByName.get( className ) != null) 
 						&& usePolishGui) {

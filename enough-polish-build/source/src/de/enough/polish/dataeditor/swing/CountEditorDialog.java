@@ -41,7 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import de.enough.polish.dataeditor.DataEntry;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p></p>
@@ -149,7 +149,7 @@ implements ActionListener
 		} else if (source == this.operationSelector ) {
 			char newOperator = OPERATION_CHARS[ this.operationSelector.getSelectedIndex() ];
 			String text = this.editor.getText();
-			text = TextUtil.replace( text, this.currentOperator, newOperator );
+			text = StringUtil.replace( text, this.currentOperator, newOperator );
 			this.editor.setText( text );
 			this.currentOperator = newOperator;
 		} else {
@@ -157,7 +157,7 @@ implements ActionListener
 			JButton button = (JButton) source;
 			String operant = button.getText();
 			String text = this.editor.getText();
-			boolean isNumeric = TextUtil.isNumeric( text );
+			boolean isNumeric = StringUtil.isNumeric( text );
 			if (isNumeric || text.length() == 0) {
 				this.editor.setText( operant );
 			} else {

@@ -33,7 +33,7 @@ import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.PropertyUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Evaluates boolean expressions based on defined (or undefined) symbols and the operators &&, ||, ! and ^.</p>
@@ -133,10 +133,10 @@ public class BooleanEvaluator {
 		}
 		expression = PropertyUtil.writeProperties(expression, this.variables);
 		// second step: replace " and " with && and " or " with ||
-		expression = TextUtil.replace( expression, " and ", " && " );
-		expression = TextUtil.replace( expression, " or ", " || " );
-		expression = TextUtil.replace( expression, " not ", " !" );
-		expression = TextUtil.replace( expression, " xor ", " ^ " );
+		expression = StringUtil.replace( expression, " and ", " && " );
+		expression = StringUtil.replace( expression, " or ", " || " );
+		expression = StringUtil.replace( expression, " not ", " !" );
+		expression = StringUtil.replace( expression, " xor ", " ^ " );
 		
 		// now extract each term:
 		Matcher matcher = TERM_PATTERN.matcher( expression );
@@ -146,7 +146,7 @@ public class BooleanEvaluator {
 				String group = matcher.group();
 				String term = group.substring( 1, group.length() -1 ); // the term has no parenthesis
 				boolean result = evaluateTerm( term, fileName, line );
-				expression = TextUtil.replaceFirst( expression, group, "" + result );
+				expression = StringUtil.replaceFirst( expression, group, "" + result );
 				
 				// find next "(...)" term:
 				foundParenthesis = matcher.find();

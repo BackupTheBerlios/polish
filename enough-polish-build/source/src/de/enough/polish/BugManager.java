@@ -39,7 +39,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages the issues of devices.</p>
@@ -117,7 +117,7 @@ public class BugManager {
 		if (bugsDefinition == null) {
 			return null;
 		}
-		String[] bugNames = TextUtil.splitAndTrim( bugsDefinition, ',' );
+		String[] bugNames = StringUtil.splitAndTrim( bugsDefinition, ',' );
 		Bug[] bugs = new Bug[ bugNames.length ];
 		for (int i = 0; i < bugNames.length; i++) {
 			String name = bugNames[i];

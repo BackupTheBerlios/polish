@@ -26,7 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Selects devices by a specific string within the given capability.</p>
@@ -63,7 +63,7 @@ public class StringRequirement extends Requirement {
 	public StringRequirement(String value, String propertyName, boolean or ) {
 		super(value, propertyName);
 		this.or = or;
-		String[] neededFeatures = TextUtil.split( value, ',');
+		String[] neededFeatures = StringUtil.split( value, ',');
 		this.features = new String[ neededFeatures.length ];
 		for (int i = 0; i < neededFeatures.length; i++) {
 			this.features[i] = "polish." + propertyName + "." + neededFeatures[i];

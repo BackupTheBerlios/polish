@@ -31,7 +31,7 @@ import java.util.HashMap;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents a JAD or MANIFEST attribute.</p>
@@ -77,7 +77,7 @@ public class Attribute extends Variable {
 	public void setTarget( String targetStr ) {
 		this.targetsManifest = false;
 		this.targetsJad = false;
-		String[] targets = TextUtil.splitAndTrim( targetStr, ',' );
+		String[] targets = StringUtil.splitAndTrim( targetStr, ',' );
 		for (int i = 0; i < targets.length; i++) {
 			String target = targets[i];
 			if (TARGET_JAD.equalsIgnoreCase( target )) {

@@ -26,7 +26,7 @@
 package de.enough.polish;
 
 import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 import org.jdom.*;
@@ -103,13 +103,13 @@ public class DeviceManager {
 			}
 			// one xml definition can contain several device-definitions,
 			// e.g. <identifier>Nokia/3650, Nokia/5550</identifier>
-			String[] identifiers = TextUtil.splitAndTrim(identifierStr,',');
+			String[] identifiers = StringUtil.splitAndTrim(identifierStr,',');
 			for (int i = 0; i < identifiers.length; i++) {
 				String identifier = identifiers[i];
 				if (devicesMap.get( identifier ) != null) {
 					throw new InvalidComponentException("The device [" + identifier + "] has been defined twice in [devices.xml]. Please remove one of those definitions.");
 				}
-				String[] chunks = TextUtil.split( identifier, '/');
+				String[] chunks = StringUtil.split( identifier, '/');
 				if (chunks.length != 2) {
 					throw new InvalidComponentException("The device [" + identifier + "] has an invalid [identifier] - every identifier needs to consists of the vendor and the name, e.g. \"Nokia/6600\". Please check you [devices.xml].");
 				}

@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -84,10 +84,10 @@ public class BooleanEvaluatorTest extends TestCase {
 		Matcher matcher = pattern.matcher( expression );
 		assertTrue( matcher.find() );
 		assertEquals( "( symb3 || ! symb4 )", matcher.group());
-		expression = TextUtil.replaceFirst( expression, "( symb3 || ! symb4 )", "true" );
+		expression = StringUtil.replaceFirst( expression, "( symb3 || ! symb4 )", "true" );
 		assertTrue( matcher.find() );
 		assertEquals( "(symb5 ^ symb6 )", matcher.group());
-		expression = TextUtil.replaceFirst( expression, "(symb5 ^ symb6 )", "true" );
+		expression = StringUtil.replaceFirst( expression, "(symb5 ^ symb6 )", "true" );
 		assertFalse( matcher.find() );
 		
 		// go to the next level:
@@ -95,7 +95,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( matcher.find() );
 		assertEquals( "( !symb2 || true && !true )", matcher.group() );
 		assertFalse( matcher.find() );
-		expression = TextUtil.replaceFirst( expression, "( !symb2 || true && !true )", "true" );
+		expression = StringUtil.replaceFirst( expression, "( !symb2 || true && !true )", "true" );
 		
 		// last level:
 		assertEquals("symbol1 && true", expression );

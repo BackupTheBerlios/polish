@@ -38,7 +38,7 @@ import javax.imageio.ImageIO;
 import org.jdom.Element;
 
 import de.enough.polish.util.CastUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents a data-type. A type can be user defined and consist of other types.</p>
@@ -268,7 +268,7 @@ public class DataType {
 			case UTF_STRING_ID:
 				return value;
 			case USER_DEFINED_ID:
-				String[] subvalues = TextUtil.split( value, ", ");
+				String[] subvalues = StringUtil.split( value, ", ");
 				if (subvalues.length != this.subtypes.length) {
 					throw new IllegalArgumentException("Invalid count of subtypes.");
 				} 

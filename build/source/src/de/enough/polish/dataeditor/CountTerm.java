@@ -25,7 +25,7 @@
  */
 package de.enough.polish.dataeditor;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents a simple term for calculating the number of entries of a specific data entry.</p>
@@ -167,7 +167,7 @@ public class CountTerm {
 		}
 		String[] entryNames;
 		if (operatorFound) {
-			entryNames = TextUtil.splitAndTrim( term, devider );
+			entryNames = StringUtil.splitAndTrim( term, devider );
 		} else {
 			entryNames = new String[]{ term.trim() };
 		}

@@ -26,7 +26,7 @@
 package de.enough.polish.obfuscate;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
@@ -85,7 +85,7 @@ public class ProGuard2Obfuscator extends Obfuscator {
         // do not obfuscate the <keep> classes and the defined midlets:
         cfg.keepClassFileOptions = new ArrayList( preserve.length );
         for (int i = 0; i < preserve.length; i++) {
-			String className = TextUtil.replace( preserve[i], '.', '/');
+			String className = StringUtil.replace( preserve[i], '.', '/');
 			//System.out.println("\npreservering: " + className );
 	        cfg.keepClassFileOptions.add(
 	        		new KeepClassFileOption(
@@ -115,7 +115,7 @@ public class ProGuard2Obfuscator extends Obfuscator {
 			// check if all preserve-classes are found:
 			for (int i = 0; i < preserve.length; i++) {
 				String className = preserve[i];
-				String fileName = TextUtil.replace( className, '.', File.separatorChar ) + ".java";
+				String fileName = StringUtil.replace( className, '.', File.separatorChar ) + ".java";
 				File file = new File( device.getSourceDir() + File.separator + fileName );
 				if (!file.exists()) {
 					System.err.println("WARNING: the MIDlet or class [" + className + "] was not found: [" + file.getAbsolutePath() + "] does not exist.");
@@ -145,7 +145,7 @@ public class ProGuard2Obfuscator extends Obfuscator {
     private ClassPath getPath(String path)
     {
         ClassPath classPath = new ClassPath();
-        String[] elements = TextUtil.split( path, File.pathSeparatorChar );
+        String[] elements = StringUtil.split( path, File.pathSeparatorChar );
         for (int i = 0; i < elements.length; i++) {
         	ClassPathEntry entry =
                 new ClassPathEntry( elements[i]);

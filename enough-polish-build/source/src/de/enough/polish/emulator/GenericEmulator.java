@@ -33,7 +33,7 @@ import de.enough.polish.Device;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.PropertyUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Launches an emulator from the command line.</p>
@@ -120,7 +120,7 @@ public class GenericEmulator extends Emulator {
 			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Please define the needed property " + missingProperty + " in your build.xml file.");
 			return false;
 		}
-		String[] args = TextUtil.split( argsStr, ";;");
+		String[] args = StringUtil.split( argsStr, ";;");
 		
 		this.arguments = new String[ args.length + 1];
 		this.arguments[0] = execStr;

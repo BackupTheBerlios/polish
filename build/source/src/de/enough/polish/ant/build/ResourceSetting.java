@@ -35,7 +35,7 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.ant.Setting;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.resources.ResourcesFileSet;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Stores all settings made in the &lt;resources&gt;-element.</p>
@@ -106,7 +106,7 @@ public class ResourceSetting extends Setting {
 	}
 	
 	public void setExcludes( String excludes ) {
-		this.excludes = TextUtil.splitAndTrim( excludes, ',' );
+		this.excludes = StringUtil.splitAndTrim( excludes, ',' );
 	}
 	
 	public String[] getExcludes() {

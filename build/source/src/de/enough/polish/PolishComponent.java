@@ -34,7 +34,7 @@ import java.util.Set;
 import org.jdom.Element;
 
 import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Provides common functionalities for PolishProject, Vendor, DeviceGroup and Device.</p>
@@ -116,7 +116,7 @@ public class PolishComponent {
 		// now set features:
 		String featureDefinition = definition.getChildTextTrim( "features");
 		if (featureDefinition != null) {
-			String[] definedFeatures = TextUtil.splitAndTrim( featureDefinition, ',');
+			String[] definedFeatures = StringUtil.splitAndTrim( featureDefinition, ',');
 			for (int i = 0; i < definedFeatures.length; i++) {
 				addFeature( definedFeatures[i] );
 			}
@@ -259,7 +259,7 @@ public class PolishComponent {
 		
 		// when the capability is a size, then also add a height and a width:
 		if (name.endsWith("Size") && value.indexOf('x') > 0) {
-			String[] values = TextUtil.splitAndTrim( value, 'x' );
+			String[] values = StringUtil.splitAndTrim( value, 'x' );
 			String nameStart = name.substring(0, name.length() - 4);
 			String width = nameStart + "Width";
 			addSingleCapability( width, values[0]);
@@ -272,7 +272,7 @@ public class PolishComponent {
 		}
 		
 		// add all capability-values as symbols/features:
-		String[] values = TextUtil.splitAndTrim( value, ',' );
+		String[] values = StringUtil.splitAndTrim( value, ',' );
 		for (int i = 0; i < values.length; i++) {
 			addFeature( name + "." + values[i] );
 		}

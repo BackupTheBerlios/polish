@@ -28,7 +28,7 @@ package de.enough.polish;
 import org.jdom.Element;
 
 import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents a single library.</p>
@@ -72,7 +72,7 @@ public class Bug extends PolishComponent {
 		if (areasString == null) {
 			throw new InvalidComponentException("The bug [" + this.name + "] does not define the areas of this issue. Please insert the <area> element into the file [bugs.xml] for this issue.");
 		}
-		this.areas = TextUtil.splitAndTrim( areasString, ',' );
+		this.areas = StringUtil.splitAndTrim( areasString, ',' );
 		this.solution = definition.getChildTextTrim( "solution");
 
 	}

@@ -26,7 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -55,7 +55,7 @@ public class SizeRequirement extends Requirement {
 	 */
 	public SizeRequirement(String value, String propertyName) {
 		super(value, propertyName);
-		String[] values = TextUtil.split( value, 'x');
+		String[] values = StringUtil.split( value, 'x');
 		if (values.length != 2) {
 			throw new BuildException( "The value of the requirement [" + this.propertyName + "] is not valid, it needs to be in the form \"[width] x [height]\".");
 		}
@@ -67,7 +67,7 @@ public class SizeRequirement extends Requirement {
 	 * @see de.enough.polish.ant.Requirement#isMet(de.enough.polish.build.Device, java.lang.String)
 	 */
 	protected boolean isMet(Device device, String property) {
-		String[] parts = TextUtil.split( property, 'x' );
+		String[] parts = StringUtil.split( property, 'x' );
 		if (parts.length != 2) {
 			throw new BuildException("The property [" + this.propertyName + "] of the device [" + device.getIdentifier() + "] is not valid. It meeds to be in the form \"[width] x [height]\".");
 		}

@@ -28,7 +28,7 @@ package de.enough.polish.ant.build;
 import java.util.Locale;
 
 import de.enough.polish.ant.Setting;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Stores the localization settings.</p>
@@ -74,7 +74,7 @@ public class LocalizationSetting extends Setting {
 		if ("*".equals(supportedLocalesStr)) {
 			this.includeAllLocales = true;
 		} else {
-			String[] localeDefs = TextUtil.splitAndTrim( supportedLocalesStr, ',' );
+			String[] localeDefs = StringUtil.splitAndTrim( supportedLocalesStr, ',' );
 			Locale[] locales = new Locale[ localeDefs.length ];
 			for (int i = 0; i < localeDefs.length; i++) {
 				String localeDefinition = localeDefs[i];

@@ -38,7 +38,7 @@ import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.StringList;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Makes some standard preprocessing like the determination whether the Ticker-class is used etc.</p>
@@ -232,7 +232,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					//System.out.println("skipping attribute [" + key + "]");
 					continue;
 				}
-				line = TextUtil.replace( line, property, "" + id );
+				line = StringUtil.replace( line, property, "" + id );
 				lines.setCurrent( line );
 				continue;
 			}
@@ -253,8 +253,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				while (matcher.find()) {
 					matchFound = true;
 					String group = matcher.group();
-					String replacement = TextUtil.replace( group, "getTicker", "getPolishTicker");
-					line = TextUtil.replace( line, group, replacement );
+					String replacement = StringUtil.replace( group, "getTicker", "getPolishTicker");
+					line = StringUtil.replace( line, group, replacement );
 				}
 				if (matchFound) {
 					this.isTickerUsed = true;
@@ -274,8 +274,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				while (matcher.find()) {
 					matchFound = true;
 					String group = matcher.group();
-					String replacement = TextUtil.replace( group, "setTicker", "setPolishTicker");
-					line = TextUtil.replace( line, group, replacement );
+					String replacement = StringUtil.replace( group, "setTicker", "setPolishTicker");
+					line = StringUtil.replace( line, group, replacement );
 				}
 				if (matchFound) {
 					this.isTickerUsed = true;
@@ -303,7 +303,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					String itemVar = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
 					String replacement = itemVar + ".show( " + displayVar + " )"; 
 					//System.out.println("replacement = [" + replacement + "].");
-					line = TextUtil.replace( line, group, replacement );
+					line = StringUtil.replace( line, group, replacement );
 					//System.out.println("line = [" + line + "]");
 					lines.setCurrent( line );
 				}

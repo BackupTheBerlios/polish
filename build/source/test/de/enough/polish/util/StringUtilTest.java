@@ -26,7 +26,7 @@ package de.enough.polish.util;
 import junit.framework.TestCase;
 
 /**
- * <p>Testing the TextUtil</p>
+ * <p>Testing the StringUtil</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
 
@@ -37,10 +37,10 @@ import junit.framework.TestCase;
  * @
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class TextUtilTest extends TestCase {
+public class StringUtilTest extends TestCase {
 
 
-	public TextUtilTest(String name) {
+	public StringUtilTest(String name) {
 		super(name);
 	}
 	

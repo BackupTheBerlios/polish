@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ant.requirements;
 
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Checks capabilities for a specific version.</p>
@@ -49,7 +49,7 @@ public class VersionMatcher implements Matcher {
 	 * @param value the needed version, e.g. "1.3+" or "1.3+.2+"
 	 */
 	public VersionMatcher( String value ) {
-		String[] chunks = TextUtil.splitAndTrim( value, '.' );
+		String[] chunks = StringUtil.splitAndTrim( value, '.' );
 		this.versionNumbers = new int[ chunks.length ];
 		this.equalsOrGreater = new boolean[ chunks.length ];
 		for (int i = 0; i < chunks.length; i++) {
@@ -63,7 +63,7 @@ public class VersionMatcher implements Matcher {
 	 * @see de.enough.polish.ant.requirements.Matcher#matches(java.lang.String)
 	 */
 	public boolean matches(String deviceValue) {
-		String[] chunks = TextUtil.splitAndTrim( deviceValue, '.' );
+		String[] chunks = StringUtil.splitAndTrim( deviceValue, '.' );
 		int min = Math.min( chunks.length, this.versionNumbers.length );
 		int diff = this.versionNumbers.length - chunks.length; 
 		boolean carryFlag = false;

@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 
 /**
@@ -115,7 +115,7 @@ public final class StackTraceUtil {
 		// secondly find the original source-file in the provided source-files.
 		
 		// find position of call 
-		String javaFileName = TextUtil.replace( className, '.', File.separatorChar )  + ".java";
+		String javaFileName = StringUtil.replace( className, '.', File.separatorChar )  + ".java";
 		preprocessedSourcePath = preprocessedSourcePath + File.separatorChar + javaFileName;
 
 		this.linesFromMethodStart -= 2;
@@ -323,7 +323,7 @@ public final class StackTraceUtil {
 	private static final String[] decompile(String className, String classPath, Map environmentProperties ) 
 	throws DecompilerNotInstalledException
 	{
-		className = TextUtil.replace( className, '.', File.separatorChar );
+		className = StringUtil.replace( className, '.', File.separatorChar );
 		classPath = classPath + File.separatorChar + className + ".class";
 		File classFile = new File( classPath );
 		if (!classFile.exists()) {

@@ -27,7 +27,7 @@ package de.enough.polish.ant.build;
 
 import de.enough.polish.*;
 import de.enough.polish.util.ResourceUtil;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -504,9 +504,9 @@ public class BuildSetting {
 	 * @param srcDir the source directory
 	 */
 	public void setSourceDir( String srcDir ) {
-		String[] paths = TextUtil.split( srcDir, ':');
+		String[] paths = StringUtil.split( srcDir, ':');
 		if (paths.length == 1) {
-			paths = TextUtil.split( srcDir, ';' );
+			paths = StringUtil.split( srcDir, ';' );
 		}
 		for (int i = 0; i < paths.length; i++) {
 			String path = paths[i];
@@ -988,9 +988,9 @@ public class BuildSetting {
 	 * 			Several libraries can be seperated with either a colon or a semicolon. 
 	 */
 	public void setBinaryLibraries( String librariesStr ) {
-		String[] libraries = TextUtil.split(librariesStr, ':');
+		String[] libraries = StringUtil.split(librariesStr, ':');
 		if (libraries.length == 1) {
-			libraries = TextUtil.split( librariesStr, ';' );
+			libraries = StringUtil.split( librariesStr, ';' );
 		}
 		this.binaryLibraries = new File[ libraries.length ];
 		for (int i = 0; i < libraries.length; i++) {

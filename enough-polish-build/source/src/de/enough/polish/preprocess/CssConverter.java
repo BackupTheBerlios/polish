@@ -28,7 +28,7 @@ package de.enough.polish.preprocess;
 import de.enough.polish.Device;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -580,13 +580,13 @@ public class CssConverter extends Converter {
 					// process columns-width value:
 					// remove all spaces and check for the star-value (e.g. "20, *"):
 					if (key.equals("width") && groupName.equals("columns")) {
-						value = TextUtil.replace( value, " ", "" );
+						value = StringUtil.replace( value, " ", "" );
 						int starPos = value.indexOf('*');
 						if (starPos != -1) {
 							String screenWidthStr = device.getCapability("ScreenWidth");
 							if (screenWidthStr != null) {
 								int screenWidth = Integer.parseInt( screenWidthStr );
-								String[] valueChunks = TextUtil.split( value, ',' );
+								String[] valueChunks = StringUtil.split( value, ',' );
 								int combinedWidth = 0;
 								int starIndex = -1;
 								for (int j = 0; j < valueChunks.length; j++) {
@@ -757,15 +757,15 @@ public class CssConverter extends Converter {
 		String[] layouts;
 		// the layout value can combine several directives, e.g. "vcenter | hcenter"
 		if ( layoutValue.indexOf('|') != -1 ) {
-			layouts = TextUtil.splitAndTrim( layoutValue, '|');
+			layouts = StringUtil.splitAndTrim( layoutValue, '|');
 		} else if ( layoutValue.indexOf('&') != -1 ) {
-				layouts = TextUtil.splitAndTrim( layoutValue, '&');
+				layouts = StringUtil.splitAndTrim( layoutValue, '&');
 		} else if ( layoutValue.indexOf(',') != -1 ) {
-			layouts = TextUtil.splitAndTrim( layoutValue, ',');
+			layouts = StringUtil.splitAndTrim( layoutValue, ',');
 		} else if ( layoutValue.indexOf(" and ") != -1 ) {
-			layouts = TextUtil.splitAndTrim( layoutValue, " and ");
+			layouts = StringUtil.splitAndTrim( layoutValue, " and ");
 		} else if ( layoutValue.indexOf(" or ") != -1 ) {
-			layouts = TextUtil.splitAndTrim( layoutValue, " or ");
+			layouts = StringUtil.splitAndTrim( layoutValue, " or ");
 		} else {
 			layouts = new String[]{ layoutValue };
 		}

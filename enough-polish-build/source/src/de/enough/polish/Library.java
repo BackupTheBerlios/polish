@@ -26,12 +26,12 @@
 package de.enough.polish;
 
 import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 import org.jdom.Element;
 
 import java.io.File;
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * <p>Represents a single library.</p>
@@ -57,7 +57,7 @@ public class Library extends PolishComponent {
 	private String polishLibPath;
 	private String path;
 	private boolean isInitialised;
-	private Hashtable antProperties;
+	private final Map antProperties;
 	private final String[] symbols;
 
 	/**
@@ -71,7 +71,7 @@ public class Library extends PolishComponent {
 	 * @param manager the library manager
 	 * @throws InvalidComponentException when the given api definition has errors
 	 */
-	public Library( Hashtable antProperties, 
+	public Library( Map antProperties, 
 			String wtkLibPath, 
 			String projectLibPath,
 			String polishLibPath,
@@ -91,7 +91,7 @@ public class Library extends PolishComponent {
 		if (namesString == null) {
 			throw new InvalidComponentException("The api [" + this.fullName + "] does not define the possible names of this library. Please insert the <names> element into the file [apis.xml] for this library.");
 		}
-		this.names = TextUtil.splitAndTrim( namesString, ',' );
+		this.names = StringUtil.splitAndTrim( namesString, ',' );
 		this.symbol = definition.getChildTextTrim( "symbol");
 		if (this.symbol == null) {
 			throw new InvalidComponentException("The api [" + this.fullName + "] does not define the preprocessing symbol for this library. Please insert the <symbol> element into the file [apis.xml] for this library.");
@@ -114,7 +114,7 @@ public class Library extends PolishComponent {
 		}
 		String fileNamesString = definition.getChildTextTrim( "files");
 		if (fileNamesString != null) {
-			this.fileNames = TextUtil.splitAndTrim( fileNamesString, ',' );
+			this.fileNames = StringUtil.splitAndTrim( fileNamesString, ',' );
 		}
 		this.defaultPath = definition.getChildTextTrim( "path");
 		this.antProperties = antProperties;
@@ -123,7 +123,7 @@ public class Library extends PolishComponent {
 
 		String featuresStr = definition.getChildTextTrim("features");
 		if (featuresStr != null) {
-			String[] features = TextUtil.splitAndTrim(featuresStr, ',');
+			String[] features = StringUtil.splitAndTrim(featuresStr, ',');
 			for (int i = 0; i < features.length; i++) {
 				String feature = features[i];
 				addFeature(feature);

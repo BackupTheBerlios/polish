@@ -33,7 +33,7 @@ import java.util.Set;
 import de.enough.polish.Device;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextFileManager;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Converts the import-statements to allow the parallel usage of the polish-gui and the standard java-gui.</p>
@@ -389,9 +389,9 @@ public final class ImportConverter {
 		*/
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
-			line = TextUtil.replace( line, "de.enough.polish.ui.borders.", "" );
-			line = TextUtil.replace( line, "de.enough.polish.ui.backgrounds.", "" );
-			line = TextUtil.replace( line, "de.enough.polish.ui.containerviews.", "" );
+			line = StringUtil.replace( line, "de.enough.polish.ui.borders.", "" );
+			line = StringUtil.replace( line, "de.enough.polish.ui.backgrounds.", "" );
+			line = StringUtil.replace( line, "de.enough.polish.ui.containerviews.", "" );
 			lines[i] = line;
 			String[] packageNames = getPackages( line, textFileManager );
 			if (packageNames != null) {
@@ -399,7 +399,7 @@ public final class ImportConverter {
 					String packageName = packageNames[j] + ".";
 					for (int k = i; k < lines.length; k++) {
 						line = lines[k];
-						lines[k] = TextUtil.replace( line, packageName, "" );
+						lines[k] = StringUtil.replace( line, packageName, "" );
 					}
 				}
 			}			

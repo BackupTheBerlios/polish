@@ -32,7 +32,7 @@ import java.util.HashMap;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Attribute;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Sorts JAD or MANIFEST attributes in a user-specific way.</p>
@@ -57,7 +57,7 @@ public class AttributesFilter {
 	}
 	
 	public void addText( String text ) {
-		String[] definitions = TextUtil.splitAndTrim( text, ',' );
+		String[] definitions = StringUtil.splitAndTrim( text, ',' );
 		this.filterElements = new ArrayList( definitions.length );
 		for (int i = 0; i < definitions.length; i++) {
 			String definition = definitions[i];

@@ -113,7 +113,7 @@ public final class JarUtil {
 		} else {
 			String entryName = file.getAbsolutePath().substring(sourceDirLength);
 			if (IS_WINDOWS) {
-					entryName = TextUtil.replace( entryName, '\\', '/' );
+					entryName = StringUtil.replace( entryName, '\\', '/' );
 			}
 			JarEntry entry = new JarEntry( entryName );
 			out.putNextEntry(entry);

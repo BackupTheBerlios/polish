@@ -26,7 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
-import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Selects devices by their vendor.</p>
@@ -50,7 +50,7 @@ public class VendorRequirement extends Requirement {
 	 */
 	public VendorRequirement(String value) {
 		super(value, "Vendor");
-		String[] vendors = TextUtil.split(value, ',');
+		String[] vendors = StringUtil.split(value, ',');
 		this.matcher = new StringMatcher( vendors, true ); 
 	}
 
