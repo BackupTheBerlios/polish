@@ -104,4 +104,11 @@ public class CssAttributesManager {
 		return (CssAttribute) this.attributesByName.get( name );
 	}
 
+	/**
+	 * @return all registered CSS attributes
+	 */
+	public CssAttribute[] getAttributes() {
+		return (CssAttribute[]) this.attributesByName.values().toArray(  new CssAttribute[ this.attributesByName.size() ] );
+	}
+
 }

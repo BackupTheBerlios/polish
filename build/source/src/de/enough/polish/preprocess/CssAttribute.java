@@ -57,6 +57,7 @@ public class CssAttribute {
 	private final String defaultValue;
 	private final String appliesTo;
 	private final String description;
+	private int id;
 
 	/**
 	 * Creates a new CSS-attribute
@@ -99,6 +100,12 @@ public class CssAttribute {
 		}
 		this.appliesTo = definition.getAttributeValue("appliesTo");
 		this.description = definition.getAttributeValue("description");
+		String idStr = definition.getAttributeValue("id");
+		if (idStr != null) {
+			this.id = Integer.parseInt(idStr);
+		} else {
+			this.id = -1;
+		}
 	}
 
 	/**
@@ -246,5 +253,24 @@ public class CssAttribute {
 			}
 		}
 		return -1;
+	}
+	
+	/**
+	 * Retrieves the ID of this attribute.
+	 * 
+	 * @return the ID - or -1 if it is not known
+	 */
+	public int getId() {
+		return this.id;
+	}
+	
+	/**
+	 * Sets the ID of this attribute.
+	 * The ID should only be set, when it was previously not know (== -1).
+	 *  
+	 * @param id the new ID
+	 */
+	public void setId( int id ) {
+		this.id = id;
 	}
 }

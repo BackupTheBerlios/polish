@@ -110,6 +110,7 @@ public class Preprocessor {
 	private HashMap preprocessQueue;
 	private boolean useDefaultPackage;
 	private TextFileManager textFileManager;
+	private CssAttributesManager cssAttributesManager;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -1127,7 +1128,7 @@ public class Preprocessor {
 		
 		final String valueStr = (String) this.variables.get( varName );
 		final String endToken = "//#next " + loopVarName;
-		boolean changed =false;
+		boolean changed = false;
 		if (valueStr == null) {
 			// okay, the variable is not defined at all,
 			// so skip all lines until the relevant #next:
@@ -1469,6 +1470,17 @@ public class Preprocessor {
 	
 	public TextFileManager getTextFileManager() {
 		return this.textFileManager;
+	}
+
+	/**
+	 * @param manager
+	 */
+	public void setCssAttributesManager(CssAttributesManager manager) {
+		this.cssAttributesManager = manager;
+	}
+	
+	public CssAttributesManager getCssAttributesManager() {
+		return this.cssAttributesManager;
 	}
 
 }

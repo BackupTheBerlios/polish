@@ -34,7 +34,10 @@ import java.util.regex.Pattern;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
+import de.enough.polish.preprocess.CssAttribute;
+import de.enough.polish.preprocess.CssAttributesManager;
 import de.enough.polish.preprocess.CustomPreprocessor;
+import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.StringList;
@@ -54,7 +57,7 @@ import de.enough.polish.util.StringUtil;
 public class PolishPreprocessor extends CustomPreprocessor {
 	
 	private boolean isTickerUsed;
-	private File abbreviationsFile;
+	private File stylePropertyIdsFile;
 	private File tickerFile;
 	private IntegerIdGenerator idGenerator;
 	private boolean isPopupUsed;
@@ -67,15 +70,35 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	//protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\([\\w|\\.]+\\s*\\)";
 	protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\(.+\\)";
 	protected static final Pattern SET_CURRENT_ITEM_PATTERN = Pattern.compile( SET_CURRENT_ITEM_STR );
+	private CssAttributesManager cssAttributesManager;
 
 	/**
 	 * Creates a new uninitialised PolishPreprocessor 
 	 */
 	public PolishPreprocessor() {
 		super();
-		this.idGenerator = new IntegerIdGenerator();
 	}
+	
+	
 
+	public void init(Preprocessor processor) {
+		super.init(processor);
+		this.idGenerator = new IntegerIdGenerator();
+		this.cssAttributesManager = processor.getCssAttributesManager();
+		if (this.cssAttributesManager != null) {
+			CssAttribute[] attributes = this.cssAttributesManager.getAttributes();
+			for (int i = 0; i < attributes.length; i++) {
+				CssAttribute attribute = attributes[i];
+				int id = attribute.getId();
+				if (id != -1) {
+					this.idGenerator.addId( attribute.getName(), id );
+				} else {
+					this.idGenerator.getId( attribute.getName(), true );
+				}
+			}
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.LineProcessor#notifyDevice(de.enough.polish.Device, boolean)
 	 */
@@ -93,12 +116,12 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			this.isPopupUsed = false;
 			
 			// init abbreviations of style-properties:
-			this.abbreviationsFile = new File( device.getBaseDir() + File.separatorChar 
+			this.stylePropertyIdsFile = new File( device.getBaseDir() + File.separatorChar 
 					+ "abbreviations.txt" );
 			HashMap idsByAttribute;
-			if (this.abbreviationsFile.exists()) {
+			if (this.stylePropertyIdsFile.exists()) {
 				try {
-					idsByAttribute = FileUtil.readPropertiesFile( this.abbreviationsFile );
+					idsByAttribute = FileUtil.readPropertiesFile( this.stylePropertyIdsFile );
 				} catch (IOException e) {
 					e.printStackTrace();
 					throw new BuildException("Unable to load abbreviations of style-attributes: " + e.toString() + ". Please try a clean rebuild.", e );
@@ -123,10 +146,10 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		
 		// write found abbreviations:
 		try {
-			FileUtil.writePropertiesFile( this.abbreviationsFile, this.idGenerator.getIdsMap() );
+			FileUtil.writePropertiesFile( this.stylePropertyIdsFile, this.idGenerator.getIdsMap() );
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException("Unable to write abbreviations of style-properties to [" + this.abbreviationsFile.getAbsolutePath() + "]: " + e.toString() + ". Please try a clean rebuild.", e );
+			throw new BuildException("Unable to write IDs of style-properties to [" + this.stylePropertyIdsFile.getAbsolutePath() + "]: " + e.toString() + ". Please try a clean rebuild.", e );
 		}
 	}
 	

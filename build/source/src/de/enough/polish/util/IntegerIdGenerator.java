@@ -123,4 +123,15 @@ public class IntegerIdGenerator {
 			return id.intValue();
 		}
 	}
+
+	/**
+	 * Adds a fix ID for a key to this generator.
+	 * 
+	 * @param key the key
+	 * @param id the ID
+	 */
+	public void addId(String key, int id) {
+		this.idsByKey.put( key, new Integer( id ) );
+		this.lastId = Math.max( this.lastId, id );
+	}
 }

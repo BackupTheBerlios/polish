@@ -534,6 +534,7 @@ public class PolishTask extends ConditionalTask {
 		// create preprocessor:
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
+		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
 		// init line processors:
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
 		CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
