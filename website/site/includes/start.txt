@@ -80,11 +80,20 @@
 				<a href="<%= basedir %>docs/build-info.html">Info Section</a><br/>
 				<a href="<%= basedir %>docs/build-deviceRequirements.html">Device Requirements Section</a><br/>
 				<a href="<%= basedir %>docs/build-build.html">Build Section</a><br/>
+				<a href="<%= basedir %>docs/build-emulator.html">Emulator Section</a><br/>
 				<a href="<%= basedir %>docs/build-example.html">Example</a><br/>
-				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a><br/>
 				</p>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/build.html">Build</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.resources %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/resources-overview.html">Resources</a></div>
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a><br/>
+				<a href="<%= basedir %>docs/localization.html">Localization</a>
+				</p>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/resources-overview.html">Resources and Localization</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.css %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/css.html">CSS</a></div>
@@ -186,7 +195,9 @@
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
 				<p class="thirdLevel">
 				<a href="<%= basedir %>devices/midp1.html">MIDP/1.0</a><br/>
-				<a href="<%= basedir %>devices/midp2.html">MIDP/2.0</a>
+				<a href="<%= basedir %>devices/midp2.html">MIDP/2.0</a><br/>
+				<a href="<%= basedir %>devices/cldc10.html">CLDC/1.0</a><br/>
+				<a href="<%= basedir %>devices/cldc11.html">CLDC/1.1</a>
 				</p>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>

@@ -5,7 +5,7 @@
 <%include start.txt %>
 	
 	<div id="content">
-	<h1 id="top">The Device-Requirements Section</h1>
+	<h1 id="top">The &lt;deviceRequirements&gt;-Section</h1>
 	<p>
 The optional &lt;deviceRequirements&gt;-section is responsible for selecting the
 devices which are supported by the application. When this section is omitted, the 
@@ -142,7 +142,12 @@ Following capabilities can be checked directly:
 	<tr><td>JavaPlatform</td>
 	 <td>The needed platform, e.g. &quot;MIDP/1.0&quot; or &quot;MIDP/2.0+&quot;.
 	 <br/><code>&lt;requirement name=&quot;JavaPlatform&quot; value=&quot;MIDP/2.0+&quot; /&gt;</code>
-	</td>
+	 </td>
+	</tr>
+	<tr><td>JavaConfiguration</td>
+	 <td>The needed platfconfiguration, e.g. &quot;CLDC/1.1+&quot;.
+	 <br/><code>&lt;requirement name=&quot;JavaConfiguration&quot; value=&quot;CLDC/1.1+&quot; /&gt;</code>
+	 </td>
 	</tr>
 	<tr><td>JavaPackage</td>
 	 <td>Needed APIs, e.g. &quot;nokia-ui, mmapi&quot;:

@@ -32,7 +32,7 @@ For technical reasons the collision detection works only with collision rectangl
 </p><p>
 When a class extends the GameCanvas class, it should call the super-implementations, when one of the methods keyPressed(int), keyReleased(int) or keyRepeated(int) is overridden.
 </p><p>
-The rotation of Sprites is currently only supported for Nokia devices, otherwise the rotation-setting will be ignored.
+The transformation of Sprites is currently only supported for Nokia devices, otherwise the transformation-setting will be ignored.
 </p>
 
 <h2 id="optimizations">Optimizations</h2>
@@ -308,6 +308,14 @@ You might need to adjust the GUI as well. When you are using J2ME Polish's advan
 	this.form.append( item );
 //#endif
 </pre></p>
+<p>
+Another common issue is the usage of a fullscreen-mode. The setFullScreenMode(boolean)-method of the Canvas-class is only available on MIDP/2.0 devices. For MIDP/1.0 devices, the fullscreen-mode can be activated by defining the preprocessing-variable &quot;polish.GameCanvas.useFullScreen&quot; (see below), but the  setFullScreenMode(boolean)-method can still be used for MIDP/2.0 devices:
+<pre>
+//#if polish.midp2
+	setFullScreenMode( true );
+//#endif
+</pre>
+</p>
 <p>
 You can use a multitude of preprocessing symbols and variables. Which of these are available depends on the device and the current setup. Please compare J2ME Polish's <a href="../devices-overview.html">device-database</a> and the  <a href="preprocessing.html">preprocessing documentation</a> for further information.
 </p>

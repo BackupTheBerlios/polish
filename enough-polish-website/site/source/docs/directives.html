@@ -147,7 +147,7 @@ directives, however, complex terms containing several symbols and variables can 
 	</tr>
 </table>
 <p>
-In the terms the boolean operators &&, ||, ^ and ! can be used. Complex terms can be seperated using normal parenthesisses &quot;(&quot; and &quot;)&quot;. The term arguments for boolean operators are symbols, which are true when they are defined and false otherwise. 
+In the terms the boolean operators &amp;&amp;, ||, ^ and ! can be used. Complex terms can be seperated using normal parenthesisses &quot;(&quot; and &quot;)&quot;. The term arguments for boolean operators are symbols, which are true when they are defined and false otherwise. 
 </p><p>
 Variables can be checked with the comparator ==, &gt;, &lt;, &lt;= and &gt;=.  Arguments for the comparators are variables or constants.
 </p><p>
@@ -155,25 +155,25 @@ A term can include comparators and boolean operators, when the sections are sepe
 </p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Boolean Operator&nbsp;&nbsp;</th><th>Meaning&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr><td>&&</td>
+	<tr><td>&amp;&amp; or &quot;and&quot;</td>
 	 <td>and</td>
 	 <td>Both arguments/symbols need to be defined:<br/>
-true && true = true<br/>
-true && false = false && true = false && false = false</td>
+true &amp;&amp; true = true<br/>
+true &amp;&amp; false = false &amp;&amp; true = false &amp;&amp; false = false</td>
 	</tr>
-	<tr><td>||</td>
+	<tr><td>|| or &quot;or&quot;</td>
 	 <td>or</td>
 	 <td>At least one argument/symbol must be defined:<br/>
 true || true = true || false = false || true = true<br/>
 false || false = false</td>
 	</tr>
-	<tr><td>^</td>
+	<tr><td>^ or &quot;xor&quot;</td>
 	 <td>xor</td>
 	 <td>Only and at least one argument/symbol must be defined:<br/>
 true ^ false = false ^ true = true<br/>
 true ^ true = false ^ false = false</td>
 	</tr>
-	<tr><td>!</td>
+	<tr><td>! or &quot;not&quot;</td>
 	 <td>not</td>
 	 <td>The argument/symbol must not be defined:<br/>
 ! false = true<br/>
@@ -233,6 +233,20 @@ Nokia == Nokia = true<br/>
 </pre></td>
 	</tr>
 </table>
+<h3 id="comparing-variable-functions">Using Variable-Functions for Comparing Values</h3>
+<p>
+Some variables have not only different values but also store them in different ways. An example are memory values like the HeapSize which is sometimes defined in kilobytes and sometimes in megabytes. In such situation functions can be used:
+<pre>
+//#if ${ bytes( polish.HeapSize ) } > 102400
+</pre></p><p>
+In the above example the heapsize is compared using the bytes-function. When a function should be used, a dollar-sign and curly parenthesizes needs to embrace the call. 
+</p><p>
+Functions can also be used for fixed values:
+<pre>
+//#if ${ bytes( polish.HeapSize ) } > ${ bytes( 100 kb ) }
+</pre></p><p>
+You will find more information about using functions at the <a href="#variablefunctions">&quot;Using Variables&quot; section</a>.
+</p>
 
 <h2 id="preprocessing-hiding">Hiding Code</h2>
 <p>
@@ -400,9 +414,40 @@ When the variable is not defined, the above example would throw an exception dur
 //#endif
 </pre></p><p>
 This is especially useful for setting configuration values, which can change easily, like Web-URLs and so on.
-The name of the variable needs to be surrounded by a ${}, just like referring to Ant-properties in the build.xml.
-Variables can be defined in the &lt;variables&gt;-element in the build.xml. Other variables are defined in the devices.xml, vendors.xml and groups.xml by the capabilities of the devices, vendors and groups.
+</p><p>
+The name of the variable needs to be surrounded by a Dollar-Sign followed by curly parenthesizes
+<code>(${ variable-name })</code>, just like referring to Ant-properties in the build.xml.
+</p><p>
+Variables can be defined in the &lt;variables&gt;-element in the build.xml. 
+Other variables are defined in the devices.xml, vendors.xml and groups.xml by the capabilities of the devices, vendors and groups.
+These files are located in the installation directory of J2ME Polish.
 </p>
+<h3 id="variablefunctions">Variable-Function</h3>
+<p>
+You can use functions like &quot;uppercase&quot; to change the values. A function is used within the curly  parenthesizes and surrounds the variable-name by normal parenthesizes:
+<pre>
+//#ifdef start-url:defined
+	//#= private String url = "${ lowercase(start-url) }";
+//#else
+	private String url = "http://192.168.101.101";
+//#endif
+</pre>
+</p><p>
+When using function you do not necessarily need a variable - you can also use a direct value. This can be handy when handling with memory values for example:
+<pre>
+//#if ${ bytes( polish.HeapSize ) } > ${ bytes(100 kb) }
+</pre>
+</p><p>
+Following functions can be used:
+</p>
+<ul>
+  <li><b>uppercase</b>: Translates the given value into uppercase. &quot;abc&quot; becomes &quot;ABC&quot; for example.</li>
+  <li><b>lowercase</b>: Translates the given value into lowercase. &quot;ABC&quot; becomes &quot;abc&quot; for example.</li>
+  <li><b>bytes</b>: Calculates the number of bytes of the given memory value. &quot;1 kb&quot; becomes 1024 for example.</li>
+  <li><b>kilobytes</b>: Calculates the (double) number of kilobytes of the given memory value. The value will contain a point and decimal places. &quot;512 bytes&quot; becomes &quot;0.5&quot; for example, &quot;1024 bytes&quot; becomes &quot;1&quot; and so on.</li>
+  <li><b>megabytes</b>: Calculates the (double) number of megabytes of the given memory value.</li>
+  <li><b>gigabytes</b>: Calculates the (double) number of gigabytes of the given memory value.</li>
+</ul>
 
 <h2 id="preprocessing-styles">Setting CSS Styles with #style</h2>
 <p>

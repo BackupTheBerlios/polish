@@ -27,6 +27,7 @@ Symbol
 
 ArrayList
 TextUtil
+Locale
 
 
 #####################################
@@ -114,6 +115,9 @@ Introduction
 Extending
 JavaDoc
 Documentation
-Customimizing:custom
+Customimizing::custom
 Trouble Shooting
 How to::howto
+Localization
+Emulator
+Internationalization::localization

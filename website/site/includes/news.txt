@@ -3,6 +3,46 @@
 	<%index %>
 <%endif %>
 
+<h2 id="1.2pre3">New Beta Release with Localization Support&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-09-18</h2>
+<p>
+	A new preview of <a href="<%= newsbasedir %>downloads/j2mepolish-1.2-pre3.html">J2ME Polish 1.2</a> 
+	is now available with a whole range of new features:
+	<br />
+	full localization/internationalization support, emulators can be started
+	automatically from within J2ME Polish, ProGuard 3.0 as well as ProGuard 2.1 are
+	supported and included, a CLDC/1.1 library is now included, resources
+	can be added when certain conditions are met, and many more features.
+</p>
+
+
+<h2 id="mobilegd-article">Article series on Mobile Game Developer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-09-01</h2>
+<p>
+	<a href="http://www.mobilegd.com" target="_blank">Mobile Game Developer</a>
+	has published an article series explaining the porting of MIDP/2.0
+	games to MIDP/1.0 games with J2ME Polish:
+	<br />
+	<a href="http://www.mobilegd.com/article78.html" target="_blank">J2ME Polish - Introduction and Installation</a><br />
+	<a href="http://www.mobilegd.com/article77.html" target="_blank">Porting MIDP 2.0 Games to MIDP 1.0 Platforms with J2ME Polish</a>	
+</p>
+
+
+<%ifdef news.showAll %>
+
+<h2 id="1.2pre2">Beta release&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-09-04</h2>
+<p>
+	A preview of <a href="<%= newsbasedir %>downloads/j2mepolish-1.2-pre2.html">J2ME Polish 1.2</a> 
+	is now available for users of ProGuard 3.0; internationalisation support is not yet integrated
+	in this preview.
+</p>
+
+<h2 id="roadmapchange">Roadmap change&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-09-02</h2>
+<p>
+	It has been decided to include full internationalization support in the
+	forthcoming J2ME Polish 1.2 release. The <a href="roadmap.html">roadmap</a> has been adjusted to
+	reflect this decision: The 1.2 release will be shipped on 2004-09-27.
+</p>
+
+
 <h2 id="1.1.1release">J2ME Polish 1.1.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-08-24</h2>
 <p>
 	<a href="<%= newsbasedir %>downloads/j2mepolish-1.1.1.html">J2ME Polish 1.1.1</a> 
@@ -28,8 +68,6 @@
 	some tips and tricks on the usage of J2ME Polish.
 </p>
 
-
-<%ifdef news.showAll %>
 
 
 <h2 id="1.0.1release">J2ME Polish 1.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2004-07-28</h2>

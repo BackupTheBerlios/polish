@@ -1,0 +1,291 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.resources %>
+<%set title = J2ME Polish: Documentation %>
+<%set basedir = ../ %>
+<%include start.txt %>
+	
+	<div id="content">
+	<h1 id"top">Localization</h1>
+	<%index %>
+<h2 id="concepts">Concepts</h2>
+<p>
+Often applications should not only be marketed in one country or region, but in several 
+ones. The process of adjusting an application to a specific region is called localization. 
+</p><p>
+J2ME Polish offers a very powerful framework for not only managing the obvious 
+needed translations, but also for adjusting any kind of resources like 
+images or sounds to specific regions. 
+Even enhanced features like locale-aware date-formatting is no problem with J2ME Polish. 
+Traditionally localization involved loading the localized messages from a file 
+during runtime and retrieving these messages with Hashtable-keys. 
+This significantly slows down a localized application and also enlarges 
+the application size. A unique feature of J2ME Polish is that the translations 
+are actually directly embedded into the source-code, so in most cases a 
+localized application has absolutely no overhead at all compared to a 
+non-localized application - both in size as well as in performance. 
+</p><p>
+The localization framework extends the concepts of the 
+<a href="resource-assembling.html">resource assembling</a>, 
+so that you can for example provide one Nokia specific resource for each 
+supported locale. The localization is controlled by the 
+<a href="build-build.html#localization">&lt;localization&gt;-element</a>, 
+which is a subelement of the <a href="build-build.html#resources">&lt;resources&gt;-element</a>. 
+</p>
+<h2 id="localization-element">The &lt;localization&gt;-Element and Localized Resource Assembling</h2>
+<p>
+<pre>
+&lt;resources
+	dir=&quot;resources&quot;
+	excludes=&quot;*.txt&quot;
+&gt;
+	&lt;localization locales=&quot;de, en, fr_CA&quot; unless=&quot;test&quot; /&gt;
+	&lt;localization locales=&quot;en&quot; if=&quot;test&quot; /&gt;
+&lt;/resources&gt;
+</pre>
+</p><p>
+The &lt;localization&gt;-element is responsible for defining which locales should be 
+supported. In the above example the locales &quot;de&quot; (German) and &quot;en&quot; 
+(English) are used, unless the test-mode is active, in which case the application 
+is only build for the English locale.
+</p><p>
+Locales are defined using the ISO standard of two lowercase letters for the 
+<a href="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt" target="_blank">language</a> 
+(&quot;en&quot; for English, &quot;de&quot; for German, &quot;fr&quot; for French and so on) 
+and two optional uppercase letters for the 
+<a href="http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html" target="_blank">country</a> 
+(&quot;US&quot; for USA, &quot;DE&quot; for Germany, &quot;FR&quot; for France and so on).
+ Possible combinations separate the language and the region with an underline. You can 
+ localize your application for French speaking Canadians by supporting the 
+ locale &quot;fr_CA&quot; for example.
+</p><p>
+In each used resources-folder you can create a subfolder for a specific locale,
+ e.g. &quot;resources/en&quot; for general English resources and
+  &quot;resources/fr_CA&quot; for resources for the French speaking Canadians. 
+  The usual specification rules also apply here, so a more specific resource 
+  in &quot;resources/Nokia/en&quot; will override a resource with the same 
+  name in &quot;resources/Nokia&quot; when the English locale is used.
+</p>
+<h2 id="translations">Managing Translations</h2>
+<h3 id="localeclass">The Locale Class</h3>
+</p><p>
+The <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a> class is used for the 
+retrieval of translations. It offers three distinct translation methods:
+</p>
+<ul>
+<li><code>static String get( String name )</code>, </li>
+<li><code>static String get( String name, String parameter )</code>, and</li>
+<li><code>static String get( String name, String[] parameters )</code>.</li>
+</ul>
+<p>
+The following code illustrates the usage of these methods:
+<pre>
+import de.enough.polish.util.Locale;
+
+[...]
+
+// getting a simple translation:
+this.menuScreen.append( Locale.get( &quot;menu.StartGame&quot;), null);
+// getting a translation with one parameter:
+this.menuScreen.setTitle( Locale.get( &quot;title.Main&quot;, userName ), null);
+// getting a translation with several parameters:
+String[] parameters = new String[2];
+parameters[0] = userName;
+parameters[1] = enemyName;
+this.textField.setString( Locale.get(&quot;messages.Introduction&quot;, parameters );
+</pre>
+</p><p>
+You need to put the ${polish.home}/import/enough-polish-client.jar on the classpath 
+of your project to use the Locale-class in your IDE.
+</p><p>
+In the &quot;resources/messages.txt&quot; the above localizations need to be defined:
+<pre>
+menu.StartGame=Start Tickle Fight
+# the title of the main-screen with the user-name as the only parameter:
+title.Main=Welcome {0}!
+# the intro for a new game - with following parameters:
+# {0}: the name of the player
+# {1}: the name of the remote or computer player
+messages.Introduction={1} threatens to tickle you!\n{0} against {1} is loading...
+</pre>
+</p><p>
+As you can see in the above example you can use parameters in the translations, 
+the first parameter is {0}, the second {1} and so on. You can also use any Java 
+specific characters, e.g. &quot;\t&quot; for a tab or &quot;\&quot;&quot; for using a 
+quotation mark.
+</p><p>
+The translations are embedded in the actual code during the preprocessing phase, 
+if you have a look at the preprocessed code, you will find following code:
+<pre>
+import de.enough.polish.util.Locale;
+
+[...]
+
+// getting a simple translation:
+this.menuScreen.append( &quot;Start Tickle Fight&quot;, null);
+// getting a translation with one parameter:
+this.menuScreen.setTitle( &quot;Welcome &quot; + userName + &quot;!&quot;, null);
+// getting a translation with several parameters:
+String[] parameters = new String[2];
+parameters[0] = userName;
+parameters[1] = enemyName;
+this.textField.setString( Locale.get(0, parameters );
+</pre>
+</p><p>
+The translations for the first two Locale-methods are directly embedded into the source-code,
+so there is no performance or size impact compared to a non-localized application at all 
+for these kinds of translations. 
+Only for the third method a call to the Locale class is actually made, but in that call 
+the former String key &quot;messages.Introduction&quot; is transformed to a 
+simple integer, thus saving valuable bytes as well as ensuring a fast 
+retrieval of the resource in question. 
+</p>
+<h3 id="definingtranslations">Defining Translations</h3>
+<p>
+All default messages are defined in &quot;resources/messages.txt&quot;, all German 
+messages in &quot;resources/de/messages.txt&quot; and all French Canadian 
+resources in &quot;resources/fr_CA/messages.txt&quot;. You can also use the 
+files &quot;resources/messages.txt&quot;, &quot;resources/messages_de.txt&quot; 
+and &quot;resources/messages_fr_CA.txt&quot; if you prefer to have all translations in 
+one folder. The name of the messages-files can be adjusted with the 
+&quot;messages&quot;-attribute of the &lt;localization&gt;-element by the way.
+</p><p>
+The translations can be adjusted by the usual hierarchy of the resource assembling, so 
+if you have Nokia-specific translations, these can be defined in the 
+&quot;resources/Nokia/messages.txt&quot; etc. 
+When an application is localized for the Nokia/6600 phone and the 
+German (&quot;de&quot;) language, J2ME Polish tries to find a 
+translation in following places:
+</p>
+<ol>
+<li>resources/Nokia/6600/de/messages.txt</li>
+<li>resources/Nokia/6600/messages_de.txt</li>
+<li>resources/[group-name]/de/messages.txt, e.g. resources/Series60/de/messages.txt</li>
+<li>resources/[group-name]/messages_de.txt, , e.g. resources/Series60/messages_de.txt</li>
+<li>resources/Nokia/de/messages.txt</li>
+<li>resources/Nokia/messages_de.txt</li>
+<li>resources/de/messages.txt</li>
+<li>resources/messages_de.txt</li>
+</ol>
+<p>
+When the translation is still not found the same hierarchy is searched again, 
+but this time the default messages.txt file is used. If the 
+translation cannot be found, J2ME Polish will report the error and 
+stop the build. When also a region is specified 
+(e.g. &quot;fr_CA&quot; for French Canadian), J2ME Polish will first try to 
+get a specific &quot;fr_CA&quot; message, e.g. from 
+&quot;resources/Nokia/6600/fr_CA/messages.txt&quot;, secondly the translation will 
+be searched for the language, e.g. 
+&quot;resources/Nokia/6600/fr/messages.txt&quot;, before the translation is retrieved 
+from the default messages-file.
+</p><p>
+In the actual translation files you can insert comments by starting the line 
+with a sharp-sign (#). Like in normal Java internationalization you can 
+use parameters within the translations, which are denoted by {0}, {1}, {2} and so on:
+<pre>
+menu.StartGame=Start Tickle Fight
+# the title of the main-screen with the user-name as the only parameter:
+title.Main=Welcome {0}!
+# the intro for a new game - with following parameters:
+# {0}: the name of the player
+# {1}: the name of the remote or computer player
+messages.Introduction={1} threatens to tickle you!\n{0} against {1} is loading...
+</pre></p>
+<h3 id="variables">Setting and Using Localized Variables</h3>
+<p>
+You can set localized variables just by defining them in the appropriate messages-file. 
+Variable-definitions need to start with either &quot;var:&quot; or &quot;variable:&quot;:
+<pre>
+var:VirtualCurrency=Nuggets
+</pre></p><p>
+Such variables can also be used within the translations (of course normal variables can also be used):
+<pre>
+# The player has won some nuggets, {0} specifies the number of won nuggets:
+messages.YouHaveWon=Congrats! You have won {0} ${polish.Vendor}-${VirtualCurrency}!
+</pre></p><p>
+Naturally the variables can be used during the usual preprocessing in the Java source
+code as well:
+<pre>
+//#= String virtualCurrency = &quot;${VirtualCurrency}&quot;;
+</pre></p><p>
+<h3 id="attributes">Using Localized Attributes</h3>
+<p>
+Some JAR- or MANIFEST-attributes need to be localized as well, e.g. the description 
+of the application. This can be done by defining such 
+MIDlet-attributes in the appropriate messages-file:
+<pre>
+MIDlet-Description=A game where you need to tickle your enemies!
+MIDlet-Name=Tickle-Fight
+</pre></p><p>
+Please compare the documentation of the <a href="build-info.html">&lt;info&gt;-section</a>
+for learning the names of the MIDlet-attributes.
+</p>
+<h2 id="utilities">Coping with Dates and Currencies</h2>
+<p>
+The <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a> class offers some help for dealing with localized content:
+</p>
+<ul>
+  <li><code>static String formatDate( Calendar calendar )</code> formats a date specific to the current locale, this method is also available for Date and long.</li>
+  <li><code>static String LANGUAGE</code> is a field holding the ISO language code.</li>
+  <li><code>static String COUNTRY</code> is a field holding the ISO country code. This is null when no country is used in the current locale.</li>
+  <li><code>static String DISPLAY_LANGUAGE</code> is a field holding the localized language name, e.g. &quot;Deutsch&quot; for German.</li>
+  <li><code>static String DISPLAY_COUNTRY</code> is a field holding the localized country name, e.g. &quot;Deutschland&quot; for Germany. This is null when no country is used in the current locale.</li>
+  <li><code>static String CURRENCY_SYMBOL</code> is a field holding the symbol of the used currency, e.g. &quot;$&quot; or &quot;&euro;&quot;. This is null when no country is used in the current locale.</li>
+  <li><code>static String CURRENCY_CODE</code> is a field holding the three-letter code of the used currency, e.g. &quot;USD&quot; or &quot;EUR&quot;. This is null when no country is used in the current locale.</li>
+</ul>
+<h2 id="easymistakes">Common Traps</h2>
+<h3 id="jarname">Adjusting the JAR-name</h3>
+<p>
+You need to remember to adjust the JAR-name of the application in the &lt;info&gt;-section of the build.xml, so that the locale is included, otherwise only the last localized application is actually written to the &quot;dist&quot; folder. You can use the variables ${polish.locale} e.g. &quot;fr_CA&quot;, ${polish.language} e.g. &quot;fr&quot;, and ${polish.country} e.g. &quot;CA&quot;  in the jarName-attribute.
+</p><p>
+An example jarName-attribute is the following:
+<pre>
+&lt;info [...]
+	jarName=&quot;${polish.vendor}-${polish.name}-${polish.locale}-example.jar&quot; 
+</pre>
+</p>
+
+<h3 id="escaping characters">Using Quotation Marks and Other Special Characters in Translations</h3>
+<p>
+You can use quotation marks as well as any special character if you escape them directly, usually with a backslash-character &quot;\&quot; at the start, e.g.:
+<br />Quotation marks: <code>\&quot;</code>
+<br />Tab: <code>\t</code>
+<br />Backslash: <code>\\</code>
+<br />
+and so on.
+</p><p>
+In the translations all standard Java escape sequences are supported.
+</p>
+<h3 id="localecalls">Invalid Locale Calls</h3>
+<p>
+Please ensure that the key of the translation is always given directly instead of using a variable, otherwise J2ME Polish will not be able to embed the translation correctly and you end up with compile errors. The following example must not be used:
+<pre>
+// never do this:
+String key = &quot;menu.StartGame&quot;;
+this.menuScreen.append( Locale.get( key ), null);
+</pre>
+</p><p>
+Instead use the key directly in the call as in this example:
+<pre>
+// this is just fine:
+this.menuScreen.append( Locale.get( &quot;menu.StartGame&quot; ), null);
+</pre></p><p>
+When you have several parameters, the parameters need to be given in a variable, otherwise J2ME Polish is again unable to process the call correctly:
+<pre>
+// never do this:
+this.menuScreen.append( Locale.get( &quot;game.StartMessage&quot; ), new String[]{ userName, enemyname } );
+</pre></p><p>
+Instead define the parameters before the actual call:
+<pre>
+// this is just fine:
+String[] parameters = new String[]{ userName, enemyname };
+this.menuScreen.append( Locale.get( &quot;game.StartMessage&quot; ), parameters );
+</pre></p>
+<h2 id="further">Going Further</h2>
+<p>Please refer to the Java Doc documentation of the Locale class for more
+information:
+<br />
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a>
+</p>
+
+	
+<%include end.txt %>

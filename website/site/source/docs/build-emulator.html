@@ -1,0 +1,117 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.build %>
+<%set title = J2ME Polish: Documentation %>
+<%set basedir = ../ %>
+<%include start.txt %>
+	
+	<div id="content">
+	<h1 id="top">The &lt;emulator&gt;-Section</h1>
+	<%index %>
+	<p>
+The &lt;emulator&gt;-element is responsible for launching any emulators after the application has been build.
+	<pre>
+&lt;emulator
+	wait=&quot;true&quot;
+	trace=&quot;class&quot;
+	preferences=&quot;myemulator.properties&quot;
+	securityDomain=&quot;trusted&quot;
+	enableProfiler=&quot;true&quot;
+	enableMemoryMonitor=&quot;true&quot;
+	enableNetworkMonitor=&quot;true&quot;
+	if=&quot;test&quot;
+	&gt;
+	&lt;parameter name=&quot;-Xjam&quot; 
+			value=&quot;transient=http://localhost:8080/${polish.jadName}&quot; /&gt;
+
+&lt;/emulator&gt;
+	</pre>
+	</p>
+	<p>In the above example the emulator is only started, when the &quot;test&quot;-property is &quot;true&quot;.</p>
+	
+	<h2 id="emulator-attributes">Supported Attributes</h2>
+	<p>Following attributes are supported by the &lt;emulator&gt;-element:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>emulator-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>wait</td>
+ 	 <td>No</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Defines whether the J2ME Polish task should wait until the emulator is finished. This is needed when any output should be shown on the Ant-output, therefore wait defaults to &quot;yes&quot;. </td>
+	</tr>
+	<tr><td>trace</td>
+ 	 <td>No</td>
+	 <td>Defines if any virtual machine activities should be shown on the output. Possible values are &quot;class&quot; for showing the loading of classes, &quot;gc&quot; for activities of the garbage collection and &quot;all&quot; for a very extensive output. Several values can be given when they are separated by comma, e.g &quot;class,gc&quot;. </td>
+	</tr>
+	<tr><td>securityDomain</td>
+ 	 <td>No</td>
+	 <td>The MIDP/2.0 security-domain of the application: either "trusted", "untrusted", "minimum" or "maximum". In &quot;trusted&quot; and &quot;maximum&quot; mode all security sensitive activities are allowed; in the &quot;untrusted&quot; mode the user will be questioned before each security sensitive activity and in the &quot;minimum&quot; mode any security sensitive activity will not be allowed. </td>
+	</tr>
+	<tr><td>enableProfiler</td>
+ 	 <td>No</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When activated the  performance will be profiled during the execution of the application. The results will be shown when the emulator itself is closed.</td>
+	</tr>
+	<tr><td>enableMemoryMonitor</td>
+ 	 <td>No</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When activated the memory usage of the application will be shown.</td>
+	</tr>
+	<tr><td>enableNetworkMonitor</td>
+ 	 <td>No</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When any network activities are done, a monitor will show details of the sent and received data.</td>
+	</tr>
+	<tr><td>preferences</td>
+ 	 <td>No</td>
+	 <td>The file which contains the emulator-preferences. When such a file is used, the profiler and monitor settings are ignored. Please consult the documentation of the Wireless Toolkit for detailed information about the preferences file.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; when the &lt;emulator&gt;-element should be executed.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; when the &lt;emulator&gt;-element should be executed.</td>
+	</tr>
+	</table>
+	
+	<h2 id="emulator-parameter">The &lt;parameter&gt; Subelement</h2>
+	<p>
+	The &lt;emulator&gt;-element supports the nested subelement &lt;parameter&gt; for defining additional command line parameters:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>parameter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>name</td>
+ 	 <td>Yes</td>
+	 <td>The name of the parameter.</td>
+	</tr>
+	<tr><td>value</td>
+ 	 <td>Yes</td>
+	 <td>
+	 The value of the parameter, the value can use any J2ME Polish or user-defined variable, the following variables are especially useful:
+<br /><code>${polish.jadName}</code>: The name of the JAD-file
+<br /><code>${polish.jadPath}</code>: The absolute path of the JAD-file
+<br /><code>${polish.jarName}</code>: The name of the JAR-file
+<br /><code>${polish.jarPath}</code>: The absolute path of the JAR-file
+<br />
+When only a command-line switch should be defined, just define an empty value, e.g.
+<pre>
+&lt;parameter name=&quot;-Xsomething&quot; value=&quot;&quot; /&gt;
+</pre>
+	 </td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this parameter should be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this parameter should be used.</td>
+	</tr>
+	</table>
+	
+	<h2 id="emulator-skin">Setting the Emulator Skin</h2>
+	<p>
+	J2ME Polish uses the device-database to determine the correct emulator, it uses the &quot;Emulator.Skin&quot;-capability. This is the name which can be found in the &quot;${wtk.home}/wtklib/devices&quot; folder, e.g. &quot;SonyEricsson_P900&quot; etc. When no &quot;Emulator.Skin&quot;-capability is found, the current default emulator will be started instead. When the wrong emulator is started, please check if the &quot;Emulator.Skin&quot;-capability has been set in the &quot;${polish.home}/devices.xml&quot; file. If that capability is missing, please report it also to j2mepolish@enough.de so that the device database can be improved.
+	</p>
+	<p>
+	In the current release only emulators which are based on the Wireless Toolkit can be launched automatically. Other popular emulator-types will follow soon.
+	</p>
+	
+<%include end.txt %>

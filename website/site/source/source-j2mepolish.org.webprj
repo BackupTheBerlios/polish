@@ -147,5 +147,11 @@
 <item url="downloads/j2mepolish-1.1.html" />
 <item url="docs/how-tos.html" />
 <item url="downloads/j2mepolish-1.1.1.html" />
+<item url="downloads/j2mepolish-1.2.html" />
+<item url="downloads/j2mepolish-1.2-pre2.html" />
+<item url="downloads/j2mepolish-1.2-pre3.html" />
+<item url="docs/localization.html" />
+<item url="docs/build-emulator.html" />
+<item url="docs/resources-overview.html" />
 </project>
 </webproject>

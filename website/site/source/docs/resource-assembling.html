@@ -1,15 +1,21 @@
 <%define inDocumentationSection %>
-<%define inDocumentationSection.build %>
+<%define inDocumentationSection.resources %>
 <%set title = J2ME Polish: Documentation %>
 <%set basedir = ../ %>
 <%include start.txt %>
 
 	<div id="content">
 	<h1 id="top">Assembling of Resources</h1>
+	<%index %>
+	<h2 id="concepts">Concepts</h2>
 	<p>
-	During the build process resources like images, sound files etc. are assembled for each device.
+	During the build process resources like images, sound files etc. 
+	are assembled autmatically for each device.
 	</p><p>
-Resources for all devices will be placed into the &quot;resources&quot; folder (when no other directory has been specified with the &quot;resDir&quot;-attribute of the &lt;build&gt;-element in the &quot;build.xml&quot; file).
+Resources for all devices will be placed into 
+the &quot;resources&quot; folder (when no other directory has been specified 
+in the <a href="build-build.html#resources">&lt;resources&gt;-element</a> or with the 
+&quot;resDir&quot;-attribute of the <a href="build-build.html">&lt;build&gt;-element</a> in the &quot;build.xml&quot; file).
 	</p><p>
 Resources for devices of specific vendors  can be placed into the &quot;resources/[vendor-name]&quot; folder, e.g. the &quot;resources/Nokia&quot; folder for Nokia devices. Resources for a specific device can be placed into the &quot;resources/[vendor-name]/[device-name]&quot; folder, e.g. the folder &quot;resources/Nokia/3650&quot; for Nokia/3650 devices. 
 	</p><p>
@@ -24,7 +30,9 @@ Image.createImage( &quot;/hello.png&quot; );
 	</p><p>
 	The adjustments of designs for different devices is described in the 
 	<a href="css-groups.html">CSS-documentation</a>.
-	</p><p>
+	</p>
+	<h2 id="groups">Often Used Groups</h2>
+	<p>
 For a complete list of groups for a specific device, please refer to the 
 <a href="../devices-overview.html">Device Database</a>.
 <br />Here are some examples:
@@ -130,4 +138,55 @@ For a complete list of groups for a specific device, please refer to the
 	</tr>
 	</table>
 
+	<h2 id="finetune">Fine Tuning the Resource Assembling</h2>
+	<p>
+	Sometimes it is necessary to adjust the resource assembling. 
+	</p><p>
+	<pre>
+Imagine the situation where you have an application which uses MP3 soundfiles when the device supports MP3, and MIDI soundfiles when the device supports MIDI. In the source code you can use the preprocessing symbols &quot;polish.audio.mp3&quot; and &quot;polish.audio.midi&quot; to distinguish between these cases:
+//#ifdef polish.audio.mp3
+	// okay play the mp3 sound
+//#elifdef polish.audio.midi
+	// play midi sound instead
+//#endif
+</pre>
+</p><p>
+The situation is different in the resource assembling step, though. Obviously you can put all MP3-files into the &quot;resources/mp3&quot; folder and all MIDI-files into the &quot;resources/midi&quot;-folder, so that these resources are available when they are needed. But for devices which support both MP3 as well as MIDI sound, the application will contain the MIDI files as well, even though only the MP3 files are actually needed.
+</p><p>
+For such cases you can define file-sets in the build.xml which will be included when specific conditions are fulfilled:
+<pre>
+&lt;resources
+	dir=&quot;resources&quot;
+	excludes=&quot;readme*&quot; 
+&gt;
+	&lt;fileset 
+		dir=&quot;resources/multimedia&quot; 
+		includes=&quot;*.mp3&quot; 
+		if=&quot;polish.audio.mp3&quot; 
+	/&gt;
+	&lt;fileset 
+		dir=&quot;resources/multimedia&quot; 
+		includes=&quot;*.mid&quot; 
+		if=&quot;polish.audio.midi and not polish.audio.mp3&quot; 
+	/&gt;
+&lt;/resources&gt;
+</pre>
+</p><p>
+In the above example MIDI files are only included when two conditions are met:
+<br />1) The device supports MIDI sound
+<br />2) The device does not support MP3 sound.
+</p><p>
+The <a href="build-build.html#resources">&lt;resources&gt;-element</a> is a subelement of 
+the <a href="build-build.html">&lt;build&gt;-section</a>. 
+An often used attribute is the &amp;quot;exclude&amp;quot;-attribute which specifies any files
+ which should not be included into the application bundle. You can have readme-files 
+ for example with background information for designers. In the above example all 
+ files starting with &amp;quot;readme&amp;quot; are excluded from the final 
+ application JAR file.
+</p><p>
+The &lt;resources&gt;-element is also responsible for the localization of the application, which is discussed in the following chapter.
+	</p><p>
+On a final note please remember not to use the &amp;quot;resDir&amp;quot;-attribute of the &lt;build&gt;-element when you use the &lt;resources&gt;-element, since this will yield unpredictable results.
+	</p>
+	
 <%include end.txt %>

@@ -7,6 +7,7 @@
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
 <property name="Version" value="1.1.1" />
+<property name="BetaVersion" value="1.2-pre3" />
 	
 <target name="clean">
 	<property name="clean" value="true" />
@@ -89,7 +90,9 @@
 		keywordsFile="keywords.txt"
 		>
 		<variable name="PolishVersion" value="${Version}" />
+		<variable name="BetaVersion" value="${BetaVersion}" />
 		<variable name="LatestDownload" value="j2mepolish-${Version}.html" />
+	 	<variable name="LatestBetaDownload" value="j2mepolish-${BetaVersion}.html" />
 		<variable name="Author" value="Robert Virkus" />
 		<variable name="basedir" value="" />
 		<variable name="javadocdir" value="" />
