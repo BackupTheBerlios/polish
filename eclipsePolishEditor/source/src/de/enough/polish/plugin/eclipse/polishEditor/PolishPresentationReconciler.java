@@ -25,12 +25,9 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor;
 
+import org.eclipse.jdt.internal.ui.text.JavaPresentationReconciler;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextInputListener;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
 
 /**
  * <p></p>
@@ -42,7 +39,7 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class PolishPresentationReconciler extends PresentationReconciler {
+public class PolishPresentationReconciler extends JavaPresentationReconciler {
 
     class PolishTextInputListener implements ITextInputListener{
 
@@ -64,9 +61,10 @@ public class PolishPresentationReconciler extends PresentationReconciler {
         
     }
     
-    private ITextViewer viewer;
-    private PolishTextInputListener polishTextInputListener = new PolishTextInputListener();
+    //private ITextViewer viewer;
+    //private PolishTextInputListener polishTextInputListener = new PolishTextInputListener();
     
+    /*
     public void install(ITextViewer newViewer) {
         super.install(newViewer);
         this.viewer= newViewer;
@@ -77,11 +75,55 @@ public class PolishPresentationReconciler extends PresentationReconciler {
         super.uninstall();
         this.viewer.removeTextInputListener(this.polishTextInputListener);
     }
+    */
     
-    
-    protected TextPresentation createPresentation(IRegion damage,
-            IDocument document) {
-        // TODO ricky implement createPresentation
-        return super.createPresentation(damage, document);
-    }
+//    protected TextPresentation createPresentation(IRegion damage, IDocument document) {
+//        try {
+//			if (fRepairers == null || fRepairers.isEmpty()) {
+//				TextPresentation presentation= new TextPresentation(damage, 1);
+//				presentation.setDefaultStyleRange(new StyleRange(damage.getOffset(), damage.getLength(), null, null));
+//				return presentation;
+//			}
+//			
+//			TextPresentation presentation= new TextPresentation(damage, 1000);
+//			
+//			ITypedRegion[] partitioning= TextUtilities.computePartitioning(document, getDocumentPartitioning(), damage.getOffset(), damage.getLength(), false);
+//			for (int i= 0; i < partitioning.length; i++) {
+//				ITypedRegion r= partitioning[i];
+//				IPresentationRepairer repairer= getRepairer(r.getType());
+//				if (repairer != null)
+//					repairer.createPresentation(presentation, r);
+//			}
+//			
+//			return presentation;
+//			
+//		} catch (BadLocationException x) {
+//		}
+//		
+//		return null;
+//        
+//        
+//        
+//        
+//        
+//        
+//        TextPresentation textPresentation = super.createPresentation(damage, document);
+//        
+//        ITypedRegion[] partitioning;
+//        try {
+//            partitioning = TextUtilities.computePartitioning(document, IPolishContentTypes.POLISH_PARTITIONING, damage.getOffset(), damage.getLength(), false);
+//        } catch (BadLocationException exception) {
+//            System.out.println("PolishPresentationReconciler.createPresentation():badLocaltionException:"+exception);
+//            return null;
+//        }
+//        for (int i= 0; i < partitioning.length; i++) {
+//			ITypedRegion r= partitioning[i];
+//			IPresentationRepairer repairer= getRepairer(r.getType());
+//			if (repairer != null)
+//				repairer.createPresentation(textPresentation, r);
+//		}
+//        return textPresentation;
+//    }
+   
+   
 }

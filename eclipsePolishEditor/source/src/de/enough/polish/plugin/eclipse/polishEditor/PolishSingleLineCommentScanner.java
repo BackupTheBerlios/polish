@@ -78,8 +78,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         rule.setDefaultToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
         rule.setDirectiveToken(getToken(IJavaColorConstants.JAVA_KEYWORD));
         rule.setNameToken(getToken(IJavaColorConstants.JAVA_STRING));
-        
-        setDefaultReturnToken(getToken(IJavaColorConstants.JAVA_STRING));
+        setDefaultReturnToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
         
         List rules = new ArrayList();
         rules.add(rule);

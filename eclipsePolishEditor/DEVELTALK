@@ -5,13 +5,13 @@ Problems:
 The folding mechanism can divide block directives.
 
 
-Coding:
+Decision of design
 
-Big Problem: We need to register our own partitioner. Every class in jdt uses
-JavaPlugin.getJavaTextTools().getPartitioner(). How do we subclass JavaTextTools and register it
-with the JavaPlugin?? When we subclass, the new object must be registered with the remaining classes. But
-they can only be tuned by subclassing.
+syntax highlighting: overload the getSingleLineCommentScanner from JavaSourceViewerConfiguration.
+Having a own partition is difficult because it would overlap with content type SINGLE_LINE_COMMENT.
+Alternative: overload FastJavaPartitionScanner and return new content type for //#. Problems: Use of partitions is
+hardwired everywhere in the jdt
 
-One solution: simply use the singleLineScanner and reimplement it... But that will not do the trick because
-others use JavaTextTools.getSingleLineScanner()... AND setJavaSourceViewerConfiguration() must be called
-somewhere. But where?
+
+
+

@@ -39,6 +39,7 @@
          </editor>
     </extension>
     
+    <!--
     <extension
     		id="PolishDocumentSetupParticipant"
 		name="PolishDocumentSetupParticipant"
@@ -48,5 +49,5 @@
 			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant">
 		</participant>
 	</extension>
-	
+	-->
 </plugin>

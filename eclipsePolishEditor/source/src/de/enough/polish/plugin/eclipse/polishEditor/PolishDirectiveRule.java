@@ -57,17 +57,46 @@ public class PolishDirectiveRule implements IRule {
     private IToken nameToken;
     
     private String REG_EX_PATTERN =
-        "(//#def)" + "|" +
-        "(//#else)" + "|" +
-        "(//#ifdef)" + "|" +
-        "(//#if)" + "|" +
-        "(//#elif)" + "|" +
-        "(//#endif)" + "|" +
-        "(//#debug)" + "|" +
-        "([a-z\\.]+)" + "|" +
-        "([ ]+)"
+        "(//#def)" + "|" + //1
+        "(//#else)" + "|" + //2
+        "(//#ifdef)" + "|" + //3 // Order is important: beware that the longer sequence is before the shorter one if both have same prefix.
+        "(//#if)" + "|" + //4
+        "(//#elif)" + "|" + //5
+        "(//#endif)" + "|" + //6
+        "(//#debug)" + "|" + //7
+        "(//#=)" + "|" + //8
+        "([a-zA-Z\\.]+)" + "|" + //9
+        "(//)" + "|" + //10
+        "([ ]+)" + "|" + //11
+        "(\\$\\{|\\})" //12
         ;
     
+    public static final int DIRECTIVE_SYMBOL = 1;
+    public static final int ASSIGNMENT_SYMBOL = 2;
+    public static final int NAME_SYMBOL = 4;
+    public static final int COMMENT_SYMBOL = 8;
+    public static final int FUNCTION_SYMBOL = 16;
+    
+    private int state;
+    public static final int COMMENT_STATE = 1;
+    public static final int DIRECTIVE_STATE = 2;
+    public static final int ASSIGNMENT_STATE = 4;
+    
+    private boolean isInState(int stateToTest) {
+        return (this.state & stateToTest) == stateToTest;
+    }
+    
+    private void addState(int stateToAdd) {
+        this.state = this.state | stateToAdd;
+    }
+    
+    private void removeState(int stateToRemove) {
+        this.state = this.state & ~stateToRemove;
+    }
+    
+    private void setState(int stateToSet) {
+        this.state = stateToSet;
+    }
     public PolishDirectiveRule() {
         this.pattern = Pattern.compile(this.REG_EX_PATTERN);
         this.matcher = this.pattern.matcher("");
@@ -97,8 +126,8 @@ public class PolishDirectiveRule implements IRule {
         Assert.isNotNull(this.directiveToken);
         Assert.isNotNull(this.nameToken);
         
-        IToken token = null;
-        int c = -255;
+        
+        int c =  Integer.MIN_VALUE;
         int readCount = 0; // number of times read was called.
         this.delimiters = scanner.getLegalLineDelimiters();
 
@@ -118,27 +147,28 @@ public class PolishDirectiveRule implements IRule {
         for(int i = 0; i < readCount; i++) {
             scanner.unread();
         }
-
-        this.matcher.reset(stringBuffer.toString());
-        stringBuffer = null;
-        boolean matchedSomething;
-        matchedSomething = this.matcher.lookingAt();
+        String commentString = stringBuffer.toString();
+        this.matcher.reset(commentString);
+        
+        boolean matcherMatchedSomething;
+        matcherMatchedSomething = this.matcher.lookingAt();
 		
-		if(!matchedSomething){
+		if(!matcherMatchedSomething){
 			//System.out.println("AAA Not matched anything.");
 		    
 		    // We havent matched anything. The default UNDEFINED token is returned.
 			return Token.UNDEFINED;
 		}
 		//System.out.println("AAA matched something.");
+		IToken token = this.defaultToken;
 		
-//		 We have something and is at the offset. Find out what it is.
+//		We have something and is at the offset. Find out what it is.
 		for(int i = 1; i <= this.matcher.groupCount();i++){
 			String value = this.matcher.group(i);
 			
 			// In theory we pass this condition exactly once. the tokenlanguage is LL so only one
 			// group match. And because we have some groups we do have a group != "", too.
-            	if((value != null) && (value.length() > 0)){ // Arcording to API sometimes "" can be a group "a*" as an example.
+            	if((value != null) && (value.length() > 0)){ // Arcording to API sometimes "" can be a group. "a*" as an example.
             	    //System.out.println("AAA group found:"+value+":i:"+i);
             	    int lengthOfValue = value.length();
             	    // Set the scanner to the right offset.
@@ -147,18 +177,34 @@ public class PolishDirectiveRule implements IRule {
 				}
 				
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
-				if(1 <= i && i <= 7) { 
+				if(1 <= i && i <= 8) { 
 				    //System.out.println("AAA token generated:directive.");
+				    this.state = DIRECTIVE_STATE;
 				    token = this.directiveToken;
 				}
-				else if(8 <= i && i <= 8) {
+//				else if(8 <= i && i <= 8) {
+//				    //System.out.println("AAA token generated:name.");
+//				    this.state = (DIRECTIVE_STATE | ASSIGNMENT_STATE);
+//				    token = this.directiveToken;
+//				}
+				else if(9 <= i && i <= 9) {
 				    //System.out.println("AAA token generated:name.");
-				    token = this.nameToken;
+				    if(isInState(DIRECTIVE_STATE)) { // Color only names within a polish directive.
+				        token = this.nameToken;
+				    }
+//				    if(isInState(ASSIGNMENT_STATE)) {
+//				        if(value.)
+//				    }
 				}
-				else {
-				    //System.out.println("AAA token generated:default.");
-				    token = this.defaultToken;
+				else if(10 <= i && i <= 10) {
+				    this.state = COMMENT_STATE;  
 				}
+				else if(12 <= i && i <= 12) {
+				    if(isInState(DIRECTIVE_STATE)) {
+				        token = this.directiveToken;
+				    }
+				}
+				
 				break;
 			}
 		}

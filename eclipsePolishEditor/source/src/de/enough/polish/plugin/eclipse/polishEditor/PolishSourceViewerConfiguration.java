@@ -33,9 +33,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextInputListener;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -115,8 +113,6 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         
     }
 
-    
-    //private PolishTextTools polishTextTools;
     private PolishSingleLineCommentScanner polishSingleLineCommentScanner;
     
 	public PolishSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
@@ -125,31 +121,58 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 	}
 	
 	
-    public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-        System.out.println("PolishSourceViewerConfiguration.getPresentationReconciler():enter.");
-        sourceViewer.addTextInputListener(new TextInputListener());
-        
-        PresentationReconciler presentationReconciler = (PresentationReconciler)super.getPresentationReconciler(sourceViewer);
-        DefaultDamagerRepairer defaultDamagerRepairer = new DefaultDamagerRepairer(getPolishSingleLineCommentScanner());
-        // TODO: track down the use of IJavaPartitions.
-        presentationReconciler.setDamager(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
-        presentationReconciler.setRepairer(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
-        return presentationReconciler;
-    }
+//    public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+//        System.out.println("PolishSourceViewerConfiguration.getPresentationReconciler():enter.");
+//        sourceViewer.addTextInputListener(new TextInputListener()); // Only to track invocation.
+//        
+//        // copy 'n pasted from JavasourceViewerConfiguration.
+//        	PresentationReconciler presentationReconciler = new PolishPresentationReconciler();
+//        	presentationReconciler.setDocumentPartitioning(IPolishContentTypes.POLISH_PARTITIONING); // We dont need this mechanism.
+//
+//		DefaultDamagerRepairer defaultDamagerRepairer;
+//
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getCodeScanner());
+//		presentationReconciler.setDamager(defaultDamagerRepairer, IDocument.DEFAULT_CONTENT_TYPE);
+//		presentationReconciler.setRepairer(defaultDamagerRepairer, IDocument.DEFAULT_CONTENT_TYPE);
+//
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getJavaDocScanner());
+//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_DOC);
+//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_DOC);
+//
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getMultilineCommentScanner());		
+//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
+//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
+//
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getSinglelineCommentScanner());		
+//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+//		
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getStringScanner());
+//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_STRING);
+//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_STRING);
+//		
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getStringScanner());
+//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_CHARACTER);
+//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_CHARACTER);
+//        
+//		// Polish stuff.
+//		defaultDamagerRepairer = new DefaultDamagerRepairer(getPolishSingleLineCommentScanner());
+//        presentationReconciler.setDamager(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
+//        presentationReconciler.setRepairer(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
+//        
+//        return presentationReconciler;
+//    }
     
     public PolishSingleLineCommentScanner getPolishSingleLineCommentScanner() {
         	return this.polishSingleLineCommentScanner;
-    }
+    }    
     
     
-    
-    /*
     protected RuleBasedScanner getSinglelineCommentScanner() {
-        System.out.println("PolishSourceViewerConfiguration.getSinglelineCommentScanner():enter.");
-        //return this.polishTextTools.getSinglelineCommentScanner();
+        //System.out.println("PolishSourceViewerConfiguration.getSinglelineCommentScanner():enter.");
         return this.polishSingleLineCommentScanner;
     }
-    */
+    
     
 	/*// DO NOT USE: the super constructor will use this method which return an not initialzed value (null).
 	protected IColorManager getColorManager() {
