@@ -10,7 +10,7 @@ body {
 	background: #fff url(bodybg.gif) -16px 0 no-repeat;
 	*/
 	background-color:  rgb(235,232,224);
-	background-image: url(bodybg.png);
+	background-image: url(bodybg.gif);
 	background-repeat: no-repeat;
 	background-position: fixed;
 	background-position: right bottom;

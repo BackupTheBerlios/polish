@@ -265,6 +265,6 @@
 		</form>
 		
 		<a class="imageLink" href="<%= basedir %>index.html">
-		<img class="navigationImage" alt="j2mepolish" src="<%= basedir %>images/j2mepolish-logo.png" width="180" height="217"/>
+		<img class="navigationImage" alt="j2mepolish" src="<%= basedir %>images/j2mepolish-logo.gif" width="180" height="217"/>
 		</a>
 	</div> <!-- end of navigation -->
