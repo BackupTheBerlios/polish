@@ -137,6 +137,7 @@
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
 	</device>
 
 	<device
@@ -1178,6 +1179,7 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
+		<capability name="Bugs" value="dateFieldBroken" />
 	</device>
 	
 	<device>
@@ -1205,6 +1207,7 @@
 		<capability name="CameraZoom" value="0" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
+		<capability name="Bugs" value="dateFieldBroken" />
 	</device>
 	
 	<device>
@@ -1234,6 +1237,7 @@
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props" />
 		<capability name="IconSize" value="15x15" />
+		<capability name="Bugs" value="dateFieldBroken" />
 	</device>
 	
 	<device>
@@ -1262,6 +1266,7 @@
 		<capability name="DRM" value="Forward Lock" />
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
 		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V600.props" />
+		<capability name="Bugs" value="dateFieldBroken" />
 	</device>
 	
 	<device>
@@ -1731,6 +1736,7 @@
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
 	</device>
 		
 	<device>
@@ -1745,6 +1751,7 @@
 		<capability name="SoundFormat" value="midi, amr,  WAV, MP3, AAC" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
 	</device>
 		
 	<device>
@@ -1762,6 +1769,7 @@
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
 	</device>
 	
 	<device>
@@ -1777,6 +1785,7 @@
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
 	</device>
 	
 	<device>

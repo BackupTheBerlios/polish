@@ -50,6 +50,7 @@
 		<capability name="key.RightSoftKey" value="22" />
 		<capability name="key.MiddleSoftKey" value="23" />
 		<capability name="key.ChangeInputModeKey" value="48" />
+		<capability name="key.ChangeNumericalAlphaInputModeKey" value="35" />
 		<capability name="TextField.charactersKeyStar" value=" " />		
 	</vendor>
 	

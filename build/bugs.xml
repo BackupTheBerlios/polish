@@ -103,6 +103,18 @@
 		<description>Some special characters are not displayed correctly in small fonts.</description>
 		<solution>Using medium, large or bitmap fonts.</solution>
 	</bug>
+	<bug>
+		<name>dateFieldAcceptsNoNullDate</name>
+		<area>ui</area>
+		<description>The javax.microedition.lcdui.DateField must not get a null Date, otherwise it cannot be changed by the user.</description>
+		<solution>Provide a new Date instance with the setDate( java.util.Date ) after creating the DateField or use the J2ME Polish GUI.</solution>
+	</bug>
+	<bug>
+		<name>dateFieldBroken</name>
+		<area>ui</area>
+		<description>The javax.microedition.lcdui.DateField always returns the initial value, even when the value has been changed by the user.</description>
+		<solution>Use the J2ME Polish GUI (which assumes a &quot;true&quot; polish.DateField.directInputMode when this error is present).</solution>
+	</bug>
 	<!--
 	<bug>
 		<name></name>

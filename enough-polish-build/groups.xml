@@ -48,6 +48,8 @@
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
+		<capability name="Font.medium.oldFirmware" value="16" />
+		<capability name="Font.large.oldFirmware" value="23" />
 	</group>
 
 	<group>
