@@ -654,7 +654,7 @@ implements CommandListener
 		//#else
 			private static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
-		private int currentInputMode; // the current input mode
+		private int inputMode; // the current input mode
 		private boolean nextCharUppercase; // is needed for the FIRST_UPPERCASE-mode
 	
 		private String[] realTextLines; // the displayed lines with spaces (which are otherwise removed)
@@ -673,7 +673,7 @@ implements CommandListener
 		//#ifdef polish.TextField.charactersKey1:defined
 			//#= private static final String charactersKey1 = "${polish.TextField.charactersKey1}";
 		//#else
-			private static final String charactersKey1 = ".,!:/@-+1";
+			private static final String charactersKey1 = ".,!:/@_-+1";
 		//#endif
 		//#ifdef polish.TextField.charactersKey2:defined
 			//#= private static final String charactersKey2 = "${polish.TextField.charactersKey2}";
@@ -731,7 +731,9 @@ implements CommandListener
 			private static final String charactersKeyPound = null;
 		//#endif
 		private static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
-		private boolean caretPositionHasBeenSet;		
+		private boolean caretPositionHasBeenSet;
+		private boolean isNumeric;
+		private boolean isEmail;
 	//#endif
 
 	/**
@@ -815,6 +817,9 @@ implements CommandListener
 			this.addCommand(DELETE_CMD);
 			this.addCommand(CLEAR_CMD);
 			this.itemCommandListener = this;
+		//#endif
+		//#ifdef tmp.directInput
+			setConstraints(constraints);
 		//#endif
 	}
 	
@@ -1127,6 +1132,18 @@ implements CommandListener
 	public void setConstraints(int constraints)
 	{
 		this.constraints = constraints;
+		//#ifdef tmp.directInput
+			if ((constraints & NUMERIC) == NUMERIC) {
+				this.isNumeric = true;
+			}
+			if ((constraints & EMAILADDR) == EMAILADDR) {
+				this.isEmail = true;
+			}
+			if ((constraints & INITIAL_CAPS_WORD) == INITIAL_CAPS_WORD) {
+				this.inputMode = MODE_FIRST_UPPERCASE;
+			}
+		//#endif
+
 	}
 
 	/**
@@ -1148,15 +1165,15 @@ implements CommandListener
 	 * input mode.  If <code>null</code> is passed, the implementation should
 	 * choose a default input mode.
 	 * 
-	 * <p>See Input Modes for a full explanation of input
-	 * modes. </p>
+	 * 
+	 * <p>When the direct input mode is used, J2ME Polish will ignore this call completely.</p>
 	 * 
 	 * @param characterSubset a string naming a Unicode character subset, or null
 	 * @since  MIDP 2.0
 	 */
 	public void setInitialInputMode( String characterSubset)
 	{
-		//#ifdef polish.midp2
+		//#if !tmp.forceDirectInput && polish.midp2
 			if (this.midpTextBox == null) {
 				createTextBox();
 			}
@@ -1426,8 +1443,18 @@ implements CommandListener
 		this.caretPosition++;
 		this.caretColumn++;
 		this.caretX += this.font.charWidth(this.caretChar);
+		if ( (this.inputMode == MODE_FIRST_UPPERCASE && this.caretChar == ' ') 
+				|| ( this.caretChar == '.' )) 
+		{
+			this.nextCharUppercase = true;
+		} else {
+			this.nextCharUppercase = false;
+		}
 		this.caretChar = this.editingCaretChar;
 		setString( myText );
+		if (getScreen() instanceof Form) {
+			notifyStateChanged();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -1480,9 +1507,9 @@ implements CommandListener
 		//#endif
 				//#ifdef tmp.directInput
 					if ( keyCode == KEY_CHANGE_MODE) {
-						this.currentInputMode++;
-						if (this.currentInputMode > MODE_NUMBERS) {
-							this.currentInputMode = MODE_NORMAL;
+						this.inputMode++;
+						if (this.inputMode > MODE_NUMBERS) {
+							this.inputMode = MODE_NORMAL;
 						}
 						if (this.caretChar != this.editingCaretChar) {
 							insertCharacter();
@@ -1523,7 +1550,7 @@ implements CommandListener
 							this.lastKey = keyCode;
 						}
 						newCharacter = alphabet.charAt( this.characterIndex );
-						if ( this.currentInputMode == MODE_UPPERCASE 
+						if ( this.inputMode == MODE_UPPERCASE 
 								|| this.nextCharUppercase ) {
 							newCharacter = Character.toUpperCase(newCharacter);
 						}
@@ -1557,6 +1584,15 @@ implements CommandListener
 										+ myText.substring( this.caretPosition + 1);
 									if (!isLastRow) {
 										setString( myText );
+									} else {
+										if (this.isPassword) {
+											this.passwordText = myText; 
+										} else {
+											this.text= myText;
+										}
+									}
+									if (getScreen() instanceof Form) {
+										notifyStateChanged();
 									}
 									return true;
 								} else if (this.caretRow > 0) {
@@ -1578,6 +1614,10 @@ implements CommandListener
 									this.caretX = this.font.stringWidth(line);
 									this.caretY -= (this.font.getHeight() + this.paddingVertical );
 									setString( myText );
+									if (getScreen() instanceof Form) {
+										notifyStateChanged();
+									}
+									return true;
 								}
 							//# }
 						}				
