@@ -168,10 +168,6 @@ import javax.microedition.lcdui.Image;
  * manufacturers may choose to provide developers with information about
  * device-specific characteristics such as these.
  * <p>
- * <HR>
- * 
- * 
- * @since MIDP 2.0
  */
 public class Sprite extends Layer
 {

@@ -36,8 +36,27 @@ The rotation of Sprites is currently only supported for Nokia devices, otherwise
 
 <h2 id="optimizations">Optimizations</h2>
 <p>
-The TiledLayer implementation has several optional optimizations, which can be triggered 
+The TiledLayer and GameCanvas implementations have several optional optimizations, which can be triggered 
 by defining specific <a href="build-build.html#variables">variables</a> in the &quot;build.xml&quot; file.
+</p>
+<h3 id="fullscreen">Using a Fullscreen-GameCanvas</h3>
+<p>
+The GameCanvas normally uses the &quot;fullscreen&quot;-attribute of the &lt;build&gt;-element to 
+determine whether it should use a fullscreen-canvas. This behavior can be overridden 
+with defining the &quot;polish.GameCanvas.useFullScreen&quot; variable. 
+Allowed value are &quot;yes&quot;, &quot;no&quot; and &quot;menu&quot;. Please note that the &quot;menu&quot; 
+mode (which should be used when commands are added to the GameCanvas) 
+is only supported when the J2ME Polish GUI is used. 
+</p>
+<ul>
+ <li><b>polish.GameCanvas.useFullScreen</b>: Defines whether the fullscreen mode is used, overrides the &quot;fullscreen&quot;-attribute of the &lt;build&gt;-element. Possible values are &quot;yes&quot;, &quot;no&quot; or &quot;menu&quot;.
+ </li>
+</ul>
+<p>
+The following example enables the fullscreen mode for the GameCanvas:
+<pre>
+&lt;variable name=&quot;polish.GameCanvas.useFullScreen&quot; value=&quot;yes&quot; /&gt;
+</pre>
 </p>
 <h3 id="backbuffer">Backbuffer Optimization for the TiledLayer</h3>
 <p>

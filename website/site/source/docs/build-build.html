@@ -56,6 +56,10 @@ With the build-section the actual build process is controlled:
  	 <td>No</td>
 	 <td>The directory containing the sources of J2ME Polish. Defaults to the enough-j2mepolish-build.jar.</td>
 	</tr>
+	<tr><td>binaryLibraries</td>
+ 	 <td>No</td>
+	 <td>Either the name of the directory which contains binary-only libraries or the name(s) of the libraries. Several libraries can be separated by colons ':' or by semicolons ';'. When no path is defined, the libraries will be searched within the &quot;import&quot; folder by default.</td>
+	</tr>
 	<tr><td>symbols</td>
  	 <td>No</td>
 	 <td>Project specific symbols, e.g. &quot;showSplash&quot; which can be checked with &quot;//#ifdef showSplash&quot; in the source code. Several symbols need to be separated by comma.</td>
@@ -224,7 +228,7 @@ With the build-section the actual build process is controlled:
 	
 	<h4 id="obfuscator-combining">Combining Several Obfuscators</h4>
 	<p>
-	Several obfuscators can be combined just by specifying several &lt;obfuscator&gt; elements. When the &lt;keep&gt; subelement is used, it only needs to be specified on of the &lt;obfuscator&gt; elements. J2ME Polish will then use the obfuscated output of one obfuscator as input for the following obfuscator.
+	Several obfuscators can be combined just by specifying several &lt;obfuscator&gt; elements. When the &lt;keep&gt; subelement is used, it only needs to be specified on of the &lt;obfuscator&gt; elements. J2ME Polish will then use the obfuscated output of one obfuscator as input for the following obfuscator.
 	</p>
 	
 	<h3 id="variables">&lt;variables&gt;</h3>
@@ -300,7 +304,8 @@ or
 System.out.println("could not load something: " + e);
 </pre></p>
 <p>You will find more information about the debugging
-possibilities on the <a href="preprocessing.html#debug">preprocessing page</a>.
+possibilities in the <a href="introduction.html#debug">introduction</a> as well as in the
+<a href="directives.html#preprocessing-debug">preprocessing</a> documentation.
 </p>	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>debug-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -496,6 +501,7 @@ This can be used for allowing new preprocessing directives for example.
  	 <td>Yes</td>
 	 <td>The class of the preprocessor.</td>
 	</tr>
+	<tr>
 	 <td>classPath</td>
  	 <td>Yes</td>
 	 <td>The classpath for the preprocessor.</td>
@@ -513,4 +519,92 @@ This can be used for allowing new preprocessing directives for example.
 	The preprocessor can be configured using a number &lt;parameter&gt; subelements. Each &lt;parameter&gt; subelement needs to define the attributes &quot;name&quot; and &quot;value&quot;.
 	</p>
 
+<h3 id="java">&lt;java&gt;</h3>
+<p>
+The &lt;java&gt;-element can be used to extend J2ME Polish with any Java utility. It accepts all attributes and nested elements like the Ant-&lt;java&gt;-element 
+(compare <a href="http://ant.apache.org/manual/CoreTasks/java.html" target="_blank">http://ant.apache.org/manual/CoreTasks/java.html</a>)
+as well as the additional attribute &quot;if&quot;, &quot;unless&quot; and &quot;message&quot;. J2ME Polish variables can be used in the nested &lt;arg&gt;-elements, so that the call can be adjusted for the current device.
+</p><p>
+Each defined &lt;java&gt;-element is called after the successful creation of an application-bundle.
+ A possible use of the &lt;java&gt;-element is the signing of MIDlets, which is 
+ described in the <a href="how-tos.html#howto-signing">signing-how-to</a>.
+</p><p>
+The following example calls the JadUtil.jar of the Wireless Toolkit for signing a JAD file:
+<pre>
+&lt;java jar=&quot;${wtk.home}/bin/JadTool.jar&quot; 
+      	fork=&quot;true&quot; 
+      	failonerror=&quot;true&quot; 
+    	if=&quot;polish.midp2&quot; 
+	unless=&quot;test&quot;
+	message=&quot;Adding signature for device ${polish.identifier}&quot;
+	&gt;
+	&lt;arg line=&quot;-addjarsig&quot;/&gt;
+	&lt;arg line=&quot;-keypass ${password}&quot;/&gt;
+	&lt;arg line=&quot;-alias SignMIDlet&quot;/&gt;
+	&lt;arg line=&quot;-keystore midlets.ks&quot;/&gt;
+	&lt;arg line=&quot;-inputjad dist/${polish.jadName}&quot;/&gt;
+	&lt;arg line=&quot;-outputjad dist/${polish.jadName}&quot;/&gt;
+	&lt;arg line=&quot;-jarfile dist/${polish.jarName}&quot;/&gt;
+&lt;/java&gt;	
+</pre></p><p>
+Following variables can be used in the &lt;arg&gt;-element and the &quot;message&quot;-attribute:
+</p>
+<ul>
+	<li><i>polish.vendor</i>: The vendor of the current device, e.g. &quot;Siemens&quot; or &quot;Nokia&quot;.</li>
+	<li><i>polish.name</i>: The  name of the current device, e.g. &quot;N-Gage&quot;.</li>
+	<li><i>polish.identifier</i>: The identifier of the current device, e.g. &quot;Siemens/SX1&quot;.</li>
+	<li><i>polish.version</i>: The version of the application as defined in the <a href="build-info.html">info-section</a>.</li>
+	<li><i>polish.jarName</i>: The name of the jar-file as defined in the <a href="build-info.html">info-section</a>.</li>
+	<li><i>polish.jadName</i>: The name of the jad-file as defined in the <a href="build-info.html">info-section</a>.</li>
+</ul>
+<p>
+The most important attributes of the &lt;java&gt;-element are:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>java-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>classname</td>
+ 	 <td>either classname or jar</td>
+	 <td>The name of the class which should be executed.</td>
+	</tr>
+	<tr>
+	 <td>jar</td>
+ 	 <td>either classname or jar</td>
+	 <td>The location of the jar file to execute (must have a Main-Class entry in the manifest). Fork must be set to true if this option is selected.</td>
+	</tr>
+	<tr>
+	 <td>fork</td>
+ 	 <td>No</td>
+	 <td>If enabled triggers the class execution in another VM (disabled by default).</td>
+	</tr>
+	<tr>
+	 <td>message</td>
+ 	 <td>No</td>
+	 <td>A message which will be printed out on the standard output when this &lt;java&gt;-element is executed. The message can contain J2ME Polish variables, such as ${ polish.identifier }.</td>
+	</tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this &lt;java&gt;-element should be executed.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this &lt;java&gt;-element should be executed.</td>
+	</tr>
+</table>
+<p>The most important nested element is the &lt;arg&gt;-element:</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>arg-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>line</td>
+ 	 <td>No</td>
+	 <td>A space-delimited list of command-line arguments.</td>
+	</tr>
+</table>
+<p>Please refer to the Ant-documentation at
+ <a href="http://ant.apache.org/manual/CoreTasks/java.html" target="_blank">http://ant.apache.org/manual/CoreTasks/java.html</a>
+ for more information about the &lt;java&gt;-element.
+</p>
+	
 <%include end.txt %>

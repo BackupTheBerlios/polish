@@ -130,6 +130,11 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.howto %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/how-tos.html">How-tos</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/how-tos.html">How-tos</a></div>
+			<%endif %>
 			<%ifdef inDocumentationSection.javadoc %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
 			<%else %>

@@ -12,7 +12,9 @@
 	</p>
 	<h2 id="install">Installation</h2>
 	<p>
-	J2ME Polish contains a graphical installer which can be started by double-clicking the downloaded jar-File  or by calling &quot;java -jar j2mepolish-[VERSION].jar&quot; from the command line, e.g. &quot;java -jar j2mepolish-1.0.jar&quot;.
+	J2ME Polish contains a graphical installer which can be started by double-clicking 
+	the downloaded jar-File  or by calling &quot;java -jar j2mepolish-[VERSION].jar&quot;
+	 from the command line, e.g. &quot;java -jar j2mepolish-1.1.jar&quot;.
 	</p>
 <p>Find more information about the installation at following location:</p>
 <ul>
@@ -219,7 +221,7 @@ You can specify in the build.xml file what &quot;resources&quot; folder should b
 <p>Find more information about the J2ME Polish GUI at following locations:</p>
 <ul>
  <li><a href="css.html">The J2ME Polish GUI</a></li>
- <li><a href="directives.html#style">The #style preprocessing directive</a></li>
+ <li><a href="directives.html#preprocessing-styles">The #style preprocessing directive</a></li>
  <li><a href="resource-assembling.html">Resource Assembling</a></li>
 </ul>
 
@@ -237,7 +239,7 @@ Logging and debugging is complex and difficult task under J2ME. On one hand logg
   <li>Simple System.out.println()-calls are used for logging.</li>
 </ul>
 <p>
-The logging is controlled with the <debug> -element in the &quot;build.xml&quot; file :
+The logging is controlled with the &lt;debug&gt;-element in the &quot;build.xml&quot; file:
 <pre>
 &lt;debug enable=&quot;true&quot; showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;&gt;
     &lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; /&gt;
@@ -269,8 +271,8 @@ In the source code logging messages will be introduced with the #debug-preproces
 <p>Find more information about the logging framework at following documentations:</p>
 <ul>
  <li><a href="build-build.html#debug">&lt;debug&gt;-element in the build.xml</a></li>
- <li><a href="preprocessing.html#debug">The #debug and #mdebug preprocessing directives</a></li>
- <li><a href="../javadoc/de/enough/polish/util/Debug.html" target="_blank">JavaDoc-documentation of the Debug class</a></li>
+ <li><a href="directives.html#preprocessing-debug">The #debug and #mdebug preprocessing directives</a></li>
+ <li><a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Debug.html" target="_blank">JavaDoc-documentation of the Debug class</a></li>
 </ul>
 
 
@@ -379,6 +381,8 @@ J2MEPolish can be extended in several ways:
 	<ul>
 		<li><b><a href="custom-obfuscator.html">Obfuscator</a></b>: integrate a third party or custom obfuscator</li>
 		<li><b><a href="custom-preprocessor.html">Preprocessing</a></b>: add custom preprocessing directives</li>
+		<li><b><a href="build-build.html#java">&lt;java&gt;</a></b>: use the &lt;java&gt;-element for signing
+		MIDlets and more.</li>
 	</ul>
 	</li>
 	<li><b>GUI:</b>
