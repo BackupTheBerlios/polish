@@ -1464,11 +1464,13 @@ implements CommandListener
 	 */
 	public boolean animate() {
 		long currentTime = System.currentTimeMillis();
-		if (this.caretChar != this.editingCaretChar) {
-			if ( (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
-				insertCharacter();
+		//#ifdef tmp.directInput
+			if (this.caretChar != this.editingCaretChar) {
+				if ( (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
+					insertCharacter();
+				}
 			}
-		}
+		//#endif
 		if ( currentTime - this.lastCaretSwitch > 500 ) {
 			this.lastCaretSwitch = currentTime;
 			this.showCaret = ! this.showCaret;
