@@ -68,14 +68,14 @@ implements Choice
 {
 	//#ifndef tmp.suppressMarkCommands
 		//#ifdef polish.command.mark:defined
-			//#= public static final Command MARK_COMMAND = new Command("${polish.command.mark}", Command.ITEM, 1 );
+			//#= public static final Command MARK_COMMAND = new Command("${polish.command.mark}", Command.ITEM, 9 );
 		//#else
-			public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 1 );
+			public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 9 );
 		//#endif
 		//#ifdef polish.command.mark:defined
-			//#= public static final Command UNMARK_COMMAND = new Command("${polish.command.unmark}", Command.ITEM, 2 );
+			//#= public static final Command UNMARK_COMMAND = new Command("${polish.command.unmark}", Command.ITEM, 10 );
 		//#else
-			public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 2 );
+			public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 10 );
 		//#endif
 	//#endif
 	private int selectedIndex;

@@ -132,37 +132,42 @@ public abstract class Screen
 	//#endif
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
-		//#ifdef polish.key.LeftSoftKey:defined
-			//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
-		//#else
-			private final static int LEFT_SOFT_KEY = -6;
-		//#endif
-		//#ifdef polish.key.RightSoftKey:defined
-			//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
-		//#else
-			private final static int RIGHT_SOFT_KEY = -7;
-		//#endif
-		private Command menuSingleLeftCommand;
-		private Command menuSingleRightCommand;
-		//#ifdef polish.key.ReturnKey:defined
-			private Command backCommand;
-		//#endif
-		private Container menuContainer;
-		private ArrayList menuCommands;
-		private boolean menuOpened;
-		private Font menuFont;
-		private int menuFontColor = 0;
-		protected int menuBarHeight;
-		//#ifdef polish.ScreenWidth:defined
-			//#= private final int menuMaxWidth = (  ${ polish.ScreenWidth } * 2 ) / 3;
-		//#else
-			private final int menuMaxWidth = ( getWidth() * 2 ) / 3;
-		//#endif
-		private int menuBarColor = 0xFFFFFF;
 		private int fullScreenHeight;
-		//#ifdef polish.hasPointerEvents
-			private int menuRightCommandX;
-			private int menuLeftCommandX;
+		protected int menuBarHeight;
+		//#if polish.MenuBar.useExtendedMenuBar == true
+			private final MenuBar menuBar;
+			//#define tmp.useExternalMenuBar
+		//#else
+			//#ifdef polish.key.LeftSoftKey:defined
+				//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
+			//#else
+				private final static int LEFT_SOFT_KEY = -6;
+			//#endif
+			//#ifdef polish.key.RightSoftKey:defined
+				//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
+			//#else
+				private final static int RIGHT_SOFT_KEY = -7;
+			//#endif
+			private Command menuSingleLeftCommand;
+			private Command menuSingleRightCommand;
+			//#ifdef polish.key.ReturnKey:defined
+				private Command backCommand;
+			//#endif
+			private Container menuContainer;
+			private ArrayList menuCommands;
+			private boolean menuOpened;
+			private Font menuFont;
+			private int menuFontColor = 0;
+			//#ifdef polish.ScreenWidth:defined
+				//#= private final int menuMaxWidth = (  ${ polish.ScreenWidth } * 2 ) / 3;
+			//#else
+				private final int menuMaxWidth = ( getWidth() * 2 ) / 3;
+			//#endif
+			private int menuBarColor = 0xFFFFFF;
+			//#ifdef polish.hasPointerEvents
+				private int menuRightCommandX;
+				private int menuLeftCommandX;
+			//#endif
 		//#endif
 	//#endif
 	/** The Gauge Item which should be animated by this screen */
@@ -241,7 +246,10 @@ public abstract class Screen
 		//#ifndef tmp.menuFullScreen
 			super.setCommandListener(this.cmdListener);
 		//#endif
-		
+		//#ifdef tmp.useExternalMenuBar
+			//#style menubar, menu, default
+			this.menuBar = new MenuBar( this );
+		//#endif
 		setTitle( title );
 	}
 		
@@ -264,39 +272,43 @@ public abstract class Screen
 			}
 		//#endif
 		//#ifdef tmp.menuFullScreen
-			//#ifdef polish.css.style.menu
-				Style menustyle = StyleSheet.menuStyle;
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBarHeight = this.menuBar.getItemHeight( this.screenWidth, this.screenWidth );
 			//#else
-				//# Style menustyle = this.style;
-			//#endif
-			if (menustyle != null) {
-				Integer colorInt = null;
-				if (this.style != null) {
-					colorInt = this.style.getIntProperty("menubar-color");
-				}
-				if (colorInt == null) {
-					colorInt = menustyle.getIntProperty("menubar-color");
-				}
-				if (colorInt != null) {
-					this.menuBarColor = colorInt.intValue();
-				}
-				this.menuFontColor = menustyle.fontColor;
-				if (menustyle.font != null) {
-					this.menuFont = menustyle.font;
+				//#ifdef polish.css.style.menu
+					Style menustyle = StyleSheet.menuStyle;
+				//#else
+					//# Style menustyle = this.style;
+				//#endif
+				if (menustyle != null) {
+					Integer colorInt = null;
+					if (this.style != null) {
+						colorInt = this.style.getIntProperty("menubar-color");
+					}
+					if (colorInt == null) {
+						colorInt = menustyle.getIntProperty("menubar-color");
+					}
+					if (colorInt != null) {
+						this.menuBarColor = colorInt.intValue();
+					}
+					this.menuFontColor = menustyle.fontColor;
+					if (menustyle.font != null) {
+						this.menuFont = menustyle.font;
+					} else {
+						this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );				
+					}			
 				} else {
-					this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );				
-				}			
-			} else {
-				this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
-			}
-			//#if polish.Menu.MarginBottom:defined && polish.Menu.MarginTop:defined 
-				//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + ${polish.Menu.MarginTop};
-			//#elif polish.Menu.MarginBottom:defined 
-				//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + 2;
-			//#elif polish.Menu.MarginTop:defined 
-				//#= this.menuBarHeight = this.menuFont.getHeight() + 2 + ${polish.Menu.MarginTop};
-			//#else
-				this.menuBarHeight = this.menuFont.getHeight() + 2;
+					this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
+				}
+				//#if polish.Menu.MarginBottom:defined && polish.Menu.MarginTop:defined 
+					//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + ${polish.Menu.MarginTop};
+				//#elif polish.Menu.MarginBottom:defined 
+					//#= this.menuBarHeight = this.menuFont.getHeight() + ${polish.Menu.MarginBottom} + 2;
+				//#elif polish.Menu.MarginTop:defined 
+					//#= this.menuBarHeight = this.menuFont.getHeight() + 2 + ${polish.Menu.MarginTop};
+				//#else
+					this.menuBarHeight = this.menuFont.getHeight() + 2;
+				//#endif
 			//#endif
 			int diff = this.originalScreenHeight - this.screenHeight;
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
@@ -470,9 +482,13 @@ public abstract class Screen
 				animated = this.background.animate();
 			}
 			//#ifdef tmp.menuFullScreen
-				if (this.menuOpened) {
-					animated = animated | this.menuContainer.animate();
-				} else
+				//#ifdef tmp.useExternalMenuBar
+					animated = animated | this.menuBar.animate();
+				//#else
+					if (this.menuOpened) {
+						animated = animated | this.menuContainer.animate();
+					} else
+				//#endif
 			//#endif
 			if (this.container != null) {
 				animated = animated | this.container.animate();
@@ -593,74 +609,101 @@ public abstract class Screen
 			
 			// paint menu in full-screen mode:
 			//#ifdef tmp.menuFullScreen
-				if (this.menuOpened) {
-					tHeight -= this.infoHeight;
-					int menuHeight = this.menuContainer.getItemHeight(this.menuMaxWidth, this.menuMaxWidth);
-					int y = this.originalScreenHeight - menuHeight;
-					if (y < tHeight) {
-						this.paintScrollIndicator = true;
-						this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
-						this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - this.titleHeight);
-						y = tHeight; 
-						this.menuContainer.setVerticalDimensions(y, this.screenHeight);
-					} else {
-						this.paintScrollIndicator = false;
+				//#ifdef tmp.useExternalMenuBar
+					this.menuBar.paint(0, this.screenHeight, 0, this.screenWidth, g);
+					if (this.menuBar.isOpened) {
+						this.paintScrollIndicator = this.menuBar.paintScrollIndicator;
+						this.paintScrollIndicatorUp = this.menuBar.canScrollUpwards;
+						this.paintScrollIndicatorDown = this.menuBar.canScrollDownwards;
 					}
-					g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
-					this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
-				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-				} 
-				if (this.showTitleOrMenu || this.menuOpened) {
-					// clear menu-bar:
-					if (this.menuBarColor != Item.TRANSPARENT) {
-						g.setColor( this.menuBarColor );
-						g.fillRect(0, this.originalScreenHeight, this.screenWidth,  this.menuBarHeight );
-					}
-					if (this.menuContainer != null && this.menuContainer.size() > 0) {
-						String menuText = null;
-						if (this.menuOpened) {
-							//#ifdef polish.command.select:defined
-								//#= menuText = "${polish.command.select}";
-							//#else
-								menuText = "Select";
-							//#endif
+				//#else
+					if (this.menuOpened) {
+						tHeight -= this.infoHeight;
+						int menuHeight = this.menuContainer.getItemHeight(this.menuMaxWidth, this.menuMaxWidth);
+						int y = this.originalScreenHeight - menuHeight;
+						if (y < tHeight) {
+							this.paintScrollIndicator = true;
+							this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
+							this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.screenHeight - this.titleHeight);
+							y = tHeight; 
+							this.menuContainer.setVerticalDimensions(y, this.screenHeight);
 						} else {
-							if (this.menuSingleLeftCommand != null) {
-								menuText = this.menuSingleLeftCommand.getLabel();
-							} else {
-								//#ifdef polish.command.options:defined
-									//#= menuText = "${polish.command.options}";
+							this.paintScrollIndicator = false;
+						}
+						g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
+						this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
+					 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+					} 
+					if (this.showTitleOrMenu || this.menuOpened) {
+						// clear menu-bar:
+						if (this.menuBarColor != Item.TRANSPARENT) {
+							g.setColor( this.menuBarColor );
+							g.fillRect(0, this.originalScreenHeight, this.screenWidth,  this.menuBarHeight );
+						}
+						if (this.menuContainer != null && this.menuContainer.size() > 0) {
+							String menuText = null;
+							if (this.menuOpened) {
+								//#ifdef polish.command.select:defined
+									//#= menuText = "${polish.command.select}";
 								//#else
-									menuText = "Options";				
+									menuText = "Select";
+								//#endif
+							} else {
+								if (this.menuSingleLeftCommand != null) {
+									menuText = this.menuSingleLeftCommand.getLabel();
+								} else {
+									//#ifdef polish.command.options:defined
+										//#= menuText = "${polish.command.options}";
+									//#else
+										menuText = "Options";				
+									//#endif
+								}
+							}
+							//#ifdef polish.hasPointerEvents
+								this.menuLeftCommandX = 2 + this.menuFont.stringWidth( menuText );
+							//#endif
+							g.setColor( this.menuFontColor );
+							g.setFont( this.menuFont );
+							//#ifdef polish.Menu.MarginLeft:defined
+								//#= int menuX = ${polish.Menu.MarginLeft};
+							//#else
+								int menuX = 2;
+							//#endif
+							//#ifdef polish.Menu.MarginTop:defined
+								//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
+							//#else
+								g.drawString(menuText, menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
+							//#endif
+							if ( this.menuOpened ) {
+								// draw cancel string:
+								//#ifdef polish.command.cancel:defined
+									//#= menuText = "${polish.command.cancel}";
+								//#else
+									menuText = "Cancel";
+								//#endif
+								//#ifdef polish.Menu.MarginRight:defined
+									//#= menuX = ${polish.Menu.MarginRight};
+								//#elifdef polish.Menu.MarginLeft:defined
+									menuX = 2;
+								//#endif
+								//#ifdef polish.Menu.MarginTop:defined
+									//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+								//#else
+									g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+								//#endif
+								//#ifdef polish.hasPointerEvents
+									this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
 								//#endif
 							}
 						}
-						//#ifdef polish.hasPointerEvents
-							this.menuLeftCommandX = 2 + this.menuFont.stringWidth( menuText );
-						//#endif
-						g.setColor( this.menuFontColor );
-						g.setFont( this.menuFont );
-						//#ifdef polish.Menu.MarginLeft:defined
-							//#= int menuX = ${polish.Menu.MarginLeft};
-						//#else
-							int menuX = 2;
-						//#endif
-						//#ifdef polish.Menu.MarginTop:defined
-							//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
-						//#else
-							g.drawString(menuText, menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
-						//#endif
-						if ( this.menuOpened ) {
-							// draw cancel string:
-							//#ifdef polish.command.cancel:defined
-								//#= menuText = "${polish.command.cancel}";
-							//#else
-								menuText = "Cancel";
-							//#endif
+						if (this.menuSingleRightCommand != null && !this.menuOpened) {
+							g.setColor( this.menuFontColor );
+							g.setFont( this.menuFont );
+							String menuText = this.menuSingleRightCommand.getLabel();
 							//#ifdef polish.Menu.MarginRight:defined
-								//#= menuX = ${polish.Menu.MarginRight};
-							//#elifdef polish.Menu.MarginLeft:defined
-								menuX = 2;
+								//#= int menuX = ${polish.Menu.MarginRight};
+							//#else
+								int menuX = 2;
 							//#endif
 							//#ifdef polish.Menu.MarginTop:defined
 								//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
@@ -668,30 +711,12 @@ public abstract class Screen
 								g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
 							//#endif
 							//#ifdef polish.hasPointerEvents
-								this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
+								this.menuRightCommandX = this.screenWidth - menuX 
+									- this.menuFont.stringWidth( menuText );
 							//#endif
 						}
-					}
-					if (this.menuSingleRightCommand != null && !this.menuOpened) {
-						g.setColor( this.menuFontColor );
-						g.setFont( this.menuFont );
-						String menuText = this.menuSingleRightCommand.getLabel();
-						//#ifdef polish.Menu.MarginRight:defined
-							//#= int menuX = ${polish.Menu.MarginRight};
-						//#else
-							int menuX = 2;
-						//#endif
-						//#ifdef polish.Menu.MarginTop:defined
-							//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
-						//#else
-							g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
-						//#endif
-						//#ifdef polish.hasPointerEvents
-							this.menuRightCommandX = this.screenWidth - menuX 
-								- this.menuFont.stringWidth( menuText );
-						//#endif
-					}
-				} // if this.showTitleOrMenu || this.menuOpened
+					} // if this.showTitleOrMenu || this.menuOpened
+				//#endif
 			//#endif
 			// paint scroll-indicator in the middle of the menu:
 			if (this.paintScrollIndicator) {
@@ -915,58 +940,69 @@ public abstract class Screen
 			int gameAction = -1;
 			
 			//#if tmp.menuFullScreen
-				//#ifdef polish.key.ReturnKey:defined
-					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
-							callCommandListener( this.backCommand );
-							repaint();
-							//# return;
-					//# }
-				//#endif
-				if (keyCode == LEFT_SOFT_KEY) {
-					if ( this.menuSingleLeftCommand != null) {
-						callCommandListener( this.menuSingleLeftCommand );
+				//#ifdef tmp.useExternalMenuBar
+					if (this.menuBar.handleKeyPressed(keyCode, 0)) {
+						System.out.println("menubar handled key pressed.");
+						repaint();
 						return;
-					} else {
-						if (!this.menuOpened 
-								&& this.menuContainer != null 
-								&&  this.menuContainer.size() != 0 ) 
-						{
-							this.menuOpened = true;
-							repaint();
+					}
+					if (this.menuBar.isSoftKeyPressed) {
+						return;
+					}
+				//#else
+					//#ifdef polish.key.ReturnKey:defined
+						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+								callCommandListener( this.backCommand );
+								repaint();
+								//# return;
+						//# }
+					//#endif
+					if (keyCode == LEFT_SOFT_KEY) {
+						if ( this.menuSingleLeftCommand != null) {
+							callCommandListener( this.menuSingleLeftCommand );
 							return;
 						} else {
-							gameAction = Canvas.FIRE;
+							if (!this.menuOpened 
+									&& this.menuContainer != null 
+									&&  this.menuContainer.size() != 0 ) 
+							{
+								this.menuOpened = true;
+								repaint();
+								return;
+							} else {
+								gameAction = Canvas.FIRE;
+							}
+						}
+					} else if (keyCode == RIGHT_SOFT_KEY) {
+						if (!this.menuOpened && this.menuSingleRightCommand != null) {
+							callCommandListener( this.menuSingleRightCommand );
+							return;
 						}
 					}
-				} else if (keyCode == RIGHT_SOFT_KEY) {
-					if (!this.menuOpened && this.menuSingleRightCommand != null) {
-						callCommandListener( this.menuSingleRightCommand );
+					boolean doReturn = false;
+					if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
+						gameAction = getGameAction( keyCode );
+					} else {
+						doReturn = true;
+					}
+					if (this.menuOpened) {
+						if (keyCode == RIGHT_SOFT_KEY ) {
+							this.menuOpened = false;
+						} else if ( gameAction == Canvas.FIRE ) {
+							int focusedIndex = this.menuContainer.getFocusedIndex();
+							Command cmd = (Command) this.menuCommands.get( focusedIndex );
+							this.menuOpened = false;
+							callCommandListener( cmd );
+						} else { 
+							this.menuContainer.handleKeyPressed(keyCode, gameAction);
+						}
+						repaint();
 						return;
 					}
-				}
-				boolean doReturn = false;
-				if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
-					gameAction = getGameAction( keyCode );
-				} else {
-					doReturn = true;
-				}
-				if (this.menuOpened) {
-					if (keyCode == RIGHT_SOFT_KEY ) {
-						this.menuOpened = false;
-					} else if ( gameAction == Canvas.FIRE ) {
-						int focusedIndex = this.menuContainer.getFocusedIndex();
-						Command cmd = (Command) this.menuCommands.get( focusedIndex );
-						this.menuOpened = false;
-						callCommandListener( cmd );
-					} else { 
-						this.menuContainer.handleKeyPressed(keyCode, gameAction);
+					if (doReturn) {
+						return;
 					}
-					repaint();
-					return;
-				}
-				if (doReturn) {
-					return;
-				}
+				//#endif
 			//#endif
 			if (gameAction == -1) {
 				gameAction = getGameAction(keyCode);
@@ -1061,100 +1097,114 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
-		if (this.menuCommands == null) {
-			this.menuCommands = new ArrayList( 6, 50 );
-			//#style menu, default
-			 this.menuContainer = new Container( true );
-		}
-		int type = cmd.getCommandType(); 
-		//#ifdef polish.key.ReturnKey:defined
-			if ( type == Command.BACK ) {
-				this.backCommand = cmd;
+		//#ifdef tmp.useExternalMenuBar
+			this.menuBar.addCommand(cmd);
+			if (this.isShown()) {
+				repaint();
+			}
+		//#else
+			if (this.menuCommands == null) {
+				this.menuCommands = new ArrayList( 6, 50 );
+				//#style menu, default
+				 this.menuContainer = new Container( true );
+			}
+			int type = cmd.getCommandType(); 
+			//#ifdef polish.key.ReturnKey:defined
+				if ( type == Command.BACK ) {
+					this.backCommand = cmd;
+				}
+			//#endif
+			if ( (type == Command.BACK || type == Command.CANCEL ) ) 
+			{
+				if ( (this.menuSingleRightCommand == null)
+						|| (cmd.getPriority() < this.menuSingleRightCommand.getPriority())	)
+				{
+					// okay set the right menu command:
+					if (this.menuSingleRightCommand != null) {
+						// the right menu command is replaced by the new one,
+						// so insert the original one into the options-menu:
+						//#style menuitem, menu, default
+						StringItem menuItem = new StringItem( null, this.menuSingleRightCommand.getLabel(), Item.HYPERLINK );
+						this.menuContainer.add( menuItem );
+						if (this.menuContainer.size() == 1) {
+							this.menuSingleLeftCommand = this.menuSingleRightCommand;
+						} else {
+							this.menuSingleLeftCommand = null;
+						}
+						this.menuCommands.add( this.menuSingleRightCommand );
+					}					
+					// this is a command for the right side of the menu:
+					this.menuSingleRightCommand = cmd;
+					if (isShown()) {
+						repaint();
+					}
+					return;
+				}
+			}
+			//#style menuitem, menu, default
+			StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
+			this.menuContainer.add( menuItem );
+			if (this.menuContainer.size() == 1) {
+				this.menuSingleLeftCommand = cmd;
+			} else {
+				this.menuSingleLeftCommand = null;
+			}
+			this.menuCommands.add( cmd );
+			if (isShown()) {
+				repaint();
 			}
 		//#endif
-		if ( (type == Command.BACK || type == Command.CANCEL ) ) 
-		{
-			if ( (this.menuSingleRightCommand == null)
-					|| (cmd.getPriority() < this.menuSingleRightCommand.getPriority())	)
-			{
-				// okay set the right menu command:
-				if (this.menuSingleRightCommand != null) {
-					// the right menu command is replaced by the new one,
-					// so insert the original one into the options-menu:
-					//#style menuitem, menu, default
-					StringItem menuItem = new StringItem( null, this.menuSingleRightCommand.getLabel(), Item.HYPERLINK );
-					this.menuContainer.add( menuItem );
-					if (this.menuContainer.size() == 1) {
-						this.menuSingleLeftCommand = this.menuSingleRightCommand;
-					} else {
-						this.menuSingleLeftCommand = null;
-					}
-					this.menuCommands.add( this.menuSingleRightCommand );
-				}					
-				// this is a command for the right side of the menu:
-				this.menuSingleRightCommand = cmd;
-				if (isShown()) {
-					repaint();
-				}
-				return;
-			}
-		}
-		//#style menuitem, menu, default
-		StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
-		this.menuContainer.add( menuItem );
-		if (this.menuContainer.size() == 1) {
-			this.menuSingleLeftCommand = cmd;
-		} else {
-			this.menuSingleLeftCommand = null;
-		}
-		this.menuCommands.add( cmd );
-		if (isShown()) {
-			repaint();
-		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
-		if (this.menuSingleRightCommand == cmd) {
-			this.menuSingleRightCommand = null;
-			//move another suitable command-item to the right-pos:
-			if (this.menuCommands != null) {
-				Command[] commands = (Command[]) this.menuCommands.toArray( new Command[ this.menuCommands.size()]);
-				for (int i = 0; i < commands.length; i++) {
-					Command command = commands[i];
-					int type = command.getCommandType(); 
-					if ( type == Command.BACK || type == Command.CANCEL ) {
-						this.menuContainer.remove( i );
-						this.menuCommands.remove( i );
-						this.menuSingleRightCommand = command;
-						break;
+		//#ifdef tmp.useExternalMenuBar
+			this.menuBar.removeCommand(cmd);
+			if (this.isShown()) {
+				repaint();
+			}
+		//#else
+			if (this.menuSingleRightCommand == cmd) {
+				this.menuSingleRightCommand = null;
+				//move another suitable command-item to the right-pos:
+				if (this.menuCommands != null) {
+					Command[] commands = (Command[]) this.menuCommands.toArray( new Command[ this.menuCommands.size()]);
+					for (int i = 0; i < commands.length; i++) {
+						Command command = commands[i];
+						int type = command.getCommandType(); 
+						if ( type == Command.BACK || type == Command.CANCEL ) {
+							this.menuContainer.remove( i );
+							this.menuCommands.remove( i );
+							this.menuSingleRightCommand = command;
+							break;
+						}
 					}
 				}
+				if (isShown()) {
+					repaint();
+				}
+				return;
+			}
+			if (this.menuCommands == null) {
+				return;
+			}
+			int index = this.menuCommands.indexOf(cmd);
+			if (index == -1) {
+				return;
+			}
+			this.menuCommands.remove(index);
+			if (this.menuSingleLeftCommand == cmd ) {
+				this.menuSingleLeftCommand = null;
+				this.menuContainer.remove(index);			
+			} else {
+				this.menuContainer.remove(index);			
 			}
 			if (isShown()) {
 				repaint();
 			}
-			return;
-		}
-		if (this.menuCommands == null) {
-			return;
-		}
-		int index = this.menuCommands.indexOf(cmd);
-		if (index == -1) {
-			return;
-		}
-		this.menuCommands.remove(index);
-		if (this.menuSingleLeftCommand == cmd ) {
-			this.menuSingleLeftCommand = null;
-			this.menuContainer.remove(index);			
-		} else {
-			this.menuContainer.remove(index);			
-		}
-		if (isShown()) {
-			repaint();
-		}
+		//#endif
 	}
 	//#endif
 	
@@ -1170,9 +1220,18 @@ public abstract class Screen
 			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
-				addCommand(command);
+				//#ifdef tmp.useExternalMenuBar
+					this.menuBar.addCommand(command);
+				//#else
+					addCommand(command);
+				//#endif
 			}
 		}
+		//#ifdef tmp.useExternalMenuBar
+			if (isShown()) {
+				repaint();
+			}
+		//#endif
 	}
 	
 	/**
@@ -1185,10 +1244,19 @@ public abstract class Screen
 			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
-				removeCommand(command);
+				//#ifdef tmp.useExternalMenuBar
+					this.menuBar.removeCommand(command);
+				//#else
+					removeCommand(command);
+				//#endif
 			}
 		}
 		this.focusedItem = null;
+		//#ifdef tmp.useExternalMenuBar
+			if (isShown()) {
+				repaint();
+			}
+		//#endif
 	}
 	
 	/**
@@ -1260,6 +1328,8 @@ public abstract class Screen
 					(x < this.scrollIndicatorX + this.scrollIndicatorWidth) &&
 					(y < this.scrollIndicatorY + this.scrollIndicatorWidth) ) 
 			{
+				//#debug
+				System.out.println("ScrollIndicator has been clicked... ");
 				// the scroll-indicator has been clicked:
 				int gameAction;
 				if ( (( !this.paintScrollIndicatorUp) || (y > this.scrollIndicatorY + this.scrollIndicatorWidth/2)) && this.paintScrollIndicatorDown) {
@@ -1268,11 +1338,19 @@ public abstract class Screen
 					gameAction = Canvas.UP;
 				}
 				//#if tmp.menuFullScreen
-					if (this.menuOpened) {
-						this.menuContainer.handleKeyPressed( 0, gameAction );
-					} else {
-						handleKeyPressed( 0, gameAction );
-					}
+					//#ifdef tmp.useExternalMenuBar
+						if (this.menuBar.isOpened) {
+							this.menuBar.handleKeyPressed( 0, gameAction );
+						} else {
+							handleKeyPressed( 0, gameAction );
+						}
+					//#else
+						if (this.menuOpened) {
+							this.menuContainer.handleKeyPressed( 0, gameAction );
+						} else {
+							handleKeyPressed( 0, gameAction );
+						}
+					//#endif
 				//#else
 					handleKeyPressed( 0, gameAction );
 				//#endif
@@ -1280,54 +1358,61 @@ public abstract class Screen
 				return;
 			}
 			//#ifdef tmp.menuFullScreen
-				// check if one of the command buttons has been pressed:
-				if (y > this.screenHeight) {
-					if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
-						if (this.menuOpened) {
-							this.menuOpened = false;
-						} else if (this.menuSingleRightCommand != null) {
-							callCommandListener(this.menuSingleRightCommand );
-						}
+				//#ifdef tmp.useExternalMenuBar
+					if (this.menuBar.handlePointerPressed(x, y)) {
 						repaint();
 						return;
-					} else if (x <= this.menuLeftCommandX){
-						// assume that the left command has been pressed:
-						if (this.menuSingleLeftCommand != null) {
-							this.callCommandListener(this.menuSingleLeftCommand);
-						} else if (this.menuOpened ) {
-							// the "SELECT" command has been clicked:
+					}
+				//#else
+					// check if one of the command buttons has been pressed:
+					if (y > this.screenHeight) {
+						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
+							if (this.menuOpened) {
+								this.menuOpened = false;
+							} else if (this.menuSingleRightCommand != null) {
+								callCommandListener(this.menuSingleRightCommand );
+							}
+							repaint();
+							return;
+						} else if (x <= this.menuLeftCommandX){
+							// assume that the left command has been pressed:
+							if (this.menuSingleLeftCommand != null) {
+								this.callCommandListener(this.menuSingleLeftCommand);
+							} else if (this.menuOpened ) {
+								// the "SELECT" command has been clicked:
+								int focusedIndex = this.menuContainer.getFocusedIndex();
+								Command cmd = (Command) this.menuCommands.get( focusedIndex );
+								callCommandListener( cmd );						
+								this.menuOpened = false;
+							} else {
+								this.menuOpened = true;
+							}
+							repaint();
+							return;
+						}
+					} else if (this.menuOpened) {
+						this.menuOpened = false;
+						// a menu-item could have been selected:
+						if (this.menuContainer.handlePointerPressed( x, y )) {
 							int focusedIndex = this.menuContainer.getFocusedIndex();
 							Command cmd = (Command) this.menuCommands.get( focusedIndex );
 							callCommandListener( cmd );						
-							this.menuOpened = false;
 						} else {
-							this.menuOpened = true;
+							//#ifdef tmp.useTitle
+								y -= this.titleHeight;
+							//#endif
+							int focusedIndex = this.menuContainer.getFocusedIndex();
+							Item item = this.menuContainer.get( focusedIndex );
+							if (y > item.yTopPos  && y < item.yBottomPos
+									&& x > item.xLeftPos && x < item.xRightPos) {
+								Command cmd = (Command) this.menuCommands.get( focusedIndex );
+								callCommandListener( cmd );	
+							}
 						}
 						repaint();
 						return;
 					}
-				} else if (this.menuOpened) {
-					this.menuOpened = false;
-					// a menu-item could have been selected:
-					if (this.menuContainer.handlePointerPressed( x, y )) {
-						int focusedIndex = this.menuContainer.getFocusedIndex();
-						Command cmd = (Command) this.menuCommands.get( focusedIndex );
-						callCommandListener( cmd );						
-					} else {
-						//#ifdef tmp.useTitle
-							y -= this.titleHeight;
-						//#endif
-						int focusedIndex = this.menuContainer.getFocusedIndex();
-						Item item = this.menuContainer.get( focusedIndex );
-						if (y > item.yTopPos  && y < item.yBottomPos
-								&& x > item.xLeftPos && x < item.xRightPos) {
-							Command cmd = (Command) this.menuCommands.get( focusedIndex );
-							callCommandListener( cmd );	
-						}
-					}
-					repaint();
-					return;
-				}
+				//#endif
 			//#endif
 			// let the screen handle the pointer pressing:
 			//#ifdef tmp.usingTitle
@@ -1486,6 +1571,7 @@ public abstract class Screen
 				this.subTitleHeight = subTitle.getItemHeight(getWidth(), getWidth());
 			//#endif
 		}
+		//#debug
 		System.out.println("SUBTITLE_HEIGHT=" + this.subTitleHeight);
 	}
 }

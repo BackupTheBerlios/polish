@@ -250,7 +250,7 @@ implements CommandListener
 				.append( '\n' );
 			}
 			if ( buffer.length() >= maxSize) {
-				buffer.delete(0, maxSize -  buffer.length() );
+				buffer.delete(0,  buffer.length() - maxSize  );
 			}
 		//#else
 			int i = messages.length - 1; 

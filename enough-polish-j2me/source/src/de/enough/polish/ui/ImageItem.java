@@ -284,7 +284,7 @@ public class ImageItem extends Item
 	 * Sets the alternate text of the <code>ImageItem</code>, or
 	 * <code>null</code> if no alternate text is provided.
 	 * 
-	 * @param text - the new alternate text
+	 * @param text the new alternate text
 	 * @see #getAltText()
 	 */
 	public void setAltText( String text)
