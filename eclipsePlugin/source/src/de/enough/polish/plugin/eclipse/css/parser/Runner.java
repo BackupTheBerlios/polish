@@ -28,7 +28,6 @@ package de.enough.polish.plugin.eclipse.css.parser;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -58,7 +57,7 @@ public class Runner {
         CssLexer lexer = new CssLexer(input);
 
         CssParser parser = new CssParser(lexer);
-        
+        parser.setASTNodeClass("de.enough.polish.plugin.eclipse.css.parser.OffsetAST");
         
         try {
             parser.styleSheet();
@@ -74,16 +73,33 @@ public class Runner {
             System.out.println("Runner.main():No AST generated.");
             return;
         }
-        //DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
-        //dumpASTVisitor.visit(astRoot);
-        System.out.println("firstChild:"+astRoot.getNextSibling());
+        
+        /*
+        DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
+        dumpASTVisitor.visit(astRoot);
+
+		*/
+        OffsetWalker offsetWalker = new OffsetWalker();
+        try {
+            offsetWalker.styleSheet(astRoot);
+            System.out.println("Walker finished.");
+        } catch (RecognitionException exception) {
+            System.out.println("INTERNAL:DEBUG:CssModel.reconcile():Parse Error in Tree walker."+exception);
+        }
+       
+      }
+    
+    /**
+     * @param astRoot
+     */
+    /*
+    private static void printChildren(AST astRoot) {
         Object[] children = getChildren(astRoot);
         for(int i = 0; i < astRoot.getNumberOfChildren(); i++) {
             System.out.println(children[i]);
         }
-        
-      }
-    
+    }
+
     private static Object[] getChildren(AST root) {
         if(root == null) {
             return null;
@@ -96,4 +112,5 @@ public class Runner {
         }
         return result.toArray();
     }
+    */
 }

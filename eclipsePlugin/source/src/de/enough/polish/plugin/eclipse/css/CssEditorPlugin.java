@@ -25,6 +25,8 @@
  */
 package de.enough.polish.plugin.eclipse.css;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.*;
@@ -52,6 +54,8 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	private BundleContext bundleContext;
 	
 	private CssEditor editor;
+	
+	public static String ID = "de.enough.polish.plugin.eclipse.css.CssEditorPlugin";
 	
 	
 	public CssEditorPlugin() {
@@ -154,4 +158,50 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	public CssEditor getEditor(){
 		return this.editor;
 	}
+	
+	/*
+	public void addLog(int severity, String message, Exception exception) {
+	    int s;
+	    String m;
+	    if( ! (severity == IStatus.ERROR ||
+	           severity == IStatus.CANCEL ||
+	           severity == IStatus.INFO ||
+	           severity == IStatus.OK ||
+	           severity == IStatus.WARNING)) {
+	        this.log.log(new Status(IStatus.ERROR,ID,0,"INTERNAL:ERROR:CssEditorPlugin.addLog():severity: Parameter is not from IStatus.",null));
+	        s = IStatus.ERROR;
+	    }
+	    else {
+	        s = severity;
+	    }
+	    if(message == null) {
+	        this.log.log(new Status(IStatus.ERROR,ID,0,"INTERNAL:ERROR:CssEditorPlugin.addLog():message: Parameter is null.",null));
+	        m = "";
+	    }
+	    else {
+	        m = message;
+	    }
+	    this.log.log(new Status(s,ID,0,m,exception));
+	}
+	*/
+	public static void log(IStatus status) {
+        getDefault().getLog().log(status);
+        if (status.getException() != null) {
+            status.getException().printStackTrace(System.err);
+        }
+    }
+
+    public static void log(String message, Throwable e) {
+        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+            message, e); 
+        log(status);
+    }
+
+    public static void log(String message) {
+        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+            message, null); 
+        log(status);
+    }
+	
+
 }

@@ -53,7 +53,7 @@ public class CssEditor extends TextEditor{
 	CssModel cssModel;
 	IDocument document;
 	
-	public CssEditor(){
+	public CssEditor() {
 		this.cssModel = new CssModel();
 		setSourceViewerConfiguration(new CssSourceViewerConfiguration(this,getSharedColors()));
 		CssEditorPlugin.getDefault().setEditor(this);

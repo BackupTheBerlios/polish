@@ -54,10 +54,11 @@ public class CssOutlinePage extends ContentOutlinePage {
 	// TODO: Always check if parent is disposed when working in createControl.
 	// SWT isnt threatsafe but nevertheless you never know when something is not accessible any more...
 	public void createControl(Composite parent) {
-		super.createControl(parent);
 		if(parent.isDisposed()){
 			System.out.println("ERROR:CssOutlinePage.createControl():parent.isDisposed():true");
+			return;
 		}
+		super.createControl(parent);
 		CssContentProvider cssContentProvider = new CssContentProvider(this.cssModel);
 		
 		TreeViewer viewer = getTreeViewer();

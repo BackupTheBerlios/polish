@@ -30,20 +30,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.percederberg.grammatica.parser.Node;
-import net.percederberg.grammatica.parser.Production;
-import net.percederberg.grammatica.parser.ProductionPattern;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-import antlr.DumpASTVisitor;
 import antlr.RecognitionException;
-import antlr.TokenStreamException;
 import antlr.collections.AST;
+import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
 import de.enough.polish.plugin.eclipse.css.parser.CssLexer;
 import de.enough.polish.plugin.eclipse.css.parser.CssParser;
-import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
+import de.enough.polish.plugin.eclipse.css.parser.OffsetWalker;
 
 /**
  * <p>Encapsulates the css model (domain model) and provides methods to deal with changes
@@ -54,55 +49,33 @@ import de.enough.polish.plugin.eclipse.css.parser.PolishCssConstants;
  * history
  *        Feb 28, 2005 - ricky creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class CssModel {
 
 	private List modelListeners;
-	
-	private ASTNode rootASTNode;
-	private Node rootParseNode;
 
-	// TODO: Decide if the CssModel or Reconciler should listen to changes.
+	// TODO: Decide if the CssModel or the Reconciler should listen to changes.
 	// The CssModel could listen to the document, the Reconciler to its viewer.
 	
 	private IDocument document;
-	//private TreePrinter treePrinter;
-	//private PolishCssParser parser;
-	//private ASTBuilderAnalyzer astBuilder;
 
     private CssLexer lexer;
     private CssParser parser;
     private AST astRoot;
-	
-	
-	
+    CssEditorPlugin plugin = CssEditorPlugin.getDefault();
+    
 	
 	public CssModel(){
-		this.rootASTNode = new StyleSheet();
 		this.modelListeners = new ArrayList();
-		//this.astBuilder = new ASTBuilderAnalyzer(this.rootASTNode);
-		//this.treePrinter = new TreePrinter(System.out);
-		
-        
 	}
 	
-	public ASTNode getRoot(){
-		
-		return this.rootASTNode;
-	}
-	
-	public void setRoot(ASTNode root){
-		this.rootASTNode = root;
-	}
-
 	/**
 	 * Reconcile the model to the changed document.
 	 */
 	public void reconcile() {
 		
 		if(this.document == null){
-			System.out.println("DEBUG:CssModel.reconcile():document: is null.");
 			return;
 		}
 		String inputString = this.document.get();
@@ -110,54 +83,33 @@ public class CssModel {
 		//DataInputStream dataInputStream = new DataInputStream();
 		this.lexer = new CssLexer(stringReader);
 		this.parser = new CssParser(this.lexer);
+		this.parser.setASTNodeClass("de.enough.polish.plugin.eclipse.css.parser.OffsetAST");
 		
 		try {
             this.parser.styleSheet();
-        } catch (RecognitionException exception) {
-            // TODO ricky handle RecognitionException
-            exception.printStackTrace();
-        } catch (TokenStreamException exception) {
-            // TODO ricky handle TokenStreamException
-            exception.printStackTrace();
         }
+		catch(Exception exception) {
+		    CssEditorPlugin.log("INTERNAL:DEBUG:CssModel.reconcile():Parse error.",exception);
+		}
         this.astRoot = this.parser.getAST();
+
         if(this.astRoot == null) {
-            System.out.println("Runner.main():No AST generated.");
+            System.out.println("CssModel.reconcile():No AST generated.");
             return;
         }
-        DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
-        dumpASTVisitor.visit(this.astRoot);
         
+        OffsetWalker offsetWalker = new OffsetWalker();
+        try {
+            offsetWalker.styleSheet(this.astRoot.getFirstChild());
+            System.out.println("Walker finished.");
+        } catch (RecognitionException exception) {
+            CssEditorPlugin.log("INTERNAL:DEBUG:CssModel.reconcile():Parse Error in Tree walker.",exception);
+        }
+        
+        /*DumpASTVisitor dumpASTVisitor = new DumpASTVisitor();
+        dumpASTVisitor.visit(this.astRoot);
+        */
 		fireModelChangedEvent();
-		// Parse.
-		/*
-		try {
-			this.parser = new PolishCssParser(new StringReader(inputString));
-			this.rootParseNode = null;
-			this.rootParseNode = this.parser.parse();
-			System.out.println("DEBUG:CssModel.reconcile():no parsing errors !!");
-			this.treePrinter.analyze(this.rootParseNode);
-			this.rootASTNode = new StyleSheet();
-			this.astBuilder.setRoot(this.rootASTNode);
-			this.astBuilder.analyze(this.rootParseNode,this.document);
-		} catch (ParserCreationException exception) {
-			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
-		} catch (ParserLogException exception) {
-			System.out.println("DEBUG:CssModel.reconcile():parsing error:"+exception.getMessage());
-		}
-		fireModelChangedEvent();
-		*/
-		
-	}
-	
-	public int getLineOfASTNode(ASTNode node){
-		int result = -1;
-		try {
-			result = this.document.getLineOfOffset(node.getOffset());
-		} catch (BadLocationException exception) {
-			System.out.println("DEBUG:CssContentProvider.selectionChanged():the offset is messed up.");
-		}
-		return result;
 	}
 	
 	
@@ -183,23 +135,7 @@ public class CssModel {
 	}
 	
 	
-	/**
-	 * Guaranteed to return a Node != null.
-	 * @return Returns the rootNode.
-	 */
-	public Node getRootNode() {
-		if(this.rootParseNode == null){
-			this.rootParseNode = new Production(new ProductionPattern(PolishCssConstants.STYLESHEET,"RootStyleSheet"));
-		}
-		return this.rootParseNode;
-	}
-	
 
-	public void setRootNode(Node rootNode) {
-		this.rootParseNode = rootNode;
-	}
-	
-	
 	public void setDocument(IDocument document){
 		this.document = document;
 	}
@@ -216,5 +152,33 @@ public class CssModel {
 
     public void setAstRoot(AST astRoot) {
         this.astRoot = astRoot;
+    }
+
+    /**
+     * @param firstSelectedNode
+     * @return the offset within the document from the given AST. -1 if an error occured.
+     */
+    public int getOffsetFromAST(AST firstSelectedNode) {
+        if(this.document == null) {
+            return -1;
+        }
+        int result = -1;
+        // We have a nonterminal node, get the line from the first terminal node.
+        if(firstSelectedNode.getLine() == 0) {
+            AST child = firstSelectedNode.getFirstChild();
+            if(child == null) { // We have a nonterminal as leaf, that should not happen.
+                
+                return -1;
+            }
+        }
+        try {
+            int lineOffset = this.document.getLineOffset(firstSelectedNode.getLine());
+            result = lineOffset + firstSelectedNode.getColumn();
+            this.document.get(result,1); // Check if computed offset is valid by trying to retrieve it from the document.
+        } catch (BadLocationException exception) {
+            CssEditorPlugin.log("INTERNAL:ERROR:CssModel.getOffsetFromAST():Wrong line parameter to document.getLineOffset():"+firstSelectedNode.getLine(),exception);
+            return -1;
+        }
+        return result;
     }
 }

@@ -40,6 +40,7 @@ import de.enough.polish.plugin.eclipse.css.editor.CssEditor;
 import de.enough.polish.plugin.eclipse.css.model.ASTNode;
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.IModelListener;
+import de.enough.polish.plugin.eclipse.css.parser.CssLexerTokenTypes;
 
 /**
  * <p></p>
@@ -74,18 +75,18 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 			if(selection == null){
 				return;
 			}
-			ASTNode firstSelectedNode = (ASTNode)selection.getFirstElement(); //FIXME: Convert to AST !!
+			AST firstSelectedNode = (AST)selection.getFirstElement(); //FIXME: Convert to AST !!
 			if(firstSelectedNode == null){
 				return;
 			}
-			this.editor.setCaretToOffset(firstSelectedNode.getOffset());
+			this.editor.setCaretToOffset(this.editor.getCssModel().getOffsetFromAST(firstSelectedNode));
 			this.editor.doActivate();
 		}
 	}
 	
 	public CssContentProvider(CssModel cssModel){
 		this.cssModel = cssModel;
-		this.cssModel.addModelListener(this);
+		this.cssModel.addModelListener(this); //TODO We do not need to listen to the model here.
 		this.selectionChangedListener = new SelectionChangedListener();
 	}
 	
@@ -96,8 +97,6 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	public void dispose() {
 		this.cssModel.removeModelListener(this);
 		// FIXME: Danger. Please implement disposable on the model for proper finalization.
-		//this.rootParent = null;
-
 	}
 
 	
@@ -124,18 +123,75 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
-	public Object[] getChildren(Object parentElement) {
-	    if( ! (parentElement instanceof AST)) {
+	public Object[] getChildren(Object object) {
+	    if( ! (object instanceof AST)) {
 	        return new Object[] {};
 	    }
-	    ArrayList result = new ArrayList();
-	    AST child = ((AST)parentElement).getFirstChild();
-	    while (child != null) {
-	        result.add(child);
-	        child = child.getNextSibling();
+	    
+	    AST parent = (AST)object;
+	    switch(parent.getType()) {
+	    		case(CssLexerTokenTypes.STYLE_SECTION):
+	    		    return getStyleSectionChildren(parent);
+	    		case(CssLexerTokenTypes.SECTION):
+	    		    return getSectionChildren(parent);
+	    		case(CssLexerTokenTypes.STYLE_SHEET):
+	    		    return getStyleSheetChildren(parent);
+	    		default:
+	    		    return new Object[] {};
 	    }
+	}
+	    		
+	private Object[] getStyleSectionChildren(AST section) {
+	    ArrayList result = new ArrayList();
+	    int attributeValuePairOffset = 3;
+	    AST sibling = section.getFirstChild(); //StyleSectionName
+	    if(sibling != null) {
+	        sibling = sibling.getNextSibling(); // Propably extends.
+	        if(sibling != null) {
+	            if(sibling.getType() == CssLexerTokenTypes.NAME) {
+	                attributeValuePairOffset = 2;
+	                sibling = sibling.getNextSibling();
+	            }
+	            else {
+	                attributeValuePairOffset = 1;
+	            }
+	    	    		for(int i = attributeValuePairOffset; i < section.getNumberOfChildren(); i++) {
+	    	        
+	    	    		    result.add(sibling);
+	    	    		    sibling = sibling.getNextSibling();
+	    	    		}
+
+	        }
+	    }
+	    
 	    return result.toArray();
 	}
+	   
+	private Object[] getStyleSheetChildren(AST root) {
+        if(root == null) {
+            return null;
+        }
+        ArrayList result = new ArrayList();
+        AST child = root.getFirstChild();
+        while (child != null) {
+            result.add(child);
+            child = child.getNextSibling();
+        }
+        return result.toArray();
+    }
+	
+	private Object[] getSectionChildren(AST section) {
+	    ArrayList result = new ArrayList();
+	    AST sibling = section.getFirstChild();
+	    for(int i = 1; i < section.getNumberOfChildren(); i++) {
+	        result.add(sibling);
+	        sibling = sibling.getNextSibling();
+	    }
+	    
+	    return result.toArray();
+	}
+	    
+	    
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
@@ -157,8 +213,14 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 		if( ! (element instanceof AST)){
 			return false;
 		}
-		return ((AST)element).getNumberOfChildren() > 0;
-		
+		switch(((AST)element).getType()) {
+			case(CssLexerTokenTypes.STYLE_SHEET):
+			case(CssLexerTokenTypes.STYLE_SECTION):
+			case(CssLexerTokenTypes.SECTION):
+			    return true;
+			default:
+			    return false;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -168,23 +230,10 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 		if( ! (inputElement instanceof CssModel)){
 			return new Object[]{};
 		}
-		return getChildren(((CssModel)inputElement).getAstRoot());
+		return getStyleSheetChildren(((CssModel)inputElement).getAstRoot());
 	}
 
-	private Object[] getChildren(AST root) {
-        if(root == null) {
-            return null;
-        }
-        ArrayList result = new ArrayList();
-        AST child = root.getFirstChild();
-        while (child != null) {
-            result.add(child);
-            child = child.getNextSibling();
-        }
-        return result.toArray();
-    }
 
-	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
 	 */

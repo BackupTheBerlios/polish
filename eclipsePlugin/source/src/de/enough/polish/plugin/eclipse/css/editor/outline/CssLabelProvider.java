@@ -27,6 +27,9 @@ package de.enough.polish.plugin.eclipse.css.editor.outline;
 
 import org.eclipse.jface.viewers.LabelProvider;
 
+import de.enough.polish.plugin.eclipse.css.parser.CssLexerTokenTypes;
+import de.enough.polish.plugin.eclipse.css.parser.OffsetAST;
+
 import antlr.collections.AST;
 
 /**
@@ -46,6 +49,36 @@ public class CssLabelProvider extends LabelProvider{
 			return "NoLabel for "+object;
 		}
 		AST node = (AST)object;
+		
+		switch(node.getType()) {
+			case(CssLexerTokenTypes.ATTRIBUTE_VALUE_PAIR):
+			    AST attributeName = node.getFirstChild();
+			    return ( attributeName != null?attributeName.toString()+((OffsetAST)attributeName).getOffset():null);
+			case(CssLexerTokenTypes.SECTION):
+			    return node.getFirstChild().toString()+((OffsetAST)node).getOffset();
+			case(CssLexerTokenTypes.STYLE_SECTION):
+			    return computeStyleSectionName(node);
+		}
+		// Fallback.
 		return node.toString();
 	}
+	
+	// Be strict and asume incomplete AST.
+	private String computeStyleSectionName(AST styleSection) {
+	    StringBuffer result = new StringBuffer();
+	    AST child = styleSection.getFirstChild();
+	    if(child == null) {
+	        return "";
+	    }
+	    result.append(child.toString());
+	    child = child.getNextSibling();
+	    result.append(((OffsetAST)child).getOffset());
+	    if(child != null && child.getType() == CssLexerTokenTypes.NAME){
+	        result.append(" (");
+	        result.append(child.toString());  
+	        result.append(" )");
+	    }
+	    return result.toString();
+	}
+	
 }

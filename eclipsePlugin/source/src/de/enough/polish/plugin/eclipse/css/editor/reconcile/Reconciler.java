@@ -25,21 +25,17 @@
  */
 package de.enough.polish.plugin.eclipse.css.editor.reconcile;
 
-import net.percederberg.grammatica.parser.ParserLogException;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextEvent;
-import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.source.ISharedTextColors;
 
 import de.enough.polish.plugin.eclipse.css.model.CssModel;
 import de.enough.polish.plugin.eclipse.css.model.IModelListener;
-import de.enough.polish.plugin.eclipse.css.parser.PresentationAnalyzer;
 
 /**
  * <p>Reconciles the viewer presentation, the underlying document and the domain model.</p>
@@ -57,8 +53,6 @@ public class Reconciler implements IReconciler{
 	protected CssModel cssModel;
 	private TextListener textListener;
 	private ModelListener modelListener;
-	private ISharedTextColors colors;
-
 	class TextListener implements ITextInputListener, ITextListener{
 		
 		/* (non-Javadoc)
@@ -101,7 +95,6 @@ public class Reconciler implements IReconciler{
 	
 	public Reconciler(CssModel cssModel,ISharedTextColors colors){
 		this.cssModel = cssModel;
-		this.colors = colors;
 		this.textListener = new TextListener();
 		this.modelListener = new ModelListener();
 		this.cssModel.addModelListener(this.modelListener);
@@ -141,7 +134,8 @@ public class Reconciler implements IReconciler{
 	}
 
 	protected void reconcilePresentation(){
-		IDocument document = this.cssModel.getDocument();
+		/*
+	    IDocument document = this.cssModel.getDocument();
 		if(document == null){
 			return;
 		}
@@ -155,6 +149,7 @@ public class Reconciler implements IReconciler{
 			System.out.println("ERROR:Reconciler.reconcilePresentation():presentationAnalyzer throw exception.exception:"+exception.getMessage());
 		}
 		this.textViewer.changeTextPresentation(textPresentation,false);
+		*/
 	}
 	
 	protected void reconcileModel(){
