@@ -290,7 +290,9 @@ public final class StyleSheet {
 				}
 			//#endif
 		}
-		stylesByName.put( fullStyleName, style );
+		if ( fullStyleName != null && style != null ) {
+			stylesByName.put( fullStyleName, style );
+		}
 		return style;
 	}
 	//#endif
