@@ -534,7 +534,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d, jtwi" />
-		<capability name="ScreenSize" value="220x176" />
+		<capability name="ScreenSize" value="176x220" />
 		<capability name="ClosedFlipScreenSize" value="96x80" />
 		<capability name="BitsPerPixel" value="16" />
 		<capability name="HeapSize" value="1.5 mb" />
@@ -546,12 +546,40 @@
 		<capability name="MaxSockets.http" value="4" />
 		<capability name="MaxSockets.udp" value="4" />
 		<capability name="ImageFormat" value="png, jpeg, gif, bmp" />
-		<capability name="SoundFormat" value="midi, wav, amr, mp3. mp4. iMelody" />
+		<capability name="SoundFormat" value="midi, wav, amr, mp3, mp4, iMelody" />
 		<!--
 		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.1/bin/emulator.exe" />
 		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;-deviceFile;;Resources/A760.props;;${polish.midlet.class}" />
 		-->
 	</device>
+	
+		<device>
+		<identifier>Motorola/V550</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi, phonebook" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="ClosedFlipScreenSize" value="96x80" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="800 kb" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="MaxRecordStoreSize" value="64 kb" />
+		<capability name="JavaProtocol" value="udp, http, https, socket, tcp" />
+		<capability name="MaxSockets" value="4" />
+		<capability name="MaxSockets.tcp" value="4" />
+		<capability name="MaxSockets.http" value="4" />
+		<capability name="MaxSockets.udp" value="4" />
+		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="SoundFormat" value="midi, wav, amr, mp3" />
+		<capability name="Region" value="North America" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="1" />
+		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe" />
+		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V550_V545.props" />
+	</device>
+	
 
 	<device>
 		<identifier>Motorola/A780</identifier>
@@ -4143,16 +4171,14 @@
 	<device>
 		<identifier>Qtek/XDAII</identifier>
 		<groups></groups>
-		<features>hasCamera, hasPointerEvents, hasCommandKeyEvents</features>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="os" value="Windows Mobile 2003" />
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf, au, wav" />
 		<capability name="HeapSize" value="64 MB" />
 		<capability name="DRM" value="forward lock" />
-		<capability name="CameraZoom" value="0" />
 	</device> 
 </devices>

@@ -107,6 +107,11 @@ public class BuildSetting {
 	public BuildSetting( Project project ) {
 		this.polishHomePath = project.getProperty( "polish.home" );
 		if (this.polishHomePath != null) {
+			File polishHomeDir = new File( this.polishHomePath );
+			if (!polishHomeDir.isAbsolute()) {
+				polishHomeDir = new File( project.getBaseDir(), this.polishHomePath );
+				this.polishHomePath = polishHomeDir.getAbsolutePath();
+			}
 			this.polishHomePath += File.separatorChar;
 		} 
 		this.projectBasePath = project.getBaseDir().getAbsolutePath() + File.separator;
