@@ -96,6 +96,7 @@ public class BuildSetting {
 	private File compilerDestDir;
 	private ResourceSetting resourceSetting;
 	private boolean alwaysUsePolishGui;
+	private PackageSetting packageSetting;
 	
 	/**
 	 * Creates a new build setting.
@@ -177,6 +178,10 @@ public class BuildSetting {
 	public void addConfiguredJad( JadAttributes attributes ) {
 		this.jadAttributes = attributes;
 		this.jadAttributesFilter = attributes.getFilter();
+	}
+	
+	public void addConfiguredPackager( PackageSetting setting ) {
+		this.packageSetting = setting;
 	}
 			
 	public void addConfiguredPreprocessor( PreprocessorSetting preprocessor ) {
@@ -1141,6 +1146,10 @@ public class BuildSetting {
 	
 	public boolean doPreverifyInCompilerMode() {
 		return this.compilerModePreverify;
+	}
+	
+	public PackageSetting getPackageSetting() {
+		return this.packageSetting;
 	}
 	
 }

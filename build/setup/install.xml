@@ -107,9 +107,10 @@
             <file src="doc" targetdir="$INSTALL_PATH"/> <!-- Reccursive adding -->
         </pack>
         <pack name="Tools" required="no" preselected="yes">
-            <description>General stand-alone tools for J2ME development.</description>
-            <file src="../setup/bin/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
-            <file src="../setup/bin/binaryeditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
+            <description>General stand-alone tools for J2ME development, e.g. the binary data editor.</description>
+            <file src="../setup/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
+            <file src="../setup/binaryeditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
+            <file src="../setup/bin" targetdir="$INSTALL_PATH" />
             <!-- mark Unix shell skripts as executable: -->
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor" stage="never" os="unix" />
         </pack>

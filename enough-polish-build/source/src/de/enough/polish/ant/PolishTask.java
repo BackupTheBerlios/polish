@@ -32,6 +32,7 @@ import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.emulator.Emulator;
 import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.*;
 import de.enough.polish.preprocess.custom.PolishPreprocessor;
@@ -126,6 +127,7 @@ public class PolishTask extends ConditionalTask {
 	private TextFile localeSourceFile;
 
 	private StringList localeCode;
+	private Packager packager;
 
 	
 	/**
@@ -703,7 +705,10 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		
-		//check if there has been an error at the last run:
+		// get the packager for creating the final jar-file:
+		this.packager = Packager.getInstance( this.buildSetting.getPackageSetting() );
+		
+		// check if there has been an error at the last run:
 		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separator + "error.lock");
 		if (this.errorLock.exists()) {
@@ -1502,8 +1507,8 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
-			FileUtil.writeTextFile( manifestFile, jad.getContent() );		
-			JarUtil.jar(classesDir, jarFile, true );
+			FileUtil.writeTextFile( manifestFile, jad.getContent() );
+			this.packager.createPackage(classesDir, jarFile, device, evaluator, this.preprocessor.getVariables(), this.project );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );

@@ -3,12 +3,13 @@
 <p>
 J2ME Polish is dual licensed under the open source license "GNU General Public License" as well as proprietary licenses for commercial use. 
 </p><p>
-If you want to use J2ME Polish for commercial (closed source) projects, you need to obtain a commercial license. Please register in this case at 
+If you want to use J2ME Polish for commercial (closed source) projects, you usually need to obtain a commercial license. Please register in this case at 
 www.j2mepolish.org 
 </p><p>
-For projects which are published under the "GNU General Public License" no registration is needed.
+For projects which are published under the &quot;GNU General Public License&quot; no registration is needed.
 </p>
 <h1>Third Party Tools</h1>
+<p>The J2ME Polish distribution contains some Open Source third party modules. These modules are governed by their respective licenses, which remain unaffected by the J2ME Polish licenses.</p>
 <p>J2ME Polish includes the ProGuard obfuscator. ProGuard is licensed under the GNU General Public License. More information and the latest version can be found at http://proguard.sourceforge.net. Also the RetroGuard obfuscator is included. RetroGuard is licensed under the GNU Lesser General Public License. RetroGuard can be found at http://www.retrologic.com. J2ME Polish uses the JDOM xml library, which is published under the GNU Lesser General Public License.
 </p>
 <h1>GPL License</h1>

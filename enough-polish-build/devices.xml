@@ -637,7 +637,7 @@
 	
 	<device>
 		<identifier>Motorola/E680</identifier>
-		<features>doubleBuffering</features>
+		<features>doubleBuffering, hasPointerEvents</features>
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="ScreenSize" value="240x320" />

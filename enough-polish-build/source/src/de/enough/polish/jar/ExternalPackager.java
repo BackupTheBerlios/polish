@@ -1,0 +1,148 @@
+/*
+ * Created on 02-Nov-2004 at 15:38:29.
+ * 
+ * Copyright (c) 2004 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+package de.enough.polish.jar;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.Map;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+
+import de.enough.polish.Device;
+import de.enough.polish.ant.build.PackageSetting;
+import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.util.PropertyUtil;
+import de.enough.polish.util.TextUtil;
+
+/**
+ * <p>Calls an external packager-tool.</p>
+ *
+ * <p>copyright Enough Software 2004</p>
+ * <pre>
+ * history
+ *        02-Nov-2004 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public class ExternalPackager extends Packager {
+
+
+	/**
+	 * Creates a new external packager
+	 * 
+	 * @param setting the settings
+	 */
+	public ExternalPackager( PackageSetting setting ) {
+		super();
+		this.setting = setting;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.jar.Packager#doPackage(java.io.File, java.io.File, de.enough.polish.Device, de.enough.polish.preprocess.BooleanEvaluator, java.util.Map, org.apache.tools.ant.Project)
+	 */
+	public void createPackage(File sourceDir, File targetFile, Device device,
+			BooleanEvaluator evalator, Map variables, Project project)
+	throws IOException, BuildException 
+	{
+		variables.put("polish.packageDir", sourceDir.getAbsolutePath() );
+		Map antProperties = project.getProperties();
+		String executable = PropertyUtil.writeProperties( this.setting.getExecutable(), antProperties );
+		executable = PropertyUtil.writeProperties( executable, variables );
+		String argumentsStr = PropertyUtil.writeProperties( this.setting.getArguments(), antProperties );
+		argumentsStr = PropertyUtil.writeProperties( argumentsStr, variables );
+		String[] arguments = TextUtil.splitAndTrim( argumentsStr, ";;");
+		String[] parameters = new String[ arguments.length + 1 ];
+		parameters[0] = executable;
+		System.arraycopy( arguments, 0, parameters, 1, arguments.length );
+		
+		Runtime runtime = Runtime.getRuntime();
+		Process process = runtime.exec(parameters);
+		
+		try {
+			String info = executable;
+			if (info.indexOf( File.separatorChar ) != -1) {
+				info = info.substring( info.indexOf( File.separatorChar ));
+			}
+			info += ": ";
+			LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info );
+			errorLog.start();
+			LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info );
+			outputLog.start();
+			int result = process.waitFor();
+			if (result != 0) {
+				System.err.println( "Call to external packager was: ");
+				for (int i = 0; i < parameters.length; i++) {
+					System.err.print( parameters[i] + " " );
+				}
+				System.err.println();
+				throw new BuildException("External packager failed with result [" + result + "].");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new BuildException("External packager was interrupted.");
+		}
+		
+	}
+
+	class LoggerThread extends Thread {
+		private final InputStream input;
+		private final PrintStream output;
+		private final String header;
+
+		public LoggerThread( InputStream input, PrintStream output, String header ) {
+			this.input = input;
+			this.output = output;
+			this.header = header;
+		}
+		
+		public void run() {
+			StringBuffer log = new StringBuffer( 300 );
+			log.append(this.header);
+			int startPos = this.header.length();
+			int c;
+			
+			try {
+				while ((c = this.input.read() ) != -1) {
+					if (c == '\n') {
+						String logMessage = log.toString();
+						this.output.println( logMessage );
+						log.delete( startPos,  log.length() );
+					}  else if (c != '\r') {
+						log.append((char) c);
+					}
+				}
+				this.input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Unable to log: " + e.toString() );
+			}
+		}
+	}
+
+}

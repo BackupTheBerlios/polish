@@ -217,6 +217,13 @@ extends AbstractTableModel
 		return this.dataChanged;
 	}
 
+	/**
+	 * 
+	 */
+	public void resetDataChanged() {
+		this.dataChanged = false;
+	}
+
 
 
 }

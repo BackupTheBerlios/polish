@@ -474,6 +474,7 @@ implements ActionListener
 		}
 		try {
 			this.dataManager.saveData( this.dataFile );
+			this.dataTableModel.resetDataChanged();
 			this.statusBar.setText("saved " + this.dataFile.getName() );
 			updateTitle();
 		} catch (Exception e) {
@@ -489,6 +490,7 @@ implements ActionListener
 				this.dataFile = file;
 				this.statusBar.setText("saved " + file.getName() );
 				updateTitle();
+				this.dataTableModel.resetDataChanged();
 			} catch (Exception e) {
 				showErrorMessage( e );
 			}
