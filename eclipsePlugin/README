@@ -9,12 +9,12 @@ Currently implemented is
 
 TODO (CssEditor)
 
-- Change old documentation style to new one. Esp. Csseditor and stuff created bevor 24.02.05.
-- document everything.
-- design domain model with element/child relationship.
+- Change old documentation style to new one. Esp. CssEditor and stuff created before 24.02.05.
+- design domain model with element/Parent/child relationship. Caution: special _element_ semantics.
 - parse css file to domain model.
 - on input reconcile domain model.
 - on input reconcile presentation.
+- document everything.
 
 
 ROADMAP
