@@ -90,6 +90,8 @@ public class Preprocessor {
 	private BooleanEvaluator booleanEvaluator;
 	private StyleSheet styleSheet;
 	private boolean usePolishGui;
+	protected static final Pattern SYSTEM_PRINT_PATTERN = Pattern.compile(
+				"System.(out|err).print(ln)?\\s*\\(" );
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -901,7 +903,7 @@ public class Preprocessor {
 				//System.out.println("is verbose debug!");
 				insertVerboseDebugInfo( lines, className );
 			}
-			return (verboseDebug | uncommentLine( line, lines ));
+			return (verboseDebug | uncommentLine( line, lines ) | convertSystemOut( lines ));
 		} else {
 			return commentLine( line, line.trim(), lines );
 		}
@@ -941,7 +943,8 @@ public class Preprocessor {
 				break;
 			}
 			if (debug) {
-				changed = changed | uncommentLine( line, lines );
+				changed = changed | uncommentLine( line, lines ) | convertSystemOut( lines );
+				
 			} else {
 				changed = changed | commentLine( line, trimmedLine, lines );
 			}
@@ -956,21 +959,59 @@ public class Preprocessor {
 	}
 	
 	/**
+	 * Converts a System.out.println etc to a Debug,debug(..)-call.
+	 * Also channels an exception.printStackTrace() etc to a Debug.debug(...)-call. 
+	 * 
+	 * @param lines the current lines
+	 * @return true when the current line was changed
+	 */
+	private boolean convertSystemOut(StringList lines) {
+		String line = lines.getCurrent();
+		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
+		if (matcher.find()) {
+			// the current line contains a system.out.println()
+			String argument = line.substring( matcher.end() ).trim();
+			int plusPos = argument.lastIndexOf('+');
+			if ( plusPos != -1 && plusPos != argument.length() -1 ) {
+				String firstArgument = argument.substring(0, plusPos ).trim();
+				String secondArgument = argument.substring( plusPos + 1 ).trim();
+				if (secondArgument.indexOf('"') != -1 && secondArgument.charAt(0) != '"') {
+					// the '+' was in the middle of a string, e.g. " bla + blubb "
+					line = "de.enough.polish.util.Debug.debug(" 
+						+ argument; 					
+				} else {
+					line = "de.enough.polish.util.Debug.debug(" 
+						+ firstArgument + ", " + secondArgument;
+				}
+			} else {
+				line = "de.enough.polish.util.Debug.debug(" 
+					+ argument; 
+			}
+			lines.setCurrent( line );
+			return true;
+		}
+		// now check if the line prints out a stacktrace:
+		int stackTraceStart = line.indexOf(".printStackTrace()"); 
+		if ( stackTraceStart != -1) {
+			String exceptionVar = line.substring(0, stackTraceStart).trim();
+			lines.setCurrent( "de.enough.polish.util.Debug.debug(" + exceptionVar + ");");
+			return true;
+		}
+		// the current line contained neither a system.out.println nor a e.printStackTrace():
+		return false;
+	}
+
+	/**
 	 * Inserts verbose debugging information (time, class-name and source-code line).
 	 * 
 	 * @param lines the source code
 	 * @param className the name of the class
 	 */
 	private void insertVerboseDebugInfo( StringList lines, String className ) {
-		String debugVerbose = "(System.currentTimeMillis() + "
+		String debugVerbose = "de.enough.polish.util.Debug.debug(System.currentTimeMillis() + "
 			+ "\" - " + className 
 			+ " line " + (lines.getCurrentIndex() + 1 - lines.getNumberOfInsertedLines()) 
 			+ "\" );";
-		if (this.debugManager.useGui()) {
-			debugVerbose = "de.enough.polish.util.Debug.debug" + debugVerbose;
-		} else {
-			debugVerbose = "System.out.println" + debugVerbose;
-		}
 		lines.insert( debugVerbose );
 		lines.next();
 	}

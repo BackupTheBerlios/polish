@@ -1302,6 +1302,118 @@
 	</device>
 	
 <!-- Siemens devices -->
+	<device>
+		<identifier>Siemens/A56i</identifier>
+		<capability name="ScreenSize" value="101x64"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPackage" value="siemens-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16" />
+		<capability name="HeapSize" value="150kb" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="StorageSize" value="120kb" />
+	</device>
+	
+	<device>
+		<identifier>Siemens/C55, Siemens/C56</identifier>
+		<capability name="ScreenSize" value="101x64"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPackage" value="siemens-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16" />
+		<capability name="HeapSize" value="150kb" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="StorageSize" value="375kb" />
+	</device>
+	
+	<device>
+		<identifier>Siemens/2128</identifier>
+		<capability name="ScreenSize" value="101x64"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPackage" value="siemens-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, wav" />
+		<capability name="HeapSize" value="150kb" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="StorageSize" value="120kb" />
+	</device>
+	
+	<device>
+		<identifier>Siemens/CT56</identifier>
+		<capability name="ScreenSize" value="101x64"/>
+		<capability name="BitsPerPixel" value="2"/>
+		<capability name="JavaPackage" value="siemens-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16, wav" />
+		<capability name="HeapSize" value="150kb" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="StorageSize" value="120kb" />
+	</device>
+
+	<device>
+		<identifier>Siemens/C60, Siemens/C61</identifier>
+		<capability name="ScreenSize" value="101x80"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi16" />
+		<capability name="HeapSize" value="760kb" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="StorageSize" value="1.8MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+	</device>
+	
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/C65</identifier>
+		<capability name="ScreenSize" value="130x130"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, location-api" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
+		<capability name="HeapSize" value="1.5MB" />
+		<capability name="MaxJarSize" value="350kb" />
+		<capability name="StorageSize" value="11MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+	</device>
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/CF62</identifier>
+		<capability name="ScreenSize" value="130x130"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, cf62-led-api" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi32, wav" />
+		<capability name="MaxJarSize" value="70kb" />
+		<capability name="MaxObjectSize" value="16kb" />		
+		<capability name="StorageSize" value="1.5MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+	</device>
+	
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/CX65</identifier>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, location-api" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
+		<capability name="VideoFormat" value="h263" />
+		<capability name="MaxJarSize" value="350kb" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="StorageSize" value="11MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Seperate Delivery, Combined Delivery" />
+	</device>
+
 	<device 
 		supportsPolishGui="true">
 		<identifier>Siemens/SX1</identifier>

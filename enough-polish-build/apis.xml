@@ -28,18 +28,29 @@
 		<description>The Wireless Messaging API provides
 			functionalities for sending and receiving messages (SMS).
 		</description>
-		<names>wmapi,wm-api, JSR-120</names>
+		<names>wmapi,wm-api, JSR-120, wma</names>
 		<symbol>wmapi</symbol>
 		<files>j2me-wmapi.jar, wma.zip</files>
 		<path>import/j2me-wmapi.jar</path>
 	</api>
 	
 	<api>
+		<name>Location API</name>
+		<description>The Location API provides
+			functionalities for determing the position of the user.
+		</description>
+		<names>location api, location-api, JSR-179</names>
+		<symbol>locationapi</symbol>
+		<files>j2me-locationapi.jar</files>
+		<path>import/j2me-locationapi.jar</path>
+	</api>
+
+	<api>
 		<name>Bluetooth API</name>
 		<description>The Bluetooth API provides
 			functionalities for data exchange with other bluetooth devices.
 		</description>
-		<names>btapi,bt-api, bluetooth, bluetooth-api</names>
+		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-82</names>
 		<symbol>btapi</symbol>
 		<files>j2me-btapi.jar, bluetooth.zip</files>
 		<path>import/j2me-btapi.jar</path>
@@ -49,7 +60,7 @@
 		<name>3D API</name>
 		<description>The 3D API provides 3D functions for J2ME.
 		</description>
-		<names>3d, 3d-api,3dapi, jsr-184, jsr184</names>
+		<names>3d, 3d-api,3dapi, JSR-184</names>
 		<symbol>3dapi</symbol>
 		<files>j2me-3dapi.jar</files>
 		<path>import/j2me-3dapi.jar</path>
@@ -70,7 +81,7 @@
 		<name>PDA API</name>
 		<description>The PDA-API defines optional packages for features that are commonly found on PDAs and other mobile devices in the J2ME space: one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
-		<names>pdaapi, pda-api, pim-api, fileconnection-api, jsr-75, jsr75</names>
+		<names>pdaapi, pda-api, pim-api, fileconnection-api, JSR-75</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
 		<path>import/j2me-pdaapi.jar</path>

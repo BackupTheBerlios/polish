@@ -47,6 +47,7 @@ public class DebugSetting extends ConditionalElement {
 	private boolean enable;
 	private boolean verbose;
 	private boolean useGui;
+	private boolean showLogOnError;
 	private String level;
 	private ArrayList filters;
 
@@ -154,6 +155,19 @@ public class DebugSetting extends ConditionalElement {
 	 */
 	public Filter[] getFilters() {
 		return (Filter[]) this.filters.toArray( new Filter[ this.filters.size() ] );
+	}
+
+	/**
+	 * @return Returns the showDebugOnError.
+	 */
+	public boolean showLogOnError() {
+		return this.showLogOnError;
+	}
+	/**
+	 * @param showDebugOnError The showDebugOnError to set.
+	 */
+	public void setShowLogOnError(boolean showDebugOnError) {
+		this.showLogOnError = showDebugOnError;
 	}
 
 }

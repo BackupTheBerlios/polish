@@ -32,6 +32,8 @@ import org.apache.tools.ant.BuildException;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -1319,6 +1321,25 @@ public class PreprocessorTest extends TestCase {
 		result = this.preprocessor.preprocess( "com.company.package.MyClass", lines );
 		assertEquals( Preprocessor.NOT_CHANGED, result );
 		
+	}
+	
+	public void testSystemPrintPattern() {
+		Pattern pattern = Preprocessor.SYSTEM_PRINT_PATTERN;
+		String test = "	System.out.println( \"hello world\");";
+		Matcher matcher = pattern.matcher( test );
+		assertTrue( matcher.find() );
+
+		test = "	System.err.println ( \"hello world\");";
+		matcher = pattern.matcher( test );
+		assertTrue( matcher.find() );
+
+		test = "	System.err.print( \"hello world\");";
+		matcher = pattern.matcher( test );
+		assertTrue( matcher.find() );
+
+		test = "	System.out.print ( \"hello world\");";
+		matcher = pattern.matcher( test );
+		assertTrue( matcher.find() );
 	}
 	
 }

@@ -307,7 +307,11 @@ public class Style {
 			String[] attributesNames = (String[]) group.keySet().toArray( new String[ group.size() ]);
 			for (int j = 0; j < attributesNames.length; j++) {
 				String attributeName = attributesNames[j];
-				attributes.add( groupName + "-" + attributeName );
+				if (groupName.equals(attributeName)) {
+					attributes.add( attributeName );
+				} else {
+					attributes.add( groupName + "-" + attributeName );
+				}
 			}
 		}
 		return (String[]) attributes.toArray( new String[ attributes.size() ] );

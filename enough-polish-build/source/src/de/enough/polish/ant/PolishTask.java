@@ -239,6 +239,9 @@ public class PolishTask extends ConditionalTask {
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
 		}
+		if (debugManager != null && this.buildSetting.getDebugSetting().showLogOnError()) {
+			this.polishProject.addFeature("showLogOnError");
+		}
 		this.polishProject.addCapability("license", this.infoSetting.getlicense() );
 		// add some specified features:
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());

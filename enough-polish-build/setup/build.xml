@@ -96,6 +96,10 @@
 			<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
+				<!-- an example variable:
+				In your Java-code you can use the following snipet to use this variable:
+				//#= private static final String UPDATE_URL = "${ update-url }";
+				-->
 				<variable name="update-url" value="http://www.enough.de/update" />
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
