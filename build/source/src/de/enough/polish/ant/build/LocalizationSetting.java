@@ -96,6 +96,15 @@ public class LocalizationSetting extends Setting {
 	}
 	
 	/**
+	 * Sets a single locale
+	 * 
+	 * @param locale the supported locale
+	 */
+	public void setLocale( String locale ) {
+		setLocales(locale);
+	}
+	
+	/**
 	 * Determines whether all found locales should be included.
 	 * 
 	 * @return Returns true when all found locales should be included.

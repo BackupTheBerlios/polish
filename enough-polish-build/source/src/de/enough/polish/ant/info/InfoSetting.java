@@ -96,6 +96,8 @@ public class InfoSetting {
 	private String vendorName;
 	private String jarName;
 	private String license;
+	private String profile;
+	private String configuration;
 	
 	/**
 	 * Creates a new InfoSetting
@@ -495,4 +497,18 @@ public class InfoSetting {
 			setJarUrl( this.jarName );
 		}
 	}
+	
+	public String getConfiguration() {
+		return this.configuration;
+	}
+	public void setConfiguration(String configuration) {
+		this.configuration = configuration;
+	}
+	public String getProfile() {
+		return this.profile;
+	}
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+
 }

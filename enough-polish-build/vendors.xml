@@ -166,4 +166,14 @@
 		<name>Palm</name>
 	</vendor>
 	
+	<vendor>
+		<name>Qtek</name>
+		<features></features>
+		<capability name="key.LeftSoftKey" value="-6" />
+		<capability name="key.RightSoftKey" value="-7" />
+		<capability name="key.ClearKey" value="-8" />
+		<capability name="key.ChangeInputModeKey" value="35" />
+		<capability name="TextField.charactersKeyPound" value=" " />  
+	</vendor>
+	
 </vendors>

@@ -109,6 +109,8 @@ public class CssConverter extends Converter {
 		VIEW_TYPES.put( "ShuffleView", "de.enough.polish.ui.containerviews.ShuffleView");
 		VIEW_TYPES.put( "dropping", "de.enough.polish.ui.containerviews.DroppingView");
 		VIEW_TYPES.put( "DroppingView", "de.enough.polish.ui.containerviews.DroppingView");
+		VIEW_TYPES.put( "midp2", "de.enough.polish.ui.containerviews.MIDP2LayoutView");
+		VIEW_TYPES.put( "midp2layout", "de.enough.polish.ui.containerviews.MIDP2LayoutView");
 		VIEW_TYPES.put( "plain", "none");
 		VIEW_TYPES.put( "normal", "none");
 	}

@@ -722,6 +722,7 @@ public class PolishTask extends ConditionalTask {
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
 				this.useDefaultPackage = this.buildSetting.useDefaultPackage();
+				
 				String[] midletClasses = this.buildSetting.getMidletClassNames();
 				if (keepClasses == null) {
 					keepClasses = new String[0];
@@ -943,6 +944,9 @@ public class PolishTask extends ConditionalTask {
 			this.preprocessor.addVariable( "polish.name", device.getName() );
 			this.preprocessor.addVariable( "polish.vendor", device.getVendorName() );
 			this.preprocessor.addVariable( "polish.version", this.infoSetting.getVersion() );
+			if (this.useDefaultPackage) {
+				this.preprocessor.addSymbol("polish.useDefaultPackage");
+			}
 			long lastLocaleModification = 0;
 			TranslationManager translationManager = null;
 			// set localization-variables:
@@ -1539,20 +1543,28 @@ public class PolishTask extends ConditionalTask {
 			jad.addAttribute( "Manifest-Version", "1.0" );
 		}
 		// set MicroEdition-Profile:
-		String midp = InfoSetting.MIDP1;
-		if (device.isMidp2()) {
-			midp = InfoSetting.MIDP2;
+		String profile = this.infoSetting.getProfile();
+		if (profile == null) {			
+			if (device.isMidp2()) {
+				profile = InfoSetting.MIDP2;
+			} else {
+				profile = InfoSetting.MIDP1;
+			}
 		}
 		if (useAttributesFilter) {
-			attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Attribute(InfoSetting.MICRO_EDITION_PROFILE, midp) );
+			attributesByName.put( InfoSetting.MICRO_EDITION_PROFILE, new Attribute(InfoSetting.MICRO_EDITION_PROFILE, profile) );
 		} else {
-			jad.addAttribute( InfoSetting.MICRO_EDITION_PROFILE, midp );
+			jad.addAttribute( InfoSetting.MICRO_EDITION_PROFILE, profile );
 		}
 
 		// set MicroEdition-Configuration:
-		String config = InfoSetting.CLDC1_0;
-		if (!device.isCldc10()) {
-			config = InfoSetting.CLDC1_1;
+		String config = this.infoSetting.getConfiguration();
+		if (config == null) {			
+			if (!device.isCldc10()) {
+				config = InfoSetting.CLDC1_1;
+			} else {
+				config = InfoSetting.CLDC1_0;
+			}
 		}
 		if (useAttributesFilter) {
 			attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );

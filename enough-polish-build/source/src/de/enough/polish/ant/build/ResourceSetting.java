@@ -123,6 +123,10 @@ public class ResourceSetting extends Setting {
 		this.localizationSettings.add( setting );
 	}
 	
+	public void setLocale( String locale ) {
+		setLocales( locale );
+	}
+	
 	/**
 	 * Retrieves the first active localization setting or null when none was found.
 	 * 

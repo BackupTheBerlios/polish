@@ -60,6 +60,19 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/multi</identifier>
+		<description>This device combines several features of different vendors. It can be used
+		             in case you want to use dynamic class loading etc for determing the 
+		             device capabilities during runtime.
+		</description>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, btapi" />
+	</device>
 	
 	<device
 		supportsPolishGui="false" >
@@ -4076,4 +4089,23 @@
 		<capability name="SoundFormat" value="wav" />
 	</device>
 	
+<!-- Qtek devices -->
+	<device>
+		<identifier>Qtek/XDAII</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="os" value="Windows Mobile 2003" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf, au, wav" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp" />
+		<capability name="HeapSize" value="64 MB" />
+		<capability name="DRM" value="forward lock" />
+		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Skin" value="SonyEricsson_P910" />
+		<capability name="Bugs" value="fullScreenInPaint, NoSpriteRotation, DisplayGetColor, drawRgbOrigin"/>
+	</device> 
 </devices>
