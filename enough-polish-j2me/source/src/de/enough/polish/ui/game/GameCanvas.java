@@ -30,6 +30,10 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+//#ifdef polish.usePolishGui
+	//# import de.enough.polish.ui.Screen;
+//#endif
+
 /**
  * The GameCanvas class provides the basis for a game user interface.
  * 
@@ -107,7 +111,7 @@ public abstract class GameCanvas
 		//#ifdef polish.usePolishGui
 			//#define tmp.useFullScreen
 			//#define tmp.extendsPolishScreen
-			//# extends de.enough.polish.ui.Screen
+			//# extends Screen
 		//#else
 			//# extends Canvas
 		//#endif
