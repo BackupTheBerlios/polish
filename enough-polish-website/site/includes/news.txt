@@ -3,7 +3,7 @@
 	<%index %>
 <%endif %>
 
-<p class="newsdate">2004-12-15:</p>
+<p class="newsdate">2004-12-20:</p>
 <h2 id="1.2.3">J2ME Polish 1.2.3</h2>
 <p>
 	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.3.html">J2ME Polish 1.2.3</a> 

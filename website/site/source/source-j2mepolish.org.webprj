@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
 <author/>
 <email/>
@@ -169,5 +169,28 @@
 <item url="s5/slides.js" />
 <item url="docs/introduction.html" />
 <item url="docs/tools.html" />
+<item url="images/binaryeditor-osx.png" />
+<item url="images/binaryeditor.png" />
+<item url="images/binaryeditor_small.png" />
+<item url="images/buildphases.png" />
+<item url="images/dragndrop-binaryeditor-osx.png" />
+<item url="images/fonteditor-osx.png" />
+<item url="images/fonteditor.png" />
+<item url="images/header.xcf" />
+<item url="images/J2ME-Polish-bin-folder.png" />
+<item url="images/RobertVirkus.png" />
+<item url="images/screenshot-example-roadrunner.png" />
+<item url="images/screenshot-motorola-example-enough.png" />
+<item url="images/screenshot-motorola-example-pink.png" />
+<item url="images/screenshot-motorola-example-roadrunner.png" />
+<item url="images/screenshot-sonyericsson-example-enough.png" />
+<item url="images/screenshot-sonyericsson-example-pink.png" />
+<item url="images/screenshot-sonyericsson-example-roadrunner.png" />
+<item url="s5/CVS/" />
+<item url="s5/CVS/Entries" />
+<item url="s5/CVS/Repository" />
+<item url="s5/CVS/Root" />
+<item url="s5/bodybg.png" />
+<item url="s5/pretty.css~" />
 </project>
 </webproject>
