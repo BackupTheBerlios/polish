@@ -85,10 +85,11 @@
             -->
         </pack>
         <pack name="Sample Application" required="yes">
-            <description>A sample application which shows a simple menu and contains two different CSS designs. This can be used as a master for new projects.</description>
+            <description>A sample application which shows a simple menu and contains three different CSS designs. This can be used as a master for new projects.</description>
             <file src="src" targetdir="$INSTALL_PATH/sample"/>
             <file src="resources" targetdir="$INSTALL_PATH/sample"/>
             <file src="resources2" targetdir="$INSTALL_PATH/sample"/>
+            <file src="resources3" targetdir="$INSTALL_PATH/sample"/>
             <file src="../setup/.classpath" targetdir="$INSTALL_PATH/sample"/>
             <file src="../setup/.project" targetdir="$INSTALL_PATH/sample"/>
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH/sample"/>

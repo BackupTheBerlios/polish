@@ -341,6 +341,7 @@
 		<fileset dir="setup" excludes="**/macosx/**" />
 		<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
 		<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
+		<fileset dir="../enough-polish-example-localization" includes="resources3/**/*.*" excludes="CVS"/>
 	</copy>
 	<!-- copy source of J2ME Polish -->
 	<mkdir dir="tmp/j2mepolish-src/build" />
