@@ -34,8 +34,7 @@ import javax.microedition.lcdui.*;
 /**
  * The common superclass of all high-level user interface classes.
  * 
- * The common superclass of all high-level user interface classes. The
- * contents displayed and their interaction with the user are defined by
+ * The contents displayed and their interaction with the user are defined by
  * subclasses.
  * 
  * <P>Using subclass-defined methods, the application may change the contents

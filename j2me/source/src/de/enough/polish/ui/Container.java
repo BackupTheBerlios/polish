@@ -430,10 +430,21 @@ public class Container extends Item {
 		
 		//#ifdef tmp.useTable
 			// columns are used
+			boolean isNormalWidthColumns = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
 			if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
-				int availableColumnWidth = (lineWidth 
-								- ((this.numberOfColumns -1) + this.paddingHorizontal))
-								/ this.numberOfColumns;
+				int availableColumnWidth;
+				if (isNormalWidthColumns) {
+					// this.columnsSetting == NORMAL_WIDTH_COLUMNS
+					// each column should use as much space as it can use
+					// without ousting the other columns
+					// (the calculation will be finished below)
+					availableColumnWidth = lineWidth - ((this.numberOfColumns -1) * this.paddingHorizontal);
+				} else {
+					// each column should take an equal share
+					availableColumnWidth = 
+						(lineWidth - ((this.numberOfColumns -1) * this.paddingHorizontal))
+						/ this.numberOfColumns;
+				}
 				//System.out.println("available column width: " + availableColumnWidth );
 				this.columnsWidths = new int[ this.numberOfColumns ];
 				for (int i = 0; i < this.numberOfColumns; i++) {
@@ -445,9 +456,11 @@ public class Container extends Item {
 			int maxRowHeight = 0;
 			int columnIndex = 0;
 			int rowIndex = 0;
-			int[] maxColumnWidths = new int[ this.numberOfColumns ];
-			boolean trackColumnWidths = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
-			int maxWidth = 0;
+			int[] maxColumnWidths = null;
+			if (isNormalWidthColumns) {
+				maxColumnWidths = new int[ this.numberOfColumns ];
+			}
+			int maxWidth = 0; // important for "equal" columns-width
 			int myContentHeight = 0;
 			//System.out.println("starting init of " + myItems.length + " container items.");
 			for (int i=0; i< myItems.length; i++) {
@@ -470,7 +483,7 @@ public class Container extends Item {
 				if (height > maxRowHeight) {
 					maxRowHeight = height;
 				}
-				if (trackColumnWidths && width > maxColumnWidths[columnIndex ]) {
+				if (isNormalWidthColumns && width > maxColumnWidths[columnIndex ]) {
 					maxColumnWidths[ columnIndex ] = width;
 				}
 				if (width > maxWidth ) {
@@ -487,9 +500,79 @@ public class Container extends Item {
 				}
 			} // for each item
 			// now save the worked out dimensions:
-			if (this.columnsSetting == NORMAL_WIDTH_COLUMNS) {
-				this.columnsWidths = maxColumnWidths;
+			if (isNormalWidthColumns) {
+				// Each column should use up as much space as 
+				// needed in the "normal" columns-width mode.
+				// Each column which takes less than available 
+				// the available-row-width / number-of-columns
+				// can keep, but the others might need to be adjusted,
+				// in case the complete width of the table is wider
+				// than the allowed width.
+				
+				int availableRowWidth = lineWidth - ((this.numberOfColumns -1) * this.paddingHorizontal);
+				int availableColumnWidth = availableRowWidth / this.numberOfColumns;
+				int usedUpWidth = 0;
+				int leftColumns = this.numberOfColumns;
+				int completeWidth = 0;
+				for (int i = 0; i < maxColumnWidths.length; i++) {
+					int maxColumnWidth = maxColumnWidths[i];
+					if (maxColumnWidth <= availableColumnWidth) {
+						usedUpWidth += maxColumnWidth;
+						leftColumns--;
+					}
+					completeWidth += maxColumnWidth;
+				}
+				if (completeWidth <= availableRowWidth) {
+					// okay, the table is fine just how it is
+					this.columnsWidths = maxColumnWidths;
+				} else {
+					// okay, some columns need to be adjusted:
+					// re-initialise the table:
+					int leftAvailableColumnWidth = (availableRowWidth - usedUpWidth) / leftColumns;
+					int[] newMaxColumnWidths = new int[ this.numberOfColumns ];
+					myContentHeight = 0;
+					columnIndex = 0;
+					rowIndex = 0;
+					maxRowHeight = 0;
+					maxWidth = 0;
+					//System.out.println("starting init of " + myItems.length + " container items.");
+					for (int i = 0; i < myItems.length; i++) {
+						Item item = myItems[i];
+						int width = item.itemWidth;
+						int height = item.itemHeight;
+						if (maxColumnWidths[ columnIndex ] <= availableColumnWidth) {
+							newMaxColumnWidths[ columnIndex ] = maxColumnWidths[ columnIndex ];
+						} else {
+							// re-initialise this item,
+							// if it is wider than the left-available-column-width
+							if ( width > leftAvailableColumnWidth ) {
+								item.isInitialised = false;
+								width = item.getItemWidth( leftAvailableColumnWidth, leftAvailableColumnWidth );
+								height = item.getItemHeight( leftAvailableColumnWidth, leftAvailableColumnWidth );
+							}
+							if (width > newMaxColumnWidths[ columnIndex ]) {
+								newMaxColumnWidths[ columnIndex ] = width;
+							}
+						}
+						if (height > maxRowHeight) {
+							maxRowHeight = height;
+						}
+						columnIndex++;
+						if (columnIndex == this.numberOfColumns) {
+							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
+							columnIndex = 0;
+							this.rowsHeights[rowIndex] = maxRowHeight;
+							myContentHeight += maxRowHeight + this.paddingVertical;
+							maxRowHeight = 0;
+							rowIndex++;
+						}
+					} // for each item		
+					this.columnsWidths = newMaxColumnWidths;
+				}
 			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
+				// Use the maximum used column-width for each column,
+				// unless this table should be expanded, in which
+				// case the above set widths  will be used instead.
 				if (!this.isLayoutExpand) {
 					for (int i = 0; i < this.columnsWidths.length; i++) {
 						this.columnsWidths[i] = maxWidth;

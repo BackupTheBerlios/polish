@@ -27,6 +27,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.*;
 
+import de.enough.polish.util.ArrayList;
+
 
 /**
  * A Screen containing list of choices.
@@ -209,6 +211,10 @@ public class List extends Screen implements Choice
 	private Command selectCommand = SELECT_COMMAND;
 	private int listType;
 	private ChoiceGroup choiceGroup;
+	//#ifdef polish.css.show-text-in-title
+		private ArrayList titles;
+		private boolean showTextInTitle;
+	//#endif
 
 	/**
 	 * Creates a new, empty <code>List</code>, specifying its title
@@ -401,6 +407,20 @@ public class List extends Screen implements Choice
 	 */
 	public int append( String stringPart, Image imagePart, Style elementStyle )
 	{
+		//#ifdef polish.css.show-text-in-title
+			if (this.showTextInTitle){
+				if (imagePart != null && stringPart != null) {
+					this.titles.add( stringPart );
+					stringPart = null;
+					if (this.titles.size() == 1) {
+						// now set the title of the first item:
+						setTitle( stringPart );
+					}
+				} else {
+					this.titles.add( "" );
+				}
+			}
+		//#endif
 		int number = this.choiceGroup.append( stringPart, imagePart, elementStyle );
 		if (number == 0) {
 			if (this.listType == IMPLICIT ) {
@@ -487,6 +507,11 @@ public class List extends Screen implements Choice
 	 */
 	public void delete(int elementNum)
 	{
+		//#ifdef polish.css.show-text-in-title
+			if (this.showTextInTitle){
+				this.titles.remove(elementNum);
+			}
+		//#endif
 		this.choiceGroup.delete(elementNum);
 		if (this.choiceGroup.size() == 0 ) {
 			if (this.listType == IMPLICIT ) {
@@ -504,6 +529,11 @@ public class List extends Screen implements Choice
 	 */
 	public void deleteAll()
 	{
+		//#ifdef polish.css.show-text-in-title
+			if (this.showTextInTitle){
+				this.titles.clear();
+			}
+		//#endif
 		this.choiceGroup.deleteAll();
 		if (this.listType == IMPLICIT ) {
 			removeCommand( SELECT_COMMAND );
@@ -783,5 +813,52 @@ public class List extends Screen implements Choice
 		return "list";
 	}
 	//#endif	
-
+	
+	//#ifdef polish.css.show-text-in-title
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		Boolean showTextInTitleBool = style.getBooleanProperty("show-text-in-title");
+		if (showTextInTitleBool != null) { 
+			this.showTextInTitle = showTextInTitleBool.booleanValue();  
+			if (this.showTextInTitle && this.titles == null) {
+				this.titles = new ArrayList();
+				// now remove all texts from the embedded items:
+				Item[] items = this.choiceGroup.getItems();
+				for (int i = 0; i < items.length; i++) {
+					ChoiceItem item = (ChoiceItem) items[i];
+					String text = item.getText();
+					if (text != null) {
+						item.setText( null );
+						this.titles.add( text );
+						if (i == 0) {
+							setTitle( text );
+						}
+					} else {
+						this.titles.add( "" );
+					}
+				}
+			}
+		}
+	}
+	//#endif
+	
+	//#ifdef polish.css.show-text-in-title
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)
+	 */
+	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		boolean processed = this.choiceGroup.handleKeyPressed(keyCode, gameAction);
+		if (processed && this.showTextInTitle) {
+			int selectedIndex = this.choiceGroup.getSelectedIndex();
+			if (selectedIndex != -1) {
+				setTitle( (String) this.titles.get( selectedIndex ) ); 
+			}
+		}
+		return processed;
+	}
+	//#endif
+	
 }
