@@ -5,10 +5,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="import/bluetooth.zip"/>
 	<classpathentry kind="lib" path="import/junit.jar"/>
-	<classpathentry kind="lib" path="import/me4se.jar"/>
-	<classpathentry kind="lib" path="import/midpapi.zip"/>
 	<classpathentry kind="lib" path="import/mma.zip"/>
 	<classpathentry kind="lib" path="import/nokiaui.zip"/>
 	<classpathentry kind="lib" path="import/wma.zip"/>
+	<classpathentry kind="lib" path="import/midp2.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
