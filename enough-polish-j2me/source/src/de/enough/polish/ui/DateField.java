@@ -273,7 +273,7 @@ implements CommandListener
 				this.calendar.setTimeZone(this.timeZone);
 			}
 			this.calendar.setTime(date);
-			StringBuffer buffer = new StringBuffer();
+			StringBuffer buffer = new StringBuffer(10);
 			if ((this.mode == DATE) || (this.mode == DATE_TIME)) {
 				int year = this.calendar.get(Calendar.YEAR);
 				int month = this.calendar.get( Calendar.MONTH );
@@ -301,6 +301,18 @@ implements CommandListener
 					}
 					buffer.append( ++month )
 				          .append(".");
+					buffer.append( year );
+				//#elif polish.DateFormat == fr
+					if (day < 10) {
+						buffer.append( '0' );
+					}
+					buffer.append( day )
+						.append("/");
+					if (month < 9) {
+						buffer.append('0');
+					}
+					buffer.append( ++month )
+					    .append("/");
 					buffer.append( year );
 				//#else
 					buffer.append( year )
