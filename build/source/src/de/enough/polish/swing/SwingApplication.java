@@ -147,20 +147,23 @@ implements Application
 	 * @see #saveSettings()
 	 */
 	public void quit() {
-		saveSettings();
-		if (this.systemExitOnQuit) {
-			System.exit(0);
-		} else {
-			setVisible( false );
+		if (saveSettings()) {
+			if (this.systemExitOnQuit) {
+				System.exit(0);
+			} else {
+				setVisible( false );
+			}
 		}
 	}
 
 	/**
 	 * Saves the settings of the application.
-	 * The default implementation does nothing.
+	 * The default implementation always returns true.
+	 * 
+	 * @return true when the settings could be saved and the application can continue to quit.
 	 */
-	protected void saveSettings() {
-		// ignore...
+	protected boolean saveSettings() {
+		return true;
 	}
 
 	/* (non-Javadoc)

@@ -46,9 +46,9 @@ public class Translation {
 	/** a plain translation contains only text and no dynamic variables */
 	public static final int PLAIN = 0; 
 	/** a translation containing only one parameter */
-	public static final int ONE_PARAMETER = 1;
+	public static final int SINGLE_PARAMETER = 1;
 	/** a translation containing several parameter, these must be combined in Locale.java */
-	public static final int SEVERAL_PARAMETERS = 2;
+	public static final int MULTIPLE_PARAMETERS = 2;
 	
 	private final static String PARAMETER_PATTERN_STR = "\\{\\d+\\}";
 	private final static Pattern PARAMETER_PATTERN = Pattern.compile( PARAMETER_PATTERN_STR );
@@ -64,12 +64,20 @@ public class Translation {
 	private int id = -1;
 
 	/**
+	 * Creates a new translation.
 	 * 
-	 * @param key
-	 * @param value
-	 * @param idGenerator
+	 * @param key the string key for the translation, e.g. "text.Greetings"
+	 * @param value the value of the translation including parameters, e.g. "Hey {0}!"
+	 * @param useDynamicTranslations true when dynamic translations are used (translations that can be changed during the runtime)
+	 * @param idGeneratorPlain the ID generator for translations with no parameters, is only used when dynamic translations are used
+	 * @param idGeneratorSingleParameters the ID generator for translations with one parameter, is only used when dynamic translations are used
+	 * @param idGeneratorMultipleParameters the ID generator for translations with multiple parameters
 	 */
-	public Translation(String key, String value, IntegerIdGenerator idGenerator) {
+	public Translation(String key, String value, boolean useDynamicTranslations, 
+			IntegerIdGenerator idGeneratorPlain, 
+			IntegerIdGenerator idGeneratorSingleParameters, 
+			IntegerIdGenerator idGeneratorMultipleParameters) 
+	{
 		this.key = key;
 		this.value = value;
 		// split the value along the "{0}" etc patterns:
@@ -82,15 +90,21 @@ public class Translation {
 		//System.out.println("value: [" + value + "]  number of references: " + numberOfParameters );
 		if (numberOfParameters == 0) {
 			this.type = PLAIN;
+			if (useDynamicTranslations) {
+				this.id = idGeneratorPlain.getId(key, true);
+			}
 		} else if (numberOfParameters == 1) {
-			this.type = ONE_PARAMETER;
+			this.type = SINGLE_PARAMETER;
 			matcher.find();
 			String param = matcher.group();
 			this.parameterIndex = Integer.parseInt( param.substring(1 , param.length()-1) );
 			this.oneValueStart = value.substring( 0, matcher.start() );
 			this.oneValueEnd = value.substring( matcher.end() );
+			if (useDynamicTranslations) {
+				this.id = idGeneratorSingleParameters.getId(key, true);
+			}
 		} else {
-			this.type = SEVERAL_PARAMETERS;
+			this.type = MULTIPLE_PARAMETERS;
 			this.parameterIndices = new int[ numberOfParameters ];
 			this.valueChunks = new String[ numberOfParameters + 1 ];
 			int i = 0;
@@ -103,8 +117,9 @@ public class Translation {
 				i++;
 			}
 			this.valueChunks[i] = value.substring( lastEnd );
-			this.id = idGenerator.getId(key, true);
+			this.id = idGeneratorMultipleParameters.getId(key, true);
 		}
+		//System.out.println("NEW TRANSLATION: " + key + " => ID = " + this.id );
 	}
 
 	/**
@@ -121,7 +136,7 @@ public class Translation {
 	}
 	/**
 	 * Retrieves the index of the referenced parameter.
-	 * This method can only be used when the Translation-type is ONE_PARAMETER
+	 * This method can only be used when the Translation-type is SINGLE_PARAMETER
 	 * 
 	 * @return Returns the index of the referenced parameter.
 	 */
@@ -143,7 +158,7 @@ public class Translation {
 	/**
 	 * Retrieves the indices of the parameters.
 	 * This method can be called only when the type of this
-	 * translation is SEVERAL_PARAMETERS.
+	 * translation is MULTIPLE_PARAMETERS.
 	 * 
 	 * @return Returns the indices of the parameters.
 	 */
@@ -177,11 +192,11 @@ public class Translation {
 	}
 	
 	public boolean hasOneParameter() {
-		return (this.type == ONE_PARAMETER);
+		return (this.type == SINGLE_PARAMETER);
 	}
 	
 	public boolean hasSeveralParameters() {
-		return (this.type == SEVERAL_PARAMETERS);
+		return (this.type == MULTIPLE_PARAMETERS);
 	}
 
 	/**
@@ -218,5 +233,14 @@ public class Translation {
 			.append( this.oneValueEnd )
 			.append( '"' );
 		return result.toString();
+	}
+
+	/**
+	 * Sets the ID programmatically.
+	 * 
+	 * @param id the new ID
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 }

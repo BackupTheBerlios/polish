@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -228,7 +229,21 @@ public class Preprocessor {
 				processor.notifyDevice(device, usesPolishGui);
 			}
 		}
-	}	
+	}
+	
+	/**
+	 * Notifies this preprocessor about a new locale for which code is preprocessed.
+	 *  
+	 * @param locale the new locale, can be null
+	 */
+	public void notifyLocale( Locale locale ) {
+		if (this.customPreprocessors != null) {
+			for (int i = 0; i < this.customPreprocessors.length; i++) {
+				CustomPreprocessor processor = this.customPreprocessors[i];
+				processor.notifyLocale( locale );
+			}
+		}
+	}
 	
 	/**
 	 * Notifies this preprocessor about the end of preprocessing for the given device.

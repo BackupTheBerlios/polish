@@ -60,6 +60,7 @@ import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
+import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
@@ -176,6 +177,8 @@ public class PolishTask extends ConditionalTask {
 	// move all classes into the default package
 	// during the preprocessing phase:
 	private boolean useDefaultPackage;
+
+	private LocalizationSetting localizationSetting;
 	
 
 	
@@ -769,11 +772,23 @@ public class PolishTask extends ConditionalTask {
 		
 		// get the resource manager:
 		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), this.project, this.preprocessor.getBooleanEvaluator() );
-		this.supportedLocales = this.resourceManager.getLocales();
-		if (this.supportedLocales != null) {
+		Locale[] localizations = this.resourceManager.getLocales();
+		if (localizations != null) {
+			this.localizationSetting = this.buildSetting.getResourceSetting().getLocalizationSetting();
+			if (this.localizationSetting.isDynamic()) {
+				this.supportedLocales = null;
+			} else {
+				this.supportedLocales = localizations;
+			}
 			// add the preprocessor for translations:
+			String className;
+			if (this.localizationSetting != null) {
+				className = this.localizationSetting.getPreprocessorClassName();
+			} else {
+				className = "de.enough.polish.preprocess.custom.TranslationPreprocessor";
+			}
 			PreprocessorSetting setting = new PreprocessorSetting();
-			setting.setClass("de.enough.polish.preprocess.custom.TranslationPreprocessor");
+			setting.setClass( className );
 			this.translationPreprocessor = (TranslationPreprocessor) CustomPreprocessor.getInstance(setting, this.preprocessor, this.project);
 			this.preprocessor.addCustomPreprocessors( this.translationPreprocessor );
 			if (this.localeSourceFile == null) {
@@ -959,6 +974,15 @@ public class PolishTask extends ConditionalTask {
 				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
+			} else if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
+				locale = this.localizationSetting.getDefaultLocale();
+				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
+				this.translationPreprocessor.setTranslationManager( translationManager );
+				lastLocaleModification = translationManager.getLastModificationTime();
+				this.preprocessor.addVariable("polish.locale", locale.toString() );
+				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
+				this.preprocessor.addVariable("polish.country", locale.getCountry() );
+				this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
 			}
 			// set info-variables:
 			String jarName = this.infoSetting.getJarName();
@@ -1041,6 +1065,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			this.preprocessor.setSyleSheet( cssStyleSheet, device );
 			this.preprocessor.notifyDevice(device, usePolishGui);
+			this.preprocessor.notifyLocale( locale );
 			// preprocess each source file:
 			for (int i = 0; i < this.sourceDirs.length; i++) {
 				File sourceDir = this.sourceDirs[i];
@@ -1113,8 +1138,10 @@ public class PolishTask extends ConditionalTask {
 					
 					// now insert the localozation data for this device
 					// into the Locale.java source-code:
-					translationManager.processLocaleCode( this.localeCode );
-					//this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
+					if (!translationManager.isDynamic()) {
+						translationManager.processLocaleCode( this.localeCode );
+						//this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
+					}
 					if (this.useDefaultPackage) {
 						this.localeCode.reset();
 						this.importConverter.processImports(true, device.isMidp1(), this.localeCode, device, this.preprocessor);

@@ -26,7 +26,9 @@
 package de.enough.polish.resources;
 
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -34,7 +36,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,14 +65,19 @@ public class TranslationManager
 implements Comparator
 {
 	
-	private final Map translations;
+	private final Map translationsByKey;
 	private final Locale locale;
 	private final Device device;
 	private final LocalizationSetting localizationSetting;
-	private final IntegerIdGenerator idGenerator;
 	private final Preprocessor preprocessor;
 	private long lastModificationTime;
-	private final List severalValuesTranslations;
+	private final List multipleParametersTranslations;
+	private final boolean isDynamic;
+	private IntegerIdGenerator idGeneratorMultipleParameters;
+	private IntegerIdGenerator idGeneratorSingleParameter;
+	private IntegerIdGenerator idGeneratorPlain;
+	private ArrayList singleParameterTranslations;
+	private ArrayList plainTranslations;
 
 	/**
 	 * Creates a new manager for translations.
@@ -87,19 +93,17 @@ implements Comparator
 	throws IOException
 	{
 		this.localizationSetting = localizationSetting;
+		this.isDynamic = localizationSetting.isDynamic();
 		this.locale = locale;
 		this.device = device;
 		this.preprocessor = preprocessor;
-		this.translations = new HashMap();
-		this.severalValuesTranslations = new ArrayList();
+		this.translationsByKey = new HashMap();
+		this.multipleParametersTranslations = new ArrayList();
+		this.singleParameterTranslations = new ArrayList();
+		this.plainTranslations = new ArrayList();
 		Map rawTranslations = loadRawTranslations(resourceDirs);
-		// load IDs for variables:
-		File idsFile = new File( device.getBaseDir() + File.separator + "LocaleIds_" + locale.toString() + ".txt");
-		Map idsMap = new HashMap();
-		if (idsFile.exists()) {
-			FileUtil.readPropertiesFile(idsFile, '=', idsMap );
-		}
-		this.idGenerator = new IntegerIdGenerator( idsMap );
+		// load IDs for variables with multiple parameters:
+		loadIdsMap();
 		processRawTranslations( rawTranslations );
 		
 		// now set DateFormat variables according to current locale:
@@ -158,17 +162,84 @@ implements Comparator
 			}
 		}
 	}
-	
+
+	/**
+	 * Retrieves the file for storing IDs of translations with multiple parameters.
+	 * 
+	 * @return the file that stores those IDs
+	 */
+	protected File getMultipleParametersIdsFile() {
+		return new File( this.device.getBaseDir() + File.separator + "LocaleIds_" + this.locale.toString() + ".txt");
+	}
+
+	/**
+	 * Retrieves the file for storing IDs of translations with one parameter.
+	 * 
+	 * @return the file that stores those IDs
+	 */
+	protected File getSingleParameterIdsFile() {
+		return new File( this.device.getBaseDir() + File.separator + "SingleLocaleIds_" + this.locale.toString() + ".txt");
+	}
+
+	/**
+	 * Retrieves the file for storing IDs of translations with no parameters.
+	 * 
+	 * @return the file that stores those IDs
+	 */
+	protected File getPlainIdsFile() {
+		return new File( this.device.getBaseDir() + File.separator + "PlainLocaleIds_" + this.locale.toString() + ".txt");
+	}
+
 	/**
 	 * Saves the IDs-map for the complex translations to disk.
+	 * When dynamic translations are used, also IDs of plain and single-parameter translations are saved, too.
 	 * 
-	 * @throws IOException when the file could not be written
+	 * @throws IOException when the file(s) could not be written
 	 */
 	public void writeIdsMap()
 	throws IOException
 	{
-		File idsFile = new File( this.device.getBaseDir() + File.separator + "LocaleIds_" + this.locale.toString() + ".txt");
-		FileUtil.writePropertiesFile(idsFile, this.idGenerator.getIdsMap() );
+		File idsFile = getMultipleParametersIdsFile();
+		FileUtil.writePropertiesFile(idsFile, this.idGeneratorMultipleParameters.getIdsMap() );
+		if (this.isDynamic) {
+			idsFile = getPlainIdsFile();
+			FileUtil.writePropertiesFile(idsFile, this.idGeneratorPlain.getIdsMap() );
+			idsFile = getSingleParameterIdsFile();
+			FileUtil.writePropertiesFile(idsFile, this.idGeneratorSingleParameter.getIdsMap() );
+		}
+	}
+	
+	/**
+	 * Loads the IDs-map for the complex translations to disk.
+	 * When dynamic translations are used, also IDs of plain and single-parameter translations are loaded as well.
+	 * 
+	 * @throws IOException when the file(s) could not be read even though they exist
+	 */
+	public void loadIdsMap()
+	throws IOException
+	{
+		File idsFile = getMultipleParametersIdsFile();
+		Map idsMap = new HashMap();
+		if (idsFile.exists()) {
+			FileUtil.readPropertiesFile(idsFile, '=', idsMap );
+		}
+		this.idGeneratorMultipleParameters = new IntegerIdGenerator( idsMap );
+		if (this.isDynamic) {
+			// load IDs for variables with one parameter:
+			idsFile = getSingleParameterIdsFile();
+			idsMap = new HashMap();
+			if (idsFile.exists()) {
+				FileUtil.readPropertiesFile(idsFile, '=', idsMap );
+			}
+			this.idGeneratorSingleParameter = new IntegerIdGenerator( idsMap );
+			// load IDs for variables with no parameters:
+			idsFile = getPlainIdsFile();
+			idsMap = new HashMap();
+			if (idsFile.exists()) {
+				FileUtil.readPropertiesFile(idsFile, '=', idsMap );
+			}
+			this.idGeneratorPlain = new IntegerIdGenerator( idsMap );
+		}
 	}
 	
 	
@@ -213,11 +284,14 @@ implements Comparator
 			}
 			if ( variableFound ) {
 				// create final translation:
-				Translation translation = new Translation( key, value, this.idGenerator );
-				this.translations.put( key, translation );
+				Translation translation = new Translation( key, value, 
+						false, null, null, null );
+				this.translationsByKey.put( key, translation );
 				rawTranslations.remove( originalKey );
+				// the following can never be true, or could it?
+				// every variable usually only has one single vlue without any i18n parameters
 				if (translation.hasSeveralParameters()) {
-					this.severalValuesTranslations.add( translation );
+					this.multipleParametersTranslations.add( translation );
 				}
 			}
 		}		
@@ -230,10 +304,16 @@ implements Comparator
 				value = PropertyUtil.writeProperties(value, variables);
 			}
 			// create final translation:
-			Translation translation = new Translation( key, value, this.idGenerator );
-			this.translations.put( key, translation );
+			Translation translation = new Translation( key, value, 
+					this.isDynamic, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
+			//Translation translation = new Translation( key, value, this.idGeneratorMultipleParameters );
+			this.translationsByKey.put( key, translation );
 			if (translation.hasSeveralParameters()) {
-				this.severalValuesTranslations.add( translation );
+				this.multipleParametersTranslations.add( translation );
+			} else if (translation.hasOneParameter()) {
+				this.singleParameterTranslations.add( translation );
+			} else {
+				this.plainTranslations.add( translation );
 			}
 		}
 	}
@@ -325,7 +405,7 @@ implements Comparator
 	 * @return the translation for the given key or null when the translation was not found.
 	 */
 	public Translation getTranslation( String key ) {
-		return (Translation) this.translations.get( key );
+		return (Translation) this.translationsByKey.get( key );
 	}
 	
 	/**
@@ -349,7 +429,8 @@ implements Comparator
 			String line = code.getCurrent();
 			if ("//$$IncludeLocaleDefinitionHere$$//".equals(line)) {
 				insertionPointFound = true;
-				insertTranslationsWithSeveralValues( code );
+				// instantiate translations directly:
+				insertMultipleParametersTranslations( code );
 				break;
 			}
 		}
@@ -366,26 +447,45 @@ implements Comparator
 	 * 
 	 * @param code the source code, the code should be inserted into the current position.
 	 */
-	private void insertTranslationsWithSeveralValues(StringList code) {
+	private void insertMultipleParametersTranslations(StringList code) {
 		ArrayList lines = new ArrayList();
-		Translation[] complexTranslations = getTranslationsWithSeveralValues();
-		int numberOfTranslations = complexTranslations.length;
+		Translation[] currentTranslations = getMultipleParametersTranslations();
+		int numberOfTranslations = currentTranslations.length;
 		if (numberOfTranslations == 0) {
 			// no need to init an empty array:
 			return; 
 		}
 		lines.add("\tstatic {");
-		lines.add("\t\tparameterOrders = new short[" + numberOfTranslations + "][];");
-		lines.add("\t\tvalues = new String[" + numberOfTranslations + "][];");
-		for (int i = 0; i < complexTranslations.length; i++) {
-			Translation translation = complexTranslations[i];
-			lines.add( getValueCode( translation ));
+		lines.add("\t\tmultipleParameterOrders = new short[" + numberOfTranslations + "][];");
+		lines.add("\t\tmultipleParameterTranslations = new String[" + numberOfTranslations + "][];");
+		for (int i = 0; i < currentTranslations.length; i++) {
+			Translation translation = currentTranslations[i];
+			lines.add( getMultipleParametersTranslationCode( translation ));
 			int[] parameterOrder = translation.getParameterIndices();
 			if (!isContinuous(parameterOrder)) {
 	 			lines.add( getParameterOrderCode( translation, parameterOrder ) );
 			}
 		}
-		lines.add("\t} // end of complex translations");
+		/*
+		 * dynamic translations are instantiated during the runtime by
+		 * reading them out of a resource file
+		if (this.isDynamic) {
+			currentTranslations = getPlainTranslations();
+			lines.add("\t\tplainTranslations = new String[" + currentTranslations.length + "];");
+			for (int i = 0; i < currentTranslations.length; i++) {
+				Translation translation = currentTranslations[i];
+				lines.add( getTranslationCode( translation ));
+			}
+			currentTranslations = getSingleParameterTranslations();
+			lines.add("\t\tsingleParameterTranslationsStart = new String[" + currentTranslations.length + "];");
+			lines.add("\t\tsingleParameterTranslationsEnd = new String[" + currentTranslations.length + "];");
+			for (int i = 0; i < currentTranslations.length; i++) {
+				Translation translation = currentTranslations[i];
+				lines.add( getTranslationCode( translation ));
+			}			
+		}
+		*/
+		lines.add("\t} // end of translations");
 		String[] codeLines = (String[]) lines.toArray( new String[ lines.size() ] );
 		code.insert(codeLines);
 	}
@@ -407,12 +507,17 @@ implements Comparator
 	}
 
 	/**
-	 * @param translation
-	 * @return
+	 * Inserts the code necessary to instantiate one translation with multiple parameters.
+	 * 
+	 * @param translation the translation
+	 * @return the string containing the necessary code
 	 */
-	private String getValueCode(Translation translation) {
+	private String getMultipleParametersTranslationCode(Translation translation) {
 		StringBuffer code = new StringBuffer();
-		code.append( "\t\tvalues[" )
+		if (!translation.hasSeveralParameters()) {
+			throw new BuildException("Cannot create code for translation [" + translation.getKey() + "]: please report this error to j2mepolish@enough.de");
+		}
+		code.append( "\t\tmultipleParameterTranslations[" )
 			.append( translation.getId() -1 )
 			.append( "] = new String[] {" );
 		String[] values = translation.getValueChunks();
@@ -426,16 +531,33 @@ implements Comparator
 			}
 		}
 		code.append("};");
+		/*
+		else if (translation.hasOneParameter()) {
+			code.append( "\t\tsingleParameterTranslationsStart[" )
+				.append( translation.getId() -1 )
+				.append( "] = \"" ).append( translation.getOneValueStart() ).append("\";");
+			code.append( "\t\tsingleParameterTranslationsEnd[" )
+				.append( translation.getId() -1 )
+				.append( "] = \"" ).append( translation.getOneValueStart() ).append("\";");
+		} else {
+			// translation has no parameters:
+			code.append( "\t\tplainTranslations[" )
+				.append( translation.getId() -1 )
+				.append( "] = " ).append( translation.getQuotedValue() ).append(';');
+		}
+		*/
 		return code.toString();
 	}
 
 	/**
-	 * @param translation
-	 * @return
+	 * Gets the code for instantiating the order of the parameters for the specified translation
+	 * 
+	 * @param translation the translation
+	 * @return the code for instantiating the order of the parameters for the specified translation
 	 */
 	private String getParameterOrderCode(Translation translation, int[] indices) {
 		StringBuffer code = new StringBuffer();
-		code.append( "\t\tparameterOrders[" )
+		code.append( "\t\tmultipleParameterOrders[" )
 			.append( translation.getId() -1 )
 			.append( "] = new short[] {" );
 		for (int i = 0; i < indices.length; i++) {
@@ -449,18 +571,33 @@ implements Comparator
 		return code.toString();
 	}
 
-	private Translation[] getTranslationsWithSeveralValues() {
-		ArrayList list = new ArrayList( this.severalValuesTranslations.size() );
-		for (Iterator iter = this.severalValuesTranslations.iterator(); iter.hasNext();) {
+	private Translation[] getMultipleParametersTranslations() {
+		/*
+		ArrayList list = new ArrayList( this.multipleParametersTranslations.size() );
+		for (Iterator iter = this.multipleParametersTranslations.iterator(); iter.hasNext();) {
 			Translation translation = (Translation) iter.next();
 			if (translation.getId() != -1) {
 				list.add( translation );
 			}
 		}
-		Translation[] complexTranslations = (Translation[]) list.toArray( new Translation[ list.size() ]);
+		*/
+		Translation[] complexTranslations = (Translation[])  this.multipleParametersTranslations.toArray( new Translation[  this.multipleParametersTranslations.size() ]);
 		Arrays.sort( complexTranslations, this );
 		return complexTranslations;
 	}
+	
+	private Translation[] getSingleParameterTranslations() {
+		Translation[] myTranslations = (Translation[])  this.singleParameterTranslations.toArray( new Translation[  this.singleParameterTranslations.size() ]);
+		Arrays.sort( myTranslations, this );
+		return myTranslations;
+	}
+
+	private Translation[] getPlainTranslations() {
+		Translation[] myTranslations = (Translation[])  this.plainTranslations.toArray( new Translation[  this.plainTranslations.size() ]);
+		Arrays.sort( myTranslations, this );
+		return myTranslations;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -496,6 +633,99 @@ implements Comparator
 			code.insert( "\tpublic static final String CURRENCY_SYMBOL = null;");
 			code.insert( "\tpublic static final String CURRENCY_CODE = null;");
 		}
+	}
+	
+	/**
+	 * Determines whether dynamic translations should be used.
+	 * Such translations can be changed during runtime.
+	 * 
+	 * @return true when dynamic translations should be used.
+	 */
+	public boolean isDynamic() {
+		return this.isDynamic;
+	}
+
+	/**
+	 * Retrieves the default locale.
+	 * This makes only sense when dynamic translations are used.
+	 * 
+	 * @return the default locale
+	 */
+	public Locale getDefaultLocale() {
+		return this.localizationSetting.getDefaultLocale();
+	}
+	
+	private void setIdsAndSort( Translation[] translations, TranslationManager manager ) {
+		for (int i = 0; i < translations.length; i++) {
+			Translation translation = translations[i];
+			Translation knownIdTranslation = manager.getTranslation( translation.getKey() );
+			if (knownIdTranslation == null) {
+				throw new BuildException("The translation [" + translation.getKey() +"] is not defined in the default locale. You need to define it in that locale as well when you want to use dynamic translations." );
+			}
+			int id = knownIdTranslation.getId();
+			translation.setId( id );
+		}		
+		Arrays.sort( translations, this );
+	}
+
+	/**
+	 * Saves all translations into a *.loc file.
+	 * This is only possible when dynamic translations are used.
+	 * 
+	 * @param targetDir the target directory
+	 * @param currentDevice the current device
+	 * @param dynamicLocale the locale
+	 * @param manager the manager that knows about the translations
+	 * @throws IOException when a resource could not be copied
+	 */
+	public void saveTranslations(File targetDir, Device currentDevice, Locale dynamicLocale, TranslationManager manager)
+	throws IOException
+	{
+		File file = new File( targetDir, dynamicLocale.toString() + ".loc" );
+		DataOutputStream out = new DataOutputStream( new FileOutputStream( file ) );
+		// plain translations:
+		Translation[] translations = getPlainTranslations();
+		setIdsAndSort( translations, manager );
+		out.writeInt( translations.length );
+		for (int i = 0; i < translations.length; i++) {
+			Translation translation = translations[i];
+			out.writeUTF( translation.getValue() );
+		}
+		// translations with a single parameter:
+		translations = getSingleParameterTranslations();
+		setIdsAndSort( translations, manager );
+		out.writeInt( translations.length );
+		for (int i = 0; i < translations.length; i++) {
+			Translation translation = translations[i];
+			out.writeUTF( translation.getOneValueStart() );
+			out.writeUTF( translation.getOneValueEnd() );
+		}
+		// translations with a multiple parameters:
+		translations = getMultipleParametersTranslations();
+		setIdsAndSort( translations, manager );
+		out.writeInt( translations.length );
+		for (int i = 0; i < translations.length; i++) {
+			Translation translation = translations[i];
+			int[] orders = translation.getParameterIndices();
+			String[] chunks = translation.getValueChunks();
+			out.writeByte( chunks.length );
+			for (int j = 0; j < chunks.length; j++) {
+				String chunk = chunks[j];
+				int order = orders[i]; 
+				out.writeByte( order );
+				out.writeUTF( chunk );
+			}
+			out.writeUTF( translation.getValue() );
+		}
+		out.flush();
+		out.close();
+	}
+
+	/**
+	 * @return the locale associated with this manager
+	 */
+	public Locale getLocale() {
+		return this.locale;
 	}
 
 }

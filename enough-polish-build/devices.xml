@@ -405,8 +405,8 @@
 		<identifier>Sony-Ericsson/K700, Sony-Ericsson/K700i, Sony-Ericsson/K700c</identifier>
 		<groups>Nokia-UI</groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
-		<capability name="ScreenSize" value="176x220"/>
-		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="FullCanvasSize" value="176x208"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
@@ -424,7 +424,7 @@
 		<capability name="CameraZoom" value="4" />
 		<capability name="Emulator.Skin" value="SonyEricsson_K700" />
 		<capability name="DebugInterface" value="KDWP" />
-		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose" />
+		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts" />
 		<capability name="Font.small" value="15" />
 		<capability name="Font.medium" value="18" />
 		<capability name="Font.large" value="22" />
@@ -2611,7 +2611,7 @@
 		<capability name="Font.small" value="12" />
 		<capability name="Font.medium" value="15" />
 		<capability name="Font.large" value="23" />
-		<capability name="Capture" value="video, audio" />
+		<capability name="Capture" value="image, video, audio" />
 		<capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
 		<capability name="mmapi.protocol.https" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
 		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />

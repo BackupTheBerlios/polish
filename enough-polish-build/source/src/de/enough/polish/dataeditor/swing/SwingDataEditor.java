@@ -639,7 +639,7 @@ implements DataEditorUI, ActionListener
 		super.quit();
 	}
 	
-	protected void saveSettings() {
+	protected boolean saveSettings() {
 		if (this.definitionFile != null) {
 			ArrayList lines = new ArrayList();
 			// save start of file:
@@ -662,8 +662,9 @@ implements DataEditorUI, ActionListener
 				e.printStackTrace();
 				System.out.println("Unable to save settings: " + e.toString() );
 			}
-		}		
-	}
+		}
+		return true;
+	} 
 	
 	private void loadSettings() {
 		try {

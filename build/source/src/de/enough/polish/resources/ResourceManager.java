@@ -27,6 +27,7 @@ package de.enough.polish.resources;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -72,6 +73,8 @@ public class ResourceManager {
 	private final SizeMatcher[] dynamicCanvasSizeMatchers;
 	private final File[] dynamicFullCanvasSizeDirs;
 	private final SizeMatcher[] dynamicFullCanvasSizeMatchers;
+	private TranslationManager translationManager;
+	private Preprocessor preprocessor;
 
 	/**
 	 * Creates a new resource manager.
@@ -213,8 +216,33 @@ public class ResourceManager {
 	{
 		File[] resources = getResources( device, locale );
 		FileUtil.copy(resources, targetDir);
+		if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
+			saveDynamicTranslations( targetDir, device );
+		}
 	}
 	
+	/**
+	 * Creates and stores the dynamic translations.
+	 * 
+	 * @param targetDir the target directory
+	 * @param device the current device
+	 * @throws IOException when an error occurred
+	 */
+	private void saveDynamicTranslations(File targetDir, Device device ) 
+	throws IOException 
+	{
+		Locale[] locales = this.localizationSetting.getSupportedLocales();
+		for (int i = 0; i < locales.length; i++) {
+			Locale locale = locales[i];
+			TranslationManager manager = createTranslationManager( device, 
+					locale, 
+					this.preprocessor, 
+					getResourceDirs(device, locale), 
+					this.localizationSetting );
+			manager.saveTranslations( targetDir, device, locale, this.translationManager );
+		}
+	}
+
 	/**
 	 * Retrieves all files for the give device and locale.
 	 * 
@@ -416,18 +444,62 @@ public class ResourceManager {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale (not null)
-	 * @param preprocessor the preprocessor
+	 * @param currentPreprocessor the preprocessor
 	 * @return the translation manager
 	 * @throws IOException when a messages-files could not be read
 	 */
-	public TranslationManager getTranslationManager( Device device, Locale locale, Preprocessor preprocessor) 
+	public TranslationManager getTranslationManager( Device device, Locale locale, Preprocessor currentPreprocessor) 
 	throws IOException
 	{
-		return new TranslationManager( device, 
+		this.preprocessor = currentPreprocessor;
+		if (this.translationManager == null || !this.translationManager.getLocale().equals( locale ) ) {
+			this.translationManager = 
+				createTranslationManager( device, 
+						locale, 
+						currentPreprocessor, 
+						getResourceDirs(device, locale), 
+						this.localizationSetting ); 
+		}
+		return this.translationManager;
+	}
+
+	/**
+	 * Creates an instance of a TranslationManager
+	 * 
+	 * @param device the current device
+	 * @param locale the current locale (not null)
+	 * @param currentPreprocessor the preprocessor
+	 * @param resourceDirs the directories containing resources for this device and this locale
+	 * @param setting the localization settings
+	 * @return an instance of TranslationManager
+	 * @throws IOException when some translation could not be loaded
+	 */
+	protected TranslationManager createTranslationManager(Device device, Locale locale, Preprocessor currentPreprocessor, File[] resourceDirs, LocalizationSetting setting) 
+	throws IOException 
+	{
+		String className = this.localizationSetting.getTranslationManagerClassName();
+		if (className != null) {
+			try {
+				Class managerClass = Class.forName( className );
+				Constructor constructor = managerClass.getConstructor( new Class[]{ Device.class, Locale.class, Preprocessor.class, File[].class, LocalizationSetting.class} );
+				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ device, locale, currentPreprocessor, resourceDirs, setting} );
+				return manager;
+			} catch (Exception e) {
+				//just return a normal translation manager
+				e.printStackTrace();
+				return new TranslationManager( device, 
+						locale, 
+						currentPreprocessor, 
+						resourceDirs, 
+						this.localizationSetting );
+			}
+		} else {
+			return new TranslationManager( device, 
 				locale, 
-				preprocessor, 
+				currentPreprocessor, 
 				getResourceDirs(device, locale), 
 				this.localizationSetting );
+		}
 	}
 
 	/**

@@ -51,11 +51,14 @@ import de.enough.polish.util.StringUtil;
  */
 public class TranslationPreprocessor extends CustomPreprocessor {
 
-	private final static String STRING_PATTERN = "\\\"[\\w|-|_|:|\\.|\\s]+\\\"";
-	private final static String LOCALE_GET_PATTERN_STR = "Locale\\.get\\s*\\(\\s*" + STRING_PATTERN + "(\\s*\\,\\s*([\\w|\\.]+|" + STRING_PATTERN + "))?\\s*\\)"; 
+	private final static String KEY_PATTERN = "\\\"[\\w|-|_|:|\\.|\\]|\\[|\\s]+\\\"";
+	private final static String PARAMETER_PATTERN = "\\\".*\\\"(\\s*\\+\\s*" + KEY_PATTERN + ")?";
+	
+	private final static String LOCALE_GET_PATTERN_STR = "Locale\\.get\\s*\\(\\s*" + KEY_PATTERN + "(\\s*\\,\\s*([\\w|\\.]+|" + PARAMETER_PATTERN + "))?\\s*\\)"; 
 	protected final static Pattern LOCALE_GET_PATTERN = Pattern.compile( LOCALE_GET_PATTERN_STR );
 	
 	private TranslationManager translationManager;
+	private boolean useDynamicTranslation;
 	
 	/**
 	 * Creates a new empty preprocessor for translations.
@@ -70,6 +73,7 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 	 */
 	public void setTranslationManager( TranslationManager translationManager ) {
 		this.translationManager = translationManager;
+		this.useDynamicTranslation = translationManager.isDynamic();
 	}
 	
 
@@ -107,28 +111,38 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 					if (translation == null) {
 						throw new BuildException( getErrorStart(className, lines) + "Found no translation for key [" + key + "].");
 					}
-					if (translation.isPlain()) {
-						line = StringUtil.replace( line, call, translation.getQuotedValue() );
+					if (this.useDynamicTranslation) {
+						// replace String-key with integer ID:
+						String id = "" + (translation.getId() - 1);
+						String quotedKey = '"' + key + '"';
+						String callReplacement = StringUtil.replace( call, quotedKey, id );
+						line = StringUtil.replace( line, call, callReplacement );						
 					} else {
-						// there is at least one parameter:
-						int parameterStart = call.indexOf(',');
-						if (parameterStart == -1) {
-							throw new BuildException( getErrorStart(className, lines) + "The translation for key [" + key + "] expects at least one parameter, but none is given. The tranlation is: [" + translation.getValue() + "].");
-						}
-						if (translation.hasOneParameter()) {
-							String parameter = call.substring( parameterStart + 1, call.length() - 1).trim();
-							line = StringUtil.replace( line, call, translation.getQuotedValue( parameter ) );
+						if (translation.isPlain()) {
+							line = StringUtil.replace( line, call, translation.getQuotedValue() );
 						} else {
-							// replace String-key with integer-ID to save valueable size:
-							String id = "" + (translation.getId() - 1);
-							String quotedKey = '"' + key + '"';
-							String callReplacement = StringUtil.replace( call, quotedKey, id );
-							line = StringUtil.replace( line, call, callReplacement );
+							// there is at least one parameter:
+							int parameterStart = call.indexOf(',');
+							if (parameterStart == -1) {
+								throw new BuildException( getErrorStart(className, lines) + "The translation for key [" + key + "] expects at least one parameter, but none is given. The tranlation is: [" + translation.getValue() + "].");
+							}
+							if (translation.hasOneParameter()) {
+								String parameter = call.substring( parameterStart + 1, call.length() - 1).trim();
+								line = StringUtil.replace( line, call, translation.getQuotedValue( parameter ) );
+							} else {
+								// replace String-key with integer-ID to save valueable size:
+								String id = "" + (translation.getId() - 1);
+								String quotedKey = '"' + key + '"';
+								String callReplacement = StringUtil.replace( call, quotedKey, id );
+								line = StringUtil.replace( line, call, callReplacement );
+							}
 						}
 					}
 				} // while matcher.find()
 				if (matchFound) {
 					lines.setCurrent( line );
+				//} else {
+				//	System.out.println("WARNING: No Locale-call() found in " + line );
 				}
 			}
 		}

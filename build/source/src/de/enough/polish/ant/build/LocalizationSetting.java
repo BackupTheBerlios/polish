@@ -46,6 +46,11 @@ public class LocalizationSetting extends Setting {
 	private String messages = "messages.txt";
 	private boolean includeAllLocales;
 	private Locale[] supportedLocales;
+	private boolean dynamic;
+	private Locale defaultLocale;
+	private String preprocessorClassName;
+	private String translationManagerClassName;
+	private String preprocessorClassName2;
 
 
 	/**
@@ -78,18 +83,7 @@ public class LocalizationSetting extends Setting {
 			Locale[] locales = new Locale[ localeDefs.length ];
 			for (int i = 0; i < localeDefs.length; i++) {
 				String localeDefinition = localeDefs[i];
-				int countryStart = localeDefinition.indexOf('_');
-				if (countryStart == -1) {
-					countryStart = localeDefinition.indexOf('-');
-				}
-				if (countryStart == -1) {
-					locales[i] = new Locale( localeDefinition );
-				} else {
-					String language = localeDefinition.substring( 0, countryStart );
-					String country = localeDefinition.substring( countryStart + 1 );
-					locales[i] = new Locale( language, country );
-				}
-				
+				locales[i] = getLocale( localeDefinition );				
 			}
 			this.supportedLocales = locales;
 		}
@@ -130,6 +124,119 @@ public class LocalizationSetting extends Setting {
 	 */
 	public String getMessagesFileName() {
 		return this.messages;
+	}
+	
+	/**
+	 * Determines whether dynamic translations should be supported.
+	 * Dynamic translations can be changed during runtime with the Locale.loadTranslations(...)-method.
+	 * 
+	 * @return true when dynamic translations should be supported.
+	 */
+	public boolean isDynamic() {
+		return this.dynamic;
+	}
+	
+	/**
+	 * Defines whether dynamic translations should be supported.
+	 * Dynamic translations can be changed during runtime with the Locale.loadTranslations(...)-method.
+	 * 
+	 * @param dynamic true when dynamic translations should be supported.
+	 */
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
+	}
+	
+	/**
+	 * Parses the locale from the given definition
+	 * 
+	 * @param definition the definition, e.g. "de_DE"
+	 * @return the corresponding locale
+	 */
+	private Locale getLocale( String definition ) {
+		int countryStart = definition.indexOf('_');
+		if (countryStart == -1) {
+			countryStart = definition.indexOf('-');
+		}
+		if (countryStart == -1) {
+			return new Locale( definition );
+		} else {
+			String language = definition.substring( 0, countryStart );
+			String country = definition.substring( countryStart + 1 );
+			return new Locale( language, country );
+		}
+	}
+	
+	/**
+	 * Sets the default locale.
+	 * This is the locale that is loaded upon start of the application by the de.enough.polish.util.Locale class.
+	 * 
+	 * @param locale the default locale, e.g. "en_US"
+	 */
+	public void setDefaultLocale( String locale ) {
+		this.defaultLocale = getLocale( locale );
+	}
+	
+	/**
+	 * Retrieves the default locale.
+	 * This call makes only sense when dynamic locales are used.
+	 * 
+	 * @return the default locale
+	 */
+	public Locale getDefaultLocale() {
+		if (this.defaultLocale != null) {
+			return this.defaultLocale;
+		} else if (this.supportedLocales.length == 1){
+			return this.supportedLocales[0];
+		} else {
+			Locale locale = Locale.getDefault();
+			for (int i = 0; i < this.supportedLocales.length; i++) {
+				Locale supportedLocale = this.supportedLocales[i];
+				if (locale.equals( supportedLocale )) {
+					return locale;
+				}
+			}
+			return this.supportedLocales[0];
+		}
+	}
+
+	/**
+	 * Retrieves the name of the preprocessor class.
+	 * 
+	 * @return the name of the preprocessor class
+	 */
+	public String getPreprocessorClassName() {
+		if (this.preprocessorClassName == null) {
+			return "de.enough.polish.preprocess.custom.TranslationPreprocessor";
+		} else {
+			return this.preprocessorClassName;
+		}
+	}
+	
+	/**
+	 * Sets the name of the preprocessor class.
+	 * 
+	 * @param preprocessorClassName the class name of the preprocessor
+	 */
+	public void setPreprocessor( String preprocessorClassName ) {
+		this.preprocessorClassName = preprocessorClassName;
+	}
+	
+	/**
+	 * Retrieves the name of the translation manager class.
+	 * 
+	 * @return the name of the translation manager class
+	 */
+	public String getTranslationManagerClassName() {
+		return this.translationManagerClassName;
+	}
+	
+	/**
+	 * Sets the name of the translation manager class.
+	 * 
+	 * @param translationManagerClassName the class name of the translation manager 
+	 */
+	public void setTranslationManager( String translationManagerClassName ) {
+		this.translationManagerClassName = translationManagerClassName;
 	}
 
 }

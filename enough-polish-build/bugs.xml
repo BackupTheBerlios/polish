@@ -123,6 +123,16 @@
 		 instead of calling layerManager.paint( g, x, y ) call layerManager.paint( g, x - viewX, y - viewY ).
 		</solution>
 	</bug>
+
+	<bug>
+		<name>needsNokiaUiForSystemAlerts</name>
+		<area>ui</area>
+		<description>When using the MIDP/2.0 based fullscreen mode devices with this error do not show system screens properly. 
+		 System screens are usually shown automatically when security sensitive operations are undertaken,
+		 e.g. sending a short message.
+		</description>
+		<solution>Use the com.nokia.mid.ui.FullCanvas instead for having a fullscreen mode. The J2ME Polish GUI obviously does this automatically when this error is present.</solution>
+	</bug>
 	
 	<!--
 	<bug>

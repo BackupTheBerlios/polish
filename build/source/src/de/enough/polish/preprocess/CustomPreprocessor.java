@@ -28,6 +28,7 @@ package de.enough.polish.preprocess;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -58,6 +59,7 @@ public abstract class CustomPreprocessor {
 	protected Device currentDevice;
 	protected StyleSheet currentStyleSheet;
 	private ArrayList directives;
+	protected Locale currentLocale;
 
 	/**
 	 * Creates a new line-preprocessor.
@@ -102,6 +104,15 @@ public abstract class CustomPreprocessor {
 		this.isUsingPolishGui = usesPolishGui;
 		this.currentStyleSheet = this.preprocessor.getStyleSheet();
 		this.isInJ2MEPolishPackage = false;
+	}
+	
+	/**
+	 * Notifies this preprocessor about a new locale.
+	 * 
+	 * @param locale the new locale, can be null
+	 */
+	public void notifyLocale( Locale locale ) {
+		this.currentLocale = locale;
 	}
 	
 	/**

@@ -87,7 +87,7 @@ public final class PropertyUtil {
 											// or == ${ function( property.name ) }
 											// or == ${ function( fix.value ) }
 			String property = group.substring( 2, group.length() -1 ).trim(); // == property.name
-			Object value;
+			String value;
 			// the property-name can also include a convert-function, e.g. bytes( polish.HeapSize )
 			int functionStart = property.indexOf('(');
 			if (functionStart != -1) {
@@ -105,13 +105,28 @@ public final class PropertyUtil {
 				Object intermediateValue = ConvertUtil.convert( originalValue, function);
 				value = ConvertUtil.toString(intermediateValue);
 			} else {
-				value = properties.get( property );
+				value = (String) properties.get( property );
 			}
 			if (value == null) {
 				if (needsToBeDefined) {
 					throw new IllegalArgumentException("property " + group + " is not defined.");
 				} else {
 					value = group;
+				}
+			} else {
+				if ( value.indexOf("${") != -1) {
+					Matcher valueMatcher = PROPERTY_PATTERN.matcher( value );
+					while ( valueMatcher.find() ) {
+						String internalGroup = valueMatcher.group();
+						String internalProperty = internalGroup.substring( 2, internalGroup.length() -1 ).trim(); // == property.name
+						String internalValue = (String) properties.get( internalProperty );
+						if (internalValue != null) {
+							value = StringUtil.replace( value, internalGroup, internalValue);
+						} else if ( needsToBeDefined ) {
+							throw new IllegalArgumentException("property " + internalGroup + " is not defined.");
+						}
+					}
+					
 				}
 			}
 			buffer.append( value );
