@@ -1,0 +1,473 @@
+<!-- 
+	standards-css-attributes.xml defines all known CSS attributes. 
+	This file should not be changed.
+
+    Copyright (c) 2004, 2005 Robert Virkus / Enough Software
+
+    This file is part of J2ME Polish.
+
+    J2ME Polish is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    J2ME Polish is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Commercial licenses are also available, please
+    refer to the accompanying LICENSE.txt or visit
+    http://www.j2mepolish.org for details.
+
+-->
+<attributes>
+	<attribute
+		name="focused-style"
+		type="style"
+		appliesTo="Screen, Form, List, ChoiceGroup"
+		description="The name of the style for the currently focused item."
+		default="focused"
+		id="1"
+	/>
+
+	<attribute
+		name="title-style"
+		type="style"
+		appliesTo="Screen, Form, List, TextBox"
+		description="The name of the style for the title of the corresponding Screen."
+		default="title"
+		id="2"
+	/>
+
+	<attribute
+		name="label-style"
+		type="style"
+		appliesTo="Item"
+		description="The name of the style for the label of the corresponding Item."
+		default="label"
+		id="3"
+	/>
+	
+	<attribute
+		name="columns"
+		type="integer"
+		appliesTo="Screen, Form, List, ChoiceGroup"
+		description="The number of columns. This can be used to layout the items in a table."
+		default="1"
+		id="4"
+	/>
+
+	<attribute
+		name="columns-width"
+		type="string"
+		appliesTo="Screen, Form, List, ChoiceGroup"
+		description="Either &quot;normal&quot;, &quot;equal&quot; or the width for each column in a comma separated list (e.g. &quot;columns-width: 60,60,10&quot;)."
+		default="normal"
+		id="5"
+	/>
+
+	<attribute
+		name="icon-image"
+		type="string"
+		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
+		description="The URL of the image. The keyword %INDEX% can be used for adding the position of the icon to the name, e.g.&quot;icon-image: url(icon%INDEX%.png);&quot;."
+		default="none"
+		id="6"
+	/>
+
+	<attribute
+		name="icon-image-align"
+		type="integer"
+		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
+		description="The position of the image relative to the text."
+		default="left"
+		values="left,right,top,bottom,center"
+		id="7"
+	/>
+
+	<attribute
+		name="choice-color"
+		type="color"
+		appliesTo="ChoiceGroup-Item"
+		description="The color in which the check- or radio-box will be painted."
+		default="black"
+		id="8"
+	/>
+
+	<attribute
+		name="checkbox-selected"
+		type="string"
+		appliesTo="ChoiceGroup-Item [MULTIPLE]"
+		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color."
+		id="9"
+	/>
+
+	<attribute
+		name="checkbox-plain"
+		type="string"
+		appliesTo="ChoiceGroup-Item [MULTIPLE]"
+		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
+		id="10"
+	/>
+	
+	<attribute
+		name="radiobox-selected"
+		type="string"
+		appliesTo="ChoiceGroup-Item [EXCLUSIVE]"
+		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color."
+		id="11"
+	/>
+
+	<attribute
+		name="radiobox-plain"
+		type="string"
+		appliesTo="ChoiceGroup-Item [EXCLUSIVE]"
+		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
+		id="12"
+	/>
+	
+
+	<attribute
+		name="popup-image"
+		type="string"
+		appliesTo="ChoiceGroup"
+		description="The URL to the image which should be shown in the closed popup-group. Per default a simple dropdown image will be used."
+		id="13"
+	/>
+
+	<attribute
+		name="popup-color"
+		type="color"
+		appliesTo="ChoiceGroup"
+		description="The color for the arrow in the dropdown-image of a closed popup-group."
+		default="black"
+		id="14"
+	/>
+
+	<attribute
+		name="popup-background-color"
+		type="color"
+		appliesTo="ChoiceGroup"
+		description="The color for the background in the dropdown-image of a closed popup-group."
+		default="white"
+		id="15"
+	/>
+	
+	<attribute
+		name="menubar-color"
+		type="color"
+		appliesTo="Screen,List,Form,TextBox"
+		description="The color of the menu-bar. This overrides the settings in the predefined style &quot;menu&quot;. This attribute is only used, when the &quot;menu&quot; fullscreen setting is activated in the &quot;build.xml&quot; file."
+		id="16"
+	/>
+
+	<attribute
+		name="gauge-image"
+		type="string"
+		appliesTo="Gauge"
+		description="The URL of the image."
+		id="17"
+	/>
+	
+	<attribute
+		name="gauge-color"
+		type="color"
+		appliesTo="Gauge"
+		description="The color of the progress bar."
+		default="blue"
+		id="18"
+	/>
+
+	<attribute
+		name="gauge-width"
+		type="integer"
+		appliesTo="Gauge"
+		description="The width of the progress bar."
+		id="19"
+	/>
+
+	<attribute
+		name="gauge-height"
+		type="integer"
+		appliesTo="Gauge"
+		description="The height of the progress bar."
+		id="20"
+	/>
+
+	<attribute
+		name="gauge-mode"
+		type="integer"
+		appliesTo="Gauge"
+		description="In the continuous mode only the gauge-color will be used, whereas the chunked mode intersects the indicator in chunks. The setting is ignored when an image is provided."
+		default="chunked"
+		values="chunked,continuous"
+		id="21"
+	/>
+	
+	<attribute
+		name="gauge-gap-color"
+		type="color"
+		appliesTo="Gauge"
+		description="The color of gaps between single chunks. Only used in the &quot;chunked&quot; gauge-mode or when a gauge with an indefinite range is used. In the latter case the provided color will be used to indicate the idle state."
+		default="white"
+		id="22"
+	/>
+
+	<attribute
+		name="gauge-gap-width"
+		type="integer"
+		appliesTo="Gauge"
+		description="The width of gaps in pixels between single chunks. Only used in the &quot;chunked&quot; gauge-mode."
+		default="3"
+		id="23"
+	/>
+
+	<attribute
+		name="gauge-chunk-width"
+		type="integer"
+		appliesTo="Gauge"
+		description="The width of single chunks in pixels. Only used in the &quot;chunked&quot; gauge-mode."
+		id="24"
+	/>
+	
+	<attribute
+		name="gauge-show-value"
+		type="boolean"
+		appliesTo="Gauge"
+		description="Determines whether the current value should be shown."
+		default="true"
+		values="true,false"
+		id="25"
+	/>
+
+	<attribute
+		name="gauge-value-align"
+		type="integer"
+		appliesTo="Gauge"
+		description="Defines where the current value of the gauge should be displayed."
+		default="left"
+		values="left,right"
+		id="26"
+	/>
+	
+	<attribute
+		name="textfield-width"
+		type="integer"
+		appliesTo="TextField, TextBox"
+		description="The minimum width of the textfield-element in pixels."
+		id="27"
+	/>
+
+	<attribute
+		name="textfield-height"
+		type="integer"
+		appliesTo="TextField, TextBox"
+		description="The minimum height of the textfield-element in pixels. Defaults to the height of the used font."
+		id="28"
+	/>
+
+	<attribute
+		name="textfield-direct-input"
+		type="boolean"
+		appliesTo="TextField, TextBox"
+		description="Defines whether input should be done with with J2ME Polish only instead of with the native input-system of the underlying OS."
+		default="false"
+		id="29"
+	/>
+
+	<attribute
+		name="textfield-caret-color"
+		type="color"
+		appliesTo="TextField, TextBox"
+		description="Defines the color of the caret. This defaults to the color of the text (font-color)."
+		id="30"
+	/>
+
+	<attribute
+		name="textfield-caret-char"
+		type="char"
+		appliesTo="TextField, TextBox"
+		description="Defines the character which is used to indicate the possible editing. The default character is |."
+		default="|"
+		id="31"
+	/>
+
+	<attribute
+		name="textfield-show-length"
+		type="boolean"
+		appliesTo="TextField, TextBox"
+		description="Defines whether the current length of the input should be shown."
+		default="false"
+		id="32"
+	/>
+
+	<attribute
+		name="datefield-width"
+		type="integer"
+		appliesTo="DateField"
+		description="The minimum width of the datefield-element in pixels."
+		id="33"
+	/>
+
+	<attribute
+		name="datefield-height"
+		type="integer"
+		appliesTo="DateField"
+		description="The minimum height of the datefield-element in pixels. Defaults to the height of the used font."
+		id="34"
+	/>
+
+	<attribute
+		name="ticker-step"
+		type="integer"
+		appliesTo="Ticker"
+		description="The number of pixels by which the ticker is shifted at each update."
+		default="2"
+		id="35"
+	/>
+	
+	<attribute
+		name="scrollindicator-color"
+		type="color"
+		appliesTo="Screen, List, Form"
+		description="The color of the item which indicates that the user can scroll the current screen."
+		default="black"
+		id="36"
+	/>
+	
+	<attribute
+		name="show-text-in-title"
+		type="boolean"
+		appliesTo="List"
+		description="Defines whether a list should show the text of the list-items in the title instead on the screen."
+		default="false"
+		id="37"
+	/>
+
+	<attribute
+		name="font-bitmap"
+		type="string"
+		appliesTo="Font, BitMapFont"
+		description="Defines which bitmap (bmf) font should be used."
+		id="38"
+	/>
+
+	<attribute
+		name="view-type"
+		type="object"
+		appliesTo="Form, List, ChoiceGroup, Container"
+		description="Defines which view should be used for showing the items of a Form, List, etc."
+		id="39"
+	/>
+
+	<attribute
+		name="droppingview-repeat-animation"
+		type="boolean"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="Defines whether the animation should be repeated each time the screen is shown."
+		default="false"
+		id="40"
+	/>
+
+	<attribute
+		name="droppingview-speed"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="Defines the speed in pixels per animation-step of the falling items."
+		default="10"
+		id="41"
+	/>
+	
+	<attribute
+		name="droppingview-maximum"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="Defines the maximum bouncing height of the falling items."
+		default="30"
+		id="42"
+	/>
+	
+	<attribute
+		name="droppingview-damping"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="The value by which the maximum is decreased for each following item. By having a damping, the top items seem to bounce higher than lower ones."
+		default="10"
+		id="43"
+	/>
+	
+	<attribute
+		name="droppingview-maxperiode"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		description="The maximum allowed number of bounces."
+		default="5"
+		id="44"
+	/>
+	
+	<attribute
+		name="shuffleview-repeat-animation"
+		type="boolean"
+		appliesTo="Container, Form, List, ChoiceGroup, The shuffle view-type"
+		description="Defines whether the animation should be repeated each time the screen is shown."
+		default="false"
+		id="45"
+	/>
+
+	<attribute
+		name="shuffleview-speed"
+		type="integer"
+		appliesTo="Container, Form, List, ChoiceGroup, The shuffle view-type"
+		description="Defines the speed in pixels per animation-step of the items."
+		default="10"
+		id="46"
+	/>
+	
+	<attribute
+		name="tabbar-scrolling-indicator-color"
+		type="color"
+		appliesTo="Tabbar, TabbedForm"
+		description="Defines the color of the scrolling indicator of the tabbar."
+		default="white"
+		id="47"
+	/>
+
+	<attribute
+		name="menubar-select-image"
+		type="string"
+		appliesTo="MenuBar"
+		description="Defines the image-URL for the select-image of the extended menubar."
+		id="48"
+	/>
+	
+	<attribute
+		name="menubar-cancel-image"
+		type="string"
+		appliesTo="MenuBar"
+		description="Defines the image-URL for the cancel-image of the extended menubar."
+		id="49"
+	/>
+
+	<attribute
+		name="menubar-options-image"
+		type="string"
+		appliesTo="MenuBar"
+		description="Defines the image-URL for the options-image of the extended menubar."
+		id="50"
+	/>
+
+	<attribute
+		name="menubar-show-image-and-text"
+		type="boolean"
+		appliesTo="MenuBar"
+		description="Determines whether the text should be shown as well in the menubar, when an image has been defined for the corresponding action."
+		default="false"
+		id="51"
+	/>
+	
+</attributes>
