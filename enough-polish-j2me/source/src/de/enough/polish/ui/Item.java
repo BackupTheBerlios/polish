@@ -815,6 +815,8 @@ public abstract class Item extends Object
 	 * @throws NullPointerException when style is null
 	 */
 	public void setStyle( Style style ) {
+		//#debug
+		System.out.println("setting style - with background: " + (style.background != null));
 		this.isInitialised = false;
 		this.isStyleInitialised = true;
 		this.style = style;
@@ -1393,7 +1395,9 @@ public abstract class Item extends Object
 			setStyle( this.style );
 		}
 		//#ifdef polish.useDynamicStyles
-			initStyle();
+			else if (this.style == null) {
+				initStyle();
+			}
 		//#endif
 		int labelWidth = 0;
 		int labelHeight = 0;
@@ -1483,12 +1487,9 @@ public abstract class Item extends Object
 	 */
 	protected void initStyle() {
 		//System.out.println("item [" + this.getClass().getName() + "/" + this.cssSelector + "/" + this.hashCode() + "] has been initalised: " + this.isStyleInitialised );
-		if (this.isStyleInitialised) {
-			return;
-		}
 		if (this.screen == null) {
 			if (this.parent != null) {
-				this.screen = this.parent.screen;
+				this.screen = getScreen();
 			} else {
 				this.screen = StyleSheet.currentScreen;
 			}

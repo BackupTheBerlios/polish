@@ -215,10 +215,17 @@ public final class StyleSheet {
 			}
 			style = (Style) stylesByName.get( screenCssSelector + " " + itemCssSelector );
 		} else if (item.parent.parent == null) {
+			//#debug
+			System.out.println("Item has one parent.");
 			// this item is propably in a form or list,
-			// typical hierarchy is for example "form>containter>p"                                                 
+			// typical hierarchy is for example "form>container>p"                                                 
 			Item parent = item.parent;
 			String parentCssSelector = parent.cssSelector;
+			if (parentCssSelector == null) {
+				parentCssSelector = parent.createCssSelector();
+			}
+			//#debug
+			System.out.println( parent.getClass().getName() + "-css-selector: " + parentCssSelector );
 			buffer.append('>').append( parentCssSelector )
 				  .append('>').append( itemCssSelector );
 			fullStyleName = buffer.toString();
@@ -257,16 +264,27 @@ public final class StyleSheet {
 			//#debug
 			System.out.println("found style: " + (style != null));
 		} else {
+			//#debug
 			System.out.println("so far unable to set style: complex item setup");
 			// this is a tiny bit more complicated....
 			fullStyleName = null;
 		}
 		if (style == null) {
 			// try just the item:
+			//#debug
+			System.out.println("trying " + itemCssSelector);
 			style = (Style) stylesByName.get( itemCssSelector );
 			if (style == null) {
+				//#debug
+				System.out.println("Using default style for item " + item.getClass().getName() );
 				style = defaultStyle;
 			}
+			//#ifdef polish.debug.debug
+				else {
+					//#debug
+					System.out.println("Found style " + itemCssSelector );
+				}
+			//#endif
 		}
 		stylesByName.put( fullStyleName, style );
 		return style;
@@ -281,7 +299,11 @@ public final class StyleSheet {
 	 * @return
 	 */
 	public static Style getStyle(Screen screen) {
-		return (Style) stylesByName.get( screen.cssSelector );
+		Style style = (Style) stylesByName.get( screen.cssSelector );
+		if (style == null) {
+			return defaultStyle;
+		}
+		return style;
 	}		
 	//#endif
 }

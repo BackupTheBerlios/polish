@@ -151,7 +151,7 @@ public abstract class Screen
 			private final int menuMaxWidth = ( getWidth() * 2 ) / 3;
 		//#endif
 		private int menuBarColor = 0xFFFFFF;
-		private final int fullScreenHeight;
+		private int fullScreenHeight;
 		//#ifdef polish.hasPointerEvents
 			private int menuRightCommandX;
 			private int menuLeftCommandX;
@@ -186,7 +186,7 @@ public abstract class Screen
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if tmp.fullScreen && polish.midp2
+		//#if tmp.fullScreen && polish.midp2 && !polish.Bugs.fullScreenInShowNotify
 			super.setFullScreenMode( true );
 		//#endif
 			
@@ -315,6 +315,17 @@ public abstract class Screen
 		//#debug
 		System.out.println("showNotify " + this );
 		try {
+			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
+				super.setFullScreenMode( true );
+				//#ifdef polish.FullCanvasHeight:defined
+					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+				//#else
+					this.fullScreenHeight = getHeight();
+				//#endif
+				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+				this.originalScreenHeight = this.screenHeight;
+				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+			//#endif
 			if (!this.isInitialised) {
 				init();
 			}
@@ -388,6 +399,8 @@ public abstract class Screen
 	 * @param style the style
 	 */
 	public void setStyle(Style style) {
+		//#debug
+		System.out.println("Setting screen-style for " + getClass().getName() );
 		this.style = style;
 		this.background = style.background;
 		this.border = style.border;
@@ -697,6 +710,8 @@ public abstract class Screen
 	 */
 	public void setTitle( String s)
 	{
+		//#debug
+		System.out.println("Setting title " + s );
 		//#ifdef polish.vendor.Motorola
 			if (this.ignoreMotorolaTitleCall) {
 				this.ignoreMotorolaTitleCall = false;
@@ -1272,7 +1287,24 @@ public abstract class Screen
 		repaint();
 	}
 	
-/**
+	
+	//#ifdef polish.midp2
+	protected void sizeChanged(int width, int height) {
+		//#ifdef tmp.menuFullScreen
+			this.fullScreenHeight = height;
+			this.screenHeight = height - this.menuBarHeight;
+			this.originalScreenHeight = this.screenHeight;
+		//#else
+			this.screenHeight = height;
+		//#endif
+		this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+		if (this.container != null) {
+			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight) );
+		}
+	}
+	//#endif
+	
+	/**
 	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
 	 *
 	 * <p>copyright Enough Software 2004</p>

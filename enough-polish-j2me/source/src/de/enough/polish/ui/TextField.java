@@ -1798,10 +1798,6 @@ implements CommandListener
 					}
 					boolean characterInserted = false;
 					char character = this.caretChar;
-					if (this.caretChar != this.editingCaretChar) {
-						insertCharacter();
-						characterInserted = true;
-					}
 					// allow backspace:
 					//#ifdef polish.key.ClearKey:defined
 						if (currentLength > 0) {
@@ -1811,6 +1807,10 @@ implements CommandListener
 							//# }
 						}				
 					//#endif
+					if (this.caretChar != this.editingCaretChar) {
+						insertCharacter();
+						characterInserted = true;
+					}
 					
 					// navigate the caret:
 					if (this.text == null) {
@@ -2010,6 +2010,11 @@ implements CommandListener
 	 * @return true when a character could be deleted.
 	 */
 	private boolean deleteCurrentChar() {
+		if (this.caretChar != this.editingCaretChar) {
+			this.caretChar = this.editingCaretChar;
+			this.caretWidth = this.font.charWidth(this.editingCaretChar);
+			return true;
+		}
 		boolean isLastRow = (this.caretRow == this.realTextLines.length - 1);
 		if (this.caretColumn > 0) {
 			this.caretColumn--;
