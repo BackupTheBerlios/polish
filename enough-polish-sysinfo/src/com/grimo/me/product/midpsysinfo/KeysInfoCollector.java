@@ -90,6 +90,7 @@ implements DynamicTestView
         }
         if (this.test == null) {
 	        try {
+	        	Class.forName( "com.nokia.mid.ui.FullCanvas" );
 	        	//#if polish.useDefaultPackage
 	        		String className = "NokiaFullCanvasTest";
 	        	//#else

@@ -52,6 +52,7 @@ public class DisplayInfoCollector extends InfoCollector {
         addInfo( "Canvas height: ", Integer.toString(canvas.getHeight()) );
         
         try {
+        	Class.forName( "com.nokia.mid.ui.FullCanvas" );
         	//#if polish.useDefaultPackage
         		String className = "NokiaFullCanvasTest";
         	//#else
