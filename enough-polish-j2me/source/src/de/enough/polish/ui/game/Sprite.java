@@ -29,6 +29,9 @@ package de.enough.polish.ui.game;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+//#ifdef polish.api.siemens-color-game-api
+	//# import com.siemens.mp.color_game.TiledLayer;
+//#endif
 
 //#ifdef polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;

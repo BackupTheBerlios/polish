@@ -1116,6 +1116,14 @@ implements CommandListener
 				|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)) {
 			return false;
 		}
+		// ignore all command keys:
+		//#ifdef polish.hasCommandKeyEvents
+			//#foreach key in polish.CommandKeys
+				//#= if ( keyCode == ${ key } ) {
+				//#		return false;
+				//# }
+			//#next key
+		//#endif
 		showTextBox();
 		return true;
 	}
