@@ -9,7 +9,7 @@ package de.enough.polish.ant.requirements;
 import de.enough.polish.Device;
 
 /**
- * <p></p>
+ * <p>Selects devices by the version of a specific capability.</p>
  *
  * <p>copyright enough software 2004</p>
  * <pre>
@@ -20,21 +20,23 @@ import de.enough.polish.Device;
  */
 public class VersionRequirement extends Requirement {
 
+	private VersionMatcher matcher;
+
 	/**
-	 * @param value
-	 * @param propertyName
+	 * Creates a new Version requirement
+	 * @param value the value of this requirement, e.g. "2.3+.2+"
+	 * @param propertyName the name of the capability
 	 */
 	public VersionRequirement(String value, String propertyName) {
 		super(value, propertyName);
-		// TODO enough implement VersionRequirement
+		this.matcher = new VersionMatcher( value );
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device, java.lang.String)
 	 */
 	protected boolean isMet(Device device, String property) {
-		// TODO enough implement isMet
-		return false;
+		return this.matcher.matches( property );
 	}
 
 }
