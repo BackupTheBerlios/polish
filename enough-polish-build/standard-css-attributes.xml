@@ -35,6 +35,14 @@
 	/>
 
 	<attribute
+		name="title-style"
+		type="style"
+		appliesTo="Screen, Form, List, TextBox"
+		description="The name of the style for the title of the corresponding Screen."
+		default="title"
+	/>
+	
+	<attribute
 		name="columns"
 		type="integer"
 		appliesTo="Screen, Form, List, ChoiceGroup"

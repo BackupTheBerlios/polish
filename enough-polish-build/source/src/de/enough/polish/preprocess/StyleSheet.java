@@ -612,6 +612,7 @@ public class StyleSheet {
 			Style[] myStyles = getAllStyles();
 			for (int i = 0; i < myStyles.length; i++) {
 				Style style = myStyles[i];
+				symbols.put( "polish.css.style." + style.getStyleName(), Boolean.TRUE );
 				String[] attributes = style.getDefinedAttributes( device );
 				for (int j = 0; j < attributes.length; j++) {
 					String attribute = attributes[j];

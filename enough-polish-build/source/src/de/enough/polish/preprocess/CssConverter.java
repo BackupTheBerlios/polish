@@ -209,6 +209,7 @@ public class CssConverter extends Converter {
 		
 		String[] styleNames = styleSheet.getUsedStyleNames();
 		//System.out.println("processing [" + styleNames.length + "] styles.");
+		int insertIndexForReferencedStyles = codeList.size();
 		codeList.add("\t//normal used styles:");
 		for (int i = 0; i < styleNames.length; i++) {
 			String styleName = styleNames[i];
@@ -223,16 +224,18 @@ public class CssConverter extends Converter {
 		Style[] styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
 		boolean isLabelStyleReferenced = false;
 		if (styles.length > 0) {
-			codeList.add("\t//referenced styles:");
+			ArrayList referencedCode = new ArrayList();
+			referencedCode.add("\t//referenced styles:");
 			for (int i = 0; i < styles.length; i++) {
 				Style style = styles[i];
 				if (style.getSelector().equals("label")) {
 					isLabelStyleReferenced = true;
 				}
 				if (!styleSheet.isUsed(style.getSelector())) {
-					processStyle( style, codeList, styleSheet, device );
+					processStyle( style, referencedCode, styleSheet, device );
 				}
 			}
+			codeList.addAll( insertIndexForReferencedStyles, referencedCode );
 		}
 		
 		// check if label-style has been defined:
@@ -254,6 +257,7 @@ public class CssConverter extends Converter {
 			if (styleSheet.getStyle("menu" ) == null) {
 				System.out.println("Warning: CSS style [menu] not found, you should define it for designing the FullScreen-menu.");
 			} else {
+				//processStyle( styleSheet.getStyle("menu" ), codeList, styleSheet, device );
 				this.referencedStyles.add(styleSheet.getStyle("menu" ));
 			}
 		}
@@ -406,7 +410,7 @@ public class CssConverter extends Converter {
 			// if a bitmap-font is defined,
 			// add a extended (string) attribute:
 			bitMapFontUrl = (String) group.get("bitmap");
-			if (bitMapFontUrl != null) {
+			if (bitMapFontUrl != null && !"none".equals( bitMapFontUrl)) {
 				if (!bitMapFontUrl.endsWith(".bmf")) {
 					bitMapFontUrl += ".bmf";
 				}
@@ -577,10 +581,12 @@ public class CssConverter extends Converter {
 					} else if (value.startsWith("style(")) {
 						value = getStyleReference( value, style, styleSheet );
 					}					
-					if (attributeType == CssAttribute.STRING || attributeType == CssAttribute.STYLE) {
+					if (attributeType == CssAttribute.STRING) {
 						valueList.append('"')
 						.append( value )
 						.append('"');
+					} else if (attributeType == CssAttribute.STYLE) {
+						valueList.append( value );
 					} else if (attributeType == CssAttribute.COLOR 
 							|| attributeType == CssAttribute.INTEGER ) {
 						// check integer value:
@@ -685,7 +691,7 @@ public class CssConverter extends Converter {
 		if (! this.referencedStyles.contains(style)) {
 			this.referencedStyles.add( style );
 		}
-		return abbreviation;
+		return reference + "Style"; //abbreviation;
 	}
 
 
