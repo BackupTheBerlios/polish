@@ -85,17 +85,27 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		super.init(processor);
 		this.idGenerator = new IntegerIdGenerator();
 		this.cssAttributesManager = processor.getCssAttributesManager();
+		//boolean allowAllCssAttributes = "true".equals( processor.getVariable("xxx.allowAllAttributes") );
+		//System.out.println("allowing all CSS attributes: " + allowAllCssAttributes  + " ---> " + processor.getVariable("xxx.allowAllAttributes"));
 		if (this.cssAttributesManager != null) {
 			CssAttribute[] attributes = this.cssAttributesManager.getAttributes();
 			for (int i = 0; i < attributes.length; i++) {
 				CssAttribute attribute = attributes[i];
 				int id = attribute.getId();
+				String name = attribute.getName();
 				if (id != -1) {
-					this.idGenerator.addId( attribute.getName(), id );
+					this.idGenerator.addId( name, id );
+					//System.out.println("Using ID [" + id + "] for CSS-attribute [" + attribute.getName() + "]");
 				} else {
-					this.idGenerator.getId( attribute.getName(), true );
+					this.idGenerator.getId( name, true );
 				}
+				/*
+				if (allowAllCssAttributes) {
+					processor.addSymbol( "polish.css" + name );
+				}
+				*/
 			}
+			
 		}
 	}
 	
@@ -118,18 +128,15 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			// init abbreviations of style-properties:
 			this.stylePropertyIdsFile = new File( device.getBaseDir() + File.separatorChar 
 					+ "abbreviations.txt" );
-			HashMap idsByAttribute;
 			if (this.stylePropertyIdsFile.exists()) {
 				try {
-					idsByAttribute = FileUtil.readPropertiesFile( this.stylePropertyIdsFile );
+					HashMap idsByAttribute = FileUtil.readPropertiesFile( this.stylePropertyIdsFile );
+					this.idGenerator.setIdsMap(idsByAttribute);
 				} catch (IOException e) {
 					e.printStackTrace();
 					throw new BuildException("Unable to load abbreviations of style-attributes: " + e.toString() + ". Please try a clean rebuild.", e );
 				}
-			} else {
-				idsByAttribute = new HashMap();
 			}
-			this.idGenerator.setIdsMap(idsByAttribute);
 			this.preprocessor.getStyleSheet().setAttributesIds( this.idGenerator.getIdsMap() );
 		}
 	}

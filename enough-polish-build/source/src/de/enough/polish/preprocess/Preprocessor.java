@@ -173,7 +173,10 @@ public class Preprocessor {
 		this.supportedDirectives.put( "message", Boolean.TRUE );
 		
 		this.booleanEvaluator = new BooleanEvaluator( this );
-
+		
+		// register global variables and symbols: 
+		this.variables.putAll( project.getCapabilities() );
+		this.symbols.putAll( project.getFeatures() );
 	}
 	
 	/**

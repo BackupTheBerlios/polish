@@ -72,6 +72,7 @@ import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.preprocess.CssAttribute;
 import de.enough.polish.preprocess.CssAttributesManager;
 import de.enough.polish.preprocess.CssConverter;
 import de.enough.polish.preprocess.CssReader;
@@ -478,10 +479,10 @@ public class PolishTask extends ConditionalTask {
 			ArrayList conditionalVarsList = new ArrayList();
 			for (int i = 0; i < variables.length; i++) {
 				Variable var = variables[i];
-				//System.out.println("adding variable [" + var.getName() + "]." );
 				if (var.hasCondition()) {
 					conditionalVarsList.add( var );
 				} else {
+					//System.out.println("adding variable [" + var.getName() + "]." );
 					this.polishProject.addDirectCapability( var );
 				}
 			}
@@ -508,6 +509,27 @@ public class PolishTask extends ConditionalTask {
 		} catch (InvalidComponentException e) {
 			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
 		}
+		
+		// load CSS attributes:
+		// create CSS attributes manager:
+		if (this.buildSetting.usePolishGui()) {
+			this.cssAttributesManager = new CssAttributesManager( this.buildSetting.openStandardCssAttributes() );
+			InputStream is = this.buildSetting.openCustomCssAttributes();
+			if (is != null) {
+				this.cssAttributesManager.addCssAttributes(is);
+			}
+			boolean allowAllCssAttributes = "true".equals( this.polishProject.getCapability("polish.css.allowAllAttributes") );
+			if (allowAllCssAttributes) {
+				CssAttribute[] attributes = this.cssAttributesManager.getAttributes();
+				for (int i = 0; i < attributes.length; i++) {
+					CssAttribute attribute = attributes[i];
+					String name = attribute.getName();
+					String feature = "polish.css." + name;
+					this.polishProject.addDirectFeature( feature );
+				}
+			}
+		}
+
 
 		// create vendor/group/device manager:
 		try {
@@ -521,16 +543,7 @@ public class PolishTask extends ConditionalTask {
 		} catch (InvalidComponentException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		}
-		
-		// create CSS attributes manager:
-		if (this.buildSetting.usePolishGui()) {
-			this.cssAttributesManager = new CssAttributesManager( this.buildSetting.openStandardCssAttributes() );
-			InputStream is = this.buildSetting.openCustomCssAttributes();
-			if (is != null) {
-				this.cssAttributesManager.addCssAttributes(is);
-			}
-		}
-		
+				
 		// create preprocessor:
 		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
@@ -538,10 +551,10 @@ public class PolishTask extends ConditionalTask {
 		// init line processors:
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
 		CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
-		// add the default line processor:
-		CustomPreprocessor lineProcessor = new PolishPreprocessor();
-		lineProcessor.init(this.preprocessor);
-		processors[0] = lineProcessor;
+		// add the polish custom processor:
+		CustomPreprocessor customProcessor = new PolishPreprocessor();
+		customProcessor.init(this.preprocessor);
+		processors[0] = customProcessor;
 		for (int i = 0; i < settings.length; i++) {
 			PreprocessorSetting setting = settings[i];
 			processors[ i + 1] = CustomPreprocessor.getInstance(setting, this.preprocessor, this.project );
@@ -995,6 +1008,7 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+			
 			// get the last modfication time of the build.xml file
 			// so that it can be checked whether there are any changes at all:
 			File buildXml = new File( this.project.getBaseDir().getAbsolutePath() 
