@@ -487,6 +487,12 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( evaluator.evaluate(expression, "MyClass", 103 ));	
 		expression = "polish.audio.midi and !polish.audio.mp3";
 		assertFalse( evaluator.evaluate(expression, "MyClass", 103 ));	
+		expression = "polish.audio.midi and not polish.audio.mp3";
+		assertFalse( evaluator.evaluate(expression, "MyClass", 103 ));
+		
+		symbols.remove("polish.audio.mp3");
+		expression = "polish.audio.midi and not polish.audio.mp3";
+		assertTrue( evaluator.evaluate(expression, "MyClass", 103 ));
 		
 	}
 

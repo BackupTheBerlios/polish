@@ -130,6 +130,7 @@ public class BooleanEvaluator {
 		// second step: replace " and " with && and " or " with ||
 		expression = TextUtil.replace( expression, " and ", " && " );
 		expression = TextUtil.replace( expression, " or ", " || " );
+		expression = TextUtil.replace( expression, " not ", " !" );
 		
 		// now extract each term:
 		Matcher matcher = TERM_PATTERN.matcher( expression );

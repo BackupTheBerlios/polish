@@ -96,6 +96,7 @@ public class ResourceManager {
 		this.resourceFilter = new ResourceFilter( setting.getExcludes(), DEFAULT_EXCLUDES, setting.useDefaultExcludes() );
 		if (this.localizationSetting != null) {
 			this.resourceFilter.addExclude( this.localizationSetting.getMessagesFileName() );
+			//TODO add messages_de.txt etc!
 		}
 		
 	}
