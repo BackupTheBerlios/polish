@@ -199,7 +199,7 @@ public class HtmlExporterTask extends Task {
 			lines.add("<h2 id=\"groups\">Groups</h2>");
 			lines.add("<p>Groups can be used to compose the resources (like images or sound-files) for an application." +
 					"<br/>Have a look at the " +
-					"<a href=\"<%= basedir %>docs/css-groups\">documentation</a> for more info.</p>");
+					"<a href=\"<%= basedir %>docs/resource-assembling.html\">documentation</a> for more info.</p>");
 			lines.add("<table class=\"borderedTable\"><tr><th>Group</th><th>Resource Folder</th></tr>");
 			for (int i = 0; i < groups.length; i++) {
 				String group = groups[i];
