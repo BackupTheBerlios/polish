@@ -488,7 +488,7 @@ public class Form extends Screen
 	 */
 	public Form( String title, Item[] items, Style style )
 	{
-		super( title, style );
+		super( title, style, true );
 		if (items != null) {
 			for (int i = 0; i < items.length; i++) {
 				Item item = items[i];
@@ -577,7 +577,11 @@ public class Form extends Screen
 	 */
 	public void insert(int itemNum, Item item)
 	{
-		this.container.add( itemNum - 1, item );
+		if (itemNum == this.container.size()) {
+			this.container.add(item);
+		} else {
+			this.container.add( itemNum, item );
+		}
 	}
 
 	/**
