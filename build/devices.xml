@@ -220,11 +220,13 @@
 		<groups></groups>
 		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, needsManualMenu</features>
 		<capability name="ScreenSize" value="208x320"/>
+        <capability name="CanvasSize" value="208x253"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi24, amr, mp3, rmf, mp4, 3gp" />
 		<capability name="HeapSize" value="12 MB" />
+		<capability name="usePolishTitle" value="true"/>
 	</device>
 	
 	<device>
@@ -241,6 +243,7 @@
 		<capability name="SoundFormat" value="iMelody, iMelody 1.2, midi, midi40, amr, mp3, rmf, mp4, 3gp" />
 		<capability name="HeapSize" value="16 MB" />
 		<capability name="DRM" value="OMA-Forward Lock" />
+		<capability name="usePolishTitle" value="true"/>
 	</device>
 	
 	<device>

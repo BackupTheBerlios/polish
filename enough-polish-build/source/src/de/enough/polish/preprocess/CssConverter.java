@@ -49,6 +49,7 @@ public class CssConverter extends Converter {
 	private static final HashMap BACKGROUND_TYPES = new HashMap();
 	static {
 		BACKGROUND_TYPES.put( "simple", "de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter");
+		BACKGROUND_TYPES.put( "plain", "de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter");
 		BACKGROUND_TYPES.put( "image", "de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter");
 		BACKGROUND_TYPES.put( "roundrect", "de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter");
 		BACKGROUND_TYPES.put( "round-rect", "de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter");
@@ -60,6 +61,7 @@ public class CssConverter extends Converter {
 	private static final HashMap BORDER_TYPES = new HashMap();
 	static {
 		BORDER_TYPES.put( "simple", "de.enough.polish.preprocess.borders.SimpleBorderConverter");
+		BORDER_TYPES.put( "plain", "de.enough.polish.preprocess.borders.SimpleBorderConverter");
 		BORDER_TYPES.put( "bottom-right-shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
 		BORDER_TYPES.put( "right-bottom-shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
 		BORDER_TYPES.put( "shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
@@ -120,7 +122,7 @@ public class CssConverter extends Converter {
 			}
 		}
 		if (index == -1) {
-			throw new BuildException("Unable to modify SytleSheet.java, include point [" + INCLUDE_MARK + "] not found.");
+			throw new BuildException("Unable to modify StyleSheet.java, include point [" + INCLUDE_MARK + "] not found.");
 		}
 		// okay start with the creation of source code:
 		ArrayList codeList = new ArrayList();
@@ -228,8 +230,10 @@ public class CssConverter extends Converter {
 		
 		
 		// check if fullscreen mode is enabled with menu:
-		if (preprocessor.hasSymbol("polish.useMenuFullScreen") 
-			&& (device.getCapability("polish.classes.fullscreen") != null) ) {
+		if ((preprocessor.hasSymbol("polish.useMenuFullScreen") 
+			&& (device.getCapability("polish.classes.fullscreen") != null))
+			|| preprocessor.hasSymbol("polish.needsManualMenu") 
+			) {
 			if (styleSheet.getStyle("menu" ) == null) {
 				System.out.println("Warning: CSS style [menu] not found, you should define it for designing the FullScreen-menu.");
 			} else {

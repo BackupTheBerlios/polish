@@ -210,13 +210,14 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("Midlets need to be defined in the build section with either <midlets> or <midlet>.");
 		}
 		// now check if the midlets do exist:
+		File[] sources = this.buildSetting.getSourceDirs();
 		for (int i = 0; i < midlets.length; i++) {
 			Midlet midlet = midlets[i];
 			String fileName = TextUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
 			boolean midletFound = false;
-			File[] sources = this.buildSetting.getSourceDirs();
 			for (int j = 0; j < sources.length; j++) {
-				String sourceDirPath = sources[i].getAbsolutePath();
+				File sourceDir = sources[j];
+				String sourceDirPath = sourceDir.getAbsolutePath();
 				File midletFile = new File( sourceDirPath + File.separator + fileName );
 				if (midletFile.exists()) {
 					midletFound = true;
@@ -850,7 +851,7 @@ public class PolishTask extends ConditionalTask {
 				if (!sourceCode.hasNext()) {
 					throw new BuildException("Unable to process MIDlet [" + className + "]: startApp method is not opened with '{': line [" + (++lineIndex) + "].");
 				}
-				sourceCode.insert("StyleSheet.display = Display.getDisplay( this );");
+				sourceCode.insert("de.enough.polish.ui.StyleSheet.display = javax.microedition.lcdui.Display.getDisplay( this );");
 				return;
 			}
 		}
@@ -992,7 +993,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		javac.setDestdir( targetDir );
 		javac.setSrcdir(new Path( this.project,  device.getSourceDir() ) );
-		javac.setSourcepath(new Path( this.project,  "" ));
+		//javac.setSourcepath(new Path( this.project,  "" ));
 		if (device.isMidp1()) {
 			javac.setBootclasspath(this.midp1BootClassPath);
 		} else {
