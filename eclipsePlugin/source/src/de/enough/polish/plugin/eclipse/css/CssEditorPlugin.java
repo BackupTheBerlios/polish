@@ -1,7 +1,12 @@
 package de.enough.polish.plugin.eclipse.css;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.*;
 import org.osgi.framework.BundleContext;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -12,6 +17,7 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	private static CssEditorPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	private BundleContext bundleContext;
 	
 	/**
 	 * The constructor.
@@ -33,6 +39,7 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		this.bundleContext = context;
 	}
 
 	/**
@@ -73,5 +80,29 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.resourceBundle;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+	 */
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+		URL iconDirectoryURL = this.bundleContext.getBundle().getEntry("/icons/");
+		
+		String[] iconNames = {"sample.gif","book.gif"};
+		ImageDescriptor imageDescriptor = null;
+		for(int i = 0; i < iconNames.length; i++){
+			imageDescriptor = null;
+			try {
+				URL url = new URL(iconDirectoryURL, iconNames[i]);
+				imageDescriptor = ImageDescriptor.createFromURL(url);
+			} catch (MalformedURLException e) {
+				// should not happen
+				imageDescriptor = ImageDescriptor.getMissingImageDescriptor();
+			}
+			reg.put(iconNames[i],imageDescriptor);
+		}
+		
 	}
 }

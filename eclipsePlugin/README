@@ -1,0 +1,25 @@
+README
+
+This is the eclipse plugin for J2ME Polish.
+
+Currently implemented is
+
+ - (a CSS-Editor)
+
+
+TODO (CssEditor)
+
+- Change old documentation style to new one. Esp. Csseditor and stuff created bevor 24.02.05.
+- document everything.
+- design domain model with element/child relationship.
+- parse css file to domain model.
+- on input reconcile domain model.
+- on input reconcile presentation.
+
+
+ROADMAP
+
+ - css editor with syntax highlighting, outline, color choosing and code completion.
+ - Builder for polish projects together with wizards for a new polish project.
+ - polish editor with code assistent for preprocessor actions.
+ 

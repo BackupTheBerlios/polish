@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin
-   id="cssEditor.CssEditor"
+   id="de.enough.polish.plugin.eclipse.css.CssEditorPlugin"
    name="CssEditor Plug-in"
    version="1.0.0"
    provider-name=""
-   class="cssEditor.CssEditorPlugin">
+   class="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
 
    <runtime>
       <library name="CssEditor.jar">
@@ -19,17 +19,18 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.views"/>
    </requires>
    
    <extension
          point="org.eclipse.ui.editors">
 		<editor
-         	id="cssEditor.editor.CssEditor"
+         	id="de.enough.polish.plugin.eclipse.css.editor.CssEditor"
          	name="Polish CSS-Editor"
          	extensions="css"
          	icon="icons/sample.gif"
          	contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-         	class="cssEditor.editor.CssEditor">
+         	class="de.enough.polish.plugin.eclipse.css.editor.CssEditor">
          </editor>
     </extension>
 
