@@ -347,6 +347,10 @@ Many GUI Items have text elements, which can be designed with the font- or label
 	 <td>underlined</td>
 	 <td>Not really a style, just an underlined text.</td>
 	</tr>
+	<tr><td>bitmap</td>
+	 <td>The name of the bitmap font. The extension &quot;.bmf&quot; is not needed.</td>
+	 <td>With the &quot;bitmap&quot;-attribute a bitmap-font can be used instead of the system, proportional and monospace fonts. Please note that bitmap-fonts cannot be changed in neither size, color or style. Compare the following section for a detailed discussion of bitmap-fonts.</td>
+	</tr>
 
 	</table>
 <p>
@@ -381,7 +385,54 @@ The same specification can also be written as follows:
 </p><p>
 In the font-definition the above face and size attributes can be skipped, since they only define the default behavior anyhow.
 </p>
+<h2 id="bitmapfonts">Bitmap-Fonts</h2>
+<p>
+Bitmap-Fonts can be used instead of the usual predefined fonts for any text elements like titles, StringItems, etc. 
+</p>
+<h3 id="creatingbitmapfonts">Creating Bitmap-Fonts</h3>
+<p>
+Bitmap-Fonts can be created out of any True Type Fonts (*.ttf) using the ${polish.home}/bin/fonteditor executable. In some cases it might be beneficial to optimize the created PNG image manually for decreasing the size of the image and making manual adjustments. The created bitmap-fonts-files (*.bmf) can also be fine-tuned using the binary data editor ${polish.home}/bin/binarydataeditor. Just select the File -> &quot;open in binary editor&quot;-command. 
+</p><p>
+The created bitmap-font needs to be copied into the &quot;resources&quot; folder of the project.
+</p>
+<h3 id="usingbitmapfontsingui">Using Bitmap-Fonts in the J2ME Polish GUI</h3>
+<p>
+The created bitmap-fonts can be used for any text-based items in the J2ME Polish GUI. They can be integrated using the &quot;font-bitmap&quot;-attribute. The &quot;.bmf&quot; extension does not need to be given. In the following example the &quot;china.bmf&quot; font is used for the currently focused item:
+<pre>
+focused {
+	font-bitmap: china;
+	background-color: yellow;
+	layout: center | expand;
+}
+</pre></p>
+
+<h3 id="usingbitmapfontsdirectly">Using Bitmap-Fonts Directly</h3>
+<p>
+The bitmap-fonts can also be used directly in the program-code with the help of the <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/BitMapFont.html" target="_blank">de.enough.polish.util.BitMapFont</a> class. 
+Please compare the <a href="<%= javadocdir %>../javadoc/j2me/index.html" target="_blank">JavaDoc</a> documentation for more information.
+</p><p>
+This example uses a bitmap-font for displaying a text:
+</p><p><pre>
+import de.enough.polish.util.*;
+
+public class MyScreen extends Canvas {
+	<b>private BitMapFont bitMapFont = BitMapFont.getInstance( &quot;/china.bmf&quot; );</b>
+	<b>private BitMapFontViewer textViewer;</b>
+	public MyScreen() throws IOException {
+		<b>this.textViewer = this.bitMapFont.getViewer( &quot;Hello World!&quot; );</b>
+		...
+	}
+...
+	public void paint( Graphics g ) {
+		int x = 20;
+		int y = 50;
+		<b>this.viewer.paint( x, y, g );</b>
+	}
+}
+</pre></p>
+
 <h2 id="labels">Labels</h2>
+<p>
 All GUI-Items can have a label, which is designed using the 
 <a href="css-styles.html#predefined">pre-defined style</a> &quot;label&quot;. 
 One can specify another-style by using the &quot;label-style&quot;-attribute:

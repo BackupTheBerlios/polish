@@ -59,7 +59,7 @@ Ant
 #####################################
 
 Design
-CSS, background, border, Style, font, label
+CSS, background, border, Style, font, label, bitmapfont
 layout, color, margin, padding, after, before
 type
 round-rect, simple, pulsating, image, shadow, circle
@@ -132,3 +132,8 @@ ProGuard
 RetroGuard
 yGuard
 DashO
+Tutorial
+BitMapFont
+Font
+Presentation::tour
+Tools

@@ -192,6 +192,16 @@ Nokia == Nokia = true<br/>
 //#if polish.vendor == Nokia
 </pre></td>
 	</tr>
+	<tr><td>!=</td>
+	 <td>not equals</td>
+	 <td>The left and the right argument must not be equal, integers and strings can be compared:<br/>
+8 != 8 = false<br/>
+Nokia != Sony-Ericsson = true<br/>
+<pre>
+//#if polish.BitsPerPixel != 8
+//#if polish.vendor != Nokia
+</pre></td>
+	</tr>
 	<tr><td>&gt;</td>
 	 <td>greater</td>
 	 <td>The left argument must be greater than the right one. Only integers can be compared:<br/>

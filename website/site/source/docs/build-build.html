@@ -44,7 +44,8 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>sourceDir</td>
  	 <td>No</td>
 	 <td>The path to the source directory. The default path is either &quot;source/src&quot;, &quot;source&quot; or &quot;src&quot;. You can define several paths by separating them with a colon ':' or a semicolon ';': 
-[path1]:[path2]</td>
+[path1]:[path2]. You can also include source-directories based on conditions when the nested <a href="#sources">&lt;sources&gt;-element</a> is used instead.
+</td>
 	</tr>
 	<tr><td>binaryLibraries or binaryLibrary</td>
  	 <td>No</td>
@@ -150,18 +151,77 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>obfuscator</td>
  	 <td>No</td>
 	 <td>The name of the obfuscator. Defaults to <a href="http://proguard.sourceforge.net" target="_blank">&quot;ProGuard&quot;</a>. 
-	 Possible values are &quot;ProGuard&quot;, &quot;KlassMaster&quot;, &quot;YGuard&quot; or &quot;RetroGuard&quot;.
+	 Possible values are &quot;ProGuard&quot;, &quot;KlassMaster&quot;, &quot;Dasho&quot;, &quot;YGuard&quot; or &quot;RetroGuard&quot;.
 	 Alternatively the nested element &quot;obfuscator&quot; can be used (see below).</td>
+	<tr>
+	 <td>compilerMode</td>
+ 	 <td>No</td>
+	 <td>When the compiler-mode is activated, J2ME Polish will not package the application and only process one device. This mode is useful for IDEs which support indirect compilation like NetBeans for example. You can select &quot;Run&quot; in NetBeans and NetBeans uses J2ME Polish as compiler, packages the application and starts the emulator - this saves valuable time during the development phase. Possible values are &quot;true&quot; or &quot;false&quot;. The compiler mode is deactivated (&quot;false&quot;) by default.
+	 </td>
+	</tr>
+	<tr>
+	 <td>compilerDestDir</td>
+ 	 <td>No</td>
+	 <td>The &quot;compilerDestDir&quot;-attribute defines where the compiled (and obfuscated) classes should be stored. The default target directory is &quot;bin/classes&quot;.
+	 </td>
+	</tr>
+	<tr>
+	 <td>compilerModePreverify</td>
+ 	 <td>No</td>
+	 <td>Defines whether J2ME Polish should preverify the compiled classes as well. This is needed for using J2ME Polish as a compiler for the EclipseME plugin. Possible values are &quot;true&quot; or &quot;false&quot;. The preverifying is deactivated (&quot;false&quot;) by default.
+	 </td>
 	</tr>
 	</table>
 	<h2 id="nested">Nested Elements</h2>
-	<p>The build section supports several nested elements: &lt;midlet&gt;, 
+	<p>The build section supports several nested elements: &lt;sources&gt;, &lt;midlet&gt;, 
 	&lt;midlets&gt;, &lt;resources&gt;, &lt;obfuscator&gt;, &lt;variables&gt;, 
 	&lt;debug&gt;, &lt;jad&gt;, &lt;manifestFilter&gt; , 
 	&lt;preprocessor&gt; and &lt;java&gt;.	
 	</p>
+	<h3 id="sources">&lt;sources&gt;</h3>
+	<p>
+	The &lt;sources&gt;-element can be used for a finer grained control of the source-directories. This can be useful to include test classes, for example:
+	<pre>
+&lt;sources&gt;
+	&lt;source dir=&quot;source/src&quot; /&gt;
+	&lt;source dir=&quot;source/test&quot; if=&quot;test&quot; /&gt;
+&lt;/sources&gt;
+</pre></p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>sources-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; for the nested source directories to be used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; for the nested source directories to be used.</td>
+	</tr>
+	</table>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>source-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>dir</td>
+ 	 <td>Yes</td>
+	 <td>The directory containing Java source files.</td>
+	</tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; for this source directory to be used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; for this source directory to be used.</td>
+	</tr>
+	</table>
+
 	<h3 id="midlet">&lt;midlet&gt; and &lt;midlets&gt;</h3>
 	<p>The &lt;midlet&gt;-element defines the actual MIDlet class:
+	
 <br/><code>&lt;midlet class=&quot;de.enough.polish.example.ExampleMidlet&quot; /&gt;</code>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>midlet-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -181,6 +241,16 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>number</td>
  	 <td>No</td>
 	 <td>The number of this MIDlet. This is interesting only for MIDlet-suites in which several MIDlets are contained.</td>
+	</tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; for this MIDlet to be used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; for this MIDlet to be used.</td>
 	</tr>
 	</table>
 	<p>
@@ -314,6 +384,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	 <td>The name of the obfuscator which should be used. Defaults to <a href="http://proguard.sourceforge.net" target="_blank">&quot;ProGuard&quot;</a>. 
 	 Possible values are at the moment either &quot;ProGuard&quot;, 
 	 <a href="http://www.zelix.com/" target="_blank">&quot;KlassMaster&quot;</a>
+	 <a href="http://www.preemptive.com/" target="_blank">&quot;Dasho&quot;</a>,
 	 <a href="http://www.yworks.de" target="_blank">&quot;YGuard&quot;</a>
 	  or <a href="http://www.retrologic.com" target="_blank">&quot;RetroGuard&quot;</a>.
 	 </td>
@@ -443,6 +514,36 @@ The following example shows a possible invocation of KlassMaster:
 &lt;/obfuscator&gt;
 </pre>
 </p>
+<h5 id="obfuscator-dasho">DashO Pro</h5>
+<p>
+DashO Pro is a commercial obfuscator by Preemptive Solutions. A free evaluation version can be requested at 
+<a href="http://www.preemptive.com" target="_blank">http://www.preemptive.com</a>.
+</p><p>
+When the DashO Pro obfuscator is used, either the Ant property &quot;dasho.home&quot; or the parameter &quot;DashoHome&quot; needs to be given. The classpath does not need to be modified.
+</p><p>
+The DashO Pro obfuscator supports following parameters:
+</p>
+<ul>
+  <li><code>DashoHome</code>: needs to point to the installation directory of the DashO Pro obfuscator.</li>
+  <li><code>Version</code>: needs to correspond to the used version of DashO. The current default version is &quot;3.1&quot;.</li>
+  <li><code>enableFlowObfuscation</code>: when &quot;true&quot; is given, DashO will obfuscate the application flow as well. This is deactivated by default.</li>
+  <li><code>enableStringEncription</code>: when &quot;true&quot; is given, Strings will be obfuscated by DashO as well. Since this decreases the performance, it is deactivated by default.</li>
+  <li><code>enableRenaming</code>: when &quot;true&quot; is given, all possible classes will be renamed. This is activated by default.</li>
+  <li><code>enableOptimization</code>: when &quot;true&quot; is given, the byte-code will be optimized by DashO. This feature is activated by default.</li>
+  <li><code>ConstantPoolTag</code>: a tag which will be added to all processed classes. This is only visible when a decompiler is used.</li>
+  <li><code></code>ScriptFile: The file containing the full script can also be set. In that case please note that the source-jar-file is always the &quot;build/source.jar&quot; and the target-file is the &quot;build/dest.jar&quot;.</li>
+</ul>
+<p>
+A report about the renamed clases as well as methods will be written to build/[vendor]/[device]/[locale]/obfuscation-map.txt. This file is useful for resolving stacktraces in the obfuscated application.
+</p><p>
+This example shows the integration of DashO Pro:
+<pre>
+&lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;Dasho&quot; &gt;
+	&lt;parameter name=&quot;DashoHome&quot; value=&quot;/home/user/DashOPro_3.1&quot; /&gt;
+	&lt;parameter name=&quot;Version&quot; value=&quot;3.1&quot; /&gt;
+&lt;/obfuscator&gt;
+</pre>
+</p>
 <h5 id="obfuscator-jode">JODE</h5>
 <p>
 JODE is quite a powerful optimizer, shrinker and obfuscator by Jochen Hoenicke. It is licensed under the GNU General Public License and is available at http://jode.sourceforge.net free of charge.
@@ -548,7 +649,7 @@ or
 System.out.println("could not load something: " + e);
 </pre></p>
 <p>You will find more information about the debugging
-possibilities in the <a href="introduction.html#debug">introduction</a> as well as in the
+possibilities in the <a href="tutorial.html#debug">introduction</a> as well as in the
 <a href="directives.html#preprocessing-debug">preprocessing</a> documentation.
 </p>	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">

@@ -7,9 +7,57 @@
 	<div id="content">
 	<h1 id="top">Utilities</h1>
 <p>
-J2ME Polish contains several often needed utilties:
+J2ME Polish contains several often needed J2ME utilty classes:
 </p>
 <%index %>
+
+<h2 id="bitmapfont">Using the BitMapFont Class</h2>
+<p>
+You can use the class
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/BitMapFont.html" target="_blank">de.enough.polish.util.BitMapFont</a>
+for using bitmap fonts directly in your application.
+This is often useful in games and other application, when you want to show messages to the user
+which should not appear in the standard font-faces.
+</p>
+<p>
+The involved concepts are quite easy:
+</p>
+<ol>
+	<li>Create a bitmap font using the <a href="tools.html#fonteditor">${polish.home}/font-editor</a> executable.</li>
+	<li>Create a <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/BitMapFont.html" target="_blank">BitMapFont</a> in your application.</li>
+	<li>Use the <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/BitMapFontViewer.html" target="_blank">BitMapFontViewer</a> to display a message.</li>
+</ol>
+<p>
+The following code illustrates the second and third step:
+<pre>
+import de.enough.polish.util.*;
+
+public class MyCanvas extends Canvas {
+
+	private BitMapFont bitMapFont;
+	privte BitMapFontViewer messageViewer;
+
+	public MyCanvas() {
+		this.bitMapFont = BitMapFont.getInstance("/coolfont.bmf");
+		this.messageViewer = this.bitMapFont.getViewer("Hello World!");
+		int availableWidth = getWidth() - 20;
+		int padding = 2;
+		int textOrientation = Graphics.LEFT;
+		this.messageViewer.layout( availableWidth, availableWidth, padding, orientation );
+	}
+
+	public void paint( Graphics g ) {
+		int x = 10;
+		int y = 20;
+		this.messageViewer.paint( x, y, g );
+	}
+}
+</pre>
+</p>
+<p>
+Since the BitMapFont.getViewer(String)-method is the most expensive one, you should
+try to call it only when it's necessary, e.g. when a new message is generated.
+</p>
 
 <h2 id="logging">Logging Framework and the Debug Class</h2>
 <p>
@@ -24,7 +72,7 @@ The logging framework of J2ME Polish consists of the #debug and
 </p>
 <p>Find more information about it at following documentations:</p>
 <ul>
- <li><a href="introduction.html#logging">Introduction to the logging framework</a></li>
+ <li><a href="tutorial.html#logging">Introduction to the logging framework</a></li>
  <li><a href="build-build.html#debug">&lt;debug&gt;-element in the build.xml</a></li>
  <li><a href="directives.html#preprocessing-debug">The #debug and #mdebug preprocessing directives</a></li>
  <li><a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Debug.html" target="_blank">JavaDoc-documentation of the Debug class</a></li>

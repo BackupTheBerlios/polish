@@ -16,16 +16,28 @@ of the &lt;build&gt;-element in the &quot;build.xml&quot; file. Just separate
 the folders with colons or semicolons:
 <pre>
 &lt;build
-	imageLoadStrategy=&quot;background&quot;
 	fullscreen=&quot;menu&quot;
 	usePolishGui=&quot;true&quot;
-	resDir=&quot;resources2&quot;
 	sourceDir=&quot;source/src:../extensions/source/src&quot;
 &gt;
 </pre>
 </p>
 <p>
 In the above example the &quot;source/src&quot; folder of the current project and the &quot;source/src&quot; folder of the &quot;extensions&quot; project are included. The notation is OS-independent by the way. So you can separate different source-paths with either a colon ':' or a semicolon ';' and you can separate folders with a slash '/' or a backslash '\'.
+</p>
+<p>
+You can also use the nested &lt;sources&gt;-element for including source-directories based on conditions. In this example the directory &quot;source/test&quot; is only included when the Ant-property &quot;test&quot; is true:
+<pre>
+&lt;build
+	fullscreen=&quot;menu&quot;
+	usePolishGui=&quot;true&quot;
+&gt;
+	&lt;sources&gt;
+		&lt;source dir=&quot;source/src&quot; /&gt;
+		&lt;source dir=&quot;source/test&quot; if=&quot;test&quot; /&gt;
+	&lt;/sources&gt;
+...
+</pre>
 </p>
 
 <h3 id="howto-api">How to Integrate Third Party APIs</h3>

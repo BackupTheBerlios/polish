@@ -11,25 +11,14 @@
 		<title>J2ME Polish</title>
 	<%endif %>
 	<link rel="Shortcut Icon" href="<%= basedir %>images/favicon.gif" type="image/ico" />
-	<noscript>
-		<link href="<%= basedir %>enough.css" rel="stylesheet" type="text/css" />
-	</noscript>
-	<script type="text/javascript">
-		isMSIE = false;
-		if (navigator.appName == "Microsoft Internet Explorer") {
-			document.write('<link href="<%= basedir %>enough-ie.css" rel="stylesheet" type="text/css" />');
-			isMSIE = true;
-		} else {
-			document.write('<link href="<%= basedir %>enough.css" rel="stylesheet" type="text/css" />');
-		}
-	</script>
+	<link href="<%= basedir %>enough.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<!-- header -->
 	<div id="header"> 
-		<img src="<%= basedir %>images/header.png" alt="J2ME Polish" width="600" height="40"/>
+		<img src="<%= basedir %>images/header.png" alt="J2ME Polish" width="750" height="50"/>
 		<a class="imageLink" href="http://www.enough.de">
-			<img class="headerImage" src="<%= basedir %>images/logo-small.png" alt="enough software" width="69" height="40" /> 
+			<img class="headerImage" src="<%= basedir %>images/logo-small.png" alt="Enough Software" width="69" height="40" /> 
 		</a>
 	</div> 
 	<!-- end of header -->
@@ -37,12 +26,28 @@
 	<div id="navigation">
 		<h1>Contents</h1>
 		<%ifdef inOverviewSection %>
-			<div id="currentLink"><a href="<%= basedir %>index.html">Overview</a></div>
+			<div id="currentLink"><a href="<%= basedir %>index.html">Home</a></div>
 		<%else %>
-			<a href="<%= basedir %>index.html">Overview</a><br />
+			<a href="<%= basedir %>index.html">Home</a><br />
 		<%endif %>
 		<%ifdef inIntroductionSection %>
 			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
+			<%ifdef inIntroductionSection.tour %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
+			<%endif %>
+			<%ifdef inIntroductionSection.features %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/features.html">Features</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/features.html">Features</a></div>
+			<%endif %>
+			<%ifdef inIntroductionSection.tutorial %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tutorial.html">Tutorial</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/tutorial.html">Tutorial</a></div>
+			<%endif %>
+			
 		<%else %>
 			<a href="<%= basedir %>docs/introduction.html">Introduction</a><br />
 		<%endif %>
@@ -122,6 +127,11 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.tools %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tools.html">Tools</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/tools.html">Tools</a></div>
+			<%endif %>
 			<%ifdef inDocumentationSection.gameengine %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>
 			<%else %>
@@ -166,9 +176,9 @@
 		<%ifdef inLicensingSection %>
 			<div id="currentLink"><a href="<%= basedir %>licenses.html">Licensing</a></div>
 			<%ifdef inLicensingSection.order %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>licensing/order1.html">Order</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>licenses.html#order">Order</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>licensing/order1.html">Order</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>licenses.html#order">Order</a></div>
 			<%endif %>
 			
 		<%else %>
@@ -239,6 +249,15 @@
 		<%else %>
 			<a href="<%= basedir %>atoz.html">Index</a><br/>
 		<%endif %>
+		
+		<!-- search form: -->
+		<form method="GET" action="http://www.google.com/search">
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="hidden" name="oe" value="UTF-8" />
+			<input type="hidden" name="as_sitesearch" value="www.j2mepolish.org" />
+			<input type="text" name="q" size="25" maxlength="255" value="">
+			<input type="submit" name="btnG" value="Search">
+		</form>
 		
 		<a class="imageLink" href="<%= basedir %>index.html">
 		<img class="navigationImage" alt="j2mepolish" src="<%= basedir %>images/j2mepolish-logo.png" width="180" height="217"/>

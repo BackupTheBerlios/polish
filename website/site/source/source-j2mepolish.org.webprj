@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
 <author/>
 <email/>
@@ -93,7 +93,6 @@
 <item modified_time="1096061562" url="download.html" />
 <item modified_time="1086496014" url=".DS_Store" />
 <item modified_time="1093354600" url="enough.css" />
-<item modified_time="1093354615" url="enough-ie.css" />
 <item modified_time="1092061355" url="faq.html" />
 <item modified_time="1096030888" url="index.html" />
 <item modified_time="1090884978" url="licenses.html" />
@@ -127,7 +126,7 @@
 <item upload_time="" modified_time="1093441742" url="docs/game-engine.html" />
 <item modified_time="1090086924" url="downloads/j2mepolish-1.0-RC6.html" />
 <item modified_time="1092060704" url="contributors.html" />
-<item modified_time="1096030785" url="docs/introduction.html" />
+<item upload_time="" modified_time="1096030785" url="docs/tutorial.html" />
 <item modified_time="1090060359" url="docs/javadoc.html" />
 <item modified_time="1091993565" url="docs/extending.html" />
 <item modified_time="1090850982" url="docs/custom-obfuscator.html" />
@@ -156,5 +155,19 @@
 <item modified_time="1096292319" url="downloads/j2mepolish-1.2.1.html" />
 <item modified_time="1097020512" url="downloads/j2mepolish-1.2.2.html" />
 <item url="downloads/j2mepolish-1.2.3.html" />
+<item url="order/" />
+<item url="docs/features.html" />
+<item url="docs/tour.html" />
+<item url="order/Order-Form.pdf" />
+<item url="s5/" />
+<item url="s5/framing.css" />
+<item url="s5/opera.css" />
+<item url="s5/pretty.css" />
+<item url="s5/print.css" />
+<item url="s5/s5-core.css" />
+<item url="s5/slides.css" />
+<item url="s5/slides.js" />
+<item url="docs/introduction.html" />
+<item url="docs/tools.html" />
 </project>
 </webproject>

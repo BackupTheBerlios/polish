@@ -435,7 +435,7 @@ The following example uses a green circle border with a two pixel wide dotted li
 <h2 id="screens">Screens: List, Form and TextBox</h2>
 <h3>Predefined Styles for Lists, Forms and TextBoxes</h3>
 <p>
-All screens have a title and one or several embedded GUI items. In a Form or List one item is usually focused. Screens can also have a designable menu, when the application uses a full-screen-mode (on Nokia devices). Some of the used styles can also use additional attributes.
+All screens have a title and one or several embedded GUI items. In a Form or List one item is usually focused. Screens can also have a designable menu, when the application uses a full-screen-mode. Some of the used styles can also use additional attributes.
 </p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Style-Name&nbsp;&nbsp;</th><th>Add. Attributes&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -476,6 +476,14 @@ Each screen itself can have some additional attributes:</p>
 	<tr><td>focused-style</td>
 	 <td>No</td>
 	 <td>The name of the style for the currently focused menu item. Defaults to the predefined &quot;focused&quot; style.</td>
+	</tr>
+	<tr><td>title-style</td>
+	 <td>No</td>
+	 <td>The name of the custom style for the title of the screen. This defaults to the predefined &quot;title&quot; style.</td>
+	</tr>
+	<tr><td>view-type</td>
+	 <td>No</td>
+	 <td>The view-type can be used for defining very different and even animated views of the items in a screen. An example is the &quot;dropping&quot; view-type in which the contained items seem to fall from the top to their positions. Please note that not all view-types support the &quot;columns&quot; and &quot;columns-width&quot;-attributes.</td>
 	</tr>
 	<tr><td>columns</td>
 	 <td>No</td>
@@ -518,6 +526,8 @@ list {
 	focused-style: .listFocusStyle; /* this style needs to be defined, too */
 }
 </pre>
+</p>
+<p>TextBoxes also support a direct input mode and all CSS-attributes of the <a href="#textfield">text-field</a>.
 </p>
 <h3 id="screenstyles">Dynamic Styles for Screens</h3>
 <p>
@@ -881,7 +891,9 @@ When the Gauge item is used with an indefinite range, the gauge-gap-color will b
 
 <h2 id="textfield">The TextField</h2>
 <p>
-A TextField is used to get user input. Currently the input is done with the use of the native functions, so that special input modes can be used (like T9). The TextField supports following additional attributes:
+A TextField is used to get user input. You can choose whether the native input methods or a direct input mode should be used. When the native mode  is activated, a new input screen will pop up for the user and special input modes like T9 or handwriting recognition can be used. When the direct input mode is used instead, no extra screen will be shown and J2ME Polish accepts the entered character directly. Please compare the following subsection <a href="#textfield-direct-input">Direct Input Mode</a> for more information.
+</p><p>
+The TextField supports following additional attributes:
 </p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -893,6 +905,26 @@ A TextField is used to get user input. Currently the input is done with the use 
 	 <td>No</td>
 	 <td>The minimum height of the  textfield-element in pixels. Defaults to the height of the used font.</td>
 	</tr>
+	<tr>
+	 <td>textfield-direct-input</td>
+	 <td>No</td>
+	 <td>Defines whether the direct input mode should be activated. Possible values are either &quot;false&quot; or &quot;true&quot;. By default the direct input mode is deactivated (&quot;false&quot;). </td>
+	</tr>
+	<tr>
+	 <td>textfield-caret-color</td>
+	 <td>No</td>
+	 <td>The color of the caret which indicates the editing position. This defaults to the color of the used font.</td>
+	</tr>
+	<tr>
+	 <td>textfield-caret-char</td>
+	 <td>No</td>
+	 <td>The character which indicates the editing position. This defaults to &quot;|&quot;.</td>
+	</tr>
+	<tr>
+	 <td>textfield-show-length</td>
+	 <td>No</td>
+	 <td>Determines whether the length of the entered text should be shown during the editing of this field. This has an effect only when the direct input mode is used.</td>
+	</tr>
 </table>
 <p>
 The following example shows the use of the TextField attributes:
@@ -903,9 +935,138 @@ The following example shows the use of the TextField attributes:
 	border-color: black;
 	textfield-height: 15; 
 	textfield-width: 40;
+	textfield-direct-input: true;
+	textfield-caret-color: red;
+	textfield-caret-char: >;
+	textfield-show-length: true;
 }
 </pre>
 </p>
+<h3 id="textfield-commands">TextField-Commands</h3>
+<p>
+A TextField adds the &quot;Clear&quot;- and &quot;Delete&quot;-commands to the menu by default. The names of these commands can be <a href="localization.html#localization-gui">changed easily</a>. If you want to suppress the commands completely, the &quot;polish.TextField.suppressCommands&quot;-variable has to be set:
+<pre>
+&lt;variable name=&quot;polish.TextField.suppressCommands&quot; value=&quot;true&quot;/&gt;
+</pre>
+</p>
+<h3 id="textfield-direct-input">Direct Input Mode</h3>
+<p>
+The direct input mode can be activated for TextFields as well as for TextBoxes using the CSS-attribute &quot;textfield-direct-input&quot; or by defining the preprocessing-variable &quot;polish.TextField.useDirectInput&quot; in the build.xml file:
+<pre>
+&lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot;/&gt;
+</pre>
+</p><p>
+When the direct input mode is used, no extra screen will be used for editing the text and all  designing possibilities of J2ME Polish can be used. When the TextField is used within a Form, the associated ItemStateListener will be notified after each change of the text.
+</p><p>
+On stylus-based devices, this mode should not be used since these devices often rely on native input methods like handwriting recognition. This can be ensured by setting the preprocessing variable only for devices which have no pointer-events:
+<pre>
+&lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot; if=&quot;!polish.hasPointerEvents&quot;/&gt;
+</pre>
+</p><p>
+The direct input should not be used for editing longs texts (i.e. TextBoxes), since T9 and similar input helpers cannot be used in this mode.
+</p><p>
+The user can change the input mode from lowercase (&quot;abc&quot;) to initial-letter uppercase (&quot;Abc&quot;)  to uppercase (&quot;ABC&quot;) and to numeric (&quot;123&quot;). The current input mode is shown below the title in an extra StringItem. This item can be designed using the predefined CSS-style &quot;info&quot;:
+<pre>
+info {
+	padding-right: 10;
+	background: none;
+	border-color: black;
+	font-style: plain; 
+	font-face: proportional; 
+	font-size: small; 
+	font-color: fontColor; /* a color defined in the &quot;colors&quot; section */
+	layout: right;
+}
+</pre>
+</p><p>
+The info-item can be deactivated globally by setting the &quot;polish.TextField.showInputInfo&quot;-variable to &quot;false&quot;:
+<pre>
+&lt;variable name=&quot;polish.TextField.showInputInfo&quot; value=&quot;false&quot; /&gt;
+</pre>
+</p><p>
+Next to using the CSS-attributes &quot;textfield-caret-color&quot;, &quot;textfield-caret-char&quot; and &quot;textfield-show-length&quot; the behavior of the direct input mode can be adjusted using several preprocessing variables. Especially the available character can be changed, which can be necessary for localizing the direct input.
+</p><p>
+Following variables can be set:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Variable&nbsp;&nbsp;</th><th>Default&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>polish.TextField.InputTimeout</td>
+	 <td>&quot;1000&quot;</td>
+	 <td>The timeout in milliseconds after which a chosen character is inserted into the text automatically.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.showInputInfo</td>
+	 <td>&quot;true&quot;</td>
+	 <td>Defines whether the box showing the current input mode (e.g. &quot;123&quot;, &quot;Abc&quot;, &quot;abc&quot;, &quot;ABC&quot;) should be shown at all. You can deactivate the box globally by setting the &quot;polish.TextField.showInputInfo&quot; variable to &quot;false&quot;.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.ChangeInputModeKey</td>
+	 <td>Varying</td>
+	 <td>The key which is used for changing the input mode between lowercase (&quot;abc&quot;), uppercase (&quot;ABC&quot;), initial-letter uppercase (&quot;Abc&quot;) and numeric (&quot;123&quot;). On Sony-Ericsson devices Canvas.KEY_STAR (42), on Motorola devices Canvas.KEY_NUM0 (48) and on all other devices Canvas.KEY_POUND (35) is used.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey1</td>
+	 <td>&quot;.,!?:/@_-+1&quot;</td>
+	 <td>The characters which are available when the key &quot;1&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey2</td>
+	 <td>&quot;abc2&quot;</td>
+	 <td>The characters which are available when the key &quot;2&quot; is pressed. It might be useful to add local specific umlauts here.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey3</td>
+	 <td>&quot;def3&quot;</td>
+	 <td>The characters which are available when the key &quot;3&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey4</td>
+	 <td>&quot;ghi4&quot;</td>
+	 <td>The characters which are available when the key &quot;4&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey5</td>
+	 <td>&quot;jkl5&quot;</td>
+	 <td>The characters which are available when the key &quot;5&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey6</td>
+	 <td>&quot;mno6&quot;</td>
+	 <td>The characters which are available when the key &quot;6&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey7</td>
+	 <td>&quot;pqrs7&quot;</td>
+	 <td>The characters which are available when the key &quot;7&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey8</td>
+	 <td>&quot;tuv8&quot;</td>
+	 <td>The characters which are available when the key &quot;8&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey9</td>
+	 <td>&quot;wxyz9&quot;</td>
+	 <td>The characters which are available when the key &quot;9&quot; is pressed.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKey0</td>
+	 <td>&quot; 0&quot;</td>
+	 <td>The characters which are available when the key &quot;0&quot; is pressed. On Motorola devices this key is used for switching the input mode.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKeyStar</td>
+	 <td>&quot;.,!?:/@_-+&quot;</td>
+	 <td>The characters which are available when the key &quot;*&quot; is pressed. On Motorola devices this key is used for entering spaces (&quot; &quot;).</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.charactersKeyPound</td>
+	 <td>(none)</td>
+	 <td>The characters which are available when the key &quot;#&quot; is pressed. On Sony-Ericsson devices this key is used for entering spaces (&quot; &quot;).</td>
+	</tr>
+</table>
+
 <h2 id="datefield">The DateField</h2>
 <p>
 A DateField is used to enter date or time information. Currently the input is done with the use of the native functions, so that special input modes can be used (like T9). The DateField supports following additional attributes:
