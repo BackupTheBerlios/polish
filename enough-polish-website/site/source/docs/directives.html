@@ -335,9 +335,10 @@ System.out.println("complex method took [" + (System.currentTimeMilis() - startT
 
 <h3 id="debug-class">The Debug Utility Class</h3>
 <p>
-The utility class <code>de.enough.polish.util.Debug</code> can be used for debugging. It is especially useful for the GUI debugging mode, which can be enabled in the build.xml by setting the &quot;useGui&quot; attribute of the <debug>-element to true:
+The utility class <code>de.enough.polish.util.Debug</code> can be used for debugging. 
+Especially its <code>showLog()</code>-method can be useful in some circumstances when the &quot;showLogOnError&quot;-attribute is not sufficient. 
 <pre>
-&lt;debug enable=&quot;true&quot; useGui=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;&gt;
+&lt;debug enable=&quot;true&quot; showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;&gt;
 	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; /&gt;
 	&lt;filter pattern=&quot;com.company.package.MyClass&quot; level=&quot;debug&quot; /&gt;
 
@@ -355,34 +356,54 @@ try {
 	Debug.debug( "complex method failed: " + e.getMessage(), e );
 }
 </pre></p><p>
-Both debug-methods are used in the example. The second method debug(String, Throwable) also prints out the stack trace of the exception, when the GUI debugging mode is not enabled.
-You can make the debug information available in your MIDlet class with the following code:
+Both debug-methods are used in the example. 
+The second method debug(String, Throwable) also prints out the stack trace of the exception, but note that the stacktrace is only available in emulators.
+</p><p>
+In general is is more flexible to use simple System.out.println()-statements instead of
+using the Debug-methods directly:
+<pre>
+try {
+	callComplexMethod();
+	//#debug info
+	System.out.println( "complex method succeeded." );
+} catch (MyException e) {
+	//#debug error
+	System.out.println( "complex method failed" + e );
+}
+</pre>
+</p><p>
+You can view the log in your MIDlet class with the following code:
 <pre>
 import de.enough.polish.util.Debug;
 public class MyMIDlet extends MIDlet {
-//#ifdef polish.useDebugGui
-	private Command logCmd = new Command( "show log", Command.SCREEN, 10 );
+//#ifdef polish.debugEnabled
+	private Command logCmd = new Command( "Show log", Command.SCREEN, 10 );
 //#endif
 private Screen mainScreen;
+private Screen display;
 [...]
 public MyMIDlet() {
 	[...]
-	//#ifdef polish.useDebugGui
+	//#ifdef polish.debugEnabled
 		this.mainScreen.addCommand( this.logCmd );
 	//#endif
 }
 public void commandAction(Command cmd, Displayable screen ) {
 	[...]
-	//#ifdef polish.useDebugGui
-	if (cmd == logCmd) {
-		this.display.setCurrent( Debug.getLogForm( true, this ) );
-	} else if (cmd == Debug.RETURN_COMMAND) {
-		this.display.setCurrent( this.mainScreen );
-	}
+	//#ifdef polish.debugEnabled
+		if (cmd == this.logCmd) {
+			Debug.showLog( this.display );
+		}
 	//#endif
 }
 </pre></p><p>
-In the above example the MIDlet &quot;MyMIDlet&quot; adds a command to its main screen when the GUI debugging mode is enabled. When this is the case, the preprocessing symbol &quot;polish.useDebugGui&quot; will be defined. The user can then select the &quot;show log&quot; command to see the form with all logging messages. When the user selects the &quot;return&quot; command from the log-screen, he will return to the main screen.
+In the above example the MIDlet <code>MyMIDlet</code> adds a command to its main screen 
+when the debugging mode is enabled. When this is the case, the preprocessing symbol 
+<code>polish.debugEnabled</code> will be defined. The user can then select the 
+&quot;Show log&quot; command to see view all logging messages. 
+When the user selects the &quot;return&quot; command from the log-screen, he will 
+return to the screen that has been shown before.
+</p><p>
 Please make sure, that you have added the &quot;import/enough-j2mepolish-util.jar&quot; to the classpath of your project, when using the Debug-class. 
 </p>
 

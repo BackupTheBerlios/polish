@@ -110,7 +110,18 @@ define the requirements very flexible.
 In this example each supported device must have a color depth of at least 4 bits per pixel. Additionally the device needs to support either the Nokia-UI-API and the Mobile Media-API (mmapi), or the Mobile Media-API and the MIDP/2.0 platform. 
 </p>
 <p>
-Following capabilities can be checked directly:
+Instead of using such nested requirements, you can also use the &quot;Term&quot; requirement that allows you to select devices with the same power like the #if preprocessing directive. The following example includes the very same requirements like the above one - but only one &quot;Term&quot; requirement is used:
+<pre>
+&lt;deviceRequirements&gt;
+	&lt;requirement name=&quot;Term&quot; 
+	value=&quot;(polish.BitsPerPixel &gt;= 4) &amp;&amp; 
+	((polish.api.nokia-ui &amp;&amp; polish.api.mmapi) 
+	     || (polish.api.mmapi &amp;&amp; polish.midp2))&quot; /&gt;
+&lt;/deviceRequirements&gt;
+</pre>
+</p>
+<p>
+J2ME Polish provides several requirements that can be used &quot;out of the box&quot;:
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>requirement-name&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -173,6 +184,11 @@ Following capabilities can be checked directly:
 	<tr><td>Feature</td>
 	 <td>A feature which needs to be supported by the device.
 	 <br/><code>&lt;requirement name=&quot;Feature&quot; value=&quot;supportsPointer&quot; /&gt;</code></td>
+	</tr>
+	<tr><td>Term</td>
+	 <td>A preprocessing term that needs to be fulfilled by the device. You can use this flexible requirement just like the //#if-preprocessing directive in your source code. 
+	 <br/><code>&lt;requirement name=&quot;Term&quot; 
+value=&quot;polish.mmapi &amp;&amp; !polish.isVirtual &amp;&amp; (polish.Vendor != Nokia)&quot; /&gt;</code></td>
 	</tr>
 	</table>
 	<p><br/><br/><br/><br/><br/>&nbsp;</p>

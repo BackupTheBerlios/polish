@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
 <author/>
 <email/>
@@ -189,8 +189,6 @@
 <item url="s5/CVS/Entries" />
 <item url="s5/CVS/Repository" />
 <item url="s5/CVS/Root" />
-<item url="s5/bodybg.png" />
-<item url="s5/pretty.css~" />
 <item url="downloads/j2mepolish-1.2.3a.html" />
 <item url="docs/articles.html" />
 <item url="downloads/Seminar.J2MEPolish.Ausarbeitung.pdf" />
@@ -206,5 +204,9 @@
 <item url="downloads/j2mepolish-1.0-RC3.zip" />
 <item url="robert_virkus.asc" />
 <item url="s5/bodybg.gif" />
+<item upload_time="" url="docs/tour-cn.html" />
+<item url="images/j2mepolish-logo.gif" />
+<item url="images/lang-cn.png" />
+<item url="downloads/j2mepolish-1.2.3d.html" />
 </project>
 </webproject>

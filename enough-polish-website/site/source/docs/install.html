@@ -152,6 +152,7 @@ You will find the created J2ME application files in the &quot;dist&quot; folder 
 </p>
 
 <h2 id="netbeans">Integrating J2ME Polish with NetBeans</h2>
+<h3 id="netbeans3">NetBeans 3.6</h3>
 <p>For integrating J2ME Polish with NetBeans mount the installation directory 
 of your J2ME Polish installation, right-click the &quot;bsample/uild.xml&quot; file and choose &quot;Execute&quot;.
 </p>
@@ -176,7 +177,17 @@ of your J2ME Polish installation, right-click the &quot;bsample/uild.xml&quot; f
 	want to. You can find it in the &quot;sample/src&quot; directory (in the package &quot;de.enough.polish.example&quot;).
 	</li>
 </ul>
-
+<h3 id="netbeans4">NetBeans 4.x</h3>
+<p>
+For integrating J2ME Polish with NetBeans 4.0 create a new project and copy the sample project from ${polish.home}/sample into your new project with a file-manager. Right-click the build.xml and choose &quot;Run Target&quot; &gt; &quot;j2mepolish&quot; for running the example. 
+</p>
+<ul>
+ <li>Create a new project: Go to &quot;File&quot; -&gt; &quot;New Project&quot; and select &quot;Mobile&quot; -&gt; &quot;Mobile Application&quot; as your project type. Give the project any name and choose any folder as the project's home. De-select the &quot;Create Hello MIDlet&quot;-option and select &quot;Finish&quot; to create the project.</li>
+ <li>Copy the sample project: Navigate to the &quot;${polish.home}/sample&quot; directory with your file-manager (e.g. Windows Explorer on Windows or Finder on Mac OS X). Select the &quot;resources&quot;, &quot;resources2&quot; and &quot;src&quot; folders as well as the &quot;build.xml&quot; file and copy all into the folder of your NetBeans project. Overwrite any existing files.</li>
+ <li>Return to NetBeans, right-click your new project in the &quot;Projects&quot; view and select &quot;Refresh Folders&quot;. You can now view the sample application in the &quot;de.enough.polish.example&quot; package.</li>
+ <li>Right-click your project again and select &quot;Properties&quot;. Go to &quot;Build&quot; and select &quot;Libraries and Resources&quot;. Select &quot;Add Jar/Zip&quot; and add the &quot;${polish.home}/import/enough-j2mepolish-client.jar&quot; file to your project.</li>
+ <li>Now switch to the &quot;Files&quot; view and right-click the &quot;build.xml&quot; file. Select &quot;Run Target&quot; &gt; &quot;Advanced&quot;. Write &quot;test, j2mepolish&quot; in the following dialog, so that the &quot;test&quot; target is executed first, followed by the &quot;j2mepolish&quot; target. J2ME Polish now executes and starts the WTK emulator.</li>
+</ul>
 
 <h2 id="antsetup">Setup and Configuration of Ant</h2>
 <p>

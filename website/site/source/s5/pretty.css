@@ -15,7 +15,7 @@ body {
 	background-position: fixed;
 	background-position: right bottom;
 	color: rgb(47,82,89);
-	font-size: 2em;
+	font-size: 1.5em;
 }
 .homelink:link, .homelink:visited {
 	color: white;

@@ -106,5 +106,13 @@
  	 <td>No</td>
 	 <td>The permissions which are useful for this application, e.g. <br/><code>optionalPermissions=&quot;javax.microedition.io.Connector.http&quot;</code>. The variable &quot;MIDlet-Permissions-Opt&quot; overrides this setting.</td>
 	</tr>
+	<tr><td>profile</td>
+ 	 <td>No</td>
+	 <td>Normally J2ME Polish is using the JavaPlatform capability of the current target device for determining the correct &quot;MicroEdition-Profile&quot; setting. You can override this by hardcoding the profile for all target devices. This is useful only in cases, when you determine device capabilities during the runtime of the application and want to deliver one application bundle for all target devices.</td>
+	</tr>
+	<tr><td>configuration</td>
+ 	 <td>No</td>
+	 <td>Normally J2ME Polish is using the JavaConfiguration capability of the current target device for determining the correct &quot;MicroEdition-Configuration&quot; setting. You can override this by hardcoding the configuration for all target devices. This is useful only in cases, when you determine device capabilities during the runtime of the application and want to deliver one application bundle for all target devices.</td>
+	</tr>
 	</table>
 <%include end.txt %>
