@@ -49,7 +49,7 @@ public class IdentifierRequirement extends Requirement {
 	 */
 	public IdentifierRequirement(String value) {
 		super(value, "Identifier");
-		this.identifiers = TextUtil.split(value, ',');
+		this.identifiers = TextUtil.splitAndTrim(value, ',');
 	}
 
 	/* (non-Javadoc)
