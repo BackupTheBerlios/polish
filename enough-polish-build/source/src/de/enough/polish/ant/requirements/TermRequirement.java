@@ -29,7 +29,6 @@ import java.util.HashMap;
 
 import de.enough.polish.Device;
 import de.enough.polish.preprocess.BooleanEvaluator;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Selects a device that fullfill a preprocessing term.</p>

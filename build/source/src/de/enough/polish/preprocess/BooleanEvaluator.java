@@ -258,8 +258,16 @@ public class BooleanEvaluator {
 					int numVar = 0;
 					int numLastVar = 0;
 					try {
-						numVar = CastUtil.getInt( var );
-						numLastVar = CastUtil.getInt( lastVar );
+						try {
+							numVar = CastUtil.getInt( var );
+						} catch (NumberFormatException e ) {
+							System.out.println("Warn: " + fileName + " line " + line + ": integer-variable [" + var + "] could not be parsed.");
+						}
+						try {
+							numLastVar = CastUtil.getInt( lastVar );
+						} catch (NumberFormatException e ) {
+							System.out.println("Warn: " + fileName + " line " + line + ": integer-variable [" + lastVar + "] could not be parsed.");
+						}
 					} catch (Exception e) {
 						throw new BuildException(fileName + " line " + line 
 								+ ": unable to parse integer-arguments [" + symbol + "] or [" 
