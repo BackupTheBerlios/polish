@@ -155,7 +155,12 @@ implements ActionListener
 			JButton button = (JButton) source;
 			String operant = button.getText();
 			String text = this.editor.getText();
-			this.editor.setText( text + " " + this.currentOperator + " " + operant );
+			boolean isNumeric = TextUtil.isNumeric( text );
+			if (isNumeric || text.length() == 0) {
+				this.editor.setText( operant );
+			} else {
+				this.editor.setText( text + " " + this.currentOperator + " " + operant );
+			}
 		}
 	}
 	

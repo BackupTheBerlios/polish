@@ -477,7 +477,7 @@ implements DataEditorUI, ActionListener
 		}
 		try {
 			this.dataManager.saveData( this.dataFile );
-			this.statusBar.setText("saved " + this.dataFile.getName() );
+			this.statusBar.setText("saved " + this.dataFile.getName()  + " (" + this.dataFile.length() + " bytes)");
 			updateTitle();
 		} catch (Exception e) {
 			showErrorMessage( e );
@@ -490,7 +490,7 @@ implements DataEditorUI, ActionListener
 			try {
 				this.dataManager.saveData(file);
 				this.dataFile = file;
-				this.statusBar.setText("saved " + file.getName() );
+				this.statusBar.setText("saved " + file.getName() + " (" + file.length() + " bytes)");
 				updateTitle();
 			} catch (Exception e) {
 				showErrorMessage( e );

@@ -206,5 +206,34 @@ public final class TextUtil {
 		return result;
 	}
 
+	/**
+	 * Checks whether the given input string is numeric.
+	 * 
+	 * @param text the text
+	 * @return true when the given text represents an integer or double value
+	 */
+	public static boolean isNumeric(String text) {
+		char[] chars = text.toCharArray();
+		if (chars.length == 0) {
+			return false;
+		}
+		int start = 0;
+		if (chars[0] == '-') {
+			start = 1;
+		}
+		boolean dotEncountered = false;
+		for (int i = start; i < chars.length; i++) {
+			char c = chars[i];
+			if ( Character.isDigit(c) ) {
+				// that's okay
+			} else if (!dotEncountered && c == '.') {
+				dotEncountered = true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 }

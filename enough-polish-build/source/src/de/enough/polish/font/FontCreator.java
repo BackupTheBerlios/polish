@@ -28,8 +28,6 @@ package de.enough.polish.font;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Event;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -63,7 +61,6 @@ implements ActionListener
 {
 
 	private JMenuItem menuSave;
-	private JMenuItem menuOpen;
 	private JMenuItem menuQuit;
 	private JMenuItem menuSaveAs;
 	private JMenuItem menuOpenTrueTypeFont;
@@ -168,11 +165,11 @@ implements ActionListener
 		return menu;
 	}
 	
+	/*
 	private JMenu createEditMenu() {
 		// create edit-menu:
 		JMenu menu = new JMenu( "Edit" );
 		menu.setMnemonic('e');
-		/*
 		JMenuItem item = new JMenuItem( "Add Entry", 'a' );
 		item.setAccelerator( KeyStroke.getKeyStroke( 'N', Event.CTRL_MASK + Event.SHIFT_MASK ));
 		item.addActionListener( this );
@@ -198,9 +195,9 @@ implements ActionListener
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuAddType = item;
-		*/
 		return menu;
 	}
+		*/
 
 	public static void main(String[] args) {
 		FontCreator creator = new FontCreator();
@@ -238,7 +235,7 @@ implements ActionListener
 	 */
 	private void savePngImageAs() throws IOException {
 		if (this.trueTypeViewer != null) {
-			File file = openFile( ".bmf", false );
+			File file = openFile( ".png", false );
 			if (file != null) {
 				this.trueTypeViewer.savePngFile(file);
 				this.statusBar.setText( "saved " + file.getName() );
@@ -258,6 +255,7 @@ implements ActionListener
 		if (this.trueTypeViewer != null) {
 			this.trueTypeViewer.saveBitMapFont( this.bitMapFontFile );
 			updateTitle();
+			this.statusBar.setText( "saved " + this.bitMapFontFile.getName() + " (" + this.bitMapFontFile.length() + " bytes)" );
 		}
 	}
 
