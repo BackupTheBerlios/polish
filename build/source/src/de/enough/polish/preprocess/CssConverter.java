@@ -257,9 +257,9 @@ public class CssConverter extends Converter {
 		}
 		
 		// register referenced and dynamic styles:
+		codeList.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
 		if (this.referencedStyles.size() > 0) {
 			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
-			codeList.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
 			codeList.add("\tstatic { \t//register referenced and dynamic styles:");
 			for (int i = 0; i < styles.length; i++) {
 				Style style = styles[i];
