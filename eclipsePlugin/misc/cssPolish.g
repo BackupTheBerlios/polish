@@ -16,6 +16,7 @@ options {
 {
 int tabWidth = 1;
 int offset = 0;
+int i = 1;
 
 public void setTabWidth(int tabWidth){
 	if(tabWidth < 1){
@@ -26,21 +27,35 @@ public void setTabWidth(int tabWidth){
 	
 public void tab(){
 	setColumn(getColumn()+4); //TODO: Acquire the concrete tabwidth from the PropertyStore.
-	this.offset = this.offset + 4;
+	//this.i = this.i + 4;
 }
 
+// TODO:Optimize token handling. remove line, column and text information. Provide only offset and length.
 protected Token makeToken(int t) {
     Token token = super.makeToken(t);
     if (token != Token.badToken) {
         ((OffsetToken)token).setOffset(this.offset);
+        //System.out.print("makeToken():"+this.offset+":");
+        //System.out.println(token.getType());
+        
+        this.offset = this.offset + i;
+        this.i = 0;
+        
     }
     return token;
 }
 
 public void consume() throws CharStreamException {
 	super.consume();
-	this.offset = this.offset + 1;
+	this.i++;
+	//this.offset = this.offset + 1;
 }
+/*
+public void newline(){
+	super.newl3ine();
+	this.offset++;
+}
+*/
 public void panic(String s) {
     System.err.println("CharScanner: Panic:"+s);
 }
@@ -73,7 +88,7 @@ options {
 
     
 WHITESPACE :	(' '
-	|	'\t'
+	|	'\t' //{this.offset++;} //TODO: mabye we do not need to advance the offset here because of consume.
 	|	'\n' {newline();}
 	|	'\r')
 		{ _ttype = Token.SKIP; }
@@ -112,6 +127,12 @@ options{
 public boolean isExtendToken(Token e) {
     return "extends".equalsIgnoreCase(e.getText());
 }
+
+public void configure(OffsetAST node,Token token) {
+    node.setOffset(((OffsetToken)token).getOffset());
+    node.setLength(token.getText().length());
+}
+
 }
 
 styleSheet
@@ -119,15 +140,15 @@ styleSheet
 	;
 	
 styleSection
-	: styleName:NAME {}(e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (sectionOrAttributeName:NAME! {sectionOrAttributeName_AST.setOffset(((OffsetToken)sectionOrAttributeName).getOffset());} (section:sectionBody[#sectionOrAttributeName] | attributeValuePair:attributeValueBody[#sectionOrAttributeName]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);styleSection_AST.setOffset(((OffsetToken)styleName).getOffset());}
+	: styleName:NAME {configure(styleName_AST,styleName);} (e:NAME! {isExtendToken(e)}? parent:NAME)? L_CURLY_BRACKET! (sectionOrAttributeName:NAME! {sectionOrAttributeName_AST.setOffset(((OffsetToken)sectionOrAttributeName).getOffset());} (section:sectionBody[#sectionOrAttributeName] | attributeValuePair:attributeValueBody[#sectionOrAttributeName]))* R_CURLY_BRACKET! {#styleSection = #([STYLE_SECTION,"StyleSection"],#styleSection);styleSection_AST.setOffset(((OffsetToken)styleName).getOffset());}
 	;
 
 sectionBody[OffsetAST sectionName]
-	: L_CURLY_BRACKET! (attributeName:NAME! attributeValueBody[#attributeName])* R_CURLY_BRACKET! {sectionBody_AST.setOffset(sectionName.getOffset());#sectionBody = #([SECTION,"Section"],#sectionName,#sectionBody);}
+	: L_CURLY_BRACKET! (attributeName:NAME! {attributeName_AST.setOffset(((OffsetToken)attributeName).getOffset());} attributeValueBody[#attributeName])* R_CURLY_BRACKET! {#sectionBody = #([SECTION,"Section"],#sectionName,#sectionBody);sectionBody_AST.setOffset(sectionName.getOffset());}
 	;
 	
 attributeValueBody[OffsetAST attributeName]
-	: string:ARBITRARY_STRING {attributeValueBody_AST.setOffset(attributeName.getOffset());#attributeValueBody = #([ATTRIBUTE_VALUE_PAIR,"AttributeValuePair"], #attributeName, #string);} // try to rename to attributeValuePair
+	: string:ARBITRARY_STRING {#attributeValueBody = #([ATTRIBUTE_VALUE_PAIR,"AttributeValuePair"], #attributeName, #string);attributeValueBody_AST.setOffset(attributeName.getOffset());string_AST.setOffset(((OffsetToken)string).getOffset());}
 	; 
 
 
@@ -136,7 +157,7 @@ attributeValueBody[OffsetAST attributeName]
 
 class OffsetWalker extends TreeParser;
 options{
-	k = 2;
+	k = 1; //Maybe we need 2 here because of the ambigutiy between all rules starting with NAME. 
 	ASTLabelType = "OffsetAST";
 }
 
@@ -145,7 +166,7 @@ styleSheet
 	;
 
 styleSection
-	: #(STYLE_SECTION name:NAME (NAME)? (att | section)+) {System.out.println("StyleSectionOffset:"+name.getOffset());}
+	: #(STYLE_SECTION name:NAME (NAME)? (att | section)+) {System.out.println("StyleSectionOffset:"+styleSection_AST_in.getOffset());}
 	;
 
 section
@@ -155,4 +176,5 @@ section
 att
 	: #(ATTRIBUTE_VALUE_PAIR name:NAME ARBITRARY_STRING) {System.out.println("AttributeOffset:"+name.getOffset());}
 	;
+	
 	
