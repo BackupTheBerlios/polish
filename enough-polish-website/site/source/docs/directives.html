@@ -314,7 +314,7 @@ System.out.println("unable to load something: " + e.getMessage() );
 Following debug levels are predefined:
 &quot;debug&quot;, &quot;info&quot;, &quot;warn&quot;, &quot;error&quot; and &quot;fatal&quot;. The specific level for a class can be defined with the <debug> element of the J2ME&nbsp;Polish-task:
 <pre>
-&lt;debug enable=&quot;true&quot; useGui=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot;&gt;
+&lt;debug showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot; if=&quot;test&quot;  &gt;
 	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; /&gt;
 	&lt;filter pattern=&quot;com.company.package.MyClass&quot; level=&quot;debug&quot; /&gt;
 &lt;/debug&gt;

@@ -397,6 +397,35 @@ The following example uses a green shadow border:
 }
 </pre></p>
 
+<h3 id="topbottomleftrightborder">Top, Bottom, Left and Right Border</h3>
+<p>
+These border paints a simple border on one side the corresponding item. Following attributes are supported:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>type</td>
+	 <td>Yes</td>
+	 <td>The type needs to be &quot;top&quot;, &quot;bottom&quot;, &quot;left&quot; or &quot;right&quot;.</td>
+	</tr>
+	<tr><td>color</td>
+	 <td>Yes</td>
+	 <td>The color of the border, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr><td>width</td>
+	 <td>No</td>
+	 <td>The width of the border in pixels. Defaults to 1.</td>
+	</tr>
+</table>
+<p>
+The following example uses a green border on the bottom of the title:
+<pre>
+title {
+	border-type: bottom;
+	border-color: green;
+	border-width: 2;
+}
+</pre></p>
+
 <h3 id="circleborder">Circle Border</h3>
 <p>
 The circle border paints a round or elliptical border and supports following attributes:
@@ -468,6 +497,9 @@ All screens have a title and one or several embedded GUI items. In a Form or Lis
 	 <td>The style for the commands in the menu. When not defined, the menu-style will be used.</td>
 	</tr>
 </table>
+<p>
+Please refer to the <a href="#menubar">Menubar section</a> for more info about designing the menu bar.
+</p>
 <h3 id="screenattributes">Additional Attributes for Screens</h3>
 <p>
 Each screen itself can have some additional attributes:</p>
@@ -1117,5 +1149,75 @@ A Ticker scrolls a text over the current screen. In J2ME Polish the ticker is si
 	 <td>The number of pixels by which the ticker is shifted at each update. Defaults to 2 pixels.</td>
 	</tr>
 </table>
+
+<h2 id="menubar">The Menu Bar</h2>
+<p>
+In the menu bar the commands reside that have been added to a screen. 
+This bar can be designed using the predefined &quot;menu&quot; style. The font-settings in this style are used to render the actual commands, and the CSS attrbute &quot;menubar-color&quot; defines the color of the menu-bar. The color can have any setting including &quot;transparent&quot;, which is useful when the background of the corresponding screen should be shown. The &quot;menubar-color&quot; defaults to white by the way. When this attribute is also defined in a screen-style, it will override the setting in the &quot;menu&quot; style for the corresponding screen. Let me demonstrate:
+<pre>
+menu {
+	padding: 5;
+	background: none;
+	/* The design of the commands in the menu-bar: */
+	font-style: bold; 
+	font-face: proportional; 
+	font-size: small; 
+	font-color: red;
+	/* The color of the menubar background:  */
+	menubar-color: black;
+}
+
+.myScreenStyle {
+	background-image: url( bg.png );
+	/* use a transparent menubar for screens with this style,
+         so that the bg.png image is shown in the menubar as well: */
+	menubar-color: transparent;
+}
+</pre>
+</p>
+<p>
+When there is more than one item available in the menu, an &quot;Options&quot; menu will be shown automatically, which opens the real menu when pressed (like shown in the following figures).
+</p>
+<p>
+<img src="../images/screenshot-example-enough.png" alt="The closed menu." />
+<img src="../images/screenshot-example-enough-menu.png" alt="The opened menu." />
+</p>
+<p>
+The items in the opened menu are designed using the predefined &quot;menuitem&quot; style. The background and the border of the opened menu is designed using the &quot;menu&quot; style. You can change the names of the &quot;Options&quot;, &quot;Select&quot; and &quot;Cancel&quot; commands by the way, this is explained in the <a href="localization.html#localization-gui">localization chapter</a>.
+</p>
+<!--
+<p>
+If you want to change the dimensions and margins of the menu-bar, you need to specify preprocessing variables within the build.xml.
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Variable&nbsp;&nbsp;</th><th>Default&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>polish.Menu.MarginBottom</td>
+	 <td>0</td>
+	 <td>The number of pixels from the bottom of the screen to the command in the menu bar.</td>
+	</tr>
+	<tr>
+	 <td>polish.Menu.MarginTop</td>
+	 <td>2</td>
+	 <td>The margin in pixels from the top to the command in the menu bar.</td>
+	</tr>
+	<tr>
+	 <td>polish.Menu.MarginLeft</td>
+	 <td>2</td>
+	 <td>The margin in pixels from the left to the command in the menu bar.</td>
+	</tr>
+	<tr>
+	 <td>polish.Menu.MarginRight</td>
+	 <td>2</td>
+	 <td>The margin in pixels from the right to the command in the menu bar.</td>
+	</tr>
+</table>
+<p>
+The following example increases the bottom margin to 3 pixels:
+<pre>
+&lt;variable name=&quot;polish.Menu.MarginBottom&quot; value=&quot;3&quot; /&gt;
+</pre>
+</p>
+-->
 
 <%include end.txt %>

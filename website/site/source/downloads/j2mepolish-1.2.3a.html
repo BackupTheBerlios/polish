@@ -1,11 +1,118 @@
 <%define inDownloadSection %>
 <%set basedir = ../ %>
-<%set title = J2ME Polish: Download J2ME Polish 1.2.3 %>
+<%set title = J2ME Polish: Download J2ME Polish 1.2.3a %>
 <%include start.txt %>
 
 	<div id="content">
-	<h1>J2ME Polish 1.2.3</h1>
+	<h1>J2ME Polish 1.2.3 a</h1>
 	<%index %>
+	<h2 id="improvements123">Improvements of J2ME Polish 1.2.3a</h2>
+	<p>
+	J2ME Polish 1.2.3a is a small update with following bugfixes and improvements:
+	</p>
+	<h3 id="bugfixes">Bug Fixes</h3>
+	<ul>
+	<li><b>Automatic Stacktrace Resolving</b>: 
+		Under Windows the automatic resolver of stacktraces got stuck when the 
+		jad decompiler issued more than 40 lines of errors.
+		<hr />
+	</li>
+	<li><b>polish.TextField.useDirectInput</b>: 
+		Setting that preprocessing variable resulted in a 
+		compile error.
+		<hr />
+	</li>
+	<li><b>compilerModePreverify</b>: 
+		The preverifying in the compiler-only mode did not work
+		correctly.
+		<hr />
+	</li>
+	<li><b>Form.set()</b>: 
+		Form.set() and Form.add() did not trigger a repaint.
+	</li>
+	</ul>
+	<h3 id="improvements">Improvements</h3>
+	<ul>
+	<!--
+	<li><b>Menu Bar</b>: 
+		The margins of the menu bar can now be set with the following preprocessing 
+		variables: polish.Menu.MarginBottom, polish.Menu.MarginTop, polish.Menu.MarginLeft, 
+		polish.Menu.MarginRight - the default value is 2 pixels for each margin 
+		but the polish.Menu.MarginBottom (which is 0 by default).
+<pre>
+&lt;variable name=&quot;polish.Menu.MarginBottom&quot; value=&quot;3&quot; /&gt;
+</pre>
+		<hr />
+	</li>
+	-->
+		<li><b>Obfuscator.useDefaultPackage</b>: 
+		J2ME Polish can now move all classes to the default package
+		for you. This includes the MIDlet-classes as well and can result
+		in a smaller jar-size. Please note that you are responsible for
+		preventing name-clashes of classes. You do not need to adjust
+		your &lt;midlet&gt;-settings, this is done automatically by J2ME Polish.
+
+<pre>
+&lt;obfuscator name=&quot;ProGuard&quot; useDefaultPackage=&quot;true&quot; unless=&quot;test&quot; /&gt;
+</pre>
+		<hr />
+	</li>
+	<li><b>New Borders</b>: 
+		you can now use the additional border-types &quot;bottom&quot;, &quot;top&quot;, 
+		&quot;left&quot; and &quot;right&quot;, which support the same attribute as the &quot;simple&quot; border, 
+		for example:
+
+<pre>
+focused {
+	font-color: red;
+	border {
+		type: bottom;
+		color: red;
+		width: 2;
+	}
+}
+</pre>
+		<hr />
+	</li>
+	<!--
+	<li><b>Image-Background</b>: 
+		The image-background can now be aligned as well, which
+		can be useful for gradient backgrounds. You can use the 
+		normal layout-terminology, e.g. &quot;left | center&quot;, &quot;h-center | v-center&quot;
+		and so on. Default layout is centered.
+<pre>
+.myStyle {
+	font-color: red;
+	background {
+		type: image;
+		image: url( bg.png );
+		repeat: repeat-y;
+		layout: left;
+	}
+}
+</pre>
+		<hr />
+	</li>
+	-->
+	<li><b>Display.setCurrentItem( Item )</b>: 
+		Display.setCurrentItem( Item ) is now automatically resolved
+		by J2ME Polish and can be used for MIDP/1.0 as well as MIDP/2.0
+		phones if you use the J2ME Polish GUI.
+		<hr />
+	</li>
+	<li><b>&lt;obfuscator&gt; and &lt;debug&gt;</b>: 
+		The &lt;obfuscator&gt;- and &lt;debug&gt;-elements do not need
+		the &quot;enable&quot; attribute any more - this is now always true and
+		is deprecated. Please use the &quot;if&quot; and &quot;unless&quot; attributes in
+		case you need to control those elements from now on.
+		<hr />
+	</li>
+	<li><b>Thanks</b>: for this release go to
+		Andrew Emmons, Thomas Kraft, Milosz Weckowski, 
+		Philipp Stolze, Eran and Fernando Gomes.
+		<hr />
+	</li>
+	</ul>
 	<h2 id="improvements123">Improvements of J2ME Polish 1.2.3</h2>
 	<p>
 	J2ME Polish 1.2.3 brings a full screen UI for all MIDP/2.0 phones,
@@ -188,8 +295,11 @@
 
 <h2 id="download">Download</h2>
 	<p>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3.jar">I accept the above rules (download the full installer: 7.421.543 bytes).</a><br/>
-	   	<a href="../index.html">I do NOT accept the above rules.</a>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3a.jar">I accept the above rules (download the full installer: 7.421.543 bytes).</a><br/>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3a.zip">I accept the above rules (download only the update).</a><br/>
+	   	<a href="../index.html">I do NOT accept the above rules.</a><br />
+		Start the installation by calling <code>java -jar j2mepolish-1.2.3a.jar</code>
+		from the commandline or by double-clicking the file.
 	</p>
 
 	<h2 id="installationproblems">Trouble Shooting</h2>
@@ -197,12 +307,11 @@
 	If you have installation problems, please make sure that you have downloaded
 	the complete package. You can start the installation either by double-clicking
 	the file or by calling &quot;java -jar j2mepolish-[version].jar&quot; from the commandline.
+	<b>Do not simply extract the downloaded JAR file!</b>
 	</p>
 	<p>
 	When you are having installation problems under Windows XP, please use the
-	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_06)</a>. 
-	This update is officially recommended for security
-	reasons as well.
+	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_06 or 1.5.x)</a>. 
 	</p>	
 
 <%include end.txt %>

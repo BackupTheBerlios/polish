@@ -75,7 +75,7 @@ MIDlet
 Form, List, TextBox, Screen
 Item, Gauge, StringItem, ImageItem, IconItem, ChoiceGroup
 TextField, DateField
-Ticker
+Ticker, MenuBar
 
 
 #####################################
@@ -137,3 +137,4 @@ BitMapFont
 Font
 Presentation::tour
 Tools
+Articles

@@ -37,7 +37,7 @@
 &lt;!-- Definition of the J2ME Polish task:                      --&gt;
 &lt;taskdef name=&quot;j2mepolish&quot; 
 	    classname=&quot;de.enough.polish.ant.PolishTask&quot; 
-	    classpath=&quot;import/enough-j2mepolish-build.jar:import/jdom.jar:
+	    classpath=&quot;import/enough-j2mepolish-build.jar:import/jdom.jar: \
 	    	import/proguard.jar:import/retroguard.jar&quot;/&gt;
 
 	
@@ -119,11 +119,10 @@
 			 value=&quot;J2ME Polish&quot; /&gt;
 		  &lt;/variables&gt;
 		  &lt;!-- obfuscator: don't obfuscate when the test-property is true --&gt;
- 		  &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; 
-		   name=&quot;ProGuard&quot; /&gt;
+ 		  &lt;obfuscator unless=&quot;test&quot; name=&quot;ProGuard&quot; /&gt;
 		  &lt;!-- debug settings: only include debug setting when the test-
 			 property is true --&gt;
-		  &lt;debug if=&quot;test&quot; enable=&quot;true&quot; 
+		  &lt;debug if=&quot;test&quot; 
 		   showLogOnError=&quot;true&quot; verbose=&quot;true&quot; 
 		   level=&quot;error&quot;&gt;
 			&lt;filter pattern=&quot;de.enough.polish.example.*&quot; 

@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-<project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
+<project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
 <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
 <author/>
 <email/>
@@ -86,7 +86,6 @@
 <item modified_time="1084203740" url="images/screenshot-gauge-plain.png" />
 <item modified_time="1085054226" url="images/screenshot-input-line.png" />
 <item modified_time="1084993063" url="images/screenshot-input.png" />
-<item modified_time="1083949505" url="images/title-background.png" />
 <item modified_time="1095272043" url="atoz.html" />
 <item modified_time="1086717622" url="contact.html" />
 <item modified_time="1095271991" url="documentation.html" />
@@ -192,5 +191,15 @@
 <item url="s5/CVS/Root" />
 <item url="s5/bodybg.png" />
 <item url="s5/pretty.css~" />
+<item url="downloads/j2mepolish-1.2.3.a.html" />
+<item url="downloads/j2mepolish-1.2.3a.html" />
+<item url="docs/articles.html" />
+<item url="downloads/Seminar.J2MEPolish.Ausarbeitung.pdf" />
+<item url="downloads/Seminar.J2MEPolish.Praesentation.pdf" />
+<item url="images/lang-de.png" />
+<item url="images/lang-en.png" />
+<item url="images/screenshot-example-enough-small.png" />
+<item url="images/screenshot-example-pink-small.png" />
+<item url="images/screenshot-example-roadrunner-small.png" />
 </project>
 </webproject>

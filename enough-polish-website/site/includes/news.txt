@@ -3,6 +3,14 @@
 	<%index %>
 <%endif %>
 
+<p class="newsdate">2005-01-13:</p>
+<h2 id="1.2.3a">J2ME Polish 1.2.3a</h2>
+<p>
+	<a href="<%= newsbasedir %>downloads/j2mepolish-1.2.3a.html">J2ME Polish 1.2.3a</a> 
+	fixes some issues, contains new design possibilities and brings the 
+	ability to move all classes to the default package. 
+</p>
+
 <p class="newsdate">2004-12-20:</p>
 <h2 id="1.2.3">J2ME Polish 1.2.3</h2>
 <p>
@@ -19,7 +27,9 @@
 <h2 id="1.2.2">Pro J2ME Polish-Book</h2>
 <p>
 	The New Yorker publishing company <a href="http://www.apress.com" target="_blank">Apress</a>
-	is going to publish a book about J2ME Polish. Expected release date is May 2005!
+	is going to publish a book about J2ME Polish: 
+	<i>Pro J2ME Polish: From Professional to Expert</i>.
+	Expected release date is July 2005!
 </p>
 
 <p class="newsdate">2004-11-20:</p>
