@@ -97,6 +97,7 @@ implements ActionListener
 	private final JCheckBox optionNumbers;
 	private final JCheckBox optionSpace;
 	private final JCheckBox optionAntiAliasing;
+	private BufferedImage externalImage;
 
 	/**
 	 * @param fontFile
@@ -179,6 +180,7 @@ implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
+		this.externalImage = null;
 		if (source == this.sizeChooser) {
 			int selectedIndex = this.sizeChooser.getSelectedIndex();
 			String fontSizeStr = FONT_SIZES[ selectedIndex ];
@@ -305,6 +307,9 @@ implements ActionListener
 	}
 	
 	public BufferedImage createImage() {
+		if (this.externalImage != null) {
+			return this.externalImage;
+		}
 		String text = this.characterMap.getText();
 		if (text.length() == 0) {
 			return null;
@@ -373,5 +378,19 @@ implements ActionListener
 			}
 		}
 		return mixedCase;
+	}
+
+
+	/**
+	 * Sets the image in the given file.
+	 * 
+	 * @param file the file which contains the image
+	 * @throws IOException
+	 */
+	public void setImage(File file) 
+	throws IOException 
+	{
+		this.externalImage = ImageIO.read(file);
+		this.imageLabel.setIcon( new ImageIcon( this.externalImage ) );
 	}
 }

@@ -115,6 +115,8 @@
             <file src="../setup/bin/level.definition" targetdir="$INSTALL_PATH/bin" />
             <file src="../setup/bin/level1.data" targetdir="$INSTALL_PATH/bin" />
             <file src="../setup/bin/readme.txt" targetdir="$INSTALL_PATH/bin" />
+            <file src="../setup/bin/example.bmf" targetdir="$INSTALL_PATH/bin" />
+            <file src="../setup/bin/bmf.definition" targetdir="$INSTALL_PATH/bin" />
             <!-- mark Unix shell skripts as executable: -->
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor" stage="never" os="unix" />
             <executable targetfile="$INSTALL_PATH/bin/fonteditor" stage="never" os="unix" />

@@ -29,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Event;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +46,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
@@ -89,6 +92,8 @@ implements DataEditorUI, ActionListener
 	private JMenuItem menuMoveDownEntry;
 	private JMenuItem menuAddType;
 	private final JLabel statusBar;
+	private final JTextField descriptionField;
+	private final JTextField extensionField;
 	private File definitionFile;
 	private File dataFile;
 	private final DataManager dataManager;
@@ -112,13 +117,29 @@ implements DataEditorUI, ActionListener
 		DataEntry entry = new DataEntry( "noname", DataType.BYTE );
 		this.dataManager.addDataEntry( entry );
 		setSize( 900, 600 );
+		this.descriptionField = new JTextField();
+		this.descriptionField.addActionListener( this );
+		this.extensionField = new JTextField();
+		this.extensionField.addActionListener( this );
+		
 		// add data-view:
 		this.dataTableModel = new DataTableModel( this.dataManager, this );
 		this.dataView = new DataView( this, this.dataTableModel, this.dataManager );
 		this.dataView.setPreferredScrollableViewportSize(new Dimension(900, 550));
 		JScrollPane scrollPane = new JScrollPane(this.dataView);
 		Container contentPane = getContentPane();
-		contentPane.add( scrollPane );
+		contentPane.setLayout( new BorderLayout() );
+		JPanel descriptionPanel = new JPanel( new BorderLayout() );
+		descriptionPanel.add( new JLabel("description: "), BorderLayout.WEST );
+		descriptionPanel.add( this.descriptionField, BorderLayout.CENTER );
+		JPanel extensionPanel = new JPanel( new BorderLayout() );
+		extensionPanel.add(   new JLabel("extension:   "), BorderLayout.WEST );
+		extensionPanel.add( this.extensionField, BorderLayout.CENTER );
+		JPanel definitionPanel = new JPanel( new GridLayout( 2, 1));
+		definitionPanel.add( descriptionPanel );
+		definitionPanel.add( extensionPanel );
+		contentPane.add( definitionPanel, BorderLayout.NORTH );
+		contentPane.add( scrollPane, BorderLayout.CENTER );
 		this.statusBar = new JLabel(" ");
 		contentPane.add( this.statusBar, BorderLayout.SOUTH );
 		updateTitle();
@@ -283,6 +304,11 @@ implements DataEditorUI, ActionListener
 				addDataType();
 			} else if (source == this.menuGenerateCode ) {
 				generateCode();
+			} else if (source == this.descriptionField ) {
+				this.dataManager.setDescription( this.descriptionField.getText() );
+			} else if (source == this.extensionField ) {
+				this.dataManager.setExtension( this.extensionField.getText() );
+				this.extensionField.setText( this.dataManager.getExtension() );
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -395,9 +421,14 @@ implements DataEditorUI, ActionListener
 	 */
 	private void newDefinition() {
 		this.dataManager.clear();
+		this.descriptionField.setText( null );
+		this.extensionField.setText( null );
 		DataEntry entry = new DataEntry( "noname", DataType.BYTE );
 		this.dataManager.addDataEntry( entry );
 		this.dataTableModel.refresh( this.dataView );
+		this.definitionFile = null;
+		this.dataFile = null;
+		updateTitle();
 	}
 
 	/**
@@ -422,6 +453,8 @@ implements DataEditorUI, ActionListener
 			return;
 		} 
 		try {
+			this.dataManager.setDescription( this.descriptionField.getText() );
+			this.dataManager.setExtension( this.extensionField.getText() );
 			this.dataManager.saveDefinition(this.definitionFile);
 			this.statusBar.setText( "saved " + this.definitionFile.getName() );
 			updateTitle();
@@ -437,9 +470,8 @@ implements DataEditorUI, ActionListener
 		File file = openFile( ".definition", false );
 		if (file != null ) {
 			try {
-				if (!file.getName().endsWith(".definition")) {
-					file = new File( file.getAbsolutePath() + ".definition" );  
-				}
+				this.dataManager.setDescription( this.descriptionField.getText() );
+				this.dataManager.setExtension( this.extensionField.getText() );
 				this.dataManager.saveDefinition( file );
 				this.definitionFile = file;
 				this.statusBar.setText("saved " + file.getName() );
@@ -459,6 +491,8 @@ implements DataEditorUI, ActionListener
 				this.dataTableModel.refresh( this.dataView );
 				this.definitionFile = file;
 				this.dataFile = null;
+				this.descriptionField.setText( this.dataManager.getDescription() );
+				this.extensionField.setText( this.dataManager.getExtension() );
 				updateTitle();
 				this.statusBar.setText("Loaded " + file.getName() );
 				this.createCodeDialog = null;
@@ -499,7 +533,7 @@ implements DataEditorUI, ActionListener
 	}
 	
 	private void openData() {
-		File file = openFile( null, true );
+		File file = openFile( this.extensionField.getText(), true );
 		if (file != null) {
 			try {
 				this.dataManager.loadData(file);
@@ -529,15 +563,25 @@ implements DataEditorUI, ActionListener
 		String title;
 		if (this.definitionFile != null) {
 			if (this.dataFile != null) {
-				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName() + " - " + this.dataFile.getName();
+				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName();
+				if (this.dataManager.isDefinitionChanged()) {
+					title += "*";
+				}
+				title += " - " + this.dataFile.getName();
+				if (this.dataManager.isDataChanged()) {
+					title += "*";
+				}
 			} else {
 				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName();
+				if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
+					title += " *";
+				}
 			}
 		} else {
 			title = "J2ME Polish: Binary Data Editor";
-		}
-		if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
-			title += " *";
+			if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
+				title += " *";
+			}
 		}
 		setTitle( title );
 	}
@@ -595,6 +639,8 @@ implements DataEditorUI, ActionListener
 						File defFile = new File( definitionPath );
 						if (defFile.exists()) {
 							this.dataManager.loadDefinition(defFile);
+							this.descriptionField.setText( this.dataManager.getDescription() );
+							this.extensionField.setText( this.dataManager.getExtension() );
 							this.definitionFile = defFile;
 							this.currentDirectory = this.definitionFile.getParentFile();
 							String dataPath = setting.getAttributeValue("dataPath");

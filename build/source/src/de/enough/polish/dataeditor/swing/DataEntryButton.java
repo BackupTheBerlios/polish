@@ -60,8 +60,10 @@ public class DataEntryButton extends JButton {
 	
 	public void setEntry( DataEntry entry ) {
 		this.entry = entry;
+		/*
 		String[] data = entry.getDataAsString();
 		setText( data );
+		*/
 	}
 
 	public void setText( String[] data ) {

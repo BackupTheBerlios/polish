@@ -235,7 +235,7 @@ public class DataEntry {
 		}
 	}
 	
-	public Object getData() {
+	public Object[] getData() {
 		return this.data;
 	}
 	
@@ -292,5 +292,17 @@ public class DataEntry {
 		for (int i = 0; i < this.count; i++) {
 			this.type.saveData( this.data[i], out );
 		}
+	}
+
+	/**
+	 * Sets the data directly.
+	 * 
+	 * @param data the new data
+	 */
+	public void setData(Object data) {
+		if (this.count != 1) {
+			throw new IllegalStateException("The entry " + this.name + " does not allow a single data-value to be set. Adjust the count of this entry to 1.");
+		}
+		this.data = new Object[]{ data };
 	}
 }

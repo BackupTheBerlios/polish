@@ -25,12 +25,15 @@
  */
 package de.enough.polish.dataeditor;
 
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.jdom.Element;
 
@@ -58,7 +61,8 @@ public class DataType {
 	public static final int ASCII_STRING_ID = 8;
 	public static final int UTF_STRING_ID = 9;
 	public static final int BOOLEAN_ID = 10;
-	public static final int USER_DEFINED_ID = 11;
+	public static final int PNG_IMAGE_ID = 11;
+	public static final int USER_DEFINED_ID = 12;
 
 	public static final DataType BYTE = new DataType("byte", BYTE_ID, 1);
 	public static final DataType UNSIGNED_BYTE = new DataType("unsigned byte", UNSIGNED_BYTE_ID, 1);
@@ -69,6 +73,8 @@ public class DataType {
 	public static final DataType ASCII_STRING = new DataType("ASCII-String", ASCII_STRING_ID, -1);
 	public static final DataType UTF_STRING = new DataType("UTF-String", UTF_STRING_ID, -1);
 	public static final DataType BOOLEAN = new DataType("boolean", BOOLEAN_ID, 1);
+	public static final DataType PNG_IMAGE = new DataType("PNG-Image", PNG_IMAGE_ID, -1);
+
 
 	private final String name;
 	private final int type;
@@ -190,6 +196,8 @@ public class DataType {
 				return "";
 			case UTF_STRING_ID:
 				return "";
+			case PNG_IMAGE_ID:
+				return "Embedded PNG Image (should be last entry for MIDP/1.0 devices)";
 			case USER_DEFINED_ID:
 				Object[] results = new Object[ this.subtypes.length ];
 				for (int i = 0; i < this.subtypes.length; i++) {
@@ -216,6 +224,8 @@ public class DataType {
 					}
 				}
 				return buffer.toString();
+			case PNG_IMAGE_ID: 
+				return getDefaultValue().toString();
 			default: 
 				return data.toString();
 		}
@@ -336,7 +346,7 @@ public class DataType {
 	}
 	
 	public static DataType[] getDefaultTypes() {
-		return new DataType[]{ BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INTEGER, LONG, BOOLEAN, ASCII_STRING, UTF_STRING };
+		return new DataType[]{ BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INTEGER, LONG, BOOLEAN, ASCII_STRING, UTF_STRING, PNG_IMAGE };
 	}
 	
 	/**
@@ -367,6 +377,8 @@ public class DataType {
 				return "String";
 			case UTF_STRING_ID:
 				return "String";
+			case PNG_IMAGE_ID:
+				return "javax.microedition.lcdui.Image";
 			case USER_DEFINED_ID:
 				return this.name;
 			default: 
@@ -512,6 +524,36 @@ public class DataType {
 					buffer.append(" = in.readUTF();\n");
 				}
 				break;
+			case PNG_IMAGE_ID:
+				if (isArray) {
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = new javax.microedition.lcdui.Image[ ").append( count ).append(" ];\n");
+					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
+					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readUTF();\n");
+					buffer.append("\t\t//#ifdef polish.midp2\n");
+					buffer.append( "\t\t\tthis." ).append( paramName );
+					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( in );\n");
+					buffer.append("\t\t//#else\n");
+					buffer.append( "\t\t\ttint " ).append( paramName ).append("Available = in.available();\n");
+					buffer.append( "\t\t\ttbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
+					buffer.append( "\t\t\ttin.read(" ).append( paramName ).append("Buffer );\n");
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
+					buffer.append("\t\t//#endif\n");
+					buffer.append("\t\t}\n");
+				} else {
+					buffer.append("\t\t//#ifdef polish.midp2\n");
+					buffer.append( "\t\t\tthis." ).append( paramName );
+					buffer.append(" = javax.microedition.lcdui.Image.createImage( in );\n");
+					buffer.append("\t\t//#else\n");
+					buffer.append( "\t\t\ttint " ).append( paramName ).append("Available = in.available();\n");
+					buffer.append( "\t\t\ttbyte[] " ).append( paramName ).append("Buffer = new byte[ ").append( paramName ).append("Available];\n");
+					buffer.append( "\t\t\ttin.read(" ).append( paramName ).append("Buffer );\n");
+					buffer.append( "\t\tthis." ).append( paramName );
+					buffer.append(" = javax.microedition.lcdui.Image.createImage( ").append( paramName ).append("Buffer, 0, ").append( paramName ).append("Available );\n");
+					buffer.append("\t\t//#endif\n");
+				}
+				break;
 			case USER_DEFINED_ID:
 				if (isArray) {
 					buffer.append( "\t\tthis." ).append( paramName );
@@ -597,6 +639,9 @@ public class DataType {
 				return new String( chars );
 			case UTF_STRING_ID:
 				return in.readUTF();
+			case PNG_IMAGE_ID:
+				BufferedImage image = ImageIO.read(in);
+				return image;
 			case USER_DEFINED_ID:
 				Object[] values = new Object[ this.subtypes.length ];
 				for (int i = 0; i < values.length; i++) {
@@ -649,6 +694,10 @@ public class DataType {
 			case UTF_STRING_ID:
 				str = (String) value;
 				out.writeUTF(str);
+				break;
+			case PNG_IMAGE_ID:
+				BufferedImage image = (BufferedImage) value;
+				ImageIO.write(image, "png", out );
 				break;
 			case USER_DEFINED_ID:
 				Object[] values = (Object[]) value;

@@ -58,6 +58,7 @@ import de.enough.polish.util.FileUtil;
 public class DataManager {
 	
 	private String definitionName;
+	private String description;
 	private String dataName;
 	private final ArrayList types;
 	private final Map typesByName;
@@ -66,6 +67,9 @@ public class DataManager {
 	private DataEditorUI gui;
 	private boolean definitionDirtyFlag;
 	private boolean dataDirtyFlag;
+	private File dataFile;
+	private File definitionFile;
+	private String extension;
 
 	/**
 	 * 
@@ -96,6 +100,9 @@ public class DataManager {
 			throw new JDOMException( "Invalid definition-file: the root-element needs to be <data-definition>.");
 		}
 		clear();
+		// read description:
+		this.description = root.getChildTextTrim("description");
+		this.extension = root.getChildTextTrim("extension");
 		// init user-defined data-types:
 		List typesList = root.getChildren("type");
 		for (Iterator iter = typesList.iterator(); iter.hasNext();) {
@@ -114,6 +121,7 @@ public class DataManager {
 		if (this.gui != null) {
 			this.gui.signalUnchangedDefinition();
 		}
+		this.definitionFile = file;
 	}
 	
 	public void saveDefinition( File file )
@@ -124,6 +132,13 @@ public class DataManager {
 		// save start of file:
 		linesList.add( "<!-- created by J2ME Polish on " + (new Date()).toString() + " -->" );
 		linesList.add( "<data-definition>" );
+		// save description:
+		if (this.description != null) {
+			linesList.add( "\t<description>" + this.description + "</description>" );
+		}
+		if (this.extension != null) {
+			linesList.add( "\t<extension>" + this.extension + "</extension>" );			
+		}
 		// save user-defined types:
 		DataType[] dataTypes = getUserDefinedTypes();
 		for (int i = 0; i < dataTypes.length; i++) {
@@ -144,6 +159,7 @@ public class DataManager {
 		if (this.gui != null) {
 			this.gui.signalUnchangedDefinition();
 		}
+		this.definitionFile = file;
 	}
 	
 
@@ -164,6 +180,7 @@ public class DataManager {
 		if (this.gui != null) {
 			this.gui.signalUnchangedData();
 		}
+		this.dataFile = file;
 	}
 
 	public void loadData( File file )
@@ -180,6 +197,7 @@ public class DataManager {
 		if (this.gui != null) {
 			this.gui.signalUnchangedData();
 		}
+		this.dataFile = file;
 	}
 	
 	private void definitionChanged() {
@@ -303,6 +321,10 @@ public class DataManager {
 			DataType type = defaultTypes[i];
 			this.typesByName.put( type.getName(), type );			
 		}
+		this.dataName = null;
+		this.definitionName = null;
+		this.dataDirtyFlag = false;
+		this.definitionDirtyFlag = false;
 	}
 
 	public DataType[] getDataTypes() {
@@ -470,6 +492,59 @@ public class DataManager {
 	public void setEntryType( DataType type, DataEntry entry ) {
 		entry.setType(type);
 		definitionChanged();
+	}
+	
+	public void setDescription( String description ) {
+		this.description = description;
+		definitionChanged();
+	}
+	
+	public String getDescription() {
+		return this.description;
+	}
+	
+	public void setExtension( String extension ) {
+		if (extension != null) {
+			if (!extension.startsWith(".")) {
+				extension = "." + extension;
+			}
+		}
+		this.extension = extension;
+		definitionChanged();
+	}
+	
+	public String getExtension() {
+		return this.extension;
+	}
+
+	/**
+	 * Sets the data of an entry directly.
+	 * 
+	 * @param data the data-object for the entry.
+	 * @param entry the DataEntry
+	 */
+	public void setData(Object data, DataEntry entry) {
+		entry.setData( data );
+		dataChanged();
+	}
+
+	/**
+	 * Retrieves the current directory.
+	 * This is the directory into which the data is stored,
+	 * or when no data has been loaded/saved, the directory from
+	 * which the definition was loaded/saved.
+	 * When no definition has been loaded or saved, the current directory
+	 * for this application is returned.
+	 * @return
+	 */
+	public File getCurrentDirectory() {
+		if (this.dataFile != null) {
+			return this.dataFile.getParentFile();
+		} else if (this.definitionFile != null) {
+			return this.definitionFile.getParentFile();
+		} else {
+			return new File(".");
+		}
 	}
 
 }

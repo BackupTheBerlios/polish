@@ -28,6 +28,7 @@ package de.enough.polish.dataeditor.swing;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JFrame;
@@ -37,6 +38,7 @@ import javax.swing.table.TableCellEditor;
 
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
+import de.enough.polish.dataeditor.DataType;
 
 /**
  * <p></p>
@@ -72,6 +74,7 @@ implements TableCellEditor, ActionListener
 		this.manager = manager;
 		this.textField = new JTextField();
 		this.button = new DataEntryButton();
+		this.button.setText("Edit...");
 		this.button.addActionListener( this );
 	}
 
@@ -91,7 +94,7 @@ implements TableCellEditor, ActionListener
 	 */
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		DataEntry entry = this.manager.getDataEntry(row);
-		if (entry.getCount() == 1) {
+		if (entry.getCount() == 1 && entry.getType() != DataType.PNG_IMAGE) {
 			this.textField.setText( value.toString() );
 			this.textField.selectAll();
 			this.useTextField = true;
@@ -112,6 +115,10 @@ implements TableCellEditor, ActionListener
 		Object source = e.getSource();
 		if (source instanceof DataEntryButton) {
 			DataEntry entry = this.button.getEntry();
+			if (entry.getType() == DataType.PNG_IMAGE) {
+				openPngImageEditor( entry );
+				return;
+			}
 			this.editor = new DataEditorDialog( this.parentFrame, "Edit " + entry.getName(), entry );
 			this.editor.setVisible(true);
 			if (this.editor.okPressed()) {
@@ -120,6 +127,26 @@ implements TableCellEditor, ActionListener
 			}
 			fireEditingStopped();
 		}
+	}
+
+	/**
+	 * Shows a simple image-viewer which allows the external saving and loading of the image.
+	 */
+	private void openPngImageEditor( DataEntry entry ) {
+		Object[] data = entry.getData();
+		BufferedImage image = null;
+		if (data != null && data.length == 1) {
+			Object o = data[0];
+			if ( o instanceof BufferedImage ) {
+				image = (BufferedImage) o;
+			}
+		}
+		ImageEditorDialog dialog = new ImageEditorDialog( this.parentFrame, "PNG-Image " + entry.getName(), image, this.manager.getCurrentDirectory() );
+		dialog.setVisible( true );
+		if ( dialog.isChanged() ) {
+			this.manager.setData( dialog.getImage(), entry );
+		}
+		fireEditingStopped();
 	}
 		
 	

@@ -407,7 +407,7 @@ public class CssConverter extends Converter {
 				HashMap bitMapFontGroup = new HashMap(1);
 				bitMapFontGroup.put("bitmap", bitMapFontUrl );
 				style.addGroup( "font", bitMapFontGroup );
-				System.out.println("adding bitmap-font " + bitMapFontUrl);
+				//System.out.println("adding bitmap-font " + bitMapFontUrl);
 			}
 			processFont( group, "font", style, codeList, styleSheet, false );
 		} else {

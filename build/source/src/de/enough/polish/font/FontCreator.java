@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
@@ -65,7 +66,7 @@ implements ActionListener
 	private JMenuItem menuSaveAs;
 	private JMenuItem menuOpenTrueTypeFont;
 	//private JMenuItem menuOpenBitMapFont;
-	//private JMenuItem menuOpenImage;
+	private JMenuItem menuOpenImage;
 	private JLabel statusBar;
 	private JScrollPane scrollPane;
 	private File currentDirectory = new File(".");
@@ -149,12 +150,12 @@ implements ActionListener
 		menu.add( item );
 		this.menuOpenBitMapFont = item;
 
+		*/
 		item = new JMenuItem( "Open PNG-Image", 'i' );
 		item.setAccelerator( KeyStroke.getKeyStroke( 'I', Event.CTRL_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenImage = item;
-		*/
 		
 		menu.addSeparator();
 
@@ -221,7 +222,9 @@ implements ActionListener
 				saveAs();
 			} else if ( source == this.menuSavePngImageAs ) {
 				savePngImageAs();
-			} 
+			}  else if ( source == this.menuOpenImage ) {
+				openImage();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.statusBar.setText( event.getActionCommand() + " failed: " + e.toString() );
@@ -230,6 +233,22 @@ implements ActionListener
 	
 	
 	
+	/**
+	 * Opens an image and sets this as data to the current viewer.
+	 * @throws IOException
+	 */
+	private void openImage() throws IOException {
+		if (this.trueTypeViewer == null ) {
+			JOptionPane.showMessageDialog( this, "You need to open a True Type Font first.");
+			return;
+		}
+		File file = openFile( ".png", true );
+		if (file != null) {
+			this.trueTypeViewer.setImage( file );
+			this.statusBar.setText( "Loaded " + file.getName() );
+		}
+	}
+
 	/**
 	 * @throws IOException
 	 * 
