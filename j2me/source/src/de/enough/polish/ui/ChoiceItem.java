@@ -342,10 +342,12 @@ public class ChoiceItem extends IconItem
 		} else {
 			this.boxImage = this.plain;
 		}
+		/*
+		 * if this is enabled, the navigation in Lists does not work anymore...
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();
-		}
+		}*/
 	}
 	
 	/**

@@ -261,8 +261,8 @@ implements CommandListener
 		// set date:
 		if (date == null ) {
 			if (this.mode == DATE) {
-				//#if polish.DateFieldEmptyText:defined
-					//#= this.text = "${polish.DateFieldEmptyText}";
+				//#if polish.DateFormatEmptyText:defined
+					//#= this.text = "${polish.DateFormatEmptyText}";
 				//#elif polish.DateFormat == us || polish.DateFormat == mdy
 					this.text = "MM-DD-YYYY";
 				//#elif polish.DateFormat == de
@@ -278,8 +278,8 @@ implements CommandListener
 			} else if (this.mode == TIME) {
 				this.text = "hh:mm";
 			} else {
-				//#if polish.DateFieldEmptyText:defined
-					//# this.text = "${polish.DateFieldEmptyText} hh:mm";
+				//#if polish.DateFormatEmptyText:defined
+					//# this.text = "${polish.DateFormatEmptyText} hh:mm";
 				//#elif polish.DateFormat == us || polish.DateFormat == mdy
 					this.text = "MM-DD-YYYY hh:mm";
 				//#elif polish.DateFormat == de

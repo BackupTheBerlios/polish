@@ -1172,10 +1172,21 @@ implements CommandListener
 	public void setConstraints(int constraints)
 	{
 		this.constraints = constraints;
+		//#ifndef tmp.forceDirectInput
+			if (this.midpTextBox != null) {
+				this.midpTextBox.setConstraints(constraints);
+			}
+		//#endif
 		//#ifdef tmp.directInput
+			if ((constraints & PASSWORD) == PASSWORD) {
+				this.isPassword = true;
+			}
 			if ((constraints & NUMERIC) == NUMERIC) {
 				this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
+				//#ifndef polish.hasPointerEvents
+					this.enableDirectInput = true;
+				//#endif
 			} else {
 				this.isNumeric = false;
 			}
