@@ -424,7 +424,7 @@ public class List extends Screen implements Choice
 		int number = this.choiceGroup.append( stringPart, imagePart, elementStyle );
 		if (number == 0) {
 			if (this.listType == IMPLICIT ) {
-				addCommand( SELECT_COMMAND );
+				addCommand( this.selectCommand );
 			} else {
 				setItemCommands(this.choiceGroup);
 			}
@@ -712,7 +712,9 @@ public class List extends Screen implements Choice
 		if (this.listType == IMPLICIT) {
 			removeCommand( this.selectCommand );
 			this.selectCommand = command;
-			addCommand( command );
+			if (this.choiceGroup.size() > 0) {
+				addCommand( command );
+			}
 			this.choiceGroup.setSelectCommand( command );
 		}
 	}
