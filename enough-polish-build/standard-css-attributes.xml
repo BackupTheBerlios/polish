@@ -74,7 +74,7 @@
 	<attribute
 		name="icon-image"
 		type="string"
-		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
+		appliesTo="List-Item, IconItem, ChoiceItem"
 		description="The URL of the image. The keyword %INDEX% can be used for adding the position of the icon to the name, e.g.&quot;icon-image: url(icon%INDEX%.png);&quot;."
 		default="none"
 		id="6"
@@ -83,7 +83,7 @@
 	<attribute
 		name="icon-image-align"
 		type="integer"
-		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
+		appliesTo="List-Item, IconItem, ChoiceItem"
 		description="The position of the image relative to the text."
 		default="left"
 		values="left,right,top,bottom,center"
@@ -102,7 +102,7 @@
 	<attribute
 		name="checkbox-selected"
 		type="string"
-		appliesTo="ChoiceGroup-Item [MULTIPLE]"
+		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color."
 		id="9"
 	/>
@@ -110,7 +110,7 @@
 	<attribute
 		name="checkbox-plain"
 		type="string"
-		appliesTo="ChoiceGroup-Item [MULTIPLE]"
+		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="10"
 	/>
@@ -118,7 +118,7 @@
 	<attribute
 		name="radiobox-selected"
 		type="string"
-		appliesTo="ChoiceGroup-Item [EXCLUSIVE]"
+		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color."
 		id="11"
 	/>
@@ -126,7 +126,7 @@
 	<attribute
 		name="radiobox-plain"
 		type="string"
-		appliesTo="ChoiceGroup-Item [EXCLUSIVE]"
+		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="12"
 	/>
@@ -334,7 +334,7 @@
 	<attribute
 		name="scrollindicator-color"
 		type="color"
-		appliesTo="Screen, List, Form"
+		appliesTo="Screen, List, Form, TabbedForm"
 		description="The color of the item which indicates that the user can scroll the current screen."
 		default="black"
 		id="36"
@@ -469,5 +469,32 @@
 		default="false"
 		id="51"
 	/>
+	
+	<attribute
+		name="foreground-image"
+		type="string"
+		appliesTo="Screen, List, Form, TabbedForm"
+		description="The url of the image that should be shown at the topmost layer. You can also set the foreground-x and forground-y positions."
+		id="52"
+	/>
+	
+	<attribute
+		name="foreground-x"
+		type="integer"
+		appliesTo="Screen, List, Form, TabbedForm"
+		description="The x position of the foreground image."
+		id="53"
+	/>
+	
+	<attribute
+		name="foreground-y"
+		type="integer"
+		appliesTo="Screen, List, Form, TabbedForm"
+		description="The y position of the foreground image."
+		id="54"
+	/>
+	
+	
+	
 	
 </attributes>

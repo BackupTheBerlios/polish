@@ -82,7 +82,7 @@ public class WriteFileListTask extends Task {
 		FileSet[] sets = (FileSet[]) this.fileSets.toArray( new FileSet[ this.fileSets.size()] );
 		for (int i = 0; i < sets.length; i++) {
 			FileSet set = sets[i];
-			DirectoryScanner scanner = set.getDirectoryScanner(this.project);
+			DirectoryScanner scanner = set.getDirectoryScanner(getProject());
 			String[] fileNames = scanner.getIncludedFiles();
 			for (int j = 0; j < fileNames.length; j++) {
 				String name = fileNames[j];

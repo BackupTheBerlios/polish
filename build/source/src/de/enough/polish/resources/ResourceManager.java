@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -104,6 +105,7 @@ public class ResourceManager {
 		
 		// getting all dynamic ScreenSize-directories:
 		File[] resDirFiles = resDir.listFiles();
+		Arrays.sort( resDirFiles );
 		ArrayList dynamicScreenSizeDirsList = new ArrayList();
 		ArrayList dynamicScreenSizeMatchersList = new ArrayList();
 		for (int i = 0; i < resDirFiles.length; i++) {

@@ -50,7 +50,6 @@ public class LocalizationSetting extends Setting {
 	private Locale defaultLocale;
 	private String preprocessorClassName;
 	private String translationManagerClassName;
-	private String preprocessorClassName2;
 
 
 	/**

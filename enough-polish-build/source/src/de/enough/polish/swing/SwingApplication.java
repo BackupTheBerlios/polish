@@ -104,6 +104,21 @@ implements Application
 		}
 	}
 	
+	/**
+	 * Sets the icon for this application.
+	 * When the icon was not found, nothing is changed.
+	 * 
+	 * @param url the URL of the icon
+	 * @param applicationClass
+	 */ 
+	public void setIcon( String url, Class applicationClass ) {
+		Image icon = SwingUtil.loadIcon( url, applicationClass );
+		if ( icon != null ) {
+			this.setIconImage( icon );
+		}
+	}
+
+	
 	protected void registerDropTarget( Component component ) {
 		new DropTarget( component,  this.applicationDropListener );
 	}

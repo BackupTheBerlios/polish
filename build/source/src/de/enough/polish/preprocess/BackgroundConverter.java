@@ -167,4 +167,15 @@ public abstract class BackgroundConverter extends Converter {
 		return parseFloat( this.styleName, "background", name, value );
 	}
 	
+	/**
+	 * Parses the given anchor value.
+	 * 
+	 * @param attributeName the name of the attribute
+	 * @param anchorValue the actual value, e.g. "top | left"
+	 * @return a string containing the correct Java code, e.g. "Graphics.TOP | Graphics.LEFT"
+	 */
+	public String parseAnchor( String attributeName, String anchorValue  ) {
+		return parseAnchor( this.styleName, "background", attributeName, anchorValue );
+	}
+
 }

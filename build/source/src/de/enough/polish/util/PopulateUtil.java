@@ -145,9 +145,51 @@ public final class PopulateUtil {
 	 * @param object the object that holds the field
 	 * @param fieldName the name of the field
 	 * @return the field
-	 * @throws NoSuchFieldException
+	 * @throws NoSuchFieldException when the field does not exist
 	 */
-	public static int getIntField( Object object, String fieldName ) throws NoSuchFieldException {
+	public static int getIntField( Object object, String fieldName ) 
+	throws NoSuchFieldException 
+	{
+		Field field = getField( object, fieldName );
+		try {
+			return field.getInt(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException("unable to access field [" + fieldName + "]: " + e.toString() );
+		}
+	}
+
+	/**
+	 * Retrieves the value of the specified String-field of the given object.
+	 * 
+	 * @param object the object that holds the field
+	 * @param fieldName the name of the field
+	 * @return the field
+	 * @throws NoSuchFieldException when the field does not exist
+	 */
+	public static String getStringField(Object object, String fieldName) 
+	throws NoSuchFieldException 
+	{
+		Field field = getField( object, fieldName );
+		try {
+			return (String) field.get(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException("unable to access field [" + fieldName + "]: " + e.toString() );
+		}
+	}
+	
+	/**
+	 * Retrieves the specified field of the given object.
+	 * 
+	 * @param object the object that holds the field
+	 * @param fieldName the name of the field
+	 * @return the field
+	 * @throws NoSuchFieldException when the field does not exist
+	 */
+	public static Field getField( Object object, String fieldName ) 
+	throws NoSuchFieldException
+	{
 		try {
 			Field field = null;
 			Class instanceClass = object.getClass();
@@ -163,16 +205,52 @@ public final class PopulateUtil {
 				}
 			}
 			field.setAccessible(true);
-			return field.getInt(object);
+			return field;
 		} catch (SecurityException e) {
 			e.printStackTrace();
 			throw new NoSuchFieldException( "Unable to access field [" + fieldName + "]: " + e.toString() );
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new NoSuchFieldException( "Unable to access field [" + fieldName + "]: " + e.toString() );
+		}
+	}
+
+	/**
+	 * Sets a field value for the given object.
+	 *  
+	 * @param object the object that should be changed
+	 * @param fieldName the name of the field
+	 * @param value the value
+	 * @throws NoSuchFieldException when the field does not exist or could not be written
+	 */
+	public static void setField(Object object, String fieldName, Object value)
+	throws NoSuchFieldException
+	{
+		try {
+			Field field = null;
+			Class instanceClass = object.getClass();
+			while (field == null) {
+				try {
+					field = instanceClass.getDeclaredField( fieldName );
+				} catch (NoSuchFieldException e) {
+					instanceClass = instanceClass.getSuperclass();
+					if (instanceClass == null) {
+						throw e;
+					}
+					//System.out.println("trying parent class [" + instanceClass.getName() + "]");
+				}
+			}
+			field.setAccessible(true);
+			field.set(object, value);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-			throw new NoSuchFieldException( "Unable to access field [" + fieldName + "]: " + e.toString() );
+			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
 		}
 	}
 

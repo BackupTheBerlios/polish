@@ -27,9 +27,14 @@ package de.enough.polish.util;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
@@ -96,12 +101,41 @@ public final class SwingUtil {
 	 */
 	public static Image loadIcon( String fileName ) {
         URL url = ClassLoader.getSystemResource(fileName);
-        if (url == null) {
+        
+        if (url == null) {    	
         	System.out.println("unable to locate [" + fileName + "].");
         	return null;
         }
         return Toolkit.getDefaultToolkit().createImage(url);
 	}
+	
+	/**
+	 * Loads an image from within a jar or from the file system.
+	 * 
+	 * @param fileName the image path. 
+	 * @param packageClass a class within the package where the image can be found
+	 * @return an initialised image-icon or null, when no image could be found.
+	 */
+	public static Image loadIcon( String fileName, Class packageClass ) {
+		try {
+	        ClassLoader classLoader = packageClass.getClassLoader(); 			
+	        InputStream is = classLoader.getResourceAsStream(fileName);
+			if (is == null) {
+				File file = new File( fileName );
+				if (file.exists()) {
+					is = new FileInputStream( file );
+				} else {
+					return null;
+				}
+			}
+			return ImageIO.read( is );
+		} catch (IOException e) {
+			System.err.println("Unable to load image [" + fileName + "]");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	
 	/**
 	 * Provides an easy way to set the icon of a JFrame.

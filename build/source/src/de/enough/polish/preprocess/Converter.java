@@ -25,7 +25,12 @@
  */
 package de.enough.polish.preprocess;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tools.ant.BuildException;
+
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Base class for several Creator classes.</p>
@@ -42,6 +47,20 @@ public class Converter {
 	protected final static String STANDALONE_MODIFIER = "\tpublic final static "; 
 	protected ColorConverter colorConverter;
 
+	public static final Map ANCHORS = new HashMap();
+	static {
+		ANCHORS.put( "left", "Graphics.LEFT" );
+		ANCHORS.put( "right", "Graphics.RIGHT" );
+		ANCHORS.put( "center", "Graphics.HCENTER" );
+		ANCHORS.put( "hcenter", "Graphics.HCENTER" );
+		ANCHORS.put( "h-center", "Graphics.HCENTER" );
+		ANCHORS.put( "horizontal-center", "Graphics.HCENTER" );
+		ANCHORS.put( "top", "Graphics.TOP" );
+		ANCHORS.put( "bottom", "Graphics.BOTTOM" );
+		ANCHORS.put( "vcenter", "Graphics.VCENTER" );
+		ANCHORS.put( "v-center", "Graphics.VCENTER" );
+		ANCHORS.put( "vertical-center", "Graphics.VCENTER" );
+	}
 
 	/**
 	 * Creates a new instance. 
@@ -154,6 +173,50 @@ public class Converter {
 	 */
 	public String parseColor( String value ) {
 		return this.colorConverter.parseColor(value);
+	}
+	
+	/**
+	 * Parses the given anchor value.
+	 * 
+	 * @param styleName the name of the style
+	 * @param groupName the name of the group
+	 * @param attributeName the name of the attribute
+	 * @param anchorValue the actual value, e.g. "top | left"
+	 * @return a string containing the correct Java code, e.g. "Graphics.TOP | Graphics.LEFT"
+	 */
+	public String parseAnchor( String styleName, String groupName, String attributeName, String anchorValue  ) {
+		anchorValue = anchorValue.toLowerCase();
+		String[] anchors;
+		// the anchor value can combine several directives, e.g. "vcenter | hcenter"
+		if ( anchorValue.indexOf('|') != -1 ) {
+			anchors = StringUtil.splitAndTrim( anchorValue, '|');
+		} else if ( anchorValue.indexOf('&') != -1 ) {
+				anchors = StringUtil.splitAndTrim( anchorValue, '&');
+		} else if ( anchorValue.indexOf(',') != -1 ) {
+			anchors = StringUtil.splitAndTrim( anchorValue, ',');
+		} else if ( anchorValue.indexOf(" and ") != -1 ) {
+			anchors = StringUtil.splitAndTrim( anchorValue, " and ");
+		} else if ( anchorValue.indexOf(" or ") != -1 ) {
+			anchors = StringUtil.splitAndTrim( anchorValue, " or ");
+		} else {
+			anchors = new String[]{ anchorValue };
+		}
+		// now add definition for each layout:
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < anchors.length; i++) {
+			boolean finished = (i == anchors.length -1 );
+			String value = anchors[i];
+			String anchor = (String) ANCHORS.get( value );
+			if (anchor == null) {
+				throw new BuildException("Invalid CSS: the [" + attributeName + "]-value \"" + anchorValue + "\" contains the invalid value \"" + value + "\". Please adjust the style \"" + styleName+ "\" - \"" + groupName + "\".");
+			}
+			buffer.append( anchor );
+			if (!finished) {
+				buffer.append(" | ");
+			}
+		}
+		buffer.append(",");
+		return buffer.toString();
 	}
 	
 	/**

@@ -232,6 +232,178 @@
 	</device>
 
 <!-- Sony-Ericsson devices -->
+
+	<device>
+		<identifier>Sony-Ericsson/Z800</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi72, amr, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="38 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="Region" value="EMEA, APAC" />
+		<capability name="Network" value="GSM, UMTS" />
+		<capability name="Frequency" value="900,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_Z800" />
+		<capability name="DebugInterface" value="KDWP" />
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/V800</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi72, amr, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="38 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="Region" value="EMEA" />
+		<capability name="Network" value="GSM, UMTS" />
+		<capability name="Frequency" value="900,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_V800" />
+		<capability name="DebugInterface" value="KDWP" />
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/V802</identifier>
+		<parent>Sony-Ericsson/V800</parent>
+		<capability name="Region" value="Japan" />
+	</device>
+
+
+	<device>
+		<identifier>Sony-Ericsson/J300</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="3gpp, h.263, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="12 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="Region" value="EMEA,AP,China,LAM,NAM" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_K300" />
+		<capability name="DebugInterface" value="KDWP" />
+	</device>
+
+
+	<device>
+		<identifier>Sony-Ericsson/K300</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="12 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="Region" value="EMEA,AP,China,LAM,NAM" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_K300" />
+		<capability name="DebugInterface" value="KDWP" />
+	</device>
+
+
+	<device>
+		<identifier>Sony-Ericsson/K750</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="38 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="2 MP" />
+		<capability name="Region" value="EMEA,AP,China" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_K750" />
+		<capability name="DebugInterface" value="KDWP" />
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/K600</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi72, amr, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, realvideo, real8, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="37 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="Region" value="EMEA,AP" />
+		<capability name="Network" value="GSM, UMTS" />
+		<capability name="Frequency" value="850,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_K600" />
+		<capability name="DebugInterface" value="KDWP" />
+	</device>
+
 	<device>
 		<identifier>Sony-Ericsson/T610, Sony-Ericsson/T618</identifier>
 		<groups></groups>
@@ -536,6 +708,56 @@
 	</device>
 	
 <!-- Motorola devices -->
+
+	<device>
+		<identifier>Motorola/V360</identifier>
+		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="ClosedFlipScreenSize" value="96x80" />
+		<capability name="BitsPerPixel" value="18" />
+		<capability name="HeapSize" value="800 kb" />
+		<capability name="StorageSize" value="1.8 MB" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="MaxRecordStoreSize" value="64 kb" />
+		<capability name="JavaProtocol" value="udp, http, https, socket, serial" />
+		<capability name="JavaPackage" value="btapi, wmapi2.0, mmapi, phonebook" />
+		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
+		<capability name="Region" value="Global" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="850, 900, 1800, 1900" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="4" />
+		<capability name="AnnounceDate" value="2005" />
+	</device>
+
+	<device>
+		<identifier>Motorola/V635</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="ClosedFlipScreenSize" value="96x32" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="800 kb" />
+		<capability name="StorageSize" value="5 MB" />
+		<capability name="MaxJarSize" value="100 kb" />
+		<capability name="MaxRecordStoreSize" value="64 kb" />
+		<capability name="JavaProtocol" value="udp, http, https, socket, serial" />
+		<capability name="JavaPackage" value="wmapi, mmapi, phonebook" />
+		<capability name="ImageFormat" value="png, jpeg" />
+		<capability name="SoundFormat" value="midi, mp3, wav, amr" />
+		<capability name="Region" value="Europe, Middle-East, Americas" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="850, 900, 1800, 1900" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="0" />
+		<capability name="AnnounceDate" value="2005" />
+	</device>
 
 	<device>
 		<identifier>Motorola/MPx200</identifier>
@@ -1459,25 +1681,299 @@
 <!-- Nokia devices -->
 
 	<device>
-		<identifier>Nokia/3230</identifier>
+		<identifier>Nokia/6030</identifier>
+		<groups>Series40</groups>
+		<features></features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr, nrt" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="64 kb" />
+		<capability name="StorageSize" value="507 kb" />
+		<capability name="DRM" value="OMA Forward Lock" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Latin America" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequence" value="900, 1800, 850, 1900" />
+		<capability name="AnnouncementDate" value="2005-03-01" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6021</identifier>
+		<groups>Series40</groups>
+		<features></features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, jtwi" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr, nrt" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="128kb" />
+		<capability name="StorageSize" value="3.3 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, China" />
+		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="900, 1800, 1900" />
+		<capability name="AnnouncementDate" value="2005-03-01" />
+	</device>
+
+
+	<device>
+		<identifier>Nokia/6230i</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="ScreenSize" value="208x208"/>
+		<capability name="CanvasSize" value="208x176"/>
+		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, m3g, pdaapi, jtwi" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4" />
+		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, truetones, wb-amr, mp3, mp4, aac" />
+		<capability name="HeapSize" value="2 MB" />
+		<capability name="MaxJarSize" value="512kb" />
+		<capability name="StorageSize" value="32 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="900, 1800, 1900, 850" />
+		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="CameraZoom" value="3" />
+		<capability name="AnnouncementDate" value="2005-03-01" />
+	</device>
+
+
+	<device>
+		<identifier>Nokia/6682</identifier>
+		<groups>Series60</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 8.0a"/>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, m3g, jtwi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, truetones, wb-amr, wav, mp3, aac, realaudio" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="10 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Americas" />
+		<capability name="Network" value="GSM, CSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="850, 1800, 1900" />
+		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="CameraZoom" value="6" />
+		<capability name="AnnouncementDate" value="2005-02-20" />
+	</device>
+
+	
+	<device>
+		<identifier>Nokia/6101</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="ClosedFlipScreenSize" value="96x65"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi, jtwi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, truetones, wb-amr, mp3" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="128 kb" />
+		<capability name="StorageSize" value="3.5 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value=" Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="900,1800,1900,850" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="1" />
+		<capability name="AnnouncementDate" value="2005-02-14" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6102</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="ClosedFlipScreenSize" value="96x65"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi, jtwi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, truetones, wb-amr, mp3" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="128 kb" />
+		<capability name="StorageSize" value="3.5 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="China, Americas" />
+		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="900,1800,1900,850" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="1" />
+		<capability name="AnnouncementDate" value="2005-02-14" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6680</identifier>
+		<groups>Series60</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 8.0a"/>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, m3g, jtwi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, truetones, wb-amr, wav, mp3, aac, realaudio" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="10 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="WCDMA, GSM, CSD, GPRS, HSCSD, EGPRS" />
+		<capability name="Frequence" value="WCDMA 2100, 900, 1800, 1900" />
+		<capability name="CameraResolution" value="1.3 MP" />
+		<capability name="CameraZoom" value="6" />
+		<capability name="AnnouncementDate" value="2005-02-14" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6681</identifier>
 		<groups>Series60</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, m3g" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, m3g, jtwi" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
-		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, wav, mp3, aac, realaudio" />
+		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, truetones, wb-amr, wav, mp3, aac, realaudio" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="dynamic" />
-		<capability name="StorageSize" value="6 MB" />
+		<capability name="StorageSize" value="8 MB" />
 		<capability name="DRM" value="OMA v1.0" />
-		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
-		<capability name="Network" value="GPRS, EGPRS" />
-		<capability name="CameraResolution" value="1.4 MP" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific" />
+		<capability name="Network" value="GSM, CSD, GPRS, HSCSD, EGPRS" />
+		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="CameraZoom" value="6" />
+		<capability name="AnnouncementDate" value="2005-02-14" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6822</identifier>
+		<groups>Series40</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="140 kb" />
+		<capability name="StorageSize" value="4.9 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Americas" />
+		<capability name="Network" value="CSD, HSCSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="900,1800,1900,850" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="1" />
+		<capability name="AnnouncementDate" value="2005-01-05" />
+	</device>
+	
+	<device>
+		<identifier>Nokia/6235</identifier>
+		<groups>Series40</groups>
+		<features></features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, pdaapi, m3g, jtwi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, aac" />
+		<capability name="HeapSize" value="1.4 MB" />
+		<!--
+		<capability name="MaxJarSize" value="dynamic" />
+		-->
+		<capability name="StorageSize" value="10 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Asia-Pacific, Americas, Latin America, Canada" />
+		<capability name="Network" value="CSD, HSCSD,  CDMA1X" />
+		<capability name="Frequence" value="800,1900" />
+		<capability name="AnnouncementDate" value="2004-11-16" />
+	</device>
+
+	<device>
+		<identifier>Nokia/6235i</identifier>
+		<groups>Series40</groups>
+		<features></features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, pdaapi, m3g, jtwi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, aac" />
+		<capability name="HeapSize" value="1.4 MB" />
+		<!--
+		<capability name="MaxJarSize" value="dynamic" />
+		-->
+		<capability name="StorageSize" value="10 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Americas, Canada,  Latin America, Asia-Pacific" />
+		<capability name="Network" value="CSD, HSCSD,  CDMA1X" />
+		<capability name="Frequence" value="800,1900" />
+		<capability name="AnnouncementDate" value="2004-11-16" />
+	</device>
+
+	<device>
+		<identifier>Nokia/7710</identifier>
+		<groups></groups>
+		<features>hasCamera, hasPointerEvents</features>
+		<capability name="OS" value="Symbian OS 7.0s"/>
+		<capability name="ScreenSize" value="640x320"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="nokia-ui, mmapi, wmapi, btapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, wav, mp3, realaudio, aac" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="80 MB" />
+		<capability name="DRM" value="OMA Forward Lock" />
+		<capability name="Region" value="Europe, Asia-Pacific, China" />
+		<capability name="Network" value="GSM, HSCSD, GPRS, EGPRS" />
+		<capability name="Frequence" value="900,1800,1900" />
+		<capability name="CameraResolution" value="1 MP" />
+		<capability name="CameraZoom" value="1" />
+		<capability name="AnnouncementDate" value="2004-11-04" />
 	</device>
 	
 	<device>
@@ -1499,6 +1995,28 @@
 		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas,  China, Latin America, Canada" />
 		<capability name="Network" value="GSM, CSD, GPRS, HSCSD, EGPRS" />
 		<capability name="CameraResolution" value="vga" />
+	</device>
+
+	<device>
+		<identifier>Nokia/3230</identifier>
+		<groups>Series60</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 8.0a"/>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, wav, mp3, aac, realaudio" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="6 MB" />
+		<capability name="DRM" value="OMA v1.0" />
+		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas" />
+		<capability name="Network" value="GPRS, EGPRS" />
+		<capability name="CameraResolution" value="1.4 MP" />
+		<capability name="CameraZoom" value="6" />
 	</device>
 
 	<device>
@@ -2619,7 +3137,29 @@
 		<capability name="mmapi.protocol.capture" value="audio/amr, video/3gpp, image/jpeg" />
 		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
-	
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/SK65</identifier>
+		<features>hasCommandKeyEvents, hasCamera</features>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="CanvasSize" value="132x176"/>
+		<capability name="FullCanvasSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, jtwi, 3dapi, locationapi, btapi, siemens-color-game, siemens-extension-api" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr" />
+		<capability name="VideoFormat" value="mpeg-4" />
+		<capability name="MaxJarSize" value="350kb" />
+		<capability name="HeapSize" value="5 MB" />
+		<capability name="StorageSize" value="11 MB" />
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="CameraResolution" value="1280x960" /> 
+	</device>
+
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/MC60</identifier>

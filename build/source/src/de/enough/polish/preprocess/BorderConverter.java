@@ -143,5 +143,17 @@ public abstract class BorderConverter extends Converter {
 	public float parseFloat( String name, String value) {
 		return parseFloat( this.styleName, "border", name, value );
 	}
+	
+	/**
+	 * Parses the given anchor value.
+	 * 
+	 * @param attributeName the name of the attribute
+	 * @param anchorValue the actual value, e.g. "top | left"
+	 * @return a string containing the correct Java code, e.g. "Graphics.TOP | Graphics.LEFT"
+	 */
+	public String parseAnchor( String attributeName, String anchorValue  ) {
+		return parseAnchor( this.styleName, "background", attributeName, anchorValue );
+	}
+
 
 }

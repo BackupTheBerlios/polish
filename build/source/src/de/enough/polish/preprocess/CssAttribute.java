@@ -25,6 +25,9 @@
  */
 package de.enough.polish.preprocess;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
@@ -41,7 +44,9 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssAttribute {
+public class CssAttribute
+implements Comparable
+{
 	
 	public final static int STRING = 0;
 	public final static int INTEGER = 1;
@@ -58,6 +63,7 @@ public class CssAttribute {
 	private final String appliesTo;
 	private final String description;
 	private int id;
+	private final Map appliesToMap;
 
 	/**
 	 * Creates a new CSS-attribute
@@ -99,6 +105,16 @@ public class CssAttribute {
 			this.allowedValues = null;
 		}
 		this.appliesTo = definition.getAttributeValue("appliesTo");
+		if ( this.appliesTo != null ) {
+			String[] appliesChunks = StringUtil.splitAndTrim( this.appliesTo, ',');
+			this.appliesToMap = new HashMap();
+			for (int i = 0; i < appliesChunks.length; i++) {
+				String chunk = appliesChunks[i];
+				this.appliesToMap.put( chunk, Boolean.TRUE );
+			}
+		} else {
+			this.appliesToMap = null;
+		}
 		this.description = definition.getAttributeValue("description");
 		String idStr = definition.getAttributeValue("id");
 		if (idStr != null) {
@@ -136,7 +152,7 @@ public class CssAttribute {
 	/**
 	 * Determines whether this attribute contains integer values
 	 * 
-	 * @return true when this attribute containts integer values.
+	 * @return true when this attribute contains integer values.
 	 */
 	public boolean isInteger() {
 		return (this.type == INTEGER);
@@ -145,7 +161,7 @@ public class CssAttribute {
 	/**
 	 * Determines whether this attribute contains color values
 	 * 
-	 * @return true when this attribute containts color values.
+	 * @return true when this attribute contains color values.
 	 */
 	public boolean isColor() {
 		return (this.type == COLOR);
@@ -154,16 +170,26 @@ public class CssAttribute {
 	/**
 	 * Determines whether this attribute contains boolean values
 	 * 
-	 * @return true when this attribute containts boolean values.
+	 * @return true when this attribute contains boolean values.
 	 */
 	public boolean isBoolean() {
 		return (this.type == BOOLEAN);
 	}
 	
 	/**
+	 * Determines whether this attribute contains Style values
+	 * 
+	 * @return true when this attribute 
+	 */
+	public boolean isStyle() {
+		return ( this.type == STYLE );
+	}
+
+	
+	/**
 	 * Determines whether this attribute contains string values
 	 * 
-	 * @return true when this attribute containts string values.
+	 * @return true when this attribute contains string values.
 	 */
 	public boolean isString() {
 		return (this.type == STRING);
@@ -273,4 +299,29 @@ public class CssAttribute {
 	public void setId( int id ) {
 		this.id = id;
 	}
+
+	/**
+	 * @param className
+	 * @return
+	 */
+	public boolean appliesTo(String className) {
+		if (this.appliesToMap == null) {
+			System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = NO APPLIES MAP DEFINED!");
+			return false;
+		} else {
+			System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = " + (this.appliesToMap.get( className ) != null));
+			return (this.appliesToMap.get( className ) != null);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		if (o instanceof CssAttribute) {
+			return this.name.compareTo( ((CssAttribute)o).name );
+		}
+		return 0;
+	}
+
 }

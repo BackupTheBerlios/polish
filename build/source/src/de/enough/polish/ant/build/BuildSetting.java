@@ -25,19 +25,21 @@
  */
 package de.enough.polish.ant.build;
 
-import de.enough.polish.*;
-import de.enough.polish.preprocess.BooleanEvaluator;
-import de.enough.polish.util.ResourceUtil;
-import de.enough.polish.util.StringUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
-import java.io.*;
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
+import de.enough.polish.Attribute;
+import de.enough.polish.Variable;
+import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.util.ResourceUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents the build settings of a polish J2ME project.</p>
@@ -235,7 +237,7 @@ public class BuildSetting {
 		}
 	}
 	
-	public void addConfiguredCompiler( CompilerTask task ) {
+	public void addConfiguredCompiler(CompilerTask task) {
 		if (this.compilers == null) {
 			this.compilers = new ArrayList();
 		}
@@ -1282,8 +1284,7 @@ public class BuildSetting {
 			for (int i = 0; i < tasks.length; i++) {
 				CompilerTask task = tasks[i];
 				if (task.isActive(evaluator, this.project)) {
-					//task.
-					return task;
+					return task.copy();
 				}
 			}
 		}
@@ -1291,7 +1292,7 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * Sets the encoding for the JAD, MANIFEST and compiler.
+	 * Sets the encoding for the JAD, MANIFEST.
 	 * 
 	 * @param encoding the encoding, defaults to "UTF8"
 	 */
@@ -1300,7 +1301,7 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * Sets the encoding for the JAD, MANIFEST and compiler.
+	 * Sets the encoding for the JAD, MANIFEST.
 	 * 
 	 * @return the encoding, defaults to "UTF8"
 	 */

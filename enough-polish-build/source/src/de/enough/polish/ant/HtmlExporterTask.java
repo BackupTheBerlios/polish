@@ -89,11 +89,11 @@ public class HtmlExporterTask extends Task {
 	public void execute() throws BuildException {
 		// load device database:
 		try {
-			this.libraryManager = new LibraryManager(this.project.getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
+			this.libraryManager = new LibraryManager(getProject().getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
 			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"));
 			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml") ); 
 			DeviceManager deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, open("devices.xml") );
-			this.bugManager = new BugManager( this.project.getProperties(), open("bugs.xml"));
+			this.bugManager = new BugManager( getProject().getProperties(), open("bugs.xml"));
 			Device[] devices = deviceManager.getDevices();
 			
 			// create detailed device pages:

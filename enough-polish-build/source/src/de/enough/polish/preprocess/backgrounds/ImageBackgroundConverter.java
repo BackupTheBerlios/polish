@@ -80,7 +80,13 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 			}
 			repeat = rep;
 		}
+		String anchor = (String) background.get("anchor");
+		if (anchor != null) {
+			anchor = parseAnchor( "anchor", anchor );
+		} else {
+			anchor = "Graphics.HCENTER | Graphics.VCENTER";
+		}
 		return "new " + BACKGROUNDS_PACKAGE + "ImageBackground( " 
-				+ this.color + ", \"" + imageUrl + "\", " + repeat + " )";
+				+ this.color + ", \"" + imageUrl + "\", " + repeat + ", " + anchor + " )";
 	}
 }

@@ -108,7 +108,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.3d";
+	private static final String VERSION = "1.2.4";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -179,6 +179,10 @@ public class PolishTask extends ConditionalTask {
 	private boolean useDefaultPackage;
 
 	private LocalizationSetting localizationSetting;
+
+	private String polishHomePath;
+
+	private File polishHomeDir;
 	
 
 	
@@ -210,7 +214,7 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	public void addConfiguredDeviceRequirements( Requirements requirements ) {
-		if (requirements.isActive(this.project)) {
+		if (requirements.isActive(getProject())) {
 			this.deviceRequirements = requirements;
 		}
 	}
@@ -221,7 +225,7 @@ public class PolishTask extends ConditionalTask {
 	 * @return the new build setting.
 	 */
 	public BuildSetting createBuild() {
-		this.buildSetting = new BuildSetting( this.project );
+		this.buildSetting = new BuildSetting( getProject() );
 		return this.buildSetting;
 	}
 	
@@ -231,7 +235,7 @@ public class PolishTask extends ConditionalTask {
 	 * @return the new runsetting.
 	 */
 	public EmulatorSetting createEmulator() {
-		this.emulatorSetting = new EmulatorSetting( this.project );
+		this.emulatorSetting = new EmulatorSetting( getProject() );
 		return this.emulatorSetting;
 	}
 	
@@ -370,7 +374,7 @@ public class PolishTask extends ConditionalTask {
 	 * @throws BuildException when a setting is invalid
 	 */
 	private void checkSettings() {
-		//System.out.println( this.project.getBaseDir().getAbsolutePath() );
+		//System.out.println( getProject().getBaseDir().getAbsolutePath() );
 		if (this.infoSetting == null) {
 			throw new BuildException("Nested element [info] is required.");
 		}
@@ -408,7 +412,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		// check if the ant-property WTK_HOME has been set:
 		//e.g. with: <property name="wtk.home" value="c:\Java\wtk-1.0.4"/>
-		this.wtkHome = this.project.getProperty("wtk.home");
+		this.wtkHome = getProject().getProperty("wtk.home");
 		if (this.buildSetting.getPreverify() == null) {
 			// no preverify has been set, that's okay when the wtk.home ant-property has been set:
 			if (this.wtkHome == null) { 
@@ -440,6 +444,18 @@ public class PolishTask extends ConditionalTask {
 	 * Initialises this project and instantiates several helper classes.
 	 */
 	private void initProject() {
+		// find out where J2ME Polish has been installed to:
+		this.polishHomePath = getProject().getProperty( "polish.home" );
+		if (this.polishHomePath != null) {
+			File dir = new File( this.polishHomePath );
+			if (!dir.isAbsolute()) {
+				dir = new File( getProject().getBaseDir(), this.polishHomePath );
+				this.polishHomePath = dir.getAbsolutePath();
+			}
+			this.polishHomePath += File.separatorChar;
+		}
+		this.polishHomeDir = new File( this.polishHomePath );
+		
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
 		DebugManager debugManager = null;
@@ -471,7 +487,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {
-			Hashtable antProperties = this.project.getProperties();
+			Hashtable antProperties = getProject().getProperties();
 			Set keySet = antProperties.keySet();
 			for (Iterator iter = keySet.iterator(); iter.hasNext();) {
 				String key = (String) iter.next();
@@ -506,7 +522,8 @@ public class PolishTask extends ConditionalTask {
 		this.polishProject.addDirectCapability("polish.midlet.class", this.buildSetting.getMidletClassNames()[0] );
 		// create LibraryManager:
 		try {
-			this.libraryManager = new LibraryManager( this.project.getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
+			this.libraryManager = new LibraryManager( getProject().getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
+			this.libraryManager.loadCustomLibraries( this.polishHomeDir, getProject() );
 		} catch (JDOMException e) {
 			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
 		} catch (IOException e) {
@@ -539,8 +556,11 @@ public class PolishTask extends ConditionalTask {
 		// create vendor/group/device manager:
 		try {
 			VendorManager vendorManager = new VendorManager( this.polishProject, this.buildSetting.openVendors());
-			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.openGroups() ); 
+			vendorManager.loadCustomVendors( this.polishHomeDir, this.polishProject, getProject() );
+			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.openGroups() );
+			groupManager.loadCustomGroups( this.polishHomeDir, getProject() );
 			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, this.buildSetting.openDevices() );
+			this.deviceManager.loadCustomDevices( vendorManager, groupManager, this.libraryManager, this.polishHomeDir, getProject() );
 		} catch (JDOMException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		} catch (IOException e) {
@@ -562,7 +582,7 @@ public class PolishTask extends ConditionalTask {
 		processors[0] = customProcessor;
 		for (int i = 0; i < settings.length; i++) {
 			PreprocessorSetting setting = settings[i];
-			processors[ i + 1] = CustomPreprocessor.getInstance(setting, this.preprocessor, this.project );
+			processors[ i + 1] = CustomPreprocessor.getInstance(setting, this.preprocessor, getProject() );
 		}
 		this.preprocessor.setCustomPreprocessors( processors );
 		
@@ -702,9 +722,9 @@ public class PolishTask extends ConditionalTask {
 		} // done preparing of binary libraries.
 		
 		// init boot class path:
-		this.midp1BootClassPath = new Path( this.project, this.buildSetting.getMidp1Path().getAbsolutePath());
-		this.midp2BootClassPath = new Path( this.project, this.buildSetting.getMidp2Path().getAbsolutePath());
-		this.midp2Cldc11BootClassPath = new Path( this.project, this.buildSetting.getMidp2Cldc11Path().getAbsolutePath());
+		this.midp1BootClassPath = new Path( getProject(), this.buildSetting.getMidp1Path().getAbsolutePath());
+		this.midp2BootClassPath = new Path( getProject(), this.buildSetting.getMidp2Path().getAbsolutePath());
+		this.midp2Cldc11BootClassPath = new Path( getProject(), this.buildSetting.getMidp2Cldc11Path().getAbsolutePath());
 		
 		// init obfuscators:
 		if (this.buildSetting.doObfuscate()) {
@@ -718,7 +738,7 @@ public class PolishTask extends ConditionalTask {
 					keepClasses = obfuscatorSetting.getPreserveClassNames();
 				}
 				if ((obfuscatorSetting.isEnabled())) {
-					Obfuscator obfuscator = Obfuscator.getInstance( obfuscatorSetting, this.project, this.buildSetting.getApiDir(), this.libraryManager ); 
+					Obfuscator obfuscator = Obfuscator.getInstance( obfuscatorSetting, getProject(), this.buildSetting.getApiDir(), this.libraryManager ); 
 					obfuscatorsList.add( obfuscator );
 				}
 				
@@ -773,7 +793,7 @@ public class PolishTask extends ConditionalTask {
 		this.javacTarget = this.buildSetting.getJavacTarget();
 		
 		// get the resource manager:
-		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), this.project, this.preprocessor.getBooleanEvaluator() );
+		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), getProject(), this.preprocessor.getBooleanEvaluator() );
 		Locale[] localizations = this.resourceManager.getLocales();
 		if (localizations != null) {
 			this.localizationSetting = this.buildSetting.getResourceSetting().getLocalizationSetting();
@@ -791,7 +811,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			PreprocessorSetting setting = new PreprocessorSetting();
 			setting.setClass( className );
-			this.translationPreprocessor = (TranslationPreprocessor) CustomPreprocessor.getInstance(setting, this.preprocessor, this.project);
+			this.translationPreprocessor = (TranslationPreprocessor) CustomPreprocessor.getInstance(setting, this.preprocessor, getProject());
 			this.preprocessor.addCustomPreprocessors( this.translationPreprocessor );
 			if (this.localeSourceFile == null) {
 				throw new BuildException("Unable to find [de.enough.polish.util.Locale.java] in the path, please set the \"polishDir\"-attribute of the <build>-element correctly.");
@@ -818,7 +838,7 @@ public class PolishTask extends ConditionalTask {
 		// set J2ME Polish specific logger,
 		// this logger will show the original source-code positions
 		// and remove some verbose logging from ProGuard etc:
-		Vector buildListeners = this.project.getBuildListeners();
+		Vector buildListeners = getProject().getBuildListeners();
 		BuildLogger logger = null;
 		for (Iterator iter = buildListeners.iterator(); iter.hasNext();) {
 			BuildListener listener = (BuildListener) iter.next();
@@ -838,8 +858,8 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			this.polishLogger = new PolishLogger(logger, classPathTranslationsMap );
-			this.project.addBuildListener( this.polishLogger );
-			this.project.removeBuildListener(logger);
+			getProject().addBuildListener( this.polishLogger );
+			getProject().removeBuildListener(logger);
 		} else {
 			System.err.println("Warning: unable to replace Ant-logger. Compile errors will point to the preprocessed files instead of the original sources.");
 		}
@@ -997,7 +1017,7 @@ public class PolishTask extends ConditionalTask {
 				BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 				for (int i = 0; i < this.conditionalVariables.length; i++) {
 					Variable var = this.conditionalVariables[i];
-					if (var.isConditionFulfilled( evaluator, this.project )) {
+					if (var.isConditionFulfilled( evaluator, getProject() )) {
 						this.preprocessor.addVariable(var.getName(), var.getValue() );
 					}
 				}
@@ -1036,7 +1056,7 @@ public class PolishTask extends ConditionalTask {
 			
 			// get the last modfication time of the build.xml file
 			// so that it can be checked whether there are any changes at all:
-			File buildXml = new File( this.project.getBaseDir().getAbsolutePath() 
+			File buildXml = new File( getProject().getBaseDir().getAbsolutePath() 
 						+ File.separatorChar + "build.xml" );
 			long buildXmlLastModified = buildXml.lastModified();
 			// check if the polish gui is used at all:
@@ -1322,8 +1342,8 @@ public class PolishTask extends ConditionalTask {
 		}
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		// init javac task:
-		CompilerTask compiler = this.buildSetting.getCompiler(evaluator);
-		compiler.setProject( this.project );
+		CompilerTask compiler = this.buildSetting.getCompiler(evaluator );
+		compiler.setProject( getProject() );
 		if (!compiler.isTaskNameSet()) {
 			compiler.setDirectTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
 		}
@@ -1351,9 +1371,9 @@ public class PolishTask extends ConditionalTask {
 			compiler.setDirectDestdir( targetDir );
 		}
 		if (!compiler.isSourceDirSet()) {
-			compiler.setDirectSrcdir(new Path( this.project,  device.getSourceDir() ) );
+			compiler.setDirectSrcdir(new Path( getProject(),  device.getSourceDir() ) );
 		}
-		//javac.setSourcepath(new Path( this.project,  "" ));
+		//javac.setSourcepath(new Path( getProject(),  "" ));
 		if (!compiler.isBootClassPathSet()) {
 			if (device.isMidp1()) {
 				compiler.setDirectBootclasspath(this.midp1BootClassPath);
@@ -1368,9 +1388,9 @@ public class PolishTask extends ConditionalTask {
 		if ( !compiler.isClassPathSet()) {
 			String classPath = device.getClassPath(); 
 			if (classPath != null) {
-				compiler.setDirectClasspath( new Path(this.project, classPath ) );
+				compiler.setDirectClasspath( new Path(getProject(), classPath ) );
 			} else {
-				compiler.setDirectClasspath( new Path(this.project, "" ) );
+				compiler.setDirectClasspath( new Path(getProject(), "" ) );
 			}
 		}
 		// start compile:
@@ -1627,7 +1647,7 @@ public class PolishTask extends ConditionalTask {
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
-			if (attribute.targetsManifest() && attribute.isConditionFulfilled(evaluator, this.project)) {
+			if (attribute.targetsManifest() && attribute.isConditionFulfilled(evaluator, getProject())) {
 				attributesByName.put(attribute.getName(),attribute );
 			}
 		}
@@ -1651,7 +1671,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
 			FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
-			this.packager.createPackage(classesDir, jarFile, device, evaluator, this.preprocessor.getVariables(), this.project );
+			this.packager.createPackage(classesDir, jarFile, device, evaluator, this.preprocessor.getVariables(), getProject() );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
@@ -1694,7 +1714,7 @@ public class PolishTask extends ConditionalTask {
 		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
-			if (attribute.targetsJad() && attribute.isConditionFulfilled(evaluator, this.project)) {
+			if (attribute.targetsJad() && attribute.isConditionFulfilled(evaluator, getProject())) {
 				attributesByName.put(attribute.getName(),
 						new Attribute( attribute.getName(), attribute.getValue() ) );
 			}
@@ -1742,9 +1762,9 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale
 	 */
 	private void runEmulator( Device device, Locale locale ) {
-		if ( this.emulatorSetting.isActive(this.project) ) {
+		if ( this.emulatorSetting.isActive(getProject()) ) {
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), this.project, evaluator, this.wtkHome, this.sourceDirs );
+			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), getProject(), evaluator, this.wtkHome, this.sourceDirs );
 			if (emulator != null) {
 				if (this.runningEmulators == null) {
 					this.runningEmulators = new ArrayList();

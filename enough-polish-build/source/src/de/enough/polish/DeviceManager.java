@@ -25,15 +25,26 @@
  */
 package de.enough.polish;
 
-import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.StringUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
-import org.jdom.*;
+import org.apache.tools.ant.Project;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import java.io.*;
-import java.util.*;
+import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages all known J2ME devices.</p>
@@ -81,16 +92,16 @@ public class DeviceManager {
 	/**
 	 * Loads the device definitions.
 	 * 
-	 * @param vendorManager The manager of the device-manufacturers
-	 * @param groupManager The manager for device-groups.
-	 * @param libraryManager the manager for API libraries
+	 * @param vendManager The manager of the device-manufacturers
+	 * @param grManager The manager for device-groups.
+	 * @param libManager the manager for API libraries
 	 * @param devicesIS the InputStream containing the device definitions.
 	 * 			Usally this is the devices.xml file in the current directory.
 	 * @throws JDOMException when there are syntax errors in devices.xml
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	private void loadDevices( VendorManager vendorManager, DeviceGroupManager groupManager, LibraryManager libraryManager, InputStream devicesIS ) 
+	private void loadDevices( VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		if (devicesIS == null) {
@@ -121,11 +132,11 @@ public class DeviceManager {
 				}
 				String vendorName = chunks[0];
 				String deviceName = chunks[1];
-				Vendor vendor = vendorManager.getVendor( vendorName );
+				Vendor vendor = vendManager.getVendor( vendorName );
 				if (vendor == null) {
 					throw new InvalidComponentException("Invalid device-specification in [devices.xml]: Please specify the vendor [" + vendorName + "] in the file [vendors.xml].");
 				}
-				Device device = new Device( definition, identifier, deviceName, vendor, groupManager, libraryManager, this );
+				Device device = new Device( definition, identifier, deviceName, vendor, grManager, libManager, this );
 				devicesMap.put( identifier, device );
 				devicesList.add( device );
 			}
@@ -174,7 +185,9 @@ public class DeviceManager {
 			Vendor vendor = (Vendor) device.parent;
 			list.put( vendor.identifier, vendor );
 		}
-		return (Vendor[]) list.values().toArray( new Vendor[ list.size() ] );		
+		Vendor[] vendors =  (Vendor[]) list.values().toArray( new Vendor[ list.size() ] );
+		Arrays.sort( vendors );
+		return vendors;
 	}
 	
 	/**
@@ -191,7 +204,9 @@ public class DeviceManager {
 				list.add( device );
 			}
 		}
-		return (Device[]) list.toArray( new Device[ list.size() ] );
+		Device[] vendorDevices = (Device[]) list.toArray( new Device[ list.size() ] );
+		Arrays.sort( vendorDevices );
+		return vendorDevices;
 	}
 	
 	/**
@@ -209,7 +224,45 @@ public class DeviceManager {
 				list.add( device );
 			}
 		}
-		return (Device[]) list.toArray( new Device[ list.size() ] );
+		Device[] vendorDevices = (Device[]) list.toArray( new Device[ list.size() ] );
+		Arrays.sort( vendorDevices );
+		return vendorDevices;
+	}
+
+	/**
+	 * @param vendManager
+	 * @param deviceGroupManager
+	 * @param libManager
+	 * @param polishHomeDir
+	 * @param project
+	 * @throws JDOMException
+	 * @throws InvalidComponentException
+	 */
+	public void loadCustomDevices(VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, File polishHomeDir, Project project) 
+	throws JDOMException, InvalidComponentException {
+		File file = new File( project.getBaseDir(), "custom-devices.xml");
+		if (!polishHomeDir.exists()) {
+			file = new File( polishHomeDir, "custom-devices.xml" );
+		}
+		if (file.exists()) {
+			try {
+				loadDevices( vendManager, deviceGroupManager, libManager, new FileInputStream( file ) );
+			} catch (FileNotFoundException e) {
+				// this shouldn't happen
+				System.err.println("Unable to load [custom-devices.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (IOException e) {
+				// this also shouldn't happen
+				System.err.println("Unable to load [custom-devices.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (InvalidComponentException e) {
+				// this can happen
+				String message = e.getMessage();
+				message = StringUtil.replace( message, "devices.xml", "custom-devices.xml" );
+				throw new InvalidComponentException( message, e );
+				
+			}
+		}
 	}
 
 

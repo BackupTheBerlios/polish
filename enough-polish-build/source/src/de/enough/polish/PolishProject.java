@@ -25,7 +25,7 @@
  */
 package de.enough.polish;
 
-import de.enough.polish.preprocess.*;
+import de.enough.polish.preprocess.DebugManager;
 
 
 /**

@@ -26,11 +26,16 @@
 package de.enough.polish;
 
 import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -129,5 +134,36 @@ public class DeviceGroupManager {
 			this.groups.put( name, group );
 		}
 		return group;
+	}
+
+	/**
+	 * @param polishHomeDir
+	 * @param project
+	 * @throws InvalidComponentException
+	 * @throws JDOMException
+	 */
+	public void loadCustomGroups(File polishHomeDir, Project project) throws InvalidComponentException, JDOMException {
+		File file = new File( project.getBaseDir(), "custom-groups.xml");
+		if (!polishHomeDir.exists()) {
+			file = new File( polishHomeDir, "custom-groups.xml" );
+		}
+		if (file.exists()) {
+			try {
+				loadGroups( new FileInputStream( file ) );
+			} catch (FileNotFoundException e) {
+				// this shouldn't happen
+				System.err.println("Unable to load [custom-groups.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (IOException e) {
+				// this also shouldn't happen
+				System.err.println("Unable to load [custom-groups.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (InvalidComponentException e) {
+				// this can happen
+				String message = e.getMessage();
+				message = StringUtil.replace( message, "groups.xml", "custom-groups.xml" );
+				throw new InvalidComponentException( message, e );
+			}
+		}
 	}
 }

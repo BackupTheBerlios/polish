@@ -26,11 +26,16 @@
 package de.enough.polish;
 
 import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -109,5 +114,39 @@ public class VendorManager {
 	 */
 	public Vendor[] getVendors() {
 		return (Vendor[]) this.vendors.values().toArray( new Vendor[ this.vendors.size() ] );
+	}
+
+	/**
+	 * Loads the custom-vendors.xml of the user from the current project.
+	 * @param polishHomeDir
+	 * 
+	 * @param polishProject
+	 * @param project
+	 * @throws JDOMException
+	 * @throws InvalidComponentException
+	 */
+	public void loadCustomVendors(File polishHomeDir, PolishProject polishProject, Project project) throws JDOMException, InvalidComponentException {
+		File file = new File( project.getBaseDir(), "custom-vendors.xml");
+		if (!file.exists()) {
+			file = new File( polishHomeDir, "custom-vendors.xml" );
+		}
+		if (file.exists()) {
+			try {
+				loadVendors( polishProject, new FileInputStream( file ) );
+			} catch (FileNotFoundException e) {
+				// this shouldn't happen
+				System.err.println("Unable to load [custom-vendors.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (IOException e) {
+				// this also shouldn't happen
+				System.err.println("Unable to load [custom-vendors.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (InvalidComponentException e) {
+				// this can happen
+				String message = e.getMessage();
+				message = StringUtil.replace( message, "vendors.xml", "custom-vendors.xml" );
+				throw new InvalidComponentException( message, e );
+			}
+		}
 	}
 }

@@ -25,15 +25,26 @@
  */
 package de.enough.polish;
 
-import de.enough.polish.exceptions.InvalidComponentException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
-import org.jdom.*;
+import org.apache.tools.ant.Project;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-
-import java.io.*;
-import java.util.*;
+import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages the libraries of devices.</p>
@@ -225,5 +236,39 @@ public class LibraryManager {
 	 */
 	public Library getLibrary(String libName) {
 		return (Library) this.libraries.get( libName );
+	}
+
+	/**
+	 * Loads the custom-apis.xml from the current project.
+	 * 
+	 * @param polishHomeDir the installation directory of J2ME Polish
+	 * @param project the project
+	 * @throws JDOMException when there is a syntax error
+	 * @throws InvalidComponentException when several libraries are duplicated for example
+	 */
+	public void loadCustomLibraries(File polishHomeDir, Project project) throws JDOMException, InvalidComponentException {
+		File file = new File( project.getBaseDir(), "custom-apis.xml");
+		if (!file.exists()) {
+			file = new File( polishHomeDir, "custom-apis.xml" );
+		}
+		if (file.exists()) {
+			try {
+				loadLibraries( new FileInputStream( file ) );
+			} catch (FileNotFoundException e) {
+				// this shouldn't happen
+				System.err.println("Unable to load [custom-apis.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (IOException e) {
+				// this also shouldn't happen
+				System.err.println("Unable to load [custom-apis.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (InvalidComponentException e) {
+				// this can happen
+				String message = e.getMessage();
+				message = StringUtil.replace( message, "apis.xml", "custom-apis.xml" );
+				throw new InvalidComponentException( message, e );
+			}
+		}
+		
 	}
 }

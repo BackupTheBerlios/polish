@@ -27,6 +27,7 @@ package de.enough.polish.preprocess;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -109,6 +110,46 @@ public class CssAttributesManager {
 	 */
 	public CssAttribute[] getAttributes() {
 		return (CssAttribute[]) this.attributesByName.values().toArray(  new CssAttribute[ this.attributesByName.size() ] );
+	}
+
+	/**
+	 * Retrieves all attributes for the given class.
+	 * 
+	 * @param fullClassName the name of the class, e.g. "de.enough.polish.ui.StringItem"
+	 * @return all applicable attributes for the given class
+	 */
+	public CssAttribute[] getApplicableAttributes( String fullClassName ) {
+		ArrayList list = new ArrayList();
+		CssAttribute[] attributes = getAttributes();
+		int lastDotPos = fullClassName.lastIndexOf('.');
+		String className = fullClassName; 
+		if (lastDotPos != -1) {
+			className = fullClassName.substring( lastDotPos + 1 );
+		}
+		for (int i = 0; i < attributes.length; i++) {
+			CssAttribute attribute = attributes[i];
+			if ( attribute.appliesTo( className ) || attribute.appliesTo( fullClassName ) ) {
+				list.add( attribute );
+			}
+		}
+		return (CssAttribute[]) list.toArray( new CssAttribute[ list.size() ] );
+	}
+
+	/**
+	 * Retrieves the attribute with the given ID-key.
+	 * 
+	 * @param id the ID of the desired attribute
+	 * @return the attribute, null when it was not found
+	 */
+	public CssAttribute getAttribute(int id) {
+		CssAttribute[] attributes = getAttributes();
+		for (int i = 0; i < attributes.length; i++) {
+			CssAttribute attribute = attributes[i];
+			if (attribute.getId() == id) {
+				return attribute;
+			}
+		}
+		return null;
 	}
 
 }

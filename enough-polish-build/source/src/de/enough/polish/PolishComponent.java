@@ -47,7 +47,9 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class PolishComponent {
+public class PolishComponent
+implements Comparable
+{
 	
 	protected String identifier;
 	protected PolishComponent parent;
@@ -390,5 +392,20 @@ public class PolishComponent {
 	 */
 	public String getFeaturesAsString() {
 		return this.featuresAsString;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		if (this.identifier != null && o instanceof PolishComponent) {
+			String otherIdentifier = ((PolishComponent)o).identifier;
+			if (otherIdentifier != null) {
+				return this.identifier.compareTo(otherIdentifier);
+			//} else {
+			//	System.out.println("Other's identifier == null!");
+			}
+		}
+		//System.out.println("Unable to compare  " + getClass().getName() + " with " + o.getClass().getName() + ": this.identifier == null: " + (this.identifier == null) );
+		return 0;
 	}
 }

@@ -58,7 +58,7 @@ public class ConditionalTask extends Task {
 	 */
 	public void setIf(String ifExpr) {
 		this.isActive = this.isActive &&
-			CastUtil.getBoolean(this.project.getProperty(ifExpr));
+			CastUtil.getBoolean(getProject().getProperty(ifExpr));
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class ConditionalTask extends Task {
 	 */
 	public void setUnless(String unlessExpr) {
 		this.isActive = this.isActive &&
-			! CastUtil.getBoolean(this.project.getProperty(unlessExpr));
+			! CastUtil.getBoolean(getProject().getProperty(unlessExpr));
 	}
 
 	/**
