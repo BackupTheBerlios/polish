@@ -231,7 +231,7 @@ public class BuildSetting {
 	 * 
 	 * @return true when this projects wants to use the polish GUI
 	 */
-	public boolean usesPolishGui() {
+	public boolean usePolishGui() {
 		return this.usePolishGui;
 	}
 	
@@ -488,7 +488,7 @@ public class BuildSetting {
 	 */
 	public InputStream openApis() {
 		try {
-			return getResource( this.apis, "apis.xml" );
+			return openResource( this.apis, "apis.xml" );
 		} catch (FileNotFoundException e) {
 			throw new BuildException("Unable to open apis.xml: " + e.getMessage(), e );
 		}
@@ -537,9 +537,9 @@ public class BuildSetting {
 	/**
 	 * @return Returns the xml file containing the devices-data.
 	 */
-	public InputStream getDevices() {
+	public InputStream openDevices() {
 		try {
-			return getResource( this.devices, "devices.xml" );
+			return openResource( this.devices, "devices.xml" );
 		} catch (FileNotFoundException e) {
 			throw new BuildException("Unable to open devices.xml: " + e.getMessage(), e );
 		}
@@ -561,11 +561,11 @@ public class BuildSetting {
 	/**
 	 * @return Returns the groups.
 	 */
-	public InputStream getGroups() {
+	public InputStream openGroups() {
 		try {
-			return getResource( this.groups, "groups.xml" );
+			return openResource( this.groups, "groups.xml" );
 		} catch (FileNotFoundException e) {
-			throw new BuildException("Unable to open devices.xml: " + e.getMessage(), e );
+			throw new BuildException("Unable to open groups.xml: " + e.getMessage(), e );
 		}
 	}
 	
@@ -587,9 +587,9 @@ public class BuildSetting {
 	 * 
 	 * @return Returns the vendors.xml file as input stream.
 	 */
-	public InputStream getVendors() {
+	public InputStream openVendors() {
 		try {
-			return getResource( this.vendors, "vendors.xml" );
+			return openResource( this.vendors, "vendors.xml" );
 		} catch (FileNotFoundException e) {
 			throw new BuildException("Unable to open vendors.xml: " + e.getMessage(), e );
 		}
@@ -784,7 +784,7 @@ public class BuildSetting {
 	 * @return the input stream for the specified resource.
 	 * @throws FileNotFoundException when the resource could not be found.
 	 */
-	private InputStream getResource(File file, String name) 
+	private InputStream openResource(File file, String name) 
 	throws FileNotFoundException 
 	{
 		if (file != null && file.exists() ) {
@@ -908,5 +908,33 @@ public class BuildSetting {
 			return (JavaExtension[]) this.javaTasks.toArray( new JavaExtension[ this.javaTasks.size() ]);
 		}
 	}
-		
+	
+	/**
+	 * Opens the [standard-css-attributes.xml] file.
+	 * 
+	 * @return an input stream to that file
+	 * @throws BuildException when the file could not be found
+	 */
+	public InputStream openStandardCssAttributes(){
+		try {
+			return openResource( getFile("standard-css-attributes.xml"), "standard-css-attributes.xml");
+		} catch (FileNotFoundException e) {
+			throw new BuildException("Unable to load [standard-css-attributes.xml].");
+		}
+	}
+
+	/**
+	 * Opens the [custom-css-attributes.xml] file.
+	 * 
+	 * @return an input stream to that file or null when the file could not be found.
+	 */
+	public InputStream openCustomCssAttributes(){
+		try {
+			return openResource( getFile("custom-css-attributes.xml"), "custom-css-attributes.xml");
+		} catch (FileNotFoundException e) {
+			System.out.println("Warning: Unable to load [custom-css-attributes.xml].");
+			return null;
+		}
+	}
+
 }

@@ -74,7 +74,7 @@
 		A JSR-185 compatible device supports the MMAPI and the WMAPI
 		as well as the MIDP/2.0 platform.
 		</description>
-		<names>JSR-185, JSR185</names>
+		<names>JSR-185, JSR185, JTWI</names>
 		<symbol>jsr-185</symbol>
 	</api>
 

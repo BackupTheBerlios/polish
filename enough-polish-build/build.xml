@@ -179,7 +179,7 @@
 		 excludes="**/*.html"
 		 index="true"
 	     >
-		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml, build/j2mepolish.index.txt" />
+		<fileset dir="." includes="apis.xml,vendors.xml,groups.xml,devices.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
 		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 	</jar>
 	<!-- create the binary J2ME distribution -->
@@ -193,7 +193,7 @@
 	<zip destfile="dist/j2mepolish-${Version}.zip">
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,build.xml" />
-		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml" />
+		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,custom-css-attributes.xml" />
 	</zip>
 </target>
 	
@@ -293,6 +293,7 @@
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
 		<variable name="index.h4" value="h4index" />
+		<variable name="index.h5" value="h5index" />
 	</webprocessor>
 	<!-- created & copy the device database -->
 	<deviceExport />
@@ -311,6 +312,7 @@
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
 		<variable name="index.h4" value="h4index" />
+		<variable name="index.h5" value="h5index" />
 	</webprocessor>
 	<!-- copy the documentation.html to the root -->
 	<webprocessor 
@@ -331,6 +333,7 @@
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
 		<variable name="index.h4" value="h4index" />
+		<variable name="index.h5" value="h5index" />
 	</webprocessor>
 	<!-- update installation settings -->
 	<propertyWriter srcfile="setup/install.xml"

@@ -12,3 +12,6 @@ If you have installed the external device database-files, you
 might want to copy the relevant files (devices.xml, vendors.xml, 
 groups.xml and apis.xml) to the installation directory of J2ME Polish as well.
 
+Please copy the provided custom-css-attributes.xml to the J2ME Polish installation 
+directory. This file deines CSS attributes of your own CustomItems.
+

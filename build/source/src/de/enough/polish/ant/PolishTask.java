@@ -101,6 +101,8 @@ public class PolishTask extends ConditionalTask {
 	private File binaryLibrariesDir;
 
 	private JavaExtension[] javaExtensions;
+
+	private CssAttributesManager cssAttributesManager;
 	
 	/**
 	 * Creates a new empty task 
@@ -172,6 +174,10 @@ public class PolishTask extends ConditionalTask {
 				if (hasExtensions) {
 					callExtensions( device );
 				}
+				if (numberOfDevices > 1) {
+					// print an empty as a separator between different devices: 
+					System.out.println();
+				}
 			}
 			test();
 			deploy();
@@ -198,6 +204,8 @@ public class PolishTask extends ConditionalTask {
 
 	/**
 	 * Checks the settings of this task.
+	 * 
+	 * @throws BuildException when a setting is invalid
 	 */
 	private void checkSettings() {
 		//System.out.println( this.project.getBaseDir().getAbsolutePath() );
@@ -279,7 +287,7 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		// create project settings:
-		this.polishProject = new PolishProject( this.buildSetting.usesPolishGui(), isDebugEnabled, debugManager );
+		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
 		}
@@ -350,15 +358,24 @@ public class PolishTask extends ConditionalTask {
 
 		// create vendor/group/device manager:
 		try {
-			VendorManager vendorManager = new VendorManager( this.polishProject, this.buildSetting.getVendors());
-			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.getGroups() ); 
-			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, this.buildSetting.getDevices() );
+			VendorManager vendorManager = new VendorManager( this.polishProject, this.buildSetting.openVendors());
+			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.openGroups() ); 
+			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, this.buildSetting.openDevices() );
 		} catch (JDOMException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		} catch (IOException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		} catch (InvalidComponentException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
+		}
+		
+		// create CSS attributes manager:
+		if (this.buildSetting.usePolishGui()) {
+			this.cssAttributesManager = new CssAttributesManager( this.buildSetting.openStandardCssAttributes() );
+			InputStream is = this.buildSetting.openCustomCssAttributes();
+			if (is != null) {
+				this.cssAttributesManager.addCssAttributes(is);
+			}
 		}
 		
 		// create preprocessor:
@@ -421,7 +438,7 @@ public class PolishTask extends ConditionalTask {
 			dirScanner.scan();
 			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles() );
 		}
-		if (this.buildSetting.usesPolishGui() && this.styleSheetFile == null) {
+		if (this.buildSetting.usePolishGui() && this.styleSheetFile == null) {
 			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the [polishDir] attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
 		}
 		
@@ -544,7 +561,7 @@ public class PolishTask extends ConditionalTask {
 		this.importConverter = new ImportConverter();
 		
 		// init base style sheet:
-		if (this.buildSetting.usesPolishGui()) {
+		if (this.buildSetting.usePolishGui()) {
 			File cssFile = new File( this.buildSetting.getResDir().getAbsolutePath() + File.separatorChar + "polish.css");
 			if (!cssFile.exists()) {
 				log("Unable to find polish.css at [" + cssFile.getAbsolutePath() + "] - you should create this file when you want to make most of the J2ME Polish GUI.", Project.MSG_WARN );
@@ -689,7 +706,7 @@ public class PolishTask extends ConditionalTask {
 						+ File.separatorChar + "build.xml" );
 			long buildXmlLastModified = buildXml.lastModified();
 			// check if the polish gui is used at all:
-			boolean usePolishGui = this.buildSetting.usesPolishGui()
+			boolean usePolishGui = this.buildSetting.usePolishGui()
 								  && device.supportsPolishGui();
 			this.preprocessor.setUsePolishGui(usePolishGui);
 			long lastCssModification = 0;
@@ -732,7 +749,7 @@ public class PolishTask extends ConditionalTask {
 					}
 					// now insert the CSS information for this device
 					// into the StyleSheet.java source-code:
-					CssConverter cssConverter = new CssConverter();
+					CssConverter cssConverter = new CssConverter( this.cssAttributesManager );
 					this.styleSheetCode.reset();
 					cssConverter.convertStyleSheet(this.styleSheetCode, 
 							this.preprocessor.getStyleSheet(),

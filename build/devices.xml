@@ -248,7 +248,7 @@
 	
 	<device>
 		<identifier>Sony-Ericsson/K700i, Sony-Ericsson/K700c</identifier>
-		<groups></groups>
+		<groups>Nokia-UI</groups>
 		<features>hasCamera, hasVideo</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -328,7 +328,7 @@
 		<capability name="SoftwarePlatform.JavaProtocol"
 				       value="UDP, TCP, SSL, HTTP, HTTPS, Serial" />
 		<capability name="SoftwarePlatform.JavaPackage"
-				       value="wmapi, mmapi, motorola-lwt, location-api, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Receive and Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D" />
+				       value="wmapi, mmapi, motorola-lwt, location-api, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D" />
 		<capability name="SoftwarePlatform.HeapSize"
 				       value="1.15 MB" />
 		<capability name="StorageSize" value="2 MB" />
@@ -2162,6 +2162,77 @@
 		<capability name="Network" value="GSM, GPRS, EGSM"/>
 		<capability name="Frequency" value="900, 1800, 1900"/>
 	</device>	
+	
+<!-- Sagem devices -->
+
+	<device>
+		<identifier>Sagem/MyX5-2</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="os" value="Windows Mobile 2003" />
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="4" />
+	</device>
+	
+	<device>
+		<identifier>Sagem/MyX6</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="StorageSize" value="4 MB" />
+		<capability name="CameraResolution" value="vga" />
+		<capability name="CameraZoom" value="4" />
+	</device>
+
+	<device>
+		<identifier>Sagem/MyX7</identifier>
+		<features>doubleBuffering, hasCamera, hasVideo</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="StorageSize" value="4 MB" />
+	</device>
+
+
+	<device>
+		<identifier>Sagem/MyV-75</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi, wmapi-1.1" />
+	</device>
+
+	<device>
+		<identifier>Sagem/MyV-65</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi, wmapi-1.1" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="CameraResolution" value="640x480" />
+		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
+	</device>
 	
 <!-- Vodafone devices -->
 	<device

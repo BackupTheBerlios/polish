@@ -191,8 +191,7 @@ public class Device extends PolishComponent {
 		ArrayList groupsList = new ArrayList();
 		String groupsDefinition = definition.getChildTextTrim("groups");
 		if (groupsDefinition != null && groupsDefinition.length() > 0) {
-			String[] tempGroupNames = TextUtil.splitAndTrim(groupsDefinition,
-					',');
+			String[] tempGroupNames = TextUtil.splitAndTrim(groupsDefinition, ',');
 			for (int i = 0; i < tempGroupNames.length; i++) {
 				String groupName = tempGroupNames[i];
 				DeviceGroup group = groupManager.getGroup(groupName);
@@ -365,10 +364,21 @@ public class Device extends PolishComponent {
 					+ bitsPerPixelStr, true));
 
 		}
+		
+		// add all devices which do not support sprite-transformations
+		// and which do not support the MIDP/2.0 standard to the
+		// NoSpriteTransformations-group:
+		if (this.midpVersion != MIDP_2 && !hasFeature("polish.supportSpriteTransformation")) {
+			groupNamesList.add("NoSpriteTransformations");
+			groupsList.add(groupManager.getGroup("NoSpriteTransformations", true));
+		}
+
 		this.groupNames = (String[]) groupNamesList
 				.toArray(new String[groupNamesList.size()]);
 		this.groups = (DeviceGroup[]) groupsList
 				.toArray(new DeviceGroup[groupsList.size()]);
+		
+	
 	}
 
 	/**

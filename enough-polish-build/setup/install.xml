@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
 
-<!-- 
-    A sample installation file.
-    Use it as a base for your own installers :-)
-    
-    To compile it :
-    - go in the bin directory where you installed IzPack
-    - call "compile ../sample/install.xml -b ../sample"
--->
-
 <installation version="1.0">
 
     <!--
@@ -16,7 +7,7 @@
         The meaning of the tags should be natural ...
     -->
     <info>
-        <appname>J2ME Polish</appname>
+        <appname>J2ME-Polish</appname>
         <appversion>${Version}</appversion>
         <authors>
             <author name="Robert Virkus" email="info@enough.de"/>
@@ -86,6 +77,7 @@
             <description>The J2ME Polish library files, which will be copied into the &quot;import&quot;-folder.</description>
             <file src="import" targetdir="$INSTALL_PATH"/>
             <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
+            <file src="../custom-css-attributes.xml" targetdir="$INSTALL_PATH"/>
             <file src="../LICENSE.txt" targetdir="$INSTALL_PATH"/>
             <!--
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH"/>

@@ -33,8 +33,8 @@ import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.preprocess.CustomPreprocessor;
-import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextUtil;
 
@@ -53,7 +53,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	private boolean isTickerUsed;
 	private File abbreviationsFile;
 	private File tickerFile;
-	private AbbreviationsGenerator abbreviationsGenerator;
+	private IntegerIdGenerator idGenerator;
 	private boolean isPopupUsed;
 	private File popupFile;
 
@@ -62,7 +62,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 */
 	public PolishPreprocessor() {
 		super();
-		this.abbreviationsGenerator = new AbbreviationsGenerator();
+		this.idGenerator = new IntegerIdGenerator();
 	}
 
 	/* (non-Javadoc)
@@ -84,19 +84,19 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			// init abbreviations of style-properties:
 			this.abbreviationsFile = new File( device.getBaseDir() + File.separatorChar 
 					+ "abbreviations.txt" );
-			HashMap abbreviations;
+			HashMap idsByAttribute;
 			if (this.abbreviationsFile.exists()) {
 				try {
-					abbreviations = FileUtil.readPropertiesFile( this.abbreviationsFile );
+					idsByAttribute = FileUtil.readPropertiesFile( this.abbreviationsFile );
 				} catch (IOException e) {
 					e.printStackTrace();
 					throw new BuildException("Unable to load abbreviations of style-attributes: " + e.toString() + ". Please try a clean rebuild.", e );
 				}
 			} else {
-				abbreviations = new HashMap();
+				idsByAttribute = new HashMap();
 			}
-			this.abbreviationsGenerator.setAbbreviationsMap(abbreviations);
-			this.preprocessor.getStyleSheet().setAttributesAbbreviations( abbreviations );
+			this.idGenerator.setIdsMap(idsByAttribute);
+			this.preprocessor.getStyleSheet().setAttributesIds( this.idGenerator.getIdsMap() );
 		}
 	}
 	
@@ -112,7 +112,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		
 		// write found abbreviations:
 		try {
-			FileUtil.writePropertiesFile( this.abbreviationsFile, this.abbreviationsGenerator.getAbbreviationsMap() );
+			FileUtil.writePropertiesFile( this.abbreviationsFile, this.idGenerator.getIdsMap() );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to write abbreviations of style-properties to [" + this.abbreviationsFile.getAbsolutePath() + "]: " + e.toString() + ". Please try a clean rebuild.", e );
@@ -181,7 +181,17 @@ public class PolishPreprocessor extends CustomPreprocessor {
 
 			
 			// check for style-property-usage:
-			int startPos = line.indexOf("style.getProperty(");
+			int startPos = -1;
+			String methodName = "style.getProperty(";
+			startPos = line.indexOf(methodName);
+			if (startPos == -1) {
+				methodName = "style.getIntProperty(";
+				startPos = line.indexOf(methodName);
+				if (startPos == -1) {
+					methodName = "style.getBooleanProperty(";
+					startPos = line.indexOf(methodName);
+				}
+			}
 			if (startPos != -1) {
 				int endPos = line.indexOf( ')', startPos );
 				if (endPos == -1) {
@@ -191,7 +201,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 							+ " This line is invalid: " + line );
 				}
 				
-				String property = line.substring( startPos + "style.getProperty(".length(),
+				String property = line.substring( startPos + methodName.length(),
 						endPos ).trim();
 				if (property.charAt(0) != '"' || property.charAt( property.length() - 1) != '"') {
 					throw new BuildException ("Invalid style-usage in class [" 
@@ -200,14 +210,14 @@ public class PolishPreprocessor extends CustomPreprocessor {
 							+ " This line is invalid: " + line );
 				}
 				String key = property.substring( 1, property.length() - 1);
-				String abbreviation = this.abbreviationsGenerator.getAbbreviation(
+				int id = this.idGenerator.getId(
 						key, this.preprocessor.hasSymbol("polish.css." + key) );
 				// check if this property is used at all:
-				if ( abbreviation == null ) {
+				if ( id == -1 ) {
 					//System.out.println("skipping attribute [" + key + "]");
 					continue;
 				}
-				line = TextUtil.replace( line, property, "\"" + abbreviation + "\"" );
+				line = TextUtil.replace( line, property, "" + id );
 				lines.setCurrent( line );
 				continue;
 			}

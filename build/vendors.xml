@@ -52,6 +52,11 @@
 	</vendor>
 
 	<vendor>
+		<name>Sagem</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
 		<name>Generic</name>
 		<features></features>
 	</vendor>

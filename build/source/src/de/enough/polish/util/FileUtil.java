@@ -168,8 +168,7 @@ public final class FileUtil {
 	 * The notation in the file will be [name]=[value]\n for each defined property.
 	 * 
 	 * @param file the file which should be created or overwritten
-	 * @param properties the properties which should be written. The
-	 * 	keys and values of the properties need to be Strings.
+	 * @param properties the properties which should be written. 
 	 * @throws IOException when there is an input/output error during the saving
 	 */
 	public static void writePropertiesFile( File file, HashMap properties ) 
@@ -178,8 +177,8 @@ public final class FileUtil {
 		Object[] keys = properties.keySet().toArray();
 		String[] lines = new String[ keys.length ];
 		for (int i = 0; i < lines.length; i++) {
-			String key = (String) keys[i];
-			String value = (String) properties.get( key );
+			String key = keys[i].toString();
+			String value = properties.get( key ).toString();
 			lines[i] = key.toString() + "=" + value.toString();
 		}
 		writeTextFile( file, lines );

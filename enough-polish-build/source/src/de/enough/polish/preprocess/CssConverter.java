@@ -97,12 +97,16 @@ public class CssConverter extends Converter {
 	}
 	private ArrayList referencedStyles;
 	private AbbreviationsGenerator abbreviationGenerator;
+	private CssAttributesManager attributesManager;
 	
 	/**
 	 * Creates a new CSS converter
+	 * 
+	 * @param attributesManager the manager for CSS attributes
 	 */
-	public CssConverter() {
+	public CssConverter( CssAttributesManager attributesManager ) {
 		this.colorConverter = new ColorConverter();
+		this.attributesManager = attributesManager;
 	}
 	
 
@@ -442,13 +446,12 @@ public class CssConverter extends Converter {
 		if (styleSheet.containsDynamicStyles()) {
 			codeList.add("\t\t, \"" + style.getSelector() + "\"\t// the selector of this style");
 		}
-		// close the style definition:
-		codeList.add("\t);");
 		
 		// now add all additional non standard-properties:
 		String[] groupNames = style.getGroupNames();
-		if (groupNames.length > 0) {
-			codeList.add("\tstatic {");
+		if (groupNames.length == 0) {
+			codeList.add( "\t\t, null, null\t// no additional attributes have been defined" );
+		} else {
 			// counting the number of special attributes:
 			int numberOfAttributes = 0;
 			for (int i = 0; i < groupNames.length; i++) {
@@ -456,7 +459,11 @@ public class CssConverter extends Converter {
 				group = style.getGroup(groupName);
 				numberOfAttributes += group.size();
 			}
-			codeList.add( "\t\t" + styleName + "Style.properties = new Hashtable( " + numberOfAttributes + " );" );
+			StringBuffer keyList = new StringBuffer();
+			keyList.append("new short[]{ ");
+			StringBuffer valueList = new StringBuffer();
+			valueList.append("new Object[]{ ");
+			int currentAttribute = 0;
 			for (int i = 0; i < groupNames.length; i++) {
 				String groupName = groupNames[i];
 				group = style.getGroup(groupName);
@@ -465,10 +472,7 @@ public class CssConverter extends Converter {
 				}
 				Set keys = group.keySet();
 				for (Iterator iter = keys.iterator(); iter.hasNext();) {
-					StringBuffer line = new StringBuffer();
-					line.append("\t\t")
-						.append( styleName )
-						.append("Style.properties.put( \"" );
+					currentAttribute++;
 					String key = (String) iter.next();
 					String value = (String) group.get( key );
 					String attributeName;
@@ -477,12 +481,22 @@ public class CssConverter extends Converter {
 					} else {
 						attributeName = groupName + "-" + key;
 					}
-					String attributeAbbreviation = styleSheet.getAttributeAbbreviation(attributeName);
-					if (attributeAbbreviation == null) {
-						System.err.println("Warning: CSS-attribute [" + attributeName + "] is not supported. Please check your [polish.css] file(s).");
-						line.append( attributeName );
+					short attributesId = styleSheet.getAttributeId(attributeName);
+					if (attributesId == -1) {
+						throw new BuildException("Invalid CSS: The CSS-attribute [" + attributeName + "] is not supported. Please check your [polish.css] file(s).");
+					}
+					keyList.append( attributesId );
+					if ( currentAttribute < numberOfAttributes) {
+						keyList.append(", ");
+					}
+					
+					int attributeType = CssAttribute.STRING;
+					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
+					if (attribute != null) {
+						attributeType = attribute.getType();
 					} else {
-						line.append( attributeAbbreviation );
+						// the attribute is not registered anywhere:
+						System.out.println("Recommendation: It is advised to register the CSS-attribute [" + attributeName + "] in the [custom-css-attributes.xml].");
 					}
 					// process columns-width value:
 					// remove all spaces and check for the star-value (e.g. "20, *"):
@@ -518,8 +532,9 @@ public class CssConverter extends Converter {
 					}
 					if (key.endsWith("style")) {
 						value = getStyleReference( value, style, styleSheet );
-					} else if (key.endsWith("color")) {
+					} else if (attributeType == CssAttribute.COLOR || key.endsWith("color")) {
 						value = getColor( value );
+						attributeType = CssAttribute.COLOR;
 					} else if (key.equals("url")) {
 						value = getUrl( value );
 					}
@@ -527,15 +542,48 @@ public class CssConverter extends Converter {
 						value = getUrl( value );
 					} else if (value.startsWith("style(")) {
 						value = getStyleReference( value, style, styleSheet );
-					}
-					line.append("\", \"")
+					}					
+					if (attributeType == CssAttribute.STRING || attributeType == CssAttribute.STYLE) {
+						valueList.append('"')
 						.append( value )
-						.append("\" );");
-					codeList.add( line.toString() );
+						.append('"');
+					} else if (attributeType == CssAttribute.COLOR 
+							|| attributeType == CssAttribute.INTEGER ) {
+						// check value:
+						if (attributeType == CssAttribute.INTEGER ) {
+							try {
+								Integer.parseInt( value );
+							} catch (NumberFormatException e) {
+								throw new BuildException("Invalid CSS: The attribute [" + attributeName + "] needs an integer value. The value [" + value + "] cannot be accepted.");
+							}
+						}
+						valueList.append( "new Integer( ")
+						.append( value )
+						.append(")");
+					} else if (attributeType == CssAttribute.BOOLEAN) {
+						if (value.equals("true") || value.equals("yes")) {
+							valueList.append( "Style.TRUE" );
+						} else if (value.equals("false") || value.equals("no")) {
+							valueList.append( "Style.FALSE" );
+						} else {
+							throw new BuildException("Invalid CSS Code: invalid value for the boolean attribute [" + attributeName + "]:  use either [true]/[yes] or [false]/[no].");
+						}
+					} else {
+						throw new BuildException("Error while processing CSS code. Encountered unknown attributes-type [" + attributeType + "]: please report this error to j2mepolish@enough.de.");
+					}
+					if ( currentAttribute < numberOfAttributes) {
+						valueList.append(", ");
+					}					
 				}
 			}
-			codeList.add("\t}");
-		} // if there are any non-standard attribute-groups		
+			keyList.append("}");
+			valueList.append("}");
+			codeList.add( "\t\t, " + keyList.toString());
+			codeList.add( "\t\t, " + valueList.toString());
+		} // if there are any non-standard attribute-groups
+		
+		// close the style definition:
+		codeList.add("\t);");
 	}
 
 

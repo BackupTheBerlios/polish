@@ -99,10 +99,8 @@ public class StyleSheet {
 	private boolean containsAfterStyle;
 
 	private HashMap cssPreprocessingSymbols;
-
 	private HashMap cssAttributes;
-
-	private HashMap attributesAbbreviations;
+	private HashMap attributesIds;
 	
 	/**
 	 * Creates a new empty style sheet
@@ -654,22 +652,39 @@ public class StyleSheet {
 		return (this.cssAttributes.get( name ) != null);
 	}
 
+
 	/**
-	 * Sets the abbreviations for CSS attributes.
-	 * @param map a HashMap containing all abbreviations.
+	 * Sets the IDs for CSS attributes.
+	 * 
+	 * @param idsByAttribute a HashMap containing all IDs
 	 */
-	public void setAttributesAbbreviations(HashMap map) {
-		this.attributesAbbreviations = map;
+	public void setAttributesIds(HashMap idsByAttribute) {
+		this.attributesIds = idsByAttribute;
 	}
 	
 	/**
-	 * Retrieves the abbreviation for the given attribute.
+	 * Retrieves the ID for the given attribute.
 	 * 
 	 * @param name the name of the attribute
-	 * @return either the found abbreviation or null when the attribute
+	 * @return either the found ID or -1 when the attribute
 	 * 	was not used in the preprocessed source code.
 	 */
-	public String getAttributeAbbreviation( String name ) {
-		return (String) this.attributesAbbreviations.get( name );
+	public short getAttributeId( String name ) {
+		/*
+		System.out.println("all known attributes:");
+		Object[] keys = this.attributesIds.keySet().toArray();
+		for (int i = 0; i < keys.length; i++) {
+			String key = (String) keys[i];
+			System.out.println("[" + key + "]=" + this.attributesIds.get( key ));
+		}
+		*/
+		Integer id = (Integer) this.attributesIds.get( name );
+		if (id == null) {
+			return -1;
+		} else {
+			return id.shortValue();
+		}
 	}
+
+
 }

@@ -1,0 +1,252 @@
+<!-- 
+	standards-css-attributes.xml defines all known CSS attributes. 
+	This file should not be changed.
+
+    Copyright (c) 2004 Robert Virkus / Enough Software
+
+    This file is part of J2ME Polish.
+
+    J2ME Polish is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    J2ME Polish is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Commercial licenses are also available, please
+    refer to the accompanying LICENSE.txt or visit
+    http://www.j2mepolish.org for details.
+
+-->
+<attributes>
+	<attribute
+		name="focused-style"
+		type="style"
+		appliesTo="Screen, Form, List, ChoiceGroup"
+		description="The name of the style for the currently focused item."
+		default="focused"
+	/>
+
+	<attribute
+		name="columns"
+		type="integer"
+		appliesTo="Screen, Form, List, ChoiceGroup"
+		description="The number of columns. This can be used to layout the items in a table."
+		default="1"
+	/>
+
+	<attribute
+		name="columns-width"
+		type="string"
+		appliesTo="Screen, Form, List, ChoiceGroup"
+		description="Either &quot;normal&quot;, &quot;equal&quot; or the width for each column in a comma separated list (e.g. &quot;columns-width: 60,60,10&quot;)."
+		default="normal"
+	/>
+
+	<attribute
+		name="icon-image"
+		type="string"
+		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
+		description="The URL of the image. The keyword %INDEX% can be used for adding the position of the icon to the name, e.g.&quot;icon-image: url(icon%INDEX%.png);&quot;."
+		default="none"
+	/>
+
+	<attribute
+		name="icon-image-align"
+		type="string"
+		appliesTo="List-Item, IconItem, ChoiceGroup-Item"
+		description="The position of the image relative to the text."
+		default="left"
+		values="left,right,top,bottom"
+	/>
+
+	<attribute
+		name="choice-color"
+		type="color"
+		appliesTo="ChoiceGroup-Item"
+		description="The color in which the check- or radio-box will be painted."
+		default="black"
+	/>
+
+	<attribute
+		name="checkbox-selected"
+		type="string"
+		appliesTo="ChoiceGroup-Item [MULTIPLE]"
+		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color."
+	/>
+
+	<attribute
+		name="checkbox-plain"
+		type="string"
+		appliesTo="ChoiceGroup-Item [MULTIPLE]"
+		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
+	/>
+	
+	<attribute
+		name="radiobox-selected"
+		type="string"
+		appliesTo="ChoiceGroup-Item [EXCLUSIVE]"
+		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color."
+	/>
+
+	<attribute
+		name="radiobox-plain"
+		type="string"
+		appliesTo="ChoiceGroup-Item [EXCLUSIVE]"
+		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
+	/>
+	
+
+	<attribute
+		name="popup-image"
+		type="string"
+		appliesTo="ChoiceGroup"
+		description="The URL to the image which should be shown in the closed popup-group. Per default a simple dropdown image will be used."
+	/>
+
+	<attribute
+		name="popup-color"
+		type="color"
+		appliesTo="ChoiceGroup"
+		description="The color for the arrow in the dropdown-image of a closed popup-group."
+		default="black"
+	/>
+
+	<attribute
+		name="popup-background-color"
+		type="color"
+		appliesTo="ChoiceGroup"
+		description="The color for the background in the dropdown-image of a closed popup-group."
+		default="white"
+	/>
+	
+	<attribute
+		name="menubar-color"
+		type="color"
+		appliesTo="Screen,List,Form,TextBox"
+		description="The color of the menu-bar. This overrides the settings in the predefined style &quot;menu&quot;. This attribute is only used, when the &quot;menu&quot; fullscreen setting is activated in the &quot;build.xml&quot; file."
+	/>
+
+	<attribute
+		name="gauge-image"
+		type="string"
+		appliesTo="Gauge"
+		description="The URL of the image."
+	/>
+	
+	<attribute
+		name="gauge-color"
+		type="color"
+		appliesTo="Gauge"
+		description="The color of the progress bar."
+		default="blue"
+	/>
+
+	<attribute
+		name="gauge-width"
+		type="integer"
+		appliesTo="Gauge"
+		description="The width of the progress bar."
+	/>
+
+	<attribute
+		name="gauge-height"
+		type="integer"
+		appliesTo="Gauge"
+		description="The height of the progress bar."
+	/>
+
+	<attribute
+		name="gauge-mode"
+		type="string"
+		appliesTo="Gauge"
+		description="In the continuous mode only the gauge-color will be used, whereas the chunked mode intersects the indicator in chunks. The setting is ignored when an image is provided."
+		default="chunked"
+		values="chunked,continuous"
+	/>
+	
+	<attribute
+		name="gauge-gap-color"
+		type="color"
+		appliesTo="Gauge"
+		description="The color of gaps between single chunks. Only used in the &quot;chunked&quot; gauge-mode or when a gauge with an indefinite range is used. In the latter case the provided color will be used to indicate the idle state."
+		default="white"
+	/>
+
+	<attribute
+		name="gauge-gap-width"
+		type="integer"
+		appliesTo="Gauge"
+		description="The width of gaps in pixels between single chunks. Only used in the &quot;chunked&quot; gauge-mode."
+		default="3"
+	/>
+
+	<attribute
+		name="gauge-chunk-width"
+		type="integer"
+		appliesTo="Gauge"
+		description="The width of single chunks in pixels. Only used in the &quot;chunked&quot; gauge-mode."
+	/>
+	
+	<attribute
+		name="gauge-show-value"
+		type="boolean"
+		appliesTo="Gauge"
+		description="Determines whether the current value should be shown."
+		default="true"
+		values="true,false"
+	/>
+
+	<attribute
+		name="gauge-value-align"
+		type="string"
+		appliesTo="Gauge"
+		description="Defines where the current value of the gauge should be displayed."
+		default="left"
+		values="left,right"
+	/>
+	
+	<attribute
+		name="textfield-width"
+		type="integer"
+		appliesTo="TextField, TextBox"
+		description="The minimum width of the textfield-element in pixels."
+	/>
+
+	<attribute
+		name="textfield-height"
+		type="integer"
+		appliesTo="TextField, TextBox"
+		description="The minimum height of the textfield-element in pixels. Defaults to the height of the used font."
+	/>
+
+	<attribute
+		name="datefield-width"
+		type="integer"
+		appliesTo="DateField"
+		description="The minimum width of the datefield-element in pixels."
+	/>
+
+	<attribute
+		name="datefield-height"
+		type="integer"
+		appliesTo="DateField"
+		description="The minimum height of the datefield-element in pixels. Defaults to the height of the used font."
+	/>
+
+	<attribute
+		name="ticker-step"
+		type="integer"
+		appliesTo="Ticker"
+		description="The number of pixels by which the ticker is shifted at each update."
+		default="2"
+	/>
+	
+</attributes>
