@@ -25,6 +25,7 @@
  */
 package de.enough.polish.preprocess;
 
+import de.enough.polish.Device;
 import de.enough.polish.util.StringList;
 
 import java.util.*;
@@ -43,10 +44,12 @@ import java.util.Set;
  */
 public final class ImportConverter {
 	
-	private final HashMap polishToMidp1;
-	private final HashMap polishToMidp2;
 	private final HashMap midp1ToPolish;
 	private final HashMap midp2ToPolish;
+	private final HashMap polishToMidp1;
+	private final HashMap polishToMidp2;
+	private final HashMap siemensColorGameApiToPolish;
+	private final HashMap polishToSiemensColorGameApi;
 	private final String completeMidp1;
 	private final String completeMidp2;
 	
@@ -75,6 +78,20 @@ public final class ImportConverter {
 		toPolish.put( "javax.microedition.lcdui.TextField", "de.enough.polish.ui.TextField");
 		toPolish.put( "javax.microedition.lcdui.Ticker", "de.enough.polish.ui.Ticker");
 		this.midp2ToPolish = toPolish;
+		
+		this.siemensColorGameApiToPolish = new HashMap( toPolish );
+		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas; import de.enough.polish.ui.StyleSheet" );
+		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer; import de.enough.polish.ui.StyleSheet" );
+		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager; import de.enough.polish.ui.StyleSheet" );
+		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer; import de.enough.polish.ui.StyleSheet" );
+		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet");
+		
+		this.polishToSiemensColorGameApi = new HashMap();
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer" );
+		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite");
 		
 		toPolish = new HashMap( toPolish );
 		toPolish.put( "javax.microedition.lcdui.game.GameCanvas", "de.enough.polish.ui.game.GameCanvas; import de.enough.polish.ui.StyleSheet");
@@ -136,26 +153,47 @@ public final class ImportConverter {
 		this.polishToMidp1 = toJavax;
 	}
 	
+	// this method is only available for testing purposes 
+	protected boolean processImports( boolean usePolishGui, boolean isMidp1, StringList sourceCode ) {
+		return processImports(usePolishGui, isMidp1, sourceCode, null, null );
+	}
+	
 	/**
 	 * Changes the import statements for the given file.
 	 * 
 	 * @param usePolishGui True when the polish-GUI should be used instead of the standard J2ME-GUI.
 	 * @param isMidp1 True when the MIDP/1-standard is supported, false when the MIDP/2-standard is supported.
 	 * @param sourceCode The source code
+	 * @param device the current device\
+	 * @param preprocessor the preprocessor with all variables and symbols
 	 * @return True when the source code has been changed,
 	 *         otherwise false is returned.
 	 */
-	public boolean processImports( boolean usePolishGui, boolean isMidp1, StringList sourceCode ) {
+	public boolean processImports( boolean usePolishGui, boolean isMidp1, StringList sourceCode, Device device, Preprocessor preprocessor ) {
+		boolean usePolishGameApi = false;
+		boolean supportsSiemensColorGameApi = false;
+		if (preprocessor != null) {
+			usePolishGameApi = "true".equals(preprocessor.getVariable("polish.usePolishGameApi"));
+			supportsSiemensColorGameApi = preprocessor.hasSymbol("polish.api.siemens-color-game-api");
+		}
 		HashMap translations;
 		if (usePolishGui) {
-			if (isMidp1) {
-				translations = this.midp1ToPolish;
+			if (isMidp1 || usePolishGameApi ) {
+				if (supportsSiemensColorGameApi) {
+					translations = this.siemensColorGameApiToPolish;
+				} else {
+					translations = this.midp1ToPolish;
+				}
 			} else {
 				translations = this.midp2ToPolish;
 			}
 		} else {
-			if (isMidp1) {
-				translations = this.polishToMidp1;
+			if (isMidp1 || usePolishGameApi ) {
+				if (supportsSiemensColorGameApi) {
+					translations = this.polishToSiemensColorGameApi;
+				} else {
+					translations = this.polishToMidp1;
+				}
 			} else {
 				translations = this.polishToMidp2;
 			}

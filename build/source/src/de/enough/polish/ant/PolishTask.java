@@ -1055,7 +1055,7 @@ public class PolishTask extends ConditionalTask {
 					if (!isInPolishPackage) {
 						sourceCode.reset();
 						// now replace the import statements:
-						boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode);
+						boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode, device, this.preprocessor );
 						if (changed) {
 							result = Preprocessor.CHANGED;
 						}

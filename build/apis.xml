@@ -130,6 +130,18 @@
 		<files>vscl-1.1.0.jar</files>
 		<path>import/vscl-1.1.0.jar</path>
 	</api>
+
+	<api>
+		<name>Siemens Color Game API</name>
+		<description>A predecessor of the MIDP/2.0 game API without
+		transformations.
+		</description>
+		<names>siemens-color-game-api</names>
+		<symbol>siemens-color-game-api</symbol>
+		<files>siemens-color-game-api.jar</files>
+		<path>import/siemens-color-game-api.jar</path>
+	</api>
+
 <!--
 	You can use this block to define a new API
 	( remove these XML-comments ):
