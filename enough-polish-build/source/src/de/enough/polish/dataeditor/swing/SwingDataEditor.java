@@ -222,34 +222,39 @@ implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
-		if ( source == this.menuQuit ) {
-			quit();
-		} else if (source == this.menuNewDefinition ) {
-			newDefinition();
-		} else if (source == this.menuSaveAll ) {
-			saveAll();
-		} else if (source == this.menuOpenDefinition ) {
-			openDefinition();
-		} else if (source == this.menuSaveDefinition ) {
-			saveDefinition();
-		} else if (source == this.menuSaveDefinitionAs ) {
-			saveDefinitionAs();
-		} else if (source == this.menuOpenData) {
-			openData();
-		} else if (source == this.menuSaveData ) {
-			saveData();
-		} else if (source == this.menuSaveDataAs ) {
-			saveDataAs();
-		} else if (source == this.menuAddEntry ) {
-			addDataEntry();
-		} else if (source == this.menuDeleteEntry ) {
-			deleteDataEntry();
-		} else if (source == this.menuMoveDownEntry ) {
-			moveDownDataEntry();
-		} else if (source == this.menuMoveUpEntry ) {
-			moveUpDataEntry();
-		} else if (source == this.menuAddType ) {
-			addDataType();
+		try {
+			if ( source == this.menuQuit ) {
+				quit();
+			} else if (source == this.menuNewDefinition ) {
+				newDefinition();
+			} else if (source == this.menuSaveAll ) {
+				saveAll();
+			} else if (source == this.menuOpenDefinition ) {
+				openDefinition();
+			} else if (source == this.menuSaveDefinition ) {
+				saveDefinition();
+			} else if (source == this.menuSaveDefinitionAs ) {
+				saveDefinitionAs();
+			} else if (source == this.menuOpenData) {
+				openData();
+			} else if (source == this.menuSaveData ) {
+				saveData();
+			} else if (source == this.menuSaveDataAs ) {
+				saveDataAs();
+			} else if (source == this.menuAddEntry ) {
+				addDataEntry();
+			} else if (source == this.menuDeleteEntry ) {
+				deleteDataEntry();
+			} else if (source == this.menuMoveDownEntry ) {
+				moveDownDataEntry();
+			} else if (source == this.menuMoveUpEntry ) {
+				moveUpDataEntry();
+			} else if (source == this.menuAddType ) {
+				addDataType();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.statusBar.setText( event.getActionCommand() + " failed: " + e.toString() );
 		}
 	}
 	
@@ -368,7 +373,7 @@ implements ActionListener
 		File file = openFile( ".definition", false );
 		if (file != null ) {
 			try {
-				if (file.getName().endsWith(".definition")) {
+				if (!file.getName().endsWith(".definition")) {
 					file = new File( file.getAbsolutePath() + ".definition" );  
 				}
 				this.dataManager.saveDefinition( file );
@@ -542,6 +547,15 @@ implements ActionListener
 		public String getDescription() {
 			return this.type;
 		}	
+	}
+
+	/**
+	 * Sets the status bar message.
+	 * 
+	 * @param message the message which should be shown on the status bar
+	 */
+	public void setStatusBar(String message) {
+		this.statusBar.setText( message );
 	}
 
 }

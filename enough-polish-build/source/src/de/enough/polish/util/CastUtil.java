@@ -76,4 +76,32 @@ public final class CastUtil {
 		return Integer.parseInt(value.toString());
 	}
 	
+	/**
+	 * Transforms the given byte value to an positive int between 0 and 255.
+	 * 
+	 * @param value the byte value
+	 * @return the unsigned integer value
+	 */
+	public static final int toUnsignedInt( byte value ) {
+		int intValue = value & 0x7F;
+		if ( value < 0 ) {
+			return ( intValue + 128 );
+		} else {
+			return intValue;
+		}
+	}
+	
+	/**
+	 * Transforms the given integer value to an byte-value representing a number between 0 and 255.
+	 * 
+	 * @param value the integer value between 0 and 255
+	 * @return the byte value representing that number
+	 */
+	public static final byte toUnsignedByte( int value ) {
+		if (value > 255 || value < 0) {
+			throw new IllegalArgumentException("Unsigned byte value range is between 0 and 255 - the value [" + value + "] is not valid." );
+		}
+		return (byte) value;
+	}
+
 }

@@ -47,6 +47,7 @@ public class DataEntry {
 	private CountTerm countTerm;
 	private byte[] data;
 	private final ArrayList dependentEntries;
+	private int[] numbersOfBytes;
 
 	/**
 	 * @param name
@@ -75,11 +76,28 @@ public class DataEntry {
 
 	public String[] getDataAsString() {
 		String[] result = new String[ this.count ];
-		int numberOfBytes = this.type.getNumberOfBytes();
-		for (int i = 0; i < this.count; i++) {
-			byte[] dataPart = new byte[ numberOfBytes ];
-			System.arraycopy( this.data, i * numberOfBytes, dataPart, 0, numberOfBytes );
-			result[i] = this.type.toString( dataPart ); 
+		if (!this.type.isDynamic()) {
+			int numberOfBytes = this.type.getNumberOfBytes();
+			for (int i = 0; i < this.count; i++) {
+				byte[] dataPart = new byte[ numberOfBytes ];
+				System.arraycopy( this.data, i * numberOfBytes, dataPart, 0, numberOfBytes );
+				result[i] = this.type.toString( dataPart ); 
+			}
+		} else {
+			if (this.data == null) {
+				for (int i = 0; i < this.count; i++) {
+					result[i] = "null";
+				}
+ 			} else {
+ 				int bytes = 0;
+ 				for (int i = 0; i < this.count; i++) {
+ 					int numberOfBytes = this.numbersOfBytes[i];
+ 					byte[] dataPart = new byte[ numberOfBytes ];
+ 					System.arraycopy( this.data, bytes, dataPart, 0, numberOfBytes );
+ 					result[i] = this.type.toString( dataPart );
+ 					bytes += numberOfBytes;
+ 				}
+ 			}
 		}
 		return result;
 	}
@@ -88,30 +106,60 @@ public class DataEntry {
 		if (this.count != 1) {
 			throw new IllegalStateException("Cannot set data as String for a DataEntry with a count different than one (" + this.count + ")" );
 		}
-		this.data = this.type.parseDataString( dataStr );
-		notifyDependentEntries();
+		setDataAsString( new String[]{ dataStr } );
 	}
 
 	public void setDataAsString( String[] dataStr ) {
-		int numberOfBytes = this.type.getNumberOfBytes();
-		for (int i = 0; i < this.count; i++) {
-			byte[] dataPart = this.type.parseDataString( dataStr[i] );
-			System.arraycopy( dataPart, 0, this.data, i * numberOfBytes, numberOfBytes );
+		if (dataStr.length != this.count ) {
+			throw new IllegalArgumentException("The to-be-set data has a different count [" + dataStr.length + "] than the allowed number [" + this.count + "].");
+		}
+		if (!this.type.isDynamic()) {
+			int numberOfBytes = this.type.getNumberOfBytes();
+			for (int i = 0; i < this.count; i++) {
+				byte[] dataPart = this.type.parseDataString( dataStr[i] );
+				System.arraycopy( dataPart, 0, this.data, i * numberOfBytes, numberOfBytes );
+			}
+		} else {
+			// this is a dynamic entry
+			int numberOfBytes = 0;
+			byte[][] dataParts = new byte[ this.count ][];
+			this.numbersOfBytes = new int[ this.count ];
+			for (int i = 0; i < this.count; i++) {
+				byte[] dataPart = this.type.parseDataString( dataStr[i] );
+				this.numbersOfBytes[i] = dataPart.length;
+				numberOfBytes += dataPart.length;
+				dataParts[i] = dataPart;
+			}
+			this.data = new byte[ numberOfBytes ];
+			int index = 0;
+			for (int i = 0; i < this.count; i++) {
+				byte[] dataPart = dataParts[i];
+				System.arraycopy( dataPart, 0, this.data, index, dataPart.length );
+				index += dataPart.length;
+			}
 		}
 		notifyDependentEntries();
 	}
 
 	public void setCount( int count ) {
-		this.count = count;
-		byte[] newData = new byte[ this.type.getNumberOfBytes() * count ];
-		if (this.data == null || this.data.length == 0) {
-			this.data = newData;
+		if (count == this.count) {
+			// ignore the setting of the same count:
 			return;
 		}
-		int minLength = Math.min( newData.length, this.data.length );
-		System.arraycopy( this.data, 0, newData, 0, minLength );
-		this.data = newData;
-		this.countTerm = null;
+		this.count = count;
+		if (!this.type.isDynamic()) {
+			byte[] newData = new byte[ this.type.getNumberOfBytes() * count ];
+			if (this.data == null || this.data.length == 0) {
+				this.data = newData;
+				return;
+			}
+			int minLength = Math.min( newData.length, this.data.length );
+			System.arraycopy( this.data, 0, newData, 0, minLength );
+			this.data = newData;
+			this.countTerm = null;
+		} else {
+			this.data = null;
+		}
 	}
 	
 	public void setCount( CountTerm term ) {
@@ -153,20 +201,30 @@ public class DataEntry {
 			this.countTerm = term;
 		}
 	}
-	
-	public void setData( byte[] data ) {
-		this.data = data;
-		notifyDependentEntries();
-	}
-	
+		
 	/**
 	 * @param data
 	 * @param offset
 	 */
 	public void setData(byte[] data, int offset) {
-		byte[] dataSection = new byte[ getNumberOfBytes() ];
-		System.arraycopy( data, offset, dataSection, 0 , dataSection.length );
-		setData( dataSection );
+		if (!this.type.isDynamic()) {
+			byte[] dataSection = new byte[ getNumberOfBytes() ];
+			System.arraycopy( data, offset, dataSection, 0 , dataSection.length );
+			this.data = dataSection;
+		} else {
+			// this is a dynamic type:
+			this.numbersOfBytes = new int[ this.count ];
+			int numberOfBytes = 0;
+			for (int i = 0; i < this.count; i++) {
+				int number = this.type.getNumberOfBytes( data, offset );
+				this.numbersOfBytes[i] = number;
+				numberOfBytes += number;
+			}
+			byte[] dataSection = new byte[ numberOfBytes ];
+			System.arraycopy( data, offset, dataSection, 0 , numberOfBytes );
+			this.data = dataSection;
+		}
+		notifyDependentEntries();
 	}
 	
 	public void setName( String name ) {
@@ -175,7 +233,11 @@ public class DataEntry {
 	
 	public void setType( DataType type ) {
 		this.type = type;
-		this.data = new byte[ type.getNumberOfBytes() * this.count ]; 
+		if (type.isDynamic()) {
+			this.data = null;
+		} else {
+			this.data = new byte[ type.getNumberOfBytes() * this.count ];
+		}
 	}
 	
 	public DataType getType() {
@@ -199,7 +261,20 @@ public class DataEntry {
 	}
 	
 	public int getNumberOfBytes() {
-		return this.count * this.type.getNumberOfBytes();
+		if (this.type.isDynamic()) {
+			if (this.numbersOfBytes == null) {
+				return 0;
+			} else {
+				int numberOfBytes = 0;
+				for (int i = 0; i < this.numbersOfBytes.length; i++) {
+					numberOfBytes += this.numbersOfBytes[i];
+				}
+				return numberOfBytes;
+			}
+		} else {
+			// this is a normal static type
+			return this.count * this.type.getNumberOfBytes();			
+		}
 	}
 	
 	public byte[] getData() {

@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.jdom.Element;
 
+import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -48,7 +49,7 @@ public class DataType {
 	public static final int SHORT_ID = 2;
 	public static final int INTEGER_ID = 3;
 	public static final int LONG_ID = 4;
-	public static final int STRING_ID = 5;
+	public static final int ASCII_STRING_ID = 5;
 	public static final int BOOLEAN_ID = 6;
 	public static final int USER_DEFINED_ID = 7;
 
@@ -56,7 +57,7 @@ public class DataType {
 	public static final DataType SHORT = new DataType("Short", SHORT_ID, 2);
 	public static final DataType INTEGER = new DataType("Integer", INTEGER_ID, 4);
 	public static final DataType LONG = new DataType("Long", LONG_ID, 8);
-	public static final DataType STRING = new DataType("String", STRING_ID, -1);
+	public static final DataType ASCII_STRING = new DataType("ASCII-String", ASCII_STRING_ID, -1);
 	public static final DataType BOOLEAN = new DataType("Boolean", BOOLEAN_ID, 1);
 
 	private final String name;
@@ -158,19 +159,46 @@ public class DataType {
 	public int getNumberOfBytes() {
 		return this.numberOfBytes;
 	}
+
+	/**
+	 * Retrieves the number of bytes for dynamic types, e.g. Strings
+	 * 
+	 * @param data the raw data
+	 * @param offset the offset where this dynamic type starts
+	 * @return the number of bytes for this type.
+	 */
+	public int getNumberOfBytes(byte[] data, int offset) {
+		if (this.type == ASCII_STRING_ID ) {
+			int numberOfChars = CastUtil.toUnsignedInt( data[ offset ] );
+			return (numberOfChars + 1);
+		} else if (this.type == USER_DEFINED_ID) {
+			int bytes = 0;
+			for (int i = 0; i < this.subtypes.length; i++) {
+				DataType subtype = this.subtypes[i];
+				if (subtype.isDynamic) {
+					bytes += subtype.getNumberOfBytes(data, offset + bytes);
+				} else {
+					bytes += subtype.numberOfBytes;
+				}
+			}
+			return bytes;
+		} else {
+			throw new IllegalStateException("The type [" + this.name + "] is either not supported or not a dynamic type.");
+		}
+	}
 	
 	public String toString( byte[] data ) {
 		switch (this.type) {
 			case BYTE_ID: 
 				return Byte.toString( data[0] );
 			case SHORT_ID:
-				short shortValue = (short) ( toUnsignedInt(data[0]) |  (data[1] << 8));
+				short shortValue = (short) ( CastUtil.toUnsignedInt(data[0]) |  (data[1] << 8));
 				return Short.toString(shortValue);
 			case INTEGER_ID:
-				int intValue = toUnsignedInt(data[0]) | (toUnsignedInt(data[1]) << 8) | (toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
+				int intValue = CastUtil.toUnsignedInt(data[0]) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
 				return Integer.toString(intValue);
 			case LONG_ID:
-				long longValue = toUnsignedInt(data[0]) | (toUnsignedInt(data[1]) << 8) | (toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
+				long longValue = CastUtil.toUnsignedInt(data[0]) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
 				return Long.toString(longValue);
 			case BOOLEAN_ID:
 				if (data[0] == 0) {
@@ -178,6 +206,8 @@ public class DataType {
 				} else {
 					return "true";
 				}
+			case ASCII_STRING_ID:
+				return new String( data, 1, CastUtil.toUnsignedInt(data[0]));
 			case USER_DEFINED_ID:
 				StringBuffer buffer = new StringBuffer();
 				int startIndex = 0;
@@ -227,6 +257,17 @@ public class DataType {
 			} else {
 				return new byte[]{ 0 };
 			}
+		case ASCII_STRING_ID:
+			int stringLength = value.length();
+			if (stringLength > 255 ) {
+				throw new IllegalArgumentException("The ASCII-String \"" + value + "\" has too many characters: maximum is 255 - this string has [" + stringLength + "] characters.");
+			}
+			//System.out.println("getting bytes data for string [" + value + "] with a length of " + stringLength );
+			data = new byte[ stringLength + 1];
+			data[0] = (byte) stringLength;
+			byte[] charData = value.getBytes();
+			System.arraycopy( charData, 0, data, 1, stringLength );
+			return data;
 		case USER_DEFINED_ID:
 			data = new byte[ this.numberOfBytes ];
 			String[] subvalues = TextUtil.split( value, ", ");
@@ -260,10 +301,10 @@ public class DataType {
 			case BYTE_ID: 
 				return data[0];
 			case SHORT_ID:
-				short shortValue = (short) ( toUnsignedInt( data[0] )  | (data[1] << 8));
+				short shortValue = (short) ( CastUtil.toUnsignedInt( data[0] )  | (data[1] << 8));
 				return shortValue;
 			case INTEGER_ID:
-				int intValue = toUnsignedInt( data[0] ) | (toUnsignedInt(data[1]) << 8) | (toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
+				int intValue = CastUtil.toUnsignedInt( data[0] ) | (CastUtil.toUnsignedInt(data[1]) << 8) | (CastUtil.toUnsignedInt(data[2]) << 16) | (data[3] << 24) ;
 				return intValue;
 			case LONG_ID:
 				long longValue = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24) ;
@@ -279,15 +320,6 @@ public class DataType {
 		}	
 	}
 	
-	protected static final int toUnsignedInt( byte value ) {
-		int intValue = value & 0x7F;
-		if ( value < 0 ) {
-			return ( intValue + 128 );
-		} else {
-			return intValue;
-		}
-	}
-
 	/**
 	 * @return
 	 */
@@ -311,7 +343,7 @@ public class DataType {
 	}
 	
 	public static DataType[] getDefaultTypes() {
-		return new DataType[]{ BYTE, SHORT, INTEGER, LONG, BOOLEAN, STRING };
+		return new DataType[]{ BYTE, SHORT, INTEGER, LONG, BOOLEAN, ASCII_STRING };
 	}
 	
 	/**

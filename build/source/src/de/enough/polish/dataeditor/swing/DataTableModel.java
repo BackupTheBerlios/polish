@@ -25,7 +25,6 @@
  */
 package de.enough.polish.dataeditor.swing;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -49,14 +48,14 @@ extends AbstractTableModel
 {
 	
 	private final DataManager dataManager;
-	private final JFrame parentFrame;
+	private final SwingDataEditor parentFrame;
 
 	/**
 	 * @param dataManager
 	 * @param parentFrame
 	 * 
 	 */
-	public DataTableModel( DataManager dataManager, JFrame parentFrame ) {
+	public DataTableModel( DataManager dataManager, SwingDataEditor parentFrame ) {
 		super();
 		this.dataManager = dataManager;
 		this.parentFrame = parentFrame;
@@ -131,45 +130,50 @@ extends AbstractTableModel
 		DataEntry entry = this.dataManager.getDataEntry( rowIndex );
 		String strValue = aValue.toString();
 		System.out.println("Setting value [" + strValue + "] for column [" + columnIndex + "].");
-		switch ( columnIndex ) {
-			case 0: 
-				entry.setName( strValue );
-				break;
-			case 1: 
-				entry.setCount( strValue, this.dataManager );
-				break;
-			case 2:
-				strValue = strValue.substring(0, strValue.indexOf(' '));
-				DataType type = this.dataManager.getDataType( strValue );
-				entry.setType(type);
-				break;
-			case 3:
-				if (entry.getCount() == 0) {
-					showErrorMessage("Unable to set data-value: count is 0.");
-					return;
-				} else if (entry.getCount() == 1) {
-					entry.setDataAsString( strValue );
-				} else {
-					String[] values = new String[ entry.getCount() ];
-					int startPos = strValue.indexOf( '[' );
-					for (int i = 0; i < values.length; i++) {
-						if (startPos == -1) {
-							showErrorMessage( "Unable to set multiple data \"" + strValue + "\" - missing opening parenthesis.");
-							return;
+		try {
+			switch ( columnIndex ) {
+				case 0: 
+					entry.setName( strValue );
+					break;
+				case 1: 
+					entry.setCount( strValue, this.dataManager );
+					break;
+				case 2:
+					strValue = strValue.substring(0, strValue.indexOf(' '));
+					DataType type = this.dataManager.getDataType( strValue );
+					entry.setType(type);
+					break;
+				case 3:
+					if (entry.getCount() == 0) {
+						showErrorMessage("Unable to set data-value: count is 0.");
+						return;
+					} else if (entry.getCount() == 1) {
+						entry.setDataAsString( strValue );
+					} else {
+						String[] values = new String[ entry.getCount() ];
+						int startPos = strValue.indexOf( '[' );
+						for (int i = 0; i < values.length; i++) {
+							if (startPos == -1) {
+								showErrorMessage( "Unable to set multiple data \"" + strValue + "\" - missing opening parenthesis.");
+								return;
+							}
+							int endPos = strValue.indexOf(']', startPos );
+							if (endPos == -1) {
+								showErrorMessage( "Unable to set multiple data \"" + strValue + "\" - missing closing parenthesis.");
+								return;
+							}
+							values[i] = strValue.substring( startPos + 1, endPos );
+							//System.out.println("values[" + i +"] = " + values[i] );
+							startPos = strValue.indexOf('[', endPos );
 						}
-						int endPos = strValue.indexOf(']', startPos );
-						if (endPos == -1) {
-							showErrorMessage( "Unable to set multiple data \"" + strValue + "\" - missing closing parenthesis.");
-							return;
-						}
-						values[i] = strValue.substring( startPos + 1, endPos );
-						System.out.println("values[" + i +"] = " + values[i] );
-						startPos = strValue.indexOf('[', endPos );
+						entry.setDataAsString( values );
 					}
-					entry.setDataAsString( values );
-				}
+			}
+			fireTableDataChanged();
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.parentFrame.setStatusBar("Unable to set value: " + e.toString() );
 		}
-		fireTableDataChanged();
 	}
 
 	/* (non-Javadoc)

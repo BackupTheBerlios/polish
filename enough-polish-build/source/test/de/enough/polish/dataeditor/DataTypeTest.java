@@ -42,20 +42,7 @@ public class DataTypeTest extends TestCase {
 	public DataTypeTest(String name) {
 		super(name);
 	}
-	
-	public void testToUnsignedInt() {
-		byte b = (byte) 0x0F;
-		assertEquals( 0x0F, DataType.toUnsignedInt( b ) );
-		b = (byte) 0xFF;
-		assertEquals( 0xFF, DataType.toUnsignedInt( b ) );
-		b = (byte) 0xF0;
-		assertEquals( 0xF0, DataType.toUnsignedInt( b ) );
-		b = (byte) 0xF1;
-		assertEquals( 0xF1, DataType.toUnsignedInt( b ) );
-		b = (byte) 0x1F;
-		assertEquals( 0x1F, DataType.toUnsignedInt( b ) );
-	}
-	
+
 	public void testByte() {
 		DataType type = DataType.BYTE;
 		byte[] data = type.parseDataString( "125" );

@@ -27,6 +27,8 @@ package de.enough.polish.dataeditor.swing;
 
 import java.awt.Container;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -36,7 +38,9 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -93,24 +97,50 @@ implements ActionListener
 		colModel.getColumn( 0 ).setPreferredWidth( 20 ); // index
 		colModel.getColumn( 1 ).setPreferredWidth( 80 ); // type
 	
+		JPanel namePanel = new JPanel( new GridLayout(1,2) );
+		JLabel nameLabel = new JLabel( "Type-Name:");
+		namePanel.add( nameLabel );
 		this.nameTextField = new JTextField( "NewTypeName" );
+		namePanel.add( this.nameTextField  );
 		this.addTypeButton.addActionListener( this );
 		this.deleteTypeButton.addActionListener( this );
+		JPanel addDeletePanel = new JPanel( new GridLayout(1,2) );
+		addDeletePanel.add( this.addTypeButton );
+		addDeletePanel.add( this.deleteTypeButton );
 		this.okButton.addActionListener( this );
 		this.cancelButton.addActionListener( this );
+		JPanel okCancelPanel = new JPanel( new GridLayout(1, 2) );
+		okCancelPanel.add( this.okButton );
+		okCancelPanel.add( this.cancelButton );
 		// add UI elements:
 		Container contentPane = this.getContentPane();
 		// set layout manager:
-		contentPane.setLayout( new GridLayout( 6, 1 ) );
-		contentPane.add( this.nameTextField );
-		contentPane.add( this.addTypeButton );
-		contentPane.add( this.deleteTypeButton );
+		GridBagLayout layout = new GridBagLayout();
+		contentPane.setLayout( layout );
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.weightx = 100D;
+		constraints.weighty = 100D;
+		constraints.fill = GridBagConstraints.BOTH;
+		layout.setConstraints(namePanel, constraints);
+		contentPane.add( namePanel );
+		constraints.gridy = 1;
+		layout.setConstraints(addDeletePanel, constraints);
+		contentPane.add( addDeletePanel );
+		constraints.gridy = 2;
+		constraints.gridheight = 5;
 		JScrollPane scrollPane = new JScrollPane(this.table );
+		layout.setConstraints(scrollPane, constraints);
 		contentPane.add( scrollPane );
-		contentPane.add( this.okButton );
-		contentPane.add( this.cancelButton );
+		constraints.gridy = 7;
+		constraints.gridheight = 1;
+		layout.setConstraints(okCancelPanel, constraints);
+		contentPane.add( okCancelPanel );
 		
-		setSize( 300, 600 );
+		setSize( 500, 550 );
 	}
 
 	/* (non-Javadoc)
