@@ -27,7 +27,6 @@ package de.enough.polish.font;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -35,7 +34,6 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -45,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
 import de.enough.polish.dataeditor.swing.SwingDataEditor;
+import de.enough.polish.swing.SwingApplication;
 import de.enough.polish.util.SwingUtil;
 
 /**
@@ -58,7 +57,7 @@ import de.enough.polish.util.SwingUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class FontCreator 
-extends JFrame
+extends SwingApplication
 implements ActionListener
 {
 
@@ -81,7 +80,7 @@ implements ActionListener
 	 * 
 	 */
 	public FontCreator() {
-		super();
+		super("FontEditor", true );
 		setJMenuBar( createMenuBar() );
 		super.addWindowListener( new MyWindowListener() );
 		setSize( 900, 600 );
@@ -111,18 +110,19 @@ implements ActionListener
 	private JMenuBar createMenuBar() {
 		// create menu-bar:
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add( createFileMenu() );
+		int shortcutKeyMask = getNativeShortcutKeyMask();
+		menuBar.add( createFileMenu(shortcutKeyMask) );
 		//menuBar.add( createEditMenu() );
 		return menuBar;
 	}
 	
-	private JMenu createFileMenu() {
+	private JMenu createFileMenu(int shortcutKeyMask) {
 		// create file-menu:
 		JMenu menu = new JMenu( "File" );
 		menu.setMnemonic('f');
  
 		JMenuItem item = new JMenuItem( "Save", 'S' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'S', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'S', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuSave = item;
@@ -140,7 +140,7 @@ implements ActionListener
 		menu.addSeparator();
 
 		item = new JMenuItem( "Open True-Type-Font", 't' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'O', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'O', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenTrueTypeFont = item;
@@ -154,13 +154,13 @@ implements ActionListener
 
 		*/
 		item = new JMenuItem( "Open PNG-Image", 'i' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'I', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'I', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenImage = item;
 		
 		item = new JMenuItem( "Open in Data Editor", 'e' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'E', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'E', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenInDataEditor = item;
@@ -168,7 +168,7 @@ implements ActionListener
 		menu.addSeparator();
 
 		item = new JMenuItem( "Quit", 'q' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'Q', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'Q', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuQuit = item;
@@ -342,7 +342,7 @@ implements ActionListener
 		}
 	}
 
-	private void quit() {
+	public void quit() {
 		//saveSettings();
 		System.exit( 0 );
 	}

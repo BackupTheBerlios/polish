@@ -40,7 +40,6 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -60,6 +59,8 @@ import de.enough.polish.dataeditor.DataEditorUI;
 import de.enough.polish.dataeditor.DataEntry;
 import de.enough.polish.dataeditor.DataManager;
 import de.enough.polish.dataeditor.DataType;
+import de.enough.polish.swing.NativeIntegration;
+import de.enough.polish.swing.SwingApplication;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.SwingUtil;
 
@@ -74,7 +75,7 @@ import de.enough.polish.util.SwingUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class SwingDataEditor 
-extends JFrame
+extends SwingApplication
 implements DataEditorUI, ActionListener
 {
 	private JMenuItem menuNewDefinition;	
@@ -122,8 +123,9 @@ implements DataEditorUI, ActionListener
 	 * @param doSystemExit true when the editor should call System.exit() whewn quitting.
 	 */
 	public SwingDataEditor( File definition, File data, boolean doSystemExit  ) {
-		super();
+		super("DataEditor", doSystemExit);
 		this.doSystemExit = doSystemExit;
+		NativeIntegration integration = null;
 		setJMenuBar( createMenuBar() );
 		super.addWindowListener( new MyWindowListener() );
 		this.dataManager = new DataManager();
@@ -139,7 +141,7 @@ implements DataEditorUI, ActionListener
 		this.dataTableModel = new DataTableModel( this.dataManager, this );
 		this.dataView = new DataView( this, this.dataTableModel, this.dataManager );
 		this.dataView.setPreferredScrollableViewportSize(new Dimension(900, 550));
-		JScrollPane scrollPane = new JScrollPane(this.dataView);
+		JScrollPane scrollPane = createScrollPane(this.dataView);
 		Container contentPane = getContentPane();
 		contentPane.setLayout( new BorderLayout() );
 		JPanel descriptionPanel = new JPanel( new BorderLayout() );
@@ -175,29 +177,27 @@ implements DataEditorUI, ActionListener
 	private JMenuBar createMenuBar() {
 		// create menu-bar:
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add( createFileMenu() );
-		menuBar.add( createEditMenu() );
-		menuBar.add( createCodeMenu() );
+		int shortcutKeyMask = getNativeShortcutKeyMask();
+		menuBar.add( createFileMenu(shortcutKeyMask) );
+		menuBar.add( createEditMenu(shortcutKeyMask) );
+		menuBar.add( createCodeMenu(shortcutKeyMask) );
 		return menuBar;
 	}
-	
-	
-
 
 	/**
 	 * @return
 	 */
-	private JMenu createFileMenu() {
+	private JMenu createFileMenu(int shortcutKeyMask) {
 		// create file-menu:
 		JMenu menu = new JMenu( "File" );
 		menu.setMnemonic('f');
 		JMenuItem item = new JMenuItem( "New", 'N' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'N', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'N', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuNewDefinition = item;
 		item = new JMenuItem( "Save All", 'A' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'S', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'S', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuSaveAll = item;
@@ -212,7 +212,7 @@ implements DataEditorUI, ActionListener
 		menu.add( item );
 		this.menuSaveDefinitionAs = item;
 		item = new JMenuItem( "Open Definition", 'o' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'O', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'O', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuOpenDefinition = item;
@@ -233,19 +233,19 @@ implements DataEditorUI, ActionListener
 		this.menuOpenData = item;
 		menu.addSeparator();
 		item = new JMenuItem( "Quit", 'q' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'Q', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'Q', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuQuit = item;
 		return menu;
 	}
 	
-	private JMenu createEditMenu() {
+	private JMenu createEditMenu(int shortcutKeyMask) {
 		// create edit-menu:
 		JMenu menu = new JMenu( "Edit" );
 		menu.setMnemonic('e');
 		JMenuItem item = new JMenuItem( "Add Entry", 'a' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'N', Event.CTRL_MASK + Event.SHIFT_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'N', shortcutKeyMask + Event.SHIFT_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuAddEntry = item;
@@ -254,18 +254,18 @@ implements DataEditorUI, ActionListener
 		menu.add( item );
 		this.menuDeleteEntry = item;
 		item = new JMenuItem( "Move Entry Down", 'd' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'D', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'D', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuMoveDownEntry = item;
 		item = new JMenuItem( "Move Entry Up", 'u' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'U', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'U', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuMoveUpEntry = item;
 		menu.addSeparator();
 		item = new JMenuItem( "Add Custom Type", 't' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'T', Event.CTRL_MASK + Event.SHIFT_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'T', shortcutKeyMask + Event.SHIFT_MASK ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuAddType = item;
@@ -273,14 +273,15 @@ implements DataEditorUI, ActionListener
 	}
 	
 	/**
+	 * @param shortcutKeyMask
 	 * @return
 	 */
-	private JMenu createCodeMenu() {
+	private JMenu createCodeMenu(int shortcutKeyMask) {
 		// create edit-menu:
 		JMenu menu = new JMenu( "Code" );
 		menu.setMnemonic('c');
 		JMenuItem item = new JMenuItem( "Generate Code", 'g' );
-		item.setAccelerator( KeyStroke.getKeyStroke( 'G', Event.CTRL_MASK ));
+		item.setAccelerator( KeyStroke.getKeyStroke( 'G', shortcutKeyMask ));
 		item.addActionListener( this );
 		menu.add( item );
 		this.menuGenerateCode = item;
@@ -586,6 +587,7 @@ implements DataEditorUI, ActionListener
 	
 	private void updateTitle() {
 		String title;
+		boolean isDirty = this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged();
 		if (this.definitionFile != null) {
 			if (this.dataFile != null) {
 				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName();
@@ -598,20 +600,21 @@ implements DataEditorUI, ActionListener
 				}
 			} else {
 				title = "J2ME Polish: Binary Data Editor: " + this.definitionFile.getName();
-				if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
+				if (isDirty) {
 					title += " *";
 				}
 			}
 		} else {
 			title = "J2ME Polish: Binary Data Editor";
-			if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
+			if (isDirty) {
 				title += " *";
 			}
 		}
+		setWindowDirtyFlag( isDirty );
 		setTitle( title );
 	}
 
-	private void quit() {
+	public void quit() {
 		if (this.dataManager.isDataChanged() || this.dataManager.isDefinitionChanged()) {
 			int result = JOptionPane.showConfirmDialog( this, "Should the changed data be saved before exiting?", "Changed Data", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE );
 			if (result == JOptionPane.CANCEL_OPTION) {
