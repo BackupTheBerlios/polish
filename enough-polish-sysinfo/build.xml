@@ -45,11 +45,14 @@
 			jarName="sysinfo.jar" 
 			jarUrl="${deploy-url}${polish.jarName}" 
 			name="MIDPSysInfo" 
-			vendorName="Grimo Software, Enough Software and Mark Schrijver" 
+			vendorName="Grimo Software" 
 			version="0.9.0"
 			profile="MIDP-1.0"
 			configuration="CLDC-1.0"
 	    />
+		<!--
+		, Enough Software and Mark Schrijver
+		-->
 		<!-- selection of supported devices -->
 		<deviceRequirements>
 			<requirement name="Identifier" value="Generic/multi"/>
@@ -75,12 +78,16 @@
 				</filter>
  			</jad>
 			<manifestFilter>
-				Manifest-Version, MIDlet-Name, MIDlet-Version, MIDlet-Vendor,
+				Manifest-Version, MIDlet-Name, 
 				MIDlet-1, MIDlet-2?, MIDlet-3?, MIDlet-4?, MIDlet-5?, 
+				MIDlet-Version, MIDlet-Vendor,
 				MicroEdition-Profile, MicroEdition-Configuration,
-				MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
 				MIDlet-Data-Size?
 			</manifestFilter>
+			<!--
+			unused manifest attributes:
+				MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
+			-->
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
 				<keep class="NokiaFullCanvasTest" />
