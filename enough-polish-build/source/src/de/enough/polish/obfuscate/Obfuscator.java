@@ -53,6 +53,7 @@ public abstract class Obfuscator {
 	protected Project project;
 	protected LibraryManager libraryManager;
 	protected File libDir;
+	protected ObfuscatorSetting setting;
 
 	/**
 	 * Creates a new obfuscator.
@@ -94,7 +95,7 @@ public abstract class Obfuscator {
 				if (setting.getClassPath() == null) {
 					Class obfuscatorClass = Class.forName( setting.getClassName() );
 					Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
-					obfuscator.init( project, libDir, libraryManager );
+					obfuscator.init( setting, project, libDir, libraryManager );
 					if (setting.hasParameters()) {
 						PopulateUtil.populate( obfuscator, setting.getParameters(), project.getBaseDir() );
 					}
@@ -118,7 +119,7 @@ public abstract class Obfuscator {
 							"de.enough.polish.obfuscate." 
 							+ obfuscatorName + "Obfuscator");
 				Obfuscator obfuscator = (Obfuscator) obfuscatorClass.newInstance();
-				obfuscator.init( project, libDir, libraryManager );
+				obfuscator.init( setting, project, libDir, libraryManager );
 				if (setting.hasParameters()) {
 					PopulateUtil.populate( obfuscator, setting.getParameters(), project.getBaseDir() );
 				}
@@ -136,7 +137,7 @@ public abstract class Obfuscator {
 			Class.forName("proguard.ProGuard");
 			// okay, proguard found:
 			Obfuscator obfuscator = new ProGuardObfuscator();
-			obfuscator.init( project, libDir, libraryManager );
+			obfuscator.init( setting, project, libDir, libraryManager );
 			if (setting.hasParameters()) {
 				PopulateUtil.populate( obfuscator, setting.getParameters(), project.getBaseDir() );
 			}
@@ -151,14 +152,16 @@ public abstract class Obfuscator {
 	 * Initialises this obfuscator.
 	 * The protected field project, libDir and libraryManager are set in the default implementation.
 	 * 
+	 * @param obfuscatorSetting the settings for this obfuscator
 	 * @param proj the Ant-project to which the obfuscator belongs to
 	 * @param lbDir the main library directory
 	 * @param lbManager the api manager 
 	 */
-	public void init(Project proj, File lbDir, LibraryManager lbManager) {
+	public void init( ObfuscatorSetting obfuscatorSetting, Project proj, File lbDir, LibraryManager lbManager) {
 		this.project = proj;
 		this.libDir = lbDir;
 		this.libraryManager = lbManager;
+		this.setting = obfuscatorSetting;
 	}
 	
 	/**
@@ -178,5 +181,9 @@ public abstract class Obfuscator {
 		}
 		classPathBuffer.append( bootPath );
 		return classPathBuffer.toString();
+	}
+	
+	public ObfuscatorSetting getSetting() {
+		return this.setting;
 	}
 }

@@ -113,6 +113,7 @@ public class BuildSetting {
 	private ArrayList compilers;
 	private String encoding = DEFAULT_ENCODING;
 	private boolean doPreverify = true;
+	private ArrayList postCompilers;
 	
 	/**
 	 * Creates a new build setting.
@@ -243,6 +244,14 @@ public class BuildSetting {
 		}
 		this.compilers.add( task );
 	}
+	
+	public void addConfiguredPostCompiler(PostCompilerSetting setting) {
+		if (this.postCompilers == null) {
+			this.postCompilers = new ArrayList();
+		}
+		this.postCompilers.add( setting );
+	}
+	
 	
 	public PreprocessorSetting[] getPreprocessors() {
 		if (this.preprocessors == null) { 
@@ -1307,6 +1316,21 @@ public class BuildSetting {
 	 */
 	public String getEncoding() {
 		return this.encoding;
+	}
+	
+	public PostCompilerSetting[] getPostCompilers() {
+		if (this.postCompilers == null) {
+			return new PostCompilerSetting[0]; 
+		} else {
+			return (PostCompilerSetting[]) this.postCompilers.toArray( new PostCompilerSetting[this.postCompilers.size()] );
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean doPostCompile() {
+		return (this.postCompilers != null);
 	}
 	
 }

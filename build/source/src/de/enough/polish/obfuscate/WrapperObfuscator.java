@@ -82,8 +82,8 @@ public class WrapperObfuscator extends Obfuscator {
     	Class obfuscatorClass = antClassLoader.loadClass( setting.getClassName() ); 
     	this.obfuscator = obfuscatorClass.newInstance();
     	// now init the line processor:
-    	Method initMethod = obfuscatorClass.getMethod("init", new Class[]{ Project.class, File.class, LibraryManager.class  } );
-    	initMethod.invoke( this.obfuscator, new Object[]{ project, libraryDir, libraryManager } );
+    	Method initMethod = obfuscatorClass.getMethod("init", new Class[]{ ObfuscatorSetting.class, Project.class, File.class, LibraryManager.class  } );
+    	initMethod.invoke( this.obfuscator, new Object[]{ setting, project, libraryDir, libraryManager } );
     	// retrives processing method:
     	this.obfuscateMethod = obfuscatorClass.getMethod("obfuscate", new Class[]{ Device.class, File.class, File.class, String[].class, Path.class } );
     	// set parameters if there are any:

@@ -36,6 +36,7 @@ import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
 import de.enough.polish.LibraryManager;
+import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.util.FileUtil;
 
 /**
@@ -81,8 +82,8 @@ public abstract class WtkPluginObfuscator extends Obfuscator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.obfuscate.Obfuscator#init(org.apache.tools.ant.Project, java.io.File, de.enough.polish.LibraryManager)
 	 */
-	public void init(Project proj, File lbDir, LibraryManager lbManager) {
-		super.init(proj, lbDir, lbManager);
+	public void init(  ObfuscatorSetting obfuscatorSetting, Project proj, File lbDir, LibraryManager lbManager) {
+		super.init(obfuscatorSetting, proj, lbDir, lbManager);
 		String wtkHome = proj.getProperty("wtk.home");
 		this.wtkBinPath = wtkHome + File.separator + "bin";
 		this.wtkLibPath = wtkHome + File.separator + "lib";

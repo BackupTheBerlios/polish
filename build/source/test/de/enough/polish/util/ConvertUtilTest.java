@@ -25,6 +25,8 @@
  */
 package de.enough.polish.util;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 
 /**
@@ -51,16 +53,21 @@ public class ConvertUtilTest extends TestCase {
 	}
 	
 	public void testConvert() {
-		assertEquals( new Long(1024), ConvertUtil.convert("1024b", "bytes") );
-		assertEquals( new Long(1024), ConvertUtil.convert("1024b", "b") );
-		assertEquals( new Double(1), ConvertUtil.convert("1024b", "kilobytes") );
-		assertEquals( new Double(1), ConvertUtil.convert("1024b", "kb") );
-		assertEquals( new Double( 1D / 1024 ), ConvertUtil.convert("1024b", "megabytes") );
-		assertEquals( new Double( 1D / 1024 ), ConvertUtil.convert("1024b", "mb") );
-		assertEquals( new Double( 1D / (1024*1024) ), ConvertUtil.convert("1024b", "gigabytes") );
-		assertEquals( new Double( 1D / (1024*1024) ), ConvertUtil.convert("1024b", "gb") );
-		assertEquals( "NOKIA", ConvertUtil.convert("nokia", "uppercase") );
-		assertEquals( "nokia", ConvertUtil.convert("noKIa", "lowercase") );
+		assertEquals( new Long(1024), ConvertUtil.convert("1024b", "bytes", null) );
+		assertEquals( new Long(1024), ConvertUtil.convert("1024b", "b", null) );
+		assertEquals( new Double(1), ConvertUtil.convert("1024b", "kilobytes", null) );
+		assertEquals( new Double(1), ConvertUtil.convert("1024b", "kb", null) );
+		assertEquals( new Double( 1D / 1024 ), ConvertUtil.convert("1024b", "megabytes", null) );
+		assertEquals( new Double( 1D / 1024 ), ConvertUtil.convert("1024b", "mb", null) );
+		assertEquals( new Double( 1D / (1024*1024) ), ConvertUtil.convert("1024b", "gigabytes", null) );
+		assertEquals( new Double( 1D / (1024*1024) ), ConvertUtil.convert("1024b", "gb", null) );
+		assertEquals( "NOKIA", ConvertUtil.convert("nokia", "uppercase", null) );
+		assertEquals( "nokia", ConvertUtil.convert("noKIa", "lowercase", null) );
+		HashMap environment = new HashMap();
+		environment.put( "polish.useDefaultPackage", "true");
+		assertEquals( "MyClass", ConvertUtil.convert("com.company.MyClass", "classname", environment ) );
+		environment.remove( "polish.useDefaultPackage" );
+		assertEquals( "com.company.MyClass", ConvertUtil.convert("com.company.MyClass", "classname", environment ) );
 	}
 
 }

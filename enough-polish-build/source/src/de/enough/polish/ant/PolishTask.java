@@ -63,6 +63,7 @@ import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
+import de.enough.polish.ant.build.PostCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -72,6 +73,7 @@ import de.enough.polish.emulator.Emulator;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
+import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.preprocess.CssAttribute;
 import de.enough.polish.preprocess.CssAttributesManager;
@@ -108,7 +110,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.4a";
+	private static final String VERSION = "1.2.4a<preview>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -185,6 +187,10 @@ public class PolishTask extends ConditionalTask {
 	private File polishHomeDir;
 
 	private ArrayList customPreprocessors;
+
+	private boolean doPostCompile;
+
+	private PostCompiler[] postCompilers;
 	
 
 	
@@ -337,6 +343,9 @@ public class PolishTask extends ConditionalTask {
 	private void execute(Device device, Locale locale, boolean hasExtensions) {
 		preprocess( device, locale );
 		compile( device );
+		if (this.doPostCompile) {
+			postCompile(device, locale);
+		}
 		if (this.buildSetting.isInCompilerMode()) {
 			if (this.buildSetting.doPreverifyInCompilerMode()) {
 				preverify( device, locale );
@@ -732,6 +741,18 @@ public class PolishTask extends ConditionalTask {
 		this.midp2BootClassPath = new Path( getProject(), this.buildSetting.getMidp2Path().getAbsolutePath());
 		this.midp2Cldc11BootClassPath = new Path( getProject(), this.buildSetting.getMidp2Cldc11Path().getAbsolutePath());
 		
+		// init postcompilers:
+		if (this.buildSetting.doPostCompile()) {
+			this.doPostCompile = true;
+			PostCompilerSetting[] postCompilerSettings = this.buildSetting.getPostCompilers();
+			this.postCompilers = new PostCompiler[ postCompilerSettings.length ];
+			for (int i = 0; i < postCompilerSettings.length; i++) {
+				PostCompilerSetting setting = postCompilerSettings[i];
+				this.postCompilers[i] = PostCompiler.getInstance(setting, getProject());
+			}
+		}
+		
+		
 		// init obfuscators:
 		if (this.buildSetting.doObfuscate()) {
 			ObfuscatorSetting[] obfuscatorSettings = this.buildSetting.getObfuscatorSettings();
@@ -989,6 +1010,7 @@ public class PolishTask extends ConditionalTask {
 			this.preprocessor.addVariable( "polish.version", this.infoSetting.getVersion() );
 			if (this.useDefaultPackage) {
 				this.preprocessor.addSymbol("polish.useDefaultPackage");
+				this.preprocessor.addVariable("polish.useDefaultPackage", "true");
 			}
 			long lastLocaleModification = 0;
 			TranslationManager translationManager = null;
@@ -1442,7 +1464,18 @@ public class PolishTask extends ConditionalTask {
 		if (this.polishLogger != null) {
 			this.polishLogger.setCompileMode( false );
 		}
-		
+	}
+	
+	private void postCompile( Device device, Locale locale ) {
+		File classDir = new File( device.getClassesDir() );
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		Project antProject = getProject();
+		for (int i = 0; i < this.postCompilers.length; i++) {
+			PostCompiler postCompiler = this.postCompilers[i];
+			if (postCompiler.getSetting().isActive(evaluator, antProject)) {
+				postCompiler.postCompile( classDir, device );
+			}
+		}
 	}
 
 
@@ -1453,7 +1486,6 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale
 	 */
 	private void obfuscate( Device device, Locale locale ) {
-		System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( true );
 		}
@@ -1475,7 +1507,8 @@ public class PolishTask extends ConditionalTask {
 		try {
 			JarUtil.jar( new File( device.getClassesDir()), sourceFile, false );
 		} catch (IOException e) {
-			throw new BuildException("Unable to prepare the obfuscation-jar: " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new BuildException("Unable to prepare the obfuscation-jar from [" + sourceFile.getAbsolutePath() + "] to [" + device.getClassesDir() + "]: " + e.getMessage(), e );
 		}
 		//System.out.println("Jaring took " + ( System.currentTimeMillis() - time) + " ms.");	
 		
@@ -1484,37 +1517,49 @@ public class PolishTask extends ConditionalTask {
 		
 		// start the obfuscation:
 		int maxIndex = this.obfuscators.length - 1;
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		Project antProject = getProject();
+		boolean hasBeenObfuscated = false;
 		for (int i=0; i <= maxIndex ; i++ ) {
 			Obfuscator obfuscator = this.obfuscators[i];
-			obfuscator.obfuscate(device, sourceFile, destFile, this.preserveClasses, bootPath );
-			if ( i != maxIndex ) {
-				sourceFile = destFile;
-				destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
-						+ File.separatorChar + "dest" + (i + 1) + ".jar");
+			if (obfuscator.getSetting().isActive(evaluator, antProject) ) {
+				if (!hasBeenObfuscated) {
+					System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
+					hasBeenObfuscated = true;
+				}
+				obfuscator.obfuscate(device, sourceFile, destFile, this.preserveClasses, bootPath );
+				if ( i != maxIndex ) {
+					sourceFile = destFile;
+					destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
+							+ File.separatorChar + "dest" + (i + 1) + ".jar");
+				}
 			}
 		}
 		
 		
 		//time = System.currentTimeMillis();
 		//unjar destFile to build/[vendor]/[name]/obfuscated:
-		try {
-			File targetDir;
-			if (this.buildSetting.isInCompilerMode()) {
-				targetDir = this.buildSetting.getCompilerDestDir();
-			} else {
-				String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
-				device.setClassesDir(targetPath);
-				targetDir = new File( targetPath );
+		if (hasBeenObfuscated) {
+			try {
+				File targetDir;
+				if (this.buildSetting.isInCompilerMode()) {
+					targetDir = this.buildSetting.getCompilerDestDir();
+				} else {
+					String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
+					device.setClassesDir(targetPath);
+					targetDir = new File( targetPath );
+				}
+				if (targetDir.exists()) {
+					// when the directory for extracting the obfuscated files
+					// exists, delete it so that no old classes are remaining
+					// in it:
+					FileUtil.delete( targetDir );
+				}
+				JarUtil.unjar( destFile,  targetDir  );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to extract the obfuscated jar file: " + e.getMessage(), e );
 			}
-			if (targetDir.exists()) {
-				// when the directory for extracting the obfuscated files
-				// exists, delete it so that no old classes are remaining
-				// in it:
-				FileUtil.delete( targetDir );
-			}
-			JarUtil.unjar( destFile,  targetDir  );
-		} catch (IOException e) {
-			throw new BuildException("Unable to prepare the obfuscation-jar: " + e.getMessage(), e );
 		}
 		
 		if (this.polishLogger != null) {

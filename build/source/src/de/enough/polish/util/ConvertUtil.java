@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -51,6 +52,7 @@ public final class ConvertUtil {
 	private static final Long GIGA_BYTES_KEY = new Long( GIGA_BYTES );
 	private static final String UPPERCASE = "uppercase";
 	private static final String LOWERCASE = "lowercase";
+	private static final String CLASSNAME = "classname";
 
 	private static final HashMap FUNCTIONS  = new HashMap();
 	static {
@@ -64,6 +66,7 @@ public final class ConvertUtil {
 		FUNCTIONS.put("gb", GIGA_BYTES_KEY);
 		FUNCTIONS.put(UPPERCASE, UPPERCASE );
 		FUNCTIONS.put(LOWERCASE, LOWERCASE );
+		FUNCTIONS.put(CLASSNAME, CLASSNAME );
 	}
 
 	/**
@@ -71,9 +74,10 @@ public final class ConvertUtil {
 	 * 
 	 * @param value the value, e.g. "200 kb"
 	 * @param targetFunction, the function-name, e.g. "bytes"
+	 * @param environment the environment with any defined variables
 	 * @return the converted value, e.g. new Long( 204800 )
 	 */
-	public final static Object convert( String value, String targetFunction ) 
+	public final static Object convert( String value, String targetFunction, Map environment ) 
 	{
 		Object function = FUNCTIONS.get( targetFunction ); 
 		if (function == null) {
@@ -91,8 +95,27 @@ public final class ConvertUtil {
 			return value.toUpperCase();
 		} else if (function == LOWERCASE) {
 			return value.toLowerCase();
+		} else if (function == CLASSNAME ) {
+			return convertClassName( value, environment );
 		}
 		throw new IllegalArgumentException("The target-function [" + targetFunction + "] is not supported.");
+	}
+
+	/**
+	 * Retrieves the classname either with full package declaration or without depending on whether the "polish.useDefaultPackage" variable is defined
+	 *  
+	 * @param value the fully qualified classname, e.g. de.enough.polish.ui.Screen
+	 * @param environment all defined variables
+	 * @return the classname, e.g. "Screen" when the default package should be used, otherwise the fully qualified name
+	 */
+	public static Object convertClassName(String value, Map environment) {
+		if (environment.get("polish.useDefaultPackage") != null) {
+			int lastDotIndex = value.lastIndexOf('.');
+			if (lastDotIndex != -1) {
+				return value.substring( lastDotIndex + 1 );
+			}
+		}
+		return value;
 	}
 
 	/**

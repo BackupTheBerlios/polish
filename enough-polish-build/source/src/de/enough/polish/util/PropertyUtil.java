@@ -102,7 +102,7 @@ public final class PropertyUtil {
 					// when functions are used, fix values can be used, too: 
 					originalValue = property;
 				}
-				Object intermediateValue = ConvertUtil.convert( originalValue, function);
+				Object intermediateValue = ConvertUtil.convert( originalValue, function, properties);
 				value = ConvertUtil.toString(intermediateValue);
 			} else {
 				value = (String) properties.get( property );

@@ -42,6 +42,7 @@ import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
 import de.enough.polish.LibraryManager;
+import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.LoggerThread;
@@ -85,8 +86,8 @@ public class DashoObfuscator extends Obfuscator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.obfuscate.Obfuscator#init(org.apache.tools.ant.Project, java.io.File, de.enough.polish.LibraryManager)
 	 */
-	public void init(Project proj, File lbDir, LibraryManager lbManager) {
-		super.init(proj, lbDir, lbManager);
+	public void init(ObfuscatorSetting obfuscatorSetting, Project proj, File lbDir, LibraryManager lbManager) {
+		super.init(obfuscatorSetting, proj, lbDir, lbManager);
 		String dashOHomePath = proj.getProperty("dasho.home");
 		if (dashOHomePath != null) {
 			File home = new File( dashOHomePath );
