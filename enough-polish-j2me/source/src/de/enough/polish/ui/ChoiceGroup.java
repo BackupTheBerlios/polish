@@ -915,10 +915,8 @@ implements Choice
 	
 	//#ifdef polish.usePopupItem
 	private void closePopup() {
-		System.out.println("Closing popup - yOffset=" + this.yOffset + " internalY=" + this.internalY);
 		this.isPopupClosed = true;
 		int difference = this.popupOpenY - this.yTopPos;
-		System.out.println("difference = " + difference );
 		if (difference > 0 && this.parent instanceof Container) {	
 			((Container)this.parent).yOffset += difference;
 		}
