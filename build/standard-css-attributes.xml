@@ -257,4 +257,12 @@
 		default="black"
 	/>
 	
+	<attribute
+		name="show-text-in-title"
+		type="boolean"
+		appliesTo="List"
+		description="Defines whether a list should show the text of the list-items in the title instead on the screen."
+		default="false"
+	/>
+	
 </attributes>

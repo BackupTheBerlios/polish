@@ -162,6 +162,13 @@ public class CssAttribute {
 	 * @throws BuildException when the given value is not allowed by this attribute.
 	 */
 	public void checkValue( String value ) {
+		if (isBoolean()) {
+			if ("true".equals( value ) || "false".equals( value )) {
+				return;
+			} else {
+				throw new BuildException( "Invalid CSS: the attribute [" + this.name + "] needs to be eiter \"true\" or \"false\" - the given value \"" + value + "\" is not supported."  );
+			}
+		}
 		if (this.allowedValues == null) {
 			return;
 		}
