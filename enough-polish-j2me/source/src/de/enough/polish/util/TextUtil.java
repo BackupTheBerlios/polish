@@ -177,7 +177,7 @@ public final class TextUtil {
 			}
 			//TODO rob maybe check whether the found string really fits into the line
 			list.add( new String( valueChars, startIndex, i - startIndex ) );
-			if (valueChars[i] == ' ') {
+			if (valueChars[i] == ' ' || valueChars[i] == '\t') {
 				startIndex = i + 1;
 			} else {				
 				startIndex = i;
