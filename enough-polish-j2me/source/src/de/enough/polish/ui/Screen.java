@@ -834,7 +834,17 @@ public abstract class Screen
 		}
 		//#endif
 	}
-		
+	
+	
+	/**
+	 * Just maps the event to the the keyPressed method.
+	 * 
+	 * @param keyCode the code of the key, which is pressed repeatedly
+	 */
+	protected void keyRepeated(int keyCode) {
+		keyPressed(keyCode);
+	}
+	
 	//#ifdef polish.useDynamicStyles	
 	/**
 	 * Retrieves the CSS selector for this screen.

@@ -682,9 +682,19 @@ public class Container extends Item {
 					}
 				}
 				return true;
-			}
-			
+			}	
 		}
+		// now allow a navigation within the container:
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				Item next = this.view.getNextItem(keyCode, gameAction);
+				if (next != null) {
+					focus( this.view.focusedIndex, next );
+					return true;
+				}
+				return false;
+			}
+		//#endif
 		boolean processed = false;
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
@@ -744,16 +754,34 @@ public class Container extends Item {
 			i = 1;
 		}
 		Item item = null;
+		boolean allowCycle = this.enableScrolling;
+		if (!forwardFocus && allowCycle) {
+			// when you scroll to the top and
+			// there is still space, do
+			// scroll first before cycling to the
+			// last item:
+			allowCycle = (this.yOffset == 0);
+		}
 		while (true) {
 			if (forwardFocus) {
 				i++;
 				if (i >= this.items.length) {
-					break;
+					if (allowCycle) {
+						allowCycle = false;
+						i = 0;
+					} else {
+						break;
+					}
 				}
 			} else {
 				i--;
 				if (i < 0) {
-					break;
+					if (allowCycle) {
+						allowCycle = false;
+						i = this.items.length - 1;
+					} else {
+						break;
+					}
 				}
 			}
 			item = this.items[i];

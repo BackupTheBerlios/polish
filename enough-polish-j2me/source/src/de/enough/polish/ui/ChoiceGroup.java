@@ -650,7 +650,9 @@ implements Choice, ItemCommandListener
 			ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
 			newSelected.select( true );
 			this.selectedIndex = elementNum;
-			focus( elementNum, newSelected );
+			if ( this.isInitialised ) {
+				focus( elementNum, newSelected );
+			}
 			//#ifdef polish.usePopupItem
 				if (this.isPopup) {
 					this.popupItem.setText( newSelected.getText() );

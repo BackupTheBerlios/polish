@@ -25,6 +25,8 @@
  */
 package de.enough.polish.ui.containerviews;
 
+
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Container;
@@ -44,15 +46,32 @@ import de.enough.polish.ui.Style;
  */
 public class DroppingView extends ContainerView {
 	
+	private final static int START_MAXIMUM = 30;
+	private final static int MAX_PERIODE = 5;
+	private final static int DEFAULT_DAMPING = 10;
+	private final static int SPEED = 10;
+	private boolean isDownwardsAnimation;
+	private int damping = DEFAULT_DAMPING;
+	private int currentPeriode;
+	private int maxPeriode = MAX_PERIODE;
+	private int currentMaximum;
+	private int startMaximum = START_MAXIMUM;
+	private int speed = SPEED;
+	private boolean animationInitialised;
+	
+	
 
 	private boolean isAnimationRunning;
 	private int[] yAdjustments;
+	
+	//#ifdef polish.css.droppingview-repeat-animation
+		private boolean repeatAnimation;
+	//#endif
 	/**
 	 * Creates new DroppingView
 	 */
 	public DroppingView() {
 		super();
-		System.out.println("new dropping view created");
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +96,7 @@ public class DroppingView extends ContainerView {
 				hasFocusableItem = true;
 			}
 			if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-				parent.focus( i, item );
+				focusItem( i, item );
 				height = item.getItemHeight( firstLineWidth, lineWidth );
 				width = item.getItemWidth( firstLineWidth, lineWidth );
 				this.focusFirstElement = false;
@@ -94,7 +113,9 @@ public class DroppingView extends ContainerView {
 		}
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;
-
+		if (!this.animationInitialised) {
+			initAnimation(myItems, this.yAdjustments);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -118,8 +139,13 @@ public class DroppingView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
 	 */
 	protected Item getNextItem(int keyCode, int gameAction) {
-		// TODO enough implement getNextItem
-		return null;
+		if (gameAction == Canvas.DOWN) {
+			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
+		} else if (gameAction == Canvas.UP) {
+			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
+		} else {
+			return null;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -127,34 +153,97 @@ public class DroppingView extends ContainerView {
 	 */
 	protected void setStyle(Style style) {
 		super.setStyle(style);
+		//#ifdef polish.css.droppingview-repeat-animation
+			Boolean repeat = style.getBooleanProperty("droppingview-repeat-animation");
+			if (repeat != null) {
+				this.repeatAnimation = repeat.booleanValue();
+			} else {
+				this.repeatAnimation = false;
+			}
+		//#endif
 	}
 	
+	//#ifdef polish.css.droppingview-repeat-animation
+	public void showNotify() {
+		if (this.repeatAnimation && this.yAdjustments != null) {
+			initAnimation( this.parentContainer.getItems(), this.yAdjustments );
+		}
+	}	
+	//#endif
+	
+	/**
+	 * Initialises the animation.
+	 *  
+	 * @param items the items.
+	 * @param yValues the y-adjustment-values
+	 */
+	private void initAnimation(Item[] items, int[] yValues) {
+		this.isDownwardsAnimation = true;
+		this.currentMaximum = this.startMaximum * -1;
+		this.currentPeriode = 0;
+		for (int i = 0; i < yValues.length; i++ ) {
+			yValues[i] = this.contentHeight; 
+		}
+		this.isAnimationRunning = true;
+		this.animationInitialised = true;
+	}
 
+
+	/**
+	 * Animates this view - the items appear to drop from above.
+	 * 
+	 * @return true when the view was really animated.
+	 */
 	public boolean animate() {
-		if (this.restartAnimation) {
-			for (int i = 0; i < this.yAdjustments.length; i++ ) {
-				this.yAdjustments[i] = this.contentHeight; 
-			}
-			this.isAnimationRunning = true;
-			this.restartAnimation = false;
-			return true;
-		} else if (this.isAnimationRunning) {
-			boolean continueAnimation = false;
-			for (int i = 0; i < this.yAdjustments.length; i++ ) {
-				int y = this.yAdjustments[i] - 10;
-				if (y < 0) {
-					y = 0;
-				} else {
-					continueAnimation = true;
+		if (this.isAnimationRunning) {
+			boolean startNextPeriode = true;
+			int max = this.currentMaximum;
+			if (this.isDownwardsAnimation) {
+				for (int i = 0; i < this.yAdjustments.length; i++ ) {
+					int y = this.yAdjustments[i] ;
+					if (y > max) {
+						y -= this.speed;
+						if (y < max) {
+							y = max;
+						}
+						startNextPeriode = false;
+					}
+					max += this.damping;
+					if (max > 0) {
+						max = 0;
+					}
+					this.yAdjustments[i] = y;
 				}
-				this.yAdjustments[i] = y;	
+			} else {
+				for (int i = 0; i < this.yAdjustments.length; i++ ) {
+					int y = this.yAdjustments[i];
+					if (y < max) {
+						y += this.speed;
+						if (y > max) {
+							y = max;
+						} 
+						startNextPeriode = false;
+					}
+					max -= this.damping;
+					if (max < 0) {
+						max = 0;
+					}
+					this.yAdjustments[i] = y;
+				}
 			}
-			if (!continueAnimation) {
-				this.isAnimationRunning = false;
+			if (startNextPeriode) {
+				this.currentPeriode ++;
+				if ((this.currentPeriode < this.maxPeriode) && (this.currentMaximum != 0)) {
+					this.currentMaximum = (this.currentMaximum * -2) / 3;
+					this.isDownwardsAnimation = !this.isDownwardsAnimation;
+				} else {
+					this.isAnimationRunning = false;
+				}
 			}
 			return true;
 		} else {
 			return false;
 		}
 	}
+
 }

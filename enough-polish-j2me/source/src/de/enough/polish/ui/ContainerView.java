@@ -103,10 +103,11 @@ public abstract class ContainerView {
 	 * or set the field "focusedIndex" yourself-
 	 * 
 	 * @param index the index of the item
-	 * @param items the items which are included in this view.
+	 * @param item the item which should be focused
 	 */
-	protected void focusItem( int index, Item[] items  ) {
+	protected void focusItem( int index, Item item  ) {
 		this.focusedIndex = index;
+		this.parentContainer.focus(index, item );
 	}
 	
 	/**
@@ -124,7 +125,7 @@ public abstract class ContainerView {
 	/**
 	 * Retrieves the next focusable item.
 	 * This helper method can be called by view-implementations.
-	 * The index of the item can be retrieved with the focusedIndex-field.#
+	 * The index of the currently focused item can be retrieved with the focusedIndex-field.
 	 * 
 	 * @param items the available items
 	 * @param foward true when a following item should be looked for,
@@ -133,6 +134,7 @@ public abstract class ContainerView {
 	 * @param allowCircle true when either the first focusable or the last focusable element
 	 *        should be returned when there is no focusable item in the given direction.
 	 * @return either the next focusable item or null when there is no such element
+	 * @see #focusItem(int, Item)
 	 */
 	protected Item getNextFocusableItem( final Item[] items, final boolean forward, int steps, boolean allowCircle ) {
 		int i = this.focusedIndex;
@@ -195,6 +197,17 @@ public abstract class ContainerView {
 	 */
 	public void showNotify() {
 		this.restartAnimation = true;
+	}
+	
+	/**
+	 * Retrieves the screen to which this view belongs to.
+	 * This is necessary since the getScreen()-method of item has only protected
+	 * access. The screen can be useful for setting the title for example. 
+	 * 
+	 * @return the screen in which this view is embedded.
+	 */
+	protected Screen getScreen() {
+		return this.parentContainer.getScreen();
 	}
 
 }
