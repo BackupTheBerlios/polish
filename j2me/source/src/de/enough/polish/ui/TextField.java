@@ -601,6 +601,7 @@ implements CommandListener
 	private String passwordText;
 	private boolean isPassword;
 	private long lastCaretSwitch;
+	private boolean enableDirectInput;
 
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
@@ -672,6 +673,11 @@ implements CommandListener
 			this.isPassword = true;
 			setString( text );
 		}
+		//#ifndef polish.hasPointerEvents
+			if ((constraints & NUMERIC) == NUMERIC) {
+				this.enableDirectInput = true;
+			}
+		//#endif
 	}
 	
 	/**
@@ -1118,11 +1124,35 @@ implements CommandListener
 		}
 		// ignore all command keys:
 		//#ifdef polish.hasCommandKeyEvents
-			//#foreach key in polish.CommandKeys
+			//#foreach key in polish.keys.CommandKeys
 				//#= if ( keyCode == ${ key } ) {
 				//#		return false;
 				//# }
 			//#next key
+		//#endif
+		//#ifndef polish.hasPointerEvents
+			if (this.enableDirectInput) {
+				int currentLength = (this.text == null ? 0 : this.text.length());
+				if (currentLength != this.maxSize && 
+						keyCode >= Canvas.KEY_NUM0 && 
+						keyCode <= Canvas.KEY_NUM9) 
+				{	
+					String newText = (this.text == null ? "" : this.text ) + (keyCode - 48);
+					setString( newText );
+					return true;
+				}
+				if (currentLength > 0) {
+					//#ifdef polish.key.ClearKey:defined
+						//#= if ((keyCode == ${polish.key.ClearKey}) || (gameAction == Canvas.LEFT)) {
+					//#else
+						if (gameAction == Canvas.LEFT) {						
+					//#endif
+						setString( this.text.substring(0, currentLength - 1) );
+						return true;
+					}
+				}				
+				return false;
+			}
 		//#endif
 		showTextBox();
 		return true;
