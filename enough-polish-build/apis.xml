@@ -58,7 +58,7 @@
 
 	<api>
 		<name>3D API</name>
-		<description>The 3D API provides 3D functions for J2ME.
+		<description>The Mobile 3D Graphics API provides 3D functions for J2ME.
 		</description>
 		<names>3d, 3d-api,3dapi, JSR-184, JSR184</names>
 		<symbol>3dapi</symbol>
