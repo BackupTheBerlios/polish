@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 12:22:24 PM.
+ * Created on Feb 24, 2005 at 11:33:13 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,11 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
-
-import org.eclipse.jface.viewers.LabelProvider;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+package de.enough.polish.plugin.eclipse.css.model.dummy;
 
 /**
  * <p></p>
@@ -39,13 +35,39 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssLabelProvider extends LabelProvider{
-
-	public String getText(Object object){
-		if(object instanceof ASTNode){
-			return ((ASTNode)object).toString();
-		}
-		return "NoName";
+abstract public class DummyElement{
+	
+	protected DummyElement parent;
+	protected String name;
+	
+	public DummyElement(){
+		this.parent = null;
+		this.name = "DummyElement";
 	}
-
+	
+	/**
+	 * @return Returns the parent.
+	 */
+	public DummyElement getParent() {
+		return this.parent;
+	}
+	/**
+	 * @param parent The parent to set.
+	 */
+	public void setParent(DummyElement parent) {
+		this.parent = parent;
+	}
+	
+	/**
+	 * @return Returns the name.
+	 */
+	public String getName() {
+		return this.name;
+	}
+	/**
+	 * @param name The name to set.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 12:22:24 PM.
+ * Created on Feb 28, 2005 at 10:25:38 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,11 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
-
-import org.eclipse.jface.viewers.LabelProvider;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+package de.enough.polish.plugin.eclipse.css.model;
 
 /**
  * <p></p>
@@ -35,17 +31,44 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssLabelProvider extends LabelProvider{
+public class Section extends ASTNode {
 
-	public String getText(Object object){
-		if(object instanceof ASTNode){
-			return ((ASTNode)object).toString();
-		}
-		return "NoName";
+	private String sectionName;
+	
+	public Section(){
+		super();
+		this.sectionName = "";
 	}
-
+	
+	//TODO: maybe it is better to have a generic name for traversal methods...
+	public void addAttributeValuePair(AttributeValuePair attributeValuePair){
+		if(attributeValuePair == null){
+			System.out.println("ERROR:Section:addAttributeValuePair():Parameter attributeValuePair is null");
+			return;
+		}
+		this.children.add(attributeValuePair);
+		attributeValuePair.setParent(this);
+	}
+	
+	/**
+	 * @return Returns the sectionName.
+	 */
+	public String getSectionName() {
+		return this.sectionName;
+	}
+	
+	/**
+	 * @param sectionName The sectionName to set.
+	 */
+	public void setSectionName(String sectionName) {
+		this.sectionName = sectionName;
+	}
+	
+	public String toString(){
+		return this.sectionName;
+	}
 }

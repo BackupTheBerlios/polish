@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 12:22:24 PM.
+ * Created on Feb 28, 2005 at 10:56:19 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,11 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
-
-import org.eclipse.jface.viewers.LabelProvider;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+package de.enough.polish.plugin.eclipse.css.model;
 
 /**
  * <p></p>
@@ -35,17 +31,16 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssLabelProvider extends LabelProvider{
+public interface IModelVisitor {
 
-	public String getText(Object object){
-		if(object instanceof ASTNode){
-			return ((ASTNode)object).toString();
-		}
-		return "NoName";
-	}
-
+	public void visit(ASTNode astNode);
+	public void visit(StyleSheet styleSheet);
+	public void visit(Comment comment);
+	public void visit(Section section);
+	public void visit(StyleSection styleSection);
+	public void visit(AttributeValuePair attributeValuePair);
 }

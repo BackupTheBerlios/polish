@@ -30,9 +30,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 
-import de.enough.polish.plugin.eclipse.css.model.DummyChild;
-import de.enough.polish.plugin.eclipse.css.model.DummyElement;
-import de.enough.polish.plugin.eclipse.css.model.DummyParent;
+import de.enough.polish.plugin.eclipse.css.model.dummy.DummyChild;
+import de.enough.polish.plugin.eclipse.css.model.dummy.DummyElement;
+import de.enough.polish.plugin.eclipse.css.model.dummy.DummyParent;
 
 /**
  * <p></p>

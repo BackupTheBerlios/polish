@@ -32,9 +32,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import de.enough.polish.plugin.eclipse.css.CssEditorPlugin;
-import de.enough.polish.plugin.eclipse.css.model.DummyChild;
-import de.enough.polish.plugin.eclipse.css.model.DummyElement;
-import de.enough.polish.plugin.eclipse.css.model.DummyParent;
+import de.enough.polish.plugin.eclipse.css.model.dummy.DummyChild;
+import de.enough.polish.plugin.eclipse.css.model.dummy.DummyElement;
+import de.enough.polish.plugin.eclipse.css.model.dummy.DummyParent;
 
 /**
  * <p></p>

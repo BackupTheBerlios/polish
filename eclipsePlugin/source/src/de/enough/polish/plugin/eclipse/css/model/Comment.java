@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 12:22:24 PM.
+ * Created on Feb 28, 2005 at 10:24:41 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,11 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
-
-import org.eclipse.jface.viewers.LabelProvider;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+package de.enough.polish.plugin.eclipse.css.model;
 
 /**
  * <p></p>
@@ -35,17 +31,33 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssLabelProvider extends LabelProvider{
+public class Comment extends ASTNode{
 
-	public String getText(Object object){
-		if(object instanceof ASTNode){
-			return ((ASTNode)object).toString();
-		}
-		return "NoName";
+	private String text;
+
+	
+	public Comment(){
+		super();
 	}
-
+	/**
+	 * @return Returns the text.
+	 */
+	public String getText() {
+		return this.text;
+	}
+	
+	/**
+	 * @param text The text to set.
+	 */
+	public void setText(String text) {
+		this.text = text;
+	}
+	
+	public String toString(){
+		return "Comment";
+	}
 }

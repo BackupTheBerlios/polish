@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 10:52:36 AM.
+ * Created on Feb 28, 2005 at 10:27:08 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -25,62 +25,56 @@
  */
 package de.enough.polish.plugin.eclipse.css.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * <p></p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class DummyParent extends DummyElement {
+public class AttributeValuePair extends ASTNode {
 
-	private List children;
+	private String attribute;
+	private String value;
 	
-	
-	public DummyParent(){
-		this.name = "DummyParent";
-		this.children  = new ArrayList();
-		this.parent = null;
-	}
-	
-	public DummyParent(String name, DummyElement parent){
-		this.name = (name != null) ? name : "DummyParent";
-		this.children  = new ArrayList();
-		this.parent = parent;
+	public AttributeValuePair(){
+		super();
+		this.attribute = "";
+		this.value = "";
 	}
 	
 	/**
-	 * @return Returns the children.
+	 * @return Returns the attribute.
 	 */
-	public List getChildren() {
-		return this.children;
+	public String getAttribute() {
+		return this.attribute;
 	}
+	
 	/**
-	 * @param children The children to set.
+	 * @param attribute The attribute to set.
 	 */
-	public void setChildren(List children) {
-		this.children = children;
+	public void setAttribute(String attribute) {
+		this.attribute = attribute;
+	}
+	
+	/**
+	 * @return Returns the value.
+	 */
+	public String getValue() {
+		return this.value;
+	}
+	
+	/**
+	 * @param value The value to set.
+	 */
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	public String toString(){
-		StringBuffer result = new StringBuffer();
-		result.append(this.name);
-		result.append(":[");
-		Iterator iterator = this.children.iterator();
-		DummyElement dummyElement = null;
-		while(iterator.hasNext()){
-			dummyElement = (DummyElement) iterator.next();
-			result.append(dummyElement);
-			result.append(",");
-		}
-		result.append("]");
-		return result.toString();
+		return this.attribute+":"+this.value;
 	}
 }

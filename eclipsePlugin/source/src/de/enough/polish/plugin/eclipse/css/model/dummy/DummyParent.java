@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 10:12:30 AM.
+ * Created on Feb 24, 2005 at 10:52:36 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,13 +23,11 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.css.editor;
+package de.enough.polish.plugin.eclipse.css.model.dummy;
 
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-
-import de.enough.polish.plugin.eclipse.css.model.ASTNode;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p></p>
@@ -41,29 +39,48 @@ import de.enough.polish.plugin.eclipse.css.model.ASTNode;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssOutlinePage extends ContentOutlinePage {
+public class DummyParent extends DummyElement {
 
-	//FIXME: We need our own model here
-	public CssOutlinePage(){
-		super();
+	private List children;
+	
+	
+	public DummyParent(){
+		this.name = "DummyParent";
+		this.children  = new ArrayList();
+		this.parent = null;
 	}
 	
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		
-		CssContentProvider cssContentProvider = new CssContentProvider();
-		
-		TreeViewer viewer= getTreeViewer();
-		viewer.setContentProvider(cssContentProvider);
-		viewer.setLabelProvider(new CssLabelProvider());
-		viewer.addSelectionChangedListener(this);
-		ASTNode rootNode = cssContentProvider.initialInput();
-		viewer.setInput(rootNode);
+	public DummyParent(String name, DummyElement parent){
+		this.name = (name != null) ? name : "DummyParent";
+		this.children  = new ArrayList();
+		this.parent = parent;
 	}
 	
-	/*
-	public void setInput(IEditorInput editorInput){
-		System.out.println("setInput");
+	/**
+	 * @return Returns the children.
+	 */
+	public List getChildren() {
+		return this.children;
 	}
-	*/
+	/**
+	 * @param children The children to set.
+	 */
+	public void setChildren(List children) {
+		this.children = children;
+	}
+	
+	public String toString(){
+		StringBuffer result = new StringBuffer();
+		result.append(this.name);
+		result.append(":[");
+		Iterator iterator = this.children.iterator();
+		DummyElement dummyElement = null;
+		while(iterator.hasNext()){
+			dummyElement = (DummyElement) iterator.next();
+			result.append(dummyElement);
+			result.append(",");
+		}
+		result.append("]");
+		return result.toString();
+	}
 }

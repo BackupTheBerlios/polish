@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 11:33:13 AM.
+ * Created on Feb 28, 2005 at 10:21:39 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -31,43 +31,44 @@ package de.enough.polish.plugin.eclipse.css.model;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-abstract public class DummyElement{
-	
-	protected DummyElement parent;
-	protected String name;
-	
-	public DummyElement(){
-		this.parent = null;
-		this.name = "DummyElement";
+public class StyleSheet extends ASTNode {
+
+	public StyleSheet(){
+		super();
 	}
 	
-	/**
-	 * @return Returns the parent.
-	 */
-	public DummyElement getParent() {
-		return this.parent;
-	}
-	/**
-	 * @param parent The parent to set.
-	 */
-	public void setParent(DummyElement parent) {
-		this.parent = parent;
+	public void addComment(Comment comment){
+		if(comment == null){
+			System.out.println("ERROR:StyleSection:addComment():Parameter comment is null");
+			return;
+		}
+		this.children.add(comment);
+		comment.setParent(this);
 	}
 	
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return this.name;
+	public void addSection(Section section){
+		if(section == null){
+			System.out.println("ERROR:StyleSection:addSection():Parameter section is null");
+			return;
+		}
+		this.children.add(section);
+		section.setParent(this);
 	}
-	/**
-	 * @param name The name to set.
-	 */
-	public void setName(String name) {
-		this.name = name;
+	
+	public void addStyleSection(StyleSection styleSection){
+		if(styleSection == null){
+			System.out.println("ERROR:StyleSection:addStyleSection():Parameter styleSection is null");
+			return;
+		}
+		this.children.add(styleSection);
+		styleSection.setParent(this);
+	}
+	
+	public String toString(){
+		return "StyleSheet";
 	}
 }

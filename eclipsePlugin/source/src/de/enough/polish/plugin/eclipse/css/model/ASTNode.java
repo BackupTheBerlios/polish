@@ -6,15 +6,50 @@
  */
 package de.enough.polish.plugin.eclipse.css.model;
 
-/**
- * @author ricky
- */
-public class ASTNode {
+import java.util.ArrayList;
+import java.util.List;
+
+
+abstract public class ASTNode {
+	
+	protected ASTNode parent;
+	protected List children;
+	
+	public ASTNode(){
+		this.parent = null;
+		this.children = new ArrayList();
+	}
+	
+	public void accept(IModelVisitor modelVisitor){
+		modelVisitor.visit(this);
+	}
+	
+	/**
+	 * @return Returns the parent.
+	 */
+	public ASTNode getParent() {
+		return this.parent;
+	}
 	
 	
+	/**
+	 * @param parent The parent to set.
+	 */
+	public void setParent(ASTNode parent) {
+		this.parent = parent;
+	}
 	
-/*
- * 
- * @author ricky
- */
+	
+	/**
+	 * @return Returns the children.
+	 */
+	public List getChildren() {
+		return this.children;
+	}
+	/**
+	 * @param children The children to set.
+	 */
+	public void setChildren(List children) {
+		this.children = children;
+	}
 }

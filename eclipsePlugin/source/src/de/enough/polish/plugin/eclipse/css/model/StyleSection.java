@@ -1,5 +1,5 @@
 /*
- * Created on Feb 24, 2005 at 10:56:29 AM.
+ * Created on Feb 28, 2005 at 10:26:01 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -31,42 +31,38 @@ package de.enough.polish.plugin.eclipse.css.model;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Feb 24, 2005 - ricky creation
+ *        Feb 28, 2005 - ricky creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class DummyChild extends DummyElement{
+public class StyleSection extends Section {
+
+	private String parentStyle;
 	
-	private int value;
-	
-	public DummyChild(String name, int value, DummyElement parent) {
-		this.name = (name != null) ? name : "DummyChild";
-		this.value = value;
-		this.parent = parent;
+	public StyleSection(){
+		super();
 	}
-	
-	public DummyChild() {
-		this.name = "DummyChild";
-		this.value = 0;
-		this.parent = null;
-	}
-	
-	
 	/**
-	 * @return Returns the name.
+	 * @return Returns the parentStyle.
 	 */
-	public int getValue() {
-		return this.value;
+	public String getParentStyle() {
+		return this.parentStyle;
 	}
-	
 	/**
-	 * @param value The name to set.
+	 * @param parentStyle The parentStyle to set.
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setParentStyle(String parentStyle) {
+		this.parentStyle = parentStyle;
 	}
 	
-	public String toString(){
-		return this.name;
+	public void addSection(Section section){
+		if(section == null){
+			System.out.println("ERROR:StyleSection:addSection():Parameter section is null");
+			return;
+		}
+		this.children.add(section);
+		section.setParent(this);
 	}
+	
+	
 }
