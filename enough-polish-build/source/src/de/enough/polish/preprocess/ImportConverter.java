@@ -278,7 +278,7 @@ public final class ImportConverter {
 				}
 				if ( useDefaultPackage ) {
 					if ( replacement != null ) {
-						if ( textFileManager.containsImport(replacement) ) {
+						if ( replacement.length() == 0 || textFileManager.containsImport(replacement) ) {
 							sourceCode.setCurrent( "//" + line);
 						} else {
 							sourceCode.setCurrent("import " + replacement + ";");
