@@ -293,6 +293,7 @@
 		<variable name="index.h1" value="h1index" />
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
+		<variable name="index.h4" value="h4index" />
 	</webprocessor>
 	<!-- created & copy the device database -->
 	<deviceExport />
@@ -310,6 +311,7 @@
 		<variable name="index.h1" value="h1index" />
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
+		<variable name="index.h4" value="h4index" />
 	</webprocessor>
 	<!-- copy the documentation.html to the root -->
 	<webprocessor 
@@ -329,6 +331,7 @@
 		<variable name="index.h1" value="h1index" />
 		<variable name="index.h2" value="h2index" />
 		<variable name="index.h3" value="h3index" />
+		<variable name="index.h4" value="h4index" />
 	</webprocessor>
 	<!-- update installation settings -->
 	<propertyWriter srcfile="setup/install.xml"

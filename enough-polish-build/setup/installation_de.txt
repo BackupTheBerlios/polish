@@ -1,10 +1,9 @@
-J2ME Polish 1.0 RC1
+J2ME Polish 1.0 RC6
 ===================
 
-Die Installation von J2ME Polish wird gestartet, indem die
-Datei "j2mepolish-1.0-RC1.jar" doppel-geklickt wird oder indem
-auf der Kommandozeile der Befehl "java -jar j2mepolish-1.0-RC1.jar"
-eingeben wird.
+Installieren Sie J2ME Polish durch doppel-klicken der Datei oder 
+durch Eingabe des Befehls "java -jar j2mepolish-1.0-RC6.jar"
+von der Kommandozeile.
 
 Der Installer enthaelt u.a. die komplette Dokumentation und eine
 Beispiels-Applikation.
@@ -19,12 +18,11 @@ Was ist J2ME Polish?
 1. Build-Tool: 
 J2ME Polish uebernimmt das Preprocessen, Kompilieren, Jaren und 
 Erstellen der JAD-Dateien für J2ME Applikationen. Dabei hilft eine umfangreiche 
-Geraete-Datenbank (z.Zt. u.a. mit ALLEN Nokia-Telefonen, ALLEN Sony-Ericsson-Telefonen
-und ALLEN Motorola-Telefonen [jeweils natuerlich nur die J2ME Handys]).
+Geraete-Datenbank.
  
 2. GUI: 
 J2ME Polish enthaelt eine GUI für J2ME Telefone, die mittels einfachen 
-CSS-Textdateien designed werden kann (wie webseiten). Mit J2ME Polish koennen 
+CSS-Textdateien designed werden kann (wie Webseiten). Mit J2ME Polish koennen 
 Designer endlich unabhaengig vom Entwickler arbeiten! Die GUI wird dabei
 transparent von J2ME Polish eingebunden und ist kompatibel zum
 MIDP-Standard. Es sind keine Aenderungen am Quellcode notwendig, um die
@@ -39,7 +37,7 @@ sind.
  
 4. Game-Engine: 
 Mit J2ME Polish kann die MIDP/2.0 Game-API auch auf MIDP/1.0 Handys genutzt werden. 
-Die notwendige Umwandlung etc wird dabei vollautomatisch vorgenommen.
+Die notwendige Umwandlung und Integration wird dabei vollautomatisch vorgenommen.
  
 5. Tools: 
 Einige Tools wie beispielsweise eine ArrayList (die es sonst unter J2ME nicht gibt) 
