@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,11 +64,11 @@ public final class StackTraceUtil {
 		// no initialization done here
 	}
 	
-	private BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs, String className, String methodName, String offset )
+	private BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties, String className, String methodName, String offset )
 	throws DecompilerNotInstalledException
 	{
 		// decompile the class-code:
-		String[] lines = decompile( className, classPath );
+		String[] lines = decompile( className, classPath, environmentProperties );
 		// try to find the method-call which is in the error-message:
 		String[] methodLines = parseMethod( lines, methodName, offset );
 		if (methodLines.length == 0) {
@@ -75,7 +76,7 @@ public final class StackTraceUtil {
 			return null;
 		}
 		// now try to find the original source-code-line:
-		String sourceMessage = getSourceFilePosition( className, methodName, this.sourceCodeLine, preprocessedSourcePath, sourceDirs );
+		String sourceMessage = getSourceFilePosition( className, methodName, this.sourceCodeLine, preprocessedSourcePath, sourceDirs, environmentProperties );
 		
 		return new BinaryStackTrace( message, sourceMessage, methodLines, this.decompiledCodeSnippet );
 	}
@@ -86,7 +87,7 @@ public final class StackTraceUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getSourceFilePosition(String className, String methodName, String sourceCode, String preprocessedSourcePath, File[] sourceDirs) 
+	private String getSourceFilePosition(String className, String methodName, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties) 
 	{
 		// first find the position in the preprocessed source code
 		// secondly find the original source-file in the provided source-files.
@@ -165,7 +166,7 @@ public final class StackTraceUtil {
 				File dir = sourceDirs[i];
 				File originalFile = new File( dir.getAbsolutePath() + File.separatorChar + javaFileName );
 				if (originalFile.exists()) {
-					return  "   = " + originalFile.getAbsolutePath() + ":" + (sourceFilePos + 1) + ": \n\t\t" + preprocessedSourceCodeLine;
+					return  "[javac] " + originalFile.getAbsolutePath() + ":" + (sourceFilePos+1) + ": " + preprocessedSourceCodeLine;
 				}
 			}
 			// did not find original file:
@@ -174,7 +175,7 @@ public final class StackTraceUtil {
 			if (separatorPos != -1) {
 				javaFileName = javaFileName.substring( separatorPos + 1 );
 			}
-			return "   = " + javaFileName + ":" + (sourceFilePos + 1) + ":\n\t\t" + preprocessedSourceCodeLine;
+			return javaFileName + ":" + (sourceFilePos+1) + ": " + preprocessedSourceCodeLine;
 		} catch (FileNotFoundException e) {
 			System.out.println("Unable to resolve stacktrace: did not find source file [" + preprocessedSourcePath + "].");
 			return null;
@@ -183,6 +184,7 @@ public final class StackTraceUtil {
 			return null;
 		}
 	}
+
 
 	/**
 	 * @param lines
@@ -214,9 +216,14 @@ public final class StackTraceUtil {
 						// now save the actual code-snippet:
 						int codeStart = 0;
 						for (int j=i; j >= methodStart; --j ) {
-							if ( lines[j].indexOf('/') == -1) {
-								codeStart = j;
-								break;
+							String prevLine = lines[j]; 
+							if ( prevLine.indexOf('/') == -1) {
+								String trimmed = prevLine.trim();
+								if ( ( trimmed.length() > 1)
+										&& !"break;".equals(trimmed)) {
+									codeStart = j;
+									break;
+								}
 							}
 						}
 						this.sourceCodeLine = lines[ codeStart ].trim();
@@ -256,7 +263,9 @@ public final class StackTraceUtil {
 						linesFromMethod++;
 					}
 				} else {
-					if (trimmedLine.indexOf( methodKey) != -1) {
+					// a method-start includes the name of the method an _no_ semicolon.
+					// (then it is probably a call of that method!)
+					if ((trimmedLine.indexOf( methodKey) != -1) && (trimmedLine.indexOf(';') == -1) ) {
 						isInMethod = true; 
 						methodStart = i;
 					}
@@ -272,12 +281,32 @@ public final class StackTraceUtil {
 	 * @param classPath
 	 * @return
 	 */
-	private static final String[] decompile(String className, String classPath) 
+	private static final String[] decompile(String className, String classPath, Map environmentProperties ) 
 	throws DecompilerNotInstalledException
 	{
+		String jadExecutable = null;
+		String polishHome = (String) environmentProperties.get("polish.home");
+		if (polishHome != null) {
+			if (File.separatorChar == '\\') {
+				// this is a windows OS
+				jadExecutable = polishHome + File.separatorChar + "bin" + File.separatorChar + "jad.exe";
+			} else {
+				jadExecutable = polishHome + File.separatorChar + "bin" + File.separatorChar + "jad";
+			}
+			if (!new File(jadExecutable).exists()) {
+				jadExecutable = null;
+			}
+		}
+		if (jadExecutable == null) {
+			if (File.separatorChar == '\\') { // this is a windows OS
+				jadExecutable = "jad.exe";
+			} else { 
+				jadExecutable = "jad";
+			}
+		}
 		className = TextUtil.replace( className, '.', File.separatorChar );
 		classPath = classPath + File.separatorChar + className + ".class";
-		String[] arguments = new String[]{"jad", "-a", "-p", classPath };
+		String[] arguments = new String[]{jadExecutable, "-a", "-p", classPath };
 		try {
 			Process process = Runtime.getRuntime().exec(arguments);
 			ArrayList lines = new ArrayList();
@@ -295,11 +324,11 @@ public final class StackTraceUtil {
 			input.close();
 			return (String[]) lines.toArray( new String[ lines.size() ] );
 		} catch (IOException e) {
-			throw new DecompilerNotInstalledException( "Unable to start the \"jad\"-decompiler. jad is available from http://www.kpdus.com/jad.html. If you have installed jad, please ensure that it is on the path.");
+			throw new DecompilerNotInstalledException( "Unable to start the \"jad\"-decompiler: [" + e.toString() + "]. jad is available from http://www.kpdus.com/jad.html.");
 		}
 	}
 	
-	public final static BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs )
+	public final static BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs , Map environmentProperties )
 	throws DecompilerNotInstalledException
 	{
 		Matcher matcher = STACK_TRACE_PATTERN.matcher(message);
@@ -319,7 +348,7 @@ public final class StackTraceUtil {
 		String offset = errorMessage.substring( offsetStart + 2, errorMessage.length() -1 );
 		
 		StackTraceUtil utility = new StackTraceUtil();		
-		return utility.translateStackTrace(message, classPath, preprocessedSourcePath, sourceDirs, className, methodName, offset);
+		return utility.translateStackTrace(message, classPath, preprocessedSourcePath, sourceDirs, environmentProperties, className, methodName, offset);
 	}
 	
 	class CodeSequence {

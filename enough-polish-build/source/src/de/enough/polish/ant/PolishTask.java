@@ -386,6 +386,7 @@ public class PolishTask extends ConditionalTask {
 		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
+			this.polishProject.addDirectCapability("polish.debug.Verbose", "enabled");
 		}
 		if (debugManager != null && this.buildSetting.getDebugSetting().showLogOnError()) {
 			this.polishProject.addFeature("showLogOnError");
@@ -396,6 +397,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		// specify some preprocessing symbols depending on the selected features:
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());
+		// this is actually outdated and only kept for backwards-compatibility:
 		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
 			this.polishProject.addFeature("useDebugGui");
 		}
@@ -1106,10 +1108,12 @@ public class PolishTask extends ConditionalTask {
 				while ((line.indexOf('{') == -1) && (sourceCode.next()) ) {
 					line = sourceCode.getCurrent();
 				}
-				if (!sourceCode.hasNext()) {
+				if (!sourceCode.next()) {
 					throw new BuildException("Unable to process MIDlet [" + className + "]: startApp method is not opened with '{': line [" + (++lineIndex) + "].");
 				}
-				sourceCode.insert("de.enough.polish.ui.StyleSheet.display = javax.microedition.lcdui.Display.getDisplay( this );");
+				line  = sourceCode.getCurrent();
+				sourceCode.setCurrent("de.enough.polish.ui.StyleSheet.display = javax.microedition.lcdui.Display.getDisplay( this );"
+						+ line );
 				return;
 			}
 		}

@@ -1254,7 +1254,7 @@ public class Preprocessor {
 	}
 
 	/**
-	 * Inserts verbose debugging information (time, class-name and source-code line).
+	 * Inserts verbose debugging information (time, class-name and source-code line) instead of the //#debug-preprocessing statement.
 	 * 
 	 * @param lines the source code
 	 * @param className the name of the class
@@ -1264,7 +1264,10 @@ public class Preprocessor {
 			+ "\" - " + className 
 			+ " line " + (lines.getCurrentIndex() + 1 - lines.getNumberOfInsertedLines()) 
 			+ "\" );";
-		lines.insert( debugVerbose );
+		lines.prev();
+		lines.setCurrent( debugVerbose );
+		lines.next();
+		//lines.insert( debugVerbose );
 		//lines.next();
 	}
 	

@@ -93,7 +93,10 @@ public class PolishLogger implements BuildLogger {
 				String classPath = message.substring(startIndex, index + ".java".length() );
 				String originalPath = (String) this.classPathTranslations.get( classPath );
 				if (originalPath != null) {
-					message = originalPath + message.substring( index + ".java".length() );
+					// [javac] is needed by some IDEs like Eclipse,
+					// so that it can map the source-code position
+					// to the editor.
+					message = "[javac] " + originalPath + message.substring( index + ".java".length() );
 					event.setMessage(message, event.getPriority());
 					this.isInternalCompilationError = false;
 				} else {

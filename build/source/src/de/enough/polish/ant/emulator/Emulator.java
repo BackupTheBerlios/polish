@@ -62,6 +62,7 @@ public abstract class Emulator extends Thread {
 	private File[] sourceDirs;
 	private String preprocessedSourcePath;
 	private String classPath;
+	private Map environmentProperties;
 	
 	/**
 	 * Creates a new emulator instance.
@@ -100,10 +101,12 @@ public abstract class Emulator extends Thread {
 	 * @param device the device which is emulated
 	 * @param setting the settings for the emulator
 	 * @param sourceDirs the directories containing the original source files.
+	 * @param environmentProperties the J2ME Polish and Ant-properties
 	 */
-	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs ) {
+	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs, Map environmentProperties ) {
 		this.emulatedDevice = device;
 		this.emulatorSetting = setting;
+		this.environmentProperties = environmentProperties;
 		this.classPath = device.getClassesDir();
 		this.preprocessedSourcePath = device.getSourceDir();
 		this.sourceDirs = sourceDirs;
@@ -296,7 +299,7 @@ public abstract class Emulator extends Thread {
 		if (!okToStart) {
 			return null;
 		}
-		emulator.setBasicSettings(device, setting, sourceDirs);
+		emulator.setBasicSettings(device, setting, sourceDirs, properties );
 		emulator.start();
 		return emulator;
 	}
@@ -332,7 +335,7 @@ public abstract class Emulator extends Thread {
 								// this seems to be an error message like
 								// "   at de.enough.polish.ClassName(+263)"
 								// so try to use JAD for finding out the source code address:
-								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs);
+								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs, Emulator.this.environmentProperties);
 								if (stackTrace != null) {
 									if (stackTrace.couldBeResolved()) {
 										this.output.println( this.header + stackTrace.getSourceCodeMessage() );

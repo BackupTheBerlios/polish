@@ -52,6 +52,8 @@ public class WtkEmulator extends Emulator {
 
 	protected String[] arguments;
 	protected boolean appendXdeviceArgument;
+	protected String[] environment;
+	protected File workingDirectory;
 	
 	/**
 	 * Creates a new emulator
@@ -135,6 +137,7 @@ public class WtkEmulator extends Emulator {
 					}
 				}
 			}
+			// okay, skin-file exists:
 		} else {
 			System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + device.getIdentifier() + "], now using the default emulator.");
 		}
@@ -146,6 +149,7 @@ public class WtkEmulator extends Emulator {
 			System.out.println("Warning: unable to find the emulator [" + executable + "].");
 			return false;
 		}
+				
 		argumentsList.add( executable );
 		
 		if (this.appendXdeviceArgument && (xDevice != null)) {
@@ -242,7 +246,7 @@ public class WtkEmulator extends Emulator {
 	public Process startEmulator() throws IOException {
 		System.out.println("Starting emulator [" + this.arguments[0] + "]...");
 		Runtime runtime = Runtime.getRuntime();
-		return runtime.exec( this.arguments );
+		return runtime.exec( this.arguments, this.environment, this.workingDirectory );
 	}
 
 }

@@ -35,6 +35,9 @@
 <!-- The directory which contains the Nokia-emulators
 	<property name="nokia.home" value="C:\Nokia" />
 -->
+<!-- The path to the Sony-Ericsson SDK
+	<property name="sony-ericsson.home" value="C:\SonyEricsson\J2ME_SDK" />
+-->
 <!-- The directory which contains the Motorola-emulators
 	<property name="motorola.home" value="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
 -->

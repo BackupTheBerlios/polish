@@ -50,6 +50,7 @@
 	<vendor>
 		<name>Sony-Ericsson</name>
 		<features></features>
+		<capability name="Emulator.Class" value="SonyEricssonEmulator" />
 	</vendor>
 	
 	<vendor>
