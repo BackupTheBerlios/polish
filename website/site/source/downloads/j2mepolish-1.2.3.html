@@ -75,7 +75,7 @@
 	</li>
 	<li><b>Binary Data Editor</b>: 
 	J2ME Polish now includes an editor for binary data files, e.g. level data.
-	Have a look at the &quot;${polish.home}/bin&quot;-directory.
+	Have a look at the <a href="../docs/tools.html">&quot;${polish.home}/bin&quot;</a>-directory.
 	<hr />
 	</li>
 	<li><b>Direct Input Mode</b>: 
@@ -109,7 +109,9 @@
 	&lt;property name=&quot;dir.work&quot; value=&quot;C:\temp\polish&quot; /&gt;.
 	<hr />
 	<li><b>Obfuscators</b>: 
-	J2ME Polish now includes the <a href="http://www.yworkds.de" target="_blank">yGuard</a> obfuscator as well.
+	J2ME Polish now includes the <a href="http://www.yworkds.de" target="_blank">yGuard</a> obfuscator as well
+	and also supports the <a href="http://www.zelix.com/" target="_blank">&quot;KlassMaster&quot;</a>
+	and <a href="http://www.preemptive.com/" target="_blank">&quot;Dasho&quot;</a> obfuscators.
 	<hr />
 	<li><b>Game Engine</b>: 
 	Corrected an error when a sprite is created using another sprite while Nokia's UI API
@@ -139,6 +141,8 @@
 	</li>
 	<li><b>Libraries</b>: 
 	The Thread.MIN_PRIORITY had the wrong value 0 instead of 1 in the included midp2.jar library.
+	J2ME Polish now also includes the Mobile 3D Graphics API (m3g.jar) as well as the 
+	bluetooth API (btapi.jar).
 	<hr />
 	</li>
 	<li><b>Device-Selection</b>: 
@@ -172,11 +176,6 @@
 	
 	</ul>
 
-<h2 id="update">Update</h2>
-	<p>When you are updating J2ME Polish from 1.1 or earlier, please have a look at the 
-	included build.xml. A new Ant-property &quot;polish.home&quot; now eases
-	the integration of J2ME Polish into your projects.
-	</p>
 	
 <h2 id="license">License</h2>
 	<p>J2ME Polish is licensed under the GNU General Public License (GPL) and under
@@ -190,18 +189,18 @@
 <h2 id="download">Download</h2>
 	<p>
 		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3.jar">I accept the above rules (download the full installer).</a><br/>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.2.3.zip">I accept the above rules (download only the update).</a><br/>
 	   	<a href="../index.html">I do NOT accept the above rules.</a>
 	</p>
 
 	<h2 id="installationproblems">Trouble Shooting</h2>
-	<p>The size of the full installer is 5.364.047 bytes.<br/>
+	<p>The size of the full installer is 7.364.047 bytes.<br/>
 	If you have installation problems, please make sure that you have downloaded
-	the complete package.
+	the complete package. You can start the installation either by double-clicking
+	the file or by calling &quot;java -jar j2mepolish-[version].jar&quot; from the commandline.
 	</p>
 	<p>
 	When you are having installation problems under Windows XP, please use the
-	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_05)</a>. 
+	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_06)</a>. 
 	This update is officially recommended for security
 	reasons as well.
 	</p>	
