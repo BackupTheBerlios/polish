@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import proguard.shrink.UsedClassFileFilter;
+
 import de.enough.polish.Device;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.TextFileManager;
@@ -58,6 +60,7 @@ public final class ImportConverter {
 	private final String completeMidp2;
 	private final String defaultPackageCompleteMidp1;
 	private final String defaultPackageCompleteMidp2;
+	private final HashMap defaultPackageSiemensColorGameApiToPolish;
 	
 	/**
 	 * Creates a new import converter.
@@ -91,7 +94,14 @@ public final class ImportConverter {
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager; import de.enough.polish.ui.StyleSheet" );
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer; import de.enough.polish.ui.StyleSheet" );
 		this.siemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet");
-		
+
+		this.defaultPackageSiemensColorGameApiToPolish = new HashMap( toPolish );
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas" );
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer" );
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.LayerManager", "com.siemens.mp.color_game.LayerManager" );
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.TiledLayer", "com.siemens.mp.color_game.TiledLayer" );
+		this.defaultPackageSiemensColorGameApiToPolish.put( "javax.microedition.lcdui.game.Sprite", "de.enough.polish.ui.game.Sprite");
+
 		this.polishToSiemensColorGameApi = new HashMap();
 		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.GameCanvas", "com.siemens.mp.color_game.GameCanvas; import de.enough.polish.ui.StyleSheet" );
 		this.polishToSiemensColorGameApi.put( "javax.microedition.lcdui.game.Layer", "com.siemens.mp.color_game.Layer; import de.enough.polish.ui.StyleSheet" );
@@ -184,11 +194,16 @@ public final class ImportConverter {
 			usePolishGameApi = "true".equals(preprocessor.getVariable("polish.usePolishGameApi"));
 			supportsSiemensColorGameApi = preprocessor.hasSymbol("polish.api.siemens-color-game-api");
 		}
+		boolean useDefaultPackage = preprocessor.useDefaultPackage();
 		HashMap translations;
 		if (usePolishGui) {
 			if (isMidp1 || usePolishGameApi ) {
 				if (supportsSiemensColorGameApi) {
-					translations = this.siemensColorGameApiToPolish;
+					if (useDefaultPackage) {
+						translations = this.defaultPackageSiemensColorGameApiToPolish;
+					} else {
+						translations = this.siemensColorGameApiToPolish;
+					}
 				} else {
 					translations = this.midp1ToPolish;
 				}
@@ -206,9 +221,8 @@ public final class ImportConverter {
 				translations = this.polishToMidp2;
 			}
 		}
-		translations = addDynamicTranslations( translations, usePolishGui, isMidp1, device, preprocessor );
+		translations = addDynamicTranslations( translations, usePolishGui, isMidp1, device, preprocessor, useDefaultPackage );
 		
-		boolean useDefaultPackage = preprocessor.useDefaultPackage();
 		//System.out.println("ImportConverter: useDefaultPackage=" + useDefaultPackage );
 		TextFileManager textFileManager = preprocessor.getTextFileManager();
 		
@@ -275,10 +289,11 @@ public final class ImportConverter {
 							changed = true;
 						}						
 					}
+					
 				} else if ( replacement != null ) {
 					changed = true;
 					sourceCode.setCurrent("import " + replacement + ";");
-				} else if ( usePolishGui && !changed ) {
+				} else if ( usePolishGui && !changed && !useDefaultPackage ) {
 					changed = true;
 					sourceCode.setCurrent( line + " import de.enough.polish.ui.StyleSheet;");
 				}
@@ -313,7 +328,7 @@ public final class ImportConverter {
 	 * @return either the same translations map, when no changes are done, or
 	 * 	 a new modified map.
 	 */
-	private HashMap addDynamicTranslations(HashMap translations, boolean usePolishGui, boolean isMidp1, Device device, Preprocessor preprocessor) {
+	private HashMap addDynamicTranslations(HashMap translations, boolean usePolishGui, boolean isMidp1, Device device, Preprocessor preprocessor, boolean useDefaultPackage) {
 		// by default do not change is applied:
 		HashMap newTranslations = translations;
 		// check for WMAPI-Wrapper:
@@ -322,19 +337,38 @@ public final class ImportConverter {
 			&& preprocessor.hasSymbol("polish.supportsWMAPIWrapper");
 		if (useWMAPIWrapper) {
 			newTranslations = new HashMap( translations );
-			newTranslations.put( "javax.wireless.messaging.*", "de.enough.polish.messaging.*");
-			newTranslations.put( "javax.wireless.messaging.Message", "de.enough.polish.messaging.Message");
-			newTranslations.put( "javax.wireless.messaging.BinaryMessage", "de.enough.polish.messaging.BinaryMessage");
-			newTranslations.put( "javax.wireless.messaging.TextMessage", "de.enough.polish.messaging.TextMessage");
-			newTranslations.put( "javax.wireless.messaging.MessageConnection", "de.enough.polish.messaging.MessageConnection");
-			newTranslations.put( "javax.wireless.messaging.MessageListener", "de.enough.polish.messaging.MessageListener");
-			newTranslations.put( "javax.wireless.messaging.MessageListener", "de.enough.polish.messaging.MessageListener");
-			newTranslations.put( "javax.microedition.io.Connector", "de.enough.polish.io.Connector");
+			if (useDefaultPackage) {
+				newTranslations.put( "javax.wireless.messaging.*", "");
+				newTranslations.put( "javax.wireless.messaging.Message", "");
+				newTranslations.put( "javax.wireless.messaging.BinaryMessage", "");
+				newTranslations.put( "javax.wireless.messaging.TextMessage", "");
+				newTranslations.put( "javax.wireless.messaging.MessageConnection", "");
+				newTranslations.put( "javax.wireless.messaging.MessageListener", "");
+				newTranslations.put( "javax.wireless.messaging.MessageListener", "");
+				newTranslations.put( "javax.microedition.io.Connector", "");
+			} else {
+				newTranslations.put( "javax.wireless.messaging.*", "de.enough.polish.messaging.*");
+				newTranslations.put( "javax.wireless.messaging.Message", "de.enough.polish.messaging.Message");
+				newTranslations.put( "javax.wireless.messaging.BinaryMessage", "de.enough.polish.messaging.BinaryMessage");
+				newTranslations.put( "javax.wireless.messaging.TextMessage", "de.enough.polish.messaging.TextMessage");
+				newTranslations.put( "javax.wireless.messaging.MessageConnection", "de.enough.polish.messaging.MessageConnection");
+				newTranslations.put( "javax.wireless.messaging.MessageListener", "de.enough.polish.messaging.MessageListener");
+				newTranslations.put( "javax.wireless.messaging.MessageListener", "de.enough.polish.messaging.MessageListener");
+				newTranslations.put( "javax.microedition.io.Connector", "de.enough.polish.io.Connector");
+			}
 			// process javax.microedition.io.*:
 			if (isMidp1) {
-				newTranslations.put( "javax.microedition.io.*", "de.enough.polish.io.Connector; import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection");				
+				if (useDefaultPackage) {
+					newTranslations.put( "javax.microedition.io.*", "import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection");
+				} else {
+					newTranslations.put( "javax.microedition.io.*", "de.enough.polish.io.Connector; import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection");
+				}
 			} else {
-				newTranslations.put( "javax.microedition.io.*", "de.enough.polish.io.Connector; import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection; import javax.microedition.io.PushRegistry; import javax.microedition.io.UDPDatagramConnection; import javax.microedition.io.ServerSocketConnection; import javax.microedition.io.SocketConnection; import javax.microedition.io.SecurityInfo; import javax.microedition.io.SecureConnection; import javax.microedition.io.HttpsConnection; import javax.microedition.io.CommConnection");				
+				if (useDefaultPackage) {
+					newTranslations.put( "javax.microedition.io.*", "import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection; import javax.microedition.io.PushRegistry; import javax.microedition.io.UDPDatagramConnection; import javax.microedition.io.ServerSocketConnection; import javax.microedition.io.SocketConnection; import javax.microedition.io.SecurityInfo; import javax.microedition.io.SecureConnection; import javax.microedition.io.HttpsConnection; import javax.microedition.io.CommConnection");
+				} else {
+					newTranslations.put( "javax.microedition.io.*", "de.enough.polish.io.Connector; import javax.microedition.io.Connection; import javax.microedition.io.ContentConnection; import javax.microedition.io.Datagram; import javax.microedition.io.DatagramConnection; import javax.microedition.io.InputConnection; import javax.microedition.io.OutputConnection; import javax.microedition.io.StreamConnection; import javax.microedition.io.StreamConnectionNotifier; import javax.microedition.io.ConnectionNotFoundException; import javax.microedition.io.HttpConnection; import javax.microedition.io.PushRegistry; import javax.microedition.io.UDPDatagramConnection; import javax.microedition.io.ServerSocketConnection; import javax.microedition.io.SocketConnection; import javax.microedition.io.SecurityInfo; import javax.microedition.io.SecureConnection; import javax.microedition.io.HttpsConnection; import javax.microedition.io.CommConnection");
+				}
 			}			
 		}
 		return newTranslations;
