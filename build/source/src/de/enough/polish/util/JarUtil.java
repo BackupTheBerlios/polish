@@ -136,7 +136,7 @@ public final class JarUtil {
 
 	/**
 	 * Extracts the given jar-file to the specified directory.
-	 * The target directory will be cleard before the jar-file will be extracted.
+	 * The target directory will be cleaned before the jar-file will be extracted.
 	 * 
 	 * @param jarFile The jar file which should be unpacked
 	 * @param targetDir The directory to which the jar-content should be extracted.
@@ -180,6 +180,51 @@ public final class JarUtil {
 		}
 		
 	}
+    
+    /**
+     * Extracts the given resource from a jar-file to the specified directory.
+     * 
+     * @param jarFile The jar file which should be unpacked
+     * @param resource The name of a resource in the jar
+     * @param targetDir The directory to which the jar-content should be extracted.
+     * @throws FileNotFoundException when the jarFile does not exist
+     * @throws IOException when a file could not be written or the jar-file could not read.
+     */
+    public static void unjar(File jarFile, String resource, File targetDir)
+    throws FileNotFoundException, IOException {
+        // clear target directory:
+        if (targetDir.exists()) {
+            targetDir.delete();
+        }
+        // create new target directory:
+        targetDir.mkdirs(); 
+        // read jar-file:
+        String targetPath = targetDir.getAbsolutePath() + File.separatorChar;
+        byte[] buffer = new byte[ 1024 * 1024 ];
+        JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+        Enumeration enumeration = input.entries();
+        for (; enumeration.hasMoreElements();) {
+            JarEntry entry = (JarEntry) enumeration.nextElement();
+            if (!entry.isDirectory()) {
+                // do not copy anything from the package cache:
+                if (entry.getName().equals(resource)) {
+                    String path = targetPath + entry.getName();
+                    File file = new File( path );
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
+                    FileOutputStream out = new FileOutputStream( file);
+                    InputStream in = input.getInputStream(entry);
+                    int read;
+                    while ( (read = in.read( buffer )) != -1) {
+                        out.write( buffer, 0, read );
+                    }
+                    in.close();
+                    out.close();
+                }
+            }
+        }
+    }
 
 	/**
 	 * Reads the package-names from the given jar-file.
