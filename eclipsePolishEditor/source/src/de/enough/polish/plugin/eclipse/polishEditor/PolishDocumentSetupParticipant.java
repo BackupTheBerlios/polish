@@ -63,11 +63,12 @@ public class PolishDocumentSetupParticipant implements IDocumentSetupParticipant
         RuleBasedPartitionScanner scanner = new RuleBasedPartitionScanner();
         SingleLineRule rule = new SingleLineRule("//#","",this.successToken);
         scanner.setPredicateRules(new IPredicateRule[]{rule});
-  
+  /*
    	    DefaultPartitioner polishPartitioner = new DefaultPartitioner(scanner,new String[] {IPolishConstants.DIRECTIVE_PARTITION});
    	    IDocumentExtension3 documentExtension= (IDocumentExtension3) document;
    	    documentExtension.setDocumentPartitioner(IPolishContentTypes.POLISH_PARTITIONING,polishPartitioner);
         polishPartitioner.connect(document);
+        */
     }
 
 }

@@ -29,8 +29,10 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.text.IJavaPartitions;
 import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
+import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 
 
@@ -51,18 +53,35 @@ public class PolishEditor extends CompilationUnitEditor {
      
     public void createPartControl(Composite parent){
         System.out.println("PolishEditor.createPartControl():enter.");
-        IPreferenceStore preferenceStore = this.getPreferenceStore();
+        
+        
+        IPreferenceStore preferenceStoreJava = this.getPreferenceStore(); // This one origins from JavaEditor and is a chain of 4 stores.
+        IPreferenceStore preferenceStorePolish = PolishEditorPlugin.getDefault().getPreferenceStore();
+        
+        //TODO: For debugging only. Set this stuff in preference page.
+        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
+        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
+        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
+        
+        IPreferenceStore[] preferenceStores = new IPreferenceStore[2];
+        preferenceStores[0] = preferenceStoreJava;
+        preferenceStores[1] = preferenceStorePolish;
+        // We are forced to do this kludge because all private methods of suberclasses uses this one preferenceStore.
+        // We do need write support so we give others this chainPreferenceStore and when we edit some values
+        // we get our own store from the plugin. And thus hardwiring as unforgivable like all others.
+        IPreferenceStore preferenceStore = new ChainedPreferenceStore(preferenceStores);
+        
+        
         IColorManager colorManager = new JavaColorManager();
+        
+        
         PolishSourceViewerConfiguration polishSourceViewerConfiguration;
         polishSourceViewerConfiguration =  new PolishSourceViewerConfiguration(colorManager,preferenceStore,this,IJavaPartitions.JAVA_PARTITIONING);
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
+        
+        
         super.createPartControl(parent);
-        
-        
-        
-        
-        
-        
+   
     }
     
     

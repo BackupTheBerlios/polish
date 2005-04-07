@@ -37,7 +37,11 @@ package de.enough.polish.plugin.eclipse.polishEditor;
  */
 public interface IPolishConstants {
 
-    String DIRECTIVE_PARTITION = "__polishDirective_partitioning";
-    
-
+    String POLISH_COLOR_DEFAULT = "__polish_color_default";
+    String POLISH_COLOR_DIRECTIVE = "__polish_color_directive";
+    String POLISH_COLOR_VARIABLE = "__polish_color_var";
+    String POLISH_COLOR_SYMBOL = "__polish_color_symbol";
+    String POLISH_COLOR_FUNCTON_NAME = "__polish_color_function_name";
+    String POLISH_COLOR_FUNCTION_PUNCTATION = "__polish_color_function_punctation";
+    String POLISH_COLOR_STATE_DEFAULT = "__polish_color_state_default";
 }

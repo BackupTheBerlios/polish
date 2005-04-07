@@ -68,28 +68,34 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         }
 
     }
-    // TODO: Have to understand the difference between PartitionType, ContentType and PositionType.
-    // Maybe JAVA_PARTITIONING should have a sibling like POLISH_PARTITIONING.
-    
+
+    //TODO: Add all tokens.
     private String[] tokenProperties = {
             IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT,
             IJavaColorConstants.JAVA_KEYWORD,
             IJavaColorConstants.JAVA_STRING,
-            IJavaColorConstants.JAVA_METHOD_NAME};
-    private IPropertyChangeListener propertyChangeListener;
+            IJavaColorConstants.JAVA_METHOD_NAME,
+            IJavaColorConstants.JAVA_DEFAULT,
+            IPolishConstants.POLISH_COLOR_DEFAULT,
+            IPolishConstants.POLISH_COLOR_DIRECTIVE
+//            IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,
+//            IPolishConstants.POLISH_COLOR_FUNCTON_NAME
+            };
     
-    
-    
+    //private IPropertyChangeListener propertyChangeListener;
+    private TokenStore tokenStore; 
+   
     /**
      * @param colorManager
      * @param preferenceStore
      */
     public PolishSingleLineCommentScanner(IColorManager colorManager, IPreferenceStore preferenceStore) {
         super(colorManager,preferenceStore);
+        this.tokenStore = new TokenStore();
         initialize(); // This is needed because the super constructor does not call it !
-        //TODO: Register this object at the preferenceStore to listen for property changes.
-        this.propertyChangeListener = new PropertyChangeListener();
-        preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
+        
+        //this.propertyChangeListener = new PropertyChangeListener(); //debugging only.
+        //preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
     }
 
     /* (non-Javadoc)
@@ -103,18 +109,33 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
      * @see org.eclipse.jdt.internal.ui.text.AbstractJavaScanner#createRules()
      */
     protected List createRules() {
-        System.out.println("PolishSingleLineCommentScanner.createRules():enter.this:"+this);
-
-        PolishDirectiveRule rule = new PolishDirectiveRule();
-        rule.setCommentToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
-        rule.setDirectiveToken(getToken(IJavaColorConstants.JAVA_KEYWORD));
-        rule.setNameToken(getToken(IJavaColorConstants.JAVA_STRING));
-        rule.setMethodToken(getToken(IJavaColorConstants.JAVA_METHOD_NAME));
-        setDefaultReturnToken(getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
+        setDefaultReturnToken(getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
         
+        this.tokenStore.addToken(IJavaColorConstants.JAVA_KEYWORD,getToken(IJavaColorConstants.JAVA_KEYWORD));
+        this.tokenStore.addToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT,getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));  
+        this.tokenStore.addToken(IJavaColorConstants.JAVA_DEFAULT,getToken(IJavaColorConstants.JAVA_DEFAULT));  
+        this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_DIRECTIVE,getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE));
+        this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_DEFAULT,getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
+        PolishDirectiveRule rule = new PolishDirectiveRule(this.tokenStore);
+   
         List rules = new ArrayList();
         rules.add(rule);
         
         return rules;
     }
+    
+    
+    public void adaptToPreferenceChange(PropertyChangeEvent event) {
+        System.out.println("PolishSingleLineCommentScanner.adaptToPreferenceChange(...):enter.event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
+        super.adaptToPreferenceChange(event);
+    }
+    
+   
+    //I know this is evil but there is no other way. The situation:The chainedPreferenceStore from JavaEditor is not writeable.
+    // So we have to store our values somewhere else. We get the preferenceStore from PolishEditorPlugin directly :( So we have two stores
+    // and this is going to be a manager nightmare. But I do not see another way. Having a writeable chained store is semanticly problematic
+    //
+//    public IToken getPolishToken(String tokenName) {
+//        return null;
+//    }
 }
