@@ -38,28 +38,46 @@
 	<group>
 		<name>Series40</name>
 		<parent>Nokia-UI</parent>
+		<capability name="OS" value="Nokia OS" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="ScreenSize" value="128x128" />
 		<capability name="CanvasSize" value="128x96" />
 		<capability name="FullCanvasSize" value="128x128" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
+	</group>
+
+	<group>
+		<name>Series40DP1</name>
+		<parent>Series40</parent>
+		<capability name="Emulator.Skin" value="Nokia_S40_DP10_SDK_1_0" />
 		<capability name="Font.medium.oldFirmware" value="16" />
 		<capability name="Font.large.oldFirmware" value="23" />
 		<capability name="Bugs" value="stringWidthLineBreak" />
 	</group>
 
 	<group>
+		<name>Series40DP2</name>
+		<parent>Series40</parent>
+		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi" />
+	</group>
+
+	<group>
 		<name>Series60</name>
 		<parent>Nokia-UI</parent>
+		<capability name="OS" value="Symbian OS 6.1" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi, mmapi" />		
 		<capability name="ScreenSize" value="176x208" />
 		<capability name="FullCanvasSize" value="176x208" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Font.small" value="14" />
 		<capability name="Font.medium" value="15" />
 		<capability name="Font.large" value="19" />
@@ -67,6 +85,21 @@
 		<capability name="Emulator.Skin" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
 		<capability name="Emulator.Skin.2" value="Series_60_MIDP_SDK_2_1" />
 		<capability name="Emulator.Skin.3" value="Series_60_MIDP_SDK_2_1_Beta" />
+		<capability name="Bugs" value="ExitCommandAlwaysPresent" />
+	</group>
+
+	<group>
+		<name>Series60DP1</name>
+		<parent>Series60</parent>
+	</group>
+
+	<group>
+		<name>Series60DP2</name>
+		<parent>Series60</parent>
+		<capability name="OS" value="Symbian OS 7.0s" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="btapi" />		
 	</group>
 
 	<group>

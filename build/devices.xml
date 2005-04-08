@@ -1160,7 +1160,7 @@
 	
 	<device>
 		<identifier>Motorola/A1000</identifier>
-		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
+		<features>doubleBuffering, hasPointerEvents, hasCamera, needsManualMenu</features>
 		<capability name="OS" value="Symbian 7.0/UIQ 2.1" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
@@ -2426,6 +2426,7 @@
 		<capability name="MaxJarSize" value="128kb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Bugs" value="ConnectorNokiaComm, PlatformRequestHttpLaunchRequiresExit" />
 	</device>
 	
 	<device>
@@ -2464,6 +2465,7 @@
 		<capability name="Emulator.Skin" value="Nokia_6230_MIDP_Concept_SDK_Beta_0_2" />
 		<capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/midi, audio/sp-midi" />
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
+		<capability name="Bugs" value="PlatformRequestHttpLaunchRequiresExit" />
 	</device>
 	
 	<device>
@@ -4446,7 +4448,7 @@
 		<capability name="ScreenSize" value="120x160"/>
 		<capability name="CanvasSize" value="120x130"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="HeapSize" value="512 kb" />
 		<capability name="MaxJarSize" value="80 kb" />

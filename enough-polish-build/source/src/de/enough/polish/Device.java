@@ -207,6 +207,14 @@ public class Device extends PolishComponent {
 				groupsList.add(group);
 				groupNamesList.add(groupName);
 				addFeature( "polish.group." + groupName );
+				String parentName = group.getParentIdentifier();
+				while (parentName != null) {
+					DeviceGroup parentGroup = groupManager.getGroup(parentName);
+					groupsList.add( parentGroup );
+					groupNamesList.add(parentName);
+					addFeature( "polish.group." + parentName );
+					parentName = parentGroup.getParentIdentifier();
+				}
 			}
 		}
 

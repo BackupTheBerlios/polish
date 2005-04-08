@@ -493,8 +493,30 @@
 		description="The y position of the foreground image."
 		id="54"
 	/>
+		
+	<attribute
+		name="exclusiveview-arrow-color"
+		type="color"
+		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		description="The color of the arrows."
+		default="black"
+		id="55"
+	/>
 	
-	
-	
+	<attribute
+		name="exclusiveview-right-arrow"
+		type="string"
+		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		description="The URL of the right arrow image."
+		id="56"
+	/>
+
+	<attribute
+		name="exclusiveview-left-arrow"
+		type="string"
+		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		description="The URL of the left arrow image."
+		id="57"
+	/>
 	
 </attributes>

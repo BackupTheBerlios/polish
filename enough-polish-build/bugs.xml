@@ -141,6 +141,31 @@
 		<solution>When calculating the complete width of a string with line-breaks, you need to split the string at the line-breaks first and then add up the widths of the single parts.</solution>
 	</bug>
 	
+	<bug>
+		<name>ConnectorNokiaComm</name>
+		<area>io</area>
+		<description>Infrared ports cannot be opend with Connector.open(&quot;comm:IR0&quot;).</description>
+		<solution>Use instead the &quot;nokiacomm&quot; connector: Connector.open(&quot;nokiacomm:IR0&quot;).</solution>
+	</bug>
+	
+	<bug>
+		<name>PlatformRequestHttpLaunchRequiresExit</name>
+		<area>io</area>
+		<description>Normally a platformRequest( &quot;http://www.xxx.com&quot;) should launch the browser immediately, 
+		  with either leaving the application running or destroying the application first. On the affected devices
+		  you need to exit the application manually, however. Initialising voice calls via platformRequest() is working
+		  however with putting the application to the background.
+		</description>
+		<solution>Exit the application manually after issuing a HTTP platform request when this bug is present.</solution>
+	</bug>
+
+	<bug>
+		<name>ExitCommandAlwaysPresent</name>
+		<area>ui</area>
+		<description>On Series 60 phones there is always an &quot;Exit&quot; command present for closing the application.</description>
+		<solution>Use the J2ME Polish GUI instead.</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>
