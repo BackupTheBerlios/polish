@@ -37,6 +37,6 @@ package de.enough.polish.plugin.eclipse.polishEditor;
  */
 public interface IPolishContentTypes {
     
-    String POLISH_PARTITIONING = "__plolish_partitioning";
+    String POLISH_PARTITIONING = "__polish_partitioning";
     String POLISH_DIRECTIVE = "__polish_directive";
 }

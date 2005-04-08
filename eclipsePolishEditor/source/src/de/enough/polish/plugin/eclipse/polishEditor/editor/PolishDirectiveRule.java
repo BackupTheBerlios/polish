@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,27 +92,43 @@ public class PolishDirectiveRule implements IRule {
     
     // ####################################################
     // Symbols.
-    private String REG_EX_PATTERN =
-        "(//#def|//#else|//#ifdef|//#if|//#elif|//#endif|//#debug|//#style)" + "|" +
-        "(//#=)" + "|" +
-        "(//# )" + "|" +
-        "(private|public|protected|final|static|boolean|int|float|double|true|false|void)" + "|" +
-        "(//)" + "|" +
-        "(\\$\\{|\\})" + "|" +
-        "([ 	]+)" + "|" +
-        "([a-zA-Z\\.]+)" + "|" +
-        "(\\(|\\)|;|=)" //TODO: Differentiate into CLB,CRB and distinquish states.
-        //"(\\\")" // FIXME: Does this work?
-        ;
+    public static final String POLISH_DIRECTIVE_REGEX = "(//#def|//#else|//#ifdef|//#if|//#elif|//#endif|//#debug|//#style)";
+    public static final String POLISH_ASSIGNMENT_REGEX = "(//#=)";
+    public static final String POLISH_COMMENT_REGEX = "(//# )";
+    public static final String JAVA_KEYWORD_REGEX = "(private|public|protected|final|static|boolean|int|float|double|true|false|void)";
+    public static final String JAVA_COMMENT_REGEX = "(//)";
+    public static final String DOLLAR_LCB_REGEX = "(\\$\\{)";
+    public static final String RCB_REGEX = "(\\})";
+    public static final String WITHESPACE_REGEX = "([ 	]+)";
+    public static final String NAME_REGEX = "([a-zA-Z\\.]+)";
+    public static final String STRING_REGEX = "(\")";
+    public static final String CATCH_ALL_REGEX = "(\\S+)";
+ 
     
+    private String REG_EX_PATTERN =
+        POLISH_DIRECTIVE_REGEX + "|" +
+        POLISH_ASSIGNMENT_REGEX + "|" +
+        POLISH_COMMENT_REGEX + "|" +
+        JAVA_KEYWORD_REGEX + "|" +
+        JAVA_COMMENT_REGEX + "|" +
+        DOLLAR_LCB_REGEX + "|" +
+        RCB_REGEX + "|" +
+        WITHESPACE_REGEX + "|" +
+        NAME_REGEX  + "|" +
+        STRING_REGEX + "|" +
+        CATCH_ALL_REGEX
+        ;
+          
     public static final int POLISH_DIRECTIVE_SYMBOL = 1;
     public static final int POLISH_ASSIGNMENT_SYMBOL = 2;
     public static final int POLISH_COMMENT_SYMBOL = 3;
     public static final int JAVA_KEYWORD_SYMBOL = 4;
     public static final int JAVA_COMMENT_SYMBOL = 5;
-    public static final int POLISH_FUNCTION_PUNCTATION_SYMBOL = 6;
-    public static final int NAME_SYMBOL = 8;
-    public static final int JAVA_PUNCTATION_SYMBOL = 9;
+    public static final int DOLLAR_LCB_SYMBOL = 6;
+    public static final int RCB_SYMBOL = 7;
+    public static final int WHITESPACE_SYMBOL = 8;
+    public static final int NAME_SYMBOL = 9;
+    public static final int STRING_SYMBOL = 10;
     
     // ####################################################
     // States.
@@ -184,14 +200,17 @@ public class PolishDirectiveRule implements IRule {
 	
 		// Set the defaultToken in regard to the current state.
 		// TODO: This is problematic because both can be active at the same time thus overriding each other.
-		if(this.states.isInState(JAVA_STATE)) {
-		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IJavaColorConstants.JAVA_DEFAULT));
-		}
 		if(this.states.isInState(POLISH_STATE)) {
 		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
 		}
+		if(this.states.isInState(JAVA_STATE)) {
+		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IJavaColorConstants.JAVA_DEFAULT));
+		}
 		if(this.states.isInState(JAVA_COMMENT_STATE)) {
 		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
+		}
+		if(this.states.isInState(STRING_STATE)) {
+		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING));
 		}
 		
 		IToken resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT);
@@ -244,58 +263,71 @@ public class PolishDirectiveRule implements IRule {
 				    resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT);
 				    break;
 				}
-//				if(i == POLISH_FUNCTION_PUNCTATION_SYMBOL) {
-//				    System.out.println("AAA functionSymbol.");
-//				    if(this.states.isInState(POLISH_STATE)) {
-//				        resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION);
-//				    }
-//				    break;
-//				}
+				if(i == DOLLAR_LCB_SYMBOL) {
+				    System.out.println("AAA dollar_lcb_Symbol.");
+				    if( ! this.states.isInState(JAVA_COMMENT_STATE)) { // Color in every state except java comments.
+				        this.states.addState(POLISH_FUNCTION_STATE);
+				        resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION);
+				    }
+				    break;
+				}
+				if(i == RCB_SYMBOL) {
+				    System.out.println("AAA rcb_Symbol.");
+				    if( ! this.states.isInState(JAVA_COMMENT_STATE)) {
+				        this.states.removeState(POLISH_FUNCTION_STATE);
+				        resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION);
+				    }
+				    break;
+				}
+				
+				
 				if(i == POLISH_COMMENT_SYMBOL) {
 				    System.out.println("AAA polishCommentSymbol.");
 				    this.states.setState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
-//				if(i == POLISH_ASSIGNMENT_SYMBOL) {
-//				    System.out.println("AAA AssignmentSymbol.");
-//				    this.states.setState(POLISH_STATE);
-//				    this.states.addState(JAVA_STATE);
-//				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
-//				    break;
-//				}
+				if(i == POLISH_ASSIGNMENT_SYMBOL) {
+				    System.out.println("AAA AssignmentSymbol.");
+				    this.states.setState(JAVA_STATE);
+				    //this.states.addState(JAVA_STATE);
+				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
+				    break;
+				}
 				if(i == JAVA_KEYWORD_SYMBOL) {
 				    if(this.states.isInState(JAVA_STATE)) {
 				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_KEYWORD);
 				    }
 				    break;
 				}
-//				if(i == JAVA_PUNCTATION_SYMBOL) {
-//				    if(this.states.isInState(JAVA_STATE)) {
-//				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_DEFAULT);
-//				    }
-//				}
+				if(i == STRING_SYMBOL) {
+				    if(this.states.isInState(STRING_STATE) && (!this.states.isInState(JAVA_COMMENT_STATE))) {
+				        this.states.removeState(STRING_STATE);
+				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING);
+				    }
+				    
+				    if( ! this.states.isInState(STRING_STATE) && (!this.states.isInState(JAVA_COMMENT_STATE))) {
+				        this.states.addState(STRING_STATE);
+				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING);
+				    }
+				    break;
+				}
+
 				System.out.println("PolishDirectiveRule.evaluate(...):Symbol not processed:"+value+"X.i:"+i);
 				break;
 			}
-		}
+ 		}
         return resultToken;
     }
 
     
-     /**
-     * @param value
-     * @return
-     */
+  
     private boolean isVariableName(String value) {
         // TODO ricky implement isVariableName
         return false;
     }
 
-    /**
-     * @param value
-     * @return
-     */
+ 
     private boolean isSymbolName(String value) {
         // TODO ricky implement isSymbolName
         return false;

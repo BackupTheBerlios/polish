@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +70,9 @@ public class TokenStore {
     
     public IToken getToken(String colorKey) {
         Assert.isNotNull(colorKey);
-        return (IToken)this.colorKeyToTokenMapping.get(colorKey);
+        IToken result = (IToken)this.colorKeyToTokenMapping.get(colorKey);
+        Assert.isNotNull(result);
+        return result;
     }
     
     public boolean containsToken(String colorKey) {

@@ -30,12 +30,12 @@
          point="org.eclipse.ui.editors">
          
 		<editor
-         	id="de.enough.polish.plugin.eclipse.polishEditor.PolishEditor"
+         	id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
          	name="Polish Editor"
          	extensions="java"
          	icon="icons/sample.gif"
          	contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-         	class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditor">
+         	class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor">
          </editor>
     </extension>
     
@@ -50,4 +50,14 @@
 		</participant>
 	</extension>
 	-->
+	
+	<extension
+       id="de.enough.polish.plugin.eclipse.polishEditor.preference.preferencePages"
+       name="J2ME Polish Prefernce Pages"
+       point="org.eclipse.ui.preferencePages">
+       <page id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage"
+	    class="de.enough.polish.plugin.eclipse.polishEditor.preference.PolishRootPage"
+            name="J2ME Polish">
+       </page>
+   </extension>
 </plugin>

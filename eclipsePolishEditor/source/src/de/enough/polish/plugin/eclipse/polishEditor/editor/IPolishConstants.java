@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 /**
  * <p></p>

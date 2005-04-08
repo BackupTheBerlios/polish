@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
@@ -35,7 +35,10 @@ import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import de.enough.polish.plugin.eclipse.polishEditor.IPolishContentTypes;
 
 
 /**
@@ -190,5 +193,12 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         newlyConfiguredContentTypes[newlyConfiguredContentTypes.length - 1] = IPolishContentTypes.POLISH_DIRECTIVE;
         
         return newlyConfiguredContentTypes;
+    }
+    
+    
+    public void handlePropertyChangeEvent(PropertyChangeEvent event) {
+        // TODO ricky implement handlePropertyChangeEvent
+        super.handlePropertyChangeEvent(event);
+        this.polishSingleLineCommentScanner.adaptToPreferenceChange(event);
     }
 }

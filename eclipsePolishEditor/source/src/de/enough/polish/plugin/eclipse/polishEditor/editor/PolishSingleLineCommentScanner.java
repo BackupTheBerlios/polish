@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
- * <p></p>
+ * <p>There ist a problem with the update of tokens. After a preference change, the change is not reflected in the presentation.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -69,7 +69,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
 
     }
 
-    //TODO: Add all tokens.
+ //  TODO: NEW_COLOR add here.
     private String[] tokenProperties = {
             IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT,
             IJavaColorConstants.JAVA_KEYWORD,
@@ -77,8 +77,8 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
             IJavaColorConstants.JAVA_METHOD_NAME,
             IJavaColorConstants.JAVA_DEFAULT,
             IPolishConstants.POLISH_COLOR_DEFAULT,
-            IPolishConstants.POLISH_COLOR_DIRECTIVE
-//            IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,
+            IPolishConstants.POLISH_COLOR_DIRECTIVE,
+            IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,
 //            IPolishConstants.POLISH_COLOR_FUNCTON_NAME
             };
     
@@ -110,12 +110,15 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
      */
     protected List createRules() {
         setDefaultReturnToken(getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
-        
+        //TODO: NEW_COLOR add here.
         this.tokenStore.addToken(IJavaColorConstants.JAVA_KEYWORD,getToken(IJavaColorConstants.JAVA_KEYWORD));
         this.tokenStore.addToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT,getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));  
         this.tokenStore.addToken(IJavaColorConstants.JAVA_DEFAULT,getToken(IJavaColorConstants.JAVA_DEFAULT));  
+        this.tokenStore.addToken(IJavaColorConstants.JAVA_STRING,getToken(IJavaColorConstants.JAVA_STRING));
         this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_DIRECTIVE,getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE));
         this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_DEFAULT,getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
+        this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION));
+          
         PolishDirectiveRule rule = new PolishDirectiveRule(this.tokenStore);
    
         List rules = new ArrayList();

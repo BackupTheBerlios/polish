@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.text.IJavaPartitions;
@@ -31,8 +31,12 @@ import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 
 
 
@@ -49,19 +53,44 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
  */
 public class PolishEditor extends CompilationUnitEditor {
     
-    
+    private PropertyChangeListener propertyChangeListener;
+
+
+    class PropertyChangeListener implements IPropertyChangeListener{
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+         */
+        public void propertyChange(PropertyChangeEvent event) {
+            System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
+            System.out.println("PolishEditor.PropertyChangeListener.propertyChange().event:source:class:"+event.getSource().getClass());
+        }
+        
+    }
      
+    
+    public PolishEditor() {
+        System.out.println("PolishEditor.PolishEditor():enter.");
+        this.propertyChangeListener = new PropertyChangeListener();
+    }
+    
+    
     public void createPartControl(Composite parent){
         System.out.println("PolishEditor.createPartControl():enter.");
         
         
         IPreferenceStore preferenceStoreJava = this.getPreferenceStore(); // This one origins from JavaEditor and is a chain of 4 stores.
         IPreferenceStore preferenceStorePolish = PolishEditorPlugin.getDefault().getPreferenceStore();
+
+        preferenceStorePolish.addPropertyChangeListener(this.propertyChangeListener);
         
-        //TODO: For debugging only. Set this stuff in preference page.
+        
+        //TODO: NEW_COLOR add here.
+        
         preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
         preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
         preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
+        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
         
         IPreferenceStore[] preferenceStores = new IPreferenceStore[2];
         preferenceStores[0] = preferenceStoreJava;
