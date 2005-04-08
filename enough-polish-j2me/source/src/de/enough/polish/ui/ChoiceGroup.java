@@ -91,7 +91,8 @@ implements Choice
 		private int popupBackgroundColor = 0xFFFFFF;
 		private IconItem popupItem;
 		private boolean isPopupClosed;
-		private int popupOpenY;
+		//private int popupOpenY;
+		private int popupParentOpenY;
 	//#endif
 	//#ifndef tmp.suppressAllCommands
 		private ItemCommandListener additionalItemCommandListener;
@@ -702,11 +703,13 @@ implements Choice
 			ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
 			newSelected.select( true );
 			this.selectedIndex = elementNum;
-			if ( this.isInitialised ) {
-				focus( elementNum, newSelected );
-			} else {
-				this.autoFocusEnabled = true;
-				this.autoFocusIndex = elementNum;
+			if (this.isFocused) {
+				if ( this.isInitialised) {
+					focus( elementNum, newSelected );
+				} else {
+					this.autoFocusEnabled = true;
+					this.autoFocusIndex = elementNum;
+				}
 			}
 			//#ifdef polish.usePopupItem
 				if (this.isPopup) {
@@ -926,26 +929,36 @@ implements Choice
 	//#ifdef polish.usePopupItem
 	private void closePopup() {
 		this.isPopupClosed = true;
+		/*
 		int difference = this.popupOpenY - this.yTopPos;
 		if (difference > 0 && (this.parent instanceof Container) && (((Container)this.parent).yOffset != 0) ) {	
 			//System.out.println("Closing popup: adjusting parent.offset from [" + (((Container)this.parent).yOffset) + "] to [" + (((Container)this.parent).yOffset + difference) + "].");
 			((Container)this.parent).yOffset += difference;
 		}
+		*/
+		if (this.parent instanceof Container) {
+			((Container)this.parent).yOffset = this.popupParentOpenY;
+		}
+		/*
 		this.internalX = -9999;		
 		if (this.yOffset < 0) {
-			//System.out.println("Closing popup: adjusting ChoiceGroup.offset from [" + this.yOffset + "] to [" + (this.yOffset + (this.contentHeight - this.popupItem.contentHeight)) + "].");
+			System.out.println("Closing popup: adjusting ChoiceGroup.offset from [" + this.yOffset + "] to [" + (this.yOffset + (this.contentHeight - this.popupItem.contentHeight)) + "].");
 			this.yOffset += (this.contentHeight - this.popupItem.contentHeight);
 			if (this.yOffset > 0 ) {
 				this.yOffset = 0;
 			}
 		}
+		*/
 		requestInit();
 	}
 	//#endif
 
 	//#ifdef polish.usePopupItem
 	private void openPopup() {
-		this.popupOpenY = this.yTopPos; 
+		//this.popupOpenY = this.yTopPos; 
+		if (this.parent instanceof Container) {
+			this.popupParentOpenY = ((Container)this.parent).yOffset;
+		}
 		this.isPopupClosed = false;
 		focus( this.selectedIndex );
 		// recalculate the internal positions of the selected choice:
@@ -972,6 +985,27 @@ implements Choice
 		if (this.itemsList.size() == 0) {
 			return false;
 		}
+		//#if polish.ChoiceGroup.handleDefaultCommandFirst == true
+			if (gameAction == Canvas.FIRE) {
+				//#ifdef polish.usePopupItem
+					if (!this.isPopup || this.isPopupClosed) {
+				//#endif
+				//#ifndef tmp.suppressAllCommands
+					if (this.defaultCommand != null && this.additionalItemCommandListener != null) {
+						this.additionalItemCommandListener.commandAction( this.defaultCommand, this );
+						return true;
+					}
+				//#else
+					if (this.defaultCommand != null && this.itemCommandListener != null) {
+						this.itemCommandListener.commandAction( this.defaultCommand, this );
+						return true;
+					}
+				//#endif
+				//#ifdef polish.usePopupItem
+				}
+				//#endif
+			}
+		//#endif
 		boolean processed = false;
 		//#ifdef polish.usePopupItem
 		if (!(this.isPopup && this.isPopupClosed)) {
@@ -1164,23 +1198,24 @@ implements Choice
 	 * @param cmd the new command for selecting this choice group
 	 */
 	public void setDefaultCommand(Command cmd) {
-		//#ifndef tmp.suppressAllCommands
-			if (this.choiceType == MULTIPLE) {
-				//#ifndef tmp.suppressMarkCommands
-					removeCommand( MARK_COMMAND );
-				//#endif
-			} else {
-				//#ifndef tmp.suppressSelectCommand
-					removeCommand( List.SELECT_COMMAND );
-					if (this.selectCommand != null) {
-						removeCommand( this.selectCommand );
-					}
-				//#endif
-			}
-			this.itemCommandListener = this;
-		//#endif
+		if (this.choiceType == MULTIPLE) {
+			//#ifndef tmp.suppressMarkCommands
+				removeCommand( MARK_COMMAND );
+			//#endif
+		} else {
+			//#ifndef tmp.suppressSelectCommand
+				removeCommand( List.SELECT_COMMAND );
+				if (this.selectCommand != null) {
+					removeCommand( this.selectCommand );
+				}
+			//#endif
+		}
+		if (this.additionalItemCommandListener == null) {
+			this.additionalItemCommandListener = this.itemCommandListener;
+		}
 		addCommand( cmd );
 		this.selectCommand = cmd;
+		this.defaultCommand = cmd;
 		this.itemCommandListener = this;
 	}
 	//#endif

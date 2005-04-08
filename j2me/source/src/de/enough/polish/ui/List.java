@@ -342,6 +342,7 @@ public class List extends Screen implements Choice
 		this.choiceGroup = new ChoiceGroup( null, this.listType, stringElements, imageElements, style, true  );
 		this.choiceGroup.autoFocusEnabled = true;
 		this.choiceGroup.screen = this;
+		this.choiceGroup.isFocused = true;
 		this.container = this.choiceGroup;
 	}
 		

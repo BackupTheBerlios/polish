@@ -226,7 +226,7 @@ public abstract class Screen
 		// up when calling super.getHeight(), so we need to use hardcoded values...
 		
 		//#ifdef tmp.menuFullScreen
-			//#ifdef polish.needsManualMenu
+			//#if polish.needsManualMenu && !tmp.fullScreen
 				this.fullScreenHeight = getHeight();
 			//#else
 				//#ifdef polish.FullCanvasHeight:defined
@@ -637,6 +637,17 @@ public abstract class Screen
 				if (this.title != null && this.showTitleOrMenu) {
 					this.title.paint(0, 0, 0, this.screenWidth, g);
 					tHeight = this.titleHeight;
+				}
+			//#elif !tmp.menuFullScreen
+				int translateY = g.getTranslateY();
+				if (translateY != 0 && this.screenHeight == this.originalScreenHeight) {
+					this.screenHeight -= translateY;
+					this.scrollIndicatorY -= translateY;
+					//#debug
+					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
+					if (this.container != null) {
+						this.container.setVerticalDimensions(translateY, this.screenHeight);
+					}
 				}
 			//#endif
 			if (this.subTitle != null) {
@@ -1562,6 +1573,8 @@ public abstract class Screen
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	protected void sizeChanged(int width, int height) {
+		//#debug
+		System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
 		//#ifdef tmp.menuFullScreen
 			this.fullScreenHeight = height;
 			this.screenHeight = height - this.menuBarHeight;

@@ -77,7 +77,7 @@ public class Container extends Item {
 	protected Style focusedStyle;
 	protected Style itemStyle;
 	protected Item focusedItem;
-	protected int focusedIndex = -1;
+	public int focusedIndex = -1;
 	private int columnsSetting = NO_COLUMNS;
 	private int numberOfColumns;
 	private int[] columnsWidths;
@@ -1087,7 +1087,6 @@ public class Container extends Item {
 			}
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
 			focus( this.focusedIndex, item );
-			this.isFocused = true;
 			if (item.commands == null && this.commands != null) {
 				Screen scr = getScreen();
 				if (scr != null) {

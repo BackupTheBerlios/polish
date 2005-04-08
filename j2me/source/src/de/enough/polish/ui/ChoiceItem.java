@@ -58,11 +58,13 @@ public class ChoiceItem extends IconItem
 	private boolean isMultiple;
 	private Image selected;
 	private Image plain;
-	boolean isSelected;
+	/** determines whether this item is currently selected */
+	public boolean isSelected;
 	private Image boxImage;
 	private int boxWidth;
 	private int yAdjust;
-	private boolean drawBox;
+	/** determines whether an image is drawn before the item */
+	public boolean drawBox;
 	private int choiceType;
 	protected Font preferredFont;
 	private int boxColor;
