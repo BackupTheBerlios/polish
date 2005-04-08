@@ -87,10 +87,10 @@ public class PolishEditor extends CompilationUnitEditor {
         
         //TODO: NEW_COLOR add here.
         
-        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
-        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
-        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
-        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
+//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
+//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
+//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
+//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
         
         IPreferenceStore[] preferenceStores = new IPreferenceStore[2];
         preferenceStores[0] = preferenceStoreJava;

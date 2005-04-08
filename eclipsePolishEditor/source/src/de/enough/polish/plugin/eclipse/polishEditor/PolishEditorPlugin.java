@@ -2,8 +2,12 @@ package de.enough.polish.plugin.eclipse.polishEditor;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.*;
 import org.osgi.framework.BundleContext;
+
+import de.enough.polish.plugin.eclipse.polishEditor.editor.IPolishConstants;
+
 import java.util.*;
 
 /**
@@ -102,10 +106,16 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
             message, null); 
         log(status);
     }
-    /*
-    public PolishPartitioner getPolishPartitioner() {
-        return this.polishPartitioner;
-    }
-    */
     
+     
+   
+    protected void initializeDefaultPreferences(IPreferenceStore store) {
+//        super.initializeDefaultPreferences(store);
+        
+        store.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,"0,200,0");
+        store.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,"0,200,0");
+        store.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,"0,200,0");
+        store.putValue(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,"0,200,0");
+
+    }
 }
