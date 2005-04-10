@@ -141,6 +141,13 @@ public abstract class Screen
 		//#define tmp.menuFullScreen
 		private int fullScreenHeight;
 		protected int menuBarHeight;
+		//#ifdef polish.key.ReturnKey:defined
+			private Command backCommand;
+		//#endif
+		
+		//#if polish.Screen.FireTriggersOkCommand == true
+			private Command okCommand;
+		//#endif
 		//#if polish.MenuBar.useExtendedMenuBar == true
 			private final MenuBar menuBar;
 			//#define tmp.useExternalMenuBar
@@ -157,9 +164,6 @@ public abstract class Screen
 			//#endif
 			private Command menuSingleLeftCommand;
 			private Command menuSingleRightCommand;
-			//#ifdef polish.key.ReturnKey:defined
-				private Command backCommand;
-			//#endif
 			private Container menuContainer;
 			private ArrayList menuCommands;
 			private boolean menuOpened;
@@ -1026,9 +1030,15 @@ public abstract class Screen
 			int gameAction = -1;
 			
 			//#if tmp.menuFullScreen
+				//#ifdef polish.key.ReturnKey:defined
+					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+							callCommandListener( this.backCommand );
+							repaint();
+							//# return;
+					//# }
+				//#endif
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handleKeyPressed(keyCode, 0)) {
-						System.out.println("menubar handled key pressed.");
 						repaint();
 						return;
 					}
@@ -1036,13 +1046,6 @@ public abstract class Screen
 						return;
 					}
 				//#else
-					//#ifdef polish.key.ReturnKey:defined
-						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
-								callCommandListener( this.backCommand );
-								repaint();
-								//# return;
-						//# }
-					//#endif
 					if (keyCode == LEFT_SOFT_KEY) {
 						if ( this.menuSingleLeftCommand != null) {
 							callCommandListener( this.menuSingleLeftCommand );
@@ -1093,6 +1096,12 @@ public abstract class Screen
 			if (gameAction == -1) {
 				gameAction = getGameAction(keyCode);
 			}
+			//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
+				if (gameAction == FIRE && this.okCommand != null) {
+					callCommandListener(this.okCommand);
+					return;
+				}
+			//#endif
 			boolean processed = handleKeyPressed(keyCode, gameAction);
 			//#ifdef polish.debug.debug
 				if (!processed) {
@@ -1183,6 +1192,18 @@ public abstract class Screen
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
+		//#if polish.Screen.FireTriggersOkCommand == true
+			if ( cmd.getCommandType() == Command.OK 
+					&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
+			{
+				this.okCommand = cmd;
+			}
+		//#endif
+		//#ifdef polish.key.ReturnKey:defined
+			if ( cmd.getCommandType() == Command.BACK ) {
+				this.backCommand = cmd;
+			}
+		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd);
 			if (this.isShown()) {
@@ -1195,11 +1216,6 @@ public abstract class Screen
 				 this.menuContainer = new Container( true );
 			}
 			int type = cmd.getCommandType(); 
-			//#ifdef polish.key.ReturnKey:defined
-				if ( type == Command.BACK ) {
-					this.backCommand = cmd;
-				}
-			//#endif
 			if ( (type == Command.BACK || type == Command.CANCEL ) ) 
 			{
 				if ( (this.menuSingleRightCommand == null)

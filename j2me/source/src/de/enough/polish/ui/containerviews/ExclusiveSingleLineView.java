@@ -59,6 +59,16 @@ public class ExclusiveSingleLineView extends ContainerView {
 	//#endif
 	private int arrowWidth = 10;
 	private int currentItemIndex;
+	private ChoiceItem currentItem;
+	private int leftArrowEndX;
+	private int rightArrowStartX;
+//#message localization settings:
+//#message locale=${polish.locale}
+//#message language=${polish.language}
+//#message country=${polish.country}
+//#ifdef polish.country:defined
+	//#message country is defined!!
+//#endif
 
 	/**
 	 * Creates a new view
@@ -87,7 +97,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 		}
 		parent.focusedIndex = selectedItemIndex;
-		selectedItem.drawBox = false;
 		//#if polish.css.exclusiveview-left-arrow || polish.css.exclusiveview-right-arrow
 			int width = 0;
 			//#ifdef polish.css.exclusiveview-left-arrow
@@ -106,14 +115,19 @@ public class ExclusiveSingleLineView extends ContainerView {
 				this.arrowWidth = width;
 			}
 		//#endif
+		int completeArrowWidth;
 		if (selectedItemIndex > 0 && selectedItemIndex < items.length -1 ) {
-			lineWidth -= 2 * ( this.arrowWidth + this.paddingHorizontal );
+			completeArrowWidth = 2 * ( this.arrowWidth + this.paddingHorizontal );
 		} else {
-			lineWidth -= 1 * ( this.arrowWidth + this.paddingHorizontal );
+			completeArrowWidth = 1 * ( this.arrowWidth + this.paddingHorizontal );
 		}
+		lineWidth -= completeArrowWidth;
+		selectedItem.drawBox = false;
 		this.contentHeight = selectedItem.getItemHeight(lineWidth, lineWidth);
-		this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth );
+		this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth ) + completeArrowWidth;
 		this.appearanceMode = Item.INTERACTIVE;
+		this.currentItem = selectedItem;
+		this.currentItemIndex = selectedItemIndex;
 	}
 	
 	
@@ -159,6 +173,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	{
 		//#debug
 		System.out.println("ExclusiveView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
+		/*
 		Item[] items = this.parentContainer.getItems();
 		ChoiceItem selectedItem = (ChoiceItem) items[0];
 		int selectedItemIndex = 0;
@@ -170,8 +185,9 @@ public class ExclusiveSingleLineView extends ContainerView {
 				break;
 			}
 		}
+		*/
 		g.setColor( this.arrowColor );
-		if (selectedItemIndex > 0) {
+		if (this.currentItemIndex > 0) {
 			// draw left arrow
 			//#ifdef polish.css.exclusiveview-left-arrow
 				if (this.leftArrow != null) {
@@ -196,9 +212,10 @@ public class ExclusiveSingleLineView extends ContainerView {
 			//#endif
 			x += this.arrowWidth + this.paddingHorizontal;
 			leftBorder += this.arrowWidth + this.paddingHorizontal;
+			this.leftArrowEndX = x;
 		}
 				
-		if (selectedItemIndex < items.length - 1) {
+		if (this.currentItemIndex < this.parentContainer.size() - 1) {
 			// draw right arrow
 			//#ifdef polish.css.exclusiveview-right-arrow
 				if (this.rightArrow != null) {
@@ -222,15 +239,16 @@ public class ExclusiveSingleLineView extends ContainerView {
 				}
 			//#endif
 			rightBorder -= this.arrowWidth + this.paddingHorizontal;
+			this.rightArrowStartX = rightBorder;
 		}
 
 		// draw item:
 		//#debug
 		System.out.println("ExclusiveView.item: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
-		selectedItem.drawBox = false;
-		selectedItem.paint(x, y, leftBorder, rightBorder, g);
+		//selectedItem.drawBox = false;
+		this.currentItem.paint(x, y, leftBorder, rightBorder, g);
 		
-		this.currentItemIndex = selectedItemIndex;
+		//this.currentItemIndex = selectedItemIndex;
 	}
 
 	/* (non-Javadoc)
@@ -238,25 +256,54 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 */
 	protected Item getNextItem(int keyCode, int gameAction) {
 		Item[] items = this.parentContainer.getItems();
-		ChoiceItem currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		//ChoiceItem currentItem = (ChoiceItem) items[ this.currentItemIndex ];
 		if ( gameAction == Canvas.LEFT && this.currentItemIndex > 0 ) {
-			currentItem.select( false );
+			this.currentItem.select( false );
 			this.currentItemIndex--;
-			currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-			currentItem.select( true );
-			return currentItem;
+			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			this.currentItem.select( true );
+			return this.currentItem;
 		} else if ( gameAction == Canvas.RIGHT && this.currentItemIndex < items.length - 1 ) {
-			currentItem.select( false );
+			this.currentItem.select( false );
 			this.currentItemIndex++;
-			currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-			currentItem.select( true );
-			return currentItem;
+			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			this.currentItem.select( true );
+			return this.currentItem;
 		}
 		// in all other cases there is no next item:
 		return null;
 	}
 
-	// TODO handle pointer events when the arrows are selected
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles pointer pressed events.
+	 * This is an optional feature that doesn't need to be implemented by subclasses.
+	 * 
+	 * @param x the x position of the event
+	 * @param y the y position of the event
+	 * @return true when the event has been handled. When false is returned the parent container
+	 *         will forward the event to the affected item.
+	 */
+	public boolean handlePointerPressed(int x, int y) {
+		Item[] items = this.parentContainer.getItems();
+		this.currentItem.select( false );
+		if (this.currentItemIndex > 0 && x < this.leftArrowEndX ) {
+			this.currentItemIndex--;
+		} else if ( this.currentItemIndex < items.length - 1 && x > this.rightArrowStartX ) {
+			this.currentItemIndex++;
+		} else  {
+			this.currentItemIndex++;
+			if (this.currentItemIndex >= items.length ) {
+				this.currentItemIndex = 0;
+			}
+		}  
+		this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		this.currentItem.select( true );
+		this.parentContainer.focus(this.currentItemIndex, this.currentItem);
+		return true;
+	}
+	//#endif
+
 	// TODO allow to repeat scrolling at first and last item
 
 }

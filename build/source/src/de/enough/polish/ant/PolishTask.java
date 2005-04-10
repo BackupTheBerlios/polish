@@ -485,8 +485,8 @@ public class PolishTask extends ConditionalTask {
 		}
 		// create project settings:
 		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
-		this.polishProject.addDirectCapability("polish.version", VERSION);
-		this.polishProject.addDirectFeature( "polish.build" );
+		this.polishProject.addDirectCapability("polish.buildVersion", VERSION);
+		this.polishProject.addDirectFeature( "polish.active" );
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
 			this.polishProject.addDirectCapability("polish.debug.Verbose", "enabled");
@@ -1030,7 +1030,12 @@ public class PolishTask extends ConditionalTask {
 				}
 				this.preprocessor.addVariable("polish.locale", locale.toString() );
 				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
-				this.preprocessor.addVariable("polish.country", locale.getCountry() );
+				String country = locale.getCountry();
+				if ( country == null || country.length() == 0 ) {
+					this.preprocessor.removeVariable( "polish.country" );
+				} else {
+					this.preprocessor.addVariable("polish.country", country );
+				}
 				
 				// load localized messages, this also sets localized variables automatically:
 				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );

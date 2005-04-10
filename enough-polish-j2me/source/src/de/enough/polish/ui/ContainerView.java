@@ -211,4 +211,19 @@ public abstract class ContainerView {
 		return this.parentContainer.getScreen();
 	}
 
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles pointer pressed events.
+	 * This is an optional feature that doesn't need to be implemented by subclasses.
+	 * 
+	 * @param x the x position of the event
+	 * @param y the y position of the event
+	 * @return true when the event has been handled. When false is returned the parent container
+	 *         will forward the event to the affected item.
+	 */
+	public boolean handlePointerPressed(int x, int y) {
+		return false;
+	}
+	//#endif
+
 }

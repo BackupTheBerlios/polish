@@ -1210,6 +1210,13 @@ public class Container extends Item {
 			|| x < this.xLeftPos || x > this.xRightPos) {
 			return false;
 		}
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				if ( this.view.handlePointerPressed(x,y) ) {
+					return true;
+				}
+			}
+		//#endif
 		// an item within this container was selected:
 		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
