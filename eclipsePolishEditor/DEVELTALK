@@ -5,7 +5,8 @@ TODO:
 - Make the nature chooseable.
 - Code cleanup: plugin structure, package structure, javadoc
 - Create updatesite with webbrowser access.
-
+- bug:
+	at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905)
 
 PROBLEMS:
 
