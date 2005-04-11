@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor.editor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor.presentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,9 @@ import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+
+import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
+import de.enough.polish.plugin.eclipse.utils.TokenStore;
 
 /**
  * <p>There ist a problem with the update of tokens. After a preference change, the change is not reflected in the presentation.</p>

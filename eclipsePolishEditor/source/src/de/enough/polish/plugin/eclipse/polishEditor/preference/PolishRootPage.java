@@ -32,8 +32,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.IPolishConstants;
 
 /**
  * <p></p>

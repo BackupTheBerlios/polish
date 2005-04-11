@@ -34,11 +34,10 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import de.enough.polish.plugin.eclipse.polishEditor.IPolishContentTypes;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
 
 
 /**
@@ -183,21 +182,22 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 	}
 	*/
 
+    //TODO: Not needed anymore. Confirm, then remove.
     // Register the content type for polish directives at the end of the java content types.
-    public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-        String[] originalConfiguredContentTypes = super.getConfiguredContentTypes(sourceViewer);
-        String[] newlyConfiguredContentTypes = new String[originalConfiguredContentTypes.length + 1];
-        
-        System.arraycopy(originalConfiguredContentTypes,0,newlyConfiguredContentTypes,0,originalConfiguredContentTypes.length);
-        
-        newlyConfiguredContentTypes[newlyConfiguredContentTypes.length - 1] = IPolishContentTypes.POLISH_DIRECTIVE;
-        
-        return newlyConfiguredContentTypes;
-    }
+//    public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+//        String[] originalConfiguredContentTypes = super.getConfiguredContentTypes(sourceViewer);
+//        String[] newlyConfiguredContentTypes = new String[originalConfiguredContentTypes.length + 1];
+//        
+//        System.arraycopy(originalConfiguredContentTypes,0,newlyConfiguredContentTypes,0,originalConfiguredContentTypes.length);
+//        
+//        newlyConfiguredContentTypes[newlyConfiguredContentTypes.length - 1] = IPolishContentTypes.POLISH_DIRECTIVE;
+//        
+//        return newlyConfiguredContentTypes;
+//    }
     
     
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
-        // TODO ricky implement handlePropertyChangeEvent
+        System.out.println("PolishSourceViewerConfiguration.handlePropertyChangeEvent(...):enter.");
         super.handlePropertyChangeEvent(event);
         this.polishSingleLineCommentScanner.adaptToPreferenceChange(event);
     }

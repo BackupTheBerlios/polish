@@ -23,6 +23,7 @@
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.resources"/>
    </requires>
 
 
@@ -60,4 +61,37 @@
             name="J2ME Polish">
        </page>
    </extension>
+   
+<extension
+	id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureExtension"
+	name="Toggle J2ME Polish nature"
+	point="org.eclipse.ui.popupMenus">
+	
+	<objectContribution
+       adaptable="true"
+       objectClass="org.eclipse.core.resources.IProject"
+       id="de.enough.polish.plugin.eclipse.polish.togglePolishNature">
+		
+		<action
+			id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureAction"
+			label="Toggle J2ME Polish nature"
+			icon="icons/simple.gif"
+			class="de.enough.polish.plugin.eclipse.polish.actions.TogglePolishNatureAction"
+			enablesFor="1">
+		</action>
+	</objectContribution>
+</extension>
+
+<extension
+	id="de.enough.polish.plugin.eclipse.polish.nature"
+	point="org.eclipse.core.resources.natures"
+	name="J2ME Polish Nature">
+	
+	<runtime>
+		<run
+			class="de.enough.polish.plugin.eclipse.polish.PolishNature">
+		</run>
+	</runtime>	
+</extension>
+
 </plugin>

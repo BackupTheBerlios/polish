@@ -29,9 +29,7 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.text.IJavaPartitions;
 import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
-import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
@@ -53,25 +51,25 @@ import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
  */
 public class PolishEditor extends CompilationUnitEditor {
     
-    private PropertyChangeListener propertyChangeListener;
+//    private PropertyChangeListener propertyChangeListener;
 
 
-    class PropertyChangeListener implements IPropertyChangeListener{
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-         */
-        public void propertyChange(PropertyChangeEvent event) {
-            System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
-            System.out.println("PolishEditor.PropertyChangeListener.propertyChange().event:source:class:"+event.getSource().getClass());
-        }
-        
-    }
+//    class PropertyChangeListener implements IPropertyChangeListener{
+//
+//        /* (non-Javadoc)
+//         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+//         */
+//        public void propertyChange(PropertyChangeEvent event) {
+//            System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
+//            System.out.println("PolishEditor.PropertyChangeListener.propertyChange().event:source:class:"+event.getSource().getClass());
+//        }
+//        
+//    }
      
     
     public PolishEditor() {
         System.out.println("PolishEditor.PolishEditor():enter.");
-        this.propertyChangeListener = new PropertyChangeListener();
+//        this.propertyChangeListener = new PropertyChangeListener();
     }
     
     
@@ -82,19 +80,14 @@ public class PolishEditor extends CompilationUnitEditor {
         IPreferenceStore preferenceStoreJava = this.getPreferenceStore(); // This one origins from JavaEditor and is a chain of 4 stores.
         IPreferenceStore preferenceStorePolish = PolishEditorPlugin.getDefault().getPreferenceStore();
 
-        preferenceStorePolish.addPropertyChangeListener(this.propertyChangeListener);
+//        preferenceStorePolish.addPropertyChangeListener(this.propertyChangeListener);
         
         
-        //TODO: NEW_COLOR add here.
-        
-//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
-//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
-//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,preferenceStoreJava.getString(IJavaColorConstants.JAVA_STRING));
-//        preferenceStorePolish.putValue(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,preferenceStoreJava.getString(IJavaColorConstants.JAVA_KEYWORD));
-        
+       
         IPreferenceStore[] preferenceStores = new IPreferenceStore[2];
         preferenceStores[0] = preferenceStoreJava;
         preferenceStores[1] = preferenceStorePolish;
+
         // We are forced to do this kludge because all private methods of suberclasses uses this one preferenceStore.
         // We do need write support so we give others this chainPreferenceStore and when we edit some values
         // we get our own store from the plugin. And thus hardwiring as unforgivable like all others.
@@ -114,4 +107,8 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     
     
+    protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+        System.out.println("PolishEditor.handlePreferenceStoreChanged(...):enter.");
+        super.handlePreferenceStoreChanged(event);
+    }
 }

@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor.editor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor.presentation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +34,10 @@ import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
+
+import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
+import de.enough.polish.plugin.eclipse.utils.States;
+import de.enough.polish.plugin.eclipse.utils.TokenStore;
 
 
 /**
@@ -49,33 +53,6 @@ import org.eclipse.jface.text.rules.Token;
 public class PolishDirectiveRule implements IRule {
 
    
-    class States{
-        
-        private int state;
-        
-        public States() {
-            this.state = 0;
-        }
-        
-        public boolean isInState(int stateToTest) {
-            return (this.state & stateToTest) == stateToTest;
-        }
-        
-        public void addState(int stateToAdd) {
-            this.state = this.state | stateToAdd;
-        }
-        
-        public void setState(int stateToSet) {
-            this.state = stateToSet;
-        }
-      
-      public void removeState(int stateToRemove) {
-          this.state = this.state & ~stateToRemove;
-      }
-
-
-    }
-
     private char[][] delimiters;
     
     private Matcher matcher;
@@ -138,7 +115,7 @@ public class PolishDirectiveRule implements IRule {
     public static final int STRING_STATE = 8;
     public static final int POLISH_FUNCTION_STATE = 16;
 
-    private String commentString;
+    private String wholeCommentLine;
     
     
     // ####################################################
@@ -152,6 +129,7 @@ public class PolishDirectiveRule implements IRule {
         
         this.tokenStore = tokenStore;
         this.states = new States();
+        this.wholeCommentLine = "";
     }
     
     /* (non-Javadoc)
@@ -168,23 +146,24 @@ public class PolishDirectiveRule implements IRule {
         this.delimiters = scanner.getLegalLineDelimiters();
 
         // Read the the whole line.
-        StringBuffer stringBuffer = new StringBuffer(200);
+        StringBuffer wholeCommentLineAsStringBuffer = new StringBuffer(200);
         c = scanner.read();
         readCount++;
         
         while( ! charIsEOLorEOF(c)) {
-            stringBuffer.append((char)c);
+            wholeCommentLineAsStringBuffer.append((char)c);
             c = scanner.read();
             readCount++;
         }
+        
+        String restOfLine = wholeCommentLineAsStringBuffer.toString();
         //System.out.println("Buffer:"+stringBuffer.toString()+"readCount:"+readCount);
         
         //Reset the scanner so length calculation remain correct.
         for(int i = 0; i < readCount; i++) {
             scanner.unread();
         }
-        this.commentString = stringBuffer.toString();
-        this.matcher.reset(this.commentString);
+        this.matcher.reset(restOfLine);
         
         boolean matcherMatchedSomething;
         matcherMatchedSomething = this.matcher.lookingAt();
@@ -234,7 +213,8 @@ public class PolishDirectiveRule implements IRule {
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
 				if(i == POLISH_DIRECTIVE_SYMBOL) { 
 				    System.out.println("AAA directiveSymbol.");
-				    this.states.setState(POLISH_STATE);
+				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+			        this.states.setState(POLISH_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
@@ -252,9 +232,6 @@ public class PolishDirectiveRule implements IRule {
 				            break;
 				        }
 				    }
-//				    if(this.states.isInState(JAVA_STATE)) {
-//				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_DEFAULT);
-//				    }
 				    break;
 				}
 				if(i == JAVA_COMMENT_SYMBOL) {
@@ -283,13 +260,15 @@ public class PolishDirectiveRule implements IRule {
 				
 				if(i == POLISH_COMMENT_SYMBOL) {
 				    System.out.println("AAA polishCommentSymbol.");
-				    this.states.setState(JAVA_STATE);
+				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+			        this.states.setState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
 				if(i == POLISH_ASSIGNMENT_SYMBOL) {
 				    System.out.println("AAA AssignmentSymbol.");
-				    this.states.setState(JAVA_STATE);
+				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+			        this.states.setState(JAVA_STATE);
 				    //this.states.addState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
@@ -304,11 +283,13 @@ public class PolishDirectiveRule implements IRule {
 				    if(this.states.isInState(STRING_STATE) && (!this.states.isInState(JAVA_COMMENT_STATE))) {
 				        this.states.removeState(STRING_STATE);
 				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING);
+				        break;
 				    }
 				    
 				    if( ! this.states.isInState(STRING_STATE) && (!this.states.isInState(JAVA_COMMENT_STATE))) {
 				        this.states.addState(STRING_STATE);
 				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING);
+				        break;
 				    }
 				    break;
 				}

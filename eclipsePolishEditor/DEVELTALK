@@ -1,11 +1,18 @@
+TODO:
+
+- Solve problem with instant property change.
+- Create a nature and register polish editor as default editor for .java.
+- Make the nature chooseable.
+- Code cleanup: plugin structure, package structure, javadoc
+- Create updatesite with webbrowser access.
 
 
-Problems:
+PROBLEMS:
 
 The folding mechanism can divide block directives.
 
 
-Decision of design
+DESIGN DECITIONS:
 
 syntax highlighting: overload the getSingleLineCommentScanner from JavaSourceViewerConfiguration.
 Having a own partition is difficult because it would overlap with content type SINGLE_LINE_COMMENT.
@@ -13,5 +20,49 @@ Alternative: overload FastJavaPartitionScanner and return new content type for /
 hardwired everywhere in the jdt
 
 
+Milestones:
+
+Mark ocurrences
+
+see JavaEditor.handlePreferenceStoreChanged(...) and PreferenceConstants.EDITOR_MARK_OCCURRENCES within.
 
 
+THINGS TO COKE ON
+
+org.eclipse.jdt.internal.compiler.parser.Scanner.getNextToken(...)
+
+Uses ArrayIndexOutBoundsException to test on end of array as part of the alogrithm !
+How many books and opinions has someone to avoid to not read that exceptions are reserved
+for, well, exceptional situations. The end of an array traversal is not exceptional in a
+algorithmical sense (unless you are used to operate on a real turing machine of curse)
+
+
+---
+org.eclipse.compare.internal.BaseCompareAction implements IActionDelegate
+
+changing the fundametal contract of OO programming between super- and subclass.
+The IAction parameter from run method from the interface is silently discarded and the another run method
+with a selection parameter is called instead.
+To aid man to deal with complexity and enormus details god permit man insight to the concept of
+abstraction. To break OO contracts and force programmer to know literally every class because every class
+has no connection to its "super" class is not only sin to programming style and the technical progress man
+made in the the field of computer science since the days of crafting fullblown applications in assembler; it is also a sin against god himself and his glory. Is there anything left
+I can say to get this programming "style" from hell out out your fucking brain??
+
+
+---
+
+Fuck a duck.
+org.eclipse.jdt.core.eval.IEvaluationContext.IJavaProject
+
+You want a unified view on everything in your package navigator ala everything is a IResource?
+IJavaProject is not a IResource or a IProject as you might thing.
+
+Whats wrong with IResource? Is a JavaProject not a IResource? In fact, isnt a JavaProject even an IProject? 
+
+I see the patterns here. jdt tries very hard to give a programmer no clue whats going on.
+You read in every book "everything is a resource in the navigator". So you depend on that
+and get bite in the back. An IJavaProject has a getProject() method. So a project which returns
+a project. Counterintuitive and easily avoidable by simply playing by the rules.
+I suggest every jdt develeoper to read "Contributing to Eclipse" by Erich Gamma and Kent Beck.
+They have some very clear rules for programming in eclipse.
