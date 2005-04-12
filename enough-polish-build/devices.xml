@@ -1185,6 +1185,9 @@
 		<capability name="Font.small" value="10" />
 		<capability name="Font.medium" value="13" />
 		<capability name="Font.large" value="20" />
+		<!--
+		<capability name="Bugs" value="fullScreenInPaint" />
+		-->
 	</device>
 
 	<device>
@@ -4828,4 +4831,17 @@
 		<capability name="HeapSize" value="64 MB" />
 		<capability name="DRM" value="forward lock" />
 	</device> 
+	
+<!-- O2 devices -->
+	<device>
+		<identifier>O2/XDAII</identifier>
+		<groups></groups>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="os" value="Windows Mobile 2003" />
+		<capability name="ScreenSize" value="240x247"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+	</device> 
+
 </devices>

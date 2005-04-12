@@ -177,4 +177,8 @@
 		<capability name="TextField.charactersKeyPound" value=" " />  
 	</vendor>
 	
+	<vendor>
+		<name>O2</name>
+	</vendor>
+	
 </vendors>

@@ -1140,6 +1140,7 @@ public class PolishTask extends ConditionalTask {
 				SourceSetting setting = this.sourceSettings[i];
 				if (setting.isActive(evaluator, getProject())) {
 					File sourceDir = setting.getDir();
+					System.out.println("Preprocessing source dir [" + sourceDir.getAbsolutePath() + "]");
 					TextFile[] files = this.sourceFiles[i];
 					processSourceDir(sourceDir, files, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
 				}
@@ -1280,20 +1281,21 @@ public class PolishTask extends ConditionalTask {
 					className = StringUtil.replace(className, '/', '.' );
 				}
 				className = StringUtil.replace(className, File.separatorChar, '.' );
-				String adjustedClassName = className;
-				if (this.useDefaultPackage) {
-					int lastDotPos = className.lastIndexOf('.');
-					if (lastDotPos != -1) {
-						adjustedClassName = className.substring( lastDotPos + 1 );
+				int result = this.preprocessor.preprocess( className, sourceCode );
+				if (usePolishGui && result != Preprocessor.SKIP_FILE) {
+					// set the StyleSheet.display variable in all MIDlets:
+					String adjustedClassName = className;
+					if (this.useDefaultPackage) {
+						int lastDotPos = className.lastIndexOf('.');
+						if (lastDotPos != -1) {
+							adjustedClassName = className.substring( lastDotPos + 1 );
+						}
+					}
+					if ( (this.midletClassesByName.get( adjustedClassName ) != null) ) {
+						sourceCode.reset();
+						insertDisplaySetting( className, sourceCode );
 					}
 				}
-				// set the StyleSheet.display variable in all MIDlets
-				if ( (this.midletClassesByName.get( adjustedClassName ) != null) 
-						&& usePolishGui) {
-					insertDisplaySetting( className, sourceCode );
-					sourceCode.reset();
-				}
-				int result = this.preprocessor.preprocess( className, sourceCode );
 				// only think about saving when the file should not be skipped 
 				// and when it is not the StyleSheet.java file:
 				if (file == this.styleSheetSourceFile ) {
@@ -1355,6 +1357,12 @@ public class PolishTask extends ConditionalTask {
 				} else {
 					displayVar = "de.enough.polish.ui.StyleSheet.display";
 				}
+				/*
+				System.out.println( className + ": changing line [" + line + "] to ["
+						+ displayVar + " = javax.microedition.lcdui.Display.getDisplay( this );"
+						+ line + "]"
+						);
+				*/
 				sourceCode.setCurrent( displayVar + " = javax.microedition.lcdui.Display.getDisplay( this );"
 						+ line );
 				return;
