@@ -86,6 +86,7 @@ public class PolishRootPage extends FieldEditorPreferencePage implements IWorkbe
         boolean value = super.performOk();
         PolishEditorPlugin.getDefault().savePluginPreferences();
 
+
         return value;
     }
 }

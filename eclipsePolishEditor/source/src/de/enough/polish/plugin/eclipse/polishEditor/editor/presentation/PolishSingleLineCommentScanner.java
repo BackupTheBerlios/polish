@@ -95,7 +95,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
     public PolishSingleLineCommentScanner(IColorManager colorManager, IPreferenceStore preferenceStore) {
         super(colorManager,preferenceStore);
         this.tokenStore = new TokenStore();
-        initialize(); // This is needed because the super constructor does not call it !
+        initialize(); // This call needed because the super constructor does not call it !
         
         //this.propertyChangeListener = new PropertyChangeListener(); //debugging only.
         //preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
@@ -122,6 +122,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_DEFAULT,getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
         this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION));
           
+        // The token store is only needed to pass all tokens to the rule in one attempt.
         PolishDirectiveRule rule = new PolishDirectiveRule(this.tokenStore);
    
         List rules = new ArrayList();
@@ -144,4 +145,15 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
 //    public IToken getPolishToken(String tokenName) {
 //        return null;
 //    }
+    public boolean affectsBehavior(PropertyChangeEvent event) {
+        String property = event.getProperty();
+        System.out.println(property);
+        if(property.equals(IPolishConstants.POLISH_COLOR_DIRECTIVE) ||
+           property.equals(IPolishConstants.POLISH_COLOR_DEFAULT) ||
+           property.equals(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION)) {
+            return true;
+        }
+        
+        return super.affectsBehavior(event);
+    }
 }

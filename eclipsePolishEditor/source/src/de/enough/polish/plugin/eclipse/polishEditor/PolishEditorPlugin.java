@@ -23,10 +23,10 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	
-	public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin";
-	public static final String POLISH_NATURE_ID = "de.enough.polish.plugin.eclipse.polish.nature";
-	
-	
+	public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin";
+	public static final String POLISH_NATURE_ID = ID + "." + "a";
+	//de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin.polishNature
+	//de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin.polishNature
 	
 	/**
 	 * The constructor.
@@ -115,13 +115,18 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
     protected void initializeDefaultPreferences(IPreferenceStore store) {
         
 //      TODO: Search for suitable color defaults.
+
         String javaKeywordColorString = JavaPlugin.getDefault().getCombinedPreferenceStore().getString(IJavaColorConstants.JAVA_KEYWORD);
+        String javaDefaultColorString = JavaPlugin.getDefault().getCombinedPreferenceStore().getString(IJavaColorConstants.JAVA_DEFAULT);
+        
+        
+        store.setDefault(IPolishConstants.POLISH_COLOR_DIRECTIVE,javaKeywordColorString);
 
 //      TODO: Only set values when they are unset. So we do not overwrite previous choices.
-        store.putValue(IPolishConstants.POLISH_COLOR_DEFAULT,"0,200,0");
-        store.putValue(IPolishConstants.POLISH_COLOR_DIRECTIVE,javaKeywordColorString);
-        store.putValue(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,"0,200,0");
-        store.putValue(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,"0,200,0");
+        store.setDefault(IPolishConstants.POLISH_COLOR_DEFAULT,javaDefaultColorString);
+        
+        store.setDefault(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,javaDefaultColorString);
+        store.setDefault(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,javaKeywordColorString);
 
     }
 
@@ -143,4 +148,23 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
         description.setNatureIds(newIds);
         project.setDescription(description,null);
     }
+
+    
+    public static void removePolishNatureFromProject(IProject project) throws CoreException{
+        IProjectDescription description = project.getDescription();
+        String[] ids = description.getNatureIds();
+        for(int i = 0; i < ids.length; i++) {
+            if(ids[i].equals(PolishEditorPlugin.POLISH_NATURE_ID)) {
+                String[] newIds = new String[ids.length-1];
+                System.arraycopy(ids,0,newIds,0,i);
+                System.arraycopy(ids,i+1,newIds,i,ids.length-i-1);
+                description.setNatureIds(newIds);
+                project.setDescription(description,null);
+                return;
+            }
+        }
+        
+    }
+
+  
 }

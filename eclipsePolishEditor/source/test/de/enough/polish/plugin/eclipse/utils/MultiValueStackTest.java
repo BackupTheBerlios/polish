@@ -14,11 +14,9 @@ import junit.framework.TestCase;
 public class MultiValueStackTest extends TestCase {
 
     private MultiValueStack stack;
-    private int a;
     
     protected void setUp() throws Exception {
         this.stack = new MultiValueStack();
-        this.a = 4;
     }
     
     public void test_pushElement(){

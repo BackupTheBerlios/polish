@@ -1,12 +1,13 @@
 TODO:
 
-- Solve problem with instant property change.
-- Create a nature and register polish editor as default editor for .java.
-- Make the nature chooseable.
+- Solve problem with instant property change. DONE
+- Create a nature and register polish editor as default editor for .java. DONE
+- Make the nature chooseable. DONE
+- Make all colors work.
+- recognize symbol and variable names.
 - Code cleanup: plugin structure, package structure, javadoc
 - Create updatesite with webbrowser access.
-- bug:
-	at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905)
+- Bug: at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905) DONE
 
 PROBLEMS:
 

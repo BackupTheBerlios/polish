@@ -30,6 +30,7 @@ import org.eclipse.jdt.internal.ui.text.IJavaPartitions;
 import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
@@ -51,25 +52,27 @@ import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
  */
 public class PolishEditor extends CompilationUnitEditor {
     
-//    private PropertyChangeListener propertyChangeListener;
+    public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor";
+    
+    private PropertyChangeListener propertyChangeListener;
+    
 
+    class PropertyChangeListener implements IPropertyChangeListener{
 
-//    class PropertyChangeListener implements IPropertyChangeListener{
-//
-//        /* (non-Javadoc)
-//         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-//         */
-//        public void propertyChange(PropertyChangeEvent event) {
-//            System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
-//            System.out.println("PolishEditor.PropertyChangeListener.propertyChange().event:source:class:"+event.getSource().getClass());
-//        }
-//        
-//    }
-     
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+         */
+        public void propertyChange(PropertyChangeEvent event) {
+            System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
+            handlePreferenceStoreChanged(event);
+        }
+        
+    }
+    
     
     public PolishEditor() {
         System.out.println("PolishEditor.PolishEditor():enter.");
-//        this.propertyChangeListener = new PropertyChangeListener();
+        this.propertyChangeListener = new PropertyChangeListener();
     }
     
     
@@ -80,7 +83,7 @@ public class PolishEditor extends CompilationUnitEditor {
         IPreferenceStore preferenceStoreJava = this.getPreferenceStore(); // This one origins from JavaEditor and is a chain of 4 stores.
         IPreferenceStore preferenceStorePolish = PolishEditorPlugin.getDefault().getPreferenceStore();
 
-//        preferenceStorePolish.addPropertyChangeListener(this.propertyChangeListener);
+        preferenceStorePolish.addPropertyChangeListener(this.propertyChangeListener);
         
         
        
@@ -105,7 +108,13 @@ public class PolishEditor extends CompilationUnitEditor {
         super.createPartControl(parent);
    
     }
-    
+   
+    protected boolean affectsTextPresentation(PropertyChangeEvent event) {
+        if(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).affectsTextPresentation(event)) {
+            return true;
+        }
+        return super.affectsTextPresentation(event);
+    }
     
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
         System.out.println("PolishEditor.handlePreferenceStoreChanged(...):enter.");

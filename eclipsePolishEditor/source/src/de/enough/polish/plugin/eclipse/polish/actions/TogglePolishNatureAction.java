@@ -19,9 +19,10 @@ import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
  */
 public class TogglePolishNatureAction implements IObjectActionDelegate{
 
-    private IAction proxyAction;
-    private IWorkbenchPart targetPart;
+    //private IAction proxyAction;
+    //private IWorkbenchPart targetPart;
     private IProject selectedProject;
+    private boolean projecthasPolishNature;
     
     public TogglePolishNatureAction(){
         System.out.println("TogglePolishNatureAction.TogglePolishNatureAction().enter.");
@@ -32,8 +33,8 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
      */
     public void setActivePart(IAction action, IWorkbenchPart currentTargetPart) {
         System.out.println("TogglePolishNatureAction.setActivePart(...).enter.");
-        this.proxyAction = action;
-        this.targetPart = currentTargetPart;
+        //this.proxyAction = action;
+        //this.targetPart = currentTargetPart;
     }
 
     /* (non-Javadoc)
@@ -44,7 +45,22 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         System.out.println(action.getId());
         if(this.selectedProject != null){
             try {
-                PolishEditorPlugin.addPolishNatureToProject(this.selectedProject);
+                if(this.selectedProject.hasNature(PolishEditorPlugin.POLISH_NATURE_ID)) {
+                    this.projecthasPolishNature = true;
+                }
+                else {
+                    this.projecthasPolishNature = false;
+                }
+                if(this.projecthasPolishNature) {
+                    // This is unrelable because maybe the nature could not be removed.
+                    PolishEditorPlugin.removePolishNatureFromProject(this.selectedProject);
+                    this.projecthasPolishNature = false;
+                }
+                else {
+                    PolishEditorPlugin.addPolishNatureToProject(this.selectedProject);
+                    this.projecthasPolishNature = true;
+                }
+                
             } catch (CoreException e) {
                 // Give a nice explanation to this silly coreexception.
                 e.printStackTrace();
@@ -64,7 +80,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         try{
             if(structuredSelection.size() > 0){
                 System.out.println("selection is of class:"+structuredSelection.toList().get(0).getClass());
-                this.selectedProject = (IProject) ((IJavaProject)structuredSelection.toList().get(0)).getProject();
+                this.selectedProject = ((IJavaProject)structuredSelection.toList().get(0)).getProject();
             }
         }
         catch(Exception exception){

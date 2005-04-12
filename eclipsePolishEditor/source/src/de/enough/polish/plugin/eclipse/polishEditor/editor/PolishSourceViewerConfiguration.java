@@ -195,6 +195,12 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 //        return newlyConfiguredContentTypes;
 //    }
     
+    public boolean affectsTextPresentation(PropertyChangeEvent event) {
+        if(this.polishSingleLineCommentScanner.affectsBehavior(event)) {
+            return true;
+        }
+        return super.affectsTextPresentation(event);
+    }
     
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
         System.out.println("PolishSourceViewerConfiguration.handlePropertyChangeEvent(...):enter.");
