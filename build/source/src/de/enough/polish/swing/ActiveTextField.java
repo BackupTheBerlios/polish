@@ -32,6 +32,8 @@ import java.text.Format;
 import javax.swing.JFormattedTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * <p>A textfield that actively notifies the registered change listener about any changes.</p>
@@ -173,7 +175,7 @@ implements CaretListener, ActionListener //, FocusListener
 		} else {
 			//System.out.println("\nActive: fireChange: original=" + this.originalValue + ",  new=" + newValue  + "\n");
 			this.originalValue = newValue;
-			this.changeListener.notifyChange( new ChangeEvent( this, newValue ) );
+			this.changeListener.stateChanged( new ChangeEvent( this ) );
 		}
 	}
 	

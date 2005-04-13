@@ -33,6 +33,7 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.Device;
 import de.enough.polish.Extension;
 import de.enough.polish.ant.build.PostCompilerSetting;
+import de.enough.polish.preprocess.Preprocessor;
 
 /**
  * <p>Is the base class for any custom post compilers.</p>
@@ -119,6 +120,17 @@ public abstract class PostCompiler extends Extension {
 		return classPath;
 	}
 
+	/**
+	 * Allows to add settings for the preprocessing phase.
+	 * This can be used by subclasses for setting preprocessing symbols or variables for example.
+	 * The default implementation does nothing.
+	 * 
+	 * @param device the current target device
+	 * @param preprocessor the preprocessor
+	 */
+	public void addPreprocessingSettings( Device device, Preprocessor preprocessor ) {
+		// do nothing
+	}
 	
 	/**
 	 * Retrieves the settings for this post compiler.

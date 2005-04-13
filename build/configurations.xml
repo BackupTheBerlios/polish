@@ -38,7 +38,7 @@
 
 	<configuration>
 		<identifier>CLDC/1.1</identifier>
-		<features>cldc1.1</features>
+		<features>cldc1.1, hasFloatingPoint</features>
 		<classpath>cldc-1.1.jar</classpath>
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>

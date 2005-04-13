@@ -27,6 +27,8 @@ package de.enough.polish.swing;
 
 import java.text.NumberFormat;
 
+import javax.swing.event.ChangeListener;
+
 
 /**
  * <p>An active textfield that only accepts integer input.</p>

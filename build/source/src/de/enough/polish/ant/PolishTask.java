@@ -1094,6 +1094,15 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+			// add settings of active postcompilers:
+			// let postcompilers adjust the bootclasspath:
+			if (this.doPostCompile) {
+				PostCompiler[] compilers = getActivePostCompilers();
+				for (int i = 0; i < compilers.length; i++) {
+					PostCompiler postCompiler = compilers[i];
+					postCompiler.addPreprocessingSettings(device, this.preprocessor);
+				}
+			}
 			// add custom preprocessors
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 			CustomPreprocessor[] preprocessors = (CustomPreprocessor[]) this.customPreprocessors.toArray( new CustomPreprocessor[ this.customPreprocessors.size() ] );
@@ -1454,17 +1463,16 @@ public class PolishTask extends ConditionalTask {
 			if (this.doPostCompile) {
 				String path = bootClassPath.toString();
 				String originalBootClassPath = path;
-				Project antProject = getProject();
-				for (int i = 0; i < this.postCompilers.length; i++) {
-					PostCompiler postCompiler = this.postCompilers[i];
-					if (postCompiler.getSetting().isActive(evaluator, antProject)) {
-						path = postCompiler.verifyBootClassPath(device, path);
-						if ( classPath != null ) {
-							classPath = postCompiler.verifyClassPath(device, classPath);
-						}
+				PostCompiler[] compilers = getActivePostCompilers();
+				for (int i = 0; i < compilers.length; i++) {
+					PostCompiler postCompiler = compilers[i];
+					path = postCompiler.verifyBootClassPath(device, path);
+					if ( classPath != null ) {
+						classPath = postCompiler.verifyClassPath(device, classPath);
 					}
 				}
 				if (path != originalBootClassPath) {
+					Project antProject = getProject();
 					bootClassPath = new Path( antProject, path );
 				}
 			}
@@ -1511,6 +1519,27 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	/**
+	 * Retrieves all currently active post compilers.
+	 * 
+	 * @return an array of all active postcompiler, can be empty but not null.
+	 */
+	protected PostCompiler[] getActivePostCompilers() {
+		if (this.postCompilers == null || this.postCompilers.length == 0) {
+			return new PostCompiler[ 0 ];
+		}
+		ArrayList list = new ArrayList();
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		Project antProject = getProject();
+		for (int i = 0; i < this.postCompilers.length; i++) {
+			PostCompiler postCompiler = this.postCompilers[i];
+			if (postCompiler.getSetting().isActive(evaluator, antProject)) {
+				list.add( postCompiler );
+			}
+		}
+		return (PostCompiler[]) list.toArray( new PostCompiler[ list.size() ]);
+	}
+	
+	/**
 	 * Postcompiles the project for the given device.
 	 * 
 	 * @param device The device for which the obfuscation should be done.
@@ -1518,13 +1547,10 @@ public class PolishTask extends ConditionalTask {
 	 */
 	private void postCompile( Device device, Locale locale ) {
 		File classDir = new File( device.getClassesDir() );
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-		Project antProject = getProject();
-		for (int i = 0; i < this.postCompilers.length; i++) {
-			PostCompiler postCompiler = this.postCompilers[i];
-			if (postCompiler.getSetting().isActive(evaluator, antProject)) {
-				postCompiler.postCompile( classDir, device );
-			}
+		PostCompiler[] compilers = getActivePostCompilers();
+		for (int i = 0; i < compilers.length; i++) {
+			PostCompiler postCompiler = compilers[i];
+			postCompiler.postCompile( classDir, device );
 		}
 	}
 
