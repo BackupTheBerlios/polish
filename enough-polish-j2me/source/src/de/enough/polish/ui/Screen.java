@@ -1097,7 +1097,7 @@ public abstract class Screen
 				gameAction = getGameAction(keyCode);
 			}
 			//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
-				if (gameAction == FIRE && this.okCommand != null) {
+				if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
 					callCommandListener(this.okCommand);
 					return;
 				}

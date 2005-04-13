@@ -1415,7 +1415,7 @@ implements CommandListener
 		//#if tmp.directInput
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
-					this.rowHeight = this.bitMapFontViewer.getFontHeigth() + this.paddingVertical;
+					this.rowHeight = this.bitMapFontViewer.getFontHeight() + this.paddingVertical;
 				} else {
 					this.rowHeight = this.font.getHeight() + this.paddingVertical;
 				}
@@ -1504,7 +1504,7 @@ implements CommandListener
 						// a bitmap-font is used:
 						this.caretPosition = this.text.length();
 						this.caretX = this.bitMapFontViewer.getWidth();
-						this.caretY = this.bitMapFontViewer.getHeight() - this.bitMapFontViewer.getFontHeigth();
+						this.caretY = this.bitMapFontViewer.getHeight() - this.bitMapFontViewer.getFontHeight();
 					}
 					//#endif
 				} else {
@@ -2195,6 +2195,27 @@ implements CommandListener
 			return false;
 		}
 	}
+	
+	
+	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	/**
+	 * Handles the event when a pointer has been pressed at the specified position.
+	 * The default method translates the pointer-event into an artificial
+	 * pressing of the FIRE game-action, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param x the x position of the pointer pressing
+	 * @param y the y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerPressed( int x, int y ) {
+		showTextBox();
+		return true;
+	}
+	//#endif
+
 	
 	//#ifdef tmp.directInput
 	/**

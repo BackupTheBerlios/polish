@@ -93,6 +93,9 @@ implements Runnable
 	//#endif
 	{
 		super();
+		//#if polish.midp2 && !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
+			super.setFullScreenMode( true );
+		//#endif
 		this.display = display;
 		this.image = image;
 		this.backgroundColor = backgroundColor;
@@ -117,6 +120,9 @@ implements Runnable
 			public InitializerSplashScreen( Display display, SplashView view, ApplicationInitializer initializer )
 		//#endif
 		{
+			//#if polish.midp2 && !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
+				super.setFullScreenMode( true );
+			//#endif
 			this.view = view;
 			this.display = display;
 			this.initializer = initializer;
@@ -136,6 +142,9 @@ implements Runnable
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	protected void paint(Graphics g) {
+		//#if polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint
+			super.setFullScreenMode(true);
+		//#endif
 		//#ifdef polish.FullCanvasSize:defined
 			//#= int height = ${polish.FullCanvasHeight};
 			//#= int width = ${polish.FullCanvasWidth};

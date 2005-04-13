@@ -271,7 +271,7 @@ public class BitMapFontViewer {
 	 * 
 	 * @return the height of the bitmap-font in pixels.
 	 */
-	public int getFontHeigth() {
+	public int getFontHeight() {
 		return this.fontHeight;
 	}
 	
