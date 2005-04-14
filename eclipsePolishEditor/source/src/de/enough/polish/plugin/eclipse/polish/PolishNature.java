@@ -32,7 +32,7 @@ public class PolishNature implements IProjectNature {
         // Error handling should be in place. Do not rely on anything here.
         this.previousDefaultEditorForJavaFiles = this.registry.getDefaultEditor(JAVA_EXTENSION).getId();
         this.registry.setDefaultEditor(JAVA_EXTENSION,PolishEditor.ID);
-        
+//      this.registry.saveAssociations(); // Do we need this?
     }
 
     /* (non-Javadoc)
@@ -41,6 +41,7 @@ public class PolishNature implements IProjectNature {
     public void deconfigure() throws CoreException {
         System.out.println("PolishNature.deconfigure():enter.");
         this.registry.setDefaultEditor(JAVA_EXTENSION,this.previousDefaultEditorForJavaFiles);
+//      this.registry.saveAssociations(); // Do we need this?
     }
 
     /* (non-Javadoc)

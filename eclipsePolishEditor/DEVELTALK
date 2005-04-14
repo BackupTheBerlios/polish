@@ -4,10 +4,14 @@ TODO:
 - Create a nature and register polish editor as default editor for .java. DONE
 - Make the nature chooseable. DONE
 - Make all colors work.
+- Get mark occurrences working. DONE
+- optimze mark occurrences.
 - recognize symbol and variable names.
-- Code cleanup: plugin structure, package structure, javadoc
+- Code cleanup: plugin structure, package structure, javadoc.
 - Create updatesite with webbrowser access.
-- Bug: at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905) DONE
+- Bug: at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905). DONE
+- migrate all org.eclipse.ui.actionSetPartAssociations with id of CompilationUnitEditor to PolishEditor.
+
 
 PROBLEMS:
 

@@ -33,10 +33,11 @@
          
 		<editor
          	id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
+         	contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor"
          	name="Polish Editor"
          	extensions="java"
          	icon="icons/sample.gif"
-         	contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+         	
          	class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor">
          </editor>
     </extension>
@@ -63,6 +64,42 @@
        </page>
    </extension>
    
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+         name="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation">
+      </type>
+    </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+         <specification
+            annotationType="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation"
+            label="PolishOccurrenceAnnotation"
+            icon="icons/full/obj16/searchm_obj.gif"
+            textPreferenceKey="occurrenceIndication"
+            textPreferenceValue="false"
+            highlightPreferenceKey="occurrenceHighlighting"
+            highlightPreferenceValue="true"
+            contributesToHeader="false"
+            overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false"
+            colorPreferenceKey="occurrenceIndicationColor"
+            colorPreferenceValue="255,248,147"
+            presentationLayer="4"
+            showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
+	        isGoToNextNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
+	        isGoToPreviousNavigationTarget="false">
+	  </specification>
+	</extension>
+         
+         
+         
 <extension
 	id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureExtension"
 	name="Toggle J2ME Polish nature"
@@ -92,6 +129,16 @@
 			class="de.enough.polish.plugin.eclipse.polish.PolishNature">
 		</run>
 	</runtime>	
+</extension>
+
+<extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.jdt.ui.text.java.actionSet.presentation">
+         <part
+               id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor">
+         </part>
+      </actionSetPartAssociation>
 </extension>
 
 </plugin>
