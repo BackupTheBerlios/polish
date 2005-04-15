@@ -82,6 +82,11 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("menubar", Boolean.TRUE );
 		PSEUDO_CLASSES.put("rightcommand", Boolean.TRUE );
 		PSEUDO_CLASSES.put("leftcommand", Boolean.TRUE );
+		PSEUDO_CLASSES.put("frame", Boolean.TRUE );
+		PSEUDO_CLASSES.put("leftframe", Boolean.TRUE );
+		PSEUDO_CLASSES.put("rightframe", Boolean.TRUE );
+		PSEUDO_CLASSES.put("bottomframe", Boolean.TRUE );
+		PSEUDO_CLASSES.put("topframe", Boolean.TRUE );
 	}
 	private final static CssBlock DEFAULT_STYLE = new CssBlock( 
 			"default {"

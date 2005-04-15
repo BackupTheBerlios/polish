@@ -60,6 +60,7 @@ import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
+import de.enough.polish.ant.build.LibrarySetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
@@ -157,8 +158,6 @@ public class PolishTask extends ConditionalTask {
 	private Variable[] conditionalVariables;
 
 	private boolean binaryLibrariesUpdated;
-
-	private File binaryLibrariesDir;
 
 	private JavaExtension[] javaExtensions;
 
@@ -663,85 +662,15 @@ public class PolishTask extends ConditionalTask {
 		// load third party binary libraries, if any.
 		// When there are third party libraries, they will all be extracted
 		// and copied to the build/binary folder for easier integration:
-		File[] binaryLibraries = this.buildSetting.getBinaryLibraries();
+		LibrarySetting[] binaryLibraries = this.buildSetting.getBinaryLibraries();
 		if (binaryLibraries != null) {
-			File targetDir = new File( this.buildSetting.getWorkDir().getAbsolutePath() +
-					File.separatorChar + "binary");
-			String cacheDirName = this.buildSetting.getWorkDir().getAbsolutePath() +
-				File.separatorChar + "binarycache" + File.separatorChar;
-			this.binaryLibrariesDir = targetDir;
+			File binaryBaseDir = new File( this.buildSetting.getWorkDir(), "binary");
+			boolean updated = false;
 			for (int i = 0; i < binaryLibraries.length; i++) {
-				File lib = binaryLibraries[i];
-				if (lib.isDirectory()) {
-					// a directory can contain library-files (jar, zip) as well
-					// as plain class or resource files. Each library-file
-					// will be extracted whereas other files will just be copied
-					// to the build/binary folder. 
-					DirectoryScanner binaryScanner = new DirectoryScanner();
-					binaryScanner.setBasedir( lib );
-					// just include all files in the directory:
-					binaryScanner.scan();
-					String[] includedFiles = binaryScanner.getIncludedFiles();
-					for (int j = 0; j < includedFiles.length; j++) {
-						String fileName = includedFiles[j];
-						File file = new File( lib.getAbsolutePath()
-								+ File.separatorChar + fileName );
-						if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) {
-							// this is a library file:
-							// only extract it when the original is newer than the copy:
-							File cacheCopy = new File( cacheDirName + fileName );
-							if ( (!cacheCopy.exists())
-									|| (file.lastModified() > cacheCopy.lastModified())) {
-								this.binaryLibrariesUpdated = true;
-								try {
-									// copy the library to the cache:
-									FileUtil.copy(file, cacheCopy );
-									// unzip / unjar the content:
-									JarUtil.unjar(file, targetDir);
-								} catch (IOException e) {
-									e.printStackTrace();
-									throw new BuildException("Unable to extract the binary class files from the library [" + file.getAbsolutePath() + "]: " + e.toString(), e );
-								}
-								
-							}
-						} else {
-							// this is a normal class or resource file:
-							try {
-								File targetFile = new File( targetDir.getAbsolutePath()
-										+ File.separatorChar + fileName );
-								// copy the file only when it is newer
-								// than the existing copy: 
-								if ( (!targetFile.exists()) 
-										|| (file.lastModified() > targetFile.lastModified()) ) {
-									this.binaryLibrariesUpdated = true;
-									FileUtil.copy(file, targetFile);
-								}
-							} catch (IOException e) {
-								e.printStackTrace();
-								throw new BuildException("Unable to copy the binary class files from the library [" + lib.getAbsolutePath() + "]: " + e.toString(), e );
-							}
-						}
-					}
-				} else {
-					// this is a library (jar or zip) file:
-					// copy only when the original is newer than the cached copy: 
-					File cacheCopy = new File( cacheDirName + lib.getName() );
-					if ( (!cacheCopy.exists())
-							|| (lib.lastModified() > cacheCopy.lastModified())) {
-						try {
-							this.binaryLibrariesUpdated = true;
-							// copy the library to the cache:
-							FileUtil.copy(lib, cacheCopy );
-							// unzip / unjar the content:
-							JarUtil.unjar(lib, targetDir);
-						} catch (IOException e) {
-							e.printStackTrace();
-							throw new BuildException("Unable to extract the binary class files from the library [" + lib.getAbsolutePath() + "]: " + e.toString(), e );
-						}
-						
-					}
-				}
+				LibrarySetting lib = binaryLibraries[i];
+				updated = lib.copyToCache(binaryBaseDir);
 			}
+			this.binaryLibrariesUpdated = updated;
 		} // done preparing of binary libraries.
 		
 		// init boot class path:
@@ -1149,7 +1078,7 @@ public class PolishTask extends ConditionalTask {
 				SourceSetting setting = this.sourceSettings[i];
 				if (setting.isActive(evaluator, getProject())) {
 					File sourceDir = setting.getDir();
-					System.out.println("Preprocessing source dir [" + sourceDir.getAbsolutePath() + "]");
+					//System.out.println("Preprocessing source dir [" + sourceDir.getAbsolutePath() + "]");
 					TextFile[] files = this.sourceFiles[i];
 					processSourceDir(sourceDir, files, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
 				}
@@ -1396,27 +1325,38 @@ public class PolishTask extends ConditionalTask {
 		// setting target directory:
 		String targetDirName = device.getBaseDir() + File.separatorChar + "classes";
 		device.setClassesDir( targetDirName );
+		File targetDir = new File( targetDirName );
 		
 		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
 			System.out.println("nothing to compile for device [" +  device.getIdentifier() + "]." );
 			return;			
 		}
-		System.out.println("compiling for device [" +  device.getIdentifier() + "]." );
 		
+		Project antProject = getProject();
+		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 		// add binary class files, if there are any:
 		if (this.binaryLibrariesUpdated) {
-			System.out.println("copying binary libraries from [" + this.binaryLibrariesDir.getAbsolutePath() + "] to [" + targetDirName + "]");
+			System.out.println("copying binary libraries to [" + targetDirName + "]...");
+			LibrarySetting[] settings = this.buildSetting.getBinaryLibraries();
+			for (int i = 0; i < settings.length; i++) {
+				LibrarySetting setting = settings[i];
+				if (setting.isActive(evaluator, antProject)) {
+					setting.copyFromCache( targetDir );
+				}
+			}
+			/*
 			try {
 				FileUtil.copyDirectoryContents( this.binaryLibrariesDir, targetDirName, true );
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new BuildException("Unable to copy binary class files: " + e.toString() + ". Please report this error to j2mepolish@enough.de.", e );
 			}
+			*/
 		}
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		System.out.println("compiling for device [" +  device.getIdentifier() + "]." );
 		// init javac task:
 		CompilerTask compiler = this.buildSetting.getCompiler(evaluator );
-		compiler.setProject( getProject() );
+		compiler.setProject( antProject );
 		if (!compiler.isTaskNameSet()) {
 			compiler.setDirectTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
 		}
@@ -1431,7 +1371,6 @@ public class PolishTask extends ConditionalTask {
 		if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
 			compiler.setDirectDebug(true);
 		}
-		File targetDir;
 		if ( this.buildSetting.isInCompilerMode() && ! this.buildSetting.doPreverifyInCompilerMode()) { // && !this.doObfuscate is not needed
 			targetDir = this.buildSetting.getCompilerDestDir();
 		} else {
@@ -1472,7 +1411,6 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 				if (path != originalBootClassPath) {
-					Project antProject = getProject();
 					bootClassPath = new Path( antProject, path );
 				}
 			}
@@ -1480,9 +1418,9 @@ public class PolishTask extends ConditionalTask {
 		}
 		if ( !compiler.isClassPathSet()) {
 			if (classPath != null) {
-				compiler.setDirectClasspath( new Path(getProject(), classPath ) );
+				compiler.setDirectClasspath( new Path(antProject, classPath ) );
 			} else {
-				compiler.setDirectClasspath( new Path(getProject(), "" ) );
+				compiler.setDirectClasspath( new Path(antProject, "" ) );
 			}
 		}
 		// start compile:

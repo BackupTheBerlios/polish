@@ -99,7 +99,7 @@ public class BuildSetting {
 	private ArrayList preprocessors;
 	private ArrayList jadAttributesFilters;
 	private ArrayList manifestAttributesFilters;
-	private File[] binaryLibraries;
+	private LibrariesSetting binaryLibraries;
 	private String polishHomePath;
 	private String projectBasePath;
 	private ArrayList javaTasks;
@@ -1078,23 +1078,44 @@ public class BuildSetting {
 	 * 			Several libraries can be seperated with either a colon or a semicolon. 
 	 */
 	public void setBinaryLibraries( String librariesStr ) {
-		String[] libraries = StringUtil.split(librariesStr, ':');
-		if (libraries.length == 1) {
-			libraries = StringUtil.split( librariesStr, ';' );
+		String[] libraryPaths = StringUtil.split(librariesStr, ':');
+		if (libraryPaths.length == 1) {
+			libraryPaths = StringUtil.split( librariesStr, ';' );
 		}
-		this.binaryLibraries = new File[ libraries.length ];
-		for (int i = 0; i < libraries.length; i++) {
-			String lib = libraries[i];
-			File file = getFile(lib);
+		if (this.binaryLibraries == null ) {
+			this.binaryLibraries = new LibrariesSetting();
+		}
+		for (int i = 0; i < libraryPaths.length; i++) {
+			String libPath = libraryPaths[i];
+			File file = getFile(libPath);
 			if (!file.exists()) {
 				// check if the file resides in the api folder (usually "import"):
 				file = new File( this.apiDir.getAbsolutePath() 
-						+ File.separatorChar + lib );
+						+ File.separatorChar + libPath );
 				if (!file.exists()) {
-					throw new BuildException("The binary library [" + lib + "] could not be found - please check your \"binaryLibraries\"-attribute of the <build> element: File not found: " + file.getAbsolutePath() );
+					throw new BuildException("The binary library [" + libPath + "] could not be found - please check your \"binaryLibraries\"-attribute of the <build> element: File not found: " + file.getAbsolutePath() );
 				}
 			}
-			this.binaryLibraries[i] = file;
+			LibrarySetting setting = new LibrarySetting();
+			if (file.isDirectory()) {
+				setting.setDir( file );
+			} else {
+				setting.setFile( file );
+			}
+			this.binaryLibraries.addConfiguredLibrary( setting  );
+		}
+	}
+	
+	/**
+	 * Sets the complete library-settings
+	 *  
+	 * @param setting the libraries
+	 */
+	public void addConfiguredLibraries( LibrariesSetting setting ) {
+		if ( this.binaryLibraries == null ) {
+			this.binaryLibraries = setting;
+		} else {
+			this.binaryLibraries.add( setting );
 		}
 	}
 	
@@ -1104,8 +1125,11 @@ public class BuildSetting {
 	 * @return An array of File to either a jar-file, a zip-file or a directory 
 	 * 			containing class files, which are needed for the project.
 	 */
-	public File[] getBinaryLibraries() {
-		return this.binaryLibraries;
+	public LibrarySetting[] getBinaryLibraries() {
+		if ( this.binaryLibraries == null ) {
+			return null;
+		}
+		return this.binaryLibraries.getLibraries();
 	}
 	
 	/**

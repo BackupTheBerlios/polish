@@ -518,5 +518,21 @@
 		description="The URL of the left arrow image."
 		id="57"
 	/>
+
+	<attribute
+		name="min-width"
+		type="integer"
+		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		description="The minimum width of an item."
+		id="58"
+	/>
+
+	<attribute
+		name="max-width"
+		type="integer"
+		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		description="The maximum width of an item."
+		id="59"
+	/>
 	
 </attributes>

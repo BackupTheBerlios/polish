@@ -300,19 +300,33 @@ public final class FileUtil {
 	public static void copyDirectoryContents(File directory, String targetDirName, boolean update)
 	throws IOException
 	{
+		copyDirectoryContents(directory, new File( targetDirName ), update );
+	}
+	
+	/**
+	 * Copies the contents of a directory to the specified target directory.
+	 * 
+	 * @param directory the directory containing files
+	 * @param targetDir the directory to which the files should be copied to
+	 * @param update is true when files should be only copied when the source files
+	 * 	are newer compared to the target files.
+	 * @throws IOException when a file could not be copied
+	 * @throws IllegalArgumentException when the directory is not a directory.
+	 */
+	public static void copyDirectoryContents(File directory, File targetDir, boolean update)
+	throws IOException
+	{
 		if (!directory.isDirectory()) {
 			throw new IllegalArgumentException("Cannot copy contents of the file [" + directory.getAbsolutePath() + "]: specify a directory instead.");
 		}
 		String[] fileNames = directory.list();
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
-			File file = new File( directory.getAbsolutePath() 
-					+ File.separatorChar + fileName );
+			File file = new File( directory.getAbsolutePath(), fileName );
 			if (file.isDirectory()) {
-				copyDirectoryContents( file, targetDirName + File.separatorChar + fileName, update );
+				copyDirectoryContents( file, targetDir.getAbsolutePath() + File.separatorChar + fileName, update );
 			}  else {
-				File targetFile = new File( targetDirName 
-						+ File.separatorChar + fileName  );
+				File targetFile = new File( targetDir, fileName  );
 				if (update) {
 					// update only when the source file is newer:
 					if ( (!targetFile.exists())
@@ -326,6 +340,7 @@ public final class FileUtil {
 			}
 		}
 	}
+
 
 	/**
 	 * Deletes a file or a directory.
