@@ -149,7 +149,7 @@ public class LibrarySetting extends Setting {
 		boolean changed = false;
 		this.cacheDir = new File( cacheBaseDir, "" + this.id );
 		File jarCacheDir = new File( cacheBaseDir, "" + this.id + "jar");
-		System.out.println(">>>>copyToCache: copying " + this.dirOrFile.getAbsolutePath() + " to " + this.cacheDir );
+		//System.out.println(">>>>copyToCache: copying " + this.dirOrFile.getAbsolutePath() + " to " + this.cacheDir );
 		if ( this.dir != null ) {
 			// a directory can contain library-files (jar, zip) as well
 			// as plain class or resource files. Each library-file
@@ -236,12 +236,12 @@ public class LibrarySetting extends Setting {
 	
 	public void copyFromCache( File targetDir ) {
 		//targetDir = new File( targetDir, "" + this.id );
-		System.out.println("<<<<copyFromCache: copying " + this.cacheDir + " to " + targetDir );
+		//System.out.println("<<<<copyFromCache: copying " + this.cacheDir + " to " + targetDir );
 		try {
 			FileUtil.copyDirectoryContents( this.cacheDir, targetDir, true );
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException( "Unable to copyu binary library [" + this.dirOrFile.getAbsolutePath() + "]: " + e.toString() );
+			throw new BuildException( "Unable to copy binary library [" + this.dirOrFile.getAbsolutePath() + "]: " + e.toString() );
 		}
 	}
 	

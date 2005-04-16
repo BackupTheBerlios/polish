@@ -45,6 +45,7 @@ public class IntegerIdGenerator {
 	
 	private int lastId;
 	private Map idsByKey;
+	private boolean hasChanged;
 
 	/**
 	 * Creates a new integer ID generator.
@@ -79,6 +80,7 @@ public class IntegerIdGenerator {
 	 * @param map a HashMap containing all IDs for full keywords 
 	 */
 	public void setIdsMap( Map map ) {
+		this.hasChanged = false;
 		this.idsByKey = new HashMap( map.size() );
 		// find out the last used ID:
 		int maxId = 0;
@@ -112,6 +114,7 @@ public class IntegerIdGenerator {
 		Integer id = (Integer) this.idsByKey.get( key );
 		if (id == null) {
 			if (create) {
+				this.hasChanged = true;
 				this.lastId++;
 				Integer newId = new Integer( this.lastId );
 				this.idsByKey.put( key, newId );
@@ -133,5 +136,14 @@ public class IntegerIdGenerator {
 	public void addId(String key, int id) {
 		this.idsByKey.put( key, new Integer( id ) );
 		this.lastId = Math.max( this.lastId, id );
+	}
+
+	/**
+	 * Determines whether any IDs have been created.
+	 * 
+	 * @return true when at least one new ID has been created by this generator
+	 */
+	public boolean hasChanged() {
+		return this.hasChanged;
 	}
 }

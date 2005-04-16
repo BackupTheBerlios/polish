@@ -65,7 +65,7 @@ public class JavaExtension extends Java {
 	public JavaExtension( Project project ) {
 		super();
 		this.argumentsList = new ArrayList();
-		this.project = project;
+		setProject(project);
 	}
 	
 	/* (non-Javadoc)
@@ -137,7 +137,7 @@ public class JavaExtension extends Java {
 	public boolean isActive(BooleanEvaluator evaluator) {
 		if (this.ifCondition != null) {
 			// first check if there is an Ant-attribute:
-			String antProperty = this.project.getProperty( this.ifCondition );
+			String antProperty = getProject().getProperty( this.ifCondition );
 			if (antProperty != null) {
 				boolean success = CastUtil.getBoolean(antProperty );
 				if (!success) {
@@ -152,7 +152,7 @@ public class JavaExtension extends Java {
 		}
 		if (this.unlessCondition != null) {
 			// first check if there is an Ant-attribute:
-			String antProperty = this.project.getProperty( this.unlessCondition );
+			String antProperty = getProject().getProperty( this.unlessCondition );
 			if (antProperty != null) {
 				boolean success = CastUtil.getBoolean(antProperty );
 				if (success) {

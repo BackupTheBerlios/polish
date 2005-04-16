@@ -25,11 +25,17 @@
  */
 package de.enough.polish.ant.build;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.ant.Setting;
+import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.IntegerIdGenerator;
 
 /**
  * <p>A container for several <library> tags.</p>
@@ -46,6 +52,7 @@ public class LibrariesSetting extends Setting {
 	private int currentId;
 	
 	private final ArrayList libraries;
+	private final IntegerIdGenerator integerIdGenerator;
 
 	/**
 	 * Creates a new libraries setting
@@ -53,6 +60,7 @@ public class LibrariesSetting extends Setting {
 	public LibrariesSetting() {
 		super();
 		this.libraries = new ArrayList();
+		this.integerIdGenerator = new IntegerIdGenerator();
 	}
 	
 	public void addConfiguredLibrary( LibrarySetting setting ) {
@@ -75,6 +83,38 @@ public class LibrariesSetting extends Setting {
 	 */
 	public void add(LibrariesSetting setting) {
 		this.libraries.addAll( setting.libraries );
+	}
+	
+
+	/**
+	 * Copies all third party binary libraries to the cache.
+	 * 
+	 * @param binaryBaseDir the base dir of the cache
+	 * @return true when at least one library had to be written again
+	 * @throws IOException when a file could not be read or written
+	 * @throws FileNotFoundException when a file was not found
+ 	 */
+	public boolean copyToCache( File binaryBaseDir ) 
+	throws FileNotFoundException, IOException 
+	{
+		File idsFile = new File( binaryBaseDir, "library-ids.txt" );
+		if (idsFile.exists()) {
+			Map idsMap = FileUtil.readPropertiesFile( idsFile );
+			this.integerIdGenerator.setIdsMap(idsMap);
+		}
+		LibrarySetting[] libs = getLibraries();
+		boolean updated = false;
+		for (int i = 0; i < libs.length; i++) {
+			LibrarySetting lib = libs[i];
+			int id = this.integerIdGenerator.getId( lib.getAbsolutePath(), true );
+			lib.setId( id );
+			updated |= lib.copyToCache(binaryBaseDir);
+		}
+		if ( this.integerIdGenerator.hasChanged() ) {
+			Map idsMap = this.integerIdGenerator.getIdsMap();
+			FileUtil.writePropertiesFile( idsFile, idsMap );
+		}
+		return updated;
 	}
 
 }

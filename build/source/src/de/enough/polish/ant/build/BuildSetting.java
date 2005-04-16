@@ -553,11 +553,16 @@ public class BuildSetting {
 	 */
 	public void setSourceDir( String srcDir ) {
 		String[] paths = StringUtil.split( srcDir, ':');
-		if (paths.length == 1) {
+		if (paths.length == 1 || containsSingleCharPath( paths ) ) {
 			paths = StringUtil.split( srcDir, ';' );
 		}
 		for (int i = 0; i < paths.length; i++) {
 			String path = paths[i];
+			if ( File.separatorChar == '\\' && path.length() == 1 && i < paths.length -1 ) {
+				// this is an absolute path on a windows machine, e.g. C:\project\source
+				i++;
+				path += ":" + paths[i];
+			}
 			File dir = getFile( path );
 			if (!dir.exists()) {
 				throw new BuildException("The source directory [" + path + "] does not exist. " +
@@ -567,6 +572,21 @@ public class BuildSetting {
 		}
 	}
 	
+	/**
+	 * Determines whether one of the given paths  is only one char long
+	 * 
+	 * @param paths the paths that are checked
+	 * @return true when at one of the given paths is only one char long
+	 */
+	private boolean containsSingleCharPath(String[] paths) {
+		for (int i = 0; i < paths.length; i++) {
+			if (paths[i].length() == 1 ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Retrieves all external source directories.
 	 * 
@@ -1122,14 +1142,10 @@ public class BuildSetting {
 	/**
 	 * Retrieves third party libraries which are only available in binary form.
 	 *  
-	 * @return An array of File to either a jar-file, a zip-file or a directory 
-	 * 			containing class files, which are needed for the project.
+	 * @return The libraries setting
 	 */
-	public LibrarySetting[] getBinaryLibraries() {
-		if ( this.binaryLibraries == null ) {
-			return null;
-		}
-		return this.binaryLibraries.getLibraries();
+	public LibrariesSetting getBinaryLibraries() {
+		return this.binaryLibraries;
 	}
 	
 	/**

@@ -60,6 +60,7 @@ import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
+import de.enough.polish.ant.build.LibrariesSetting;
 import de.enough.polish.ant.build.LibrarySetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.Midlet;
@@ -192,6 +193,8 @@ public class PolishTask extends ConditionalTask {
 	private boolean doPostCompile;
 
 	private PostCompiler[] postCompilers;
+
+	private LibrariesSetting binaryLibraries;
 
 	
 
@@ -662,15 +665,15 @@ public class PolishTask extends ConditionalTask {
 		// load third party binary libraries, if any.
 		// When there are third party libraries, they will all be extracted
 		// and copied to the build/binary folder for easier integration:
-		LibrarySetting[] binaryLibraries = this.buildSetting.getBinaryLibraries();
-		if (binaryLibraries != null) {
+		this.binaryLibraries = this.buildSetting.getBinaryLibraries();
+		if (this.binaryLibraries != null) {
 			File binaryBaseDir = new File( this.buildSetting.getWorkDir(), "binary");
-			boolean updated = false;
-			for (int i = 0; i < binaryLibraries.length; i++) {
-				LibrarySetting lib = binaryLibraries[i];
-				updated = lib.copyToCache(binaryBaseDir);
+			try {
+				this.binaryLibrariesUpdated = this.binaryLibraries.copyToCache( binaryBaseDir );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to copy the binary libraries to the internal cache [" + binaryBaseDir.getAbsolutePath() + "]: " + e.toString(), e );
 			}
-			this.binaryLibrariesUpdated = updated;
 		} // done preparing of binary libraries.
 		
 		// init boot class path:
@@ -1337,7 +1340,7 @@ public class PolishTask extends ConditionalTask {
 		// add binary class files, if there are any:
 		if (this.binaryLibrariesUpdated) {
 			System.out.println("copying binary libraries to [" + targetDirName + "]...");
-			LibrarySetting[] settings = this.buildSetting.getBinaryLibraries();
+			LibrarySetting[] settings = this.binaryLibraries.getLibraries();
 			for (int i = 0; i < settings.length; i++) {
 				LibrarySetting setting = settings[i];
 				if (setting.isActive(evaluator, antProject)) {
