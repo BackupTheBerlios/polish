@@ -27,7 +27,6 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -198,7 +197,7 @@ public class PolishEditor extends CompilationUnitEditor {
                 try {
                     IRegion lineRegion = this.document.getLineInformation(currentLineNumber);
                     currentLine = this.document.get(lineRegion.getOffset(),lineRegion.getLength());
-                    System.out.println("PolishEditor.PolishOccurrencesMarker.findPositionsOfWordinDocument(...):currentLine:"+currentLine.toCharArray());
+                    System.out.println("PolishEditor.PolishOccurrencesMarker.findPositionsOfWordinDocument(...):currentLine:"+currentLine.toCharArray().toString());
                 } catch (BadLocationException exception) {
                     System.out.println("PolishEditor.PolishOccurrencesMarker.findPositionsOfWordinDocument(...):badLocation.exception:"+exception);
                     continue;

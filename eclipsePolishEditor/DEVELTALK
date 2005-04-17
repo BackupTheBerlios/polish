@@ -72,3 +72,14 @@ and get bite in the back. An IJavaProject has a getProject() method. So a projec
 a project. Counterintuitive and easily avoidable by simply playing by the rules.
 I suggest every jdt develeoper to read "Contributing to Eclipse" by Erich Gamma and Kent Beck.
 They have some very clear rules for programming in eclipse.
+
+---
+JavaEditor.setPreferenceStore(...):
+
+A ! is missing in the if-clause. Now a new JavaSourceViewerConf is instantiated even if it is there already.
+The instantiation uses a deprecated constructor.
+
+
+---
+org.eclipse.jdt.internal.ui.javaeditor.SemanticHighlightingManager.install(...)
+This class should not instantiate 
