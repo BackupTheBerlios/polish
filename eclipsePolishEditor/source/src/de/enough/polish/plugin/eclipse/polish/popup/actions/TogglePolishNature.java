@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+// NOT USED.
 public class TogglePolishNature implements IObjectActionDelegate {
 
 	/**

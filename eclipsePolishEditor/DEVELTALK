@@ -83,3 +83,10 @@ The instantiation uses a deprecated constructor.
 ---
 org.eclipse.jdt.internal.ui.javaeditor.SemanticHighlightingManager.install(...)
 This class should not instantiate 
+
+
+IRC
+irc.oftc.net #gcj
+irc.freenode.net #classpath wenden an: overholt, pmuldoon, scsibear, Michael ist man-di
+
+

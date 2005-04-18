@@ -25,14 +25,16 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
     private boolean projecthasPolishNature;
     
     public TogglePolishNatureAction(){
-        System.out.println("TogglePolishNatureAction.TogglePolishNatureAction().enter.");
+        /*
+         * 
+         */
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
      */
     public void setActivePart(IAction action, IWorkbenchPart currentTargetPart) {
-        System.out.println("TogglePolishNatureAction.setActivePart(...).enter.");
+       
         //this.proxyAction = action;
         //this.targetPart = currentTargetPart;
     }

@@ -69,7 +69,8 @@ public class PolishDirectiveRule implements IRule {
     
     // ####################################################
     // Symbols.
-    public static final String POLISH_DIRECTIVE_REGEX = "(//#def|//#else|//#ifdef|//#if|//#elif|//#endif|//#debug|//#style)";
+    //public static final String POLISH_DIRECTIVE_REGEX = "(//#def|//#else|//#ifdef|//#if|//#elif|//#endif|//#debug|//#style)";
+    public static final String POLISH_DIRECTIVE_REGEX = "(//#[a-zA-Z][a-zA-Z]*)";
     public static final String POLISH_ASSIGNMENT_REGEX = "(//#=)";
     public static final String POLISH_COMMENT_REGEX = "(//# )";
     public static final String JAVA_KEYWORD_REGEX = "(private|public|protected|final|static|boolean|int|float|double|true|false|void)";
@@ -212,7 +213,7 @@ public class PolishDirectiveRule implements IRule {
 
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
 				if(i == POLISH_DIRECTIVE_SYMBOL) { 
-				    System.out.println("AAA directiveSymbol.");
+				    
 				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(POLISH_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
@@ -220,7 +221,7 @@ public class PolishDirectiveRule implements IRule {
 				}
 				
 				if(i == NAME_SYMBOL) {
-				    System.out.println("AAA nameSymbol.");
+				    
 				    if(this.states.isInState(POLISH_STATE)) { // Color only names within a polish directive.
 				        // Distinquish between variable and symbol by semantic matching.
 				        if(isSymbolName(value)) {
@@ -235,13 +236,13 @@ public class PolishDirectiveRule implements IRule {
 				    break;
 				}
 				if(i == JAVA_COMMENT_SYMBOL) {
-				    System.out.println("AAA javaCommentSymbol.");
+				  
 				    this.states.setState(JAVA_COMMENT_STATE);
 				    resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT);
 				    break;
 				}
 				if(i == DOLLAR_LCB_SYMBOL) {
-				    System.out.println("AAA dollar_lcb_Symbol.");
+				    
 				    if( ! this.states.isInState(JAVA_COMMENT_STATE)) { // Color in every state except java comments.
 				        this.states.addState(POLISH_FUNCTION_STATE);
 				        resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION);
@@ -249,7 +250,7 @@ public class PolishDirectiveRule implements IRule {
 				    break;
 				}
 				if(i == RCB_SYMBOL) {
-				    System.out.println("AAA rcb_Symbol.");
+				   
 				    if( ! this.states.isInState(JAVA_COMMENT_STATE)) {
 				        this.states.removeState(POLISH_FUNCTION_STATE);
 				        resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION);
@@ -259,14 +260,14 @@ public class PolishDirectiveRule implements IRule {
 				
 				
 				if(i == POLISH_COMMENT_SYMBOL) {
-				    System.out.println("AAA polishCommentSymbol.");
+				    
 				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
 				if(i == POLISH_ASSIGNMENT_SYMBOL) {
-				    System.out.println("AAA AssignmentSymbol.");
+				    
 				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_STATE);
 				    //this.states.addState(JAVA_STATE);
@@ -294,7 +295,7 @@ public class PolishDirectiveRule implements IRule {
 				    break;
 				}
 
-				System.out.println("PolishDirectiveRule.evaluate(...):Symbol not processed:"+value+"X.i:"+i);
+				//System.out.println("PolishDirectiveRule.evaluate(...):Symbol not processed:"+value+"X.i:"+i);
 				break;
 			}
  		}

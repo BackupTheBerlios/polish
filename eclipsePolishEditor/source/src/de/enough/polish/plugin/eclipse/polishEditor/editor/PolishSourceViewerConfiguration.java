@@ -195,6 +195,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 //        return newlyConfiguredContentTypes;
 //    }
     
+    
     public boolean affectsTextPresentation(PropertyChangeEvent event) {
         if(this.polishSingleLineCommentScanner.affectsBehavior(event)) {
             return true;
@@ -204,7 +205,10 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
         System.out.println("PolishSourceViewerConfiguration.handlePropertyChangeEvent(...):enter.");
+        if (this.polishSingleLineCommentScanner.affectsBehavior(event))
+            this.polishSingleLineCommentScanner.adaptToPreferenceChange(event);
         super.handlePropertyChangeEvent(event);
-        this.polishSingleLineCommentScanner.adaptToPreferenceChange(event);
+        
     }
+    
 }
