@@ -116,7 +116,7 @@ public class PolishDirectiveRule implements IRule {
     public static final int STRING_STATE = 8;
     public static final int POLISH_FUNCTION_STATE = 16;
 
-    private String wholeCommentLine; //Problem with missing offset within string. Log the offset somewhere.
+    //private String wholeCommentLine; //Problem with missing offset within string. Log the offset somewhere.
     
     
     // ####################################################
@@ -130,7 +130,7 @@ public class PolishDirectiveRule implements IRule {
         
         this.tokenStore = tokenStore;
         this.states = new States();
-        this.wholeCommentLine = "";
+        //this.wholeCommentLine = "";
     }
     
     /* (non-Javadoc)
@@ -210,7 +210,7 @@ public class PolishDirectiveRule implements IRule {
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
 				if(i == POLISH_DIRECTIVE_SYMBOL) { 
 				    
-				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(POLISH_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
@@ -257,14 +257,14 @@ public class PolishDirectiveRule implements IRule {
 				
 				if(i == POLISH_COMMENT_SYMBOL) {
 				    
-				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
 				if(i == POLISH_ASSIGNMENT_SYMBOL) {
 				    
-				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
