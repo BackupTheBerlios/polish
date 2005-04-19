@@ -121,50 +121,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 		super(colorManager,preferenceStore,editor,partitioning);
 		this.polishSingleLineCommentScanner = new PolishSingleLineCommentScanner(colorManager,preferenceStore);
 	}
-	
-	
-//    public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-//        System.out.println("PolishSourceViewerConfiguration.getPresentationReconciler():enter.");
-//        sourceViewer.addTextInputListener(new TextInputListener()); // Only to track invocation.
-//        
-//        // copy 'n pasted from JavasourceViewerConfiguration.
-//        	PresentationReconciler presentationReconciler = new PolishPresentationReconciler();
-//        	presentationReconciler.setDocumentPartitioning(IPolishContentTypes.POLISH_PARTITIONING); // We dont need this mechanism.
-//
-//		DefaultDamagerRepairer defaultDamagerRepairer;
-//
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getCodeScanner());
-//		presentationReconciler.setDamager(defaultDamagerRepairer, IDocument.DEFAULT_CONTENT_TYPE);
-//		presentationReconciler.setRepairer(defaultDamagerRepairer, IDocument.DEFAULT_CONTENT_TYPE);
-//
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getJavaDocScanner());
-//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_DOC);
-//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_DOC);
-//
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getMultilineCommentScanner());		
-//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
-//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
-//
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getSinglelineCommentScanner());		
-//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
-//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
-//		
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getStringScanner());
-//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_STRING);
-//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_STRING);
-//		
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getStringScanner());
-//		presentationReconciler.setDamager(defaultDamagerRepairer, IJavaPartitions.JAVA_CHARACTER);
-//		presentationReconciler.setRepairer(defaultDamagerRepairer, IJavaPartitions.JAVA_CHARACTER);
-//        
-//		// Polish stuff.
-//		defaultDamagerRepairer = new DefaultDamagerRepairer(getPolishSingleLineCommentScanner());
-//        presentationReconciler.setDamager(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
-//        presentationReconciler.setRepairer(defaultDamagerRepairer, IPolishContentTypes.POLISH_DIRECTIVE);
-//        
-//        return presentationReconciler;
-//    }
-    
+
     public PolishSingleLineCommentScanner getPolishSingleLineCommentScanner() {
         	return this.polishSingleLineCommentScanner;
     }    
@@ -182,20 +139,6 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 	}
 	*/
 
-    //TODO: Not needed anymore. Confirm, then remove.
-    // Register the content type for polish directives at the end of the java content types.
-//    public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-//        String[] originalConfiguredContentTypes = super.getConfiguredContentTypes(sourceViewer);
-//        String[] newlyConfiguredContentTypes = new String[originalConfiguredContentTypes.length + 1];
-//        
-//        System.arraycopy(originalConfiguredContentTypes,0,newlyConfiguredContentTypes,0,originalConfiguredContentTypes.length);
-//        
-//        newlyConfiguredContentTypes[newlyConfiguredContentTypes.length - 1] = IPolishContentTypes.POLISH_DIRECTIVE;
-//        
-//        return newlyConfiguredContentTypes;
-//    }
-    
-    
     public boolean affectsTextPresentation(PropertyChangeEvent event) {
         if(this.polishSingleLineCommentScanner.affectsBehavior(event)) {
             return true;
@@ -205,6 +148,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
         System.out.println("PolishSourceViewerConfiguration.handlePropertyChangeEvent(...):enter.");
+        // This check is needed because adaptToPreferenceChange cokes on unknown events :(
         if (this.polishSingleLineCommentScanner.affectsBehavior(event))
             this.polishSingleLineCommentScanner.adaptToPreferenceChange(event);
         super.handlePropertyChangeEvent(event);

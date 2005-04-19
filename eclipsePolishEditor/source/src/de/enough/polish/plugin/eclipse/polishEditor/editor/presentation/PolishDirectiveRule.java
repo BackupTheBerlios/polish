@@ -82,7 +82,7 @@ public class PolishDirectiveRule implements IRule {
     public static final String STRING_REGEX = "(\")";
     public static final String CATCH_ALL_REGEX = "(\\S+)";
  
-    
+    //TODO: Make a function to generate the regEx string automaticly.
     private String REG_EX_PATTERN =
         POLISH_DIRECTIVE_REGEX + "|" +
         POLISH_ASSIGNMENT_REGEX + "|" +
@@ -116,7 +116,7 @@ public class PolishDirectiveRule implements IRule {
     public static final int STRING_STATE = 8;
     public static final int POLISH_FUNCTION_STATE = 16;
 
-    //private String wholeCommentLine; //Problem with missing offset within string. Log the offset somewhere.
+    private String wholeCommentLine; //Problem with missing offset within string. Log the offset somewhere.
     
     
     // ####################################################
@@ -130,18 +130,14 @@ public class PolishDirectiveRule implements IRule {
         
         this.tokenStore = tokenStore;
         this.states = new States();
-        //this.wholeCommentLine = "";
+        this.wholeCommentLine = "";
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
      */
     public IToken evaluate(ICharacterScanner scanner) {
-//        if( ! this.tokenStore.containsToken(IJavaColorConstants.JAVA_DEFAULT) ||
-//            ! this.tokenStore.containsToken(IJavaColorConstants.JAVA_KEYWORD)) {
-//            throw new IllegalArgumentException("ERROR:PolishDirectiveRule.evaluate(...):Some tokens are not set.");
-//        }
-        
+
         int c =  Integer.MIN_VALUE; // Clean initialization.
         int readCount = 0; // number of times read was called.
         this.delimiters = scanner.getLegalLineDelimiters();
@@ -197,7 +193,7 @@ public class PolishDirectiveRule implements IRule {
 		
 //		We have something and is at the offset. Find out what it is.
 		// TODO: Maybe extract the loop, obtain index and value of the symbol and
-		// go on with the result.
+		// go on with the result, e.g. make a tokenizer.
 		for(int i = 1; i <= this.matcher.groupCount();i++){
 			String value = this.matcher.group(i);
 			
@@ -214,7 +210,7 @@ public class PolishDirectiveRule implements IRule {
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
 				if(i == POLISH_DIRECTIVE_SYMBOL) { 
 				    
-				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(POLISH_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
@@ -261,16 +257,15 @@ public class PolishDirectiveRule implements IRule {
 				
 				if(i == POLISH_COMMENT_SYMBOL) {
 				    
-				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
 				if(i == POLISH_ASSIGNMENT_SYMBOL) {
 				    
-				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
+				    this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_STATE);
-				    //this.states.addState(JAVA_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}

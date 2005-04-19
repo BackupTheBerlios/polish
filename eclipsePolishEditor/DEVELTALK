@@ -3,14 +3,17 @@ TODO:
 - Solve problem with instant property change. DONE
 - Create a nature and register polish editor as default editor for .java. DONE
 - Make the nature chooseable. DONE
-- Make all colors work.
+- Make all colors work. DONE
 - Get mark occurrences working. DONE
 - optimze mark occurrences.
 - recognize symbol and variable names.
 - Code cleanup: plugin structure, package structure, javadoc.
-- Create updatesite with webbrowser access.
+- Create updatesite with webbrowser access. DONE
 - Bug: at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905). DONE
 - migrate all org.eclipse.ui.actionSetPartAssociations with id of CompilationUnitEditor to PolishEditor.
+- try to get indention working.
+- replace all system.out.println with plugin.log messages.
+- defencive programming EVERYWHERE.
 
 
 PROBLEMS:

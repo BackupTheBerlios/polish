@@ -25,6 +25,8 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import java.util.List;
+
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.text.IJavaPartitions;
@@ -104,10 +106,6 @@ public class PolishEditor extends CompilationUnitEditor {
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
         
         super.createPartControl(parent);
-        
-        //getSourceViewer().addTextListener(this.textListener);
-        //getSourceViewer().addTextInputListener(this.polishOccurrencesMarkerConfigurationUpdater);
-   
     }
    
     protected boolean affectsTextPresentation(PropertyChangeEvent event) {
@@ -126,41 +124,23 @@ public class PolishEditor extends CompilationUnitEditor {
     
     protected void updateOccurrenceAnnotations(ITextSelection selection,
             CompilationUnit astRoot) {
-       //System.out.println("PolishEditor.updateOccurrenceAnnotations(...):isMarkingOccurrences:"+isMarkingOccurrences());
-        //System.out.println("PolishEditor.updateOccurrenceAnnotations(...):selection:"+selection.getText());
-        //this.polishOccurrencesMarker.setSourceViewer(getSourceViewer());
-        /*
-        if(isMarkingOccurrences()) {
-            this.polishOccurrencesMarker.updateAnnotations(selection);
-        }
-        else {
-            System.out.println("removeAnnotations.");
-            this.polishOccurrencesMarker.removeAnnotations();
-        }
-       */
+        List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
+        
         System.out.println("PolishEditor.updateOccurenceAnnotations(...):enter.");
-        //this.polishOccurrencesMarker.updateAnnotations(selection);
+        this.polishOccurrencesMarker.updateAnnotations(selection,listOfComments); //TODO: Put this in to get our marking back to work.
         super.updateOccurrenceAnnotations(selection, astRoot);
     }
     
-    //TODO:
-    // How does mark occurrecnes work? Is it registered on a selectionProvider or is it called by
-    // updateOccurrenceAnnotations(...)?
     
     // Use this mechanism to get informed about install and uninstall.
     protected void installOccurrencesFinder() {
         System.out.println("PolishEditor.installOccurrencesFinder().enter");
-//        if(this.polishOccurrencesMarker != null) { //TODO: When do we have the poli
-//            this.polishOccurrencesMarker.setSourceViewer(getSourceViewer());
-//            getSourceViewer().getSelectionProvider().addSelectionChangedListener(this.polishOccurrencesMarker);
-//        }
-        //this.polishOccurrencesMarker.setSourceViewer(getSourceViewer());
+        this.polishOccurrencesMarker.setSourceViewer(getSourceViewer());
         super.installOccurrencesFinder();
     }
     protected void uninstallOccurrencesFinder() {
         System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
-        //getSourceViewer().getSelectionProvider().removeSelectionChangedListener(this.polishOccurrencesMarker);
-        //this.polishOccurrencesMarker.removeAnnotations();
+        this.polishOccurrencesMarker.removeAnnotations();
         super.uninstallOccurrencesFinder();
     }
 }
