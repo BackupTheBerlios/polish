@@ -13,7 +13,7 @@ TODO:
 - migrate all org.eclipse.ui.actionSetPartAssociations with id of CompilationUnitEditor to PolishEditor.
 - try to get indention working.
 - replace all system.out.println with plugin.log messages.
-- defencive programming EVERYWHERE.
+- defensive programming EVERYWHERE.
 
 
 PROBLEMS:
@@ -86,6 +86,17 @@ The instantiation uses a deprecated constructor.
 ---
 org.eclipse.jdt.internal.ui.javaeditor.SemanticHighlightingManager.install(...)
 This class should not instantiate 
+
+
+---
+QA in action:
+JavaEditor: private boolean fMarkLocalVariableypeOccurrences;
+
+
+
+---
+InternalJob.getState(...): Uses public constants from Job, one of its subclasses ! Isnt it said that a superclass
+sould not know its subclasses?
 
 
 IRC

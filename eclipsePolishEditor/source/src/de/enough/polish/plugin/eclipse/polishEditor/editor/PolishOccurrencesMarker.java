@@ -44,20 +44,20 @@ import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 
 
+
 class PolishOccurrencesMarker /*implements ISelectionChangedListener*/{
         
-        //private final PolishEditor polishEditor;
+        
         private IDocument document;
         private List currentAnnotations;
         private ISourceViewer sourceViewer;
+        private List marker; // List of PolishAbstractMarker
         
-        //private Position[] lastPositionsOfSelectedWord;
         private String lastSelectedWord;
         
         public PolishOccurrencesMarker(PolishEditor editor) {
             this.currentAnnotations = new ArrayList();
             this.lastSelectedWord = "";
-            //this.lastPositionsOfSelectedWord = new Position[] {}; // Initialisation not necessary.
         }
 
 //      1. Check if the selection is within //#
