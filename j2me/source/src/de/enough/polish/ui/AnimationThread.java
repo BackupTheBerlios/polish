@@ -81,6 +81,7 @@ public class AnimationThread extends Thread {
 				Screen screen = StyleSheet.currentScreen;
 				if (screen != null ) {
 					if (screen.animate()) {
+						screen.repaint();
 						sleeptime = ANIMATION_INTERVAL;
 						animationCounter = 0;
 					} else {

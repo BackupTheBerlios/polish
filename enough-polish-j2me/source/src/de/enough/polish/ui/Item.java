@@ -589,6 +589,12 @@ public abstract class Item extends Object
 	protected int preferredHeight;
 	protected int minimumWidth;
 	protected int minimumHeight;
+	//#ifdef polish.css.max-width
+		protected int maximumWidth;
+	//#endif
+	//#ifdef polish.css.max-height
+		protected int maximumHeight;
+	//#endif
 	protected boolean isInitialised;
 	protected Background background;
 	protected Border border;
@@ -673,8 +679,10 @@ public abstract class Item extends Object
 	// label settings:
 	protected Style labelStyle = StyleSheet.labelStyle;
 	protected StringItem label;
-
 	private boolean useSingleRow;
+	
+	protected Style focusedStyle;
+
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -896,6 +904,37 @@ public abstract class Item extends Object
 		if (this.label != null) {
 			this.label.setStyle( this.labelStyle );			
 		}
+		//#ifdef polish.css.min-width
+			Integer minWidthInt = style.getIntProperty("min-width");
+			if (minWidthInt != null) {
+				this.minimumWidth = minWidthInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.max-width
+			Integer maxWidthInt  = style.getIntProperty("max-width");
+			if (maxWidthInt != null) {
+				this.maximumWidth = maxWidthInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.min-height
+			Integer minHeightInt = style.getIntProperty("min-height");
+			if (minHeightInt != null) {
+				this.minimumHeight = minHeightInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.max-height
+			Integer maxHeightInt  = style.getIntProperty("max-height");
+			if (maxHeightInt != null) {
+				this.maximumHeight = maxHeightInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.focused-style
+			Style focused = (Style) style.getObjectProperty("focused-style");
+			if (focused != null) {
+				this.focusedStyle = focused;
+			}
+		//#endif
+
 	}
 	
 	/**
@@ -1429,11 +1468,31 @@ public abstract class Item extends Object
 			System.out.println("INVALID NONE CONTENT WIDTH=" + noneContentWidth);
 		}
 		*/
-		int firstLineContentWidth = firstLineWidth - noneContentWidth;
-		int availableContentWidth = lineWidth - noneContentWidth;
+		//#ifdef polish.css.max-width
+			int firstLineAdjustedWidth = firstLineWidth;
+			int lineAdjustedWidth = lineWidth;
+			if (this.maximumWidth != 0 ) {
+				if (firstLineAdjustedWidth > this.maximumWidth ) {
+					firstLineAdjustedWidth = this.maximumWidth;
+				} 
+				if (lineAdjustedWidth > this.maximumWidth ) {
+					lineAdjustedWidth = this.maximumWidth;
+				}
+			}
+			int firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
+			int availableContentWidth = lineAdjustedWidth - noneContentWidth;
+		//#else
+			//# int firstLineContentWidth = firstLineWidth - noneContentWidth;
+			//# int availableContentWidth = lineWidth - noneContentWidth;
+		//#endif
 		// initialise content by subclass:
 		initContent( firstLineContentWidth, availableContentWidth );
 		this.itemWidth = noneContentWidth + this.contentWidth;
+		//#ifdef polish.css.min-width
+		if (this.itemWidth < this.minimumWidth ) {
+			this.itemWidth = this.minimumWidth;
+		}
+		//#endif
 		int cHeight = this.contentHeight;
 		//#ifdef polish.useBeforeStyle
 			if (this.contentHeight < this.beforeHeight) {
@@ -1466,6 +1525,11 @@ public abstract class Item extends Object
 		}
 		if ( this.isLayoutExpand ) {
 			this.itemWidth = lineWidth;
+			//#ifdef polish.css.max-width
+				if (this.maximumWidth != 0 && lineWidth > this.maximumWidth ) {
+					this.itemWidth = this.maximumWidth;
+				}
+			//#endif
 		} else if (this.itemWidth > lineWidth) {
 			this.itemWidth = lineWidth;
 		}
@@ -1625,12 +1689,15 @@ public abstract class Item extends Object
 	/**
 	 * Focuses this item.
 	 * 
-	 * @param focusedStyle the style which is used to indicate the focused state
+	 * @param newStyle the style which is used to indicate the focused state
 	 * @return the current style of this item
 	 */
-	protected Style focus(Style focusedStyle ) {
+	protected Style focus(Style newStyle ) {
 		Style oldStyle = this.style;
-		setStyle( focusedStyle );
+		if (this.focusedStyle != null) {
+			newStyle = this.focusedStyle;
+		}
+		setStyle( newStyle );
 		this.isFocused = true;
 		// now set any commands of this item:
 		if (this.commands != null) {

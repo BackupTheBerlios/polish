@@ -74,7 +74,6 @@ public class Container extends Item {
 	protected Item[] items;
 	protected boolean autoFocusEnabled;
 	protected int autoFocusIndex;
-	protected Style focusedStyle;
 	protected Style itemStyle;
 	protected Item focusedItem;
 	public int focusedIndex = -1;
@@ -84,6 +83,9 @@ public class Container extends Item {
 	private int[] rowsHeights;
 	private int numberOfRows;
 	private boolean enableScrolling;
+	//#if polish.Container.allowCycling != false
+		protected boolean allowCycling = true;
+	//#endif
 	int yTop;
 	int yBottom;
 	protected int yOffset;
@@ -125,15 +127,14 @@ public class Container extends Item {
 		super( label, LAYOUT_DEFAULT, INTERACTIVE, style );
 		this.itemsList = new ArrayList();
 		this.autoFocusEnabled = focusFirstElement;
-		if (this.focusedStyle == null) {
-			Style focStyle = StyleSheet.focusedStyle;
-			this.focusedStyle = focStyle;
-			this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
-			if (focStyle.border != null) {
-				this.focusedTopMargin += focStyle.border.borderWidth;
-			} else if (focStyle.background != null) {
-				this.focusedTopMargin += focStyle.background.borderWidth;
-			}
+		Style focStyle = StyleSheet.focusedStyle;
+		this.focusedStyle = focStyle;
+		this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
+		if (focStyle.border != null) {
+			this.focusedTopMargin += focStyle.border.borderWidth;
+		} 
+		if (focStyle.background != null) {
+			this.focusedTopMargin += focStyle.background.borderWidth;
 		}
 		this.layout |= Item.LAYOUT_NEWLINE_BEFORE;
 		setVerticalDimensions(yTop, yBottom);
@@ -869,42 +870,52 @@ public class Container extends Item {
 			i = 1;
 		}
 		Item item = null;
-		boolean allowCycle = this.enableScrolling;
-		if (allowCycle) {
-			if (forwardFocus) {
-				// when you scroll to the bottom and
-				// there is still space, do
-				// scroll first before cycling to the
-				// first item:
-				allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
-			} else {
-				// when you scroll to the top and
-				// there is still space, do
-				// scroll first before cycling to the
-				// last item:
-				allowCycle = (this.yOffset == 0);
+		//#if polish.Container.allowCycling != false
+			boolean allowCycle = this.enableScrolling && this.allowCycling;
+			if (allowCycle) {
+				if (forwardFocus) {
+					// when you scroll to the bottom and
+					// there is still space, do
+					// scroll first before cycling to the
+					// first item:
+					allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
+				} else {
+					// when you scroll to the top and
+					// there is still space, do
+					// scroll first before cycling to the
+					// last item:
+					allowCycle = (this.yOffset == 0);
+				}
 			}
-		}
+		//#endif
 		while (true) {
 			if (forwardFocus) {
 				i++;
 				if (i >= this.items.length) {
-					if (allowCycle) {
-						allowCycle = false;
-						i = 0;
-					} else {
+					//#if polish.Container.allowCycling != false
+						if (allowCycle) {
+							allowCycle = false;
+							i = 0;
+						} else {
+							break;
+						}
+					//#else
 						break;
-					}
+					//#endif
 				}
 			} else {
 				i--;
 				if (i < 0) {
-					if (allowCycle) {
-						allowCycle = false;
-						i = this.items.length - 1;
-					} else {
+					//#if polish.Container.allowCycling != false
+						if (allowCycle) {
+							allowCycle = false;
+							i = this.items.length - 1;
+						} else {
+							break;
+						}
+					//#else
 						break;
-					}
+					//#endif
 				}
 			}
 			item = this.items[i];
@@ -932,6 +943,9 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style) {
+		if (this.parent == null) {
+			System.out.println("Container.setStyle without boolean parameter for container " + toString() );
+		}
 		setStyle(style, false);
 	}
 	
@@ -949,16 +963,13 @@ public class Container extends Item {
 			this.border = null;
 			this.borderWidth = 0;
 		}
-		//#ifdef polish.css.focused-style
-			Style focused = (Style) style.getObjectProperty("focused-style");
-			if (focused != null) {
-				this.focusedStyle = focused;
-				this.focusedTopMargin = focused.marginTop + focused.paddingTop;
-				if (focused.border != null) {
-					this.focusedTopMargin += focused.border.borderWidth;
-				} else if (focused.background != null) {
-					this.focusedTopMargin += focused.background.borderWidth;
-				}
+		//#if polish.css.focused-style
+			this.focusedTopMargin = this.focusedStyle.marginTop + this.focusedStyle.paddingTop;
+			if (this.focusedStyle.border != null) {
+				this.focusedTopMargin += this.focusedStyle.border.borderWidth;
+			}
+			if (this.focusedStyle.background != null) {
+				this.focusedTopMargin += this.focusedStyle.background.borderWidth;
 			}
 		//#endif
 		this.columnsSetting = NO_COLUMNS;

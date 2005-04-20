@@ -132,11 +132,6 @@ public abstract class Screen
 	private boolean isLayoutVCenter;
 	private boolean isLayoutBottom;
 	private boolean isInitialised;
-	//#if polish.useFullScreen && polish.api.nokia-ui 
-		private boolean isInPaintMethod;
-		private long lastPaintTime;
-		private boolean repaintRequested;
-	//#endif
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
 		private int fullScreenHeight;
@@ -209,6 +204,10 @@ public abstract class Screen
 		private int foregroundX;
 		private int foregroundY;
 	//#endif
+	protected int contentX;
+	protected int contentY;
+	protected int contentWidth;
+	protected int contentHeight;
 	
 	/**
 	 * Creates a new screen
@@ -370,14 +369,24 @@ public abstract class Screen
 
 		if (this.container != null) {
 			this.container.screen = this;
-			this.container.setVerticalDimensions( 0, this.screenHeight - (this.titleHeight  + this.subTitleHeight + this.infoHeight ) );
 		}
+		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight  + this.subTitleHeight + this.infoHeight ) );
 		
 		// start the animmation thread if necessary: 
 		if (startAnimationThread) {
 			StyleSheet.animationThread.start();
 		}
 		this.isInitialised = true;
+	}
+	
+	protected void setContentArea( int x, int y, int width, int height ) {
+		this.contentX = x;
+		this.contentY = y;
+		this.contentWidth = width;
+		this.contentHeight = height;
+		if (this.container != null) {
+			this.container.setVerticalDimensions( y, y + height );
+		}
 	}
 	
 	
@@ -487,6 +496,7 @@ public abstract class Screen
 		this.background = style.background;
 		this.border = style.border;
 		if (this.container != null) {
+			// use the same style for the container - but ignore the background and border settings:
 			this.container.setStyle(style, true);
 		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
@@ -577,17 +587,7 @@ public abstract class Screen
 					animated = animated | this.ticker.animate();
 				}
 			//#endif
-			//#if polish.useFullScreen && polish.api.nokia-ui 
-			if (animated || this.repaintRequested) {
-				this.repaintRequested = false;
-			//#else
-				//# if (animated) {
-			//#endif
-				repaint();
-				return true;
-			} else {
-				return false;
-			}
+			return animated;
 		} catch (Exception e) {
 			//#debug error
 			Debug.debug("animate() threw an exception", e );
@@ -613,9 +613,6 @@ public abstract class Screen
 				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 			}
 		//#endif			
-		//#if polish.useFullScreen && polish.api.nokia-ui 
-			this.isInPaintMethod = true;
-		//#endif
 		//#ifdef polish.debug.error
 		try {
 		//#endif
@@ -650,7 +647,7 @@ public abstract class Screen
 					//#debug
 					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
 					if (this.container != null) {
-						this.container.setVerticalDimensions(translateY, this.screenHeight);
+						setContentArea( 0, translateY, this.screenWidth, this.screenHeight - (this.infoHeight + this.subTitleHeight + translateY)  );
 					}
 				}
 			//#endif
@@ -837,10 +834,6 @@ public abstract class Screen
 			Debug.debug( "unable to paint screen", e );
 		}
 		//#endif
-		//#if polish.useFullScreen && polish.api.nokia-ui 
-			this.lastPaintTime = System.currentTimeMillis();
-			this.isInPaintMethod = false;
-		//#endif
 	}
 	
 	/**
@@ -851,20 +844,22 @@ public abstract class Screen
 	 * @param g the graphics on which the screen should be painted
 	 */
 	protected void paintScreen( Graphics g ) {
-		int y = 0;
-		int containerHeight = this.container.getItemHeight( this.screenWidth, this.screenWidth);
-		int availableHeight = this.screenHeight - (this.titleHeight + this.infoHeight);
+		int y = this.contentY;
+		int x = this.contentX;
+		int height = this.contentHeight;
+		int width = this.contentWidth;
+		int containerHeight = this.container.getItemHeight( width, width);
 		this.paintScrollIndicator = false; // defaults to false
-		if (containerHeight > availableHeight ) {
+		if (containerHeight > height ) {
 			this.paintScrollIndicator = true;
 			this.paintScrollIndicatorUp = (this.container.yOffset != 0);
-			this.paintScrollIndicatorDown = (this.container.yOffset + containerHeight > availableHeight);
+			this.paintScrollIndicatorDown = (this.container.yOffset + containerHeight > height );
 		} else if (this.isLayoutVCenter) {
-			y = ((availableHeight - containerHeight) / 2);
+			y += ((height - containerHeight) / 2);
 		} else if (this.isLayoutBottom) {
-			y = (availableHeight - containerHeight);
+			y += (height - containerHeight);
 		}
-		this.container.paint( 0, y, 0, this.screenWidth, g );
+		this.container.paint( x, y, x, x + width, g );
 	}
 	
 	//#ifdef tmp.usingTitle
@@ -933,9 +928,7 @@ public abstract class Screen
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
-		}
+		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
 		if (this.isInitialised && isShown()) {
 			repaint();
 		}
@@ -966,9 +959,7 @@ public abstract class Screen
 			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
 			this.showInfoItem = true;
 		}
-		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
-		}
+		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
 	}
 
 	//#ifndef polish.skipTicker
@@ -1110,11 +1101,7 @@ public abstract class Screen
 				}
 			//#endif
 			if (processed) {
-				//#if polish.useFullScreen && polish.api.nokia-ui
-					requestRepaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#if polish.debug.error
 		} catch (Exception e) {
@@ -1388,25 +1375,7 @@ public abstract class Screen
 	public int getAvailableHeight() {
 		return this.screenHeight - this.titleHeight;
 	}
-	 
-	//#if polish.useFullScreen && polish.api.nokia-ui 
-	/**
-	 * Requests a repaint of the screen.
-	 * This request is ignored when the paint method is currently called.
-	 * J2ME Polish needs to implement this method because the
-	 * Nokia FullCanvas implementation crashes sometimes when calling repaint() in
-	 * the middlet of the paint method.
-	 * This method is only available when the Nokia FullCanvas is used. 
-	 */
-	public void requestRepaint() {
-		if (this.isInPaintMethod  || (System.currentTimeMillis() - this.lastPaintTime) < 100) {
-			this.repaintRequested = true;
-			return;
-		}
-		repaint();
-	}
-	//#endif
-	
+	 	
 	
 	//#if polish.debugVerbose && polish.useDebugGui
 	public void commandAction( Command command, Displayable screen ) {
@@ -1600,9 +1569,7 @@ public abstract class Screen
 			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
 		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
-		if (this.container != null) {
-			this.container.setVerticalDimensions( 0,  this.screenHeight - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
-		}
+		setContentArea( 0, 0, this.screenWidth,  this.screenHeight - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 	}
 	//#endif
 	

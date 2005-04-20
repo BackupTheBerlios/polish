@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
@@ -86,17 +87,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	{
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
-		Item[] items = parent.getItems();
-		ChoiceItem selectedItem = (ChoiceItem) items[0];
-		int selectedItemIndex = 0;
-		for (int i = 0; i < items.length; i++) {
-			ChoiceItem item = (ChoiceItem) items[i];
-			if (item.isSelected) {
-				selectedItemIndex = i;
-				selectedItem = item;
-				break;
-			}
-		}
+		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
 		parent.focusedIndex = selectedItemIndex;
 		//#if polish.css.exclusiveview-left-arrow || polish.css.exclusiveview-right-arrow
 			int width = 0;
@@ -117,12 +108,13 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 		//#endif
 		int completeArrowWidth;
-		if (selectedItemIndex > 0 && selectedItemIndex < items.length -1 ) {
+		if (selectedItemIndex > 0 && selectedItemIndex < parent.size() -1 ) {
 			completeArrowWidth = 2 * ( this.arrowWidth + this.paddingHorizontal );
 		} else {
 			completeArrowWidth = 1 * ( this.arrowWidth + this.paddingHorizontal );
 		}
 		lineWidth -= completeArrowWidth;
+		ChoiceItem selectedItem = (ChoiceItem) parent.get( selectedItemIndex );
 		selectedItem.drawBox = false;
 		this.contentHeight = selectedItem.getItemHeight(lineWidth, lineWidth);
 		this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth ) + completeArrowWidth;
@@ -262,13 +254,15 @@ public class ExclusiveSingleLineView extends ContainerView {
 			this.currentItem.select( false );
 			this.currentItemIndex--;
 			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-			this.currentItem.select( true );
+			//this.currentItem.select( true );
+			((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
 			return this.currentItem;
 		} else if ( gameAction == Canvas.RIGHT && this.currentItemIndex < items.length - 1 ) {
 			this.currentItem.select( false );
 			this.currentItemIndex++;
 			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-			this.currentItem.select( true );
+			((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
+			//this.currentItem.select( true );
 			return this.currentItem;
 		}
 		// in all other cases there is no next item:
@@ -299,7 +293,8 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 		}  
 		this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-		this.currentItem.select( true );
+		//this.currentItem.select( true );
+		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
 		this.parentContainer.focus(this.currentItemIndex, this.currentItem);
 		return true;
 	}
