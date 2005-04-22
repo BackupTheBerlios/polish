@@ -3,7 +3,7 @@
 <plugin
    id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin"
    name="PolishEditor Plug-in"
-   version="0.3.1"
+   version="0.3.2"
    provider-name=""
    class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin">
 
