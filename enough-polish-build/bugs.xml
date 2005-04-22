@@ -81,7 +81,10 @@
 		on this device. This method is often used for CustomItems.
 		</description>
 		<area>ui</area>
-		<solution>Define and use your own colors for this device.</solution>
+		<solution>Define and use your own colors for this device.
+		A possible (but untested) solution might be to call getColor() after the first
+		screen has been set, so that the UI graphics system has the chance to initialize.
+		</solution>
 	</bug>
 	<bug>
 		<name>needsGCinPaint</name>
@@ -165,7 +168,65 @@
 		<description>On Series 60 phones there is always an &quot;Exit&quot; command present for closing the application.</description>
 		<solution>Use the J2ME Polish GUI instead.</solution>
 	</bug>
+
+	<bug>
+		<name>PlatformRequestRequiresQuit</name>
+		<area>io</area>
+		<description>When a non-voice-call platform request is issued, the application needs to be exited manually before the request is launched.</description>
+		<solution>Exit the application when this bug is present.</solution>
+	</bug>
+
+
+	<bug>
+		<name>GaugeNoProgessIndicatorOnAlerts</name>
+		<area>ui</area>
+		<description>When you update a Gauge item within an Alert this update is not shown. Also the title of the Alert is not shown.</description>
+		<solution>Do not use a Gauge as a progress indicator in Alerts when this bug is present.</solution>
+	</bug>
 	
+	<bug>
+		<name>BluetoothRfcommInputStream</name>
+		<area>io</area>
+		<description>When an RFCOMM-protocol InputStream is read over a bluetooth connection on the affected devices,
+			an IOException is thrown when the the other end has closed the stream while it is still being read.
+			Also the application crashes when the input stream uses an array bigger than 512 bytes.
+		</description>
+		<solution>Make sure that the other end does not close the connection before the application has finished
+			reading the input stream. Also do not use a larger array than 512 for the input stream.
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>OverrideGetWidthGetHeightInFullCanvas</name>
+		<area>ui</area>
+		<description>When you extend the com.nokia.mid.ui.FullCanvas class you can experience strange behaviors and crashes 
+			when you override either the getWidth() or the getHeight() method. Nokia canvas classes don't seem to
+			like that in general.
+		</description>
+		<solution>Use other method names if you need to provide your own height and width.
+		</solution>
+	</bug>
+
+	<bug>
+		<name>drawStringOver200Chars</name>
+		<area>ui</area>
+		<description>The Graphics.drawString() and Graphics.drawSubstring() methods crash when the given String contains 
+			more than 200 characters.
+		</description>
+		<solution>Use Graphics.drawChars() instead.</solution>
+	</bug>
+
+	<bug>
+		<name>getResourceAsStreamMemoryLeak</name>
+		<area>io, ui</area>
+		<description>When you call getResourceAsStream() memory will be leaked in the same size as the resource.
+		     This is also the case when it is used indirectly, e.g. in Image.createImage().
+		</description>
+		<solution>
+			Don't load the same resource more than once and hope it all fits into the memory.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>

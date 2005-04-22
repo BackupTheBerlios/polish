@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Variable;
+import de.enough.polish.ant.build.Variables;
 
 /**
  * <p>A base class for settings which accept parameters.</p>
@@ -45,6 +46,7 @@ import de.enough.polish.Variable;
 public class Setting extends ConditionalElement {
 	
 	private ArrayList parameters;
+	private Variables variables;
 
 	/**
 	 * Creates a new empty parameter setting
@@ -59,6 +61,11 @@ public class Setting extends ConditionalElement {
 	 * @param var the parameter with a [name] and a [value] attribute.
 	 */
 	public void addConfiguredParameter( Variable var ) {
+		if (this.variables == null) {
+			this.variables = new Variables();
+		}
+		this.variables.addConfiguredVariable( var );
+		/*
 		if (this.parameters == null) {
 			this.parameters = new ArrayList();
 		}
@@ -83,6 +90,7 @@ public class Setting extends ConditionalElement {
 			}
 		}
 		this.parameters.add( var );
+		*/
 	}
 	
 	/**

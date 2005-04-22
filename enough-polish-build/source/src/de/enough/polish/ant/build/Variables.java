@@ -27,10 +27,14 @@ package de.enough.polish.ant.build;
 
 
 import de.enough.polish.*;
+import de.enough.polish.preprocess.BooleanEvaluator;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
+import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * <p>Manages a list of variables.</p>
@@ -45,14 +49,16 @@ import java.util.ArrayList;
  */
 public class Variables {
 	
-	private ArrayList variables;
+	protected ArrayList variablesList;
+	protected ArrayList unconditionalVariablesList;
 	private boolean includeAntProperties;
 
 	/**
 	 * Creates a new list of variables.
 	 */
 	public Variables() {
-		this.variables = new ArrayList();
+		this.variablesList = new ArrayList();
+		this.unconditionalVariablesList = new ArrayList();
 	}
 	
 	public void addConfiguredVariable( Variable var ) {
@@ -61,23 +67,45 @@ public class Variables {
 				throw new BuildException("Please check your variable definition, each variable needs to have the attribute [name]");
 			}
 			if (var.getValue() == null) {
-				throw new BuildException("Please check your variable definition, each variable needs to have the attribute [value]");
+				throw new BuildException("Please check your variable definition, the variable [" + var.getName() + "] does lack the required [value] attribute");
 			}
-			this.variables.add( var );
-		} else {
+			if (var.getIfCondition() == null && var.getUnlessCondition() == null ) {
+				this.unconditionalVariablesList.add( var );
+			}
+		/*
+		} else {			
 			Variable[] vars = var.loadVariables();
 			for (int i = 0; i < vars.length; i++) {
 				Variable variable = vars[i];
 				variable.setIf( var.getIfCondition() );
 				variable.setUnless( var.getUnlessCondition() );
-				this.variables.add( variable );
+				this.variablesList.add( variable );
+			}
+			*/
+		}
+		this.variablesList.add( var );
+	}
+	/*
+	public Variable[] getVariables( Map environment ) {
+		ArrayList list = new ArrayList();
+		Variable[] variables = (Variable[]) this.variablesList.toArray( new Variable[ this.variablesList.size() ] );
+		for (int i = 0; i < variables.length; i++) {
+			Variable variable = variables[i];
+			if (variable.containsMultipleVariables()) {
+				Variable[] vars = variable.loadVariables( environment );
+				for (int j = 0; j < vars.length; j++) {
+					Variable var = vars[j];
+					var.setIf( variable.getIfCondition() );
+					var.setUnless( variable.getUnlessCondition() );
+					list.add( var );
+				}
+			} else {
+				list.add( variable );
 			}
 		}
+		return (Variable[]) list.toArray( new Variable[ list.size() ] );
 	}
-	
-	public Variable[] getVariables() {
-		return (Variable[]) this.variables.toArray( new Variable[ this.variables.size() ] );
-	}
+	*/
 
 	/**
 	 * @return Returns the includeAntProperties.
@@ -90,5 +118,41 @@ public class Variables {
 	 */
 	public void setIncludeAntProperties(boolean includeAntProperties) {
 		this.includeAntProperties = includeAntProperties;
+	}
+	
+	public Variable[] getVariables( Project antProject, BooleanEvaluator evaluator, Map environment ) {
+		ArrayList list = new ArrayList();
+		Variable[] variables = getVariables( this.variablesList );
+		for (int i = 0; i < variables.length; i++) {
+			Variable variable = variables[i];
+			if (variable.isConditionFulfilled(evaluator, antProject)) {
+				if (variable.containsMultipleVariables()) {
+					Variable[] vars = variable.loadVariables( environment, antProject );
+					for (int j = 0; j < vars.length; j++) {
+						Variable var = vars[j];
+						var.setIf( variable.getIfCondition() );
+						var.setUnless( variable.getUnlessCondition() );
+						list.add( var );
+					}
+				} else {
+					list.add( variable );
+				}
+			}
+		}
+		return getVariables( list );
+	}
+
+	/**
+	 * @return
+	 */
+	protected Variable[] getVariables( List list ) {
+		return (Variable[]) list.toArray( new Variable[ list.size() ] );	
+	}
+
+	/**
+	 * @return
+	 */
+	public Variable[] getUnconditionalVariables() {
+		return (Variable[]) this.unconditionalVariablesList.toArray( new Variable[ this.unconditionalVariablesList.size() ] );
 	}
 }

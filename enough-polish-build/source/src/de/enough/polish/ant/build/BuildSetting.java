@@ -83,7 +83,7 @@ public class BuildSetting {
 	private File vendors;
 	private File groups;
 	private File apis;
-	private Variable[] variables;
+	private Variables variables;
 	private boolean usePolishGui;
 	private File midp1Path;
 	private File midp2Path;
@@ -194,7 +194,7 @@ public class BuildSetting {
 	
 	public void addConfiguredVariables( Variables vars ) {
 		this.includeAntProperties = vars.includeAntProperties();
-		this.variables = vars.getVariables();
+		this.variables = vars; //vars.getVariables();
 	}
 	
 	public void addConfiguredManifestFilter( AttributesFilter filter ) {
@@ -279,17 +279,20 @@ public class BuildSetting {
 		return setting;
 	}
 	
-	public Variable[] getVariables() {
+	public Variables getVariables() {
 		return this.variables;
 	}
 
 	
-	public Attribute[] getJadAttributes() {
+	public JadAttributes getJadAttributes() {
+		return this.jadAttributes;
+		/*
 		if (this.jadAttributes == null) {
 			return new Attribute[0];
 		} else {
 			return this.jadAttributes.getAttributes();
 		}
+		*/
 	}
 	
 	/**

@@ -33,6 +33,7 @@
 		<capability name="JavaPackage" value="nokia-ui" />
 		<capability name="key.LeftSoftKey" value="-6" />
 		<capability name="key.RightSoftKey" value="-7" />
+		<capability name="Bugs" value="OverrideGetWidthGetHeightInFullCanvas" />
 	</group>
 
 	<group>
@@ -57,6 +58,7 @@
 		<capability name="Emulator.Skin" value="Nokia_S40_DP10_SDK_1_0" />
 		<capability name="Font.medium.oldFirmware" value="16" />
 		<capability name="Font.large.oldFirmware" value="23" />
+		<capability name="RMS.MaxRecordSize" value="20 kb" />
 		<capability name="Bugs" value="stringWidthLineBreak" />
 	</group>
 
@@ -67,6 +69,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi" />
+		<capability name="Bugs" value="PlatformRequestRequiresQuit" />
 	</group>
 
 	<group>
@@ -89,17 +92,18 @@
 	</group>
 
 	<group>
-		<name>Series60DP1</name>
+		<name>Series60E1</name>
 		<parent>Series60</parent>
 	</group>
 
 	<group>
-		<name>Series60DP2</name>
+		<name>Series60E2</name>
 		<parent>Series60</parent>
 		<capability name="OS" value="Symbian OS 7.0s" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="btapi" />		
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts" />
 	</group>
 
 	<group>

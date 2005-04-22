@@ -28,6 +28,7 @@ package de.enough.polish;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -35,6 +36,7 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.PropertyUtil;
 
 /**
  * <p>Variable provides the definition of a name-value pair.</p>
@@ -53,8 +55,8 @@ public class Variable {
 	private String type;
 	private String ifCondition;
 	private String unlessCondition;
-	protected String xmlElementName = "<variable>";
-	protected File file;
+	private boolean hasPropertiesInFileName;
+	protected String fileName;
 
 	/**
 	 * Creates new uninitialised Variable
@@ -157,13 +159,13 @@ public class Variable {
 	/**
 	 * Sets the file which contains several variables.
 	 * 
-	 * @param file the file, which needs to exist.
+	 * @param fileName the name file, e.g. <variable file="cfg/${ lowercase(polish.vendor) }.properties" />
 	 */
-	public void setFile( File file ) {
-		if (!file.exists()) {
-			throw new BuildException("Invalid build.xml: The [file]-attribute of a " + this.xmlElementName + "-element points to the non-existing file [" + file.getAbsolutePath() + "]. Please correct this [file]-attribute.");
-		}
-		this.file = file;
+	public void setFile( String fileName ) {
+		this.fileName = fileName;
+		if ( fileName.indexOf("${") != -1 ) {
+			this.hasPropertiesInFileName = true;
+		}		
 	}
 	
 	/**
@@ -173,29 +175,102 @@ public class Variable {
 	 * @return true when this variable contains several variable-definitions.
 	 */
 	public boolean containsMultipleVariables() {
-		return (this.file != null);
+		return (this.fileName != null);
 	}
 	
 	/**
 	 * Loads all variable-definitions from the specified file.
 	 * 
+	 * @param environment the environment settings
+	 * @param antProject the Ant project
 	 * @return an array of variable definitions found in the specified file.
 	 */
-	public Variable[] loadVariables() {
+	public Variable[] loadVariables(Map environment, Project antProject ) {
+		File file = getFile( environment, antProject );
+		if (!file.exists()) {
+			System.err.println( getFileNotFoundWarning( file )  );
+			return new Variable[0];
+		}
 		try {
-			HashMap map = FileUtil.readPropertiesFile(this.file);
+			HashMap map = FileUtil.readPropertiesFile( file, getDelimiter() );
 			Object[] keys = map.keySet().toArray();
-			Variable[] variables = new Variable[ keys.length ];
+			Variable[] variables = createArray( keys.length );
 			for (int i = 0; i < variables.length; i++) {
 				String key = (String) keys[i];
-				variables[i] = new Variable( key, (String) map.get( key ) );
+				variables[i] = createVariable( key, (String) map.get( key ) );
 			}
 			return variables;
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException("Unable to load " + this.xmlElementName + "-file [" + this.file.getAbsolutePath() + "]:" + e.toString(), e );
+			throw new BuildException( getFileIOError(file, e), e );
 		}
 	}
+	
+	protected Variable[] createArray( int size ) {
+		return new Variable[ size ];
+	}
+	
+	public Variable createVariable( String varName, String varValue ) {
+		return new Variable( varName, varValue );
+	}
+
+	/**
+	 * The delimiter for separating variable-names from variable-values.
+	 * 
+	 * @return '=' by default
+	 */
+	protected char getDelimiter() {
+		return '=';
+	}
+
+	/**
+	 * Gets the warning that is shown when a dynamic variables file could not be found.
+	 * 
+	 * @param file the file that couldn't be found
+	 * @return a warning message
+	 */
+	protected String getFileNotFoundWarning(File file) {
+		return "Warning: unable to load <variable>-file [" + this.fileName + "] from [" + file.getAbsolutePath() + "]: file not found.";
+	}
+	
+	/**
+	 * Gets the error-message that is shown when a static variables file could not be found.
+	 * 
+	 * @param file the file that couldn't be found
+	 * @return an error message
+	 */
+	protected String getFileNotFoundError(File file) {
+		return " The [file]-attribute  [" + this.fileName + "] of a <variable>-element points to the non-existing file [" + file.getAbsolutePath() + "]. Please correct this [file]-attribute.";
+	}
+
+	/**
+	 * Gets the error-message that is shown when a variables file could not be loaded.
+	 * 
+	 * @param file the file that couldn't be found
+	 * @param e the IOException
+	 * @return an error message
+	 */
+	protected String getFileIOError(File file, IOException e) {
+		return "Unable to load <variable>-file [" + file.getAbsolutePath() + "]:" + e.toString();
+	}
+
+	/**
+	 * @param environment
+	 * @param antProject
+	 * @return
+	 */
+	protected File getFile(Map environment, Project antProject) {
+		String fName = this.fileName;
+		if (this.hasPropertiesInFileName) {
+			fName = PropertyUtil.writeProperties( fName, environment );
+		}
+		File file = antProject.resolveFile( fName );
+		if ( !file.exists() && !this.hasPropertiesInFileName ) {
+			throw new BuildException("Invalid build.xml:" + getFileNotFoundError( file ) );
+		}
+		return file;
+	}
+
 
 	/**
 	 * Checks if the conditions for this variable are met.

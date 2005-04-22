@@ -25,10 +25,13 @@
  */
 package de.enough.polish;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
@@ -56,7 +59,6 @@ public class Attribute extends Variable {
 	 */
 	public Attribute() {
 		super();
-		this.xmlElementName = "<attribute>";
 	}
 
 	/**
@@ -107,11 +109,18 @@ public class Attribute extends Variable {
 	/**
 	 * Loads all attribute-definitions from the specified file.
 	 * 
+	 * @param environment the environment settings
+	 * @param antProject the Ant project
 	 * @return an array of variable definitions found in the specified file.
 	 */
-	public Attribute[] loadAttributes() {
+	public Attribute[] loadAttributes( Map environment, Project antProject) {
+		File file = getFile( environment, antProject );
+		if ( !file.exists() ) {
+			System.err.println("Warning: unable to load attributes from [" + file.getAbsolutePath() + "]: file not found.");
+			return new Attribute[0];
+		}
 		try {
-			HashMap map = FileUtil.readPropertiesFile(this.file, ':');
+			HashMap map = FileUtil.readPropertiesFile( file, ':');
 			Object[] keys = map.keySet().toArray();
 			Attribute[] variables = new Attribute[ keys.length ];
 			for (int i = 0; i < variables.length; i++) {
@@ -121,8 +130,39 @@ public class Attribute extends Variable {
 			return variables;
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException("Unable to load " + this.xmlElementName + "-file [" + this.file.getAbsolutePath() + "]:" + e.toString(), e );
+			throw new BuildException( getFileIOError(file, e), e );
 		}
+	}
+	
+	/**
+	 * Gets the warning that is shown when a dynamic variables file could not be found.
+	 * 
+	 * @param file the file that couldn't be found
+	 * @return a warning message
+	 */
+	protected String getFileNotFoundWarning(File file) {
+		return "Warning: unable to load <attribute>-file [" + this.fileName + "] from [" + file.getAbsolutePath() + "]: file not found.";
+	}
+	
+	/**
+	 * Gets the error-message that is shown when a static variables file could not be found.
+	 * 
+	 * @param file the file that couldn't be found
+	 * @return an error message
+	 */
+	protected String getFileNotFoundError(File file) {
+		return " The [file]-attribute  [" + this.fileName + "] of an <attribute>-element points to the non-existing file [" + file.getAbsolutePath() + "]. Please correct this [file]-attribute.";
+	}
+
+	/**
+	 * Gets the error-message that is shown when a variables file could not be loaded.
+	 * 
+	 * @param file the file that couldn't be found
+	 * @param e the IOException
+	 * @return an error message
+	 */
+	protected String getFileIOError(File file, IOException e) {
+		return "Unable to load <attribute>-file [" + file.getAbsolutePath() + "]:" + e.toString();
 	}
 
 	/**
@@ -142,5 +182,23 @@ public class Attribute extends Variable {
 	public void setTargetsJad( boolean targets ) {
 		this.targetsJad = targets;
 	}
+
+	/**
+	 * The delimiter for separating variable-names from variable-values.
+	 * 
+	 * @return ':' by default
+	 */
+	protected char getDelimiter() {
+		return ':';
+	}
+	
+	protected Variable[] createArray( int size ) {
+		return new Attribute[ size ];
+	}
+	
+	public Variable createVariable( String varName, String varValue ) {
+		return new Attribute( varName, varValue );
+	}
+
 
 }

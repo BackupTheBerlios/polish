@@ -24,26 +24,31 @@
 package de.enough.polish.ant.build;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 import de.enough.polish.Attribute;
+import de.enough.polish.Variable;
+import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Represents user-defined attributes for the JAD and the MANIFEST</p>
  * 
  * @author robert virkus, j2mepolish@enough.de
  */
-public class JadAttributes {
+public class JadAttributes extends Variables {
 
-	private ArrayList list;
+	//private ArrayList list;
 	private ArrayList filters;
 
 	/**
 	 * Creates a new list 
 	 */
 	public JadAttributes() {
-		this.list = new ArrayList();
+		//this.list = new ArrayList();
 	}
 	
 	public void addConfiguredAttribute( Attribute attribute ) {
@@ -54,8 +59,13 @@ public class JadAttributes {
 			if (attribute.getValue() == null) {
 				throw new BuildException("Please check your <jad> definition, each attribute needs to have the attribute [value]");
 			}
-			this.list.add( attribute );
-		} else {
+		}
+		super.addConfiguredVariable(attribute);
+			//FIXME add fix
+		
+			/*
+		this.list.add( attribute );
+	} else {
 			Attribute[] attributes = attribute.loadAttributes();
 			for (int i = 0; i < attributes.length; i++) {
 				Attribute attr = attributes[i];
@@ -66,6 +76,7 @@ public class JadAttributes {
 				this.list.add( attr );
 			}
 		}
+			*/
 	}
 	
 	public void addConfiguredFilter( AttributesFilter filterSetting ) {
@@ -79,8 +90,12 @@ public class JadAttributes {
 		this.filters.add( filterSetting );
 	}
 
-	public Attribute[] getAttributes(){
-		return (Attribute[]) this.list.toArray( new Attribute[ this.list.size() ] );
+	protected Variable[] getVariables( List list ) {
+		return (Attribute[]) list.toArray( new Attribute[ list.size() ] );	
+	}
+	
+	public Attribute[] getAttributes( Project antProject, BooleanEvaluator evaluator, Map environment ){
+		return (Attribute[]) getVariables(antProject, evaluator, environment);
 	}
 	
 	public ArrayList getFilters() {
