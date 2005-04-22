@@ -5,7 +5,7 @@ TODO:
 - Make the nature chooseable. DONE
 - Make all colors work. DONE
 - Get mark occurrences working. DONE
-- optimze mark occurrences.
+- optimize mark occurrences. refactor marker. Have several marks take turn to color the text.
 - recognize symbol and variable names.
 - Code cleanup: plugin structure, package structure, javadoc.
 - Create updatesite with webbrowser access. DONE
@@ -14,6 +14,10 @@ TODO:
 - try to get indention working.
 - replace all system.out.println with plugin.log messages.
 - defensive programming EVERYWHERE.
+- change names to J2MEPolish
+- nature is not visible jet
+- verify the presence of views, wizards, use of resourcebundles
+- registering polish editor as default causes problems. Sometimes an editor is null somewhere.
 
 
 PROBLEMS:

@@ -4,6 +4,7 @@
 package de.enough.polish.plugin.eclipse.polish.actions;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
@@ -48,18 +49,24 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         if(this.selectedProject != null){
             try {
                 if(this.selectedProject.hasNature(PolishEditorPlugin.POLISH_NATURE_ID)) {
+                    System.out.println("Found a polish nature.");
                     this.projecthasPolishNature = true;
                 }
                 else {
+                    System.out.println("NO polish nature found.");
                     this.projecthasPolishNature = false;
                 }
                 if(this.projecthasPolishNature) {
+                   System.out.println("About to remove nature.");
                     // This is unrelable because maybe the nature could not be removed.
-                    PolishEditorPlugin.removePolishNatureFromProject(this.selectedProject);
+                    removePolishNatureFromProject(this.selectedProject);
+                    System.out.println("nature removed.");
                     this.projecthasPolishNature = false;
                 }
                 else {
-                    PolishEditorPlugin.addPolishNatureToProject(this.selectedProject);
+                    System.out.println("about to install nature.");
+                    addPolishNatureToProject(this.selectedProject);
+                    System.out.println("nature installed.");
                     this.projecthasPolishNature = true;
                 }
                 
@@ -91,5 +98,40 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         }
        
     }
+    public void addPolishNatureToProject(IProject project) throws CoreException {
+        
+        if(project.hasNature(PolishEditorPlugin.POLISH_NATURE_ID)){
+            System.out.println("ERROR:PolishEditorPlugin.addPolishNatureToProject(...):Project has Polish nature already.");
+            return;
+        }
+        IProjectDescription description = project.getDescription();
+        String[] ids = description.getNatureIds();
+        String[] newIds = new String[ids.length+1];
+        System.arraycopy(ids,0,newIds,0,ids.length);
+        newIds[ids.length] = PolishEditorPlugin.POLISH_NATURE_ID;
+        description.setNatureIds(newIds);
+        project.setDescription(description,null);
+    }
 
+    public void removePolishNatureFromProject(IProject project) throws CoreException{
+        
+        if( ! project.hasNature(PolishEditorPlugin.POLISH_NATURE_ID)){
+            System.out.println("ERROR:PolishEditorPlugin.removePolishNatureFromProject(...):Project has no Polish nature.");
+            return;
+        }
+        
+        IProjectDescription description = project.getDescription();
+        String[] ids = description.getNatureIds();
+        for(int i = 0; i < ids.length; i++) {
+            if(ids[i].equals(PolishEditorPlugin.POLISH_NATURE_ID)) {
+                String[] newIds = new String[ids.length-1];
+                System.arraycopy(ids,0,newIds,0,i);
+                System.arraycopy(ids,i+1,newIds,i,ids.length-i-1);
+                description.setNatureIds(newIds);
+                project.setDescription(description,null);
+                return;
+            }
+        }
+        
+    }
 }

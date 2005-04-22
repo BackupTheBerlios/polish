@@ -51,7 +51,7 @@ class PolishOccurrencesMarker /*implements ISelectionChangedListener*/{
         private IDocument document;
         private List currentAnnotations;
         private ISourceViewer sourceViewer;
-        private List marker; // List of PolishAbstractMarker
+        //private List marker; // List of PolishAbstractMarker
         
         private String lastSelectedWord;
         
@@ -72,7 +72,7 @@ class PolishOccurrencesMarker /*implements ISelectionChangedListener*/{
                 return;
             }
             if( ! caretInPolishDirective(selection)) {
-                System.out.println("no new word selected.");
+                System.out.println("PolishOcurrencesMarker.updateAnnotations(...):abort.");
                 return;
             }
             
@@ -85,20 +85,19 @@ class PolishOccurrencesMarker /*implements ISelectionChangedListener*/{
             
             // We actually have a word.
             if(wordAtSelectionCaret.length() == 0) {
-                System.out.println("no new word selected.");
+                System.out.println("PolishOcurrencesMarker.updateAnnotations(...):abort.");
                 return;
             }
             
             // Get the positions for the selected word ether from the previous invocation or get them new.
             Position[] positions;
             if(wordAtSelectionCaret.equals(this.lastSelectedWord)) {
-                System.out.println("no new word selected.");
+                System.out.println("PolishOcurrencesMarker.updateAnnotations(...):abort.");
                 //positions = this.lastPositionsOfSelectedWord;
                 return;
             }
             
             // We have a new word. Remember it as the last selected word and get its new positions.
-            System.out.println("Got new positions.");
             positions = findPositionsOfWordinListOfComments(wordAtSelectionCaret,listOfComments);
             //this.lastPositionsOfSelectedWord = positions;
             this.lastSelectedWord = wordAtSelectionCaret;

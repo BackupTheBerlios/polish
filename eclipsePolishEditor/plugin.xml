@@ -120,7 +120,7 @@
 </extension>
 
 <extension
-	id="a"
+	id="polishNature"
 	point="org.eclipse.core.resources.natures"
 	name="J2ME Polish Nature">
 	
@@ -131,6 +131,16 @@
 	</runtime>	
 </extension>
 
+<!-- Caution: IDs from natures are relative to the plugin ID.-->
+<extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/black.gif"
+            natureId="org.eclipse.ui.ide.projectNatureImages.polishNature"
+            id="de.enough.polish.plugin.eclipse.polishEditor.PolishProjectNatureImage">
+      </image>
+   </extension>
+   
 <extension
          point="org.eclipse.ui.actionSetPartAssociations">
       <actionSetPartAssociation

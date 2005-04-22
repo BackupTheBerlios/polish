@@ -25,10 +25,10 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 
+//TODO Make this work :) Use OcurrencesFinder for managing and the Markers for concrete work.
 /**
  * <p></p>
  *
@@ -42,77 +42,77 @@ import org.eclipse.jface.text.ITextSelection;
 public class DirectiveMarker extends AbstractMarker {
 
     
-    private String findWordAtSelectionCaret(IDocument document,int offset) {
-        String word = "";
-        
-        int documentLength = document.getLength();
-        char currentChar;
-        
-        // Get everything to the right.
-        int lastValidCharPositionRightEnd = offset;
-        try {
-            do {
-                currentChar = document.getChar(lastValidCharPositionRightEnd);
-                lastValidCharPositionRightEnd++;
-            }
-            while(isValidCharForWord(currentChar) && (lastValidCharPositionRightEnd < documentLength));
-            // Back off by one because we broke the loopp on the next char which does not belong the word anymore.
-            lastValidCharPositionRightEnd--;
-        }
-        catch(Exception exception) {
-            System.out.println("PolishEditor.PolishOccurrencesMarker.findWordAtSelectionCaret:BadLocation reached at right end.exception:"+exception);
-            return "";
-        }
-        
-        // Get everything to the left.
-        int lastValidCharPositionLeftEnd = offset;
-        try {
-            currentChar = document.getChar(offset);
-            
-//          This is nesessary. There are two cases:
-//		   1. the offset has a valid char. In this case walk and back off by one when you found an invalid char.
-//          2. the offset is invalid so the left bound is the offset itself. Do not backup again !
-           
-            if(isValidCharForWord(currentChar)) { 
-                
-                while(isValidCharForWord(currentChar) && (lastValidCharPositionLeftEnd > 0)){
-                    lastValidCharPositionLeftEnd--;
-                    currentChar = document.getChar(lastValidCharPositionLeftEnd);  
-                }
-                if( ! isValidCharForWord(currentChar)) {
-                    // We overshot the left boundary of the word. Back of my one.
-                    lastValidCharPositionLeftEnd++;
-                }
-                if(lastValidCharPositionLeftEnd < 0) {
-                    lastValidCharPositionLeftEnd = 0;
-                }
-            }
-            
-        }
-        catch (BadLocationException exception) {
-            System.out.println("PolishEditor.PolishOccurrencesMarker.findWordAtSelectionCaret:BadLocation reached at left end.exception:"+exception);
-           return "";
-        }
-       
-        try {
-            word = document.get(lastValidCharPositionLeftEnd,lastValidCharPositionRightEnd-lastValidCharPositionLeftEnd);
-        } catch (BadLocationException exception) {
-            System.out.println("PolishEditor.PolishOccurrencesMarker.findWordAtSelectionCaret:BadLocation calculated for selected word.exception"+exception);
-            return "";
-        }
-        return word;
-    }
+//    private String findWordAtSelectionCaret(IDocument document,int offset) {
+//        String word = "";
+//        
+//        int documentLength = document.getLength();
+//        char currentChar;
+//        
+//        // Get everything to the right.
+//        int lastValidCharPositionRightEnd = offset;
+//        try {
+//            do {
+//                currentChar = document.getChar(lastValidCharPositionRightEnd);
+//                lastValidCharPositionRightEnd++;
+//            }
+//            while(isValidCharForWord(currentChar) && (lastValidCharPositionRightEnd < documentLength));
+//            // Back off by one because we broke the loopp on the next char which does not belong the word anymore.
+//            lastValidCharPositionRightEnd--;
+//        }
+//        catch(Exception exception) {
+//            System.out.println("PolishEditor.PolishOccurrencesMarker.findWordAtSelectionCaret:BadLocation reached at right end.exception:"+exception);
+//            return "";
+//        }
+//        
+//        // Get everything to the left.
+//        int lastValidCharPositionLeftEnd = offset;
+//        try {
+//            currentChar = document.getChar(offset);
+//            
+////          There are two cases:
+////		   1. the offset has a valid char. In this case walk and back off by one when you found an invalid char.
+////          2. the offset is invalid so the left bound is the offset itself. Do not backup again !
+//           
+//            if(isValidCharForWord(currentChar)) { 
+//                
+//                while(isValidCharForWord(currentChar) && (lastValidCharPositionLeftEnd > 0)){
+//                    lastValidCharPositionLeftEnd--;
+//                    currentChar = document.getChar(lastValidCharPositionLeftEnd);  
+//                }
+//                if( ! isValidCharForWord(currentChar)) {
+//                    // We overshot the left boundary of the word. Back of my one.
+//                    lastValidCharPositionLeftEnd++;
+//                }
+//                if(lastValidCharPositionLeftEnd < 0) {
+//                    lastValidCharPositionLeftEnd = 0;
+//                }
+//            }
+//            
+//        }
+//        catch (BadLocationException exception) {
+//            System.out.println("PolishEditor.PolishOccurrencesMarker.findWordAtSelectionCaret:BadLocation reached at left end.exception:"+exception);
+//           return "";
+//        }
+//       
+//        try {
+//            word = document.get(lastValidCharPositionLeftEnd,lastValidCharPositionRightEnd-lastValidCharPositionLeftEnd);
+//        } catch (BadLocationException exception) {
+//            System.out.println("PolishEditor.PolishOccurrencesMarker.findWordAtSelectionCaret:BadLocation calculated for selected word.exception"+exception);
+//            return "";
+//        }
+//        return word;
+//    }
     
     
-    private boolean isValidCharForWord(char currentChar) {
-        return Character.isLetterOrDigit(currentChar);
-    }
+//    private boolean isValidCharForWord(char currentChar) {
+//        return Character.isLetterOrDigit(currentChar);
+//    }
 
-    private String findWortAtOffset(int offset) {
-        
-        
-        return "";
-    }
+    
+//    private String findWortAtOffset(int offset) {
+//       
+//        return "";
+//    }
     
     
     /* (non-Javadoc)

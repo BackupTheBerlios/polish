@@ -1,18 +1,15 @@
 package de.enough.polish.plugin.eclipse.polishEditor;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.CoreException;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.plugin.*;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-
-import java.util.*;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -24,10 +21,9 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	private ResourceBundle resourceBundle;
 	
 	public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin";
-	public static final String POLISH_NATURE_ID = ID + "." + "a";
-	//de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin.polishNature
-	//de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin.polishNature
-	
+	public static final String POLISH_NATURE_LOCAL_ID = "polishNature";
+	public static final String POLISH_NATURE_ID = ID + "." + POLISH_NATURE_LOCAL_ID;
+
 	/**
 	 * The constructor.
 	 */
@@ -114,57 +110,25 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
    
     protected void initializeDefaultPreferences(IPreferenceStore store) {
         
-//      TODO: Search for suitable color defaults.
-
         String javaKeywordColorString = JavaPlugin.getDefault().getCombinedPreferenceStore().getString(IJavaColorConstants.JAVA_KEYWORD);
         String javaDefaultColorString = JavaPlugin.getDefault().getCombinedPreferenceStore().getString(IJavaColorConstants.JAVA_DEFAULT);
         
         
-        store.setDefault(IPolishConstants.POLISH_COLOR_DIRECTIVE,javaKeywordColorString);
-
-//      TODO: Only set values when they are unset. So we do not overwrite previous choices.
+        //store.setDefault(IPolishConstants.POLISH_COLOR_DIRECTIVE,javaKeywordColorString);
+        store.setDefault(IPolishConstants.POLISH_COLOR_DIRECTIVE,"230,25,25");    
         store.setDefault(IPolishConstants.POLISH_COLOR_DEFAULT,javaDefaultColorString);
-        
         store.setDefault(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,javaDefaultColorString);
         store.setDefault(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,javaKeywordColorString);
-
     }
 
     /**
      * @param project
      * @throws CoreException
      */
-    public static void addPolishNatureToProject(IProject project) throws CoreException {
-        
-        if(project.hasNature(POLISH_NATURE_ID)){
-            System.out.println("ERROR:PolishEditorPlugin.addPolishNatureToProject(...):Project has Polish nature already.");
-            return;
-        }
-        IProjectDescription description = project.getDescription();
-        String[] ids = description.getNatureIds();
-        String[] newIds = new String[ids.length+1];
-        System.arraycopy(ids,0,newIds,0,ids.length);
-        newIds[ids.length] = POLISH_NATURE_ID;
-        description.setNatureIds(newIds);
-        project.setDescription(description,null);
-    }
+ 
 
     
-    public static void removePolishNatureFromProject(IProject project) throws CoreException{
-        IProjectDescription description = project.getDescription();
-        String[] ids = description.getNatureIds();
-        for(int i = 0; i < ids.length; i++) {
-            if(ids[i].equals(PolishEditorPlugin.POLISH_NATURE_ID)) {
-                String[] newIds = new String[ids.length-1];
-                System.arraycopy(ids,0,newIds,0,i);
-                System.arraycopy(ids,i+1,newIds,i,ids.length-i-1);
-                description.setNatureIds(newIds);
-                project.setDescription(description,null);
-                return;
-            }
-        }
-        
-    }
+ 
 
   
 }

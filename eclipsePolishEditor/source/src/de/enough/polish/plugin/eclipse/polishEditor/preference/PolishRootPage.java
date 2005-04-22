@@ -54,39 +54,37 @@ public class PolishRootPage extends FieldEditorPreferencePage implements IWorkbe
     }
  
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-     */
+
     protected void createFieldEditors() {
         System.out.println("PolishRootPage.createFieldEditors(...):enter.");
         FieldEditor colorDirectiveEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_DIRECTIVE,"Directive Color",getFieldEditorParent());
         FieldEditor colorDefaultEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_DEFAULT,"Default Color",getFieldEditorParent());
-        FieldEditor colorVariableEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_VARIABLE,"Variable Color",getFieldEditorParent());
-        FieldEditor colorSymbolEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_SYMBOL,"Symbol Color",getFieldEditorParent());
+        //FieldEditor colorVariableEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_VARIABLE,"Variable Color",getFieldEditorParent());
+        //FieldEditor colorSymbolEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_SYMBOL,"Symbol Color",getFieldEditorParent());
         FieldEditor colorFunctionPunctationEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,"Function Punctation Color",getFieldEditorParent());
         
         
         addField(colorDirectiveEditor);
         addField(colorDefaultEditor);
-        addField(colorVariableEditor);
-        addField(colorSymbolEditor);
+        //addField(colorVariableEditor);
+        //addField(colorSymbolEditor);
         addField(colorFunctionPunctationEditor);
     }
-        
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-        System.out.println("PolishRootPage.init(...):enter.");
-    }
+       
 
 	public boolean performOk() {
-        System.out.println("PolishRootPage.performOK():enter.");
        
         boolean value = super.performOk();
         PolishEditorPlugin.getDefault().savePluginPreferences();
 
-
         return value;
+    }
+
+
+
+    public void init(IWorkbench workbench) {
+      /*
+       * 
+       */
     }
 }
