@@ -36,7 +36,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Attribute;
-import de.enough.polish.Variable;
 import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
@@ -149,7 +148,6 @@ public class BuildSetting {
 		
 		this.defaultJadFilter = new AttributesFilter( DEFAULT_JAD_FILTER_PATTERN );
 		this.defaultManifestFilter = new AttributesFilter( DEFAULT_MANIFEST_FILTER_PATTERN );
-
 	}
 	
 	public void addConfiguredObfuscator( ObfuscatorSetting setting ) {
@@ -280,19 +278,15 @@ public class BuildSetting {
 	}
 	
 	public Variables getVariables() {
+		if (this.variables == null) {
+			this.variables = new Variables();
+		}
 		return this.variables;
 	}
 
 	
 	public JadAttributes getJadAttributes() {
 		return this.jadAttributes;
-		/*
-		if (this.jadAttributes == null) {
-			return new Attribute[0];
-		} else {
-			return this.jadAttributes.getAttributes();
-		}
-		*/
 	}
 	
 	/**
