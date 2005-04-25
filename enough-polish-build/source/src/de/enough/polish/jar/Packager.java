@@ -32,10 +32,10 @@ import java.util.Map;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Extension;
 import de.enough.polish.ant.build.PackageSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Is responsible for packaging files.</p>

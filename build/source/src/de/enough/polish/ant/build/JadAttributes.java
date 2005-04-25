@@ -25,14 +25,14 @@ package de.enough.polish.ant.build;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Attribute;
+import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
 import de.enough.polish.Variable;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Represents user-defined attributes for the JAD and the MANIFEST</p>
@@ -94,7 +94,7 @@ public class JadAttributes extends Variables {
 		return (Attribute[]) list.toArray( new Attribute[ list.size() ] );	
 	}
 	
-	public Attribute[] getAttributes( Project antProject, BooleanEvaluator evaluator, Map environment ){
+	public Attribute[] getAttributes( Project antProject, BooleanEvaluator evaluator, Environment environment ){
 		return (Attribute[]) getVariables(antProject, evaluator, environment);
 	}
 	

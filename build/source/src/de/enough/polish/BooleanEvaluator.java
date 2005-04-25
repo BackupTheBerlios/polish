@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess;
+package de.enough.polish;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -71,15 +71,15 @@ public class BooleanEvaluator {
 
 	private Map symbols;
 	private Map variables;
-	private Preprocessor preprocessor;
+	private Environment environment;
 
 	/**
 	 * Creates a new boolean evaluator.
 	 * 
-	 * @param preprocessor the parent preprocessor - must NOT be null
+	 * @param environment the environment settings
 	 */ 
-	public BooleanEvaluator( Preprocessor preprocessor ) {
-		this.preprocessor = preprocessor;
+	public BooleanEvaluator( Environment environment ) {
+		this.environment = environment;
 	}
 
 	/**
@@ -128,10 +128,13 @@ public class BooleanEvaluator {
 		// evaluate each of them.
 		
 		// first step: replace all properties:
-		if (this.preprocessor != null) {
-			this.variables = this.preprocessor.getVariables();
+		if ( this.environment != null) {
+			//System.out.println("BooleanEvaluator: prev: " + expression);
+			expression = this.environment.writeProperties( expression );
+			//System.out.println("BooleanEvaluator: post: " + expression);
+		} else {
+			expression = PropertyUtil.writeProperties(expression, this.variables);
 		}
-		expression = PropertyUtil.writeProperties(expression, this.variables);
 		// second step: replace " and " with && and " or " with ||
 		expression = StringUtil.replace( expression, " and ", " && " );
 		expression = StringUtil.replace( expression, " or ", " || " );
@@ -204,9 +207,11 @@ public class BooleanEvaluator {
 			} else if ("false".equals( symbol)) {
 				symbolResult = false;
 			} else {
-				if (this.preprocessor != null) {
-					symbolResult = this.preprocessor.hasSymbol( symbol );
+				if (this.environment != null) {
+					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " by environment");
+					symbolResult = this.environment.hasSymbol( symbol );
 				} else {
+					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " directly...");
 					symbolResult = ( this.symbols.get( symbol ) != null );
 				}
 			}
@@ -230,8 +235,8 @@ public class BooleanEvaluator {
 				//System.out.println("comparing [" + lastSymbol + "] with [" + symbol + "].");
 				// this is either >, <, ==, >=, <= or !=
 				String var;
-				if (this.preprocessor != null) {
-					var  = this.preprocessor.getVariable( symbol );
+				if (this.environment != null) {
+					var  = this.environment.getVariable( symbol );
 				} else {
 					var  = (String) this.variables.get( symbol );
 				}
@@ -239,8 +244,8 @@ public class BooleanEvaluator {
 					var = symbol;
 				}
 				String lastVar;
-				if (this.preprocessor != null) {
-					lastVar = this.preprocessor.getVariable( lastSymbol );
+				if (this.environment != null) {
+					lastVar = this.environment.getVariable( lastSymbol );
 				} else {
 					lastVar = (String) this.variables.get( lastSymbol );
 				}

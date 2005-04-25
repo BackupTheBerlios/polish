@@ -24,13 +24,13 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Launches Nokia emulators.</p>
@@ -90,7 +90,7 @@ public class NokiaEmulator extends WtkEmulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			HashMap properties, Project project, BooleanEvaluator evaluator,
+			Environment properties, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
 		String skin = device.getCapability("polish.Emulator.Skin");
@@ -98,7 +98,7 @@ public class NokiaEmulator extends WtkEmulator {
 			System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: no \"Emulator.Skin\"-capability defined in devices.xml.");
 			return false;
 		}
-		String nokiaHomePath = (String) properties.get("nokia.home");
+		String nokiaHomePath = properties.getVariable("nokia.home");
 		if (nokiaHomePath == null) {
 			if (File.separatorChar == '\\') {
 				nokiaHomePath = "C:\\Nokia";

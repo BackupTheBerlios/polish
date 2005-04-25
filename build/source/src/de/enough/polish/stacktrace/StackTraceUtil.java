@@ -30,10 +30,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.enough.polish.Environment;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -68,11 +68,11 @@ public final class StackTraceUtil {
 		// no initialization done here
 	}
 	
-	private BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties, String className, String methodName, String offset )
+	private BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs, Environment environment, String className, String methodName, String offset )
 	throws DecompilerNotInstalledException
 	{
 		// decompile the class-code:
-		String[] lines = decompile( className, classPath, environmentProperties );
+		String[] lines = decompile( className, classPath, environment );
 		if ( lines == null) {
 			// class could not be found:
 			return null;
@@ -93,7 +93,7 @@ public final class StackTraceUtil {
 			return null;
 		}
 		// now try to find the original source-code-line:
-		String sourceMessage = getSourceFilePosition( className, methodName, searchForConstructor, this.sourceCodeLine, preprocessedSourcePath, sourceDirs, environmentProperties );
+		String sourceMessage = getSourceFilePosition( className, methodName, searchForConstructor, this.sourceCodeLine, preprocessedSourcePath, sourceDirs, environment );
 		
 		return new BinaryStackTrace( message, sourceMessage, methodLines, this.decompiledCodeSnippet );
 	}
@@ -106,10 +106,10 @@ public final class StackTraceUtil {
 	 * @param sourceCode
 	 * @param preprocessedSourcePath
 	 * @param sourceDirs
-	 * @param environmentProperties
+	 * @param environment
 	 * @return the original line in the source code
 	 */
-	private String getSourceFilePosition(String className, String methodName, boolean searchForConstructor, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Map environmentProperties) 
+	private String getSourceFilePosition(String className, String methodName, boolean searchForConstructor, String sourceCode, String preprocessedSourcePath, File[] sourceDirs, Environment environment) 
 	{
 		// first find the position in the preprocessed source code
 		// secondly find the original source-file in the provided source-files.
@@ -316,11 +316,11 @@ public final class StackTraceUtil {
 	 * 
 	 * @param className
 	 * @param classPath
-	 * @param environmentProperties
+	 * @param environment
 	 * @return array of decompiled lines of the class, null when the class is not found
 	 * @throws DecompilerNotInstalledException
 	 */
-	private static final String[] decompile(String className, String classPath, Map environmentProperties ) 
+	private static final String[] decompile(String className, String classPath, Environment environment ) 
 	throws DecompilerNotInstalledException
 	{
 		className = StringUtil.replace( className, '.', File.separatorChar );
@@ -331,7 +331,7 @@ public final class StackTraceUtil {
 			return null;
 		}
 		String jadExecutable = null;
-		String polishHome = (String) environmentProperties.get("polish.home");
+		String polishHome = environment.getVariable("polish.home");
 		if (polishHome != null) {
 			if (File.separatorChar == '\\') {
 				// this is a windows OS
@@ -384,7 +384,7 @@ public final class StackTraceUtil {
 		}
 	}
 	
-	public final static BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs , Map environmentProperties )
+	public final static BinaryStackTrace translateStackTrace( String message, String classPath, String preprocessedSourcePath, File[] sourceDirs , Environment environment )
 	throws DecompilerNotInstalledException
 	{
 		Matcher matcher = STACK_TRACE_PATTERN.matcher(message);
@@ -404,7 +404,7 @@ public final class StackTraceUtil {
 		String offset = errorMessage.substring( offsetStart + 2, errorMessage.length() -1 );
 		
 		StackTraceUtil utility = new StackTraceUtil();		
-		return utility.translateStackTrace(message, classPath, preprocessedSourcePath, sourceDirs, environmentProperties, className, methodName, offset);
+		return utility.translateStackTrace(message, classPath, preprocessedSourcePath, sourceDirs, environment, className, methodName, offset);
 	}
 	
 	class EmptyInputStreamThread extends Thread {

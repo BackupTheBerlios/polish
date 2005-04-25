@@ -52,7 +52,7 @@ public final class StringUtil {
 	 */
 	public static final String replace(String input, String search, String replacement) {
 		if (input == null || search == null || replacement == null) {
-			throw new IllegalArgumentException( "TextUtil.replace: given input parameters must not be null.");
+			throw new IllegalArgumentException( "StringUtil.replace( \"" + input + "\", \"" + search + "\", \"" + replacement + "\" ): given input parameters must not be null.");
 		}
 		int startPos = 0;
 		int pos;

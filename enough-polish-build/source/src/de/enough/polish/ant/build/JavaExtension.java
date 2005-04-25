@@ -32,8 +32,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.types.Commandline.Argument;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.PropertyUtil;
 

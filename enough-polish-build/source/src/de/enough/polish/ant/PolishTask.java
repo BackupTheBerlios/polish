@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -50,6 +49,7 @@ import org.apache.tools.ant.types.Path;
 import org.jdom.JDOMException;
 
 import de.enough.polish.Attribute;
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.DeviceGroupManager;
 import de.enough.polish.DeviceManager;
@@ -81,7 +81,6 @@ import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.preprocess.CssAttribute;
 import de.enough.polish.preprocess.CssAttributesManager;
 import de.enough.polish.preprocess.CssConverter;
@@ -97,7 +96,6 @@ import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
-import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
@@ -352,6 +350,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param hasExtensions true when there are <java>-extensions
 	 */
 	private void execute(Device device, Locale locale, boolean hasExtensions) {
+		initialize( device, locale );
 		preprocess( device, locale );
 		compile( device );
 		if (this.doPostCompile) {
@@ -377,6 +376,7 @@ public class PolishTask extends ConditionalTask {
 		if (hasExtensions) {
 			callExtensions( device, locale );
 		}
+		finalize( device, locale );
 		if (this.emulatorSetting != null) {
 			runEmulator( device, locale );
 		}
@@ -481,6 +481,17 @@ public class PolishTask extends ConditionalTask {
 			this.polishHomeDir = new File( "." );
 		}
 		
+		try {
+			// load extensions:
+			this.extensionManager = new ExtensionManager( getProject(), this.buildSetting.openExtensions() );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
+		}
+		
+		// create environment
+		this.environment = new Environment( this.extensionManager );
+		
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
 		DebugManager debugManager = null;
@@ -555,7 +566,11 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// add primary midlet-class-definition:
-		this.polishProject.addDirectCapability("polish.midlet.class", this.buildSetting.getMidletClassNames()[0] );
+		String[] midletClassNames = this.buildSetting.getMidletClassNames();
+		this.polishProject.addDirectCapability("polish.midlet.class", midletClassNames[0] );
+		for (int i = 0; i < midletClassNames.length; i++) {
+			this.polishProject.addDirectCapability("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
+		}
 		// create LibraryManager:
 		try {
 			this.libraryManager = new LibraryManager( getProject().getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
@@ -606,7 +621,7 @@ public class PolishTask extends ConditionalTask {
 		}
 				
 		// create preprocessor:
-		this.preprocessor = new Preprocessor( this.polishProject, null, null, null, false, true, null );
+		this.preprocessor = new Preprocessor( this.polishProject, this.environment, null, false, true, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
 		// init custom preprocessors:
@@ -775,7 +790,7 @@ public class PolishTask extends ConditionalTask {
 		this.javacTarget = this.buildSetting.getJavacTarget();
 		
 		// get the resource manager:
-		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), getProject(), this.preprocessor.getBooleanEvaluator() );
+		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), getProject(), this.environment.getBooleanEvaluator() );
 		Locale[] localizations = this.resourceManager.getLocales();
 		if (localizations != null) {
 			this.localizationSetting = this.buildSetting.getResourceSetting().getLocalizationSetting();
@@ -939,7 +954,8 @@ public class PolishTask extends ConditionalTask {
 	
 	private void initialize( Device device, Locale locale ) {
 		// intialise the environment
-		this.environment.initialize( device, locale );
+		this.environment.initialize(device, locale);
+		device.setEnvironment( this.environment );
 		// set variables and symbols:
 		this.environment.setSymbols( device.getFeatures() );
 		this.environment.setVariables( device.getCapabilities() );
@@ -951,94 +967,88 @@ public class PolishTask extends ConditionalTask {
 			this.environment.addSymbol("polish.useDefaultPackage");
 			this.environment.addVariable("polish.useDefaultPackage", "true");
 		}
-		long lastLocaleModification = 0;
-		TranslationManager translationManager = null;
 		// set localization-variables:
 		if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
 			if (locale == null) {
 				locale = this.localizationSetting.getDefaultLocale();
-				this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
+				this.environment.addSymbol("polish.i18n.useDynamicTranslations");
+				this.environment.setLocale( locale );
 			}
-			this.preprocessor.addVariable("polish.locale", locale.toString() );
-			this.preprocessor.addVariable("polish.language", locale.getLanguage() );
+			this.environment.addVariable("polish.locale", locale.toString() );
+			this.environment.addVariable("polish.language", locale.getLanguage() );
 			String country = locale.getCountry();
 			if ( country == null || country.length() == 0 ) {
-				this.preprocessor.removeVariable( "polish.country" );
+				this.environment.removeVariable( "polish.country" );
 			} else {
-				this.preprocessor.addVariable("polish.country", country );
+				this.environment.addVariable("polish.country", country );
 			}
-			
-			try {
-				// load localized messages, this also sets localized variables automatically:
-				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new BuildException("Unable to initialize translation manager: " + e.toString(), e );
-			}
-			this.translationPreprocessor.setTranslationManager( translationManager );
-			lastLocaleModification = translationManager.getLastModificationTime();
 		}
 		// set info-variables:
 		String jarName = this.infoSetting.getJarName();
-		jarName = PropertyUtil.writeProperties(jarName, this.preprocessor.getVariables());
-		this.preprocessor.addVariable( "polish.jarName", jarName );
+		jarName = this.environment.writeProperties( jarName, true );
+		this.environment.addVariable( "polish.jarName", jarName );
 		String jarPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jarName;
-		this.preprocessor.addVariable( "polish.jarPath", jarPath );
+		this.environment.addVariable( "polish.jarPath", jarPath );
 		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
-		this.preprocessor.addVariable( "polish.jadName", jadName );
+		this.environment.addVariable( "polish.jadName", jadName );
 		String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
-		this.preprocessor.addVariable( "polish.jadPath", jadPath );
+		this.environment.addVariable( "polish.jadPath", jadPath );
 		// set conditional variables:
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		Project antProject = getProject();
-		Map properties = this.preprocessor.getVariables();
-		Variable[] vars = this.variables.getVariables( antProject, evaluator, properties );
+		Variable[] vars = this.variables.getVariables( antProject, evaluator, this.environment );
 		for (int i = 0; i < vars.length; i++) {
 			Variable var = vars[i];
-			this.preprocessor.addVariable(var.getName(), var.getValue() );
+			this.environment.addVariable(var.getName(), var.getValue() );
 		}
-		/*
-		if (this.conditionalVariables != null) {
-			// add variables which fulfill the conditions: 
-			for (int i = 0; i < this.conditionalVariables.length; i++) {
-				Variable var = this.conditionalVariables[i];
-				if (var.isConditionFulfilled( evaluator, getProject() )) {
-					this.preprocessor.addVariable(var.getName(), var.getValue() );
-				}
-			}
-		}
-		*/
 		// now set the full-screen-settings:
-		String value = this.preprocessor.getVariable("polish.FullScreen");
+		String value = this.environment.getVariable("polish.FullScreen");
 		if (value != null) {
 			if ("menu".equalsIgnoreCase(value)) {
-				this.preprocessor.addSymbol("polish.useMenuFullScreen");
-				this.preprocessor.addSymbol("polish.useFullScreen");					
+				this.environment.addSymbol("polish.useMenuFullScreen");
+				this.environment.addSymbol("polish.useFullScreen");					
 			} else if ("yes".equalsIgnoreCase( value ) || "true".equalsIgnoreCase(value)) {
-				this.preprocessor.addSymbol("polish.useFullScreen");					
+				this.environment.addSymbol("polish.useFullScreen");					
 			}
 		} else {
 			FullScreenSetting fullScreenSetting = this.buildSetting.getFullScreenSetting();
 			if (fullScreenSetting != null) {
 				if (fullScreenSetting.isMenu()) {
-					this.preprocessor.addSymbol("polish.useMenuFullScreen");
-					this.preprocessor.addSymbol("polish.useFullScreen");
+					this.environment.addSymbol("polish.useMenuFullScreen");
+					this.environment.addSymbol("polish.useFullScreen");
 				} else if (fullScreenSetting.isEnabled()) {
-					this.preprocessor.addSymbol("polish.useFullScreen");
+					this.environment.addSymbol("polish.useFullScreen");
 				}
 			}
 		}
 		// adjust polish.classes.ImageLoader in case the default package is used:
 		if (this.useDefaultPackage) {
-			String imageLoaderClass = this.preprocessor.getVariable("polish.classes.ImageLoader");
+			String imageLoaderClass = this.environment.getVariable("polish.classes.ImageLoader");
 			if (imageLoaderClass != null) {
 				int classStartIndex = imageLoaderClass.lastIndexOf('.');
 				if (classStartIndex != -1) {
 					imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
-					this.preprocessor.addVariable("polish.classes.ImageLoader", imageLoaderClass );
+					this.environment.addVariable("polish.classes.ImageLoader", imageLoaderClass );
 				}
 			}
 		}
+		boolean usePolishGui = this.buildSetting.usePolishGui()
+		  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui());
+		if (!usePolishGui) {
+			// check if a preprocessing variable is set for using the Polish GUI:
+			value = this.environment.getVariable("polish.usePolishGui");
+			if (value != null) {
+				if ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) || "always".equalsIgnoreCase(value)) {
+					usePolishGui = true;					
+				}
+			}
+		}
+		if ( usePolishGui ) {
+			this.environment.addSymbol("polish.usePolishGui");
+		}
+
+		
+		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:
 		// let postcompilers adjust the bootclasspath:
 		if (this.doPostCompile) {
@@ -1072,6 +1082,7 @@ public class PolishTask extends ConditionalTask {
 			// initialise the preprocessor:
 			this.preprocessor.setTargetDir( targetDir );
 			// set variables and symbols:
+			/*
 			this.preprocessor.setSymbols( device.getFeatures() );
 			this.preprocessor.setVariables( device.getCapabilities() );
 			this.preprocessor.addVariable( "polish.identifier", device.getIdentifier() );
@@ -1082,14 +1093,16 @@ public class PolishTask extends ConditionalTask {
 				this.preprocessor.addSymbol("polish.useDefaultPackage");
 				this.preprocessor.addVariable("polish.useDefaultPackage", "true");
 			}
+			*/
 			long lastLocaleModification = 0;
 			TranslationManager translationManager = null;
 			// set localization-variables:
 			if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
 				if (locale == null) {
 					locale = this.localizationSetting.getDefaultLocale();
-					this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
+					//this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
 				}
+				/*
 				this.preprocessor.addVariable("polish.locale", locale.toString() );
 				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
 				String country = locale.getCountry();
@@ -1098,13 +1111,14 @@ public class PolishTask extends ConditionalTask {
 				} else {
 					this.preprocessor.addVariable("polish.country", country );
 				}
-				
+				*/
 				// load localized messages, this also sets localized variables automatically:
 				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
 			}
 			// set info-variables:
+			/*
 			String jarName = this.infoSetting.getJarName();
 			jarName = PropertyUtil.writeProperties(jarName, this.preprocessor.getVariables());
 			this.preprocessor.addVariable( "polish.jarName", jarName );
@@ -1117,12 +1131,12 @@ public class PolishTask extends ConditionalTask {
 			// set conditional variables:
 			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
 			Project antProject = getProject();
-			Map properties = this.preprocessor.getVariables();
-			Variable[] vars = this.variables.getVariables( antProject, evaluator, properties );
+			Variable[] vars = this.variables.getVariables( antProject, evaluator, this.environment );
 			for (int i = 0; i < vars.length; i++) {
 				Variable var = vars[i];
 				this.preprocessor.addVariable(var.getName(), var.getValue() );
 			}
+			*/
 			/*
 			if (this.conditionalVariables != null) {
 				// add variables which fulfill the conditions: 
@@ -1136,6 +1150,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			*/
 			// now set the full-screen-settings:
+			/*
 			String value = this.preprocessor.getVariable("polish.FullScreen");
 			if (value != null) {
 				if ("menu".equalsIgnoreCase(value)) {
@@ -1175,6 +1190,8 @@ public class PolishTask extends ConditionalTask {
 					postCompiler.addPreprocessingSettings(device, this.preprocessor);
 				}
 			}
+			*/
+			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 			// add custom preprocessors
 			CustomPreprocessor[] preprocessors = (CustomPreprocessor[]) this.customPreprocessors.toArray( new CustomPreprocessor[ this.customPreprocessors.size() ] );
 			this.preprocessor.clearCustomPreprocessors();
@@ -1196,14 +1213,14 @@ public class PolishTask extends ConditionalTask {
 				  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui());
 			if (!usePolishGui) {
 				// check if a preprocessing variable is set for using the Polish GUI:
-				value = this.preprocessor.getVariable("polish.usePolishGui");
+				String value = this.environment.getVariable("polish.usePolishGui");
 				if (value != null) {
 					if ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) || "always".equalsIgnoreCase(value)) {
 						usePolishGui = true;					
 					}
 				}
 			}
-			this.preprocessor.setUsePolishGui(usePolishGui);
+			//this.preprocessor.setUsePolishGui(usePolishGui);
 			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;
 			if (usePolishGui) {
@@ -1326,7 +1343,7 @@ public class PolishTask extends ConditionalTask {
 									boolean isInPolishPackage)
 	throws IOException
 	{
-		this.preprocessor.addVariable( "polish.source", sourceDir.getAbsolutePath() );
+		this.environment.addVariable( "polish.source", sourceDir.getAbsolutePath() );
 		File baseDirectory = new File( targetDir );
 		//System.out.println("current source dir: " + sourceDir );
 		// preprocess each file in that source-dir:
@@ -1482,7 +1499,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		Project antProject = getProject();
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		// add binary class files, if there are any:
 		if (this.binaryLibrariesUpdated) {
 			System.out.println("copying binary libraries to [" + targetDirName + "]...");
@@ -1615,7 +1632,7 @@ public class PolishTask extends ConditionalTask {
 			return new PostCompiler[ 0 ];
 		}
 		ArrayList list = new ArrayList();
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		Project antProject = getProject();
 		for (int i = 0; i < this.postCompilers.length; i++) {
 			PostCompiler postCompiler = this.postCompilers[i];
@@ -1680,7 +1697,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// start the obfuscation:
 		int maxIndex = this.obfuscators.length - 1;
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		Project antProject = getProject();
 		boolean hasBeenObfuscated = false;
 		for (int i=0; i <= maxIndex ; i++ ) {
@@ -1820,7 +1837,7 @@ public class PolishTask extends ConditionalTask {
 		}		
 
 		// retrieve the name of the jar-file:
-		String jarName = this.preprocessor.getVariable("polish.jarName");
+		String jarName = this.environment.getVariable("polish.jarName");
 		File jarFile = new File( this.buildSetting.getDestDir().getAbsolutePath() 
 						+ File.separatorChar + jarName );
 		device.setJarFile( jarFile );
@@ -1855,7 +1872,7 @@ public class PolishTask extends ConditionalTask {
 		attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
 
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.preprocessor.getVariables() );
+		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.environment.getVariables() );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute attribute = jadAttributes[i];
 			attributesByName.put( attribute.getName(), attribute );
@@ -1870,9 +1887,8 @@ public class PolishTask extends ConditionalTask {
 		
 		// add user-defined attributes:
 		Project antProject = getProject();
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-		Map properties = this.preprocessor.getVariables(); 
-		Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes(antProject, evaluator, properties);
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes(antProject, evaluator, this.environment);
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
 			if ( attribute.targetsManifest() ) {
@@ -1884,8 +1900,8 @@ public class PolishTask extends ConditionalTask {
 		attributesByName.put( "Polish-Version", new Attribute("Polish-Version", VERSION ) );
 		
 		// sort and filter the attributes if this is requested:
-		Variable[] manifestAttributes = this.buildSetting.filterManifestAttributes( attributesByName, this.preprocessor.getBooleanEvaluator() );
-		Jad jad = new Jad( this.preprocessor.getVariables() );
+		Variable[] manifestAttributes = this.buildSetting.filterManifestAttributes( attributesByName, this.environment.getBooleanEvaluator() );
+		Jad jad = new Jad( this.environment );
 		jad.setAttributes(manifestAttributes);
 		
 		File manifestFile = new File( device.getClassesDir() 
@@ -1899,7 +1915,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
 			FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
-			this.packager.createPackage(classesDir, jarFile, device, evaluator, this.preprocessor.getVariables(), getProject() );
+			this.packager.createPackage(classesDir, jarFile, device, evaluator, this.environment.getVariables(), getProject() );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
@@ -1917,7 +1933,7 @@ public class PolishTask extends ConditionalTask {
 		// now create the JAD file:
 		HashMap attributesByName = new HashMap();
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.preprocessor.getVariables() );
+		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment.getVariables() );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute var  = jadAttributes[i];
 			attributesByName.put( var.getName(), 
@@ -1939,9 +1955,8 @@ public class PolishTask extends ConditionalTask {
 		
 		// add user-defined attributes:
 		Project antProject = getProject();
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-		Map properties = this.preprocessor.getVariables(); 
-		Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes(antProject, evaluator, properties);
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes(antProject, evaluator, this.environment);
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
 			if ( attribute.targetsJad() ) {
@@ -1951,11 +1966,11 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// sort and filter the JAD attributes if requested:
-		Attribute[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName, this.preprocessor.getBooleanEvaluator() );
-		Jad jad = new Jad( this.preprocessor.getVariables() );
+		Attribute[] filteredAttributes = this.buildSetting.filterJadAttributes(attributesByName, this.environment.getBooleanEvaluator() );
+		Jad jad = new Jad( this.environment );
 		jad.setAttributes( filteredAttributes );
 		
-		String jadPath = this.preprocessor.getVariable("polish.jadPath");
+		String jadPath = this.environment.getVariable("polish.jadPath");
 		File jadFile = new File( jadPath );
 		try {
 			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
@@ -1973,18 +1988,22 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale
 	 */
 	private void callExtensions( Device device, Locale locale ) {
-		BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		
 		for (int i = 0; i < this.javaExtensions.length; i++) {
 			JavaExtension extension = this.javaExtensions[i];
 			if (extension.isActive( evaluator )) {
 				System.out.println("Executing <java> extension for device [" + device.getIdentifier() + "]." );
 				// now call the extension:
-				extension.execute(device, this.preprocessor.getVariables());
+				extension.execute(device, this.environment.getVariables());
 			}
 		}
 	}
-	
+
+	private void finalize( Device device, Locale locale ) {
+		device.resetEnvironment();
+	}
+
 	/**
 	 * Launches the emulator if the user wants to.
 	 * 
@@ -1993,7 +2012,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	private void runEmulator( Device device, Locale locale ) {
 		if ( this.emulatorSetting.isActive(getProject()) ) {
-			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
+			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 			Project antProject = getProject();
 			// get currently active source directories:
 			ArrayList sourceDirsList = new ArrayList();
@@ -2004,7 +2023,7 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			File[] sourceDirs = (File[]) sourceDirsList.toArray( new File[ sourceDirsList.size() ] );
-			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.preprocessor.getVariables(), getProject(), evaluator, this.wtkHome, sourceDirs );
+			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.environment, getProject(), evaluator, this.wtkHome, sourceDirs );
 			if (emulator != null) {
 				if (this.runningEmulators == null) {
 					this.runningEmulators = new ArrayList();

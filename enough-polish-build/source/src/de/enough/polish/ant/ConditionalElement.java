@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ant;
 
-import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
 
 import org.apache.tools.ant.Project;

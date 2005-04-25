@@ -25,14 +25,13 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
-import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -62,24 +61,24 @@ public class GenericEmulator extends Emulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			HashMap properties, Project project, BooleanEvaluator evaluator,
+			Environment env, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
-		String execStr = (String) properties.get("polish.Emulator.Executable");
+		String execStr = env.getVariable("polish.Emulator.Executable");
 		if (execStr == null) {
 			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Did not find the capability [Emulator.Executable] in the [devices.xml] file.");
 			return false;
 		}
 		// setting of default values for ${siemens.home} and ${nokia.home}, when
 		// these are not defined:
-		Object siemensHome = properties.get("siemens.home");
+		String siemensHome = env.getVariable("siemens.home");
 		if ((siemensHome == null) && (File.separatorChar == '\\')) {
 			String siemensHomePath = "C:\\siemens";
 			if (new File(siemensHomePath).exists()) {
-				properties.put("siemens.home", siemensHomePath );
+				env.addVariable("siemens.home", siemensHomePath );
 			}
 		}
-		Object nokiaHome = properties.get("nokia.home");
+		String nokiaHome = env.getVariable("nokia.home");
 		if (nokiaHome == null) {
 			String nokiaHomePath;
 			if (File.separatorChar == '\\') {
@@ -88,10 +87,10 @@ public class GenericEmulator extends Emulator {
 				nokiaHomePath = System.getProperty("user.home") + "/Nokia";
 			}
 			if (new File(nokiaHomePath).exists()) {
-				properties.put("nokia.home", nokiaHomePath);
+				env.addVariable("nokia.home", nokiaHomePath);
 			}
 		}
-		execStr = PropertyUtil.writeProperties( execStr, properties );
+		execStr = env.writeProperties(execStr);
 		if (execStr.indexOf("${") != -1) {
 			int propStart = execStr.indexOf("${");
 			int propEnd = execStr.indexOf('}', propStart);
@@ -107,12 +106,12 @@ public class GenericEmulator extends Emulator {
 			}
 		}
 		
-		String argsStr = (String) properties.get("polish.Emulator.Arguments");
+		String argsStr = env.getVariable("polish.Emulator.Arguments");
 		if (argsStr == null) {
 			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Did not find the capability [Emulator.Arguments] in the [devices.xml] file.");
 			return false;
 		}
-		argsStr = PropertyUtil.writeProperties( argsStr, properties );
+		argsStr = env.writeProperties( argsStr );
 		if (argsStr.indexOf("${") != -1) {
 			int propStart = argsStr.indexOf("${");
 			int propEnd = argsStr.indexOf('}', propStart);

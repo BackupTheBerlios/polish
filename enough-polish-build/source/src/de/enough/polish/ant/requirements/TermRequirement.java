@@ -27,8 +27,8 @@ package de.enough.polish.ant.requirements;
 
 import java.util.HashMap;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Selects a device that fullfill a preprocessing term.</p>

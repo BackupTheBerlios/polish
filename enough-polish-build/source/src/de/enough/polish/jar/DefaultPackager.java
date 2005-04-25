@@ -32,8 +32,8 @@ import java.util.Map;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.JarUtil;
 
 /**

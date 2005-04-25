@@ -28,15 +28,12 @@ package de.enough.polish;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.PropertyUtil;
 
 /**
  * <p>Variable provides the definition of a name-value pair.</p>
@@ -185,7 +182,7 @@ public class Variable {
 	 * @param antProject the Ant project
 	 * @return an array of variable definitions found in the specified file.
 	 */
-	public Variable[] loadVariables(Map environment, Project antProject ) {
+	public Variable[] loadVariables(Environment environment, Project antProject ) {
 		File file = getFile( environment, antProject );
 		if (!file.exists()) {
 			System.err.println( getFileNotFoundWarning( file )  );
@@ -259,10 +256,10 @@ public class Variable {
 	 * @param antProject
 	 * @return
 	 */
-	protected File getFile(Map environment, Project antProject) {
+	protected File getFile(Environment environment, Project antProject) {
 		String fName = this.fileName;
 		if (this.hasPropertiesInFileName) {
-			fName = PropertyUtil.writeProperties( fName, environment );
+			fName = environment.writeProperties( fName );
 		}
 		File file = antProject.resolveFile( fName );
 		if ( !file.exists() && !this.hasPropertiesInFileName ) {

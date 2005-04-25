@@ -134,6 +134,8 @@ public class Device extends PolishComponent {
 	private boolean isCldc10;
 	private boolean isCldc11;
 
+	private Environment environment;
+
 
 
 	public Device(String identifier) {
@@ -277,6 +279,7 @@ public class Device extends PolishComponent {
 		// set midp-version:
 		String midp = getCapability(JAVA_PLATFORM);
 		if (midp == null) {
+			System.out.println( this.getCapabilities() );
 			throw new InvalidComponentException("The device ["
 					+ this.identifier
 					+ "] does not define the needed element [" + JAVA_PLATFORM
@@ -673,6 +676,21 @@ public class Device extends PolishComponent {
 	 */
 	public boolean isCldc11() {
 		return this.isCldc11;
+	}
+
+	/**
+	 * @param environment
+	 */
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+	
+	public Environment getEnvironment() {
+		return this.environment;
+	}
+	
+	public void resetEnvironment() {
+		this.environment = null;
 	}
 
 }

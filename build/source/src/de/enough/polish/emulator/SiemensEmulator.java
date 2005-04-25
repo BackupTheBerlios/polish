@@ -24,13 +24,13 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Launches a Siemens emulator.</p>
@@ -91,10 +91,10 @@ public class SiemensEmulator extends WtkEmulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			HashMap properties, Project project, BooleanEvaluator evaluator,
+			Environment properties, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
-		String siemensHomePath = (String) properties.get("siemens.home");
+		String siemensHomePath = properties.getVariable("siemens.home");
 		if (siemensHomePath == null) {
 			siemensHomePath = "C:\\siemens\\SMTK";
 		}

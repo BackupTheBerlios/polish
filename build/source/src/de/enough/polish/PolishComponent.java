@@ -247,6 +247,7 @@ implements Comparable
 		if (!name.startsWith("polish.")) {
 			name = "polish." + name;
 		}
+		
 		if ( (Device.JAVA_PACKAGE.equals(name) ) 
 				|| (Device.JAVA_PROTOCOL.equals(name)) 
 				|| (Device.VIDEO_FORMAT.equals(name))
@@ -287,6 +288,7 @@ implements Comparable
 	 * @param value the value of the capability
 	 */
 	private void addSingleCapability( String name, String value ) {
+		name = name.toLowerCase();
 		this.capabilities.put( name, value );
 		this.features.put( name + ":defined", Boolean.TRUE );
 	}
@@ -297,8 +299,7 @@ implements Comparable
 	 * @param capability The capability which should be added
 	 */
 	public void addDirectCapability(Variable capability) {
-		this.capabilities.put( capability.getName(), capability.getValue() );
-		this.features.put( capability.getName() + ":defined", capability.getValue() );
+		addDirectCapability( capability.getName(), capability.getValue()  ); 
 	}
 	
 
@@ -309,7 +310,13 @@ implements Comparable
 	 * @param value The value of the capability.
 	 */
 	public void addDirectCapability(String name, String value) {
-		this.capabilities.put( name, value );
+		//name = name.toLowerCase();
+		addSingleCapability(name, value);
+		// add all capability-values as symbols/features:
+		String[] values = StringUtil.splitAndTrim( value, ',' );
+		for (int i = 0; i < values.length; i++) {
+			addDirectFeature( name + "." + values[i] );
+		}
 	}
 	
 	/**
@@ -321,6 +328,7 @@ implements Comparable
 		if (feature.length() == 0) {
 			return;
 		}
+		feature = feature.toLowerCase();
 		if (!feature.startsWith("polish.")) {
 			feature = "polish." + feature;
 		}
@@ -333,6 +341,7 @@ implements Comparable
 	 * @param feature The feature which should be added.
 	 */
 	public void addDirectFeature( String feature ) {
+		feature = feature.toLowerCase();
 		this.features.put( feature, Boolean.TRUE );
 	}
 
@@ -347,7 +356,8 @@ implements Comparable
 		if ("supportsPolishGui".equals(feature)) {
 			return this.supportsPolishGui;
 		}
-		return (this.features.get(feature) != null);
+		feature = feature.toLowerCase();
+		return ( (this.features.get(feature) != null) );
 	}
 
 	/**
@@ -369,6 +379,7 @@ implements Comparable
 	 * @return the value of the capability or null when the given capability is not defined.
 	 */
 	public String getCapability(String key) {
+		key = key.toLowerCase();
 		String capability = (String) this.capabilities.get( key );
 		if (capability == null) {
 			capability = (String) this.capabilities.get( "polish." + key );

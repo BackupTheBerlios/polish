@@ -26,15 +26,15 @@
 package de.enough.polish.ant.build;
 
 
-import de.enough.polish.*;
-import de.enough.polish.preprocess.BooleanEvaluator;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
+import de.enough.polish.Variable;
 
 /**
  * <p>Manages a list of variables.</p>
@@ -120,7 +120,7 @@ public class Variables {
 		this.includeAntProperties = includeAntProperties;
 	}
 	
-	public Variable[] getVariables( Project antProject, BooleanEvaluator evaluator, Map environment ) {
+	public Variable[] getVariables( Project antProject, BooleanEvaluator evaluator, Environment environment ) {
 		ArrayList list = new ArrayList();
 		Variable[] variables = getVariables( this.variablesList );
 		for (int i = 0; i < variables.length; i++) {

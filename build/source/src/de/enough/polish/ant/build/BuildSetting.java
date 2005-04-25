@@ -36,7 +36,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Attribute;
-import de.enough.polish.preprocess.BooleanEvaluator;
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -82,6 +82,7 @@ public class BuildSetting {
 	private File vendors;
 	private File groups;
 	private File apis;
+	private File extensions;
 	private Variables variables;
 	private boolean usePolishGui;
 	private File midp1Path;
@@ -140,6 +141,7 @@ public class BuildSetting {
 		this.midp2Path = getFile( "import/midp2.jar" );
 		this.midp2Cldc11Path = getFile( "import/midp2-cldc11.jar" );
 		this.apis = getFile("apis.xml");
+		this.extensions = getFile("extensions.xml");
 		this.vendors = getFile("vendors.xml");
 		this.groups = getFile("groups.xml");
 		this.devices = getFile("devices.xml");
@@ -629,6 +631,18 @@ public class BuildSetting {
 			throw new BuildException("Unable to open apis.xml: " + e.getMessage(), e );
 		}
 	}
+	
+	/**
+	 * @return
+	 */
+	public InputStream openExtensions() {
+		try {
+			return openResource( this.extensions, "extensions.xml" );
+		} catch (FileNotFoundException e) {
+			throw new BuildException("Unable to open extensions.xml: " + e.getMessage(), e );
+		}
+	}
+
 	
 	/**
 	 * Sets the path to the apis.xml file.

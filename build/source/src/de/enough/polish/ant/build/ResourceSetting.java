@@ -32,8 +32,8 @@ import java.util.Iterator;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.ant.Setting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.resources.ResourcesFileSet;
 import de.enough.polish.util.StringUtil;
 

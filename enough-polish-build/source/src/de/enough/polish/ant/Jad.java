@@ -26,10 +26,9 @@
 package de.enough.polish.ant;
 
 import java.util.ArrayList;
-import java.util.Map;
 
+import de.enough.polish.Environment;
 import de.enough.polish.Variable;
-import de.enough.polish.util.PropertyUtil;
 
 /**
  * <p>Represents a Java Application Description file.</p>
@@ -46,16 +45,16 @@ public class Jad {
 	
 	
 	private ArrayList attributes;
-	private Map properties;
+	private Environment environment;
 
 	/**
 	 * Creates a new empty JAD
 	 * 
 	 * @param properties a map of defined variables which can be used in the attribute-values.
 	 */
-	public Jad(Map properties ) {
+	public Jad(Environment properties ) {
 		this.attributes = new ArrayList();
-		this.properties = properties;
+		this.environment = properties;
 	}
 	
 	/**
@@ -74,7 +73,7 @@ public class Jad {
 	 * @param value the value which can contain variables like ${polish.jarName} etc
 	 */
 	public void addAttribute( String name, String value ) {
-		value = PropertyUtil.writeProperties(value, this.properties);
+		value = this.environment.writeProperties (value );
 		this.attributes.add( name + ": " + value );
 	}
 	

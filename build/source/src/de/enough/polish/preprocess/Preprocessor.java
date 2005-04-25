@@ -39,13 +39,14 @@ import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.PolishProject;
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.StringList;
-import de.enough.polish.util.TextFileManager;
 import de.enough.polish.util.StringUtil;
+import de.enough.polish.util.TextFileManager;
 
 /**
  * <p>Preprocesses source code.</p>
@@ -87,13 +88,9 @@ public class Preprocessor {
 	private DebugManager debugManager;
 	private File destinationDir;
 	/** holds all defined variables */
-	private HashMap variables;
-	/** holds all temporary defined variables */
-	private HashMap temporaryVariables;
+	//private HashMap variables;
 	/** holds all defined symbols */
-	private HashMap symbols;
-	/** holds all temporary defined symbols */
-	private HashMap temporarySymbols;
+	//private HashMap symbols;
 	private boolean backup;
 	private boolean indent;
 	boolean enableDebug;
@@ -102,7 +99,7 @@ public class Preprocessor {
 	private HashMap ignoreDirectives;
 	private HashMap supportedDirectives;
 	private int ifDirectiveCount;
-	private BooleanEvaluator booleanEvaluator;
+	//private BooleanEvaluator booleanEvaluator;
 	private StyleSheet styleSheet;
 	private boolean usePolishGui;
 	private CustomPreprocessor[] customPreprocessors;
@@ -112,23 +109,21 @@ public class Preprocessor {
 	private boolean useDefaultPackage;
 	private TextFileManager textFileManager;
 	private CssAttributesManager cssAttributesManager;
+	private final Environment environment;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
 	 * 
 	 * @param project the project settings
+	 * @param environment
 	 * @param destinationDir the destination directory for the preprocessed files
-	 * @param variables the defined variables
-	 * @param symbols the defined symbols
 	 * @param backup true when the found source files should be backuped
 	 * @param indent true when comments should be intended
 	 * @param newExt the new extension for preprocessed files
 	 */
 	public Preprocessor(
 			PolishProject project,
-			File destinationDir,
-			HashMap variables,
-			HashMap symbols,
+			Environment environment, File destinationDir,
 			boolean backup,
 			boolean indent,
 			String newExt) 
@@ -136,21 +131,12 @@ public class Preprocessor {
 		this.debugManager = project.getDebugManager();
 		this.enableDebug = project.isDebugEnabled();
 		this.usePolishGui = project.usesPolishGui();
-		if (variables == null) {
-			variables = new HashMap();
-		}
-		this.variables = variables;
-		if (symbols == null) {
-			symbols = new HashMap();
-		}
-		this.symbols = symbols;
-		this.temporaryVariables = new HashMap();
-		this.temporarySymbols = new HashMap();
 		this.backup = backup;
 		this.indent = indent;
 		this.newExtension = newExt;
 		this.destinationDir = destinationDir;
 		this.preprocessQueue = new HashMap();
+		this.environment = environment;
 		
 		this.withinIfDirectives = new HashMap();
 		this.withinIfDirectives.put( "elifdef", Boolean.TRUE );
@@ -172,12 +158,6 @@ public class Preprocessor {
 		this.supportedDirectives.put( "define", Boolean.TRUE );
 		this.supportedDirectives.put( "undefine", Boolean.TRUE );
 		this.supportedDirectives.put( "message", Boolean.TRUE );
-		
-		this.booleanEvaluator = new BooleanEvaluator( this );
-		
-		// register global variables and symbols: 
-		this.variables.putAll( project.getCapabilities() );
-		this.symbols.putAll( project.getFeatures() );
 	}
 	
 	/**
@@ -286,6 +266,7 @@ public class Preprocessor {
 	 * 
 	 * @param symbols All new symbols, defined in a HashMap.
 	 * @throws BuildException when an invalid symbol is defined (currently only "false" is checked);
+	 * @deprecated use Environment for such settings now
 	 */
 	public void setSymbols(HashMap symbols) {
 		// check symbols:
@@ -296,22 +277,23 @@ public class Preprocessor {
 				throw new BuildException("The symbol [false] must not be defined. Please check your settings in your build.xml, devices.xml, groups.xml and vendors.xml");
 			}
 		}
-		this.symbols = symbols;
-		this.temporarySymbols.clear();
-		this.booleanEvaluator.setEnvironment(symbols, this.variables);
+		this.environment.setSymbols(symbols);
+		//this.symbols = symbols;
+		//this.booleanEvaluator.setEnvironment(symbols, this.variables);
 	}
 	
 	/**
 	 * Turns the support for the J2ME Polish GUI on or off.
 	 *  
 	 * @param usePolishGui true when the GUI is supported, false otherwise
+	 * @deprecated use environment add/removeSymbol now
 	 */
 	public void setUsePolishGui( boolean usePolishGui ) {
 		this.usePolishGui = usePolishGui;
 		if (usePolishGui) {
-			addSymbol("polish.usePolishGui");
+			this.environment.addSymbol("polish.usePolishGui");
 		} else {
-			removeSymbol("polish.usePolishGui");
+			this.environment.removeSymbol("polish.usePolishGui");
 		}
 	}
 	
@@ -319,29 +301,31 @@ public class Preprocessor {
 	 * Adds a single symbol to the list.
 	 * 
 	 * @param name The name of the symbol.
+	 * @deprecated use environment.addSymbol() instead
 	 */
 	public void addSymbol( String name ) {
-		this.symbols.put( name, Boolean.TRUE );
+		this.environment.addSymbol( name );
 	}
 
 	/**
 	 * Removes a symbol from the list of defined symbols.
 	 * 
 	 * @param name The name of the symbol.
+	 * @deprecated use environment.removeSymbol() instead
 	 */
 	public void removeSymbol(String name) {
-		this.symbols.remove(name);
+		this.environment.removeSymbol(name);
 	}
 	
 	/**
 	 * Sets the variables, any old settings will be lost.
 	 * 
 	 * @param variables the variables.
+	 * @deprecated use Evironment for such settings now
 	 */
 	public void setVariables(HashMap variables) {
-		this.variables = variables;
-		this.temporaryVariables.clear();
-		this.booleanEvaluator.setEnvironment(this.symbols, variables);
+		this.environment.setVariables(  variables );
+		//this.booleanEvaluator.setEnvironment(this.symbols, variables);
 	}
 	
 	/**
@@ -351,22 +335,20 @@ public class Preprocessor {
 	 * 
 	 * @param name The name of the variable.
 	 * @param value The value of the variable.
+	 * @deprecated use environment.addVariable() instead
 	 */
 	public void addVariable( String name, String value ) {
-		this.variables.put( name, value );
-		this.symbols.put( name + ":defined", Boolean.TRUE );
+		this.environment.addVariable( name, value );
 	}
 
 	/**
 	 * Removes a variable from this preprocessor
 	 * 
 	 * @param name the variable name
+	 * @deprecated use environment.removeVariable() instead
 	 */
 	public void removeVariable(String name) {
-		Object o = this.variables.remove( name );
-		if (o != null) {
-			this.symbols.remove( name + ":defined" );
-		}
+		this.environment.removeVariable(name);
 	}
 
 	/**
@@ -374,18 +356,21 @@ public class Preprocessor {
 	 * When a variable already exists, it will be overwritten.
 	 * 
 	 * @param additionalVars A map of additional variables.
+	 * @deprecated use environment.addVariables() instead
 	 */
 	public void addVariables( Map additionalVars ) {
-		this.variables.putAll(additionalVars);
+		this.environment.getVariables().putAll(additionalVars);
 	}
 	
 	/**
 	 * Retrieves the evaluator for boolean expressions
 	 * 
 	 * @return the boolean evaluator with the symbols and variables of the current device
+	 * @deprecated use environment.getBooleanEvaluator() instead
+	 * @see Environment#getBooleanEvaluator()
 	 */
 	public BooleanEvaluator getBooleanEvaluator(){
-		return this.booleanEvaluator;
+		return this.environment.getBooleanEvaluator();
 	}
 	
 	/**
@@ -406,7 +391,7 @@ public class Preprocessor {
 		String[] sourceLines = FileUtil.readTextFile( sourceFile );
 		StringList lines = new StringList( sourceLines );
 		// set source directory:
-		this.variables.put( "polish.source", sourceDir.getAbsolutePath() );
+		this.environment.addVariable( "polish.source", sourceDir.getAbsolutePath() );
 		String className = fileName.substring(0, fileName.indexOf('.'));
 		className = StringUtil.replace( className, "/", "." );
 		int result = preprocess( className, lines );
@@ -447,8 +432,6 @@ public class Preprocessor {
 	 * The internal state is reset to allow new preprocessing of other files. 
 	 */
 	public void reset() {
-		this.temporarySymbols.clear();
-		this.temporaryVariables.clear();
 		this.ifDirectiveCount = 0;
 	}
 
@@ -464,20 +447,21 @@ public class Preprocessor {
 	throws BuildException 
 	{
 		// clear the temporary variables and symbols:
-		this.temporarySymbols.clear();
-		this.temporaryVariables.clear();
+		this.environment.clearTemporarySettings();
 		
 		// set debugging preprocessing symbols:
 		if (this.debugManager != null) {
 			String[] debuggingSymbols = this.debugManager.getDebuggingSymbols( className );
 			for (int i = 0; i < debuggingSymbols.length; i++) {
 				String symbol = debuggingSymbols[i];
-				this.temporarySymbols.put( symbol, Boolean.TRUE );
+				this.environment.addTemporarySymbol( symbol );
 			}
 		}
 		// adding all normal variables and symbols to the temporary ones:
+		/*
 		this.temporarySymbols.putAll( this.symbols );
 		this.temporaryVariables.putAll( this.variables );
+		*/
 		
 		boolean changed = false;
 		if (this.customPreprocessors != null) {
@@ -572,8 +556,10 @@ public class Preprocessor {
 		String argument = trimmedLine.substring( spacePos + 1 ).trim();
 		boolean changed = false;
 		if ("condition".equals(command)) {
+			//System.out.println("Checking #condition " + argument);
 			// a precondition must be fullfilled for this source file:
 			if (! checkIfCondition(argument, className, lines)) {
+				//System.out.println("#condition: " + argument + " is not defined.");
 				return SKIP_FILE;
 			}
 		} else if ("ifdef".equals(command)) {
@@ -645,7 +631,7 @@ public class Preprocessor {
 	private boolean processIfdef(String argument, StringList lines, String className )
 	throws BuildException
 	{
-		boolean conditionFulfilled = hasSymbol( argument );
+		boolean conditionFulfilled = this.environment.hasSymbol( argument );
 		if (!conditionFulfilled && argument.indexOf(' ') != -1) {
 			throw new BuildException(
 					className + " line " + (lines.getCurrentIndex() + 1) 
@@ -667,7 +653,7 @@ public class Preprocessor {
 	private boolean processIfndef(String argument, StringList lines, String className ) 
 	throws BuildException
 	{
-		boolean conditionFulfilled = !hasSymbol( argument );
+		boolean conditionFulfilled = !this.environment.hasSymbol( argument );
 		if (conditionFulfilled && argument.indexOf(' ') != -1) {
 			throw new BuildException(
 					className + " line " + (lines.getCurrentIndex() + 1) 
@@ -818,7 +804,7 @@ public class Preprocessor {
 	protected boolean checkIfCondition(String argument, String className, StringList lines ) 
 	throws BuildException 
 	{
-		return this.booleanEvaluator.evaluate( argument, className, lines.getCurrentIndex() + 1);
+		return this.environment.getBooleanEvaluator().evaluate( argument, className, lines.getCurrentIndex() + 1);
 	}
 
 	/**
@@ -907,10 +893,9 @@ public class Preprocessor {
 		if (equalsIndex != -1) {
 			String name = argument.substring(0, equalsIndex).trim();
 			String value = argument.substring( equalsIndex + 1).trim();
-			this.temporaryVariables.put( name, value );
-			this.temporarySymbols.put( name + ":defined", Boolean.TRUE );
+			this.environment.addTemporaryVariable(name, value);
 		} else {
-			this.temporarySymbols.put( argument, Boolean.TRUE );
+			this.environment.addTemporarySymbol( argument );
 		}
 	}
 
@@ -929,13 +914,12 @@ public class Preprocessor {
 			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1) 
 					+ ": found invalid #undefine directive: the symbol [true] cannot be defined.");
 		}
-		Object symbol = this.temporarySymbols.remove( argument );
-		this.symbols.remove( argument );
-		if (symbol == null) {
-			this.temporaryVariables.remove( argument );
-			this.temporarySymbols.remove( argument + ":defined" );
-			this.variables.remove( argument );
-			this.symbols.remove( argument + ":defined" );
+		boolean success = this.environment.removeTemporarySymbol( argument );
+		this.environment.removeSymbol( argument );
+		if (!success) {
+			// this is a variable
+			this.environment.removeTemporaryVariable( argument );
+			this.environment.removeVariable( argument );
 		}
 	}
 
@@ -952,7 +936,7 @@ public class Preprocessor {
 	throws BuildException
 	{
 		try {
-			String line = PropertyUtil.writeProperties( argument, this.temporaryVariables, true );
+			String line = this.environment.writeProperties( argument, true );
 			lines.setCurrent( line );
 			return true;
 		} catch (IllegalArgumentException e) {
@@ -975,7 +959,7 @@ public class Preprocessor {
 	{
 		String file = argument;
 		try {
-			file = PropertyUtil.writeProperties( argument, this.variables, true );
+			file = this.environment.writeProperties( argument, true );
 			String[] includes = FileUtil.readTextFile( file );
 			lines.insert( includes );
 			return true;
@@ -1110,7 +1094,7 @@ public class Preprocessor {
 	private boolean processMessage(String argument, StringList lines, String className) 
 	throws BuildException
 	{
-		argument = PropertyUtil.writeProperties( argument, this.variables);
+		argument = this.environment.writeProperties( argument);
 		System.out.println("MESSAGE: " + argument );
 		return false;
 	}
@@ -1125,7 +1109,7 @@ public class Preprocessor {
 	 * @throws BuildException when the preprocessing fails
 	 */
 	private boolean processTodo(String argument, StringList lines, String className) {
-		argument = PropertyUtil.writeProperties( argument, this.variables);
+		argument = this.environment.writeProperties( argument );
 		System.out.println("TODO: " + getErrorStart(className, lines) +  argument );
 		return false;
 	}
@@ -1153,7 +1137,7 @@ public class Preprocessor {
 		final String loopVarName = argument.substring(0, inPos).trim();
 		final String varName = argument.substring( inPos + 4 ).trim();
 		
-		final String valueStr = (String) this.variables.get( varName );
+		final String valueStr = this.environment.getVariable( varName );
 		final String endToken = "//#next " + loopVarName;
 		boolean changed = false;
 		if (valueStr == null) {
@@ -1187,11 +1171,11 @@ public class Preprocessor {
 		final String[] values = StringUtil.splitAndTrim( valueStr, ',' );
 		for (int i = 0; i < values.length; i++) {
 			final String value = values[i];
-			this.temporaryVariables.put( loopVarName, value );
+			this.environment.addTemporaryVariable( loopVarName, value );
 			final String[] copy = new String[ innerLines.length ];
 			System.arraycopy( innerLines, 0, copy, 0, innerLines.length);
 			for (int j = 0; j < copy.length; j++) {
-				copy[j] = PropertyUtil.writeProperties(copy[j], this.temporaryVariables );
+				copy[j] = this.environment.writeProperties( copy[j] ); //PropertyUtil.writeProperties(copy[j], this.temporaryVariables );
 			}
 			lines.insert( copy );
 			insertionIndex += copy.length;
@@ -1368,6 +1352,7 @@ public class Preprocessor {
 	 * 
 	 * @param device the current device
 	 * @param styleSheet the new style sheet
+	 * @deprecated use environment.setVariable() etc instead
 	 */
 	public void setSyleSheet(StyleSheet styleSheet, Device device) {
 		this.styleSheet = styleSheet;
@@ -1393,7 +1378,7 @@ public class Preprocessor {
 				removeSymbol("polish.useAfterStyle");
 			}
 			// now set the CSS-symbols:
-			this.symbols.putAll( styleSheet.getCssPreprocessingSymbols( device ) );
+			this.environment.addSymbols( styleSheet.getCssPreprocessingSymbols( device ) );
 		}
 	}
 	
@@ -1411,10 +1396,10 @@ public class Preprocessor {
 	 * 
 	 * @param symbol the symbol 
 	 * @return true when the symbol is defined
+	 * @deprecated use environment.hasSymbol() instead
 	 */
 	public boolean hasSymbol(String symbol) {
-		return ((this.temporarySymbols.get( symbol) != null) 
-				|| (this.symbols.get( symbol) != null));
+		return this.environment.hasSymbol( symbol);
 	}
 
 	/**
@@ -1422,13 +1407,10 @@ public class Preprocessor {
 	 * 
 	 * @param name the name of the variable
 	 * @return the value of the variable
+	 * @deprecated use environment.getVariable() instead
 	 */
 	public String getVariable(String name) {
-		String var = (String) this.temporaryVariables.get(name);
-		if (var == null) {
-			var = (String) this.variables.get(name);
-		}
-		return var;
+		return this.environment.getVariable(name);
 	}
 
 	/**
@@ -1464,9 +1446,10 @@ public class Preprocessor {
 	 * Changes take effect on the preprocessor.
 	 * 
 	 * @return all defined variables
+	 * @deprecated use environment.getVariable() instead
 	 */
 	public Map getVariables() {
-		return this.variables;
+		return this.environment.getVariables();
 	}
 	
 	/**
@@ -1517,6 +1500,10 @@ public class Preprocessor {
 	
 	public CssAttributesManager getCssAttributesManager() {
 		return this.cssAttributesManager;
+	}
+
+	public Environment getEnvironment() {
+		return this.environment;
 	}
 
 }

@@ -24,13 +24,13 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>Starts Sony-Ericsson emulators.</p>
@@ -97,7 +97,7 @@ public class SonyEricssonEmulator extends WtkEmulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			HashMap properties, Project project, BooleanEvaluator evaluator,
+			Environment properties, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
 		String skin = device.getCapability("polish.Emulator.Skin");
@@ -105,9 +105,9 @@ public class SonyEricssonEmulator extends WtkEmulator {
 			// add default-emulator name:
 			device.addDirectCapability("polish.Emulator.Skin", "SonyEricsson_" + device.getName());
 		}
-		String sonyHomePath = (String) properties.get("sony-ericsson.home");
+		String sonyHomePath = properties.getVariable("sony-ericsson.home");
 		if (sonyHomePath == null) {
-			sonyHomePath = (String) properties.get("sonyericsson.home");
+			sonyHomePath = properties.getVariable("sonyericsson.home");
 		}
 		if (sonyHomePath == null) {
 			if (File.separatorChar == '\\') {

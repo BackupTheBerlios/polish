@@ -36,8 +36,8 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.apache.tools.ant.util.facade.FacadeTaskHelper;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.ant.ConditionalElement;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.PopulateUtil;
 
 /**

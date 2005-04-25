@@ -33,6 +33,7 @@ import java.util.Locale;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Extension;
 import de.enough.polish.ant.build.PreprocessorSetting;
@@ -82,7 +83,7 @@ public abstract class CustomPreprocessor extends Extension {
 	public void init( Preprocessor processor, PreprocessorSetting preprocessorSetting ) {
 		this.preprocessor = processor;
 		this.setting = preprocessorSetting;
-		this.booleanEvaluator = processor.getBooleanEvaluator();
+		this.booleanEvaluator = processor.getEnvironment().getBooleanEvaluator();
 	}
 	
 	/**

@@ -38,12 +38,12 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.requirements.SizeMatcher;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.preprocess.CssReader;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.StyleSheet;

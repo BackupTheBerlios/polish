@@ -1,0 +1,98 @@
+<!-- 
+	extensions.xml defines all default extensions. 
+	Use custom-extensions.xml fpr defining your own extensions.
+
+    Copyright (c) 2005 Robert Virkus / Enough Software
+
+    This file is part of J2ME Polish.
+
+    J2ME Polish is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    J2ME Polish is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    Commercial licenses are also available, please
+    refer to the accompanying LICENSE.txt or visit
+    http://www.j2mepolish.org for details.
+
+-->
+
+<extensions>
+	<extension>
+	    <type>plugin</type>
+    	<name>mBooster</name>
+	    <class>com.innaworks.mbooster.j2mepolish.MBoosterBuildPlugin</class>
+    	<classpath>${polish.home}/import/mbooster.jar</classpath>
+	</extension>
+	
+	
+	<!-- Property Functions -->
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>uppercase</name>
+		<class>de.enough.polish.propertyfunctions.UpperCaseFunction</class>
+	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>lowercase</name>
+		<class>de.enough.polish.propertyfunctions.LowerCaseFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>bytes</name>
+		<class>de.enough.polish.propertyfunctions.BytesFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>kilobytes</name>
+		<class>de.enough.polish.propertyfunctions.KiloBytesFunction</class>
+	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>megabytes</name>
+		<class>de.enough.polish.propertyfunctions.MegaBytesFunction</class>
+	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>gigabytes</name>
+		<class>de.enough.polish.propertyfunctions.GigaBytesFunction</class>
+	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>replace</name>
+		<class>de.enough.polish.propertyfunctions.ReplaceFunction</class>
+	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>classname</name>
+		<class>de.enough.polish.propertyfunctions.ClassNameFunction</class>
+	</extension>
+	
+	
+	<!-- Post Compiler -->
+	<extension>
+		<type>postcompiler</type>
+		<name>floater</name>
+		<class>de.enough.floater.FloaterPostcompiler</class>
+		<classpath>${polish.home}/import/enough-floater.jar:${polish.home}/import/enough-floater-evaluation.jar</classpath>
+	</extension>
+		
+	
+</extensions>

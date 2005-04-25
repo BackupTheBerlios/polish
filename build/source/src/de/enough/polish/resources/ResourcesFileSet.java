@@ -28,8 +28,8 @@ package de.enough.polish.resources;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.ant.ConditionalElement;
-import de.enough.polish.preprocess.BooleanEvaluator;
 
 /**
  * <p>A fileset which can have additional conditions (if and unless attributes).</p>

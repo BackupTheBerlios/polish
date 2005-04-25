@@ -28,7 +28,6 @@ package de.enough.polish;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -113,7 +112,7 @@ public class Attribute extends Variable {
 	 * @param antProject the Ant project
 	 * @return an array of variable definitions found in the specified file.
 	 */
-	public Attribute[] loadAttributes( Map environment, Project antProject) {
+	public Attribute[] loadAttributes( Environment environment, Project antProject) {
 		File file = getFile( environment, antProject );
 		if ( !file.exists() ) {
 			System.err.println("Warning: unable to load attributes from [" + file.getAbsolutePath() + "]: file not found.");

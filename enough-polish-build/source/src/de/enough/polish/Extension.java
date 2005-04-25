@@ -28,6 +28,7 @@ package de.enough.polish;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
+import org.jdom.Element;
 
 import de.enough.polish.ant.ExtensionSetting;
 import de.enough.polish.util.PopulateUtil;
@@ -46,6 +47,10 @@ public class Extension {
 
 	protected ExtensionSetting extensionSetting;
 	protected Project antProject;
+	private Element xmlConfiguration;
+	private ExtensionManager extensionManager;
+	private String type;
+	private String name;
 
 	/**
 	 * Creates a new extension.
@@ -63,8 +68,28 @@ public class Extension {
 	protected void init(ExtensionSetting setting, Project project) {
 		this.extensionSetting = setting;
 		this.antProject = project;
-		
 	}
+	
+	/**
+	 * Initialises this extension.
+	 * 
+	 * @param element the extension settings taken from extensions.xml or custom-extensions.xml 
+	 * @param project the ant project
+	 */
+	protected void init(Element element, Project project, ExtensionManager manager) {
+		this.xmlConfiguration = element;
+		this.antProject = project;
+		this.extensionManager= manager;
+		this.type = element.getChildTextTrim( "type" );
+		if (this.type == null) {
+			throw new IllegalArgumentException("The extension has no type.");
+		}
+		this.name = element.getChildTextTrim( "name" );
+		if (this.name == null) {
+			throw new IllegalArgumentException("The extension has no name.");
+		}
+	}
+	
 	
 	public ExtensionSetting getExtensionSetting() {
 		return this.extensionSetting;
@@ -72,6 +97,14 @@ public class Extension {
 	
 	public Project getAntProject() {
 		return this.antProject;
+	}
+	
+	public String getType() {
+		return this.type;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public static Extension getInstance( ExtensionSetting setting, Project antProject ) 
@@ -94,6 +127,29 @@ public class Extension {
 		if (setting.hasParameters()) {
 			PopulateUtil.populate( extension, setting.getParameters(), antProject.getBaseDir() );
 		}
+		return extension;
+	}
+	
+	public static Extension getInstance( Element element, Project antProject, ExtensionManager manager ) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		
+		ClassLoader classLoader;
+		String classPathStr = element.getChildTextTrim("classpath");
+		if (classPathStr == null) {
+			classLoader = Extension.class.getClassLoader();
+		} else {
+			Path classPath = new Path( antProject, classPathStr );
+			classLoader = new AntClassLoader(
+				Extension.class.getClassLoader(),
+    			antProject,  
+				classPath,
+				true);
+		}
+		String className = element.getChildTextTrim("class");
+		Class extensionClass = classLoader.loadClass( className );
+		Extension extension = (Extension) extensionClass.newInstance();
+		extension.init( element, antProject, manager );
 		return extension;
 	}
 

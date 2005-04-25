@@ -30,20 +30,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.stacktrace.BinaryStackTrace;
 import de.enough.polish.stacktrace.DecompilerNotInstalledException;
 import de.enough.polish.stacktrace.StackTraceUtil;
-import de.enough.polish.util.PropertyUtil;
 
 /**
  * <p>Excutes an emulator.</p>
@@ -64,13 +61,13 @@ public abstract class Emulator extends Thread {
 	private File[] sourceDirs;
 	private String preprocessedSourcePath;
 	private String classPath;
-	private Map environmentProperties;
+	private Environment environment;
 	
 	/**
 	 * Creates a new emulator instance.
 	 * The actual initialisation is done in the init-method.
 	 * 
-	 * @see #init(Device, EmulatorSetting, HashMap, Project, BooleanEvaluator, String)
+	 * @see #init(Device, EmulatorSetting, Environment, Project, BooleanEvaluator, String)
 	 */
 	public Emulator() {
 		// no initialisation done here
@@ -81,13 +78,13 @@ public abstract class Emulator extends Thread {
 	 *  
 	 * @param setting the setting
 	 * @param device the current device
-	 * @param properties all Ant- and polish-properties for the parameter-values
+	 * @param env all Ant- and polish-properties for the parameter-values
 	 * @param project the ant-project to which this emulator belongs to 
 	 * @param evaluator a boolean evaluator for the parameter-conditions
 	 * @param wtkHome the home directory of the wireless toolkit
 	 * @return true when an emulator could be detected
 	 */
-	public abstract boolean init(Device device, EmulatorSetting setting, HashMap properties, Project project, BooleanEvaluator evaluator, String wtkHome );
+	public abstract boolean init(Device device, EmulatorSetting setting, Environment env, Project project, BooleanEvaluator evaluator, String wtkHome );
 	
 	/**
 	 * Starts the actual emulator-process.
@@ -112,12 +109,12 @@ public abstract class Emulator extends Thread {
 	 * @param device the device which is emulated
 	 * @param setting the settings for the emulator
 	 * @param sourceDirs the directories containing the original source files.
-	 * @param environmentProperties the J2ME Polish and Ant-properties
+	 * @param environment the J2ME Polish and Ant-properties
 	 */
-	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs, Map environmentProperties ) {
+	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs, Environment environment ) {
 		this.emulatedDevice = device;
 		this.emulatorSetting = setting;
-		this.environmentProperties = environmentProperties;
+		this.environment = environment;
 		this.classPath = device.getClassesDir();
 		this.preprocessedSourcePath = device.getSourceDir();
 		this.sourceDirs = sourceDirs;
@@ -175,7 +172,7 @@ public abstract class Emulator extends Thread {
 	 * @param properties the map containing all properties
 	 * @return an array of parameters with the written properties
 	 */
-	protected Variable[] writeProperties( Variable[] variables, Map properties ) {
+	protected Variable[] writeProperties( Variable[] variables, Environment properties ) {
 		Variable[] newVars = new Variable[ variables.length ];
 		for (int i = 0; i < variables.length; i++) {
 			Variable variable = variables[i];
@@ -186,7 +183,7 @@ public abstract class Emulator extends Thread {
 				newVars[i] = variable;
 			} else {
 				// the value contains a property:
-				value = PropertyUtil.writeProperties( value, properties);
+				value = properties.writeProperties( value );
 				Variable var = new Variable( variable.getName(), value );
 				var.setIf( variable.getIfCondition() );
 				var.setUnless( variable.getUnlessCondition() );
@@ -212,7 +209,7 @@ public abstract class Emulator extends Thread {
 	 * @param properties all Ant- and J2ME Polish-properties.
 	 * @return an array of initialised parameters.
 	 */
-	protected Variable[] getParameters( EmulatorSetting setting, Project project, BooleanEvaluator evalutor, Map properties ) {
+	protected Variable[] getParameters( EmulatorSetting setting, Project project, BooleanEvaluator evalutor, Environment properties ) {
 		Variable[] parameters = setting.getParameters();
 		if (parameters.length == 0) {
 			return parameters;
@@ -274,13 +271,13 @@ public abstract class Emulator extends Thread {
 	 * @param sourceDirs the directories containing the original source files.
 	 * @return true when an emulator could be detected
 	 */
-	public static Emulator createEmulator(Device device, EmulatorSetting setting, Map variables, Project project, BooleanEvaluator evaluator, String wtkHome, File[] sourceDirs ) {
+	public static Emulator createEmulator(Device device, EmulatorSetting setting, Environment variables, Project project, BooleanEvaluator evaluator, String wtkHome, File[] sourceDirs ) {
 		String className = setting.getEmulatorClassName();
 		if (className == null) {
 			className = device.getCapability("polish.Emulator.Class");
 			if (className == null) {
-				Object executable = variables.get("polish.Emulator.Executable");
-				Object arguments =  variables.get("polish.Emulator.Arguments");
+				String executable = variables.getVariable("polish.Emulator.Executable");
+				String arguments =  variables.getVariable("polish.Emulator.Arguments");
 				if (executable != null && arguments != null) {
 					className = GenericEmulator.class.getName();
 				} else {
@@ -309,17 +306,12 @@ public abstract class Emulator extends Thread {
 			System.err.println("Unable to instantiate the emulator-class [" + className + "]: " + e.toString() );
 			return null;
 		}
-		Hashtable antProperties = project.getProperties();
-		HashMap capabilities = device.getCapabilities();
-		HashMap properties = new HashMap( antProperties.size() + variables.size() + capabilities.size() );
-		properties.putAll( antProperties );
-		properties.putAll( capabilities );
-		properties.putAll( variables );
-		boolean okToStart = emulator.init(device, setting, properties, project, evaluator, wtkHome);
+		variables.addVariables( project.getProperties() );
+		boolean okToStart = emulator.init(device, setting, variables, project, evaluator, wtkHome);
 		if (!okToStart) {
 			return null;
 		}
-		emulator.setBasicSettings(device, setting, sourceDirs, properties );
+		emulator.setBasicSettings(device, setting, sourceDirs, variables );
 		emulator.start();
 		return emulator;
 	}
@@ -355,7 +347,7 @@ public abstract class Emulator extends Thread {
 								// this seems to be an error message like
 								// "   at de.enough.polish.ClassName(+263)"
 								// so try to use JAD for finding out the source code address:
-								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs, Emulator.this.environmentProperties);
+								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs, Emulator.this.environment);
 								if (stackTrace != null) {
 									boolean showDecompiledStackTrace = true;
 									if (stackTrace.couldBeResolved()) {

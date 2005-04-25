@@ -28,14 +28,14 @@ package de.enough.polish.emulator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
-import de.enough.polish.preprocess.BooleanEvaluator;
 import de.enough.polish.util.ConvertUtil;
 import de.enough.polish.util.FileUtil;
 
@@ -128,7 +128,7 @@ public class WtkEmulator extends Emulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			HashMap properties, Project project,
+			Environment properties, Project project,
 			BooleanEvaluator evaluator, String wtkHome) 
 	{
 		// okay, now create the arguments:
@@ -192,7 +192,7 @@ public class WtkEmulator extends Emulator {
 		}
 		
 		// add -Xdescriptor-parameter:
-		argumentsList.add("-Xdescriptor:" + properties.get("polish.jadPath") );
+		argumentsList.add("-Xdescriptor:" + properties.getVariable("polish.jadPath") );
 		
 		// add the -Xverbose-parameter:
 		String trace = setting.getTrace();
