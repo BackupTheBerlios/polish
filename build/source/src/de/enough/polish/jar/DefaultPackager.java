@@ -27,13 +27,12 @@ package de.enough.polish.jar;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.util.JarUtil;
 
 /**
@@ -59,8 +58,7 @@ public class DefaultPackager extends Packager {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.jar.Packager#doPackage(java.io.File, java.io.File, de.enough.polish.Device, de.enough.polish.preprocess.BooleanEvaluator, java.util.Map, org.apache.tools.ant.Project)
 	 */
-	public void createPackage(File sourceDir, File targetFile, Device device,
-			BooleanEvaluator evalator, Map variables, Project project)
+	public void createPackage(File sourceDir, File targetFile, Device device, Locale locale, Environment environment)
 	throws IOException, BuildException 
 	{
 		JarUtil.jar(sourceDir, targetFile, true );

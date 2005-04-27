@@ -141,31 +141,31 @@ implements Comparable
 		// 1. set the capabilities:
 		HashMap caps = component.getCapabilities();
 		for (Iterator iter = caps.keySet().iterator(); iter.hasNext();) {
-			String key = (String) iter.next();
+			String name = (String) iter.next();
 			//System.out.println("adding component-key " + key);
-			String currentValue = (String) this.capabilities.get( key);
+			String currentValue = (String) this.capabilities.get( name);
 			//System.out.println("current value: " + currentValue);
-			String componentValue = (String) caps.get( key );
+			String componentValue = (String) caps.get( name );
 			//System.out.println("component value: " + componentValue);
 			if (currentValue == null) {
 				// okay, this capability has not been defined so far:
-				addCapability( key, componentValue );
-			} else if ( (Device.JAVA_PACKAGE.equals(key) ) 
-					|| (Device.JAVA_PROTOCOL.equals(key)) 
-					|| (Device.VIDEO_FORMAT.equals(key))
-					|| (Device.SOUND_FORMAT.equals(key)) 
-					|| (Device.BUGS.equals(key)) ) {
+				addCapability( name, componentValue );
+			} else if ( (Device.JAVA_PACKAGE.equalsIgnoreCase(name) ) 
+					|| (Device.JAVA_PROTOCOL.equalsIgnoreCase(name)) 
+					|| (Device.VIDEO_FORMAT.equalsIgnoreCase(name))
+					|| (Device.SOUND_FORMAT.equalsIgnoreCase(name)) 
+					|| (Device.BUGS.equalsIgnoreCase(name)) ) {
 				// add additional package/protocol definitions:
 				String newValue = currentValue + "," + componentValue;
-				addCapability(key, newValue);
+				addCapability(name, newValue);
 			} // else do not overwrite weaker capability
 		}
 		
 		// 2. set all features (overwriting will do no harm):
 		Set feats = component.features.keySet();
 		for (Iterator iter = feats.iterator(); iter.hasNext();) {
-			String feature = (String) iter.next();
-			this.features.put( feature, Boolean.TRUE );
+			String name = (String) iter.next();
+			this.features.put( name, Boolean.TRUE );
 		}
 		
 		// 3. set the features-string:
@@ -322,42 +322,42 @@ implements Comparable
 	/**
 	 * Adds a feature this this component.
 	 * 
-	 * @param feature the name of the feature
+	 * @param name the name of the feature
 	 */
-	public void addFeature( String feature ) {
-		if (feature.length() == 0) {
+	public void addFeature( String name ) {
+		if (name.length() == 0) {
 			return;
 		}
-		feature = feature.toLowerCase();
-		if (!feature.startsWith("polish.")) {
-			feature = "polish." + feature;
+		name = name.toLowerCase();
+		if (!name.startsWith("polish.")) {
+			name = "polish." + name;
 		}
-		this.features.put( feature, Boolean.TRUE );
+		this.features.put( name, Boolean.TRUE );
 	}
 	
 	/**
 	 * Adds a feature without inserting a ".polish" before the feature-name.
 	 * 
-	 * @param feature The feature which should be added.
+	 * @param name The feature which should be added.
 	 */
-	public void addDirectFeature( String feature ) {
-		feature = feature.toLowerCase();
-		this.features.put( feature, Boolean.TRUE );
+	public void addDirectFeature( String name ) {
+		name = name.toLowerCase();
+		this.features.put( name, Boolean.TRUE );
 	}
 
 	/**
 	 * Checks if this component has a specific feature.
 	 * A feature is a capability without a value.
 	 * 
-	 * @param feature the feature which should be defined, e.g. "hardware.camera"
+	 * @param name the feature which should be defined, e.g. "hardware.camera"
 	 * @return true when this feature is defined.
 	 */
-	public boolean hasFeature(String feature) {
-		if ("supportsPolishGui".equals(feature)) {
+	public boolean hasFeature(String name) {
+		if ("supportsPolishGui".equals(name)) {
 			return this.supportsPolishGui;
 		}
-		feature = feature.toLowerCase();
-		return ( (this.features.get(feature) != null) );
+		name = name.toLowerCase();
+		return ( (this.features.get(name) != null) );
 	}
 
 	/**
@@ -375,14 +375,14 @@ implements Comparable
 	/**
 	 * Retrieves a specific capability of this component.
 	 * 
-	 * @param key the name of the capability. 
+	 * @param name the name of the capability. 
 	 * @return the value of the capability or null when the given capability is not defined.
 	 */
-	public String getCapability(String key) {
-		key = key.toLowerCase();
-		String capability = (String) this.capabilities.get( key );
+	public String getCapability(String name) {
+		name = name.toLowerCase();
+		String capability = (String) this.capabilities.get( name );
 		if (capability == null) {
-			capability = (String) this.capabilities.get( "polish." + key );
+			capability = (String) this.capabilities.get( "polish." + name );
 		}
 		return capability;
 	}

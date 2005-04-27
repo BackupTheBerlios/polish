@@ -34,6 +34,7 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.FinalizerSetting;
 
 /**
@@ -55,10 +56,10 @@ public abstract class Finalizer extends Extension {
 		super();
 	}
 	
-	public static Finalizer getInstance( FinalizerSetting setting, Project antProject ) 
+	public static Finalizer getInstance( FinalizerSetting setting, Project antProject, ExtensionManager manager, Environment environment ) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
 	{
-		Finalizer finalizer = (Finalizer) Extension.getInstance( setting, antProject );
+		Finalizer finalizer = (Finalizer) manager.getExtension( ExtensionManager.TYPE_FINALIZER, setting, environment );
 		return finalizer;
 	}
 	

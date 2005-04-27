@@ -26,12 +26,13 @@
 package de.enough.polish;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.tools.ant.Project;
 
 import de.enough.polish.propertyfunctions.PropertyFunction;
 import de.enough.polish.util.StringUtil;
@@ -64,15 +65,18 @@ public class Environment {
 	private final BooleanEvaluator booleanEvaluator;
 	private Locale locale;
 	private Device device;
+	private final Project antProject;
 	
 
 	/**
 	 * Creates a new empty environment.
 	 * 
 	 * @param extensionsManager the manager for extensions
+	 * @param antProject the project
 	 */
-	public Environment( ExtensionManager extensionsManager ) {
+	public Environment( ExtensionManager extensionsManager, Project antProject ) {
 		super();
+		this.antProject = antProject;
 		this.symbols = new HashMap();
 		this.variables = new HashMap();
 		this.temporarySymbols = new HashMap();
@@ -145,6 +149,16 @@ public class Environment {
 		}
 		return value;
 	}
+	
+	/**
+	 * @param name
+	 * @param value
+	 */
+	public void setVariable(String name, String value) {
+		removeVariable( name );
+		addVariable( name, value );
+	}
+
 	
 	public String removeTemporaryVariable( String name ) {
 		name = name.toLowerCase();
@@ -270,10 +284,11 @@ public class Environment {
 			
 			String property = group.substring( 2, group.length() -1 ).trim(); // == property.name
 			
-			String value = writeProperty( property, needsToBeDefined );
-			
-			input = StringUtil.replace( input, group, value );
-			PROPERTY_PATTERN.matcher( input );
+			String value = getProperty( property, needsToBeDefined );
+			if (value != null) {
+				input = StringUtil.replace( input, group, value );
+				PROPERTY_PATTERN.matcher( input );
+			}
 			propertyFound = matcher.find();
 		} 
 		/*
@@ -335,13 +350,15 @@ public class Environment {
 	 * @param needsToBeDefined
 	 * @return
 	 */
-	private String writeProperty(String property, boolean needsToBeDefined) {
+	private String getProperty(String property, boolean needsToBeDefined) {
 		if (property.indexOf('(') == -1) {
 			// the property does not contain a property-function:
 			String value = getVariable( property );
 			if (value == null) {
 				if (needsToBeDefined) {
 					throw new IllegalArgumentException("The property [" + property + "] is not defined.");
+				} else {
+					return null;
 				}
 			} else {
 				property = value;
@@ -373,7 +390,13 @@ public class Environment {
 					parameters = StringUtil.splitAndTrim( parametersStr, ',' );
 				}
 				String functionName = group.substring( 0, propertyNameStart ).trim();
-				PropertyFunction function = (PropertyFunction) this.extensionManager.getExtension( ExtensionManager.TYPE_PROPERTY_FUNCTION, functionName );
+				PropertyFunction function = null;
+				try {
+					function = (PropertyFunction) this.extensionManager.getExtension( ExtensionManager.TYPE_PROPERTY_FUNCTION, functionName, this );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new IllegalArgumentException("The property function [" + functionName + "] could not be loaded. Please register it in custom-extensions.xml.");
+				}
 				if (function == null) {
 					throw new IllegalArgumentException("The property function [" + functionName + "] is not known. Please register it in custom-extensions.xml.");
 				}
@@ -429,4 +452,13 @@ public class Environment {
 			addVariable( name, value );
 		}
 	}
+
+	/**
+	 * @return
+	 */
+	public Project getProject() {
+		return this.antProject;
+	}
+
+	
 }

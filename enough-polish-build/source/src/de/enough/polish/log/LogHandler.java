@@ -1,5 +1,5 @@
 /*
- * Created on 25-Apr-2005 at 13:05:48.
+ * Created on 26-Apr-2005 at 18:10:01.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,57 +23,39 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.propertyfunctions;
+package de.enough.polish.log;
 
 import java.util.Locale;
-
-import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 
 /**
- * <p>Can be used to change property values, e.g. ${ uppercase( polish.Vendor ) }.</p>
- * <p>
- * You can register your own functions in ${polish.home}/custom-extensions.xml
- * </p>
+ * <p>Prepares the usage of log handlers for the logging framework of J2ME Polish.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        25-Apr-2005 - rob creation
+ *        26-Apr-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class PropertyFunction extends Extension {
+public class LogHandler extends Extension {
+	
 
 	/**
-	 * Creates a new property function.
+	 * Creates a new log handler
 	 */
-	public PropertyFunction() {
+	public LogHandler() {
 		super();
 	}
-	
-	
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void execute(Device device, Locale locale, Environment environment)
-	throws BuildException
-	{
-		// ignore...
-
+	public void execute(Device device, Locale locale, Environment environment) {
+		// ignore call
 	}
-	/**
-	 * Processes the given input.
-	 * 
-	 * @param input the input
-	 * @param arguments any additional arguments, null if none are given
-	 * @param environment the environment settings
-	 * @return the processed input
-	 */
-	public abstract String process( String input, String[] arguments, Environment environment );
-
+	
 }

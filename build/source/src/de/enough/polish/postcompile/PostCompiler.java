@@ -26,14 +26,15 @@
 package de.enough.polish.postcompile;
 
 import java.io.File;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.PostCompilerSetting;
-import de.enough.polish.preprocess.Preprocessor;
 
 /**
  * <p>Is the base class for any custom post compilers.</p>
@@ -59,27 +60,39 @@ public abstract class PostCompiler extends Extension {
 	}
 	
 	
+	
 	/**
 	 * Retrieves a new PostCompiler
 	 *  
 	 * @param postCompilerSetting the ant settings
-	 * @param antProject the current ant project
+	 * @param manager the extension manager 
+	 * @param environment the environment settings
 	 * @return a new instance of a post compiler
 	 * @throws BuildException when the class could not be loaded or initialized
 	 */
-	public static PostCompiler getInstance( PostCompilerSetting postCompilerSetting, Project antProject )
+	public static PostCompiler getInstance( PostCompilerSetting postCompilerSetting, ExtensionManager manager, Environment environment )
 	throws BuildException
 	{
 		try {
-			PostCompiler postCompiler = (PostCompiler) Extension.getInstance( postCompilerSetting, antProject );
+			PostCompiler postCompiler = (PostCompiler) manager.getExtension( ExtensionManager.TYPE_POSTCOMPILER, postCompilerSetting, environment );
 			return postCompiler;
-		} catch (ClassNotFoundException e) {
-			throw new BuildException("Unable to load post compiler class [" + postCompilerSetting.getClassName() + "]: " + e.toString(), e );
-		} catch (InstantiationException e) {
-			throw new BuildException("Unable to intialize post compiler class [" + postCompilerSetting.getClassName() + "]: " + e.toString(), e );
-		} catch (IllegalAccessException e) {
-			throw new BuildException("Unable to access post compiler class [" + postCompilerSetting.getClassName() + "]: " + e.toString(), e );
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("Unable to load post compiler class [" + postCompilerSetting.getClassName() + "/" + postCompilerSetting.getName() + "]: " + e.toString(), e );
 		}
+	}
+	
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void execute(Device device, Locale locale, Environment environment)
+	throws BuildException 
+	{
+		postCompile( new File( device.getClassesDir() ), device );
 	}
 	
 	/**
@@ -118,18 +131,6 @@ public abstract class PostCompiler extends Extension {
 	 */
 	public String verifyClassPath( Device device, String classPath ) {
 		return classPath;
-	}
-
-	/**
-	 * Allows to add settings for the preprocessing phase.
-	 * This can be used by subclasses for setting preprocessing symbols or variables for example.
-	 * The default implementation does nothing.
-	 * 
-	 * @param device the current target device
-	 * @param preprocessor the preprocessor
-	 */
-	public void addPreprocessingSettings( Device device, Preprocessor preprocessor ) {
-		// do nothing
 	}
 	
 	/**

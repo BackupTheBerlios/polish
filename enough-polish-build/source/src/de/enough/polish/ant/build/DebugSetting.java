@@ -50,13 +50,15 @@ public class DebugSetting extends ConditionalElement {
 	private boolean useGui;
 	private boolean showLogOnError;
 	private String level;
-	private ArrayList filters;
+	private final ArrayList filters;
+	private final ArrayList logHandlers;
 
 	/**
 	 * Creates a new empty debug-setting.
 	 */
 	public DebugSetting() {
 		this.filters = new ArrayList();
+		this.logHandlers = new ArrayList();
 		this.level = "debug";
 	}
 	
@@ -151,12 +153,23 @@ public class DebugSetting extends ConditionalElement {
 		this.filters.add( filter );
 	}
 
-
 	/**
 	 * @return an array of all debug-filters.
 	 */
 	public Filter[] getFilters() {
 		return (Filter[]) this.filters.toArray( new Filter[ this.filters.size() ] );
+	}
+	
+	public void addConfiguredHandler( LogHandlerSetting setting ) {
+		addConfiguredLogHandler(setting);
+	}
+	
+	public void addConfiguredLogHandler( LogHandlerSetting setting ) {
+		this.logHandlers.add( setting );
+	}
+	
+	public LogHandlerSetting[] getLogHandlers() {
+		return (LogHandlerSetting[]) this.logHandlers.toArray( new LogHandlerSetting[ this.logHandlers.size() ] );
 	}
 
 	/**

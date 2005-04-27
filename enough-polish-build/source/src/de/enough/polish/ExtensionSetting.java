@@ -23,9 +23,11 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ant;
+package de.enough.polish;
 
 import org.apache.tools.ant.types.Path;
+
+import de.enough.polish.ant.Setting;
 
 /**
  * <p>Extends the possibilities of the Setting by allowing the setting of a class name and a classpath.</p>
@@ -39,6 +41,7 @@ import org.apache.tools.ant.types.Path;
  */
 public class ExtensionSetting extends Setting {
 
+	private String name;
 	private String className;
 	private Path classPath;
 
@@ -70,5 +73,32 @@ public class ExtensionSetting extends Setting {
 		return this.classPath;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 
+	/**
+	 * Retrieves the defined parameter.
+	 * 
+	 * @param parameterName the name of the parameter
+	 * @param environment the environment, is used for finding out whether the parameter is active. 
+	 *        When the environment is null, the first match is returned.
+	 * @return the parameter or null when none is found.
+	 */
+	public Variable getParameter(String parameterName, Environment environment) {
+		Variable[] parameters = getParameters();
+		for (int i = 0; i < parameters.length; i++) {
+			Variable variable = parameters[i];
+			String varName = variable.getName();
+			if ( parameterName.equals( varName )) {
+				if (environment == null || variable.isConditionFulfilled( environment.getBooleanEvaluator(), environment.getProject() )) {
+					return variable;
+				}
+			}
+		}
+		return null;
+	}
 }

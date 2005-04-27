@@ -63,8 +63,16 @@ public final class PopulateUtil {
 	 *        or when a needed method has not be found. 
 	 */
 	public final static void populate( Object object, Variable[] parameters, File baseDir ) {
-		// put all methods into a hash map:
 		Class objectClass = object.getClass();
+		try {
+			// first check whether the object in question has implmented the setParameters( Variable[] parameters, File baseDir ) method.
+			Method setParametersMethod = objectClass.getMethod("setParameters", new Class[]{ Variable[].class, File.class } );
+			setParametersMethod.invoke( object, new Object[]{ parameters, baseDir } );
+			return;
+		} catch (Exception e) {
+			// okay, try the traditional settings...
+		}
+		// put all methods into a hash map:
 		Method[] methods = objectClass.getMethods();
 		HashMap methodsByName = new HashMap();
 		for (int i = 0; i < methods.length; i++) {

@@ -25,6 +25,11 @@
  */
 package de.enough.polish.propertyfunctions;
 
+import java.util.Locale;
+
+import org.apache.tools.ant.BuildException;
+
+import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 
@@ -50,6 +55,17 @@ public abstract class PropertyFunction extends Extension {
 		super();
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void execute(Device device, Locale locale, Environment environment)
+	throws BuildException
+	{
+		// ignore...
+
+	}
 	/**
 	 * Processes the given input.
 	 * 

@@ -30,10 +30,11 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.ResourceCopierSetting;
 
 /**
@@ -55,6 +56,18 @@ public abstract class ResourceCopier extends Extension {
 		super();
 	}
 	
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void execute(Device device, Locale locale, Environment environment)
+	throws BuildException 
+	{
+		// ignore....
+	}
+	
 	/**
 	 * Copies all resources for the target device and the target locale to the final resources directory.
 	 * 
@@ -67,12 +80,14 @@ public abstract class ResourceCopier extends Extension {
 	public abstract void copyResources( Device device, Locale locale, File[] resources, File targetDir )
 	throws IOException;
 	
-	public static ResourceCopier getInstance( ResourceCopierSetting copierSetting, Project antProject ) {
+	public static ResourceCopier getInstance( ResourceCopierSetting copierSetting, ExtensionManager manager, Environment environment ) {
 		if (copierSetting == null) {
-			return new DefaultResourceCopier();
+			ResourceCopier copier = new DefaultResourceCopier();
+			manager.registerExtension( ExtensionManager.TYPE_RESOURCE_COPIER, copier);
+			return copier;
 		}
 		try {
-			Extension extension = Extension.getInstance( copierSetting, antProject ); 
+			Extension extension = manager.getExtension( ExtensionManager.TYPE_RESOURCE_COPIER, copierSetting, environment ); 
 			return (ResourceCopier) extension;
 		} catch (Exception e) {
 			e.printStackTrace();

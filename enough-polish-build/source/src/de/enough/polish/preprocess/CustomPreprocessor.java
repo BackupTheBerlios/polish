@@ -31,11 +31,12 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.util.StringList;
 
@@ -187,17 +188,19 @@ public abstract class CustomPreprocessor extends Extension {
 	 * 
 	 * @param setting the definition of the line preprocessor 
 	 * @param preprocessor the preprocessor
-	 * @param project the Ant project
+	 * @param manager the extension manager
+	 * @param environment the environment settings
 	 * @return the initialised custom preprocessor
 	 * @throws BuildException when the defined class could not be instantiated
 	 */
 	public static CustomPreprocessor getInstance( PreprocessorSetting setting, 
 			Preprocessor preprocessor,
-			Project project ) 
+			ExtensionManager manager,
+			Environment environment) 
 	throws BuildException
 	{
 		try {
-			CustomPreprocessor customProcessor = (CustomPreprocessor) Extension.getInstance( setting, project );
+			CustomPreprocessor customProcessor = (CustomPreprocessor) manager.getExtension(  ExtensionManager.TYPE_PREPROCESSOR, setting, environment );
 			customProcessor.init( preprocessor, setting );
 			return customProcessor;
 		} catch (Exception e) {
@@ -260,6 +263,17 @@ public abstract class CustomPreprocessor extends Extension {
 	
 	public PreprocessorSetting getSetting() {
 		return this.setting;
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void execute(Device device, Locale locale, Environment environment)
+	throws BuildException 
+	{
+		// ignore...
 	}
 	
 	class Directive {

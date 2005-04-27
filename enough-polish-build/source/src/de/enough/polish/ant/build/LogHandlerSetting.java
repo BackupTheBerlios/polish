@@ -1,5 +1,5 @@
 /*
- * Created on 04-Apr-2005 at 13:44:01.
+ * Created on 26-Apr-2005 at 14:07:42.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -28,23 +28,22 @@ package de.enough.polish.ant.build;
 import de.enough.polish.ExtensionSetting;
 
 /**
- * <p>Contains the configuration for a resource copier.</p>
+ * <p>Configures a log handler.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        04-Apr-2005 - rob creation
+ *        26-Apr-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ResourceCopierSetting extends ExtensionSetting {
+public class LogHandlerSetting extends ExtensionSetting {
 
-	
 	/**
-	 * Createa new setting
+	 * Creates a new log handler setting
 	 */
-	public ResourceCopierSetting() {
+	public LogHandlerSetting() {
 		super();
 	}
-	
+
 }

@@ -40,6 +40,8 @@ import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
@@ -82,18 +84,17 @@ public class ResourceManager {
 	 * Creates a new resource manager.
 	 * 
 	 * @param setting the configuration
-	 * @param project the parent Ant project
-	 * @param evaluator the boolean evaluator
-	 * 
+	 * @param manager the extension manager
+	 * @param environment environment settings
 	 */
-	public ResourceManager(ResourceSetting setting, 
-				Project project, 
-				BooleanEvaluator evaluator ) 
+	public ResourceManager(ResourceSetting setting,
+				ExtensionManager manager,
+				Environment environment ) 
 	{
 		super();
 		this.resourceSetting = setting;
-		this.project = project;
-		this.booleanEvaluator = evaluator;
+		this.project = environment.getProject();
+		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
 		File resDir = setting.getDir();
 		if (!resDir.exists()) {
@@ -205,8 +206,8 @@ public class ResourceManager {
 		}
 		
 		// creating resource copier:
-		ResourceCopierSetting copierSetting = setting.getCopier(evaluator);
-		this.resourceCopier = ResourceCopier.getInstance( copierSetting, project );
+		ResourceCopierSetting copierSetting = setting.getCopier( environment.getBooleanEvaluator() );
+		this.resourceCopier = ResourceCopier.getInstance( copierSetting, manager, environment );
 		
 	}
 	
@@ -472,7 +473,7 @@ public class ResourceManager {
 						this.localizationSetting ); 
 		}
 		// resetting preprocessing variables:
-		currentPreprocessor.addVariables( this.translationManager.getPreprocessingVariables() );
+		currentPreprocessor.getEnvironment().addVariables( this.translationManager.getPreprocessingVariables() );
 		return this.translationManager;
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Created on 25-Apr-2005 at 13:05:48.
+ * Created on 25-Apr-2005 at 15:09:59.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -25,19 +25,12 @@
  */
 package de.enough.polish.propertyfunctions;
 
-import java.util.Locale;
-
-import org.apache.tools.ant.BuildException;
-
-import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.Extension;
+import de.enough.polish.util.StringUtil;
 
 /**
- * <p>Can be used to change property values, e.g. ${ uppercase( polish.Vendor ) }.</p>
- * <p>
- * You can register your own functions in ${polish.home}/custom-extensions.xml
- * </p>
+ * <p>Calculates the number of subvalues within a capability/variable.</p>
+ * <p>The sub-values are separated by commas, e.g. "nokia-ui, mmapi, wmapi".</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -46,34 +39,20 @@ import de.enough.polish.Extension;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class PropertyFunction extends Extension {
+public class NumberFunction extends PropertyFunction {
 
 	/**
-	 * Creates a new property function.
+	 * Creates a new uppercase function
 	 */
-	public PropertyFunction() {
+	public NumberFunction() {
 		super();
 	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
-	 */
-	public void execute(Device device, Locale locale, Environment environment)
-	throws BuildException
-	{
-		// ignore...
 
-	}
-	/**
-	 * Processes the given input.
-	 * 
-	 * @param input the input
-	 * @param arguments any additional arguments, null if none are given
-	 * @param environment the environment settings
-	 * @return the processed input
+	/* (non-Javadoc)
+	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
-	public abstract String process( String input, String[] arguments, Environment environment );
+	public String process(String input, String[] arguments, Environment environment) {
+		return "" + StringUtil.split( input,',' ).length;
+	}
 
 }

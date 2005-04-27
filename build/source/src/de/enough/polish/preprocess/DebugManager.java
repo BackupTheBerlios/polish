@@ -25,8 +25,12 @@
  */
 package de.enough.polish.preprocess;
 
+import de.enough.polish.Environment;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.DebugSetting;
 import de.enough.polish.ant.build.Filter;
+import de.enough.polish.ant.build.LogHandlerSetting;
+import de.enough.polish.log.LogHandler;
 
 import org.apache.tools.ant.BuildException;
 
@@ -59,6 +63,7 @@ public class DebugManager {
 	private HashMap levelOrder;
 	private boolean verbose;
 	private boolean useGui;
+	private LogHandler[] handlers;
 	
 	private void init(){
 		this.classPatterns = new HashMap();
@@ -115,10 +120,13 @@ public class DebugManager {
 	 * Creates a new debug manager.
 	 * 
 	 * @param setting The settings for this manager.
-	 * 
+	 * @param manager the extension manager
+	 * @param environment the environment settings
 	 * @throws BuildException when the pattern of an included debug-filter is invalid
 	 */
-	public DebugManager(DebugSetting setting) throws BuildException {
+	public DebugManager(DebugSetting setting, ExtensionManager manager, Environment environment ) 
+	throws BuildException 
+	{
 		init();
 		this.verbose = setting.isVerbose();
 		this.useGui = setting.useGui();
@@ -133,6 +141,19 @@ public class DebugManager {
 		for (int i = 0; i < filters.length; i++) {
 			Filter filter = filters[i];
 			addDebugSetting( filter.getPattern(), filter.getLevel() );
+		}
+		LogHandlerSetting[] handlerSettings = setting.getLogHandlers();
+		this.handlers = new LogHandler[ handlerSettings.length ];
+		try {
+			for (int i = 0; i < handlerSettings.length; i++) {
+				LogHandlerSetting handlerSetting = handlerSettings[i];
+				this.handlers[i] = (LogHandler) manager.getExtension( ExtensionManager.TYPE_LOG_HANDLER, handlerSetting, environment);
+			}
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to initialize log handler: " + e.toString() );
 		}
 	}
 

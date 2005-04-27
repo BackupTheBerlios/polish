@@ -83,7 +83,7 @@ public class Preprocessor {
 	public static final int SKIP_FILE = 8;
 	
 	public static final Pattern DIRECTIVE_PATTERN = 
-		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+)");
+		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+|//#abort)");
 
 	private DebugManager debugManager;
 	private File destinationDir;
@@ -590,6 +590,8 @@ public class Preprocessor {
 			changed = processTodo( argument, lines, className );
 		} else if ("foreach".equals( command) ) {
 			changed = processForeach( argument, lines, className );
+		} else if ("abort".equals( command) ) {
+			processAbort( argument, lines, className );
 		} else {
 			return checkInvalidDirective( className, lines, line, command, argument );
 		}
@@ -600,6 +602,18 @@ public class Preprocessor {
 		}
 	}
 	
+
+	/**
+	 * Aborts the preprocessing.
+	 * 
+	 * @param argument
+	 * @param lines
+	 * @param className
+	 */
+	private void processAbort(String argument, StringList lines, String className) {
+		String message = this.environment.writeProperties( argument );
+		throw new BuildException(  className + " line " + (lines.getCurrentIndex() + 1) + ": #abort: " + message );
+	}
 
 	private int checkInvalidDirective( String className, StringList lines, String line, String command, String argument )
 	throws BuildException
@@ -1187,13 +1201,13 @@ public class Preprocessor {
 	/**
 	 * Processes the #debug command.
 	 * 
-	 * @param argument the debug-level if defined
+	 * @param debugLevel the debug-level if defined
 	 * @param lines the source code
 	 * @param className the name of the source file
 	 * @return true when changes were made
 	 * @throws BuildException when the preprocessing fails
 	 */
-	private boolean processDebug(String argument, StringList lines, String className) 
+	private boolean processDebug(String debugLevel, StringList lines, String className) 
 	throws BuildException
 	{
 		lines.next();
@@ -1201,15 +1215,18 @@ public class Preprocessor {
 		if (!this.enableDebug) {
 			return (commentLine( line, line.trim(), lines ));
 		}
-		if (argument == null || "".equals(argument)) {
-			argument = "debug";
+		if (debugLevel == null || "".equals(debugLevel)) {
+			debugLevel = "debug";
 		}
-		if (this.debugManager.isDebugEnabled( className, argument )) {
+		if (this.debugManager.isDebugEnabled( className, debugLevel )) {
+			/*
 			boolean verboseDebug = this.debugManager.isVerbose();
 			if (verboseDebug) {
 				insertVerboseDebugInfo( lines, className );
 			}
-			return (verboseDebug | uncommentLine( line, lines ) | convertSystemOut( lines ));
+			return (verboseDebug | uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className ));
+			*/
+			return (uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className ));
 		} else {
 			return commentLine( line, line.trim(), lines );
 		}
@@ -1218,30 +1235,32 @@ public class Preprocessor {
 	/**
 	 * Processes the #mdebug command.
 	 * 
-	 * @param argument the debug-level if defined
+	 * @param debugLevel the debug-level if defined
 	 * @param lines the source code
 	 * @param className the name of the source file
 	 * @return true when changes were made
 	 * @throws BuildException when the preprocessing fails
 	 */
-	private boolean processMdebug(String argument, StringList lines, String className) 
+	private boolean processMdebug(String debugLevel, StringList lines, String className) 
 	throws BuildException
 	{
 		boolean hasNext = lines.next();
 		boolean debug = false;
 		boolean changed = false;
 		if (this.enableDebug) {
-			if (argument == null || "".equals(argument)) {
-				argument = "debug";
+			if (debugLevel == null || "".equals(debugLevel)) {
+				debugLevel = "debug";
 			}
-			debug = this.debugManager.isDebugEnabled( className, argument );
+			debug = this.debugManager.isDebugEnabled( className, debugLevel );
 		}
 		int startLine = lines.getCurrentIndex();
 		boolean endTagFound = false;
+		/*
 		boolean verboseDebug = (debug && this.debugManager.isVerbose());
 		if (verboseDebug) {
 			insertVerboseDebugInfo( lines, className );
 		}
+		*/
 		while ( hasNext ) {
 			String line = lines.getCurrent();
 			String trimmedLine = line.trim();
@@ -1250,7 +1269,7 @@ public class Preprocessor {
 				break;
 			}
 			if (debug) {
-				changed = changed | uncommentLine( line, lines ) | convertSystemOut( lines );
+				changed = changed | uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className );
 				
 			} else {
 				changed = changed | commentLine( line, trimmedLine, lines );
@@ -1263,7 +1282,8 @@ public class Preprocessor {
 					+ ": missing #enddebug directive for multi-line debug directive #mdebug."
 			);
 		}
-		return (verboseDebug || changed);
+		//return (verboseDebug || changed);
+		return (changed);
 	}
 	
 	/**
@@ -1273,13 +1293,14 @@ public class Preprocessor {
 	 * @param lines the current lines
 	 * @return true when the current line was changed
 	 */
-	private boolean convertSystemOut(StringList lines) {
+	private boolean convertSystemOut(StringList lines, String debugLevel, String className ) {
 		String debugCall;
 		if (this.useDefaultPackage) {
 			debugCall = "Debug.debug(";
 		} else {
 			debugCall = "de.enough.polish.util.Debug.debug(";
 		}
+		debugCall += "\"" + debugLevel + "\", \"" + className + "\", " + (lines.getCurrentIndex() + 1) + ", ";
 		String line = lines.getCurrent();
 		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
 		if (matcher.find()) {
@@ -1289,10 +1310,14 @@ public class Preprocessor {
 			if ( plusPos != -1 && plusPos != argument.length() -1 ) {
 				String firstArgument = argument.substring(0, plusPos ).trim();
 				String secondArgument = argument.substring( plusPos + 1 ).trim();
-				if (secondArgument.indexOf('"') != -1 && secondArgument.charAt(0) != '"') {
+				if ( (secondArgument.indexOf('"') != -1 && secondArgument.charAt(0) != '"')
+						|| (secondArgument.indexOf(']') != -1 )) 
+				{
 					// the '+' was in the middle of a string, e.g. " bla + blubb "
+					// or it was in something like "somearray[ index + 2 ]"
 					line = debugCall + argument; 					
 				} else {
+					// okay, we can split up the argument:
 					line = debugCall  
 						+ firstArgument + ", " + secondArgument;
 				}
@@ -1318,7 +1343,6 @@ public class Preprocessor {
 	 * 
 	 * @param lines the source code
 	 * @param className the name of the class
-	 */
 	private void insertVerboseDebugInfo( StringList lines, String className ) {
 		String debugVerbose;
 		if (this.useDefaultPackage) {
@@ -1335,6 +1359,7 @@ public class Preprocessor {
 		//lines.insert( debugVerbose );
 		//lines.next();
 	}
+	 */
 	
 	/**
 	 * Checks if the given line contains a directive.
@@ -1352,30 +1377,29 @@ public class Preprocessor {
 	 * 
 	 * @param device the current device
 	 * @param styleSheet the new style sheet
-	 * @deprecated use environment.setVariable() etc instead
 	 */
 	public void setSyleSheet(StyleSheet styleSheet, Device device) {
 		this.styleSheet = styleSheet;
 		if (styleSheet == null) {
-			removeSymbol("polish.useDynamicStyles");
-			removeSymbol("polish.useBeforeStyle");
-			removeSymbol("polish.useAfterStyle");			
+			this.environment.removeSymbol("polish.useDynamicStyles");
+			this.environment.removeSymbol("polish.useBeforeStyle");
+			this.environment.removeSymbol("polish.useAfterStyle");			
 		} else {
 			// the style sheet is not null:
 			if (styleSheet.containsDynamicStyles()) {
 				addSymbol("polish.useDynamicStyles");
 			} else {
-				removeSymbol("polish.useDynamicStyles");
+				this.environment.removeSymbol("polish.useDynamicStyles");
 			}
 			if (styleSheet.containsBeforeStyle()) {
-				addSymbol("polish.useBeforeStyle");
+				this.environment.addSymbol("polish.useBeforeStyle");
 			} else {
-				removeSymbol("polish.useBeforeStyle");
+				this.environment.removeSymbol("polish.useBeforeStyle");
 			}
 			if (styleSheet.containsAfterStyle()) {
-				addSymbol("polish.useAfterStyle");
+				this.environment.addSymbol("polish.useAfterStyle");
 			} else {
-				removeSymbol("polish.useAfterStyle");
+				this.environment.removeSymbol("polish.useAfterStyle");
 			}
 			// now set the CSS-symbols:
 			this.environment.addSymbols( styleSheet.getCssPreprocessingSymbols( device ) );

@@ -54,116 +54,6 @@
     	classpath="bin/classes:import/ant.jar:import/junit.jar" 
     	doctitle="the polish build framework"/>
 </target>
-    
-<target name="j2mepolish" >
-	<polish>
-	    <!-- info settings -->
-		<info
-			name="MyProject"
-			version="1.3.4"
-			description="A test project"
-			vendorName="enough software"
-			infoUrl=""
-			icon="icon.png"
-			jarName="${polish.vendor}-${polish.name}-example.jar" 
-			jarUrl="http://www.enough.de/midp/${polish.jarName}"
-		    copyright="Copyright 2004 enough software. All rights reserved."
-		    deleteConfirm="Do you really want to kill me?" 
-		    deleteNotify="http://www.enough.de/killed?MyProject"
-		    installNotify="http://www.enough.de/installed?MyProject"
-		    dataSize="120kb"
-		    >
-		    <!-- problem: texts need to be adjusted during the internationalisation! (description, info, deleteConfirm etc)  -->
-		    <!--
-			<vendorInfo
-				name="enough software"
-				url="http://www.enough.de"
-				description="Mobile Development Tools"
-		    	/>
-		    -->
-		    <authors>
-				<author name="Robert Virkus" email="robert@enough.de" />
-			</authors>
-	    </info>
-		<!-- selection of supported devices -->
-		<deviceRequirements>
-			<requirement name="JavaPackage" value="nokia-ui, mmapi" />
-			<requirement name="JavaProtocol" value="https, socket" />
-			<requirement name="HeapSize" value="500+kb" />
-			<requirement name="Vendor" value="Nokia, SonyEricsson" />
-			<requirement name="Feature" value="supportsPointer" />
-			<requirement name="JavaPlatform" value="MIDP/2.0+" />
-			<requirement name="CanvasSize" value="100+ x 100+" />
-			<requirement name="ScreenWidth" value="100+" />
-			<requirement name="BitsPerPixel" value="4+" />
-									<!--
-			<requirement name="MaxMidletSize" value="100+ kb" type="Memory" />
-			<requirement name="CanvasSize" value="100+ x 100+" />
-			<requirement name="ScreenSize" value="100+ x 100+" />
-			<requirement name="BitsPerPixel" value="4+" />
-			<or>
-				<requirement name="JavaPackage" value="nokia-ui, mmapi" />
-				<and>
-					<requirement name="JavaPackage" value="mmapi" />
-					<requirement name="JavaPlatform" value="MIDP/2.0+" />
-				</and>
-			</or>
-			<requirement name="Vendor" value="Nokia, SonyEricsson" />
-			<requirement name="Identifier" value="Nokia/6600, SonyEricsson/P900" />
-			<requirement name="JavaProtocol" value="https, socket" />
-			<requirement name="JavaPlatform" value="MIDP/1.0+" />
-			-->
-		</deviceRequirements>
-	    <!-- build settings -->
-		<build
-			symbols="ExampleSymbol, AnotherExample"
-			imageLoadStrategy="background"
-			fullscreen="menu"
-			usePolishGui="true"
-			devices="definitions/devices.xml"
-			vendors="definitions/vendors.xml"
-			groups="definitions/groups.xml"
-			workDir="build"
-			destDir="dist"
-			apiDir="import"
-			resDir="resources"
-			midp1Path="/home/enough/dev/WTK2.1/wtklib/emptyapi.zip"
-			midp2Path="/home/enough/dev/WTK2.1/wtklib/emptyapi.zip"
-			preverify="${polish.preverify}"
-			obfuscate="true"
-			obfuscator="ProGuard"
-			>
-			<!-- midlets definition -->
-			<midlets>
-				<midlet class="de.enough.polish.example.ExampleMidlet" />
-				<midlet name="J2ME Polish Demo" number="2" icon="no2.png" class="de.enough.polish.example.GuiDemoMidlet" />
-			</midlets>
-			<!-- use fullscreen classes were available -->
-			<!--
-			<fullscreen enable="yes" menu="yes" />
-			-->
-			<!-- project-wide variables - used for preprocessing  -->
-			<variables includeAntProperties="true">
-				<variable name="update-url" value="http://www.enough.de/update" />
-			</variables>
-			<!-- sources -->
-			<source
-				url="/home/enough/workspace/enough-polish-j2me/source/src"
-				/>
-			<!--
-			<source
-				url="./source/src"
-				polish="/home/enough/workspace/enough-polish-j2me/source/src"
-				/>
-			-->
-			<!-- debug settings -->
-			<debug enable="true" useGui="true" verbose="false" level="error">
-				<filter pattern="com.company.package.*" level="info" />
-				<filter pattern="com.company.package.MyClass" level="debug" />
-			</debug>
-		</build>
-	</polish>
-</target>
 
 
 <target name="bin-dist" depends="init">
@@ -189,7 +79,7 @@
 		 excludes="**/*.html"
 		 index="true"
 	     >
-		<fileset dir="." includes="custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
+		<fileset dir="." includes="extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
 		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 		<fileset dir="setup" includes="icons/*.*" />
 	</jar>

@@ -27,14 +27,14 @@ package de.enough.polish.jar;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.PackageSetting;
 
 /**
@@ -58,12 +58,12 @@ public abstract class Packager extends Extension {
 		super();
 	}
 	
-	public final static Packager getInstance( PackageSetting setting, Project antProject ) {
+	public final static Packager getInstance( PackageSetting setting, ExtensionManager manager, Environment environment ) {
 		if (setting == null) {
 			return new DefaultPackager();
 		} else if ( setting.getClassName() != null) {
 			try {
-				Packager packager = (Packager) Extension.getInstance( setting, antProject );
+				Packager packager = (Packager) manager.getExtension( ExtensionManager.TYPE_PACKAGER, setting, environment );
 				return packager;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -73,9 +73,13 @@ public abstract class Packager extends Extension {
 			if ( setting.getArguments() == null) {
 				throw new BuildException("Please set the \"arguments\"-attribute of the <package>-element.");
 			}
-			return new ExternalPackager( setting );
+			Packager packager = new ExternalPackager( setting );
+			manager.registerExtension(ExtensionManager.TYPE_PACKAGER, packager );
+			return packager;
 		} else {
-			return new DefaultPackager();
+			Packager packager = new DefaultPackager();
+			manager.registerExtension(ExtensionManager.TYPE_PACKAGER, packager );
+			return packager;
 		}
 	}
 	
@@ -84,19 +88,33 @@ public abstract class Packager extends Extension {
 	}
 
 	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void execute(Device device, Locale locale, Environment environment)
+	throws BuildException
+	{
+		try {
+			createPackage( new File( device.getClassesDir() ), device.getJarFile(), device, locale, environment );
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to package for device [" + device.getIdentifier() + "] into jar [" + device.getJarFile() + "]: " + e.toString() );
+		}
+	}
+	
 	/**
 	 * Creates a jar file from all the contents in the given directory.
 	 * 
 	 * @param sourceDir the directory which contents should be jarred
 	 * @param targetFile the target jar-file
 	 * @param device the current device
-	 * @param evalator the evaluator for conditional parameters
-	 * @param variables the variables
-	 * @param project the base Ant projects
+	 * @param locale the current locale, can be null
+	 * @param environment the environment settings
 	 * @throws IOException when the packaging fails
 	 * @throws BuildException when the packaging fails for another reason
 	 */
-	public abstract void createPackage( File sourceDir, File targetFile, Device device, BooleanEvaluator evalator, Map variables, Project project)
+	public abstract void createPackage( File sourceDir, File targetFile, Device device, Locale locale, Environment environment)
 	throws IOException, BuildException;
 
 }

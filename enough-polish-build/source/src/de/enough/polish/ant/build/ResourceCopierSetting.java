@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ant.build;
 
-import de.enough.polish.ant.ExtensionSetting;
+import de.enough.polish.ExtensionSetting;
 
 /**
  * <p>Contains the configuration for a resource copier.</p>

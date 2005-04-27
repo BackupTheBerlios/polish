@@ -1,6 +1,6 @@
 <!-- 
 	extensions.xml defines all default extensions. 
-	Use custom-extensions.xml fpr defining your own extensions.
+	Use custom-extensions.xml for defining your own extensions.
 
     Copyright (c) 2005 Robert Virkus / Enough Software
 
@@ -27,12 +27,21 @@
 -->
 
 <extensions>
+
+	<!-- type definitions -->
+	<typedefinition>
+		<name>loghandler</name>
+		<defaultclass>de.enough.polish.log.DefaultLogHandler</defaultclass>
+	</typedefinition>
+
+    <!--
 	<extension>
 	    <type>plugin</type>
     	<name>mBooster</name>
 	    <class>com.innaworks.mbooster.j2mepolish.MBoosterBuildPlugin</class>
     	<classpath>${polish.home}/import/mbooster.jar</classpath>
 	</extension>
+	-->
 	
 	
 	<!-- Property Functions -->
@@ -84,15 +93,31 @@
 		<name>classname</name>
 		<class>de.enough.polish.propertyfunctions.ClassNameFunction</class>
 	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>number</name>
+		<class>de.enough.polish.propertyfunctions.NumberFunction</class>
+	</extension>
 	
 	
 	<!-- Post Compiler -->
+	
 	<extension>
 		<type>postcompiler</type>
 		<name>floater</name>
-		<class>de.enough.floater.FloaterPostcompiler</class>
+		<class>de.enough.floater.FloaterPostCompiler</class>
 		<classpath>${polish.home}/import/enough-floater.jar:${polish.home}/import/enough-floater-evaluation.jar</classpath>
 	</extension>
+	
+	
+	<!-- Log Handler -->
+	<extension>
+		<type>loghandler</type>
+		<name>rms</name>
+		<clientClass>de.enough.polish.log.rms.RmsLogHandler</clientClass>
+	</extension>
+	
 		
 	
 </extensions>

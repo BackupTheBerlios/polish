@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ant.build;
 
-import de.enough.polish.ant.ExtensionSetting;
+import de.enough.polish.ExtensionSetting;
 
 /**
  * <p>Is used for integrating custom post compilers.</p>

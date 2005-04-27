@@ -27,6 +27,7 @@ package de.enough.polish;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+
 
 /**
  * <p>Manages the available extensions.</p>
@@ -56,13 +58,20 @@ public class ExtensionManager {
 	public static final String TYPE_PREPROCESSOR = "preprocessor";
 	public static final String TYPE_POSTCOMPILER = "postcompiler";
 	public static final String TYPE_OBFUSCATOR = "obfucator";
-	public static final String TYPE_RESOURCE_RENAMER = "resourcerenamer";
+	public static final String TYPE_RESOURCE_COPIER = "resourcecopier";
 	public static final String TYPE_PACKAGER = "packager";
 	public static final String TYPE_FINALIZER = "finalizer";
+	public static final String TYPE_LOG_HANDLER = "loghandler";
 	
 	
-	private final Map repository;
+	private final Map definitionsByType;
+	private final Map extensionsByType;
+	private final Map typesByName;
+	private final List instantiatedExtensions;
+	private final List instantiatedPlugins;
 	private final Project antProject;
+	
+	private Extension[] activeExtensions;
 
 	/**
 	 * @param antProject
@@ -74,26 +83,46 @@ public class ExtensionManager {
 	public ExtensionManager( Project antProject, InputStream is ) throws JDOMException, IOException {
 		super();
 		this.antProject = antProject;
-		this.repository = new HashMap();
-		loadExtensions( is );
+		this.definitionsByType = new HashMap();
+		this.extensionsByType = new HashMap();
+		this.typesByName = new HashMap();
+		this.instantiatedExtensions = new ArrayList();
+		this.instantiatedPlugins = new ArrayList();
+		loadDefinitions( is );
 	}
-	
-	private void loadExtensions( InputStream is ) 
+
+	/**
+	 * Loads the definitions from the given input stream.
+	 * 
+	 * @param is the input stream, usually from extensions.xml or custom-extensions.xml
+	 * @throws JDOMException when the XML is not wellformed
+	 * @throws IOException when the input stream could not be read
+	 */
+	private void loadDefinitions( InputStream is ) 
 	throws JDOMException, IOException 
 	{
 		SAXBuilder builder = new SAXBuilder( false );
 		Document document = builder.build( is );
-		List xmlList = document.getRootElement().getChildren();
+		// load type-definitions:
+		List xmlList = document.getRootElement().getChildren("typedefinition");
+		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
+			Element element = (Element) iter.next();
+			ExtensionTypeDefinition type = new ExtensionTypeDefinition( element );
+			this.typesByName.put( type.getName(), type );
+		}
+		
+		// load the actual extension-definitions:
+		xmlList = document.getRootElement().getChildren("extension");
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element element = (Element) iter.next();
 			try {
-				Extension extension = Extension.getInstance( element, this.antProject, this );
-				Map store = (Map) this.repository.get( extension.getType() );
+				ExtensionDefinition definition = new ExtensionDefinition( element, this.antProject, this );
+				Map store = (Map) this.definitionsByType.get( definition.getType() );
 				if ( store == null ) {
 					store = new HashMap();
-					this.repository.put( extension.getType(), store );
+					this.definitionsByType.put( definition.getType(), store );
 				}
-				store.put( extension.getName(), extension );
+				store.put( definition.getName(), definition );
 			} catch (Exception e) {
 				System.out.println("Unable to load extension [" + element.getChildTextTrim("class") + "]: " + e.toString() );
 			}
@@ -101,26 +130,158 @@ public class ExtensionManager {
 	}
 	
 	/**
+	/**
+	 * Retrieves an extension.
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param setting the configuration of the extension, taken from the build.xml
+	 * @return the extension, null when the type or the name is not known
+	 * @param environment the environment settings
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 */
+	public Extension getExtension(String type, ExtensionSetting setting, Environment environment) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		String name = setting.getName();
+		if (name == null) {
+			name = setting.getClassName();
+			if (name == null) {
+				throw new IllegalArgumentException("Unable to load extension without name or class-setting. Please check your build.xml file.");
+			}
+		}
+		return getExtension(type, name, setting, environment);
+	}
+	
+	/**
 	 * Retrieves an extension.
 	 * 
 	 * @param type the type of the extension, e.g. "propertyfunction"
 	 * @param name the name of the extensio, e.g. "uppercase"
+	 * @param environment the environment settings
 	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
 	 */
-	public Extension getExtension( String type, String name ) { 
-		Map store = (Map) this.repository.get( type );
+	public Extension getExtension( String type, String name, Environment environment ) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		return getExtension( type, name, null, environment );
+	}
+	
+	/**
+	 * Retrieves an extension.
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param name the name of the extensio, e.g. "uppercase"
+	 * @param setting the configuration of the extension, taken from the build.xml
+	 * @param environment the environment settings
+	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 */
+	public Extension getExtension( String type, String name, ExtensionSetting setting, Environment environment ) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		Map store = (Map) this.extensionsByType.get( type );
+		if (store != null) {
+			Extension extension = (Extension) store.get( name );
+			if (extension != null) {
+				return extension;
+			}
+		}
+		// this extension has not been instantiated so far,
+		// so do it now:
+		ExtensionDefinition definition = getDefinition( type, name );
+		ExtensionTypeDefinition typeDefinition = getTypeDefinition( type );
+		Extension extension = Extension.getInstance( typeDefinition, definition, setting, this.antProject, this, environment );
+		if (store == null) {
+			store = new HashMap();
+			this.extensionsByType.put( type, store );
+		}
+		this.instantiatedExtensions.add( extension );
+		store.put( name, extension );
+		return extension;
+	}
+	
+	/**
+	 * @param type
+	 * @return
+	 */
+	public ExtensionTypeDefinition getTypeDefinition(String type) {
+		return (ExtensionTypeDefinition) this.typesByName.get( type );
+	}
+
+	/**
+	 * Retrieves the defnition of the specified extension
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param name the name of the extensio, e.g. "uppercase"
+	 * @return the definition of the extension
+	 */
+	public ExtensionDefinition getDefinition( String type, String name ) {
+		Map store = (Map) this.definitionsByType.get( type );
 		if ( store == null ) {
 			return null;
 		} else {
-			return (Extension) store.get( name );
+			return (ExtensionDefinition) store.get( name );
 		}
-		
+	}
+	
+	public void registerExtension( String type, Extension extension ) {
+		Map store = (Map) this.extensionsByType.get( type );
+		if (store == null) {
+			store = new HashMap();
+			this.extensionsByType.put( type, store );
+		}
+		store.put( extension.toString(), extension );
+		this.instantiatedExtensions.add( extension );
 	}
 	
 	
 	public void preInitialize( Device device, Locale locale ) {
 		// call preInitialize on the registered plugins:
 	}
+	
+	public void initialize( Device device, Locale locale, Environment environment ) {
+		// find out active extensions:
+		BooleanEvaluator evaluator = environment.getBooleanEvaluator();
+		ArrayList activeList = new ArrayList();
+		for (Iterator iter = this.instantiatedExtensions.iterator(); iter.hasNext();) {
+			Extension extension = (Extension) iter.next();
+			ExtensionSetting setting = extension.getExtensionSetting();
+			if ( setting == null || setting.isActive(evaluator, this.antProject) ) {
+				activeList.add( extension );
+				// call initialize on all active extensions:
+				extension.intialize(device, locale, environment);
+			}
+		}
+		this.activeExtensions = (Extension[]) activeList.toArray( new Extension[ activeList.size() ] );
+	}
+	
+	public void postInitialize( Device device, Locale locale, Environment environment ) {
+		// call preInitialize on the registered plugins:
+	}
+	
+	public void preFinalize( Device device, Locale locale, Environment environment ) {
+		// call preInitialize on the registered plugins:
+	}
+	
+	public void finalize( Device device, Locale locale, Environment environment ) {
+		// call initialize on all active extensions:
+		for (int i = 0; i < this.activeExtensions.length; i++) {
+			Extension extension = this.activeExtensions[i];
+			extension.finalize(device, locale, environment);
+		}
+	}
+	
+	public void postFinalize( Device device, Locale locale, Environment environment ) {
+		// call preInitialize on the registered plugins:
+	}
+
 	
 	
 
