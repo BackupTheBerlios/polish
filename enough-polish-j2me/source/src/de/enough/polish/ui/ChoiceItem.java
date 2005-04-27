@@ -26,13 +26,11 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.Debug;
+import java.io.IOException;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-
-import java.io.IOException;
 
 /**
  * <p>Paints a single item of a choice group.</p>
@@ -305,7 +303,7 @@ public class ChoiceItem extends IconItem
 			}
 		} catch (IOException e) {
 			//#debug error
-			Debug.debug("Unable to load image [" + name + "]" , e );
+			System.out.println("Unable to load image [" + name + "]" + e );
 		}
 		
 	}

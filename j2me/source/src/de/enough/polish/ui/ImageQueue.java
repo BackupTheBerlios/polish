@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.Debug;
-
 import javax.microedition.lcdui.Image;
 
 /**
@@ -63,7 +61,7 @@ public class ImageQueue {
 				this.consumers[i].setImage(name, image );
 			} catch (Exception e) {
 				//#debug error
-				Debug.debug( "Unable to notify ImageConsumer about image [" + name + "]" , e );
+				System.out.println( "Unable to notify ImageConsumer about image [" + name + "]" + e );
 			}
 		}
 	}

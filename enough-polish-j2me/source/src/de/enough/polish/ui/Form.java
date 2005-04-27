@@ -512,8 +512,7 @@ public class Form extends Screen
 	 */
 	public int append( Item item)
 	{
-		this.container.add( item );
-		return this.container.size() - 1;
+		return append( item, null );
 	}
 	
 	/**
@@ -530,8 +529,13 @@ public class Form extends Screen
 	 */
 	public int append( Item item, Style itemStyle )
 	{
-		item.setStyle( itemStyle );
+		if (itemStyle != null) {
+			item.setStyle( itemStyle );
+		}
 		this.container.add( item );
+		if (this.isShown() ) {
+			repaint();
+		}
 		return this.container.size() - 1;
 	}
 

@@ -245,19 +245,29 @@ public class FramedForm extends Form {
 		if (! handled ) {
 			Container newFrame = null;
 			if (this.currentlyActiveContainer == this.container ) {
-				if ( gameAction == DOWN && this.bottomFrame != null && this.bottomFrame.appearanceMode != Item.PLAIN ) {
-					newFrame = this.bottomFrame;
-					System.out.println("activating bottom frame");
-				} else if ( gameAction == LEFT && this.leftFrame != null && this.leftFrame.appearanceMode != Item.PLAIN ) {
-					newFrame = this.leftFrame;
-				} else if ( gameAction == RIGHT && this.rightFrame != null && this.rightFrame.appearanceMode != Item.PLAIN ) {
-					newFrame = this.rightFrame;
-					System.out.println("activating right frame");
-				} else if ( gameAction == UP && this.topFrame != null && this.topFrame.appearanceMode != Item.PLAIN ) {
-					newFrame = this.topFrame;
+				Container[] nextFrames;
+				switch (gameAction) {
+					case DOWN:
+						nextFrames = new Container[]{ this.bottomFrame, this.leftFrame, this.rightFrame, this.topFrame };
+						break;
+					case UP:
+						nextFrames = new Container[]{ this.topFrame, this.leftFrame, this.rightFrame, this.bottomFrame };
+						break;
+					case LEFT:
+						nextFrames = new Container[]{ this.leftFrame, this.topFrame, this.bottomFrame, this.rightFrame };
+						break;
+					default:
+						nextFrames = new Container[]{ this.rightFrame, this.topFrame, this.bottomFrame, this.leftFrame };
+				}
+				for (int i = 0; i < nextFrames.length; i++) {
+					Container frame = nextFrames[i];
+					if (frame != null && frame.appearanceMode != Item.PLAIN) {
+						newFrame = frame;
+						break;
+					}
 				}
 			} else {
-				System.out.println("Changing back to default container");
+				//System.out.println("Changing back to default container");
 				newFrame = this.container;
 			}
 			if (newFrame != null) {
@@ -266,8 +276,8 @@ public class FramedForm extends Form {
 				this.currentlyActiveContainer = newFrame;
 				handled = true;
 			}
-		} else {
-			System.out.println("currently active container has handled the key press event");
+		//} else {
+		//	System.out.println("currently active container has handled the key press event");
 		}
 		return handled;
 	}

@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.Debug;
-
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 
@@ -187,7 +185,7 @@ public class Style
 					this.before = StyleSheet.getImage(beforeUrl, this, true);
 				} catch (Exception e) {
 					//#debug error
-					Debug.debug("unable to load before-image [" + beforeUrl + "]. ", e );
+					System.out.println("unable to load before-image [" + beforeUrl + "]. " + e );
 				}
 				if (this.before != null) {
 					this.beforeWidth = this.before.getWidth();
@@ -204,7 +202,7 @@ public class Style
 					this.after = StyleSheet.getImage(afterUrl, this, true);
 				} catch (Exception e) {
 					//#debug error
-					Debug.debug("unable to load after-image [" + afterUrl + "]. ", e );
+					System.out.println("unable to load after-image [" + afterUrl + "]. " + e );
 				}
 				if (this.after != null) {
 					this.afterWidth = this.after.getWidth();

@@ -26,12 +26,10 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.Debug;
+import java.io.IOException;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-
-import java.io.IOException;
 
 /**
  * <p>Shows a string with an optional image attached to it.</p>
@@ -211,7 +209,7 @@ implements ImageConsumer
 					}
 				} catch (IOException e) {
 					//#debug error
-					Debug.debug("unable to load image [" + imageName + "]", e);
+					System.out.println("unable to load image [" + imageName + "]" + e);
 				}
 			}
 		//#endif
@@ -230,7 +228,7 @@ implements ImageConsumer
 			}
 		} catch (IOException e) {
 			//#debug error
-			Debug.debug("unable to load image [" + url + "]", e);
+			System.out.println("unable to load image [" + url + "]" + e);
 		}		
 	}
 

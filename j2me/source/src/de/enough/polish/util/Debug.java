@@ -34,6 +34,8 @@ import javax.microedition.lcdui.StringItem;
 //#if polish.showLogOnError && polish.usePolishGui
 	import de.enough.polish.ui.StyleSheet;
 //#endif
+import de.enough.polish.log.LogEntry;
+import de.enough.polish.log.LogHandler;
 
 /**
  * <p>Is used for debugging of information.</p>
@@ -49,23 +51,37 @@ import javax.microedition.lcdui.StringItem;
 public final class Debug
 implements CommandListener
 {
-	public static final Command RETURN_COMMAND = new Command( "return", Command.SCREEN, 1 );
+	public static final Command RETURN_COMMAND = new Command( "Return", Command.SCREEN, 1 );
 	private static final ArrayList MESSAGES = new ArrayList( 100 );
 	private static Displayable returnDisplayable;
 	private static Display midletDisplay;
 	private static javax.microedition.lcdui.TextBox textBox;
+	//#if polish.log.handlers:defined
+		private static LogHandler[] handlers;
+		static {
+			//#= handlers = new LogHandler[ ${ number( polish.log.handlers )} ];
+			int i = 0;
+			//#foreach handler in polish.log.handlers
+				//#= handlers[i] = new ${ classname( handler )}();
+				i++;
+			//#next handler
+		}
+	//#endif
 	
 	/**
 	 * Prints a message.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 * @param exception the exception or just an ordinary object
 	 */
-	public static final void debug( String message, Object exception ) {
+	public static final void debug( String level, String className, int lineNumber, String message, Object exception ) {
 		if (exception instanceof Throwable) {
-			debug( message, (Throwable) exception );
+			debug( level, className, lineNumber, message, (Throwable) exception );
 		} else {
-			debug( message + exception );
+			debug( level, className, lineNumber, message + exception );
 		}
 	}
 
@@ -73,44 +89,70 @@ implements CommandListener
 	 * Prints a message.
 	 * This method should not be used directly.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
-	 * @param value the int value
+	 * @param value the char value
 	 */
-	public static final void debug( String message, int value ) {
-		debug( message + value );
-	}
-	
-	/**
-	 * Prints a message.
-	 * This method should not be used directly.
-	 * 
-	 * @param message the message.
-	 * @param value the long value
-	 */
-	public static final void debug( String message, long value ) {
-		debug( message + value );
+	public static final void debug( String level, String className, int lineNumber, String message, char value ) {
+		debug( level, className, lineNumber, message + value );
 	}
 
 	/**
 	 * Prints a message.
 	 * This method should not be used directly.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
-	 * @param value the short value
+	 * @param value the int value
 	 */
-	public static final void debug( String message, short value ) {
-		debug( message + value );
+	public static final void debug( String level, String className, int lineNumber, String message, int value ) {
+		debug( level, className, lineNumber, message + value );
 	}
 	
 	/**
 	 * Prints a message.
 	 * This method should not be used directly.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
+	 * @param message the message.
+	 * @param value the long value
+	 */
+	public static final void debug( String level, String className, int lineNumber, String message, long value ) {
+		debug( level, className, lineNumber, message + value );
+	}
+
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
+	 * @param message the message.
+	 * @param value the short value
+	 */
+	public static final void debug( String level, String className, int lineNumber, String message, short value ) {
+		debug( level, className, lineNumber, message + value );
+	}
+	
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 * @param value the byte value
 	 */
-	public static final void debug( String message, byte value ) {
-		debug( message + value );
+	public static final void debug( String level, String className, int lineNumber, String message, byte value ) {
+		debug( level, className, lineNumber, message + value );
 	}
 	
 	//#ifdef polish.cldc1.1
@@ -118,62 +160,120 @@ implements CommandListener
 	 * Prints a message.
 	 * This method should not be used directly.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 * @param value the float value
 	 */
-	//# public static final void debug( String message, float value ) {
-	//# 	debug( message + value );
+	//# public static final void debug( String level, String className, int lineNumber, String message, float value ) {
+	//# 	debug( level, className, lineNumber, message + value );
 	//# }
 	//#endif
-	
+
+	//#ifdef polish.cldc1.1
 	/**
 	 * Prints a message.
 	 * This method should not be used directly.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
+	 * @param message the message.
+	 * @param value the double value
+	 */
+	//# public static final void debug( String level, String className, int lineNumber, String message, double value ) {
+	//# 	debug( level, className, lineNumber, message + value );
+	//# }
+	//#endif
+
+	/**
+	 * Prints a message.
+	 * This method should not be used directly.
+	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 * @param value the boolean value
 	 */
-	public static final void debug( String message, boolean value ) {
-		debug( message + value );
+	public static final void debug( String level, String className, int lineNumber, String message, boolean value ) {
+		debug( level, className, lineNumber, message + value );
 	}
 	
 	/**
 	 * Prints the message or adds the message to the internal message list.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 */
-	public static final void debug( String message ) {
-		debug( message, null );
+	public static final void debug( String level, String className, int lineNumber, String message ) {
+		debug( level, className, lineNumber, message, null );
 	}
 	
 	/**
 	 * Logs the given exception.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param exception the exception which was catched.
 	 */
-	public static final void debug( Throwable exception ) {
-		debug( "Error", exception );
+	public static final void debug( String level, String className, int lineNumber, Throwable exception ) {
+		debug( level, className, lineNumber, "Error", exception );
 	}
 	
 	/**
 	 * Prints a message.
 	 * 
+	 * @param level the log level, e.g. "debug"
+	 * @param className the name of the class
+	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 * @param exception the exception
 	 */
-	public static final void debug( String message, Throwable exception ) {
-		System.out.println( message );
+	public static final void debug( String level, String className, int lineNumber, String message, Throwable exception ) {
+		String exceptionMessage = null;
 		if (exception != null) {
-			message += ": " + exception.toString();
+			exceptionMessage = exception.toString();
+		}
+		LogEntry logEntry = new LogEntry( className, lineNumber, System.currentTimeMillis(), level, message, exceptionMessage );
+		System.out.println( logEntry.toString() );
+		if (exception != null) {
 			exception.printStackTrace();
 		}
-		MESSAGES.add( message );
+		MESSAGES.add( logEntry );
 		if (MESSAGES.size() > 98) {
 			MESSAGES.remove( 0 );
 		}
 		if (Debug.textBox != null) {
 			addMessages();
 		}
+		// try to store this log-entry:
+		// add then entry to the interal list:
+		//#if polish.log.handlers:defined
+			if ( handlers != null ) {
+				for (int i = 0; i < handlers.length; i++) {
+					LogHandler handler = handlers[i];
+					try {
+						handler.handleLogEntry(logEntry);
+					} catch (Exception e) {
+						e.printStackTrace();
+						LogEntry entry = new LogEntry( "de.enough.polish.log.LogHandler", -1, System.currentTimeMillis(), "error", "Unable to handle log entry", e.toString() );
+						while (MESSAGES.size() > 5) {
+							MESSAGES.remove( 0 );
+						}
+						MESSAGES.add( entry );
+						//#if polish.showLogOnError && polish.usePolishGui 
+							showLog( StyleSheet.display );
+						//#endif
+					}
+				}
+			}
+		//#endif
+		
 		//#if polish.showLogOnError && polish.usePolishGui 
 			if (exception != null) {
 				showLog( StyleSheet.display );
@@ -192,20 +292,20 @@ implements CommandListener
 	 * @see #showLog(Display)
 	 */
 	public static final Form getLogForm( boolean reverseSort, CommandListener listener ) {
-		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
-		StringItem[] items = new StringItem[ messages.length ];
-		int index = messages.length - 1;
+		LogEntry[] entries = (LogEntry[]) MESSAGES.toArray( new LogEntry[ MESSAGES.size() ] );
+		StringItem[] items = new StringItem[ entries.length ];
+		int index = entries.length - 1;
 		for (int i = 0; i < items.length; i++) {
-			String message;
+			LogEntry entry;
 			if (reverseSort) {
-				message = messages[ index ];
+				entry = entries[ index ];
 				index--;
 			} else {
-				message = messages[i];
+				entry = entries[i];
 			}
-			items[i] = new StringItem( null, message );
+			items[i] = new StringItem( null, entry.toString() );
 		}
-		Form form = new Form( "debug", items );
+		Form form = new Form( "Log", items );
 		form.setCommandListener(listener);
 		form.addCommand(RETURN_COMMAND);
 		return form;
@@ -245,19 +345,19 @@ implements CommandListener
 	private static final void addMessages() {
 		StringBuffer buffer = new StringBuffer();
 		int maxSize = Debug.textBox.getMaxSize();
-		String[] messages = (String[]) MESSAGES.toArray( new String[ MESSAGES.size() ] );
+		LogEntry[] entries = (LogEntry[]) MESSAGES.toArray( new LogEntry[ MESSAGES.size() ] );
 		//#if polish.Debug.showLastMessageFirst != true
-			for (int i = 0; i < messages.length; i++) {
-				buffer.append( messages[i])
+			for (int i = 0; i < entries.length; i++) {
+				buffer.append( entries[i].toString())
 				.append( '\n' );
 			}
 			if ( buffer.length() >= maxSize) {
 				buffer.delete(0,  buffer.length() - maxSize  );
 			}
 		//#else
-			int i = messages.length - 1; 
+			int i = entries.length - 1; 
 			while (buffer.length() < maxSize && i >= 0 ) {
-				buffer.append( messages[i])
+				buffer.append( entries[i].toString() )
 					.append( '\n' );
 				i--;
 			}

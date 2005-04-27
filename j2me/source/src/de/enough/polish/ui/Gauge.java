@@ -25,11 +25,12 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.Debug;
-
-import javax.microedition.lcdui.*;
-
 import java.io.IOException;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 /**
  * Implements a graphical display, such as a bar graph, of an integer
@@ -887,7 +888,7 @@ implements ImageConsumer
 					this.image = StyleSheet.getImage( imageStr, this, false );
 				} catch (IOException e) {
 					//#debug error
-					Debug.debug("unable to load gauge-image [" + imageStr + "]: " + e.getMessage(), e );
+					System.out.println("unable to load gauge-image [" + imageStr + "]: " + e );
 				}
 			}
 		//#endif

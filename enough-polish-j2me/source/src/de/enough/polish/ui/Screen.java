@@ -36,7 +36,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.Debug;
 //#ifdef polish.Screen.imports:defined
 	//#include ${polish.Screen.imports}
 //#endif
@@ -442,7 +441,7 @@ public abstract class Screen
 			//#endif
 		} catch (Exception e) {
 			//#debug error
-			Debug.debug("error while calling showNotify", e );
+			System.out.println("error while calling showNotify" + e );
 		}
 		//#ifdef polish.Vendor.Siemens
 			this.showNotifyTime = System.currentTimeMillis();
@@ -590,7 +589,7 @@ public abstract class Screen
 			return animated;
 		} catch (Exception e) {
 			//#debug error
-			Debug.debug("animate() threw an exception", e );
+			System.out.println("animate() threw an exception" + e );
 			return false;
 		}
 	}
@@ -831,7 +830,7 @@ public abstract class Screen
 		//#ifdef polish.debug.error
 		} catch (RuntimeException e) {
 			//#debug error
-			Debug.debug( "unable to paint screen", e );
+			System.out.println( "unable to paint screen" + e );
 		}
 		//#endif
 	}
@@ -1017,7 +1016,7 @@ public abstract class Screen
 		try {
 		//#endif
 			//#debug
-			Debug.debug("keyPressed: [" + keyCode + "].");
+			System.out.println("keyPressed: [" + keyCode + "].");
 			int gameAction = -1;
 			
 			//#if tmp.menuFullScreen
@@ -1097,7 +1096,7 @@ public abstract class Screen
 			//#ifdef polish.debug.debug
 				if (!processed) {
 					//#debug
-					Debug.debug("unable to handle key [" + keyCode + "].");
+					System.out.println("unable to handle key [" + keyCode + "].");
 				}
 			//#endif
 			if (processed) {
@@ -1106,7 +1105,7 @@ public abstract class Screen
 		//#if polish.debug.error
 		} catch (Exception e) {
 			//#debug error
-			Debug.debug("keyPressed() threw an exception", e );
+			System.out.println("keyPressed() threw an exception" + e );
 		}
 		//#endif
 	}
@@ -1500,12 +1499,12 @@ public abstract class Screen
 			
 			//#ifdef polish.debug.debug
 				if (!processed) {
-					Debug.debug("PointerPressed at " + x + ", " + y + " not processed.");					
+					System.out.println("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
 			//#endif
 		} catch (Exception e) {
 			//#debug error
-			Debug.debug("PointerPressed at " + x + "," + y + " resulted in exception", e );
+			System.out.println("PointerPressed at " + x + "," + y + " resulted in exception" + e );
 		}
 	}
 	//#endif

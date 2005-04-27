@@ -26,15 +26,15 @@
  */
 package de.enough.polish.ui.backgrounds;
 
-import de.enough.polish.ui.*;
-import de.enough.polish.ui.Background;
-import de.enough.polish.ui.StyleSheet;
-import de.enough.polish.util.Debug;
+import java.io.IOException;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import java.io.IOException;
+import de.enough.polish.ui.Background;
+import de.enough.polish.ui.ImageConsumer;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StyleSheet;
 
 /**
  * <p>Paints an image as a background.</p>
@@ -108,7 +108,7 @@ implements ImageConsumer
 				this.image = StyleSheet.getImage(this.imageUrl, this, false);
 			} catch (IOException e) {
 				//#debug error
-				Debug.debug( "unable to load image [" + this.imageUrl + "]", e );
+				System.out.println( "unable to load image [" + this.imageUrl + "]" + e );
 			}
 			this.imageUrl = null;
 			this.isLoaded = true;

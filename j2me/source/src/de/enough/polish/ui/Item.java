@@ -32,7 +32,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.Debug;
 
 
 /**
@@ -1435,7 +1434,7 @@ public abstract class Item extends Object
 	 */
 	protected final void init( int firstLineWidth, int lineWidth ) {
 		//#debug
-		Debug.debug("intialising item " + this.getClass().getName() );
+		System.out.println("intialising item " + this.getClass().getName() );
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}

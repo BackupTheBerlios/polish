@@ -25,14 +25,13 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.ui.tasks.ImageTask;
-import de.enough.polish.util.Debug;
-
-import javax.microedition.lcdui.*;
-
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Timer;
+
+import javax.microedition.lcdui.*;
+
+import de.enough.polish.ui.tasks.ImageTask;
 
 /**
  * <p>Manages all defined styles of a specific project.</p>
@@ -128,7 +127,7 @@ public final class StyleSheet {
 			// tell the background-thread to do so now:		
 			if ( ! (parent instanceof ImageConsumer)) {
 				//#debug error
-				Debug.debug("StyleSheet.getImage(..) needs an ImageConsumer when images are loaded in the background!");
+				System.out.println("StyleSheet.getImage(..) needs an ImageConsumer when images are loaded in the background!");
 				return null;
 			}
 			if (scheduledImagesByName == null ) {

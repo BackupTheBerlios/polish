@@ -26,13 +26,12 @@
  */
 package de.enough.polish.ui.tasks;
 
-import de.enough.polish.ui.StyleSheet;
-import de.enough.polish.util.Debug;
+import java.io.IOException;
+import java.util.TimerTask;
 
 import javax.microedition.lcdui.Image;
 
-import java.io.IOException;
-import java.util.TimerTask;
+import de.enough.polish.ui.StyleSheet;
 
 /**
  * <p>Loads an Image in the background using a Timer.</p>
@@ -62,7 +61,7 @@ public class ImageTask extends TimerTask {
 	 */
 	public void run() {
 		//#debug
-		Debug.debug( "ImageTask: loading image [" + this.url + "].");
+		System.out.println( "ImageTask: loading image [" + this.url + "].");
 		
 		try {
 			//#ifdef polish.classes.ImageLoader:defined
@@ -75,10 +74,10 @@ public class ImageTask extends TimerTask {
 			//#endif
 		} catch (IOException e) {
 			//#debug error
-			Debug.debug( "ImageTask: unable to load image [" + this.url + "].", e);
+			System.out.println( "ImageTask: unable to load image [" + this.url + "]." + e);
 		} catch (Throwable e) {
 			//#debug fatal
-			//# Debug.debug( "ImageTask: unable to set image [" + this.url + "].", e);
+			System.out.println( "ImageTask: unable to set image [" + this.url + "]." + e);
 		}
 
 	}
