@@ -288,11 +288,20 @@ public abstract class Extension {
 			classPath = setting.getClassPath();
 		}
 		if (classPath == null && definition != null && definition.getClassPath() != null ) {
+			//System.out.println("definition-classPath=" + definition.getClassPath());
+			//System.out.println("polish.home=" + environment.getVariable("polish.home"));
 			classPath = new Path( antProject, environment.writeProperties( definition.getClassPath() ) );
 		}
 		if (classPath == null && typeDefinition != null && typeDefinition.getDefaultClassPath() != null ) {
 			classPath = new Path( antProject, environment.writeProperties( typeDefinition.getDefaultClassPath() ) );
 		}
+		/*
+		if (classPath != null) {
+			System.out.println("Using classpath [" + classPath.toString() + "]");
+		} else {
+			System.out.println("Unable to resolve classpath...");
+		}
+		*/
 		return classPath;
 	}
 

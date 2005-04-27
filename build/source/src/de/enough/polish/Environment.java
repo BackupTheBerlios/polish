@@ -83,6 +83,7 @@ public class Environment {
 		this.temporaryVariables = new HashMap();
 		this.extensionManager = extensionsManager;
 		this.booleanEvaluator = new BooleanEvaluator( this );
+		this.variables.putAll( antProject.getProperties() );
 	}
 	
 	public void initialize( Device newDevice, Locale newLocale ) {
@@ -91,7 +92,8 @@ public class Environment {
 		this.symbols.clear();
 		this.symbols.putAll( newDevice.getFeatures() );
 		this.variables.clear();
-		this.variables.putAll( newDevice.getCapabilities() );		
+		this.variables.putAll( newDevice.getCapabilities() );
+		this.variables.putAll( this.antProject.getProperties() );
 	}
 
 	/**
