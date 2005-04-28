@@ -25,6 +25,7 @@
  */
 package de.enough.polish;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -34,6 +35,7 @@ import java.util.regex.Pattern;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.propertyfunctions.PropertyFunction;
 import de.enough.polish.util.StringUtil;
 
@@ -66,6 +68,8 @@ public class Environment {
 	private Locale locale;
 	private Device device;
 	private final Project antProject;
+	private BuildSetting buildSetting;
+	private LibraryManager libraryManager;
 	
 
 	/**
@@ -460,6 +464,41 @@ public class Environment {
 	 */
 	public Project getProject() {
 		return this.antProject;
+	}
+
+	/**
+	 * Resolves the path to a file.
+	 * 
+	 * @param url the filepath that can contain properties such as ${polish.home}.
+	 * @return the appropriate file. Please note that the file doesn't need to exist,
+	 *         call file.exists() for determining that.
+	 */
+	public File resolveFile(String url) {
+		url = writeProperties( url );
+		File file = new File( url );
+		if (!file.isAbsolute()) {
+			file = new File( this.antProject.getBaseDir(), url );
+		}
+		return file;
+	}
+
+	/**
+	 * @param setting
+	 */
+	public void setBuildSetting(BuildSetting setting) {
+		this.buildSetting = setting;
+	}
+	
+	public BuildSetting getBuildSetting() {
+		return this.buildSetting;
+	}
+	
+	public void setLibraryManager( LibraryManager manager ) {
+		this.libraryManager = manager;
+	}
+	
+	public LibraryManager getLibraryManager() {
+		return this.libraryManager;
 	}
 
 	

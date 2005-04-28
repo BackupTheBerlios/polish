@@ -3,8 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
-	<property name="Version" value="1.2.5-preview" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 1.2.5-preview! " />
+	<property name="Version" value="1.3-beta1" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 1.3 &lt;Beta 1&gt;! " />
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
@@ -83,6 +83,13 @@
 		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 		<fileset dir="setup" includes="icons/*.*" />
 	</jar>
+	<!-- create the binary extensions distribution -->
+	<jar destfile="dist/enough-j2mepolish-extensions.jar"
+	     basedir="bin/extensions"
+		 excludes="**/*.html"
+		 index="true"
+	     >
+	</jar>
 	<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
 	<mkdir dir="../enough-polish-j2me/bin/preverified" />
 	<exec executable="${wtk.home}/bin/preverify">
@@ -101,7 +108,7 @@
 	</jar>
 	<!-- create the update zip file containing the jars -->
 	<zip destfile="dist/j2mepolish-${Version}.zip">
-		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,setup/Update.txt,LICENSE.txt" />
+		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,menu/build.xml" />
 		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml" />
 		<fileset dir="import" includes="midp1-cldc11.jar" />
@@ -225,27 +232,47 @@
 		<fileset dir="setup/macosx" excludes="**/CVS/**" />
 	</copy>
 	<!-- copy sample application -->
-	<mkdir dir="tmp/menu/src" />
-	<copy todir="tmp/menu/src">
+	<mkdir dir="tmp/samples/menu/source/src" />
+	<copy todir="tmp/samples/menu/source/src">
 		<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
 	</copy>
-	<copy todir="tmp/menu/" 
+	<copy todir="tmp/samples/menu/" 
 		>
-		<fileset dir="setup/menu" excludes="**/macosx/**" />
+		<fileset dir="setup/samples/menu" excludes="**/macosx/**" />
 		<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
 		<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
 		<fileset dir="../enough-polish-example-localization" includes="resources3/**/*.*" excludes="CVS"/>
 	</copy>
 	<!-- copy sysinfo application -->
-	<mkdir dir="tmp/sysinfo/src" />
-	<copy todir="tmp/sysinfo/src">
-		<fileset dir="../enough-polish-sysinfo/src" includes="**/*.java" />
+	<mkdir dir="tmp/samples/sysinfo/source/src" />
+	<copy todir="tmp/samples/sysinfo/source/src">
+		<fileset dir="../enough-polish-sysinfo/source/src" includes="**/*.java" />
 	</copy>
-	<copy todir="tmp/sysinfo/" 
+	<copy todir="tmp/samples/sysinfo/" 
 		>
 		<fileset dir="../enough-polish-sysinfo" includes="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO" />
-		<fileset dir="setup/sysinfo" excludes="**/macosx/**" />
+		<fileset dir="setup/samples/sysinfo" excludes="**/macosx/**" />
 		<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
+	</copy>
+	<!-- copy logviewer sample application -->
+	<mkdir dir="tmp/samples/logviewer/source/src" />
+	<copy todir="tmp/samples/logviewer/source/src">
+		<fileset dir="../enough-polish-logviewer/source/src" includes="**/*.java" />
+	</copy>
+	<copy todir="tmp/samples/logviewer/" 
+		>
+		<fileset dir="setup/samples/logviewer" excludes="**/macosx/**" />
+		<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
+	</copy>
+	<!-- copy roadrunner sample application -->
+	<mkdir dir="tmp/samples/roadrunner/source/src" />
+	<copy todir="tmp/samples/roadrunner/source/src">
+		<fileset dir="../enough-polish-roadrunner/source/src" includes="**/*.java" />
+	</copy>
+	<copy todir="tmp/samples/roadrunner/" 
+		>
+		<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
+		<fileset dir="../enough-polish-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
 	</copy>
 	<!-- copy source of J2ME Polish -->
 	<mkdir dir="tmp/j2mepolish-src/build" />
@@ -376,7 +403,7 @@
 	/>
 </target>
 	
-<target name="izpack" >
+<target name="izpack" description="calls only IzPack for generating the installer">
 	<!-- update installation settings -->
 	<propertyWriter srcfile="setup/install.xml"
 		            destfile="tmp/install.xml" />

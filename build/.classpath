@@ -4,6 +4,7 @@
 	<classpathentry kind="lib" path="import/ant.jar"/>
 	<classpathentry kind="lib" path="import/junit.jar"/>
 	<classpathentry kind="src" path="source/src"/>
+	<classpathentry output="bin/extensions" kind="src" path="source/extensions"/>
 	<classpathentry output="bin/test" kind="src" path="source/test"/>
 	<classpathentry kind="lib" path="import/jdom.jar"/>
 	<classpathentry kind="lib" path="import/proguard.jar"/>

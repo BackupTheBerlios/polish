@@ -57,7 +57,7 @@ public class ExtensionManager {
 	public static final String TYPE_PROPERTY_FUNCTION = "propertyfunction";
 	public static final String TYPE_PREPROCESSOR = "preprocessor";
 	public static final String TYPE_POSTCOMPILER = "postcompiler";
-	public static final String TYPE_OBFUSCATOR = "obfucator";
+	public static final String TYPE_OBFUSCATOR = "obfuscator";
 	public static final String TYPE_RESOURCE_COPIER = "resourcecopier";
 	public static final String TYPE_PACKAGER = "packager";
 	public static final String TYPE_FINALIZER = "finalizer";
@@ -280,6 +280,48 @@ public class ExtensionManager {
 	
 	public void postFinalize( Device device, Locale locale, Environment environment ) {
 		// call preInitialize on the registered plugins:
+	}
+
+	/**
+	 * @param type
+	 * @param environment
+	 * @return
+	 */
+	public Extension getActiveExtension(String type, Environment environment) {
+		Map store = (Map) this.extensionsByType.get( type );
+		if (store == null) {
+			return null;
+		}
+		BooleanEvaluator evaluator = environment.getBooleanEvaluator();
+		Object[] extensions = store.values().toArray();
+		for (int i = 0; i < extensions.length; i++) {
+			Extension extension = (Extension) extensions[i];
+			ExtensionSetting setting = extension.getExtensionSetting();
+			if (setting == null || setting.isActive(evaluator, this.antProject)) {
+				return extension;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param type
+	 * @param settings
+	 * @param environment
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 */
+	public void registerExtensions(String type, ExtensionSetting[] settings, Environment environment) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		if (settings == null) {
+			return;
+		}
+		for (int i = 0; i < settings.length; i++) {
+			ExtensionSetting setting = settings[i];
+			getExtension(type, setting, environment);
+		}
 	}
 
 	

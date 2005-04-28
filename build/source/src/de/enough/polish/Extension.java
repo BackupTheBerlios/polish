@@ -237,6 +237,7 @@ public abstract class Extension {
 			name = className;
 		}
 		Path classPath = getClassPath( antProject, typeDefinition, definition, setting, environment );
+		//System.out.println("Extension [" + className + "]: using classPath [" + classPath + "]");
 		ClassLoader classLoader;
 		if (setting != null) {
 			classLoader = setting.getClass().getClassLoader();
@@ -244,17 +245,23 @@ public abstract class Extension {
 			classLoader = definition.getClass().getClassLoader();
 		}
 		if (classPath != null) {
+			// add enough-j2mepolish-extensions.jar to the path:
+			String extensionsPath = environment.writeProperties("${polish.home}/import/enough-j2mepolish-extensions.jar:${polish.home}/bin/extensions");
+			classPath.add( new Path( antProject, extensionsPath ));
 			classLoader = new AntClassLoader(
-    			classLoader,
-    			antProject,  
-				classPath,
-				true);
+	    			classLoader,
+	    			antProject,  
+					classPath,
+					false);
 		}
-		Class extensionClass = classLoader.loadClass( className );
+		Class extensionClass = classLoader.loadClass( className );		
 		Extension extension = (Extension) extensionClass.newInstance();
 		extension.init( typeDefinition, definition, setting, antProject, manager );
 		if (setting != null && setting.hasParameters()) {
+			//System.out.println("Extension [" + className + "]: setting [" + setting.getParameters().length + "] parameters");
 			PopulateUtil.populate( extension, setting.getParameters(), antProject.getBaseDir() );
+		//} else {
+		//	System.out.println("Extension [" + className + "]: setting no parameters - setting == null: " + (setting == null) );
 		}
 		return extension;
 	}

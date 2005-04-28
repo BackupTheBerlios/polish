@@ -31,12 +31,16 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
+import de.enough.polish.ExtensionManager;
+import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -109,11 +113,12 @@ public class BuildSetting {
 	private File compilerDestDir;
 	private ResourceSetting resourceSetting;
 	private boolean alwaysUsePolishGui;
-	private PackageSetting packageSetting;
+	private ArrayList packageSettings;
 	private ArrayList compilers;
 	private String encoding = DEFAULT_ENCODING;
 	private boolean doPreverify = true;
 	private ArrayList postCompilers;
+	private ArrayList finalizers;
 	
 	/**
 	 * Creates a new build setting.
@@ -157,7 +162,6 @@ public class BuildSetting {
 			this.obfuscatorSettings = new ArrayList();
 		}
 		if (setting.isActive(this.project)) {
-			setting.checkSettings( this );
 			this.obfuscatorSettings.add( setting );
 			if (setting.isEnabled()) {
 				this.doObfuscate = true;
@@ -213,7 +217,10 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredPackager( PackageSetting setting ) {
-		this.packageSetting = setting;
+		if (this.packageSettings == null) {
+			this.packageSettings = new ArrayList();
+		}
+		this.packageSettings.add( setting );
 	}
 			
 	public void addConfiguredPreprocessor( PreprocessorSetting preprocessor ) {
@@ -241,6 +248,32 @@ public class BuildSetting {
 		}
 	}
 	
+	public void addConfiguredSign( SignSetting setting ) {
+		if (setting.getKeystore() == null) {
+			throw new BuildException("The \"keystore\" attribute of the <sign> element is mandatory.");
+		}
+		if (!setting.getKeystore().exists()) {
+			throw new BuildException("The \"keystore\" attribute of the <sign> element points to the non-existing file[" + setting.getKeystore().getAbsolutePath() + "].");
+		}
+		if (setting.getKey() == null) {
+			throw new BuildException("The \"key\" attribute of the <sign> element is mandatory.");
+		}
+		if (setting.getPassword() == null) {
+			throw new BuildException("The \"password\" attribute of the <sign> element is mandatory.");
+		}
+		addConfiguredFinalizer( setting );
+	}
+	
+	/**
+	 * @param setting
+	 */
+	public void addConfiguredFinalizer(FinalizerSetting setting) {
+		if (this.finalizers == null) {
+			this.finalizers = new ArrayList();
+		}
+		this.finalizers.add( setting );
+	}
+
 	public void addConfiguredCompiler(CompilerTask task) {
 		if (this.compilers == null) {
 			this.compilers = new ArrayList();
@@ -1311,8 +1344,12 @@ public class BuildSetting {
 		return this.compilerModePreverify;
 	}
 	
-	public PackageSetting getPackageSetting() {
-		return this.packageSetting;
+	public PackageSetting[] getPackageSettings() {
+		if (this.packageSettings == null) {
+			return new PackageSetting[0];
+		} else {
+			return (PackageSetting[]) this.packageSettings.toArray( new PackageSetting[ this.packageSettings.size() ]);
+		}
 	}
 
 	/**
@@ -1385,6 +1422,32 @@ public class BuildSetting {
 	 */
 	public boolean doPostCompile() {
 		return (this.postCompilers != null);
+	}
+
+	/**
+	 * @param manager
+	 * @param environment
+	 * @return
+	 */
+	public Finalizer[] getFinalizers(ExtensionManager manager, Environment environment) 
+	{
+		if (this.finalizers == null) {
+			return new Finalizer[0];
+		}
+		BooleanEvaluator evaluator = environment.getBooleanEvaluator();
+		ArrayList list = new ArrayList( this.finalizers.size() );
+		for (Iterator iter = this.finalizers.iterator(); iter.hasNext();) {
+			FinalizerSetting finalizerSetting = (FinalizerSetting) iter.next();
+			if (finalizerSetting.isActive( evaluator, this.project)) {
+				try {
+					Finalizer finalizer = (Finalizer) manager.getExtension( ExtensionManager.TYPE_FINALIZER, finalizerSetting, environment);
+					list.add( finalizer );
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return (Finalizer[]) list.toArray( new Finalizer[ list.size() ] );
 	}
 	
 }

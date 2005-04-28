@@ -44,6 +44,8 @@ public class LoggerThread extends Thread {
 	private final InputStream input;
 	private final PrintStream output;
 	private final String header;
+	private final boolean ignoreEmptyLines;
+	private OutputFilter filter;
 
 	/**
 	 * Creates a new logger thread.
@@ -53,29 +55,72 @@ public class LoggerThread extends Thread {
 	 * @param header the info which should be added in front of each line 
 	 */
 	public LoggerThread( InputStream input, PrintStream output, String header ) {
+		this( input, output, header, false, null );
+	}
+
+	/**
+	 * Creates a new logger thread.
+	 * 
+	 * @param input the input stream
+	 * @param output the stream to which the input should be redirected
+	 * @param header the info which should be added in front of each line 
+	 * @param ignoreEmptyLines true when empty lines should not be printed out
+	 */
+	public LoggerThread( InputStream input, PrintStream output, String header, boolean ignoreEmptyLines ) {
+		this( input, output, header, ignoreEmptyLines, null );
+	}
+	
+	/**
+	 * Creates a new logger thread.
+	 * 
+	 * @param input the input stream
+	 * @param output the stream to which the input should be redirected
+	 * @param header the info which should be added in front of each line 
+	 * @param ignoreEmptyLines true when empty lines should not be printed out
+	 * @param filter a filter for messages, is ignored when null
+	 */
+	public LoggerThread(InputStream input, PrintStream output, String header, boolean ignoreEmptyLines, OutputFilter filter) {
 		this.input = input;
 		this.output = output;
 		this.header = header;
+		this.ignoreEmptyLines = ignoreEmptyLines;
+		this.filter = filter;
 	}
-	
+
 	public void run() {
 		StringBuffer log = new StringBuffer( 300 );
-		log.append(this.header);
-		int startPos = this.header.length();
+		int startPos = 0;
+		if (this.header != null) {
+			log.append(this.header);
+			startPos = this.header.length();
+		}
+		
 		int c;
 		
 		try {
 			while ((c = this.input.read() ) != -1) {
 				if (c == '\n') {
 					String logMessage = log.toString();
-					this.output.println( logMessage );
+					if (!this.ignoreEmptyLines || logMessage.trim().length() > startPos ) {
+						if (this.filter == null) {
+							this.output.println( logMessage );
+						} else {
+							this.filter.filter(logMessage, this.output);
+						}
+					}
 					log.delete( startPos,  log.length() );
 				}  else if (c != '\r') {
 					log.append((char) c);
 				}
 			}
 			String logMessage = log.toString();
-			this.output.println( logMessage );
+			if (logMessage.trim().length() > startPos ) {
+				if (this.filter == null) {
+					this.output.println( logMessage );
+				} else {
+					this.filter.filter(logMessage, this.output);
+				}
+			}
 			this.input.close();
 		} catch (IOException e) {
 			e.printStackTrace();

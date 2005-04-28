@@ -155,4 +155,11 @@ public class Variables {
 	public Variable[] getUnconditionalVariables() {
 		return (Variable[]) this.unconditionalVariablesList.toArray( new Variable[ this.unconditionalVariablesList.size() ] );
 	}
+
+	/**
+	 * @return
+	 */
+	public Variable[] getVariables() {
+		return getVariables( this.variablesList );
+	}
 }

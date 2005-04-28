@@ -33,6 +33,11 @@
 		<name>loghandler</name>
 		<defaultclass>de.enough.polish.log.DefaultLogHandler</defaultclass>
 	</typedefinition>
+	
+	<typedefinition>
+		<name>packager</name>
+		<defaultclass>de.enough.polish.jar.ExternalPackager</defaultclass>
+	</typedefinition>
 
     <!--
 	<extension>
@@ -99,7 +104,42 @@
 		<name>number</name>
 		<class>de.enough.polish.propertyfunctions.NumberFunction</class>
 	</extension>
+
+	<!-- Obfuscator -->
 	
+	<extension>
+		<type>obfuscator</type>
+		<name>RetroGuard</name>
+		<class>de.enough.polish.obfuscate.RetroGuardObfuscator</class>
+		<classpath>${polish.home}/import/retroguard.jar</classpath>
+	</extension>
+
+	<extension>
+		<type>obfuscator</type>
+		<name>ProGuard</name>
+		<class>de.enough.polish.obfuscate.ProGuardObfuscator</class>
+		<classpath>${polish.home}/import/proguard.jar</classpath>
+	</extension>
+
+	<extension>
+		<type>obfuscator</type>
+		<name>YGuard</name>
+		<class>de.enough.polish.obfuscate.YGuardObfuscator</class>
+		<classpath>${polish.home}/import/yguard-lib.jar</classpath>
+	</extension>
+	
+	<extension>
+		<type>obfuscator</type>
+		<name>KlassMaster</name>
+		<class>de.enough.polish.obfuscate.KlassMasterObfuscator</class>
+		<classpath>${polish.home}/import/ZKM.jar:${wtk.home}/wtklib/kenv.zip</classpath>
+	</extension>
+
+	<extension>
+		<type>obfuscator</type>
+		<name>Dasho</name>
+		<class>de.enough.polish.obfuscate.DashoObfuscator</class>
+	</extension>
 	
 	<!-- Post Compiler -->
 	
@@ -112,12 +152,39 @@
 	
 	
 	<!-- Log Handler -->
+	
 	<extension>
 		<type>loghandler</type>
 		<name>rms</name>
 		<clientClass>de.enough.polish.log.rms.RmsLogHandler</clientClass>
 	</extension>
 	
+	<extension>
+		<type>loghandler</type>
+		<name>bluetooth</name>
+		<clientClass>de.enough.polish.log.bluetooth.BluetoothLogHandler</clientClass>
+	</extension>
+	
+	<!-- Packager -->
+	<extension>
+		<type>packager</type>
+		<name>7zip</name>
+		<class>de.enough.polish.jar.SevenZipPackager</class>
+	</extension>
+
+	<extension>
+		<type>packager</type>
+		<name>kzip</name>
+		<class>de.enough.polish.jar.KZipPackager</class>
+	</extension>
 		
+
+	<!-- Finalizer -->
+	
+	<extension>
+		<type>finalizer</type>
+		<name>sign</name>
+		<class>de.enough.polish.finalize.SignFinalizer</class>
+	</extension>
 	
 </extensions>

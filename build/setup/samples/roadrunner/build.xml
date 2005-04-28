@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="j2mepolish" name="enough-polish-example">
+	
+	<!-- The wtk.home property should point to the directory      -->
+	<!-- containing the Wireless Toolkit.                         -->
+	<property name="wtk.home" value="%{WTK_HOME}" />
+	<!-- The polish.home property should point to the directory   -->
+	<!-- containing the J2ME Polish installation.                 -->
+	<property name="polish.home" value="%{INSTALL_PATH}" />
+		
+	<!-- The siemens.home, nokia.home and motorola.home-          -->
+	<!-- properties can be necessary when their emulators         -->
+	<!-- should be started.                                       -->
+	<!-- The directory which contains the Siemens-SMTK
+		<property name="siemens.home" value="C:\siemens" />
+	-->
+	<!-- The directory which contains the Nokia-emulators
+		<property name="nokia.home" value="C:\Nokia" />
+	-->
+	<!-- The path to the Sony-Ericsson SDK
+		<property name="sony-ericsson.home" value="C:\SonyEricsson\J2ME_SDK" />
+	-->
+	<!-- The directory which contains the Motorola-emulators
+		<property name="motorola.home" value="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
+	-->
+		
+	<!-- Definition of the J2ME Polish task:                      -->
+	<taskdef name="j2mepolish" 
+		classname="de.enough.polish.ant.PolishTask" 
+		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
+	/>
+
+		
+	<!-- build targets, each target can be called via "ant [name]", 
+		 e.g. "ant clean", "ant notest j2mepolish" or just "ant" for calling the default-target -->
+	
+	<target name="test">
+		<property name="test" value="true"/>
+		<property name="dir.work" value="build/test"/>
+	</target>
+		
+	<target name="deploy">
+		<property name="deploy-url" value="http://193.22.164.185:8080/"/>
+	</target>
+			
+	<target name="init">
+	  	<property name="test" value="false"/>
+		<property name="deploy-url" value=""/>
+		<property name="dir.work" value="build/real"/>
+	</target>
+	    
+	<target depends="init" name="j2mepolish">
+		<j2mepolish>
+		    <!-- general settings -->
+			<info 
+				license="GPL" 
+				name="RoadRunner" 
+				vendorName="Enough Software" 
+				version="1.0.1"
+				copyright="Copyright 2005 Enough Software. All rights reserved." 
+				deleteConfirm="Do you really want to remove Roadrunner?" 
+				description="A frogger clone." 
+				icon="dot.png"
+				infoUrl="http://www.enough.de" 
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-roadrunner.jar" 
+				jarUrl="${deploy-url}${polish.jarName}" 
+		    />
+			<!-- selection of supported devices -->
+			<deviceRequirements if="test">
+				<requirement name="Identifier" value="Nokia/Series60"/>
+			</deviceRequirements>
+			<deviceRequirements unless="test">
+				<requirement name="Identifier" value="Nokia/Series60, Nokia/Series60Midp2, Sony-Ericsson/K700, Samsung/SGH-E800"/>
+			</deviceRequirements>
+		    <!-- build settings -->
+			<build	fullscreen="menu" 
+					usePolishGui="true"
+					sourceDir="source/src"
+					workDir="${dir.work}"
+				>
+				<!-- midlets definition -->
+				<midlet class="de.enough.roadrunner.RoadRunner" name="RoadRunner"/>
+				<!-- project-wide variables - used for preprocessing  -->
+				<variables>
+					<variable name="polish.TiledLayer.useBackBuffer" value="true"/>
+					<variable name="polish.TiledLayer.TransparentTileColor" value="0x00FF00"/>
+				</variables>
+				<manifestFilter if="polish.vendor == Samsung">
+					Manifest-Version, MIDlet-Name, MIDlet-Version, 
+					MIDlet-Vendor, MIDlet-1*,MIDlet-Icon?, MIDlet-Data-Size?, 
+					MIDlet-Description?, MIDlet-Info-URL?,
+					MicroEdition-Profile?, MicroEdition-Configuration?
+				</manifestFilter>
+				<jad>
+					<filter if="polish.vendor == Samsung">
+						MIDlet-Name, MIDlet-Version, MIDlet-Vendor,  
+						MIDlet-1*,MIDlet-Icon?, MIDlet-Data-Size?, MIDlet-Description?,
+						MIDlet-Info-URL?, MicroEdition-Profile?, MicroEdition-Configuration?
+					</filter>
+				</jad>
+				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
+				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" />
+				<!-- debug settings: only include debug setting when the test-property is true -->
+				<debug level="error" showLogOnError="true" verbose="true" if="test">
+					<filter level="debug" pattern="de.enough.roadrunner.*"/>
+					<filter level="info" pattern="de.enough.polish.ui.*"/>
+					<filter level="debug" pattern="de.enough.polish.ui.game.*"/>
+				</debug>
+				<resources
+					dir="resources"
+					defaultexcludes="yes"
+					excludes="readme.txt, *.definition"
+				>
+					<localization defaultLocale="de_DE" dynamic="true" locales="en_US, de_DE" if="test" />
+					<localization dynamic="true" locales="en_US, de_DE" unless="test" />
+				</resources>
+			</build>
+			<!-- launch emulator		-->
+			<emulator if="test" />
+	
+		</j2mepolish>
+	</target>
+	
+	
+	<target description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml" name="clean">
+		<delete dir="build"/>
+		<delete dir="dist"/>
+	</target>
+
+</project>

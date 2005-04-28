@@ -25,12 +25,11 @@
  */
 package de.enough.polish.ant.build;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 
-import de.enough.polish.ant.Setting;
+import de.enough.polish.ExtensionSetting;
 
 /**
  * <p>Containts information about the obfuscator which should be used.</p>
@@ -46,14 +45,11 @@ import de.enough.polish.ant.Setting;
  * @author Robert Virkus, robert@enough.de
  */
 public class ObfuscatorSetting 
-extends Setting 
+extends ExtensionSetting 
 {
 	
 	private ArrayList keeps;
 	private boolean enable = true;
-	private String name;
-	private String className;
-	private File classPath;
 	private boolean useDefaultPackage;
 	private boolean renameMidlets;
 
@@ -83,31 +79,7 @@ extends Setting
 	public boolean isEnabled() {
 		return this.enable;
 	}
-	
-	public void setName( String name ) {
-		this.name = name;
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public void setClass( String className ) {
-		this.className = className;
-	}
-	
-	public String getClassName() {
-		return this.className;
-	}
-	
-	public void setClassPath( File classPath ) {
-		this.classPath = classPath;
-	}
-	
-	public File getClassPath() {
-		return this.classPath;
-	}
-	
+		
 	public boolean hasKeepDefinitions() {
 		return (this.keeps.size() > 0);
 	}
@@ -125,24 +97,6 @@ extends Setting
 			preserves[i] = keep.getClassName();
 		}
 		return preserves;
-	}
-
-	/**
-	 * Checks the settings of this obfuscator.
-	 * This method distinguishes between the different ProGuard-versions.
-	 * 
-	 * @param parent the parent <build> element.
-	 */
-	public void checkSettings(BuildSetting parent) {
-		if ("ProGuard".equals( this.name )) {
-			// check if ProGuard 3.x is available:
-			try {
-				Class.forName("proguard.ClassSpecification");
-			} catch (ClassNotFoundException e) {
-				// only ProGuard 2 is available:
-				this.name = "ProGuard2";
-			}
-		}
 	}
 
 	/**

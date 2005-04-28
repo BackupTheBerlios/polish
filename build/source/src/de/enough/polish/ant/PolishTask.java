@@ -78,6 +78,8 @@ import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.emulator.Emulator;
 import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
@@ -115,7 +117,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.2.5<preview>";
+	private static final String VERSION = "1.3<beta1>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -179,7 +181,6 @@ public class PolishTask extends ConditionalTask {
 	private TextFile localeSourceFile;
 
 	private StringList localeCode;
-	private Packager packager;
 	
 	// move all classes into the default package
 	// during the preprocessing phase:
@@ -491,6 +492,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// create environment
 		this.environment = new Environment( this.extensionManager, getProject() );
+		this.environment.setBuildSetting( this.buildSetting );
 		
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
@@ -575,6 +577,7 @@ public class PolishTask extends ConditionalTask {
 		try {
 			this.libraryManager = new LibraryManager( getProject().getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
 			this.libraryManager.loadCustomLibraries( this.polishHomeDir, getProject() );
+			this.environment.setLibraryManager(this.libraryManager);
 		} catch (JDOMException e) {
 			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
 		} catch (IOException e) {
@@ -735,7 +738,15 @@ public class PolishTask extends ConditionalTask {
 					keepClasses = obfuscatorSetting.getPreserveClassNames();
 				}
 				if ((obfuscatorSetting.isEnabled())) {
-					Obfuscator obfuscator = Obfuscator.getInstance( obfuscatorSetting, getProject(), this.buildSetting.getApiDir(), this.libraryManager ); 
+					Obfuscator obfuscator;
+					try {
+						obfuscator = Obfuscator.getInstance( obfuscatorSetting, getProject(), this.extensionManager, this.environment );
+					} catch (BuildException e) {
+						throw e;
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new BuildException("Unable to initialize the obfuscator [" + obfuscatorSetting.getName() + "/" + obfuscatorSetting.getClassName() + "]: " + e.toString() );
+					}
 					obfuscatorsList.add( obfuscator );
 				}
 				
@@ -815,8 +826,13 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		
-		// get the packager for creating the final jar-file:
-		this.packager = Packager.getInstance( this.buildSetting.getPackageSetting(), this.extensionManager, this.environment );
+		try {
+			// get the packager for creating the final jar-file:
+			this.extensionManager.registerExtensions( ExtensionManager.TYPE_PACKAGER, this.buildSetting.getPackageSettings(), this.environment );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to initialize packager: " + e.toString() );
+		}
 		
 		// check if there has been an error at the last run:
 		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()
@@ -1924,7 +1940,11 @@ public class PolishTask extends ConditionalTask {
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
 			FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
-			this.packager.createPackage(classesDir, jarFile, device, locale, this.environment );
+			Packager packager = (Packager) this.extensionManager.getActiveExtension( ExtensionManager.TYPE_PACKAGER, this.environment );
+			if (packager == null ) {
+				packager = new DefaultPackager();
+			}
+			packager.createPackage(classesDir, jarFile, device, locale, this.environment );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
@@ -2012,6 +2032,12 @@ public class PolishTask extends ConditionalTask {
 	}
 
 	private void finalize( Device device, Locale locale ) {
+		this.extensionManager.finalize(device, locale, this.environment );
+		Finalizer[] finalizers = this.buildSetting.getFinalizers( this.extensionManager, this.environment );
+		for (int i = 0; i < finalizers.length; i++) {
+			Finalizer finalizer = finalizers[i];
+			finalizer.execute(device, locale, this.environment);
+		}
 		device.resetEnvironment();
 	}
 

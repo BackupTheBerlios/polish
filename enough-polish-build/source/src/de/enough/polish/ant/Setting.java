@@ -25,10 +25,6 @@
  */
 package de.enough.polish.ant;
 
-import java.util.ArrayList;
-
-import org.apache.tools.ant.BuildException;
-
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.Variables;
 
@@ -45,7 +41,6 @@ import de.enough.polish.ant.build.Variables;
  */
 public class Setting extends ConditionalElement {
 	
-	private ArrayList parameters;
 	private Variables variables;
 
 	/**
@@ -99,7 +94,7 @@ public class Setting extends ConditionalElement {
 	 * @return true when there are parameters for this setting.
 	 */
 	public boolean hasParameters() {
-		return (this.parameters != null);
+		return (this.variables != null);
 	}
 	
 	/**
@@ -108,10 +103,10 @@ public class Setting extends ConditionalElement {
 	 * @return an array of variable, can be empty but not null.
 	 */
 	public Variable[] getParameters() {
-		if (this.parameters == null) {
+		if (this.variables == null) {
 			return new Variable[ 0 ];
 		} else {
-			return (Variable[]) this.parameters.toArray( new Variable[ this.parameters.size() ]);
+			return this.variables.getVariables();
 		}
 	}
 
