@@ -152,7 +152,7 @@ implements OutputFilter
 		//System.out.println(arguments);
 		int result = ProcessUtil.exec( arguments, "7zip: ", true, this );
 		if (result != 0) {
-			throw new BuildException("Unable to create [" + targetFile.getAbsolutePath() + "]: 7zip returned [" + result + "].");
+			throw new BuildException("7zip: Unable to create [" + targetFile.getAbsolutePath() + "]: 7zip returned [" + result + "].");
 		}
 	}
 

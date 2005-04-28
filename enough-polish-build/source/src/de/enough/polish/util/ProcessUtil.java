@@ -157,7 +157,7 @@ public final class ProcessUtil {
 	throws IOException 
 	{
 		Runtime runtime = Runtime.getRuntime();
-		Process process = runtime.exec( arguments );
+		Process process = runtime.exec( arguments, null, dir );
 		LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info, true, filter );
 		errorLog.start();
 		LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info, true, filter );

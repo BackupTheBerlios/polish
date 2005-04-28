@@ -32,9 +32,12 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.Variable;
 import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 
@@ -53,6 +56,7 @@ extends Packager
 implements OutputFilter
 {
 
+	private Variable[] parameters;
 
 	/**
 	 * Creates a new packager 
@@ -83,27 +87,65 @@ implements OutputFilter
 		} else  {
 			arguments.add( "kzip.exe" );
 		}
-		File tempFile = new File( "kziptemp.ZIP" );
+		File tempFile = new File( sourceDir, "kziptemp.ZIP" );
 		arguments.add( "kziptemp.ZIP" ); // target JAR file
 		arguments.add("/y"); // overwrite existing files
+		// add optional parameters:
+		if (this.parameters != null) {
+			BooleanEvaluator evaluator = environment.getBooleanEvaluator();
+			Project project = environment.getProject();
+			for (int i = 0; i < this.parameters.length; i++) {
+				Variable parameter = this.parameters[i];
+				if ( parameter.isConditionFulfilled(evaluator, project) ) {
+					String name = parameter.getName();
+					String value = parameter.getValue();
+					if (name.charAt(0) == '/') {
+						if (value == null || value.length() == 0) {
+							arguments.add( name );
+						} else {
+							arguments.add( name + value );
+						}
+					} else if ("blocks".equals(name) || ("blocksplit".equals(name))) {
+						try {
+							int split = Integer.parseInt( value );
+							if (split < 0 || split > 2048) {
+								System.out.println("kzplit: Warning: the blocksplit value [" + value + "] is not supported - trying to call kzip anyhow...");
+							}
+						} catch (NumberFormatException e) {
+							throw new BuildException("kzip: Unable to set blocksplit value [" + value + "]: Use a number between 0 and 2048." );
+						}
+					} else {
+						throw new BuildException("kzip: Unable to set parameter [" + name + "]: start parameter with \"/\" to set any parameter." );
+					}
+				}
+			}
+		}
 		arguments.add("/r"); // recursive
 		arguments.add( "*.*" ); // source directory
-		System.out.println(arguments);
+		//System.out.println(arguments);
 		int result = ProcessUtil.exec( arguments, "kzip: ", true, this, sourceDir );
 		if (result != 0) {
-			throw new BuildException("Unable to create [" + targetFile.getAbsolutePath() + "]: kzip returned [" + result + "].");
+			throw new BuildException("kzip: Unable to create [" + targetFile.getAbsolutePath() + "]: kzip returned [" + result + "].");
 		}
 		// now rename temporary file:
-		tempFile.renameTo(targetFile);
+		boolean renamed = tempFile.renameTo(targetFile);
+		if (!renamed) {
+			throw new BuildException("kzip: Unable to rename [" + tempFile.getAbsolutePath() + " to " + targetFile.getAbsolutePath() + "].");
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.OutputFilter#filter(java.lang.String, java.io.PrintStream)
 	 */
 	public void filter(String message, PrintStream output) {
-		//if (message.indexOf("Adding") == -1) {
+		if (message.indexOf("Adding") == -1) {
 			output.println( message );
-		//}
+		}
 	}
+	
+	public void setParameters( Variable[] parameters, File baseDir ) {
+		this.parameters = parameters;
+	}
+
 	
 }
