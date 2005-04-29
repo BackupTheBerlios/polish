@@ -38,6 +38,7 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 
 import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
+import de.enough.polish.plugin.eclipse.utils.States;
 
 /**
  * <p></p>
@@ -54,40 +55,62 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
     public static final int DIRECTION_UP = 1;
     public static final int DIRECTION_DOWN = 2;
     
-    //private Matcher matcher;
-	
-    //public BlockMarker() {
-        //Pattern pattern = Pattern.compile("$\\s*//#(\\S+)");
-        //this.matcher = pattern.matcher("");
-    //}
+    public static final String[] IF_DIRECTIVES = {"if","ifdef","ifndef"};
+    public static final String[] ELSE_DIRECTIVES = {"else","elif","elifdef","elifndef"};
+    public static final String[] ENDIF_DIRECTIVES = {"endif"};
     
-
+    public static final int STATE_INIT = 1;
+    public static final int STATE_SEARCH_FOR_IF = 2;
+    public static final int STATE_SEARCH_FOR_ELSE = 4;
+    public static final int STATE_SEARCH_FOR_ENDIF = 8;
+    
+    private States state;
+   
+	
+    public BlockMarker() {
+        this.state = new States();
+    }
+    
     
     public void updateAnnotations(ITextSelection selection) {
         super.updateAnnotations(selection);
-        
-//        List positions = findOtherPositionsOfIf(selection.getStartLine());
+//        List positions = findOtherPositionsforElse(selection.getStartLine());
 //        for (Iterator iterator = positions.iterator(); iterator.hasNext(); ) {
 //            Position position = (Position) iterator.next();
 //            System.out.println("DEBUG:BlockMarker.updateAnnotations(...):position:"+makeStringFromPosition(position));
 //        }
-//        //System.out.println("DEBUG:getDirectiveFromLine:"+makeStringFromPosition(getDirectiveFromLine(selection.getStartLine())));
+//        
 //        return;
         
         List newPositions = new ArrayList();
+        Position blockDirectiveAsPosition;
         
-        Position blockDirectiveAsPosition = findBlockDirectiveAtCaret(selection);
+        blockDirectiveAsPosition = findBlockDirectiveAtCaret(selection);
         if(blockDirectiveAsPosition == null) {
            System.out.println("DEBUG:BlockMarker.updateAnnotations(...):Nothing to do for BlockMarker.updateAnnotations(...).");
            return;
         }
         
-        String blockDirectiveAsString = makeStringFromPosition(blockDirectiveAsPosition);
+//        blockDirectiveAsPosition = getDirectiveFromLine(selection.getStartLine());
+//        if(blockDirectiveAsPosition == null || ! blockDirectiveAsPosition.overlapsWith(selection.getOffset(),selection.getLength())) {
+//            System.out.println("DEBUG:BlockMarker.updateAnnotations(...):Nothing to do for BlockMarker.updateAnnotations(...).");
+//            return;
+//        }
         
-        if("if".equals(blockDirectiveAsString)) {
+        // Search for corresponding directives.
+        String blockDirectiveAsString = makeStringFromPosition(blockDirectiveAsPosition);
+        blockDirectiveAsString = blockDirectiveAsString.intern();
+        
+        if(isDirective(blockDirectiveAsString,IF_DIRECTIVES)) {
             newPositions.addAll(findOtherPositionsForIf(selection.getStartLine()));
         }
-        
+        if(isDirective(blockDirectiveAsString,ELSE_DIRECTIVES)) {
+            newPositions.addAll(findOtherPositionsforElse(selection.getStartLine()));
+        }
+        if(isDirective(blockDirectiveAsString,ENDIF_DIRECTIVES)) {
+            newPositions.addAll(findOtherPositionsForEndif(selection.getStartLine()));
+        }
+        // Annotate the found positions of corresponding directives.
         Position position;
         String text;
         Annotation annotation;
@@ -110,7 +133,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
             System.out.println("ERROR:BlockMarker.makeStringFromPosition:Parameter is null.");
             return "";
         }
-        
         String result;
         try {
             result = getDocument().get(position.getOffset(),position.getLength());
@@ -121,6 +143,7 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         return result;
     }
 
+    // This method can be replaced with getDirectiveFromLine and a test if selection overlaps with directive.
     private Position findBlockDirectiveAtCaret(ITextSelection selection) { 
 	    IDocument document = getDocument();
         int offsetOfSelectionInDocument = selection.getOffset();
@@ -154,7 +177,7 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
 	    int lastIndexOfLine;
         try {
             IRegion lineInformtation = document.getLineInformationOfOffset(offset);
-            lastIndexOfLine = lineInformtation.getOffset()+lineInformtation.getLength()-1; // TODO: we need a -1 here??
+            lastIndexOfLine = lineInformtation.getOffset()+lineInformtation.getLength()-1;
         } catch (BadLocationException exception) {
             System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):Parameter out of valid range.");
 	        return null;
@@ -210,72 +233,51 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
 	        return null;
         }
         
-        //This code uses regex
-//        String lineAsString;
-//        int leftmostIndex;
-//        int rightmostIndex;
-//        this.matcher.reset(lineAsString);
-//        boolean hasMatched = this.matcher.lookingAt();
-//        String matchedWord = "";
-//        if(hasMatched) {
-//            matchedWord = this.matcher.group();
-//        }
-//        else {
-//            return null;
-//        }
-//        if(matchedWord != null && matchedWord.length() > 0) {
-//            leftmostIndex = lineAsRegion.getOffset()+this.matcher.start();
-//            rightmostIndex = lineAsRegion.getOffset()+this.matcher.end();
-//            return new Position(leftmostIndex,rightmostIndex-leftmostIndex);
-//        }
-//        return null;
-        
-        
         int lastIndexInLine = lineAsRegion.getOffset() + lineAsRegion.getLength() -1;
         char c;
-        int state = 0;
+        int stateOfScanner = 0;
         int leftmostIndex = 0;
         int rightmostIndex = 0;
         boolean directiveFound = false;
         for(int i = lineAsRegion.getOffset(); i <= lastIndexInLine;i++) {
             try {
                 c = document.getChar(i);
-                if(state == 0) {
+                if(stateOfScanner == 0) {
                     if(Character.isWhitespace(c)) {
                         continue;
                     }
-                    state = 1;
+                    stateOfScanner = 1;
                 }
-                if(state == 1) {
+                if(stateOfScanner == 1) {
                     if(c == '/') {
-                        state = 2;
+                        stateOfScanner = 2;
                         continue;
                     }
                 }
-                if(state == 2) {
+                if(stateOfScanner == 2) {
                     if(c == '/') {
-                        state = 3;
+                        stateOfScanner = 3;
                         continue;
                     }
                 }
-                if(state == 3) {
+                if(stateOfScanner == 3) {
                     if(c == '#') {
-                        state = 4;
+                        stateOfScanner = 4;
                         continue; 
                     }
                 }
-                if(state == 4) { // First char of directive found.
+                if(stateOfScanner == 4) { // First char of directive found.
                     if(Character.isJavaIdentifierPart(c)) {
                         leftmostIndex = i;
                         rightmostIndex = i;
                         directiveFound = true;
-                        state = 5;
+                        stateOfScanner = 5;
                         continue;
                     }
                     directiveFound = false; //the char after # is not valid. abort.
                     break;
                 }
-                if(state == 5) {
+                if(stateOfScanner == 5) {
                     if(Character.isJavaIdentifierPart(c)) {
                         rightmostIndex = i;
                         continue;
@@ -296,12 +298,195 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         return null;
     }
 
+    // Beware to use internd strings only as we compare with ==.
+    private boolean isDirective(String directive, String[] targetDirectives) {
+        for (int i = 0; i < targetDirectives.length; i++) {
+            if(directive == targetDirectives[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
  
+    private List findOtherPositionsforElse(int startLineIndex) {
+        int level = 0;
+        this.state.setState(STATE_SEARCH_FOR_ELSE);
+        
+        IDocument document = getDocument();
+        int maxLineIndex = document.getNumberOfLines() - 1;
+        List positionsOfCorrespondingBlockElements = new LinkedList();
+        
+        if(startLineIndex < 0 || startLineIndex > maxLineIndex) {
+            System.out.println("ERROR:BlockMarker.findOtherPositionsForIf(...):Parameter startLineIndex out of bounds.");
+            return positionsOfCorrespondingBlockElements;
+        }
+        
+        int currentLineIndex;
+        Position directiveAsPosition;
+        String directiveAsString;
+        
+        // Advance up the document.
+        for(currentLineIndex = startLineIndex;currentLineIndex >= 0; currentLineIndex--) {
+            directiveAsPosition = getDirectiveFromLine(currentLineIndex);
+           
+            directiveAsString = makeStringFromPosition(directiveAsPosition);
+            if(directiveAsString == null){
+                System.out.println("ERROR:BlockMarker.findOtherPositionsOfIf(...):Parameter 'directiveAsString' is null.");
+                continue;
+            }
+            
+//          Use intern to speed comparison up a bit.
+            directiveAsString = directiveAsString.intern();
+	        
+            if(isDirective(directiveAsString,IF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_IF)) {
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+	            break;
+	        }
+            
+            if(isDirective(directiveAsString,ELSE_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ELSE)) {
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+	            this.state.reset();
+	            this.state.addState(STATE_SEARCH_FOR_IF);
+	            this.state.addState(STATE_SEARCH_FOR_ELSE);
+	            continue;
+	        }
+            
+//          We found a nested if block.
+	        if(isDirective(directiveAsString,IF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_IF)) { 
+	            level = level + 1;
+	            continue;
+	        }
+	        // We found a endif in the wrong level.
+	        if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
+	            level = level - 1;
+	            continue;
+	        }
+        }
+        
+        // We found the corresponding if, search for the endif and other else.
+        this.state.reset();
+        this.state.addState(STATE_SEARCH_FOR_ENDIF);
+        this.state.addState(STATE_SEARCH_FOR_ELSE);
+        
+//      Advance down the document.
+        for(currentLineIndex = startLineIndex+1;currentLineIndex <= maxLineIndex; currentLineIndex++) {
+            directiveAsPosition = getDirectiveFromLine(currentLineIndex);
+            
+//          Do we have a directive in this line?
+            if(directiveAsPosition == null) {
+                // ... if not, try the next line.
+               continue;
+            }
+            directiveAsString = makeStringFromPosition(directiveAsPosition);
+            if(directiveAsString == null){
+                System.out.println("ERROR:BlockMarker.findOtherPositionsOfIf(...):Parameter 'directiveAsString' is null.");
+                continue;
+            }
+            
+	        // Use intern to speed comparison up a bit.
+            directiveAsString = directiveAsString.intern();
+	        
+	        if(isDirective(directiveAsString,ELSE_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ELSE)) {
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+	            this.state.reset();
+	            this.state.addState(STATE_SEARCH_FOR_ENDIF);
+	            this.state.addState(STATE_SEARCH_FOR_ELSE); // We may find other else on this level.
+	            continue;
+	        }
+	        // We found a endif on this line in the right level.
+	        if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
 
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+	            // Dont go any further, we reached the corresponding endif to this if.
+	            break;
+	        }
+	        // We found a nested if block.
+	        if(isDirective(directiveAsString,IF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_IF)) { 
+	            level = level + 1;
+	            continue;
+	        }
+	        // We found a endif in the wrong level.
+	        if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
+	            level = level - 1;
+	            continue;
+	        }
+        }
+        
+        return positionsOfCorrespondingBlockElements;
+    }
+
+    private List findOtherPositionsForEndif(int startLineIndex) {
+        int level = 0;
+        this.state.setState(STATE_SEARCH_FOR_ENDIF);
+        
+        IDocument document = getDocument();
+        int maxLineIndex = document.getNumberOfLines() - 1;
+        List positionsOfCorrespondingBlockElements = new LinkedList();
+        
+        if(startLineIndex < 0 || startLineIndex > maxLineIndex) {
+            System.out.println("ERROR:BlockMarker.findOtherPositionsForIf(...):Parameter startLineIndex out of bounds.");
+            return positionsOfCorrespondingBlockElements;
+        }
+        
+        int currentLineIndex;
+        Position directiveAsPosition;
+        String directiveAsString;
+        
+        // Advance up the document.
+        for(currentLineIndex = startLineIndex;currentLineIndex >= 0; currentLineIndex--) {
+            directiveAsPosition = getDirectiveFromLine(currentLineIndex);
+           
+            
+            if(directiveAsPosition == null){
+                continue;
+            }
+            directiveAsString = makeStringFromPosition(directiveAsPosition);
+//          Use intern to speed comparison up a bit.
+            directiveAsString = directiveAsString.intern();
+	        
+            if(isDirective(directiveAsString,IF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_IF)) {
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+	            System.out.println("DEBUG:FOUND IF2");
+	            break;
+	        }
+            
+            if(isDirective(directiveAsString,ELSE_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ELSE)) {
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+//	            this.state.reset();
+//	            this.state.addState(STATE_SEARCH_FOR_IF);
+//	            this.state.addState(STATE_SEARCH_FOR_ELSE);
+	            System.out.println("DEBUG:FOUND ELSE2");
+	            continue;
+	        }
+            if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
+	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
+	            System.out.println("DEBUG:FOUND ENDIF2");
+	            this.state.reset();
+	            this.state.addState(STATE_SEARCH_FOR_IF);
+	            this.state.addState(STATE_SEARCH_FOR_ELSE);
+	            continue;
+	        }
+//          We found a nested if block.
+            // TODO:BIG PROBLEM: This condition shall trigger when we
+	        if(isDirective(directiveAsString,IF_DIRECTIVES) && level != 0) { 
+	            System.out.println("DEBUG:BlockMarker.findOtherPositionsForEndif(...):levelUp:directiveAsString:"+directiveAsString);
+	            level = level + 1;
+	            continue;
+	        }
+	        // We found a endif in the wrong level.
+	        if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
+	            System.out.println("DEBUG:BlockMarker.findOtherPositionsForEndif(...):levelDown:directiveAsString:"+directiveAsString);
+	            level = level - 1;
+	            continue;
+	        }
+        }
+        return positionsOfCorrespondingBlockElements;
+    }
+    
     // startLineIndex is the line with the if directive to start from.
     private List findOtherPositionsForIf(int startLineIndex) {
         int level = 0;
-        int state = 0;
+        this.state.setState(STATE_SEARCH_FOR_IF);
         IDocument document = getDocument();
         int maxLineIndex = document.getNumberOfLines() - 1;
         List positionsOfCorrespondingBlockElements = new LinkedList();
@@ -332,39 +517,33 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
 	        // Use intern to speed comparison up a bit.
             directiveAsString = directiveAsString.intern();
 	        
-	        if(directiveAsString == "if" && level == 0 && state == 0) {
+	        if(isDirective(directiveAsString,IF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_IF)) {
 	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
-	            state = 1;
+	            this.state.setState(STATE_SEARCH_FOR_ELSE);
+	            this.state.addState(STATE_SEARCH_FOR_ENDIF);
 	            continue;
 	        }
-	        if(directiveAsString == "elif" && level == 0 && state == 1) {
-	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
-	            continue;
-	        }
-	        if(directiveAsString == "else" && level == 0 && state == 1) {
+	        if(isDirective(directiveAsString,ELSE_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ELSE)) {
 	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
 	            continue;
 	        }
+	        
 	        // We found a endif on this line in the right level.
-	        if(directiveAsString == "endif" && level == 0 && state == 1) {
+	        if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
 	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
-	            state = 2;
 	            // Dont go any further, we reached the corresponding endif to this if.
 	            break;
 	        }
 	        // We found a nested if block.
-	        if(directiveAsString == "if" && state != 0) {
-	            System.out.println("level up from if");
+	        if(isDirective(directiveAsString,IF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_IF)) {
 	            level = level + 1;
 	            continue;
 	        }
 	        // We found a endif in the wrong level.
-	        if(directiveAsString == "endif" && state != 2) {
-	            System.out.println("level down from endif");
+	        if(isDirective(directiveAsString,ENDIF_DIRECTIVES) && level != 0) {
 	            level = level -1;
 	            continue;
 	        }
-            
         }
         return positionsOfCorrespondingBlockElements;
     }

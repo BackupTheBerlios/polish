@@ -6,11 +6,6 @@ package de.enough.polish.plugin.eclipse.polish;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.registry.EditorRegistry;
-
-import de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor;
 
 
 
@@ -19,12 +14,12 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor;
  */
 public class PolishNature implements IProjectNature {
 
-    private static final String JAVA_EXTENSION = "*.java";
+    //private static final String JAVA_EXTENSION = "*.java";
     IProject project;
-    private String previousDefaultEditorForJavaFiles = "";
-    private String defaultJavaEditor = "org.eclipse.jdt.ui.CompilationUnitEditor";
+    //private String previousDefaultEditorForJavaFiles = "";
+    //private String defaultJavaEditor = "org.eclipse.jdt.ui.CompilationUnitEditor";
     
-    private EditorRegistry registry = (EditorRegistry)WorkbenchPlugin.getDefault().getEditorRegistry();
+    //private EditorRegistry registry = (EditorRegistry)WorkbenchPlugin.getDefault().getEditorRegistry();
     
     /* (non-Javadoc)
      * @see org.eclipse.core.resources.IProjectNature#configure()
