@@ -34,12 +34,14 @@ import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
 
 
@@ -60,7 +62,8 @@ public class PolishEditor extends CompilationUnitEditor {
     
     private PropertyChangeListener propertyChangeListener;
 
-    protected PolishOccurrencesMarker polishOccurrencesMarker;
+    protected OccurrencesMarkerManager occurrencesMarkerManager;
+    protected OccurrencesMarkerManager.DefaultConfiguration defaultOccurrenceMarkerManagerConfiguration;
     
     class PropertyChangeListener implements IPropertyChangeListener{
 
@@ -77,7 +80,8 @@ public class PolishEditor extends CompilationUnitEditor {
 
     public PolishEditor() {
         this.propertyChangeListener = new PropertyChangeListener();
-        this.polishOccurrencesMarker = new PolishOccurrencesMarker(this);
+        this.occurrencesMarkerManager = new OccurrencesMarkerManager();
+        this.defaultOccurrenceMarkerManagerConfiguration = new OccurrencesMarkerManager.DefaultConfiguration();
     }
     
     
@@ -109,7 +113,8 @@ public class PolishEditor extends CompilationUnitEditor {
     }
    
     protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-        if(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).affectsTextPresentation(event)) {
+        PolishSourceViewerConfiguration polishSourceViewerConfiguration = (PolishSourceViewerConfiguration)getSourceViewerConfiguration();
+        if(polishSourceViewerConfiguration.affectsTextPresentation(event)) {
             return true;
         }
         return super.affectsTextPresentation(event);
@@ -122,12 +127,19 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     
     
-    protected void updateOccurrenceAnnotations(ITextSelection selection,
-            CompilationUnit astRoot) {
+    protected void updateOccurrenceAnnotations(ITextSelection selection, CompilationUnit astRoot) {
+        if(selection == null){
+            System.out.println("PolishEditor.updateOccurrenceAnnotations(...):Parameter 'selection'is null.");
+            return;
+        }
+        if(astRoot == null){
+            System.out.println("PolishEditor.updateOccurrenceAnnotations(...):Parameter 'astRoot' is null.");
+            return;
+        }
         List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
+      
+        this.occurrencesMarkerManager.updateAnnotations(selection,listOfComments);
         
-        System.out.println("PolishEditor.updateOccurenceAnnotations(...):enter.");
-        this.polishOccurrencesMarker.updateAnnotations(selection,listOfComments); //TODO: Put this in to get our marking back to work.
         super.updateOccurrenceAnnotations(selection, astRoot);
     }
     
@@ -135,12 +147,20 @@ public class PolishEditor extends CompilationUnitEditor {
     // Use this mechanism to get informed about install and uninstall.
     protected void installOccurrencesFinder() {
         System.out.println("PolishEditor.installOccurrencesFinder().enter");
-        this.polishOccurrencesMarker.setSourceViewer(getSourceViewer());
+        ISourceViewer sourceViewer = getSourceViewer();
+        if(sourceViewer == null) {
+            System.out.println("PolishEditor.installOccurrencesFinder():sourceViewer is null.");
+            return;
+        }
+        // Reset the Marker Manager, maybe something has changed.
+        this.defaultOccurrenceMarkerManagerConfiguration.setAnnotationModel(sourceViewer.getAnnotationModel());
+        this.defaultOccurrenceMarkerManagerConfiguration.setDocument(sourceViewer.getDocument());
+        this.occurrencesMarkerManager.configure(this.defaultOccurrenceMarkerManagerConfiguration);
         super.installOccurrencesFinder();
     }
     protected void uninstallOccurrencesFinder() {
         System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
-        this.polishOccurrencesMarker.removeAnnotations();
+        this.occurrencesMarkerManager.removeAnnotations();
         super.uninstallOccurrencesFinder();
     }
 }

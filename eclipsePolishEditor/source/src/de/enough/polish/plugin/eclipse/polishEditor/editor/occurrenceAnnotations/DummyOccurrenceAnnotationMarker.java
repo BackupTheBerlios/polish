@@ -1,5 +1,5 @@
 /*
- * Created on Apr 20, 2005 at 3:15:08 PM.
+ * Created on Apr 27, 2005 at 3:17:50 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,10 +23,11 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor.editor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations;
 
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
+
+import de.enough.polish.plugin.eclipse.polishEditor.editor.IConfiguration;
 
 /**
  * <p></p>
@@ -34,20 +35,24 @@ import org.eclipse.jface.text.ITextSelection;
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        Apr 20, 2005 - ricky creation
+ *        Apr 27, 2005 - ricky creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public abstract class AbstractMarker {
+public class DummyOccurrenceAnnotationMarker extends
+        AbstractOccurrenceAnnotationMarker {
 
     
     
-//    public void configure(IConfiguration configuration) {
-//        configuration.configure(this);
-//    }
-    
-    public abstract boolean wantMarkOcurrencesWithGivenSelection(IDocument document, ITextSelection selection);
-    
-    public abstract void updateOcurrenceMarks(IDocument document, ITextSelection selection);
-    
+    public boolean ableToAnnotate(ITextSelection selection) {
+        return true;
+    }
+    public void configure(IConfiguration configuration) {
+        System.out.println("DummyOccurrenceAnnotationMarker.configure(...):enter.");
+        super.configure(configuration);
+    }
+    public void updateAnnotations(ITextSelection selection) {
+        System.out.println("DummyOccurrenceAnnotationMarker.updateAnnotations(...):enter.");
+        super.updateAnnotations(selection);
+    }
 }
