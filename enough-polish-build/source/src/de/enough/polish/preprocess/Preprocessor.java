@@ -110,15 +110,17 @@ public class Preprocessor {
 	private TextFileManager textFileManager;
 	private CssAttributesManager cssAttributesManager;
 	private final Environment environment;
+	private final boolean replacePropertiesWithoutDirective;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
 	 * 
 	 * @param project the project settings
-	 * @param environment
+	 * @param environment environment settings
 	 * @param destinationDir the destination directory for the preprocessed files
 	 * @param backup true when the found source files should be backuped
 	 * @param indent true when comments should be intended
+	 * @param replacePropertiesWithoutDirective true when ${name} properties should be replaced without using the //#= directive
 	 * @param newExt the new extension for preprocessed files
 	 */
 	public Preprocessor(
@@ -126,8 +128,10 @@ public class Preprocessor {
 			Environment environment, File destinationDir,
 			boolean backup,
 			boolean indent,
+			boolean replacePropertiesWithoutDirective,
 			String newExt) 
 	{
+		this.replacePropertiesWithoutDirective = replacePropertiesWithoutDirective;
 		this.debugManager = project.getDebugManager();
 		this.enableDebug = project.isDebugEnabled();
 		this.usePolishGui = project.usesPolishGui();
@@ -483,6 +487,12 @@ public class Preprocessor {
 					} else if (result == SKIP_FILE) {
 						return SKIP_FILE;
 					}
+				} else if (this.replacePropertiesWithoutDirective && line.indexOf("${") != -1) {
+					String newLine = this.environment.writeProperties(line);
+					if (!newLine.equals(line)) {
+						changed = true;
+						lines.setCurrent( newLine );
+					}
 				} else if (this.useDefaultPackage){
 					//line = line.trim();
 					if (line.startsWith("package ")) {
@@ -519,6 +529,14 @@ public class Preprocessor {
 	{
 		if (!trimmedLine.startsWith("//#")) {
 			// this is not a preprocesssing directive:
+			if (this.replacePropertiesWithoutDirective && trimmedLine.indexOf("${") != -1) {
+				String newLine = this.environment.writeProperties( line );
+				//System.out.println("replaced property without //#=: " + newLine);
+				if (!newLine.equals( line )) {
+					lines.setCurrent(newLine);
+					return CHANGED;
+				}
+			}
 			return NOT_CHANGED;
 		}
 		int tabPos  = trimmedLine.indexOf('\t');

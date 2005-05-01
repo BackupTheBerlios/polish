@@ -25,6 +25,9 @@
  */
 package de.enough.polish;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+
+import de.enough.polish.exceptions.InvalidComponentException;
 
 
 /**
@@ -89,7 +94,38 @@ public class ExtensionManager {
 		this.instantiatedExtensions = new ArrayList();
 		this.instantiatedPlugins = new ArrayList();
 		loadDefinitions( is );
+		is.close();
 	}
+	
+	/**
+	 * Loads custom extensions, when there are any.
+	 * 
+	 * @param polishHomeDir
+	 * @param project
+	 * @throws JDOMException
+	 * @throws InvalidComponentException
+	 */
+	public void loadCustomDefinitions(File polishHomeDir, Project project) 
+	throws JDOMException, InvalidComponentException {
+		File file = new File( project.getBaseDir(), "custom-extensions.xml");
+		if (!file.exists() && (polishHomeDir != null) ) {
+			file = new File( polishHomeDir, "custom-extensions.xml" );
+		}
+		if (file.exists()) {
+			try {
+				loadDefinitions( new FileInputStream( file ) );
+			} catch (FileNotFoundException e) {
+				// this shouldn't happen
+				System.err.println("Unable to load [custom-extensions.xml]: " + e.toString() );
+				e.printStackTrace();
+			} catch (IOException e) {
+				// this also shouldn't happen
+				System.err.println("Unable to load [custom-extensions.xml]: " + e.toString() );
+				e.printStackTrace();
+			}
+		}
+	}
+
 
 	/**
 	 * Loads the definitions from the given input stream.

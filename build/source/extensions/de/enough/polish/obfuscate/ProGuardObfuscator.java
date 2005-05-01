@@ -25,25 +25,24 @@
  */
 package de.enough.polish.obfuscate;
 
-import de.enough.polish.Device;
-import de.enough.polish.util.StringUtil;
+import java.io.File;
+import java.io.PrintStream;
+import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import proguard.ClassPath;
 import proguard.ClassPathEntry;
-import proguard.ClassSpecification;
-import proguard.Configuration;
-import proguard.ProGuard;
-import proguard.classfile.ClassConstants;
+import de.enough.polish.Device;
+import de.enough.polish.ExtensionDefinition;
+import de.enough.polish.util.JarUtil;
+import de.enough.polish.util.OutputFilter;
+import de.enough.polish.util.ProcessUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
- * <p>Is used to obfuscate code with the ProGuard 3.x obfuscator.</p>
+ * <p>Is used to obfuscate code with the ProGuard obfuscator.</p>
  * <p>For details of ProGuard, please refer to http://proguard.sourceforge.net/.</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
@@ -54,9 +53,13 @@ import proguard.classfile.ClassConstants;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class ProGuardObfuscator extends Obfuscator {
+public class ProGuardObfuscator 
+extends Obfuscator
+implements OutputFilter
+{
 	
 	private boolean doOptimize;
+	private File proGuardJarFile;
 
 	/**
 	 * Creates a new pro guard obfuscator.
@@ -65,13 +68,79 @@ public class ProGuardObfuscator extends Obfuscator {
 		super();
 	}
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.obfuscate.Obfuscator#obfuscate(de.enough.polish.Device, java.io.File, java.lang.String[], org.apache.tools.ant.types.Path)
 	 */
 	public void obfuscate(Device device, File sourceFile, File targetFile, String[] preserve, Path bootClassPath) 
 	throws BuildException 
 	{
-		System.out.println("Starting obfuscation with ProGuard.");
+		if (this.proGuardJarFile == null) {
+			ExtensionDefinition definition = getExtensionDefinition();
+			if (definition != null) {
+				this.proGuardJarFile = new File( getEnvironment().writeProperties( definition.getClassPath().toString() ) );
+			}
+		}
+		ArrayList argsList = new ArrayList();
+		// the executable:
+		argsList.add( "java" );
+		argsList.add( "-jar" );
+		argsList.add( this.proGuardJarFile.getAbsolutePath() );
+		// the input jar file:
+		argsList.add( "-injars" );
+		argsList.add( sourceFile.getAbsolutePath() );
+		// the output jar file:
+		argsList.add( "-outjars" );
+		argsList.add( targetFile.getAbsolutePath() );
+		// the libraries:
+		argsList.add( "-libraryjars" );
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( bootClassPath.toString() ).append( File.pathSeparatorChar );
+		String[] apiPaths = device.getClassPaths();
+		for (int i = 0; i < apiPaths.length; i++) {
+			buffer.append( apiPaths[i].toString() );
+			if (i != apiPaths.length - 1 ) {
+				buffer.append( File.pathSeparatorChar );
+			}
+		}
+		argsList.add( buffer.toString() );
+		// add classes that should be kept from obfuscating:
+		for (int i = 0; i < preserve.length; i++) {
+			argsList.add( "-keep" );
+			argsList.add( "class " + preserve[i] );
+		}
+		// add settings:
+		if (!this.doOptimize) {
+			argsList.add( "-dontoptimize" );
+		}
+		argsList.add( "-allowaccessmodification" );
+		argsList.add( "-printmapping" );
+		argsList.add( device.getBaseDir() + File.separator + "obfuscation-map.txt" );
+		argsList.add( "-overloadaggressively" );
+		argsList.add( "-defaultpackage" );
+		argsList.add( "" );
+		argsList.add( "-dontusemixedcaseclassnames" );
+		
+		//System.out.println( argsList );
+		int result = 0;
+		try {
+			result = ProcessUtil.exec(argsList, "proguard: ", true, this );
+			// invoking the main(String[]) method fails because
+			// ProGuard calls System.exit(0) explicitely (for whatever reason)...
+			//JarUtil.exec( this.proGuardJarFile, argsList, getClass().getClassLoader() );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("ProGuard is unable to obfuscate: " + e.toString(), e );
+		}
+		if (result != 0) {
+			throw new BuildException("ProGuard was unable to obfuscate - got return value [" + result + "].");
+		}
+		/*
+		 * The direct invocation cannot be used anymore, because Eric Lafortune withdraw his permission for this...
+		argsList.add( "" );
+		argsList.add( "" );
+		argsList.add( "" );
 		// create the configuration for ProGuard:
 		Configuration cfg = new Configuration();
 		
@@ -133,6 +202,7 @@ public class ProGuardObfuscator extends Obfuscator {
 			}
 			throw new BuildException("ProGuard was unable to obfuscate: " + e.getMessage(), e );
 		}
+		*/
 	}
 	
 	/**
@@ -141,10 +211,10 @@ public class ProGuardObfuscator extends Obfuscator {
 	 * @param file The file for which a class path should be retrieved.
 	 * @param isOutput true when this path specifies the output-jar.
 	 * @return The classpath of the given file
-	 */
 	private ClassPath getPath(File file, boolean isOutput ) {
 		return getPath( file.getAbsolutePath(), isOutput );
 	}
+	 */
 
 	/**
 	 * Converts the given file path to a proguard.ClassPath
@@ -152,7 +222,6 @@ public class ProGuardObfuscator extends Obfuscator {
 	 * @param path The path as a String
 	 * @param isOutput true when this path specifies the output-jar.
 	 * @return The path as a proguard-ClassPath
-     */
     private ClassPath getPath(String path, boolean isOutput)
     {
         ClassPath classPath = new ClassPath();
@@ -165,9 +234,31 @@ public class ProGuardObfuscator extends Obfuscator {
 		}
         return classPath;
     }
+     */
     
+	/**
+	 * Enables or disables the optimization step of ProGuard.
+	 * 
+	 * @param optimize true when the optimization should be enabled. By default the
+	 *        optimization is enabled.
+	 */
     public void setOptimize( boolean optimize ) {
     	this.doOptimize = optimize;
     }
+
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.OutputFilter#filter(java.lang.String, java.io.PrintStream)
+	 */
+	public void filter(String message, PrintStream output) {
+		if (message.indexOf("Note:") == -1
+			&& message.indexOf("Reading library") == -1
+			) 
+		{
+			output.println( message );
+		}
+		
+	}
 
 }

@@ -31,11 +31,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.zip.CRC32;
 
 /**
@@ -258,6 +263,52 @@ public final class JarUtil {
 			}
 		}
 		return (String[]) packageNames.values().toArray( new String[ packageNames.size() ] );
+	}
+	
+	/**
+	 * Extracts the name of the main class from the given jar file.
+	 * 
+	 * @param jarFile the jar file
+	 * @return the name of the main class from the given jar file, null when the jar does not have a manifest.
+	 * @throws IOException when the jar file could not be read
+	 */
+	public static String getMainClassName( File jarFile ) 
+	throws IOException 
+	{
+		if (!jarFile.exists()) {
+			throw new IllegalArgumentException("File [" + jarFile.getAbsolutePath() + "] does not exist." );
+		}
+		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+		Manifest manifest = input.getManifest();
+		if (manifest == null) {
+			return null;
+		}
+		Attributes attributes = manifest.getMainAttributes();
+		if (attributes != null) {
+			return attributes.getValue("Main-Class");
+		}
+		return null;
+	}
+	
+	public static void exec( File jarFile, ArrayList argsList, ClassLoader classLoader ) 
+	throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, 
+	IllegalArgumentException, IllegalAccessException, InvocationTargetException 
+	{
+		String[] args = (String[]) argsList.toArray( new String[ argsList.size() ] );
+		exec( jarFile, args, classLoader );
+	}
+
+	public static void exec( File jarFile, String[] args, ClassLoader classLoader ) 
+	throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, 
+	IllegalArgumentException, IllegalAccessException, InvocationTargetException 
+	{
+		String mainClassName = getMainClassName(jarFile);
+		if (mainClassName == null) {
+			throw new ClassNotFoundException("Unable to extract name of Main-Class of " + jarFile.getAbsolutePath() );
+		}
+		Class mainClass = classLoader.loadClass(mainClassName);
+		Method mainMethod = mainClass.getMethod("main", new Class[]{ String[].class } );
+		mainMethod.invoke(null, new Object[]{ args } );
 	}
 	
 }

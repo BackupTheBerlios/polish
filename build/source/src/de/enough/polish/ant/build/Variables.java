@@ -52,6 +52,7 @@ public class Variables {
 	protected ArrayList variablesList;
 	protected ArrayList unconditionalVariablesList;
 	private boolean includeAntProperties;
+	private boolean replacePropertiesWithoutDirective;
 
 	/**
 	 * Creates a new list of variables.
@@ -118,6 +119,14 @@ public class Variables {
 	 */
 	public void setIncludeAntProperties(boolean includeAntProperties) {
 		this.includeAntProperties = includeAntProperties;
+	}
+	
+	public void setReplacePropertiesWithoutDirective( boolean replacePropertiesWithoutDirective ) {
+		this.replacePropertiesWithoutDirective = replacePropertiesWithoutDirective;
+	}
+	
+	public boolean replacePropertiesWithoutDirective() {
+		return this.replacePropertiesWithoutDirective;	
 	}
 	
 	public Variable[] getVariables( Project antProject, BooleanEvaluator evaluator, Environment environment ) {

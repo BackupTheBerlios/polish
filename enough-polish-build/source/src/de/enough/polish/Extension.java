@@ -51,6 +51,7 @@ public abstract class Extension {
 	protected ExtensionManager extensionManager;
 	protected ExtensionDefinition extensionDefinition;
 	protected ExtensionTypeDefinition extensionTypeDefinition;
+	protected Environment environment;
 
 	/**
 	 * Creates a new extension.
@@ -66,13 +67,15 @@ public abstract class Extension {
 	 * @param definition the extension definition taken from extensions.xml or custom-extensions.xml 
 	 * @param setting the extension settings
 	 * @param project the ant project
+	 * @param env
 	 */
-	protected void init(ExtensionTypeDefinition typeDefinition, ExtensionDefinition definition, ExtensionSetting setting, Project project, ExtensionManager manager) {
+	protected void init(ExtensionTypeDefinition typeDefinition, ExtensionDefinition definition, ExtensionSetting setting, Project project, ExtensionManager manager, Environment env) {
 		this.extensionDefinition = definition;
 		this.extensionSetting = setting;
 		this.antProject = project;
 		this.extensionManager= manager;
 		this.extensionTypeDefinition = typeDefinition;
+		this.environment = env;
 	}
 	
 	public ExtensionSetting getExtensionSetting() {
@@ -87,15 +90,19 @@ public abstract class Extension {
 		return this.antProject;
 	}
 	
+	public Environment getEnvironment() {
+		return this.environment;
+	}
+	
 	/**
 	 * Initializes this extension for a new device or a new locale.
 	 * The default implementation doesn't do anything.
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param environment the environment/configuration
+	 * @param env the environment/configuration
 	 */
-	public void intialize( Device device, Locale locale, Environment environment ) {
+	public void intialize( Device device, Locale locale, Environment env ) {
 		// default implementation does nothing
 	}
 	
@@ -105,9 +112,9 @@ public abstract class Extension {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param environment the environment/configuration
+	 * @param env the environment/configuration
 	 */
-	public void finalize( Device device, Locale locale, Environment environment ) {
+	public void finalize( Device device, Locale locale, Environment env ) {
 		// default implementation does nothing
 	}
 	
@@ -116,22 +123,22 @@ public abstract class Extension {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param environment the environment/configuration
+	 * @param env the environment/configuration
 	 * @throws BuildException when the execution failed
 	 */
-	public abstract void execute( Device device, Locale locale, Environment environment )
+	public abstract void execute( Device device, Locale locale, Environment env )
 	throws BuildException;
 	
 	/**
 	 * Retrieves a parameter value from either the setting, the definition or the type definition of this extension.
 	 * 
 	 * @param parameterName the name of the parameter
-	 * @param environment the environment, can be null
+	 * @param env the environment, can be null
 	 * @return either the value or null of the parameter is not defined anywhere
 	 */
-	public String getParameterValue( String parameterName, Environment environment ) {
+	public String getParameterValue( String parameterName, Environment env ) {
 		if (this.extensionSetting != null) {
-			Variable parameter = this.extensionSetting.getParameter(parameterName, environment);
+			Variable parameter = this.extensionSetting.getParameter(parameterName, env);
 			if (parameter != null) {
 				return parameter.getValue();
 			}
@@ -256,7 +263,7 @@ public abstract class Extension {
 		}
 		Class extensionClass = classLoader.loadClass( className );		
 		Extension extension = (Extension) extensionClass.newInstance();
-		extension.init( typeDefinition, definition, setting, antProject, manager );
+		extension.init( typeDefinition, definition, setting, antProject, manager, environment );
 		if (setting != null && setting.hasParameters()) {
 			//System.out.println("Extension [" + className + "]: setting [" + setting.getParameters().length + "] parameters");
 			PopulateUtil.populate( extension, setting.getParameters(), antProject.getBaseDir() );

@@ -50,9 +50,10 @@
     	nodeprecatedlist="false" 
     	nodeprecated="false" 
     	packagenames="de.enough.*" 
-    	sourcepath="source/src" 
+    	sourcepath="source/src:source/extensions" 
     	classpath="bin/classes:import/ant.jar:import/junit.jar" 
-    	doctitle="the polish build framework"/>
+    	doctitle="the polish build framework"
+    />
 </target>
 
 
@@ -66,12 +67,13 @@
 		>
 		<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java" />
 	</indexWriter>
-	<!-- compile the legacy code -->
+	<!-- compile the legacy code 
 	<javac 
 		srcdir="source/legacy"
 		destdir="bin/classes" >
 		<classpath path="bin/classes:import/proguard2.jar" />
 	</javac>
+	-->
 		
 	<!-- create the binary build distribution -->
 	<jar destfile="dist/enough-j2mepolish-build.jar"
@@ -79,7 +81,7 @@
 		 excludes="**/*.html"
 		 index="true"
 	     >
-		<fileset dir="." includes="extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
+		<fileset dir="." includes="extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
 		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 		<fileset dir="setup" includes="icons/*.*" />
 	</jar>
@@ -110,8 +112,8 @@
 	<zip destfile="dist/j2mepolish-${Version}.zip">
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,menu/build.xml" />
-		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml" />
-		<fileset dir="import" includes="midp1-cldc11.jar" />
+		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml,custom-extensions.xml" />
+		<fileset dir="import" includes="pim.jar,fileconnection.jar,pdaapi.jar,s2g.jar" />
 		<!--
 		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
 		-->
@@ -220,10 +222,10 @@
 	<!-- copy the installation files -->
 	<!-- copy the core files of J2ME Polish -->
 	<copy todir="tmp/" >
-		<fileset dir="." includes="custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
+		<fileset dir="." includes="custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
 	</copy>
 	<copy todir="tmp/import">
-		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar" />
+		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,s2g.jar" />
 		<fileset dir="dist" includes="*.jar" />
 	</copy>
 	<!-- copy mac os x standalone applications -->

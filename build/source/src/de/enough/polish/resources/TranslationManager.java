@@ -719,16 +719,21 @@ implements Comparator
 		out.writeInt( translations.length );
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];
-			int[] orders = translation.getParameterIndices();
-			String[] chunks = translation.getValueChunks();
-			out.writeByte( chunks.length );
-			for (int j = 0; j < chunks.length; j++) {
-				String chunk = chunks[j];
-				int order = orders[i]; 
-				out.writeByte( order );
-				out.writeUTF( chunk );
+			try {
+				int[] orders = translation.getParameterIndices();
+				String[] chunks = translation.getValueChunks();
+				out.writeByte( chunks.length );
+				for (int j = 0; j < chunks.length; j++) {
+					String chunk = chunks[j];
+					int order = orders[i]; 
+					out.writeByte( order );
+					out.writeUTF( chunk );
+				}
+				out.writeUTF( translation.getValue() );
+			} catch (RuntimeException e) {
+				System.err.println("Unable to process translation [" + translation.getKey() + "]: " + e.toString() );
+				throw e;
 			}
-			out.writeUTF( translation.getValue() );
 		}
 		out.flush();
 		out.close();

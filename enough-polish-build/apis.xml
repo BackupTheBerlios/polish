@@ -45,7 +45,7 @@
 		<names>mmapi,mm-api, JSR-135, JSR135</names>
 		<symbol>mmapi</symbol>
 		<files>j2me-mmapi.jar, mma.zip</files>
-		<path>import/j2me-mmapi.jar</path>
+		<path>import/mmapi.jar</path>
 	</api>
 	
 	<api>
@@ -56,7 +56,7 @@
 		<names>wmapi, wm-api, JSR-120, JSR120, wma, wmapi-1.1, wmapi1.1</names>
 		<symbol>wmapi</symbol>
 		<files>j2me-wmapi.jar, wma.zip</files>
-		<path>import/j2me-wmapi.jar</path>
+		<path>import/wmapi.jar</path>
 	</api>
 	
 	<api>
@@ -67,8 +67,8 @@
 		<names>wmapi2.0, wmapi2, JSR-205, JSR205</names>
 		<symbol>wmapi2.0</symbol>
 		<parent>wmapi</parent>
-		<files>j2me-wmapi-2.0.jar, wma_2_0.zip</files>
-		<path>import/j2me-wmapi-2.0.jar</path>
+		<files>wmapi-2.0.jar,j2me-wmapi-2.0.jar, wma_2_0.zip</files>
+		<path>import/wmapi-2.0.jar</path>
 	</api>
 	
 	<api>
@@ -89,8 +89,8 @@
 		</description>
 		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-82, JSR82</names>
 		<symbol>btapi</symbol>
-		<files>j2me-btapi.jar, bluetooth.zip</files>
-		<path>import/j2me-btapi.jar</path>
+		<files>btapi.jar, j2me-btapi.jar, bluetooth.zip</files>
+		<path>import/btapi.jar</path>
 	</api>
 
 	<api>
@@ -121,7 +121,7 @@
 		<names>pdaapi, pda-api, pim-api, fileconnection-api, JSR-75, JSR75</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
-		<path>import/j2me-pdaapi.jar</path>
+		<path>import/pdaapi.jar</path>
 	</api>
 	
 	<api>

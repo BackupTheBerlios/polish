@@ -485,6 +485,7 @@ public class PolishTask extends ConditionalTask {
 		try {
 			// load extensions:
 			this.extensionManager = new ExtensionManager( getProject(), this.buildSetting.openExtensions() );
+			this.extensionManager.loadCustomDefinitions(this.polishHomeDir, getProject());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
@@ -624,7 +625,11 @@ public class PolishTask extends ConditionalTask {
 		}
 				
 		// create preprocessor:
-		this.preprocessor = new Preprocessor( this.polishProject, this.environment, null, false, true, null );
+		boolean replacePropertiesWithoutDirective = false;
+		if (this.variables != null) {
+			replacePropertiesWithoutDirective = this.variables.replacePropertiesWithoutDirective();
+		}
+		this.preprocessor = new Preprocessor( this.polishProject, this.environment, null, false, true, replacePropertiesWithoutDirective, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
 		// init custom preprocessors:

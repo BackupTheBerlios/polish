@@ -88,7 +88,7 @@ public class BugManager {
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		if (is == null) {
-			throw new BuildException("Unable to load apis.xml, no file found.");
+			throw new BuildException("Unable to load bugs.xml, no file found.");
 		}
 		SAXBuilder builder = new SAXBuilder( false );
 		Document document = builder.build( is );
