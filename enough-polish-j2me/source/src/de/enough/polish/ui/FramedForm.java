@@ -54,17 +54,22 @@ public class FramedForm extends Form {
 	private boolean expandLeftFrame;
 	
 	private Container currentlyActiveContainer;
+	private ScreenStateListener screenStateListener;
 
 	/**
-	 * @param title
+	 * Creates a new FramedForm
+	 * 
+	 * @param title the title of this form
 	 */
 	public FramedForm(String title ) {
 		this( title, null );
 	}
 
 	/**
-	 * @param title
-	 * @param style
+	 * Creates a new FramedForm
+	 * 
+	 * @param title the title of this form
+	 * @param style the style of this form, usually set with a #style directive
 	 */
 	public FramedForm(String title, Style style) {
 		super( title, style );
@@ -95,7 +100,7 @@ public class FramedForm extends Form {
 	
 	//#if false
 	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener listener ) {
-		throw new RuntimeException("Unable to use standard ItemStateListener in a tabbed form.");
+		throw new RuntimeException("Unable to use standard ItemStateListener in a framed form.");
 	}
 	//#endif
 
@@ -110,6 +115,13 @@ public class FramedForm extends Form {
 		append( frameOrientation, item, null );
 	}
 
+	/**
+	 * Adds the given item to the specifid frame.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param item the item
+	 * @param itemStyle the style for that item, is ignored when null
+	 */
 	public void append( int frameOrientation, Item item, Style itemStyle ) {
 		if (itemStyle != null) {
 			item.setStyle( itemStyle );
@@ -271,9 +283,7 @@ public class FramedForm extends Form {
 				newFrame = this.container;
 			}
 			if (newFrame != null) {
-				this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
-				newFrame.focus( StyleSheet.focusedStyle );
-				this.currentlyActiveContainer = newFrame;
+				setActiveFrame(newFrame);
 				handled = true;
 			}
 		//} else {
@@ -282,6 +292,20 @@ public class FramedForm extends Form {
 		return handled;
 	}
 	
+	/**
+	 * Activates another frame.
+	 * 
+	 * @param newFrame the next frame
+	 */
+	private void  setActiveFrame(Container newFrame) {
+		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
+		newFrame.focus( StyleSheet.focusedStyle );
+		this.currentlyActiveContainer = newFrame;
+		if (this.screenStateListener != null) {
+			this.screenStateListener.screenStateChanged( this );
+		}
+	}
+
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
@@ -300,9 +324,7 @@ public class FramedForm extends Form {
 			newFrame = this.rightFrame;
 		}
 		if (newFrame != null && newFrame != this.currentlyActiveContainer ) {
-			this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
-			newFrame.focus( StyleSheet.focusedStyle );
-			this.currentlyActiveContainer = newFrame;
+			setActiveFrame(newFrame);
 		}
 		return (newFrame != null);
 	}
@@ -320,4 +342,14 @@ public class FramedForm extends Form {
 			| ( this.bottomFrame != null && this.bottomFrame.animate() );
 		return animated;
 	}
+	
+	/**
+	 * Sets the screen listener for this TabbedForm.
+	 * 
+	 * @param listener the listener that is notified whenever the user selects another tab,
+	 */
+	public void setScreenStateListener( ScreenStateListener listener ) {
+		this.screenStateListener = listener;
+	}
+
 }

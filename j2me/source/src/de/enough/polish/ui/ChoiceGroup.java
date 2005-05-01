@@ -1309,7 +1309,7 @@ implements Choice
 		//#elif tmp.allowMarkCommands
 			//# if (c == MARK_COMMAND || c == this.selectCommand ) {
 		//#else
-			//#message Invalid combination of suppressed commands for a ChoiceGroup!
+			//#abort Invalid combination of suppressed commands for a ChoiceGroup!
 			//# if (false) {
 		//#endif
 			if (this.focusedIndex != -1) {

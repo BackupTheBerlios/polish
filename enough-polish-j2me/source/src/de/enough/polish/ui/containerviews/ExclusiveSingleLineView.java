@@ -64,13 +64,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 	private ChoiceItem currentItem;
 	private int leftArrowEndX;
 	private int rightArrowStartX;
-//#message localization settings:
-//#message locale=${polish.locale}
-//#message language=${polish.language}
-//#message country=${polish.country}
-//#ifdef polish.country:defined
-	//#message country is defined!!
-//#endif
 
 	/**
 	 * Creates a new view

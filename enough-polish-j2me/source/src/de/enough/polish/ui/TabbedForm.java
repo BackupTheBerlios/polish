@@ -44,6 +44,7 @@ public class TabbedForm extends Form {
 	private final TabBar tabBar;
 	private final Container[] tabContainers;
 	private int activeTabIndex;
+	private ScreenStateListener screenStateListener;
 
 	/**
 	 * Creates a new tabbed form without a style.
@@ -69,9 +70,15 @@ public class TabbedForm extends Form {
 		super(title, style );
 		//#style tabbar, default
 		this.tabBar = new TabBar( tabNames, tabImages );
-		this.tabContainers = new Container[ tabNames.length ];
+		int length;
+		if (tabNames != null) {
+			length = tabNames.length;
+		} else {
+			length = tabImages.length;
+		}
+		this.tabContainers = new Container[ length ];
 		this.tabContainers[0] = this.container;
-		for (int i = 1; i < tabNames.length; i++) {
+		for (int i = 1; i < length; i++) {
 			Container tabContainer = new Container( null, true, style, 20, this.screenHeight );
 			tabContainer.screen = this;
 			this.tabContainers[i] = tabContainer;
@@ -202,6 +209,9 @@ public class TabbedForm extends Form {
 			tabContainer.focus( tabContainer.style );
 		}
 		this.container = tabContainer;
+		if (this.screenStateListener != null) {
+			this.screenStateListener.screenStateChanged( this );
+		}
 		if (isShown()) {
 			repaint();
 		}
@@ -278,5 +288,23 @@ public class TabbedForm extends Form {
 		}
 	}
 	//#endif
+	
+	/**
+	 * Retrieves the index of the currently active tab.
+	 * 
+	 * @return the index of the currently active tab, 0 is the first tab. 
+	 */
+	public int getSelectedTab() {
+		return this.activeTabIndex;
+	}
+	
+	/**
+	 * Sets the screen listener for this TabbedForm.
+	 * 
+	 * @param listener the listener that is notified whenever the user selects another tab,
+	 */
+	public void setScreenStateListener( ScreenStateListener listener ) {
+		this.screenStateListener = listener;
+	}
 
 }

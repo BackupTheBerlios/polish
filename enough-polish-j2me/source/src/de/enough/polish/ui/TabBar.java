@@ -81,6 +81,8 @@ public class TabBar extends Item {
 		super( null, 0, Item.BUTTON, style);
 		if (tabImages == null) {
 			tabImages = new Image[ tabNames.length ];
+		} else if (tabNames == null) {
+			tabNames = new String[ tabImages.length ];
 		}
 		// getting styles:
 		//#if true

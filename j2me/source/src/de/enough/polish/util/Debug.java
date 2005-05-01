@@ -267,7 +267,9 @@ implements CommandListener
 						}
 						MESSAGES.add( entry );
 						//#if polish.showLogOnError && polish.usePolishGui 
-							showLog( StyleSheet.display );
+							if (Debug.textBox == null) {
+								showLog( StyleSheet.display );
+							}
 						//#endif
 					}
 				}
@@ -275,7 +277,7 @@ implements CommandListener
 		//#endif
 		
 		//#if polish.showLogOnError && polish.usePolishGui 
-			if (exception != null) {
+			if (exception != null && Debug.textBox == null) {
 				showLog( StyleSheet.display );
 			}
 		//#endif
