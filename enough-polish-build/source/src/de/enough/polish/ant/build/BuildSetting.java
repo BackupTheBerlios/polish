@@ -87,6 +87,11 @@ public class BuildSetting {
 	private File groups;
 	private File apis;
 	private File extensions;
+	private File customDevices;
+	private File customVendors;
+	private File customGroups;
+	private File customApis;
+	private File customExtensions;
 	private Variables variables;
 	private boolean usePolishGui;
 	private File midp1Path;
@@ -119,6 +124,7 @@ public class BuildSetting {
 	private boolean doPreverify = true;
 	private ArrayList postCompilers;
 	private ArrayList finalizers;
+	private File projectBaseDir;
 	
 	/**
 	 * Creates a new build setting.
@@ -136,6 +142,7 @@ public class BuildSetting {
 			this.polishHomePath += File.separatorChar;
 		} 
 		this.projectBasePath = project.getBaseDir().getAbsolutePath() + File.separator;
+		this.projectBaseDir = project.getBaseDir();
 		this.project = project;
 		this.workDir = new File( this.projectBasePath + "build");
 		this.destDir = new File( this.projectBasePath + "dist");
@@ -1449,5 +1456,131 @@ public class BuildSetting {
 		}
 		return (Finalizer[]) list.toArray( new Finalizer[ list.size() ] );
 	}
+	
+	/**
+	 * @return Returns the customApis.
+	 */
+	public File getCustomApis() {
+		if (this.customApis != null) {
+			return this.customApis;			
+		}
+		File file = new File( this.projectBaseDir, "custom-apis.xml");
+		if (file.exists()) {
+			return file;
+		} else {
+			return new File( this.polishDir, "custom-apis.xml");
+		}
+	}
+	
+	/**
+	 * @param customApis The customApis to set.
+	 */
+	public void setCustomApis(File customApis) {
+		if (!customApis.exists()) {
+			throw new BuildException("The <build> attribute \"customApis\" points to a non-existing file: " + customApis.getAbsolutePath() );
+		}
+		this.customApis = customApis;
+	}
+	
+	/**
+	 * @return Returns the customDevices
+	 */
+	public File getCustomDevices() {
+		if (this.customDevices != null) {
+			return this.customDevices;			
+		}
+		File file = new File( this.projectBaseDir, "custom-devices.xml");
+		if (file.exists()) {
+			return file;
+		} else {
+			return new File( this.polishDir, "custom-devices.xml");
+		}
+	}
+	
+	/**
+	 * @param customDevices The customDevices to set.
+	 */
+	public void setCustomDevices(File customDevices) {
+		if (!customDevices.exists()) {
+			throw new BuildException("The <build> attribute \"customDevices\" points to a non-existing file: " + customDevices.getAbsolutePath() );
+		}
+		this.customDevices = customDevices;
+	}
+
+	/**
+	 * @return Returns the customExtensions
+	 */
+	public File getCustomExtensions() {
+		if (this.customExtensions != null) {
+			return this.customExtensions;			
+		}
+		File file = new File( this.projectBaseDir, "custom-extensions.xml");
+		if (file.exists()) {
+			return file;
+		} else {
+			return new File( this.polishDir, "custom-extensions.xml");
+		}
+	}
+	
+	/**
+	 * @param customExtensions The customExtensions to set.
+	 */
+	public void setCustomExtensions(File customExtensions) {
+		if (!customExtensions.exists()) {
+			throw new BuildException("The <build> attribute \"customExtensions\" points to a non-existing file: " + customExtensions.getAbsolutePath() );
+		}
+		this.customExtensions = customExtensions;
+	}
+
+	/**
+	 * @return Returns the customGroups
+	 */
+	public File getCustomGroups() {
+		if (this.customGroups != null) {
+			return this.customGroups;			
+		}
+		File file = new File( this.projectBaseDir, "custom-groups.xml");
+		if (file.exists()) {
+			return file;
+		} else {
+			return new File( this.polishDir, "custom-groups.xml");
+		}
+	}
+	
+	/**
+	 * @param customGroups The customGroups to set.
+	 */
+	public void setCustomGroups(File customGroups) {
+		if (!customGroups.exists()) {
+			throw new BuildException("The <build> attribute \"customGroups\" points to a non-existing file: " + customGroups.getAbsolutePath() );
+		}
+		this.customGroups = customGroups;
+	}
+
+	/**
+	 * @return Returns the customVendors
+	 */
+	public File getCustoVendors() {
+		if (this.customVendors != null) {
+			return this.customVendors;			
+		}
+		File file = new File( this.projectBaseDir, "custom-vendors.xml");
+		if (file.exists()) {
+			return file;
+		} else {
+			return new File( this.polishDir, "custom-vendors.xml");
+		}
+	}
+	
+	/**
+	 * @param customVendors The customVendors to set.
+	 */
+	public void setCustomVendors(File customVendors) {
+		if (!customVendors.exists()) {
+			throw new BuildException("The <build> attribute \"customVendors\" points to a non-existing file: " + customVendors.getAbsolutePath() );
+		}
+		this.customVendors = customVendors;
+	}
+	
 	
 }

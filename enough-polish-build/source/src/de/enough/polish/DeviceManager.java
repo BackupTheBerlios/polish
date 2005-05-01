@@ -37,7 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -235,20 +234,15 @@ public class DeviceManager {
 	 * @param vendManager
 	 * @param deviceGroupManager
 	 * @param libManager
-	 * @param polishHomeDir
-	 * @param project
+	 * @param customDevices
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomDevices(VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, File polishHomeDir, Project project) 
+	public void loadCustomDevices(VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, File customDevices ) 
 	throws JDOMException, InvalidComponentException {
-		File file = new File( project.getBaseDir(), "custom-devices.xml");
-		if (!file.exists() && (polishHomeDir != null) ) {
-			file = new File( polishHomeDir, "custom-devices.xml" );
-		}
-		if (file.exists()) {
+		if (customDevices.exists()) {
 			try {
-				loadDevices( vendManager, deviceGroupManager, libManager, new FileInputStream( file ) );
+				loadDevices( vendManager, deviceGroupManager, libManager, new FileInputStream( customDevices ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-devices.xml]: " + e.toString() );

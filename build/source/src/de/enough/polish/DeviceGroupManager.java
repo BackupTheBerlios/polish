@@ -25,20 +25,23 @@
  */
 package de.enough.polish;
 
-import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.StringUtil;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.jdom.*;
-import org.jdom.input.SAXBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.tools.ant.BuildException;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+
+import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages all known groups of devices.</p>
@@ -136,20 +139,12 @@ public class DeviceGroupManager {
 		return group;
 	}
 
-	/**
-	 * @param polishHomeDir
-	 * @param project
-	 * @throws InvalidComponentException
-	 * @throws JDOMException
-	 */
-	public void loadCustomGroups(File polishHomeDir, Project project) throws InvalidComponentException, JDOMException {
-		File file = new File( project.getBaseDir(), "custom-groups.xml");
-		if (!polishHomeDir.exists()) {
-			file = new File( polishHomeDir, "custom-groups.xml" );
-		}
-		if (file.exists()) {
+	public void loadCustomGroups(File customGroups ) 
+	throws InvalidComponentException, JDOMException 
+	{
+		if (customGroups.exists()) {
 			try {
-				loadGroups( new FileInputStream( file ) );
+				loadGroups( new FileInputStream( customGroups ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-groups.xml]: " + e.toString() );

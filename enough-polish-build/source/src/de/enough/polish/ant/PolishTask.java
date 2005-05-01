@@ -485,7 +485,7 @@ public class PolishTask extends ConditionalTask {
 		try {
 			// load extensions:
 			this.extensionManager = new ExtensionManager( getProject(), this.buildSetting.openExtensions() );
-			this.extensionManager.loadCustomDefinitions(this.polishHomeDir, getProject());
+			this.extensionManager.loadCustomDefinitions( this.buildSetting.getCustomExtensions() );
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
@@ -577,7 +577,7 @@ public class PolishTask extends ConditionalTask {
 		// create LibraryManager:
 		try {
 			this.libraryManager = new LibraryManager( getProject().getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
-			this.libraryManager.loadCustomLibraries( this.polishHomeDir, getProject() );
+			this.libraryManager.loadCustomLibraries( this.buildSetting.getCustomApis() );
 			this.environment.setLibraryManager(this.libraryManager);
 		} catch (JDOMException e) {
 			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
@@ -611,11 +611,11 @@ public class PolishTask extends ConditionalTask {
 		// create vendor/group/device manager:
 		try {
 			VendorManager vendorManager = new VendorManager( this.polishProject, this.buildSetting.openVendors());
-			vendorManager.loadCustomVendors( this.polishHomeDir, this.polishProject, getProject() );
+			vendorManager.loadCustomVendors( this.buildSetting.getCustoVendors(), this.polishProject );
 			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.openGroups() );
-			groupManager.loadCustomGroups( this.polishHomeDir, getProject() );
+			groupManager.loadCustomGroups( this.buildSetting.getCustomGroups() );
 			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, this.buildSetting.openDevices() );
-			this.deviceManager.loadCustomDevices( vendorManager, groupManager, this.libraryManager, this.polishHomeDir, getProject() );
+			this.deviceManager.loadCustomDevices( vendorManager, groupManager, this.libraryManager, this.buildSetting.getCustomDevices() );
 		} catch (JDOMException e) {
 			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
 		} catch (IOException e) {

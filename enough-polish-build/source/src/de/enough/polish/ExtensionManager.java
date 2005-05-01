@@ -100,20 +100,15 @@ public class ExtensionManager {
 	/**
 	 * Loads custom extensions, when there are any.
 	 * 
-	 * @param polishHomeDir
-	 * @param project
+	 * @param customExtensionsFile the file that contains custom extensions
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomDefinitions(File polishHomeDir, Project project) 
+	public void loadCustomDefinitions(File customExtensionsFile ) 
 	throws JDOMException, InvalidComponentException {
-		File file = new File( project.getBaseDir(), "custom-extensions.xml");
-		if (!file.exists() && (polishHomeDir != null) ) {
-			file = new File( polishHomeDir, "custom-extensions.xml" );
-		}
-		if (file.exists()) {
+		if (customExtensionsFile.exists()) {
 			try {
-				loadDefinitions( new FileInputStream( file ) );
+				loadDefinitions( new FileInputStream( customExtensionsFile ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-extensions.xml]: " + e.toString() );

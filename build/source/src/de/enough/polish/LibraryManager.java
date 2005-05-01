@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -243,19 +242,16 @@ public class LibraryManager {
 	/**
 	 * Loads the custom-apis.xml from the current project.
 	 * 
-	 * @param polishHomeDir the installation directory of J2ME Polish
-	 * @param project the project
+	 * @param customApisFile the file containing custom-apis.xml
 	 * @throws JDOMException when there is a syntax error
 	 * @throws InvalidComponentException when several libraries are duplicated for example
 	 */
-	public void loadCustomLibraries(File polishHomeDir, Project project) throws JDOMException, InvalidComponentException {
-		File file = new File( project.getBaseDir(), "custom-apis.xml");
-		if (!file.exists()) {
-			file = new File( polishHomeDir, "custom-apis.xml" );
-		}
-		if (file.exists()) {
+	public void loadCustomLibraries(File customApisFile ) 
+	throws JDOMException, InvalidComponentException 
+	{
+		if (customApisFile.exists()) {
 			try {
-				loadLibraries( new FileInputStream( file ) );
+				loadLibraries( new FileInputStream( customApisFile ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-apis.xml]: " + e.toString() );

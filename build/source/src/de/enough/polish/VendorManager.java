@@ -25,20 +25,23 @@
  */
 package de.enough.polish;
 
-import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.util.StringUtil;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.jdom.*;
-import org.jdom.input.SAXBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.tools.ant.BuildException;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+
+import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages all known vendors.</p>
@@ -118,21 +121,16 @@ public class VendorManager {
 
 	/**
 	 * Loads the custom-vendors.xml of the user from the current project.
-	 * @param polishHomeDir
-	 * 
+	 * @param customVendors
 	 * @param polishProject
-	 * @param project
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomVendors(File polishHomeDir, PolishProject polishProject, Project project) throws JDOMException, InvalidComponentException {
-		File file = new File( project.getBaseDir(), "custom-vendors.xml");
-		if (!file.exists()) {
-			file = new File( polishHomeDir, "custom-vendors.xml" );
-		}
-		if (file.exists()) {
+	public void loadCustomVendors(File customVendors, PolishProject polishProject ) 
+	throws JDOMException, InvalidComponentException {
+		if (customVendors.exists()) {
 			try {
-				loadVendors( polishProject, new FileInputStream( file ) );
+				loadVendors( polishProject, new FileInputStream( customVendors ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-vendors.xml]: " + e.toString() );
