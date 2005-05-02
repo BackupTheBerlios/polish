@@ -105,14 +105,14 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		System.out.println("DEBUG:CssContentProvider.inputChanged(): enter");
+		//System.out.println("DEBUG:CssContentProvider.inputChanged(): enter");
 		if(viewer != null){
 			if(this.treeViewer != null){
 				this.treeViewer.removeSelectionChangedListener(this.selectionChangedListener);
 			}
 			this.treeViewer = viewer;
-			System.out.println("DEBUG:CssContentProvider.inputChanged():oldInput:"+oldInput);
-			System.out.println("DEBUG:CssContentProvider.inputChanged():newInput:"+ ((newInput != null) ? newInput.getClass().toString() : "null"));
+			//System.out.println("DEBUG:CssContentProvider.inputChanged():oldInput:"+oldInput);
+			//System.out.println("DEBUG:CssContentProvider.inputChanged():newInput:"+ ((newInput != null) ? newInput.getClass().toString() : "null"));
 			if(newInput instanceof CssModel){
 				this.cssModel = (CssModel)newInput;
 			}

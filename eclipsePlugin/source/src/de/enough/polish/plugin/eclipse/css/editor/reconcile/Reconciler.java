@@ -89,13 +89,14 @@ public class Reconciler implements IReconciler{
 		}
 	}
 	
+	// Not really needed at the moment.
 	class ModelListener implements IModelListener{
 
 		/* (non-Javadoc)
 		 * @see de.enough.polish.plugin.eclipse.css.model.IModelListener#modelChanged()
 		 */
 		public void modelChanged() {
-			System.out.println("DEBUG:Reconciler.ModelListener.modelChanged().enter.");
+			//System.out.println("DEBUG:Reconciler.ModelListener.modelChanged().enter.");
 		}
 		
 	}

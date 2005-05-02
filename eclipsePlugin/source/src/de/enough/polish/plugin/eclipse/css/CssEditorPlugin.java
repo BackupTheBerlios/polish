@@ -159,31 +159,6 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 		return this.editor;
 	}
 	
-	/*
-	public void addLog(int severity, String message, Exception exception) {
-	    int s;
-	    String m;
-	    if( ! (severity == IStatus.ERROR ||
-	           severity == IStatus.CANCEL ||
-	           severity == IStatus.INFO ||
-	           severity == IStatus.OK ||
-	           severity == IStatus.WARNING)) {
-	        this.log.log(new Status(IStatus.ERROR,ID,0,"INTERNAL:ERROR:CssEditorPlugin.addLog():severity: Parameter is not from IStatus.",null));
-	        s = IStatus.ERROR;
-	    }
-	    else {
-	        s = severity;
-	    }
-	    if(message == null) {
-	        this.log.log(new Status(IStatus.ERROR,ID,0,"INTERNAL:ERROR:CssEditorPlugin.addLog():message: Parameter is null.",null));
-	        m = "";
-	    }
-	    else {
-	        m = message;
-	    }
-	    this.log.log(new Status(s,ID,0,m,exception));
-	}
-	*/
 	public static void log(IStatus status) {
         getDefault().getLog().log(status);
         if (status.getException() != null) {
