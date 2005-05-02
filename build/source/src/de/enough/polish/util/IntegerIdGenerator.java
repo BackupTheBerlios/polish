@@ -116,6 +116,7 @@ public class IntegerIdGenerator {
 			if (create) {
 				this.hasChanged = true;
 				this.lastId++;
+				//System.out.println("]]]>Creating new ID for key [" + key + "]: " + this.lastId );
 				Integer newId = new Integer( this.lastId );
 				this.idsByKey.put( key, newId );
 				return this.lastId;

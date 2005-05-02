@@ -1468,10 +1468,13 @@ public class Preprocessor {
 	/**
 	 * Adds the file to the preprocessing queue
 	 * 
-	 * @param fileName the name of the file
+	 * @param fileName the name of the file, e.g. de/enough/polish/ui/Screen.java
 	 */
 	public void addToPreprocessQueue( String fileName ) {
-		this.preprocessQueue.put( fileName, Boolean.TRUE );
+		String fileNameWindows = fileName.replace( '/', '\\');
+		this.preprocessQueue.put( fileNameWindows, Boolean.TRUE );
+		String fileNameUnix = fileName.replace( '\\', '/');
+		this.preprocessQueue.put( fileNameUnix, Boolean.TRUE );
 	}
 	
 	/**
@@ -1480,7 +1483,10 @@ public class Preprocessor {
 	 * @param fileName the name of the file
 	 */
 	public void removeFromPreprocessQueue( String fileName ) {
-		this.preprocessQueue.remove( fileName );
+		String fileNameWindows = fileName.replace( '/', '\\');
+		this.preprocessQueue.remove( fileNameWindows );
+		String fileNameUnix = fileName.replace( '\\', '/');
+		this.preprocessQueue.remove( fileNameUnix );
 	}
 
 	/**

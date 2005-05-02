@@ -98,7 +98,7 @@ public class BuildSetting {
 	private File midp2Path;
 	private File midp2Cldc11Path;
 	private File preverify;
-	private final Project project;
+	private final Project antProject;
 	private boolean includeAntProperties;
 	private ResourceUtil resourceUtil;
 	private final ArrayList sourceSettings;
@@ -125,25 +125,27 @@ public class BuildSetting {
 	private ArrayList postCompilers;
 	private ArrayList finalizers;
 	private File projectBaseDir;
+	private File polishHomeDir;
 	
 	/**
 	 * Creates a new build setting.
 	 * 
-	 * @param project The corresponding ant-project.
+	 * @param antProject The corresponding ant-project.
 	 */
-	public BuildSetting( Project project ) {
-		this.polishHomePath = project.getProperty( "polish.home" );
+	public BuildSetting( Project antProject ) {
+		this.polishHomePath = antProject.getProperty( "polish.home" );
 		if (this.polishHomePath != null) {
-			File polishHomeDir = new File( this.polishHomePath );
-			if (!polishHomeDir.isAbsolute()) {
-				polishHomeDir = new File( project.getBaseDir(), this.polishHomePath );
-				this.polishHomePath = polishHomeDir.getAbsolutePath();
+			this.polishHomeDir = new File( this.polishHomePath );
+			if (!this.polishHomeDir.isAbsolute()) {
+				this.polishHomeDir = new File( antProject.getBaseDir(), this.polishHomePath );
+				this.polishHomePath = this.polishHomeDir.getAbsolutePath();
 			}
 			this.polishHomePath += File.separatorChar;
 		} 
-		this.projectBasePath = project.getBaseDir().getAbsolutePath() + File.separator;
-		this.projectBaseDir = project.getBaseDir();
-		this.project = project;
+		this.projectBasePath = antProject.getBaseDir().getAbsolutePath() + File.separator;
+		//System.out.println("project base path=" + this.projectBasePath);
+		this.projectBaseDir = antProject.getBaseDir();
+		this.antProject = antProject;
 		this.workDir = new File( this.projectBasePath + "build");
 		this.destDir = new File( this.projectBasePath + "dist");
 		this.apiDir = getFile("import");
@@ -168,7 +170,7 @@ public class BuildSetting {
 		if (this.obfuscatorSettings == null) {
 			this.obfuscatorSettings = new ArrayList();
 		}
-		if (setting.isActive(this.project)) {
+		if (setting.isActive(this.antProject)) {
 			this.obfuscatorSettings.add( setting );
 			if (setting.isEnabled()) {
 				this.doObfuscate = true;
@@ -198,7 +200,7 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredDebug( DebugSetting setting ) {
-		if (setting.isActive(this.project)) {
+		if (setting.isActive(this.antProject)) {
 			this.debugSetting = setting;
 		}
 	}
@@ -241,7 +243,7 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredSources( SourcesSetting setting ) {
-		if (setting.isActive( this.project ) ) {
+		if (setting.isActive( this.antProject ) ) {
 			SourceSetting[] sources = setting.getSources();
 			for (int i = 0; i < sources.length; i++) {
 				SourceSetting source = sources[i];
@@ -308,13 +310,13 @@ public class BuildSetting {
 		if (this.javaTasks == null) {
 			this.javaTasks = new ArrayList();
 		}
-		JavaExtension java = new JavaExtension( this.project );
+		JavaExtension java = new JavaExtension( this.antProject );
 		this.javaTasks.add( java );
 		return java;
 	}
 	
 	public ResourceSetting createResources() {
-		ResourceSetting setting = new ResourceSetting( this.project );
+		ResourceSetting setting = new ResourceSetting( this.antProject );
 		this.resourceSetting = setting;
 		return setting;
 	}
@@ -338,7 +340,7 @@ public class BuildSetting {
 	 */
 	public ResourceSetting getResourceSetting() {
 		if (this.resourceSetting == null) {
-			this.resourceSetting = new ResourceSetting( this.project );
+			this.resourceSetting = new ResourceSetting( this.antProject );
 			this.resourceSetting.setDir( getResDir() );
 		}
 		return this.resourceSetting;
@@ -447,7 +449,7 @@ public class BuildSetting {
 		if (this.midletSetting == null) {
 			return null;
 		}
-		return this.midletSetting.getMidlets( this.project );
+		return this.midletSetting.getMidlets( this.antProject );
 	}
 
 	/**
@@ -545,7 +547,7 @@ public class BuildSetting {
 					"of the <build> element.");
 		}
 		this.resDir = resDir;
-		this.resourceSetting = new ResourceSetting( this.project );
+		this.resourceSetting = new ResourceSetting( this.antProject );
 		this.resourceSetting.setDir( resDir );
 	}
 	
@@ -650,7 +652,7 @@ public class BuildSetting {
 								"source directories [source/src], [src] or [source]. " +
 								"Please specify the [sourceDir]-attribute of the " +
 								"<build> element. " +
-								"Base-directory is [" + this.project.getBaseDir().getAbsolutePath() + "].");
+								"Base-directory is [" + this.antProject.getBaseDir().getAbsolutePath() + "].");
 					}
 				}
 			}
@@ -1031,7 +1033,7 @@ public class BuildSetting {
 				throw new BuildException("Unable to open [" + file.getAbsolutePath() + "]: " + e.getMessage(), e );
 			}
 		}
-		return this.resourceUtil.open( this.project.getBaseDir().getAbsolutePath(), name );
+		return this.resourceUtil.open( this.antProject.getBaseDir().getAbsolutePath(), name );
 	}
 	
 	/**
@@ -1090,7 +1092,7 @@ public class BuildSetting {
 			AttributesFilter[] filters = (AttributesFilter[]) this.jadAttributesFilters.toArray( new AttributesFilter[ this.jadAttributesFilters.size() ]);
 			for (int i = 0; i < filters.length; i++) {
 				AttributesFilter filter = filters[i];
-				if (filter.isActive(evaluator, this.project)) {
+				if (filter.isActive(evaluator, this.antProject)) {
 					return filter.filterAttributes(attributesMap);
 				}
 			}
@@ -1122,7 +1124,7 @@ public class BuildSetting {
 			AttributesFilter[] filters = (AttributesFilter[]) this.manifestAttributesFilters.toArray( new AttributesFilter[ this.manifestAttributesFilters.size() ]);
 			for (int i = 0; i < filters.length; i++) {
 				AttributesFilter filter = filters[i];
-				if (filter.isActive(evaluator, this.project)) {
+				if (filter.isActive(evaluator, this.antProject)) {
 					return filter.filterAttributes(attributesMap);
 				}
 			}
@@ -1262,7 +1264,7 @@ public class BuildSetting {
 				return TARGET_1_1;
 			}
 			// check for WTK version < 2.0:
-			String wtkHomePath = this.project.getProperty("wtk.home");
+			String wtkHomePath = this.antProject.getProperty("wtk.home");
 			if (wtkHomePath != null) {
 				if ((wtkHomePath.indexOf('1') != -1) && 
 				(wtkHomePath.indexOf("1.") != -1 
@@ -1390,7 +1392,7 @@ public class BuildSetting {
 			CompilerTask[] tasks = (CompilerTask[]) this.compilers.toArray( new CompilerTask[this.compilers.size() ]);
 			for (int i = 0; i < tasks.length; i++) {
 				CompilerTask task = tasks[i];
-				if (task.isActive(evaluator, this.project)) {
+				if (task.isActive(evaluator, this.antProject)) {
 					return task.copy();
 				}
 			}
@@ -1445,7 +1447,7 @@ public class BuildSetting {
 		ArrayList list = new ArrayList( this.finalizers.size() );
 		for (Iterator iter = this.finalizers.iterator(); iter.hasNext();) {
 			FinalizerSetting finalizerSetting = (FinalizerSetting) iter.next();
-			if (finalizerSetting.isActive( evaluator, this.project)) {
+			if (finalizerSetting.isActive( evaluator, this.antProject)) {
 				try {
 					Finalizer finalizer = (Finalizer) manager.getExtension( ExtensionManager.TYPE_FINALIZER, finalizerSetting, environment);
 					list.add( finalizer );
@@ -1468,7 +1470,7 @@ public class BuildSetting {
 		if (file.exists()) {
 			return file;
 		} else {
-			return new File( this.polishDir, "custom-apis.xml");
+			return new File( this.polishHomeDir, "custom-apis.xml");
 		}
 	}
 	
@@ -1490,11 +1492,11 @@ public class BuildSetting {
 			return this.customDevices;			
 		}
 		File file = new File( this.projectBaseDir, "custom-devices.xml");
-		if (file.exists()) {
-			return file;
-		} else {
-			return new File( this.polishDir, "custom-devices.xml");
+		
+		if (!file.exists()) {
+			file = new File( this.polishHomeDir, "custom-devices.xml");
 		}
+		return file;
 	}
 	
 	/**
@@ -1518,7 +1520,7 @@ public class BuildSetting {
 		if (file.exists()) {
 			return file;
 		} else {
-			return new File( this.polishDir, "custom-extensions.xml");
+			return new File( this.polishHomeDir, "custom-extensions.xml");
 		}
 	}
 	
@@ -1543,7 +1545,7 @@ public class BuildSetting {
 		if (file.exists()) {
 			return file;
 		} else {
-			return new File( this.polishDir, "custom-groups.xml");
+			return new File( this.polishHomeDir, "custom-groups.xml");
 		}
 	}
 	
@@ -1568,7 +1570,7 @@ public class BuildSetting {
 		if (file.exists()) {
 			return file;
 		} else {
-			return new File( this.polishDir, "custom-vendors.xml");
+			return new File( this.polishHomeDir, "custom-vendors.xml");
 		}
 	}
 	

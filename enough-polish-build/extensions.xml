@@ -48,6 +48,14 @@
 	</extension>
 	-->
 	
+	<!-- Preprocessor -->
+	
+	<extension>
+		<type>preprocessor</type>
+		<name>polish</name>
+		<class>de.enough.polish.preprocess.custom.PolishPreprocessor</class>
+	</extension>
+	
 	
 	<!-- Property Functions -->
 	

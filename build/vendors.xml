@@ -180,5 +180,14 @@
 	<vendor>
 		<name>O2</name>
 	</vendor>
+
+	<vendor>
+		<name>T-Mobile</name>
+	</vendor>
+	
+	<vendor>
+		<name>HTC</name>
+	</vendor>
+	
 	
 </vendors>

@@ -86,7 +86,7 @@ public class ResourceSetting extends Setting {
 	
 	public void addConfiguredCopier( ResourceCopierSetting setting ) {
 		if (setting.getClassName() == null) {
-			throw new BuildException("Invalid <copier>-element in build.xml: please specify the attribute \"class\"." );
+			throw new BuildException("Invalid <copier> element in build.xml: please specify the attribute \"class\"." );
 		}
 		if (this.copierSettings == null) {
 			this.copierSettings = new ArrayList();
@@ -96,7 +96,7 @@ public class ResourceSetting extends Setting {
 	
 	public void setDir( File dir ) {
 		if (!dir.exists()) { 
-			throw new BuildException("The specified resources-directory [" + dir.getAbsolutePath() + "] doe not exist. Please adjust the \"dir\"-attribute of the <resources>-element.");
+			throw new BuildException("The specified resources-directory [" + dir.getAbsolutePath() + "] does not exist. Please adjust the \"dir\" attribute of the <resources> element.");
 		}
 		this.dir = dir;
 	}

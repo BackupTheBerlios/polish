@@ -637,13 +637,16 @@ public class PolishTask extends ConditionalTask {
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
 		//CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
 		// add the polish custom processor:
-		CustomPreprocessor customProcessor = new PolishPreprocessor();
-		customProcessor.init(this.preprocessor, null);
+		// new PolishPreprocessor();
+		PreprocessorSetting preprocessorSetting = new PreprocessorSetting();
+		preprocessorSetting.setName("polish");
+		CustomPreprocessor customProcessor = CustomPreprocessor.getInstance(preprocessorSetting, this.preprocessor, this.extensionManager, this.environment );
+		//customProcessor.init(this.preprocessor, null);
 		this.customPreprocessors.add( customProcessor );
 		//processors[0] = customProcessor;
 		for (int i = 0; i < settings.length; i++) {
-			PreprocessorSetting setting = settings[i];
-			customProcessor = CustomPreprocessor.getInstance(setting, this.preprocessor, this.extensionManager, this.environment );
+			preprocessorSetting = settings[i];
+			customProcessor = CustomPreprocessor.getInstance(preprocessorSetting, this.preprocessor, this.extensionManager, this.environment );
 			this.customPreprocessors.add( customProcessor );
 		}
 		

@@ -97,8 +97,6 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				if (id != -1) {
 					this.idGenerator.addId( name, id );
 					//System.out.println("Using ID [" + id + "] for CSS-attribute [" + attribute.getName() + "]");
-				} else {
-					this.idGenerator.getId( name, true );
 				}
 				/*
 				if (allowAllCssAttributes) {
@@ -106,7 +104,15 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				}
 				*/
 			}
-			
+			// now register all attributes that have no ID assigned:
+			for (int i = 0; i < attributes.length; i++) {
+				CssAttribute attribute = attributes[i];
+				int id = attribute.getId();
+				String name = attribute.getName();
+				if (id == -1) {
+					this.idGenerator.getId( name, true );
+				}
+			}
 		}
 	}
 	
@@ -130,6 +136,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			this.stylePropertyIdsFile = new File( device.getBaseDir() + File.separatorChar 
 					+ "abbreviations.txt" );
 			if (this.stylePropertyIdsFile.exists()) {
+				//System.out.println("reading css attributes from " + this.stylePropertyIdsFile.getAbsolutePath() );
 				try {
 					HashMap idsByAttribute = FileUtil.readPropertiesFile( this.stylePropertyIdsFile );
 					this.idGenerator.setIdsMap(idsByAttribute);
@@ -173,10 +180,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		
 		// set settings for usage of Ticker:
 		if (this.isTickerUsed || this.tickerFile.exists()) {
-			this.preprocessor.removeSymbol("polish.skipTicker");
+			this.environment.removeSymbol("polish.skipTicker");
 			if (!this.tickerFile.exists()) {
 				this.preprocessor.addToPreprocessQueue("de/enough/polish/ui/Screen.java");
-				this.preprocessor.addToPreprocessQueue("de\\enough\\polish\\ui\\Screen.java");
 				try {
 					this.tickerFile.createNewFile();
 				} catch (IOException e) {
@@ -186,16 +192,14 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			}
 		} else {
 			this.preprocessor.removeFromPreprocessQueue("de/enough/polish/ui/Screen.java");
-			this.preprocessor.removeFromPreprocessQueue("de\\enough\\polish\\ui\\Screen.java");
-			this.preprocessor.addSymbol("polish.skipTicker");
+			this.environment.addSymbol("polish.skipTicker");
 		}
 		
 		// indicate the usage of a POPUP item:
 		if (this.isPopupUsed || this.popupFile.exists()) {
-			this.preprocessor.addSymbol( "polish.usePopupItem" );
+			this.environment.addSymbol( "polish.usePopupItem" );
 			if (!this.popupFile.exists()) {
 				this.preprocessor.addToPreprocessQueue("de/enough/polish/ui/ChoiceGroup.java");
-				this.preprocessor.addToPreprocessQueue("de\\enough\\polish\\ui\\ChoiceGroup.java");
 				try {
 					this.popupFile.createNewFile();
 				} catch (IOException e) {
@@ -204,9 +208,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				}
 			}			
 		} else {
-			this.preprocessor.removeSymbol( "polish.usePopupItem" );
+			this.environment.removeSymbol( "polish.usePopupItem" );
 			this.preprocessor.removeFromPreprocessQueue("de/enough/polish/ui/ChoiceGroup.java");
-			this.preprocessor.removeFromPreprocessQueue("de\\enough\\polish\\ui\\ChoiceGroup.java");
 		}
 	}
 
@@ -257,12 +260,13 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				}
 				String key = property.substring( 1, property.length() - 1);
 				int id = this.idGenerator.getId(
-						key, this.preprocessor.hasSymbol("polish.css." + key) );
+						key, this.environment.hasSymbol("polish.css." + key) );
 				// check if this property is used at all:
 				if ( id == -1 ) {
 					//System.out.println("skipping attribute [" + key + "]");
 					continue;
 				}
+				//System.out.println("got id " + id + " for key " + key);
 				line = StringUtil.replace( line, property, "" + id );
 				//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");
 				lines.setCurrent( line );
