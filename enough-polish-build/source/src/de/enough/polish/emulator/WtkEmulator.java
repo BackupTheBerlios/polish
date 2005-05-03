@@ -28,7 +28,10 @@ package de.enough.polish.emulator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
@@ -51,7 +54,7 @@ import de.enough.polish.util.FileUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class WtkEmulator extends Emulator {
-
+	
 	protected String[] arguments;
 	protected boolean appendXdeviceArgument;
 	protected String[] environment;
@@ -128,13 +131,13 @@ public class WtkEmulator extends Emulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			Environment properties, Project project,
+			Environment env, Project project,
 			BooleanEvaluator evaluator, String wtkHome) 
 	{
 		// okay, now create the arguments:
 		ArrayList argumentsList = new ArrayList();
 		
-		Variable[] parameters = getParameters(setting, project, evaluator, properties);
+		Variable[] parameters = getParameters(setting, project, evaluator, env);
 
 		String xDevice = getParameterValue("-Xdevice", parameters );
 		boolean xDeviceParameterGiven = true;
@@ -192,7 +195,7 @@ public class WtkEmulator extends Emulator {
 		}
 		
 		// add -Xdescriptor-parameter:
-		argumentsList.add("-Xdescriptor:" + properties.getVariable("polish.jadPath") );
+		argumentsList.add("-Xdescriptor:" + env.getVariable("polish.jadPath") );
 		
 		// add the -Xverbose-parameter:
 		String trace = setting.getTrace();
@@ -216,20 +219,31 @@ public class WtkEmulator extends Emulator {
 				usingPreferencesFile = true;
 			}
 			if (!usingPreferencesFile && setting.writePreferencesFile()) {
+				File propertiesFile = getEmulatorPropertiesFile( env );
+				Map emulatorPropertiesMap = new HashMap();
+				if (propertiesFile != null && propertiesFile.exists()) {
+					try {
+						FileUtil.readPropertiesFile(propertiesFile, ':', '#', emulatorPropertiesMap, false );	
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new BuildException("Unable to read the default emulator properties from [" + propertiesFile.getAbsolutePath() + "]: " + e.toString() + " - please make sure to use the WTK/2.2 or higher.", e  );
+					}
+				}
+				
+				
 				// now write a preferences-file:
-				String[] lines = new String[ 8 ];
-				lines[0] = "kvem.memory.monitor.enable:" + setting.enableMemoryMonitor();
-				lines[1] = "kvem.profiler.enable:" + setting.enableProfiler();
+				emulatorPropertiesMap.put( "kvem.memory.monitor.enable", "" + setting.enableMemoryMonitor() );
+				emulatorPropertiesMap.put( "kvem.profiler.enable", "" + setting.enableProfiler() );
 				boolean enableNetworkMonitor = setting.enableNetworkMonitor();
-				lines[2] = "kvem.netmon.comm.enable:" + enableNetworkMonitor;
-				lines[3] = "kvem.netmon.datagram.enable:" + enableNetworkMonitor;
-				lines[4] = "kvem.netmon.http.enable:" + enableNetworkMonitor;
-				lines[5] = "kvem.netmon.https.enable:" + enableNetworkMonitor;
-				lines[6] = "kvem.netmon.socket.enable:" + enableNetworkMonitor;
-				lines[7] = "kvem.netmon.ssl.enable:" + enableNetworkMonitor;
+				emulatorPropertiesMap.put( "kvem.netmon.comm.enable", "" + enableNetworkMonitor );
+				emulatorPropertiesMap.put( "kvem.netmon.datagram.enable", ""  + enableNetworkMonitor );
+				emulatorPropertiesMap.put( "kvem.netmon.http.enable", "" + enableNetworkMonitor );
+				emulatorPropertiesMap.put( "kvem.netmon.https.enable", "" + enableNetworkMonitor );
+				emulatorPropertiesMap.put( "kvem.netmon.socket.enable", "" + enableNetworkMonitor );
+				emulatorPropertiesMap.put( "kvem.netmon.ssl.enable", "" + enableNetworkMonitor );
 				preferences = new File( device.getBaseDir() + File.separatorChar + "emulator.properties" );	
 				try {
-					FileUtil.writeTextFile(preferences, lines);
+					FileUtil.writePropertiesFile(preferences, emulatorPropertiesMap);
 					argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -279,6 +293,16 @@ public class WtkEmulator extends Emulator {
 		
 		this.arguments = (String[]) argumentsList.toArray( new String[ argumentsList.size() ] );
 		return true;
+	}
+
+	/**
+	 * Retrieves the file containing the default properties for the emulator.
+	 * 
+	 * @param env the environment that helps to resolve files (env.resolveFile(String)).
+	 * @return by default ${wtk.home}/wtklib/emulator.properties is returned
+	 */
+	protected File getEmulatorPropertiesFile(Environment env) {
+		return env.resolveFile("${wtk.home}/wtklib/emulator.properties");
 	}
 
 	/* (non-Javadoc)

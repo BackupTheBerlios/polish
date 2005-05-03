@@ -203,6 +203,21 @@ public final class FileUtil {
 	public static void writePropertiesFile( File file, Map properties ) 
 	throws IOException 
 	{
+		writePropertiesFile(file, '=', properties);
+	}
+	
+	/**
+	 * Writes the properties which are defined in the given HashMap into a textfile.
+	 * The notation in the file will be [name]=[value]\n for each defined property.
+	 * 
+	 * @param file the file which should be created or overwritten
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param properties the properties which should be written. 
+	 * @throws IOException when there is an input/output error during the saving
+	 */
+	public static void writePropertiesFile( File file, char delimiter, Map properties ) 
+	throws IOException 
+	{
 		Object[] keys = properties.keySet().toArray();
 		String[] lines = new String[ keys.length ];
 		for (int i = 0; i < lines.length; i++) {
@@ -212,6 +227,7 @@ public final class FileUtil {
 		}
 		writeTextFile( file, lines );
 	}
+
 
 	/**
 	 * Reads a properties file.
@@ -238,7 +254,7 @@ public final class FileUtil {
 	 * for each defined property.
 	 * 
 	 * @param file the file containing the properties
-	 * @param delimiter the sign which is used for separating a property-name from a property-value.
+	 * @param delimiter the character that separates a property-name from a property-value.
 	 * @return a hashmap containing all properties found in the file
 	 * @throws FileNotFoundException when the file was not found
 	 * @throws IOException when file could not be read.
@@ -256,11 +272,11 @@ public final class FileUtil {
 	/**
 	 * Reads a properties file.
 	 * The notation of the file needs to be 
-	 * "[name]=[value]\n"
+	 * "[name]=[value]\n" where '=' is the defined delimiter character.
 	 * for each defined property.
 	 * 
 	 * @param file the file containing the properties
-	 * @param delimiter the sign which is used for separating a property-name from a property-value.
+	 * @param delimiter the character that separates a property-name from a property-value.
 	 * @param map the hash map to which the properties should be added 
 	 * @throws FileNotFoundException when the file was not found
 	 * @throws IOException when file could not be read.
@@ -269,6 +285,8 @@ public final class FileUtil {
 	public static void readPropertiesFile( File file, char delimiter, Map map ) 
 	throws FileNotFoundException, IOException 
 	{
+		readPropertiesFile( file, delimiter, '#', map, false );
+		/*
 		String[] lines = readTextFile( file );
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
@@ -284,6 +302,32 @@ public final class FileUtil {
 				String value = line.substring( equalsPos + 1);
 				map.put( key, value );
 			}
+		}
+		*/
+	}
+	
+	/**
+	 * Reads a properties file.
+	 * The notation of the file needs to be 
+	 * "[name]=[value]\n" where '=' is the defined delimiter character.
+	 * for each defined property.
+	 * 
+	 * @param file the file containing the properties
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the character that introduces a comment, e.g. '#'
+	 * @param map the hash map to which the properties should be added 
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @throws FileNotFoundException when the file was not found
+	 * @throws IOException when file could not be read.
+	 * @throws IllegalArgumentException when the line does not contain a property
+	 */
+	public static void readPropertiesFile( File file, char delimiter, char comment, Map map, boolean ignoreInvalidProperties ) 
+	throws FileNotFoundException, IOException 
+	{
+		try {
+			readProperties( new FileInputStream( file ), delimiter, comment, map, ignoreInvalidProperties );
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("File [" + file.getAbsolutePath() + "]:  " + e.getMessage() );
 		}
 	}
 	
@@ -372,7 +416,7 @@ public final class FileUtil {
 	 */
 	public static Map readProperties(InputStream in) throws IOException {
 		Map map = new HashMap();
-		readProperties(in, '=', '#', map );
+		readProperties(in, '=', '#', map, false );
 		return map;
 	}
 	
@@ -380,12 +424,31 @@ public final class FileUtil {
 	 * Reads properties from the given input stream.
 	 * 
 	 * @param in the input stream
-	 * @param delimiter the char separating key and value
+	 * @param delimiter the character that separates a property-name from a property-value.
 	 * @param comment the char denoting comments
 	 * @param properties a map containing properties
 	 * @throws IOException when reading from the input stream fails
 	 */
-	public static void readProperties(InputStream in, char delimiter, char comment, Map properties ) throws IOException {
+	public static void readProperties(InputStream in, char delimiter, char comment, Map properties ) 
+	throws IOException 
+	{
+		readProperties( in, delimiter, comment, properties, false );
+	}
+	
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @throws IOException when reading from the input stream fails
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static void readProperties(InputStream in, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties ) 
+	throws IOException 
+	{
 		BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
 		String line;
 		while ( (line = reader.readLine()) != null) {
@@ -394,7 +457,13 @@ public final class FileUtil {
 			}
 			int delimiterPos = line.indexOf( delimiter );
 			if (delimiterPos == -1) {
-				continue;
+				if (ignoreInvalidProperties) {
+					continue;
+				} else {
+					throw new IllegalArgumentException("The line [" + line 
+							+ "] contains an invalid property definition: " +
+									"missing separater-character (\"" + delimiter + "\")." );					
+				}
 			}
 			String key = line.substring( 0, delimiterPos ).trim();
 			String value = line.substring( delimiterPos + 1 );
