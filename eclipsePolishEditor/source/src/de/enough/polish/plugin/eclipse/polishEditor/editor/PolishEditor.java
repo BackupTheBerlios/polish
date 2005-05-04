@@ -77,7 +77,7 @@ public class PolishEditor extends CompilationUnitEditor {
         
     }
     
-
+    
     public PolishEditor() {
         this.propertyChangeListener = new PropertyChangeListener();
         this.occurrencesMarkerManager = new OccurrencesMarkerManager();

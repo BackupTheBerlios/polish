@@ -1,39 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?eclipse version="3.0"?>
-<plugin
-   id="de.enough.polish.plugin.eclipse.css.CssEditorPlugin"
-   name="CssEditor Plug-in"
-   version="0.3.0"
-   provider-name=""
-   class="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
-
-   <runtime>
-      <library name="CssEditor.jar">
-         <export name="*"/>
-      </library>
-      <library name="lib/antlr-2.7.5.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
-
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.views"/>
-   </requires>
-   
-   <extension
-         point="org.eclipse.ui.editors">
-		<editor
-         	id="de.enough.polish.plugin.eclipse.css.editor.CssEditor"
-         	name="Polish CSS-Editor"
-         	extensions="css"
-         	icon="icons/sample.gif"
-         	contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-         	class="de.enough.polish.plugin.eclipse.css.editor.CssEditor">
-         </editor>
+<plugin id="de.enough.polish.plugin.eclipse.css.CssEditorPlugin" name="CssEditor Plug-in" version="0.3.0" provider-name="" class="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
+    <runtime>
+        <library name="CssEditor.jar">
+            <export name="*"></export>
+        </library>
+        <library name="lib/antlr-2.7.5.jar">
+            <export name="*"></export>
+        </library>
+    </runtime>
+    <requires>
+        <import plugin="org.eclipse.ui"></import>
+        <import plugin="org.eclipse.core.runtime"></import>
+        <import plugin="org.eclipse.ui.editors"></import>
+        <import plugin="org.eclipse.ui.workbench.texteditor"></import>
+        <import plugin="org.eclipse.jface.text"></import>
+        <import plugin="org.eclipse.ui.views"></import>
+    </requires>
+    <extension point="org.eclipse.ui.editors">
+        <editor id="de.enough.polish.plugin.eclipse.css.editor.CssEditor" name="Polish CSS-Editor" extensions="css" icon="icons/sample.gif" contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor" class="de.enough.polish.plugin.eclipse.css.editor.CssEditor"></editor>
     </extension>
 </plugin>
+

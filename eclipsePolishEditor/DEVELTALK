@@ -1,3 +1,9 @@
+Genrating build.xml for plugin construction:
+ - org.eclipse.pde.internal.ui.build.BuildPluginAction
+ - org.eclipse.pde.internal.build.builder.ClasspathComputer3_0
+ - org.eclipse.pde.internal.build.builder.ModelBuildScriptGenerator
+
+
 TODO:
 
 - Solve problem with instant property change. DONE
