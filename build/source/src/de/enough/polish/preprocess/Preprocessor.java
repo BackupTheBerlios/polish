@@ -989,18 +989,19 @@ public class Preprocessor {
 	private boolean processInclude(String argument, StringList lines, String className) 
 	throws BuildException
 	{
-		String file = argument;
+		String filePath = argument;
 		try {
-			file = this.environment.writeProperties( argument, true );
-			String[] includes = FileUtil.readTextFile( file );
+			filePath = this.environment.writeProperties( argument, true );
+			System.out.println("include: resolved filePath = [" + filePath + "]");
+			String[] includes = FileUtil.readTextFile( filePath );
 			lines.insert( includes );
 			return true;
 		} catch (IllegalArgumentException e) {
 			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1)
 					+ ": unable to include file [" + argument + "]: " + e.getMessage()  );
 		} catch (IOException e) {
-			if (!argument.equals(file)) {
-				argument += "] / [" + file;
+			if (!argument.equals(filePath)) {
+				argument += "] / [" + filePath;
 			}
 			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1)
 					+ ": unable to include file [" + argument + "]: " + e.getClass().getName() + ": " + e.getMessage() );

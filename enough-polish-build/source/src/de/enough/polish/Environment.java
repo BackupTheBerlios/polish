@@ -51,7 +51,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class Environment {
 	
-	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[\\w|\\.|,|\\(|\\)|\\s]+\\s*\\}";
+	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[\\w|\\.|\\-|,|\\(|\\)|\\s]+\\s*\\}";
 	protected final static Pattern PROPERTY_PATTERN = Pattern.compile( PROPERTY_PATTERN_STR );
 	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[\\w|\\s|\\.|,]+\\s*\\)";
 	protected final static Pattern FUNCTION_PATTERN = Pattern.compile( FUNCTION_PATTERN_STR );
@@ -293,7 +293,7 @@ public class Environment {
 			String value = getProperty( property, needsToBeDefined );
 			if (value != null) {
 				input = StringUtil.replace( input, group, value );
-				PROPERTY_PATTERN.matcher( input );
+				matcher = PROPERTY_PATTERN.matcher( input );
 			}
 			propertyFound = matcher.find();
 		} 

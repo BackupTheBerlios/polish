@@ -1018,6 +1018,18 @@ public class PolishTask extends ConditionalTask {
 		this.environment.addVariable( "polish.jadName", jadName );
 		String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
 		this.environment.addVariable( "polish.jadPath", jadPath );
+		
+		// enable the support for the J2ME Polish GUI, part 1: 
+		// check if a preprocessing variable is set for using the Polish GUI:
+		String usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
+		boolean usePolishGui = (this.buildSetting.usePolishGui()
+		  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui()))
+		  || (( "true".equals( usePolishGuiVariable) || "yes".equals( usePolishGuiVariable ) || "always".equals( usePolishGuiVariable )) );
+		  
+		if ( usePolishGui) {
+			this.environment.addSymbol("polish.usePolishGui");
+		}
+		
 		// set conditional variables:
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		Project antProject = getProject();
@@ -1046,6 +1058,7 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		}
+		
 		// adjust polish.classes.ImageLoader in case the default package is used:
 		if (this.useDefaultPackage) {
 			String imageLoaderClass = this.environment.getVariable("polish.classes.ImageLoader");
@@ -1057,22 +1070,19 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		}
-		boolean usePolishGui = this.buildSetting.usePolishGui()
-		  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui());
-		if (!usePolishGui) {
-			// check if a preprocessing variable is set for using the Polish GUI:
-			value = this.environment.getVariable("polish.usePolishGui");
-			if (value != null) {
-				if ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) || "always".equalsIgnoreCase(value)) {
-					usePolishGui = true;					
-				}
+		
+		// set support for the J2ME Polish GUI, part 2:
+		usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
+		if (usePolishGuiVariable != null) {
+			if ("true".equalsIgnoreCase(usePolishGuiVariable) || "yes".equalsIgnoreCase(usePolishGuiVariable) || "always".equalsIgnoreCase(usePolishGuiVariable)) {
+				usePolishGui = true;					
+				this.environment.addSymbol("polish.usePolishGui");
+			} else {
+				usePolishGui = false;					
+				this.environment.removeSymbol("polish.usePolishGui");
 			}
 		}
-		if ( usePolishGui ) {
-			this.environment.addSymbol("polish.usePolishGui");
-		}
 
-		
 		// okay, now initialize extension manager:
 		this.extensionManager.initialize(device, locale, this.environment);
 		this.extensionManager.postInitialize(device, locale, this.environment);
@@ -1240,17 +1250,7 @@ public class PolishTask extends ConditionalTask {
 						+ File.separatorChar + "build.xml" );
 			long buildXmlLastModified = buildXml.lastModified();
 			// check if the polish gui is used at all:
-			boolean usePolishGui = this.buildSetting.usePolishGui()
-				  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui());
-			if (!usePolishGui) {
-				// check if a preprocessing variable is set for using the Polish GUI:
-				String value = this.environment.getVariable("polish.usePolishGui");
-				if (value != null) {
-					if ("true".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) || "always".equalsIgnoreCase(value)) {
-						usePolishGui = true;					
-					}
-				}
-			}
+			boolean usePolishGui = this.environment.hasSymbol("polish.usePolishGui");
 			//this.preprocessor.setUsePolishGui(usePolishGui);
 			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;
