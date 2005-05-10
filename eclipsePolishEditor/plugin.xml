@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?eclipse version="3.0"?>
-<plugin id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin" name="PolishEditor Plug-in" version="0.3.8" provider-name="" class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin">
+<plugin id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin" name="PolishEditor Plug-in" version="0.3.9" provider-name="" class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin">
     <runtime>
         <library name="PolishEditor.jar">
             <export name="*"></export>
@@ -24,15 +24,15 @@
         <editor id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" name="Polish Editor" extensions="java" icon="icons/sample.gif" class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"></editor>
     </extension>
     <!--
-    &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;extension
+    <extension
     		id="PolishDocumentSetupParticipant"
 		name="PolishDocumentSetupParticipant"
-		point="org.eclipse.core.filebuffers.documentSetup"&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
+		point="org.eclipse.core.filebuffers.documentSetup">
 		
-		&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;participant extensions="java"
-			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant"&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
-		&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/participant&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
-	&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/extension&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
+		<participant extensions="java"
+			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant">
+		</participant>
+	</extension>
 	-->
 
     <extension id="de.enough.polish.plugin.eclipse.polishEditor.preference.preferencePages" name="J2ME Polish Prefernce Pages" point="org.eclipse.ui.preferencePages">

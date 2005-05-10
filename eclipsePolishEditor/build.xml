@@ -34,7 +34,7 @@
         <antcall target="gather.bin.parts">
             <param name="destination.temp.folder" value="${temp.folder}/"></param>
         </antcall>
-        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar" basedir="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar" filesonly="false" whenempty="skip" update="false"></zip>
+        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9.jar" basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9" filesonly="false" whenempty="skip" update="false"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target name="PolishEditor.jar" depends="init" unless="PolishEditor.jar" description="Create jar: PolishEditor.jar.">
@@ -142,7 +142,7 @@
     </target>
     <target name="PolishEditorsrc.zip" depends="init" unless="PolishEditorsrc.zip">
         <mkdir dir="${build.result.folder}"></mkdir>
-        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar" filesonly="false" whenempty="skip" update="false" basedir="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar">
+        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9.jar" filesonly="false" whenempty="skip" update="false" basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9">
             <fileset dir="source/src/" includes="**/*.java"></fileset>
         </zip>
     </target>
@@ -155,11 +155,11 @@
         <antcall target="PolishEditorsrc.zip"></antcall>
     </target>
     <target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4"></mkdir>
-        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4" failonerror="true">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9"></mkdir>
+        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9" failonerror="true">
             <fileset dir="${build.result.folder}" includes="PolishEditor.jar"></fileset>
         </copy>
-        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4" failonerror="true">
+        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9" failonerror="true">
             <fileset dir="${basedir}" includes="plugin.xml,PolishEditor.jar,lib/antlr-2.7.5.jar,icons/sample.gif"></fileset>
         </copy>
     </target>
@@ -176,10 +176,11 @@
         <copy file="${temp.folder}/PolishEditor.jar.bin.log" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4" failonerror="false"></copy>
     </target>
     <target name="clean" depends="init" description="Clean the plug-in: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin of all the zips, jars and logs created.">
+        <echoproperties></echoproperties>
         <delete file="${build.result.folder}/PolishEditor.jar"></delete>
         <delete file="${build.result.folder}/PolishEditorsrc.zip"></delete>
-        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar"></delete>
-        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.zip"></delete>
+        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9.jar"></delete>
+        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9.zip"></delete>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
@@ -200,7 +201,7 @@
         <delete>
             <fileset dir="${temp.folder}" includes="**/*.bin.log"></fileset>
         </delete>
-        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar" basedir="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.4.jar" filesonly="true" whenempty="skip" update="false"></zip>
+        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9.jar" basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.9" filesonly="true" whenempty="skip" update="false"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
 </project>

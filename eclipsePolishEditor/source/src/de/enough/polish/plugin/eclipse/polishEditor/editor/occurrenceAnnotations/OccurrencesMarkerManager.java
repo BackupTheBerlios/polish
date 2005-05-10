@@ -100,7 +100,7 @@ public class OccurrencesMarkerManager{
             System.out.println("OccurrencesMarkerManager:updateAnnotations(...):this is not configured.");
             return;
         }
-        
+        // TODO: editor.removeAnnotations(...) aufrufen irgendwo. Drauf achten, dass man es  nicht zu oft aufruft.
         for(Iterator iterator = this.listOfMarkers.iterator();iterator.hasNext();) {
             IOccurrenceAnnotationMarker aMarker = (IOccurrenceAnnotationMarker) iterator.next();
             aMarker.removeAnnotations();
