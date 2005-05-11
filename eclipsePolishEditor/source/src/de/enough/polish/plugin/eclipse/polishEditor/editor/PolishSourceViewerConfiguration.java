@@ -25,15 +25,18 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import org.eclipse.jdt.internal.ui.text.IJavaPartitions;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IAutoIndentStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -155,4 +158,12 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         
     }
     
+    
+    public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer,
+                                                     String contentType) {
+        //if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
+        if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
+			return new PolishIndentStrategy();
+        return super.getAutoIndentStrategy(sourceViewer, contentType);
+    }
 }

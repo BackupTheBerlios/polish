@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?eclipse version="3.0"?>
-<plugin id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin" name="PolishEditor Plug-in" version="0.3.9" provider-name="" class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin">
+<plugin class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin" id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin" name="PolishEditor Plug-in" provider-name="" version="0.3.9">
     <runtime>
         <library name="PolishEditor.jar">
             <export name="*"></export>
@@ -21,35 +21,35 @@
         <import plugin="org.eclipse.jdt.core"></import>
     </requires>
     <extension point="org.eclipse.ui.editors">
-        <editor id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" name="Polish Editor" extensions="java" icon="icons/sample.gif" class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"></editor>
+        <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif" id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" name="Polish Editor"></editor>
     </extension>
     <!--
-    <extension
+    &amp;amp;amp;amp;amp;amp;lt;extension
     		id="PolishDocumentSetupParticipant"
 		name="PolishDocumentSetupParticipant"
-		point="org.eclipse.core.filebuffers.documentSetup">
+		point="org.eclipse.core.filebuffers.documentSetup"&amp;amp;amp;amp;amp;amp;gt;
 		
-		<participant extensions="java"
-			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant">
-		</participant>
-	</extension>
+		&amp;amp;amp;amp;amp;amp;lt;participant extensions="java"
+			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant"&amp;amp;amp;amp;amp;amp;gt;
+		&amp;amp;amp;amp;amp;amp;lt;/participant&amp;amp;amp;amp;amp;amp;gt;
+	&amp;amp;amp;amp;amp;amp;lt;/extension&amp;amp;amp;amp;amp;amp;gt;
 	-->
 
     <extension id="de.enough.polish.plugin.eclipse.polishEditor.preference.preferencePages" name="J2ME Polish Prefernce Pages" point="org.eclipse.ui.preferencePages">
-        <page id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage" class="de.enough.polish.plugin.eclipse.polishEditor.preference.PolishRootPage" name="J2ME Polish"></page>
+        <page class="de.enough.polish.plugin.eclipse.polishEditor.preference.PolishRootPage" id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage" name="J2ME Polish"></page>
     </extension>
     <extension point="org.eclipse.ui.editors.annotationTypes">
         <type name="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation"></type>
     </extension>
     <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
-        <specification annotationType="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation" label="PolishOccurrenceAnnotation" icon="icons/full/obj16/searchm_obj.gif" textPreferenceKey="occurrenceIndication" textPreferenceValue="false" highlightPreferenceKey="occurrenceHighlighting" highlightPreferenceValue="true" contributesToHeader="false" overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler" overviewRulerPreferenceValue="true" verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler" verticalRulerPreferenceValue="false" colorPreferenceKey="occurrenceIndicationColor" colorPreferenceValue="255,248,147" presentationLayer="4" showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction" showInNextPrevDropdownToolbarAction="true" isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget" isGoToNextNavigationTarget="false" isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget" isGoToPreviousNavigationTarget="false"></specification>
+        <specification annotationType="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation" colorPreferenceKey="occurrenceIndicationColor" colorPreferenceValue="255,248,147" contributesToHeader="false" highlightPreferenceKey="occurrenceHighlighting" highlightPreferenceValue="true" icon="icons/full/obj16/searchm_obj.gif" isGoToNextNavigationTarget="false" isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget" isGoToPreviousNavigationTarget="false" isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget" label="PolishOccurrenceAnnotation" overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler" overviewRulerPreferenceValue="true" presentationLayer="4" showInNextPrevDropdownToolbarAction="true" showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction" textPreferenceKey="occurrenceIndication" textPreferenceValue="false" verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler" verticalRulerPreferenceValue="false"></specification>
     </extension>
     <extension id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureExtension" name="Toggle J2ME Polish nature" point="org.eclipse.ui.popupMenus">
-        <objectContribution adaptable="true" objectClass="org.eclipse.core.resources.IProject" id="de.enough.polish.plugin.eclipse.polish.togglePolishNature">
-            <action id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureAction" label="Toggle J2ME Polish nature" icon="icons/simple.gif" class="de.enough.polish.plugin.eclipse.polish.actions.TogglePolishNatureAction" enablesFor="1"></action>
+        <objectContribution adaptable="true" id="de.enough.polish.plugin.eclipse.polish.togglePolishNature" objectClass="org.eclipse.core.resources.IProject">
+            <action class="de.enough.polish.plugin.eclipse.polish.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/simple.gif" id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
         </objectContribution>
     </extension>
-    <extension id="polishNature" point="org.eclipse.core.resources.natures" name="J2ME Polish Nature">
+    <extension id="polishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
         <runtime>
             <run class="de.enough.polish.plugin.eclipse.polish.PolishNature"></run>
         </runtime>
@@ -57,7 +57,7 @@
     <!-- Caution: IDs from natures are relative to the plugin ID.-->
 
     <extension point="org.eclipse.ui.ide.projectNatureImages">
-        <image icon="icons/black.gif" natureId="org.eclipse.ui.ide.projectNatureImages.polishNature" id="de.enough.polish.plugin.eclipse.polishEditor.PolishProjectNatureImage"></image>
+        <image icon="icons/black.gif" id="de.enough.polish.plugin.eclipse.polishEditor.PolishProjectNatureImage" natureId="org.eclipse.ui.ide.projectNatureImages.polishNature"></image>
     </extension>
     <extension point="org.eclipse.ui.actionSetPartAssociations">
         <actionSetPartAssociation targetID="org.eclipse.jdt.ui.text.java.actionSet.presentation">

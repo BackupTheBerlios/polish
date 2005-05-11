@@ -121,7 +121,7 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
-        System.out.println("PolishEditor.handlePreferenceStoreChanged(...):enter.");
+        //System.out.println("PolishEditor.handlePreferenceStoreChanged(...):enter.");
         // Here should a change from mark occurences be placed. If e.g. only derectives should be marked.
         super.handlePreferenceStoreChanged(event);
     }
@@ -129,11 +129,11 @@ public class PolishEditor extends CompilationUnitEditor {
     
     protected void updateOccurrenceAnnotations(ITextSelection selection, CompilationUnit astRoot) {
         if(selection == null){
-            System.out.println("PolishEditor.updateOccurrenceAnnotations(...):Parameter 'selection'is null.");
+            System.out.println("ERROR:PolishEditor.updateOccurrenceAnnotations(...):Parameter 'selection'is null.");
             return;
         }
         if(astRoot == null){
-            System.out.println("PolishEditor.updateOccurrenceAnnotations(...):Parameter 'astRoot' is null.");
+            System.out.println("ERROR:PolishEditor.updateOccurrenceAnnotations(...):Parameter 'astRoot' is null.");
             return;
         }
         List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
@@ -146,10 +146,10 @@ public class PolishEditor extends CompilationUnitEditor {
     
     // Use this mechanism to get informed about install and uninstall.
     protected void installOccurrencesFinder() {
-        System.out.println("PolishEditor.installOccurrencesFinder().enter");
+        //System.out.println("PolishEditor.installOccurrencesFinder().enter");
         ISourceViewer sourceViewer = getSourceViewer();
         if(sourceViewer == null) {
-            System.out.println("PolishEditor.installOccurrencesFinder():sourceViewer is null.");
+            System.out.println("ERROR:PolishEditor.installOccurrencesFinder():sourceViewer is null.");
             return;
         }
         // Reset the Marker Manager, maybe something has changed.
@@ -159,8 +159,8 @@ public class PolishEditor extends CompilationUnitEditor {
         super.installOccurrencesFinder();
     }
     protected void uninstallOccurrencesFinder() {
-        System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
-        this.occurrencesMarkerManager.removeAnnotations();
+        //System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
+        //this.occurrencesMarkerManager.removeAnnotations(); // Seems not to work as it complains about beeing not configured.
         super.uninstallOccurrencesFinder();
     }
 }

@@ -1,26 +1,23 @@
-Genrating build.xml for plugin construction:
- - org.eclipse.pde.internal.ui.build.BuildPluginAction
- - org.eclipse.pde.internal.build.builder.ClasspathComputer3_0
- - org.eclipse.pde.internal.build.builder.ModelBuildScriptGenerator
-
-
 TODO:
 
+- replace all system.out.println with plugin.log messages.
+- move updateSite stuff to seperate build project to have a clear cut.
+- ant file cleanup and enhancement.
+- change names to J2MEPolish
+- Code cleanup: plugin structure, package structure, javadoc.
+- optimize mark occurrences. refactor marker. Have several marks take turn to color the text.
+- migrate all org.eclipse.ui.actionSetPartAssociations with id of CompilationUnitEditor to PolishEditor.
+- recognize symbol and variable names.
 - Solve problem with instant property change. DONE
 - Create a nature and register polish editor as default editor for .java. DONE
 - Make the nature chooseable. DONE
 - Make all colors work. DONE
 - Get mark occurrences working. DONE
-- optimize mark occurrences. refactor marker. Have several marks take turn to color the text.
-- recognize symbol and variable names.
-- Code cleanup: plugin structure, package structure, javadoc.
 - Create updatesite with webbrowser access. DONE
 - Bug: at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905). DONE
-- migrate all org.eclipse.ui.actionSetPartAssociations with id of CompilationUnitEditor to PolishEditor.
 - try to get indention working.
-- replace all system.out.println with plugin.log messages.
 - defensive programming EVERYWHERE.
-- change names to J2MEPolish
+
 - nature is not visible jet
 - verify the presence of views, wizards, use of resourcebundles
 - registering polish editor as default causes problems. Sometimes an editor is null somewhere.
@@ -37,13 +34,6 @@ syntax highlighting: overload the getSingleLineCommentScanner from JavaSourceVie
 Having a own partition is difficult because it would overlap with content type SINGLE_LINE_COMMENT.
 Alternative: overload FastJavaPartitionScanner and return new content type for //#. Problems: Use of partitions is
 hardwired everywhere in the jdt
-
-
-Milestones:
-
-Mark ocurrences
-
-see JavaEditor.handlePreferenceStoreChanged(...) and PreferenceConstants.EDITOR_MARK_OCCURRENCES within.
 
 
 THINGS TO COKE ON

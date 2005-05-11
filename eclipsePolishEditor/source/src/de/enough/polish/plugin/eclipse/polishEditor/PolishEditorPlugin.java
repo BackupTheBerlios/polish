@@ -100,6 +100,10 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
         log(status);
     }
 
+    public static void log(Throwable e) {
+        IStatus status = new Status(IStatus.ERROR, ID,IStatus.ERROR,"",e); 
+        log(status);
+    }
     public static void log(String message) {
         IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
             message, null); 
