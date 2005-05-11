@@ -726,7 +726,7 @@ public class Sprite
 				int clipY = g.getClipY();
 				int clipWidth = g.getClipWidth();
 				int clipHeight = g.getClipHeight();
-				g.setClip( x, y, this.width, this.height );
+				g.clipRect( x, y, this.width, this.height );
 				x -= this.column * this.width;
 				y -= this.row * this.height;
 			

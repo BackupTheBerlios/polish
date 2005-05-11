@@ -2408,7 +2408,7 @@ implements CommandListener
 	//#endif
 	
 	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
-	protected Style focus(Style focusedStyle) {
+	protected Style focus(Style focStyle) {
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {
 		//#endif
@@ -2418,7 +2418,12 @@ implements CommandListener
 		//#ifdef tmp.allowDirectInput
 			}
 		//#endif
-		return super.focus(focusedStyle);
+		return super.focus(focStyle);
 	}
 	//#endif
+	
+//#ifdef polish.TextField.additionalMethods:defined
+	//#include ${polish.TextField.additionalMethods}
+//#endif
+
 }

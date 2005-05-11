@@ -102,6 +102,7 @@ public class MenuBar extends Item {
 		//#style menu, default
 		this.commandsContainer = new Container( true );
 		this.commandsContainer.screen = screen;
+		this.commandsContainer.parent = this;
 		//#style rightcommand, default
 		this.singleRightCommandItem = new IconItem( null, null );
 		this.singleRightCommandItem.setImageAlign( Graphics.LEFT );
@@ -382,6 +383,8 @@ public class MenuBar extends Item {
 			g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			this.commandsContainer.paint(0, this.commandsContainerY, 0, this.commandsContainerWidth , g);
+			//System.out.println("MenuBar: commandContainer.background == null: " + ( this.commandsContainer.background == null ) );
+			//System.out.println("MenuBar: commandContainer.style.background == null: " + ( this.commandsContainer.style.background == null ) );
 			//#ifdef polish.FullCanvasSize:defined
 				//#= g.setClip(0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
 			//#else

@@ -928,6 +928,10 @@ public abstract class Item extends Object
 			}
 		//#endif
 		//#ifdef polish.css.focused-style
+			//Object object = style.getObjectProperty("focused-style");
+			//if (object != null) {
+			//	System.out.println("focused-type: " + object.getClass().getName());
+			//}
 			Style focused = (Style) style.getObjectProperty("focused-style");
 			if (focused != null) {
 				this.focusedStyle = focused;

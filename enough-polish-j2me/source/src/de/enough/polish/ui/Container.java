@@ -943,9 +943,12 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style) {
+		//#if polish.debug.debug
 		if (this.parent == null) {
+			//#debug
 			System.out.println("Container.setStyle without boolean parameter for container " + toString() );
 		}
+		//#endif
 		setStyle(style, false);
 	}
 	

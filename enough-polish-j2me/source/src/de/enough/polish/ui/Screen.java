@@ -36,6 +36,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
+
 //#ifdef polish.Screen.imports:defined
 	//#include ${polish.Screen.imports}
 //#endif
@@ -611,7 +612,10 @@ public abstract class Screen
 				this.originalScreenHeight = this.screenHeight;
 				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 			}
-		//#endif			
+		//#endif
+		//#if tmp.fullScreen && polish.FullCanvasSize:defined && polish.Bugs.setClipForFullScreenNeeded
+			//#= g.setClip( 0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
+		//#endif
 		//#ifdef polish.debug.error
 		try {
 		//#endif
