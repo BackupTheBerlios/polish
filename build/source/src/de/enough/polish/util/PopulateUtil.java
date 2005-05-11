@@ -283,5 +283,83 @@ public final class PopulateUtil {
 			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
 		}
 	}
+	
+	public static Object callMethod( Object object, String methodName, int value ) 
+	throws NoSuchMethodException 
+	{
+		Class instanceClass = object.getClass();
+		Method method = null;
+		while (method == null) {
+			try {
+				method = instanceClass.getDeclaredMethod( methodName, new Class[]{ Integer.TYPE } );
+			} catch (NoSuchMethodException e) {
+				instanceClass = instanceClass.getSuperclass();
+				if (instanceClass == null) {
+					throw e;
+				}
+			}
+		}
+		try {
+			return method.invoke(object, new Object[]{ new Integer( value ) } );
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			throw new NoSuchMethodException( e.toString() );
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException( e.getCause() );
+		}
+	}
+
+	public static Object callMethod(String methodName, Object object, Class[] signature, Object[] values) 
+	throws NoSuchMethodException 
+	{
+		Class instanceClass = object.getClass();
+		Method method = null;
+		while (method == null) {
+			try {
+				method = instanceClass.getDeclaredMethod( methodName, signature );
+			} catch (NoSuchMethodException e) {
+				instanceClass = instanceClass.getSuperclass();
+				if (instanceClass == null) {
+					throw e;
+				}
+			}
+		}
+		try {
+			return method.invoke(object, values );
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			throw new NoSuchMethodException( e.toString() );
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException( e.getCause() );
+		}
+	}
+
+	public static Object callMethod(String methodName, Object object) 
+	throws NoSuchMethodException 
+	{
+		Class instanceClass = object.getClass();
+		Method method = null;
+		while (method == null) {
+			try {
+				method = instanceClass.getDeclaredMethod( methodName, new Class[0] );
+			} catch (NoSuchMethodException e) {
+				instanceClass = instanceClass.getSuperclass();
+				if (instanceClass == null) {
+					throw e;
+				}
+			}
+		}
+		try {
+			return method.invoke(object, new Object[0] );
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			throw new NoSuchMethodException( e.toString() );
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException( e.getCause() );
+		}
+	}
 
 }

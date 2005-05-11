@@ -153,19 +153,6 @@
 	</device>
 
 	<device
-		supportsPolishGui="true" >
-		<identifier>Nokia/midp2</identifier>
-		<features>isVirtual, hasCommandKeyEvents</features>
-		<groups></groups>
-		<capability name="OS" value="Symbian"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="VideoFormat" value="3gpp" />
-		<capability name="SoundFormat" value="midi, amr" />
-	</device>
-
-	<device
 		supportsPolishGui="false" >
 		<identifier>Nokia/Series40</identifier>
 		<features>isVirtual</features>
@@ -606,6 +593,15 @@
 		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts" />
 	</device>
 
+	<device>
+		<identifier>Sony-Ericsson/K700Update</identifier>
+		<parent>Sony-Ericsson/K700i</parent>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="CanvasSize" value="176x176"/>		
+		<capability name="Bugs" value="setClipForFullScreenNeeded" />
+	</device>
+	
 	<device>
 		<identifier>Sony-Ericsson/K500, Sony-Ericsson/K500i, Sony-Ericsson/F500, Sony-Ericsson/F500i</identifier>
 		<groups></groups>
@@ -2346,7 +2342,7 @@
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, getResourceAsStreamMemoryLeak" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, getResourceAsStreamMemoryLeak, stringsInOffscreenAlwaysBlack" />
 	</device>
 		
 	<device>
@@ -2361,7 +2357,7 @@
 		<capability name="SoundFormat" value="midi, amr,  WAV, MP3, AAC" />
 		<capability name="HeapSize" value="dynamic" />
 		<capability name="MaxJarSize" value="4mb" />
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, stringsInOffscreenAlwaysBlack" />
 	</device>
 		
 	<device>
@@ -2379,7 +2375,7 @@
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, stringsInOffscreenAlwaysBlack" />
 	</device>
 	
 	<device>
@@ -2395,7 +2391,7 @@
 		<capability name="MaxJarSize" value="4mb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, drawStringOver200Chars" />
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, drawStringOver200Chars, stringsInOffscreenAlwaysBlack" />
 	</device>
 	
 	<device>

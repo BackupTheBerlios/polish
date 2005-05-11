@@ -96,13 +96,11 @@ implements OutputFilter
 		// the libraries:
 		argsList.add( "-libraryjars" );
 		StringBuffer buffer = new StringBuffer();
-		buffer.append( bootClassPath.toString() ).append( File.pathSeparatorChar );
+		buffer.append( bootClassPath.toString() );
 		String[] apiPaths = device.getClassPaths();
 		for (int i = 0; i < apiPaths.length; i++) {
+			buffer.append( File.pathSeparatorChar );
 			buffer.append( apiPaths[i].toString() );
-			if (i != apiPaths.length - 1 ) {
-				buffer.append( File.pathSeparatorChar );
-			}
 		}
 		argsList.add( buffer.toString() );
 		// add classes that should be kept from obfuscating:
@@ -131,9 +129,11 @@ implements OutputFilter
 			//JarUtil.exec( this.proGuardJarFile, argsList, getClass().getClassLoader() );
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("ProGuard arguments: " + argsList.toString() );
 			throw new BuildException("ProGuard is unable to obfuscate: " + e.toString(), e );
 		}
 		if (result != 0) {
+			System.out.println("ProGuard arguments: " + argsList.toString() );
 			throw new BuildException("ProGuard was unable to obfuscate - got return value [" + result + "].");
 		}
 		/*

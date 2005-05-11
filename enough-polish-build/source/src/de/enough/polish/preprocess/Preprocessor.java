@@ -992,7 +992,7 @@ public class Preprocessor {
 		String filePath = argument;
 		try {
 			filePath = this.environment.writeProperties( argument, true );
-			System.out.println("include: resolved filePath = [" + filePath + "]");
+			//System.out.println("include: resolved filePath = [" + filePath + "]");
 			String[] includes = FileUtil.readTextFile( filePath );
 			lines.insert( includes );
 			return true;

@@ -1,5 +1,5 @@
 /*
- * Created on 06-Mar-2005 at 17:05:07.
+ * Created on 11-May-2005 at 13:25:16.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -26,18 +26,27 @@
 package de.enough.polish.swing;
 
 /**
- * <p>Is used to communicate with an OkCancelApplyPanel.</p>
+ * <p></p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        06-Mar-2005 - rob creation
+ *        11-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see de.enough.polish.swing.OkCancelApplyPanel
  */
-public interface OkCancelApplyListener {
-	public void okSelected();
-	public void applySelected();
-	public void cancelSelected();
+public interface BackgroundProcess {
+	/**
+	 * Retrieves the number of steps of this process.
+	 * 
+	 * @return the number of steps of this process, -1 when the number is not known.
+	 */
+	public int getSteps();
+	
+	/**
+	 * Executes the long-going process.
+	 * 
+	 * @param progressFrame the progress frame used for showing the progress.
+	 */
+	public void runBackgroundProcess( ProgressFrame progressFrame );
 }

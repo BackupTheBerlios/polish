@@ -26,7 +26,7 @@
 package de.enough.polish.swing;
 
 /**
- * <p>Is used to communicate with an OkCancelApplyPanek.</p>
+ * <p>Is used to communicate with an OkCancelApplyPanel.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>

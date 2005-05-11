@@ -227,6 +227,23 @@
 		</solution>
 	</bug>
 
+	<bug>
+		<name>setClipForFullScreenNeeded</name>
+		<area>ui</area>
+		<description>This devices requires that the Graphics clip is set to 
+		the full canvas dimensions, otherwise only part of available space can be used.</description>
+		<solution>call setClip( ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight }) in each paint() method.</solution>
+	</bug>
+
+	<bug>
+		<name>stringsInOffscreenAlwaysBlack</name>
+		<area>ui</area>
+		<description>Strings that are drawn in an image-buffer are always black.</description>
+		<solution>Use a bright background color or paint strings only directly on the Graphics element
+		given in the Canvas.paint() method.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>

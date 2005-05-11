@@ -1,5 +1,5 @@
 /*
- * Created on 06-Mar-2005 at 17:05:07.
+ * Created on 11-May-2005 at 20:05:07.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -26,18 +26,17 @@
 package de.enough.polish.swing;
 
 /**
- * <p>Is used to communicate with an OkCancelApplyPanel.</p>
+ * <p>Is used to communicate with an OkCancelPanel.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        06-Mar-2005 - rob creation
+ *        11-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  * @see de.enough.polish.swing.OkCancelApplyPanel
  */
-public interface OkCancelApplyListener {
+public interface OkCancelListener {
 	public void okSelected();
-	public void applySelected();
 	public void cancelSelected();
 }
