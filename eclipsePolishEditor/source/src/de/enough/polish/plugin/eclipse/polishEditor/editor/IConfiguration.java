@@ -24,7 +24,7 @@
  * http://www.j2mepolish.org for details.
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
-
+//TODO: Not needed. Remove.
 /**
  * <p></p>
  *

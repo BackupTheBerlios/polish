@@ -71,7 +71,7 @@ public class PolishEditor extends CompilationUnitEditor {
          * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
          */
         public void propertyChange(PropertyChangeEvent event) {
-            System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
+            //System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
             handlePreferenceStoreChanged(event);
         }
         

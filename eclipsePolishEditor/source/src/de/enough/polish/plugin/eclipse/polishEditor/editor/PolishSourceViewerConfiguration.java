@@ -54,7 +54,7 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSi
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class PolishSourceViewerConfiguration extends JavaSourceViewerConfiguration {
-
+    //TODO: Not needed. Remove.
     class DocumentListener implements IDocumentListener{
 
         /* (non-Javadoc)
@@ -74,7 +74,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
            
             IDocument document = event.getDocument();
             if( ! (document instanceof IDocumentExtension3)) {
-                System.out.println("DocumentListener.documentChanged():document is not instance of IDocumentExtension3");
+                System.out.println("ERROR:DocumentListener.documentChanged():document is not instance of IDocumentExtension3");
                 return;
             }
             IDocumentExtension3 documentExtension3 = (IDocumentExtension3) document;

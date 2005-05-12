@@ -147,7 +147,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
 //    }
     public boolean affectsBehavior(PropertyChangeEvent event) {
         String property = event.getProperty();
-        System.out.println(property);
+        //System.out.println(property);
         if(property.equals(IPolishConstants.POLISH_COLOR_DIRECTIVE) ||
            property.equals(IPolishConstants.POLISH_COLOR_DEFAULT) ||
            property.equals(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION)) {

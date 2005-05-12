@@ -36,6 +36,11 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 
 import de.enough.polish.plugin.eclipse.polishEditor.editor.IConfiguration;
 
+/*
+ * TODO: Think about new arrangement in OccurrencesMarkerManager. Register handler to recognize 
+ * tokens and register handler to carry out marking for a specific token.
+ * 
+ */
 
 // Typo verbessern: Manager.
 public class OccurrencesMarkerManager{

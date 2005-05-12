@@ -1,0 +1,13 @@
+BUGS
+
+- 050512.01: Folding truncates block directives. E.g. an #endif after the last import statement
+  is left after a folding.
+ 
+- 050512.02: marking #else will not mark corresponding #endif if else clause contains nested
+  block directives.
+
+- 050512.03: menuitems source, refactor ... are missing. Also some buttons like next annotation.
+
+- 050512.04: Always inserting //#endif after //#if is annoying.
+
+

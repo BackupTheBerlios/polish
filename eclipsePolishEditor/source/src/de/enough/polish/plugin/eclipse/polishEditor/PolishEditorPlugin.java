@@ -124,15 +124,4 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
         store.setDefault(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,javaDefaultColorString);
         store.setDefault(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,javaKeywordColorString);
     }
-
-    /**
-     * @param project
-     * @throws CoreException
-     */
- 
-
-    
- 
-
-  
 }

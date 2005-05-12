@@ -1,6 +1,9 @@
 TODO:
 
 - replace all system.out.println with plugin.log messages.
+- Make all messages aswer the following:
+    Where did the error occurred (class,method,position)? What happend (technically with exception/condition,semanticly if no obvious)? Why did it happen? (technically with numbers,semanticly if no obvious)
+- Terminology: offset and position: a position is mutable and may have different roles like startPosition, currentPosition. An offset is one special position in a series of possible positions.
 - move updateSite stuff to seperate build project to have a clear cut.
 - ant file cleanup and enhancement.
 - change names to J2MEPolish
@@ -101,6 +104,6 @@ sould not know its subclasses?
 
 IRC
 irc.oftc.net #gcj
-irc.freenode.net #classpath wenden an: overholt, pmuldoon, scsibear, Michael ist man-di
+irc.freenode.net #classpath. wenden an: overholt, pmuldoon, scsibear, Michael ist man-di
 
 
