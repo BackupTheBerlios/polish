@@ -305,6 +305,7 @@ public final class PopulateUtil {
 			e.printStackTrace();
 			throw new NoSuchMethodException( e.toString() );
 		} catch (InvocationTargetException e) {
+			System.out.println("PopulateUtil: unable to call method " + methodName + "( " + value + ")");
 			e.printStackTrace();
 			throw new RuntimeException( e.getCause() );
 		}

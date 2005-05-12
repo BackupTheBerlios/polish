@@ -72,6 +72,7 @@ public class BooleanEvaluator {
 	private Map symbols;
 	private Map variables;
 	private Environment environment;
+	private Device device;
 
 	/**
 	 * Creates a new boolean evaluator.
@@ -110,6 +111,17 @@ public class BooleanEvaluator {
 		this.symbols = symbols;
 		this.variables = variables;
 	}
+	
+	/**
+	 * Sets the environment for this evaluator.
+	 * 
+	 * @param device the device
+	 * @throws NullPointerException when symbols or variables are null
+	 */
+	public void setEnvironment( Device device ) {
+		this.device = device;
+	}
+
 	
 	/**
 	 * Evaluates the given expression.
@@ -210,6 +222,8 @@ public class BooleanEvaluator {
 				if (this.environment != null) {
 					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " by environment");
 					symbolResult = this.environment.hasSymbol( symbol );
+				} else if (this.device != null) {
+					symbolResult = this.device.hasFeature( symbol );
 				} else {
 					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " directly...");
 					symbolResult = ( this.symbols.get( symbol ) != null );
@@ -237,6 +251,8 @@ public class BooleanEvaluator {
 				String var;
 				if (this.environment != null) {
 					var  = this.environment.getVariable( symbol );
+				} else if (this.device != null) {
+					var = this.device.getCapability( symbol );
 				} else {
 					var  = (String) this.variables.get( symbol );
 				}
@@ -246,6 +262,8 @@ public class BooleanEvaluator {
 				String lastVar;
 				if (this.environment != null) {
 					lastVar = this.environment.getVariable( lastSymbol );
+				} else if (this.device != null) {
+					lastVar = this.device.getCapability( lastSymbol );
 				} else {
 					lastVar = (String) this.variables.get( lastSymbol );
 				}

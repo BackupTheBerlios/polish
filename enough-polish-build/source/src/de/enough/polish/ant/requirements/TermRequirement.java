@@ -69,8 +69,17 @@ public class TermRequirement extends Requirement {
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device)
 	 */
 	public boolean isMet(Device device) {
-		this.booleanEvaluator.setEnvironment( device.getFeatures(), device.getCapabilities() );
+		this.booleanEvaluator.setEnvironment( device );
 		return this.booleanEvaluator.evaluate( this.term, "build.xml", 0 );
+		/*
+		if (result) {
+			//System.out.println("device " + device.getIdentifier() + " is virtual: " + device.hasFeature("polish.isVirtual") );
+			System.out.println("device " + device.getIdentifier() + " is virtual<lowercase>: " + device.hasFeature("polish.isvirtual") );
+			//System.out.println("term=" + this.term );
+			System.out.println("!polish.isVirtual==" + this.booleanEvaluator.evaluate( "!polish.isVirtual", "build.xml", 0 ) );
+		}
+		return result;
+		*/
 	}
 
 }
