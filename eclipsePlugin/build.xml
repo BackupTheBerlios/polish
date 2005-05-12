@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="de.enough.polish.plugin.eclipse.css.CssEditorPlugin" default="build.jars" basedir=".">
+<project basedir="." default="build.jars" name="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
     <property name="bootclasspath" value=""></property>
     <property name="basews" value="${ws}"></property>
     <property name="baseos" value="${os}"></property>
@@ -12,7 +12,7 @@
     <property name="javacSource" value="1.3"></property>
     <property name="javacTarget" value="1.2"></property>
     <property name="compilerArg" value=""></property>
-    <target name="init" depends="properties">
+    <target depends="properties" name="init">
         <condition property="pluginTemp" value="${buildTempFolder}/plugins">
             <isset property="buildTempFolder"></isset>
         </condition>
@@ -24,25 +24,25 @@
         <property name="temp.folder" value="${basedir}/temp.folder"></property>
         <property name="plugin.destination" value="${basedir}"></property>
     </target>
-    <target name="properties" if="eclipse.running">
+    <target if="eclipse.running" name="properties">
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"></property>
     </target>
-    <target name="build.update.jar" depends="init" description="Build the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin for an update site.">
+    <target depends="init" description="Build the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin for an update site." name="build.update.jar">
         <delete dir="${temp.folder}"></delete>
         <mkdir dir="${temp.folder}"></mkdir>
         <antcall target="build.jars"></antcall>
         <antcall target="gather.bin.parts">
             <param name="destination.temp.folder" value="${temp.folder}/"></param>
         </antcall>
-        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar" basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="false" whenempty="skip" update="false"></zip>
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="false" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
-    <target name="CssEditor.jar" depends="init" unless="CssEditor.jar" description="Create jar: CssEditor.jar.">
+    <target depends="init" description="Create jar: CssEditor.jar." name="CssEditor.jar" unless="CssEditor.jar">
         <delete dir="${temp.folder}/CssEditor.jar.bin"></delete>
         <mkdir dir="${temp.folder}/CssEditor.jar.bin"></mkdir>
         <!-- compile the source code -->
 
-        <javac destdir="${temp.folder}/CssEditor.jar.bin" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bootclasspath}" source="${javacSource}" target="${javacTarget}">
+        <javac bootclasspath="${bootclasspath}" debug="${javacDebugInfo}" destdir="${temp.folder}/CssEditor.jar.bin" failonerror="${javacFailOnError}" includeAntRuntime="no" source="${javacSource}" target="${javacTarget}" verbose="${javacVerbose}">
             <compilerarg line="${compilerArg}"></compilerarg>
             <classpath>
                 <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui_3.0.1/ui.jar"></pathelement>
@@ -89,60 +89,60 @@
         </javac>
         <!-- Copy necessary resources -->
 
-        <copy todir="${temp.folder}/CssEditor.jar.bin" failonerror="true">
+        <copy failonerror="true" todir="${temp.folder}/CssEditor.jar.bin">
             <fileset dir="source/src/" excludes="**/*.java, **/package.htm*"></fileset>
         </copy>
         <mkdir dir="${build.result.folder}"></mkdir>
-        <jar jarfile="${build.result.folder}/CssEditor.jar" basedir="${temp.folder}/CssEditor.jar.bin"></jar>
+        <jar basedir="${temp.folder}/CssEditor.jar.bin" jarfile="${build.result.folder}/CssEditor.jar"></jar>
         <delete dir="${temp.folder}/CssEditor.jar.bin"></delete>
     </target>
-    <target name="CssEditorsrc.zip" depends="init" unless="CssEditorsrc.zip">
+    <target depends="init" name="CssEditorsrc.zip" unless="CssEditorsrc.zip">
         <mkdir dir="${build.result.folder}"></mkdir>
-        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar" filesonly="false" whenempty="skip" update="false" basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1">
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="false" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar">
             <fileset dir="source/src/" includes="**/*.java"></fileset>
         </zip>
     </target>
-    <target name="build.jars" depends="init" description="Build all the jars for the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin.">
-        <available property="CssEditor.jar" file="${build.result.folder}/CssEditor.jar"></available>
+    <target depends="init" description="Build all the jars for the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin." name="build.jars">
+        <available file="${build.result.folder}/CssEditor.jar" property="CssEditor.jar"></available>
         <antcall target="CssEditor.jar"></antcall>
     </target>
-    <target name="build.sources" depends="init">
-        <available property="CssEditorsrc.zip" file="${build.result.folder}/CssEditorsrc.zip"></available>
+    <target depends="init" name="build.sources">
+        <available file="${build.result.folder}/CssEditorsrc.zip" property="CssEditorsrc.zip"></available>
         <antcall target="CssEditorsrc.zip"></antcall>
     </target>
-    <target name="gather.bin.parts" depends="init" if="destination.temp.folder">
+    <target depends="init" if="destination.temp.folder" name="gather.bin.parts">
         <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1"></mkdir>
-        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" failonerror="true">
-            <fileset dir="${build.result.folder}" includes="CssEditor.jar"></fileset>
+        <copy failonerror="true" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1">
+            <fileset dir="${build.result.folder}" excludes="bin/test/" includes="CssEditor.jar"></fileset>
         </copy>
-        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" failonerror="true">
-            <fileset dir="${basedir}" includes="plugin.xml,CssEditor.jar,icons/,bin/,build.properties"></fileset>
+        <copy failonerror="true" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1">
+            <fileset dir="${basedir}" excludes="bin/test/" includes="plugin.xml,CssEditor.jar,icons/,bin/,lib/antlr-2.7.5.jar"></fileset>
         </copy>
     </target>
-    <target name="build.zips" depends="init"></target>
-    <target name="gather.sources" depends="init" if="destination.temp.folder">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.0"></mkdir>
-        <copy file="${build.result.folder}/CssEditorsrc.zip" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.0" failonerror="false"></copy>
-        <copy todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.0" failonerror="false">
+    <target depends="init" name="build.zips"></target>
+    <target depends="init" if="destination.temp.folder" name="gather.sources">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1"></mkdir>
+        <copy failonerror="false" file="${build.result.folder}/CssEditorsrc.zip" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1"></copy>
+        <copy failonerror="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1">
             <fileset dir="${basedir}" includes="src/,plugin.xml,icons/,build.properties"></fileset>
         </copy>
     </target>
-    <target name="gather.logs" depends="init" if="destination.temp.folder">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.0"></mkdir>
-        <copy file="${temp.folder}/CssEditor.jar.bin.log" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.0" failonerror="false"></copy>
+    <target depends="init" if="destination.temp.folder" name="gather.logs">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1"></mkdir>
+        <copy failonerror="false" file="${temp.folder}/CssEditor.jar.bin.log" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1"></copy>
     </target>
-    <target name="clean" depends="init" description="Clean the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin of all the zips, jars and logs created.">
+    <target depends="init" description="Clean the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin of all the zips, jars and logs created." name="clean">
         <delete file="${build.result.folder}/CssEditor.jar"></delete>
         <delete file="${build.result.folder}/CssEditorsrc.zip"></delete>
         <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar"></delete>
         <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.zip"></delete>
         <delete dir="${temp.folder}"></delete>
     </target>
-    <target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
+    <target depends="init" description="Refresh this folder." if="eclipse.running" name="refresh">
         <eclipse.convertPath fileSystemPath="/Users/ricky/workspace/enough-polish-plugin-eclipse-cssEditor" property="resourcePath"></eclipse.convertPath>
-        <eclipse.refreshLocal resource="${resourcePath}" depth="infinite"></eclipse.refreshLocal>
+        <eclipse.refreshLocal depth="infinite" resource="${resourcePath}"></eclipse.refreshLocal>
     </target>
-    <target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin.">
+    <target depends="init" description="Create a zip containing all the elements for the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin." name="zip.plugin">
         <delete dir="${temp.folder}"></delete>
         <mkdir dir="${temp.folder}"></mkdir>
         <antcall target="build.jars"></antcall>
@@ -156,7 +156,7 @@
         <delete>
             <fileset dir="${temp.folder}" includes="**/*.bin.log"></fileset>
         </delete>
-        <zip zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar" basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="true" whenempty="skip" update="false"></zip>
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="true" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
 </project>
