@@ -722,10 +722,13 @@ implements Comparator
 			try {
 				int[] orders = translation.getParameterIndices();
 				String[] chunks = translation.getValueChunks();
+				if (orders.length != chunks.length) {
+					throw new IllegalStateException("TranslationManager: unable to save translation file: orders.length != chunks.length, please report this error to j2mepolish@enough.org");
+				}
 				out.writeByte( chunks.length );
 				for (int j = 0; j < chunks.length; j++) {
 					String chunk = chunks[j];
-					int order = orders[i]; 
+					int order = orders[j]; 
 					out.writeByte( order );
 					out.writeUTF( chunk );
 				}
