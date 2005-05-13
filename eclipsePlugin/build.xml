@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project basedir="." default="build.jars" name="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
-    <property name="bootclasspath" value=""></property>
     <property name="basews" value="${ws}"></property>
     <property name="baseos" value="${os}"></property>
     <property name="basearch" value="${arch}"></property>
     <property name="basenl" value="${nl}"></property>
+    <!-- Compiler settings. -->
+
     <property name="javacFailOnError" value="false"></property>
     <property name="javacDebugInfo" value="on"></property>
     <property name="javacVerbose" value="true"></property>
     <property name="javacSource" value="1.3"></property>
     <property name="javacTarget" value="1.2"></property>
     <property name="compilerArg" value=""></property>
+    <path id="path_bootclasspath">
+        <fileset dir="${java.home}/lib">
+            <include name="*.jar"></include>
+        </fileset>
+    </path>
+    <property name="bootclasspath" refid="path_bootclasspath"></property>
     <target depends="properties" name="init">
         <condition property="pluginTemp" value="${buildTempFolder}/plugins">
             <isset property="buildTempFolder"></isset>
         </condition>
         <property name="pluginTemp" value="${basedir}"></property>
-        <condition property="build.result.folder" value="${pluginTemp}/enough-polish-plugin-eclipse-cssEditor">
+        <condition property="build.result.folder" value="${pluginTemp}/eclipseCssEditor">
             <isset property="buildTempFolder"></isset>
         </condition>
         <property name="build.result.folder" value="${basedir}"></property>
@@ -34,10 +41,10 @@
         <antcall target="gather.bin.parts">
             <param name="destination.temp.folder" value="${temp.folder}/"></param>
         </antcall>
-        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="false" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar"></zip>
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar" filesonly="false" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3.jar"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
-    <target depends="init" description="Create jar: CssEditor.jar." name="CssEditor.jar" unless="CssEditor.jar">
+    <target depends="init" description="Create jar: de.enough.polish.plugin.eclipse.css.CssEditorPlugin CssEditor.jar." name="CssEditor.jar" unless="CssEditor.jar">
         <delete dir="${temp.folder}/CssEditor.jar.bin"></delete>
         <mkdir dir="${temp.folder}/CssEditor.jar.bin"></mkdir>
         <!-- compile the source code -->
@@ -45,45 +52,38 @@
         <javac bootclasspath="${bootclasspath}" debug="${javacDebugInfo}" destdir="${temp.folder}/CssEditor.jar.bin" failonerror="${javacFailOnError}" includeAntRuntime="no" source="${javacSource}" target="${javacTarget}" verbose="${javacVerbose}">
             <compilerarg line="${compilerArg}"></compilerarg>
             <classpath>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui_3.0.1/ui.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.carbon_3.0.0/ui.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.carbon_3.0.0/carbon.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.core.runtime_3.0.1/runtime.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.osgi_3.0.1/core.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.osgi_3.0.1/console.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.osgi_3.0.1/osgi.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.osgi_3.0.1/resolver.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.osgi_3.0.1/defaultAdaptor.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.osgi_3.0.1/eclipseAdaptor.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.help_3.0.0/help.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.swt_3.0.1/ws/${basews}/swt.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.swt.carbon_3.0.1/ws/${basews}/swt.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.swt.carbon_3.0.1/ws/carbon/swt-pi.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.jface_3.0.0/jface.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.workbench_3.0.1/compatibility.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.workbench_3.0.1/workbench.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.workbench.compatibility_3.0.0/compatibility.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.workbench.compatibility_3.0.0/workbench.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.core.expressions_3.0.0/expressions.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.editors_3.0.1/editors.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.ide_3.0.1/ide.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.core.resources_3.0.1/resources.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.core.resources.macosx_3.0.0/resources.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.core.runtime.compatibility_3.0.0/compatibility.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.update.configurator_3.0.0/configurator.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.views_3.0.0/views.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.update.core_3.0.1/updatecore.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.update.ui_3.0.1/updateui.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.help.base_3.0.1/helpbase.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.apache.lucene_1.3.1/parser.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.apache.lucene_1.3.1/lucene-1.3-final.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.help.appserver_3.0.0/appserver.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.forms_3.0.0/forms.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.ui.workbench.texteditor_3.0.1/texteditor.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.jface.text_3.0.1/jfacetext.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.text_3.0.1/text.jar"></pathelement>
-                <pathelement path="../../../../Applications/eclipse/plugins/org.eclipse.core.filebuffers_3.0.1/filebuffers.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.runtime_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.osgi_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.help_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.swt_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.swt.gtk_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.jface_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.commands_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.workbench_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.workbench.compatibility_3.1.0/compatibility.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.workbench.compatibility_3.1.0/@dot"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.expressions_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.resources_3.1.0/resources.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.resources.compatibility_3.1.0/resources.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.resources.compatibility_3.1.0/compatibility.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.resources.linux_3.0.0/resources.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.resources.linux_3.0.0/@dot"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.runtime.compatibility_3.1.0/compatibility.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.update.configurator_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.editors_3.1.0/editors.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.ide_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.views_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.update.core_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.update.core.linux_3.1.0/@dot"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.update.ui_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.forms_3.1.0.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.ui.workbench.texteditor_3.1.0/texteditor.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.jface.text_3.1.0/jfacetext.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.text_3.1.0/text.jar"></pathelement>
+                <pathelement path="../../local/eclipse/plugins/org.eclipse.core.filebuffers_3.1.0/filebuffers.jar"></pathelement>
                 <pathelement path="lib/antlr-2.7.5.jar"></pathelement>
+                <pathelement path="${build.result.folder}/../de.enough.polish.plugin.eclipse.css.CssEditorPlugin/lib/antlr-2.7.5.jar"></pathelement>
             </classpath>
             <src path="source/src/"></src>
         </javac>
@@ -93,12 +93,12 @@
             <fileset dir="source/src/" excludes="**/*.java, **/package.htm*"></fileset>
         </copy>
         <mkdir dir="${build.result.folder}"></mkdir>
-        <jar basedir="${temp.folder}/CssEditor.jar.bin" jarfile="${build.result.folder}/CssEditor.jar"></jar>
+        <jar basedir="${temp.folder}/CssEditor.jar.bin" destfile="${build.result.folder}/CssEditor.jar"></jar>
         <delete dir="${temp.folder}/CssEditor.jar.bin"></delete>
     </target>
     <target depends="init" name="CssEditorsrc.zip" unless="CssEditorsrc.zip">
         <mkdir dir="${build.result.folder}"></mkdir>
-        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="false" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar">
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3" destfile="${build.result.folder}/CssEditorsrc.zip" filesonly="false" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3.jar">
             <fileset dir="source/src/" includes="**/*.java"></fileset>
         </zip>
     </target>
@@ -111,11 +111,11 @@
         <antcall target="CssEditorsrc.zip"></antcall>
     </target>
     <target depends="init" if="destination.temp.folder" name="gather.bin.parts">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1"></mkdir>
-        <copy failonerror="true" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3"></mkdir>
+        <copy failonerror="true" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3">
             <fileset dir="${build.result.folder}" excludes="bin/test/" includes="CssEditor.jar"></fileset>
         </copy>
-        <copy failonerror="true" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1">
+        <copy failonerror="true" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3">
             <fileset dir="${basedir}" excludes="bin/test/" includes="plugin.xml,CssEditor.jar,icons/,bin/,lib/antlr-2.7.5.jar"></fileset>
         </copy>
     </target>
@@ -134,12 +134,12 @@
     <target depends="init" description="Clean the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin of all the zips, jars and logs created." name="clean">
         <delete file="${build.result.folder}/CssEditor.jar"></delete>
         <delete file="${build.result.folder}/CssEditorsrc.zip"></delete>
-        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar"></delete>
-        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.zip"></delete>
+        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3.jar"></delete>
+        <delete file="${destination.temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3.zip"></delete>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target depends="init" description="Refresh this folder." if="eclipse.running" name="refresh">
-        <eclipse.convertPath fileSystemPath="/Users/ricky/workspace/enough-polish-plugin-eclipse-cssEditor" property="resourcePath"></eclipse.convertPath>
+        <eclipse.convertPath fileSystemPath="/home/rickyn/workspace/eclipseCssEditor" property="resourcePath"></eclipse.convertPath>
         <eclipse.refreshLocal depth="infinite" resource="${resourcePath}"></eclipse.refreshLocal>
     </target>
     <target depends="init" description="Create a zip containing all the elements for the plug-in: de.enough.polish.plugin.eclipse.css.CssEditorPlugin." name="zip.plugin">
@@ -156,7 +156,7 @@
         <delete>
             <fileset dir="${temp.folder}" includes="**/*.bin.log"></fileset>
         </delete>
-        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1" filesonly="true" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.jar"></zip>
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.1.zip" filesonly="true" update="false" whenempty="skip" zipfile="${plugin.destination}/de.enough.polish.plugin.eclipse.css.CssEditorPlugin_0.3.3.jar"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
 </project>
