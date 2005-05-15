@@ -31,6 +31,8 @@ import java.io.IOException;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.ImageUtil;
+
 /**
  * <p>Shows a string with an optional image attached to it.</p>
  * <p>The dynamic CSS selector of the IconItem is "icon".</p>
@@ -66,6 +68,17 @@ implements ImageConsumer
 	private int imageHeight;
 	private int imageWidth;
 	private int yAdjust;
+	//#if polish.midp2 && polish.css.scale-factor
+		private int scaleFactor;
+		private int scaleSteps;
+		private int currentStep;
+		private int[] rgbData;
+		private int[] scaledRgbData;
+		private boolean scaleDown;
+		private boolean scaleFinished;
+		private int scaleWidth;
+		private int scaleHeight;
+	//#endif
 
 	/**
 	 * Creates a new icon.
@@ -140,7 +153,15 @@ implements ImageConsumer
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.image != null) {
 			if (this.imageAlign == Graphics.LEFT ) {
+				//#if polish.midp2 && polish.css.scale-factor
+					if (this.scaledRgbData != null) {
+						g.drawRGB(this.scaledRgbData, 0, this.image.getWidth(), x, y, this.image.getWidth(), this.image.getHeight(), true );
+					} else {
+				//#endif
 				g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
+				//#if polish.midp2 && polish.css.scale-factor
+					}
+				//#endif
 				x += this.imageWidth;
 				leftBorder += this.imageWidth;
 				y += this.yAdjust;
@@ -152,7 +173,29 @@ implements ImageConsumer
 				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
 				//System.out.println("left: " + leftBorder + "  right: " + rightBorder + "  contentWidth: " + this.contentWidth);
 				//System.out.println("x: " + x + "  centerX: " + centerX );
+				//#if polish.midp2 && polish.css.scale-factor
+					if (this.scaledRgbData != null) {
+						centerX -= this.scaleWidth / 2;
+						if (centerX < 0) {
+							centerX = 0;
+						}
+						int centerY = y - ((this.scaleHeight - this.image.getWidth()) / 2);
+						//System.out.println("y=" + y + ", centerY=" + centerY );
+						if (centerY < 0) {
+							centerY = 0;
+						}
+						//#ifdef polish.Bugs.drawRgbOrigin
+							g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, centerX + g.getTranslateX(), centerY + g.getTranslateY(), this.scaleWidth, this.scaleHeight, true );
+						//#else
+							g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, centerX, centerY, this.scaleWidth, this.scaleHeight, true );
+						//#endif
+
+					} else {
+				//#endif
 				g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
+				//#if polish.midp2 && polish.css.scale-factor
+					}
+				//#endif
 				y += this.imageHeight;
 			} else if (this.imageAlign == Graphics.BOTTOM ){
 				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
@@ -206,13 +249,31 @@ implements ImageConsumer
 					Image img = StyleSheet.getImage(imageName, this, true);
 					if (img != null) {
 						this.image = img;
+						//#if polish.midp2 && polish.css.scale-factor
+							this.rgbData = null;
+							this.scaledRgbData = null;
+						//#endif
 					}
 				} catch (IOException e) {
 					//#debug error
 					System.out.println("unable to load image [" + imageName + "]" + e);
 				}
 			}
-		//#endif
+		//#endif		
+		//#if polish.midp2	
+			//#ifdef polish.css.scale-factor
+				Integer scaleFactorInt = style.getIntProperty( "scale-factor" );
+				if (scaleFactorInt != null) {
+					this.scaleFactor = scaleFactorInt.intValue();
+				}
+			//#endif
+			//#ifdef polish.css.scale-steps
+				Integer scaleStepsInt = style.getIntProperty( "scale-steps" );
+				if (scaleStepsInt != null) {
+					this.scaleSteps = scaleStepsInt.intValue();
+				}
+			//#endif
+		//#endif	
 	}
 
 	/**
@@ -254,6 +315,10 @@ implements ImageConsumer
 	public void setImage( Image image ) {
 		this.isInitialised = false;
 		this.image = image;
+		//#if polish.midp2 && polish.css.scale-factor
+			this.rgbData = null;
+			this.scaledRgbData = null;
+		//#endif
 	}
 	
 	/**
@@ -265,6 +330,61 @@ implements ImageConsumer
 		this.imageAlign = imageAlign;
 		this.isInitialised = false;
 	}
+	
+	//#if polish.midp2 && polish.css.scale-factor
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#hideNotify()
+	 */
+	public boolean animate() {
+		if (this.scaleFactor != 0) {
+			if (this.scaleFinished || this.image == null) {
+				return false;
+			}
+			int imgWidth = this.image.getWidth();
+			int imgHeight = this.image.getHeight();
+			if (this.rgbData == null) {
+				this.rgbData = new int[ imgWidth * imgHeight ];
+				this.image.getRGB(this.rgbData, 0, imgWidth, 0, 0, imgWidth, imgHeight );
+			}
+			int step = this.currentStep;
+			if (this.scaleDown) {
+				step--;
+				if (step == 0) {
+					this.scaleFinished =  true;
+					this.scaledRgbData = null;
+					return false;
+				}
+			} else {
+				step++;
+				if (step > this.scaleSteps) {
+					this.scaleDown = true;
+					return false;
+				}
+			}
+			this.currentStep = step;
+			this.scaleWidth = imgWidth + ((imgWidth * this.scaleFactor * step) / (this.scaleSteps * 100));
+			this.scaleHeight = imgHeight + ((imgHeight * this.scaleFactor * step) / (this.scaleSteps * 100));
+			//System.out.println("\nstep=" + step + ", scaleSteps=" + this.scaleSteps + "\nscaleWidth=" + this.scaleWidth + ", scaleHeight=" + this.scaleHeight + ", imgWidth=" + imgWidth + ", imgHeight=" + imgHeight + "\n");
+			this.scaledRgbData = ImageUtil.scale(this.scaleWidth, this.scaleHeight, imgWidth, 
+					imgWidth, imgHeight, this.rgbData);
+			return true;
+		}
+		return false;
+		
+	}		
+	//#endif
+
+	//#if polish.midp2 && polish.css.scale-factor
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle) {
+		super.defocus(originalStyle);
+		this.scaleFinished = false;
+		this.scaleDown = false;
+		this.currentStep = 0;
+	}
+	//#endif
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}

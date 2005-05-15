@@ -834,7 +834,7 @@ public abstract class Screen
 		//#ifdef polish.debug.error
 		} catch (RuntimeException e) {
 			//#debug error
-			System.out.println( "unable to paint screen" + e );
+			System.out.println( "unable to paint screen (" + getClass().getName() + "):" + e );
 		}
 		//#endif
 	}

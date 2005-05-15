@@ -174,6 +174,7 @@ public class SpriteItem
 			return true;
 		}
 	}
+	
 	protected void traverseOut() {
 		this.isFocused = false;
 		this.sprite.setFrame( this.defaultFrameIndex );
