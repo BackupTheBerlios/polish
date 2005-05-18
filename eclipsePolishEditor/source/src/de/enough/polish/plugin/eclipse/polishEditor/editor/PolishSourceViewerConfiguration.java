@@ -25,7 +25,9 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import org.eclipse.jdt.internal.ui.text.*;
 import org.eclipse.jdt.ui.text.IColorManager;
+import org.eclipse.jdt.ui.text.*;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -36,6 +38,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextInputListener;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -159,9 +163,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         
     }
     
-    
-    
-    
+    // This is the method for 3.1.
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
             return new IAutoEditStrategy[] {new PolishIndentStrategy()};
@@ -173,6 +175,19 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         //if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
 			return new PolishIndentStrategy();
+        // content type used when pasting on the plane. __dftl_partition_content_type
         return super.getAutoIndentStrategy(sourceViewer, contentType);
+    }
+    
+    
+    public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+        System.out.println("DEBUG:PolishSourceViewerConfiguration.getContentAssistant(...):enter.");
+        IContentAssistant newIContentAssistant = super.getContentAssistant(sourceViewer);
+        if(newIContentAssistant instanceof ContentAssistant) {
+            ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
+            contentAssistant.setContentAssistProcessor(new PolishContentAssistProcessor(),IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+            return contentAssistant;
+        }
+        return newIContentAssistant;
     }
 }

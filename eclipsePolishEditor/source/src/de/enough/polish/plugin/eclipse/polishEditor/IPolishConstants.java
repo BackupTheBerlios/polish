@@ -46,4 +46,6 @@ public interface IPolishConstants {
     String POLISH_COLOR_STATE_DEFAULT = "__polish_color_state_default";
     String POLISH_POSITION_CATEGORY = "__polish_position_category";
     String POLISH_ANNOTATION = "de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation"; //TODO: Do we need the unique name?
+
+    String[] POLISH_DIRECTIVES = {"if","ifdef","ifndef","else","elif","elifdef","elnifdef","def","endif","=","debug","mdebug","enddebug","style","condition","include","foreach","next"};
 }

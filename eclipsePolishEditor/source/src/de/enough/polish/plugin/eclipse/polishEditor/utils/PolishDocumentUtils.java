@@ -42,6 +42,28 @@ import org.eclipse.jface.text.Position;
  */
 public class PolishDocumentUtils {
 
+    // Returns the position of the # in a line with a //#.
+    public static boolean isPolishLine(IDocument document, int offset) {
+        IRegion lineAsRegion;
+        String lineAsString;
+        try {
+            lineAsRegion = document.getLineInformation(document.getLineOfOffset(offset));
+            lineAsString = document.get(lineAsRegion.getOffset(),lineAsRegion.getLength());
+        }
+        catch (BadLocationException exception) {
+            System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong currentLine."+exception);
+            return true;
+        }
+        return lineAsString.trim().startsWith("//#");
+    }
+    
+    
+    /**
+     * Returns the position of the directive, if this line is a polish line.
+     * @param document
+     * @param currentLine
+     * @return Position when directive was found, null otherwise.
+     */
     public static Position getDirectiveFromLine(IDocument document, int currentLine) {
         IRegion lineAsRegion;
         
@@ -120,7 +142,7 @@ public class PolishDocumentUtils {
     }
     
     /**
-     * Beware to intern the string you provide.
+     * Beware to intern the string you provide before using this method.
      * @param directive this must be an interned string.
      * @param targetDirectives
      * @return true, if directive is in targetDirectives.

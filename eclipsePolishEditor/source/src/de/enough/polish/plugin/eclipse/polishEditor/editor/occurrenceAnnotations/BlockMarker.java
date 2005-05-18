@@ -61,6 +61,7 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
     public static final int DIRECTION_UP = 1;
     public static final int DIRECTION_DOWN = 2;
     
+    //TODO: Move to IPolishConstants
     public static final String[] IF_DIRECTIVES = {"if","ifdef","ifndef"};
     public static final String[] ELSE_DIRECTIVES = {"else","elif","elifdef","elifndef"};
     public static final String[] ENDIF_DIRECTIVES = {"endif"};

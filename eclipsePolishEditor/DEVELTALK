@@ -41,6 +41,29 @@ hardwired everywhere in the jdt
 
 THINGS TO COKE ON
 
+org.eclipse.swt.widgets.EventTable
+
+public void sendEvent (Event event) {
+	if (types == null) return;
+	level++;
+	try {
+		for (int i=0; i<types.length; i++) {
+			if (event.type == SWT.None) return;
+			if (types [i] == event.type) {
+				Listener listener = listeners [i];
+				if (listener != null) listener.handleEvent (event);
+			}
+		}
+	} finally {
+		--level;
+	}
+}
+
+Doesnt indicate the first neasted if clause a confused programmer? The check if the parameter has a specific type
+does not belong in a loop! Like the first if clause which examines the parameter, the second if clause
+should be located at the top, too.
+
+
 org.eclipse.jdt.internal.compiler.parser.Scanner.getNextToken(...)
 
 Uses ArrayIndexOutBoundsException to test on end of array as part of the alogrithm !
