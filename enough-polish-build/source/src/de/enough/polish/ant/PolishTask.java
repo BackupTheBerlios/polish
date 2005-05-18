@@ -732,7 +732,7 @@ public class PolishTask extends ConditionalTask {
 				this.postCompilers[i] = PostCompiler.getInstance(setting, this.extensionManager, this.environment);
 			}
 		}
-		
+				
 		
 		// init obfuscators:
 		if (this.buildSetting.doObfuscate()) {

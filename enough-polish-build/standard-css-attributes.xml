@@ -535,4 +535,20 @@
 		id="59"
 	/>
 	
+	<attribute
+		name="scale-factor"
+		type="integer"
+		appliesTo="IconItem, ListItem, ChoiceItem, ChoiceGroup"
+		description="The factor in percent by which the image should be scaled, e.g. 200."
+		id="60"
+	/>
+	
+	<attribute
+		name="scale-steps"
+		type="integer"
+		appliesTo="IconItem, ListItem, ChoiceItem, ChoiceGroup"
+		description="The number of intermediate steps that should be used for scaling an image."
+		id="61"
+	/>
+	
 </attributes>

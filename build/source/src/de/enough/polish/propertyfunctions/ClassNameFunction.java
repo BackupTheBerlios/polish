@@ -49,8 +49,8 @@ public class ClassNameFunction extends PropertyFunction {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
-	public String process(String input, String[] arguments, Environment environment) {
-		if (environment.hasSymbol("polish.useDefaultPackage")) {
+	public String process(String input, String[] arguments, Environment env) {
+		if (env.hasSymbol("polish.useDefaultPackage")) {
 			int lastDotIndex = input.lastIndexOf('.');
 			if (lastDotIndex != -1) {
 				return input.substring( lastDotIndex + 1 );

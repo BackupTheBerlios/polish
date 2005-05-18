@@ -1,5 +1,5 @@
 /*
- * Created on 25-Apr-2005 at 15:17:54.
+ * Created on 25-Apr-2005 at 15:09:59.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -28,7 +28,7 @@ package de.enough.polish.propertyfunctions;
 import de.enough.polish.Environment;
 
 /**
- * <p>Converts memory values into kilobytes.</p>
+ * <p>Replaces spaces in strings through underlines.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -37,12 +37,12 @@ import de.enough.polish.Environment;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class KiloBytesFunction extends BytesFunction {
+public class NoSpaceFunction extends PropertyFunction {
 
 	/**
-	 * Creates a new function
+	 * Creates a new uppercase function
 	 */
-	public KiloBytesFunction() {
+	public NoSpaceFunction() {
 		super();
 	}
 
@@ -50,15 +50,12 @@ public class KiloBytesFunction extends BytesFunction {
 	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
 	public String process(String input, String[] arguments, Environment env) {
-		double bytes = getBytes( input );
-		if (bytes == -1) {
-			return "-1";
+		if (input == null) {
+			return null;
 		}
-		String result = Double.toString( bytes / KILO_BYTES );
-		if (result.endsWith(".0")) {
-			result = result.substring(0, result.length() -2);
-		}
-		return result;
+		input = input.replace(' ', '_' );
+		input = input.replace('\t', '_' );
+		return input;
 	}
 
 }

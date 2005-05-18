@@ -49,7 +49,7 @@ public class KiloBytesFunction extends BytesFunction {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
-	public String process(String input, String[] arguments, Environment environment) {
+	public String process(String input, String[] arguments, Environment env) {
 		double bytes = getBytes( input );
 		if (bytes == -1) {
 			return "-1";

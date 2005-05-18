@@ -61,6 +61,12 @@
 	
 	<extension>
 		<type>propertyfunction</type>
+		<name>nospace</name>
+		<class>de.enough.polish.propertyfunctions.NoSpaceFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
 		<name>uppercase</name>
 		<class>de.enough.polish.propertyfunctions.UpperCaseFunction</class>
 	</extension>
@@ -158,6 +164,12 @@
 		<classpath>${polish.home}/import/enough-floater.jar:${polish.home}/import/enough-floater-evaluation.jar</classpath>
 	</extension>
 	
+	<extension>
+		<type>postcompiler</type>
+		<name>screenchanger</name>
+		<class>de.enough.polish.postcompile.screenchange.ScreenChangerPostCompiler</class>
+		<classpath>${polish.home}/import/asm-2.0.RC1.jar:${polish.home}/import/asm-tree-2.0.RC1.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+	</extension>
 	
 	<!-- Log Handler -->
 	

@@ -50,7 +50,7 @@ public class ReplaceFunction extends PropertyFunction {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
-	public String process(String input, String[] arguments, Environment environment) {
+	public String process(String input, String[] arguments, Environment env) {
 		if (arguments == null || arguments.length != 2) {
 			throw new IllegalArgumentException("The replace function needs two arguments, e.g. replace( input, toBeReplaced, replacement )");
 		}

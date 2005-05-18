@@ -60,7 +60,7 @@ public abstract class PropertyFunction extends Extension {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void execute(Device device, Locale locale, Environment environment)
+	public void execute(Device device, Locale locale, Environment env)
 	throws BuildException
 	{
 		// ignore...
@@ -71,9 +71,9 @@ public abstract class PropertyFunction extends Extension {
 	 * 
 	 * @param input the input
 	 * @param arguments any additional arguments, null if none are given
-	 * @param environment the environment settings
+	 * @param env the environment settings
 	 * @return the processed input
 	 */
-	public abstract String process( String input, String[] arguments, Environment environment );
+	public abstract String process( String input, String[] arguments, Environment env );
 
 }

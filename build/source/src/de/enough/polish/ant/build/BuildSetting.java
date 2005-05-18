@@ -1419,9 +1419,13 @@ public class BuildSetting {
 	}
 	
 	public PostCompilerSetting[] getPostCompilers() {
+		// init standard postcompilers:
+		PostCompilerSetting screenChangerSetting = new PostCompilerSetting();
+		screenChangerSetting.setName("screenchanger");
 		if (this.postCompilers == null) {
-			return new PostCompilerSetting[0]; 
+			return new PostCompilerSetting[] { screenChangerSetting }; 
 		} else {
+			this.postCompilers.add( screenChangerSetting );
 			return (PostCompilerSetting[]) this.postCompilers.toArray( new PostCompilerSetting[this.postCompilers.size()] );
 		}
 	}
@@ -1430,7 +1434,7 @@ public class BuildSetting {
 	 * @return
 	 */
 	public boolean doPostCompile() {
-		return (this.postCompilers != null);
+		return true; //(this.postCompilers != null);
 	}
 
 	/**
