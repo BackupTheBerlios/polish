@@ -152,11 +152,14 @@ implements ImageConsumer
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.image != null) {
+			//#if polish.midp2 && polish.css.scale-factor
+				int scaleX = x;
+				int scaleY = y;
+				boolean useScaledImage = (this.scaledRgbData != null) && !this.scaleFinished;
+			//#endif
 			if (this.imageAlign == Graphics.LEFT ) {
 				//#if polish.midp2 && polish.css.scale-factor
-					if (this.scaledRgbData != null) {
-						g.drawRGB(this.scaledRgbData, 0, this.image.getWidth(), x, y, this.image.getWidth(), this.image.getHeight(), true );
-					} else {
+					if (!useScaledImage) {
 				//#endif
 				g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
 				//#if polish.midp2 && polish.css.scale-factor
@@ -166,7 +169,15 @@ implements ImageConsumer
 				leftBorder += this.imageWidth;
 				y += this.yAdjust;
 			} else if (this.imageAlign == Graphics.RIGHT ) {
+				//#if polish.midp2 && polish.css.scale-factor
+					if (useScaledImage) {
+						scaleX = leftBorder  - this.scaleWidth;
+					} else {
+				//#endif
 				g.drawImage(this.image, x + this.contentWidth, y, Graphics.TOP | Graphics.RIGHT );
+				//#if polish.midp2 && polish.css.scale-factor
+					}
+				//#endif
 				rightBorder -= this.imageWidth;
 				y += this.yAdjust;
 			} else if (this.imageAlign == Graphics.TOP ) {
@@ -174,22 +185,9 @@ implements ImageConsumer
 				//System.out.println("left: " + leftBorder + "  right: " + rightBorder + "  contentWidth: " + this.contentWidth);
 				//System.out.println("x: " + x + "  centerX: " + centerX );
 				//#if polish.midp2 && polish.css.scale-factor
-					if (this.scaledRgbData != null) {
-						centerX -= this.scaleWidth / 2;
-						if (centerX < 0) {
-							centerX = 0;
-						}
-						int centerY = y - ((this.scaleHeight - this.image.getWidth()) / 2);
-						//System.out.println("y=" + y + ", centerY=" + centerY );
-						if (centerY < 0) {
-							centerY = 0;
-						}
-						//#ifdef polish.Bugs.drawRgbOrigin
-							g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, centerX + g.getTranslateX(), centerY + g.getTranslateY(), this.scaleWidth, this.scaleHeight, true );
-						//#else
-							g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, centerX, centerY, this.scaleWidth, this.scaleHeight, true );
-						//#endif
-
+					if (useScaledImage) {
+						scaleX = centerX - (this.scaleWidth / 2);
+						scaleY = y - ((this.scaleHeight - this.image.getWidth()) / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
@@ -200,13 +198,47 @@ implements ImageConsumer
 			} else if (this.imageAlign == Graphics.BOTTOM ){
 				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
 				int bottomY = y + this.contentHeight;
+				//#if polish.midp2 && polish.css.scale-factor
+					if (useScaledImage) {
+						scaleX = centerX  - (this.scaleWidth / 2);
+						scaleY = bottomY - this.scaleHeight;
+					} else {
+				//#endif
 				g.drawImage(this.image, centerX, bottomY, Graphics.BOTTOM | Graphics.HCENTER );
+				//#if polish.midp2 && polish.css.scale-factor
+					}
+				//#endif
 			} else {
 				// imageAlign == Graphics.HCENTER | Graphics.VCENTER 
 				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
 				int centerY = y + this.contentHeight / 2;
+				//#if polish.midp2 && polish.css.scale-factor
+					if (useScaledImage) {
+						scaleX = centerX  - (this.scaleWidth / 2);
+						scaleY = centerY - (this.scaleHeight / 2);
+					} else {
+				//#endif
 				g.drawImage(this.image, centerX, centerY,  Graphics.HCENTER | Graphics.VCENTER);
+				//#if polish.midp2 && polish.css.scale-factor
+					}
+				//#endif
 			}
+			//#if polish.midp2 && polish.css.scale-factor
+				if (useScaledImage) {
+					//#ifdef polish.Bugs.drawRgbOrigin
+						scaleX += g.getTranslateX();
+						scaleY += g.getTranslateY();						
+					//#endif
+					if (scaleX < 0) {
+						scaleX = 0;
+					}
+					if (scaleY < 0) {
+						scaleY = 0;
+					}
+					g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, scaleX, scaleY, this.scaleWidth, this.scaleHeight, true );
+				}
+			//#endif
+			
 		}
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 	}
@@ -349,10 +381,10 @@ implements ImageConsumer
 			int step = this.currentStep;
 			if (this.scaleDown) {
 				step--;
-				if (step == 0) {
+				if (step <= 0) {
 					this.scaleFinished =  true;
 					this.scaledRgbData = null;
-					return false;
+					return true;
 				}
 			} else {
 				step++;

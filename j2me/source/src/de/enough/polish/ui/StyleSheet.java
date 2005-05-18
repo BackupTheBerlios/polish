@@ -311,4 +311,19 @@ public final class StyleSheet {
 		return style;
 	}		
 	//#endif
+	
+	/**
+	 * Includes an animation while changing the screen.
+	 *  
+	 * @param display the display
+	 * @param screen the new screen, animations are only included for de.enough.polish.ui.Screen classes
+	 */
+	public static void setCurrent( Display display, Displayable screen ) {
+		if ( screen instanceof Screen ) {
+			// include screen change animation... somehow, gulp.
+			display.setCurrent( screen );
+		} else {
+			display.setCurrent( screen );
+		}
+	}
 }
