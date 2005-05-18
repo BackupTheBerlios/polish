@@ -319,6 +319,7 @@ public final class StyleSheet {
 	 * @param screen the new screen, animations are only included for de.enough.polish.ui.Screen classes
 	 */
 	public static void setCurrent( Display display, Displayable screen ) {
+		System.out.println("Set current is called! Whoey!");
 		if ( screen instanceof Screen ) {
 			// include screen change animation... somehow, gulp.
 			display.setCurrent( screen );
