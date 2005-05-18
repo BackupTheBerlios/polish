@@ -170,7 +170,7 @@ public class CssContentProvider implements ITreeContentProvider,IModelListener {
 	   
 	private Object[] getStyleSheetChildren(AST root) {
         if(root == null) {
-            return null;
+            return new Object[] {};
         }
         ArrayList result = new ArrayList();
         AST child = root.getFirstChild();
