@@ -45,7 +45,7 @@ import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 public class PolishContentAssistProcessor implements IContentAssistProcessor {
 
     private String errorMessage = null;
-    
+
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
                                                             int offset) {
         System.out.println("DEBUG:PolishContentAssistProcessor.computeCompletionProposals(...):enter.");

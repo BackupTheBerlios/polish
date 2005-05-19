@@ -25,7 +25,13 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.IClassFileEditorInput;
+import org.eclipse.jdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
 import org.eclipse.jdt.internal.ui.text.*;
+import org.eclipse.jdt.internal.ui.text.java.JavaAutoIndentStrategy;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.*;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
@@ -43,8 +49,11 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
 
 
@@ -165,14 +174,20 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     
     // This is the method for 3.1.
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+        String partitioning= getConfiguredDocumentPartitioning(sourceViewer);
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
             return new IAutoEditStrategy[] {new PolishIndentStrategy()};
+        if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
+            IAutoEditStrategy[] autoEditStrategies= new IAutoEditStrategy[] { new PolishJavaAutoIndentStrategy(partitioning, getProject()) };
+            return autoEditStrategies;
+        }
         return super.getAutoEditStrategies(sourceViewer, contentType);
     }
 
     public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer,
                                                      String contentType) {
         //if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
+        System.out.println("ERROR:PolishSourceViewerConfiguration.getAutoIndentStrategy(...):enter. This method cant be called by 3.1.M6?!");
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
 			return new PolishIndentStrategy();
         // content type used when pasting on the plane. __dftl_partition_content_type
@@ -189,5 +204,31 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             return contentAssistant;
         }
         return newIContentAssistant;
+    }
+    
+    private IJavaProject getProject() {
+        ITextEditor editor= getEditor();
+        if (editor == null)
+            return null;
+        
+        IJavaElement element= null;
+        IEditorInput input= editor.getEditorInput();
+        IDocumentProvider provider= editor.getDocumentProvider();
+        if (provider instanceof ICompilationUnitDocumentProvider) {
+            ICompilationUnitDocumentProvider cudp= (ICompilationUnitDocumentProvider) provider;
+            element= cudp.getWorkingCopy(input);
+        } else if (input instanceof IClassFileEditorInput) {
+            IClassFileEditorInput cfei= (IClassFileEditorInput) input;
+            element= cfei.getClassFile();
+        }
+        
+        if (element == null)
+            return null;
+        
+        return element.getJavaProject();
+    }
+    
+    protected IPreferenceStore getPreferenceStore() {
+        return PolishEditorPlugin.getDefault().getPreferenceStore();
     }
 }
