@@ -1,14 +1,41 @@
+NAMING
+
+All Plugins
+de.enough.mepose.cssEditor
+de.enough.mepose.paEditor (preprocessing aware editor)
+de.enough.mepose.MessagesEditor
+de.enough.mepose.core (what to put in it? Maybe the current device? 'core' may be a feature name)
+de.enough.mepose.project (together with builders)
+de.enough.mepose.projectWizard (configuring project with nature and setting up build.xml)
+de.enough.mepose.deviceManager (select device from requirements originating from build.xml or from interactive input)
+
+AllFeatures
+org.j2mepolish.mepose.mainFeature
+
+Usage of the term 'mepose'
+http://groups.msn.com/IMAGEHOSTING/evilkandykane.msnw
+http://groups.msn.com/IMAGEHOSTING/evilkandykane.msnw?action=ShowPhoto&PhotoID=918
+Some french sites from google.
+
+
+
+IRC (in this channels eclipse developers from redhat were seen recently.)
+irc.oftc.net #gcj
+irc.freenode.net #classpath. wenden an: overholt, pmuldoon, scsibear, Michael ist man-di
+
+
+
 TODO:
 
 - replace all system.out.println with plugin.log messages.
-- Make all messages aswer the following:
+- Make all error messages aswer the following:
     Where did the error occurred (class,method,position)? What happend (technically with exception/condition,semanticly if no obvious)? Why did it happen? (technically with numbers,semanticly if no obvious)
 - Terminology: offset and position: a position is mutable and may have different roles like startPosition, currentPosition. An offset is one special position in a series of possible positions.
-- move updateSite stuff to seperate build project to have a clear cut.
+- move updateSite stuff to seperate build project to have a clear cut. DONE
 - ant file cleanup and enhancement.
-- change names to J2MEPolish
+- change names arcording to naming schema.
 - Code cleanup: plugin structure, package structure, javadoc.
-- optimize mark occurrences. refactor marker. Have several marks take turn to color the text.
+- optimize mark occurrences. refactor marker.
 - migrate all org.eclipse.ui.actionSetPartAssociations with id of CompilationUnitEditor to PolishEditor.
 - recognize symbol and variable names.
 - Solve problem with instant property change. DONE
@@ -18,17 +45,19 @@ TODO:
 - Get mark occurrences working. DONE
 - Create updatesite with webbrowser access. DONE
 - Bug: at org.eclipse.core.internal.resources.Project.setDescription(Project.java:905). DONE
-- try to get indention working.
+- try to get indention working. DONE
 - defensive programming EVERYWHERE.
+- use resourcebundles everywhere.
+- register polish editor as default in mepose projects.
 
-- nature is not visible jet
-- verify the presence of views, wizards, use of resourcebundles
-- registering polish editor as default causes problems. Sometimes an editor is null somewhere.
 
 
 PROBLEMS:
 
-The folding mechanism can divide block directives.
+- registering polish editor as default causes problems. Sometimes an editor is null somewhere.
+- problematic interaction if using negative lookahead and lookinAt(): The negative lookahead must
+  be specified in reverse order (!). The lookinAt() method will not match the pattern, the find() will.
+  "(?!ba)cd" matches "abcd" but "(?!ab)cd" will not.
 
 
 DESIGN DECITIONS:
@@ -125,8 +154,5 @@ InternalJob.getState(...): Uses public constants from Job, one of its subclasses
 sould not know its subclasses?
 
 
-IRC
-irc.oftc.net #gcj
-irc.freenode.net #classpath. wenden an: overholt, pmuldoon, scsibear, Michael ist man-di
 
 

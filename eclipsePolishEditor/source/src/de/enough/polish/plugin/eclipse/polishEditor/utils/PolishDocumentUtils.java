@@ -110,14 +110,14 @@ public class PolishDocumentUtils {
                     }
                 }
                 if(stateOfScanner == 4) { // First char of directive found.
+                    directiveFound = true;
+                    leftmostIndex = i;
+                    rightmostIndex = i;
                     if(Character.isJavaIdentifierPart(c)) {
-                        leftmostIndex = i;
-                        rightmostIndex = i;
-                        directiveFound = true;
                         stateOfScanner = 5;
                         continue;
                     }
-                    directiveFound = false; //the char after # is not valid. abort.
+                    //directiveFound = false; //the char after # is not valid. abort.
                     break;
                 }
                 if(stateOfScanner == 5) {
@@ -169,5 +169,9 @@ public class PolishDocumentUtils {
             return "";
         }
         return result;
+    }
+    // Implement interface TokenExtractor with 'IPosition extract(IDocument document,int offset)'
+    public static boolean isVariableAtCaret(IDocument document, int offeset) {
+        return false;
     }
 }

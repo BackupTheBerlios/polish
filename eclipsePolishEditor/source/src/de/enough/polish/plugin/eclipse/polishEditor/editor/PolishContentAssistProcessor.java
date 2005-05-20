@@ -46,6 +46,8 @@ public class PolishContentAssistProcessor implements IContentAssistProcessor {
 
     private String errorMessage = null;
 
+    
+    //TODO: This class needs a major rewrite.
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
                                                             int offset) {
         System.out.println("DEBUG:PolishContentAssistProcessor.computeCompletionProposals(...):enter.");
@@ -67,32 +69,32 @@ public class PolishContentAssistProcessor implements IContentAssistProcessor {
             return new ICompletionProposal[] {};
         }
         List completionProposals = new LinkedList();
-        // Have we found a preprocessing directive?
-        if(startOfDirectiveAsPosition == null) {
-            startOfDirectiveAsPosition = new Position(offset,0);
-        }
         
-        
-        for(int index = 0; index < IPolishConstants.POLISH_DIRECTIVES.length; index++) {
-            if(IPolishConstants.POLISH_DIRECTIVES[index].startsWith(startOfDirectiveAsString)) {
-                StringBuffer replacementText = new StringBuffer();
-                replacementText.append(IPolishConstants.POLISH_DIRECTIVES[index]);
-                replacementText.append(" ");
-                completionProposals.add(new PositionBasedCompletionProposal(replacementText.toString(),startOfDirectiveAsPosition,IPolishConstants.POLISH_DIRECTIVES[index].length()+1));
+        // We are in not in the directive, so complete symbols or variables. Check if we are before the prefix !
+        if(startOfDirectiveAsPosition != null) {
+            for(int index = 0; index < IPolishConstants.POLISH_DIRECTIVES.length; index++) {
+                if(IPolishConstants.POLISH_DIRECTIVES[index].startsWith(startOfDirectiveAsString)) {
+                    StringBuffer replacementText = new StringBuffer();
+                    replacementText.append(IPolishConstants.POLISH_DIRECTIVES[index]);
+                    replacementText.append(" ");
+                    completionProposals.add(new PositionBasedCompletionProposal(replacementText.toString(),startOfDirectiveAsPosition,IPolishConstants.POLISH_DIRECTIVES[index].length()+1));
+                } 
             }
-            
+            return (ICompletionProposal[])completionProposals.toArray(new ICompletionProposal[completionProposals.size()]);
         }
-        return (ICompletionProposal[])completionProposals.toArray(new ICompletionProposal[completionProposals.size()]);
+        // We are somewhere else. Determine if we are in a symbol related line.
+        //TODO: DUMMY
+        return null;
     }
-
+//  startOfDirectiveAsPosition = new Position(offset,0);
     public IContextInformation[] computeContextInformation(ITextViewer viewer,
                                                            int offset) {
-        // TODO ricky implement computeContextInformation
+        
         return null;
     }
 
     public char[] getCompletionProposalAutoActivationCharacters() {
-        // TODO ricky implement getCompletionProposalAutoActivationCharacters
+        
         return null;
     }
 
