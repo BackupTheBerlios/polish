@@ -30,9 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
@@ -92,7 +90,7 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         List newPositions = new ArrayList();
         Position blockDirectiveAsPosition;
         
-        blockDirectiveAsPosition = findBlockDirectiveAtCaret(selection);
+        blockDirectiveAsPosition = PolishDocumentUtils.findBlockDirectiveAtCaret(getDocument(),selection.getOffset());
         if(blockDirectiveAsPosition == null) {
            System.out.println("DEBUG:BlockMarker.updateAnnotations(...):Nothing to do for BlockMarker.updateAnnotations(...).");
            return;
@@ -136,82 +134,8 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
     
     
 
-
-    // This method can be replaced with getDirectiveFromLine and a test if selection overlaps with directive.
-    private Position findBlockDirectiveAtCaret(ITextSelection selection) { 
-	    IDocument document = getDocument();
-        int offsetOfSelectionInDocument = selection.getOffset();
-	    
-        Position wordAsPosition = extractWordAtPosition(offsetOfSelectionInDocument);
-	    
-	    String wordAsString = PolishDocumentUtils.makeStringFromPosition(getDocument(),wordAsPosition);
-        if(wordAsString.equals("")) {
-            System.out.println("ERROR:BlockMarker.findDirectiveAtCaret(...):Cant extract string from position");
-            return null;
-        }
-        if(wordAsString.equals("if") ||wordAsString.equals("else") || wordAsString.equals("elif") || wordAsString.equals("endif") || wordAsString.equals("ifdef")) {
-	        int offset = wordAsPosition.getOffset();
-            if(offset >= 3) {
-	            try {
-                    if(document.getChar(offset-1) == '#' && document.getChar(offset-2) == '/' && document.getChar(offset-3) == '/') {
-                        return wordAsPosition;
-                    }
-                } catch (BadLocationException exception) {
-                    System.out.println("ERROR:BlockMarker.findDirectiveAtCaret(...):cant seek for //#:"+exception);
-                    return null;
-                }
-	        }
-	    }
-	    return null;
-	}
-
     
-	private Position extractWordAtPosition(int offset) {
-	    IDocument document = getDocument();
-	    int lastIndexOfLine;
-        try {
-            IRegion lineInformtation = document.getLineInformationOfOffset(offset);
-            lastIndexOfLine = lineInformtation.getOffset()+lineInformtation.getLength()-1;
-        } catch (BadLocationException exception) {
-            System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):Parameter out of valid range.");
-	        return null;
-        }
-        
-	    int leftmostIndexOfWord = offset;
-	    int rightmostIndexOfWord = offset;
-	    // It makes no sense to catch every exception for itself so we use one big try block.
-	    try {
-		    // search for the left bound.
-		    for(int i = offset-1; i >= 0; i--) {
-		        // As we are advancing forward and we found a invalid char, step one back to the last vaid char.
-		        if( ! Character.isJavaIdentifierPart(document.getChar(i))) {
-		            leftmostIndexOfWord = i+1;
-		            break;
-		        }
-		        leftmostIndexOfWord = i;
-		    }
-		    
-		    // If the current char is invalid, the next chars at the right are uninteressting.
-		    if( ! Character.isJavaIdentifierPart(document.getChar(offset))) {
-		        rightmostIndexOfWord--;// = offset;
-		    }
-		    // We have at least one valid char, look for more.
-		    else {
-			    for(int i = offset+1; i <= lastIndexOfLine;i++) {
-			        if( ! Character.isJavaIdentifierPart(document.getChar(i))) {
-			            rightmostIndexOfWord = i-1;
-			            break;
-			        }
-			        rightmostIndexOfWord = i;
-			    }
-		    }
-	    }
-	    catch(BadLocationException exception) {
-	        System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):BadLocationException:"+exception);
-	        return null;
-	    }
-	    return new Position(leftmostIndexOfWord,rightmostIndexOfWord-leftmostIndexOfWord+1);
-	}
+
 	
 	
 

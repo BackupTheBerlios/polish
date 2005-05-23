@@ -42,10 +42,10 @@ import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
-public class PolishContentAssistProcessor implements IContentAssistProcessor {
+public class DirectiveContentAssistProcessor implements IContentAssistProcessor {
 
     private String errorMessage = null;
-
+    //private Position wordAtCaret = null;
     
     //TODO: This class needs a major rewrite.
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
@@ -54,8 +54,24 @@ public class PolishContentAssistProcessor implements IContentAssistProcessor {
         if( ! PolishDocumentUtils.isPolishLine(viewer.getDocument(),offset)) {
             return new ICompletionProposal[] {};
         }
-        
         IDocument document = viewer.getDocument();
+        
+//        Position wordAtCaret;
+//        wordAtCaret = getPositionFromDirectiveAtCaret(document, offset);
+//        if(wordAtCaret != null) {
+//            completeDirectives(wordAtCaret);
+//        }
+//        wordAtCaret = getPositionFromSybolAtCaret(document, offset);
+//        if(wordAtCaret != null) {
+//            completeSymbols(wordAtCaret);
+//        }
+//        wordAtCaret = getPositionFromVriableAtCaret(document, offset);
+//        if(wordAtCaret != null) {
+//            completeVariables(wordAtCaret);
+//        }
+//        List linkedList = new LinkedList();
+//        return (ICompletionProposal[]) linkedList.toArray(new ICompletionProposal[linkedList.size()]);
+
         int lineInDocument;
         Position startOfDirectiveAsPosition;
         String startOfDirectiveAsString = "";
@@ -82,10 +98,11 @@ public class PolishContentAssistProcessor implements IContentAssistProcessor {
             }
             return (ICompletionProposal[])completionProposals.toArray(new ICompletionProposal[completionProposals.size()]);
         }
-        // We are somewhere else. Determine if we are in a symbol related line.
-        //TODO: DUMMY
-        return null;
+        
+        return new ICompletionProposal[] {};
     }
+    
+
 //  startOfDirectiveAsPosition = new Position(offset,0);
     public IContextInformation[] computeContextInformation(ITextViewer viewer,
                                                            int offset) {

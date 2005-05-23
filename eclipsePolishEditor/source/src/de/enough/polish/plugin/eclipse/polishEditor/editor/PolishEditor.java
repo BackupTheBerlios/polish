@@ -162,7 +162,7 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     protected void uninstallOccurrencesFinder() {
         //System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
-        //this.occurrencesMarkerManager.removeAnnotations(); // Seems not to work as it complains about beeing not configured.
+        this.occurrencesMarkerManager.removeAnnotations(); // Seems not to work as it complains about beeing not configured.
         super.uninstallOccurrencesFinder();
     }
 }

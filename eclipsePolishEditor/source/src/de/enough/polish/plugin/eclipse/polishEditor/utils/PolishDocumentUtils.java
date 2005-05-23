@@ -42,7 +42,6 @@ import org.eclipse.jface.text.Position;
  */
 public class PolishDocumentUtils {
 
-    // Returns the position of the # in a line with a //#.
     public static boolean isPolishLine(IDocument document, int offset) {
         IRegion lineAsRegion;
         String lineAsString;
@@ -173,5 +172,78 @@ public class PolishDocumentUtils {
     // Implement interface TokenExtractor with 'IPosition extract(IDocument document,int offset)'
     public static boolean isVariableAtCaret(IDocument document, int offeset) {
         return false;
+    }
+    
+    public static Position findBlockDirectiveAtCaret(IDocument document, int offset) { 
+        int offsetOfSelectionInDocument = offset;
+        
+        Position wordAsPosition = extractWordAtPosition(document, offsetOfSelectionInDocument);
+        
+        String wordAsString = PolishDocumentUtils.makeStringFromPosition(document,wordAsPosition);
+        if(wordAsString.equals("")) {
+            System.out.println("ERROR:BlockMarker.findDirectiveAtCaret(...):Cant extract string from position");
+            return null;
+        }
+        if(wordAsString.equals("if") ||wordAsString.equals("else") || wordAsString.equals("elif") || wordAsString.equals("endif") || wordAsString.equals("ifdef")) {
+            int soffset = wordAsPosition.getOffset();
+            if(soffset >= 3) {
+                try {
+                    if(document.getChar(soffset-1) == '#' && document.getChar(soffset-2) == '/' && document.getChar(soffset-3) == '/') {
+                        return wordAsPosition;
+                    }
+                } catch (BadLocationException exception) {
+                    System.out.println("ERROR:BlockMarker.findDirectiveAtCaret(...):cant seek for //#:"+exception);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    
+    public static Position extractWordAtPosition(IDocument document, int offset) {
+        int lastIndexOfLine;
+        try {
+            IRegion lineInformtation = document.getLineInformationOfOffset(offset);
+            lastIndexOfLine = lineInformtation.getOffset()+lineInformtation.getLength()-1;
+        } catch (BadLocationException exception) {
+            System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):Parameter out of valid range.");
+            return null;
+        }
+        
+        int leftmostIndexOfWord = offset;
+        int rightmostIndexOfWord = offset;
+        // It makes no sense to catch every exception for itself so we use one big try block.
+        try {
+            // search for the left bound.
+            for(int i = offset-1; i >= 0; i--) {
+                // As we are advancing forward and we found a invalid char, step one back to the last vaid char.
+                if( ! (Character.isJavaIdentifierPart(document.getChar(i)) || document.getChar(i) == '.')) {
+                    leftmostIndexOfWord = i+1;
+                    break;
+                }
+                leftmostIndexOfWord = i;
+            }
+            
+            // If the current char is invalid, the next chars at the right are uninteressting.
+            if( ! Character.isJavaIdentifierPart(document.getChar(offset))) {
+                rightmostIndexOfWord--;// = offset;
+            }
+            // We have at least one valid char, look for more.
+            else {
+                for(int i = offset+1; i <= lastIndexOfLine;i++) {
+                    if( ! Character.isJavaIdentifierPart(document.getChar(i))) {
+                        rightmostIndexOfWord = i-1;
+                        break;
+                    }
+                    rightmostIndexOfWord = i;
+                }
+            }
+        }
+        catch(BadLocationException exception) {
+            System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):BadLocationException:"+exception);
+            return null;
+        }
+        return new Position(leftmostIndexOfWord,rightmostIndexOfWord-leftmostIndexOfWord+1);
     }
 }

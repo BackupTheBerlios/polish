@@ -31,9 +31,11 @@ import java.util.List;
 
 import org.eclipse.core.internal.utils.Assert;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModelExtension;
 
 import de.enough.polish.plugin.eclipse.polishEditor.editor.IConfiguration;
 
@@ -157,10 +159,26 @@ public abstract class AbstractOccurrenceAnnotationMarker implements IOccurrenceA
             System.out.println("AbstractOccurrencesMarker.removeAnnotations():this is not configured.");
             return;
         }
-        for (Iterator it= this.currentAnnotations.iterator(); it.hasNext();) {
-			Annotation annotation= (Annotation) it.next();
-			this.annotationModel.removeAnnotation(annotation);
-		}
+        synchronized (getLockObjectForAnnotationModel()) {
+            if (this.annotationModel instanceof IAnnotationModelExtension) {
+                ((IAnnotationModelExtension)this.annotationModel).replaceAnnotations((Annotation[])this.currentAnnotations.toArray(new Annotation[this.currentAnnotations.size()]), null);
+            }
+            else {
+                for (int i= 0, length= this.currentAnnotations.size(); i < length; i++)
+                    this.annotationModel.removeAnnotation((Annotation)this.currentAnnotations.get(i));
+            }
+        }
+//        for (Iterator it= this.currentAnnotations.iterator(); it.hasNext();) {
+//			Annotation annotation= (Annotation) it.next();
+//			this.annotationModel.removeAnnotation(annotation);
+//		}
 		this.currentAnnotations.clear();   
+    }
+    
+    private Object getLockObjectForAnnotationModel() { 
+        if (this.annotationModel instanceof ISynchronizable)
+            return ((ISynchronizable)this.annotationModel).getLockObject();
+        else
+            return this.annotationModel;
     }
 }

@@ -70,6 +70,12 @@ hardwired everywhere in the jdt
 
 THINGS TO COKE ON
 
+JavaEditor.removeOccurrenceAnnotations(...)
+
+This method is package private which it should not be.
+
+---
+
 org.eclipse.swt.widgets.EventTable
 
 public void sendEvent (Event event) {
@@ -92,6 +98,7 @@ Doesnt indicate the first neasted if clause a confused programmer? The check if 
 does not belong in a loop! Like the first if clause which examines the parameter, the second if clause
 should be located at the top, too.
 
+---
 
 org.eclipse.jdt.internal.compiler.parser.Scanner.getNextToken(...)
 
@@ -102,6 +109,7 @@ algorithmical sense (unless you are used to operate on a real turing machine of 
 
 
 ---
+
 org.eclipse.compare.internal.BaseCompareAction implements IActionDelegate
 
 changing the fundametal contract of OO programming between super- and subclass.

@@ -199,8 +199,11 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         System.out.println("DEBUG:PolishSourceViewerConfiguration.getContentAssistant(...):enter.");
         IContentAssistant newIContentAssistant = super.getContentAssistant(sourceViewer);
         if(newIContentAssistant instanceof ContentAssistant) {
+            // The cast is a hack to be able to set an processor. The interface itself has no useful methods.
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
-            contentAssistant.setContentAssistProcessor(new PolishContentAssistProcessor(),IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+            CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
+            compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
+            contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }
         return newIContentAssistant;
