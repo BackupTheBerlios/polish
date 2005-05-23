@@ -47,11 +47,78 @@ import de.enough.polish.Variable;
 public final class PopulateUtil {
 
 	/**
+	 * Populates the given object with the specified parameter.
+	 * For the parameter-name the given object needs to specify
+	 * either set[param-name]( String ), set[param-name]( File ) or set[param-name]( boolean ).
+	 * When the parameter "message" is provided, either the method
+	 * setMessage( String value ), setMessage( File value ) or setMessage( boolean ) needs
+	 * to be defined by the given object.
+	 * When the object defines both methods, it cannot be foreseen which
+	 * one of them will be called.
+	 * 
+	 * @param object the object which should be populated.
+	 * @param parameter the parameter.
+	 * @param baseDir the base directory for the population.
+	 * @throws  IllegalArgumentException when a parameter has a syntax error
+	 *        or when a needed method has not be found. 
+	 */
+	public final static void populate( Object object, Variable parameter, File baseDir ) {
+		String methodName = parameter.getName();
+		if (methodName == null) {
+			throw new IllegalArgumentException( "The parameter does not contain a name." );
+		}
+		methodName = "set" + Character.toUpperCase( methodName.charAt( 0 ) ) + methodName.substring( 1 );
+		Class objectClass = object.getClass();
+		Method method = null;
+		Object argument = null;
+		String value = parameter.getValue();
+		try {
+			method = objectClass.getMethod(methodName, new Class[]{ String.class } );
+			argument = value;
+		} catch (NoSuchMethodException e) {
+			try {
+				method = objectClass.getMethod(methodName, new Class[]{ File.class } );
+				if (value != null) {
+					File file = new File( value );
+					if (!file.isAbsolute()) {
+						file = new File( baseDir, value );
+					}
+					argument = file;
+				}
+			} catch (NoSuchMethodException e2) {
+				try {
+					method = objectClass.getMethod(methodName, new Class[]{ Boolean.TYPE } );
+					argument = new Boolean( CastUtil.getBoolean(value) );
+				} catch (NoSuchMethodException e3) {
+					throw new IllegalArgumentException( "Unable to retrieve method " + methodName + ": " + e3.toString() );
+				}				
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException( "Unable to retrieve method " + methodName + ": " + e.toString() );
+		}
+		try {
+			// okay, we've now have a method and an argument, so let's invoke it:
+			method.invoke(object, new Object[]{ argument } );
+		} catch (IllegalArgumentException e) {
+			throw e;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			String message = "Unable to set the parameter [" + parameter.getName() + "] with value [" + parameter.getValue() + "] for class [" + object.getClass().getName() + "]: " + e.toString();
+			throw new IllegalArgumentException( message );				
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			String message = "Unable to set the parameter [" + parameter.getName() + "] with value [" + parameter.getValue() + "] for class [" + object.getClass().getName() + "]: " + e.toString();
+			throw new IllegalArgumentException( message );				
+		}
+	}
+	
+	/**
 	 * Populates the given object with the specified parameters.
 	 * For each parameter-name the given object needs to specify
-	 * either set[param-name]( String ) or set[param-name]( File ).
+	 * either set[param-name]( String ), set[param-name]( File ) or set[param-name]( boolean ).
 	 * When the parameter "message" is provided, either the method
-	 * setMessage( String value ) or setMessage( File value ) needs
+	 * setMessage( String value ), setMessage( File value ) or setMessage( boolean ) needs
 	 * to be defined by the given object.
 	 * When the object defines both methods, it cannot be foreseen which
 	 * one of them will be called.

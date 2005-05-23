@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.propertyfunctions.PropertyFunction;
@@ -70,6 +71,7 @@ public class Environment {
 	private final Project antProject;
 	private BuildSetting buildSetting;
 	private LibraryManager libraryManager;
+	private final Task polishTask;
 	
 
 	/**
@@ -77,10 +79,12 @@ public class Environment {
 	 * 
 	 * @param extensionsManager the manager for extensions
 	 * @param antProject the project
+	 * @param polishTask the J2ME Polish task that is using this environment
 	 */
-	public Environment( ExtensionManager extensionsManager, Project antProject ) {
+	public Environment( ExtensionManager extensionsManager, Project antProject, Task polishTask ) {
 		super();
 		this.antProject = antProject;
+		this.polishTask = polishTask;
 		this.symbols = new HashMap();
 		this.variables = new HashMap();
 		this.temporarySymbols = new HashMap();
@@ -354,7 +358,7 @@ public class Environment {
 	/**
 	 * @param property
 	 * @param needsToBeDefined
-	 * @return
+	 * @return the found property
 	 */
 	private String getProperty(String property, boolean needsToBeDefined) {
 		if (property.indexOf('(') == -1) {
@@ -431,7 +435,9 @@ public class Environment {
 	}
 
 	/**
-	 * @return
+	 * Retrieves all defined variables (capabilities) for the current device and this project.
+	 * 
+	 * @return all defined variables
 	 */
 	public Map getVariables() {
 		return this.variables;
@@ -460,7 +466,9 @@ public class Environment {
 	}
 
 	/**
-	 * @return
+	 * Retrieves the Ant project in which the J2ME Polish task runs
+	 *  
+	 * @return the associated Ant project
 	 */
 	public Project getProject() {
 		return this.antProject;
@@ -501,5 +509,16 @@ public class Environment {
 		return this.libraryManager;
 	}
 
-	
+	/**
+	 * Retrieves all symbols.
+	 * 
+	 * @return a map containing the names of all defined symbols. The value for the symbols is always Boolean.TRUE
+	 */
+	public Map getSymbols() {
+		return this.symbols;
+	}
+
+	public Task getPolishTask() {
+		return this.polishTask;
+	}
 }

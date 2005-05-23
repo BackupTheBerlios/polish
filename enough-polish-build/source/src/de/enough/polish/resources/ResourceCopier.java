@@ -62,9 +62,11 @@ public abstract class ResourceCopier extends Extension {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void execute(Device device, Locale locale, Environment environment)
+	public void execute(Device device, Locale locale, Environment env)
 	throws BuildException 
 	{
+		this.environment = env;
+		this.antProject = env.getProject();
 		// ignore....
 	}
 	

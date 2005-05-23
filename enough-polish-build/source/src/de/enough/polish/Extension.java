@@ -25,11 +25,19 @@
  */
 package de.enough.polish;
 
+import java.io.File;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.CallTarget;
+import org.apache.tools.ant.taskdefs.Property;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.util.PopulateUtil;
@@ -95,6 +103,34 @@ public abstract class Extension {
 	}
 	
 	/**
+	 * Configures this extension with conditional parameters.
+	 * Subclasses can implement the setParameters( Variable[] parameters, File baseDir ) method
+	 * and subsequently use this method for only setting parameters that either have no conditions
+	 * or which conditions are fulfilled.
+	 * For each valid parameter the subclass needs to provide the method set[param-name] with
+	 * either the argument String, File or boolean. If the parameter name is "message" you
+	 * need to implement either setMessage( String ), setMessage( File ) or setMessage( boolean ),
+	 * for example.
+	 * 
+	 * @param parameters the parameters.
+	 * @throws  IllegalArgumentException when a parameter has a syntax error
+	 *        or when a needed method has not be found. 
+	 */
+	public void configure( Variable[] parameters ) {
+		if ( parameters == null ) {
+			return;
+		}
+		File baseDir = this.antProject.getBaseDir();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		for (int i = 0; i < parameters.length; i++) {
+			Variable parameter = parameters[i];
+			if ( parameter.isConditionFulfilled(evaluator, this.antProject ) ) {
+				PopulateUtil.populate( evaluator, parameter, baseDir );
+			}
+		}
+	}
+	
+	/**
 	 * Initializes this extension for a new device or a new locale.
 	 * The default implementation doesn't do anything.
 	 * 
@@ -102,7 +138,7 @@ public abstract class Extension {
 	 * @param locale the current locale, can be null
 	 * @param env the environment/configuration
 	 */
-	public void intialize( Device device, Locale locale, Environment env ) {
+	public void initialize( Device device, Locale locale, Environment env ) {
 		// default implementation does nothing
 	}
 	
@@ -266,7 +302,7 @@ public abstract class Extension {
 		extension.init( typeDefinition, definition, setting, antProject, manager, environment );
 		if (setting != null && setting.hasParameters()) {
 			//System.out.println("Extension [" + className + "]: setting [" + setting.getParameters().length + "] parameters");
-			PopulateUtil.populate( extension, setting.getParameters(), antProject.getBaseDir() );
+			PopulateUtil.populate( extension, setting.getAllParameters( environment ), antProject.getBaseDir() );
 		//} else {
 		//	System.out.println("Extension [" + className + "]: setting no parameters - setting == null: " + (setting == null) );
 		}
@@ -338,6 +374,73 @@ public abstract class Extension {
 		}
 		return className;
 	}
+	/**
+	 * Executes an Ant target.
+	 * 
+	 * @param targetName 
+	 * @param antPropertiesList
+	 */
+	public void executeAntTarget( String targetName, List antPropertiesList ) {
+		if (antPropertiesList == null) {
+			executeAntTarget( targetName, (Variable[]) null );
+		}
+		Variable[] antProperties = (Variable[]) antPropertiesList.toArray( new Variable[ antPropertiesList.size() ] );
+		executeAntTarget( targetName, antProperties );
+	}
 
+	/**
+	 * Executes an Ant target.
+	 * 
+	 * @param targetName 
+	 * @param antProperties
+	 */
+	public void executeAntTarget( String targetName, Variable[] antProperties ) {
+		CallTarget target = new CallTarget();
+		target.setTarget( targetName );
+		// setting up a new ant project:
+		target.setProject( this.antProject );
+		// setting device properties:
+		Map symbols = this.environment.getSymbols();
+		for (Iterator iter = symbols.keySet().iterator(); iter.hasNext();) {
+			String symbol = (String) iter.next();
+			Property antProperty = target.createParam();
+			antProperty.setName( symbol );
+			antProperty.setValue( "true" );			
+		}
+		Map variables = this.environment.getVariables(); 
+		for (Iterator iter = variables.keySet().iterator(); iter.hasNext();) {
+			String name = (String) iter.next();
+			String value = (String) variables.get( name );
+			if ( value.indexOf("${") != -1 ) {
+				value = this.environment.writeProperties( value );
+			}			
+			Property antProperty = target.createParam();
+			antProperty.setName( name );
+			antProperty.setValue( value );			
+		}
+		
+		// setting user defined properties:
+		if (antProperties != null) {
+			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+			for (int i = 0; i < antProperties.length; i++) {
+				Variable property = antProperties[i];
+				if (property.isConditionFulfilled(evaluator, this.antProject)) {
+					String value = property.getValue();
+					if (value == null) {
+						continue;
+					}
+					if ( value.indexOf("${") != -1 ) {
+						value = this.environment.writeProperties( value );
+					}
+					//System.out.println("adding user defined property [" + property.getName() + "] = " + value );
+					Property antProperty = target.createParam();
+					antProperty.setName( property.getName() );
+					antProperty.setValue( value );
+				}
+			}
+		}
+		//target.init(); (is initialized automatically when the first param is created)
+		target.execute();
+	}
 
 }

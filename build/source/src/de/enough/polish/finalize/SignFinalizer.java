@@ -60,12 +60,12 @@ public class SignFinalizer extends Finalizer {
 	 * @see de.enough.polish.finalize.Finalizer#finalize(java.io.File, java.io.File, de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
 	public void finalize(File jadFile, File jarFile, Device device,
-			Locale locale, Environment environment) 
+			Locale locale, Environment env) 
 	{
 		// locate the JadUtil:
-		File jadUtil = environment.resolveFile("${wtk.home}/bin/JadTool.jar");
+		File jadUtil = env.resolveFile("${wtk.home}/bin/JadTool.jar");
 		if (! jadUtil.exists() ) {
-			jadUtil = environment.resolveFile("${polish.home}/bin/JadTool.jar");
+			jadUtil = env.resolveFile("${polish.home}/bin/JadTool.jar");
 			if (!jadUtil.exists()) {
 				throw new BuildException("Unable to sign application: neither ${wtk.home}/bin/JadUtil.jar nor ${polish.home}/bin/JadUtil.jar was found.");
 			}

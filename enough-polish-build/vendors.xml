@@ -136,6 +136,11 @@
 	</vendor>
 
 	<vendor>
+		<name>RIM-BlackBerry</name>
+		<features></features>
+	</vendor>
+
+	<vendor>
 		<name>Toshiba</name>
 		<features></features>
 	</vendor>

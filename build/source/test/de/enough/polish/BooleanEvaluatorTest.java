@@ -172,6 +172,15 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( matcher.find() );
 		assertEquals( "test.5:defined", matcher.group() );
 		assertFalse( matcher.find() );
+		
+		term = "polish.Vendor==RIM-BlackBerry";
+		matcher = BooleanEvaluator.SYMBOL_PATTERN.matcher( term );
+		assertTrue( matcher.find() );
+		assertEquals( "polish.Vendor", matcher.group() );
+		assertTrue( matcher.find() );
+		assertEquals( "RIM-BlackBerry", matcher.group() );
+		assertFalse( matcher.find() );
+
 	}
 	
 	public void testEvaluateTerm() throws BuildException {

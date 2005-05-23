@@ -37,5 +37,20 @@
 		<type>version</type>
 	</capability>
 
+	<capability>
+		<identifier>build.Preverifier</identifier>
+		<extension-mode>overwrite</extension-mode>
+		<group>Build</group>
+		<required>no</required>
+		<type>extension</type>
+	</capability>
+
+	<capability>
+		<identifier>build.Finalizer</identifier>
+		<extension-mode>append</extension-mode>
+		<group>Build</group>
+		<required>no</required>
+		<type>extension</type>
+	</capability>
 	
 </capabilities>

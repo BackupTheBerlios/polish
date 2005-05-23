@@ -22,25 +22,25 @@
 	
 	<!-- The wtk.home property should point to the directory      -->
 	<!-- containing the Wireless Toolkit.                         -->
-	<property name="wtk.home" value="%{WTK_HOME}" />
+	<property name="wtk.home" location="%{WTK_HOME}" />
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
-	<property name="polish.home" value="%{INSTALL_PATH}" />
+	<property name="polish.home" location="%{INSTALL_PATH}" />
 		
 	<!-- The siemens.home, nokia.home and motorola.home-          -->
 	<!-- properties can be necessary when their emulators         -->
 	<!-- should be started.                                       -->
 	<!-- The directory which contains the Siemens-SMTK
-		<property name="siemens.home" value="C:\siemens" />
+		<property name="siemens.home" location="C:\siemens" />
 	-->
 	<!-- The directory which contains the Nokia-emulators
-		<property name="nokia.home" value="C:\Nokia" />
+		<property name="nokia.home" location="C:\Nokia" />
 	-->
 	<!-- The path to the Sony-Ericsson SDK
-		<property name="sony-ericsson.home" value="C:\SonyEricsson\J2ME_SDK" />
+		<property name="sony-ericsson.home" location="C:\SonyEricsson\J2ME_SDK" />
 	-->
 	<!-- The directory which contains the Motorola-emulators
-		<property name="motorola.home" value="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
+		<property name="motorola.home" location="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
 	-->
 		
 	<!-- Definition of the J2ME Polish task:                      -->

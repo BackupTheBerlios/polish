@@ -287,7 +287,7 @@ public class ExtensionManager {
 			if ( setting == null || setting.isActive(evaluator, this.antProject) ) {
 				activeList.add( extension );
 				// call initialize on all active extensions:
-				extension.intialize(device, locale, environment);
+				extension.initialize(device, locale, environment);
 			}
 		}
 		this.activeExtensions = (Extension[]) activeList.toArray( new Extension[ activeList.size() ] );

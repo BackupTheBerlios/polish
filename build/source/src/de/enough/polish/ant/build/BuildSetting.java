@@ -126,6 +126,7 @@ public class BuildSetting {
 	private ArrayList finalizers;
 	private File projectBaseDir;
 	private File polishHomeDir;
+	private ArrayList preverifiers;
 	
 	/**
 	 * Creates a new build setting.
@@ -233,9 +234,6 @@ public class BuildSetting {
 	}
 			
 	public void addConfiguredPreprocessor( PreprocessorSetting preprocessor ) {
-		if (preprocessor.getClassName() == null) {
-			throw new BuildException("Invalid <preprocessor> element: please define the attribute \"class\" for each preprocessor.");
-		}
 		if (this.preprocessors == null) {
 			this.preprocessors = new ArrayList();
 		}
@@ -271,6 +269,13 @@ public class BuildSetting {
 			throw new BuildException("The \"password\" attribute of the <sign> element is mandatory.");
 		}
 		addConfiguredFinalizer( setting );
+	}
+	
+	public void addConfiguredPreverifier( PreverifierSetting setting ) {
+		if (this.preverifiers == null) {
+			this.preverifiers = new ArrayList();
+		}
+		this.preverifiers.add( setting );
 	}
 	
 	/**
@@ -1566,7 +1571,7 @@ public class BuildSetting {
 	/**
 	 * @return Returns the customVendors
 	 */
-	public File getCustoVendors() {
+	public File getCustomVendors() {
 		if (this.customVendors != null) {
 			return this.customVendors;			
 		}
@@ -1588,5 +1593,13 @@ public class BuildSetting {
 		this.customVendors = customVendors;
 	}
 	
+	
+	public PreverifierSetting[] getPreverifierSettings() {
+		if (this.preverifiers == null) {
+			return new PreverifierSetting[0];
+		} else {
+			return (PreverifierSetting[]) this.preverifiers.toArray( new PreverifierSetting[ this.preverifiers.size() ] );
+		}
+	}
 	
 }

@@ -150,6 +150,28 @@ public class Variables {
 		}
 		return getVariables( list );
 	}
+	
+	public Variable[] getAllVariables( Environment environment ) {
+		Project antProject = environment.getProject(); 
+		ArrayList list = new ArrayList();
+		Variable[] variables = getVariables( this.variablesList );
+		for (int i = 0; i < variables.length; i++) {
+			Variable variable = variables[i];
+			if (variable.containsMultipleVariables()) {
+				Variable[] vars = variable.loadVariables( environment, antProject );
+				for (int j = 0; j < vars.length; j++) {
+					Variable var = vars[j];
+					var.setIf( variable.getIfCondition() );
+					var.setUnless( variable.getUnlessCondition() );
+					list.add( var );
+				}
+			} else {
+				list.add( variable );
+			}
+		}
+		return getVariables( list );
+	}
+
 
 	/**
 	 * @return

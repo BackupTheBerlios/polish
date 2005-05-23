@@ -61,7 +61,7 @@ public class BooleanEvaluator {
 	public static final int LESSER_EQUALS = 9;
 	public static final int NOT_EQUALS = 10;
 
-	private static final String SYMBOL = "(\\w|-|:|\\.|/)+"; 
+	private static final String SYMBOL = "(\\w|-|:|\\.|/|_)+"; 
 	protected static final Pattern SYMBOL_PATTERN = Pattern.compile( SYMBOL ); 
 	private static final String OPERATOR = "(&&|\\^|\\|\\||==|>=|<=|>|<|!=)"; 
 	protected static final Pattern OPERATOR_PATTERN = Pattern.compile( OPERATOR ); 
@@ -326,11 +326,14 @@ public class BooleanEvaluator {
 							+": found invalid/additional operator in [" + term +"] (that term might be simplified)." );
 					
 				}
-				String empty = term.substring( lastSymbolEnd + 1, operatorPos ).trim();
-				if (empty.length() > 0) {
-					throw new BuildException( fileName + " line " + line  
-							+": missing or invalid operator after [" + symbol +"] in term [" + term
-							+"] (both symbol and term might be simplified)." );
+				int emptyStart = lastSymbolEnd + 1;
+				if ( emptyStart < operatorPos ) {
+					String empty = term.substring( emptyStart, operatorPos ).trim();
+					if (empty.length() > 0) {
+						throw new BuildException( fileName + " line " + line  
+								+": missing or invalid operator after [" + symbol +"] in term [" + term
+								+"] (both symbol and term might be simplified)." );
+					}
 				}
 				// okay operator is in correct position, so know check what operator it is:
 				String operatorSymbol = operatorMatcher.group();

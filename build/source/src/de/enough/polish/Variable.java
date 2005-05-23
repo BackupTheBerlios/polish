@@ -254,7 +254,7 @@ public class Variable {
 	/**
 	 * @param environment
 	 * @param antProject
-	 * @return
+	 * @return the file containing variable definitions
 	 */
 	protected File getFile(Environment environment, Project antProject) {
 		String fName = this.fileName;
@@ -268,6 +268,16 @@ public class Variable {
 		return file;
 	}
 
+	/**
+	 * Checks if the conditions for this variable are met.
+	 * 
+	 * @param environment the environment settings
+	 * @return true when no condition has been specified 
+	 * 			or the specified conditions have been met.
+	 */
+	public boolean isConditionFulfilled( Environment environment ) {
+		return isConditionFulfilled( environment.getBooleanEvaluator(), environment.getProject() );
+	}
 
 	/**
 	 * Checks if the conditions for this variable are met.

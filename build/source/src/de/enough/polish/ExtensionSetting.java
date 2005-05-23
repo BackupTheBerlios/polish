@@ -44,6 +44,7 @@ public class ExtensionSetting extends Setting {
 	private String name;
 	private String className;
 	private Path classPath;
+	private String target;
 
 	/**
 	 * Creates a new setting.
@@ -78,6 +79,18 @@ public class ExtensionSetting extends Setting {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getTarget(){
+		return this.target;
+	}
+	/**
+	 * Sets the &lt;antcall&gt; target of this extension.
+	 *  
+	 * @param target the Ant target that should be called
+	 */
+	public void setTarget( String target ) {
+		this.target = target;
 	}
 
 	/**

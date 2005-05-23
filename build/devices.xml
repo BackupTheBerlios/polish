@@ -3360,6 +3360,14 @@
 	
 <!-- Research In Motion devices -->
 	<device>
+		<identifier>RIM-BlackBerry/5810</identifier>
+		<capability name="ScreenSize" value="160x160"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+
+	<device>
 		<identifier>Research In Motion/BlackBerry 5810</identifier>
 		<capability name="ScreenSize" value="160x160"/>
 		<capability name="BitsPerPixel" value="1"/>

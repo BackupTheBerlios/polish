@@ -25,6 +25,7 @@
  */
 package de.enough.polish.ant;
 
+import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.Variables;
 
@@ -107,6 +108,20 @@ public class Setting extends ConditionalElement {
 			return new Variable[ 0 ];
 		} else {
 			return this.variables.getVariables();
+		}
+	}
+	
+	/**
+	 * Retrieves the parameters of this setting, this method resolves any file-parameters as well.
+	 * 
+	 * @param environment the configruation settings
+	 * @return an array of variable, can be empty but not null.
+	 */
+	public Variable[] getAllParameters( Environment environment ) {
+		if (this.variables == null) {
+			return new Variable[ 0 ];
+		} else {
+			return this.variables.getAllVariables( environment );
 		}
 	}
 

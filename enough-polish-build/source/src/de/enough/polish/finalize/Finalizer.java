@@ -68,15 +68,15 @@ public abstract class Finalizer extends Extension {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param environment environment variables and settings
+	 * @param env environment variables and settings
 	 * @throws BuildException when this extension failed to get executed
 	 */
-	public void execute( Device device, Locale locale, Environment environment ) {
-		String jadPath = environment.getVariable( "polish.jadPath" );
+	public void execute( Device device, Locale locale, Environment env ) {
+		String jadPath = env.getVariable( "polish.jadPath" );
 		File jadFile =  this.antProject.resolveFile( jadPath );
-		String jarPath = environment.getVariable( "polish.jarPath" );
+		String jarPath = env.getVariable( "polish.jarPath" );
 		File jarFile =  this.antProject.resolveFile( jarPath );
-		finalize( jadFile, jarFile, device, locale, environment );
+		finalize( jadFile, jarFile, device, locale, env );
 	}
 
 	/**
@@ -86,8 +86,8 @@ public abstract class Finalizer extends Extension {
 	 * @param jarFile the JAR file
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param environment environment variables and settings
+	 * @param env environment variables and settings
 	 */
-	public abstract void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment environment);
+	public abstract void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env);
 
 }

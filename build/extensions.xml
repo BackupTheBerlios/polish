@@ -56,6 +56,12 @@
 		<class>de.enough.polish.preprocess.custom.PolishPreprocessor</class>
 	</extension>
 	
+	<extension>
+		<type>preprocessor</type>
+		<name>antcall</name>
+		<class>de.enough.polish.preprocess.custom.AntCallPreprocessor</class>
+	</extension>
+	
 	
 	<!-- Property Functions -->
 	
@@ -153,6 +159,13 @@
 		<type>obfuscator</type>
 		<name>Dasho</name>
 		<class>de.enough.polish.obfuscate.DashoObfuscator</class>
+		<classpath>${polish.home}/import/dasho.jar</classpath>
+	</extension>
+
+	<extension>
+		<type>obfuscator</type>
+		<name>antcall</name>
+		<class>de.enough.polish.obfuscate.AntCallObfuscator</class>
 	</extension>
 	
 	<!-- Post Compiler -->
@@ -170,6 +183,12 @@
 		<class>de.enough.polish.postcompile.screenchange.ScreenChangerPostCompiler</class>
 		<classpath>${polish.home}/import/asm-2.0.RC1.jar:${polish.home}/import/asm-tree-2.0.RC1.jar:${polish.home}/import/enough-bytecode.jar</classpath>
 	</extension>
+
+	<extension>
+		<type>postcompiler</type>
+		<name>antcall</name>
+		<class>de.enough.polish.postcompile.AntCallPostCompiler</class>
+	</extension>
 	
 	<!-- Log Handler -->
 	
@@ -185,7 +204,22 @@
 		<clientClass>de.enough.polish.log.bluetooth.BluetoothLogHandler</clientClass>
 	</extension>
 	
+	<!-- Preverifier -->
+	
+	<extension>
+		<type>preverifier</type>
+		<name>none</name>
+		<class>de.enough.polish.preverify.NoPreverifier</class>
+	</extension>
+
+	<extension>
+		<type>packager</type>
+		<name>kzip</name>
+		<class>de.enough.polish.jar.KZipPackager</class>
+	</extension>
+
 	<!-- Packager -->
+	
 	<extension>
 		<type>packager</type>
 		<name>7zip</name>
@@ -206,5 +240,19 @@
 		<name>sign</name>
 		<class>de.enough.polish.finalize.SignFinalizer</class>
 	</extension>
+
+	<extension>
+		<type>finalizer</type>
+		<name>antcall</name>
+		<class>de.enough.polish.finalize.AntCallFinalizer</class>
+	</extension>
+	
+	<extension>
+		<type>finalizer</type>
+		<name>cod</name>
+		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
+		<classpath>${polish.home}/import/extensions.jar</classpath>
+	</extension>
+	
 	
 </extensions>

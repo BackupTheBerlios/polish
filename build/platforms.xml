@@ -50,19 +50,19 @@
 	<platform>
 		<identifier>BlackBerry</identifier>
 		<features>blackberry</features>
-		<capability name="Finalizer" value="BlackBerryFinalizer" />
+		<capability name="build.Finalizer" value="cod" />
 	</platform>
 
 	<platform>
 		<identifier>WIPI/1.2</identifier>
 		<features>wipi1.2</features>
-		<capability name="SkipPreverification" value="true" />
+		<capability name="build.Preverfier" value="none" />
 	</platform>
 
 	<platform>
 		<identifier>WIPI/2.0</identifier>
 		<features>wipi2.0,midp2</features>
-		<capability name="SkipPreverification" value="true" />
+		<capability name="build.Preverfier" value="none" />
 	</platform>
 	
 </platforms>

@@ -66,8 +66,8 @@ public class DefaultLogHandler extends LogHandler {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#intialize(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void intialize(Device device, Locale locale, Environment environment) {
-		super.intialize(device, locale, environment);
+	public void initialize(Device device, Locale locale, Environment environment) {
+		super.initialize(device, locale, environment);
 		ExtensionSetting setting = this.getExtensionSetting();
 		if (setting == null) {
 			System.out.println("Warning: default loghandler has not configuration setting and is unable to set up environment/preprocessing variables.");

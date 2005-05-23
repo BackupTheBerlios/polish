@@ -92,7 +92,6 @@ import de.enough.polish.preprocess.DebugManager;
 import de.enough.polish.preprocess.ImportConverter;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.StyleSheet;
-import de.enough.polish.preprocess.custom.PolishPreprocessor;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
 import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
@@ -492,7 +491,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// create environment
-		this.environment = new Environment( this.extensionManager, getProject() );
+		this.environment = new Environment( this.extensionManager, getProject(), this );
 		this.environment.setBuildSetting( this.buildSetting );
 		
 		// create debug manager:
@@ -611,7 +610,7 @@ public class PolishTask extends ConditionalTask {
 		// create vendor/group/device manager:
 		try {
 			VendorManager vendorManager = new VendorManager( this.polishProject, this.buildSetting.openVendors());
-			vendorManager.loadCustomVendors( this.buildSetting.getCustoVendors(), this.polishProject );
+			vendorManager.loadCustomVendors( this.buildSetting.getCustomVendors(), this.polishProject );
 			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.openGroups() );
 			groupManager.loadCustomGroups( this.buildSetting.getCustomGroups() );
 			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, this.buildSetting.openDevices() );
