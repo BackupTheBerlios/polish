@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor.editor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor.indention;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -46,8 +46,18 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.rules.FastPartitioner;
 
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-
+/**
+ * This class is copied nearly verbatim from JavaautoIndentStrategy. This was nessessary to circumvent
+ * the 'pasting comment' behavior (splitting the comment '//    #def' on paste). The only real difference is in addIndent(...)
+ * <p></p>
+ *
+ * <p>Copyright Enough Software 2005</p>
+ * <pre>
+ * history
+ *        May 24, 2005 - ricky creation
+ * </pre>
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+ */
 public class PolishJavaAutoIndentStrategy extends JavaAutoIndentStrategy {
 
     private static final String LINE_COMMENT= "//"; //$NON-NLS-1$

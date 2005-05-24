@@ -29,6 +29,9 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.util.Assert;
+
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 
 /**
  * <p></p>
@@ -63,7 +66,7 @@ public class PolishDocumentUtils {
      * @param currentLine
      * @return Position when directive was found, null otherwise.
      */
-    public static Position getDirectiveFromLine(IDocument document, int currentLine) {
+    public static Position extractDirectiveFromLine(IDocument document, int currentLine) {
         IRegion lineAsRegion;
         
         try {
@@ -124,13 +127,13 @@ public class PolishDocumentUtils {
                         rightmostIndex = i;
                         continue;
                     }
-                    directiveFound = true; //the char after # is not valid. abort.
-                    //rightmostIndex--; //We went to one char to far.
+                    //directiveFound = true; //the char after # is not valid. abort.
+                    rightmostIndex--; //We went to far by one char.
                     break;
                 }
             }
             catch(BadLocationException exception) {
-                System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong offset of char."+exception);
+                System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong offset of char:"+exception);
     	        return null;
             }
         }
@@ -146,62 +149,113 @@ public class PolishDocumentUtils {
      * @param targetDirectives
      * @return true, if directive is in targetDirectives.
      */
-    public static boolean isDirective(String directive, String[] targetDirectives) {
+    public static boolean isDirectiveInCategory(String directive, String[] targetDirectives) {
+        Assert.isNotNull(directive);
+        Assert.isNotNull(targetDirectives);
         for (int i = 0; i < targetDirectives.length; i++) {
-            if(directive == targetDirectives[i]) {
+            if(directive.equals(targetDirectives[i])) {
                 return true;
             }
         }
         return false;
     }
     
-    public static String makeStringFromPosition(IDocument document, Position position) {
-        if (position == null) {
-            System.out.println("ERROR:PolishDocumentUtils.makeStringFromPosition:Parameter is null.");
-            return "";
+    public static boolean isDirectiveInCategory(IDocument document, Position position, String[] targetDirectives) {
+        String textAtPosition = "";
+        try {
+            textAtPosition = document.get(position.getOffset(),position.getLength());
+        } catch (BadLocationException exception) {
+            PolishEditorPlugin.log("Bad Offset for get in IDocument.");
+            return false;
         }
+        return isDirectiveInCategory(textAtPosition,targetDirectives);
+    }
+    
+    public static String makeStringFromPosition(IDocument document, Position position) {
+        Assert.isNotNull(document);
+        Assert.isNotNull(position);
+        
         String result;
         try {
             result = document.get(position.getOffset(),position.getLength());
         } catch (BadLocationException exception) {
             System.out.println("ERROR:PolishDocumentUtils.makeStringFromPosition(...):cant extract string from position:"+exception);
-            return "";
+            result = "";
         }
         return result;
     }
+    
     // Implement interface TokenExtractor with 'IPosition extract(IDocument document,int offset)'
-    public static boolean isVariableAtCaret(IDocument document, int offeset) {
-        return false;
-    }
-    
-    public static Position findBlockDirectiveAtCaret(IDocument document, int offset) { 
-        int offsetOfSelectionInDocument = offset;
+    public static Position extractVariableAtOffset(IDocument document, int offset) {
+        // bla ${hallo} blubb
+        // hallo > 0
+        Position wordAtOffset = extractWordAtOffset(document, offset);
+        boolean variableFound = false;
+        Position result;
         
-        Position wordAsPosition = extractWordAtPosition(document, offsetOfSelectionInDocument);
-        
-        String wordAsString = PolishDocumentUtils.makeStringFromPosition(document,wordAsPosition);
-        if(wordAsString.equals("")) {
-            System.out.println("ERROR:BlockMarker.findDirectiveAtCaret(...):Cant extract string from position");
-            return null;
+        // If we do not have word ...
+        if(wordAtOffset == null) {
+            //... consider we are at the beginning of a new directive.
+            wordAtOffset = new Position(offset,0);
         }
-        if(wordAsString.equals("if") ||wordAsString.equals("else") || wordAsString.equals("elif") || wordAsString.equals("endif") || wordAsString.equals("ifdef")) {
-            int soffset = wordAsPosition.getOffset();
-            if(soffset >= 3) {
-                try {
-                    if(document.getChar(soffset-1) == '#' && document.getChar(soffset-2) == '/' && document.getChar(soffset-3) == '/') {
-                        return wordAsPosition;
-                    }
-                } catch (BadLocationException exception) {
-                    System.out.println("ERROR:BlockMarker.findDirectiveAtCaret(...):cant seek for //#:"+exception);
-                    return null;
-                }
+        try {
+            String prefix = document.get(wordAtOffset.getOffset()-2,2);
+            System.out.println("X"+PolishDocumentUtils.makeStringFromPosition(document,wordAtOffset)+"X");
+            if("${".equals(prefix) || prefix.endsWith("$")) {
+                variableFound = true;
             }
+        } catch (BadLocationException exception) {
+            variableFound = false;
         }
-        return null;
+        
+        if(variableFound) {
+            result = wordAtOffset;
+        }
+        else {
+            result = null;
+        }
+        
+        return result;
     }
-
     
-    public static Position extractWordAtPosition(IDocument document, int offset) {
+ 
+    /**Returns the directive which encloses a given offset.
+     * @param document
+     * @param offset
+     * @return Position, when a directive is found. A zero length Position when offset is in front of '//#' with no directive name
+     * and null when offset is not within a directive.
+     */
+    public static Position extractDirectiveAtOffset(IDocument document, int offset) { 
+        Position wordAtOffset = extractWordAtOffset(document, offset);
+        boolean directiveFound = false;
+        Position result;
+        
+        // If we do not have word ...
+        if(wordAtOffset == null) {
+            //... consider we are at the beginning of a new directive.
+            wordAtOffset = new Position(offset,0);
+        }
+        try {
+            String prefix = document.get(wordAtOffset.getOffset()-3,3);
+            if("//#".equals(prefix)) {
+                directiveFound = true;
+            }
+        } catch (BadLocationException exception) {
+            directiveFound = false;
+        }
+        
+        if(directiveFound) {
+            result = wordAtOffset;
+        }
+        else {
+            result = null;
+        }
+        
+        return result;
+        
+    }
+    
+    public static Position extractWordAtOffset(IDocument document, int offset) {
         int lastIndexOfLine;
         try {
             IRegion lineInformtation = document.getLineInformationOfOffset(offset);
@@ -218,7 +272,8 @@ public class PolishDocumentUtils {
             // search for the left bound.
             for(int i = offset-1; i >= 0; i--) {
                 // As we are advancing forward and we found a invalid char, step one back to the last vaid char.
-                if( ! (Character.isJavaIdentifierPart(document.getChar(i)) || document.getChar(i) == '.')) {
+                char c = document.getChar(i);
+                if( ! (Character.isJavaIdentifierPart(c) || c == '.')) {
                     leftmostIndexOfWord = i+1;
                     break;
                 }

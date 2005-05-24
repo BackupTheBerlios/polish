@@ -27,23 +27,16 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.jdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
-import org.eclipse.jdt.internal.ui.text.*;
-import org.eclipse.jdt.internal.ui.text.java.JavaAutoIndentStrategy;
+import org.eclipse.jdt.internal.ui.text.CompoundContentAssistProcessor;
 import org.eclipse.jdt.ui.text.IColorManager;
-import org.eclipse.jdt.ui.text.*;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IAutoIndentStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentExtension3;
-import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
@@ -54,6 +47,10 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.DirectiveContentAssistProcessor;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishIndentStrategy;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishJavaAutoIndentStrategy;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
 
 
@@ -69,68 +66,69 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSi
  */
 public class PolishSourceViewerConfiguration extends JavaSourceViewerConfiguration {
     //TODO: Not needed. Remove.
-    class DocumentListener implements IDocumentListener{
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
-         */
-        public void documentAboutToBeChanged(DocumentEvent event) {
-            /*
-             * 
-             */
-            
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
-         */
-        public void documentChanged(DocumentEvent event) {
-           
-            IDocument document = event.getDocument();
-            if( ! (document instanceof IDocumentExtension3)) {
-                System.out.println("ERROR:DocumentListener.documentChanged():document is not instance of IDocumentExtension3");
-                return;
-            }
-            IDocumentExtension3 documentExtension3 = (IDocumentExtension3) document;
-            System.out.println("DocumentListener.documentChanged():partions:");
-            String[] partitions = documentExtension3.getPartitionings();
-            for(int i = 0; i < partitions.length; i++) {
-                System.out.print(partitions[i]+" ");
-            }
-            System.out.println();
-            
-        }
-        
-    }
+    
+//    class DocumentListener implements IDocumentListener{
+//
+//        /* (non-Javadoc)
+//         * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
+//         */
+//        public void documentAboutToBeChanged(DocumentEvent event) {
+//            /*
+//             * 
+//             */
+//            
+//        }
+//
+//        /* (non-Javadoc)
+//         * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
+//         */
+//        public void documentChanged(DocumentEvent event) {
+//           
+//            IDocument document = event.getDocument();
+//            if( ! (document instanceof IDocumentExtension3)) {
+//                System.out.println("ERROR:DocumentListener.documentChanged():document is not instance of IDocumentExtension3");
+//                return;
+//            }
+//            IDocumentExtension3 documentExtension3 = (IDocumentExtension3) document;
+//            System.out.println("DocumentListener.documentChanged():partions:");
+//            String[] partitions = documentExtension3.getPartitionings();
+//            for(int i = 0; i < partitions.length; i++) {
+//                System.out.print(partitions[i]+" ");
+//            }
+//            System.out.println();
+//            
+//        }
+//        
+//    }
     
     
-    class TextInputListener implements ITextInputListener{
-
-        DocumentListener documentListener = new DocumentListener();
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
-         */
-        public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
-            /*
-             * 
-             */
-       }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
-         */
-        public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-            System.out.println("PolishEditor.TextInputListener.inputDocumentChanged():enter.newInput:"+newInput);
-            if(oldInput != null) {
-                oldInput.removeDocumentListener(this.documentListener);
-            }
-            if(newInput != null) {
-                newInput.addDocumentListener(this.documentListener);
-            }
-        }
-        
-    }
+//    class TextInputListener implements ITextInputListener{
+//
+//        DocumentListener documentListener = new DocumentListener();
+//        
+//        /* (non-Javadoc)
+//         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+//         */
+//        public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
+//            /*
+//             * 
+//             */
+//       }
+//
+//        /* (non-Javadoc)
+//         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+//         */
+//        public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
+//            System.out.println("PolishEditor.TextInputListener.inputDocumentChanged():enter.newInput:"+newInput);
+//            if(oldInput != null) {
+//                oldInput.removeDocumentListener(this.documentListener);
+//            }
+//            if(newInput != null) {
+//                newInput.addDocumentListener(this.documentListener);
+//            }
+//        }
+//        
+//    }
 
     private PolishSingleLineCommentScanner polishSingleLineCommentScanner;
     
@@ -186,7 +184,6 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 
     public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer,
                                                      String contentType) {
-        //if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
         System.out.println("ERROR:PolishSourceViewerConfiguration.getAutoIndentStrategy(...):enter. This method cant be called by 3.1.M6?!");
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
 			return new PolishIndentStrategy();
@@ -203,6 +200,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
             CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
             compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
+            compoundContentAssistProcessor.add(new VariableContentAssistProcessor());
             contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }

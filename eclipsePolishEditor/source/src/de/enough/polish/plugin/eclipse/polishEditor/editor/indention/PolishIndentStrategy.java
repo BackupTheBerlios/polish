@@ -23,77 +23,69 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.polishEditor.editor;
+package de.enough.polish.plugin.eclipse.polishEditor.editor.indention;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultAutoIndentStrategy;
 import org.eclipse.jface.text.DocumentCommand;
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.jface.util.Assert;
 
-import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.BlockMarker;
+import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
 	
 public class PolishIndentStrategy extends DefaultAutoIndentStrategy {
     
     public void customizeDocumentCommand(IDocument document, DocumentCommand documentCommand) {
+        Assert.isNotNull(document);
+        Assert.isNotNull(documentCommand);
         System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):documentCommand.text:X"+documentCommand.text+"X");
         System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):documentCommand.length:"+documentCommand.length);
         
-//      Did the User push return?
+//      Did the User pushed return?
         if (documentCommand.length == 0 && documentCommand.text != null && isLineDelimiter(document,documentCommand.text)) {
             System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):return pressed.");
-            // Is the curser on a line with a if-like directive?
-            if(isSpecificBlockDirectiveOnLine(document,documentCommand.offset,BlockMarker.IF_DIRECTIVES)) {
+            
+            Position directiveAsPosition = null;
+            try {
+                directiveAsPosition = PolishDocumentUtils.extractDirectiveFromLine(document,document.getLineOfOffset(documentCommand.offset));
+            } catch (BadLocationException exception) {
+                PolishEditorPlugin.log("The line:"+directiveAsPosition+" contains directive:"+PolishDocumentUtils.makeStringFromPosition(document,directiveAsPosition));
+                return;
+            }
+            // We havent found a directive on the line?
+            if(directiveAsPosition == null) {
+                //... do normal indent.
+                autoIndentAfterNewLine(document,documentCommand);
+                return;
+            }
+            String directiveAsString;
+            directiveAsString= PolishDocumentUtils.makeStringFromPosition(document, directiveAsPosition);
+            
+            if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.IF_DIRECTIVES)) {
                 System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):if directive found..");
                 indentAtIfDirectiveAfterNewLine(document, documentCommand);
             }
-            else if(isSpecificBlockDirectiveOnLine(document,documentCommand.offset,BlockMarker.ELSE_DIRECTIVES)) {
+            else if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.ELSE_DIRECTIVES)) {
                 System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):else directive found..");
                 indentAtElseDirectiveAfterNewLine(document, documentCommand);
             }
-            else if(isSpecificBlockDirectiveOnLine(document,documentCommand.offset,BlockMarker.ENDIF_DIRECTIVES)) {
+            else if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.ENDIF_DIRECTIVES)) {
                 System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):endif directive found..");
                 indentAtEndifDirectiveAfterNewLine(document, documentCommand);
             }
             else {
                 autoIndentAfterNewLine(document,documentCommand);
             }
-        }      
-
-//		else if (documentCommand.text.length() == 1) {
-//			//smartIndentAfterBlockDelimiter(document, documentCommand);
-//		}
-//		else if (documentCommand.text.length() > 1 && getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_PASTE)) {
-//			//smartPaste(document, documentCommand); // no smart backspace for paste
-//		}
-    }
-
-    private boolean isSpecificBlockDirectiveOnLine(IDocument document, int offset, String[] directives) {
-        Position directiveAsPosition;
-        try {
-            directiveAsPosition = PolishDocumentUtils.getDirectiveFromLine(document,document.getLineOfOffset(offset));
-        } catch (BadLocationException exception) {
-            System.out.println("ERROR:PolishIndentStrategy.isIfBlockDirectiveOnLine(...):bad location:offset:"+offset);
-            return false;
         }
-        if(directiveAsPosition == null) {
-            return false;
-        }
-        String directiveAsString = PolishDocumentUtils.makeStringFromPosition(document,directiveAsPosition);
-        directiveAsString = directiveAsString.intern();
-        //System.out.println("string is:"+directiveAsString);
-        return PolishDocumentUtils.isDirective(directiveAsString,directives);
     }
-   
-//    private IPreferenceStore getPreferenceStore() {
-//        return PolishEditorPlugin.getDefault().getPreferenceStore();
-//    }
     
+    // TODO: Why synchronized.
 	private synchronized void indentAtIfDirectiveAfterNewLine(IDocument document, DocumentCommand command) {
 		
 		if (command.offset == -1 || document.getLength() == 0) {
@@ -112,8 +104,7 @@ public class PolishIndentStrategy extends DefaultAutoIndentStrategy {
             replacementText.append("//#endif");
             command.text = replacementText.toString();
             command.shiftsCaret = false;
-            command.caretOffset = command.offset + lengthOfInnerIndention;
-            
+            command.caretOffset = command.offset + lengthOfInnerIndention;   
             
 		} catch (BadLocationException exception) {
             System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):A BadLocationException occurred. An offset could not be retrieved.command.offset:"+command.offset);

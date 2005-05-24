@@ -27,6 +27,8 @@ irc.freenode.net #classpath. wenden an: overholt, pmuldoon, scsibear, Michael is
 
 TODO:
 
+- Change BlockMarker to new schema.
+- implement extractSymbolAtOffset and SymbolCompletionProcessor
 - replace all system.out.println with plugin.log messages.
 - Make all error messages aswer the following:
     Where did the error occurred (class,method,position)? What happend (technically with exception/condition,semanticly if no obvious)? Why did it happen? (technically with numbers,semanticly if no obvious)

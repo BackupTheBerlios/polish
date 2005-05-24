@@ -31,9 +31,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
-//This is a hack to get IJavaPartitions into 3.0.1. and 3.1. as it was moved between the releases.
-import org.eclipse.jdt.internal.ui.text.*; 
-import org.eclipse.jdt.ui.text.*;
+import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;

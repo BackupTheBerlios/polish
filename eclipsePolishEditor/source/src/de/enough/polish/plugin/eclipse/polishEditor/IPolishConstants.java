@@ -48,4 +48,8 @@ public interface IPolishConstants {
     String POLISH_ANNOTATION = "de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation"; //TODO: Do we need the unique name?
 
     String[] POLISH_DIRECTIVES = {"if","ifdef","ifndef","else","elif","elifdef","elnifdef","def","endif","=","debug","mdebug","enddebug","style","condition","include","foreach","next"};
+    
+    public static final String[] IF_DIRECTIVES = {"if","ifdef","ifndef"};
+    public static final String[] ELSE_DIRECTIVES = {"else","elif","elifdef","elifndef"};
+    public static final String[] ENDIF_DIRECTIVES = {"endif"};
 }
