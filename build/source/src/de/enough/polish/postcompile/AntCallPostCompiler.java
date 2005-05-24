@@ -61,9 +61,17 @@ public class AntCallPostCompiler extends PostCompiler {
 	{
 		String target = this.extensionSetting.getTarget();
 		if ( target == null ) {
-			throw new BuildException( "You need to define the \"target\" attribute in the [anttarget] postcompiler." );
+			throw new BuildException( "You need to define the \"target\" attribute in the [antcall] postcompiler." );
 		}
-		executeAntTarget( target, this.properties );
+		Variable[] props;
+		if (this.properties == null) {
+			props = new Variable[ 1 ];
+		} else {
+			props = new Variable[ this.properties.length + 1 ];
+			System.arraycopy( this.properties, 0, props, 1, this.properties.length );
+		}
+		props[0] = new Variable( "polish.postcompile.dir", classesDir.getAbsolutePath() );
+		executeAntTarget( target, props );
 	}
 	
 	public void setParameters( Variable[] properties, File baseDir ) {

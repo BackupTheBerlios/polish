@@ -23,12 +23,13 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 import java.util.ArrayList;
 
 import org.jdom.Element;
 
+import de.enough.polish.Device;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 

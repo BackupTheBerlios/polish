@@ -37,6 +37,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
 import de.enough.polish.ant.build.BuildSetting;
+import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.propertyfunctions.PropertyFunction;
 import de.enough.polish.util.StringUtil;
 

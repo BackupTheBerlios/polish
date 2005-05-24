@@ -36,8 +36,8 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
-import de.enough.polish.LibraryManager;
 import de.enough.polish.ant.build.ObfuscatorSetting;
+import de.enough.polish.devices.LibraryManager;
 
 /**
  * <p>An obfuscator is used to obfuscate and shrink the code.</p>

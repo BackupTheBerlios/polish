@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 
 import java.util.HashMap;
@@ -33,6 +33,8 @@ import java.util.Set;
 
 import org.jdom.Element;
 
+import de.enough.polish.Device;
+import de.enough.polish.Variable;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 
@@ -57,24 +59,29 @@ implements Comparable
 	private HashMap features;
 	private HashMap capabilities;
 	private String featuresAsString;
+	protected final CapabilityManager capabilityManager;
+	protected final HashMap implicitGroupsByName;
 	
 	/**
 	 * Creates a new component.
 	 */
 	public PolishComponent() {
-		this( null );
+		this( null, null );
 	}
 	/**
 	 * Creates a new component.
 	 * 
 	 * @param parent the parent, e.g. is the parent of a vendor a project,
 	 *              the parent of a device is a vendor.
+	 * @param capabilityManager knows about how to deal with capabilities
 	 */
-	public PolishComponent( PolishComponent parent ) {
+	public PolishComponent( PolishComponent parent, CapabilityManager capabilityManager ) {
 		this.parent = parent;
+		this.capabilityManager = capabilityManager;
 		this.capabilities = new HashMap();
 		//this.capabilitiesList = new ArrayList();
 		this.features = new HashMap();
+		this.implicitGroupsByName = new HashMap();
 		//this.featuresList = new ArrayList();
 		if (parent != null) {
 			this.capabilities.putAll( parent.getCapabilities() );
@@ -243,11 +250,27 @@ implements Comparable
 		} else if (name.startsWith("HardwarePlatform.")) {
 			name = name.substring( 17 );
 		}
-		
+
+		if (this.capabilityManager != null) {
+			Capability capability = this.capabilityManager.getCapability( name );
+			if ( capability != null ) {
+				if ( capability.appendExtensions() ) {
+					//value = value.toLowerCase();
+					String existingValue = getCapability( name );
+					if (existingValue != null) {
+						value += "," + existingValue;
+					}
+				}
+				String group = capability.getImplicitGroup();
+				if ( group != null ) {
+					addImplicitGroups( value );
+				}
+			}
+		}
 		if (!name.startsWith("polish.")) {
 			name = "polish." + name;
 		}
-		
+		/*
 		if ( (Device.JAVA_PACKAGE.equals(name) ) 
 				|| (Device.JAVA_PROTOCOL.equals(name)) 
 				|| (Device.VIDEO_FORMAT.equals(name))
@@ -258,6 +281,7 @@ implements Comparable
 				value += "," + existingValue;
 			}
 		}
+		*/
 		addSingleCapability( name, value );
 		
 		// when the capability is a size, then also add a height and a width:
@@ -278,6 +302,17 @@ implements Comparable
 		String[] values = StringUtil.splitAndTrim( value, ',' );
 		for (int i = 0; i < values.length; i++) {
 			addFeature( name + "." + values[i] );
+		}
+	}
+	
+	/**
+	 * @param value
+	 */
+	protected void addImplicitGroups(String value) {
+		String[] values = StringUtil.splitAndTrim( value.toLowerCase(), ',' );
+		for (int i = 0; i < values.length; i++) {
+			String name = values[i];
+			this.implicitGroupsByName.put( name, Boolean.TRUE );
 		}
 	}
 	

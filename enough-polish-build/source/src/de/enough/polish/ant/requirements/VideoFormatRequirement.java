@@ -1,6 +1,6 @@
 /*
- * Created on 16-Feb-2004 at 13:33:54.
- *
+ * Created on 28-Aug-2004 at 21:14:24.
+ * 
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
@@ -25,13 +25,12 @@
  */
 package de.enough.polish.ant.requirements;
 
+
 import de.enough.polish.Device;
 import de.enough.polish.util.StringUtil;
 
-import org.apache.tools.ant.BuildException;
-
 /**
- * <p>Selects a device by the supported platform. A platform is for example "MIDP/1.0"</p>
+ * <p>Selects a device by the supported video formats.</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
 
@@ -41,51 +40,33 @@ import org.apache.tools.ant.BuildException;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class JavaPlatformRequirement extends Requirement {
+public class VideoFormatRequirement extends Requirement {
 	
-	private String platformName;
-	private VersionMatcher platformVersion;
-	private String neededPlatform;
+	private String[] neededFormats;
 
 	/**
 	 * Creates a new requirement for the java platform of a device.
 	 * 
 	 * @param value The value of the platform
 	 */
-	public JavaPlatformRequirement(String value ) {
-		super(value, "JavaPlatform" );
-		this.neededPlatform = value;
-		int splitPos = value.indexOf('/');
-		if (splitPos == -1) {
-			throw new BuildException("The JavaPlatform requirement needs to specify the " +
-					"name and the version of the platform in the following form: " +
-					"\"[name]/[version]\" - e.g. \"MIDP/1.0+\".");
+	public VideoFormatRequirement(String value ) {
+		super(value, "VideoFormat" );
+		this.neededFormats = StringUtil.splitAndTrim( value , ',' );
+		for (int i = 0; i < this.neededFormats.length; i++) {
+			this.neededFormats[i] = "polish.video." + this.neededFormats[i];
 		}
-		this.platformName = value.substring(0, splitPos ).trim();
-		this.platformVersion = new VersionMatcher( value.substring(splitPos + 1).trim() );
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device, java.lang.String)
 	 */
 	protected boolean isMet(Device device, String property) {
-		if (property.equals( this.neededPlatform)) {
-			return true;
-		}
-		String[] platforms = StringUtil.splitAndTrim( property, ',');
-		for (int i = 0; i < platforms.length; i++) {
-			String platform = platforms[i];
-			int splitPos = platform.indexOf('/');
-			if (splitPos == -1) {
+		for (int i = 0; i < this.neededFormats.length; i++) {
+			String format = this.neededFormats[i];
+			if ( ! device.hasFeature( format )) {
 				return false;
 			}
-			String devPlatformName = platform.substring(0, splitPos ).trim();
-			String devPlatformVersion = platform.substring(splitPos +1 ).trim();
-			if ( this.platformName.equals(devPlatformName)
-				&& this.platformVersion.matches(devPlatformVersion) ) {
-				return true;
-			}
 		}
-		return false;
+		return true;
 	}
 }

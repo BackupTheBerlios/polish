@@ -30,12 +30,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.Extension;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.stacktrace.BinaryStackTrace;
@@ -53,7 +56,10 @@ import de.enough.polish.stacktrace.StackTraceUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class Emulator extends Thread {
+public abstract class Emulator 
+extends Extension 
+implements Runnable 
+{
 
 	private Device emulatedDevice;
 	private EmulatorSetting emulatorSetting;
@@ -312,8 +318,21 @@ public abstract class Emulator extends Thread {
 			return null;
 		}
 		emulator.setBasicSettings(device, setting, sourceDirs, variables );
-		emulator.start();
+		Thread thread = new Thread( emulator );
+		thread.start();
 		return emulator;
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.devices.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void execute(Device device, Locale locale, Environment env)
+			throws BuildException 
+	{
+		// TODO enough implement execute
+
 	}
 	
 	class LoggerThread extends Thread {

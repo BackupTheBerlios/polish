@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +42,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import de.enough.polish.Device;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 
@@ -63,30 +64,29 @@ public class DeviceManager {
 	private final ArrayList devicesList;
 	private final HashMap devicesByIdentifier;
 	private final VendorManager vendorManager;
-	private final DeviceGroupManager groupManager;
-	private final LibraryManager libraryManager;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
 	 * 
+	 * @param platformManager
+	 * @param configuratioManager
 	 * @param vendorManager The manager of the device-manufacturers
 	 * @param groupManager The manager for device-groups.
 	 * @param libraryManager the manager for device-specific APIs
+	 * @param capabilityManager
 	 * @param devicesIS the InputStream containing the device definitions.
 	 * 			Usally this is the devices.xml file in the current directory.
 	 * @throws JDOMException when there are syntax errors in devices.xml
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	public DeviceManager( VendorManager vendorManager, DeviceGroupManager groupManager, LibraryManager libraryManager, InputStream devicesIS ) 
+	public DeviceManager( ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendorManager, DeviceGroupManager groupManager, LibraryManager libraryManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		this.devicesByIdentifier = new HashMap();
 		this.devicesList = new ArrayList();
-		this.groupManager = groupManager;
-		this.libraryManager = libraryManager;
 		this.vendorManager = vendorManager;
-		loadDevices( vendorManager, groupManager, libraryManager, devicesIS );
+		loadDevices( configuratioManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, devicesIS );
 		devicesIS.close();
 	}
 	
@@ -102,7 +102,7 @@ public class DeviceManager {
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	private void loadDevices( VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, InputStream devicesIS ) 
+	private void loadDevices(  ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		if (devicesIS == null) {
@@ -137,7 +137,7 @@ public class DeviceManager {
 				if (vendor == null) {
 					throw new InvalidComponentException("Invalid device-specification in [devices.xml]: Please specify the vendor [" + vendorName + "] in the file [vendors.xml].");
 				}
-				Device device = new Device( definition, identifier, deviceName, vendor, grManager, libManager, this );
+				Device device = new Device( configuratioManager, platformManager, definition, identifier, deviceName, vendor, grManager, libManager, this, capabilityManager );
 				devicesMap.put( identifier, device );
 				this.devicesList.add( device );
 			}
@@ -231,18 +231,21 @@ public class DeviceManager {
 	}
 
 	/**
+	 * @param configuratioManager
+	 * @param platformManager
 	 * @param vendManager
 	 * @param deviceGroupManager
 	 * @param libManager
+	 * @param capabilityManager
 	 * @param customDevices
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomDevices(VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, File customDevices ) 
+	public void loadCustomDevices( ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, CapabilityManager capabilityManager, File customDevices ) 
 	throws JDOMException, InvalidComponentException {
 		if (customDevices.exists()) {
 			try {
-				loadDevices( vendManager, deviceGroupManager, libManager, new FileInputStream( customDevices ) );
+				loadDevices( configuratioManager, platformManager, vendManager, deviceGroupManager, libManager, capabilityManager, new FileInputStream( customDevices ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-devices.xml]: " + e.toString() );

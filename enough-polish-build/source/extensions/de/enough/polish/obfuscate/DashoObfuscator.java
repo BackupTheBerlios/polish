@@ -41,8 +41,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
-import de.enough.polish.LibraryManager;
 import de.enough.polish.ant.build.ObfuscatorSetting;
+import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.LoggerThread;

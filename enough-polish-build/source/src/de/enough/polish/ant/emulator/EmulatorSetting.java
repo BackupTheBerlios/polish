@@ -29,7 +29,7 @@ import java.io.File;
 
 import org.apache.tools.ant.Project;
 
-import de.enough.polish.ant.Setting;
+import de.enough.polish.ExtensionSetting;
 
 /**
  * <p>Includes the settings for running the emulator.</p>
@@ -42,7 +42,7 @@ import de.enough.polish.ant.Setting;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class EmulatorSetting extends Setting {
+public class EmulatorSetting extends ExtensionSetting {
 	
 	private String executable;
 	private String className;

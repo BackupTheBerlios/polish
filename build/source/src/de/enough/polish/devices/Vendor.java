@@ -23,8 +23,9 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
+import de.enough.polish.PolishProject;
 import de.enough.polish.exceptions.InvalidComponentException;
 
 import org.jdom.Element;
@@ -49,12 +50,13 @@ public class Vendor extends PolishComponent {
 	 * 
 	 * @param parent the project to which this vendor manufacturer belongs to.
 	 * @param definition the XML definition of this vendor.
+	 * @param capabilityManager manages capabilities
 	 * @throws InvalidComponentException when the given definition contains errors
 	 */
-	public Vendor( PolishProject parent, Element definition )
+	public Vendor( PolishProject parent, Element definition, CapabilityManager capabilityManager )
 	throws InvalidComponentException
 	{
-		super( parent );
+		super( parent, capabilityManager );
 		this.identifier = definition.getChildTextTrim( "name");
 		//System.out.println("\ninitialising vendor " + this.identifier);
 		if (this.identifier == null) {

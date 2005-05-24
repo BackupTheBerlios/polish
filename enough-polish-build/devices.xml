@@ -817,7 +817,7 @@
 		-->
 	</device>
 	
-		<device>
+	<device>
 		<identifier>Motorola/V550</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="OS" value="Motorola" />
@@ -3360,12 +3360,21 @@
 	
 <!-- Research In Motion devices -->
 	<device>
-		<identifier>RIM-BlackBerry/5810</identifier>
+		<identifier>BlackBerry/5810</identifier>
 		<capability name="ScreenSize" value="160x160"/>
 		<capability name="BitsPerPixel" value="1"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaPlatform" value="MIDP/1.0, BlackBerry" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
+	
+	<device>
+		<identifier>BlackBerry/7290</identifier>
+		<capability name="ScreenSize" value="240x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
 
 	<device>
 		<identifier>Research In Motion/BlackBerry 5810</identifier>

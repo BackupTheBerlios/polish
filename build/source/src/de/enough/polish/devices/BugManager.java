@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +40,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import de.enough.polish.Device;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 
@@ -64,10 +65,10 @@ public class BugManager {
 	 * Creates a new BugManager.
 	 * 
 	 * @param antProperties all properties which have been defined in Ant
-	 * @param is input stream for reading the apis.xml file
-	 * @throws JDOMException when there are syntax errors in apis.xml
-	 * @throws IOException when apis.xml could not be read
-	 * @throws InvalidComponentException when an api definition has errors
+	 * @param is input stream for reading the bugs.xml file
+	 * @throws JDOMException when there are syntax errors in bugs.xml
+	 * @throws IOException when bugs.xml could not be read
+	 * @throws InvalidComponentException when an issue definition has errors
 	 */
 	public BugManager( Hashtable antProperties, InputStream is) 
 	throws JDOMException, IOException, InvalidComponentException 
@@ -80,8 +81,8 @@ public class BugManager {
 	 * Loads the bugs.xml file.
 	 * 
 	 * @param is input stream for reading the bugs.xml file
-	 * @throws JDOMException when there are syntax errors in apis.xml
-	 * @throws IOException when apis.xml could not be read
+	 * @throws JDOMException when there are syntax errors in bugs.xml
+	 * @throws IOException when bugs.xml could not be read
 	 * @throws InvalidComponentException when an api definition has errors
 	 */
 	private void loadBugs(InputStream is) 

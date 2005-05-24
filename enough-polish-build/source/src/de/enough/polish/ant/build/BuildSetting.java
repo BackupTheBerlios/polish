@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -91,6 +92,8 @@ public class BuildSetting {
 	private File customVendors;
 	private File customGroups;
 	private File customApis;
+	private File customConfigurations;
+	private File customPlatforms;
 	private File customExtensions;
 	private Variables variables;
 	private boolean usePolishGui;
@@ -127,6 +130,9 @@ public class BuildSetting {
 	private File projectBaseDir;
 	private File polishHomeDir;
 	private ArrayList preverifiers;
+	private File capabilities;
+	private File platforms;
+	private File configurations;
 	
 	/**
 	 * Creates a new build setting.
@@ -157,9 +163,14 @@ public class BuildSetting {
 		this.midp2Cldc11Path = getFile( "import/midp2-cldc11.jar" );
 		this.apis = getFile("apis.xml");
 		this.extensions = getFile("extensions.xml");
+		this.capabilities = getFile("capabilities.xml");
 		this.vendors = getFile("vendors.xml");
 		this.groups = getFile("groups.xml");
 		this.devices = getFile("devices.xml");
+		this.platforms = getFile("platforms.xml");
+		this.configurations = getFile("configurations.xml");
+		this.capabilities = getFile("capabilities.xml");
+		
 		this.imageLoadStrategy = IMG_LOAD_FOREGROUND;
 		this.resourceUtil = new ResourceUtil( this.getClass().getClassLoader() );
 		
@@ -679,9 +690,22 @@ public class BuildSetting {
 		}
 	}
 	
-	/**
-	 * @return
-	 */
+	public InputStream openConfigurations() {
+		try {
+			return openResource( this.configurations, "configurations.xml" );
+		} catch (FileNotFoundException e) {
+			throw new BuildException("Unable to open configurations.xml: " + e.getMessage(), e );
+		}
+	}
+
+	public InputStream openPlatforms() {
+		try {
+			return openResource( this.platforms, "platforms.xml" );
+		} catch (FileNotFoundException e) {
+			throw new BuildException("Unable to open platforms.xml: " + e.getMessage(), e );
+		}
+	}
+
 	public InputStream openExtensions() {
 		try {
 			return openResource( this.extensions, "extensions.xml" );
@@ -690,6 +714,13 @@ public class BuildSetting {
 		}
 	}
 
+	public InputStream openCapabilities() {
+		try {
+			return openResource( this.capabilities, "capabilities.xml" );
+		} catch (FileNotFoundException e) {
+			throw new BuildException("Unable to open capabilities.xml: " + e.getMessage(), e );
+		}
+	}
 	
 	/**
 	 * Sets the path to the apis.xml file.
@@ -1517,6 +1548,26 @@ public class BuildSetting {
 		}
 		this.customDevices = customDevices;
 	}
+	
+	/**
+	 * @param customConfigurations The file containing custom-configurations.xml
+	 */
+	public void setCustomConfigurations(File customConfigurations) {
+		if (!customConfigurations.exists()) {
+			throw new BuildException("The <build> attribute \"customConfigurations\" points to a non-existing file: " + customConfigurations.getAbsolutePath() );
+		}
+		this.customConfigurations = customConfigurations;
+	}
+
+	/**
+	 * @param customPlatforms The file containing custom-platforms.xml
+	 */
+	public void setCustomPlatforms(File customPlatforms) {
+		if (!customPlatforms.exists()) {
+			throw new BuildException("The <build> attribute \"customPlatforms\" points to a non-existing file: " + customPlatforms.getAbsolutePath() );
+		}
+		this.customPlatforms = customPlatforms;
+	}
 
 	/**
 	 * @return Returns the customExtensions
@@ -1601,5 +1652,49 @@ public class BuildSetting {
 			return (PreverifierSetting[]) this.preverifiers.toArray( new PreverifierSetting[ this.preverifiers.size() ] );
 		}
 	}
+
+	/**
+	 * @return a map which contains the openend input stream for each device database file, e.g. "devices.xml"
+	 */
+	public Map getDeviceDatabaseInputStreams() {
+		Map map = new HashMap();
+		map.put( "capabilities.xml", openCapabilities() );
+		map.put( "apis.xml", openApis() );
+		map.put( "configurations.xml", openConfigurations() );
+		map.put( "platforms.xml", openPlatforms() );
+		map.put( "vendors.xml", openVendors() );
+		map.put( "groups.xml", openGroups() );
+		map.put( "devices.xml", openDevices() );
+		//map.put( "bugs.xml", openBugs() );
+		return map;
+	}
+
+	/**
+	 * @return a map that contains user defined files for custom-XXX files, e.g. custom-devices.xml 
+	 */
+	public Map getDeviceDatabaseFiles() {
+		Map map = new HashMap();
+		if (this.customApis != null) {
+			map.put( "custom-apis.xml", this.customApis );
+		}
+		if (this.customConfigurations != null) {
+			map.put( "custom-configurations.xml", this.customConfigurations );
+		}
+		if (this.customPlatforms != null) {
+			map.put( "custom-platforms.xml", this.customPlatforms );
+		}
+		if (this.customVendors != null) {
+			map.put( "custom-vendors.xml", this.customVendors );
+		}
+		if (this.customGroups != null) {
+			map.put( "custom-groups.xml", this.customGroups );
+		}
+		if (this.customDevices != null) {
+			map.put( "custom-devices.xml", this.customDevices );
+		}
+		//map.put( "bugs.xml", openBugs() );
+		return map;
+	}
+
 	
 }

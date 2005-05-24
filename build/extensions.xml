@@ -218,6 +218,14 @@
 		<class>de.enough.polish.jar.KZipPackager</class>
 	</extension>
 
+	<!-- Resource Copier -->
+	
+	<extension>
+		<type>resourcecopier</type>
+		<name>renamer</name>
+		<class>de.enough.polish.resources.RenamingResourceCopier</class>
+	</extension>
+
 	<!-- Packager -->
 	
 	<extension>
@@ -249,7 +257,7 @@
 	
 	<extension>
 		<type>finalizer</type>
-		<name>cod</name>
+		<name>jar2cod</name>
 		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
 		<classpath>${polish.home}/import/extensions.jar</classpath>
 	</extension>

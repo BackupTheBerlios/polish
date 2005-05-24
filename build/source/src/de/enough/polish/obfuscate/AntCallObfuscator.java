@@ -72,10 +72,11 @@ public class AntCallObfuscator extends Obfuscator {
 		this.properties.add( new Variable( "polish.obfuscate.target", targetFile.getAbsolutePath() ) );
 		this.properties.add( new Variable( "polish.obfuscate.bootclasspath", bootClassPath.toString() ) );
 		this.properties.add( new Variable( "polish.obfuscate.classpath", device.getClassPath() ) );
+		this.properties.add( new Variable( "polish.obfuscate.keepcount", "" + preserve.length ) );
 		StringBuffer preserveBuffer = new StringBuffer();
 		for (int i = 0; i < preserve.length; i++) {
 			String keep = preserve[i];
-			this.properties.add( new Variable( "polish.obfuscate.keep" + i, keep ) );
+			this.properties.add( new Variable( "polish.obfuscate.keep." + i, keep ) );
 			preserveBuffer.append( keep );
 			if (i != preserve.length - 1 ) {
 				preserveBuffer.append( ',' );

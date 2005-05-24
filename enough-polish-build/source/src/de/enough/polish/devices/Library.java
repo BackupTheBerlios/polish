@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
@@ -52,9 +52,9 @@ public class Library extends PolishComponent {
 	private final String[] names;
 	private String[] fileNames;
 	private String defaultPath;
-	private String wtkLibPath;
-	private String projectLibPath;
-	private String polishLibPath;
+	private File wtkLibPath;
+	private File projectLibPath;
+	private File polishLibPath;
 	private String path;
 	private boolean isInitialised;
 	private final Map antProperties;
@@ -72,9 +72,9 @@ public class Library extends PolishComponent {
 	 * @throws InvalidComponentException when the given api definition has errors
 	 */
 	public Library( Map antProperties, 
-			String wtkLibPath, 
-			String projectLibPath,
-			String polishLibPath,
+			File wtkLibPath, 
+			File projectLibPath,
+			File polishLibPath,
 			Element definition,
 			LibraryManager manager) 
 	throws InvalidComponentException 
@@ -173,21 +173,21 @@ public class Library extends PolishComponent {
 			for (int i = 0; i < this.fileNames.length; i++) {
 				String fileName = this.fileNames[i];
 				// look in the project:
-				File libFile = new File( this.projectLibPath + fileName );
+				File libFile = new File( this.projectLibPath, fileName );
 				if (libFile.exists()) {
 					this.path = libFile.getAbsolutePath();
 					return;
 				}
 				if (this.polishLibPath != null) {
 					// look in the J2ME Polish installation:
-					libFile = new File( this.polishLibPath + fileName );
+					libFile = new File( this.polishLibPath, fileName );
 					if (libFile.exists()) {
 						this.path = libFile.getAbsolutePath();
 						return;
 					}		
 				}
 				// look in the wtk:
-				libFile = new File( this.wtkLibPath + fileName );
+				libFile = new File( this.wtkLibPath, fileName );
 				if (libFile.exists()) {
 					this.path = libFile.getAbsolutePath();
 					return;
@@ -201,13 +201,13 @@ public class Library extends PolishComponent {
 			// first look for jar files:
 			String name = this.names[i] + ".jar";
 			// look in the project:
-			File libFile = new File( this.projectLibPath + name );
+			File libFile = new File( this.projectLibPath, name );
 			if (libFile.exists()) {
 				this.path = libFile.getAbsolutePath();
 				return;
 			}
 			// look in the wtk:
-			libFile = new File( this.wtkLibPath + name );
+			libFile = new File( this.wtkLibPath, name );
 			if (libFile.exists()) {
 				this.path = libFile.getAbsolutePath();
 				return;
@@ -216,13 +216,13 @@ public class Library extends PolishComponent {
 			// now try zip-files:
 			name = this.names[i] + ".zip";
 			// look in the project:
-			libFile = new File( this.projectLibPath + name );
+			libFile = new File( this.projectLibPath, name );
 			if (libFile.exists()) {
 				this.path = libFile.getAbsolutePath();
 				return;
 			}
 			// look in the wtk:
-			libFile = new File( this.wtkLibPath + name );
+			libFile = new File( this.wtkLibPath, name );
 			if (libFile.exists()) {
 				this.path = libFile.getAbsolutePath();
 				return;

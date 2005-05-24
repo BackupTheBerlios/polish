@@ -26,6 +26,18 @@
 package de.enough.polish;
 
 import de.enough.polish.ant.requirements.MemoryMatcher;
+import de.enough.polish.devices.CapabilityManager;
+import de.enough.polish.devices.Configuration;
+import de.enough.polish.devices.ConfigurationManager;
+import de.enough.polish.devices.DeviceGroup;
+import de.enough.polish.devices.DeviceGroupManager;
+import de.enough.polish.devices.DeviceManager;
+import de.enough.polish.devices.Library;
+import de.enough.polish.devices.LibraryManager;
+import de.enough.polish.devices.Platform;
+import de.enough.polish.devices.PlatformManager;
+import de.enough.polish.devices.PolishComponent;
+import de.enough.polish.devices.Vendor;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
@@ -98,6 +110,8 @@ public class Device extends PolishComponent {
 
 	public static final int MIDP_2 = 2;
 
+	public static final int MIDP_3 = 3;
+
 	private static final int POLISH_GUI_MIN_BITS_PER_PIXEL = 8;
 
 	private static final MemoryMatcher POLISH_GUI_MIN_HEAP_SIZE = new MemoryMatcher(
@@ -144,6 +158,8 @@ public class Device extends PolishComponent {
 
 	/**
 	 * Creates a new device.
+	 * @param platformManager
+	 * @param configuratioManager
 	 * 
 	 * @param definition the xml definition of this device.
 	 * @param identifier The identifier of this device.
@@ -152,15 +168,17 @@ public class Device extends PolishComponent {
 	 * @param groupManager The manager for device-groups.
 	 * @param libraryManager the manager for device-specific APIs
 	 * @param deviceManager the manager for devices
+	 * @param capabilityManager manages capabilities
 	 * @throws InvalidComponentException when the given definition has errors
 	 */
-	public Device(Element definition, String identifier, String deviceName,
+	public Device(ConfigurationManager configuratioManager, PlatformManager platformManager, Element definition, String identifier, String deviceName,
 			Vendor vendor, DeviceGroupManager groupManager,
 			LibraryManager libraryManager,
-			DeviceManager deviceManager ) 
+			DeviceManager deviceManager,
+			CapabilityManager capabilityManager ) 
 	throws InvalidComponentException 
 	{
-		super(vendor);
+		super( vendor, capabilityManager );
 		this.identifier = identifier;
 		this.name = deviceName;
 		this.vendorName = vendor.getIdentifier();
@@ -277,61 +295,56 @@ public class Device extends PolishComponent {
 			}
 		}
 		// set midp-version:
-		String midp = getCapability(JAVA_PLATFORM);
-		if (midp == null) {
+		String platformsStr = getCapability(JAVA_PLATFORM);
+		if (platformsStr == null) {
 			System.out.println( this.getCapabilities() );
 			throw new InvalidComponentException("The device ["
 					+ this.identifier
 					+ "] does not define the needed element [" + JAVA_PLATFORM
 					+ "].");
 		}
-		midp = midp.toUpperCase();
-		if (midp.startsWith("MIDP/1.")) {
-			addFeature("midp1");
-			this.midpVersion = MIDP_1;
-			groupNamesList.add("midp1");
-			groupsList.add(groupManager.getGroup("midp1", true));
-		} else if (midp.startsWith("MIDP/2.")) {
-			addFeature("midp2");
-			this.midpVersion = MIDP_2;
-			groupNamesList.add("midp2");
-			groupsList.add(groupManager.getGroup("midp2", true));
-		} else {
-			System.err.println("Warning: device [" + this.identifier
-					+ "] supports unknown JavaPlatform [" + midp + "].");
-		}
-		String cldc = getCapability( JAVA_CONFIGURATION );
-		if (cldc != null) {
-			cldc = cldc.toUpperCase();
-			if ("CLDC/1.0".equals( cldc)) {
-				addFeature("cldc1.0");
-				groupNamesList.add("cldc1.0");
-				groupsList.add(groupManager.getGroup("cldc1.0", true));
-				this.isCldc10 = true;
-				this.isCldc11 = false;
-			} else if ("CLDC/1.1".equals( cldc)) {
-				addFeature("cldc1.1");
-				groupNamesList.add("cldc1.1");
-				groupsList.add(groupManager.getGroup("cldc1.1", true));
-				this.isCldc10 = false;
-				this.isCldc11 = true;
-			} else if ("CLDC/1.0.4".equals( cldc)) {
-				addFeature("cldc1.0");
-				addFeature("cldc1.0.4");
-				groupNamesList.add("cldc1.0");
-				groupsList.add(groupManager.getGroup("cldc1.0", true));
-				this.isCldc10 = true;
-				this.isCldc11 = false;
-			} else {
-				System.err.println("Warning: the device [" + this.identifier + 
-						"] supports the unknown JavaConfiguration [" + cldc + ".");
+		String[] platforms = StringUtil.splitAndTrim(platformsStr, ',');
+		for (int i = 0; i < platforms.length; i++) {
+			String platformIdentifier = platforms[i];
+			Platform platform = platformManager.getPlatform( platformIdentifier );
+			if ( platform == null ) {
+				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaPlatform [" + platformIdentifier + "]: if this is a valid platform, you need to add it to [platforms.xml]");
 			}
- 
-		} else {
-			System.err.println("Warning: the device [" + this.identifier 
-					+ "] has no JavaConfiguration defined.");
+			addComponent( platform );
+			addImplicitGroups( platform, groupNamesList, groupsList, groupManager );
 		}
-		
+		if (hasFeature("polish.midp1")) {
+			this.midpVersion = MIDP_1;
+		} else if (hasFeature("polish.midp2")) {
+			this.midpVersion = MIDP_2;
+		} else if (hasFeature("polish.midp3")) {
+			this.midpVersion = MIDP_3;
+		} 
+
+		String cldcStr = getCapability( JAVA_CONFIGURATION );
+		if (cldcStr == null) {
+			System.out.println( this.getCapabilities() );
+			throw new InvalidComponentException("The device [" + this.identifier
+					+ "] does not define the needed element [" + JAVA_CONFIGURATION	+ "].");
+		}
+		String[] configurations = StringUtil.splitAndTrim( cldcStr, ',' );
+		for (int i = 0; i < configurations.length; i++) {
+			String configurationIdentifier = configurations[i];
+			Configuration configuration = configuratioManager.getConfiguration(configurationIdentifier);
+			if (configuration == null) {
+				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaConfiguration [" + configurationIdentifier + "]: if this is a valid configuration, you need to add it to [configurations.xml]");
+			}
+			addComponent( configuration );
+			addImplicitGroups( configuration, groupNamesList, groupsList, groupManager );
+		}
+		if (hasFeature("polish.cldc1.1")) {
+			this.isCldc10 = false;
+			this.isCldc11 = true;
+		} else if (hasFeature("polish.cldc1.0")) {
+			this.isCldc10 = true;
+			this.isCldc11 = false;
+		}
+
 		if ( hasFeature("polish.api.jtwi") ) {
 			addDirectFeature( "polish.jtwi" );
 		}
@@ -424,7 +437,7 @@ public class Device extends PolishComponent {
 		// add all devices which do not support sprite-transformations
 		// and which do not support the MIDP/2.0 standard to the
 		// NoSpriteTransformations-group:
-		if (this.midpVersion != MIDP_2 && !hasFeature("polish.supportSpriteTransformation")) {
+		if (this.midpVersion == MIDP_1 && !hasFeature("polish.supportSpriteTransformation")) {
 			groupNamesList.add("NoSpriteTransformations");
 			groupsList.add(groupManager.getGroup("NoSpriteTransformations", true));
 		}
@@ -435,6 +448,18 @@ public class Device extends PolishComponent {
 				.toArray(new DeviceGroup[groupsList.size()]);
 		
 	
+	}
+
+	private void addImplicitGroups(PolishComponent component, ArrayList groupNamesList, ArrayList groupsList, DeviceGroupManager groupManager ) {
+		String groupsStr = component.getCapability("build.ImplicitGroups");
+		if (groupsStr != null) {
+			String[] localGroupNames = StringUtil.splitAndTrim( groupsStr, ',');
+			for (int i = 0; i < localGroupNames.length; i++) {
+				String groupName = localGroupNames[i];
+				groupNamesList.add( groupName );
+				groupsList.add(groupManager.getGroup( groupName, true));
+			}
+		}
 	}
 
 	/**

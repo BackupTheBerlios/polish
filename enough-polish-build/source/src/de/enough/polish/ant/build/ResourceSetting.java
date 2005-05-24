@@ -85,9 +85,6 @@ public class ResourceSetting extends Setting {
 	}
 	
 	public void addConfiguredCopier( ResourceCopierSetting setting ) {
-		if (setting.getClassName() == null) {
-			throw new BuildException("Invalid <copier> element in build.xml: please specify the attribute \"class\"." );
-		}
 		if (this.copierSettings == null) {
 			this.copierSettings = new ArrayList();
 		}

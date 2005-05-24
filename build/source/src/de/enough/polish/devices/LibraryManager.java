@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +42,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import de.enough.polish.Device;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 
@@ -58,9 +59,9 @@ import de.enough.polish.util.StringUtil;
  */
 public class LibraryManager {
 	
-	private final String wtkLibPath;
-	private final String projectLibPath;
-	private final String polishLibPath;
+	private final File wtkLibPath;
+	private final File projectLibPath;
+	private final File polishLibPath;
 	private final HashMap libraries = new HashMap();
 	private final HashMap resolvedClassPaths = new HashMap();
 	private final HashMap resolvedLibraryPaths = new HashMap();
@@ -70,34 +71,22 @@ public class LibraryManager {
 	 * Creates a new ApiManager.
 	 * 
 	 * @param antProperties all properties which have been defined in Ant
-	 * @param projectLibPath the default path to libraries. The default is "import".
-	 * @param wtkHomePath the path to the wireless toolkit (if known)
-	 * @param preverifyPath the path to the preverify executable
+	 * @param apisHome the default path to libraries. The default is "import".
+	 * @param wtkHome the path to the wireless toolkit (if known)
 	 * @param is input stream for reading the apis.xml file
 	 * @throws JDOMException when there are syntax errors in apis.xml
 	 * @throws IOException when apis.xml could not be read
 	 * @throws InvalidComponentException when an api definition has errors
 	 */
-	public LibraryManager( Map antProperties, String projectLibPath, String wtkHomePath, String preverifyPath, InputStream is) 
+	public LibraryManager( Map antProperties, File apisHome, File wtkHome, InputStream is) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
-		if (wtkHomePath == null) {
-			int pos = preverifyPath.lastIndexOf( File.separatorChar );
-			wtkHomePath = preverifyPath.substring(0, pos );
-			pos = preverifyPath.lastIndexOf( File.separatorChar );
-			wtkHomePath = preverifyPath.substring(0, pos );
-		} else if (wtkHomePath.endsWith( File.separator )) {
-			wtkHomePath = wtkHomePath.substring(0, wtkHomePath.length() -1 );
-		}
-		if (!projectLibPath.endsWith( File.separator )) {
-			projectLibPath += File.separator;
-		}
 		this.antProperties = antProperties;
-		this.projectLibPath = projectLibPath;
-		this.wtkLibPath = wtkHomePath + File.separatorChar + "lib" + File.separatorChar;
+		this.projectLibPath = apisHome;
+		this.wtkLibPath = new File( wtkHome, "lib" );
 		String polishHomeProperty = (String) antProperties.get("polish.home");
 		if (polishHomeProperty != null) {
-			this.polishLibPath = polishHomeProperty + File.separatorChar + "import" + File.separatorChar;
+			this.polishLibPath = new File( polishHomeProperty + File.separatorChar + "import" );
 		} else {
 			this.polishLibPath = null;
 		}

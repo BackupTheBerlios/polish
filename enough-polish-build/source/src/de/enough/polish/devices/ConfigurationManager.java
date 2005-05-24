@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish;
+package de.enough.polish.devices;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,95 +54,95 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class VendorManager {
+public class ConfigurationManager {
 	
-	private final HashMap vendors;
+	private final HashMap configurationsByIdentifier;
 	
 	/**
-	 * Creates a new vendor manager.
+	 * Creates a new configuration manager.
 	 * 
-	 * @param project The j2me project settings.
-	 * @param vendorsIS The input stream containing the vendor-definitions. This is usually "./vendors.xml".
-	 * @throws JDOMException when there are syntax errors in vendors.xml
-	 * @throws IOException when vendors.xml could not be read
-	 * @throws InvalidComponentException when a vendor definition has errors
+	 * @param capabilityManager manages device capabilities
+	 * @param is The input stream containing the platform-definitions. This is usually "./configurations.xml".
+	 * @throws JDOMException when there are syntax errors in configurations.xml
+	 * @throws IOException when configurations.xml could not be read
+	 * @throws InvalidComponentException when a configurations definition has errors
 	 */
-	public VendorManager( PolishProject project, InputStream vendorsIS ) 
+	public ConfigurationManager( CapabilityManager capabilityManager, InputStream is ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
-		this.vendors = new HashMap();
-		loadVendors( project, vendorsIS );
-		vendorsIS.close();
+		this.configurationsByIdentifier = new HashMap();
+		loadConfigurations( capabilityManager, is );
+		is.close();
 	}
 	
 	/**
-	 * Loads all known vendors from the given file.
+	 * Loads all known configurations from the given file.
 	 * 
-	 * @param project The j2me project settings.
-	 * @param vendorsIS The input stream containing the vendor-definitions. This is usually "./vendors.xml".
-	 * @throws JDOMException when there are syntax errors in vendors.xml
-	 * @throws IOException when vendors.xml could not be read
-	 * @throws InvalidComponentException when a vendor definition has errors
+	 * @param capabilityManager manages device capabilities
+	 * @param is The input stream containing the platform-definitions. This is usually "./configurations.xml".
+	 * @throws JDOMException when there are syntax errors in configurations.xml
+	 * @throws IOException when configurations.xml could not be read
+	 * @throws InvalidComponentException when a configurations definition has errors
 	 */
-	private void loadVendors(PolishProject project, InputStream vendorsIS) 
+	private void loadConfigurations(CapabilityManager capabilityManager, InputStream is) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
-		if (vendorsIS == null) {
-			throw new BuildException("Unable to load vendors.xml, no file found.");
+		if (is == null) {
+			throw new BuildException("Unable to load configurations.xml, no file found.");
 		}
 		SAXBuilder builder = new SAXBuilder( false );
-		Document document = builder.build( vendorsIS );
+		Document document = builder.build( is );
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element deviceElement = (Element) iter.next();
-			Vendor vendor = new Vendor( project, deviceElement );
-			this.vendors.put( vendor.getIdentifier(), vendor );
+			Configuration configuration = new Configuration( deviceElement, capabilityManager );
+			this.configurationsByIdentifier.put( configuration.getIdentifier(), configuration );
 		}
 	}
 
 	/**
-	 * Retrieves the specified vendor.
+	 * Retrieves the specified configuration.
 	 * 
-	 * @param name The name of the vendor, e.g. Nokia, Siemens, Motorola, etc.
-	 * @return The vendor or null of that vendor has not been defined.
+	 * @param identifier The identifier of the configuration
+	 * @return The configuration or null of that configuration has not been defined.
 	 */
-	public Vendor getVendor( String name ) {
-		return (Vendor) this.vendors.get( name );
+	public Configuration getConfiguration( String identifier ) {
+		return (Configuration) this.configurationsByIdentifier.get( identifier );
 	}
 
 	/**
-	 * Retrieves all known vendors.
+	 * Retrieves all known Platform.
 	 * 
-	 * @return an array with all known vendors
+	 * @return an array with all known Platform
 	 */
-	public Vendor[] getVendors() {
-		return (Vendor[]) this.vendors.values().toArray( new Vendor[ this.vendors.size() ] );
+	public Platform[] getPlatforms() {
+		return (Platform[]) this.configurationsByIdentifier.values().toArray( new Platform[ this.configurationsByIdentifier.size() ] );
 	}
 
 	/**
 	 * Loads the custom-vendors.xml of the user from the current project.
-	 * @param customVendors
-	 * @param polishProject
+	 * @param customPlatforms
+	 * @param capabilityManager
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomVendors(File customVendors, PolishProject polishProject ) 
+	public void loadCustomPlatforms(File customPlatforms, CapabilityManager capabilityManager ) 
 	throws JDOMException, InvalidComponentException {
-		if (customVendors.exists()) {
+		if (customPlatforms.exists()) {
 			try {
-				loadVendors( polishProject, new FileInputStream( customVendors ) );
+				loadConfigurations( capabilityManager, new FileInputStream( customPlatforms ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
-				System.err.println("Unable to load [custom-vendors.xml]: " + e.toString() );
+				System.err.println("Unable to load [custom-platforms.xml]: " + e.toString() );
 				e.printStackTrace();
 			} catch (IOException e) {
 				// this also shouldn't happen
-				System.err.println("Unable to load [custom-vendors.xml]: " + e.toString() );
+				System.err.println("Unable to load [custom-platforms.xml]: " + e.toString() );
 				e.printStackTrace();
 			} catch (InvalidComponentException e) {
 				// this can happen
 				String message = e.getMessage();
-				message = StringUtil.replace( message, "vendors.xml", "custom-vendors.xml" );
+				message = StringUtil.replace( message, "platforms.xml", "custom-platforms.xml" );
 				throw new InvalidComponentException( message, e );
 			}
 		}

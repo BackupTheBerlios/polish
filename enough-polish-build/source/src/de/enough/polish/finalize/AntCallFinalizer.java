@@ -64,9 +64,18 @@ public class AntCallFinalizer extends Finalizer {
 		
 		String target = this.extensionSetting.getTarget();
 		if ( target == null ) {
-			throw new BuildException( "You need to define the \"target\" attribute in the [anttarget] finalizer." );
+			throw new BuildException( "You need to define the \"target\" attribute in the [antcall] finalizer." );
 		}
-		executeAntTarget( target, this.properties );
+		Variable[] props;
+		if (this.properties == null) {
+			props = new Variable[ 2 ];
+		} else {
+			props = new Variable[ this.properties.length + 2 ];
+			System.arraycopy( this.properties, 0, props, 2, this.properties.length );
+		}
+		props[0] = new Variable( "polish.finalize.jar", jarFile.getAbsolutePath() );
+		props[1] = new Variable( "polish.finalize.jad", jadFile.getAbsolutePath() );
+		executeAntTarget( target, props );
 	}
 	
 	public void setParameters( Variable[] properties, File baseDir ) {

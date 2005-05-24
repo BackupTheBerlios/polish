@@ -41,17 +41,20 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jdom.JDOMException;
 
-import de.enough.polish.Bug;
-import de.enough.polish.BugManager;
 import de.enough.polish.Device;
-import de.enough.polish.DeviceGroupManager;
-import de.enough.polish.DeviceManager;
-import de.enough.polish.IdentifierComparator;
-import de.enough.polish.Library;
-import de.enough.polish.LibraryManager;
 import de.enough.polish.Variable;
-import de.enough.polish.VendorManager;
 import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.devices.Bug;
+import de.enough.polish.devices.BugManager;
+import de.enough.polish.devices.CapabilityManager;
+import de.enough.polish.devices.ConfigurationManager;
+import de.enough.polish.devices.DeviceGroupManager;
+import de.enough.polish.devices.DeviceManager;
+import de.enough.polish.devices.IdentifierComparator;
+import de.enough.polish.devices.Library;
+import de.enough.polish.devices.LibraryManager;
+import de.enough.polish.devices.PlatformManager;
+import de.enough.polish.devices.VendorManager;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
@@ -70,8 +73,7 @@ import de.enough.polish.util.StringUtil;
 public class HtmlExporterTask extends Task {
 	private static final String[] CSS_TABLE_ROW_CLASSES = new String[]{"oddRow", "evenRow" };
 
-	private String wtkHome = "/home/enough/dev/WTK2.1";
-	private String preverifyHome = this.wtkHome + "/bin/preverify";
+	private File wtkHome = new File( "/home/enough/dev/WTK2.1" );
 	private String targetDir = "../enough-polish-website/tmp/devices/";
 	private HashMap deviceLinks = new HashMap();
 	private Comparator caseInsensitiveComparator = new CaseInsensitiveComparator();
@@ -91,10 +93,13 @@ public class HtmlExporterTask extends Task {
 	public void execute() throws BuildException {
 		// load device database:
 		try {
-			this.libraryManager = new LibraryManager(getProject().getProperties(), "import", this.wtkHome, this.preverifyHome, open( "apis.xml" ) );
-			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"));
+			CapabilityManager capabilityManager = new CapabilityManager( getProject().getProperties(),  open( "capabilities.xml" ) );
+			ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
+			PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
+			this.libraryManager = new LibraryManager(getProject().getProperties(), new File( "import"), this.wtkHome, open( "apis.xml" ) );
+			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager);
 			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml") ); 
-			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, open("devices.xml") );
+			this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, this.libraryManager, capabilityManager, open("devices.xml") );
 			this.bugManager = new BugManager( getProject().getProperties(), open("bugs.xml"));
 			Device[] devices = this.deviceManager.getDevices();
 			
@@ -794,7 +799,7 @@ public class HtmlExporterTask extends Task {
 		
 		// write the file:
 		String[] htmlCode = (String[] ) lines.toArray( new String[ lines.size() ] );
-		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );	
+		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );
 	}
 
 	/**

@@ -46,19 +46,14 @@ import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
-import org.jdom.JDOMException;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
-import de.enough.polish.DeviceGroupManager;
-import de.enough.polish.DeviceManager;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionManager;
-import de.enough.polish.LibraryManager;
 import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
-import de.enough.polish.VendorManager;
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
 import de.enough.polish.ant.build.FullScreenSetting;
@@ -76,8 +71,10 @@ import de.enough.polish.ant.build.Variables;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.devices.DeviceDatabase;
+import de.enough.polish.devices.DeviceManager;
+import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.emulator.Emulator;
-import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
@@ -201,6 +198,8 @@ public class PolishTask extends ConditionalTask {
 
 	private ExtensionManager extensionManager;
 	private Environment environment;
+
+	private DeviceDatabase deviceDatabase;
 
 	
 	/**
@@ -504,6 +503,7 @@ public class PolishTask extends ConditionalTask {
 				throw new BuildException( e.getMessage(), e );
 			}
 		}
+		
 		// create project settings:
 		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
 		this.polishProject.addDirectCapability("polish.buildVersion", VERSION);
@@ -573,18 +573,6 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < midletClassNames.length; i++) {
 			this.polishProject.addDirectCapability("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
 		}
-		// create LibraryManager:
-		try {
-			this.libraryManager = new LibraryManager( getProject().getProperties(), this.buildSetting.getApiDir().getAbsolutePath(), this.wtkHome, this.buildSetting.getPreverify().getAbsolutePath(), this.buildSetting.openApis() );
-			this.libraryManager.loadCustomLibraries( this.buildSetting.getCustomApis() );
-			this.environment.setLibraryManager(this.libraryManager);
-		} catch (JDOMException e) {
-			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
-		} catch (IOException e) {
-			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
-		} catch (InvalidComponentException e) {
-			throw new BuildException("unable to create api manager: " + e.getMessage(), e );
-		}
 		
 		// load CSS attributes:
 		// create CSS attributes manager:
@@ -606,22 +594,15 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 
-
-		// create vendor/group/device manager:
-		try {
-			VendorManager vendorManager = new VendorManager( this.polishProject, this.buildSetting.openVendors());
-			vendorManager.loadCustomVendors( this.buildSetting.getCustomVendors(), this.polishProject );
-			DeviceGroupManager groupManager = new DeviceGroupManager( this.buildSetting.openGroups() );
-			groupManager.loadCustomGroups( this.buildSetting.getCustomGroups() );
-			this.deviceManager = new DeviceManager( vendorManager, groupManager, this.libraryManager, this.buildSetting.openDevices() );
-			this.deviceManager.loadCustomDevices( vendorManager, groupManager, this.libraryManager, this.buildSetting.getCustomDevices() );
-		} catch (JDOMException e) {
-			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
-		} catch (IOException e) {
-			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
-		} catch (InvalidComponentException e) {
-			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
-		}
+		// create device database:
+		this.deviceDatabase = new DeviceDatabase( getProject().getProperties(), this.polishHomeDir, getProject().getBaseDir(),
+				this.buildSetting.getApiDir(), this.polishProject, this.buildSetting.getDeviceDatabaseInputStreams(), this.buildSetting.getDeviceDatabaseFiles() );
+		
+		this.libraryManager = this.deviceDatabase.getLibraryManager();
+		this.environment.setLibraryManager(this.libraryManager);
+		
+		// create capability/vendor/group/device manager:
+		this.deviceManager = this.deviceDatabase.getDeviceManager();
 				
 		// create preprocessor:
 		boolean replacePropertiesWithoutDirective = false;
@@ -1785,6 +1766,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	private void preverify( Device device, Locale locale ) {
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
+		
 		File preverify = this.buildSetting.getPreverify();
 		String classPath;
 		if (device.isMidp1()) {
@@ -2044,6 +2026,22 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < finalizers.length; i++) {
 			Finalizer finalizer = finalizers[i];
 			finalizer.execute(device, locale, this.environment);
+		}
+		String deviceFinalizersStr = device.getCapability( "polish.build.Finalizer");
+		if (deviceFinalizersStr != null) {
+			String[] deviceFinalizers = StringUtil.splitAndTrim(deviceFinalizersStr, ',');
+			for (int i = 0; i < deviceFinalizers.length; i++) {
+				String finalizerName = deviceFinalizers[i];
+				System.out.println("Executing device specific finalizer [" + finalizerName + "]" );
+				try {
+					Finalizer finalizer = (Finalizer) this.extensionManager.getExtension( ExtensionManager.TYPE_FINALIZER, finalizerName, this.environment );
+					finalizer.execute( device, locale, this.environment );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BuildException("Unable to execute finalizer [" + finalizerName + "] for device [" + device.getIdentifier() + "]: " + e.toString() );
+				}
+				
+			}
 		}
 		device.resetEnvironment();
 	}

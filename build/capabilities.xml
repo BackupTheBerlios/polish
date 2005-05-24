@@ -35,6 +35,51 @@
 		<group>Platform</group>
 		<required>yes</required>
 		<type>version</type>
+		<description>Defines the platform of the device, e.g. MIDP/1.0 or WIPI/2.0</description>
+	</capability>
+
+	<capability>
+		<identifier>JavaConfiguration</identifier>
+		<extension-mode>overwrite</extension-mode>
+		<group>Platform</group>
+		<required>no</required>
+		<type>version</type>
+	</capability>
+
+	<capability>
+		<identifier>JavaPackage</identifier>
+		<extension-mode>append</extension-mode>
+		<group>Platform</group>
+		<required>no</required>
+		<type>list</type>
+		<implicit-group>api</implicit-group>
+	</capability>
+
+	<capability>
+		<identifier>SoundFormat</identifier>
+		<extension-mode>append</extension-mode>
+		<group>Multimedia</group>
+		<required>no</required>
+		<type>list</type>
+		<implicit-group>audio</implicit-group>
+	</capability>
+
+	<capability>
+		<identifier>VideoFormat</identifier>
+		<extension-mode>append</extension-mode>
+		<group>Multimedia</group>
+		<required>no</required>
+		<type>list</type>
+		<implicit-group>video</implicit-group>
+	</capability>
+
+	<capability>
+		<identifier>ImageFormat</identifier>
+		<extension-mode>append</extension-mode>
+		<group>Multimedia</group>
+		<required>no</required>
+		<type>list</type>
+		<implicit-group>image</implicit-group>
 	</capability>
 
 	<capability>

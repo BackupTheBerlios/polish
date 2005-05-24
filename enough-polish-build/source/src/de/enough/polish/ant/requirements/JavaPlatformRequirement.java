@@ -26,6 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -71,13 +72,20 @@ public class JavaPlatformRequirement extends Requirement {
 		if (property.equals( this.neededPlatform)) {
 			return true;
 		}
-		int splitPos = property.indexOf('/');
-		if (splitPos == -1) {
-			return false;
+		String[] platforms = StringUtil.splitAndTrim( property, ',');
+		for (int i = 0; i < platforms.length; i++) {
+			String platform = platforms[i];
+			int splitPos = platform.indexOf('/');
+			if (splitPos == -1) {
+				return false;
+			}
+			String devPlatformName = platform.substring(0, splitPos ).trim();
+			String devPlatformVersion = platform.substring(splitPos +1 ).trim();
+			if ( this.platformName.equals(devPlatformName)
+				&& this.platformVersion.matches(devPlatformVersion) ) {
+				return true;
+			}
 		}
-		String devPlatformName = property.substring(0, splitPos ).trim();
-		String devPlatformVersion = property.substring(splitPos +1 ).trim();
-		return this.platformName.equals(devPlatformName)
-			&& this.platformVersion.matches(devPlatformVersion);
+		return false;
 	}
 }
