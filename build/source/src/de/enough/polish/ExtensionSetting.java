@@ -41,10 +41,10 @@ import de.enough.polish.ant.Setting;
  */
 public class ExtensionSetting extends Setting {
 
-	private String name;
-	private String className;
-	private Path classPath;
-	private String target;
+	protected String name;
+	protected String className;
+	protected Path classPath;
+	protected String target;
 
 	/**
 	 * Creates a new setting.
