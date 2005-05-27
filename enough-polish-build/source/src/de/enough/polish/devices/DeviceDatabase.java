@@ -161,16 +161,16 @@ public class DeviceDatabase {
 			// load devices:
 			is = (InputStream) inputStreamsByFileName.get("devices.xml");
 			this.deviceManager = new DeviceManager( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, is );
-			file = (File) customFilesByFileName.get("custom-groups.xml");
+			file = (File) customFilesByFileName.get("custom-devices.xml");
 			if ( file != null ) {
 				this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 			} else {
 				// use default vendors:
-				file = new File( polishHome, "custom-groups.xml");
+				file = new File( polishHome, "custom-devices.xml");
 				if (file.exists()) {
 					this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 				}
-				file = new File( projectHome, "custom-groups.xml");
+				file = new File( projectHome, "custom-devices.xml");
 				if (file.exists()) {
 					this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 				}

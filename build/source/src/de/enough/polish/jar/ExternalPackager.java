@@ -53,6 +53,13 @@ public class ExternalPackager extends Packager {
 
 	/**
 	 * Creates a new external packager
+	 */
+	public ExternalPackager() {
+		// default setting
+	}
+	
+	/**
+	 * Creates a new external packager
 	 * 
 	 * @param setting the settings
 	 */
@@ -65,14 +72,14 @@ public class ExternalPackager extends Packager {
 	 * @see de.enough.polish.jar.Packager#doPackage(java.io.File, java.io.File, de.enough.polish.Device, de.enough.polish.preprocess.BooleanEvaluator, java.util.Map, org.apache.tools.ant.Project)
 	 */
 	public void createPackage(File sourceDir, File targetFile, Device device,
-			Locale locale, Environment environment )
+			Locale locale, Environment env )
 	throws IOException, BuildException 
 	{
 		PackageSetting setting = getSetting();
-		environment.addVariable("polish.packageDir", sourceDir.getAbsolutePath() );
+		env.addVariable("polish.packageDir", sourceDir.getAbsolutePath() );
 		
-		String executable = environment.writeProperties( setting.getExecutable());
-		String argumentsStr = environment.writeProperties( setting.getArguments() );
+		String executable = env.writeProperties( setting.getExecutable());
+		String argumentsStr = env.writeProperties( setting.getArguments() );
 		String[] arguments = StringUtil.splitAndTrim( argumentsStr, ";;");
 		String[] parameters = new String[ arguments.length + 1 ];
 		parameters[0] = executable;

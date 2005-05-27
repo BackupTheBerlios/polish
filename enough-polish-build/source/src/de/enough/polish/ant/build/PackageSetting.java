@@ -62,6 +62,9 @@ public class PackageSetting extends ExtensionSetting {
 	 * @param executable The executable to set.
 	 */
 	public void setExecutable(String executable) {
+		if (this.name == null) {
+			this.name = "external";
+		}
 		this.executable = executable;
 	}
 	

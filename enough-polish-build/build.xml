@@ -113,7 +113,7 @@
 		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
 		<fileset dir="setup" includes="Update.txt,menu/build.xml" />
 		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml,custom-extensions.xml,capabilities.xml,configurations.xml,platforms.xml" />
-		<fileset dir="import" includes="pim.jar,fileconnection.jar,pdaapi.jar,s2g.jar" />
+		<fileset dir="import" includes="asm-2.0.RC1.jar,asm-tree-2.0.RC1.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,s2g.jar" />
 		<!--
 		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
 		-->
@@ -222,10 +222,10 @@
 	<!-- copy the installation files -->
 	<!-- copy the core files of J2ME Polish -->
 	<copy todir="tmp/" >
-		<fileset dir="." includes="custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
+		<fileset dir="." includes="capabilities.xml,platforms.xml,configurations.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
 	</copy>
 	<copy todir="tmp/import">
-		<fileset dir="import" includes="jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,s2g.jar" />
+		<fileset dir="import" includes="asm-2.0.RC1.jar,asm-tree-2.0.RC1.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,s2g.jar" />
 		<fileset dir="dist" includes="*.jar" />
 	</copy>
 	<!-- copy mac os x standalone applications -->

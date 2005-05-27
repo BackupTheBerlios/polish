@@ -92,11 +92,11 @@ public abstract class Packager extends Extension {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void execute(Device device, Locale locale, Environment environment)
+	public void execute(Device device, Locale locale, Environment env)
 	throws BuildException
 	{
 		try {
-			createPackage( new File( device.getClassesDir() ), device.getJarFile(), device, locale, environment );
+			createPackage( new File( device.getClassesDir() ), device.getJarFile(), device, locale, env );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to package for device [" + device.getIdentifier() + "] into jar [" + device.getJarFile() + "]: " + e.toString() );
@@ -110,11 +110,11 @@ public abstract class Packager extends Extension {
 	 * @param targetFile the target jar-file
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param environment the environment settings
+	 * @param env the environment settings
 	 * @throws IOException when the packaging fails
 	 * @throws BuildException when the packaging fails for another reason
 	 */
-	public abstract void createPackage( File sourceDir, File targetFile, Device device, Locale locale, Environment environment)
+	public abstract void createPackage( File sourceDir, File targetFile, Device device, Locale locale, Environment env)
 	throws IOException, BuildException;
 
 }

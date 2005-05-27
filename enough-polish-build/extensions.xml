@@ -240,6 +240,11 @@
 		<class>de.enough.polish.jar.KZipPackager</class>
 	</extension>
 		
+	<extension>
+		<type>packager</type>
+		<name>external</name>
+		<class>de.enough.polish.jar.ExternalPackager</class>
+	</extension>
 
 	<!-- Finalizer -->
 	
