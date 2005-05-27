@@ -73,7 +73,7 @@ public class PolishDirectiveRule implements IRule {
     public static final String POLISH_DIRECTIVE_REGEX = "(//#[a-zA-Z][a-zA-Z]*)";
     public static final String POLISH_ASSIGNMENT_REGEX = "(//#=)";
     public static final String POLISH_COMMENT_REGEX = "(//# )";
-    public static final String JAVA_KEYWORD_REGEX = "(private|public|protected|final|static|boolean|int|float|double|true|false|void)";
+    public static final String JAVA_KEYWORD_REGEX = "(this|class|extends|implements|private|public|protected|final|static|boolean|int|float|double|true|false|void)";
     public static final String JAVA_COMMENT_REGEX = "(//)";
     public static final String DOLLAR_LCB_REGEX = "(\\$\\{)";
     public static final String RCB_REGEX = "(\\})";

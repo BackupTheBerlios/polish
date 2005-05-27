@@ -1,3 +1,36 @@
+NEXT:
+- Den j2me polish Ant task aus dem Plugin heraus laden und so an die konfigurierten Geräte und
+requirements zu kommen.
+- Jede capability wird zu einem symbol polish.javaplatform:defined und die Werte zu
+polish.javaplatform.mmapi, ...
+- Für die capabilites gibts zusatzinfos in capabilites.xml, die ebenfalls angezeit werden sollten.
+- es kann sein, dass die capabilites.xml und co. woanders liegen. Deren Position steht im build.xml
+  und sollte daher durch ant eingeparst werden.
+
+- when a variable is marked in the code it should be marked in //#= directives, too.
+
+- within //#= directive the 'this' is not colored.
+
+ANT
+
+- The goal is to utilize ant to execute parts of a task.
+
+- To do that construct a Project as an environment for the task.
+
+- Entry point is Lauchner.run(...).
+
+- Interessting part starts in Main.runBuild(...).
+  . project.init().
+  . some project.setUserPreference("ant.file",""); and project.setUserPreference("ant.version","");
+  . possible commandline properties
+  . set system property HELPER_PROPERTY to 'ProjectHelper2'
+  . ProjectHelper.getProjectHelper() returns helper set in property.
+  . ProjectHelper.configureProject(project,this.buildfile);
+  . look at maybeconfigured() in Task. Do we need that?
+
+
+
+
 NAMING
 
 All Plugins
