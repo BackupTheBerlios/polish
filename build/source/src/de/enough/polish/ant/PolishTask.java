@@ -201,6 +201,8 @@ public class PolishTask extends ConditionalTask {
 
 	private DeviceDatabase deviceDatabase;
 
+	private boolean isInitialized;
+
 	
 	/**
 	 * Creates a new empty task 
@@ -268,9 +270,12 @@ public class PolishTask extends ConditionalTask {
 			return;
 		}
 		try {
-			checkSettings();
-			initProject();
-			selectDevices();
+			if (!this.isInitialized) {
+				checkSettings();
+				initProject();
+				selectDevices();
+				this.isInitialized = true;
+			}
 			int numberOfDevices = this.devices.length;
 			if (this.buildSetting.isInCompilerMode()) {
 				System.out.println("Using J2ME Polish as compiler...");
@@ -394,7 +399,7 @@ public class PolishTask extends ConditionalTask {
 	 * 
 	 * @throws BuildException when a setting is invalid
 	 */
-	private void checkSettings() {
+	public void checkSettings() {
 		//System.out.println( getProject().getBaseDir().getAbsolutePath() );
 		if (this.infoSetting == null) {
 			throw new BuildException("Nested element [info] is required.");
@@ -465,7 +470,7 @@ public class PolishTask extends ConditionalTask {
 	/**
 	 * Initialises this project and instantiates several helper classes.
 	 */
-	private void initProject() {
+	public void initProject() {
 		// find out where J2ME Polish has been installed to:
 		this.polishHomePath = getProject().getProperty( "polish.home" );
 		if (this.polishHomePath != null) {
@@ -940,7 +945,7 @@ public class PolishTask extends ConditionalTask {
 	/**
 	 * Selects the actual devices for which optimal applications should be generated.
 	 */
-	private void selectDevices() {
+	public void selectDevices() {
 		if (this.deviceRequirements == null) {
 			this.devices = this.deviceManager.getDevices();
 			if (this.devices == null || this.devices.length == 0) {
@@ -2090,6 +2095,11 @@ public class PolishTask extends ConditionalTask {
 	private void deploy() {
 		// TODO enough implement deploy
 		
+	}
+	
+	
+	public Device[] getDevices() {
+		return this.devices;
 	}
 	
 	/**

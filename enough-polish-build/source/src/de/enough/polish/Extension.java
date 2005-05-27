@@ -125,7 +125,7 @@ public abstract class Extension {
 		for (int i = 0; i < parameters.length; i++) {
 			Variable parameter = parameters[i];
 			if ( parameter.isConditionFulfilled(evaluator, this.antProject ) ) {
-				PopulateUtil.populate( evaluator, parameter, baseDir );
+				PopulateUtil.populate( this, parameter, baseDir );
 			}
 		}
 	}
