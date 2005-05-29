@@ -26,6 +26,8 @@
 package de.enough.polish.preprocess;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
@@ -64,6 +66,7 @@ implements Comparable
 	private final String description;
 	private int id;
 	private final Map appliesToMap;
+	private final Map mappingsByName;
 
 	/**
 	 * Creates a new CSS-attribute
@@ -114,6 +117,18 @@ implements Comparable
 			}
 		} else {
 			this.appliesToMap = null;
+		}
+		List mappingsList = definition.getChildren("mapping");
+		if (mappingsList == null) {
+			this.mappingsByName = null;
+		} else {
+			this.mappingsByName = new HashMap( mappingsList.size() );
+			for (Iterator iter = mappingsList.iterator(); iter.hasNext();) {
+				Element mapping = (Element) iter.next();
+				String from = mapping.getAttributeValue("from");
+				String to = mapping.getAttributeValue("to");
+				this.mappingsByName.put( from, to );
+			}
 		}
 		this.description = definition.getAttributeValue("description");
 		String idStr = definition.getAttributeValue("id");
@@ -322,6 +337,14 @@ implements Comparable
 			return this.name.compareTo( ((CssAttribute)o).name );
 		}
 		return 0;
+	}
+	
+	public String getMapping( String value ) {
+		if (this.mappingsByName == null) {
+			return null;
+		} else {
+			return (String) this.mappingsByName.get( value );
+		}
 	}
 
 }

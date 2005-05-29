@@ -662,16 +662,25 @@ public class CssConverter extends Converter {
 							throw new BuildException("Invalid CSS Code: invalid value for the boolean attribute [" + attributeName + "]:  use either [true]/[yes] or [false]/[no].");
 						}
 					} else if (attributeType == CssAttribute.OBJECT) {
-						if (groupName.equals("view") && key.equals("type") ) {
-							String translatedViewType = (String) VIEW_TYPES.get( value );
-							if (translatedViewType == null ) {
-								// the value represents a full class:
-								valueList.append("new ").append( value ).append("()");
-							} else if ("none".equals( translatedViewType)) {
+						String mappedValue = attribute.getMapping( value );
+						if (mappedValue != null) {
+							 if ("none".equals( mappedValue)) {
 								valueList.append("null");
-							} else {
-								// a standard view is used:
-								valueList.append("new ").append( translatedViewType ).append("()");
+							 } else {
+							 	valueList.append( mappedValue );
+							 }
+						} else {
+							if (groupName.equals("view") && key.equals("type") ) {
+								String translatedViewType = (String) VIEW_TYPES.get( value );
+								if (translatedViewType == null ) {
+									// the value represents a full class:
+									valueList.append("new ").append( value ).append("()");
+								} else if ("none".equals( translatedViewType)) {
+									valueList.append("null");
+								} else {
+									// a standard view is used:
+									valueList.append("new ").append( translatedViewType ).append("()");
+								}
 							}
 						}
 					} else {

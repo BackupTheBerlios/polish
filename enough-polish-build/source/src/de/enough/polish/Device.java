@@ -237,6 +237,59 @@ public class Device extends PolishComponent {
 				}
 			}
 		}
+		
+		
+		// set midp-version:
+		String platformsStr = getCapability(JAVA_PLATFORM);
+		if (platformsStr == null) {
+			System.out.println( this.getCapabilities() );
+			throw new InvalidComponentException("The device ["
+					+ this.identifier
+					+ "] does not define the needed element [" + JAVA_PLATFORM
+					+ "].");
+		}
+		String[] platforms = StringUtil.splitAndTrim(platformsStr, ',');
+		for (int i = 0; i < platforms.length; i++) {
+			String platformIdentifier = platforms[i];
+			Platform platform = platformManager.getPlatform( platformIdentifier );
+			if ( platform == null ) {
+				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaPlatform [" + platformIdentifier + "]: if this is a valid platform, you need to add it to [platforms.xml]");
+			}
+			addComponent( platform );
+			addImplicitGroups( platform, groupNamesList, groupsList, groupManager );
+		}
+		if (hasFeature("polish.midp1")) {
+			this.midpVersion = MIDP_1;
+		} else if (hasFeature("polish.midp2")) {
+			this.midpVersion = MIDP_2;
+		} else if (hasFeature("polish.midp3")) {
+			this.midpVersion = MIDP_3;
+		} 
+		// add configuration settings:
+		String cldcStr = getCapability( JAVA_CONFIGURATION );
+		if (cldcStr == null) {
+			System.out.println( this.getCapabilities() );
+			throw new InvalidComponentException("The device [" + this.identifier
+					+ "] does not define the needed element [" + JAVA_CONFIGURATION	+ "].");
+		}
+		String[] configurations = StringUtil.splitAndTrim( cldcStr, ',' );
+		for (int i = 0; i < configurations.length; i++) {
+			String configurationIdentifier = configurations[i];
+			Configuration configuration = configuratioManager.getConfiguration(configurationIdentifier);
+			if (configuration == null) {
+				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaConfiguration [" + configurationIdentifier + "]: if this is a valid configuration, you need to add it to [configurations.xml]");
+			}
+			addComponent( configuration );
+			addImplicitGroups( configuration, groupNamesList, groupsList, groupManager );
+		}
+		if (hasFeature("polish.cldc1.1")) {
+			this.isCldc10 = false;
+			this.isCldc11 = true;
+		} else if (hasFeature("polish.cldc1.0")) {
+			this.isCldc10 = true;
+			this.isCldc11 = false;
+		}
+
 
 		// set specific features:
 		// set api-support:
@@ -294,56 +347,7 @@ public class Device extends PolishComponent {
 				groupsList.add(groupManager.getGroup(format, true));
 			}
 		}
-		// set midp-version:
-		String platformsStr = getCapability(JAVA_PLATFORM);
-		if (platformsStr == null) {
-			System.out.println( this.getCapabilities() );
-			throw new InvalidComponentException("The device ["
-					+ this.identifier
-					+ "] does not define the needed element [" + JAVA_PLATFORM
-					+ "].");
-		}
-		String[] platforms = StringUtil.splitAndTrim(platformsStr, ',');
-		for (int i = 0; i < platforms.length; i++) {
-			String platformIdentifier = platforms[i];
-			Platform platform = platformManager.getPlatform( platformIdentifier );
-			if ( platform == null ) {
-				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaPlatform [" + platformIdentifier + "]: if this is a valid platform, you need to add it to [platforms.xml]");
-			}
-			addComponent( platform );
-			addImplicitGroups( platform, groupNamesList, groupsList, groupManager );
-		}
-		if (hasFeature("polish.midp1")) {
-			this.midpVersion = MIDP_1;
-		} else if (hasFeature("polish.midp2")) {
-			this.midpVersion = MIDP_2;
-		} else if (hasFeature("polish.midp3")) {
-			this.midpVersion = MIDP_3;
-		} 
 
-		String cldcStr = getCapability( JAVA_CONFIGURATION );
-		if (cldcStr == null) {
-			System.out.println( this.getCapabilities() );
-			throw new InvalidComponentException("The device [" + this.identifier
-					+ "] does not define the needed element [" + JAVA_CONFIGURATION	+ "].");
-		}
-		String[] configurations = StringUtil.splitAndTrim( cldcStr, ',' );
-		for (int i = 0; i < configurations.length; i++) {
-			String configurationIdentifier = configurations[i];
-			Configuration configuration = configuratioManager.getConfiguration(configurationIdentifier);
-			if (configuration == null) {
-				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaConfiguration [" + configurationIdentifier + "]: if this is a valid configuration, you need to add it to [configurations.xml]");
-			}
-			addComponent( configuration );
-			addImplicitGroups( configuration, groupNamesList, groupsList, groupManager );
-		}
-		if (hasFeature("polish.cldc1.1")) {
-			this.isCldc10 = false;
-			this.isCldc11 = true;
-		} else if (hasFeature("polish.cldc1.0")) {
-			this.isCldc10 = true;
-			this.isCldc11 = false;
-		}
 
 		if ( hasFeature("polish.api.jtwi") ) {
 			addDirectFeature( "polish.jtwi" );
