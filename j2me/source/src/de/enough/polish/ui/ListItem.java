@@ -70,6 +70,7 @@ public class ListItem
 	 * 
 	 * @param label the label of this item
 	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
+	 * @param style the style
 	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
 	public ListItem(String label, int listType, Style style) {

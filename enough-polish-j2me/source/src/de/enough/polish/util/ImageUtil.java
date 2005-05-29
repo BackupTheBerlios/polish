@@ -44,6 +44,19 @@ public final class ImageUtil {
 		super();
 	}
 	
+	public static void scale(int[] scaledRgbData, int scaleFactor, int width, int height, int[] rgbData) {
+		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
+		int xStart = (width - width * 100 / scaleFactor ) / 2;
+		for (int y = 0; y < height; y++) {
+			int c1 = y * width;
+			int c2 = yStart + (y * 100  / scaleFactor) * width;
+			for (int x = 0; x < width; x++) {
+				scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ];
+			}
+		}
+	}
+
+	
 	public static int[] scale(int scaledWidth, int scaledHeight, int scanlength, int sourceWidth, int sourceHeight, int[] rgbData) {
 		int scaledRgbData[] = new int[scaledWidth * scaledHeight];
 		for (int y = 0; y < scaledHeight; y++) {
@@ -55,5 +68,7 @@ public final class ImageUtil {
 		}
 		return scaledRgbData;
 	}
+	
+
 
 }

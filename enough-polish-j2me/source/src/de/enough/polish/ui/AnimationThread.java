@@ -52,14 +52,14 @@ package de.enough.polish.ui;
 public class AnimationThread extends Thread {
 	
 	//#ifdef polish.animationInterval:defined
-		//#=public final static int ANIMATION_INTERVAL = ${polish.animationInterval};
+		//#= public final static int ANIMATION_INTERVAL = ${polish.animationInterval};
 	//#else
 		public final static int ANIMATION_INTERVAL = 100;
 	//#endif
-		//#ifdef polish.animationInterval:defined
-		//#=private final static int SLEEP_INTERVAL = ${polish.sleepInterval};
+		//#ifdef polish.sleepInterval:defined
+		//#= private final static int SLEEP_INTERVAL = ${polish.sleepInterval};
 	//#else
-		private final static int SLEEP_INTERVAL = 500;
+		private final static int SLEEP_INTERVAL = 300;
 	//#endif
 	
 	/**

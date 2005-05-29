@@ -1258,9 +1258,9 @@ public abstract class CustomItem extends Item
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
 	 */
-	protected Style focus(Style focusedStyle) {
+	protected Style focus(Style focusStyle) {
 		traverse( CustomItem.NONE, this.clipWidth, this.clipHeight, this.visRect_inout );
-		return super.focus(focusedStyle);
+		return super.focus(focusStyle);
 	}
 	
 	/* (non-Javadoc)

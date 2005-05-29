@@ -155,11 +155,14 @@ implements ImageConsumer
 			//#if polish.midp2 && polish.css.scale-factor
 				int scaleX = x;
 				int scaleY = y;
-				boolean useScaledImage = (this.scaledRgbData != null) && !this.scaleFinished;
+				boolean useScaledImage = this.isFocused && (this.scaledRgbData != null) && !this.scaleFinished;
 			//#endif
 			if (this.imageAlign == Graphics.LEFT ) {
 				//#if polish.midp2 && polish.css.scale-factor
-					if (!useScaledImage) {
+					if (useScaledImage) { 
+						scaleX = x  -  ((this.scaleWidth - this.image.getWidth()) / 2);
+						scaleY = y - ((this.scaleHeight - this.image.getHeight()) / 2);
+					} else {
 				//#endif
 				g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
 				//#if polish.midp2 && polish.css.scale-factor
@@ -171,7 +174,8 @@ implements ImageConsumer
 			} else if (this.imageAlign == Graphics.RIGHT ) {
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
-						scaleX = leftBorder  - this.scaleWidth;
+						scaleX = rightBorder  -  ((this.image.getWidth()  + this.scaleWidth) / 2);
+						scaleY = y - ((this.scaleHeight - this.image.getHeight()) / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, x + this.contentWidth, y, Graphics.TOP | Graphics.RIGHT );
@@ -187,7 +191,7 @@ implements ImageConsumer
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
 						scaleX = centerX - (this.scaleWidth / 2);
-						scaleY = y - ((this.scaleHeight - this.image.getWidth()) / 2);
+						scaleY = y - ((this.scaleHeight - this.image.getHeight()) / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
@@ -237,8 +241,7 @@ implements ImageConsumer
 					}
 					g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, scaleX, scaleY, this.scaleWidth, this.scaleHeight, true );
 				}
-			//#endif
-			
+			//#endif		
 		}
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 	}
@@ -368,6 +371,7 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#hideNotify()
 	 */
 	public boolean animate() {
+		boolean animated = super.animate();
 		if (this.scaleFactor != 0) {
 			if (this.scaleFinished || this.image == null) {
 				return false;
@@ -401,7 +405,7 @@ implements ImageConsumer
 					imgWidth, imgHeight, this.rgbData);
 			return true;
 		}
-		return false;
+		return animated;
 		
 	}		
 	//#endif
@@ -415,6 +419,7 @@ implements ImageConsumer
 		this.scaleFinished = false;
 		this.scaleDown = false;
 		this.currentStep = 0;
+		this.scaledRgbData = null;
 	}
 	//#endif
 	

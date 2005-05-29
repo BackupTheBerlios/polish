@@ -312,19 +312,83 @@ public final class StyleSheet {
 	}		
 	//#endif
 	
+	//#ifdef polish.css.screen-change-animation
 	/**
 	 * Includes an animation while changing the screen.
 	 *  
 	 * @param display the display
-	 * @param screen the new screen, animations are only included for de.enough.polish.ui.Screen classes
+	 * @param nextDisplayable the new screen, animations are only included for de.enough.polish.ui.Screen classes
 	 */
-	public static void setCurrent( Display display, Displayable screen ) {
-		System.out.println("Set current is called! Whoey!");
-		if ( screen instanceof Screen ) {
-			// include screen change animation... somehow, gulp.
-			display.setCurrent( screen );
+	public static void setCurrent( Display display, Displayable nextDisplayable ) {
+		if ( nextDisplayable instanceof Screen ) {
+			try {
+				Screen nextScreen = (Screen) nextDisplayable;
+				ScreenChangeAnimation screenAnimation = null;
+				Style screenstyle = null;
+				if (nextScreen.style != null) {
+					screenstyle = nextScreen.style;
+					screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+				}
+				Displayable lastDisplayable = display.getCurrent();
+				if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
+					//#debug
+					System.out.println("StyleSheet: last displayable is a ScreenChangeAnomation" );
+					lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextScreen;
+				}
+				Screen lastScreen = null;
+				if (lastDisplayable != null && lastDisplayable instanceof Screen) {
+					//#debug
+					System.out.println("StyleSheet: last displayble is a Screen");
+					lastScreen = (Screen) lastDisplayable;
+					if (screenAnimation == null && lastScreen.style != null) {
+						screenstyle = lastScreen.style;
+						screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+						//#debug
+						System.out.println("StyleSheet: Using screen animation of last screen");
+					}
+				}
+				if ( screenAnimation == null ) {
+					//#debug
+					System.out.println("StyleSheet: found no screen animation");
+					display.setCurrent( nextDisplayable );
+				}
+				
+				//#if polish.FullCanvasSize:defined
+					//#= int width = ${polish.FullCanvasWidth};
+					//#= int height = ${polish.FullCanvasHeight};
+				//#else
+					int width = nextScreen.getWidth();
+					int height = nextScreen.getHeight();
+				//#endif
+				Image lastScreenImage = Image.createImage(width, height);
+				Graphics g = lastScreenImage.getGraphics(); 
+				if ( lastScreen != null ) {
+					//#debug
+					System.out.println("StyleSheet: last screen is painted");
+					lastScreen.paint( g );
+				//#if polish.ScreenChangeAnimation.blankColor:defined
+					} else {
+						//#= g.setColor( ${polish.ScreenChangeAnimation.blankColor} );
+						g.fillRect( 0, 0, width, height );
+				//#endif
+				}
+				Image nextScreenImage = Image.createImage(width, height);
+				g = nextScreenImage.getGraphics();
+				nextScreen.showNotify();
+				nextScreen.paint( g );
+				//#debug
+				System.out.println("StyleSheet: showing screen animation");
+				screenAnimation = (ScreenChangeAnimation) screenAnimation.getClass().newInstance();
+				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextScreen );
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Screen: unable to copy screen change animation" + e );
+				display.setCurrent( nextDisplayable );
+			}
+			
 		} else {
-			display.setCurrent( screen );
+			display.setCurrent( nextDisplayable );
 		}
 	}
+	//#endif
 }

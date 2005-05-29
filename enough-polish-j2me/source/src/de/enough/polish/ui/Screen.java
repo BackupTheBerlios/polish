@@ -106,6 +106,7 @@ public abstract class Screen
 			private boolean ignoreMotorolaTitleCall = true;
 		//#endif
 	//#endif
+
 	//#ifdef polish.Vendor.Siemens
 		// Siemens sometimes calls hideNotify directly
 		// after showNotify for some reason.
@@ -300,6 +301,7 @@ public abstract class Screen
 				this.scrollIndicatorWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
 				this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
 				this.scrollIndicatorY = this.fullScreenHeight - this.menuBar.marginBottom + 1 - this.scrollIndicatorWidth;
+				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight );	
 				//System.out.println("Screen.init: menuBarHeight=" + this.menuBarHeight + " scrollIndicatorWidth=" + this.scrollIndicatorWidth );
 			//#else
 				//#ifdef polish.css.style.menu
@@ -340,6 +342,7 @@ public abstract class Screen
 				this.scrollIndicatorWidth = localMenuBarHeight;
 				this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
 				this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight + ", localMenuBarHeight=" + localMenuBarHeight);	
 				//#ifdef polish.Menu.MarginBottom:defined 
 					//#= localMenuBarHeight += ${polish.Menu.MarginBottom};
 					//#= this.scrollIndicatorY -=  ${polish.Menu.MarginBottom};
@@ -366,11 +369,12 @@ public abstract class Screen
 			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
 			
-
+		//System.out.println("final: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight );	
 		if (this.container != null) {
 			this.container.screen = this;
 		}
-		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight  + this.subTitleHeight + this.infoHeight ) );
+		int y = this.titleHeight  + this.subTitleHeight + this.infoHeight;
+		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 		
 		// start the animmation thread if necessary: 
 		if (startAnimationThread) {
@@ -650,7 +654,8 @@ public abstract class Screen
 					//#debug
 					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
 					if (this.container != null) {
-						setContentArea( 0, translateY, this.screenWidth, this.screenHeight - (this.infoHeight + this.subTitleHeight + translateY)  );
+						int nonContentHeight = this.infoHeight + this.subTitleHeight + translateY;
+						setContentArea( 0, nonContentHeight, this.screenWidth, this.screenHeight - nonContentHeight  );
 					}
 				}
 			//#endif
@@ -664,13 +669,13 @@ public abstract class Screen
 			}
 			// protect the title, ticker and the full-screen-menu area:
 			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
-			g.translate( 0, tHeight );
+			//g.translate( 0, tHeight );
 			// paint content:
 			//System.out.println("starting to paint content of screen");
 			paintScreen( g );
 			//System.out.println("done painting content of screen");
 			
-			g.translate( 0, - tHeight );
+			//g.translate( 0, - tHeight );
 			// allow painting outside of the screen again:
 			//#ifdef tmp.menuFullScreen
 			 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
@@ -805,6 +810,7 @@ public abstract class Screen
 				g.setColor( this.scrollIndicatorColor );
 				int x = this.scrollIndicatorX;
 				int y = this.scrollIndicatorY;
+				//System.out.println("paint: this.scrollIndicatorY=" + this.scrollIndicatorY);
 				int width = this.scrollIndicatorWidth;
 				int halfWidth = width / 2;
 				if (this.paintScrollIndicatorUp) {
@@ -1473,7 +1479,7 @@ public abstract class Screen
 							callCommandListener( cmd );						
 						} else {
 							//#ifdef tmp.useTitle
-								y -= this.titleHeight;
+								//y -= this.titleHeight;
 							//#endif
 							int focusedIndex = this.menuContainer.getFocusedIndex();
 							Item item = this.menuContainer.get( focusedIndex );
@@ -1490,7 +1496,8 @@ public abstract class Screen
 			//#endif
 			// let the screen handle the pointer pressing:
 			//#ifdef tmp.usingTitle
-				boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
+				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
+				boolean processed = handlePointerPressed( x, y  );
 				if (processed) {
 					repaint();
 				}
@@ -1572,7 +1579,8 @@ public abstract class Screen
 			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
 		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
-		setContentArea( 0, 0, this.screenWidth,  this.screenHeight - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
+		int y = this.titleHeight + this.infoHeight + this.subTitleHeight;
+		setContentArea( 0, y, this.screenWidth,  this.screenHeight - y );
 	}
 	//#endif
 	
