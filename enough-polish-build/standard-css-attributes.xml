@@ -550,5 +550,59 @@
 		description="The number of intermediate steps that should be used for scaling an image."
 		id="61"
 	/>
+
+	<attribute
+		name="screen-change-animation"
+		type="object"
+		appliesTo="Screen, List, Form, FramedForm, TabbedForm"
+		description="An effect that should be shown whenever the screen is changed."
+		id="62"
+	>
+		<mapping from="left" to="new de.enough.polish.ui.screenanimations.LeftScreenChangeAnimation()" />
+		<mapping from="right" to="new de.enough.polish.ui.screenanimations.RightScreenChangeAnimation()" />
+		<mapping from="top" to="new de.enough.polish.ui.screenanimations.TopScreenChangeAnimation()" />
+		<mapping from="bottom" to="new de.enough.polish.ui.screenanimations.BottomScreenChangeAnimation()" />
+		<mapping from="3drotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
+		<mapping from="3dRotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
+		<mapping from="3d" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
+		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" />
+		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
+		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
+		<mapping from="zoominandhide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
+		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
+		
+	</attribute>
+	
+	<attribute
+		name="left-screen-change-animation-speed"
+		type="integer"
+		appliesTo="LeftScreenChangeAnimation"
+		description="The speed of the animation."
+		id="63"
+	/>
+
+	<attribute
+		name="right-screen-change-animation-speed"
+		type="integer"
+		appliesTo="RightScreenChangeAnimation"
+		description="The speed of the animation."
+		id="64"
+	/>
+	
+	<attribute
+		name="top-screen-change-animation-speed"
+		type="integer"
+		appliesTo="TopScreenChangeAnimation"
+		description="The speed of the animation."
+		id="65"
+	/>
+	<attribute
+		name="bottom-screen-change-animation-speed"
+		type="integer"
+		appliesTo="BottomScreenChangeAnimation"
+		description="The speed of the animation."
+		id="66"
+	/>
+	
 	
 </attributes>
