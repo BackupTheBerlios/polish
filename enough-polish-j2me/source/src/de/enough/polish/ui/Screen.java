@@ -144,6 +144,9 @@ public abstract class Screen
 		//#if polish.Screen.FireTriggersOkCommand == true
 			private Command okCommand;
 		//#endif
+		//#if polish.ScreenChangeAnimation.forward:defined
+			protected Command lastTriggeredCommand;
+		//#endif	
 		//#if polish.MenuBar.useExtendedMenuBar == true
 			private final MenuBar menuBar;
 			//#define tmp.useExternalMenuBar
@@ -1368,6 +1371,9 @@ public abstract class Screen
 	 * @param cmd the command wich should be issued to the listener
 	 */
 	protected void callCommandListener( Command cmd ) {
+		//#if polish.ScreenChangeAnimation.forward:defined
+			this.lastTriggeredCommand = cmd;
+		//#endif
 		if (this.cmdListener != null) {
 			try {
 				this.cmdListener.commandAction(cmd, this );

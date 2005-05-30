@@ -324,18 +324,32 @@ public final class StyleSheet {
 			try {
 				Screen nextScreen = (Screen) nextDisplayable;
 				ScreenChangeAnimation screenAnimation = null;
+				Displayable lastDisplayable = display.getCurrent();
+				Screen lastScreen = null;
 				Style screenstyle = null;
+				//#if polish.ScreenChangeAnimation.forward:defined
+					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
+						lastScreen = (Screen) lastDisplayable;
+						Command lastCommand = lastScreen.lastTriggeredCommand;
+						screenstyle = lastScreen.style;
+						if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
+							//#= screenAnimation = ${polish.ScreenChangeAnimation.back};
+						}
+					}
+					if ( screenAnimation == null ) {
+						//#= screenAnimation = ${polish.ScreenChangeAnimation.forward};
+						screenstyle = nextScreen.style;
+					}
+				//#else
 				if (nextScreen.style != null) {
 					screenstyle = nextScreen.style;
 					screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
 				}
-				Displayable lastDisplayable = display.getCurrent();
 				if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
 					//#debug
 					System.out.println("StyleSheet: last displayable is a ScreenChangeAnomation" );
 					lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextScreen;
 				}
-				Screen lastScreen = null;
 				if (lastDisplayable != null && lastDisplayable instanceof Screen) {
 					//#debug
 					System.out.println("StyleSheet: last displayble is a Screen");
@@ -353,6 +367,7 @@ public final class StyleSheet {
 					display.setCurrent( nextDisplayable );
 					return;
 				}
+				//#endif
 				
 				//#if polish.FullCanvasSize:defined
 					//#= int width = ${polish.FullCanvasWidth};
