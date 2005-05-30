@@ -864,6 +864,10 @@ public abstract class Screen
 			this.paintScrollIndicatorUp = (this.container.yOffset != 0);
 			this.paintScrollIndicatorDown = (this.container.yOffset + containerHeight > height );
 		} else if (this.isLayoutVCenter) {
+			/*
+			//#debug
+			System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
+			*/
 			y += ((height - containerHeight) / 2);
 		} else if (this.isLayoutBottom) {
 			y += (height - containerHeight);
@@ -968,7 +972,8 @@ public abstract class Screen
 			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
 			this.showInfoItem = true;
 		}
-		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
+		int y = this.titleHeight + this.subTitleHeight + this.infoHeight;
+		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 	}
 
 	//#ifndef polish.skipTicker

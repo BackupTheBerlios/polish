@@ -356,7 +356,7 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item ) {
 		//#debug
-		System.out.println("Container: Focusing item " + index );
+		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index );
 		
 		if (this.autoFocusEnabled  && !this.isInitialised) {
 			// setting the index for automatically focusing the appropriate item
@@ -402,11 +402,15 @@ public class Container extends Item {
 				this.internalX =  item.contentX - this.contentX + item.internalX;
 				this.internalWidth = item.internalWidth;
 				this.internalY = item.contentY - this.contentY + item.internalY;
+				//#debug
+				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY);
 				this.internalHeight = item.internalHeight;
 			} else {
 				this.internalX = item.xLeftPos - this.contentX;
 				this.internalWidth = item.itemWidth;
 				this.internalY = item.yTopPos - this.contentY;
+				//#debug
+				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY );
 				this.internalHeight = item.itemHeight;
 			}
 			if (this.enableScrolling) {	
@@ -440,7 +444,7 @@ public class Container extends Item {
 					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
 				}
 				//#debug
-				System.out.println("Container-focus:: difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
+				System.out.println("Container (" + getClass().getName() + "): difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
 				this.yOffset += difference;
 			}
 		}
@@ -707,6 +711,12 @@ public class Container extends Item {
 		// the layout will be done according to this containers'
 		// layout or according to the items layout, when specified.
 		// adjust vertical start for scrolling:
+		//#if polish.debug.debug
+			if (this.yOffset != 0) {
+				//#debug
+				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
+			}
+		//#endif
 		y += this.yOffset;
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
@@ -776,8 +786,12 @@ public class Container extends Item {
 				if (this.enableScrolling && item.internalX != -9999) {
 					if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
 						this.yOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+						//#debug
+						System.out.println("Container (" + getClass().getName() + "): lowered yOffset to " + this.yOffset );
 					} else if ( item.contentY + item.internalY < this.yTop ) {
 						this.yOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+						//#debug
+						System.out.println("Container (" + getClass().getName() + "): increased yOffset to " + this.yOffset + ", yTop=" + this.yTop + ", item.class=" + item.getClass().getName() + ", item.contentY=" + item.contentY + ", item.internalY=" + item.internalY );
 					}
 				}
 				return true;

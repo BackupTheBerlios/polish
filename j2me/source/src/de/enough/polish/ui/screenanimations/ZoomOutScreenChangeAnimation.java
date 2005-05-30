@@ -71,9 +71,8 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
 		this.scaledScreenRgb = new int[ width * height ];
 		this.currentStep = this.steps;
-		ImageUtil.scale(this.scaledScreenRgb, this.scaleFactor, this.screenWidth, this.screenHeight, this.nextScreenRgb);
-		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtScreen);
+		ImageUtil.scale( 255/this.steps, this.scaleFactor, width, height, this.nextScreenRgb, this.scaledScreenRgb);
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtScreen);
 	}
 	
 	/* (non-Javadoc)
@@ -85,7 +84,8 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 			return false;
 		}
 		int factor = 100 + ( (this.scaleFactor - 100) * this.currentStep ) / this.steps;
-		ImageUtil.scale(this.scaledScreenRgb, factor, this.screenWidth, this.screenHeight, this.nextScreenRgb);
+		int opacity = 255 / this.steps * ( this.steps - this.currentStep );
+		ImageUtil.scale( opacity, factor, this.screenWidth, this.screenHeight, this.nextScreenRgb, this.scaledScreenRgb);
 		
 		return true;
 	}
@@ -110,7 +110,9 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, false );
+			
+		g.drawImage( this.lastScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 		
 		this.display.callSerially( this );
 	}

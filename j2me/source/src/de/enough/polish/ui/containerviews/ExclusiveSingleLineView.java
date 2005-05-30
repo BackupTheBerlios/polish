@@ -233,7 +233,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 		System.out.println("ExclusiveView.item: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 		//selectedItem.drawBox = false;
 		this.currentItem.paint(x, y, leftBorder, rightBorder, g);
-		
 		//this.currentItemIndex = selectedItemIndex;
 	}
 
@@ -242,11 +241,13 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 */
 	protected Item getNextItem(int keyCode, int gameAction) {
 		Item[] items = this.parentContainer.getItems();
+		Item lastItem = this.currentItem;
 		//ChoiceItem currentItem = (ChoiceItem) items[ this.currentItemIndex ];
 		if ( gameAction == Canvas.LEFT && this.currentItemIndex > 0 ) {
 			this.currentItem.select( false );
 			this.currentItemIndex--;
 			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			this.currentItem.adjustProperties( lastItem );
 			//this.currentItem.select( true );
 			((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
 			return this.currentItem;
@@ -254,6 +255,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			this.currentItem.select( false );
 			this.currentItemIndex++;
 			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			this.currentItem.adjustProperties( lastItem );
 			((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
 			//this.currentItem.select( true );
 			return this.currentItem;

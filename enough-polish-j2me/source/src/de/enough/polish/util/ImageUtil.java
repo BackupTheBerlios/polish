@@ -44,7 +44,16 @@ public final class ImageUtil {
 		super();
 	}
 	
-	public static void scale(int[] scaledRgbData, int scaleFactor, int width, int height, int[] rgbData) {
+	/**
+	 * Scales the rgb data and stores it into the given scaledRgbData array.
+	 * 
+	 * @param scaleFactor the factor by which the rgb data should be magnified in percent, e.g. 130
+	 * @param width the width of the rgbData and the scaledRgbData (scanline width)
+	 * @param height the height of the rgbData and the scaledRgbData (scanline width)
+	 * @param rgbData the source rgbData
+	 * @param scaledRgbData the target rgbData array, must have the same dimensions like the given rgbData
+	 */
+	public static void scale(int scaleFactor, int width, int height, int[] rgbData, int[] scaledRgbData) {
 		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
 		int xStart = (width - width * 100 / scaleFactor ) / 2;
 		for (int y = 0; y < height; y++) {
@@ -52,6 +61,30 @@ public final class ImageUtil {
 			int c2 = yStart + (y * 100  / scaleFactor) * width;
 			for (int x = 0; x < width; x++) {
 				scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ];
+			}
+		}
+	}
+
+	/**
+	 * Scales the rgb data and stores it into the given scaledRgbData array and adds an alpha semi transparency value at the same time.
+	 * 
+	 * @param opacity the alpha value, 255 (0xFF) means fully opaque, 0 fully transparent
+	 * @param scaleFactor the factor by which the rgb data should be magnified in percent, e.g. 130
+	 * @param width the width of the rgbData and the scaledRgbData (scanline width)
+	 * @param height the height of the rgbData and the scaledRgbData (scanline width)
+	 * @param rgbData the source rgbData
+	 * @param scaledRgbData the target rgbData array, must have the same dimensions like the given rgbData
+	 */
+	public static void scale( int opacity, int scaleFactor, int width, int height, int[] rgbData, int[] scaledRgbData) {
+		opacity = (opacity << 24) | 0xFFFFFF;
+		
+		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
+		int xStart = (width - width * 100 / scaleFactor ) / 2;
+		for (int y = 0; y < height; y++) {
+			int c1 = y * width;
+			int c2 = yStart + (y * 100  / scaleFactor) * width;
+			for (int x = 0; x < width; x++) {
+				scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ] & opacity;
 			}
 		}
 	}

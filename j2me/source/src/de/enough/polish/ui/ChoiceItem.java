@@ -367,5 +367,13 @@ public class ChoiceItem extends IconItem
 	public void setPreferredFont(Font font) {
 		this.preferredFont = font;
 	}
+
+	/**
+	 * @param lastItem
+	 */
+	public void adjustProperties(Item lastItem) {
+		this.yTopPos = lastItem.yTopPos;
+		this.yBottomPos = lastItem.yBottomPos;
+	}
 	
 }

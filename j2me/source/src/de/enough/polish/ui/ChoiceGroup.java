@@ -1010,6 +1010,8 @@ implements Choice
 		//#ifdef polish.usePopupItem
 		if (!(this.isPopup && this.isPopupClosed)) {
 			processed = super.handleKeyPressed(keyCode, gameAction);
+			//#debug
+			System.out.println("ChoiceGroup: container handled keyPressEvent: " + processed);
 		}
 		if (!processed) {
 			if ( gameAction == Canvas.FIRE ) {

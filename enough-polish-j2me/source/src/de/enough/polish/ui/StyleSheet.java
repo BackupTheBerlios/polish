@@ -351,6 +351,7 @@ public final class StyleSheet {
 					//#debug
 					System.out.println("StyleSheet: found no screen animation");
 					display.setCurrent( nextDisplayable );
+					return;
 				}
 				
 				//#if polish.FullCanvasSize:defined
