@@ -218,6 +218,9 @@ public class StyleSheet {
 	 * @return true when the specified style is known.
 	 */
 	public boolean isDefined( String name ) {
+		if (name.charAt(0) == '.') {
+			name = name.substring( 1 );
+		}
 		name = name.toLowerCase();
 		if ("default".equals(name)) {
 			// the default style is always defined!

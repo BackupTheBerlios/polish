@@ -1596,7 +1596,10 @@ public class PolishTask extends ConditionalTask {
 					bootClassPath = new Path( antProject, path );
 				}
 			}
+			device.setBootClassPath( bootClassPath.toString() );
 			compiler.setDirectBootclasspath( bootClassPath );
+		} else {
+			device.setBootClassPath( compiler.getBootclasspath().toString() );
 		}
 		if ( !compiler.isClassPathSet()) {
 			if (classPath != null) {

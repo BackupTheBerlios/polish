@@ -150,6 +150,8 @@ public class Device extends PolishComponent {
 
 	private Environment environment;
 
+	private String bootClassPath;
+
 
 
 	public Device(String identifier) {
@@ -701,7 +703,7 @@ public class Device extends PolishComponent {
 	}
 
 	/**
-	 * @return
+	 * @return true when this device supports the CLDC/1.1 configuration
 	 */
 	public boolean isCldc11() {
 		return this.isCldc11;
@@ -720,6 +722,17 @@ public class Device extends PolishComponent {
 	
 	public void resetEnvironment() {
 		this.environment = null;
+	}
+
+	/**
+	 * @param path the bootclasspath of this device
+	 */
+	public void setBootClassPath(String path) {
+		this.bootClassPath = path;
+	}
+	
+	public String getBootClassPath() {
+		return this.bootClassPath;
 	}
 
 }
