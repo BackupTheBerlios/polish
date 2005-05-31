@@ -133,6 +133,7 @@ public class BuildSetting {
 	private File capabilities;
 	private File platforms;
 	private File configurations;
+	private boolean replacePropertiesWithoutDirective;
 	
 	/**
 	 * Creates a new build setting.
@@ -1696,5 +1697,15 @@ public class BuildSetting {
 		return map;
 	}
 
+	/**
+	 * @return true when ant properties should be replaced without an explicit directive, e.g. String message="Hello ${polish.Identifier}";
+	 */
+	public boolean replacePropertiesWithoutDirective() {
+		return this.replacePropertiesWithoutDirective;
+	}
+
+	public void setReplacePropertiesWithoutDirective( boolean enable ) {
+		this.replacePropertiesWithoutDirective = enable;
+	}
 	
 }

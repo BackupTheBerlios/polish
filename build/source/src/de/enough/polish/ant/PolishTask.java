@@ -614,6 +614,9 @@ public class PolishTask extends ConditionalTask {
 		if (this.variables != null) {
 			replacePropertiesWithoutDirective = this.variables.replacePropertiesWithoutDirective();
 		}
+		if (!replacePropertiesWithoutDirective) {
+			replacePropertiesWithoutDirective = this.buildSetting.replacePropertiesWithoutDirective();
+		}
 		this.preprocessor = new Preprocessor( this.polishProject, this.environment, null, false, true, replacePropertiesWithoutDirective, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
@@ -961,7 +964,7 @@ public class PolishTask extends ConditionalTask {
 	
 	
 	
-	private void initialize( Device device, Locale locale ) {
+	public void initialize( Device device, Locale locale ) {
 		this.extensionManager.preInitialize(device, locale);
 		// intialise the environment
 		this.environment.initialize(device, locale);
@@ -2103,6 +2106,10 @@ public class PolishTask extends ConditionalTask {
 	
 	public Device[] getDevices() {
 		return this.devices;
+	}
+	
+	public Environment getEnvironment() {
+		return this.environment;
 	}
 	
 	/**
