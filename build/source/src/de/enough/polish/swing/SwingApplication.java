@@ -44,7 +44,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 import de.enough.polish.util.SwingUtil;
 
@@ -185,8 +187,8 @@ implements Application
 	
 	public JScrollPane createScrollPane( JComponent component ) {
 		if (this.isMacOsX) {
-			return new JScrollPane(component,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			return new JScrollPane(component,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		} else {
 			return new JScrollPane( component );
 		}
@@ -265,7 +267,7 @@ implements Application
 	 * Registers a standard window listener that in turns calls quit when the main window is closed.
 	 */
 	protected void registerWindowListener() {
-		setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+		setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
 		super.addWindowListener( new MyWindowListener() );		
 	}
 	

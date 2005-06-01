@@ -42,6 +42,8 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.CRC32;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 /**
  * <p>Methods for the fast and simple creation of jar files.</p>
@@ -78,9 +80,9 @@ public final class JarUtil {
 		JarOutputStream out = new JarOutputStream(
 								new FileOutputStream( target ) );
 		if (compress) {
-			out.setLevel( JarOutputStream.DEFLATED );
+			out.setLevel( ZipOutputStream.DEFLATED );
 		} else {
-			out.setLevel( JarOutputStream.STORED );
+			out.setLevel( ZipOutputStream.STORED );
 		}
 		// create a CRC32 object:
 		CRC32 crc = new CRC32();
@@ -160,7 +162,7 @@ public final class JarUtil {
 		// read jar-file:
 		String targetPath = targetDir.getAbsolutePath() + File.separatorChar;
 		byte[] buffer = new byte[ 1024 * 1024 ];
-		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+		JarFile input = new JarFile( jarFile, false, ZipFile.OPEN_READ );
 		Enumeration enumeration = input.entries();
 		for (; enumeration.hasMoreElements();) {
 			JarEntry entry = (JarEntry) enumeration.nextElement();
@@ -206,7 +208,7 @@ public final class JarUtil {
         // read jar-file:
         String targetPath = targetDir.getAbsolutePath() + File.separatorChar;
         byte[] buffer = new byte[ 1024 * 1024 ];
-        JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+        JarFile input = new JarFile( jarFile, false, ZipFile.OPEN_READ );
         Enumeration enumeration = input.entries();
         for (; enumeration.hasMoreElements();) {
             JarEntry entry = (JarEntry) enumeration.nextElement();
@@ -242,7 +244,7 @@ public final class JarUtil {
 	throws IOException 
 	{
 		HashMap packageNames = new HashMap();
-		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+		JarFile input = new JarFile( jarFile, false, ZipFile.OPEN_READ );
 		Enumeration enumeration = input.entries();
 		for (; enumeration.hasMoreElements();) {
 			JarEntry entry = (JarEntry) enumeration.nextElement();
@@ -278,7 +280,7 @@ public final class JarUtil {
 		if (!jarFile.exists()) {
 			throw new IllegalArgumentException("File [" + jarFile.getAbsolutePath() + "] does not exist." );
 		}
-		JarFile input = new JarFile( jarFile, false, JarFile.OPEN_READ );
+		JarFile input = new JarFile( jarFile, false, ZipFile.OPEN_READ );
 		Manifest manifest = input.getManifest();
 		if (manifest == null) {
 			return null;
