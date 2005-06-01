@@ -30,15 +30,10 @@ package de.enough.polish.log.bluetooth;
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.L2CAPConnection;
 import javax.bluetooth.LocalDevice;
-import javax.bluetooth.RemoteDevice;
 import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
-import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 
-//#ifdef polish.usePolishGui
-	import de.enough.polish.ui.StyleSheet;
-//#endif
 import de.enough.polish.log.LogEntry;
 import de.enough.polish.log.LogHandler;
 import de.enough.polish.util.ArrayList;
