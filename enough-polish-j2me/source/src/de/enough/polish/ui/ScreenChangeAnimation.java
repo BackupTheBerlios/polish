@@ -43,7 +43,7 @@ import javax.microedition.lcdui.Image;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public abstract class ScreenChangeAnimation
-//#if polish.midp2
+//#if polish.midp2 && ! polish.Bugs.needsNokiaUiForSystemAlerts
 	extends Canvas
 //#elif polish.classes.fullscreen:defined
 	//#= extends ${polish.classes.fullscreen}

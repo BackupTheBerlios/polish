@@ -95,6 +95,10 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 			*/
 			return true;
 		} else {
+			//#if polish.css.left-screen-change-animation-speed
+				this.speed = 2;
+			//#endif
+			this.currentX = 0;	
 			return false;
 		}
 	}

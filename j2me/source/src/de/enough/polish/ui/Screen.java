@@ -447,6 +447,38 @@ public abstract class Screen
 					super.setFullScreenMode( true );
 				//#endif
 			//#endif
+		
+			// init components:
+			int	width = this.screenWidth;
+			//#ifdef tmp.menuFullScreen
+				//#ifdef tmp.useExternalMenuBar
+					if (!this.menuBar.isInitialised) {
+						this.menuBar.init( width, width );
+					}
+				//#else
+					if (this.menuOpened) {
+						if (!this.menuContainer.isInitialised) {
+							this.menuContainer.init( width, width );
+						}
+					} else
+				//#endif
+			//#endif
+			if (this.container != null && !this.container.isInitialised) {
+				this.container.init( width, width );
+			}
+			if (this.gauge != null && !this.gauge.isInitialised) {
+				this.gauge.init( width, width );
+			}
+			//#ifdef tmp.usingTitle
+				if (this.title != null && !this.title.isInitialised) {
+					this.title.init( width, width );
+				}
+			//#endif
+			//#ifndef polish.skipTicker
+				if (this.ticker != null && !this.ticker.isInitialised) {
+					this.ticker.init( width, width );
+				}
+			//#endif		
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("error while calling showNotify" + e );

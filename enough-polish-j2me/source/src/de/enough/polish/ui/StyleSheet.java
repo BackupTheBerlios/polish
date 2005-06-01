@@ -58,6 +58,22 @@ public final class StyleSheet {
 		public static Style menuStyle = null;
 		private static Hashtable stylesByName = new Hashtable();
 	//#endif
+
+	//#if polish.ScreenChangeAnimation.forward:defined
+		//#if false
+			private static ScreenChangeAnimation forwardAnimation;
+			private static ScreenChangeAnimation backwardAnimation;			
+		//#endif
+		//#= private static ScreenChangeAnimation forwardAnimation = ${polish.ScreenChangeAnimation.forward};
+		//#if polish.ScreenChangeAnimation.back:defined
+			//#= private static ScreenChangeAnimation = ${polish.ScreenChangeAnimation.back};
+		//#elif polish.ScreenChangeAnimation.backward:defined
+			//#= private static ScreenChangeAnimation = ${polish.ScreenChangeAnimation.backward};
+		//#else
+			//#abort You need to define the polish.ScreenChangeAnimation.backward screen change animation as well, when you define the forward animation!
+		//#endif
+	//#endif
+
 	
 	
 	// do not change the following line!
@@ -75,6 +91,10 @@ public final class StyleSheet {
 		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
 	//#else
 		public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
+	//#endif
+
+	//#if polish.ScreenChangeAnimation.allowConfiguration == true
+		public static boolean enableScreenChangeAnimations = true;
 	//#endif
 
 	/**
@@ -321,6 +341,12 @@ public final class StyleSheet {
 	 */
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
 		if ( nextDisplayable instanceof Screen ) {
+			//#if polish.ScreenChangeAnimation.allowConfiguration == true
+				if (!enableScreenChangeAnimations) {
+					display.setCurrent( nextDisplayable );
+				}
+			//#endif
+
 			try {
 				Screen nextScreen = (Screen) nextDisplayable;
 				ScreenChangeAnimation screenAnimation = null;
@@ -331,13 +357,13 @@ public final class StyleSheet {
 					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
 						lastScreen = (Screen) lastDisplayable;
 						Command lastCommand = lastScreen.lastTriggeredCommand;
-						screenstyle = lastScreen.style;
 						if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
-							//#= screenAnimation = ${polish.ScreenChangeAnimation.back};
+							screenAnimation = backwardAnimation;
+							screenstyle = lastScreen.style;
 						}
 					}
 					if ( screenAnimation == null ) {
-						//#= screenAnimation = ${polish.ScreenChangeAnimation.forward};
+						screenAnimation = forwardAnimation;
 						screenstyle = nextScreen.style;
 					}
 				//#else
@@ -394,7 +420,9 @@ public final class StyleSheet {
 				nextScreen.paint( g );
 				//#debug
 				System.out.println("StyleSheet: showing screen animation");
-				screenAnimation = (ScreenChangeAnimation) screenAnimation.getClass().newInstance();
+				//#if ! polish.ScreenChangeAnimation.forward:defined
+					//screenAnimation = (ScreenChangeAnimation) screenAnimation.getClass().newInstance();
+				//#endif
 				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextScreen );
 			} catch (Exception e) {
 				//#debug error

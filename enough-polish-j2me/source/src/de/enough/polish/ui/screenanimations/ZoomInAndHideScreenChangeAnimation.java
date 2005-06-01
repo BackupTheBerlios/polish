@@ -67,9 +67,11 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
 	{
-		this.lastScreenRgb = new int[ width * height ];
-		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );
-		this.scaledScreenRgb = new int[ width * height ];
+		if ( this.lastScreenRgb == null ) {
+			this.lastScreenRgb = new int[ width * height ];
+			this.scaledScreenRgb = new int[ width * height ];
+		}
+		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );		
 		System.arraycopy( this.lastScreenRgb, 0, this.scaledScreenRgb, 0,  width * height );
 		//ImageUtil.scale( 200, this.scaleFactor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
 		super.show(style, dsplay, width, height, lstScreenImage,
@@ -82,6 +84,9 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	protected boolean animate() {
 		this.currentStep++;
 		if (this.currentStep >= this.steps) {
+			this.scaleFactor = 200;
+			this.steps = 10;
+			this.currentStep = 0;
 			return false;
 		}
 		int factor = 100 + (this.scaleFactor - 100) * this.currentStep / this.steps;

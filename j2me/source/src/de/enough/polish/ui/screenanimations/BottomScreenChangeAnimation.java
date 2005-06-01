@@ -90,6 +90,10 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 			*/
 			return true;
 		} else {
+			//#if polish.css.bottom-screen-change-animation-speed
+				this.speed = 2;
+			//#endif
+			this.currentY = 0;
 			return false;
 		}
 	}

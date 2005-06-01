@@ -87,6 +87,10 @@ public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
 		if (this.scaleDown) {
 			step--;
 			if (step <= 0) {
+				// set default values:
+				this.scaleFactor = 200;
+				this.steps = 6;
+				this.currentStep = 0;
 				return false;
 			}
 		} else {

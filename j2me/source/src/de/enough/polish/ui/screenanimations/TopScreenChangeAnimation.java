@@ -86,10 +86,12 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 			//#else
 				this.currentY += 2;
 			//#endif
-			/*
-			*/
 			return true;
 		} else {
+			//#if polish.css.top-screen-change-animation-speed
+				this.speed = 2;
+			//#endif
+			this.currentY = 0;
 			return false;
 		}
 	}

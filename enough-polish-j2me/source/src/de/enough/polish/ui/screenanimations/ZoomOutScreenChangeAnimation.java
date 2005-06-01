@@ -67,9 +67,11 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
 	{
-		this.nextScreenRgb = new int[ width * height ];
+		if ( this.nextScreenRgb == null ) {
+			this.nextScreenRgb = new int[ width * height ];
+			this.scaledScreenRgb = new int[ width * height ];
+		}
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		this.scaledScreenRgb = new int[ width * height ];
 		this.currentStep = this.steps;
 		ImageUtil.scale( 255/this.steps, this.scaleFactor, width, height, this.nextScreenRgb, this.scaledScreenRgb);
 		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtScreen);
@@ -81,6 +83,8 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	protected boolean animate() {
 		this.currentStep--;
 		if (this.currentStep <= 0) {
+			this.steps = 6;
+			this.scaleFactor = 200;
 			return false;
 		}
 		int factor = 100 + ( (this.scaleFactor - 100) * this.currentStep ) / this.steps;
