@@ -566,6 +566,7 @@
 		<mapping from="3dRotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
 		<mapping from="3d" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" />
+		<mapping from="shutter" to="new de.enough.polish.ui.screenanimations.ShutterScreenChangeAnimation()" />
 		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
 		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
 		<mapping from="zoominandhide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
@@ -596,6 +597,7 @@
 		description="The speed of the animation."
 		id="65"
 	/>
+
 	<attribute
 		name="bottom-screen-change-animation-speed"
 		type="integer"
@@ -604,5 +606,20 @@
 		id="66"
 	/>
 	
+	<attribute
+		name="shutter-screen-change-animation-speed"
+		type="integer"
+		appliesTo="ShutterScreenChangeAnimation"
+		description="The speed of the animation."
+		id="67"
+	/>
+	
+	<attribute
+		name="shutter-screen-change-animation-color"
+		type="color"
+		appliesTo="ShutterScreenChangeAnimation"
+		description="The color of the animation."
+		id="68"
+	/>
 	
 </attributes>
