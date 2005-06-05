@@ -27,6 +27,10 @@
 	<!-- containing the J2ME Polish installation.                 -->
 	<property name="polish.home" location="%{INSTALL_PATH}" />
 		
+	<!-- the device for the test mode - you can define it on the command-line
+	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
+	<property name="device" value="Generic/midp1"/>
+	
 	<!-- The siemens.home, nokia.home and motorola.home-          -->
 	<!-- properties can be necessary when their emulators         -->
 	<!-- should be started.                                       -->
@@ -105,7 +109,7 @@
 			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
 			<!-- the second deviceRequirements will be used instead. -->
 			<deviceRequirements if="test">
-				<requirement name="Identifier" value="Generic/midp1" />
+				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
 				<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />

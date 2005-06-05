@@ -28,6 +28,7 @@ package de.enough.polish.finalize.blackberry;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
@@ -35,11 +36,12 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.OutputFilter;
 
 /**
- * <p>Creates COD out of JAR files for RIM BlackBerry devices.</p>
+ * <p>Creates COD out of JAR files for RIM BlackBerry devices, also creates an ALX file for deployment using the BlackBerry Desktop Manager.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -47,6 +49,7 @@ import de.enough.polish.util.OutputFilter;
  *        22-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @author Stephen Johnson, original converter
  */
 public class JarToCodFinalizer 
 extends Finalizer
@@ -74,11 +77,19 @@ implements OutputFilter
 		if ( blackberryHome == null ) {
 			throw new BuildException("You need to define the Ant property \"blackberry.home\" that points to the JDE directory.");
 		}
+		
+		File rapcJarFile = env.resolveFile( "${blackberry.home}/bin/rapc.jar" );
+		if ( !rapcJarFile.exists() ) {
+			throw new BuildException("Your Ant property \"blackberry.home\" is invalid, it needs to point to the JDE directory (so that it finds the \"bin\\rapc.jar\" file within the ${blackberry.home} directory).");
+		}
+		
 		ArrayList commands = new ArrayList();
 		try {
+			
+			// call the rapc compiler for converting the JAR to a COD file:
 			commands.add( "java" );
 			commands.add( "-cp" );
-			commands.add( blackberryHome + "/bin/rapc.jar" );
+			commands.add( rapcJarFile.getAbsolutePath() );
 			commands.add( "net.rim.tools.compiler.Compiler" );
 			commands.add( "import=" + blackberryHome + "/lib/net_rim_api.jar" );
 			commands.add(  "codename=" + codName );
@@ -109,6 +120,46 @@ implements OutputFilter
 
 			csoFile.delete();
 			debugFile.delete();
+			
+			// now create an ALX file for deployment using the BlackBerry Desktop Manager:
+			ArrayList lines = new ArrayList();
+			lines.add( "<loader version=\"1.0\">");
+			lines.add( "<application id=\"" + codName + "\">" );
+			lines.add( "<name >" );
+			lines.add( env.getVariable("MIDlet-Name") );
+			lines.add( "</name>" );
+			String value = env.getVariable("MIDlet-Description");
+			if (value == null) {
+				value = "An application build with J2ME Polish.";
+			}
+			lines.add( "<description >" );
+			lines.add( value );
+			lines.add( "</description>" );
+			lines.add( "<version >" );
+			lines.add( env.getVariable("MIDlet-Version") );
+			lines.add( "</version>" );
+			lines.add( "<vendor >" );
+			lines.add( env.getVariable("MIDlet-Vendor") );
+			lines.add( "</vendor>" );
+			value = env.getVariable("MIDlet-Copyright");
+			lines.add( "<copyright >" );
+			if ( value != null ) {
+				lines.add( value );
+			} else {
+				lines.add( "Copyright (c) " + Calendar.getInstance().get( Calendar.YEAR ) + " " +  env.getVariable("MIDlet-Vendor") );
+			}
+			lines.add( "</copyright>" );
+			lines.add( "<fileset Java=\"1.0\">" );
+			lines.add( "<directory >" );
+			lines.add( "</directory>" );
+			lines.add( "<files >"  );
+			lines.add( codName + ".cod" );
+			lines.add( "</files>" );
+			lines.add( "</fileset>" );
+			lines.add( "</application>" );			
+			lines.add( "</loader>");
+			File alxFile = new File( jarFile.getParentFile(),  codName  + ".alx" );
+			FileUtil.writeTextFile(alxFile, lines);
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e){

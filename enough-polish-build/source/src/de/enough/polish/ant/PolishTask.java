@@ -1051,6 +1051,16 @@ public class PolishTask extends ConditionalTask {
 		String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
 		this.environment.addVariable( "polish.jadPath", jadPath );
 
+		// add info attributes:
+		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment.getVariables() );
+		for (int i = 0; i < jadAttributes.length; i++) {
+			Attribute attribute = jadAttributes[i];
+			this.environment.addVariable( attribute.getName(), attribute.getValue() );
+		}
+		String copyright = this.infoSetting.getCopyright();
+		if (copyright != null) {
+			this.environment.addVariable( "MIDlet-Copyrigh", copyright );
+		}
 		
 		// adjust polish.classes.ImageLoader in case the default package is used:
 		if (this.useDefaultPackage) {

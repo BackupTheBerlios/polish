@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="j2mepolish" name="enough-polish-example">
+<project basedir="." default="j2mepolish" name="enough-polish-roadrunner">
 	
 	<!-- The wtk.home property should point to the directory      -->
 	<!-- containing the Wireless Toolkit.                         -->
@@ -30,6 +30,9 @@
 		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
 	/>
 
+	<!-- the device for the test mode - you can define it on the command-line
+	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
+	<property name="device" value="Nokia/Series60Midp2"/>
 		
 	<!-- build targets, each target can be called via "ant [name]", 
 		 e.g. "ant clean", "ant notest j2mepolish" or just "ant" for calling the default-target -->
@@ -67,7 +70,7 @@
 		    />
 			<!-- selection of supported devices -->
 			<deviceRequirements if="test">
-				<requirement name="Identifier" value="Nokia/Series60"/>
+				<requirement name="Identifier" value="${device}"/>
 			</deviceRequirements>
 			<deviceRequirements unless="test">
 				<requirement name="Identifier" value="Nokia/Series60, Nokia/Series60Midp2, Sony-Ericsson/K700, Samsung/SGH-E800"/>
@@ -111,8 +114,7 @@
 					defaultexcludes="yes"
 					excludes="readme.txt, *.definition"
 				>
-					<localization defaultLocale="de_DE" dynamic="true" locales="en_US, de_DE" if="test" />
-					<localization dynamic="true" locales="en_US, de_DE" unless="test" />
+					<localization defaultLocale="en_US" dynamic="true" locales="en_US, de_DE" />
 				</resources>
 			</build>
 			<!-- launch emulator		-->
