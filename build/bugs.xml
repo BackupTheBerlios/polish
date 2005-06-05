@@ -239,10 +239,36 @@
 		<name>stringsInOffscreenAlwaysBlack</name>
 		<area>ui</area>
 		<description>Strings that are drawn in an image-buffer are always black.</description>
-		<solution>Use a bright background color or paint strings only directly on the Graphics element
-		given in the Canvas.paint() method.
+		<solution>
+			Use a bright background color or paint strings only directly on the Graphics element
+			given in the Canvas.paint() method.
 		</solution>
 	</bug>
+	
+	<bug>
+		<name>displaySetCurrentFlickers</name>
+		<area>ui</area>
+		<description>
+			Each time when a new screen is shown a white flash is seen. Also when an existing canvas is shown, 
+			apparently an internal buffer is shown first before paint() of that canvas is called.
+		</description>
+		<solution>
+			Use the J2ME Polish GUI (in fullscreen mode) or use a single canvas.
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>GameCanvasGetGraphicsNotInConstructor</name>
+		<area>game</area>
+		<description>
+			When you get the Graphics instance of a GameCanvas in fullscreen mode, you must not get it in the constructor, 
+			because in that case you cannot draw the complete available height.
+		</description>
+		<solution>
+			Retrieve the Graphics object at a later state, e.g. in the game loop.
+		</solution>
+	</bug>
+	
 
 	<!--
 	<bug>

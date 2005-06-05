@@ -79,7 +79,7 @@ public class RenamingResourceCopier extends ResourceCopier {
 	}
 	
 	public void setSearchPattern( String pattern ) {
-		System.out.println("search-patttern is: " + pattern );
+		//System.out.println("search-patttern is: " + pattern );
 		this.searchPattern = Pattern.compile( pattern );
 	}
 

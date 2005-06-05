@@ -147,6 +147,13 @@
 		<class>de.enough.polish.obfuscate.YGuardObfuscator</class>
 		<classpath>${polish.home}/import/yguard-lib.jar</classpath>
 	</extension>
+
+	<extension>
+		<type>obfuscator</type>
+		<name>yGuard</name>
+		<class>de.enough.polish.obfuscate.YGuardObfuscator</class>
+		<classpath>${polish.home}/import/yguard-lib.jar</classpath>
+	</extension>
 	
 	<extension>
 		<type>obfuscator</type>

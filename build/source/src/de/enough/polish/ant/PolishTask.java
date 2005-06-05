@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -959,6 +960,7 @@ public class PolishTask extends ConditionalTask {
 			if (this.devices == null || this.devices.length == 0) {
 				throw new BuildException("Your device-requirements are too strict - no device fulfills them." );
 			}
+			Arrays.sort( this.devices );
 		}
 	}
 	
@@ -1000,12 +1002,6 @@ public class PolishTask extends ConditionalTask {
 		String jarName = this.infoSetting.getJarName();
 		jarName = this.environment.writeProperties( jarName, true );
 		this.environment.addVariable( "polish.jarName", jarName );
-		String jarPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jarName;
-		this.environment.addVariable( "polish.jarPath", jarPath );
-		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
-		this.environment.addVariable( "polish.jadName", jadName );
-		String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
-		this.environment.addVariable( "polish.jadPath", jadPath );
 		
 		// enable the support for the J2ME Polish GUI, part 1: 
 		// check if a preprocessing variable is set for using the Polish GUI:
@@ -1046,6 +1042,15 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		}
+		
+		jarName = this.environment.getVariable( "polish.jarName" );
+		String jarPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jarName;
+		this.environment.addVariable( "polish.jarPath", jarPath );
+		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
+		this.environment.addVariable( "polish.jadName", jadName );
+		String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
+		this.environment.addVariable( "polish.jadPath", jadPath );
+
 		
 		// adjust polish.classes.ImageLoader in case the default package is used:
 		if (this.useDefaultPackage) {
@@ -1099,9 +1104,10 @@ public class PolishTask extends ConditionalTask {
 		System.out.println("preprocessing for device [" +  device.getIdentifier() + "]." );
 		try {
 			this.numberOfChangedFiles = 0;
-			String targetDir = this.buildSetting.getWorkDir().getAbsolutePath() 
-				+ File.separatorChar + device.getVendorName() 
-				+ File.separatorChar + device.getName();
+			String deviceSpecificBuildPath = File.separatorChar + device.getVendorName() 
+											+ File.separatorChar + device.getName();
+			deviceSpecificBuildPath = deviceSpecificBuildPath.replace(' ', '_' );
+			String targetDir = this.buildSetting.getWorkDir().getAbsolutePath() + deviceSpecificBuildPath;
 			if (locale != null) {
 				targetDir += File.separatorChar + locale.toString();
 			}

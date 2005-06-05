@@ -175,7 +175,7 @@
 		<description>A predecessor of the MIDP/2.0 game API without
 		transformations.
 		</description>
-		<names>siemens-color-game-api</names>
+		<names>siemens-color-game-api, siemens-color-game</names>
 		<symbol>siemens-color-game-api</symbol>
 		<files>siemens-color-game-api.jar</files>
 		<path>import/siemens-color-game-api.jar</path>

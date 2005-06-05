@@ -131,25 +131,19 @@
 		supportsPolishGui="true" >
 		<identifier>Nokia/Series60</identifier>
 		<features>isVirtual</features>
-		<groups>Series60</groups>
+		<groups>Series60E1</groups>
 		<capability name="OS" value="Symbian"/>
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate" />
 	</device>
 
 	<device
 		supportsPolishGui="true" >
 		<identifier>Nokia/Series60Midp2</identifier>
 		<features>isVirtual</features>
-		<groups>Series60</groups>
-		<capability name="OS" value="Symbian"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="VideoFormat" value="3gpp" />
-		<capability name="SoundFormat" value="midi, amr" />
+		<groups>Series60E2</groups>
 	</device>
 
 	<device
@@ -567,8 +561,8 @@
 		<identifier>Sony-Ericsson/K700, Sony-Ericsson/K700i, Sony-Ericsson/K700c</identifier>
 		<groups>Nokia-UI</groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
-		<capability name="ScreenSize" value="176x208"/>
-		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
@@ -590,7 +584,8 @@
 		<capability name="Font.medium" value="18" />
 		<capability name="Font.large" value="22" />
 		<capability name="Property.imei" value="com.sonyericsson.imei" />
-		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts" />
+		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts, setClipForFullScreenNeeded" />
+		<!--, needsNokiaUiForSystemAlerts -->
 	</device>
 
 	<device>
@@ -2201,7 +2196,7 @@
 	
 	<device>
 		<identifier>Nokia/6630</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -3115,6 +3110,7 @@
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/M65</identifier>
+		<groups>x65</groups>
 		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -3129,12 +3125,12 @@
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
-		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 	
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/S65</identifier>
+		<groups>x65</groups>
 		<features>hasCommandKeyEvents, hasCamera, isDoubleBuffered</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="CanvasSize" value="132x176"/>
@@ -3164,12 +3160,12 @@
 		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp" />
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq" />
 		<capability name="mmapi.protocol.capture" value="audio/amr, video/3gpp, image/jpeg" />
-		<capability name="Bugs" value="layerManagerSetViewWindow" />	
 	</device>
 
 	<device
 		supportsPolishGui="true">
 		<identifier>Siemens/SK65</identifier>
+		<groups>x65</groups>
 		<features>hasCommandKeyEvents, hasCamera</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="CanvasSize" value="132x176"/>
@@ -4654,18 +4650,6 @@
 		<capability name="Frequency" value="1500"/>
 	</device>	
 
-<!-- TTPCom devices -->
-
-	<device>
-		<identifier>TTPCom/B'Ngo</identifier>
-		<capability name="ScreenSize" value="220x176"/>
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="Network" value="GSM, GPRS"/>
-		<capability name="Frequency" value="900, 1800, 1900"/>
-	</device>	
-
 <!-- Mio devices -->
 
 	<device>
@@ -4688,6 +4672,7 @@
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="os" value="Windows Mobile 2003" />
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -4702,6 +4687,7 @@
 		<identifier>Sagem/MyX6</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -4716,6 +4702,7 @@
 		<identifier>Sagem/MyX7</identifier>
 		<features>doubleBuffering, hasCamera, hasVideo</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -4741,6 +4728,7 @@
 		<identifier>Sagem/MyV-75</identifier>
 		<features>doubleBuffering</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -4753,6 +4741,7 @@
 		<identifier>Sagem/MyV-65</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />

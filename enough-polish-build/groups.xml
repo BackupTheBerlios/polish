@@ -81,6 +81,7 @@
 		<capability name="JavaPackage" value="wmapi, mmapi" />		
 		<capability name="ScreenSize" value="176x208" />
 		<capability name="FullCanvasSize" value="176x208" />
+		<capability name="CanvasSize" value="176x144" />
 		<capability name="Font.small" value="14" />
 		<capability name="Font.medium" value="15" />
 		<capability name="Font.large" value="19" />
@@ -94,6 +95,7 @@
 	<group>
 		<name>Series60E1</name>
 		<parent>Series60</parent>
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, displaySetCurrentFlickers" />	
 	</group>
 
 	<group>
@@ -102,9 +104,21 @@
 		<capability name="OS" value="Symbian OS 7.0s" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="VideoFormat" value="3gpp" />
+		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="JavaPackage" value="btapi" />		
-		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts" />
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, displaySetCurrentFlickers, GameCanvasGetGraphicsNotInConstructor" />
 	</group>
+	
+	<group>
+		<name>Series60E2FP2</name>
+		<parent>Series60E2</parent>
+		<capability name="OS" value="Symbian OS 8.0a" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="m3g, pdaapi" />		
+	</group>
+	
 
 	<group>
 		<name>Series80</name>
@@ -120,6 +134,11 @@
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Series_90_MIDP_Concept_SDK_Beta_0_1" />
+	</group>
+
+	<group>
+		<name>x65</name>
+		<capability name="Bugs" value="layerManagerSetViewWindow, displaySetCurrentFlickers" />		
 	</group>
 		
 </groups>

@@ -96,7 +96,7 @@
 	<mkdir dir="../enough-polish-j2me/bin/preverified" />
 	<exec executable="${wtk.home}/bin/preverify">
 		<arg line="-classpath"/>
-		<arg line="import/midp2.jar:import/btapi.jar"/>
+		<arg line="import/m3g.jar:import/midp2.jar:import/btapi.jar"/>
 		<arg line="-d"/>
 		<arg line="../enough-polish-j2me/bin/preverified"/>
 		<arg line="../enough-polish-j2me/bin/classes"/>

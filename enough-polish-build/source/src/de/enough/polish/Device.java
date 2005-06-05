@@ -208,14 +208,13 @@ public class Device extends PolishComponent {
 		// load capabilities and features:
 		loadCapabilities(definition, this.identifier, "devices.xml");
 
-		//add groups:
-		ArrayList groupNamesList = new ArrayList();
-		ArrayList groupsList = new ArrayList();
+		// load group features and capabilities:
 		String groupsDefinition = definition.getChildTextTrim("groups");
+		String[] explicitGroupNames = null;
 		if (groupsDefinition != null && groupsDefinition.length() > 0) {
-			String[] tempGroupNames = StringUtil.splitAndTrim(groupsDefinition, ',');
-			for (int i = 0; i < tempGroupNames.length; i++) {
-				String groupName = tempGroupNames[i];
+			explicitGroupNames = StringUtil.splitAndTrim(groupsDefinition, ',');
+			for (int i = 0; i < explicitGroupNames.length; i++) {
+				String groupName = explicitGroupNames[i];
 				DeviceGroup group = groupManager.getGroup(groupName);
 				if (group == null) {
 					throw new InvalidComponentException(
@@ -226,20 +225,19 @@ public class Device extends PolishComponent {
 									+ "] - please check either [devices.xml] or [groups.xml].");
 				}
 				addComponent(group);
-				groupsList.add(group);
-				groupNamesList.add(groupName);
-				addFeature( "polish.group." + groupName );
 				String parentName = group.getParentIdentifier();
 				while (parentName != null) {
 					DeviceGroup parentGroup = groupManager.getGroup(parentName);
-					groupsList.add( parentGroup );
-					groupNamesList.add(parentName);
-					addFeature( "polish.group." + parentName );
+					addComponent( parentGroup );
 					parentName = parentGroup.getParentIdentifier();
 				}
+
 			}
 		}
-		
+
+		//add implicit groups:
+		ArrayList groupNamesList = new ArrayList();
+		ArrayList groupsList = new ArrayList();		
 		
 		// set midp-version:
 		String platformsStr = getCapability(JAVA_PLATFORM);
@@ -446,13 +444,35 @@ public class Device extends PolishComponent {
 		if (this.midpVersion == MIDP_1 && !hasFeature("polish.supportSpriteTransformation")) {
 			groupNamesList.add("NoSpriteTransformations");
 			groupsList.add(groupManager.getGroup("NoSpriteTransformations", true));
+		}		
+		
+		// add explicit groups:
+		// these groups are added last, so that the resource assembling order is correct
+		// (explicit groups are more specific than implicit groups)
+		if (explicitGroupNames != null) {
+			for (int i = 0; i < explicitGroupNames.length; i++) {
+				String groupName = explicitGroupNames[i];
+				DeviceGroup group = groupManager.getGroup(groupName);
+				groupsList.add(group);
+				groupNamesList.add(groupName);
+				addFeature( "polish.group." + groupName );
+				int index = groupsList.size() - 1;
+				String parentName = group.getParentIdentifier();
+				while (parentName != null) {
+					DeviceGroup parentGroup = groupManager.getGroup(parentName);
+					groupsList.add( index, parentGroup );
+					groupNamesList.add( index, parentName);
+					addFeature( "polish.group." + parentName );
+					parentName = parentGroup.getParentIdentifier();
+				}
+			}
 		}
 
 		this.groupNames = (String[]) groupNamesList
-				.toArray(new String[groupNamesList.size()]);
+			.toArray(new String[groupNamesList.size()]);
 		this.groups = (DeviceGroup[]) groupsList
-				.toArray(new DeviceGroup[groupsList.size()]);
-		
+			.toArray(new DeviceGroup[groupsList.size()]);
+
 	
 	}
 
