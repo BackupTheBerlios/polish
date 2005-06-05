@@ -66,9 +66,9 @@ public final class StyleSheet {
 		//#endif
 		//#= private static ScreenChangeAnimation forwardAnimation = ${polish.ScreenChangeAnimation.forward};
 		//#if polish.ScreenChangeAnimation.back:defined
-			//#= private static ScreenChangeAnimation = ${polish.ScreenChangeAnimation.back};
+			//#= private static ScreenChangeAnimation backwardAnimation = ${polish.ScreenChangeAnimation.back};
 		//#elif polish.ScreenChangeAnimation.backward:defined
-			//#= private static ScreenChangeAnimation = ${polish.ScreenChangeAnimation.backward};
+			//#= private static ScreenChangeAnimation backwardAnimation = ${polish.ScreenChangeAnimation.backward};
 		//#else
 			//#abort You need to define the polish.ScreenChangeAnimation.backward screen change animation as well, when you define the forward animation!
 		//#endif
@@ -131,7 +131,7 @@ public final class StyleSheet {
 		//#ifdef polish.images.directLoad
 			// when images should be loaded directly, try to do so now:
 			//#ifdef polish.classes.ImageLoader:defined
-				//#= Image image = ${polish.classes.ImageLoader}.loadImage( url );
+				//#= Image image = ${ classname( polish.classes.ImageLoader ) }.loadImage( url );
 			//#else
 				Image image = Image.createImage( url );
 			//#endif
@@ -343,14 +343,26 @@ public final class StyleSheet {
 		if ( nextDisplayable instanceof Screen ) {
 			//#if polish.ScreenChangeAnimation.allowConfiguration == true
 				if (!enableScreenChangeAnimations) {
-					display.setCurrent( nextDisplayable );
+					//#if polish.Bugs.displaySetCurrentFlickers
+						MasterCanvas.setCurrent(display, nextDisplayable);
+					//#else
+						display.setCurrent( nextDisplayable );						
+					//#endif
 				}
 			//#endif
 
 			try {
 				Screen nextScreen = (Screen) nextDisplayable;
 				ScreenChangeAnimation screenAnimation = null;
-				Displayable lastDisplayable = display.getCurrent();
+				Displayable lastDisplayable = null;
+				//#if polish.Bugs.displaySetCurrentFlickers
+					if ( MasterCanvas.instance != null ) {
+						//# lastDisplayable = MasterCanvas.instance.currentDisplayable;
+					}
+				//#else
+					lastDisplayable = display.getCurrent();
+				//#endif
+	
 				Screen lastScreen = null;
 				Style screenstyle = null;
 				//#if polish.ScreenChangeAnimation.forward:defined
@@ -367,32 +379,36 @@ public final class StyleSheet {
 						screenstyle = nextScreen.style;
 					}
 				//#else
-				if (nextScreen.style != null) {
-					screenstyle = nextScreen.style;
-					screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
-				}
-				if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
-					//#debug
-					System.out.println("StyleSheet: last displayable is a ScreenChangeAnomation" );
-					lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextScreen;
-				}
-				if (lastDisplayable != null && lastDisplayable instanceof Screen) {
-					//#debug
-					System.out.println("StyleSheet: last displayble is a Screen");
-					lastScreen = (Screen) lastDisplayable;
-					if (screenAnimation == null && lastScreen.style != null) {
-						screenstyle = lastScreen.style;
+					if (nextScreen.style != null) {
+						screenstyle = nextScreen.style;
 						screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
-						//#debug
-						System.out.println("StyleSheet: Using screen animation of last screen");
 					}
-				}
-				if ( screenAnimation == null ) {
-					//#debug
-					System.out.println("StyleSheet: found no screen animation");
-					display.setCurrent( nextDisplayable );
-					return;
-				}
+					if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
+						//#debug
+						System.out.println("StyleSheet: last displayable is a ScreenChangeAnomation" );
+						lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextScreen;
+					}
+					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
+						//#debug
+						System.out.println("StyleSheet: last displayble is a Screen");
+						lastScreen = (Screen) lastDisplayable;
+						if (screenAnimation == null && lastScreen.style != null) {
+							screenstyle = lastScreen.style;
+							screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+							//#debug
+							System.out.println("StyleSheet: Using screen animation of last screen");
+						}
+					}
+					if ( screenAnimation == null ) {
+						//#debug
+						System.out.println("StyleSheet: found no screen animation");
+						//#if polish.Bugs.displaySetCurrentFlickers
+							MasterCanvas.setCurrent(display, nextDisplayable);
+						//#else
+							display.setCurrent( nextDisplayable );						
+						//#endif
+						return;
+					}
 				//#endif
 				
 				//#if polish.FullCanvasSize:defined
@@ -431,7 +447,11 @@ public final class StyleSheet {
 			}
 			
 		} else {
-			display.setCurrent( nextDisplayable );
+			//#if polish.Bugs.displaySetCurrentFlickers
+				MasterCanvas.setCurrent(display, nextDisplayable);
+			//#else
+				display.setCurrent( nextDisplayable );						
+			//#endif
 		}
 	}
 	//#endif

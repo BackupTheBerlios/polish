@@ -1287,7 +1287,7 @@ implements CommandListener
 											g.setColor( this.textColor );
 										//#endif
 									}
-									g.drawString( this.caretRowFirstPart, rightBorder - this.caretRowLastPartWidth - this.caretX, y, Graphics.TOP | Graphics.RIGHT );
+									g.drawString( this.caretRowFirstPart, rightBorder - this.caretRowLastPartWidth - this.caretWidth, y, Graphics.TOP | Graphics.RIGHT );
 								} else if (this.isLayoutCenter) {
 									int width = this.caretX + this.caretWidth + this.caretRowLastPartWidth;
 									int leftX = centerX - (width / 2);

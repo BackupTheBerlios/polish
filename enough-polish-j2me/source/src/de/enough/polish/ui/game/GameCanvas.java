@@ -30,6 +30,8 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.MasterCanvas;
+
 //#ifdef polish.usePolishGui
 	//# import de.enough.polish.ui.Screen;
 //#endif
@@ -354,6 +356,9 @@ public abstract class GameCanvas
 	public void paint( Graphics g)
 	//#endif
 	{
+		//#if tmp.extendsPolishScreen && polish.FullCanvasSize:defined
+			//#= g.setClip( 0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
+		//#endif
 		if (this.setClip) {
 			g.clipRect( this.clipX, this.clipY, this.clipWidth, this.clipHeight);
 			this.setClip = false;
@@ -390,8 +395,13 @@ public abstract class GameCanvas
 		this.clipY = y;
 		this.clipWidth = width;
 		this.clipHeight = height;
-		repaint();
-		serviceRepaints();
+		//#if polish.Bugs.displaySetCurrentFlickers
+			MasterCanvas.instance.repaint();
+			MasterCanvas.instance.serviceRepaints();			
+		//#else
+			repaint();
+			serviceRepaints();			
+		//#endif
 	}
 
 	/**
@@ -411,8 +421,13 @@ public abstract class GameCanvas
 	 */
 	public void flushGraphics()
 	{
-		repaint();
-		serviceRepaints();
+		//#if polish.Bugs.displaySetCurrentFlickers
+			MasterCanvas.instance.repaint();
+			MasterCanvas.instance.serviceRepaints();			
+		//#else
+			repaint();
+			serviceRepaints();			
+		//#endif
 	}
 
 	//#ifdef tmp.extendsPolishScreen
@@ -449,7 +464,7 @@ public abstract class GameCanvas
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
-	protected void keyReleased(int keyCode) {
+	public void keyReleased(int keyCode) {
 		int gameAction = getGameAction(keyCode);
 		if (gameAction != 0) {
 			this.releasedKeys |= 1 << gameAction;

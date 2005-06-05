@@ -81,7 +81,14 @@ public class AnimationThread extends Thread {
 				Screen screen = StyleSheet.currentScreen;
 				if (screen != null ) {
 					if (screen.animate()) {
-						screen.repaint();
+						//#if polish.Bugs.displaySetCurrentFlickers
+							if ( MasterCanvas.instance != null ) {
+								MasterCanvas.instance.repaint();
+							}
+						//#else
+							screen.repaint();					
+						//#endif
+						
 						sleeptime = ANIMATION_INTERVAL;
 						animationCounter = 0;
 					} else {

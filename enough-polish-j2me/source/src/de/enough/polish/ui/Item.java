@@ -1021,7 +1021,11 @@ public abstract class Item extends Object
 		}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
-			scr.repaint();
+			//#if polish.Bugs.displaySetCurrentFlickers
+				MasterCanvas.instance.repaint();
+			//#else
+				scr.repaint();
+			//#endif
 		}
 	}
 	

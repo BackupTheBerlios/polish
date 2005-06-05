@@ -93,6 +93,7 @@ public abstract class Screen
 //#else
 	extends Canvas
 //#endif
+implements AccessibleCanvas
 {
 	
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
@@ -133,6 +134,9 @@ public abstract class Screen
 	private boolean isLayoutVCenter;
 	private boolean isLayoutBottom;
 	private boolean isInitialised;
+	//#if polish.ScreenChangeAnimation.forward:defined
+		protected Command lastTriggeredCommand;
+	//#endif	
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
 		private int fullScreenHeight;
@@ -144,9 +148,6 @@ public abstract class Screen
 		//#if polish.Screen.FireTriggersOkCommand == true
 			private Command okCommand;
 		//#endif
-		//#if polish.ScreenChangeAnimation.forward:defined
-			protected Command lastTriggeredCommand;
-		//#endif	
 		//#if polish.MenuBar.useExtendedMenuBar == true
 			private final MenuBar menuBar;
 			//#define tmp.useExternalMenuBar
@@ -401,7 +402,7 @@ public abstract class Screen
 	/**
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
-	protected void showNotify() {
+	public void showNotify() {
 		//#debug
 		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialised);
 		try {
@@ -491,7 +492,7 @@ public abstract class Screen
 	/**
 	 * Unregisters this screen and notifies all items that they will not be shown anymore.
 	 */
-	protected void hideNotify() {
+	public void hideNotify() {
 		//#ifdef polish.Vendor.Siemens
 			// Siemens sometimes calls hideNotify directly
 			// after showNotify for some reason.
@@ -978,7 +979,11 @@ public abstract class Screen
 		}
 		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
 		if (this.isInitialised && isShown()) {
-			repaint();
+			//#if polish.Bugs.displaySetCurrentFlickers
+				MasterCanvas.instance.repaint();
+			//#else
+				repaint();
+			//#endif
 		}
 	}
 	//#endif
@@ -1036,7 +1041,11 @@ public abstract class Screen
 			this.screenHeight = this.originalScreenHeight - tickerHeight;
 		}
 		if (isShown()) {
-			repaint();
+			//#if polish.Bugs.displaySetCurrentFlickers
+				MasterCanvas.instance.repaint();
+			//#else
+				repaint();
+			//#endif
 		}
 	}
 	//#endif
@@ -1061,7 +1070,7 @@ public abstract class Screen
 	 * 
 	 * @param keyCode The code of the pressed key
 	 */
-	protected void keyPressed(int keyCode) {
+	public void keyPressed(int keyCode) {
 		//#if polish.debug.error
 		try {
 		//#endif
@@ -1073,13 +1082,21 @@ public abstract class Screen
 				//#ifdef polish.key.ReturnKey:defined
 					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
 							callCommandListener( this.backCommand );
-							repaint();
+							//#if polish.Bugs.displaySetCurrentFlickers
+								MasterCanvas.instance.repaint();
+							//#else
+								repaint();
+							//#endif
 							//# return;
 					//# }
 				//#endif
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handleKeyPressed(keyCode, 0)) {
-						repaint();
+						//#if polish.Bugs.displaySetCurrentFlickers
+							MasterCanvas.instance.repaint();
+						//#else
+							repaint();
+						//#endif
 						return;
 					}
 					if (this.menuBar.isSoftKeyPressed) {
@@ -1096,7 +1113,11 @@ public abstract class Screen
 									&&  this.menuContainer.size() != 0 ) 
 							{
 								this.menuOpened = true;
-								repaint();
+								//#if polish.Bugs.displaySetCurrentFlickers
+									MasterCanvas.instance.repaint();
+								//#else
+									repaint();
+								//#endif
 								return;
 							} else {
 								gameAction = Canvas.FIRE;
@@ -1125,7 +1146,11 @@ public abstract class Screen
 						} else { 
 							this.menuContainer.handleKeyPressed(keyCode, gameAction);
 						}
-						repaint();
+						//#if polish.Bugs.displaySetCurrentFlickers
+							MasterCanvas.instance.repaint();
+						//#else
+							repaint();
+						//#endif
 						return;
 					}
 					if (doReturn) {
@@ -1150,7 +1175,11 @@ public abstract class Screen
 				}
 			//#endif
 			if (processed) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#if polish.debug.error
 		} catch (Exception e) {
@@ -1166,10 +1195,19 @@ public abstract class Screen
 	 * 
 	 * @param keyCode the code of the key, which is pressed repeatedly
 	 */
-	protected void keyRepeated(int keyCode) {
+	public void keyRepeated(int keyCode) {
 		keyPressed(keyCode);
 	}
-	
+
+	/**
+	 * Is called when a key is released.
+	 * 
+	 * @param keyCode the code of the key, which has been released
+	 */
+	public void keyReleased(int keyCode) {
+		// ignore
+	}
+
 	//#ifdef polish.useDynamicStyles	
 	/**
 	 * Retrieves the CSS selector for this screen.
@@ -1243,7 +1281,11 @@ public abstract class Screen
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd);
 			if (this.isShown()) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#else
 			if (this.menuCommands == null) {
@@ -1274,7 +1316,11 @@ public abstract class Screen
 					// this is a command for the right side of the menu:
 					this.menuSingleRightCommand = cmd;
 					if (isShown()) {
-						repaint();
+						//#if polish.Bugs.displaySetCurrentFlickers
+							MasterCanvas.instance.repaint();
+						//#else
+							repaint();
+						//#endif
 					}
 					return;
 				}
@@ -1289,7 +1335,11 @@ public abstract class Screen
 			}
 			this.menuCommands.add( cmd );
 			if (isShown()) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#endif
 	}
@@ -1301,7 +1351,11 @@ public abstract class Screen
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
 			if (this.isShown()) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#else
 			if (this.menuSingleRightCommand == cmd) {
@@ -1321,7 +1375,11 @@ public abstract class Screen
 					}
 				}
 				if (isShown()) {
-					repaint();
+					//#if polish.Bugs.displaySetCurrentFlickers
+						MasterCanvas.instance.repaint();
+					//#else
+						repaint();
+					//#endif
 				}
 				return;
 			}
@@ -1340,7 +1398,11 @@ public abstract class Screen
 				this.menuContainer.remove(index);			
 			}
 			if (isShown()) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#endif
 	}
@@ -1367,7 +1429,11 @@ public abstract class Screen
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (isShown()) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#endif
 	}
@@ -1392,7 +1458,11 @@ public abstract class Screen
 		this.focusedItem = null;
 		//#ifdef tmp.useExternalMenuBar
 			if (isShown()) {
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 			}
 		//#endif
 	}
@@ -1440,7 +1510,7 @@ public abstract class Screen
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int, int)
 	 */
-	protected void pointerPressed(int x, int y) {
+	public void pointerPressed(int x, int y) {
 		//#debug
 		System.out.println("PointerPressed at " + x + ", " + y );
 		try {
@@ -1477,13 +1547,21 @@ public abstract class Screen
 				//#else
 					handleKeyPressed( 0, gameAction );
 				//#endif
-				repaint();
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
 				return;
 			}
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handlePointerPressed(x, y)) {
-						repaint();
+						//#if polish.Bugs.displaySetCurrentFlickers
+							MasterCanvas.instance.repaint();
+						//#else
+							repaint();
+						//#endif
 						return;
 					}
 				//#else
@@ -1495,7 +1573,11 @@ public abstract class Screen
 							} else if (this.menuSingleRightCommand != null) {
 								callCommandListener(this.menuSingleRightCommand );
 							}
-							repaint();
+							//#if polish.Bugs.displaySetCurrentFlickers
+								MasterCanvas.instance.repaint();
+							//#else
+								repaint();
+							//#endif
 							return;
 						} else if (x <= this.menuLeftCommandX){
 							// assume that the left command has been pressed:
@@ -1510,7 +1592,11 @@ public abstract class Screen
 							} else {
 								this.menuOpened = true;
 							}
-							repaint();
+							//#if polish.Bugs.displaySetCurrentFlickers
+								MasterCanvas.instance.repaint();
+							//#else
+								repaint();
+							//#endif
 							return;
 						}
 					} else if (this.menuOpened) {
@@ -1532,7 +1618,11 @@ public abstract class Screen
 								callCommandListener( cmd );	
 							}
 						}
-						repaint();
+						//#if polish.Bugs.displaySetCurrentFlickers
+							MasterCanvas.instance.repaint();
+						//#else
+							repaint();
+						//#endif
 						return;
 					}
 				//#endif
@@ -1542,12 +1632,20 @@ public abstract class Screen
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				boolean processed = handlePointerPressed( x, y  );
 				if (processed) {
-					repaint();
+					//#if polish.Bugs.displaySetCurrentFlickers
+						MasterCanvas.instance.repaint();
+					//#else
+						repaint();
+					//#endif
 				}
 			//#else
 				//# boolean processed = handlePointerPressed( x, y );
 				if (processed) {
-					repaint();
+					//#if polish.Bugs.displaySetCurrentFlickers
+						MasterCanvas.instance.repaint();
+					//#else
+						repaint();
+					//#endif
 				}
 			//#endif
 			
@@ -1605,12 +1703,19 @@ public abstract class Screen
 				//#endif
 			}
 		//#endif
-		repaint();
+		//#if polish.Bugs.displaySetCurrentFlickers
+			if (MasterCanvas.instance != null) {
+				MasterCanvas.instance.repaint();
+			}
+		//#else
+			repaint();
+		//#endif
 	}
 	
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
-	protected void sizeChanged(int width, int height) {
+	public void sizeChanged(int width, int height) {
+		//#if false
 		//#debug
 		System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
 		//#ifdef tmp.menuFullScreen
@@ -1624,6 +1729,7 @@ public abstract class Screen
 		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
 		int y = this.titleHeight + this.infoHeight + this.subTitleHeight;
 		setContentArea( 0, y, this.screenWidth,  this.screenHeight - y );
+		//#endif
 	}
 	//#endif
 	

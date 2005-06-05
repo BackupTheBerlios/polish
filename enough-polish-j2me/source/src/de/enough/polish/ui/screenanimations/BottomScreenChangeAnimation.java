@@ -101,7 +101,7 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	protected void paint(Graphics g) {
+	public void paint(Graphics g) {
 		//#if polish.Bugs.fullScreenInPaint
 			if (! this.fullScreenModeSet ) {
 				setFullScreenMode(true);

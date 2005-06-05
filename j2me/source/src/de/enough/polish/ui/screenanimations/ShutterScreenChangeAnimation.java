@@ -119,7 +119,7 @@ public class ShutterScreenChangeAnimation extends ScreenChangeAnimation
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	protected void paint(Graphics g)
+	public void paint(Graphics g)
 	{
 		//#if polish.Bugs.fullScreenInPaint
 		if (! this.fullScreenModeSet)
@@ -131,9 +131,9 @@ public class ShutterScreenChangeAnimation extends ScreenChangeAnimation
 		
 		g.drawImage(this.lastScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.shutter-screen-change-animation-color
-		g.setColor(this.color);
+			g.setColor(this.color);
 		//#else
-		g.setColor(0);
+			g.setColor(0);
 		//#endif
 		g.drawLine(0, this.currentY, this.screenWidth, this.currentY);
 		g.setClip(0, 0, this.screenWidth, this.currentY);

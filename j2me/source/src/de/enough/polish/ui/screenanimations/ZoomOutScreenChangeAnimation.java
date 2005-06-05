@@ -99,7 +99,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
-	protected void keyPressed(int keyCode) {
+	public void keyPressed(int keyCode) {
 		super.keyPressed(keyCode);
 		this.nextScreenImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
@@ -107,14 +107,13 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	protected void paint(Graphics g) {
+	public void paint(Graphics g) {
 		//#if polish.Bugs.fullScreenInPaint
 			if (! this.fullScreenModeSet ) {
 				setFullScreenMode(true);
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-			
 		g.drawImage( this.lastScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 		

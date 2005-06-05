@@ -43,14 +43,18 @@ import javax.microedition.lcdui.Image;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public abstract class ScreenChangeAnimation
-//#if polish.midp2 && ! polish.Bugs.needsNokiaUiForSystemAlerts
+//#if polish.midp2
 	extends Canvas
 //#elif polish.classes.fullscreen:defined
 	//#= extends ${polish.classes.fullscreen}
 //#else
 	//#= extends Canvas 
 //#endif
-implements Runnable
+//#if polish.Bugs.displaySetCurrentFlickers
+	implements Runnable, AccessibleCanvas
+//#else
+	//# implements Runnable	
+//#endif
 {
 	protected Display display;
 	protected Screen nextScreen;
@@ -84,19 +88,56 @@ implements Runnable
 		this.nextScreenRgb = new int[ width * height ];
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
 		*/
-		dsplay.setCurrent( this );
+		//#if polish.Bugs.displaySetCurrentFlickers
+			MasterCanvas.setCurrent( dsplay, this );
+		//#else
+			dsplay.setCurrent( this );
+		//#endif
+		
 		//nxtScreen.showNotify();
 		//Thread thread = new Thread( this );
 		//thread.start();
 	}
 	
+	
 	protected abstract boolean animate();
 
+	
+	
+	//#if polish.hasPointerEvents
+	public void pointerPressed( int x, int y ) {
+		this.nextScreen.pointerPressed( x, y );
+		Graphics g = this.nextScreenImage.getGraphics();
+		this.nextScreen.paint( g );
+	}
+	//#endif
+	
+	public void showNotify() {
+		// ignore
+	}
+	
+	public void hideNotify() {
+		// ignore
+	}
+	
+	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+	public void sizeChanged( int width, int height ) {
+		// ignore
+	}
+	//#endif
+
+	public void keyRepeated( int keyCode ) {
+		keyPressed( keyCode );
+	}
+
+	public void keyReleased( int keyCode ) {
+		// ignore
+	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
-	protected void keyPressed( int keyCode ) {
+	public void keyPressed( int keyCode ) {
 		this.nextScreen.keyPressed( keyCode );
 		Graphics g = this.nextScreenImage.getGraphics();
 		this.nextScreen.paint( g );
@@ -108,11 +149,19 @@ implements Runnable
 	 */
 	public void run() {
 		if (animate()) {
-			repaint();
+			//#if polish.Bugs.displaySetCurrentFlickers
+				MasterCanvas.instance.repaint();
+			//#else
+				repaint();
+			//#endif
 		} else {
 			//#debug
 			System.out.println("ScreenChangeAnimation: setting next screen");
-			this.display.setCurrent( this.nextScreen );
+			//#if polish.Bugs.displaySetCurrentFlickers
+				MasterCanvas.setCurrent( this.display, this.nextScreen );
+			//#else
+				this.display.setCurrent( this.nextScreen );
+			//#endif
 		}
 	}
 
