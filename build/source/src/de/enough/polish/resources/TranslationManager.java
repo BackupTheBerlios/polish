@@ -44,8 +44,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.build.LocalizationSetting;
-import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.PropertyUtil;
@@ -65,13 +65,12 @@ import de.enough.polish.util.StringList;
 public class TranslationManager
 implements Comparator
 {
-	
+	public static final String ENVIRONMENT_KEY = "polish.TranslationManager";
 	protected final Map translationsByKey;
 	protected final Map preprocessingVariablesByKey;
 	protected final Locale locale;
 	protected final Device device;
 	protected final LocalizationSetting localizationSetting;
-	protected final Preprocessor preprocessor;
 	protected long lastModificationTime;
 	protected final List multipleParametersTranslations;
 	protected final boolean isDynamic;
@@ -81,6 +80,7 @@ implements Comparator
 	protected ArrayList singleParameterTranslations;
 	protected ArrayList plainTranslations;
 	protected final Project project;
+	private final Environment environment;
 
 	/**
 	 * Creates a new manager for translations.
@@ -88,12 +88,12 @@ implements Comparator
 	 * @param project the current Ant project
 	 * @param device the current device
 	 * @param locale the current locale
-	 * @param preprocessor the preprocessor which manages variables and symbols.
+	 * @param environment the environment
 	 * @param resourceDirs the directories containing resources for the given device
 	 * @param localizationSetting the localization setting
 	 * @throws IOException when resources could not be loaded
 	 */
-	public TranslationManager(Project project, Device device, Locale locale, Preprocessor preprocessor, File[] resourceDirs, LocalizationSetting localizationSetting )
+	public TranslationManager(Project project, Device device, Locale locale, Environment environment, File[] resourceDirs, LocalizationSetting localizationSetting )
 	throws IOException
 	{
 		this.project = project;
@@ -101,7 +101,7 @@ implements Comparator
 		this.isDynamic = localizationSetting.isDynamic();
 		this.locale = locale;
 		this.device = device;
-		this.preprocessor = preprocessor;
+		this.environment = environment;
 		this.translationsByKey = new HashMap();
 		this.preprocessingVariablesByKey = new HashMap();
 		this.multipleParametersTranslations = new ArrayList();
@@ -113,12 +113,12 @@ implements Comparator
 		processRawTranslations( rawTranslations );
 		
 		// now set DateFormat variables according to current locale:
-		String dateFormat = preprocessor.getVariable("polish.DateFormat"); 
+		String dateFormat = environment.getVariable("polish.DateFormat"); 
 		if ( dateFormat != null) {
 			// maybe the dateformat needs to be changed:
 			if (dateFormat.length() == 2) {
-				String separator = preprocessor.getVariable("polish.DateFormatSeparator");
-				String emptyText = preprocessor.getVariable("polish.DateFormatEmptyText");
+				String separator = environment.getVariable("polish.DateFormatSeparator");
+				String emptyText = environment.getVariable("polish.DateFormatEmptyText");
 				if ("de".equals(dateFormat)) {
 					dateFormat = "dmy";
 					if (separator == null) {
@@ -144,29 +144,31 @@ implements Comparator
 						emptyText = "MM-DD-YYYY";
 					}
 				}
-				preprocessor.addVariable( "polish.DateFormat", dateFormat );
-				preprocessor.addVariable( "polish.DateFormatSeparator", separator );
-				preprocessor.addVariable( "polish.DateFormatEmptyText", emptyText );
+				environment.addVariable( "polish.DateFormat", dateFormat );
+				environment.addVariable( "polish.DateFormatSeparator", separator );
+				environment.addVariable( "polish.DateFormatEmptyText", emptyText );
 			}
 		} else {
 			String language = locale.getLanguage();
 			if ("de".equals(language)) {
-				preprocessor.addVariable( "polish.DateFormat", "dmy" );
-				preprocessor.addVariable( "polish.DateFormatSeparator", "." );
-				preprocessor.addVariable( "polish.DateFormatEmptyText", "TT.MM.JJJJ" );
+				environment.addVariable( "polish.DateFormat", "dmy" );
+				environment.addVariable( "polish.DateFormatSeparator", "." );
+				environment.addVariable( "polish.DateFormatEmptyText", "TT.MM.JJJJ" );
 			} else if ("fr".equals(language)) {
-				preprocessor.addVariable( "polish.DateFormat", "dmy" );
-				preprocessor.addVariable( "polish.DateFormatSeparator", "." );
-				preprocessor.addVariable( "polish.DateFormatEmptyText", "JJ/MM/AAAA" );
+				environment.addVariable( "polish.DateFormat", "dmy" );
+				environment.addVariable( "polish.DateFormatSeparator", "." );
+				environment.addVariable( "polish.DateFormatEmptyText", "JJ/MM/AAAA" );
 			} else {
 				String country = locale.getCountry();
 				if ("US".equals(country)) {
-					preprocessor.addVariable( "polish.DateFormat", "mdy" );
-					preprocessor.addVariable( "polish.DateFormatSeparator", "-" );
-					preprocessor.addVariable( "polish.DateFormatEmptyText", "MM-DD-YYYY" );
+					environment.addVariable( "polish.DateFormat", "mdy" );
+					environment.addVariable( "polish.DateFormatSeparator", "-" );
+					environment.addVariable( "polish.DateFormatEmptyText", "MM-DD-YYYY" );
 				}
 			}
 		}
+		// register manager at the environment:
+		environment.set( ENVIRONMENT_KEY, this );
 	}
 
 	/**
@@ -260,7 +262,7 @@ implements Comparator
 		// in the second steps "ordinary" translations are processed.
 		// This is necessary, so that variables which are defined or
 		// changed in the messages-file can be used by other translations.
-		Map variables = this.preprocessor.getVariables();
+		Map variables = this.environment.getVariables();
 		String[] keys = (String[]) rawTranslations.keySet().toArray( new String[ rawTranslations.size()] );
 		// in the first round only set variables:
 		for (int i = 0; i < keys.length; i++) {
@@ -288,7 +290,7 @@ implements Comparator
 				variableFound = true;
 			}
 			if ( variableFound ) {
-				this.preprocessor.addVariable(key, value );
+				this.environment.addVariable(key, value );
 				this.preprocessingVariablesByKey.put( key, value );
 				// create final translation:
 				Translation translation = new Translation( key, value, 

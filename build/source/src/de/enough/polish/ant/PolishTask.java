@@ -1158,7 +1158,7 @@ public class PolishTask extends ConditionalTask {
 				}
 				*/
 				// load localized messages, this also sets localized variables automatically:
-				translationManager = this.resourceManager.getTranslationManager(device, locale, this.preprocessor );
+				translationManager = this.resourceManager.getTranslationManager(device, locale );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
 			}

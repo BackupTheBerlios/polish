@@ -73,6 +73,7 @@ public class Environment {
 	private BuildSetting buildSetting;
 	private LibraryManager libraryManager;
 	private final Task polishTask;
+	private final HashMap exchangeStore;
 	
 
 	/**
@@ -88,6 +89,7 @@ public class Environment {
 		this.polishTask = polishTask;
 		this.symbols = new HashMap();
 		this.variables = new HashMap();
+		this.exchangeStore = new HashMap();
 		this.temporarySymbols = new HashMap();
 		this.temporaryVariables = new HashMap();
 		this.extensionManager = extensionsManager;
@@ -521,5 +523,29 @@ public class Environment {
 
 	public Task getPolishTask() {
 		return this.polishTask;
+	}
+
+	/**
+	 * Sets any object to this environment.
+	 * This eases communication between different components.
+	 * 
+	 * @param key the key under which the value is stored
+	 * @param value the value
+	 * @see #get( String )
+	 */
+	public void set(String key, Object value ) {
+		this.exchangeStore.put( key, value );
+	}
+	
+	/**
+	 * Retrieves any object to this environment.
+	 * This eases communication between different components.
+	 * 
+	 * @param key the key under which the value is stored
+	 * @return the object that has been stored previously, or null when none has been set
+	 * @see #set( String, Object )
+	 */
+	public Object get( String key ) {
+		return this.exchangeStore.get( key );
 	}
 }

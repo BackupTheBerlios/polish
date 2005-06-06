@@ -47,7 +47,6 @@ import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.requirements.SizeMatcher;
 import de.enough.polish.preprocess.CssReader;
-import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.StyleSheet;
 
 /**
@@ -78,7 +77,7 @@ public class ResourceManager {
 	private final SizeMatcher[] dynamicFullCanvasSizeMatchers;
 	private final ResourceCopier resourceCopier;
 	private TranslationManager translationManager;
-	private Preprocessor preprocessor;
+	private final Environment environment;
 
 	/**
 	 * Creates a new resource manager.
@@ -93,6 +92,7 @@ public class ResourceManager {
 	{
 		super();
 		this.resourceSetting = setting;
+		this.environment = environment;
 		this.project = environment.getProject();
 		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
@@ -245,7 +245,7 @@ public class ResourceManager {
 			Locale locale = locales[i];
 			TranslationManager manager = createTranslationManager( device, 
 					locale, 
-					this.preprocessor, 
+					this.environment, 
 					getResourceDirs(device, locale), 
 					this.localizationSetting );
 			manager.saveTranslations( targetDir, device, locale, this.translationManager );
@@ -453,14 +453,12 @@ public class ResourceManager {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale (not null)
-	 * @param currentPreprocessor the preprocessor
 	 * @return the translation manager
 	 * @throws IOException when a messages-files could not be read
 	 */
-	public TranslationManager getTranslationManager( Device device, Locale locale, Preprocessor currentPreprocessor) 
+	public TranslationManager getTranslationManager( Device device, Locale locale ) 
 	throws IOException
 	{
-		this.preprocessor = currentPreprocessor;
 		if (!this.localizationSetting.isDynamic()  
 				|| this.translationManager == null  
 				|| !this.translationManager.getLocale().equals( locale ) ) 
@@ -468,12 +466,12 @@ public class ResourceManager {
 			this.translationManager = 
 				createTranslationManager( device, 
 						locale, 
-						currentPreprocessor, 
+						this.environment, 
 						getResourceDirs(device, locale), 
 						this.localizationSetting ); 
 		}
 		// resetting preprocessing variables:
-		currentPreprocessor.getEnvironment().addVariables( this.translationManager.getPreprocessingVariables() );
+		this.environment.addVariables( this.translationManager.getPreprocessingVariables() );
 		return this.translationManager;
 	}
 
@@ -482,21 +480,21 @@ public class ResourceManager {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale (not null)
-	 * @param currentPreprocessor the preprocessor
+	 * @param environment the environment settings
 	 * @param resourceDirs the directories containing resources for this device and this locale
 	 * @param setting the localization settings
 	 * @return an instance of TranslationManager
 	 * @throws IOException when some translation could not be loaded
 	 */
-	protected TranslationManager createTranslationManager(Device device, Locale locale, Preprocessor currentPreprocessor, File[] resourceDirs, LocalizationSetting setting) 
+	protected TranslationManager createTranslationManager(Device device, Locale locale, Environment environment, File[] resourceDirs, LocalizationSetting setting) 
 	throws IOException 
 	{
 		String className = this.localizationSetting.getTranslationManagerClassName();
 		if (className != null) {
 			try {
 				Class managerClass = Class.forName( className );
-				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, Locale.class, Preprocessor.class, File[].class, LocalizationSetting.class} );
-				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, currentPreprocessor, resourceDirs, setting} );
+				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, Locale.class, Environment.class, File[].class, LocalizationSetting.class} );
+				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, environment, resourceDirs, setting} );
 				return manager;
 			} catch (Exception e) {
 				//just return a normal translation manager
@@ -507,7 +505,7 @@ public class ResourceManager {
 			return new TranslationManager( this.project,
 				device, 
 				locale, 
-				currentPreprocessor, 
+				environment, 
 				getResourceDirs(device, locale), 
 				this.localizationSetting );
 		}
