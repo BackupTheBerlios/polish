@@ -566,8 +566,18 @@
 		<mapping from="3dRotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
 		<mapping from="3d" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" />
-		<mapping from="shutter" to="new de.enough.polish.ui.screenanimations.ShutterScreenChangeAnimation()" />
-		<mapping from="verticalShutter" to="new de.enough.polish.ui.screenanimations.VerticalShutterScreenChangeAnimation()" />
+		<mapping from="leftshutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
+		<mapping from="leftShutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
+		<mapping from="rightshutter" to="new de.enough.polish.ui.screenanimations.RightShutterScreenChangeAnimation()" />
+		<mapping from="rightShutter" to="new de.enough.polish.ui.screenanimations.RightShutterScreenChangeAnimation()" />
+		<mapping from="topshutter" to="new de.enough.polish.ui.screenanimations.TopShutterScreenChangeAnimation()" />
+		<mapping from="topShutter" to="new de.enough.polish.ui.screenanimations.TopShutterScreenChangeAnimation()" />
+		<mapping from="bottomshutter" to="new de.enough.polish.ui.screenanimations.BottomShutterScreenChangeAnimation()" />
+		<mapping from="bottomShutter" to="new de.enough.polish.ui.screenanimations.BottomShutterScreenChangeAnimation()" />
+		<mapping from="flash" to="new de.enough.polish.ui.screenanimations.FlashScreenChangeAnimation()" />
+		<mapping from="verticalflash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
+		<mapping from="verticalFlash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
+		<mapping from="scrollUp" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
 		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
 		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
 		<mapping from="zoominandhide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
@@ -608,35 +618,115 @@
 	/>
 	
 	<attribute
-		name="shutter-screen-change-animation-speed"
+		name="left-shutter-screen-change-animation-speed"
 		type="integer"
-		appliesTo="ShutterScreenChangeAnimation"
+		appliesTo="LeftShutterScreenChangeAnimation"
 		description="The speed of the animation."
 		id="67"
 	/>
 	
 	<attribute
-		name="shutter-screen-change-animation-color"
+		name="left-shutter-screen-change-animation-color"
 		type="color"
-		appliesTo="ShutterScreenChangeAnimation"
+		appliesTo="LeftShutterScreenChangeAnimation"
 		description="The color of the animation."
 		id="68"
 	/>
 	
 	<attribute
-		name="vertical-shutter-screen-change-animation-speed"
+		name="right-shutter-screen-change-animation-speed"
 		type="integer"
-		appliesTo="VerticalShutterScreenChangeAnimation"
+		appliesTo="RightShutterScreenChangeAnimation"
 		description="The speed of the animation."
 		id="69"
 	/>
 	
 	<attribute
-		name="vertical-shutter-screen-change-animation-color"
+		name="right-shutter-screen-change-animation-color"
 		type="color"
-		appliesTo="VerticalShutterScreenChangeAnimation"
+		appliesTo="RightShutterScreenChangeAnimation"
 		description="The color of the animation."
 		id="70"
+	/>
+	
+	<attribute
+		name="top-shutter-screen-change-animation-speed"
+		type="integer"
+		appliesTo="TopShutterScreenChangeAnimation"
+		description="The speed of the animation."
+		id="71"
+	/>
+	
+	<attribute
+		name="top-shutter-screen-change-animation-color"
+		type="color"
+		appliesTo="TopShutterScreenChangeAnimation"
+		description="The color of the animation."
+		id="72"
+	/>
+	
+	<attribute
+		name="bottom-shutter-screen-change-animation-speed"
+		type="integer"
+		appliesTo="BottomShutterScreenChangeAnimation"
+		description="The speed of the animation."
+		id="73"
+	/>
+	
+	<attribute
+		name="bottom-shutter-screen-change-animation-color"
+		type="color"
+		appliesTo="BottomShutterScreenChangeAnimation"
+		description="The color of the animation."
+		id="74"
+	/>
+	
+	<attribute
+		name="flash-screen-change-animation-speed"
+		type="integer"
+		appliesTo="FlashScreenChangeAnimation"
+		description="The speed of the animation."
+		id="75"
+	/>
+	
+	<attribute
+		name="flash-screen-change-animation-color"
+		type="color"
+		appliesTo="FlashScreenChangeAnimation"
+		description="The color of the animation."
+		id="76"
+	/>
+	
+	<attribute
+		name="vertical-flash-screen-change-animation-speed"
+		type="integer"
+		appliesTo="VerticalFlashScreenChangeAnimation"
+		description="The speed of the animation."
+		id="77"
+	/>
+	
+	<attribute
+		name="vertical-flash-screen-change-animation-color"
+		type="color"
+		appliesTo="VerticalFlashScreenChangeAnimation"
+		description="The color of the animation."
+		id="78"
+	/>
+	
+	<attribute
+		name="scrollup-screen-change-animation-speed"
+		type="integer"
+		appliesTo="ScrollUpScreenChangeAnimation"
+		description="The speed of the animation."
+		id="79"
+	/>
+	
+	<attribute
+		name="scrollup-screen-change-animation-color"
+		type="color"
+		appliesTo="ScrollUpScreenChangeAnimation"
+		description="The color of the animation."
+		id="80"
 	/>
 	
 </attributes>
