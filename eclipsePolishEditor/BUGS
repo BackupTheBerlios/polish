@@ -15,6 +15,7 @@ BUGS
 
 - 050523.01: mark occurrences does not remove previous java marks.
 
-- 050523.02: mark occurrences is not shutting down marks when the toggle button is pressed.
+- 050523.02: mark occurrences is not shutting down marks when the toggle button is pressed. DONE?
 
-
+- 050601.01: On eclipse 3.1M7 the coloring is not in place when the editor goes up. Also
+    after refactoring actions the coloring is gone.

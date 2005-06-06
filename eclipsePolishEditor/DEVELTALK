@@ -9,26 +9,27 @@ polish.javaplatform.mmapi, ...
 
 - when a variable is marked in the code it should be marked in //#= directives, too.
 
-- within //#= directive the 'this' is not colored.
+Das Problem:
+Um eine Vorschlagliste zusammenzustellen brauchen die ContentProcessor-Objekte die
+aktuelle envrionment. Dieese ändert sich aber (Objektaustausch), wenn initProject() wiederholt
+aufgerufen wird. Die ContentProcessoren können ihrerseits auch vernichtet werden, was das registrieren
+schwierig macht.
 
-ANT
-
-- The goal is to utilize ant to execute parts of a task.
-
-- To do that construct a Project as an environment for the task.
-
-- Entry point is Lauchner.run(...).
-
-- Interessting part starts in Main.runBuild(...).
-  . project.init().
-  . some project.setUserPreference("ant.file",""); and project.setUserPreference("ant.version","");
-  . possible commandline properties
-  . set system property HELPER_PROPERTY to 'ProjectHelper2'
-  . ProjectHelper.getProjectHelper() returns helper set in property.
-  . ProjectHelper.configureProject(project,this.buildfile);
-  . look at maybeconfigured() in Task. Do we need that?
-
-
+Ansätze:
+ - ContentProcessoren als ChangeListener am Projekt registrieren und informieren lassen, wenn
+   die environment ausgewechselt wurde. Problem: Damit die ContentProcessoren sich wieder deregistrieren
+   können, wenn der editor geschlossen wird, muß ein eigener SourceViewer bereitgestellt werden. Da
+   der CompilationUnitEditor einen inneren AdaptedSourceViewer hat und diesen literal referenziert,
+   müssen auch andere Methoden überschieben werden.
+ - Proxy-Environment:das sich ändernde Environment-Objekt wird in ein persistentes Proxy-Element
+   eingebettet.
+ - den ContentProcessoren das ganze MeposeProjekt übergeben, da es ebenfalls persistent ist (evtl.
+   statisch?). Nachteil: Sehr starke Kopplung an die innere Struktur des MeposeProjekts von anderen
+   Klassen. Aber jetzt wohl am schnellsten...
+ - Triviallösung: Abhängigkeiten hardcoden: Wenn sich das environment geändert hat, explizit die betreffenden
+   ContentProcessoren auf das neue Objekt setzen. EVIL...
+ - den listener mit weak references registrieren, damit ich nicht tracken muß, wann die ContentProcessoren sterben
+ 
 
 
 NAMING
@@ -36,7 +37,7 @@ NAMING
 All Plugins
 de.enough.mepose.cssEditor
 de.enough.mepose.paEditor (preprocessing aware editor)
-de.enough.mepose.MessagesEditor
+de.enough.mepose.messagesEditor
 de.enough.mepose.core (what to put in it? Maybe the current device? 'core' may be a feature name)
 de.enough.mepose.project (together with builders)
 de.enough.mepose.projectWizard (configuring project with nature and setting up build.xml)
@@ -44,6 +45,15 @@ de.enough.mepose.deviceManager (select device from requirements originating from
 
 AllFeatures
 org.j2mepolish.mepose.mainFeature
+
+Package hierarchy
+de.enough.mepose.cssEditor
+de.enough.mepose.paEditor
+de.enough.mepose.utils
+de.enough.mepose.messagesEditor
+de.enough.mepose.
+Thing about project names and package hierarchy.
+
 
 Usage of the term 'mepose'
 http://groups.msn.com/IMAGEHOSTING/evilkandykane.msnw

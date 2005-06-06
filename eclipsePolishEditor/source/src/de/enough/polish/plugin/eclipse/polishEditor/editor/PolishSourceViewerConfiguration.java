@@ -38,6 +38,7 @@ import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IAutoIndentStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -65,7 +66,7 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSi
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class PolishSourceViewerConfiguration extends JavaSourceViewerConfiguration {
-    //TODO: Not needed. Remove.
+    //TODO: Not needed?! Remove?!
     
 //    class DocumentListener implements IDocumentListener{
 //
@@ -131,11 +132,16 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 //    }
 
     private PolishSingleLineCommentScanner polishSingleLineCommentScanner;
+    private PolishEditor editor;
     
 	public PolishSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
-		super(colorManager,preferenceStore,editor,partitioning);
-		this.polishSingleLineCommentScanner = new PolishSingleLineCommentScanner(colorManager,preferenceStore);
-	}
+        super(colorManager,preferenceStore,editor,partitioning);
+        this.polishSingleLineCommentScanner = new PolishSingleLineCommentScanner(colorManager,preferenceStore);
+        if( ! (editor instanceof PolishEditor)) {
+            throw new IllegalArgumentException("ERROR:PolishSourceViewerConfiguration.PolishSourceViewerConfiguration:Parameter 'editor' is not instance of 'PolishEditor'");
+        }
+        this.editor = (PolishEditor)editor; 
+    }
 
     public PolishSingleLineCommentScanner getPolishSingleLineCommentScanner() {
         	return this.polishSingleLineCommentScanner;
@@ -200,7 +206,10 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
             CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
             compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
-            compoundContentAssistProcessor.add(new VariableContentAssistProcessor());
+      
+            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(this.editor.getDeviceEnvironment());
+            compoundContentAssistProcessor.add(processor);
+            this.editor.getMeposeProject().addObjectChangedListener(processor);
             contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }
@@ -208,13 +217,13 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     }
     
     private IJavaProject getProject() {
-        ITextEditor editor= getEditor();
-        if (editor == null)
+        ITextEditor editor2= getEditor();
+        if (editor2 == null)
             return null;
         
         IJavaElement element= null;
-        IEditorInput input= editor.getEditorInput();
-        IDocumentProvider provider= editor.getDocumentProvider();
+        IEditorInput input= editor2.getEditorInput();
+        IDocumentProvider provider= editor2.getDocumentProvider();
         if (provider instanceof ICompilationUnitDocumentProvider) {
             ICompilationUnitDocumentProvider cudp= (ICompilationUnitDocumentProvider) provider;
             element= cudp.getWorkingCopy(input);

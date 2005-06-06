@@ -19,6 +19,7 @@
         <import plugin="org.eclipse.jface.text"></import>
         <import plugin="org.eclipse.core.resources"></import>
         <import plugin="org.eclipse.jdt.core"></import>
+        <import plugin="org.apache.ant"/>
     </requires>
     <extension point="org.eclipse.ui.editors">
         <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif" id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" name="Polish Editor"></editor>

@@ -40,6 +40,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
+import de.enough.polish.Environment;
+import de.enough.polish.plugin.eclipse.core.MeposeProject;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
@@ -77,6 +79,8 @@ public class PolishEditor extends CompilationUnitEditor {
         
     }
     
+    private MeposeProject meposeProject;
+    private Environment deviceEnvironment;
     
     public PolishEditor() {
         this.propertyChangeListener = new PropertyChangeListener();
@@ -85,6 +89,16 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     
     
+    
+    protected void initializeEditor() {
+        this.meposeProject = MeposeProject.getTestProject();
+        this.deviceEnvironment = this.meposeProject.getEnvironment();
+        // TODO ricky implement initializeEditor
+        super.initializeEditor();
+    }
+
+
+
     public void createPartControl(Composite parent){
         
         // This one origins from JavaEditor and is a chain of 4 stores.
@@ -163,4 +177,37 @@ public class PolishEditor extends CompilationUnitEditor {
         this.occurrencesMarkerManager.removeAnnotations(); // Seems not to work as it complains about beeing not configured.
         super.uninstallOccurrencesFinder();
     }
+
+    /**
+     * @return Returns the deviceEnvironment.
+     */
+    public Environment getDeviceEnvironment() {
+        return this.deviceEnvironment;
+    }
+
+    
+    public MeposeProject getMeposeProject() {
+        return this.meposeProject;
+    }
+
+
+
+    public void setMeposeProject(MeposeProject meposeProject) {
+        this.meposeProject = meposeProject;
+    }
+
+
+
+    /**
+     * @param deviceEnvironment The deviceEnvironment to set.
+     */
+    public void setDeviceEnvironment(Environment deviceEnvironment) {
+        if(deviceEnvironment == null){
+            throw new IllegalArgumentException("ERROR:PolishEditor.setDeviceEnvironment(...):Parameter 'deviceEnvironment' is null.");
+        }
+        this.deviceEnvironment = deviceEnvironment;
+    }
+    
+    
+    
 }

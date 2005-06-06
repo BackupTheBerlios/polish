@@ -25,8 +25,10 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.internal.ui.text.template.contentassist.PositionBasedCompletionProposal;
 import org.eclipse.jface.text.IDocument;
@@ -37,12 +39,24 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
+import de.enough.polish.Environment;
+import de.enough.polish.plugin.eclipse.core.IObjectChangeListener;
+import de.enough.polish.plugin.eclipse.core.ObjectChangeEvent;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
-public class VariableContentAssistProcessor implements IContentAssistProcessor {
+// TODO:Find a common superclass.
+public class VariableContentAssistProcessor implements IContentAssistProcessor, IObjectChangeListener {
 
     private String errorMessage = null;
     private static ICompletionProposal[] emptyCompletionProposalArray = new ICompletionProposal[0];
+    private Environment deviceEnvironment;
+    
+    
+    public VariableContentAssistProcessor(Environment deviceEnvironment) {
+        // Having a null environment sould be okay, as it is possible that no build.xml is
+        // specified for the editor. No variable completion is possible in this case.
+        this.deviceEnvironment = deviceEnvironment;
+    }
     
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
                                                             int offset) {
@@ -56,17 +70,28 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor {
         //int lineInDocument;
         Position startOfVariableAsPosition;
         startOfVariableAsPosition = PolishDocumentUtils.extractVariableAtOffset(document,offset);
+        // There is no variable at offset.
         if(startOfVariableAsPosition == null) {
             return emptyCompletionProposalArray;
         }
         
-        String startOfDirectiveAsString = "";
-        startOfDirectiveAsString = PolishDocumentUtils.makeStringFromPosition(document,startOfVariableAsPosition);
+        String startOfVariableAsString = "";
+        startOfVariableAsString = PolishDocumentUtils.makeStringFromPosition(document,startOfVariableAsPosition);
         
         List completionProposals = new LinkedList();
-       
-        completionProposals.add(new PositionBasedCompletionProposal("Hallo ",startOfVariableAsPosition,4));
-        completionProposals.add(new PositionBasedCompletionProposal("Hallo ",startOfVariableAsPosition,6));
+        // No environment means we know nothing about possible variables.
+        if(this.deviceEnvironment == null) {
+            return emptyCompletionProposalArray;
+        }
+        Map variableToValueMapping = this.deviceEnvironment.getVariables();
+        for (Iterator iterator = variableToValueMapping.keySet().iterator(); iterator.hasNext(); ) {
+            String variableName = (String) iterator.next();
+            if(variableName.startsWith(startOfVariableAsString)) {
+                completionProposals.add(new PositionBasedCompletionProposal(variableName,startOfVariableAsPosition,1,null,null,null,(String)variableToValueMapping.get(variableName)));
+            }
+        }
+        //completionProposals.add(new PositionBasedCompletionProposal("Hallo ",startOfVariableAsPosition,4));
+        //completionProposals.add(new PositionBasedCompletionProposal("Hallo ",startOfVariableAsPosition,6));
 //        for(int index = 0; index < IPolishConstants.POLISH_DIRECTIVES.length; index++) {
 //            if(IPolishConstants.POLISH_DIRECTIVES[index].startsWith(startOfDirectiveAsString)) {
 //                StringBuffer replacementText = new StringBuffer();
@@ -99,4 +124,14 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor {
         return null;
     }
 
+    /*
+     * @see de.enough.polish.plugin.eclipse.core.IObjectChangeListener#handleObjectChangedEvent(de.enough.polish.plugin.eclipse.core.ObjectChangeEvent)
+     */
+    public void handleObjectChangedEvent(ObjectChangeEvent objectChangeEvent) {
+        if(objectChangeEvent == null){
+            throw new IllegalArgumentException("ERROR:VariableContentAssistProcessor.handleObjectChangedEvent(...):Parameter 'objectChangeEvent' is null.");
+        }
+        
+    }
+    
 }

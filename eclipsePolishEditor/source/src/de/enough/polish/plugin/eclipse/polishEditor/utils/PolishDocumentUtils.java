@@ -204,6 +204,9 @@ public class PolishDocumentUtils {
             if("${".equals(prefix) || prefix.endsWith("$")) {
                 variableFound = true;
             }
+            else {
+                // TODO: Look out for comparison operators to the right of the word.
+            }
         } catch (BadLocationException exception) {
             variableFound = false;
         }
