@@ -63,15 +63,16 @@ public class DeviceGroupManager {
 	 * 
 	 * @param groupsIS the InputStream containing the groups definitions.
 	 * 			Usally this is the groups.xml file in the current directory.
+	 * @param capabilityManager the manager of capabilities
 	 * @throws JDOMException when there are syntax errors in groups.xml
 	 * @throws IOException when groups.xml could not be read
 	 * @throws InvalidComponentException when a group definition has errors
 	 */
-	public DeviceGroupManager( InputStream groupsIS ) 
+	public DeviceGroupManager( InputStream groupsIS, CapabilityManager capabilityManager ) 
 	throws InvalidComponentException, JDOMException, IOException 
 	{
 		this.groups = new HashMap();
-		loadGroups( groupsIS );
+		loadGroups( groupsIS, capabilityManager );
 		groupsIS.close();
 	}
 	
@@ -80,11 +81,12 @@ public class DeviceGroupManager {
 	 * 
 	 * @param groupsIS the InputStream containing the groups definitions.
 	 * 			Usally this is the groups.xml file in the current directory.
+	 * @param capabilityManager the manager of capabilities
 	 * @throws JDOMException when there are syntax errors in groups.xml
 	 * @throws IOException when groups.xml could not be read
 	 * @throws InvalidComponentException when a group definition has errors
 	 */
-	private void loadGroups(InputStream groupsIS) 
+	private void loadGroups(InputStream groupsIS, CapabilityManager capabilityManager) 
 	throws InvalidComponentException, JDOMException, IOException 
 	{
 		if (groupsIS == null) {
@@ -95,9 +97,20 @@ public class DeviceGroupManager {
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element deviceElement = (Element) iter.next();
-			DeviceGroup group = new DeviceGroup( deviceElement );
+			DeviceGroup group = new DeviceGroup( deviceElement, capabilityManager );
+			String parentName = group.getParentIdentifier();
+			if (parentName != null) {
+				//System.out.println("\nsetting " + parentName + " as parent for group " + group.getIdentifier());
+				DeviceGroup parent = getGroup( parentName );
+				if (parent == null) {
+					throw new InvalidComponentException("The group [" + group.getIdentifier() + "] has the non-existing parent [" + parentName + "]. Check your [groups.xml]");
+				}
+				//System.out.println("group: setting parent " + parentName + " for group " + group.getIdentifier() );
+				group.addComponent( parent );
+			}
 			this.groups.put( group.getIdentifier(), group );
 		}
+		/*
 		DeviceGroup[] groupArray = (DeviceGroup[]) this.groups.values().toArray( new DeviceGroup[ this.groups.size() ] );
 		for (int i = 0; i < groupArray.length; i++) {
 			DeviceGroup group = groupArray[i];
@@ -108,9 +121,11 @@ public class DeviceGroupManager {
 				if (parent == null) {
 					throw new InvalidComponentException("The group [" + group.getIdentifier() + "] has the non-existing parent [" + parentName + "]. Check your [groups.xml]");
 				}
+				System.out.println("group: setting parent " + parentName + " for group " + group.getIdentifier() );
 				group.addComponent( parent );
 			}
 		}
+		*/
 	}
 
 	/**
@@ -139,12 +154,12 @@ public class DeviceGroupManager {
 		return group;
 	}
 
-	public void loadCustomGroups(File customGroups ) 
+	public void loadCustomGroups(File customGroups, CapabilityManager capabilityManager ) 
 	throws InvalidComponentException, JDOMException 
 	{
 		if (customGroups.exists()) {
 			try {
-				loadGroups( new FileInputStream( customGroups ) );
+				loadGroups( new FileInputStream( customGroups ), capabilityManager );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-groups.xml]: " + e.toString() );

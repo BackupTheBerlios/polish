@@ -86,6 +86,7 @@ implements Comparable
 		if (parent != null) {
 			this.capabilities.putAll( parent.getCapabilities() );
 			this.features.putAll(  parent.getFeatures() );
+			this.featuresAsString = parent.featuresAsString;
 		}
 	}
 
@@ -124,7 +125,7 @@ implements Comparable
 		
 		// now set features:
 		String featureDefinition = definition.getChildTextTrim( "features");
-		if (featureDefinition != null) {
+		if (featureDefinition != null && featureDefinition.length() > 0) {
 			String[] definedFeatures = StringUtil.splitAndTrim( featureDefinition, ',');
 			for (int i = 0; i < definedFeatures.length; i++) {
 				addFeature( definedFeatures[i] );
@@ -134,6 +135,7 @@ implements Comparable
 			} else {
 				this.featuresAsString = featureDefinition;
 			}
+			//System.out.println( this.identifier + ".loadCapabilities(): featuresAsString=" + this.featuresAsString);
 		}
 	}
 
@@ -150,27 +152,27 @@ implements Comparable
 		for (Iterator iter = caps.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
 			//System.out.println("adding component-key " + key);
-			String currentValue = (String) this.capabilities.get( name);
+			//sString currentValue = (String) this.capabilities.get( name);
 			//System.out.println("current value: " + currentValue);
 			String componentValue = (String) caps.get( name );
 			//System.out.println("component value: " + componentValue);
-			if (currentValue == null) {
+			//if (currentValue == null) {
 				// okay, this capability has not been defined so far:
-				addCapability( name, componentValue );
-			} else if ( (Device.JAVA_PACKAGE.equalsIgnoreCase(name) ) 
-					|| (Device.JAVA_PROTOCOL.equalsIgnoreCase(name)) 
-					|| (Device.VIDEO_FORMAT.equalsIgnoreCase(name))
-					|| (Device.SOUND_FORMAT.equalsIgnoreCase(name)) 
-					|| (Device.BUGS.equalsIgnoreCase(name)) ) {
+			addCapability( name, componentValue );
+			//} else if ( (Device.JAVA_PACKAGE.equalsIgnoreCase(name) ) 
+			//		|| (Device.JAVA_PROTOCOL.equalsIgnoreCase(name)) 
+			//		|| (Device.VIDEO_FORMAT.equalsIgnoreCase(name))
+			//		|| (Device.SOUND_FORMAT.equalsIgnoreCase(name)) 
+			//		|| (Device.BUGS.equalsIgnoreCase(name)) ) {
 				// add additional package/protocol definitions:
-				String newValue = currentValue + "," + componentValue;
-				addCapability(name, newValue);
-			} // else do not overwrite weaker capability
+			//	String newValue = currentValue + "," + componentValue;
+			//	addCapability(name, newValue);
+			//} // else do not overwrite weaker capability
 		}
 		
 		// 2. set all features (overwriting will do no harm):
 		Set feats = component.features.keySet();
-		for (Iterator iter = feats.iterator(); iter.hasNext();) {
+		for ( Iterator iter = feats.iterator(); iter.hasNext(); ) {
 			String name = (String) iter.next();
 			this.features.put( name, Boolean.TRUE );
 		}
@@ -182,6 +184,7 @@ implements Comparable
 			} else {
 				this.featuresAsString = component.featuresAsString;
 			}
+			//System.out.println( this.identifier + ".addComponent(): featuresAsString=" + this.featuresAsString);
 		}
 	}
 	
@@ -250,15 +253,37 @@ implements Comparable
 		} else if (name.startsWith("HardwarePlatform.")) {
 			name = name.substring( 17 );
 		}
+		name = name.toLowerCase();
+		if (!name.startsWith("polish.")) {
+			name = "polish." + name;
+		}
 
+		//boolean debug = (name.indexOf("javapackage") != -1);
 		if (this.capabilityManager != null) {
 			Capability capability = this.capabilityManager.getCapability( name );
 			if ( capability != null ) {
 				if ( capability.appendExtensions() ) {
 					//value = value.toLowerCase();
 					String existingValue = getCapability( name );
+					//if (debug) {
+					//	System.out.println( this.identifier + ": " + name + ": value = [" + value + "], existingValue = [" + existingValue + "]");
+					//}
 					if (existingValue != null) {
-						value += "," + existingValue;
+						String[] singleValues = StringUtil.splitAndTrim( value, ',' );
+						boolean valueAdded = false;
+						for (int i = 0; i < singleValues.length; i++) {
+							String singleValue = singleValues[i];
+							//TODO what happens if I add "mmapi" to a "mmaapi1.1" device?
+							if ( existingValue.indexOf( singleValue ) == -1) {
+								existingValue += ", " + singleValue;
+								valueAdded = true;
+							}
+						}
+						if (valueAdded) {
+							value = existingValue;
+						} else {
+							return;
+						}
 					}
 				}
 				String group = capability.getImplicitGroup();
@@ -267,9 +292,9 @@ implements Comparable
 				}
 			}
 		}
-		if (!name.startsWith("polish.")) {
-			name = "polish." + name;
-		}
+		//if (debug) {
+		//	System.out.println(this.identifier + ": " + name + "=" + value);
+		//}
 		/*
 		if ( (Device.JAVA_PACKAGE.equals(name) ) 
 				|| (Device.JAVA_PROTOCOL.equals(name)) 
@@ -285,16 +310,16 @@ implements Comparable
 		addSingleCapability( name, value );
 		
 		// when the capability is a size, then also add a height and a width:
-		if (name.endsWith("Size") && value.indexOf('x') > 0) {
+		if (name.endsWith("size") && value.indexOf('x') > 0) {
 			String[] values = StringUtil.splitAndTrim( value, 'x' );
 			String nameStart = name.substring(0, name.length() - 4);
-			String width = nameStart + "Width";
+			String width = nameStart + "width";
 			addSingleCapability( width, values[0]);
-			String height = nameStart + "Height";
+			String height = nameStart + "height";
 			addSingleCapability( height, values[1]);
 			if (values.length == 3) {
-				String depth = nameStart + "Depth";
-				addSingleCapability( depth, values[1]);
+				String depth = nameStart + "depth";
+				addSingleCapability( depth, values[2]);
 			}
 		}
 		

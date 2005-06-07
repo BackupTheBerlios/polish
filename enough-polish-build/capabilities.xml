@@ -83,6 +83,14 @@
 	</capability>
 
 	<capability>
+		<identifier>Bugs</identifier>
+		<extension-mode>append</extension-mode>
+		<group>Issues</group>
+		<required>no</required>
+		<type>list</type>
+	</capability>
+
+	<capability>
 		<identifier>build.Preverifier</identifier>
 		<extension-mode>overwrite</extension-mode>
 		<group>Build</group>

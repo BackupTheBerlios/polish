@@ -42,6 +42,7 @@ import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
 
+import org.apache.tools.ant.AntClassLoader;
 import org.jdom.Element;
 
 import java.io.File;
@@ -151,6 +152,7 @@ public class Device extends PolishComponent {
 	private Environment environment;
 
 	private String bootClassPath;
+	private ClassLoader classLoader;
 
 
 
@@ -224,14 +226,17 @@ public class Device extends PolishComponent {
 									+ groupName
 									+ "] - please check either [devices.xml] or [groups.xml].");
 				}
+				//System.out.println( this.identifier + ": adding group [" + groupName + "], JavaPackage=" + group.getCapability("polish.JavaPackage") );
 				addComponent(group);
+				/*
 				String parentName = group.getParentIdentifier();
 				while (parentName != null) {
 					DeviceGroup parentGroup = groupManager.getGroup(parentName);
+					System.out.println( this.identifier + ": adding parent group [" + parentName + "] + JavaPackage=" + parentGroup.getCapability("polish.JavaPackage"));
 					addComponent( parentGroup );
 					parentName = parentGroup.getParentIdentifier();
 				}
-
+				*/
 			}
 		}
 
@@ -755,4 +760,20 @@ public class Device extends PolishComponent {
 		return this.bootClassPath;
 	}
 
+	/**
+	 * Retrieves the classloader that contains all classes that are available for this device.
+	 * This is mainly used for postcompilers.
+	 *  
+	 * @return the initialized and ready to use classloader.
+	 */
+	public ClassLoader getClassLoader() {
+		if (this.classLoader == null) {
+			AntClassLoader acl = new AntClassLoader();
+			acl.addPathElement( this.bootClassPath );
+			acl.addPathElement( this.classPath );
+			acl.addPathElement( this.classesDir );
+			this.classLoader = acl;
+		}
+		return this.classLoader;
+	}
 }

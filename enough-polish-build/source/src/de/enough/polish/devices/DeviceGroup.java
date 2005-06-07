@@ -54,11 +54,13 @@ public class DeviceGroup extends PolishComponent {
 	 * Creates a new device group.
 	 * 
 	 * @param definition The xml definition of this group.
+	 * @param capabilityManager the manager of capabilities
 	 * @throws InvalidComponentException when the given definition contains errors.
 	 */
-	public DeviceGroup( Element definition ) 
+	public DeviceGroup( Element definition, CapabilityManager capabilityManager ) 
 	throws InvalidComponentException 
 	{
+		super( null, capabilityManager );
 		this.identifier = definition.getChildTextTrim( "name" );
 		//System.out.println("\ninitialising group " + this.identifier );
 		if (this.identifier == null) {

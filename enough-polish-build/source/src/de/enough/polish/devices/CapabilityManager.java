@@ -95,8 +95,11 @@ public class CapabilityManager {
 				throw new InvalidComponentException("The issue [" + capability.getIdentifier() 
 						+ "] defined twice. Please remove one in [capabilities.xml].");
 			}
-			this.capabilitiesByIdentifier.put( capability.getIdentifier(), capability );
-			this.capabilitiesByIdentifier.put( "polish." + capability.getIdentifier(), capability );
+			String identifier = capability.getIdentifier();
+			this.capabilitiesByIdentifier.put( identifier, capability );
+			identifier = identifier.toLowerCase();
+			this.capabilitiesByIdentifier.put( identifier, capability );
+			this.capabilitiesByIdentifier.put( "polish." + identifier, capability );
 		}		
 	}
 	

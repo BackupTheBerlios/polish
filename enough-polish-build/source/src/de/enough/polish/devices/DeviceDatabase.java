@@ -142,19 +142,19 @@ public class DeviceDatabase {
 			
 			// load device groups:
 			is = (InputStream) inputStreamsByFileName.get("groups.xml");
-			this.groupManager = new DeviceGroupManager( is );
+			this.groupManager = new DeviceGroupManager( is, this.capabilityManager );
 			file = (File) customFilesByFileName.get("custom-groups.xml");
 			if ( file != null ) {
-				this.groupManager.loadCustomGroups( file );
+				this.groupManager.loadCustomGroups( file, this.capabilityManager );
 			} else {
 				// use default vendors:
 				file = new File( polishHome, "custom-groups.xml");
 				if (file.exists()) {
-					this.groupManager.loadCustomGroups( file );
+					this.groupManager.loadCustomGroups( file, this.capabilityManager );
 				}
 				file = new File( projectHome, "custom-groups.xml");
 				if (file.exists()) {
-					this.groupManager.loadCustomGroups( file );
+					this.groupManager.loadCustomGroups( file, this.capabilityManager );
 				}
 			}
 			
