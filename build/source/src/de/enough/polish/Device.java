@@ -770,9 +770,14 @@ public class Device extends PolishComponent {
 		if (this.classLoader == null) {
 			AntClassLoader acl = new AntClassLoader();
 			acl.addPathElement( this.bootClassPath );
-			acl.addPathElement( this.classPath );
+			for (int i=0; i < this.classPaths.length; i++ ) {
+				String path = this.classPaths[i];
+				acl.addPathElement( path );
+			}
 			acl.addPathElement( this.classesDir );
+			System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );
 			this.classLoader = acl;
+			
 		}
 		return this.classLoader;
 	}

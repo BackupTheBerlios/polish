@@ -92,6 +92,7 @@ public abstract class PostCompiler extends Extension {
 	public void execute(Device device, Locale locale, Environment env)
 	throws BuildException 
 	{
+		System.out.println("Invoking postcompiler [" + getClass().getName() + "]...");
 		postCompile( new File( device.getClassesDir() ), device );
 	}
 	
