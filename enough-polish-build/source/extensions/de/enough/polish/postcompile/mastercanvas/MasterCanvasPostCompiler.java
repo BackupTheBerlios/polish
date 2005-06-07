@@ -1,5 +1,5 @@
 /*
- * Created on 18-May-2005 at 15:44:27.
+ * Created on 07-Jun-2005 at 13:09:58.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,11 +23,10 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.postcompile.screenchange;
+package de.enough.polish.postcompile.mastercanvas;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 
@@ -38,56 +37,43 @@ import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.util.FileUtil;
 
 /**
- * <p>Moves calls to Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ) when screen change effects are activated.</p>
+ * <p>Maps display.setCurrent(), display.getCurrent() and Canvas.repaint() on MasterCanvas.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        18-May-2005 - rob creation
+ *        07-Jun-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ScreenChangerPostCompiler extends PostCompiler {
+public class MasterCanvasPostCompiler extends PostCompiler {
 
 	/**
-	 * Creates a new screen changer post compiler.
+	 * Creates a new post compiler
 	 */
-	public ScreenChangerPostCompiler() {
+	public MasterCanvasPostCompiler() {
 		super();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.postcompile.PostCompiler#postCompile(java.io.File, de.enough.polish.Device)
 	 */
 	public void postCompile(File classesDir, Device device)
 	throws BuildException 
 	{
-		boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
-		if (!enableScreenEffects) {
-			return;
-		}
 		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
-		ArrayList filesList = new ArrayList( fileNames.length );
+		File[] files = new File[ fileNames.length ]; 
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
-			if (!(fileName.endsWith("StyleSheet.class") 
-					|| fileName.endsWith("MasterCanvas.class")
-					|| fileName.endsWith("ScreenChangeAnimation.class") 
-					|| (fileName.indexOf("screenanimations") != -1) )) 
-			{
-				filesList.add( new File( classesDir, fileName ) );
-			//} else {
-			//	System.out.println("ScreenChanger: skipping class " + fileName);
-			}
+			files[i] = new File( classesDir, fileName );
 		}
-		File[] files = (File[]) filesList.toArray( new File[ filesList.size() ] );
 		try {
-			System.out.println("mapping of Display.setCurrent() for " + files.length + " class files.");
+			System.out.println("MasterCanvas: mapping of Display.setCurrent() for " + files.length + " class files.");
 			String targetClassPath;
 			if (this.environment.hasSymbol("polish.useDefaultPackage")) {
-				targetClassPath = "StyleSheet";
+				targetClassPath = "MasterCanvas";
 			} else {
-				targetClassPath = "de/enough/polish/ui/StyleSheet";
+				targetClassPath = "de/enough/polish/ui/MasterCanvas";
 			}
 			MethodMapper mapper = new MethodMapper();
 			mapper.addMapping(
@@ -96,11 +82,20 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 											false, targetClassPath, "setCurrent",
 											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
 			);
+			mapper.addMapping(
+				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "getCurrent",
+											"()Ljavax/microedition/lcdui/Displayable;",
+											false, targetClassPath, "getCurrent",
+											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
+			);
+			//TODO michael: add repaint() mapping here
 			mapper.doMethodMapping( files );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to map Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ): " + e.toString(), e );
 		}
+
+
 	}
 
 }

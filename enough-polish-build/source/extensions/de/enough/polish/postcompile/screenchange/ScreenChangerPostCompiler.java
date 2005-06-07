@@ -96,12 +96,6 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 											false, targetClassPath, "setCurrent",
 											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
 			);
-			mapper.addMapping(
-				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "getCurrent",
-											"()Ljavax/microedition/lcdui/Displayable;",
-											false, targetClassPath, "getCurrent",
-											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
-			);
 			mapper.doMethodMapping( files );
 		} catch (IOException e) {
 			e.printStackTrace();
