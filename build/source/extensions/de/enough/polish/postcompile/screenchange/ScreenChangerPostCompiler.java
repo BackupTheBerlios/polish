@@ -90,18 +90,16 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 				targetClassName = "de/enough/polish/ui/StyleSheet";
 			}
 			MethodMapper mapper = new MethodMapper();
+			mapper.setClassLoader(device.getClassLoader());
+			
+			// Note: This code is duplicated in MasterCanvasPostCompiler.
 			mapper.addMapping(
 				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "setCurrent",
 											"(Ljavax/microedition/lcdui/Displayable;)V",
 											false, targetClassName, "setCurrent",
 											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
 			);
-			mapper.addMapping(
-				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "getCurrent",
-											"()Ljavax/microedition/lcdui/Displayable;",
-											false, targetClassName, "getCurrent",
-											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
-			);
+			
 			mapper.doMethodMapping( files );
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -46,13 +46,13 @@ import de.enough.polish.util.FileUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class MasterCanvasPostCompiler extends PostCompiler {
-
+public class MasterCanvasPostCompiler extends PostCompiler
+{
 	/**
 	 * Creates a new post compiler
 	 */
 	public MasterCanvasPostCompiler() {
-		super();
+		// Do nothing here.
 	}
 
 	/* (non-Javadoc)
@@ -63,11 +63,15 @@ public class MasterCanvasPostCompiler extends PostCompiler {
 	{
 		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
 		File[] files = new File[ fileNames.length ]; 
-		for (int i = 0; i < fileNames.length; i++) {
+		
+		for (int i = 0; i < fileNames.length; i++)
+		{
 			String fileName = fileNames[i];
 			files[i] = new File( classesDir, fileName );
 		}
-		try {
+		
+		try
+		{
 			System.out.println("MasterCanvas: mapping of Display.setCurrent() for " + files.length + " class files.");
 			String targetClassPath;
 			if (this.environment.hasSymbol("polish.useDefaultPackage")) {
@@ -75,27 +79,40 @@ public class MasterCanvasPostCompiler extends PostCompiler {
 			} else {
 				targetClassPath = "de/enough/polish/ui/MasterCanvas";
 			}
+			
 			MethodMapper mapper = new MethodMapper();
+			mapper.setClassLoader(device.getClassLoader());
+			
+			// Note: The same mappings are done in ScreenChangerPostCompiler.
 			mapper.addMapping(
-				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "setCurrent",
+				new MethodInvocationMapping(
+											true, "javax/microedition/lcdui/Display", "setCurrent",
 											"(Ljavax/microedition/lcdui/Displayable;)V",
 											false, targetClassPath, "setCurrent",
 											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
 			);
 			mapper.addMapping(
-				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "getCurrent",
+				new MethodInvocationMapping(
+											true, "javax/microedition/lcdui/Display", "getCurrent",
 											"()Ljavax/microedition/lcdui/Displayable;",
 											false, targetClassPath, "getCurrent",
 											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
 			);
+			
 			//TODO michael: add repaint() mapping here
-			mapper.doMethodMapping( files );
-		} catch (IOException e) {
+			mapper.addMapping(
+				new MethodInvocationMapping(
+											true, "de/enough/polish/ui/AccessibleCanvas", "repaint",
+											"()V",
+											false, "de/enough/polish/ui/MasterCanvas", "repaintMasterCanvas",
+											"(Lde/enough/polish/ui/AccessibleCanvas;)V"));
+			
+			mapper.doMethodMapping(files);
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 			throw new BuildException("Unable to map Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ): " + e.toString(), e );
 		}
-
-
 	}
-
 }
