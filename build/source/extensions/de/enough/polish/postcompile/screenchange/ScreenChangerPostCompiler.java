@@ -89,12 +89,20 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 			} else {
 				targetClassPath = "de/enough/polish/ui/StyleSheet";
 			}
-			MethodInvocationMapping mapping =
+			MethodMapper mapper = new MethodMapper();
+			mapper.addMapping(
 				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "setCurrent",
 											"(Ljavax/microedition/lcdui/Displayable;)V",
 											false, targetClassPath, "setCurrent",
-											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V");
-			MethodMapper.doMethodMapping( files, mapping );
+											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
+			);
+			mapper.addMapping(
+				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "getCurrent",
+											"()Ljavax/microedition/lcdui/Displayable;",
+											false, targetClassPath, "getCurrent",
+											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
+			);
+			mapper.doMethodMapping( files );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to map Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ): " + e.toString(), e );
