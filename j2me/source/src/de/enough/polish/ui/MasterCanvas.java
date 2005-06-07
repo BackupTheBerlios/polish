@@ -143,5 +143,19 @@ public class MasterCanvas
 			instance.repaint();
 		}
 	}
+	
+	public static Displayable getCurrent() {
+		if (instance != null) {
+			return instance.currentDisplayable;
+		} else {
+			return null;
+		}
+	}
+	
+	public static void repaintMasterCanvas() {
+		if ( instance != null ) {
+			instance.repaint();
+		}
+	}
 
 }
