@@ -1688,14 +1688,6 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current localization
 	 */
 	private void postCompile( Device device, Locale locale ) {
-		ClassLoader loader = device.getClassLoader();
-		try {
-			Class formClass = loader.loadClass("javax.wireless.messaging.BinaryMessage");
-			System.out.println("loaded class " + formClass.getName() );
-		} catch (ClassNotFoundException e) {
-			// TODO enough handle ClassNotFoundException
-			e.printStackTrace();
-		}
 		File classDir = new File( device.getClassesDir() );
 		PostCompiler[] compilers = getActivePostCompilers();
 		for (int i = 0; i < compilers.length; i++) {
