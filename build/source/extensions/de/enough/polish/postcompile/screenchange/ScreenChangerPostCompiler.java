@@ -83,18 +83,24 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 		File[] files = (File[]) filesList.toArray( new File[ filesList.size() ] );
 		try {
 			System.out.println("mapping of Display.setCurrent() for " + files.length + " class files.");
-			String targetClassPath;
+			String targetClassName;
 			if (this.environment.hasSymbol("polish.useDefaultPackage")) {
-				targetClassPath = "StyleSheet";
+				targetClassName = "StyleSheet";
 			} else {
-				targetClassPath = "de/enough/polish/ui/StyleSheet";
+				targetClassName = "de/enough/polish/ui/StyleSheet";
 			}
 			MethodMapper mapper = new MethodMapper();
 			mapper.addMapping(
 				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "setCurrent",
 											"(Ljavax/microedition/lcdui/Displayable;)V",
-											false, targetClassPath, "setCurrent",
+											false, targetClassName, "setCurrent",
 											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
+			);
+			mapper.addMapping(
+				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "getCurrent",
+											"()Ljavax/microedition/lcdui/Displayable;",
+											false, targetClassName, "getCurrent",
+											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
 			);
 			mapper.doMethodMapping( files );
 		} catch (IOException e) {
