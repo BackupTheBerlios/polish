@@ -28,6 +28,7 @@
 package de.enough.polish.ui.screenanimations;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.m3g.Appearance;
@@ -44,7 +45,7 @@ import javax.microedition.m3g.TriangleStripArray;
 import javax.microedition.m3g.VertexArray;
 import javax.microedition.m3g.VertexBuffer;
 
-import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -82,10 +83,10 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtScreen);
+				nxtScreenImage, nxtCanvas, nxtDisplayable );
 		// initialization of 3D settings:
 	    // Hole grafischen Context Graphics3D
 		this.g3D = Graphics3D.getInstance();

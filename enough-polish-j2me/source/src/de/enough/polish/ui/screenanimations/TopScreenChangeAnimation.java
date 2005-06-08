@@ -28,10 +28,11 @@
 package de.enough.polish.ui.screenanimations;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -65,14 +66,14 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 		Integer speedInt = style.getIntProperty( "top-screen-change-animation-speed" );
 		if (speedInt != null ) {
 			this.speed = speedInt.intValue();
 		}
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtScreen);
+				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	//#endif
 	
@@ -106,8 +107,8 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.lastScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( this.nextScreenImage, 0, -this.screenHeight +  this.currentY, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( this.nextCanvasImage, 0, -this.screenHeight +  this.currentY, Graphics.TOP | Graphics.LEFT );
 		this.display.callSerially( this );
 	}
 

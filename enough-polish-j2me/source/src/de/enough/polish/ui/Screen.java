@@ -868,11 +868,15 @@ implements AccessibleCanvas
 					//#endif
 				}
 			}
+			//#if polish.ScreenInfo.enable == true
+				ScreenInfo.paint( g, tHeight, this.screenWidth );
+			//#endif
 			//#ifdef polish.css.foreground-image
 				if (this.foregroundImage != null) {
 					g.drawImage( this.foregroundImage, this.foregroundX, this.foregroundY, Graphics.TOP | Graphics.LEFT  );
 				}
 			//#endif
+		
 		//#ifdef polish.debug.error
 		} catch (RuntimeException e) {
 			//#debug error
@@ -1071,9 +1075,7 @@ implements AccessibleCanvas
 	 * @param keyCode The code of the pressed key
 	 */
 	public void keyPressed(int keyCode) {
-		//#if polish.debug.error
 		try {
-		//#endif
 			//#debug
 			System.out.println("keyPressed: [" + keyCode + "].");
 			int gameAction = -1;
@@ -1181,12 +1183,13 @@ implements AccessibleCanvas
 					repaint();
 				//#endif
 			}
-		//#if polish.debug.error
 		} catch (Exception e) {
+			//#if !polish.debug.error 
+				e.printStackTrace();
+			//#endif
 			//#debug error
 			System.out.println("keyPressed() threw an exception" + e );
 		}
-		//#endif
 	}
 	
 	
@@ -1805,6 +1808,15 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("SUBTITLE_HEIGHT=" + this.subTitleHeight);
 	}
+	
+	//#if polish.Bugs.displaySetCurrentFlickers
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Displayable#isShown()
+	 */
+	public boolean isShown() {
+		return (StyleSheet.currentScreen == this);
+	}
+	//#endif
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}

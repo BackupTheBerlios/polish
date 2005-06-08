@@ -28,10 +28,11 @@
 package de.enough.polish.ui.screenanimations;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ImageUtil;
@@ -65,7 +66,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 		if ( this.nextScreenRgb == null ) {
 			this.nextScreenRgb = new int[ width * height ];
@@ -74,7 +75,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
 		this.currentStep = this.steps;
 		ImageUtil.scale( 255/this.steps, this.scaleFactor, width, height, this.nextScreenRgb, this.scaledScreenRgb);
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtScreen);
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
 	/* (non-Javadoc)
@@ -101,7 +102,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	 */
 	public void keyPressed(int keyCode) {
 		super.keyPressed(keyCode);
-		this.nextScreenImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
 	/* (non-Javadoc)
@@ -114,7 +115,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.lastScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 		
 		this.display.callSerially( this );

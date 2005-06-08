@@ -29,6 +29,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -57,14 +58,15 @@ public abstract class ScreenChangeAnimation
 //#endif
 {
 	protected Display display;
-	protected Screen nextScreen;
-	protected Image lastScreenImage;
-	protected Image nextScreenImage;
+	protected AccessibleCanvas nextCanvas;
+	protected Image lastCanvasImage;
+	protected Image nextCanvasImage;
 	protected int screenWidth;
 	protected int screenHeight;
 	//#if polish.Bugs.fullScreenInPaint
 		protected boolean fullScreenModeSet;
 	//#endif
+	protected Displayable nextDisplayable;
 
 	public ScreenChangeAnimation() {
 		// default constructor
@@ -73,17 +75,18 @@ public abstract class ScreenChangeAnimation
 		//#endif
 	}
 	
-	protected void show( Style style, Display dsplay, final int width, final int height, Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen ) {
+	protected void show( Style style, Display dsplay, final int width, final int height, Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) {
 		this.screenWidth = width;
 		this.screenHeight = height;
 		this.display = dsplay;
-		this.nextScreen = nxtScreen;
-		this.lastScreenImage = lstScreenImage;
+		this.nextCanvas = nxtCanvas;
+		this.nextDisplayable = nxtDisplayable;
+		this.lastCanvasImage = lstScreenImage;
 		/*
 		this.lastScreenRgb = new int[ width * height ];
 		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );
 		*/
-		this.nextScreenImage = nxtScreenImage;
+		this.nextCanvasImage = nxtScreenImage;
 		/*
 		this.nextScreenRgb = new int[ width * height ];
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
@@ -106,9 +109,9 @@ public abstract class ScreenChangeAnimation
 	
 	//#if polish.hasPointerEvents
 	public void pointerPressed( int x, int y ) {
-		this.nextScreen.pointerPressed( x, y );
-		Graphics g = this.nextScreenImage.getGraphics();
-		this.nextScreen.paint( g );
+		this.nextCanvas.pointerPressed( x, y );
+		Graphics g = this.nextCanvasImage.getGraphics();
+		this.nextCanvas.paint( g );
 	}
 	//#endif
 	
@@ -138,9 +141,9 @@ public abstract class ScreenChangeAnimation
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	public void keyPressed( int keyCode ) {
-		this.nextScreen.keyPressed( keyCode );
-		Graphics g = this.nextScreenImage.getGraphics();
-		this.nextScreen.paint( g );
+		this.nextCanvas.keyPressed( keyCode );
+		Graphics g = this.nextCanvasImage.getGraphics();
+		this.nextCanvas.paint( g );
 		//this.nextScreenImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
@@ -158,9 +161,9 @@ public abstract class ScreenChangeAnimation
 			//#debug
 			System.out.println("ScreenChangeAnimation: setting next screen");
 			//#if polish.Bugs.displaySetCurrentFlickers
-				MasterCanvas.setCurrent( this.display, this.nextScreen );
+				MasterCanvas.setCurrent( this.display, this.nextDisplayable );
 			//#else
-				this.display.setCurrent( this.nextScreen );
+				this.display.setCurrent( this.nextDisplayable );
 			//#endif
 		}
 	}

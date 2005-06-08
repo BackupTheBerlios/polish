@@ -118,11 +118,20 @@ public class MasterCanvas
 	}
 	
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
+		//#debug
+		System.out.println("MasterCanvas: setCurrent of " + nextDisplayable.getClass().getName() );
+		//if ( nextDisplayable == instance ) {
+		//	display.setCurrent( nextDisplayable );
+		//	return;
+		//}
 		if ( ! (nextDisplayable instanceof AccessibleCanvas) ) {
 			if (instance != null && instance.currentCanvas != null) {
 				instance.currentCanvas.hideNotify();
-				instance.currentCanvas = null;
-				instance.currentDisplayable = null;
+				if (instance.currentDisplayable != nextDisplayable ) {
+					System.out.println("MasterCanvas: setting instance.currentCanvas to NULL!!!");
+					instance.currentCanvas = null;
+					instance.currentDisplayable = null;
+				}
 			}
 			display.setCurrent( nextDisplayable );
 			return;
@@ -144,7 +153,7 @@ public class MasterCanvas
 		}
 	}
 	
-	public static Displayable getCurrent() {
+	public static Displayable getCurrent( Display display ) {
 		if (instance != null) {
 			return instance.currentDisplayable;
 		} else {

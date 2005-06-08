@@ -340,7 +340,7 @@ public final class StyleSheet {
 	 * @param nextDisplayable the new screen, animations are only included for de.enough.polish.ui.Screen classes
 	 */
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
-		if ( nextDisplayable instanceof Screen ) {
+		if ( nextDisplayable instanceof AccessibleCanvas ) {
 			//#if polish.ScreenChangeAnimation.allowConfiguration == true
 				if (!enableScreenChangeAnimations) {
 					//#if polish.Bugs.displaySetCurrentFlickers
@@ -352,7 +352,10 @@ public final class StyleSheet {
 			//#endif
 
 			try {
-				Screen nextScreen = (Screen) nextDisplayable;
+				Screen nextScreen = null;
+				if ( nextDisplayable instanceof Screen ) {
+					nextScreen = (Screen) nextDisplayable;
+				}
 				ScreenChangeAnimation screenAnimation = null;
 				Displayable lastDisplayable = null;
 				//#if polish.Bugs.displaySetCurrentFlickers
@@ -376,17 +379,19 @@ public final class StyleSheet {
 					}
 					if ( screenAnimation == null ) {
 						screenAnimation = forwardAnimation;
-						screenstyle = nextScreen.style;
+						if (nextScreen != null) {
+							screenstyle = nextScreen.style;
+						}
 					}
-				//#else
-					if (nextScreen.style != null) {
+				//#else					
+					if (nextScreen != null && nextScreen.style != null) {
 						screenstyle = nextScreen.style;
 						screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
 					}
 					if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
 						//#debug
 						System.out.println("StyleSheet: last displayable is a ScreenChangeAnomation" );
-						lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextScreen;
+						lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextDisplayable;
 					}
 					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
 						//#debug
@@ -420,10 +425,10 @@ public final class StyleSheet {
 				//#endif
 				Image lastScreenImage = Image.createImage(width, height);
 				Graphics g = lastScreenImage.getGraphics(); 
-				if ( lastScreen != null ) {
+				if ( lastDisplayable != null && lastDisplayable instanceof AccessibleCanvas) {
 					//#debug
 					System.out.println("StyleSheet: last screen is painted");
-					lastScreen.paint( g );
+					( (AccessibleCanvas)lastDisplayable).paint( g );
 				//#if polish.ScreenChangeAnimation.blankColor:defined
 					} else {
 						//#= g.setColor( ${polish.ScreenChangeAnimation.blankColor} );
@@ -432,18 +437,23 @@ public final class StyleSheet {
 				}
 				Image nextScreenImage = Image.createImage(width, height);
 				g = nextScreenImage.getGraphics();
-				nextScreen.showNotify();
-				nextScreen.paint( g );
+				AccessibleCanvas nextCanvas = (AccessibleCanvas) nextDisplayable;
+				nextCanvas.showNotify();
+				nextCanvas.paint( g );
 				//#debug
 				System.out.println("StyleSheet: showing screen animation");
-				//#if ! polish.ScreenChangeAnimation.forward:defined
-					//screenAnimation = (ScreenChangeAnimation) screenAnimation.getClass().newInstance();
-				//#endif
-				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextScreen );
+				if ( screenstyle == null ) {
+					screenstyle = defaultStyle;
+				}
+				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextCanvas, nextDisplayable );
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Screen: unable to copy screen change animation" + e );
-				display.setCurrent( nextDisplayable );
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.setCurrent(display, nextDisplayable);
+				//#else
+					display.setCurrent( nextDisplayable );						
+				//#endif
 			}
 			
 		} else {

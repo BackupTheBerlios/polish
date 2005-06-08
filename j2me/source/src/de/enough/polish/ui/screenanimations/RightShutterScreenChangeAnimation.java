@@ -28,10 +28,11 @@
 package de.enough.polish.ui.screenanimations;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -68,7 +69,7 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-											Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
+											Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 		//#if polish.css.right-shutter-screen-change-animation-speed
 		Integer speedInt = style.getIntProperty("right-shutter-screen-change-animation-speed");
@@ -90,7 +91,7 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 		
 		this.currentX = this.screenWidth;
 		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtScreen);
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	//#endif
 	
@@ -131,7 +132,7 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 		}
 		//#endif
 		
-		g.drawImage(this.lastScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.right-shutter-screen-change-animation-color
 		g.setColor(this.color);
 		//#else
@@ -139,7 +140,7 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 		//#endif
 		g.drawLine(this.currentX - 1, 0, this.currentX - 1, this.screenHeight);
 		g.setClip(this.currentX, 0, this.screenWidth - this.currentX, this.screenHeight);
-		g.drawImage(this.nextScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 		this.display.callSerially(this);
 	}
 }

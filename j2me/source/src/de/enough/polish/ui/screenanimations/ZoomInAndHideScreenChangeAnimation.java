@@ -28,10 +28,11 @@
 package de.enough.polish.ui.screenanimations;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ImageUtil;
@@ -65,7 +66,7 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, Screen nxtScreen) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 		if ( this.lastScreenRgb == null ) {
 			this.lastScreenRgb = new int[ width * height ];
@@ -75,7 +76,7 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 		System.arraycopy( this.lastScreenRgb, 0, this.scaledScreenRgb, 0,  width * height );
 		//ImageUtil.scale( 200, this.scaleFactor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtScreen);
+				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
 	/* (non-Javadoc)
@@ -106,7 +107,7 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.nextScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 		
 		this.display.callSerially( this );

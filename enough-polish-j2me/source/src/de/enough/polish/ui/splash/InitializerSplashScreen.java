@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -50,7 +51,7 @@ public class InitializerSplashScreen
 //#else
 	extends Canvas
 //#endif
-implements Runnable
+implements Runnable, AccessibleCanvas
 {
 
 	//#if polish.classes.ApplicationInitializer:defined
@@ -141,7 +142,7 @@ implements Runnable
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	protected void paint(Graphics g) {
+	public void paint(Graphics g) {
 		//#if polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint
 			super.setFullScreenMode(true);
 		//#endif
@@ -194,15 +195,38 @@ implements Runnable
 	
 	
 
-	protected void keyPressed(int keyCode) {
+	public void keyPressed(int keyCode) {
 		if (this.isInitialized && this.nextScreen != null ) {
 			this.display.setCurrent( this.nextScreen );
 		}
 	}
 	
+	public void keyReleased(int keyCode) {
+		// ignore
+	}
+
+	public void keyRepeated(int keyCode) {
+		// ignore
+	}
+	
 	//#ifdef polish.hasPointerEvents
-	protected void pointerPressed(int x, int y) {
+	public void pointerPressed(int x, int y) {
 		keyPressed( 0 );
 	}
 	//#endif
+	
+	//#if polish.midp2
+	public void sizeChanged( int width, int height ) {
+		// ignore
+	}
+	//#endif
+	
+	public void showNotify() {
+		// ignore
+	}
+	
+	public void hideNotify() {
+		// ignore
+	}
+
 }
