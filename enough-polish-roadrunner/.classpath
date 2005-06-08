@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source/src"/>
+	<classpathentry kind="src" path="/enough-polish-j2me"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/midp2.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>

@@ -1,0 +1,16 @@
+
+.mainScreen {
+	screen-change-animation: verticalShutter;
+	vertical-shutter-screen-change-animation-speed: 5;
+}
+
+
+.settingsScreen {
+	screen-change-animation: shutter;
+	shutter-screen-change-animation-speed: 5;
+}
+
+.aboutScreen {
+	screen-change-animation: verticalShutter;
+	vertical-shutter-screen-change-animation-speed: 8;
+}

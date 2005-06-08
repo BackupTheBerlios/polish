@@ -1,0 +1,8 @@
+<!-- Settings of the J2ME Polish binary editor from Thu Mar 03 13:34:38 CET 2005 -->
+<binaryeditor-settings>
+	<setting
+		definitionPath="/home/enough/workspace/enough-polish-build/setup/bin/loc.definition"
+		dataPath="/home/enough/workspace/enough-polish-roadrunner/build/test/Nokia/Series60/classes/en_US.loc"
+		package="de.enough.roadrunner"
+	/>
+</binaryeditor-settings>

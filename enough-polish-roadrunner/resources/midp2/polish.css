@@ -1,0 +1,12 @@
+
+.mainScreen {
+	screen-change-animation: zoomOut;
+}
+
+
+.settingsScreen {
+	screen-change-animation: zoomInAndHide;
+}
+
+.aboutScreen {
+}
