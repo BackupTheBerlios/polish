@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="j2mepolish" name="enough-polish-example">
 	
-	<property  name="polish.home" location="/home/enough/workspace/enough-polish-build"/>
+	<property file="${user.name}.properties" />
+	<property  name="polish.home" location="../enough-polish-build"/>
 	<property  name="wtk.home" location="/home/enough/dev/WTK2.2"/>
 	<property  name="nokia.home" location="/home/enough/dev/Nokia"/>
 	<property name="blackberry.home" 	location="/home/enough/.wine/fake_windows/Program Files/Research In Motion/BlackBerry JDE 4.0" />
