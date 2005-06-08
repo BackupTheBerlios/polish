@@ -5,7 +5,7 @@
 
 
 .settingsScreen {
-	screen-change-animation: zoomInAndHide;
+	screen-change-animation: zoomIn;
 }
 
 .aboutScreen {

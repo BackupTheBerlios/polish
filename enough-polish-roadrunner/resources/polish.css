@@ -121,7 +121,7 @@ focused {
 	padding-right: 15;
 	background: froggerBackground;
 	layout: horizontal-expand | horizontal-center | vertical-center;
-	screen-change-animation: shutter;
+	screen-change-animation: verticalflash;
 	/*
 	view-type: dropping;
 	*/
