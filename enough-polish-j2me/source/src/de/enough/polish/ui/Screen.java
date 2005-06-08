@@ -983,11 +983,7 @@ implements AccessibleCanvas
 		}
 		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
 		if (this.isInitialised && isShown()) {
-			//#if polish.Bugs.displaySetCurrentFlickers
-				MasterCanvas.instance.repaint();
-			//#else
-				repaint();
-			//#endif
+			repaint();
 		}
 	}
 	//#endif
@@ -1045,11 +1041,7 @@ implements AccessibleCanvas
 			this.screenHeight = this.originalScreenHeight - tickerHeight;
 		}
 		if (isShown()) {
-			//#if polish.Bugs.displaySetCurrentFlickers
-				MasterCanvas.instance.repaint();
-			//#else
-				repaint();
-			//#endif
+			repaint();
 		}
 	}
 	//#endif
@@ -1084,21 +1076,13 @@ implements AccessibleCanvas
 				//#ifdef polish.key.ReturnKey:defined
 					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
 							callCommandListener( this.backCommand );
-							//#if polish.Bugs.displaySetCurrentFlickers
-								MasterCanvas.instance.repaint();
-							//#else
-								repaint();
-							//#endif
+							repaint();
 							//# return;
 					//# }
 				//#endif
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handleKeyPressed(keyCode, 0)) {
-						//#if polish.Bugs.displaySetCurrentFlickers
-							MasterCanvas.instance.repaint();
-						//#else
-							repaint();
-						//#endif
+						repaint();
 						return;
 					}
 					if (this.menuBar.isSoftKeyPressed) {
@@ -1115,11 +1099,7 @@ implements AccessibleCanvas
 									&&  this.menuContainer.size() != 0 ) 
 							{
 								this.menuOpened = true;
-								//#if polish.Bugs.displaySetCurrentFlickers
-									MasterCanvas.instance.repaint();
-								//#else
-									repaint();
-								//#endif
+								repaint();
 								return;
 							} else {
 								gameAction = Canvas.FIRE;
@@ -1148,11 +1128,7 @@ implements AccessibleCanvas
 						} else { 
 							this.menuContainer.handleKeyPressed(keyCode, gameAction);
 						}
-						//#if polish.Bugs.displaySetCurrentFlickers
-							MasterCanvas.instance.repaint();
-						//#else
-							repaint();
-						//#endif
+						repaint();
 						return;
 					}
 					if (doReturn) {
@@ -1177,11 +1153,7 @@ implements AccessibleCanvas
 				}
 			//#endif
 			if (processed) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		} catch (Exception e) {
 			//#if !polish.debug.error 
@@ -1284,11 +1256,7 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd);
 			if (this.isShown()) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#else
 			if (this.menuCommands == null) {
@@ -1319,11 +1287,7 @@ implements AccessibleCanvas
 					// this is a command for the right side of the menu:
 					this.menuSingleRightCommand = cmd;
 					if (isShown()) {
-						//#if polish.Bugs.displaySetCurrentFlickers
-							MasterCanvas.instance.repaint();
-						//#else
-							repaint();
-						//#endif
+						repaint();
 					}
 					return;
 				}
@@ -1338,11 +1302,7 @@ implements AccessibleCanvas
 			}
 			this.menuCommands.add( cmd );
 			if (isShown()) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#endif
 	}
@@ -1354,11 +1314,7 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
 			if (this.isShown()) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#else
 			if (this.menuSingleRightCommand == cmd) {
@@ -1378,11 +1334,7 @@ implements AccessibleCanvas
 					}
 				}
 				if (isShown()) {
-					//#if polish.Bugs.displaySetCurrentFlickers
-						MasterCanvas.instance.repaint();
-					//#else
-						repaint();
-					//#endif
+					repaint();
 				}
 				return;
 			}
@@ -1401,11 +1353,7 @@ implements AccessibleCanvas
 				this.menuContainer.remove(index);			
 			}
 			if (isShown()) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#endif
 	}
@@ -1432,11 +1380,7 @@ implements AccessibleCanvas
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (isShown()) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#endif
 	}
@@ -1461,11 +1405,7 @@ implements AccessibleCanvas
 		this.focusedItem = null;
 		//#ifdef tmp.useExternalMenuBar
 			if (isShown()) {
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			}
 		//#endif
 	}
@@ -1550,21 +1490,13 @@ implements AccessibleCanvas
 				//#else
 					handleKeyPressed( 0, gameAction );
 				//#endif
-				//#if polish.Bugs.displaySetCurrentFlickers
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 				return;
 			}
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handlePointerPressed(x, y)) {
-						//#if polish.Bugs.displaySetCurrentFlickers
-							MasterCanvas.instance.repaint();
-						//#else
-							repaint();
-						//#endif
+						repaint();
 						return;
 					}
 				//#else
@@ -1576,11 +1508,7 @@ implements AccessibleCanvas
 							} else if (this.menuSingleRightCommand != null) {
 								callCommandListener(this.menuSingleRightCommand );
 							}
-							//#if polish.Bugs.displaySetCurrentFlickers
-								MasterCanvas.instance.repaint();
-							//#else
-								repaint();
-							//#endif
+							repaint();
 							return;
 						} else if (x <= this.menuLeftCommandX){
 							// assume that the left command has been pressed:
@@ -1595,11 +1523,7 @@ implements AccessibleCanvas
 							} else {
 								this.menuOpened = true;
 							}
-							//#if polish.Bugs.displaySetCurrentFlickers
-								MasterCanvas.instance.repaint();
-							//#else
-								repaint();
-							//#endif
+							repaint();
 							return;
 						}
 					} else if (this.menuOpened) {
@@ -1621,11 +1545,7 @@ implements AccessibleCanvas
 								callCommandListener( cmd );	
 							}
 						}
-						//#if polish.Bugs.displaySetCurrentFlickers
-							MasterCanvas.instance.repaint();
-						//#else
-							repaint();
-						//#endif
+						repaint();
 						return;
 					}
 				//#endif
@@ -1635,20 +1555,12 @@ implements AccessibleCanvas
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				boolean processed = handlePointerPressed( x, y  );
 				if (processed) {
-					//#if polish.Bugs.displaySetCurrentFlickers
-						MasterCanvas.instance.repaint();
-					//#else
-						repaint();
-					//#endif
+					repaint();
 				}
 			//#else
 				//# boolean processed = handlePointerPressed( x, y );
 				if (processed) {
-					//#if polish.Bugs.displaySetCurrentFlickers
-						MasterCanvas.instance.repaint();
-					//#else
-						repaint();
-					//#endif
+					repaint();
 				}
 			//#endif
 			
@@ -1706,13 +1618,7 @@ implements AccessibleCanvas
 				//#endif
 			}
 		//#endif
-		//#if polish.Bugs.displaySetCurrentFlickers
-			if (MasterCanvas.instance != null) {
-				MasterCanvas.instance.repaint();
-			}
-		//#else
-			repaint();
-		//#endif
+		repaint();
 	}
 	
 	

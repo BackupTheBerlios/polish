@@ -441,14 +441,14 @@ public final class StyleSheet {
 				nextCanvas.showNotify();
 				nextCanvas.paint( g );
 				//#debug
-				System.out.println("StyleSheet: showing screen animation");
+				System.out.println("StyleSheet: showing screen animation " + screenAnimation.getClass().getName() );
 				if ( screenstyle == null ) {
 					screenstyle = defaultStyle;
 				}
 				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextCanvas, nextDisplayable );
 			} catch (Exception e) {
 				//#debug error
-				System.out.println("Screen: unable to copy screen change animation" + e );
+				System.out.println("Screen: unable to start screen change animation" + e );
 				//#if polish.Bugs.displaySetCurrentFlickers
 					MasterCanvas.setCurrent(display, nextDisplayable);
 				//#else

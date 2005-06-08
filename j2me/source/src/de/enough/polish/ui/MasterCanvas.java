@@ -73,7 +73,9 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#hideNotify()
 	 */
 	protected void hideNotify() {
-		this.currentCanvas.hideNotify();
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.hideNotify();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -126,9 +128,9 @@ public class MasterCanvas
 		//}
 		if ( ! (nextDisplayable instanceof AccessibleCanvas) ) {
 			if (instance != null && instance.currentCanvas != null) {
-				instance.currentCanvas.hideNotify();
 				if (instance.currentDisplayable != nextDisplayable ) {
 					System.out.println("MasterCanvas: setting instance.currentCanvas to NULL!!!");
+					instance.currentCanvas.hideNotify();
 					instance.currentCanvas = null;
 					instance.currentDisplayable = null;
 				}
@@ -157,7 +159,7 @@ public class MasterCanvas
 		if (instance != null) {
 			return instance.currentDisplayable;
 		} else {
-			return null;
+			return display.getCurrent();
 		}
 	}
 	

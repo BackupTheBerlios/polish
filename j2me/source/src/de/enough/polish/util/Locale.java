@@ -50,6 +50,9 @@ public final class Locale {
 		private static String[] plainTranslations;
 		private static String[] singleParameterTranslationsStart;
 		private static String[] singleParameterTranslationsEnd;
+		private static boolean isLoaded;
+		private static boolean isLoadError;
+		/*
 		static {
 			try {
 				//#if polish.locale:defined
@@ -68,6 +71,7 @@ public final class Locale {
 			}
 			
 		}
+		*/
 	//#endif
 		
 	
@@ -112,6 +116,25 @@ public final class Locale {
 	//#endif
 
 	//#ifdef polish.i18n.useDynamicTranslations
+	private static void initialize() {
+		try {
+			//#if polish.locale:defined
+				//#= loadTranslations( "/${polish.locale}.loc" );
+			//#else
+				loadTranslations( "/default.loc" );
+			//#endif
+			isLoaded = true;
+			isLoadError = false;
+		} catch (IOException e) {
+			isLoadError = true;
+			//#debug error
+			System.out.println("Unable to load localizations " + e );
+		}
+		
+	}
+	//#endif
+
+	//#ifdef polish.i18n.useDynamicTranslations
 	/**
 	 * Retrieves the translation for the specified key.
 	 * 
@@ -124,6 +147,12 @@ public final class Locale {
 	//#else
 		//# public static final String get( int keyId ) {
 	//#endif
+		if ( !isLoaded ) {
+			initialize();
+			if (isLoadError) {
+				return "";
+			}
+		}
 		// all simple translations are usually directly embedded into the source-code,
 		// so this method does only need to be implemenented when dynamic translations are used:
 		return plainTranslations[ keyId ];
@@ -145,6 +174,12 @@ public final class Locale {
 	//#else
 		//# public static final String get( int keyId, String parameter ) {
 	//#endif
+		if ( !isLoaded ) {
+			initialize();
+			if (isLoadError) {
+				return "";
+			}
+		}
 		// all simple translations are usually directly embedded into the source-code,
 		// so this method does only need to be implemenented when dynamic translations are used:
 		return singleParameterTranslationsStart[keyId] + parameter + singleParameterTranslationsEnd[keyId];
@@ -171,6 +206,14 @@ public final class Locale {
 	//#endif
 		//#ifdef false
 			short keyId = 0;
+		//#endif
+		//#ifdef polish.i18n.useDynamicTranslations
+			if ( !isLoaded ) {
+				initialize();
+				if (isLoadError) {
+					return "";
+				}
+			}
 		//#endif
 		
 		// Reshuffle the parameters:
@@ -363,7 +406,10 @@ public final class Locale {
 			orders[i] = chunkOrders;
 		}
 		multipleParameterOrders = orders;
-		multipleParameterTranslations = translationChunks;	
+		multipleParameterTranslations = translationChunks;
+		
+		isLoaded = true;
+		isLoadError = false;
 	}
 	//#endif
 

@@ -65,13 +65,13 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 		// Do nothing here.
 	}
 
-	//#if polish.css.vertical-flash-screen-change-animation-speed || polish.css.vertical-flash-screen-change-animation-color
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
 											Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
+		this.currentX = width / 2;
 		//#if polish.css.vertical-flash-screen-change-animation-speed
 		Integer speedInt = style.getIntProperty("vertical-flash-screen-change-animation-speed");
 		
@@ -92,7 +92,6 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 		
 		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()

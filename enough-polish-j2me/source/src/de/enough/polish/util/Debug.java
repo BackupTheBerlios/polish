@@ -51,6 +51,7 @@ import de.enough.polish.log.LogHandler;
 public final class Debug
 implements CommandListener
 {
+	public static boolean suppressMessages;
 	public static final Command RETURN_COMMAND = new Command( "Return", Command.SCREEN, 1 );
 	private static final ArrayList MESSAGES = new ArrayList( 100 );
 	private static Displayable returnDisplayable;
@@ -235,6 +236,9 @@ implements CommandListener
 	 * @param exception the exception
 	 */
 	public static final void debug( String level, String className, int lineNumber, String message, Throwable exception ) {
+		if (suppressMessages) {
+			return;
+		}
 		String exceptionMessage = null;
 		if (exception != null) {
 			exceptionMessage = exception.toString();
