@@ -84,11 +84,12 @@ public class MasterCanvasPostCompiler extends PostCompiler
 		try
 		{
 			System.out.println("MasterCanvas: mapping of Display.setCurrent() for " + files.length + " class files.");
-			String targetClassPath;
-			if (this.environment.hasSymbol("polish.useDefaultPackage")) {
-				targetClassPath = "MasterCanvas";
+			boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
+			String masterCanvasClassName;
+			if ( useDefaultPackage ) {
+				masterCanvasClassName = "MasterCanvas";
 			} else {
-				targetClassPath = "de/enough/polish/ui/MasterCanvas";
+				masterCanvasClassName = "de/enough/polish/ui/MasterCanvas";
 			}
 			
 			MethodMapper mapper = new MethodMapper();
@@ -115,7 +116,7 @@ public class MasterCanvasPostCompiler extends PostCompiler
 					new MethodInvocationMapping(
 												true, "javax/microedition/lcdui/Display", "setCurrent",
 												"(Ljavax/microedition/lcdui/Displayable;)V",
-												false, targetClassPath, "setCurrent",
+												false, masterCanvasClassName, "setCurrent",
 												"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
 				);
 			}
@@ -123,16 +124,22 @@ public class MasterCanvasPostCompiler extends PostCompiler
 				new MethodInvocationMapping(
 											true, "javax/microedition/lcdui/Display", "getCurrent",
 											"()Ljavax/microedition/lcdui/Displayable;",
-											false, targetClassPath, "getCurrent",
+											false, masterCanvasClassName, "getCurrent",
 											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
 			);
 			
+			String accessibleCanvasClassName;
+			if ( useDefaultPackage ) {
+				accessibleCanvasClassName = "AccessibleCanvas";
+			} else {
+				accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
+			}
 			mapper.addMapping(
 				new MethodInvocationMapping(
-											true, "de/enough/polish/ui/AccessibleCanvas", "repaint",
+											true, accessibleCanvasClassName, "repaint",
 											"()V",
-											false, "de/enough/polish/ui/MasterCanvas", "repaintMasterCanvas",
-											"(Lde/enough/polish/ui/AccessibleCanvas;)V"));
+											false, masterCanvasClassName, "repaintMasterCanvas",
+											"(L" + accessibleCanvasClassName + ";)V"));
 			
 			mapper.doMethodMapping(files);
 		}

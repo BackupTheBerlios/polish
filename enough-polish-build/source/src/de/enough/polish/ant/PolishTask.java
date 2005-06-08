@@ -95,6 +95,7 @@ import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
+import de.enough.polish.util.PopulateUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
@@ -1683,6 +1684,22 @@ public class PolishTask extends ConditionalTask {
 	 */
 	private void postCompile( Device device, Locale locale ) {
 		File classDir = new File( device.getClassesDir() );
+		// deactivate logging:
+		String className;
+		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+			className = "Debug";
+		} else {
+			className = "de.enough.polish.util.Debug";
+		}
+		ClassLoader classLoader = device.getClassLoader();
+		try {
+			Class debugClass = classLoader.loadClass(className);
+			PopulateUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
+		} catch (Exception e) {
+			System.err.println("Unable to deactivate logging in Debug class: " + e.toString() );
+			e.printStackTrace();
+		}
+		
 		PostCompiler[] compilers = getActivePostCompilers();
 		for (int i = 0; i < compilers.length; i++) {
 			PostCompiler postCompiler = compilers[i];

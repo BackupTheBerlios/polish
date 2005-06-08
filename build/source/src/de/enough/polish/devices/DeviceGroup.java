@@ -67,6 +67,7 @@ public class DeviceGroup extends PolishComponent {
 		if (this.identifier == null) {
 			throw new InvalidComponentException("A group needs to have the element <name> defined. Please check your [groups.xml] file.");
 		}
+				
 		this.parentIdentifier  = definition.getChildTextTrim( "parent" );
 		if ( this.parentIdentifier != null) {
 			//System.out.println("\nsetting " + parentName + " as parent for group " + group.getIdentifier());
@@ -77,8 +78,9 @@ public class DeviceGroup extends PolishComponent {
 			//System.out.println("group: setting parent " + parentName + " for group " + group.getIdentifier() );
 			addComponent( this.parent );
 		}
-
+		
 		loadCapabilities(definition, this.identifier, "groups.xml");
+
 	}
 	
 	/**

@@ -351,6 +351,45 @@ public final class PopulateUtil {
 		}
 	}
 	
+	/**
+	 * Sets a field value for the given object.
+	 *  
+	 * @param fieldClass the class that should be changed
+	 * @param fieldName the name of the field
+	 * @param value the value
+	 * @throws NoSuchFieldException when the field does not exist or could not be written
+	 */
+	public static void setStaticField(Class fieldClass, String fieldName, Object value)
+	throws NoSuchFieldException
+	{
+		try {
+			Field field = null;
+			while (field == null) {
+				try {
+					field = fieldClass.getDeclaredField( fieldName );
+				} catch (NoSuchFieldException e) {
+					fieldClass = fieldClass.getSuperclass();
+					if (fieldClass == null) {
+						throw e;
+					}
+					//System.out.println("trying parent class [" + instanceClass.getName() + "]");
+				}
+			}
+			field.setAccessible(true);
+			field.set( null, value );
+		} catch (SecurityException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			throw new NoSuchFieldException( "Unable to set field [" + fieldName + "]: " + e.toString() );
+		}
+	}
+
+	
 	public static Object callMethod( Object object, String methodName, int value ) 
 	throws NoSuchMethodException 
 	{

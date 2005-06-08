@@ -667,6 +667,7 @@ public class CssConverter extends Converter {
 							 if ("none".equals( mappedValue)) {
 								valueList.append("null");
 							 } else {
+							 	//System.out.println("Using mapped value [" + mappedValue + "] for attribute [" + attribute.getId() + "]");
 							 	valueList.append( mappedValue );
 							 }
 						} else {
@@ -681,6 +682,8 @@ public class CssConverter extends Converter {
 									// a standard view is used:
 									valueList.append("new ").append( translatedViewType ).append("()");
 								}
+							} else {
+								valueList.append( value );
 							}
 						}
 					} else {

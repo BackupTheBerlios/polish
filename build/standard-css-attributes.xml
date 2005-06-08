@@ -570,6 +570,7 @@
 		<mapping from="leftShutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
 		<mapping from="rightshutter" to="new de.enough.polish.ui.screenanimations.RightShutterScreenChangeAnimation()" />
 		<mapping from="rightShutter" to="new de.enough.polish.ui.screenanimations.RightShutterScreenChangeAnimation()" />
+		<mapping from="shutter" to="new de.enough.polish.ui.screenanimations.TopShutterScreenChangeAnimation()" />
 		<mapping from="topshutter" to="new de.enough.polish.ui.screenanimations.TopShutterScreenChangeAnimation()" />
 		<mapping from="topShutter" to="new de.enough.polish.ui.screenanimations.TopShutterScreenChangeAnimation()" />
 		<mapping from="bottomshutter" to="new de.enough.polish.ui.screenanimations.BottomShutterScreenChangeAnimation()" />
@@ -580,6 +581,8 @@
 		<mapping from="scrollUp" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
 		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
 		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
+		<mapping from="zoomin" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
+		<mapping from="zoomIn" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
 		<mapping from="zoominandhide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
 		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
 		

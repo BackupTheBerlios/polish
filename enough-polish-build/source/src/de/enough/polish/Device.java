@@ -209,8 +209,6 @@ public class Device extends PolishComponent {
 			addComponent(parentDevice);
 		}
 
-		// load capabilities and features:
-		loadCapabilities(definition, this.identifier, "devices.xml");
 
 		// load group features and capabilities:
 		String groupsDefinition = definition.getChildTextTrim("groups");
@@ -245,7 +243,10 @@ public class Device extends PolishComponent {
 		//add implicit groups:
 		ArrayList groupNamesList = new ArrayList();
 		ArrayList groupsList = new ArrayList();		
-		
+
+		// load capabilities and features:
+		loadCapabilities(definition, this.identifier, "devices.xml");
+
 		// set midp-version:
 		String platformsStr = getCapability(JAVA_PLATFORM);
 		if (platformsStr == null) {
@@ -828,7 +829,7 @@ public class Device extends PolishComponent {
 				}
 			}
 			acl.addPathElement( this.classesDir );
-			System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );
+			//System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );
 			this.classLoader = acl;
 			
 		}

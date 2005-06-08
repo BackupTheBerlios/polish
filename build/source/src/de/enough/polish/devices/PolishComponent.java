@@ -263,8 +263,8 @@ implements Comparable
 			Capability capability = this.capabilityManager.getCapability( name );
 			if ( capability != null ) {
 				if ( capability.appendExtensions() ) {
-					//value = value.toLowerCase();
 					String existingValue = getCapability( name );
+					//value = value.toLowerCase();
 					//if (debug) {
 					//	System.out.println( this.identifier + ": " + name + ": value = [" + value + "], existingValue = [" + existingValue + "]");
 					//}
@@ -285,7 +285,7 @@ implements Comparable
 							return;
 						}
 					}
-				}
+				} 
 				String group = capability.getImplicitGroup();
 				if ( group != null ) {
 					addImplicitGroups( value );
