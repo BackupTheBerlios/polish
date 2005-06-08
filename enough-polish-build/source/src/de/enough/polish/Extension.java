@@ -58,6 +58,8 @@ public abstract class Extension {
 	protected ExtensionDefinition extensionDefinition;
 	protected ExtensionTypeDefinition extensionTypeDefinition;
 	protected Environment environment;
+	protected String autoStartCondition;
+	private String type;
 
 	/**
 	 * Creates a new extension.
@@ -76,6 +78,14 @@ public abstract class Extension {
 	 * @param env
 	 */
 	protected void init(ExtensionTypeDefinition typeDefinition, ExtensionDefinition definition, ExtensionSetting setting, Project project, ExtensionManager manager, Environment env) {
+		if (definition != null) {
+			this.autoStartCondition = definition.getAutoStartCondition();
+		}
+		if (typeDefinition != null) {
+			this.type = typeDefinition.getName();
+		} else if (definition != null) {
+			this.type = definition.getType();
+		}
 		this.extensionDefinition = definition;
 		this.extensionSetting = setting;
 		this.antProject = project;
@@ -439,6 +449,30 @@ public abstract class Extension {
 		}
 		//target.init(); (is initialized automatically when the first param is created)
 		target.execute();
+	}
+	
+	public String getAutoStartCondition() {
+		return this.autoStartCondition;
+	}
+
+	/**
+	 * Checks whether the autostart condition for this extension is fulfilled.
+	 * 
+	 * @param env the environment
+	 * @return true when this condition is fulfilled
+	 */
+	public boolean isConditionFulfilled(Environment env) {
+		if (this.autoStartCondition == null) {
+			return true;
+		}
+		return env.isConditionFulfilled( this.autoStartCondition );
+	}
+
+	/**
+	 * @return the type of this extension
+	 */
+	public String getType() {
+		return this.type;
 	}
 
 }

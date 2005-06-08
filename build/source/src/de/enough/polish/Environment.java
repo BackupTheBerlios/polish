@@ -548,4 +548,17 @@ public class Environment {
 	public Object get( String key ) {
 		return this.exchangeStore.get( key );
 	}
+
+	/**
+	 * Checks whether a condition is met.
+	 * 
+	 * @param condition the condition
+	 * @return true when the given condition is met by this environment
+	 */
+	public boolean isConditionFulfilled(String condition) {
+		if (condition == null) {
+			return true;
+		}
+		return this.booleanEvaluator.evaluate(condition, "Environment", 0 );
+	}
 }

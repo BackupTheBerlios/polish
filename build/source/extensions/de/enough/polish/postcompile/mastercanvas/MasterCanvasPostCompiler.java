@@ -27,6 +27,7 @@ package de.enough.polish.postcompile.mastercanvas;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 
@@ -62,13 +63,23 @@ public class MasterCanvasPostCompiler extends PostCompiler
 	throws BuildException 
 	{
 		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
-		File[] files = new File[ fileNames.length ]; 
-		
-		for (int i = 0; i < fileNames.length; i++)
-		{
+		ArrayList filesList = new ArrayList( fileNames.length );
+		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
-			files[i] = new File( classesDir, fileName );
+			if (!(fileName.endsWith("StyleSheet.class") 
+					|| fileName.endsWith("MasterCanvas.class")
+					//|| fileName.endsWith("ScreenChangeAnimation.class") 
+					//|| (fileName.indexOf("screenanimations") != -1)
+					//|| fileName.endsWith("Locale.class")
+					//|| fileName.endsWith("Debug.class")
+			 )) 
+			{
+				filesList.add( new File( classesDir, fileName ) );
+			//} else {
+			//	System.out.println("ScreenChanger: skipping class " + fileName);
+			}
 		}
+		File[] files = (File[]) filesList.toArray( new File[ filesList.size() ] );
 		
 		try
 		{
@@ -83,14 +94,31 @@ public class MasterCanvasPostCompiler extends PostCompiler
 			MethodMapper mapper = new MethodMapper();
 			mapper.setClassLoader(device.getClassLoader());
 			
-			// Note: The same mappings are done in ScreenChangerPostCompiler.
-			mapper.addMapping(
-				new MethodInvocationMapping(
-											true, "javax/microedition/lcdui/Display", "setCurrent",
-											"(Ljavax/microedition/lcdui/Displayable;)V",
-											false, targetClassPath, "setCurrent",
-											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
-			);
+			boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
+			if (enableScreenEffects) {
+				String styleSheetClass;
+				if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+					styleSheetClass = "StyleSheet";
+				} else {					
+					styleSheetClass = "de/enough/polish/ui/StyleSheet";
+				}
+				mapper.addMapping(
+						new MethodInvocationMapping(
+													true, "javax/microedition/lcdui/Display", "setCurrent",
+													"(Ljavax/microedition/lcdui/Displayable;)V",
+													false, styleSheetClass, "setCurrent",
+													"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
+					);
+				
+			} else {
+				mapper.addMapping(
+					new MethodInvocationMapping(
+												true, "javax/microedition/lcdui/Display", "setCurrent",
+												"(Ljavax/microedition/lcdui/Displayable;)V",
+												false, targetClassPath, "setCurrent",
+												"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
+				);
+			}
 			mapper.addMapping(
 				new MethodInvocationMapping(
 											true, "javax/microedition/lcdui/Display", "getCurrent",
@@ -99,7 +127,6 @@ public class MasterCanvasPostCompiler extends PostCompiler
 											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
 			);
 			
-			//TODO michael: add repaint() mapping here
 			mapper.addMapping(
 				new MethodInvocationMapping(
 											true, "de/enough/polish/ui/AccessibleCanvas", "repaint",

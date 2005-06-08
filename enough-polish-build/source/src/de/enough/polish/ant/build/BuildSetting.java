@@ -1457,12 +1457,12 @@ public class BuildSetting {
 	
 	public PostCompilerSetting[] getPostCompilers() {
 		// init standard postcompilers:
-		PostCompilerSetting screenChangerSetting = new PostCompilerSetting();
-		screenChangerSetting.setName("screenchanger");
+		//PostCompilerSetting screenChangerSetting = new PostCompilerSetting();
+		//screenChangerSetting.setName("screenchanger");
 		if (this.postCompilers == null) {
-			return new PostCompilerSetting[] { screenChangerSetting }; 
+			return new PostCompilerSetting[0]; // { screenChangerSetting }; 
 		} else {
-			this.postCompilers.add( screenChangerSetting );
+			//this.postCompilers.add( screenChangerSetting );
 			return (PostCompilerSetting[]) this.postCompilers.toArray( new PostCompilerSetting[this.postCompilers.size()] );
 		}
 	}
@@ -1477,7 +1477,7 @@ public class BuildSetting {
 	/**
 	 * @param manager
 	 * @param environment
-	 * @return
+	 * @return an array of initialized finalizers
 	 */
 	public Finalizer[] getFinalizers(ExtensionManager manager, Environment environment) 
 	{

@@ -189,8 +189,18 @@
 		<name>screenchanger</name>
 		<class>de.enough.polish.postcompile.screenchange.ScreenChangerPostCompiler</class>
 		<classpath>${polish.home}/import/asm-2.0.RC1.jar:${polish.home}/import/asm-tree-2.0.RC1.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<autostart>polish.css.screen-change-animation</autostart>
+		<!-- old: polish.css.screen-change-animation and not polish.Bugs.displaySetCurrentFlickers -->
 	</extension>
 
+	<extension>
+		<type>postcompiler</type>
+		<name>mastercanvas</name>
+		<class>de.enough.polish.postcompile.mastercanvas.MasterCanvasPostCompiler</class>
+		<classpath>${polish.home}/import/asm-2.0.RC1.jar:${polish.home}/import/asm-tree-2.0.RC1.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<autostart>polish.Bugs.displaySetCurrentFlickers and falses</autostart>
+	</extension>
+	
 	<extension>
 		<type>postcompiler</type>
 		<name>antcall</name>

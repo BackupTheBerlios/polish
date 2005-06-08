@@ -55,9 +55,10 @@ public class DeviceGroup extends PolishComponent {
 	 * 
 	 * @param definition The xml definition of this group.
 	 * @param capabilityManager the manager of capabilities
+	 * @param manager
 	 * @throws InvalidComponentException when the given definition contains errors.
 	 */
-	public DeviceGroup( Element definition, CapabilityManager capabilityManager ) 
+	public DeviceGroup( Element definition, CapabilityManager capabilityManager, DeviceGroupManager manager ) 
 	throws InvalidComponentException 
 	{
 		super( null, capabilityManager );
@@ -67,6 +68,16 @@ public class DeviceGroup extends PolishComponent {
 			throw new InvalidComponentException("A group needs to have the element <name> defined. Please check your [groups.xml] file.");
 		}
 		this.parentIdentifier  = definition.getChildTextTrim( "parent" );
+		if ( this.parentIdentifier != null) {
+			//System.out.println("\nsetting " + parentName + " as parent for group " + group.getIdentifier());
+			this.parent = manager.getGroup( this.parentIdentifier );
+			if (this.parent == null) {
+				throw new InvalidComponentException("The group [" + this.identifier + "] has the non-existing parent [" + this.parentIdentifier + "]. Check your [groups.xml]");
+			}
+			//System.out.println("group: setting parent " + parentName + " for group " + group.getIdentifier() );
+			addComponent( this.parent );
+		}
+
 		loadCapabilities(definition, this.identifier, "groups.xml");
 	}
 	

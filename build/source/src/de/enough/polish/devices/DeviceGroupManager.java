@@ -97,17 +97,7 @@ public class DeviceGroupManager {
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element deviceElement = (Element) iter.next();
-			DeviceGroup group = new DeviceGroup( deviceElement, capabilityManager );
-			String parentName = group.getParentIdentifier();
-			if (parentName != null) {
-				//System.out.println("\nsetting " + parentName + " as parent for group " + group.getIdentifier());
-				DeviceGroup parent = getGroup( parentName );
-				if (parent == null) {
-					throw new InvalidComponentException("The group [" + group.getIdentifier() + "] has the non-existing parent [" + parentName + "]. Check your [groups.xml]");
-				}
-				//System.out.println("group: setting parent " + parentName + " for group " + group.getIdentifier() );
-				group.addComponent( parent );
-			}
+			DeviceGroup group = new DeviceGroup( deviceElement, capabilityManager, this );
 			this.groups.put( group.getIdentifier(), group );
 		}
 		/*

@@ -47,6 +47,7 @@ public class ExtensionDefinition {
 	private final String name;
 	private final String className;
 	private final String classPath;
+	private String autoStartCondition;
 
 	/**
 	 * Creates a new extension.
@@ -70,6 +71,7 @@ public class ExtensionDefinition {
 		}
 		this.className = element.getChildTextTrim( "class" );
 		this.classPath = element.getChildTextTrim( "classpath" );
+		this.autoStartCondition = element.getChildTextTrim( "autostart" );
 	}
 
 	public Project getAntProject() {
@@ -110,5 +112,26 @@ public class ExtensionDefinition {
 	public String getParameterValue(String parameterName ) {
 		return this.element.getChildTextTrim(parameterName );
 	}
+
+	/**
+	 * @return the condition for starting this extension automatically
+	 */
+	public String getAutoStartCondition() {
+		return this.autoStartCondition;
+	}
+	
+	/**
+	 * Checks whether the autostart condition for this extension is fulfilled.
+	 * 
+	 * @param env the environment
+	 * @return true when this condition is fulfilled
+	 */
+	public boolean isConditionFulfilled(Environment env) {
+		if (this.autoStartCondition == null) {
+			return true;
+		}
+		return env.isConditionFulfilled( this.autoStartCondition );
+	}
+
 	
 }

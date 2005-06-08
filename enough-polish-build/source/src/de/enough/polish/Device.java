@@ -43,6 +43,7 @@ import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
 import java.io.File;
@@ -152,6 +153,7 @@ public class Device extends PolishComponent {
 	private Environment environment;
 
 	private String bootClassPath;
+	private String[] bootClassPaths;
 	private ClassLoader classLoader;
 
 
@@ -756,10 +758,52 @@ public class Device extends PolishComponent {
 		this.bootClassPath = path;
 	}
 	
+	private void initBootClassPath() {
+		String path = getCapability( "polish.build.bootclasspath" );
+		if (path == null) {
+			throw new BuildException("IllegalState: device [" + this.identifier + "] has no build.BootClassPath defined!");
+		}
+		if (this.environment == null) {
+			throw new BuildException("IllegalState: device [" + this.identifier + "] has no environment!");
+		}
+		StringBuffer buffer = new StringBuffer();
+		String[] paths = StringUtil.splitAndTrim( path, ',' );
+		File polishHome = (File) this.environment.get("polish.home");
+		File importFolder = (File) this.environment.get("polish.apidir");
+		for (int i = 0; i < paths.length; i++) {
+			String pathElement = paths[i];
+			File lib = new File( polishHome, pathElement );
+			if ( ! lib.exists() ) {
+				lib = new File( importFolder, pathElement );
+				if ( ! lib.exists() ) {
+					lib = new File( pathElement );
+					if ( ! lib.exists() ) {
+						throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.identifier + "]: file not found!");
+					}
+				}
+			}
+			paths[i] = lib.getAbsolutePath();
+			buffer.append( lib.getAbsolutePath() );
+			if ( i < paths.length - 1 ) {
+				buffer.append( File.pathSeparatorChar );
+			}
+		}
+		this.bootClassPath = buffer.toString();
+		this.bootClassPaths = paths;
+	}
+	
 	public String getBootClassPath() {
+		if (this.bootClassPath == null) {
+			initBootClassPath();
+		}
 		return this.bootClassPath;
 	}
 
+	public String[] getBootClassPaths() {
+		return this.bootClassPaths;
+	}
+
+	
 	/**
 	 * Retrieves the classloader that contains all classes that are available for this device.
 	 * This is mainly used for postcompilers.
@@ -768,11 +812,20 @@ public class Device extends PolishComponent {
 	 */
 	public ClassLoader getClassLoader() {
 		if (this.classLoader == null) {
+			if (this.bootClassPaths == null) {
+				initBootClassPath();
+			}
 			AntClassLoader acl = new AntClassLoader();
-			acl.addPathElement( this.bootClassPath );
-			for (int i=0; i < this.classPaths.length; i++ ) {
-				String path = this.classPaths[i];
+			//acl.addPathElement( this.bootClassPath );
+			for ( int i=0; i < this.bootClassPaths.length; i++ ) {
+				String path = this.bootClassPaths[i];
 				acl.addPathElement( path );
+			}
+			if (this.classPaths != null) {
+				for (int i=0; i < this.classPaths.length; i++ ) {
+					String path = this.classPaths[i];
+					acl.addPathElement( path );
+				}
 			}
 			acl.addPathElement( this.classesDir );
 			System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );

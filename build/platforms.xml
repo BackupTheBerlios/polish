@@ -32,14 +32,14 @@
 	<platform>
 		<identifier>MIDP/1.0</identifier>
 		<features>midp1</features>
-		<classpath>midp-1.0.jar</classpath>
+		<capability name="build.BootClassPath" value="midp-1.0.jar" />
 		<capability name="build.ImplicitGroups" value="midp1" />
 	</platform>
 
 	<platform>
 		<identifier>MIDP/2.0</identifier>
 		<features>midp2</features>
-		<classpath>midp-2.0.jar</classpath>
+		<capability name="build.BootClassPath" value="midp-2.0.jar" />
 		<capability name="build.ImplicitGroups" value="midp2" />
 	</platform>
 
@@ -60,6 +60,7 @@
 	<platform>
 		<identifier>WIPI/1.2</identifier>
 		<features>wipi1.2</features>
+		<capability name="build.BootClassPath" value="midp-1.0.jar" />
 		<capability name="build.Preverfier" value="none" />
 		<capability name="build.ImplicitGroups" value="wipi, wipi1.2" />
 	</platform>
@@ -67,6 +68,7 @@
 	<platform>
 		<identifier>WIPI/2.0</identifier>
 		<features>wipi2.0,midp2</features>
+		<capability name="build.BootClassPath" value="midp-2.0.jar" />
 		<capability name="build.Preverfier" value="none" />
 		<capability name="build.ImplicitGroups" value="wipi, wipi2.0" />
 	</platform>

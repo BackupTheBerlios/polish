@@ -1090,6 +1090,9 @@ public class PolishTask extends ConditionalTask {
 		this.extensionManager.initialize(device, locale, this.environment);
 		this.extensionManager.postInitialize(device, locale, this.environment);
 		
+		this.environment.set( "polish.home", this.polishHomeDir );
+		this.environment.set( "polish.apidir", this.buildSetting.getApiDir() );
+		
 		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:
 		// let postcompilers adjust the bootclasspath:
@@ -1589,16 +1592,7 @@ public class PolishTask extends ConditionalTask {
 		//javac.setSourcepath(new Path( getProject(),  "" ));
 		String classPath = device.getClassPath(); 
 		if (!compiler.isBootClassPathSet()) {
-			Path bootClassPath;
-			if (device.isMidp1()) {
-				 bootClassPath = this.midp1BootClassPath;
-			} else {
-				if (device.isCldc10()) {
-					bootClassPath = this.midp2BootClassPath;
-				} else {
-					bootClassPath = this.midp2Cldc11BootClassPath;
-				}
-			}
+			Path bootClassPath = new Path( antProject, device.getBootClassPath() );
 			// let postcompilers adjust the bootclasspath:
 			if (this.doPostCompile) {
 				String path = bootClassPath.toString();
@@ -1615,10 +1609,10 @@ public class PolishTask extends ConditionalTask {
 					bootClassPath = new Path( antProject, path );
 				}
 			}
-			device.setBootClassPath( bootClassPath.toString() );
+			//device.setBootClassPath( bootClassPath.toString() );
 			compiler.setDirectBootclasspath( bootClassPath );
-		} else {
-			device.setBootClassPath( compiler.getBootclasspath().toString() );
+		//} else {
+		//	device.setBootClassPath( compiler.getBootclasspath().toString() );
 		}
 		if ( !compiler.isClassPathSet()) {
 			if (classPath != null) {
@@ -1694,6 +1688,7 @@ public class PolishTask extends ConditionalTask {
 			PostCompiler postCompiler = compilers[i];
 			postCompiler.postCompile( classDir, device );
 		}
+		this.extensionManager.postCompile( device, locale, this.environment );
 	}
 
 

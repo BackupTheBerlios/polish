@@ -77,6 +77,7 @@ public class ExtensionManager {
 	private final Project antProject;
 	
 	private Extension[] activeExtensions;
+	private final List autoStartExtensions;
 
 	/**
 	 * @param antProject
@@ -93,6 +94,7 @@ public class ExtensionManager {
 		this.typesByName = new HashMap();
 		this.instantiatedExtensions = new ArrayList();
 		this.instantiatedPlugins = new ArrayList();
+		this.autoStartExtensions = new ArrayList();
 		loadDefinitions( is );
 		is.close();
 	}
@@ -154,6 +156,9 @@ public class ExtensionManager {
 					this.definitionsByType.put( definition.getType(), store );
 				}
 				store.put( definition.getName(), definition );
+				if ( definition.getAutoStartCondition() != null ) {
+					this.autoStartExtensions.add( definition );
+				}
 			} catch (Exception e) {
 				System.out.println("Unable to load extension [" + element.getChildTextTrim("class") + "]: " + e.toString() );
 			}
@@ -297,6 +302,36 @@ public class ExtensionManager {
 		// call preInitialize on the registered plugins:
 	}
 	
+	public void postCompile( Device device, Locale locale, Environment environment ) {
+		Extension[] extensions = getExtensions( TYPE_POSTCOMPILER, device, locale, environment );
+		for (int i = 0; i < extensions.length; i++) {
+			Extension extension = extensions[i];
+			extension.execute( device, locale, environment );
+		}
+	}
+	
+	/**
+	 * @param type
+	 * @param device
+	 * @param locale
+	 * @param environment
+	 * @return an array of extensions that should be started automatically
+	 */
+	private Extension[] getExtensions(String type, Device device, Locale locale, Environment environment) {
+		ArrayList list = new ArrayList();
+		for (Iterator iter = this.autoStartExtensions.iterator(); iter.hasNext();) {
+			ExtensionDefinition definition = (ExtensionDefinition) iter.next();
+			if ( type.equals( definition.getType()) && definition.isConditionFulfilled( environment )) {
+				try {
+					list.add( getExtension( type, definition.getName(), environment ) );
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return (Extension[]) list.toArray( new Extension[ list.size() ] );
+	}
+
 	public void preFinalize( Device device, Locale locale, Environment environment ) {
 		// call preInitialize on the registered plugins:
 	}
