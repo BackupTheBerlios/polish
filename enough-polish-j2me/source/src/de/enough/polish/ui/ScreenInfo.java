@@ -75,7 +75,7 @@ public class ScreenInfo {
 	
 	private static void repaint() {
 		//#if polish.Bugs.displaySetCurrentFlickers
-			MasterCanvas.repaint( null );
+			MasterCanvas.repaintAccessibleCanvas( null );
 		//#else
 			if (StyleSheet.display != null) {
 				Displayable displayable = StyleSheet.display.getCurrent();

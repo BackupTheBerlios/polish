@@ -163,14 +163,13 @@ public class MasterCanvas
 		}
 	}
 	
-	public static void repaint(AccessibleCanvas canvas) {
-	public static void repaintMasterCanvas(Canvas canvas) {
+	public static void repaintAccessibleCanvas( AccessibleCanvas canvas ) {
 		if ( instance != null ) {
 			instance.repaint();
 		}
 	}
 
-	public static void repaintMasterCanvas(AccessibleCanvas canvas) {
+	public static void repaintCanvas( Canvas canvas ) {
 		if ( instance != null ) {
 			instance.repaint();
 		}
