@@ -578,6 +578,7 @@
 		<mapping from="flash" to="new de.enough.polish.ui.screenanimations.FlashScreenChangeAnimation()" />
 		<mapping from="verticalflash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
 		<mapping from="verticalFlash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
+		<mapping from="scrollup" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
 		<mapping from="scrollUp" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
 		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
 		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
