@@ -139,7 +139,7 @@ public class MasterCanvasPostCompiler extends PostCompiler
 				new MethodInvocationMapping(
 											true, accessibleCanvasClassName, "repaint",
 											"()V",
-											false, masterCanvasClassName, "repaint",
+											false, masterCanvasClassName, "repaintAccessibleCanvas",
 											"(L" + accessibleCanvasClassName + ";)V"));
 			// mapping of isShown():
 			mapper.addMapping(
@@ -156,7 +156,7 @@ public class MasterCanvasPostCompiler extends PostCompiler
 				  	new MethodInvocationMapping(
 												  true, "javax.microedition.lcdui.Canvas", "repaint",
 												  "()V",
-												  false, masterCanvasClassName, "repaint",
+												  false, masterCanvasClassName, "repaintCanvas",
 													"(Ljavax.microedition.lcdui.Canvas;)V"));
 				// mapping of isShown():
 				mapper.addMapping(
