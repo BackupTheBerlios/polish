@@ -134,13 +134,21 @@ public class MasterCanvasPostCompiler extends PostCompiler
 			} else {
 				accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
 			}
+			// mapping of repaint():
 			mapper.addMapping(
 				new MethodInvocationMapping(
 											true, accessibleCanvasClassName, "repaint",
 											"()V",
-											false, masterCanvasClassName, "repaintMasterCanvas",
+											false, masterCanvasClassName, "repaint",
 											"(L" + accessibleCanvasClassName + ";)V"));
-			
+			// mapping of isShown():
+			mapper.addMapping(
+					new MethodInvocationMapping(
+												true, accessibleCanvasClassName, "isShown",
+												"()V",
+												false, masterCanvasClassName, "isShown",
+												"(L" + accessibleCanvasClassName + ";)V"));
+
 			mapper.doMethodMapping(files);
 		}
 		catch (IOException e)

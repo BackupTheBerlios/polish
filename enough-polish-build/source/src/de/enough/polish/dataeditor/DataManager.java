@@ -397,12 +397,13 @@ public class DataManager {
 		buffer.append("\n\tpublic ").append( className ).append("( String dataUrl )\n");
 		buffer.append("\tthrows IOException\n\t{\n");
 		buffer.append("\t\tInputStream plainIn = getClass().getResourceAsStream( dataUrl );\n");
-		buffer.append("\t\tDataInputStream in = new DataInputStream( plainIn );\n");
 		// check if resource really exists:
-		buffer.append("\t\tif (in == null) {\n" )
+		buffer.append("\t\tif (plainIn == null) {\n" )
 			.append("\t\t\tthrow new IllegalArgumentException(\"Unable to open resource [\" + dataUrl + \"]: resource not found: does it start with \\\"/\\\"?\");\n")
-			.append("\t\t}\n")
-			.append("\t\ttry {\n");
+			.append("\t\t}\n");
+		// create DataInputStream:
+		buffer.append("\t\tDataInputStream in = new DataInputStream( plainIn );\n");
+		buffer.append("\t\ttry {\n");
 			
 		// add the loading of the data:
 		for (int i = 0; i < myEntries.length; i++) {

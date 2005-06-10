@@ -89,6 +89,7 @@
 		<capability name="Emulator.Skin" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
 		<capability name="Emulator.Skin.2" value="Series_60_MIDP_SDK_2_1" />
 		<capability name="Emulator.Skin.3" value="Series_60_MIDP_SDK_2_1_Beta" />
+		<capability name="Emulator.Control" value="Series60" />
 		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin" />
 	</group>
 

@@ -532,7 +532,7 @@ public class DataType {
 					buffer.append("\t\tfor (int i = 0; i < ").append( count ).append("; i++) {\n");
 					buffer.append("\t\t\tthis.").append(paramName).append("[i] = in.readUTF();\n");
 					buffer.append("\t\t//#ifdef polish.midp2\n");
-					buffer.append( "\t\t\tthis." ).append( paramName );
+					buffer.append( "\t\t\t//# this." ).append( paramName );
 					buffer.append("[i] = javax.microedition.lcdui.Image.createImage( in );\n");
 					buffer.append("\t\t//#else\n");
 					/*

@@ -26,6 +26,8 @@
 package de.enough.polish.devices;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -58,12 +60,13 @@ public class DeviceDatabase {
 
 	/**
 	 * Creates a new device database.
-	 * @param properties
-	 * @param polishHome
-	 * @param projectHome
-	 * @param apisHome
-	 * @param polishProject
-	 * @param inputStreamsByFileName
+	 * 
+	 * @param properties configuration settings, needs to contain the wtk.home key
+	 * @param polishHome the installation directory of J2ME Polish
+	 * @param projectHome the project's directory
+	 * @param apisHome the default import folder, can be null (in which case ${polish.home}/import is used)
+	 * @param polishProject basic settings
+	 * @param inputStreamsByFileName the configured input streams, can be null
 	 * @param customFilesByFileName
 	 */
 	public DeviceDatabase( Map properties, File polishHome, File projectHome, File apisHome, 
@@ -71,17 +74,18 @@ public class DeviceDatabase {
 	{
 		super();
 		try {
-			// load capability-definitions:
-			InputStream is = (InputStream) inputStreamsByFileName.get("capabilities.xml");
-			this.capabilityManager = new CapabilityManager( properties, is );
-			
-			// load libraries:
-			is = (InputStream) inputStreamsByFileName.get("apis.xml");
 			String wtkHomePath = (String) properties.get( "wtk.home" );
 			if (wtkHomePath == null) {
 				throw new BuildException("Unable to initialise device database - found no wtk.home property.");
 			}
 			File wtkHome = new File( wtkHomePath );
+			
+			// load capability-definitions:
+			InputStream is = getInputStream( "capabilities.xml", polishHome, inputStreamsByFileName ); 
+			this.capabilityManager = new CapabilityManager( properties, is );
+			
+			// load libraries:
+			is = getInputStream( "apis.xml", polishHome, inputStreamsByFileName );
 			this.libraryManager = new LibraryManager( properties, apisHome, wtkHome, is );
 			File file = (File) customFilesByFileName.get("custom-libraries.xml");
 			if ( file != null ) {
@@ -99,7 +103,7 @@ public class DeviceDatabase {
 			}
 			
 			// load configurations:
-			is = (InputStream) inputStreamsByFileName.get("configurations.xml");
+			is = getInputStream("configurations.xml", polishHome, inputStreamsByFileName);
 			this.configurationManager = new ConfigurationManager( this.capabilityManager, is );
 			/*
 			file = (File) customFilesByFileName.get("custom-configurations.xml");
@@ -118,12 +122,12 @@ public class DeviceDatabase {
 			}
 			*/
 			// load platforms:
-			is = (InputStream) inputStreamsByFileName.get("platforms.xml");
+			is = getInputStream("platforms.xml", polishHome, inputStreamsByFileName);
 			this.platformManager = new PlatformManager( this.capabilityManager, is );
 			
 			
 			// load vendors:
-			is = (InputStream) inputStreamsByFileName.get("vendors.xml");
+			is = getInputStream("vendors.xml", polishHome, inputStreamsByFileName);
 			this.vendorManager = new VendorManager( polishProject,  is, this.capabilityManager);
 			file = (File) customFilesByFileName.get("custom-vendors.xml");
 			if ( file != null ) {
@@ -141,7 +145,7 @@ public class DeviceDatabase {
 			}
 			
 			// load device groups:
-			is = (InputStream) inputStreamsByFileName.get("groups.xml");
+			is = getInputStream("groups.xml", polishHome, inputStreamsByFileName);
 			this.groupManager = new DeviceGroupManager( is, this.capabilityManager );
 			file = (File) customFilesByFileName.get("custom-groups.xml");
 			if ( file != null ) {
@@ -159,7 +163,7 @@ public class DeviceDatabase {
 			}
 			
 			// load devices:
-			is = (InputStream) inputStreamsByFileName.get("devices.xml");
+			is = getInputStream("devices.xml", polishHome, inputStreamsByFileName);
 			this.deviceManager = new DeviceManager( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, is );
 			file = (File) customFilesByFileName.get("custom-devices.xml");
 			if ( file != null ) {
@@ -187,6 +191,32 @@ public class DeviceDatabase {
 
 	
 	
+	/**
+	 * Gets the input stream for the specified resource.
+	 * 
+	 * @param fileName the name of the resource
+	 * @param polishHome the installation directory of J2ME Polish
+	 * @param inputStreamsByFileName the map containing configured input streams
+	 * @return the input stream or null when neither the stream is defined, nor the file can be found in polishHome
+	 */
+	private InputStream getInputStream(String fileName, File polishHome, Map inputStreamsByFileName) {
+		InputStream is = (InputStream) inputStreamsByFileName.get( fileName );
+		if (is == null) {
+			File file = new File( polishHome, fileName );
+			if ( file.exists() ) {
+				try {
+					return new FileInputStream( file );
+				} catch (FileNotFoundException e) {
+					// this should not happen, since we explicitely test this case
+					e.printStackTrace();
+				}
+			}
+		}
+		return is;
+	}
+
+
+
 	/**
 	 * @return Returns the capabilityManager.
 	 */

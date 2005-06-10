@@ -197,7 +197,7 @@
 		<name>mastercanvas</name>
 		<class>de.enough.polish.postcompile.mastercanvas.MasterCanvasPostCompiler</class>
 		<classpath>${polish.home}/import/asm-2.0.RC1.jar:${polish.home}/import/asm-tree-2.0.RC1.jar:${polish.home}/import/enough-bytecode.jar</classpath>
-		<autostart>polish.Bugs.displaySetCurrentFlickers</autostart>
+		<autostart>polish.usePolishGui and polish.Bugs.displaySetCurrentFlickers</autostart>
 	</extension>
 	
 	<extension>

@@ -69,20 +69,20 @@ implements OutputFilter
 	 * @see de.enough.polish.jar.Packager#createPackage(java.io.File, java.io.File, de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
 	public void createPackage(File sourceDir, File targetFile, Device device,
-			Locale locale, Environment environment) 
+			Locale locale, Environment env) 
 	throws IOException, BuildException 
 	{
 		File executable;
 		if ( File.separatorChar == '\\' ) {
 			// this is a window environment
-			executable = environment.resolveFile("${polish.home}/bin/7za.exe");
+			executable = env.resolveFile("${polish.home}/bin/7za.exe");
 			if (!executable.exists()) {
-				executable = environment.resolveFile("${7zip.home}/7za.exe");
+				executable = env.resolveFile("${7zip.home}/7za.exe");
 			}
 		} else {
-			executable = environment.resolveFile("${polish.home}/bin/7za");
+			executable = env.resolveFile("${polish.home}/bin/7za");
 			if (!executable.exists()) {
-				executable = environment.resolveFile("${7zip.home}/7za");
+				executable = env.resolveFile("${7zip.home}/7za");
 			}
 		}
 		ArrayList arguments = new ArrayList();
@@ -97,8 +97,8 @@ implements OutputFilter
 		arguments.add("-tzip"); // use zip compression
 		arguments.add( targetFile.getAbsolutePath() ); // target JAR file
 		// add optional parameters:
-		BooleanEvaluator evaluator = environment.getBooleanEvaluator();
-		Project project = environment.getProject();
+		BooleanEvaluator evaluator = env.getBooleanEvaluator();
+		Project project = env.getProject();
 		if (this.parameters != null) {
 			for (int i = 0; i < this.parameters.length; i++) {
 				Variable parameter = this.parameters[i];

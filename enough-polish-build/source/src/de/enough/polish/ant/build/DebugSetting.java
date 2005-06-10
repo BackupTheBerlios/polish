@@ -161,10 +161,10 @@ public class DebugSetting extends ConditionalElement {
 	}
 	
 	public void addConfiguredHandler( LogHandlerSetting setting ) {
-		addConfiguredLogHandler(setting);
+		addConfiguredLoghandler(setting);
 	}
 	
-	public void addConfiguredLogHandler( LogHandlerSetting setting ) {
+	public void addConfiguredLoghandler( LogHandlerSetting setting ) {
 		this.logHandlers.add( setting );
 	}
 	

@@ -35,6 +35,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionSetting;
 import de.enough.polish.Variable;
+import de.enough.polish.ant.build.LogHandlerSetting;
 
 /**
  * <p>The default log handler just sets preprocessing directives according to the given parameters.</p>
@@ -66,8 +67,8 @@ public class DefaultLogHandler extends LogHandler {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#intialize(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void initialize(Device device, Locale locale, Environment environment) {
-		super.initialize(device, locale, environment);
+	public void initialize(Device device, Locale locale, Environment env) {
+		super.initialize(device, locale, env);
 		ExtensionSetting setting = this.getExtensionSetting();
 		if (setting == null) {
 			System.out.println("Warning: default loghandler has not configuration setting and is unable to set up environment/preprocessing variables.");
@@ -78,19 +79,19 @@ public class DefaultLogHandler extends LogHandler {
 			System.out.println("Warning: default loghandler has not name and is unable to set up environment/preprocessing variables.");
 			return;
 		}
-		String value = environment.getVariable( "polish.log.handlers" );
+		String value = env.getVariable( "polish.log.handlers" );
 		if (value == null ) {
-			environment.addVariable( "polish.log.handlers", getClientLogHandlerClass(environment) );
+			env.addVariable( "polish.log.handlers", getClientLogHandlerClass(env) );
 		} else {
-			environment.addVariable( "polish.log.handlers", value + "," + getClientLogHandlerClass(environment) );
+			env.addVariable( "polish.log.handlers", value + "," + getClientLogHandlerClass(env) );
 		}
-		BooleanEvaluator evalutor = environment.getBooleanEvaluator();
+		BooleanEvaluator evalutor = env.getBooleanEvaluator();
 		if (this.parameters != null) {
-			Project project = environment.getProject();
+			Project project = env.getProject();
 			for (int i = 0; i < this.parameters.length; i++) {
 				Variable parameter = this.parameters[i];
 				if (parameter.isConditionFulfilled(evalutor, project)) {
-					environment.addVariable( "polish.log." + name + "." + parameter.getName(), parameter.getValue() );
+					env.addVariable( "polish.log." + name + "." + parameter.getName(), parameter.getValue() );
 				}
 			}
 		}
@@ -105,11 +106,15 @@ public class DefaultLogHandler extends LogHandler {
 	 * @throws IllegalStateException when the client log handler class is not defined anywhere
 	 * @throws NullPointerException when the setting is null
 	 */
-	protected String getClientLogHandlerClass( Environment environment ) {
-		String clientClass =  getParameterValue("clientClass", environment);
-		if (clientClass == null) {
-			throw new IllegalStateException("The loghandler [" + this.extensionSetting.getName() + "] has no clientClass-parameter defined. Please check your settings.");
+	protected String getClientLogHandlerClass( Environment env ) {
+		String clientClassName =  getParameterValue("clientClass", env);
+		if (clientClassName == null) {
+			LogHandlerSetting setting = (LogHandlerSetting) this.extensionSetting;
+			clientClassName = setting.getClientClassName();
+			if (clientClassName == null) {
+				throw new IllegalStateException("The loghandler [" + this.extensionSetting.getName() + "] has no clientClass-parameter defined. Please check your settings.");
+			}
 		}
-		return clientClass;
+		return clientClassName;
 	}
 }

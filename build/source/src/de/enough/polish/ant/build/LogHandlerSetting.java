@@ -39,11 +39,24 @@ import de.enough.polish.ExtensionSetting;
  */
 public class LogHandlerSetting extends ExtensionSetting {
 
+	private String clientClassName;
+
 	/**
 	 * Creates a new log handler setting
 	 */
 	public LogHandlerSetting() {
 		super();
+	}
+
+	/**
+	 * @return the name of the client class
+	 */
+	public String getClientClassName() {
+		return this.clientClassName;
+	}
+	
+	public void setClientClass( String name ) {
+		this.clientClassName = name;
 	}
 
 }
