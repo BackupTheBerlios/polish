@@ -149,6 +149,24 @@ public class MasterCanvasPostCompiler extends PostCompiler
 												false, masterCanvasClassName, "isShown",
 												"(L" + accessibleCanvasClassName + ";)V"));
 
+			// Optional mapping of javax.microedition.lcdui.Canvas
+			if ("true".equals(this.environment.getVariable("polish.MasterCanvas.alwaysMapCanvas")))
+			{
+				mapper.addMapping(
+				  	new MethodInvocationMapping(
+												  true, "javax.microedition.lcdui.Canvas", "repaint",
+												  "()V",
+												  false, masterCanvasClassName, "repaint",
+													"(Ljavax.microedition.lcdui.Canvas;)V"));
+				// mapping of isShown():
+				mapper.addMapping(
+						new MethodInvocationMapping(
+													true, "javax.microedition.lcdui.Canvas", "isShown",
+													"()V",
+													false, masterCanvasClassName, "isShown",
+													"(Ljavax.microedition.lcdui.Canvas;)V"));
+			}
+				
 			mapper.doMethodMapping(files);
 		}
 		catch (IOException e)
