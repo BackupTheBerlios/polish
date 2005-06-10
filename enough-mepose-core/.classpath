@@ -16,7 +16,11 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="JUNIT_HOME/junit.jar">
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/enough-j2mepolish-build.jar">
 		<attributes>
 		</attributes>
 	</classpathentry>

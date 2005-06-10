@@ -40,8 +40,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
+import de.enough.mepose.core.MeposeProject;
 import de.enough.polish.Environment;
-import de.enough.polish.plugin.eclipse.core.MeposeProject;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 

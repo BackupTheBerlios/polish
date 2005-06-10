@@ -14,6 +14,7 @@ import org.apache.tools.ant.Task;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.PolishTask;
+import de.enough.utils.AntBox;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

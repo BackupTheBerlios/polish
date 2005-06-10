@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.utils;
+package de.enough.utils;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -76,24 +76,25 @@ public class AntBox {
         this.errorStream = System.err;
     }
     
+    // Maybe needed to circumvent classloader issues.
+    public void createProject(ClassLoader eclipseClassLoader) {
+        createProject();
+        this.project.setCoreLoader(eclipseClassLoader);
+    }
+    
     /**
      * Creates a project configured with the current build.xml file.
-     * 
+     * @throws IllegalStateException if no buildxml file was specified.
      */
-    public void createProject(ClassLoader eclipseClassLoader) {
+    public void createProject() {
         if(this.buildxml == null){
-            throw new IllegalArgumentException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
+            throw new IllegalStateException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
         }
         this.project = new Project();
-        //this.project.setCoreLoader(eclipseClassLoader);
         this.project.init();
         this.project.setUserProperty("ant.version", Main.getAntVersion());
         this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
         
-        // This property is necessary to give ProjectHelper a concrete class to parse the build.xml file.
-        //System.setProperty("HELPER_PROPERTY","org.apache.tools.ant.helper.ProjectHelper2");
-        // Method is deprecated.
-        //ProjectHelper.configureProject(this.project, this.buildxml);
         this.projectHelper = new ProjectHelper2();
         this.projectHelper.parse(this.project,this.buildxml);
         
@@ -102,6 +103,8 @@ public class AntBox {
         logger.setOutputPrintStream(this.outputStream);
         logger.setErrorPrintStream(this.errorStream);
         logger.setEmacsMode(true);
+        
+        this.project.addBuildListener(logger);
     }
 
     /**

@@ -23,16 +23,14 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.core;
+package de.enough.mepose.core;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
@@ -40,7 +38,7 @@ import org.apache.tools.ant.Task;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
-import de.enough.polish.plugin.eclipse.utils.AntBox;
+import de.enough.utils.AntBox;
 
 /**
  * This class encapsulates the concepts in a build.xml in an abstract manner.
@@ -55,36 +53,49 @@ import de.enough.polish.plugin.eclipse.utils.AntBox;
  */
 public class MeposeProject {
     
-    //private File polishProject;
-    
-    //private List configuredDevices;
+    // The environment for a specific device. May be null when no device is choosen.
     private Environment environment;
-    // Other stuff like infosection, requirements, obfuscators,...
+    private Device[] configuredDevices;
+    
+    // TODO:Other stuff like infosection, requirements, obfuscators,...
 
-    private PolishTask polishTask;
     private AntBox antBox;
-
-    private List objectChangeListeners;
+    private PolishTask polishTask;
     
     public MeposeProject() {
         this.antBox = new AntBox();
     }
     
-    public boolean setBuildxml(File buildxml) {
+    /**
+     * When called initializes the antBox with the given buildxml, creates a antproject, sets
+     * 'environment' and gathers the configured devices.
+     * @param buildxml 
+     * @throws BuildException if parsing of the build.xml file was not possible or no 'PolishTask' was found.
+     */
+    public void setBuildxml(File buildxml) throws BuildException{
         if(buildxml == null){
             throw new IllegalArgumentException("ERROR:MeposeProject.setBuildxml(...):Parameter 'buildxml' is null.");
         }
         this.antBox.setBuildxml(buildxml);
-        this.antBox.createProject(this.getClass().getClassLoader());
+        this.antBox.createProject(getClass().getClassLoader());
         Project project = this.antBox.getProject();
         Map targetNameToTargetObjectMapping = project.getTargets();
         Collection targetObjectSet = targetNameToTargetObjectMapping.values();
         boolean foundPolishTask = false;
+        this.polishTask = null;
         for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
             Target target = (Target) iterator.next();
-            this.antBox.configureTarget(target);
+            try {
+                this.antBox.configureTarget(target);
+            }
+            catch(BuildException e) {
+                // configuring the target failed, maybe because the taskdef could not be resolved.
+                System.out.println(e.getClass().getName());
+                continue;
+            }
             Task[] tasks = target.getTasks();
             Task task;
+            
             for (int taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
                 task = tasks[taskIndex];
                 //if(task instanceof PolishTask) {
@@ -106,14 +117,15 @@ public class MeposeProject {
         }
         //TODO: Think about alternative error reporting facility instead of boolean return value.
         if(! foundPolishTask) {
-            return false;
+            throw new BuildException("No target with a 'PolishTask' was found.");
         }
-        Environment oldEnvironment = this.environment;
+        //Environment oldEnvironment = this.environment;
         this.polishTask.initProject();
         this.environment = this.polishTask.getEnvironment();
-        fireObjectChangedEvent(oldEnvironment,this.environment);
+        //TODO: Fire a propertyChangeEvent to inform others that the object reference
+        // has changed. ContentProcessors are typical clients to this mechanism.
         this.polishTask.selectDevices();
-        return true;
+        this.configuredDevices = this.polishTask.getDevices();
     }
 
     /*
@@ -123,29 +135,13 @@ public class MeposeProject {
         if(device == null){
             throw new IllegalArgumentException("ERROR:AntPolishProject.setEnvironmentToDevice(...):Parameter 'device' is null.");
         }
+        if(this.polishTask == null){
+            throw new IllegalStateException("ERROR:MeposeProject.setEnvironmentToDevice(...):Field 'polishTask' is null.");
+        }
         //TODO: Is null as Locale alright?
         // This does not delete or create the environment object but modifies it.
         this.polishTask.initialize(device,null);
-    }
-    
-    public void fireObjectChangedEvent(Object oldObject,Object newObject) {
-        if(oldObject == null && newObject == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.fireObjectChangedEvent(...):Both parameter are null.");
-        }
-        ObjectChangeEvent objectChangeEvent = new ObjectChangeEvent(this,oldObject,newObject);
-        IObjectChangeListener objectChangeListener;
-        WeakReference weakReference;
-        for (Iterator iterator = this.objectChangeListeners.iterator(); iterator.hasNext(); ) {
-            weakReference = (WeakReference)iterator.next();
-            objectChangeListener = (IObjectChangeListener)weakReference.get();
-            // When the editor was closed, all listeners were deleted. So we have to remove them from the listers list.
-            if(objectChangeListener == null) {
-                this.objectChangeListeners.remove(weakReference);
-            }
-            else {
-                objectChangeListener.handleObjectChangedEvent(objectChangeEvent);
-            }
-        }
+        this.environment = this.polishTask.getEnvironment();
     }
     
     // TODO: Put this stuff into the core plugin.
@@ -181,13 +177,6 @@ public class MeposeProject {
         return meposeProject;
     }
     
-    public void addObjectChangedListener(IObjectChangeListener objectChangeListener) {
-        if(objectChangeListener == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.addObjectChangedListener(...):Parameter 'objectChangeListener' is null.");
-        }
-        WeakReference weakReference = new WeakReference(objectChangeListener);
-        this.objectChangeListeners.add(weakReference);
-    }
 
     public AntBox getAntBox() {
         return this.antBox;
@@ -198,17 +187,29 @@ public class MeposeProject {
     }
 
     public void setAntBox(AntBox antBox) {
+        if(antBox == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.setAntBox(...):Parameter 'antBox' is null.");
+        }
         this.antBox = antBox;
     }
 
     public void setEnvironment(Environment environment) {
+        if(environment == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.setEnvironment(...):Parameter 'environment' is null.");
+        }
         this.environment = environment;
+    }
+
+    public Device[] getConfiguredDevices() {
+        return this.configuredDevices;
+    }
+
+    public void setConfiguredDevices(Device[] configuredDevices) {
+        if(configuredDevices == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.setConfiguredDevices(...):Parameter 'configuredDevices' is null.");
+        }
+        this.configuredDevices = configuredDevices;
     }
     
     
-    
-    // Triggered events:
-    //   environment created(Environment newEnvironment)
-    //   environment deleted(Environment deletedEnvironment)
-    //   environment modified(Environment modifiedEnvironment)
 }

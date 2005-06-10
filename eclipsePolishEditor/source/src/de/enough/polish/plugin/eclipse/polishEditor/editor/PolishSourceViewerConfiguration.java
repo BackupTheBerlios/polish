@@ -38,7 +38,6 @@ import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IAutoIndentStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -207,9 +206,9 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
             compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
       
-            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(this.editor.getDeviceEnvironment());
-            compoundContentAssistProcessor.add(processor);
-            this.editor.getMeposeProject().addObjectChangedListener(processor);
+            //VariableContentAssistProcessor processor = new VariableContentAssistProcessor(this.editor.getDeviceEnvironment());
+            // compoundContentAssistProcessor.add(processor);
+            // Register the processors as listeners to the meposeProject, e.g.
             contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }
