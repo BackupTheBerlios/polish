@@ -163,6 +163,7 @@ public class MasterCanvas
 		}
 	}
 	
+	public static void repaint(AccessibleCanvas canvas) {
 	public static void repaintMasterCanvas(Canvas canvas) {
 		if ( instance != null ) {
 			instance.repaint();
@@ -174,5 +175,15 @@ public class MasterCanvas
 			instance.repaint();
 		}
 	}
+	
+	public static boolean isShown(AccessibleCanvas canvas) {
+		if ( instance != null ) {
+			return (canvas == instance.currentCanvas);
+		} else {
+			return false;
+		}
+		
+	}
+
 
 }

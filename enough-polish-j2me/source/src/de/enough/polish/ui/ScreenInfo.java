@@ -73,40 +73,44 @@ public class ScreenInfo {
 		return visible;
 	}
 	
+	private static void repaint() {
+		//#if polish.Bugs.displaySetCurrentFlickers
+			MasterCanvas.repaint( null );
+		//#else
+			if (StyleSheet.display != null) {
+				Displayable displayable = StyleSheet.display.getCurrent();
+				if (displayable instanceof Canvas) {
+					((Canvas) displayable).repaint();
+				}
+			}		
+		//#endif
+	}
+	
 	public static void setText( String text ) {
 		item.setText( text );
-		if (StyleSheet.display != null) {
-			Displayable displayable = StyleSheet.display.getCurrent();
-			if (displayable instanceof Canvas) {
-				((Canvas) displayable).repaint();
-			}
-		}
+		repaint();
 	}
 	
 	public static void setImage( Image image ) {
 		item.setImage( image );
-		if (StyleSheet.display != null) {
-			Displayable displayable = StyleSheet.display.getCurrent();
-			if (displayable instanceof Canvas) {
-				((Canvas) displayable).repaint();
-			}
-		}
+		repaint();
 	}
 
 	public static void setPosition( int x, int y ) {
 		itemX = x;
 		itemY = y;
 		positionSet = true;
+		repaint();
 	}
 	
 	public static void setBackground( Background background ) {
 		item.background = background;
-		if (StyleSheet.display != null) {
-			Displayable displayable = StyleSheet.display.getCurrent();
-			if (displayable instanceof Canvas) {
-				((Canvas) displayable).repaint();
-			}
-		}
+		repaint();
+	}
+	
+	public static void setFontColor( int color ) {
+		item.textColor = color;
+		repaint();
 	}
 
 	

@@ -1066,7 +1066,7 @@ implements AccessibleCanvas
 	 * 
 	 * @param keyCode The code of the pressed key
 	 */
-	public void keyPressed(int keyCode) {
+	public synchronized void keyPressed(int keyCode) {
 		try {
 			//#debug
 			System.out.println("keyPressed: [" + keyCode + "].");
