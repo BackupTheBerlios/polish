@@ -150,7 +150,7 @@ public class MasterCanvasPostCompiler extends PostCompiler
 												"(L" + accessibleCanvasClassName + ";)V"));
 
 			// Optional mapping of javax.microedition.lcdui.Canvas
-			if ("true".equals(this.environment.getVariable("polish.MasterCanvas.alwaysMapCanvas")))
+			if ("true".equals(this.environment.getVariable("polish.MasterCanvas.mapCanvasCalls")))
 			{
 				mapper.addMapping(
 				  	new MethodInvocationMapping(
