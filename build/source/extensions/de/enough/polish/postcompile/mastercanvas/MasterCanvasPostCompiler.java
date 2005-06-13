@@ -134,24 +134,11 @@ public class MasterCanvasPostCompiler extends PostCompiler
 			} else {
 				accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
 			}
-			// mapping of repaint():
-			mapper.addMapping(
-				new MethodInvocationMapping(
-											true, accessibleCanvasClassName, "repaint",
-											"()V",
-											false, masterCanvasClassName, "repaintAccessibleCanvas",
-											"(L" + accessibleCanvasClassName + ";)V"));
-			// mapping of isShown():
-			mapper.addMapping(
-					new MethodInvocationMapping(
-												true, accessibleCanvasClassName, "isShown",
-												"()V",
-												false, masterCanvasClassName, "isShown",
-												"(L" + accessibleCanvasClassName + ";)V"));
 
 			// Optional mapping of javax.microedition.lcdui.Canvas
 			if ("true".equals(this.environment.getVariable("polish.MasterCanvas.mapCanvasCalls")))
 			{
+				// mapping of repaint():
 				mapper.addMapping(
 				  	new MethodInvocationMapping(
 												  true, "javax.microedition.lcdui.Canvas", "repaint",
@@ -163,8 +150,24 @@ public class MasterCanvasPostCompiler extends PostCompiler
 						new MethodInvocationMapping(
 													true, "javax.microedition.lcdui.Canvas", "isShown",
 													"()V",
-													false, masterCanvasClassName, "isShown",
+													false, masterCanvasClassName, "isCanvasShown",
 													"(Ljavax.microedition.lcdui.Canvas;)V"));
+			} else {
+				// map only AccessibleCanvas calls:
+				// mapping of repaint():
+				mapper.addMapping(
+					new MethodInvocationMapping(
+												true, accessibleCanvasClassName, "repaint",
+												"()V",
+												false, masterCanvasClassName, "repaintAccessibleCanvas",
+												"(L" + accessibleCanvasClassName + ";)V"));
+				// mapping of isShown():
+				mapper.addMapping(
+						new MethodInvocationMapping(
+													true, accessibleCanvasClassName, "isShown",
+													"()V",
+													false, masterCanvasClassName, "isAccessibleCanvasShown",
+													"(L" + accessibleCanvasClassName + ";)V"));				
 			}
 				
 			mapper.doMethodMapping(files);
