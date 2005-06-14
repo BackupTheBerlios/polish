@@ -1,16 +1,17 @@
 package de.enough.mepose.core;
 
-import org.eclipse.ui.plugin.*;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.BundleContext;
-import java.util.*;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class CorePlugin extends AbstractUIPlugin {
+public class CorePlugin extends Plugin {
 	
     public static final String ID = "de.enough.mepose.core.CorePlugin";
     
@@ -24,17 +25,23 @@ public class CorePlugin extends AbstractUIPlugin {
 	 */
 	public CorePlugin() {
 		super();
+        System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
+        System.out.flush();
 		plugin = this;
+        this.meposeProject = new MeposeProject(); 
 	}
 
 	public void start(BundleContext context) throws Exception {
+        System.out.println("DEBUG:CorePlugin.start(...):enter.");
 		super.start(context);
-        this.meposeProject = new MeposeProject();
+        
 	}
     
 
 	public void stop(BundleContext context) throws Exception {
+        System.out.println("DEBUG:CorePlugin.stop(...):enter.");
 		super.stop(context);
+        //new MeposeProject();
 		plugin = null;
 		this.resourceBundle = null;
 	}
@@ -102,6 +109,7 @@ public class CorePlugin extends AbstractUIPlugin {
             message, null); 
         log(status);
     }
+    
 
     public MeposeProject getMeposeProject() {
         return this.meposeProject;
@@ -113,6 +121,7 @@ public class CorePlugin extends AbstractUIPlugin {
         }
         this.meposeProject = meposeProject;
     }
+    
     
     // ###################################################################
     // Getter and Setter

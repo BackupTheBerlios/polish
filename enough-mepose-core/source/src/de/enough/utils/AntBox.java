@@ -57,6 +57,7 @@ public class AntBox {
     private int messageOutputLevel;
     private PrintStream outputStream;
     private PrintStream errorStream;
+    private ClassLoader alternativeClassLoader;
     
     public AntBox(File buildxml) {
         if(buildxml == null){
@@ -76,12 +77,6 @@ public class AntBox {
         this.errorStream = System.err;
     }
     
-    // Maybe needed to circumvent classloader issues.
-    public void createProject(ClassLoader eclipseClassLoader) {
-        createProject();
-        this.project.setCoreLoader(eclipseClassLoader);
-    }
-    
     /**
      * Creates a project configured with the current build.xml file.
      * @throws IllegalStateException if no buildxml file was specified.
@@ -90,7 +85,12 @@ public class AntBox {
         if(this.buildxml == null){
             throw new IllegalStateException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
         }
+        //TODO: Second try to get the class loader into ant.
+        //this.project = new ProjectWithCustomClassLoader();
+        //this.project.setCustomClassLoader(getClass().getClassLoader());
         this.project = new Project();
+        // TODO: First try to get the eclipse class loader into ant.
+        this.project.setCoreLoader(this.alternativeClassLoader);
         this.project.init();
         this.project.setUserProperty("ant.version", Main.getAntVersion());
         this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
@@ -161,8 +161,25 @@ public class AntBox {
     }
     
     
+    
     //##############################################################
     // Setter
+
+    public ProjectHelper getProjectHelper() {
+        return this.projectHelper;
+    }
+
+    public void setProjectHelper(ProjectHelper projectHelper) {
+        this.projectHelper = projectHelper;
+    }
+
+    public ClassLoader getAlternativeClassLoader() {
+        return this.alternativeClassLoader;
+    }
+
+    public void setAlternativeClassLoader(ClassLoader alternativeClassLoader) {
+        this.alternativeClassLoader = alternativeClassLoader;
+    }
 
     /**
      * @param project The project to set.

@@ -1,5 +1,5 @@
 /*
- * Created on Jun 9, 2005 at 2:32:32 PM.
+ * Created on Jun 13, 2005 at 4:40:31 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,15 +23,34 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-public class CorePluginTest extends TestCase{
-
-    public void testPluginStart() {
-        CorePlugin pluginInstance = CorePlugin.getDefault();
-        Assert.assertNotNull("There is no instance of 'CorePlugin'",pluginInstance);
-    }
-}
+//package de.enough.mepose.ant;
+//
+//import org.apache.tools.ant.AntClassLoader;
+//import org.apache.tools.ant.Project;
+//import org.apache.tools.ant.loader.AntClassLoader2;
+//import org.apache.tools.ant.types.Path;
+//
+//public class ProjectWithCustomClassLoader extends Project {
+//
+//    ClassLoader classLoader;
+//    
+//    
+//    public ClassLoader getClassLoader() {
+//        return this.classLoader;
+//    }
+//
+//
+//    public void setClassLoader(ClassLoader classLoader) {
+//        this.classLoader = classLoader;
+//    }
+//
+//
+//    public AntClassLoader createClassLoader(Path path) {
+//        AntClassLoader loader = new AntClassLoader2();
+//        loader.setProject(this);
+//        loader.setParent(this.classLoader);
+//        loader.setParentFirst(true);
+//        loader.setClassPath(path);
+//        return loader;
+//    }
+//}

@@ -1,5 +1,5 @@
 /*
- * Created on Jun 9, 2005 at 7:00:19 PM.
+ * Created on Jun 14, 2005 at 2:40:08 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,30 +23,10 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ant;
+package de.enough.mepose.core;
 
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.types.Path;
-
-public class ProjectWithEclipseClassLoader extends AntClassLoader {
-
-    private AntClassLoader customClassLoader;
-    
-    
-    
-    public AntClassLoader getCustomClassLoader() {
-        return this.customClassLoader;
-    }
-
-    public void setCustomClassLoader(AntClassLoader customClassLoader) {
-        this.customClassLoader = customClassLoader;
-    }
-
-
-
-    public AntClassLoader createClassLoader(Path path) {
-        return (this.customClassLoader == null)?createClassLoader(path):this.customClassLoader;
-    }
-
-    
+public class Empty {
+ /*
+  * 
+  */
 }

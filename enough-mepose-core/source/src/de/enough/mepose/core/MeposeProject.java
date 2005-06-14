@@ -61,9 +61,11 @@ public class MeposeProject {
 
     private AntBox antBox;
     private PolishTask polishTask;
+    private File buildxml;
     
     public MeposeProject() {
         this.antBox = new AntBox();
+        this.antBox.setAlternativeClassLoader(getClass().getClassLoader());
     }
     
     /**
@@ -76,13 +78,22 @@ public class MeposeProject {
         if(buildxml == null){
             throw new IllegalArgumentException("ERROR:MeposeProject.setBuildxml(...):Parameter 'buildxml' is null.");
         }
+        
         this.antBox.setBuildxml(buildxml);
-        this.antBox.createProject(getClass().getClassLoader());
+        this.antBox.createProject();
+        
+        // Configure all targets.
         Project project = this.antBox.getProject();
         Map targetNameToTargetObjectMapping = project.getTargets();
         Collection targetObjectSet = targetNameToTargetObjectMapping.values();
         boolean foundPolishTask = false;
         this.polishTask = null;
+//        System.out.print("prefixMeposeProject.setBuildxml(...):all targets:");
+//        for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
+//            Target element = (Target) iterator.next();
+//            System.out.print(element+" ");
+//        }
+//        System.out.println();
         for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
             Target target = (Target) iterator.next();
             try {
@@ -90,7 +101,8 @@ public class MeposeProject {
             }
             catch(BuildException e) {
                 // configuring the target failed, maybe because the taskdef could not be resolved.
-                System.out.println(e.getClass().getName());
+                //System.out.println("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
+                CorePlugin.log("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
                 continue;
             }
             Task[] tasks = target.getTasks();
@@ -98,18 +110,16 @@ public class MeposeProject {
             
             for (int taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
                 task = tasks[taskIndex];
-                //if(task instanceof PolishTask) {
-//                try {
-                    //task.getClass().equals(getClass().getClassLoader().loadClass("de.enough.polish.ant.PolishTask")
+//                if(task.getClass().getName().equals("de.enough.polish.ant.PolishTask")) {
+//                    System.out.println("DEBUG:MeposeProject.setBuildxml(...):PolishTask found.");
+//                    System.out.println("taskloader:"+task.getClass().getClassLoader());
+//                    System.out.println("polishloader:"+PolishTask.class.getClassLoader());
+//                }
                     if(task instanceof PolishTask) {
-                        //this.targetContainingPolishTask = target;
                         this.polishTask = (PolishTask)task;
                         foundPolishTask = true;
                         break;
                     }
-//                } catch (ClassNotFoundException exception) {
-//                    foundPolishTask = false;
-//                }
             }
             if(foundPolishTask) {
                 break;
@@ -126,6 +136,7 @@ public class MeposeProject {
         // has changed. ContentProcessors are typical clients to this mechanism.
         this.polishTask.selectDevices();
         this.configuredDevices = this.polishTask.getDevices();
+        this.buildxml = buildxml;
     }
 
     /*
@@ -143,7 +154,7 @@ public class MeposeProject {
         this.polishTask.initialize(device,null);
         this.environment = this.polishTask.getEnvironment();
     }
-    
+    /*
     // TODO: Put this stuff into the core plugin.
     public static MeposeProject getTestProject() {
         String oldUserDir = System.getProperty("user.dir");
@@ -176,7 +187,7 @@ public class MeposeProject {
         System.setProperty("user.dir",oldUserDir);
         return meposeProject;
     }
-    
+    */
 
     public AntBox getAntBox() {
         return this.antBox;
@@ -209,6 +220,10 @@ public class MeposeProject {
             throw new IllegalArgumentException("ERROR:MeposeProject.setConfiguredDevices(...):Parameter 'configuredDevices' is null.");
         }
         this.configuredDevices = configuredDevices;
+    }
+
+    public File getBuildxml() {
+        return this.buildxml;
     }
     
     
