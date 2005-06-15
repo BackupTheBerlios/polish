@@ -72,6 +72,9 @@ public class ExtensionDefinition {
 		this.className = element.getChildTextTrim( "class" );
 		this.classPath = element.getChildTextTrim( "classpath" );
 		this.autoStartCondition = element.getChildTextTrim( "autostart" );
+		if (this.autoStartCondition != null) {
+			this.autoStartCondition = this.autoStartCondition.replace( '\n', ' ' );
+		}
 	}
 
 	public Project getAntProject() {

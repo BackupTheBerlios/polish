@@ -115,7 +115,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta1>";
+	private static final String VERSION = "1.3<beta2>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -517,6 +517,7 @@ public class PolishTask extends ConditionalTask {
 		this.polishProject.addDirectFeature( "polish.active" );
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
+			this.polishProject.addFeature("debug.verbose");
 			this.polishProject.addDirectCapability("polish.debug.Verbose", "enabled");
 		}
 		if (debugManager != null && this.buildSetting.getDebugSetting().showLogOnError()) {

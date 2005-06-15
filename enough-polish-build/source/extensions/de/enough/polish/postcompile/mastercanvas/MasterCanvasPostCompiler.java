@@ -95,10 +95,12 @@ public class MasterCanvasPostCompiler extends PostCompiler
 			MethodMapper mapper = new MethodMapper();
 			mapper.setClassLoader(device.getClassLoader());
 			
-			boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
+			boolean enableScreenEffects = 
+				this.environment.hasSymbol("polish.css.screen-change-animation") 
+				|| this.environment.hasSymbol("polish.ScreenChangeAnimation.forward:defined");
 			if (enableScreenEffects) {
 				String styleSheetClass;
-				if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+				if ( useDefaultPackage ) {
 					styleSheetClass = "StyleSheet";
 				} else {					
 					styleSheetClass = "de/enough/polish/ui/StyleSheet";
@@ -127,48 +129,31 @@ public class MasterCanvasPostCompiler extends PostCompiler
 											false, masterCanvasClassName, "getCurrent",
 											"(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;")
 			);
-			
+
+			/*
 			String accessibleCanvasClassName;
 			if ( useDefaultPackage ) {
 				accessibleCanvasClassName = "AccessibleCanvas";
 			} else {
 				accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
 			}
-
-			// Optional mapping of javax.microedition.lcdui.Canvas
-			if ("true".equals(this.environment.getVariable("polish.MasterCanvas.mapCanvasCalls")))
-			{
-				// mapping of repaint():
-				mapper.addMapping(
-				  	new MethodInvocationMapping(
-												  true, "javax.microedition.lcdui.Canvas", "repaint",
-												  "()V",
-												  false, masterCanvasClassName, "repaintCanvas",
-													"(Ljavax.microedition.lcdui.Canvas;)V"));
-				// mapping of isShown():
-				mapper.addMapping(
-						new MethodInvocationMapping(
-													true, "javax.microedition.lcdui.Canvas", "isShown",
-													"()V",
-													false, masterCanvasClassName, "isCanvasShown",
-													"(Ljavax.microedition.lcdui.Canvas;)V"));
-			} else {
-				// map only AccessibleCanvas calls:
-				// mapping of repaint():
-				mapper.addMapping(
+			*/
+			// mapping of isShown(), please note the different signature ()Z instead of ()V, since
+			// a boolean value is returned:
+			mapper.addMapping(
 					new MethodInvocationMapping(
-												true, accessibleCanvasClassName, "repaint",
-												"()V",
-												false, masterCanvasClassName, "repaintAccessibleCanvas",
-												"(L" + accessibleCanvasClassName + ";)V"));
-				// mapping of isShown():
-				mapper.addMapping(
-						new MethodInvocationMapping(
-													true, accessibleCanvasClassName, "isShown",
-													"()V",
-													false, masterCanvasClassName, "isAccessibleCanvasShown",
-													"(L" + accessibleCanvasClassName + ";)V"));				
-			}
+												true, "javax/microedition/lcdui/Displayable", "isShown",
+												"()Z",
+												false, masterCanvasClassName, "isDisplayableShown",
+												"(Ljavax/microedition/lcdui/Displayable;)Z"));
+
+			// mapping of repaint():
+			mapper.addMapping(
+			  	new MethodInvocationMapping(
+											  true, "javax/microedition/lcdui/Canvas", "repaint",
+											  "()V",
+											  false, masterCanvasClassName, "repaintCanvas",
+												"(Ljavax/microedition/lcdui/Canvas;)V"));
 				
 			mapper.doMethodMapping(files);
 		}

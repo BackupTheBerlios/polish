@@ -139,6 +139,9 @@ public class BooleanEvaluator {
 		// main loop: extract all simple expressions (without parenthesisses) and 
 		// evaluate each of them.
 		
+		// replace all tabs by spaces:
+		expression = expression.replace('\t', ' ');
+		
 		// first step: replace all properties:
 		if ( this.environment != null) {
 			//System.out.println("BooleanEvaluator: prev: " + expression);

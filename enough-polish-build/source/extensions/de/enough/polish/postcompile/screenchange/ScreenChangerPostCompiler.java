@@ -62,10 +62,11 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 	public void postCompile(File classesDir, Device device)
 	throws BuildException 
 	{
+		/*
 		boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
 		if (!enableScreenEffects) {
 			return;
-		}
+		}*/
 		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
 		ArrayList filesList = new ArrayList( fileNames.length );
 		for (int i = 0; i < fileNames.length; i++) {
@@ -82,7 +83,7 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 		}
 		File[] files = (File[]) filesList.toArray( new File[ filesList.size() ] );
 		try {
-			System.out.println("mapping of Display.setCurrent() for " + files.length + " class files.");
+			//System.out.println("mapping of Display.setCurrent() for " + files.length + " class files.");
 			String targetClassName;
 			if (this.environment.hasSymbol("polish.useDefaultPackage")) {
 				targetClassName = "StyleSheet";
