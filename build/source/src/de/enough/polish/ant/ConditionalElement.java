@@ -137,7 +137,7 @@ public class ConditionalElement {
 					return false;
 				}
 			} else {
-				boolean success = evaluator.evaluate( this.ifCondition, "build.xml", 0);
+				boolean success = evaluator.evaluate( this.unlessCondition, "build.xml", 0);
 				if (success) {
 					return false;
 				}
