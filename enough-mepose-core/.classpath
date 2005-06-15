@@ -12,15 +12,16 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/enough-j2mepolish-build.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/ant-nodeps.jar">
 		<attributes>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/ant.jar">
+	<classpathentry sourcepath="/Users/ricky/lib/apache-ant-1.6.3-src.zip" kind="lib" path="lib/ant.jar">
+		<attributes>
+			<attribute value="jar:file:/Users/ricky/lib/apache-ant-1.6.3-doc.zip!/" name="javadoc_location"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" sourcepath="/enough-polish-build/source/src" kind="lib" path="lib/enough-j2mepolish-build.jar">
 		<attributes>
 		</attributes>
 	</classpathentry>

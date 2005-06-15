@@ -25,9 +25,13 @@
  */
 package de.enough.mepose.core;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
@@ -56,16 +60,25 @@ public class MeposeProject {
     // The environment for a specific device. May be null when no device is choosen.
     private Environment environment;
     private Device[] configuredDevices;
-    
-    // TODO:Other stuff like infosection, requirements, obfuscators,...
+    private String projectPath;
 
     private AntBox antBox;
     private PolishTask polishTask;
     private File buildxml;
     
+    // TODO: Make a map and register listeners with properties directly.
+    private List propertyChangeListeners;
+    
     public MeposeProject() {
+        reset();
+    }
+    
+    public void reset() {
         this.antBox = new AntBox();
         this.antBox.setAlternativeClassLoader(getClass().getClassLoader());
+        this.buildxml = new File("");
+        this.projectPath = "";
+        this.propertyChangeListeners = new LinkedList();
     }
     
     /**
@@ -78,7 +91,7 @@ public class MeposeProject {
         if(buildxml == null){
             throw new IllegalArgumentException("ERROR:MeposeProject.setBuildxml(...):Parameter 'buildxml' is null.");
         }
-        
+        this.antBox.setWorkingDirectory(this.projectPath);
         this.antBox.setBuildxml(buildxml);
         this.antBox.createProject();
         
@@ -88,12 +101,6 @@ public class MeposeProject {
         Collection targetObjectSet = targetNameToTargetObjectMapping.values();
         boolean foundPolishTask = false;
         this.polishTask = null;
-//        System.out.print("prefixMeposeProject.setBuildxml(...):all targets:");
-//        for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
-//            Target element = (Target) iterator.next();
-//            System.out.print(element+" ");
-//        }
-//        System.out.println();
         for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
             Target target = (Target) iterator.next();
             try {
@@ -101,20 +108,13 @@ public class MeposeProject {
             }
             catch(BuildException e) {
                 // configuring the target failed, maybe because the taskdef could not be resolved.
-                //System.out.println("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
                 CorePlugin.log("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
                 continue;
             }
             Task[] tasks = target.getTasks();
             Task task;
-            
             for (int taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
                 task = tasks[taskIndex];
-//                if(task.getClass().getName().equals("de.enough.polish.ant.PolishTask")) {
-//                    System.out.println("DEBUG:MeposeProject.setBuildxml(...):PolishTask found.");
-//                    System.out.println("taskloader:"+task.getClass().getClassLoader());
-//                    System.out.println("polishloader:"+PolishTask.class.getClassLoader());
-//                }
                     if(task instanceof PolishTask) {
                         this.polishTask = (PolishTask)task;
                         foundPolishTask = true;
@@ -129,11 +129,12 @@ public class MeposeProject {
         if(! foundPolishTask) {
             throw new BuildException("No target with a 'PolishTask' was found.");
         }
-        //Environment oldEnvironment = this.environment;
+        Environment oldEnvironment = this.environment;
         this.polishTask.initProject();
         this.environment = this.polishTask.getEnvironment();
         //TODO: Fire a propertyChangeEvent to inform others that the object reference
         // has changed. ContentProcessors are typical clients to this mechanism.
+        firePropertyChangeEvent("environment",oldEnvironment,this.environment);
         this.polishTask.selectDevices();
         this.configuredDevices = this.polishTask.getDevices();
         this.buildxml = buildxml;
@@ -149,46 +150,12 @@ public class MeposeProject {
         if(this.polishTask == null){
             throw new IllegalStateException("ERROR:MeposeProject.setEnvironmentToDevice(...):Field 'polishTask' is null.");
         }
-        //TODO: Is null as Locale alright?
-        // This does not delete or create the environment object but modifies it.
+        
+        // This does not delete or create the environment object but modifies it in place.
         this.polishTask.initialize(device,null);
         this.environment = this.polishTask.getEnvironment();
     }
-    /*
-    // TODO: Put this stuff into the core plugin.
-    public static MeposeProject getTestProject() {
-        String oldUserDir = System.getProperty("user.dir");
-        System.setProperty("user.dir","/Users/ricky/workspace/enough-polish-demo");
-        MeposeProject meposeProject = new MeposeProject();
-        File buildxml = new File("build.xml");
-        
-        meposeProject.setBuildxml(buildxml);
-        AntBox antBox = meposeProject.getAntBox();
-        antBox.createProject(MeposeProject.class.getClassLoader());
-        Project project = antBox.getProject();
-        Target polishTarget = (Target)project.getTargets().get("j2mepolish");
-        antBox.configureTarget(polishTarget);
-        Task[] tasks = polishTarget.getTasks();
-        Task t = tasks[0];
-        PolishTask task;
-//        try {
-            //t.getClass().equals(MeposeProject.class.getClassLoader().loadClass("de.enough.polish.ant.PolishTask")
-            if(t instanceof PolishTask) {
-                task = (PolishTask)t;
-            }
-            else {
-                throw new RuntimeException("MeposeProject.getTestProject():task is not a PolishTask.");
-            }
-//        } catch (ClassNotFoundException exception) {
-//            throw new RuntimeException("eposeProject.getTestProject():task is not a PolishTask.");
-//        }
-        
-        meposeProject.setEnvironment(task.getEnvironment());
-        System.setProperty("user.dir",oldUserDir);
-        return meposeProject;
-    }
-    */
-
+  
     public AntBox getAntBox() {
         return this.antBox;
     }
@@ -225,6 +192,40 @@ public class MeposeProject {
     public File getBuildxml() {
         return this.buildxml;
     }
+
+    public String getProjectPath() {
+        return this.projectPath;
+    }
+
+    public void setProjectPath(String projectPath) {
+        if(projectPath == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.setProjectPath(...):Parameter 'projectPath' is null.");
+        }
+        this.projectPath = projectPath;
+    }
     
+    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        if(propertyChangeListener == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.addPropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
+        }
+        this.propertyChangeListeners.add(propertyChangeListener);
+    }
     
+    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        if(propertyChangeListener == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.removePropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
+        }
+        this.propertyChangeListeners.remove(propertyChangeListener);
+    }
+    
+    public void firePropertyChangeEvent(String property,Object oldValue, Object newValue) {
+        if(property == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.firePropertyChangeEvent(...):Parameter 'property' is null.");
+        }
+        PropertyChangeEvent event = new PropertyChangeEvent(this,property,oldValue,newValue);
+        for (Iterator iterator = this.propertyChangeListeners.iterator(); iterator.hasNext(); ) {
+            PropertyChangeListener propertyChangeListener = (PropertyChangeListener) iterator.next();
+            propertyChangeListener.propertyChange(event);
+        }
+    }
 }

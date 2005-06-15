@@ -11,9 +11,6 @@
       <library name="MeposeCore.jar">
          <export name="*"/>
       </library>
-      <library name="lib/enough-j2mepolish-build.jar">
-         <export name="*"/>
-      </library>
       <library name="lib/ant.jar">
          <export name="*"/>
       </library>
@@ -21,6 +18,9 @@
          <export name="*"/>
       </library>
       <library name="lib/jdom.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/enough-j2mepolish-build.jar">
          <export name="*"/>
       </library>
    </runtime>

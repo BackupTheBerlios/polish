@@ -28,6 +28,7 @@ package de.enough.utils;
 import java.io.File;
 import java.io.PrintStream;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Main;
@@ -38,6 +39,9 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.helper.ProjectHelper2;
 
 /**
+ * 1. Set the build.xml file and a working directory.
+ * 2. Call createProject().
+ * 3. Configure a target.
  * Beware that this class is written for ant-1.6.3. but eclipse uses 1.6.2.
  * <p></p>
  *
@@ -57,45 +61,52 @@ public class AntBox {
     private int messageOutputLevel;
     private PrintStream outputStream;
     private PrintStream errorStream;
-    private ClassLoader alternativeClassLoader;
+    private ClassLoader alternativeClassLoader = null;
+    private String workingDirectory = "";
+    private String previousWorkingDirectory = "";
+    
+    
     
     public AntBox(File buildxml) {
         if(buildxml == null){
             throw new IllegalArgumentException("ERROR:AntBox.AntBox(...):Parameter 'buildxml' is null.");
         }
+        reset();
         this.buildxml = buildxml;
-        init();
     }
     
     public AntBox() {
-        init();
+        reset();
     }
     
-    private void init() {
+    public void reset() {
         this.messageOutputLevel = Project.MSG_INFO;
         this.outputStream = System.out;
         this.errorStream = System.err;
+        this.alternativeClassLoader = null;
+        this.workingDirectory = "";
+        this.previousWorkingDirectory = "";
+        this.buildxml = new File("");
+        this.projectHelper = new ProjectHelper2();
+        this.project = new Project();
     }
     
     /**
      * Creates a project configured with the current build.xml file.
      * @throws IllegalStateException if no buildxml file was specified.
+     * @throws BuildException 
      */
-    public void createProject() {
+    public void createProject() throws BuildException{
         if(this.buildxml == null){
             throw new IllegalStateException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
         }
-        //TODO: Second try to get the class loader into ant.
-        //this.project = new ProjectWithCustomClassLoader();
-        //this.project.setCustomClassLoader(getClass().getClassLoader());
-        this.project = new Project();
-        // TODO: First try to get the eclipse class loader into ant.
+        changeWorkingDirectory();
+        
         this.project.setCoreLoader(this.alternativeClassLoader);
         this.project.init();
         this.project.setUserProperty("ant.version", Main.getAntVersion());
         this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
         
-        this.projectHelper = new ProjectHelper2();
         this.projectHelper.parse(this.project,this.buildxml);
         
         BuildLogger logger = new DefaultLogger();
@@ -105,22 +116,40 @@ public class AntBox {
         logger.setEmacsMode(true);
         
         this.project.addBuildListener(logger);
+        
+        // Restore previous working directory.
+        restorePreviousWorkingDirectory();
     }
 
+    
     /**
      * This method needs to be called when a target is used in any way. It will replace all UnknownElements tasks
      * with concrete task classes.
      * @param target
+     * @throws BuildException
      */
-    public void configureTarget(Target target) {
+    public void configureTarget(Target target) throws BuildException{
         if(target == null){
             throw new IllegalArgumentException("ERROR:AntBox.configureTarget(...):Parameter 'target' is null.");
         }
+        changeWorkingDirectory();
         Task[] tasks = target.getTasks();
         for (int i = 0; i < tasks.length; i++) {
             tasks[i].maybeConfigure();
         }
+        restorePreviousWorkingDirectory();
     }
+    
+    
+    private void restorePreviousWorkingDirectory() {
+        System.setProperty("user.dir",this.previousWorkingDirectory);
+    }
+
+    private void changeWorkingDirectory() {
+        this.previousWorkingDirectory = System.getProperty("user.dir");
+        System.setProperty("user.dir",this.workingDirectory);
+    }
+
     
     //##############################################################
     // Getter
@@ -160,24 +189,27 @@ public class AntBox {
         return this.outputStream;
     }
     
-    
-    
-    //##############################################################
-    // Setter
 
     public ProjectHelper getProjectHelper() {
         return this.projectHelper;
     }
 
-    public void setProjectHelper(ProjectHelper projectHelper) {
-        this.projectHelper = projectHelper;
-    }
-
     public ClassLoader getAlternativeClassLoader() {
         return this.alternativeClassLoader;
     }
+    
+//  ##############################################################
+    // Setter
+    
+    public void setProjectHelper(ProjectHelper projectHelper) {
+        if(projectHelper == null){
+            throw new IllegalArgumentException("ERROR:AntBox.setProjectHelper(...):Parameter 'projectHelper' is null.");
+        }
+        this.projectHelper = projectHelper;
+    }
 
     public void setAlternativeClassLoader(ClassLoader alternativeClassLoader) {
+        // Null is allowed parameter is allowed. Means to use default class loader.
         this.alternativeClassLoader = alternativeClassLoader;
     }
 
@@ -228,5 +260,14 @@ public class AntBox {
         this.outputStream = outputStream;
     }
     
-    
+    public String getWorkingDirectory() {
+        return this.workingDirectory;
+    }
+
+    public void setWorkingDirectory(String workingDirectory) {
+        if(workingDirectory == null){
+            throw new IllegalArgumentException("ERROR:AntBox.setUsedWorkingDirectory(...):Parameter 'usedWorkingDirectory' is null.");
+        }
+        this.workingDirectory = workingDirectory;
+    }
 }

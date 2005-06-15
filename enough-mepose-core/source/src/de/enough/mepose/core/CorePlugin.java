@@ -1,5 +1,6 @@
 package de.enough.mepose.core;
 
+import java.io.File;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -26,11 +27,20 @@ public class CorePlugin extends Plugin {
 	public CorePlugin() {
 		super();
         System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
-        System.out.flush();
 		plugin = this;
-        this.meposeProject = new MeposeProject(); 
+        this.meposeProject = new MeposeProject();
+        // TODO:One for bootstrap testing.
+        createTestProject();
 	}
 
+    public void createTestProject() {
+        String buildxml1_basedir = "/Users/ricky/workspace/enough-polish-demo";
+        String buildxml1_filename = "build.xml";
+        this.meposeProject.setProjectPath(buildxml1_basedir);
+        this.meposeProject.setBuildxml(new File(buildxml1_filename));
+        this.meposeProject.setEnvironmentToDevice(this.meposeProject.getConfiguredDevices()[0]);
+    }
+    
 	public void start(BundleContext context) throws Exception {
         System.out.println("DEBUG:CorePlugin.start(...):enter.");
 		super.start(context);
