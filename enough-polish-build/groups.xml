@@ -46,7 +46,8 @@
 		<capability name="CanvasSize" value="128x96" />
 		<capability name="FullCanvasSize" value="128x128" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
-		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
+		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_1" />
+		<capability name="Emulator.Skin.2" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
@@ -67,7 +68,7 @@
 		<parent>Series40</parent>
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="Bugs" value="PlatformRequestRequiresQuit" />
 	</group>

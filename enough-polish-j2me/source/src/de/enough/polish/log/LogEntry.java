@@ -131,8 +131,8 @@ public class LogEntry {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("[").append( this.level ).append("] "); 
-		//#if polish.debug.verbose
-			buffer.append( this.className ).append(" - ").append( this.lineNumber ).append(": ");
+		//#if polish.debugVerbose
+			buffer.append( this.className ).append(" (").append( this.lineNumber ).append("): ");
 		//#endif
 		buffer.append( this.message );
 		if (this.exception.length() > 0) {

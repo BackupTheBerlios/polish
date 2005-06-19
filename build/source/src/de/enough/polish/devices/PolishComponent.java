@@ -274,7 +274,26 @@ implements Comparable
 						for (int i = 0; i < singleValues.length; i++) {
 							String singleValue = singleValues[i];
 							//TODO what happens if I add "mmapi" to a "mmaapi1.1" device?
-							if ( existingValue.indexOf( singleValue ) == -1) {
+							int existingValueIndex = existingValue.indexOf( singleValue ); 
+							if ( existingValueIndex != -1 ) {
+								// this is a value that seems to be present already,
+								// double check it:
+								int commaIndex = existingValue.indexOf(',', existingValueIndex );
+								String checkValue;
+								if (commaIndex == -1) {
+									checkValue = existingValue.substring( existingValueIndex ).trim();
+								} else {
+									checkValue = existingValue.substring( existingValueIndex, commaIndex ).trim();
+								}
+								if ( !checkValue.equals( singleValue ) ) {
+									// this was just a similar value...
+									//System.out.println( this.identifier + ": Adding value " + singleValue + " to " + name );
+									existingValueIndex = -1;
+								//} else {
+								//	System.out.println( this.identifier + ": Duplicate value " + singleValue + " of " + name );
+								}
+							}
+							if ( existingValueIndex == -1) {
 								existingValue += ", " + singleValue;
 								valueAdded = true;
 							}

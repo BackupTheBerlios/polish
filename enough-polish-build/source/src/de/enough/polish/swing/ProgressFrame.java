@@ -71,6 +71,7 @@ implements Runnable
 	throws HeadlessException 
 	{
 		super(title);
+		setUndecorated( true );
 		this.process = process;
 		int steps = process.getSteps();
 		if (steps == -1) {

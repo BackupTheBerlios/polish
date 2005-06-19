@@ -74,16 +74,12 @@ public class ScreenInfo {
 	}
 	
 	private static void repaint() {
-		//#if polish.Bugs.displaySetCurrentFlickers
-			MasterCanvas.repaintAccessibleCanvas( null );
-		//#else
-			if (StyleSheet.display != null) {
-				Displayable displayable = StyleSheet.display.getCurrent();
-				if (displayable instanceof Canvas) {
-					((Canvas) displayable).repaint();
-				}
-			}		
-		//#endif
+		if (StyleSheet.display != null) {
+			Displayable displayable = StyleSheet.display.getCurrent();
+			if (displayable != null && displayable instanceof Canvas) {
+				((Canvas) displayable).repaint();
+			}
+		}		
 	}
 	
 	public static void setText( String text ) {

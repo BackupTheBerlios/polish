@@ -2233,7 +2233,7 @@
 
 	<device>
 		<identifier>Nokia/7610</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>

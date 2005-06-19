@@ -179,7 +179,7 @@ public class Ticker extends Item
 			//System.out.println("changing chunk: xOffset=" + this.xOffset + " chunkWidth=" + this.chunkWidth );
 			this.xOffset = -this.contentWidth;
 			this.chunkIndex++;
-			if ( this.chunks.length >= this.chunkIndex ) {
+			if ( this.chunkIndex >= this.chunks.length  ) {
 				this.chunkIndex = 0;
 			}
 			this.chunk = this.chunks[ this.chunkIndex ];

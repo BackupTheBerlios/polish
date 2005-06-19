@@ -47,6 +47,18 @@
 		<files>j2me-mmapi.jar, mma.zip</files>
 		<path>import/mmapi.jar</path>
 	</api>
+
+	<api>
+		<name>Mobile Media API 1.1</name>
+		<description>The Mobile Media API 1.1 provides
+			functionalities for playing and capturing sounds and videos.
+		</description>
+		<parent>mmapi</parent>
+		<names>mmapi1.1,mm-api1.1</names>
+		<symbol>mmapi1.1</symbol>
+		<files>j2me-mmapi.jar, mma.zip</files>
+		<path>import/mmapi.jar</path>
+	</api>
 	
 	<api>
 		<name>Wireless Messaging API</name>

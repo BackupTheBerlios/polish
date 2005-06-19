@@ -46,6 +46,8 @@ import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
+import com.sun.kvem.security.API;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -196,20 +198,6 @@ public class Device extends PolishComponent {
 		addCapability(IDENTIFIER, this.identifier);
 		addCapability( "polish.identifier", this.identifier );
 		
-		// check if this device extends another one:
-		String parentIdentifier = definition.getChildTextTrim( "parent" );
-		if (parentIdentifier == null) {
-			parentIdentifier = definition.getAttributeValue("extends");
-		}
-		if (parentIdentifier != null) {
-			Device parentDevice = deviceManager.getDevice( parentIdentifier );
-			if (parentDevice == null) {
-				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + parentIdentifier + "] is not known. Make sure it is defined before this device.");
-			}
-			addComponent(parentDevice);
-		}
-
-
 		// load group features and capabilities:
 		String groupsDefinition = definition.getChildTextTrim("groups");
 		String[] explicitGroupNames = null;
@@ -227,7 +215,7 @@ public class Device extends PolishComponent {
 									+ "] - please check either [devices.xml] or [groups.xml].");
 				}
 				//System.out.println( this.identifier + ": adding group [" + groupName + "], JavaPackage=" + group.getCapability("polish.JavaPackage") );
-				addComponent(group);
+				addComponent( group );
 				/*
 				String parentName = group.getParentIdentifier();
 				while (parentName != null) {
@@ -239,6 +227,20 @@ public class Device extends PolishComponent {
 				*/
 			}
 		}
+		
+		// check if this device extends another one:
+		String parentIdentifier = definition.getChildTextTrim( "parent" );
+		if (parentIdentifier == null) {
+			parentIdentifier = definition.getAttributeValue("extends");
+		}
+		if (parentIdentifier != null) {
+			Device parentDevice = deviceManager.getDevice( parentIdentifier );
+			if (parentDevice == null) {
+				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + parentIdentifier + "] is not known. Make sure it is defined before this device.");
+			}
+			addComponent( parentDevice );
+		}
+
 
 		//add implicit groups:
 		ArrayList groupNamesList = new ArrayList();
@@ -248,7 +250,7 @@ public class Device extends PolishComponent {
 		loadCapabilities(definition, this.identifier, "devices.xml");
 
 		// set midp-version:
-		String platformsStr = getCapability(JAVA_PLATFORM);
+		String platformsStr = getCapability( JAVA_PLATFORM );
 		if (platformsStr == null) {
 			System.out.println( this.getCapabilities() );
 			throw new InvalidComponentException("The device ["
@@ -309,7 +311,7 @@ public class Device extends PolishComponent {
 					.splitAndTrim(this.supportedApisString, ',');
 			for (int i = 0; i < apis.length; i++) {
 				String api = apis[i].toLowerCase();
-				Library library = libraryManager.getLibrary(api);
+				Library library = libraryManager.getLibrary( api );
 				String symbol;
 				String[] symbols;
 				if (library != null) {
@@ -328,7 +330,7 @@ public class Device extends PolishComponent {
 				}
 				// add any defined features and symbols of the api:
 				if (library != null) {
-					addComponent(library);
+					addComponent( library );
 				}
 			}
 			this.supportedApis = apis;
@@ -770,6 +772,7 @@ public class Device extends PolishComponent {
 		StringBuffer buffer = new StringBuffer();
 		String[] paths = StringUtil.splitAndTrim( path, ',' );
 		File polishHome = (File) this.environment.get("polish.home");
+		polishHome = new File( polishHome, "import" );
 		File importFolder = (File) this.environment.get("polish.apidir");
 		for (int i = 0; i < paths.length; i++) {
 			String pathElement = paths[i];
@@ -779,7 +782,7 @@ public class Device extends PolishComponent {
 				if ( ! lib.exists() ) {
 					lib = new File( pathElement );
 					if ( ! lib.exists() ) {
-						throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.identifier + "]: file not found!");
+						throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.identifier + "]: file not found! default-dir=[" + polishHome.getAbsolutePath() + "], api-dir=[" + importFolder.getAbsolutePath() + "].");
 					}
 				}
 			}

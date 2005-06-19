@@ -129,6 +129,7 @@ public class MasterCanvas
 		if ( ! (nextDisplayable instanceof AccessibleCanvas) ) {
 			if (instance != null && instance.currentCanvas != null) {
 				if (instance.currentDisplayable != nextDisplayable ) {
+					//#debug
 					System.out.println("MasterCanvas: setting instance.currentCanvas to NULL!!!");
 					instance.currentCanvas.hideNotify();
 					instance.currentCanvas = null;
@@ -140,8 +141,7 @@ public class MasterCanvas
 		}
 		if ( instance == null ) {
 			instance = new MasterCanvas();
-		}
-		if ( instance.currentCanvas != null ) {
+		} else if ( instance.currentCanvas != null ) {
 			instance.currentCanvas.hideNotify();
 		}
 		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
@@ -164,25 +164,64 @@ public class MasterCanvas
 	}
 	
 	public static void repaintAccessibleCanvas( AccessibleCanvas canvas ) {
+		if (canvas == null) {
+			//#debug warn
+			System.out.println("MasterCanvas: repaintAccessibleCanvas got [null] canvas." );
+			return;
+		}
+		//#debug
+		System.out.println("MasterCanvas: repaintAccessibleCanvas");
 		if ( instance != null ) {
 			instance.repaint();
+		} else {
+			((Canvas) canvas).repaint(); 
 		}
 	}
 
 	public static void repaintCanvas( Canvas canvas ) {
+		if (canvas == null) {
+			//#debug warn
+			System.out.println("MasterCanvas: repaintCanvas got [null] canvas." );
+			return;
+		}
+		//#debug
+		System.out.println("MasterCanvas: repaintCanvas");
 		if ( instance != null ) {
 			instance.repaint();
+		} else {
+			canvas.repaint();
 		}
 	}
 	
-	public static boolean isShown(AccessibleCanvas canvas) {
+	public static boolean isAccessibleCanvasShown(AccessibleCanvas canvas) {
+		//#debug
+		System.out.println("MasterCanvas: isAccessibleCanvasShown");
 		if ( instance != null ) {
 			return (canvas == instance.currentCanvas);
 		} else {
-			return false;
+			return ((Canvas)canvas).isShown();
 		}
 		
 	}
 
+	public static boolean isCanvasShown(Canvas canvas) {
+		//#debug
+		System.out.println("MasterCanvas: isCanvasShown");
+		if ( instance != null && instance.isShown() ) {
+			return (canvas == instance.currentDisplayable);
+		} else {
+			return canvas.isShown();
+		}
+	}
+
+	public static boolean isDisplayableShown(Displayable displayable) {
+		//#debug
+		System.out.println("MasterCanvas: isDisplayableShown");
+		if ( instance != null && instance.isShown() ) {
+			return (displayable == instance.currentDisplayable);
+		} else {
+			return displayable.isShown();
+		}
+	}
 
 }

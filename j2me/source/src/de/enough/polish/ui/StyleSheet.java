@@ -332,7 +332,7 @@ public final class StyleSheet {
 	}		
 	//#endif
 	
-	//#ifdef polish.css.screen-change-animation
+	//#if polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined
 	/**
 	 * Includes an animation while changing the screen.
 	 *  
@@ -348,6 +348,7 @@ public final class StyleSheet {
 					//#else
 						display.setCurrent( nextDisplayable );						
 					//#endif
+					return;	
 				}
 			//#endif
 
@@ -416,12 +417,30 @@ public final class StyleSheet {
 					}
 				//#endif
 				
+				int width;
+				int height;
 				//#if polish.FullCanvasSize:defined
-					//#= int width = ${polish.FullCanvasWidth};
-					//#= int height = ${polish.FullCanvasHeight};
+					//#= width = ${polish.FullCanvasWidth};
+					//#= height = ${polish.FullCanvasHeight};
 				//#else
-					int width = nextScreen.getWidth();
-					int height = nextScreen.getHeight();
+					//#if polish.midp2
+						width = nextDisplayable.getWidth();
+						height = nextDisplayable.getHeight();
+					//#else
+						if (nextScreen != null) {
+							width = lastScreen.getWidth();
+							height = lastScreen.getHeight();
+						} else if (nextDisplayable instanceof Canvas) {
+							width = ((Canvas) nextDisplayable).getWidth();
+							height = ((Canvas) nextDisplayable).getHeight();
+						} else {
+							Canvas canvas = new Canvas() {
+								public void paint( Graphics g) {}
+							};
+							width = canvas.getWidth();
+							height = canvas.getHeight();
+						}
+					//#endif
 				//#endif
 				Image lastScreenImage = Image.createImage(width, height);
 				Graphics g = lastScreenImage.getGraphics(); 

@@ -1624,20 +1624,20 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		//#if false
-		//#debug
-		System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
-		//#ifdef tmp.menuFullScreen
-			this.fullScreenHeight = height;
-			this.screenHeight = height - this.menuBarHeight;
-			this.originalScreenHeight = this.screenHeight;
-		//#else
-			this.screenHeight = height;
-			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
-		//#endif
-		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
-		int y = this.titleHeight + this.infoHeight + this.subTitleHeight;
-		setContentArea( 0, y, this.screenWidth,  this.screenHeight - y );
+		//#if !polish.group.Series60
+			//#debug
+			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
+			//#ifdef tmp.menuFullScreen
+				this.fullScreenHeight = height;
+				this.screenHeight = height - this.menuBarHeight;
+				this.originalScreenHeight = this.screenHeight;
+			//#else
+				this.screenHeight = height;
+				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+			//#endif
+			this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
+			int y = this.titleHeight + this.infoHeight + this.subTitleHeight;
+			setContentArea( 0, y, this.screenWidth,  this.screenHeight - y );
 		//#endif
 	}
 	//#endif
