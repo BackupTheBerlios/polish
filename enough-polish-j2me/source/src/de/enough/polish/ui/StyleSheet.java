@@ -122,12 +122,14 @@ public final class StyleSheet {
 	throws IOException 
 	{
 		// check if the image has been cached before:
-		if ( imagesByName != null ) {
-			Image image = (Image) imagesByName.get( url );
-			if (image != null) {
-				return image;
+		//#if polish.allowImageCaching != false
+			if ( imagesByName != null ) {
+				Image image = (Image) imagesByName.get( url );
+				if (image != null) {
+					return image;
+				}
 			}
-		}
+		//#endif
 		//#ifdef polish.images.directLoad
 			// when images should be loaded directly, try to do so now:
 			//#ifdef polish.classes.ImageLoader:defined
@@ -135,12 +137,14 @@ public final class StyleSheet {
 			//#else
 				Image image = Image.createImage( url );
 			//#endif
-			if (cache) {
-				if (imagesByName == null ) {
-					imagesByName = new Hashtable();
+			//#if polish.allowImageCaching != false
+				if (cache) {
+					if (imagesByName == null ) {
+						imagesByName = new Hashtable();
+					}
+					imagesByName.put( url, image );
 				}
-				imagesByName.put( url, image );
-			}
+			//#endif
 			//# return image;
 		//#else
 			// when images should be loaded in the background, 

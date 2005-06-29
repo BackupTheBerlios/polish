@@ -452,6 +452,7 @@ public class Preprocessor {
 	{
 		// clear the temporary variables and symbols:
 		this.environment.clearTemporarySettings();
+		this.usePolishGui = this.environment.hasSymbol( "polish.usePolishGui" );
 		
 		// set debugging preprocessing symbols:
 		if (this.debugManager != null) {

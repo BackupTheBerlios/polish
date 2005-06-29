@@ -36,6 +36,7 @@ package de.enough.polish.ui;
  *        01-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @since J2ME Polish 1.3
  */
 public interface ScreenStateListener {
 	

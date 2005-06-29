@@ -1351,6 +1351,8 @@ public class PolishTask extends ConditionalTask {
 					if (!translationManager.isDynamic()) {
 						translationManager.processLocaleCode( this.localeCode );
 						//this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
+					} else {
+						translationManager.insertDynamicFields( this.localeCode );
 					}
 					if (this.useDefaultPackage) {
 						this.localeCode.reset();

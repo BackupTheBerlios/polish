@@ -32,8 +32,9 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 //#ifdef polish.css.font-bitmap
-	import de.enough.polish.util.BitMapFontViewer;
+import de.enough.polish.util.BitMapFontViewer;
 //#endif
+import de.enough.polish.util.Locale;
 
 
 /**
@@ -744,6 +745,7 @@ implements CommandListener
 		private static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
 		private boolean caretPositionHasBeenSet;
 		private boolean isNumeric;
+		private boolean isDecimal;
 		private boolean isEmail;
 
 		private String caretRowFirstPart;
@@ -1191,8 +1193,11 @@ implements CommandListener
 				this.isNumeric = false;
 			}
 			if ((constraints & DECIMAL) == DECIMAL) {
-				//this.isNumeric = true;
+				this.isNumeric = true;
+				this.isDecimal = true;
 				this.inputMode = MODE_NUMBERS;
+			} else {
+				this.isDecimal = false;
 			}
 			if ((constraints & EMAILADDR) == EMAILADDR) {
 				this.isEmail = true;
@@ -1897,9 +1902,8 @@ implements CommandListener
 					}
 					int currentLength = (this.text == null ? 0 : this.text.length());
 					if (this.inputMode == MODE_NUMBERS) {
-						if (currentLength < this.maxSize && 
-								(keyCode >= Canvas.KEY_NUM0 && 
-								keyCode <= Canvas.KEY_NUM9) ) 
+						if (currentLength < this.maxSize 
+								&& ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 ) ) 
 						{
 							this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
 							//#ifdef polish.css.font-bitmap
@@ -1909,6 +1913,23 @@ implements CommandListener
 							//#endif
 							insertCharacter();
 							return true;
+						} else if ( this.isDecimal ) {
+							//System.out.println("handling key for DECIMAL TextField");
+							if (currentLength < this.maxSize 
+									&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
+									&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
+									) 
+							{
+								
+								this.caretChar = Locale.DECIMAL_SEPARATOR;
+								//#ifdef polish.css.font-bitmap
+									if (this.bitMapFont != null) {
+										this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
+									}
+								//#endif
+								insertCharacter();
+								return true;								
+							}
 						}
 						
 					}

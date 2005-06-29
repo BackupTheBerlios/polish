@@ -30,6 +30,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -451,7 +453,7 @@ implements Comparator
 			throw new BuildException("Unable to modify [de.enough.polish.util.Locale.java]: insertion point not found!");
 		}
 		// now include the static local specific fields:
-		insertFields( code );
+		insertFields( code, true );
 	}
 
 	/**
@@ -621,30 +623,109 @@ implements Comparator
 		return t1.getId() - t2.getId();
 	}
 
+	public void insertDynamicFields(StringList code) {
+		code.reset();
+		boolean insertionPointFound = false;
+		while (code.next()) {
+			String line = code.getCurrent();
+			if ("//$$IncludeLocaleDefinitionHere$$//".equals(line)) {
+				insertionPointFound = true;
+				break;
+			}
+		}
+		if (!insertionPointFound) {
+			throw new BuildException("Unable to modify [de.enough.polish.util.Locale.java]: insertion point not found!");
+		}
+		// now include the static local specific fields:
+		insertFields( code, false );		
+	}
+
 	/**
 	 * Inserts the static fields of the Locale class.
 	 * 
 	 * @param code the source code, the code should be inserted into the current position.
 	 */
-	private void insertFields(StringList code) {
-		code.insert( "\tpublic static final String LANGUAGE = \"" + this.locale.getLanguage() + "\";");
-		code.insert( "\tpublic static final String DISPLAY_LANGUAGE = \"" + this.locale.getDisplayLanguage(this.locale) + "\";");
-		String country = this.locale.getCountry();
-		if (country.length() > 0) {
-			code.insert( "\tpublic static final String COUNTRY = \"" + this.locale.getCountry() + "\";");
-			code.insert( "\tpublic static final String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
-			NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
-			Currency currency = format.getCurrency();
-			String currencySymbol = currency.getSymbol(this.locale);
-			String currencyCode = currency.getCurrencyCode();
-			code.insert( "\tpublic static final String CURRENCY_SYMBOL = \"" + currencySymbol + "\";");
-			code.insert( "\tpublic static final String CURRENCY_CODE = \"" + currencyCode + "\";");
+	private void insertFields(StringList code, boolean isFinal) {
+		if ( isFinal ) {
+			code.insert( "\tpublic static final String LANGUAGE = \"" + this.locale.getLanguage() + "\";");
+			code.insert( "\tpublic static final String DISPLAY_LANGUAGE = \"" + this.locale.getDisplayLanguage(this.locale) + "\";");
 		} else {
-			// no country is defined:
-			code.insert( "\tpublic static final String COUNTRY = null;");
-			code.insert( "\tpublic static final String DISPLAY_COUNTRY = null;");
-			code.insert( "\tpublic static final String CURRENCY_SYMBOL = null;");
-			code.insert( "\tpublic static final String CURRENCY_CODE = null;");
+			code.insert( "\tpublic static String LANGUAGE = \"" + this.locale.getLanguage() + "\";");
+			code.insert( "\tpublic static String DISPLAY_LANGUAGE = \"" + this.locale.getDisplayLanguage(this.locale) + "\";");
+		}
+		String country = this.locale.getCountry();
+		char minusSign = '-';
+		char zeroDigit = '0';
+		char decimalSeparator = '.';
+		char monetaryDecimalSeparator = '.';
+		char groupingSeparator = ',';
+		char percent = '%';
+		char permill = '‰';
+		String infinity = "∞";
+		
+		NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
+		try {
+			DecimalFormat decimalFormat = (DecimalFormat) format;
+			DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+			minusSign = symbols.getMinusSign();
+			zeroDigit = symbols.getZeroDigit();
+			decimalSeparator = symbols.getDecimalSeparator();
+			monetaryDecimalSeparator = symbols.getMonetaryDecimalSeparator();
+			groupingSeparator = symbols.getGroupingSeparator();
+			percent = symbols.getPercent();
+			permill = symbols.getPerMill();
+			infinity = symbols.getInfinity();
+		} catch (Exception e) {
+			System.out.println("Warning: the locale [" + this.locale + "] does not support decimal symbols: " + e.toString() );
+		}
+		if (isFinal) {
+			code.insert( "\tpublic static final char MINUS_SIGN = '" + minusSign + "';");
+			code.insert( "\tpublic static final char ZERO_DIGIT = '" + zeroDigit + "';");
+			code.insert( "\tpublic static final char DECIMAL_SEPARATOR = '" + decimalSeparator + "';");
+			code.insert( "\tpublic static final char MONETARY_DECIMAL_SEPARATOR = '" + monetaryDecimalSeparator + "';");
+			code.insert( "\tpublic static final char GROUPING_SEPARATOR = '" + groupingSeparator + "';");
+			code.insert( "\tpublic static final char PERCENT = '" + percent + "';");
+			code.insert( "\tpublic static final char PERMILL = '" + permill + "';");
+			code.insert( "\tpublic static final String INFINITY = \"" + infinity + "\";");
+			if (country.length() > 0) {
+				code.insert( "\tpublic static final String COUNTRY = \"" + this.locale.getCountry() + "\";");
+				code.insert( "\tpublic static final String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
+				Currency currency = format.getCurrency();
+				String currencySymbol = currency.getSymbol(this.locale);
+				String currencyCode = currency.getCurrencyCode();
+				code.insert( "\tpublic static final String CURRENCY_SYMBOL = \"" + currencySymbol + "\";");
+				code.insert( "\tpublic static final String CURRENCY_CODE = \"" + currencyCode + "\";");
+			} else {
+				// no country is defined:
+				code.insert( "\tpublic static final String COUNTRY = null;");
+				code.insert( "\tpublic static final String DISPLAY_COUNTRY = null;");
+				code.insert( "\tpublic static final String CURRENCY_SYMBOL = null;");
+				code.insert( "\tpublic static final String CURRENCY_CODE = null;");
+			}
+		} else {
+			code.insert( "\tpublic static char MINUS_SIGN = '" + minusSign + "';");
+			code.insert( "\tpublic static char ZERO_DIGIT = '" + zeroDigit + "';");
+			code.insert( "\tpublic static char DECIMAL_SEPARATOR = '" + decimalSeparator + "';");
+			code.insert( "\tpublic static char MONETARY_DECIMAL_SEPARATOR = '" + monetaryDecimalSeparator + "';");
+			code.insert( "\tpublic static char GROUPING_SEPARATOR = '" + groupingSeparator + "';");
+			code.insert( "\tpublic static char PERCENT = '" + percent + "';");
+			code.insert( "\tpublic static char PERMILL = '" + permill + "';");
+			code.insert( "\tpublic static String INFINITY = \"" + infinity + "\";");
+			if (country.length() > 0) {
+				code.insert( "\tpublic static String COUNTRY = \"" + this.locale.getCountry() + "\";");
+				code.insert( "\tpublic static String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
+				Currency currency = format.getCurrency();
+				String currencySymbol = currency.getSymbol(this.locale);
+				String currencyCode = currency.getCurrencyCode();
+				code.insert( "\tpublic static String CURRENCY_SYMBOL = \"" + currencySymbol + "\";");
+				code.insert( "\tpublic static String CURRENCY_CODE = \"" + currencyCode + "\";");
+			} else {
+				// no country is defined:
+				code.insert( "\tpublic static String COUNTRY = null;");
+				code.insert( "\tpublic static String DISPLAY_COUNTRY = null;");
+				code.insert( "\tpublic static String CURRENCY_SYMBOL = null;");
+				code.insert( "\tpublic static String CURRENCY_CODE = null;");
+			}
 		}
 	}
 	

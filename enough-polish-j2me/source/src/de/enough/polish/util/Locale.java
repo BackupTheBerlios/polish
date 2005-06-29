@@ -109,7 +109,55 @@ public final class Locale {
 	 * This is null when no country is defined in the current locale.
 	 */
 	public static final String CURRENCY_CODE = "USD";
+
+
+	/** 
+	 * The character used for decimal sign.
+	 * This is a '-' by default.
+	 */
+	public static final char MINUS_SIGN = '-';
+
+	/** 
+	 * The character used for zero.
+	 * This is a '0' by default.
+	 */
+	public static final char ZERO_DIGIT = '0';
+
+	/** 
+	 * The character used for decimal sign.
+	 * This is a dot by default.
+	 */
+	public static final char DECIMAL_SEPARATOR = '.';
+
+	/** 
+	 * The monetary decimal separator.
+	 * This is a dot by default.
+	 */
+	public static final char MONETARY_DECIMAL_SEPARATOR = '.';
+
+	/** 
+	 * The character used for thousands separator.
+	 * This is a comma by default.
+	 */
+	public static final char GROUPING_SEPARATOR = ',';
 	
+	/**
+	 * The character used to represent a percent value.
+	 */
+	public static final char PERCENT = '%';
+
+	/**
+	 * The character used to represent a permill value.
+	 */
+	public static final char PERMILL = '‰';
+
+	/** 
+	 * The string used to represent infinity.
+	 */
+	public static final String INFINITY = "∞";
+	
+	
+
 	private Locale() {
 		// no instantiation allowed
 	}
