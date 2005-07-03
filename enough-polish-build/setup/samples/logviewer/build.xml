@@ -71,6 +71,7 @@
 	            usePolishGui="yes"
 	            sourceDir="source/src"
 				workDir="${dir.work}"
+				abortOnError="true"
 				>
 				<!-- midlets definition -->
 				<midlet class="de.enough.polish.log.rms.LogViewerMidlet" name="Log Viewer"/>

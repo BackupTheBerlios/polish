@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.CallTarget;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Attribute;
@@ -286,6 +288,10 @@ public class PolishTask extends ConditionalTask {
 			}
 			boolean hasExtensions = (this.javaExtensions.length > 0);
 			
+			int successCount = 0;
+			ArrayList failures = new ArrayList();
+			boolean abortOnError = this.buildSetting.abortOnError();
+			
 			for ( int i=0; i < numberOfDevices; i++) {
 				Device device = this.devices[i];
 				if (numberOfDevices > 1) {
@@ -295,14 +301,32 @@ public class PolishTask extends ConditionalTask {
 					for (int j = 0; j < this.supportedLocales.length; j++) {
 						Locale locale = this.supportedLocales[j];
 						System.out.println("Using locale [" + locale.toString() + "]...");
-						execute(device, locale, hasExtensions);
+						try {
+							execute(device, locale, hasExtensions);
+							successCount++;
+						} catch (BuildException e) {
+							if (abortOnError) {
+								throw e;
+							}
+							//e.printStackTrace();
+							failures.add( new FailureInfo( device, locale, e ) );
+						}
 						if (this.buildSetting.isInCompilerMode()) {
 							// return immediately in the compiler mode:
 							return;
 						}
 					}					
 				} else {
-					execute(device, null, hasExtensions);
+					try {
+						execute(device, null, hasExtensions);
+						successCount++;
+					} catch (BuildException e) {
+						if (abortOnError) {
+							throw e;
+						}
+						//e.printStackTrace();
+						failures.add( new FailureInfo( device, null, e ) );
+					}
 					if (this.buildSetting.isInCompilerMode()) {
 						// return immediately in the compiler mode:
 						return;
@@ -316,14 +340,45 @@ public class PolishTask extends ConditionalTask {
 			test();
 			deploy();
 			finishProject();
-			if (numberOfDevices > 1) {
-				System.out.println("Successfully processed [" + numberOfDevices + "] devices.");
+			
+			if (abortOnError || failures.size() == 0 ) {
+				if (numberOfDevices > 1 || successCount > 1 ) {
+					if ( successCount == numberOfDevices ) {
+						System.out.println("Successfully processed [" + numberOfDevices + "] devices.");
+					} else {
+						if ( numberOfDevices == 1 ) {
+							System.out.println("Successfully processed one device with [" + successCount + "] builds.");
+						} else {
+							System.out.println("Successfully processed [" + numberOfDevices + "] devices with [" + successCount + "] builds.");
+						}
+					}
+				}
+			} else {
+				StringBuffer buffer = new StringBuffer();
+				buffer.append("Processed [" ).append( numberOfDevices ).append( "] devices with [" )
+					.append( successCount ).append( "] successful builds and [" ).append( failures.size() ).append( "] errors:\n" );
+				FailureInfo[] infos  = (FailureInfo[]) failures.toArray( new FailureInfo[ failures.size() ] );
+				for (int i = 0; i < infos.length; i++) {
+					FailureInfo info = infos[i];
+					info.appendInfo( buffer );
+					buffer.append('\n');
+				}
+				String message = buffer.toString();
+				System.out.println( message );
+				
+				Project antProject = getProject();
+				antProject.setProperty("j2mepolish.error", "true");
+				antProject.setProperty("j2mepolish.error.message",  message );
+				
+				executeErrorTarget( this.buildSetting.getOnError(), null );
 			}
 		} catch (BuildException e) {
+			executeErrorTarget( this.buildSetting.getOnError(), e );
 			//e.printStackTrace();
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
+			executeErrorTarget( this.buildSetting.getOnError(), e );
 			throw new BuildException("Unable to execute J2ME Polish task: " + e.toString(), e );
 		}
 		if (this.runningEmulators != null) {
@@ -344,6 +399,22 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+		}
+	}
+	
+	private void executeErrorTarget( String targetName, Exception e ) {
+		if ( targetName != null ) {
+			Project antProject = getProject();
+			if (e != null) {
+				antProject.setProperty("j2mepolish.error", "true");
+				antProject.setProperty("j2mepolish.error.message",  e.toString() );
+			}
+			// invoke Ant target:
+			CallTarget errorTarget = new CallTarget();
+			errorTarget.setTarget( targetName );
+			// setting up a new ant project:
+			errorTarget.setProject( antProject );
+			errorTarget.execute();
 		}
 	}
 	
@@ -1370,7 +1441,7 @@ public class PolishTask extends ConditionalTask {
 			e.printStackTrace();
 			throw new BuildException( e.getMessage() );
 		} catch (BuildException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			throw new BuildException( e.getMessage() );
 		}
 	}
@@ -2174,6 +2245,41 @@ public class PolishTask extends ConditionalTask {
 			} else {
 				return true;
 			}
+		}
+	}
+	
+	class FailureInfo {
+		private final Date time;
+		private final Device device;
+		private final Locale locale;
+		private final BuildException exception;
+		
+		/**
+		 * @param device
+		 * @param locale
+		 * @param exception
+		 */
+		public FailureInfo(Device device, Locale locale, BuildException exception) {
+			super();
+			this.time = new Date();
+			this.device = device;
+			this.exception = exception;
+			this.locale = locale;
+		}
+		
+		public String toString() {
+			StringBuffer buffer = new StringBuffer();
+			appendInfo( buffer );
+			return buffer.toString();
+		}
+		
+		public void appendInfo( StringBuffer buffer ) {
+			buffer.append( this.time.toString() ).append(": ");
+			buffer.append( this.device.getIdentifier() );
+			if ( this.locale != null ) {
+				buffer.append( "[ " ).append( this.locale.toString() ).append("]");
+			}
+			buffer.append(": ").append( this.exception.toString() );
 		}
 	}
 	

@@ -26,6 +26,8 @@
 package de.enough.polish.postcompile;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
@@ -35,6 +37,7 @@ import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
 import de.enough.polish.ant.build.PostCompilerSetting;
+import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Is the base class for any custom post compilers.</p>
@@ -141,6 +144,32 @@ public abstract class PostCompiler extends Extension {
 	 */
 	public PostCompilerSetting getSetting() {
 		return (PostCompilerSetting) this.extensionSetting;
+	}
+
+	 /**
+	  * Helper method to find all files to post compile in a given	directory and all its subdirectories.
+	  * 
+	  * @param classesDir the directory that contains all compiled	classes
+	  * @param filter the filter to apply on the file names, or null
+	  * @return an array list of file names
+	  */
+	protected ArrayList findFiles( File classesDir, FilenameFilter filter )
+	{
+		ArrayList list = new ArrayList();
+		String[] files = FileUtil.filterDirectory( classesDir,	".class", true);
+		if (filter != null) {
+			for (int i = 0; i < files.length; i++) {
+				if (filter.accept(classesDir, files[i])) {
+					list.add(files[i]);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < files.length; i++) {
+			list.add(files[i]);
+			}
+		}
+		return list;
 	}
 
 }

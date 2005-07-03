@@ -134,6 +134,8 @@ public class BuildSetting {
 	private File platforms;
 	private File configurations;
 	private boolean replacePropertiesWithoutDirective;
+	private boolean abortOnError;
+	private String onError;
 	
 	/**
 	 * Creates a new build setting.
@@ -1468,7 +1470,7 @@ public class BuildSetting {
 	}
 
 	/**
-	 * @return
+	 * @return true when there are postcompilers
 	 */
 	public boolean doPostCompile() {
 		return true; //(this.postCompilers != null);
@@ -1706,6 +1708,22 @@ public class BuildSetting {
 
 	public void setReplacePropertiesWithoutDirective( boolean enable ) {
 		this.replacePropertiesWithoutDirective = enable;
+	}
+
+	public boolean abortOnError() {
+		return this.abortOnError;
+	}
+
+	public void setAbortOnError(boolean abortOnError) {
+		this.abortOnError = abortOnError;
+	}
+
+	public String getOnError() {
+		return this.onError;
+	}
+
+	public void setOnError(String onError) {
+		this.onError = onError;
 	}
 	
 }

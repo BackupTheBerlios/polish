@@ -210,6 +210,13 @@
 		<class>de.enough.polish.postcompile.AntCallPostCompiler</class>
 	</extension>
 	
+	<extension>
+		<type>postcompiler</type>
+		<name>orchestra</name>
+		<class>de.enough.orchestra.OrchestraPostCompiler</class>
+		<classpath>${polish.home}/import/enough-orchestra.jar</classpath>
+	</extension>
+	
 	<!-- Log Handler -->
 	
 	<extension>

@@ -81,9 +81,16 @@ public class Preprocessor {
 	 * SKIP_FILE has the value 8. 
 	 */
 	public static final int SKIP_FILE = 8;
-	
+
+	/**
+	 * A value indicating that the rest of the current file should not be preprocessed.
+	 * 
+	 * SKIP_REST has the value 16. 
+	 */
+	public static final int SKIP_REST = 16;
+
 	public static final Pattern DIRECTIVE_PATTERN = 
-		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+|//#abort)");
+		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+|//#abort|//#skiprest)");
 
 	private DebugManager debugManager;
 	private File destinationDir;
@@ -162,6 +169,8 @@ public class Preprocessor {
 		this.supportedDirectives.put( "define", Boolean.TRUE );
 		this.supportedDirectives.put( "undefine", Boolean.TRUE );
 		this.supportedDirectives.put( "message", Boolean.TRUE );
+		this.supportedDirectives.put( "todo", Boolean.TRUE );
+		this.supportedDirectives.put( "skiprest", Boolean.TRUE );
 	}
 	
 	/**
@@ -487,6 +496,12 @@ public class Preprocessor {
 						changed = true;
 					} else if (result == SKIP_FILE) {
 						return SKIP_FILE;
+					} else if (result == SKIP_REST) {
+						if ( changed ) {
+							return CHANGED;
+						} else {
+							return NOT_CHANGED;
+						}
 					}
 				} else if (this.replacePropertiesWithoutDirective && line.indexOf("${") != -1) {
 					String newLine = this.environment.writeProperties(line);
@@ -564,6 +579,8 @@ public class Preprocessor {
 				} else {
 					return DIRECTIVE_FOUND;
 				}
+			} else if (trimmedLine.equals("//#skiprest")) {
+				return SKIP_REST;
 			}
 			// when the argument is within an if-branch, there might be other valid directives:
 			return checkInvalidDirective( className, lines, line, trimmedLine.substring(3).trim(), null );
@@ -574,6 +591,7 @@ public class Preprocessor {
 		String command = trimmedLine.substring(3, spacePos);
 		String argument = trimmedLine.substring( spacePos + 1 ).trim();
 		boolean changed = false;
+		int result = -1;
 		if ("condition".equals(command)) {
 			//System.out.println("Checking #condition " + argument);
 			// a precondition must be fullfilled for this source file:
@@ -582,11 +600,11 @@ public class Preprocessor {
 				return SKIP_FILE;
 			}
 		} else if ("ifdef".equals(command)) {
-			changed = processIfdef( argument, lines, className );
+			result = processIfdef( argument, lines, className );
 		} else if ("ifndef".equals(command)) {
-			changed = processIfndef( argument, lines, className );
+			result = processIfndef( argument, lines, className );
 		} else if ("if".equals(command)) {
-			changed = processIf( argument, lines, className );
+			result = processIf( argument, lines, className );
 		} else if ("define".equals(command)) {
 			// define never changes the source directly:
 			processDefine( argument, lines, className );
@@ -611,8 +629,15 @@ public class Preprocessor {
 			changed = processForeach( argument, lines, className );
 		} else if ("abort".equals( command) ) {
 			processAbort( argument, lines, className );
+		} else if ("skiprest".equals( command) ) {
+			return SKIP_REST;
 		} else {
 			return checkInvalidDirective( className, lines, line, command, argument );
+		}
+		if (result == SKIP_REST ) {
+			return SKIP_REST;
+		} else if (result != -1){
+			changed = (result == CHANGED);
 		}
 		if (changed) {
 			return CHANGED;
@@ -661,7 +686,7 @@ public class Preprocessor {
 	 * @return true when any lines were actually changed
 	 * @throws BuildException when the preprocessing fails
 	 */
-	private boolean processIfdef(String argument, StringList lines, String className )
+	private int processIfdef(String argument, StringList lines, String className )
 	throws BuildException
 	{
 		boolean conditionFulfilled = this.environment.hasSymbol( argument );
@@ -683,7 +708,7 @@ public class Preprocessor {
 	 * @return true when changes were made
 	 * @throws BuildException when the preprocessing fails
 	 */
-	private boolean processIfndef(String argument, StringList lines, String className ) 
+	private int processIfndef(String argument, StringList lines, String className ) 
 	throws BuildException
 	{
 		boolean conditionFulfilled = !this.environment.hasSymbol( argument );
@@ -705,7 +730,7 @@ public class Preprocessor {
 	 * @return true when any lines were actually changed
 	 * @throws BuildException when the preprocessing fails
 	 */
-	private boolean processIfVariations(boolean conditionFulfilled, StringList lines, String className )
+	private int processIfVariations(boolean conditionFulfilled, StringList lines, String className )
 	throws BuildException
 	{
 		this.ifDirectiveCount++;
@@ -725,6 +750,8 @@ public class Preprocessor {
 			}
 			if (result == CHANGED ) {
 				processed = true;
+			} else if ( result == SKIP_REST ) {
+				return SKIP_REST;
 			} else if ( result == DIRECTIVE_FOUND ) {
 				// another directive was found and processed, but no changes were made
 			} else if ( trimmedLine.startsWith("//#ifdef ") ) {
@@ -822,7 +849,11 @@ public class Preprocessor {
 					+": #ifdef is not terminated with #endif!" );
 		}
 		this.ifDirectiveCount--;
-		return processed;
+		if (processed) {
+			return CHANGED;
+		} else {
+			return NOT_CHANGED;
+		}
 	}
 
 	/**
@@ -900,7 +931,7 @@ public class Preprocessor {
 	 * @return true when changes were made
 	 * @throws BuildException when the preprocessing fails
 	 */
-	private boolean processIf(String argument, StringList lines, String className ) 
+	private int processIf(String argument, StringList lines, String className ) 
 	throws BuildException
 	{
 		boolean conditionFulfilled = checkIfCondition( argument, className, lines );
