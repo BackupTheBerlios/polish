@@ -2,7 +2,7 @@
 	name="enough-polish-build" 
 	default="bin-dist">
 
-<!-- global properties -->
+	<!-- global properties -->
 	<property file="${user.name}.properties" />
 	<property name="Version" value="1.3-beta2" />
 	<property name="VersionMessage" value="Welcome to J2ME Polish 1.3 &lt;Beta 2&gt;! " />
@@ -10,468 +10,464 @@
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
 	
-  <path id="thirdparty">
-    <fileset dir="import">
-        <include name="*.jar"/>
-      </fileset>
-  </path>
-
-<!-- task definitions -->
-
-<taskdef name="polish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:import/jdom.jar"/>
-<taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
-<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
-<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:import/jdom.jar"/>
-<taskdef name="izpack" 
-	classpath="${izpack.dir}/lib/compiler.jar"
-	classname="com.izforge.izpack.ant.IzPackTask"/>
-<!--<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />-->
-<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
-<taskdef resource="proguard/ant/task.properties" classpath="import/proguard.jar" />	
-
-<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
-
-<target name="init">
-	<!-- Create the time stamp -->
-    <tstamp/>
- </target>
-
-<!-- Creates the Source Code documentation -->
-<target name="javadoc">
-    <javadoc 
-    	destdir="doc" 
-    	access="public" 
-    	use="true" 
-    	notree="false" 
-    	nonavbar="false" 
-    	noindex="false" 
-    	splitindex="true" 
-    	author="true" 
-    	version="true" 
-    	nodeprecatedlist="false" 
-    	nodeprecated="false" 
-    	packagenames="de.enough.*" 
-    	sourcepath="source/src:source/extensions" 
-    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
-    	doctitle="the polish build framework"
-    />
-</target>
-
-
-<target name="bin-dist" depends="init">
-	<delete dir="dist" />
-	<mkdir dir="dist" />
+	<!-- task definitions -->
 	
-	<!-- create a list of all J2ME source files: -->
-	<indexWriter 
-		target="build/j2mepolish.index.txt"
-		>
-		<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java" />
-	</indexWriter>
-	<!-- compile the legacy code 
-	<javac 
-		srcdir="source/legacy"
-		destdir="bin/classes" >
-		<classpath path="bin/classes:import/proguard2.jar" />
-	</javac>
-	-->
+	<taskdef name="polish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:import/jdom.jar"/>
+	<taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
+	<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
+	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:import/jdom.jar"/>
+	<taskdef name="izpack" 
+		classpath="${izpack.dir}/lib/compiler.jar"
+		classname="com.izforge.izpack.ant.IzPackTask"/>
+	<taskdef name="webprocessor" 
+		classname="de.enough.webprocessor.WebProcessorTask" 
+		classpath="../enough-webprocessor/bin/classes" />
+	<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
+	<taskdef resource="proguard/ant/task.properties" classpath="import/proguard.jar" />	
+	
+	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
+	
+	<target name="init">
+		<!-- Create the time stamp -->
+	    <tstamp/>
+	 </target>
+	
+	<!-- Creates the Source Code documentation -->
+	<target name="javadoc">
+	    <javadoc 
+	    	destdir="doc" 
+	    	access="public" 
+	    	use="true" 
+	    	notree="false" 
+	    	nonavbar="false" 
+	    	noindex="false" 
+	    	splitindex="true" 
+	    	author="true" 
+	    	version="true" 
+	    	nodeprecatedlist="false" 
+	    	nodeprecated="false" 
+	    	packagenames="de.enough.*" 
+	    	sourcepath="source/src:source/extensions" 
+	    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
+	    	doctitle="the polish build framework"
+	    />
+	</target>
+	
+	
+	<target name="bin-dist" depends="init">
+		<delete dir="dist" />
+		<mkdir dir="dist" />
 		
-	<!-- create the binary build distribution -->
-	<jar destfile="dist/enough-j2mepolish-build.jar"
-	     basedir="bin/classes"
-		 excludes="**/*.html"
-		 index="true"
-	     >
-		<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
-		<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
-		<fileset dir="setup" includes="icons/*.*" />
-	</jar>
-	<!-- create the binary extensions distribution -->
-	<jar destfile="dist/enough-j2mepolish-extensions.jar"
-	     basedir="bin/extensions"
-		 excludes="**/*.html"
-		 index="true"
-	     >
-	</jar>
-	<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
-	<mkdir dir="../enough-polish-j2me/bin/preverified" />
-	<exec executable="${wtk.home}/bin/preverify">
-		<arg line="-classpath"/>
-		<arg line="import/m3g.jar:import/midp2.jar:import/btapi.jar"/>
-		<arg line="-d"/>
-		<arg line="../enough-polish-j2me/bin/preverified"/>
-		<arg line="../enough-polish-j2me/bin/classes"/>
-	</exec>
-	<!-- create the binary J2ME distribution -->
-	<jar destfile="dist/enough-j2mepolish-client.jar"
-	     basedir="../enough-polish-j2me/bin/preverified"
-		 excludes="**/*.html"
-		 index="true"
-	     >
-	</jar>
-	<!-- create the update zip file containing the jars -->
-	<zip destfile="dist/j2mepolish-${Version}.zip">
-		<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
-		<fileset dir="setup" includes="Update.txt,menu/build.xml" />
-		<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml,custom-extensions.xml,capabilities.xml,configurations.xml,platforms.xml" />
-		<fileset dir="import" includes="asm-2.0.RC1.jar,asm-tree-2.0.RC1.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar" />
-		<!--
-		<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
+		<!-- create a list of all J2ME source files: -->
+		<indexWriter 
+			target="build/j2mepolish.index.txt"
+			>
+			<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java" />
+		</indexWriter>
+		<!-- compile the legacy code 
+		<javac 
+			srcdir="source/legacy"
+			destdir="bin/classes" >
+			<classpath path="bin/classes:import/proguard2.jar" />
+		</javac>
 		-->
-	</zip>
-</target>
+			
+		<!-- create the binary build distribution -->
+		<jar destfile="dist/enough-j2mepolish-build.jar"
+		     basedir="bin/classes"
+			 excludes="**/*.html"
+			 index="true"
+		     >
+			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
+			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
+			<fileset dir="setup" includes="icons/*.*" />
+		</jar>
+		<!-- create the binary extensions distribution -->
+		<jar destfile="dist/enough-j2mepolish-extensions.jar"
+		     basedir="bin/extensions"
+			 excludes="**/*.html"
+			 index="true"
+		     >
+		</jar>
+		<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
+		<mkdir dir="../enough-polish-j2me/bin/preverified" />
+		<exec executable="${wtk.home}/bin/preverify">
+			<arg line="-classpath"/>
+			<arg line="import/m3g.jar:import/midp2.jar:import/btapi.jar"/>
+			<arg line="-d"/>
+			<arg line="../enough-polish-j2me/bin/preverified"/>
+			<arg line="../enough-polish-j2me/bin/classes"/>
+		</exec>
+		<!-- create the binary J2ME distribution -->
+		<jar destfile="dist/enough-j2mepolish-client.jar"
+		     basedir="../enough-polish-j2me/bin/preverified"
+			 excludes="**/*.html"
+			 index="true"
+		     >
+		</jar>
+		<!-- create the update zip file containing the jars -->
+		<zip destfile="dist/j2mepolish-${Version}.zip">
+			<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
+			<fileset dir="setup" includes="Update.txt,menu/build.xml" />
+			<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml,custom-extensions.xml,capabilities.xml,configurations.xml,platforms.xml" />
+			<fileset dir="import" includes="asm-2.0.RC1.jar,asm-tree-2.0.RC1.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar" />
+			<!--
+			<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
+			-->
+		</zip>
+	</target>
+		
+	<target name="macstandalone" 
+			description="creates the standalone packages for Mac OS X."
+			depends="bin-dist"
+			>
+			<delete dir="tmp" />
+			<mkdir dir="tmp/macosx/tmp" />
+			<copy todir="tmp/macosx" >
+				<fileset dir="setup/macosx" excludes="**/CVS/**" />
+			</copy>
+			<mkdir dir="tmp/macosx/binaryeditor.app/Contents/Resources/Java" />
+			<mkdir dir="tmp/macosx/fonteditor.app/Contents/Resources/Java" />
+			<!-- generate the binary editor-application: -->
+			<genjar 
+				jarfile="dist/enough-j2mepolish-editor.jar"
+				destdir="tmp/macosx/tmp">
+				<class name="de.enough.polish.font.FontCreator" />
+				<class name="de.enough.polish.dataeditor.swing.SwingDataEditor" />
+				<class name="de.enough.polish.swing.MacOsXIntegration" />
+				<classpath>
+				    <pathelement location="import/jdom.jar"/>
+				    <pathelement location="import/AppleJavaExtensions.jar"/>
+				    <pathelement location="dist/enough-j2mepolish-build.jar"/>
+				</classpath>
+				<classfilter>
+					<exclude name="com.apple." />
+				</classfilter>
+			</genjar>
+			<delete dir="tmp/macosx/tmp" />
+		<!--
+		-->
+			<proguard>
+		  		-libraryjars ${java.home}/lib/rt.jar
+		  		-libraryjars import/AppleJavaExtensions.jar
+		  		-injars      dist/enough-j2mepolish-editor.jar
+		  		-outjars     tmp/macosx/binaryeditor.app/Contents/Resources/Java/enough-j2mepolish-binaryeditor.jar
 	
-<target name="macstandalone" 
-		description="creates the standalone packages for Mac OS X."
-		depends="bin-dist"
+		  		-keep class de.enough.polish.dataeditor.swing.SwingDataEditor {
+			    	public static void main(java.lang.String[]);
+				}
+				-keep class de.enough.polish.swing.MacOsXIntegration
+				-keep class org.apache.xerces.parsers.SAXParser
+				
+				-allowaccessmodification
+				-defaultpackage
+				-overloadaggressively
+			</proguard>
+			<!-- generate the font editor-application: -->
+		<!--
+			<delete dir="tmp/macosx/tmp" />
+			<mkdir dir="tmp/macosx/tmp" />
+		-->
+		<!--
+			<genjar 
+				jarfile="tmp/macosx/fonteditor.app/Contents/Resources/Java/enough-j2mepolish-fonteditor.jar"
+				destdir="tmp/macosx/tmp">
+				<class name="de.enough.polish.font.FontCreator" />
+				<class name="de.enough.polish.swing.MacOsXIntegration" />
+				<classpath>
+				    <pathelement location="import/jdom.jar"/>
+				    <pathelement location="import/AppleJavaExtensions.jar"/>
+				    <pathelement location="dist/enough-j2mepolish-build.jar"/>
+				</classpath>
+				<classfilter>
+					<exclude name="com.apple." />
+				</classfilter>
+			</genjar>
+		-->
+			<proguard>
+	  			-libraryjars ${java.home}/lib/rt.jar
+	  			-libraryjars import/AppleJavaExtensions.jar
+		  		-injars      dist/enough-j2mepolish-editor.jar
+	  			-outjars     tmp/macosx/fonteditor.app/Contents/Resources/Java/enough-j2mepolish-fonteditor.jar
+	
+				-keep class de.enough.polish.font.FontCreator {
+			    	public static void main(java.lang.String[]);
+				}
+		  		-keep class de.enough.polish.dataeditor.swing.SwingDataEditor {
+			    	public static void main(java.lang.String[]);
+				}
+				-keep class de.enough.polish.swing.MacOsXIntegration
+				-keep class org.apache.xerces.parsers.SAXParser
+			
+				-allowaccessmodification
+				-defaultpackage
+				-overloadaggressively
+			</proguard>
+		<!--
+			<delete dir="tmp/macosx/tmp" />
+		-->
+		</target>
+		
+	<target name="installer" 
+			 depends="bin-dist"
+			 description="creates the j2mepolish-installer." 
 		>
 		<delete dir="tmp" />
-		<mkdir dir="tmp/macosx/tmp" />
+		<mkdir dir="tmp/import" />
+		<mkdir dir="tmp/menu" />
+		<mkdir dir="tmp/sysinfo" />
+		<!-- copy the installation files -->
+		<!-- copy the core files of J2ME Polish -->
+		<copy todir="tmp/" >
+			<fileset dir="." includes="capabilities.xml,platforms.xml,configurations.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
+		</copy>
+		<copy todir="tmp/import">
+			<fileset dir="import" includes="asm-2.0.RC1.jar,asm-tree-2.0.RC1.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar" />
+			<fileset dir="dist" includes="*.jar" />
+		</copy>
+		<!-- copy mac os x standalone applications -->
+		<mkdir dir="tmp/macosx" />
 		<copy todir="tmp/macosx" >
 			<fileset dir="setup/macosx" excludes="**/CVS/**" />
 		</copy>
-		<mkdir dir="tmp/macosx/binaryeditor.app/Contents/Resources/Java" />
-		<mkdir dir="tmp/macosx/fonteditor.app/Contents/Resources/Java" />
-		<!-- generate the binary editor-application: -->
-		<genjar 
-			jarfile="dist/enough-j2mepolish-editor.jar"
-			destdir="tmp/macosx/tmp">
-			<class name="de.enough.polish.font.FontCreator" />
-			<class name="de.enough.polish.dataeditor.swing.SwingDataEditor" />
-			<class name="de.enough.polish.swing.MacOsXIntegration" />
-			<classpath>
-			    <pathelement location="import/jdom.jar"/>
-			    <pathelement location="import/AppleJavaExtensions.jar"/>
-			    <pathelement location="dist/enough-j2mepolish-build.jar"/>
-			</classpath>
-			<classfilter>
-				<exclude name="com.apple." />
-			</classfilter>
-		</genjar>
-		<delete dir="tmp/macosx/tmp" />
-	<!--
-	-->
-		<proguard>
-	  		-libraryjars ${java.home}/lib/rt.jar
-	  		-libraryjars import/AppleJavaExtensions.jar
-	  		-injars      dist/enough-j2mepolish-editor.jar
-	  		-outjars     tmp/macosx/binaryeditor.app/Contents/Resources/Java/enough-j2mepolish-binaryeditor.jar
-
-	  		-keep class de.enough.polish.dataeditor.swing.SwingDataEditor {
-		    	public static void main(java.lang.String[]);
-			}
-			-keep class de.enough.polish.swing.MacOsXIntegration
-			-keep class org.apache.xerces.parsers.SAXParser
-			
-			-allowaccessmodification
-			-defaultpackage
-			-overloadaggressively
-		</proguard>
-		<!-- generate the font editor-application: -->
-	<!--
-		<delete dir="tmp/macosx/tmp" />
-		<mkdir dir="tmp/macosx/tmp" />
-	-->
-	<!--
-		<genjar 
-			jarfile="tmp/macosx/fonteditor.app/Contents/Resources/Java/enough-j2mepolish-fonteditor.jar"
-			destdir="tmp/macosx/tmp">
-			<class name="de.enough.polish.font.FontCreator" />
-			<class name="de.enough.polish.swing.MacOsXIntegration" />
-			<classpath>
-			    <pathelement location="import/jdom.jar"/>
-			    <pathelement location="import/AppleJavaExtensions.jar"/>
-			    <pathelement location="dist/enough-j2mepolish-build.jar"/>
-			</classpath>
-			<classfilter>
-				<exclude name="com.apple." />
-			</classfilter>
-		</genjar>
-	-->
-		<proguard>
-  			-libraryjars ${java.home}/lib/rt.jar
-  			-libraryjars import/AppleJavaExtensions.jar
-	  		-injars      dist/enough-j2mepolish-editor.jar
-  			-outjars     tmp/macosx/fonteditor.app/Contents/Resources/Java/enough-j2mepolish-fonteditor.jar
-
-			-keep class de.enough.polish.font.FontCreator {
-		    	public static void main(java.lang.String[]);
-			}
-	  		-keep class de.enough.polish.dataeditor.swing.SwingDataEditor {
-		    	public static void main(java.lang.String[]);
-			}
-			-keep class de.enough.polish.swing.MacOsXIntegration
-			-keep class org.apache.xerces.parsers.SAXParser
+		<!-- copy sample application -->
+		<mkdir dir="tmp/samples/menu/source/src" />
+		<copy todir="tmp/samples/menu/source/src">
+			<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/menu/" 
+			>
+			<fileset dir="setup/samples/menu" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-example-localization" includes="resources3/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy sysinfo application -->
+		<mkdir dir="tmp/samples/sysinfo/source/src" />
+		<copy todir="tmp/samples/sysinfo/source/src">
+			<fileset dir="../enough-polish-sysinfo/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/sysinfo/" 
+			>
+			<fileset dir="../enough-polish-sysinfo" includes="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO" />
+			<fileset dir="setup/samples/sysinfo" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy logviewer sample application -->
+		<mkdir dir="tmp/samples/logviewer/source/src" />
+		<copy todir="tmp/samples/logviewer/source/src">
+			<fileset dir="../enough-polish-logviewer/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/logviewer/" 
+			>
+			<fileset dir="setup/samples/logviewer" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy roadrunner sample application -->
+		<mkdir dir="tmp/samples/roadrunner/source/src" />
+		<copy todir="tmp/samples/roadrunner/source/src">
+			<fileset dir="../enough-polish-roadrunner/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/roadrunner/" 
+			>
+			<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy source of J2ME Polish -->
+		<mkdir dir="tmp/j2mepolish-src/build" />
+		<copy todir="tmp/j2mepolish-src/build">
+			<fileset dir="../enough-polish-build/source" includes="**/*.java" />
+		</copy>
+		<mkdir dir="tmp/j2mepolish-src/j2me" />
+		<copy todir="tmp/j2mepolish-src/j2me">
+			<fileset dir="../enough-polish-j2me/source" includes="**/*.java" />
+		</copy>
+		<!-- create / copy documentation -->
+		<mkdir dir="tmp/doc/javadoc/build" />
+		<mkdir dir="tmp/doc/javadoc/j2me" />
+		<copy todir="tmp/doc" >
+			<fileset dir="setup" includes="javadoc.html" />
+			<fileset dir="../enough-polish-website/site/source/downloads" includes="Complete_Guide_to_J2ME_Polish.pdf" />			
+		</copy>
+		<javadoc 
+		    	destdir="tmp/doc/javadoc/build" 
+		    	access="public" 
+		    	use="true" 
+		    	notree="false" 
+		    	nonavbar="false" 
+		    	noindex="false" 
+		    	splitindex="true" 
+		    	author="true" 
+		    	version="true" 
+		    	nodeprecatedlist="false" 
+		    	nodeprecated="false" 
+		    	packagenames="de.enough.*" 
+		    	sourcepath="source/src" 
+		    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
+		    	doctitle="The J2ME Polish Build Framework, Version ${Version}"
+		/>	
+		<javadoc 
+		    	destdir="tmp/doc/javadoc/j2me" 
+		    	access="public" 
+		    	use="true" 
+		    	notree="false" 
+		    	nonavbar="false" 
+		    	noindex="false" 
+		    	splitindex="true" 
+		    	author="true" 
+		    	version="true" 
+		    	nodeprecatedlist="false" 
+		    	nodeprecated="false" 
+		    	packagenames="de.enough.*" 
+		    	sourcepath="../enough-polish-j2me/source/src" 
+		    	classpath="../enough-polish-j2me/bin/classes:import/midp2.jar" 
+		    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
+		/>	
+		<!-- copy the whole website to the documentation -->
+		<webprocessor 
+			srcdir="../enough-polish-website/site/source"
+		 	includedir="../enough-polish-website/site/includes"
+			destdir="tmp/doc/html"
+			clean="false"
+			update="atoz.html, documentation.html, index.html, news.html, docs/install.html"
+			keywordsFile="../enough-polish-website/keywords.txt"
+			excludes="downloads/**/*,download.html"
+			symbols="excludeDownload"
+			>
+			<variable name="PolishVersion" value="${Version}" />
+			<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+			<variable name="Author" value="Robert Virkus" />
+			<variable name="basedir" value="" />
+			<variable name="javadocdir" value="../" />
+			<variable name="newsbasedir" value="http://www.j2mepolish.org/" />
+			<variable name="index.h1" value="h1index" />
+			<variable name="index.h2" value="h2index" />
+			<variable name="index.h3" value="h3index" />
+			<variable name="index.h4" value="h4index" />
+			<variable name="index.h5" value="h5index" />
+		</webprocessor>
+		<!-- created & copy the device database -->
+		<deviceExport />
+		<webprocessor 
+			srcdir="../enough-polish-website/tmp"
+		 	includedir="../enough-polish-website/site/includes"
+			destdir="tmp/doc/html"
+			clean="false"
+			symbols="excludeDownload"
+			>
+			<variable name="PolishVersion" value="${Version}" />
+			<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+			<variable name="Author" value="Robert Virkus" />
+			<variable name="basedir" value="" />
+			<variable name="index.h1" value="h1index" />
+			<variable name="index.h2" value="h2index" />
+			<variable name="index.h3" value="h3index" />
+			<variable name="index.h4" value="h4index" />
+			<variable name="index.h5" value="h5index" />
+		</webprocessor>
+		<!-- copy the documentation.html to the root -->
+		<webprocessor 
+			srcdir="../enough-polish-website/site/source"
+		 	includedir="../enough-polish-website/site/includes"
+			destdir="tmp/doc"
+			clean="false"
+			update="documentation.html"
+			keywordsFile="../enough-polish-website/keywords.txt"
+			includes="documentation.html"
+			symbols="excludeDownload, onlyDocumentation"
+			>
+			<variable name="PolishVersion" value="${Version}" />
+			<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+			<variable name="Author" value="Robert Virkus" />
+			<variable name="basedir" value="html/" />
+			<variable name="index.h1" value="h1index" />
+			<variable name="index.h2" value="h2index" />
+			<variable name="index.h3" value="h3index" />
+			<variable name="index.h4" value="h4index" />
+			<variable name="index.h5" value="h5index" />
+		</webprocessor>
+		<!-- update installation settings -->
+		<propertyWriter srcfile="setup/install.xml"
+			            destfile="tmp/install.xml" />
+		<propertyWriter srcfile="setup/UserInputSpec.xml"
+			            destfile="tmp/userInputSpec.xml" />
+		<propertyWriter srcfile="setup/Readme.txt"
+			            destfile="tmp/Readme.txt" />
+		<!-- create installation file -->
+		<izpack input="tmp/install.xml"
+		        output="dist/j2mepolish-${Version}.jar"
+		        installerType="standard"
+		        basedir="tmp"
+		        izPackDir="${izpack.dir}"
+		/>
+	</target>
 		
-			-allowaccessmodification
-			-defaultpackage
-			-overloadaggressively
-		</proguard>
-	<!--
-		<delete dir="tmp/macosx/tmp" />
-	-->
+	<target name="izpack" description="calls only IzPack for generating the installer">
+		<!-- update installation settings -->
+		<propertyWriter srcfile="setup/install.xml"
+			            destfile="tmp/install.xml" />
+		<propertyWriter srcfile="setup/UserInputSpec.xml"
+			            destfile="tmp/userInputSpec.xml" />
+		<propertyWriter srcfile="setup/Readme.txt"
+			            destfile="tmp/Readme.txt" />
+		<!-- create installation file -->
+		<izpack input="tmp/install.xml"
+		        output="dist/j2mepolish-${Version}.jar"
+		        installerType="standard"
+		        basedir="tmp"
+	        izPackDir="${izpack.dir}"
+		/>
+	</target>
+		
+	<target name="webprocessor">
+		<webprocessor 
+			srcdir="../enough-polish-website/site/source"
+		 	includedir="../enough-polish-website/site/includes"
+			destdir="tmp/doc/html"
+			clean="false"
+			update="atoz.html, documentation.html, index.html, news.html, docs/install.html"
+			keywordsFile="../enough-polish-website/keywords.txt"
+			excludes="downloads/**/*,download.html"
+			symbols="excludeDownload"
+			>
+			<variable name="PolishVersion" value="${Version}" />
+			<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+			<variable name="Author" value="Robert Virkus" />
+			<variable name="basedir" value="" />
+			<variable name="index.h1" value="h1index" />
+			<variable name="index.h2" value="h2index" />
+			<variable name="index.h3" value="h3index" />
+		</webprocessor>
+	</target>
+		
+	<target name="device-export">
+		<deviceExport />
+		<webprocessor 
+			srcdir="../enough-polish-website/tmp"
+		 	includedir="../enough-polish-website/site/includes"
+			destdir="tmp/doc/html"
+			clean="false"
+			>
+			<variable name="PolishVersion" value="${Version}" />
+			<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+			<variable name="Author" value="Robert Virkus" />
+			<variable name="basedir" value="" />
+			<variable name="index.h1" value="h1index" />
+			<variable name="index.h2" value="h2index" />
+			<variable name="index.h3" value="h3index" />
+		</webprocessor>
+	</target>
+		
+	<target name="test" depends="bin-dist">
+		<copy file="dist/enough-j2mepolish-build.jar" todir="../enough-polish-dict/import/" />
+		<copy file="dist/enough-j2mepolish-build.jar" todir="../enough-polish-example/import/" />
 	</target>
 	
-<target name="installer" 
-		 depends="bin-dist"
-		 description="creates the j2mepolish-installer." 
-	>
-	<delete dir="tmp" />
-	<mkdir dir="tmp/import" />
-	<mkdir dir="tmp/menu" />
-	<mkdir dir="tmp/sysinfo" />
-	<!-- copy the installation files -->
-	<!-- copy the core files of J2ME Polish -->
-	<copy todir="tmp/" >
-		<fileset dir="." includes="capabilities.xml,platforms.xml,configurations.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
-	</copy>
-	<copy todir="tmp/import">
-		<fileset dir="import" includes="asm-2.0.RC1.jar,asm-tree-2.0.RC1.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar" />
-		<fileset dir="dist" includes="*.jar" />
-	</copy>
-	<!-- copy mac os x standalone applications -->
-	<mkdir dir="tmp/macosx" />
-	<copy todir="tmp/macosx" >
-		<fileset dir="setup/macosx" excludes="**/CVS/**" />
-	</copy>
-	<!-- copy sample application -->
-	<mkdir dir="tmp/samples/menu/source/src" />
-	<copy todir="tmp/samples/menu/source/src">
-		<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
-	</copy>
-	<copy todir="tmp/samples/menu/" 
-		>
-		<fileset dir="setup/samples/menu" excludes="**/macosx/**" />
-		<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
-		<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
-		<fileset dir="../enough-polish-example-localization" includes="resources3/**/*.*" excludes="CVS"/>
-	</copy>
-	<!-- copy sysinfo application -->
-	<mkdir dir="tmp/samples/sysinfo/source/src" />
-	<copy todir="tmp/samples/sysinfo/source/src">
-		<fileset dir="../enough-polish-sysinfo/source/src" includes="**/*.java" />
-	</copy>
-	<copy todir="tmp/samples/sysinfo/" 
-		>
-		<fileset dir="../enough-polish-sysinfo" includes="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO" />
-		<fileset dir="setup/samples/sysinfo" excludes="**/macosx/**" />
-		<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
-	</copy>
-	<!-- copy logviewer sample application -->
-	<mkdir dir="tmp/samples/logviewer/source/src" />
-	<copy todir="tmp/samples/logviewer/source/src">
-		<fileset dir="../enough-polish-logviewer/source/src" includes="**/*.java" />
-	</copy>
-	<copy todir="tmp/samples/logviewer/" 
-		>
-		<fileset dir="setup/samples/logviewer" excludes="**/macosx/**" />
-		<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
-	</copy>
-	<!-- copy roadrunner sample application -->
-	<mkdir dir="tmp/samples/roadrunner/source/src" />
-	<copy todir="tmp/samples/roadrunner/source/src">
-		<fileset dir="../enough-polish-roadrunner/source/src" includes="**/*.java" />
-	</copy>
-	<copy todir="tmp/samples/roadrunner/" 
-		>
-		<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
-		<fileset dir="../enough-polish-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
-	</copy>
-	<!-- copy source of J2ME Polish -->
-	<mkdir dir="tmp/j2mepolish-src/build" />
-	<copy todir="tmp/j2mepolish-src/build">
-		<fileset dir="../enough-polish-build/source" includes="**/*.java" />
-	</copy>
-	<mkdir dir="tmp/j2mepolish-src/j2me" />
-	<copy todir="tmp/j2mepolish-src/j2me">
-		<fileset dir="../enough-polish-j2me/source" includes="**/*.java" />
-	</copy>
-	<!-- create / copy documentation -->
-	<mkdir dir="tmp/doc/javadoc/build" />
-	<mkdir dir="tmp/doc/javadoc/j2me" />
-	<copy todir="tmp/doc" >
-		<fileset dir="setup" includes="javadoc.html" />
-		<fileset dir="../enough-polish-website/site/source/downloads" includes="Complete_Guide_to_J2ME_Polish.pdf" />			
-	</copy>
-	<javadoc 
-	    	destdir="tmp/doc/javadoc/build" 
-	    	access="public" 
-	    	use="true" 
-	    	notree="false" 
-	    	nonavbar="false" 
-	    	noindex="false" 
-	    	splitindex="true" 
-	    	author="true" 
-	    	version="true" 
-	    	nodeprecatedlist="false" 
-	    	nodeprecated="false" 
-	    	packagenames="de.enough.*" 
-	    	sourcepath="source/src" 
-	    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
-	    	doctitle="The J2ME Polish Build Framework, Version ${Version}"
-	/>	
-	<javadoc 
-	    	destdir="tmp/doc/javadoc/j2me" 
-	    	access="public" 
-	    	use="true" 
-	    	notree="false" 
-	    	nonavbar="false" 
-	    	noindex="false" 
-	    	splitindex="true" 
-	    	author="true" 
-	    	version="true" 
-	    	nodeprecatedlist="false" 
-	    	nodeprecated="false" 
-	    	packagenames="de.enough.*" 
-	    	sourcepath="../enough-polish-j2me/source/src" 
-	    	classpath="../enough-polish-j2me/bin/classes:import/midp2.jar" 
-	    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
-	/>	
-	<!-- copy the whole website to the documentation -->
-	<webprocessor 
-		srcdir="../enough-polish-website/site/source"
-	 	includedir="../enough-polish-website/site/includes"
-		destdir="tmp/doc/html"
-		clean="false"
-		update="atoz.html, documentation.html, index.html, news.html, docs/install.html"
-		keywordsFile="../enough-polish-website/keywords.txt"
-		excludes="downloads/**/*,download.html"
-		symbols="excludeDownload"
-		>
-		<variable name="PolishVersion" value="${Version}" />
-		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
-		<variable name="Author" value="Robert Virkus" />
-		<variable name="basedir" value="" />
-		<variable name="javadocdir" value="../" />
-		<variable name="newsbasedir" value="http://www.j2mepolish.org/" />
-		<variable name="index.h1" value="h1index" />
-		<variable name="index.h2" value="h2index" />
-		<variable name="index.h3" value="h3index" />
-		<variable name="index.h4" value="h4index" />
-		<variable name="index.h5" value="h5index" />
-	</webprocessor>
-	<!-- created & copy the device database -->
-	<deviceExport />
-	<webprocessor 
-		srcdir="../enough-polish-website/tmp"
-	 	includedir="../enough-polish-website/site/includes"
-		destdir="tmp/doc/html"
-		clean="false"
-		symbols="excludeDownload"
-		>
-		<variable name="PolishVersion" value="${Version}" />
-		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
-		<variable name="Author" value="Robert Virkus" />
-		<variable name="basedir" value="" />
-		<variable name="index.h1" value="h1index" />
-		<variable name="index.h2" value="h2index" />
-		<variable name="index.h3" value="h3index" />
-		<variable name="index.h4" value="h4index" />
-		<variable name="index.h5" value="h5index" />
-	</webprocessor>
-	<!-- copy the documentation.html to the root -->
-	<webprocessor 
-		srcdir="../enough-polish-website/site/source"
-	 	includedir="../enough-polish-website/site/includes"
-		destdir="tmp/doc"
-		clean="false"
-		update="documentation.html"
-		keywordsFile="../enough-polish-website/keywords.txt"
-		includes="documentation.html"
-		symbols="excludeDownload, onlyDocumentation"
-		>
-		<variable name="PolishVersion" value="${Version}" />
-		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
-		<variable name="Author" value="Robert Virkus" />
-		<variable name="basedir" value="html/" />
-		<variable name="index.h1" value="h1index" />
-		<variable name="index.h2" value="h2index" />
-		<variable name="index.h3" value="h3index" />
-		<variable name="index.h4" value="h4index" />
-		<variable name="index.h5" value="h5index" />
-	</webprocessor>
-	<!-- update installation settings -->
-	<propertyWriter srcfile="setup/install.xml"
-		            destfile="tmp/install.xml" />
-	<propertyWriter srcfile="setup/UserInputSpec.xml"
-		            destfile="tmp/userInputSpec.xml" />
-	<propertyWriter srcfile="setup/Readme.txt"
-		            destfile="tmp/Readme.txt" />
-	<!-- create installation file -->
-	<izpack input="tmp/install.xml"
-	        output="dist/j2mepolish-${Version}.jar"
-	        installerType="standard"
-	        basedir="tmp"
-	        izPackDir="${izpack.dir}"
-	/>
-</target>
-	
-<target name="izpack" description="calls only IzPack for generating the installer">
-	<!-- update installation settings -->
-	<propertyWriter srcfile="setup/install.xml"
-		            destfile="tmp/install.xml" />
-	<propertyWriter srcfile="setup/UserInputSpec.xml"
-		            destfile="tmp/userInputSpec.xml" />
-	<propertyWriter srcfile="setup/Readme.txt"
-		            destfile="tmp/Readme.txt" />
-	<!-- create installation file -->
-	<izpack input="tmp/install.xml"
-	        output="dist/j2mepolish-${Version}.jar"
-	        installerType="standard"
-	        basedir="tmp"
-        izPackDir="${izpack.dir}"
-	/>
-</target>
-	
-<target name="webprocessor">
-	<webprocessor 
-		srcdir="../enough-polish-website/site/source"
-	 	includedir="../enough-polish-website/site/includes"
-		destdir="tmp/doc/html"
-		clean="false"
-		update="atoz.html, documentation.html, index.html, news.html, docs/install.html"
-		keywordsFile="../enough-polish-website/keywords.txt"
-		excludes="downloads/**/*,download.html"
-		symbols="excludeDownload"
-		>
-		<variable name="PolishVersion" value="${Version}" />
-		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
-		<variable name="Author" value="Robert Virkus" />
-		<variable name="basedir" value="" />
-		<variable name="index.h1" value="h1index" />
-		<variable name="index.h2" value="h2index" />
-		<variable name="index.h3" value="h3index" />
-	</webprocessor>
-</target>
-	
-<target name="device-export">
-	<deviceExport />
-	<webprocessor 
-		srcdir="../enough-polish-website/tmp"
-	 	includedir="../enough-polish-website/site/includes"
-		destdir="tmp/doc/html"
-		clean="false"
-		>
-		<variable name="PolishVersion" value="${Version}" />
-		<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
-		<variable name="Author" value="Robert Virkus" />
-		<variable name="basedir" value="" />
-		<variable name="index.h1" value="h1index" />
-		<variable name="index.h2" value="h2index" />
-		<variable name="index.h3" value="h3index" />
-	</webprocessor>
-</target>
-	
-<target name="test" depends="bin-dist">
-	<copy file="dist/enough-j2mepolish-build.jar" todir="../enough-polish-dict/import/" />
-	<copy file="dist/enough-j2mepolish-build.jar" todir="../enough-polish-example/import/" />
-</target>
-
-<target name="clean" depends="init">
-	<delete dir="build" />
-	<delete dir="dist" />
-	<delete dir="tmp" />
-</target>
+	<target name="clean" depends="init">
+		<delete dir="build" />
+		<delete dir="dist" />
+		<delete dir="tmp" />
+	</target>
 
 
 </project>

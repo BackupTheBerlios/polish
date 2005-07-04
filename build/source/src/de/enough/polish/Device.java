@@ -25,6 +25,13 @@
  */
 package de.enough.polish;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.BuildException;
+import org.jdom.Element;
+
 import de.enough.polish.ant.requirements.MemoryMatcher;
 import de.enough.polish.devices.CapabilityManager;
 import de.enough.polish.devices.Configuration;
@@ -41,15 +48,6 @@ import de.enough.polish.devices.Vendor;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
-
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
-import org.jdom.Element;
-
-import com.sun.kvem.security.API;
-
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * <p>Represents a J2ME device.</p>
@@ -775,14 +773,18 @@ public class Device extends PolishComponent {
 		polishHome = new File( polishHome, "import" );
 		File importFolder = (File) this.environment.get("polish.apidir");
 		for (int i = 0; i < paths.length; i++) {
-			String pathElement = paths[i];
-			File lib = new File( polishHome, pathElement );
+			String pathElement = this.environment.writeProperties( paths[i] );
+			
+			File lib = new File( pathElement ); 
 			if ( ! lib.exists() ) {
-				lib = new File( importFolder, pathElement );
+				lib = new File( polishHome, pathElement );
 				if ( ! lib.exists() ) {
-					lib = new File( pathElement );
+					lib = new File( importFolder, pathElement );
 					if ( ! lib.exists() ) {
-						throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.identifier + "]: file not found! default-dir=[" + polishHome.getAbsolutePath() + "], api-dir=[" + importFolder.getAbsolutePath() + "].");
+						lib = new File( pathElement );
+						if ( ! lib.exists() ) {
+							throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.identifier + "]: file not found! default-dir=[" + polishHome.getAbsolutePath() + "], api-dir=[" + importFolder.getAbsolutePath() + "].");
+						}
 					}
 				}
 			}

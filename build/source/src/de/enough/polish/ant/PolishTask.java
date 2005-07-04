@@ -532,7 +532,7 @@ public class PolishTask extends ConditionalTask {
 				// probably the wtk.home path is wrong:
 				File file = new File( this.wtkHome );
 				if (!file.exists()) {
-					throw new BuildException("The Ant-property [wtk.home] points to a non-existing directory. Please adjust his setting in the build.xml file.");
+					throw new BuildException("The Ant-property [wtk.home] points to the non-existing directory [" + this.wtkHome + "]. Please adjust his setting in the build.xml file.");
 				} else {
 					throw new BuildException("Unable to find the preverify tool at the default location [" + preverifyPath + "]. Please specify where to find it with the \"preverify\"-attribute of the <build> element (in the build.xml file).");
 				}

@@ -53,6 +53,7 @@
 	<platform>
 		<identifier>BlackBerry</identifier>
 		<features>blackberry</features>
+		<capability name="build.BootClassPath" value="${blackberry.home}/lib/net_rim_api.jar" />
 		<capability name="build.Finalizer" value="jar2cod" />
 		<capability name="build.ImplicitGroups" value="blackberry" />
 	</platform>
