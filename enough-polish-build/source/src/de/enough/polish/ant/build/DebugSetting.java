@@ -52,6 +52,12 @@ public class DebugSetting extends ConditionalElement {
 	private String level;
 	private final ArrayList filters;
 	private final ArrayList logHandlers;
+	private boolean logLevel = true;
+	private boolean logTimestamp = false;
+	private boolean logClassName = false;
+	private boolean logLineNumber = false;
+	private boolean logMessage = true;
+	private boolean logException = true;
 
 	/**
 	 * Creates a new empty debug-setting.
@@ -183,6 +189,76 @@ public class DebugSetting extends ConditionalElement {
 	 */
 	public void setShowLogOnError(boolean showDebugOnError) {
 		this.showLogOnError = showDebugOnError;
+	}
+
+
+	public boolean logLevel() {
+		return this.logLevel;
+	}
+
+
+	public void setLogLevel(boolean logLevel) {
+		this.logLevel = logLevel;
+	}
+
+
+	public boolean logLineNumber() {
+		return this.logLineNumber;
+	}
+
+
+	public void setLogLineNumber(boolean logLineNumber) {
+		this.logLineNumber = logLineNumber;
+	}
+
+
+	public boolean logMessage() {
+		return this.logMessage;
+	}
+
+
+	public void setLogMessage(boolean logMessage) {
+		this.logMessage = logMessage;
+	}
+
+
+	public boolean logTimestamp() {
+		return this.logTimestamp;
+	}
+
+
+	public void setLogTimestamp(boolean logTimestamp) {
+		this.logTimestamp = logTimestamp;
+	}
+
+
+	public boolean isShowLogOnError() {
+		return this.showLogOnError;
+	}
+
+
+	public boolean isUseGui() {
+		return this.useGui;
+	}
+
+
+	public boolean logClassName() {
+		return this.logClassName;
+	}
+
+
+	public void setLogClassName(boolean logClassName) {
+		this.logClassName = logClassName;
+	}
+
+
+	public boolean logException() {
+		return this.logException;
+	}
+
+
+	public void setLogException(boolean logException) {
+		this.logException = logException;
 	}
 
 }

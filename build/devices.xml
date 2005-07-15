@@ -3369,7 +3369,7 @@
 		<capability name="ScreenSize" value="240x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
 	</device>
 	
 

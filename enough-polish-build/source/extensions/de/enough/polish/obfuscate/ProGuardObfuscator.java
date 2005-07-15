@@ -92,11 +92,28 @@ implements OutputFilter
 		// the libraries:
 		argsList.add( "-libraryjars" );
 		StringBuffer buffer = new StringBuffer();
-		buffer.append( bootClassPath.toString() );
-		String[] apiPaths = device.getClassPaths();
-		for (int i = 0; i < apiPaths.length; i++) {
+		String[] apiPaths = device.getBootClassPaths();
+		String path = apiPaths[0];
+		if (path.indexOf(' ') != -1) {
+			path = '"' + path + '"';
+		}
+		buffer.append( path );
+		for (int i = 1; i < apiPaths.length; i++) {
+			path = apiPaths[i];
+			if (path.indexOf(' ') != -1) {
+				path = '"' + path + '"';
+			}
 			buffer.append( File.pathSeparatorChar );
-			buffer.append( apiPaths[i].toString() );
+			buffer.append( path );
+		}
+		apiPaths = device.getClassPaths();
+		for (int i = 0; i < apiPaths.length; i++) {
+			path = apiPaths[i];
+			if (path.indexOf(' ') != -1) {
+				path = '"' + path + '"';
+			}
+			buffer.append( File.pathSeparatorChar );
+			buffer.append( path );
 		}
 		argsList.add( buffer.toString() );
 		// add classes that should be kept from obfuscating:

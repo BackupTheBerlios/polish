@@ -47,9 +47,9 @@ public class ConvertUtilTest extends TestCase {
 	}
 	
 	public void testCharacterToUppercase() {
-		assertEquals( 'Ö', Character.toUpperCase('ö'));
-		assertEquals( 'Ä', Character.toUpperCase('ä'));
-		assertEquals( 'ß', Character.toUpperCase('ß'));
+		assertEquals( '\u00d6', Character.toUpperCase('\u00f6'));
+		assertEquals( '\u00c4', Character.toUpperCase('\u00e4'));
+		assertEquals( '\u00df', Character.toUpperCase('\u00df'));
 	}
 	
 	public void testConvert() {

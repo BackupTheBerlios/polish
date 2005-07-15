@@ -41,6 +41,17 @@
 		</solution>
 	</bug>
 	<bug>
+		<name>drawRgbNeedsFullBuffer</name>
+		<description>The Graphics.drawRGB(..) method does not accept only one row which
+		then can be repeated several times. Usually this trick saves some memory as well as work.
+		</description>
+		<area>ui</area>
+		<solution>
+		Give a full buffer (rows * columns) in the drawRGB method instead of only one row.
+		</solution>
+	</bug>
+	
+	<bug>
 		<name>ImageIOStreamAutoClose</name>
 		<description>The Image.createImage( InputStream in ) should not close
 		the given input stream according to the specification. Devices with this

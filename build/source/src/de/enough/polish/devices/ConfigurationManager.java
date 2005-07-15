@@ -120,29 +120,29 @@ public class ConfigurationManager {
 	}
 
 	/**
-	 * Loads the custom-vendors.xml of the user from the current project.
-	 * @param customPlatforms
+	 * Loads the custom-configurations.xml of the user from the current project.
+	 * @param customConfigurations
 	 * @param capabilityManager
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomPlatforms(File customPlatforms, CapabilityManager capabilityManager ) 
+	public void loadCustomConfigurations(File customConfigurations, CapabilityManager capabilityManager ) 
 	throws JDOMException, InvalidComponentException {
-		if (customPlatforms.exists()) {
+		if (customConfigurations.exists()) {
 			try {
-				loadConfigurations( capabilityManager, new FileInputStream( customPlatforms ) );
+				loadConfigurations( capabilityManager, new FileInputStream( customConfigurations ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
-				System.err.println("Unable to load [custom-platforms.xml]: " + e.toString() );
+				System.err.println("Unable to load [custom-configurations.xml]: " + e.toString() );
 				e.printStackTrace();
 			} catch (IOException e) {
 				// this also shouldn't happen
-				System.err.println("Unable to load [custom-platforms.xml]: " + e.toString() );
+				System.err.println("Unable to load [custom-configurations.xml]: " + e.toString() );
 				e.printStackTrace();
 			} catch (InvalidComponentException e) {
 				// this can happen
 				String message = e.getMessage();
-				message = StringUtil.replace( message, "platforms.xml", "custom-platforms.xml" );
+				message = StringUtil.replace( message, "configurations.xml", "custom-configurations.xml" );
 				throw new InvalidComponentException( message, e );
 			}
 		}

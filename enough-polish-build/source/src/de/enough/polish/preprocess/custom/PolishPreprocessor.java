@@ -145,6 +145,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					throw new BuildException("Unable to load abbreviations of style-attributes: " + e.toString() + ". Please try a clean rebuild.", e );
 				}
 			}
+			//System.out.println( "PolishPreprocessor: preprocessor == null: " + (this.preprocessor == null) );
+			//System.out.println("styleSheet == null: "  + (this.preprocessor.getStyleSheet() == null) );
+			//System.out.println("idGenerator == null: "  + (this.idGenerator == null ) );
 			this.preprocessor.getStyleSheet().setAttributesIds( this.idGenerator.getIdsMap() );
 		}
 	}

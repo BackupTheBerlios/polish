@@ -28,6 +28,8 @@ package de.enough.polish.resources;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -41,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -387,7 +390,7 @@ implements Comparator
 					this.lastModificationTime = messagesFile.lastModified();
 				}
 				//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
-				FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
+				readPropertiesFile(messagesFile, rawTranslations );
 			}
 			if (languageFileName != null) {
 				messagesFile = new File( dirPath + languageFileName );
@@ -397,7 +400,7 @@ implements Comparator
 						this.lastModificationTime = messagesFile.lastModified();
 					}
 					//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
-					FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
+					readPropertiesFile(messagesFile, rawTranslations );
 				}
 			}
 			messagesFile = new File( dirPath + localeFileName );
@@ -407,10 +410,26 @@ implements Comparator
 					this.lastModificationTime = messagesFile.lastModified();
 				}
 				//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
-				FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
+				readPropertiesFile(messagesFile, rawTranslations );
 			}
 		}
 		return rawTranslations;
+	}
+	
+	private void readPropertiesFile( File messagesFile, Map rawTranslations ) 
+	throws FileNotFoundException, IOException 
+	{
+		if (this.isDynamic) {
+			// use the java.util.Properties tool for resolving Unicode escape mechanism.
+			// this is needed because we later store the loaded strings via DataOutputStream.writeUTF()
+			// and the device would show \t instead of a tab and so on.
+			Properties properties = new Properties();
+			properties.load( new FileInputStream( messagesFile ) );
+			rawTranslations.putAll( properties );
+		} else {
+			// just load the properties directly
+			FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
+		}
 	}
 	
 	/**
@@ -660,8 +679,8 @@ implements Comparator
 		char monetaryDecimalSeparator = '.';
 		char groupingSeparator = ',';
 		char percent = '%';
-		char permill = '‰';
-		String infinity = "∞";
+		char permill = '\u2030';
+		String infinity = "\u221e";
 		
 		NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
 		try {

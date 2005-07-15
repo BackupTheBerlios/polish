@@ -108,7 +108,7 @@ public class ExtensionManager {
 	 */
 	public void loadCustomDefinitions(File customExtensionsFile ) 
 	throws JDOMException, InvalidComponentException {
-		if (customExtensionsFile.exists()) {
+		if (customExtensionsFile != null && customExtensionsFile.exists()) {
 			try {
 				loadDefinitions( new FileInputStream( customExtensionsFile ) );
 			} catch (FileNotFoundException e) {
@@ -302,8 +302,16 @@ public class ExtensionManager {
 		// call preInitialize on the registered plugins:
 	}
 	
+	public void preprocess( Device device, Locale locale, Environment environment ) {
+		//executeExtensions( TYPE_PREPROCESSOR, device, locale, environment );
+	}
+	
 	public void postCompile( Device device, Locale locale, Environment environment ) {
-		Extension[] extensions = getExtensions( TYPE_POSTCOMPILER, device, locale, environment );
+		executeExtensions( TYPE_POSTCOMPILER, device, locale, environment );
+	}
+	
+	public void executeExtensions( String type, Device device, Locale locale, Environment environment ) {
+		Extension[] extensions = getAutoStartExtensions( type, device, locale, environment );
 		for (int i = 0; i < extensions.length; i++) {
 			Extension extension = extensions[i];
 			extension.execute( device, locale, environment );
@@ -317,7 +325,7 @@ public class ExtensionManager {
 	 * @param environment
 	 * @return an array of extensions that should be started automatically
 	 */
-	private Extension[] getExtensions(String type, Device device, Locale locale, Environment environment) {
+	public Extension[] getAutoStartExtensions(String type, Device device, Locale locale, Environment environment) {
 		ArrayList list = new ArrayList();
 		for (Iterator iter = this.autoStartExtensions.iterator(); iter.hasNext();) {
 			ExtensionDefinition definition = (ExtensionDefinition) iter.next();
@@ -337,7 +345,8 @@ public class ExtensionManager {
 	}
 	
 	public void finalize( Device device, Locale locale, Environment environment ) {
-		// call initialize on all active extensions:
+		executeExtensions( TYPE_FINALIZER, device, locale, environment );
+		// call finalize on all active extensions:
 		for (int i = 0; i < this.activeExtensions.length; i++) {
 			Extension extension = this.activeExtensions[i];
 			extension.finalize(device, locale, environment);

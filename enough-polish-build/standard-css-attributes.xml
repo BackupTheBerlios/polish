@@ -733,4 +733,22 @@
 		id="80"
 	/>
 	
+	<attribute
+		name="icon-horizontal-adjustment"
+		type="integer"
+		appliesTo="IconItem, ImageItem, ListItem"
+		description="Adjusts the icon by the specified number of pixels horizontally. Negative values move the icon-image to the left."
+		default="0"
+		id="81"
+	/>
+	
+	<attribute
+		name="icon-vertical-adjustment"
+		type="integer"
+		appliesTo="IconItem, ImageItem, ListItem"
+		description="Adjusts the icon by the specified number of pixels vertically. Negative values move the icon-image to the top."
+		default="0"
+		id="82"
+	/>
+	
 </attributes>

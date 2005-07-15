@@ -52,7 +52,16 @@
 
 	<platform>
 		<identifier>BlackBerry</identifier>
-		<features>blackberry</features>
+		<features>blackberry, hasCommandKeyEvents</features>
+		<capability name="Bugs" value="drawRgbNeedsFullBuffer" />
+		<capability name="key.EscapeKey" value="1769472" />
+		<capability name="key.ReturnKey" value="1769472" />
+		<capability name="key.RightSoftKey" value="1769472" />
+		<capability name="key.ClearKey" value="524288" />
+		<capability name="key.EnterKey" value="655360" />
+		<capability name="key.MoveLeftKey" value="5177410" />
+		<capability name="key.MoveRightKey" value="5242946" />
+		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
 		<capability name="build.BootClassPath" value="${blackberry.home}/lib/net_rim_api.jar" />
 		<capability name="build.Finalizer" value="jar2cod" />
 		<capability name="build.ImplicitGroups" value="blackberry" />

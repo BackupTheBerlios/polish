@@ -112,6 +112,8 @@ public class Preprocessor {
 	private CustomPreprocessor[] customPreprocessors;
 	protected static final Pattern SYSTEM_PRINT_PATTERN = Pattern.compile(
 				"System.(out|err).print(ln)?\\s*\\(" );
+
+	public static final String ENVIRONMENT_KEY = "Key_Preprocessor";
 	private HashMap preprocessQueue;
 	private boolean useDefaultPackage;
 	private TextFileManager textFileManager;
@@ -1133,6 +1135,9 @@ public class Preprocessor {
 			if (openingParenthesisPos != parenthesisPos -1 ) {
 				buffer.append(", ");
 			} 
+			if (!this.useDefaultPackage) {
+				buffer.append("de.enough.polish.ui.");
+			}
 			buffer.append( "StyleSheet." )
 					.append( style )
 					.append( "Style " )
@@ -1140,7 +1145,11 @@ public class Preprocessor {
 			lines.setCurrent( buffer.toString() );
 		} else { // either there is no next line or the next line has no new operator
 			lines.prev();
-			lines.insert( "\tStyleSheet.currentStyle = StyleSheet." + style + "Style;"  );
+			if (this.useDefaultPackage) {
+				lines.insert( "\tStyleSheet.currentStyle = StyleSheet." + style + "Style;"  );
+			} else {
+				lines.insert( "\tde.enough.polish.ui.StyleSheet.currentStyle = de.enough.polish.ui.StyleSheet." + style + "Style;"  );
+			}
 		}
 		// mark the style as beeing used:
 		this.styleSheet.addUsedStyle( style );

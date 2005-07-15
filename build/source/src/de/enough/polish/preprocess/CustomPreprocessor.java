@@ -31,12 +31,16 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionDefinition;
 import de.enough.polish.ExtensionManager;
+import de.enough.polish.ExtensionSetting;
+import de.enough.polish.ExtensionTypeDefinition;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.util.StringList;
 
@@ -73,6 +77,11 @@ public abstract class CustomPreprocessor extends Extension {
 		// no initialisation work done
 	}
 	
+	protected void init(ExtensionTypeDefinition typeDefinition, ExtensionDefinition definition, ExtensionSetting preprocessorSetting, Project project, ExtensionManager manager, Environment env) {
+		super.init(typeDefinition, definition, preprocessorSetting, project, manager, env);
+		init( (Preprocessor) env.get( Preprocessor.ENVIRONMENT_KEY ), (PreprocessorSetting) preprocessorSetting );
+	}
+
 	/**
 	 * Initialises this custom preprocessor.
 	 * The default implementation set the boolean evaluator and the

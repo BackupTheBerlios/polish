@@ -97,9 +97,6 @@ public class BuildSetting {
 	private File customExtensions;
 	private Variables variables;
 	private boolean usePolishGui;
-	private File midp1Path;
-	private File midp2Path;
-	private File midp2Cldc11Path;
 	private File preverify;
 	private final Project antProject;
 	private boolean includeAntProperties;
@@ -107,7 +104,6 @@ public class BuildSetting {
 	private final ArrayList sourceSettings;
 	private File polishDir;
 	private JadAttributes jadAttributes;
-	private boolean defaultMidpPathUsed = true;
 	private ArrayList preprocessors;
 	private ArrayList jadAttributesFilters;
 	private ArrayList manifestAttributesFilters;
@@ -134,7 +130,7 @@ public class BuildSetting {
 	private File platforms;
 	private File configurations;
 	private boolean replacePropertiesWithoutDirective;
-	private boolean abortOnError;
+	private boolean abortOnError = true;
 	private String onError;
 	
 	/**
@@ -161,9 +157,6 @@ public class BuildSetting {
 		this.apiDir = getFile("import");
 		this.resDir = getFile ("resources");
 		this.sourceSettings = new ArrayList();
-		this.midp1Path = getFile( "import/midp1.jar" );
-		this.midp2Path = getFile( "import/midp2.jar" );
-		this.midp2Cldc11Path = getFile( "import/midp2-cldc11.jar" );
 		this.apis = getFile("apis.xml");
 		this.extensions = getFile("extensions.xml");
 		this.capabilities = getFile("capabilities.xml");
@@ -759,10 +752,6 @@ public class BuildSetting {
 			throw new BuildException("The [apiDir]-attribute of the <build> element points to a non existing directory: [" + newApiDir.getAbsolutePath() + "].");
 		}
 		this.apiDir = newApiDir;
-		if (this.defaultMidpPathUsed) {
-			this.midp1Path = new File( newApiDir.getAbsolutePath() + File.separator + "midp1.jar" );
-			this.midp2Path = new File( newApiDir.getAbsolutePath() + File.separator + "midp2.jar" );
-		}
 	}
 	
 	/**
@@ -839,17 +828,6 @@ public class BuildSetting {
 		this.vendors = newVendors;
 	}
 
-	/**
-	 * Gets the path to the MIDP/1.0-api-file
-	 * 
-	 * @return The path to the api-file of the MIDP/1.0 environment 
-	 */
-	public File getMidp1Path() {
-		if (!this.midp1Path.exists()) {
-			throw new BuildException("The default path to the MIDP/1.0-API [" + this.midp1Path.getAbsolutePath() + "] points to a non-existing file. Please specify it with the [midp1Path] attribute of the <build> element.");
-		}
-		return this.midp1Path;
-	}
 	
 	/**
 	 * Sets the path to the api-file of the MIDP/1.0 environment
@@ -857,37 +835,9 @@ public class BuildSetting {
 	 * @param midp1PathStr The path to the MIDP/1.0-api-file
 	 */
 	public void setMidp1Path( String midp1PathStr ) {
-		File newMidp1Path = getFile( midp1PathStr );
-		if (!newMidp1Path.exists()) {
-			throw new BuildException("Invalid path to the MIDP/1.0-API: [" + newMidp1Path.getAbsolutePath() + "] (File not found).");
-		}
-		this.midp1Path = newMidp1Path;
-		this.defaultMidpPathUsed = false;
+		throw new BuildException("Plese specify the bootclass-APIs within platforms.xml and configurations.xml.");
 	}
 
-	/**
-	 * Gets the path to the MIDP/2.0-jar
-	 * 
-	 * @return The path to the api-file of the MIDP/2.0 environment 
-	 */
-	public File getMidp2Path() {
-		if (!this.midp2Path.exists()) {
-			throw new BuildException("The default path to the MIDP/2.0-API [" + this.midp2Path.getAbsolutePath() + "] points to a non-existing file. Please specify it with the [midp2Path] attribute of the <build> element.");
-		}
-		return this.midp2Path;
-	}
-	
-	/**
-	 * Gets the path to the MIDP/2.0/CLDC/1.1-jar
-	 * 
-	 * @return the path to the API-file for MIDP/2.0 devices which support the CLDC/1.1 configuration
-	 */
-	public File getMidp2Cldc11Path() {
-		if (!this.midp2Cldc11Path.exists()) {
-			throw new BuildException("The default path to the MIDP/2.0 / CLDC/1.1-API [" + this.midp2Cldc11Path.getAbsolutePath() + "] points to a non-existing file. Please specify it with the [midp2Cldc11Path] attribute of the <build> element.");
-		}
-		return this.midp2Cldc11Path;
-	}
 	
 	/**
 	 * Sets the path to the api-file of the MIDP/2.0 environment.
@@ -897,15 +847,7 @@ public class BuildSetting {
 	 * @param midp2PathStr The path to the MIDP/2.0-api-file
 	 */
 	public void setMidp2Path( String midp2PathStr ) {
-		File newMidp2Path = getFile( midp2PathStr );
-		if (!newMidp2Path.exists()) {
-			throw new BuildException("Invalid path to the MIDP/2.0-API: [" + newMidp2Path.getAbsolutePath() + "] (File not found).");
-		}
-		this.midp2Path = newMidp2Path;
-		if (this.midp1Path == null) {
-			this.midp1Path = newMidp2Path;
-		}
-		this.defaultMidpPathUsed = false;
+		throw new BuildException("Plese specify the bootclass-APIs within platforms.xml and configurations.xml.");
 	}
 
 	/**
@@ -914,12 +856,7 @@ public class BuildSetting {
 	 * @param midp2Cldc11PathStr The path to the MIDP/2.0-api-file
 	 */
 	public void setMidp2Cldc11Path( String midp2Cldc11PathStr ) {
-		File newMidp2Path = getFile( midp2Cldc11PathStr );
-		if (!newMidp2Path.exists()) {
-			throw new BuildException("Invalid path to the MIDP/2.0/CLDC/1.1-API: [" + newMidp2Path.getAbsolutePath() + "] (File not found).");
-		}
-		this.midp2Cldc11Path = newMidp2Path;
-		this.defaultMidpPathUsed = false;
+		throw new BuildException("Plese specify the bootclass-APIs within platforms.xml and configurations.xml.");
 	}
 	
 	
@@ -1502,20 +1439,6 @@ public class BuildSetting {
 		return (Finalizer[]) list.toArray( new Finalizer[ list.size() ] );
 	}
 	
-	/**
-	 * @return Returns the customApis.
-	 */
-	public File getCustomApis() {
-		if (this.customApis != null) {
-			return this.customApis;			
-		}
-		File file = new File( this.projectBaseDir, "custom-apis.xml");
-		if (file.exists()) {
-			return file;
-		} else {
-			return new File( this.polishHomeDir, "custom-apis.xml");
-		}
-	}
 	
 	/**
 	 * @param customApis The customApis to set.
@@ -1527,20 +1450,6 @@ public class BuildSetting {
 		this.customApis = customApis;
 	}
 	
-	/**
-	 * @return Returns the customDevices
-	 */
-	public File getCustomDevices() {
-		if (this.customDevices != null) {
-			return this.customDevices;			
-		}
-		File file = new File( this.projectBaseDir, "custom-devices.xml");
-		
-		if (!file.exists()) {
-			file = new File( this.polishHomeDir, "custom-devices.xml");
-		}
-		return file;
-	}
 	
 	/**
 	 * @param customDevices The customDevices to set.
@@ -1572,20 +1481,6 @@ public class BuildSetting {
 		this.customPlatforms = customPlatforms;
 	}
 
-	/**
-	 * @return Returns the customExtensions
-	 */
-	public File getCustomExtensions() {
-		if (this.customExtensions != null) {
-			return this.customExtensions;			
-		}
-		File file = new File( this.projectBaseDir, "custom-extensions.xml");
-		if (file.exists()) {
-			return file;
-		} else {
-			return new File( this.polishHomeDir, "custom-extensions.xml");
-		}
-	}
 	
 	/**
 	 * @param customExtensions The customExtensions to set.
@@ -1597,19 +1492,8 @@ public class BuildSetting {
 		this.customExtensions = customExtensions;
 	}
 
-	/**
-	 * @return Returns the customGroups
-	 */
-	public File getCustomGroups() {
-		if (this.customGroups != null) {
-			return this.customGroups;			
-		}
-		File file = new File( this.projectBaseDir, "custom-groups.xml");
-		if (file.exists()) {
-			return file;
-		} else {
-			return new File( this.polishHomeDir, "custom-groups.xml");
-		}
+	public File getCustomExtensions() {
+		return this.customExtensions;
 	}
 	
 	/**
@@ -1620,21 +1504,6 @@ public class BuildSetting {
 			throw new BuildException("The <build> attribute \"customGroups\" points to a non-existing file: " + customGroups.getAbsolutePath() );
 		}
 		this.customGroups = customGroups;
-	}
-
-	/**
-	 * @return Returns the customVendors
-	 */
-	public File getCustomVendors() {
-		if (this.customVendors != null) {
-			return this.customVendors;			
-		}
-		File file = new File( this.projectBaseDir, "custom-vendors.xml");
-		if (file.exists()) {
-			return file;
-		} else {
-			return new File( this.polishHomeDir, "custom-vendors.xml");
-		}
 	}
 	
 	/**

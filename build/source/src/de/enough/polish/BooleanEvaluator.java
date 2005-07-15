@@ -155,7 +155,9 @@ public class BooleanEvaluator {
 		expression = StringUtil.replace( expression, " or ", " || " );
 		expression = StringUtil.replace( expression, " not ", " !" );
 		expression = StringUtil.replace( expression, " xor ", " ^ " );
-		
+		if (expression.startsWith("not ")) {
+			expression = "!" + expression.substring( "not ".length() );
+		}
 		// now extract each term:
 		Matcher matcher = TERM_PATTERN.matcher( expression );
 		try {

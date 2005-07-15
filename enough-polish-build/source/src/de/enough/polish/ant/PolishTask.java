@@ -54,11 +54,13 @@ import de.enough.polish.Attribute;
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
 import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
+import de.enough.polish.ant.build.DebugSetting;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.LibrariesSetting;
@@ -134,9 +136,6 @@ public class PolishTask extends ConditionalTask {
 	//private File[] sourceDirs;
 	private SourceSetting[] sourceSettings;
 	private TextFile[][] sourceFiles;
-	private Path midp1BootClassPath;
-	private Path midp2BootClassPath;
-	private Path midp2Cldc11BootClassPath;
 	private String javacTarget;
 	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
 	private String sourceCompatibility = "1.3";
@@ -151,6 +150,8 @@ public class PolishTask extends ConditionalTask {
 	private HashMap midletClassesByName;
 	private static final Pattern START_APP_PATTERN = 
 		Pattern.compile("\\s*void\\s+startApp\\s*\\(\\s*\\)");
+	private static final Pattern DESTROY_APP_PATTERN = 
+		Pattern.compile("\\s*void\\s+destroyApp\\s*\\(\\s*(final)?\\s*boolean\\s+\\w+\\s*\\)");
 
 	private LibraryManager libraryManager;
 	private File errorLock;
@@ -562,6 +563,8 @@ public class PolishTask extends ConditionalTask {
 			// load extensions:
 			this.extensionManager = new ExtensionManager( getProject(), this.buildSetting.openExtensions() );
 			this.extensionManager.loadCustomDefinitions( this.buildSetting.getCustomExtensions() );
+			this.extensionManager.loadCustomDefinitions( new File( this.polishHomeDir, "custom-extensions.xml" ) );
+			this.extensionManager.loadCustomDefinitions( new File( getProject().getBaseDir(), "custom-extensions.xml" ) );
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
@@ -574,9 +577,10 @@ public class PolishTask extends ConditionalTask {
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
 		DebugManager debugManager = null;
+		DebugSetting debugSetting = this.buildSetting.getDebugSetting();
 		if (isDebugEnabled) {
 			try {
-				debugManager = new DebugManager( this.buildSetting.getDebugSetting(), this.extensionManager, this.environment );
+				debugManager = new DebugManager( debugSetting, this.extensionManager, this.environment );
 			} catch (BuildException e) {
 				throw new BuildException( e.getMessage(), e );
 			}
@@ -586,6 +590,14 @@ public class PolishTask extends ConditionalTask {
 		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
 		this.polishProject.addDirectCapability("polish.buildVersion", VERSION);
 		this.polishProject.addDirectFeature( "polish.active" );
+		if ( isDebugEnabled) {
+			this.polishProject.addCapability("polish.debug.level", "" + debugSetting.logLevel() );
+			this.polishProject.addCapability("polish.debug.timestamp", "" + debugSetting.logTimestamp() );
+			this.polishProject.addCapability("polish.debug.className", "" + debugSetting.logClassName() );
+			this.polishProject.addCapability("polish.debug.lineNumber", "" + debugSetting.logLineNumber() );
+			this.polishProject.addCapability("polish.debug.message", "" + debugSetting.logMessage() );
+			this.polishProject.addCapability("polish.debug.exception", "" + debugSetting.logException() );
+		}
 		if (debugManager != null && debugManager.isVerbose()) {
 			this.polishProject.addFeature("debugVerbose");
 			this.polishProject.addFeature("debug.verbose");
@@ -694,22 +706,30 @@ public class PolishTask extends ConditionalTask {
 		this.preprocessor = new Preprocessor( this.polishProject, this.environment, null, false, true, replacePropertiesWithoutDirective, null );
 		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
+		this.environment.set( Preprocessor.ENVIRONMENT_KEY, this.preprocessor );
 		// init custom preprocessors:
 		this.customPreprocessors = new ArrayList();
 		PreprocessorSetting[] settings = this.buildSetting.getPreprocessors();
+		
 		//CustomPreprocessor[] processors = new CustomPreprocessor[ settings.length + 1];
 		// add the polish custom processor:
 		// new PolishPreprocessor();
-		PreprocessorSetting preprocessorSetting = new PreprocessorSetting();
-		preprocessorSetting.setName("polish");
-		CustomPreprocessor customProcessor = CustomPreprocessor.getInstance(preprocessorSetting, this.preprocessor, this.extensionManager, this.environment );
+		//PreprocessorSetting preprocessorSetting = new PreprocessorSetting();
+		//preprocessorSetting.setName("polish");
+		//CustomPreprocessor customProcessor = CustomPreprocessor.getInstance(preprocessorSetting, this.preprocessor, this.extensionManager, this.environment );
 		//customProcessor.init(this.preprocessor, null);
-		this.customPreprocessors.add( customProcessor );
+		//this.customPreprocessors.add( customProcessor );
 		//processors[0] = customProcessor;
 		for (int i = 0; i < settings.length; i++) {
-			preprocessorSetting = settings[i];
-			customProcessor = CustomPreprocessor.getInstance(preprocessorSetting, this.preprocessor, this.extensionManager, this.environment );
-			this.customPreprocessors.add( customProcessor );
+			PreprocessorSetting preprocessorSetting = settings[i];
+			try {
+				//Extension customProcessor = this.extensionManager.getExtension( ExtensionManager.TYPE_PREPROCESSOR, preprocessorSetting, this.environment );
+				CustomPreprocessor customProcessor = CustomPreprocessor.getInstance(preprocessorSetting, this.preprocessor, this.extensionManager, this.environment );
+				this.customPreprocessors.add( customProcessor );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to initialize preprocessor [" + preprocessorSetting.getName() + "/" + preprocessorSetting.getClassName() + "]: " + e.toString() );
+			}
 		}
 		
 		//	initialise the preprocessing-source-directories:
@@ -779,10 +799,6 @@ public class PolishTask extends ConditionalTask {
 			}
 		} // done preparing of binary libraries.
 		
-		// init boot class path:
-		this.midp1BootClassPath = new Path( getProject(), this.buildSetting.getMidp1Path().getAbsolutePath());
-		this.midp2BootClassPath = new Path( getProject(), this.buildSetting.getMidp2Path().getAbsolutePath());
-		this.midp2Cldc11BootClassPath = new Path( getProject(), this.buildSetting.getMidp2Cldc11Path().getAbsolutePath());
 		
 		// init postcompilers:
 		if (this.buildSetting.doPostCompile()) {
@@ -1313,15 +1329,22 @@ public class PolishTask extends ConditionalTask {
 			}
 			*/
 			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+			Project antProject = getProject();
 			// add custom preprocessors
 			CustomPreprocessor[] preprocessors = (CustomPreprocessor[]) this.customPreprocessors.toArray( new CustomPreprocessor[ this.customPreprocessors.size() ] );
 			this.preprocessor.clearCustomPreprocessors();
 			for (int i = 0; i < preprocessors.length; i++) {
 				CustomPreprocessor processor = preprocessors[i];
 				PreprocessorSetting setting = processor.getSetting();
-				if (setting == null || setting.isActive( evaluator, getProject() ) ) {
-					this.preprocessor.addCustomPreprocessor(processor);
+				if (setting == null || setting.isActive( evaluator, antProject ) ) {
+					this.preprocessor.addCustomPreprocessor( processor );
 				}
+			}
+			// add autostart preprocessors:
+			Extension[] autoStartPreprocessors = this.extensionManager.getAutoStartExtensions( ExtensionManager.TYPE_PREPROCESSOR, device, locale, this.environment );
+			for (int i = 0; i < autoStartPreprocessors.length; i++) {
+				Extension extension = autoStartPreprocessors[i];
+				this.preprocessor.addCustomPreprocessor( (CustomPreprocessor) extension );
 			}
 			
 			// get the last modfication time of the build.xml file
@@ -1504,6 +1527,8 @@ public class PolishTask extends ConditionalTask {
 					if ( (this.midletClassesByName.get( adjustedClassName ) != null) ) {
 						sourceCode.reset();
 						insertDisplaySetting( className, sourceCode );
+						sourceCode.reset();
+						insertExitSetting( className, sourceCode );
 					}
 				}
 				// only think about saving when the file should not be skipped 
@@ -1520,14 +1545,14 @@ public class PolishTask extends ConditionalTask {
 						}
 					}
 				} else {
-					if (!isInPolishPackage || this.useDefaultPackage ) {
-						sourceCode.reset();
+					//if (!isInPolishPackage || this.useDefaultPackage ) {
+						// sourceCode.reset();
 						// now replace the import statements:
-						boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode, device, this.preprocessor );
-						if (changed) {
-							result = Preprocessor.CHANGED;
-						}
-					}
+						// boolean changed = this.importConverter.processImports(usePolishGui, device.isMidp1(), sourceCode, device, this.preprocessor );
+						//if (changed) {
+						//	result = Preprocessor.CHANGED;
+						// }
+					//}
 					// save modified file:
 					if ( ( saveInAnyCase ) 
 					  || (result == Preprocessor.CHANGED) ) 
@@ -1587,6 +1612,45 @@ public class PolishTask extends ConditionalTask {
 		}
 		System.out.println(START_APP_PATTERN.pattern());
 		throw new BuildException("Unable to find startApp method in MIDlet [" + className + "].");
+
+	}
+	
+	/**
+	 * Sets the StyleSheet.display variable in a MIDlet class.
+	 * 
+	 * @param className the name of the class
+	 * @param sourceCode the source code
+	 * @throws BuildException when the startApp()-method could not be found
+	 */
+	private void insertExitSetting( String className, StringList sourceCode ) {
+		if (!this.environment.hasSymbol("polish.debugEnabled")) {
+			return;
+		}
+		// at first try to find the startApp method:
+		while (sourceCode.next()) {
+			String line = sourceCode.getCurrent();
+			Matcher matcher = DESTROY_APP_PATTERN.matcher(line);
+			if (matcher.find()) {
+				int lineIndex = sourceCode.getCurrentIndex();
+				while ((line.indexOf('{') == -1) && (sourceCode.next()) ) {
+					line = sourceCode.getCurrent();
+				}
+				if (!sourceCode.next()) {
+					throw new BuildException("Unable to process MIDlet [" + className + "]: destroyApp method is not opened with '{': line [" + (++lineIndex) + "].");
+				}
+				line  = sourceCode.getCurrent();
+				String debugExit;
+				if (this.useDefaultPackage) {
+					debugExit = "Debug.exit();";
+				} else {
+					debugExit = "de.enough.polish.util.Debug.exit();";
+				}
+				sourceCode.setCurrent( debugExit + line );
+				return;
+			}
+		}
+		System.out.println(DESTROY_APP_PATTERN.pattern());
+		throw new BuildException("Unable to find destroyApp method in MIDlet [" + className + "].");
 
 	}
 
@@ -1793,16 +1857,7 @@ public class PolishTask extends ConditionalTask {
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( true );
 		}
-		Path bootPath;
-		if (device.isMidp1()) {
-			bootPath = this.midp1BootClassPath;
-		} else {
-			if (device.isCldc10()) {
-				bootPath = this.midp2BootClassPath;
-			} else {
-				bootPath = this.midp2Cldc11BootClassPath;
-			}
-		}
+		Path bootPath = new Path( getProject(), device.getBootClassPath() );
 		// create the initial jar-file: only include to class files,
 		// for accelerating the obfuscation:
 		File sourceFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
@@ -1881,17 +1936,7 @@ public class PolishTask extends ConditionalTask {
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
 		
 		File preverify = this.buildSetting.getPreverify();
-		String classPath;
-		if (device.isMidp1()) {
-			classPath = this.midp1BootClassPath.toString();
-		} else {
-			if (device.isCldc10()) {
-				classPath = this.midp2BootClassPath.toString();
-			} else {
-				classPath = this.midp2Cldc11BootClassPath.toString();
-			}			
-		}
-		classPath += File.pathSeparatorChar + device.getClassPath();
+		String classPath = device.getBootClassPath() +  File.pathSeparatorChar + device.getClassPath();
 		/* File preverfyDir = new File( this.buildSetting.getWorkDir().getAbsolutePath()
 				+ File.separatorChar + "preverfied" );
 		device.setPreverifyDir( preverifyDir ); 
@@ -2153,7 +2198,6 @@ public class PolishTask extends ConditionalTask {
 					e.printStackTrace();
 					throw new BuildException("Unable to execute finalizer [" + finalizerName + "] for device [" + device.getIdentifier() + "]: " + e.toString() );
 				}
-				
 			}
 		}
 		device.resetEnvironment();

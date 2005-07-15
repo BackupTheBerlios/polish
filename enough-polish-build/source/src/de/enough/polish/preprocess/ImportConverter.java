@@ -45,6 +45,8 @@ import de.enough.polish.util.StringUtil;
  *        26-Feb-2004 - rob creation
  * </pre>
  * @author Robert Virkus, robert@enough.de
+ * @deprecated use the ImportPreprocessor for now
+ * @see de.enough.polish.preprocess.custom.ImportPreprocessor
  */
 public final class ImportConverter {
 	

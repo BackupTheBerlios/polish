@@ -54,7 +54,144 @@
 		<type>preprocessor</type>
 		<name>polish</name>
 		<class>de.enough.polish.preprocess.custom.PolishPreprocessor</class>
+		<autostart>true</autostart>
 	</extension>
+
+	<extension>
+		<type>preprocessor</type>
+		<name>importconverter</name>
+		<class>de.enough.polish.preprocess.custom.ImportPreprocessor</class>
+		<autostart>true</autostart>
+		
+		<!-- mapping of GUI imports -->
+		<mappings if="polish.usePolishGui and not polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.Choice" to="de.enough.polish.ui.Choice; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.ChoiceGroup" to="de.enough.polish.ui.ChoiceGroup; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.CustomItem" to="de.enough.polish.ui.CustomItem; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.DateField" to="de.enough.polish.ui.DateField; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Form" to="de.enough.polish.ui.Form; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Gauge" to="de.enough.polish.ui.Gauge; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.ImageItem" to="de.enough.polish.ui.ImageItem; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Item" to="de.enough.polish.ui.Item; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.ItemCommandListener" to="de.enough.polish.ui.ItemCommandListener; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.ItemStateListener" to="de.enough.polish.ui.ItemStateListener; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.List" to="de.enough.polish.ui.List; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Screen" to="de.enough.polish.ui.Screen; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Spacer" to="de.enough.polish.ui.Spacer; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.StringItem" to="de.enough.polish.ui.StringItem; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Style" to="de.enough.polish.ui.Style; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.TextBox" to="de.enough.polish.ui.TextBox; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.TextField" to="de.enough.polish.ui.TextField; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.Ticker" to="de.enough.polish.ui.Ticker; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.*">
+				<to>
+					javax.microedition.lcdui.CommandListener; 
+					import javax.microedition.lcdui.Alert; 
+					import javax.microedition.lcdui.AlertType;
+					import javax.microedition.lcdui.Canvas;
+					import javax.microedition.lcdui.Command;
+					import javax.microedition.lcdui.Display;
+					import javax.microedition.lcdui.Displayable;
+					import javax.microedition.lcdui.Font;
+					import javax.microedition.lcdui.Graphics;
+					import javax.microedition.lcdui.Image; 
+					import de.enough.polish.ui.*
+				</to>
+			</mapping>
+		</mappings>
+		<mappings if="polish.usePolishGui and polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.Choice" to="" />
+			<mapping from="javax.microedition.lcdui.ChoiceGroup" to="" />
+			<mapping from="javax.microedition.lcdui.CustomItem" to="" />
+			<mapping from="javax.microedition.lcdui.DateField" to="" />
+			<mapping from="javax.microedition.lcdui.Form" to="" />
+			<mapping from="javax.microedition.lcdui.Gauge" to="" />
+			<mapping from="javax.microedition.lcdui.ImageItem" to="" />
+			<mapping from="javax.microedition.lcdui.Item" to="" />
+			<mapping from="javax.microedition.lcdui.ItemCommandListener" to="" />
+			<mapping from="javax.microedition.lcdui.ItemStateListener" to="" />
+			<mapping from="javax.microedition.lcdui.List" to="" />
+			<mapping from="javax.microedition.lcdui.Screen" to="" />
+			<mapping from="javax.microedition.lcdui.Spacer" to="" />
+			<mapping from="javax.microedition.lcdui.StringItem" to="" />
+			<mapping from="javax.microedition.lcdui.Style" to="" />
+			<mapping from="javax.microedition.lcdui.TextBox" to="" />
+			<mapping from="javax.microedition.lcdui.TextField" to="" />
+			<mapping from="javax.microedition.lcdui.Ticker" to="" />
+			<mapping from="javax.microedition.lcdui.*">
+				<to>
+					javax.microedition.lcdui.CommandListener; 
+					import javax.microedition.lcdui.Alert; 
+					import javax.microedition.lcdui.AlertType;
+					import javax.microedition.lcdui.Canvas;
+					import javax.microedition.lcdui.Command;
+					import javax.microedition.lcdui.Display;
+					import javax.microedition.lcdui.Displayable;
+					import javax.microedition.lcdui.Font;
+					import javax.microedition.lcdui.Graphics;
+					import javax.microedition.lcdui.Image
+				</to>
+			</mapping>
+		</mappings>
+		
+		<!-- mapping of game imports -->
+		<mappings if="(polish.midp1 or polish.usePolishGameApi) and not polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="de.enough.polish.ui.game.GameCanvas; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.Layer" to="de.enough.polish.ui.game.Layer; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.LayerManager" to="de.enough.polish.ui.game.LayerManager; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.Sprite" to="de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="de.enough.polish.ui.game.TiledLayer; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.*" to="de.enough.polish.ui.game.*; import de.enough.polish.ui.StyleSheet" />
+		</mappings>
+		<mappings if="(polish.midp1 or polish.usePolishGameApi) and polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="" />
+			<mapping from="javax.microedition.lcdui.game.Layer" to="" />
+			<mapping from="javax.microedition.lcdui.game.LayerManager" to="" />
+			<mapping from="javax.microedition.lcdui.game.Sprite" to="" />
+			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="" />
+			<mapping from="javax.microedition.lcdui.game.*" to="" />
+		</mappings>
+		<mappings if="polish.midp1 and polish.api.siemens-color-game-api and not polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="com.siemens.mp.color_game.GameCanvas; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.Layer" to="com.siemens.mp.color_game.Layer; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.LayerManager" to="com.siemens.mp.color_game.LayerManager; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="com.siemens.mp.color_game.TiledLayer; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.Sprite" to="de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet" />
+			<mapping from="javax.microedition.lcdui.game.*" to="de.enough.polish.ui.game.Sprite; import de.enough.polish.ui.StyleSheet; import com.siemens.mp.color_game.GameCanvas; import com.siemens.mp.color_game.Layer; import com.siemens.mp.color_game.LayerManager; import com.siemens.mp.color_game.TiledLayer" />
+		</mappings>
+		<mappings if="polish.midp1 and polish.api.siemens-color-game-api and polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="com.siemens.mp.color_game.GameCanvas" />
+			<mapping from="javax.microedition.lcdui.game.Layer" to="com.siemens.mp.color_game.Layer" />
+			<mapping from="javax.microedition.lcdui.game.LayerManager" to="com.siemens.mp.color_game.LayerManager" />
+			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="com.siemens.mp.color_game.TiledLayer" />
+			<mapping from="javax.microedition.lcdui.game.Sprite" to="de.enough.polish.ui.game.Sprite" />
+			<mapping from="javax.microedition.lcdui.game.*" to="import com.siemens.mp.color_game.GameCanvas; import com.siemens.mp.color_game.Layer; import com.siemens.mp.color_game.LayerManager; import com.siemens.mp.color_game.TiledLayer" />
+		</mappings>
+		
+		<!-- mapping of WMAPI imports -->
+		<mappings if="polish.useWMAPIWrapper and not polish.api.wmapi and polish.supportsWMAPIWrapper and not polish.useDefaultPackage">
+			<mapping from="javax.wireless.messaging.*" to="de.enough.polish.messaging.*" />
+			<mapping from="javax.wireless.messaging.Message" to="de.enough.polish.messaging.Message" />
+			<mapping from="javax.wireless.messaging.BinaryMessage" to="de.enough.polish.messaging.BinaryMessage" />
+			<mapping from="javax.wireless.messaging.TextMessage" to="de.enough.polish.messaging.TextMessage" />
+			<mapping from="javax.wireless.messaging.MessageConnection" to="de.enough.polish.messaging.MessageConnection" />
+			<mapping from="javax.wireless.messaging.MessageListener" to="de.enough.polish.messaging.MessageListener" />
+			<mapping from="javax.wireless.messaging.MessageListener" to="de.enough.polish.messaging.MessageListener" />
+			<mapping from="javax.microedition.io.Connector" to="de.enough.polish.io.Connector" />
+		</mappings>
+
+		<!-- mapping of blackberry wrapper classes -->
+		<mappings if="false and polish.usePolishGui and polish.blackberry and not polish.useDefaultPackage">
+			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.blackberry.MIDlet" />
+			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.blackberry.MIDlet; import javax.microedition.midlet.MIDletStateChangeException" />
+		</mappings>
+		<mappings if="false and polish.usePolishGui and polish.blackberry and polish.useDefaultPackage">
+			<mapping from="javax.microedition.midlet.MIDlet" to="" />
+			<mapping from="javax.microedition.midlet.*" to="javax.microedition.midlet.MIDletStateChangeException" />
+		</mappings>
+	</extension>
+	
+	
 	
 	<extension>
 		<type>preprocessor</type>
@@ -223,6 +360,12 @@
 		<type>loghandler</type>
 		<name>rms</name>
 		<clientClass>de.enough.polish.log.rms.RmsLogHandler</clientClass>
+	</extension>
+
+	<extension>
+		<type>loghandler</type>
+		<name>file</name>
+		<clientClass>de.enough.polish.log.file.FileLogHandler</clientClass>
 	</extension>
 	
 	<extension>

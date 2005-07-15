@@ -87,16 +87,16 @@ public class DeviceDatabase {
 			// load libraries:
 			is = getInputStream( "apis.xml", polishHome, inputStreamsByFileName );
 			this.libraryManager = new LibraryManager( properties, apisHome, wtkHome, is );
-			File file = (File) customFilesByFileName.get("custom-libraries.xml");
+			File file = (File) customFilesByFileName.get("custom-apis.xml");
 			if ( file != null ) {
 				this.libraryManager.loadCustomLibraries( file );
-			} else {
+			}  else {
 				// use default libraries:
-				file = new File( polishHome, "custom-libraries.xml");
+				file = new File( polishHome, "custom-apis.xml");
 				if (file.exists()) {
 					this.libraryManager.loadCustomLibraries( file );
 				}
-				file = new File( projectHome, "custom-libraries.xml");
+				file = new File( projectHome, "custom-apis.xml");
 				if (file.exists()) {
 					this.libraryManager.loadCustomLibraries( file );
 				}
@@ -105,26 +105,39 @@ public class DeviceDatabase {
 			// load configurations:
 			is = getInputStream("configurations.xml", polishHome, inputStreamsByFileName);
 			this.configurationManager = new ConfigurationManager( this.capabilityManager, is );
-			/*
 			file = (File) customFilesByFileName.get("custom-configurations.xml");
 			if ( file != null ) {
-				this.configurationManager.loadCustomConfigurations( file );
+				this.configurationManager.loadCustomConfigurations( file, this.capabilityManager );
 			} else {
 				// use default libraries:
-				file = new File( polishHome, "custom-libraries.xml");
+				file = new File( polishHome, "custom-configurations.xml");
 				if (file.exists()) {
-					this.libraryManager.loadCustomLibraries( file );
+					this.configurationManager.loadCustomConfigurations( file, this.capabilityManager );
 				}
-				file = new File( projectHome, "custom-libraries.xml");
+				file = new File( projectHome, "custom-configurations.xml");
 				if (file.exists()) {
-					this.libraryManager.loadCustomLibraries( file );
+					this.configurationManager.loadCustomConfigurations( file, this.capabilityManager );
 				}
 			}
+			/*
 			*/
 			// load platforms:
 			is = getInputStream("platforms.xml", polishHome, inputStreamsByFileName);
 			this.platformManager = new PlatformManager( this.capabilityManager, is );
-			
+			file = (File) customFilesByFileName.get("custom-platforms.xml");
+			if ( file != null ) {
+				this.platformManager.loadCustomPlatforms( file, this.capabilityManager );
+			} else {
+				// use default vendors:
+				file = new File( polishHome, "custom-platforms.xml");
+				if (file.exists()) {
+					this.platformManager.loadCustomPlatforms( file, this.capabilityManager );
+				}
+				file = new File( projectHome, "custom-platforms.xml");
+				if (file.exists()) {
+					this.platformManager.loadCustomPlatforms( file, this.capabilityManager );
+				}
+			}
 			
 			// load vendors:
 			is = getInputStream("vendors.xml", polishHome, inputStreamsByFileName);

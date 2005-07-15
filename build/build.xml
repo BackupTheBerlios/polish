@@ -91,9 +91,9 @@
 		</jar>
 		<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
 		<mkdir dir="../enough-polish-j2me/bin/preverified" />
-		<exec executable="${wtk.home}/bin/preverify">
+		<exec executable="${wtk.home}/bin/preverify" failonerror="true">
 			<arg line="-classpath"/>
-			<arg line="import/m3g.jar:import/midp2.jar:import/btapi.jar"/>
+			<arg line="${dir.import}/net_rim_api.jar:${dir.import}/pdaapi.jar:import/m3g.jar:import/midp2.jar:import/btapi.jar"/>
 			<arg line="-d"/>
 			<arg line="../enough-polish-j2me/bin/preverified"/>
 			<arg line="../enough-polish-j2me/bin/classes"/>
