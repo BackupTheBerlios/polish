@@ -386,6 +386,22 @@ implements CommandListener
 		disp.setCurrent( returnDisp );
 	}
 	
+	
+	public static void exit() {
+		//#if polish.log.handlers:defined
+			if ( handlers != null ) {
+				for (int i = 0; i < handlers.length; i++) {
+					LogHandler handler = handlers[i];
+					try {
+						handler.exit();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		//#endif
+	}
+	
 }
 
 

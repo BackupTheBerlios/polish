@@ -83,14 +83,17 @@ import de.enough.polish.util.ArrayList;
  * @since MIDP 1.0
  * 
  */
-public abstract class Screen 
-//#if polish.useFullScreen && (polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts)  && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
-	//#define tmp.fullScreen
-	//# extends Canvas
-//#elif polish.useFullScreen && polish.classes.fullscreen:defined
-	//#define tmp.fullScreen
-	//#= extends ${polish.classes.fullscreen}
-//#else
+public abstract class Screen
+//#if polish.useFullScreen
+	//#if (polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
+		//#define tmp.fullScreen
+		//# extends Canvas
+	//#elif polish.classes.fullscreen:defined
+		//#define tmp.fullScreen
+		//#= extends ${polish.classes.fullscreen}
+	//#endif
+//#endif
+//#if !tmp.fullScreen
 	extends Canvas
 //#endif
 implements AccessibleCanvas
@@ -208,6 +211,9 @@ implements AccessibleCanvas
 		private Image foregroundImage;
 		private int foregroundX;
 		private int foregroundY;
+	//#endif
+	//#if polish.blackberry
+		boolean keyPressedProcessed;
 	//#endif
 	protected int contentX;
 	protected int contentY;
@@ -975,13 +981,14 @@ implements AccessibleCanvas
 			//#ifdef polish.ScreenWidth:defined
 				//#= this.titleHeight = this.title.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
 			//#else
-				this.titleHeight = this.title.getItemHeight( getWidth(), getWidth() );
+				this.titleHeight = this.title.getItemHeight( this.screenWidth, this.screenWidth );
 			//#endif
 		} else {
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		setContentArea( 0, 0, this.screenWidth, this.screenHeight - (this.titleHeight + this.subTitleHeight + this.infoHeight) );
+		int nonContentHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
+		setContentArea( 0, nonContentHeight, this.screenWidth, this.screenHeight - nonContentHeight );
 		if (this.isInitialised && isShown()) {
 			repaint();
 		}
@@ -1071,21 +1078,34 @@ implements AccessibleCanvas
 			//#debug
 			System.out.println("keyPressed: [" + keyCode + "].");
 			int gameAction = -1;
-			
+			//#if polish.blackberry
+				this.keyPressedProcessed = true;
+			//#endif
+
 			//#if tmp.menuFullScreen
+				/*
 				//#ifdef polish.key.ReturnKey:defined
-					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
-							callCommandListener( this.backCommand );
-							repaint();
-							//# return;
-					//# }
+					//#if  polish.key.ReturnKey == polish.key.ClearKey
+						//#define tmp.checkReturnKeyLater
+					//#else
+						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+								callCommandListener( this.backCommand );
+								repaint();
+								//# return;
+						//# }
+					//#endif
 				//#endif
+				 * 
+				 */
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handleKeyPressed(keyCode, 0)) {
 						repaint();
 						return;
 					}
 					if (this.menuBar.isSoftKeyPressed) {
+						//#if polish.blackberry
+							this.keyPressedProcessed = false;
+						//#endif
 						return;
 					}
 				//#else
@@ -1115,6 +1135,9 @@ implements AccessibleCanvas
 					if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
 						gameAction = getGameAction( keyCode );
 					} else {
+						//#if polish.blackberry
+							this.keyPressedProcessed = false;
+						//#endif
 						doReturn = true;
 					}
 					if (this.menuOpened) {
@@ -1151,6 +1174,18 @@ implements AccessibleCanvas
 					//#debug
 					System.out.println("unable to handle key [" + keyCode + "].");
 				}
+			//#endif
+			//#if tmp.menuFullScreen && polish.key.ReturnKey:defined
+			// # if  tmp.checkReturnKeyLater
+				if (!processed) {
+					//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+							callCommandListener( this.backCommand );
+							processed = true;
+					//# }
+				}
+			//#endif
+			//#if polish.blackberry
+				this.keyPressedProcessed = processed;
 			//#endif
 			if (processed) {
 				repaint();
@@ -1248,8 +1283,16 @@ implements AccessibleCanvas
 				this.okCommand = cmd;
 			}
 		//#endif
+		int cmdType = cmd.getCommandType();
 		//#ifdef polish.key.ReturnKey:defined
-			if ( cmd.getCommandType() == Command.BACK ) {
+			//#if polish.blackberry
+			if ( cmdType == Command.BACK || cmdType == Command.CANCEL || 
+					(cmdType == Command.EXIT && this.backCommand == null) ) 
+			{
+				
+			//#else
+				//# if ( cmd.getCommandType() == Command.BACK ) {
+			//#endif
 				this.backCommand = cmd;
 			}
 		//#endif
@@ -1264,8 +1307,7 @@ implements AccessibleCanvas
 				//#style menu, default
 				 this.menuContainer = new Container( true );
 			}
-			int type = cmd.getCommandType(); 
-			if ( (type == Command.BACK || type == Command.CANCEL ) ) 
+			if ( (cmdType == Command.BACK || cmdType == Command.CANCEL ) ) 
 			{
 				if ( (this.menuSingleRightCommand == null)
 						|| (cmd.getPriority() < this.menuSingleRightCommand.getPriority())	)
@@ -1724,8 +1766,24 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
+	/**
+	 * Retrieves the currently focused item.
+	 * 
+	 * @return the currently focused item, null when none is focused.
+	 */
+	public Item getCurrentItem() {
+		if (this.container != null) {
+			return this.container.focusedItem;
+		}
+		return null;
+	}
+	
+	
+	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
 //#endif
+	
+	
 
 }

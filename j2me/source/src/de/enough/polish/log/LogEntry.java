@@ -130,14 +130,27 @@ public class LogEntry {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("[").append( this.level ).append("] "); 
-		//#if polish.debugVerbose
-			buffer.append( this.className ).append(" (").append( this.lineNumber ).append("): ");
+		//#if polish.debug.level != false
+			buffer.append("[").append( this.level ).append("] ");
 		//#endif
-		buffer.append( this.message );
-		if (this.exception.length() > 0) {
-			buffer.append("/").append( this.exception );
-		}
+		//#if polish.debug.timestamp != false
+			buffer.append("<").append( this.time ).append(" ms> ");
+		//#endif
+		//#if polish.debugVerbose || ( (polish.debug.className == true) && (polish.debug.lineNumber == true) )
+			buffer.append( this.className ).append(" (").append( this.lineNumber ).append("): ");
+		//#elif polish.debug.className != false
+			buffer.append( this.className ).append(": ");
+		//#elif polish.debug.className != false
+			buffer.append(" (").append( this.lineNumber ).append("): ");
+		//#endif
+		//#if polish.debug.message != false
+			buffer.append( this.message );
+		//#endif
+		//#if polish.debug.exception != false
+			if (this.exception.length() > 0) {
+				buffer.append("/").append( this.exception );
+			}
+		//#endif
 		return buffer.toString();
 	}
 

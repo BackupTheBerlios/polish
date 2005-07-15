@@ -244,7 +244,7 @@ public class FramedForm extends Form {
 			this.topFrame.paint( 0, 0, 0, this.screenWidth, g );
 		}
 		if (this.bottomFrame != null ) {
-			this.bottomFrame.paint( 0, this.contentHeight, 0, this.screenWidth, g );
+			this.bottomFrame.paint( 0, this.contentY + this.contentHeight, 0, this.screenWidth, g );
 		}
 	}
 	
@@ -290,6 +290,18 @@ public class FramedForm extends Form {
 		//	System.out.println("currently active container has handled the key press event");
 		}
 		return handled;
+	}
+	
+	/**
+	 * Retrieves the currently focused item.
+	 * 
+	 * @return the currently focused item, null when none is focused.
+	 */
+	public Item getCurrentItem() {
+		if (this.currentlyActiveContainer != null) {
+			return this.currentlyActiveContainer.focusedItem;
+		}
+		return null;
 	}
 	
 	/**

@@ -79,7 +79,8 @@ public class TabbedForm extends Form {
 		this.tabContainers = new Container[ length ];
 		this.tabContainers[0] = this.container;
 		for (int i = 1; i < length; i++) {
-			Container tabContainer = new Container( null, true, style, 20, this.screenHeight );
+			Container tabContainer = new Container( null, true, null, 20, this.screenHeight );
+			tabContainer.setStyle( style, true );
 			tabContainer.screen = this;
 			this.tabContainers[i] = tabContainer;
 		}
@@ -208,6 +209,8 @@ public class TabbedForm extends Form {
 			System.out.println("Focusing tab [" + tabIndex + "].");
 			tabContainer.focus( tabContainer.style );
 		}
+		tabContainer.background = null;
+		tabContainer.border = null;
 		this.container = tabContainer;
 		if (this.screenStateListener != null) {
 			this.screenStateListener.screenStateChanged( this );

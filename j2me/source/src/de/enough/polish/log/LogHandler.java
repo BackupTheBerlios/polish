@@ -53,5 +53,15 @@ public abstract class LogHandler {
 	 */
 	public abstract void handleLogEntry( LogEntry logEntry )
 	throws Exception;
+	
+	/**
+	 *  Is called before the corresponding MIDlet exits.
+	 *  
+	 *  Subclasses can override this method for cleaning up.
+	 *
+	 */
+	public void exit() {
+		// ignore
+	}
 
 }

@@ -149,12 +149,12 @@ public final class Locale {
 	/**
 	 * The character used to represent a permill value.
 	 */
-	public static final char PERMILL = '‰';
+	public static final char PERMILL = '\u2030';
 
 	/** 
 	 * The string used to represent infinity.
 	 */
-	public static final String INFINITY = "∞";
+	public static final String INFINITY = "\u221e";
 	
 	
 

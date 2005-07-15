@@ -953,6 +953,15 @@ public class Container extends Item {
 		return this.focusedIndex;
 	}
 	
+	/**
+	 * Retrieves the currently focused item.
+	 * 
+	 * @return the currently focused item, null when there is no focusable item in this container.
+	 */
+	public Item getFocusedItem() {
+		return this.focusedItem;
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */

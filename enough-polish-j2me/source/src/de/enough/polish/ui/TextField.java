@@ -30,10 +30,11 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-
-//#ifdef polish.css.font-bitmap
-import de.enough.polish.util.BitMapFontViewer;
+//#if polish.blackberry
+	//# import net.rim.device.api.ui.Keypad;
 //#endif
+
+import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.Locale;
 
 
@@ -622,7 +623,7 @@ implements CommandListener
 		private int caretColor = -1;
 	//#endif
 	private char editingCaretChar = '|';
-	private char caretChar = '|';
+	protected char caretChar = '|';
 	//#ifdef polish.css.font-bitmap
 		private BitMapFontViewer editingCaretViewer;
 		private BitMapFontViewer caretViewer;
@@ -655,13 +656,13 @@ implements CommandListener
 		private static final int MODE_LOWERCASE = 0;
 		private static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
 		private static final int MODE_UPPERCASE = 2;
-		private static final int MODE_NUMBERS = 3;
+		static final int MODE_NUMBERS = 3;
 		//#ifdef polish.key.ChangeInputModeKey:defined
 			//#= private static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
 		//#else
 			private static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
-		private int inputMode; // the current input mode
+		int inputMode; // the current input mode
 		private boolean nextCharUppercase; // is needed for the FIRST_UPPERCASE-mode
 	
 		private String[] realTextLines; // the displayed lines with spaces (which are otherwise removed)
@@ -679,7 +680,7 @@ implements CommandListener
 		//#endif
 
 		private int lastKey; // the last key which has been pressed
-		private long lastInputTime; // the last time a key has been pressed
+		long lastInputTime; // the last time a key has been pressed
 		private int characterIndex; // the index within the available characters of the current key
 		// the characters for each key:
 		//#ifdef polish.TextField.charactersKey1:defined
@@ -753,6 +754,8 @@ implements CommandListener
 		private int caretRowLastPartWidth;
 
 		private int rowHeight;
+		
+		protected final Object lock;
 	//#endif
 
 	/**
@@ -810,6 +813,9 @@ implements CommandListener
 	public TextField( String label, String text, int maxSize, int constraints, Style style)
 	{
 		super( label, text, INTERACTIVE, style );
+		//#if tmp.directInput
+			this.lock = new Object();
+		//#endif
 		this.constraints = constraints;
 		this.maxSize = maxSize;
 		if (label != null) {
@@ -833,7 +839,7 @@ implements CommandListener
 			
 		//#ifndef tmp.suppressCommands
 			// add default text field item-commands:
-			//#if polish.TextField.suppressDeleteCommand != true
+			//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
 				this.addCommand(DELETE_CMD);
 			//#endif
 			//#if polish.TextField.suppressClearCommand != true
@@ -1661,11 +1667,20 @@ implements CommandListener
 			}
 		//#endif
 		//#ifdef polish.css.textfield-caret-char
+			//#if tmp.directInput
+				synchronized ( this.lock ) {
+			//#endif
 			String sign = style.getProperty("textfield-caret-char");
 			if (sign != null) {
-				this.caretChar = sign.charAt(0);
-				this.editingCaretChar = this.caretChar;
+				char c = sign.charAt(0);
+				if (c != this.editingCaretChar ) {
+					this.caretChar = c; 
+					this.editingCaretChar = c;
+				}
 			}
+			//#if tmp.directInput
+				}
+			//#endif
 		//#endif
 		//#if polish.css.textfield-show-length && tmp.directInput
 			Boolean showBool = style.getBooleanProperty("textfield-show-length");
@@ -1699,7 +1714,10 @@ implements CommandListener
 	}
 	
 	//#ifdef tmp.directInput
-	private synchronized void insertCharacter() {
+	protected void insertCharacter() {
+		if (this.text != null && this.text.length() >= this.maxSize) {
+			return;
+		}
 		char insertChar = this.caretChar;
 		//#debug
 		System.out.println("TextField: inserting character " + insertChar );
@@ -1811,9 +1829,11 @@ implements CommandListener
 		}
 		long currentTime = System.currentTimeMillis();
 		//#ifdef tmp.directInput
-			if (this.caretChar != this.editingCaretChar) {
-				if ( (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
-					insertCharacter();
+			synchronized ( this.lock ) {
+				if (this.caretChar != this.editingCaretChar) {
+					if ( (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
+						insertCharacter();
+					}
 				}
 			}
 		//#endif
@@ -1830,7 +1850,7 @@ implements CommandListener
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
-	protected synchronized boolean handleKeyPressed(int keyCode, int gameAction) {
+	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#ifndef tmp.directInput
 			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
 					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -1851,6 +1871,7 @@ implements CommandListener
 			//# if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
+					synchronized ( this.lock ) {
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric) {
 							if (this.inputMode == MODE_NUMBERS) {
@@ -1901,6 +1922,13 @@ implements CommandListener
 						return true;
 					}
 					int currentLength = (this.text == null ? 0 : this.text.length());
+					//#if false and polish.blackberry
+						//# this.caretChar = Keypad.map( keyCode );
+						insertCharacter();
+						if (true) {
+							return true;
+						}
+					//#else
 					if (this.inputMode == MODE_NUMBERS) {
 						if (currentLength < this.maxSize 
 								&& ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 ) ) 
@@ -1988,6 +2016,8 @@ implements CommandListener
 						}
 						return true;
 					}
+					//#endif
+
 					boolean characterInserted = false;
 					char character = this.caretChar;
 					// allow backspace:
@@ -2171,17 +2201,14 @@ implements CommandListener
 					if (true) {
 						return false;
 					}
+					}
 				//#endif
 		//#if tmp.allowDirectInput
 			//# }
 		//#endif
 		//#ifndef polish.hasPointerEvents
 			if (this.enableDirectInput) {
-				//#if !tmp.forceDirectInput
-					//# int currentLength = (this.text == null ? 0 : this.text.length());
-				//#else
-					currentLength = (this.text == null ? 0 : this.text.length());
-				//#endif
+				int currentLength = (this.text == null ? 0 : this.text.length());
 				if (currentLength < this.maxSize && 
 						keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
@@ -2442,6 +2469,23 @@ implements CommandListener
 		return super.focus(focStyle);
 	}
 	//#endif
+	
+	/*
+	public boolean keyChar(char key, int status, int time) {
+		Screen scr = getScreen();
+		if (!this.isFocused || scr == null || !scr.isShown()) {
+			return false;
+		}
+		int currentLength = (this.text == null ? 0 : this.text.length());
+		if (currentLength < this.maxSize) { 
+			this.caretChar = key;
+			insertCharacter();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	*/
 	
 //#ifdef polish.TextField.additionalMethods:defined
 	//#include ${polish.TextField.additionalMethods}

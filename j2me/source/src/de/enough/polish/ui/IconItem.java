@@ -79,6 +79,12 @@ implements ImageConsumer
 		private int scaleWidth;
 		private int scaleHeight;
 	//#endif
+	//#if polish.css.icon-vertical-adjustment
+		private int verticalAdjustment;
+	//#endif
+	//#if polish.css.icon-horizontal-adjustment
+		private int horizontalAdjustment;
+	//#endif
 
 	/**
 	 * Creates a new icon.
@@ -128,7 +134,13 @@ implements ImageConsumer
 			lineWidth -= this.imageWidth;
 			super.initContent(firstLineWidth, lineWidth);
 			if (this.imageHeight > this.contentHeight) {
-				this.yAdjust = (this.imageHeight - this.contentHeight) / 2;
+				if ( (this.layout & LAYOUT_TOP) == LAYOUT_TOP ) {
+					this.yAdjust = 0;
+				} else if ( (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM ) {
+					this.yAdjust = this.imageHeight - this.contentHeight;
+				} else {
+					this.yAdjust = (this.imageHeight - this.contentHeight) / 2;
+				}
 				this.contentHeight = this.imageHeight;
 			} else {
 				this.yAdjust = 0;
@@ -152,6 +164,12 @@ implements ImageConsumer
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.image != null) {
+			//#if polish.css.icon-horizontal-adjustment
+				x += this.horizontalAdjustment;
+			//#endif
+			//#if polish.css.icon-vertical-adjustment
+				y += this.verticalAdjustment;
+			//#endif
 			//#if polish.midp2 && polish.css.scale-factor
 				int scaleX = x;
 				int scaleY = y;
@@ -242,6 +260,12 @@ implements ImageConsumer
 					g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, scaleX, scaleY, this.scaleWidth, this.scaleHeight, true );
 				}
 			//#endif		
+			//#if polish.css.icon-horizontal-adjustment
+				x -= this.horizontalAdjustment;
+			//#endif
+			//#if polish.css.icon-vertical-adjustment
+				y -= this.verticalAdjustment;
+			//#endif
 		}
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 	}
@@ -294,7 +318,20 @@ implements ImageConsumer
 					System.out.println("unable to load image [" + imageName + "]" + e);
 				}
 			}
-		//#endif		
+		//#endif
+		//#if polish.css.icon-vertical-adjustment
+			Integer verticalAdjustmentInt = style.getIntProperty("icon-vertical-adjustment");
+			if (verticalAdjustmentInt != null) {
+				this.verticalAdjustment = verticalAdjustmentInt.intValue();
+			}
+		//#endif
+		//#if polish.css.icon-horizontal-adjustment
+			Integer horizontalAdjustmentInt = style.getIntProperty("icon-horizontal-adjustment");
+			if (horizontalAdjustmentInt != null) {
+				this.horizontalAdjustment = horizontalAdjustmentInt.intValue();
+			}
+		//#endif
+
 		//#if polish.midp2	
 			//#ifdef polish.css.scale-factor
 				Integer scaleFactorInt = style.getIntProperty( "scale-factor" );

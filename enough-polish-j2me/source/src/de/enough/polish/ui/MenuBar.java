@@ -58,6 +58,10 @@ public class MenuBar extends Item {
 	//#else
 		private final static int RIGHT_SOFT_KEY = -7;
 	//#endif
+	//#if polish.blackberry && (polish.BlackBerry.useStandardMenuBar != true)
+		//#define tmp.useInvisibleMenuBar
+		private Command cancelCommand;
+	//#endif
 	private final ArrayList commandsList;
 	private final Container commandsContainer;
 	protected boolean isOpened;
@@ -115,41 +119,66 @@ public class MenuBar extends Item {
 		//System.out.println("adding command " + cmd.getLabel() + " (" + cmd + ")");
 		int type = cmd.getCommandType();
 		int priority = cmd.getPriority();
-		if (type == Command.BACK || type == Command.CANCEL) {
-			if (this.singleRightCommand == null) {
-				this.singleRightCommand = cmd;
-				this.singleRightCommandItem.setImage( (Image)null );
-				this.singleRightCommandItem.setText( cmd.getLabel() );
+		//#if tmp.useInvisibleMenuBar
+			if ( this.cancelCommand == null ) {
+				// add cancel command:
+				//#ifdef polish.command.cancel:defined
+					//#= String text =  "${polish.command.cancel}";
+				//#else
+					String text =  "Cancel";
+				//#endif
+				this.cancelCommand = new Command( text, Command.CANCEL, 2000 );
+				addCommand( this.cancelCommand );
+			} else {
+				if ( (cmd != this.cancelCommand) && 
+						(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
+				{
+					if ( this.singleRightCommand == null || this.singleRightCommand.getPriority() > priority ) {
+						this.singleRightCommand = cmd;
+					}
+				}
+			}
+		//#else
+			//#if polish.blackberry
+				//# if (type == Command.BACK || type == Command.CANCEL || type == Command.EXIT ) {
+			//#else
+			if (type == Command.BACK || type == Command.CANCEL) {
+			//#endif
+				if (this.singleRightCommand == null) {
+					this.singleRightCommand = cmd;
+					this.singleRightCommandItem.setImage( (Image)null );
+					this.singleRightCommandItem.setText( cmd.getLabel() );
+					if (this.isInitialised) {
+						this.isInitialised = false;
+						repaint();
+					}
+					return;
+				} else if ( this.singleRightCommand.getPriority() > priority ) {
+					Command oldRightCommand = this.singleRightCommand;
+					this.singleRightCommand = cmd;
+					this.singleRightCommandItem.setText( cmd.getLabel() );
+					cmd = oldRightCommand;
+					priority = oldRightCommand.getPriority();
+				}
+			}
+			if (this.singleLeftCommand != null) {
+				// add existing left command first:
+				//#style menuitem, menu, default
+				StringItem item = new StringItem( null, this.singleLeftCommand.getLabel(), Item.INTERACTIVE );
+				this.commandsList.add( this.singleLeftCommand );
+				this.commandsContainer.add( item );
+				this.singleLeftCommand = null;
+			}  else if (this.commandsList.size() == 0) {
+				// this is the new single left command!
+				this.singleLeftCommand = cmd;
+				this.singleLeftCommandItem.setText( cmd.getLabel() );
 				if (this.isInitialised) {
 					this.isInitialised = false;
 					repaint();
 				}
 				return;
-			} else if ( this.singleRightCommand.getPriority() > priority ) {
-				Command oldRightCommand = this.singleRightCommand;
-				this.singleRightCommand = cmd;
-				this.singleRightCommandItem.setText( cmd.getLabel() );
-				cmd = oldRightCommand;
-				priority = oldRightCommand.getPriority();
-			}
-		}
-		if (this.singleLeftCommand != null) {
-			// add existing left command first:
-			//#style menuitem, menu, default
-			StringItem item = new StringItem( null, this.singleLeftCommand.getLabel(), Item.INTERACTIVE );
-			this.commandsList.add( this.singleLeftCommand );
-			this.commandsContainer.add( item );
-			this.singleLeftCommand = null;
-		}  else if (this.commandsList.size() == 0) {
-			// this is the new single left command!
-			this.singleLeftCommand = cmd;
-			this.singleLeftCommandItem.setText( cmd.getLabel() );
-			if (this.isInitialised) {
-				this.isInitialised = false;
-				repaint();
-			}
-			return;
-		} 
+			} 
+		//#endif
 		//#style menuitem, menu, default
 		StringItem item = new StringItem( null, cmd.getLabel(), Item.INTERACTIVE );
 		if ( this.commandsList.size() == 0 ) {
@@ -226,7 +255,11 @@ public class MenuBar extends Item {
 			for (int i = 0; i < myCommands.length; i++) {
 				Command command = myCommands[i];
 				int type = command.getCommandType();
-				if ((type == Command.BACK || type == Command.CANCEL) 
+				//#if polish.blackberry
+					if ((type == Command.BACK || type == Command.CANCEL || type == Command.EXIT)
+				//#else
+					//# if ((type == Command.BACK || type == Command.CANCEL)
+				//#endif
 						&& command.getPriority() < maxPriority ) 
 				{
 					maxPriority = command.getPriority();
@@ -290,87 +323,98 @@ public class MenuBar extends Item {
 			this.canScrollUpwards = (this.commandsContainer.yOffset != 0);
 			this.canScrollDownwards = (this.commandsContainer.yOffset + containerHeight > screenHeight - titleHeight) && (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
 			this.paintScrollIndicator = this.canScrollUpwards || this.canScrollDownwards;
-			if (this.selectImage != null) {
-				this.singleLeftCommandItem.setImage( this.selectImage );
-				if (this.showImageAndText) {
-					//#ifdef polish.command.select:defined
-						//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
-					//#else
-						this.singleLeftCommandItem.setText( "Select" );
-					//#endif
-				} else {
-					this.singleLeftCommandItem.setText( null );
-				}
-			} else {
-				this.singleLeftCommandItem.setImage( (Image)null );
-				//#ifdef polish.command.select:defined
-					//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
-				//#else
-					this.singleLeftCommandItem.setText( "Select" );
-				//#endif
-			}
-			if (this.cancelImage != null) {
-				this.singleRightCommandItem.setImage( this.cancelImage );
-				if (this.showImageAndText) {
-					//#ifdef polish.command.cancel:defined
-						//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}" );
-					//#else
-						this.singleRightCommandItem.setText( "Cancel" );
-					//#endif
-				} else {
-					this.singleRightCommandItem.setText( null );
-				}
-			} else {
-				//#ifdef polish.command.cancel:defined
-					//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}"  );
-				//#else
-					this.singleRightCommandItem.setText( "Cancel" );
-				//#endif
-			}
-		} else {
-			// the menu is closed
-			this.paintScrollIndicator = false;
-			if (this.singleRightCommand != null) {
-				this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
-				this.singleRightCommandItem.setImage( (Image)null );
-			}
-			if (this.commandsList.size() > 0) {
-				if (this.optionsImage != null) {
-					this.singleLeftCommandItem.setImage( this.optionsImage );
+			//#if !tmp.useInvisibleMenuBar
+				if (this.selectImage != null) {
+					this.singleLeftCommandItem.setImage( this.selectImage );
 					if (this.showImageAndText) {
-						//#ifdef polish.command.options:defined
-							//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+						//#ifdef polish.command.select:defined
+							//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
 						//#else
-							this.singleLeftCommandItem.setText( "Options" );				
+							this.singleLeftCommandItem.setText( "Select" );
 						//#endif
 					} else {
 						this.singleLeftCommandItem.setText( null );
 					}
 				} else {
 					this.singleLeftCommandItem.setImage( (Image)null );
-					//#ifdef polish.command.options:defined
-						//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+					//#ifdef polish.command.select:defined
+						//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
 					//#else
-						this.singleLeftCommandItem.setText( "Options" );				
+						this.singleLeftCommandItem.setText( "Select" );
 					//#endif
 				}
+				if (this.cancelImage != null) {
+					this.singleRightCommandItem.setImage( this.cancelImage );
+					if (this.showImageAndText) {
+						//#ifdef polish.command.cancel:defined
+							//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}" );
+						//#else
+							this.singleRightCommandItem.setText( "Cancel" );
+						//#endif
+					} else {
+						this.singleRightCommandItem.setText( null );
+					}
+				} else {
+					//#ifdef polish.command.cancel:defined
+						//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}"  );
+					//#else
+						this.singleRightCommandItem.setText( "Cancel" );
+					//#endif
+				}
+			//#endif
+		} else {
+			//#if tmp.useInvisibleMenuBar
+				this.background = null;
+				this.border = null;
+				this.contentWidth = 0;
+				this.contentHeight = 0;
+			//#else
+				// the menu is closed
+				this.paintScrollIndicator = false;
+				if (this.singleRightCommand != null) {
+					this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+					this.singleRightCommandItem.setImage( (Image)null );
+				}
+				if (this.commandsList.size() > 0) {
+					if (this.optionsImage != null) {
+						this.singleLeftCommandItem.setImage( this.optionsImage );
+						if (this.showImageAndText) {
+							//#ifdef polish.command.options:defined
+								//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+							//#else
+								this.singleLeftCommandItem.setText( "Options" );				
+							//#endif
+						} else {
+							this.singleLeftCommandItem.setText( null );
+						}
+					} else {
+						this.singleLeftCommandItem.setImage( (Image)null );
+						//#ifdef polish.command.options:defined
+							//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+						//#else
+							this.singleLeftCommandItem.setText( "Options" );				
+						//#endif
+					}
+				}
+			//#endif
+		}
+		//#if !tmp.useInvisibleMenuBar
+			int availableWidth = lineWidth / 2;
+			if ( ! this.isOpened && this.singleRightCommand == null ) {
+				availableWidth = lineWidth;
 			}
-		}
-		int availableWidth = lineWidth / 2;
-		if ( ! this.isOpened && this.singleRightCommand == null ) {
-			availableWidth = lineWidth;
-		}
-		//System.out.println("Initialising single commands with a width of " + availableWidth + " lineWidth is " + lineWidth);
-		int height = this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth);
-		if (this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth ) > height) {
-			height = this.singleRightCommandItem.itemHeight;
-		}
-		if (height > this.contentHeight) {
-			this.contentHeight = height; 
-		}
-		this.singleLeftCommandY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
-		this.singleRightCommandY = this.contentHeight - this.singleRightCommandItem.itemHeight;
-		this.contentWidth = lineWidth;
+			//System.out.println("Initialising single commands with a width of " + availableWidth + " lineWidth is " + lineWidth);
+			int height = this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth);
+			if (this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth ) > height) {
+				height = this.singleRightCommandItem.itemHeight;
+			}
+			if (height > this.contentHeight) {
+				this.contentHeight = height; 
+			}
+			this.singleLeftCommandY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
+			this.singleRightCommandY = this.contentHeight - this.singleRightCommandItem.itemHeight;
+			this.contentWidth = lineWidth;
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -380,11 +424,19 @@ public class MenuBar extends Item {
 	{
 		if (this.isOpened) {
 			// paint opened menu:
-			g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
-			this.commandsContainer.paint(0, this.commandsContainerY, 0, this.commandsContainerWidth , g);
+			//#if tmp.useInvisibleMenuBar
+				// paint menu at the top left corner:
+				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
+				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.commandsContainerWidth, this.screen.screenWidth, g);
+			//#else
+				// paint menu at the lower right corner:
+				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
+				this.commandsContainer.paint(0, this.commandsContainerY, 0, this.commandsContainerWidth , g);
+			//#endif
 			//System.out.println("MenuBar: commandContainer.background == null: " + ( this.commandsContainer.background == null ) );
 			//System.out.println("MenuBar: commandContainer.style.background == null: " + ( this.commandsContainer.style.background == null ) );
+		//#if !tmp.useInvisibleMenuBar
 			//#ifdef polish.FullCanvasSize:defined
 				//#= g.setClip(0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
 			//#else
@@ -403,6 +455,7 @@ public class MenuBar extends Item {
 				x = rightBorder - this.singleRightCommandItem.itemWidth;
 				this.singleRightCommandItem.paint(x, y + this.singleRightCommandY, leftBorder, rightBorder, g);
 			}
+		//#endif
 		}
 	}
 
@@ -426,7 +479,13 @@ public class MenuBar extends Item {
 			this.isSoftKeyPressed = true;
 			if (this.isOpened) {
 				Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
-				this.screen.callCommandListener(command);
+				//#if tmp.useInvisibleMenuBar
+					if (command != this.cancelCommand ) {
+						this.screen.callCommandListener(command);
+					}
+				//#else
+					this.screen.callCommandListener(command);
+				//#endif
 				this.isOpened = false;
 				this.isInitialised = false;
 				return true;
@@ -532,58 +591,63 @@ public class MenuBar extends Item {
 	
 	
 	public void setStyle(Style style) {
-		super.setStyle(style);
-		
-		//#ifdef polish.css.menubar-show-image-and-text
-			Boolean showImageAndTextBool = style.getBooleanProperty( "menubar-show-image-and-text" );
-			if (showImageAndTextBool != null) {
-				this.showImageAndText = showImageAndTextBool.booleanValue();
-			}
-		//#endif
-		//#ifdef polish.css.menubar-options-image
-			String optionsUrl = style.getProperty("menubar-options-image");
-			if (optionsUrl != null) {
-				try {
-					this.optionsImage = StyleSheet.getImage(optionsUrl, this, false);
-					int imageHeight = this.optionsImage.getHeight();
-					if (imageHeight > this.contentHeight) {
-						this.contentHeight = imageHeight;
-					}
-				} catch (IOException e) {
-					//#debug error
-					System.out.println("Unable to load options-image " + optionsUrl + e );
+		//#if tmp.useInvisibleMenuBar
+			this.background = null;
+			this.border = null;
+		//#else
+			super.setStyle(style);
+			
+			//#ifdef polish.css.menubar-show-image-and-text
+				Boolean showImageAndTextBool = style.getBooleanProperty( "menubar-show-image-and-text" );
+				if (showImageAndTextBool != null) {
+					this.showImageAndText = showImageAndTextBool.booleanValue();
 				}
-			}
-		//#endif
-		//#ifdef polish.css.menubar-select-image
-			String selectUrl = style.getProperty("menubar-select-image");
-			if (selectUrl != null) {
-				try {
-					this.selectImage = StyleSheet.getImage(selectUrl, this, false);
-					int imageHeight = this.selectImage.getHeight();
-					if (imageHeight > this.contentHeight) {
-						this.contentHeight = imageHeight;
+			//#endif
+			//#ifdef polish.css.menubar-options-image
+				String optionsUrl = style.getProperty("menubar-options-image");
+				if (optionsUrl != null) {
+					try {
+						this.optionsImage = StyleSheet.getImage(optionsUrl, this, false);
+						int imageHeight = this.optionsImage.getHeight();
+						if (imageHeight > this.contentHeight) {
+							this.contentHeight = imageHeight;
+						}
+					} catch (IOException e) {
+						//#debug error
+						System.out.println("Unable to load options-image " + optionsUrl + e );
 					}
-				} catch (IOException e) {
-					//#debug error
-					System.out.println("Unable to load select-image " + selectUrl + e );
 				}
-			}
-		//#endif
-		//#ifdef polish.css.menubar-cancel-image
-			String cancelUrl = style.getProperty("menubar-cancel-image");
-			if (cancelUrl != null) {
-				try {
-					this.cancelImage = StyleSheet.getImage(cancelUrl, this, false);
-					int imageHeight = this.cancelImage.getHeight();
-					if (imageHeight > this.contentHeight) {
-						this.contentHeight = imageHeight;
+			//#endif
+			//#ifdef polish.css.menubar-select-image
+				String selectUrl = style.getProperty("menubar-select-image");
+				if (selectUrl != null) {
+					try {
+						this.selectImage = StyleSheet.getImage(selectUrl, this, false);
+						int imageHeight = this.selectImage.getHeight();
+						if (imageHeight > this.contentHeight) {
+							this.contentHeight = imageHeight;
+						}
+					} catch (IOException e) {
+						//#debug error
+						System.out.println("Unable to load select-image " + selectUrl + e );
 					}
-				} catch (IOException e) {
-					//#debug error
-					System.out.println("Unable to load cancel-image " + cancelUrl + e );
 				}
-			}
+			//#endif
+			//#ifdef polish.css.menubar-cancel-image
+				String cancelUrl = style.getProperty("menubar-cancel-image");
+				if (cancelUrl != null) {
+					try {
+						this.cancelImage = StyleSheet.getImage(cancelUrl, this, false);
+						int imageHeight = this.cancelImage.getHeight();
+						if (imageHeight > this.contentHeight) {
+							this.contentHeight = imageHeight;
+						}
+					} catch (IOException e) {
+						//#debug error
+						System.out.println("Unable to load cancel-image " + cancelUrl + e );
+					}
+				}
+			//#endif
 		//#endif
 	}
 	

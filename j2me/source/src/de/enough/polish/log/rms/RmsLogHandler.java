@@ -61,6 +61,12 @@ public class RmsLogHandler extends LogHandler {
 		//	throw new RuntimeException("FEHLERBEHANDLUNG KLAPPT!");
 		//}
 		if (this.logStore == null) {
+			try {
+				// try to delete last record store first
+				RecordStore.deleteRecordStore( "j2mepolishlog" );
+			} catch (Exception e) {
+				// ignore
+			}
 			//#if polish.midp2
 				this.logStore = RecordStore.openRecordStore( "j2mepolishlog", true, RecordStore.AUTHMODE_ANY, true );
 			//#else

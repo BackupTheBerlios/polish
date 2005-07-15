@@ -53,6 +53,9 @@ public class TranslucentSimpleBackground extends Background {
 		// int MIDP/2.0 the buffer is always used:
 		private int[] buffer;
 		private int lastWidth;
+		//#if polish.Bugs.drawRgbNeedsFullBuffer
+			//# private int lastHeight;
+		//#endif
 	//#elif polish.api.nokia-ui
 		private Image imageBuffer;
 		//# private int lastWidth;
@@ -82,14 +85,27 @@ public class TranslucentSimpleBackground extends Background {
 			//#endif
 				
 			// check if the buffer needs to be created:
-			if (width != this.lastWidth) {
-				this.lastWidth = width;
-				int[] newBuffer = new int[ width ];
-				for (int i = newBuffer.length - 1; i >= 0 ; i--) {
-					newBuffer[i] = this.argbColor;
+			
+			//#if polish.Bugs.drawRgbNeedsFullBuffer
+				if (width != this.lastWidth || height != this.lastHeight) {
+					this.lastWidth = width;
+					this.lastHeight = height;
+					int[] newBuffer = new int[ width * height ];
+					for (int i = newBuffer.length - 1; i >= 0 ; i--) {
+						newBuffer[i] = this.argbColor;
+					}
+					this.buffer = newBuffer;
 				}
-				this.buffer = newBuffer;
-			}
+			//#else
+				if (width != this.lastWidth) {
+					this.lastWidth = width;
+					int[] newBuffer = new int[ width ];
+					for (int i = newBuffer.length - 1; i >= 0 ; i--) {
+						newBuffer[i] = this.argbColor;
+					}
+					this.buffer = newBuffer;
+				}
+			//#endif
 			if (x < 0) {
 				width += x;
 				if (width < 0) {
@@ -104,7 +120,11 @@ public class TranslucentSimpleBackground extends Background {
 				}
 				y = 0;
 			}
-			g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);			
+			//#if polish.Bugs.drawRgbNeedsFullBuffer
+				g.drawRGB(this.buffer, 0, width, x, y, width, height, true);
+			//#else
+				g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
+			//#endif
 		//#elif polish.api.nokia-ui
 			if (width != this.lastWidth || height != this.lastHeight) {
 				this.lastWidth = width;

@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="import/midp2.jar"/>
 	<classpathentry kind="lib" path="import/siemens-extension-api.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/m3g.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/net_rim_api.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
