@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="de.enough.mepose.ui.UIPlugin"
+   name="UI Plug-in"
+   version="1.0.0"
+   provider-name=""
+   class="de.enough.mepose.ui.UIPlugin">
+
+   <runtime>
+      <library name="meposeUI.jar"/>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="de.enough.mepose.core.CorePlugin"/>
+      <import plugin="org.eclipse.core.resources"/>
+   </requires>
+
+	<extension point="org.eclipse.ui.propertyPages"> 
+    		<page 
+     		id="de.enough.mepose.ui.ProjectPropertyPage" 
+            	name="Mepose Project Properties" 
+            	objectClass="org.eclipse.core.resources.IProject" 
+            	class="de.enough.mepose.ui.ProjectPropertyPage">
+        		<filter
+           		name="nature"
+             	value="org.eclipse.jdt.core.javanature">
+       		</filter>
+        	</page> 
+    	</extension> 
+
+	<!-- Another hack because IJavaProject is not a decendent of IProject. So we simple duplicate
+	this entry. Polymorphism is for pussies anyway. -->
+	<extension point="org.eclipse.ui.propertyPages"> 
+    		<page 
+     		id="de.enough.mepose.ui.ProjectPropertyPage" 
+            	name="Mepose Project Properties" 
+            	objectClass="org.eclipse.jdt.core.IJavaProject" 
+            	class="de.enough.mepose.ui.ProjectPropertyPage">
+        		<!-- TODO: We need our own meposenature or polishnature here. -->
+        		<filter
+           		name="nature"
+             	value="org.eclipse.jdt.core.javanature">
+       		</filter>
+        	</page> 
+    	</extension> 
+
+</plugin>

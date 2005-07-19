@@ -10,7 +10,7 @@ class CssLexer extends Lexer;
 options {
     charVocabulary = '\3'..'\377';
     genHashLines=true;
-    
+    k=2; 
 }
 
 {
@@ -85,21 +85,22 @@ options {
 
     
 WHITESPACE :	(' '
-	|	'\t' //{this.offset++;} //TODO: mabye we do not need to advance the offset here because of consume.
-	|	'\n' {newline();}
-	|	'\r')
-		{ _ttype = Token.SKIP; }
+								|	'\t' //{this.offset++;} //TODO: mabye we do not need to advance the offset here because of consume.
+								|	'\n' {newline();}
+								|	'\r')
+								{ _ttype = Token.SKIP; }
 	;
 
 /* Use TokenStreamHiddenTokenFilter to hide the comment from the grammar but put in the ast.*/
 /*So we can move the comment along the elements.*/
 ML_COMMENT
 options {
-  paraphrase = "a multiline comment";
- 
+  paraphrase = "a multiline comment"; 
 }
-	: "/*"! (options {greedy=false;} : '\n' {newline();}|.)* "*/"! { _ttype = Token.SKIP; }
-	;
+	//: "/*"! (('\n' {newline();}|~('*'|'\n')))* "*/"! { _ttype = Token.SKIP; }
+					: "/*" (  { LA(2) != '/' }? '*'| ~('*'))* "*/" {_ttype = Token.SKIP;}
+    ;
+	
 
 protected
 ATTRIBUTE_VALUE_PAIR : ;
@@ -119,6 +120,7 @@ options{
 	buildAST=true;
 	genHashLines=true;
 	ASTLabelType = "OffsetAST";
+	k=2;
 }
 {
 public boolean isExtendToken(Token e) {
@@ -133,7 +135,7 @@ public void configure(OffsetAST node,Token token) {
 }
 
 styleSheet
-	:  ((ML_COMMENT)? styleSection)+ EOF! {#styleSheet = #([STYLE_SHEET,"StyleSheet"],#styleSheet); } //{styleSheet_AST.setOffset(((OffsetAST)styleSheet_AST.getFirstChild()).getOffset());
+	:  (styleSection)+ EOF! {#styleSheet = #([STYLE_SHEET,"StyleSheet"],#styleSheet); } //{styleSheet_AST.setOffset(((OffsetAST)styleSheet_AST.getFirstChild()).getOffset());
 	;
 	
 styleSection
