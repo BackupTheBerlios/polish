@@ -197,6 +197,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		variables.put("polish.Screen.Width", "100");
 		variables.put("polish.Screen.Height", "80");
 		variables.put("polish.BitsPerPixel", "8");
+		variables.put("polish.isEnabled", "true");
 		
 		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
 		String term = "test1 ||  test2";
@@ -205,7 +206,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
 		term = "test1 ^  test2";
 		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
-		
+				
 		term = "test1 ||  test2 || test3";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
 		term = "test1 &&  test2 || test3";
@@ -336,6 +337,13 @@ public class BooleanEvaluatorTest extends TestCase {
 		} catch (BuildException e) {
 			// expected behaviour!
 		}
+
+		term = "polish.isEnabled"; // a variable with the value "true"
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+
+		term = "polish.isEnabled || test2"; // a variable with the value "true"
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+
 	}
 	
 	public void testEvaluateExpression() throws BuildException {

@@ -226,12 +226,12 @@ public class BooleanEvaluator {
 			} else {
 				if (this.environment != null) {
 					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " by environment");
-					symbolResult = this.environment.hasSymbol( symbol );
+					symbolResult = this.environment.hasSymbol( symbol ) || "true".equals( this.environment.getVariable(symbol));
 				} else if (this.device != null) {
-					symbolResult = this.device.hasFeature( symbol );
+					symbolResult = this.device.hasFeature( symbol )  || "true".equals( this.device.getCapability(symbol) );
 				} else {
 					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " directly...");
-					symbolResult = ( this.symbols.get( symbol ) != null );
+					symbolResult = ( ( this.symbols.get( symbol ) != null) || "true".equals( this.variables.get(symbol) ) );
 				}
 			}
 			if (negate) {
@@ -376,5 +376,16 @@ public class BooleanEvaluator {
 		}
 		return result;
 	}
+
+	public Map getSymbols() {
+		return this.symbols;
+	}
 	
+	public Map getVariables() {
+		return this.variables;
+	}
+	
+	public Environment getEnvironment() {
+		return this.environment;
+	}
 }

@@ -235,5 +235,12 @@ public final class StringUtil {
 		return true;
 	}
 
+	public static String escape(String string) {
+		if ( string.indexOf(' ') == -1 ) {
+			return string;
+		}
+		return '"' + string + '"';
+	}
+
 
 }

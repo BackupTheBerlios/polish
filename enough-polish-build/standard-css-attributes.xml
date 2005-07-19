@@ -750,5 +750,23 @@
 		default="0"
 		id="82"
 	/>
+
+	<attribute
+		name="text-horizontal-adjustment"
+		type="integer"
+		appliesTo="StringItem, IconItem, ImageItem, ListItem"
+		description="Adjusts the text by the specified number of pixels horizontally. Negative values move the text to the left."
+		default="0"
+		id="83"
+	/>
+	
+	<attribute
+		name="text-vertical-adjustment"
+		type="integer"
+		appliesTo="StringItem, IconItem, ImageItem, ListItem"
+		description="Adjusts the text by the specified number of pixels vertically. Negative values move the text to the top."
+		default="0"
+		id="84"
+	/>
 	
 </attributes>

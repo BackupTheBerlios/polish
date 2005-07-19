@@ -25,10 +25,10 @@
  */
 package de.enough.polish.ant;
 
+import org.apache.tools.ant.Project;
+
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.util.CastUtil;
-
-import org.apache.tools.ant.Project;
 
 /**
  * <p>The base class for any nested element which can be conditional.</p>

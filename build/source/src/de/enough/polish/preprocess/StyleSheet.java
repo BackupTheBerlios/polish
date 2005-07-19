@@ -88,6 +88,8 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("bottomframe", Boolean.TRUE );
 		PSEUDO_CLASSES.put("topframe", Boolean.TRUE );
 		PSEUDO_CLASSES.put("screeninfo", Boolean.TRUE );
+		PSEUDO_CLASSES.put("messageheadline", Boolean.TRUE );
+		PSEUDO_CLASSES.put("messagetext", Boolean.TRUE );
 	}
 	private final static CssBlock DEFAULT_STYLE = new CssBlock( 
 			"default {"

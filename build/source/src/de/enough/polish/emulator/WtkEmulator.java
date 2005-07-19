@@ -41,6 +41,7 @@ import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.util.ConvertUtil;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.PropertyFileMap;
 
 /**
  * <p>Is responsible for configuring and starting any WTK-based emulator.</p>
@@ -115,6 +116,7 @@ public class WtkEmulator extends Emulator {
 	 * 
 	 * @param wtkHome the path to the Wireless Toolkit
 	 * @param xDevice the name of the skin
+	 * @param device the device
 	 * @return the file which points to the emulator-application
 	 */
 	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device device ) {
@@ -195,7 +197,7 @@ public class WtkEmulator extends Emulator {
 		}
 		
 		// add -Xdescriptor-parameter:
-		argumentsList.add("-Xdescriptor:" + env.getVariable("polish.jadPath") );
+		argumentsList.add( "-Xdescriptor:" + env.getVariable("polish.jadPath") );
 		
 		// add the -Xverbose-parameter:
 		String trace = setting.getTrace();
@@ -205,14 +207,14 @@ public class WtkEmulator extends Emulator {
 		
 		// add the -Xprefs-parameter:
 		if (supportsPreferencesFile()) {
-			File preferences = setting.getPreferences();
+			File preferencesFile = setting.getPreferences();
 			boolean usingPreferencesFile = false;
-			if (preferences != null) {
-				if (preferences.exists()) {
-					argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
+			if (preferencesFile != null) {
+				if (preferencesFile.exists()) {
+					argumentsList.add("-Xprefs:" + preferencesFile.getAbsolutePath() );
 					usingPreferencesFile = true;
 				} else {
-					System.err.println("Warning: unable to use preferences-file: the file [" + preferences.getAbsolutePath() + "] does not exist.");
+					System.err.println("Warning: unable to use preferences-file: the file [" + preferencesFile.getAbsolutePath() + "] does not exist.");
 				}
 			}
 			if (getParameter("-Xprefs", parameters) != null) {
@@ -220,10 +222,11 @@ public class WtkEmulator extends Emulator {
 			}
 			if (!usingPreferencesFile && setting.writePreferencesFile()) {
 				File propertiesFile = getEmulatorPropertiesFile( env );
-				Map emulatorPropertiesMap = new HashMap();
+				PropertyFileMap emulatorPropertiesMap = new PropertyFileMap();
 				if (propertiesFile != null && propertiesFile.exists()) {
 					try {
-						FileUtil.readPropertiesFile(propertiesFile, ':', '#', emulatorPropertiesMap, false );	
+						emulatorPropertiesMap.readFile( propertiesFile );
+						//FileUtil.readPropertiesFile(propertiesFile, ':', '#', emulatorPropertiesMap, false );	
 					} catch (IOException e) {
 						e.printStackTrace();
 						throw new BuildException("Unable to read the default emulator properties from [" + propertiesFile.getAbsolutePath() + "]: " + e.toString() + " - please make sure to use the WTK/2.2 or higher.", e  );
@@ -231,20 +234,12 @@ public class WtkEmulator extends Emulator {
 				}
 				
 				
-				// now write a preferences-file:
-				emulatorPropertiesMap.put( "kvem.memory.monitor.enable", "" + setting.enableMemoryMonitor() );
-				emulatorPropertiesMap.put( "kvem.profiler.enable", "" + setting.enableProfiler() );
-				boolean enableNetworkMonitor = setting.enableNetworkMonitor();
-				emulatorPropertiesMap.put( "kvem.netmon.comm.enable", "" + enableNetworkMonitor );
-				emulatorPropertiesMap.put( "kvem.netmon.datagram.enable", ""  + enableNetworkMonitor );
-				emulatorPropertiesMap.put( "kvem.netmon.http.enable", "" + enableNetworkMonitor );
-				emulatorPropertiesMap.put( "kvem.netmon.https.enable", "" + enableNetworkMonitor );
-				emulatorPropertiesMap.put( "kvem.netmon.socket.enable", "" + enableNetworkMonitor );
-				emulatorPropertiesMap.put( "kvem.netmon.ssl.enable", "" + enableNetworkMonitor );
-				preferences = new File( device.getBaseDir() + File.separatorChar + "emulator.properties" );	
+				addProperties(setting, emulatorPropertiesMap);
+				preferencesFile = new File( device.getBaseDir() + File.separatorChar + "emulator.properties" );	
 				try {
-					FileUtil.writePropertiesFile(preferences, emulatorPropertiesMap);
-					argumentsList.add("-Xprefs:" + preferences.getAbsolutePath() );
+					emulatorPropertiesMap.writeFile( preferencesFile );
+					//FileUtil.writePropertiesFile(preferences, emulatorPropertiesMap);
+					argumentsList.add("-Xprefs:" + preferencesFile.getAbsolutePath() );
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.out.println("Unable to set preferences-file for emulator: " + e.toString() );
@@ -293,6 +288,95 @@ public class WtkEmulator extends Emulator {
 		
 		this.arguments = (String[]) argumentsList.toArray( new String[ argumentsList.size() ] );
 		return true;
+	}
+
+	protected void addProperties(EmulatorSetting setting, PropertyFileMap emulatorPropertiesMap) {
+		// now write a preferences-file:
+		emulatorPropertiesMap.put( "kvem.memory.monitor.enable", "" + setting.enableMemoryMonitor() );
+		emulatorPropertiesMap.put( "kvem.profiler.enable", "" + setting.enableProfiler() );
+		boolean enableNetworkMonitor = setting.enableNetworkMonitor();
+		emulatorPropertiesMap.put( "kvem.netmon.comm.enable", "" + enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.datagram.enable", ""  + enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.http.enable", "" + enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.https.enable", "" + enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.socket.enable", "" + enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.ssl.enable", "" + enableNetworkMonitor );
+		
+		emulatorPropertiesMap.put( "bluetooth.connected.devices.max", "7" );
+		emulatorPropertiesMap.put( "bluetooth.device.authentication", "on" );
+		emulatorPropertiesMap.put( "bluetooth.device.authorization", "on" );
+		emulatorPropertiesMap.put( "bluetooth.device.discovery.enable", "true" );
+		emulatorPropertiesMap.put( "bluetooth.device.discovery.timeout", "10000" );
+		emulatorPropertiesMap.put( "bluetooth.device.encryption", "on" );
+		emulatorPropertiesMap.put( "bluetooth.device.friendlyName", "WirelessToolkit" );
+		emulatorPropertiesMap.put( "bluetooth.enable", "true" );
+		emulatorPropertiesMap.put( "bluetooth.l2cap.receiveMTU.max", "512" );
+		emulatorPropertiesMap.put( "bluetooth.sd.attr.retrievable.max", "10" );
+		emulatorPropertiesMap.put( "bluetooth.sd.trans.max", "5" );
+		emulatorPropertiesMap.put( "file.extension", "jad" );
+		emulatorPropertiesMap.put( "heap.size", "" );
+		emulatorPropertiesMap.put( "http.proxyHost", "" );
+		emulatorPropertiesMap.put( "http.proxyPort", "" );
+		emulatorPropertiesMap.put( "http.version", "HTTP/1.1" );
+		emulatorPropertiesMap.put( "https.proxyHost", "" );
+		emulatorPropertiesMap.put( "https.proxyPort", "" );
+		emulatorPropertiesMap.put( "irdaobex.discoveryTimeout", "10000" );
+		emulatorPropertiesMap.put( "irdaobex.packetLength", "4096" );
+		emulatorPropertiesMap.put( "jammode", "" );
+		emulatorPropertiesMap.put( "kvem.api.exclude", "" );
+		emulatorPropertiesMap.put( "kvem.device", "DefaultColorPhone" );
+		emulatorPropertiesMap.put( "kvem.netmon.autoclose", "false" );
+		emulatorPropertiesMap.put( "kvem.netmon.enable", "false" );
+		emulatorPropertiesMap.put( "kvem.netmon.filter_file_name", "netmon_filter.dat" );
+		emulatorPropertiesMap.put( "kvem.netmon.fixed_font_name", "Courier New" );
+		emulatorPropertiesMap.put( "kvem.netmon.fixed_font_size", "12" );
+		emulatorPropertiesMap.put( "kvem.netmon.variable_font_name", "Arial" );
+		emulatorPropertiesMap.put( "kvem.netmon.variable_font_size", "14" );
+		emulatorPropertiesMap.put( "kvem.profiler.outfile", "" );
+		emulatorPropertiesMap.put( "kvem.profiler.showsystem", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.all", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.allocation", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.bytecodes", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.calls", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.calls.verbose", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.class", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.class.verbose", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.events", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.exceptions", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.frames", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.gc", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.gc.verbose", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.monitors", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.networking", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.stackchunks", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.stackmaps", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.threading", "false" );
+		emulatorPropertiesMap.put( "kvem.trace.verifier", "false" );
+		emulatorPropertiesMap.put( "mm.control.capture", "true" );
+		emulatorPropertiesMap.put( "mm.control.midi", "true" );
+		emulatorPropertiesMap.put( "mm.control.mixing", "true" );
+		emulatorPropertiesMap.put( "mm.control.record", "true" );
+		emulatorPropertiesMap.put( "mm.control.volume", "true" );
+		emulatorPropertiesMap.put( "mm.format.midi", "true" );
+		emulatorPropertiesMap.put( "mm.format.video", "true" );
+		emulatorPropertiesMap.put( "mm.format.wav", "true" );
+		emulatorPropertiesMap.put( "netspeed.bitpersecond", "1200" );
+		emulatorPropertiesMap.put( "netspeed.enableSpeedEmulation", "false" );
+		emulatorPropertiesMap.put( "prng.secure", "false" );
+		emulatorPropertiesMap.put( "screen.graphicsLatency", "0" );
+		emulatorPropertiesMap.put( "screen.refresh.mode", "" );
+		emulatorPropertiesMap.put( "screen.refresh.rate", "30" );
+		emulatorPropertiesMap.put( "security.domain", "untrusted" );
+		emulatorPropertiesMap.put( "storage.root", "" );
+		emulatorPropertiesMap.put( "storage.size", "" );
+		emulatorPropertiesMap.put( "vmspeed.bytecodespermilli", "100" );
+		emulatorPropertiesMap.put( "vmspeed.enableEmulation", "false" );
+		emulatorPropertiesMap.put( "vmspeed.range", "100,1000" );
+		emulatorPropertiesMap.put( "wma.client.phoneNumber", "" );
+		emulatorPropertiesMap.put( "wma.server.deliveryDelayMS", "" );
+		emulatorPropertiesMap.put( "wma.server.firstAssignedPhoneNumber", "+5550000" );
+		emulatorPropertiesMap.put( "wma.server.percentFragmentLoss", "0" );
+		emulatorPropertiesMap.put( "wma.smsc.phoneNumber", "+1234567890" );
 	}
 
 	/**

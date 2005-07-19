@@ -73,9 +73,16 @@ implements OutputFilter
 	throws BuildException 
 	{
 		if (this.proGuardJarFile == null) {
+			String proguardPath;
 			ExtensionDefinition definition = getExtensionDefinition();
 			if (definition != null) {
-				this.proGuardJarFile = new File( getEnvironment().writeProperties( definition.getClassPath().toString() ) );
+				proguardPath = getEnvironment().writeProperties( definition.getClassPath().toString() );
+			} else {
+				proguardPath = getEnvironment().writeProperties( "${polish.home}/import/proguard.jar" );
+			}
+			this.proGuardJarFile = new File( proguardPath );
+			if ( !this.proGuardJarFile.exists() ) {
+				this.proGuardJarFile = new File( getEnvironment().getProject().getBaseDir(), proguardPath );
 			}
 		}
 		ArrayList argsList = new ArrayList();
@@ -85,35 +92,26 @@ implements OutputFilter
 		argsList.add( this.proGuardJarFile.getAbsolutePath() );
 		// the input jar file:
 		argsList.add( "-injars" );
-		argsList.add( sourceFile.getAbsolutePath() );
+		argsList.add( quote( sourceFile.getAbsolutePath() ) );
 		// the output jar file:
 		argsList.add( "-outjars" );
-		argsList.add( targetFile.getAbsolutePath() );
+		argsList.add( quote( targetFile.getAbsolutePath() ) );
 		// the libraries:
 		argsList.add( "-libraryjars" );
 		StringBuffer buffer = new StringBuffer();
 		String[] apiPaths = device.getBootClassPaths();
 		String path = apiPaths[0];
-		if (path.indexOf(' ') != -1) {
-			path = '"' + path + '"';
-		}
-		buffer.append( path );
+		buffer.append( quote( path ) );
 		for (int i = 1; i < apiPaths.length; i++) {
 			path = apiPaths[i];
-			if (path.indexOf(' ') != -1) {
-				path = '"' + path + '"';
-			}
 			buffer.append( File.pathSeparatorChar );
-			buffer.append( path );
+			buffer.append( quote( path ) );
 		}
 		apiPaths = device.getClassPaths();
 		for (int i = 0; i < apiPaths.length; i++) {
 			path = apiPaths[i];
-			if (path.indexOf(' ') != -1) {
-				path = '"' + path + '"';
-			}
 			buffer.append( File.pathSeparatorChar );
-			buffer.append( path );
+			buffer.append( quote( path ) );
 		}
 		argsList.add( buffer.toString() );
 		// add classes that should be kept from obfuscating:
@@ -127,7 +125,7 @@ implements OutputFilter
 		}
 		argsList.add( "-allowaccessmodification" );
 		argsList.add( "-printmapping" );
-		argsList.add( device.getBaseDir() + File.separator + "obfuscation-map.txt" );
+		argsList.add( quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
 		argsList.add( "-overloadaggressively" );
 		argsList.add( "-defaultpackage" );
 		argsList.add( "" );
@@ -272,6 +270,19 @@ implements OutputFilter
 			output.println( message );
 		}
 		
+	}
+	
+	private String quote( String path ) {
+		if ( path.indexOf( ' ' ) != -1 ) {
+			// for some weird reason proguard expects
+			// to be doubled quoted under Windows... sigh.
+			if ( File.separatorChar == '\\' ) {
+				path = "\"'" + path + "'\"";
+			} else {
+				path = '"' + path + '"';
+			}
+		}
+		return path;
 	}
 
 }

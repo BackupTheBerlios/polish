@@ -519,6 +519,14 @@ public class PolishTask extends ConditionalTask {
 			if (this.wtkHome == null) { 
 				throw new BuildException("Nested element [build] needs to define the attribute [preverify] which points to the preverify-executable of the wireless toolkit. Alternatively you can set the home directory of the Wireless Toolkit by defining the Ant-property [wtk.home]: <property name=\"wtk.home\" location=\"/home/user/WTK2.1\"/>");
 			}
+			File wtkHomeFile = new File( this.wtkHome );
+			if ( !wtkHomeFile.exists() ) {
+				wtkHomeFile = new File( getProject().getBaseDir(), this.wtkHome );
+				if ( wtkHomeFile.exists() ) {
+					this.wtkHome = wtkHomeFile.getAbsolutePath();
+				}
+			}
+			
 			if (!this.wtkHome.endsWith( File.separator )) {
 				this.wtkHome += File.separator;
 			}
@@ -824,16 +832,15 @@ public class PolishTask extends ConditionalTask {
 					keepClasses = obfuscatorSetting.getPreserveClassNames();
 				}
 				if ((obfuscatorSetting.isEnabled())) {
-					Obfuscator obfuscator;
 					try {
-						obfuscator = Obfuscator.getInstance( obfuscatorSetting, getProject(), this.extensionManager, this.environment );
+						Obfuscator obfuscator = Obfuscator.getInstance( obfuscatorSetting, getProject(), this.extensionManager, this.environment );
+						obfuscatorsList.add( obfuscator );
 					} catch (BuildException e) {
 						throw e;
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw new BuildException("Unable to initialize the obfuscator [" + obfuscatorSetting.getName() + "/" + obfuscatorSetting.getClassName() + "]: " + e.toString() );
 					}
-					obfuscatorsList.add( obfuscator );
 				}
 				
 			}
@@ -1762,7 +1769,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		// start compile:
 		if (this.polishLogger != null) {
-			this.polishLogger.setCompileMode( true );
+			//this.polishLogger.setCompileMode( true );
 		}
 		try {
 			compiler.execute();

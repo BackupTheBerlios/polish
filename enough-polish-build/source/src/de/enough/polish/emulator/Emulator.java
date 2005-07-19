@@ -44,6 +44,7 @@ import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.stacktrace.BinaryStackTrace;
 import de.enough.polish.stacktrace.DecompilerNotInstalledException;
 import de.enough.polish.stacktrace.StackTraceUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Excutes an emulator.</p>
@@ -108,6 +109,11 @@ implements Runnable
 	 * @return an array with the arguments for starting the emulator.
 	 */
 	public abstract String[] getArguments();
+	
+	public String escape(String string) {
+		return StringUtil.escape( string );
+	}
+
 	
 	/**
 	 * Sets the minimum settings.
