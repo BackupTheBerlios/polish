@@ -732,14 +732,15 @@ public abstract class Item extends Object
 	public void setLabel( String label)
 	{
 		if (this.label == null) {
-			this.label = new StringItem( null, label, this.labelStyle );
-			this.label.parent = this;
+			this.label = new StringItem( null, null, this.labelStyle );
+			this.label.parent = this.parent;
+		} else {
+			this.label.setText( label );
 		}
-		this.label.setText( label );
 		if (this.isInitialised) {
+			this.isInitialised = false;
 			repaint();
 		}
-		this.isInitialised = false;
 	}
 
 	/**

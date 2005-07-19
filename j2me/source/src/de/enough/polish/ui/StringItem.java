@@ -53,6 +53,12 @@ public class StringItem extends Item
 		protected BitMapFont bitMapFont;
 		protected BitMapFontViewer bitMapFontViewer;
 	//#endif
+	//#ifdef polish.css.text-horizontal-adjustment
+		protected int textHorizontalAdjustment;
+	//#endif
+	//#ifdef polish.css.text-vertical-adjustment
+		protected int textVerticalAdjustment;
+	//#endif
 
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
@@ -247,12 +253,24 @@ public class StringItem extends Item
 				if (this.bitMapFontViewer != null) {
 					if (this.isLayoutCenter) {
 						x = leftBorder + (rightBorder - leftBorder) / 2;
+						//#ifdef polish.css.text-horizontal-adjustment
+							x += this.textHorizontalAdjustment;
+						//#endif
 					} else if (this.isLayoutRight) {
 						x = rightBorder;
+						//#ifdef polish.css.text-horizontal-adjustment
+							x += this.textHorizontalAdjustment;
+						//#endif
 					}
+					//#ifdef polish.css.text-vertical-adjustment
+						y += this.textVerticalAdjustment;
+					//#endif
 					this.bitMapFontViewer.paint( x, y, g );
 					return;
 				}
+			//#endif
+			//#ifdef polish.css.text-vertical-adjustment
+				y += this.textVerticalAdjustment;
 			//#endif
 			g.setFont( this.font );
 			g.setColor( this.textColor );
@@ -260,7 +278,14 @@ public class StringItem extends Item
 			int centerX = 0;
 			if (this.isLayoutCenter) {
 				centerX = leftBorder + (rightBorder - leftBorder) / 2;
+				//#ifdef polish.css.text-horizontal-adjustment
+					centerX += this.textHorizontalAdjustment;
+				//#endif
 			}
+			//#ifdef polish.css.text-horizontal-adjustment
+				x += this.textHorizontalAdjustment;
+				rightBorder += this.textHorizontalAdjustment;
+			//#endif
 			for (int i = 0; i < this.textLines.length; i++) {
 				String line = this.textLines[i];
 				// adjust the painting according to the layout:
@@ -337,6 +362,19 @@ public class StringItem extends Item
 				this.bitMapFontViewer = null;
 			}
 		//#endif
+		//#ifdef polish.css.text-horizontal-adjustment
+			Integer textHorizontalAdjustmentInt = style.getIntProperty( "text-horizontal-adjustment" );
+			if ( textHorizontalAdjustmentInt != null ) {
+				this.textHorizontalAdjustment = textHorizontalAdjustmentInt.intValue();		
+			}
+		//#endif
+		//#ifdef polish.css.text-vertical-adjustment
+			Integer textVerticalAdjustmentInt = style.getIntProperty( "text-vertical-adjustment" );
+			if ( textVerticalAdjustmentInt != null ) {
+				this.textVerticalAdjustment = textVerticalAdjustmentInt.intValue();		
+			}
+		//#endif
+
 	}
 
 	//#ifdef polish.useDynamicStyles

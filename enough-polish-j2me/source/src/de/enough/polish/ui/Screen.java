@@ -393,6 +393,15 @@ implements AccessibleCanvas
 		this.isInitialised = true;
 	}
 	
+	/**
+	 * Sets the content area for this screen.
+	 * Usually no items are painted outside of the specified area.
+	 * 
+	 * @param x left start of the content area
+	 * @param y top start of the content area
+	 * @param width width of the content area
+	 * @param height height of the content area
+	 */
 	protected void setContentArea( int x, int y, int width, int height ) {
 		this.contentX = x;
 		this.contentY = y;
@@ -952,6 +961,25 @@ implements AccessibleCanvas
 	 */
 	public void setTitle( String s)
 	{
+		setTitle( s, null );
+	}
+	//#endif
+	
+	//#ifdef tmp.usingTitle
+	/**
+	 * Sets the title of the Screen. If null is given, removes the title.
+	 * 
+	 * If the Screen is physically visible, the visible effect
+	 * should take place no later than immediately
+	 * after the callback or
+	 * <A HREF="../../../javax/microedition/midlet/MIDlet.html#startApp()"><CODE>startApp</CODE></A>
+	 * returns back to the implementation.
+	 * 
+	 * @param s the new title, or null for no title
+	 * @param tStyle the new style for the title, is ignored when null
+	 */
+	public void setTitle( String s, Style tStyle)
+	{
 		//#debug
 		System.out.println("Setting title " + s );
 		//#ifdef tmp.ignoreMotorolaTitleCall
@@ -966,8 +994,11 @@ implements AccessibleCanvas
 		if (s != null) {
 			//#style title, default
 			this.title = new StringItem( null, s );
+			if ( tStyle != null ) {
+				this.title.setStyle( tStyle );
+			}
 			//#ifdef polish.css.title-style
-				if (this.titleStyle != null) {
+				else if (this.titleStyle != null) {
 					this.title.setStyle( this.titleStyle );
 				}
 			//#endif
@@ -1753,8 +1784,8 @@ implements AccessibleCanvas
 				this.subTitleHeight = subTitle.getItemHeight(getWidth(), getWidth());
 			//#endif
 		}
-		//#debug
-		System.out.println("SUBTITLE_HEIGHT=" + this.subTitleHeight);
+		int y = this.titleHeight + this.subTitleHeight + this.infoHeight;
+		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 	}
 	
 	//#if polish.Bugs.displaySetCurrentFlickers

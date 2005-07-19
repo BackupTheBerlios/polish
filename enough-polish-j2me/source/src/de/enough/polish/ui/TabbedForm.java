@@ -200,7 +200,7 @@ public class TabbedForm extends Form {
 		this.activeTabIndex = tabIndex;
 		this.tabBar.setActiveTab(tabIndex);
 		Container tabContainer = this.tabContainers[ tabIndex ];
-		tabContainer.setVerticalDimensions( 0, this.screenHeight - (this.titleHeight  + this.subTitleHeight + this.infoHeight ) );
+		tabContainer.setVerticalDimensions( this.contentY, this.contentY + this.contentHeight );
 		if (!tabContainer.isInitialised) {
 			tabContainer.init( this.screenWidth, this.screenWidth );
 		}
