@@ -43,9 +43,12 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
 import de.enough.utils.AntBox;
+import de.enough.utils.ErrorSituation;
 
 /**
  * This class encapsulates the concepts in a build.xml in an abstract manner.
+ * There is always a instance of this class present in the CorePlugin although
+ * its felds may not be set.
  * <p></p>
  *
  * <p>Copyright Enough Software 2005</p>
@@ -55,7 +58,12 @@ import de.enough.utils.AntBox;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class MeposeProject {
+public class MeposeModel {
+    
+    public static final String ERROR_NOBUILDXML_FILE = "No build.xml file specified.";
+    public static final String ERROR_NO_DEVICE = "No device specified.";
+    public static final String ERROR_PARSE_ERROR = "Errors while parsing build.xml";
+    public static final String ERROR_INVALID_WORKING_DIR = "Working directory is not valid";
     
     // The environment for a specific device. May be null when no device is choosen.
     private Environment environment;
@@ -64,12 +72,14 @@ public class MeposeProject {
 
     private AntBox antBox;
     private PolishTask polishTask;
+    //TODO: Make this property have a absolute path to the buildxml file.
     private File buildxml;
+    private ErrorSituation errorSituation;
     
     // TODO: Make a map and register listeners with properties directly.
     private List propertyChangeListeners;
     
-    public MeposeProject() {
+    public MeposeModel() {
         reset();
     }
     
@@ -79,6 +89,9 @@ public class MeposeProject {
         this.buildxml = new File("");
         this.projectPath = "";
         this.propertyChangeListeners = new LinkedList();
+        this.errorSituation = new ErrorSituation();
+        this.errorSituation.addErrorToken(ERROR_NOBUILDXML_FILE);
+        this.errorSituation.addErrorToken(ERROR_NO_DEVICE);
     }
     
     /**
@@ -92,6 +105,8 @@ public class MeposeProject {
             throw new IllegalArgumentException("ERROR:MeposeProject.setBuildxml(...):Parameter 'buildxml' is null.");
         }
         this.antBox.setWorkingDirectory(this.projectPath);
+        // Listen to the errorSituation of antBox.
+        //this.errorSituation.addAll(this.antBox.getErrorTokens());
         this.antBox.setBuildxml(buildxml);
         this.antBox.createProject();
         

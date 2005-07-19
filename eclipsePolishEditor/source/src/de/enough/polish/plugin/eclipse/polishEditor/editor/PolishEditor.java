@@ -40,7 +40,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
-import de.enough.mepose.core.MeposeProject;
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposeModel;
 import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
@@ -79,24 +80,15 @@ public class PolishEditor extends CompilationUnitEditor {
         
     }
     
-    private MeposeProject meposeProject;
+    private MeposeModel meposeProject;
     private Environment deviceEnvironment;
     
     public PolishEditor() {
         this.propertyChangeListener = new PropertyChangeListener();
         this.occurrencesMarkerManager = new OccurrencesMarkerManager();
         this.defaultOccurrenceMarkerManagerConfiguration = new OccurrencesMarkerManager.DefaultConfiguration();
-    }
-    
-    
-    
-    protected void initializeEditor() {
-        this.meposeProject = MeposeProject.getTestProject();
-        this.deviceEnvironment = this.meposeProject.getEnvironment();
-        // TODO ricky implement initializeEditor
-        super.initializeEditor();
-    }
-
+        this.meposeProject = CorePlugin.getDefault().getMeposeProject();
+        }
 
 
     public void createPartControl(Composite parent){
@@ -186,13 +178,13 @@ public class PolishEditor extends CompilationUnitEditor {
     }
 
     
-    public MeposeProject getMeposeProject() {
+    public MeposeModel getMeposeProject() {
         return this.meposeProject;
     }
 
 
 
-    public void setMeposeProject(MeposeProject meposeProject) {
+    public void setMeposeProject(MeposeModel meposeProject) {
         this.meposeProject = meposeProject;
     }
 

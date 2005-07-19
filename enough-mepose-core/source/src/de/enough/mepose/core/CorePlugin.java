@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
+
+//TODO: IWorkbenchPage.getActiveEditor().
+
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -19,7 +22,7 @@ public class CorePlugin extends Plugin {
 	private static CorePlugin plugin;
 	private ResourceBundle resourceBundle;
     
-    private MeposeProject meposeProject;
+    private MeposeModel meposeProject;
     
 	/**
 	 * The constructor.
@@ -28,8 +31,9 @@ public class CorePlugin extends Plugin {
 		super();
         System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
 		plugin = this;
-        this.meposeProject = new MeposeProject();
-        // TODO:One for bootstrap testing.
+        //TODO: Put this into start(), so we are able to restart the plugin properly.
+        this.meposeProject = new MeposeModel();
+        // TODO:Only for bootstrap testing.
         createTestProject();
 	}
 
@@ -121,11 +125,11 @@ public class CorePlugin extends Plugin {
     }
     
 
-    public MeposeProject getMeposeProject() {
+    public MeposeModel getMeposeProject() {
         return this.meposeProject;
     }
 
-    public void setMeposeProject(MeposeProject meposeProject) {
+    public void setMeposeProject(MeposeModel meposeProject) {
         if(meposeProject == null){
             throw new IllegalArgumentException("ERROR:CorePlugin.setMeposeProject(...):Parameter 'meposeProject' is null.");
         }

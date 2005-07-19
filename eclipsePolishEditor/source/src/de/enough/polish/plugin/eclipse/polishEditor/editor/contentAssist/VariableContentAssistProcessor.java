@@ -25,6 +25,8 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,12 +42,10 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import de.enough.polish.Environment;
-import de.enough.polish.plugin.eclipse.core.IObjectChangeListener;
-import de.enough.polish.plugin.eclipse.core.ObjectChangeEvent;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
 // TODO:Find a common superclass.
-public class VariableContentAssistProcessor implements IContentAssistProcessor, IObjectChangeListener {
+public class VariableContentAssistProcessor implements IContentAssistProcessor,PropertyChangeListener {
 
     private String errorMessage = null;
     private static ICompletionProposal[] emptyCompletionProposalArray = new ICompletionProposal[0];
@@ -79,27 +79,20 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor, 
         startOfVariableAsString = PolishDocumentUtils.makeStringFromPosition(document,startOfVariableAsPosition);
         
         List completionProposals = new LinkedList();
-        // No environment means we know nothing about possible variables.
+         
+        // Check if we have a current device. This is a kludge as it tests domain-specific logic
+        // (do we have a device?) with testing a specific data structure.
         if(this.deviceEnvironment == null) {
+            System.out.println("DEBUG:VariableContentAssistProcessor.computeCompletionProposals(...):no environment.");
             return emptyCompletionProposalArray;
         }
         Map variableToValueMapping = this.deviceEnvironment.getVariables();
         for (Iterator iterator = variableToValueMapping.keySet().iterator(); iterator.hasNext(); ) {
             String variableName = (String) iterator.next();
             if(variableName.startsWith(startOfVariableAsString)) {
-                completionProposals.add(new PositionBasedCompletionProposal(variableName,startOfVariableAsPosition,1,null,null,null,(String)variableToValueMapping.get(variableName)));
+                completionProposals.add(new PositionBasedCompletionProposal(variableName+" ",startOfVariableAsPosition,variableName.length()+1,null,null,null,(String)variableToValueMapping.get(variableName)));
             }
         }
-        //completionProposals.add(new PositionBasedCompletionProposal("Hallo ",startOfVariableAsPosition,4));
-        //completionProposals.add(new PositionBasedCompletionProposal("Hallo ",startOfVariableAsPosition,6));
-//        for(int index = 0; index < IPolishConstants.POLISH_DIRECTIVES.length; index++) {
-//            if(IPolishConstants.POLISH_DIRECTIVES[index].startsWith(startOfDirectiveAsString)) {
-//                StringBuffer replacementText = new StringBuffer();
-//                replacementText.append(IPolishConstants.POLISH_DIRECTIVES[index]);
-//                replacementText.append(" ");
-//                completionProposals.add(new PositionBasedCompletionProposal(replacementText.toString(),startOfVariableAsPosition,IPolishConstants.POLISH_DIRECTIVES[index].length()+1));
-//            } 
-//        }
         return (ICompletionProposal[])completionProposals.toArray(new ICompletionProposal[completionProposals.size()]);
     }
 
@@ -125,13 +118,19 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor, 
     }
 
     /*
-     * @see de.enough.polish.plugin.eclipse.core.IObjectChangeListener#handleObjectChangedEvent(de.enough.polish.plugin.eclipse.core.ObjectChangeEvent)
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
-    public void handleObjectChangedEvent(ObjectChangeEvent objectChangeEvent) {
-        if(objectChangeEvent == null){
-            throw new IllegalArgumentException("ERROR:VariableContentAssistProcessor.handleObjectChangedEvent(...):Parameter 'objectChangeEvent' is null.");
+    public void propertyChange(PropertyChangeEvent event) {
+        if(event == null){
+            throw new IllegalArgumentException("ERROR:VariableContentAssistProcessor.propertyChange(...):Parameter 'arg0' is null.");
         }
-        
+        if( ! "environment".equals(event.getPropertyName())){
+            return;
+        }
+        if( ! (event.getNewValue() instanceof Environment)){
+            return;
+        }
+        this.deviceEnvironment = (Environment)event.getNewValue();
     }
     
 }

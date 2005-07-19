@@ -45,7 +45,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
+import de.enough.mepose.core.CorePlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.DirectiveContentAssistProcessor;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
@@ -205,10 +205,12 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
             CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
             compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
-      
-            //VariableContentAssistProcessor processor = new VariableContentAssistProcessor(this.editor.getDeviceEnvironment());
-            // compoundContentAssistProcessor.add(processor);
-            // Register the processors as listeners to the meposeProject, e.g.
+            
+            //TODO: Use the CorePlugin to get the environment.
+            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(CorePlugin.getDefault().getMeposeProject().getEnvironment());
+            compoundContentAssistProcessor.add(processor);
+            this.editor.getMeposeProject().addPropertyChangeListener(processor);
+   
             contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }

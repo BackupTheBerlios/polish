@@ -1,5 +1,5 @@
 /*
- * Created on Jun 1, 2005 at 3:36:23 PM.
+ * Created on Jun 23, 2005 at 4:31:53 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,9 +23,12 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.plugin.eclipse.core;
+package de.enough.mepose.core;
 
-public interface IObjectChangeListener {
+public interface IMeposeModel {
     
-    public void handleObjectChangedEvent(ObjectChangeEvent objectChangeEvent);
+    public String getBuildxml();
+    public String getCurrentDevice();
+    public String getProjectPath();
+    
 }

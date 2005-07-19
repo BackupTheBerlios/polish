@@ -19,7 +19,7 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	private static PolishEditorPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-	// MEPOSE as a name for the plugin.
+	
 	public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin";
 	public static final String POLISH_NATURE_LOCAL_ID = "polishNature";
 	public static final String POLISH_NATURE_ID = ID + "." + POLISH_NATURE_LOCAL_ID;
@@ -35,7 +35,6 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 		} catch (MissingResourceException x) {
 			this.resourceBundle = null;
 		}
-		//this.polishPartitioner = new PolishPartitioner();
 	}
 
 	/**

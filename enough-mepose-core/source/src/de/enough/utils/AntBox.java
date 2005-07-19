@@ -65,6 +65,7 @@ public class AntBox {
     private String workingDirectory = "";
     private String previousWorkingDirectory = "";
     
+    //ErrorSituation should be here.
     
     
     public AntBox(File buildxml) {
@@ -100,7 +101,7 @@ public class AntBox {
         if(this.buildxml == null){
             throw new IllegalStateException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
         }
-        changeWorkingDirectory();
+        setWorkingDirectory();
         
         this.project.setCoreLoader(this.alternativeClassLoader);
         this.project.init();
@@ -132,7 +133,7 @@ public class AntBox {
         if(target == null){
             throw new IllegalArgumentException("ERROR:AntBox.configureTarget(...):Parameter 'target' is null.");
         }
-        changeWorkingDirectory();
+        setWorkingDirectory();
         Task[] tasks = target.getTasks();
         for (int i = 0; i < tasks.length; i++) {
             tasks[i].maybeConfigure();
@@ -145,7 +146,7 @@ public class AntBox {
         System.setProperty("user.dir",this.previousWorkingDirectory);
     }
 
-    private void changeWorkingDirectory() {
+    private void setWorkingDirectory() {
         this.previousWorkingDirectory = System.getProperty("user.dir");
         System.setProperty("user.dir",this.workingDirectory);
     }
