@@ -112,7 +112,7 @@ implements OutputFilter
 			
 			if ( result != 0 ) {
 				System.err.println("rapc-call: " + commands.toString() );
-				throw new BuildException("rapc faild and returned " + result );
+				throw new BuildException("rapc failed and returned " + result );
 			}
 
 			File csoFile = new File( distDir, codName + ".cso" );
