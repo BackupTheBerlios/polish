@@ -647,4 +647,12 @@ public class Form extends Screen
 		return this.height;
 	}
 
+    /*
+     * @see de.enough.polish.ui.Screen#createCssSelector()
+     */
+    protected String createCssSelector() {
+        // TODO ricky implement createCssSelector
+        return null;
+    }
+
 }

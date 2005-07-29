@@ -394,6 +394,14 @@ public class TextBox extends Screen
 		this.title = s;
 	}
 
+    /*
+     * @see de.enough.polish.ui.Screen#createCssSelector()
+     */
+    protected String createCssSelector() {
+        // TODO ricky implement createCssSelector
+        return null;
+    }
+
 	
 
 }
