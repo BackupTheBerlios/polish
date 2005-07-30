@@ -62,8 +62,15 @@ public class BooleanEvaluator {
 	public static final int NOT_EQUALS = 10;
 
 	private static final String SYMBOL = "(\\w|-|:|\\.|/|_)+"; 
-	protected static final Pattern SYMBOL_PATTERN = Pattern.compile( SYMBOL ); 
-	private static final String OPERATOR = "(&&|\\^|\\|\\||==|>=|<=|>|<|!=)"; 
+	protected static final Pattern SYMBOL_PATTERN = Pattern.compile( SYMBOL );
+	
+	private static final String COMPARATOR = "(==|>=|<=|>|<|!=)";
+	private static final String COMPARATOR_TERM = SYMBOL + "\\s*" + COMPARATOR + "\\s*" + SYMBOL;
+	protected static final Pattern COMPARATOR_PATTERN = Pattern.compile( COMPARATOR );
+	protected static final Pattern COMPARATOR_TERM_PATTERN = Pattern.compile( COMPARATOR_TERM );
+	
+	private static final String OPERATOR = "(&&|\\^|\\|\\||==|>=|<=|>|<|!=)";
+	
 	protected static final Pattern OPERATOR_PATTERN = Pattern.compile( OPERATOR ); 
 	private static final String TERM = "\\(\\s*!?\\s*" + SYMBOL + "\\s*(" + OPERATOR 
 								       + "\\s*!?\\s*" + SYMBOL + "\\s*)+\\)";
@@ -159,23 +166,39 @@ public class BooleanEvaluator {
 			expression = "!" + expression.substring( "not ".length() );
 		}
 		// now extract each term:
-		Matcher matcher = TERM_PATTERN.matcher( expression );
+		Matcher termMatcher = TERM_PATTERN.matcher( expression );
 		try {
-			boolean foundParenthesis = matcher.find(); 
+			boolean foundParenthesis = termMatcher.find(); 
 			while ( foundParenthesis ) {
-				String group = matcher.group();
+				String group = termMatcher.group();
 				String term = group.substring( 1, group.length() -1 ); // the term has no parenthesis
+				
+				Matcher comparatorTermMatcher = COMPARATOR_TERM_PATTERN.matcher( term );
+				while ( comparatorTermMatcher.find() ) {
+					String comparatorTerm = comparatorTermMatcher.group();
+					boolean result = evaluateTerm( comparatorTerm, fileName, line );
+					term = StringUtil.replaceFirst( term, comparatorTerm, "" + result );
+				}
+				
 				boolean result = evaluateTerm( term, fileName, line );
 				expression = StringUtil.replaceFirst( expression, group, "" + result );
 				
 				// find next "(...)" term:
-				foundParenthesis = matcher.find();
+				foundParenthesis = termMatcher.find();
 				if (!foundParenthesis) {
-					matcher = TERM_PATTERN.matcher( expression );
-					foundParenthesis = matcher.find();
+					termMatcher = TERM_PATTERN.matcher( expression );
+					foundParenthesis = termMatcher.find();
 				}
 			}
 			// now the expression is simplified to a term without parenthesis:
+			// first go through any remaning comparisons:
+			Matcher comparatorTermMatcher = COMPARATOR_TERM_PATTERN.matcher( expression );
+			while ( comparatorTermMatcher.find() ) {
+				String comparatorTerm = comparatorTermMatcher.group();
+				boolean result = evaluateTerm( comparatorTerm, fileName, line );
+				expression = StringUtil.replaceFirst( expression, comparatorTerm, "" + result );
+			}
+			// then evaluate the really simplified expression and return that value:
 			return evaluateTerm( expression, fileName, line );
 		} catch (IndexOutOfBoundsException e) {
 			System.err.println("Error while evaluating expression [" + expression + "].");
@@ -194,6 +217,7 @@ public class BooleanEvaluator {
 	protected boolean evaluateTerm(String term, String fileName, int line)
 	throws BuildException
 	{
+		//System.out.println("EvaluatingTerm: " + term);
 		// check for parenthesisses:
 		if (term.indexOf('(') != -1) {
 			throw new BuildException(fileName + " line " + line 
@@ -376,7 +400,7 @@ public class BooleanEvaluator {
 		}
 		return result;
 	}
-
+	
 	public Map getSymbols() {
 		return this.symbols;
 	}

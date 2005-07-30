@@ -554,4 +554,61 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue(evaluator.evaluate("polish.Identifier != Nokia/Series60", "build.xml", 0));
 	}
 
+	public void testComparator() {
+		//System.out.println("========================\ntestCompare:");
+		HashMap symbols = new HashMap();
+		symbols.put( "polish.audio.mp3", Boolean.TRUE );
+		symbols.put( "polish.audio.midi", Boolean.TRUE );
+		symbols.put( "test2", Boolean.TRUE );
+		symbols.put( "sym-1", Boolean.TRUE );
+		symbols.put( "sym-2", Boolean.TRUE );
+		symbols.put( "var-1:defined", Boolean.TRUE );
+		symbols.put( "polish.Identifier.Nokia/6600", Boolean.TRUE );
+		HashMap variables = new HashMap();
+		variables.put("polish.Memory", "100 kb");
+		variables.put("polish.HeapSize", "1mb");
+		variables.put("polish.BitsPerPixel", "8");
+		variables.put("polish.Vendor", "Nokia");
+		variables.put("polish.Identifier", "Nokia/6600");
+		variables.put("polish.Name", "6600");
+		
+		Matcher matcher = BooleanEvaluator.COMPARATOR_PATTERN.matcher("polish.Identifier == Nokia/6600 && xxx-1");
+		assertTrue( matcher.find() );
+		assertEquals("==", matcher.group() );
+		
+		matcher = BooleanEvaluator.SYMBOL_PATTERN.matcher("polish.Identifier == Nokia/6600 && xxx-1");
+		assertTrue( matcher.find() );
+		assertEquals("polish.Identifier", matcher.group() );
+		assertTrue( matcher.find() );
+		assertEquals("Nokia/6600", matcher.group() );
+		assertTrue( matcher.find() );
+		assertEquals("xxx-1", matcher.group() );
+
+		matcher = BooleanEvaluator.SYMBOL_PATTERN.matcher("xxx-1 && polish.Identifier == Nokia/6600");
+		assertTrue( matcher.find() );
+		assertEquals("xxx-1", matcher.group() );
+		assertTrue( matcher.find() );
+		assertEquals("polish.Identifier", matcher.group() );
+		assertTrue( matcher.find() );
+		assertEquals("Nokia/6600", matcher.group() );
+
+		matcher = BooleanEvaluator.COMPARATOR_TERM_PATTERN.matcher("polish.Identifier == Nokia/6600 && xxx-1");
+		assertTrue( matcher.find() );
+		assertEquals( "polish.Identifier == Nokia/6600", matcher.group() );
+		
+		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
+		assertTrue( evaluator.evaluate("polish.Identifier == Nokia/6600 || sym-1", "build.xml", 0));
+		assertTrue( evaluator.evaluate("sym-1 || polish.Identifier == Nokia/6600", "build.xml", 0));
+		assertTrue( evaluator.evaluate("polish.Identifier == Nokia/6600 || xxx-1", "build.xml", 0));
+		assertTrue( evaluator.evaluate("xxx-1 || polish.Identifier == Nokia/6600", "build.xml", 0));
+		assertFalse( evaluator.evaluate("polish.Identifier == Nokia/6600 && xxx-1", "build.xml", 0));
+		assertFalse( evaluator.evaluate("xxx-1 && polish.Identifier == Nokia/6600", "build.xml", 0));
+		assertFalse( evaluator.evaluate("xxx-2 || (polish.Identifier == Nokia/6600 && xxx-1)", "build.xml", 0));
+		assertFalse( evaluator.evaluate("(xxx-1 && polish.Identifier == Nokia/6600) || xxx-2", "build.xml", 0));
+		assertTrue( evaluator.evaluate("sym-2 || (polish.Identifier == Nokia/6600 && xxx-1)", "build.xml", 0));
+		assertTrue( evaluator.evaluate("(xxx-1 && polish.Identifier == Nokia/6600) || sym-2", "build.xml", 0));
+		assertTrue( evaluator.evaluate("${bytes(polish.Memory)} >= ${ bytes(100 kb)} || (polish.Identifier == Nokia/6600 && xxx-1)", "build.xml", 0));
+		assertTrue( evaluator.evaluate("(xxx-1 && polish.Identifier == Nokia/6600) || ${bytes(polish.Memory)} >= ${ bytes(100 kb)}", "build.xml", 0));
+	}
+
 }
