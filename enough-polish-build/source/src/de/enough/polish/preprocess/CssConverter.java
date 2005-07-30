@@ -117,17 +117,24 @@ public class CssConverter extends Converter {
 		VIEW_TYPES.put( "plain", "none");
 		VIEW_TYPES.put( "normal", "none");
 	}
-	private ArrayList referencedStyles;
-	private AbbreviationsGenerator abbreviationGenerator;
-	private CssAttributesManager attributesManager;
+	protected ArrayList referencedStyles;
+	protected AbbreviationsGenerator abbreviationGenerator;
+	protected CssAttributesManager attributesManager;
 	
 	/**
 	 * Creates a new CSS converter
 	 * 
+	 */
+	public CssConverter() {
+		this.colorConverter = new ColorConverter();
+	}
+	
+	/**
+	 * Sets the manager of CSS attributes. 
+	 * 
 	 * @param attributesManager the manager for CSS attributes
 	 */
-	public CssConverter( CssAttributesManager attributesManager ) {
-		this.colorConverter = new ColorConverter();
+	public void setAttributesManager( CssAttributesManager attributesManager ) {
 		this.attributesManager = attributesManager;
 	}
 	
@@ -355,6 +362,7 @@ public class CssConverter extends Converter {
 		// now insert the created source code into the source of the polish-StyleSheet.java:
 		String[] code = (String[]) codeList.toArray( new String[ codeList.size()]);
 		sourceCode.insert(code);
+		sourceCode.forward( code.length );
 	}
 
 
@@ -368,7 +376,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
 	 */
-	private void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device) {
+	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device) {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
@@ -423,7 +431,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
 	 */
-	private void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device) {
+	protected void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device) {
 		String styleName = style.getStyleName();
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style:
@@ -711,7 +719,7 @@ public class CssConverter extends Converter {
 	 * @param value the color
 	 * @return the color as a decimal integer value
 	 */
-	private String getColor(String value) {
+	protected String getColor(String value) {
 		String color = this.colorConverter.parseColor(value);
 		if (color == ColorConverter.TRANSPARENT ) {
 			return "-1";
@@ -729,7 +737,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the sheet in which the style is embedded
 	 * @return the name of the reference style
 	 */
-	private String getStyleReference(String value, Style parent, StyleSheet styleSheet) {
+	protected String getStyleReference(String value, Style parent, StyleSheet styleSheet) {
 		String reference = value.toLowerCase();
 		if (value.startsWith("style(")) {
 			reference = reference.substring( 6 );
@@ -768,7 +776,7 @@ public class CssConverter extends Converter {
 	 * @param codeList the source code
 	 * @param styleSheet the parent style sheet
 	 */
-	private void processLayout(HashMap group, Style style, ArrayList codeList, 
+	protected void processLayout(HashMap group, Style style, ArrayList codeList, 
 			StyleSheet styleSheet) 
 	{
 		String layoutValue = (String) group.get("layout");
@@ -828,7 +836,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public border-field should be created,
 	 *        otherwise the border will be embedded in a style instantiation. 
 	 */
-	private void processBorder(String borderName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) {
+	protected void processBorder(String borderName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) {
 		//System.out.println("processing border " + borderName + " = "+ group.toString() );
 		String reference = (String) group.get("border");
 		if (reference != null && group.size() == 1) {
@@ -883,7 +891,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public background-field should be created,
 	 *        otherwise the background will be embedded in a style instantiation. 
 	 */
-	private void processBackground(String backgroundName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone) {
+	protected void processBackground(String backgroundName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone) {
 		//System.out.println("processing background " + backgroundName + " = " + group.toString() );
 		// check if the background is just a reference to another background:
 		String reference = (String) group.get("background");
@@ -953,7 +961,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public font-field should be created,
 	 *        otherwise the font will be embedded in a style instantiation. 
 	 */
-	private void processFont(HashMap group, String groupName, Style style, 
+	protected void processFont(HashMap group, String groupName, Style style, 
 			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) 
 	{
 		//System.out.println("processing font: "  + groupName +  " = " + group.toString() );
@@ -972,7 +980,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public font-field should be created,
 	 *        otherwise the font will be embedded in a style instantiation. 
 	 */
-	private void processFontOrLabel(String typeName, HashMap group, String groupName, Style style, 
+	protected void processFontOrLabel(String typeName, HashMap group, String groupName, Style style, 
 			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) 
 	{
 		// check if this is a reference to another font:
@@ -1051,7 +1059,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the fields should be processed
 	 */
-	private void processFields(int defaultValue, boolean includeVerticalHorizontal, HashMap fields, String groupName, Style style, ArrayList codeList, StyleSheet styleSheet, Device device) {
+	protected void processFields(int defaultValue, boolean includeVerticalHorizontal, HashMap fields, String groupName, Style style, ArrayList codeList, StyleSheet styleSheet, Device device) {
 		StringBuffer result = new StringBuffer();
 		result.append("\t\t");
 		String styleName = style.getSelector();

@@ -70,6 +70,7 @@ import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PostCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
+import de.enough.polish.ant.build.PreverifierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.build.SourceSetting;
 import de.enough.polish.ant.build.Variables;
@@ -95,6 +96,8 @@ import de.enough.polish.preprocess.ImportConverter;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.StyleSheet;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
+import de.enough.polish.preverify.CldcPreverifier;
+import de.enough.polish.preverify.Preverifier;
 import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.FileUtil;
@@ -1411,7 +1414,22 @@ public class PolishTask extends ConditionalTask {
 					}
 					// now insert the CSS information for this device
 					// into the StyleSheet.java source-code:
-					CssConverter cssConverter = new CssConverter( this.cssAttributesManager );
+					CssConverter cssConverter;
+					String cssConverterClassName = this.environment.getVariable( "polish.classes.CssConverter" );
+					if ( cssConverterClassName != null ) { 
+						try {
+							cssConverter = (CssConverter) Class.forName( cssConverterClassName ).newInstance();
+							System.out.println("Using CSS Converter [" + cssConverterClassName + "]...");
+						} catch (Exception e) {
+							e.printStackTrace();
+							throw new BuildException("Unable to initialize CSS converter [" + cssConverterClassName + "]: " + e.toString(), e );
+						}
+					} else {
+						// use default CSS converter
+						cssConverter = new CssConverter();
+					}
+					cssConverter.setAttributesManager( this.cssAttributesManager );
+					
 					this.styleSheetCode.reset();
 					cssConverter.convertStyleSheet(this.styleSheetCode, 
 							this.preprocessor.getStyleSheet(),
@@ -1942,56 +1960,55 @@ public class PolishTask extends ConditionalTask {
 	private void preverify( Device device, Locale locale ) {
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
 		
-		File preverify = this.buildSetting.getPreverify();
-		String classPath = device.getBootClassPath() +  File.pathSeparatorChar + device.getClassPath();
-		/* File preverfyDir = new File( this.buildSetting.getWorkDir().getAbsolutePath()
-				+ File.separatorChar + "preverfied" );
-		device.setPreverifyDir( preverifyDir ); 
-		*/
-		String cldc = null;
-		if (device.isCldc10()) {
-			cldc = "-cldc";
-		} else {
-			cldc = "-nonative";
+		// add environment settings:
+		File preverifyExecutable = this.buildSetting.getPreverify();
+		if ( preverifyExecutable != null ) {
+			this.environment.set( "preverify.executable", preverifyExecutable );
 		}
-		String destinationDir = device.getClassesDir();
+		File destinationDir;
 		if (this.buildSetting.isInCompilerMode()) {
-			destinationDir = this.buildSetting.getCompilerDestDir().getAbsolutePath();
+			destinationDir = this.buildSetting.getCompilerDestDir();
+		} else {
+			destinationDir = new File( device.getClassesDir() );
+			if ( !destinationDir.exists() ) {
+				destinationDir = new File( getProject().getBaseDir(), device.getClassesDir() );
+			}
 		}
-		String[] commands = new String[] {
-			preverify.getAbsolutePath(), 
-			"-classpath", classPath,
-			"-d", destinationDir, // destination-dir - default is ./output
-			cldc,
-			device.getClassesDir()
-		};
-		StringBuffer commandBuffer = new StringBuffer();
-		for (int i = 0; i < commands.length; i++) {
-			commandBuffer.append( commands[i] ).append(' ');
+		this.environment.set( "preverify.target", destinationDir );
+
+		// get the correct preverifier:
+		Preverifier preverifier = null;
+		PreverifierSetting[] settings =  this.buildSetting.getPreverifierSettings();
+		Project antProject = getProject();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		for (int i = 0; i < settings.length; i++) {
+			PreverifierSetting setting = settings[i];
+			if ( setting.isActive( evaluator, antProject ) ) {
+				try {
+					preverifier = (Preverifier) this.extensionManager.getExtension( ExtensionManager.TYPE_PREVERIFIER, setting,  this.environment );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BuildException("Unable to preverify for device [" + device.getIdentifier() + "], preverifier [" + setting.getName()  + "]: " + e.toString(), e );
+				}
+			}
+		}
+		if ( preverifier == null ) {
+			// load default preverifier:
+			String preverifierName = this.environment.getVariable( "polish.build.Preverfier" );
+			if (  preverifierName != null ) {
+				try {
+					preverifier = (Preverifier) this.extensionManager.getExtension( ExtensionManager.TYPE_PREVERIFIER, preverifierName, this.environment );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BuildException("Unable to preverify for device [" + device.getIdentifier() + "], preverifier [" + preverifierName + "]: " + e.toString(), e );
+				}
+			} else {
+				preverifier = new CldcPreverifier();
+			}
 		}
 		
-		try {
-			Process preverifyProc = Runtime.getRuntime().exec( commands, null );
-			InputStream in = preverifyProc.getErrorStream();
-			int ch;
-			StringBuffer message = new StringBuffer();
-			while ( (ch = in.read()) != -1) {
-				message.append((char) ch );
-			}
-			int exitValue = preverifyProc.waitFor();
-			if (exitValue != 0) {
-				throw new BuildException("Unable to preverify: " + message.toString()  
-					+ " - The exit-status is [" + exitValue + "]\n"
-					+ " The call was: [" + commandBuffer.toString() + "]."
-				);
-			}
-		} catch (IOException e ) {
-			throw new BuildException("Unable to preverify: " + e.getMessage()
-					+ "\n The call was: [" + commandBuffer.toString() + "].", e);
-		} catch (InterruptedException e) {
-			throw new BuildException("Unable to preverify: " + e.getMessage()
-					+ "\n The call was: [" + commandBuffer.toString() + "].", e);
-		}
+		// execute preverifier:
+		preverifier.execute( device, locale, getEnvironment() );
 		
 	}
 

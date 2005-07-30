@@ -268,10 +268,30 @@ public class StringList {
 	}	
 
 	/**
-	 * @return
+	 * @return the next line
 	 */
 	public String getNext() {
 		return this.lines[ this.currentIndex + 1 ];
+	}
+
+	public boolean forward(int length) {
+		int newIndex = this.currentIndex + length;
+		if ( newIndex < size() ) {
+			this.currentIndex = newIndex;
+			return true;
+		} else {
+			return false;
+		}
+	}	
+
+	public boolean backward(int length) {
+		int newIndex = this.currentIndex - length;
+		if ( newIndex >= 0 ) {
+			this.currentIndex = newIndex;
+			return true;
+		} else {
+			return false;
+		}
 	}	
 
 }

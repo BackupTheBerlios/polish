@@ -25,9 +25,12 @@
  */
 package de.enough.polish.preverify;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
@@ -43,7 +46,13 @@ import de.enough.polish.Extension;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Preverifier extends Extension {
+public abstract class Preverifier extends Extension {
+	
+	/**
+	 * The executable of the WTK that preverifies the project.
+	 * Beware: this can be null in the preverify( ... ) method!
+	 */
+	protected File preverifyExecutable;
 
 	/**
 	 * Creates a new preverifier
@@ -58,9 +67,40 @@ public class Preverifier extends Extension {
 	public void execute(Device device, Locale locale, Environment env)
 			throws BuildException 
 	{
+		File sourceDir = new File( device.getClassesDir() );
+		if ( !sourceDir.exists() ) {
+			sourceDir = new File( this.antProject.getBaseDir(), device.getClassesDir() );
+		}
+		File targetDir = (File) env.get("preverify.target");
+		this.preverifyExecutable = (File) env.get( "preverify.executable" );
 		
-		// TODO enough implement execute
-
+		Path bootClassPath = new Path( this.antProject, device.getBootClassPath() );
+		Path classPath = null;
+		String classPathStr = device.getClassPath();
+		if ( classPathStr != null ) {
+			classPath = new Path( this.antProject, classPathStr );
+		}
+		
+		try {
+			preverify( device, sourceDir, targetDir, bootClassPath, classPath );
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to preverify for device [" + device.getIdentifier() + "]: " + e.toString() );
+		}
 	}
+	
+	/**
+	 * Preverifies the classes for the target device.
+	 *  
+	 * @param device the target device 
+	 * @param sourceDir the directory containing the class files
+	 * @param targetDir the directory to which the preverfied class files should be written to
+	 * @param bootClassPath the boot class path of the device
+	 * @param classPath  the class path of the device, null when the device does not support additional APIs
+	 * @throws IOException when the process could not be executed
+	 */
+	public abstract void preverify(Device device, File sourceDir, File targetDir,
+			Path bootClassPath, Path classPath) 
+	throws IOException; 
 
 }

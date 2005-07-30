@@ -3393,7 +3393,7 @@
 
 	<device> 
 		<identifier>Samsung/Z100</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x177"/> 
 		<capability name="FullCanvasSize" value="176x177"/> 
 		<capability name="CanvasSize" value="176x161"/> 
@@ -3412,7 +3412,7 @@
  
 	<device> 
 		<identifier>Samsung/Z105</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x177"/> 
 		<capability name="FullCanvasSize" value="176x177"/> 
 		<capability name="CanvasSize" value="176x161"/> 
@@ -3431,7 +3431,7 @@
  
 	<device> 
 		<identifier>Samsung/P730</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="CanvasSize" value="176x195"/> 
@@ -3450,7 +3450,7 @@
  
 	<device> 
 		<identifier>Samsung/P735</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="CanvasSize" value="176x195"/> 
@@ -3469,7 +3469,7 @@
  
 	<device> 
 		<identifier>Samsung/E300</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3489,7 +3489,7 @@
  
 	<device> 
 		<identifier>Samsung/E310</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3508,7 +3508,7 @@
  
 	<device> 
 		<identifier>Samsung/E600</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3527,7 +3527,7 @@
  
 	<device> 
 		<identifier>Samsung/E810</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3547,7 +3547,7 @@
  
 	<device> 
 		<identifier>Samsung/D410</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="CanvasSize" value="176x204"/> 
@@ -3566,7 +3566,7 @@
  
 	<device> 
 		<identifier>Samsung/D415</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="CanvasSize" value="176x204"/> 
@@ -3585,7 +3585,7 @@
  
 	<device> 
 		<identifier>Samsung/D418</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="CanvasSize" value="176x204"/> 
@@ -3604,7 +3604,7 @@
  
 	<device> 
 		<identifier>Samsung/E400</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x144"/> 
 		<capability name="FullCanvasSize" value="128x144"/> 
 		<capability name="CanvasSize" value="128x128"/> 
@@ -3623,7 +3623,7 @@
  
 	<device> 
 		<identifier>Samsung/E418</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3642,7 +3642,7 @@
  
 	<device> 
 		<identifier>Samsung/E710</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3662,7 +3662,7 @@
  
 	<device> 
 		<identifier>Samsung/E715</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3682,7 +3682,7 @@
  
 	<device> 
 		<identifier>Samsung/P400</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3702,7 +3702,7 @@
  
 	<device> 
 		<identifier>Samsung/E105</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x140"/> 
@@ -3722,7 +3722,7 @@
  
 	<device> 
 		<identifier>Samsung/X105</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3741,7 +3741,7 @@
  
 	<device> 
 		<identifier>Samsung/X450</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3761,7 +3761,7 @@
  
 	<device> 
 		<identifier>Samsung/X458</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3780,7 +3780,7 @@
  
 	<device> 
 		<identifier>Samsung/X430</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x143"/> 
@@ -3799,7 +3799,7 @@
  
 	<device> 
 		<identifier>Samsung/X427</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x140"/> 
@@ -3819,7 +3819,7 @@
  
 	<device> 
 		<identifier>Samsung/X426</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x140"/> 
@@ -3838,7 +3838,7 @@
  
 	<device> 
 		<identifier>Samsung/X400</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3857,7 +3857,7 @@
  
 	<device> 
 		<identifier>Samsung/C100</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3876,7 +3876,7 @@
  
 	<device> 
 		<identifier>Samsung/C110</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3895,7 +3895,7 @@
  
 	<device> 
 		<identifier>Samsung/D100</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -3920,7 +3920,7 @@
  
 	<device> 
 		<identifier>Samsung/S300</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3939,7 +3939,7 @@
  
 	<device> 
 		<identifier>Samsung/S300M</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3958,7 +3958,7 @@
  
 	<device> 
 		<identifier>Samsung/S307</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -3978,7 +3978,7 @@
  
 	<device> 
 		<identifier>Samsung/S200</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x144"/> 
 		<capability name="FullCanvasSize" value="128x144"/> 
 		<capability name="CanvasSize" value="128x128"/> 
@@ -3997,7 +3997,7 @@
  
 	<device> 
 		<identifier>Samsung/S208</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x144"/> 
 		<capability name="FullCanvasSize" value="128x144"/> 
 		<capability name="CanvasSize" value="128x128"/> 
@@ -4016,7 +4016,7 @@
  
 	<device> 
 		<identifier>Samsung/S100</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -4035,7 +4035,7 @@
  
 	<device> 
 		<identifier>Samsung/S105</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x144"/> 
@@ -4054,7 +4054,7 @@
  
         <device> 
 		<identifier>Samsung/SGH-D500</identifier> 
-		<features>hasCommandKeys, hasCamera</features> 
+		<features>hasCommandKeyEvents, hasCamera</features> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="MenuBarHeight" value="23" /> 
@@ -4075,7 +4075,7 @@
  
         <device> 
 		<identifier>Samsung/SGH-E100</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="MenuBarHeight" value="20" /> 
@@ -4106,7 +4106,7 @@
  
         <device> 
 		<identifier>Samsung/SGH-E330</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="MenuBarHeight" value="20" /> 
@@ -4126,7 +4126,7 @@
  
         <device> 
 		<identifier>Samsung/SGH-E600</identifier> 
-		<features>hasCommandKeys, hasCamera</features> 
+		<features>hasCommandKeyEvents, hasCamera</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="CanvasSize" value="128x112"/> 
@@ -4147,7 +4147,7 @@
  
         <device> 
 			<identifier>Samsung/SGH-E630</identifier> 
-			<features>hasCommandKeys</features> 
+			<features>hasCommandKeyEvents</features> 
 			<capability name="ScreenSize" value="128x160"/> 
 			<capability name="FullCanvasSize" value="128x160"/> 
 			<capability name="MenuBarHeight" value="20" /> 
@@ -4167,7 +4167,7 @@
  
 	<device> 
 		<identifier>Samsung/SGH-E700</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x140"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
@@ -4203,7 +4203,7 @@
  
 	<device> 
 		<identifier>Samsung/SGH-E800</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="CanvasSize" value="128x140"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
@@ -4239,7 +4239,7 @@
  
 	<device> 
 		<identifier>Samsung/SGH-E820</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 
 		<capability name="FullCanvasSize" value="128x160"/> 
 		<capability name="MenuBarHeight" value="20" /> 
@@ -4259,7 +4259,7 @@
  
         <device> 
 		<identifier>Samsung/SGH-X100</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="MenuBarHeight" value="18" /> 
@@ -4291,7 +4291,7 @@
  
         <device> 
 		<identifier>Samsung/SGH-X600</identifier> 
-		<features>hasCommandKeys</features> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
 		<capability name="FullCanvasSize" value="128x128"/> 
 		<capability name="MenuBarHeight" value="18" /> 

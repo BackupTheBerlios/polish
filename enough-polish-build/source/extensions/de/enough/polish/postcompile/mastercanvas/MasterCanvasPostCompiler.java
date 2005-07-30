@@ -163,8 +163,9 @@ public class MasterCanvasPostCompiler extends PostCompiler
 												"(Ljavax/microedition/lcdui/Canvas;)V"));
 				
 			mapper.doMethodMapping(files);
+			System.out.println("MasterCanvasPostCompiler finished.");
 		}
-		catch (IOException e)
+		catch (Throwable e)
 		{
 			e.printStackTrace();
 			throw new BuildException("Unable to map Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ): " + e.toString(), e );
