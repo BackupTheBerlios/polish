@@ -89,7 +89,7 @@ public class CldcPreverifier extends Preverifier {
 		
 		// launch the preverifier:
 		int result = ProcessUtil.exec( arguments, "preverify:", true  );
-		if ( result == -1 ) {
+		if ( result != 0 ) {
 			System.out.println("Preverify call failed: " + result );
 			for (Iterator iter = arguments.iterator(); iter.hasNext();) {
 				String element = (String) iter.next();

@@ -153,4 +153,15 @@ public abstract class Obfuscator extends Extension {
 	public ObfuscatorSetting getSetting() {
 		return this.setting;
 	}
+
+
+
+	public void initialize(Device device, Locale locale, Environment env) {
+		if (this.setting != null && this.setting.useDefaultPackage()) {
+			env.addSymbol( "polish.useDefaultPackage" );
+			env.addVariable( "polish.useDefaultPackage", "true" );
+		}
+	}
+	
+	
 }

@@ -898,11 +898,11 @@ public class BuildSetting {
 	/**
 	 * Retrieves all the defined MIDlet-class-names.
 	 * 
+	 * @param useDefaultPackage true when the default package should be used 
 	 * @return The names of all midlet-classes in a String array. 
 	 * 		The first midlet is also the first element in the returned array.
 	 */
-	public String[] getMidletClassNames() {
-		boolean useDefaultPackage = useDefaultPackage();
+	public String[] getMidletClassNames( boolean useDefaultPackage ) {
 		Midlet[] midlets = getMidlets();
 		String[] midletClassNames = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
@@ -924,11 +924,11 @@ public class BuildSetting {
 	 * and are used for the JAD and the manifest.
 	 * 
 	 * @param defaultIcon the url of the default icon.
+	 * @param useDefaultPackage true when the default package should be used 
 	 * @return The infos of all midlets in a String array.
 	 * 		The first midlet is also the first element in the returned array.
 	 */
-	public String[] getMidletInfos( String defaultIcon ) {
-		boolean useDefaultPackage = useDefaultPackage();
+	public String[] getMidletInfos( String defaultIcon, boolean useDefaultPackage ) {
 		Midlet[] midlets = getMidlets();
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
@@ -1127,8 +1127,16 @@ public class BuildSetting {
 	 * 			Several libraries can be seperated with either a colon or a semicolon. 
 	 */
 	public void setBinaryLibraries( String librariesStr ) {
+		//System.out.println("SETTING BINARY LIBRARIES=" + librariesStr );
 		String[] libraryPaths = StringUtil.split(librariesStr, ':');
-		if (libraryPaths.length == 1) {
+		boolean useSemicolonSplit = false;
+		for (int i = 0; i < libraryPaths.length; i++) {
+			String path = libraryPaths[i];
+			if (path.length() == 1) { // this could be C:, D: etc on Windows systems
+				useSemicolonSplit = true;
+			}
+		}
+		if (libraryPaths.length == 1 || useSemicolonSplit) {
 			libraryPaths = StringUtil.split( librariesStr, ';' );
 		}
 		if (this.binaryLibraries == null ) {
@@ -1136,15 +1144,15 @@ public class BuildSetting {
 		}
 		for (int i = 0; i < libraryPaths.length; i++) {
 			String libPath = libraryPaths[i];
-			File file = getFile(libPath);
+			File file = getFile( libPath );
 			if (!file.exists()) {
 				// check if the file resides in the api folder (usually "import"):
-				file = new File( this.apiDir.getAbsolutePath() 
-						+ File.separatorChar + libPath );
+				file = new File( this.apiDir, libPath );
 				if (!file.exists()) {
 					throw new BuildException("The binary library [" + libPath + "] could not be found - please check your \"binaryLibraries\"-attribute of the <build> element: File not found: " + file.getAbsolutePath() );
 				}
 			}
+			//System.out.println("Adding binary library [" + file.getAbsolutePath() + "]");
 			LibrarySetting setting = new LibrarySetting();
 			if (file.isDirectory()) {
 				setting.setDir( file );
@@ -1342,20 +1350,20 @@ public class BuildSetting {
 	 * 
 	 * @return true when all classes should be moved into the default package.
 	 */
-	public boolean useDefaultPackage() {
-		if (this.obfuscatorSettings == null) {
-			return false;
-		} else {
-			ObfuscatorSetting[] settings = getObfuscatorSettings();
-			for (int i = 0; i < settings.length; i++) {
-				ObfuscatorSetting setting = settings[i];
-				if (setting.useDefaultPackage()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	public boolean useDefaultPackage() {
+//		if (this.obfuscatorSettings == null) {
+//			return false;
+//		} else {
+//			ObfuscatorSetting[] settings = getObfuscatorSettings();
+//			for (int i = 0; i < settings.length; i++) {
+//				ObfuscatorSetting setting = settings[i];
+//				if (setting.useDefaultPackage()) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 	
 	/**
 	 * Retrieves the appropriate compiler setting

@@ -183,6 +183,10 @@ public class InfoSetting {
 	 * @param icon The icon to set.
 	 */
 	public void setIcon(String icon) {
+		if ( icon == null || icon.length() == 0) {
+			this.icon = null;
+			return;
+		}
 		if (!icon.startsWith("/")) {
 			icon = "/" + icon;
 		}

@@ -406,7 +406,7 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
-	private void executeErrorTarget( String targetName, Exception e ) {
+	protected void executeErrorTarget( String targetName, Exception e ) {
 		if ( targetName != null ) {
 			Project antProject = getProject();
 			if (e != null) {
@@ -430,7 +430,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current locale, can be null
 	 * @param hasExtensions true when there are <java>-extensions
 	 */
-	private void execute(Device device, Locale locale, boolean hasExtensions) {
+	protected void execute(Device device, Locale locale, boolean hasExtensions) {
 		initialize( device, locale );
 		preprocess( device, locale );
 		compile( device );
@@ -467,7 +467,7 @@ public class PolishTask extends ConditionalTask {
 	 * Finishes this project.
 	 * Basically removes the error-lock:
 	 */
-	private void finishProject() {
+	protected void finishProject() {
 		this.errorLock.delete();
 	}
 
@@ -494,7 +494,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		// now check if the midlets do exist:
 		SourceSetting[] sources = this.buildSetting.getSourceSettings();
-		if (!this.buildSetting.useDefaultPackage()) {
+		//if (!this.buildSetting.useDefaultPackage()) {
 			for (int i = 0; i < midlets.length; i++) {
 				Midlet midlet = midlets[i];
 				String fileName = StringUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
@@ -513,7 +513,7 @@ public class PolishTask extends ConditionalTask {
 					throw new BuildException("The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.");
 				}
 			}
-		}
+		//}
 		// check if the ant-property WTK_HOME has been set:
 		//e.g. with: <property name="wtk.home" value="c:\Java\wtk-1.0.4"/>
 		this.wtkHome = getProject().getProperty("wtk.home");
@@ -668,14 +668,7 @@ public class PolishTask extends ConditionalTask {
 				this.polishProject.addDirectFeature( symbols[i] );
 			}
 		}
-		
-		// add primary midlet-class-definition:
-		String[] midletClassNames = this.buildSetting.getMidletClassNames();
-		this.polishProject.addDirectCapability("polish.midlet.class", midletClassNames[0] );
-		for (int i = 0; i < midletClassNames.length; i++) {
-			this.polishProject.addDirectCapability("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
-		}
-		
+				
 		// load CSS attributes:
 		// create CSS attributes manager:
 		if (this.buildSetting.usePolishGui()) {
@@ -715,7 +708,6 @@ public class PolishTask extends ConditionalTask {
 			replacePropertiesWithoutDirective = this.buildSetting.replacePropertiesWithoutDirective();
 		}
 		this.preprocessor = new Preprocessor( this.polishProject, this.environment, null, false, true, replacePropertiesWithoutDirective, null );
-		this.preprocessor.setUseDefaultPackage( this.buildSetting.useDefaultPackage() );
 		this.preprocessor.setCssAttributesManager( this.cssAttributesManager );
 		this.environment.set( Preprocessor.ENVIRONMENT_KEY, this.preprocessor );
 		// init custom preprocessors:
@@ -850,15 +842,29 @@ public class PolishTask extends ConditionalTask {
 			this.doObfuscate = (obfuscatorsList.size() > 0);
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
-				this.useDefaultPackage = this.buildSetting.useDefaultPackage();
+				//this.useDefaultPackage = this.buildSetting.useDefaultPackage();
 				
-				String[] midletClasses = this.buildSetting.getMidletClassNames();
-				if (keepClasses == null) {
-					keepClasses = new String[0];
+				String[] midletClasses = this.buildSetting.getMidletClassNames( false );
+				ArrayList preserveList = new ArrayList();
+				for (int i = 0; i < midletClasses.length; i++) {
+					String className = midletClasses[i];
+					preserveList.add( className );
+					int lastDotPos = className.lastIndexOf( '.' );
+					if ( lastDotPos != -1 ) {
+						preserveList.add( className.substring( lastDotPos + 1 ) );							
+					}					
 				}
-				this.preserveClasses = new String[ keepClasses.length + midletClasses.length ];
-				System.arraycopy( keepClasses, 0, this.preserveClasses, 0,  keepClasses.length );
-				System.arraycopy( midletClasses, 0, this.preserveClasses, keepClasses.length, midletClasses.length  );
+				if (keepClasses != null) {
+					for (int i = 0; i < keepClasses.length; i++) {
+						String className = keepClasses[i];
+						preserveList.add( className );
+						int lastDotPos = className.lastIndexOf( '.' );
+						if ( lastDotPos != -1 ) {
+							preserveList.add( className.substring( lastDotPos + 1 ) );							
+						}	
+					}
+				}
+				this.preserveClasses = (String[]) preserveList.toArray( new String[ preserveList.size() ] );
 			}
 		}
 		
@@ -885,9 +891,14 @@ public class PolishTask extends ConditionalTask {
 		
 		// set the names of the midlets:
 		this.midletClassesByName = new HashMap();
-		String[] midletClasses = this.buildSetting.getMidletClassNames();
-		for (int i = 0; i < midletClasses.length; i++) {
-			this.midletClassesByName.put( midletClasses[i], Boolean.TRUE );			
+		String[] midletClassNames = this.buildSetting.getMidletClassNames( false );
+		for (int i = 0; i < midletClassNames.length; i++) {
+			String midletClassName = midletClassNames[i];
+			this.midletClassesByName.put( midletClassName, Boolean.TRUE );
+			int lastDotPos = midletClassName.lastIndexOf( '.' );
+			if ( lastDotPos != -1 ) {
+				this.midletClassesByName.put( midletClassName.substring( lastDotPos + 1 ), Boolean.TRUE );
+			}
 		}
 		
 		// get the java-extension:
@@ -982,7 +993,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param textFileManager the manager for textfiles
 	 * @return an array of text-files
 	 */
-	private TextFile[] getTextFiles(File baseDir, String[] fileNames, TextFileManager textFileManager ) 
+	protected TextFile[] getTextFiles(File baseDir, String[] fileNames, TextFileManager textFileManager ) 
 	{
 		TextFile[] files = new TextFile[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {
@@ -1020,7 +1031,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param textFileManager the manager for textfiles
 	 * @return an array of text-files
 	 */
-	private TextFile[] getTextFiles(String baseDir, String[] fileNames, long lastModificationTime, TextFileManager textFileManager) 
+	protected TextFile[] getTextFiles(String baseDir, String[] fileNames, long lastModificationTime, TextFileManager textFileManager) 
 	{
 		TextFile[] files = new TextFile[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {
@@ -1077,10 +1088,6 @@ public class PolishTask extends ConditionalTask {
 		this.environment.addVariable( "polish.name", device.getName() );
 		this.environment.addVariable( "polish.vendor", device.getVendorName() );
 		this.environment.addVariable( "polish.version", this.infoSetting.getVersion() );
-		if (this.useDefaultPackage) {
-			this.environment.addSymbol("polish.useDefaultPackage");
-			this.environment.addVariable("polish.useDefaultPackage", "true");
-		}
 		// set localization-variables:
 		if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
 			if (locale == null) {
@@ -1160,19 +1167,7 @@ public class PolishTask extends ConditionalTask {
 		if (copyright != null) {
 			this.environment.addVariable( "MIDlet-Copyrigh", copyright );
 		}
-		
-		// adjust polish.classes.ImageLoader in case the default package is used:
-		if (this.useDefaultPackage) {
-			String imageLoaderClass = this.environment.getVariable("polish.classes.ImageLoader");
-			if (imageLoaderClass != null) {
-				int classStartIndex = imageLoaderClass.lastIndexOf('.');
-				if (classStartIndex != -1) {
-					imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
-					this.environment.addVariable("polish.classes.ImageLoader", imageLoaderClass );
-				}
-			}
-		}
-		
+				
 		// set support for the J2ME Polish GUI, part 2:
 		usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
 		if (usePolishGuiVariable != null) {
@@ -1185,8 +1180,33 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 
+		
 		// okay, now initialize extension manager:
 		this.extensionManager.initialize(device, locale, this.environment);
+		
+		// check if there is an active obfuscator with the "useDefaultPackage" option:
+		this.useDefaultPackage =  "true".equals( this.environment.getVariable("polish.useDefaultPackage"));
+		this.preprocessor.setUseDefaultPackage( this.useDefaultPackage );
+		// adjust polish.classes.ImageLoader in case the default package is used:
+		if (this.useDefaultPackage) {
+			String imageLoaderClass = this.environment.getVariable("polish.classes.ImageLoader");
+			if (imageLoaderClass != null) {
+				int classStartIndex = imageLoaderClass.lastIndexOf('.');
+				if (classStartIndex != -1) {
+					imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
+					this.environment.addVariable("polish.classes.ImageLoader", imageLoaderClass );
+				}
+			}
+		}
+
+		// add primary midlet-class-definition:
+		String[] midletClassNames = this.buildSetting.getMidletClassNames( this.useDefaultPackage );
+		this.polishProject.addDirectCapability("polish.midlet.class", midletClassNames[0] );
+		for (int i = 0; i < midletClassNames.length; i++) {
+			this.polishProject.addDirectCapability("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
+		}
+
+		
 		this.extensionManager.postInitialize(device, locale, this.environment);
 		
 		this.environment.set( "polish.home", this.polishHomeDir );
@@ -1212,7 +1232,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the preprocessing should be done.
 	 * @param locale the current locale, can be null
 	 */
-	private void preprocess( Device device, Locale locale ) {
+	protected void preprocess( Device device, Locale locale ) {
 		System.out.println("preprocessing for device [" +  device.getIdentifier() + "]." );
 		try {
 			this.numberOfChangedFiles = 0;
@@ -1494,7 +1514,7 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
-	private void processSourceDir( File sourceDir, 
+	protected void processSourceDir( File sourceDir, 
 									TextFile[] files, 
 									Device device, 
 									boolean usePolishGui, 
@@ -1604,7 +1624,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param sourceCode the source code
 	 * @throws BuildException when the startApp()-method could not be found
 	 */
-	private void insertDisplaySetting( String className, StringList sourceCode ) {
+	protected void insertDisplaySetting( String className, StringList sourceCode ) {
 		// at first try to find the startApp method:
 		while (sourceCode.next()) {
 			String line = sourceCode.getCurrent();
@@ -1647,7 +1667,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param sourceCode the source code
 	 * @throws BuildException when the startApp()-method could not be found
 	 */
-	private void insertExitSetting( String className, StringList sourceCode ) {
+	protected void insertExitSetting( String className, StringList sourceCode ) {
 		if (!this.environment.hasSymbol("polish.debugEnabled")) {
 			return;
 		}
@@ -1685,7 +1705,7 @@ public class PolishTask extends ConditionalTask {
 	 *  
 	 * @param device The device for which the source code should be compiled.
 	 */
-	private void compile( Device device ) {
+	public void compile( Device device ) {
 		// set the class-path:
 		String[] classPaths = this.libraryManager.getClassPaths(device);
 		device.setClassPaths( classPaths );
@@ -1703,7 +1723,7 @@ public class PolishTask extends ConditionalTask {
 		Project antProject = getProject();
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		// add binary class files, if there are any:
-		if (this.binaryLibrariesUpdated) {
+		if (this.binaryLibrariesUpdated || (!targetDir.exists() && this.binaryLibraries != null) ) {
 			System.out.println("copying binary libraries to [" + targetDirName + "]...");
 			LibrarySetting[] settings = this.binaryLibraries.getLibraries();
 			for (int i = 0; i < settings.length; i++) {
@@ -1754,7 +1774,8 @@ public class PolishTask extends ConditionalTask {
 			compiler.setDirectSrcdir(new Path( getProject(),  device.getSourceDir() ) );
 		}
 		//javac.setSourcepath(new Path( getProject(),  "" ));
-		String classPath = device.getClassPath(); 
+		String classPath = device.getClassPath();
+		String completePath = classPath; // just used for printing out the classpath in case of an error
 		if (!compiler.isBootClassPathSet()) {
 			Path bootClassPath = new Path( antProject, device.getBootClassPath() );
 			// let postcompilers adjust the bootclasspath:
@@ -1775,6 +1796,11 @@ public class PolishTask extends ConditionalTask {
 			}
 			//device.setBootClassPath( bootClassPath.toString() );
 			compiler.setDirectBootclasspath( bootClassPath );
+			if (completePath != null) {
+				completePath = bootClassPath.toString() + File.pathSeparatorChar + completePath;
+			} else {
+				completePath = bootClassPath.toString();				
+			}
 		//} else {
 		//	device.setBootClassPath( compiler.getBootclasspath().toString() );
 		}
@@ -1787,7 +1813,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		// start compile:
 		if (this.polishLogger != null) {
-			//this.polishLogger.setCompileMode( true );
+			this.polishLogger.setCompileMode( true );
 		}
 		try {
 			compiler.execute();
@@ -1804,12 +1830,12 @@ public class PolishTask extends ConditionalTask {
 							"has been used: [" + device.getClassPath() + "].");
 					throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 				} else {
-					System.out.println("When an API-class was not found, you might need to define where to find the device-APIs. Following classpath has been used: [" + device.getClassPath() + "].");
+					System.out.println("When an API-class was not found, you might need to define where to find the device-APIs. Following classpath has been used: [" + completePath + "].");
 					throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 				}
 			} else {
 				System.out.println("If an error occured in the J2ME Polish packages, please try a clean rebuild - e.g. [ant clean] and then [ant].");
-				System.out.println("Alternatively you might need to define where to find the device-APIs. Following classpath has been used: [" + device.getClassPath() + "].");
+				System.out.println("Alternatively you might need to define where to find the device-APIs. Following classpath has been used: [" + completePath + "].");
 				throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 			}
 		}
@@ -1845,7 +1871,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the obfuscation should be done.
 	 * @param locale the current localization
 	 */
-	private void postCompile( Device device, Locale locale ) {
+	protected void postCompile( Device device, Locale locale ) {
 		File classDir = new File( device.getClassesDir() );
 		// deactivate logging:
 		String className;
@@ -1878,7 +1904,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the obfuscation should be done.
 	 * @param locale the current localization
 	 */
-	private void obfuscate( Device device, Locale locale ) {
+	protected void obfuscate( Device device, Locale locale ) {
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( true );
 		}
@@ -1957,7 +1983,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the preverification should be done.
 	 * @param locale the current localization
 	 */
-	private void preverify( Device device, Locale locale ) {
+	protected void preverify( Device device, Locale locale ) {
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
 		
 		// add environment settings:
@@ -2018,7 +2044,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the code should be jared.
 	 * @param locale the current locale, can be null
 	 */
-	private void jar( Device device, Locale locale ) {
+	protected void jar( Device device, Locale locale ) {
 		File classesDir = new File( device.getClassesDir() );
 		
 		try {
@@ -2073,7 +2099,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// add build properties - midlet infos:
-		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
+		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.useDefaultPackage );
 		for (int i = 0; i < midletInfos.length; i++) {
 			String info = midletInfos[i];
 			attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Attribute(InfoSetting.NMIDLET + (i+1), info ) );
@@ -2129,7 +2155,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device The device for which the JAD file should be created.
 	 * @param locale
 	 */
-	private void jad(Device device, Locale locale) {		
+	protected void jad(Device device, Locale locale) {		
 		// now create the JAD file:
 		HashMap attributesByName = new HashMap();
 		// add info attributes:
@@ -2141,7 +2167,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// add build properties - midlet infos:
-		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon() );
+		String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.useDefaultPackage );
 		for (int i = 0; i < midletInfos.length; i++) {
 			String info = midletInfos[i];
 			attributesByName.put( InfoSetting.NMIDLET + (i+1), 
@@ -2189,7 +2215,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device the current device
 	 * @param locale
 	 */
-	private void callExtensions( Device device, Locale locale ) {
+	protected void callExtensions( Device device, Locale locale ) {
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		
 		for (int i = 0; i < this.javaExtensions.length; i++) {
@@ -2202,7 +2228,7 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 
-	private void finalize( Device device, Locale locale ) {
+	protected void finalize( Device device, Locale locale ) {
 		this.extensionManager.finalize(device, locale, this.environment );
 		Finalizer[] finalizers = this.buildSetting.getFinalizers( this.extensionManager, this.environment );
 		for (int i = 0; i < finalizers.length; i++) {
@@ -2233,7 +2259,7 @@ public class PolishTask extends ConditionalTask {
 	 * @param device the current device.
 	 * @param locale
 	 */
-	private void runEmulator( Device device, Locale locale ) {
+	protected void runEmulator( Device device, Locale locale ) {
 		if ( this.emulatorSetting.isActive(getProject()) ) {
 			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 			Project antProject = getProject();

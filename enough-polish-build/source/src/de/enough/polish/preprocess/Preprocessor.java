@@ -511,12 +511,12 @@ public class Preprocessor {
 						changed = true;
 						lines.setCurrent( newLine );
 					}
-				} else if (this.useDefaultPackage){
+				//} else if (this.useDefaultPackage){
 					//line = line.trim();
-					if (line.startsWith("package ")) {
-						changed = true;
-						lines.setCurrent( "//" + line );
-					}
+				//	if (line.startsWith("package ")) {
+				//		changed = true;
+				//		lines.setCurrent( "//" + line );
+				//	}
 				}
 			}
 		} catch (BuildException e) {

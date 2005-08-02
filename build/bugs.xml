@@ -279,6 +279,19 @@
 			Retrieve the Graphics object at a later state, e.g. in the game loop.
 		</solution>
 	</bug>
+
+	<bug>
+		<name>ReducedMessageLength</name>
+		<area>wmapi</area>
+		<description>
+			In older firmware versions the length of messages is reduced to 89%, ie if you send 100 chars, 
+			it will only send 89, if you send 150 it will send 133.
+		</description>
+		<solution>
+			Set the length of the message to actualLength * 1.123 or arrange for a firmware update.
+		</solution>
+		<infoUrl>https://motocoder.custhelp.com/cgi-bin/motocoder.cfg/php/enduser/std_adp.php?p_faqid=658&p_created=1115735150</infoUrl>
+	</bug>
 	
 
 	<!--

@@ -122,7 +122,10 @@ public class ImportPreprocessor extends CustomPreprocessor {
 		// go through the code and search for import statements:
 		while (sourceCode.next()) {
 			String line = sourceCode.getCurrent().trim();
-			if (line.indexOf("import") != -1) {
+			if ( this.useDefaultPackage && line.startsWith("package ")) {
+				line = "// " + line;
+				sourceCode.setCurrent( line );
+			} else if (line.indexOf("import") != -1) {
 				Matcher matcher = IMPORT_PATTERN.matcher( line );
 				boolean changed = false;
 				while (matcher.find()) {
