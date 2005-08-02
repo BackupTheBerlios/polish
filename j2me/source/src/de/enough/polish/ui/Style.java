@@ -360,5 +360,10 @@ public class Style
 		//#endif
 	}
 	//#endif
+	
+//#ifdef polish.Style.additionalMethods:defined
+	//#include ${polish.Style.additionalMethods}
+//#endif
+	
 
 }

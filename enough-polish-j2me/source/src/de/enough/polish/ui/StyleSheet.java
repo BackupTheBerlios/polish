@@ -488,4 +488,10 @@ public final class StyleSheet {
 		}
 	}
 	//#endif
+	
+	
+//#ifdef polish.StyleSheet.additionalMethods:defined
+	//#include ${polish.StyleSheet.additionalMethods}
+//#endif
+
 }

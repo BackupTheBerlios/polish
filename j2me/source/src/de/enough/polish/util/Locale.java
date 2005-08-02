@@ -31,6 +31,10 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 
+//#if polish.Locale.imports:defined
+	//#include ${polish.Locale.imports}
+//#endif
+
 /**
  * <p>Is used for internationalisation.</p>
  *
@@ -163,8 +167,13 @@ public final class Locale {
 	}
 	//#endif
 
-	//#ifdef polish.i18n.useDynamicTranslations
+	
+	//#if polish.i18n.useDynamicTranslations
 	private static void initialize() {
+		//#if polish.Locale.initializeMethod:defined
+			//#include ${polish.Locale.initializeMethod}
+		
+		//#else
 		try {
 			//#if polish.locale:defined
 				//#= loadTranslations( "/${polish.locale}.loc" );
@@ -178,7 +187,7 @@ public final class Locale {
 			//#debug error
 			System.out.println("Unable to load localizations " + e );
 		}
-		
+		//#endif		
 	}
 	//#endif
 

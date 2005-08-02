@@ -243,21 +243,25 @@ public class ExclusiveSingleLineView extends ContainerView {
 		Item[] items = this.parentContainer.getItems();
 		Item lastItem = this.currentItem;
 		//ChoiceItem currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		ChoiceGroup choiceGroup = (ChoiceGroup) this.parentContainer;
 		if ( gameAction == Canvas.LEFT && this.currentItemIndex > 0 ) {
 			this.currentItem.select( false );
 			this.currentItemIndex--;
 			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
 			this.currentItem.adjustProperties( lastItem );
 			//this.currentItem.select( true );
-			((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
+			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
+			choiceGroup.notifyStateChanged();
 			return this.currentItem;
 		} else if ( gameAction == Canvas.RIGHT && this.currentItemIndex < items.length - 1 ) {
 			this.currentItem.select( false );
 			this.currentItemIndex++;
 			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
 			this.currentItem.adjustProperties( lastItem );
-			((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
+			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
+			choiceGroup.notifyStateChanged();
 			//this.currentItem.select( true );
+			
 			return this.currentItem;
 		}
 		// in all other cases there is no next item:

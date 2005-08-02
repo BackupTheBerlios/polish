@@ -62,7 +62,12 @@ import java.util.*;
  * @since MIDP 1.0
  */
 public class DateField extends StringItem
-implements CommandListener
+//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroke
+	//#define tmp.directInput
+	implements ItemCommandListener
+//#else
+	//# implements CommandListener
+//#endif
 {
 	/**
 	 * Input mode for date information (day, month, year). With this mode this
@@ -101,28 +106,24 @@ implements CommandListener
 
 	private Date date;
 	private int inputMode;
-	private int mode;
 	private TimeZone timeZone;
 	private boolean showCaret;
 	private int originalWidth;
 	private int originalHeight;
 	private long lastCaretSwitch;
-	private javax.microedition.lcdui.DateField midpDateField; 
-	private javax.microedition.lcdui.Form form;
 
 	private Calendar calendar;
 	
-	//#if (polish.DateField.useDirectInput == true) || polish.Bugs.dateFieldBroken
-		//#define forceDirectInput
+	//#if tmp.directInput
+		private static final int[] DAYS_IN_MONTHS = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		private int editIndex;
+		private int textComplementColor;
 		private int currentField;
-		private int focusedColor;
-		private int focusedXStart;
-		private int focusedXEnd;
-		private char caretChar = '|';
-		private int caretPosition;
-		private int caretX;
-		//private Field[] inputFields;
+		private int currentFieldStartIndex;
+		private ItemCommandListener additionalItemCommandListener;
 	//#else
+		private javax.microedition.lcdui.DateField midpDateField; 
+		private javax.microedition.lcdui.Form form;
 	//#endif
 
 	/**
@@ -193,13 +194,17 @@ implements CommandListener
 	public DateField( String label, int mode, TimeZone timeZone, Style style)
 	{
 		super( label, null, INTERACTIVE, style );
-		this.mode = mode;
+		this.inputMode = mode;
 		if (timeZone != null) {
 			this.timeZone = timeZone;
 		} else {
 			this.timeZone = TimeZone.getDefault();
 		}
 		setDate( null );
+		//#if tmp.directInput
+			addCommand( TextField.CLEAR_CMD );
+			this.itemCommandListener = this;
+		//#endif
 	}
 	
 	
@@ -255,12 +260,14 @@ implements CommandListener
 	public void setDate( Date date)
 	{
 		this.date = date;
+		//#if ! tmp.directInput
 		if (this.midpDateField != null) {
 			this.midpDateField.setDate( date );
 		}
+		//#endif
 		// set date:
 		if (date == null ) {
-			if (this.mode == DATE) {
+			if (this.inputMode == DATE) {
 				//#if polish.DateFormatEmptyText:defined
 					//#= this.text = "${polish.DateFormatEmptyText}";
 				//#elif polish.DateFormat == us || polish.DateFormat == mdy
@@ -275,11 +282,11 @@ implements CommandListener
 					// default to ymd
 					this.text = "YYYY-MM-DD";
 				//#endif
-			} else if (this.mode == TIME) {
+			} else if (this.inputMode == TIME) {
 				this.text = "hh:mm";
 			} else {
 				//#if polish.DateFormatEmptyText:defined
-					//# this.text = "${polish.DateFormatEmptyText} hh:mm";
+					//#= this.text = "${polish.DateFormatEmptyText} hh:mm";
 				//#elif polish.DateFormat == us || polish.DateFormat == mdy
 					this.text = "MM-DD-YYYY hh:mm";
 				//#elif polish.DateFormat == de
@@ -300,7 +307,7 @@ implements CommandListener
 			}
 			this.calendar.setTime(date);
 			StringBuffer buffer = new StringBuffer(10);
-			if ((this.mode == DATE) || (this.mode == DATE_TIME)) {
+			if ((this.inputMode == DATE) || (this.inputMode == DATE_TIME)) {
 				int year = this.calendar.get(Calendar.YEAR);
 				int month = this.calendar.get( Calendar.MONTH );
 				int day = this.calendar.get( Calendar.DAY_OF_MONTH );
@@ -315,6 +322,13 @@ implements CommandListener
 					}
 					buffer.append( day )
 						  .append("-");
+					if (year < 10) {
+						buffer.append( "000");
+					} else if (year < 100) {
+						buffer.append( "00");
+					} else if (year < 1000) {
+						buffer.append( "0");
+					}
 					buffer.append( year );
 				//#elif polish.DateFormat == de
 					if (day < 10) {
@@ -327,6 +341,13 @@ implements CommandListener
 					}
 					buffer.append( ++month )
 				          .append(".");
+					if (year < 10) {
+						buffer.append( "000");
+					} else if (year < 100) {
+						buffer.append( "00");
+					} else if (year < 1000) {
+						buffer.append( "0");
+					}
 					buffer.append( year );
 				//#elif polish.DateFormat == fr
 					if (day < 10) {
@@ -339,6 +360,13 @@ implements CommandListener
 					}
 					buffer.append( ++month )
 					    .append("/");
+					if (year < 10) {
+						buffer.append( "000");
+					} else if (year < 100) {
+						buffer.append( "00");
+					} else if (year < 1000) {
+						buffer.append( "0");
+					}
 					buffer.append( year );
 				//#elif polish.DateFormat == mdy
 					if (month < 9) {
@@ -359,6 +387,13 @@ implements CommandListener
 					//#else
 					        .append("-");
 					//#endif
+					if (year < 10) {
+						buffer.append( "000");
+					} else if (year < 100) {
+						buffer.append( "00");
+					} else if (year < 1000) {
+						buffer.append( "0");
+					}
 					buffer.append( year );
 				//#elif polish.DateFormat == dmy
 					if (day < 10) {
@@ -379,9 +414,23 @@ implements CommandListener
 					//#else
 					        .append("-");
 					//#endif
+					if (year < 10) {
+						buffer.append( "000");
+					} else if (year < 100) {
+						buffer.append( "00");
+					} else if (year < 1000) {
+						buffer.append( "0");
+					}
 					buffer.append( year );
 				//#else
 					// default to YMD
+					if (year < 10) {
+						buffer.append( "000");
+					} else if (year < 100) {
+						buffer.append( "00");
+					} else if (year < 1000) {
+						buffer.append( "0");
+					}
 					buffer.append( year )
 					//#if polish.DateFormatSeparator:defined
 						//#= .append("${polish.DateFormatSeparator}");
@@ -402,11 +451,11 @@ implements CommandListener
 					}
 					buffer.append( day );
 				//#endif
-				if  (this.mode == DATE_TIME) {
+				if  (this.inputMode == DATE_TIME) {
 					buffer.append(' ');
 				}
 			}
-			if ((this.mode == TIME) || (this.mode == DATE_TIME)) {
+			if ((this.inputMode == TIME) || (this.inputMode == DATE_TIME)) {
 				int hour = this.calendar.get( Calendar.HOUR_OF_DAY );
 				if (hour < 10) {
 					buffer.append('0');
@@ -421,7 +470,10 @@ implements CommandListener
 			}
 			this.text = buffer.toString();
 		} // date != null
-		this.isInitialised = false;
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 
 	/**
@@ -447,9 +499,12 @@ implements CommandListener
 	public void setInputMode(int mode)
 	{
 		this.inputMode = mode;
+		//#if !tmp.directInput
 		if (this.midpDateField != null) {
 			this.midpDateField.setInputMode(mode);
 		}
+		//#endif
+		setDate( this.date ); 
 	}
 
 	/* (non-Javadoc)
@@ -457,30 +512,56 @@ implements CommandListener
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		super.paintContent(x, y, leftBorder, rightBorder, g);
-		if (this.showCaret) {
-			if (this.text == null) {
-				// when the text is null the appropriate font and color
-				// might not have been set, so set them now:
-				g.setFont( this.font );
-				g.setColor( this.textColor );
-			}
-			if (this.isLayoutCenter) {
-				int centerX = leftBorder 
-					+ (rightBorder - leftBorder) / 2 
-					+ this.originalWidth / 2
-					+ 2;
-				if (this.originalHeight > 0) {
-					y += this.originalHeight - this.font.getHeight();
+		//#if tmp.directInput
+			if ( this.isFocused ) {
+				String head = this.text.substring( 0, this.editIndex );
+				int headWidth = this.font.stringWidth( head );
+				char editChar = this.text.charAt( this.editIndex );
+				int editWidth = this.font.charWidth( editChar );
+				if ( this.isLayoutCenter ) {
+					int centerX = leftBorder + (rightBorder - leftBorder) / 2;
+					//#ifdef polish.css.text-horizontal-adjustment
+						centerX += this.textHorizontalAdjustment;
+					//#endif
+					int completeWidth = this.font.stringWidth( this.text );
+					x = centerX - ( completeWidth / 2 );
+				} else if ( this.isLayoutRight ) {
+					int completeWidth = this.font.stringWidth( this.text );
+					x = rightBorder - completeWidth;					
 				}
-				g.drawChar('|', centerX, y, Graphics.TOP | Graphics.LEFT );
-			} else {
-				x += this.originalWidth + 2;
-				if (this.originalHeight > 0) {
-					y += this.originalHeight - this.font.getHeight();
+				g.fillRect( x + headWidth - 1, y  - 1, editWidth + 1, this.font.getHeight() );
+				
+				if (this.showCaret) {
+					g.setColor( this.textComplementColor );
+					g.drawChar( editChar, x + headWidth, y, Graphics.TOP | Graphics.LEFT );
 				}
-				g.drawChar('|', x, y, Graphics.TOP | Graphics.LEFT );
 			}
-		}
+		//#else
+			if (this.showCaret) {
+				if (this.text == null) {
+					// when the text is null the appropriate font and color
+					// might not have been set, so set them now:
+					g.setFont( this.font );
+					g.setColor( this.textColor );
+				}
+				if (this.isLayoutCenter) {
+					int centerX = leftBorder 
+						+ (rightBorder - leftBorder) / 2 
+						+ this.originalWidth / 2
+						+ 2;
+					if (this.originalHeight > 0) {
+						y += this.originalHeight - this.font.getHeight();
+					}
+					g.drawChar('|', centerX, y, Graphics.TOP | Graphics.LEFT );
+				} else {
+					x += this.originalWidth + 2;
+					if (this.originalHeight > 0) {
+						y += this.originalHeight - this.font.getHeight();
+					}
+					g.drawChar('|', x, y, Graphics.TOP | Graphics.LEFT );
+				}
+			}
+		//#endif
 	}
 
 
@@ -532,6 +613,12 @@ implements CommandListener
 				this.minimumHeight = height.intValue();
 			}
 		//#endif
+		//#if tmp.directInput
+			this.textComplementColor = 
+				((255 - (( 0xFF0000 & this.textColor ) >> 16)) << 16)
+				| ((255 - (( 0x00FF00 & this.textColor ) >> 8)) << 8)
+				| (255 - ( 0x0000FF & this.textColor ) );				
+		//#endif
 	}
 	
 	/* (non-Javadoc)
@@ -559,26 +646,277 @@ implements CommandListener
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
-	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-				|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-				|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
-				|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
-			return false;
-		}
-		showDateForm();
+	protected synchronized boolean handleKeyPressed(int keyCode, int gameAction) {
+		//#if tmp.directInput
+			// there are several possble situations:
+			// backspace: delete last char, move internal focus left
+			// left, right: move internal focus left/right
+			// input of number: a) plausibility check, b) move internal focus right
+			// up, down: exit editing mode, set default values.
+			// 		parse time/date and so on.
+			
+			// check for input of numbers 
+			if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9  ) 
+			{
+				if (this.date == null) {
+					setDate( new Date( System.currentTimeMillis() ) );
+				}
+				char c = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+				String newText = this.text.substring( 0, this.editIndex ) + c;
+				if ( this.editIndex < this.text.length() -1 ) {
+					newText += this.text.substring( this.editIndex + 1 );
+				}
+				setText( newText );
+				moveForward();
+			//#ifdef polish.key.ClearKey:defined
+				//#= } else if ( this.date != null && (gameAction == Canvas.LEFT || keyCode == ${polish.key.ClearKey}) ) {
+			//#else
+				} else if ( this.date != null && gameAction == Canvas.LEFT ) {
+			//#endif
+				moveBackward();
+			} else if ( this.date != null && gameAction == Canvas.RIGHT ) {
+				moveForward();
+			} else {
+				// force check before leaving this date=-field:
+				if (this.date != null) {
+					moveForward();
+					this.currentField = 0;
+					this.currentFieldStartIndex = 0;
+					this.editIndex = 0;
+				}
+				return false;
+			}
+
+		//#else
+			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
+					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
+				return false;
+			}		
+			showDateForm();
+		//#endif
 		return true;
 	}
 	
+	//#if tmp.directInput
+	private void moveBackward() {
+		if (this.date == null) {
+			return;
+		}
+		int forwardIndex = this.editIndex;
+		while (Character.isDigit( this.text.charAt(forwardIndex))) {
+			forwardIndex++;
+			if (forwardIndex == this.text.length() ) {
+				forwardIndex = 0;
+				break;
+			}
+		}
+		
+		int newIndex = this.editIndex -1;
+		while (true) {
+			if ( newIndex < 0 ) {
+				checkField( forwardIndex );
+				newIndex = this.text.length() - 1;
+				if (this.inputMode == DATE) {
+					this.currentField = 2;
+				} else if ( this.inputMode == TIME ) {
+					this.currentField = 1;
+				} else {
+					this.currentField = 4;
+				}
+			}
+			char c = this.text.charAt( newIndex );
+			// break when the character is a digit:
+			if ( Character.isDigit(c) ) {
+				break;
+			}
+			checkField( forwardIndex );
+			this.currentField--;
+			newIndex--;
+		}
+		this.editIndex = newIndex;
+		// now find the correct start-index for the current field:
+		if (newIndex == 0) {
+			this.currentFieldStartIndex = 0;
+		} else {
+			while ( Character.isDigit( this.text.charAt( newIndex )) ) {
+				newIndex--;
+				if (newIndex == -1) {
+					break;
+				}
+			}
+			this.currentFieldStartIndex = newIndex + 1;
+		}
+	}
+	//#endif
+
+	//#if tmp.directInput
+	private void moveForward() {
+		int newIndex = this.editIndex + 1;
+		while (true) {
+			if ( newIndex >= this.text.length() ) {
+				newIndex = 0;
+				checkField( newIndex );
+				this.currentField = 0;
+				this.currentFieldStartIndex = 0;
+			}
+			char c = this.text.charAt( newIndex );
+			// break when the character is a digit:
+			if ( Character.isDigit(c) ) {
+				break;
+			}
+			// okay, we're entering a new field, so check the value of the last field now:
+			checkField( newIndex );
+			newIndex++;
+			this.currentFieldStartIndex = newIndex;
+			this.currentField++;
+		}
+		this.editIndex = newIndex;
+	}
+	//#endif
+	
+	//#if tmp.directInput
+	private void checkField(int newIndex) {
+		String fieldStr;
+		if ( newIndex == 0 ) {
+			fieldStr = this.text.substring( this.currentFieldStartIndex );
+		} else {
+			fieldStr = this.text.substring( this.currentFieldStartIndex, newIndex );
+		}
+		int fieldValue = Integer.parseInt( fieldStr );
+		
+		// check the actual value:
+		if (this.calendar == null) {
+			this.calendar = Calendar.getInstance();
+			this.calendar.setTimeZone(this.timeZone);
+		}
+		this.calendar.setTime( this.date );
+		int calendarField = -1;
+		
+		if ((this.inputMode == DATE) || (this.inputMode == DATE_TIME)) {
+			//#if (polish.DateFormat == us) || (polish.DateFormat == mdy) 
+				switch (this.currentField) {
+				case 0: calendarField = Calendar.MONTH; break;
+				case 1: calendarField = Calendar.DAY_OF_MONTH; break;
+				case 2: calendarField =  Calendar.YEAR; break;
+				}
+			//#elif (polish.DateFormat == de) || (polish.DateFormat == fr) || (polish.DateFormat == dmy)
+				switch (this.currentField) {
+				case 0: calendarField = Calendar.DAY_OF_MONTH; break;
+				case 1: calendarField = Calendar.MONTH; break;
+				case 2: calendarField =  Calendar.YEAR; break;
+				}
+			//#else
+				switch (this.currentField) {
+				case 0: calendarField =  Calendar.YEAR; break;
+				case 1: calendarField = Calendar.MONTH; break;
+				case 2: calendarField = Calendar.DAY_OF_MONTH; break;
+				}
+			//#endif
+		} 
+		if ( this.inputMode == DATE_TIME ) {
+			switch (this.currentField) {
+			case 3: calendarField =  Calendar.HOUR_OF_DAY; break;
+			case 4: calendarField = Calendar.MINUTE; break;
+			}
+
+		} else if ( this.inputMode == TIME ) {
+			switch (this.currentField) {
+			case 0: calendarField =  Calendar.HOUR_OF_DAY; break;
+			case 1: calendarField = Calendar.MINUTE; break;
+			}
+		}
+		
+		if ( calendarField == -1 ) {
+			//#debug warn
+			System.out.println("Unable to to set field [" + this.currentField + "]: unknown index.");
+			return;
+		} else {
+			switch (calendarField) {
+			case Calendar.DAY_OF_MONTH:
+				if ( fieldValue < 1 ) {
+					fieldValue = 1;
+				} else {
+					int month = this.calendar.get( Calendar.MONTH );
+					int maxDay = DAYS_IN_MONTHS[ month ];
+					if ( fieldValue > maxDay ) {
+						fieldValue = maxDay;
+					}
+				}
+				break;
+			case Calendar.MONTH:
+				if (fieldValue < 1) {
+					fieldValue = 1;
+				} else if ( fieldValue > 12 ) {
+					fieldValue = 12;
+				}
+				fieldValue--;
+				break;
+			case Calendar.HOUR_OF_DAY:
+				if (fieldValue == 24) {
+					fieldValue = 0;
+				} else if (fieldValue > 24) {
+					fieldValue = 23;
+				}
+				break;
+			case Calendar.MINUTE:
+				if (fieldValue > 59) {
+					fieldValue = 59;
+				}
+				break;
+			}
+			this.calendar.set( calendarField, fieldValue );
+			boolean changed = false;
+			try {
+				Date newDate = this.calendar.getTime();
+				setDate( newDate );
+				changed = true;
+			} catch (IllegalArgumentException e) {
+				if (calendarField ==  Calendar.DAY_OF_MONTH ||  calendarField == Calendar.MONTH ) {
+					int month = calendarField == Calendar.MONTH ? fieldValue : this.calendar.get( Calendar.MONTH );
+					int day = calendarField == Calendar.DAY_OF_MONTH ? fieldValue : this.calendar.get( Calendar.DAY_OF_MONTH );
+					int maxDay = DAYS_IN_MONTHS[ month ];
+					if ( month == 2 ) {
+						maxDay = 28;
+					}
+					if ( day > maxDay ) {
+						this.calendar.set( Calendar.DAY_OF_MONTH, maxDay );
+						try {
+							setDate( this.calendar.getTime() );
+							changed = true;
+						} catch ( IllegalArgumentException e2 ) {
+							// ignore
+						}
+					}
+				}
+				//#if polish.debug.error
+				if (!changed) {
+					//#debug error
+					System.out.println("Unable to set date: " + e );
+				}
+				//#endif
+			}
+			if ( changed && ( getScreen() instanceof Form ) ) {
+				notifyStateChanged();
+			}
+		}
+		
+		//System.out.println("Field [" + this.currentField + "]/[Calendar." + calendarField + "] is: " + fieldStr );
+
+	}
+	//#endif
+
+	//#if !tmp.directInput
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
 	private void showDateForm() {
 		if (this.midpDateField == null) {
-			this.midpDateField = new javax.microedition.lcdui.DateField( getLabel(), this.mode, this.timeZone );
+			this.midpDateField = new javax.microedition.lcdui.DateField( getLabel(), this.inputMode, this.timeZone );
 			//#ifdef polish.Bugs.dateFieldAcceptsNoNullDate
 				if (this.date == null) {
-					if (this.mode == TIME) {
+					if (this.inputMode == TIME) {
 						this.midpDateField.setDate( new Date(0) );
 					} else {
 						this.midpDateField.setDate( new Date() );
@@ -593,12 +931,14 @@ implements CommandListener
 			this.form.append( this.midpDateField );
 			this.form.addCommand(StyleSheet.OK_CMD);
 			this.form.addCommand(StyleSheet.CANCEL_CMD);
-			this.form.setCommandListener( this );
+			//# this.form.setCommandListener( this );
 		}
 		this.screen = StyleSheet.currentScreen;
 		StyleSheet.display.setCurrent( this.form );
 	}
+	//#endif
 
+	//#if !tmp.directInput
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
@@ -611,4 +951,25 @@ implements CommandListener
 		}
 		StyleSheet.display.setCurrent( this.screen );
 	}
+	//#endif
+	
+	//#ifdef tmp.directInput
+	public void setItemCommandListener(ItemCommandListener l) {
+		this.additionalItemCommandListener = l;
+	}
+	//#endif
+
+
+	//#if tmp.directInput
+	public void commandAction(Command c, Item item) {
+		if (c == TextField.CLEAR_CMD) {
+			this.editIndex = 0;
+			this.currentField = 0;
+			this.currentFieldStartIndex = 0;
+			setDate( null );
+		} else if (this.additionalItemCommandListener != null) {
+			this.additionalItemCommandListener.commandAction(c, item);
+		}
+	}
+	//#endif
 }

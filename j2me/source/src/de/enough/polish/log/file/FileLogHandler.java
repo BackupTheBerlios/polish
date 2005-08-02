@@ -83,7 +83,7 @@ public class FileLogHandler extends LogHandler {
 				//System.out.println("opening data output stream...");
 				this.out = new PrintStream( connection.openOutputStream() );
 				this.out.println("time\tlevel\tclass\tline\tmessage\terror");
-				this.out.println( roots );
+				//this.out.println( roots );
 			}
 		}
 		StringBuffer buffer = new StringBuffer();					
