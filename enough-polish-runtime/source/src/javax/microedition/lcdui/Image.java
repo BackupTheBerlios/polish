@@ -380,13 +380,18 @@ public class Image extends Object
 	 */
 	public static Image createImage(byte[] imageData, int imageOffset, int imageLength)
 	{
+        System.out.println("DEBUG:Image.createImage(...):enter.");
 		ByteArrayInputStream in = new ByteArrayInputStream( imageData, imageOffset, imageLength );
 		try {
-			return createImage( in );
-		} catch (IOException e) {
+            Image image = createImage( in );
+            System.out.println("DEBUG:Image.createImage(...):leave.");
+			return image;
+		} catch (Throwable e) {
 			e.printStackTrace();
+            System.out.println("DEBUG:Image.createImage(...):IOException thrown.");
 			throw new IllegalArgumentException("Unable to load image from byte-array: " + e.toString() );
 		}
+        
 	}
 
 	/**
@@ -553,7 +558,9 @@ public class Image extends Object
 	 */
 	public static Image createImage( InputStream stream) throws IOException
 	{
+        System.out.println("DEBUG:Image.createImage(stream):enter.");
 		BufferedImage image = ImageIO.read(stream);
+        System.out.println("DEBUG:Image.createImage(...):leave.");
 		return new Image( image );
 	}
 
