@@ -65,7 +65,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 	}
 	
 	/**
-	 * Retrieves the maximum allowed icon size for the current device.
+	 * Retrieves the maximum allowed icon size, if available.
 	 * 
 	 * @param env the environment settings
 	 * @return the maximum allowed size or null when the target device does not define the "IconSize" capability.
@@ -90,6 +90,24 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 			}
 			return new Dimension( maxWidth, maxHeight );
 		}
+	}
+	
+	/**
+	 * Retrieves the size of the screen, if available.
+	 * 
+	 * @param env the environment settings
+	 * @return the sceen size or null, when the current device does not define the "polish.ScreenSize" capability.
+	 */
+	protected Dimension getScreenSize( Environment env ) {
+		String screenSizesStr = env.getVariable("polish.ScreenSize");
+		if (screenSizesStr == null) {
+			return null;
+		} else {
+			return new Dimension(
+					Integer.parseInt( env.getVariable("polish.ScreenWidth") ),
+					Integer.parseInt( env.getVariable("polish.ScreenHeight") )
+					);
+		}		
 	}
 
 	/**
