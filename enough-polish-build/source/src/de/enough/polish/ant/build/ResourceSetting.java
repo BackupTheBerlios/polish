@@ -189,5 +189,20 @@ public class ResourceSetting extends Setting {
 		return null;
 	}
 
+	public ResourceCopierSetting[] getCopiers(BooleanEvaluator evaluator) {
+		if (this.copierSettings == null) {
+			return null;
+		}
+		ArrayList copiers = new ArrayList();
+		ResourceCopierSetting[] settings = (ResourceCopierSetting[]) this.copierSettings.toArray( new ResourceCopierSetting[ this.copierSettings.size()]  );
+		for (int i = 0; i < settings.length; i++) {
+			ResourceCopierSetting setting = settings[i];
+			if (setting.isActive(evaluator, this.project)) {
+				copiers.add( setting );
+			}
+		}
+		return (ResourceCopierSetting[]) copiers.toArray( new ResourceCopierSetting[ copiers.size() ] );
+	}
+
 
 }

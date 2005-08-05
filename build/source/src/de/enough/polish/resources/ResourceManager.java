@@ -48,6 +48,7 @@ import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.requirements.SizeMatcher;
 import de.enough.polish.preprocess.CssReader;
 import de.enough.polish.preprocess.StyleSheet;
+import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Is responsible for the assembling of resources like images and localization messages.</p>
@@ -75,9 +76,10 @@ public class ResourceManager {
 	private final SizeMatcher[] dynamicCanvasSizeMatchers;
 	private final File[] dynamicFullCanvasSizeDirs;
 	private final SizeMatcher[] dynamicFullCanvasSizeMatchers;
-	private final ResourceCopier resourceCopier;
+	//private final ResourceCopier resourceCopier;
 	private TranslationManager translationManager;
 	private final Environment environment;
+	private final ExtensionManager extensionManager;
 
 	/**
 	 * Creates a new resource manager.
@@ -92,6 +94,7 @@ public class ResourceManager {
 	{
 		super();
 		this.resourceSetting = setting;
+		this.extensionManager = manager;
 		this.environment = environment;
 		this.project = environment.getProject();
 		this.booleanEvaluator = environment.getBooleanEvaluator();
@@ -203,12 +206,7 @@ public class ResourceManager {
 				}
 
 			}
-		}
-		
-		// creating resource copier:
-		ResourceCopierSetting copierSetting = setting.getCopier( environment.getBooleanEvaluator() );
-		this.resourceCopier = ResourceCopier.getInstance( copierSetting, manager, environment );
-		
+		}		
 	}
 	
 	/**
@@ -224,7 +222,32 @@ public class ResourceManager {
 	{
 		File[] resources = getResources( device, locale );
 		//FileUtil.copy(resources, targetDir);
-		this.resourceCopier.copyResources(device, locale, resources, targetDir);
+		// creating resource copier:
+		ResourceCopierSetting[] copierSettings = this.resourceSetting.getCopiers( this.environment.getBooleanEvaluator() );
+		if (copierSettings == null || copierSettings.length == 0 ) {
+			ResourceCopier resourceCopier = ResourceCopier.getInstance( null, this.extensionManager, this.environment );
+			resourceCopier.copyResources(device, locale, resources, targetDir);
+		} else {
+			for (int i = 0; i < copierSettings.length; i++) {
+				ResourceCopierSetting setting = copierSettings[i];
+				ResourceCopier resourceCopier = ResourceCopier.getInstance( setting, this.extensionManager, this.environment );
+				File tempTargetDir;
+				boolean lastRound = i == copierSettings.length - 1; 
+				if ( lastRound ) {
+					tempTargetDir = targetDir;
+				} else {
+					tempTargetDir = new File( device.getBaseDir() + File.separatorChar + "res" + i );
+					if ( tempTargetDir.exists() ) {
+						FileUtil.delete( tempTargetDir );
+					}
+					tempTargetDir.mkdir();
+				}
+				resourceCopier.copyResources(device, locale, resources, tempTargetDir);
+				if (!lastRound) {
+					resources = tempTargetDir.listFiles();
+				}
+			}
+		}
 		if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
 			saveDynamicTranslations( targetDir, device );
 		}
@@ -480,13 +503,13 @@ public class ResourceManager {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale (not null)
-	 * @param environment the environment settings
+	 * @param env the environment settings
 	 * @param resourceDirs the directories containing resources for this device and this locale
 	 * @param setting the localization settings
 	 * @return an instance of TranslationManager
 	 * @throws IOException when some translation could not be loaded
 	 */
-	protected TranslationManager createTranslationManager(Device device, Locale locale, Environment environment, File[] resourceDirs, LocalizationSetting setting) 
+	protected TranslationManager createTranslationManager(Device device, Locale locale, Environment env, File[] resourceDirs, LocalizationSetting setting) 
 	throws IOException 
 	{
 		String className = this.localizationSetting.getTranslationManagerClassName();
@@ -494,7 +517,7 @@ public class ResourceManager {
 			try {
 				Class managerClass = Class.forName( className );
 				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, Locale.class, Environment.class, File[].class, LocalizationSetting.class} );
-				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, environment, resourceDirs, setting} );
+				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, env, resourceDirs, setting} );
 				return manager;
 			} catch (Exception e) {
 				//just return a normal translation manager
@@ -505,7 +528,7 @@ public class ResourceManager {
 			return new TranslationManager( this.project,
 				device, 
 				locale, 
-				environment, 
+				env, 
 				getResourceDirs(device, locale), 
 				this.localizationSetting );
 		}

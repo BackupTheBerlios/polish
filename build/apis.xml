@@ -204,6 +204,17 @@
 		<path>import/siemens-extension-api.jar</path>
 	</api>
 
+	<api>
+		<name>Scalable 2D Vector Graphics</name>
+		<description>
+		A library that allows you to use vector graphics in your application.
+		</description>
+		<names>JSR-226, JSR226, S2VG, m2g, svg, svgapi, svg-api</names>
+		<symbol>svg</symbol>
+		<files>m2g.jar</files>
+		<path>import/m2g.jar</path>
+	</api>
+
 
 <!--
 	You can use this block to define a new API

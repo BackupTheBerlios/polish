@@ -411,6 +411,13 @@
 		<name>renamer</name>
 		<class>de.enough.polish.resources.RenamingResourceCopier</class>
 	</extension>
+	
+	<extension>
+		<type>resourcecopier</type>
+		<name>svgconverter</name>
+		<class>de.enough.polish.resources.SvgConverterResourceCopier</class>
+	</extension>
+	
 
 	<!-- Packager -->
 	
