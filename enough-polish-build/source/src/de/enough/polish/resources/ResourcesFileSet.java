@@ -70,6 +70,18 @@ public class ResourcesFileSet extends FileSet {
 		this.condition.setUnless(unlessCondition);
 	}
 	
+	public String getIf() {
+		return this.condition.getIf();
+	}
+
+	public String getUnless() {
+		return this.condition.getUnless();
+	}
+	
+	public String getCondition() {
+		return this.condition.getCondition();
+	}
+
 	/**
 	 * Checks if the conditions for this element are met.
 	 * 

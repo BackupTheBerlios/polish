@@ -72,6 +72,14 @@
 		</solution>
 	</bug>
 	<bug>
+		<name>losesFullScreen</name>
+		<description>Canvas.setFullScreenMode(boolean) is needed regularily,
+		</description>
+		<area>ui</area>
+		<solution>Call it in every paint() method.
+		</solution>
+	</bug>
+	<bug>
 		<name>fullScreenInShowNotify</name>
 		<description>Calling the Canvas.setFullScreenMode(boolean) method results
 		in an error, unless it is called in the showNotify()-method.
@@ -290,7 +298,7 @@
 		<solution>
 			Set the length of the message to actualLength * 1.123 or arrange for a firmware update.
 		</solution>
-		<infoUrl>https://motocoder.custhelp.com/cgi-bin/motocoder.cfg/php/enduser/std_adp.php?p_faqid=658&p_created=1115735150</infoUrl>
+		<infoUrl>https://motocoder.custhelp.com/cgi-bin/motocoder.cfg/php/enduser/std_adp.php?p_faqid=658&amp;p_created=1115735150</infoUrl>
 	</bug>
 	
 

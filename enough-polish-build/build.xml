@@ -347,7 +347,9 @@
 			<variable name="index.h5" value="h5index" />
 		</webprocessor>
 		<!-- created & copy the device database -->
+		<echo message="starting device export" />
 		<deviceExport />
+		<echo message="starting webprocessor (1/2)" />
 		<webprocessor 
 			srcdir="../enough-polish-website/tmp"
 		 	includedir="../enough-polish-website/site/includes"
@@ -366,6 +368,7 @@
 			<variable name="index.h5" value="h5index" />
 		</webprocessor>
 		<!-- copy the documentation.html to the root -->
+		<echo message="starting webprocessor (2/2)" />
 		<webprocessor 
 			srcdir="../enough-polish-website/site/source"
 		 	includedir="../enough-polish-website/site/includes"
@@ -386,6 +389,7 @@
 			<variable name="index.h4" value="h4index" />
 			<variable name="index.h5" value="h5index" />
 		</webprocessor>
+		<echo message="updating installation settings" />
 		<!-- update installation settings -->
 		<propertyWriter srcfile="setup/install.xml"
 			            destfile="tmp/install.xml" />
@@ -394,6 +398,7 @@
 		<propertyWriter srcfile="setup/Readme.txt"
 			            destfile="tmp/Readme.txt" />
 		<!-- create installation file -->
+		<echo message="starting izpack..." />
 		<izpack input="tmp/install.xml"
 		        output="dist/j2mepolish-${Version}.jar"
 		        installerType="standard"

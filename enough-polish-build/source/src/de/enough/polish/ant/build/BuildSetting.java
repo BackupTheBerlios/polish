@@ -1149,7 +1149,12 @@ public class BuildSetting {
 				// check if the file resides in the api folder (usually "import"):
 				file = new File( this.apiDir, libPath );
 				if (!file.exists()) {
-					throw new BuildException("The binary library [" + libPath + "] could not be found - please check your \"binaryLibraries\"-attribute of the <build> element: File not found: " + file.getAbsolutePath() );
+					// try ${polish.home}/import:
+					file = new File( this.polishHomeDir, "import" + File.separatorChar + libPath );
+					//System.out.println("polish.home=" + this.polishHomeDir.getAbsolutePath() );
+					if (!file.exists()) {
+						throw new BuildException("The binary library [" + libPath + "] could not be found - please check your \"binaryLibraries\"-attribute of the <build> element: File not found: " + file.getAbsolutePath() );
+					}
 				}
 			}
 			//System.out.println("Adding binary library [" + file.getAbsolutePath() + "]");

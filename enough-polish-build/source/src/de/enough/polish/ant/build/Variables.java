@@ -51,7 +51,7 @@ public class Variables {
 	
 	protected ArrayList variablesList;
 	protected ArrayList unconditionalVariablesList;
-	private boolean includeAntProperties;
+	private boolean includeAntProperties = true;
 	private boolean replacePropertiesWithoutDirective;
 
 	/**

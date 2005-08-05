@@ -164,8 +164,12 @@ public class ResourceSetting extends Setting {
 		for (Iterator iter = this.fileSets.iterator(); iter.hasNext();) {
 			ResourcesFileSet set = (ResourcesFileSet) iter.next();
 			if (set.isActive(evaluator, this.project)) {
+				//System.out.println("Adding <fileset> " + set.getDir(this.project)  + " (condition=" + set.getCondition() + ")");
 				list.add( set );
+			//} else {
+			//	System.out.println("Skipping <fileset> " + set.getDir(this.project) + " (condition=" + set.getCondition() + ")");
 			}
+			
 		}
 		ResourcesFileSet[] sets = (ResourcesFileSet[]) list.toArray( new ResourcesFileSet[list.size()] );
 		return sets;

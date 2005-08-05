@@ -187,12 +187,15 @@ public class HtmlExporterTask extends Task {
 			
 			// write known issues:
 			writeKnownIssues();
-	} catch (IOException e) {
-			throw new BuildException("unable to init manager: " + e.getMessage(), e );
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("unable to device database: " + e.getMessage(), e );
 		} catch (JDOMException e) {
-			throw new BuildException("unable to init manager: " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new BuildException("unable to device database: " + e.getMessage(), e );
 		} catch (InvalidComponentException e) {
-			throw new BuildException("unable to create device manager: " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new BuildException("unable to create device database: " + e.getMessage(), e );
 		}
 	}
 	

@@ -145,5 +145,23 @@ public class ConditionalElement {
 		}
 		return true;
 	}
+
+	public String getIf() {
+		return this.ifCondition;
+	}
+	
+	public String getUnless() {
+		return this.unlessCondition;
+	}
+
+	public String getCondition() {
+		if (this.ifCondition == null) {
+			return this.unlessCondition;
+		} else if (this.unlessCondition == null) {
+			return this.ifCondition;
+		} else {
+			return "if=" + this.ifCondition + ", unless=" + this.unlessCondition;
+		}
+	}
 	
 }
