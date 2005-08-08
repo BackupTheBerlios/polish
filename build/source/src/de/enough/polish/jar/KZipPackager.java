@@ -69,12 +69,12 @@ implements OutputFilter
 	 * @see de.enough.polish.jar.Packager#createPackage(java.io.File, java.io.File, de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
 	public void createPackage(File sourceDir, File targetFile, Device device,
-			Locale locale, Environment environment) 
+			Locale locale, Environment env) 
 	throws IOException, BuildException 
 	{
-		File executable = environment.resolveFile("${polish.home}/bin/kzip.exe");
+		File executable = env.resolveFile("${polish.home}/bin/kzip.exe");
 		if (!executable.exists()) {
-			executable = environment.resolveFile("${kzip.home}/kzip.exe");
+			executable = env.resolveFile("${kzip.home}/kzip.exe");
 		}
 		ArrayList arguments = new ArrayList();
 		if ( File.separatorChar != '\\' ) {
@@ -92,8 +92,8 @@ implements OutputFilter
 		arguments.add("/y"); // overwrite existing files
 		// add optional parameters:
 		if (this.parameters != null) {
-			BooleanEvaluator evaluator = environment.getBooleanEvaluator();
-			Project project = environment.getProject();
+			BooleanEvaluator evaluator = env.getBooleanEvaluator();
+			Project project = env.getProject();
 			for (int i = 0; i < this.parameters.length; i++) {
 				Variable parameter = this.parameters[i];
 				if ( parameter.isConditionFulfilled(evaluator, project) ) {

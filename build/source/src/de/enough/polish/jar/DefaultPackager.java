@@ -58,7 +58,7 @@ public class DefaultPackager extends Packager {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.jar.Packager#doPackage(java.io.File, java.io.File, de.enough.polish.Device, de.enough.polish.preprocess.BooleanEvaluator, java.util.Map, org.apache.tools.ant.Project)
 	 */
-	public void createPackage(File sourceDir, File targetFile, Device device, Locale locale, Environment environment)
+	public void createPackage(File sourceDir, File targetFile, Device device, Locale locale, Environment env)
 	throws IOException, BuildException 
 	{
 		JarUtil.jar(sourceDir, targetFile, true );

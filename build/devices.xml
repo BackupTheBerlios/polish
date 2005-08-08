@@ -1833,7 +1833,10 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, m3g, pdaapi, jtwi" />
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4" />
+		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, truetones, mp3, mp4, aac" />
+		<!--
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, truetones, wb-amr, mp3, mp4, aac" />
+		-->
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="MaxJarSize" value="512kb" />
 		<capability name="StorageSize" value="32 MB" />
@@ -1844,6 +1847,7 @@
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="CameraZoom" value="3" />
 		<capability name="AnnouncementDate" value="2005-03-01" />
+		<capability name="Bugs" value="FontGetBaseline"/>
 	</device>
 
 

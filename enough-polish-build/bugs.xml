@@ -300,6 +300,12 @@
 		</solution>
 		<infoUrl>https://motocoder.custhelp.com/cgi-bin/motocoder.cfg/php/enduser/std_adp.php?p_faqid=658&amp;p_created=1115735150</infoUrl>
 	</bug>
+	<bug>
+		<name>FontGetBaseline</name>
+		<area>ui</area>
+		<description>font.getBaselinePosition() returns wrong values, e.g. 1.</description>
+		<solution>use font.getHeigth() for getting an approximate value.</solution>
+	</bug>
 	
 
 	<!--

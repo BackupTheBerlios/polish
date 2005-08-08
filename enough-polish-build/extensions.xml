@@ -398,11 +398,6 @@
 		<class>de.enough.polish.preverify.NoPreverifier</class>
 	</extension>
 
-	<extension>
-		<type>packager</type>
-		<name>kzip</name>
-		<class>de.enough.polish.jar.KZipPackager</class>
-	</extension>
 
 	<!-- Resource Copier -->
 	
@@ -437,6 +432,12 @@
 		<type>packager</type>
 		<name>external</name>
 		<class>de.enough.polish.jar.ExternalPackager</class>
+	</extension>
+	
+	<extension>
+		<type>packager</type>
+		<name>jar</name>
+		<class>de.enough.polish.jar.JarPackager</class>
 	</extension>
 
 	<!-- Finalizer -->
