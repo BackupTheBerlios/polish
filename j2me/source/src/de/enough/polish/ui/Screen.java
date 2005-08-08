@@ -231,7 +231,7 @@ implements AccessibleCanvas
 		super();
 		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint || polish.Bugs.needsNokiaUiForSystemAlerts)
 			//#if tmp.fullScreen && polish.midp2
-				super.setFullScreenMode( true );
+				//# super.setFullScreenMode( true );
 			//#endif			
 		//#endif
 			
@@ -270,7 +270,7 @@ implements AccessibleCanvas
 		this.style = style;
 		this.cmdListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
-			super.setCommandListener(this.cmdListener);
+			//# super.setCommandListener(this.cmdListener);
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			//#style menubar, menu, default
@@ -425,7 +425,7 @@ implements AccessibleCanvas
 				//#include ${polish.Screen.showNotifyCode}
 			//#endif
 			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
-				super.setFullScreenMode( true );
+				//# super.setFullScreenMode( true );
 				//#ifdef polish.FullCanvasHeight:defined
 					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
 				//#else
@@ -455,12 +455,12 @@ implements AccessibleCanvas
 			//#if tmp.ignoreMotorolaTitleCall
 				this.ignoreMotorolaTitleCall = true;
 			//#endif
-			//#if tmp.fullScreen && polish.midp2
+			//#if tmp.fullScreen && polish.midp2 && !polish.blackberry
 				// this is needed on Sony Ericsson for example,
 				// since the fullscreen mode is not resumed automatically
 				// when the previous screen was in the "normal" mode:
 				//#if ! tmp.fullScreenInPaint
-					super.setFullScreenMode( true );
+					//# super.setFullScreenMode( true );
 				//#endif
 			//#endif
 		
@@ -654,9 +654,12 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public final void paint(Graphics g) {
+		//#if polish.Bugs.losesFullScreen
+			//# super.setFullScreenMode( true );
+		//#endif
 		//#if tmp.fullScreenInPaint
 			if (!this.isInFullScreenMode) {
-				super.setFullScreenMode( true );
+				//# super.setFullScreenMode( true );
 				this.isInFullScreenMode = true;
 				//#ifdef polish.FullCanvasHeight:defined
 					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
@@ -1808,8 +1811,7 @@ implements AccessibleCanvas
 		}
 		return null;
 	}
-	
-	
+		
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}

@@ -758,6 +758,7 @@ implements CommandListener
 		protected final Object lock;
 	//#endif
 
+
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
 	 * contents, maximum size in characters, and constraints.
@@ -1271,9 +1272,25 @@ implements CommandListener
 					//#ifdef polish.css.font-bitmap
 					if (this.bitMapFont != null) {
 						//System.out.println("Using bitmap-font");
-						super.paintContent(x, y, leftBorder, rightBorder, g);
+						if (this.isLayoutRight) {
+							super.paintContent(x, y, leftBorder, rightBorder - this.caretWidth, g);
+						} else {
+							super.paintContent(x, y, leftBorder, rightBorder, g);
+						}
 						if (this.showCaret) {
-							this.caretViewer.paint( x + this.caretX, y + this.caretY, g);
+							//System.out.println(this + "" + this + ".paintContent(): caretX=" + this.caretX);
+							if (this.isLayoutCenter) {
+								int centerX = leftBorder + ( rightBorder - leftBorder ) / 2;
+								//#ifdef polish.css.text-horizontal-adjustment
+									centerX += this.textHorizontalAdjustment;
+								//#endif
+
+								this.caretViewer.paint( centerX + this.caretX/2 , y + this.caretY, g);
+							} else if (this.isLayoutRight) {
+								this.caretViewer.paint( rightBorder - this.caretWidth, y + this.caretY, g);
+							} else {
+								this.caretViewer.paint( x + this.caretX, y + this.caretY, g);
+							}
 						}
 					} else {
 						//System.out.println("bitmapfont is NULL!");
@@ -1478,6 +1495,7 @@ implements CommandListener
 							}
 							if (updateCaretPosition) {
 								this.caretX = this.font.stringWidth(this.caretRowFirstPart);
+								//System.out.println(this + ".initContent()/font1: caretX=" + this.caretX);
 							}
 						} else if (i < this.textLines.length -1){
 							// the caret-position has been shifted to the next row:
@@ -1491,6 +1509,7 @@ implements CommandListener
 							this.caretRowLastPart = "";
 							this.caretColumn = line.length();
 							this.caretX = this.font.stringWidth(line);
+							//System.out.println(this + ".initContent()/font2: caretX=" + this.caretX);
 						}
 					}
 				} // for each line
@@ -1501,7 +1520,8 @@ implements CommandListener
 				this.caretPositionHasBeenSet = true;
 				if (this.text != null) {
 					//#ifdef polish.css.font-bitmap
-					if (this.textLines != null) { 
+					//if (this.textLines != null) {
+					if (this.bitMapFontViewer == null) {
 					//#endif
 						this.caretPosition = this.text.length();
 						this.caretRow = this.realTextLines.length - 1;
@@ -1509,12 +1529,14 @@ implements CommandListener
 						this.caretColumn = this.originalRowText.length();
 						this.caretY = this.rowHeight * (this.realTextLines.length - 1);
 						this.caretX = this.font.stringWidth( this.originalRowText );
+						//System.out.println(this + ".initContent()/font3: caretX=" + this.caretX);
 						this.textLines[ this.textLines.length -1 ] += " "; 
 					//#ifdef polish.css.font-bitmap
 					} else {
 						// a bitmap-font is used:
 						this.caretPosition = this.text.length();
 						this.caretX = this.bitMapFontViewer.getWidth();
+						//System.out.println(this + ".initContent(): caretX=bitMapFontViewer.getWidth()=" + this.caretX);
 						this.caretY = this.bitMapFontViewer.getHeight() - this.bitMapFontViewer.getFontHeight();
 					}
 					//#endif
@@ -1523,6 +1545,7 @@ implements CommandListener
 					this.caretRow = 0;
 					this.caretColumn = 0;
 					this.caretX = 0;
+					//System.out.println(this + ".initContent()/reset1: caretX=" + this.caretX);
 					this.caretY = 0;
 					this.originalRowText = null;
 				}		
@@ -1540,6 +1563,7 @@ implements CommandListener
 			checkCaretPosition();
 			*/
 			this.screen = getScreen();
+			//System.out.println(this + "" + this + ".initContent():leave: caretX=" + this.caretX);
 			//System.out.println("firstpart=" + this.caretRowFirstPart + "   lastPart=" + this.caretRowLastPart);
 		//#endif
 	}
@@ -1639,6 +1663,9 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style) {
+		//#if tmp.directInput
+			this.caretPositionHasBeenSet = false;
+		//#endif
 		super.setStyle(style);
 		//#ifdef polish.css.textfield-width
 			Integer width = style.getIntProperty("textfield-width");
@@ -1720,7 +1747,7 @@ implements CommandListener
 		}
 		char insertChar = this.caretChar;
 		//#debug
-		System.out.println("TextField: inserting character " + insertChar );
+		System.out.println(this + ": inserting character " + insertChar );
 		String myText;
 		int width;
 		if (this.isPassword) {
@@ -2063,6 +2090,7 @@ implements CommandListener
 						this.caretRowFirstPart = line;
 						this.caretPosition -= this.caretColumn;
 						this.caretX = this.font.stringWidth( line );
+						//System.out.println(this + ".handleKeyPressed()/fon1t: caretX=" + this.caretX);
 						this.caretColumn = line.length();
 						this.caretPosition -= fullLine.length() - line.length();
 						this.caretRowLastPart = fullLine.substring( this.caretColumn );
@@ -2099,6 +2127,7 @@ implements CommandListener
 						this.caretRowFirstPart = firstPart;
 						this.caretPosition += (lastLineLength - this.caretColumn);
 						this.caretX = this.font.stringWidth( firstPart );
+						//System.out.println(this + ".handleKeyPressed()/font2: caretX=" + this.caretX);
 						this.caretColumn = firstPart.length();
 						this.caretPosition += firstPart.length();
 						this.caretRowLastPart = nextLine.substring( this.caretColumn );
@@ -2120,10 +2149,12 @@ implements CommandListener
 							int lastCaretX = this.caretX;
 							if (this.caretColumn == 0) {
 								this.caretX = 0;
+								//System.out.println(this + ".handleKeyPressed()/font/reset1: caretX=" + this.caretX);
 								firstPart = "";
 							} else {
 								firstPart = this.originalRowText.substring( 0, this.caretColumn );
 								this.caretX = this.font.stringWidth( firstPart );
+								//System.out.println(this + ".handleKeyPressed()/font3: caretX=" + this.caretX);
 							} 
 							this.caretRowFirstPart = firstPart;
 							this.caretRowLastPart = this.originalRowText.substring( this.caretColumn );
@@ -2137,6 +2168,7 @@ implements CommandListener
 							this.originalRowText = prevLine;
 							this.caretColumn = prevLine.length();
 							this.caretX = this.font.stringWidth(prevLine);
+							//System.out.println(this + ".handleKeyPressed()/font4: caretX=" + this.caretX);
 							this.caretY -= this.rowHeight;
 							this.caretRowFirstPart = prevLine;
 							this.caretRowLastPart = "";
@@ -2165,6 +2197,7 @@ implements CommandListener
 							this.caretPosition++;
 							String firstPart = this.originalRowText.substring(0, this.caretColumn);
 							this.caretX = this.font.stringWidth(firstPart);
+							//System.out.println(this + ".handleKeyPressed()/font5: caretX=" + this.caretX);
 							this.caretRowFirstPart = firstPart;
 							String lastPart = this.originalRowText.substring( this.caretColumn );
 							this.caretRowLastPart = lastPart;
@@ -2176,6 +2209,7 @@ implements CommandListener
 							this.originalRowText = this.realTextLines[ this.caretRow ];
 							if (characterInserted) {
 								this.caretX = this.font.charWidth(character);
+								//System.out.println(this + ".handleKeyPressed()/font6: caretX=" + this.caretX);
 								this.caretColumn = 1;
 							} else {
 								this.caretRowFirstPart = ""; 
@@ -2314,6 +2348,7 @@ implements CommandListener
 			String start = this.originalRowText.substring(0, this.caretColumn );
 			String end = this.originalRowText.substring( this.caretColumn + 1);
 			this.caretX = this.font.stringWidth(start);
+			//System.out.println(this + ".deleteCurrentChar()/font: caretX=" + this.caretX);
 			this.originalRowText = start + end;
 			this.realTextLines[ this.caretRow ] = this.originalRowText;
 			String myText;
@@ -2364,6 +2399,7 @@ implements CommandListener
 			line = line.substring( 0, line.length() -1 );
 			this.caretColumn = line.length();
 			this.caretX = this.font.stringWidth(line);
+			//System.out.println(this + ".deleteCurrentChar()/font2: caretX=" + this.caretX);
 			this.caretY -= this.rowHeight;
 			setString( myText );
 			//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)

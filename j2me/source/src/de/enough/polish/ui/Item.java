@@ -1051,7 +1051,7 @@ public abstract class Item extends Object
 	 * 
 	 * @return either the corresponding screen or null when no screen could be found 
 	 */
-	protected Screen getScreen() {
+	public Screen getScreen() {
 		if (this.screen != null) {
 			return this.screen;
 		} else if (this.parent != null) {

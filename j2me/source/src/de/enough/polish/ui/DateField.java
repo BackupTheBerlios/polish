@@ -26,6 +26,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.*;
 
+import de.enough.polish.util.BitMapFontViewer;
+
 import java.util.*;
 
 /**
@@ -121,6 +123,12 @@ public class DateField extends StringItem
 		private int currentField;
 		private int currentFieldStartIndex;
 		private ItemCommandListener additionalItemCommandListener;
+		//#if polish.css.font-bitmap
+			private int caretWidth;
+			private int caretX;
+			private int fontHeight;
+			private BitMapFontViewer caretViewer;
+		//#endif
 	//#else
 		private javax.microedition.lcdui.DateField midpDateField; 
 		private javax.microedition.lcdui.Form form;
@@ -514,27 +522,49 @@ public class DateField extends StringItem
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 		//#if tmp.directInput
 			if ( this.isFocused ) {
-				String head = this.text.substring( 0, this.editIndex );
-				int headWidth = this.font.stringWidth( head );
-				char editChar = this.text.charAt( this.editIndex );
-				int editWidth = this.font.charWidth( editChar );
-				if ( this.isLayoutCenter ) {
-					int centerX = leftBorder + (rightBorder - leftBorder) / 2;
-					//#ifdef polish.css.text-horizontal-adjustment
-						centerX += this.textHorizontalAdjustment;
-					//#endif
-					int completeWidth = this.font.stringWidth( this.text );
-					x = centerX - ( completeWidth / 2 );
-				} else if ( this.isLayoutRight ) {
-					int completeWidth = this.font.stringWidth( this.text );
-					x = rightBorder - completeWidth;					
-				}
-				g.fillRect( x + headWidth - 1, y  - 1, editWidth + 1, this.font.getHeight() );
-				
-				if (this.showCaret) {
-					g.setColor( this.textComplementColor );
-					g.drawChar( editChar, x + headWidth, y, Graphics.TOP | Graphics.LEFT );
-				}
+				//#if polish.css.font-bitmap
+					if (this.bitMapFontViewer != null) {
+						//System.out.println("this.editIndex="+ this.editIndex );
+						//#ifdef polish.css.text-horizontal-adjustment
+							x += this.textHorizontalAdjustment;
+						//#endif
+						if (this.isLayoutCenter) {
+							x = leftBorder + (rightBorder - leftBorder)/2 - this.bitMapFontViewer.getWidth()/2;
+						} else if (this.isLayoutRight) {
+							x = rightBorder - this.bitMapFontViewer.getWidth();
+						}
+						g.setColor( this.textComplementColor );
+						g.fillRect( x + this.caretX - 1, y  - 1, this.caretWidth + 1, this.fontHeight + 1 );
+						if (this.showCaret) {
+							//System.out.println("caretX=" + this.caretX + ", x=" + x);
+							this.caretViewer.paint(x + this.caretX, y, g);
+						}
+					} else {
+				//#endif
+						String head = this.text.substring( 0, this.editIndex );
+						int headWidth = this.font.stringWidth( head );
+						char editChar = this.text.charAt( this.editIndex );
+						int editWidth = this.font.charWidth( editChar );
+						if ( this.isLayoutCenter ) {
+							int centerX = leftBorder + (rightBorder - leftBorder) / 2;
+							//#ifdef polish.css.text-horizontal-adjustment
+								centerX += this.textHorizontalAdjustment;
+							//#endif
+							int completeWidth = this.font.stringWidth( this.text );
+							x = centerX - ( completeWidth / 2 );
+						} else if ( this.isLayoutRight ) {
+							int completeWidth = this.font.stringWidth( this.text );
+							x = rightBorder - completeWidth;					
+						}
+						g.fillRect( x + headWidth - 1, y  - 1, editWidth + 1, this.font.getHeight() );
+						
+						if (this.showCaret) {
+							g.setColor( this.textComplementColor );
+							g.drawChar( editChar, x + headWidth, y, Graphics.TOP | Graphics.LEFT );
+						}
+				//#if polish.css.font-bitmap
+					}
+				//#endif
 			}
 		//#else
 			if (this.showCaret) {
@@ -585,6 +615,20 @@ public class DateField extends StringItem
 			this.contentHeight = this.font.getHeight();
 			this.originalHeight = this.contentHeight;
 		}
+		//#if polish.css.font-bitmap && tmp.directInput
+			if (this.bitMapFontViewer != null) {
+			
+				if (this.caretViewer == null) {
+					char editChar = this.text.charAt( 0 );
+					BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
+					this.caretViewer = viewer;
+					this.caretWidth = viewer.getWidth();
+					this.caretX = 0;
+					this.fontHeight = viewer.getFontHeight();
+				}
+			}
+	//#endif
+
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -683,6 +727,9 @@ public class DateField extends StringItem
 					this.currentField = 0;
 					this.currentFieldStartIndex = 0;
 					this.editIndex = 0;
+					//#if polish.css.font-bitmap
+						this.caretViewer = null;
+					//#endif
 				}
 				return false;
 			}
@@ -748,6 +795,21 @@ public class DateField extends StringItem
 			}
 			this.currentFieldStartIndex = newIndex + 1;
 		}
+		//#if polish.css.font-bitmap
+			if (this.bitMapFontViewer != null) {
+				char editChar = this.text.charAt( this.editIndex );
+				BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
+				this.caretViewer = viewer;
+				this.caretWidth = viewer.getWidth();
+				if (this.editIndex == 0) {
+					this.caretX = 0;
+				} else {
+					viewer = this.bitMapFont.getViewer( this.text.substring( 0, this.editIndex ));
+					this.caretX = viewer.getWidth();
+				}
+				this.fontHeight = viewer.getFontHeight();
+			}
+		//#endif
 	}
 	//#endif
 
@@ -773,6 +835,26 @@ public class DateField extends StringItem
 			this.currentField++;
 		}
 		this.editIndex = newIndex;
+		//#if polish.css.font-bitmap
+			if (this.bitMapFontViewer != null) {
+				if (newIndex == 0) {
+					this.caretX = 0;
+				} else {
+					String header = this.text.substring( 0, newIndex );
+					BitMapFontViewer viewer = this.bitMapFont.getViewer( header );
+					this.caretX = viewer.getWidth();
+					//System.out.println("Width of [" + header + "]=" + this.caretX );
+				}
+				
+				char editChar = this.text.charAt( newIndex );
+				System.out.println("MoveForward: text[" + newIndex + "]=" + editChar );
+				BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
+				this.caretViewer = viewer;
+				this.caretWidth = viewer.getWidth();
+				this.fontHeight = viewer.getFontHeight();
+				//System.out.println("moveForward: caretX=" + this.caretX );
+			}
+		//#endif
 	}
 	//#endif
 	

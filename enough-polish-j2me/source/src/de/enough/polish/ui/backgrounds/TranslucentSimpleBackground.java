@@ -28,7 +28,7 @@ package de.enough.polish.ui.backgrounds;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-//#if polish.api.nokia-ui && !polish.midp2
+//#if polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;
 	import com.nokia.mid.ui.DirectUtils;
 //#endif
@@ -49,17 +49,16 @@ import de.enough.polish.ui.Background;
 public class TranslucentSimpleBackground extends Background {
 
 	private final int argbColor;
-	//#ifdef polish.midp2
+	//#ifdef polish.api.nokia-ui
+		private final int[] xCoords;
+		private final int[] yCoords;
+	//#elifdef polish.midp2
 		// int MIDP/2.0 the buffer is always used:
 		private int[] buffer;
 		private int lastWidth;
 		//#if polish.Bugs.drawRgbNeedsFullBuffer
-			//# private int lastHeight;
+			private int lastHeight;
 		//#endif
-	//#elif polish.api.nokia-ui
-		private Image imageBuffer;
-		//# private int lastWidth;
-		private int lastHeight;
 	//#endif
 
 	/**
@@ -70,13 +69,34 @@ public class TranslucentSimpleBackground extends Background {
 	public TranslucentSimpleBackground( int argbColor ) {
 		super();
 		this.argbColor = argbColor;
+		//#if polish.api.nokia-ui
+			this.xCoords = new int[4];
+			this.xCoords[0] = Integer.MIN_VALUE;
+			this.yCoords = new int[4];
+			this.yCoords[0] = Integer.MIN_VALUE;
+		//#endif
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		//#ifdef polish.midp2
+		//#ifdef polish.api.nokia-ui
+			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+			if ( this.xCoords[0] != x) {
+				this.xCoords[0] = x;
+				this.xCoords[1] = x + width;
+				this.xCoords[2] = x + width;
+				this.xCoords[3] = x;
+			}
+			if ( this.yCoords[0] != y) {
+				this.yCoords[0] = y;
+				this.yCoords[1] = y;
+				this.yCoords[2] = y + height;
+				this.yCoords[3] = y + height;
+			}
+			dg.fillPolygon( this.xCoords, 0, this.yCoords, 0, 4, this.argbColor );
+		//#elifdef polish.midp2
 			// on the SE K700 for example the translated origin of the graphics 
 			// does not seem to used. Instead the real origin is used:
 			//#ifdef polish.Bugs.drawRgbOrigin
@@ -125,14 +145,14 @@ public class TranslucentSimpleBackground extends Background {
 			//#else
 				g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
 			//#endif
-		//#elif polish.api.nokia-ui
-			if (width != this.lastWidth || height != this.lastHeight) {
-				this.lastWidth = width;
-				this.lastHeight = height;
-				this.imageBuffer = DirectUtils.createImage( width, height, this.argbColor );
-			}
-			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
-			dg.drawImage(this.imageBuffer, x, y, Graphics.TOP | Graphics.LEFT, 0 );
+//		//#elif polish.api.nokia-ui
+//			if (width != this.lastWidth || height != this.lastHeight) {
+//				this.lastWidth = width;
+//				this.lastHeight = height;
+//				this.imageBuffer = DirectUtils.createImage( width, height, this.argbColor );
+//			}
+//			//DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+//			dg.drawImage(this.imageBuffer, x, y, Graphics.TOP | Graphics.LEFT, 0 );
 		//#else
 			// ignore alpha-value
 			g.setColor( this.argbColor );
