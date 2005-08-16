@@ -26,10 +26,24 @@
 package de.enough.polish.resources;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import javax.imageio.ImageIO;
+
+import com.kitfox.svg.SVGDiagram;
+import com.kitfox.svg.SVGException;
+import com.kitfox.svg.SVGUniverse;
+import com.kitfox.svg.app.beans.SVGPanel;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
@@ -49,9 +63,10 @@ import de.enough.polish.util.StringUtil;
  */
 public class SvgConverterResourceCopier extends ResourceCopier {
 
+	private boolean scaleToFit;
+
 	public SvgConverterResourceCopier() {
 		super();
-		// TODO enough implement SvgConverterResourceCopier
 	}
 	
 	/**
@@ -92,6 +107,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 		}
 	}
 	
+	
 	/**
 	 * Retrieves the size of the screen, if available.
 	 * 
@@ -126,19 +142,80 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 		Environment env = device.getEnvironment();
 		boolean supportsSvgApi = supportsSvgApi( env );
 		Dimension iconSize = getIconSize( env );
+		Dimension screenSize = getScreenSize( env );
 		
 		ArrayList leftResourcesList = new ArrayList();
 		for (int i = 0; i < resources.length; i++) {
 			File file = resources[i];
 			if ( file.getName().endsWith(".svg") || file.getName().endsWith(".SVG") ) {
-				//TODO Tim: convert SVG
-				
+	
+					handleSvgFile( file, env, device, supportsSvgApi, iconSize, screenSize, targetDir );
+		
 			} else {
 				leftResourcesList.add( file );
 			}
 		}
 		File[] leftResources = (File[]) leftResourcesList.toArray( new File[ leftResourcesList.size() ] );
 		FileUtil.copy( leftResources, targetDir );
+	}
+	
+	public void setScaleToFit( boolean scaleToFit ) {
+		this.scaleToFit = scaleToFit;
+	}
+
+	private void handleSvgFile(File file, Environment env, Device device, boolean supportsSvgApi, Dimension iconSize, Dimension screenSize, File targetDir) 
+	throws IOException  
+	{		
+		if(file.getName().startsWith("icon") || file.getName().startsWith("bg")){
+		double newWidth = 0,newHeight = 0;
+		if (file.getName().startsWith("icon")) {
+	    	  if ( iconSize == null ) {
+	    		  iconSize = new Dimension( 15, 15 );
+	    	  }
+	  		newWidth = iconSize.width;newHeight = iconSize.height; 
+	  	  }
+	      else if(file.getName().startsWith("bg")){
+	    	  if(screenSize == null){
+	    		  screenSize = new Dimension(128,160);
+	    	  }
+		  		newWidth = screenSize.width;newHeight = screenSize.height; 
+	      }	
+
+	  		SVGUniverse universe = new SVGUniverse();
+	  		SVGDiagram diagram = null;
+	  		URI uri;	
+	  		uri = universe.loadSVG( new FileInputStream(file), "svgimage" );
+	  		diagram = universe.getDiagram(uri);	 
+	  		double width = diagram.getWidth();
+	  		double height = diagram.getHeight();
+	  		BufferedImage image = new BufferedImage( (int)newWidth, (int)newHeight, BufferedImage.TYPE_4BYTE_ABGR);		
+	  		Graphics2D g = image.createGraphics();	
+	  		g.setClip(0,0,(int)newWidth,(int)newHeight);
+	  		double sX = newWidth / width;
+	  		double sY =  newHeight / height;
+	  		g.scale(sX,sY);
+//	  		System.out.println("handling svg file " + file.getAbsolutePath() );
+//	  		System.out.println("targetDir=" + targetDir.getAbsolutePath() );
+//	  		System.out.println("width: " + width );
+//	  		System.out.println("height: " + height );
+//	  		System.out.println("newWidth: " + newWidth );
+//	  		System.out.println("newHeight: " +newHeight );
+//	  		System.out.println("sX: " + sX );
+//	  		System.out.println("sY: " +sY );
+//	  		System.out.println("breite: " + width * sX );
+//	  		System.out.println("höhe: " + height * sY );
+  			try {
+				diagram.render(g);
+			} catch (SVGException e) {
+				throw new IOException(e.toString());
+			}
+			  		
+	  		File target = new File(targetDir, file.getName().substring( 0, file.getName().length() - 4 )  +  ".png");
+	  		FileOutputStream out;
+	  		out = new FileOutputStream( target );
+	  		ImageIO.write( image, "png", out );
+	  		out.close();
+			}
 	}
 
 }

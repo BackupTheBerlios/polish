@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="import/ant.jar"/>
 	<classpathentry kind="lib" path="import/junit.jar"/>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry output="bin/extensions" kind="src" path="source/extensions"/>
@@ -15,5 +14,7 @@
 	<classpathentry kind="lib" path="import/jode-1.1.2-pre1.jar"/>
 	<classpathentry kind="lib" path="import/AppleJavaExtensions.jar"/>
 	<classpathentry kind="src" path="/enough-bytecode"/>
+	<classpathentry kind="lib" path="import/ant.jar"/>
+	<classpathentry kind="lib" path="import/svgSalamander.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
