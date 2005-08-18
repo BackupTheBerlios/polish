@@ -25,12 +25,15 @@
  */
 package de.enough.polish.ant;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildLogger;
+
+import de.enough.polish.Environment;
 
 
 
@@ -47,11 +50,15 @@ import org.apache.tools.ant.BuildLogger;
  */
 public class PolishLogger implements BuildLogger {
 	
+	private final static char SEPERATOR_CHAR = File.separatorChar; // this weird construct is needed
+	// so that Ant does not load the File class in the messageLogged() method...
+
 	private BuildLogger logger;
 	private boolean isInObfuscateMode;
 	private boolean isInCompileMode;
 	private Map classPathTranslations;
 	private boolean isInternalCompilationError;
+	private final Environment environment;
 
 
 	/**
@@ -61,9 +68,10 @@ public class PolishLogger implements BuildLogger {
 	 * @param classPathTranslations a map containing all original paths for each loaded java file.
 	 * 
 	 */
-	public PolishLogger( BuildLogger logger, Map classPathTranslations ) {
+	public PolishLogger( BuildLogger logger, Map classPathTranslations, Environment environment ) {
 		this.logger = logger;
 		this.classPathTranslations = classPathTranslations;
+		this.environment = environment;
 		try {
 			// force class loading, so that no additional build-event
 			// is triggered when the messageLogged()-method
@@ -96,12 +104,20 @@ public class PolishLogger implements BuildLogger {
 				if (originalPath != null) {
 					// [javac] is needed by some IDEs like Eclipse,
 					// so that it can map the source-code position
-					// to the editor.
-					message = "[javac] " + originalPath + message.substring( index + ".java".length() );
+					// to the editor. (2005-08: this is now done directly, since Eclipse 3.1
+					// expects [javac] at the beginning of the line.
+					//message = "[javac] " + originalPath + message.substring( index + ".java".length() );
+					message = originalPath + message.substring( index + ".java".length() );
 					event.setMessage(message, event.getPriority());
 					this.isInternalCompilationError = false;
 				} else {
-					event.setMessage("Internal J2ME Polish class: " + message, event.getPriority() );
+					String polishSource = this.environment.getVariable("polish.source");
+					if (polishSource != null) {
+						message = polishSource + SEPERATOR_CHAR +  message.substring( startIndex );
+						event.setMessage(message, event.getPriority() );
+					} else {
+						event.setMessage("Internal J2ME Polish class: " + message, event.getPriority() );
+					}
 					this.isInternalCompilationError = true;
 				}
 			}

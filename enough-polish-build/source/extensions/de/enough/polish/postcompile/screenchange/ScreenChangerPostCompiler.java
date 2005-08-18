@@ -94,12 +94,27 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 			mapper.setClassLoader(device.getClassLoader());
 			
 			// Note: This code is duplicated in MasterCanvasPostCompiler.
-			mapper.addMapping(
-				new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "setCurrent",
-											"(Ljavax/microedition/lcdui/Displayable;)V",
-											false, targetClassName, "setCurrent",
-											"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
-			);
+			
+			// on blackberry devices we provide our own display classes,
+			// so there is a special case then:
+			boolean usePolishBlackberryImpl = this.environment.hasSymbol("polish.blackberry");
+			if (!usePolishBlackberryImpl) {
+				// normal case:
+				mapper.addMapping(
+					new MethodInvocationMapping(true, "javax/microedition/lcdui/Display", "setCurrent",
+												"(Ljavax/microedition/lcdui/Displayable;)V",
+												false, targetClassName, "setCurrent",
+												"(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Displayable;)V")
+				);
+			} else {
+				// special blackberry case:
+				mapper.addMapping(
+						new MethodInvocationMapping(true, "de/enough/polish/blackberry/ui/Display", "setCurrent",
+													"(Lde/enough/polish/blackberry/ui/Displayable;)V",
+													false, targetClassName, "setCurrent",
+													"(Lde/enough/polish/blackberry/ui/Display;Lde/enough/polish/blackberry/ui/Displayable;)V")
+				);
+			}
 			
 			mapper.doMethodMapping( files );
 		} catch (IOException e) {

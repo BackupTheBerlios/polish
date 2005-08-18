@@ -128,15 +128,6 @@ public class GenericEmulator extends Emulator {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ant.emulator.Emulator#startEmulator()
-	 */
-	public Process startEmulator() throws IOException {
-		System.out.println("Starting emulator [" + this.arguments[0] + "]...");
-		Runtime runtime = Runtime.getRuntime();
-		return runtime.exec( this.arguments );
-	}
-
-	/* (non-Javadoc)
 	 * @see de.enough.polish.emulator.Emulator#getArguments()
 	 */
 	public String[] getArguments() {

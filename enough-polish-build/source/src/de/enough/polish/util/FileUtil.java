@@ -150,7 +150,7 @@ public final class FileUtil {
 	 * Copies a file.
 	 * 
 	 * @param source The file which should be copied
-	 * @param target The file to which the source-file should be copied to.
+	 * @param target The file or directory to which the source-file should be copied to.
 	 * @throws FileNotFoundException when the source file was not found
 	 * @throws IOException when there is an error while copying the file.
 	 */
@@ -164,7 +164,7 @@ public final class FileUtil {
 	 * Copies a file.
 	 * 
 	 * @param source The file which should be copied
-	 * @param target The file to which the source-file should be copied to.
+	 * @param target The file or directory to which the source-file should be copied to.
 	 * @param buffer A buffer used for the copying.
 	 * @throws FileNotFoundException when the source file was not found
 	 * @throws IOException when there is an error while copying the file.
@@ -177,6 +177,9 @@ public final class FileUtil {
 		File parent = target.getParentFile();
 		if (!parent.exists()) {
 			parent.mkdirs();
+		} 
+		if (target.isDirectory()) {
+			target = new File( target, source.getName() );
 		}
 		OutputStream out = new FileOutputStream( target );
 		int read;

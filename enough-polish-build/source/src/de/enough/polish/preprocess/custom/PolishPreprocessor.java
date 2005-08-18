@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.preprocess.CssAttribute;
 import de.enough.polish.preprocess.CssAttributesManager;
@@ -68,10 +69,14 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	protected static final Pattern SET_TICKER_PATTERN = Pattern.compile( SET_TICKER_STR );
 	protected static final Pattern GET_TICKER_PATTERN = Pattern.compile( GET_TICKER_STR );
 	
+	protected static final String GET_GRAPHICS_STR = "([\\.|\\s]|^)getGraphics\\s*\\(\\s*\\)";
+	protected static final Pattern GET_GRAPHICS_PATTERN = Pattern.compile( GET_GRAPHICS_STR );
+	
 	//protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\([\\w|\\.]+\\s*\\)";
 	protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\(.+\\)";
 	protected static final Pattern SET_CURRENT_ITEM_PATTERN = Pattern.compile( SET_CURRENT_ITEM_STR );
 	private CssAttributesManager cssAttributesManager;
+	private boolean usesBlackBerry;
 
 	/**
 	 * Creates a new uninitialised PolishPreprocessor 
@@ -121,6 +126,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 */
 	public void notifyDevice(Device device, boolean usesPolishGui) {
 		super.notifyDevice(device, usesPolishGui);
+		Environment env = device.getEnvironment();
+		this.usesBlackBerry = env.hasSymbol("polish.blackberry") && usesPolishGui;
 		if (usesPolishGui) {
 			// init ticker setting:
 			this.tickerFile = new File( device.getBaseDir() + File.separatorChar 
@@ -355,6 +362,31 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				this.isPopupUsed = true;
 				continue;
 			}
+			
+			// check for GameCanvase.getGraphics() on BlackBerry phones:
+			if (this.usesBlackBerry) {
+				startPos = line.indexOf("getGraphics"); 
+				if ( startPos != -1) {
+					int commentPos = line.indexOf("//");
+					if (commentPos != -1 && commentPos < startPos) {
+						continue;
+					}
+					Matcher matcher = GET_GRAPHICS_PATTERN.matcher( line );
+					boolean matchFound = false;
+					while (matcher.find()) {
+						matchFound = true;
+						String group = matcher.group();
+						String replacement = StringUtil.replace( group, "getGraphics", "getPolishGraphics");
+						line = StringUtil.replace( line, group, replacement );
+					}
+					if (matchFound) {
+						this.isTickerUsed = true;
+						lines.setCurrent( line );					
+					}
+					continue;
+				}
+			}
+
 		}
 	}
 	

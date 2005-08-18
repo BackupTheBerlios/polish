@@ -11,8 +11,8 @@
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
-    J2ME Polish is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    J2ME Polish is distributed in the hope that it will be useful,
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
@@ -133,9 +133,55 @@
 				</to>
 			</mapping>
 		</mappings>
+		<mappings if="polish.usePolishGui and not polish.useDefaultPackage and polish.blackberry">
+			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.blackberry.midlet.*" />
+			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.blackberry.midlet.MIDlet" />
+			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="de.enough.polish.blackberry.midlet.MIDletStateChangeException" />
+			<mapping from="javax.microedition.lcdui.Alert" to="de.enough.polish.blackberry.ui.Alert" />
+			<mapping from="javax.microedition.lcdui.AlertType" to="de.enough.polish.blackberry.ui.AlertType" />
+			<mapping from="javax.microedition.lcdui.Canvas" to="de.enough.polish.blackberry.ui.Canvas" />
+			<mapping from="javax.microedition.lcdui.Command" to="de.enough.polish.blackberry.ui.Command" />
+			<mapping from="javax.microedition.lcdui.CommandListener" to="de.enough.polish.blackberry.ui.CommandListener" />
+			<mapping from="javax.microedition.lcdui.Display" to="de.enough.polish.blackberry.ui.Display" />
+			<mapping from="javax.microedition.lcdui.Displayable" to="de.enough.polish.blackberry.ui.Displayable" />
+			<mapping from="javax.microedition.lcdui.Font" to="de.enough.polish.blackberry.ui.Font" />
+			<mapping from="javax.microedition.lcdui.Graphics" to="de.enough.polish.blackberry.ui.Graphics" />
+			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.blackberry.ui.Image" />
+			<mapping from="javax.microedition.lcdui.*">
+				<to>
+					de.enough.polish.blackberry.ui.CommandListener; 
+					import de.enough.polish.blackberry.ui.Alert; 
+					import de.enough.polish.blackberry.ui.AlertType;
+					import de.enough.polish.blackberry.ui.Canvas;
+					import de.enough.polish.blackberry.ui.Command;
+					import de.enough.polish.blackberry.ui.Display;
+					import de.enough.polish.blackberry.ui.Displayable;
+					import de.enough.polish.blackberry.ui.Font;
+					import de.enough.polish.blackberry.ui.Graphics;
+					import de.enough.polish.blackberry.ui.Image; 
+					import de.enough.polish.ui.*
+				</to>
+			</mapping>
+		</mappings>
+		<mappings if="polish.usePolishGui and polish.useDefaultPackage and polish.blackberry">
+			<mapping from="javax.microedition.midlet.*" to="" />
+			<mapping from="javax.microedition.midlet.MIDlet" to="" />
+			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="" />
+			<mapping from="javax.microedition.lcdui.Alert" to="" />
+			<mapping from="javax.microedition.lcdui.AlertType" to="" />
+			<mapping from="javax.microedition.lcdui.Canvas" to="" />
+			<mapping from="javax.microedition.lcdui.Command" to="" />
+			<mapping from="javax.microedition.lcdui.CommandListener" to="" />
+			<mapping from="javax.microedition.lcdui.Display" to="" />
+			<mapping from="javax.microedition.lcdui.Displayable" to="" />
+			<mapping from="javax.microedition.lcdui.Font" to="" />
+			<mapping from="javax.microedition.lcdui.Graphics" to="" />
+			<mapping from="javax.microedition.lcdui.Image" to="" />
+			<mapping from="javax.microedition.lcdui.*" to="" />
+		</mappings>
 		
 		<!-- mapping of game imports -->
-		<mappings if="(polish.midp1 or polish.usePolishGameApi) and not polish.useDefaultPackage">
+		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry) and not polish.useDefaultPackage and polish.usePolishGui">
 			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="de.enough.polish.ui.game.GameCanvas; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.game.Layer" to="de.enough.polish.ui.game.Layer; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.game.LayerManager" to="de.enough.polish.ui.game.LayerManager; import de.enough.polish.ui.StyleSheet" />
@@ -143,7 +189,15 @@
 			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="de.enough.polish.ui.game.TiledLayer; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.game.*" to="de.enough.polish.ui.game.*; import de.enough.polish.ui.StyleSheet" />
 		</mappings>
-		<mappings if="(polish.midp1 or polish.usePolishGameApi) and polish.useDefaultPackage">
+		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry) and not polish.useDefaultPackage and not polish.usePolishGui">
+			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="de.enough.polish.ui.game.GameCanvas" />
+			<mapping from="javax.microedition.lcdui.game.Layer" to="de.enough.polish.ui.game.Layer" />
+			<mapping from="javax.microedition.lcdui.game.LayerManager" to="de.enough.polish.ui.game.LayerManager" />
+			<mapping from="javax.microedition.lcdui.game.Sprite" to="de.enough.polish.ui.game.Sprite" />
+			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="de.enough.polish.ui.game.TiledLayer" />
+			<mapping from="javax.microedition.lcdui.game.*" to="de.enough.polish.ui.game.*" />
+		</mappings>
+		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry) and polish.useDefaultPackage">
 			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="" />
 			<mapping from="javax.microedition.lcdui.game.Layer" to="" />
 			<mapping from="javax.microedition.lcdui.game.LayerManager" to="" />

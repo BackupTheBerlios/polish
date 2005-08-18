@@ -86,6 +86,7 @@ public class WriteFileListTask extends Task {
 			String[] fileNames = scanner.getIncludedFiles();
 			for (int j = 0; j < fileNames.length; j++) {
 				String name = fileNames[j];
+				name = name.replace('\\', '/');
 				fileNamesList.add( name );
 			}
 		}

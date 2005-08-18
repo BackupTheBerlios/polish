@@ -62,16 +62,21 @@
 		<capability name="key.MoveLeftKey" value="5177410" />
 		<capability name="key.MoveRightKey" value="5242946" />
 		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
+		<!--
 		<capability name="build.BootClassPath" value="${blackberry.home}/lib/net_rim_api.jar" />
+		<capability name="build.Preverifier" value="none" />
+		-->
+		<capability name="build.BootClassPath" value="blackberry-4.0.jar" />
 		<capability name="build.Finalizer" value="jar2cod" />
 		<capability name="build.ImplicitGroups" value="blackberry" />
+		<capability name="Emulator.Class" value="BlackBerryEmulator" />
 	</platform>
 
 	<platform>
 		<identifier>WIPI/1.2</identifier>
 		<features>wipi1.2</features>
 		<capability name="build.BootClassPath" value="midp-1.0.jar" />
-		<capability name="build.Preverfier" value="none" />
+		<capability name="build.Preverifier" value="none" />
 		<capability name="build.ImplicitGroups" value="wipi, wipi1.2" />
 	</platform>
 

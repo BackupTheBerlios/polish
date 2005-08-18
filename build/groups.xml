@@ -47,7 +47,10 @@
 		<capability name="FullCanvasSize" value="128x128" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_1" />
-		<capability name="Emulator.Skin.2" value="Nokia_S40_DP20_SDK_1_0" />
+		<!-- repeat first skin, so that devices can set the primary skin without
+		     loosing the normal emulator skin -->
+		<capability name="Emulator.Skin.2" value="Nokia_S40_DP20_SDK_1_1" />
+		<capability name="Emulator.Skin.3" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
@@ -121,6 +124,26 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi" />		
 	</group>
+
+	<group>
+		<name>Series60E2FP2</name>
+		<parent>Series60E2</parent>
+		<capability name="OS" value="Symbian OS 8.0a" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="m3g, pdaapi" />		
+	</group>
+
+	<group>
+		<name>Series60E2FP3</name>
+		<parent>Series60E2FP2</parent>
+		<capability name="OS" value="Symbian OS 8.0a" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="m3g, pdaapi" />		
+		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
+	</group>
+	
 	
 
 	<group>

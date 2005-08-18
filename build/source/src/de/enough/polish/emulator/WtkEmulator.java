@@ -389,14 +389,11 @@ public class WtkEmulator extends Emulator {
 		return env.resolveFile("${wtk.home}/wtklib/emulator.properties");
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ant.emulator.Emulator#startEmulator()
-	 */
-	public Process startEmulator() throws IOException {
-		System.out.println("Starting emulator [" + this.arguments[0] + "]...");
-		Runtime runtime = Runtime.getRuntime();
-		return runtime.exec( this.arguments, this.environment, this.workingDirectory );
+	
+	protected File getExecutionDir() {
+		return this.workingDirectory;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.emulator.Emulator#getArguments()

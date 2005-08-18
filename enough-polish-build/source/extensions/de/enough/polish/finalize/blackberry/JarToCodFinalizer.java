@@ -26,6 +26,8 @@
 package de.enough.polish.finalize.blackberry;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,19 +85,66 @@ implements OutputFilter
 			throw new BuildException("Your Ant property \"blackberry.home\" is invalid, it needs to point to the JDE directory (so that it finds the \"bin\\rapc.jar\" file within the ${blackberry.home} directory).");
 		}
 		
+		// check if a MIDlet should be converted or whether a normal
+		// blackberry application is used:
+		String mainClassName = env.getVariable( "blackberry.main");
+		boolean usePolishGui = env.hasSymbol( "polish.usePolishGui" );
+		if (mainClassName == null && usePolishGui) {
+			boolean useDefaultPackage = env.hasSymbol( "polish.useDefaultPackage" );
+			if (useDefaultPackage) {
+				mainClassName = "MIDlet";
+			} else {
+				mainClassName= "de.enough.polish.blackberry.midlet.MIDlet";
+			}
+		}
+		if (mainClassName != null) {
+			try {
+				/*
+				String[] entries = FileUtil.readTextFile( jadFile );
+				String[] newEntries = new String[ entries.length + 1 ];
+				System.arraycopy( entries, 0, newEntries, 0, entries.length );
+				newEntries[ entries.length ] = "RIM-MIDlet-Flags-1: 0";
+				*/
+				String[] newEntries = new String[]{
+						"MIDlet-Name: " + env.getVariable("MIDlet-Name"),
+						"MIDlet-Version: 0.0",
+						"MIDlet-Vendor: <unknown>",
+						"MIDlet-Jar-URL: " + jarFile.getName(),
+						"MIDlet-Jar-Size: 0",
+						"MicroEdition-Profile: MIDP-2.0",
+						"MicroEdition-Configuration: CLDC-1.1",
+						"MIDlet-1: " + env.getVariable("MIDlet-Name") + ",,",
+						"RIM-MIDlet-Flags-1: 0",
+						""
+				};
+
+				File rapcFile = new File( jadFile.getParent(), codName + ".rapc");
+				FileUtil.writeTextFile( rapcFile, newEntries );
+			} catch ( IOException e ) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (!this.verbose) {
+			this.verbose = "true".equals( env.getVariable("polish.blackberry.verbose") );
+		}
 		ArrayList commands = new ArrayList();
 		try {
-			
 			// call the rapc compiler for converting the JAR to a COD file:
 			commands.add( "java" );
 			commands.add( "-cp" );
 			commands.add( rapcJarFile.getAbsolutePath() );
 			commands.add( "net.rim.tools.compiler.Compiler" );
-			commands.add( "import=" + blackberryHome + "/lib/net_rim_api.jar" );
+			commands.add( "import=" +  blackberryHome + File.separatorChar + "lib" + File.separatorChar + "net_rim_api.jar" );
 			commands.add(  "codename=" + codName );
-			commands.add( "-midlet" );
-			commands.add( "jad=" + jadFile.getAbsolutePath() );
-			commands.add( jarFile.getAbsolutePath() );
+			//commands.add( "-midlet" );
+			if (mainClassName == null) {
+				commands.add( "-midlet" );
+				commands.add( "jad=" + jadFile.getName() );
+			} else {
+				commands.add( codName + ".rapc" );
+			}
+			commands.add( jarFile.getName() );
 			System.out.println("rapc: Converting jar to cod for device [" + device.getIdentifier() + "]");
 			/*
 			Class compilerClass = Class.forName("net.rim.tools.compiler.Compiler");
@@ -180,12 +229,37 @@ implements OutputFilter
 		if ( this.verbose 
 				|| 
 				(message.indexOf("Parsing") == -1 
+				&& message.indexOf("Warning!") == -1
+				&& message.indexOf("Reading ") == -1
 				&& message.indexOf(".class:") == -1
 				&& message.indexOf("Duplicate method only") == -1
+				&& message.indexOf("not required") == -1
 				) ) 
 		{
+			//output.println( message + this.verbose + message.indexOf("Warning!") );
 			output.println( message );
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#initialize(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
+	 */
+	public void initialize( Device device, Locale locale, Environment env ) {
+		String mainClassName = env.getVariable( "blackberry.main");
+		boolean usePolishGui = env.hasSymbol( "polish.usePolishGui" );
+		if (mainClassName == null && usePolishGui) {
+			boolean useDefaultPackage = env.hasSymbol( "polish.useDefaultPackage" );
+			if (useDefaultPackage) {
+				mainClassName = "MIDlet";
+			} else {
+				mainClassName= "de.enough.polish.blackberry.midlet.MIDlet";
+			}
+		}
+		if (mainClassName != null) {
+			env.addVariable( "polish.classes.main", mainClassName );
+		}
+	}
+	
+	
 
 }

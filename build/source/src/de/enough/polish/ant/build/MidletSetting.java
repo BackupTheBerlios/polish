@@ -28,6 +28,9 @@ package de.enough.polish.ant.build;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
+
 import java.util.*;
 
 /**
@@ -62,16 +65,18 @@ public class MidletSetting {
 	/**
 	 * Gets all the defined midlets in the correct order.
 	 * @param project
+	 * @param environment 
 	 * 
 	 * @return All midlets in the correct order, that means Midlet-1 is the first element of the array. 
 	 */
-	public Midlet[] getMidlets(Project project) {
+	public Midlet[] getMidlets(Project project, Environment environment) {
+		BooleanEvaluator evaluator = environment.getBooleanEvaluator();
 		ArrayList mids = new ArrayList();
 		Midlet[] midletsArray = (Midlet[]) this.midlets.toArray( new Midlet[ this.midlets.size() ] );
 		// add only active MIDlets:
 		for (int i = 0; i < midletsArray.length; i++) {
 			Midlet midlet = midletsArray[i];
-			if (midlet.isActive(project)) {
+			if (midlet.isActive( evaluator, project )) {
 				mids.add( midlet );
 			}
 		}
@@ -105,6 +110,10 @@ public class MidletSetting {
 			return midlet1.getNumber() - midlet2.getNumber();
 		}
 		
+	}
+
+	public Midlet[] getMidlets() {
+		return (Midlet[]) this.midlets.toArray( new Midlet[ this.midlets.size() ] );
 	}
 
 }

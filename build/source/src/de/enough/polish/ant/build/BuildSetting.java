@@ -64,7 +64,7 @@ public class BuildSetting {
 	public final static String TARGET_1_2 = "1.2";
 	
 	private static final String DEFAULT_JAD_FILTER_PATTERN = "MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
-	private static final String DEFAULT_MANIFEST_FILTER_PATTERN = "Manifest-Version, MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
+	private static final String DEFAULT_MANIFEST_FILTER_PATTERN = "Manifest-Version, Main-Class?, MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
 	
 	private static final String DEFAULT_ENCODING = "UTF8";
 	
@@ -457,11 +457,15 @@ public class BuildSetting {
 		return this.debugSetting;
 	}
 	
-	public Midlet[] getMidlets() {
+	public Midlet[] getMidlets(Environment environment) {
 		if (this.midletSetting == null) {
 			return null;
 		}
-		return this.midletSetting.getMidlets( this.antProject );
+		return this.midletSetting.getMidlets( this.antProject, environment );
+	}
+
+	public Midlet[] getMidlets() {	
+		return this.midletSetting.getMidlets();
 	}
 
 	/**
@@ -899,11 +903,12 @@ public class BuildSetting {
 	 * Retrieves all the defined MIDlet-class-names.
 	 * 
 	 * @param useDefaultPackage true when the default package should be used 
+	 * @param environment the environment
 	 * @return The names of all midlet-classes in a String array. 
 	 * 		The first midlet is also the first element in the returned array.
 	 */
-	public String[] getMidletClassNames( boolean useDefaultPackage ) {
-		Midlet[] midlets = getMidlets();
+	public String[] getMidletClassNames( boolean useDefaultPackage, Environment environment ) {
+		Midlet[] midlets = getMidlets( environment );
 		String[] midletClassNames = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
 			String className = midlets[i].getClassName();
@@ -928,8 +933,8 @@ public class BuildSetting {
 	 * @return The infos of all midlets in a String array.
 	 * 		The first midlet is also the first element in the returned array.
 	 */
-	public String[] getMidletInfos( String defaultIcon, boolean useDefaultPackage ) {
-		Midlet[] midlets = getMidlets();
+	public String[] getMidletInfos( String defaultIcon, boolean useDefaultPackage, Environment environment ) {
+		Midlet[] midlets = getMidlets( environment );
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
 			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon, useDefaultPackage );
@@ -1607,5 +1612,6 @@ public class BuildSetting {
 	public void setOnError(String onError) {
 		this.onError = onError;
 	}
+
 	
 }

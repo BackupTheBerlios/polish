@@ -44,6 +44,8 @@ import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.stacktrace.BinaryStackTrace;
 import de.enough.polish.stacktrace.DecompilerNotInstalledException;
 import de.enough.polish.stacktrace.StackTraceUtil;
+import de.enough.polish.util.OutputFilter;
+import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -59,16 +61,18 @@ import de.enough.polish.util.StringUtil;
  */
 public abstract class Emulator 
 extends Extension 
-implements Runnable 
+implements Runnable, OutputFilter
 {
 
-	private Device emulatedDevice;
-	private EmulatorSetting emulatorSetting;
+	protected EmulatorSetting emulatorSetting;
 	private boolean isFinished = false;
 	private File[] sourceDirs;
 	private String preprocessedSourcePath;
 	private String classPath;
-	private Environment environment;
+	protected Environment environment;
+	protected Device device;
+	private boolean decompilerInstalled;
+	private String header;
 	
 	/**
 	 * Creates a new emulator instance.
@@ -94,17 +98,7 @@ implements Runnable
 	public abstract boolean init(Device device, EmulatorSetting setting, Environment env, Project project, BooleanEvaluator evaluator, String wtkHome );
 	
 	/**
-	 * Starts the actual emulator-process.
-	 * 
-	 * @return the process itself, so that J2ME Polish can show the output of the process
-	 * @throws IOException when the process could not be started
-	 */
-	public abstract Process startEmulator() throws IOException;
-	
-	/**
-	 * Retrieves the arguments which were used to start the emulator.
-	 * This is used when an emulator could not be started, so that 
-	 * the user has a chance to correct any setup errors etc.
+	 * Retrieves the arguments which are used to start the emulator.
 	 * 
 	 * @return an array with the arguments for starting the emulator.
 	 */
@@ -124,7 +118,7 @@ implements Runnable
 	 * @param environment the J2ME Polish and Ant-properties
 	 */
 	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs, Environment environment ) {
-		this.emulatedDevice = device;
+		this.device = device;
 		this.emulatorSetting = setting;
 		this.environment = environment;
 		this.classPath = device.getClassesDir();
@@ -138,36 +132,55 @@ implements Runnable
 	 */
 	public void run() {
 		try {
-			Process process = startEmulator();
-			if (this.emulatorSetting.doWait()) {
-				long startTime = System.currentTimeMillis();
-				String info = this.emulatedDevice.getIdentifier() + ": ";
-				LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info );
-				errorLog.start();
-				LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info );
-				outputLog.start();
-				int result = process.waitFor();
-				System.out.println("Emulator finished with result code [" + result + "]." );
-				long usedTime = System.currentTimeMillis() - startTime;
-				if ((result != 0) || (usedTime < 2000) ) {
-					String[] arguments = getArguments();
-					System.out.println("Emulator-arguments were:");
-					for (int i = 0; i < arguments.length; i++) {
-						String argument = arguments[i];
-						System.out.println( argument );
-					}
-				}
+			String[] arguments = getArguments();
+			boolean wait = this.emulatorSetting.doWait();
+			long startTime = System.currentTimeMillis();
+			int res = exec( arguments, this.device.getIdentifier() + ": ",  wait, this, getExecutionDir() );
+			long usedTime = System.currentTimeMillis() - startTime;
+			if ( res != 0 || (wait && usedTime < 2000) ) {
+				System.out.println("Emulator-arguments were:");
+				for (int i = 0; i < arguments.length; i++) {
+					String argument = arguments[i];
+					System.out.println( argument );
+				}				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Unable to start or run emulator: " + e.toString() );
-		} catch (InterruptedException e) {
-			// ignore...
 		} finally {
 			this.isFinished = true;
 		}
 	}
-	
+
+	/**
+	 * Executes the actual emulator.
+	 *  
+	 * @param arguments all command line arguments
+	 * @param info the info block for output messages
+	 * @param wait true when the current thread should block
+	 * @param filter the output filter
+	 * @param executionDir the director for executing the emulator
+	 * @return the result code from the emulator
+	 * @throws IOException when the emulator process could not be invoked
+	 */
+	protected int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File executionDir ) 
+	throws IOException 
+	{
+		this.decompilerInstalled = true;
+		this.header = info;
+		return ProcessUtil.exec( arguments, info, wait, filter,  executionDir );
+	}
+
+	/**
+	 * Retrieves the directory in which the emulator should be executed.
+	 * 
+	 * @return null when the emulator should be started from the current directory
+	 *         or a file pointing to the actual needed execution dir.
+	 */
+	protected File getExecutionDir() {
+		return null;
+	}
+
 	/**
 	 * Determines whether this emulator is finished.
 	 * 
@@ -324,8 +337,8 @@ implements Runnable
 			return null;
 		}
 		emulator.setBasicSettings(device, setting, sourceDirs, variables );
-		Thread thread = new Thread( emulator );
-		thread.start();
+		//Thread thread = new Thread( emulator );
+		//thread.start();
 		return emulator;
 	}
 	
@@ -334,12 +347,15 @@ implements Runnable
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#execute(de.enough.polish.devices.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void execute(Device device, Locale locale, Environment env)
+	public void execute(Device dev, Locale locale, Environment env)
 			throws BuildException 
 	{
-		// TODO enough implement execute
-
+		this.device = dev;
+		this.environment = env;
+		Thread t = new Thread( this );
+		t.start();
 	}
+	
 	
 	class LoggerThread extends Thread {
 		private final InputStream input;
@@ -396,6 +412,34 @@ implements Runnable
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("Unable to log: " + e.toString() );
+			}
+		}
+	}
+
+
+	public void filter( String logMessage, PrintStream output ) {
+		output.println( logMessage );
+		if (this.decompilerInstalled
+				&& (logMessage.indexOf('+') != -1) 
+				&& (logMessage.indexOf("at ") != -1)) {
+			try {
+				// this seems to be an error message like
+				// "   at de.enough.polish.ClassName(+263)"
+				// so try to use JAD for finding out the source code address:
+				BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs, Emulator.this.environment);
+				if (stackTrace != null) {
+					boolean showDecompiledStackTrace = true;
+					if (stackTrace.couldBeResolved()) {
+						output.println( this.header + stackTrace.getSourceCodeMessage() );
+						showDecompiledStackTrace = false;
+					} 
+					if (showDecompiledStackTrace || Emulator.this.emulatorSetting.showDecompiledStackTrace()){
+						output.println( this.header + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
+					}
+				}
+			} catch (DecompilerNotInstalledException e) {
+				output.println("Unable to translate stacktrace: " + e.getMessage() );
+				this.decompilerInstalled = false;
 			}
 		}
 	}

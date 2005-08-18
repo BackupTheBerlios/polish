@@ -44,6 +44,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.util.StringUtil;
 
 
 /**
@@ -297,8 +299,29 @@ public class ExtensionManager {
 			}
 		}
 		this.activeExtensions = (Extension[]) activeList.toArray( new Extension[ activeList.size() ] );
+		// initialize device specific extensions:
+		initialize( TYPE_FINALIZER, device.getCapability( "polish.build.Finalizer"), device, locale, environment );
+		initialize( TYPE_PREVERIFIER, device.getCapability( "polish.build.Preverifier"), device, locale, environment );
+
 	}
 	
+	private void initialize( String type, String extensions, Device device, Locale locale, Environment environment ) {
+		if (extensions != null) {
+			String[] extensionNames = StringUtil.splitAndTrim(extensions, ',');
+			for (int i = 0; i < extensionNames.length; i++) {
+				String extensionName = extensionNames[i];
+				//System.out.println("Executing device specific finalizer [" + finalizerName + "]" );
+				try {
+					Extension extension = getExtension( type, extensionName, environment );
+					extension.initialize(device, locale, environment );
+				} catch ( Exception e ) {
+					e.printStackTrace();
+					System.out.println("Unable to initialize extension " + extensionName );
+				}
+			}
+		}
+	}
+
 	public void postInitialize( Device device, Locale locale, Environment environment ) {
 		// call preInitialize on the registered plugins:
 	}

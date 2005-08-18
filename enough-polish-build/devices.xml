@@ -71,7 +71,7 @@
 		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, btapi, pdaapi, 3dapi" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, btapi, pdaapi, 3dapi, svg" />
 	</device>
 	
 	<device
@@ -139,11 +139,34 @@
 		<capability name="SoundFormat" value="midi, amr" />
 	</device>
 
-	<device
-		supportsPolishGui="true" >
+	<device	supportsPolishGui="true" >
 		<identifier>Nokia/Series60Midp2</identifier>
 		<features>isVirtual</features>
 		<groups>Series60E2</groups>
+	</device>
+
+	<device	supportsPolishGui="true" >
+		<identifier>Nokia/Series60E2</identifier>
+		<features>isVirtual</features>
+		<groups>Series60E2</groups>
+	</device>
+
+	<device	supportsPolishGui="true" >
+		<identifier>Nokia/Series60E2FP1</identifier>
+		<features>isVirtual</features>
+		<groups>Series60E2</groups>
+	</device>
+
+	<device	supportsPolishGui="true" >
+		<identifier>Nokia/Series60E2FP2</identifier>
+		<features>isVirtual</features>
+		<groups>Series60E2FP2</groups>
+	</device>
+
+	<device	supportsPolishGui="true" >
+		<identifier>Nokia/Series60E2FP3</identifier>
+		<features>isVirtual</features>
+		<groups>Series60E2FP3</groups>
 	</device>
 
 	<device
@@ -1847,6 +1870,7 @@
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="CameraZoom" value="3" />
 		<capability name="AnnouncementDate" value="2005-03-01" />
+		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_6230i" />
 		<capability name="Bugs" value="FontGetBaseline"/>
 	</device>
 
@@ -3454,11 +3478,20 @@
 	<device>
 		<identifier>BlackBerry/7290</identifier>
 		<capability name="ScreenSize" value="240x160"/>
+		<capability name="FullCanvasSize" value="240x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 	</device>
 	
+	<device>
+		<identifier>BlackBerry/7100t</identifier>
+		<capability name="ScreenSize" value="240x260"/>
+		<capability name="FullCanvasSize" value="240x260"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+	</device>
 
 	<device>
 		<identifier>Research In Motion/BlackBerry 5810</identifier>
@@ -3480,7 +3513,7 @@
 	<device> 
 		<identifier>Samsung/SGH-D720</identifier> 
 		<groups>Series60E2</groups>
-		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, raw" />
+		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, wb-amr, raw" />
 		<capability name="PolyphonicVoices" value="64" />
 		<capability name="ImageFormat" value="png, jpeg, jpg, gif, bmp" />
 		<capability name="VideoFormat" value="3gpp" />
