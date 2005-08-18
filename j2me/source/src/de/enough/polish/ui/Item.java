@@ -30,6 +30,9 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+//#if polish.blackberry
+	import net.rim.device.api.ui.Field;
+//#endif
 
 import de.enough.polish.util.ArrayList;
 
@@ -679,7 +682,10 @@ public abstract class Item extends Object
 	protected Style labelStyle = StyleSheet.labelStyle;
 	protected StringItem label;
 	private boolean useSingleRow;
-	
+	//#if polish.blackberry
+		public Field _bbField;
+		public boolean _bbFieldAdded;
+	//#endif
 	protected Style focusedStyle;
 
 	

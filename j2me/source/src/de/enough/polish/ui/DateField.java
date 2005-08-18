@@ -1011,9 +1011,13 @@ public class DateField extends StringItem
 			//#endif
 			this.form = new javax.microedition.lcdui.Form( StyleSheet.currentScreen.getTitle() );
 			this.form.append( this.midpDateField );
+			/*
 			this.form.addCommand(StyleSheet.OK_CMD);
 			this.form.addCommand(StyleSheet.CANCEL_CMD);
+			*/
+			//#if !polish.blackberry
 			//# this.form.setCommandListener( this );
+			//#endif
 		}
 		this.screen = StyleSheet.currentScreen;
 		StyleSheet.display.setCurrent( this.form );

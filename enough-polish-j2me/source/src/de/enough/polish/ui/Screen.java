@@ -213,7 +213,7 @@ implements AccessibleCanvas
 		private int foregroundY;
 	//#endif
 	//#if polish.blackberry
-		boolean keyPressedProcessed;
+		public boolean keyPressedProcessed;
 	//#endif
 	protected int contentX;
 	protected int contentY;
@@ -250,7 +250,7 @@ implements AccessibleCanvas
 				//#endif
 			//#endif
 			//TODO this.menuBarHeight is 0 during initialisation...
-			this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+			this.screenHeight = this.fullScreenHeight; // - this.menuBarHeight;
 		//#else
 			this.screenHeight = getHeight();
 		//#endif
@@ -403,6 +403,7 @@ implements AccessibleCanvas
 	 * @param height height of the content area
 	 */
 	protected void setContentArea( int x, int y, int width, int height ) {
+		//System.out.println("setContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
 		this.contentX = x;
 		this.contentY = y;
 		this.contentWidth = width;
@@ -708,8 +709,8 @@ implements AccessibleCanvas
 					//#debug
 					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
 					if (this.container != null) {
-						int nonContentHeight = this.infoHeight + this.subTitleHeight + translateY;
-						setContentArea( 0, nonContentHeight, this.screenWidth, this.screenHeight - nonContentHeight  );
+						int y = this.infoHeight + this.subTitleHeight + translateY;
+						setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 					}
 				}
 			//#endif
@@ -739,6 +740,7 @@ implements AccessibleCanvas
 			 
 			//#ifndef polish.skipTicker
 			 	if (this.ticker != null) {
+			 		//System.out.println("painting ticker... at 0, " + this.screenHeight );
 			 		this.ticker.paint( 0, this.screenHeight, 0, this.screenWidth, g );
 			 	}
 			//#endif
@@ -1021,8 +1023,8 @@ implements AccessibleCanvas
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		int nonContentHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
-		setContentArea( 0, nonContentHeight, this.screenWidth, this.screenHeight - nonContentHeight );
+		int y = this.titleHeight + this.subTitleHeight + this.infoHeight;
+		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 		if (this.isInitialised && isShown()) {
 			repaint();
 		}
@@ -1079,8 +1081,10 @@ implements AccessibleCanvas
 			this.screenHeight = this.originalScreenHeight;
 		} else {
 			int tickerHeight = ticker.getItemHeight(this.screenWidth, this.screenWidth );
+			//System.out.println("setTicker(): tickerHeight=" + tickerHeight );
 			this.screenHeight = this.originalScreenHeight - tickerHeight;
 		}
+		//System.out.println("setTicker(): screenHeight=" + this.screenHeight + ", original=" + this.originalScreenHeight );
 		if (isShown()) {
 			repaint();
 		}
@@ -1700,7 +1704,8 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		//#if !polish.group.Series60
+		//#if false;
+		//!polish.group.Series60
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
 			//#ifdef tmp.menuFullScreen
@@ -1713,7 +1718,7 @@ implements AccessibleCanvas
 			//#endif
 			this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
 			int y = this.titleHeight + this.infoHeight + this.subTitleHeight;
-			setContentArea( 0, y, this.screenWidth,  this.screenHeight - y );
+			setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 		//#endif
 	}
 	//#endif

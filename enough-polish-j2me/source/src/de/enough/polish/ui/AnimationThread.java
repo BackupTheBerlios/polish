@@ -60,7 +60,7 @@ import javax.microedition.lcdui.Canvas;
  */
 public class AnimationThread extends Thread
 //#if polish.blackberry
-	//# implements KeyListener, TrackwheelListener
+	// # implements KeyListener, TrackwheelListener
 //#endif
 
 {
@@ -81,10 +81,10 @@ public class AnimationThread extends Thread
 	 */
 	public AnimationThread() {
 		super();
-		//#if polish.blackberry
-			//# Application app = Application.getApplication();
-			//# app.addKeyListener( this );
-			//# app.addTrackwheelListener( this );
+		//#if polish.blackberry and false
+			// # Application app = Application.getApplication();
+			// # app.addKeyListener( this );
+			// # app.addTrackwheelListener( this );
 		//#endif
 	}
 	
@@ -129,7 +129,7 @@ public class AnimationThread extends Thread
 		}
 	}
 	
-	//#if polish.blackberry
+	//#if polish.blackberry and false
 	public boolean keyChar(char key, int status, int time) {
 		Screen screen = StyleSheet.currentScreen;		
 		if (screen == null || !screen.isShown()) {

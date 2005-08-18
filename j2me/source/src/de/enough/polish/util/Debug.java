@@ -333,6 +333,7 @@ implements CommandListener
 			System.err.println("Unable to show log with null-Display.");
 			return;
 		}
+		//#if !polish.blackberry
 		Debug.returnDisplayable = display.getCurrent();
 		Debug.midletDisplay = display;
 		Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
@@ -342,6 +343,7 @@ implements CommandListener
 		Debug.textBox.addCommand(RETURN_COMMAND);
 		Debug.textBox.setCommandListener( new Debug() );
 		display.setCurrent( Debug.textBox );
+		//#endif
 	}
 	
 	/**

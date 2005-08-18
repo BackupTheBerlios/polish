@@ -30,8 +30,13 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+
 //#if polish.blackberry
-	//# import net.rim.device.api.ui.Keypad;
+	import net.rim.device.api.ui.Field;
+	import net.rim.device.api.ui.FieldChangeListener;
+	import net.rim.device.api.ui.XYRect;
+	import net.rim.device.api.ui.component.BasicEditField;
+	import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 
 import de.enough.polish.util.BitMapFontViewer;
@@ -315,11 +320,25 @@ import de.enough.polish.util.Locale;
  * @since MIDP 1.0
  */
 public class TextField extends StringItem
-implements CommandListener
+//#if polish.TextField.useDirectInput && !polish.blackberry
+	//#define tmp.forceDirectInput
+	//#define tmp.directInput
+//#elif polish.css.textfield-direct-input && !polish.blackberry
+	//#define tmp.directInput
+	//#define tmp.allowDirectInput
+//#endif
+//#if !(tmp.forceDirectInput || polish.blackberry)
+	implements CommandListener
+//#endif
 //#if polish.TextField.suppressCommands == true
 	//#define tmp.suppressCommands
+//#elif (tmp.forceDirectInput || polish.blackberry)
+	//# implements ItemCommandListener
 //#else
 	, ItemCommandListener
+//#endif
+//#if polish.blackberry
+	, FieldChangeListener
 //#endif
 {
 	/**
@@ -618,7 +637,6 @@ implements CommandListener
 	
 	private int maxSize;
 	private int constraints;
-	private javax.microedition.lcdui.TextBox midpTextBox;
 	//#ifdef polish.css.textfield-caret-color
 		private int caretColor = -1;
 	//#endif
@@ -640,13 +658,6 @@ implements CommandListener
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
 		
-	//#if polish.TextField.useDirectInput == true
-		//#define tmp.forceDirectInput
-		//#define tmp.directInput
-	//#elif polish.css.textfield-direct-input
-		//#define tmp.directInput
-		//#define tmp.allowDirectInput
-	//#endif
 	//#if tmp.directInput
 		//#ifdef polish.TextField.InputTimeout:defined
 			//#= private static final int INPUT_TIMEOUT = ${polish.TextField.InputTimeout};  
@@ -757,6 +768,11 @@ implements CommandListener
 		
 		protected final Object lock;
 	//#endif
+	//#if polish.blackberry
+		private PolishEditField editField;
+	//#elif !tmp.forceDirectInput
+		private javax.microedition.lcdui.TextBox midpTextBox;
+	//#endif
 
 
 	/**
@@ -848,11 +864,13 @@ implements CommandListener
 			//#endif
 			this.itemCommandListener = this;
 		//#endif
-		//#ifdef tmp.directInput
+		//#if tmp.directInput || polish.blackberry
 			setConstraints(constraints);
 		//#endif
 	}
 	
+	
+	//#if !tmp.forceDirectInput && !polish.blackberry
 	/**
 	 * Creates the TextBox used for the actual input mode.
 	 */
@@ -860,9 +878,9 @@ implements CommandListener
 		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, getText(), this.maxSize, this.constraints );
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
 		this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
-		this.midpTextBox.setCommandListener( this );
-	
+		this.midpTextBox.setCommandListener( this );	
 	}
+	//#endif
 	
 	/**
 	 * Gets the contents of the <code>TextField</code> as a string value.
@@ -908,7 +926,7 @@ implements CommandListener
 			}
 		//#endif
 
-		//#ifndef tmp.forceDirectInput
+		//#if !(tmp.forceDirectInput || polish.blackberry)
 			if (this.midpTextBox != null) {
 				if (this.isPassword) {
 					this.midpTextBox.setString( this.passwordText );
@@ -1113,7 +1131,7 @@ implements CommandListener
 		if ((this.text != null && maxSize < this.text.length()) || (maxSize < 1)) {
 			throw new IllegalArgumentException();
 		}
-		//#if ! tmp.forceDirectInput
+		//#if ! tmp.forceDirectInput && !polish.blackberry
 			if (this.midpTextBox != null) {
 				this.maxSize = this.midpTextBox.setMaxSize(maxSize);
 				return this.maxSize;
@@ -1121,7 +1139,7 @@ implements CommandListener
 		//#endif
 				this.maxSize = maxSize;
 				return maxSize;
-		//#if ! tmp.forceDirectInput
+		//#if ! tmp.forceDirectInput  && !polish.blackberry
 			}
 		//#endif
 	}
@@ -1157,6 +1175,8 @@ implements CommandListener
 				return this.midpTextBox.getCaretPosition();
 			}
 			//# return 0;
+		//#elif polish.blackberry
+			//# return this.editField.getInsertPositionOffset();
 		//#elif tmp.forceDirectInput
 			//# return this.caretPosition;
 		//#else
@@ -1181,7 +1201,30 @@ implements CommandListener
 	public void setConstraints(int constraints)
 	{
 		this.constraints = constraints;
-		//#ifndef tmp.forceDirectInput
+		//#if polish.blackberry
+			long bbStyle = Field.FOCUSABLE | Field.EDITABLE;
+			if ( (constraints & DECIMAL) == DECIMAL) {
+				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
+			} else if ((constraints & NUMERIC) == NUMERIC) {
+				bbStyle |= BasicEditField.FILTER_INTEGER;
+			} else if ((constraints & PHONENUMBER) == PHONENUMBER) {
+				bbStyle |= BasicEditField.FILTER_PHONE;
+			} else if ( (constraints & EMAILADDR) == EMAILADDR ) {
+				bbStyle |= BasicEditField.FILTER_EMAIL;
+			} else if ( (constraints & URL) == URL ) {
+				bbStyle |= BasicEditField.FILTER_URL;
+			}
+			if (this.editField != null) {
+				// remove the old edit field from the blackberry screen:
+				this._bbFieldAdded = false;
+				if (this.isFocused) {
+					//# getScreen().setFocus( this );
+				}
+			}
+			this.editField = new PolishEditField( null, this.text, this.maxSize, bbStyle );
+			this.editField.setChangeListener( this );
+			this._bbField = this.editField;
+		//#elif !tmp.forceDirectInput
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setConstraints(constraints);
 			}
@@ -1212,7 +1255,7 @@ implements CommandListener
 			if ((constraints & INITIAL_CAPS_WORD) == INITIAL_CAPS_WORD) {
 				this.inputMode = MODE_FIRST_UPPERCASE;
 				this.nextCharUppercase = true;
-			}
+			} 
 			//#if polish.TextField.showInputInfo != false
 				updateInfo();
 			//#endif
@@ -1247,7 +1290,7 @@ implements CommandListener
 	 */
 	public void setInitialInputMode( String characterSubset)
 	{
-		//#if !tmp.forceDirectInput && polish.midp2
+		//#if !(tmp.forceDirectInput || polish.blackberry) && polish.midp2
 			if (this.midpTextBox == null) {
 				createTextBox();
 			}
@@ -1259,6 +1302,13 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		//#if polish.blackberry
+			if (this.isFocused) {
+				this.editField.paint( x, y, g );
+			} else {
+				super.paintContent(x, y, leftBorder, rightBorder, g);
+			}
+		//#else
 		if (!this.isFocused) {
 			super.paintContent(x, y, leftBorder, rightBorder, g);
 			return;
@@ -1419,6 +1469,8 @@ implements CommandListener
 				}
 			//#endif
 		}
+		// end of non-blackberry block
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -1440,7 +1492,16 @@ implements CommandListener
 			this.contentHeight = this.font.getHeight();
 			this.originalHeight = this.contentHeight;
 		}
-		//#if tmp.directInput
+		//#if polish.blackberry
+			if (!this.isFocused) {
+				return;
+			}
+			this.editField.layout( lineWidth, this.contentHeight );
+			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
+			XYRect rect = this.editField.getExtent();
+			this.contentWidth = rect.width;
+			this.contentHeight = rect.height;
+		//#elif tmp.directInput
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
 					this.rowHeight = this.bitMapFontViewer.getFontHeight() + this.paddingVertical;
@@ -1567,6 +1628,8 @@ implements CommandListener
 			//System.out.println("firstpart=" + this.caretRowFirstPart + "   lastPart=" + this.caretRowLastPart);
 		//#endif
 	}
+	
+	
 
 	/*
 	 * Checks the caret position - is only used during debugging.
@@ -1650,6 +1713,12 @@ implements CommandListener
 	 */
 	//#endif
 	
+	//#if polish.blackberry
+//	protected void hideNotify() {
+//		this.editField.onUndisplay();
+//	}
+	//#endif
+
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getCssSelector()
@@ -1847,6 +1916,7 @@ implements CommandListener
 	}
 	//#endif
 
+	//#if !polish.blackberry
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
@@ -1872,8 +1942,9 @@ implements CommandListener
 			return false;
 		}
 	}
+	//#endif
 	
-	
+	//#if !polish.blackberry
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
@@ -2048,14 +2119,16 @@ implements CommandListener
 					boolean characterInserted = false;
 					char character = this.caretChar;
 					// allow backspace:
-					//#ifdef polish.key.ClearKey:defined
-						if (currentLength > 0) {
-							//#= if ((keyCode == ${polish.key.ClearKey})) {
-								//System.out.println("backspace");
-								return deleteCurrentChar();
-							//# }
-						}				
-					//#endif
+					if (currentLength > 0) {
+						//#ifdef polish.key.ClearKey:defined
+							//#= if (keyCode == ${polish.key.ClearKey}) {
+						//#else
+							if ( keyCode == -8 ) {
+						//#endif
+							//System.out.println("backspace");
+							return deleteCurrentChar();
+						}
+					}				
 					if (this.caretChar != this.editingCaretChar) {
 						insertCharacter();
 						characterInserted = true;
@@ -2104,7 +2177,7 @@ implements CommandListener
 								return false;
 							}
 						//#endif
-						if (this.caretRow >= this.textLines.length - 1) {
+						if (this.textLines == null || this.caretRow >= this.textLines.length - 1) {
 							return false;
 						} 
 			
@@ -2255,7 +2328,7 @@ implements CommandListener
 					//#ifdef polish.key.ClearKey:defined
 						//#= if ((keyCode == ${polish.key.ClearKey}) || (gameAction == Canvas.LEFT)) {
 					//#else
-						if (gameAction == Canvas.LEFT) {						
+						if (keyCode == -8 || gameAction == Canvas.LEFT) {						
 					//#endif
 						setString( this.text.substring(0, currentLength - 1) );
 						return true;
@@ -2268,15 +2341,20 @@ implements CommandListener
 			&& keyCode <= Canvas.KEY_NUM9)
 			//#ifdef polish.key.ClearKey:defined
 				//#= || (keyCode == ${polish.key.ClearKey})
+			//#else
+				|| (keyCode == -8)
 			//#endif
-			|| (gameAction == Canvas.FIRE) )
+			|| (gameAction == Canvas.FIRE ) )
 		{	
-			showTextBox();
+			//#if !(polish.blackberry || tmp.forceDirectInput)
+				showTextBox();
+			//#endif
 			return true;
 		} else {
 			return false;
 		}
 	}
+	//#endif
 	
 	
 	//#if polish.hasPointerEvents && !tmp.forceDirectInput
@@ -2417,6 +2495,7 @@ implements CommandListener
 	}
 	//#endif
 
+	//#if !(polish.blackberry || tmp.forceDirectInput)
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -2431,7 +2510,9 @@ implements CommandListener
 		}
 		StyleSheet.display.setCurrent( this.midpTextBox );
 	}
+	//#endif
 
+	//#if !(polish.blackberry || tmp.forceDirectInput)
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
@@ -2446,6 +2527,7 @@ implements CommandListener
 		}
 		StyleSheet.display.setCurrent( this.screen );
 	}
+	//#endif
 	
 	//#ifndef tmp.suppressCommands
 		public void setItemCommandListener(ItemCommandListener l) {
@@ -2482,12 +2564,16 @@ implements CommandListener
 		}
 	//#endif
 		
-	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
+	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
-		if (this.screen != null) {
-			this.screen.setInfo(null);
-		}
+		//#if polish.blackberry
+			this.editField.focusRemove();
+		//#else
+			if (this.screen != null) {
+				this.screen.setInfo(null);
+			}
+		//#endif
 	}
 	//#endif
 	
@@ -2503,6 +2589,15 @@ implements CommandListener
 			}
 		//#endif
 		return super.focus(focStyle);
+	}
+	//#endif
+
+	//#if polish.blackberry
+	public void fieldChanged(Field field, int context) {
+		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
+			setText( this.editField.getText() );
+			notifyStateChanged();
+		}
 	}
 	//#endif
 	

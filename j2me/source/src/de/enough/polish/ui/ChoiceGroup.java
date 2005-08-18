@@ -876,6 +876,13 @@ implements Choice
 		}
 		return font;
 	}
+	//#ifdef polish.usePopupItem
+	protected void hideNotify() {
+		if (this.isPopup && !this.isPopupClosed) {
+			closePopup();
+		}
+	}
+	//#endif
 
 	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)

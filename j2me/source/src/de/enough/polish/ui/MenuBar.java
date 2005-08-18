@@ -285,6 +285,7 @@ public class MenuBar extends Item {
 		}
 		// if there is only one remaining item in the commandsList, the 
 		// single left command is used instead:
+		//#if !tmp.useInvisibleMenuBar
 		if (this.commandsList.size() == 1) {
 			//System.out.println("moving only left command to single-left-one");
 			Command command = (Command) this.commandsList.remove( 0 );
@@ -292,6 +293,7 @@ public class MenuBar extends Item {
 			this.singleLeftCommand = command;
 			this.singleLeftCommandItem.setText( command.getLabel() );
 		}
+		//#endif
 
 		if (this.isInitialised) {
 			this.isInitialised = false;

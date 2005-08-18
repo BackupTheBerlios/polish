@@ -171,15 +171,22 @@ implements ImageConsumer
 				y += this.verticalAdjustment;
 			//#endif
 			//#if polish.midp2 && polish.css.scale-factor
+				int[] sData = this.scaledRgbData;
+				int sWidth = 0;
+				int sHeight = 0;
 				int scaleX = x;
 				int scaleY = y;
-				boolean useScaledImage = this.isFocused && (this.scaledRgbData != null) && !this.scaleFinished;
+				boolean useScaledImage = this.isFocused && (sData != null) && !this.scaleFinished;
+				if (useScaledImage) {
+					sWidth = this.scaleWidth;
+					sHeight = sData.length / sWidth;
+				}
 			//#endif
 			if (this.imageAlign == Graphics.LEFT ) {
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) { 
-						scaleX = x  -  ((this.scaleWidth - this.image.getWidth()) / 2);
-						scaleY = y - ((this.scaleHeight - this.image.getHeight()) / 2);
+						scaleX = x  -  ((sWidth - this.image.getWidth()) / 2);
+						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
@@ -192,8 +199,8 @@ implements ImageConsumer
 			} else if (this.imageAlign == Graphics.RIGHT ) {
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
-						scaleX = rightBorder  -  ((this.image.getWidth()  + this.scaleWidth) / 2);
-						scaleY = y - ((this.scaleHeight - this.image.getHeight()) / 2);
+						scaleX = rightBorder  -  ((this.image.getWidth()  + sWidth) / 2);
+						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, x + this.contentWidth, y, Graphics.TOP | Graphics.RIGHT );
@@ -208,8 +215,8 @@ implements ImageConsumer
 				//System.out.println("x: " + x + "  centerX: " + centerX );
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
-						scaleX = centerX - (this.scaleWidth / 2);
-						scaleY = y - ((this.scaleHeight - this.image.getHeight()) / 2);
+						scaleX = centerX - (sWidth / 2);
+						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
@@ -222,8 +229,8 @@ implements ImageConsumer
 				int bottomY = y + this.contentHeight;
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
-						scaleX = centerX  - (this.scaleWidth / 2);
-						scaleY = bottomY - this.scaleHeight;
+						scaleX = centerX  - (sWidth / 2);
+						scaleY = bottomY - sHeight;
 					} else {
 				//#endif
 				g.drawImage(this.image, centerX, bottomY, Graphics.BOTTOM | Graphics.HCENTER );
@@ -236,8 +243,8 @@ implements ImageConsumer
 				int centerY = y + this.contentHeight / 2;
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
-						scaleX = centerX  - (this.scaleWidth / 2);
-						scaleY = centerY - (this.scaleHeight / 2);
+						scaleX = centerX  - (sWidth / 2);
+						scaleY = centerY - (sHeight / 2);
 					} else {
 				//#endif
 				g.drawImage(this.image, centerX, centerY,  Graphics.HCENTER | Graphics.VCENTER);
@@ -257,7 +264,7 @@ implements ImageConsumer
 					if (scaleY < 0) {
 						scaleY = 0;
 					}
-					g.drawRGB(this.scaledRgbData, 0, this.scaleWidth, scaleX, scaleY, this.scaleWidth, this.scaleHeight, true );
+					g.drawRGB(sData, 0, sWidth, scaleX, scaleY, sWidth, sHeight, true );
 				}
 			//#endif		
 			//#if polish.css.icon-horizontal-adjustment

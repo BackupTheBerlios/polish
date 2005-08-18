@@ -358,6 +358,10 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index );
 		
+		//#if polish.blackberry
+			//# getScreen().setFocus( item );
+		//#endif
+		
 		if (this.autoFocusEnabled  && !this.isInitialised) {
 			// setting the index for automatically focusing the appropriate item
 			// during the initialisation:
