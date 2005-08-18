@@ -48,7 +48,7 @@ public class PolishDocumentUtilsTest extends TestCase {
             fail("Bad LocationException occurred.");
         }
     }
-    public void testîffsetAtEndOfDirective() {
+    public void testOffsetAtEndOfDirective() {
         IDocument document = new Document("//#hallo  ");
         Position result = PolishDocumentUtils.extractDirectiveAtOffset(document,8);
         if(result == null) {
@@ -62,7 +62,7 @@ public class PolishDocumentUtilsTest extends TestCase {
             fail("Bad LocationException occurred.");
         }
     }
-    public void testîffsetAtBlankDirective() {
+    public void testOffsetAtBlankDirective() {
         IDocument document = new Document("//# ");
         Position result = PolishDocumentUtils.extractDirectiveAtOffset(document,3);
         if(result == null) {
