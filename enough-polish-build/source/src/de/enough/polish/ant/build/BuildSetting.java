@@ -132,6 +132,7 @@ public class BuildSetting {
 	private boolean replacePropertiesWithoutDirective;
 	private boolean abortOnError = true;
 	private String onError;
+	private ArrayList preCompilers;
 	
 	/**
 	 * Creates a new build setting.
@@ -300,6 +301,13 @@ public class BuildSetting {
 			this.compilers = new ArrayList();
 		}
 		this.compilers.add( task );
+	}
+	
+	public void addConfiguredPreCompiler(PreCompilerSetting setting) {
+		if (this.preCompilers == null) {
+			this.preCompilers = new ArrayList();
+		}
+		this.preCompilers.add( setting );
 	}
 	
 	public void addConfiguredPostCompiler(PostCompilerSetting setting) {
@@ -1412,6 +1420,20 @@ public class BuildSetting {
 		return this.encoding;
 	}
 	
+	public PreCompilerSetting[] getPreCompilers() {
+		if (this.preCompilers == null) {
+			return new PreCompilerSetting[0]; // { screenChangerSetting }; 
+		} else {
+			//this.postCompilers.add( screenChangerSetting );
+			return (PreCompilerSetting[]) this.preCompilers.toArray( new PreCompilerSetting[this.preCompilers.size()] );
+		}
+	}
+
+	public boolean doPreCompile() {
+		return (this.preCompilers != null);
+	}
+
+	
 	public PostCompilerSetting[] getPostCompilers() {
 		// init standard postcompilers:
 		//PostCompilerSetting screenChangerSetting = new PostCompilerSetting();
@@ -1428,7 +1450,7 @@ public class BuildSetting {
 	 * @return true when there are postcompilers
 	 */
 	public boolean doPostCompile() {
-		return true; //(this.postCompilers != null);
+		return (this.postCompilers != null);
 	}
 
 	/**
@@ -1612,6 +1634,7 @@ public class BuildSetting {
 	public void setOnError(String onError) {
 		this.onError = onError;
 	}
+
 
 	
 }

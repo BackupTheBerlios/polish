@@ -381,6 +381,26 @@
 		<name>antcall</name>
 		<class>de.enough.polish.obfuscate.AntCallObfuscator</class>
 	</extension>
+
+	<!-- Pre Compiler -->
+	
+	<extension>
+		<type>precompiler</type>
+		<name>antcall</name>
+		<class>de.enough.polish.precompile.AntCallPreCompiler</class>
+	</extension>
+
+	<extension>
+		<type>precompiler</type>
+		<name>blackberryimportresolver</name>
+		<class>de.enough.polish.precompile.blackberry.ImportResolver</class>
+		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>		
+		<autostart>
+			polish.usePolishGui 
+			and polish.blackberry
+		</autostart>
+	</extension>
+	
 	
 	<!-- Post Compiler -->
 	
@@ -465,6 +485,7 @@
 		<type>resourcecopier</type>
 		<name>svgconverter</name>
 		<class>de.enough.polish.resources.SvgConverterResourceCopier</class>
+		<classpath>${polish.home}/import/svgSalamander.jar:${polish.home}/import/extensions.jar</classpath>
 	</extension>
 	
 

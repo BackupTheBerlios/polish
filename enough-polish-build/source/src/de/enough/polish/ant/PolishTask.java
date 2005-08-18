@@ -69,6 +69,7 @@ import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PostCompilerSetting;
+import de.enough.polish.ant.build.PreCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.ant.build.PreverifierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
@@ -86,6 +87,7 @@ import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
+import de.enough.polish.precompile.PreCompiler;
 import de.enough.polish.preprocess.CssAttribute;
 import de.enough.polish.preprocess.CssAttributesManager;
 import de.enough.polish.preprocess.CssConverter;
@@ -210,6 +212,8 @@ public class PolishTask extends ConditionalTask {
 	private DeviceDatabase deviceDatabase;
 
 	private boolean isInitialized;
+
+	private PreCompiler[] preCompilers;
 
 	
 	/**
@@ -433,10 +437,8 @@ public class PolishTask extends ConditionalTask {
 	protected void execute(Device device, Locale locale, boolean hasExtensions) {
 		initialize( device, locale );
 		preprocess( device, locale );
-		compile( device );
-		if (this.doPostCompile) {
-			postCompile(device, locale);
-		}
+		compile( device, locale );
+		postCompile(device, locale);
 		if (this.buildSetting.isInCompilerMode()) {
 			if (this.buildSetting.doPreverifyInCompilerMode()) {
 				preverify( device, locale );
@@ -814,7 +816,17 @@ public class PolishTask extends ConditionalTask {
 			}
 		} // done preparing of binary libraries.
 		
-		
+
+		// init precompilers:
+		if (this.buildSetting.doPreCompile()) {
+			PreCompilerSetting[] postCompilerSettings = this.buildSetting.getPreCompilers();
+			this.preCompilers = new PreCompiler[ postCompilerSettings.length ];
+			for (int i = 0; i < postCompilerSettings.length; i++) {
+				PreCompilerSetting setting = postCompilerSettings[i];
+				this.preCompilers[i] = PreCompiler.getInstance(setting, this.extensionManager, this.environment);
+			}
+		}
+
 		// init postcompilers:
 		if (this.buildSetting.doPostCompile()) {
 			this.doPostCompile = true;
@@ -1724,9 +1736,10 @@ public class PolishTask extends ConditionalTask {
 	/**
 	 * Compiles the source code.
 	 *  
-	 * @param device The device for which the source code should be compiled.
+	 * @param device The device for which the obfuscation should be done.
+	 * @param locale the current localization
 	 */
-	public void compile( Device device ) {
+	public void compile( Device device, Locale locale ) {
 		// set the class-path:
 		String[] classPaths = this.libraryManager.getClassPaths(device);
 		device.setClassPaths( classPaths );
@@ -1762,6 +1775,8 @@ public class PolishTask extends ConditionalTask {
 			}
 			*/
 		}
+		// invoking all precompilers:
+		precompile( device, locale );
 		System.out.println("compiling for device [" +  device.getIdentifier() + "]." );
 		// init javac task:
 		CompilerTask compiler = this.buildSetting.getCompiler(evaluator );
@@ -1875,6 +1890,58 @@ public class PolishTask extends ConditionalTask {
 	 * 
 	 * @return an array of all active postcompiler, can be empty but not null.
 	 */
+	protected PreCompiler[] getActivePreCompilers() {
+		if (this.preCompilers == null || this.preCompilers.length == 0) {
+			return new PreCompiler[ 0 ];
+		}
+		ArrayList list = new ArrayList();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		Project antProject = getProject();
+		for (int i = 0; i < this.postCompilers.length; i++) {
+			PreCompiler preCompiler = this.preCompilers[i];
+			if (preCompiler.getSetting().isActive(evaluator, antProject)) {
+				list.add( preCompiler );
+			}
+		}
+		return (PreCompiler[]) list.toArray( new PreCompiler[ list.size() ]);
+	}
+
+	/**
+	 * Is called by the compile-target after the binary libraries have been copied.
+	 * 
+	 * @param device The device for which the obfuscation should be done.
+	 * @param locale the current localization
+	 */
+	protected void precompile(Device device, Locale locale) {
+		// deactivate logging:
+		String className;
+		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+			className = "Debug";
+		} else {
+			className = "de.enough.polish.util.Debug";
+		}
+		ClassLoader classLoader = device.getClassLoader();
+		try {
+			Class debugClass = classLoader.loadClass(className);
+			PopulateUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
+		} catch (Exception e) {
+			//System.err.println("Precompile: Unable to deactivate logging in Debug class: " + e.toString() );
+			//e.printStackTrace();
+		}
+		// execute active precompilers:
+		PreCompiler[] compilers = getActivePreCompilers();
+		for (int i = 0; i < compilers.length; i++) {
+			PreCompiler compiler = compilers[i];
+			compiler.execute( device, locale, this.environment );
+		}
+		this.extensionManager.preCompile(device, locale, getEnvironment());
+	}
+
+	/**
+	 * Retrieves all currently active post compilers.
+	 * 
+	 * @return an array of all active postcompiler, can be empty but not null.
+	 */
 	protected PostCompiler[] getActivePostCompilers() {
 		if (this.postCompilers == null || this.postCompilers.length == 0) {
 			return new PostCompiler[ 0 ];
@@ -1898,7 +1965,6 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current localization
 	 */
 	protected void postCompile( Device device, Locale locale ) {
-		File classDir = new File( device.getClassesDir() );
 		// deactivate logging:
 		String className;
 		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
@@ -1911,14 +1977,15 @@ public class PolishTask extends ConditionalTask {
 			Class debugClass = classLoader.loadClass(className);
 			PopulateUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
 		} catch (Exception e) {
-			System.err.println("Unable to deactivate logging in Debug class: " + e.toString() );
-			e.printStackTrace();
+			System.err.println("Precompile: Unable to deactivate logging in Debug class: " + e.toString() );
+			//e.printStackTrace();
 		}
 		
+		// execute active postcompilers:
 		PostCompiler[] compilers = getActivePostCompilers();
 		for (int i = 0; i < compilers.length; i++) {
 			PostCompiler postCompiler = compilers[i];
-			postCompiler.postCompile( classDir, device );
+			postCompiler.execute( device, locale, this.environment );
 		}
 		this.extensionManager.postCompile( device, locale, this.environment );
 	}

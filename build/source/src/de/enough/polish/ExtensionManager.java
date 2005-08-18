@@ -63,6 +63,7 @@ public class ExtensionManager {
 	public static final String TYPE_PLUGIN = "plugin";
 	public static final String TYPE_PROPERTY_FUNCTION = "propertyfunction";
 	public static final String TYPE_PREPROCESSOR = "preprocessor";
+	public static final String TYPE_PRECOMPILER = "precompiler";
 	public static final String TYPE_POSTCOMPILER = "postcompiler";
 	public static final String TYPE_OBFUSCATOR = "obfuscator";
 	public static final String TYPE_PREVERIFIER = "preverifier";
@@ -331,7 +332,11 @@ public class ExtensionManager {
 		// by the standard preprocessor itself...
 		//executeExtensions( TYPE_PREPROCESSOR, device, locale, environment );
 	}
-	
+
+	public void preCompile( Device device, Locale locale, Environment environment ) {
+		executeExtensions( TYPE_PRECOMPILER, device, locale, environment );
+	}
+
 	public void postCompile( Device device, Locale locale, Environment environment ) {
 		executeExtensions( TYPE_POSTCOMPILER, device, locale, environment );
 	}

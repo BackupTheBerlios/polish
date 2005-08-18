@@ -535,6 +535,9 @@ public final class FileUtil {
 	 * @return an String array with the file-names relative to the given directory that do have the given extension
 	 */
 	public static String[] filterDirectory(File dir, String extension, boolean recursive) {
+		if (dir == null || !dir.exists()) {
+			return new String[0];
+		}
 		ArrayList fileNamesList = new ArrayList();
 		filterDirectory( "", dir, extension, recursive, fileNamesList );
 		return (String[]) fileNamesList.toArray( new String[ fileNamesList.size() ] );

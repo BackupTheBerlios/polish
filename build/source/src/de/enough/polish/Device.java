@@ -558,8 +558,7 @@ public class Device extends PolishComponent {
 	}
 
 	/**
-	 * @param classesDir
-	 *            The classesDir to set.
+	 * @param classesDir The classesDir to set.
 	 */
 	public void setClassesDir(String classesDir) {
 		this.classesDir = classesDir;

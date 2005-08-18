@@ -162,6 +162,8 @@ public class Preprocessor {
 		this.withinIfDirectives.put( "mdebug", Boolean.TRUE );
 		this.ignoreDirectives = new HashMap();
 		this.ignoreDirectives.put( "endinclude", Boolean.TRUE );
+		this.ignoreDirectives.put( "", Boolean.TRUE );
+		this.ignoreDirectives.put( "=", Boolean.TRUE );
 		this.supportedDirectives = new HashMap();
 		this.supportedDirectives.putAll( this.withinIfDirectives );
 		this.supportedDirectives.putAll( this.ignoreDirectives );
