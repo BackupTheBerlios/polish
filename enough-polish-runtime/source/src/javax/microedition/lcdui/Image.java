@@ -241,6 +241,7 @@ public class Image extends Object
 	private int imageHeight;
 	public String url;
 	private BufferedImage bufferedImage;
+    private byte[] data;
 
 	/**
 	 * @param bufferedImage
@@ -380,19 +381,29 @@ public class Image extends Object
 	 */
 	public static Image createImage(byte[] imageData, int imageOffset, int imageLength)
 	{
-        System.out.println("DEBUG:Image.createImage(...):enter.");
+        // System.out.println("DEBUG:Image.createImage(...):enter."); // For testing on Mac OS X.
 		ByteArrayInputStream in = new ByteArrayInputStream( imageData, imageOffset, imageLength );
 		try {
             Image image = createImage( in );
-            System.out.println("DEBUG:Image.createImage(...):leave.");
+            image.data = imageData;
+            // System.out.println("DEBUG:Image.createImage(...):leave."); // For testing on Mac OS X.
 			return image;
 		} catch (Throwable e) {
 			e.printStackTrace();
-            System.out.println("DEBUG:Image.createImage(...):IOException thrown.");
+            // System.out.println("DEBUG:Image.createImage(...):IOException thrown."); // For testing on Mac OS X.
 			throw new IllegalArgumentException("Unable to load image from byte-array: " + e.toString() );
 		}
         
 	}
+    
+    /**
+     * Retreives the original PNG data, if known.
+     *  
+     * @return the original PNG data, can be null.
+     */
+    public byte[] getData() {
+        return this.data;
+    }
 
 	/**
 	 * Creates an immutable image using pixel data from the specified
@@ -558,9 +569,9 @@ public class Image extends Object
 	 */
 	public static Image createImage( InputStream stream) throws IOException
 	{
-        System.out.println("DEBUG:Image.createImage(stream):enter.");
+        // System.out.println("DEBUG:Image.createImage(stream):enter."); // For testing on Mac OS X.
 		BufferedImage image = ImageIO.read(stream);
-        System.out.println("DEBUG:Image.createImage(...):leave.");
+        // System.out.println("DEBUG:Image.createImage(...):leave."); // For testing on Mac OS X.
 		return new Image( image );
 	}
 
