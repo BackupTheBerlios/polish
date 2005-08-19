@@ -207,9 +207,15 @@
 			<delete dir="tmp/macosx/tmp" />
 		-->
 		</target>
+	
+	<target name="floater"
+		description="creates a new floater evaluation version"
+		>
+		<ant dir="../enough-floater" target="deploy" ></ant>
+	</target>
 		
 	<target name="installer" 
-			 depends="bin-dist"
+			 depends="bin-dist, floater"
 			 description="creates the j2mepolish-installer." 
 		>
 		<taskdef name="izpack" 
