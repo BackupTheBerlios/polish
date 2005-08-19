@@ -215,7 +215,7 @@
 	</target>
 		
 	<target name="installer" 
-			 depends="bin-dist, floater"
+			 depends="bin-dist"
 			 description="creates the j2mepolish-installer." 
 		>
 		<taskdef name="izpack" 
@@ -435,6 +435,11 @@
 	        izPackDir="${izpack.dir}"
 		/>
 	</target>
+	
+	<target name="fullinstall"
+		description="creates a floater evaluation version along with the J2ME Polish installer"
+		depends="floater, installer"
+	/>
 		
 	<target name="webprocessor">
 		<webprocessor 
