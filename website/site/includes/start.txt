@@ -217,6 +217,11 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
 			<%endif %>
+			<%ifdef inDevicesSection.issues %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/issues.html">Known Issues</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>devices/issues.html">Known Issues</a></div>
+			<%endif %>
 			
 		<%else %>
 			<a href="<%= basedir %>devices-overview.html">Devices</a><br/>

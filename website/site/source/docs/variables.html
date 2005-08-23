@@ -76,8 +76,8 @@ optimizations are easier than ever.</p>
 	</tr>
 	<tr>
 	 <td>colors</td>
-	 <td>polish.BitsPerColor.12, polish.BitsPerColor.16, etc.</td>
-	 <td>polish.BitsPerColor</td>
+	 <td>polish.BitsPerPixel.12, polish.BitsPerPixel.16, etc.</td>
+	 <td>polish.BitsPerPixel</td>
 	 <td>Depending on the color depth of a device, the appropriate "polish.BitsPerPixel"-symbol
 	 is defined. The color depth can be compared within an &quot;#if&quot;-clause:
 	 <pre>
@@ -167,6 +167,11 @@ public class MyCanvas
 	[...]
 </pre>
 	 </td>
+	</tr>
+	 <td>MIDlet classes</td>
+	 <td>--</td>
+	 <td>polish.classes.midlet-1, polish.classes.midlet-2, polish.classes.midlet-n</td>
+	 <td>For each used MIDlet class the corresponding <code>polish.classes.midlet-n</code> variable is defined.</td>
 	</tr>
 	<tr>
 	 <td>animation</td>

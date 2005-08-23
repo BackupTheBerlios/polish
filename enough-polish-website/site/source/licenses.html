@@ -60,8 +60,44 @@
 	3 developer seats and the Single License:<br />
 	<code>3 x 99,- Euro + 199,- Euro = 496,- Euro</code>.
 	</p>
-	<h2 id="earlybird">Early Bird Discount</h2>
-	<p>The Early Bird Discount has been finished with the release of the version 1.0.
+	<h2 id="whycommercial">Why do I need a commercial license?</h2>
+	<p>When you develop applications with J2ME Polish, specific APIs are weaved into
+	your application during the build process, i.e. the GUI classes, the game-engine classes, 
+	the localization classes, the logging classes, etc. Since your application then uses these classes
+	you effectively link agains the J2ME Polish library. The GNU GPL license requires you to
+	publish your completely source code solely under the GNU GPL again. That's why the alternative
+	commercial licenses exist. These commercial licenses allow you to use J2ME Polish
+	completely without any restrictions for your commercial applications.
+	</p>
+	<h2 id="gplsufficient">In what cases do I NOT need a commercial license?</h2>
+	<p>You can use J2ME Polish commercially for closed source application as well, but you must not
+	use any of the following advanced features in that case:
+	</p>
+	<ul>
+	 <li>The J2ME Polish GUI</li>
+	 <li>The Game Engine / MIDP/2.0 compatible game-API</li>
+	 <li>The Logging Framework</li>
+	 <li>The Localization classes</li>
+	 <li>The BitMapFont classes</li>
+	 <li>Any utility classes</li>
+	 <li>The logging/debugging framework</li>
+	</ul>
+	<p>When you use any of the above features you need to use the commercial license of J2ME Polish.
+	</p>
+	<p>You can use the building framework along with the device database, the preprocessing, the 
+	resource assembling and so on for building commercial J2ME applications 
+	without ackquiring a commercial license.
+	</p>
+	<p>
+	You can also extend J2ME Polish by using the extension points (that are all based on
+	the de.enough.polish.Extension class) without needing to release your extension under the GPL.
+	The same applies for your own backgrounds and borders that are based on J2ME Polish.
+	So you can create and sell commercial extensions for J2ME Polish without needing to license J2ME Polish yourself.
+	</p>
+	<p>
+	The device database itself is also licensed under the GPL, so if you want to use the database for
+	something different than building your applications, you need my written consent first (or publish your
+	project under the GPL again).
 	</p>
 	<h2 id="security">Security of Investments</h2>
 	<p>When the development on J2ME Polish should be discontinued, Enough Software will license

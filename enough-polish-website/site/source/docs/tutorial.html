@@ -100,8 +100,8 @@ To understand and control the build process, we need to have a closer look at th
 </p><p>
 At first the J2MEPolish Ant-task needs to be defined with the &lt;taskdef&gt; construct. The Ant-property &quot;wtk.home&quot; points to the installation directory of the Wireless Toolkit. 
 </p><p>
-The J2MEPolish task has the three main-sections &quot;&lt;info&gt;&quot;, &quot;&lt;deviceRequirements&gt;&quot; and &quot;&lt;build&gt;&quot;. The &lt;info&gt;-element specifies some general information about the project like the name and the version. The &lt;deviceRequirements&gt;-element is used to select the devices for which the application should be builded. The &lt;build&gt;-element is the central controller of the actual build process. This element controls whether the J2MEPolish GUI should be used, what MIDlets are used, which obfuscators should be used, and so on. Here you can also define additional variables and symbols which can be used in the preprocessing step.
-You can also use the additional section &quot;&amp;lt;emulator&amp;gt;&quot; for launching any WTK-based emulators from within J2ME Polish.
+The J2MEPolish task has the three main-sections &quot;&lt;info&gt;&quot;, &quot;&lt;deviceRequirements&gt;&quot; and &quot;&lt;build&gt;&quot;. The &lt;info&gt;-element specifies some general information about the project like the name and the version. The &lt;deviceRequirements&gt;-element is used to select the devices for which the application should be built. The &lt;build&gt;-element is the central controller of the actual build process. This element controls whether the J2MEPolish GUI should be used, what MIDlets are used, which obfuscators should be used, and so on. Here you can also define additional variables and symbols which can be used in the preprocessing step.
+You can also use the additional &lt;emulator&gt; section for launching any WTK-based emulators from within J2ME Polish.
 </p>
 <p>Find more information about the build.xml at following locations:</p>
 <ul>
@@ -263,7 +263,7 @@ try {
 </p><p>
 When the &quot;verbose&quot;-attribute is true, after each logging message the current time and the source-code file as well line of the message will be added. This eases the location of errors especially when obfuscation is used. The J2ME APIs of J2MEPolish will also specify details of errors whenever they throw an exception, when the &quot;verbose&quot;-attribute is true. The &quot;level&quot;-attribute controls the general logging-level which is used when no specific level has been assigned for a class. The logging-levels are hierarchically ordered:
 </p><p>
-debug &lt; info &lt; warn &lt; error &lt; fatal &lt; user-definiert
+debug &lt; info &lt; warn &lt; error &lt; fatal &lt; user-defined
 </p><p>
 When a class has the logging-level &quot;info&quot; assigned, messages with a level of &quot;warn&quot;, &quot;error&quot; and so on will also be logged, but no &quot;debug&quot; messages.
 </p><p>
@@ -282,7 +282,7 @@ In the source code logging messages will be introduced with the #debug-preproces
 <p>
 Device optimizations are mostly needed for the user interface of an application. The UI of J2MEPolish adapts automatically to devices and can - thanks to the resource assembling - be easily adjusted to different devices and device-groups.
 </p><p>
-There are however, other situations in which device optimizations are useful. With the help of the preprocessing capabilities and device database of J2MEPolish, these optimizations are done easy and without risking the portability of the application. 
+There are however, other situations in which device optimizations are useful. With the help of the preprocessing capabilities and device database of J2MEPolish, these optimizations are done easily without risking the portability of the application. 
 </p><p>
 Often the preprocessing directives &quot;#ifdef&quot;, &quot;#if&quot; and &quot;#=&quot; are used for optimizations:
 </p><p>

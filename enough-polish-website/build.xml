@@ -7,9 +7,10 @@
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
 <property name="Version" value="1.2.4" />
-<property name="BetaVersion" value="1.3" />
-<property name="symbols" value="" />
+<property name="BetaVersion" value="1.3-beta1" />
+<property name="symbols" value="isBetaAvailable" />
 <!--
+<property name="symbols" value="" />
 	<property name="symbols" value="isBetaAvailable" />
 -->
 	

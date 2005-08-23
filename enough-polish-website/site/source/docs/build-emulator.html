@@ -93,6 +93,10 @@ The &lt;emulator&gt;-element is responsible for launching any emulators after th
 <br /><code>${polish.jadPath}</code>: The absolute path of the JAD-file
 <br /><code>${polish.jarName}</code>: The name of the JAR-file
 <br /><code>${polish.jarPath}</code>: The absolute path of the JAR-file
+<br /><code>${polish.midlet.class}</code>: The name of the main MIDlet class.
+<br /><code>${polish.class.midlet-1}</code>: The name of the first MIDlet class (same as <code>polish.midlet.class</code>).
+<br /><code>${polish.class.midlet-2}</code>: The name of the second MIDlet class, if any.
+<br /><code>${polish.class.midlet-n}</code>: The name of the n<sup>th</sup> MIDlet class, if any.
 <br />
 When only a command-line switch should be defined, just define an empty value, e.g.
 <pre>
@@ -124,17 +128,17 @@ You can also set several skins, when several versions of an emulator do exist, f
 </p>
 <h3 id="nokia">Nokia Emulators</h3>
 <p>
-For launching Siemens-emulators it might be necessary to define the  &quot;<code>nokia.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the Nokia emulators and defaults to  &quot;C:\Nokia&quot; on Windows machines and to  &quot;${user.home}/Nokia&quot; on Unix machines. For many emulators it is sufficient to set the  <code>&quot;Emulator.Class&quot;</code> and  <code>&quot;Emulator.Skin&quot;</code>-capabilities of the device in the  &quot;${polish.home}/devices.xml&quot; file. The  <code>&quot;Emulator.Class&quot;</code>-capability then needs to be  &quot;NokiaEmulator&quot; and the  <code>&quot;Emulator.Skin&quot;</code>-capability needs to correspond with the name of the emulator which can be found in the  &quot;${nokia.home}/Devices&quot;-directory.
+For launching Nokia emulators it might be necessary to define the  &quot;<code>nokia.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the Nokia emulators and defaults to  &quot;C:\Nokia&quot; on Windows machines and to  &quot;${user.home}/Nokia&quot; on Unix machines. For many emulators it is sufficient to set the  <code>&quot;Emulator.Class&quot;</code> and  <code>&quot;Emulator.Skin&quot;</code>-capabilities of the device in the  &quot;${polish.home}/devices.xml&quot; file. The  <code>&quot;Emulator.Class&quot;</code>-capability then needs to be  &quot;NokiaEmulator&quot; and the  <code>&quot;Emulator.Skin&quot;</code>-capability needs to correspond with the name of the emulator which can be found in the  &quot;${nokia.home}/Devices&quot;-directory.
 </p><p>
 Some non-standard-emulators make it necessary the use the  &quot;GenericEmulator&quot;-class instead. The invocation of such emulators is explained below.
 </p>
 <h3 id="siemens">Siemens Emulators</h3>
 <p>
-For launching Siemens-emulators it might be necessary to define the  &quot;<code>siemens.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the  &quot;Siemens Mobile Toolkit&quot; (SMTK) and defaults to  &quot;C:\siemens&quot;. When a Siemens-emulator should be used, the corresponding device-definition in the  &quot;${polish.home}/devices.xml&quot; file needs to set the  <code>&quot;Emulator.Class&quot;</code>-capability to  &quot;SiemensEmulator&quot; (this is the default for all Siemens-phones). The <code>&quot;Emulator.Skin&quot;</code>-capability needs to specify the name of the emulator, which can be found in the &quot;${siemens.home}/SMTK/emulators&quot;-directory.
+For launching Siemens emulators it might be necessary to define the  &quot;<code>siemens.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the  &quot;Siemens Mobile Toolkit&quot; (SMTK) and defaults to  &quot;C:\siemens&quot;. When a Siemens-emulator should be used, the corresponding device-definition in the  &quot;${polish.home}/devices.xml&quot; file needs to set the  <code>&quot;Emulator.Class&quot;</code>-capability to  &quot;SiemensEmulator&quot; (this is the default for all Siemens-phones). The <code>&quot;Emulator.Skin&quot;</code>-capability needs to specify the name of the emulator, which can be found in the &quot;${siemens.home}/SMTK/emulators&quot;-directory.
 </p>
 <h3 id="motorola">Motorola Emulators</h3>
 <p>
-For launching Motorola-emulators it is necessary to define the &quot;<code>motorola.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the Motorola SDK, e.g. &quot;C:\program files\Motorola\SDK v.4.3 for J2ME&quot;. Since Motorola-emulators do not support the &quot;Unified Emulator Interface&quot;, the emulators are started by the  &quot;GenericEmulator&quot;. See below for more details.
+For launching Motorola emulators it is necessary to define the &quot;<code>motorola.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the Motorola SDK, e.g. &quot;C:\program files\Motorola\SDK v.4.3 for J2ME&quot;. Since Motorola-emulators do not support the &quot;Unified Emulator Interface&quot;, the emulators are started by the  &quot;GenericEmulator&quot;. See below for more details.
 </p>
 <h3 id="any-emulator">Launching any Emulator with the GenericEmulator-Implementation</h3>
 <p>
@@ -142,7 +146,7 @@ You can start any kind of emulator with the GenericEmulator class. You should se
 </p><p>
 The <code>&quot;Emulator.Executable&quot;</code>-capability needs to define the program which should be started, e.g. &quot;java&quot; or &quot;${motorola.home}/EmulatorA.1/bin/emujava.exe&quot;. This program is responsible for starting the emulator.
 </p><p>
-You need also to define the command-line arguments for the emulator with the <code>&quot;Emulator.Arguments&quot;</code>-capability. Command-line arguments are separated by two semicolons in a row, e.g. &quot;-Xdescriptor;;${polish.jadPath};;-classpath;;${polish.jarPath}&quot;. As you can see in the example, any J2ME Polish-variables as well as Ant-properties can be used within the emulator-arguments. Often used is the &quot;polish.jadPath&quot;-variable, which contains the absolute path to the JAD-file and the &quot;polish.jarPath&quot;-variable, which does the same for the JAR-file. 
+You need also to define the command-line arguments for the emulator with the <code>&quot;Emulator.Arguments&quot;</code>-capability. Command-line arguments are separated by two semicolons in a row, e.g. &quot;-Xdescriptor;;${polish.jadPath};;-classpath;;${polish.jarPath}&quot;. As you can see in the example, any J2ME Polish-variables as well as Ant-properties can be used within the emulator-arguments. Often used is the &quot;polish.jadPath&quot;-variable, which contains the absolute path to the JAD-file and the &quot;polish.jarPath&quot;-variable, which does the same for the JAR-file. Also useful is the variable <code>polish.classes.midlet-1</code> that does define the first MIDlet in the suite.
 </p><p>
 You should try to minimize the dependency on a specific system setup by using properties like &quot;<code>motorola.home</code>&quot; or &quot;<code>nokia.home</code>&quot; in your settings. These properties can then be defined within the corresponding build.xml file.  
 </p><p>

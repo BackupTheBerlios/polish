@@ -102,33 +102,13 @@ The image background uses an image for painting the background. This background 
 	 <td>Yes</td>
 	 <td>The URL of the image, e.g. &quot;url( background.png )&quot;</td>
 	</tr>
-	<tr>
-	 <td>anchor</td>
+	<tr><td>anchor</td>
 	 <td>No</td>
 	 <td>The anchor of the image - when not specified the image will be centered (&quot;horizontal-center | vertical-center&quot;). You can use a combination of &quot;top&quot;, &quot;vertical-center&quot; (=&quot;vcenter&quot;), &quot;bottom&quot; and &quot;left&quot;, &quot;horizontal-center&quot; (= &quot;hcenter&quot; = &quot;center&quot;), &quot;right&quot;. E.g. &quot;top | left&quot;.</td>
 	</tr>
-	<tr>
-	 <td>repeat</td>
+	<tr><td>repeat</td>
 	 <td>No</td>
-	 <td>Either &quot;repeat&quot;, &quot;no-repeat&quot;, &quot;repeat-x&quot;/&quot;repeat-horizontal&quot; or &quot;repeat-y&quot;/&quot;repeat-vertical&quot;. Determines whether the background should be repeated, repeated horizontally or repeated vertically. Default is no repeat.</td>
-	</tr>
-	<tr>
-	 <td>padding-horizontal</td>
-	 <td>No</td>
-	 <td>The horizontal gap between tiles, can be negative for overlapping the tiles. Defaults to 0. Is only applicable when the repeat mode is activated.</td>
-	</tr>
-	<tr>
-	 <td>padding-vertical</td>
-	 <td>No</td>
-	 <td>The vertical gap between tiles, can be negative for overlapping the tiles. Defaults to 0. Is only applicable when the repeat mode is activated.</td>
-	</tr>
-	<tr>
-	 <td>overlap</td>
-	 <td>No</td>
-	 <td>Defines whether the tiles should overlap over the actual background-area when they don't
- 		fit exactly into the actual background-area. 
-		Either &quot;true&quot;/&quot;yes&quot; or &quot;no&quot;/&quot;false&quot;. Defaults to false. Is only applicable when the repeat mode is activated.
-		</td>
+	 <td>Either &quot;repeat&quot;, &quot;no-repeat&quot;, &quot;repeat-x&quot; or &quot;repeat-y&quot;. Determines whether the background should be repeated, repeated horizontally or repeated vertically. Default is no repeat.</td>
 	</tr>
 	</table>
 <p>
@@ -344,61 +324,64 @@ The following example uses the opening background:
 	}
 }
 </pre></p>
-<h3 id="openingroundrectbackground">Opening-Round-Rect Background</h3>
-<p>
+Opening-Round-Rect Background
 The opening round rectangle background paints an animated background which height starts small and then increases whenever it changes the position. Its primary use is for the &quot;focused&quot;-style. It supports following attributes:
-</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>type</td>
 	 <td>Yes</td>
-	 <td>The type needs to be &quot;opening-round-rect&quot;.</td>
+	 <td></td>
 	</tr>
 	<tr>
-	 <td>color</td>
-	 <td>Yes</td>
-	 <td>The background color, either the name of the color or a direct definition. </td>
-	</tr>
-	<tr>
-	 <td>start-height</td>
+	 <td></td>
 	 <td>No</td>
-	 <td>The height of the background immediately after it has changed its position. This defaults to 1 pixel.</td>
+	 <td></td>
 	</tr>
 	<tr>
-	 <td>steps</td>
+	 <td></td>
 	 <td>No</td>
-	 <td>The number of pixels by which the height should be increased in each animation step. This defaults to 4 pixels. When the height is as big as the normal background-height, the animation is stopped.</td>
+	 <td></td>
 	</tr>
 	<tr>
-	 <td>border-width</td>
+	 <td></td>
 	 <td>No</td>
-	 <td>The width of the border, defaults to 0 (no border).</td>
-	</tr>
-	<tr>
-	 <td>border-color</td>
-	 <td>No</td>
-	 <td>The color of the border, defaults to black.</td>
-	</tr>
-	<tr>
-	 <td>arc</td>
-	 <td>No</td>
-	 <td>The diameter of the arc at the four corners. Defaults to 10 pixels, when none is specified.</td>
-	</tr>
-	<tr>
-	 <td>arc-width</td>
-	 <td>No</td>
-	 <td>The horizontal diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.</td>
-	</tr>
-	<tr>
-	 <td>arc-height</td>
-	 <td>No</td>
-	 <td>The vertical diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.</td>
+	 <td></td>
 	</tr>
 	</table>
-<p>
+
+Attribute
+Required
+Explanation
+type
+Yes
+The type needs to be &quot;opening-round-rect&quot;.
+color
+Yes
+The background color, either the name of the color or a direct definition. 
+start-height
+No
+The height of the background immediately after it has changed its position. This defaults to 1 pixel.
+steps
+No
+The number of pixels by which the height should be increased in each animation step. This defaults to 4 pixels. When the height is as big as the normal background-height, the animation is stopped.
+border-width
+No
+The width of the border, defaults to 0 (no border).
+border-color
+No
+The color of the border, defaults to black.
+arc
+No
+The diameter of the arc at the four corners. Defaults to 10 pixels, when none is specified.
+arc-width
+No
+The horizontal diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.
+arc-height
+No
+The vertical diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.
+
 The following example uses the opening-round-rect background:
-<pre>
 .myStyle {
 	background {
 		type: opening-round-rect;
@@ -409,43 +392,52 @@ The following example uses the opening-round-rect background:
 		border-color: darkBgColor;
 	}
 }
-</pre>
-</p>
-<h3 id="roundtabbackground">Round-Tab Background</h3>
-<p>
+Round-Tab Background
 The round-tab background paints a rectangular background where the top edges are rounded. It supports following attributes:
-</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>type</td>
 	 <td>Yes</td>
-	 <td>The type needs to be &quot;round-tab&quot;</td>
+	 <td></td>
 	</tr>
 	<tr>
-	 <td>color</td>
+	 <td></td>
 	 <td>No</td>
-	 <td>The color of the background, either the name of the color or a direct definition. The default color is white.</td>
+	 <td></td>
 	</tr>
 	<tr>
-	 <td>arc</td>
+	 <td></td>
 	 <td>No</td>
-	 <td>The diameter of the arc at the four corners. Defaults to 10 pixels, when none is specified.</td>
+	 <td></td>
 	</tr>
 	<tr>
-	 <td>arc-width</td>
+	 <td></td>
 	 <td>No</td>
-	 <td>The horizontal diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.</td>
-	</tr>
-	<tr>
-	 <td>arc-height</td>
-	 <td>No</td>
-	 <td>The vertical diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.</td>
+	 <td></td>
 	</tr>
 	</table>
-<p>
+
+Attribute
+Required
+Explanation
+type
+Yes
+The type needs to be &quot;round-tab&quot;
+color
+No
+The color of the background, either the name of the color or a direct definition. The default color is white.
+arc
+No
+The diameter of the arc at the four corners. Defaults to 10 pixels, when none is specified.
+arc-width
+No
+The horizontal diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.
+arc-height
+No
+The vertical diameter of the arc at the four corners. Defaults to the arc-value, when none is specified.
+
 This example creates a purple background with an arc diameter of 6 pixels:
-<pre>
 .myStyle {
 	background {
 		type: round-tab;
@@ -453,17 +445,14 @@ This example creates a purple background with an arc diameter of 6 pixels:
 		arc: 6;
 	}
 }
-</pre></p>
-<p>
+
 The following example uses a different horizontal arc diameter:
-<pre>
 .myStyle {
 	background-type: round-tab;
 	background-color: purple;
 	background-arc: 6;
 	background-arc-width: 10;
 }
-</pre></p>
 
 <h2 id="borders">Borders</h2>
 <p>

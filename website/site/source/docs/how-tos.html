@@ -311,6 +311,18 @@ If you have text which is displayed only seldom, consider to move them into a pr
 Signing MIDlets can be automated using the 
 <a href="build-build.html#java">&lt;java&gt;</a>-subelement of the 
 <a href="build-build.html">&lt;build&gt;</a>-element. 
+</p>
+<p>
+<b>
+IMPORTANT: please note that you cannot use normal code signing certificates on most devices, since the 
+required root certificates are missing. Your best bet to sign an application is with the (commercial) help
+of the <a href="http://javaverified.com" target="_blank">Java Verified</a> initiative.
+<br />
+On some devices you can import your own certificates.
+<br />
+Another option is to let your application certify by a vendor or a carrier.
+</b>
+</p>
 <p>
 Keys can be generated using the Java-keytool, e.g.:
 <pre>
