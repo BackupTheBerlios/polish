@@ -82,6 +82,9 @@ public class ImageItem extends Item
 
 	//following variables are implicitely defined by getter- or setter-methods:
 	private Image image;
+	//#if polish.api.svg
+		
+	//#endif
 	private String altText;
 	private int textColor;
 	private Font font;
