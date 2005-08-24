@@ -64,7 +64,7 @@ import java.util.*;
  * @since MIDP 1.0
  */
 public class DateField extends StringItem
-//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroke
+//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroke || polish.blackberry
 	//#define tmp.directInput
 	implements ItemCommandListener
 //#else
@@ -1011,11 +1011,11 @@ public class DateField extends StringItem
 			//#endif
 			this.form = new javax.microedition.lcdui.Form( StyleSheet.currentScreen.getTitle() );
 			this.form.append( this.midpDateField );
-			/*
 			this.form.addCommand(StyleSheet.OK_CMD);
 			this.form.addCommand(StyleSheet.CANCEL_CMD);
+			/*
 			*/
-			//#if !polish.blackberry
+			//#if !tmp.directInput
 			//# this.form.setCommandListener( this );
 			//#endif
 		}

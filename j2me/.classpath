@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="import/siemens-extension-api.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/m3g.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
-	<classpathentry kind="lib" path="/SVG/import/svgSalamander.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.0.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/svgSalamander.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui
+
 /*
  * Created on 22.08.2005 at 10:34:28.
  * 
@@ -64,7 +66,6 @@ public class SmoothColorBackground extends Background {
 	
 	
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		// TODO Auto-generated method stub
 		g.setStrokeStyle(this.stroke);
 		int startX = x;
 		int startY = y;
@@ -89,5 +90,7 @@ public class SmoothColorBackground extends Background {
 			blue = this.colorValue(blue,blue2,sumX,sumY);
 		}
 		while((red != red2 || green != green2 || blue != blue2) && x <= (width+startX) && y <= (height+startY));
+		
+		g.setStrokeStyle( Graphics.SOLID );
 	}
 }

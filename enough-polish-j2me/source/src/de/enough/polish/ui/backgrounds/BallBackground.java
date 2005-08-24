@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui
+
 package de.enough.polish.ui.backgrounds;
 
 import java.io.IOException;

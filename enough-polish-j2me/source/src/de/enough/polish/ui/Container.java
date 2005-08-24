@@ -1179,9 +1179,12 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
-		// just animate the currently focused item:
+		boolean animated = false;
+		if  (this.background != null) {
+			animated |= this.background.animate();
+		}
 		if (this.focusedItem != null) {
-			boolean animated = this.focusedItem.animate();
+			animated |= this.focusedItem.animate();
 			/*
 			if (this.focusedItem.background != null) {
 				animated = animated | this.focusedItem.background.animate();
@@ -1189,14 +1192,14 @@ public class Container extends Item {
 			*/
 			//#ifdef polish.css.view-type
 				if ( this.view != null ) {
-					animated = animated | this.view.animate();
+					animated |= this.view.animate();
 				}
 			//#endif
 			return animated;
 		} else {
 			//#ifdef polish.css.view-type
 				if ( this.view != null ) {
-					return this.view.animate();
+					return animated | this.view.animate();
 				}
 			//#endif
 			return false;

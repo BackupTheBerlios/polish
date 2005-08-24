@@ -1,4 +1,3 @@
-
 //#condition polish.usePolishGui
 
 package de.enough.polish.ui.backgrounds;
@@ -14,11 +13,12 @@ public class TigerStripesBackground extends Background {
 	
 	private final int color;
 	private final int stripesColor;
-	private Random random;
+	private final Random random;
 	private int startX,endX, endStartX, endEndX;
-	private static int number;
-	private static int maxNumber;
-	private static int minimalAbstand = 6, maximalAbstand = 10;
+	private int number;
+	private final int maxNumber;
+	private final int minimalAbstand = 6, maximalAbstand = 10;
+	
 	public TigerStripesBackground(int color, int stripesColor,int number) {
 		super();
 		this.color = color;
@@ -46,9 +46,9 @@ public class TigerStripesBackground extends Background {
 		while(this.endEndX <= (this.endX + this.minimalAbstand));
 	}
 	
-	private void stripeCounter(int number){
+	private void stripeCounter(int count){
 		do {
-			this.number = Math.abs( this.random.nextInt() ) % number;
+			this.number = Math.abs( this.random.nextInt() ) % count;
 		} while( this.number < 1);
 	}
 	
@@ -56,7 +56,7 @@ public class TigerStripesBackground extends Background {
 		g.setColor( this.color );
 		g.fillRect( x, y, width, height );
 		g.setColor( this.stripesColor);
-		g.setStrokeStyle(1);
+		g.setStrokeStyle( Graphics.DOTTED );
 		g.drawRect(x  ,y + 8,width ,2);
 		g.drawRect(x,y,width,height);
 		stripeCounter(this.maxNumber);
@@ -72,5 +72,7 @@ public class TigerStripesBackground extends Background {
 				}
 			}
 		}
+		g.setStrokeStyle( Graphics.SOLID );
+
 	}
 }

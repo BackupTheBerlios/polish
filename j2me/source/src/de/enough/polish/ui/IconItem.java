@@ -418,7 +418,7 @@ implements ImageConsumer
 		boolean animated = super.animate();
 		if (this.scaleFactor != 0) {
 			if (this.scaleFinished || this.image == null) {
-				return false;
+				return animated;
 			}
 			int imgWidth = this.image.getWidth();
 			int imgHeight = this.image.getHeight();

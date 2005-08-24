@@ -44,7 +44,6 @@ public class FileLogHandler extends LogHandler {
 
 	public FileLogHandler() {
 		super();
-		// TODO enough implement FileLogHandler
 	}
 
 	public void handleLogEntry(LogEntry entry) throws Exception {
