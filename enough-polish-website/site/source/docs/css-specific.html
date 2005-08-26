@@ -465,6 +465,130 @@ The following example uses a different horizontal arc diameter:
 }
 </pre></p>
 
+<h3 id="smooth-color">Smooth-Color Background</h3>
+<p>
+The smooth-color background paints an gradient background. It supports following attributes:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>color</td>
+	 <td>Yes</td>
+	 <td>The color of the background, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr>
+	 <td>gradient-color</td>
+	 <td>Yes</td>
+	 <td>The color for the gradient, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr>
+	 <td>stroke</td>
+	 <td>No</td>
+	 <td>The default value is 0.For effects set stroke 1.</td>
+	</tr>
+	</table>
+<p>
+This example creates a red background with an gradient to yellow:
+<pre>
+.myStyle {
+	background {
+		type: smooth-color;
+	 	color: red;
+	 	gradient-color: yellow;
+	 	
+	}
+}
+</pre></p>
+<h3 id="tiger-stripes">Tiger-Stripes Background</h3>
+<p>
+The tiger-stripes background paints an background with randomized numbers of Stripes. It supports following attributes:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>color</td>
+	 <td>Yes</td>
+	 <td>The color of the background, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr>
+	 <td>stripes-color</td>
+	 <td>Yes</td>
+	 <td>The color for the stripes, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr>
+	 <td>number</td>
+	 <td>Yes</td>
+	 <td>The posible number of stripes that can be displayed.</td>
+	</tr>
+	</table>
+<p>
+This example creates a red background with an maximum of 25 black stripes:
+<pre>
+.myStyle {
+	background {
+		type: tiger-stripes;	
+		color: red;
+		stripe-color: black;
+		number: 25;
+	}
+}
+</pre></p>
+
+<h3 id="ball-games">Ball-Games Background</h3>
+<p>
+The ball-games background paints an animated background with an number of sprites which moving through the background. It supports following attributes:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>color</td>
+	 <td>Yes</td>
+	 <td>The color of the background, either the name of the color or a direct definition.</td>
+	</tr>
+	<tr>
+	 <td>number</td>
+	 <td>Yes</td>
+	 <td>The number of sprites that were displayed.</td>
+	</tr>
+	<tr>
+	<td>border-color</td>
+	 <td>Yes</td>
+	 <td>The border color from the background.</td>
+	</tr>
+	<tr>
+	<td>image</td>
+	 <td>Yes</td>
+	 <td>The image for the sprite.</td>
+	</tr>
+	<tr>
+	<td>image-width</td>
+	 <td>Yes</td>
+	 <td>The width for the sprite.</td>
+	</tr>
+	<tr>
+	<td>image-height</td>
+	 <td>Yes</td>
+	 <td>The height for the sprite.</td>
+	</tr>
+	</table>
+<p>
+This example creates blue background with 25 sprites.The sprites include the given image(player.png):
+<pre>
+.myStyle {
+	background {
+		type: ball-games;
+		image: url( player.png );	
+		image-width: 15;
+		image-height: 15;
+		color: blue;
+		number: 25;
+		border-color: green;
+
+	 	
+	}
+}
+</pre></p>
+
 <h2 id="borders">Borders</h2>
 <p>
 There are many different border-types which make use of specific CSS attributes. When another border than the default simple border should be used, the border-type attribute needs to be declared. 
