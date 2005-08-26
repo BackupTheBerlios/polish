@@ -52,6 +52,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	private Appearance  appearance;
 	private Material  material = new Material();
 	private Image   image;
+	private boolean first = true;
 	public CubeScreenChangeAnimation() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -62,6 +63,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
+		if(this.first){
 		 this.graphics3d = Graphics3D.getInstance();
 
 		 this.camera = new Camera();
@@ -139,12 +141,14 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  this.material.setShininess(100.0f);
 
 		  this.background.setColor(0xffffcc);
+		  this.first = false;
+		}
 	}
 	
 	
 	protected boolean animate() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public void paint(Graphics g) {
