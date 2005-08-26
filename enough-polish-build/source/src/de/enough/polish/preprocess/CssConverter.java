@@ -61,6 +61,10 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "round-rect-opening", "de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter");
 		BACKGROUND_TYPES.put( "opening-round-rect", "de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter");
 		BACKGROUND_TYPES.put( "round-tab", "de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter");
+		BACKGROUND_TYPES.put( "ball-games", "de.enough.polish.preprocess.backgrounds.BallBackgroundConverter");
+		BACKGROUND_TYPES.put( "tiger-stripes", "de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter");
+		BACKGROUND_TYPES.put( "smooth-color", "de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter");
+
 	}
 	private static final HashMap BORDER_TYPES = new HashMap();
 	static {
