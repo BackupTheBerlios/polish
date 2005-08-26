@@ -218,7 +218,7 @@
 			<mapping from="javax.microedition.lcdui.game.Layer" to="com.siemens.mp.color_game.Layer" />
 			<mapping from="javax.microedition.lcdui.game.LayerManager" to="com.siemens.mp.color_game.LayerManager" />
 			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="com.siemens.mp.color_game.TiledLayer" />
-			<mapping from="javax.microedition.lcdui.game.Sprite" to="de.enough.polish.ui.game.Sprite" />
+			<mapping from="javax.microedition.lcdui.game.Sprite" to="" />
 			<mapping from="javax.microedition.lcdui.game.*" to="import com.siemens.mp.color_game.GameCanvas; import com.siemens.mp.color_game.Layer; import com.siemens.mp.color_game.LayerManager; import com.siemens.mp.color_game.TiledLayer" />
 		</mappings>
 		

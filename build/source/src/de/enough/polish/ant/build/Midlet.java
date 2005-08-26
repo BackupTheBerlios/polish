@@ -142,8 +142,8 @@ public class Midlet extends Setting {
 				if (dotPos != -1) {
 					altName = altName.substring( dotPos + 1);
 				}
-				this.name = altName; 
 			}
+			this.name = altName; 
 		}
 		if (this.icon == null) {
 			if (defaultIcon != null) {

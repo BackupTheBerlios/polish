@@ -132,6 +132,8 @@ public class Environment {
 	 * @param value
 	 */
 	public void addVariable(String name, String value) {
+		this.variables.put( name, value );
+		this.symbols.put( name + ":defined", Boolean.TRUE );
 		name = name.toLowerCase();
 		this.variables.put( name, value );
 		this.symbols.put( name + ":defined", Boolean.TRUE );
@@ -144,6 +146,10 @@ public class Environment {
 	}
 	
 	public String removeVariable( String name ) {
+		this.variables.remove( name );
+		this.temporaryVariables.remove( name );
+		this.variables.remove( name + ":defined" );
+		this.temporaryVariables.remove( name + ":defined" );
 		name = name.toLowerCase();
 		String value = (String) this.variables.remove( name );
 		String tempValue = (String) this.temporaryVariables.remove( name );
@@ -189,15 +195,20 @@ public class Environment {
 
 	
 	public String getVariable( String name ) {
-		name = name.toLowerCase();
 		String value = (String) this.variables.get( name );
 		if (value == null) {
-			value = (String) this.temporaryVariables.get( name );
+			name = name.toLowerCase();
+			value = (String) this.variables.get( name );
+			if (value == null) {
+				value = (String) this.temporaryVariables.get( name );
+			}
 		}
 		return value;
 	}
 	
 	public void addTemporaryVariable( String name, String value ) {
+		this.temporaryVariables.put( name, value );
+		this.temporarySymbols.put( name + ":defined", Boolean.TRUE );
 		name = name.toLowerCase();
 		this.temporaryVariables.put( name, value );
 		this.temporarySymbols.put( name + ":defined", Boolean.TRUE );
@@ -214,14 +225,18 @@ public class Environment {
 	 * @param name
 	 */
 	public void addSymbol( String name ) {
+		this.symbols.put( name, Boolean.TRUE );
 		name = name.toLowerCase();
 		this.symbols.put( name, Boolean.TRUE );
 	}
 	
 	public boolean removeSymbol( String name ) {
-		name = name.toLowerCase();
-		return ((this.symbols.remove( name ) != null) 
+		boolean removed = ((this.symbols.remove( name ) != null) 
 		       | (this.temporarySymbols.remove( name ) != null) );
+		name = name.toLowerCase();
+		removed = ((this.symbols.remove( name ) != null) 
+			       | (this.temporarySymbols.remove( name ) != null) );
+		return removed;
 	}
 	
 	public boolean hasSymbol( String name ) {

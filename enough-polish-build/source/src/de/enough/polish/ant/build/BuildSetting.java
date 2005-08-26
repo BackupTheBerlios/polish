@@ -938,6 +938,7 @@ public class BuildSetting {
 	 * 
 	 * @param defaultIcon the url of the default icon.
 	 * @param useDefaultPackage true when the default package should be used 
+	 * @param environment environment settings
 	 * @return The infos of all midlets in a String array.
 	 * 		The first midlet is also the first element in the returned array.
 	 */

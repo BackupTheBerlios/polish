@@ -61,6 +61,7 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "round-rect-opening", "de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter");
 		BACKGROUND_TYPES.put( "opening-round-rect", "de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter");
 		BACKGROUND_TYPES.put( "round-tab", "de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter");
+		BACKGROUND_TYPES.put( "fade-in", "de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter");
 		BACKGROUND_TYPES.put( "ball-games", "de.enough.polish.preprocess.backgrounds.BallBackgroundConverter");
 		BACKGROUND_TYPES.put( "tiger-stripes", "de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter");
 		BACKGROUND_TYPES.put( "smooth-color", "de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter");
@@ -79,6 +80,7 @@ public class CssConverter extends Converter {
 		BORDER_TYPES.put( "top", "de.enough.polish.preprocess.borders.TopBorderConverter");
 		BORDER_TYPES.put( "left", "de.enough.polish.preprocess.borders.LeftBorderConverter");
 		BORDER_TYPES.put( "right", "de.enough.polish.preprocess.borders.RightBorderConverter");
+		BORDER_TYPES.put( "drop-shadow", "de.enough.polish.preprocess.borders.DropShadowBorderConverter");
 	}
 	private static HashMap LAYOUTS = new HashMap();
 	static {

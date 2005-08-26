@@ -39,9 +39,11 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
@@ -123,22 +125,94 @@ public final class JarUtil {
 					entryName = StringUtil.replace( entryName, '\\', '/' );
 			}
 			JarEntry entry = new JarEntry( entryName );
-			out.putNextEntry(entry);
 			// read file:
 			FileInputStream in = new FileInputStream( file );
-			int read;
-			long size = 0;
-			while (( read = in.read(buffer)) != -1) {
-				crc.update(buffer, 0, read);
-				out.write(buffer, 0, read);
-				size += read;
-			}
-			entry.setCrc( crc.getValue() );
-			entry.setSize( size );
-			in.close();
-			out.closeEntry();
-			crc.reset();
+			add(entry, in, out, crc, buffer);
 		}
+	}
+
+	/**
+	 * @param entry
+	 * @param in
+	 * @param out
+	 * @param crc
+	 * @param buffer
+	 * @throws IOException
+	 */
+	private static void add(JarEntry entry, InputStream in, JarOutputStream out, CRC32 crc, byte[] buffer) 
+	throws IOException 
+	{
+		out.putNextEntry(entry);
+		int read;
+		long size = 0;
+		while (( read = in.read(buffer)) != -1) {
+			crc.update(buffer, 0, read);
+			out.write(buffer, 0, read);
+			size += read;
+		}
+		entry.setCrc( crc.getValue() );
+		entry.setSize( size );
+		in.close();
+		out.closeEntry();
+		crc.reset();
+	}
+	
+	/**
+	 * Adds the given file to the specified JAR file.
+	 * 
+	 * @param file the file that should be added
+	 * @param jarFile The JAR to which the file should be added
+	 * @param parentDir the parent directory of the file, this is used to calculate the path witin the JAR file.
+	 *                  When null is given, the file will be added into the root of the JAR.
+	 * @param compress True when the jar file should be compressed
+	 * @throws FileNotFoundException when the jarFile does not exist
+	 * @throws IOException when a file could not be written or the jar-file could not read.
+	 */
+	public static void addToJar( File file, File jarFile, File parentDir, boolean compress )
+	throws FileNotFoundException, IOException
+	{
+		File tmpJarFile = File.createTempFile("tmp", ".jar", jarFile.getParentFile() );
+		JarOutputStream out = new JarOutputStream(
+				new FileOutputStream( tmpJarFile ) );
+		if (compress) {
+			out.setLevel( ZipOutputStream.DEFLATED );
+		} else {
+			out.setLevel( ZipOutputStream.STORED );
+		}
+		// copy contents of old jar to new jar:
+		JarFile inputFile = new JarFile( jarFile );
+		JarInputStream in = new JarInputStream( new FileInputStream( jarFile ) );
+		CRC32 crc = new CRC32();
+		byte[] buffer = new byte[ 1024 * 1024 ];
+		JarEntry entry = (JarEntry) in.getNextEntry();
+		while (entry != null) {
+			InputStream entryIn = inputFile.getInputStream(entry); 
+			add( entry, entryIn, out, crc, buffer );
+			entryIn.close();
+			entry = (JarEntry) in.getNextEntry();
+		}
+		in.close();
+		inputFile.close();
+		
+		int sourceDirLength;
+		if (parentDir == null) {
+			sourceDirLength = file.getAbsolutePath().lastIndexOf( File.separatorChar ) + 1;
+		} else {
+			sourceDirLength = file.getAbsolutePath().lastIndexOf( File.separatorChar ) + 1
+				- parentDir.getAbsolutePath().length();			
+		}
+		addFile( file, out, crc, sourceDirLength, buffer );
+		out.close();
+		
+		// remove old jar file and rename temp file to old one:
+		if (jarFile.delete()) {
+			if ( !tmpJarFile.renameTo(jarFile) ) {
+				throw new IOException("Unable to rename temporary JAR file to [" + jarFile.getAbsolutePath() + "]." );
+			}
+		} else {
+			throw new IOException("Unable to delete old JAR file [" + jarFile.getAbsolutePath() + "]." );
+		}
+		
 	}
 
 	/**

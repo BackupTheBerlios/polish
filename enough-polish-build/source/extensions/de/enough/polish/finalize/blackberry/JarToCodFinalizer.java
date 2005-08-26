@@ -39,6 +39,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.OutputFilter;
 
@@ -95,6 +96,15 @@ implements OutputFilter
 				mainClassName = "MIDlet";
 			} else {
 				mainClassName= "de.enough.polish.blackberry.midlet.MIDlet";
+			}
+			// add JAD file to JAR, so that MIDlet.getAppProperty() works later onwards:
+			try {
+				File txtJadFile = new File( jadFile.getParent(), jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
+				FileUtil.copy( jadFile, txtJadFile );
+				JarUtil.addToJar(txtJadFile, jarFile, null, true );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to store JAD file in BlackBerry JAR file: " + e.toString() );
 			}
 		}
 		if (mainClassName != null) {

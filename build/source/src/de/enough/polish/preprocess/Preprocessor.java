@@ -745,8 +745,10 @@ public class Preprocessor {
 		int commandStartLine = lines.getCurrentIndex();
 		boolean processed = false;
 		while (lines.next()) {
+			
 			String line = lines.getCurrent();
 			String trimmedLine = line.trim();
+			try {
 			int result = NOT_CHANGED; 
 			if (conditionFulfilled) {
 				result = processSingleLine( className, lines, line, trimmedLine );
@@ -846,6 +848,10 @@ public class Preprocessor {
 				if (changed) {
 					processed = true;
 				}
+			}
+			} catch (StringIndexOutOfBoundsException e) {
+				//e.printStackTrace();
+				throw new BuildException( className + " line " + (lines.getCurrentIndex() + 1) + ": invalid #if directive [" + line + "].", e );
 			}
 		} // loop until endif is found
 		if (!endifFound) {
