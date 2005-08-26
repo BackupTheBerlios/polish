@@ -70,7 +70,7 @@ public class SmoothColorBackground extends Background {
 		int startX = x;
 		int startY = y;
 		g.setColor(000000);
-		g.drawRect(x,y,width,height);
+		g.drawRect(x+1,y+1,width,height);
 		int red,green, blue,red2,green2,blue2;
 		red = (0x00FF & (this.color >>> 16));	
 		green = (0x0000FF & (this.color >>> 8));
