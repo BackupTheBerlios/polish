@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui && polish.api.3dapi
 /*
  * Created on 26.08.2005 at 10:33:18.
  * 
@@ -63,15 +64,16 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-		if(this.first){
-		 this.graphics3d = Graphics3D.getInstance();
+		 System.out.print("3DCube");
 
+		 this.graphics3d = Graphics3D.getInstance();
+		 System.out.print("3DCube2");
 		 this.camera = new Camera();
 		 this.camera.setPerspective( 60.0f,
 		   (float)getWidth()/ (float)getHeight(),
 		   1.0f,
 		   1000.0f );
-
+		 System.out.print("3DCube3");
 		 this.light = new Light();
 		 this.light.setColor(0xffffff);
 		 this.light.setIntensity(1.25f);
@@ -98,7 +100,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 
 		  VertexArray normArray = new VertexArray(norm.length / 3, 3, 1);
 		  normArray.set(0, norm.length/3, norm);
-
+		  System.out.print("3DCube4");
 		  // per vertex texture coordinates
 		  short[] tex = {
 		   1, 0,  0, 0,  1, 1,  0, 1,
@@ -110,7 +112,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 
 		  VertexArray texArray = new VertexArray(tex.length / 2, 2, 2);
 		  texArray.set(0, tex.length/2, tex);
-
+		  System.out.print("3DCube5");
 		  int[] stripLen = { 4, 4, 4, 4, 4, 4 };
 
 		  // the VertexBuffer for our object
@@ -118,35 +120,47 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  vb.setPositions(vertArray, 1.0f, null);
 		  vb.setNormals(normArray);
 		  vb.setTexCoords(0, texArray, 1.0f, null);
-
+		  System.out.print("3DCube6");
 		  this.indexbuffer = new TriangleStripArray( 0, stripLen );
 
 		  // the image for the texture
 		  
-
-		  Image2D image2D = new Image2D( Image2D.RGB, nxtScreenImage );
+		  System.out.print("3DCube6.25");
+		  try {
+			image = Image.createImage("/tex.png");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  System.out.print("3DCube6.35;;;;;");
+		  Image2D image2D = new Image2D( Image2D.RGB, image );
+		  System.out.print("3DCube6.5");
 		  Texture2D texture = new Texture2D( image2D );
+		  System.out.print("3DCube6.75");
 		  texture.setFiltering(Texture2D.FILTER_NEAREST,
 		        Texture2D.FILTER_NEAREST);
+		  System.out.print("3DCube8.5");
 		  texture.setWrapping(Texture2D.WRAP_CLAMP,
 		       Texture2D.WRAP_CLAMP);
 		  texture.setBlending(Texture2D.FUNC_MODULATE);
-
+		  System.out.print("3DCube7");
 		  // create the appearance
 		  this.appearance = new Appearance();
-		  this.appearance.setTexture(0, texture);
+//		  this.appearance.setTexture(0, texture);
 		  this.appearance.setMaterial(this.material);
 		  this.material.setColor(Material.DIFFUSE, 0xFFFFFFFF);
 		  this.material.setColor(Material.SPECULAR, 0xFFFFFFFF);
 		  this.material.setShininess(100.0f);
-
+		  System.out.print("3DCube8");
 		  this.background.setColor(0xffffcc);
 		  this.first = false;
-		}
+		  System.out.print("3DCubeEnd");
+		
 	}
 	
 	
 	protected boolean animate() {
+		
 		// TODO Auto-generated method stub
 		return true;
 	}
