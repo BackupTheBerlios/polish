@@ -1487,7 +1487,15 @@ public class Graphics extends Object
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
 	{
-		this.g.drawRGB(rgbData, offset, scanlength, x, y, width, height);
+//		if ( processAlpha ) {
+//			//Bitmap bitmap = new Bitmap( Bitmap.ALPHA_BITDEPTH_8BPP, width, height );
+//			Bitmap bitmap = new Bitmap( Bitmap.ROWWISE_16BIT_COLOR, width, height ); 
+//			net.rim.device.api.ui.Graphics graphics = new net.rim.device.api.ui.Graphics( bitmap );
+//			graphics.drawRGB(rgbData, offset, scanlength, x, y, width, height);
+//			this.g.drawBitmap(x, y, width, height, bitmap, 0, 0 );
+//		} else {
+			this.g.drawRGB(rgbData, offset, scanlength, x, y, width, height);
+//		}
 	}
 
 	/**

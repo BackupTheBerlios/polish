@@ -556,7 +556,8 @@ implements AccessibleCanvas
 			this.container.setStyle(style, true);
 		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
-		this.isLayoutBottom = (( style.layout & Item.LAYOUT_BOTTOM ) == Item.LAYOUT_BOTTOM);
+		this.isLayoutBottom = ! this.isLayoutVCenter 
+							&& (( style.layout & Item.LAYOUT_BOTTOM ) == Item.LAYOUT_BOTTOM);
 		//#ifdef polish.css.scrollindicator-color
 			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
 			if (scrollIndicatorColorInt != null) {

@@ -125,7 +125,7 @@ public class MenuBar extends Item {
 				//#ifdef polish.command.cancel:defined
 					//#= String text =  "${polish.command.cancel}";
 				//#else
-					String text =  "Cancel";
+					String text =  "Hide";
 				//#endif
 				this.cancelCommand = new Command( text, Command.CANCEL, 2000 );
 				addCommand( this.cancelCommand );
@@ -431,6 +431,7 @@ public class MenuBar extends Item {
 				// paint menu at the top left corner:
 				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
 				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.commandsContainerWidth, this.screen.screenWidth, g);
+				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
 			//#else
 				// paint menu at the lower right corner:
 				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);

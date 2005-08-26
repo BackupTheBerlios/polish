@@ -207,7 +207,11 @@ public abstract class MIDlet extends UiApplication
 	{
 		if ( this.appProperties == null ) {
 			this.appProperties = new Hashtable();
-			InputStream inputStream = getClass().getResourceAsStream("/META-INF/MANIFEST.MF");
+			//#if true
+				//#= InputStream inputStream = getClass().getResourceAsStream("/${ replace( polish.jadName, .jad, .txt) }");
+			//#else
+				InputStream inputStream = getClass().getResourceAsStream("/META-INF/MANIFEST.MF");
+			//#endif
 			if (inputStream != null) {
 				InputStreamReader reader = new InputStreamReader( inputStream );
 				char[] buffer = new char[ 4 * 1024 ]; // 8 kb
@@ -231,22 +235,26 @@ public abstract class MIDlet extends UiApplication
 						continue;
 					}
 					String attributeKey = line.substring( 0, colonPos );
-					String attributeValue = line.substring( colonPos + 1 );
+					String attributeValue = line.substring( colonPos + 2 );
+					//#debug
 					System.out.println("Adding: " + attributeKey + "=" + attributeValue );
 					this.appProperties.put( attributeKey, attributeValue );
 				}
 			}
 		}
 		
-//		if ("ClientID".equals( key )) {
-//			return "4711";
-//		} else if ("UserName".equals( key )) {
-//			return "Milosz Weckowski";
-//		} else if ("ClientID".equals( key )) {
-//			return "4711";
-//		}
 		String value = (String) this.appProperties.get( key );
+		//#debug
 		System.out.println("got value [" + value + "] for key [" + key + "]");
+		if (value == null) {
+			if ("ClientID".equals( key )) {
+				return "4711";
+			} else if ("UserName".equals( key )) {
+				return "Milosz Weckowski";
+			} else if ("ClientID".equals( key )) {
+				return "4711";
+			}
+		}
 		return value;
 	}
 
@@ -388,7 +396,7 @@ public abstract class MIDlet extends UiApplication
 	private class NativeMidlet extends javax.microedition.midlet.MIDlet {
 		
 
-			protected void startApp() throws MIDletStateChangeException {
+			protected void startApp() throws javax.microedition.midlet.MIDletStateChangeException {
 				// nothing to do
 			}
 		
@@ -396,7 +404,7 @@ public abstract class MIDlet extends UiApplication
 				// ignore
 			}
 		
-			protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
+			protected void destroyApp(boolean arg0) throws javax.microedition.midlet.MIDletStateChangeException {
 				// ignore
 			}
 	}

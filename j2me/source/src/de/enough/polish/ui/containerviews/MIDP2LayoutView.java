@@ -222,12 +222,11 @@ public class MIDP2LayoutView extends ContainerView {
 	                } else {
                         layout = (layout & LAYOUT_VERTICAL);
                         switch (layout) {
+	                        case Item.LAYOUT_VCENTER :
+	                            rowItem.y += ((this.rowHeight - rowItem.height) >> 1);
+	                            break;
                             case Item.LAYOUT_BOTTOM :
                                 rowItem.y += this.rowHeight - rowItem.height;
-                                break;
-
-                            case Item.LAYOUT_VCENTER :
-                                rowItem.y += ((this.rowHeight - rowItem.height) >> 1);
                                 break;
                         }
 	                }

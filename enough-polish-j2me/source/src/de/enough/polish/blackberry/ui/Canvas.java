@@ -1133,7 +1133,7 @@ extends Displayable
 		if (processed) {
 			return true;
 		}
-		System.out.println("keyDown: keyCode=" + keyCode );
+		//System.out.println("keyDown: keyCode=" + keyCode );
 		switch (keyCode) {
 		case KEY_BB_0: keyCode = KEY_NUM0; break;
 		case KEY_BB_1: keyCode = KEY_NUM1; break;
@@ -1170,15 +1170,15 @@ extends Displayable
 				if ( !item._bbFieldAdded ) {
 					item._bbFieldAdded = true;
 					add( item._bbField );
-					System.out.println("Canvas.focus(): adding field " + item._bbField );
+					//System.out.println("Canvas.focus(): adding field " + item._bbField );
 				}
 				setFocus( item._bbField, 0, 0, 0, 0 );
-				System.out.println("Canvas.focus(): focusing field " + item._bbField );
+				//System.out.println("Canvas.focus(): focusing field " + item._bbField );
 				this.dummyFieldHasFocus = false;
 			} else if (!this.dummyFieldHasFocus) {
 				this.dummyFieldHasFocus = true;
 				setFocus( this.dummyField, 0, 0, 0, 0 );
-				System.out.println("Canvas.focus(): focusing dummy");
+				//System.out.println("Canvas.focus(): focusing dummy");
 			}
         }
 	}

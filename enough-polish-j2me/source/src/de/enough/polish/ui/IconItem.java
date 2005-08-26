@@ -134,12 +134,13 @@ implements ImageConsumer
 			lineWidth -= this.imageWidth;
 			super.initContent(firstLineWidth, lineWidth);
 			if (this.imageHeight > this.contentHeight) {
-				if ( (this.layout & LAYOUT_TOP) == LAYOUT_TOP ) {
-					this.yAdjust = 0;
+				if ( (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER ) {
+					this.yAdjust = (this.imageHeight - this.contentHeight) / 2;
 				} else if ( (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM ) {
 					this.yAdjust = this.imageHeight - this.contentHeight;
 				} else {
-					this.yAdjust = (this.imageHeight - this.contentHeight) / 2;
+					// top layout:
+					this.yAdjust = 0;
 				}
 				this.contentHeight = this.imageHeight;
 			} else {

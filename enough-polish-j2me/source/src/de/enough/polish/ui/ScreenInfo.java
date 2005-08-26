@@ -115,7 +115,7 @@ public class ScreenInfo {
 			return;
 		}
 		if ( positionSet ) {
-			item.paint( itemX, itemY, itemX, screenWidth - itemX, g );
+			item.paint( itemX, itemY, itemX, screenWidth, g );
 		} else {
 			item.paint( 0, titleHeight, 0, screenWidth, g );
 		}

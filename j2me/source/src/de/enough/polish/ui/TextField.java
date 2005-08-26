@@ -34,6 +34,7 @@ import javax.microedition.lcdui.Graphics;
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
+import net.rim.device.api.ui.UiApplication;
 	import net.rim.device.api.ui.XYRect;
 	import net.rim.device.api.ui.component.BasicEditField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
@@ -908,6 +909,14 @@ public class TextField extends StringItem
 	 */
 	public void setString( String text)
 	{
+		//#if polish.blackberry
+		if (this.editField != null && text != this.text ) {
+			Object bbLock = UiApplication.getEventLock();
+			synchronized (bbLock) {
+				this.editField.setText(text);
+			}
+		}
+		//#endif
 		if (this.isPassword) {
 			this.passwordText = text;
 			if (text != null) {
