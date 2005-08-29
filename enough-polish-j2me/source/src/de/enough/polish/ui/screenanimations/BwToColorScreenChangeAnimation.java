@@ -89,7 +89,6 @@ extends ScreenChangeAnimation
 //			color = (blue + (green * 256) + (red * 65536));
 	
 		}
-		this.firstStep = true;
 		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
