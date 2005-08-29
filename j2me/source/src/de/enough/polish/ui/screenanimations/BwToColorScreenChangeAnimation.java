@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui and polish.midp2
 /*
  * Created on 24.08.2005 at 15:37:25.
  * 
@@ -47,9 +47,7 @@ extends ScreenChangeAnimation
 	
 	private int[] nextScreenRgb;
 	private int[] currentScreenRgb;
-	private int[] bufferedScreenRgb;
-	private boolean firstStep;
-	private int factor,count=0;
+//	private int[] bufferedScreenRgb;
 	/**
 	 * 
 	 */
@@ -67,14 +65,14 @@ extends ScreenChangeAnimation
 		if ( this.nextScreenRgb == null ) {
 			this.nextScreenRgb = new int[ width * height ];
 			this.currentScreenRgb = new int[ width * height ];
-			this.bufferedScreenRgb = new int [width * height];
+//			this.bufferedScreenRgb = new int [width * height];
 			if(this.firstScreenImage == null){
 				System.out.print("fill image\n");
 				this.firstScreenImage = this.nextCanvasImage;
 			}
 		}
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		nxtScreenImage.getRGB( this.bufferedScreenRgb, 0, width, 0, 0, width, height );
+//		nxtScreenImage.getRGB( this.bufferedScreenRgb, 0, width, 0, 0, width, height );
 		// TODO render a black and white version out of the nextScreenRgb array
 		int color,red,green,blue;
 		for(int i = 0;i < this.currentScreenRgb.length;i++){
@@ -100,55 +98,6 @@ extends ScreenChangeAnimation
 	public void keyPressed(int keyCode) {
 		super.keyPressed(keyCode);
 		this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-//		if(this.firstScreenImage != null){
-//			this.firstScreenImage.getRGB( this.bufferedScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-//		}
-//		int color,red = 0,green = 0,blue = 0,nextRed,nextBlue,nextGreen,nextColor;
-////		for(int i = 1; i <= 2;i++){
-//			int id = 0;
-//			while(id < this.nextScreenRgb.length){
-//				
-//				color = this.bufferedScreenRgb[id];
-//				nextColor = this.nextScreenRgb[id];
-//
-//				if(this.bufferedScreenRgb[id] != this.nextScreenRgb[id]){
-//					red = (0x00FF & (color >>> 16));	
-//					green = (0x0000FF & (color >>> 8));
-//					blue = color & (0x000000FF );
-//					nextRed = (0x00FF & (nextColor >>> 16));
-//					nextGreen = (0x0000FF & (nextColor >>> 8));
-//					nextBlue = nextColor & (0x000000FF);
-////					System.out.print("change pixel");
-//					int brightness = (nextRed + nextGreen + nextBlue) / 3;
-//					if ( brightness > 127 ) {
-////						this.currentScreenRgb[id] = 0xFFFFFF;
-//						red = 255;
-//						green = 255;
-//						blue = 255;
-//					} else {
-////						this.currentScreenRgb[id] = 0x0;
-//						red = 0;
-//						green = 0;
-//						blue = 0;
-//					}
-//					for(int u = 0;u < this.count;u++){
-//						if(red != nextRed){
-//							red = this.colorValue(red,nextRed,-1);
-//						}
-//						if(green != nextGreen){
-//							green = this.colorValue(green,nextGreen,-1);
-//						}
-//						if(blue != nextBlue){
-//							blue = this.colorValue(blue,nextBlue,-1);
-//						}
-//					}
-//					this.currentScreenRgb[id] = (red << 16) | (green << 8) | blue;				
-//				}
-//				id++;
-//			}
-////		}
-//			System.out.print("id:"+id+"\n");
-//			this.firstScreenImage = this.nextCanvasImage;
 	}
 
 	//#if polish.hasPointerEvents
@@ -167,7 +116,6 @@ extends ScreenChangeAnimation
 				currentColor+= sum;
 			}
 			else{
-//				currentColor = targetColor;
 				int sum =  (currentColor-targetColor ) ;
 				if(sum > speed)sum = sum / speed;
 				if(sum == 0)sum = 1;
@@ -187,24 +135,26 @@ extends ScreenChangeAnimation
 		for(int i = 0;i < this.currentScreenRgb.length;i++){
 			color = this.currentScreenRgb[i];
 			nextColor = this.nextScreenRgb[i];
-			red = (0x00FF & (color >>> 16));	
-			green = (0x0000FF & (color >>> 8));
-			blue = color & (0x000000FF );
-			nextRed = (0x00FF & (nextColor >>> 16));
-			nextGreen = (0x0000FF & (nextColor >>> 8));
-			nextBlue = nextColor & (0x000000FF);
-			if(red != nextRed){
-				red = this.colorValue(red,nextRed,-1);
-			}
-			if(green != nextGreen){
-				green = this.colorValue(green,nextGreen,-1);
-			}
-			if(blue != nextBlue){
-				blue = this.colorValue(blue,nextBlue,-1);
-			}
-			if(red != nextRed || green != nextGreen || blue != nextBlue){
-				this.currentScreenRgb[i] = (red << 16) | (green << 8) | blue;
-				bolReturn = true;
+			if(color != nextColor){
+				red = (0x00FF & (color >>> 16));	
+				green = (0x0000FF & (color >>> 8));
+				blue = color & (0x000000FF );
+				nextRed = (0x00FF & (nextColor >>> 16));
+				nextGreen = (0x0000FF & (nextColor >>> 8));
+				nextBlue = nextColor & (0x000000FF);
+				if(red != nextRed){
+					red = this.colorValue(red,nextRed,-1);
+				}
+				if(green != nextGreen){
+					green = this.colorValue(green,nextGreen,-1);
+				}
+				if(blue != nextBlue){
+					blue = this.colorValue(blue,nextBlue,-1);
+				}
+				if(red != nextRed || green != nextGreen || blue != nextBlue){
+					this.currentScreenRgb[i] = (red << 16) | (green << 8) | blue;
+					bolReturn = true;
+				}
 			}
 		}
 		if (!bolReturn) {
@@ -212,7 +162,7 @@ extends ScreenChangeAnimation
 			this.nextScreenRgb = null;
 			// TODO reset speed
 		}
-			this.count++;
+//			this.count++;
 			return bolReturn;
 	
 	}
@@ -228,41 +178,3 @@ extends ScreenChangeAnimation
 	}
 
 }
-//for(int i = 0;i < this.currentScreenRgb.length;i++){
-//	color = this.nextScreenRgb[i];			
-//	red = (0x00FF & (color >>> 16));	
-//	green = (0x0000FF & (color >>> 8));
-//	blue = color & (0x000000FF );
-//	int brightness = (red + green + blue) / 3;
-//	if ( brightness > 127 ) {
-//		this.currentScreenRgb[i] = 0xFFFFFF;
-//	} else {
-//		this.currentScreenRgb[i] = 0x0;
-//	}
-//
-//}
-//int id = 0;
-//while(id < this.count){
-//for(int i = 0;i < this.currentScreenRgb.length;i++){
-//	color = this.currentScreenRgb[i];
-//	nextColor = this.nextScreenRgb[i];
-//	red = (0x00FF & (color >>> 16));	
-//	green = (0x0000FF & (color >>> 8));
-//	blue = color & (0x000000FF );
-//	nextRed = (0x00FF & (nextColor >>> 16));
-//	nextGreen = (0x0000FF & (nextColor >>> 8));
-//	nextBlue = nextColor & (0x000000FF);
-//	if(red != nextRed){
-//		red = this.colorValue(red,nextRed,1);
-//	}
-//	if(green != nextGreen){
-//		green = this.colorValue(green,nextGreen,1);
-//	}
-//	if(blue != nextBlue){
-//		blue = this.colorValue(blue,nextBlue,1);
-//	}
-//	if(red != nextRed || green != nextGreen || blue != nextBlue){
-//		this.currentScreenRgb[i] = (red << 16) | (green << 8) | blue;
-//	}
-//}id++;
-//}
