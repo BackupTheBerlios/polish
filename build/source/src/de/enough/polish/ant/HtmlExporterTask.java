@@ -189,13 +189,16 @@ public class HtmlExporterTask extends Task {
 			writeKnownIssues();
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException("unable to device database: " + e.getMessage(), e );
+			throw new BuildException("unable to read device database: " + e.getMessage(), e );
 		} catch (JDOMException e) {
 			e.printStackTrace();
-			throw new BuildException("unable to device database: " + e.getMessage(), e );
+			throw new BuildException("unable to read device database: " + e.getMessage(), e );
 		} catch (InvalidComponentException e) {
 			e.printStackTrace();
 			throw new BuildException("unable to create device database: " + e.getMessage(), e );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("unable to read device database: " + e.getMessage(), e );
 		}
 	}
 	

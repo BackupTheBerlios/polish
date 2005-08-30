@@ -371,14 +371,21 @@ public class InfoSetting {
 	
 	private Attribute[] getAttributes( ArrayList list, Map variables ) {
 		Attribute[] attributes = (Attribute[]) list.toArray( new Attribute[ list.size() ] );
+		ArrayList newList = new ArrayList( attributes.length );
+		
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
 			String variableValue = (String) variables.get( attribute.getName() );
 			if (variableValue != null) {
-				attributes[i] = new Attribute( attribute.getName(), variableValue );
+				attribute = new Attribute( attribute.getName(), variableValue );
+			} else {
+				variableValue = attribute.getValue();
+			}
+			if ( variableValue.length() > 0 ) {
+				newList.add( attribute );
 			}
 		}
-		return attributes;
+		return (Attribute[]) newList.toArray( new Attribute[ newList.size() ] );
 	}
 	
 	/**

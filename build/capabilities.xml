@@ -42,7 +42,7 @@
 		<identifier>JavaConfiguration</identifier>
 		<extension-mode>overwrite</extension-mode>
 		<group>Platform</group>
-		<required>no</required>
+		<required>yes</required>
 		<type>version</type>
 	</capability>
 

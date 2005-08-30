@@ -49,6 +49,14 @@
 		<capability name="build.BootClassPath" value="cldc-1.1.jar" />
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>
+	
+	<configuration>
+		<identifier>CDC/1.0</identifier>
+		<features>cdc1.0, hasFloatingPoint, hasJNI</features>
+		<capability name="build.BootClassPath" value="cdc-1.0.jar" />
+		<capability name="SupportFloatingPoint" value="true" />
+	</configuration>
+	
 
 	
 </configurations>

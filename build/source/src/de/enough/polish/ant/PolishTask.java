@@ -1229,12 +1229,34 @@ public class PolishTask extends ConditionalTask {
 		for (int i = 0; i < midletClassNames.length; i++) {
 			this.environment.addVariable("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
 		}
-
+		
+		
+		// check settings:
+		String version = this.environment.getVariable( "MIDlet-Version");
+		if (version != null) {
+			String[] versionChunks = StringUtil.split( version, '.' );
+			for (int i = 0; i < versionChunks.length; i++) {
+				String versionChunk = versionChunks[i];
+				int versionNumber = Integer.parseInt( versionChunk );
+				if (versionNumber > 99) {
+					if ( this.environment.hasSymbol("polish.Bugs.VersionNumberMustNotExceed99") ) {
+						throw new BuildException("Invalid MIDlet-Version [" + version + "]: each version-part must not exceed 99 on the " + device.getIdentifier() + "." );
+					} else {
+						System.out.println("WARNING: the MIDlet-Version [" + version + "] contains a number greater than 99, This can cause problems on some devices.");
+					}
+				}
+			}
+		}
 		
 		this.extensionManager.postInitialize(device, locale, this.environment);
 		
+		
+		
+		
 		this.environment.set( "polish.home", this.polishHomeDir );
 		this.environment.set( "polish.apidir", this.buildSetting.getApiDir() );
+		
+		
 		
 		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:

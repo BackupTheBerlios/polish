@@ -27,6 +27,7 @@ package de.enough.polish.ant.requirements;
 
 
 import de.enough.polish.Device;
+import de.enough.polish.util.StringUtil;
 
 import org.apache.tools.ant.BuildException;
 
@@ -72,13 +73,20 @@ public class JavaConfigurationRequirement extends Requirement {
 		if (property.equals( this.neededConfiguration)) {
 			return true;
 		}
-		int splitPos = property.indexOf('/');
-		if (splitPos == -1) {
-			return false;
+		String[] configurations = StringUtil.splitAndTrim( property, ',' );
+		for (int i = 0; i < configurations.length; i++) {
+			String configuration = configurations[i];
+			int splitPos = configuration.indexOf('/');
+			if (splitPos == -1) {
+				return false;
+			}
+			String devPlatformName = configuration.substring(0, splitPos ).trim();
+			String devPlatformVersion = configuration.substring(splitPos +1 ).trim();
+			if (this.configurationName.equals(devPlatformName)
+				&& this.configurationVersion.matches(devPlatformVersion)) {
+				return true;
+			}
 		}
-		String devPlatformName = property.substring(0, splitPos ).trim();
-		String devPlatformVersion = property.substring(splitPos +1 ).trim();
-		return this.configurationName.equals(devPlatformName)
-			&& this.configurationVersion.matches(devPlatformVersion);
+		return false;
 	}
 }

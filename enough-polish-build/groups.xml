@@ -71,9 +71,20 @@
 		<parent>Series40</parent>
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 		<capability name="Bugs" value="PlatformRequestRequiresQuit" />
+	</group>
+
+	<group>
+		<name>Series40DP3</name>
+		<parent>Series40</parent>
+		<capability name="ScreenSize" value="240x320" />
+		<capability name="FullCanvasSize" value="240x320" />
+		<capability name="Emulator.Skin" value="Nokia_S40_DP30_SDK_1_0" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, m3gapi" />
 	</group>
 
 	<group>
@@ -117,19 +128,15 @@
 	</group>
 	
 	<group>
-		<name>Series60E2FP2</name>
+		<name>Series60E2FP1</name>
 		<parent>Series60E2</parent>
-		<capability name="OS" value="Symbian OS 8.0a" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="m3g, pdaapi" />		
 	</group>
 
 	<group>
 		<name>Series60E2FP2</name>
 		<parent>Series60E2</parent>
 		<capability name="OS" value="Symbian OS 8.0a" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi" />		
 	</group>
@@ -138,33 +145,81 @@
 		<name>Series60E2FP3</name>
 		<parent>Series60E2FP2</parent>
 		<capability name="OS" value="Symbian OS 8.0a" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="m3g, pdaapi" />		
+		<capability name="JavaPackage" value="m3g, pdaapi, webservice" />		
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
 	</group>
 	
+	<group>
+		<name>Series60E3</name>
+		<parent>Series60E2FP2</parent>
+		<capability name="OS" value="Symbian OS 9.1" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi, locationapi" />		
+		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
+	</group>
 	
 
 	<group>
 		<name>Series80</name>
 		<parent>Nokia-UI</parent>
-		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Series80_MIDP_SDK_1_0b" />
+		<capability name="OS" value="Symbian OS 7.0s" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi" />		
 	</group>
 	
 	<group>
 		<name>Series90</name>
 		<parent>Nokia-UI</parent>
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0, CDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Series_90_MIDP_Concept_SDK_Beta_0_1" />
+		<capability name="OS" value="Symbian OS 7.0s" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi" />		
 	</group>
 
 	<group>
+		<name>x55</name>
+		<capability name="OS" value="Siemens OS" />		
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="siemens-color-game-api" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="key.MiddleSoftKey" value="-26" />
+	</group>
+	
+	<group>
 		<name>x65</name>
+		<capability name="OS" value="Siemens OS" />		
+		<capability name="ScreenSize" value="132x176" />		
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, siemens-color-game-api" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="key.MiddleSoftKey" value="-26" />
+		<capability name="key.ReturnKey" value="-12" />
+		<capability name="key.ClearKey" value="-12" />
 		<capability name="Bugs" value="layerManagerSetViewWindow, displaySetCurrentFlickers" />		
 	</group>
+	
+	<group>
+		<name>x75</name>
+		<capability name="OS" value="Siemens OS" />		
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, siemens-color-game-api" />
+		<capability name="key.LeftSoftKey" value="-1" />
+		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="key.MiddleSoftKey" value="-26" />
+	</group>
+	
 		
 </groups>

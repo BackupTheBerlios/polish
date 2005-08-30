@@ -173,8 +173,19 @@
 		supportsPolishGui="false" >
 		<identifier>Nokia/Series40</identifier>
 		<features>isVirtual</features>
-		<groups>Series40</groups>
-		<capability name="OS" value="Symbian"/>
+		<groups>Series40DP1</groups>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="SoundFormat" value="midi" />
+		<capability name="HeapSize" value="200kb" />
+		<capability name="MaxJarSize" value="64kb" />
+	</device>
+
+	<device
+		supportsPolishGui="false" >
+		<identifier>Nokia/Series40DP1</identifier>
+		<features>isVirtual</features>
+		<groups>Series40DP1</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="SoundFormat" value="midi" />
@@ -186,8 +197,7 @@
 		supportsPolishGui="true" >
 		<identifier>Nokia/Series40Midp2</identifier>
 		<features>isVirtual</features>
-		<groups>Series40</groups>
-		<capability name="OS" value="Symbian"/>
+		<groups>Series40DP2</groups>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, mmapi" />
@@ -197,7 +207,43 @@
 		<capability name="HeapSize" value="512kb" />
 		<capability name="MaxJarSize" value="128kb" />
 	</device>
-		
+	
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series40DP2</identifier>
+		<features>isVirtual</features>
+		<groups>Series40DP2</groups>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi, mmapi" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="VideoFormat" value="3gpp" />
+		<capability name="SoundFormat" value="midi" />
+		<capability name="HeapSize" value="512kb" />
+		<capability name="MaxJarSize" value="128kb" />
+	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series40DP3</identifier>
+		<features>isVirtual</features>
+		<groups>Series40DP3</groups>
+	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series80</identifier>
+		<features>isVirtual</features>
+		<groups>Series80</groups>
+	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Nokia/Series90</identifier>
+		<features>isVirtual</features>
+		<groups>Series90</groups>
+	</device>
+	
 	<device
 		supportsPolishGui="true" >
 		<identifier>Siemens/midp1</identifier>
@@ -233,6 +279,27 @@
 		<capability name="Font.medium" value="15" />
 		<capability name="Font.large" value="23" />
 		<capability name="Bugs" value="layerManagerSetViewWindow" />	
+	</device>
+	
+	<device
+		supportsPolishGui="false">
+		<identifier>Siemens/x55</identifier>
+		<features>isVirtual</features>
+		<groups>x55</groups>
+	</device>
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/x65</identifier>
+		<features>isVirtual</features>
+		<groups>x65</groups>
+	</device>
+
+	<device
+		supportsPolishGui="true">
+		<identifier>Siemens/x75</identifier>
+		<features>isVirtual</features>
+		<groups>x75</groups>
 	</device>
 
 <!-- Sony-Ericsson devices -->
