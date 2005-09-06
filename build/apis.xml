@@ -127,8 +127,8 @@
 	</api>
 
 	<api>
-		<name>PDA API</name>
-		<description>The PDA-API defines optional packages for features that are commonly found on PDAs and other mobile devices in the J2ME space: one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
+		<name>PDA Optional Packages</name>
+		<description>The PDA Optional Packages API defines one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
 		<names>pdaapi, pda-api, pim-api, fileconnection-api, JSR-75, JSR75</names>
 		<symbol>pdaapi</symbol>
@@ -180,6 +180,18 @@
 		<symbol>vscl-1.1.0</symbol>
 		<files>vscl-1.1.0.jar</files>
 		<path>import/vscl-1.1.0.jar</path>
+	</api>
+
+	<api>
+		<name>Vodafone Service Class Library 2.0</name>
+		<description>
+		A JBlend extension for some devices of the Vodafone operator.
+		</description>
+		<names>VSCL-2.0, vslc2.0</names>
+		<parent>VSCL-1.1.0</parent>
+		<symbol>vscl-2.0</symbol>
+		<files>vscl-2.0.jar</files>
+		<path>import/vscl-2.0.jar</path>
 	</api>
 
 	<api>

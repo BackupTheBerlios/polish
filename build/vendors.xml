@@ -63,6 +63,7 @@
 		<capability name="key.ClearKey" value="-8" />
 		<capability name="key.ChangeInputModeKey" value="42" />
 		<capability name="TextField.charactersKeyPound" value=" " />		
+		<capability name="Property.imei" value="com.sonyericsson.imei" />
 	</vendor>
 	
 	<vendor>

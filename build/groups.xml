@@ -221,5 +221,83 @@
 		<capability name="key.MiddleSoftKey" value="-26" />
 	</group>
 	
+	<group>
+		<name>SE-JavaPlatform1</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi" />
+		<capability name="ScreenSize" value="128x160" />
+	</group>
+	
+	<group>
+		<name>SE-JavaPlatform2</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="CanvasSize" value="176x176"/>
+		<capability name="FullCanvasSize" value="176x220" />
+	</group>
+	
+	<group>
+		<name>SE-JavaPlatform3</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g" />
+	</group>
+
+	<group>
+		<name>SE-JavaPlatform4</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="CanvasSize" value="176x176"/>
+	</group>
+
+	<group>
+		<name>SE-JavaPlatform5</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g, pdaapi" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="CanvasSize" value="176x176"/>
+	</group>
+
+	<group>
+		<name>SE-JavaPlatform6</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="CanvasSize" value="176x176"/>
+	</group>
 		
+	<group>
+		<name>SE-JavaPlatform1Symbian</name>
+		<capability name="OS" value="Symbian UIQ OS" />
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="208x320" />
+	</group>
+
+	<group>
+		<name>SE-JavaPlatform2Symbian</name>
+		<capability name="OS" value="Symbian UIQ OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi" />
+		<capability name="ScreenSize" value="208x320" />
+	</group>
+		
+
 </groups>

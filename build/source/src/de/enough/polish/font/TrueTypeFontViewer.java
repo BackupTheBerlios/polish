@@ -80,7 +80,7 @@ implements ActionListener
 	private static final String[] FONT_SIZES = new String[]{ "8", "9", "10", "10.5", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "22", "24", "26", "28", "30", "32", "34", "36" };
 	private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-	private static final String PUNCTUATION = ":,.!";
+	private static final String PUNCTUATION = "@©®§€£$&_+-\'\"(),./\\:;?!<>«»°àáâçèêéûÈÉÊ";
 	private static final String NUMBERS = "0123456789";
 	private static final String SPACE = " "; 
 	private static final String STANDARD_TEXT =  LOWERCASE + SPACE + PUNCTUATION + NUMBERS;
@@ -191,7 +191,6 @@ implements ActionListener
 			add( inputPanel , BorderLayout.SOUTH );
 			updateImage();
 		} catch (FontFormatException e) {
-			e.printStackTrace();
 			throw new IOException( "Unable to init true type font: " + e.toString() );
 		}
 	}
@@ -288,7 +287,6 @@ implements ActionListener
 				updateImage();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.statusBar.warn("Unable to perform action: " + e.toString() );
 		}
 	}
@@ -303,6 +301,8 @@ implements ActionListener
 	public void saveBitMapFont(File file) 
 	throws IOException 
 	{
+		//FIXME 
+		// ADD CHARSPACING FIELD
 		BufferedImage image = createImage();
 		FileOutputStream out = new FileOutputStream( file );
 		String text = this.characterMap.getText();
@@ -318,8 +318,11 @@ implements ActionListener
 		dataOut.writeUTF(charMap);
 		// write the widths of each character:
 		Graphics2D g = image.createGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		                    RenderingHints.VALUE_ANTIALIAS_ON);
+		if(this.optionAntiAliasing.isSelected() ){ 
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		} else {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
 		FontRenderContext fc = g.getFontRenderContext();
 		for (int i = 0; i < text.length(); i++) {
 			String substring = text.substring( i, i + 1);
@@ -342,6 +345,7 @@ implements ActionListener
 	}
 	
 	public BufferedImage createImage() {
+		final boolean aa = this.optionAntiAliasing.isSelected();
 		if (this.externalImage != null) {
 			return this.externalImage;
 		}
@@ -349,37 +353,33 @@ implements ActionListener
 		if (text.length() == 0) {
 			return null;
 		}
-		boolean useAntiAliasing = this.optionAntiAliasing.isSelected();
 		// use dummy buffer for get a render context:
-		BufferedImage image =
-		    new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage image = new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = image.createGraphics();
-		if (useAntiAliasing) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		                    RenderingHints.VALUE_ANTIALIAS_ON);
+		if (aa) {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		}else {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 		FontRenderContext fc = g.getFontRenderContext();
 		Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
 		double height = bounds.getHeight();
-		double width = bounds.getWidth() + (text.length() * this.characterSpacing);
-		// now create real image:
-		//DirectColorModel colorModel = new DirectColorModel(8+8+8+1, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x01000000);
+		double width = bounds.getWidth() /*+ (text.length() * this.characterSpacing)*/;
 		image = new BufferedImage( (int) width, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
 		g = image.createGraphics();
 		Color transparent = new Color( 1, 1, 1, 0 );
 		g.setBackground( transparent );
 		g.clearRect(0, 0, (int) width, (int) height );
-		if (useAntiAliasing) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		                    RenderingHints.VALUE_ANTIALIAS_ON);
+		if (aa) {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		}else {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
 		g.setFont( this.derivedFont );
 		g.setColor( this.currentColor );
 		char[] characters = text.toCharArray();
-		int spacingStart = this.characterSpacing / 2;
-		//int spacingEnd = this.characterSpacing - spacingStart;
 		int y = (int)-bounds.getY();
-		int x = spacingStart;
+		int x = 0;
 		for (int i = 0; i < characters.length; i++) {
 			g.drawChars(characters, i, 1, x, y );
 			bounds = this.derivedFont.getStringBounds(characters, i, i+1, fc);
@@ -397,32 +397,20 @@ implements ActionListener
 			this.imageLabel.setIcon( new ImageIcon( image ) );
 		}
 	}
-	
 	private boolean hasMixedCase( String map ) {
-		boolean mixedCase = true;
 		char[] characters = map.toCharArray();
+		char lastChar = 0;
 		for (int i = 0; i < characters.length; i++) {
-			char c = characters[i];
-			if (Character.isLetter(c)) {
-				char differentCase;
-				if (Character.isUpperCase(c)) {
-					differentCase = Character.toLowerCase(c);
-				} else {
-					differentCase = Character.toUpperCase(c);
+			if( lastChar != 0 ){
+				if ((Character.isUpperCase( lastChar ) != Character.isUpperCase( characters[i] ) ) ||
+					(Character.isLowerCase( lastChar ) != Character.isLowerCase( characters[i] ) )){
+					return true;
 				}
-				boolean differentCaseFound = false;
-				for (int j = 0; j < characters.length; j++) {
-					char d = characters[j];
-					if (d == differentCase) {
-						differentCaseFound = true;
-					}
-				}
-				if (!differentCaseFound) {
-					return false;
-				}
-			}
+			} 
+			// Too soon to know
+			lastChar = characters[i];
 		}
-		return mixedCase;
+		return false;
 	}
 
 

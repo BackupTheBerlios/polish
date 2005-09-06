@@ -219,6 +219,20 @@ implements OutputFilter
 			lines.add( "</loader>");
 			File alxFile = new File( jarFile.getParentFile(),  codName  + ".alx" );
 			FileUtil.writeTextFile(alxFile, lines);
+			
+			// request signature when the "blackberry.certificate.dir" variable is set:
+			if ( env.getVariable("blackberry.certificate.dir") != null) {
+				SignatureRequester requester = new SignatureRequester();
+				File codFile = new File( jarFile.getParent(), codName + ".cod" );
+				try {
+					int signResult = requester.requestSignature(device, locale, new File( blackberryHome ), codFile, env);
+					if (signResult != 0) {
+						System.out.println("Unable to request BlackBerry signature: Signing request returned " + signResult );
+					}
+				} catch (Exception e) {
+				    throw new BuildException("Unable to to request BlackBerry signature: " + e.toString() );
+				}
+			}
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e){
