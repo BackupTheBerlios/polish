@@ -27,7 +27,6 @@
 package de.enough.polish.ui.backgrounds;
 
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 //#if polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;
 	import com.nokia.mid.ui.DirectUtils;
@@ -83,13 +82,13 @@ public class TranslucentSimpleBackground extends Background {
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		//#ifdef polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
-			if ( this.xCoords[0] != x) {
+			if ( this.xCoords[0] != x || this.xCoords[1] != x + width) {
 				this.xCoords[0] = x;
 				this.xCoords[1] = x + width;
 				this.xCoords[2] = x + width;
 				this.xCoords[3] = x;
 			}
-			if ( this.yCoords[0] != y) {
+			if ( this.yCoords[0] != y || this.yCoords[2] != y + height ) {
 				this.yCoords[0] = y;
 				this.yCoords[1] = y;
 				this.yCoords[2] = y + height;

@@ -84,8 +84,11 @@ import de.enough.polish.util.ArrayList;
  * 
  */
 public abstract class Screen
+//#if polish.Bugs.needsNokiaUiForSystemAlerts && !polish.SystemAlertNotUsed
+	//#define tmp.needsNokiaUiForSystemAlerts
+//#endif
 //#if polish.useFullScreen
-	//#if (polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
+	//#if (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
 		//#define tmp.fullScreen
 		//# extends Canvas
 	//#elif polish.classes.fullscreen:defined
@@ -229,7 +232,7 @@ implements AccessibleCanvas
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint || polish.Bugs.needsNokiaUiForSystemAlerts)
+		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
 			//#if tmp.fullScreen && polish.midp2
 				//# super.setFullScreenMode( true );
 			//#endif			
@@ -243,10 +246,18 @@ implements AccessibleCanvas
 			//#if polish.needsManualMenu && !tmp.fullScreen
 				this.fullScreenHeight = getHeight();
 			//#else
-				//#ifdef polish.FullCanvasHeight:defined
-					//#= this.fullScreenHeight = ${ polish.FullCanvasHeight };
+				//#if tmp.needsNokiaUiForSystemAlerts
+					//#ifdef polish.NokiaFullCanvasHeight:defined
+						//#= this.fullScreenHeight = ${ polish.NokiaFullCanvasHeight };
+					//#else
+						//# this.fullScreenHeight = getHeight();
+					//#endif
 				//#else
-					//# this.fullScreenHeight = getHeight();
+					//#ifdef polish.FullCanvasHeight:defined
+						//#= this.fullScreenHeight = ${ polish.FullCanvasHeight };
+					//#else
+						//# this.fullScreenHeight = getHeight();
+					//#endif
 				//#endif
 			//#endif
 			//TODO this.menuBarHeight is 0 during initialisation...
@@ -673,7 +684,21 @@ implements AccessibleCanvas
 				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 			}
 		//#endif
+		//#if !tmp.menuFullScreen
+			int translateY = g.getTranslateY();
+			if (translateY != 0 && this.screenHeight == this.originalScreenHeight) {
+				this.screenHeight -= translateY;
+				this.scrollIndicatorY -= translateY;
+				//#debug
+				System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
+				if (this.container != null) {
+					int y = this.infoHeight + this.subTitleHeight + translateY;
+					setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+				}
+			}
+		//#endif
 		//#if tmp.fullScreen && polish.FullCanvasSize:defined && polish.Bugs.setClipForFullScreenNeeded
+			g.translate( -g.getTranslateX(), -g.getTranslateY() );
 			//#= g.setClip( 0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
 		//#endif
 		//#ifdef polish.debug.error
@@ -701,18 +726,6 @@ implements AccessibleCanvas
 				if (this.title != null && this.showTitleOrMenu) {
 					this.title.paint(0, 0, 0, this.screenWidth, g);
 					tHeight = this.titleHeight;
-				}
-			//#elif !tmp.menuFullScreen
-				int translateY = g.getTranslateY();
-				if (translateY != 0 && this.screenHeight == this.originalScreenHeight) {
-					this.screenHeight -= translateY;
-					this.scrollIndicatorY -= translateY;
-					//#debug
-					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
-					if (this.container != null) {
-						int y = this.infoHeight + this.subTitleHeight + translateY;
-						setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
-					}
 				}
 			//#endif
 			if (this.subTitle != null) {
@@ -751,6 +764,10 @@ implements AccessibleCanvas
 				this.border.paint(0, 0, this.screenWidth, this.screenHeight, g);
 			}
 			
+			//#if polish.ScreenInfo.enable == true
+				ScreenInfo.paint( g, tHeight, this.screenWidth );
+			//#endif
+				
 			// paint menu in full-screen mode:
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
@@ -889,9 +906,6 @@ implements AccessibleCanvas
 					//#endif
 				}
 			}
-			//#if polish.ScreenInfo.enable == true
-				ScreenInfo.paint( g, tHeight, this.screenWidth );
-			//#endif
 			//#ifdef polish.css.foreground-image
 				if (this.foregroundImage != null) {
 					g.drawImage( this.foregroundImage, this.foregroundX, this.foregroundY, Graphics.TOP | Graphics.LEFT  );
@@ -1315,6 +1329,8 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
+		//#debug
+		System.out.println("adding command [" + cmd.getLabel() + "].");
 		//#if polish.Screen.FireTriggersOkCommand == true
 			if ( cmd.getCommandType() == Command.OK 
 					&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
@@ -1743,8 +1759,8 @@ implements AccessibleCanvas
 		 */
 		public void commandAction(Command cmd, Displayable thisScreen) {
 			//check if the given command is from the currently focused item:
-			if ((Screen.this.focusedItem != null) && (Screen.this.focusedItem.itemCommandListener != null)) {
-				Item item = Screen.this.focusedItem;
+			Item item = Screen.this.focusedItem;
+			if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
 				if ( item.commands.contains(cmd)) {
 					item.itemCommandListener.commandAction(cmd, item);
 					return;

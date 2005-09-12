@@ -26,8 +26,6 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Image;
 
 /**
  * A <code>ChoiceGroup</code> is a group of selectable elements intended to be
@@ -93,10 +91,16 @@ implements Choice
 		private boolean isPopupClosed;
 		//private int popupOpenY;
 		private int popupParentOpenY;
+		private int originalContentWidth;
+		private int originalContentHeight;
 	//#endif
 	//#ifndef tmp.suppressAllCommands
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
+	//#if ! tmp.suppressSelectCommand && polish.css.view-type
+		private boolean isSelectCommandAdded;
+	//#endif
+
 	
 
 	/**
@@ -337,7 +341,7 @@ implements Choice
 					addCommand( UNMARK_COMMAND );
 				//#endif
 			} else {
-				//#ifndef tmp.suppressSelectCommand
+				//#if ! (tmp.suppressSelectCommand || polish.css.view-type)
 					addCommand( List.SELECT_COMMAND );
 				//#endif
 			}
@@ -896,6 +900,17 @@ implements Choice
 		}
 	}
 	//#endif
+	
+	//#ifdef polish.usePopupItem
+	protected void init( int firstLineWidth, int lineWidth ) {
+		super.init(firstLineWidth, lineWidth);
+		if (this.isPopup && !this.isPopupClosed) {
+			this.backgroundWidth += (this.originalContentWidth - this.contentWidth); 
+			this.backgroundHeight += (this.originalContentHeight - this.contentHeight); 
+		}
+	}
+	//#endif
+
 
 	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
@@ -917,9 +932,12 @@ implements Choice
 								+ this.marginRight + this.borderWidth + this.paddingRight;
 					this.popupItem.init(firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
 				}
-				this.contentWidth = this.popupItem.contentWidth;			
-				this.contentHeight = this.popupItem.contentHeight;
+			} else {
+				this.originalContentWidth = this.contentWidth;
+				this.originalContentHeight = this.contentHeight;
 			}
+			this.contentWidth = this.popupItem.contentWidth;			
+			this.contentHeight = this.popupItem.contentHeight;
 		}
 	}
 	//#endif
@@ -1259,6 +1277,9 @@ implements Choice
 	 */
 	protected Style focus(Style focusStyle) {
 		if (this.isPopup && this.isPopupClosed) {
+			if (this.focusedStyle != null) {
+				focusStyle = this.focusedStyle;
+			}
 			Style original = this.style;
 			this.popupItem.setStyle( focusStyle );
 			setStyle( focusStyle );
@@ -1302,6 +1323,17 @@ implements Choice
 					this.popupBackgroundColor = bgColor.intValue();
 				}
 			//#endif
+			//#if ! tmp.suppressSelectCommand && polish.css.view-type
+				if (!this.isSelectCommandAdded && this.choiceType == EXCLUSIVE && this.view == null) {
+					if (this.selectCommand != null) {
+						addCommand( this.selectCommand );
+					} else {
+						addCommand( List.SELECT_COMMAND );
+					}
+					this.isSelectCommandAdded = true;				
+				}
+			//#endif
+
 		}
 	}
 	//#endif
@@ -1356,4 +1388,6 @@ implements Choice
 		this.additionalItemCommandListener = l;
 	}
 	//#endif
+
+
 }

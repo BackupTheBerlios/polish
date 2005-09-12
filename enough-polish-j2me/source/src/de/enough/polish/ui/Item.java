@@ -601,7 +601,7 @@ public abstract class Item extends Object
 	protected Background background;
 	protected Border border;
 	protected Style style;
-	protected int itemWidth;
+	public int itemWidth;
 	public int itemHeight;
 	protected int paddingLeft;
 	protected int paddingTop;
@@ -942,6 +942,9 @@ public abstract class Item extends Object
 			Style focused = (Style) style.getObjectProperty("focused-style");
 			if (focused != null) {
 				this.focusedStyle = focused;
+//				if (this instanceof ChoiceGroup) {
+//					System.out.println("Setting focused style for choicegroup!");
+//				}
 			}
 		//#endif
 
@@ -1342,7 +1345,7 @@ public abstract class Item extends Object
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
-		if (!this.isInitialised) {
+		if (!this.isInitialised ) { // || availableWidth < this.itemWidth || availableWidth < this.backgroundWidth
 			init( rightBorder - x, availableWidth );
 		}
 		
@@ -1443,7 +1446,7 @@ public abstract class Item extends Object
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param lineWidth the maximum width of any following lines
 	 */
-	protected final void init( int firstLineWidth, int lineWidth ) {
+	protected void init( int firstLineWidth, int lineWidth ) {
 		//#debug
 		System.out.println("intialising item " + this.getClass().getName() );
 		if (this.style != null && !this.isStyleInitialised) {
@@ -1706,7 +1709,7 @@ public abstract class Item extends Object
 		Style oldStyle = this.style;
 		if (this.focusedStyle != null) {
 			newStyle = this.focusedStyle;
-		}
+		} 
 		setStyle( newStyle );
 		this.isFocused = true;
 		// now set any commands of this item:

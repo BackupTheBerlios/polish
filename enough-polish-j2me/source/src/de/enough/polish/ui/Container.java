@@ -91,7 +91,7 @@ public class Container extends Item {
 	protected int yOffset;
 	private int focusedTopMargin;
 	//#ifdef polish.css.view-type
-		private ContainerView view;
+		protected ContainerView view;
 	//#endif
 	
 	/**
@@ -732,6 +732,9 @@ public class Container extends Item {
 		synchronized (this.itemsList) {
 			myItems = this.items;
 		}
+		int focusedX = x;
+		int focusedY = 0;
+		int focusedRightBorder = rightBorder;
 		//#ifdef tmp.useTable
 		if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
 		//#endif
@@ -743,7 +746,13 @@ public class Container extends Item {
 				Item item = myItems[i];
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
 				// since after every item a line break will be done.
-				item.paint(x, y, leftBorder, rightBorder, g);
+				if (i == this.focusedIndex) {
+					focusedY = y;
+					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
+				} else {
+					// the currently focused item is painted last
+					item.paint(x, y, leftBorder, rightBorder, g);
+				}
 				y += item.itemHeight + this.paddingVertical;
 			}
 		//#ifdef tmp.useTable
@@ -754,7 +763,14 @@ public class Container extends Item {
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				int columnWidth = this.columnsWidths[ columnIndex ];
-				item.paint(x, y, x, x + columnWidth, g);
+				if (i == this.focusedIndex) {
+					focusedY = y;
+					focusedX = x;
+					focusedRightBorder = x + columnWidth;
+					item.getItemHeight( columnWidth, columnWidth );
+				} else {
+					item.paint(x, y, x, x + columnWidth, g);
+				}
 				x += columnWidth + this.paddingHorizontal;
 				columnIndex++;
 				if (columnIndex == this.numberOfColumns) {
@@ -766,6 +782,11 @@ public class Container extends Item {
 			}
 		}
 		//#endif
+		
+		// paint the currently focused item:
+		if (this.focusedItem != null) {
+			this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+		}
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -1110,6 +1131,9 @@ public class Container extends Item {
 		if ( this.itemsList.size() == 0) {
 			return super.focus( this.focusedStyle );
 		} else {
+			if (this.focusedStyle != null) {
+				focusstyle = this.focusedStyle;
+			}
 			this.isFocused = true;
 			if (this.focusedIndex == -1) {
 				// focus the first interactive item...

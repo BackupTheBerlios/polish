@@ -133,6 +133,7 @@ implements ImageConsumer
 				} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
 					y += height;
 				}
+				//System.out.println("Drawing image at " + x + ", " + y);
 				g.drawImage(this.image, x, y, this.anchor );
 			}
 		}

@@ -338,7 +338,9 @@ public class TextField extends StringItem
 //#else
 	, ItemCommandListener
 //#endif
-//#if polish.blackberry
+//#if polish.blackberry and polish.TextField.suppressCommands
+	//# implements FieldChangeListener
+//#elif polish.blackberry  
 	, FieldChangeListener
 //#endif
 {
@@ -629,11 +631,11 @@ public class TextField extends StringItem
 		//#else
 			protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
 		//#endif
-		//#ifdef polish.command.clear:defined
-			//#= protected static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 2 );
-		//#else
-			protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
-		//#endif
+	//#endif
+	//#ifdef polish.command.clear:defined
+		//#= protected static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 2 );
+	//#else
+		protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
 	//#endif
 	
 	private int maxSize;
@@ -774,6 +776,10 @@ public class TextField extends StringItem
 	//#elif !tmp.forceDirectInput
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
+	//#ifdef polish.css.textfield-caret-flash
+		private boolean flashCaret = true;
+	//#endif
+		
 
 
 	/**
@@ -850,7 +856,7 @@ public class TextField extends StringItem
 			setString( text );
 		}
 		//#ifndef polish.hasPointerEvents
-			if ((constraints & NUMERIC) == NUMERIC) {
+			if ((constraints & NUMERIC) == NUMERIC && (constraints & DECIMAL) != DECIMAL) {
 				this.enableDirectInput = true;
 			}
 		//#endif
@@ -876,7 +882,8 @@ public class TextField extends StringItem
 	 * Creates the TextBox used for the actual input mode.
 	 */
 	private void createTextBox() {
-		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, getText(), this.maxSize, this.constraints );
+		String currentText = this.isPassword ? this.passwordText : this.text;
+		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, currentText, this.maxSize, this.constraints );
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
 		this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		this.midpTextBox.setCommandListener( this );	
@@ -909,6 +916,12 @@ public class TextField extends StringItem
 	 */
 	public void setString( String text)
 	{
+		//#if !(tmp.forceDirectInput || polish.blackberry)
+			if (this.midpTextBox != null) {
+				System.out.println("TextField.setString( " + text + " )");
+				this.midpTextBox.setString( text );
+			}
+		//#endif
 		//#if polish.blackberry
 		if (this.editField != null && text != this.text ) {
 			Object bbLock = UiApplication.getEventLock();
@@ -932,16 +945,6 @@ public class TextField extends StringItem
 		//#ifdef tmp.directInput
 			if ((text == null || text.length() == 0) && this.inputMode == MODE_FIRST_UPPERCASE) {
 				this.nextCharUppercase = true;
-			}
-		//#endif
-
-		//#if !(tmp.forceDirectInput || polish.blackberry)
-			if (this.midpTextBox != null) {
-				if (this.isPassword) {
-					this.midpTextBox.setString( this.passwordText );
-				} else {
-					this.midpTextBox.setString( text );
-				}
 			}
 		//#endif
 	}
@@ -1557,6 +1560,9 @@ public class TextField extends StringItem
 					}
 					if (i == this.caretRow) {
 						this.originalRowText = line;
+						if (this.caretColumn < 0 ) {
+							this.caretColumn = 0;
+						}
 						if (this.caretColumn <= line.length() ) {
 							this.caretRowFirstPart = line.substring( 0, this.caretColumn );
 							this.caretRowLastPart = line.substring( this.caretColumn );
@@ -1805,6 +1811,15 @@ public class TextField extends StringItem
 				//#endif
 			}
 		//#endif
+		//#ifdef polish.css.textfield-caret-flash
+			Boolean flashCursorBool = style.getBooleanProperty( "textfield-caret-flash" );
+			if ( flashCursorBool != null ) {
+				this.flashCaret = flashCursorBool.booleanValue();
+				if (!this.flashCaret) {
+					this.showCaret = true;
+				}
+			}
+		//#endif	
 		//#if tmp.directInput	
 			//#ifdef polish.css.font-bitmap
 			if (this.bitMapFont != null) {
@@ -1941,6 +1956,11 @@ public class TextField extends StringItem
 						insertCharacter();
 					}
 				}
+			}
+		//#endif
+		//#ifdef polish.css.textfield-caret-flash
+			if (!this.flashCaret) {
+				return false;
 			}
 		//#endif
 		if ( currentTime - this.lastCaretSwitch > 500 ) {
@@ -2323,14 +2343,16 @@ public class TextField extends StringItem
 			//# }
 		//#endif
 		//#ifndef polish.hasPointerEvents
+			String currentText = this.isPassword ? this.passwordText : this.text;
 			if (this.enableDirectInput) {
 				int currentLength = (this.text == null ? 0 : this.text.length());
 				if (currentLength < this.maxSize && 
 						keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
 				{	
-					String newText = (this.text == null ? "" : this.text ) + (keyCode - 48);
+					String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
 					setString( newText );
+					notifyStateChanged();
 					return true;
 				}
 				if (currentLength > 0) {
@@ -2339,7 +2361,8 @@ public class TextField extends StringItem
 					//#else
 						if (keyCode == -8 || gameAction == Canvas.LEFT) {						
 					//#endif
-						setString( this.text.substring(0, currentLength - 1) );
+						setString( currentText.substring(0, currentLength - 1) );
+						notifyStateChanged();
 						return true;
 					}
 				}				

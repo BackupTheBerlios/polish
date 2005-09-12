@@ -79,6 +79,18 @@ public class MasterCanvas
 		}
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#showNotify()
+	 */
+	protected void showNotify() {
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.showNotify();
+		}
+	}
+
+
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
