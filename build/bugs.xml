@@ -307,12 +307,19 @@
 		<solution>use font.getHeigth() for getting an approximate value.</solution>
 	</bug>
 	
-        <bug>
-                <name>VersionNumberMustNotExceed99</name>
-                <area>build</area>
-                <description>Each version number must not exceed 99. The version 1.0.99 is valid, whereas 1.0.100 will not be accepted.</description>
-                <solution>Always use lower version numbers than 100.</solution>
-        </bug>
+	<bug>
+		<name>VersionNumberMustNotExceed99</name>
+		<area>build</area>
+		<description>Each version number must not exceed 99. The version 1.0.99 is valid, whereas 1.0.100 will not be accepted.</description>
+		<solution>Always use lower version numbers than 100.</solution>
+	</bug>
+        
+	<bug>
+		<name>getHeightReturnsCompleteScreenHeight</name>
+		<area>ui</area>
+		<description>canvas.getHeight() always returns the height of the screen, not matter whether the fullscreen mode is activated or not.</description>
+		<solution>Call graphics.getClipHeight() instead.</solution>
+	</bug>
 
 	<!--
 	<bug>

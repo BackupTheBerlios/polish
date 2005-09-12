@@ -480,6 +480,12 @@
 		<name>renamer</name>
 		<class>de.enough.polish.resources.RenamingResourceCopier</class>
 	</extension>
+
+	<extension>
+		<type>resourcecopier</type>
+		<name>antcall</name>
+		<class>de.enough.polish.resources.AntCallResourceCopier</class>
+	</extension>
 	
 	<extension>
 		<type>resourcecopier</type>
@@ -533,8 +539,16 @@
 		<type>finalizer</type>
 		<name>jar2cod</name>
 		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
-		<classpath>${polish.home}/import/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
 	</extension>
 	
+	<extension>
+		<type>finalizer</type>
+		<name>jar2prc</name>
+		<class>de.enough.polish.finalize.palm.JarToPrcFinalizer</class>
+		<!--
+		-->
+		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
+	</extension>
 	
 </extensions>

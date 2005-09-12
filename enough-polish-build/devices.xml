@@ -864,7 +864,8 @@
 		<groups>Nokia-UI, SE-JavaPlatform3</groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
-		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="NokiaFullCanvasSize" value="176x208"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
@@ -885,18 +886,7 @@
 		<capability name="Font.small" value="15" />
 		<capability name="Font.medium" value="18" />
 		<capability name="Font.large" value="22" />
-		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts, setClipForFullScreenNeeded, VersionNumberMustNotExceed99" />
-
-		<!--, needsNokiaUiForSystemAlerts -->
-	</device>
-
-	<device>
-		<identifier>Sony-Ericsson/K700Update</identifier>
-		<parent>Sony-Ericsson/K700i</parent>
-		<capability name="ScreenSize" value="176x220"/>
-		<capability name="FullCanvasSize" value="176x220"/>
-		<capability name="CanvasSize" value="176x176"/>		
-		<capability name="Bugs" value="setClipForFullScreenNeeded" />
+		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts, setClipForFullScreenNeeded, VersionNumberMustNotExceed99, getHeightReturnsCompleteScreenHeight" />
 	</device>
 	
 	<device>

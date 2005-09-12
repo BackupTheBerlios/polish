@@ -66,6 +66,7 @@ import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.LibrariesSetting;
 import de.enough.polish.ant.build.LibrarySetting;
 import de.enough.polish.ant.build.LocalizationSetting;
+import de.enough.polish.ant.build.Manifest;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PostCompilerSetting;
@@ -2249,11 +2250,9 @@ public class PolishTask extends ConditionalTask {
 			System.err.println("Unable to filter MANIFEST attributes: " + e.getMessage() );
 			throw e;
 		}
-		Jad jad = new Jad( this.environment );
-		jad.setAttributes(manifestAttributes);
+//		Jad jad = new Jad( this.environment );
+//		jad.setAttributes(manifestAttributes);
 		
-		File manifestFile = new File( device.getClassesDir() 
-				+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
 		try {
 			if (jarFile.exists()) {
 				boolean success = jarFile.delete();
@@ -2262,7 +2261,14 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
-			FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
+			// writing manifest:
+			Manifest manifest = new Manifest( this.environment, this.buildSetting.getEncoding() );
+			manifest.setAttributes( manifestAttributes );
+			File manifestFile = new File( device.getClassesDir() 
+					+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
+			manifest.write(manifestFile);
+			//FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
+			// package all classes and resources:
 			Packager packager = (Packager) this.extensionManager.getActiveExtension( ExtensionManager.TYPE_PACKAGER, this.environment );
 			if (packager == null ) {
 				packager = new DefaultPackager();

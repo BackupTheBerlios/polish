@@ -171,6 +171,8 @@
 	
 	<vendor>
 		<name>Palm</name>
+		<capability name="build.Finalizer" value="jar2prc" />
+		<capability name="Emulator.Class" value="PalmEmulator" />
 	</vendor>
 	
 	<vendor>

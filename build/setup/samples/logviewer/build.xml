@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="j2mepolish" name="enough-polish-example">
 
+	<!-- import user specific properties                          -->
+	<property file="${user.name}.properties" />
+	
 	<!-- The wtk.home property should point to the directory      -->
 	<!-- containing the Wireless Toolkit.                         -->
 	<property name="wtk.home" location="%{WTK_HOME}" />

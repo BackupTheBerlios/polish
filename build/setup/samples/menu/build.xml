@@ -20,6 +20,9 @@
 	name="enough-j2mepolish-example" 
 	default="j2mepolish">
 	
+	<!-- import user specific properties                          -->
+	<property file="${user.name}.properties" />
+	
 	<!-- The wtk.home property should point to the directory      -->
 	<!-- containing the Wireless Toolkit.                         -->
 	<property name="wtk.home" location="%{WTK_HOME}" />
@@ -46,7 +49,22 @@
 	<!-- The directory which contains the Motorola-emulators
 		<property name="motorola.home" location="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
 	-->
-		
+
+	<!-- Palm settings -->
+	<!--
+		The directory which contains the PalmSim.exe simulator:
+		<property name="palm.simulator.home" location="C:\Program Files\Palm\Simulator" />
+	-->
+	<!--
+		The directory which contains the Tools/bin/jartoprc.exe converter:
+		<property name="palm.weme.home" location="C:\Program Files\Palm\WEME57" />
+	-->
+	<!-- BlackBerry settings -->
+	<!--
+		The directory which contains the BlackBerry JDE:
+		<property name="blackberry.home" location="C:\Program Files\Research In Motion/BlackBerry JDE 4.0.2" />
+	-->
+
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 

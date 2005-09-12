@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="j2mepolish" name="enough-polish-roadrunner">
 	
+	<!-- import user specific properties                          -->
+	<property file="${user.name}.properties" />
+	
+	<!-- The device which is used for the emulator.               -->
+	<!-- You can call Ant from the command line with another      -->
+	<!-- device like this: ant -Ddevice=Generic/midp2 emulator    -->
+	<property  name="device" value="Nokia/Series60E2" />
+
 	<!-- The wtk.home property should point to the directory      -->
 	<!-- containing the Wireless Toolkit.                         -->
 	<property name="wtk.home" location="%{WTK_HOME}" />
@@ -29,10 +37,6 @@
 		classname="de.enough.polish.ant.PolishTask" 
 		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
 	/>
-
-	<!-- the device for the test mode - you can define it on the command-line
-	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
-	<property name="device" value="Nokia/Series60Midp2"/>
 		
 	<!-- build targets, each target can be called via "ant [name]", 
 		 e.g. "ant clean", "ant notest j2mepolish" or just "ant" for calling the default-target -->

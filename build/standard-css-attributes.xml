@@ -305,6 +305,15 @@
 		default="false"
 		id="32"
 	/>
+	
+	<attribute
+		name="textfield-caret-flash"
+		type="boolean"
+		appliesTo="TextField, TextBox"
+		description="Defines whether the cursor should blink/flash."
+		default="true"
+		id="85"
+	/>
 
 	<attribute
 		name="datefield-width"
@@ -769,5 +778,7 @@
 		default="0"
 		id="84"
 	/>
+	
+	<!-- last ID: 85 (TextField) -->
 	
 </attributes>
