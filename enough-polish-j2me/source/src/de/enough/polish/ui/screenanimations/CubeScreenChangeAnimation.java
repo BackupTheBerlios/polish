@@ -45,14 +45,15 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	private Graphics3D  graphics3d;
 	private Camera   camera;
 	private Light   light;
-	private float   angle = 0.0f;
+	private float   angle = 0.0f,angle2 = 0.0f;
 	private Transform  transform = new Transform();
 	private Background  background = new Background();
 	private VertexBuffer vbuffer;
 	private IndexBuffer  indexbuffer;
 	private Appearance  appearance;
 	private Material  material = new Material();
-	private boolean first = true;
+	private int height, width;
+	private float fHeight,fWidth;
 	public CubeScreenChangeAnimation() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -63,22 +64,28 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-		if(this.first){
+		this.width = width; this.height = height;
+		float wPercent = (float)(width / 256.0f); float hPercent = (float)(height / 256.0f);
+		this.fWidth = (5.0f*wPercent); this.fHeight = (5.0f*hPercent);
+		System.out.print("fwidth:"+(this.fWidth)+";fheight:"+this.fHeight+";fwprocent:"+(wPercent)+";fhprocent:"+(hPercent)+"\n");
 		 this.graphics3d = Graphics3D.getInstance();
 		 this.camera = new Camera();
-		 this.camera.setPerspective( 60.0f,
+		 System.out.print((float)getWidth()/ (float)getHeight()+"\n");
+		 this.camera.setPerspective( 90.0f,
 		   (float)getWidth()/ (float)getHeight(),
 		   1.0f,
-		   100.0f );
+		   200.0f );
+
+//		 this.camera.setOrientation(100.0f,1.0f,1.0f,1.0f);
 		 this.light = new Light();
 		 this.light.setColor(0xffffff);
-		 this.light.setMode(this.light.SPOT);
-		 this.light.setIntensity(1.25f);
+		 this.light.setMode(this.light.AMBIENT);
+		 this.light.setIntensity(2.25f);
 
 		  short[] vert = {
 				  5, 5, 5,  -5, 5, 5,   5,-5, 5,  -5,-5, 5, // 0,0,5,   5,0,5,   0,-5,5,  -5,0,5,  0,5,5,//front
-				 -5, 5,-5,   5, 5,-5,  -5,-5,-5,   5,-5,-5, //back
-//				 -5, 5, 5,  -5, 5,-5,  -5,-5, 5,  -5,-5,-5, //left
+//				 -5, 5,-5,   5, 5,-5,  -5,-5,-5,   5,-5,-5, //back
+				 -5, 5, 5,  -5, 5,-5,  -5,-5, 5,  -5,-5,-5, //left
 //				  5, 5,-5,   5, 5, 5,   5,-5,-5,   5,-5, 5,  //right
 //				  5, 5,-5,  -5, 5,-5,   5, 5, 5,  -5, 5, 5,//up
 //				  5,-5, 5,  -5,-5, 5,   5,-5,-5,  -5,-5,-5//down
@@ -98,7 +105,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  // The per-vertex normals for the cube
 		  byte[] norm = {
 				   0, 0, 127,     0, 0, 127,     0, 0, 127,   0, 0, 127, //0, 0, 127, 0, 0, 127, 0, 0, 127, 0, 0, 127, 0, 0, 127,
-				   0, 0,-127,     0, 0,-127,     0, 0,-127,   0, 0,-127,  
+				   -127, 0,0,     -127, 0,0,     -127, 0,0,   -127, 0,0,  
 		  };
 		  VertexArray normArray = new VertexArray(norm.length / 3, 3, 1);
 		  normArray.set(0, norm.length/3, norm);
@@ -106,14 +113,15 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 // 			must build an Z
 		  short[] tex = {
 //	                256,0, 0,0, 256,256, 0,256 ,//128,128, 256,128, 128,256, 0,128 ,128,0,
-				  256,0,  0,0,   256,256,   0,256,
 				  0,0,  0,0, 0,0,0,0,    			 
+				  0,0,  256,0,   0,256,   256,256,
 				  };
 		  VertexArray texArray = new VertexArray(tex.length / 2, 2, 2);
 		  texArray.set(0, tex.length/2, tex);
-		  short[] lsttex = {              
+		  short[] lsttex = {    
+				  256,0,  0,0,   256,256,   0,256,
 				  	0,0,  0,0,   0,0,   0,0,	//0,0, 0,0, 0,0, 0,0, 0,0,
-	                256,0,  0,0,   256,256,   0,256,	
+	                	
 	                };
 
 		  VertexArray lsttexArray = new VertexArray(tex.length / 2, 2, 2);
@@ -125,8 +133,8 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  VertexBuffer vb = this.vbuffer = new VertexBuffer();
 		  vb.setPositions(vertArray,1.0f, null);
 		  vb.setNormals(normArray);
-		  vb.setTexCoords(0, texArray, 1.0f/256.0f, null);
-//		  vb.setTexCoords(1, lsttexArray,(1.0f/256.0f),null);
+		  vb.setTexCoords(0, lsttexArray,(1.0f/256.0f),null);
+		  vb.setTexCoords(1, texArray, 1.0f/256.0f, null);
 		  this.indexbuffer = new TriangleStripArray( indices, stripLen );
 		  int[] rgbData = new int[256*256];
 		  int[] lstrgbData = new int[256*256];
@@ -146,20 +154,19 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  for(int i = 0; i < lstrgbData.length;i++){
 			  if(row < width && rgbCount < lstrgbbuffer.length){
 				  lstrgbData[i] = lstrgbbuffer[rgbCount];
-				  rgbCount ++;
+				  rgbCount++;
 			  }
 			  row = (row + 1) % 256;		  
 		  }
-		  
 		  // the image for the texture
 		  Image image = Image.createRGBImage(rgbData,256,256,false);
-//		  Image lstImage = Image.createRGBImage(lstrgbData,256,256,false);
+		  Image lstImage = Image.createRGBImage(lstrgbData,256,256,false);
 		  
-//		  Image2D lstImage2D = new Image2D (Image2D.RGB,lstImage);
 		  Image2D image2D = new Image2D( Image2D.RGB, image );
+		  Image2D lstImage2D = new Image2D (Image2D.RGB,lstImage);
 		  
-//		  Texture2D lsttexture = new Texture2D( lstImage2D );
-		  Texture2D texture = new Texture2D( image2D );
+		  Texture2D texture = new Texture2D( lstImage2D );
+		  Texture2D lsttexture = new Texture2D( image2D );
 		  
 		  texture.setFiltering(Texture2D.FILTER_NEAREST,
 		        Texture2D.FILTER_NEAREST);
@@ -168,50 +175,61 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  texture.setBlending(Texture2D.FUNC_MODULATE);
 		  // create the appearance
 		  this.appearance = new Appearance();	
-		  this.appearance.setTexture(0,texture);  
-//		  this.appearance.setTexture(1,lsttexture );	
+		  this.appearance.setTexture(0,lsttexture );
+		  this.appearance.setTexture(1,texture);  
 		 
 		  this.appearance.setMaterial(this.material);
-//		  this.material.setVertexColorTrackingEnable(true);
+		  this.material.setVertexColorTrackingEnable(true);
 		  this.material.setColor(Material.DIFFUSE, 0xFFFFFFcc);
 		  this.material.setColor(Material.SPECULAR, 0xFFFFFFcc);
 		  this.material.setShininess(100.0f);
 		  this.background.setColor(0xFFFFFFcc);
-		  this.first = false;
 		
 		  super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
-		}
+
 	}
 	
 	
 	protected boolean animate() {
 		
 		// TODO Auto-generated method stub
-		return true;
+
+			return true;
+
 	}
 
 	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
+		
 		  this.graphics3d.bindTarget(g, true,
 			      Graphics3D.DITHER |
 			      Graphics3D.TRUE_COLOR);
+//		  this.graphics3d.setViewport(0,0,this.width,this.height);
 		  this.graphics3d.clear(this.background);
 			  // Set the camera
 			  Transform transform = new Transform();
-			  transform.postTranslate(0.0f, 0.0f, 30.0f);
-			  this.graphics3d.setCamera(this.camera, transform);
+//			  transform.postTranslate(0.0f, 0.0f, 18.0f);
+//			  transform.postTranslate(-(this.fWidth/2.0f), (this.fHeight/2.0f),(this.fWidth*this.fWidth)/2.0f);
+			  System.out.print((this.fWidth/2.0f)+";"+(this.fHeight/2.0f)+";"+(this.fHeight*this.fHeight)/2.0f+"\n");
+			  transform.postTranslate(-(this.fWidth/2.0f),(this.fHeight/2.0f),(this.fHeight*this.fHeight)/2.0f);
+//			  transform.postRotate(this.angle2,1.0f,this.angle2,1.0f);
+//			  this.camera.translate(1.0f,1.0f,1.0f);
+//			  this.camera.setOrientation(90.0f,1.0f,1.0f,1.0f);
+			  this.graphics3d.setCamera(this.camera,transform);
 			  // Set light
 			  this.graphics3d.resetLights();
 			  this.graphics3d.addLight(this.light, transform);
 			  // see rotation
-			  this.angle += 1.0f;
+			  this.angle += 0.5f;
+			  System.out.print(this.angle+"\n");
+			  this.angle2 += 0.2f;
 			  transform.setIdentity();
-			  transform.postRotate(this.angle,1.0f,this.angle, 1.0f);
+//			  transform.postRotate(1.0f,1.0f,1.0f, 1.0f);
+
 			  transform.postTranslate(0.0f,0.0f,0.0f);
+			  this.graphics3d.render(this.vbuffer, this.indexbuffer, this.appearance, transform);
 			  this.graphics3d.render(this.vbuffer, this.indexbuffer, this.appearance, transform);
 			  this.graphics3d.releaseTarget();
 			  this.display.callSerially( this );
-
 	}
-
 }
