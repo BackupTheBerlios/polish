@@ -1293,6 +1293,7 @@ public class PolishTask extends ConditionalTask {
 			device.setBaseDir( targetDir );
 			targetDir += File.separatorChar + "source";
 			device.setSourceDir(targetDir);
+			this.environment.addVariable("polish.sourcedir", targetDir);
 			// initialise the preprocessor:
 			this.preprocessor.setTargetDir( targetDir );
 			// set variables and symbols:
@@ -1920,7 +1921,7 @@ public class PolishTask extends ConditionalTask {
 		ArrayList list = new ArrayList();
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		Project antProject = getProject();
-		for (int i = 0; i < this.postCompilers.length; i++) {
+		for (int i = 0; i < this.preCompilers.length; i++) {
 			PreCompiler preCompiler = this.preCompilers[i];
 			if (preCompiler.getSetting().isActive(evaluator, antProject)) {
 				list.add( preCompiler );

@@ -36,7 +36,6 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
-import de.enough.polish.ant.build.PostCompilerSetting;
 import de.enough.polish.ant.build.PreCompilerSetting;
 import de.enough.polish.util.FileUtil;
 
@@ -78,7 +77,7 @@ public abstract class PreCompiler extends Extension {
 	throws BuildException
 	{
 		try {
-			PreCompiler preCompiler = (PreCompiler) manager.getExtension( ExtensionManager.TYPE_POSTCOMPILER, preCompilerSetting, environment );
+			PreCompiler preCompiler = (PreCompiler) manager.getExtension( ExtensionManager.TYPE_PRECOMPILER, preCompilerSetting, environment );
 			return preCompiler;
 		} catch (BuildException e) {
 			throw e;
@@ -143,8 +142,8 @@ public abstract class PreCompiler extends Extension {
 	 * 
 	 * @return the settings
 	 */
-	public PostCompilerSetting getSetting() {
-		return (PostCompilerSetting) this.extensionSetting;
+	public PreCompilerSetting getSetting() {
+		return (PreCompilerSetting) this.extensionSetting;
 	}
 
 	 /**
