@@ -35,19 +35,15 @@ import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 public class CardScreenChangeAnimation extends ScreenChangeAnimation {
-	private Image image;
 	private boolean stillRun = true;
-	//row = wo sich das neue image befindet am display
 	private int row = 0;
 	private int[] rgbData ;
 	private int[] rgbbuffer ;
 	private int[] lstrgbbuffer ;
 	private int[] scaleableHeight;
 	private int lstScale = 0;
-	private int width, height;
 	private int scaleableWidth;
 	private boolean first = true;
-	private boolean letsGo = false;
 	public CardScreenChangeAnimation() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -57,8 +53,6 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
-			this.height = height;
-			this.width = width;
 			this.lstScale = width;
 			this.scaleableWidth = width;
 			this.scaleableHeight = new int [width];
@@ -73,88 +67,134 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
-	private int getColorRGB(int i,int row,int column){
-		int perWidth = this.scaleableWidth / this.width;
-		int perHeight = this.scaleableHeight[row] / this.height;
-		int newi = (i * this.scaleableHeight[row]);
-//		column --;
-//		if(column == 0 && row != 0)column++;
-//		if(row == 0 && column != 0)row++;
-
-		
-		return this.rgbbuffer[i];
+	private int getColorRGB(int row,int column){
+//		newI = ((row-1))+ (this.width * ((column)));
+//----------------------------------------------------
+//		float newI = 0;
+//		float proWidth = ((float)this.scaleableWidth / (float)this.width);
+//		int sH = this.scaleableHeight[row];
+//		float sHeight = (float)this.height -(float)sH;
+//		if(column != 0)column = column - (this.height - sH);
+//		if(column < 0)column = 0;
+//		float proHeight = (((float)this.height-(sHeight*2.0f)) / (float)this.height);
+//		if(row != 0)row = row - this.row;
+//		if(row < 0)row = 0;
+//		newI = (((float)row/proWidth))+ (this.width * (int)(column/proHeight));
+//		if(newI >38719)newI = 38719;
+//		int i = (int)newI;
+//-----------------------------------------------------
+//		int intProWidth = (this.scaleableWidth*100) / this.width;
+//-----------------------------------------------------
+		int sH = this.scaleableHeight[row];
+		if(column != 0)column = column - (this.screenHeight - sH);
+		if(column <= 0)column = 1;
+//		int intProHeight = ((this.height-((this.height-sH)*2))*100)/this.height;
+		if(row != 0)row = row - this.row;
+		if(row <= 0)row = 1;
+		int u = (((this.screenHeight-((this.screenHeight-sH)*2))*100)/this.screenHeight);
+		if(u == 0)u++;
+		int o = ((this.scaleableWidth*100) / this.screenWidth);
+		if(o == o)o++;
+		int i = ((row*100)/o)+(this.screenWidth * ((column*100)/u));
+		if(i >38719)i = 38719;
+		if(i < 0)i = 0;
+		if(this.first)return this.rgbbuffer[i];
+		else return this.rgbbuffer[i];
 	}
+	
 	
 	protected boolean animate() {
 		// TODO Auto-generated method stub
-		int row = 0,column = 5;
-		for(int i = 0; i < this.rgbData.length;i++){
-			row = (row + 1) % this.width;
+		int row = 0,column = 0;
+		int length = this.rgbData.length;
+		for(int i = 0; i < length;i++){
+			row = (row + 1) % this.screenWidth;
 			if(row == 0)column++;	
-					if(this.scaleableHeight[row] < column || (this.height - this.scaleableHeight[row]) > column){
+			int sH = this.scaleableHeight[row];
+					if(sH < column || (this.screenHeight - sH) > column || row > (this.screenWidth-this.row) || row < this.row){
 						this.rgbData[i] = 0x000000;
 					}else{
-						this.rgbData[i] = getColorRGB(i,row,column);
+						this.rgbData[i] = getColorRGB(row,column);
 					}
-
 		}
 		if(this.first){this.lstScale--;this.cubeEffect();}
 		else {this.newDirection();}
-		if(this.row < this.width/2)this.row++;
+//		if(this.row < this.width/2)this.row++;
 		return this.stillRun;
 	}
 	
 	
 	private void newDirection(){
 		//scaling for the lstImage
-		for(int i = 0; i < this.width-1;i++){	
-
-			if(this.scaleableHeight[i] == 0 && this.scaleableHeight[i+1] > this.height-60){
-				this.scaleableHeight[i]=this.scaleableHeight[i+1]-1;
-				break;
-				}
-			else if(this.scaleableHeight[i+1] != 0 && this.scaleableHeight[i] == 0){
-				this.scaleableHeight[i] = this.scaleableHeight[i+1];
-			}
-			else if(this.scaleableHeight[i] != 0 && this.scaleableHeight[i] != this.height){
-				this.scaleableHeight[i]++;
-			}
-			else if(i == this.row ){
-				this.scaleableHeight[i]=this.height;
-				this.row++;
-				break;
-			}
+		for(int i = 0; i < this.screenWidth-1;i++){	
+			this.scaleableHeight[i] = this.screenHeight;
+			if(i != 0)this.scaleableHeight[i -1] = this.screenHeight;
 		}
+		this.scaleableWidth = this.screenWidth;
+		this.row = 0;
+		this.first = true;
 	}
+	
 	
 	
 	private void cubeEffect(){
-		//scaling for the lstImage
-		for(int i = this.width-1; i >= 0;i--){	
-			if(this.row < this.width/2 && i > this.lstScale && this.scaleableHeight[i] > this.height-60){
-				this.scaleableHeight[i]-=2;
-			}else if(this.scaleableHeight[i] <= this.height-60 && this.scaleableHeight[i]!=0) {
-				this.scaleableHeight[i]=0;
-				this.scaleableWidth--;
-			}
-			else{
-				if(this.scaleableHeight[i] != this.height && this.scaleableHeight[i]!=0){
-					this.scaleableHeight[i]=0;
-					this.scaleableWidth--;
-					break;
-				}
-			}
+		for(int i = 0; i < this.screenWidth;i++){
+//			int sH = this.scaleableHeight[i];
+//			if(sH > this.screenHeight-20)this.scaleableHeight[i]--;
+//			int sum = (sH*100) / this.height; 
 			
-			if(i < this.row && this.scaleableHeight[i]!=0){
-				this.scaleableWidth--;
-				this.scaleableHeight[i]=0;
-			}
-			if(this.scaleableWidth == 1)this.first=false;
 		}
+		this.scaleableWidth-=2;
+		this.row++;
+//		for(int i = this.width-1; i >= 0;i--){	
+//			if(this.r > i)this.scaleableHeight[i]--;
+////			System.out.print(this.scaleableHeight[i]+"\n");
+//		}
+//		this.r= (this.r +1) % this.width;
+		//scaling for the lstImage 
+//		for(int i = this.width-1; i >= 0;i--){	
+//			if
+//			( this.r-1 == i || this.r-2 == i || this.r-3 == i||this.r-4 == i||this.r-5 == i)
+//				{this.scaleableHeight[i] -= 1;}
+//			else if
+//			(this.r == i || this.r+1 == i || this.r+2 == i || this.r+3 == i|| this.r+4 == i|| this.r+5 == i)
+//				{this.scaleableHeight[i] += 1;}
+//		}
+//		this.r= (this.r +1) % this.width;
+////		System.out.print(r+"\n");
+//		for(int i = this.width-1; i >= 0;i--){	
+//			int sH = this.scaleableHeight[i];
+//			if(this.row < this.width/2 && i > this.lstScale && sH > this.height-50){
+//				this.scaleableHeight[i]-=1;
+//			}else if(sH <= this.height-50 && sH!=0) {
+//				this.scaleableHeight[i]=0;
+//				this.scaleableWidth--;
+//			}
+//			else{
+//				if(sH != this.height && sH !=0){
+//					this.scaleableHeight[i]=0;
+//					this.scaleableWidth--;
+//					break;
+//				}
+//			}			
+//			if(i < this.row && sH!=0){
+//				this.scaleableWidth--;
+//				this.scaleableHeight[i]=0;
+//			}
+//			if(this.scaleableWidth == 1)this.first=false;
+//		}
+//		for(int i = this.width-1; i >= 0;i--){	
+//			this.scaleableHeight[i]-=2;
+//		}
+//			if(this.scaleableHeight[this.row]!=0 && this.scaleableHeight[this.width-1-this.row]!= 0)
+//				this.scaleableHeight[this.width-1-this.row]= 0;
+//				this.scaleableHeight[this.row]=0;
+//				this.scaleableWidth-=2;
+		
 	}
 	
 	public void paint(Graphics g) {
-		g.drawRGB(this.rgbData,0,this.width,0,0,this.width,this.height,false);
+		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
 		this.display.callSerially( this );
 	}
 
