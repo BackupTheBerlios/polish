@@ -277,9 +277,8 @@ public class TabbedForm extends Form {
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
-		int realY = y + this.titleHeight + this.subTitleHeight + this.infoHeight;
-		if ( realY <= this.tabBar.yBottomPos && realY >= this.tabBar.yTopPos 
-				&& this.tabBar.handlePointerPressed(x, realY)) 
+		if ( y <= this.tabBar.yBottomPos && y >= this.tabBar.yTopPos 
+				&& this.tabBar.handlePointerPressed(x, y)) 
 		{
 			if (this.tabBar.newActiveTabIndex == this.activeTabIndex) {
 				return false;

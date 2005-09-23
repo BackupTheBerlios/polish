@@ -1274,7 +1274,16 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		if (y < this.yTopPos || y > this.yBottomPos 
+		// an item within this container was selected:
+		Item[] myItems = getItems();
+		int lastYPos = this.yBottomPos;
+		if ( myItems.length != 0) {
+			Item lastItem = myItems[ myItems.length - 1];
+			if ( lastItem.backgroundHeight > lastItem.itemHeight ) {
+				lastYPos += (lastItem.backgroundHeight - lastItem.itemHeight);
+			}
+		}
+		if (y < this.yTopPos || y > lastYPos 
 			|| x < this.xLeftPos || x > this.xRightPos) {
 			return false;
 		}
@@ -1285,13 +1294,18 @@ public class Container extends Item {
 				}
 			}
 		//#endif
-		// an item within this container was selected:
-		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
 			if (y < item.yTopPos  || y > item.yBottomPos || x < item.xLeftPos || x > item.xRightPos) {
-				// this item is not in the range:
-				continue;
+				// check for internal positions (e.g. POPUP choice groups can be over this area):
+				if ( item.backgroundHeight > item.itemHeight ) {
+					if ( y > item.yTopPos + item.backgroundHeight && x > item.xLeftPos + item.backgroundWidth ) {
+						continue;
+					}
+				} else {
+					// this item is not in the range:
+					continue;					
+				}
 			}
 			// the pressed item has been found:
 			if ((item.appearanceMode != Item.PLAIN) && (i != this.focusedIndex)) {

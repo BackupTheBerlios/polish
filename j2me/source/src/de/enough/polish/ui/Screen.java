@@ -128,7 +128,9 @@ implements AccessibleCanvas
 	private Background background;
 	protected Border border;
 	protected Style style;
+	/** the screen height minus the ticker height and the height of the menu bar */
 	protected int screenHeight;
+	/** the screen height minus the height of the menu bar */
 	private int originalScreenHeight;
 	protected final int screenWidth;
 	//#ifndef polish.skipTicker
@@ -145,6 +147,7 @@ implements AccessibleCanvas
 	//#endif	
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
+		/** the real, complete height of the screen - this includes title, subtitle, content and menubar */
 		private int fullScreenHeight;
 		protected int menuBarHeight;
 		//#ifdef polish.key.ReturnKey:defined
@@ -394,8 +397,7 @@ implements AccessibleCanvas
 		if (this.container != null) {
 			this.container.screen = this;
 		}
-		int y = this.titleHeight  + this.subTitleHeight + this.infoHeight;
-		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		
 		// start the animmation thread if necessary: 
 		if (startAnimationThread) {
@@ -405,16 +407,31 @@ implements AccessibleCanvas
 	}
 	
 	/**
-	 * Sets the content area for this screen.
+	 * Calculates and sets the content area for this screen.
 	 * Usually no items are painted outside of the specified area.
+	 * This method knows about the title, subtitle, infoarea and ticker
+	 * and adjusts the content area accordingly
 	 * 
-	 * @param x left start of the content area
-	 * @param y top start of the content area
-	 * @param width width of the content area
-	 * @param height height of the content area
+	 * @param x left start of the content area, might later be adjusted by an external scrollindicator
+	 * @param y top start of the content area, is adjusted by the title height, subtitle height, 
+	 *        info height and maybe ticker height (when the ticker should be painted at the top).
+	 * @param width width of the content area, might later be adjusted by an external scrollindicator
+	 * @param height height of the content area, is adjusted by the title height, subtitle height, 
+	 *        info height and ticker height.
 	 */
-	protected void setContentArea( int x, int y, int width, int height ) {
-		//System.out.println("setContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
+	protected void calculateContentArea( int x, int y, int width, int height ) {
+		//#debug
+		System.out.println("setContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
+		int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight; 
+		y += topHeight;
+		int tickerHeight = 0;
+		//#ifndef polish.skipTicker			
+			if (this.ticker != null) {
+				tickerHeight = this.ticker.getItemHeight( this.screenWidth, this.screenWidth );
+			} 	
+		//#endif
+		//TODO allow ticker at the top as well	
+		height -= topHeight + tickerHeight;
 		this.contentX = x;
 		this.contentY = y;
 		this.contentWidth = width;
@@ -445,7 +462,7 @@ implements AccessibleCanvas
 				//#endif
 				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
 				this.originalScreenHeight = this.screenHeight;
-				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+				this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1;
 			//#endif
 			if (!this.isInitialised) {
 				init();
@@ -674,14 +691,16 @@ implements AccessibleCanvas
 			if (!this.isInFullScreenMode) {
 				//# super.setFullScreenMode( true );
 				this.isInFullScreenMode = true;
-				//#ifdef polish.FullCanvasHeight:defined
-					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-				//#else
-					this.fullScreenHeight = getHeight();
+				//#if tmp.menuFullScreen
+					//#ifdef polish.FullCanvasHeight:defined
+						//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+					//#else
+						this.fullScreenHeight = getHeight();
+					//#endif
+					this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+					this.originalScreenHeight = this.screenHeight;
+					this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1 - this.menuBarHeight;
 				//#endif
-				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-				this.originalScreenHeight = this.screenHeight;
-				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 			}
 		//#endif
 		//#if !tmp.menuFullScreen
@@ -692,8 +711,8 @@ implements AccessibleCanvas
 				//#debug
 				System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
 				if (this.container != null) {
-					int y = this.infoHeight + this.subTitleHeight + translateY;
-					setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+					int y = translateY;
+					calculateContentArea( 0, y, this.screenWidth, this.screenHeight - y );
 				}
 			}
 		//#endif
@@ -755,7 +774,8 @@ implements AccessibleCanvas
 			//#ifndef polish.skipTicker
 			 	if (this.ticker != null) {
 			 		//System.out.println("painting ticker... at 0, " + this.screenHeight );
-			 		this.ticker.paint( 0, this.screenHeight, 0, this.screenWidth, g );
+			 		//TODO allow to paint ticker at the top of the screen...
+			 		this.ticker.paint( 0, this.contentY + this.contentHeight, 0, this.screenWidth, g );
 			 	}
 			//#endif
 			
@@ -1014,6 +1034,7 @@ implements AccessibleCanvas
 		if (s != null) {
 			//#style title, default
 			this.title = new StringItem( null, s );
+			this.title.screen = this;
 			if ( tStyle != null ) {
 				this.title.setStyle( tStyle );
 			}
@@ -1038,8 +1059,7 @@ implements AccessibleCanvas
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		int y = this.titleHeight + this.subTitleHeight + this.infoHeight;
-		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		if (this.isInitialised && isShown()) {
 			repaint();
 		}
@@ -1060,6 +1080,7 @@ implements AccessibleCanvas
 		if (this.infoItem == null) {
 			//#style info, default
 			this.infoItem = new StringItem( null, infoText );
+			this.infoItem.screen = this;
 		} else {
 			this.infoItem.setText( infoText );
 		}
@@ -1070,8 +1091,7 @@ implements AccessibleCanvas
 			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
 			this.showInfoItem = true;
 		}
-		int y = this.titleHeight + this.subTitleHeight + this.infoHeight;
-		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 	}
 
 	//#ifndef polish.skipTicker
@@ -1093,11 +1113,13 @@ implements AccessibleCanvas
 	{
 		this.ticker = ticker;
 		if (ticker == null) {
-			this.screenHeight = this.originalScreenHeight;
+			//this.screenHeight = this.originalScreenHeight;
 		} else {
-			int tickerHeight = ticker.getItemHeight(this.screenWidth, this.screenWidth );
+			ticker.screen = this;
+			// initialise ticker, so that subsequently ticker.itemHeight can be called:
+			ticker.getItemHeight(this.screenWidth, this.screenWidth );
 			//System.out.println("setTicker(): tickerHeight=" + tickerHeight );
-			this.screenHeight = this.originalScreenHeight - tickerHeight;
+			//this.screenHeight = this.originalScreenHeight - tickerHeight;
 		}
 		//System.out.println("setTicker(): screenHeight=" + this.screenHeight + ", original=" + this.originalScreenHeight );
 		if (isShown()) {
@@ -1688,6 +1710,9 @@ implements AccessibleCanvas
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
+		if (this.subTitle != null && this.subTitle.handlePointerPressed(x, y)) {
+			return true;
+		}
 		return this.container.handlePointerPressed(x, y);
 	}
 	//#endif
@@ -1721,22 +1746,21 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		//#if false;
-		//!polish.group.Series60
-			//#debug
-			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
-			//#ifdef tmp.menuFullScreen
-				this.fullScreenHeight = height;
-				this.screenHeight = height - this.menuBarHeight;
-				this.originalScreenHeight = this.screenHeight;
-			//#else
-				this.screenHeight = height;
-				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
-			//#endif
-			this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
-			int y = this.titleHeight + this.infoHeight + this.subTitleHeight;
-			setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+		if (!this.isInitialised) {
+			return;
+		}
+		//#debug
+		System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
+		//#ifdef tmp.menuFullScreen
+			this.fullScreenHeight = height;
+			this.screenHeight = height - this.menuBarHeight;
+			this.originalScreenHeight = this.screenHeight;
+		//#else
+			this.screenHeight = height;
+			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
 		//#endif
+		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
 	}
 	//#endif
 	
@@ -1803,14 +1827,14 @@ implements AccessibleCanvas
 		if (subTitle == null) {
 			this.subTitleHeight = 0;
 		} else {
+			subTitle.screen = this;
 			//#ifdef polish.ScreenWidth:defined
 				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
 			//#else
 				this.subTitleHeight = subTitle.getItemHeight(getWidth(), getWidth());
 			//#endif
 		}
-		int y = this.titleHeight + this.subTitleHeight + this.infoHeight;
-		setContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
 	//#if polish.Bugs.displaySetCurrentFlickers

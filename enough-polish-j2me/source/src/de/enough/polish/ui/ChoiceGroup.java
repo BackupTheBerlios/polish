@@ -936,7 +936,7 @@ implements Choice
 				this.originalContentWidth = this.contentWidth;
 				this.originalContentHeight = this.contentHeight;
 			}
-			this.contentWidth = this.popupItem.contentWidth;			
+			//this.contentWidth = this.popupItem.contentWidth;			
 			this.contentHeight = this.popupItem.contentHeight;
 		}
 	}
@@ -950,7 +950,7 @@ implements Choice
 		return "choicegroup";
 	}
 	//#endif
-	
+		
 	//#ifdef polish.usePopupItem
 	private void closePopup() {
 		this.isPopupClosed = true;
@@ -1166,6 +1166,8 @@ implements Choice
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
+		//#debug
+		System.out.println("ChoiceGroup.handlePointerPressed(" + x + ", " + y + ")");
 		//#ifndef polish.usePopupItem
 			super.handlePointerPressed(x, y);
 			//# return handleKeyPressed( -1, Canvas.FIRE ); 

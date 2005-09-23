@@ -916,9 +916,10 @@ public class TextField extends StringItem
 	 */
 	public void setString( String text)
 	{
+		//#debug
+		System.out.println("TextField.setString( " + text + " )");
 		//#if !(tmp.forceDirectInput || polish.blackberry)
 			if (this.midpTextBox != null) {
-				System.out.println("TextField.setString( " + text + " )");
 				this.midpTextBox.setString( text );
 			}
 		//#endif
@@ -1233,7 +1234,7 @@ public class TextField extends StringItem
 					//# getScreen().setFocus( this );
 				}
 			}
-			this.editField = new PolishEditField( null, this.text, this.maxSize, bbStyle );
+			this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
 			this.editField.setChangeListener( this );
 			this._bbField = this.editField;
 		//#elif !tmp.forceDirectInput
@@ -1509,7 +1510,7 @@ public class TextField extends StringItem
 				return;
 			}
 			this.editField.layout( lineWidth, this.contentHeight );
-			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
+			System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.editField.getExtent();
 			this.contentWidth = rect.width;
 			this.contentHeight = rect.height;
@@ -2627,7 +2628,7 @@ public class TextField extends StringItem
 	//#if polish.blackberry
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
-			setText( this.editField.getText() );
+			setString( this.editField.getText() );
 			notifyStateChanged();
 		}
 	}

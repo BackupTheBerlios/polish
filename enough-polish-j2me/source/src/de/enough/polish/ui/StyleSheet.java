@@ -225,6 +225,11 @@ public final class StyleSheet {
 	 *         the default style is returned.
 	 */
 	public static Style getStyle( Item item ) {
+		if (item.screen == null) {
+			//#debug error
+			System.out.println("unable to retrieve style for item [" + item.getClass().getName() + "] without screen.");
+			return defaultStyle;
+		}
 		String itemCssSelector = item.cssSelector;
 		String screenCssSelector = item.screen.cssSelector;
 		Style style = null;

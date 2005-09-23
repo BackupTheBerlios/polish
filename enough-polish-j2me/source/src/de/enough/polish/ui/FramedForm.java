@@ -168,7 +168,12 @@ public class FramedForm extends Form {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#setContentArea(int, int, int, int)
 	 */
-	protected void setContentArea(int x, int y, int width, int height) {
+	protected void calculateContentArea(int x, int y, int width, int height) {
+		super.calculateContentArea(x, y, width, height);
+		x = this.contentX;
+		y = this.contentY;
+		width = this.contentWidth;
+		height = this.contentHeight;
 		this.originalContentWidth = width;
 		this.originalContentHeight = height;
 		if (this.leftFrame != null) {
@@ -195,7 +200,7 @@ public class FramedForm extends Form {
 		if (this.bottomFrame != null ) {
 			height -= this.bottomFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth);
 		}
-		super.setContentArea(x, y, width, height);
+		this.container.setVerticalDimensions( y, y + height );
 	}
 	
 	

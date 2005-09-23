@@ -520,6 +520,10 @@ public class Graphics extends Object
 	
 	protected Graphics() {
 		this.font = Font.getDefaultFont();
+		//#if polish.ScreenSize:defined
+			//#= this.clipWidth = ${polish.ScreenWidth}; 
+			//#= this.clipHeight = ${polish.ScreenHeight}; 
+		//#endif
 	}
 
 	/**
@@ -547,7 +551,11 @@ public class Graphics extends Object
 	 */
 	public void translate(int x, int y)
 	{
-		this.g.translate(x, y);
+        this.clipX -= x;
+        this.clipY -= y;
+        this.translateX += x;
+        this.translateY += y;
+		//this.g.translate(x, y);
 	}
 
 	/**
@@ -557,7 +565,7 @@ public class Graphics extends Object
 	 */
 	public int getTranslateX()
 	{
-		return this.g.getTranslateX();
+		return this.translateX; //this.g.getTranslateX();
 	}
 
 	/**
@@ -567,7 +575,7 @@ public class Graphics extends Object
 	 */
 	public int getTranslateY()
 	{
-		return this.g.getTranslateY();
+		return this.translateY; //this.g.getTranslateY();
 	}
 
 	/**
@@ -805,19 +813,22 @@ public class Graphics extends Object
 	 */
 	public void clipRect(int x, int y, int width, int height)
 	{
-		if (x > this.clipX ) {
-			this.clipX = x;
+		if (x < this.clipX) {
+			width -= (this.clipX - x);
+			x = this.clipX;
 		}
-		if (y > this.clipY) {
-			this.clipY = y;
+		if (y < this.clipY) {
+			height -= (this.clipY - y);
+			y = this.clipY;
 		}
-		if (width < this.clipWidth) {
-			this.clipWidth = width;
+		if (x + width > this.clipX + this.clipWidth) {
+			width = this.clipX + this.clipWidth - x;
 		}
-		if (height < this.clipHeight ) {
-			this.clipHeight = height;
+		if (y + height > this.clipY + this.clipHeight) {
+			height = this.clipY + this.clipHeight - y;
 		}
-		this.g.pushRegion( x, y, width, height, 0, 0 );
+		setClip( x, y, width, height );
+		//this.g.pushRegion( x, y, width, height, 0, 0 );
 	}
 
 	/**
@@ -832,8 +843,6 @@ public class Graphics extends Object
 	 */
 	public void setClip(int x, int y, int width, int height)
 	{
-		x += this.translateX;
-		y += this.translateY;
 		this.clipX = x;
 		this.clipY = y;
 		this.clipWidth = width;
@@ -841,6 +850,8 @@ public class Graphics extends Object
 		if (this.isContextPushed) {
 			this.g.popContext();
 		}
+		x += this.translateX;
+		y += this.translateY;
 		this.g.pushContext(x, y, width, height, 0, 0 );
 		this.isContextPushed = true;
 	}
@@ -857,7 +868,7 @@ public class Graphics extends Object
 	 */
 	public void drawLine(int x1, int y1, int x2, int y2)
 	{
-		this.g.drawLine(x1, y1, x2, y2);
+		this.g.drawLine(x1 + this.translateX, y1 + this.translateY, x2 + this.translateX, y2 + this.translateY);
 	}
 
 	/**
@@ -873,7 +884,7 @@ public class Graphics extends Object
 	 */
 	public void fillRect(int x, int y, int width, int height)
 	{
-		this.g.fillRect(x, y, width, height);
+		this.g.fillRect(x + this.translateX, y + this.translateY, width, height);
 	}
 
 	/**
@@ -892,7 +903,7 @@ public class Graphics extends Object
 	 */
 	public void drawRect(int x, int y, int width, int height)
 	{
-		this.g.drawRect(x, y, width, height);
+		this.g.drawRect(x + this.translateX, y + this.translateY, width, height);
 	}
 
 	/**
@@ -914,7 +925,7 @@ public class Graphics extends Object
 	 */
 	public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
-		this.g.drawRoundRect(x, y, width, height, arcWidth, arcHeight);
+		this.g.drawRoundRect(x + this.translateX, y + this.translateY, width, height, arcWidth, arcHeight);
 	}
 
 	/**
@@ -932,7 +943,7 @@ public class Graphics extends Object
 	 */
 	public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
-		this.g.fillRoundRect(x, y, width, height, arcWidth, arcHeight);
+		this.g.fillRoundRect(x + this.translateX, y + this.translateY, width, height, arcWidth, arcHeight);
 	}
 
 	/**
@@ -980,7 +991,7 @@ public class Graphics extends Object
 	 */
 	public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
 	{
-		this.g.fillArc(x, y, width, height, startAngle, arcAngle);
+		this.g.fillArc(x + this.translateX, y + this.translateY, width, height, startAngle, arcAngle);
 	}
 
 	/**
@@ -1024,7 +1035,7 @@ public class Graphics extends Object
 	 */
 	public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle)
 	{
-		this.g.drawArc(x, y, width, height, startAngle, arcAngle);
+		this.g.drawArc(x + this.translateX, y + this.translateY, width, height, startAngle, arcAngle);
 	}
 
 	/**
@@ -1047,7 +1058,7 @@ public class Graphics extends Object
 		} else if (( anchor & HCENTER ) == HCENTER ) {
 			x -= this.font.font.getAdvance( str ) / 2;
 		} 
-		this.g.drawText(str, x, y, DrawStyle.LEFT | DrawStyle.TOP );
+		this.g.drawText(str, x + this.translateX, y + this.translateY, DrawStyle.LEFT | DrawStyle.TOP );
 	}
 
 	/**
@@ -1120,7 +1131,7 @@ public class Graphics extends Object
 	public void drawChar(char character, int x, int y, int anchor)
 	{
 		int width = this.font.font.getAdvance(character);
-		this.g.drawText(character, x, y, translateAnchor(anchor), width);
+		this.g.drawText(character, x + this.translateX, y + this.translateY, translateAnchor(anchor), width);
 	}
 
 	/**
@@ -1192,7 +1203,7 @@ public class Graphics extends Object
 		} else if ( (anchor & VCENTER) == VCENTER ) {
 			y -= height / 2;
 		}
-		this.g.drawBitmap( x, y, width, height, bitmap, 0, 0 );
+		this.g.drawBitmap( x + this.translateX, y + this.translateY, width, height, bitmap, 0, 0 );
 	}
 
 	/**
@@ -1294,7 +1305,7 @@ public class Graphics extends Object
 		} else if ( (anchor & VCENTER) == VCENTER ) {
 			y_dest -= height / 2;
 		}
-		this.g.drawBitmap( x_dest, y_dest, width, height, src.bitmap, x_src, y_src );
+		this.g.drawBitmap( x_dest + this.translateX, y_dest + this.translateY, width, height, src.bitmap, x_src, y_src );
 		//TODO allow transformation
 	}
 
@@ -1374,7 +1385,7 @@ public class Graphics extends Object
 		} else if ( (anchor & VCENTER) == VCENTER ) {
 			y_dest -= height / 2;
 		}
-		this.g.copyArea( x_src, y_src, width, height, x_src - x_dest, y_src - y_dest );
+		this.g.copyArea( x_src + this.translateX, y_src + this.translateY, width, height, x_src - x_dest + + this.translateX, y_src - y_dest + + this.translateY);
 	}
 
 	/**
@@ -1392,8 +1403,8 @@ public class Graphics extends Object
 	 */
 	public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
 	{
-		int[] xPositions = new int[] { x1, x2, x3 };
-		int[] yPositions = new int[] { y1, y2, y3 };
+		int[] xPositions = new int[] { x1 + this.translateX, x2 + this.translateX, x3 + this.translateX };
+		int[] yPositions = new int[] { y1 + this.translateY, y2 + this.translateY, y3 + this.translateY };
 		this.g.drawFilledPath(xPositions, yPositions, null, null );
 //		this.g.drawLine(x1, y1, x2, y2);
 //		this.g.drawLine(x2, y2, x3, y3);
@@ -1490,9 +1501,9 @@ public class Graphics extends Object
 		 if ( processAlpha ) {
              Bitmap bitmap = new Bitmap( Bitmap.ROWWISE_16BIT_COLOR, width, height ); 
              bitmap.setARGB(rgbData, offset, scanlength, 0, 0, width, height);
-             this.g.drawBitmap(x, y, width, height, bitmap, 0, 0 );
+             this.g.drawBitmap(x + this.translateX, y + this.translateY, width, height, bitmap, 0, 0 );
 	     } else {
-	    	 this.g.drawRGB(rgbData, offset, scanlength, x, y, width, height);
+	    	 this.g.drawRGB(rgbData, offset, scanlength, x + this.translateX, y + this.translateY, width, height);
 	     }
 	}
 
