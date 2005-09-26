@@ -112,7 +112,7 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 			row = (row + 1) % this.screenWidth;
 			if(row == 0)column++;	
 			int sH = this.scaleableHeight[row];
-					if(sH < column || (this.screenHeight - sH) > column){// || row > (this.screenWidth-this.row) || row < this.row){
+					if(sH < column || (this.screenHeight - sH) > column || this.scaleableWidth < row){// || row > (this.screenWidth-this.row) || row < this.row){
 						this.rgbData[i] = 0x000000;
 					}else{
 						this.rgbData[i] = getColorRGB(row,column);
@@ -120,7 +120,7 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		}
 		if(this.first){this.lstScale--;this.cubeEffect();}
 		else {this.newDirection();}
-//		if(this.row < this.width/2)this.row++;
+		if(this.scaleableWidth < 2)this.first = false;
 		return this.stillRun;
 	}
 	
@@ -133,6 +133,7 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		}
 		this.scaleableWidth = this.screenWidth;
 		this.row = 0;
+		this.degree = 0;
 		this.first = true;
 	}
 	
@@ -143,7 +144,24 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		int u = this.screenHeight - sH ;
 		if(u == 0)u++;	
 		float z =  u / this.scaleableWidth;
-
+		if(this.degree < 90)this.degree++;
+		float scale = this.screenWidth / 90.0f;
+		this.scaleableWidth = (int) (this.screenWidth -(scale * this.degree));
+		if(this.screenWidth <= 0)this.screenWidth++;
+		if(this.scaleableWidth <= 0)this.scaleableWidth++;
+		int heightScale = ((this.screenHeight-((this.screenHeight * 15)/100))*100)/90;
+		int endOfHeight =  (this.screenHeight -(heightScale * this.degree));
+		int o = this.screenHeight + (endOfHeight/100);
+		int r = ((this.screenHeight - o)*100)/this.screenWidth;
+		int sum = r;
+//		System.out.print(heightScale+".:."+endOfHeight+".o:o."+o+".:."+r+"\n");
+		for(int i = this.row+1; i < this.scaleableWidth;i++){
+//			this.scaleableHeight[i] = this.screenHeight + (endOfHeight/100);
+			this.scaleableHeight[i] = this.screenHeight - (r/100);
+//			System.out.print(this.screenHeight - (r/100)+"\n");
+			r = r + sum;
+		}
+//		System.out.print("degree"+this.degree+".sum."+scale+".scaleWidth."+this.scaleableWidth+"\n");
 //		System.out.print("r."+this.row+".sW."+this.scaleableWidth+"::u."+u+".z."+z+".a.\n");
 //		for(int i = this.row; i < this.scaleableWidth;i++){	
 //		if(i <= z){

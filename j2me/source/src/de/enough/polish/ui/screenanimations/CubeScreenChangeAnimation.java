@@ -73,7 +73,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		 System.out.print((float)getWidth()/ (float)getHeight()+"\n");
 		 this.camera.setPerspective( 90.0f,
 		   (float)getWidth()/ (float)getHeight(),
-		   1.0f,
+		   0.1f,
 		   200.0f );
 
 //		 this.camera.setOrientation(100.0f,1.0f,1.0f,1.0f);
@@ -211,7 +211,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 //			  transform.postTranslate(0.0f, 0.0f, 18.0f);
 //			  transform.postTranslate(-(this.fWidth/2.0f), (this.fHeight/2.0f),(this.fWidth*this.fWidth)/2.0f);
 			  System.out.print((this.fWidth/2.0f)+";"+(this.fHeight/2.0f)+";"+(this.fHeight*this.fHeight)/2.0f+"\n");
-			  transform.postTranslate(-(this.fWidth/2.0f),(this.fHeight/2.0f),(this.fHeight*this.fHeight)/2.0f);
+			  transform.postTranslate(-(this.fWidth/2.0f),(0.78f),(this.fHeight*this.fHeight)/2.0f);
 //			  transform.postRotate(this.angle2,1.0f,this.angle2,1.0f);
 //			  this.camera.translate(1.0f,1.0f,1.0f);
 //			  this.camera.setOrientation(90.0f,1.0f,1.0f,1.0f);
