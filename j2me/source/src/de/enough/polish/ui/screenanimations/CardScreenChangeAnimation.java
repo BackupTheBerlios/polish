@@ -36,7 +36,7 @@ import de.enough.polish.ui.Style;
 
 public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 	private boolean stillRun = true;
-	private int degree = 1;
+	private int degree = 1,lstdegree = 89;
 	private int row = 0;
 	private int[] rgbData ;
 	private int[] rgbbuffer ;
@@ -91,17 +91,21 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		if(column != 0)column = column - (this.screenHeight - sH);
 		if(column <= 0)column = 1;
 //		int intProHeight = ((this.height-((this.height-sH)*2))*100)/this.height;
-		if(row != 0)row = row - this.row;
-		if(row <= 0)row = 1;
 		int u = (((this.screenHeight-((this.screenHeight-sH)*2))*100)/this.screenHeight);
 		if(u == 0)u++;
-		int o = ((this.scaleableWidth*100) / this.screenWidth);
+		int o = 0;
+		if(!lastImage){
+			row = row - this.row;
+			if(row <= 0)row = 1;
+			o = ((this.scaleableWidth*100) / this.screenWidth);
+			}
+		else{o = (((this.row)*100) / this.screenWidth);}
 		if(o == o)o++;
 		int i = ((row*100)/o)+(this.screenWidth * ((column*100)/u));
 		if(i >38719)i = 38719;
 		if(i < 0)i = 0;
-		if(lastImage)return this.lstrgbbuffer[i];
-		else return this.rgbbuffer[i];
+		if(lastImage)return this.rgbbuffer[i];
+		else return this.lstrgbbuffer[i];
 	}
 	
 	
@@ -125,7 +129,7 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		}
 		if(this.first){this.cubeEffect();}
 		else {this.newDirection();}
-//		if(this.scaleableWidth < 2)this.first = false;
+		if(this.lstdegree <= 1)this.stillRun = false;
 		return this.stillRun;
 	}
 	
@@ -145,30 +149,43 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	
 	
-	private void cubeEffect(){
-		if(this.degree < 90)this.degree++;
-		int scaleSum = (this.screenWidth *100)/ 90;
-		this.scaleableWidth = (this.screenWidth -((scaleSum * this.degree)/100));
-		if(this.scaleableWidth <= 0)this.scaleableWidth++;
-		this.lstScale = this.scaleableWidth;
-		this.row++;
-		this.scaleableWidth-=this.row;
+	private void cubeEffect(){		
+		//the way to go by degrees in percent
+		//the new scalableWidth for the front scaling of the cube
+		if(this.row < this.screenWidth-2)this.row+=2;
 		int heightScale = ((this.screenHeight-((this.screenHeight * 12)/100))*100)/90;
-		int endOfHeight =  (this.screenHeight -(heightScale * this.degree));
-		int difference = this.screenHeight + (endOfHeight/100);
-		int scale = ((this.screenHeight - difference)*100)/this.screenWidth;
-		int sumScale = scale;
-//		System.out.print(heightScale+".:."+endOfHeight+".o:o."+o+".:."+r+"\n");
-		for(int i = this.row+1; i <= this.lstScale-1;i++){
+		int endOfHeight; int difference; int scale; int sumScale;
+		if(this.degree < 90){		
+//			int wayForScale = (this.screenWidth *100)/ 90;
+//			this.scaleableWidth = (this.screenWidth -((wayForScale * this.degree)/100));
+//			if(this.scaleableWidth <= 0)this.scaleableWidth++;
+//			this.lstScale = this.scaleableWidth;
+//			this.scaleableWidth-=this.row;
+			this.degree++;
+
+			this.scaleableWidth = this.screenWidth - this.row;
+			this.lstScale = this.screenWidth;
+
+
+			endOfHeight =  (this.screenHeight -(heightScale * this.degree));
+			difference = this.screenHeight + (endOfHeight/100);
+			scale = ((this.screenHeight - difference)*100)/this.screenWidth;
+			sumScale = scale;	
+				for(int i = this.row+1; i <= this.lstScale-1;i++){
 //			this.scaleableHeight[i] = this.screenHeight + (endOfHeight/100);
-			int newScale = this.screenHeight - (scale/100);
-			this.scaleableHeight[i] = newScale;
-			if(newScale <= 0)this.scaleableWidth--;
-//			System.out.print(this.screenHeight - (r/100)+"\n");
-			scale = scale + sumScale;
+					int newScale = this.screenHeight - (scale/100);
+//					System.out.print(scale+".:."+newScale+"\n");
+					this.scaleableHeight[i] = newScale;
+					if(newScale <= 0)this.scaleableWidth--;
+					scale = scale + sumScale;
+				}
 		}
+		if(this.lstdegree > 1)this.lstdegree--;
+		endOfHeight =  (this.screenHeight -(heightScale * this.lstdegree));
+		difference = this.screenHeight + (endOfHeight/100);
 		scale = ((this.screenHeight - difference)*100)/this.screenWidth;
 		sumScale = scale;
+		if(this.lstScale <= this.row)this.lstScale = this.row;
 		for(int i = this.row+1; i > 0;i--){
 			int newScale = this.screenHeight - (scale/100);
 			this.scaleableHeight[i] = newScale;
