@@ -92,7 +92,7 @@ public final class TextUtil {
 		}
 		boolean hasLineBreaks = (value.indexOf('\n') != -1);
 		int completeWidth = font.stringWidth(value);
-		if ( completeWidth <= firstLineWidth && !hasLineBreaks ) {
+		if ( (completeWidth <= firstLineWidth && !hasLineBreaks) || (value.length() <= 1) ) {
 			// the given string fits on the first line:
 			//if (hasLineBreaks) {
 			//	return split( "complete/linebreaks:" + completeWidth + "> " + value, '\n');
@@ -129,7 +129,9 @@ public final class TextUtil {
 					firstLineWidth = lineWidth;
 				} // for each line
 			} // for all chars
-		}		
+		}
+		//#debug
+		System.out.println("Splitted [" + value + "] into " + lines.size() + " rows.");
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
 	

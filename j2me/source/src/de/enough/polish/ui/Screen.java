@@ -683,7 +683,7 @@ implements AccessibleCanvas
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public final void paint(Graphics g) {
+	public void paint(Graphics g) {
 		//#if polish.Bugs.losesFullScreen
 			//# super.setFullScreenMode( true );
 		//#endif

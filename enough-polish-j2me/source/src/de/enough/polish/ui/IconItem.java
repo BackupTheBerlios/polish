@@ -73,11 +73,12 @@ implements ImageConsumer
 		private int scaleSteps;
 		private int currentStep;
 		private int[] rgbData;
-		private int[] scaledRgbData;
 		private boolean scaleDown;
 		private boolean scaleFinished;
-		private int scaleWidth;
-		private int scaleHeight;
+		// a short array, so that we don't need to use synchronization.
+		// scaleData[0] = scaled RGB Data
+		// scaleData[1] = width of RGB Data 
+		private Object[] scaleData;
 	//#endif
 	//#if polish.css.icon-vertical-adjustment
 		private int verticalAdjustment;
@@ -173,14 +174,16 @@ implements ImageConsumer
 				y += this.verticalAdjustment;
 			//#endif
 			//#if polish.midp2 && polish.css.scale-factor
-				int[] sData = this.scaledRgbData;
+				Object[] localeScaleData = this.scaleData;
+				int[] sData = null;
 				int sWidth = 0;
 				int sHeight = 0;
 				int scaleX = x;
 				int scaleY = y;
-				boolean useScaledImage = this.isFocused && (sData != null) && !this.scaleFinished;
+				boolean useScaledImage = this.isFocused && (localeScaleData != null) && !this.scaleFinished;
 				if (useScaledImage) {
-					sWidth = this.scaleWidth;
+					sData = (int[]) localeScaleData[0];
+					sWidth = ((Integer) localeScaleData[1]).intValue();
 					sHeight = sData.length / sWidth;
 				}
 			//#endif
@@ -319,7 +322,7 @@ implements ImageConsumer
 						this.image = img;
 						//#if polish.midp2 && polish.css.scale-factor
 							this.rgbData = null;
-							this.scaledRgbData = null;
+							this.scaleData = null;
 						//#endif
 					}
 				} catch (IOException e) {
@@ -398,7 +401,7 @@ implements ImageConsumer
 		this.image = image;
 		//#if polish.midp2 && polish.css.scale-factor
 			this.rgbData = null;
-			this.scaledRgbData = null;
+			this.scaleData = null;
 		//#endif
 	}
 	
@@ -433,7 +436,7 @@ implements ImageConsumer
 				step--;
 				if (step <= 0) {
 					this.scaleFinished =  true;
-					this.scaledRgbData = null;
+					this.scaleData = null;
 					return true;
 				}
 			} else {
@@ -444,11 +447,14 @@ implements ImageConsumer
 				}
 			}
 			this.currentStep = step;
-			this.scaleWidth = imgWidth + ((imgWidth * this.scaleFactor * step) / (this.scaleSteps * 100));
-			this.scaleHeight = imgHeight + ((imgHeight * this.scaleFactor * step) / (this.scaleSteps * 100));
+			int scaleWidth = imgWidth + ((imgWidth * this.scaleFactor * step) / (this.scaleSteps * 100));
+			int scaleHeight = imgHeight + ((imgHeight * this.scaleFactor * step) / (this.scaleSteps * 100));
 			//System.out.println("\nstep=" + step + ", scaleSteps=" + this.scaleSteps + "\nscaleWidth=" + this.scaleWidth + ", scaleHeight=" + this.scaleHeight + ", imgWidth=" + imgWidth + ", imgHeight=" + imgHeight + "\n");
-			this.scaledRgbData = ImageUtil.scale(this.scaleWidth, this.scaleHeight, imgWidth, 
+			int[] scaledRgbData = ImageUtil.scale( scaleWidth, scaleHeight, imgWidth, 
 					imgWidth, imgHeight, this.rgbData);
+			Object[] localeScaleData = new Object[]{ scaledRgbData, new Integer( scaleWidth ) };
+			// this operation is atomic:
+			this.scaleData = localeScaleData;
 			return true;
 		}
 		return animated;
@@ -465,7 +471,7 @@ implements ImageConsumer
 		this.scaleFinished = false;
 		this.scaleDown = false;
 		this.currentStep = 0;
-		this.scaledRgbData = null;
+		this.scaleData = null;
 	}
 	//#endif
 	

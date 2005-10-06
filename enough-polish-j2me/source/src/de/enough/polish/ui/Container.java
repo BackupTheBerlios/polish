@@ -819,6 +819,9 @@ public class Container extends Item {
 						System.out.println("Container (" + getClass().getName() + "): increased yOffset to " + this.yOffset + ", yTop=" + this.yTop + ", item.class=" + item.getClass().getName() + ", item.contentY=" + item.contentY + ", item.internalY=" + item.internalY );
 					}
 				}
+				//#debug
+				System.out.println("Container(" + this + "): handleKeyPressed consumed by item " + item.getClass().getName() + "/" + item );
+				
 				return true;
 			}	
 		}
@@ -854,10 +857,14 @@ public class Container extends Item {
 				int currentRow = this.focusedIndex / this.numberOfColumns;
 				if (currentRow < this.numberOfRows - 1) {
 					processed = shiftFocus( true, this.numberOfColumns - 1 );
+					  //#debug
+					System.out.println("Container(" + this + "): forward shift by one row succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 				}
 			}
 			if (!processed) {
 				processed = shiftFocus( true, 0 );
+				  //#debug
+				System.out.println("Container(" + this + "): forward shift by one column succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			}
 			if ((!processed) && this.enableScrolling 
 					&&  (this.yBottomPos + this.yOffset > this.yBottom)) {
@@ -962,7 +969,7 @@ public class Container extends Item {
 				break;
 			}
 		}
-		if (item == null || item.appearanceMode == Item.PLAIN) {
+		if (item == null || item.appearanceMode == Item.PLAIN || item == this.focusedItem) {
 			return false;
 		}
 		focus(i, item);

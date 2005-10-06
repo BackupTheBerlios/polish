@@ -64,7 +64,7 @@ import java.util.*;
  * @since MIDP 1.0
  */
 public class DateField extends StringItem
-//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroke || polish.blackberry
+//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroken || polish.blackberry
 	//#define tmp.directInput
 	implements ItemCommandListener
 //#else
