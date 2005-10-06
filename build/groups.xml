@@ -112,7 +112,7 @@
 	<group>
 		<name>Series60E1</name>
 		<parent>Series60</parent>
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, displaySetCurrentFlickers" />	
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, dateFieldBroken, displaySetCurrentFlickers" />	
 	</group>
 
 	<group>

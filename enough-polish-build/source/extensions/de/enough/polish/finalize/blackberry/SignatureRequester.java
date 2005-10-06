@@ -95,12 +95,11 @@ implements Runnable
 	{
 		File jdeBin = new File( jdeHome, "bin" );
 		// copy sigtool files to jdeBin:
-		FileUtil.copy( new File( sigtoolDir, "sigtool.csk"), jdeBin );
-		FileUtil.copy( new File( sigtoolDir, "sigtool.db"), jdeBin );
-		
-		// copy the cod file to the certificate dir:
-		//FileUtil.copy( codFile, certificateDir );
-		
+		if (!sigtoolDir.equals(jdeBin)) {
+			FileUtil.copy( new File( sigtoolDir, "sigtool.csk"), jdeBin );
+			FileUtil.copy( new File( sigtoolDir, "sigtool.db"), jdeBin );
+		}
+				
 		// execute BlackBerry's SignatureTool.jar:
 		ArrayList arguments = new ArrayList();
 		arguments.add( "java" );

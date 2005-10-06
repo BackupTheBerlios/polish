@@ -129,7 +129,7 @@
 
 	<device
 		supportsPolishGui="true" >
-		<identifier>Nokia/Series60</identifier>
+		<identifier>Nokia/Series60, Nokia/Series60E1</identifier>
 		<features>isVirtual</features>
 		<groups>Series60E1</groups>
 		<capability name="OS" value="Symbian"/>
@@ -2867,7 +2867,7 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, m3g" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo" />
 		<capability name="SoundFormat" value="midi, midi48, amr, wb-amr, wav, mp3, aac, realaudio" />
 		<capability name="HeapSize" value="dynamic" />
@@ -4172,7 +4172,7 @@
 
 <!-- LG Electronics devices -->
 	<device>
-		<identifier>LG Electronics/C-nain 2000</identifier>
+		<identifier>LG/C-nain 2000</identifier>
 		<capability name="ScreenSize" value="120x133"/>
 		<capability name="BitsPerPixel" value="8"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
@@ -4180,10 +4180,18 @@
 	</device>
 
 	<device>
-		<identifier>LG Electronics/LX5350</identifier>
+		<identifier>LG/LX5350</identifier>
 		<capability name="ScreenSize" value="120x198"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>LG/U8138</identifier>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
 
@@ -4194,6 +4202,15 @@
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
+	
+<!-- NEC devices -->
+	<device>
+		<identifier>NEC/E616</identifier>
+		<capability name="ScreenSize" value="176x240"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
 
 <!-- Panasonic devices -->
 	<device>
@@ -4202,6 +4219,29 @@
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</device>
+	
+	<device>
+		<identifier>Panasonic/X60</identifier>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="CanvasSize" value="128x112"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="530 kb" />
+		<capability name="MaxJarSize" value="80 kb" />
+		<capability name="StorageSize" value="500 kb" />
+		<capability name="MaxRecordStoreSize" value="50 kb" />
+		<capability name="MaxApplicationQuantity" value="51" />
+		<capability name="ImageFormat" value="jpg, png" />
+		<capability name="SoundFormat" value="smaf, eva" />
+		<capability name="MaxPngSize" value="20 kb" />
+		<capability name="MaxJpegSize" value="20 kb" />
+		<capability name="MaxSmafSize" value="dynamic" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
+		<capability name="Bugs" value="needsGCinPaint" />
+		<capability name="JavaPackage" value="gx10api" />   
 	</device>
 	
 <!-- Research In Motion devices -->
@@ -5491,7 +5531,7 @@
 		<capability name="key.RightSoftKey" value="22" />
 	</device>
 
-<device
+	<device
 		supportsPolishGui="true">
 		<identifier>Sharp/TM200</identifier>
 		<features>hasCommandKeyEvents, hasCamera</features>
@@ -5511,6 +5551,23 @@
 		<capability name="CameraZoom" value="8" />
 		<capability name="key.LeftSoftKey" value="21" />
 		<capability name="key.RightSoftKey" value="22" />
+	</device>
+	
+	<device>
+		<identifier>Sharp/902, Sharp/SGH-902</identifier>
+		<features>hasCommandKeyEvents, hasCamera</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x260"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="wmapi" />
+		<capability name="MaxJarSize" value="200 kb" />
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4" />
+		<capability name="ImageFormat" value="jpg, png, bmp, wbmp, wpng, nva, gif" />
+		<capability name="SoundFormat" value="amr, smaf, midi, midi40,iMelody, wav, mp3, aac" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
 	</device>
 
 

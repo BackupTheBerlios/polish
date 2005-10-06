@@ -52,6 +52,7 @@
 		<capability name="key.ChangeInputModeKey" value="48" />
 		<capability name="key.ChangeNumericalAlphaInputModeKey" value="35" />
 		<capability name="TextField.charactersKeyStar" value=" " />		
+		<capability name="IconSize" value="15x15" />		
 	</vendor>
 	
 	<vendor>
@@ -85,9 +86,14 @@
 		<name>Alcatel</name>
 		<features></features>
 	</vendor>
+	
+	<vendor>
+		<name>LG</name>
+		<features></features>
+	</vendor>
 
 	<vendor>
-		<name>LG Electronics</name>
+		<name>NEC</name>
 		<features></features>
 	</vendor>
 

@@ -4,8 +4,8 @@
 
 	<!-- global properties -->
 	<property file="${user.name}.properties" />
-	<property name="Version" value="1.3-beta2" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 1.3 &lt;Beta 2&gt;! " />
+	<property name="Version" value="1.3-beta3" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 1.3 &lt;Beta 3&gt;! " />
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />

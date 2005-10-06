@@ -115,15 +115,22 @@ implements OutputFilter
 				System.arraycopy( entries, 0, newEntries, 0, entries.length );
 				newEntries[ entries.length ] = "RIM-MIDlet-Flags-1: 0";
 				*/
+				String iconUrl = env.getVariable("MIDlet-Icon");
+				if (iconUrl != null && iconUrl.length() > 1) {
+					iconUrl = iconUrl.substring( 1 );
+				} else {
+					iconUrl = "";
+				}
 				String[] newEntries = new String[]{
 						"MIDlet-Name: " + env.getVariable("MIDlet-Name"),
-						"MIDlet-Version: 0.0",
-						"MIDlet-Vendor: <unknown>",
+						"MIDlet-Version: " + env.getVariable("MIDlet-Version"),
+						"MIDlet-Vendor: " + env.getVariable("MIDlet-Vendor"),
 						"MIDlet-Jar-URL: " + jarFile.getName(),
-						"MIDlet-Jar-Size: 0",
+						"MIDlet-Jar-Size: " + jarFile.length(),
 						"MicroEdition-Profile: MIDP-2.0",
 						"MicroEdition-Configuration: CLDC-1.1",
-						"MIDlet-1: " + env.getVariable("MIDlet-Name") + ",,",
+						"MIDlet-1: " + env.getVariable("MIDlet-Name") + "," + iconUrl + ",",
+						"MIDlet-Icon: " + iconUrl,
 						"RIM-MIDlet-Flags-1: 0",
 						""
 				};
@@ -166,6 +173,13 @@ implements OutputFilter
 				// the Compiler class calls System.exit() after the successfull 
 			}
 			*/
+//			Object[] args = commands.toArray();
+//			StringBuffer argsBuffer = new StringBuffer();
+//			for (int i = 0; i < args.length; i++) {
+//				Object object = args[i];
+//				argsBuffer.append( object ).append(" ");
+//			}
+//			System.out.println("Call to rapc: " + argsBuffer.toString() );
 			File distDir = jarFile.getParentFile();
 			int result = ProcessUtil.exec( commands, "rapc: ", true, this, distDir );
 			

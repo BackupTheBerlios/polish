@@ -62,6 +62,7 @@
 		<capability name="key.MoveLeftKey" value="5177410" />
 		<capability name="key.MoveRightKey" value="5242946" />
 		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
+		<capability name="polish.IconSize" value="28x28,55x55" />
 		<!--
 		<capability name="build.BootClassPath" value="${blackberry.home}/lib/net_rim_api.jar" />
 		<capability name="build.Preverifier" value="none" />
