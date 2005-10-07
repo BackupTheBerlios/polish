@@ -24,13 +24,17 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
+import de.enough.polish.util.OutputFilter;
 
 /**
  * <p>Starts Sony-Ericsson emulators.</p>
@@ -41,7 +45,6 @@ import de.enough.polish.ant.emulator.EmulatorSetting;
  * history
  *        09.10.2004 - rob creation
  * </pre>
- * @
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class SonyEricssonEmulator extends WtkEmulator {
@@ -128,5 +131,26 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		return super.init(device, setting, properties, project, evaluator, wtkHome);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.emulator.Emulator#exec(java.lang.String[], java.lang.String, boolean, de.enough.polish.util.OutputFilter, java.io.File)
+	 */
+	protected int exec(String[] args, String info, boolean wait, OutputFilter filter, File executionDir) throws IOException {
+		int result = super.exec(args, info, wait, filter, executionDir);
+		if ( result != 0 ) {
+			// there was an error - new Sony Ericsson emulators require a "_emu" 
+			// at the end of the device name - why? Who knows?
+			for (int i = 0; i < args.length; i++) {
+				String arg = args[i];
+				if (arg.startsWith("-Xdevice:") ){
+					args[i] = arg + "_emu";
+					break;
+				}
+			}
+			result = super.exec(args, info, wait, filter, executionDir);
+		}
+		return result;
+	}
+
+	
 
 }
