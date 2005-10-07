@@ -597,6 +597,7 @@
 		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
 		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()" />
 		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CubeScreenChangeAnimation()" />
+		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" />
 	</attribute>
 	
 	<attribute
