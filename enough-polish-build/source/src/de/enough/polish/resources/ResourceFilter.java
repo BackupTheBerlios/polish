@@ -27,8 +27,12 @@ package de.enough.polish.resources;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
+
+import de.enough.polish.ant.build.ResourceFilterSetting;
 
 /**
  * <p>Filters resources by names.</p>
@@ -46,6 +50,7 @@ public class ResourceFilter {
 	private final String[] startPatterns;
 	private final String[] endPatterns;
 	private final HashMap excludesByName;
+	private Pattern[] patterns;
 
 	/**
 	 * Creates a new filter.
@@ -129,6 +134,19 @@ public class ResourceFilter {
 					break;
 				}
 			}
+			if (this.patterns != null) {
+				for (int j = 0; j < this.patterns.length; j++) {
+					Pattern pattern = this.patterns[j];
+					Matcher matcher = pattern.matcher(fileName);
+					if ( matcher.find()) {
+						// this file should not be included:
+						//System.out.println(">>>>> MATCH!!! pattern [" + pattern.pattern() + "] matches resource [" + fileName + "]");
+						include = false;
+						break;
+					}
+					//System.out.println("pattern [" + pattern.pattern() + "] DOES NOT match resource [" + fileName + "]");
+				}
+			}
 			if (include) {
 				//System.out.println("filter: adding " + fileName );
 				// okay, this file should really be included:
@@ -136,6 +154,23 @@ public class ResourceFilter {
 			}
 		}
 		return (String[]) list.toArray( new String[ list.size() ] );
+	}
+
+	public void setAdditionalFilters(ResourceFilterSetting[] filters) {
+		if (filters == null) {
+			this.patterns = null;
+			return;
+		}
+		ArrayList patternsList = new ArrayList();
+		for (int i = 0; i < filters.length; i++) {
+			ResourceFilterSetting setting = filters[i];
+			Pattern[] pats = setting.getExcludePatterns();
+			for (int j = 0; j < pats.length; j++) {
+				Pattern pattern = pats[j];
+				patternsList.add( pattern );
+			}
+		}
+		this.patterns = (Pattern[]) patternsList.toArray( new Pattern[ patternsList.size() ] );
 	}
 
 }

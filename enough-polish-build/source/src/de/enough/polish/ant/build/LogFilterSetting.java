@@ -26,7 +26,7 @@
 package de.enough.polish.ant.build;
 
 /**
- * <p></p>
+ * <p>Specifies a log level for a specific class or package.</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
 
@@ -36,14 +36,14 @@ package de.enough.polish.ant.build;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class Filter {
+public class LogFilterSetting {
 	String pattern;
 	String level;
 
 	/**
-	 * 
+	 * Creates a new log filter
 	 */
-	public Filter() {
+	public LogFilterSetting() {
 		super();
 		// TODO enough implement Filter
 	}

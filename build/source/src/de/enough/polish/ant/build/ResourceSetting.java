@@ -28,6 +28,7 @@ package de.enough.polish.ant.build;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -58,6 +59,8 @@ public class ResourceSetting extends Setting {
 	private String baseDir;
 	private Project project;
 	private ArrayList copierSettings;
+	private boolean filterZeroLengthFiles = true;
+	private ArrayList filterSettings;
 
 	/**
 	 * Creates a new empty Resource Setting.
@@ -72,6 +75,7 @@ public class ResourceSetting extends Setting {
 		this.localizationSettings = new ArrayList();
 		this.fileSets = new ArrayList();
 	}
+	
 	
 	public void addConfiguredLocalization( LocalizationSetting setting ) {
 		if (setting.includeAllLocales() == false && setting.getSupportedLocales() == null) {
@@ -89,6 +93,16 @@ public class ResourceSetting extends Setting {
 			this.copierSettings = new ArrayList();
 		}
 		this.copierSettings.add( setting );
+	}
+	
+	public void addConfiguredFilter( ResourceFilterSetting setting ) {
+		if (setting.getExcludePatterns() == null) {
+			throw new BuildException("Each <filter> element within the <resources> element needs to define one \"excludes\" attribute.");
+		}
+		if ( this.filterSettings == null ) {
+			this.filterSettings = new ArrayList();
+		}
+		this.filterSettings.add( setting );
 	}
 	
 	public void setDir( File dir ) {
@@ -147,7 +161,10 @@ public class ResourceSetting extends Setting {
 				return localizationSetting;
 			}
 		}
-		return null;
+		// return default setting:
+		LocalizationSetting setting = new LocalizationSetting();
+		setting.setLocale( Locale.getDefault().toString() );
+		return setting;
 	}
 	
 	/**
@@ -202,6 +219,34 @@ public class ResourceSetting extends Setting {
 			}
 		}
 		return (ResourceCopierSetting[]) copiers.toArray( new ResourceCopierSetting[ copiers.size() ] );
+	}
+	
+	public ResourceFilterSetting[] getFilters(BooleanEvaluator evaluator) {
+		if (this.filterSettings == null) {
+			return null;
+		}
+		
+		ArrayList filters = new ArrayList();
+		ResourceFilterSetting[] settings = (ResourceFilterSetting[]) this.filterSettings.toArray( new ResourceFilterSetting[ this.filterSettings.size()]  );
+		for (int i = 0; i < settings.length; i++) {
+			ResourceFilterSetting setting = settings[i];
+			if (setting.isActive(evaluator, this.project)) {
+				//System.out.println("ResourceSetting: adding filter with pattern " + setting.getExcludePatterns()[0].pattern() );
+				filters.add( setting );
+//			} else {
+//				System.out.println("ResourceSetting: NOT adding filter with pattern " + setting.getExcludePatterns()[0].pattern() + " and condition " + setting.getCondition() );
+			}
+		}
+		return (ResourceFilterSetting[]) filters.toArray( new ResourceFilterSetting[ filters.size() ] );
+	}
+
+	
+	public void setFilterZeroLengthFiles( boolean filter ) {
+		this.filterZeroLengthFiles = filter;
+	}
+
+	public boolean filterZeroLengthFiles() {
+		return this.filterZeroLengthFiles ;
 	}
 
 

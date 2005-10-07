@@ -129,7 +129,7 @@ public final class FileUtil {
 	/**
 	 * Copies the given files to the specified target directory.
 	 * 
-	 * @param files The files which should be copied.
+	 * @param files The files which should be copied, when an array element is null, it will be ignored.
 	 * @param targetDir The directory to which the given files should be copied to.
 	 * @throws FileNotFoundException when the source file was not found
 	 * @throws IOException when there is an error while copying the file.
@@ -142,7 +142,9 @@ public final class FileUtil {
 		byte[] buffer = new byte[ 1024 * 1024 ];
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
-			copy( file, new File( targetPath + file.getName() ), buffer );
+			if (file != null) {
+				copy( file, new File( targetPath + file.getName() ), buffer );
+			}
 		}
 	}
 

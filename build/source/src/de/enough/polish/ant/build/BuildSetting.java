@@ -72,7 +72,7 @@ public class BuildSetting {
 	private final AttributesFilter defaultManifestFilter;
 
 	
-	private DebugSetting debugSetting;
+	private LogSetting debugSetting;
 	private MidletSetting midletSetting; 
 	private ArrayList obfuscatorSettings;
 	private boolean doObfuscate;
@@ -173,6 +173,10 @@ public class BuildSetting {
 		
 		this.defaultJadFilter = new AttributesFilter( DEFAULT_JAD_FILTER_PATTERN );
 		this.defaultManifestFilter = new AttributesFilter( DEFAULT_MANIFEST_FILTER_PATTERN );
+		
+		// set a default resources setting:
+		this.resourceSetting = new ResourceSetting( this.antProject );
+
 	}
 	
 	public void addConfiguredObfuscator( ObfuscatorSetting setting ) {
@@ -208,7 +212,7 @@ public class BuildSetting {
 		this.fullScreenSetting = setting;
 	}
 	
-	public void addConfiguredDebug( DebugSetting setting ) {
+	public void addConfiguredDebug( LogSetting setting ) {
 		if (setting.isActive(this.antProject)) {
 			this.debugSetting = setting;
 		}
@@ -461,7 +465,7 @@ public class BuildSetting {
 		return this.fullScreenSetting;
 	}
 	
-	public DebugSetting getDebugSetting() {
+	public LogSetting getDebugSetting() {
 		return this.debugSetting;
 	}
 	

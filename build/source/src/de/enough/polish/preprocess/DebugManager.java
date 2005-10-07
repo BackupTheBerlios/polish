@@ -27,8 +27,8 @@ package de.enough.polish.preprocess;
 
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionManager;
-import de.enough.polish.ant.build.DebugSetting;
-import de.enough.polish.ant.build.Filter;
+import de.enough.polish.ant.build.LogSetting;
+import de.enough.polish.ant.build.LogFilterSetting;
 import de.enough.polish.ant.build.LogHandlerSetting;
 import de.enough.polish.log.LogHandler;
 
@@ -124,7 +124,7 @@ public class DebugManager {
 	 * @param environment the environment settings
 	 * @throws BuildException when the pattern of an included debug-filter is invalid
 	 */
-	public DebugManager(DebugSetting setting, ExtensionManager manager, Environment environment ) 
+	public DebugManager(LogSetting setting, ExtensionManager manager, Environment environment ) 
 	throws BuildException 
 	{
 		init();
@@ -137,9 +137,9 @@ public class DebugManager {
 			this.levelOrder.put( setting.getLevel(), new Integer( USER_DEFINED ));
 			this.debugLevel = USER_DEFINED;
 		}
-		Filter[] filters = setting.getFilters();
+		LogFilterSetting[] filters = setting.getFilters();
 		for (int i = 0; i < filters.length; i++) {
-			Filter filter = filters[i];
+			LogFilterSetting filter = filters[i];
 			addDebugSetting( filter.getPattern(), filter.getLevel() );
 		}
 		LogHandlerSetting[] handlerSettings = setting.getLogHandlers();

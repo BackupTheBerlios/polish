@@ -60,7 +60,7 @@ import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
-import de.enough.polish.ant.build.DebugSetting;
+import de.enough.polish.ant.build.LogSetting;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.LibrariesSetting;
@@ -599,7 +599,7 @@ public class PolishTask extends ConditionalTask {
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
 		DebugManager debugManager = null;
-		DebugSetting debugSetting = this.buildSetting.getDebugSetting();
+		LogSetting debugSetting = this.buildSetting.getDebugSetting();
 		if (isDebugEnabled) {
 			try {
 				debugManager = new DebugManager( debugSetting, this.extensionManager, this.environment );
@@ -1282,6 +1282,7 @@ public class PolishTask extends ConditionalTask {
 	protected void preprocess( Device device, Locale locale ) {
 		System.out.println("preprocessing for device [" +  device.getIdentifier() + "]." );
 		try {
+
 			this.numberOfChangedFiles = 0;
 			String deviceSpecificBuildPath = File.separatorChar + device.getVendorName() 
 											+ File.separatorChar + device.getName();
@@ -1451,12 +1452,12 @@ public class PolishTask extends ConditionalTask {
 					File sourceDir = setting.getDir();
 					//System.out.println("Preprocessing source dir [" + sourceDir.getAbsolutePath() + "]");
 					TextFile[] files = this.sourceFiles[i];
-					processSourceDir(sourceDir, files, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
+					processSourceDir(sourceDir, files, locale, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, false);
 				}
 			} // for each source folder
 			this.preprocessor.notifyPolishPackageStart();
 			// now process the J2ME package files:
-			processSourceDir(this.polishSourceDir, this.polishSourceFiles, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, true);
+			processSourceDir(this.polishSourceDir, this.polishSourceFiles, locale, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, true);
 			// notify preprocessor about the end of preprocessing:
 			this.preprocessor.notifyDeviceEnd( device, usePolishGui );
 			
@@ -1518,7 +1519,7 @@ public class PolishTask extends ConditionalTask {
 				
 			}
 			// now check if the de.enough.polish.util.Locale.java needs to be rewritten:
-			if (locale != null) {
+			//if (locale != null) {
 				File targetFile =  this.localeSourceFile.getTargetFile( baseDirectory, this.useDefaultPackage );
 				//File targetFile = new File( targetDir + File.separatorChar + this.localeSourceFile.getFilePath() );				
 				boolean localizationIsNew = (!targetFile.exists())
@@ -1535,6 +1536,7 @@ public class PolishTask extends ConditionalTask {
 					
 					// now insert the localozation data for this device
 					// into the Locale.java source-code:
+					
 					if (!translationManager.isDynamic()) {
 						translationManager.processLocaleCode( this.localeCode );
 						//this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
@@ -1548,7 +1550,7 @@ public class PolishTask extends ConditionalTask {
 					FileUtil.writeTextFile(targetFile, this.localeCode.getArray());
 					this.numberOfChangedFiles++;
 				}
-			}
+			//}
 			device.setNumberOfChangedFiles( this.numberOfChangedFiles );
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -1564,6 +1566,7 @@ public class PolishTask extends ConditionalTask {
 	
 	protected void processSourceDir( File sourceDir, 
 									TextFile[] files, 
+									Locale locale,
 									Device device, 
 									boolean usePolishGui, 
 									String targetDir, 
@@ -1574,7 +1577,8 @@ public class PolishTask extends ConditionalTask {
 	{
 		this.environment.addVariable( "polish.source", sourceDir.getAbsolutePath() );
 		File baseDirectory = new File( targetDir );
-		//System.out.println("current source dir: " + sourceDir );
+		//System.out.println("current source dir: " + sourceDir + " -  locale: " + locale );
+		
 		// preprocess each file in that source-dir:
 		for (int j = 0; j < files.length; j++) {
 			TextFile file = files[j];
@@ -1629,8 +1633,10 @@ public class PolishTask extends ConditionalTask {
 				if (file == this.styleSheetSourceFile ) {
 					this.styleSheetCode = sourceCode;
 				} else if (file == this.localeSourceFile) {
+					//System.out.println("setting locale code for locale " + locale );
 					this.localeCode = sourceCode;
 				} else if (result == Preprocessor.SKIP_FILE ) {
+					//System.out.println("skipping " + file.getClassName());
 					if (targetFile.exists()) {
 						boolean deleted = FileUtil.delete(targetFile);
 						if (!deleted) {

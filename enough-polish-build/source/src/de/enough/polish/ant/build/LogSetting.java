@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class DebugSetting extends ConditionalElement {
+public class LogSetting extends ConditionalElement {
 	
 	private boolean enable = true;
 	private boolean verbose;
@@ -62,7 +62,7 @@ public class DebugSetting extends ConditionalElement {
 	/**
 	 * Creates a new empty debug-setting.
 	 */
-	public DebugSetting() {
+	public LogSetting() {
 		this.filters = new ArrayList();
 		this.logHandlers = new ArrayList();
 		this.level = "debug";
@@ -149,7 +149,7 @@ public class DebugSetting extends ConditionalElement {
 		this.useGui = useGui;
 	}
 	
-	public void addConfiguredFilter( Filter filter ) {
+	public void addConfiguredFilter( LogFilterSetting filter ) {
 		if (filter.getPattern() == null) {
 			throw new BuildException("Error in debug settings: the element [filter] needs to define the attribute [pattern].");
 		}
@@ -162,8 +162,8 @@ public class DebugSetting extends ConditionalElement {
 	/**
 	 * @return an array of all debug-filters.
 	 */
-	public Filter[] getFilters() {
-		return (Filter[]) this.filters.toArray( new Filter[ this.filters.size() ] );
+	public LogFilterSetting[] getFilters() {
+		return (LogFilterSetting[]) this.filters.toArray( new LogFilterSetting[ this.filters.size() ] );
 	}
 	
 	public void addConfiguredHandler( LogHandlerSetting setting ) {

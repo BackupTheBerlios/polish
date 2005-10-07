@@ -103,7 +103,7 @@ implements Comparator
 	{
 		this.project = project;
 		this.localizationSetting = localizationSetting;
-		this.isDynamic = localizationSetting.isDynamic();
+		this.isDynamic = (localizationSetting == null ? false : localizationSetting.isDynamic() );
 		this.locale = locale;
 		this.device = device;
 		this.environment = environment;

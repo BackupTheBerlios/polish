@@ -80,6 +80,7 @@ public class ResourceManager {
 	private TranslationManager translationManager;
 	private final Environment environment;
 	private final ExtensionManager extensionManager;
+	private boolean filterZeroLengthFiles;
 
 	/**
 	 * Creates a new resource manager.
@@ -93,6 +94,7 @@ public class ResourceManager {
 				Environment environment ) 
 	{
 		super();
+		this.filterZeroLengthFiles = setting.filterZeroLengthFiles();
 		this.resourceSetting = setting;
 		this.extensionManager = manager;
 		this.environment = environment;
@@ -172,6 +174,7 @@ public class ResourceManager {
 
 		// get localization setting:
 		this.localizationSetting = this.resourceSetting.getLocalizationSetting();
+		
 		// creates resources-filter:
 		this.resourceFilter = new ResourceFilter( setting.getExcludes(), DEFAULT_EXCLUDES, setting.useDefaultExcludes() );
 		if (this.localizationSetting != null) {
@@ -206,7 +209,7 @@ public class ResourceManager {
 				}
 
 			}
-		}		
+		}
 	}
 	
 	/**
@@ -220,6 +223,8 @@ public class ResourceManager {
 	public void copyResources( File targetDir, Device device, Locale locale ) 
 	throws IOException 
 	{
+		// add manual excludes from the user:
+		this.resourceFilter.setAdditionalFilters( this.resourceSetting.getFilters(this.booleanEvaluator));
 		File[] resources = getResources( device, locale );
 		//FileUtil.copy(resources, targetDir);
 		// creating resource copier:
@@ -440,7 +445,11 @@ public class ResourceManager {
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if (!file.isDirectory()) {
-				resourcesByName.put( file.getName(), file );
+				if ( this.filterZeroLengthFiles && file.length() == 0) {
+					resourcesByName.remove( file.getName() );
+				} else {
+					resourcesByName.put( file.getName(), file );
+				}
 			}
 		}
 	}
@@ -454,7 +463,11 @@ public class ResourceManager {
 		String basePath = baseDir.getAbsolutePath() + File.separator;
 		for (int i = 0; i < fileNames.length; i++) {
 			File file = new File( basePath + fileNames[i] );
-			resourcesByName.put( file.getName(), file );
+			if ( this.filterZeroLengthFiles  && file.length() == 0) {
+				resourcesByName.remove( file.getName() );
+			} else {
+				resourcesByName.put( file.getName(), file );
+			}
 		}
 	}
 	
@@ -482,7 +495,7 @@ public class ResourceManager {
 	public TranslationManager getTranslationManager( Device device, Locale locale ) 
 	throws IOException
 	{
-		if (!this.localizationSetting.isDynamic()  
+		if ( !this.localizationSetting.isDynamic()  
 				|| this.translationManager == null  
 				|| !this.translationManager.getLocale().equals( locale ) ) 
 		{
