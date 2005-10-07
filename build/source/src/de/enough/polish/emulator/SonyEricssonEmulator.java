@@ -135,7 +135,12 @@ public class SonyEricssonEmulator extends WtkEmulator {
 	 * @see de.enough.polish.emulator.Emulator#exec(java.lang.String[], java.lang.String, boolean, de.enough.polish.util.OutputFilter, java.io.File)
 	 */
 	protected int exec(String[] args, String info, boolean wait, OutputFilter filter, File executionDir) throws IOException {
-		int result = super.exec(args, info, wait, filter, executionDir);
+		int result = -1;
+		try {
+			result = super.exec(args, info, wait, filter, executionDir);
+		} catch (Exception e ) {
+			result = -1;
+		}
 		if ( result != 0 ) {
 			// there was an error - new Sony Ericsson emulators require a "_emu" 
 			// at the end of the device name - why? Who knows?

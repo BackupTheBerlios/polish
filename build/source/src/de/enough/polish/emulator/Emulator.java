@@ -138,7 +138,10 @@ implements Runnable, OutputFilter
 			int res = exec( arguments, this.device.getIdentifier() + ": ",  wait, this, getExecutionDir() );
 			long usedTime = System.currentTimeMillis() - startTime;
 			if ( res != 0 || (wait && usedTime < 2000) ) {
-				System.out.println("Emulator-arguments were:");
+				if (res == 0) {
+					res = -110011;
+				}
+				System.out.println("Emulator returned [" + res + "], arguments were:");
 				for (int i = 0; i < arguments.length; i++) {
 					String argument = arguments[i];
 					System.out.println( argument );
