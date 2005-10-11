@@ -2239,6 +2239,7 @@
 		<capability name="CameraResolution" value="1 MP" />
 		<capability name="CameraZoom" value="2" />
 		<capability name="AnnouncementDate" value="2005-06-13" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2286,6 +2287,7 @@
 		<capability name="Network" value="GSM, GPRS" />
 		<capability name="Frequence" value="850, 900, 1800, 1900" />
 		<capability name="AnnouncementDate" value="2005-06-13" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2434,6 +2436,7 @@
 		<capability name="Frequence" value="800, 1900" />
 		<capability name="CameraResolution" value="1MP" />
 		<capability name="AnnouncementDate" value="2005-03-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2459,6 +2462,7 @@
 		<capability name="Frequence" value="800, 1900" />
 		<capability name="CameraResolution" value="1MP" />
 		<capability name="AnnouncementDate" value="2005-03-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2484,6 +2488,7 @@
 		<capability name="Frequence" value="800, 1900" />
 		<capability name="CameraResolution" value="1MP" />
 		<capability name="AnnouncementDate" value="2005-03-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2509,6 +2514,7 @@
 		<capability name="Frequence" value="800, 1900" />
 		<capability name="CameraResolution" value="1MP" />
 		<capability name="AnnouncementDate" value="2005-03-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2534,6 +2540,7 @@
 		<capability name="Frequence" value="800, 1900" />
 		<capability name="CameraResolution" value="1MP" />
 		<capability name="AnnouncementDate" value="2005-03-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2664,6 +2671,7 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="1" />
 		<capability name="AnnouncementDate" value="2005-02-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2692,6 +2700,7 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="1" />
 		<capability name="AnnouncementDate" value="2005-02-14" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -2835,6 +2844,7 @@
 		<capability name="CameraResolution" value="1 MP" />
 		<capability name="CameraZoom" value="1" />
 		<capability name="AnnouncementDate" value="2004-11-04" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_Nokia_7710_MIDP_Emulator" />
 	</device>
 	
 	<device>
@@ -3000,6 +3010,7 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
 		<capability name="Network" value="GSM, GPRS, HSCSD, WCDMA" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -3019,6 +3030,7 @@
 		<capability name="Region" value="Europe, Africa, Americas, Asia-Pacific" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 
 	<device>
@@ -3252,6 +3264,7 @@
 		<capability name="SoundFormat" value="midi, mp3, aac" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="3" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 	
 	<device>
@@ -3719,6 +3732,7 @@
 		<capability name="MaxJarSize" value="64kb" />
 		<capability name="CameraResolution" value="vga" />
 		<capability name="CameraZoom" value="0" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator" />
 	</device>
 	
 	<device>

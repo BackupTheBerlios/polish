@@ -320,6 +320,14 @@
 		<description>canvas.getHeight() always returns the height of the screen, not matter whether the fullscreen mode is activated or not.</description>
 		<solution>Call graphics.getClipHeight() instead.</solution>
 	</bug>
+	
+	<bug>
+		<name>sizeChangedReportsWrongHeight</name>
+		<area>ui</area>
+		<description>canvas.sizeChanged(int width, int height) returns the height of the screen in non-fullscreen mode, not matter whether the fullscreen mode is activated or not.</description>
+		<solution>Ignore the sizeChanged() call on such devices.</solution>
+	</bug>
+	
 
 	<!--
 	<bug>

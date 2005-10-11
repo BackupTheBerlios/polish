@@ -105,12 +105,15 @@ public class Environment {
 		this.variables.clear();
 		this.variables.putAll( newDevice.getCapabilities() );
 		this.variables.putAll( this.antProject.getProperties() );
+		this.temporaryVariables.clear();
+		this.temporarySymbols.clear();
 	}
 
 	/**
 	 * @param features
 	 */
 	public void setSymbols( Map features ) {
+		this.symbols.clear();
 		this.symbols.putAll( features );
 	}
 
@@ -118,6 +121,7 @@ public class Environment {
 	 * @param capabilities
 	 */
 	public void setVariables( Map capabilities ) {
+		this.variables.clear();
 		this.variables.putAll( capabilities );
 	}
 	

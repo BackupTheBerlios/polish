@@ -212,7 +212,25 @@ public class ExtensionManager {
 	}
 	
 	/**
-	 * Retrieves an extension.
+	 * Retrieves an extension without storing it.
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param name the name of the extensio, e.g. "uppercase"
+	 * @param environment the environment settings
+	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 */
+	public Extension getTemporaryExtension(String type, String name, Environment environment )
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		return getTemporaryExtension(type, name, null, environment );
+	}
+
+	
+	/**
+	 * Retrieves and stores an extension.
 	 * 
 	 * @param type the type of the extension, e.g. "propertyfunction"
 	 * @param name the name of the extensio, e.g. "uppercase"
@@ -224,6 +242,43 @@ public class ExtensionManager {
 	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
 	 */
 	public Extension getExtension( String type, String name, ExtensionSetting setting, Environment environment ) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		return getExtension(type, name, setting, environment, true);
+	}
+	
+	/**
+	 * Retrieves an extension without storing it.
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param name the name of the extensio, e.g. "uppercase"
+	 * @param setting the configuration of the extension, taken from the build.xml
+	 * @param environment the environment settings
+	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 */
+	public Extension getTemporaryExtension(String type, String name, ExtensionSetting setting, Environment environment )
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		return getExtension(type, name, setting, environment, false);
+	}
+	
+	/**
+	 * Retrieves an extension.
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param name the name of the extensio, e.g. "uppercase"
+	 * @param setting the configuration of the extension, taken from the build.xml
+	 * @param environment the environment settings
+	 * @param storeExtension true when the extension should be stored for other devices as well
+	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 */
+	public Extension getExtension( String type, String name, ExtensionSetting setting, Environment environment, boolean storeExtension ) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
 	{
 		Map store = (Map) this.extensionsByType.get( type );
@@ -242,10 +297,14 @@ public class ExtensionManager {
 			store = new HashMap();
 			this.extensionsByType.put( type, store );
 		}
-		this.instantiatedExtensions.add( extension );
 		store.put( name, extension );
+		if (storeExtension) {
+			//System.out.println("Storing  " + type + " " + name  );
+			this.instantiatedExtensions.add( extension );
+		}
 		return extension;
 	}
+
 	
 	/**
 	 * @param type
@@ -301,9 +360,10 @@ public class ExtensionManager {
 		}
 		this.activeExtensions = (Extension[]) activeList.toArray( new Extension[ activeList.size() ] );
 		// initialize device specific extensions:
-		initialize( TYPE_FINALIZER, device.getCapability( "polish.build.Finalizer"), device, locale, environment );
+		initialize( TYPE_PRECOMPILER, device.getCapability( "polish.build.PreCompiler"), device, locale, environment );
+		initialize( TYPE_POSTCOMPILER, device.getCapability( "polish.build.PostCompiler"), device, locale, environment );
 		initialize( TYPE_PREVERIFIER, device.getCapability( "polish.build.Preverifier"), device, locale, environment );
-
+		initialize( TYPE_FINALIZER, device.getCapability( "polish.build.Finalizer"), device, locale, environment );
 	}
 	
 	private void initialize( String type, String extensions, Device device, Locale locale, Environment environment ) {
@@ -313,7 +373,7 @@ public class ExtensionManager {
 				String extensionName = extensionNames[i];
 				//System.out.println("Executing device specific finalizer [" + finalizerName + "]" );
 				try {
-					Extension extension = getExtension( type, extensionName, environment );
+					Extension extension = getTemporaryExtension( type, extensionName, environment );
 					extension.initialize(device, locale, environment );
 				} catch ( Exception e ) {
 					e.printStackTrace();
@@ -324,7 +384,7 @@ public class ExtensionManager {
 	}
 
 	public void postInitialize( Device device, Locale locale, Environment environment ) {
-		// call preInitialize on the registered plugins:
+		// call postInitialize on the registered plugins:
 	}
 	
 	public void preprocess( Device device, Locale locale, Environment environment ) {
@@ -430,7 +490,8 @@ public class ExtensionManager {
 		}
 	}
 
-	
-	
+	public void removeExtension(Extension extension) {
+		this.instantiatedExtensions.remove(extension);
+	}	
 
 }

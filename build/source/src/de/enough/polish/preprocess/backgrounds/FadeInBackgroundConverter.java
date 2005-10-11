@@ -59,7 +59,7 @@ public class FadeInBackgroundConverter extends BackgroundConverter {
 	protected String createNewStatement(HashMap background, Style style, StyleSheet styleSheet) throws BuildException {
 		boolean hasAlphaColor = isAlphaColor(this.color);
 		if ( !hasAlphaColor ) {
-			int col = Integer.parseInt( this.color );
+			int col = Integer.decode( this.color ).intValue();
 			this.color = "" + (0xFF000000 | col);
 		}
 		boolean restartOnTime = false;

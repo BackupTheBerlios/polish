@@ -75,6 +75,10 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	//protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\([\\w|\\.]+\\s*\\)";
 	protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\(.+\\)";
 	protected static final Pattern SET_CURRENT_ITEM_PATTERN = Pattern.compile( SET_CURRENT_ITEM_STR );
+	
+	protected static final String SET_CURRENT_ALERT_DISPLAYABLE_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrent\\s*\\(\\s*[\\w*|\\.]+\\s*,\\s*[\\w*|\\.]+\\s*\\)";
+	protected static final Pattern SET_CURRENT_ALERT_DISPLAYABLE_PATTERN = Pattern.compile( SET_CURRENT_ALERT_DISPLAYABLE_STR );
+	
 	private CssAttributesManager cssAttributesManager;
 	private boolean usesBlackBerry;
 
@@ -331,6 +335,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				continue;
 			}
 			
+			// check for display.setCurrentItem:
 			startPos = line.indexOf("setCurrentItem");
 			if ( startPos != -1) {
 				//System.out.println("setCurrentItem found in line " + line );
@@ -354,7 +359,35 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					lines.setCurrent( line );
 				}
 				continue;
+			}
+			
+			// check for display.setCurrent( Alert, Displayable ):
+			startPos = line.indexOf("setCurrent");
+			if ( startPos != -1) {
+				//System.out.println("setCurrent found in line " + line );
+				int commentPos = line.indexOf("//");
+				if (commentPos != -1 && commentPos < startPos) {
+					continue;
+				}
+				Matcher matcher = SET_CURRENT_ALERT_DISPLAYABLE_PATTERN.matcher( line );
+				if (matcher.find()) {
+					String group = matcher.group();
+					//System.out.println("group = [" + group + "]");
+					int parenthesisPos = group.indexOf('(');
+					String displayVar = group.substring(0, parenthesisPos);
+					int dotPos = displayVar.lastIndexOf('.');
+					displayVar = displayVar.substring( 0, dotPos ).trim();
+					String alertDisplayableVars = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
+					//int commaPos = alertDisplayableVars.indexOf('.');
+					String replacement = "Alert.setCurrent( " + displayVar + ", " + alertDisplayableVars  + " )"; 
+					//System.out.println("replacement = [" + replacement + "].");
+					line = StringUtil.replace( line, group, replacement );
+					//System.out.println("line = [" + line + "]");
+					lines.setCurrent( line );
+				}
+				continue;
 			}			
+
 			
 			// check for Choice.POPUP:
 			startPos = line.indexOf(".POPUP");

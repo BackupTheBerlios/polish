@@ -1074,17 +1074,26 @@ public class Preprocessor {
 		// get the style-name:
 		String[] styles = StringUtil.splitAndTrim(styleNames, ',');
 		String style = null;
+		boolean isOptional = false;
 		for (int i = 0; i < styles.length; i++) {
 			String name = styles[i].toLowerCase();
 			if (name.charAt(0) == '.') {
 				name = name.substring( 1 );
+			}
+			isOptional = name.endsWith("?");
+			if (isOptional) {
+				name = name.substring( 0, name.length() - 1 );
 			}
 			if (this.styleSheet.isDefined(name)) {
 				style = name;
 				break;
 			}
 		}
-		if (style == null) {
+		if (style == null ) {
+			if ( isOptional ) {
+				// style was not found - but it was optional, so don't apply any style at all:
+				return false; // nothing has been changed
+			}
 			String message;
 			if (styles.length == 1) {
 				message = "the style [" + styleNames + "] is not defined. Please define the style in the appropriate polish.css file.";

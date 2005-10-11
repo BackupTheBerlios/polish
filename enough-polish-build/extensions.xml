@@ -65,6 +65,7 @@
 		
 		<!-- mapping of GUI imports -->
 		<mappings if="polish.usePolishGui and not polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.Alert" to="de.enough.polish.ui.Alert; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.Choice" to="de.enough.polish.ui.Choice; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.ChoiceGroup" to="de.enough.polish.ui.ChoiceGroup; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.CustomItem" to="de.enough.polish.ui.CustomItem; import de.enough.polish.ui.StyleSheet" />
@@ -84,9 +85,9 @@
 			<mapping from="javax.microedition.lcdui.TextField" to="de.enough.polish.ui.TextField; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.Ticker" to="de.enough.polish.ui.Ticker; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.*">
+				<!-- 					import javax.microedition.lcdui.Alert; -->
 				<to>
 					javax.microedition.lcdui.CommandListener; 
-					import javax.microedition.lcdui.Alert; 
 					import javax.microedition.lcdui.AlertType;
 					import javax.microedition.lcdui.Canvas;
 					import javax.microedition.lcdui.Command;
@@ -100,6 +101,7 @@
 			</mapping>
 		</mappings>
 		<mappings if="polish.usePolishGui and polish.useDefaultPackage">
+			<mapping from="javax.microedition.lcdui.Alert" to="" />
 			<mapping from="javax.microedition.lcdui.Choice" to="" />
 			<mapping from="javax.microedition.lcdui.ChoiceGroup" to="" />
 			<mapping from="javax.microedition.lcdui.CustomItem" to="" />
@@ -119,9 +121,9 @@
 			<mapping from="javax.microedition.lcdui.TextField" to="" />
 			<mapping from="javax.microedition.lcdui.Ticker" to="" />
 			<mapping from="javax.microedition.lcdui.*">
+				<!-- import javax.microedition.lcdui.Alert; -->
 				<to>
 					javax.microedition.lcdui.CommandListener; 
-					import javax.microedition.lcdui.Alert; 
 					import javax.microedition.lcdui.AlertType;
 					import javax.microedition.lcdui.Canvas;
 					import javax.microedition.lcdui.Command;
@@ -137,7 +139,10 @@
 			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.blackberry.midlet.*" />
 			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.blackberry.midlet.MIDlet" />
 			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="de.enough.polish.blackberry.midlet.MIDletStateChangeException" />
+			<!--
 			<mapping from="javax.microedition.lcdui.Alert" to="de.enough.polish.blackberry.ui.Alert" />
+					import de.enough.polish.blackberry.ui.Alert; 
+			-->
 			<mapping from="javax.microedition.lcdui.AlertType" to="de.enough.polish.blackberry.ui.AlertType" />
 			<mapping from="javax.microedition.lcdui.Canvas" to="de.enough.polish.blackberry.ui.Canvas" />
 			<mapping from="javax.microedition.lcdui.Command" to="de.enough.polish.blackberry.ui.Command" />
@@ -150,7 +155,6 @@
 			<mapping from="javax.microedition.lcdui.*">
 				<to>
 					de.enough.polish.blackberry.ui.CommandListener; 
-					import de.enough.polish.blackberry.ui.Alert; 
 					import de.enough.polish.blackberry.ui.AlertType;
 					import de.enough.polish.blackberry.ui.Canvas;
 					import de.enough.polish.blackberry.ui.Command;

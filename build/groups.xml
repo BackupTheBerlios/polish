@@ -47,10 +47,11 @@
 		<capability name="FullCanvasSize" value="128x128" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_1" />
+		<capability name="Emulator.Skin.2" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x128_MIDP_Emulator" />
 		<!-- repeat first skin, so that devices can set the primary skin without
 		     loosing the normal emulator skin -->
-		<capability name="Emulator.Skin.2" value="Nokia_S40_DP20_SDK_1_1" />
-		<capability name="Emulator.Skin.3" value="Nokia_S40_DP20_SDK_1_0" />
+		<capability name="Emulator.Skin.3" value="Nokia_S40_DP20_SDK_1_1" />
+		<capability name="Emulator.Skin.4" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
@@ -101,14 +102,13 @@
 		<capability name="Font.medium" value="15" />
 		<capability name="Font.large" value="19" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
-		
-		
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S60_MIDP_Emulator" />
-		<capability name="Emulator.Skin.2" value="\Devices\Nokia_Prototype_SDK_3_0" />
-		<capability name="Emulator.Skin.3" value="Series_60_MIDP_SDK_2_1" />
-		<capability name="Emulator.Skin.4" value="Series_60_MIDP_SDK_2_1_Beta" />
+		<capability name="Emulator.Skin.2" value="Nokia_Prototype_SDK_3_0_Beta" />
+		<capability name="Emulator.Skin.3" value="\Devices\Nokia_Prototype_SDK_3_0" />
+		<capability name="Emulator.Skin.4" value="Series_60_MIDP_SDK_2_1" />
+		<capability name="Emulator.Skin.5" value="Series_60_MIDP_SDK_2_1_Beta" />
 		<capability name="Emulator.Control" value="Series60" />
-		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin" />
+		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight" />
 	</group>
 
 	<group>
@@ -170,7 +170,8 @@
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
-		<capability name="Emulator.Skin" value="Series80_MIDP_SDK_1_0b" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S80_MIDP_Emulator" />
+		<capability name="Emulator.Skin.2" value="Series80_MIDP_SDK_1_0b" />
 		<capability name="OS" value="Symbian OS 7.0s" />
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi" />		
 	</group>

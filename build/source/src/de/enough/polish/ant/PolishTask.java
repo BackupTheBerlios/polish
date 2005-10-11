@@ -1107,8 +1107,8 @@ public class PolishTask extends ConditionalTask {
 		this.environment.initialize(device, locale);
 		device.setEnvironment( this.environment );
 		// set variables and symbols:
-		this.environment.setSymbols( device.getFeatures() );
-		this.environment.setVariables( device.getCapabilities() );
+		//this.environment.setSymbols( device.getFeatures() );
+		//this.environment.setVariables( device.getCapabilities() );
 		this.environment.addVariable( "polish.identifier", device.getIdentifier() );
 		this.environment.addVariable( "polish.name", device.getName() );
 		this.environment.addVariable( "polish.vendor", device.getVendorName() );
@@ -2135,6 +2135,7 @@ public class PolishTask extends ConditionalTask {
 			if ( setting.isActive( evaluator, antProject ) ) {
 				try {
 					preverifier = (Preverifier) this.extensionManager.getExtension( ExtensionManager.TYPE_PREVERIFIER, setting,  this.environment );
+					break;
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new BuildException("Unable to preverify for device [" + device.getIdentifier() + "], preverifier [" + setting.getName()  + "]: " + e.toString(), e );
@@ -2146,7 +2147,7 @@ public class PolishTask extends ConditionalTask {
 			String preverifierName = this.environment.getVariable( "polish.build.Preverifier" );
 			if (  preverifierName != null ) {
 				try {
-					preverifier = (Preverifier) this.extensionManager.getExtension( ExtensionManager.TYPE_PREVERIFIER, preverifierName, this.environment );
+					preverifier = (Preverifier) this.extensionManager.getTemporaryExtension( ExtensionManager.TYPE_PREVERIFIER, preverifierName, this.environment );
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new BuildException("Unable to preverify for device [" + device.getIdentifier() + "], preverifier [" + preverifierName + "]: " + e.toString(), e );
@@ -2224,6 +2225,7 @@ public class PolishTask extends ConditionalTask {
 		// add build properties - midlet infos:
 		String mainClassName = this.environment.getVariable( "polish.classes.main" );
 		if (mainClassName != null) {
+			System.out.println("Using Main-Class " + mainClassName );
 			attributesByName.put( "Main-Class", new Attribute( "Main-Class", mainClassName ) );
 			attributesByName.put( "MIDlet-1", new Attribute( "MIDlet-1", ",," ) );
 		} else {
@@ -2393,8 +2395,9 @@ public class PolishTask extends ConditionalTask {
 			for (int i = 0; i < deviceFinalizers.length; i++) {
 				String finalizerName = deviceFinalizers[i];
 				System.out.println("Executing device specific finalizer [" + finalizerName + "]" );
+				Finalizer finalizer = null;
 				try {
-					Finalizer finalizer = (Finalizer) this.extensionManager.getExtension( ExtensionManager.TYPE_FINALIZER, finalizerName, this.environment );
+					finalizer = (Finalizer) this.extensionManager.getTemporaryExtension( ExtensionManager.TYPE_FINALIZER, finalizerName, this.environment );
 					finalizer.execute( device, locale, this.environment );
 				} catch (Exception e) {
 					e.printStackTrace();
