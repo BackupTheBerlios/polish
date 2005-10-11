@@ -32,7 +32,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.m3g.Appearance;
-import javax.microedition.m3g.Background;
 import javax.microedition.m3g.Camera;
 import javax.microedition.m3g.Graphics3D;
 import javax.microedition.m3g.Image2D;
@@ -63,7 +62,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	private float angle;
 	private Graphics3D g3D;
-	private Background background;
+	private javax.microedition.m3g.Background background;
 	private Camera camera;
 	private Light light;
 	private TriangleStripArray triangleStripArray;
@@ -179,7 +178,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	    this.appearance.setPolygonMode(polygonMode);
 
 	    // Hintergrund fuer die Szene definieren
-	    this.background = new Background();
+	    this.background = new javax.microedition.m3g.Background();
 	    this.background.setColor(0x000000); 
 	}
 	/* (non-Javadoc)

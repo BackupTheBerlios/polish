@@ -725,12 +725,14 @@ implements AccessibleCanvas
 		//#endif
 			// paint background:
 			if (this.background != null) {
+				//System.out.println("Screen (" + this + ": using background...");
 				//#ifdef tmp.menuFullScreen
 					this.background.paint(0, 0, this.screenWidth, this.fullScreenHeight, g);
 				//#else
 					this.background.paint(0, 0, this.screenWidth, this.screenHeight, g);
 				//#endif
 			} else {
+				//System.out.println("Screen (" + this + ": clearing area...");
 				g.setColor( 0xFFFFFF );
 				//#ifdef tmp.menuFullScreen
 					g.fillRect( 0, 0, this.screenWidth, this.fullScreenHeight );
@@ -1746,21 +1748,23 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		if (!this.isInitialised) {
-			return;
-		}
-		//#debug
-		System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
-		//#ifdef tmp.menuFullScreen
-			this.fullScreenHeight = height;
-			this.screenHeight = height - this.menuBarHeight;
-			this.originalScreenHeight = this.screenHeight;
-		//#else
-			this.screenHeight = height;
-			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+		 //#if !polish.Bugs.sizeChangedReportsWrongHeight
+			if (!this.isInitialised) {
+				return;
+			}
+			//#debug
+			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
+			//#ifdef tmp.menuFullScreen
+				this.fullScreenHeight = height;
+				this.screenHeight = height - this.menuBarHeight;
+				this.originalScreenHeight = this.screenHeight;
+			//#else
+				this.screenHeight = height;
+				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+			//#endif
+			this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
 		//#endif
-		this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
-		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
 	}
 	//#endif
 	

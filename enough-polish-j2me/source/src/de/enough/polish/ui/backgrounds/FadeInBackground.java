@@ -54,7 +54,7 @@ public class FadeInBackground extends Background {
 	private long lastUpdateTime;
 	private int lastX;
 	private int lastY;
-	private boolean animationRunning;
+	private boolean animationRunning = true;
 	//#ifdef polish.api.nokia-ui
 		private final int[] xCoords;
 		private final int[] yCoords;
@@ -84,6 +84,7 @@ public class FadeInBackground extends Background {
 	}
 
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		System.out.println("FadeInBackround: currentColor=" + Integer.toHexString(this.currentColor));
 		if ( this.restartOnTime ) {
 			long updateTime = System.currentTimeMillis();
 			if (!this.animationRunning) {
@@ -232,8 +233,10 @@ public class FadeInBackground extends Background {
 				}
 			//#endif
 		//#endif
+				
+				//System.out.println("FadeInBackground.animate()=" + this.animationRunning);
 
-		return true;
+		return this.animationRunning;
 	}
 
 }

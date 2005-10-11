@@ -847,7 +847,7 @@ public class DateField extends StringItem
 				}
 				
 				char editChar = this.text.charAt( newIndex );
-				System.out.println("MoveForward: text[" + newIndex + "]=" + editChar );
+				//System.out.println("MoveForward: text[" + newIndex + "]=" + editChar );
 				BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
 				this.caretViewer = viewer;
 				this.caretWidth = viewer.getWidth();

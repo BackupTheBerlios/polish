@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui && polish.midp2
+
 /*
  * Created on 14.09.2005 at 11:56:03.
  * 

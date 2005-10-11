@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Alert;
+//import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
@@ -168,37 +168,43 @@ public class MasterCanvas
 		}
 	}
 	
-	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
-		//#debug
-		System.out.println("MasterCanvas: setCurrent of " + nextDisplayable.getClass().getName() );
-		//if ( nextDisplayable == instance ) {
-		//	display.setCurrent( nextDisplayable );
-		//	return;
-		//}
-		if ( ! (nextDisplayable instanceof AccessibleCanvas) ) {
-			if (instance != null && instance.currentCanvas != null) {
-				if (instance.currentDisplayable != nextDisplayable ) {
-					//#debug
-					System.out.println("MasterCanvas: setting instance.currentCanvas to NULL!!!");
-					instance.currentCanvas.hideNotify();
-					instance.currentCanvas = null;
-					instance.currentDisplayable = null;
-				}
-			}
-			display.setCurrent( alert, nextDisplayable );
-			return;
-		}
-		if ( instance == null ) {
-			instance = new MasterCanvas();
-		} else if ( instance.currentCanvas != null ) {
-			instance.currentCanvas.hideNotify();
-		}
-		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
-		instance.currentCanvas = canvas;
-		instance.currentDisplayable = nextDisplayable;
-		canvas.showNotify();
-		display.setCurrent( alert, instance );
-	}
+	// not needed anymore, since display.setCurrent( Alert, Displayable ) is now mapped
+	// during the preprocessing phase.
+//	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
+//		//#debug
+//		System.out.println("MasterCanvas: setCurrent of " + nextDisplayable.getClass().getName() );
+//		//if ( nextDisplayable == instance ) {
+//		//	display.setCurrent( nextDisplayable );
+//		//	return;
+//		//}
+//		alert.setNextDisplayable(display, nextDisplayable);
+//		setCurrent( display, alert );
+////		if ( ! (nextDisplayable instanceof AccessibleCanvas) ) {
+////			if (instance != null && instance.currentCanvas != null) {
+////				if (instance.currentDisplayable != nextDisplayable ) {
+////					//#debug
+////					System.out.println("MasterCanvas: setting instance.currentCanvas to NULL!!!");
+////					instance.currentCanvas.hideNotify();
+////					instance.currentCanvas = null;
+////					instance.currentDisplayable = null;
+////				}
+////			}
+////			alert.setNextDisplayable(display, nextDisplayable);
+////			display.setCurrent( alert );
+////			display.setCurrent( alert, nextDisplayable );
+////			return;
+////		}
+////		if ( instance == null ) {
+////			instance = new MasterCanvas();
+////		} else if ( instance.currentCanvas != null ) {
+////			instance.currentCanvas.hideNotify();
+////		}
+////		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
+////		instance.currentCanvas = canvas;
+////		instance.currentDisplayable = nextDisplayable;
+////		canvas.showNotify();
+////		display.setCurrent( alert, instance );
+//	}
 	
 	public static Displayable getCurrent( Display display ) {
 		if (instance != null) {

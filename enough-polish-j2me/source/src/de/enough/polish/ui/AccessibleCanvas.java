@@ -53,7 +53,7 @@ public interface AccessibleCanvas {
 	
 	public void hideNotify();
 	
-	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
 	public void sizeChanged( int width, int height );
 	//#endif
 	
