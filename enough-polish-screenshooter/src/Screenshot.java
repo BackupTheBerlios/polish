@@ -17,21 +17,21 @@ import javax.imageio.*;;
 //import java.awt.Window;
 
 public class Screenshot extends Frame
-implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
+implements ActionListener, MouseListener,MouseMotionListener,KeyListener,Runnable{
 	
 	private static final long serialVersionUID = 1L;
 	private int x = 400,y = 400,width = 176,height = 220;
-	private int interval = 100,maxImages = 120;
+	private int interval = 120,maxImages = 120;
 	private Button bStart,bEnde,bQuit,bRefresh;
 	private BufferedImage scrIm;
 	private TextField tfx, tfy, tfw, tfh,tfInterval,tfMaxmages,tfImageName;
+	private Label labx,laby,labw,labh,labInterval,labMaxImages,labImageName;
 	private boolean isShooting = false;
-	
+	private Thread th;
     public void actionPerformed( ActionEvent e )
     {
     	String cmd = e.getActionCommand ();
     	if (cmd.equals ("Refresh")){ 
-	        System.out.print( "ok-Button geklickt" );
 	        this.x = Integer.parseInt(this.tfx.getText());
 	        this.y = Integer.parseInt(this.tfy.getText());
 	        this.width = Integer.parseInt(this.tfw.getText());
@@ -40,7 +40,6 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 	        this.repaint();
     	}
     	else if (cmd.equals ("start")){
-    		System.out.print( "photo-Button geklickt" );
     		try {
     			this.maxImages = Integer.parseInt(this.tfMaxmages.getText());
     			this.isShooting = true;
@@ -53,10 +52,8 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
     	}    	
     	else if (cmd.equals ("ende")){
     		this.isShooting = false;
-    		System.out.print( "ende-Button geklickt" );
     	}
     	else if (cmd.equals ("Programm Beenden")){
-            System.out.print( "ok-Button geklickt" );
             System.exit(0);
     	}
     }
@@ -67,6 +64,7 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 	}
 	
 	public void screenBackground(){
+		this.th = new Thread(this);
 		this.setVisible(false);
 		this.dispose();
 //		this.setVisible(false);
@@ -91,12 +89,11 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 	}
 	
 	public Screenshot(){
-		System.out.print("tim");
-		
+
 //		this.setUndecorated(true);
 	    this.setLayout(null);
 	    
-
+	    
 	    this.bStart = new Button("start");
 	    this.bStart.addActionListener(this);
 	    this.bEnde = new Button("ende");	
@@ -112,18 +109,31 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 		this.tfMaxmages = new TextField(""+120);
 		this.tfInterval = new TextField(""+this.interval, 20);
 		this.tfImageName = new TextField("ImageName",20);
-		
+		this.labx = new Label("X :");
+		this.laby = new Label("Y :");
+		this.labw = new Label("Width :");
+		this.labh = new Label("Height :");
+		this.labMaxImages = new Label("Max. Image :");
+		this.labInterval = new Label("Interval :");
+		this.labImageName = new Label("Image Name :");
 	    this.bStart.setBounds(0,125,150,25);
 	    this.bEnde.setBounds(0,150,150,25);	 
 	    this.bQuit.setBounds(0,175,150,25);	
 	    this.bRefresh.setBounds(0,200,150,25);
-		this.tfx.setBounds(50,300,100,25);
-		this.tfy.setBounds(50,325,100,25);
-		this.tfw.setBounds(50,350,100,25);
-		this.tfh.setBounds(50,375,100,25);  
-		this.tfInterval.setBounds(50,400,100,25);
-		this.tfMaxmages.setBounds(50,425,100,25);
-		this.tfImageName.setBounds(50,450,100,25);
+		this.tfx.setBounds(80,300,100,25);
+		this.tfy.setBounds(80,325,100,25);
+		this.tfw.setBounds(80,350,100,25);
+		this.tfh.setBounds(80,375,100,25);  
+		this.tfInterval.setBounds(80,400,100,25);
+		this.tfMaxmages.setBounds(80,425,100,25);
+		this.tfImageName.setBounds(80,450,100,25);
+		this.labx.setBounds(5,300,80,25);
+		this.laby.setBounds(5,325,80,25);
+		this.labw.setBounds(5,350,80,25);
+		this.labh.setBounds(5,375,80,25);
+		this.labMaxImages.setBounds(5,400,80,25);
+		this.labInterval.setBounds(5,425,80,25);
+		this.labImageName.setBounds(5,450,80,25);
 	    this.add(this.bStart);
 	    this.add(this.bEnde);
 	    this.add(this.bQuit);
@@ -135,6 +145,13 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 	    this.add(this.tfInterval);
 	    this.add(this.tfMaxmages);
 	    this.add(this.tfImageName);
+	    this.add(this.labx);
+	    this.add(this.laby);
+	    this.add(this.labw);
+	    this.add(this.labh);
+	    this.add(this.labMaxImages);
+	    this.add(this.labInterval);
+	    this.add(this.labImageName);
 	    this.addKeyListener(this);
 	    this.tfx.addKeyListener(this);
 	    this.tfy.addKeyListener(this);
@@ -153,14 +170,18 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 	  }
 
 	public void shot(int i) throws IOException{
+		String stImageName = this.tfImageName.getText();
+		File userDir = new File(stImageName);
+		userDir.mkdir(); 
 		this.interval =  Integer.parseInt(this.tfInterval.getText());
-		long inter = System.currentTimeMillis() + this.interval;
+		this.maxImages = Integer.parseInt(this.tfMaxmages.getText());
+//		long inter = System.currentTimeMillis() + this.interval;
 		this.setVisible(false);
 		this.dispose();
-		String stImageName = this.tfImageName.getText();
+		String outFileName;
 		while(this.isShooting && i < this.maxImages){
-			if(inter <= System.currentTimeMillis()){
-				String outFileName = stImageName+i+".png";
+//			if(inter <= System.currentTimeMillis()){
+				outFileName = stImageName+i+".png";
 				Rectangle screenRect = new Rectangle(x, y, width, height);
 				// create screen shot
 				Robot robot;
@@ -168,19 +189,21 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 					robot = new Robot();
 					BufferedImage image = robot.createScreenCapture(screenRect);
 					// save captured image to PNG file
-					ImageIO.write(image, "png", new File(outFileName));
-					// give feedback
-					System.out.println("Saved screen shot (" + image.getWidth() +
-						" x " + image.getHeight() + " pixels) to file \"" +
-						outFileName + "\".");
+					ImageIO.write(image, "png", new File(stImageName+"/"+outFileName));
 				} catch (AWTException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				try {
+					this.th.sleep(this.interval);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.print("error");
+				}
 				i++;
-				inter = System.currentTimeMillis() + this.interval;
-			}
+//				inter = System.currentTimeMillis() + this.interval;
+//			}
 			
 		}
 		this.isShooting = false;
@@ -189,7 +212,6 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 
 	public void mouseClicked(MouseEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.print("mouse-click\n");
 		this.x = evt.getX();
 		this.y = evt.getY();
 		this.tfx.setText( ""+evt.getX()) ;
@@ -232,12 +254,16 @@ implements ActionListener, MouseListener,MouseMotionListener,KeyListener{
 	}
 	public void keyReleased(KeyEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.print(evt+"\n");
+		System.out.print("iii");
         this.x = Integer.parseInt(this.tfx.getText());
         this.y = Integer.parseInt(this.tfy.getText());
         this.width = Integer.parseInt(this.tfw.getText());
         this.height = Integer.parseInt(this.tfh.getText());
 		this.repaint();
+	}
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
