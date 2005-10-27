@@ -63,7 +63,7 @@
 		    />
 			<!-- selection of supported devices -->
 			<deviceRequirements if="test">
-				<requirement name="Identifier" value="Nokia/Series60Midp2"/>
+				<requirement name="Identifier" value="Nokia/Series60E2"/>
 			</deviceRequirements>
 			<deviceRequirements unless="test">
 				<requirement name="Identifier" value="Nokia/6630, Motorola/A1000, Sony-Ericsson/K700, Siemens/S65"/>

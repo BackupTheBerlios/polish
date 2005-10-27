@@ -39,7 +39,9 @@ import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.Variable;
+import de.enough.polish.ant.emulator.DebuggerSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.stacktrace.BinaryStackTrace;
 import de.enough.polish.stacktrace.DecompilerNotInstalledException;
@@ -104,6 +106,15 @@ implements Runnable, OutputFilter
 	 */
 	public abstract String[] getArguments();
 	
+	public void addDebugCommandLine(ArrayList argumentsList) {
+		String line = this.environment.getVariable("polish.debug.commandline");
+		if ( line != null && line.length() > 1 ) {
+			System.out.println("adding debug command line [" + line + "]");
+			argumentsList.add( line );
+		}
+	}
+
+	
 	public String escape(String string) {
 		return StringUtil.escape( string );
 	}
@@ -133,11 +144,33 @@ implements Runnable, OutputFilter
 	public void run() {
 		try {
 			String[] arguments = getArguments();
+			DebuggerSetting debuggerSetting = this.emulatorSetting.getDebuggerSetting( this.environment.getBooleanEvaluator() );
+			DebuggerThread debuggerThread = null;
+			if ( debuggerSetting != null ) {
+				ArrayList argsList = new ArrayList();
+				for (int i = 0; i < arguments.length; i++) {
+					String arg = arguments[i];
+					argsList.add( arg );
+				}
+				try {
+					Debugger debugger = (Debugger) this.extensionManager.getTemporaryExtension( ExtensionManager.TYPE_DEBUGGER, debuggerSetting, this.environment );
+					addDebugArguments( argsList, debugger );
+					arguments = (String[]) argsList.toArray( new String[ argsList.size() ] );
+					debuggerThread = new DebuggerThread( debugger );
+					debuggerThread.start();
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Warning: unable to initalize debugger connection: " + e.toString() );
+				} 
+			}
 			boolean wait = this.emulatorSetting.doWait();
 			long startTime = System.currentTimeMillis();
 			int res = exec( arguments, this.device.getIdentifier() + ": ",  wait, this, getExecutionDir() );
 			long usedTime = System.currentTimeMillis() - startTime;
 			if ( res != 0 || (wait && usedTime < 2000) ) {
+				if (debuggerThread != null) {
+					debuggerThread.cancel();
+				}
 				if (res == 0) {
 					res = -110011;
 				}
@@ -153,6 +186,17 @@ implements Runnable, OutputFilter
 		} finally {
 			this.isFinished = true;
 		}
+	}
+
+	/**
+	 * Adds the debugging settings to the arguments list.
+	 * By default the UEI arguments -Xdebug and -Xrunjdwp arguments are added by calling debugger.addDebugArguments( List ).
+	 * 
+	 * @param argsList the arguments list
+	 * @param debugger the debugger
+	 */
+	protected void addDebugArguments(ArrayList argsList, Debugger debugger) {
+		debugger.addDebugArguments( argsList );
 	}
 
 	/**
@@ -292,20 +336,22 @@ implements Runnable, OutputFilter
 	 *  
 	 * @param setting the setting
 	 * @param device the current device
-	 * @param variables the variables for the parameter-values
+	 * @param environment the variables for the parameter-values
 	 * @param project the ant-project to which this emulator belongs to 
 	 * @param evaluator a boolean evaluator for the parameter-conditions
 	 * @param wtkHome the home directory of the wireless toolkit
 	 * @param sourceDirs the directories containing the original source files.
+	 * @param extensionManager manager for extensions
 	 * @return true when an emulator could be detected
 	 */
-	public static Emulator createEmulator(Device device, EmulatorSetting setting, Environment variables, Project project, BooleanEvaluator evaluator, String wtkHome, File[] sourceDirs ) {
+	public static Emulator createEmulator(Device device, EmulatorSetting setting, Environment environment, Project project, BooleanEvaluator evaluator, String wtkHome, File[] sourceDirs, ExtensionManager extensionManager ) {
+		
 		String className = setting.getEmulatorClassName();
 		if (className == null) {
 			className = device.getCapability("polish.Emulator.Class");
 			if (className == null) {
-				String executable = variables.getVariable("polish.Emulator.Executable");
-				String arguments =  variables.getVariable("polish.Emulator.Arguments");
+				String executable = environment.getVariable("polish.Emulator.Executable");
+				String arguments =  environment.getVariable("polish.Emulator.Arguments");
 				if (executable != null && arguments != null) {
 					className = GenericEmulator.class.getName();
 				} else {
@@ -334,12 +380,17 @@ implements Runnable, OutputFilter
 			System.err.println("Unable to instantiate the emulator-class [" + className + "]: " + e.toString() );
 			return null;
 		}
-		variables.addVariables( project.getProperties() );
-		boolean okToStart = emulator.init(device, setting, variables, project, evaluator, wtkHome);
+		environment.addVariables( project.getProperties() );
+		emulator.init(null, null, setting, project, extensionManager, environment);
+		// for some reason the environment is not set correctly in the init() method... weird.
+		emulator.environment = environment;
+		emulator.antProject = project;
+		//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
+		boolean okToStart = emulator.init(device, setting, environment, project, evaluator, wtkHome);
 		if (!okToStart) {
 			return null;
 		}
-		emulator.setBasicSettings(device, setting, sourceDirs, variables );
+		emulator.setBasicSettings(device, setting, sourceDirs, environment );
 		//Thread thread = new Thread( emulator );
 		//thread.start();
 		return emulator;
@@ -447,5 +498,32 @@ implements Runnable, OutputFilter
 		}
 	}
 
+	class DebuggerThread extends Thread {
+		
+		private final Debugger debugger;
+		private boolean stopRequested;
+		
+		DebuggerThread( Debugger debugger  ) {
+			this.debugger  = debugger;
+		}
+		
+		public void cancel() {
+			this.stopRequested = true;
+		}
 
+		public void run() {
+			//System.out.println("executing debugger " + this.debugger.getClass().getName() );
+			try {
+				Thread.sleep( 5000 );
+			} catch (InterruptedException e) {
+				// ignore
+			}
+			if (this.stopRequested) {
+				System.out.println("stop has been requested...");
+				return;
+			}
+			this.debugger.execute( Emulator.this.environment.getDevice(), Emulator.this.environment.getLocale(), Emulator.this.environment );
+		}
+		
+	}
 }

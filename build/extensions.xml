@@ -476,6 +476,59 @@
 		<class>de.enough.polish.preverify.NoPreverifier</class>
 	</extension>
 
+	<extension>
+		<type>preverifier</type>
+		<name>antcall</name>
+		<class>de.enough.polish.preverify.AntCallPreverifier</class>
+	</extension>
+
+	<!-- Manifest Creator -->
+
+	<extension>
+		<type>manifestcreator</type>
+		<name>default</name>
+		<class>de.enough.polish.manifest.DefaultManifestCreator</class>
+	</extension>
+	
+	<extension>
+		<type>manifestcreator</type>
+		<name>none</name>
+		<class>de.enough.polish.manifest.NoManifestCreator</class>
+	</extension>
+
+	<extension>
+		<type>manifestcreator</type>
+		<name>antcall</name>
+		<class>de.enough.polish.manifest.AntCallManifestCreator</class>
+	</extension>
+
+	<!-- Descriptor Creator -->
+
+	<extension>
+		<type>descriptorcreator</type>
+		<name>default</name>
+		<class>de.enough.polish.descriptor.DefaultDescriptorCreator</class>
+	</extension>
+	
+	<extension>
+		<type>descriptorcreator</type>
+		<name>doja</name>
+		<class>de.enough.polish.descriptor.DoJaDescriptorCreator</class>
+	</extension>
+
+	<extension>
+		<type>descriptorcreator</type>
+		<name>antcall</name>
+		<class>de.enough.polish.descriptor.AntCallDescriptorCreator</class>
+	</extension>
+	
+	<!-- Debugger Interfaces -->
+	
+	<extension>
+		<type>debugger</type>
+		<name>antcall</name>
+		<class>de.enough.polish.emulator.AntCallDebugger</class>
+	</extension>
 
 	<!-- Resource Copier -->
 	

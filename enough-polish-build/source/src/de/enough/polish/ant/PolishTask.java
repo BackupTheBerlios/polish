@@ -36,7 +36,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -60,13 +62,12 @@ import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.ant.build.CompilerTask;
-import de.enough.polish.ant.build.LogSetting;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.LibrariesSetting;
 import de.enough.polish.ant.build.LibrarySetting;
 import de.enough.polish.ant.build.LocalizationSetting;
-import de.enough.polish.ant.build.Manifest;
+import de.enough.polish.ant.build.LogSetting;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PostCompilerSetting;
@@ -79,6 +80,7 @@ import de.enough.polish.ant.build.Variables;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceManager;
 import de.enough.polish.devices.LibraryManager;
@@ -86,6 +88,7 @@ import de.enough.polish.emulator.Emulator;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
+import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.precompile.PreCompiler;
@@ -130,7 +133,7 @@ public class PolishTask extends ConditionalTask {
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
 	private Requirements deviceRequirements;
-	private EmulatorSetting emulatorSetting;
+	private List emulatorSettings;
 	
 	/** the project settings */ 
 	private PolishProject polishProject;
@@ -216,6 +219,8 @@ public class PolishTask extends ConditionalTask {
 
 	private PreCompiler[] preCompilers;
 
+	private BooleanEvaluator antPropertiesEvaluator;
+
 	
 	/**
 	 * Creates a new empty task 
@@ -245,7 +250,7 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	public void addConfiguredDeviceRequirements( Requirements requirements ) {
-		if (requirements.isActive(getProject())) {
+		if (requirements.isActive( this.antPropertiesEvaluator )) {
 			this.deviceRequirements = requirements;
 		}
 	}
@@ -256,7 +261,7 @@ public class PolishTask extends ConditionalTask {
 	 * @return the new build setting.
 	 */
 	public BuildSetting createBuild() {
-		this.buildSetting = new BuildSetting( getProject() );
+		this.buildSetting = new BuildSetting( getProject(), this.antPropertiesEvaluator );
 		return this.buildSetting;
 	}
 	
@@ -266,8 +271,12 @@ public class PolishTask extends ConditionalTask {
 	 * @return the new runsetting.
 	 */
 	public EmulatorSetting createEmulator() {
-		this.emulatorSetting = new EmulatorSetting( getProject() );
-		return this.emulatorSetting;
+		if (this.emulatorSettings == null) {
+			this.emulatorSettings =  new ArrayList();
+		}
+		EmulatorSetting emulatorSetting = new EmulatorSetting( getProject() );
+		this.emulatorSettings.add( emulatorSetting );
+		return emulatorSetting;
 	}
 	
 	/**
@@ -300,10 +309,10 @@ public class PolishTask extends ConditionalTask {
 			int successCount = 0;
 			ArrayList failures = new ArrayList();
 			boolean abortOnError = this.buildSetting.abortOnError();
-			
+			boolean enableCompilerMode = this.buildSetting.isInCompilerMode();
 			for ( int i=0; i < numberOfDevices; i++) {
 				Device device = this.devices[i];
-				if (numberOfDevices > 1) {
+				if ( !enableCompilerMode && numberOfDevices > 1) {
 					System.out.println("Building application for [" + device.getIdentifier() + "] (" + (i+1) + "/" + numberOfDevices + "):");
 				}
 				if (this.supportedLocales != null) {
@@ -320,7 +329,7 @@ public class PolishTask extends ConditionalTask {
 							//e.printStackTrace();
 							failures.add( new FailureInfo( device, locale, e ) );
 						}
-						if (this.buildSetting.isInCompilerMode()) {
+						if (enableCompilerMode) {
 							// return immediately in the compiler mode:
 							return;
 						}
@@ -461,7 +470,7 @@ public class PolishTask extends ConditionalTask {
 			callExtensions( device, locale );
 		}
 		finalize( device, locale );
-		if (this.emulatorSetting != null) {
+		if (this.emulatorSettings != null) {
 			runEmulator( device, locale );
 		}
 	}
@@ -561,6 +570,19 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		}
+	}
+	
+	public void init() {
+		super.init();
+		Map antSymbols = new HashMap();
+		Hashtable properties = getProject().getProperties();
+		Object[] keys = properties.keySet().toArray();
+		for (int i = 0; i < keys.length; i++) {
+			Object key = keys[i];
+			antSymbols.put( key + ":defined", Boolean.TRUE );
+		}
+		this.antPropertiesEvaluator = new BooleanEvaluator( antSymbols, properties );
+
 	}
 	
 	/**
@@ -1776,8 +1798,14 @@ public class PolishTask extends ConditionalTask {
 
 		// setting target directory:
 		String targetDirName = device.getBaseDir() + File.separatorChar + "classes";
+		File targetDir; // = new File( targetDirName );
+		if ( this.buildSetting.isInCompilerMode()) { //  && ! this.buildSetting.doPreverifyInCompilerMode() && !this.doObfuscate is not needed
+			targetDir = this.buildSetting.getCompilerDestDir();
+			targetDirName = targetDir.getAbsolutePath();
+		} else {
+			targetDir = new File( targetDirName );
+		}
 		device.setClassesDir( targetDirName );
-		File targetDir = new File( targetDirName );
 		
 		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
 			System.out.println("nothing to compile for device [" +  device.getIdentifier() + "]." );
@@ -1824,11 +1852,6 @@ public class PolishTask extends ConditionalTask {
 		}
 		if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
 			compiler.setDirectDebug(true);
-		}
-		if ( this.buildSetting.isInCompilerMode() && ! this.buildSetting.doPreverifyInCompilerMode()) { // && !this.doObfuscate is not needed
-			targetDir = this.buildSetting.getCompilerDestDir();
-		} else {
-			targetDir = new File( targetDirName );
 		}
 		if (!targetDir.exists()) {
 			targetDir.mkdirs();
@@ -2007,7 +2030,7 @@ public class PolishTask extends ConditionalTask {
 			Class debugClass = classLoader.loadClass(className);
 			PopulateUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
 		} catch (Exception e) {
-			System.err.println("Precompile: Unable to deactivate logging in Debug class: " + e.toString() );
+			System.err.println("Postcompile: Unable to deactivate logging in Debug class: " + e.toString() );
 			//e.printStackTrace();
 		}
 		
@@ -2225,7 +2248,7 @@ public class PolishTask extends ConditionalTask {
 		// add build properties - midlet infos:
 		String mainClassName = this.environment.getVariable( "polish.classes.main" );
 		if (mainClassName != null) {
-			System.out.println("Using Main-Class " + mainClassName );
+			//System.out.println("Using Main-Class " + mainClassName );
 			attributesByName.put( "Main-Class", new Attribute( "Main-Class", mainClassName ) );
 			attributesByName.put( "MIDlet-1", new Attribute( "MIDlet-1", ",," ) );
 		} else {
@@ -2259,6 +2282,8 @@ public class PolishTask extends ConditionalTask {
 			System.err.println("Unable to filter MANIFEST attributes: " + e.getMessage() );
 			throw e;
 		}
+		this.environment.set( ManifestCreator.MANIFEST_ATTRIBUTES_KEY, manifestAttributes );
+		this.environment.set( ManifestCreator.MANIFEST_ENCODING_KEY, this.buildSetting.getEncoding() );
 //		Jad jad = new Jad( this.environment );
 //		jad.setAttributes(manifestAttributes);
 		
@@ -2271,11 +2296,16 @@ public class PolishTask extends ConditionalTask {
 			}
 			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
 			// writing manifest:
-			Manifest manifest = new Manifest( this.environment, this.buildSetting.getEncoding() );
-			manifest.setAttributes( manifestAttributes );
-			File manifestFile = new File( device.getClassesDir() 
-					+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
-			manifest.write(manifestFile);
+			String creatorName = this.environment.getVariable( "polish.build.ManifestCreator" );
+			if (creatorName == null ) {
+				creatorName = "default";
+			}
+			this.extensionManager.executeTemporaryExtension(ExtensionManager.TYPE_MANIFEST_CREATOR, creatorName, this.environment );
+//			Manifest manifest = new Manifest( this.environment, this.buildSetting.getEncoding() );
+//			manifest.setAttributes( manifestAttributes );
+//			File manifestFile = new File( device.getClassesDir() 
+//					+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
+//			manifest.write(manifestFile);
 			//FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
 			// package all classes and resources:
 			Packager packager = (Packager) this.extensionManager.getActiveExtension( ExtensionManager.TYPE_PACKAGER, this.environment );
@@ -2349,17 +2379,27 @@ public class PolishTask extends ConditionalTask {
 			System.err.println("Unable to filter JAD attributes: " + e.getMessage() );
 			throw e;
 		}
-		Jad jad = new Jad( this.environment );
-		jad.setAttributes( filteredAttributes );
 		
-		String jadPath = this.environment.getVariable("polish.jadPath");
-		File jadFile = new File( jadPath );
-		try {
-			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
-			FileUtil.writeTextFile(jadFile, jad.getContent(), this.buildSetting.getEncoding() );
-		} catch (IOException e) {
-			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
+		this.environment.set( DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY, filteredAttributes );
+		this.environment.set( DescriptorCreator.DESCRIPTOR_ENCODING_KEY, this.buildSetting.getEncoding() );
+			// writing JAD:
+		
+		String creatorName = this.environment.getVariable( "polish.build.DescriptorCreator" );
+		if (creatorName == null ) {
+			creatorName = "default";
 		}
+		this.extensionManager.executeTemporaryExtension( ExtensionManager.TYPE_DESCRIPTOR_CREATOR, creatorName, this.environment );
+//		Jad jad = new Jad( this.environment );
+//		jad.setAttributes( filteredAttributes );
+//		
+//		String jadPath = this.environment.getVariable("polish.jadPath");
+//		File jadFile = new File( jadPath );
+//		try {
+//			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
+//			FileUtil.writeTextFile(jadFile, jad.getContent(), this.buildSetting.getEncoding() );
+//		} catch (IOException e) {
+//			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
+//		}
 	}
 	
 	/**
@@ -2412,33 +2452,45 @@ public class PolishTask extends ConditionalTask {
 	 * Launches the emulator if the user wants to.
 	 * 
 	 * @param device the current device.
-	 * @param locale
+	 * @param locale current locale
 	 */
 	protected void runEmulator( Device device, Locale locale ) {
-		if ( this.emulatorSetting.isActive(getProject()) ) {
-			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
-			Project antProject = getProject();
-			// get currently active source directories:
-			ArrayList sourceDirsList = new ArrayList();
-			for (int i = 0; i < this.sourceSettings.length; i++) {
-				SourceSetting setting = this.sourceSettings[i];
-				if (setting.isActive(evaluator, antProject)) {
-					sourceDirsList.add( setting.getDir() );
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		EmulatorSetting[] settings = getEmulatorSettings();
+		for (int i = 0; i < settings.length; i++) {
+			EmulatorSetting emulatorSetting = settings[i];
+			if ( emulatorSetting.isActive( evaluator ) ) {
+				Project antProject = getProject();
+				// get currently active source directories:
+				ArrayList sourceDirsList = new ArrayList();
+				for (int j = 0; j < this.sourceSettings.length; j++) {
+					SourceSetting setting = this.sourceSettings[j];
+					if (setting.isActive(evaluator, antProject)) {
+						sourceDirsList.add( setting.getDir() );
+					}
 				}
-			}
-			File[] sourceDirs = (File[]) sourceDirsList.toArray( new File[ sourceDirsList.size() ] );
-			Emulator emulator = Emulator.createEmulator(device, this.emulatorSetting, this.environment, getProject(), evaluator, this.wtkHome, sourceDirs );
-			if (emulator != null) {
-				emulator.execute( device, locale, this.environment );
-				if (this.runningEmulators == null) {
-					this.runningEmulators = new ArrayList();
+				File[] sourceDirs = (File[]) sourceDirsList.toArray( new File[ sourceDirsList.size() ] );
+				Emulator emulator = Emulator.createEmulator(device, emulatorSetting, this.environment, getProject(), evaluator, this.wtkHome, sourceDirs, this.extensionManager );
+				if (emulator != null) {
+					emulator.execute( device, locale, this.environment );
+					if (this.runningEmulators == null) {
+						this.runningEmulators = new ArrayList();
+					}
+					this.runningEmulators.add( emulator );
 				}
-				this.runningEmulators.add( emulator );
-			}
-			
+				break;
+			}			
 		}
 	}
 	
+	private EmulatorSetting[] getEmulatorSettings() {
+		if (this.emulatorSettings == null) {
+			return new EmulatorSetting[0];
+		} else {
+			return (EmulatorSetting[]) this.emulatorSettings.toArray( new EmulatorSetting[ this.emulatorSettings.size()]);
+		}
+	}
+
 	/**
 	 * 
 	 */

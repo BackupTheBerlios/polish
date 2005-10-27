@@ -26,9 +26,12 @@
 package de.enough.polish.ant.emulator;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.ExtensionSetting;
 
 /**
@@ -55,6 +58,7 @@ public class EmulatorSetting extends ExtensionSetting {
 	private boolean enableMemoryMonitor;
 	private boolean enableNetworkMonitor;
 	private boolean showDecompiledStackTrace;
+	private List debuggers;
 	
 	/**
 	 * Creates an empty uninitialised run setting.
@@ -65,7 +69,12 @@ public class EmulatorSetting extends ExtensionSetting {
 		super();
 	}
 	
-	
+	public void addConfiguredDebugger( DebuggerSetting setting ) {
+		if ( this.debuggers == null ) {
+			this.debuggers = new ArrayList();
+		}
+		this.debuggers.add( setting );
+	}
 
 	/**
 	 * Returns the command for launching the emulator.
@@ -239,5 +248,19 @@ public class EmulatorSetting extends ExtensionSetting {
 	 */
 	public void setShowDecompiledStackTrace(boolean showDecompiledStackTrace) {
 		this.showDecompiledStackTrace = showDecompiledStackTrace;
+	}
+	
+	public DebuggerSetting getDebuggerSetting( BooleanEvaluator evaluator ) {
+		if (this.debuggers == null) {
+			return null;
+		}
+		Object[] settings = this.debuggers.toArray();
+		for (int i = 0; i < settings.length; i++) {
+			DebuggerSetting setting = (DebuggerSetting) settings[i];
+			if (setting.isActive(evaluator)) {
+				return setting;
+			}
+		}
+		return null;
 	}
 }

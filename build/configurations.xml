@@ -31,21 +31,21 @@
 	
 	<configuration>
 		<identifier>CLDC/1.0</identifier>
-		<features>cldc1.0</features>
+		<features>cldc, cldc1.0</features>
 		<capability name="build.BootClassPath" value="cldc-1.0.jar" />
 		<capability name="SupportFloatingPoint" value="false" />
 	</configuration>
 
 	<configuration>
 		<identifier>CLDC/1.0.4</identifier>
-		<features>cldc1.0</features>
+		<features>cldc, cldc1.0</features>
 		<capability name="build.BootClassPath" value="cldc-1.0.jar" />
 		<capability name="SupportFloatingPoint" value="false" />
 	</configuration>
 
 	<configuration>
 		<identifier>CLDC/1.1</identifier>
-		<features>cldc1.1, hasFloatingPoint</features>
+		<features>cldc, cldc1.1, hasFloatingPoint</features>
 		<capability name="build.BootClassPath" value="cldc-1.1.jar" />
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>
@@ -56,7 +56,6 @@
 		<capability name="build.BootClassPath" value="cdc-1.0.jar" />
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>
-	
 
 	
 </configurations>

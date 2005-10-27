@@ -94,22 +94,34 @@
             <file src="../setup/samples/menu/.classpath" targetdir="$INSTALL_PATH/samples/menu"/>
             <file src="../setup/samples/menu/.project" targetdir="$INSTALL_PATH/samples/menu"/>
             <file src="../setup/samples/menu/build.xml" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="../setup/samples/menu/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="../setup/samples/menu/nbproject" targetdir="$INSTALL_PATH/samples/menu"/>
             <parsable targetfile="$INSTALL_PATH/samples/menu/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/menu/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/menu/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/menu/nbproject/project.properties" type="shell" /> 
         </pack>
         <pack name="Logviewer Sample Application" required="yes">
             <description>A sample application that is used to show log entries that have been previously stored in the recordstore.</description>
             <file src="samples/logviewer/source" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="samples/logviewer/resources" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="../setup/samples/logviewer/build.xml" targetdir="$INSTALL_PATH/samples/logviewer"/>
+            <file src="../setup/samples/logviewer/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/logviewer"/>
+            <file src="../setup/samples/logviewer/nbproject" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/logviewer/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/logviewer/nbproject/project.properties" type="shell" /> 
         </pack>
         <pack name="Roadrunner Sample Application" required="no" preselected="yes">
             <description>A sample application that features a well know game principle.</description>
             <file src="samples/roadrunner/source" targetdir="$INSTALL_PATH/samples/roadrunner"/>
             <file src="samples/roadrunner/resources" targetdir="$INSTALL_PATH/samples/roadrunner"/>
             <file src="../setup/samples/roadrunner/build.xml" targetdir="$INSTALL_PATH/samples/roadrunner"/>
+            <file src="../setup/samples/roadrunner/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/roadrunner"/>
+            <file src="../setup/samples/roadrunner/nbproject" targetdir="$INSTALL_PATH/samples/roadrunner"/>
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/roadrunner/nbproject/project.properties" type="shell" /> 
         </pack>
         <pack name="MIDP SysInfo" required="no" preselected="yes">
             <description>An application that checks the capabilities of your device. This application is based on Grimo Software's MIDP SysInfo MIDlet and is a co-effort of Grimo Software, Enough Software and Mark Schriejver.</description>
@@ -118,6 +130,10 @@
             <file src="../setup/samples/sysinfo/.classpath" targetdir="$INSTALL_PATH/samples/sysinfo"/>
             <file src="../setup/samples/sysinfo/.project" targetdir="$INSTALL_PATH/samples/sysinfo"/>
             <file src="../setup/samples/sysinfo/build.xml" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="../setup/samples/sysinfo/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="../setup/samples/sysinfo/nbproject" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/sysinfo/nbproject/project.properties" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/.classpath" type="shell" /> 
         </pack>

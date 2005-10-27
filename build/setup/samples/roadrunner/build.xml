@@ -77,7 +77,7 @@
 				<requirement name="Identifier" value="${device}"/>
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Nokia/Series60, Nokia/Series60Midp2, Sony-Ericsson/K700, Samsung/SGH-E800"/>
+				<requirement name="Identifier" value="Nokia/Series60, Nokia/Series60E2, Sony-Ericsson/K700, Samsung/SGH-E800"/>
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build	fullscreen="menu" 

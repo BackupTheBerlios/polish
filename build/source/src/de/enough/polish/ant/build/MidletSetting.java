@@ -25,13 +25,17 @@
  */
 package de.enough.polish.ant.build;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
-
-import java.util.*;
+import de.enough.polish.ant.ConditionalElement;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages all midlets of a specific project.</p>
@@ -44,7 +48,7 @@ import java.util.*;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class MidletSetting {
+public class MidletSetting extends ConditionalElement {
 	
 	private final ArrayList midlets;
 
@@ -114,6 +118,27 @@ public class MidletSetting {
 
 	public Midlet[] getMidlets() {
 		return (Midlet[]) this.midlets.toArray( new Midlet[ this.midlets.size() ] );
+	}
+	
+	public void setDefinition( String definition ) {
+		if (definition == null || "".equals(definition)) {
+			System.err.println("Warning: the \"definition\" attribute given in the  <midlets> element is empty.");
+			return;
+		}
+		// check for netbeans definition:
+		if ("${manifest.midlets}".equals(definition)) {
+			return;
+		}
+		String[] definitions = StringUtil.split( definition, '\n' );
+		for (int i = definitions.length; --i >= 0; ) {
+			String def = definitions[i];
+			if (def.length() < 2 ) {
+				continue;
+			}
+			Midlet midlet = new Midlet();
+			midlet.setDefinition( def );
+			addConfiguredMidlet(midlet);
+		}
 	}
 
 }

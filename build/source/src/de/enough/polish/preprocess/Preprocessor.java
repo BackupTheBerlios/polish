@@ -1142,7 +1142,9 @@ public class Preprocessor {
 			if ( parenthesisPos == -1 ) {
 				throw new BuildException(
 						className + " line " + styleDirectiveLine
-						+ ": unable to process #style directive: the statement which follows the #style directive must be closed by a parenthesis and a semicolon on the same line: [);]. "  
+						+ ": unable to process #style directive: the statement which follows the #style " 
+						+ "directive must be closed by a parenthesis and a semicolon on the same line: [);]: " 
+						+ nextLine 
 				);
 			}
 			// append the style-parameter as the last argument:

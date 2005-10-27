@@ -37,12 +37,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import de.enough.polish.ant.emulator.DebuggerSetting;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.StringUtil;
@@ -71,6 +73,9 @@ public class ExtensionManager {
 	public static final String TYPE_PACKAGER = "packager";
 	public static final String TYPE_FINALIZER = "finalizer";
 	public static final String TYPE_LOG_HANDLER = "loghandler";
+	public static final String TYPE_MANIFEST_CREATOR = "manifestcreator";
+	public static final String TYPE_DESCRIPTOR_CREATOR =  "descriptorcreator";
+	public static final String TYPE_DEBUGGER = "debugger";
 	
 	
 	private final Map definitionsByType;
@@ -251,6 +256,27 @@ public class ExtensionManager {
 	 * Retrieves an extension without storing it.
 	 * 
 	 * @param type the type of the extension, e.g. "propertyfunction"
+	 * @param setting the configuration of the extension, taken from the build.xml
+	 * @param environment the environment settings
+	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalAccessException when the extension could not be accesssed
+	 * @throws InstantiationException when the extension could not be loaded
+	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 */
+	public Extension getTemporaryExtension(String type, ExtensionSetting setting, Environment environment )
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
+	{
+		if (setting == null) {
+			return null;
+		} else {
+			return getExtension(type, setting.getName(), setting, environment, false);
+		}
+	}
+	
+	/**
+	 * Retrieves an extension without storing it.
+	 * 
+	 * @param type the type of the extension, e.g. "propertyfunction"
 	 * @param name the name of the extensio, e.g. "uppercase"
 	 * @param setting the configuration of the extension, taken from the build.xml
 	 * @param environment the environment settings
@@ -304,8 +330,38 @@ public class ExtensionManager {
 		}
 		return extension;
 	}
-
 	
+	public void executeTemporaryExtension(String type, String name, Environment environment) {
+		executeTemporaryExtension(type, name, null, environment);		
+	}	
+
+	public void executeTemporaryExtension(String type, ExtensionSetting setting, Environment environment) {
+		if (setting == null) {
+			return;
+		}
+		executeTemporaryExtension(type, setting.getName(), setting, environment);
+		
+	}	
+	
+	public void executeTemporaryExtension(String type, String name, ExtensionSetting setting, Environment environment) {
+		if (name == null ) {
+			if (setting != null) {
+				name = setting.getName();
+			} else {
+				return;
+			}
+		}
+		try {
+			Extension extension = getTemporaryExtension(type, name, setting, environment);
+			extension.execute( environment.getDevice(), environment.getLocale(), environment );
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException( "Unable to execute extension [" + name + "]: " + e.toString()  );
+		}
+	}
+
 	/**
 	 * @param type
 	 * @return
@@ -422,7 +478,7 @@ public class ExtensionManager {
 			ExtensionDefinition definition = (ExtensionDefinition) iter.next();
 			if ( type.equals( definition.getType()) && definition.isConditionFulfilled( environment )) {
 				try {
-					list.add( getExtension( type, definition.getName(), environment ) );
+					list.add( getTemporaryExtension( type, definition.getName(), environment ) );
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -492,6 +548,6 @@ public class ExtensionManager {
 
 	public void removeExtension(Extension extension) {
 		this.instantiatedExtensions.remove(extension);
-	}	
+	}
 
 }

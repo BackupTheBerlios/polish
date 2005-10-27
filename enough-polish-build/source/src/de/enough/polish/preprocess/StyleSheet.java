@@ -811,7 +811,7 @@ public class StyleSheet {
 				String[] attributes = style.getDefinedAttributes( device );
 				for (int j = 0; j < attributes.length; j++) {
 					String attribute = attributes[j];
-					//System.out.println("adding symbol polish.css." + attribute);
+					//System.out.println("adding symbol polish.css." + attribute + " of style " + style.getSelector() );
 					symbols.put( "polish.css." + attribute, Boolean.TRUE );
 					attributesByName.put( attribute, Boolean.TRUE );
 				}

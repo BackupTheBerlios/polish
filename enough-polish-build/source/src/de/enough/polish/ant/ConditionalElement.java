@@ -96,10 +96,32 @@ public class ConditionalElement {
 	 */
 	public boolean isActive( Project project ) {
 		if (this.unlessCondition != null) {
-			return ! CastUtil.getBoolean(project.getProperty(this.unlessCondition)); 
+			if (this.unlessCondition.endsWith(":defined")) {
+				String propName = this.unlessCondition.substring( 0, this.unlessCondition.lastIndexOf(':') );
+				String propValue = project.getProperty( propName );
+				if (propValue != null) {
+					return false;
+				}
+			} else {
+				boolean success = CastUtil.getBoolean(project.getProperty(this.unlessCondition));
+				if (success) {
+					return false;
+				}
+			}
 		}
 		if (this.ifCondition != null ) {
-			return CastUtil.getBoolean(project.getProperty(this.ifCondition)); 
+			if (this.ifCondition.endsWith(":defined")) {
+				String propName = this.ifCondition.substring( 0, this.ifCondition.lastIndexOf(':') );
+				String propValue = project.getProperty( propName );
+				if (propValue == null) {
+					return false;
+				}
+			} else {
+				boolean success = CastUtil.getBoolean(project.getProperty(this.ifCondition));
+				if (!success) {
+					return false;	
+				}
+			}
 		}
 		return true;
 	}
@@ -145,6 +167,30 @@ public class ConditionalElement {
 		}
 		return true;
 	}
+	
+	/**
+	 * Checks if the conditions for this element are met.
+	 * 
+	 * @param evaluator the boolean evaluator with the settings for the current device
+	 * @return true when no condition has been specified 
+	 * 			or the specified conditions have been met.
+	 */
+	public boolean isActive(BooleanEvaluator evaluator ) {
+		if (this.ifCondition != null) {
+			boolean success = evaluator.evaluate( this.ifCondition, "build.xml", 0);
+			if (!success) {
+				return false;
+			}
+		}
+		if (this.unlessCondition != null) {
+			boolean success = evaluator.evaluate( this.unlessCondition, "build.xml", 0);
+			if (success) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	public String getIf() {
 		return this.ifCondition;

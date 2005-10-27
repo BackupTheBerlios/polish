@@ -119,7 +119,53 @@
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="mmapi,wmapi2.0,jtwi" />
 		<capability name="SoundFormat" value="midi, amr" />
+	</device>
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/DefaultColorPhone</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="SoundFormat" value="midi, amr, wav" />
+		<capability name="HeapSize" value="20MB" />
+		<capability name="Emulator.Skin" value="DefaultColorPhone" />
 	</device>	
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/MediaControlSkin</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="SoundFormat" value="midi, amr, wav" />
+		<capability name="Emulator.Skin" value="MediaControlSkin" />
+	</device>	
+
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/QwertyDevice</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="SoundFormat" value="midi, amr, wav" />
+		<capability name="Emulator.Skin" value="QwertyDevice" />
+	</device>	
+	
+	<device
+		supportsPolishGui="false" >
+		<identifier>Generic/DefaultGrayPhone</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="SoundFormat" value="midi, amr, wav" />
+		<capability name="Emulator.Skin" value="DefaultGrayPhone" />
+	</device>	
+
 	
 <!-- virtual devices -->
 
@@ -1595,7 +1641,7 @@
 		<capability name="CameraResolution" value="vga" />
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.MiddleSoftKey" value="-23" />
-		<capability name="key RightSoftKey" value="-22" />
+		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="Bugs" value="ReducedMessageLength" />
 	</device>
 	
@@ -5895,5 +5941,20 @@
 		<capability name="CameraResulution" value="640x480" />
 		<capability name="CameraZoom" value="0" />
 	</device> 
-
+	
+	
+	<!-- DoJa device definitions -->
+	<device
+		supportsPolishGui="false" >
+		<identifier>DoJa/os15</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="DoJa/1.5" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<!--
+		<capability name="JavaPackage" value="doja-15" />
+		-->
+		<capability name="ImageFormat" 	value="gif" />
+		<capability name="Emulator.Executable" value="${doja.home}/bin/doja.exe" />
+		<capability name="Emulator.Arguments" value="-j;;${polish.jarPath}" />
+	</device>
 </devices>

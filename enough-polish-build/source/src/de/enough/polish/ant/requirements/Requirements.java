@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.ant.ConditionalElement;
 
@@ -105,6 +106,16 @@ extends AndRelation
 	 */
 	public boolean isActive( Project project ) {
 		return this.condition.isActive( project );
+	}
+
+	/**
+	 * Checks if this element should be used.
+	 * 
+	 * @param evaluator the boolean evaluator.
+	 * @return true when this element is valid
+	 */
+	public boolean isActive(BooleanEvaluator evaluator) {
+		return this.condition.isActive( evaluator );
 	}
 
 	

@@ -58,7 +58,7 @@ public class WtkEmulator extends Emulator {
 	
 	protected String[] arguments;
 	protected boolean appendXdeviceArgument;
-	protected String[] environment;
+	protected String[] environmentArguments;
 	protected File workingDirectory;
 	
 	/**
@@ -285,6 +285,8 @@ public class WtkEmulator extends Emulator {
 				argumentsList.add( name );
 			}
 		}
+		
+		addDebugCommandLine( argumentsList );
 		
 		this.arguments = (String[]) argumentsList.toArray( new String[ argumentsList.size() ] );
 		return true;

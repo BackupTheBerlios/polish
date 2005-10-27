@@ -90,8 +90,8 @@
 		</description>
 		<names>location api, location-api, JSR-179</names>
 		<symbol>locationapi</symbol>
-		<files>j2me-locationapi.jar</files>
-		<path>import/j2me-locationapi.jar</path>
+		<files>j2me-locationapi.jar, location.jar</files>
+		<path>import/locationapi.jar</path>
 	</api>
 
 	<api>
@@ -225,6 +225,15 @@
 		<symbol>svg</symbol>
 		<files>m2g.jar</files>
 		<path>import/m2g.jar</path>
+	</api>
+
+	<api>
+		<name>DoJa 1.5 Overseas</name>
+		<description>DoJa is a Japanese Java version for mobile devices.</description>
+		<names>doja-15</names>
+		<symbol>doja-15</symbol>
+		<files>doja1.5.jar, doja_classes.zip</files>
+		<path>import/doja_classes.zip</path>
 	</api>
 
 

@@ -229,23 +229,31 @@ public class Environment {
 	 * @param name
 	 */
 	public void addSymbol( String name ) {
+//		if ( name.indexOf("screen-change-animation") != -1) {
+//			System.out.println("ADDING SYMBOL "+ name);
+//			throw new IllegalArgumentException("hier");
+//		}
 		this.symbols.put( name, Boolean.TRUE );
 		name = name.toLowerCase();
 		this.symbols.put( name, Boolean.TRUE );
 	}
 	
 	public boolean removeSymbol( String name ) {
+		this.symbols.remove( name ); 
+		this.temporarySymbols.remove( name );
+		name = name.toLowerCase();
 		boolean removed = ((this.symbols.remove( name ) != null) 
 		       | (this.temporarySymbols.remove( name ) != null) );
-		name = name.toLowerCase();
-		removed = ((this.symbols.remove( name ) != null) 
-			       | (this.temporarySymbols.remove( name ) != null) );
 		return removed;
 	}
 	
 	public boolean hasSymbol( String name ) {
 		name = name.toLowerCase();
 		//System.out.println( "Environment: hasSymbol(" + name + ") = " + ( this.symbols.get(name) != null ) );
+//		if ( name.indexOf("screen-change-animation") != -1) {
+//			System.out.println("this.symbols.get(" + name + ")=" + ( this.symbols.get(name) != null) );
+//			System.out.println("this.temporarySymbols.get(" + name + ")=" + ( this.temporarySymbols.get(name) != null) );
+//		}
 		return ( this.symbols.get(name) != null 
 				|| this.temporarySymbols.get( name ) != null );
 	}

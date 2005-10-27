@@ -404,9 +404,9 @@ public abstract class Extension {
 	 */
 	public void executeAntTarget( String targetName, Variable[] antProperties ) {
 		CallTarget target = new CallTarget();
-		target.setTarget( targetName );
 		// setting up a new ant project:
 		target.setProject( this.antProject );
+		target.setTarget( targetName );
 		// setting device properties:
 		Map symbols = this.environment.getSymbols();
 		for (Iterator iter = symbols.keySet().iterator(); iter.hasNext();) {

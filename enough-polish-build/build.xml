@@ -6,10 +6,14 @@
 	<property file="${user.name}.properties" />
 	<property name="Version" value="1.3-beta3" />
 	<property name="VersionMessage" value="Welcome to J2ME Polish 1.3 &lt;Beta 3&gt;! " />
+	<property name="all.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
+	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
+	
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.1" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
 	<property name="dir.import" location="import" />
+	
 	
 	<!-- task definitions -->
 	
@@ -110,7 +114,7 @@
 			<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
 			<fileset dir="setup" includes="Update.txt,menu/build.xml" />
 			<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml,custom-extensions.xml,capabilities.xml,configurations.xml,platforms.xml" />
-			<fileset dir="import" includes="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar" />
+			<fileset dir="import" includes="${update.jars}" />
 			<!--
 			<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
 			-->
@@ -234,7 +238,7 @@
 			<fileset dir="." includes="capabilities.xml,platforms.xml,configurations.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
 		</copy>
 		<copy todir="tmp/import">
-			<fileset dir="import" includes="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar" />
+			<fileset dir="import" includes="${all.jars}" />
 			<fileset dir="dist" includes="*.jar" />
 		</copy>
 		<!-- copy mac os x standalone applications -->
@@ -420,6 +424,9 @@
 	</target>
 		
 	<target name="izpack" description="calls only IzPack for generating the installer">
+		<taskdef name="izpack" 
+			classpath="${izpack.dir}/lib/compiler.jar"
+			classname="com.izforge.izpack.ant.IzPackTask"/>
 		<!-- update installation settings -->
 		<propertyWriter srcfile="setup/install.xml"
 			            destfile="tmp/install.xml" />

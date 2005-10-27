@@ -25,7 +25,10 @@
  */
 package de.enough.polish.ant.build;
 
+import org.apache.tools.ant.BuildException;
+
 import de.enough.polish.ant.Setting;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Represents a midlet.</p>
@@ -153,6 +156,35 @@ public class Midlet extends Setting {
 			}
 		}
 		return this.name + "," + this.icon + "," + myClassName;
+	}
+
+
+
+	public void setDefinition(String def) {
+		try {
+			int colonPos = def.indexOf(':');
+			String numberStr = def.substring( def.indexOf('-') + 1, colonPos);
+			String defValue = def.substring( colonPos + 2 );
+			String[] chunks = StringUtil.splitAndTrim( defValue, ',');
+//			System.out.println("definition=[" + def + "]");
+//			for (int j = 0; j < chunks.length; j++) {
+//				String string = chunks[j];
+//				System.out.println( "  " +  j +"=" + string );
+//			}
+			
+			String nameStr = chunks[0];
+			String iconStr = chunks[1];
+			String classNameStr = chunks[2];
+			setName( nameStr );
+			if (iconStr.length() > 0) {
+				setIcon(iconStr);
+			}
+			setClass(classNameStr);
+			setNumber( Integer.parseInt( numberStr) );
+		} catch (Exception e) {
+			throw new BuildException("Invalid MIDlet-definition [" + def + "]");
+		}
+		
 	}
 
 }

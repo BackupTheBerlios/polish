@@ -38,6 +38,7 @@
 		<capability name="Emulator.Class" value="SiemensEmulator" />
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
+		<capability name="Property.imei" value="com.siemens.mp.imei" />
 	</vendor>
 	
 	<vendor>
@@ -53,6 +54,7 @@
 		<capability name="key.ChangeNumericalAlphaInputModeKey" value="35" />
 		<capability name="TextField.charactersKeyStar" value=" " />		
 		<capability name="IconSize" value="15x15" />		
+		<capability name="Property.imsi" value="IMSI" />
 	</vendor>
 	
 	<vendor>
@@ -202,6 +204,13 @@
 	<vendor>
 		<name>HTC</name>
 	</vendor>
-	
+
+	<vendor>
+		<name>DoJa</name>
+	</vendor>	
+
+	<vendor>
+		<name>NTT-DoCoMo</name>
+	</vendor>	
 	
 </vendors>

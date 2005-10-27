@@ -31,11 +31,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.BooleanEvaluator;
@@ -99,6 +101,7 @@ public class BuildSetting {
 	private boolean usePolishGui;
 	private File preverify;
 	private final Project antProject;
+	private final BooleanEvaluator antPropertiesEvaluator;
 	private boolean includeAntProperties;
 	private ResourceUtil resourceUtil;
 	private final ArrayList sourceSettings;
@@ -139,7 +142,7 @@ public class BuildSetting {
 	 * 
 	 * @param antProject The corresponding ant-project.
 	 */
-	public BuildSetting( Project antProject ) {
+	public BuildSetting( Project antProject, BooleanEvaluator antEvaluator ) {
 		this.polishHomePath = antProject.getProperty( "polish.home" );
 		if (this.polishHomePath != null) {
 			this.polishHomeDir = new File( this.polishHomePath );
@@ -153,6 +156,7 @@ public class BuildSetting {
 		//System.out.println("project base path=" + this.projectBasePath);
 		this.projectBaseDir = antProject.getBaseDir();
 		this.antProject = antProject;
+		this.antPropertiesEvaluator = antEvaluator;
 		this.workDir = new File( this.projectBasePath + "build");
 		this.destDir = new File( this.projectBasePath + "dist");
 		this.apiDir = getFile("import");
@@ -192,8 +196,11 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredMidlets( MidletSetting setting ) {
+		if ( !setting.isActive( this.antPropertiesEvaluator ) ){
+			return;
+		}
 		if (this.midletSetting != null) {
-			throw new BuildException("Please use either <midlets> or <midlet> to define your midlets!");
+			throw new BuildException("Please use either <midlets> or <midlet> to define your midlets, or use mutually \"if\" and \"unless\" attributes.!");
 		}
 		this.midletSetting = setting;
 	}
@@ -664,18 +671,13 @@ public class BuildSetting {
 	public SourceSetting[] getSourceSettings() {
 		if (this.sourceSettings.size() == 0) {
 			// add default directory: either source/src, scr or source:
-			File src = getFile("source/src", false );
-			if (src.exists()) {
-				this.sourceSettings.add( new SourceSetting( src  ) );
-			} else {
-				src = getFile("src", false );
-				if (src.exists()) {
-					this.sourceSettings.add( new SourceSetting( src  ) );
-				} else {
-					src = getFile("source", false);
-					if (src.exists()) {
-						this.sourceSettings.add( new SourceSetting( src ) );
-					} else {
+			//System.out.println("Starting searching for source dirs...");
+			File src = getProjectOrAbsoluteFile( "source/src", false );
+			if (!src.exists()) {
+				src = getProjectOrAbsoluteFile("src", false );
+				if (!src.exists()) {
+					src = getProjectOrAbsoluteFile("source", false);
+					if (!src.exists()) {
 						throw new BuildException("Did not find any of the default " +
 								"source directories [source/src], [src] or [source]. " +
 								"Please specify the [sourceDir]-attribute of the " +
@@ -684,6 +686,8 @@ public class BuildSetting {
 					}
 				}
 			}
+			//System.out.println("setting source dir to [" + src.getAbsolutePath() + "]");
+			this.sourceSettings.add( new SourceSetting( src ) );
 		}
 		SourceSetting[] settings = (SourceSetting[]) this.sourceSettings.toArray( new SourceSetting[ this.sourceSettings.size()]);
 		return settings;
@@ -1061,6 +1065,26 @@ public class BuildSetting {
 		}
 		return file;
 	}
+	
+	/**
+	 * Resolves the given path and returns a file handle for that path.
+	 * 
+	 * @param path the relative or absolute path, e.g. "resources2"
+	 * @param tryPolishHomePath true when the file should also be searched in the polishHomePath 
+	 * @return the file handle for the path
+	 */
+	protected File getProjectOrAbsoluteFile( String path, boolean tryPolishHomePath ) {
+		File absolute = new File( path );
+		if (absolute.isAbsolute()) {
+			return absolute;
+		}
+		File file = new File( this.projectBasePath + path );
+		if (!file.exists() && tryPolishHomePath) {
+			file = new File( this.polishHomePath + path );
+		}
+		return file;
+	}
+
 
 	/**
 	 * Determines whether there is a filter registered for JAD attributes
