@@ -41,7 +41,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 	//the start degrees of the images
 	private int degree = 1,lstdegree = 89;
 	//the nxtImage to start in screen
-	private int row = 0;
+	private int row = 0,currentX=0;
 	private int[] left ,right ,up,down;
 	//the rgb - images
 	private int[] rgbData ;
@@ -104,8 +104,8 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 //		System.out.print("bishier.1\n");
 		int row = 0,column = 0;
 		int length = this.rgbData.length-1;
-		int sH,c,u,o,r,newI,sW = 0,left = 0,right = this.screenWidth;
-		o = this.screenWidth;
+		int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;
+		scalePercentWidth = this.screenWidth;
 		for(int i = 0; i < length;i++){
 			row = (row + 1) % this.screenWidth;
 			if(row == 0){
@@ -113,7 +113,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 				left = this.left[column];
 				right = this.right[column];
 				sW = this.scaleableWidth[column];
-				o = ((sW*100) / this.screenWidth);
+				scalePercentWidth = ((sW*100) / this.screenWidth);
 			}
 			sH = this.scaleableHeight[row];
 			
@@ -122,24 +122,29 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 			}
 			else{
 				c = column - (this.screenHeight - sH);
-				u = (((this.screenHeight-((this.screenHeight-sH)))*100)/this.screenHeight);
-				this.row = this.screenWidth - (left+(this.screenWidth-right));
+				if(c < 1)c++;
+				scalePercentH = (((this.screenHeight-((this.screenHeight-sH)))*100)/this.screenHeight);
+				this.row = left + ((this.screenWidth - right)/this.screenWidth);
 				if(this.row <= row){
 					r = row - this.row;
-					o = ((sW*100) / this.screenWidth);
+					scalePercentWidth = (sW*100) / this.screenWidth;
 				}else{
 					r = row;
-					o = (((this.row)*100) / this.screenWidth);
+					scalePercentWidth = (this.row*100) / this.screenWidth;
 				}
-				newI = ((r*100)/o)+(this.screenWidth * ((c*100)/u));
+				
+//				if(r < 1)r++;
+//				if(sW < 1)sW++;
+				scalePercentWidth = (((this.screenWidth-((this.screenWidth-sW)))*100)/this.screenWidth);
+				if(scalePercentWidth < 1)scalePercentWidth++;
+				if(scalePercentH < 1)scalePercentH++;
+				newI = ((r*100)/scalePercentWidth)+(this.screenWidth * ((c*100)/scalePercentH));
 				if(newI >= length)newI = length;
 				if(newI < 0)newI = 0;
-				if( this.row > row){
-					this.rgbData[i] = this.rgbbuffer[newI];
-				}else{
-					this.rgbData[i] = this.lstrgbbuffer[newI];
-				}
+
+				this.rgbData[i] = this.rgbbuffer[newI];
 			}
+		
 		}
 //		System.out.print("bishier.2\n");
 		this.cubeEffect();
@@ -153,11 +158,18 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 				this.scaleableHeight[i]--;this.up[i]++;
 		}
 		int up = this.up[0];
+		if(up > 110)up = 110;
 		for(int i = 0; i < up;i++){
-			this.scaleableWidth[up + i]-=2;
-			this.right[up + i]--;
-			this.left[up + i]++;
+			if(this.scaleableWidth[up + i] > 10){
+				this.scaleableWidth[up + i]-=10;
+				this.right[up + i]-=5;
+				this.left[up + i]+=5;
+			}
 		}
+//		System.out.print("up"+up+"\n");
+//		for(int i = 0; i < this.scaleableWidth.length;i++){
+//				this.scaleableWidth[i]--;this.right[i]--;
+//		}
 	}
 	
 	public void keyPressed(int keyCode) {
@@ -173,7 +185,9 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 	//#endif
 	
 	public void paint(Graphics g) {
-		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
+		g.fillRect(0,0,this.screenWidth,this.screenHeight);
+		g.drawRGB(this.rgbData,0,this.screenWidth,0,this.currentX,this.screenWidth,this.screenHeight,false);
+		this.currentX+=1;
 		this.display.callSerially( this );
 	}
 
