@@ -74,13 +74,11 @@ public class DefaultDescriptorCreator extends DescriptorCreator  {
 		Jad jad = new Jad( env );
 		jad.setAttributes( descriptorAttributes );
 		
-		String jadPath = env.getVariable("polish.jadPath");
-		File jadFile = new File( jadPath );
 		try {
-			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
-			FileUtil.writeTextFile(jadFile, jad.getContent(), encoding );
+			System.out.println("creating JAD file [" + descriptorFile.getAbsolutePath() + "].");
+			FileUtil.writeTextFile(descriptorFile, jad.getContent(), encoding );
 		} catch (IOException e) {
-			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
+			throw new BuildException("Unable to create JAD file [" + descriptorFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
 		}
 		
 	}

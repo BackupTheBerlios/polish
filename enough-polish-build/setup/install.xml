@@ -137,6 +137,20 @@
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/.classpath" type="shell" /> 
         </pack>
+        <pack name="DoJa Tetris" required="no" preselected="yes">
+            <description>A Tetris clone from Sun for DoJa devices.</description>
+            <file src="samples/doja/source" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="samples/doja/resources" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="../setup/samples/doja/.classpath" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="../setup/samples/doja/.project" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="../setup/samples/doja/build.xml" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="../setup/samples/doja/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="../setup/samples/doja/nbproject" targetdir="$INSTALL_PATH/samples/doja"/>
+            <parsable targetfile="$INSTALL_PATH/samples/doja/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/doja/nbproject/project.properties" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/doja/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/doja/.classpath" type="shell" /> 
+        </pack>
         <pack name="External Device Database" required="no" preselected="yes" >
             <description>The files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot; etc. These are necessary if you want to add your own device-definitions or modify existing ones.</description>
             <file src="devices.xml" targetdir="$INSTALL_PATH"/>

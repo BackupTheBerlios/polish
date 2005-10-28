@@ -65,7 +65,7 @@ public abstract class DescriptorCreator extends Extension {
 	throws BuildException 
 	{
 		this.environment = env;
-		File descriptorFile = new File( device.getClassesDir() + File.separatorChar + "META-INF" + File.separatorChar + "MANIFEST.MF" );
+		File descriptorFile = new File( env.getVariable("polish.jadPath") );
 		Attribute[] descriptorAttributes = (Attribute[]) env.get(DESCRIPTOR_ATTRIBUTES_KEY);
 		if (descriptorAttributes == null) {
 			throw new BuildException("No descriptor attributes stored.");

@@ -95,6 +95,8 @@
 		<capability name="build.BootClassPath" value="doja-1.5.jar" />
 		<capability name="build.ImplicitGroups" value="doja, doja1.5" />
 		<capability name="build.ManifestCreator" value="none" />
+		<capability name="build.DescriptorCreator" value="doja" />
+		<capability name="Emulator.Class" value="DoJaEmulator" />
 	</platform>
 
 	<platform>
@@ -103,6 +105,8 @@
 		<capability name="build.BootClassPath" value="doja-2.5.jar" />
 		<capability name="build.ImplicitGroups" value="doja, doja2.5" />
 		<capability name="build.ManifestCreator" value="none" />
+		<capability name="build.DescriptorCreator" value="doja" />
+		<capability name="Emulator.Class" value="DoJaEmulator" />
 	</platform>
 	
 </platforms>

@@ -136,6 +136,8 @@ public class BuildSetting {
 	private boolean abortOnError = true;
 	private String onError;
 	private ArrayList preCompilers;
+	private ClassSetting mainClassSetting;
+	private ClassSetting dojaClassSetting;
 	
 	/**
 	 * Creates a new build setting.
@@ -478,12 +480,15 @@ public class BuildSetting {
 	
 	public Midlet[] getMidlets(Environment environment) {
 		if (this.midletSetting == null) {
-			return null;
+			return new Midlet[ 0 ];
 		}
 		return this.midletSetting.getMidlets( this.antProject, environment );
 	}
 
 	public Midlet[] getMidlets() {	
+		if (this.midletSetting == null) {
+			return new Midlet[ 0 ];
+		}
 		return this.midletSetting.getMidlets();
 	}
 
@@ -1662,6 +1667,47 @@ public class BuildSetting {
 
 	public void setOnError(String onError) {
 		this.onError = onError;
+	}
+
+	/**
+	 * @return Returns the dojaClassSetting.
+	 */
+	public ClassSetting getDojaClassSetting() {
+		return this.dojaClassSetting;
+	}
+
+	/**
+	 * @param setting The dojaClassSetting to set.
+	 */
+	public void addConfiguredDoja(ClassSetting setting) {
+		if (setting.getClassName() == null ) {
+			throw new BuildException("Invalid <doja>/<iappli> element: the \"class\" attribute is required.");
+		}
+		this.dojaClassSetting = setting;
+	}
+
+	/**
+	 * @param setting The dojaClassSetting to set.
+	 */
+	public void addConfiguredIappli(ClassSetting setting) {
+		addConfiguredDoja( setting );
+	}
+
+	/**
+	 * @return Returns the mainClassSetting.
+	 */
+	public ClassSetting getMainClassSetting() {
+		return this.mainClassSetting;
+	}
+
+	/**
+	 * @param setting The mainClassSetting to set.
+	 */
+	public void addConfiguredMain(ClassSetting setting) {
+		if (setting.getClassName() == null ) {
+			throw new BuildException("Invalid <main> element: the \"class\" attribute is required.");
+		}
+		this.mainClassSetting = setting;
 	}
 
 

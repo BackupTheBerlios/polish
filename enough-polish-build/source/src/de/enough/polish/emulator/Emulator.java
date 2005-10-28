@@ -154,10 +154,12 @@ implements Runnable, OutputFilter
 				}
 				try {
 					Debugger debugger = (Debugger) this.extensionManager.getTemporaryExtension( ExtensionManager.TYPE_DEBUGGER, debuggerSetting, this.environment );
-					addDebugArguments( argsList, debugger );
-					arguments = (String[]) argsList.toArray( new String[ argsList.size() ] );
-					debuggerThread = new DebuggerThread( debugger );
-					debuggerThread.start();
+					if (supportsDebugger(debugger)) {
+						addDebugArguments( argsList, debugger );
+						arguments = (String[]) argsList.toArray( new String[ argsList.size() ] );
+						debuggerThread = new DebuggerThread( debugger );
+						debuggerThread.start();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.err.println("Warning: unable to initalize debugger connection: " + e.toString() );
@@ -198,6 +200,17 @@ implements Runnable, OutputFilter
 	protected void addDebugArguments(ArrayList argsList, Debugger debugger) {
 		debugger.addDebugArguments( argsList );
 	}
+	
+	/**
+	 * Defines whether this emulator supports the given debugger.
+	 * Subclasses can use this for influencing the debugging process.
+	 * 
+	 * @return true when the debugger is supported. This defaults to true.
+	 */
+	protected boolean supportsDebugger(Debugger debugger) {
+		return true;
+	}
+
 
 	/**
 	 * Executes the actual emulator.

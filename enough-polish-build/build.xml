@@ -246,7 +246,8 @@
 		<copy todir="tmp/macosx" >
 			<fileset dir="setup/macosx" excludes="**/CVS/**" />
 		</copy>
-		<!-- copy sample application -->
+		<!-- copy sample applications -->
+		<!-- copy menu application -->
 		<mkdir dir="tmp/samples/menu/source/src" />
 		<copy todir="tmp/samples/menu/source/src">
 			<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
@@ -288,6 +289,16 @@
 			>
 			<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy doja sample application -->
+		<mkdir dir="tmp/samples/doja/source/src" />
+		<copy todir="tmp/samples/doja/source/src">
+			<fileset dir="../enough-polish-sample-doja/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/doja/" 
+			>
+			<fileset dir="setup/samples/doja" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-doja" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy source of J2ME Polish -->
 		<mkdir dir="tmp/j2mepolish-src/build" />

@@ -588,4 +588,18 @@ public class Environment {
 		}
 		return this.booleanEvaluator.evaluate(condition, "Environment", 0 );
 	}
+
+	/**
+	 * Retrieves the variables and writes any properties into it's value.
+	 * 
+	 * @param name the name of the variable
+	 * @return the value of the variable that doesn't include any properties
+	 */
+	public String resolveVariable(String name ) {
+		String value = getVariable(name);
+		if (value != null && value.indexOf('$') != -1) {
+			value = writeProperties(value);
+		}
+		return value;
+	}
 }

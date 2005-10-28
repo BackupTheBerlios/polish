@@ -5950,11 +5950,15 @@
 		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="DoJa/1.5" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<!--
-		<capability name="JavaPackage" value="doja-15" />
-		-->
 		<capability name="ImageFormat" 	value="gif" />
-		<capability name="Emulator.Executable" value="${doja.home}/bin/doja.exe" />
-		<capability name="Emulator.Arguments" value="-j;;${polish.jarPath}" />
 	</device>
+	<device
+		supportsPolishGui="false" >
+		<identifier>DoJa/os25</identifier>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="DoJa/2.5" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ImageFormat" 	value="gif" />
+	</device>
+	
 </devices>

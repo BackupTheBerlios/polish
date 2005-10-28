@@ -61,6 +61,7 @@ import de.enough.polish.ExtensionManager;
 import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.BuildSetting;
+import de.enough.polish.ant.build.ClassSetting;
 import de.enough.polish.ant.build.CompilerTask;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
@@ -502,7 +503,14 @@ public class PolishTask extends ConditionalTask {
 		// check the nested element of <build>:
 		Midlet[] midlets = this.buildSetting.getMidlets(); 
 		if (midlets == null || midlets.length == 0) {
-			throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>.");
+			// check for main class or iappli class:
+			if ( this.buildSetting.getMainClassSetting() == null
+					&& this.buildSetting.getDojaClassSetting() == null
+					) 
+			{
+				
+				throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>. Alternatively you might use a <iappli> or <main> element for defining the DoJa main class or the BlackBerry main class.");
+			}
 		}
 		// now check if the midlets do exist:
 		SourceSetting[] sources = this.buildSetting.getSourceSettings();
@@ -911,6 +919,12 @@ public class PolishTask extends ConditionalTask {
 						}	
 					}
 				}
+				if (this.buildSetting.getDojaClassSetting() != null) {
+					preserveList.add( this.buildSetting.getDojaClassSetting().getClassName() );
+				}
+				if (this.buildSetting.getMainClassSetting() != null) {
+					preserveList.add( this.buildSetting.getMainClassSetting().getClassName() );
+				}
 				this.preserveClasses = (String[]) preserveList.toArray( new String[ preserveList.size() ] );
 			}
 		}
@@ -1155,7 +1169,7 @@ public class PolishTask extends ConditionalTask {
 		String jarName = this.infoSetting.getJarName();
 		jarName = this.environment.writeProperties( jarName, true );
 		this.environment.addVariable( "polish.jarName", jarName );
-		
+				
 		// enable the support for the J2ME Polish GUI, part 1: 
 		// check if a preprocessing variable is set for using the Polish GUI:
 		String usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
@@ -1175,6 +1189,15 @@ public class PolishTask extends ConditionalTask {
 			Variable var = vars[i];
 			this.environment.addVariable(var.getName(), var.getValue() );
 		}
+		ClassSetting dojaSetting = this.buildSetting.getDojaClassSetting();
+		if (dojaSetting != null && dojaSetting.isActive( evaluator, antProject ) ) {
+			this.environment.addVariable("polish.classes.iapplication", dojaSetting.getClassName() );
+		}
+		ClassSetting mainSetting = this.buildSetting.getMainClassSetting();
+		if (mainSetting != null && mainSetting.isActive( evaluator, antProject ) ) {
+			this.environment.addVariable("polish.classes.main", mainSetting.getClassName() );
+		}
+
 		// now set the full-screen-settings:
 		String value = this.environment.getVariable("polish.FullScreen");
 		if (value != null) {
@@ -1248,9 +1271,11 @@ public class PolishTask extends ConditionalTask {
 
 		// add primary midlet-class-definition:
 		String[] midletClassNames = this.buildSetting.getMidletClassNames( this.useDefaultPackage, this.environment );
-		this.environment.addVariable("polish.midlet.class", midletClassNames[0] );
-		for (int i = 0; i < midletClassNames.length; i++) {
-			this.environment.addVariable("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
+		if (midletClassNames.length > 0) {
+			this.environment.addVariable("polish.midlet.class", midletClassNames[0] );
+			for (int i = 0; i < midletClassNames.length; i++) {
+				this.environment.addVariable("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
+			}
 		}
 		
 		
@@ -2349,6 +2374,7 @@ public class PolishTask extends ConditionalTask {
 				String info = midletInfos[i];
 				attributesByName.put( InfoSetting.NMIDLET + (i+1), 
 							new Attribute(InfoSetting.NMIDLET + (i+1), info) );
+				this.environment.setVariable( InfoSetting.NMIDLET + (i+1), info );
 			}
 //		}
 		
@@ -2356,6 +2382,7 @@ public class PolishTask extends ConditionalTask {
 		long size = device.getJarFile().length();
 		attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
 					new Attribute( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
+		this.environment.setVariable( InfoSetting.MIDLET_JAR_SIZE, "" + size );
 		
 		// add user-defined attributes:
 		Project antProject = getProject();
