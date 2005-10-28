@@ -52,6 +52,7 @@ public class CageScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
+			this.row = 0;
 			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
 			this.height = height;
 			this.width = width;

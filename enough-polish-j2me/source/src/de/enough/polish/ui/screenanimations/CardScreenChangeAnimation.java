@@ -60,10 +60,16 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
+			System.gc();
 			System.out.print("width:"+width+":height:"+height);
+			this.row = 0;
+//			this.row = width;
+			this.degree = 1;
+			this.lstdegree = 89;
+			this.stillRun = true;
 			this.wayForScale = (width *100)/ 90;
 			this.heightScale = ((height-((height * 12)/100))*100)/90;
-			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
+			int size = width * height;
 			this.scaleableWidth = width;
 			this.scaleableHeight = new int [width];
 			for(int i = 0;i < this.scaleableHeight.length;i++){
@@ -74,6 +80,7 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 			this.rgbData = new int [size];
 			nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
 			lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
+			lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
 			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
@@ -127,10 +134,12 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		int sH,c,u,o,r,newI;
 		for(int i = 0; i < length;i++){
 			row = (row + 1) % this.screenWidth;
-			if(row == 0)column++;	
+			if(row == 0){
+				column++;	
+			}
 			sH = this.scaleableHeight[row];
 			if(sH < column || (this.screenHeight - sH) > column ){// || row > (this.screenWidth-this.row) || row < this.row){
-				this.rgbData[i] = 0x000000;
+				this.rgbData[i] = 0x028D0A;
 			}
 			else{
 				c = column - (this.screenHeight - sH);
@@ -147,9 +156,14 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 				}
 //				if(o <= 0)o++;
 				newI = ((r*100)/o)+(this.screenWidth * ((c*100)/u));
-				if(newI >= this.rgbData.length)newI = this.rgbData.length-1;
-//				if(newI < 0)newI = 0;
-				this.rgbData[i] = this.rgbbuffer[newI];
+				if(newI >= length)newI = length-1;
+				if(newI < 0)newI = 0;
+//				this.rgbData[i] = this.rgbbuffer[newI];
+				if( this.row > row){
+					this.rgbData[i] = this.rgbbuffer[newI];
+				}else{
+					this.rgbData[i] = this.lstrgbbuffer[newI];
+				}
 			}
 //			else if( this.row > row){
 //				this.rgbData[i] = getColorRGB(true,row,column);
@@ -184,6 +198,7 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 //		if(this.row < this.screenWidth-2)this.row+=2;
 		
 		this.row = (this.screenWidth -((this.wayForScale * this.lstdegree)/100));
+		System.out.print("row"+this.row+"\n");
 		int endOfHeight; int difference; int scale; int sumScale;
 		if(this.degree < 90){		
 //			if(this.scaleableWidth <= 0)this.scaleableWidth++;

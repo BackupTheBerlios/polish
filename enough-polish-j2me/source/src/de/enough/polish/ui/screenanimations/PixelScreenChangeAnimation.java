@@ -50,6 +50,8 @@ public class PixelScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
+			this.stillRun = true;
+			this.row = 25;
 			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
 			this.height = height;
 			this.width = width;

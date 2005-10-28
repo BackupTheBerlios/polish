@@ -53,6 +53,7 @@ public class PaperScreenChangeAnimation extends ScreenChangeAnimation {
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
+			this.row = 0;
 			this.height = height;
 			this.width = width;
 			this.rgbNew = new int [size];

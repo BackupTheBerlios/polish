@@ -9,7 +9,7 @@ import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
-public class RainScreenChangeAnimation extends ScreenChangeAnimation {
+public class TestRainScreenChangeAnimation extends ScreenChangeAnimation {
 	private boolean stillRun = true;
 	//the start degrees of the images
 	//the nxtImage to start in screen
@@ -25,7 +25,7 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
  	//the scale from the row
 //	//kann nachher weg nur zum testen
 //	private boolean first = true;
-	public RainScreenChangeAnimation() {
+	public TestRainScreenChangeAnimation() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -34,7 +34,7 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 			System.gc();
-			this.id = 12;
+			this.id = 8;
 			this.row = 0;
 			this.stillRun = true;
 			int size = width * height;
@@ -66,94 +66,50 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	
 	protected boolean animate() {
-//		// TODO Auto-generated method stub
-//		this.cubeEffect();
-//		int row = 0,column = 0;
-//		int length = this.rgbData.length-1;
-//		int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;
-//		scalePercentWidth = this.screenWidth;
-//		for(int i = 0; i < length;i++){
-//			row = (row + 1) % this.screenWidth;
-//			if(row == 0){
-//				column++;	
-//				left = this.left[column];
-//				right = this.right[column];
-//				sW = this.scaleableWidth[column];
-//				scalePercentWidth = ((sW*100) / this.screenWidth);
-//			}
-//			sH = this.scaleableHeight[row];
-//			
-//			if(left > row || right < row || this.down[row] < column || this.up[row] > column){
-//				this.rgbData[i] = this.rgbbuffer[i];
-//			}
-//			else{
-//				c = column - (this.screenHeight - sH);
-//				if(c < 1)c++;
-//				scalePercentH = (((this.screenHeight-((this.screenHeight-sH)))*100)/this.screenHeight);
-//				this.row = left + ((this.screenWidth - right)/this.screenWidth);
-//				if(this.row <= row){
-//					r = row - this.row;
-//					scalePercentWidth = (sW*100) / this.screenWidth;
-//				}else{
-//					r = row;
-//					scalePercentWidth = (this.row*100) / this.screenWidth;
-//				}
-//				
-////				if(r < 1)r++;
-////				if(sW < 1)sW++;
-//				scalePercentWidth = (((this.screenWidth-((this.screenWidth-sW)))*100)/this.screenWidth);
-//				if(scalePercentWidth < 1)scalePercentWidth++;
-//				if(scalePercentH < 1)scalePercentH++;
-//				newI = ((r*100)/scalePercentWidth)+(this.screenWidth * ((c*100)/scalePercentH));
-//				if(newI >= length)newI = length;
-//				if(newI < 0)newI = 0;
-//
-//				this.rgbData[i] = this.lstrgbbuffer[newI];
-//			}
 		// TODO Auto-generated method stub
 		this.cubeEffect();
+		int row = 0,column = 0;
 		int length = this.rgbData.length-1;
 		int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;
 		scalePercentWidth = this.screenWidth;
-		for(int y = 0; y < this.screenHeight;y++){
-				left = this.left[y];
-				right = this.right[y];
-				sW = this.scaleableWidth[y];
+		for(int i = 0; i < length;i++){
+			row = (row + 1) % this.screenWidth;
+			if(row == 0){
+				column++;	
+				left = this.left[column];
+				right = this.right[column];
+				sW = this.scaleableWidth[column];
 				scalePercentWidth = ((sW*100) / this.screenWidth);
-				int column = y*this.screenWidth;
-				for(int x = 1; x < this.screenWidth;x++){
-//					System.out.print(y*x+"\n");
-					sH = this.scaleableHeight[x];
-					
-					if(left > x || right < x || this.down[x] < y || this.up[x] > y){
-						this.rgbData[column+x] = this.rgbbuffer[column+x];
-					}
-					else{
-						c = y - (this.screenHeight - sH);
-						if(c < 1)c++;
-						scalePercentH = (((this.screenHeight-((this.screenHeight-sH)))*100)/this.screenHeight);
-						this.row = left + ((this.screenWidth - right)/this.screenWidth);
-						if(this.row <= x){
-							r = x - this.row;
-							scalePercentWidth = (sW*100) / this.screenWidth;
-						}else{
-							r = x;
-							scalePercentWidth = (this.row*100) / this.screenWidth;
-						}
-						
-//						if(r < 1)r++;
-//						if(sW < 1)sW++;
-						scalePercentWidth = (((this.screenWidth-((this.screenWidth-sW)))*100)/this.screenWidth);
-						if(scalePercentWidth < 1)scalePercentWidth++;
-						if(scalePercentH < 1)scalePercentH++;
-						newI = ((r*100)/scalePercentWidth)+(this.screenWidth * ((c*100)/scalePercentH));
-						if(newI >= length)newI = length;
-						if(newI < 0)newI = 0;
-
-						this.rgbData[x+column] = this.lstrgbbuffer[newI];
-					}	
+			}
+			sH = this.scaleableHeight[row];
+			
+			if(left > row || right < row || this.down[row] < column || this.up[row] > column){
+				this.rgbData[i] = this.rgbbuffer[i];
+			}
+			else{
+				c = column - (this.screenHeight - sH);
+				if(c < 1)c++;
+				scalePercentH = (((this.screenHeight-((this.screenHeight-sH)))*100)/this.screenHeight);
+				this.row = left + ((this.screenWidth - right)/this.screenWidth);
+				if(this.row <= row){
+					r = row - this.row;
+					scalePercentWidth = (sW*100) / this.screenWidth;
+				}else{
+					r = row;
+					scalePercentWidth = (this.row*100) / this.screenWidth;
 				}
 				
+//				if(r < 1)r++;
+//				if(sW < 1)sW++;
+				scalePercentWidth = (((this.screenWidth-((this.screenWidth-sW)))*100)/this.screenWidth);
+				if(scalePercentWidth < 1)scalePercentWidth++;
+				if(scalePercentH < 1)scalePercentH++;
+				newI = ((r*100)/scalePercentWidth)+(this.screenWidth * ((c*100)/scalePercentH));
+				if(newI >= length)newI = length;
+				if(newI < 0)newI = 0;
+
+				this.rgbData[i] = this.lstrgbbuffer[newI];
+			}
 
 		}
 		
@@ -167,10 +123,9 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 			if(this.scaleableHeight[i] > 0){
 				this.scaleableHeight[i]-=20;
 				this.up[i]+=20;
-			}	
-			
+			}		
 		}
-		this.id+=12;
+		this.id+=8;
 		if(id > this.screenWidth)this.id = this.scaleableHeight.length;
 	}
 	

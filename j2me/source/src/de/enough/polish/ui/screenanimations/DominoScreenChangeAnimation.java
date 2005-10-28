@@ -41,7 +41,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 	//the start degrees of the images
 	private int degree = 1,lstdegree = 89;
 	//the nxtImage to start in screen
-	private int row = 0,currentX=0;
+	private int row = 0,currentX=0,id = 0;
 	private int[] left ,right ,up,down;
 	//the rgb - images
 	private int[] rgbData ;
@@ -65,6 +65,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 			System.gc();
 			System.out.print("width:"+width+":height:"+height);
 			this.row = 0;
+			this.id = 0;
 //			this.row = width;
 			this.degree = 1;
 			this.lstdegree = 89;
@@ -118,7 +119,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 			sH = this.scaleableHeight[row];
 			
 			if(left > row || right < row || this.down[row] < column || this.up[row] > column){
-				this.rgbData[i] = 0x028D0A;
+				this.rgbData[i] = this.rgbbuffer[i];
 			}
 			else{
 				c = column - (this.screenHeight - sH);
@@ -142,29 +143,46 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 				if(newI >= length)newI = length;
 				if(newI < 0)newI = 0;
 
-				this.rgbData[i] = this.rgbbuffer[newI];
+				this.rgbData[i] = this.lstrgbbuffer[newI];
 			}
 		
 		}
 //		System.out.print("bishier.2\n");
 		this.cubeEffect();
-		if(this.lstdegree <= 1)this.stillRun = false;
+		if(this.scaleableHeight[0] <= 0)this.stillRun = false;
+//		this.id++;
 		return this.stillRun;
 	}
 	
 	
 	private void cubeEffect(){		
+//		for(int i = 0; i < this.scaleableHeight.length;i++){
+//				this.scaleableHeight[i]--;this.up[i]++;
+//		}
+//		int up = this.up[0];
+//		if(up > 110)up = 110;
+//		for(int i = 0; i < up;i++){
+//			if(this.scaleableWidth[up + i] > 10){
+//				this.scaleableWidth[up + i]-=10;
+//				this.right[up + i]-=5;
+//				this.left[up + i]+=5;
+//			}
+//		}
+//		int id=0,idNext=0;
 		for(int i = 0; i < this.scaleableHeight.length;i++){
-				this.scaleableHeight[i]--;this.up[i]++;
-		}
-		int up = this.up[0];
-		if(up > 110)up = 110;
-		for(int i = 0; i < up;i++){
-			if(this.scaleableWidth[up + i] > 10){
-				this.scaleableWidth[up + i]-=10;
-				this.right[up + i]-=5;
-				this.left[up + i]+=5;
-			}
+//			id = (id + 1) % 2;
+//			if(id == 0){
+			this.scaleableHeight[i]-=18;
+			this.up[i]+=18;
+//				this.up[i]++;
+//				this.down[i]--;
+//			}
+//			if(id == 1){
+//				this.scaleableWidth[i]+=6;
+				
+//				this.left[i]++;
+//				this.right[i]-=12;
+//			}
 		}
 //		System.out.print("up"+up+"\n");
 //		for(int i = 0; i < this.scaleableWidth.length;i++){
@@ -186,7 +204,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	public void paint(Graphics g) {
 		g.fillRect(0,0,this.screenWidth,this.screenHeight);
-		g.drawRGB(this.rgbData,0,this.screenWidth,0,this.currentX,this.screenWidth,this.screenHeight,false);
+		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
 		this.currentX+=1;
 		this.display.callSerially( this );
 	}
