@@ -25,10 +25,17 @@
  */
 package de.enough.polish.resources;
 
+import java.io.File;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 
+import sun.security.krb5.internal.ccache.an;
+
 import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.ConditionalElement;
 
 /**
@@ -44,7 +51,10 @@ import de.enough.polish.ant.ConditionalElement;
  */
 public class ResourcesFileSet extends FileSet {
 	
-	private ConditionalElement condition = new ConditionalElement(); 
+	private ConditionalElement condition = new ConditionalElement();
+	private Environment environment;
+	private String dirName; 
+	private File resolvedDir;
 
 	/**
 	 * Creates a new empty file set.
@@ -86,12 +96,76 @@ public class ResourcesFileSet extends FileSet {
 	 * Checks if the conditions for this element are met.
 	 * 
 	 * @param evaluator the boolean evaluator with the settings for the current device
-	 * @param parentProject the Ant project into which this variable is embedded
+	 * @param antProject the Ant project into which this variable is embedded
+	 * @param env the environment
 	 * @return true when no condition has been specified 
 	 * 			or the specified conditions have been met.
 	 */
-	public boolean isActive(BooleanEvaluator evaluator, Project parentProject) {
-		return this.condition.isActive(evaluator, parentProject);
+	public boolean isActive(BooleanEvaluator evaluator, Project antProject, Environment env) {
+		this.environment = env;
+		this.resolvedDir = null;
+		return this.condition.isActive(evaluator, antProject) && dirExists(antProject);
+	}	
+	
+
+	private boolean dirExists(Project antProject) {
+		if (this.resolvedDir == null) {
+			resolveDir(antProject);
+		}
+		return this.resolvedDir.exists();
+	}
+
+	private void resolveDir(Project antProject) {
+		String realDirName = this.dirName;
+		if (this.environment == null) {
+			System.err.println("Warning: no environment has been set for ResourcesFileSet.");
+		} else {
+			realDirName = this.environment.writeProperties( realDirName );
+		}
+		File file = new File( realDirName );
+		if (file.isAbsolute()) {
+			this.resolvedDir = file;
+		} else {
+			this.resolvedDir = new File( antProject.getBaseDir(), realDirName );
+		}
+		//System.out.println("resolved dir = [" + this.resolvedDir.getAbsolutePath() + "]");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.types.AbstractFileSet#setDir(java.io.File)
+	 */
+	public void setDir(File file) throws BuildException {
+		//System.err.println("Warning: setDir( File ) called on ResourceFileSet: " + file.getPath() );
+		this.dirName = file.getPath();
+		if (this.dirName.indexOf('$') == -1 && !file.exists()) {
+			throw new BuildException("A <fileset> \"dir\" attribute points to the non-existing location " + file.getAbsolutePath() + " - please correct this setting in your build.xml script." );
+		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.types.AbstractFileSet#getDir(org.apache.tools.ant.Project)
+	 */
+	public File getDir(Project antProject) {
+		if (this.resolvedDir == null) {
+			resolveDir( antProject );
+		}
+		return this.resolvedDir;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.tools.ant.types.AbstractFileSet#getDirectoryScanner(org.apache.tools.ant.Project)
+	 */
+	public DirectoryScanner getDirectoryScanner(Project antProject) {
+		if (this.resolvedDir == null) {
+			resolveDir( antProject );
+		}
+		super.setDir( this.resolvedDir );
+		return super.getDirectoryScanner( antProject );
+	}
+	
+	public void setEnvironment( Environment env ) {
+		this.environment = env;
 	}
 
 }

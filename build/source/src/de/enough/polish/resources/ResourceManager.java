@@ -301,7 +301,7 @@ public class ResourceManager {
 			addFiles(files, resourcesByName);
 		}
 		// also load resources from the filesets:
-		ResourcesFileSet[] fileSets = this.resourceSetting.getFileSets(this.booleanEvaluator);
+		ResourcesFileSet[] fileSets = this.resourceSetting.getFileSets(this.booleanEvaluator, this.environment );
 		for (int i = 0; i < fileSets.length; i++) {
 			ResourcesFileSet set = fileSets[i];
 			File dir = set.getDir(this.project);

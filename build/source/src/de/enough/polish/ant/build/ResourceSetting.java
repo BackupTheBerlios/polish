@@ -34,6 +34,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.Setting;
 import de.enough.polish.resources.ResourcesFileSet;
 import de.enough.polish.util.StringUtil;
@@ -171,16 +172,17 @@ public class ResourceSetting extends Setting {
 	 * Retrieves an array of file-sets which should either include or exclude files.
 	 * 
 	 * @param evaluator the evaluator for complex terms
+	 * @param env the environment
 	 * @return an array of the appropriate ResourcesFileSet, can be empty but not null
 	 */
-	public ResourcesFileSet[] getFileSets( BooleanEvaluator evaluator ) {
+	public ResourcesFileSet[] getFileSets( BooleanEvaluator evaluator, Environment env ) {
 		if (this.fileSets.size() == 0) {
 			return new ResourcesFileSet[0];
 		}
 		ArrayList list = new ArrayList( this.fileSets.size());
 		for (Iterator iter = this.fileSets.iterator(); iter.hasNext();) {
 			ResourcesFileSet set = (ResourcesFileSet) iter.next();
-			if (set.isActive(evaluator, this.project)) {
+			if (set.isActive(evaluator, this.project, env )) {
 				//System.out.println("Adding <fileset> " + set.getDir(this.project)  + " (condition=" + set.getCondition() + ")");
 				list.add( set );
 			//} else {
