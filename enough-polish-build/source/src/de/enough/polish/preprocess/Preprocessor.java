@@ -1466,7 +1466,7 @@ public class Preprocessor {
 		} else {
 			// the style sheet is not null:
 			if (styleSheet.containsDynamicStyles()) {
-				addSymbol("polish.useDynamicStyles");
+				this.environment.addSymbol("polish.useDynamicStyles");
 			} else {
 				this.environment.removeSymbol("polish.useDynamicStyles");
 			}
@@ -1482,6 +1482,33 @@ public class Preprocessor {
 			}
 			// now set the CSS-symbols:
 			this.environment.addSymbols( styleSheet.getCssPreprocessingSymbols( device ) );
+			
+			// add colors of the style sheet as preprocessing variables:
+			Map colors = styleSheet.getColors();
+			Object[] keys = colors.keySet().toArray();
+			// set the color-definitions:
+			ColorConverter colorConverter = new ColorConverter();
+			colorConverter.setTemporaryColors( colors );
+			for (int i = 0; i < keys.length; i++) {
+				Object key = keys[i];
+				String color = (String) ((Map)colors.get( key )).get( key );
+				this.environment.addVariable( "polish.color." + key, colorConverter.parseColor(color) );
+			}
+			
+			// add the names of the styles as preprocessing variables:
+			Style[] styles = styleSheet.getAllStyles();
+			String styleSheetClassName;
+			if( this.environment.hasSymbol("polish.useDefaultPackage") ) {
+				styleSheetClassName = "StyleSheet.";				
+			} else {
+				styleSheetClassName = "de.enough.polish.ui.StyleSheet.";
+			}
+			
+			for (int i = 0; i < styles.length; i++) {
+				Style style = styles[i];
+				//System.out.println("adding variable polish.style." + style.getStyleName() + "=" + styleSheetClassName + style.getStyleName() + "Style");
+				this.environment.addVariable( "polish.style." + style.getStyleName(), styleSheetClassName + style.getStyleName() + "Style" );
+			}
 		}
 	}
 	

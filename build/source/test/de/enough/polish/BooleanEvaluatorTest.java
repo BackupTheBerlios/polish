@@ -213,7 +213,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
 		term = "test1 ^  test2  || test3";
 		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
-		
+
 		term = "sym-1 ||  sym-2";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
 		term = "sym-1 &&  sym-2";
@@ -358,6 +358,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		variables.put("polish.Screen.Width", "100");
 		variables.put("polish.Screen.Height", "80");
 		variables.put("polish.BitsPerPixel", "8");
+		variables.put("polish.classes.fullscreen", "com.nokia.mid.ui.FullCanvas" );
 		
 		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
 		String expression = "test1 && test2";
@@ -374,7 +375,12 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertFalse( evaluator.evaluate(expression, "MyClass", 103 ));
 		expression = "test1 && (test2 ^ ! test3)";
 		assertFalse( evaluator.evaluate(expression, "MyClass", 103 ));
+		
+		assertFalse( evaluator.evaluate( "!(test1 ||  test2 || test3)", "MyClass", 12) );
 
+		assertFalse( evaluator.evaluate( "!(polish.midp2 || polish.classes.fullscreen	== com.nokia.mid.ui.FullCanvas)", "MyClass", 12) );
+		assertFalse( evaluator.evaluate( "!(polish.midp2 || polish.classes.fullscreen	== \"com.nokia.mid.ui.FullCanvas\")", "MyClass", 12) );
+		
 		expression = "true && ((true ^ ! true) || false)";
 		assertTrue( evaluator.evaluate(expression, "MyClass", 103 ));
 		expression = "true && ((true ^ ! true) || false) && (!true ^ false)";

@@ -32,8 +32,6 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 
-import sun.security.krb5.internal.ccache.an;
-
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.ConditionalElement;
@@ -104,7 +102,14 @@ public class ResourcesFileSet extends FileSet {
 	public boolean isActive(BooleanEvaluator evaluator, Project antProject, Environment env) {
 		this.environment = env;
 		this.resolvedDir = null;
-		return this.condition.isActive(evaluator, antProject) && dirExists(antProject);
+		if (this.condition.isActive(evaluator, antProject)) {
+			if (dirExists(antProject)) {
+				return true;
+			} else {
+				System.err.println("Warning: resources <fileset> with dir=\"" + this.dirName + "\" points to the non-existing directory " + this.resolvedDir.getAbsolutePath() );
+			}
+		}
+		return false;
 	}	
 	
 

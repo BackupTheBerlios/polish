@@ -220,7 +220,7 @@ public class ColorConverter {
 	 * @param newColors all colors in a map.
 	 * @throws BuildException when one of the given colors is invalid 
 	 */
-	public void setTemporaryColors( HashMap newColors ) {
+	public void setTemporaryColors( Map newColors ) {
 		this.tempColors = new HashMap();
 		Set keys = newColors.keySet();
 		for (Iterator iter = keys.iterator(); iter.hasNext();) {

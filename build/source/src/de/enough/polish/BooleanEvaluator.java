@@ -61,7 +61,7 @@ public class BooleanEvaluator {
 	public static final int LESSER_EQUALS = 9;
 	public static final int NOT_EQUALS = 10;
 
-	private static final String SYMBOL = "(\\w|-|:|\\.|/|_)+"; 
+	private static final String SYMBOL = "(\\w|-|:|\\.|/|_|\")+"; 
 	protected static final Pattern SYMBOL_PATTERN = Pattern.compile( SYMBOL );
 	
 	private static final String COMPARATOR = "(==|>=|<=|>|<|!=)";
@@ -286,7 +286,19 @@ public class BooleanEvaluator {
 					var  = (String) this.variables.get( symbol );
 				}
 				if (var == null) {
-					var = symbol;
+					boolean symbolDefined = false;
+					if (this.environment != null) {
+						symbolDefined = this.environment.hasSymbol( symbol );
+					} else if (this.device != null) {
+						symbolDefined = this.device.hasFeature( symbol );
+					} else {
+						symbolDefined = this.symbols.containsKey( symbol );
+					}
+					if (symbolDefined) {
+						var = "true";
+					} else {
+						var = symbol;
+					}
 				}
 				String lastVar;
 				if (this.environment != null) {
@@ -300,6 +312,12 @@ public class BooleanEvaluator {
 					lastVar = lastSymbol;
 				}
 				if ( operator == EQUALS ) {
+					if ( (var.charAt( 0 ) == '\"') && (var.charAt( var.length() - 1 ) == '\"')) {
+						var = var.substring( 1, var.length() - 1 );
+					}
+					if ( (lastVar.charAt( 0 ) == '\"') && (lastVar.charAt( lastVar.length() - 1 ) == '\"')) {
+						lastVar = lastVar.substring( 1, lastVar.length() - 1 );
+					}
 					result = var.equals( lastVar );
 					//System.out.println( var + " == " + lastVar + " = " + result);
 				} else if ( operator == NOT_EQUALS ) {

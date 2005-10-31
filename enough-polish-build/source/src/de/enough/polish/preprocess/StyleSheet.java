@@ -714,7 +714,7 @@ public class StyleSheet {
 	/**
 	 * Retrieves all independent color definitions.
 	 * 
-	 * @return the list of colors which has been defined.
+	 * @return the list of colors which have been defined.
 	 */
 	public HashMap getColors() {
 		return this.colors;
