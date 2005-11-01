@@ -491,8 +491,15 @@ CSS styles are used for the design of the application. The styles are defined in
 //#style cool, frosty, default
 StringItem url = new StringItem( null, "http://192.168.101.101" );
 </pre></p><p>
-In the above example one of the styles &quot;cool&quot;, &quot;frosty&quot; or &quot;default&quot; is used for the new item. The style &quot;frosty&quot; is only used when the style &quot;cool&quot; is not defined. The style &quot;default&quot; is only used, when neither the style &quot;cool&quot; nor the style &quot;frosty&quot; is defined. The style &quot;default&quot; is special, since it is always defined, even when the designer does not define it explicitly. The #style directive needs at least one style name as argument. The styles mentioned here can be defined in the &quot;resources/polish.css&quot; file. In that file the style-names need to start with a dot. In the above example you can define the styles &quot;.cool&quot;, &quot;.frosty&quot; or &quot;default&quot;. The &quot;default&quot; style is a predefined style and its name must not, therefore, start with a dot.
-Styles are only used, when the J2ME&nbsp;Polish GUI is used. This can be triggered with the &quot;usePolishGui&quot; attribute of the <build>-element in the build.xml. 
+In the above example one of the styles &quot;cool&quot;, &quot;frosty&quot; or &quot;default&quot; is used for the new item. The style &quot;frosty&quot; is only used when the style &quot;cool&quot; is not defined. The style &quot;default&quot; is only used, when neither the style &quot;cool&quot; nor the style &quot;frosty&quot; is defined. The style &quot;default&quot; is special, since it is always defined, even when the designer does not define it explicitly. The #style directive needs at least one style name as argument. The style is deemed optional when the style ends with a question mark. In that case it will
+only be used when it is defined:
+<pre>
+//#style cool?
+StringItem url = new StringItem( null, "http://192.168.101.101" );
+</pre></p><p>
+The styles mentioned here can be defined in the &quot;resources/polish.css&quot; file. In that file names of custom styles need to start with a dot. In the above example you can define the styles &quot;.cool&quot;, &quot;.frosty&quot; or &quot;default&quot;. The &quot;default&quot; style is a predefined style and its name must not, therefore, start with a dot.
+</p><p>
+Styles are only used, when the J2ME&nbsp;Polish GUI is used. This can be triggered with the &quot;usePolishGui&quot; attribute of the &lt;build&gt; element in the build.xml. 
 Using #style directive improves the performance of the application, since dynamic styles need some processing time. Dynamic styles design items by their position in screens, see section <a href="css-styles.html">&quot;Dynamic Styles&quot;</a>.
 Styles can be set for all items-constructors and for many methods:
 </p>

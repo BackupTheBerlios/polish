@@ -107,6 +107,17 @@ JBuilder
 NetBeans
 
 #####################################
+## Vendors                         ##
+#####################################
+BlackBerry
+Palm
+Nokia
+Siemens
+Sony-Ericsson
+DoJa
+NTT DoCoMo
+
+#####################################
 ## Misc. Keywords                  ##
 #####################################
 

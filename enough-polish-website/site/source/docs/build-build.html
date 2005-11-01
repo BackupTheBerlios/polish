@@ -250,16 +250,16 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; for this MIDlet to be used.</td>
+	 <td>The Ant-property or preprocessing directive which needs to be &quot;true&quot; for this MIDlet to be used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; for this MIDlet to be used.</td>
+	 <td>The Ant-property or preprocessing directive which needs to be &quot;false&quot; for this MIDlet to be used.</td>
 	</tr>
 	</table>
 	<p>
-	The optional &lt;midlets&gt;-element is used as a container for several &lt;midlet&gt;-elements:
+	The optional &lt;midlets&gt;-element is used as a container for several &lt;midlet&gt;-elements and also supports the if/unless attributes:
 <pre>
 &lt;midlets&gt;
 	&lt;midlet class=&quot;de.enough.polish.example.ExampleMidlet&quot; /&gt;
@@ -267,6 +267,28 @@ With the &lt;build&gt;-section the actual build process is controlled:
 		  class=&quot;de.enough.polish.example.GuiDemoMidlet&quot; /&gt;
 &lt;/midlets&gt;
 </pre></p>
+
+	<h3 id="iappli">&lt;iappli&gt;</h3>
+	<p>The &lt;iappli&gt; or &lt;doja&gt; element defines the IApplication class of your <a href="platform-doja.html">DoJa</a> release.
+	This is only applicable when you are targeting this platform.
+	</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>iappli-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>class</td>
+ 	 <td>Yes</td>
+	 <td>The complete package and class-name of the main IApplication.</td>
+	</tr>
+	<tr>
+	 <td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property or preprocessing directive that needs to be/result &quot;true&quot; for this iappli to be used.</td>
+	</tr>
+	<tr>
+	 <td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property or preprocessing directive that needs to be/result &quot;false&quot; for this iappli to be used.</td>
+	</tr>
+	</table>
 
 	<h3 id="resources">&lt;resources&gt;</h3>
 	<p>
@@ -284,6 +306,10 @@ With the &lt;build&gt;-section the actual build process is controlled:
 		dir=&quot;resources/multimedia&quot; 
 		includes=&quot;*.mid&quot; 
 		if=&quot;polish.audio.midi and not polish.audio.mp3&quot; 
+	/&gt;
+	&lt;fileset 
+		dir=&quot;resources/multimedia/${polish.language}&quot; 
+		includes=&quot;*.mid&quot; 
 	/&gt;
 	&lt;localization locales=&quot;de, en&quot; unless=&quot;test&quot; /&gt;
 	&lt;localization locales=&quot;en&quot; if=&quot;test&quot; /&gt;
@@ -307,15 +333,51 @@ With the &lt;build&gt;-section the actual build process is controlled:
  	 <td>No</td>
 	 <td>Additional files which should not be included in the JAR-files can be defined using the &quot;excludes&quot;-attribute. Several files need to be separated by comma. The star can be used to select several files at once, e.g. &quot;*.txt, readme*&quot;.</td>
 	</tr>
-	<tr><td>locales</td>
- 	 <td>No</td>
+	<tr>
+	 <td>locales</td>
+	 <td>No</td>
 	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested &lt;localization&gt;-element can be used.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
+	 </td>
+	</tr>
+	<tr>
+	 <td>filterZeroLengthFiles</td>
+	 <td>No</td>
+	 <td>Defines whether files with a length of 0 should also be filtered. This is true by default, so
+		any files with a length of 0 bytes will not be copied, unless you activate this by setting
+		<code>filterNullFiles=&quot;false&quot;</code>. You can use this mechanism for removing
+		files for specific devices or device groups. Imagine the situation where you have a image
+		file in the &quot;resources&quot; directory. You want to use that image on all devices except
+		the Vendor/DeviceName one. You can now remove that file for that specific devices by placing
+		a file with the same name but with a length of 0 bytes into &quot;resources/Vendor/DeviceName&quot;.
 	 </td>
 	</tr>
 	</table>
 	<p>
-	The &lt;resources&gt;-elements accepts the nested elements &lt;fileset&gt; and &lt;localization&gt;:
+	The &lt;resources&gt;-elements accepts the nested elements &lt;filter&gt;, &lt;fileset&gt; and &lt;localization&gt;:
 	</p>	
+<h4 id="filter">The &lt;filter&gt; Subelement</h4>
+<p>
+Sometimes it is easier to exclude resources for specific devices rather than to include it for the other devices. You can use any number of &lt;filter&gt; elements for this purpose. The following element removes all *.mid files when the target device supports both MIDI as well as AMR files:
+<pre>
+&lt;filter excludes=&quot;*.mid&quot; if=&quot;polish.audio.midi and polish.audio.amr&quot; /&gt;
+</pre>
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>filter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>excludes</td>
+ 	 <td>Yes</td>
+	 <td>Defines which files should be excluded, e.g. &quot;*.mid&quot;. You can also use regular expressions in this attribute.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this filter to be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this filter to be used.</td>
+	</tr>
+	</table>	
+
 	<h4 id="fileset">The &lt;fileset&gt; Subelement</h4>
 	<p>
 	The &lt;fileset&gt; behaves like any <a href="http://ant.apache.org/manual/CoreTypes/fileset.html" target="_blank">Ant fileset</a>, but it offers the additional &quot;if&quot; and &quot;unless&quot;-attributes for allowing a fine grained control. The most important attributes are:
@@ -324,7 +386,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><th>fileset-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>dir</td>
  	 <td>Yes</td>
-	 <td>The base directory of this fileset. This directory needs to exist.</td>
+	 <td>The base directory of this fileset. This directory needs to exist unless you use variables in it like ${polish.vendor}, ${polish.name}, ${polish.language}, ${polish.country} and so on. You can use any J2ME Polish preprocessing variable or Ant property in the dir attribute.</td>
 	</tr>
 	<tr><td>includes</td>
  	 <td>Yes</td>
@@ -373,6 +435,75 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	</table>
 
+<h3 id="copier">The &lt;copier&gt; Subelement</h3>
+<p>Use the &lt;copier&gt;-element to transform the resources before they are packaged in the final JAR file. You can chain several copiers together just by defining several &lt;copier&gt; elements.
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>copier-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>name</td>
+ 	 <td>Yes, unless class is set</td>
+	 <td>The name of the resource copier, e.g. &quot;antcall&quot;, &quot;renamer&quot; or &quot;svgconverter&quot;. You can register your own resource copier in ${polish.home}/custom-extensions with the type &quot;resourcecopier&quot;.</td>
+	</tr>
+	<tr><td>class</td>
+ 	 <td>No</td>
+	 <td>The class that extends the de.enough.polish.resources.ResourceCopier class.</td>
+	</tr>
+	<tr><td>classpath</td>
+ 	 <td>No</td>
+	 <td>The classpath that is used.</td>
+	</tr>
+	<tr><td>target</td>
+ 	 <td>No</td>
+	 <td>The target in your build.xml script that should be called when using the &quot;antcall&quot; copier.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this copier to be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this copier to be used.</td>
+	</tr>
+	</table>
+
+<h5 id="copier-antcall">The antcall Resource Copier</h5>
+<p>
+The &quot;antcall&quot; resource copier executes another target in your build.xml script for copying the resources. You can use all (lowercase) J2ME Polish variables and properties of the current target device as well as following specific properties:
+</p>
+<ul>
+	<li>${polish.resources.target}: contains the target directory, to which the resources need to be copied</li>
+	<li>${polish.resources.files}: includes a comma separated list of the files that should be copied</li>
+	<li>${polish.resources.filePaths}: includes a semicolon (Windows) or colon (Unix) separated list of the files that should be copied.</li>
+</ul>
+<p>
+You can also specify your own properties by using nested &lt;parameter&gt; elements.
+<pre>
+&lt;copier name=&quot;antcall&quot; target=&quot;copyresources&quot;&gt;
+	&lt;parameter name=&quot;MySettings&quot; value=&quot;${polish.name}.settings&quot; /&gt;
+&lt;/copier&gt;
+</pre>
+</p>
+<h5 id="copier-renamer">The renamer Resource Copier</h5>
+<p>
+Use the &quot;renamer&quot; resource copier for modifying the file-names of the resources before they are packaged in the final JAR. The following renamer removes all characters that are surrounded by curly braces. You can use this for giving your resources meaningful names while using short names in the JAR file. The file i0{ start game icon }.png will be renamed to i0.png, for example. This saves some precious space.
+<pre>
+&lt;copier name=&quot;renamer&quot;&gt;
+	&lt;!-- use a regular expression for defining
+           name parts that should be changed: 
+	--&gt;
+	&lt;parameter name=&quot;searchPattern&quot; value=&quot;\{.*\}&quot; /&gt;
+	&lt;!-- define the replacement for the searchPattern here: --&gt;
+	&lt;parameter name=&quot;replacement&quot; value=&quot;&quot; /&gt;
+&lt;/copier&gt;
+</pre>
+</p>
+<h5 id="copier-svgconverter">The svgconverter Resource Copier</h5>
+<p>
+Use the &quot;svgconverter&quot; for modifying SVG images of the resources before they are packaged in the final JAR. The svgconverter  allows you to provide only one icon or background image for a variety of phones. It scales the SVG  image to the appropriate size of the current target device and converts it into a PNG image.  For an background image you have to start naming your image &quot;bg&quot;(&quot;bg&quot;+whatever+&quot;.svg&quot;), for an icon start with &quot;icon&quot;. The svgconverter then uses the defined ScreenSize and IconSize of the target device for scaling such images. When the target device does not specify these sizes the default size for icons is 15x15 and for backgrounds 128x160 pixels.
+<pre>
+&lt;copier name=&quot;svgconverter&quot; /&gt;
+</pre>
+</p>
 	<h3 id="compiler">&lt;compiler&gt;</h3>
 	<p>
 	The optional &lt;compiler&gt;-element can be used for specifying any compiler-arguments. J2ME Polish normally calls the Java compiler normally with the appropriate classpath as well as bootclasspath for the current target device. In some cases you might want to adjust the compiler settings, however, so you can use the nested &lt;compiler&gt;-element. Along to all attributes of the standard &lt;javac&gt;-task, the &lt;compiler&gt;-element also supports the &quot;if&quot; and &quot;unless&quot; attributes for selecting to appropriate compiler setting:
@@ -1227,6 +1358,12 @@ Usually the efficient internal J2ME Polish packager is used for creating the fin
 </pre>
 </p>
 <p>
+A much simpler but equally valid call is this:
+<pre>
+&lt;packager name=&quot;jar&quot; /&gt;
+</pre>
+</p>
+<p>
 A possible alternative might be the Open Source tool &quot;7-Zip&quot;, which can create smaller files compared to the standard ZIP mechanism. This might result in problems on the actual device, though, so use with care. The 7-Zip tool can be obtained free of charge at 
 <a href="http://www.7-zip.org" target="_blank">http://www.7-zip.org</a>.
 </p>
@@ -1236,8 +1373,18 @@ The &lt;packager&gt;-element supports following attributes:
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>packager-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
+	 <td>name</td>
+ 	 <td>Yes, unless executable or class is defined</td>
+	 <td>The name of the packager, e.g. &quot;jar&quot;, &quot;antcall&quot;, &quot;7zip&quot; or &quot;kzip&quot;. You can register your own packager in ${polish.home}/custom-extensions.xml by using the &quot;packager&quot; type.</td>
+	</tr>
+	<tr>
+	 <td>target</td>
+ 	 <td>No</td>
+	 <td>The Ant target that should be used for the packaging step. Only relevant when the &quot;antcall&quot; packager is used.</td>
+	</tr>
+	<tr>
 	 <td>executable</td>
- 	 <td>Yes, unless class is used</td>
+ 	 <td>No</td>
 	 <td>The name of the program, e.g. &quot;jar&quot; or &quot;7za.exe&quot;.</td>
 	</tr>
 	<tr>

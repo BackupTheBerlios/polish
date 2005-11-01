@@ -1,0 +1,85 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.platform %>
+<%define inDocumentationSection.blackberry %>
+<%set title = J2ME Polish: BlackBerry Development %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+
+	<div id="content">
+<h1 id="top">Developing for BlackBerry Devices</h1>
+	<%index %>
+<p>
+The BlackBerry platform of Research in Motion is quite popular for business applications. Normal MIDlets as well as BlackBerry specific applications can be developed with J2ME Polish.
+</p>
+<h2 id="blackberry-preparation">Preparations</h2>
+<p>
+For transforming and signing the JAR files to the BlackBerry proprietary COD format, the BlackBerry Java Development Environment (JDE) needs to be installed. The JDE can be downloaded from <a target="_blank" href="http://www.blackberry.com/developers">http://www.blackberry.com/developers</a>. On Unix systems it can be installed using Wine.
+</p><p>
+In your build.xml script you then need to define the blackberry.home property which points to the installation folder of the JDE:
+<pre>
+&lt;property 
+	name=&quot;blackberry.home&quot; 
+	location=&quot;C:/Program Files/Research In Motion/BlackBerry JDE 4.0.2&quot; 
+/&gt;
+</pre>
+</p>
+
+<h2 id="blackberry-jar2cod">Converting JARs into CODs</h2>
+<p>
+When you target BlackBerry devices like the BlackBerry/7100t device and have set the blackberry.home property, J2ME Polish will automatically invoke the rapc compiler for converting the JAR file into a COD file in the finalize step of the build process.
+Remember that resources should be less than 64 kb in size, otherwise the rapc process will abort the processing. You can use the <a href="build-build.html#packager">jar packager</a> for compressing the resources a bit better than the internal J2ME Polish jar mechanism: 
+<pre>
+&lt;packager name=&quot;jar&quot; /&gt;.
+</pre>
+</p>
+<h2 id="blackberry-signing">Signing COD Files</h2>
+<p>
+J2ME Polish can also automate the requesting of signatures during the build process. Signatures are required for accessing some Blackberry specific security sensitive APIs and require a certificate. In order to get a certificate, you need to register with BlackBerry first. In your Ant build.xml script you then need to define the &quot;blackberry.certificate.dir&quot; property:
+<pre>
+&lt;property name=&quot;blackberry.certificate.dir&quot; location=&quot;resources/certificates&quot;/&gt;
+</pre>
+</p>
+<p>
+In case the sigtool.csk and sigtool.db files are not included in the same location like the certificates, you also need to define the &quot;blackberry.sigtool.dir&quot; property:
+<pre>
+&lt;property name=&quot;blackberry.sigtool.dir&quot; location=&quot;resources/sigtool&quot;/&gt;
+</pre>
+</p>
+<p>
+When you specify the password as well, J2ME Polish uses this for requesting the signatures without manual intervention. For such cases the password needs to contain only ASCII characters, otherwise J2ME Polish can't include the password automatically.
+</pre>
+&lt;property name=&quot;blackberry.certificate.password&quot; value=&quot;secret&quot;/&gt;
+</pre>
+</p>
+
+<h2 id="blackberry-gui">Using the J2ME Polish GUI on BlackBerry Devices</h2>
+<p>
+The J2ME Polish GUI can be used normally on BlackBerry devices as well. In order to make most of the System, J2ME Polish converts your MIDlet into a native BlackBerry UiApplication. This allows J2ME Polish to process trackwheel events and so on correctly. Also native InputFields are used for the text input.
+The successful conversion requires that your MIDlet uses a public constructor. 
+</p>
+
+<h2 id="blackberry-native">Developing Native BlackBerry Applications</h2>
+<p>
+You can also develop native BlackBerry applications by defining the blackberry.main variable that contains the name of the class that extends net.rim.device.api.system.Application.
+<pre>
+&lt;variable name=&quot;blackberry.main&quot; value=&quot;com.company.product.ProductApplication&quot; /&gt;
+</pre>
+</p><p>
+Please note that the currently provided BlackBerry library does not contain all available classes, compare the following Troubleshooting section.
+</p>
+
+<h2 id="blackberry-troubleshooting">Troubleshooting</h2>
+<h3 id="blackberry-obfuscation">Deactivate Obfuscation</h3>
+<p>
+You should deactivate <a href="build-build.html#obfuscator">obfuscation</a> for BlackBerry devices, since the rapc compiler already removes any unneeded fields, classes etc. Also you can get verification errors on the BlackBerry devices when you enable the obfuscation. You can skip the obfuscation for test builds as well as for BlackBerry devices with this definition:
+<pre>
+&lt;obfuscator name=&quot;ProGuard&quot; unless=&quot;test || polish.blackberry&quot; /&gt;
+</pre>
+</p>
+<h3 id="blackberry-library">Library</h3>
+<p>
+J2ME Polish includes the ${polish.home}/import/blackberry-4.0.jar library which contains the most important packages that are additionally available on BlackBerry devices. If you use BlackBerry specific classes in your application you might encounter compiler problems, because currently not all available classes are included in the default library. In such cases you can copy the JAR provided by the JDE from ${blackberry.home}/lib/net_rim_api.jar to ${polish.home}/import/blackberry-4.0.jar. Since this file contains unresolved class dependencies you need to use a JDK 1.4.x and must not use a 1.5 JDK.
+</p>
+
+<%include end.txt %>

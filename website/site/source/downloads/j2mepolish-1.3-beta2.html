@@ -4,38 +4,32 @@
 <%include start.txt %>
 
 	<div id="content">
-	<h1>J2ME Polish 1.3-beta1</h1>
+	<h1>J2ME Polish 1.3-beta2</h1>
 	<%index %>
 	<h2 id="improvements13-beta1">Improvements of J2ME Polish 1.3-beta2</h2>
 	<p>
-	J2ME Polish 1.3-beta2 features many major improvements. Please note that this software
-	has BETA status and should be used with care.
+	J2ME Polish 1.3-beta2 features many major improvements like support for different J2ME Platforms,
+	screen change effects and much more. Check out this release now!
 	</p>
 	<ul>
+	  <li><b>Screen Change Effects</b>: 
+		You can now enable effects that are played whenever the current screen is changed.
+		This is demonstrated by the &quot;roadrunner&quot; sample application, just register an
+		effect by setting the screen-change-animation CSS attribute of the corresponding screen:
+<pre>
+screen-change-animation: verticalflash;
+</pre>
+		These effects are described in detail in the <a href="../book/book.html">Pro J2ME Polish book</a>.
+	</li>
+	<li><b>BlackBerry and Palm Support</b>:
+	<a href="../docs/platform-blackberry.html">BlackBerry</a> and <a href="../docs/platform-palm.html">Palm</a> 
+	platforms are now supported out of the box. You can easily adjust J2ME Polish to other platforms, too.
+	</li>
 	  <li><b>Direct Input in DateFields</b>: 
 	  You can now activate the direct input mode of DateFields by setting the &quot;polish.DateField.useDirectInput&quot;
 	  variable in your build.xml file:
 <pre>
 &lt;variable name=&quot;polish.DateField.useDirectInput&quot; value=&quot;true&quot; /&gt;
-</pre>
-	  </li>
-	  <li><b>abortOnError/onError</b>: 
-	  J2ME Polish now continues to build even when an error occurs for one device. You can 
-	  specify that the complete build should be aborted by setting the &quot;abortOnError&quot; attribute
-	  of the &lt;build&gt; element. &lt;br /&gt;
-	  You can also call an Ant target automatically when an error occurred by specifying the
-	  target's name in the &amp;quot;onError&amp;quot; attribute of the &amp;lt;build&amp;gt; element.
-	  When an error occurs, J2ME Polish sets the Ant property &quot;j2mepolish.error&quot; to &quot;true&quot; 
-	  and the &quot;j2mepolish.error.message&quot; property contains the error message.
-<pre>
-	&lt;build abortOnError=&quot;false&quot; onError=&quot;handleErrorTarget&quot;&gt;
-		...
-	&lt;/build&gt;
-	
-	...
-&lt;target name=&quot;handleErrorTarget&quot;&gt;
-	&lt;echo message=&quot;${j2mepolish.error.message}&quot; /&gt;
-&lt;/target&gt;
 </pre>
 	  </li>
 	  <li><b>SpriteItem</b>: use the new 
@@ -46,7 +40,7 @@
 	  <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/MessageItem.html">MessageItem</a> 
 	  for showing a combination of a IconItem (for the headline along with an icon) and a StringItem (for the text).
 	  </li>
-	  <li><b>InfoItem</b>: you can now show an information item on every screen with the new
+	  <li><b>ScreenInfo</b>: you can now show an information item on every screen with the new
 	  <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/ScreenInfo.html">ScreenInfo</a> element.
 	  Additionally you need to activate this info element by setting the &quot;polish.ScreenInfo.enable&quot;
 	  preprocessing variable to &quot;true&quot; in your build.xml file:
@@ -83,6 +77,28 @@ if ( this.isRegistered ) {
 	   for exclusive ChoiceGroups. This view only shows the currently selected item and allows
 	   to choose other items by using the left and right arrows.
 	  </li>
+	  <li><b>TextField</b>: You can now deactivate the flashing of the cursor by specifying
+		<code>textfield-caret-flash: false;</code>.
+	  </li>
+	  <li><b>abortOnError/onError</b>: 
+	  J2ME Polish now continues to build even when an error occurs for one device. You can 
+	  specify that the complete build should be aborted by setting the &quot;abortOnError&quot; attribute
+	  of the &lt;build&gt; element. &lt;br /&gt;
+	  You can also call an Ant target automatically when an error occurred by specifying the
+	  target's name in the &amp;quot;onError&amp;quot; attribute of the &amp;lt;build&amp;gt; element.
+	  When an error occurs, J2ME Polish sets the Ant property &quot;j2mepolish.error&quot; to &quot;true&quot; 
+	  and the &quot;j2mepolish.error.message&quot; property contains the error message.
+<pre>
+	&lt;build abortOnError=&quot;false&quot; onError=&quot;handleErrorTarget&quot;&gt;
+		...
+	&lt;/build&gt;
+	
+	...
+&lt;target name=&quot;handleErrorTarget&quot;&gt;
+	&lt;echo message=&quot;${j2mepolish.error.message}&quot; /&gt;
+&lt;/target&gt;
+</pre>
+	  </li>
 	  <li><b>Preprocessor</b>: &lt;preprocessor&gt;-elements can now use preprocessing
 	  terms as if- or unless-conditions.
 	  </li>
@@ -114,12 +130,18 @@ if ( this.isRegistered ) {
 	defaultexcludes=&quot;yes&quot;
 	excludes=&quot;*.db&quot;
  &gt;
-	&lt;copier class=&quot;de.enough.polish.resources.RenamingResourceCopier&quot;&gt;
+	&lt;copier name=&quot;renamer&quot;&gt;
 		&lt;parameter name=&quot;searchPattern&quot; value=&quot;\{.*\}&quot; /&gt;
 		&lt;parameter name=&quot;replacement&quot; value=&quot;&quot; /&gt;
 	&lt;/copier&gt;
+	&lt;copier name=&quot;svgconverter /&quot;&gt;
 &lt;/resources&gt;
 </pre>
+	  </li>
+	  <li><b>Extend all build phases</b>: You can now enhance and adjust your build process by
+		using the improved and new extensions like &lt;preprocessor&gt;, &lt;precompiler&gt;,
+		&lt;compiler&gt;, &lt;postcompiler&gt;, &lt;obfuscator&gt;, &lt;copier&gt;, &lt;packager&gt; and &lt;finalizer&gt;.
+		Learn the details in the <a href="../book/book.html">Pro J2ME Polish book</a>.
 	  </li>
 	  <li><b>TextUtil</b>: Strings with hardcoded linebreaks were not processed correctly
 	  on Series 40 devices, since the <code>Font.stringWidth()</code>-method behaves
@@ -300,9 +322,10 @@ int i = 0;
 	System.out.println("Using device ${ polish.identfier }..." );
 </pre>
 	  </li>
-	  <li><b>KZip and 7-Zip</b>: KZip and 7-Zip are now supported &quot;out of the box&quot;,
+	  <li><b>Jar, KZip and 7-Zip</b>: Jar, KZip and 7-Zip are now supported &quot;out of the box&quot;,
 	  when these packagers are either on the PATH or in ${polish.home}/bin:
 <pre>
+&lt;packager name=&quot;jar&quot; /&gt;
 &lt;packager name=&quot;7zip&quot; /&gt;
 &lt;packager name=&quot;kzip&quot; /&gt;
 </pre>
@@ -327,7 +350,7 @@ int i = 0;
 	  </li>
 	  <li><b>THANKS!</b>:
 	  Thanks goes to all the people that contributed to this release, i.e.
-	  Paul Atkins, Thorsten Pr&ouml;lss, Bret Schumacher,  Joe Bowbeer, 
+	  Pierre Richard, Alec Bickerton, Paul Atkins, Thorsten Pr&ouml;lss, Bret Schumacher,  Joe Bowbeer, 
 	  Timo Nentwig, David Clocklabs, Chester Kollschen, Nick Richards,
 	  Killy Gncint, Kevin Hankinson, Gabriel Hauber, Martin Leissler, 
 	  Florin Marcus, Gionata Maran, Cole Lokhe, Adrian Williams,
@@ -347,20 +370,32 @@ int i = 0;
 <h2 id="download">Download</h2>
 	<p>
 		<a href="http://download.berlios.de/polish/j2mepolish-1.3-beta2.jar">I accept the above rules 
-		(download the full installer: 8,713,090 bytes).</a><br/>
+		(download the full installer: 10,765,814 bytes).</a><br/>
 		<a href="http://download.berlios.de/polish/j2mepolish-1.3-beta2.zip">I accept the above rules 
-		(download only the update: 1,026,488 bytes).</a><br/>
+		(download only the update: 2,274,421 bytes).</a><br/>
 	   	<a href="../index.html">I do NOT accept the above rules.</a><br />
 		Start the installation by calling <code>java -jar j2mepolish-1.3-beta2.jar</code>
 		from the commandline or by double-clicking the file.
 	</p>
 
+	<h2 id="knownissues">Known Issues</h2>
+	<p>
+	There are some known issues with this release which will be fixed within the next time:
+	</p>
+	<ul>
+		<li>Popup CheckBox and Pointer Events: Currently items that lie behind an opened popup checkbox are selected, instead of the options of the popup, when it is selected with a pointer.</li>
+		<li>Public Methods in GameCanvas/Screen Based Classes: when you extend either the GameCanvas on MIDP 1.0 
+		devices or the Screen class, you need to declare the paint() method as well as the keyPressed() and keyRepeated() methods as public (instead of only protected).
+		</li>
+		<li>de.enough.polish.util.Locale: this class is only included when a &lt;localization&gt; element  has been defined, otherwise compiler errors occur.</li>
+	</ul>
 	<h2 id="installationproblems">Trouble Shooting</h2>
-	<p>The size of the full installer is 8,713,090 bytes.<br/>
+	<p>The size of the full installer is 10,765,814 bytes.<br/>
 	If you have installation problems, please make sure that you have downloaded
 	the complete package. You can start the installation either by double-clicking
 	the file or by calling &quot;java -jar j2mepolish-[version].jar&quot; from the commandline.
-	<b>Do not simply extract the downloaded JAR file!</b>
+	<b>Do not simply extract the downloaded JAR file! Microsoft Internet Explorer users might
+	need to rename the extension from ".zip" to ".jar".</b>
 	</p>
 	<p>
 	When you are having installation problems under Windows XP, please use the

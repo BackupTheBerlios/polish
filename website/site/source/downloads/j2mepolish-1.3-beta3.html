@@ -1,16 +1,56 @@
-<%define inDownloadSection %>
+3<%define inDownloadSection %>
 <%set basedir = ../ %>
-<%set title = J2ME Polish: Download J2ME Polish 1.3-beta2 %>
+<%set title = J2ME Polish: Download J2ME Polish 1.3-beta3 %>
 <%include start.txt %>
 
 	<div id="content">
-	<h1>J2ME Polish 1.3-beta2</h1>
+	<h1>J2ME Polish 1.3-beta3</h1>
 	<%index %>
-	<h2 id="improvements13-beta1">Improvements of J2ME Polish 1.3-beta2</h2>
+	<h2 id="improvements13-beta3">Improvements of J2ME Polish 1.3-beta3</h2>
 	<p>
-	J2ME Polish 1.3-beta2 features many major improvements like support for different J2ME Platforms,
-	screen change effects and much more. Check out this release now!
+	J2ME Polish 1.3-beta3 features bug fixes as well as some big improvements for the 1.3-beta2 release. Check out this release now!
 	</p>
+	<h3 id="fixes13-beta3">Bugfixes since 1.3-beta2</h3>
+	<ul>
+		<li><b>TabbedForm: </b> pointer events are now processed normally.</li>
+		<li><b>ScrollIndicator: </b> in some cases the scrollindicator was painted above the menu bar.</li>
+		<li><b>POPUP ChoiceGroups :</b> such ChoiceGroups are now handled correctly when a pointer event occurs while the group is opened. Also horizontal alignments are done correctly now.</li>
+		<li><b>Locale.java: </b> The Locale.java class is now always included.</li>
+
+	</ul>
+
+	<h3 id="improvements13-beta3">Improvements since 1.3-beta2</h3>
+	<ul>
+		<li><b>DoJa: </b>J2ME Polish now supports the Japanese <a href="../docs/platform-doja.html">DoJa</a> standard out of the box.</li>
+		<li><b>Resource Assembling: </b> 
+		<ol>
+			<li><i>Excluding files: </i>You can now exclude specific resources either by placing files with a length of 0 into the resources tree or by using the <a href="../docs/build-build.html#filter">&lt;filter&gt;</a> element within the &lt;resources&gt; element.</li>
+			<li><i>Enhanced filesets: </i>
+			It's possible to use any J2ME Polish preprocessing variables within 
+			<a href="../docs/build-build.html#fileset">&lt;fileset&gt;</a>
+			 elements now:
+<pre>
+&lt;fileset 
+	dir=&quot;resources/multimedia/images/${polish.language}&quot; 
+	includes=&quot;*.png&quot; 
+/&gt;
+</pre></li>
+		</ol>
+		</li>
+		<li><b>Alert: </b> You can now design alerts just like other screens. Use the predefined styles 
+		<code>alert</code> and <code>alertcontent</code> for designing them or use your own CSS styles using the
+		<code>//#style</code> preprocessing directive.
+		</li>
+		<li><b>Optional Styles: </b> You can now mark a style as optional by ending the name with a question mark within the #style directive. When the style is defined, it will be included normally, otherwise it
+		will not be used:
+<pre>
+//#style mySpecificStyle?
+Form form = new Form( title );
+</pre>
+		</li>
+		<li><b>NetBeans: </b>J2ME Polish now supports <a href="../docs/install.html#netbeans5">NetBeans 5.x</a> out of the box. Just open any of the provided sample projects, rename the build-netbeans.xml script to build.xml and you're done.</li>
+	</ul>
+	<h3 id="changelog">Changes since 1.2.4</h3>
 	<ul>
 	  <li><b>Screen Change Effects</b>: 
 		You can now enable effects that are played whenever the current screen is changed.
@@ -387,7 +427,6 @@ int i = 0;
 		<li>Public Methods in GameCanvas/Screen Based Classes: when you extend either the GameCanvas on MIDP 1.0 
 		devices or the Screen class, you need to declare the paint() method as well as the keyPressed() and keyRepeated() methods as public (instead of only protected).
 		</li>
-		<li>de.enough.polish.util.Locale: this class is only included when a &lt;localization&gt; element  has been defined, otherwise compiler errors occur.</li>
 	</ul>
 	<h2 id="installationproblems">Trouble Shooting</h2>
 	<p>The size of the full installer is 10,765,814 bytes.<br/>
@@ -399,7 +438,7 @@ int i = 0;
 	</p>
 	<p>
 	When you are having installation problems under Windows XP, please use the
-	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_07 or 1.5.x)</a>. 
+	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE-version (1.4.2_09 or 1.5.x)</a>. 
 	</p>	
 	<p>
 	If you have trouble building your application, consider to set the &quot;JAVA_HOME&quot;

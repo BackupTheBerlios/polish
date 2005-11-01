@@ -146,27 +146,17 @@ a:link {
 	text-decoration: underline;
 }
 
-#navigation>a:link {
-	text-decoration: none;
-}
-
-#navigation>a:visited {
-	text-decoration: none;
-}
-
-#navigation>a:hover {
-	text-decoration: underline;
-}
-
 
 a:hover {
 	color: red;
 	text-decoration: underline;
 }
 
+/*
 #navigation>a:hover:before {
 	content: "> ";
 }
+*/
 
 a:visited {
 	color: rgb(24,41,44);
@@ -183,9 +173,11 @@ a:visited:hover {
 	text-decoration: none;
 }
 
+/*
 #navigation>.imageLink:hover:before {
 	content: ""; 
 }
+*/
 
 #header {
 	float: left;
@@ -208,7 +200,7 @@ a:visited:hover {
 
 
 #navigation {
-	padding: 0 2%;
+	padding: 0.0%;
 	float: left;
 	width: 16%;
 	font-family: Verdana, Arial, sans-serif;
@@ -216,30 +208,62 @@ a:visited:hover {
 	color: rgb(47,82,89);
 }
 
+#navigation a {
+	display: block;
+}
+
+#navigation a:link {
+	text-decoration: none;
+}
+
+#navigation a:visited {
+	text-decoration: none;
+}
+
+#navigation a:hover {
+	text-decoration: none;
+	background-color: white;
+}
+
+
+
+#whitenavigation a {
+	display: block;
+}
+
+#whitenavigation a:link {
+	text-decoration: gray;
+}
+
+#whitenavigation a:visited {
+	text-decoration: gray;
+}
+
+#whitenavigation a:hover {
+	text-decoration: none;
+	background-color: rgb(235,232,224);
+}
+
+
+
 .navigationImage {
 	margin-top: 50px;
 	margin-left: -10px;
 }
 
-.thirdLevel {
-	margin-top: 0px;
-	margin-bottom: 5px;
-	margin-left: 10px;
-	padding-left: 2px;
-	padding-right: 2px;
-	background-color: white;
-	font-size: small;
-	border-style: solid;
-	border-top-width: 0px;
-	border-left-width: 2px;
-	border-right-width: 2px;
-	border-bottom-width: 2px;
-	border-color: rgb(47,82,89);
+.navigationImage a:hover {
+	background-color: rgb(235,232,224);
 }
 
-.thirdLevel>a {
-	text-decoration: none;
+#navigation .navigationImage a:hover {
+	background-color: rgb(235,232,224);
 }
+
+
+#navigation .imageLinkImage a:hover {
+	background-color: rgb(235,232,224);
+}
+
 
 #thincontent {
 	float: left;
@@ -273,17 +297,40 @@ a:visited:hover {
 	font-weight: bold;
 }
 
+#currentLink a:link {
+	display: block;
+}
+
+#currentLink a:visited {
+	display: block;
+}
+
+#currentLink a:hover {
+	background-color: white;
+}
+
 .secondLevelLink {
 	margin-right: 10px;
 	margin-left: 10px;
 	font-family: Verdana, Arial, sans-serif;
 }
 
-.secondLevelLink>a {
+.secondLevelLink a {
 	text-decoration: none;
+	display: block;
+}
+
+.secondLevelLink a:visited {
+	text-decoration: none;
+	display: block;
+}
+
+.secondLevelLink a:hover {
+	background-color: white;
 }
 
 #currentSecondLevelLink {
+	display: block;
 	margin-right: 10px;
 	margin-left: 10px;
 	color: rgb(47,82,89);
@@ -297,15 +344,52 @@ a:visited:hover {
 	font-weight: bold;
 }
 
-#currentSecondLevelLink>a:visited {
+#currentSecondLevelLink a:visited {
+	display: block;
 	text-decoration: none;
 }
 
-#currentLink>a{
+#currentSecondLevelLink a:hover {
+	background-color: white;
+}
+
+.thirdLevel {
+	margin-top: 0px;
+	margin-bottom: 5px;
+	margin-left: 10px;
+	padding-left: 2px;
+	padding-right: 2px;
+	background-color: white;
+	font-size: small;
+	border-style: solid;
+	border-top-width: 0px;
+	border-left-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-color: rgb(47,82,89);
+}
+
+#thirdLevel a:link {
+	text-decoration: none;
+	display: block;
+}
+
+#thirdLevel a:hover {
+	background-color: rgb(235,232,224);
+}
+
+#thirdLevel a:visited {
+	text-decoration: none;
+	display: block;
+}
+
+
+
+#currentLink a:link{
 	color: white;
 }
 
-#currentLink>a:visited {
+#currentLink a:visited {
 	text-decoration: none;
 }
 

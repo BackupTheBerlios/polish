@@ -28,7 +28,7 @@
 		<%ifdef inOverviewSection %>
 			<div id="currentLink"><a href="<%= basedir %>index.html">Home</a></div>
 		<%else %>
-			<a href="<%= basedir %>index.html">Home</a><br />
+			<a href="<%= basedir %>index.html">Home</a>
 		<%endif %>
 		<%ifdef inIntroductionSection %>
 			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
@@ -49,19 +49,19 @@
 			<%endif %>
 			
 		<%else %>
-			<a href="<%= basedir %>docs/introduction.html">Introduction</a><br />
+			<a href="<%= basedir %>docs/introduction.html">Introduction</a>
 		<%endif %>
 		<%ifdef inNewsSection %>
 			<div id="currentLink"><a href="<%= basedir %>news.html">News</a></div>
 		<%else %>
-			<a href="<%= basedir %>news.html">News</a><br />
+			<a href="<%= basedir %>news.html">News</a>
 		<%endif %>
 		
 		<%ifndef excludeDownload %>
 			<%ifdef inDownloadSection %>
 				<div id="currentLink"><a href="<%= basedir %>download.html">Download</a></div>
 			<%else %>
-				<a href="<%= basedir %>download.html">Download</a><br/>
+				<a href="<%= basedir %>download.html">Download</a>
 			<%endif %>
 					
 		<%endif %>
@@ -85,45 +85,53 @@
 			<%endif %>
 			<%ifdef inDocumentationSection.build %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/build.html">Build</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/build-taskdef.html">Task Definition</a><br/>
-				<a href="<%= basedir %>docs/build-info.html">Info Section</a><br/>
-				<a href="<%= basedir %>docs/build-deviceRequirements.html">Device Requirements Section</a><br/>
-				<a href="<%= basedir %>docs/build-build.html">Build Section</a><br/>
-				<a href="<%= basedir %>docs/build-emulator.html">Emulator Section</a><br/>
-				<a href="<%= basedir %>docs/build-example.html">Example</a><br/>
+				<a href="<%= basedir %>docs/build-taskdef.html">Task Definition</a>
+				<a href="<%= basedir %>docs/build-info.html">Info Section</a>
+				<a href="<%= basedir %>docs/build-deviceRequirements.html">Device Requirements Section</a>
+				<a href="<%= basedir %>docs/build-build.html">Build Section</a>
+				<a href="<%= basedir %>docs/build-emulator.html">Emulator Section</a>
+				<a href="<%= basedir %>docs/build-example.html">Example</a>
 				</p>
+				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/build.html">Build</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.resources %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/resources-overview.html">Resources</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a><br/>
+				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a>
 				<a href="<%= basedir %>docs/localization.html">Localization</a>
 				</p>
+				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/resources-overview.html">Resources and Localization</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.css %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/css.html">CSS</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/css.html">GUI</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/css-groups.html">Designing for Specific Devices or Device-Groups</a><br/>
-				<a href="<%= basedir %>docs/css-styles.html">Dynamic, Static and Predefined Styles</a><br/>
-				<a href="<%= basedir %>docs/css-extending.html">Extending Styles</a><br/>
-				<a href="<%= basedir %>docs/css-syntax.html">CSS Syntax</a><br/>
-				<a href="<%= basedir %>docs/css-common.html">Common Design Attributes</a><br/>
+				<a href="<%= basedir %>docs/css-groups.html">Designing for Specific Devices or Device-Groups</a>
+				<a href="<%= basedir %>docs/css-styles.html">Dynamic, Static and Predefined Styles</a>
+				<a href="<%= basedir %>docs/css-extending.html">Extending Styles</a>
+				<a href="<%= basedir %>docs/css-syntax.html">CSS Syntax</a>
+				<a href="<%= basedir %>docs/css-common.html">Common Design Attributes</a>
 				<a href="<%= basedir %>docs/css-specific.html">Specific Design Attributes</a>
 				</p>
+				</div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/css.html">CSS</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/css.html">GUI</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.preprocessing %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/directives.html">Directives</a><br/>
+				<a href="<%= basedir %>docs/directives.html">Directives</a>
 				<a href="<%= basedir %>docs/variables.html">Variables &amp; Symbols</a>
 				</p>
+				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
 			<%endif %>
@@ -142,15 +150,29 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.platform %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/platform.html">Platforms</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/platform-blackberry.html">BlackBerry</a>
+				<a href="<%= basedir %>docs/platform-palm.html">Palm</a>
+				<a href="<%= basedir %>docs/platform-doja.html">DoJa</a>
+				</p>
+				</div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/platform.html">Platforms</a></div>
+			<%endif %>
 			<%ifdef inDocumentationSection.extending %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/custom-obfuscator.html">Obfuscator</a><br/>
-				<a href="<%= basedir %>docs/custom-preprocessor.html">Preprocessor</a><br/>
-				<a href="<%= basedir %>docs/custom-item.html">GUI: CustomItem</a><br/>
-				<a href="<%= basedir %>docs/custom-background.html">GUI: Background</a><br/>
+				<a href="<%= basedir %>docs/custom-obfuscator.html">Obfuscator</a>
+				<a href="<%= basedir %>docs/custom-preprocessor.html">Preprocessor</a>
+				<a href="<%= basedir %>docs/custom-item.html">GUI: CustomItem</a>
+				<a href="<%= basedir %>docs/custom-background.html">GUI: Background</a>
 				<a href="<%= basedir %>docs/custom-border.html">GUI: Border</a>
 				</p>
+				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
 			<%endif %>
@@ -166,17 +188,17 @@
 			<%endif %>
 			
 		<%else %>
-			<a href="<%= basedir %>documentation.html">Documentation</a><br/>
+			<a href="<%= basedir %>documentation.html">Documentation</a>
 		<%endif %>
 		<%ifdef inFaqSection %>
 			<div id="currentLink"><a href="<%= basedir %>faq.html">FAQ</a></div>
 		<%else %>
-			<a href="<%= basedir %>faq.html">FAQ</a><br/>
+			<a href="<%= basedir %>faq.html">FAQ</a>
 		<%endif %>
 		<%ifdef inScreenshotsSection %>
 			<div id="currentLink"><a href="<%= basedir %>screenshots.html">Screenshots</a></div>
 		<%else %>
-			<a href="<%= basedir %>screenshots.html">Screenshots</a><br/>
+			<a href="<%= basedir %>screenshots.html">Screenshots</a>
 		<%endif %>
 		<%ifdef inLicensingSection %>
 			<div id="currentLink"><a href="<%= basedir %>licenses.html">Licensing</a></div>
@@ -187,12 +209,12 @@
 			<%endif %>
 			
 		<%else %>
-			<a href="<%= basedir %>licenses.html">Licensing</a><br/>
+			<a href="<%= basedir %>licenses.html">Licensing</a>
 		<%endif %>
 		<%ifdef inRoadmapSection %>
 			<div id="currentLink"><a href="<%= basedir %>roadmap.html">Roadmap</a></div>
 		<%else %>
-			<a href="<%= basedir %>roadmap.html">Roadmap</a><br/>
+			<a href="<%= basedir %>roadmap.html">Roadmap</a>
 		<%endif %>
 		<%ifdef inDevicesSection %>
 			<div id="currentLink"><a href="<%= basedir %>devices-overview.html">Devices</a></div>
@@ -208,12 +230,14 @@
 			<%endif %>
 			<%ifdef inDevicesSection.platform %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>devices/midp1.html">MIDP/1.0</a><br/>
-				<a href="<%= basedir %>devices/midp2.html">MIDP/2.0</a><br/>
-				<a href="<%= basedir %>devices/cldc10.html">CLDC/1.0</a><br/>
+				<a href="<%= basedir %>devices/midp1.html">MIDP/1.0</a>
+				<a href="<%= basedir %>devices/midp2.html">MIDP/2.0</a>
+				<a href="<%= basedir %>devices/cldc10.html">CLDC/1.0</a>
 				<a href="<%= basedir %>devices/cldc11.html">CLDC/1.1</a>
 				</p>
+				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
 			<%endif %>
@@ -224,16 +248,18 @@
 			<%endif %>
 			
 		<%else %>
-			<a href="<%= basedir %>devices-overview.html">Devices</a><br/>
+			<a href="<%= basedir %>devices-overview.html">Devices</a>
 		<%endif %>
 		<%ifdef inDiscussionSection %>
 			<div id="currentLink"><a href="<%= basedir %>discussion.html">Discussion</a></div>
 			<%ifdef inDiscussionSection.forum %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>forums.html">Forums</a></div>
+				<div id="thirdLevel">
 				<p class="thirdLevel">
-					<a href="http://developer.berlios.de/forum/forum.php?forum_id=3780" target="_blank">BerliOS Forum (English)</a><br/>
+					<a href="http://developer.berlios.de/forum/forum.php?forum_id=3780" target="_blank">BerliOS Forum (English)</a>
 					<a href="http://www.j2meforum.com/viewforum.php?f=35" target="_blank">J2MeForum.com (deutsch)</a>
 				</p>
+				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="forums.html">Forums</a></div>
 			<%endif %>			
@@ -241,23 +267,23 @@
 			<div class="secondLevelLink"><a href="http://developer.berlios.de/feature/?group_id=1246" target="_blank">Feature Request</a></div>
 			<div class="secondLevelLink"><a href="http://openfacts.berlios.de/index-en.phtml?title=J2ME%20Polish" target="_blank">Wiki</a></div>
 		<%else %>
-			<a href="<%= basedir %>discussion.html">Discussion</a><br/>
+			<a href="<%= basedir %>discussion.html">Discussion</a>
 		<%endif %>
 		
 		<%ifdef inContactSection %>
 			<div id="currentLink"><a href="<%= basedir %>contact.html">Contact</a></div>
 		<%else %>
-			<a href="<%= basedir %>contact.html">Contact</a><br/>
+			<a href="<%= basedir %>contact.html">Contact</a>
 		<%endif %>
 		<%ifdef inContributorSection %>
 			<div id="currentLink"><a href="<%= basedir %>contributors.html">Contributors</a></div>
 		<%else %>
-			<a href="<%= basedir %>contributors.html">Contributors</a><br/>
+			<a href="<%= basedir %>contributors.html">Contributors</a>
 		<%endif %>
 		<%ifdef inIndexSection %>
 			<div id="currentLink"><a href="<%= basedir %>atoz.html">Index</a></div>
 		<%else %>
-			<a href="<%= basedir %>atoz.html">Index</a><br/>
+			<a href="<%= basedir %>atoz.html">Index</a>
 		<%endif %>
 		
 		<!-- search form: -->
@@ -268,8 +294,13 @@
 			<input type="text" name="q" size="25" maxlength="255" value="">
 			<input type="submit" name="btnG" value="Search">
 		</form>
-		
-		<a class="imageLink" href="<%= basedir %>index.html">
+	<a class="imageLink" href="<%= basedir %>index.html">
 		<img class="navigationImage" alt="j2mepolish" src="<%= basedir %>images/j2mepolish-logo.gif" width="180" height="217"/>
-		</a>
+	</a>
+	<br />
+	<a class="imageLink" href="<%= basedir %>book/book.html">
+		<img src="<%= basedir %>images/proj2mepolish.gif" width="125" height="164" alt="Pro J2ME Polish book" />
+	</a>
+		
 	</div> <!-- end of navigation -->
+	

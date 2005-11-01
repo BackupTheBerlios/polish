@@ -39,7 +39,7 @@ To use J2ME Polish, following components need to be installed:
 	<li>Favorite IDE, for example Eclipse 3.0, 
 	<a href="http://www.eclipse.org" target="_blank">http://www.eclipse.org</a>
 	</li>
-	<li>Ant 1.5 or higher, if not already integrated in the IDE, 
+	<li>Ant 1.6 or higher, if not already integrated in the IDE, 
 	<a href="http://ant.apache.org" target="_blank">http://ant.apache.org</a>
 	</li>
 	<li>Optionally device emulators, e.g. the Nokia J2ME emulator, 
@@ -61,7 +61,7 @@ to be copied into the &quot;import&quot;-folder of your installation directory.
 	</p>
 	<p>
 	When you are having installation problems under Windows XP, please use the
-	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE 1.4-version (1.4.2_07)</a>. 
+	latest <a href="http://java.sun.com/j2se/1.4.2/download.html" target="_blank">J2SE 1.4-version (1.4.2_09)</a>. 
 	This update is officially recommended for security reasons as well.
 	<br />
 	Using J2SE 5.0 (1.5) is not recommended for developing MIDlets, since many emulators
@@ -195,6 +195,23 @@ For integrating J2ME Polish with NetBeans 4.0 create a new project and copy the 
  <li>Right-click your project again and select &quot;Properties&quot;. Go to &quot;Build&quot; and select &quot;Libraries and Resources&quot;. Select &quot;Add Jar/Zip&quot; and add the &quot;${polish.home}/import/enough-j2mepolish-client.jar&quot; file to your project.</li>
  <li>Now switch to the &quot;Files&quot; view and right-click the &quot;build.xml&quot; file. Select &quot;Run Target&quot; &gt; &quot;Advanced&quot;. Write &quot;test, j2mepolish&quot; in the following dialog, so that the &quot;test&quot; target is executed first, followed by the &quot;j2mepolish&quot; target. J2ME Polish now executes and starts the WTK emulator.</li>
 </ul>
+
+<h3 id="netbeans5">NetBeans 5.x</h3>
+<p>
+J2ME Polish provides NetBeans specific build scripts from J2ME Polish 1.3 Beta 3 onwards. You can now just open any of the provided sample applications, delete the default build.xml script and rename the build-netbeans.xml script to build.xml. You can from then on use the normal debugging, build and compile facilities of NetBeans.
+<br />
+Integrating a sample application in NetBeans:
+</p>
+<ul>
+	<li>Select File > Open Project... and select any sample application in ${polish.home}/samples. Just select a folder like the menu folder and select Open.</li>
+	<li>Now switch to the Files window by selecting Window > Files.</li>
+	<li>In this window delete or rename the build.xml script which is in the base folder of the project.</li>
+	<li>Now right-click the build-netbeans.xml script and rename it to build.xml. When the renaming does not work, do it directly from the file system (e.g. Windows Explorer).</li>
+	<li>From now on you can build, run, debug and compile with the normal NetBeans commands (e.g. F5 for debugging). J2ME Polish is then used for building etc.</li>
+</ul>
+<p>
+When you start a new project in NetBeans, just copy one of the sample build.xml scripts to your project's folder. Then adjust the settings according to your needs.
+</p>
 
 <h2 id="antsetup">Setup and Configuration of Ant</h2>
 <p>
