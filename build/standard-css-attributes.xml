@@ -597,7 +597,19 @@
 		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
 		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()" />
 		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CubeScreenChangeAnimation()" />
+		<mapping from="MIDPCube" to="new de.enough.polish.ui.screenanimations.DisplayScreenChangeAnimation()" />
+		<mapping from="Cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()" />
+		<mapping from="CagePart2" to="new de.enough.polish.ui.screenanimations.Cage2ScreenChangeAnimation()" />
 		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" />
+		<mapping from="Paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()" />
+		<mapping from="Pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()" />
+		<mapping from="Domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()" />
+		<mapping from="test" to="new de.enough.polish.ui.screenanimations.TestScreenChangeAnimation()" />
+		<mapping from="TabliodPress" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()" />
+		<mapping from="Rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"/>
+		<mapping from="TestRain" to="new de.enough.polish.ui.screenanimations.TestRainScreenChangeAnimation()"/>
+		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()"/>
+		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"/>
 	</attribute>
 	
 	<attribute
