@@ -34,9 +34,76 @@ import javax.microedition.lcdui.Image;
 
 /**
  * <p>Paints a single item of a choice group.</p>
- *
+ * 
+ * As for <code>IconItem</code>,
+ * <code>ChoiceItem</code> is a <i>de.enough.polish</i> extension to group
+ * in a same Object text and image, <code>ChoiceItem</code>s being aimed at
+ * choice items of lists, e.g. <code>List</code> or <code>ChoiceGroup</code>.&nbsp;
+ * Hence, arguments of type <code>ChoiceItem</code> are found in the constructors
+ * of these lists, and in all methods for adding items to them, or retrieving
+ * items from them.
+ * <p>
+ * This is a much better alternative to methods passing separately string and
+ * image parts, for (at least) 2 reasons:
+ * <ol>
+ * <li>for methods taking an array of <code>String</code>s and <code>Image</code>s,
+ * such as:</li>
+ * <ul>
+ * <li><code>
+ * List(String title, int listType, String[] stringElements, Image[] imageElements)
+ * </code></li>
+ * <li><code>
+ * ChoiceGroup(String label, int choiceType, String[] stringElements, Image[] imageElements)
+ * </code></li>
+ * </ul>
+ * the caller <u>must</u> ensure that both arrays have the same length.&nbsp;
+ * Providing an unique array of <code>ChoiceItem</code>, each of them containing
+ * its image and text, solves this error-prone constraint.
+ * <li>there is no easy way to associate data to a given choice.  One must create
+ * a parallel array containing the associated data and ensure the synchronism between
+ * the data array and the displayed choices array.&nbsp;
+ * Extending <code>ChoiceItem</code> is a much
+ * robust approach, as shown in this example:
+ * </ol>
+ * <PRE>
+ * import javax.microedition.lcdui.*;
+ * import de.enough.polish.ui.ChoiceItem;
+ * 
+ * class ListExample extends List implements CommandListener
+ * {
+ *    static class Entry extends ChoiceItem {
+ *       String data;
+ *       Entry(String text, Image img, String data) {
+ *          //#style default
+ *          super(text, img, List.IMPLICIT);
+ *          this.data = data;
+ *       }
+ *    }
+ * 
+ *    static final Entry[] entries = {
+ *       new Entry("Item #1", null, "data 1"),
+ *       new Entry("Item #2", null, "data 2"),
+ *       new Entry("Item #3", null, "data 3")
+ *    };
+ * 
+ *    ListExample() {
+ *       //#style default
+ *       super("A List", List.IMPLICIT, entries);
+ *       setCommandListener(this);
+ *       display.setCurrent(this);
+ *    }
+ * 
+ *    public void commandAction(Command c, Displayable d)
+ *    {
+ *       int sel;
+ *       if ((c == List.SELECT_COMMAND) &amp;&amp; (-1 != (sel = getSelectedIndex()))) {
+ *          System.out.println("Selected data: " + ((Entry)getItem(sel)).data);
+ *       }
+ *    }
+ * }
+ * </PRE>
+ * <b><i>(Example and JavaDoc provided by Pierre G. Richard)</i></b> 
  * <p>Copyright Enough Software 2004, 2005</p>
-
  * <pre>
  * history
  *        05-May-2004 - rob creation

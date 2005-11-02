@@ -1,3 +1,5 @@
+//#condition polish.cldc
+
 /*
  * Created on 09-Sep-2004 at 10:30:04.
  * 

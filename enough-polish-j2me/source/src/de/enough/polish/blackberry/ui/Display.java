@@ -10,6 +10,7 @@ import net.rim.device.api.system.KeyListener;
 import net.rim.device.api.system.TrackwheelListener;
 
 import de.enough.polish.blackberry.midlet.MIDlet;
+import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StyleSheet;
@@ -609,11 +610,12 @@ implements TrackwheelListener, KeyListener
 	 * @param nextDisplayable - the Displayable to be shown after this alert is  dismissed
 	 * @throws NullPointerException - if alert or nextDisplayable is null
 	 * @throws IllegalArgumentException - if nextDisplayable is an Alert
-	 * @see Alert, getCurrent()
+	 * @see Alert
+	 * @see #getCurrent()
 	 */
-	public void setCurrent( Alert alert, Displayable nextDisplayable)
+	public void setCurrent( Displayable alert, Displayable nextDisplayable)
 	{
-		alert.nextDisplayable = nextDisplayable;
+		//alert.nextDisplayable = nextDisplayable;
 		setCurrent( alert );
 		//TODO implement setCurrent
 	}

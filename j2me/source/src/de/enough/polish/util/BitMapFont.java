@@ -1,3 +1,4 @@
+//#condition polish.midp
 /*
  * Created on 08-Nov-2004 at 23:59:52.
  * 

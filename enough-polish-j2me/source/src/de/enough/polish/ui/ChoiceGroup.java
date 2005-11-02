@@ -293,6 +293,113 @@ implements Choice
 	 */
 	public ChoiceGroup( String label, int choiceType, String[] stringElements, Image[] imageElements, Style style, boolean allowImplicit )
 	{
+		this( label, choiceType, 
+				buildChoiceItems(stringElements, imageElements, choiceType, style),
+				style, allowImplicit );
+	}
+
+	/**
+	 * Creates a new <code>ChoiceGroup</code>, specifying its title,
+	 * the type of the
+	 * <code>ChoiceGroup</code>, and an array of <code>ChoiceItem</code>s
+	 * to be used as its initial contents.
+	 * 
+	 * <p>The type must be one of <code>EXCLUSIVE</code>,
+	 * <code>MULTIPLE</code>, or <code>POPUP</code>.  The
+	 * <code>IMPLICIT</code>
+	 * type is not allowed for <code>ChoiceGroup</code>.</p>
+	 * 
+	 * <p>The <code>items</code>s array must be non-null and
+	 * every <code>ChoiceItem</code> must have its text be a non-null
+	 * <code>String</code>.
+	 * The length of the <code>items</code> array
+	 * determines the number of elements in the <code>ChoiceGroup</code>.</p>
+	 * 
+	 * @param label the item's label (see Item)
+	 * @param choiceType EXCLUSIVE, MULTIPLE, or POPUP
+	 * @param items set of <code>ChoiceItem</code>s specifying the ChoiceGroup elements
+	 * @throws NullPointerException if <code>items</code> is null 
+	 *         or if getText() for one of the <code>ChoiceItem</code> in the array 
+	 *         retuns a null <code>String</code>.
+	 * @throws IllegalArgumentException if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP (unless allowImplicit is defined)
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
+	 */
+	public ChoiceGroup( String label, int choiceType, ChoiceItem[] items)
+	{
+		this( label, choiceType, items, null, false );
+	}
+
+	/**
+	 * Creates a new <code>ChoiceGroup</code>, specifying its title,
+	 * the type of the
+	 * <code>ChoiceGroup</code>, and an array of <code>ChoiceItem</code>s
+	 * to be used as its initial contents.
+	 * 
+	 * <p>The type must be one of <code>EXCLUSIVE</code>,
+	 * <code>MULTIPLE</code>, or <code>POPUP</code>.  The
+	 * <code>IMPLICIT</code>
+	 * type is not allowed for <code>ChoiceGroup</code>.</p>
+	 * 
+	 * <p>The <code>items</code>s array must be non-null and
+	 * every <code>ChoiceItem</code> must have its text be a non-null
+	 * <code>String</code>.
+	 * The length of the <code>items</code> array
+	 * determines the number of elements in the <code>ChoiceGroup</code>.</p>
+	 * 
+	 * @param label the item's label (see Item)
+	 * @param choiceType EXCLUSIVE, MULTIPLE, or POPUP
+	 * @param items set of <code>ChoiceItem</code>s specifying the ChoiceGroup elements
+	 * @param style The CSS style for this item
+	 * @throws NullPointerException if <code>items</code> is null 
+	 *         or if getText() for one of the <code>ChoiceItem</code> in the array 
+	 *         retuns a null <code>String</code>.
+	 * @throws IllegalArgumentException if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP (unless allowImplicit is defined)
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
+	 */
+	public ChoiceGroup( String label, int choiceType, ChoiceItem[] items, Style style )
+	{
+		this( label, choiceType, items, style, false );
+	}
+
+	/**
+	 * Creates a new <code>ChoiceGroup</code>, specifying its title,
+	 * the type of the
+	 * <code>ChoiceGroup</code>, and an array of <code>ChoiceItem</code>s
+	 * to be used as its initial contents.
+	 * 
+	 * <p>The type must be one of <code>EXCLUSIVE</code>,
+	 * <code>MULTIPLE</code>, or <code>POPUP</code>.  The
+	 * <code>IMPLICIT</code>
+	 * type is not allowed for <code>ChoiceGroup</code>.</p>
+	 * 
+	 * <p>The <code>items</code>s array must be non-null and
+	 * every <code>ChoiceItem</code> must have its text be a non-null
+	 * <code>String</code>.
+	 * The length of the <code>items</code> array
+	 * determines the number of elements in the <code>ChoiceGroup</code>.</p>
+	 * 
+	 * @param label the item's label (see Item)
+	 * @param choiceType EXCLUSIVE, MULTIPLE, or POPUP
+	 * @param items set of <code>ChoiceItem</code>s specifying the ChoiceGroup elements
+	 * @param style The CSS style for this item
+	 * @param allowImplicit true when the Choice.IMPLICIT choiceType is also allowed
+	 * @throws NullPointerException if <code>items</code> is null 
+	 *         or if getText() for one of the <code>ChoiceItem</code> in the array 
+	 *         retuns a null <code>String</code>.
+	 * @throws IllegalArgumentException if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP (unless allowImplicit is defined)
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
+	 */
+	public ChoiceGroup( String label, int choiceType, ChoiceItem[] items, Style style, boolean allowImplicit )
+	{
 		super( label, false, style, -1, -1 );
 		if (choiceType == Choice.EXCLUSIVE) {
 			//this.isExclusive = true;
@@ -317,22 +424,10 @@ implements Choice
 				//# throw new IllegalArgumentException();
 			//#endif
 		}
-		//#ifndef polish.skipArgumentCheck
-			if (imageElements != null && imageElements.length != stringElements.length) {
-				//#ifdef polish.verboseDebug
-					throw new IllegalArgumentException("imageElements need to have the same length as the stringElements.");
-				//#else
-					//# throw new IllegalArgumentException();
-				//#endif
-			}
-		//#endif
 		this.choiceType = choiceType;
-		for (int i = 0; i < stringElements.length; i++) {
-			Image img = null;
-			if (imageElements != null) {
-				img = imageElements[i];
-			}
-			append( stringElements[i], img, style );
+		for (int i = 0; i < items.length; i++) {
+			ChoiceItem item = items[i];
+			append( item );
 		}
 		//#ifndef tmp.suppressAllCommands
 			if (choiceType == MULTIPLE) {
@@ -347,6 +442,45 @@ implements Choice
 			}
 			this.itemCommandListener = this;
 		//#endif
+	}
+	
+	/**
+	 * Builds an array of <code>ChoiceItems</code> out of
+	 * an array of <code>String</code>s and <code>Image</code>s,
+	 * specifying the <code>choiceType</code> and <code>style</code>
+	 * common to any <code>ChoiceItem</code> in the resulting array.
+	 * 
+	 * @param stringElements set of strings specifying the string parts of the ChoiceGroup elements
+	 * @param imageElements set of images specifying the image parts of the ChoiceGroup elements
+	 * @param choiceType EXCLUSIVE, MULTIPLE, or POPUP
+	 * @param style The CSS style for this item
+	 * @throws NullPointerException if stringElements is null or if the stringElements array contains any null elements
+	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 * @see Choice#POPUP
+	 */
+	private static ChoiceItem[] buildChoiceItems(String[] stringElements, Image[] imageElements, int choiceType, Style style)
+	{
+		//#ifndef polish.skipArgumentCheck
+			if (imageElements != null && imageElements.length != stringElements.length) {
+				//#ifdef polish.verboseDebug
+					throw new IllegalArgumentException("imageElements need to have the same length as the stringElements.");
+				//#else
+					//# throw new IllegalArgumentException();
+				//#endif
+			}
+		//#endif
+		ChoiceItem[] items = new ChoiceItem[stringElements.length];
+		for (int i = 0; i < stringElements.length; ++i) {
+			Image img = null;
+			if (imageElements != null) {
+				img = imageElements[i];
+			}
+			items[i] = new ChoiceItem( stringElements[i], img, choiceType, style );
+		}
+		return items;
 	}
 	
 	//#ifdef polish.usePopupItem
@@ -406,6 +540,19 @@ implements Choice
 	}
 
 	/**
+	 * Gets the <code>ChoiceItem</code> of the element referenced by
+	 * <code>elementNum</code>.
+	 *
+	 * @param elementNum the number of the element to be queried
+	 * @return the ChoiceItem of the element
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public ChoiceItem getItem( int elementNum )
+	{
+		return (ChoiceItem)this.itemsList.get( elementNum );
+	}
+
+	/**
 	 * Appends an element to the <code>ChoiceGroup</code>.
 	 * 
 	 * @param stringPart the string part of the element to be added
@@ -432,10 +579,33 @@ implements Choice
 	public int append( String stringPart, Image imagePart, Style elementStyle )
 	{
 		ChoiceItem item = new ChoiceItem( stringPart, imagePart, this.choiceType, elementStyle );
+		return append( item, elementStyle );
+	}
+	
+	/**
+	 * Appends a ChoiceItem to this choice group.
+	 * 
+	 * @param item the item
+	 * @return the assigned index of the element
+	 */
+	public int append( ChoiceItem item ) {
+		return append( item, null );
+	}
+	/**
+	 * Appends a ChoiceItem to this choice group.
+	 * 
+	 * @param item the item
+	 * @param elementStyle the style of the item, ignored when null
+	 * @return the assigned index of the element
+	 */
+	public int append( ChoiceItem item, Style elementStyle ) {
 		add( item );
+		if ( elementStyle != null ) {
+			item.setStyle( elementStyle );
+		}
 		//#ifdef polish.usePopupItem
 			if (this.isPopup && this.isPopupClosed && this.selectedIndex == -1) {
-				this.popupItem.setText( stringPart );
+				this.popupItem.setText( item.text );
 				this.selectedIndex = 0;
 			}
 		//#endif
@@ -455,7 +625,7 @@ implements Choice
 	 */
 	public void insert(int elementNum, String stringPart, Image imagePart)
 	{
-		insert( elementNum, stringPart, imagePart );
+		insert( elementNum, stringPart, imagePart, null );
 	}
 
 	/**
@@ -473,6 +643,19 @@ implements Choice
 	public void insert(int elementNum, String stringPart, Image imagePart, Style elementStyle)
 	{
 		ChoiceItem item = new ChoiceItem( stringPart, imagePart, this.choiceType, elementStyle );
+		add(elementNum, item);
+	}
+
+	/**
+	 * Inserts an element into the <code>ChoiceGroup</code> just prior to
+	 * the element specified.
+	 * 
+	 * @param elementNum the index of the element where insertion is to occur
+	 * @param item ChoiceItem of the element to be inserted
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public void insert(int elementNum, ChoiceItem item)
+	{
 		add(elementNum, item);
 	}
 
@@ -516,6 +699,25 @@ implements Choice
 		if (elementStyle != null) {
 			item.setStyle(elementStyle);
 		}
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
+	}
+
+	/**
+	 * Sets the <code>ChoiceItem</code> of the
+	 * element referenced by <code>elementNum</code>,
+	 * replacing the previous one.
+	 * 
+	 * @param elementNum the index of the element to be set
+	 * @param item the ChoiceItem of the new element
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public void set(int elementNum, ChoiceItem item )
+	{
+		delete( elementNum );
+		add( elementNum, item );
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();

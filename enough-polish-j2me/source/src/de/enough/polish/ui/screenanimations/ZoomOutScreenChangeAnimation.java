@@ -86,6 +86,8 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 		if (this.currentStep <= 0) {
 			this.steps = 6;
 			this.scaleFactor = 200;
+			this.nextScreenRgb = null;
+			this.scaledScreenRgb = null;
 			return false;
 		}
 		int factor = 100 + ( (this.scaleFactor - 100) * this.currentStep ) / this.steps;

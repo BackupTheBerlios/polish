@@ -347,6 +347,79 @@ public class List extends Screen implements Choice
 	}
 		
 	/**
+	 * Creates a new <code>List</code>, specifying its title, the type
+	 * the type of the
+	 * <code>List</code>, and an array of <code>ChoiceItem</code>s
+	 * to be used as its initial contents.
+	 * 
+	 * <p>The <code>items</code>s array must be non-null and
+	 * every <code>ChoiceItem</code> must have its text be a non-null
+	 * <code>String</code>.
+	 * The length of the <code>items</code> array
+	 * determines the number of elements in the <code>ChoiceGroup</code>.</p>
+	 * 
+	 * @param title the screen's title (see Displayable)
+	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
+	 * @param items set of <code>ChoiceItem</code>s specifying the ChoiceGroup elements
+	 * @throws NullPointerException if <code>items</code> is null 
+	 *         or if getText() for one of the <code>ChoiceItem</code> in the array 
+	 *         retuns a null <code>String</code>.
+	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 */
+	public List( String title, int listType, ChoiceItem[] items)
+	{
+		this( title, listType, items, null ); 
+	}
+		
+	/**
+	 * Creates a new <code>List</code>, specifying its title, the type
+	 * the type of the
+	 * <code>List</code>, and an array of <code>ChoiceItem</code>s
+	 * to be used as its initial contents.
+	 * 
+	 * <p>The <code>items</code>s array must be non-null and
+	 * every <code>ChoiceItem</code> must have its text be a non-null
+	 * <code>String</code>.
+	 * The length of the <code>items</code> array
+	 * determines the number of elements in the <code>ChoiceGroup</code>.</p>
+	 * 
+	 * @param title the screen's title (see Displayable)
+	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
+	 * @param items set of <code>ChoiceItem</code>s specifying the ChoiceGroup elements
+	 * @param style the style of this list
+	 * @throws NullPointerException if <code>items</code> is null 
+	 *         or if getText() for one of the <code>ChoiceItem</code> in the array 
+	 *         retuns a null <code>String</code>.
+	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
+	 * @see Choice#EXCLUSIVE
+	 * @see Choice#MULTIPLE
+	 * @see Choice#IMPLICIT
+	 */
+	public List( String title, int listType, ChoiceItem[] items, Style style)
+	{
+		super( title, style, false );
+		//#ifndef polish.skipArgumentCheck
+			if (listType != Choice.EXCLUSIVE && listType != Choice.MULTIPLE && listType != Choice.IMPLICIT ) {
+				//#ifdef polish.debugVerbose
+					throw new IllegalArgumentException("invalid list-type: " + listType );
+				//#else
+					//# throw new IllegalArgumentException();
+				//#endif
+			}		
+		//#endif
+		this.listType = listType;
+		
+		this.choiceGroup = new ChoiceGroup( null, this.listType, items, style, true  );
+		this.choiceGroup.autoFocusEnabled = true;
+		this.choiceGroup.screen = this;
+		this.choiceGroup.isFocused = true;
+		this.container = this.choiceGroup;
+	}
+		
+	/**
 	 * Gets the number of elements in the <code>List</code>.
 	 * 
 	 * @return the number of elements in the List
@@ -388,6 +461,19 @@ public class List extends Screen implements Choice
 	}
 
 	/**
+	 * Gets the <code>ChoiceItem</code> of the element referenced by
+	 * <code>elementNum</code>.
+	 *
+	 * @param elementNum the number of the element to be queried
+	 * @return the ChoiceItem of the element
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public ChoiceItem getItem( int elementNum )
+	{
+		return (ChoiceItem)this.choiceGroup.get( elementNum );
+	}
+
+	/**
 	 * Appends an element to the <code>List</code>.
 	 * 
 	 * @param stringPart the string part of the element to be added
@@ -412,11 +498,23 @@ public class List extends Screen implements Choice
 	 */
 	public int append( String stringPart, Image imagePart, Style elementStyle )
 	{
+		return append( new ChoiceItem( stringPart, imagePart, this.listType, elementStyle ));
+	}
+	
+	/**
+	 * Appends a <code>ChoiceItem</code> to the <code>List</code>.
+	 *
+	 * @param item ChoiceItem to be added
+	 * @return the assigned index of the element
+	 */
+	public int append( ChoiceItem item )
+	{
 		//#ifdef polish.css.show-text-in-title
 			if (this.showTextInTitle){
-				if (imagePart != null && stringPart != null) {
+				String stringPart = item.getText();
+				if (item.getImage() != null && stringPart != null) {
+					item.setText( null );
 					this.titles.add( stringPart );
-					stringPart = null;
 					if (this.titles.size() == 1) {
 						// now set the title of the first item:
 						setTitle( stringPart );
@@ -426,7 +524,7 @@ public class List extends Screen implements Choice
 				}
 			}
 		//#endif
-		int number = this.choiceGroup.append( stringPart, imagePart, elementStyle );
+		int number = this.choiceGroup.append( item );
 		if (number == 0) {
 			if (this.listType == IMPLICIT && this.selectCommand != null ) {
 				addCommand( this.selectCommand );
@@ -469,6 +567,18 @@ public class List extends Screen implements Choice
 	}
 
 	/**
+	 * Inserts an element into the <code>List</code> just prior to the element specified.
+	 * 
+	 * @param elementNum the index of the element where insertion is to occur
+	 * @param item ChoiceItem of the element to be inserted
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public void insert(int elementNum, ChoiceItem item)
+	{
+		this.choiceGroup.insert( elementNum, item );
+	}
+	
+	/**
 	 * Sets the <code>String</code> and <code>Image</code> parts of the
 	 * element referenced by <code>elementNum</code>,
 	 * replacing the previous contents of the element.
@@ -501,6 +611,20 @@ public class List extends Screen implements Choice
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
 		this.choiceGroup.set( elementNum, stringPart, imagePart, elementStyle );
+	}
+
+	/**
+	 * Sets the <code>ChoiceItem</code> of the
+	 * element referenced by <code>elementNum</code>,
+	 * replacing the previous one.
+	 * 
+	 * @param elementNum the index of the element to be set
+	 * @param item ChoiceItem of the new element
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public void set(int elementNum, ChoiceItem item)
+	{
+		this.choiceGroup.set( elementNum, item );
 	}
 
 	/**

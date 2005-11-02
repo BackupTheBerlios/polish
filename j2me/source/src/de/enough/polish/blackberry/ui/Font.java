@@ -204,12 +204,18 @@ public final class Font extends Object
 			}
 			this.font = family.getFont( bbStyle, bbSize, Ui.UNITS_px  );
 			if (this.font == null) {
+				//#debug
 				System.out.println("Unable to retrieve font...");
 				this.font = net.rim.device.api.ui.Font.getDefault();
 			}
 		}
-		this.height = this.font.getHeight();
-		this.baselinePosition = this.font.getBaseline();
+		if (this.font != null) {
+			this.height = this.font.getHeight();
+			this.baselinePosition = this.font.getBaseline();
+		} else {
+			this.height = 12;
+			this.baselinePosition = 10;
+		}
 	}
 
 	/**

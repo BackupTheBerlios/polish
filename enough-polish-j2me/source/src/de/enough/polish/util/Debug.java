@@ -1,3 +1,4 @@
+
 /*
  * Created on 20-Jan-2003 at 15:05:18.
  *
@@ -25,12 +26,14 @@
  */
 package de.enough.polish.util;
 
+//#if polish.midp
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.StringItem;
+//#endif
 //#if polish.showLogOnError && polish.usePolishGui
 	import de.enough.polish.ui.StyleSheet;
 //#endif
@@ -49,14 +52,18 @@ import de.enough.polish.log.LogHandler;
  * @author Robert Virkus, robert@enough.de
  */
 public final class Debug
+//#if polish.midp
 implements CommandListener
+//#endif
 {
 	public static boolean suppressMessages;
+	//#if polish.midp
 	public static final Command RETURN_COMMAND = new Command( "Return", Command.SCREEN, 1 );
-	private static final ArrayList MESSAGES = new ArrayList( 100 );
 	private static Displayable returnDisplayable;
 	private static Display midletDisplay;
 	private static javax.microedition.lcdui.TextBox textBox;
+	//#endif
+	private static final ArrayList MESSAGES = new ArrayList( 100 );
 	//#if polish.log.handlers:defined
 		private static LogHandler[] handlers;
 		static {
@@ -252,9 +259,11 @@ implements CommandListener
 		if (MESSAGES.size() > 98) {
 			MESSAGES.remove( 0 );
 		}
+		//#if polish.midp
 		if (Debug.textBox != null) {
 			addMessages();
 		}
+		//#endif
 		// try to store this log-entry:
 		// add then entry to the interal list:
 		//#if polish.log.handlers:defined
@@ -270,7 +279,7 @@ implements CommandListener
 							MESSAGES.remove( 0 );
 						}
 						MESSAGES.add( entry );
-						//#if polish.showLogOnError && polish.usePolishGui 
+						//#if polish.midp && polish.showLogOnError && polish.usePolishGui 
 							if (Debug.textBox == null) {
 								showLog( StyleSheet.display );
 							}
@@ -280,13 +289,14 @@ implements CommandListener
 			}
 		//#endif
 		
-		//#if polish.showLogOnError && polish.usePolishGui 
+		//#if polish.midp && polish.showLogOnError && polish.usePolishGui 
 			if (exception != null && Debug.textBox == null) {
 				showLog( StyleSheet.display );
 			}
 		//#endif
 	}
 		
+	//#if polish.midp
 	/**
 	 * Retrieves a form with all the debugging messages.
 	 * 
@@ -316,7 +326,9 @@ implements CommandListener
 		form.addCommand(RETURN_COMMAND);
 		return form;
 	}
+	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Shows the log with the current messages.
 	 * When new messages are added, the log will be updated.
@@ -345,7 +357,9 @@ implements CommandListener
 		display.setCurrent( Debug.textBox );
 		//#endif
 	}
+	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Adds all messages to the internal TextBox-Log.
 	 *
@@ -375,7 +389,9 @@ implements CommandListener
 		//#endif
 		Debug.textBox.setString( buffer.toString() );
 	}
+	//#endif
 
+	//#if polish.midp
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
@@ -387,6 +403,7 @@ implements CommandListener
 		Debug.returnDisplayable = null;
 		disp.setCurrent( returnDisp );
 	}
+	//#endif
 	
 	
 	public static void exit() {

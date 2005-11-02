@@ -1,7 +1,5 @@
-//#condition polish.midp
-
 /*
- * Created on 23-Mar-2005 at 21:53:09.
+ * Created on 28-Oct-2005 at 10:32:59.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -25,31 +23,20 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.ui.splash;
+package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Graphics;
+import junit.framework.TestCase;
 
-/**
- * <p>Paints a custom view for the IntializerSplashScreen.
- * This interface can only be used during the development phase,
- * since it is not actually included in the application.
- * What you need to do is to define the preprocessing variable
- * "polish.classes.SplashView". Your SplashView implementation needs to look like this:
- * public class MySplashView
- * //#if false
- *     implements SplashView
- * //#endif  
- * </p>
- *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        23-Mar-2005 - rob creation
- * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
- */
-public interface SplashView {
+public class TextFieldTest extends TestCase {
+
+	public TextFieldTest(String name) {
+		super(name);
+	}
 	
-	public void paint( int width, int height, boolean isInitialized, Graphics g );
+	public void testNumericAnyTrick() {
+		TextField field = new TextField( null, "23", 50, TextField.NUMERIC );
+		field.setConstraints( TextField.ANY );
+		assertEquals( TextField.MODE_NUMBERS, field.inputMode );
+	}
 
 }

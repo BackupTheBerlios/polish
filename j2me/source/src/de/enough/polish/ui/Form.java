@@ -530,10 +530,10 @@ public class Form extends Screen
 	 */
 	public int append( Item item, Style itemStyle )
 	{
+		this.container.add( item );
 		if (itemStyle != null) {
 			item.setStyle( itemStyle );
 		}
-		this.container.add( item );
 		if (this.isShown() ) {
 			repaint();
 		}
@@ -556,7 +556,7 @@ public class Form extends Screen
 	 */
 	public int append( String str, Style itemStyle )
 	{
-		return append( new StringItem(null, str, itemStyle) );
+		return append( new StringItem(null, str, itemStyle), null );
 	}
 
 	/**
@@ -574,7 +574,7 @@ public class Form extends Screen
 	 */
 	public int append( String str)
 	{
-		return append( new StringItem(null, str) );
+		return append( new StringItem(null, str), null );
 	}
 
 	/**
@@ -594,7 +594,7 @@ public class Form extends Screen
 	public int append( Image img, Style itemStyle )
 	{
 		
-		return append(new ImageItem(null, img, Item.LAYOUT_DEFAULT, null, itemStyle));
+		return append(new ImageItem(null, img, Item.LAYOUT_DEFAULT, null, itemStyle), null );
 	}
 	
 	/**
@@ -612,7 +612,7 @@ public class Form extends Screen
 	 */
 	public int append( Image img)
 	{
-		return append(new ImageItem(null, img, Item.LAYOUT_DEFAULT, null));
+		return append(new ImageItem(null, img, Item.LAYOUT_DEFAULT, null), null);
 	}
 
 	/**

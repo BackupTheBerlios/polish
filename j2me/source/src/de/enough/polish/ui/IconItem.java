@@ -316,6 +316,11 @@ implements ImageConsumer
 				if (this.parent instanceof Container) {
 					imageName = ((Container) this.parent).parseIndexUrl( imageName, this );
 				}
+				//#if polish.debug.error
+					else if ( imageName.indexOf( "%INDEX%") != -1) {
+						throw new IllegalStateException("IconItem cannot resolve %INDEX% in url since parent is not a container: " + this.parent );
+					}
+				//#endif
 				try {
 					Image img = StyleSheet.getImage(imageName, this, true);
 					if (img != null) {

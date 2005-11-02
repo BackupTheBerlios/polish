@@ -88,6 +88,8 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 			this.scaleFactor = 200;
 			this.steps = 10;
 			this.currentStep = 0;
+			this.scaledScreenRgb = null;
+			this.lastScreenRgb = null;
 			return false;
 		}
 		int factor = 100 + (this.scaleFactor - 100) * this.currentStep / this.steps;

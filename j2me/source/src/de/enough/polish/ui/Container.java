@@ -69,6 +69,8 @@ public class Container extends Item {
 	private static final int EQUAL_WIDTH_COLUMNS = 1;
 	private static final int NORMAL_WIDTH_COLUMNS = 2;
 	private static final int STATIC_WIDTH_COLUMNS = 3;
+	public static final int SCROLL_DEFAULT = 0;
+	public static final int SCROLL_SMOOTH = 1;
 	
 	protected ArrayList itemsList;
 	protected Item[] items;
@@ -93,6 +95,11 @@ public class Container extends Item {
 	//#ifdef polish.css.view-type
 		protected ContainerView view;
 	//#endif
+	//#ifdef polish.css.scroll-mode
+		protected boolean scrollSmooth = true;	
+	//#endif
+	protected int targetYOffset;
+
 	
 	/**
 	 * Creates a new empty container.
@@ -128,6 +135,15 @@ public class Container extends Item {
 		this.itemsList = new ArrayList();
 		this.autoFocusEnabled = focusFirstElement;
 		Style focStyle = StyleSheet.focusedStyle;
+		//#if false
+			// this code is needed for the JUnit tests only:
+			if (focStyle == null) {
+				focStyle = new Style( 1, 1, 1, 1,
+						0, 0, 0, 0, 0, 0,
+						0, 0x0, null, null, null, null, null, null, null, null
+				);
+			}
+		//#endif
 		this.focusedStyle = focStyle;
 		this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
 		if (focStyle.border != null) {
@@ -266,6 +282,7 @@ public class Container extends Item {
 			this.focusedIndex--;
 		}
 		this.yOffset = 0;
+		this.targetYOffset = 0;
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();
@@ -301,6 +318,7 @@ public class Container extends Item {
 			this.focusedIndex = -1;
 		}
 		this.yOffset = 0;
+		this.targetYOffset = 0;
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			//this.yBottom = this.yTop = 0;
@@ -396,7 +414,7 @@ public class Container extends Item {
 				System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
 			}
 		//#endif
-		
+		boolean isDownwards = index > this.focusedIndex;
 		this.focusedIndex = index;
 		this.focusedItem = item;
 		if (this.yTopPos != this.yBottomPos) {
@@ -419,8 +437,18 @@ public class Container extends Item {
 			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
-				int itemYTop = item.yTopPos;
-				int itemYBottom = item.yBottomPos;
+				
+				Item nextItem;
+				if ( isDownwards && index < this.itemsList.size() - 1 ) {
+					nextItem = (Item) this.itemsList.get( index + 1 );
+				} else if ( !isDownwards && index > 0 ) {
+					nextItem = (Item) this.itemsList.get( index - 1 );
+				} else {
+					nextItem = item;
+				}
+
+				int itemYTop = isDownwards ? item.yTopPos : nextItem.yTopPos;
+				int itemYBottom = isDownwards ? nextItem.yBottomPos : item.yBottomPos;
 				int difference = 0;
 				if (itemYTop == itemYBottom) {
 					//#debug
@@ -449,7 +477,15 @@ public class Container extends Item {
 				}
 				//#debug
 				System.out.println("Container (" + getClass().getName() + "): difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
-				this.yOffset += difference;
+				//#if polish.css.scroll-mode
+					if (!this.scrollSmooth) {
+						this.yOffset += difference;
+					} else {
+				//#endif
+						this.targetYOffset = this.yOffset + difference;
+				//#if polish.css.scroll-mode
+					}
+				//#endif
 			}
 		}
 		this.isInitialised = false;
@@ -810,13 +846,29 @@ public class Container extends Item {
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
 				if (this.enableScrolling && item.internalX != -9999) {
 					if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
-						this.yOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+						//#if polish.css.scroll-mode
+							if (!this.scrollSmooth) {
+								this.yOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+							} else {
+						//#endif
+								this.targetYOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+						//#if polish.css.scroll-mode
+							}
+						//#endif
 						//#debug
-						System.out.println("Container (" + getClass().getName() + "): lowered yOffset to " + this.yOffset );
+						System.out.println("Container (" + getClass().getName() + "): lowered yOffset to " + this.yOffset + "/" + this.targetYOffset  );
 					} else if ( item.contentY + item.internalY < this.yTop ) {
-						this.yOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+						//#if polish.css.scroll-mode
+							if (!this.scrollSmooth) {
+								this.yOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+							} else {
+						//#endif
+								this.targetYOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+						//#if polish.css.scroll-mode
+							}
+						//#endif
 						//#debug
-						System.out.println("Container (" + getClass().getName() + "): increased yOffset to " + this.yOffset + ", yTop=" + this.yTop + ", item.class=" + item.getClass().getName() + ", item.contentY=" + item.contentY + ", item.internalY=" + item.internalY );
+						System.out.println("Container (" + getClass().getName() + "): increased yOffset to " + this.yOffset + "/" + this.targetYOffset + ", yTop=" + this.yTop + ", item.class=" + item.getClass().getName() + ", item.contentY=" + item.contentY + ", item.internalY=" + item.internalY );
 					}
 				}
 				//#debug
@@ -833,19 +885,25 @@ public class Container extends Item {
 					focus( this.view.focusedIndex, next );
 					return true;
 				} else if (this.enableScrolling) {
-					if (gameAction == Canvas.UP && this.yOffset < 0 ) {
-						this.yOffset += 10;
-						if (this.yOffset > 0 ) {
-							this.yOffset = 0;
+					
+					if (gameAction == Canvas.UP && this.targetYOffset < 0 ) {
+						this.targetYOffset += 10;
+						if (this.targetYOffset > 0 ) {
+							this.targetYOffset = 0;
 						}
 						return true;
 					}
 					if (gameAction == Canvas.DOWN
-							&& (this.itemHeight + this.yOffset > (this.yBottom - this.yTop)) ) 
+							&& (this.itemHeight + this.targetYOffset > (this.yBottom - this.yTop)) ) 
 					{
-						this.yOffset -= 10;
+						this.targetYOffset -= 10;
 						return true;
 					}
+					//#if polish.scroll-mode
+						if (!this.scrollSmooth) {
+							this.yOffset = this.targetYOffset;
+						}
+					//#endif
 				}
 				return false;
 			}
@@ -867,11 +925,16 @@ public class Container extends Item {
 				System.out.println("Container(" + this + "): forward shift by one column succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			}
 			if ((!processed) && this.enableScrolling 
-					&&  (this.yBottomPos + this.yOffset > this.yBottom)) {
+					&&  (this.yBottomPos + this.targetYOffset > this.yBottom)) {
 				// scroll downwards:
-				this.yOffset -= 10;
+				this.targetYOffset -= 10;
 				processed = true;
 				//System.out.println("yBottomPos: " + this.yBottomPos + "  yBottom: " + this.yBottom );
+				//#if polish.scroll-mode
+					if (!this.scrollSmooth) {
+						this.yOffset = this.targetYOffset;
+					}
+				//#endif
 			}
 		} else if ( (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
 				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
@@ -884,13 +947,18 @@ public class Container extends Item {
 			if (!processed) {
 				processed = shiftFocus( false, 0 );
 			}
-			if ((!processed) && this.enableScrolling && (this.yOffset < 0)) {
+			if ((!processed) && this.enableScrolling && (this.targetYOffset < 0)) {
 				// scroll upwards:
-				this.yOffset += 10;
-				if (this.yOffset > 0) {
-					this.yOffset = 0;
+				this.targetYOffset += 10;
+				if (this.targetYOffset > 0) {
+					this.targetYOffset = 0;
 				}
 				processed = true;
+				//#if polish.scroll-mode
+					if (!this.scrollSmooth) {
+						this.yOffset = this.targetYOffset;
+					}
+				//#endif
 			}
 		}
 		return processed;
@@ -919,19 +987,41 @@ public class Container extends Item {
 		//#if polish.Container.allowCycling != false
 			boolean allowCycle = this.enableScrolling && this.allowCycling;
 			if (allowCycle) {
-				if (forwardFocus) {
-					// when you scroll to the bottom and
-					// there is still space, do
-					// scroll first before cycling to the
-					// first item:
-					allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
-				} else {
-					// when you scroll to the top and
-					// there is still space, do
-					// scroll first before cycling to the
-					// last item:
-					allowCycle = (this.yOffset == 0);
-				}
+				//#if polish.css.scroll-mode
+					if (!this.scrollSmooth) {
+						if (forwardFocus) {
+							// when you scroll to the bottom and
+							// there is still space, do
+							// scroll first before cycling to the
+							// first item:
+							allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
+						} else {
+							// when you scroll to the top and
+							// there is still space, do
+							// scroll first before cycling to the
+							// last item:
+							allowCycle = (this.yOffset == 0);
+						}						
+					} else {
+				//#endif
+					if (forwardFocus) {
+						// when you scroll to the bottom and
+						// there is still space, do
+						// scroll first before cycling to the
+						// first item:
+						allowCycle = (this.targetYOffset + this.itemHeight <= this.yBottom);
+					} else {
+						// when you scroll to the top and
+						// there is still space, do
+						// scroll first before cycling to the
+						// last item:
+						allowCycle = (this.targetYOffset == 0);
+					}
+				//#if polish.css.scroll-mode
+					}
+				//#endif
+				//#debug
+				System.out.println("shiftFocus: allowCycl=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset );	
 			}
 		//#endif
 		while (true) {
@@ -1109,6 +1199,12 @@ public class Container extends Item {
 			}
 			this.view = viewType;
 		//#endif
+		//#if polish.css.scroll-mode
+			Integer scrollModeInt = style.getIntProperty("scroll-mode");
+			if ( scrollModeInt != null ) {
+				this.scrollSmooth = (scrollModeInt.intValue() == SCROLL_SMOOTH);
+			}
+		//#endif	
 	}
 
 	/**
@@ -1211,6 +1307,21 @@ public class Container extends Item {
 	 */
 	public boolean animate() {
 		boolean animated = false;
+		//#if polish.css.scroll-mode
+			if (this.scrollSmooth && this.targetYOffset != this.yOffset) {
+		//#else
+			//# if (this.targetYOffset != this.yOffset) {	
+		//#endif
+			int speed = (this.targetYOffset - this.yOffset) / 3;
+			speed += this.targetYOffset > this.yOffset ? 1 : -1;
+			this.yOffset += speed;
+			if ( speed > 0 && this.yOffset > this.targetYOffset) {
+				this.yOffset = this.targetYOffset;
+			} else if (speed < 0 && this.yOffset < this.targetYOffset) {
+				this.yOffset = this.targetYOffset;
+			}
+			animated = true;
+		}
 		if  (this.background != null) {
 			animated |= this.background.animate();
 		}

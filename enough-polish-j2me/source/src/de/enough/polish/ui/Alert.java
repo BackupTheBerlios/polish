@@ -228,7 +228,7 @@ implements CommandListener
 	private AlertType alertType;
 	
 	private Display display;
-	private Displayable nextDisplayable;
+	protected Displayable nextDisplayable;
 
 	/**
 	 * Constructs a new, empty <code>Alert</code> object with the given title. 

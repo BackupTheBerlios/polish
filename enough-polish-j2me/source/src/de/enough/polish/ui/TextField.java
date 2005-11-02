@@ -1510,7 +1510,7 @@ public class TextField extends StringItem
 				return;
 			}
 			this.editField.layout( lineWidth, this.contentHeight );
-			System.out.println("TextField: editField.getText()="+ this.editField.getText() );
+			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.editField.getExtent();
 			this.contentWidth = rect.width;
 			this.contentHeight = rect.height;
