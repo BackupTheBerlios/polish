@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -124,10 +125,8 @@ implements Comparable
 		} else {
 			this.mappingsByName = new HashMap( mappingsList.size() );
 			for (Iterator iter = mappingsList.iterator(); iter.hasNext();) {
-				Element mapping = (Element) iter.next();
-				String from = mapping.getAttributeValue("from");
-				String to = mapping.getAttributeValue("to");
-				this.mappingsByName.put( from, to );
+				CssMapping mapping = new CssMapping( (Element) iter.next());
+				this.mappingsByName.put( mapping.getFrom(), mapping );
 			}
 		}
 		this.description = definition.getAttributeValue("description");
@@ -214,9 +213,10 @@ implements Comparable
 	 * Determines whether the given value is allowed.
 	 * 
 	 * @param value the actual value
+	 * @param evaluator the evaluator for checking conditions
 	 * @throws BuildException when the given value is not allowed by this attribute.
 	 */
-	public void checkValue( String value ) {
+	public void checkValue( String value, BooleanEvaluator evaluator ) {
 		if (isBoolean()) {
 			if ("true".equals( value ) || "false".equals( value )) {
 				return;
@@ -226,6 +226,11 @@ implements Comparable
 		} else if (this.type == CHAR) {
 			if (value.length() != 1) {
 				throw new BuildException( "Invalid CSS: the attribute [" + this.name + "] needs to be a character - the given value \"" + value + "\" is not supported."  );
+			}
+		} else if (this.mappingsByName != null) {
+			CssMapping mapping = getMapping(value);
+			if (mapping != null) {
+				mapping.checkCondition( this.name, evaluator );
 			}
 		}
 		if (this.allowedValues == null) {
@@ -321,10 +326,10 @@ implements Comparable
 	 */
 	public boolean appliesTo(String className) {
 		if (this.appliesToMap == null) {
-			System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = NO APPLIES MAP DEFINED!");
+			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = NO APPLIES MAP DEFINED!");
 			return false;
 		} else {
-			System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = " + (this.appliesToMap.get( className ) != null));
+			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = " + (this.appliesToMap.get( className ) != null));
 			return (this.appliesToMap.get( className ) != null);
 		}
 	}
@@ -339,12 +344,20 @@ implements Comparable
 		return 0;
 	}
 	
-	public String getMapping( String value ) {
+	public CssMapping getMapping( String value ) {
 		if (this.mappingsByName == null) {
 			return null;
 		} else {
-			return (String) this.mappingsByName.get( value );
+			return (CssMapping) this.mappingsByName.get( value );
 		}
+	}
+
+	public String getMappingFrom(String value) {
+		CssMapping mapping = getMapping(value);
+		if (mapping != null) {
+			return mapping.getTo();
+		}
+		return null;
 	}
 
 }

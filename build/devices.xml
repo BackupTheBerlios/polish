@@ -428,10 +428,11 @@
 		<capability name="Region" value="global" />
 		<capability name="Network" value="GSM, GPRS, UMTS" />
 		<capability name="Frequency" value="900,1800,1900" />
-		<capability name="Emulator.Skin" value="SonyEricsson_K608" />
+		<capability name="Emulator.Skin" value="SonyEricsson_W800" />
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="CameraResolution" value="2 MP" />
 		<capability name="CameraZoom" value="4" />
+		<capability name="Bugs" value="ImageIOStreamAutoClose" />
 	</device>
 
 	<device>
@@ -456,7 +457,7 @@
 		<capability name="Region" value="global" />
 		<capability name="Network" value="GSM, GPRS, UMTS" />
 		<capability name="Frequency" value="900,1800,1900" />
-		<capability name="Emulator.Skin" value="SonyEricsson_K608" />
+		<capability name="Emulator.Skin" value="SonyEricsson_W600" />
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="CameraZoom" value="4" />
@@ -699,6 +700,7 @@
 		<capability name="Frequency" value="900,1800,1900" />
 		<capability name="Emulator.Skin" value="SonyEricsson_K750" />
 		<capability name="DebugInterface" value="KDWP" />
+		<capability name="Bugs" value="ImageIOStreamAutoClose" />
 	</device>
 
 	<device>

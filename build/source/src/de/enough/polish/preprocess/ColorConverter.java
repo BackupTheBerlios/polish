@@ -43,6 +43,7 @@ import java.util.Set;
  *        01-Mar-2004 - rob creation
  * </pre>
  * @author Robert Virkus, robert@enough.de
+ * @author Eugene Markov, fixed inheritance of colors
  */
 public class ColorConverter {
 	
@@ -220,7 +221,7 @@ public class ColorConverter {
 	 * @param newColors all colors in a map.
 	 * @throws BuildException when one of the given colors is invalid 
 	 */
-	public void setTemporaryColors( Map newColors ) {
+	public void oldSetTemporaryColors( Map newColors ) {
 		this.tempColors = new HashMap();
 		Set keys = newColors.keySet();
 		for (Iterator iter = keys.iterator(); iter.hasNext();) {
@@ -228,6 +229,62 @@ public class ColorConverter {
 			HashMap map = (HashMap) newColors.get( colorName );
 			String color = (String) map.get(colorName);
 			this.tempColors.put( colorName, parseColor( color ));
+		}
+	}
+	
+	/**
+	 * Sets the temporary colors.
+	 * 
+	 * @param newColors all colors in a map.
+	 * @throws BuildException when one of the given colors is invalid 
+	 */
+	 public void setTemporaryColors( Map newColors )
+	 {
+		this.tempColors = new HashMap();
+		HashSet set = new HashSet( 5 );
+		Set keys = newColors.keySet();
+		for (Iterator iter = keys.iterator(); iter.hasNext();)
+		{
+			String color = (String)iter.next();
+			if ( ! this.tempColors.containsKey( color ) )
+			{
+				System.out.println( "color: " + color );
+				set.clear();
+				while( color.matches( "[a-zA-Z_][a-zA-Z0-9_-]*[a-zA-Z0-9_]" ) )
+				{
+					if ( this.tempColors.containsKey( color ) ) {
+						break;
+					} else {
+						if( set.contains( color ) ) {
+							throw new BuildException( "Invalid color definition in CSS: [" +
+							color + "] is cyclically." );
+						}
+						set.add( color );
+						HashMap map = (HashMap) newColors.get( color );
+						color = (String) map.get(color);
+						if ( color == null ) {
+							throw new BuildException( "Invalid color definition in CSS: [" +
+									color + "] is not a valid value." );
+						}
+					 	if ( COLORS.get( color ) != null ) {
+					 		break;
+					 	}
+					 }
+				}
+				if ( set.isEmpty() )
+				{
+					throw new BuildException("Invalid color definition in CSS: [" +
+							color + "] is not a valid name." );
+				} else {
+					color = parseColor( color );
+					for (Iterator iter1 = set.iterator(); iter1.hasNext();)
+					{
+						String keycolor = (String)iter1.next();
+						System.out.println( keycolor + "=" + color );
+						this.tempColors.put( keycolor, color );
+					}
+				}
+			}
 		}
 	}
 

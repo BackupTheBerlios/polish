@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.BuildLogger;
 
 import de.enough.polish.Environment;
@@ -53,7 +54,7 @@ public class PolishLogger implements BuildLogger {
 	private final static char SEPERATOR_CHAR = File.separatorChar; // this weird construct is needed
 	// so that Ant does not load the File class in the messageLogged() method...
 
-	private BuildLogger logger;
+	private BuildListener logger;
 	private boolean isInObfuscateMode;
 	private boolean isInCompileMode;
 	private Map classPathTranslations;
@@ -66,9 +67,10 @@ public class PolishLogger implements BuildLogger {
 	 * 
 	 * @param logger the original logger
 	 * @param classPathTranslations a map containing all original paths for each loaded java file.
+	 * @param environment the environment settings
 	 * 
 	 */
-	public PolishLogger( BuildLogger logger, Map classPathTranslations, Environment environment ) {
+	public PolishLogger( BuildListener logger, Map classPathTranslations, Environment environment ) {
 		this.logger = logger;
 		this.classPathTranslations = classPathTranslations;
 		this.environment = environment;
@@ -111,7 +113,7 @@ public class PolishLogger implements BuildLogger {
 					event.setMessage(message, event.getPriority());
 					this.isInternalCompilationError = false;
 				} else {
-					String polishSource = this.environment.getVariable("polish.source");
+					String polishSource = this.environment.getVariable("polish.internal.source");
 					if (polishSource != null) {
 						message = polishSource + SEPERATOR_CHAR +  message.substring( startIndex );
 						event.setMessage(message, event.getPriority() );
@@ -119,6 +121,8 @@ public class PolishLogger implements BuildLogger {
 						event.setMessage("Internal J2ME Polish class: " + message, event.getPriority() );
 					}
 					this.isInternalCompilationError = true;
+//					message = "unable to resolve: " + classPath;
+//					event.setMessage(message, event.getPriority());
 				}
 			}
 		} else if (this.isInObfuscateMode) {
@@ -177,7 +181,9 @@ public class PolishLogger implements BuildLogger {
 	 * @see org.apache.tools.ant.BuildLogger#setOutputPrintStream(java.io.PrintStream)
 	 */
 	public void setOutputPrintStream(PrintStream out) {
-		this.logger.setOutputPrintStream(out);
+		if (this.logger instanceof BuildLogger) {
+			((BuildLogger)this.logger).setOutputPrintStream(out);
+		}
 	}
 
 
@@ -186,7 +192,9 @@ public class PolishLogger implements BuildLogger {
 	 * @see org.apache.tools.ant.BuildLogger#setMessageOutputLevel(int)
 	 */
 	public void setMessageOutputLevel(int level) {
-		this.logger.setMessageOutputLevel(level);
+		if (this.logger instanceof BuildLogger) {
+			((BuildLogger)this.logger).setMessageOutputLevel(level);
+		}
 	}
 
 
@@ -195,7 +203,9 @@ public class PolishLogger implements BuildLogger {
 	 * @see org.apache.tools.ant.BuildLogger#setEmacsMode(boolean)
 	 */
 	public void setEmacsMode(boolean enabled) {
-		this.logger.setEmacsMode(enabled);
+		if (this.logger instanceof BuildLogger) {
+			((BuildLogger)this.logger).setEmacsMode(enabled);
+		}
 	}
 
 
@@ -204,7 +214,9 @@ public class PolishLogger implements BuildLogger {
 	 * @see org.apache.tools.ant.BuildLogger#setErrorPrintStream(java.io.PrintStream)
 	 */
 	public void setErrorPrintStream(PrintStream out) {
-		this.logger.setErrorPrintStream(out);
+		if (this.logger instanceof BuildLogger) {
+			((BuildLogger)this.logger).setErrorPrintStream(out);
+		}
 	}
 
 

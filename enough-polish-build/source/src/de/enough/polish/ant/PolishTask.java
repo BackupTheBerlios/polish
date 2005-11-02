@@ -422,18 +422,23 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	protected void executeErrorTarget( String targetName, Exception e ) {
-		if ( targetName != null ) {
-			Project antProject = getProject();
-			if (e != null) {
-				antProject.setProperty("j2mepolish.error", "true");
-				antProject.setProperty("j2mepolish.error.message",  e.toString() );
+		try {
+			if ( targetName != null ) {
+				Project antProject = getProject();
+				if (e != null) {
+					antProject.setProperty("j2mepolish.error", "true");
+					antProject.setProperty("j2mepolish.error.message",  e.toString() );
+				}
+				// invoke Ant target:
+				CallTarget errorTarget = new CallTarget();
+				// setting up a new ant project:
+				errorTarget.setProject( antProject );
+				errorTarget.setTarget( targetName );
+				errorTarget.execute();
 			}
-			// invoke Ant target:
-			CallTarget errorTarget = new CallTarget();
-			errorTarget.setTarget( targetName );
-			// setting up a new ant project:
-			errorTarget.setProject( antProject );
-			errorTarget.execute();
+		} catch (Exception targetE) {
+			targetE.printStackTrace();
+			System.err.println("Unable to execute error target [" + targetName + "]: " + targetE.toString() );
 		}
 	}
 	
@@ -791,7 +796,7 @@ public class PolishTask extends ConditionalTask {
 			if (this.variables == null) {
 				this.variables = new Variables();
 			}
-			this.variables.addConfiguredVariable( new Variable( "polish.source", this.polishSourceDir.getAbsolutePath() ));
+			this.variables.addConfiguredVariable( new Variable( "polish.internal.source", this.polishSourceDir.getAbsolutePath() ));
 			dirScanner.setBasedir(this.polishSourceDir);
 			dirScanner.scan();
 			this.polishSourceFiles = getTextFiles( this.polishSourceDir,  dirScanner.getIncludedFiles(), textFileManager );
@@ -1020,13 +1025,15 @@ public class PolishTask extends ConditionalTask {
 		// this logger will show the original source-code positions
 		// and remove some verbose logging from ProGuard etc:
 		Vector buildListeners = getProject().getBuildListeners();
-		BuildLogger logger = null;
+		BuildListener logger = null;
 		for (Iterator iter = buildListeners.iterator(); iter.hasNext();) {
 			BuildListener listener = (BuildListener) iter.next();
-			if (listener instanceof BuildLogger) {
-				logger = (BuildLogger) listener;
+			if (listener instanceof BuildLogger || listener.getClass().getName().indexOf("NbBuildLogger") != -1) {
+				logger = listener;
 				break;
-			}			
+//			} else {
+//				System.out.println("Found BuildListener " + listener.getClass().getName() );
+			}
 		}
 		if (logger != null) {
 			// prepare the classPathTranslations-Map:
@@ -1035,7 +1042,13 @@ public class PolishTask extends ConditionalTask {
 				TextFile[] files = this.sourceFiles[i];
 				for (int j = 0; j < files.length; j++) {
 					TextFile file = files[j];
-					classPathTranslationsMap.put( file.getFilePath(), file.getFile().getAbsolutePath() );
+					String filePath = file.getFilePath();
+					classPathTranslationsMap.put( filePath, file.getFile().getAbsolutePath() );
+					int packageEnd = filePath.lastIndexOf( File.separatorChar );
+					if ( packageEnd != -1 ) {
+						classPathTranslationsMap.put( filePath.substring( packageEnd + 1 ), file.getFile().getAbsolutePath() );						
+					}
+					//System.out.println("classPathTranslation: from=" + file.getFilePath() + " to " + file.getFile().getAbsolutePath() );
 				}
 			}
 			this.polishLogger = new PolishLogger(logger, classPathTranslationsMap, this.environment );
@@ -1550,7 +1563,8 @@ public class PolishTask extends ConditionalTask {
 					cssConverter.convertStyleSheet(this.styleSheetCode, 
 							this.preprocessor.getStyleSheet(),
 							device,
-							this.preprocessor ); 				
+							this.preprocessor,
+							this.environment ); 				
 					//this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
 					if (this.useDefaultPackage) {
 						this.styleSheetCode.reset();
@@ -1606,8 +1620,10 @@ public class PolishTask extends ConditionalTask {
 			e.printStackTrace();
 			throw new BuildException( e.getMessage() );
 		} catch (BuildException e) {
-			e.printStackTrace();
-			throw new BuildException( e.getMessage() );
+			throw e;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new BuildException( e.getMessage() );
 		}
 	}
 	

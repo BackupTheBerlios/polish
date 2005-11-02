@@ -589,27 +589,49 @@
 		<mapping from="verticalFlash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
 		<mapping from="scrollup" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
 		<mapping from="scrollUp" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
-		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
-		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()" />
-		<mapping from="zoomin" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
-		<mapping from="zoomIn" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
-		<mapping from="zoominandhide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
-		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()" />
-		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()" />
+		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="zoomOut" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="zoomin" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="zoomIn" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="zoominandhide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<!--
 		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CubeScreenChangeAnimation()" />
-		<mapping from="MIDPCube" to="new de.enough.polish.ui.screenanimations.DisplayScreenChangeAnimation()" />
-		<mapping from="Cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()" />
-		<mapping from="CagePart2" to="new de.enough.polish.ui.screenanimations.Cage2ScreenChangeAnimation()" />
-		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" />
-		<mapping from="Paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()" />
-		<mapping from="Pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()" />
-		<mapping from="Domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()" />
-		<mapping from="test" to="new de.enough.polish.ui.screenanimations.TestScreenChangeAnimation()" />
-		<mapping from="TabliodPress" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()" />
-		<mapping from="Rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"/>
-		<mapping from="TestRain" to="new de.enough.polish.ui.screenanimations.TestRainScreenChangeAnimation()"/>
-		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()"/>
-		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"/>
+		-->
+		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
+		<mapping from="MIDPCube" to="new de.enough.polish.ui.screenanimations.DisplayScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="Cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="CagePart2" to="new de.enough.polish.ui.screenanimations.Cage2ScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="test" to="new de.enough.polish.ui.screenanimations.TestScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="TabliodPress" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="TestRain" to="new de.enough.polish.ui.screenanimations.TestRainScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"  condition="polish.midp2"/>
 	</attribute>
 	
 	<attribute
@@ -791,7 +813,25 @@
 		default="0"
 		id="84"
 	/>
+
+	<attribute
+		name="scroll-mode"
+		type="integer"
+		appliesTo="Form, List, TabbedForm, FramedForm, Container, Screen"
+		description="Enables or disables the smooth scrolling function."
+		default="smooth"
+		values="normal,smooth"
+		id="85"
+	/>
 	
-	<!-- last ID: 85 (TextField) -->
+	<attribute
+		name="cube-screen-change-animation-background-color"
+		type="color"
+		appliesto="CubeScreenChangeAnimation"
+		default="black"
+		id="86"
+	/>
+	
+	<!-- last ID: 85 (smooth-scroll) -->
 	
 </attributes>

@@ -25,7 +25,9 @@
  */
 package de.enough.polish.preprocess;
 
+import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
@@ -148,7 +150,8 @@ public class CssConverter extends Converter {
 	public void convertStyleSheet( StringList sourceCode, 
 								   StyleSheet styleSheet, 
 								   Device device,
-								   Preprocessor preprocessor ) 
+								   Preprocessor preprocessor,
+								   Environment env ) 
 	{
 		this.abbreviationGenerator = null;
 		// search for the position to include the style-sheet definitions:
@@ -211,7 +214,7 @@ public class CssConverter extends Converter {
 			HashMap group = (HashMap) borders.get( groupName );
 			processBorder(groupName, group, null, codeList, styleSheet, true );
 		}
-		String test = preprocessor.getVariable("polish.license");
+		String test = env.getVariable("polish.license");
 		if ( "GPL".equals(test) ) {
 			// GPL license is fine.
 		} else if (test == null || test.length() != 12) {
@@ -223,11 +226,11 @@ public class CssConverter extends Converter {
 				throw new BuildException("Encountered invalid license.");
 			}
 		}
-		
+		BooleanEvaluator evaluator = env.getBooleanEvaluator();
 		// add the default style:
 		processDefaultStyle( defaultFontDefined,  
 				defaultBackgroundDefined, defaultBorderDefined,
-				codeList, styleSheet, device );
+				codeList, styleSheet, device, evaluator  );
 		
 		
 		// now add all other static and referenced styles:
@@ -236,10 +239,10 @@ public class CssConverter extends Converter {
 		defaultStyleNames.add( "label");
 		defaultStyleNames.add( "focused");
 		// check if fullscreen mode is enabled with menu:
-		if ((preprocessor.hasSymbol("polish.useMenuFullScreen") 
+		if ((env.hasSymbol("polish.useMenuFullScreen") 
 			&& ((device.getCapability("polish.classes.fullscreen") != null) 
-					|| (device.isMidp2() && preprocessor.hasSymbol("polish.hasCommandKeyEvents") ) ))
-			|| preprocessor.hasSymbol("polish.needsManualMenu") 
+					|| (device.isMidp2() && env.hasSymbol("polish.hasCommandKeyEvents") ) ))
+			|| env.hasSymbol("polish.needsManualMenu") 
 			) 
 		{
 			defaultStyleNames.add( "menu");
@@ -256,7 +259,7 @@ public class CssConverter extends Converter {
 				if ("label".equals(style.getSelector())) {
 					isLabelStyleReferenced = true;
 				}
-				processStyle( style, codeList, styleSheet, device );
+				processStyle( style, codeList, styleSheet, device, evaluator );
 			}
 		}
 		codeList.add( STANDALONE_MODIFIER + "String lic=\"" + test +"\";");
@@ -382,7 +385,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
 	 */
-	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device) {
+	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device, BooleanEvaluator evaluator) {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
@@ -425,7 +428,7 @@ public class CssConverter extends Converter {
 		group.put("border", "default");
 		copy.addGroup("border", group );
 		// now process the rest of the style completely normal:
-		processStyle(copy, codeList, styleSheet, device);
+		processStyle(copy, codeList, styleSheet, device, evaluator );
 	}
 
 
@@ -437,7 +440,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
 	 */
-	protected void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device) {
+	protected void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device, BooleanEvaluator evaluator ) {
 		String styleName = style.getStyleName();
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style:
@@ -588,7 +591,7 @@ public class CssConverter extends Converter {
 					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attribute != null) {
 						attributeType = attribute.getType();
-						attribute.checkValue(value);
+						attribute.checkValue( value, evaluator );
 						if (attributeType == CssAttribute.INTEGER && attribute.hasFixValues()) {
 							value = Integer.toString( attribute.getValuePosition(value) );
 						}
@@ -676,7 +679,7 @@ public class CssConverter extends Converter {
 							throw new BuildException("Invalid CSS Code: invalid value for the boolean attribute [" + attributeName + "]:  use either [true]/[yes] or [false]/[no].");
 						}
 					} else if (attributeType == CssAttribute.OBJECT) {
-						String mappedValue = attribute.getMapping( value );
+						String mappedValue = attribute.getMappingFrom( value );
 						if (mappedValue != null) {
 							 if ("none".equals( mappedValue)) {
 								valueList.append("null");

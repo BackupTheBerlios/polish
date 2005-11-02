@@ -602,4 +602,14 @@ public class Environment {
 		}
 		return value;
 	}
+
+	/**
+	 * Determines whether a variable is defined.
+	 * 
+	 * @param name the name of the variable
+	 * @return true when the variable is defined
+	 */
+	public boolean hasVariable(String name) {
+		return (getVariable(name) != null);
+	}
 }

@@ -120,6 +120,7 @@ public class Preprocessor {
 	private CssAttributesManager cssAttributesManager;
 	private final Environment environment;
 	private final boolean replacePropertiesWithoutDirective;
+	private boolean isNetBeans;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -229,6 +230,7 @@ public class Preprocessor {
 	 * @param usesPolishGui true when the J2ME Polish GUI is used for the new device
 	 */
 	public void notifyDevice( Device device, boolean usesPolishGui ) {
+		this.isNetBeans = this.environment.hasVariable("netbeans.home");
 		if (this.customPreprocessors != null) {
 			for (int i = 0; i < this.customPreprocessors.length; i++) {
 				CustomPreprocessor processor = this.customPreprocessors[i];
@@ -463,6 +465,17 @@ public class Preprocessor {
 	public int preprocess(String className, StringList lines) 
 	throws BuildException 
 	{
+		if (this.isNetBeans) {
+			// remove all NetBeans specific Preprocessing comments (//--) from line starts:
+			String[] sourceLines = lines.getArray();
+			for (int i = 0; i < sourceLines.length; i++) {
+				String line = sourceLines[i];
+				if (line.startsWith("//--") && line.length() > 4) {
+					//System.out.println( className + ":" + (i+1) + "=" + line);
+					sourceLines[i] = line.substring( 4 );
+				}
+			}
+		}
 		// clear the temporary variables and symbols:
 		this.environment.clearTemporarySettings();
 		this.usePolishGui = this.environment.hasSymbol( "polish.usePolishGui" );
@@ -1396,9 +1409,24 @@ public class Preprocessor {
 					// or it was in something like "somearray[ index + 2 ]"
 					line = debugCall + argument; 					
 				} else {
-					// okay, we can split up the argument:
-					line = debugCall  
-						+ firstArgument + ", " + secondArgument;
+					// check the number of opening parentheses:
+					char[] chars = firstArgument.toCharArray();
+					int numberOfOpeningParentheses = 0;
+					for (int i = 0; i < chars.length; i++) {
+						char c = chars[i];
+						if (c == '(' ) {
+							numberOfOpeningParentheses++;
+						} else if ( c == ')') {
+							numberOfOpeningParentheses--;
+						}
+					}
+					if ( numberOfOpeningParentheses != 0 ) {
+						// the '+' was in the middle of a term, e.g. System.out.println( " something: " + (i + 1) );
+						line = debugCall + argument; 					
+					} else {
+						// okay, we can split up the argument:
+						line = debugCall + firstArgument + ", " + secondArgument;
+					}
 				}
 			} else {
 				line = debugCall + argument; 

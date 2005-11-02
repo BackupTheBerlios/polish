@@ -44,6 +44,7 @@ import java.util.Set;
  *        16-Jan-2004 - rob creation
  * </pre>
  * @author Robert Virkus, robert@enough.de
+ * @author Eugene Markov, fixed inheritance of styles
  */
 public class StyleSheet {
 	
@@ -596,7 +597,7 @@ public class StyleSheet {
 	 * @see #isInherited()
 	 * @see #getSourceCode()
 	 */
-	public void inherit() {
+	public void oldInherit() {
 		// create default-style when not explicitely defined:
 		if (this.stylesByName.get("default") == null ) {
 			addCssBlock(DEFAULT_STYLE);
@@ -617,6 +618,56 @@ public class StyleSheet {
 		}
 		this.isInitialised = true;
 	}
+	
+	 public void inherit() {
+//		 create default-style when not explicitely defined:
+		if (this.stylesByName.get("default") == null )
+		{
+			addCssBlock(DEFAULT_STYLE);
+		}
+		HashSet set = new HashSet( 5 );
+		Style[] allStyles = getAllStyles();
+		for (int i = 0; i < allStyles.length; i++)
+		{
+			Style style = allStyles[i];
+			inheritDo( style, set );
+		}
+		this.isInitialised = true;
+	}
+
+
+	private void inheritDo( Style style, HashSet set)
+		{
+		String parentName = style.getParentName();
+		String currentName = style.getSelector();
+
+		if (parentName == null)
+		{
+	//		 System.out.println("style [" + currentName + "] no parent.");
+			return; // No parent.
+		}
+		else if ( set.contains( currentName ) )
+		{
+	//		 System.out.println("style [" + currentName + "] has been set.");
+			return; // Has been set
+		}
+		else
+		{
+			checkInheritanceHierarchy( style );
+			Style parent = getStyle( parentName );
+	//		 System.out.println("inheriting style [" + currentName + "] from style [" + parentName + "].");
+			if (parent == null)
+			{
+				throw new BuildException("Invalid CSS code: the style [" +
+				currentName +
+				"] extends the non-existing style [" +
+				parentName + "].");
+			}
+			inheritDo( parent, set );
+			style.setParent( parent );
+			set.add( currentName );
+			}
+		}
 	
 	/**
 	 * Checks whether the inheritance hierarchy is correct.
