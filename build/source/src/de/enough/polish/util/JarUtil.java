@@ -183,7 +183,7 @@ public final class JarUtil {
 		JarFile inputFile = new JarFile( jarFile );
 		JarInputStream in = new JarInputStream( new FileInputStream( jarFile ) );
 		CRC32 crc = new CRC32();
-		byte[] buffer = new byte[ 1024 * 1024 ];
+		byte[] buffer = new byte[ 512 * 1024 ];
 		JarEntry entry = (JarEntry) in.getNextEntry();
 		while (entry != null) {
 			InputStream entryIn = inputFile.getInputStream(entry); 

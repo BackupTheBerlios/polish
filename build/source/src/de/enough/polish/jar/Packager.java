@@ -52,6 +52,13 @@ public abstract class Packager extends Extension {
 	
 
 	/**
+	 * The key which can be used to retrieves the used packager
+	 * from the environment AFTER the packaging build phase:
+	 * @see Environment#get(String)
+	 */
+	public static final String KEY_ENVIRONMENT = "key.Packager";
+
+	/**
 	 * Creates a new packager
 	 */
 	protected Packager() {

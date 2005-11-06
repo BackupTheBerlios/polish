@@ -278,7 +278,7 @@
 		<copy todir="tmp/samples/logviewer/" 
 			>
 			<fileset dir="setup/samples/logviewer" excludes="**/macosx/**" />
-			<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-logviewer" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy roadrunner sample application -->
 		<mkdir dir="tmp/samples/roadrunner/source/src" />

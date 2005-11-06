@@ -52,7 +52,7 @@ public class ImportResolver extends PreCompiler {
 	public void preCompile(File classesDir, Device device)
 	throws BuildException 
 	{
-		System.out.println("ImportResolver.preCompile(): start");
+		//System.out.println("ImportResolver.preCompile(): start");
 		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
 		File[] files = new File[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {

@@ -925,10 +925,20 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 				if (this.buildSetting.getDojaClassSetting() != null) {
-					preserveList.add( this.buildSetting.getDojaClassSetting().getClassName() );
+					String className = this.buildSetting.getDojaClassSetting().getClassName(); 
+					preserveList.add( className );
+					int lastDotPos = className.lastIndexOf( '.' );
+					if ( lastDotPos != -1 ) {
+						preserveList.add( className.substring( lastDotPos + 1 ) );							
+					}	
 				}
 				if (this.buildSetting.getMainClassSetting() != null) {
-					preserveList.add( this.buildSetting.getMainClassSetting().getClassName() );
+					String className = this.buildSetting.getMainClassSetting().getClassName(); 
+					preserveList.add( className );
+					int lastDotPos = className.lastIndexOf( '.' );
+					if ( lastDotPos != -1 ) {
+						preserveList.add( className.substring( lastDotPos + 1 ) );							
+					}	
 				}
 				this.preserveClasses = (String[]) preserveList.toArray( new String[ preserveList.size() ] );
 			}
@@ -1806,17 +1816,24 @@ public class PolishTask extends ConditionalTask {
 				while ((line.indexOf('{') == -1) && (sourceCode.next()) ) {
 					line = sourceCode.getCurrent();
 				}
-				if (!sourceCode.next()) {
-					throw new BuildException("Unable to process MIDlet [" + className + "]: destroyApp method is not opened with '{': line [" + (++lineIndex) + "].");
-				}
-				line  = sourceCode.getCurrent();
 				String debugExit;
 				if (this.useDefaultPackage) {
 					debugExit = "Debug.exit();";
 				} else {
 					debugExit = "de.enough.polish.util.Debug.exit();";
 				}
-				sourceCode.setCurrent( debugExit + line );
+				int closePos = line.indexOf('}');
+				if (closePos != -1 ) {
+					// the destroyApp() method is empty!
+					// Now include the exit call between those parentheses:
+					sourceCode.setCurrent( line.substring(0, closePos) + debugExit + line.substring( closePos ) );
+				} else {
+					if (!sourceCode.next()) {
+						throw new BuildException("Unable to process MIDlet [" + className + "]: destroyApp method is not opened with '{': line [" + (++lineIndex) + "].");
+					}
+					line  = sourceCode.getCurrent();
+					sourceCode.setCurrent( debugExit + line );
+				}
 				return;
 			}
 		}
@@ -2353,6 +2370,7 @@ public class PolishTask extends ConditionalTask {
 			if (packager == null ) {
 				packager = new DefaultPackager();
 			}
+			this.environment.set( Packager.KEY_ENVIRONMENT, packager );
 			packager.createPackage(classesDir, jarFile, device, locale, this.environment );
 		} catch (IOException e) {
 			e.printStackTrace();

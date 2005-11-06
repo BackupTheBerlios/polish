@@ -248,7 +248,7 @@ public class ColorConverter {
 			String color = (String)iter.next();
 			if ( ! this.tempColors.containsKey( color ) )
 			{
-				System.out.println( "color: " + color );
+				//System.out.println( "color: " + color );
 				set.clear();
 				while( color.matches( "[a-zA-Z_][a-zA-Z0-9_-]*[a-zA-Z0-9_]" ) )
 				{
@@ -280,7 +280,7 @@ public class ColorConverter {
 					for (Iterator iter1 = set.iterator(); iter1.hasNext();)
 					{
 						String keycolor = (String)iter1.next();
-						System.out.println( keycolor + "=" + color );
+						//System.out.println( keycolor + "=" + color );
 						this.tempColors.put( keycolor, color );
 					}
 				}

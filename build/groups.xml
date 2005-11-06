@@ -102,12 +102,14 @@
 		<capability name="Font.medium" value="15" />
 		<capability name="Font.large" value="19" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
-		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S60_MIDP_Emulator" />
-		<capability name="Emulator.Skin.2" value="Nokia_Prototype_SDK_3_0_Beta" />
-		<capability name="Emulator.Skin.3" value="\Devices\Nokia_Prototype_SDK_3_0" />
-		<capability name="Emulator.Skin.4" value="Series_60_MIDP_SDK_2_1" />
-		<capability name="Emulator.Skin.5" value="Series_60_MIDP_SDK_2_1_Beta" />
-		<capability name="Emulator.Skin.6" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
+		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.2" value="\Devices\Nokia_Prototype_SDK_4_0_Beta\devices\Prototype_4_0_Beta_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.3" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.4" value="Nokia_Prototype_SDK_3_0_Beta" />
+		<capability name="Emulator.Skin.5" value="\Devices\Nokia_Prototype_SDK_3_0" />
+		<capability name="Emulator.Skin.6" value="Series_60_MIDP_SDK_2_1" />
+		<capability name="Emulator.Skin.7" value="Series_60_MIDP_SDK_2_1_Beta" />
+		<capability name="Emulator.Skin.8" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
 		<capability name="Emulator.Control" value="Series60" />
 		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight" />
 	</group>
@@ -156,11 +158,11 @@
 	
 	<group>
 		<name>Series60E3</name>
-		<parent>Series60E2FP2</parent>
+		<parent>Series60E2FP3</parent>
 		<capability name="OS" value="Symbian OS 9.1" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi, locationapi" />		
+		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
 	</group>
 	

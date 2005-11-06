@@ -38,6 +38,7 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.jar.Packager;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.ProcessUtil;
@@ -83,7 +84,7 @@ implements OutputFilter
 		
 		File rapcJarFile = env.resolveFile( "${blackberry.home}/bin/rapc.jar" );
 		if ( !rapcJarFile.exists() ) {
-			throw new BuildException("Your Ant property \"blackberry.home\" is invalid, it needs to point to the JDE directory (so that it finds the \"bin\\rapc.jar\" file within the ${blackberry.home} directory).");
+			throw new BuildException("Your Ant property \"blackberry.home\" [" + blackberryHome + "] is invalid, it needs to point to the JDE directory (so that it finds the \"bin\\rapc.jar\" file within the ${blackberry.home} directory).");
 		}
 		
 		// check if a MIDlet should be converted or whether a normal
@@ -91,6 +92,8 @@ implements OutputFilter
 		String mainClassName = env.getVariable( "blackberry.main");
 		boolean usePolishGui = env.hasSymbol( "polish.usePolishGui" );
 		if (mainClassName == null && usePolishGui) {
+			// repackage the JAR file:
+			File classesDir = new File( device.getClassesDir() );
 			boolean useDefaultPackage = env.hasSymbol( "polish.useDefaultPackage" );
 			if (useDefaultPackage) {
 				mainClassName = "MIDlet";
@@ -99,9 +102,14 @@ implements OutputFilter
 			}
 			// add JAD file to JAR, so that MIDlet.getAppProperty() works later onwards:
 			try {
-				File txtJadFile = new File( jadFile.getParent(), jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
+				File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
 				FileUtil.copy( jadFile, txtJadFile );
-				JarUtil.addToJar(txtJadFile, jarFile, null, true );
+				FileUtil.delete(jarFile);
+				
+				Packager packager = (Packager) env.get( Packager.KEY_ENVIRONMENT );
+				//System.out.println("Using packager " + packager.getClass().getName() );
+				packager.createPackage( classesDir, jarFile, device, locale, env );
+				//JarUtil.addToJar(txtJadFile, jarFile, null, true );
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new BuildException("Unable to store JAD file in BlackBerry JAR file: " + e.toString() );
