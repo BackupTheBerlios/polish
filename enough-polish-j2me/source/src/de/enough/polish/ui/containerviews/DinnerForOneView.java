@@ -160,5 +160,5 @@ public class DinnerForOneView extends ContainerView {
 				else this.isAnimationRunning = true;
 				System.out.print("adY-"+adjustedY+";adY[i]-"+this.yAdjustments[i]+";delay-"+this.delay+":"+this.isAnimationRunning+";\n");
 			}
-	}
+		}
 }
