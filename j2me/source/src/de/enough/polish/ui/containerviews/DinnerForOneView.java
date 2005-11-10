@@ -8,7 +8,7 @@ import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 
-public class DinnerForOneView extends ContainerView {
+public class DinnerForOneView extends TableView {
 	
 	private final static int START_MAXIMUM = 30;
 	private final static int MAX_PERIODE = 5;
@@ -16,7 +16,9 @@ public class DinnerForOneView extends ContainerView {
 	private final static int SPEED = 10;
 	private int [] yAdjustments;
 	private int [] xAdjustments;
-	private int delay,myitemslenght;
+	private int [] yNewAdjust;
+	private int [] xNewAdjust;
+	private int delayVertical,delayHorizontal,myitemslenght;
 	private int startX, startY;
 	private boolean isAnimationRunning = true;
 	private int damping = DEFAULT_DAMPING;
@@ -26,9 +28,7 @@ public class DinnerForOneView extends ContainerView {
 	private int startMaximum = START_MAXIMUM;
 	private int speed = SPEED;
 	private boolean animationInitialised;
-	//#ifdef polish.css.droppingview-repeat-animation
-		private boolean repeatAnimation;
-	//#endif
+	
 	/**
 	 * Creates new DroppingView
 	 */
@@ -42,26 +42,45 @@ public class DinnerForOneView extends ContainerView {
 	protected void initContent(Container parent, int firstLineWidth,
 			int lineWidth) 
 	{
+//		this.restartAnimation
+//		this.contentHeight 
+//		this.contentWidth 
 //		this.isAnimationRunning = true;
+		System.out.print("column"+this.columns+""+this.contentHeight+":::"+this.contentWidth+"\n");
 		this.parentContainer = parent;
 		Item[] myItems = this.parentContainer.getItems();
+		this.yNewAdjust   = new int [myItems.length];
+		this.xNewAdjust   = new int [myItems.length];
 		this.xAdjustments = new int [myItems.length];
 		this.yAdjustments = new int [myItems.length];
-		int y = 1,x = 0;
+		int y = 50,x = 20,columns = 0;
 		this.myitemslenght = myItems.length;
 		for (int i = 0; i < this.myitemslenght; i++) {
 			Item item = myItems[i];
 			this.xAdjustments[i] = x;
 			this.yAdjustments[i] = y;
-			if(item.appearanceMode == Item.PLAIN){
-				this.focusItem(i,item);
-				this.startX = this.xAdjustments[i];
-				this.startY = this.yAdjustments[i];
-				System.out.print("startX"+startX+"startY"+startY+"\n");
+			if(this.focusedIndex == i){
+				this.startX = x;
+				this.startY = y;
 			}
-			y += this.paddingVertical+item.getItemHeight(firstLineWidth,lineWidth);
+			System.out.print(x+"...x\n");
+			columns = ((columns + 1)) % this.columns;
+			if(columns == 0){
+				x = 0;
+				y += this.paddingVertical+item.getItemHeight(firstLineWidth,lineWidth);
+			}else{
+				x += this.paddingHorizontal+item.getItemWidth(firstLineWidth,lineWidth);
+			}
 		}
-		this.delay = this.paddingVertical+ myItems[1].getItemHeight(firstLineWidth,lineWidth);
+		for (int i = 0; i < this.myitemslenght; i++) {
+			this.yNewAdjust[i] = this.startY;
+			this.xNewAdjust[i] = this.startX;
+			System.out.print(this.xAdjustments[i]+"::"+this.xNewAdjust[i]+";\n");
+		}
+		this.delayVertical = (this.paddingVertical+ myItems[0].getItemHeight(firstLineWidth,lineWidth));
+//#ifdef polish.css.columns
+		this.delayHorizontal = (this.paddingHorizontal+ myItems[0].getItemWidth(firstLineWidth,lineWidth));
+//#endif
 	}
 
 
@@ -79,52 +98,15 @@ public class DinnerForOneView extends ContainerView {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)
-	 */
-	protected void setStyle(Style style) {
-		super.setStyle(style);
-		//#ifdef polish.css.droppingview-repeat-animation
-			Boolean repeat = style.getBooleanProperty("droppingview-repeat-animation");
-			if (repeat != null) {
-				this.repeatAnimation = repeat.booleanValue();
-			} else {
-				this.repeatAnimation = false;
-			}
-		//#endif
-		//#ifdef polish.css.droppingview-damping
-			Integer dampingInt = style.getIntProperty("droppingview-damping");
-			if (dampingInt != null) {
-				this.damping = dampingInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.droppingview-maximum
-			Integer maxInt = style.getIntProperty("droppingview-maximum");
-			if (maxInt != null) {
-				this.startMaximum = maxInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.droppingview-speed
-			Integer speedInt = style.getIntProperty("droppingview-speed");
-			if (speedInt != null) {
-				this.speed = speedInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.droppingview-maxperiode
-			Integer periodeInt = style.getIntProperty("droppingview-maxperiode");
-			if (periodeInt != null) {
-				this.maxPeriode = periodeInt.intValue();
-			}
-		//#endif
-	}
+
 	
-	//#ifdef polish.css.droppingview-repeat-animation
-	public void showNotify() {
-		if (this.repeatAnimation && this.xAdjustments != null) {
-			initAnimation( this.parentContainer.getItems(), this.xAdjustments );
-		}
-	}	
-	//#endif
+//	//#ifdef polish.css.droppingview-repeat-animation
+//	public void showNotify() {
+//		if (this.repeatAnimation && this.xAdjustments != null) {
+//			initAnimation( this.parentContainer.getItems(), this.xAdjustments );
+//		}
+//	}	
+//	//#endif
 	
 	/**
 	 * Initialises the animation.
@@ -144,8 +126,14 @@ public class DinnerForOneView extends ContainerView {
 	 * @return true when the view was really animated.
 	 */
 	public boolean animate() {
-		this.delay = this.delay - (this.delay / (this.myitemslenght-1));
-		if(this.delay == 2)this.delay = 1;
+//		Thread th = new Thread();
+//		try {
+//			th.sleep(100);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.print("sleep-error"+e+"\n");
+//		}
 		return this.isAnimationRunning;
 	}
 
@@ -154,11 +142,21 @@ public class DinnerForOneView extends ContainerView {
 		Item[] myItems = this.parentContainer.getItems();
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
-				int adjustedY = y+(this.yAdjustments[i]/this.delay);
-				item.paint(x, adjustedY, leftBorder, rightBorder, g);
-				if(adjustedY == (this.yAdjustments[i]+this.yAdjustments[1]))this.isAnimationRunning = false;
-				else this.isAnimationRunning = true;
-				System.out.print("adY-"+adjustedY+";adY[i]-"+this.yAdjustments[i]+";delay-"+this.delay+":"+this.isAnimationRunning+";\n");
+				if(this.yAdjustments[i] < this.yNewAdjust[i]){
+					this.yNewAdjust[i] -= 1;
+				}
+				else if(this.yAdjustments[i] > this.yNewAdjust[i]){
+					this.yNewAdjust[i] +=  1;
+				}
+				if(this.xAdjustments[i] < this.xNewAdjust[i]){
+					this.xNewAdjust[i] -= 1;
+					System.out.print("x-"+this.xNewAdjust[i]+"\n");
+				}
+				else if(this.xAdjustments[i] > this.xNewAdjust[i]){
+					this.xNewAdjust[i] +=  1;
+					System.out.print("x+"+this.xNewAdjust[i]+"\n");
+				}
+				item.paint(this.xNewAdjust[i], this.yNewAdjust[i], this.xNewAdjust[i], this.xNewAdjust[i]+this.delayHorizontal, g);
 			}
 		}
 }

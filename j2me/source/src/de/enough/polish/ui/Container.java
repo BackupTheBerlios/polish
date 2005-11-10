@@ -557,7 +557,6 @@ public class Container extends Item {
 			} else {
 				this.appearanceMode = INTERACTIVE;
 			}
-		
 			this.contentHeight = myContentHeight;
 			this.contentWidth = myContentWidth;
 			return;

@@ -44,9 +44,9 @@ import de.enough.polish.ui.Style;
  * @author Robert Virkus, robert@enough.de
  */
 
-public class TableView extends ContainerView {
-	
-	//private int numberOfColumns = 2;
+public abstract class TableView extends ContainerView {
+	public int columns = 1;
+
 
 	/**
 	 * Creates a new table view.
@@ -83,13 +83,21 @@ public class TableView extends ContainerView {
 		// TODO Robert implement TableView.getNextItem
 		return null;
 	}
+	
 
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)
 	 */
 	protected void setStyle(Style style) {
-		// TODO Robert implement TableView.setStyle
-		
+		super.setStyle(style);
+		//#ifdef polish.css.columns
+		System.out.print("define-css-columns\n");
+			Integer columnsInt = style.getIntProperty("columns");
+			if (columnsInt != null) {
+				this.columns = columnsInt.intValue();
+			}
+		//#endif
 	}
 
 }
