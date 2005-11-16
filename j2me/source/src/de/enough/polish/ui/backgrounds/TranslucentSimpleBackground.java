@@ -56,7 +56,7 @@ public class TranslucentSimpleBackground extends Background {
 		private int[] buffer;
 		private int lastWidth;
 		//#if polish.Bugs.drawRgbNeedsFullBuffer
-		private int lastHeight;
+			private int lastHeight;
 		//#endif
 	//#endif
 
