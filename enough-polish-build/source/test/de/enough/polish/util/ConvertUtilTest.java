@@ -69,5 +69,14 @@ public class ConvertUtilTest extends TestCase {
 		environment.remove( "polish.useDefaultPackage" );
 		assertEquals( "com.company.MyClass", ConvertUtil.convert("com.company.MyClass", "classname", environment ) );
 	}
+	
+	
+	public void testParseInt() {
+		String test;
+		int result;
+		test = "-3";
+		result = Integer.parseInt(test);
+		assertEquals( -3, result );
+	}
 
 }

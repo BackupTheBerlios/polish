@@ -168,6 +168,9 @@ public class Converter {
 	 * @throws NullPointerException when the url is null
 	 */
 	public static final String getUrl(String url) {
+		if ("none".equals( url )) {
+			return null;
+		}
 		if ( url.startsWith("url") ) {
 			int startPos = url.indexOf('(');
 			int endPos = url.lastIndexOf(')');

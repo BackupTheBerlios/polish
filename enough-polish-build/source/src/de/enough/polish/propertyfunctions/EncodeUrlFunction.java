@@ -1,5 +1,5 @@
 /*
- * Created on 06-Mar-2005 at 20:59:07.
+ * Created on 07-Nov-2005 at 02:12:59.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,61 +23,48 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.swing;
+package de.enough.polish.propertyfunctions;
 
-import java.text.NumberFormat;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
-import javax.swing.event.ChangeListener;
-
+import de.enough.polish.Environment;
 
 /**
- * <p>An active textfield that only accepts integer input.</p>
+ * <p>Encodes the given parameter for URLs in the UTF-8 encoding.</p>
+ * <p>Sample usage:
+ * <pre>
+ * //#= String url = "http://myserver.com?vendor=${ encodeurl( MIDlet-Vendor )}"; 
+ * </pre>
+ * </p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        06-Mar-2005 - rob creation
+ *         07-Nov-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class IntegerTextField extends ActiveTextField {
-
-
-	private static final long serialVersionUID = 7006859670363152211L;
+public class EncodeUrlFunction extends PropertyFunction {
 
 	/**
-	 * @param listener
+	 * Creates a new URL encoding function
 	 */
-	public IntegerTextField( ChangeListener listener) {
-		super(NumberFormat.getInstance(), listener);
+	public EncodeUrlFunction() {
+		super();
 	}
 
-	/**
-	 * @param listener
-	 * @param columns
+	/* (non-Javadoc)
+	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
-	public IntegerTextField( ChangeListener listener, int columns ) {
-		super(NumberFormat.getInstance(), listener);
-		setColumns(columns);
-	}
-
-	/**
-	 * @return the integer value of this field. When a NumberFormatException is thrown, 0 will be returned
-	 */
-	public int getIntValue() {
+	public String process(String input, String[] arguments, Environment env) {
 		try {
-			return Integer.parseInt( getText() );
-		} catch (NumberFormatException e) {
-			System.err.println("Warning: unable to parse integer [" + getText() + "]: " + e.toString()  );
-			return 0;
+			return URLEncoder.encode( input, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// should never happen:
+			//e.printStackTrace();
+			throw new RuntimeException("Unable to urlencode String [" + input + "]: " + e.toString(), e );
 		}
-	}
-
-	/**
-	 * @param value
-	 */
-	public void setIntValue( int value ) {
-		setText( "" + value );
 	}
 
 }

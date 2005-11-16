@@ -319,6 +319,18 @@
 		<name>number</name>
 		<class>de.enough.polish.propertyfunctions.NumberFunction</class>
 	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>encodeurl</name>
+		<class>de.enough.polish.propertyfunctions.EncodeUrlFunction</class>
+	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>urlencode</name>
+		<class>de.enough.polish.propertyfunctions.EncodeUrlFunction</class>
+	</extension>
 
 
 	<!-- Preverifier -->

@@ -98,7 +98,11 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 		while (lines.next()) {
 			String line = lines.getCurrent();
 			int startIndex = line.indexOf("Locale.get");
-			if (startIndex != -1) {
+			if (startIndex != -1 ) {
+				int commentIndex = line.indexOf("//");
+				if ( commentIndex != -1 && commentIndex < startIndex && line.indexOf("//#") != commentIndex) {
+					continue;
+				}
 				Matcher matcher = LOCALE_GET_PATTERN.matcher( line );
 				boolean matchFound = false;
 				while (matcher.find()) {

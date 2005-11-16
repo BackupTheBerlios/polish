@@ -1,4 +1,4 @@
-<!-- 
+<!--
 	standards-css-attributes.xml defines all known CSS attributes. 
 	This file should not be changed.
 
@@ -828,10 +828,126 @@
 		name="cube-screen-change-animation-background-color"
 		type="color"
 		appliesto="CubeScreenChangeAnimation"
+		description="Sets the background of a cube screen change animation."
 		default="black"
 		id="86"
 	/>
 	
-	<!-- last ID: 85 (smooth-scroll) -->
+	<attribute
+		name="clip-screen-info"
+		type="boolean"
+		appliesto="Screen, Form, TabbedForm, FramedForm, TextBox"
+		description="Enables or disables the clipping of the info-section. This is visible for TextFields in the direct input mode, for example."
+		default="false"
+		id="87"
+	/>
+	
+	<attribute
+		name="text-effect"
+		type="object"
+		appliesto="StringItem, IconItem, ChoiceItem"
+		description="Sets a text effect."
+		id="88"
+	>
+		<mapping from="shadow" to="new de.enough.polish.ui.texteffects.ShadowTextEffect()" />
+		<mapping from="outline" to="new de.enough.polish.ui.texteffects.OutlineTextEffect()" />
+		<mapping from="segment" to="new de.enough.polish.ui.texteffects.SegmentTextEffect()" />
+		<mapping from="typewriter" to="new de.enough.polish.ui.texteffects.TypeWriterTextEffect()" />
+		<mapping from="lighthouse" to="new de.enough.polish.ui.texteffects.LighthouseTextEffect()" />
+	</attribute>
+	
+	<attribute
+		name="text-shadow-color"
+		type="color"
+		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the color of a shadow for the shadow font-effect."
+		default="black"
+		id="89"
+	/>
+	
+	<attribute
+		name="text-shadow-orientation"
+		type="integer"
+		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the orientation of a shadow for the shadow font-effect."
+		default="bottom-right"
+		values="bottom-right, bottom-left, top-right, top-left, bottom, top, right, left"
+		id="90"
+	/>
+
+	<attribute
+		name="text-shadow-x"
+		type="integer"
+		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the x-orientation in pixels of a shadow for the shadow font-effect."
+		default="2"
+		id="91"
+	/>
+	
+	<attribute
+		name="text-shadow-y"
+		type="integer"
+		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the y-orientation in pixels of a shadow for the shadow font-effect."
+		default="2"
+		id="92"
+	/>
+	
+	<attribute
+		name="text-outline-inner-color"
+		type="color"
+		appliesto="OutlineTextEffect, StringItem, IconItem, ChoiceItem"
+		description="The color with which the outline is filled inside. The outline itself will be painted in the specified font-color."
+		default="white"
+		id="93"
+	/>
+	
+	<attribute
+		name="text-segment-color"
+		type="color"
+		appliesto="SegmentTextEffect, StringItem, IconItem, ChoiceItem"
+		description="The color of the lines used for separating the segments."
+		default="white"
+		id="94"
+	/>
+	
+	<attribute
+		name="text-segment-gap"
+		type="integer"
+		appliesto="SegmentTextEffect, StringItem, IconItem, ChoiceItem"
+		description="The gap between segment lines."
+		default="3"
+		id="95"
+	/>
+	
+
+	<attribute
+		name="text-lighthouse-mode"
+		type="integer"
+		appliesto="LighthouseTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the mode of the lighthouse font-effect."
+		default="back-and-forth"
+		values="back-and-forth, left-to-right, right-to-left, back-and-forth-once, left-to-right-once, right-to-left-once"
+		id="96"
+	/>
+	
+	<attribute
+		name="text-lighthouse-color"
+		type="color"
+		appliesto="LighthouseTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the main color of the lighthouse font-effect."
+		default="#44b500"
+		id="97"
+	/>
+	
+	<attribute
+		name="text-lighthouse-neighbor-color"
+		type="color"
+		appliesto="LighthouseTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the color for characters next to the currently main character in the lighthouse font-effect."
+		default="#379100"
+		id="98"
+	/>
+	
 	
 </attributes>

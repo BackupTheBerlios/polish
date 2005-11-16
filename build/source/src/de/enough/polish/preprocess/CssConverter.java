@@ -525,7 +525,12 @@ public class CssConverter extends Converter {
 		if (styleSheet.containsBeforeStyle()) {
 			group = style.removeGroup("before");
 			if (group != null) {
-				codeList.add("\t\t, \"" + getUrl( (String) group.get("before") ) + "\" // URL of the before element" );								
+				String url = getUrl( (String) group.get("before") );
+				if (url != null) {
+					codeList.add("\t\t, \"" + url + "\"\t// URL of the before element" );
+				} else {
+					codeList.add("\t\t, null\t// no before element has been defined");
+				}
 			} else {
 				codeList.add("\t\t, null\t// no before element has been defined");				
 			}
@@ -534,7 +539,12 @@ public class CssConverter extends Converter {
 		if (styleSheet.containsAfterStyle()) {
 			group = style.removeGroup("after");
 			if (group != null) {
-				codeList.add("\t\t, \"" + getUrl( (String) group.get("after") ) + "\"\t// URL of the after element" );								
+				String url = getUrl( (String) group.get("after") );
+				if (url != null) {
+					codeList.add("\t\t, \"" + url + "\"\t// URL of the after element" );
+				} else {
+					codeList.add("\t\t, null\t// no after element has been defined");
+				}
 			} else {
 				codeList.add("\t\t, null\t// no after element has been defined");				
 			}
@@ -652,9 +662,13 @@ public class CssConverter extends Converter {
 						value = getStyleReference( value, style, styleSheet );
 					}					
 					if (attributeType == CssAttribute.STRING || attributeType == CssAttribute.CHAR) {
-						valueList.append('"')
-						.append( value )
-						.append('"');
+						if ( "none".equals(value)) {
+							valueList.append("null");
+						} else {
+							valueList.append('"')
+							.append( value )
+							.append('"');
+						}
 					} else if (attributeType == CssAttribute.STYLE) {
 						valueList.append( value );
 					} else if (attributeType == CssAttribute.COLOR 

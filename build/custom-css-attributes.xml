@@ -1,4 +1,4 @@
-<!-- 
+<!--
 	custom-css-attributes.xml can define the CSS attributes of your
 	own CustomItems. 
 	
@@ -23,5 +23,4 @@
 		default="focused"
 	/>
 	-->
-
 </attributes>

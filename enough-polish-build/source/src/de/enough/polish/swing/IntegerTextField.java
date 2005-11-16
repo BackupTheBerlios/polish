@@ -42,6 +42,9 @@ import javax.swing.event.ChangeListener;
  */
 public class IntegerTextField extends ActiveTextField {
 
+
+	private static final long serialVersionUID = 7006859670363152211L;
+
 	/**
 	 * @param listener
 	 */
@@ -59,10 +62,15 @@ public class IntegerTextField extends ActiveTextField {
 	}
 
 	/**
-	 * @return
+	 * @return the integer value of this field. When a NumberFormatException is thrown, 0 will be returned
 	 */
 	public int getIntValue() {
-		return Integer.parseInt( getText() );
+		try {
+			return Integer.parseInt( getText() );
+		} catch (NumberFormatException e) {
+			System.err.println("Warning: unable to parse integer [" + getText() + "]: " + e.toString()  );
+			return 0;
+		}
 	}
 
 	/**
