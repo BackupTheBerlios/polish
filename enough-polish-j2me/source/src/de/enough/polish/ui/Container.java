@@ -36,6 +36,7 @@ import de.enough.polish.util.TextUtil;
  * <p>Contains a number of items.</p>
  * <p>Main purpose is to manage all items of a Form or similiar canvases.</p>
  * <p>Containers support following CSS attributes:
+ * </p>
  * <ul>
  * 		<li><b>focused</b>: The name of the focused style, e.g. "style( funnyFocused );"
  * 				</li>
@@ -49,9 +50,9 @@ import de.enough.polish.util.TextUtil;
  * 					columns-width: 15,5;
  * 				</pre>
  * 				</li>
- * 		<li><b></b>: </li>
+ * 		<li><b>scroll-mode</b>: Either "smooth" (=default) or "normal".</li>
+ * 		<li><b>view-type</b>: The view of this container.</li>
  * </ul>
- * </p>
  * <p>Copyright Enough Software 2004, 2005</p>
 
  * <pre>
@@ -221,11 +222,12 @@ public class Container extends Item {
 		if (index == this.focusedIndex) {
 			this.itemStyle = item.focus( this.focusedStyle );
 		}
+		Item last = (Item) this.itemsList.set( index, item );
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();
 		}
-		return (Item) this.itemsList.set( index, item );
+		return last;
 	}
 	
 	/**
@@ -424,15 +426,15 @@ public class Container extends Item {
 				this.internalX =  item.contentX - this.contentX + item.internalX;
 				this.internalWidth = item.internalWidth;
 				this.internalY = item.contentY - this.contentY + item.internalY;
-				//#debug
-				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY);
+				// #debug
+				//System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY);
 				this.internalHeight = item.internalHeight;
 			} else {
 				this.internalX = item.xLeftPos - this.contentX;
 				this.internalWidth = item.itemWidth;
 				this.internalY = item.yTopPos - this.contentY;
-				//#debug
-				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY );
+				// #debug
+				//System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY );
 				this.internalHeight = item.itemHeight;
 			}
 			if (this.enableScrolling) {	
@@ -441,26 +443,50 @@ public class Container extends Item {
 				Item nextItem;
 				if ( isDownwards && index < this.itemsList.size() - 1 ) {
 					nextItem = (Item) this.itemsList.get( index + 1 );
+					// #debug
+					//System.err.println("Focusing downwards, nextItem.y = [" + nextItem.yTopPos + "-" + nextItem.yBottomPos + "], focusedItem.y=[" + item.yTopPos + "-" + item.yBottomPos + "], this.yOffset=" + this.yOffset + ", this.targetYOffset=" + this.targetYOffset);
 				} else if ( !isDownwards && index > 0 ) {
 					nextItem = (Item) this.itemsList.get( index - 1 );
+					// #debug
+					//System.err.println("Focusing upwards, nextItem.yTopPos = " + nextItem.yTopPos + ", focusedItem.yTopPos=" + item.yTopPos );
 				} else {
+					// #debug
+					//System.err.println("Focusing last or first item.");
 					nextItem = item;
 				}
 
+				
 				int itemYTop = isDownwards ? item.yTopPos : nextItem.yTopPos;
 				int itemYBottom = isDownwards ? nextItem.yBottomPos : item.yBottomPos;
+//				if (itemYBottom - itemYTop > this.yTop - this.yBottom) {
+//					if ( isDownwards ) {
+//						itemYBottom = this.internalY + this.internalHeight;
+//					} else {
+//						itemYTop = this.internalY;
+//					}
+//				}
 				int difference = 0;
 				if (itemYTop == itemYBottom) {
 					//#debug
 					System.out.println("Container: unable to auto-scroll, item.yBottomPos == item.yTopPos");
 				} else if (itemYBottom > this.yBottom) {
 					// this item is too low:
-					difference = this.yBottom - itemYBottom; 
+					difference = this.yBottom - itemYBottom;
+					// #debug
 					//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+					//if ( itemYTop + difference < this.yTop) {
 					if ( itemYTop + difference < this.yTop) {
+						// #debug
+						//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
 						difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
-						//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop );
 					}
+					/*
+					if ( itemYTop + difference < this.internalY) {
+						//#debug
+						System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.internalY=" +  this.internalY + "  to new difference=" + (this.internalY - itemYTop + 10) );
+						difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
+					}
+					*/
 				} else if (itemYTop < this.yTop) {
 					// this item is too high:
 					//#if tmp.useTable
@@ -473,10 +499,12 @@ public class Container extends Item {
 					} else {
 						difference = this.yTop - itemYTop + this.focusedTopMargin;
 					}
+					// #debug
 					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
 				}
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): difference: " + difference + "  container.yOffset=" + this.yOffset + "  internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom );
+				System.out.println("Container (" + getClass().getName() + "): difference: " + difference + "  container.yOffset=" + this.yOffset + ", itemY=[" + itemYTop + "-" + itemYBottom + "],  item.internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom  + "   ---- , this.internalY=" +  this.internalY);
+						
 				//#if polish.css.scroll-mode
 					if (!this.scrollSmooth) {
 						this.yOffset += difference;
@@ -557,6 +585,7 @@ public class Container extends Item {
 			} else {
 				this.appearanceMode = INTERACTIVE;
 			}
+		
 			this.contentHeight = myContentHeight;
 			this.contentWidth = myContentWidth;
 			return;
@@ -1236,6 +1265,12 @@ public class Container extends Item {
 			if (this.focusedStyle != null) {
 				focusstyle = this.focusedStyle;
 			}
+			//#if polish.css.view-type
+				if (this.view != null) {
+					this.view.setStyle(focusstyle);
+					//this.isInitialised = false; not required
+				}
+			//#endif
 			this.isFocused = true;
 			if (this.focusedIndex == -1) {
 				// focus the first interactive item...
@@ -1284,6 +1319,12 @@ public class Container extends Item {
 			this.isFocused = false;
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
+			//#if polish.css.view-type
+				if (this.view != null) {
+					this.view.setStyle( this.itemStyle );
+					this.isInitialised = false;
+				}
+			//#endif
 			this.isFocused = false;
 			// now remove any commands which are associated with this item:
 			if (item.commands == null && this.commands != null) {

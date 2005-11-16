@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui && polish.midp2
+
 package de.enough.polish.ui.screenanimations;
 
 import javax.microedition.lcdui.Display;

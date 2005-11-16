@@ -661,6 +661,10 @@ public class Form extends Screen
 	public void delete(int itemNum)
 	{
 		this.container.remove(itemNum);
+		if (this.isShown() ) {
+			repaint();
+		}
+
 	}
 
 	/**
@@ -673,6 +677,10 @@ public class Form extends Screen
 	public void deleteAll()
 	{
 		this.container.clear();
+		if (this.isShown() ) {
+			repaint();
+		}
+
 	}
 
 	/**

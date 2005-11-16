@@ -41,128 +41,99 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 	//the start degrees of the images
 	private int degree = 1,lstdegree = 89;
 	//the nxtImage to start in screen
-	private int row = 0;
+	private int xSplitPosition = 0;
 	//the rgb - images
 	private int[] rgbData ;
-	private int[] rgbbuffer ;
-	private int[] lstrgbbuffer ;
+	private int[] nextScreenRgbBuffer ;
+	private int[] lastScreenRgbBuffer ;
 	//the height of the columns
-	private int[] scaleableHeight;
+	private int[] scaleableHeights;
 	//the scale from the row
 	private int scaleableWidth,wayForScale,heightScale;
-//	//kann nachher weg nur zum testen
-//	private boolean first = true;
+	//#if polish.css.cube-screen-change-animation-background-color
+	private int backGroundColor;
+	//#endif
+	
 	public CardScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-			System.gc();
-			System.out.print("width:"+width+":height:"+height);
-			this.row = 0;
+		//#if polish.css.cube-screen-change-animation-background-color
+		Integer colorInt = style.getIntProperty( "cube-screen-change-animation-background-color" ); 
+		if (colorInt != null ) { 
+			this.backGroundColor = colorInt.intValue(); 
+		}
+		//#endif
+		System.gc();
+		//System.out.print("width:"+width+":height:"+height);
+		this.xSplitPosition = 0;
 //			this.row = width;
-			this.degree = 1;
-			this.lstdegree = 89;
-			this.stillRun = true;
-			this.wayForScale = (width *100)/ 90;
-			this.heightScale = ((height-((height * 12)/100))*100)/90;
-			int size = width * height;
-			this.scaleableWidth = width;
-			this.scaleableHeight = new int [width];
-			for(int i = 0;i < this.scaleableHeight.length;i++){
-				this.scaleableHeight[i] = height;
-			}
-			this.rgbbuffer = new int[size];
-			this.lstrgbbuffer = new int [size];
-			this.rgbData = new int [size];
-			nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		this.degree = 1;
+		this.lstdegree = 89;
+		this.stillRun = true;
+		this.wayForScale = (width *100)/ 90;
+		this.heightScale = ((height-((height * 12)/100))*100)/90;
+		int size = width * height;
+		this.scaleableWidth = width;
+		this.scaleableHeights = new int [width];
+		for(int i = 0;i < this.scaleableHeights.length;i++){
+			this.scaleableHeights[i] = height;
+		}
+		this.nextScreenRgbBuffer = new int[size];
+		this.lastScreenRgbBuffer = new int [size];
+		this.rgbData = new int [size];
+		nxtScreenImage.getRGB(this.nextScreenRgbBuffer, 0, width, 0, 0, width, height );
+		lstScreenImage.getRGB(this.lastScreenRgbBuffer, 0, width, 0, 0, width, height );
+		System.arraycopy( this.lastScreenRgbBuffer, 0, this.rgbData, 0, size);
+		//lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
-//	private int getColorRGB(boolean lastImage,int row,int column){
-////		newI = ((row-1))+ (this.width * ((column)));
-////----------------------------------------------------
-////		float newI = 0;
-////		float proWidth = ((float)this.scaleableWidth / (float)this.width);
-////		int sH = this.scaleableHeight[row];
-////		float sHeight = (float)this.height -(float)sH;
-////		if(column != 0)column = column - (this.height - sH);
-////		if(column < 0)column = 0;
-////		float proHeight = (((float)this.height-(sHeight*2.0f)) / (float)this.height);
-////		if(row != 0)row = row - this.row;
-////		if(row < 0)row = 0;
-////		newI = (((float)row/proWidth))+ (this.width * (int)(column/proHeight));
-////		if(newI >38719)newI = 38719;
-////		int i = (int)newI;
-////-----------------------------------------------------
-////		int intProWidth = (this.scaleableWidth*100) / this.width;
-////-----------------------------------------------------
-//		int sH = this.scaleableHeight[row];
-//		column = column - (this.screenHeight - sH);
-//		if(column <= 0)column = 1;
-////		int intProHeight = ((this.height-((this.height-sH)*2))*100)/this.height;
-//		int u = (((this.screenHeight-((this.screenHeight-sH)*2))*100)/this.screenHeight);
-//		if(u <= 0)u++;
-//		int o = 0;
-//		if(!lastImage){
-//			row = row - this.row;
-//			if(row <= 0)row = 1;
-//			o = ((this.scaleableWidth*100) / this.screenWidth);
-//		}else{
-//			o = (((this.row)*100) / this.screenWidth);
-//		}
-//		if(o <= 0)o++;
-//		int i = ((row*100)/o)+(this.screenWidth * ((column*100)/u));
-////		if(i > 38719)i = 38719;
-//		if(i > this.rgbData.length-1)i = this.rgbData.length-1;
-//		if(i < 0)i = 0;
-//		if(lastImage)return this.rgbbuffer[i];
-//		else return this.rgbbuffer[i];
-//	}
+
 	
 	
 	protected boolean animate() {
-		// TODO Auto-generated method stub
-		
-		int row = 0,column = 0;
+		int currentX = 0,currentY = 0;
 		int length = this.rgbData.length;
-		int sH,c,u,o,r,newI;
+		int currentScalableHeight,targetY,verticalShrinkFactorPercent,horizontalScaleFactorPercent,sourceX,targetArrayIndex;
 		for(int i = 0; i < length;i++){
-			row = (row + 1) % this.screenWidth;
-			if(row == 0){
-				column++;	
+			currentX = (currentX + 1) % this.screenWidth;
+			if(currentX == 0){
+				currentY++;	
 			}
-			sH = this.scaleableHeight[row];
-			if(sH < column || (this.screenHeight - sH) > column ){// || row > (this.screenWidth-this.row) || row < this.row){
-				this.rgbData[i] = 0x028D0A;
+			currentScalableHeight = this.scaleableHeights[currentX];
+			if(currentScalableHeight < currentY || (this.screenHeight - currentScalableHeight) > currentY ){// || row > (this.screenWidth-this.row) || row < this.row){
+				//#if polish.css.cube-screen-change-animation-background-color
+					this.rgbData[i] = this.backGroundColor;
+				//#else
+					this.rgbData[i] = 0;
+				//#endif
 			}
 			else{
-				c = column - (this.screenHeight - sH);
+				targetY = currentY - (this.screenHeight - currentScalableHeight);
 //				if(c <= 0)c = 1;
-				u = (((this.screenHeight-((this.screenHeight-sH)*2))*100)/this.screenHeight);
+				verticalShrinkFactorPercent = (((this.screenHeight-((this.screenHeight-currentScalableHeight)*2))*100)/this.screenHeight);
 //				if(u <= 0)u=1;
-				if(this.row <= row){
-					r = row - this.row;
+				if(this.xSplitPosition <= currentX){
+					sourceX = currentX - this.xSplitPosition;
 //					if(r <= 0)r = 1;
-					o = ((this.scaleableWidth*100) / this.screenWidth);
+					horizontalScaleFactorPercent = ((this.scaleableWidth*100) / this.screenWidth);
 				}else{
-					r = row;
-					o = (((this.row)*100) / this.screenWidth);
+					sourceX = currentX;
+					horizontalScaleFactorPercent = (((this.xSplitPosition)*100) / this.screenWidth);
 				}
 //				if(o <= 0)o++;
-				newI = ((r*100)/o)+(this.screenWidth * ((c*100)/u));
-				if(newI >= length)newI = length-1;
-				if(newI < 0)newI = 0;
+				targetArrayIndex = ((sourceX*100)/horizontalScaleFactorPercent)+(this.screenWidth * ((targetY*100)/verticalShrinkFactorPercent));
+				if(targetArrayIndex >= length)targetArrayIndex = length-1;
+				if(targetArrayIndex < 0)targetArrayIndex = 0;
 //				this.rgbData[i] = this.rgbbuffer[newI];
-				if( this.row > row){
-					this.rgbData[i] = this.rgbbuffer[newI];
+				if( this.xSplitPosition > currentX){
+					this.rgbData[i] = this.nextScreenRgbBuffer[targetArrayIndex];
 				}else{
-					this.rgbData[i] = this.lstrgbbuffer[newI];
+					this.rgbData[i] = this.lastScreenRgbBuffer[targetArrayIndex];
 				}
 			}
 //			else if( this.row > row){
@@ -197,31 +168,31 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 //		the new scalableWidth for the front scaling of the cube
 //		if(this.row < this.screenWidth-2)this.row+=2;
 		
-		this.row = (this.screenWidth -((this.wayForScale * this.lstdegree)/100));
-		System.out.print("row"+this.row+"\n");
+		this.xSplitPosition = (this.screenWidth -((this.wayForScale * this.lstdegree)/100));
+		//System.out.print("row"+this.xSplitPosition+"\n");
 		int endOfHeight; int difference; int scale; int sumScale;
 		if(this.degree < 90){		
 //			if(this.scaleableWidth <= 0)this.scaleableWidth++;
 //			this.lstScale = this.scaleableWidth;
 //			this.scaleableWidth-=this.row;
 			this.degree++;
-			this.scaleableWidth = this.screenWidth - this.row;
+			this.scaleableWidth = this.screenWidth - this.xSplitPosition;
 			endOfHeight =  (this.screenHeight -(this.heightScale * this.degree));
 			difference = this.screenHeight + (endOfHeight/100);
 			scale = ((this.screenHeight - difference)*100)/this.screenWidth;
 			sumScale = scale;	
-			int start = this.row+1;
+			int start = this.xSplitPosition+1;
 			int finishAnimationSide = this.screenWidth-5;
 			int newScale;
 				for(int i = start; i < this.screenWidth;i++){
 //			this.scaleableHeight[i] = this.screenHeight + (endOfHeight/100);
-					if(this.row > finishAnimationSide){
+					if(this.xSplitPosition > finishAnimationSide){
 						newScale =0 ;
 					}else{
 						newScale = this.screenHeight - (scale/100);
 						scale = scale + sumScale;
 					}
-					this.scaleableHeight[i] = newScale;
+					this.scaleableHeights[i] = newScale;
 //					if(newScale <= 0)this.scaleableWidth--;
 				}
 		}	
@@ -231,28 +202,28 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 			scale = ((this.screenHeight - difference)*100)/this.screenWidth;
 			sumScale = scale;
 //			if(this.lstScale <= this.row)this.lstScale = this.row-10;
-			int start = this.row+1;
+			int start = this.xSplitPosition+1;
 			int newScale;
 			for(int i = start; i > 0;i--){			
-				if(this.row < 9){
+				if(this.xSplitPosition < 9){
 					newScale =0 ;
 				}else{
 					newScale = this.screenHeight - (scale/100);
 					scale = scale + sumScale;
 				}
-				this.scaleableHeight[i] = newScale;			
+				this.scaleableHeights[i] = newScale;			
 			}
 	}
 	
 	public void keyPressed(int keyCode) {
 		super.keyPressed(keyCode);
-		this.nextCanvasImage.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		this.nextCanvasImage.getRGB( this.nextScreenRgbBuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 
 	//#if polish.hasPointerEvents
 	public void pointerPressed(int x, int y) {
 		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		this.nextCanvasImage.getRGB( this.nextScreenRgbBuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	//#endif
 	

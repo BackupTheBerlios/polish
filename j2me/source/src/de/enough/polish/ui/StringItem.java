@@ -59,6 +59,9 @@ public class StringItem extends Item
 	//#ifdef polish.css.text-vertical-adjustment
 		protected int textVerticalAdjustment;
 	//#endif
+	//#ifdef polish.css.text-effect
+		protected TextEffect textEffect;
+	//#endif
 
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
@@ -169,6 +172,45 @@ public class StringItem extends Item
 		super( label, LAYOUT_DEFAULT, appearanceMode, style );
 		this.text = text;
 	}
+	
+	
+	//#ifdef polish.css.text-effect
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#animate()
+	 */
+	public boolean animate() {
+		boolean animated = super.animate();
+		if (this.textEffect != null) {
+			animated |= this.textEffect.animate();
+		}
+		return animated;
+	}
+	//#endif
+
+	//#ifdef polish.css.text-effect
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#hideNotify()
+	 */
+	protected void hideNotify() {
+		if (this.textEffect != null) {
+			this.textEffect.hideNotify();
+		}
+		super.hideNotify();
+	}
+	//#endif
+
+	//#ifdef polish.css.text-effect
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#showNotify()
+	 */
+	protected void showNotify() {
+		if (this.textEffect != null) {
+			this.textEffect.showNotify();
+		}
+		super.showNotify();
+	}
+	//#endif
+
 	
 	/**
 	 * Gets the text contents of the <code>StringItem</code>, or
@@ -289,15 +331,32 @@ public class StringItem extends Item
 			//#endif
 			for (int i = 0; i < this.textLines.length; i++) {
 				String line = this.textLines[i];
+				int lineX = x;
+				int lineY = y;
+				int orientation;
 				// adjust the painting according to the layout:
 				if (this.isLayoutRight) {
-					g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+					lineX = rightBorder;
+					orientation = Graphics.TOP | Graphics.RIGHT;
+					//g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 				} else if (this.isLayoutCenter) {
-					g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
+					lineX = centerX;
+					orientation = Graphics.TOP | Graphics.HCENTER;
+					//g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
 				} else {
+					orientation = Graphics.TOP | Graphics.LEFT;
 					// left layout (default)
-					g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
+					//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
 				}
+				//#if polish.css.text-effect
+					if (this.textEffect != null) {
+						this.textEffect.drawString( line, this.textColor, lineX, lineY, orientation, g );
+					} else {
+				//#endif
+						g.drawString( line, lineX, lineY, orientation );
+				//#if polish.css.text-effect
+					}
+				//#endif
 				x = leftBorder;
 				y += lineHeight;
 			}
@@ -375,6 +434,15 @@ public class StringItem extends Item
 				this.textVerticalAdjustment = textVerticalAdjustmentInt.intValue();		
 			}
 		//#endif
+		//#ifdef polish.css.text-effect
+			TextEffect effect = (TextEffect) style.getObjectProperty( "text-effect" );
+			if (effect != null) {
+				this.textEffect = effect;
+				effect.setStyle(style);
+			} else {
+				this.textEffect = null;
+			}
+		//#endif	
 
 	}
 
@@ -392,4 +460,5 @@ public class StringItem extends Item
 		}
 	}
 	//#endif
+
 }

@@ -1,0 +1,149 @@
+//#condition polish.usePolishGui
+/*
+ * Created on 16-Nov-2005 at 11:59:50.
+ * 
+ * Copyright (c) 2005 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+package de.enough.polish.ui;
+
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+
+/**
+ * <p>Allows text effects for StringItems, IconItems and ChoiceItems.</p>
+ *
+ * <p>Copyright Enough Software 2005</p>
+ * <pre>
+ * history
+ *        16-Nov-2005 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public abstract class TextEffect {
+
+	/**
+	 * Creates a new effect
+	 */
+	public TextEffect() {
+		super();
+	}
+	
+	/**
+	 * Sets the style of this item.
+	 * Subclasses can override this method for getting specific settings.
+	 * 
+	 * @param style the new style for this item.
+	 * @throws NullPointerException when style is null
+	 */
+	public void setStyle( Style style ) {
+		// the default implementation does nothing
+	}
+	
+	/**
+	 * Animates this effect.
+	 * Subclasses can override this method to create animations.
+	 * 
+	 * @return true when this effect has been animated.
+	 */
+	public boolean animate() {
+		return false;
+	}
+	
+	/**
+	 * Paints the text and applies the text effect.
+	 * 
+	 * @param text the text
+	 * @param textColor the color of the text
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param orientation the orientation, e.g. Graphics.TOP | Graphics.LEFT or Graphics.TOP | Graphics.HCENTER
+	 * @param g the graphics context
+	 */
+	public abstract void drawString( String text, int textColor, int x, int y, int orientation, Graphics g );
+	
+	/**
+	 * Retrieves the left start position for a text.
+	 * 
+	 * @param x the x position given in drawString()
+	 * @param orientation the orientation given in drawString()
+	 * @param textWidth the width of the text given in drawString()
+	 * @return the left x position
+	 */
+	public int getLeftX( int x, int orientation, int textWidth  ) {
+		if ( (orientation & Graphics.LEFT) == Graphics.LEFT) {
+			return x;
+		} else if ( (orientation & Graphics.RIGHT) == Graphics.RIGHT) {
+			return x - textWidth;
+		} else {
+			return x - textWidth / 2;
+		}
+	}
+
+	/**
+	 * Retrieves the top y position for a text.
+	 *  
+	 * @param y the y position given in drawString()
+	 * @param orientation the orientation given in drawString()
+	 * @param font the used font, usually g.getFont()
+	 * @return the top y position.
+	 */
+	public int getTopY( int y, int orientation, Font font ) {
+		return getTopY(y, orientation, font.getHeight(), font.getBaselinePosition() );
+	}
+
+	/**
+	 * Retrieves the top y position for a text.
+	 *  
+	 * @param y the y position given in drawString()
+	 * @param orientation the orientation given in drawString()
+	 * @param height the height of the used font
+	 * @param baseLine the base line of the used font
+	 * @return the top y position.
+	 */
+	public int getTopY( int y, int orientation, int height, int baseLine ) {
+		if ( (orientation & Graphics.TOP) == Graphics.TOP) {
+			return y;
+		} else if ( (orientation & Graphics.BOTTOM) == Graphics.BOTTOM) {
+			return y - height;
+		} else {
+			return y - (height - baseLine);
+		}
+	}
+
+	/**
+	 * Notifies this effect that the corresponding item is to be shown.
+	 * The default implementation is empty. 
+	 */
+	public void showNotify() {
+		// default implementation is empty
+	}
+	
+	/**
+	 * Notifies this effect that the corresponding item is to be hidden.
+	 * The default implementation is empty. 
+	 */
+	public void hideNotify() {
+		// default implementation is empty
+	}
+
+}

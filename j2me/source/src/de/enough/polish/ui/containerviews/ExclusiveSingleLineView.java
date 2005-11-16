@@ -110,6 +110,9 @@ public class ExclusiveSingleLineView extends ContainerView {
 		ChoiceItem selectedItem = (ChoiceItem) parent.get( selectedItemIndex );
 		selectedItem.drawBox = false;
 		this.contentHeight = selectedItem.getItemHeight(lineWidth, lineWidth);
+		//if ( selectedItem.isFocused ) {
+			System.out.println("Exclusive Single Line View: contentHeight=" + this.contentHeight);
+		//}
 		this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth ) + completeArrowWidth;
 		this.appearanceMode = Item.INTERACTIVE;
 		this.currentItem = selectedItem;

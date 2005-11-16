@@ -1,14 +1,15 @@
+//#condition polish.usePolishGui && polish.midp2
 
-	package de.enough.polish.ui.screenanimations;
+package de.enough.polish.ui.screenanimations;
 
-	import javax.microedition.lcdui.Display;
-	import javax.microedition.lcdui.Displayable;
-	import javax.microedition.lcdui.Graphics;
-	import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
-	import de.enough.polish.ui.AccessibleCanvas;
-	import de.enough.polish.ui.ScreenChangeAnimation;
-	import de.enough.polish.ui.Style;
+import de.enough.polish.ui.AccessibleCanvas;
+import de.enough.polish.ui.ScreenChangeAnimation;
+import de.enough.polish.ui.Style;
 
 public class NewWaveScreenChangeAnimation extends ScreenChangeAnimation {
 		private boolean stillRun = true;
@@ -28,7 +29,6 @@ public class NewWaveScreenChangeAnimation extends ScreenChangeAnimation {
 //		private boolean first = true;
 		public NewWaveScreenChangeAnimation() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 		
 		protected void show(Style style, Display dsplay, int width, int height,

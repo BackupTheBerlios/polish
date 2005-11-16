@@ -200,6 +200,10 @@ public class FramedForm extends Form {
 		if (this.bottomFrame != null ) {
 			height -= this.bottomFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth);
 		}
+		this.contentX = x;
+		this.contentY = y;
+		this.contentWidth = width;
+		this.contentHeight = height;
 		this.container.setVerticalDimensions( y, y + height );
 	}
 	
@@ -209,6 +213,12 @@ public class FramedForm extends Form {
 	 */
 	protected void paintScreen(Graphics g) {
 		super.paintScreen(g);
+		//#ifdef tmp.menuFullScreen
+		 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+		//#else
+		 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
+		//#endif
+
 		if (this.leftFrame != null) {
 		 	Style frameStyle = this.leftFrame.style;
 			if (this.expandLeftFrame) {
@@ -252,7 +262,6 @@ public class FramedForm extends Form {
 			this.bottomFrame.paint( 0, this.contentY + this.contentHeight, 0, this.screenWidth, g );
 		}
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)

@@ -283,7 +283,12 @@ public class Style
 		}
 		for (int i = 0; i < this.attributeKeys.length; i++ ) {
 			if (this.attributeKeys[i] == key) {
-				return this.attributeValues[i].toString();
+				Object value = this.attributeValues[i];
+				if (value != null) {
+					return value.toString();
+				} else {
+					return null;
+				}
 			}
 		}
 		return null;

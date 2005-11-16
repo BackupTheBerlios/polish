@@ -28,6 +28,7 @@
 package de.enough.polish.log.rms;
 
 import javax.microedition.rms.RecordStore;
+import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.log.LogEntry;
 import de.enough.polish.log.LogHandler;
@@ -81,5 +82,21 @@ public class RmsLogHandler extends LogHandler {
 		//this.logStore = null;
 		//System.out.println("Stored log in RMS!");
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.log.LogHandler#exit()
+	 */
+	public void exit() {
+		if (this.logStore != null) {
+			try {
+				this.logStore.closeRecordStore();
+			} catch (RecordStoreException e) {
+				// ignore
+			}
+			this.logStore = null;
+		}
+	}
+	
+	
 
 }

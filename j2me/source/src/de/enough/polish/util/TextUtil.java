@@ -233,5 +233,60 @@ public final class TextUtil {
 		}
 		*/
 	}
+	
+//	 Unreserved punctuation mark/symbols
+    private static final String UNRESERVED = "-_.!~*'()\"";
+
+    /**
+     * Converts Hex digit to a UTF-8 "Hex" character
+     * 
+     * @param digitValue digit to convert to Hex
+     * @return the converted Hex digit
+     */
+    private static char toHexChar(int digitValue) {
+        if (digitValue < 10)
+            // Convert value 0-9 to char 0-9 hex char
+            return (char)('0' + digitValue);
+        else
+            // Convert value 10-15 to A-F hex char
+            return (char)('A' + (digitValue - 10));
+    }
+
+    /**
+     * Encodes a URL for  - This method assumes UTF-8
+     * 
+     * @param url URL to encode
+     * @return the encoded URL
+     */
+    public static String encodeUrl(String url) {
+        StringBuffer encodedUrl = new StringBuffer(); // Encoded URL
+        int len = url.length();
+        // Encode each URL character
+        for (int i = 0; i < len; i++) {
+            char c = url.charAt(i); // Get next character
+            if ((c >= '0' && c <= '9') ||
+                (c >= 'a' && c <= 'z') ||
+                (c >= 'A' && c <= 'Z')) {
+                // Alphanumeric characters require no encoding, append as is
+                encodedUrl.append(c);
+            } else {
+                int imark = UNRESERVED.indexOf(c);
+                if (imark >=0) {
+                    // Unreserved punctuation marks and symbols require
+                    //  no encoding, append as is
+                    encodedUrl.append(c);
+                } else {
+                    // Encode all other characters to Hex, using the format "%XX",
+                    //  where XX are the hex digits
+                    encodedUrl.append('%'); // Add % character
+                    // Encode the character's high-order nibble to Hex
+                    encodedUrl.append(toHexChar((c & 0xF0) >> 4));
+                    // Encode the character's low-order nibble to Hex
+                    encodedUrl.append(toHexChar (c & 0x0F));
+                }
+            }
+        }
+        return encodedUrl.toString(); // Return encoded URL
+    }
 
 }

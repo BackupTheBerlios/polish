@@ -665,7 +665,7 @@ public abstract class Item extends Object
 	protected int internalY;
 	protected int internalWidth;
 	protected int internalHeight;
-	protected boolean isFocused;
+	public boolean isFocused;
 	
 	//#ifdef polish.useBeforeStyle
 		private int beforeWidth;
@@ -1455,6 +1455,12 @@ public abstract class Item extends Object
 		//#ifdef polish.useDynamicStyles
 			else if (this.style == null) {
 				initStyle();
+			}
+		//#else
+			else if (this.style == null && !this.isStyleInitialised) {
+				//#debug
+				System.out.println("Setting default style for item " + getClass().getName() );
+				setStyle( StyleSheet.defaultStyle );
 			}
 		//#endif
 		int labelWidth = 0;

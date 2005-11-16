@@ -1559,6 +1559,13 @@ implements Choice
 		//#endif
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, true );
+				if ( (this.choiceType != IMPLICIT) 
+						//#ifdef polish.usePopupItem
+						&& !(this.isPopup && !this.isPopupClosed)
+						//#endif
+						&& (this.getScreen() instanceof Form) ) {
+					notifyStateChanged();
+				}
 				//#ifdef polish.usePopupItem
 					if (this.isPopup) {
 						if (this.isPopupClosed) {
@@ -1579,6 +1586,13 @@ implements Choice
 		} else if (c == UNMARK_COMMAND ) {
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, false );
+				if ( (this.choiceType != IMPLICIT) 
+						//#ifdef polish.usePopupItem
+						&& !(this.isPopup && !this.isPopupClosed)
+						//#endif
+						&& (this.getScreen() instanceof Form) ) {
+					notifyStateChanged();
+				}
 			}
 		//#endif
 		} else if (this.additionalItemCommandListener != null) {

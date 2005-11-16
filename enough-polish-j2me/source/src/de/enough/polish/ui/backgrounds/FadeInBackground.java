@@ -84,7 +84,7 @@ public class FadeInBackground extends Background {
 	}
 
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		System.out.println("FadeInBackround: currentColor=" + Integer.toHexString(this.currentColor));
+		// System.out.println("FadeInBackround: currentColor=" + Integer.toHexString(this.currentColor));
 		if ( this.restartOnTime ) {
 			long updateTime = System.currentTimeMillis();
 			if (!this.animationRunning) {

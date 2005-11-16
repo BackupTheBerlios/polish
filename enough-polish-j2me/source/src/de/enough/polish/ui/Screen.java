@@ -131,7 +131,7 @@ implements AccessibleCanvas
 	/** the screen height minus the ticker height and the height of the menu bar */
 	protected int screenHeight;
 	/** the screen height minus the height of the menu bar */
-	private int originalScreenHeight;
+	protected int originalScreenHeight;
 	protected final int screenWidth;
 	//#ifndef polish.skipTicker
 		private Ticker ticker;
@@ -148,7 +148,7 @@ implements AccessibleCanvas
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
 		/** the real, complete height of the screen - this includes title, subtitle, content and menubar */
-		private int fullScreenHeight;
+		protected int fullScreenHeight;
 		protected int menuBarHeight;
 		//#ifdef polish.key.ReturnKey:defined
 			private Command backCommand;
@@ -218,6 +218,9 @@ implements AccessibleCanvas
 		private int foregroundX;
 		private int foregroundY;
 	//#endif
+	//#if polish.css.clip-screen-info
+		private boolean clipScreenInfo;
+	//#endif	
 	//#if polish.blackberry
 		public boolean keyPressedProcessed;
 	//#endif
@@ -629,6 +632,12 @@ implements AccessibleCanvas
 				}
 			}
 		//#endif
+		//#if polish.css.clip-screen-info
+			Boolean clipScreenInfoBool = style.getBooleanProperty( "clip-screen-info" );
+			if (clipScreenInfoBool != null) {
+				this.clipScreenInfo = clipScreenInfoBool.booleanValue();
+			}
+		//#endif	
 
 	}
 	
@@ -751,12 +760,13 @@ implements AccessibleCanvas
 			//#endif
 			if (this.subTitle != null) {
 				this.subTitle.paint( 0, tHeight, 0, this.screenWidth, g );
-				tHeight += this.subTitleHeight;
 			}
-			if (this.showInfoItem) {
-				this.infoItem.paint( 0, tHeight, 0, this.screenWidth, g );
-				tHeight += this.infoHeight;
-			}
+			int infoItemY = tHeight;
+			//#if polish.clip-screen-info
+				if (this.showInfoItem && this.clipScreenInfo) {			
+					tHeight += this.infoHeight;
+				}
+			//#endif
 			// protect the title, ticker and the full-screen-menu area:
 			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
 			//g.translate( 0, tHeight );
@@ -764,6 +774,8 @@ implements AccessibleCanvas
 			//System.out.println("starting to paint content of screen");
 			paintScreen( g );
 			//System.out.println("done painting content of screen");
+			
+
 			
 			//g.translate( 0, - tHeight );
 			// allow painting outside of the screen again:
@@ -773,6 +785,11 @@ implements AccessibleCanvas
 			 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
 			//#endif
 			 
+			// paint info element:
+			if (this.showInfoItem) {			
+				this.infoItem.paint( 0, infoItemY, 0, this.screenWidth, g );
+			}
+ 	
 			//#ifndef polish.skipTicker
 			 	if (this.ticker != null) {
 			 		//System.out.println("painting ticker... at 0, " + this.screenHeight );

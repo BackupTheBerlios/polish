@@ -76,6 +76,7 @@ implements Runnable, AccessibleCanvas
 	//#if false
 		private final SplashView view;
 	//#endif
+	private String message;
 
 	//#if !polish.classes.SplashView:defined
 	/**
@@ -141,6 +142,17 @@ implements Runnable, AccessibleCanvas
 		}
 	//#endif
 
+	/**
+	 * Sets a message that is displayed immediately.
+	 * This call is ignored when a SplashView is used.
+	 * 
+	 * @param message the new message, null when no message should be shown.
+	 */
+	public void setMessage( String message ) {
+		this.message = message;
+		repaint();
+	}
+	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
@@ -165,6 +177,16 @@ implements Runnable, AccessibleCanvas
 				g.setColor( this.messageColor );
 				Font font = Font.getDefaultFont();
 				String[] lines = TextUtil.split( this.readyMessage, font, width - 10, width - 10 );
+				int y = height - ( lines.length * ( font.getHeight() + 1 ) );
+				for (int i = 0; i < lines.length; i++) {
+					String line = lines[i];
+					g.drawString( line, width/2, y, Graphics.TOP | Graphics.HCENTER );
+					y += font.getHeight() +  1;
+				}
+			} else if (this.message != null) {
+				g.setColor( this.messageColor );
+				Font font = Font.getDefaultFont();
+				String[] lines = TextUtil.split( this.message, font, width - 10, width - 10 );
 				int y = height - ( lines.length * ( font.getHeight() + 1 ) );
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];

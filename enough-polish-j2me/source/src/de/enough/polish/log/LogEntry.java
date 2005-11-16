@@ -43,12 +43,15 @@ import java.io.IOException;
  */
 public class LogEntry {
 	
+	final static int VERSION = 100;
+	
 	public final String className;
 	public final long time;
 	public final String level;
 	public final String message;
 	public final int lineNumber;
 	public final String exception;
+	public final String thread;
 	private byte[] data;
 
 	/**
@@ -63,6 +66,24 @@ public class LogEntry {
 	 * 
 	 */
 	public LogEntry( String className, int lineNumber, long time, String level, String message, String exception ) {
+		//#if polish.cldc1.1
+			this( className, lineNumber, time, level, message, exception, Thread.currentThread().getName() );
+		//#else
+			//# this( className, lineNumber, time, level, message, exception, Thread.currentThread().toString() );
+		//#endif
+	}
+
+	/**
+	 * Creates a new log entry,
+	 * 
+	 * @param className the name of the class
+	 * @param lineNumber the line number within the class
+	 * @param time the time of the log event
+	 * @param level the level, e.g. "debug" or "info"
+	 * @param message the message
+	 * @param exception the exception message, if any
+	 */
+	protected LogEntry( String className, int lineNumber, long time, String level, String message, String exception, String threadName ) {
 		if (className == null) {
 			className = "";
 		}
@@ -75,32 +96,18 @@ public class LogEntry {
 		if ( exception == null ) {
 			exception = "";
 		}
+		if (threadName == null) {
+			threadName = Thread.currentThread().toString();
+		}
 		this.className = className;
 		this.lineNumber = lineNumber;
 		this.time = time;
 		this.level = level;
 		this.message = message;
 		this.exception = exception;
+		this.thread = threadName;
 	}
-	
-	/**
-	 * Creates a new log entry out of the given byte array.
-	 * 
-	 * @param data the data of the entry
-	 * @throws IOException when the data could not be read
-	 */
-	public LogEntry( byte[] data ) 
-	throws IOException 
-	{
-		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ) );
-		this.time = in.readLong();
-		this.level = in.readUTF();
-		this.className = in.readUTF();
-		this.lineNumber = in.readInt();
-		this.message = in.readUTF();
-		this.exception = in.readUTF();
-	}
-	
+		
 	/**
 	 * Writes the data into a byte buffer.
 	 * 
@@ -113,13 +120,14 @@ public class LogEntry {
 		if (this.data == null) {
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream( byteOut );
-			out.writeLong( this.time );
-			out.writeUTF( this.level );
-			out.writeUTF( this.className );
-			out.writeInt( this.lineNumber );
-			out.writeUTF( this.message );
-			out.writeUTF(this.exception);
+			write( out );
+
+			out.close();
+			byteOut.close();
 			this.data = byteOut.toByteArray();
+			
+			//DataInputStream in = new DataInputStream( new ByteArrayInputStream( this.data ) );
+			//LogEntry copy = newLogEntry( in ); 
 		}
 		return this.data;
 	}
@@ -132,6 +140,9 @@ public class LogEntry {
 		StringBuffer buffer = new StringBuffer();
 		//#if polish.debug.level != false
 			buffer.append("[").append( this.level ).append("] ");
+		//#endif
+		//#if polish.debug.thread != false
+			buffer.append("{").append( this.thread ).append("} ");
 		//#endif
 		//#if polish.debug.timestamp != false
 			buffer.append("<").append( this.time ).append(" ms> ");
@@ -153,5 +164,66 @@ public class LogEntry {
 		//#endif
 		return buffer.toString();
 	}
+
+	/**
+	 * Writes this log entry to the given output stream.
+	 * 
+	 * @param out the output to which this entry should be writen.
+	 * @throws IOException when the data could not be written 
+	 */
+	public void write(DataOutputStream out) 
+	throws IOException 
+	{
+		out.writeInt( VERSION );
+		out.writeUTF( this.level );
+		out.writeLong( this.time );
+		out.writeUTF( this.className );
+		out.writeInt( this.lineNumber );
+		out.writeUTF( this.message );
+		out.writeUTF( this.exception );
+		out.writeUTF( this.thread );
+	}
+	
+	/**
+	 * Reads a new log entry from the given input stream
+	 * 
+	 * @param data the data
+	 * @return a new log entry instance
+	 * @throws IOException when the data could not be read 
+	 */
+	public static LogEntry newLogEntry( byte[] data ) 
+	throws IOException 
+	{
+		ByteArrayInputStream byteIn = new ByteArrayInputStream( data );
+		DataInputStream in = new DataInputStream( byteIn );
+		LogEntry entry = newLogEntry( in );
+		in.close();
+		return entry;
+	}
+	
+	/**
+	 * Reads a new log entry from the given input stream
+	 * 
+	 * @param in the input from which the data is read
+	 * @return a new log entry instance
+	 * @throws IOException when the data could not be read 
+	 */
+	public static LogEntry newLogEntry(DataInputStream in ) 
+	throws IOException 
+	{
+		int version = in.readInt();
+		if ( version > VERSION ) {
+			throw new IOException("Unable to read new log entry format, supported version is [" + VERSION + "], required version is [" + version + "].");
+		}
+		String level = in.readUTF();
+		long time = in.readLong();
+		String className = in.readUTF();
+		int lineNumber = in.readInt();
+		String message = in.readUTF();
+		String exception = in.readUTF();
+		String thread = in.readUTF();
+		return new LogEntry( className, lineNumber, time, level, message, exception, thread );
+	}
+
 
 }
