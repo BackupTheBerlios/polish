@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 package de.enough.polish.ui.containerviews;
 
 
@@ -9,6 +10,8 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 
 public class DinnerForOneView extends TableView {
+	
+	
 	
 	private final static int START_MAXIMUM = 30;
 	private final static int MAX_PERIODE = 5;
@@ -46,41 +49,54 @@ public class DinnerForOneView extends TableView {
 //		this.contentHeight 
 //		this.contentWidth 
 //		this.isAnimationRunning = true;
+
 		System.out.print("column"+this.columns+""+this.contentHeight+":::"+this.contentWidth+"\n");
 		this.parentContainer = parent;
 		Item[] myItems = this.parentContainer.getItems();
+
 		this.yNewAdjust   = new int [myItems.length];
 		this.xNewAdjust   = new int [myItems.length];
 		this.xAdjustments = new int [myItems.length];
 		this.yAdjustments = new int [myItems.length];
-		int y = 50,x = 20,columns = 0;
+		int y = 0,x = 0,columns = 0,myContentWidth = 0,myContentHeight = 0,width = 0;
 		this.myitemslenght = myItems.length;
 		for (int i = 0; i < this.myitemslenght; i++) {
-			Item item = myItems[i];
+			Item item = myItems[i];			
 			this.xAdjustments[i] = x;
 			this.yAdjustments[i] = y;
+			System.out.print("zielX:"+x+";zielY:"+y+"\n");
 			if(this.focusedIndex == i){
 				this.startX = x;
 				this.startY = y;
 			}
-			System.out.print(x+"...x\n");
 			columns = ((columns + 1)) % this.columns;
-			if(columns == 0){
+			System.out.print("columns"+columns+";\n");
+			if(columns == 0 && (i+1) != this.myitemslenght){
 				x = 0;
+				myContentHeight += this.paddingVertical+item.getItemHeight(firstLineWidth,lineWidth);
 				y += this.paddingVertical+item.getItemHeight(firstLineWidth,lineWidth);
+				width = 0;
+				System.out.print("h:"+myContentHeight+";\n");
 			}else{
+				width +=  this.paddingHorizontal+item.getItemWidth(firstLineWidth,lineWidth); 
 				x += this.paddingHorizontal+item.getItemWidth(firstLineWidth,lineWidth);
+				
+			}
+			if(width > myContentWidth){
+				myContentWidth = width;
+				System.out.print("w:"+width+";\n");
 			}
 		}
+		this.contentHeight = myContentHeight;
+		this.contentWidth = myContentWidth;
+		System.out.print("width:"+this.contentWidth+".:height:"+this.contentHeight+"\n");
 		for (int i = 0; i < this.myitemslenght; i++) {
 			this.yNewAdjust[i] = this.startY;
 			this.xNewAdjust[i] = this.startX;
-			System.out.print(this.xAdjustments[i]+"::"+this.xNewAdjust[i]+";\n");
 		}
-		this.delayVertical = (this.paddingVertical+ myItems[0].getItemHeight(firstLineWidth,lineWidth));
-//#ifdef polish.css.columns
-		this.delayHorizontal = (this.paddingHorizontal+ myItems[0].getItemWidth(firstLineWidth,lineWidth));
-//#endif
+		this.delayVertical = this.delay;
+		this.delayHorizontal = this.delay;
+		System.out.print("delay:::"+this.delay);
 	}
 
 
@@ -126,14 +142,6 @@ public class DinnerForOneView extends TableView {
 	 * @return true when the view was really animated.
 	 */
 	public boolean animate() {
-//		Thread th = new Thread();
-//		try {
-//			th.sleep(100);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.print("sleep-error"+e+"\n");
-//		}
 		return this.isAnimationRunning;
 	}
 
@@ -142,21 +150,23 @@ public class DinnerForOneView extends TableView {
 		Item[] myItems = this.parentContainer.getItems();
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
-				if(this.yAdjustments[i] < this.yNewAdjust[i]){
-					this.yNewAdjust[i] -= 1;
+				if(this.yAdjustments[i] <= (this.yNewAdjust[i]-this.delayVertical)){
+					this.yNewAdjust[i] -= this.delayVertical;
 				}
-				else if(this.yAdjustments[i] > this.yNewAdjust[i]){
-					this.yNewAdjust[i] +=  1;
+				else if(this.yAdjustments[i] >= (this.yNewAdjust[i]+this.delayVertical)){
+					this.yNewAdjust[i] +=  this.delayVertical;
+				}else{
+					this.yNewAdjust[i] = this.yAdjustments[i];
 				}
-				if(this.xAdjustments[i] < this.xNewAdjust[i]){
-					this.xNewAdjust[i] -= 1;
-					System.out.print("x-"+this.xNewAdjust[i]+"\n");
+				if(this.xAdjustments[i] <= (this.xNewAdjust[i]-this.delayHorizontal)){				
+					this.xNewAdjust[i] -= this.delayHorizontal;
 				}
-				else if(this.xAdjustments[i] > this.xNewAdjust[i]){
-					this.xNewAdjust[i] +=  1;
-					System.out.print("x+"+this.xNewAdjust[i]+"\n");
+				else if(this.xAdjustments[i] >= (this.xNewAdjust[i]+this.delayHorizontal)){
+					this.xNewAdjust[i] +=  this.delayHorizontal;
+				}else{
+					this.xNewAdjust[i] = this.xAdjustments[i];
 				}
-				item.paint(this.xNewAdjust[i], this.yNewAdjust[i], this.xNewAdjust[i], this.xNewAdjust[i]+this.delayHorizontal, g);
+				item.paint((this.xNewAdjust[i]+x),(y+ this.yNewAdjust[i]), leftBorder, rightBorder, g);
 			}
 		}
-}
+	}
