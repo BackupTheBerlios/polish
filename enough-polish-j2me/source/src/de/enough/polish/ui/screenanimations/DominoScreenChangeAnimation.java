@@ -107,7 +107,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 		int length = this.rgbData.length-1;
 		int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;
 		scalePercentWidth = this.screenWidth;
-		for(int i = 0; i < length;i++){
+		for(int i = 0; i < length; i++){
 			row = (row + 1) % this.screenWidth;
 			if(row == 0){
 				column++;	
@@ -117,7 +117,6 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 				scalePercentWidth = ((sW*100) / this.screenWidth);
 			}
 			sH = this.scaleableHeight[row];
-			
 			if(left > row || right < row || this.down[row] < column || this.up[row] > column){
 				this.rgbData[i] = this.rgbbuffer[i];
 			}
@@ -145,7 +144,6 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 
 				this.rgbData[i] = this.lstrgbbuffer[newI];
 			}
-		
 		}
 //		System.out.print("bishier.2\n");
 		this.cubeEffect();
@@ -170,24 +168,15 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 //		}
 //		int id=0,idNext=0;
 		for(int i = 0; i < this.scaleableHeight.length;i++){
-//			id = (id + 1) % 2;
-//			if(id == 0){
-			this.scaleableHeight[i]-=18;
-			this.up[i]+=18;
-//				this.up[i]++;
-//				this.down[i]--;
-//			}
-//			if(id == 1){
-//				this.scaleableWidth[i]+=6;
-				
-//				this.left[i]++;
-//				this.right[i]-=12;
-//			}
+			this.scaleableHeight[i]-= 8;
+			this.down[i]-= 8;
+//			this.up[i]+=4;
 		}
-//		System.out.print("up"+up+"\n");
-//		for(int i = 0; i < this.scaleableWidth.length;i++){
-//				this.scaleableWidth[i]--;this.right[i]--;
-//		}
+		for(int i = 0; i < this.scaleableWidth.length;i++){
+			this.scaleableWidth[i]-= 8;
+			this.right[i]-= 4;
+			this.left[i]+= 4;
+		}
 	}
 	
 	public void keyPressed(int keyCode) {

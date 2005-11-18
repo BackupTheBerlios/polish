@@ -190,7 +190,6 @@ public class ShuffleView extends ContainerView {
 	 */
 	public boolean animate() {
 		if (this.isAnimationRunning) {
-			
 			int counter = 0;
 			for (int i = 0; i < this.xAdjustments.length; i++ ) {
 				int x = this.xAdjustments[i];
@@ -215,5 +214,4 @@ public class ShuffleView extends ContainerView {
 			return false;
 		}
 	}
-
 }

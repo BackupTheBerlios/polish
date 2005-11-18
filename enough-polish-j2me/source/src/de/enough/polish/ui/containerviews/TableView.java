@@ -44,8 +44,10 @@ import de.enough.polish.ui.Style;
  * @author Robert Virkus, robert@enough.de
  */
 
-public abstract class TableView extends ContainerView {
+public class TableView extends ContainerView {
 	public int columns = 1;
+	private int myContentHeight;
+	private int myContentWidth;
 
 
 	/**
@@ -64,7 +66,6 @@ public abstract class TableView extends ContainerView {
 			int lineWidth) 
 	{
 		// TODO Robert implement TableView.initContent
-
 	}
 
 	/* (non-Javadoc)
@@ -85,7 +86,6 @@ public abstract class TableView extends ContainerView {
 	}
 	
 
-	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)
 	 */
@@ -99,5 +99,6 @@ public abstract class TableView extends ContainerView {
 			}
 		//#endif
 	}
+
 
 }

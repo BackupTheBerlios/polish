@@ -278,7 +278,6 @@ public class MIDP2LayoutView extends ContainerView {
         protected Item getNextItem(int keyCode, int gameAction) {
                 if (this.allRows.size() == 0)
                         return null;
-
                 Item[] items = this.parentContainer.getItems();
                 if (this.focusedIndex >= items.length) {
                         for(int i=0; i < items.length; i++) {

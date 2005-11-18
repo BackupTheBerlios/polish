@@ -21,6 +21,7 @@ public class DinnerForOneView extends TableView {
 	private int [] xAdjustments;
 	private int [] yNewAdjust;
 	private int [] xNewAdjust;
+	private int delay;
 	private int delayVertical,delayHorizontal,myitemslenght;
 	private int startX, startY;
 	private boolean isAnimationRunning = true;
@@ -144,7 +145,22 @@ public class DinnerForOneView extends TableView {
 	public boolean animate() {
 		return this.isAnimationRunning;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)
+	 */
+	protected void setStyle(Style style) {
+		super.setStyle(style);
+		//#ifdef polish.css.delay-speed
+			Integer delayInt = style.getIntProperty("delay-speed");
+			if (delayInt != null) {
+				this.delay = delayInt.intValue();
+			}
+			System.out.print("define-css-delay"+this.delay+"\n");
+		//#endif
+	}
+	
+	
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		// TODO Auto-generated method stub
 		Item[] myItems = this.parentContainer.getItems();

@@ -31,7 +31,6 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Is responsible for visual representation and interpretation of user-input.</p>
  * <p>Copyright Enough Software 2004, 2005</p>
-
  * <pre>
  * history
  *        Oct 27, 2004 - rob creation
