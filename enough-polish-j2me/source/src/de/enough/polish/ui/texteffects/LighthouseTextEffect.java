@@ -135,6 +135,7 @@ public class LighthouseTextEffect extends TextEffect {
 			if (this.mode == MODE_RIGHT_TO_LEFT || this.mode == MODE_RIGHT_TO_LEFT_ONCE) {
 				this.currentPos = length;
 			} else {
+				this.direction = DIRECTION_RIGHT;
 				this.currentPos = -1;
 			}
 		}
@@ -142,6 +143,9 @@ public class LighthouseTextEffect extends TextEffect {
 			g.drawString(text, x, y, orientation);
 		} else {
 			int pos = this.currentPos;
+			if (pos < -1) {
+				pos = -1;
+			}
 			Font font = g.getFont();
 			x = getLeftX(x, orientation, font.stringWidth( text ) );
 			y = getTopY(y, orientation, font.getHeight(), font.getBaselinePosition() );
