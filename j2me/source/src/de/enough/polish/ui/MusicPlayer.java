@@ -26,32 +26,64 @@
 package de.enough.polish.ui;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 
-public class MusicPlayer extends Canvas {
+import de.enough.polish.util.Debug;
+import de.enough.polish.util.Locale;
+
+public class MusicPlayer extends Canvas implements CommandListener{
 	private Item item;
 	private Player p;
+	private List list;
+	private Command playCmd, stopCmd;
+	private FileConnection fileCon;
 	private PlayerListener pListener;
 		public MusicPlayer() {
 			super();
 			// TODO Auto-generated constructor stub
 //			this.pListener = new PlayerListener();
-			
-			String url = "file:///C:/Nokia/Images/";
+			this.list = new List("Music List", List.IMPLICIT);
+			String url = "file:///C:/Nokia/";
 			try {
-				FileConnection fileCon = (FileConnection) Connector.open( url, Connector.READ_WRITE );
+				this.fileCon = (FileConnection) Connector.open( url, Connector.READ );
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		    if( this.fileCon.isDirectory() && this.fileCon.canRead() ){
+		        Enumeration names;
+				try {
+					names = this.fileCon.list();
+			        while( names.hasMoreElements() ){
+			            String name = (String) names.nextElement();
+			            this.list.append(name, null);
+			        }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		    this.playCmd = new Command("Play",Command.ITEM, 10 );
+		    this.stopCmd = new Command("Stop",Command.ITEM, 2 );
+		    this.list.setCommandListener(this);
+		    this.list.addCommand(this.playCmd);
+		    this.list.addCommand(this.stopCmd);
+		    this.list.setSelectedIndex(1,true);
+		    this.repaint();
 		}
 		
 		public void start(String url){
@@ -90,6 +122,15 @@ public class MusicPlayer extends Canvas {
 
 		protected void paint(Graphics g) {
 			// TODO Auto-generated method stub
-			g.fillRect(0,0,getWidth(),getHeight());
+			//g.fillRect(0,0,getWidth(),getHeight());
+            this.list.paint(g);
 		}
+
+		public void commandAction(Command cmd, Displayable screen) {		
+			System.out.print("lookingForCommand\n");
+				if (cmd == List.SELECT_COMMAND) {
+					this.repaint();
+					System.out.print("MusicCommad\n");
+					}
+			}
 	}
