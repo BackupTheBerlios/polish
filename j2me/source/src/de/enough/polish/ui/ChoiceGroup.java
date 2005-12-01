@@ -436,8 +436,14 @@ implements Choice
 					addCommand( UNMARK_COMMAND );
 				//#endif
 			} else {
-				//#if ! (tmp.suppressSelectCommand || polish.css.view-type)
-					addCommand( List.SELECT_COMMAND );
+				//#if !tmp.suppressSelectCommand
+					//#if polish.css.view-type
+						if (this.view == null) {
+					//#endif
+							addCommand( List.SELECT_COMMAND );
+					//#if polish.css.view-type
+						}
+					//#endif
 				//#endif
 			}
 			this.itemCommandListener = this;

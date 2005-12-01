@@ -1396,13 +1396,32 @@ public abstract class Item extends Object
 		int originalContentY = contY;
 		
 		// paint before element:
+		//#if polish.useBeforeStyle || polish.useAfterStyle
+		boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
+		boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
+		boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
+		//#endif
 		//#ifdef polish.useBeforeStyle
 			if (this.beforeImage != null) {
 				int beforeY = contY;
+				int yAdjustment = this.beforeHeight - this.contentHeight;
 				if ( this.beforeHeight < this.contentHeight) {
-					beforeY += (this.contentHeight - this.beforeHeight) / 2;
+					if (isTop) {
+						beforeY -= yAdjustment;
+					} else if (isBottom) {
+						beforeY += yAdjustment;
+					} else {
+						beforeY -= yAdjustment / 2;
+					}
 				} else {
-					contY += (this.beforeHeight - this.contentHeight) / 2;
+					if (isTop) {
+						// keep contY
+					} else if (isBottom) {
+						contY += yAdjustment;
+					} else {
+						contY += yAdjustment / 2;
+					}
+					//contY += (this.beforeHeight - this.contentHeight) / 2;
 				}
 				g.drawImage(this.beforeImage, contX, beforeY, Graphics.TOP | Graphics.LEFT );
 				contX += this.beforeWidth;
@@ -1413,13 +1432,28 @@ public abstract class Item extends Object
 		//#ifdef polish.useAfterStyle
 			if (this.afterImage != null) {
 				int afterY = originalContentY;
+				int yAdjustment = this.afterHeight - this.contentHeight;
 				if ( this.afterHeight < this.contentHeight) {
-					afterY += (this.contentHeight - this.afterHeight) / 2;
+					if (isTop) {
+						afterY -= yAdjustment;
+					} else if (isBottom) {
+						afterY += yAdjustment;
+					} else {
+						afterY -= yAdjustment / 2;
+					}
+					//afterY += (this.contentHeight - this.afterHeight) / 2;
 				} else {
 					//#ifdef polish.useBeforeStyle
 					if (this.afterHeight > this.beforeHeight) {
 					//#endif
-						contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
+						if (isTop) {
+							// keep contY
+						} else if (isBottom) {
+							contY = originalContentY + yAdjustment;
+						} else {
+							contY = originalContentY + yAdjustment / 2;
+						}
+						//contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
 					//#ifdef polish.useBeforeStyle
 					}
 					//#endif
@@ -1730,6 +1764,9 @@ public abstract class Item extends Object
 		if (this.yTopPos != this.yBottomPos) {
 			this.yBottomPos += 5;
 			this.itemHeight += 5;
+		}
+		if (oldStyle == null) {
+			oldStyle = StyleSheet.defaultStyle;
 		}
 		return oldStyle;
 	}

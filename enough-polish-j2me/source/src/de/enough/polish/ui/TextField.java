@@ -2353,7 +2353,9 @@ public class TextField extends StringItem
 				{	
 					String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
 					setString( newText );
-					notifyStateChanged();
+					if (getScreen() instanceof Form) {
+						notifyStateChanged();
+					}
 					return true;
 				}
 				if (currentLength > 0) {
@@ -2363,7 +2365,9 @@ public class TextField extends StringItem
 						if (keyCode == -8 || gameAction == Canvas.LEFT) {						
 					//#endif
 						setString( currentText.substring(0, currentLength - 1) );
-						notifyStateChanged();
+						if (getScreen() instanceof Form) {
+							notifyStateChanged();
+						}
 						return true;
 					}
 				}				
@@ -2629,7 +2633,9 @@ public class TextField extends StringItem
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
 			setString( this.editField.getText() );
-			notifyStateChanged();
+			if (getScreen() instanceof Form ) {
+				notifyStateChanged();
+			}
 		}
 	}
 	//#endif

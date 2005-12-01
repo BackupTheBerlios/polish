@@ -221,13 +221,12 @@ implements CommandListener
 	public static final Command DISMISS_COMMAND = StyleSheet.OK_CMD;
 
 	private int timeout = FOREVER;
+	private long showTime;
 	private AlertType type;
 	private IconItem iconItem;
 	private Gauge indicator;
 
 	private AlertType alertType;
-	
-	private Display display;
 	protected Displayable nextDisplayable;
 
 	/**
@@ -715,6 +714,11 @@ implements CommandListener
 		if (this.indicator != null) {
 			animated |= this.indicator.animate();
 		}
+		if (this.timeout != FOREVER ) {
+			if (System.currentTimeMillis() - this.showTime > this.timeout) {
+				commandAction(DISMISS_COMMAND, this);
+			}
+		}
 		return animated; 
 	}
 
@@ -743,14 +747,23 @@ implements CommandListener
 			throw new IllegalStateException();
 		}
 		Displayable next = this.nextDisplayable;
-		Display disp = this.display;
-		this.display = null;
 		this.nextDisplayable = null;
-		disp.setCurrent( next );
+		StyleSheet.display.setCurrent( next );
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#showNotify()
+	 */
+	public void showNotify() {
+		super.showNotify();
+		this.showTime = System.currentTimeMillis();
+		if (this.nextDisplayable == null) {
+			this.nextDisplayable = StyleSheet.display.getCurrent();
+		}
+	}
+
 	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
-		alert.display = display;
 		alert.nextDisplayable = nextDisplayable;
 		display.setCurrent( alert );
 	}

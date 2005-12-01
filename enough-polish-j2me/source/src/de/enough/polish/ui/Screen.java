@@ -1131,9 +1131,7 @@ implements AccessibleCanvas
 	public void setPolishTicker( Ticker ticker)
 	{
 		this.ticker = ticker;
-		if (ticker == null) {
-			//this.screenHeight = this.originalScreenHeight;
-		} else {
+		if (ticker != null) {
 			ticker.screen = this;
 			// initialise ticker, so that subsequently ticker.itemHeight can be called:
 			ticker.getItemHeight(this.screenWidth, this.screenWidth );
@@ -1141,6 +1139,7 @@ implements AccessibleCanvas
 			//this.screenHeight = this.originalScreenHeight - tickerHeight;
 		}
 		//System.out.println("setTicker(): screenHeight=" + this.screenHeight + ", original=" + this.originalScreenHeight );
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		if (isShown()) {
 			repaint();
 		}
@@ -1372,14 +1371,14 @@ implements AccessibleCanvas
 	public void addCommand(Command cmd) {
 		//#debug
 		System.out.println("adding command [" + cmd.getLabel() + "].");
+		int cmdType = cmd.getCommandType();
 		//#if polish.Screen.FireTriggersOkCommand == true
-			if ( cmd.getCommandType() == Command.OK 
+			if ( cmdType == Command.OK 
 					&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
 			{
 				this.okCommand = cmd;
 			}
 		//#endif
-		int cmdType = cmd.getCommandType();
 		//#ifdef polish.key.ReturnKey:defined
 			//#if polish.blackberry
 			if ( cmdType == Command.BACK || cmdType == Command.CANCEL || 
@@ -1432,13 +1431,41 @@ implements AccessibleCanvas
 			}
 			//#style menuitem, menu, default
 			StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
-			this.menuContainer.add( menuItem );
-			if (this.menuContainer.size() == 1) {
+			if ( this.menuCommands.size() == 0 ) {
+				this.menuCommands.add( cmd );
+				this.menuCommands.add( menuItem );
 				this.menuSingleLeftCommand = cmd;
 			} else {
 				this.menuSingleLeftCommand = null;
+				// there are already several commands,
+				// so add this cmd to the appropriate sorted position:
+				int priority = cmd.getPriority();
+				Command[] myCommands = (Command[]) this.menuCommands.toArray( new Command[ this.menuCommands.size() ]);
+				boolean inserted = false;
+				for (int i = 0; i < myCommands.length; i++) {
+					Command command = myCommands[i];
+					if ( cmd == command ) {
+						return;
+					}
+					if (command.getPriority() > priority ) {
+						this.menuCommands.add( i, cmd );
+						this.menuContainer.add(i, menuItem);
+						inserted = true;
+						break;
+					}
+				}
+				if (!inserted) {
+					this.menuCommands.add( cmd );
+					this.menuContainer.add( menuItem );
+				}
 			}
-			this.menuCommands.add( cmd );
+//			this.menuContainer.add( menuItem );
+//			if (this.menuContainer.size() == 1) {
+//				this.menuSingleLeftCommand = cmd;
+//			} else {
+//				this.menuSingleLeftCommand = null;
+//			}
+//			this.menuCommands.add( cmd );
 			if (isShown()) {
 				repaint();
 			}
@@ -1505,10 +1532,12 @@ implements AccessibleCanvas
 	protected void setItemCommands( Item item ) {
 		this.focusedItem = item;
 		// now add any commands which are associated with the item:
+		System.out.println("Adding item commands...");
 		if (item.commands != null) {
 			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
+				System.out.println("adding item command " + command.getLabel() );
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.addCommand(command);
 				//#else

@@ -179,4 +179,4 @@ public class SpriteItem
 		this.isFocused = false;
 		this.sprite.setFrame( this.defaultFrameIndex );
 	}
-}
+	}

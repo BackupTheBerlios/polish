@@ -116,7 +116,8 @@ public class MenuBar extends Item {
 	}
 
 	public void addCommand(Command cmd) {
-		//System.out.println("adding command " + cmd.getLabel() + " (" + cmd + ")");
+		//#debug
+		System.out.println("adding command " + cmd.getLabel() + " (" + cmd + ")");
 		int type = cmd.getCommandType();
 		int priority = cmd.getPriority();
 		//#if tmp.useInvisibleMenuBar
@@ -129,13 +130,12 @@ public class MenuBar extends Item {
 				//#endif
 				this.cancelCommand = new Command( text, Command.CANCEL, 2000 );
 				addCommand( this.cancelCommand );
-			} else {
-				if ( (cmd != this.cancelCommand) && 
-						(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
-				{
-					if ( this.singleRightCommand == null || this.singleRightCommand.getPriority() > priority ) {
-						this.singleRightCommand = cmd;
-					}
+			}
+			if ( (cmd != this.cancelCommand) && 
+					(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
+			{
+				if ( this.singleRightCommand == null || this.singleRightCommand.getPriority() > priority ) {
+					this.singleRightCommand = cmd;
 				}
 			}
 		//#else
@@ -191,6 +191,9 @@ public class MenuBar extends Item {
 			boolean inserted = false;
 			for (int i = 0; i < myCommands.length; i++) {
 				Command command = myCommands[i];
+				if ( cmd == command ) {
+					return;
+				}
 				if (command.getPriority() > priority ) {
 					this.commandsList.add( i, cmd );
 					this.commandsContainer.add(i, item);
@@ -214,7 +217,8 @@ public class MenuBar extends Item {
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
-		//System.out.println("removing command " + cmd.getLabel() + " (" + cmd + ")");
+		//#debug
+		System.out.println("removing command " + cmd.getLabel() + " (" + cmd + ")");
 		// 1.case: cmd == this.singleLeftCommand
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
@@ -305,6 +309,8 @@ public class MenuBar extends Item {
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
+		//#debug
+		System.out.println("Init content of MenuBar - isOpened=" + this.isOpened );
 		if (this.isOpened) {
 			int titleHeight = this.screen.titleHeight; // + this.screen.subTitleHeight + this.screen.infoHeight;
 			int screenHeight = this.screen.screenHeight;

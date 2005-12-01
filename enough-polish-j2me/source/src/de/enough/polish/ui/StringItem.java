@@ -460,5 +460,12 @@ public class StringItem extends Item
 		}
 	}
 	//#endif
+	
+	//#if polish.debug.error
+	public String toString() {
+		return  "StringItem " + super.toString() + ": \"" + this.getText() + "\""; 
+	}
+	//#endif
+
 
 }

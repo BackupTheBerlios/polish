@@ -80,7 +80,12 @@ public class AnimationThread extends Thread
 	 * Creates a new animation thread.
 	 */
 	public AnimationThread() {
-		super();
+		//#if polish.cldc1.1 && polish.debug.error
+			super("AnimationThread");
+		//#else
+			//# super();
+		//#endif
+		
 		//#if polish.blackberry and false
 			// # Application app = Application.getApplication();
 			// # app.addKeyListener( this );

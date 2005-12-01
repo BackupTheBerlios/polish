@@ -81,6 +81,9 @@ public class ExclusiveSingleLineView extends ContainerView {
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
+		if (selectedItemIndex == -1) {
+			selectedItemIndex = 0;
+		}
 		parent.focusedIndex = selectedItemIndex;
 		//#if polish.css.exclusiveview-left-arrow || polish.css.exclusiveview-right-arrow
 			int width = 0;
@@ -111,7 +114,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 		selectedItem.drawBox = false;
 		this.contentHeight = selectedItem.getItemHeight(lineWidth, lineWidth);
 		//if ( selectedItem.isFocused ) {
-			System.out.println("Exclusive Single Line View: contentHeight=" + this.contentHeight);
+			//System.out.println("Exclusive Single Line View: contentHeight=" + this.contentHeight);
 		//}
 		this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth ) + completeArrowWidth;
 		this.appearanceMode = Item.INTERACTIVE;

@@ -201,6 +201,9 @@ public class Container extends Item {
 		item.internalX = -9999;
 		item.parent = this;
 		this.itemsList.add( index, item );
+		if (index <= this.focusedIndex) {
+			this.focusedIndex++;
+		}
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();
@@ -217,12 +220,13 @@ public class Container extends Item {
 	 */
 	public Item set( int index, Item item ) {
 		//#debug
-		System.out.println("Container: setting item " + index );
+		System.out.println("Container: setting item " + index + " " + item.toString() );
 		item.parent = this;
+		Item last = (Item) this.itemsList.set( index, item );
 		if (index == this.focusedIndex) {
+			last.defocus(this.itemStyle);
 			this.itemStyle = item.focus( this.focusedStyle );
 		}
-		Item last = (Item) this.itemsList.set( index, item );
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();
@@ -249,9 +253,9 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item remove( int index ) {
-		//#debug
-		System.out.println("Container: removing item " + index );
 		Item removedItem = (Item) this.itemsList.remove(index);
+		//#debug
+		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );		
 		// adjust y-positions of following items:
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		for (int i = 0; i < myItems.length; i++) {
@@ -317,7 +321,14 @@ public class Container extends Item {
 		this.items = new Item[0];
 		if (this.focusedIndex != -1) {
 			this.autoFocusEnabled = true;
+			this.autoFocusIndex = this.focusedIndex;
 			this.focusedIndex = -1;
+			if (this.focusedItem.commands != null) {
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.removeItemCommands(this.focusedItem);
+				}
+			}
 		}
 		this.yOffset = 0;
 		this.targetYOffset = 0;
@@ -527,7 +538,7 @@ public class Container extends Item {
 		System.out.println("Container: intialising content for " + getClass().getName() + ": autofocus=" + this.autoFocusEnabled);
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
-		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length) {
+		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 			this.autoFocusIndex = 0;
 		}
 		//#ifdef polish.css.view-type
@@ -1305,7 +1316,11 @@ public class Container extends Item {
 					}
 				}
 			//#endif
-			return item.style;
+			if (item.style == null) {
+				return StyleSheet.defaultStyle;
+			} else {
+				return item.style;
+			}
 		}
 	}
 	

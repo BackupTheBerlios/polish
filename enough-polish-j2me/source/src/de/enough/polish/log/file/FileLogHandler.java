@@ -27,6 +27,7 @@
  */
 package de.enough.polish.log.file;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Enumeration;
 
@@ -36,66 +37,31 @@ import javax.microedition.io.file.FileSystemRegistry;
 
 import de.enough.polish.log.LogEntry;
 import de.enough.polish.log.LogHandler;
+import de.enough.polish.util.ArrayList;
 
-public class FileLogHandler extends LogHandler {
+public class FileLogHandler 
+extends LogHandler
+implements Runnable
+{
 	
 	private PrintStream out;
-	private final Object lock = new Object();
+	private boolean isShuttingDown;
+	private ArrayList scheduledLogEntries;
 
 	public FileLogHandler() {
 		super();
 	}
 
 	public void handleLogEntry(LogEntry entry) throws Exception {
-		if (this.out == null) {
-			synchronized ( this.lock ) {
-				String url = null;
-				String root = null;
-				Enumeration enumeration = FileSystemRegistry.listRoots();
-				String roots = "";
-				//#if polish.log.file.preferredRoot:defined
-					while (enumeration.hasMoreElements()) {
-						root = (String) enumeration.nextElement();
-						roots += root + "; ";
-						//#= if  ( root.startsWith( "${polish.log.file.preferredRoot}" )) {
-							break;
-						//#= }
-					}
-					
-				//#else				
-					root = (String) enumeration.nextElement();
-				//#endif
-				
-				//#if polish.log.file.useUnqiueName == true
-					url = "file:///" + root + "j2melog" + System.currentTimeMillis() + ".txt";
-				//#elif polish.log.file.fileName:defined
-					//#= url = "file:///" + root + "${polish.log.file.fileName}";
-				//#else
-					url = "file:///" + root + "j2melog.txt";
-				//#endif
-				FileConnection connection = null;
-				connection = (FileConnection) Connector.open( url, Connector.READ_WRITE );
-				if (!connection.exists()) {
-					//System.out.println("Creating file...");
-					connection.create();
-				}
-				//System.out.println("opening data output stream...");
-				this.out = new PrintStream( connection.openOutputStream() );
-				this.out.println("time\tlevel\tclass\tline\tmessage\terror");
-				//this.out.println( roots );
-			}
+		if (this.scheduledLogEntries == null) {
+			this.scheduledLogEntries = new ArrayList( 7 );
+			Thread thread = new Thread( this );
+			thread.start();
 		}
-		StringBuffer buffer = new StringBuffer();					
-		buffer.append( entry.time ).append('\t')
-			.append( entry.level ).append('\t')
-			.append( entry.className ).append('\t')
-			.append( entry.lineNumber ).append('\t')
-			.append( entry.message ).append('\t')
-			.append( entry.exception );
-		this.out.println( buffer.toString() );
-		
-		//this.out.close();
-		//this.out = null;
+		synchronized ( this.scheduledLogEntries ) {
+			this.scheduledLogEntries.add(entry);
+		}
+		notify();
 	}
 
 	public void exit() {
@@ -105,6 +71,72 @@ public class FileLogHandler extends LogHandler {
 			this.out = null;
 		}
 	}
+
+	public void run() {
+		// create the logfile:
+		synchronized ( this ) {
+			String url = null;
+			String root = null;
+			Enumeration enumeration = FileSystemRegistry.listRoots();
+			String roots = "";
+			//#if polish.log.file.preferredRoot:defined
+				while (enumeration.hasMoreElements()) {
+					root = (String) enumeration.nextElement();
+					roots += root + "; ";
+					//#= if  ( root.startsWith( "${polish.log.file.preferredRoot}" )) {
+						break;
+					//#= }
+				}
+				
+			//#else				
+				root = (String) enumeration.nextElement();
+			//#endif
+			
+			//#if polish.log.file.useUnqiueName == true
+				url = "file:///" + root + "j2melog" + System.currentTimeMillis() + ".txt";
+			//#elif polish.log.file.fileName:defined
+				//#= url = "file:///" + root + "${polish.log.file.fileName}";
+			//#else
+				url = "file:///" + root + "j2melog.txt";
+			//#endif
+			try {
+				FileConnection connection = (FileConnection) Connector.open( url, Connector.READ_WRITE );
+				if (!connection.exists()) {
+					//System.out.println("Creating file...");
+					connection.create();
+				}
+				//System.out.println("opening data output stream...");
+				this.out = new PrintStream( connection.openOutputStream() );
+				this.out.println("time\tlevel\tclass\tline\tmessage\terror");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("Unable to open file log: " + e );
+			}
+			//this.out.println( roots );
+		}
+		
+		while (!this.isShuttingDown) {
+			while ( this.scheduledLogEntries.size() != 0 ) {
+				LogEntry entry;
+				synchronized ( this.scheduledLogEntries ) {
+					entry = (LogEntry) this.scheduledLogEntries.remove(0);
+				}
+				StringBuffer buffer = new StringBuffer();					
+				buffer.append( entry.time ).append('\t')
+					.append( entry.level ).append('\t')
+					.append( entry.className ).append('\t')
+					.append( entry.lineNumber ).append('\t')
+					.append( entry.message ).append('\t')
+					.append( entry.exception );
+				this.out.println( buffer.toString() );	}
+			}
+			// wait for next log entry:
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// ignore
+			}
+		}
 	
 	
 
