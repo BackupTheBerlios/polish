@@ -87,80 +87,80 @@ public final class Locale {
 	//#ifdef false
 	/** The ISO language code, 
 	 * e.g. "en" for English. */
-	public static final String LANGUAGE = "en";
+	public static String LANGUAGE = "en";
 	/** 
 	 * The ISO country code, 
 	 * e.g. "US" for USA 
 	 * This is null when no country is defined in the current locale.
 	 */
-	public static final String COUNTRY = "US";
+	public static String COUNTRY = "US";
 	/** The localized language name, 
 	 * e.g. "English" or "Deutsch" */
-	public static final String DISPLAY_LANGUAGE = "English";
+	public static String DISPLAY_LANGUAGE = "English";
 	/** 
 	 * The localized country name, 
 	 * e.g. "United States" or "Deutschland".
 	 * This is null when no country is defined in the current locale.
 	 */
-	public static final String DISPLAY_COUNTRY = "United States";
+	public static String DISPLAY_COUNTRY = "United States";
 	/** 
 	 * The symbol of the currency, 
 	 * e.g. "$" or "&euro;".
 	 * This is null when no country is defined in the current locale.
 	 */
-	public static final String CURRENCY_SYMBOL = "$";
+	public static String CURRENCY_SYMBOL = "$";
 	/** 
 	 * The international three letter code of the currency, 
 	 * e.g. "USD" or "EUR".
 	 * This is null when no country is defined in the current locale.
 	 */
-	public static final String CURRENCY_CODE = "USD";
+	public static String CURRENCY_CODE = "USD";
 
 
 	/** 
 	 * The character used for decimal sign.
 	 * This is a '-' by default.
 	 */
-	public static final char MINUS_SIGN = '-';
+	public static char MINUS_SIGN = '-';
 
 	/** 
 	 * The character used for zero.
 	 * This is a '0' by default.
 	 */
-	public static final char ZERO_DIGIT = '0';
+	public static char ZERO_DIGIT = '0';
 
 	/** 
 	 * The character used for decimal sign.
 	 * This is a dot by default.
 	 */
-	public static final char DECIMAL_SEPARATOR = '.';
+	public static char DECIMAL_SEPARATOR = '.';
 
 	/** 
 	 * The monetary decimal separator.
 	 * This is a dot by default.
 	 */
-	public static final char MONETARY_DECIMAL_SEPARATOR = '.';
+	public static char MONETARY_DECIMAL_SEPARATOR = '.';
 
 	/** 
 	 * The character used for thousands separator.
 	 * This is a comma by default.
 	 */
-	public static final char GROUPING_SEPARATOR = ',';
+	public static char GROUPING_SEPARATOR = ',';
 	
 	/**
 	 * The character used to represent a percent value.
 	 */
-	public static final char PERCENT = '%';
+	public static char PERCENT = '%';
 
 	/**
 	 * The character used to represent a permill value.
 	 */
-	public static final char PERMILL = '\u2030';
+	public static char PERMILL = '\u2030';
 
 	/** 
 	 * The string used to represent infinity.
 	 */
-	public static final String INFINITY = "\u221e";
+	public static String INFINITY = "\u221e";
 	
 	
 
@@ -306,7 +306,7 @@ public final class Locale {
 		// return result:
 		return result.toString();
 	}
-	
+		
 	/**
 	 * Formats the given date to the current locale's format.
 	 * This method just calls the formatDate-method with a new Date instance.
@@ -467,6 +467,32 @@ public final class Locale {
 		multipleParameterOrders = orders;
 		multipleParameterTranslations = translationChunks;
 		
+		// now load language name etc, but only when no other language has been loaded before,
+		// because otherwise the default locae settings are intialized anyhow:
+		if (isLoaded) {
+			LANGUAGE = in.readUTF();
+			DISPLAY_LANGUAGE = in.readUTF();
+			MINUS_SIGN = in.readChar();
+			ZERO_DIGIT = in.readChar();
+			DECIMAL_SEPARATOR = in.readChar();
+			MONETARY_DECIMAL_SEPARATOR = in.readChar();
+			GROUPING_SEPARATOR = in.readChar();
+			PERCENT = in.readChar();
+			PERMILL = in.readChar();
+			INFINITY = in.readUTF();
+			String country = in.readUTF();
+			if (country.length() > 0) {
+				COUNTRY = country;
+				DISPLAY_COUNTRY = in.readUTF();
+				CURRENCY_SYMBOL = in.readUTF();
+				CURRENCY_CODE = in.readUTF();
+			} else {
+				COUNTRY = null;
+				DISPLAY_COUNTRY = null;
+				CURRENCY_SYMBOL = null;
+				CURRENCY_CODE = null;
+			}
+		}
 		isLoaded = true;
 		isLoadError = false;
 	}

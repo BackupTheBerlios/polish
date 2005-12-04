@@ -27,6 +27,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.*;
 
+import de.enough.polish.util.Locale;
+
 /**
  * A <code>ChoiceGroup</code> is a group of selectable elements intended to be
  * placed within a <CODE>Form</CODE>. The group may be created with a mode that requires a
@@ -65,15 +67,19 @@ implements Choice
 //#endif
 {
 	//#ifndef tmp.suppressMarkCommands
-		//#ifdef polish.command.mark:defined
+		//#ifdef polish.i18n.useDynamicTranslations
+			public static Command MARK_COMMAND = new Command( Locale.get("polish.command.mark"), Command.ITEM, 9 );
+		//#elifdef polish.command.mark:defined
 			//#= public static final Command MARK_COMMAND = new Command("${polish.command.mark}", Command.ITEM, 9 );
 		//#else
-			public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 9 );
+			//# public static final Command MARK_COMMAND = new Command( "Mark", Command.ITEM, 9 );
 		//#endif
-		//#ifdef polish.command.mark:defined
+		//#ifdef polish.i18n.useDynamicTranslations
+			public static Command UNMARK_COMMAND = new Command( Locale.get("polish.command.unmark"), Command.ITEM, 9 );
+		//#elifdef polish.command.mark:defined
 			//#= public static final Command UNMARK_COMMAND = new Command("${polish.command.unmark}", Command.ITEM, 10 );
 		//#else
-			public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 10 );
+			//# public static final Command UNMARK_COMMAND = new Command( "Unmark", Command.ITEM, 10 );
 		//#endif
 	//#endif
 	private int selectedIndex;
@@ -429,25 +435,6 @@ implements Choice
 			ChoiceItem item = items[i];
 			append( item );
 		}
-		//#ifndef tmp.suppressAllCommands
-			if (choiceType == MULTIPLE) {
-				//#ifndef tmp.suppressMarkCommands
-					addCommand( MARK_COMMAND );
-					addCommand( UNMARK_COMMAND );
-				//#endif
-			} else {
-				//#if !tmp.suppressSelectCommand
-					//#if polish.css.view-type
-						if (this.view == null) {
-					//#endif
-							addCommand( List.SELECT_COMMAND );
-					//#if polish.css.view-type
-						}
-					//#endif
-				//#endif
-			}
-			this.itemCommandListener = this;
-		//#endif
 	}
 	
 	/**
@@ -1505,48 +1492,82 @@ implements Choice
 	}
 	//#endif
 
-	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#setStyle(de.enough.polish.ui.Style, boolean)
 	 */
 	public void setStyle(Style style, boolean ignoreBackground) {
 		super.setStyle(style, ignoreBackground);
-		if (this.isPopup && this.popupItem != null) {
-			this.popupItem.setStyle( style );
-		}
-		if (this.isPopup && this.popupItem.image == null ) {
-			//#ifdef polish.css.popup-image
-				String url = style.getProperty("popup-image");
-				if (url != null ) {
-					this.popupItem.setImage( url );
-				}
-			//#endif
-			//#ifdef polish.css.popup-color
-				Integer color = style.getIntProperty("popup-color");
-				if (color != null) {
-					this.popupColor = color.intValue();
-				}
-			//#endif
-			//#ifdef polish.css.popup-background-color
-				Integer bgColor = style.getIntProperty("popup-background-color");
-				if (bgColor != null) {
-					this.popupBackgroundColor = bgColor.intValue();
-				}
-			//#endif
-			//#if ! tmp.suppressSelectCommand && polish.css.view-type
-				if (!this.isSelectCommandAdded && this.choiceType == EXCLUSIVE && this.view == null) {
-					if (this.selectCommand != null) {
-						addCommand( this.selectCommand );
-					} else {
-						addCommand( List.SELECT_COMMAND );
+		//#ifdef polish.usePopupItem
+			if (this.isPopup && this.popupItem != null) {
+				this.popupItem.setStyle( style );
+			}
+			if (this.isPopup && this.popupItem.image == null ) {
+				//#ifdef polish.css.popup-image
+					String url = style.getProperty("popup-image");
+					if (url != null ) {
+						this.popupItem.setImage( url );
 					}
-					this.isSelectCommandAdded = true;				
-				}
+				//#endif
+				//#ifdef polish.css.popup-color
+					Integer color = style.getIntProperty("popup-color");
+					if (color != null) {
+						this.popupColor = color.intValue();
+					}
+				//#endif
+				//#ifdef polish.css.popup-background-color
+					Integer bgColor = style.getIntProperty("popup-background-color");
+					if (bgColor != null) {
+						this.popupBackgroundColor = bgColor.intValue();
+					}
+				//#endif
+				//#if ! tmp.suppressSelectCommand && polish.css.view-type
+					if (!this.isSelectCommandAdded && this.choiceType == EXCLUSIVE && this.view == null) {
+						if (this.selectCommand != null) {
+							addCommand( this.selectCommand );
+						} else {
+							addCommand( List.SELECT_COMMAND );
+						}
+						this.isSelectCommandAdded = true;				
+					}
+				//#endif
+			}
+		//#endif
+		//#ifndef tmp.suppressAllCommands
+		if (this.choiceType == MULTIPLE) {
+			//#ifndef tmp.suppressMarkCommands
+				//#ifdef polish.i18n.useDynamicTranslations
+					String cmdLabel = Locale.get("polish.command.mark");
+					if (cmdLabel != MARK_COMMAND.getLabel()) {
+						MARK_COMMAND = new Command( cmdLabel, Command.ITEM, 9 );
+					}
+					cmdLabel = Locale.get("polish.command.unmark");
+					if (cmdLabel != UNMARK_COMMAND.getLabel()) {
+						UNMARK_COMMAND = new Command( cmdLabel, Command.ITEM, 10 );
+					}
+				//#endif					
+				addCommand( MARK_COMMAND );
+				addCommand( UNMARK_COMMAND );
 			//#endif
-
+		} else {
+			//#if !tmp.suppressSelectCommand
+				//#if polish.css.view-type
+					if (this.view == null) {
+				//#endif
+					//#ifdef polish.i18n.useDynamicTranslations
+						String cmdLabel = Locale.get("polish.command.select");
+						if (cmdLabel != List.SELECT_COMMAND.getLabel()) {
+							List.SELECT_COMMAND = new Command( cmdLabel, Command.ITEM, 3 );
+						}
+					//#endif
+					addCommand( List.SELECT_COMMAND );
+				//#if polish.css.view-type
+					}
+				//#endif
+			//#endif
 		}
-	}
+		this.itemCommandListener = this;
 	//#endif
+	}
 
 	//#ifndef tmp.suppressAllCommands
 	/* (non-Javadoc)

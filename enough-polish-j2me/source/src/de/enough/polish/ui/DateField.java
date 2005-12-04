@@ -27,6 +27,7 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.*;
 
 import de.enough.polish.util.BitMapFontViewer;
+import de.enough.polish.util.Locale;
 
 import java.util.*;
 
@@ -210,6 +211,12 @@ public class DateField extends StringItem
 		}
 		setDate( null );
 		//#if tmp.directInput
+			//#ifdef polish.i18n.useDynamicTranslations
+				String clearLabel = Locale.get("polish.command.clear");
+				if ( clearLabel != TextField.CLEAR_CMD.getLabel()) {
+					TextField.CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, 2 );
+				}
+			//#endif
 			addCommand( TextField.CLEAR_CMD );
 			this.itemCommandListener = this;
 		//#endif

@@ -1332,7 +1332,7 @@ public class Container extends Item {
 			super.defocus( originalStyle );
 		} else {
 			this.isFocused = false;
-			Item item = (Item) this.itemsList.get( this.focusedIndex );
+			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			//#if polish.css.view-type
 				if (this.view != null) {
@@ -1500,6 +1500,20 @@ public class Container extends Item {
 		return false;
 	}
 	//#endif
+
+	/**
+	 * Moves the focus away from the specified item.
+	 * 
+	 * @param item the item that currently has the focus
+	 */
+	public void requestDefocus( Item item ) {
+		if (item == this.focusedItem) {
+			boolean success = shiftFocus(true, 1);
+			if (!success) {
+				defocus(this.itemStyle);
+			}
+		}
+	}
 
 //#ifdef polish.Container.additionalMethods:defined
 	//#include ${polish.Container.additionalMethods}

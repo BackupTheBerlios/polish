@@ -32,7 +32,7 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 
-public class HashMapTest extends TestCase {
+public class OAHashMapTest extends TestCase {
 	
 	private static final int TEST_RUNS = 50000;
 	private final Integer[] integerKeys;
@@ -40,7 +40,7 @@ public class HashMapTest extends TestCase {
 	private final Integer[] integerKeysMixed;
 	private final String[] stringKeysMixed;
 
-	public HashMapTest(String name) {
+	public OAHashMapTest(String name) {
 		super(name);
 		this.integerKeys = new Integer[ TEST_RUNS ];
 		this.stringKeys = new String[ TEST_RUNS ];
@@ -75,17 +75,18 @@ public class HashMapTest extends TestCase {
 	
 	public void testPut() {
 		System.out.println(">>> put()");
-		HashMap map = new HashMap();
+		OAHashMap map = new OAHashMap();
 		System.gc();
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
-			map.put( key, value );
+			Object previous = map.put( key, value );
+			assertNull( previous );
 			assertEquals( i + 1, map.size() );
 		}
 		long neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for putting " + TEST_RUNS + " values into de.enough.polish.util.HashMap.");
+		System.out.println("needed " + neededTime + "ms for putting " + TEST_RUNS + " values into de.enough.polish.util.OAHashMap.");
 		
 		java.util.HashMap j2semap = new java.util.HashMap(); 
 		System.gc();
@@ -93,7 +94,8 @@ public class HashMapTest extends TestCase {
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
-			j2semap.put( key, value );
+			Object previous = j2semap.put( key, value );
+			assertNull( previous );
 			assertEquals( i + 1, j2semap.size() );
 		}
 		neededTime = System.currentTimeMillis() - time;
@@ -105,7 +107,8 @@ public class HashMapTest extends TestCase {
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
-			table.put( key, value );
+			Object previous = table.put( key, value );
+			assertNull( previous );
 			assertEquals( i + 1, table.size() );
 		}
 		neededTime = System.currentTimeMillis() - time;
@@ -116,84 +119,17 @@ public class HashMapTest extends TestCase {
 	
 	public void testRemove() {
 		System.out.println(">>> remove()");
-		
-		HashMap map = new HashMap();
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
-			map.put( key, value );
+		OAHashMap map = new OAHashMap();
+		try {
+			map.remove( "Hello" );
+			fail("map.remove() should not be implemeted");
+		} catch (Exception e) {
+			// expected
 		}
-		int size = TEST_RUNS;
-		System.gc();
-		long time = System.currentTimeMillis();
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeysMixed[i];
-			Object value = this.stringKeysMixed[i];
-			Object previous = map.remove(key);
-			assertNotNull( previous );
-			assertEquals( value, previous );
-			size--;
-			assertEquals( size, map.size() );
-			previous = map.remove(key);
-			assertNull( previous );
-			assertEquals( size, map.size() );
-		}
-		long neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for removing " + TEST_RUNS + " keys from de.enough.polish.util.HashMap.");
-		
-		java.util.HashMap j2semap = new java.util.HashMap(); 
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
-			j2semap.put( key, value );
-		}
-		size = TEST_RUNS;
-		System.gc();
-		time = System.currentTimeMillis();
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeysMixed[i];
-			Object value = this.stringKeysMixed[i];
-			Object previous = j2semap.remove(key);
-			assertNotNull( previous );
-			assertEquals( value, previous );
-			size--;
-			assertEquals( size, j2semap.size() );
-			previous = j2semap.remove(key);
-			assertNull( previous );
-			assertEquals( size, j2semap.size() );
-		}
-		neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for removing " + TEST_RUNS + " keys from java.util.HashMap.");
-		
-		Hashtable table = new Hashtable(); 
-		time = System.currentTimeMillis();
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
-			table.put( key, value );
-		}
-		size = TEST_RUNS;
-		System.gc();
-		time = System.currentTimeMillis();
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeysMixed[i];
-			Object value = this.stringKeysMixed[i];
-			Object previous = table.remove(key);
-			assertNotNull( previous );
-			assertEquals( value, previous );
-			size--;
-			assertEquals( size, table.size() );
-			previous = table.remove(key);
-			assertNull( previous );
-			assertEquals( size, table.size() );
-		}
-		neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for removing " + TEST_RUNS + " keys from java.util.Hashtable.");
-
 	}
 	
 	public void testPutWithSameKeys() {
-		HashMap map = new HashMap();
+		OAHashMap map = new OAHashMap();
 		String key = "key";
 		Object[] values = new Object[]{"one", "two", new Integer(3), "four"};
 		
@@ -214,17 +150,16 @@ public class HashMapTest extends TestCase {
 		
 		assertEquals( values[3], map.get( key ));
 		assertEquals( 1, map.size() );
-		assertEquals( values[3], map.remove( key ));
-		assertEquals( 0, map.size() );
 	}
 	
 	public void testGet() {
 		System.out.println(">>> get()");
-		HashMap map = new HashMap();
+		OAHashMap map = new OAHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
 			map.put( key, value );
+			assertEquals( value, map.get( key ));
 		}
 		System.gc();
 		long time = System.currentTimeMillis();
@@ -235,7 +170,7 @@ public class HashMapTest extends TestCase {
 		}
 		
 		long neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for getting " + TEST_RUNS + " values in de.enough.polish.util.HashMap.");
+		System.out.println("needed " + neededTime + "ms for getting " + TEST_RUNS + " values in de.enough.polish.util.OAHashMap.");
 		
 		java.util.HashMap j2semap = new java.util.HashMap(); 
 		for (int i = 0; i < TEST_RUNS; i++) {
@@ -272,7 +207,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsKey() {
 		System.out.println(">>> containsKey()");
-		HashMap map = new HashMap();
+		OAHashMap map = new OAHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
@@ -285,7 +220,7 @@ public class HashMapTest extends TestCase {
 			assertTrue( map.containsKey( key ));
 		}		
 		long neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS + " keys in de.enough.polish.util.HashMap.");
+		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS + " keys in de.enough.polish.util.OAHashMap.");
 		
 		java.util.HashMap j2semap = new java.util.HashMap(); 
 		for (int i = 0; i < TEST_RUNS; i++) {
@@ -320,7 +255,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsValue() {
 		System.out.println(">>> containsValue()");
-		HashMap map = new HashMap();
+		OAHashMap map = new OAHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
@@ -333,7 +268,7 @@ public class HashMapTest extends TestCase {
 			assertTrue( map.containsValue( value ));
 		}		
 		long neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS/10 + " values in de.enough.polish.util.HashMap.");
+		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS/10 + " values in de.enough.polish.util.OAHashMap.");
 		
 		java.util.HashMap j2semap = new java.util.HashMap(); 
 		for (int i = 0; i < TEST_RUNS; i++) {
@@ -368,7 +303,7 @@ public class HashMapTest extends TestCase {
 
 	public void testValues() {
 		System.out.println(">>> values()");
-		HashMap map = new HashMap();
+		OAHashMap map = new OAHashMap();
 		Object[] values = map.values();
 		assertEquals( 0, values.length );
 		for (int i = 0; i < TEST_RUNS; i++) {
@@ -378,11 +313,13 @@ public class HashMapTest extends TestCase {
 		}
 		System.gc();
 		long time = System.currentTimeMillis();
-		values = map.values();
-		assertNotNull( values );
-		assertEquals( map.size(), values.length );
+		for (int i = 0; i < 3; i++ ) {
+			values = map.values();
+			assertNotNull( values );
+			assertEquals( map.size(), values.length );
+		}
 		long neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from de.enough.polish.util.HashMap.");
+		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from de.enough.polish.util.OAHashMap.");
 		System.gc();
 		time = System.currentTimeMillis();
 		String[] stringValues = (String[]) map.values( new String[ map.size() ]);
@@ -404,10 +341,12 @@ public class HashMapTest extends TestCase {
 		}
 		System.gc();
 		time = System.currentTimeMillis();
-		col = j2semap.values();
-		values = col.toArray();
-		assertNotNull( values );
-		assertEquals( j2semap.size(), values.length );
+		for (int i = 0; i < 3; i++ ) {
+			col = j2semap.values();
+			values = col.toArray();
+			assertNotNull( values );
+			assertEquals( j2semap.size(), values.length );
+		}
 		neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from java.util.HashMap.");
 
@@ -421,11 +360,13 @@ public class HashMapTest extends TestCase {
 			table.put( key, value );
 		}
 		System.gc();
-		time = System.currentTimeMillis();
-		col = table.values();
-		values = col.toArray();
-		assertNotNull( values );
-		assertEquals( table.size(), values.length );
+		for (int i = 0; i < 3; i++ ) {
+			time = System.currentTimeMillis();
+			col = table.values();
+			values = col.toArray();
+			assertNotNull( values );
+			assertEquals( table.size(), values.length );
+		}
 		neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from java.util.Hashtable.");
 	}

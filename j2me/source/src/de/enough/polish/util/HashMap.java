@@ -28,7 +28,13 @@ package de.enough.polish.util;
 /**
  * <p>Provides the functionality of the J2SE java.util.HashMap for J2ME applications.</p>
  * <p>In contrast to the java.util.Hashtable (which is available on J2ME platforms),
- *    this implementation is not synchronized and considerably faster.
+ *    this implementation is not synchronized and faster.
+ * </p>
+ * <p>This implementation uses chains for resolving collisions, that means
+ *    when a key-value pair has the same hash code as a previous inserted item,
+ *    the new item is linked to the previous item. Depending on your situation
+ *    The OpenAddressingHashMap implementation might be better, especially when you
+ *    do not have many collisions (items with the same hash code).
  * </p>
  *
  * <p>Copyright Enough Software 2005</p>
@@ -38,15 +44,20 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class HashMap {
+public final class HashMap 
+//#if polish.Map.dropInterface != true
+	implements Map 
+//#endif
+{
 	
-	/** The default capacity is 11 */
+	/** The default capacity is 16, this results in an internal size of 21 */
 	public static final int DEFAULT_INITIAL_CAPACITY = 16;
 	/** The default load factor is 75 (=75%), so the HashMap is increased when 75% of it's capacity is reached */ 
 	public static final int DEFAULT_LOAD_FACTOR = 75;
 	
 	private final int loadFactor;	
 	private Element[] buckets;
+	private final boolean isPowerOfTwo;
 	private int size;
 
 	/**
@@ -59,9 +70,8 @@ public class HashMap {
 	/**
 	 * Creates a new HashMap with the specified initial capacity.
 	 * 
-	 * @param initialCapacity the initial size of the map, remember that the default load factor 
-	 *        is 75%, you if you know the maximum size ahead of time, you need to calculate 
-	 *        <code>initialCapacity=maxSize * 4 / 3</code>, when you use this constructor.
+	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
+	 *        increase it's internal size.
 	 */
 	public HashMap(int initialCapacity ) {
 		this( initialCapacity, DEFAULT_LOAD_FACTOR );
@@ -73,15 +83,27 @@ public class HashMap {
 	/**
 	 * Creates a new HashMap with the specified initial capacity and the specified load factor.
 	 * 
-	 * @param initialCapacity the initial size of the map.
+	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
+	 *        increase it's internal size.
 	 * @param loadFactor the loadfactor in percent, a number between 0 and 100. When the loadfactor is 100,
 	 *        the size of this map is only increased after all slots have been filled. 
 	 */
 	public HashMap(int initialCapacity, int loadFactor) {
+		// check if initial capacity is a power of 2:
+		initialCapacity = (initialCapacity * 100) / loadFactor;
+		int capacity = 1;
+		while (initialCapacity > capacity) {
+			capacity <<= 2;
+		}
+		this.isPowerOfTwo = (capacity == initialCapacity);
+		//System.out.println("isPowerOfTwo: " + this.isPowerOfTwo );
 		this.buckets = new Element[ initialCapacity ];
 		this.loadFactor = loadFactor;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#put(java.lang.Object, java.lang.Object)
+	 */
 	public Object put( Object key, Object value ) {
 		if (key == null || value == null ) {
 			throw new IllegalArgumentException("HashMap cannot accept null key [" + key + "] or value [" + value + "].");
@@ -90,12 +112,18 @@ public class HashMap {
 			increaseSize();
 		}
 		
-		this.size++;
 		int hashCode = key.hashCode();
-		int index = hashCode & (this.buckets.length - 1);
+		int index;
+		if (this.isPowerOfTwo) {
+			index = (hashCode & 0x7FFFFFFF) & (this.buckets.length - 1);
+		} else {
+			index = (hashCode & 0x7FFFFFFF) % this.buckets.length;
+		}
 		Element element = this.buckets[ index ];
 		if (element == null) {
-			this.buckets[index] = new Element( hashCode, key, value );
+			element = new Element( hashCode, key, value );
+			this.buckets[index] = element;
+			this.size++;
 			return null;
 		}
 		// okay, there is a collision:
@@ -112,11 +140,23 @@ public class HashMap {
 		// now insert new element at the end of the bucket:
 		element = new Element( hashCode, key, value );
 		lastElement.next = element;
+		this.size++;
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#get(java.lang.Object)
+	 */
 	public Object get( Object key ) {
-		int index = key.hashCode() & (this.buckets.length - 1);
+		if (key == null) {
+			throw new IllegalArgumentException();
+		}
+		int index;
+		if (this.isPowerOfTwo) {
+			index = (key.hashCode()& 0x7FFFFFFF) & (this.buckets.length - 1);
+		} else {
+			index = (key.hashCode()& 0x7FFFFFFF) % this.buckets.length;
+		}
 		Element element = this.buckets[ index ];
 		if (element == null) {
 			return null;
@@ -130,20 +170,29 @@ public class HashMap {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#remove(java.lang.Object)
+	 */
 	public Object remove( Object key ) {
 		if (key == null) {
 			throw new IllegalArgumentException();
 		}
-		int index = key.hashCode() & (this.buckets.length - 1);
+		int index;
+		if (this.isPowerOfTwo) {
+			index = (key.hashCode()& 0x7FFFFFFF) & (this.buckets.length - 1);
+		} else {
+			index = (key.hashCode()& 0x7FFFFFFF) % this.buckets.length;
+		}
 		Element element = this.buckets[ index ];
 		if (element == null) {
+			//System.out.println("remove: No bucket found for key " + key + ", containsKey()=" + containsKey(key));
 			return null;
 		}
 		Element lastElement = null;
 		do {
 			if (element.key.equals( key )) {
 				if (lastElement == null) {
-					this.buckets[ index ] = null;
+					this.buckets[ index ] = element.next;
 				} else {
 					lastElement.next = element.next;
 				}
@@ -153,21 +202,34 @@ public class HashMap {
 			lastElement = element;
 			element = element.next;
 		} while (element != null);
+		//System.out.println("No element found for key " + key + ", containsKey()=" + containsKey(key));
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#isEmpty()
+	 */
 	public boolean isEmpty() {
 		return (this.size == 0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#size()
+	 */
 	public int size() {
 		return this.size;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#containsKey(java.lang.Object)
+	 */
 	public boolean containsKey( Object key ) {
 		return get( key ) != null;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#containsValue(java.lang.Object)
+	 */
 	public boolean containsValue( Object value ) {
 		for (int i = 0; i < this.buckets.length; i++) {
 			Element element = this.buckets[i];
@@ -181,6 +243,9 @@ public class HashMap {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#clear()
+	 */
 	public void clear() {
 		for (int i = 0; i < this.buckets.length; i++) {
 			this.buckets[i] = null;
@@ -188,10 +253,16 @@ public class HashMap {
 		this.size = 0;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#values()
+	 */
 	public Object[] values() {
 		return values( new Object[ this.size ] );
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#values(java.lang.Object[])
+	 */
 	public Object[] values(Object[] objects) {
 		int index = 0;
 		for (int i = 0; i < this.buckets.length; i++) {
@@ -205,13 +276,49 @@ public class HashMap {
 		return objects;
 	}
 
-	private void increaseSize() {
-		int newCapacity = this.buckets.length << 1;
-		Element[] newBuckets = new Element[ newCapacity ];
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#keys()
+	 */
+	public Object[] keys() {
+		return keys( new Object[ this.size ] );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Map#keys(java.lang.Object[])
+	 */
+	public Object[] keys(Object[] objects) {
+		int index = 0;
 		for (int i = 0; i < this.buckets.length; i++) {
 			Element element = this.buckets[i];
 			while (element != null) {
-				int index = element.hashCode & (newCapacity -1);
+				objects[index] = element.key;
+				index++;
+				element = element.next;
+			}
+		}
+		return objects;
+	}
+	
+	/**
+	 * Increaases the internal capacity of this map.
+	 */
+	private void increaseSize() {
+		int newCapacity;
+		if (this.isPowerOfTwo) {
+			newCapacity = this.buckets.length << 1; // * 2
+		} else {
+			newCapacity = (this.buckets.length << 1) - 1; // * 2 - 1 
+		}
+		Element[] newBuckets = new Element[ newCapacity ];
+		for (int i = 0; i < this.buckets.length; i++) {
+			Element element = this.buckets[i];
+			while (element != null) {				
+				int index;
+				if (this.isPowerOfTwo) {
+					index = (element.hashCode & 0x7FFFFFFF) & (newCapacity - 1);
+				} else {
+					index = (element.hashCode & 0x7FFFFFFF) % newCapacity;
+				}
 				Element newElement = newBuckets[ index ];
 				if (newElement == null ) {
 					newBuckets[ index ] = element;
@@ -231,7 +338,7 @@ public class HashMap {
 		this.buckets = newBuckets;
 	}
 
-	private final class Element {
+	private static final class Element {
 		public final Object key;
 		public final int hashCode;
 		public Object value;

@@ -26,9 +26,16 @@
 package de.enough.polish.util;
 
 /**
- * <p>Provides the functionality of the J2SE java.util.HashMap for J2ME applications.</p>
+ * <p>Provides the functionality of the J2SE java.util.HashMap for J2ME applications and uses reference checks for comparing keys.</p>
+ * <p>WARNING: Only use this implementation when you can ensure that you always
+ *    use the original keys! (see below)
+ * </p>
  * <p>In contrast to the java.util.Hashtable (which is available on J2ME platforms),
- *    this implementation is not synchronized and faster.
+ *    this implementation is not synchronized and faster. This implementation
+ *    also uses only reference checks (==) for testing keys and values on
+ *    equality instead of calling equals() for comparing them. This is considerably
+ *    faster, but you need to ensure that you only use references (=the original) keys when
+ *    storing or retrieving values.
  * </p>
  * <p>This implementation uses chains for resolving collisions, that means
  *    when a key-value pair has the same hash code as a previous inserted item,
@@ -44,13 +51,13 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class HashMap 
+public final class IdentityHashMap
 //#if polish.Map.dropInterface != true
 	implements Map 
 //#endif
 {
 	
-	/** The default capacity is 16, this results in an internal size of 21 */
+	/** The default capacity is 16 */
 	public static final int DEFAULT_INITIAL_CAPACITY = 16;
 	/** The default load factor is 75 (=75%), so the HashMap is increased when 75% of it's capacity is reached */ 
 	public static final int DEFAULT_LOAD_FACTOR = 75;
@@ -63,7 +70,7 @@ public final class HashMap
 	/**
 	 * Creates a new HashMap with the default initial capacity 16 and a load factor of 75%. 
 	 */
-	public HashMap() {
+	public IdentityHashMap() {
 		this( DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR );
 	}
 	
@@ -73,7 +80,7 @@ public final class HashMap
 	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
 	 *        increase it's internal size.
 	 */
-	public HashMap(int initialCapacity ) {
+	public IdentityHashMap(int initialCapacity ) {
 		this( initialCapacity, DEFAULT_LOAD_FACTOR );
 	}
 	
@@ -88,9 +95,9 @@ public final class HashMap
 	 * @param loadFactor the loadfactor in percent, a number between 0 and 100. When the loadfactor is 100,
 	 *        the size of this map is only increased after all slots have been filled. 
 	 */
-	public HashMap(int initialCapacity, int loadFactor) {
-		// check if initial capacity is a power of 2:
+	public IdentityHashMap(int initialCapacity, int loadFactor) {
 		initialCapacity = (initialCapacity * 100) / loadFactor;
+		// check if initial capacity is a power of 2:
 		int capacity = 1;
 		while (initialCapacity > capacity) {
 			capacity <<= 2;
@@ -129,7 +136,7 @@ public final class HashMap
 		// okay, there is a collision:
 		Element lastElement = element;
 		do {
-			if (element.key.equals( key )) {
+			if (element.key == key ) {
 				Object oldValue = element.value;
 				element.value = value;
 				return oldValue;
@@ -153,16 +160,16 @@ public final class HashMap
 		}
 		int index;
 		if (this.isPowerOfTwo) {
-			index = (key.hashCode()& 0x7FFFFFFF) & (this.buckets.length - 1);
+			index = (key.hashCode() & 0x7FFFFFFF) & (this.buckets.length - 1);
 		} else {
-			index = (key.hashCode()& 0x7FFFFFFF) % this.buckets.length;
+			index = (key.hashCode() & 0x7FFFFFFF) % this.buckets.length;
 		}
 		Element element = this.buckets[ index ];
 		if (element == null) {
 			return null;
 		}
 		do {
-			if (element.key.equals( key )) {
+			if (element.key == key ) {
 				return element.value;
 			}
 			element = element.next;
@@ -179,9 +186,9 @@ public final class HashMap
 		}
 		int index;
 		if (this.isPowerOfTwo) {
-			index = (key.hashCode()& 0x7FFFFFFF) & (this.buckets.length - 1);
+			index = (key.hashCode() & 0x7FFFFFFF) & (this.buckets.length - 1);
 		} else {
-			index = (key.hashCode()& 0x7FFFFFFF) % this.buckets.length;
+			index = (key.hashCode() & 0x7FFFFFFF) % this.buckets.length;
 		}
 		Element element = this.buckets[ index ];
 		if (element == null) {
@@ -190,7 +197,7 @@ public final class HashMap
 		}
 		Element lastElement = null;
 		do {
-			if (element.key.equals( key )) {
+			if (element.key == key ) {
 				if (lastElement == null) {
 					this.buckets[ index ] = element.next;
 				} else {
@@ -234,7 +241,7 @@ public final class HashMap
 		for (int i = 0; i < this.buckets.length; i++) {
 			Element element = this.buckets[i];
 			while (element != null) {
-				if (element.value.equals( value )) {
+				if (element.value == value ) {
 					return true;
 				}
 				element = element.next;

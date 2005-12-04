@@ -28,6 +28,7 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.*;
 
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Locale;
 
 
 /**
@@ -202,10 +203,12 @@ public class List extends Screen implements Choice
 	 * 
 	 * 
 	 */
-	//#ifdef polish.command.select:defined
-		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.ITEM, 10 );
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command SELECT_COMMAND = new Command( Locale.get("polish.command.select"), Command.ITEM, 3 );
+	//#elifdef polish.command.select:defined
+		//#= public static final Command SELECT_COMMAND = new Command("${polish.command.select}", Command.ITEM, 3 );
 	//#else
-		public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 10 );
+		//# public static final Command SELECT_COMMAND = new Command( "Select", Command.ITEM, 3 );
 	//#endif
 
 	private Command selectCommand = SELECT_COMMAND;
@@ -218,8 +221,7 @@ public class List extends Screen implements Choice
 
 	/**
 	 * Creates a new, empty <code>List</code>, specifying its title
-	 * and the type of the
-	 * list.
+	 * and the type of the list.
 	 * 
 	 * @param title the screen's title (see Displayable)
 	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
@@ -525,13 +527,20 @@ public class List extends Screen implements Choice
 			}
 		//#endif
 		int number = this.choiceGroup.append( item );
-		if (number == 0) {
-			if (this.listType == IMPLICIT && this.selectCommand != null ) {
-				addCommand( this.selectCommand );
-			} else {
-				setItemCommands(this.choiceGroup);
+		//#if polish.List.suppressCommands != true
+			if (number == 0) {
+				// the first item has been inserted:
+				if (this.listType == IMPLICIT && this.selectCommand != null ) {
+					//#if polish.List.suppressSelectCommand != true
+						addCommand( this.selectCommand );
+					//#endif
+				} else {
+					//#if polish.List.suppressMarkCommands != true
+						setItemCommands(this.choiceGroup);
+					//#endif
+				}
 			}
-		}
+		//#endif
 		return number;
 	}
 	

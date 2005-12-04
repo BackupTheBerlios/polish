@@ -626,16 +626,20 @@ public class TextField extends StringItem
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
 	//#ifndef tmp.suppressCommands
-		//#ifdef polish.command.delete:defined
+		//#ifdef polish.i18n.useDynamicTranslations
+	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
+		//#elifdef polish.command.delete:defined
 			//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, 1 );
 		//#else
-			protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
+			//# protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
 		//#endif
 	//#endif
-	//#ifdef polish.command.clear:defined
+	//#ifdef polish.i18n.useDynamicTranslations
+  		protected static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, 2 );
+	//#elifdef polish.command.clear:defined
 		//#= protected static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 2 );
 	//#else
-		protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
+		//# protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
 	//#endif
 	
 	private int maxSize;
@@ -864,9 +868,21 @@ public class TextField extends StringItem
 		//#ifndef tmp.suppressCommands
 			// add default text field item-commands:
 			//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+				//#ifdef polish.i18n.useDynamicTranslations
+					String delLabel = Locale.get("polish.command.delete");
+					if ( delLabel != DELETE_CMD.getLabel()) {
+						DELETE_CMD = new Command( delLabel, Command.CANCEL, 1 );
+					}
+				//#endif
 				this.addCommand(DELETE_CMD);
 			//#endif
 			//#if polish.TextField.suppressClearCommand != true
+				//#ifdef polish.i18n.useDynamicTranslations
+					String clearLabel = Locale.get("polish.command.clear");
+					if ( clearLabel != CLEAR_CMD.getLabel()) {
+						CLEAR_CMD = new Command( clearLabel, Command.ITEM, 2 );
+					}
+				//#endif
 				this.addCommand(CLEAR_CMD);
 			//#endif
 			this.itemCommandListener = this;
@@ -1273,7 +1289,15 @@ public class TextField extends StringItem
 				updateInfo();
 			//#endif
 		//#endif
-
+		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
+			// deactivate this field:
+			super.setAppearanceMode( Item.PLAIN );
+			if (this.isInitialised && this.isFocused && this.parent instanceof Container) {
+				((Container)this.parent).requestDefocus( this );
+			}
+		} else {
+			super.setAppearanceMode( Item.INTERACTIVE );
+		}
 	}
 
 	/**

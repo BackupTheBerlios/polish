@@ -36,6 +36,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Locale;
 
 //#ifdef polish.Screen.imports:defined
 	//#include ${polish.Screen.imports}
@@ -843,7 +844,9 @@ implements AccessibleCanvas
 						if (this.menuContainer != null && this.menuContainer.size() > 0) {
 							String menuText = null;
 							if (this.menuOpened) {
-								//#ifdef polish.command.select:defined
+								//#ifdef polish.i18n.useDynamicTranslations
+									menuText = Locale.get( "polish.command.select" ); 
+								//#elifdef polish.command.select:defined
 									//#= menuText = "${polish.command.select}";
 								//#else
 									menuText = "Select";
@@ -852,7 +855,9 @@ implements AccessibleCanvas
 								if (this.menuSingleLeftCommand != null) {
 									menuText = this.menuSingleLeftCommand.getLabel();
 								} else {
-									//#ifdef polish.command.options:defined
+									//#ifdef polish.i18n.useDynamicTranslations
+										menuText = Locale.get( "polish.command.options" ); 
+									//#elifdef polish.command.options:defined
 										//#= menuText = "${polish.command.options}";
 									//#else
 										menuText = "Options";				
@@ -876,7 +881,9 @@ implements AccessibleCanvas
 							//#endif
 							if ( this.menuOpened ) {
 								// draw cancel string:
-								//#ifdef polish.command.cancel:defined
+								//#ifdef polish.i18n.useDynamicTranslations
+									menuText = Locale.get( "polish.command.cancel" ); 
+								//#elifdef polish.command.cancel:defined
 									//#= menuText = "${polish.command.cancel}";
 								//#else
 									menuText = "Cancel";
@@ -1433,7 +1440,7 @@ implements AccessibleCanvas
 			StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
 			if ( this.menuCommands.size() == 0 ) {
 				this.menuCommands.add( cmd );
-				this.menuCommands.add( menuItem );
+				this.menuContainer.add( menuItem );
 				this.menuSingleLeftCommand = cmd;
 			} else {
 				this.menuSingleLeftCommand = null;
@@ -1531,13 +1538,10 @@ implements AccessibleCanvas
 	 */
 	protected void setItemCommands( Item item ) {
 		this.focusedItem = item;
-		// now add any commands which are associated with the item:
-		System.out.println("Adding item commands...");
 		if (item.commands != null) {
 			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
-				System.out.println("adding item command " + command.getLabel() );
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.addCommand(command);
 				//#else

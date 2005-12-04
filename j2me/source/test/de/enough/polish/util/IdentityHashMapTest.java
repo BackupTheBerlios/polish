@@ -32,7 +32,7 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 
-public class HashMapTest extends TestCase {
+public class IdentityHashMapTest extends TestCase {
 	
 	private static final int TEST_RUNS = 50000;
 	private final Integer[] integerKeys;
@@ -40,7 +40,7 @@ public class HashMapTest extends TestCase {
 	private final Integer[] integerKeysMixed;
 	private final String[] stringKeysMixed;
 
-	public HashMapTest(String name) {
+	public IdentityHashMapTest(String name) {
 		super(name);
 		this.integerKeys = new Integer[ TEST_RUNS ];
 		this.stringKeys = new String[ TEST_RUNS ];
@@ -75,7 +75,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testPut() {
 		System.out.println(">>> put()");
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		System.gc();
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < TEST_RUNS; i++) {
@@ -117,7 +117,7 @@ public class HashMapTest extends TestCase {
 	public void testRemove() {
 		System.out.println(">>> remove()");
 		
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
@@ -133,9 +133,6 @@ public class HashMapTest extends TestCase {
 			assertNotNull( previous );
 			assertEquals( value, previous );
 			size--;
-			assertEquals( size, map.size() );
-			previous = map.remove(key);
-			assertNull( previous );
 			assertEquals( size, map.size() );
 		}
 		long neededTime = System.currentTimeMillis() - time;
@@ -157,9 +154,6 @@ public class HashMapTest extends TestCase {
 			assertNotNull( previous );
 			assertEquals( value, previous );
 			size--;
-			assertEquals( size, j2semap.size() );
-			previous = j2semap.remove(key);
-			assertNull( previous );
 			assertEquals( size, j2semap.size() );
 		}
 		neededTime = System.currentTimeMillis() - time;
@@ -183,9 +177,6 @@ public class HashMapTest extends TestCase {
 			assertEquals( value, previous );
 			size--;
 			assertEquals( size, table.size() );
-			previous = table.remove(key);
-			assertNull( previous );
-			assertEquals( size, table.size() );
 		}
 		neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for removing " + TEST_RUNS + " keys from java.util.Hashtable.");
@@ -193,7 +184,7 @@ public class HashMapTest extends TestCase {
 	}
 	
 	public void testPutWithSameKeys() {
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		String key = "key";
 		Object[] values = new Object[]{"one", "two", new Integer(3), "four"};
 		
@@ -220,7 +211,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testGet() {
 		System.out.println(">>> get()");
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
@@ -272,7 +263,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsKey() {
 		System.out.println(">>> containsKey()");
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
@@ -320,7 +311,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsValue() {
 		System.out.println(">>> containsValue()");
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Object key = this.integerKeys[i];
 			Object value = this.stringKeys[i];
@@ -363,12 +354,12 @@ public class HashMapTest extends TestCase {
 			assertTrue( table.containsValue( value ));
 		}
 		neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS/10 + " keys/values in java.util.Hashtable.");
+		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS/10 + " values in java.util.Hashtable.");
 	}
 
 	public void testValues() {
 		System.out.println(">>> values()");
-		HashMap map = new HashMap();
+		IdentityHashMap map = new IdentityHashMap();
 		Object[] values = map.values();
 		assertEquals( 0, values.length );
 		for (int i = 0; i < TEST_RUNS; i++) {

@@ -35,6 +35,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides a more powerful alternative to the build-in menu bar of the Screen-class.</p>
@@ -123,10 +124,12 @@ public class MenuBar extends Item {
 		//#if tmp.useInvisibleMenuBar
 			if ( this.cancelCommand == null ) {
 				// add cancel command:
-				//#ifdef polish.command.cancel:defined
-					//#= String text =  "${polish.command.cancel}";
+				//#ifdef polish.i18n.useDynamicTranslations
+					String text =  Locale.get("polish.command.hide");
+				//#elifdef polish.command.hide:defined
+					//#= String text =  "${polish.command.hide}";
 				//#else
-					String text =  "Hide";
+					//# String text =  "Hide";
 				//#endif
 				this.cancelCommand = new Command( text, Command.CANCEL, 2000 );
 				addCommand( this.cancelCommand );
@@ -335,7 +338,9 @@ public class MenuBar extends Item {
 				if (this.selectImage != null) {
 					this.singleLeftCommandItem.setImage( this.selectImage );
 					if (this.showImageAndText) {
-						//#ifdef polish.command.select:defined
+						//#ifdef polish.i18n.useDynamicTranslations
+							this.singleLeftCommandItem.setText( Locale.get( "polish.command.select" ) ); 
+						//#elifdef polish.command.select:defined
 							//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
 						//#else
 							this.singleLeftCommandItem.setText( "Select" );
@@ -345,7 +350,9 @@ public class MenuBar extends Item {
 					}
 				} else {
 					this.singleLeftCommandItem.setImage( (Image)null );
-					//#ifdef polish.command.select:defined
+					//#ifdef polish.i18n.useDynamicTranslations
+						this.singleLeftCommandItem.setText( Locale.get( "polish.command.select" ) ); 
+					//#elifdef polish.command.select:defined
 						//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
 					//#else
 						this.singleLeftCommandItem.setText( "Select" );
@@ -354,7 +361,9 @@ public class MenuBar extends Item {
 				if (this.cancelImage != null) {
 					this.singleRightCommandItem.setImage( this.cancelImage );
 					if (this.showImageAndText) {
-						//#ifdef polish.command.cancel:defined
+						//#ifdef polish.i18n.useDynamicTranslations
+							this.singleRightCommandItem.setText( Locale.get( "polish.command.cancel" ) ); 
+						//#elifdef polish.command.cancel:defined
 							//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}" );
 						//#else
 							this.singleRightCommandItem.setText( "Cancel" );
@@ -363,7 +372,9 @@ public class MenuBar extends Item {
 						this.singleRightCommandItem.setText( null );
 					}
 				} else {
-					//#ifdef polish.command.cancel:defined
+					//#ifdef polish.i18n.useDynamicTranslations
+						this.singleRightCommandItem.setText( Locale.get( "polish.command.cancel" ) ); 
+					//#elifdef polish.command.cancel:defined
 						//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}"  );
 					//#else
 						this.singleRightCommandItem.setText( "Cancel" );
@@ -387,7 +398,9 @@ public class MenuBar extends Item {
 					if (this.optionsImage != null) {
 						this.singleLeftCommandItem.setImage( this.optionsImage );
 						if (this.showImageAndText) {
-							//#ifdef polish.command.options:defined
+							//#ifdef polish.i18n.useDynamicTranslations
+								this.singleLeftCommandItem.setText( Locale.get( "polish.command.options" ) ); 
+							//#elifdef polish.command.options:defined
 								//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
 							//#else
 								this.singleLeftCommandItem.setText( "Options" );				
@@ -397,7 +410,9 @@ public class MenuBar extends Item {
 						}
 					} else {
 						this.singleLeftCommandItem.setImage( (Image)null );
-						//#ifdef polish.command.options:defined
+						//#ifdef polish.i18n.useDynamicTranslations
+							this.singleLeftCommandItem.setText( Locale.get( "polish.command.options" ) ); 
+						//#elifdef polish.command.options:defined
 							//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
 						//#else
 							this.singleLeftCommandItem.setText( "Options" );				
