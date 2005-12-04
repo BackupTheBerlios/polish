@@ -273,7 +273,7 @@ public final class FileUtil {
 		readPropertiesFile( file, delimiter, map );
 		return map;
 	}
-
+	
 	/**
 	 * Reads a properties file.
 	 * The notation of the file needs to be 
@@ -424,7 +424,21 @@ public final class FileUtil {
 		readProperties(in, '=', '#', map, false );
 		return map;
 	}
-	
+
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param properties a map containing properties
+	 * @throws IOException when reading from the input stream fails
+	 */
+	public static void readProperties(InputStream in, char delimiter, Map properties ) 
+	throws IOException 
+	{
+		readProperties( in, delimiter, '#', properties, false );
+	}
+
 	/**
 	 * Reads properties from the given input stream.
 	 * 
@@ -566,6 +580,5 @@ public final class FileUtil {
 			}
 		}
 	}
-
 	
 }

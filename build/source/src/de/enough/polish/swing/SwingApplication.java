@@ -341,6 +341,47 @@ implements Application
 		}
 	}
 
+	/**
+	 * Queries the user with a yes/no question.
+	 * 
+	 * @param message the question
+	 * @param title the title
+	 * @return true when the YES option was selected
+	 */
+	public boolean showYesNoDialog( String message, String title ) {
+		int result = JOptionPane.showConfirmDialog( this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE );
+		return (result == JOptionPane.YES_OPTION);
+	}
+
+	/**
+	 * Queries the user with a yes/no question with the option to cancel.
+	 * 
+	 * @param message the question
+	 * @param title the title
+	 * @return either JOptionPane.YES_OPTION, JOptionPane.NO_OPTION or JOptionPane.CANCEL_OPTION
+	 */
+	public int showYesNoCancelDialog( String message, String title ) {
+		return JOptionPane.showConfirmDialog( this, message, title, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE );
+	}
 	
+	/**
+	 * Shows the user a error message with a OK option.
+	 * 
+	 * @param message the message
+	 * @param title the title
+	 */
+	public void showErrorMessageDialog( String message, String title ) {
+		JOptionPane.showMessageDialog( this, message, title, JOptionPane.ERROR_MESSAGE );
+	}
+	
+	/**
+	 * Shows the user a message with a OK option.
+	 * 
+	 * @param message the message
+	 * @param title the title
+	 */
+	public void showInformationMessageDialog( String message, String title ) {
+		JOptionPane.showMessageDialog( this, message, title, JOptionPane.INFORMATION_MESSAGE );
+	}
 
 }

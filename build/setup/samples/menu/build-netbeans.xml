@@ -342,7 +342,6 @@
 	        </target>
 	        
 	    <target name="connect-debugger">
-	        <echo message="using port ${polish.debug.port}" />
 	        <property name="jpda.port" value="${polish.debug.port}" />
 	        <antcall target="nbdebug"/>
 	    </target>

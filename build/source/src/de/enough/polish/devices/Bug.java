@@ -48,7 +48,7 @@ public class Bug extends PolishComponent {
 	
 	private final String name;
 	private final String[] areas;
-	private final String description;
+	//private final String description;
 	private final String solution;
 
 	/**
@@ -62,12 +62,13 @@ public class Bug extends PolishComponent {
 			BugManager manager) 
 	throws InvalidComponentException 
 	{
+		super( definition );
 		this.name = definition.getChildTextTrim( "name");
 		if (this.name == null) {
 			throw new InvalidComponentException("A bug listed in bugs.xml does not define its name. Please insert the <name> element into the file [bugs.xml] for this issue.");
 		}
 		this.identifier = this.name;
-		this.description = definition.getChildTextTrim( "description");
+		//this.description = definition.getChildTextTrim( "description");
 		if (this.description == null) {
 			throw new InvalidComponentException("The bug [" + this.name + "] listed in bugs.xml does not define its description. Please insert the <description> element into the file [bugs.xml] for this issue.");
 		}
@@ -98,7 +99,7 @@ public class Bug extends PolishComponent {
 
 	/**
 	 * @param area
-	 * @return
+	 * @return true when the bug belongs to the specified area
 	 */
 	public boolean isInArea(String area) {
 		for (int i = 0; i < this.areas.length; i++) {
@@ -111,7 +112,7 @@ public class Bug extends PolishComponent {
 	
 	/**
 	 * @param manager
-	 * @return
+	 * @return all devices that have this bug.
 	 */
 	public Device[] getDevices(DeviceManager manager) {
 		ArrayList list = new ArrayList();

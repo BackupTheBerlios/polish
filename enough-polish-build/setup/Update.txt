@@ -1,4 +1,5 @@
-Please copy all jar-files into the "import"-folder of your J2ME installation directory.
+Please copy all jar-files into the "import"-folder of your J2ME installation directory (${polish.home}/import).
+Copy all XML files to ${polish.home}, but skip the custom-xxx.xml files when you have adjusted them yourself.
 
 The provided "build.xml" needs to be adjusted:
 - the "wtk.home" property needs to point to the installation directory of
@@ -7,11 +8,4 @@ The provided "build.xml" needs to be adjusted:
   J2ME Polish.
 - the "license" attribute of the <build>-elements needs to be either "GPL" or
   the commercial license key.
-
-If you have installed the external device database-files, you
-might want to copy the relevant files (devices.xml, vendors.xml, 
-groups.xml and apis.xml) to the installation directory of J2ME Polish as well.
-
-Please copy the provided custom-css-attributes.xml to the J2ME Polish installation 
-directory. This file defines CSS attributes of your own CustomItems.
 

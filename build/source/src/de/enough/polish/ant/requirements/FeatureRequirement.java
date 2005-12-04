@@ -61,6 +61,8 @@ public class FeatureRequirement extends Requirement {
 		// this is not needed, since we overried isMet(Device ) already.
 		return false;
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device)

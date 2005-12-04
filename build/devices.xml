@@ -2397,6 +2397,7 @@
 		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi, webservice" />
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="352x416"/>
+		<capability name="CanvasSize" value="352x288"/>
 		<capability name="FullCanvasSize" value="352x416"/>
 		<capability name="ExternalBitsPerPixel" value="16"/>
 		<capability name="ExternalScreenSize" value="128x128"/>

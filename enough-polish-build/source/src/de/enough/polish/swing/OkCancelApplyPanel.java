@@ -28,10 +28,11 @@ package de.enough.polish.swing;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import de.enough.polish.util.Translations;
 
 /**
  * <p>Provides the three buttons "ok", "cancel" and "apply" within an panel.</p>
@@ -49,8 +50,9 @@ import javax.swing.JPanel;
  */
 public class OkCancelApplyPanel
 extends JPanel
-implements ActionListener, ResourceConsumer
+implements ActionListener, Translatable
 {
+	private static final long serialVersionUID = -3091106564017323215L;
 	private final OkCancelApplyListener listener;
 	private final JButton okButton;
 	private final JButton cancelButton;
@@ -60,21 +62,21 @@ implements ActionListener, ResourceConsumer
 	 * Creates a new button panel.
 	 * 
 	 * @param listener the listener that will be notified when a button has been selected
-	 * @param resourceBundle the translations
+	 * @param translations the translations
 	 * 
 	 */
-	public OkCancelApplyPanel( OkCancelApplyListener listener, ResourceBundle resourceBundle ) 
+	public OkCancelApplyPanel( OkCancelApplyListener listener, Translations translations ) 
 	{
 		super( new GridLayout( 1, 3, 5, 5) );
 		this.listener = listener;
-		this.okButton = new JButton( resourceBundle.getString("button.ok") );
-		this.okButton.setMnemonic(resourceBundle.getString("button.ok.mnemonic").charAt(0) );
+		this.okButton = new JButton( translations.getString("button.ok") );
+		this.okButton.setMnemonic(translations.getString("button.ok.mnemonic").charAt(0) );
 		this.okButton.addActionListener( this );
-		this.cancelButton = new JButton(resourceBundle.getString("button.cancel"));
-		this.cancelButton.setMnemonic( resourceBundle.getString("button.cancel.mnemonic").charAt(0) );
+		this.cancelButton = new JButton(translations.getString("button.cancel"));
+		this.cancelButton.setMnemonic( translations.getString("button.cancel.mnemonic").charAt(0) );
 		this.cancelButton.addActionListener( this );
-		this.applyButton = new JButton(resourceBundle.getString("button.apply"));
-		this.applyButton.setMnemonic(resourceBundle.getString("button.apply.mnemonic").charAt(0));
+		this.applyButton = new JButton(translations.getString("button.apply"));
+		this.applyButton.setMnemonic(translations.getString("button.apply.mnemonic").charAt(0));
 		this.applyButton.addActionListener( this );
 		
 		// deactivate buttons first:
@@ -126,14 +128,14 @@ implements ActionListener, ResourceConsumer
 	/* (non-Javadoc)
 	 * @see de.enough.polish.swing.ResourceConsumer#setResourceBundle(java.util.ResourceBundle)
 	 */
-	public void setResourceBundle(ResourceBundle resourceBundle) {
-		this.okButton.setText( resourceBundle.getString("button.ok") );
-		this.okButton.setMnemonic( resourceBundle.getString("button.ok.mnemonic").charAt(0) );
-		this.cancelButton.setText( resourceBundle.getString("button.cancel") );
-		this.cancelButton.setMnemonic( resourceBundle.getString("button.cancel.mnemonic").charAt(0));
+	public void setTranslations(Translations translations) {
+		this.okButton.setText( translations.getString("button.ok") );
+		this.okButton.setMnemonic( translations.getString("button.ok.mnemonic").charAt(0) );
+		this.cancelButton.setText( translations.getString("button.cancel") );
+		this.cancelButton.setMnemonic( translations.getString("button.cancel.mnemonic").charAt(0));
 		this.cancelButton.addActionListener( this );
-		this.applyButton.setText( resourceBundle.getString("button.apply") );
-		this.applyButton.setMnemonic(resourceBundle.getString("button.apply.mnemonic").charAt(0));
+		this.applyButton.setText( translations.getString("button.apply") );
+		this.applyButton.setMnemonic(translations.getString("button.apply.mnemonic").charAt(0));
 
 	}
 

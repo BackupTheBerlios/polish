@@ -97,8 +97,8 @@ public class HtmlExporterTask extends Task {
 			ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
 			PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
 			this.libraryManager = new LibraryManager(getProject().getProperties(), new File( "import"), this.wtkHome, open( "apis.xml" ) );
-			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager);
 			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml"), capabilityManager ); 
+			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager, groupManager );
 			this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, this.libraryManager, capabilityManager, open("devices.xml") );
 			this.bugManager = new BugManager( getProject().getProperties(), open("bugs.xml"));
 			Device[] devices = this.deviceManager.getDevices();

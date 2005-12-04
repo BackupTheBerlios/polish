@@ -27,6 +27,13 @@
 -->
 <groups>
 	<group>
+		<name>UEI</name>
+		<description>Devices belonging to the UEI group provide UEI compatible emulators.</description>
+		<capability name="polish.debug.commandline"
+					value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port}" />
+	</group>
+
+	<group>
 		<name>Nokia-UI</name>
 		<features>supportSpriteTransformation, hasCommandKeyEvents, isDoubleBuffered</features>
 		<capability name="classes.fullscreen" value="com.nokia.mid.ui.FullCanvas" />
@@ -92,6 +99,7 @@
 		<name>Series60</name>
 		<parent>Nokia-UI</parent>
 		<capability name="OS" value="Symbian OS 6.1" />
+		<capability name="key.ClearKey" value="-8" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="wmapi, mmapi" />		

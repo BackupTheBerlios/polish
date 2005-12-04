@@ -99,6 +99,9 @@ public class PolishLogger implements BuildLogger {
 				if (startIndex == -1) {
 					startIndex = 0;
 				} else {
+					if (startIndex != 0 && message.charAt(startIndex-1) != File.separatorChar) {
+						startIndex = message.indexOf( "source" );
+					}
 					startIndex += "source/".length();
 				}
 				String classPath = message.substring(startIndex, index + ".java".length() );

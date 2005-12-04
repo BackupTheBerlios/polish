@@ -26,6 +26,7 @@
 package de.enough.polish.devices;
 
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,6 @@ import java.util.Set;
 
 import org.jdom.Element;
 
-import de.enough.polish.Device;
 import de.enough.polish.Variable;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
@@ -61,12 +61,14 @@ implements Comparable
 	private String featuresAsString;
 	protected final CapabilityManager capabilityManager;
 	protected final HashMap implicitGroupsByName;
+	protected String description;
 	
 	/**
 	 * Creates a new component.
+	 * @param definition the XML definition, can be null
 	 */
-	public PolishComponent() {
-		this( null, null );
+	public PolishComponent( Element definition ) {
+		this( null, null, definition );
 	}
 	/**
 	 * Creates a new component.
@@ -74,8 +76,9 @@ implements Comparable
 	 * @param parent the parent, e.g. is the parent of a vendor a project,
 	 *              the parent of a device is a vendor.
 	 * @param capabilityManager knows about how to deal with capabilities
+	 * @param definition the XML definition, can be null
 	 */
-	public PolishComponent( PolishComponent parent, CapabilityManager capabilityManager ) {
+	public PolishComponent( PolishComponent parent, CapabilityManager capabilityManager, Element definition ) {
 		this.parent = parent;
 		this.capabilityManager = capabilityManager;
 		this.capabilities = new HashMap();
@@ -87,6 +90,9 @@ implements Comparable
 			this.capabilities.putAll( parent.getCapabilities() );
 			this.features.putAll(  parent.getFeatures() );
 			this.featuresAsString = parent.featuresAsString;
+		}
+		if (definition != null) {
+			this.description = definition.getChildTextTrim("description");
 		}
 	}
 
@@ -138,6 +144,46 @@ implements Comparable
 			//System.out.println( this.identifier + ".loadCapabilities(): featuresAsString=" + this.featuresAsString);
 		}
 	}
+	
+	/**
+	 * Loads all groups to which this component belongs to and sets the capabilities accordingly.
+	 * 
+	 * @param definition the xml definition
+	 * @param groupManager the manager of groups
+	 * @param invalidGroupMessage the message for the InvalidComponentException when a group name is not valid.
+	 *        {0} is for the identifier, {1} for the group name.
+	 * @return an array of strings with the names of the groups, null when no groups are used
+	 * @throws InvalidComponentException when a group name is not valid
+	 */
+	protected String[] loadGroups(Element definition, DeviceGroupManager groupManager, String invalidGroupMessage) 
+	throws InvalidComponentException {
+		String groupsDefinition = definition.getChildTextTrim("groups");
+		String[] explicitGroupNames = null;
+		if (groupsDefinition != null && groupsDefinition.length() > 0) {
+			explicitGroupNames = StringUtil.splitAndTrim(groupsDefinition, ',');
+			for (int i = 0; i < explicitGroupNames.length; i++) {
+				String groupName = explicitGroupNames[i];
+				DeviceGroup group = groupManager.getGroup(groupName);
+				if (group == null) {
+					throw new InvalidComponentException(
+							MessageFormat.format( invalidGroupMessage, new String[]{ this.identifier, groupName } ) );
+				}
+				//System.out.println( this.identifier + ": adding group [" + groupName + "], JavaPackage=" + group.getCapability("polish.JavaPackage") );
+				addComponent( group );
+				/*
+				String parentName = group.getParentIdentifier();
+				while (parentName != null) {
+					DeviceGroup parentGroup = groupManager.getGroup(parentName);
+					System.out.println( this.identifier + ": adding parent group [" + parentName + "] + JavaPackage=" + parentGroup.getCapability("polish.JavaPackage"));
+					addComponent( parentGroup );
+					parentName = parentGroup.getParentIdentifier();
+				}
+				*/
+			}
+		}
+		return explicitGroupNames;
+	}
+
 
 	/**
 	 * Adds a sub-component to this component.
@@ -436,7 +482,11 @@ implements Comparable
 			return this.supportsPolishGui;
 		}
 		name = name.toLowerCase();
-		return ( (this.features.get(name) != null) );
+		boolean hasFeature = (this.features.get(name) != null);
+		if (!hasFeature) {
+			hasFeature = (this.features.get("polish." + name) != null);
+		}
+		return hasFeature;
 	}
 
 	/**
@@ -473,6 +523,15 @@ implements Comparable
 	 */
 	public String getIdentifier() {
 		return this.identifier;
+	}
+	
+	/**
+	 * Retrieves the description of this component.
+	 * 
+	 * @return the description or null, when none has been defined
+	 */
+	public String getDescription() {
+		return this.description;
 	}
 
 	/**

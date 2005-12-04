@@ -47,7 +47,7 @@ import java.util.Map;
 public class Library extends PolishComponent {
 	
 	private final String fullName;
-	private final String description;
+	//private final String description;
 	private final String symbol;
 	private final String[] names;
 	private String[] fileNames;
@@ -79,6 +79,7 @@ public class Library extends PolishComponent {
 			LibraryManager manager) 
 	throws InvalidComponentException 
 	{
+		super( definition );
 		this.wtkLibPath = wtkLibPath;
 		this.polishLibPath = polishLibPath;
 		this.projectLibPath = projectLibPath;
@@ -86,7 +87,7 @@ public class Library extends PolishComponent {
 		if (this.fullName == null) {
 			throw new InvalidComponentException("An api listed in apis.xml does not define its name. Please insert the <name> element into the file [apis.xml] for this library.");
 		}
-		this.description = definition.getChildTextTrim( "description");
+		//this.description = definition.getChildTextTrim( "description");
 		String namesString = definition.getChildTextTrim( "names");
 		if (namesString == null) {
 			throw new InvalidComponentException("The api [" + this.fullName + "] does not define the possible names of this library. Please insert the <names> element into the file [apis.xml] for this library.");

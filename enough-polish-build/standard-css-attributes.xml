@@ -854,6 +854,8 @@
 		<mapping from="segment" to="new de.enough.polish.ui.texteffects.SegmentTextEffect()" />
 		<mapping from="typewriter" to="new de.enough.polish.ui.texteffects.TypeWriterTextEffect()" />
 		<mapping from="lighthouse" to="new de.enough.polish.ui.texteffects.LighthouseTextEffect()" />
+		<mapping from="gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()"/>
+		<mapping from="vertical-gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()" />
 	</attribute>
 	
 	<attribute
@@ -947,6 +949,32 @@
 		description="Sets the color for characters next to the currently main character in the lighthouse font-effect."
 		default="#379100"
 		id="98"
+	/>
+
+	<attribute
+		name="text-vertical-gradient-start-color"
+		type="color"
+		appliesto="VerticalGradientTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the top color for the font gradient."
+		default="white"
+		id="99"
+	/>
+
+	<attribute
+		name="text-vertical-gradient-end-color"
+		type="color"
+		appliesto="VerticalGradientTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets the bottom color for the font gradient."
+		default="black"
+		id="100"
+	/>
+	
+	<attribute
+		name="text-vertical-gradient-steps"
+		type="integer"
+		appliesto="VerticalGradientTextEffect, StringItem, IconItem, ChoiceItem"
+		description="Sets number of steps for the font gradient. This defaults to the height of the standard font (Font.getDefaultFont())."
+		id="101"
 	/>
 	
 	

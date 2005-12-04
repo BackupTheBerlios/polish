@@ -1606,14 +1606,8 @@ public class PolishTask extends ConditionalTask {
 					}
 					
 					// now insert the localozation data for this device
-					// into the Locale.java source-code:
-					
-					if (!translationManager.isDynamic()) {
-						translationManager.processLocaleCode( this.localeCode );
-						//this.localeSourceFile.saveToDir(targetDir, this.localeCode.getArray(), false );
-					} else {
-						translationManager.insertDynamicFields( this.localeCode );
-					}
+					// into the Locale.java source-code:					
+					translationManager.processLocaleCode( this.localeCode );
 					if (this.useDefaultPackage) {
 						this.localeCode.reset();
 						this.importConverter.processImports(true, device.isMidp1(), this.localeCode, device, this.preprocessor);

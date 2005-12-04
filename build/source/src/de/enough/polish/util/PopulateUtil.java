@@ -320,6 +320,20 @@ public final class PopulateUtil {
 	 * @param value the value
 	 * @throws NoSuchFieldException when the field does not exist or could not be written
 	 */
+	public static void setField(Object object, String fieldName, int value)
+	throws NoSuchFieldException
+	{
+		setField( object, fieldName, new Integer( value ));
+	}
+	
+	/**
+	 * Sets a field value for the given object.
+	 *  
+	 * @param object the object that should be changed
+	 * @param fieldName the name of the field
+	 * @param value the value
+	 * @throws NoSuchFieldException when the field does not exist or could not be written
+	 */
 	public static void setField(Object object, String fieldName, Object value)
 	throws NoSuchFieldException
 	{

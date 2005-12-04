@@ -90,14 +90,14 @@ implements Runnable, OutputFilter
 	 * Starts the emulator for the given device.
 	 *  
 	 * @param setting the setting
-	 * @param device the current device
+	 * @param dev the current device
 	 * @param env all Ant- and polish-properties for the parameter-values
 	 * @param project the ant-project to which this emulator belongs to 
 	 * @param evaluator a boolean evaluator for the parameter-conditions
 	 * @param wtkHome the home directory of the wireless toolkit
 	 * @return true when an emulator could be detected
 	 */
-	public abstract boolean init(Device device, EmulatorSetting setting, Environment env, Project project, BooleanEvaluator evaluator, String wtkHome );
+	public abstract boolean init(Device dev, EmulatorSetting setting, Environment env, Project project, BooleanEvaluator evaluator, String wtkHome );
 	
 	/**
 	 * Retrieves the arguments which are used to start the emulator.
@@ -106,14 +106,6 @@ implements Runnable, OutputFilter
 	 */
 	public abstract String[] getArguments();
 	
-	public void addDebugCommandLine(ArrayList argumentsList) {
-		String line = this.environment.getVariable("polish.debug.commandline");
-		if ( line != null && line.length() > 1 ) {
-			System.out.println("adding debug command line [" + line + "]");
-			argumentsList.add( line );
-		}
-	}
-
 	
 	public String escape(String string) {
 		return StringUtil.escape( string );
@@ -198,7 +190,7 @@ implements Runnable, OutputFilter
 	 * @param debugger the debugger
 	 */
 	protected void addDebugArguments(ArrayList argsList, Debugger debugger) {
-		debugger.addDebugArguments( argsList );
+		debugger.addDebugArguments( this.environment, argsList );
 	}
 	
 	/**
@@ -427,18 +419,18 @@ implements Runnable, OutputFilter
 	class LoggerThread extends Thread {
 		private final InputStream input;
 		private final PrintStream output;
-		private final String header;
+		private final String logHeader;
 
 		public LoggerThread( InputStream input, PrintStream output, String header ) {
 			this.input = input;
 			this.output = output;
-			this.header = header;
+			this.logHeader = header;
 		}
 		
 		public void run() {
 			StringBuffer log = new StringBuffer( 300 );
-			log.append(this.header);
-			int startPos = this.header.length();
+			log.append(this.logHeader);
+			int startPos = this.logHeader.length();
 			int c;
 			
 			try {
@@ -459,11 +451,11 @@ implements Runnable, OutputFilter
 								if (stackTrace != null) {
 									boolean showDecompiledStackTrace = true;
 									if (stackTrace.couldBeResolved()) {
-										this.output.println( this.header + stackTrace.getSourceCodeMessage() );
+										this.output.println( this.logHeader + stackTrace.getSourceCodeMessage() );
 										showDecompiledStackTrace = false;
 									} 
 									if (showDecompiledStackTrace || Emulator.this.emulatorSetting.showDecompiledStackTrace()){
-										this.output.println( this.header + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
+										this.output.println( this.logHeader + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
 									}
 								}
 							} catch (DecompilerNotInstalledException e) {

@@ -27,8 +27,8 @@
 
 	<vendor>
 		<name>Nokia</name>
+		<groups>UEI</groups>
 		<features></features>
-		<capability name="key.ClearKey" value="-8" />
 		<capability name="key.ChangeInputModeKey" value="35" />
 	</vendor>
 	
@@ -82,6 +82,7 @@
 	<vendor>
 		<name>Generic</name>
 		<features></features>
+		<groups>UEI</groups>
 	</vendor>
 
 	<vendor>

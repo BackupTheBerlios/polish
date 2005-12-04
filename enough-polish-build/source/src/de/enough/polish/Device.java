@@ -119,6 +119,9 @@ public class Device extends PolishComponent {
 	private static final MemoryMatcher POLISH_GUI_MIN_HEAP_SIZE = new MemoryMatcher(
 			"500+kb");
 
+	private static final String INVALID_GROUP_NAME_MESSAGE = "The device \"{0}\" contains the undefined group \""
+									+ "{1}\" - please check either [devices.xml] or [groups.xml].";
+
 	private String name;
 
 	private String vendorName;
@@ -159,6 +162,7 @@ public class Device extends PolishComponent {
 
 
 	public Device(String identifier) {
+		super( null );
 		this.identifier = identifier;
 	}
 
@@ -184,7 +188,7 @@ public class Device extends PolishComponent {
 			CapabilityManager capabilityManager ) 
 	throws InvalidComponentException 
 	{
-		super( vendor, capabilityManager );
+		super( vendor, capabilityManager , definition );
 		this.identifier = identifier;
 		this.name = deviceName;
 		this.vendorName = vendor.getIdentifier();
@@ -197,34 +201,7 @@ public class Device extends PolishComponent {
 		addCapability( "polish.identifier", this.identifier );
 		
 		// load group features and capabilities:
-		String groupsDefinition = definition.getChildTextTrim("groups");
-		String[] explicitGroupNames = null;
-		if (groupsDefinition != null && groupsDefinition.length() > 0) {
-			explicitGroupNames = StringUtil.splitAndTrim(groupsDefinition, ',');
-			for (int i = 0; i < explicitGroupNames.length; i++) {
-				String groupName = explicitGroupNames[i];
-				DeviceGroup group = groupManager.getGroup(groupName);
-				if (group == null) {
-					throw new InvalidComponentException(
-							"The device ["
-									+ this.identifier
-									+ "] contains the undefined group ["
-									+ groupName
-									+ "] - please check either [devices.xml] or [groups.xml].");
-				}
-				//System.out.println( this.identifier + ": adding group [" + groupName + "], JavaPackage=" + group.getCapability("polish.JavaPackage") );
-				addComponent( group );
-				/*
-				String parentName = group.getParentIdentifier();
-				while (parentName != null) {
-					DeviceGroup parentGroup = groupManager.getGroup(parentName);
-					System.out.println( this.identifier + ": adding parent group [" + parentName + "] + JavaPackage=" + parentGroup.getCapability("polish.JavaPackage"));
-					addComponent( parentGroup );
-					parentName = parentGroup.getParentIdentifier();
-				}
-				*/
-			}
-		}
+		String[] explicitGroupNames = loadGroups(definition, groupManager, INVALID_GROUP_NAME_MESSAGE);
 		
 		// check if this device extends another one:
 		String parentIdentifier = definition.getChildTextTrim( "parent" );

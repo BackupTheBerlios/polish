@@ -34,6 +34,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ant.emulator.DebuggerSetting;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Connects the emulator to a debugger.</p>
@@ -76,13 +77,38 @@ public abstract class Debugger extends Extension {
 
 	/**
 	 * Adds the debugging settings to the arguments list.
-	 * By default the UEI arguments -Xdebug and -Xrunjdwp arguments are added by calling debugger.addDebugArguments( List ).
+	 * By default the UEI arguments -Xdebug and -Xrunjdwp arguments are added by calling debugger.addDebugArguments( List ),
+	 * unless the "polish.debug.commandline" variable is defined.
+	 * The "debug.commandline" variable can be defined
+	 * in one of the device database files (devices.xml, vendors.xml, etc) or in the &l;variables&g; section
+	 * of the build.xml script. Several arguments can be defined by separating them with two semicolons (;;).
+	 * Addtionally the "polish.debug.port" settings can be used, this is set by the "port" attribute
+	 * of the &lt;debugger&gt; element.
+	 * The following example sets the same arguments as the default UIEI arguments:
+	 * <pre>
+	 * &lt;capability 
+	 *     name="polish.debug.commandline"
+	 *     value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port}"
+	 * /&gt;
+	 * </pre>
 	 * 
+	 * @param env the environment settings. 
 	 * @param argsList the arguments list
 	 */
-	public void addDebugArguments(List argsList) {
-		argsList.add( "-Xdebug" );
-		argsList.add( "-Xrunjdwp:address=" + ((DebuggerSetting) this.extensionSetting).getPort() );
+	public void addDebugArguments(Environment env, List argsList) {
+		String line = env.getVariable("polish.debug.commandline");
+		int port = ((DebuggerSetting) this.extensionSetting).getPort();
+		if ( line != null && line.length() > 1 ) {
+			env.setVariable("polish.debug.port", "" + port );
+			line = env.writeProperties(line);
+			String[] lines = StringUtil.split( line, ";;" );
+			for (int i = 0; i < lines.length; i++) {
+				argsList.add( lines[i] );
+			}
+		} else {
+			argsList.add( "-Xdebug" );
+			argsList.add( "-Xrunjdwp:address=" + port );
+		}
 
 	} 
 

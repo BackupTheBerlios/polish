@@ -65,15 +65,16 @@ public class VendorManager {
 	 * @param project The j2me project settings.
 	 * @param vendorsIS The input stream containing the vendor-definitions. This is usually "./vendors.xml".
 	 * @param capabilityManager manages capabilities
+	 * @param groupManager manager of groups
 	 * @throws JDOMException when there are syntax errors in vendors.xml
 	 * @throws IOException when vendors.xml could not be read
 	 * @throws InvalidComponentException when a vendor definition has errors
 	 */
-	public VendorManager( PolishProject project, InputStream vendorsIS, CapabilityManager capabilityManager ) 
+	public VendorManager( PolishProject project, InputStream vendorsIS, CapabilityManager capabilityManager, DeviceGroupManager groupManager ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		this.vendors = new HashMap();
-		loadVendors( project, vendorsIS, capabilityManager );
+		loadVendors( project, vendorsIS, capabilityManager, groupManager );
 		vendorsIS.close();
 	}
 	
@@ -83,11 +84,12 @@ public class VendorManager {
 	 * @param project The j2me project settings.
 	 * @param vendorsIS The input stream containing the vendor-definitions. This is usually "./vendors.xml".
 	 * @param capabilityManager manages capabilities
+	 * @param groupManager manager of groups
 	 * @throws JDOMException when there are syntax errors in vendors.xml
 	 * @throws IOException when vendors.xml could not be read
 	 * @throws InvalidComponentException when a vendor definition has errors
 	 */
-	private void loadVendors(PolishProject project, InputStream vendorsIS, CapabilityManager capabilityManager) 
+	private void loadVendors(PolishProject project, InputStream vendorsIS, CapabilityManager capabilityManager, DeviceGroupManager groupManager) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		if (vendorsIS == null) {
@@ -98,7 +100,7 @@ public class VendorManager {
 		List xmlList = document.getRootElement().getChildren();
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element deviceElement = (Element) iter.next();
-			Vendor vendor = new Vendor( project, deviceElement, capabilityManager );
+			Vendor vendor = new Vendor( project, deviceElement, capabilityManager, groupManager );
 			this.vendors.put( vendor.getIdentifier(), vendor );
 		}
 	}
@@ -127,14 +129,15 @@ public class VendorManager {
 	 * @param customVendors
 	 * @param polishProject
 	 * @param capabilityManager manages capabilities
+	 * @param groupManager manager of groups
 	 * @throws JDOMException
 	 * @throws InvalidComponentException
 	 */
-	public void loadCustomVendors(File customVendors, PolishProject polishProject, CapabilityManager capabilityManager ) 
+	public void loadCustomVendors(File customVendors, PolishProject polishProject, CapabilityManager capabilityManager, DeviceGroupManager groupManager ) 
 	throws JDOMException, InvalidComponentException {
 		if (customVendors.exists()) {
 			try {
-				loadVendors( polishProject, new FileInputStream( customVendors ), capabilityManager );
+				loadVendors( polishProject, new FileInputStream( customVendors ), capabilityManager, groupManager );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-vendors.xml]: " + e.toString() );

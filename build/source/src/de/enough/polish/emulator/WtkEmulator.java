@@ -132,7 +132,7 @@ public class WtkEmulator extends Emulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
-	public boolean init(Device device, EmulatorSetting setting,
+	public boolean init(Device dev, EmulatorSetting setting,
 			Environment env, Project project,
 			BooleanEvaluator evaluator, String wtkHome) 
 	{
@@ -145,14 +145,14 @@ public class WtkEmulator extends Emulator {
 		boolean xDeviceParameterGiven = true;
 		if (xDevice == null) {
 			xDeviceParameterGiven = false;
-			xDevice = device.getCapability("polish.Emulator.Skin");
+			xDevice = dev.getCapability("polish.Emulator.Skin");
 		}
 		if (xDevice != null) {
 			// test if this emulator exists:
 			File skinFile = getEmulatorSkin(wtkHome, xDevice);
 			if (!skinFile.exists()) {
 				if (xDeviceParameterGiven) {
-					System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + device.getIdentifier() + "] is not installed.");
+					System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + dev.getIdentifier() + "] is not installed.");
 					return false;
 				} else {
 					String originalSkin = xDevice;
@@ -160,7 +160,7 @@ public class WtkEmulator extends Emulator {
 					// check if there are other skins given:
 					int skinNumber = 2;
 					while (true) {
-						xDevice = device.getCapability("polish.Emulator.Skin." + skinNumber);
+						xDevice = dev.getCapability("polish.Emulator.Skin." + skinNumber);
 						if (xDevice == null) {
 							break;
 						}
@@ -172,18 +172,18 @@ public class WtkEmulator extends Emulator {
 						System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
 					}
 					if (!skinFile.exists()) {
-						System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + originalSkin + "] for the device [" + device.getIdentifier() + "] is not installed.");
+						System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + originalSkin + "] for the device [" + dev.getIdentifier() + "] is not installed.");
 						return false;
 					}
 				}
 			}
 			// okay, skin-file exists:
 		} else {
-			System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + device.getIdentifier() + "], now using the default emulator.");
+			System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + dev.getIdentifier() + "], now using the default emulator.");
 		}
 		
 		// get emulator executable:
-		File execFile = getEmulatorExcecutable(wtkHome, xDevice, device );
+		File execFile = getEmulatorExcecutable(wtkHome, xDevice, dev );
 		String executable = execFile.getAbsolutePath();
 		if (!execFile.exists()) {
 			System.out.println("Warning: unable to find the emulator [" + executable + "].");
@@ -235,7 +235,7 @@ public class WtkEmulator extends Emulator {
 				
 				
 				addProperties(setting, emulatorPropertiesMap);
-				preferencesFile = new File( device.getBaseDir() + File.separatorChar + "emulator.properties" );	
+				preferencesFile = new File( dev.getBaseDir() + File.separatorChar + "emulator.properties" );	
 				try {
 					emulatorPropertiesMap.writeFile( preferencesFile );
 					//FileUtil.writePropertiesFile(preferences, emulatorPropertiesMap);
@@ -259,7 +259,7 @@ public class WtkEmulator extends Emulator {
 		
 		if (supportsHeapsize()) {
 			// add the -Xheapsize-parameter:
-			String heapSizeStr = device.getCapability("polish.HeapSize");
+			String heapSizeStr = dev.getCapability("polish.HeapSize");
 			if ((heapSizeStr != null) && !("dynamic".equals(heapSizeStr))) {
 				long bytes = ConvertUtil.convertToBytes( heapSizeStr );
 				argumentsList.add("-Xheapsize:" + bytes );
@@ -285,9 +285,7 @@ public class WtkEmulator extends Emulator {
 				argumentsList.add( name );
 			}
 		}
-		
-		addDebugCommandLine( argumentsList );
-		
+				
 		this.arguments = (String[]) argumentsList.toArray( new String[ argumentsList.size() ] );
 		return true;
 	}

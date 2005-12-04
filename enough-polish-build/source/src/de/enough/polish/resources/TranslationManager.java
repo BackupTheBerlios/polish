@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -54,6 +55,7 @@ import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.PropertyUtil;
+import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
 
 /**
@@ -301,9 +303,11 @@ implements Comparator
 				Translation translation = new Translation( key, value, 
 						false, null, null, null );
 				this.translationsByKey.put( key, translation );
-				rawTranslations.remove( originalKey );
+				if (!this.isDynamic) {
+					rawTranslations.remove( originalKey );
+				}
 				// the following can never be true, or could it?
-				// every variable usually only has one single vlue without any i18n parameters
+				// every variable usually only has one single value without any i18n parameters
 				if (translation.hasSeveralParameters()) {
 					this.multipleParametersTranslations.add( translation );
 				}
@@ -355,6 +359,23 @@ implements Comparator
 		// resources/vendor/device/locale
 		
 		Map rawTranslations = new HashMap();
+		// load GUI translations when dynamic translations:
+		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
+		InputStream in = resourceUtil.open( this.environment.getVariable("polish.home"), "translations.txt");
+		readProperties(in, rawTranslations);
+		//System.out.println( this.locale + ": read " + rawTranslations.size() + " translations:");
+		Object[] keys = rawTranslations.keySet().toArray();
+		for (int i = 0; i < keys.length; i++) {
+			String key = (String) keys[i];
+			Object value = this.environment.getVariable( key );
+			if (value != null) {
+				// user-defined variables have priority over these settings:
+				rawTranslations.put( key, value );
+			}
+			//System.out.println(key + "=" + rawTranslations.get( key ));
+		}
+		in.close();
+		
 		// load general resources:
 		String messagesFileName = File.separator + this.localizationSetting.getMessagesFileName();
 		String localeFileName;
@@ -419,18 +440,27 @@ implements Comparator
 	private void readPropertiesFile( File messagesFile, Map rawTranslations ) 
 	throws FileNotFoundException, IOException 
 	{
+		InputStream in = new FileInputStream( messagesFile );
+		readProperties( in, rawTranslations );
+		in.close();
+	}
+	
+	private void readProperties( InputStream in, Map rawTranslations ) 
+	throws FileNotFoundException, IOException 
+	{
 		if (this.isDynamic) {
 			// use the java.util.Properties tool for resolving Unicode escape mechanism.
 			// this is needed because we later store the loaded strings via DataOutputStream.writeUTF()
 			// and the device would show \t instead of a tab and so on.
 			Properties properties = new Properties();
-			properties.load( new FileInputStream( messagesFile ) );
+			properties.load( in );
 			rawTranslations.putAll( properties );
 		} else {
 			// just load the properties directly
-			FileUtil.readPropertiesFile(messagesFile, '=', rawTranslations );
+			FileUtil.readProperties(in, '=', rawTranslations );
 		}
 	}
+
 	
 	/**
 	 * Retrieves a translation for the given key.
@@ -464,7 +494,9 @@ implements Comparator
 			if ("//$$IncludeLocaleDefinitionHere$$//".equals(line)) {
 				insertionPointFound = true;
 				// instantiate translations directly:
-				insertMultipleParametersTranslations( code );
+				if (!this.isDynamic) {
+					insertMultipleParametersTranslations( code );
+				}
 				break;
 			}
 		}
@@ -472,8 +504,26 @@ implements Comparator
 			throw new BuildException("Unable to modify [de.enough.polish.util.Locale.java]: insertion point not found!");
 		}
 		// now include the static local specific fields:
-		insertFields( code, true );
+		insertFields( code, !this.isDynamic );
 	}
+	
+//	public void insertDynamicFields(StringList code) {
+//		code.reset();
+//		boolean insertionPointFound = false;
+//		while (code.next()) {
+//			String line = code.getCurrent();
+//			if ("//$$IncludeLocaleDefinitionHere$$//".equals(line)) {
+//				insertionPointFound = true;
+//				break;
+//			}
+//		}
+//		if (!insertionPointFound) {
+//			throw new BuildException("Unable to modify [de.enough.polish.util.Locale.java]: insertion point not found!");
+//		}
+//		// now include the static local specific fields:
+//		insertFields( code, false );		
+//	}
+
 
 	/**
 	 * Inserts the actual code fragments into Locale.java
@@ -642,27 +692,13 @@ implements Comparator
 		return t1.getId() - t2.getId();
 	}
 
-	public void insertDynamicFields(StringList code) {
-		code.reset();
-		boolean insertionPointFound = false;
-		while (code.next()) {
-			String line = code.getCurrent();
-			if ("//$$IncludeLocaleDefinitionHere$$//".equals(line)) {
-				insertionPointFound = true;
-				break;
-			}
-		}
-		if (!insertionPointFound) {
-			throw new BuildException("Unable to modify [de.enough.polish.util.Locale.java]: insertion point not found!");
-		}
-		// now include the static local specific fields:
-		insertFields( code, false );		
-	}
 
 	/**
 	 * Inserts the static fields of the Locale class.
 	 * 
 	 * @param code the source code, the code should be inserted into the current position.
+	 * @param isFinal true when the fields should be "static final" instead of only "static". When
+	 *        the dynamic localization mode is used, the fileds cannot be final.
 	 */
 	private void insertFields(StringList code, boolean isFinal) {
 		if ( isFinal ) {
@@ -840,6 +876,50 @@ implements Comparator
 				throw e;
 			}
 		}
+		out.writeUTF( dynamicLocale.getLanguage() );
+		out.writeUTF( dynamicLocale.getDisplayLanguage( dynamicLocale ) );
+		char minusSign = '-';
+		char zeroDigit = '0';
+		char decimalSeparator = '.';
+		char monetaryDecimalSeparator = '.';
+		char groupingSeparator = ',';
+		char percent = '%';
+		char permill = '\u2030';
+		String infinity = "\u221e";	
+		NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
+		try {
+			DecimalFormat decimalFormat = (DecimalFormat) format;
+			DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+			minusSign = symbols.getMinusSign();
+			zeroDigit = symbols.getZeroDigit();
+			decimalSeparator = symbols.getDecimalSeparator();
+			monetaryDecimalSeparator = symbols.getMonetaryDecimalSeparator();
+			groupingSeparator = symbols.getGroupingSeparator();
+			percent = symbols.getPercent();
+			permill = symbols.getPerMill();
+			infinity = symbols.getInfinity();
+		} catch (Exception e) {
+			System.out.println("Warning: the locale [" + this.locale + "] does not support decimal symbols: " + e.toString() );
+		}
+		out.writeChar( minusSign );
+		out.writeChar( zeroDigit );
+		out.writeChar( decimalSeparator );
+		out.writeChar( monetaryDecimalSeparator );
+		out.writeChar( groupingSeparator );
+		out.writeChar( percent );
+		out.writeChar(  permill );
+		out.writeUTF( infinity );
+		String country = dynamicLocale.getCountry();
+		out.writeUTF( country );
+		if (country.length() > 0) {
+			out.writeUTF( this.locale.getDisplayCountry(this.locale) );
+			Currency currency = format.getCurrency();
+			String currencySymbol = currency.getSymbol(this.locale);
+			String currencyCode = currency.getCurrencyCode();
+			out.writeUTF( currencySymbol );
+			out.writeUTF( currencyCode );
+		}
+
 		out.flush();
 		out.close();
 	}

@@ -164,7 +164,18 @@ public class LocalizationSetting extends Setting {
 			return new Locale( language, country );
 		}
 	}
-	
+
+	/**
+	 * Sets the default locale.
+	 * This is the locale that is loaded upon start of the application by the de.enough.polish.util.Locale class.
+	 * 
+	 * @param locale the default locale, e.g. "en_US"
+	 * @see #setDefaultLocale(String)
+	 */
+	public void setDefault( String locale ) {
+		setDefaultLocale(locale);
+	}
+
 	/**
 	 * Sets the default locale.
 	 * This is the locale that is loaded upon start of the application by the de.enough.polish.util.Locale class.

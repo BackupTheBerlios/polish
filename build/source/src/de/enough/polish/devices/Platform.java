@@ -54,7 +54,7 @@ public class Platform extends PolishComponent {
 	public Platform( Element definition, CapabilityManager capabilityManager )
 	throws InvalidComponentException
 	{
-		super( null, capabilityManager );
+		super( null, capabilityManager, definition );
 		this.identifier = definition.getChildTextTrim( "identifier");
 		if (this.identifier == null) {
 			System.out.println("platform-definition=" + definition.toString() );

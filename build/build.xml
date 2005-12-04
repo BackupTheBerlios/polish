@@ -77,7 +77,7 @@
 			 excludes="**/*.html"
 			 index="true"
 		     >
-			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt" />
+			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt,translations.txt" />
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 			<fileset dir="setup" includes="icons/*.*" />
 		</jar>

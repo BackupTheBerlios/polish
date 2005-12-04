@@ -61,7 +61,7 @@ public class DeviceGroup extends PolishComponent {
 	public DeviceGroup( Element definition, CapabilityManager capabilityManager, DeviceGroupManager manager ) 
 	throws InvalidComponentException 
 	{
-		super( null, capabilityManager );
+		super( null, capabilityManager, definition );
 		this.identifier = definition.getChildTextTrim( "name" );
 		//System.out.println("\ninitialising group " + this.identifier );
 		if (this.identifier == null) {
@@ -89,6 +89,7 @@ public class DeviceGroup extends PolishComponent {
 	 * @param name the name of the group
 	 */
 	public DeviceGroup(String name) {
+		super( null );
 		this.identifier = name;
 	}
 

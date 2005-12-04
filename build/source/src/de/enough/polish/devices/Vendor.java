@@ -44,6 +44,9 @@ import org.jdom.Element;
  */
 public class Vendor extends PolishComponent {
 
+	private static final String INVALID_GROUP_NAME_MESSAGE = "The vendor \"{0}\" contains the undefined group \""
+		+ "{1}\" - please check either [vendors.xml] or [groups.xml].";
+
 	
 	/**
 	 * Creates a new Vendor.
@@ -51,19 +54,23 @@ public class Vendor extends PolishComponent {
 	 * @param parent the project to which this vendor manufacturer belongs to.
 	 * @param definition the XML definition of this vendor.
 	 * @param capabilityManager manages capabilities
+	 * @param groupManager manager of groups
 	 * @throws InvalidComponentException when the given definition contains errors
 	 */
-	public Vendor( PolishProject parent, Element definition, CapabilityManager capabilityManager )
+	public Vendor( PolishProject parent, Element definition, CapabilityManager capabilityManager, DeviceGroupManager groupManager )
 	throws InvalidComponentException
 	{
-		super( parent, capabilityManager );
+		super( parent, capabilityManager, definition );
 		this.identifier = definition.getChildTextTrim( "name");
 		//System.out.println("\ninitialising vendor " + this.identifier);
 		if (this.identifier == null) {
 			throw new InvalidComponentException("Every vendor needs to define the element <name> - please check your vendors.xml.");
 		}
+		
+		loadGroups(definition, groupManager, INVALID_GROUP_NAME_MESSAGE);
 		// load all capabilities:
 		loadCapabilities(definition, this.identifier, "vendors.xml");
+		
 	}
 
 

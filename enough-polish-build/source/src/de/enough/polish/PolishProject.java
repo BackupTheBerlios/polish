@@ -54,6 +54,7 @@ public class PolishProject extends PolishComponent {
 	 * @param debugManager manages specific debugging settings.
 	 */
 	public PolishProject( boolean usesPolishGui, boolean isDebugEnabled, DebugManager debugManager ) {
+		super( null );
 		this.usesPolishGui = usesPolishGui;
 		this.isDebugEnabled = isDebugEnabled;
 		this.debugManager = debugManager;

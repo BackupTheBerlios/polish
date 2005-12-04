@@ -24,7 +24,6 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.tools.ant.Project;
 
@@ -60,13 +59,13 @@ public class GenericEmulator extends Emulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
-	public boolean init(Device device, EmulatorSetting setting,
+	public boolean init(Device dev, EmulatorSetting setting,
 			Environment env, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
 		String execStr = env.getVariable("polish.Emulator.Executable");
 		if (execStr == null) {
-			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Did not find the capability [Emulator.Executable] in the [devices.xml] file.");
+			System.err.println("Unable to launch emulator for [" + dev.getIdentifier() + "]: Did not find the capability [Emulator.Executable] in the [devices.xml] file.");
 			return false;
 		}
 		// setting of default values for ${siemens.home} and ${nokia.home}, when
@@ -95,20 +94,20 @@ public class GenericEmulator extends Emulator {
 			int propStart = execStr.indexOf("${");
 			int propEnd = execStr.indexOf('}', propStart);
 			String missingProperty = execStr.substring( propStart, propEnd + 1);
-			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Please define the needed property " + missingProperty + " in your build.xml file.");
+			System.err.println("Unable to launch emulator for [" + dev.getIdentifier() + "]: Please define the needed property " + missingProperty + " in your build.xml file.");
 			return false;
 		}
 		if (execStr.length() > 6) {
 			File executable = new File( execStr );
 			if (!executable.exists()) {
-				System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Did not find the executable [" + execStr + "].");
+				System.err.println("Unable to launch emulator for [" + dev.getIdentifier() + "]: Did not find the executable [" + execStr + "].");
 				return false;
 			}
 		}
 		
 		String argsStr = env.getVariable("polish.Emulator.Arguments");
 		if (argsStr == null) {
-			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Did not find the capability [Emulator.Arguments] in the [devices.xml] file.");
+			System.err.println("Unable to launch emulator for [" + dev.getIdentifier() + "]: Did not find the capability [Emulator.Arguments] in the [devices.xml] file.");
 			return false;
 		}
 		argsStr = env.writeProperties( argsStr );
@@ -116,7 +115,7 @@ public class GenericEmulator extends Emulator {
 			int propStart = argsStr.indexOf("${");
 			int propEnd = argsStr.indexOf('}', propStart);
 			String missingProperty = argsStr.substring( propStart, propEnd + 1);
-			System.err.println("Unable to launch emulator for [" + device.getIdentifier() + "]: Please define the needed property " + missingProperty + " in your build.xml file.");
+			System.err.println("Unable to launch emulator for [" + dev.getIdentifier() + "]: Please define the needed property " + missingProperty + " in your build.xml file.");
 			return false;
 		}
 		String[] args = StringUtil.split( argsStr, ";;");

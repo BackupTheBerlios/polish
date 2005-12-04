@@ -28,10 +28,11 @@ package de.enough.polish.swing;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import de.enough.polish.util.Translations;
 
 /**
  * <p>Provides the buttons "ok" and "cancel" within an panel.</p>
@@ -49,8 +50,9 @@ import javax.swing.JPanel;
  */
 public class OkCancelPanel
 extends JPanel
-implements ActionListener, ResourceConsumer
+implements ActionListener, Translatable
 {
+	private static final long serialVersionUID = 2781475237726598437L;
 	private final OkCancelListener listener;
 	private final JButton okButton;
 	private final JButton cancelButton;
@@ -59,18 +61,18 @@ implements ActionListener, ResourceConsumer
 	 * Creates a new button panel.
 	 * 
 	 * @param listener the listener that will be notified when a button has been selected
-	 * @param resourceBundle the translations
+	 * @param translations the translations
 	 * 
 	 */
-	public OkCancelPanel( OkCancelListener listener, ResourceBundle resourceBundle ) 
+	public OkCancelPanel( OkCancelListener listener, Translations translations ) 
 	{
 		super( new GridLayout( 1, 3, 5, 5) );
 		this.listener = listener;
-		this.okButton = new JButton( resourceBundle.getString("button.ok") );
-		this.okButton.setMnemonic(resourceBundle.getString("button.ok.mnemonic").charAt(0) );
+		this.okButton = new JButton( translations.getString("button.ok") );
+		this.okButton.setMnemonic(translations.getString("button.ok.mnemonic").charAt(0) );
 		this.okButton.addActionListener( this );
-		this.cancelButton = new JButton(resourceBundle.getString("button.cancel"));
-		this.cancelButton.setMnemonic( resourceBundle.getString("button.cancel.mnemonic").charAt(0) );
+		this.cancelButton = new JButton(translations.getString("button.cancel"));
+		this.cancelButton.setMnemonic( translations.getString("button.cancel.mnemonic").charAt(0) );
 		this.cancelButton.addActionListener( this );
 		
 		// deactivate buttons first:
@@ -111,11 +113,11 @@ implements ActionListener, ResourceConsumer
 	/* (non-Javadoc)
 	 * @see de.enough.polish.swing.ResourceConsumer#setResourceBundle(java.util.ResourceBundle)
 	 */
-	public void setResourceBundle(ResourceBundle resourceBundle) {
-		this.okButton.setText( resourceBundle.getString("button.ok") );
-		this.okButton.setMnemonic( resourceBundle.getString("button.ok.mnemonic").charAt(0) );
-		this.cancelButton.setText( resourceBundle.getString("button.cancel") );
-		this.cancelButton.setMnemonic( resourceBundle.getString("button.cancel.mnemonic").charAt(0));
+	public void setTranslations(Translations translations) {
+		this.okButton.setText( translations.getString("button.ok") );
+		this.okButton.setMnemonic( translations.getString("button.ok.mnemonic").charAt(0) );
+		this.cancelButton.setText( translations.getString("button.cancel") );
+		this.cancelButton.setMnemonic( translations.getString("button.cancel.mnemonic").charAt(0));
 		this.cancelButton.addActionListener( this );
 
 	}

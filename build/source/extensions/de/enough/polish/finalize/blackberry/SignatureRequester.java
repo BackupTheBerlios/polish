@@ -86,6 +86,9 @@ implements Runnable
 		}
 		
 		String pw = env.getVariable( "blackberry.certificate.password" );
+		if (!"true".equals( env.getVariable("blackberry.certificate.donotusetab") )) {
+			pw = '\t' + pw;
+		}
 		
 		return requestSignature( jdeHome, codFile, certificateDir, sigtoolDir, pw );
 	}
@@ -115,7 +118,7 @@ implements Runnable
 		}
 		int result =  ProcessUtil.exec( arguments, "SignatureTool: ", true, null, certificateDir );
 		if (result != 0 && pw != null) {
-			System.err.println("Signing failed with password [" + pw + "].");
+			System.err.println("BlackBerry signing failed with result [" + result + "].");
 		}
 		this.isFinished = true;
 		return result;
@@ -125,47 +128,54 @@ implements Runnable
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		//while (! this.isFinished ) {
 			try {
-				Thread.sleep( 1500 );
+				Thread.sleep( 2500 );
 			} catch (InterruptedException e) {
 				// ignore
 			}
 			try {
-			char[] chars = this.password.toCharArray();
-			int[] keyEvents = parseKeyEvents( this.password );
-			GraphicsDevice[] devices = graphicsEnvironment.getScreenDevices();
-			for (int i = 0; i < devices.length; i++) {
-				GraphicsDevice device = devices[i];
-//				System.out.println( i + ": " + device.getIDstring() );
-//				GraphicsConfiguration configuration = device.getDefaultConfiguration();
-				try {
-					Robot robot = new Robot( device );
-					for (int j = 0; j < keyEvents.length; j++) {
-						int keyEvent = keyEvents[j];
-						char originalChar = chars[j];
-						try {
-						if (Character.isUpperCase(originalChar)) {
-							robot.keyPress( KeyEvent.VK_SHIFT );
-							robot.keyPress(keyEvent);
-							robot.keyRelease(keyEvent);
-							robot.keyRelease( KeyEvent.VK_SHIFT );
-							
-						} else {
-							robot.keyPress(keyEvent);
-							robot.keyRelease(keyEvent);
+				char[] chars = this.password.toCharArray();
+				int[] keyEvents = parseKeyEvents( this.password );
+				//System.out.println("Entering password with length [" + chars.length + "], no. of keyEvents=" + keyEvents.length );
+				GraphicsDevice[] devices = graphicsEnvironment.getScreenDevices();
+				for (int i = 0; i < devices.length; i++) {
+					GraphicsDevice device = devices[i];
+					//System.out.println( i + ": " + device.getIDstring() );
+	//				GraphicsConfiguration configuration = device.getDefaultConfiguration();
+					try {
+						Robot robot = new Robot( device );
+						for (int j = 0; j < keyEvents.length; j++) {
+							int keyEvent = keyEvents[j];
+							char originalChar = chars[j];
+							//System.out.println("Entering pw-char [" + originalChar + "]");
+							try {
+								if (Character.isUpperCase(originalChar)) {
+									robot.keyPress( KeyEvent.VK_SHIFT );
+									robot.keyPress(keyEvent);
+									robot.keyRelease(keyEvent);
+									robot.keyRelease( KeyEvent.VK_SHIFT );
+									
+								} else {
+									robot.keyPress(keyEvent);
+									robot.keyRelease(keyEvent);
+								}
+							} catch (IllegalArgumentException e) {
+								System.err.println("Unable to enter char [" + originalChar + "], keyEvent [" + keyEvent + "] of password [" + this.password + "].");
+								return;
+								
+							}
+//							try {
+//								Thread.sleep( 200 );
+//							} catch (InterruptedException e) {
+//								// ignore
+//							}
 						}
-						} catch (IllegalArgumentException e) {
-							System.err.println("Unable to enter char [" + originalChar + "], keyEvent [" + keyEvent + "] of password [" + this.password + "].");
-							return;
-							
-						}
+						robot.keyPress( KeyEvent.VK_ENTER );
+						
+					} catch (AWTException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					robot.keyPress( KeyEvent.VK_ENTER );
-					
-				} catch (AWTException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
 			} catch (Exception e) {
 				System.err.println("Unable to automate code signing: " + e.toString() );
 				return;

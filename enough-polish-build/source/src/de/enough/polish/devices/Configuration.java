@@ -54,7 +54,7 @@ public class Configuration extends PolishComponent {
 	public Configuration( Element definition, CapabilityManager capabilityManager )
 	throws InvalidComponentException
 	{
-		super( null, capabilityManager );
+		super( null, capabilityManager, definition );
 		this.identifier = definition.getChildTextTrim( "identifier");
 		if (this.identifier == null) {
 			System.out.println("configuration-definition=" + definition.toString() );

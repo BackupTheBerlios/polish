@@ -62,7 +62,7 @@ public class AntCallDebugger extends Debugger {
 	public void connectDebugger(int port, Device device, Locale locale, Environment env) {
 		String target = this.extensionSetting.getTarget();
 		if ( target == null ) {
-			throw new BuildException( "You need to define the \"target\" attribute in the [antcall] finalizer." );
+			throw new BuildException( "You need to define the \"target\" attribute in the [antcall] debugger." );
 		}
 		Variable[] props;
 		if (this.properties == null) {

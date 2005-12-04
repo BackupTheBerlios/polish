@@ -28,15 +28,12 @@ package de.enough.polish.devices;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
-import org.jdom.JDOMException;
 
 import de.enough.polish.PolishProject;
-import de.enough.polish.exceptions.InvalidComponentException;
 
 /**
  * <p>Manages the complete device database.</p>
@@ -73,19 +70,25 @@ public class DeviceDatabase {
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
 		super();
-		try {
-			String wtkHomePath = (String) properties.get( "wtk.home" );
-			if (wtkHomePath == null) {
-				throw new BuildException("Unable to initialise device database - found no wtk.home property.");
-			}
-			File wtkHome = new File( wtkHomePath );
-			
+		
+		String wtkHomePath = (String) properties.get( "wtk.home" );
+		if (wtkHomePath == null) {
+			throw new BuildException("Unable to initialise device database - found no wtk.home property.");
+		}
+		File wtkHome = new File( wtkHomePath );
+		
+		try {			
 			// load capability-definitions:
 			InputStream is = getInputStream( "capabilities.xml", polishHome, inputStreamsByFileName ); 
 			this.capabilityManager = new CapabilityManager( properties, is );
-			
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read capabilities.xml: " + e.getMessage(), e );
+		}
+		try {	
 			// load libraries:
-			is = getInputStream( "apis.xml", polishHome, inputStreamsByFileName );
+			InputStream is = getInputStream( "apis.xml", polishHome, inputStreamsByFileName );
 			this.libraryManager = new LibraryManager( properties, apisHome, wtkHome, is );
 			File file = (File) customFilesByFileName.get("custom-apis.xml");
 			if ( file != null ) {
@@ -101,11 +104,16 @@ public class DeviceDatabase {
 					this.libraryManager.loadCustomLibraries( file );
 				}
 			}
-			
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read apis.xml/custom-apis.xml: " + e.getMessage(), e );
+		}
+		try {	
 			// load configurations:
-			is = getInputStream("configurations.xml", polishHome, inputStreamsByFileName);
+			InputStream is = getInputStream("configurations.xml", polishHome, inputStreamsByFileName);
 			this.configurationManager = new ConfigurationManager( this.capabilityManager, is );
-			file = (File) customFilesByFileName.get("custom-configurations.xml");
+			File file = (File) customFilesByFileName.get("custom-configurations.xml");
 			if ( file != null ) {
 				this.configurationManager.loadCustomConfigurations( file, this.capabilityManager );
 			} else {
@@ -119,12 +127,16 @@ public class DeviceDatabase {
 					this.configurationManager.loadCustomConfigurations( file, this.capabilityManager );
 				}
 			}
-			/*
-			*/
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read configurations.xml/custom-configurations.xml: " + e.getMessage(), e );
+		}
+		try {	
 			// load platforms:
-			is = getInputStream("platforms.xml", polishHome, inputStreamsByFileName);
+			InputStream is = getInputStream("platforms.xml", polishHome, inputStreamsByFileName);
 			this.platformManager = new PlatformManager( this.capabilityManager, is );
-			file = (File) customFilesByFileName.get("custom-platforms.xml");
+			File file = (File) customFilesByFileName.get("custom-platforms.xml");
 			if ( file != null ) {
 				this.platformManager.loadCustomPlatforms( file, this.capabilityManager );
 			} else {
@@ -138,29 +150,16 @@ public class DeviceDatabase {
 					this.platformManager.loadCustomPlatforms( file, this.capabilityManager );
 				}
 			}
-			
-			// load vendors:
-			is = getInputStream("vendors.xml", polishHome, inputStreamsByFileName);
-			this.vendorManager = new VendorManager( polishProject,  is, this.capabilityManager);
-			file = (File) customFilesByFileName.get("custom-vendors.xml");
-			if ( file != null ) {
-				this.vendorManager.loadCustomVendors( file, polishProject, this.capabilityManager );
-			} else {
-				// use default vendors:
-				file = new File( polishHome, "custom-vendors.xml");
-				if (file.exists()) {
-					this.vendorManager.loadCustomVendors( file, polishProject, this.capabilityManager );
-				}
-				file = new File( projectHome, "custom-vendors.xml");
-				if (file.exists()) {
-					this.vendorManager.loadCustomVendors( file, polishProject, this.capabilityManager );
-				}
-			}
-			
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read platforms.xml/custom-platforms.xml: " + e.getMessage(), e );
+		}
+		try {	
 			// load device groups:
-			is = getInputStream("groups.xml", polishHome, inputStreamsByFileName);
+			InputStream is = getInputStream("groups.xml", polishHome, inputStreamsByFileName);
 			this.groupManager = new DeviceGroupManager( is, this.capabilityManager );
-			file = (File) customFilesByFileName.get("custom-groups.xml");
+			File file = (File) customFilesByFileName.get("custom-groups.xml");
 			if ( file != null ) {
 				this.groupManager.loadCustomGroups( file, this.capabilityManager );
 			} else {
@@ -174,11 +173,39 @@ public class DeviceDatabase {
 					this.groupManager.loadCustomGroups( file, this.capabilityManager );
 				}
 			}
-			
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read groups.xml/custom-groups.xml: " + e.getMessage(), e );
+		}
+		try {				
+			// load vendors:
+			InputStream is = getInputStream("vendors.xml", polishHome, inputStreamsByFileName);
+			this.vendorManager = new VendorManager( polishProject,  is, this.capabilityManager, this.groupManager);
+			File file = (File) customFilesByFileName.get("custom-vendors.xml");
+			if ( file != null ) {
+				this.vendorManager.loadCustomVendors( file, polishProject, this.capabilityManager, this.groupManager );
+			} else {
+				// use default vendors:
+				file = new File( polishHome, "custom-vendors.xml");
+				if (file.exists()) {
+					this.vendorManager.loadCustomVendors( file, polishProject, this.capabilityManager, this.groupManager );
+				}
+				file = new File( projectHome, "custom-vendors.xml");
+				if (file.exists()) {
+					this.vendorManager.loadCustomVendors( file, polishProject, this.capabilityManager, this.groupManager );
+				}
+			}
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read vendors.xml/custom-vendors.xml: " + e.getMessage(), e );
+		}
+		try {				
 			// load devices:
-			is = getInputStream("devices.xml", polishHome, inputStreamsByFileName);
+			InputStream is = getInputStream("devices.xml", polishHome, inputStreamsByFileName);
 			this.deviceManager = new DeviceManager( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, is );
-			file = (File) customFilesByFileName.get("custom-devices.xml");
+			File file = (File) customFilesByFileName.get("custom-devices.xml");
 			if ( file != null ) {
 				this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 			} else {
@@ -192,13 +219,10 @@ public class DeviceDatabase {
 					this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 				}
 			}
-			
-		} catch (JDOMException e) {
-			throw new BuildException("unable to create device database: " + e.getMessage(), e );
-		} catch (IOException e) {
-			throw new BuildException("unable to create device database: " + e.getMessage(), e );
-		} catch (InvalidComponentException e) {
-			throw new BuildException("unable to create device database: " + e.getMessage(), e );
+		} catch (BuildException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuildException("unable to read devices.xml/custom-devices.xml: " + e.getMessage(), e );
 		}
 	}
 
