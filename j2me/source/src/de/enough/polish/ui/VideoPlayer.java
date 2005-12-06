@@ -26,6 +26,7 @@
 package de.enough.polish.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
@@ -33,11 +34,13 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
+import javax.microedition.media.control.ToneControl;
+import javax.microedition.media.control.VideoControl;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 public class VideoPlayer extends Canvas{
-	
+private Item item;
 private Player p;
 private PlayerListener pListener;
 	public VideoPlayer() {
@@ -47,12 +50,20 @@ private PlayerListener pListener;
 	}
 	
 	public void start(String url){
+		
 			try {
-				System.out.print("player_start\n");
+				VideoControl vc;
+//				InputStream is = getClass().getResourceAsStream(url);
+				System.out.print("1\n");
 				this.p = Manager.createPlayer(url);
+				System.out.print("2\n");
+				vc = (VideoControl)this.p.getControl("VideoControl");
+				System.out.print("3\n");
+				Item video = (Item)vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
 				this.p.setLoopCount(5);
 				this.p.start();
 			} catch (MediaException e) {
+				System.out.print("Error\n");
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -84,7 +95,4 @@ private PlayerListener pListener;
 		// TODO Auto-generated method stub
 		g.fillRect(0,0,getWidth(),getHeight());
 	}
-
-	
-	
 }

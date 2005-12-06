@@ -27,7 +27,7 @@ package de.enough.polish.ui;
 
 import java.io.IOException;
 import java.util.Enumeration;
-
+import javax.microedition.lcdui.List;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Canvas;
@@ -41,23 +41,28 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
-
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.midlet.MIDletStateChangeException;
 import de.enough.polish.util.Debug;
 import de.enough.polish.util.Locale;
 
 public class MusicPlayer extends Canvas implements CommandListener{
 	private Item item;
 	private Player p;
-	private List list;
-	private Command playCmd, stopCmd;
-	private FileConnection fileCon;
+	public List list;
+	private String url;
+	private Form form;
+	private int index = 0;
+	private Command cmdPlay, cmdStop,cmdExit,cmdChoice,cmdBack;
+	private FileConnection fileCon;	
 	private PlayerListener pListener;
 		public MusicPlayer() {
 			super();
 			// TODO Auto-generated constructor stub
 //			this.pListener = new PlayerListener();
+			this.form = new Form("");
 			this.list = new List("Music List", List.IMPLICIT);
-			String url = "file:///C:/Nokia/";
+			this.url = "file:///C:/Nokia/";
 			try {
 				this.fileCon = (FileConnection) Connector.open( url, Connector.READ );
 			} catch (IOException e) {
@@ -77,13 +82,20 @@ public class MusicPlayer extends Canvas implements CommandListener{
 					e.printStackTrace();
 				}
 		    }
-		    this.playCmd = new Command("Play",Command.ITEM, 10 );
-		    this.stopCmd = new Command("Stop",Command.ITEM, 2 );
+		    this.list.setSelectedIndex(this.index,true);
+		    this.cmdExit = new Command("Stop", Command.STOP, 1);
+		    this.cmdPlay = new Command("Play", Command.ITEM, 1 );
+		    this.cmdStop = new Command("Stop", Command.ITEM, 1 );
+		    this.cmdChoice = new Command("Choice", Command.ITEM,1);
+		    this.cmdBack = new Command("Back", Command.ITEM,1);
+		    this.addCommand(this.cmdExit);
+		    this.addCommand(this.cmdPlay);
+		    this.addCommand(this.cmdStop);
+		    this.list.setSelectCommand(this.cmdChoice);
+		    this.list.addCommand(this.cmdBack);
+		    this.list.addCommand(this.cmdChoice);
 		    this.list.setCommandListener(this);
-		    this.list.addCommand(this.playCmd);
-		    this.list.addCommand(this.stopCmd);
-		    this.list.setSelectedIndex(1,true);
-		    this.repaint();
+//		    this.setCommandListener(this);
 		}
 		
 		public void start(String url){
@@ -102,6 +114,8 @@ public class MusicPlayer extends Canvas implements CommandListener{
 		}
 		
 		public void stop(){
+			System.out.print("stop()\n");
+			this.repaint();
 			try {
 				this.p.stop();
 				this.p.setMediaTime(0);
@@ -122,15 +136,72 @@ public class MusicPlayer extends Canvas implements CommandListener{
 
 		protected void paint(Graphics g) {
 			// TODO Auto-generated method stub
-			//g.fillRect(0,0,getWidth(),getHeight());
-            this.list.paint(g);
+			//g.fillRect(0,0,getWidth(),getHeight());      
+		}
+		
+
+		protected void startApp() throws MIDletStateChangeException {
+			// TODO Auto-generated method stub
+			
 		}
 
-		public void commandAction(Command cmd, Displayable screen) {		
-			System.out.print("lookingForCommand\n");
-				if (cmd == List.SELECT_COMMAND) {
-					this.repaint();
-					System.out.print("MusicCommad\n");
-					}
+		protected void pauseApp() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		private void backUrl(){
+			this.url.length();
+		}
+		
+		private void openUrl(){
+			System.out.print("choiceCommand\n");
+			System.out.print(this.url+this.list.getString(this.list.getSelectedIndex())+"\n");
+			this.url = this.url+this.list.getString(this.list.getSelectedIndex());
+			System.out.print("URL:"+url+"\n");
+			try {
+				this.fileCon = (FileConnection) Connector.open( url, Connector.READ );
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		    if( this.fileCon.isDirectory() && this.fileCon.canRead() ){
+		        Enumeration names;
+				try {
+					names = this.fileCon.list();
+			        this.list.deleteAll();
+					while( names.hasMoreElements() ){
+			            String name = (String) names.nextElement();
+			            this.list.append(name, null);
+			        }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}
+		
+		public void commandAction(Command cmd, Displayable screen) {	
+			System.out.print("CommandoPimPerle\n");
+				if(cmd == this.cmdChoice){
+					this.openUrl();
+				}
+				else if(cmd == this.cmdBack){
+					this.backUrl();
+				}
+				else if (cmd == this.list.SELECT_COMMAND) {
+					int selectedItem = this.list.getSelectedIndex();
+					switch (selectedItem) {
+						case 0 : System.out.print("Commando0\n"); break;
+						case 1 : System.out.print("Commando1\n"); break;
+						case 2 : System.out.print("Commando2\n");  break;
+						default: System.out.print("CommandoDefault\n");  
+				}
+			}
+		}
 	}
