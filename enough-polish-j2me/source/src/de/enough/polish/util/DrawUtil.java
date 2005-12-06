@@ -49,8 +49,11 @@ public final class DrawUtil {
 
 	public final static void fillPolygon( int[] xValues, int[] yValues, int color, Graphics g ) {
 		//#if polish.blackberry && polish.usePolishGui
-			if ( ((Object)g) instanceof de.enough.polish.blackberry.ui.Graphics) {
-				net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) ((Object)g)).g;
+			Object o = g; // this cast is needed, otherwise the compiler will complain
+			              // that javax.microedition.lcdui.Graphics can never be casted
+			              // to de.enough.polish.blackberry.ui.Graphics.
+			if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
+				net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
 				graphics.setColor(color);
 				graphics.drawFilledPath( xValues, yValues, null, null);
 			}
@@ -65,7 +68,17 @@ public final class DrawUtil {
 		//#endif
 	}
 	
-	public final int[] getGradient( int startColor, int endColor, int steps ) {
+	/**
+	 * Creates a gradient of colors.
+	 * This method is highly optimized and only uses bit-shifting and additions (no multitplication nor devision).
+	 * 
+	 * @param startColor the first color
+	 * @param endColor the last color
+	 * @param steps the number of colors in the gradient, 
+	 *        when 2 is given, the first one will be the startColor and the second one will the endColor.  
+	 * @return an int array with the gradient.
+	 */
+	public static final int[] getGradient( int startColor, int endColor, int steps ) {
 		int startAlpha = startColor >>> 24;
 		int startRed = (startColor >>> 16) & 0x00FF;
 		int startGreen = (startColor >>> 8) & 0x0000FF;
@@ -76,10 +89,13 @@ public final class DrawUtil {
 		int endGreen = (endColor >>> 8) & 0x0000FF;
 		int endBlue = endColor  & 0x00000FF;
 		
-		int stepAlpha = ((startAlpha - endAlpha) << 8) / steps;
-		int stepRed = ((startRed - endRed) << 8) / steps;
-		int stepGreen = ((startGreen - endGreen) << 8) / steps;
-		int stepBlue = ((startBlue - endBlue) << 8) / steps;
+		int stepAlpha = ((endAlpha - startAlpha) << 8) / (steps-1);
+		int stepRed = ((endRed -startRed) << 8) / (steps-1);
+		int stepGreen = ((endGreen - startGreen) << 8) / (steps-1);
+		int stepBlue = ((endBlue - startBlue) << 8) / (steps-1);
+//		System.out.println("step red=" + Integer.toHexString(stepRed));
+//		System.out.println("step green=" + Integer.toHexString(stepGreen));
+//		System.out.println("step blue=" + Integer.toHexString(stepBlue));
 		
 		startAlpha <<= 8;
 		startRed <<= 8;

@@ -17,6 +17,7 @@ import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
+import de.enough.polish.util.DrawUtil;
 
 /**
  * Paints a gradient font where the color changes from top to bottom.
@@ -173,42 +174,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 		//#else
 			steps = Font.getDefaultFont().getHeight();
 		//#endif
-		int startAlpha = startColor >>> 24;
-		int startRed = (startColor >>> 16) & 0x00FF;
-		int startGreen = (startColor >>> 8) & 0x0000FF;
-		int startBlue = startColor  & 0x00000FF;
-
-		int endAlpha = endColor >>> 24;
-		int endRed = (endColor >>> 16) & 0x00FF;
-		int endGreen = (endColor >>> 8) & 0x0000FF;
-		int endBlue = endColor  & 0x00000FF;
-		
-		int stepAlpha = ((startAlpha - endAlpha) << 8) / steps;
-		int stepRed = ((startRed - endRed) << 8) / steps;
-		int stepGreen = ((startGreen - endGreen) << 8) / steps;
-		int stepBlue = ((startBlue - endBlue) << 8) / steps;
-		
-		startAlpha <<= 8;
-		startRed <<= 8;
-		startGreen <<= 8;
-		startBlue <<= 8;
-		
-		int[] gradient = new int[ steps ];
-		gradient[0] = startColor;
-		for (int i = 1; i < steps; i++) {
-			startAlpha += stepAlpha;
-			startRed += stepRed;
-			startGreen += stepGreen;
-			startBlue += stepBlue;
-			
-			gradient[i] = (( startAlpha << 16) & 0xFF000000)
-				| (( startRed << 8) & 0x00FF0000)
-				| ( startGreen & 0x0000FF00)
-				| ( startBlue >>> 8);
-				//| (( startBlue >>> 8) & 0x000000FF);
-		}
-		this.colors = gradient;
-
+		this.colors = DrawUtil.getGradient(startColor, endColor, steps);
 	}
 	
 	

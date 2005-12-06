@@ -542,9 +542,10 @@ public class DateField extends StringItem
 						}
 						g.setColor( this.textComplementColor );
 						g.fillRect( x + this.caretX - 1, y  - 1, this.caretWidth + 1, this.fontHeight + 1 );
-						if (this.showCaret) {
+						BitMapFontViewer viewer;
+						if (this.showCaret && (viewer = this.caretViewer) != null) {
 							//System.out.println("caretX=" + this.caretX + ", x=" + x);
-							this.caretViewer.paint(x + this.caretX, y, g);
+							viewer.paint(x + this.caretX, y, g);
 						}
 					} else {
 				//#endif
@@ -727,7 +728,7 @@ public class DateField extends StringItem
 				moveBackward();
 			} else if ( this.date != null && gameAction == Canvas.RIGHT ) {
 				moveForward();
-			} else {
+			} else if (gameAction != Canvas.FIRE){
 				// force check before leaving this date=-field:
 				if (this.date != null) {
 					moveForward();

@@ -321,7 +321,11 @@ public class Container extends Item {
 		this.items = new Item[0];
 		if (this.focusedIndex != -1) {
 			this.autoFocusEnabled = true;
-			this.autoFocusIndex = this.focusedIndex;
+			//#if polish.Container.clearResetsFocus != false
+				this.autoFocusIndex = 0;
+			//#else
+				this.autoFocusIndex = this.focusedIndex;
+			//#endif			
 			this.focusedIndex = -1;
 			if (this.focusedItem.commands != null) {
 				Screen scr = getScreen();
@@ -926,23 +930,36 @@ public class Container extends Item {
 				} else if (this.enableScrolling) {
 					
 					if (gameAction == Canvas.UP && this.targetYOffset < 0 ) {
-						this.targetYOffset += 10;
+						//#if polish.Container.ScrollDelta:defined
+							//#= this.targetYOffset += ${polish.Container.ScrollDelta};
+						//#else
+							this.targetYOffset += 30;
+						//#endif
 						if (this.targetYOffset > 0 ) {
 							this.targetYOffset = 0;
 						}
+						//#if polish.scroll-mode
+							if (!this.scrollSmooth) {
+								this.yOffset = this.targetYOffset;
+							}
+						//#endif
 						return true;
 					}
 					if (gameAction == Canvas.DOWN
 							&& (this.itemHeight + this.targetYOffset > (this.yBottom - this.yTop)) ) 
 					{
-						this.targetYOffset -= 10;
+						//#if polish.Container.ScrollDelta:defined
+							//#= this.targetYOffset -= ${polish.Container.ScrollDelta};
+						//#else
+							this.targetYOffset -= 30;
+						//#endif
+						//#if polish.scroll-mode
+							if (!this.scrollSmooth) {
+								this.yOffset = this.targetYOffset;
+							}
+						//#endif
 						return true;
 					}
-					//#if polish.scroll-mode
-						if (!this.scrollSmooth) {
-							this.yOffset = this.targetYOffset;
-						}
-					//#endif
 				}
 				return false;
 			}
@@ -966,7 +983,13 @@ public class Container extends Item {
 			if ((!processed) && this.enableScrolling 
 					&&  (this.yBottomPos + this.targetYOffset > this.yBottom)) {
 				// scroll downwards:
-				this.targetYOffset -= 10;
+				//#if polish.Container.ScrollDelta:defined
+					//#= this.targetYOffset -= ${polish.Container.ScrollDelta};
+				//#else
+					this.targetYOffset -= 30;
+				//#endif
+				//#debug
+				System.out.println("Down/Right: Reducing targetYOffset to " + this.targetYOffset);	
 				processed = true;
 				//System.out.println("yBottomPos: " + this.yBottomPos + "  yBottom: " + this.yBottom );
 				//#if polish.scroll-mode
@@ -988,7 +1011,13 @@ public class Container extends Item {
 			}
 			if ((!processed) && this.enableScrolling && (this.targetYOffset < 0)) {
 				// scroll upwards:
-				this.targetYOffset += 10;
+				//#if polish.Container.ScrollDelta:defined
+					//#= this.targetYOffset += ${polish.Container.ScrollDelta};
+				//#else
+					this.targetYOffset += 30;
+				//#endif
+				//#debug
+				System.out.println("Up/Left: Increasing targetYOffset to " + this.targetYOffset);	
 				if (this.targetYOffset > 0) {
 					this.targetYOffset = 0;
 				}
@@ -1375,6 +1404,8 @@ public class Container extends Item {
 			} else if (speed < 0 && this.yOffset < this.targetYOffset) {
 				this.yOffset = this.targetYOffset;
 			}
+			// # debug
+			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
 			animated = true;
 		}
 		if  (this.background != null) {
@@ -1382,25 +1413,13 @@ public class Container extends Item {
 		}
 		if (this.focusedItem != null) {
 			animated |= this.focusedItem.animate();
-			/*
-			if (this.focusedItem.background != null) {
-				animated = animated | this.focusedItem.background.animate();
-			}
-			*/
-			//#ifdef polish.css.view-type
-				if ( this.view != null ) {
-					animated |= this.view.animate();
-				}
-			//#endif
-			return animated;
-		} else {
-			//#ifdef polish.css.view-type
-				if ( this.view != null ) {
-					return animated | this.view.animate();
-				}
-			//#endif
-			return false;
 		}
+		//#ifdef polish.css.view-type
+			if ( this.view != null ) {
+				animated |= this.view.animate();
+			}
+		//#endif
+		return animated;
 	}
 	
 	/**

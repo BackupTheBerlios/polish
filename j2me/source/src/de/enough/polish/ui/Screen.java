@@ -690,8 +690,12 @@ implements AccessibleCanvas
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
+	/**
+	 * Paints the screen.
+	 * When you subclass Screen you should override paintScreen(Graphics g) instead, if possible.
+	 * 
+	 * @param g the graphics context.
+	 * @see #paintScreen(Graphics)
 	 */
 	public void paint(Graphics g) {
 		//#if polish.Bugs.losesFullScreen
@@ -761,6 +765,7 @@ implements AccessibleCanvas
 			//#endif
 			if (this.subTitle != null) {
 				this.subTitle.paint( 0, tHeight, 0, this.screenWidth, g );
+				tHeight += this.subTitleHeight;
 			}
 			int infoItemY = tHeight;
 			//#if polish.clip-screen-info
@@ -972,6 +977,13 @@ implements AccessibleCanvas
 	 * paintScrollIndicator, paintScrollIndicatorUp and paintScrollIndicatorDown.
 	 * 
 	 * @param g the graphics on which the screen should be painted
+	 * @see #contentX
+	 * @see #contentY
+	 * @see #contentWidth
+	 * @see #contentHeight
+	 * @see #paintScrollIndicator
+	 * @see #paintScrollIndicatorUp
+	 * @see #paintScrollIndicatorDown
 	 */
 	protected void paintScreen( Graphics g ) {
 		int y = this.contentY;
@@ -1890,6 +1902,7 @@ implements AccessibleCanvas
 		}
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 	}
+	
 	
 	//#if polish.Bugs.displaySetCurrentFlickers
 	/* (non-Javadoc)

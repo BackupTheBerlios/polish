@@ -84,7 +84,7 @@ public class TabbedForm extends Form {
 			tabContainer.screen = this;
 			this.tabContainers[i] = tabContainer;
 		}
-		setSubTitle(this.tabBar);
+		setSubTitle( this.tabBar );
 	}
 
 	//#if false
