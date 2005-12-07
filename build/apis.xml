@@ -44,7 +44,7 @@
 		</description>
 		<names>mmapi,mm-api, JSR-135, JSR135</names>
 		<symbol>mmapi</symbol>
-		<files>j2me-mmapi.jar, mma.zip</files>
+		<files>mmapi.jar,j2me-mmapi.jar, mma.zip</files>
 		<path>import/mmapi.jar</path>
 	</api>
 
@@ -56,7 +56,7 @@
 		<parent>mmapi</parent>
 		<names>mmapi1.1,mm-api1.1</names>
 		<symbol>mmapi1.1</symbol>
-		<files>j2me-mmapi.jar, mma.zip</files>
+		<files>mmapi.jar,j2me-mmapi.jar, mma.zip</files>
 		<path>import/mmapi.jar</path>
 	</api>
 	
@@ -115,7 +115,7 @@
 		<path>import/m3g.jar</path>
 	</api>
 
-	<api>
+	<api hasPackage="false">
 		<name>Java Technology for the Wireless Industry.</name>
 		<description>
 		A JSR-185 compatible device supports the the WMAPI

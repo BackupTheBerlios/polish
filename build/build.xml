@@ -93,7 +93,7 @@
 		<echo message="Invoking preverifier ${wtk.home}/bin/preverify..." />
 		<exec executable="${wtk.home}/bin/preverify" failonerror="true">
 			<arg line="-classpath"/>
-			<arg line="import/cldc-1.1.jar:import/midp-2.0.jar:import/blackberry-4.0.jar:import/pdaapi.jar:import/m3g.jar:import/btapi.jar"/>
+			<arg line="import/cldc-1.1.jar:import/midp-2.0.jar:import/blackberry-4.0.jar:import/pdaapi.jar:import/mmapi.jar:import/m3g.jar:import/btapi.jar"/>
 			<!-- unix:
 			-->
 			<!-- windows 

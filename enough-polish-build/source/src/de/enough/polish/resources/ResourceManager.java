@@ -310,6 +310,7 @@ public class ResourceManager {
 			}
 			DirectoryScanner scanner = set.getDirectoryScanner(this.project);
 			String[] fileNames = scanner.getIncludedFiles();
+			//System.out.println("Adding resources from " + dir.getPath() );
 			addFiles( dir, fileNames, resourcesByName );
 		}
 	

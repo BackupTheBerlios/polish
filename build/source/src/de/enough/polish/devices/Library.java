@@ -28,6 +28,7 @@ package de.enough.polish.devices;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 
+import org.jdom.Attribute;
 import org.jdom.Element;
 
 import java.io.File;
@@ -59,6 +60,7 @@ public class Library extends PolishComponent {
 	private boolean isInitialised;
 	private final Map antProperties;
 	private final String[] symbols;
+	private final boolean hasPackage;
 
 	/**
 	 * Creates a new library.
@@ -84,6 +86,8 @@ public class Library extends PolishComponent {
 		this.polishLibPath = polishLibPath;
 		this.projectLibPath = projectLibPath;
 		this.fullName = definition.getChildTextTrim( "name");
+		Attribute hasPackageAttr = definition.getAttribute("hasPackage");
+		this.hasPackage = hasPackageAttr == null || !"false".equals(hasPackageAttr.getValue());
 		if (this.fullName == null) {
 			throw new InvalidComponentException("An api listed in apis.xml does not define its name. Please insert the <name> element into the file [apis.xml] for this library.");
 		}
@@ -139,6 +143,9 @@ public class Library extends PolishComponent {
 	 * 			not be resolved
 	 */
 	public String getPath() {
+		if (!this.hasPackage) {
+			return null;
+		}
 		if (!this.isInitialised) {
 			findPath();
 			this.isInitialised = true;
@@ -155,6 +162,11 @@ public class Library extends PolishComponent {
 			File libFile = new File( this.defaultPath );
 			if (libFile.exists()) {
 				this.path = this.defaultPath;
+				return;
+			}
+			libFile = new File( this.polishLibPath.getParent(), this.defaultPath );
+			if (libFile.exists()) {				
+				this.path = libFile.getAbsolutePath();
 				return;
 			}
 		}
@@ -230,8 +242,12 @@ public class Library extends PolishComponent {
 			}
 		}
 		
-		
-		System.out.println("Warning: unable to find the library [" + this.fullName + "] on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
+		if (this.defaultPath != null) {
+			System.out.println("Warning: unable to find the library \"" + this.fullName + "\" / \"" + this.defaultPath + "\" on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
+			System.out.println("polish.home=" + this.projectLibPath);
+		} else {
+			System.out.println("Warning: unable to find the library \"" + this.fullName + "\" on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
+		}
 	}
 	
 	/**

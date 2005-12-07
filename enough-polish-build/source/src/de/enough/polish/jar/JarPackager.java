@@ -27,18 +27,13 @@ package de.enough.polish.jar;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.Variable;
-import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 
 /**
@@ -79,7 +74,28 @@ extends Packager
 		//System.out.println("Manifest moved to " + manifestFile.getAbsolutePath() + ": " + moved );
 		//File manifestDir = new File( sourceDir, "META-INF");
 		//manifestDir.delete();
-		arguments.add( "jar" );
+		String javaHome = System.getProperty("java.home");
+		if (javaHome != null) {
+			if (javaHome.endsWith("jre")) {
+				javaHome = javaHome.substring( 0, javaHome.length() - "/jre".length() );
+			} else if (javaHome.charAt( javaHome.length() - 1) == File.separatorChar) {
+				javaHome = javaHome.substring( 0, javaHome.length() - 1);
+			}
+			File jarFile;
+			if (File.separatorChar == '\\') {
+				// windows:
+				jarFile = new File( javaHome + "\\bin\\jar.exe" );				
+			} else {
+				jarFile = new File( javaHome + "/bin/jar" );				
+			}
+			if (jarFile.exists()) {
+				arguments.add( jarFile.getAbsolutePath() );
+			} else {
+				arguments.add( "jar" );
+			}
+		} else {
+			arguments.add( "jar" );
+		}
 		if (this.verbose) {
 			arguments.add( "-cvfM" );			
 		} else {
@@ -92,7 +108,18 @@ extends Packager
 		arguments.add( "." );
 		//System.out.println(arguments);
 		//int result = ProcessUtil.exec( arguments, "jar: ", true, this, sourceDir );
-		int result = ProcessUtil.exec( arguments, "jar: ", true, null, sourceDir );
+		int result = 0;
+		try {
+			result = ProcessUtil.exec( arguments, "jar: ", true, null, sourceDir );
+		} catch (IOException e) {
+			if (File.separatorChar == '\\') {
+				// windows:
+				System.err.println("Unable to execute the jar packager. Check if your PATH includes %JAVA_HOME%\\bin.");
+			} else {
+				System.err.println("Unable to execute the jar packager. Check if your PATH includes $JAVA_HOME/bin.");
+			}
+			throw e;
+		}
 		if (result != 0) {
 			throw new BuildException("jar: Unable to create [" + targetFile.getAbsolutePath() + "]: jar returned [" + result + "].");
 		}
