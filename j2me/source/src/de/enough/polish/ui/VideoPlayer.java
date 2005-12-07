@@ -1,3 +1,4 @@
+//#condition polish.api.mmapi
 /*
  * Created on 18.11.2005 at 10:58:44.
  * 

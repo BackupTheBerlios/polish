@@ -1743,9 +1743,12 @@ public abstract class Item extends Object
 	 * Focuses this item.
 	 * 
 	 * @param newStyle the style which is used to indicate the focused state
+	 * @param direction the direction from which this item is focused,
+	 *        either Canvas.UP, Canvas.DOWN, Canvas.LEFT, Canvas.RIGHT or 0.
+	 *        When 0 is given, the direction is unknown.
 	 * @return the current style of this item
 	 */
-	protected Style focus(Style newStyle ) {
+	protected Style focus( Style newStyle, int direction ) {
 		Style oldStyle = this.style;
 		if (this.focusedStyle != null) {
 			newStyle = this.focusedStyle;

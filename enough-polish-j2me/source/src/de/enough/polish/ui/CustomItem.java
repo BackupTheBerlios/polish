@@ -41,8 +41,8 @@ import javax.microedition.lcdui.Graphics;
  * 
  * <br/><br/><b>Traversal</b><br/>
  * When the custom item gains the focus for the first time, the traverse-method
- * will be called with the CustomItem.NONE direction.
- * Subsequent calls will include the direction (either Canvas.UP, DOWN, LEFT or RIGHT).
+ * will be called with the appropriate direction(either Canvas.UP, DOWN, LEFT, RIGHT 
+ * or CustomItem.NONE, when the direction is not known).
  * 
  * <br/><br/><b>Interaction Modes</b><br/>
  * The J2ME Polish implementation supports the interaction modes KEY_PRESS,  
@@ -1258,9 +1258,9 @@ public abstract class CustomItem extends Item
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
 	 */
-	protected Style focus(Style focusStyle) {
-		traverse( CustomItem.NONE, this.clipWidth, this.clipHeight, this.visRect_inout );
-		return super.focus(focusStyle);
+	protected Style focus(Style focusStyle, int direction ) {
+		traverse( direction, this.clipWidth, this.clipHeight, this.visRect_inout );
+		return super.focus(focusStyle, direction );
 	}
 	
 	/* (non-Javadoc)

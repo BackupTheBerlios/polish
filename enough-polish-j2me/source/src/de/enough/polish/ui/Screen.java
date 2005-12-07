@@ -1874,7 +1874,7 @@ implements AccessibleCanvas
 		if (index != -1) {
 			//#debug
 			System.out.println("Screen: focusing item " + index );
-			this.container.focus( index, item );
+			this.container.focus( index, item, 0 );
 			return;
 		}
 		//#debug warn
@@ -1897,7 +1897,7 @@ implements AccessibleCanvas
 			//#ifdef polish.ScreenWidth:defined
 				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
 			//#else
-				this.subTitleHeight = subTitle.getItemHeight(getWidth(), getWidth());
+				this.subTitleHeight = subTitle.getItemHeight( this.screenWidth, this.screenWidth );
 			//#endif
 		}
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );

@@ -2639,7 +2639,7 @@ public class TextField extends StringItem
 	//#endif
 	
 	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
-	protected Style focus(Style focStyle) {
+	protected Style focus(Style focStyle, int direction) {
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {
 		//#endif
@@ -2649,7 +2649,7 @@ public class TextField extends StringItem
 		//#ifdef tmp.allowDirectInput
 			}
 		//#endif
-		return super.focus(focStyle);
+		return super.focus(focStyle, direction);
 	}
 	//#endif
 

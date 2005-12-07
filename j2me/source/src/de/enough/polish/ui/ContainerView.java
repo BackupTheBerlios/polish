@@ -26,6 +26,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -106,8 +107,14 @@ public abstract class ContainerView {
 	 * @param item the item which should be focused
 	 */
 	protected void focusItem( int index, Item item  ) {
+		int direction = 0;
+		if (this.focusedIndex < index ) {
+			direction = Canvas.UP;
+		} else {
+			direction = Canvas.DOWN;
+		}
 		this.focusedIndex = index;
-		this.parentContainer.focus(index, item );
+		this.parentContainer.focus(index, item, direction );
 	}
 	
 	/**

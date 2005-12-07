@@ -904,7 +904,7 @@ implements Choice
 			this.selectedIndex = elementNum;
 			if (this.isFocused) {
 				if ( this.isInitialised) {
-					focus( elementNum, newSelected );
+					focus( elementNum, newSelected, 0 );
 				} else {
 					this.autoFocusEnabled = true;
 					this.autoFocusIndex = elementNum;
@@ -1470,9 +1470,9 @@ implements Choice
 
 	//#ifdef polish.usePopupItem	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
-	protected Style focus(Style focusStyle) {
+	protected Style focus(Style focusStyle, int direction) {
 		if (this.isPopup && this.isPopupClosed) {
 			if (this.focusedStyle != null) {
 				focusStyle = this.focusedStyle;
@@ -1487,7 +1487,7 @@ implements Choice
 			}
 			return original;
 		} else {
-			return super.focus(focusStyle);
+			return super.focus(focusStyle, direction);
 		}
 	}
 	//#endif

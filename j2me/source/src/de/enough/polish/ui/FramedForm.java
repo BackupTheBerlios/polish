@@ -325,7 +325,7 @@ public class FramedForm extends Form {
 	 */
 	private void  setActiveFrame(Container newFrame) {
 		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
-		newFrame.focus( StyleSheet.focusedStyle );
+		newFrame.focus( StyleSheet.focusedStyle, 0 );
 		this.currentlyActiveContainer = newFrame;
 		if (this.screenStateListener != null) {
 			this.screenStateListener.screenStateChanged( this );

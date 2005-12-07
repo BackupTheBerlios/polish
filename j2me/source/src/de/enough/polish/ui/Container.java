@@ -225,7 +225,7 @@ public class Container extends Item {
 		Item last = (Item) this.itemsList.set( index, item );
 		if (index == this.focusedIndex) {
 			last.defocus(this.itemStyle);
-			this.itemStyle = item.focus( this.focusedStyle );
+			this.itemStyle = item.focus( this.focusedStyle, 0 );
 		}
 		if (this.isInitialised) {
 			this.isInitialised = false;
@@ -276,7 +276,7 @@ public class Container extends Item {
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				if (item.appearanceMode != PLAIN) {
-					focus( i, item );
+					focus( i, item, Canvas.DOWN );
 					focusSet = true;
 					break;
 				}
@@ -377,7 +377,18 @@ public class Container extends Item {
 	public boolean focus(int index) {
 		Item item = (Item) this.itemsList.get(index );
 		if (item.appearanceMode != Item.PLAIN) {
-			focus( index, item );			
+			int direction = 0;
+			if (this.isFocused) {
+				if (this.focusedIndex == -1) {
+					// nothing
+				} else if (this.focusedIndex < index ) {
+					direction = Canvas.DOWN;
+				} else if (this.focusedIndex > index) {
+					direction = Canvas.UP;
+				}
+			
+			}
+			focus( index, item, direction );			
 			return true;
 		}
 		return false;
@@ -388,8 +399,9 @@ public class Container extends Item {
 	 * 
 	 * @param index the position
 	 * @param item the item which should be focused
+	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
 	 */
-	public void focus( int index, Item item ) {
+	public void focus( int index, Item item, int direction ) {
 		//#debug
 		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index );
 		
@@ -424,7 +436,15 @@ public class Container extends Item {
 		}
 		
 		// save style of the to be focused item and focus the item:
-		this.itemStyle = item.focus( this.focusedStyle );
+//		int direction;
+//		if (this.focusedIndex == -1) {
+//			direction = 0;
+//		} else if ( index < this.focusedIndex ) {
+//			direction = Canvas.UP;
+//		} else {
+//			direction = Canvas.DOWN;
+//		}
+		this.itemStyle = item.focus( this.focusedStyle, direction );
 		//#ifdef polish.debug.error
 			if (this.itemStyle == null) {
 				//#debug error 
@@ -554,7 +574,7 @@ public class Container extends Item {
 					if (this.autoFocusIndex < myItems.length ) {
 						Item item = myItems [ this.autoFocusIndex ];
 						if (item.appearanceMode != Item.PLAIN) {
-							focus( this.autoFocusIndex, item );		
+							focus( this.autoFocusIndex, item, 0 );		
 						}
 					}
 				}
@@ -586,7 +606,7 @@ public class Container extends Item {
 					//#debug
 					System.out.println("Container: autofocusing element " + i);
 					this.autoFocusEnabled = false;
-					focus( i, item );
+					focus( i, item, 0 );
 					height = item.getItemHeight( firstLineWidth, lineWidth );
 					width = item.getItemWidth( firstLineWidth, lineWidth );
 				}
@@ -671,7 +691,7 @@ public class Container extends Item {
 					//#debug
 					System.out.println("Container: Autofocusing item " + i );
 					this.autoFocusEnabled = false;
-					focus( i, item );
+					focus( i, item, 0 );
 					height = item.getItemHeight( availableWidth, availableWidth );
 					width = item.getItemWidth( availableWidth, availableWidth );
 				}
@@ -925,7 +945,7 @@ public class Container extends Item {
 			if (this.view != null) {
 				Item next = this.view.getNextItem(keyCode, gameAction);
 				if (next != null) {
-					focus( this.view.focusedIndex, next );
+					focus( this.view.focusedIndex, next, gameAction );
 					return true;
 				} else if (this.enableScrolling) {
 					
@@ -1130,7 +1150,11 @@ public class Container extends Item {
 		if (item == null || item.appearanceMode == Item.PLAIN || item == this.focusedItem) {
 			return false;
 		}
-		focus(i, item);
+		int direction = Canvas.UP;
+		if (forwardFocus) {
+			direction = Canvas.DOWN;
+		}
+		focus(i, item, direction );
 		return true;
 	}
 
@@ -1296,11 +1320,11 @@ public class Container extends Item {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
-	protected Style focus(Style focusstyle) {
+	protected Style focus(Style focusstyle, int direction ) {
 		if ( this.itemsList.size() == 0) {
-			return super.focus( this.focusedStyle );
+			return super.focus( this.focusedStyle, direction );
 		} else {
 			if (this.focusedStyle != null) {
 				focusstyle = this.focusedStyle;
@@ -1312,23 +1336,60 @@ public class Container extends Item {
 				}
 			//#endif
 			this.isFocused = true;
-			if (this.focusedIndex == -1) {
-				// focus the first interactive item...
+			int newFocusIndex = this.focusedIndex;
+			//if (this.focusedIndex == -1) {
+			//#if polish.css.view-type
+				if (this.view != null && false) {
+			//#endif
 				Item[] myItems = getItems();
-				for (int i = 0; i < myItems.length; i++) {
-					Item item = myItems[i];
-					if (item.appearanceMode != PLAIN) {
-						this.focusedIndex = i;
-						break;
+				// focus the first interactive item...
+				if (direction == Canvas.UP || direction == Canvas.LEFT ) {
+					//System.out.println("Container: direction UP");
+					for (int i = myItems.length; --i > 0; ) {
+						Item item = myItems[i];
+						if (item.appearanceMode != PLAIN) {
+							newFocusIndex = i;
+							break;
+						}
+					}
+				} else {
+					//System.out.println("Container: direction DOWN");
+					for (int i = 0; i < myItems.length; i++) {
+						Item item = myItems[i];
+						if (item.appearanceMode != PLAIN) {
+							newFocusIndex = i;
+							break;
+						}
 					}
 				}
-				if (this.focusedIndex == -1) {
+				this.focusedIndex = newFocusIndex;
+				if (newFocusIndex == -1) {
+					//System.out.println("DID NOT FIND SUITEABLE ITEM");
 					// this container has only non-focusable items!
-					return super.focus( this.focusedStyle );
+					return super.focus( this.focusedStyle, direction );
 				}
-			}
+			//}
+			//#if polish.css.view-type
+				} else if (this.focusedIndex == -1) {
+					Item[] myItems = getItems();
+					System.out.println("Container: direction DOWN through view type");
+					for (int i = 0; i < myItems.length; i++) {
+						Item item = myItems[i];
+						if (item.appearanceMode != PLAIN) {
+							newFocusIndex = i;
+							break;
+						}
+					}
+					this.focusedIndex = newFocusIndex;
+					if (newFocusIndex == -1) {
+						//System.out.println("DID NOT FIND SUITEABLE ITEM");
+						// this container has only non-focusable items!
+						return super.focus( this.focusedStyle, direction );
+					}
+				}
+			//#endif
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
-			focus( this.focusedIndex, item );
+			focus( this.focusedIndex, item, direction );
 			if (item.commands == null && this.commands != null) {
 				Screen scr = getScreen();
 				if (scr != null) {
@@ -1502,7 +1563,7 @@ public class Container extends Item {
 			// the pressed item has been found:
 			if ((item.appearanceMode != Item.PLAIN) && (i != this.focusedIndex)) {
 				// only focus the item when it has not been focused already:
-				focus(i, item);
+				focus(i, item, 0);
 				// let the item also handle the pointer-pressing event:
 				item.handlePointerPressed( x , y );
 				/*

@@ -207,7 +207,7 @@ public class TabbedForm extends Form {
 		if (tabContainer.appearanceMode != Item.PLAIN) {
 			//#debug
 			System.out.println("Focusing tab [" + tabIndex + "].");
-			tabContainer.focus( tabContainer.style );
+			tabContainer.focus( tabContainer.style, 0 );
 		}
 		tabContainer.background = null;
 		tabContainer.border = null;
