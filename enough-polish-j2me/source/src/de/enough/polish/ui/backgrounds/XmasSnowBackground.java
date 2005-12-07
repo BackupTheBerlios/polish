@@ -33,11 +33,11 @@ import javax.microedition.lcdui.Image;
 import de.enough.polish.ui.Background;
 
 public class XmasSnowBackground extends Background {
-	private boolean gameover = true,plus = true;
+	private boolean isRunning = true,plus = true;
 	private Image imgSnowflake;
 	private int[] x,y,z;
 	private int numbers,color,far;
-	
+	private final Random rand = new Random();
 	public XmasSnowBackground(int color, String url, int width, int height, int far, int numbers) {
 		super();
 		this.color = color;
@@ -47,7 +47,6 @@ public class XmasSnowBackground extends Background {
 		this.y = new int[numbers];
 		this.z = new int[numbers];
 		int i = 0;
-		Random rand = new Random();
 		while(i < numbers){
 			this.x[i] = Math.abs( rand.nextInt() % width );
 			this.y[i] = Math.abs( rand.nextInt() % height );
@@ -64,7 +63,7 @@ public class XmasSnowBackground extends Background {
 	
 	public boolean animate() {
 		// TODO Auto-generated method stub	
-		return this.gameover;
+		return this.isRunning;
 	}
 	
 	public void paint(int x, int y, int width, int height, Graphics g) {
@@ -75,17 +74,17 @@ public class XmasSnowBackground extends Background {
 		int i = 0;
 		while(i < this.numbers){
 //			this.x[i]++;
-			if(this.y[i] < height){
+			if(this.y[i] < height && this.x[i] < width){
 				int z = this.z[i];
 				this.y[i]+= z;	
 				this.x[i]+=1;
 			}
 			else{
 				this.y[i] = 0;
-				Random rand = new Random();
 				this.x[i] = Math.abs( rand.nextInt() % width );
 				this.z[i] = Math.abs( rand.nextInt() % this.far );
 			}
+//			System.out.print("X:"+this.x[i]+";Y:"+this.y[i]+";Z:"+this.z[i]+";width"+width+";height"+height+"\n");
 			int size = this.z[i];
 			g.fillRoundRect(this.x[i],this.y[i],size,size,size,size);
 			i++;
