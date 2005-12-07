@@ -91,10 +91,15 @@
 	</vendor>
 	
 	<vendor>
-		<name>LG</name>
+		<name>LG Electronics</name>
 		<features></features>
 	</vendor>
 
+	<vendor>
+		<name>LG</name>
+		<features></features>
+	</vendor>
+	
 	<vendor>
 		<name>NEC</name>
 		<features></features>

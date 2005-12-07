@@ -47,6 +47,7 @@ import com.kitfox.svg.app.beans.SVGPanel;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.Variable;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -63,11 +64,19 @@ import de.enough.polish.util.StringUtil;
  */
 public class SvgConverterResourceCopier extends ResourceCopier {
 
-	private boolean scaleToFit;
-
+	private boolean scaleToFit = false;
+	private int defaultIconWidth = 15;
+	private int defaultIconHeight = 15;
+	private int defaultScreenWidth;
+	private int defaultScreenHeight;
+	
+	
 	public SvgConverterResourceCopier() {
 		super();
+		System.out.print("tim\n");
 	}
+	
+	
 	
 	/**
 	 * Determines whether the device supports the SVG API.
@@ -88,7 +97,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 	protected Dimension getIconSize( Environment env ) {
 		String iconSizesStr = env.getVariable("polish.IconSize");
 		if (iconSizesStr == null) {
-			return null;
+			return new Dimension( this.defaultIconWidth, this.defaultIconHeight );
 		} else {
 			String[] iconSizes = StringUtil.splitAndTrim( iconSizesStr, ',' );
 			int maxWidth = 0;
@@ -159,41 +168,61 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 		FileUtil.copy( leftResources, targetDir );
 	}
 	
+	public void setIconSize( String defaultSize ) {
+		System.out.print("seticonsizeStart\n");
+		if (defaultSize == null) {
+			setDefaultIconWidth( 15 );
+			setDefaultIconHeight( 15 );
+		} else {
+			String[] chunks = StringUtil.splitAndTrim( defaultSize, 'x' );
+			if (chunks.length != 2) {
+				throw new IllegalArgumentException("Invalid IconSize parameter for svgconverter: " + defaultSize );
+			}
+			setDefaultIconWidth( Integer.parseInt(chunks[0]) );
+			setDefaultIconHeight( Integer.parseInt(chunks[1]) );
+		}
+		System.out.print("seticonsizeEnde\n");
+	}
+	
 	public void setScaleToFit( boolean scaleToFit ) {
 		this.scaleToFit = scaleToFit;
 	}
-
+	
+	
+	
 	private void handleSvgFile(File file, Environment env, Device device, boolean supportsSvgApi, Dimension iconSize, Dimension screenSize, File targetDir) 
 	throws IOException  
 	{		
 		if(file.getName().startsWith("icon") || file.getName().startsWith("bg")){
 		double newWidth = 0,newHeight = 0;
 		if (file.getName().startsWith("icon")) {
-	    	  if ( iconSize == null ) {
-	    		  iconSize = new Dimension( 15, 15 );
-	    	  }
-	  		newWidth = iconSize.width;newHeight = iconSize.height; 
-	  	  }
-	      else if(file.getName().startsWith("bg")){
-	    	  if(screenSize == null){
+	  		newWidth = iconSize.width;
+	  		newHeight = iconSize.height; 
+	  		System.out.print("icon\n");
+		} else if(file.getName().startsWith("bg")){
+	    	if(screenSize == null && this.scaleToFit != true){
 	    		  screenSize = new Dimension(128,160);
-	    	  }
-		  		newWidth = screenSize.width;newHeight = screenSize.height; 
-	      }	
-
-	  		SVGUniverse universe = new SVGUniverse();
-	  		SVGDiagram diagram = null;
-	  		URI uri;	
-	  		uri = universe.loadSVG( new FileInputStream(file), "svgimage" );
-	  		diagram = universe.getDiagram(uri);	 
-	  		double width = diagram.getWidth();
-	  		double height = diagram.getHeight();
-	  		BufferedImage image = new BufferedImage( (int)newWidth, (int)newHeight, BufferedImage.TYPE_4BYTE_ABGR);		
-	  		Graphics2D g = image.createGraphics();	
-	  		g.setClip(0,0,(int)newWidth,(int)newHeight);
-	  		double sX = newWidth / width;
-	  		double sY =  newHeight / height;
-	  		g.scale(sX,sY);
+	    	}
+			newWidth = screenSize.width;
+			newHeight = screenSize.height; 
+			System.out.print("bg\n");
+	   }	
+  		SVGUniverse universe = new SVGUniverse();
+  		SVGDiagram diagram = null;	
+  		System.out.print(file.getAbsolutePath()+"\n");
+  		URI uri = universe.loadSVG( new FileInputStream( file ), "svgimage" );
+  		System.out.print(file.getAbsolutePath()+"\n");
+  		System.out.print(uri.getPath()+"\n");
+  		diagram = universe.getDiagram(uri);	 
+  		double width = diagram.getWidth();
+  		double height = diagram.getHeight();
+  		BufferedImage image = new BufferedImage( (int)newWidth, (int)newHeight, BufferedImage.TYPE_4BYTE_ABGR);		
+  		Graphics2D g = image.createGraphics();	
+  		g.setClip(0,0,(int)newWidth,(int)newHeight);
+  		double sX = newWidth / width;
+  		double sY =  newHeight / height;
+  		g.scale(sX,sY);
+  		
 //	  		System.out.println("handling svg file " + file.getAbsolutePath() );
 //	  		System.out.println("targetDir=" + targetDir.getAbsolutePath() );
 //	  		System.out.println("width: " + width );
@@ -204,18 +233,42 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 //	  		System.out.println("sY: " +sY );
 //	  		System.out.println("breite: " + width * sX );
 //	  		System.out.println("höhe: " + height * sY );
-  			try {
-				diagram.render(g);
-			} catch (SVGException e) {
-				throw new IOException(e.toString());
-			}
-			  		
-	  		File target = new File(targetDir, file.getName().substring( 0, file.getName().length() - 4 )  +  ".png");
-	  		FileOutputStream out;
-	  		out = new FileOutputStream( target );
-	  		ImageIO.write( image, "png", out );
-	  		out.close();
-			}
+		try {
+			diagram.render(g);
+		} catch (SVGException e) {
+			throw new IOException(e.toString());
+		}
+		  		
+  		File target = new File(targetDir, file.getName().substring( 0, file.getName().length() - 4 )  +  ".png");
+  		FileOutputStream out;
+  		out = new FileOutputStream( target );
+  		ImageIO.write( image, "png", out );
+  		out.close();
+		}
+	}
+
+
+
+	public void setDefaultIconHeight(int defaultIconHeight) {
+		this.defaultIconHeight = defaultIconHeight;
+	}
+
+
+
+	public void setDefaultIconWidth(int defaultIconWidth) {
+		this.defaultIconWidth = defaultIconWidth;
+	}
+
+
+
+	public void setDefaultScreenHeight(int defaultScreenHeight) {
+		this.defaultScreenHeight = defaultScreenHeight;
+	}
+
+
+
+	public void setDefaultScreenWidth(int defaultScreenWidth) {
+		this.defaultScreenWidth = defaultScreenWidth;
 	}
 
 }

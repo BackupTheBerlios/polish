@@ -67,6 +67,7 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "ball-games", "de.enough.polish.preprocess.backgrounds.BallBackgroundConverter");
 		BACKGROUND_TYPES.put( "tiger-stripes", "de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter");
 		BACKGROUND_TYPES.put( "smooth-color", "de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter");
+		BACKGROUND_TYPES.put( "snowflakes", "de.enough.polish.preprocess.backgrounds.XmasSnowBackgroundConverter");
 
 	}
 	private static final HashMap BORDER_TYPES = new HashMap();
@@ -122,6 +123,7 @@ public class CssConverter extends Converter {
 		VIEW_TYPES.put( "exclusive", "de.enough.polish.ui.containerviews.ExclusiveSingleLineView");
 		VIEW_TYPES.put( "exclusive-single-line", "de.enough.polish.ui.containerviews.ExclusiveSingleLineView");
 		VIEW_TYPES.put( "ExclusiveSingleLineView", "de.enough.polish.ui.containerviews.ExclusiveSingleLineView");
+		VIEW_TYPES.put( "Dinner", "de.enough.polish.ui.containerviews.DinnerForOneView");
 		VIEW_TYPES.put( "plain", "none");
 		VIEW_TYPES.put( "normal", "none");
 	}
