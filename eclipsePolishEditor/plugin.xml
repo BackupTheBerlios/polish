@@ -21,6 +21,7 @@
         <import plugin="org.eclipse.jdt.core"></import>
         <import plugin="org.apache.ant"/>
         <import plugin="de.enough.mepose.core.CorePlugin"/>
+        <import plugin="de.enough.mepose.ui.UIPlugin"/>
     </requires>
     <extension point="org.eclipse.ui.editors">
         <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif" id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" name="Polish Editor"></editor>
@@ -38,7 +39,11 @@
 	-->
 
     <extension id="de.enough.polish.plugin.eclipse.polishEditor.preference.preferencePages" name="J2ME Polish Prefernce Pages" point="org.eclipse.ui.preferencePages">
-        <page class="de.enough.polish.plugin.eclipse.polishEditor.preference.PolishRootPage" id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage" name="J2ME Polish"></page>
+        <page
+              category="de.enough.mepose.core.ui.preferencePages.MainPage"
+              class="de.enough.polish.plugin.eclipse.polishEditor.preference.PolishRootPage"
+              id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage"
+              name="Polish Editor"></page>
     </extension>
     <extension point="org.eclipse.ui.editors.annotationTypes">
         <type name="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation"></type>
@@ -65,6 +70,12 @@
         <actionSetPartAssociation targetID="org.eclipse.jdt.ui.text.java.actionSet.presentation">
             <part id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"></part>
         </actionSetPartAssociation>
+    </extension>
+    <extension
+          point="de.enough.mepose.ui.UIPlugin.preferencePageSummery">
+       <preferencePage
+             pageID="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage"
+             shortDescription="Change settings in the Polish Editor"/>
     </extension>
 </plugin>
 

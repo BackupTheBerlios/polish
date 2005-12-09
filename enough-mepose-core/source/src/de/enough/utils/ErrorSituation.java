@@ -4,10 +4,7 @@
 package de.enough.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class ErrorSituation {
 
@@ -34,5 +31,9 @@ public class ErrorSituation {
 
     public boolean isErroneousSituation(){
         return this.errorTokens.isEmpty();
+    }
+    
+    public String[] getErrorToken() {
+        return (String[]) this.errorTokens.toArray(new String[this.errorTokens.size()]);
     }
 }

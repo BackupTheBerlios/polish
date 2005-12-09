@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mepose Core Plugin
+Bundle-SymbolicName: de.enough.mepose.core.CorePlugin; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: MeposeCore.jar,
+ lib/ant.jar,
+ lib/ant-nodeps.jar,
+ lib/jdom.jar,
+ lib/enough-j2mepolish-build.jar
+Bundle-Activator: de.enough.mepose.core.CorePlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-AutoStart: true
+Export-Package: de.enough.mepose.core,
+ de.enough.mepose.core.model,
+ de.enough.polish,
+ de.enough.polish.ant,
+ de.enough.utils

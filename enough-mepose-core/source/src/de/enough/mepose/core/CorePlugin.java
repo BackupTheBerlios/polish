@@ -1,6 +1,5 @@
 package de.enough.mepose.core;
 
-import java.io.File;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -9,12 +8,9 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
+import de.enough.mepose.core.model.MeposeModel;
 
-//TODO: IWorkbenchPage.getActiveEditor().
 
-/**
- * The main plugin class to be used in the desktop.
- */
 public class CorePlugin extends Plugin {
 	
     public static final String ID = "de.enough.mepose.core.CorePlugin";
@@ -22,31 +18,28 @@ public class CorePlugin extends Plugin {
 	private static CorePlugin plugin;
 	private ResourceBundle resourceBundle;
     
-    private MeposeModel meposeProject;
+    private MeposeModel meposeModel;
     
-	/**
-	 * The constructor.
-	 */
 	public CorePlugin() {
 		super();
         System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
 		plugin = this;
-        //TODO: Put this into start(), so we are able to restart the plugin properly.
-        this.meposeProject = new MeposeModel();
+        
         // TODO:Only for bootstrap testing.
-        createTestProject();
+        //createTestProject();
 	}
 
-    public void createTestProject() {
-        String buildxml1_basedir = "/Users/ricky/workspace/enough-polish-demo";
-        String buildxml1_filename = "build.xml";
-        this.meposeProject.setProjectPath(buildxml1_basedir);
-        this.meposeProject.setBuildxml(new File(buildxml1_filename));
-        this.meposeProject.setEnvironmentToDevice(this.meposeProject.getConfiguredDevices()[0]);
-    }
+//    public void createTestProject() {
+//        String buildxml1_basedir = "/Users/ricky/workspace/enough-polish-demo";
+//        String buildxml1_filename = "build.xml";
+//        this.meposeModel.setProjectPath(buildxml1_basedir);
+//        this.meposeModel.setBuildxml(new File(buildxml1_filename));
+//        this.meposeModel.setEnvironmentToDevice(this.meposeModel.getConfiguredDevices()[0]);
+//    }
     
 	public void start(BundleContext context) throws Exception {
         System.out.println("DEBUG:CorePlugin.start(...):enter.");
+        this.meposeModel = new MeposeModel();
 		super.start(context);
         
 	}
@@ -125,20 +118,16 @@ public class CorePlugin extends Plugin {
     }
     
 
-    public MeposeModel getMeposeProject() {
-        return this.meposeProject;
+    // TODO: This can be enhanced with a MeposeProjectManager which can deal with several models keyed by name. 
+    public MeposeModel getDefaultMeposeModel() {
+        return this.meposeModel;
     }
 
-    public void setMeposeProject(MeposeModel meposeProject) {
-        if(meposeProject == null){
-            throw new IllegalArgumentException("ERROR:CorePlugin.setMeposeProject(...):Parameter 'meposeProject' is null.");
+    public void setDefaultMeposeModel(MeposeModel meposeModel) {
+        if(meposeModel == null){
+            throw new IllegalArgumentException("ERROR:CorePlugin.setMeposeProject(...):Parameter 'meposeModel' is null.");
         }
-        this.meposeProject = meposeProject;
+        this.meposeModel = meposeModel;
     }
-    
-    
-    // ###################################################################
-    // Getter and Setter
-    
     
 }

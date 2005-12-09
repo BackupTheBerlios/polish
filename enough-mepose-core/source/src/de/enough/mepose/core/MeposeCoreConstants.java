@@ -1,5 +1,5 @@
 /*
- * Created on Jun 23, 2005 at 4:07:06 PM.
+ * Created on Dec 7, 2005 at 2:51:44 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,17 +23,20 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui;
+package de.enough.mepose.core;
 
+/**
+ * 
+ * <br>Copyright Enough Software 2005
+ * <pre>
+ * history
+ *        Dec 7, 2005 - rickyn creation
+ * </pre>
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+ */
+public interface MeposeCoreConstants {
 
-public interface IProjectPropertyPageModel{
-    
-    public void isApplyEnabled();
-    public void isDefaultEnabled();
-    
-    public void apply();
-    public void cancel();
-    
-    public String getLatestMessage();
-    public String getLatestErrorMessage();
+    public static final String POLISH_INSTALLATION_DIR = "polish.installation.dir";
+    public static final String WTK_INSTALLATION_DIR = "WTK.installation.dir";
+
 }

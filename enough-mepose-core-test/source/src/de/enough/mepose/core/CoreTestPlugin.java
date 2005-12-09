@@ -32,20 +32,13 @@ public class CoreTestPlugin extends Plugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
-		resourceBundle = null;
+		this.resourceBundle = null;
 	}
 
-	/**
-	 * Returns the shared instance.
-	 */
 	public static CoreTestPlugin getDefault() {
 		return plugin;
 	}
 
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = CoreTestPlugin.getDefault().getResourceBundle();
 		try {
@@ -55,17 +48,14 @@ public class CoreTestPlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
 	public ResourceBundle getResourceBundle() {
 		try {
-			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("enough.mepose.core.test.EnoughMeposeCoreTestPluginResources");
+			if (this.resourceBundle == null)
+				this.resourceBundle = ResourceBundle.getBundle("enough.mepose.core.test.EnoughMeposeCoreTestPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 
 }

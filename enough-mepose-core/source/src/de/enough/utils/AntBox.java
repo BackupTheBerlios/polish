@@ -65,9 +65,8 @@ public class AntBox {
     private String workingDirectory = "";
     private String previousWorkingDirectory = "";
     
-    //ErrorSituation should be here.
-    
-    
+
+    // TODO: Add working directory to argument list as it is a prerequisit.
     public AntBox(File buildxml) {
         if(buildxml == null){
             throw new IllegalArgumentException("ERROR:AntBox.AntBox(...):Parameter 'buildxml' is null.");

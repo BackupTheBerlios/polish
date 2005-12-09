@@ -1,50 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="de.enough.mepose.ui.UIPlugin"
-   name="UI Plug-in"
-   version="1.0.0"
-   provider-name=""
-   class="de.enough.mepose.ui.UIPlugin">
+<plugin>
 
-   <runtime>
-      <library name="meposeUI.jar"/>
-   </runtime>
-
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="de.enough.mepose.core.CorePlugin"/>
-      <import plugin="org.eclipse.core.resources"/>
-   </requires>
+     <extension-point id="preferencePageSummery" name="Perference Page Summery" schema="schema/preferencePageSummery.exsd"/>
 
 	<extension point="org.eclipse.ui.propertyPages"> 
     		<page 
      		id="de.enough.mepose.ui.ProjectPropertyPage" 
-            	name="Mepose Project Properties" 
-            	objectClass="org.eclipse.core.resources.IProject" 
-            	class="de.enough.mepose.ui.ProjectPropertyPage">
-        		<filter
-           		name="nature"
-             	value="org.eclipse.jdt.core.javanature">
-       		</filter>
-        	</page> 
-    	</extension> 
-
-	<!-- Another hack because IJavaProject is not a decendent of IProject. So we simple duplicate
-	this entry. Polymorphism is for pussies anyway. -->
-	<extension point="org.eclipse.ui.propertyPages"> 
-    		<page 
-     		id="de.enough.mepose.ui.ProjectPropertyPage" 
-            	name="Mepose Project Properties" 
+            	name="Mepose Projectxxx" 
             	objectClass="org.eclipse.jdt.core.IJavaProject" 
             	class="de.enough.mepose.ui.ProjectPropertyPage">
         		<!-- TODO: We need our own meposenature or polishnature here. -->
-        		<filter
+        	<filter
            		name="nature"
              	value="org.eclipse.jdt.core.javanature">
        		</filter>
         	</page> 
-    	</extension> 
+    	</extension>
+ 
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          class="de.enough.mepose.core.ui.preferencePages.MainPage"
+          id="de.enough.mepose.core.ui.preferencePages.MainPage"
+          name="J2ME Polish"/>
+    <page
+          category="de.enough.mepose.core.ui.preferencePages.MainPage"
+          class="de.enough.mepose.core.ui.preferencePages.InstallationPage"
+          id="de.enough.mepose.core.ui.preferencePages.InstallationPage"
+          name="Installation"/>
+ </extension>
+ <extension
+       point="de.enough.mepose.ui.UIPlugin.preferencePageSummery">
+    <preferencePage
+          pageID="de.enough.mepose.core.ui.preferencePages.InstallationPage"
+          shortDescription="Change settings like paths of the wireless toolkit or the J2ME Polish installation directory"/>
+ </extension>
+ <extension
+       point="org.eclipse.ui.newWizards">
+    <wizard
+          category="org.eclipse.jdt.ui.java"
+          class="de.enough.mepose.core.ui.wizards.PolishNewWizard"
+          descriptionImage="icons/j2mepolish-logo.gif"
+          finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+          hasPages="true"
+          helpHref="http://www.j2mepolish.org"
+          icon="icons/polish_logo_16x16.png"
+          id="de.enough.mepose.core.ui.wizards.PolishNewWizard"
+          name="J2ME Polish Project"
+          preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective,org.eclipse.jdt.ui.JavaBrowsingPerspective,org.eclipse.jdt.ui.JavaHierarchyPerspective"
+          project="true"/>
+ </extension> 
 
 </plugin>

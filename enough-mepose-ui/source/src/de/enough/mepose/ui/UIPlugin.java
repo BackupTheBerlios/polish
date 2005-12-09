@@ -1,8 +1,13 @@
 package de.enough.mepose.ui;
 
+import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.*;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.osgi.framework.BundleContext;
+
+import de.enough.mepose.MeposeCoreUIConstants;
+
 import java.util.*;
 
 /**
@@ -13,6 +18,8 @@ public class UIPlugin extends AbstractUIPlugin {
 	private static UIPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+    
+    public static Logger logger = Logger.getLogger(UIPlugin.class);
 	
 	/**
 	 * The constructor.
@@ -81,4 +88,26 @@ public class UIPlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.ui.UIPlugin", path);
 	}
+
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        super.initializeImageRegistry(reg);
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_LOGO,getImageDescriptor("/icons/polish_logo_16x16.png"));
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_OK,getImageDescriptor("/icons/tsk_green.png"));
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_WARNING,getImageDescriptor("/icons/tsk_yellow.png"));
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_ERROR,getImageDescriptor("/icons/tsk_red.png"));
+    }
+
+    /**
+     * @param imageKey
+     * @return an imageDescriptor or null when imageKey is invalid or null.
+     */
+    public ImageDescriptor getImage(String imageKey) {
+        if(imageKey == null){
+            logger.error("Parameter 'imageKey' is null contrary to API.");
+            return null;
+        }
+        return getImageRegistry().getDescriptor(imageKey);
+    }
+    
+    
 }

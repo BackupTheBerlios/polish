@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core;
+package de.enough.mepose.core.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -38,7 +38,10 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
+import org.eclipse.core.runtime.Preferences;
 
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposeCoreConstants;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
@@ -46,10 +49,10 @@ import de.enough.utils.AntBox;
 import de.enough.utils.ErrorSituation;
 
 /**
- * This class encapsulates the concepts in a build.xml in an abstract manner.
+ * This class encapsulates the concepts of the polish build.xml in an abstract manner.
  * There is always a instance of this class present in the CorePlugin although
- * its felds may not be set.
- * <p></p>
+ * its fields may not be set.
+ * <br>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -92,8 +95,15 @@ public class MeposeModel {
         this.errorSituation = new ErrorSituation();
         this.errorSituation.addErrorToken(ERROR_NOBUILDXML_FILE);
         this.errorSituation.addErrorToken(ERROR_NO_DEVICE);
+        
+        initFromPreferences();
     }
     
+    private void initFromPreferences() {
+//        Preferences preferences = CorePlugin.getDefault().getPluginPreferences();
+//        String wtkInstallationDir = preferences.getString(MeposeCoreConstants.WTK_INSTALLATION_DIR);
+    }
+
     /**
      * When called initializes the antBox with the given buildxml, creates a antproject, sets
      * 'environment' and gathers the configured devices.

@@ -47,7 +47,7 @@ public class ProjectPropertyPage extends PropertyPage{
 
     private Text textField;
     private Composite mainComposite;
-    private IProjectPropertyPageModel presentationModel;
+//    private IProjectPropertyPageModel presentationModel;
     private PropertyChangeListener propertyChangeListenerForPresentationModel;
     
     class PresentationModelListener implements PropertyChangeListener{
@@ -95,7 +95,7 @@ public class ProjectPropertyPage extends PropertyPage{
         IProject project = (IProject)getElement().getAdapter(IProject.class);
         if(project == null) {
             System.out.println("ERROR:ProjectPropertyPage.getDefaultBuildxml(...):we dont have IProject as element.");
-            return defaultBuildxml;
+            return "";
         }
         IPath projectPath = project.getLocation();
         if(projectPath == null) {

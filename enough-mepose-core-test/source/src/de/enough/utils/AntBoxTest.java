@@ -4,9 +4,11 @@ package de.enough.utils;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
@@ -14,10 +16,6 @@ import org.apache.tools.ant.Task;
 
 import de.enough.polish.Device;
 import de.enough.polish.ant.PolishTask;
-import de.enough.utils.AntBox;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class AntBoxTest extends TestCase{
 

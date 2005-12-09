@@ -27,6 +27,7 @@ package de.enough.mepose.core;
 
 import java.io.File;
 
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.Device;
 
 import junit.framework.Assert;
@@ -41,7 +42,7 @@ public class MeposeProjectTest extends TestCase {
     MeposeModel meposeProject;
     
     public void setUp() {
-        this.meposeProject = this.corePlugin.getMeposeProject();
+        this.meposeProject = this.corePlugin.getDefaultMeposeModel();
         this.meposeProject.setProjectPath(this.buildxml1_basedir);
         this.meposeProject.setBuildxml(new File(this.buildxml1_filename));
     }

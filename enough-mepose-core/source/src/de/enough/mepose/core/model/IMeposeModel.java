@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core;
+package de.enough.mepose.core.model;
 
 public interface IMeposeModel {
     

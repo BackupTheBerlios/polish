@@ -1,5 +1,5 @@
 /*
- * Created on Jun 23, 2005 at 4:07:06 PM.
+ * Created on Dec 5, 2005 at 7:06:46 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,17 +23,25 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui;
+package de.enough.mepose;
 
+import de.enough.mepose.core.ui.preferencePages.InstallationPage;
 
-public interface IProjectPropertyPageModel{
+/**
+ * 
+ * <br>Copyright Enough Software 2005
+ * <pre>
+ * history
+ *        Dec 5, 2005 - rickyn creation
+ * </pre>
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+ */
+public interface MeposeCoreUIConstants {
+
+    public static final String EXTENSION_ID_INSTALLATIONPAGE = InstallationPage.class.getName();
     
-    public void isApplyEnabled();
-    public void isDefaultEnabled();
-    
-    public void apply();
-    public void cancel();
-    
-    public String getLatestMessage();
-    public String getLatestErrorMessage();
+    public static final String KEY_IMAGE_LOGO = "logo";
+    public static final String KEY_IMAGE_WARNING = "warning";
+    public static final String KEY_IMAGE_ERROR = "error";
+    public static final String KEY_IMAGE_OK = "ok";
 }

@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.MeposeModel;
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
@@ -87,7 +87,7 @@ public class PolishEditor extends CompilationUnitEditor {
         this.propertyChangeListener = new PropertyChangeListener();
         this.occurrencesMarkerManager = new OccurrencesMarkerManager();
         this.defaultOccurrenceMarkerManagerConfiguration = new OccurrencesMarkerManager.DefaultConfiguration();
-        this.meposeProject = CorePlugin.getDefault().getMeposeProject();
+        this.meposeProject = CorePlugin.getDefault().getDefaultMeposeModel();
         }
 
 
