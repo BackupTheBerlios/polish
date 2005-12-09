@@ -1844,10 +1844,6 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current localization
 	 */
 	public void compile( Device device, Locale locale ) {
-		// set the class-path:
-		String[] classPaths = this.libraryManager.getClassPaths(device);
-		device.setClassPaths( classPaths );
-
 		// setting target directory:
 		String targetDirName = device.getBaseDir() + File.separatorChar + "classes";
 		File targetDir; // = new File( targetDirName );

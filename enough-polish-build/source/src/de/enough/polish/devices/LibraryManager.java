@@ -137,6 +137,28 @@ public class LibraryManager {
 	}
 	
 	/**
+	 * Retrieves the supported optional APIs for the given device.
+	 * 
+	 * @param device the device for which the path should be retrieved
+	 * @return all resolvable libraries for this device.
+	 */
+	public Library[] getLibraries(Device device) {
+		String[] libNames = device.getSupportedApis();
+		if (libNames == null) {
+			return new Library[ 0 ];
+		}
+		ArrayList libs = new ArrayList();
+		for (int i = 0; i < libNames.length; i++) {
+			String libName = libNames[i];
+			Library library = (Library) this.libraries.get( libName );
+			if (library != null) {
+				libs.add( library );
+			}
+		}
+		return (Library[]) libs.toArray( new Library[ libs.size() ] );
+	}
+
+	/**
 	 * Retrieves the classpath for the given device.
 	 * 
 	 * @param device the device for which the path should be retrieved
@@ -258,4 +280,5 @@ public class LibraryManager {
 		}
 		
 	}
+
 }

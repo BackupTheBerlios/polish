@@ -303,7 +303,7 @@ implements Comparator
 				Translation translation = new Translation( key, value, 
 						false, null, null, null );
 				this.translationsByKey.put( key, translation );
-				if (!this.isDynamic) {
+				if (!this.isDynamic || !key.startsWith("polish.")) {
 					rawTranslations.remove( originalKey );
 				}
 				// the following can never be true, or could it?

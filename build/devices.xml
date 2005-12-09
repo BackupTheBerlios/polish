@@ -165,6 +165,20 @@
 		<capability name="SoundFormat" value="midi, amr, wav" />
 		<capability name="Emulator.Skin" value="DefaultGrayPhone" />
 	</device>	
+	
+	<device
+		supportsPolishGui="true" >
+		<identifier>Generic/MppPhone</identifier>
+		<description>A MIDP 2.0 and CLDC 1.1 phone using the mpowerplayer for emulation.</description>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="SoundFormat" value="midi, amr, wav" />
+		<capability name="HeapSize" value="20MB" />
+		<capability name="Emulator.Class" value="MppEmulator" />
+	</device>	
+	
 
 	
 <!-- virtual devices -->

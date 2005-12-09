@@ -42,6 +42,13 @@
 		<description>The Mobile Media API provides
 			functionalities for playing and capturing sounds and videos.
 		</description>
+		<!-- 
+		     The MIDP 2.0 standard supports a subset of the MMAPI, so when the 
+		     MMAPI is present, it needs to be prepended to the bootclasspath
+		     otherwise there will be compile errors when MMAPI-only features
+		     are used such as the Manager.MIDI_DEVICE_LOCATOR constant.
+		-->
+		<position>bootclasspath/p</position>
 		<names>mmapi,mm-api, JSR-135, JSR135</names>
 		<symbol>mmapi</symbol>
 		<files>mmapi.jar,j2me-mmapi.jar, mma.zip</files>
@@ -53,6 +60,13 @@
 		<description>The Mobile Media API 1.1 provides
 			functionalities for playing and capturing sounds and videos.
 		</description>
+		<!-- 
+		     The MIDP 2.0 standard supports a subset of the MMAPI, so when the 
+		     MMAPI is present, it needs to be prepended to the bootclasspath
+		     otherwise there will be compile errors when MMAPI-only features
+		     are used such as the Manager.MIDI_DEVICE_LOCATOR constant.
+		-->
+		<position>bootclasspath/p</position>
 		<parent>mmapi</parent>
 		<names>mmapi1.1,mm-api1.1</names>
 		<symbol>mmapi1.1</symbol>

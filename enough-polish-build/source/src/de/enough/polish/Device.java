@@ -29,11 +29,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
 import de.enough.polish.ant.requirements.MemoryMatcher;
 import de.enough.polish.devices.CapabilityManager;
+import de.enough.polish.devices.ClassPath;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.ConfigurationManager;
 import de.enough.polish.devices.DeviceGroup;
@@ -132,8 +132,6 @@ public class Device extends PolishComponent {
 
 	private String supportedApisString;
 
-	private String classPath;
-
 	private String sourceDir;
 
 	private String classesDir;
@@ -148,16 +146,14 @@ public class Device extends PolishComponent {
 
 	private int numberOfChangedFiles;
 
-	private String[] classPaths;
-
 	private boolean isCldc10;
 	private boolean isCldc11;
 
 	private Environment environment;
 
-	private String bootClassPath;
-	private String[] bootClassPaths;
 	private ClassLoader classLoader;
+
+	private ClassPath classPath;
 
 
 
@@ -192,6 +188,7 @@ public class Device extends PolishComponent {
 		this.identifier = identifier;
 		this.name = deviceName;
 		this.vendorName = vendor.getIdentifier();
+		this.classPath = new ClassPath( this, libraryManager );
 
 		addCapability(NAME, this.name);
 		addCapability( "polish.name", this.name );
@@ -545,15 +542,7 @@ public class Device extends PolishComponent {
 	 * @return Returns the classPath.
 	 */
 	public String getClassPath() {
-		return this.classPath;
-	}
-
-	/**
-	 * @param classPath
-	 *            The classPath to set.
-	 */
-	public void setClassPath(String classPath) {
-		this.classPath = classPath;
+		return this.classPath.getClassPath();
 	}
 
 	/**
@@ -668,25 +657,6 @@ public class Device extends PolishComponent {
 		return this.numberOfChangedFiles;
 	}
 
-	/**
-	 * Sets the classpaths as a string array
-	 * 
-	 * @param classPaths
-	 *            the class paths as a string array
-	 */
-	public void setClassPaths(String[] classPaths) {
-		this.classPaths = classPaths;
-		if (classPaths != null) {
-		StringBuffer buffer = new StringBuffer();
-			for (int i = 0; i < classPaths.length; i++) {
-				buffer.append( classPaths[i] );
-				if ( i != classPaths.length -1 ) {
-					buffer.append( File.pathSeparatorChar );
-				}
-			}
-			setClassPath( buffer.toString() );
-		}
-	}
 
 	/**
 	 * Retrieves the classpaths for this device as a string array
@@ -694,7 +664,7 @@ public class Device extends PolishComponent {
 	 * @return an array containing the classpaths for this device.
 	 */
 	public String[] getClassPaths() {
-		return this.classPaths;
+		return this.classPath.getClassPaths();
 	}
 	
 	/**
@@ -728,61 +698,15 @@ public class Device extends PolishComponent {
 		this.environment = null;
 	}
 
-	/**
-	 * @param path the bootclasspath of this device
-	 */
-	public void setBootClassPath(String path) {
-		this.bootClassPath = path;
-	}
 	
-	private void initBootClassPath() {
-		String path = getCapability( "polish.build.bootclasspath" );
-		if (path == null) {
-			throw new BuildException("IllegalState: device [" + this.identifier + "] has no build.BootClassPath defined!");
-		}
-		if (this.environment == null) {
-			throw new BuildException("IllegalState: device [" + this.identifier + "] has no environment!");
-		}
-		StringBuffer buffer = new StringBuffer();
-		String[] paths = StringUtil.splitAndTrim( path, ',' );
-		File polishHome = (File) this.environment.get("polish.home");
-		polishHome = new File( polishHome, "import" );
-		File importFolder = (File) this.environment.get("polish.apidir");
-		for (int i = 0; i < paths.length; i++) {
-			String pathElement = this.environment.writeProperties( paths[i] );
-			
-			File lib = new File( pathElement ); 
-			if ( ! lib.exists() ) {
-				lib = new File( polishHome, pathElement );
-				if ( ! lib.exists() ) {
-					lib = new File( importFolder, pathElement );
-					if ( ! lib.exists() ) {
-						lib = new File( pathElement );
-						if ( ! lib.exists() ) {
-							throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.identifier + "]: file not found! default-dir=[" + polishHome.getAbsolutePath() + "], api-dir=[" + importFolder.getAbsolutePath() + "].");
-						}
-					}
-				}
-			}
-			paths[i] = lib.getAbsolutePath();
-			buffer.append( lib.getAbsolutePath() );
-			if ( i < paths.length - 1 ) {
-				buffer.append( File.pathSeparatorChar );
-			}
-		}
-		this.bootClassPath = buffer.toString();
-		this.bootClassPaths = paths;
-	}
+	
 	
 	public String getBootClassPath() {
-		if (this.bootClassPath == null) {
-			initBootClassPath();
-		}
-		return this.bootClassPath;
+		return this.classPath.getBootClassPath();
 	}
 
 	public String[] getBootClassPaths() {
-		return this.bootClassPaths;
+		return this.classPath.getBootClassPaths();
 	}
 
 	
@@ -794,20 +718,17 @@ public class Device extends PolishComponent {
 	 */
 	public ClassLoader getClassLoader() {
 		if (this.classLoader == null) {
-			if (this.bootClassPaths == null) {
-				initBootClassPath();
-			}
+			String[] bootClassPaths = this.classPath.getBootClassPaths(); 
 			AntClassLoader acl = new AntClassLoader();
 			//acl.addPathElement( this.bootClassPath );
-			for ( int i=0; i < this.bootClassPaths.length; i++ ) {
-				String path = this.bootClassPaths[i];
+			for ( int i=0; i < bootClassPaths.length; i++ ) {
+				String path = bootClassPaths[i];
 				acl.addPathElement( path );
 			}
-			if (this.classPaths != null) {
-				for (int i=0; i < this.classPaths.length; i++ ) {
-					String path = this.classPaths[i];
-					acl.addPathElement( path );
-				}
+			String[] classPaths = this.classPath.getClassPaths();
+			for (int i=0; i < classPaths.length; i++ ) {
+				String path = classPaths[i];
+				acl.addPathElement( path );
 			}
 			acl.addPathElement( this.classesDir );
 			//System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );

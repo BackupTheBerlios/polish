@@ -46,7 +46,12 @@ import java.util.Map;
  * @author Robert Virkus, robert@enough.de
  */
 public class Library extends PolishComponent {
-	
+	/** This library should be added to the classpath */
+	public static final int POSITION_CLASSPATH = 0;
+	/** This library should be preppended to the bootclasspath */
+	public static final int POSITION_BOOTCP_PREPPEND = 1;
+	/** This library should be appended to the bootclasspath */
+	public static final int POSITION_BOOTCP_APPEND = 2;
 	private final String fullName;
 	//private final String description;
 	private final String symbol;
@@ -61,6 +66,7 @@ public class Library extends PolishComponent {
 	private final Map antProperties;
 	private final String[] symbols;
 	private final boolean hasPackage;
+	private final int position;
 
 	/**
 	 * Creates a new library.
@@ -82,6 +88,7 @@ public class Library extends PolishComponent {
 	throws InvalidComponentException 
 	{
 		super( definition );
+		this.antProperties = antProperties;
 		this.wtkLibPath = wtkLibPath;
 		this.polishLibPath = polishLibPath;
 		this.projectLibPath = projectLibPath;
@@ -121,8 +128,17 @@ public class Library extends PolishComponent {
 		if (fileNamesString != null) {
 			this.fileNames = StringUtil.splitAndTrim( fileNamesString, ',' );
 		}
+		String positionStr = definition.getChildTextTrim( "position");
+		if (positionStr == null || "classpath".equals( positionStr)) {
+			this.position = POSITION_CLASSPATH;
+		} else if ("bootclasspath/p".equals( positionStr)) {
+			this.position = POSITION_BOOTCP_PREPPEND;
+		} else if ("bootclasspath/a".equals( positionStr) || "bootclasspath".equals( positionStr)) {
+			this.position = POSITION_BOOTCP_APPEND;
+		} else {
+			throw new InvalidComponentException("The library [" + this.fullName + "] used the unsupported position [" + positionStr + "]. Use either \"classpath\", \"bootclasspath/p\" or \"bootclasspath/a\" in the <position> element.");
+		}
 		this.defaultPath = definition.getChildTextTrim( "path");
-		this.antProperties = antProperties;
 		// try and find this library only when it is used
 		// (compare method findPath())
 
@@ -292,6 +308,18 @@ public class Library extends PolishComponent {
 	 */
 	public String getSymbol() {
 		return this.symbol;
+	}
+	
+	/**
+	 * Retrieves the position of this library inside of the classpath for compilation/obfuscation, etc.
+	 * 
+	 * @return either POSITION_CLASSPATH, POSITION_BOOTCP_PREPPEND or POSITION_BOOTCP_APPEND.
+	 * @see #POSITION_CLASSPATH
+	 * @see #POSITION_BOOTCP_APPEND
+	 * @see #POSITION_BOOTCP_PREPPEND
+	 */
+	public int getPosition() {
+		return this.position;
 	}
 
 }
