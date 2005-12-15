@@ -27,7 +27,6 @@
  */
 package de.enough.polish.log.file;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Enumeration;
 
@@ -60,8 +59,8 @@ implements Runnable
 		}
 		synchronized ( this.scheduledLogEntries ) {
 			this.scheduledLogEntries.add(entry);
+			this.scheduledLogEntries.notify();
 		}
-		notify();
 	}
 
 	public void exit() {
@@ -108,9 +107,10 @@ implements Runnable
 				//System.out.println("opening data output stream...");
 				this.out = new PrintStream( connection.openOutputStream() );
 				this.out.println("time\tlevel\tclass\tline\tmessage\terror");
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Unable to open file log: " + e );
+				return;
 			}
 			//this.out.println( roots );
 		}
@@ -128,16 +128,22 @@ implements Runnable
 					.append( entry.lineNumber ).append('\t')
 					.append( entry.message ).append('\t')
 					.append( entry.exception );
-				this.out.println( buffer.toString() );	}
+				try {
+					this.out.println( buffer.toString() );
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("Unable to write log entry: " + e );
+				}
 			}
 			// wait for next log entry:
 			try {
-				wait();
+				synchronized ( this.scheduledLogEntries ) {
+					this.scheduledLogEntries.wait();
+				}
 			} catch (InterruptedException e) {
 				// ignore
 			}
 		}
-	
-	
+	}
 
 }

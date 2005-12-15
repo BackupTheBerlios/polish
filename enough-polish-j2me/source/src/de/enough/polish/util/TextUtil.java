@@ -42,6 +42,8 @@ import javax.microedition.lcdui.Font;
  * @author Robert Virkus, robert@enough.de
  */
 public final class TextUtil {
+
+	private static final String UNRESERVED = "-_.!~*'()\"";
 	
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
@@ -235,7 +237,6 @@ public final class TextUtil {
 	}
 	
 //	 Unreserved punctuation mark/symbols
-    private static final String UNRESERVED = "-_.!~*'()\"";
 
     /**
      * Converts Hex digit to a UTF-8 "Hex" character
@@ -287,6 +288,76 @@ public final class TextUtil {
             }
         }
         return encodedUrl.toString(); // Return encoded URL
+    }
+
+    /**
+     * Replaces the all matches within a String.
+     * 
+     * @param input the input string
+     * @param search the string that should be replaced
+     * @param replacement the replacement
+     * @return the input string where the search string has been replaced
+     * @throws NullPointerException when one of the specified strings is null
+     */
+    public static String replace( String input, String search, String replacement ) {
+    	int pos = input.indexOf( search );
+    	if (pos != -1) {
+    		StringBuffer buffer = new StringBuffer();
+    		int lastPos = 0;
+    		do {
+    			buffer.append( input.substring( lastPos, pos ) )
+    			      .append( replacement );
+    			lastPos = pos + search.length();
+    			pos = input.indexOf( search, lastPos );
+    		} while (pos != -1);
+    		buffer.append( input.substring( lastPos ));
+    		input = buffer.toString();
+    	}
+    	return input;
+    }
+
+    
+    /**
+     * Replaces the first match in a String.
+     * 
+     * @param input the input string
+     * @param search the string that should be replaced
+     * @param replacement the replacement
+     * @return the input string where the first match of the search string has been replaced
+     * @throws NullPointerException when one of the specified strings is null
+     */
+    public static String replaceFirst( String input, String search, String replacement ) {
+    	int pos = input.indexOf( search );
+    	if (pos != -1) {
+    		input = input.substring(0, pos) + replacement + input.substring( pos + search.length() );
+    	}
+    	return input;
+    }
+
+    /**
+     * Replaces the last match in a String.
+     * 
+     * @param input the input string
+     * @param search the string that should be replaced
+     * @param replacement the replacement
+     * @return the input string where the last match of the search string has been replaced
+     * @throws NullPointerException when one of the specified strings is null
+     */
+    public static String replaceLast( String input, String search, String replacement ) {
+    	int pos = input.indexOf( search );
+    	if (pos != -1) {
+	    	int lastPos = pos;
+	    	while (true) {
+	    		pos = input.indexOf( search, lastPos + 1 );
+	    		if (pos == -1) {
+	    			break;
+	    		} else {
+	    			lastPos = pos;
+	    		}
+	    	}
+    		input = input.substring(0, lastPos) + replacement + input.substring( lastPos + search.length() );
+    	}
+    	return input;
     }
 
 }

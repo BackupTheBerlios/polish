@@ -41,7 +41,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 public class VideoPlayer extends Canvas{
-private Item item;
 private Player p;
 private PlayerListener pListener;
 	public VideoPlayer() {
@@ -60,7 +59,7 @@ private PlayerListener pListener;
 				System.out.print("2\n");
 				vc = (VideoControl)this.p.getControl("VideoControl");
 				System.out.print("3\n");
-				Item video = (Item)vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
+				vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
 				this.p.setLoopCount(5);
 				this.p.start();
 			} catch (MediaException e) {

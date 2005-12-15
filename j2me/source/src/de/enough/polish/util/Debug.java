@@ -368,15 +368,7 @@ implements CommandListener
 		StringBuffer buffer = new StringBuffer();
 		int maxSize = Debug.textBox.getMaxSize();
 		LogEntry[] entries = (LogEntry[]) MESSAGES.toArray( new LogEntry[ MESSAGES.size() ] );
-		//#if polish.Debug.showLastMessageFirst != true
-			for (int i = 0; i < entries.length; i++) {
-				buffer.append( entries[i].toString())
-				.append( '\n' );
-			}
-			if ( buffer.length() >= maxSize) {
-				buffer.delete(0,  buffer.length() - maxSize  );
-			}
-		//#else
+		//#if polish.Debug.showLastMessageFirst != false
 			int i = entries.length - 1; 
 			while (buffer.length() < maxSize && i >= 0 ) {
 				buffer.append( entries[i].toString() )
@@ -385,6 +377,14 @@ implements CommandListener
 			}
 			if ( buffer.length() >= maxSize) {
 				buffer.delete(maxSize - 1, buffer.length() );
+			}
+		//#else
+			for (int j = 0; j < entries.length; j++) {
+				buffer.append( entries[j].toString())
+				.append( '\n' );
+			}
+			if ( buffer.length() >= maxSize) {
+				buffer.delete(0,  buffer.length() - maxSize  );
 			}
 		//#endif
 		Debug.textBox.setString( buffer.toString() );

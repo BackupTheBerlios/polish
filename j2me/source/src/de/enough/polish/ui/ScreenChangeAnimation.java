@@ -160,10 +160,19 @@ public abstract class ScreenChangeAnimation
 		} else {
 			//#debug
 			System.out.println("ScreenChangeAnimation: setting next screen");
+			this.lastCanvasImage = null;
+			this.nextCanvasImage = null;
+			this.nextCanvas = null;
+			Display disp = this.display;
+			this.display = null;
+			Displayable next = this.nextDisplayable;
+			this.nextDisplayable = null;
+			System.gc();
+
 			//#if polish.Bugs.displaySetCurrentFlickers
-				MasterCanvas.setCurrent( this.display, this.nextDisplayable );
+				MasterCanvas.setCurrent( disp, next );
 			//#else
-				this.display.setCurrent( this.nextDisplayable );
+				disp.setCurrent( next );
 			//#endif
 		}
 	}

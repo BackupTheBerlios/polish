@@ -239,7 +239,7 @@ public class ArrayList {
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain null.");
 		}
-		if (index < 0 || index >= this.size ) {
+		if (index < 0 || index > this.size ) {
 			throw new IndexOutOfBoundsException("the index [" + index + "] is not valid for this list with the size [" + this.size + "].");
 		}
 		if (this.size >= this.storedObjects.length) {
