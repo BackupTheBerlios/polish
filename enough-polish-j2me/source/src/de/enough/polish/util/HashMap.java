@@ -300,6 +300,23 @@ public final class HashMap
 	}
 	
 	/**
+	 * Returns String containing the String representations of all objects of this map.
+	 * 
+	 * @return the stored elements in a String representation.
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer( this.size * 23 );
+		buffer.append( super.toString() ).append( "{\n" );
+		Object[] values = values();
+		for (int i = 0; i < values.length; i++) {
+			buffer.append( values[i] );
+			buffer.append('\n');
+		}
+		buffer.append('}');
+		return buffer.toString();
+	}
+	
+	/**
 	 * Increaases the internal capacity of this map.
 	 */
 	private void increaseSize() {

@@ -272,6 +272,22 @@ public class ArrayList {
 	}
 	
 	/**
+	 * Returns String containing the String representations of all objects of this list.
+	 * 
+	 * @return the stored elements in a String representation.
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer( this.size * 23 );
+		buffer.append( super.toString() ).append( "{\n" );
+		for (int i = 0; i < this.size; i++) {
+			buffer.append( this.storedObjects[i] );
+			buffer.append('\n');
+		}
+		buffer.append('}');
+		return buffer.toString();
+	}
+	
+	/**
 	 * Returns all stored elements as an array.
 	 * 
 	 * @return the stored elements as an array.
