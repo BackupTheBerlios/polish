@@ -93,7 +93,7 @@ public final class HashMap
 		initialCapacity = (initialCapacity * 100) / loadFactor;
 		int capacity = 1;
 		while (initialCapacity > capacity) {
-			capacity <<= 2;
+			capacity <<= 1;
 		}
 		this.isPowerOfTwo = (capacity == initialCapacity);
 		//System.out.println("isPowerOfTwo: " + this.isPowerOfTwo );

@@ -100,7 +100,7 @@ public final class IdentityHashMap
 		// check if initial capacity is a power of 2:
 		int capacity = 1;
 		while (initialCapacity > capacity) {
-			capacity <<= 2;
+			capacity <<= 1;
 		}
 		this.isPowerOfTwo = (capacity == initialCapacity);
 		//System.out.println("isPowerOfTwo: " + this.isPowerOfTwo );
