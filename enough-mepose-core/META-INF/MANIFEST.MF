@@ -7,10 +7,14 @@ Bundle-ClassPath: MeposeCore.jar,
  lib/ant.jar,
  lib/ant-nodeps.jar,
  lib/jdom.jar,
- lib/enough-j2mepolish-build.jar
+ lib/enough-j2mepolish-build.jar,
+ .
 Bundle-Activator: de.enough.mepose.core.CorePlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.apache.log4j,
+ org.eclipse.core.resources,
+ org.apache.velocity
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose.core,
  de.enough.mepose.core.model,

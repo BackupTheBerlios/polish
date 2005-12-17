@@ -52,6 +52,7 @@ import de.enough.utils.ErrorSituation;
  * This class encapsulates the concepts of the polish build.xml in an abstract manner.
  * There is always a instance of this class present in the CorePlugin although
  * its fields may not be set.
+ * Every project may have a MeposeModel.
  * <br>
  *
  * <p>Copyright Enough Software 2005</p>
@@ -78,7 +79,7 @@ public class MeposeModel {
     //TODO: Make this property have a absolute path to the buildxml file.
     private File buildxml;
     private ErrorSituation errorSituation;
-    
+
     // TODO: Make a map and register listeners with properties directly.
     private List propertyChangeListeners;
     
@@ -252,5 +253,25 @@ public class MeposeModel {
             PropertyChangeListener propertyChangeListener = (PropertyChangeListener) iterator.next();
             propertyChangeListener.propertyChange(event);
         }
+    }
+
+    public void setPolishHome(File file) {
+        // TODO rickyn implement setPolishHome
+        
+    }
+
+    public void setWTKHome(File file) {
+        // TODO rickyn implement setWTKHome
+        
+    }
+
+    public void setConfiguredDevicesAsString(String configuredDevices2) {
+        // TODO rickyn implement setConfiguredDevicesAsString
+        
+    }
+
+    public void setPlatformConfiguredAsString(String configuredPlatforms) {
+        // TODO rickyn implement setPlatformConfiguredAsString
+        
     }
 }
