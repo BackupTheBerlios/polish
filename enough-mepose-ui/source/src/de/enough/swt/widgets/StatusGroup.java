@@ -23,19 +23,16 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.ui.wizards;
+package de.enough.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import de.enough.mepose.MeposeCoreUIConstants;
-import de.enough.mepose.core.MeposeCoreConstants;
 import de.enough.mepose.ui.UIPlugin;
 
 /**
@@ -47,7 +44,7 @@ import de.enough.mepose.ui.UIPlugin;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class MyGroup extends Composite{
+public class StatusGroup extends Composite{
 
     private Group group;
     private Composite echoArea;
@@ -56,7 +53,7 @@ public class MyGroup extends Composite{
     private Label echoLabel;
     private GridData echoAreaGridData;
 
-    public MyGroup(Composite parent, int style) {
+    public StatusGroup(Composite parent, int style) {
         super(parent, style);
         setLayout(new GridLayout(1,false));
         this.group = new Group(this,SWT.NONE);

@@ -91,41 +91,41 @@ public class PreferencesAdapter implements IPreferenceStore {
      * @param preferences The preferences to wrap.
      */
     public PreferencesAdapter(Preferences preferences) {
-        fPreferences= preferences;
+        this.fPreferences= preferences;
     }
 
     /**
      * {@inheritDoc}
      */
     public void addPropertyChangeListener(IPropertyChangeListener listener) {
-        if (fListeners.size() == 0)
-            fPreferences.addPropertyChangeListener(fListener);
-        fListeners.add(listener);
+        if (this.fListeners.size() == 0)
+            this.fPreferences.addPropertyChangeListener(this.fListener);
+        this.fListeners.add(listener);
     }
 
     /**
      * {@inheritDoc}
      */
     public void removePropertyChangeListener(IPropertyChangeListener listener) {
-        fListeners.remove(listener);
-        if (fListeners.size() == 0)
-            fPreferences.removePropertyChangeListener(fListener);
+        this.fListeners.remove(listener);
+        if (this.fListeners.size() == 0)
+            this.fPreferences.removePropertyChangeListener(this.fListener);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean contains(String name) {
-        return fPreferences.contains(name);
+        return this.fPreferences.contains(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
-        if (!fSilent) {
+        if (!this.fSilent) {
             PropertyChangeEvent event= new PropertyChangeEvent(this, name, oldValue, newValue);
-            Object[] listeners= fListeners.getListeners();
+            Object[] listeners= this.fListeners.getListeners();
             for (int i= 0; i < listeners.length; i++)
                 ((IPropertyChangeListener) listeners[i]).propertyChange(event);
         }
@@ -135,98 +135,98 @@ public class PreferencesAdapter implements IPreferenceStore {
      * {@inheritDoc}
      */
     public boolean getBoolean(String name) {
-        return fPreferences.getBoolean(name);
+        return this.fPreferences.getBoolean(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getDefaultBoolean(String name) {
-        return fPreferences.getDefaultBoolean(name);
+        return this.fPreferences.getDefaultBoolean(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public double getDefaultDouble(String name) {
-        return fPreferences.getDefaultDouble(name);
+        return this.fPreferences.getDefaultDouble(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public float getDefaultFloat(String name) {
-        return fPreferences.getDefaultFloat(name);
+        return this.fPreferences.getDefaultFloat(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getDefaultInt(String name) {
-        return fPreferences.getDefaultInt(name);
+        return this.fPreferences.getDefaultInt(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public long getDefaultLong(String name) {
-        return fPreferences.getDefaultLong(name);
+        return this.fPreferences.getDefaultLong(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getDefaultString(String name) {
-        return fPreferences.getDefaultString(name);
+        return this.fPreferences.getDefaultString(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public double getDouble(String name) {
-        return fPreferences.getDouble(name);
+        return this.fPreferences.getDouble(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public float getFloat(String name) {
-        return fPreferences.getFloat(name);
+        return this.fPreferences.getFloat(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getInt(String name) {
-        return fPreferences.getInt(name);
+        return this.fPreferences.getInt(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public long getLong(String name) {
-        return fPreferences.getLong(name);
+        return this.fPreferences.getLong(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getString(String name) {
-        return fPreferences.getString(name);
+        return this.fPreferences.getString(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isDefault(String name) {
-        return fPreferences.isDefault(name);
+        return this.fPreferences.isDefault(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean needsSaving() {
-        return fPreferences.needsSaving();
+        return this.fPreferences.needsSaving();
     }
 
     /**
@@ -234,10 +234,10 @@ public class PreferencesAdapter implements IPreferenceStore {
      */
     public void putValue(String name, String value) {
         try {
-            fSilent= true;
-            fPreferences.setValue(name, value);
+            this.fSilent= true;
+            this.fPreferences.setValue(name, value);
         } finally {
-            fSilent= false;
+            this.fSilent= false;
         }
     }
 
@@ -245,90 +245,90 @@ public class PreferencesAdapter implements IPreferenceStore {
      * {@inheritDoc}
      */
     public void setDefault(String name, double value) {
-        fPreferences.setDefault(name, value);
+        this.fPreferences.setDefault(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDefault(String name, float value) {
-        fPreferences.setDefault(name, value);
+        this.fPreferences.setDefault(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDefault(String name, int value) {
-        fPreferences.setDefault(name, value);
+        this.fPreferences.setDefault(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDefault(String name, long value) {
-        fPreferences.setDefault(name, value);
+        this.fPreferences.setDefault(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDefault(String name, String defaultObject) {
-        fPreferences.setDefault(name, defaultObject);
+        this.fPreferences.setDefault(name, defaultObject);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDefault(String name, boolean value) {
-        fPreferences.setDefault(name, value);
+        this.fPreferences.setDefault(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setToDefault(String name) {
-        fPreferences.setToDefault(name);
+        this.fPreferences.setToDefault(name);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(String name, double value) {
-        fPreferences.setValue(name, value);
+        this.fPreferences.setValue(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(String name, float value) {
-        fPreferences.setValue(name, value);
+        this.fPreferences.setValue(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(String name, int value) {
-        fPreferences.setValue(name, value);
+        this.fPreferences.setValue(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(String name, long value) {
-        fPreferences.setValue(name, value);
+        this.fPreferences.setValue(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(String name, String value) {
-        fPreferences.setValue(name, value);
+        this.fPreferences.setValue(name, value);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setValue(String name, boolean value) {
-        fPreferences.setValue(name, value);
+        this.fPreferences.setValue(name, value);
     }
 }

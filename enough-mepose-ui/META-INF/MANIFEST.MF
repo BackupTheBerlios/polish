@@ -8,9 +8,10 @@ Bundle-Activator: de.enough.mepose.ui.UIPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- de.enough.mepose.core.CorePlugin,
  org.eclipse.core.resources,
  org.apache.log4j,
+ de.enough.mepose.core.CorePlugin,
  org.eclipse.jdt.core,
- org.eclipse.jdt.ui
+ org.eclipse.jdt.ui,
+ org.apache.ant
 Eclipse-AutoStart: true

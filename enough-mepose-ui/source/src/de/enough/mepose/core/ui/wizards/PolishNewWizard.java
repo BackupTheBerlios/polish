@@ -2,7 +2,11 @@ package de.enough.mepose.core.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,6 +33,9 @@ import org.eclipse.ui.IWorkbenchWizard;
 public class PolishNewWizard extends Wizard implements INewWizard {
 //	private FirstWizardPage firstPage;
 //	private WizardPage firstPage;
+    
+    public static Logger logger = Logger.getLogger(PolishNewWizard.class);
+    
     private ISelection selection;
     private NewPolishProjectDAO newPolishProjectDAO;
     private PathsPage pathsPage;
@@ -180,6 +187,21 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     public boolean canFinish() {
         return this.newPolishProjectDAO.isBasicallyConfigured();
     }
+
+    public boolean performCancel() {
+        IProject project = this.newPolishProjectDAO.getProject();
+        if(project != null) {
+            try {
+                project.delete(true,true,new NullProgressMonitor());
+            } catch (CoreException exception) {
+                if(logger.isDebugEnabled()) {
+                    logger.error("Could not remove project:"+exception);
+                }
+            }
+        }
+        return super.performCancel();
+    }
+    
     
     
 }

@@ -25,9 +25,12 @@
  */
 package de.enough.mepose.core.ui.wizards;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
+
+import de.enough.mepose.core.model.MeposeModel;
 
 /**
  * 
@@ -47,6 +50,8 @@ public class NewPolishProjectDAO{
     private IPath polishHomePath;
     private boolean isBasicallyConfigured;
     private String projectName;
+    private IProject project;
+    private MeposeModel model;
     
     public NewPolishProjectDAO() {
         reset();
@@ -89,4 +94,21 @@ public class NewPolishProjectDAO{
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+
+    public MeposeModel getModel() {
+        return this.model;
+    }
+
+    public void setModel(MeposeModel model) {
+        this.model = model;
+    }
+
+    public IProject getProject() {
+        return this.project;
+    }
+
+    public void setProject(IProject project) {
+        this.project = project;
+    }
+    
 }

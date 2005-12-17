@@ -92,6 +92,7 @@ public class ProjectPropertyPage extends PropertyPage{
 
     private String getDefaultBuildxml() {
         String defaultBuildxml = "build.xml";
+        
         IProject project = (IProject)getElement().getAdapter(IProject.class);
         if(project == null) {
             System.out.println("ERROR:ProjectPropertyPage.getDefaultBuildxml(...):we dont have IProject as element.");
