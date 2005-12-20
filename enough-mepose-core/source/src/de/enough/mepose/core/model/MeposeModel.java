@@ -38,10 +38,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
-import org.eclipse.core.runtime.Preferences;
 
 import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.MeposeCoreConstants;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
@@ -77,8 +75,11 @@ public class MeposeModel {
     private AntBox antBox;
     private PolishTask polishTask;
     //TODO: Make this property have a absolute path to the buildxml file.
-    private File buildxml;
+    private File buildxml = new File("");
     private ErrorSituation errorSituation;
+    private File wtkHome = new File("");
+    private File polishHome = new File("");
+    
 
     // TODO: Make a map and register listeners with properties directly.
     private List propertyChangeListeners;
@@ -260,9 +261,17 @@ public class MeposeModel {
         
     }
 
+    public File getPolishHome() {
+        return this.polishHome;
+    }
+
     public void setWTKHome(File file) {
         // TODO rickyn implement setWTKHome
         
+    }
+    
+    public File getWTKHome() {
+        return this.wtkHome;
     }
 
     public void setConfiguredDevicesAsString(String configuredDevices2) {
@@ -274,4 +283,7 @@ public class MeposeModel {
         // TODO rickyn implement setPlatformConfiguredAsString
         
     }
+
+
+    
 }

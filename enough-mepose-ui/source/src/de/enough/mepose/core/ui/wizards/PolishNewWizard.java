@@ -1,9 +1,15 @@
 package de.enough.mepose.core.ui.wizards;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -17,6 +23,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.model.BuildXMLWriter;
+import de.enough.mepose.core.model.MeposeModel;
 
 
 /**
@@ -50,6 +60,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 		super();
 		setNeedsProgressMonitor(true);
         this.newPolishProjectDAO = new NewPolishProjectDAO();
+        this.newPolishProjectDAO.setModel(new MeposeModel());
 	}
 	
 	/**
@@ -103,6 +114,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	}
 	
 	protected void doFinish(IProgressMonitor monitor){
+        createBuildXML();
         
         // Sanity check
         // Create IProject
@@ -142,45 +154,40 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //		});
 //		monitor.worked(1);
 	}
-	
-	/**
-	 * We will initialize file contents with a sample text.
-	 */
-
-//	private InputStream openContentStream() {
-//		String contents =
-//			"This is the initial file contents for *.mpe file that should be word-sorted in the Preview page of the multi-page editor";
-//		return new ByteArrayInputStream(contents.getBytes());
-//	}
-//
-//	private void throwCoreException(String message) throws CoreException {
-//		IStatus status =
-//			new Status(IStatus.ERROR, "de.enough.mepose.ui.UIPlugin", IStatus.OK, message, null);
-//		throw new CoreException(status);
-//	}
-
-	/**
-	 * We will accept the selection in the workbench to see if
-	 * we can initialize from it.
-	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-	 */
+    private void createBuildXML() {        
+        BuildXMLWriter buildXMLWriter = new BuildXMLWriter(this.newPolishProjectDAO.getModel());
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
+        buildXMLWriter.writeBuildXML(new OutputStreamWriter(byteArrayOutputStream));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        
+        IFile file = this.newPolishProjectDAO.getNewProject().getFile("build.xml");
+        try {
+            file.create(inputStream,true,null);
+        } catch (CoreException exception) {
+            System.out.println("DEBUG;PolishNewWizard.createBuildXML(...):could not create file:"+exception);
+            return;
+        }
+        
+    }
+    
 	public void init(IWorkbench workbench, IStructuredSelection newSelection) {
 		this.selection = newSelection;
         this.newPolishProjectDAO.setProjectToConvert(extractProjectFromSelection(this.selection));
 	}
     
-    private IJavaProject extractProjectFromSelection(ISelection projectSelection) {
-        if (projectSelection != null && projectSelection.isEmpty() == false
-                && projectSelection instanceof IStructuredSelection) {
-            IStructuredSelection ssel = (IStructuredSelection) projectSelection;
-            if (ssel.size() > 1) {
-                return null;
-            }
-            Object obj = ssel.getFirstElement();
-            if (obj instanceof IJavaProject) {
-                return (IJavaProject)obj;
-            }
-        }
+    private IProject extractProjectFromSelection(ISelection projectSelection) {
+//        if (projectSelection != null && projectSelection.isEmpty() == false
+//                && projectSelection instanceof IStructuredSelection) {
+//            IStructuredSelection ssel = (IStructuredSelection) projectSelection;
+//            if (ssel.size() > 1) {
+//                return null;
+//            }
+//            Object obj = ssel.getFirstElement();
+//            if (obj instanceof IJavaProject) {
+//                return (IJavaProject)obj;
+//            }
+//        }
         return null;
     }
 
@@ -189,7 +196,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     }
 
     public boolean performCancel() {
-        IProject project = this.newPolishProjectDAO.getProject();
+        IProject project = this.newPolishProjectDAO.getNewProject();
         if(project != null) {
             try {
                 project.delete(true,true,new NullProgressMonitor());

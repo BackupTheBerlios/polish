@@ -25,8 +25,8 @@
  */
 package de.enough.mepose.core.ui.wizards;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import java.io.File;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -50,12 +50,12 @@ import org.eclipse.swt.widgets.Text;
  */
 public class PathsPage extends WizardPage {
 
-    private NewPolishProjectDAO newPolkishProjectDAO;
+    private NewPolishProjectDAO newPolishProjectDAO;
     private Text polishHomeText;
 
     protected PathsPage(NewPolishProjectDAO newPolishProjectDAO) {
         super("Paths and Locations");
-        this.newPolkishProjectDAO = newPolishProjectDAO;
+        this.newPolishProjectDAO = newPolishProjectDAO;
         setTitle("Paths and Locations");
         setDescription("Specify where to find the required locations.");
     }
@@ -68,7 +68,7 @@ public class PathsPage extends WizardPage {
         polishHomeLabel.setText("J2ME Polish Home:");
         
         this.polishHomeText = new Text(composite,SWT.NONE);
-        this.polishHomeText.setText(this.newPolkishProjectDAO.getPolishHomePath().toString());
+        this.polishHomeText.setText(this.newPolishProjectDAO.getPolishHome().toString());
         this.polishHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
         Button browseButton = new Button(composite,SWT.NONE);
         browseButton.setText("Browse for Path");
@@ -85,9 +85,9 @@ public class PathsPage extends WizardPage {
         FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
         String pathString = fileDialog.open();
         if(pathString != null) {
-            IPath path = new Path(pathString);
-            //TODO: Maybe chekc if the path is only a dir, not a file.
-            this.newPolkishProjectDAO.setPolishHomePath(path);
+//            IPath path = new Path(pathString);
+            //TODO: check if the path is only a dir, not a file.
+            this.newPolishProjectDAO.setPolishHome(new File(pathString));
             this.polishHomeText.setText(pathString);
         }
     }

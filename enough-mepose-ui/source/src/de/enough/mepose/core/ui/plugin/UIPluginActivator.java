@@ -1,4 +1,4 @@
-package de.enough.mepose.ui;
+package de.enough.mepose.core.ui.plugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.*;
@@ -13,18 +13,18 @@ import java.util.*;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class UIPlugin extends AbstractUIPlugin {
+public class UIPluginActivator extends AbstractUIPlugin {
 	//The shared instance.
-	private static UIPlugin plugin;
+	private static UIPluginActivator plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
     
-    public static Logger logger = Logger.getLogger(UIPlugin.class);
+    public static Logger logger = Logger.getLogger(UIPluginActivator.class);
 	
 	/**
 	 * The constructor.
 	 */
-	public UIPlugin() {
+	public UIPluginActivator() {
 		super();
 		plugin = this;
 	}
@@ -48,7 +48,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static UIPlugin getDefault() {
+	public static UIPluginActivator getDefault() {
 		return plugin;
 	}
 
@@ -57,7 +57,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	 * or 'key' if not found.
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = UIPlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = UIPluginActivator.getDefault().getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
@@ -86,7 +86,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.ui.UIPlugin", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.core.ui.plugin", path);
 	}
 
     protected void initializeImageRegistry(ImageRegistry reg) {

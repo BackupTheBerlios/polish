@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui;
+package de.enough.mepose.core.ui.propertyPages;
 
 /**
  * This class is stolen from org.eclipse.jdt.internal.ui.text.PreferencesAdapter.

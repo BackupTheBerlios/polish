@@ -1,5 +1,5 @@
 /*
- * Created on Jun 23, 2005 at 4:06:17 PM.
+ * Created on Dec 19, 2005 at 6:06:02 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,18 +23,29 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui;
+package de.enough.mepose.core.model;
 
+import java.io.File;
+import java.io.OutputStreamWriter;
 
-public abstract class AbstractProjectPropertyPageModel {
+import junit.framework.TestCase;
 
-    public abstract String getBuildxml();
-    public abstract String getCurrentDevice();
-    public abstract String getProjectPath();
-    
-    public abstract void isApplyEnabled();
-    public abstract void isDefaultEnabled();
-    
-    public abstract String getLatestMessage();
-    public abstract String getLatestErrorMessage();
+/**
+ * 
+ * <br>Copyright Enough Software 2005
+ * <pre>
+ * history
+ *        Dec 19, 2005 - rickyn creation
+ * </pre>
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+ */
+public class BuildXMLWriterTest extends TestCase {
+
+    public void testWriteXML() {
+        MeposeModel model = new MeposeModel();
+        model.setWTKHome(new File("/home"));
+        model.setPolishHome(new File("/home/rickyn"));
+        BuildXMLWriter writer = new BuildXMLWriter(model);
+        writer.writeBuildXML(new OutputStreamWriter(System.out));
+    }
 }

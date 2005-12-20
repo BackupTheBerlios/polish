@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 import de.enough.mepose.MeposeCoreUIConstants;
-import de.enough.mepose.ui.UIPlugin;
+import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 
 /**
  * 
@@ -86,7 +86,7 @@ public class StatusGroup extends Composite{
 
     public void setWarning(String message) {
 //        showEchoArea(true);
-        this.iconLabel.setImage(UIPlugin.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_WARNING).createImage());
+        this.iconLabel.setImage(UIPluginActivator.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_WARNING).createImage());
         if(message == null) {
             message = "";
         }
@@ -95,7 +95,7 @@ public class StatusGroup extends Composite{
     
     public void setError(String message) {
 //        showEchoArea(true);
-        this.iconLabel.setImage(UIPlugin.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_ERROR).createImage());
+        this.iconLabel.setImage(UIPluginActivator.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_ERROR).createImage());
         if(message == null) {
             message = "";
         }
@@ -104,7 +104,7 @@ public class StatusGroup extends Composite{
     
     public void setOK(String message) {
 //        showEchoArea(true);
-        this.iconLabel.setImage(UIPlugin.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_OK).createImage());
+        this.iconLabel.setImage(UIPluginActivator.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_OK).createImage());
         this.iconLabel.pack();
         if(message == null) {
             message = "";
@@ -116,6 +116,10 @@ public class StatusGroup extends Composite{
         this.iconLabel.setImage(null);
         this.echoLabel.setText("");
     }
+    
+//    public void setChildrenEnabled(boolean enabled) {
+//        this.group.getChildren();
+//    }
 
 //    private void showEchoArea(boolean show) {
 //        this.echoAreaGridData.exclude =  ! show;

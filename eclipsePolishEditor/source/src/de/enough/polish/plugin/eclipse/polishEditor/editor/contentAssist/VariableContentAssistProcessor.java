@@ -83,7 +83,7 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor,P
         // Check if we have a current device. This is a kludge as it tests domain-specific logic
         // (do we have a device?) with testing a specific data structure.
         if(this.deviceEnvironment == null) {
-            System.out.println("DEBUG:VariableContentAssistProcessor.computeCompletionProposals(...):no environment.");
+            System.out.println("ERROR:VariableContentAssistProcessor.computeCompletionProposals(...):no environment.");
             return emptyCompletionProposalArray;
         }
         Map variableToValueMapping = this.deviceEnvironment.getVariables();

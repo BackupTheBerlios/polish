@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.utils.log4j.Log4JPlugin;
 
 
 public class CorePlugin extends Plugin {
@@ -39,6 +40,7 @@ public class CorePlugin extends Plugin {
 		super();
         System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
 		plugin = this;
+        Log4JPlugin.init();
         
         // TODO:Only for bootstrap testing.
         //createTestProject();

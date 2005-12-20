@@ -26,6 +26,7 @@
 package de.enough.mepose.core.model;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -35,14 +36,16 @@ import java.util.ArrayList;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.plugin.TemplateService;
+import org.apache.velocity.plugin.VelocityService;
 import org.apache.velocity.plugin.VelocityPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposeCoreConstants;
 
 /**
  * 
@@ -55,100 +58,73 @@ import de.enough.mepose.core.CorePlugin;
  */
 public class BuildXMLWriter {
 
-    public static final String TEMPLATE_NAME = "build.xml.template";
+    private MeposeModel meposeModel;
+    
+    public BuildXMLWriter(MeposeModel meposeModel) {
+        this.meposeModel = meposeModel;
+    }
     
     public void writeBuildXML(Writer os) {
         try {
-            /*
-             * setup
-             */
-            // It is important that this is called first to start the Velocity plugin.
-            System.out.println("DEBUG:BuildXMLWriter.writeBuildXML(...):velocity plugin:"+VelocityPlugin.getInstance());
-            BundleContext bundleContext = CorePlugin.getDefault().getBundleContext();
-            ServiceReference sr = bundleContext.getServiceReference(TemplateService.class.getName());
-            TemplateService templateService = (TemplateService)bundleContext.getService(sr);
-            InputStream buildxmlAsStream = bundleContext.getBundle().getResource("/templates/build.xml.template").openStream();
-            templateService.setTemplate(TEMPLATE_NAME,buildxmlAsStream);
+            VelocityService velocityService = getVelocityService();
             
-//            System.out.println("DEBUG:BuildXMLWriter.writeBuildXML(...):classpath:"+System.getProperties().toString());
-//            Velocity.init("velocity.properties");
-            Velocity.setProperty("resource.loader","eclipse");
-            Velocity.setProperty("eclipse.resource.loader.class","org.apache.velocity.plugin.EclipseResourceLoader");
-            Velocity.init();
+            if(velocityService == null) {
+                return;
+            }
             
-            /*
-             *  Make a context object and populate with the data.  This 
-             *  is where the Velocity engine gets the data to resolve the
-             *  references (ex. $list) in the template
-             */
+            InputStream buildxmlAsStream = getBundleContext().getBundle().getResource(MeposeCoreConstants.PATH_BUILD_XML_TEMPLATE).openStream();
+            
+            velocityService.setTemplate(MeposeCoreConstants.ID_TEMPLATE_NAME,buildxmlAsStream);
+            
+            VelocityEngine velocityEngine = velocityService.getNewVelocityEngine();
+            velocityEngine.init();
 
             VelocityContext context = new VelocityContext();
-            context.put("list", getNames());
+            fillContext(context);
             
-//            BundleContext bundleContext = CorePlugin.getDefault().getBundleContext();
-//            ServiceReference sr = bundleContext.getServiceReference(TemplateService.class.getName());
-//            TemplateService templateService = (TemplateService)bundleContext.getService(sr);
-//            InputStream buildxmlAsStream = bundleContext.getBundle().getResource("/templates/build.xml.template").openStream();
-//            templateService.setTemplate(TEMPLATE_NAME,buildxmlAsStream);
-            
-            /*
-             *  get the Template object.  This is the parsed version of your 
-             *  template input file.  Note that getTemplate() can throw
-             *   ResourceNotFoundException : if it doesn't find the template
-             *   ParseErrorException : if there is something wrong with the VTL
-             *   Exception : if something else goes wrong (this is generally
-             *        indicative of as serious problem...)
-             */
-
             Template template =  null;
 
             try 
             {
-                template = Velocity.getTemplate(TEMPLATE_NAME);
+                template = velocityEngine.getTemplate(MeposeCoreConstants.ID_TEMPLATE_NAME);
             }
             catch( ResourceNotFoundException rnfe )
             {
-                System.out.println("Example : error : cannot find template " + TEMPLATE_NAME );
+                System.out.println("Example : error : cannot find template " + MeposeCoreConstants.ID_TEMPLATE_NAME );
             }
             catch( ParseErrorException pee )
             {
-                System.out.println("Example : Syntax error in template " + TEMPLATE_NAME + ":" + pee );
+                System.out.println("Example : Syntax error in template " + MeposeCoreConstants.ID_TEMPLATE_NAME + ":" + pee );
             }
-
-            /*
-             *  Now have the template engine process your template using the
-             *  data placed into the context.  Think of it as a  'merge' 
-             *  of the template and the data to produce the output stream.
-             */
-
-//            BufferedWriter writer = writer = new BufferedWriter(
-//                new OutputStreamWriter(System.out));
 
             if ( template != null)
                 template.merge(context, os);
 
             os.flush();
-            
-            /*
-             *  flush and cleanup
-             */
-
-//            writer.flush();
-//            writer.close();
         }
         catch( Exception e )
         {
             System.out.println(e);
         }
     }
-    public ArrayList getNames(){
-        ArrayList list = new ArrayList();
 
-        list.add("ArrayList element 1");
-        list.add("ArrayList element 2");
-        list.add("ArrayList element 3");
-        list.add("ArrayList element 4");
+    private VelocityService getVelocityService() {
+        BundleContext bundleContext = getBundleContext();
+        ServiceReference sr = bundleContext.getServiceReference(VelocityService.class.getName());
+        return (VelocityService)bundleContext.getService(sr);
+    }
 
-        return list;
+    /**
+     * @param context
+     */
+    private void fillContext(VelocityContext context) {
+      context.put("wtkHome","WTKBLAAA");
+      context.put("polishHome","PolishBBB");
+//        context.put("wtk.home",this.meposeModel.getWTKHome().toString());
+//        context.put("polish.home",this.meposeModel.getPolishHome().toString());
+    }
+    
+    public BundleContext getBundleContext() {
+        return CorePlugin.getDefault().getBundleContext();
     }
 }

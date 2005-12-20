@@ -6,7 +6,7 @@ import org.eclipse.ui.IWorkbench;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.MeposeCoreConstants;
-import de.enough.mepose.ui.PreferencesAdapter;
+import de.enough.mepose.core.ui.propertyPages.PreferencesAdapter;
 import de.enough.utils.ErrorSituation;
 
 /**

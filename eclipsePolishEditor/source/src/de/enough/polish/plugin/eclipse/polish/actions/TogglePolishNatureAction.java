@@ -6,6 +6,7 @@ package de.enough.polish.plugin.eclipse.polish.actions;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -89,7 +90,11 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         try{
             if(structuredSelection.size() > 0){
                 System.out.println("selection is of class:"+structuredSelection.toList().get(0).getClass());
-                this.selectedProject = ((IJavaProject)structuredSelection.toList().get(0)).getProject();
+                Object object = structuredSelection.getFirstElement();
+                if(object instanceof IAdaptable) {
+                    IAdaptable adaptable = (IAdaptable) object;
+                    this.selectedProject = (IProject)adaptable.getAdapter(IProject.class);
+                }
             }
         }
         catch(Exception exception){

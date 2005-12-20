@@ -44,4 +44,6 @@ public interface MeposeCoreUIConstants {
     public static final String KEY_IMAGE_WARNING = "warning";
     public static final String KEY_IMAGE_ERROR = "error";
     public static final String KEY_IMAGE_OK = "ok";
+
+    public static final String ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY = "de.enough.mepose.core.ui.plugin.preferencePageSummary";
 }

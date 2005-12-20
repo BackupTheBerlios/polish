@@ -2,14 +2,15 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-     <extension-point id="preferencePageSummery" name="Perference Page Summery" schema="schema/preferencePageSummery.exsd"/>
+     <extension-point id="preferencePageSummary" name="Perference Page Summary" schema="schema/preferencePageSummary.exsd"/>
 
 	<extension point="org.eclipse.ui.propertyPages"> 
-    		<page 
-     		id="de.enough.mepose.ui.ProjectPropertyPage" 
-            	name="Mepose Projectxxx" 
-            	objectClass="org.eclipse.jdt.core.IJavaProject" 
-            	class="de.enough.mepose.ui.ProjectPropertyPage">
+    		<page
+            class="de.enough.mepose.core.ui.propertyPages.ProjectPropertyPage"
+            icon="icons/polish_logo_16x16.png"
+            id="de.enough.mepose.core.ui.propertyPages.ProjectPropertyPage"
+            name="j2ME Polish"
+            objectClass="org.eclipse.jdt.core.IJavaProject">
         		<!-- TODO: We need our own meposenature or polishnature here. -->
         	<filter
            		name="nature"
@@ -31,8 +32,8 @@
           name="Installation"/>
  </extension>
  <extension
-       point="de.enough.mepose.ui.UIPlugin.preferencePageSummery">
-    <preferencePage
+       point="de.enough.mepose.core.ui.plugin.preferencePageSummary">
+    <preferencePageSummary
           pageID="de.enough.mepose.core.ui.preferencePages.InstallationPage"
           shortDescription="Change settings like paths of the wireless toolkit or the J2ME Polish installation directory"/>
  </extension>

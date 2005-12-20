@@ -217,7 +217,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         return newIContentAssistant;
     }
     
-    private IJavaProject getProject() {
+    protected IJavaProject getProject() {
         ITextEditor editor2= getEditor();
         if (editor2 == null)
             return null;

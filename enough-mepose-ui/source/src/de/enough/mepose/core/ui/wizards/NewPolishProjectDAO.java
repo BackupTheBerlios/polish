@@ -25,6 +25,8 @@
  */
 package de.enough.mepose.core.ui.wizards;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -44,13 +46,12 @@ import de.enough.mepose.core.model.MeposeModel;
 public class NewPolishProjectDAO{
     
     // May be null.
-    private IJavaProject projectToConvert;
+    private IProject projectToConvert;
     private boolean shouldConvertProject;
     // Must not be null.
-    private IPath polishHomePath;
-    private boolean isBasicallyConfigured;
+    private boolean mayFinish;
     private String projectName;
-    private IProject project;
+    private IProject newProject;
     private MeposeModel model;
     
     public NewPolishProjectDAO() {
@@ -60,14 +61,13 @@ public class NewPolishProjectDAO{
     public void reset() {
         this.projectToConvert = null;
         this.shouldConvertProject = false;
-        this.polishHomePath = new Path("");
-        this.isBasicallyConfigured = false;
+        this.mayFinish = false;
         this.projectName = "";
     }
-    public IJavaProject getProjectToConvert() {
+    public IProject getProjectToConvert() {
         return this.projectToConvert;
     }
-    public void setProjectToConvert(IJavaProject projectToConvert) {
+    public void setProjectToConvert(IProject projectToConvert) {
         this.projectToConvert = projectToConvert;
     }
     public boolean isShouldConvertProject() {
@@ -76,17 +76,11 @@ public class NewPolishProjectDAO{
     public void setShouldConvertProject(boolean shouldConvertProject) {
         this.shouldConvertProject = shouldConvertProject;
     }
-    public IPath getPolishHomePath() {
-        return this.polishHomePath;
-    }
-    public void setPolishHomePath(IPath polishHomePath) {
-        this.polishHomePath = polishHomePath;
-    }
     public boolean isBasicallyConfigured() {
-        return this.isBasicallyConfigured;
+        return this.mayFinish;
     }
     public void setBasicallyConfigured(boolean isBasicallyConfigured) {
-        this.isBasicallyConfigured = isBasicallyConfigured;
+        this.mayFinish = isBasicallyConfigured;
     }
     public String getProjectName() {
         return this.projectName;
@@ -103,12 +97,27 @@ public class NewPolishProjectDAO{
         this.model = model;
     }
 
-    public IProject getProject() {
-        return this.project;
+    public IProject getNewProject() {
+        return this.newProject;
     }
 
-    public void setProject(IProject project) {
-        this.project = project;
+    public void setNewProject(IProject project) {
+        this.newProject = project;
     }
     
+    public void setPolishHome(File polishHome) {
+        this.model.setPolishHome(polishHome);
+    }
+    
+    public void setWTKHome(File wtkHome) {
+        this.model.setWTKHome(wtkHome);
+    }
+    
+    public File getPolishHome() {
+        return this.model.getPolishHome();
+    }
+    
+    public File getWTKHome() {
+        return this.model.getWTKHome();
+    }
 }

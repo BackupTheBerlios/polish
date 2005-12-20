@@ -38,5 +38,7 @@ public interface MeposeCoreConstants {
 
     public static final String POLISH_INSTALLATION_DIR = "polish.installation.dir";
     public static final String WTK_INSTALLATION_DIR = "WTK.installation.dir";
+    public static final String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
+    public static final String ID_TEMPLATE_NAME = "build.xml.template";
 
 }
