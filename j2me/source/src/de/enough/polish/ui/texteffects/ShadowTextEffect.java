@@ -61,9 +61,9 @@ public class ShadowTextEffect extends TextEffect {
 	public static final int ORIENTATION_RIGHT = 6;
 	public static final int ORIENTATION_LEFT = 7;
 	
-	private int shadowColor;
-	private int xOffset = 2;
-	private int yOffset = 2;
+	public int shadowColor;
+	public int xOffset = 2;
+	public int yOffset = 2;
 
 	/**
 	 * Creates a shadow effect.
@@ -72,6 +72,19 @@ public class ShadowTextEffect extends TextEffect {
 		super();
 	}
 	
+	/**
+	 * Creates a shadow effect.
+	 * @param shadowColor the color 
+	 * @param xOffset the xOffset
+	 * @param yOffset the yOffset
+	 */
+	public ShadowTextEffect(int shadowColor, int xOffset, int yOffset) {
+		super();
+		this.shadowColor = shadowColor;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+	}
+
 	
 	//#if polish.css.text-shadow-color || polish.css.text-shadow-x || polish.css.text-shadow-y || polish.css.text-shadow-orientation
 	/* (non-Javadoc)
@@ -80,10 +93,10 @@ public class ShadowTextEffect extends TextEffect {
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		//#ifdef polish.css.text-shadow-color
-		Integer colorInt = style.getIntProperty("text-shadow-color");
-		if (colorInt != null) {
-			this.shadowColor = colorInt.intValue();
-		}
+			Integer colorInt = style.getIntProperty("text-shadow-color");
+			if (colorInt != null) {
+				this.shadowColor = colorInt.intValue();
+			}
 		//#endif
 		//#ifdef polish.css.text-shadow-orientation
 			Integer orientationInt = style.getIntProperty("text-shadow-orientation");

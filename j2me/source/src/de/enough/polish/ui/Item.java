@@ -598,7 +598,7 @@ public abstract class Item extends Object
 		protected int maximumHeight;
 	//#endif
 	protected boolean isInitialised;
-	protected Background background;
+	public Background background;
 	protected Border border;
 	protected Style style;
 	public int itemWidth;
@@ -1397,9 +1397,9 @@ public abstract class Item extends Object
 		
 		// paint before element:
 		//#if polish.useBeforeStyle || polish.useAfterStyle
-		boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
-		boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
-		boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
+			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
+			boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
+			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
 		//#endif
 		//#ifdef polish.useBeforeStyle
 			if (this.beforeImage != null) {

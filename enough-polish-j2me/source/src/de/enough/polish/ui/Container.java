@@ -510,7 +510,7 @@ public class Container extends Item {
 					// #debug
 					//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
 					//if ( itemYTop + difference < this.yTop) {
-					if ( itemYTop + difference < this.yTop) {
+					if ( isDownwards && itemYTop + difference < this.yTop) {
 						// #debug
 						//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
 						difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
@@ -534,6 +534,12 @@ public class Container extends Item {
 					} else {
 						difference = this.yTop - itemYTop + this.focusedTopMargin;
 					}
+					// re-adjust the scrolling in case we scroll up and the previous
+					// item is very large:
+					if ( !isDownwards && itemYBottom + difference > this.yBottom  ) {
+						difference = this.yBottom - itemYBottom;
+					}
+						
 					// #debug
 					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
 				}
@@ -559,7 +565,7 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("Container: intialising content for " + getClass().getName() + ": autofocus=" + this.autoFocusEnabled);
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled);
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
@@ -1276,20 +1282,31 @@ public class Container extends Item {
 		//#endif
 		//#ifdef polish.css.view-type
 			ContainerView viewType = (ContainerView) style.getObjectProperty("view-type");
+//			if (this instanceof ChoiceGroup) {
+//				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
+//			}
 			if (viewType != null) {
-				try {
-					if (viewType.parentContainer != null) {
-						viewType = (ContainerView) viewType.getClass().newInstance();
+				if (this.view != null && this.view.getClass() == viewType.getClass()) {
+					this.view.focusFirstElement = this.autoFocusEnabled;
+					this.view.setStyle(style);
+					//System.out.println("SET.STYLE / CHOICEGROUP: found OLD view-type (2): " + viewType + " for " + this);
+				} else {
+					//System.out.println("SET.STYLE / CHOICEGROUP: found new view-type (2): " + viewType + " for " + this);
+					try {
+						if (viewType.parentContainer != null) {
+							viewType = (ContainerView) viewType.getClass().newInstance();
+						}
+						viewType.parentContainer = this;
+						viewType.focusFirstElement = this.autoFocusEnabled;
+						viewType.setStyle(style);
+						this.view = viewType;
+					} catch (Exception e) {
+						//#debug error
+						System.out.println("Container: Unable to init view-type " + e );
+						viewType = null;
 					}
-					viewType.parentContainer = this;
-					viewType.focusFirstElement = this.autoFocusEnabled;
-					viewType.setStyle(style);
-				} catch (Exception e) {
-					//#debug error
-					System.out.println("Container: Unable to init view-type " + e );
 				}
 			}
-			this.view = viewType;
 		//#endif
 		//#if polish.css.scroll-mode
 			Integer scrollModeInt = style.getIntProperty("scroll-mode");
@@ -1331,7 +1348,7 @@ public class Container extends Item {
 			}
 			//#if polish.css.view-type
 				if (this.view != null) {
-					this.view.setStyle(focusstyle);
+					this.view.focus(focusstyle, direction);
 					//this.isInitialised = false; not required
 				}
 			//#endif
@@ -1372,7 +1389,7 @@ public class Container extends Item {
 			//#if polish.css.view-type
 				} else if (this.focusedIndex == -1) {
 					Item[] myItems = getItems();
-					System.out.println("Container: direction DOWN through view type");
+					//System.out.println("Container: direction DOWN through view type");
 					for (int i = 0; i < myItems.length; i++) {
 						Item item = myItems[i];
 						if (item.appearanceMode != PLAIN) {
@@ -1389,6 +1406,10 @@ public class Container extends Item {
 				}
 			//#endif
 			Item item = (Item) this.itemsList.get( this.focusedIndex );
+//			Style previousStyle = item.style;
+//			if (previousStyle == null) {
+//				previousStyle = StyleSheet.defaultStyle;
+//			}
 			focus( this.focusedIndex, item, direction );
 			if (item.commands == null && this.commands != null) {
 				Screen scr = getScreen();
@@ -1406,11 +1427,7 @@ public class Container extends Item {
 					}
 				}
 			//#endif
-			if (item.style == null) {
-				return StyleSheet.defaultStyle;
-			} else {
-				return item.style;
-			}
+			return this.style;
 		}
 	}
 	
@@ -1426,7 +1443,7 @@ public class Container extends Item {
 			item.defocus( this.itemStyle );
 			//#if polish.css.view-type
 				if (this.view != null) {
-					this.view.setStyle( this.itemStyle );
+					this.view.defocus( this.itemStyle );
 					this.isInitialised = false;
 				}
 			//#endif

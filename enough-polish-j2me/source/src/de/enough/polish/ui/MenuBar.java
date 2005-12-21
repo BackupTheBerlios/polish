@@ -322,7 +322,7 @@ public class MenuBar extends Item {
 			//System.out.println("setting vertical dimension: " + topMargin + ", " + (this.screen.screenHeight - topMargin) );
 			this.commandsContainerWidth = (this.screen.screenWidth * 2) / 3;
 			int containerHeight = this.commandsContainer.getItemHeight(this.commandsContainerWidth, this.commandsContainerWidth);
-			this.commandsContainerY = screenHeight - containerHeight;
+			this.commandsContainerY = screenHeight - containerHeight - 1;
 			if (this.commandsContainerY < titleHeight) {
 				this.commandsContainerY = titleHeight;
 			}
@@ -331,8 +331,10 @@ public class MenuBar extends Item {
 			this.canScrollUpwards = (focusedIndex != 0); 
 			this.canScrollDownwards = (focusedIndex != this.commandsList.size() - 1 );
 			*/
-			this.canScrollUpwards = (this.commandsContainer.yOffset != 0);
-			this.canScrollDownwards = (this.commandsContainer.yOffset + containerHeight > screenHeight - titleHeight) && (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
+			this.canScrollUpwards = (this.commandsContainer.yOffset != 0)
+				&& (this.commandsContainer.focusedIndex != 0);
+			this.canScrollDownwards = (this.commandsContainer.yOffset + containerHeight > screenHeight - titleHeight) 
+				&& (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
 			this.paintScrollIndicator = this.canScrollUpwards || this.canScrollDownwards;
 			//#if !tmp.useInvisibleMenuBar
 				if (this.selectImage != null) {

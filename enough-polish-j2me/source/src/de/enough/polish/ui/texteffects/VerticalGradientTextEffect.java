@@ -46,6 +46,10 @@ public class VerticalGradientTextEffect extends TextEffect {
 		// initialization is done upon request.
 	}
 
+	public VerticalGradientTextEffect(int startColor, int endColor, int steps) {
+		this.colors = DrawUtil.getGradient(startColor, endColor, steps);
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -168,11 +172,13 @@ public class VerticalGradientTextEffect extends TextEffect {
 
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		boolean styleDefined = false;
 		int startColor = 0xFFFFFFFF;
 		//#if polish.css.text-vertical-gradient-start-color
 			Integer startColorInt = style.getIntProperty("text-vertical-gradient-start-color");
 			if (startColorInt != null) {
 				startColor = startColorInt.intValue();
+				styleDefined = true;
 			}
 		//#endif
 		int endColor = 0xFF000000;
@@ -180,6 +186,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 			Integer endColorInt = style.getIntProperty("text-vertical-gradient-end-color");
 			if (endColorInt != null) {
 				endColor = endColorInt.intValue();
+				styleDefined = true;
 			}
 		//#endif
 		this.useTransparency = ((startColor & 0xFF000000) != 0) || ((endColor & 0xFF000000) != 0);
@@ -188,13 +195,16 @@ public class VerticalGradientTextEffect extends TextEffect {
 			Integer stepsInt = style.getIntProperty("text-vertical-gradient-steps");
 			if (stepsInt != null) {
 				steps = stepsInt.intValue();
+				styleDefined = true;
 			} else {
 				steps = Font.getDefaultFont().getHeight();
 			}
 		//#else
 			steps = Font.getDefaultFont().getHeight();
 		//#endif
-		this.colors = DrawUtil.getGradient(startColor, endColor, steps);
+		if (styleDefined || this.colors == null) {
+			this.colors = DrawUtil.getGradient(startColor, endColor, steps);
+		}
 		this.oldText = null;
 	}
 	

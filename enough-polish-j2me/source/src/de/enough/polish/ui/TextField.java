@@ -909,7 +909,7 @@ public class TextField extends StringItem
 	/**
 	 * Gets the contents of the <code>TextField</code> as a string value.
 	 * 
-	 * @return the current contents
+	 * @return the current contents, an empty string when the current value is null. 
 	 * @see #setString(java.lang.String)
 	 */
 	public String getString()
@@ -917,6 +917,9 @@ public class TextField extends StringItem
 		if (this.isPassword) {
 			return this.passwordText;
 		} else {
+			if (this.text == null) {
+				return "";
+			}
 			return this.text;
 		}
 	}
@@ -958,6 +961,13 @@ public class TextField extends StringItem
 				text = buffer.toString();
 			}
 		}
+		//#ifdef tmp.directInput
+			if (this.caretPosition == 0 && (text != null) 
+					&& (this.text == null || this.text.length() == 0) ) {
+				this.caretPosition = text.length();
+				this.caretColumn = this.caretPosition;
+			}
+		//#endif
 		setText(text);
 		//#ifdef tmp.directInput
 			if ((text == null || text.length() == 0) && this.inputMode == MODE_FIRST_UPPERCASE) {

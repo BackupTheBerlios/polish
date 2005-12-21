@@ -51,6 +51,7 @@ public abstract class ContainerView {
 	protected int paddingHorizontal;
 	protected boolean focusFirstElement;
 	protected int appearanceMode;
+	protected boolean isFocused;
 
 	/**
 	 * Creates a new view
@@ -115,6 +116,35 @@ public abstract class ContainerView {
 		}
 		this.focusedIndex = index;
 		this.parentContainer.focus(index, item, direction );
+	}
+
+	/**
+	 * Sets the focus to this container view.
+	 * The default implementation sets the style and the field "isFocused" to true.
+	 * 
+	 * @param focusstyle the appropriate style.
+	 * @param direction the direction from the which the focus is gained, 
+	 *        either Canvas.UP, Canvas.DOWN, Canvas.LEFT, Canvas.RIGHT or 0.
+	 *        When 0 is given, the direction is unknown.1
+	 * 
+	 */
+	public void focus(Style focusstyle, int direction) {
+		setStyle( focusstyle );
+		this.isFocused = true;
+	}
+
+	
+	/**
+	 * Notifies this view that the parent container is not focused anymore.
+	 * Please call super.defocus() when overriding this method.
+	 * The default implementation calls setStyle( originalStyle )
+	 * and sets the field "isFocused" to false.
+	 * 
+	 * @param originalStyle the previous used style.
+	 */
+	protected void defocus( Style originalStyle ) {
+		this.isFocused = false;
+		setStyle( originalStyle );
 	}
 	
 	/**

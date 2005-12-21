@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Container;
@@ -52,18 +53,36 @@ import de.enough.polish.ui.StyleSheet;
  */
 public class ExclusiveSingleLineView extends ContainerView {
 	
+	
+	private final static int POSITION_BOTH_SIDES = 0; 
+	private final static int POSITION_RIGHT = 1; 
+	private final static int POSITION_LEFT = 2; 
 	private int arrowColor;
 	//#ifdef polish.css.exclusiveview-left-arrow
 		private Image leftArrow;
+		private int leftYOffset;
 	//#endif
 	//#ifdef polish.css.exclusiveview-right-arrow
 		private Image rightArrow;
+		private int rightYOffset;
 	//#endif
+	//#ifdef polish.css.exclusiveview-arrow-position
+		private int arrowPosition;
+	//#endif
+	//#ifdef polish.css.exclusiveview-expand-background
+		private Background background;
+		private boolean expandBackground;
+	//#endif	
 	private int arrowWidth = 10;
 	private int currentItemIndex;
 	private ChoiceItem currentItem;
+	private int leftArrowStartX;
 	private int leftArrowEndX;
 	private int rightArrowStartX;
+	private int rightArrowEndX;
+	private int xStart;
+	private Background parentBackground;
+	//private boolean isInitialized;
 
 	/**
 	 * Creates a new view
@@ -80,6 +99,14 @@ public class ExclusiveSingleLineView extends ContainerView {
 	{
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
+		if (this.isFocused && this.parentBackground == null) {
+			Background bg = parent.background;
+			if (bg != null) {
+				this.parentBackground = bg; 
+				parent.background = null;
+			}
+			//System.out.println("EXCLUSIVE:   INIT CONTENT WITH NO PARENT BG, now parentBackround != null: " + (this.parentBackground != null));
+		}
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
 		if (selectedItemIndex == -1) {
 			selectedItemIndex = 0;
@@ -99,16 +126,39 @@ public class ExclusiveSingleLineView extends ContainerView {
 					}
 				}
 			//#endif
-			if (width > this.arrowWidth) {
-				this.arrowWidth = width;
+			//#if polish.css.exclusiveview-left-arrow && polish.css.exclusiveview-right-arrow
+				if (this.rightArrow != null && this.leftArrow != null) {
+					this.arrowWidth = width;
+				} else {
+			//#endif
+					if (width > this.arrowWidth) {
+						this.arrowWidth = width;
+					}
+			//#if polish.css.exclusiveview-left-arrow && polish.css.exclusiveview-right-arrow
+				}
+			//#endif
+		//#endif
+		int completeArrowWidth = ( this.arrowWidth + this.paddingHorizontal ) << 1;
+		//#ifdef polish.css.exclusiveview-arrow-position
+			if (this.arrowPosition == POSITION_BOTH_SIDES) {
+		//#endif
+				this.leftArrowStartX = 0;
+				this.leftArrowEndX = this.arrowWidth;
+				this.rightArrowStartX = lineWidth - this.arrowWidth;
+				this.rightArrowEndX = lineWidth;
+		//#ifdef polish.css.exclusiveview-arrow-position
+			} else if (this.arrowPosition == POSITION_RIGHT){
+				this.leftArrowStartX = lineWidth - completeArrowWidth + this.paddingHorizontal;
+				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
+				this.rightArrowStartX = lineWidth - this.arrowWidth;
+				this.rightArrowEndX = lineWidth;
+			} else {
+				this.leftArrowStartX = 0;
+				this.leftArrowEndX = this.arrowWidth;
+				this.rightArrowStartX = this.arrowWidth + this.paddingHorizontal;
+				this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
 			}
 		//#endif
-		int completeArrowWidth;
-		if (selectedItemIndex > 0 && selectedItemIndex < parent.size() -1 ) {
-			completeArrowWidth = 2 * ( this.arrowWidth + this.paddingHorizontal );
-		} else {
-			completeArrowWidth = 1 * ( this.arrowWidth + this.paddingHorizontal );
-		}
 		lineWidth -= completeArrowWidth;
 		ChoiceItem selectedItem = (ChoiceItem) parent.get( selectedItemIndex );
 		selectedItem.drawBox = false;
@@ -120,11 +170,37 @@ public class ExclusiveSingleLineView extends ContainerView {
 		this.appearanceMode = Item.INTERACTIVE;
 		this.currentItem = selectedItem;
 		this.currentItemIndex = selectedItemIndex;
+		//this.isInitialized = true;
+		
+		//#if polish.css.exclusiveview-left-arrow			
+			if (this.leftArrow != null) {
+				this.leftYOffset = (this.contentHeight - this.leftArrow.getHeight()) / 2; // always center vertically
+			}
+		//#endif
+		//#if polish.css.exclusiveview-right-arrow
+			if (this.rightArrow != null) {
+				this.rightYOffset = (this.contentHeight - this.rightArrow.getHeight()) / 2; // always center vertically
+			}
+		//#endif
+
+		
+//		System.out.println("leftX=" + this.leftArrowStartX);
+//		System.out.println("rightX=" + this.rightArrowStartX);
+//		System.out.println("arrowColor=" + Integer.toHexString(this.arrowColor));
 	}
 	
 	
 
 	protected void setStyle(Style style) {
+		//#ifdef polish.css.exclusiveview-expand-background
+			Boolean expandBackgroundBool = style.getBooleanProperty("exclusiveview-expand-background");
+			if (expandBackgroundBool != null) {
+				this.expandBackground = expandBackgroundBool.booleanValue(); 
+			}
+			if (this.expandBackground) {
+				this.background = style.background;
+			}
+		//#endif
 		super.setStyle(style);
 		//#ifdef polish.css.exclusiveview-left-arrow
 			String leftArrowUrl = style.getProperty("exclusiveview-left-arrow");
@@ -154,6 +230,13 @@ public class ExclusiveSingleLineView extends ContainerView {
 				this.arrowColor = colorInt.intValue();
 			}
 		//#endif
+		//#ifdef polish.css.exclusiveview-arrow-position
+			Integer positionInt = style.getIntProperty("exclusiveview-arrow-position");
+			if ( positionInt != null ) {
+				this.arrowPosition = positionInt.intValue();
+			}
+		//#endif
+			
 	}
 	
 	
@@ -165,83 +248,99 @@ public class ExclusiveSingleLineView extends ContainerView {
 	{
 		//#debug
 		System.out.println("ExclusiveView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
-		/*
-		Item[] items = this.parentContainer.getItems();
-		ChoiceItem selectedItem = (ChoiceItem) items[0];
-		int selectedItemIndex = 0;
-		for (int i = 0; i < items.length; i++) {
-			ChoiceItem item = (ChoiceItem) items[i];
-			if (item.isSelected) {
-				selectedItemIndex = i;
-				selectedItem = item;
-				break;
+		this.xStart = x;
+		int modifiedX = x;
+		//#ifdef polish.css.exclusiveview-expand-background
+			if (this.expandBackground && this.background != null) {
+				this.currentItem.background = null;
+				this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
 			}
-		}
-		*/
-		g.setColor( this.arrowColor );
-		if (this.currentItemIndex > 0) {
-			// draw left arrow
-			//#ifdef polish.css.exclusiveview-left-arrow
-				if (this.leftArrow != null) {
-					g.drawImage( this.leftArrow, x, y + this.contentHeight, Graphics.LEFT | Graphics.BOTTOM );
-				} else {
-			//#endif
-			//#if polish.midp2
-				g.fillTriangle( 
-						x, y + this.contentHeight/2, 
-						x + this.arrowWidth, y,
-						x + this.arrowWidth, y + this.contentHeight );
-			//#else
-				int y1 = y + this.contentHeight / 2;
-				int x2 = x + this.arrowWidth;
-				int y3 = y + this.contentHeight;
-				g.drawLine( x, y1, x2, y );
-				g.drawLine( x, y1, x2, y3 );
-				g.drawLine( x2, y, x2, y3 );
-			//#endif
-			//#ifdef polish.css.exclusiveview-left-arrow
-				}
-			//#endif
-			x += this.arrowWidth + this.paddingHorizontal;
-			leftBorder += this.arrowWidth + this.paddingHorizontal;
-			this.leftArrowEndX = x;
-		}
-				
-		if (this.currentItemIndex < this.parentContainer.size() - 1) {
-			// draw right arrow
-			//#ifdef polish.css.exclusiveview-right-arrow
-				if (this.rightArrow != null) {
-					g.drawImage( this.rightArrow, rightBorder, y + this.contentHeight, Graphics.RIGHT | Graphics.BOTTOM );
-				} else {
-			//#endif
-			//#if polish.midp2
-				g.fillTriangle( 
-						rightBorder, y + this.contentHeight/2, 
-						rightBorder - this.arrowWidth, y,
-						rightBorder - this.arrowWidth, y + this.contentHeight );
-			//#else
-				int y1 = y + this.contentHeight / 2;
-				int x2 = rightBorder - this.arrowWidth;
-				int y3 = y + this.contentHeight;
-				g.drawLine( rightBorder, y1, x2, y );
-				g.drawLine( rightBorder, y1, x2, y3 );
-				g.drawLine( x2, y, x2, y3 );
-			//#endif
-			//#ifdef polish.css.exclusiveview-right-arrow
-				}
-			//#endif
-			rightBorder -= this.arrowWidth + this.paddingHorizontal;
-			this.rightArrowStartX = rightBorder;
-		}
+		//#endif
 
-		// draw item:
-		//selectedItem.drawBox = false;
-		//this.currentItem.init( rightBorder - x, rightBorder - leftBorder );
+		//#ifdef polish.css.exclusiveview-arrow-position
+			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
+		//#endif
+				modifiedX += this.arrowWidth + this.paddingHorizontal;
+				leftBorder += this.arrowWidth + this.paddingHorizontal;
+		//#ifdef polish.css.exclusiveview-arrow-position
+			} else if (this.arrowPosition == POSITION_LEFT ) {
+				modifiedX += (this.arrowWidth + this.paddingHorizontal) << 1;
+				leftBorder += (this.arrowWidth + this.paddingHorizontal) << 1;
+			}
+		//#endif	
+				
+
+		//#ifdef polish.css.exclusiveview-arrow-position
+			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
+		//#endif
+				rightBorder -= this.arrowWidth + this.paddingHorizontal;
+		//#ifdef polish.css.exclusiveview-arrow-position
+			} else if (this.arrowPosition == POSITION_RIGHT ) {
+				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;
+			}
+		//#endif
+
 		
 		//#debug
-		System.out.println("ExclusiveView.item: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.currentItem.itemWidth  );
-		this.currentItem.paint(x, y, leftBorder, rightBorder, g);
-		//this.currentItemIndex = selectedItemIndex;
+		System.out.println("ExclusiveView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.currentItem.itemWidth  );
+		this.currentItem.paint(modifiedX, y, leftBorder, rightBorder, g);
+
+		g.setColor( this.arrowColor );
+		//draw left arrow:
+		if (this.currentItemIndex > 0) {
+			// draw left arrow
+			int startX = x + this.leftArrowStartX;	
+			//#ifdef polish.css.exclusiveview-left-arrow
+				if (this.leftArrow != null) {
+					//System.out.println("Drawing left IMAGE arrow at " + startX );
+					g.drawImage( this.leftArrow, startX, y + this.leftYOffset, Graphics.LEFT | Graphics.TOP );
+				} else {
+			//#endif
+				//#if polish.midp2
+					//System.out.println("Drawing left triangle arrow at " + startX );
+					g.fillTriangle( 
+							startX, y + this.contentHeight/2, 
+							startX + this.arrowWidth, y,
+							startX + this.arrowWidth, y + this.contentHeight );
+				//#else
+					int y1 = y + this.contentHeight / 2;
+					int x2 = startX + this.arrowWidth;
+					int y3 = y + this.contentHeight;
+					g.drawLine( startX, y1, x2, y );
+					g.drawLine( startX, y1, x2, y3 );
+					g.drawLine( x2, y, x2, y3 );
+				//#endif
+			//#ifdef polish.css.exclusiveview-left-arrow
+				}
+			//#endif
+		}
+		
+		// draw right arrow:
+		if (this.currentItemIndex < this.parentContainer.size() - 1) {
+			// draw right arrow
+			int startX = x + this.rightArrowStartX;	
+			//#ifdef polish.css.exclusiveview-right-arrow
+				if (this.rightArrow != null) {
+					g.drawImage( this.rightArrow, startX, y + this.rightYOffset, Graphics.LEFT | Graphics.TOP );
+				} else {
+			//#endif
+				//#if polish.midp2
+					g.fillTriangle( 
+							startX + this.arrowWidth, y + this.contentHeight/2, 
+							startX, y,
+							startX, y + this.contentHeight );
+				//#else
+					int y1 = y + this.contentHeight / 2;
+					int x2 = startX + this.arrowWidth;
+					int y3 = y + this.contentHeight;
+					g.drawLine( x2, y1, x2, y );
+					g.drawLine( x2, y1, x2, y3 );
+					g.drawLine( startX, y, startX, y3 );
+				//#endif
+			//#ifdef polish.css.exclusiveview-right-arrow
+				}
+			//#endif
+		}
 	}
 
 	/* (non-Javadoc)
@@ -250,10 +349,16 @@ public class ExclusiveSingleLineView extends ContainerView {
 	protected Item getNextItem(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("ExclusiveSingleLineView: getNextItem()");
+		ChoiceGroup choiceGroup = (ChoiceGroup) this.parentContainer;
 		Item[] items = this.parentContainer.getItems();
+		if (this.currentItem == null) {
+			//#debug warn
+			System.out.println("ExclusiveSingleLineView: getNextItem(): no current item defined, it seems the initContent() has been skipped.");
+			this.currentItemIndex = choiceGroup.getSelectedIndex();
+			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		}
 		Item lastItem = this.currentItem;
 		//ChoiceItem currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-		ChoiceGroup choiceGroup = (ChoiceGroup) this.parentContainer;
 		if ( gameAction == Canvas.LEFT && this.currentItemIndex > 0 ) {
 			this.currentItem.select( false );
 			this.currentItemIndex--;
@@ -292,9 +397,10 @@ public class ExclusiveSingleLineView extends ContainerView {
 	public boolean handlePointerPressed(int x, int y) {
 		Item[] items = this.parentContainer.getItems();
 		this.currentItem.select( false );
-		if (this.currentItemIndex > 0 && x < this.leftArrowEndX ) {
+		x -= this.xStart;
+		if (this.currentItemIndex > 0 && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
 			this.currentItemIndex--;
-		} else if ( this.currentItemIndex < items.length - 1 && x > this.rightArrowStartX ) {
+		} else if ( this.currentItemIndex < items.length - 1 && x >= this.rightArrowStartX && x <= this.rightArrowEndX ) {
 			this.currentItemIndex++;
 		} else  {
 			this.currentItemIndex++;
@@ -310,6 +416,36 @@ public class ExclusiveSingleLineView extends ContainerView {
 	}
 	//#endif
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle) {
+		if (this.parentBackground != null ) {
+			this.parentContainer.background = this.parentBackground;
+			this.parentBackground = null;
+		}
+		super.defocus(originalStyle);
+		//System.out.println("EXCLUSIVE:   DEFOCUS!");
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#focus(de.enough.polish.ui.Style, int)
+	 */
+	public void focus(Style focusstyle, int direction) {
+		Background bg = this.parentContainer.background;
+		if (bg != null) {
+			this.parentBackground = bg; 
+			this.parentContainer.background = null;
+		}
+		//System.out.println("EXCLUSIVE:   FOCUS, parentBackround != null: " + (this.parentBackground != null));
+		super.focus(focusstyle, direction);
+	}
+	
+	
+
+
 	// TODO allow to repeat scrolling at first and last item
+	
+	
 
 }

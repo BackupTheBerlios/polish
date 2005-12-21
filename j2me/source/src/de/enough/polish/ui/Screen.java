@@ -202,6 +202,10 @@ implements AccessibleCanvas
 	private int scrollIndicatorX; // left x position of scroll indicator
 	private int scrollIndicatorY; // top y position of scroll indicator
 	private int scrollIndicatorWidth; // width and height of the indicator
+	//#if polish.css.scrollindicator-up-image || polish.css.scrollindicator-down-image 
+		private Image scrollIndicatorUpImage; 
+		private Image scrollIndicatorDownImage; 
+	//#endif		
 	//#if tmp.usingTitle || tmp.menuFullScreen
 		private boolean showTitleOrMenu = true;
 	//#endif
@@ -590,6 +594,59 @@ implements AccessibleCanvas
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
 		this.isLayoutBottom = ! this.isLayoutVCenter 
 							&& (( style.layout & Item.LAYOUT_BOTTOM ) == Item.LAYOUT_BOTTOM);
+		//#if polish.css.scrollindicator-up-image
+			String scrollUpUrl = style.getProperty("scrollindicator-up-image");
+			if (scrollUpUrl != null) {
+				try {
+					this.scrollIndicatorUpImage = StyleSheet.getImage(scrollUpUrl, null, true);
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load scroll up image" + e );
+				}
+			} else {
+				this.scrollIndicatorUpImage = null;
+			}
+		//#endif		
+		//#if polish.css.scrollindicator-down-image
+			String scrollDownUrl = style.getProperty("scrollindicator-down-image");
+			if (scrollDownUrl != null) {
+				try {
+					this.scrollIndicatorDownImage = StyleSheet.getImage(scrollDownUrl, null, true);
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load scroll down image" + e );
+				}
+			} else {
+				this.scrollIndicatorDownImage = null;
+			}
+		//#endif		
+		//#if polish.css.scrollindicator-up-image && polish.css.scrollindicator-down-image
+			if (this.scrollIndicatorUpImage != null && this.scrollIndicatorDownImage != null) {
+				int height = this.scrollIndicatorUpImage.getHeight() + this.scrollIndicatorDownImage.getHeight();
+				int width = Math.max( this.scrollIndicatorUpImage.getWidth(), this.scrollIndicatorDownImage.getWidth() );
+				this.scrollIndicatorWidth = width;
+				this.scrollIndicatorX = this.screenWidth / 2 - width / 2;
+				//#ifdef tmp.menuFullScreen
+					//#ifdef tmp.useExternalMenuBar
+						this.scrollIndicatorY = this.fullScreenHeight - this.menuBar.marginBottom + 1 - height;
+					//#else
+						this.scrollIndicatorY = this.fullScreenHeight - height - 1;
+					//#endif					
+				//#elif polish.vendor.Siemens
+					// set the position of scroll indicator for Siemens devices 
+					// on the left side, so that the menu-indicator is visible:
+					this.scrollIndicatorWidth = width;
+					this.scrollIndicatorX = 0;
+					this.scrollIndicatorY = this.screenHeight - height - 1;
+				//#else
+					// set position of scroll indicator:
+					this.scrollIndicatorWidth = width;
+					this.scrollIndicatorX = this.screenWidth - width - 1;
+					this.scrollIndicatorY = this.screenHeight - height - 1;
+				//#endif					
+			}
+		//#endif
+
 		//#ifdef polish.css.scrollindicator-color
 			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
 			if (scrollIndicatorColorInt != null) {
@@ -830,7 +887,8 @@ implements AccessibleCanvas
 						if (y < tHeight) {
 							this.paintScrollIndicator = true;
 							this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
-							this.paintScrollIndicatorDown = (this.menuContainer.yOffset + menuHeight > this.originalScreenHeight - tHeight);
+							this.paintScrollIndicatorDown = ( (this.menuContainer.focusedIndex != this.menuContainer.size() - 1)
+									&& (this.menuContainer.yOffset + menuHeight > this.originalScreenHeight - tHeight)) ;
 							y = tHeight; 
 							this.menuContainer.setVerticalDimensions(y, this.originalScreenHeight);
 						} else {
@@ -939,21 +997,40 @@ implements AccessibleCanvas
 				int width = this.scrollIndicatorWidth;
 				int halfWidth = width / 2;
 				if (this.paintScrollIndicatorUp) {
-					//#ifdef polish.midp2
-						g.fillTriangle(x, y + halfWidth-1, x + width, y + halfWidth-1, x + halfWidth, y );
-					//#else
-						g.drawLine( x, y + halfWidth-1, x + width, y + halfWidth-1 );
-						g.drawLine( x, y + halfWidth-1, x + halfWidth, y );
-						g.drawLine( x + width, y + halfWidth-1, x + halfWidth, y );
+					//#if polish.css.scrollindicator-up-image
+						if (this.scrollIndicatorUpImage != null) {
+							g.drawImage(this.scrollIndicatorUpImage, x, y, Graphics.TOP | Graphics.LEFT );
+						} else {
+					//#endif						
+						//#ifdef polish.midp2
+							g.fillTriangle(x, y + halfWidth-1, x + width, y + halfWidth-1, x + halfWidth, y );
+						//#else
+							g.drawLine( x, y + halfWidth-1, x + width, y + halfWidth-1 );
+							g.drawLine( x, y + halfWidth-1, x + halfWidth, y );
+							g.drawLine( x + width, y + halfWidth-1, x + halfWidth, y );
+						//#endif
+					//#if polish.css.scrollindicator-up-image
+						}
 					//#endif
 				}
 				if (this.paintScrollIndicatorDown) {
-					//#ifdef polish.midp2
-						g.fillTriangle(x, y + halfWidth+1, x + width, y + halfWidth+1, x + halfWidth, y + width );
-					//#else
-						g.drawLine( x, y + halfWidth+1, x + width, y + halfWidth+1 );
-						g.drawLine( x, y + halfWidth+1, x + halfWidth, y + width );
-						g.drawLine(x + width, y + halfWidth+1, x + halfWidth, y + width );
+					//#if polish.css.scrollindicator-down-image
+						if (this.scrollIndicatorDownImage != null) {
+							if (this.scrollIndicatorUpImage != null) {
+								y += this.scrollIndicatorUpImage.getHeight() + 1;
+							}
+							g.drawImage(this.scrollIndicatorDownImage, x, y, Graphics.TOP | Graphics.LEFT );
+						} else {
+					//#endif						
+						//#ifdef polish.midp2
+							g.fillTriangle(x, y + halfWidth+1, x + width, y + halfWidth+1, x + halfWidth, y + width );
+						//#else
+							g.drawLine( x, y + halfWidth+1, x + width, y + halfWidth+1 );
+							g.drawLine( x, y + halfWidth+1, x + halfWidth, y + width );
+							g.drawLine(x + width, y + halfWidth+1, x + halfWidth, y + width );
+						//#endif
+					//#if polish.css.scrollindicator-down-image
+						}
 					//#endif
 				}
 			}
@@ -994,8 +1071,10 @@ implements AccessibleCanvas
 		this.paintScrollIndicator = false; // defaults to false
 		if (containerHeight > height ) {
 			this.paintScrollIndicator = true;
-			this.paintScrollIndicatorUp = (this.container.yOffset != 0);
-			this.paintScrollIndicatorDown = (this.container.yOffset + containerHeight > height );
+			this.paintScrollIndicatorUp = (this.container.yOffset != 0)
+				&& (this.container.focusedIndex != 0);
+			this.paintScrollIndicatorDown = ( (this.container.focusedIndex != this.container.size() - 1)
+					 && (this.container.yOffset + containerHeight > height) );
 		} else if (this.isLayoutVCenter) {
 			/*
 			//#debug
@@ -1129,7 +1208,17 @@ implements AccessibleCanvas
 			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
 			this.showInfoItem = true;
 		}
-		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		
+		if (this.isInitialised && this.container != null) {
+			int previousContentHeight = this.contentHeight;
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			int differentce = this.contentHeight - previousContentHeight;
+			//System.out.println("ADJUSTING CONTAINER.YOFFSET BY " + differentce + " PIXELS");
+			this.container.yOffset += differentce;
+		} else {
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		}
+		
 	}
 
 	//#ifndef polish.skipTicker
