@@ -197,7 +197,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 
     public boolean performCancel() {
         IProject project = this.newPolishProjectDAO.getNewProject();
-        if(project != null) {
+        if(project != null && this.newPolishProjectDAO.isProjectCreated()) {
             try {
                 project.delete(true,true,new NullProgressMonitor());
             } catch (CoreException exception) {

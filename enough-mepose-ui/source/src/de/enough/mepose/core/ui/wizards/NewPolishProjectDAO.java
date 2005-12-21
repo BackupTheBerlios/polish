@@ -53,7 +53,7 @@ public class NewPolishProjectDAO{
     private String projectName;
     private IProject newProject;
     private MeposeModel model;
-    
+    private boolean projectCreated = false;
     public NewPolishProjectDAO() {
         reset();
     }
@@ -120,4 +120,13 @@ public class NewPolishProjectDAO{
     public File getWTKHome() {
         return this.model.getWTKHome();
     }
+
+    public boolean isProjectCreated() {
+        return this.projectCreated;
+    }
+
+    public void setProjectCreated(boolean projectCreated) {
+        this.projectCreated = projectCreated;
+    }
+    
 }

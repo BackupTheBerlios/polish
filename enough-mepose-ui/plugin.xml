@@ -51,6 +51,20 @@
           name="J2ME Polish Project"
           preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective,org.eclipse.jdt.ui.JavaBrowsingPerspective,org.eclipse.jdt.ui.JavaHierarchyPerspective"
           project="true"/>
- </extension> 
+ </extension>
+ 
+	<extension id="PolishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
+        <runtime>
+            <run class="de.enough.mepose.core.ui.project.PolishNature"></run>
+        </runtime>
+	</extension>
+	
+	<extension point="org.eclipse.ui.ide.projectNatureImages">
+ 		<image 
+ 	   		id="de.enough.mepose.core.ui.plugin.javaNatureImage"
+    		natureId="de.enough.mepose.core.ui.plugin.PolishNature"
+    		icon="icons/nature.png">
+  		</image>
+ 	</extension>
 
 </plugin>

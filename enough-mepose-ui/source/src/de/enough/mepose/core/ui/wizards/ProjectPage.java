@@ -1,7 +1,11 @@
 package de.enough.mepose.core.ui.wizards;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +25,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.enough.mepose.MeposeCoreUIConstants;
+import de.enough.mepose.core.ui.project.PropertyConstants;
 import de.enough.swt.widgets.StatusGroup;
 
 /**
@@ -223,6 +229,8 @@ public class ProjectPage extends WizardPage{
     public IWizardPage getNextPage() {
         try {
             createProject();
+            setupProject();
+            addNature();
         }
         catch (CoreException exception) {
             if(logger.isDebugEnabled()) {
@@ -234,9 +242,35 @@ public class ProjectPage extends WizardPage{
 
     
 
-    /**
-     * @throws CoreException
-     */
+    private void setupProject() throws CoreException {
+        IProject newProject = this.newPolishProjectModel.getNewProject();
+        if(newProject == null) {
+            return;
+        }
+        newProject.open(null);
+        String pproperty;
+        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_WTK_HOME);
+        if(pproperty != null) {
+            this.newPolishProjectModel.setWTKHome(new File(pproperty));
+        }
+        
+        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_POLISH_HOME);
+        if(pproperty != null) {
+            this.newPolishProjectModel.setPolishHome(new File(pproperty));
+        }
+        
+        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_PLATFORMS_SUPPORTED);
+        if(pproperty != null) {
+            this.newPolishProjectModel.setPolishHome(new File(pproperty));
+        }
+        
+        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_DEVICES_SUPPORTED);
+        if(pproperty != null) {
+            this.newPolishProjectModel.setPolishHome(new File(pproperty));
+        }
+        
+    }
+
     private void createProject() throws CoreException {
         IProject projectToConvert = this.newPolishProjectModel.getProjectToConvert();
         if(projectToConvert == null) {
@@ -245,12 +279,36 @@ public class ProjectPage extends WizardPage{
             project.create(new NullProgressMonitor());
             project.open(null);
             this.newPolishProjectModel.setNewProject(project);
+            this.newPolishProjectModel.setProjectCreated(true);
         }
         else {
             this.newPolishProjectModel.setNewProject(projectToConvert);
+            this.newPolishProjectModel.setProjectCreated(false);
         }
         
         this.newPolishProjectModel.setBasicallyConfigured(true);
+    }
+    
+    public void addNature() throws CoreException {
+        IProject newProject = this.newPolishProjectModel.getNewProject();
+        if(newProject == null) {
+            return;
+        }
+        
+        IProjectNature nature = newProject.getNature(MeposeCoreUIConstants.ID_NATURE);
+        if(nature != null) {
+            // Its already a PolishProject.
+            return;
+        }
+        IProjectDescription projectDescription = newProject.getDescription();
+        String[] natureIDs = projectDescription.getNatureIds();
+        String[] newNatureIDs = new String[natureIDs.length+1];
+        System.arraycopy(natureIDs, 0, newNatureIDs, 0, natureIDs.length);
+        // As last element.
+        newNatureIDs[natureIDs.length] = MeposeCoreUIConstants.ID_NATURE;
+        
+        projectDescription.setNatureIds(newNatureIDs);
+        newProject.setDescription(projectDescription, null);
     }
 
     public boolean canFlipToNextPage() {

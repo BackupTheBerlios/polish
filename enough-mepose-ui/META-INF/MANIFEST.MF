@@ -15,3 +15,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.ui,
  org.apache.ant
 Eclipse-AutoStart: true
+Export-Package: de.enough.mepose,
+ de.enough.mepose.core.ui.plugin,
+ de.enough.mepose.core.ui.preferencePages,
+ de.enough.mepose.core.ui.project,
+ de.enough.mepose.core.ui.propertyPages,
+ de.enough.mepose.core.ui.wizards,
+ de.enough.swt.widgets
