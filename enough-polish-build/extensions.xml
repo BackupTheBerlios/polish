@@ -332,6 +332,23 @@
 		<class>de.enough.polish.propertyfunctions.EncodeUrlFunction</class>
 	</extension>
 
+	<extension>
+		<type>propertyfunction</type>
+		<name>localefilename</name>
+		<class>de.enough.polish.propertyfunctions.LocaleFileNameFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>displaylanguage</name>
+		<class>de.enough.polish.propertyfunctions.DisplayLanguageFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>displaycountry</name>
+		<class>de.enough.polish.propertyfunctions.DisplayCountryFunction</class>
+	</extension>
 
 	<!-- Preverifier -->
 	

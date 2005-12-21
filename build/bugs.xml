@@ -328,6 +328,13 @@
 		<solution>Ignore the sizeChanged() call on such devices.</solution>
 	</bug>
 	
+	<bug>
+		<name>TransparencyNotWorkingInNokiaUiApi</name>
+		<area>ui</area>
+		<description>Nokia-UI-API: After creating a transparent image with DirectUtils nothing can be rendered on that image buffer.</description>
+		<solution>Use MIDP 2.0 drawRGB instead.</solution>
+	</bug>
+	
 
 	<!--
 	<bug>

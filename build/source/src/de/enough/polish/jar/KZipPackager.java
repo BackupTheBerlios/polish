@@ -128,6 +128,12 @@ implements OutputFilter
 			throw new BuildException("kzip: Unable to create [" + targetFile.getAbsolutePath() + "]: kzip returned [" + result + "].");
 		}
 		// now rename temporary file:
+		if (targetFile.exists()) {
+			boolean deleted = targetFile.delete();
+			if (!deleted) {
+				throw new BuildException("kzip: Unable to delete previous JAR file [" + targetFile.getAbsolutePath() + " - check the permissions of that file or delete it manually.");
+			}
+		}
 		boolean renamed = tempFile.renameTo(targetFile);
 		if (!renamed) {
 			throw new BuildException("kzip: Unable to rename [" + tempFile.getAbsolutePath() + " to " + targetFile.getAbsolutePath() + "].");

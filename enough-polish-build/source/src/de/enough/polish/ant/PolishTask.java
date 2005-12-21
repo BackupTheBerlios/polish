@@ -1179,6 +1179,7 @@ public class PolishTask extends ConditionalTask {
 				this.environment.addSymbol("polish.i18n.useDynamicTranslations");
 				this.environment.setLocale( locale );
 			}
+			this.environment.addVariable("polish.SupportedLocales", this.localizationSetting.getSupportedLocalesAsString() );
 			this.environment.addVariable("polish.locale", locale.toString() );
 			this.environment.addVariable("polish.language", locale.getLanguage() );
 			String country = locale.getCountry();

@@ -73,7 +73,7 @@
 
 	<attribute
 		name="icon-image"
-		type="string"
+		type="imageurl"
 		appliesTo="List-Item, IconItem, ChoiceItem"
 		description="The URL of the image. The keyword %INDEX% can be used for adding the position of the icon to the name, e.g.&quot;icon-image: url(icon%INDEX%.png);&quot;."
 		default="none"
@@ -101,7 +101,7 @@
 
 	<attribute
 		name="checkbox-selected"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color."
 		id="9"
@@ -109,7 +109,7 @@
 
 	<attribute
 		name="checkbox-plain"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="10"
@@ -117,7 +117,7 @@
 	
 	<attribute
 		name="radiobox-selected"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color."
 		id="11"
@@ -125,7 +125,7 @@
 
 	<attribute
 		name="radiobox-plain"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="12"
@@ -134,7 +134,7 @@
 
 	<attribute
 		name="popup-image"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceGroup"
 		description="The URL to the image which should be shown in the closed popup-group. Per default a simple dropdown image will be used."
 		id="13"
@@ -168,7 +168,7 @@
 
 	<attribute
 		name="gauge-image"
-		type="string"
+		type="imageurl"
 		appliesTo="Gauge"
 		description="The URL of the image."
 		id="17"
@@ -448,7 +448,7 @@
 
 	<attribute
 		name="menubar-select-image"
-		type="string"
+		type="imageurl"
 		appliesTo="MenuBar"
 		description="Defines the image-URL for the select-image of the extended menubar."
 		id="48"
@@ -456,7 +456,7 @@
 	
 	<attribute
 		name="menubar-cancel-image"
-		type="string"
+		type="imageurl"
 		appliesTo="MenuBar"
 		description="Defines the image-URL for the cancel-image of the extended menubar."
 		id="49"
@@ -464,7 +464,7 @@
 
 	<attribute
 		name="menubar-options-image"
-		type="string"
+		type="imageurl"
 		appliesTo="MenuBar"
 		description="Defines the image-URL for the options-image of the extended menubar."
 		id="50"
@@ -481,7 +481,7 @@
 	
 	<attribute
 		name="foreground-image"
-		type="string"
+		type="imageurl"
 		appliesTo="Screen, List, Form, TabbedForm"
 		description="The url of the image that should be shown at the topmost layer. You can also set the foreground-x and forground-y positions."
 		id="52"
@@ -514,7 +514,7 @@
 	
 	<attribute
 		name="exclusiveview-right-arrow"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceGroup, List, The exclusive view-type"
 		description="The URL of the right arrow image."
 		id="56"
@@ -522,7 +522,7 @@
 
 	<attribute
 		name="exclusiveview-left-arrow"
-		type="string"
+		type="imageurl"
 		appliesTo="ChoiceGroup, List, The exclusive view-type"
 		description="The URL of the left arrow image."
 		id="57"
@@ -977,5 +977,39 @@
 		id="101"
 	/>
 	
+	<attribute
+		name="scrollindicator-up-image"
+		type="imageurl"
+		appliesTo="Screen, List, Form, TabbedForm"
+		description="The URL of the image indicating that the user can scroll upwards."
+		id="102"
+	/>
+	
+	<attribute
+		name="scrollindicator-down-image"
+		type="imageurl"
+		appliesTo="Screen, List, Form, TabbedForm"
+		description="The URL of the image indicating that the user can scroll downwards."
+		id="103"
+	/>
+
+	<attribute
+		name="exclusiveview-arrow-position"
+		type="integer"
+		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		description="The position of the arrows, either on both sides, left or right."
+		default="bothsides"
+		values="bothsides,right,left"
+		id="104"
+	/>
+	
+	<attribute
+		name="exclusiveview-expand-background"
+		type="boolean"
+		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		description="Defines whether the background should be painted under the arrows as well."
+		default="false"
+		id="105"
+	/>
 	
 </attributes>

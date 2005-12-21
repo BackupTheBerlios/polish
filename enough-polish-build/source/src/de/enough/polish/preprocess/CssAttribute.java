@@ -58,6 +58,7 @@ implements Comparable
 	public final static int STYLE = 4;
 	public static final int CHAR = 5;
 	public static final int OBJECT = 6;
+	public static final int IMAGE_URL = 7;
 	
 	private final String name;
 	private final int type;
@@ -82,20 +83,22 @@ implements Comparable
 		this.defaultValue = definition.getAttributeValue("default");
 		String typeStr = definition.getAttributeValue("type");
 		if (typeStr != null) {
-			if ("color".equals( typeStr )) {
+			if ("color".equalsIgnoreCase( typeStr )) {
 				this.type = COLOR;
-			} else if ("integer".equals( typeStr )) {
+			} else if ("integer".equalsIgnoreCase( typeStr )) {
 				this.type = INTEGER;
-			} else if ("boolean".equals( typeStr )) {
+			} else if ("boolean".equalsIgnoreCase( typeStr )) {
 				this.type = BOOLEAN;
-			} else if ("style".equals( typeStr )) {
+			} else if ("style".equalsIgnoreCase( typeStr )) {
 				this.type = STYLE;
-			} else if ("string".equals( typeStr )){
+			} else if ("string".equalsIgnoreCase( typeStr )){
 				this.type = STRING;
-			} else if ("char".equals( typeStr )){
+			} else if ("char".equalsIgnoreCase( typeStr )){
 				this.type = CHAR;
-			} else if ("object".equals( typeStr )){
+			} else if ("object".equalsIgnoreCase( typeStr )){
 				this.type = OBJECT;
+			} else if ("imageurl".equalsIgnoreCase( typeStr )){
+				this.type = IMAGE_URL;
 			} else {
 				throw new BuildException("The CSS-attribute-type [" + typeStr + "] is not supported. It needs to be either [integer], [color], [boolean], [style] or [string].");
 			}
@@ -198,6 +201,16 @@ implements Comparable
 	public boolean isStyle() {
 		return ( this.type == STYLE );
 	}
+	
+	/**
+	 * Determines whether this attribute contains image-url values
+	 * 
+	 * @return true when this attribute 
+	 */
+	public boolean isImageUrl() {
+		return ( this.type == IMAGE_URL );
+	}
+
 
 	
 	/**
@@ -290,7 +303,7 @@ implements Comparable
 	 *         When the value is invalid, -1 will be returned
 	 * @throws NullPointerException when no fix allowed values are defined
 	 * @see #hasFixValues()
-	 * @see #checkValue(String) 
+	 * @see #checkValue(String, BooleanEvaluator) 
 	 */
 	public int getValuePosition( String value ) {
 		for (int i = 0; i < this.allowedValues.length; i++) {
@@ -322,7 +335,7 @@ implements Comparable
 
 	/**
 	 * @param className
-	 * @return
+	 * @return true when the attribute can be used for the given class.
 	 */
 	public boolean appliesTo(String className) {
 		if (this.appliesToMap == null) {

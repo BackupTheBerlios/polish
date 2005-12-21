@@ -50,6 +50,7 @@ public class LocalizationSetting extends Setting {
 	private Locale defaultLocale;
 	private String preprocessorClassName;
 	private String translationManagerClassName;
+	private String supportedLocalesString;
 
 
 	/**
@@ -247,6 +248,24 @@ public class LocalizationSetting extends Setting {
 	 */
 	public void setTranslationManager( String translationManagerClassName ) {
 		this.translationManagerClassName = translationManagerClassName;
+	}
+
+	public String getSupportedLocalesAsString() {
+		if (this.supportedLocalesString == null) {
+			StringBuffer buffer = new StringBuffer();
+			if (this.defaultLocale == null) {
+				this.defaultLocale = getDefaultLocale();
+			}
+			buffer.append( this.defaultLocale.toString() );
+			for (int i = 0; i < this.supportedLocales.length; i++) {
+				Locale locale = this.supportedLocales[i];
+				if (!locale.equals( this.defaultLocale )) {
+					buffer.append(",").append( locale.toString() );
+				}
+			}
+			this.supportedLocalesString = buffer.toString();
+		}
+		return this.supportedLocalesString;
 	}
 
 }

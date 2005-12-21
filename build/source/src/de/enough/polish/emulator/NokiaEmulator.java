@@ -71,8 +71,8 @@ public class NokiaEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.WtkEmulator#getEmulatorExcecutable(java.lang.String, java.lang.String)
 	 */
-	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device device) {
-		String execName = device.getCapability("polish.Emulator.Executable");
+	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev) {
+		String execName = dev.getCapability("polish.Emulator.Executable");
 		if (execName == null) {
 			if (File.separatorChar == '\\') {
 				execName = "emulator.exe";
@@ -89,13 +89,13 @@ public class NokiaEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
-	public boolean init(Device device, EmulatorSetting setting,
+	public boolean init(Device dev, EmulatorSetting setting,
 			Environment properties, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
-		String skin = device.getCapability("polish.Emulator.Skin");
+		String skin = dev.getCapability("polish.Emulator.Skin");
 		if (skin == null) {
-			System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: no \"Emulator.Skin\"-capability defined in devices.xml.");
+			System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: no \"Emulator.Skin\"-capability defined in devices.xml.");
 			return false;
 		}
 		String nokiaHomePath = properties.getVariable("nokia.home");
@@ -107,16 +107,16 @@ public class NokiaEmulator extends WtkEmulator {
 			}
 			File home = new File( nokiaHomePath );
 			if (!home.exists()) {
-				System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: Please define the ${nokia.home}-property in your build.xml. The default path [" + nokiaHomePath + "] does not exist.");
+				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please define the ${nokia.home}-property in your build.xml. The default path [" + nokiaHomePath + "] does not exist.");
 			}
 		} else {
 			File home = new File( nokiaHomePath );
 			if (!home.exists()) {
-				System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: Please adjust the ${nokia.home}-property in your build.xml. The path [" + nokiaHomePath + "] does not exist.");
+				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the ${nokia.home}-property in your build.xml. The path [" + nokiaHomePath + "] does not exist.");
 			}
 		}
 		this.nokiaHome = nokiaHomePath;
-		return super.init(device, setting, properties, project, evaluator, wtkHome);
+		return super.init(dev, setting, properties, project, evaluator, wtkHome);
 	}
 
 }

@@ -664,7 +664,10 @@ public class CssConverter extends Converter {
 					} else if (value.startsWith("style(")) {
 						value = getStyleReference( value, style, styleSheet );
 					}					
-					if (attributeType == CssAttribute.STRING || attributeType == CssAttribute.CHAR) {
+					if (attributeType == CssAttribute.STRING 
+							|| attributeType == CssAttribute.IMAGE_URL 
+							|| attributeType == CssAttribute.CHAR) 
+					{
 						if ( "none".equals(value)) {
 							valueList.append("null");
 						} else {
@@ -675,7 +678,8 @@ public class CssConverter extends Converter {
 					} else if (attributeType == CssAttribute.STYLE) {
 						valueList.append( value );
 					} else if (attributeType == CssAttribute.COLOR 
-							|| attributeType == CssAttribute.INTEGER ) {
+							|| attributeType == CssAttribute.INTEGER ) 
+					{
 						// check integer value:
 						if (attributeType == CssAttribute.INTEGER ) {
 							try {
