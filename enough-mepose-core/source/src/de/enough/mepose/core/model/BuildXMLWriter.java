@@ -118,10 +118,10 @@ public class BuildXMLWriter {
      * @param context
      */
     private void fillContext(VelocityContext context) {
-      context.put("wtkHome","WTKBLAAA");
-      context.put("polishHome","PolishBBB");
-//        context.put("wtk.home",this.meposeModel.getWTKHome().toString());
-//        context.put("polish.home",this.meposeModel.getPolishHome().toString());
+//      context.put("wtkHome","WTKBLAAA");
+//      context.put("polishHome","PolishBBB");
+        context.put("wtk.home",this.meposeModel.getWTKHome().toString());
+        context.put("polish.home",this.meposeModel.getPolishHome().toString());
     }
     
     public BundleContext getBundleContext() {

@@ -29,11 +29,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
@@ -44,7 +46,8 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
 import de.enough.utils.AntBox;
-import de.enough.utils.ErrorSituation;
+import de.enough.utils.PropertyModel;
+import de.enough.utils.Status;
 
 /**
  * This class encapsulates the concepts of the polish build.xml in an abstract manner.
@@ -60,29 +63,39 @@ import de.enough.utils.ErrorSituation;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class MeposeModel {
+public class MeposeModel extends PropertyModel{
     
-    public static final String ERROR_NOBUILDXML_FILE = "No build.xml file specified.";
-    public static final String ERROR_NO_DEVICE = "No device specified.";
-    public static final String ERROR_PARSE_ERROR = "Errors while parsing build.xml";
-    public static final String ERROR_INVALID_WORKING_DIR = "Working directory is not valid";
+    private static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
+
+    public static Logger logger = Logger.getLogger(MeposeModel.class);
     
-    // The environment for a specific device. May be null when no device is choosen.
-    private Environment environment;
+//    public static final String ERROR_NOBUILDXML_FILE = "No build.xml file specified.";
+//    public static final String ERROR_NO_DEVICE = "No device specified.";
+//    public static final String ERROR_PARSE_ERROR = "Errors while parsing build.xml";
+//    public static final String ERROR_INVALID_WORKING_DIR = "Working directory is not valid";
+    
+    public static final String ID_DEVICES_SUPPORTED = "id.devices.supported";
+    public static final String ID_PLATFORMS_SUPPORTED = "id.platforms.supported";
+    public static final String ID_POLISH_HOME = "id.path.polishhome";
+    public static final String ID_WTK_HOME = "id.path.wtkhome";
+    public static final String ID_BUILD_WD = "id.build.wd";
+    public static final String ID_BUILDXML = "id.buildxml";
+    public static final String ID_ANT_TASK_POLISH = "id.ant.task.polish";
+    
     private Device[] configuredDevices;
+    private File buildxml = new File("");
     private String projectPath;
+    private File polishHome = new File("");
+    private File wtkHome = new File("");
 
     private AntBox antBox;
+    private Environment environment;
     private PolishTask polishTask;
-    //TODO: Make this property have a absolute path to the buildxml file.
-    private File buildxml = new File("");
-    private ErrorSituation errorSituation;
-    private File wtkHome = new File("");
-    private File polishHome = new File("");
+//    private ErrorSituation errorSituation;
     
-
-    // TODO: Make a map and register listeners with properties directly.
     private List propertyChangeListeners;
+
+    
     
     public MeposeModel() {
         reset();
@@ -94,18 +107,11 @@ public class MeposeModel {
         this.buildxml = new File("");
         this.projectPath = "";
         this.propertyChangeListeners = new LinkedList();
-        this.errorSituation = new ErrorSituation();
-        this.errorSituation.addErrorToken(ERROR_NOBUILDXML_FILE);
-        this.errorSituation.addErrorToken(ERROR_NO_DEVICE);
-        
-        initFromPreferences();
+//        this.errorSituation = new ErrorSituation();
+//        this.errorSituation.addErrorToken(ERROR_NOBUILDXML_FILE);
+//        this.errorSituation.addErrorToken(ERROR_NO_DEVICE);
     }
     
-    private void initFromPreferences() {
-//        Preferences preferences = CorePlugin.getDefault().getPluginPreferences();
-//        String wtkInstallationDir = preferences.getString(MeposeCoreConstants.WTK_INSTALLATION_DIR);
-    }
-
     /**
      * When called initializes the antBox with the given buildxml, creates a antproject, sets
      * 'environment' and gathers the configured devices.
@@ -116,10 +122,23 @@ public class MeposeModel {
         if(buildxml == null){
             throw new IllegalArgumentException("ERROR:MeposeProject.setBuildxml(...):Parameter 'buildxml' is null.");
         }
+        this.buildxml = buildxml;
+        if( ! this.buildxml.exists()) {
+            setPropertyStatus(ID_BUILDXML,STATUS_BUILDXML_MISSING);
+            return;
+        }
+        extractTaskFromBuildXML();
+    }
+
+    private void extractTaskFromBuildXML() {
+//        if(this.buildxml == null){
+//            throw new IllegalStateException("this.buildxml must not be null when method is called.");
+//        }
+//        if( ! this.buildxml.exists()) {
+//            setPropertyStatus(ID_BUILDXML,STATUS_BUILDXML_MISSING);
+//            return;
+//        }
         this.antBox.setWorkingDirectory(this.projectPath);
-        // Listen to the errorSituation of antBox.
-        //this.errorSituation.addAll(this.antBox.getErrorTokens());
-        this.antBox.setBuildxml(buildxml);
         this.antBox.createProject();
         
         // Configure all targets.
@@ -145,6 +164,7 @@ public class MeposeModel {
                     if(task instanceof PolishTask) {
                         this.polishTask = (PolishTask)task;
                         foundPolishTask = true;
+                        setPropertyStatus(ID_ANT_TASK_POLISH,Status.OK);
                         break;
                     }
             }
@@ -154,17 +174,16 @@ public class MeposeModel {
         }
         //TODO: Think about alternative error reporting facility instead of boolean return value.
         if(! foundPolishTask) {
-            throw new BuildException("No target with a 'PolishTask' was found.");
+            setPropertyStatus(ID_ANT_TASK_POLISH,new Status(Status.TYPE_ERROR,"Ant task 'polish' not found in build.xml",null));
+            return;
+            //throw new BuildException("No target with a 'PolishTask' was found.");
         }
         Environment oldEnvironment = this.environment;
         this.polishTask.initProject();
         this.environment = this.polishTask.getEnvironment();
-        //TODO: Fire a propertyChangeEvent to inform others that the object reference
-        // has changed. ContentProcessors are typical clients to this mechanism.
         firePropertyChangeEvent("environment",oldEnvironment,this.environment);
         this.polishTask.selectDevices();
         this.configuredDevices = this.polishTask.getDevices();
-        this.buildxml = buildxml;
     }
 
     /*
