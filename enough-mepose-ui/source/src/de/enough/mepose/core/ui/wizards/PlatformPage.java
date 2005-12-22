@@ -45,12 +45,12 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class PlatformPage extends WizardPage {
 
-    private NewPolishProjectDAO newPolishProjectDAO;
+    private NewProjectModel newPolishProjectDAO;
 
     /**
      * @param pageName
      */
-    protected PlatformPage(NewPolishProjectDAO newPolishProjectDAO) {
+    protected PlatformPage(NewProjectModel newPolishProjectDAO) {
         super("Select Platform");
         this.newPolishProjectDAO = newPolishProjectDAO;
         setTitle("Platform Selection");

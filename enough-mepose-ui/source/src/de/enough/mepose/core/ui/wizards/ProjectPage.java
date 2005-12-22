@@ -10,8 +10,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -19,13 +17,13 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.enough.mepose.MeposeCoreUIConstants;
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.ui.project.PropertyConstants;
 import de.enough.swt.widgets.StatusGroup;
 
@@ -38,23 +36,21 @@ import de.enough.swt.widgets.StatusGroup;
 public class ProjectPage extends WizardPage{
 
     public static final int OK = 10;
-    
-    private NewPolishProjectDAO newPolishProjectModel;
     public static Logger logger = Logger.getLogger(ProjectPage.class);
-    private Button yesButton;
-    private Button noButton;
+    
+    private NewProjectModel newProjectModel;
     private Text newProjectNameText;
     private Label newProjectNameLabel;
     private StatusGroup newProjectNameStatusGroup;
     private boolean isReady = false;
     
-	public ProjectPage(NewPolishProjectDAO newProjectOptions) {
+	public ProjectPage(NewProjectModel newProjectOptions) {
 		super("wizardPage");
         if(newProjectOptions == null){
             logger.error("Parameter 'newProjectOptions' is null contrary to API.");
             return;
         }
-        this.newPolishProjectModel = newProjectOptions;
+        this.newProjectModel = newProjectOptions;
 		setTitle("Create a J2ME Polish Project");
 		setDescription("Create a new J2ME Polish Project or convert an existing one.");
 	}
@@ -90,20 +86,10 @@ public class ProjectPage extends WizardPage{
 		Label someLabel = new Label(container,SWT.NONE);
         someLabel.setText("ask the user something");
         
-//		dialogChanged();
-		checkGUIState();
-		setControl(container);
+        setControl(container);
+
+        checkGUIState();
 	}
-
-//    protected void actionToggleConvertProject() {
-//        this.newProjectOptions.setShouldConvertProject(this.yesButton.getSelection());
-//        enableNewProjectName( ! this.newProjectOptions.isShouldConvertProject());
-//    }
-
-    /**
-	 * Uses the standard container selection dialog to choose the new value for
-	 * the container field.
-	 */
 
 //	private void handleBrowse() {
 //		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
@@ -116,10 +102,6 @@ public class ProjectPage extends WizardPage{
 //			}
 //		}
 //	}
-
-	/**
-	 * Ensures that both text fields are set.
-	 */
 
 //	private void dialogChanged() {
 //		IResource container = ResourcesPlugin.getWorkspace().getRoot()
@@ -163,43 +145,19 @@ public class ProjectPage extends WizardPage{
     }
     
     protected void projectNameModified() {
-        String projectName = this.newProjectNameText.getText();
-        if(projectName == null || projectName.length() == 0) {
-//            noGoWizard("The project name must not be null");
-            this.newProjectNameStatusGroup.setError("The project name must not be empty");
-            return;
-        }
-        IResource resource = null;
-        try {
-            resource = ResourcesPlugin.getWorkspace().getRoot().findMember(projectName);
-        } catch (Exception e) {
-            System.out.println("ERROR:ProjectPage.projectNameModified(...):"+e);
-        }
-        if(resource != null) {
-            if(resource instanceof IProject) {
-                setStateError(WARNING,this.newProjectNameStatusGroup,"Project exists and will be converted");
-                this.newPolishProjectModel.setProjectToConvert((IProject)resource);
-            }
-            else {
-                this.newProjectNameStatusGroup.setError("Resource exists");
-                this.newPolishProjectModel.setProjectToConvert(null);
-            }
-        }
-        else {
-            setStateError(OK,this.newProjectNameStatusGroup,"");
-            this.newPolishProjectModel.setProjectToConvert(null);
-        }
+        String newName = this.newProjectNameText.getText();
+        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_NAME,newName);
     }
 
-    private void setStateError(int type, StatusGroup statusGroup, String reason) {
-        switch(type) {
-            case ERROR: statusGroup.setError(reason); this.isReady = false;break;
-            case WARNING: statusGroup.setWarning(reason); this.isReady = true; break;
-            case OK: statusGroup.setOK(reason); this.isReady = true; break;
-            default: return;
-        }
-        getContainer().updateButtons();
-    }
+//    private void setStateError(int type, StatusGroup statusGroup, String reason) {
+//        switch(type) {
+//            case ERROR: statusGroup.setError(reason); this.isReady = false;break;
+//            case WARNING: statusGroup.setWarning(reason); this.isReady = true; break;
+//            case OK: statusGroup.setOK(reason); this.isReady = true; break;
+//            default: return;
+//        }
+//        getContainer().updateButtons();
+//    }
     
     
 //    protected void goWizard() {
@@ -243,7 +201,7 @@ public class ProjectPage extends WizardPage{
     
 
     private void setupProject() throws CoreException {
-        IProject newProject = this.newPolishProjectModel.getNewProject();
+        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
         if(newProject == null) {
             return;
         }
@@ -251,46 +209,45 @@ public class ProjectPage extends WizardPage{
         String pproperty;
         pproperty = newProject.getPersistentProperty(PropertyConstants.QN_WTK_HOME);
         if(pproperty != null) {
-            this.newPolishProjectModel.setWTKHome(new File(pproperty));
+            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_WTK_HOME,new File(pproperty));
         }
         
         pproperty = newProject.getPersistentProperty(PropertyConstants.QN_POLISH_HOME);
         if(pproperty != null) {
-            this.newPolishProjectModel.setPolishHome(new File(pproperty));
+            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,new File(pproperty));
         }
         
         pproperty = newProject.getPersistentProperty(PropertyConstants.QN_PLATFORMS_SUPPORTED);
         if(pproperty != null) {
-            this.newPolishProjectModel.setPolishHome(new File(pproperty));
+            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PLATFORMS_SUPPORTED,new File(pproperty));
         }
         
         pproperty = newProject.getPersistentProperty(PropertyConstants.QN_DEVICES_SUPPORTED);
         if(pproperty != null) {
-            this.newPolishProjectModel.setPolishHome(new File(pproperty));
+            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_DEVICES_SUPPORTED,new File(pproperty));
         }
         
     }
 
     private void createProject() throws CoreException {
-        IProject projectToConvert = this.newPolishProjectModel.getProjectToConvert();
-        if(projectToConvert == null) {
-            // Make a new project;
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(this.newProjectNameText.getText());
-            project.create(new NullProgressMonitor());
-            project.open(null);
-            this.newPolishProjectModel.setNewProject(project);
-            this.newPolishProjectModel.setProjectCreated(true);
+        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT);
+        if(project != null) {
+            // Set the project to convert to the new project.
+            this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE,project);
+            this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT,Boolean.FALSE);
         }
         else {
-            this.newPolishProjectModel.setNewProject(projectToConvert);
-            this.newPolishProjectModel.setProjectCreated(false);
+            // Make a new project;
+            project = ResourcesPlugin.getWorkspace().getRoot().getProject(this.newProjectNameText.getText());
+            project.create(new NullProgressMonitor());
+            project.open(null);
+            this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE,project);
+            this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT,Boolean.TRUE);
         }
-        
-        this.newPolishProjectModel.setBasicallyConfigured(true);
     }
     
     public void addNature() throws CoreException {
-        IProject newProject = this.newPolishProjectModel.getNewProject();
+        IProject newProject = this.newProjectModel.getNewProject();
         if(newProject == null) {
             return;
         }
@@ -312,6 +269,7 @@ public class ProjectPage extends WizardPage{
     }
 
     public boolean canFlipToNextPage() {
+        XXX We need a getModelStatus
        return this.isReady ;
     }
     

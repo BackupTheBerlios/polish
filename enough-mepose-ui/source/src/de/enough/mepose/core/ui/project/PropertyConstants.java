@@ -28,6 +28,7 @@ package de.enough.mepose.core.ui.project;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 
 /**
@@ -41,14 +42,9 @@ import de.enough.mepose.core.ui.plugin.UIPluginActivator;
  */
 public interface PropertyConstants {
 
-    public static final String ID_WTK_HOME = "id.wtk.home";
-    public static final String ID_POLISH_HOME = "id.polish.home";
-    public static final String ID_PLATFORMS_SUPPORTED = "id.platform.supported";
-    public static final String ID_DEVICES_SUPPORTED = "id.devices.supported";
-    
-    public static final QualifiedName QN_WTK_HOME = new QualifiedName(UIPluginActivator.class.getName(),ID_WTK_HOME);
-    public static final QualifiedName QN_POLISH_HOME = new QualifiedName(UIPluginActivator.class.getName(),ID_POLISH_HOME);
-    public static final QualifiedName QN_PLATFORMS_SUPPORTED = new QualifiedName(UIPluginActivator.class.getName(),ID_PLATFORMS_SUPPORTED);
-    public static final QualifiedName QN_DEVICES_SUPPORTED = new QualifiedName(UIPluginActivator.class.getName(),ID_DEVICES_SUPPORTED);;
+    public static final QualifiedName QN_WTK_HOME = new QualifiedName(UIPluginActivator.class.getName(),MeposeModel.ID_WTK_HOME);
+    public static final QualifiedName QN_POLISH_HOME = new QualifiedName(UIPluginActivator.class.getName(),MeposeModel.ID_POLISH_HOME);
+    public static final QualifiedName QN_PLATFORMS_SUPPORTED = new QualifiedName(UIPluginActivator.class.getName(),MeposeModel.ID_PLATFORMS_SUPPORTED);
+    public static final QualifiedName QN_DEVICES_SUPPORTED = new QualifiedName(UIPluginActivator.class.getName(),MeposeModel.ID_DEVICES_SUPPORTED);;
 }
 

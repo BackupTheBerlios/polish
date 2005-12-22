@@ -27,6 +27,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.utils.Status;
 
 
 /**
@@ -47,7 +48,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     public static Logger logger = Logger.getLogger(PolishNewWizard.class);
     
     private ISelection selection;
-    private NewPolishProjectDAO newPolishProjectDAO;
+    private NewProjectModel newPolishProjectDAO;
     private PathsPage pathsPage;
     private PlatformPage platformPage;
     private ProjectPage projectPage;
@@ -59,8 +60,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	public PolishNewWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-        this.newPolishProjectDAO = new NewPolishProjectDAO();
-        this.newPolishProjectDAO.setModel(new MeposeModel());
+        this.newPolishProjectDAO = new NewProjectModel(new MeposeModel());
 	}
 	
 	/**
@@ -155,13 +155,17 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //		monitor.worked(1);
 	}
     private void createBuildXML() {        
-        BuildXMLWriter buildXMLWriter = new BuildXMLWriter(this.newPolishProjectDAO.getModel());
+        BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
         buildXMLWriter.writeBuildXML(new OutputStreamWriter(byteArrayOutputStream));
         ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         
-        IFile file = this.newPolishProjectDAO.getNewProject().getFile("build.xml");
+        IProject project = (IProject)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        if(project == null) {
+            throw new IllegalStateException("No project instance to generate build.xml in.");
+        }
+        IFile file = project.getFile("build.xml");
         try {
             file.create(inputStream,true,null);
         } catch (CoreException exception) {
@@ -173,7 +177,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     
 	public void init(IWorkbench workbench, IStructuredSelection newSelection) {
 		this.selection = newSelection;
-        this.newPolishProjectDAO.setProjectToConvert(extractProjectFromSelection(this.selection));
+        this.newPolishProjectDAO.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
 	}
     
     private IProject extractProjectFromSelection(ISelection projectSelection) {
@@ -192,12 +196,13 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     }
 
     public boolean canFinish() {
-        return this.newPolishProjectDAO.isBasicallyConfigured();
+        return this.newPolishProjectDAO.getModelStatus().getType() == Status.TYPE_OK;
     }
 
     public boolean performCancel() {
-        IProject project = this.newPolishProjectDAO.getNewProject();
-        if(project != null && this.newPolishProjectDAO.isProjectCreated()) {
+        IProject project = (IProject)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        Boolean projectNewlyCreated = ((Boolean)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT));
+        if(project != null && projectNewlyCreated != null && projectNewlyCreated.booleanValue()) {
             try {
                 project.delete(true,true,new NullProgressMonitor());
             } catch (CoreException exception) {

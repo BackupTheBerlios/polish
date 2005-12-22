@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.enough.mepose.core.model.MeposeModel;
+
 /**
  * 
  * <br>Copyright Enough Software 2005
@@ -50,10 +52,10 @@ import org.eclipse.swt.widgets.Text;
  */
 public class PathsPage extends WizardPage {
 
-    private NewPolishProjectDAO newPolishProjectDAO;
+    private NewProjectModel newPolishProjectDAO;
     private Text polishHomeText;
 
-    protected PathsPage(NewPolishProjectDAO newPolishProjectDAO) {
+    protected PathsPage(NewProjectModel newPolishProjectDAO) {
         super("Paths and Locations");
         this.newPolishProjectDAO = newPolishProjectDAO;
         setTitle("Paths and Locations");
@@ -68,7 +70,8 @@ public class PathsPage extends WizardPage {
         polishHomeLabel.setText("J2ME Polish Home:");
         
         this.polishHomeText = new Text(composite,SWT.NONE);
-        this.polishHomeText.setText(this.newPolishProjectDAO.getPolishHome().toString());
+        String polishHomeString = (String)(this.newPolishProjectDAO.getMeposeModel().getPropertyValue(MeposeModel.ID_POLISH_HOME));
+        this.polishHomeText.setText((polishHomeString == null)?"":polishHomeString);
         this.polishHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
         Button browseButton = new Button(composite,SWT.NONE);
         browseButton.setText("Browse for Path");
@@ -87,7 +90,7 @@ public class PathsPage extends WizardPage {
         if(pathString != null) {
 //            IPath path = new Path(pathString);
             //TODO: check if the path is only a dir, not a file.
-            this.newPolishProjectDAO.setPolishHome(new File(pathString));
+            this.newPolishProjectDAO.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,new File(pathString));
             this.polishHomeText.setText(pathString);
         }
     }
