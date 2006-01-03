@@ -61,8 +61,7 @@ public class ListItem
 	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
 	public ListItem(String label, int listType) {
-		super(label);
-		this.container = new Container( false );
+		this( label, listType, null );
 	}
 
 	/**

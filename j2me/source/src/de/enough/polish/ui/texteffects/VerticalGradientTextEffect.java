@@ -72,7 +72,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 			int width = font.stringWidth( text );
 			int startX = getLeftX( x, orientation, width );
 			int startY = getTopY( y, orientation, height, font.getBaselinePosition() );
-			//#if polish.api.nokia-ui || polish.midp2
+			//#if tmp.useNokiaUiApi || polish.midp2
 				Graphics bufferG;
 			//#else
 				int clipX = g.getClipX();
@@ -93,8 +93,10 @@ public class VerticalGradientTextEffect extends TextEffect {
 				midp2ImageBuffer.getRGB(clearColorArray, 0, 1, 0, 0, 1, 1 );
 				int clearColor = clearColorArray[0];
 			//#endif
+			//#if tmp.useNokiaUiApi || polish.midp2
+				bufferG.setFont(font);
+			//#endif	
 			int j = 0;
-			bufferG.setFont(font);
 			boolean increase = true;
 			int maxJ = this.colors.length - 1;
 			for (int i = 0; i < height; i++) {

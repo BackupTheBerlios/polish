@@ -44,7 +44,7 @@ public class TopBorder extends Border {
 	private final int color;
 
 	/**
-	 * Creates a new simple border.
+	 * Creates a new top border.
 	 * 
 	 * @param color the color of this border in RGB, e.g. 0xFFDD12
 	 * @param borderWidth the width of this border

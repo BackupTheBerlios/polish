@@ -274,6 +274,30 @@ public class DateField extends StringItem
 	 */
 	public void setDate( Date date)
 	{
+		if ( date != null && this.inputMode == TIME) {
+			// check if the year-month-day is set to zero (so that the date starts at 1970-01-01)
+			// 1 day =
+			// 1000 // == 1 sec
+			// * 60 // == 1 min
+			// * 60 // == 1 hour 
+			// * 24 // == 1 day
+			// = 86.400.000 ==  0x5265C00
+			if ( date.getTime() > 86400000 ) {
+				if (this.calendar == null) {
+					this.calendar = Calendar.getInstance();
+					this.calendar.setTimeZone(this.timeZone);
+				}
+				this.calendar.setTime(date);
+				long timeOnly = this.calendar.get( Calendar.MILLISECOND )
+					+ this.calendar.get( Calendar.SECOND ) * 1000
+					+ this.calendar.get( Calendar.MINUTE ) * 60 * 1000
+					+ this.calendar.get( Calendar.HOUR ) * 60 * 60 * 1000;
+				date.setTime(timeOnly);
+				//System.out.print("Adjusting date from " + this.calendar + " to " );
+				//this.calendar.setTime(date);
+				//System.out.println( this.calendar );
+			}
+		}
 		this.date = date;
 		//#if ! tmp.directInput
 		if (this.midpDateField != null) {
