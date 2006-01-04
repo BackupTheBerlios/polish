@@ -266,8 +266,11 @@ public class ImageItem extends Item
 	 */
 	public void setImage( Image image)
 	{
-		this.isInitialised = false;
 		this.image = image;
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 
 	/**
@@ -294,6 +297,7 @@ public class ImageItem extends Item
 		this.altText = text;
 		if (this.image == null) {
 			this.isInitialised = false;
+			repaint();
 		}
 	}
 
