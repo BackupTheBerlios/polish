@@ -155,11 +155,14 @@ public class Device extends PolishComponent {
 
 	private ClassPath classPath;
 
+	private final boolean isVirtual;
+
 
 
 	public Device(String identifier) {
 		super( null );
 		this.identifier = identifier;
+		this.isVirtual = false;
 	}
 
 	/**
@@ -271,6 +274,7 @@ public class Device extends PolishComponent {
 			this.isCldc10 = true;
 			this.isCldc11 = false;
 		}
+		this.isVirtual = hasFeature("polish.isVirtual");
 
 
 		// set specific features:
@@ -736,5 +740,14 @@ public class Device extends PolishComponent {
 			
 		}
 		return this.classLoader;
+	}
+
+	/**
+	 * Determines whether this device is virtual.
+	 * 
+	 * @return true when this device is virtual.
+	 */
+	public boolean isVirtual() {
+		return this.isVirtual;
 	}
 }

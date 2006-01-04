@@ -186,22 +186,7 @@
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
-					<!-- you can add resources based on complex criterias: 
-					<fileset 
-						dir="resources/multimedia" 
-						includes="*.wav" 
-						if="polish.audio.wav" 
-					/>
-					<fileset 
-						dir="resources/multimedia" 
-						includes="*.mid" 
-						if="polish.audio.midi and not polish.audio.wav" 
-					/>
-					-->
-					<!-- add the localization element for created localized
-					     versions of your application: -->
-					<localization locales="de_DE, en_US" unless="test" />
-					<localization locales="en_US" if="test" />
+					<localization dynamic="true" locales="en_US, de_DE" defaultLocale="en_US" />
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >

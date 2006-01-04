@@ -164,6 +164,20 @@ public class DeviceManager {
 		return (Device) this.devicesByIdentifier.get( identifier );
 	}
 	
+	public Device[] getVirtualDevices() {
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < this.devices.length; i++) {
+			Device device = this.devices[i];
+			if ( device.isVirtual() ) {
+				list.add( device );
+			}
+		}
+		
+		Device[] virtualDevices = (Device[]) list.toArray( new Device[ list.size() ] );
+		Arrays.sort( virtualDevices );
+		return virtualDevices;
+	}
+	
 	/**
 	 * Retrieves all known vendors.
 	 * 
@@ -172,6 +186,7 @@ public class DeviceManager {
 	public Vendor[] getVendors() {
 		return this.vendorManager.getVendors();		
 	}
+
 
 	/**
 	 * Retrieves all vendors that used by the given devices.

@@ -284,4 +284,17 @@ public class DeviceDatabase {
 	public VendorManager getVendorManager() {
 		return this.vendorManager;
 	}
+	/**
+	 * @return Returns the manager of platforms.
+	 */
+	public PlatformManager getPlatformManager() {
+		return this.platformManager;
+	}
+
+	/**
+	 * @return Returns the configurationManager.
+	 */
+	public ConfigurationManager getConfigurationManager() {
+		return this.configurationManager;
+	}
 }

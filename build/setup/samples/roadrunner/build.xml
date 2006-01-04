@@ -118,7 +118,7 @@
 					defaultexcludes="yes"
 					excludes="readme.txt, *.definition"
 				>
-					<localization defaultLocale="en_US" dynamic="true" locales="en_US, de_DE" />
+					<localization dynamic="true" locales="en_US, de_DE" defaultLocale="en_US" />
 				</resources>
 			</build>
 			<!-- launch emulator		-->

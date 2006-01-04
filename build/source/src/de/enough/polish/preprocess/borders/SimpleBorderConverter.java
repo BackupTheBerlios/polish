@@ -55,7 +55,46 @@ public class SimpleBorderConverter extends BorderConverter {
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
 	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet) throws BuildException {
-		return "new " + BORDERS_PACKAGE + "SimpleBorder( " + this.color 
-													+ ", " + this.width + ")";	
+		String topWidthStr = (String) border.get("top-width");
+		String bottomWidthStr = (String) border.get("bottom-width");
+		String leftWidthStr = (String) border.get("left-width");
+		String rightWidthStr = (String) border.get("right-width");
+		
+		if (topWidthStr == null && bottomWidthStr == null && leftWidthStr == null && rightWidthStr == null) {
+			return "new " + BORDERS_PACKAGE + "SimpleBorder( " + this.color 
+													+ ", " + this.width + ")";
+		} else {
+			this.width = (String) border.get("width");
+			if (this.width == null) {
+				this.width = "0";	// 0 is the default border width when at least one top/bottom/left/right border-width has been defined:
+			} else {
+				parseInt( "width", this.width );
+			}
+			if (topWidthStr == null) {
+				topWidthStr = this.width;
+			} else {
+				parseInt("top-width", topWidthStr);
+			}
+			if (bottomWidthStr == null) {
+				bottomWidthStr = this.width;
+			} else {
+				parseInt("bottom-width", bottomWidthStr);
+			}
+			if (leftWidthStr == null) {
+				leftWidthStr = this.width;
+			} else {
+				parseInt("left-width", leftWidthStr);
+			}
+			if (rightWidthStr == null) {
+				rightWidthStr = this.width;
+			} else {
+				parseInt("right-width", rightWidthStr);
+			}
+			return "new " + BORDERS_PACKAGE + "TopBottomLeftRightBorder( " + this.color 
+				+ ", " + topWidthStr 
+				+ ", " + bottomWidthStr
+				+ ", " + leftWidthStr
+				+ ", " + rightWidthStr	+ ")";
+		}
 	}
 }
