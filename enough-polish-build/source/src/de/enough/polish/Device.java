@@ -157,6 +157,10 @@ public class Device extends PolishComponent {
 
 	private final boolean isVirtual;
 
+	private Platform[] platforms;
+
+	private Configuration[] configurations;
+
 
 
 	public Device(String identifier) {
@@ -233,13 +237,15 @@ public class Device extends PolishComponent {
 					+ "] does not define the needed element [" + JAVA_PLATFORM
 					+ "].");
 		}
-		String[] platforms = StringUtil.splitAndTrim(platformsStr, ',');
-		for (int i = 0; i < platforms.length; i++) {
-			String platformIdentifier = platforms[i];
+		String[] platformNames = StringUtil.splitAndTrim(platformsStr, ',');
+		this.platforms = new Platform[ platformNames.length ];
+		for (int i = 0; i < platformNames.length; i++) {
+			String platformIdentifier = platformNames[i];
 			Platform platform = platformManager.getPlatform( platformIdentifier );
 			if ( platform == null ) {
 				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaPlatform [" + platformIdentifier + "]: if this is a valid platform, you need to add it to [platforms.xml]");
 			}
+			this.platforms[i] = platform;
 			addComponent( platform );
 			addImplicitGroups( platform, groupNamesList, groupsList, groupManager );
 		}
@@ -251,19 +257,21 @@ public class Device extends PolishComponent {
 			this.midpVersion = MIDP_3;
 		} 
 		// add configuration settings:
-		String cldcStr = getCapability( JAVA_CONFIGURATION );
-		if (cldcStr == null) {
+		String configurationDefinition = getCapability( JAVA_CONFIGURATION );
+		if (configurationDefinition == null) {
 			System.out.println( this.getCapabilities() );
 			throw new InvalidComponentException("The device [" + this.identifier
 					+ "] does not define the needed element [" + JAVA_CONFIGURATION	+ "].");
 		}
-		String[] configurations = StringUtil.splitAndTrim( cldcStr, ',' );
-		for (int i = 0; i < configurations.length; i++) {
-			String configurationIdentifier = configurations[i];
+		String[] configurationNames = StringUtil.splitAndTrim( configurationDefinition, ',' );
+		this.configurations = new Configuration[ configurationNames.length ];
+		for (int i = 0; i < configurationNames.length; i++) {
+			String configurationIdentifier = configurationNames[i];
 			Configuration configuration = configuratioManager.getConfiguration(configurationIdentifier);
 			if (configuration == null) {
 				throw new InvalidComponentException("The device [" + this.identifier + "] uses the invalid JavaConfiguration [" + configurationIdentifier + "]: if this is a valid configuration, you need to add it to [configurations.xml]");
 			}
+			this.configurations[i] = configuration;
 			addComponent( configuration );
 			addImplicitGroups( configuration, groupNamesList, groupsList, groupManager );
 		}
@@ -750,4 +758,23 @@ public class Device extends PolishComponent {
 	public boolean isVirtual() {
 		return this.isVirtual;
 	}
+
+	public boolean supportsPlatform(Platform platform) {
+		for (int i = 0; i < this.platforms.length; i++) {
+			if (this.platforms[i] == platform) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean supportsConfiguration(Configuration configuration) {
+		for (int i = 0; i < this.platforms.length; i++) {
+			if (this.configurations[i] == configuration) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

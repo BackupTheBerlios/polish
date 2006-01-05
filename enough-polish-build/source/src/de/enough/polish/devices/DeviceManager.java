@@ -203,8 +203,9 @@ public class DeviceManager {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < filteredDevices.length; i++) {
 			Device device = filteredDevices[i];
-			boolean addDevice = false;
+			boolean addDevice = true;
 			if (supportedConfigurations != null) {
+				addDevice = false;
 				for (int j = 0; j < supportedConfigurations.length; j++) {
 					Configuration configuration = supportedConfigurations[j];
 					if (device.supportsConfiguration( configuration )) {

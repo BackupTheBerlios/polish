@@ -165,19 +165,72 @@ public class DeviceManager {
 	}
 	
 	public Device[] getVirtualDevices() {
+		return getVirtualDevices( this.devices );
+	}
+	
+	public Device[] getVirtualDevices( Device[] filteredDevices ) {
 		ArrayList list = new ArrayList();
-		for (int i = 0; i < this.devices.length; i++) {
-			Device device = this.devices[i];
+		for (int i = 0; i < filteredDevices.length; i++) {
+			Device device = filteredDevices[i];
 			if ( device.isVirtual() ) {
 				list.add( device );
 			}
 		}
-		
 		Device[] virtualDevices = (Device[]) list.toArray( new Device[ list.size() ] );
 		Arrays.sort( virtualDevices );
 		return virtualDevices;
 	}
 	
+	public Device[] getRealDevices( Device[] filteredDevices ) {
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < filteredDevices.length; i++) {
+			Device device = filteredDevices[i];
+			if ( !device.isVirtual() ) {
+				list.add( device );
+			}
+		}
+		Device[] realDevices = (Device[]) list.toArray( new Device[ list.size() ] );
+		Arrays.sort( realDevices );
+		return realDevices;
+	}
+
+	
+	public Device[] getDevices( Configuration[] supportedConfigurations, Platform[] supportedPlatforms ) {
+		return getDevices( this.devices, supportedConfigurations, supportedPlatforms );
+	}
+	
+	public Device[] getDevices( Device[] filteredDevices, Configuration[] supportedConfigurations, Platform[] supportedPlatforms ) {
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < filteredDevices.length; i++) {
+			Device device = filteredDevices[i];
+			boolean addDevice = false;
+			if (supportedConfigurations != null) {
+				for (int j = 0; j < supportedConfigurations.length; j++) {
+					Configuration configuration = supportedConfigurations[j];
+					if (device.supportsConfiguration( configuration )) {
+						addDevice = true;
+						break;
+					}
+				}
+			}
+			if (addDevice && supportedPlatforms != null) {
+				addDevice = false;
+				for (int j = 0; j < supportedPlatforms.length; j++) {
+					Platform platform = supportedPlatforms[j];
+					if (device.supportsPlatform( platform )) {
+						addDevice = true;
+						break;
+					}
+				}
+			}
+			if (addDevice) {
+				list.add( device );
+			}
+		}
+		Device[] platformDevices = (Device[]) list.toArray( new Device[ list.size() ] );
+		Arrays.sort( platformDevices );
+		return platformDevices;
+	}
 	/**
 	 * Retrieves all known vendors.
 	 * 
