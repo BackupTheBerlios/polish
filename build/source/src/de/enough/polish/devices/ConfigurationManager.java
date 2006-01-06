@@ -111,12 +111,12 @@ public class ConfigurationManager {
 	}
 
 	/**
-	 * Retrieves all known Platform.
+	 * Retrieves all known configurations.
 	 * 
-	 * @return an array with all known Platform
+	 * @return an array with all known configurations
 	 */
-	public Platform[] getPlatforms() {
-		return (Platform[]) this.configurationsByIdentifier.values().toArray( new Platform[ this.configurationsByIdentifier.size() ] );
+	public Configuration[] getConfigurations() {
+		return (Configuration[]) this.configurationsByIdentifier.values().toArray( new Configuration[ this.configurationsByIdentifier.size() ] );
 	}
 
 	/**

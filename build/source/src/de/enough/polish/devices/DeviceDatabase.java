@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
@@ -64,13 +65,15 @@ public class DeviceDatabase {
 	 * @param apisHome the default import folder, can be null (in which case ${polish.home}/import is used)
 	 * @param polishProject basic settings
 	 * @param inputStreamsByFileName the configured input streams, can be null
-	 * @param customFilesByFileName
+	 * @param customFilesByFileName user-defined XLM configuration files, can be null
 	 */
 	public DeviceDatabase( Map properties, File polishHome, File projectHome, File apisHome, 
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
 		super();
-		
+		if (customFilesByFileName == null) {
+			customFilesByFileName = new HashMap();
+		}
 		String wtkHomePath = (String) properties.get( "wtk.home" );
 		if (wtkHomePath == null) {
 			throw new BuildException("Unable to initialise device database - found no wtk.home property.");
@@ -233,11 +236,14 @@ public class DeviceDatabase {
 	 * 
 	 * @param fileName the name of the resource
 	 * @param polishHome the installation directory of J2ME Polish
-	 * @param inputStreamsByFileName the map containing configured input streams
+	 * @param inputStreamsByFileName the map containing configured input streams, can be null
 	 * @return the input stream or null when neither the stream is defined, nor the file can be found in polishHome
 	 */
 	private InputStream getInputStream(String fileName, File polishHome, Map inputStreamsByFileName) {
-		InputStream is = (InputStream) inputStreamsByFileName.get( fileName );
+		InputStream is = null;
+		if (inputStreamsByFileName != null)  {
+			is = (InputStream) inputStreamsByFileName.get( fileName );
+		}
 		if (is == null) {
 			File file = new File( polishHome, fileName );
 			if ( file.exists() ) {
