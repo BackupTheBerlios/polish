@@ -769,7 +769,7 @@ public class Device extends PolishComponent {
 	}
 	
 	public boolean supportsConfiguration(Configuration configuration) {
-		for (int i = 0; i < this.platforms.length; i++) {
+		for (int i = 0; i < this.configurations.length; i++) {
 			if (this.configurations[i] == configuration) {
 				return true;
 			}
