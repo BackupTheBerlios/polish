@@ -94,6 +94,9 @@ implements Comparable
 		if (definition != null) {
 			this.description = definition.getChildTextTrim("description");
 		}
+        if(this.description == null) {
+		    this.description = "";
+        }
 	}
 
 	/**
