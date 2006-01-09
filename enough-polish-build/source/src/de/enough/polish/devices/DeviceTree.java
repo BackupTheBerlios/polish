@@ -69,14 +69,17 @@ public class DeviceTree {
 		Device[] devices = this.deviceDatabase.getDeviceManager().getDevices(configurations, platforms);
 		DeviceTreeItem[] deviceItems = new DeviceTreeItem[ devices.length ];
 		ArrayList rootItemsList = new ArrayList();
-		DeviceTreeItem virtualTreeItem = new DeviceTreeItem( null, null );
-		rootItemsList.add( virtualTreeItem );
+        DeviceTreeItem virtualTreeItem = null;
 		Vendor lastVendor = null;
 		DeviceTreeItem lastVendorItem = null;
 		for (int i = 0; i < devices.length; i++) {
 			Device device = devices[i];
 			DeviceTreeItem item;
 			if (device.isVirtual()) {
+                if(virtualTreeItem == null) {
+                    virtualTreeItem = new DeviceTreeItem( null, null );
+                    rootItemsList.add( virtualTreeItem );
+                }
 				item = new DeviceTreeItem( null, device );
 				virtualTreeItem.addChild(item);
 			} else {
