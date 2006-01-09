@@ -65,7 +65,7 @@ public class DeviceTree {
 	 * @param configurations all configurations that should be supported, can be null (in which case all configurations are supported)
 	 * @param platforms all platforms/profiles that should be supported, can be null (in which case all platforms/profiles are supported)
 	 */
-	private void rebuild(Configuration[] configurations, Platform[] platforms) {
+	public void rebuild(Configuration[] configurations, Platform[] platforms) {
 		Device[] devices = this.deviceDatabase.getDeviceManager().getDevices(configurations, platforms);
 		DeviceTreeItem[] deviceItems = new DeviceTreeItem[ devices.length ];
 		ArrayList rootItemsList = new ArrayList();
