@@ -62,7 +62,7 @@ public class DeviceTreeItem {
 		this.vendor = vendor;
 		this.device = device;
 		if (device != null) {
-			if (vendor == null) {
+			if (vendor != null) {
 				this.name = device.getName();
 			} else {
 				this.name = device.getIdentifier();
