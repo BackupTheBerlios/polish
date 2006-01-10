@@ -99,6 +99,11 @@ public class FadeInBackground extends Background {
 			this.lastUpdateTime = updateTime;
 		}
 		//#ifdef polish.api.nokia-ui
+			// in drawPolygon no x or y value must be 0 or less...
+			if (x < 1) {
+				width += x;
+				x = 1;
+			}
 			if ( this.lastX != x) {
 				this.lastX = x;
 				this.xCoords[0] = x;
@@ -110,6 +115,11 @@ public class FadeInBackground extends Background {
 					this.currentColor = 0x00FFFFFF & this.targetArgbColor;
 					return;
 				}
+			}
+			// in drawPolygon no x or y value must be 0 or less...
+			if (y < 1) {
+				height += y;
+				y = 1;
 			}
 			if ( this.lastY != y) {
 				this.lastY = y;
@@ -124,8 +134,14 @@ public class FadeInBackground extends Background {
 				}
 			}
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
-			System.out.println("FadeInBg - drawing with currentColor=" + Integer.toHexString(this.currentColor));
-			dg.fillPolygon( this.xCoords, 0, this.yCoords, 0, 4, this.currentColor );
+//			try {
+				dg.fillPolygon( this.xCoords, 0, this.yCoords, 0, 4, this.currentColor );
+//				System.out.println("FadeInBg - drawn with currentColor=" + Integer.toHexString(this.currentColor) + " at "+ x+ ", " + y + ", " + width + ", " + height );
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				//#debug error
+//				System.out.println("Unable to draw FadeInBackground" + e);
+//			}
 		//#elifdef polish.midp2
 			// on the SE K700 for example the translated origin of the graphics 
 			// does not seem to used. Instead the real origin is used:

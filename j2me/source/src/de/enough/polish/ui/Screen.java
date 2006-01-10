@@ -1479,13 +1479,6 @@ implements AccessibleCanvas
 	public void addCommand(Command cmd) {
 		//#debug
 		System.out.println("adding command [" + cmd.getLabel() + "].");
-		if (cmd.getLabel().equals("Select")) {
-			try {
-				throw new IllegalStateException("Select command added");
-			} catch ( Exception e) {
-				e.printStackTrace();
-			}
-		}
 		int cmdType = cmd.getCommandType();
 		//#if polish.Screen.FireTriggersOkCommand == true
 			if ( cmdType == Command.OK 

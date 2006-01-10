@@ -707,7 +707,7 @@ implements CommandListener
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
-		System.out.println("Alert: super.animate()=" + animated );
+		//System.out.println("Alert: super.animate()=" + animated );
 		if (this.iconItem != null) {
 			animated |= this.iconItem.animate();
 		}
