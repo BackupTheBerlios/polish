@@ -226,7 +226,7 @@ implements CommandListener
 	private IconItem iconItem;
 	private Gauge indicator;
 
-	private AlertType alertType;
+	//private AlertType alertType;
 	protected Displayable nextDisplayable;
 
 	/**
@@ -240,7 +240,7 @@ implements CommandListener
 	 * <code>Alert(title, null, null, null)</code>
 	 * </pre>
 	 * 
-	 * @param title - the title string, or null
+	 * @param title the title string, or null
 	 * @see #Alert(String, String, Image, AlertType)
 	 */
 	public Alert( String title)
@@ -336,18 +336,18 @@ implements CommandListener
 		if ( alertText != null || alertImage != null ) {
 			createItem( alertText, alertImage, null );
 		}
-		this.alertType = alertType;
+		//this.alertType = alertType;
 		addCommand( StyleSheet.OK_CMD );
 		setCommandListener( this );
 	}
 
 
-	private void createItem(String alertText, Image alertImage, Style style) {
-		if (style == null) {
+	private void createItem(String alertText, Image alertImage, Style itemStyle) {
+		if (itemStyle == null) {
 			//#style alertcontent?
 			this.iconItem = new IconItem( alertText, alertImage );								
 		} else {
-			this.iconItem = new IconItem( alertText, alertImage, style );				
+			this.iconItem = new IconItem( alertText, alertImage, itemStyle );				
 		}
 		this.iconItem.appearanceMode = Item.PLAIN;
 		this.container.add( this.iconItem );		
@@ -707,7 +707,7 @@ implements CommandListener
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
-		//System.out.println("Alert: super.animate()=" + animated );
+		System.out.println("Alert: super.animate()=" + animated );
 		if (this.iconItem != null) {
 			animated |= this.iconItem.animate();
 		}
@@ -717,6 +717,7 @@ implements CommandListener
 		if (this.timeout != FOREVER ) {
 			if (System.currentTimeMillis() - this.showTime > this.timeout) {
 				commandAction(DISMISS_COMMAND, this);
+				return false;
 			}
 		}
 		return animated; 
@@ -748,6 +749,7 @@ implements CommandListener
 		}
 		Displayable next = this.nextDisplayable;
 		this.nextDisplayable = null;
+		//System.out.println("Alert: setting nextDisplayable=" + next );
 		StyleSheet.display.setCurrent( next );
 	}
 	
@@ -764,6 +766,10 @@ implements CommandListener
 	}
 
 	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
+		if (nextDisplayable == null) {
+			//System.out.println("Alert: storing current displayable from display");
+			nextDisplayable = display.getCurrent();
+		}
 		alert.nextDisplayable = nextDisplayable;
 		display.setCurrent( alert );
 	}

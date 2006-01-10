@@ -329,23 +329,24 @@ public class List extends Screen implements Choice
 	 */
 	public List( String title, int listType, String[] stringElements, Image[] imageElements, Style style)
 	{
-		super( title, style, false );
-		//#ifndef polish.skipArgumentCheck
-			if (listType != Choice.EXCLUSIVE && listType != Choice.MULTIPLE && listType != Choice.IMPLICIT ) {
-				//#ifdef polish.debugVerbose
-					throw new IllegalArgumentException("invalid list-type: " + listType );
-				//#else
-					//# throw new IllegalArgumentException();
-				//#endif
-			}		
-		//#endif
-		this.listType = listType;
-		
-		this.choiceGroup = new ChoiceGroup( null, this.listType, stringElements, imageElements, style, true  );
-		this.choiceGroup.autoFocusEnabled = true;
-		this.choiceGroup.screen = this;
-		this.choiceGroup.isFocused = true;
-		this.container = this.choiceGroup;
+		this( title, listType, ChoiceGroup.buildChoiceItems(stringElements, imageElements, listType, style), style);
+//		super( title, style, false );
+//		//#ifndef polish.skipArgumentCheck
+//			if (listType != Choice.EXCLUSIVE && listType != Choice.MULTIPLE && listType != Choice.IMPLICIT ) {
+//				//#ifdef polish.debugVerbose
+//					throw new IllegalArgumentException("invalid list-type: " + listType );
+//				//#else
+//					//# throw new IllegalArgumentException();
+//				//#endif
+//			}		
+//		//#endif
+//		this.listType = listType;
+//		
+//		this.choiceGroup = new ChoiceGroup( null, this.listType, stringElements, imageElements, style, true  );
+//		this.choiceGroup.autoFocusEnabled = true;
+//		this.choiceGroup.screen = this;
+//		this.choiceGroup.isFocused = true;
+//		this.container = this.choiceGroup;
 	}
 		
 	/**
@@ -414,6 +415,14 @@ public class List extends Screen implements Choice
 		//#endif
 		this.listType = listType;
 		
+		//#ifdef polish.i18n.useDynamicTranslations
+			String selectLabel = Locale.get("polish.command.select");
+			if ( selectLabel != SELECT_COMMAND.getLabel()) {
+				SELECT_COMMAND = new Command( selectLabel, Command.ITEM, 3 );
+				this.selectCommand = SELECT_COMMAND;
+			}
+		//#endif
+
 		this.choiceGroup = new ChoiceGroup( null, this.listType, items, style, true  );
 		this.choiceGroup.autoFocusEnabled = true;
 		this.choiceGroup.screen = this;

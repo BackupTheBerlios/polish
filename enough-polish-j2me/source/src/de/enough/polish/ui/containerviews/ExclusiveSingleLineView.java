@@ -43,6 +43,7 @@ import de.enough.polish.ui.StyleSheet;
 
 /**
  * <p>Shows only the currently selected item of an exclusive ChoiceGroup or an exclusive List.</p>
+ * <p>Apply this view by specifying "view-type: exclusive-single-line;" in your polish.css file.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -333,8 +334,8 @@ public class ExclusiveSingleLineView extends ContainerView {
 					int y1 = y + this.contentHeight / 2;
 					int x2 = startX + this.arrowWidth;
 					int y3 = y + this.contentHeight;
-					g.drawLine( x2, y1, x2, y );
-					g.drawLine( x2, y1, x2, y3 );
+					g.drawLine( x2, y1, startX, y );
+					g.drawLine( x2, y1, startX, y3 );
 					g.drawLine( startX, y, startX, y3 );
 				//#endif
 			//#ifdef polish.css.exclusiveview-right-arrow

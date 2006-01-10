@@ -402,13 +402,30 @@ implements ImageConsumer
 	 * @param image the image for this icon, when null is given, no image is painted.
 	 */
 	public void setImage( Image image ) {
-		this.isInitialised = false;
-		this.image = image;
+		setImage( image, null );
+	}
+	
+	/**
+	 * Sets the image for this icon.
+	 * 
+	 * @param img the image for this icon, when null is given, no image is painted.
+	 * @param style the new style of this item, is ignored when null
+	 */
+	public void setImage(Image img, Style style) {
+		if (style != null) {
+			setStyle( style );
+		}
+		this.image = img;
 		//#if polish.midp2 && polish.css.scale-factor
 			this.rgbData = null;
 			this.scaleData = null;
 		//#endif
+		if (this.isInitialised) {	
+			this.isInitialised = false;
+			repaint();
+		}
 	}
+
 	
 	/**
 	 * Sets the image align for this icon.
@@ -479,6 +496,7 @@ implements ImageConsumer
 		this.scaleData = null;
 	}
 	//#endif
+
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}

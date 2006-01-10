@@ -26,8 +26,6 @@
 package de.enough.polish.util;
 
 
-import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Random;
 
 import junit.framework.TestCase;

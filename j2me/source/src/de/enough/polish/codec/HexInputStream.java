@@ -42,24 +42,51 @@ import java.io.InputStream;
  */
 public class HexInputStream extends InputStream {
 
-	private final InputStream in;
+	private InputStream in;
+	private byte[] buffer;
+	private int positionInBuffer;
 
+	/**
+	 * Creates a new HexInputStream that wraps another stream.
+	 * 
+	 * @param in the stream that provides hex encoded data.
+	 */
 	public HexInputStream( InputStream in) {
 		super();
 		this.in = in;
 	}
 
+	/**
+	 * Creates a new HexInputStream that uses a byte array internally.
+	 * Compared to wrapping a byte array into a ByteArrayInputStream
+	 * and then read it with the HexInputStream( InputStream in) constructor,
+	 * this constructor results in a much faster processing.
+	 * 
+	 * @param buffer the hex encoded data that is used as a source.
+	 */
+	public HexInputStream( byte[] buffer ) {
+		super();
+		this.buffer = buffer;
+	}
+
+	/**
+	 * Reads the next byte of data.
+	 */
 	public int read() throws IOException {
 		// we assume that the characters are encoded as ASCII,
 		// so there is one byte for each character
-//        int res =  (this.in.read() << 4) | this.in.read();
-//        return (res & 0xFF);
-		char firstChar = (char) this.in.read(); // ((this.in.read() << 8) | this.in.read() );
-		char secondChar = (char) this.in.read(); // ((this.in.read() << 8) | this.in.read() );
+		char firstChar;
+		char secondChar;
+		if (this.buffer != null) {
+			firstChar = (char) this.buffer[ this.positionInBuffer++ ];
+			secondChar = (char) this.buffer[ this.positionInBuffer++ ];
+		} else {
+			firstChar = (char) this.in.read(); // ((this.in.read() << 8) | this.in.read() );
+			secondChar = (char) this.in.read(); // ((this.in.read() << 8) | this.in.read() );
+		}
 		//System.out.print( firstChar + secondChar );
 		int f = Character.digit( firstChar, 16 ) << 4;
         f = f | Character.digit( secondChar, 16 );
-        //TODO there should be an easier/faster method for without using characters at all
         return (f & 0xFF);
 	}
 

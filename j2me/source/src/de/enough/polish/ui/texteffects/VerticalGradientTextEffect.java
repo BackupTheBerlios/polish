@@ -81,7 +81,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 				int clipHeight = g.getClipHeight();
 			//#endif
 			//#if tmp.useNokiaUiApi
-				this.nokiaImageBuffer = DirectUtils.createImage( width, height, 0xFFFFFFFF );
+				this.nokiaImageBuffer = DirectUtils.createImage( width, height, 0x00000000 );
 				bufferG = this.nokiaImageBuffer.getGraphics();
 				DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			//#elif polish.midp2

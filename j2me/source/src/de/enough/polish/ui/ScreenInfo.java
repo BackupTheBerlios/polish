@@ -37,6 +37,21 @@ import javax.microedition.lcdui.Image;
  * This needs to be enabled specifically by setting the 
  * "polish.ScreenInfo.enable" preprocessing variable to "true".
  * </p>
+ * <p>
+ *  If you want to display text you can use the "screeninfo" style
+ *  for designing this element.
+ *  Alternatively you can use the setImage( Image, Style ) or setText( String, Style )
+ *  methods for changing the style during runtime like this:
+ * <pre>
+ * if (this.isOnline) {
+ *    //#style online
+ *    ScreenInfo.setText("on");
+ * } else {
+ *    //#style offline
+ *    ScreenInfo.setText("off");
+ * }
+ * </pre>
+ * </p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -65,6 +80,11 @@ public class ScreenInfo {
 		super();
 	}
 	
+	/**
+	 * Paddles the visibility of the ScreenInfo object.
+	 * 
+	 * @param isVisible true when this element should be shown. 
+	 */
 	public static void setVisible( boolean isVisible ) {
 		visible = isVisible;
 	}
@@ -82,16 +102,53 @@ public class ScreenInfo {
 		}		
 	}
 	
+	/**
+	 * Sets the text contents of the ScreenInfo along with a style. 
+	 * 
+	 * @param text the new text
+	 */
 	public static void setText( String text ) {
 		item.setText( text );
 		repaint();
 	}
-	
+
+	/**
+	 * Sets the text contents of the ScreenInfo along with a style. 
+	 * 
+	 * @param text the new text
+	 * @param style the new style, is ignored when null
+	 */
+	public static void setText( String text, Style style ) {
+		item.setText( text, style );
+		repaint();
+	}
+
+	/**
+	 * Sets the image for the screen info object.
+	 * 
+	 * @param image the image, when null is given, no image is painted.
+	 */
 	public static void setImage( Image image ) {
 		item.setImage( image );
 		repaint();
 	}
 
+	/**
+	 * Sets the image for the screen info object.
+	 * 
+	 * @param image the image, when null is given, no image is painted.
+	 * @param style the new style of this item, is ignored when null
+	 */
+	public static void setImage( Image image, Style style ) {
+		item.setImage( image, style );
+		repaint();
+	}
+
+	/**
+	 * Sets the position of this ScreenInfo - if not set it will be painted on the left side below the title.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 */
 	public static void setPosition( int x, int y ) {
 		itemX = x;
 		itemY = y;
@@ -99,17 +156,37 @@ public class ScreenInfo {
 		repaint();
 	}
 	
+	/**
+	 * Sets a specific background.
+	 * Usually not necessary, when this element is designed using the "screeninfo" style
+	 * or the setImage( Image, Style ) method or the setText( String, Style ) method.
+	 * 
+	 * @param background the new background.
+	 */
 	public static void setBackground( Background background ) {
 		item.background = background;
 		repaint();
 	}
 	
+	/**
+	 * Sets a specific text color.
+	 * Usually not necessary, when this element is designed using the "screeninfo" style
+	 * or the setImage( Image, Style ) method or the setText( String, Style ) method.
+	 * 
+	 * @param color the new font color.
+	 */
 	public static void setFontColor( int color ) {
 		item.textColor = color;
 		repaint();
 	}
 
-	
+	/**
+	 * Paints this element. This method is usually only called by the Screen implementation.
+	 * 
+	 * @param g the graphics object
+	 * @param titleHeight the height of the screen's title
+	 * @param screenWidth the width of the screen
+	 */
 	public static void paint( Graphics g, int titleHeight, int screenWidth ) {
 		if (!visible) {
 			return;

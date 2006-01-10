@@ -159,10 +159,17 @@ public class MasterCanvas
 		} else if ( instance.currentCanvas != null ) {
 			instance.currentCanvas.hideNotify();
 		}
+		
 		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
+		if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
+			((Alert)nextDisplayable).nextDisplayable = instance.currentDisplayable;
+		}
 		instance.currentCanvas = canvas;
 		instance.currentDisplayable = nextDisplayable;
 		canvas.showNotify();
+//		if (nextDisplayable instanceof Alert) {
+//			System.out.println("MasterCanvas: setting Alert " + nextDisplayable + " as next screen!");
+//		}
 		if ( !instance.isShown() ) {
 			display.setCurrent( instance );
 		} else {

@@ -124,6 +124,7 @@ public class FadeInBackground extends Background {
 				}
 			}
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+			System.out.println("FadeInBg - drawing with currentColor=" + Integer.toHexString(this.currentColor));
 			dg.fillPolygon( this.xCoords, 0, this.yCoords, 0, 4, this.currentColor );
 		//#elifdef polish.midp2
 			// on the SE K700 for example the translated origin of the graphics 

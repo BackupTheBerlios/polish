@@ -447,6 +447,7 @@ implements Choice
 	 * @param imageElements set of images specifying the image parts of the ChoiceGroup elements
 	 * @param choiceType EXCLUSIVE, MULTIPLE, or POPUP
 	 * @param style The CSS style for this item
+	 * @return an aray of choice items
 	 * @throws NullPointerException if stringElements is null or if the stringElements array contains any null elements
 	 * @throws IllegalArgumentException if the imageElements array is non-null and has a different length from the stringElements array
 	 * @see Choice#EXCLUSIVE
@@ -454,7 +455,7 @@ implements Choice
 	 * @see Choice#IMPLICIT
 	 * @see Choice#POPUP
 	 */
-	private static ChoiceItem[] buildChoiceItems(String[] stringElements, Image[] imageElements, int choiceType, Style style)
+	protected static ChoiceItem[] buildChoiceItems(String[] stringElements, Image[] imageElements, int choiceType, Style style)
 	{
 		//#ifndef polish.skipArgumentCheck
 			if (imageElements != null && imageElements.length != stringElements.length) {
@@ -692,6 +693,21 @@ implements Choice
 		if (elementStyle != null) {
 			item.setStyle(elementStyle);
 		}
+		
+		//#if polish.i18n.useDynamicTranslations
+//		if (elementNum == this.focusedIndex) {
+//				if (this.selectCommand == List.SELECT_COMMAND ) {
+//					String selectLabel = Locale.get("polish.command.select");
+//					if ( selectLabel != List.SELECT_COMMAND.getLabel()) {
+//						List.SELECT_COMMAND = new Command( selectLabel, Command.ITEM, 3 );
+//						removeCommand(this.selectCommand);
+//						this.selectCommand = List.SELECT_COMMAND;
+//						addCommand( this.selectCommand );
+//					}
+//				}
+//		}
+		//#endif
+
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			repaint();

@@ -255,7 +255,11 @@ public class Container extends Item {
 	public Item remove( int index ) {
 		Item removedItem = (Item) this.itemsList.remove(index);
 		//#debug
-		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );		
+		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
+		Screen scr = getScreen();
+		if (scr != null) {
+			scr.removeItemCommands(removedItem);
+		}
 		// adjust y-positions of following items:
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		for (int i = 0; i < myItems.length; i++) {
@@ -671,8 +675,12 @@ public class Container extends Item {
 					this.columnsWidths[ dynamicColumnIndex ] = lineWidth - restWidth;
 				}
 			}
-			this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
-			this.rowsHeights = new int[ this.numberOfRows ];
+			//#if polish.css.colspan
+				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + (myItems.length % 2) + 1 );
+			//#else
+				this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
+				this.rowsHeights = new int[ this.numberOfRows ];
+			//#endif
 			int maxRowHeight = 0;
 			int columnIndex = 0;
 			int rowIndex = 0;
@@ -686,6 +694,42 @@ public class Container extends Item {
 			for (int i=0; i< myItems.length; i++) {
 				Item item = myItems[i];
 				int availableWidth = this.columnsWidths[columnIndex];
+				//#if polish.css.colspan
+					int itemColSpan = item.colSpan;
+					if (item.style != null) {
+						Integer colSpanInt = item.style.getIntProperty("colspan");
+						if ( colSpanInt != null ) {
+							itemColSpan = colSpanInt.intValue();
+							//System.out.println("colspan of item " + i + "/" + item + ", column " + columnIndex + ": " + itemColSpan);
+						}
+					}
+					if (itemColSpan > 1) {
+						// okay, this item stretched beyond one column,
+						// so let's calculate the correct available cell width
+						// and switch to the right column index:
+						int maxColSpan = this.numberOfColumns - columnIndex;
+						if (itemColSpan > maxColSpan) {
+							//#debug error
+							System.err.println("Warning: colspan " + itemColSpan + " is invalid at column " + columnIndex + " of a table with " + this.numberOfColumns + " columns, now using maximum possible value " + maxColSpan + ".");
+							itemColSpan = maxColSpan;
+						}
+						if (item.colSpan != itemColSpan) { 
+							//System.out.println("initializing new colspan of item " + i + "/" + item + ", column " + columnIndex + ": " + itemColSpan);
+							item.colSpan = itemColSpan;
+							item.isInitialised = false;
+						}
+						// adjust the available width only when
+						// each column has an equal size or when
+						// the column widths are static,
+						// otherwise the complete row width
+						// is available anyhow:
+						if (!isNormalWidthColumns) {
+							for (int j = columnIndex + 1; j < columnIndex + itemColSpan; j++) {
+								availableWidth += this.paddingHorizontal + this.columnsWidths[j];
+							}
+						}
+					}
+				//#endif
 				//System.out.println("available with: " + availableWidth);
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
@@ -705,22 +749,43 @@ public class Container extends Item {
 				if (height > maxRowHeight) {
 					maxRowHeight = height;
 				}
-				if (isNormalWidthColumns && width > maxColumnWidths[columnIndex ]) {
-					maxColumnWidths[ columnIndex ] = width;
-				}
-				if (width > maxWidth ) {
-					maxWidth = width;
-				}
-				columnIndex++;
+				//#if polish.css.colspan
+					if (itemColSpan == 1) {
+				//#endif
+						if (isNormalWidthColumns && width > maxColumnWidths[columnIndex ]) {
+							maxColumnWidths[ columnIndex ] = width;
+						}
+						if (width > maxWidth ) {
+							maxWidth = width;
+						}
+				//#if polish.css.colspan
+					}
+				//#endif
+				//#if polish.css.colspan
+					columnIndex += itemColSpan;
+				//#else
+					columnIndex++;
+				//#endif
 				if (columnIndex == this.numberOfColumns) {
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 					columnIndex = 0;
-					this.rowsHeights[rowIndex] = maxRowHeight;
+					//#if polish.css.colspan
+						rowHeightsList.add( new Integer( maxRowHeight ) );
+					//#else
+						this.rowsHeights[rowIndex] = maxRowHeight;						
+					//#endif
 					myContentHeight += maxRowHeight + this.paddingVertical;
 					maxRowHeight = 0;
 					rowIndex++;
 				}
 			} // for each item
+			//#if polish.css.colspan
+				this.numberOfRows = rowHeightsList.size();
+				this.rowsHeights = new int[ this.numberOfRows ];
+				for (int i = 0; i < this.numberOfRows; i++) {
+					this.rowsHeights[i] = ((Integer) rowHeightsList.get(i)).intValue();
+				}
+			//#endif
 			// now save the worked out dimensions:
 			if (isNormalWidthColumns) {
 				// Each column should use up as much space as 
@@ -779,7 +844,12 @@ public class Container extends Item {
 						if (height > maxRowHeight) {
 							maxRowHeight = height;
 						}
-						columnIndex++;
+						//#if polish.css.colspan
+							columnIndex += item.colSpan;
+						//#else
+							columnIndex++;
+						//#endif
+						
 						if (columnIndex == this.numberOfColumns) {
 							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 							columnIndex = 0;
@@ -868,16 +938,34 @@ public class Container extends Item {
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				int columnWidth = this.columnsWidths[ columnIndex ];
+				//#if polish.css.colspan
+					if (item.colSpan > 1) {						
+						for (int j = columnIndex + 1; j < columnIndex + item.colSpan; j++) {
+							columnWidth += this.columnsWidths[ j ] + this.paddingHorizontal;
+						}
+						//System.out.println("Painting item " + i + "/" + item + " with width=" + item.itemWidth + " and with increased colwidth of " + columnWidth + " (prev=" + this.columnsWidths[ columnIndex ] + ")" );
+						
+					}
+				//#endif
 				if (i == this.focusedIndex) {
 					focusedY = y;
 					focusedX = x;
 					focusedRightBorder = x + columnWidth;
-					item.getItemHeight( columnWidth, columnWidth );
+					// item.getItemHeight( columnWidth, columnWidth );
 				} else {
 					item.paint(x, y, x, x + columnWidth, g);
 				}
 				x += columnWidth + this.paddingHorizontal;
-				columnIndex++;
+				//#if polish.css.colspan
+					if (item.colSpan > 1) {
+						columnIndex += item.colSpan;
+					} else {
+						columnIndex++;
+					}
+				//#else
+					columnIndex++;
+				//#endif
+		
 				if (columnIndex == this.numberOfColumns) {
 					columnIndex = 0;
 					y += this.rowsHeights[ rowIndex ] + this.paddingVertical;
@@ -890,6 +978,7 @@ public class Container extends Item {
 		
 		// paint the currently focused item:
 		if (this.focusedItem != null) {
+			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
 			this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 		}
 	}
@@ -994,16 +1083,17 @@ public class Container extends Item {
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
+				//TODO currentRow calculation is wrong
 				int currentRow = this.focusedIndex / this.numberOfColumns;
 				if (currentRow < this.numberOfRows - 1) {
 					processed = shiftFocus( true, this.numberOfColumns - 1 );
-					  //#debug
+					//#debug
 					System.out.println("Container(" + this + "): forward shift by one row succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 				}
 			}
 			if (!processed) {
 				processed = shiftFocus( true, 0 );
-				  //#debug
+				//#debug
 				System.out.println("Container(" + this + "): forward shift by one column succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			}
 			if ((!processed) && this.enableScrolling 
@@ -1063,20 +1153,68 @@ public class Container extends Item {
 	 * 
 	 * @param forwardFocus true when the next item should be focused, false when
 	 * 		  the previous item should be focused.
-	 * @param steps how many steps forward or backward the search for the next focusable item should be started
+	 * @param steps how many steps forward or backward the search for the next focusable item should be started,
+	 *        0 for the current item, negative values go backwards.
 	 * @return true when the focus could be moved to either the next or the previous item.
 	 */
 	private boolean shiftFocus(boolean forwardFocus, int steps ) {
 		if ( this.items == null ) {
 			return false;
 		}
-		int i = this.focusedIndex + steps;
-		if (i > this.items.length) {
-			i = this.items.length - 2;
-		}
-		if (i < 0) {
-			i = 1;
-		}
+		//#if polish.css.colspan
+			int i = this.focusedIndex;
+			if (steps != 0) {
+				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
+				int doneSteps = 0;
+				steps = Math.abs( steps ) + 1;
+				Item item = this.items[i];
+				while( doneSteps <= steps) {
+					doneSteps += item.colSpan;
+					if (doneSteps >= steps) {
+						//System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+						break;
+					}
+					if (forwardFocus) {
+						i++;
+						if (i == this.items.length - 1 ) {
+							i = this.items.length - 2;
+							break;
+						} else if (i == this.items.length) {
+							i = this.items.length - 1;
+							break;
+						}
+					} else {
+						i--; 
+						if (i < 0) {
+							i = 1;
+							break;
+						}
+					}
+					item = this.items[i];
+					System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+				}
+				if (doneSteps >= steps && item.colSpan != 1) {
+					if (forwardFocus) {
+						i--;
+						if (i < 0) {
+							i = this.items.length - 1;
+						}
+						System.out.println("forward: Adjusting startIndex to " + i );
+					} else {
+						i = (i + 1) % this.items.length;
+						System.out.println("backward: Adjusting startIndex to " + i );
+					}
+				}
+			}
+		//#else			
+			//# int i = this.focusedIndex + steps;
+			if (i > this.items.length) {
+				i = this.items.length - 2;
+			}
+			if (i < 0) {
+				i = 1;
+			}
+		//#endif
 		Item item = null;
 		//#if polish.Container.allowCycling != false
 			boolean allowCycle = this.enableScrolling && this.allowCycling;

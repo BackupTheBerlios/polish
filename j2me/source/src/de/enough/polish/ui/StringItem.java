@@ -226,18 +226,37 @@ public class StringItem extends Item
 	}
 
 	/**
-	 * Sets the text contents of the <code>StringItem</code>. If text
+	 * Sets the text contents of the <code>StringItem</code>. 
+	 * If text
 	 * is <code>null</code>,
 	 * the <code>StringItem</code>
 	 * is set to be empty.
 	 * 
-	 * @param text - the new content
+	 * @param text the new content
 	 * @see #getText()
 	 */
 	public void setText( String text)
 	{
+		setText( text, null );
+	}
+	
+	/**
+	 * Sets the text contents of the <code>StringItem</code> along with a style. 
+	 * If text is <code>null</code>,
+	 * the <code>StringItem</code>
+	 * is set to be empty.
+	 * 
+	 * @param text the new content
+	 * @param style the new style, is ignored when null
+	 * @see #getText()
+	 */
+	public void setText( String text, Style style)
+	{
 		//#debug
 		System.out.println("StringItem: setText( \"" + text + "\" )");
+		if ( style != null ) {
+			setStyle( style );
+		}
 		this.text = text;
 		if (text == null) {
 			this.textLines = null;

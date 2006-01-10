@@ -688,6 +688,13 @@ public abstract class Item extends Object
 	//#endif
 	protected Style focusedStyle;
 
+	//#if polish.css.colspan
+		protected int colSpan = 1;
+	//#endif
+	//#if polish.css.rowspan
+		protected int rowSpan;
+	//#endif
+
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
