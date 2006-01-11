@@ -88,6 +88,24 @@ public class ExtensionManager {
 	private Extension[] activeExtensions;
 	private final List autoStartExtensions;
 
+    /**
+     * @param antProject
+     * @throws IOException
+     * @throws JDOMException
+     * 
+     */
+    public ExtensionManager( Project antProject ) throws JDOMException, IOException {
+        super();
+        this.antProject = antProject;
+        this.definitionsByType = new HashMap();
+        this.extensionsByType = new HashMap();
+        this.typesByName = new HashMap();
+        this.instantiatedExtensions = new ArrayList();
+        this.instantiatedPlugins = new ArrayList();
+        this.autoStartExtensions = new ArrayList();
+    }
+
+    
 	/**
 	 * @param antProject
 	 * @param is
