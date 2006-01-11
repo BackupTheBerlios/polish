@@ -105,5 +105,29 @@ public final class ImageUtil {
 	}
 	
 
+	public static final int[] scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
+		int[]newrgbData = new int[newWidth*newHeight];
+		scale( rgbData, newWidth,newHeight, oldWidth, oldHeight, newrgbData);
+		return newrgbData;
+	}
+
+	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight,int[] newrgbData){	
+		int currentX = 0,currentY = 0;
+		int oldLenght = rgbData.length;
+		int newLength = newrgbData.length;	
+		int targetArrayIndex;
+		int verticalShrinkFactorPercent = ((newHeight*100) / oldHeight);
+		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
+		for(int i = 0; i < newLength;i++){
+			currentX = (currentX + 1) % newWidth;
+			if(currentX == 0){
+				currentY++;	
+			}				
+			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalShrinkFactorPercent));
+			if(targetArrayIndex >= oldLenght)targetArrayIndex = oldLenght-1;
+			if(targetArrayIndex < 0)targetArrayIndex = 0;
+			newrgbData[i] = rgbData[targetArrayIndex];
+		}
+	}
 
 }
