@@ -560,4 +560,11 @@ implements Comparable
 		//System.out.println("Unable to compare  " + getClass().getName() + " with " + o.getClass().getName() + ": this.identifier == null: " + (this.identifier == null) );
 		return 0;
 	}
+    
+    public String toString() {
+        if(this.identifier != null) {
+            return this.identifier;
+        }
+        return super.toString();
+    }
 }
