@@ -180,11 +180,14 @@ public class Library extends PolishComponent {
 				this.path = this.defaultPath;
 				return;
 			}
-			libFile = new File( this.polishLibPath.getParent(), this.defaultPath );
-			if (libFile.exists()) {				
-				this.path = libFile.getAbsolutePath();
-				return;
-			}
+            // This if is needed as polishLibPath may be null.
+            if(this.polishLibPath != null) {
+                libFile = new File( this.polishLibPath.getParent(), this.defaultPath );
+                if (libFile.exists()) {				
+                    this.path = libFile.getAbsolutePath();
+				    return;
+                }
+            }
 		}
 		
 		// 2. now check if an property has been defined for this api:
