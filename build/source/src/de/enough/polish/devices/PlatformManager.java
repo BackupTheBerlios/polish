@@ -30,8 +30,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -119,6 +121,36 @@ public class PlatformManager {
 		return (Platform[]) this.platformsByIdentifier.values().toArray( new Platform[ this.platformsByIdentifier.size() ] );
 	}
 
+	// TODO: This is going to change to another location. Maybe DeviceDatabase.
+    public Platform[] filterSuperPlatforms(Platform[] platforms) {
+        List resultList = new LinkedList();
+        Arrays.sort(platforms);
+        if(platforms.length == 1) {
+            return new Platform[] {platforms[0]};
+        }
+        
+        String identifier = platforms[0].getIdentifier();
+        String identifierName = identifier.substring(0,identifier.indexOf("/"));
+        String oldIdentifierName = identifierName;
+        Platform oldPlatform = platforms[0];
+        
+        for (int i = 1; i < platforms.length; i++) {
+            Platform platform = platforms[i];
+            identifier = platform.getIdentifier();
+            identifierName = identifier.substring(0,identifier.indexOf("/"));
+            // Search for the end of similar platforms like MIDP/1.0, MIDP/1.1, DoJa/1.0
+            // If found add the previos platform as it has the highest version.
+            if( ! identifierName.equals(oldIdentifierName)) {
+                resultList.add(oldPlatform);
+                oldIdentifierName = identifierName;
+            }
+            oldPlatform = platform;
+        }
+        // The last of the platforms is always the highest. But the loop above does not catch this.
+        resultList.add(platforms[platforms.length-1]);
+        return (Platform[]) resultList.toArray(new Platform[resultList.size()]);
+    }
+    
 	/**
 	 * Loads the custom-vendors.xml of the user from the current project.
 	 * @param customPlatforms

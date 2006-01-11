@@ -25,9 +25,26 @@
  */
 package de.enough.polish.devices;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.jdom.JDOMException;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
+import de.enough.polish.ExtensionManager;
+import de.enough.polish.ant.PolishTask;
 
 /**
  * <p>The DeviceTree structures the device database.</p>
@@ -77,25 +94,27 @@ public class DeviceTree {
 			DeviceTreeItem item;
 			if (device.isVirtual()) {
                 if(virtualTreeItem == null) {
-                    virtualTreeItem = new DeviceTreeItem( null, null );
+                    virtualTreeItem = new DeviceTreeItem( null, null, null );
                     rootItemsList.add( virtualTreeItem );
                 }
-				item = new DeviceTreeItem( null, device );
+				item = new DeviceTreeItem( virtualTreeItem, null, device );
 				virtualTreeItem.addChild(item);
 			} else {
 				if (device.getVendor() != lastVendor) {
 					lastVendor = device.getVendor();
-					lastVendorItem = new DeviceTreeItem( lastVendor, null );
+					lastVendorItem = new DeviceTreeItem( null, lastVendor, null );
 					rootItemsList.add( lastVendorItem );
 				}
-				item = new DeviceTreeItem( lastVendor, device );
+				item = new DeviceTreeItem( lastVendorItem, lastVendor, device );
 				lastVendorItem.addChild( item );
 			}
 			deviceItems[i] = item;
 		}
 		this.deviceTreeItems = deviceItems;
 		this.rootTreeItems = (DeviceTreeItem[]) rootItemsList.toArray( new DeviceTreeItem[ rootItemsList.size() ]);
-	}
+	
+		
+    }
 	
 	public DeviceTreeItem[] getRootItems() {
 		return this.rootTreeItems;
@@ -105,7 +124,7 @@ public class DeviceTree {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < this.deviceTreeItems.length; i++) {
 			DeviceTreeItem item = this.deviceTreeItems[i];
-			if ( !item.isSelected() ) {
+			if ( item.isSelected() ) {
 				list.add( item.getDevice() );
 			}
 		}
@@ -114,5 +133,103 @@ public class DeviceTree {
 		return selectedDevices;
 		
 	}
+
+    public File[] getClasspathForSelectedDevices() {
+        Device[] selectedDevices = getSelectedDevices();
+        Environment env = null;
+        try {
+            env  = new Environment(new ExtensionManager(new Project()),new Project(),new PolishTask());
+        } catch (JDOMException exception) {
+            throw new RuntimeException("Could not create an Environment."+exception);
+        } catch (IOException exception) {
+            throw new RuntimeException("Could not create an Environment."+exception);
+        }
+        env.set("polish.home", this.deviceDatabase.getPolishHome());
+        env.set("polish.apidir", this.deviceDatabase.getApisHome());
+        
+        for (int i = 0; i < selectedDevices.length; i++) {
+            Device selectedDevice = selectedDevices[i];
+            selectedDevice.setEnvironment(env);
+        }
+        
+        Set normalClasspathSet = new HashSet();
+        Set bootClasspathSet = new HashSet();
+        for (int i = 0; i < selectedDevices.length; i++) {
+            Device device = selectedDevices[i];
+            String[] normalClasspath = device.getClassPaths();
+            String[] bootClasspath = device.getBootClassPaths();
+            for (int j = 0; j < normalClasspath.length; j++) {
+                normalClasspathSet.add(normalClasspath[j]);
+            }
+            for (int j = 0; j < bootClasspath.length; j++) {
+                bootClasspathSet.add(bootClasspath[j]);
+            }
+        }
+        
+        String[] normalClasspathArray = (String[]) normalClasspathSet.toArray(new String[normalClasspathSet.size()]);
+        String[] bootClasspathArray = (String[]) bootClasspathSet.toArray(new String[bootClasspathSet.size()]);
+        
+        Arrays.sort(normalClasspathArray);
+        Arrays.sort(bootClasspathArray);
+        
+        String[] fullClasspathArray = new String[normalClasspathArray.length+bootClasspathArray.length];
+        
+        System.arraycopy(bootClasspathArray,0,fullClasspathArray,0,bootClasspathArray.length);
+        System.arraycopy(normalClasspathArray,0,fullClasspathArray,bootClasspathArray.length,normalClasspathArray.length);
+        
+        String [] filteredClasspathArray = filterPaths(fullClasspathArray);
+
+        File[] files = new File[filteredClasspathArray.length];
+        for (int i = 0; i < filteredClasspathArray.length; i++) {
+            files[i] = new File(filteredClasspathArray[i]);
+        }
+        return files;
+    }
+
+    /**
+     * @param fullClasspathArray Must be sorted and non null.
+     */
+    protected String[] filterPaths(String[] paths) {
+        List resultList = new LinkedList();
+        if(paths.length == 0) {
+            return new String[0];
+        }
+        if(paths.length == 1) {
+            return new String[] {paths[0]};
+        }
+        
+        String oldPath = paths[0];
+        String oldIdentifier = extractIdentifier(oldPath);
+        
+        for (int i = 1; i < paths.length; i++) {
+            String path = paths[i];
+            String identifier = extractIdentifier(path);
+            
+            if( ! identifier.equals(oldIdentifier)) {
+                resultList.add(oldPath);
+                oldIdentifier = identifier;
+            }
+            oldPath = path;
+        }
+        // The last of the platforms is always the highest. But the loop above does not catch this.
+        resultList.add(paths[paths.length-1]);
+        return (String[]) resultList.toArray(new String[resultList.size()]);
+    }
+
+    /**
+     * @param path
+     */
+    private String extractIdentifier(String path) {
+        String delimiter;
+        String jarName = path.substring(path.lastIndexOf(File.separator),path.length()-1);
+        if(jarName.indexOf("-") != -1) {
+            delimiter = "-";
+        }
+        else {
+            delimiter = ".";
+        }
+        
+        return jarName.substring(0,jarName.indexOf(delimiter));
+    }
 
 }
