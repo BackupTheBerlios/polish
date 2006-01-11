@@ -55,6 +55,8 @@ public class DeviceDatabase {
 	private VendorManager vendorManager;
 	private ConfigurationManager configurationManager;
 	private PlatformManager platformManager;
+    private File polishHome;
+    private File apisHome;
 
 	/**
 	 * Creates a new device database.
@@ -227,6 +229,8 @@ public class DeviceDatabase {
 		} catch (Exception e) {
 			throw new BuildException("unable to read devices.xml/custom-devices.xml: " + e.getMessage(), e );
 		}
+        this.polishHome = polishHome;
+        this.apisHome = apisHome;
 	}
 
 	
@@ -303,4 +307,15 @@ public class DeviceDatabase {
 	public ConfigurationManager getConfigurationManager() {
 		return this.configurationManager;
 	}
+
+    public File getPolishHome() {
+        return this.polishHome;
+    }
+
+    public File getApisHome() {
+        return this.apisHome;
+    }
+    
+    
+    
 }
