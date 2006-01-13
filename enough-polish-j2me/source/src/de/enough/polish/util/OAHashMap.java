@@ -70,7 +70,7 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class OAHashMap 
+public class OAHashMap 
 //#if polish.Map.dropInterface != true
 	implements Map 
 //#endif
@@ -437,6 +437,11 @@ public final class OAHashMap
 			this.key = key;
 			this.value = value;
 		}
+	}
+
+	public Iterator keysIterator() {
+		// TODO enough implement keysIterator
+		return null;
 	}
 
 }

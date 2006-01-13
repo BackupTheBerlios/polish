@@ -51,7 +51,7 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class IntHashMap
+public class IntHashMap
 {
 	
 	/** The default capacity is 16 */

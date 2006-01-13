@@ -337,23 +337,23 @@ implements CommandListener
 	 * @param display the display-variable for the current MIDlet.
 	 */
 	public static void showLog( Display display ) {
-		if (returnDisplayable != null) {
-			// the debug form is already shown!
-			return;
-		}
 		if (display == null) {
 			System.err.println("Unable to show log with null-Display.");
 			return;
 		}
 		//#if !polish.blackberry
-		Debug.returnDisplayable = display.getCurrent();
-		Debug.midletDisplay = display;
-		Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
-		int maxSize = Debug.textBox.getMaxSize();
-		Debug.textBox.setMaxSize( maxSize );
-		addMessages();
-		Debug.textBox.addCommand(RETURN_COMMAND);
-		Debug.textBox.setCommandListener( new Debug() );
+			
+		Displayable currentDisplayable = display.getCurrent();
+		if (Debug.returnDisplayable != currentDisplayable) {
+			Debug.returnDisplayable = currentDisplayable;
+			Debug.midletDisplay = display;
+			Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
+			int maxSize = Debug.textBox.getMaxSize();
+			Debug.textBox.setMaxSize( maxSize );
+			addMessages();
+			Debug.textBox.addCommand(RETURN_COMMAND);
+			Debug.textBox.setCommandListener( new Debug() );
+		}
 		display.setCurrent( Debug.textBox );
 		//#endif
 	}

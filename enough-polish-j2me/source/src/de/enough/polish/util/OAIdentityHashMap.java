@@ -73,7 +73,7 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class OAIdentityHashMap 
+public class OAIdentityHashMap 
 //#if polish.Map.dropInterface != true
 	implements Map 
 //#endif
@@ -440,6 +440,11 @@ public final class OAIdentityHashMap
 			this.key = key;
 			this.value = value;
 		}
+	}
+
+	public Iterator keysIterator() {
+		// TODO enough implement keysIterator
+		return null;
 	}
 
 }

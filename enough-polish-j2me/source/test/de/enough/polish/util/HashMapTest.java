@@ -73,6 +73,63 @@ public class HashMapTest extends TestCase {
 		} while (i < TEST_RUNS);
 	}
 	
+	public void testKeysIterator() {
+		System.out.println(">>> keysIterator()");
+		HashMap map = new HashMap();
+		Hashtable table = new Hashtable();
+		for (int i = 0; i < TEST_RUNS; i++) {
+			Object key = this.integerKeys[i];
+			Object value = this.stringKeys[i];
+			map.put( key, value );
+			table.put( key, value );
+		}
+		System.gc();
+		long time = System.currentTimeMillis();
+		Iterator iterator = map.keysIterator();
+		assertTrue( iterator.hasNext() );
+		int size = 0;
+		while (iterator.hasNext()) {
+			Object key = iterator.next();
+			assertNotNull(key);
+			Object value = table.remove(key);
+			assertNotNull(value);
+			size++;
+		}
+		assertEquals( map.size(), size );
+		long neededTime = System.currentTimeMillis() - time;
+		System.out.println("needed " + neededTime + "ms for iterating over " + TEST_RUNS + " keys from de.enough.polish.util.HashMap.");
+	}
+
+	public void testKeysIteratorRemove() {
+		System.out.println(">>> keysIteratorRemove()");
+		HashMap map = new HashMap();
+		Hashtable table = new Hashtable();
+		for (int i = 0; i < TEST_RUNS; i++) {
+			Object key = this.integerKeys[i];
+			Object value = this.stringKeys[i];
+			map.put( key, value );
+			table.put( key, value );
+		}
+		System.gc();
+		long time = System.currentTimeMillis();
+		Iterator iterator = map.keysIterator();
+		assertTrue( iterator.hasNext() );
+		while (iterator.hasNext()) {
+			Object key = iterator.next();
+			assertNotNull(key);
+			Object value = table.remove(key);
+			assertNotNull(value);
+			
+			iterator.remove();
+			
+			assertNull( map.get(key));
+		}
+		assertEquals( 0, map.size() );
+		long neededTime = System.currentTimeMillis() - time;
+		System.out.println("needed " + neededTime + "ms for iterating over and removing " + TEST_RUNS + " keys from de.enough.polish.util.HashMap.");
+	}
+
+	
 	public void testPut() {
 		System.out.println(">>> put()");
 		HashMap map = new HashMap();
@@ -429,4 +486,5 @@ public class HashMapTest extends TestCase {
 		neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from java.util.Hashtable.");
 	}
+	
 }

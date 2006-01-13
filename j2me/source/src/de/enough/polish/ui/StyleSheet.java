@@ -32,6 +32,7 @@ import java.util.Timer;
 import javax.microedition.lcdui.*;
 
 import de.enough.polish.ui.tasks.ImageTask;
+import de.enough.polish.util.Locale;
 
 /**
  * <p>Manages all defined styles of a specific project.</p>
@@ -82,10 +83,12 @@ public final class StyleSheet {
 	public static Screen currentScreen;	
 	public static Display display;
 	public static AnimationThread animationThread;
-	//#ifdef polish.command.ok:defined
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command OK_CMD = new Command( Locale.get("polish.command.ok"), Command.OK, 2 );
+	//#elifdef polish.command.ok:defined
 		//#= public static final Command OK_CMD = new Command("${polish.command.ok}", Command.OK, 2 );
 	//#else
-		public static final Command OK_CMD = new Command("OK", Command.OK, 2 );
+		//# public static final Command OK_CMD = new Command("OK", Command.OK, 2 );
 	//#endif
 	//#ifdef polish.command.cancel:defined
 		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );

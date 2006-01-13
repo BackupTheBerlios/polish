@@ -1191,7 +1191,7 @@ public class Container extends Item {
 						}
 					}
 					item = this.items[i];
-					System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+					//System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 				}
 				if (doneSteps >= steps && item.colSpan != 1) {
 					if (forwardFocus) {
@@ -1199,10 +1199,10 @@ public class Container extends Item {
 						if (i < 0) {
 							i = this.items.length - 1;
 						}
-						System.out.println("forward: Adjusting startIndex to " + i );
+						//System.out.println("forward: Adjusting startIndex to " + i );
 					} else {
 						i = (i + 1) % this.items.length;
-						System.out.println("backward: Adjusting startIndex to " + i );
+						//System.out.println("backward: Adjusting startIndex to " + i );
 					}
 				}
 			}

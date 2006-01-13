@@ -135,5 +135,15 @@ public interface Map {
 	 * @return an object array with all keys.
 	 */
 	public Object[] keys(Object[] objects);
+	
+	/**
+	 * Iterates over the keys of this map.
+	 * In contrast to using the keys() method no additional array is created.
+	 * When the map is modified while the iterator is being used, the behavior
+	 * of the iterator is unspecified (unless the iterator.remove() method is used).
+	 * 
+	 * @return an iterator that contains all keys.
+	 */
+	public Iterator keysIterator();
 
 }

@@ -44,7 +44,7 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class HashMap 
+public class HashMap 
 //#if polish.Map.dropInterface != true
 	implements Map 
 //#endif
@@ -56,9 +56,9 @@ public final class HashMap
 	public static final int DEFAULT_LOAD_FACTOR = 75;
 	
 	private final int loadFactor;	
-	private Element[] buckets;
+	Element[] buckets;
 	private final boolean isPowerOfTwo;
-	private int size;
+	int size;
 
 	/**
 	 * Creates a new HashMap with the default initial capacity 16 and a load factor of 75%. 
@@ -355,6 +355,11 @@ public final class HashMap
 		this.buckets = newBuckets;
 	}
 
+	public Iterator keysIterator() {
+		return new HashMapIterator();
+	}
+	
+
 	private static final class Element {
 		public final Object key;
 		public final int hashCode;
@@ -365,6 +370,74 @@ public final class HashMap
 			this.key = key;
 			this.value = value;
 		}
+	}
+
+	private final class HashMapIterator implements Iterator {
+		
+		private int position;
+		private Element current;
+		private int lastBucketIndex;
+		private int iteratorSize;
+		
+		HashMapIterator() {
+			this.iteratorSize = HashMap.this.size;
+		}
+
+		public boolean hasNext() {
+			return this.position < this.iteratorSize;
+		}
+
+		public Object next() {
+			if (this.current != null) {
+				this.current = this.current.next;
+			}
+			if (this.current == null) {
+				// find next bucket:
+				for (int i = this.lastBucketIndex; i < HashMap.this.buckets.length; i++) {
+					Element element = HashMap.this.buckets[i];
+					if (element != null) {
+						this.current = element;
+						this.lastBucketIndex = i+1;
+						this.position++;
+						return element.key;
+					}
+				}
+				throw new IllegalStateException("no more elements");
+			} else {
+				this.position++;
+				return this.current.key;
+			}
+		}
+
+		public void remove() {
+			if (this.current == null) {
+				throw new IllegalStateException("no current element");
+			}
+			// search for previous element:
+			for (int i = this.lastBucketIndex - 1; i >= 0; i--) {
+				Element element = HashMap.this.buckets[i];
+				if ( element == this.current) {
+					// the removed element is the head, so exchange this one with the following:
+					HashMap.this.buckets[i] = this.current.next;
+					HashMap.this.size--;
+					return;
+				} else {
+					Element last = element;
+					while (element != null) {
+						if (element == this.current) {
+							last.next = element.next;
+							HashMap.this.size--;
+							return;
+						}
+						last = element;
+						element = element.next;
+					}
+				}
+				
+			}
+			throw new IllegalStateException("unable to locate current element");
+		}
+		
 	}
 
 }

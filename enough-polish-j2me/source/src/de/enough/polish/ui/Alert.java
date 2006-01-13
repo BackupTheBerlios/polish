@@ -10,6 +10,8 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.Locale;
+
 
 /**
  * An alert is a screen that shows data to the user and waits for a certain
@@ -218,7 +220,11 @@ implements CommandListener
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final Command DISMISS_COMMAND = StyleSheet.OK_CMD;
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command DISMISS_COMMAND = StyleSheet.OK_CMD;
+	//#else
+		//# public static final Command DISMISS_COMMAND = StyleSheet.OK_CMD;
+	//#endif
 
 	private int timeout = FOREVER;
 	private long showTime;
@@ -336,11 +342,28 @@ implements CommandListener
 		if ( alertText != null || alertImage != null ) {
 			createItem( alertText, alertImage, null );
 		}
+		//#ifdef polish.i18n.useDynamicTranslations
+			String okLabel = Locale.get("polish.command.ok");
+			if ( okLabel != StyleSheet.OK_CMD.getLabel()) {
+				StyleSheet.OK_CMD = new Command(okLabel, Command.OK, 2 );
+				DISMISS_COMMAND = StyleSheet.OK_CMD; 
+			}
+		//#endif
 		//this.alertType = alertType;
-		addCommand( StyleSheet.OK_CMD );
+		addCommand( DISMISS_COMMAND );
 		setCommandListener( this );
 	}
+	
+	
 
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#addCommand(javax.microedition.lcdui.Command)
+	 */
+	public void addCommand(Command cmd) {
+		super.removeCommand( DISMISS_COMMAND );
+		super.addCommand(cmd);
+	}
 
 	private void createItem(String alertText, Image alertImage, Style itemStyle) {
 		if (itemStyle == null) {
