@@ -1541,7 +1541,8 @@ public class PolishTask extends ConditionalTask {
 				// check if the CSS declarations have changed since the last run:
 				File targetFile =  this.styleSheetSourceFile.getTargetFile( baseDirectory, this.useDefaultPackage );
 					//new File( targetDir + File.separatorChar + this.styleSheetSourceFile.getFilePath() );				
-				boolean cssIsNew = (!targetFile.exists())
+				boolean cssIsNew = this.lastRunFailed
+					|| (!targetFile.exists())
 					|| ( lastCssModification > targetFile.lastModified() )
 					|| ( buildXmlLastModified > targetFile.lastModified() );
 				if (cssIsNew) {

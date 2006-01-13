@@ -457,7 +457,7 @@
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="CameraResolution" value="2 MP" />
 		<capability name="CameraZoom" value="4" />
-		<capability name="Bugs" value="ImageIOStreamAutoClose" />
+		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin" />
 	</device>
 
 	<device>

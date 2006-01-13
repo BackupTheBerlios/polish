@@ -64,12 +64,18 @@ public class PulsatingBackgroundConverter extends BackgroundConverter {
 			throw new BuildException("Invalid CSS: the background type [pulsating] needs to define the attribute [start-color].");
 		}
 		startColorStr = this.colorConverter.parseColor(startColorStr);
+		if (isAlphaColor(startColorStr)) {
+			throw new BuildException("Invalid CSS: the background type [pulsating] needs to have a RGB [start-color], alpha/transparent values are not supported. The value [" + startColorStr + "] is invalid.");
+		}
 		int startColor = Integer.decode( startColorStr ).intValue();
 		String endColorStr = (String) background.get("end-color");
 		if (endColorStr == null) {
 			throw new BuildException("Invalid CSS: the background type [pulsating] needs to define the attribute [end-color].");
 		}
 		endColorStr = this.colorConverter.parseColor(endColorStr);
+		if (isAlphaColor(endColorStr)) {
+			throw new BuildException("Invalid CSS: the background type [pulsating] needs to have a RGB [end-color], alpha/transparent values are not supported. The value [" + endColorStr + "] is invalid.");
+		}
 		int endColor = Integer.decode( endColorStr ).intValue();
 		String stepsStr = (String) background.get("steps");
 		int steps = 10;

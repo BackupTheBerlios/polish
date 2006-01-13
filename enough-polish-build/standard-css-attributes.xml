@@ -372,7 +372,25 @@
 		appliesTo="Form, List, ChoiceGroup, Container"
 		description="Defines which view should be used for showing the items of a Form, List, etc."
 		id="39"
-	/>
+	>
+		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
+		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
+		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" />
+		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
+		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
+		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
+		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
+		<mapping from="exclusive-single-line" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
+		<mapping from="ExclusiveSingleLineView" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
+		<mapping from="Dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
+		<mapping from="dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
+		<mapping from="DinnerForOne" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
+		<mapping from="plain" to="none" />
+		<mapping from="normal" to="none" />
+		<!--
+		<mapping from="" to="" />
+		-->
+	</attribute>
 
 	<attribute
 		name="droppingview-repeat-animation"
@@ -1011,5 +1029,15 @@
 		default="false"
 		id="105"
 	/>
+	
+	<attribute
+		name="colspan"
+		type="integer"
+		appliesTo="Item"
+		description="The number of columns wich are used by the item within a table."
+		default="1"
+		id="106"
+	/>
+	
 	
 </attributes>

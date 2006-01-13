@@ -35,6 +35,7 @@
 		<symbol>nokia-ui</symbol>
 		<files>nokia-ui.jar, nokiaui.zip</files>
 		<path>import/nokia-ui.jar</path>
+		<capability name="Bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi" />
 	</api>
 	
 	<api>
@@ -125,6 +126,7 @@
 		</description>
 		<names>3d, 3d-api,3dapi, JSR-184, JSR184, m3g, m3gapi</names>
 		<symbol>3dapi</symbol>
+		<features>api.m3g</features>
 		<files>j2me-3dapi.jar, m3g.jar, jsr184.jar</files>
 		<path>import/m3g.jar</path>
 	</api>

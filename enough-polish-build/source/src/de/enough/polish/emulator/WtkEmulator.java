@@ -294,13 +294,14 @@ public class WtkEmulator extends Emulator {
 		// now write a preferences-file:
 		emulatorPropertiesMap.put( "kvem.memory.monitor.enable", "" + setting.enableMemoryMonitor() );
 		emulatorPropertiesMap.put( "kvem.profiler.enable", "" + setting.enableProfiler() );
-		boolean enableNetworkMonitor = setting.enableNetworkMonitor();
-		emulatorPropertiesMap.put( "kvem.netmon.comm.enable", "" + enableNetworkMonitor );
-		emulatorPropertiesMap.put( "kvem.netmon.datagram.enable", ""  + enableNetworkMonitor );
-		emulatorPropertiesMap.put( "kvem.netmon.http.enable", "" + enableNetworkMonitor );
-		emulatorPropertiesMap.put( "kvem.netmon.https.enable", "" + enableNetworkMonitor );
-		emulatorPropertiesMap.put( "kvem.netmon.socket.enable", "" + enableNetworkMonitor );
-		emulatorPropertiesMap.put( "kvem.netmon.ssl.enable", "" + enableNetworkMonitor );
+		String enableNetworkMonitor = "" + setting.enableNetworkMonitor();
+		emulatorPropertiesMap.put( "kvem.netmon.enable", enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.comm.enable", enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.datagram.enable", enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.http.enable", enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.https.enable", enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.socket.enable", enableNetworkMonitor );
+		emulatorPropertiesMap.put( "kvem.netmon.ssl.enable", enableNetworkMonitor );
 		
 		emulatorPropertiesMap.put( "bluetooth.connected.devices.max", "7" );
 		emulatorPropertiesMap.put( "bluetooth.device.authentication", "on" );
@@ -326,7 +327,6 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put( "kvem.api.exclude", "" );
 		emulatorPropertiesMap.put( "kvem.device", "DefaultColorPhone" );
 		emulatorPropertiesMap.put( "kvem.netmon.autoclose", "false" );
-		emulatorPropertiesMap.put( "kvem.netmon.enable", "false" );
 		emulatorPropertiesMap.put( "kvem.netmon.filter_file_name", "netmon_filter.dat" );
 		emulatorPropertiesMap.put( "kvem.netmon.fixed_font_name", "Courier New" );
 		emulatorPropertiesMap.put( "kvem.netmon.fixed_font_size", "12" );
@@ -334,24 +334,98 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put( "kvem.netmon.variable_font_size", "14" );
 		emulatorPropertiesMap.put( "kvem.profiler.outfile", "" );
 		emulatorPropertiesMap.put( "kvem.profiler.showsystem", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.all", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.allocation", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.bytecodes", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.calls", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.calls.verbose", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.class", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.class.verbose", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.events", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.exceptions", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.frames", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.gc", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.gc.verbose", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.monitors", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.networking", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.stackchunks", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.stackmaps", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.threading", "false" );
-		emulatorPropertiesMap.put( "kvem.trace.verifier", "false" );
+		if ("all".equals(setting.getTrace())) {
+			emulatorPropertiesMap.put( "kvem.trace.all", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.all", "false" );
+		}
+		if (setting.traceIncludes("allocation")) {
+			emulatorPropertiesMap.put( "kvem.trace.allocation", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.allocation", "false" );
+		}
+		if (setting.traceIncludes("bytecodes")) {
+			emulatorPropertiesMap.put( "kvem.trace.bytecodes", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.bytecodes", "false" );
+		}
+		if (setting.traceIncludes("calls")) {
+			emulatorPropertiesMap.put( "kvem.trace.calls", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.calls", "false" );
+		}
+		if (setting.traceIncludes("calls.verbose")) {
+			emulatorPropertiesMap.put( "kvem.trace.calls.verbose", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.calls.verbose", "false" );
+		}
+		if (setting.traceIncludes("class")) {
+			emulatorPropertiesMap.put( "kvem.trace.class", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.class", "false" );
+		}
+		if (setting.traceIncludes("class.verbose")) {
+			emulatorPropertiesMap.put( "kvem.trace.class.verbose", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.class.verbose", "false" );
+		}
+		if (setting.traceIncludes("events")) {
+			emulatorPropertiesMap.put( "kvem.trace.events", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.events", "false" );
+		}
+		if (setting.traceIncludes("exceptions")) {
+			emulatorPropertiesMap.put( "kvem.trace.exceptions", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.exceptions", "false" );
+		}
+		if (setting.traceIncludes("frames")) {
+			emulatorPropertiesMap.put( "kvem.trace.frames", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.frames", "false" );
+		}
+		if (setting.traceIncludes("gc")) {
+			emulatorPropertiesMap.put( "kvem.trace.gc", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.gc", "false" );
+		}
+		if (setting.traceIncludes("gc.verbose")) {
+			emulatorPropertiesMap.put( "kvem.trace.gc.verbose", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.gc.verbose", "false" );
+		}
+		if (setting.traceIncludes("monitors")) {
+			emulatorPropertiesMap.put( "kvem.trace.monitors", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.monitors", "false" );
+		}
+		if (setting.traceIncludes("networking")) {
+			emulatorPropertiesMap.put( "kvem.trace.networking", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.networking", "false" );
+		}
+		if (setting.traceIncludes("stackchunks")) {
+			emulatorPropertiesMap.put( "kvem.trace.stackchunks", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.stackchunks", "false" );
+		}
+		if (setting.traceIncludes("stackmaps")) {
+			emulatorPropertiesMap.put( "kvem.trace.stackmaps", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.stackmaps", "false" );
+		}
+		if (setting.traceIncludes("threading")) {
+			emulatorPropertiesMap.put( "kvem.trace.threading", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.threading", "false" );
+		}
+		if (setting.traceIncludes("verifier")) {
+			emulatorPropertiesMap.put( "kvem.trace.verifier", "true" );
+		} else {
+			emulatorPropertiesMap.put( "kvem.trace.verifier", "false" );
+		}
+		
+		
 		emulatorPropertiesMap.put( "mm.control.capture", "true" );
 		emulatorPropertiesMap.put( "mm.control.midi", "true" );
 		emulatorPropertiesMap.put( "mm.control.mixing", "true" );
@@ -366,7 +440,11 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put( "screen.graphicsLatency", "0" );
 		emulatorPropertiesMap.put( "screen.refresh.mode", "" );
 		emulatorPropertiesMap.put( "screen.refresh.rate", "30" );
-		emulatorPropertiesMap.put( "security.domain", "untrusted" );
+		if (setting.getSecurityDomain() != null) {
+			emulatorPropertiesMap.put( "security.domain", setting.getSecurityDomain() );
+		} else {
+			emulatorPropertiesMap.put( "security.domain", "untrusted" );			
+		}
 		emulatorPropertiesMap.put( "storage.root", "" );
 		emulatorPropertiesMap.put( "storage.size", "" );
 		emulatorPropertiesMap.put( "vmspeed.bytecodespermilli", "100" );

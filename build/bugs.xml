@@ -335,6 +335,12 @@
 		<solution>Use MIDP 2.0 drawRGB instead.</solution>
 	</bug>
 	
+	<bug>
+		<name>FillPolygonRequiresPositiveXYInNokiaUiApi</name>
+		<area>ui</area>
+		<description>Nokia-UI-API: In DirectGraphics.fillPolygon each x and y point needs to be at least 1 or higher, otherwise the rendering is aborted without error message.</description>
+		<solution>Use x/y points that are 1 or higher, or use MIDP 2.0 drawRGB instead.</solution>
+	</bug>
 
 	<!--
 	<bug>

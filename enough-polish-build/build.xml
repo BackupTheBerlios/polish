@@ -319,7 +319,7 @@
 		</copy>
 		<javadoc 
 		    	destdir="tmp/doc/javadoc/build" 
-		    	access="public" 
+		    	access="protected" 
 		    	use="true" 
 		    	notree="false" 
 		    	nonavbar="false" 
@@ -336,7 +336,7 @@
 		/>	
 		<javadoc 
 		    	destdir="tmp/doc/javadoc/j2me" 
-		    	access="public" 
+		    	access="protected" 
 		    	use="true" 
 		    	notree="false" 
 		    	nonavbar="false" 

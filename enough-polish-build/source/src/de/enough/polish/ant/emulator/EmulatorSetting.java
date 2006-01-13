@@ -172,6 +172,7 @@ public class EmulatorSetting extends ExtensionSetting {
 	 */
 	public void setTrace(String trace) {
 		this.trace = trace;
+		this.writePreferencesFile |= (trace != null) && (trace.indexOf(',') != -1);
 	}
 	
 	/**
@@ -262,5 +263,12 @@ public class EmulatorSetting extends ExtensionSetting {
 			}
 		}
 		return null;
+	}
+
+	public boolean traceIncludes(String string) {
+		if (this.trace == null) {
+			return false;
+		}
+		return (this.trace.indexOf(string) != -1);
 	}
 }

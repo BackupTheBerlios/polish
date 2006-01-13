@@ -113,6 +113,8 @@ public class CssConverter extends Converter {
 		LAYOUTS.put( "vexpand", "Item.LAYOUT_VEXPAND" );
 		LAYOUTS.put( "vertical-expand", "Item.LAYOUT_VEXPAND" );
 	}
+	/*
+	 * the mappings are now done in the standard-css-attributes.xml
 	private static final HashMap VIEW_TYPES = new HashMap();
 	static {
 		VIEW_TYPES.put( "shuffle", "de.enough.polish.ui.containerviews.ShuffleView");
@@ -128,6 +130,7 @@ public class CssConverter extends Converter {
 		VIEW_TYPES.put( "plain", "none");
 		VIEW_TYPES.put( "normal", "none");
 	}
+	*/
 	protected ArrayList referencedStyles;
 	protected AbbreviationsGenerator abbreviationGenerator;
 	protected CssAttributesManager attributesManager;
@@ -710,6 +713,9 @@ public class CssConverter extends Converter {
 							 }
 						} else {
 							if (groupName.equals("view") && key.equals("type") ) {
+								// the value represents a fully qualified class:
+								valueList.append("new ").append( value ).append("()");
+								/*
 								String translatedViewType = (String) VIEW_TYPES.get( value );
 								if (translatedViewType == null ) {
 									// the value represents a full class:
@@ -720,6 +726,7 @@ public class CssConverter extends Converter {
 									// a standard view is used:
 									valueList.append("new ").append( translatedViewType ).append("()");
 								}
+								*/
 							} else {
 								valueList.append( value );
 							}
