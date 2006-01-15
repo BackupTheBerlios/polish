@@ -29,6 +29,9 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.TextUtil;
+
 /**
  * <p>Is responsible for visual representation and interpretation of user-input.</p>
  * <p>Copyright Enough Software 2004, 2005</p>
@@ -38,8 +41,16 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public abstract class ContainerView {
+public class ContainerView {
+	//#if polish.css.columns || polish.useTable
+		//#define tmp.useTable
+	//#endif
 	
+	private static final int NO_COLUMNS = 0;
+	private static final int EQUAL_WIDTH_COLUMNS = 1;
+	private static final int NORMAL_WIDTH_COLUMNS = 2;
+	private static final int STATIC_WIDTH_COLUMNS = 3;
+
 	protected int yOffset;
 	protected int contentWidth;
 	protected int contentHeight;
@@ -49,9 +60,22 @@ public abstract class ContainerView {
 	protected boolean restartAnimation;
 	protected int paddingVertical;
 	protected int paddingHorizontal;
+	protected int layout;
 	protected boolean focusFirstElement;
 	protected int appearanceMode;
 	protected boolean isFocused;
+	protected Item focusedItem;
+	
+	// table support:
+	private int columnsSetting = NO_COLUMNS;
+	private int numberOfColumns;
+	private int[] columnsWidths;
+	private int[] rowsHeights;
+	private int numberOfRows;
+	private boolean isLayoutCenter;
+	private boolean isLayoutRight;
+	
+
 
 	/**
 	 * Creates a new view
@@ -64,15 +88,296 @@ public abstract class ContainerView {
 	 * Initialises this item. 
 	 * The implementation needs to calculate and set the contentWidth and 
 	 * contentHeight fields. 
-	 * 
-	 * @param parent the Container which uses this view 
+	 * The style of the focused item has already been set.
+	 *  
+	 * @param parent the Container which uses this view, use parent.getItems() for retrieving all items. 
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param lineWidth the maximum width of any following lines
 	 * @see #contentWidth
 	 * @see #contentHeight
 	 */
-	protected abstract void initContent( Container parent, int firstLineWidth, int lineWidth );
+	protected void initContent( Container parent, int firstLineWidth, int lineWidth ) {
+		//#debug
+		System.out.println("ContainerView: intialising content for " + this );
+		Item[] myItems = parent.items;
+
+		//#ifdef tmp.useTable
+		if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
+		//#endif
+			int myContentWidth = 0;
+			int myContentHeight = 0;
+			boolean hasFocusableItem = false;
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
+				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
+				int width = item.getItemWidth( firstLineWidth, lineWidth );
+				int height = item.getItemHeight( firstLineWidth, lineWidth );
+				// now the item should have a style, so it can be safely focused
+				// without loosing the style information:
+				if (item.appearanceMode != Item.PLAIN) {
+					hasFocusableItem = true;
+				}
+				if (width > myContentWidth) {
+					myContentWidth = width; 
+				}
+				myContentHeight += height + this.paddingVertical;
+			}
+			if (!hasFocusableItem) {
+				this.appearanceMode = Item.PLAIN;
+			} else {
+				this.appearanceMode = Item.INTERACTIVE;
+			}
 		
+			this.contentHeight = myContentHeight;
+			this.contentWidth = myContentWidth;
+			return;
+		//#ifdef tmp.useTable
+		}
+		//#endif
+		
+		//#ifdef tmp.useTable
+			// columns are used
+			boolean isNormalWidthColumns = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
+			if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
+				int availableColumnWidth;
+				if (isNormalWidthColumns) {
+					// this.columnsSetting == NORMAL_WIDTH_COLUMNS
+					// each column should use as much space as it can use
+					// without ousting the other columns
+					// (the calculation will be finished below)
+					availableColumnWidth = lineWidth - ((this.numberOfColumns -1) * this.paddingHorizontal);
+				} else {
+					// each column should take an equal share
+					availableColumnWidth = 
+						(lineWidth - ((this.numberOfColumns -1) * this.paddingHorizontal))
+						/ this.numberOfColumns;
+				}
+				//System.out.println("available column width: " + availableColumnWidth );
+				this.columnsWidths = new int[ this.numberOfColumns ];
+				for (int i = 0; i < this.numberOfColumns; i++) {
+					this.columnsWidths[i] = availableColumnWidth;
+				}
+			} else {
+				int restWidth = 0;
+				int dynamicColumnIndex = -1;
+				for (int i = 0; i < this.numberOfColumns; i++) {
+					int w = this.columnsWidths[i];
+					if (w == -1) {
+						dynamicColumnIndex = i;
+					} else {
+						restWidth += w;
+					}
+				}
+				if (dynamicColumnIndex != -1) {
+					this.columnsWidths[ dynamicColumnIndex ] = lineWidth - restWidth;
+				}
+			}
+			//#if polish.css.colspan
+				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + (myItems.length % 2) + 1 );
+			//#else
+				this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
+				this.rowsHeights = new int[ this.numberOfRows ];
+			//#endif
+			int maxRowHeight = 0;
+			int columnIndex = 0;
+			int rowIndex = 0;
+			int[] maxColumnWidths = null;
+			if (isNormalWidthColumns) {
+				maxColumnWidths = new int[ this.numberOfColumns ];
+			}
+			int maxWidth = 0; // important for "equal" columns-width
+			int myContentHeight = 0;
+			//System.out.println("starting init of " + myItems.length + " container items.");
+			for (int i=0; i< myItems.length; i++) {
+				Item item = myItems[i];
+				int availableWidth = this.columnsWidths[columnIndex];
+				//#if polish.css.colspan
+					int itemColSpan = item.colSpan;
+					if (item.style != null) {
+						Integer colSpanInt = item.style.getIntProperty("colspan");
+						if ( colSpanInt != null ) {
+							itemColSpan = colSpanInt.intValue();
+							//System.out.println("colspan of item " + i + "/" + item + ", column " + columnIndex + ": " + itemColSpan);
+						}
+					}
+					if (itemColSpan > 1) {
+						// okay, this item stretched beyond one column,
+						// so let's calculate the correct available cell width
+						// and switch to the right column index:
+						int maxColSpan = this.numberOfColumns - columnIndex;
+						if (itemColSpan > maxColSpan) {
+							//#debug error
+							System.err.println("Warning: colspan " + itemColSpan + " is invalid at column " + columnIndex + " of a table with " + this.numberOfColumns + " columns, now using maximum possible value " + maxColSpan + ".");
+							itemColSpan = maxColSpan;
+						}
+						if (item.colSpan != itemColSpan) { 
+							//System.out.println("initializing new colspan of item " + i + "/" + item + ", column " + columnIndex + ": " + itemColSpan);
+							item.colSpan = itemColSpan;
+							item.isInitialised = false;
+						}
+						// adjust the available width only when
+						// each column has an equal size or when
+						// the column widths are static,
+						// otherwise the complete row width
+						// is available anyhow:
+						if (!isNormalWidthColumns) {
+							for (int j = columnIndex + 1; j < columnIndex + itemColSpan; j++) {
+								availableWidth += this.paddingHorizontal + this.columnsWidths[j];
+							}
+						}
+					}
+				//#endif
+				//System.out.println("available with: " + availableWidth);
+				int width = item.getItemWidth( availableWidth, availableWidth );
+				//System.out.println("got item width");
+				int height = item.getItemHeight( availableWidth, availableWidth );
+								
+				if (height > maxRowHeight) {
+					maxRowHeight = height;
+				}
+				//#if polish.css.colspan
+					if (itemColSpan == 1) {
+				//#endif
+						if (isNormalWidthColumns && width > maxColumnWidths[columnIndex ]) {
+							maxColumnWidths[ columnIndex ] = width;
+						}
+						if (width > maxWidth ) {
+							maxWidth = width;
+						}
+				//#if polish.css.colspan
+					}
+				//#endif
+				//#if polish.css.colspan
+					columnIndex += itemColSpan;
+				//#else
+					columnIndex++;
+				//#endif
+				if (columnIndex == this.numberOfColumns) {
+					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
+					columnIndex = 0;
+					//#if polish.css.colspan
+						rowHeightsList.add( new Integer( maxRowHeight ) );
+					//#else
+						this.rowsHeights[rowIndex] = maxRowHeight;						
+					//#endif
+					myContentHeight += maxRowHeight + this.paddingVertical;
+					maxRowHeight = 0;
+					rowIndex++;
+				}
+			} // for each item
+			//#if polish.css.colspan
+				this.numberOfRows = rowHeightsList.size();
+				this.rowsHeights = new int[ this.numberOfRows ];
+				for (int i = 0; i < this.numberOfRows; i++) {
+					this.rowsHeights[i] = ((Integer) rowHeightsList.get(i)).intValue();
+				}
+			//#endif
+			// now save the worked out dimensions:
+			if (isNormalWidthColumns) {
+				// Each column should use up as much space as 
+				// needed in the "normal" columns-width mode.
+				// Each column which takes less than available 
+				// the available-row-width / number-of-columns
+				// can keep, but the others might need to be adjusted,
+				// in case the complete width of the table is wider
+				// than the allowed width.
+				
+				int availableRowWidth = lineWidth - ((this.numberOfColumns -1) * this.paddingHorizontal);
+				int availableColumnWidth = availableRowWidth / this.numberOfColumns;
+				int usedUpWidth = 0;
+				int leftColumns = this.numberOfColumns;
+				int completeWidth = 0;
+				for (int i = 0; i < maxColumnWidths.length; i++) {
+					int maxColumnWidth = maxColumnWidths[i];
+					if (maxColumnWidth <= availableColumnWidth) {
+						usedUpWidth += maxColumnWidth;
+						leftColumns--;
+					}
+					completeWidth += maxColumnWidth;
+				}
+				if (completeWidth <= availableRowWidth) {
+					// okay, the table is fine just how it is
+					this.columnsWidths = maxColumnWidths;
+				} else {
+					// okay, some columns need to be adjusted:
+					// re-initialise the table:
+					int leftAvailableColumnWidth = (availableRowWidth - usedUpWidth) / leftColumns;
+					int[] newMaxColumnWidths = new int[ this.numberOfColumns ];
+					myContentHeight = 0;
+					columnIndex = 0;
+					rowIndex = 0;
+					maxRowHeight = 0;
+					maxWidth = 0;
+					//System.out.println("starting init of " + myItems.length + " container items.");
+					for (int i = 0; i < myItems.length; i++) {
+						Item item = myItems[i];
+						int width = item.itemWidth;
+						int height = item.itemHeight;
+						if (maxColumnWidths[ columnIndex ] <= availableColumnWidth) {
+							newMaxColumnWidths[ columnIndex ] = maxColumnWidths[ columnIndex ];
+						} else {
+							// re-initialise this item,
+							// if it is wider than the left-available-column-width
+							if ( width > leftAvailableColumnWidth ) {
+								item.isInitialised = false;
+								width = item.getItemWidth( leftAvailableColumnWidth, leftAvailableColumnWidth );
+								height = item.getItemHeight( leftAvailableColumnWidth, leftAvailableColumnWidth );
+							}
+							if (width > newMaxColumnWidths[ columnIndex ]) {
+								newMaxColumnWidths[ columnIndex ] = width;
+							}
+						}
+						if (height > maxRowHeight) {
+							maxRowHeight = height;
+						}
+						//#if polish.css.colspan
+							columnIndex += item.colSpan;
+						//#else
+							columnIndex++;
+						//#endif
+						
+						if (columnIndex == this.numberOfColumns) {
+							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
+							columnIndex = 0;
+							this.rowsHeights[rowIndex] = maxRowHeight;
+							myContentHeight += maxRowHeight + this.paddingVertical;
+							maxRowHeight = 0;
+							rowIndex++;
+						}
+					} // for each item		
+					this.columnsWidths = newMaxColumnWidths;
+				}
+			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
+				// Use the maximum used column-width for each column,
+				// unless this table should be expanded, in which
+				// case the above set widths  will be used instead.
+				if (!isLayoutExpand()) {
+					for (int i = 0; i < this.columnsWidths.length; i++) {
+						this.columnsWidths[i] = maxWidth;
+					}
+				}
+			} // otherwise the column widths are defined statically.
+			// set content height & width:
+			int myContentWidth = 0;
+			for (int i = 0; i < this.columnsWidths.length; i++) {
+				myContentWidth += this.columnsWidths[i] + this.paddingHorizontal;
+			}
+			this.contentWidth = myContentWidth;
+			this.contentHeight = myContentHeight;
+		//#endif
+	}
+		
+	/**
+	 * Determines whether this view should be expanded horizontally
+	 * 
+	 * @return true when this view should be expanded horizontally
+	 * @see #layout
+	 * @see Item#LAYOUT_EXPAND
+	 */
+	protected boolean isLayoutExpand() {
+		return ((this.layout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND);
+	}
+
 	/**
 	 * Paints the content of this container view.
 	 * 
@@ -82,11 +387,88 @@ public abstract class ContainerView {
 	 * @param rightBorder the right border, nothing must be painted right of this position
 	 * @param g the Graphics on which this item should be painted.
 	 */
-	protected abstract void paintContent( int x, int y, int leftBorder, int rightBorder, Graphics g );
+	protected void paintContent( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		Item[] myItems = this.parentContainer.getItems();
+		
+		int focusedX = x;
+		int focusedY = 0;
+		int focusedRightBorder = rightBorder;
+		//#ifdef tmp.useTable
+			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
+		//#endif
+				if (!(this.isLayoutCenter || this.isLayoutRight)) {
+					// adjust the right border:
+					rightBorder = leftBorder + this.contentWidth;
+				}
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
+					// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
+					// since after every item a line break will be done.
+					if (i == this.focusedIndex) {
+						focusedY = y;
+						item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
+					} else {
+						// the currently focused item is painted last
+						item.paint(x, y, leftBorder, rightBorder, g);
+					}
+					y += item.itemHeight + this.paddingVertical;
+				}
+		//#ifdef tmp.useTable
+			} else {
+				x = leftBorder;
+				int columnIndex = 0;
+				int rowIndex = 0;
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
+					int columnWidth = this.columnsWidths[ columnIndex ];
+					//#if polish.css.colspan
+						if (item.colSpan > 1) {						
+							for (int j = columnIndex + 1; j < columnIndex + item.colSpan; j++) {
+								columnWidth += this.columnsWidths[ j ] + this.paddingHorizontal;
+							}
+							//System.out.println("Painting item " + i + "/" + item + " with width=" + item.itemWidth + " and with increased colwidth of " + columnWidth + " (prev=" + this.columnsWidths[ columnIndex ] + ")" );
+							
+						}
+					//#endif
+					if (i == this.focusedIndex) {
+						focusedY = y;
+						focusedX = x;
+						focusedRightBorder = x + columnWidth;
+						// item.getItemHeight( columnWidth, columnWidth );
+					} else {
+						item.paint(x, y, x, x + columnWidth, g);
+					}
+					x += columnWidth + this.paddingHorizontal;
+					//#if polish.css.colspan
+						if (item.colSpan > 1) {
+							columnIndex += item.colSpan;
+						} else {
+							columnIndex++;
+						}
+					//#else
+						columnIndex++;
+					//#endif
+			
+					if (columnIndex == this.numberOfColumns) {
+						columnIndex = 0;
+						y += this.rowsHeights[ rowIndex ] + this.paddingVertical;
+						x = leftBorder;
+						rowIndex++;
+					}
+				}
+			}
+		//#endif
+		
+		// paint the currently focused item:
+		if (this.focusedItem != null) {
+			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
+			this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+		}
+	}
 
 	/**
 	 * Interpretes the given user-input and retrieves the nexte item which should be focused.
-	 * Please not that the focusIte()-method is not called as well. The
+	 * Please not that the focusItem()-method is not called as well. The
 	 * view is responsible for updating its internal configuration here as well.
 	 * 
 	 * @param keyCode the code of the keyPressed-events
@@ -94,15 +476,227 @@ public abstract class ContainerView {
 	 * @return the next item which will be focused, null when there is
 	 * 			no such element.
 	 */
-	protected abstract Item getNextItem( int keyCode, int gameAction );
+	protected Item getNextItem( int keyCode, int gameAction ) {
+
+		Item[] myItems = this.parentContainer.getItems();
+		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
+				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
+			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
+				int currentRow = 0;
+				//#if polish.css.colspan
+					// iterate over all items to find the correct row:
+					int column = 0;
+					for (int i = 0; i < myItems.length; i++) {
+						Item item = myItems[i];
+						column += item.colSpan;
+						if (column >= this.numberOfColumns) {
+							currentRow++;
+						}
+					}
+				//#else
+					currentRow = this.focusedIndex / this.numberOfColumns;
+				//#endif
+				if (currentRow < this.numberOfRows - 1) {
+					return shiftFocus( true, this.numberOfColumns - 1, myItems );
+				}
+			}
+			return shiftFocus( true, 0, myItems );
+			
+		} else if ( (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
+				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
+			if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
+				int currentRow = this.focusedIndex / this.numberOfColumns;
+				if (currentRow > 0) {
+					return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
+				}
+			}
+			return shiftFocus( false, 0, myItems );
+//			if ((!processed) && this.enableScrolling && (this.targetYOffset < 0)) {
+//				// scroll upwards:
+//				//#if polish.Container.ScrollDelta:defined
+//					//#= this.targetYOffset += ${polish.Container.ScrollDelta};
+//				//#else
+//					this.targetYOffset += 30;
+//				//#endif
+//				//#debug
+//				System.out.println("Up/Left: Increasing targetYOffset to " + this.targetYOffset);	
+//				if (this.targetYOffset > 0) {
+//					this.targetYOffset = 0;
+//				}
+//				processed = true;
+//				//#if polish.scroll-mode
+//					if (!this.scrollSmooth) {
+//						this.yOffset = this.targetYOffset;
+//					}
+//				//#endif
+//			}
+		}
+		
+		
+		return null;
+		
+	}
 	
+	/**
+	 * Shifts the focus to the next or the previous item.
+	 * 
+	 * @param forwardFocus true when the next item should be focused, false when
+	 * 		  the previous item should be focused.
+	 * @param steps how many steps forward or backward the search for the next focusable item should be started,
+	 *        0 for the current item, negative values go backwards.
+	 * @return the item that has been focused or null, when no item has been focused.
+	 */
+	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items) {
+		//#if polish.css.colspan
+			int i = this.focusedIndex;
+			if (steps != 0) {
+				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
+				int doneSteps = 0;
+				steps = Math.abs( steps ) + 1;
+				Item item = this.parentContainer.items[i];
+				while( doneSteps <= steps) {
+					doneSteps += item.colSpan;
+					if (doneSteps >= steps) {
+						//System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+						break;
+					}
+					if (forwardFocus) {
+						i++;
+						if (i == items.length - 1 ) {
+							i = items.length - 2;
+							break;
+						} else if (i == items.length) {
+							i = items.length - 1;
+							break;
+						}
+					} else {
+						i--; 
+						if (i < 0) {
+							i = 1;
+							break;
+						}
+					}
+					item = items[i];
+					//System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+				}
+				if (doneSteps >= steps && item.colSpan != 1) {
+					if (forwardFocus) {
+						i--;
+						if (i < 0) {
+							i = items.length - 1;
+						}
+						//System.out.println("forward: Adjusting startIndex to " + i );
+					} else {
+						i = (i + 1) % items.length;
+						//System.out.println("backward: Adjusting startIndex to " + i );
+					}
+				}
+			}
+		//#else			
+			//# int i = this.focusedIndex + steps;
+			if (i > this.parentContainer.items.length) {
+				i = this.parentContainer.items.length - 2;
+			}
+			if (i < 0) {
+				i = 1;
+			}
+		//#endif
+		//TODO check how to integrate cycling in containers
+	//	//#if polish.Container.allowCycling != false
+	//		boolean allowCycle = this.enableScrolling && this.allowCycling;
+	//		if (allowCycle) {
+	//			//#if polish.css.scroll-mode
+	//				if (!this.scrollSmooth) {
+	//					if (forwardFocus) {
+	//						// when you scroll to the bottom and
+	//						// there is still space, do
+	//						// scroll first before cycling to the
+	//						// first item:
+	//						allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
+	//					} else {
+	//						// when you scroll to the top and
+	//						// there is still space, do
+	//						// scroll first before cycling to the
+	//						// last item:
+	//						allowCycle = (this.yOffset == 0);
+	//					}						
+	//				} else {
+	//			//#endif
+	//				if (forwardFocus) {
+	//					// when you scroll to the bottom and
+	//					// there is still space, do
+	//					// scroll first before cycling to the
+	//					// first item:
+	//					allowCycle = (this.targetYOffset + this.itemHeight <= this.yBottom);
+	//				} else {
+	//					// when you scroll to the top and
+	//					// there is still space, do
+	//					// scroll first before cycling to the
+	//					// last item:
+	//					allowCycle = (this.targetYOffset == 0);
+	//				}
+	//			//#if polish.css.scroll-mode
+	//				}
+	//			//#endif
+	//			//#debug
+	//			System.out.println("shiftFocus: allowCycl=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset );	
+	//		}
+	//	//#endif
+		boolean allowCycle = true;
+		Item nextItem = null;
+		while (true) {
+			if (forwardFocus) {
+				i++;
+				if (i >= items.length) {
+					//#if polish.Container.allowCycling != false
+						if (allowCycle) {
+							allowCycle = false;
+							i = 0;
+						} else {
+							break;
+						}
+					//#else
+						break;
+					//#endif
+				}
+			} else {
+				i--;
+				if (i < 0) {
+					//#if polish.Container.allowCycling != false
+						if (allowCycle) {
+							allowCycle = false;
+							i = items.length - 1;
+						} else {
+							break;
+						}
+					//#else
+						break;
+					//#endif
+				}
+			}
+			nextItem = items[i];
+			if (nextItem.appearanceMode != Item.PLAIN) {
+				break;
+			}
+		}
+		if (nextItem == null || nextItem.appearanceMode == Item.PLAIN || nextItem == this.focusedItem) {
+			return null;
+		}
+		int direction = Canvas.UP;
+		if (forwardFocus) {
+			direction = Canvas.DOWN;
+		}
+		focusItem(i, nextItem );
+		return nextItem;
+	}
+
 	/**
 	 * Focuses the item with the given index.
 	 * The container will then set the style of the 
 	 * retrieved item. The default implementation just
-	 * sets the internal focusedIndex field. When this
-	 * method is overwritten, please do call super.focusItem first
-	 * or set the field "focusedIndex" yourself-
+	 * sets the internal focusedIndex field along with focusedItem. 
+	 * When this method is overwritten, please do call super.focusItem first
+	 * or set the fields "focusedIndex" and "focusedItem" yourself.
 	 * 
 	 * @param index the index of the item
 	 * @param item the item which should be focused
@@ -111,10 +705,13 @@ public abstract class ContainerView {
 		int direction = 0;
 		if (this.focusedIndex < index ) {
 			direction = Canvas.UP;
+		} else if (this.focusedIndex == index ) {
+			direction = 0;
 		} else {
 			direction = Canvas.DOWN;
 		}
 		this.focusedIndex = index;
+		this.focusedItem = item;
 		this.parentContainer.focus(index, item, direction );
 	}
 
@@ -157,6 +754,84 @@ public abstract class ContainerView {
 	protected void setStyle( Style style ) {
 		this.paddingHorizontal = style.paddingHorizontal;
 		this.paddingVertical = style.paddingVertical;
+		this.layout = style.layout;
+		// horizontal styles: center -> right -> left
+		if ( ( this.layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER ) {
+			this.isLayoutCenter = true;
+			this.isLayoutRight = false;
+		} else {
+			this.isLayoutCenter = false;
+			if ( ( this.layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT ) {
+				this.isLayoutRight = true;
+			} else {
+				this.isLayoutRight = false;
+				// meaning: layout == Item.LAYOUT_LEFT
+			}
+		}
+		this.columnsSetting = NO_COLUMNS;
+		//#ifdef polish.css.columns
+			Integer columns = style.getIntProperty("columns");
+			if (columns != null) {
+				this.numberOfColumns = columns.intValue();
+				//System.out.println("ContainerView: supporting " + this.numberOfColumns + " cols");
+				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+				//#ifdef polish.css.columns-width
+					String width = style.getProperty("columns-width");
+					if (width != null) {
+						if ("equal".equals(width)) {
+							this.columnsSetting = EQUAL_WIDTH_COLUMNS;
+						} else if ("normal".equals(width)) {
+							//this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+							// this is the default value set above...
+						} else {
+							// these are pixel settings.
+							String[] widths = TextUtil.split( width, ',');
+							if (widths.length != this.numberOfColumns) {
+								// this is an invalid setting!
+								this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+								//#debug warn
+								System.out.println("Container: Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
+							} else {
+								this.columnsSetting = STATIC_WIDTH_COLUMNS;
+								this.columnsWidths = new int[ this.numberOfColumns ];
+								//#ifdef polish.css.columns-width.star
+									int combinedWidth = 0;
+									int starIndex = -1;
+								//#endif
+								for (int i = 0; i < widths.length; i++) {
+									//#ifdef polish.css.columns-width.star
+										String widthStr = widths[i];
+										if ("*".equals( widthStr )) {
+											starIndex = i;
+										} else {
+											int w = Integer.parseInt( widthStr );
+											combinedWidth += w;
+											this.columnsWidths[i] = w;
+										}
+									//#else
+										this.columnsWidths[i] = Integer.parseInt( widths[i] );
+									//#endif
+								}
+								//#ifdef polish.css.columns-width.star
+									if (starIndex != -1) {
+										Screen myScreen = getScreen();
+										if (myScreen != null) {
+											this.columnsWidths[starIndex] = 
+												myScreen.getWidth() - combinedWidth;
+										} else {
+											//#debug warn
+											System.out.println("Container: Unable to process '*'-columns-width");
+										}
+									}
+								//#endif
+								this.columnsSetting = STATIC_WIDTH_COLUMNS;
+							}					
+						}
+					}
+				//#endif
+				//TODO rob allow definition of the "fill-policy"
+			}
+		//#endif
 	}
 	
 	/**
@@ -251,6 +926,11 @@ public abstract class ContainerView {
 	/**
 	 * Handles pointer pressed events.
 	 * This is an optional feature that doesn't need to be implemented by subclasses.
+	 * The default implementation just returns false.
+	 * You only need to implement this method when there are pointer events:
+	 * <pre>
+	 * //#if polish.hasPointerEvents
+	 * </pre>
 	 * 
 	 * @param x the x position of the event
 	 * @param y the y position of the event

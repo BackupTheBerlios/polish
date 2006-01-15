@@ -93,7 +93,8 @@ public class Container extends Item {
 	int yBottom;
 	protected int yOffset;
 	private int focusedTopMargin;
-	//#ifdef polish.css.view-type
+	//#if polish.css.view-type || polish.css.columns
+		//#define tmp.supportViewType 
 		protected ContainerView view;
 	//#endif
 	//#ifdef polish.css.scroll-mode
@@ -575,7 +576,7 @@ public class Container extends Item {
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 			this.autoFocusIndex = 0;
 		}
-		//#ifdef polish.css.view-type
+		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				if (this.autoFocusEnabled) {
 					//#debug
@@ -584,7 +585,12 @@ public class Container extends Item {
 					if (this.autoFocusIndex < myItems.length ) {
 						Item item = myItems [ this.autoFocusIndex ];
 						if (item.appearanceMode != Item.PLAIN) {
-							focus( this.autoFocusIndex, item, 0 );		
+							// make sure that the item has applied it's own style first:
+							item.getItemHeight( firstLineWidth, lineWidth );
+							// now focus the item:
+							focus( this.autoFocusIndex, item, 0 );
+							this.view.focusedIndex = this.autoFocusIndex;
+							this.view.focusedItem = this.focusedItem;
 						}
 					}
 				}
@@ -897,16 +903,16 @@ public class Container extends Item {
 			}
 		//#endif
 		y += this.yOffset;
-		//#ifdef polish.css.view-type
+		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				this.view.paintContent(x, y, leftBorder, rightBorder, g);
 				return;
 			}
 		//#endif
 		Item[] myItems;
-		synchronized (this.itemsList) {
+		//synchronized (this.itemsList) {
 			myItems = this.items;
-		}
+		//}
 		int focusedX = x;
 		int focusedY = 0;
 		int focusedRightBorder = rightBorder;
@@ -1036,7 +1042,7 @@ public class Container extends Item {
 			}	
 		}
 		// now allow a navigation within the container:
-		//#ifdef polish.css.view-type
+		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				Item next = this.view.getNextItem(keyCode, gameAction);
 				if (next != null) {
@@ -1356,68 +1362,69 @@ public class Container extends Item {
 				this.focusedTopMargin += this.focusedStyle.background.borderWidth;
 			}
 		//#endif
-		this.columnsSetting = NO_COLUMNS;
-		//#ifdef polish.css.columns
-			Integer columns = style.getIntProperty("columns");
-			if (columns != null) {
-				this.numberOfColumns = columns.intValue();
-				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-				//#ifdef polish.css.columns-width
-				String width = style.getProperty("columns-width");
-				if (width != null) {
-					if ("equal".equals(width)) {
-						this.columnsSetting = EQUAL_WIDTH_COLUMNS;
-					} else if ("normal".equals(width)) {
-						//this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-					} else {
-						// these are pixel settings.
-						String[] widths = TextUtil.split( width, ',');
-						if (widths.length != this.numberOfColumns) {
-							// this is an invalid setting!
-							this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-							//#debug warn
-							System.out.println("Container: Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
-						} else {
-							this.columnsSetting = STATIC_WIDTH_COLUMNS;
-							this.columnsWidths = new int[ this.numberOfColumns ];
-							//#ifdef polish.css.columns-width.star
-								int combinedWidth = 0;
-								int starIndex = -1;
-							//#endif
-							for (int i = 0; i < widths.length; i++) {
-								//#ifdef polish.css.columns-width.star
-									String widthStr = widths[i];
-									if ("*".equals( widthStr )) {
-										starIndex = i;
-									} else {
-										int w = Integer.parseInt( widthStr );
-										combinedWidth += w;
-										this.columnsWidths[i] = w;
-									}
-								//#else
-									this.columnsWidths[i] = Integer.parseInt( widths[i] );
-								//#endif
-							}
-							//#ifdef polish.css.columns-width.star
-								if (starIndex != -1) {
-									Screen myScreen = getScreen();
-									if (myScreen != null) {
-										this.columnsWidths[starIndex] = 
-											myScreen.getWidth() - combinedWidth;
-									} else {
-										//#debug warn
-										System.out.println("Container: Unable to process '*'-columns-width");
-									}
-								}
-							//#endif
-							this.columnsSetting = STATIC_WIDTH_COLUMNS;
-						}					
-					}
-				}
-				//#endif
-				//TODO rob allow definition of the "fill-policy"
-			}
-		//#endif
+		
+//		this.columnsSetting = NO_COLUMNS;
+//		//#ifdef polish.css.columns
+//			Integer columns = style.getIntProperty("columns");
+//			if (columns != null) {
+//				this.numberOfColumns = columns.intValue();
+//				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+//				//#ifdef polish.css.columns-width
+//				String width = style.getProperty("columns-width");
+//				if (width != null) {
+//					if ("equal".equals(width)) {
+//						this.columnsSetting = EQUAL_WIDTH_COLUMNS;
+//					} else if ("normal".equals(width)) {
+//						//this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+//					} else {
+//						// these are pixel settings.
+//						String[] widths = TextUtil.split( width, ',');
+//						if (widths.length != this.numberOfColumns) {
+//							// this is an invalid setting!
+//							this.columnsSetting = NORMAL_WIDTH_COLUMNS;
+//							//#debug warn
+//							System.out.println("Container: Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
+//						} else {
+//							this.columnsSetting = STATIC_WIDTH_COLUMNS;
+//							this.columnsWidths = new int[ this.numberOfColumns ];
+//							//#ifdef polish.css.columns-width.star
+//								int combinedWidth = 0;
+//								int starIndex = -1;
+//							//#endif
+//							for (int i = 0; i < widths.length; i++) {
+//								//#ifdef polish.css.columns-width.star
+//									String widthStr = widths[i];
+//									if ("*".equals( widthStr )) {
+//										starIndex = i;
+//									} else {
+//										int w = Integer.parseInt( widthStr );
+//										combinedWidth += w;
+//										this.columnsWidths[i] = w;
+//									}
+//								//#else
+//									this.columnsWidths[i] = Integer.parseInt( widths[i] );
+//								//#endif
+//							}
+//							//#ifdef polish.css.columns-width.star
+//								if (starIndex != -1) {
+//									Screen myScreen = getScreen();
+//									if (myScreen != null) {
+//										this.columnsWidths[starIndex] = 
+//											myScreen.getWidth() - combinedWidth;
+//									} else {
+//										//#debug warn
+//										System.out.println("Container: Unable to process '*'-columns-width");
+//									}
+//								}
+//							//#endif
+//							this.columnsSetting = STATIC_WIDTH_COLUMNS;
+//						}					
+//					}
+//				}
+//				//#endif
+//				//TODO rob allow definition of the "fill-policy"
+//			}
+//		//#endif
 		//#ifdef polish.css.view-type
 			ContainerView viewType = (ContainerView) style.getObjectProperty("view-type");
 //			if (this instanceof ChoiceGroup) {
@@ -1446,6 +1453,21 @@ public class Container extends Item {
 				}
 			}
 		//#endif
+		//#ifdef polish.css.columns
+			if (this.view == null) {
+				Integer columns = style.getIntProperty("columns");
+				if (columns != null) {
+					if (columns.intValue() > 0) {
+						//System.out.println("Container: Using default container view for displaying table");
+						this.view = new ContainerView();  
+						this.view.parentContainer = this;
+						this.view.focusFirstElement = this.autoFocusEnabled;
+						this.view.setStyle(style);
+					}
+				}
+			}
+		//#endif
+
 		//#if polish.css.scroll-mode
 			Integer scrollModeInt = style.getIntProperty("scroll-mode");
 			if ( scrollModeInt != null ) {
@@ -1484,7 +1506,7 @@ public class Container extends Item {
 			if (this.focusedStyle != null) {
 				focusstyle = this.focusedStyle;
 			}
-			//#if polish.css.view-type
+			//#if tmp.supportViewType
 				if (this.view != null) {
 					this.view.focus(focusstyle, direction);
 					//this.isInitialised = false; not required
@@ -1493,7 +1515,7 @@ public class Container extends Item {
 			this.isFocused = true;
 			int newFocusIndex = this.focusedIndex;
 			//if (this.focusedIndex == -1) {
-			//#if polish.css.view-type
+			//#if tmp.supportViewType
 				if (this.view != null && false) {
 			//#endif
 				Item[] myItems = getItems();
@@ -1524,7 +1546,7 @@ public class Container extends Item {
 					return super.focus( this.focusedStyle, direction );
 				}
 			//}
-			//#if polish.css.view-type
+			//#if tmp.supportViewType
 				} else if (this.focusedIndex == -1) {
 					Item[] myItems = getItems();
 					//System.out.println("Container: direction DOWN through view type");
@@ -1579,7 +1601,7 @@ public class Container extends Item {
 			this.isFocused = false;
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
-			//#if polish.css.view-type
+			//#if tmp.supportViewType
 				if (this.view != null) {
 					this.view.defocus( this.itemStyle );
 					this.isInitialised = false;
@@ -1630,7 +1652,7 @@ public class Container extends Item {
 		if (this.focusedItem != null) {
 			animated |= this.focusedItem.animate();
 		}
-		//#ifdef polish.css.view-type
+		//#ifdef tmp.supportViewType
 			if ( this.view != null ) {
 				animated |= this.view.animate();
 			}
@@ -1648,7 +1670,7 @@ public class Container extends Item {
 	 */
 	protected void showNotify()
 	{
-		//#ifdef polish.css.view-type
+		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				this.view.showNotify();
 			}
@@ -1695,7 +1717,7 @@ public class Container extends Item {
 			|| x < this.xLeftPos || x > this.xRightPos) {
 			return false;
 		}
-		//#ifdef polish.css.view-type
+		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				if ( this.view.handlePointerPressed(x,y) ) {
 					return true;
