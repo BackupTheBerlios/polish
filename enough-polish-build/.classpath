@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="import/junit.jar"/>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry output="bin/extensions" kind="src" path="source/extensions"/>
 	<classpathentry output="bin/test" kind="src" path="source/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="import/jdom.jar"/>
+	<classpathentry kind="lib" path="import/junit.jar"/>
 	<classpathentry kind="lib" path="import/proguard.jar"/>
 	<classpathentry kind="lib" path="import/retroguard.jar"/>
 	<classpathentry kind="lib" path="import/yguard-lib.jar"/>
