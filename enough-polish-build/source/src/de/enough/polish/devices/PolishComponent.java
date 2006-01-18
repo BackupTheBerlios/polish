@@ -93,6 +93,7 @@ implements Comparable
 		}
 		if (definition != null) {
 			this.description = definition.getChildTextTrim("description");
+            this.description = stripText(this.description);
 		}
         if(this.description == null) {
 		    this.description = "";
@@ -100,6 +101,21 @@ implements Comparable
 	}
 
 	/**
+     * Converts new lines, tabs and successive whitespace to a single whitespace.
+     * @param string the string to strip. May be null.
+     * @return the striped string or null if the parameter was null.
+     */
+    protected String stripText(String string) {
+        if(string == null) {
+            return null;
+        }
+        return string.replaceAll("\n|\r\n|\t+| +"," ");
+//        String temp = string;
+//        temp = temp.replaceAll("\t+"," ");
+//        temp = temp.replaceAll(" +"," ");
+//        return temp;
+    }
+    /**
 	 * Loads all found capabilities of this component.
 	 * 
 	 * @param definition The xml definition.
