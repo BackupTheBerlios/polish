@@ -40,7 +40,7 @@ import javax.microedition.lcdui.Graphics;
  */
 public abstract class Border {
 	
-	protected int borderWidth;
+	public int borderWidth;
 
 	/**
 	 * Creates a new border.

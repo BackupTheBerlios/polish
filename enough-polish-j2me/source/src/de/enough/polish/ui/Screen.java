@@ -233,6 +233,10 @@ implements AccessibleCanvas
 	protected int contentY;
 	protected int contentWidth;
 	protected int contentHeight;
+	private int marginLeft;
+	private int marginRight;
+	private int marginTop;
+	private int marginBottom;
 	
 	/**
 	 * Creates a new screen
@@ -430,6 +434,11 @@ implements AccessibleCanvas
 	protected void calculateContentArea( int x, int y, int width, int height ) {
 		//#debug
 		System.out.println("setContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
+		
+		x += this.marginLeft;
+		width -= this.marginLeft + this.marginRight;
+		y += this.marginTop;
+		height -= this.marginTop + this.marginBottom;
 		int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight; 
 		y += topHeight;
 		int tickerHeight = 0;
@@ -587,6 +596,10 @@ implements AccessibleCanvas
 		this.style = style;
 		this.background = style.background;
 		this.border = style.border;
+		this.marginTop = style.marginTop;
+		this.marginBottom = style.marginBottom;
+		this.marginLeft = style.marginRight;
+		this.marginRight = style.marginRight;
 		if (this.container != null) {
 			// use the same style for the container - but ignore the background and border settings:
 			this.container.setStyle(style, true);
@@ -794,34 +807,33 @@ implements AccessibleCanvas
 		//#ifdef polish.debug.error
 		try {
 		//#endif
+			int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
+			int rightBorder = this.marginLeft + sWidth;
+			//#ifdef tmp.menuFullScreen
+				int sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
+			//#else
+				//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
+			//#endif
 			// paint background:
 			if (this.background != null) {
 				//System.out.println("Screen (" + this + ": using background...");
-				//#ifdef tmp.menuFullScreen
-					this.background.paint(0, 0, this.screenWidth, this.fullScreenHeight, g);
-				//#else
-					this.background.paint(0, 0, this.screenWidth, this.screenHeight, g);
-				//#endif
+				this.background.paint(this.marginLeft, this.marginTop, sWidth, sHeight, g);
 			} else {
 				//System.out.println("Screen (" + this + ": clearing area...");
 				g.setColor( 0xFFFFFF );
-				//#ifdef tmp.menuFullScreen
-					g.fillRect( 0, 0, this.screenWidth, this.fullScreenHeight );
-				//#else
-					g.fillRect( 0, 0, this.screenWidth, this.screenHeight );
-				//#endif
+				g.fillRect( this.marginLeft, this.marginTop, sWidth, sHeight );
 			}
 			
-			int tHeight = 0;
+			int tHeight = this.marginTop;
 			//#ifdef tmp.usingTitle
 				// paint title:
 				if (this.title != null && this.showTitleOrMenu) {
-					this.title.paint(0, 0, 0, this.screenWidth, g);
+					this.title.paint( this.marginLeft, this.marginTop, this.marginLeft, rightBorder, g);
 					tHeight = this.titleHeight;
 				}
 			//#endif
 			if (this.subTitle != null) {
-				this.subTitle.paint( 0, tHeight, 0, this.screenWidth, g );
+				this.subTitle.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g );
 				tHeight += this.subTitleHeight;
 			}
 			int infoItemY = tHeight;
@@ -831,7 +843,7 @@ implements AccessibleCanvas
 				}
 			//#endif
 			// protect the title, ticker and the full-screen-menu area:
-			g.setClip(0, tHeight, this.screenWidth, this.screenHeight - tHeight );
+			g.setClip(this.marginLeft, tHeight, sWidth, this.screenHeight - tHeight - this.marginBottom );
 			//g.translate( 0, tHeight );
 			// paint content:
 			//System.out.println("starting to paint content of screen");
@@ -850,20 +862,24 @@ implements AccessibleCanvas
 			 
 			// paint info element:
 			if (this.showInfoItem) {			
-				this.infoItem.paint( 0, infoItemY, 0, this.screenWidth, g );
+				this.infoItem.paint( this.marginLeft, infoItemY, this.marginLeft, rightBorder, g );
 			}
  	
 			//#ifndef polish.skipTicker
 			 	if (this.ticker != null) {
 			 		//System.out.println("painting ticker... at 0, " + this.screenHeight );
 			 		//TODO allow to paint ticker at the top of the screen...
-			 		this.ticker.paint( 0, this.contentY + this.contentHeight, 0, this.screenWidth, g );
+			 		this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g );
 			 	}
 			//#endif
 			
 			// paint border:
 			if (this.border != null) {
-				this.border.paint(0, 0, this.screenWidth, this.screenHeight, g);
+				//#ifdef tmp.menuFullScreen
+					this.border.paint(this.marginLeft, this.marginTop, sWidth, this.screenHeight - this.marginBottom - this.marginTop, g);
+				//#else
+					this.border.paint(this.marginLeft, this.marginTop, sWidth, sHeight, g);
+				//#endif
 			}
 			
 			//#if polish.ScreenInfo.enable == true
@@ -873,7 +889,7 @@ implements AccessibleCanvas
 			// paint menu in full-screen mode:
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					this.menuBar.paint(0, this.screenHeight, 0, this.screenWidth, g);
+					this.menuBar.paint(this.marginLeft, this.screenHeight, this.marginLeft, rightBorder, g);
 					if (this.menuBar.isOpened) {
 						this.paintScrollIndicator = this.menuBar.paintScrollIndicator;
 						this.paintScrollIndicatorUp = this.menuBar.canScrollUpwards;
@@ -895,14 +911,14 @@ implements AccessibleCanvas
 							this.paintScrollIndicator = false;
 						}
 						g.setClip(0, tHeight, this.screenWidth, this.originalScreenHeight - tHeight );
-						this.menuContainer.paint(0, y, 0, this.menuMaxWidth, g);
+						this.menuContainer.paint(this.marginLeft, y, this.marginLeft, this.menuMaxWidth, g);
 					 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 					} 
 					if (this.showTitleOrMenu || this.menuOpened) {
 						// clear menu-bar:
 						if (this.menuBarColor != Item.TRANSPARENT) {
 							g.setColor( this.menuBarColor );
-							g.fillRect(0, this.originalScreenHeight, this.screenWidth,  this.menuBarHeight );
+							g.fillRect(this.marginLeft, this.originalScreenHeight, sWidth,  this.menuBarHeight );
 						}
 						if (this.menuContainer != null && this.menuContainer.size() > 0) {
 							String menuText = null;
@@ -933,9 +949,9 @@ implements AccessibleCanvas
 							g.setColor( this.menuFontColor );
 							g.setFont( this.menuFont );
 							//#ifdef polish.Menu.MarginLeft:defined
-								//#= int menuX = ${polish.Menu.MarginLeft};
+								//#= int menuX = ${polish.Menu.MarginLeft} + this.marginLeft;
 							//#else
-								int menuX = 2;
+								int menuX = 2 + this.marginLeft;
 							//#endif
 							//#ifdef polish.Menu.MarginTop:defined
 								//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
@@ -952,9 +968,9 @@ implements AccessibleCanvas
 									menuText = "Cancel";
 								//#endif
 								//#ifdef polish.Menu.MarginRight:defined
-									//#= menuX = ${polish.Menu.MarginRight};
+									//#= menuX = ${polish.Menu.MarginRight}  + this.marginRight;
 								//#elifdef polish.Menu.MarginLeft:defined
-									menuX = 2;
+									menuX = 2 + this.marginRight;
 								//#endif
 								//#ifdef polish.Menu.MarginTop:defined
 									//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
@@ -971,9 +987,9 @@ implements AccessibleCanvas
 							g.setFont( this.menuFont );
 							String menuText = this.menuSingleRightCommand.getLabel();
 							//#ifdef polish.Menu.MarginRight:defined
-								//#= int menuX = ${polish.Menu.MarginRight};
+								//#= int menuX = ${polish.Menu.MarginRight} + this.marginRight;
 							//#else
-								int menuX = 2;
+								int menuX = 2 + this.marginRight;
 							//#endif
 							//#ifdef polish.Menu.MarginTop:defined
 								//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );

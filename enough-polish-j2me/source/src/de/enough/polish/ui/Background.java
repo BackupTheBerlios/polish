@@ -43,7 +43,7 @@ public abstract class Background {
 	 * Defines the width of this Background.
 	 * Usually this is 0, but some backgrounds might have a border included.
 	 */
-	protected int borderWidth;
+	public int borderWidth;
 
 	/**
 	 * Creates a new Background.

@@ -954,6 +954,12 @@ public abstract class Item extends Object
 //				}
 			}
 		//#endif
+		//#if polish.css.colspan
+			Integer colSpanInt = style.getIntProperty("colspan");
+			if ( colSpanInt != null ) {
+				this.colSpan = colSpanInt.intValue();
+			}
+		//#endif	
 
 	}
 	

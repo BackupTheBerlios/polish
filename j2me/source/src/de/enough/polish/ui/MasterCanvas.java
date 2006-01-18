@@ -66,7 +66,7 @@ public class MasterCanvas
 	
 	
 	private MasterCanvas() {
-		//#if polish.midp2
+		//#if polish.midp2 && tmp.fullScreen
 			setFullScreenMode( true );
 		//#endif
 	}
@@ -99,6 +99,15 @@ public class MasterCanvas
 	protected void keyPressed(int keyCode) {
 		this.currentCanvas.keyPressed( keyCode );
 	}
+	
+	//#if polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
+	 */
+	protected void pointerPressed(int x, int y) {
+		this.currentCanvas.pointerPressed( x, y );
+	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
@@ -161,9 +170,11 @@ public class MasterCanvas
 		}
 		
 		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
+		//#if polish.usePolishGui
 		if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
 			((Alert)nextDisplayable).nextDisplayable = instance.currentDisplayable;
 		}
+		//#endif
 		instance.currentCanvas = canvas;
 		instance.currentDisplayable = nextDisplayable;
 		canvas.showNotify();

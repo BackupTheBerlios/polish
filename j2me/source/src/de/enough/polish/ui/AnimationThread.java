@@ -98,7 +98,7 @@ public class AnimationThread extends Thread
 	 */
 	public void run() {
 		long sleeptime = ANIMATION_INTERVAL;
-		int animationCounter = 0;
+//		int animationCounter = 0;
 		while ( true ) {
 			try {
 				Thread.sleep(sleeptime);
@@ -114,13 +114,13 @@ public class AnimationThread extends Thread
 						//#endif
 						
 						sleeptime = ANIMATION_INTERVAL;
-						animationCounter = 0;
-					} else {
-						animationCounter++;
-						if (animationCounter > 10) {
-							sleeptime = SLEEP_INTERVAL;
-							animationCounter = 0;
-						}
+//						animationCounter = 0;
+//					} else {
+//						animationCounter++;
+//						if (animationCounter > 10) {
+//							sleeptime = SLEEP_INTERVAL;
+//							animationCounter = 0;
+//						}
 					}
 				} else {
 					sleeptime = SLEEP_INTERVAL;

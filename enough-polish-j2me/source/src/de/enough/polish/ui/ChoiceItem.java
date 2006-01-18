@@ -293,8 +293,7 @@ public class ChoiceItem extends IconItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	public void paintContent(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) {
+	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.drawBox) {
 			if ( this.boxImage != null) {
 				g.drawImage( this.boxImage, x, y, Graphics.TOP | Graphics.LEFT );
