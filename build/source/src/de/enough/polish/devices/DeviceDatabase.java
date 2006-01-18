@@ -77,11 +77,12 @@ public class DeviceDatabase {
 			customFilesByFileName = new HashMap();
 		}
 		String wtkHomePath = (String) properties.get( "wtk.home" );
-		if (wtkHomePath == null) {
-			throw new BuildException("Unable to initialise device database - found no wtk.home property.");
+		File wtkHome = null;
+		if (wtkHomePath != null) {
+			wtkHome = new File( wtkHomePath );
+			//throw new BuildException("Unable to initialise device database - found no wtk.home property.");
 		}
-		File wtkHome = new File( wtkHomePath );
-		
+				
 		try {			
 			// load capability-definitions:
 			InputStream is = getInputStream( "capabilities.xml", polishHome, inputStreamsByFileName ); 

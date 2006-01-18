@@ -547,39 +547,55 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		//}
-		// check if the ant-property WTK_HOME has been set:
+		// check if the ant-property wtk.home or alternatively mpp.home has been set:
 		//e.g. with: <property name="wtk.home" value="c:\Java\wtk-1.0.4"/>
 		this.wtkHome = getProject().getProperty("wtk.home");
+		String mppHome = getProject().getProperty("mpp.home");
+
 		if (this.buildSetting.getPreverify() == null) {
 			// no preverify has been set, that's okay when the wtk.home ant-property has been set:
-			if (this.wtkHome == null) { 
-				throw new BuildException("Nested element [build] needs to define the attribute [preverify] which points to the preverify-executable of the wireless toolkit. Alternatively you can set the home directory of the Wireless Toolkit by defining the Ant-property [wtk.home]: <property name=\"wtk.home\" location=\"/home/user/WTK2.1\"/>");
+			if (this.wtkHome == null && mppHome == null) { 
+				System.err.println("Warning: Nested element [build] should define the attribute [preverify] which points to the preverify-executable of the wireless toolkit. Alternatively you can set the home directory of the Wireless Toolkit by defining the Ant-property [wtk.home]: <property name=\"wtk.home\" location=\"C:\\WTK2.3\"/>\nAnother option is to set the \"mpp.home\" property that points to the installation directory of the MPowerPlayer SDK.\nThese settings are only necessary when you target MIDP devices, though.");
 			}
-			File wtkHomeFile = new File( this.wtkHome );
-			if ( !wtkHomeFile.exists() ) {
-				wtkHomeFile = new File( getProject().getBaseDir(), this.wtkHome );
-				if ( wtkHomeFile.exists() ) {
-					this.wtkHome = wtkHomeFile.getAbsolutePath();
+			if (this.wtkHome != null) {
+				File wtkHomeFile = new File( this.wtkHome );
+				if ( !wtkHomeFile.exists() ) {
+					wtkHomeFile = new File( getProject().getBaseDir(), this.wtkHome );
+					if ( wtkHomeFile.exists() ) {
+						this.wtkHome = wtkHomeFile.getAbsolutePath();
+					}
+				}
+				
+				if (!this.wtkHome.endsWith( File.separator )) {
+					this.wtkHome += File.separator;
 				}
 			}
-			
-			if (!this.wtkHome.endsWith( File.separator )) {
-				this.wtkHome += File.separator;
+			File preverifyFile = null;
+			if (this.wtkHome != null) {
+				String preverifyPath = this.wtkHome + "bin" + File.separator + "preverify";
+				if ( File.separatorChar == '\\') {
+					preverifyPath += ".exe";
+				}
+				preverifyFile = new File( preverifyPath );
+			} else if (mppHome != null) {
+				if (!mppHome.endsWith(File.separator)) {
+					mppHome += File.separator;
+				}
+				String preverifyPath = mppHome + "osx" + File.separator + "preverify" + File.separator + "preverify";
+				preverifyFile = new File( preverifyPath );
+				//if (preverifyFile.)
 			}
-			String preverifyPath = this.wtkHome + "bin" + File.separator + "preverify";
-			if ( File.separatorChar == '\\') {
-				preverifyPath += ".exe";
-			}
-			File preverifyFile = new File( preverifyPath );
-			if (preverifyFile.exists()) {
-				this.buildSetting.setPreverify( preverifyFile.getAbsolutePath() );
-			} else {
-				// probably the wtk.home path is wrong:
-				File file = new File( this.wtkHome );
-				if (!file.exists()) {
-					throw new BuildException("The Ant-property [wtk.home] points to the non-existing directory [" + this.wtkHome + "]. Please adjust his setting in the build.xml file.");
+			if (preverifyFile != null) {
+				if (preverifyFile.exists()) {
+					this.buildSetting.setPreverify( preverifyFile.getAbsolutePath() );
 				} else {
-					throw new BuildException("Unable to find the preverify tool at the default location [" + preverifyPath + "]. Please specify where to find it with the \"preverify\"-attribute of the <build> element (in the build.xml file).");
+					// probably the wtk.home path is wrong:
+					File file = new File( this.wtkHome );
+					if (!file.exists()) {
+						throw new BuildException("The Ant-property [wtk.home] points to the non-existing directory [" + this.wtkHome + "]. Please adjust his setting in the build.xml file.");
+					} else {
+						throw new BuildException("Unable to find the preverify tool at the default location [" + preverifyFile.getAbsolutePath() + "]. Please specify where to find it with the \"preverify\"-attribute of the <build> element (in the build.xml file) or specify the \"wtk.home\" property.");
+					}
 				}
 			}
 		}

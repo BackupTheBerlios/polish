@@ -181,10 +181,10 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/MppPhone</identifier>
 		<description>A MIDP 2.0 and CLDC 1.1 phone using the mpowerplayer for emulation.</description>
-		<features>isVirtual</features>
+		<features>isVirtual, hasPointerEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="JavaPackage" value="mmapi,wmapi,btapi, jtwi" />
 		<capability name="SoundFormat" value="midi, amr, wav" />
 		<capability name="HeapSize" value="20MB" />
 		<capability name="Emulator.Class" value="MppEmulator" />
@@ -1687,7 +1687,7 @@
 	
 	<device>
 		<identifier>Motorola/A1000</identifier>
-		<features>doubleBuffering, hasPointerEvents, hasCamera, needsManualMenu</features>
+		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
 		<capability name="OS" value="Symbian 7.0/UIQ 2.1" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />

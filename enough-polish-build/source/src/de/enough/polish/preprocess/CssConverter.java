@@ -711,6 +711,8 @@ public class CssConverter extends Converter {
 							 	//System.out.println("Using mapped value [" + mappedValue + "] for attribute [" + attribute.getId() + "]");
 							 	valueList.append( mappedValue );
 							 }
+						} else if ("none".equals( value )){
+							valueList.append("null");
 						} else {
 							if (groupName.equals("view") && key.equals("type") ) {
 								// the value represents a fully qualified class:

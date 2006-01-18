@@ -372,5 +372,15 @@ implements Comparable
 		}
 		return null;
 	}
+	
+	/**
+	 * Adds the mappings of the given capability to this one.
+	 * With this feature new mappings can be added in custom-css-attributes.xml
+	 * 
+	 * @param extension the attribute containing further mappings
+	 */
+	public void add( CssAttribute extension ) {
+		this.mappingsByName.putAll( extension.mappingsByName );
+	}
 
 }

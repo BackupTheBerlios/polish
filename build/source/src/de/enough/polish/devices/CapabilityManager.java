@@ -91,15 +91,18 @@ public class CapabilityManager {
 			Element definition = (Element) iter.next();
 			Capability capability = new Capability( definition, this );
 			Capability existingCapability = (Capability) this.capabilitiesByIdentifier.get( capability.getIdentifier() ); 
+			
 			if ( existingCapability != null ) {
-				throw new InvalidComponentException("The issue [" + capability.getIdentifier() 
-						+ "] defined twice. Please remove one in [capabilities.xml].");
+//				existingCapability.add( capability );
+				throw new InvalidComponentException("The capability [" + capability.getIdentifier() 
+						+ "] is defined twice. Please remove one in [capabilities.xml].");
+			} else {
+				String identifier = capability.getIdentifier();
+				this.capabilitiesByIdentifier.put( identifier, capability );
+				identifier = identifier.toLowerCase();
+				this.capabilitiesByIdentifier.put( identifier, capability );
+				this.capabilitiesByIdentifier.put( "polish." + identifier, capability );
 			}
-			String identifier = capability.getIdentifier();
-			this.capabilitiesByIdentifier.put( identifier, capability );
-			identifier = identifier.toLowerCase();
-			this.capabilitiesByIdentifier.put( identifier, capability );
-			this.capabilitiesByIdentifier.put( "polish." + identifier, capability );
 		}		
 	}
 	

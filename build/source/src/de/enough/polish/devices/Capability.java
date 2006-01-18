@@ -115,4 +115,5 @@ public class Capability {
 	public String getDescription() {
 		return this.description;
 	}
+
 }

@@ -100,7 +100,7 @@ public class BugManager {
 			Bug existingIssue = (Bug) this.bugsByName.get( issue.getName() ); 
 			if ( existingIssue != null ) {
 				throw new InvalidComponentException("The issue [" + issue.getName() 
-						+ "] defined twice. Please remove one in [bugs.xml].");
+						+ "] is defined twice. Please remove one in [bugs.xml].");
 			}
 			String[] areas = issue.getAreas();
 			for (int i = 0; i < areas.length; i++) {

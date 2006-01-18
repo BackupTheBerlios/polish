@@ -87,11 +87,13 @@ public class CssAttributesManager {
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
 			CssAttribute attribute = new CssAttribute( definition );
-			Object existingAttribute = this.attributesByName.get( attribute.getName() );
+			CssAttribute existingAttribute = (CssAttribute) this.attributesByName.get( attribute.getName() );
 			if (existingAttribute != null) {
-				throw new BuildException("Duplicate CSS-attributes-definition: The attribute [" + attribute.getName() + "] is defined twice. Please remove one definition from [custom-css-attributes.xml]." );
+				existingAttribute.add( attribute );
+				//throw new BuildException("Duplicate CSS-attributes-definition: The attribute [" + attribute.getName() + "] is defined twice. Please remove one definition from [custom-css-attributes.xml]." );
+			} else {
+				this.attributesByName.put( attribute.getName(), attribute );
 			}
-			this.attributesByName.put( attribute.getName(), attribute );
 		}
 	}
 	
