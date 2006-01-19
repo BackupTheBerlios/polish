@@ -13,7 +13,10 @@ Require-Bundle: org.eclipse.ui,
  de.enough.mepose.core.CorePlugin,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.apache.ant
+ org.apache.ant,
+ org.eclipse.debug.ui,
+ org.eclipse.debug.core,
+ org.eclipse.ant.core
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose,
  de.enough.mepose.core.ui.plugin,

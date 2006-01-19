@@ -25,11 +25,19 @@
  */
 package de.enough.mepose.core.ui.wizards;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.Device;
+import de.enough.polish.devices.Configuration;
+import de.enough.polish.devices.DeviceTree;
+import de.enough.polish.devices.Platform;
 import de.enough.utils.PropertyModel;
 import de.enough.utils.Status;
 
@@ -51,6 +59,11 @@ public class NewProjectModel extends PropertyModel{
     public static final String ID_NEWPROJECTMODEL_MEPOSEMODEL = "id.newprojectmodel.meposeModel";
     
     private MeposeModel meposeModel;
+    private boolean canFinish = false;
+    
+    private List targetDevices = new LinkedList();
+    private List targetConfigurations = new LinkedList();
+    private List targetPlatforms = new LinkedList();
 
     //    private IProject projectToConvert;
 //    private boolean mayFinish;
@@ -65,15 +78,16 @@ public class NewProjectModel extends PropertyModel{
     public NewProjectModel(MeposeModel meposeModel) {
         if(meposeModel != null) {
             this.meposeModel = meposeModel;
+            // Init this to avoid null pointer exceptions when setting a text field.
+            setPropertyDefaultValue(ID_NEWPROJECTMODEL_PROJECT_NAME,"");
         }
         else {
             this.meposeModel = new MeposeModel();
         }
         
-        setPropertyDefaultValue(ID_NEWPROJECTMODEL_PROJECT_NAME,"");
         setPropertyValue(ID_NEWPROJECTMODEL_MEPOSEMODEL,this.meposeModel);
         
-        this.propertiesLeastOK = new String[] {ID_NEWPROJECTMODEL_PROJECT_INSTANCE};
+        this.propertiesWithAtLeastOKStatus = new String[] {ID_NEWPROJECTMODEL_PROJECT_INSTANCE};
         checkModelStatus();
     }
     
@@ -98,7 +112,7 @@ public class NewProjectModel extends PropertyModel{
         if(resource != null) {
             if(resource instanceof IProject) {
                 setPropertyValue(ID_NEWPROJECTMODEL_PROJECT_TOCONVERT,resource);
-                return new Status(Status.TYPE_OK,"Project exists and will be converted");
+                return new Status(Status.TYPE_WARNING,"Project exists and will be converted");
             }
             setPropertyValue(ID_NEWPROJECTMODEL_PROJECT_TOCONVERT,null);
             return new Status(Status.TYPE_ERROR,"Resource exists");
@@ -127,84 +141,140 @@ public class NewProjectModel extends PropertyModel{
         this.meposeModel = meposeModel;
     }
     
-//    /**
-//     * 
-//     * @return May be null.
-//     */
-//    public IProject getProjectToConvert() {
-//        return this.projectToConvert;
-//    }
-//    
-//    public void setProjectToConvert(IProject projectToConvert) {
-//        this.projectToConvert = projectToConvert;
-//    }
-//    
-//    public boolean isBasicallyConfigured() {
-//        return this.mayFinish;
-//    }
-//    public void setBasicallyConfigured(boolean isBasicallyConfigured) {
-//        this.mayFinish = isBasicallyConfigured;
-//    }
+    public boolean canFinish() {
+        DeviceTree deviceTree = this.meposeModel.getDeviceTree();
+        if(deviceTree == null) {
+            return false;
+        }
+        boolean hasTargetDevices = deviceTree.getSelectedDevices().length > 0;
+        boolean hasProject = getProject() != null;
+        return hasTargetDevices && hasProject;
+    }
     
-//    /**
-//     * 
-//     * @return Never be null.
-//     */
-//    public String getProjectName() {
-//        return this.projectName;
-//    }
-//    
-//    public void setProjectName(String projectName) {
-//        this.projectName = projectName;
-//    }
+    public IProject getProject() {
+        return (IProject)getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+    }
+    
+    public void setTargetDevices(Device[] targetDevices) {
+        if(targetDevices == null){
+            logger.error("Parameter 'targetDevices' is null contrary to API.");
+            return;
+        }
+        this.targetDevices.clear();
+        this.targetDevices = new LinkedList(Arrays.asList(targetDevices));
+    }
+    
+    /**
+     * The initial target devices for the new project.
+     * @return Never null.
+     */
+    public Device[] getTargetDevices() {
+        return (Device[]) this.targetDevices.toArray(new Device[this.targetDevices.size()]);
+    }
+    
+    public void setTargetConfiguration(Configuration[] targetConfigurations) {
+        if(targetConfigurations == null){
+            logger.error("Parameter 'targetConfigurations' is null contrary to API.");
+            return;
+        }
+        this.targetConfigurations.clear();
+        this.targetConfigurations = new LinkedList(Arrays.asList(targetConfigurations));
+    }
+    
+    /**
+     * The initial target configurations for the new project.
+     * @return Never null.
+     */
+    public Configuration[] getTargetConfigurations() {
+        return (Configuration[]) this.targetConfigurations.toArray(new Configuration[this.targetConfigurations.size()]);
+    }
+    
+    public void setTargetPlatforms(Platform[] targetPlatforms) {
+        if(targetPlatforms == null){
+            logger.error("Parameter 'targetPlatforms' is null contrary to API.");
+            return;
+        }
+        this.targetPlatforms.clear();
+        this.targetPlatforms = new LinkedList(Arrays.asList(targetPlatforms));
+    }
+    
+    /**
+     * The initial target platforms for the new project.
+     * @return Never null.
+     */
+    public Platform[] getTargetPlatforms() {
+        return (Platform[]) this.targetPlatforms.toArray(new Platform[this.targetPlatforms.size()]);
+    }
+    
+    public void addTargetPlatform(Platform newPlatform) {
+        if(newPlatform == null){
+            logger.error("Parameter 'newPlatform' is null contrary to API.");
+            return;
+        }
+        this.targetPlatforms.add(newPlatform);
+    }
+    
+    public void removeTargetPlatform(Platform deletedPlatform) {
+        if(deletedPlatform == null){
+            logger.error("Parameter 'deletedPlatform' is null contrary to API.");
+            return;
+        }
+        this.targetPlatforms.remove(deletedPlatform);
+    }
+    
+    public void addTargetConfiguration(Configuration newConfiguration) {
+        if(newConfiguration == null) {
+            logger.error("Parameter 'newConfiguration' is null contrary to API.");
+            return;
+        }
+        this.targetConfigurations.add(newConfiguration);
+    }
+    
+    public void removeTargetConfiguration(Configuration deletedConfiguration) {
+        if(deletedConfiguration == null){
+            logger.error("Parameter 'deletedConfiguration' is null contrary to API.");
+            return;
+        }
+        this.targetConfigurations.remove(deletedConfiguration);
+    }
+    
+    public void addTargetDevice(Device newDevice) {
+        if(newDevice == null){
+            logger.error("Parameter 'newDevice' is null contrary to API.");
+            return;
+        }
+        this.targetDevices.add(newDevice);
+    }
 
-    
+    public void removeTargetDevice(Device deletedDevice) {
+        if(deletedDevice == null){
+            logger.error("Parameter 'deletedDevice' is null contrary to API.");
+            return;
+        }
+        this.targetDevices.remove(deletedDevice);
+    }
 
-//    /**
-//     * 
-//     * @return May be null.
-//     */
-//    public IProject getNewProject() {
-//        return this.newProject;
-//    }
-//
-//    public void setNewProject(IProject project) {
-//        this.newProject = project;
-//    }
-    
-//    public void setPolishHome(File polishHome) {
-//        this.model.setPolishHome(polishHome);
-//    }
-//    
-//    public void setWTKHome(File wtkHome) {
-//        this.model.setWTKHome(wtkHome);
-//    }
-    
-//    /**
-//     * 
-//     * @return Never null.
-//     */
-//    public File getPolishHome() {
-//        return this.model.getPolishHome();
-//    }
-//    
-//    /**
-//     * 
-//     * @return Never null.
-//     */
-//    public File getWTKHome() {
-//        return this.model.getWTKHome();
-//    }
+    /**
+     * 
+     */
+    public void removeAllTargetDevices() {
+        this.targetDevices.clear();
+    }
 
-//    public boolean isProjectCreated() {
-//        return this.projectCreated;
-//    }
-//
-//    public void setProjectCreated(boolean projectCreated) {
-//        this.projectCreated = projectCreated;
-//    }
-    
-    
+    /**
+     * @param projectDescription
+     */
+    public void setProjectDescription(String projectDescription) {
+        this.meposeModel.setProjectDescription(projectDescription);
+    }
+
+    /**
+     * 
+     * @return Never null.
+     */
+    public String getProjectDescription() {
+        return this.meposeModel.getProjectDescription();
+    }
     
     
 }

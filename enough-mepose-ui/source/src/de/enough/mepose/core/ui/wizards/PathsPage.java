@@ -26,20 +26,28 @@
 package de.enough.mepose.core.ui.wizards;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.swt.widgets.StatusGroup;
+import de.enough.utils.Status;
 
 /**
  * 
@@ -52,47 +60,254 @@ import de.enough.mepose.core.model.MeposeModel;
  */
 public class PathsPage extends WizardPage {
 
-    private NewProjectModel newPolishProjectDAO;
-    private Text polishHomeText;
-
+    private NewProjectModel newProjectModel;
+    private Text wtkHomeText;
+    
+    private Text nokiaHomeText;
+    private Text blackberryText;
+    private Text sonyText;
+    
+    public class VerifyEvent{
+        private Object source;
+        private Object object;
+        private Status oldStatus;
+        private Status newStatus;
+        public VerifyEvent(Object source, Object object, Status oldStatus,Status newStatus) {
+            this.source = source;
+            this.object = object;
+            this.oldStatus = oldStatus;
+            this.newStatus = newStatus;
+        }
+        public Status getNewStatus() {
+            return this.newStatus;
+        }
+        public Object getObject() {
+            return this.object;
+        }
+        public Status getOldStatus() {
+            return this.oldStatus;
+        }
+        public Object getSource() {
+            return this.source;
+        }
+    }
+    
+    public interface VerifierListener{
+        public void handleVerifyEvent(VerifyEvent verifyEvent);
+    }
+    
+    //TODO: A change listener for the input would be handy.
+    public interface Verifier{
+        public void setVerifierDelegate(VerifierDelegate verifierDelegate);
+        public void removeVerifierDelegate();
+        public void addVerifierListener(VerifierListener verifierListener);
+        public void removeVerifierListener(VerifierListener verifierListener);
+        public void verify();
+        
+    }
+    
+    public interface VerifierDelegate{
+        public VerifyEvent verify();
+    }
+    
+    //TODO: Instead of an abstract class having a delegate whould be cooler as
+    // no subclassing is needed.
+    public class AbstractVerifier implements Verifier{
+        private List verifierListeners;
+        private VerifierDelegate verifierDelegate;
+        public AbstractVerifier() {
+            this.verifierListeners = new LinkedList();
+        }
+        public void addVerifierListener(VerifierListener verifierListener) {
+            this.verifierListeners.add(verifierListener);
+        }
+        public void removeVerifierListener(VerifierListener verifierListener) {
+            this.verifierListeners.remove(verifierListener);
+        }
+        protected void fireVerifyEvent(VerifyEvent verifyEvent) {
+            if(verifyEvent == null) {
+                return;
+            }
+            for (Iterator iterator = this.verifierListeners.iterator(); iterator.hasNext(); ) {
+                VerifierListener verifyListener = (VerifierListener) iterator.next();
+                verifyListener.handleVerifyEvent(verifyEvent);
+            }
+        }
+        public void verify() {
+            if(this.verifierDelegate != null) {
+                fireVerifyEvent(this.verifierDelegate.verify());
+            }
+        }
+        public void setVerifierDelegate(VerifierDelegate newVerifierDelegate) {
+            this.verifierDelegate = newVerifierDelegate;
+        }
+        public void removeVerifierDelegate() {
+            this.verifierDelegate = null;
+        }
+    }
+    
     protected PathsPage(NewProjectModel newPolishProjectDAO) {
         super("Paths and Locations");
-        this.newPolishProjectDAO = newPolishProjectDAO;
+        this.newProjectModel = newPolishProjectDAO;
         setTitle("Paths and Locations");
-        setDescription("Specify where to find the required locations.");
+        setDescription("Specify where to find the required resources.");
     }
 
     public void createControl(Composite parent) {
         Composite composite = new Composite(parent,SWT.NONE);
-        composite.setLayout(new GridLayout(3,false));
+        composite.setLayout(new GridLayout(1,false));
         
-        Label polishHomeLabel = new Label(composite,SWT.NONE);
-        polishHomeLabel.setText("J2ME Polish Home:");
+        StatusGroup statusGroup;
+        Composite main;
+        Button browseButton;
+
+        final StatusGroup wtkStatusGroup = new StatusGroup(composite,SWT.NONE);
+        wtkStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = wtkStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label wtkLabel = new Label(main,SWT.NONE);
+        wtkLabel.setText("WTK Home:");
         
-        this.polishHomeText = new Text(composite,SWT.NONE);
-        String polishHomeString = (String)(this.newPolishProjectDAO.getMeposeModel().getPropertyValue(MeposeModel.ID_POLISH_HOME));
-        this.polishHomeText.setText((polishHomeString == null)?"":polishHomeString);
-        this.polishHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-        Button browseButton = new Button(composite,SWT.NONE);
+        this.wtkHomeText = new Text(main,SWT.NONE);
+        this.wtkHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+        this.wtkHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String path = wtkHomeText.getText();
+                File file = new File(path);
+                if( ! file.exists() || ! file.isDirectory()) {
+                    wtkStatusGroup.setError("Path is not a directory.");
+                }
+                else {
+                    newProjectModel.getMeposeModel().setWTKHome(file);
+                    wtkStatusGroup.setOK("");
+                }
+            }
+        });
+        this.wtkHomeText.setText("");
+        browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                handleBrowse();
+                handleBrowseButtonSelected(wtkHomeText,"Choose the location of your WTK directory");
             }
         });
-        setControl(composite);
         
+        // ----------------------
+        
+        final StatusGroup nokiaStatusGroup = new StatusGroup(composite,SWT.NONE);
+        nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = nokiaStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label nokiaLabel = new Label(main,SWT.NONE);
+        nokiaLabel.setText("Nokia Home:");
+        
+        this.nokiaHomeText = new Text(main,SWT.NONE);
+        this.nokiaHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.nokiaHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String path = nokiaHomeText.getText();
+                File file = new File(path);
+                if( ! file.exists() || ! file.isDirectory()) {
+                    nokiaStatusGroup.setError("Path is not a directory.");
+                }
+                else {
+                    newProjectModel.getMeposeModel().setNokiaHome(file);
+                    nokiaStatusGroup.setOK("");
+                }
+            }
+        });
+        this.nokiaHomeText.setText("");
+        browseButton = new Button(main,SWT.NONE);
+        browseButton.setText("Browse for Path");
+        browseButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                handleBrowseButtonSelected(nokiaHomeText,"Choose the location of your Nokia directory");
+            }
+        });
+        
+        // ----------------------------------
+        
+        setControl(composite);
+        updateGUIFromModel();
     }
 
-    protected void handleBrowse() {
-        FileDialog fileDialog = new FileDialog(getShell(),SWT.OPEN);
-        String pathString = fileDialog.open();
-        if(pathString != null) {
-//            IPath path = new Path(pathString);
-            //TODO: check if the path is only a dir, not a file.
-            this.newPolishProjectDAO.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,new File(pathString));
-            this.polishHomeText.setText(pathString);
+    protected void handleBrowseButtonSelected(Text text, String message) {
+        String path = handleBrowse(message);
+        if(path == null) {
+            path = "";
         }
+        text.setText(path);
+    }
+    
+//    private void createRow(Composite parent,String labelString,final String directoryMessage) {
+//        StatusGroup statusGroup = new StatusGroup(parent,SWT.NONE);
+//        Group main = statusGroup.getGroup();
+//        main.setLayout(new GridLayout(3,false));
+//        Label label = new Label(main,SWT.NONE);
+//        label.setText(labelString);
+//        final Text text = new Text(main,SWT.NONE);
+//        text.addModifyListener(new ModifyListener() {
+//            public void modifyText(ModifyEvent e) {
+//                updateModelFromGUI();
+//                e.
+//            }
+//        });
+//        Button browseButton = new Button(main,SWT.NONE);
+//        browseButton.setText("Browse for Path");
+//        browseButton.addSelectionListener(new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent e) {
+//                text.setText(handleBrowse(directoryMessage));
+//            }
+//        });
+//        
+//    }
+    
+    
+    protected void updateModelFromGUI() {
+        String wtkHome = this.wtkHomeText.getText();
+        String nokiaHome = this.nokiaHomeText.getText();
+//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHome);
+        File wtkHomeFile = new File((wtkHome==null)?"":wtkHome);
+        File nokiaHomeFile = new File((nokiaHome==null)?"":nokiaHome);
+        this.newProjectModel.getMeposeModel().setWTKHome(wtkHomeFile);
+        this.newProjectModel.getMeposeModel().setNokiaHome(nokiaHomeFile);
+    }
+    
+    protected void updateGUIFromModel() {
+//        File polishHomeString = (File)(this.newProjectModel.getMeposeModel().getPropertyValue(MeposeModel.ID_POLISH_HOME));
+//        this.wtkHomeText.setText((polishHomeString == null)?"":polishHomeString.getAbsolutePath());
+        // TODO: Get the other values.
     }
 
+    protected String handleBrowse(String message) {
+        DirectoryDialog directoryDialog = new DirectoryDialog(getShell(),SWT.OPEN);
+        directoryDialog.setMessage(message);
+        return directoryDialog.open();
+    }
+
+    public IWizardPage getNextPage() {
+        PlatformPage pp = (PlatformPage)super.getNextPage();
+        pp.fillGUI();
+        return pp;
+    }
+
+    
+    public boolean canFlipToNextPage() {
+        boolean anyWtkPresent = anyWtkPresent();
+        return anyWtkPresent;
+    }
+
+    private boolean anyWtkPresent() {
+//        MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
+//        if(meposeModel.getWTKHome() != null && meposeModel.getWTKHome().exists()) {
+//            return true;
+//        }
+        // mpp is present.
+        return true;
+    }
+    
+    
+
+    
 }

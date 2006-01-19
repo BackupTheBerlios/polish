@@ -66,5 +66,21 @@
     		icon="icons/nature.png">
   		</image>
  	</extension>
+ <extension
+       point="org.eclipse.debug.core.launchConfigurationTypes">
+    <launchConfigurationType
+          delegate="de.enough.mepose.core.ui.launcher.MiDletEmulatorLaunchConfigurationDelegate"
+          id="de.enough.mepose.core.ui.launcher.midletemulator"
+          modes="run, debug"
+          name="MiDlet Emulator"/>
+ </extension>
+ <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    <launchConfigurationTabGroup
+          class="de.enough.mepose.core.ui.launcher.MiDletEmulatorLaunchConfigurationTabGroup"
+          description="Configure the runtime of the MiDlet Emulator"
+          id="de.enough.mepose.core.ui.launch.midletemulatorlaunchconfigurationtabgroup"
+          type="de.enough.mepose.core.ui.launcher.midletemulator"/>
+ </extension>
 
 </plugin>

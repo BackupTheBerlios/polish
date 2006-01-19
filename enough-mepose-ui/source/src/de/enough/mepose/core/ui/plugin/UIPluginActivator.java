@@ -2,6 +2,8 @@ package de.enough.mepose.core.ui.plugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.ui.plugin.*;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.osgi.framework.BundleContext;
@@ -18,7 +20,7 @@ public class UIPluginActivator extends AbstractUIPlugin {
 	private static UIPluginActivator plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-    
+    private static final String ID = "de.enough.mepose.core.ui.plugin";
     public static Logger logger = Logger.getLogger(UIPluginActivator.class);
 	
 	/**
@@ -109,5 +111,34 @@ public class UIPluginActivator extends AbstractUIPlugin {
         return getImageRegistry().getDescriptor(imageKey);
     }
     
+    public static void log(IStatus status) {
+        getDefault().getLog().log(status);
+        if (status.getException() != null) {
+            status.getException().printStackTrace(System.err);
+        }
+    }
+
+    public static void log(String message, Throwable e) {
+        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+            message, e); 
+        log(status);
+    }
+
+    public static void log(Throwable e) {
+        IStatus status = new Status(IStatus.ERROR, ID,IStatus.ERROR,"",e); 
+        log(status);
+    }
+    
+    public static void log(String message) {
+        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+                                    message, null); 
+        log(status);
+    }
+    
+    public static void log(String message,int severity) {
+        IStatus status = new Status(severity, ID, IStatus.ERROR,
+            message, null); 
+        log(status);
+    }
     
 }

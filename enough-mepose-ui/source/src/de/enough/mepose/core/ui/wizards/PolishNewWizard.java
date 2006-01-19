@@ -2,18 +2,20 @@ package de.enough.mepose.core.ui.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -22,7 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PlatformUI;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
@@ -48,7 +50,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     public static Logger logger = Logger.getLogger(PolishNewWizard.class);
     
     private ISelection selection;
-    private NewProjectModel newPolishProjectDAO;
+    private NewProjectModel newProjectModel;
     private PathsPage pathsPage;
     private PlatformPage platformPage;
     private ProjectPage projectPage;
@@ -60,18 +62,28 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	public PolishNewWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-        this.newPolishProjectDAO = new NewProjectModel(new MeposeModel());
+//		File polishHomeFile;
+//        File wtkHomeFile;
+//        try {
+//            polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).toURI());
+//            wtkHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/wtk104"))).toURI());
+//        } catch (URISyntaxException exception) {
+//            throw new IllegalStateException("No embedded j2me polish found.");
+//        } catch (IOException exception) {
+//            throw new IllegalStateException("IO excpetion:"+exception);
+//        }
+        this.newProjectModel = new NewProjectModel(new MeposeModel());
+//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHomeFile);
+//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_WTK_HOME,wtkHomeFile);
 	}
 	
 	/**
 	 * Adding the page to the wizard.
 	 */
-
 	public void addPages() {
-//	    this.firstPage = new FirstWizardPage(this.newProjectOptions);
-        this.projectPage = new ProjectPage(this.newPolishProjectDAO);
-        this.pathsPage = new PathsPage(this.newPolishProjectDAO);
-        this.platformPage = new PlatformPage(this.newPolishProjectDAO);
+        this.projectPage = new ProjectPage(this.newProjectModel);
+        this.pathsPage = new PathsPage(this.newProjectModel);
+        this.platformPage = new PlatformPage(this.newProjectModel);
         this.javaSettingsPage = new JavaCapabilityConfigurationPage();
         addPage(this.projectPage);
 		addPage(this.pathsPage);
@@ -115,7 +127,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	
 	protected void doFinish(IProgressMonitor monitor){
         createBuildXML();
-        
+        makeJavaProject();
         // Sanity check
         // Create IProject
         // call JavaCapabilityConfigurationPage.createJavaProject
@@ -154,14 +166,29 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //		});
 //		monitor.worked(1);
 	}
-    private void createBuildXML() {        
-        BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
+    /**
+     * 
+     */
+    private void makeJavaProject() {
+        try {
+            this.javaSettingsPage.configureJavaProject(null);
+        } catch (CoreException exception) {
+            // TODO rickyn handle CoreException
+            exception.printStackTrace();
+        } catch (InterruptedException exception) {
+            // TODO rickyn handle InterruptedException
+            exception.printStackTrace();
+        }
+    }
+
+    private void createBuildXML() {
+        BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
         buildXMLWriter.writeBuildXML(new OutputStreamWriter(byteArrayOutputStream));
         ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         
-        IProject project = (IProject)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
         if(project == null) {
             throw new IllegalStateException("No project instance to generate build.xml in.");
         }
@@ -172,12 +199,11 @@ public class PolishNewWizard extends Wizard implements INewWizard {
             System.out.println("DEBUG;PolishNewWizard.createBuildXML(...):could not create file:"+exception);
             return;
         }
-        
     }
     
 	public void init(IWorkbench workbench, IStructuredSelection newSelection) {
 		this.selection = newSelection;
-        this.newPolishProjectDAO.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
+        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
 	}
     
     private IProject extractProjectFromSelection(ISelection projectSelection) {
@@ -196,12 +222,13 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     }
 
     public boolean canFinish() {
-        return this.newPolishProjectDAO.getModelStatus().getType() == Status.TYPE_OK;
+//        this.newProjectModel.getModelStatus().getType() == Status.TYPE_OK;
+        return this.newProjectModel.canFinish();
     }
-
+    
     public boolean performCancel() {
-        IProject project = (IProject)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-        Boolean projectNewlyCreated = ((Boolean)this.newPolishProjectDAO.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT));
+        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        Boolean projectNewlyCreated = ((Boolean)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT));
         if(project != null && projectNewlyCreated != null && projectNewlyCreated.booleanValue()) {
             try {
                 project.delete(true,true,new NullProgressMonitor());
