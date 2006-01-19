@@ -1038,6 +1038,33 @@
 		default="1"
 		id="106"
 	/>
-	
-	
+ <!--	
+	<attribute
+		name="rowspan"
+		type="integer"
+		appliesTo="Item"
+		description="The number of rows wich are used by the item within a table."
+		default="1"
+		id="107"
+	/>
+-->
+
+	<attribute
+		name="view-type-left-x-offset"
+		type="integer"
+		appliesTo="Container, ContainerView, view-type"
+		description="The number of pixels the left border of the a view-type is shifted to the right (inside), negative values move the left border to the left (outside)."
+		default="0"
+		id="108"
+	/>
+
+	<attribute
+		name="view-type-right-x-offset"
+		type="integer"
+		appliesTo="Container, ContainerView, view-type"
+		description="The number of pixels the right border of the a view-type is shifted to the left (inside), negative values move the left border to the right (outside)."
+		default="0"
+		id="109"
+	/>
+
 </attributes>

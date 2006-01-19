@@ -261,11 +261,11 @@ public class ColorConverter {
 						}
 						set.add( color );
 						HashMap map = (HashMap) newColors.get( color );
-						color = (String) map.get(color);
-						if ( color == null ) {
+						if ( map == null || map.get(color) == null ) {
 							throw new BuildException( "Invalid color definition in CSS: [" +
 									color + "] is not a valid value." );
 						}
+						color = (String) map.get(color);
 					 	if ( COLORS.get( color ) != null ) {
 					 		break;
 					 	}

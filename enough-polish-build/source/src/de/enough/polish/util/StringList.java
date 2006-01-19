@@ -258,7 +258,9 @@ public class StringList {
 	}
 
 	/**
-	 * @return
+	 * Retrieves the previous line without changing the current position.
+	 * 
+	 * @return the previous line.
 	 */
 	public String getPrevious() {
 		if (this.currentIndex <= 0) {
@@ -268,6 +270,8 @@ public class StringList {
 	}	
 
 	/**
+	 * Retrieves the next line without changing the current position.
+	 * 
 	 * @return the next line
 	 */
 	public String getNext() {

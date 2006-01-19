@@ -78,6 +78,7 @@ import de.enough.polish.ant.build.PreverifierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.build.SourceSetting;
 import de.enough.polish.ant.build.Variables;
+import de.enough.polish.ant.buildlistener.BuildListenerExtensionSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
@@ -221,6 +222,9 @@ public class PolishTask extends ConditionalTask {
 	private PreCompiler[] preCompilers;
 
 	private BooleanEvaluator antPropertiesEvaluator;
+	
+	private ArrayList polishBuildListenerSettingsList;
+	private PolishBuildListener[] polishBuildListeners;
 
 	
 	/**
@@ -231,6 +235,13 @@ public class PolishTask extends ConditionalTask {
 		// if you should use the PolishTask not within an ant-build.xml
 		// then make sure to set the project with .setProject(...)
 		this.resourceUtil = new ResourceUtil( getClass().getClassLoader() );
+	}
+	
+	public void addConfiguredBuildlistener( BuildListenerExtensionSetting setting ) {
+		if (this.polishBuildListenerSettingsList == null) {
+			this.polishBuildListenerSettingsList = new ArrayList();
+		}
+		this.polishBuildListenerSettingsList.add( setting );
 	}
 	
 	public void addConfiguredInfo( InfoSetting setting ) {
@@ -1083,6 +1094,42 @@ public class PolishTask extends ConditionalTask {
 		} else {
 			System.err.println("Warning: unable to replace Ant-logger. Compile errors will point to the preprocessed files instead of the original sources.");
 		}
+		
+		
+		// initialize polish build listeners:
+		ArrayList polishBuildListenersList = new ArrayList();
+		String classDefs = getProject().getProperty( PolishBuildListener.ANT_PROPERTY_NAME );
+		if (classDefs != null ) {
+			String[] classNames = StringUtil.splitAndTrim(classDefs, ',');
+			for (int i = 0; i < classNames.length; i++) {
+				String className = classNames[i];
+				try {
+					PolishBuildListener listener = (PolishBuildListener) Class.forName(className).newInstance();
+					polishBuildListenersList.add( listener );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BuildException("Unable to load PolishBuildListener " + className + ": " + e.toString(), e  );
+				}
+			}
+		}
+		if (this.polishBuildListenerSettingsList != null ) {
+			BuildListenerExtensionSetting[] buildSettings = (BuildListenerExtensionSetting[]) this.polishBuildListenerSettingsList.toArray( new BuildListenerExtensionSetting[this.polishBuildListenerSettingsList.size()] );
+			for (int i = 0; i < buildSettings.length; i++) {
+				BuildListenerExtensionSetting setting = buildSettings[i];
+				String className = setting.getClassName();
+				//TODO use extension manager for instantiation of PolishBuildListeners
+				try {
+					PolishBuildListener listener = (PolishBuildListener) Class.forName(className).newInstance();
+					polishBuildListenersList.add( listener );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BuildException("Unable to load PolishBuildListener " + className + ": " + e.toString(), e  );
+				}
+			}
+		}
+		if (polishBuildListenersList.size() > 0 ) {
+			this.polishBuildListeners = (PolishBuildListener[]) polishBuildListenersList.toArray( new PolishBuildListener[ polishBuildListenersList.size() ] ); 
+		}
 	}
 
 	/**
@@ -1382,6 +1429,7 @@ public class PolishTask extends ConditionalTask {
 			targetDir += File.separatorChar + "source";
 			device.setSourceDir(targetDir);
 			this.environment.addVariable("polish.sourcedir", targetDir);
+			notifyPolishBuildListeners( PolishBuildListener.EVENT_PREPROCESS_SOURCE_DIR, new File( targetDir ) );
 			// initialise the preprocessor:
 			this.preprocessor.setTargetDir( targetDir );
 			// set variables and symbols:
@@ -2651,6 +2699,20 @@ public class PolishTask extends ConditionalTask {
 				buffer.append( "[ " ).append( this.locale.toString() ).append("]");
 			}
 			buffer.append(": ").append( this.exception.toString() );
+		}
+	}
+	
+	protected void notifyPolishBuildListeners( String eventName, Object data ) {
+		if (this.polishBuildListeners != null) {
+			for (int i = 0; i < this.polishBuildListeners.length; i++) {
+				PolishBuildListener listener = this.polishBuildListeners[i];
+				try {
+					listener.notifyBuildEvent(eventName, data);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new BuildException("Unable to notofy build listener " + listener + " about event " + eventName + ": " + e.toString(), e );
+				}
+			}
 		}
 	}
 	

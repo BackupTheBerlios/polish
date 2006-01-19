@@ -1311,16 +1311,15 @@ public class Preprocessor {
 			debugLevel = "debug";
 		}
 		if (this.debugManager.isDebugEnabled( className, debugLevel )) {
-			/*
-			boolean verboseDebug = this.debugManager.isVerbose();
-			if (verboseDebug) {
-				insertVerboseDebugInfo( lines, className );
-			}
-			return (verboseDebug | uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className ));
-			*/
 			return (uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className ));
 		} else {
-			return commentLine( line, line.trim(), lines );
+			boolean changed  = false;
+			while (line.indexOf(';') == -1) {
+				changed |= commentLine( line, line.trim(), lines );
+				lines.next();
+				line = lines.getCurrent();
+			}
+			return changed | commentLine( line, line.trim(), lines );
 		}
 	}
 
@@ -1396,6 +1395,13 @@ public class Preprocessor {
 		String line = lines.getCurrent();
 		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
 		if (matcher.find()) {
+			while (line.indexOf(';') == -1) {
+				commentLine(line, line,  lines);
+				lines.next();
+				String tmp = lines.getCurrent();
+				uncommentLine( tmp, lines );
+				line += lines.getCurrent().trim();
+			}
 			// the current line contains a system.out.println()
 			String argument = line.substring( matcher.end() ).trim();
 			int plusPos = argument.lastIndexOf('+');
