@@ -1,6 +1,7 @@
 package de.enough.mepose.core;
 
 import java.io.File;
+import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
@@ -56,8 +58,11 @@ public class CorePlugin extends Plugin {
     
 	public void start(BundleContext context) throws Exception {
         System.out.println("DEBUG:CorePlugin.start(...):enter.");
-        this.meposeModel = new MeposeModel();
+//        this.meposeModel = new MeposeModel();
         this.bundleContext = context;
+        URL url = Platform.asLocalURL(context.getBundle().getEntry("/"));
+        File file = new File(url.toURI());
+        System.out.println("DEBUG:CorePlugin.start(...):"+file.isDirectory());
 		super.start(context);
         
 	}
@@ -66,7 +71,6 @@ public class CorePlugin extends Plugin {
 	public void stop(BundleContext context) throws Exception {
         System.out.println("DEBUG:CorePlugin.stop(...):enter.");
 		super.stop(context);
-        //new MeposeProject();
 		plugin = null;
 		this.resourceBundle = null;
 	}
@@ -131,6 +135,12 @@ public class CorePlugin extends Plugin {
     
     public static void log(String message) {
         IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+                                    message, null); 
+        log(status);
+    }
+    
+    public static void log(String message,int severity) {
+        IStatus status = new Status(severity, ID, IStatus.ERROR,
             message, null); 
         log(status);
     }

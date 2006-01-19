@@ -36,15 +36,19 @@ package de.enough.utils;
  */
 public class Status {
 
+    private static final int TYPE_RANGE_START = 0;
     public static final int TYPE_OK = 1;
     public static final int TYPE_WARNING = 2;
     public static final int TYPE_INFO = 3;
     public static final int TYPE_ERROR = 4;
+    public static final int TYPE_UNKNOWN = 5;
+    private static final int TYPE_RANGE_END = 6;
     
     public static final Status OK = new Status(TYPE_OK,"",null);
     public static final Status WARNING = new Status(TYPE_WARNING,"",null);
     public static final Status INFO = new Status(TYPE_INFO,"",null);
     public static final Status ERROR = new Status(TYPE_ERROR,"",null);
+    public static final Status UNKNOWN = new Status(TYPE_UNKNOWN,"",null);
     
     private int type;
     private String message;
@@ -63,7 +67,7 @@ public class Status {
     }
     
     public Status(int type,String message, Throwable exception) {
-        if(type != TYPE_OK || type != TYPE_INFO || type != TYPE_WARNING || type != TYPE_ERROR) {
+        if(type <= TYPE_RANGE_START || type >= TYPE_RANGE_END) {
             throw new IllegalArgumentException("type is wrong.type:"+type);
         }
         this.type = type;

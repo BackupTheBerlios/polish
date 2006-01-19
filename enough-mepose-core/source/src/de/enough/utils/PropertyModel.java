@@ -26,12 +26,20 @@
 package de.enough.utils;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 /**
- * 
+ * This class is a generic model to associate a property (a string at the moment)
+ * to a value. It maintains the following:
+ * - A property-value pair. The property may have a null value.
+ * - A default value for a property. The default value may be null.
+ * - A Status object for a property. This is never null for a property.
+ * - A Status object for the whole model. This is never null.
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
@@ -49,13 +57,21 @@ public class PropertyModel {
     
     private Status modelStatus;
 
-    protected String[] propertiesLeastOK;
-    protected String[] propertiesLeastWARNING;
+    protected String[] propertiesWithAtLeastOKStatus;
+    protected String[] propertiesWithAtLeastWARNINGStatus;
 
     private boolean optionGetDefaultTransparently;
     private boolean optionDefaultStatusIsOK;
+
+    private MutableBoolean dummyMutableBoolean = new MutableBoolean(true);
+
+    private List statusListeners;
     
 
+    public interface StatusProvider{
+        public Status getStatusForProperty(String property);
+    }
+    
     public PropertyModel() {
         resetPropertyModel();
     }
@@ -85,17 +101,48 @@ public class PropertyModel {
         this.optionGetDefaultTransparently = true;
         this.optionDefaultStatusIsOK = true;
         this.modelStatus = Status.OK;
+        
+        this.statusListeners = new LinkedList();
     }
     
+    public void addStatusListener(StatusListener statusListener) {
+        this.statusListeners.add(statusListener);
+    }
+    
+    public void removeStatusListener(StatusListener statusListener) {
+        this.statusListeners.remove(statusListener);
+    }
+    
+    protected void fireStatusEvent(StatusEvent statusEvent) {
+        for (Iterator iterator = this.statusListeners.iterator(); iterator.hasNext(); ) {
+            StatusListener statusListener = (StatusListener) iterator.next();
+            statusListener.handleStatusEvent(statusEvent);
+        }
+    }
+    
+    /**
+     * If set the default value is retrieved when the value of a property was not found.
+     * The user do not need to get the default value by himself. But on the other hand
+     * he cant tell if a value is the default or a regular value.
+     * @param optionGetDefaultTransparent
+     */
     public void setOptionGetDefaultTransparent(boolean optionGetDefaultTransparent) {
         this.optionGetDefaultTransparently = optionGetDefaultTransparent;
     }
     
+    /**
+     * If set the default status is ok for properties which do not have a status set.
+     * @param optionDefaultStatusOK
+     */
     public void setOptionDefaultStatusOK(boolean optionDefaultStatusOK) {
         this.optionDefaultStatusIsOK = optionDefaultStatusOK;
     }
     
     public Object getPropertyValue(String property) {
+        return getPropertyValue(property,this.dummyMutableBoolean);
+    }
+    
+    public Object getPropertyValue(String property, MutableBoolean isDefaultValue) {
         if(property == null){
             throw new IllegalArgumentException("Parameter 'property' is null contrary to API.");
         }
@@ -103,6 +150,14 @@ public class PropertyModel {
         Object object = this.propertyToValue.get(property);
         if(this.optionGetDefaultTransparently && object == null) {
             object = this.propertyToDefaultValue.get(property);
+            if(isDefaultValue != null) {
+                isDefaultValue.setBooolean(true);
+            }
+        }
+        else {
+            if(isDefaultValue != null) {
+                isDefaultValue.setBooolean(false);
+            }
         }
         return object;
     }
@@ -126,7 +181,7 @@ public class PropertyModel {
      * Customize this method to handle specific properties and their valid values.
      * This method may alter the value.
      * TODO: This is extension through subclassing. Using composition is stronger.
-     * So encapsulte this in an object and as this object for a status
+     * So encapsulte this in an object and ask this object for a status
      * @param property
      * @param value
      * @return Never null.
@@ -160,14 +215,15 @@ public class PropertyModel {
             return;
         }
         this.propertyToValue.put(property,status);
+        fireStatusEvent(new StatusEvent(property,null,status));
         checkModelStatus();
     }
     
     
     protected void checkModelStatus() {
-        if(this.propertiesLeastOK != null) {
-            for (int i = 0; i < this.propertiesLeastOK.length; i++) {
-                String property = this.propertiesLeastOK[i];
+        if(this.propertiesWithAtLeastOKStatus != null) {
+            for (int i = 0; i < this.propertiesWithAtLeastOKStatus.length; i++) {
+                String property = this.propertiesWithAtLeastOKStatus[i];
                 Status status = getPropertyStatus(property);
                 if(status.getType() != Status.TYPE_OK) {
                     setModelStatus(Status.ERROR);
@@ -175,9 +231,9 @@ public class PropertyModel {
                 }
             }
         }
-        if(this.propertiesLeastWARNING != null) {
-            for (int i = 0; i < this.propertiesLeastWARNING.length; i++) {
-                String property = this.propertiesLeastWARNING[i];
+        if(this.propertiesWithAtLeastWARNINGStatus != null) {
+            for (int i = 0; i < this.propertiesWithAtLeastWARNINGStatus.length; i++) {
+                String property = this.propertiesWithAtLeastWARNINGStatus[i];
                 Status status = getPropertyStatus(property);
                 if(status.getType() != Status.TYPE_OK || status.getType() != Status.TYPE_WARNING) {
                     setModelStatus(Status.ERROR);

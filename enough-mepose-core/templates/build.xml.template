@@ -24,13 +24,22 @@
 <!-- The wtk.home property should point to the directory      -->
 <!-- containing the Wireless Toolkit.                         -->
 
-<property name="wtk.home" value="$wtkHome" />
 
+<!--
+<property name="wtk.home" value="C:\bla" />
+-->
 <!-- The polish.home property should point to the directory   -->
 <!-- containing the J2ME Polish installation.                 -->
 
 <property name="polish.home" value="$polishHome" />
-	
+#if ($nokiaHome)
+<property name="nokia.home" value="$nokiaHome" />
+#endif
+
+#if ($wtkHome)
+<property name="wtk.home" value="$wtkHome" />
+#endif
+
 <!-- The siemens.home, nokia.home and motorola.home-          -->
 <!-- properties can be necessary when their emulators         -->
 <!-- should be started.                                       -->
@@ -95,7 +104,7 @@
 			license="GPL"
 			name="J2ME Polish"
 			version="1.3.4"
-			description="A sample project"
+			description="$projectDescription"
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
@@ -112,7 +121,9 @@
 			<requirement name="Identifier" value="Generic/midp1" />
 		</deviceRequirements>
 		<deviceRequirements unless="test">
-			<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
+			#foreach ($device in $deviceList)
+			<requirement name="Identifier" value="$device.Identifier" />
+			#end
 			<!-- on could use other devices for real builds, e.g. :
 			<or>
 				<and>
@@ -131,6 +142,7 @@
 			usePolishGui="true"
 			workDir="${dir.work}"
 		>
+		    
 			<!-- midlets definition -->
 			<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
 			<!-- project-wide variables - used for preprocessing.  -->

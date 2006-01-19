@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.velocity.Template;
@@ -59,6 +60,7 @@ import de.enough.mepose.core.MeposeCoreConstants;
 public class BuildXMLWriter {
 
     private MeposeModel meposeModel;
+    private ServiceReference sr;
     
     public BuildXMLWriter(MeposeModel meposeModel) {
         this.meposeModel = meposeModel;
@@ -71,14 +73,19 @@ public class BuildXMLWriter {
             if(velocityService == null) {
                 return;
             }
-            
-            InputStream buildxmlAsStream = getBundleContext().getBundle().getResource(MeposeCoreConstants.PATH_BUILD_XML_TEMPLATE).openStream();
-            
+            URL resource = getBundleContext().getBundle().getEntry(MeposeCoreConstants.PATH_BUILD_XML_TEMPLATE);
+            if(resource == null) {
+                throw new IllegalStateException("No URL for build template found.");
+            }
+            InputStream buildxmlAsStream = resource.openStream();
+            if(resource == null) {
+                throw new IllegalStateException("No build template found.");
+            }
             velocityService.setTemplate(MeposeCoreConstants.ID_TEMPLATE_NAME,buildxmlAsStream);
             
             VelocityEngine velocityEngine = velocityService.getNewVelocityEngine();
             velocityEngine.init();
-
+            
             VelocityContext context = new VelocityContext();
             fillContext(context);
             
@@ -101,6 +108,7 @@ public class BuildXMLWriter {
                 template.merge(context, os);
 
             os.flush();
+            ungetVelocityService();
         }
         catch( Exception e )
         {
@@ -110,18 +118,37 @@ public class BuildXMLWriter {
 
     private VelocityService getVelocityService() {
         BundleContext bundleContext = getBundleContext();
-        ServiceReference sr = bundleContext.getServiceReference(VelocityService.class.getName());
-        return (VelocityService)bundleContext.getService(sr);
+        this.sr = bundleContext.getServiceReference(VelocityService.class.getName());
+        return (VelocityService)bundleContext.getService(this.sr);
     }
 
+    private void ungetVelocityService() {
+        if(this.sr == null) {
+            return;
+        }
+        getBundleContext().ungetService(this.sr);
+    }
     /**
      * @param context
      */
     private void fillContext(VelocityContext context) {
-//      context.put("wtkHome","WTKBLAAA");
-//      context.put("polishHome","PolishBBB");
-        context.put("wtk.home",this.meposeModel.getWTKHome().toString());
-        context.put("polish.home",this.meposeModel.getPolishHome().toString());
+        File polishHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_POLISH_HOME);
+        File mppHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_MPP_HOME);
+        File nokiaHome = this.meposeModel.getNokiaHome();
+        String projectDescription = this.meposeModel.getProjectDescription();
+        
+        context.put("polishHome",polishHome.getAbsolutePath());
+        context.put("mppHome",mppHome.getAbsolutePath());
+        context.put("projectDescription",projectDescription);
+        context.put("deviceList",this.meposeModel.getSupportedDevices());
+        String temp = null;
+        if(nokiaHome.exists()) {
+            temp = nokiaHome.getAbsolutePath();
+            if(temp == null || temp.length() <= 0) {
+                temp = null;
+            }
+        }
+        context.put("nokiaHome",temp);
     }
     
     public BundleContext getBundleContext() {

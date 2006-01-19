@@ -28,6 +28,8 @@ package de.enough.mepose.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,16 +37,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
+import de.enough.polish.devices.DeviceDatabase;
+import de.enough.polish.devices.DeviceTree;
 import de.enough.utils.AntBox;
 import de.enough.utils.PropertyModel;
 import de.enough.utils.Status;
@@ -67,8 +72,6 @@ public class MeposeModel extends PropertyModel{
     
     private static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
 
-    public static Logger logger = Logger.getLogger(MeposeModel.class);
-    
 //    public static final String ERROR_NOBUILDXML_FILE = "No build.xml file specified.";
 //    public static final String ERROR_NO_DEVICE = "No device specified.";
 //    public static final String ERROR_PARSE_ERROR = "Errors while parsing build.xml";
@@ -77,16 +80,21 @@ public class MeposeModel extends PropertyModel{
     public static final String ID_DEVICES_SUPPORTED = "id.devices.supported";
     public static final String ID_PLATFORMS_SUPPORTED = "id.platforms.supported";
     public static final String ID_POLISH_HOME = "id.path.polishhome";
+    // This is a File instance
+    public static final String ID_PROJECT_HOME = "id.path.projecthome";
     public static final String ID_WTK_HOME = "id.path.wtkhome";
     public static final String ID_BUILD_WD = "id.build.wd";
     public static final String ID_BUILDXML = "id.buildxml";
     public static final String ID_ANT_TASK_POLISH = "id.ant.task.polish";
+    public static final String ID_MPP_HOME = "id.path.mpphome";
     
     private Device[] configuredDevices;
     private File buildxml = new File("");
     private String projectPath;
     private File polishHome = new File("");
     private File wtkHome = new File("");
+    private File nokiaHome = new File("");
+    private File mppHome = new File("");
 
     private AntBox antBox;
     private Environment environment;
@@ -95,7 +103,12 @@ public class MeposeModel extends PropertyModel{
     
     private List propertyChangeListeners;
 
-    
+    private DeviceDatabase deviceDatabase;
+
+    private DeviceTree deviceTree;
+
+    private String projectDescription = "";
+
     
     public MeposeModel() {
         reset();
@@ -107,9 +120,19 @@ public class MeposeModel extends PropertyModel{
         this.buildxml = new File("");
         this.projectPath = "";
         this.propertyChangeListeners = new LinkedList();
-//        this.errorSituation = new ErrorSituation();
-//        this.errorSituation.addErrorToken(ERROR_NOBUILDXML_FILE);
-//        this.errorSituation.addErrorToken(ERROR_NO_DEVICE);
+        this.mppHome = new File("");
+        File polishHomeFile;
+        File mppHomeFile;
+        try {
+            polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).toURI());
+            mppHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).toURI());
+        } catch (URISyntaxException exception) {
+            throw new IllegalStateException("No embedded j2me polish found.");
+        } catch (IOException exception) {
+            throw new IllegalStateException("IO excpetion:"+exception);
+        }
+        setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHomeFile);
+        setPropertyValue(MeposeModel.ID_MPP_HOME,mppHomeFile);
     }
     
     /**
@@ -131,13 +154,6 @@ public class MeposeModel extends PropertyModel{
     }
 
     private void extractTaskFromBuildXML() {
-//        if(this.buildxml == null){
-//            throw new IllegalStateException("this.buildxml must not be null when method is called.");
-//        }
-//        if( ! this.buildxml.exists()) {
-//            setPropertyStatus(ID_BUILDXML,STATUS_BUILDXML_MISSING);
-//            return;
-//        }
         this.antBox.setWorkingDirectory(this.projectPath);
         this.antBox.createProject();
         
@@ -242,6 +258,7 @@ public class MeposeModel extends PropertyModel{
     public String getProjectPath() {
         return this.projectPath;
     }
+   
 
     public void setProjectPath(String projectPath) {
         if(projectPath == null){
@@ -303,6 +320,69 @@ public class MeposeModel extends PropertyModel{
         
     }
 
+    public DeviceDatabase getDeviceDatabase() {
+        if(this.deviceDatabase != null) {
+            return this.deviceDatabase;
+        }
+        File polishHome = (File)getPropertyValue(ID_POLISH_HOME);
+        File projectHome = (File)getPropertyValue(ID_PROJECT_HOME);
+        File wtkHome = (File)getPropertyValue(ID_WTK_HOME);
+        // What to do here?
+        if(polishHome == null||projectHome == null) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("No polishHome or projectHome");
+            }
+            return null;
+        }
+        HashMap properties = new HashMap();
+        properties.put("wtk.home",wtkHome.getAbsolutePath());
+        try {
+            this.deviceDatabase = new DeviceDatabase(properties,polishHome,projectHome,null,null,new HashMap(),new HashMap());
+        } catch (Exception e) {
+            System.out.println("ERROR:MeposeModel.getDeviceDatabase(...):"+e);
+            e.printStackTrace();
+        }
+        return this.deviceDatabase;
+    }
 
+    public DeviceTree getDeviceTree() {
+        
+        if(this.deviceTree == null && this.deviceDatabase != null) {
+            this.deviceTree = new DeviceTree(this.deviceDatabase,null,null);
+        }
+      
+        return this.deviceTree;
+        
+    }
+
+    public Device[] getSupportedDevices() {
+        return this.deviceTree.getSelectedDevices();
+    }
+    
+    /**
+     * @param projectDescription
+     */
+    public void setProjectDescription(String projectDescription) {
+        assert projectDescription != null : "In method 'MeposeModel.setProjectDescription(...)' parameter 'projectDescription' is null contrary to API.";
+        
+        this.projectDescription = projectDescription;
+    }
+
+    public String getProjectDescription() {
+        return this.projectDescription;
+    }
+
+    /**
+     * @param nokiaHome
+     */
+    public void setNokiaHome(File nokiaHome) {
+        this.nokiaHome = nokiaHome;
+    }
+
+    public File getNokiaHome() {
+        return this.nokiaHome;
+    }
+    
+    
     
 }
