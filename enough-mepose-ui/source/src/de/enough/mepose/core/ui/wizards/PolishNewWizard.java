@@ -2,11 +2,8 @@ package de.enough.mepose.core.ui.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -14,22 +11,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 
-import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.utils.Status;
 
 
 /**
@@ -49,7 +40,6 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     
     public static Logger logger = Logger.getLogger(PolishNewWizard.class);
     
-    private ISelection selection;
     private NewProjectModel newProjectModel;
     private PathsPage pathsPage;
     private PlatformPage platformPage;
@@ -62,19 +52,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	public PolishNewWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-//		File polishHomeFile;
-//        File wtkHomeFile;
-//        try {
-//            polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).toURI());
-//            wtkHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/wtk104"))).toURI());
-//        } catch (URISyntaxException exception) {
-//            throw new IllegalStateException("No embedded j2me polish found.");
-//        } catch (IOException exception) {
-//            throw new IllegalStateException("IO excpetion:"+exception);
-//        }
         this.newProjectModel = new NewProjectModel(new MeposeModel());
-//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHomeFile);
-//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_WTK_HOME,wtkHomeFile);
 	}
 	
 	/**
@@ -97,8 +75,6 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	 * using wizard as execution context.
 	 */
 	public boolean performFinish() {
-//		final String containerName = firstPage.getContainerName();
-//		final String fileName = firstPage.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 			    try{
@@ -185,7 +161,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
-        buildXMLWriter.writeBuildXML(new OutputStreamWriter(byteArrayOutputStream));
+        buildXMLWriter.writeBuildXML(writer);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         
         IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
@@ -202,11 +178,11 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     }
     
 	public void init(IWorkbench workbench, IStructuredSelection newSelection) {
-		this.selection = newSelection;
-        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
+//		this.selection = newSelection;
+//        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
 	}
     
-    private IProject extractProjectFromSelection(ISelection projectSelection) {
+//    private IProject extractProjectFromSelection(ISelection projectSelection) {
 //        if (projectSelection != null && projectSelection.isEmpty() == false
 //                && projectSelection instanceof IStructuredSelection) {
 //            IStructuredSelection ssel = (IStructuredSelection) projectSelection;
@@ -218,8 +194,8 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //                return (IJavaProject)obj;
 //            }
 //        }
-        return null;
-    }
+//        return null;
+//    }
 
     public boolean canFinish() {
 //        this.newProjectModel.getModelStatus().getType() == Status.TYPE_OK;

@@ -1,63 +1,75 @@
 package de.enough.mepose.core.ui.plugin;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import org.apache.log4j.Logger;
-import org.eclipse.ui.plugin.*;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.MeposeCoreUIConstants;
-
-import java.util.*;
+import de.enough.mepose.core.CorePlugin;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class UIPluginActivator extends AbstractUIPlugin {
-	//The shared instance.
 	private static UIPluginActivator plugin;
-	//Resource bundle.
 	private ResourceBundle resourceBundle;
+    
     private static final String ID = "de.enough.mepose.core.ui.plugin";
     public static Logger logger = Logger.getLogger(UIPluginActivator.class);
 	
-	/**
-	 * The constructor.
-	 */
+    private class ProjectSelected implements ISelectionListener{
+        public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+            if(selection instanceof IStructuredSelection) {
+                IStructuredSelection s = (IStructuredSelection)selection;
+                Object o = s.getFirstElement();
+                if(o instanceof IJavaProject) {
+                    IJavaProject javaProject = (IJavaProject)o;
+                    setCurrentProject(javaProject.getProject());
+                }
+            }
+        }
+        protected void setCurrentProject(IProject project) {
+            CorePlugin.getDefault().getMeposeModelManager().setCurrentProject(project);
+         }
+    }    
+    
 	public UIPluginActivator() {
 		super();
 		plugin = this;
 	}
 
-	/**
-	 * This method is called upon plug-in activation
-	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+        
+        registerProjectListener();
 	}
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
+    
+    
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
-		resourceBundle = null;
+		this.resourceBundle = null;
 	}
 
-	/**
-	 * Returns the shared instance.
-	 */
 	public static UIPluginActivator getDefault() {
 		return plugin;
 	}
 
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = UIPluginActivator.getDefault().getResourceBundle();
 		try {
@@ -67,42 +79,20 @@ public class UIPluginActivator extends AbstractUIPlugin {
 		}
 	}
 
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
 	public ResourceBundle getResourceBundle() {
 		try {
-			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("de.enough.mepose.ui.UIPluginResources");
+			if (this.resourceBundle == null)
+                this.resourceBundle = ResourceBundle.getBundle("de.enough.mepose.ui.UIPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+            this.resourceBundle = null;
 		}
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.core.ui.plugin", path);
 	}
 
-    protected void initializeImageRegistry(ImageRegistry reg) {
-        super.initializeImageRegistry(reg);
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_LOGO,getImageDescriptor("/icons/polish_logo_16x16.png"));
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_OK,getImageDescriptor("/icons/tsk_green.png"));
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_WARNING,getImageDescriptor("/icons/tsk_yellow.png"));
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_ERROR,getImageDescriptor("/icons/tsk_red.png"));
-    }
-
-    /**
-     * @param imageKey
-     * @return an imageDescriptor or null when imageKey is invalid or null.
-     */
     public ImageDescriptor getImage(String imageKey) {
         if(imageKey == null){
             logger.error("Parameter 'imageKey' is null contrary to API.");
@@ -110,6 +100,10 @@ public class UIPluginActivator extends AbstractUIPlugin {
         }
         return getImageRegistry().getDescriptor(imageKey);
     }
+    
+    
+    // ###################################################################
+    // Logging.
     
     public static void log(IStatus status) {
         getDefault().getLog().log(status);
@@ -141,4 +135,23 @@ public class UIPluginActivator extends AbstractUIPlugin {
         log(status);
     }
     
+
+    // ###################################################################
+    // Protected methods.
+    
+        protected void initializeImageRegistry(ImageRegistry reg) {
+        super.initializeImageRegistry(reg);
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_LOGO,getImageDescriptor("/icons/polish_logo_16x16.png"));
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_OK,getImageDescriptor("/icons/tsk_green.png"));
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_WARNING,getImageDescriptor("/icons/tsk_yellow.png"));
+        reg.put(MeposeCoreUIConstants.KEY_IMAGE_ERROR,getImageDescriptor("/icons/tsk_red.png"));
+    }
+    
+    
+    // ###################################################################
+    // Private methods.
+    
+    private void registerProjectListener() {
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(new ProjectSelected());
+    }
 }

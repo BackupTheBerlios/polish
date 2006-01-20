@@ -48,7 +48,7 @@ public class ProjectPropertyPage extends PropertyPage{
     private Text textField;
     private Composite mainComposite;
 //    private IProjectPropertyPageModel presentationModel;
-    private PropertyChangeListener propertyChangeListenerForPresentationModel;
+//    private PropertyChangeListener propertyChangeListenerForPresentationModel;
     
     class PresentationModelListener implements PropertyChangeListener{
 

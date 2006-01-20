@@ -443,6 +443,8 @@ public class PlatformPage extends WizardPage {
         classpathEntries[libraryEntries.length] = sourceEntry;
         boolean defaulsOverrideExistingClasspath = true;
         
+        this.newProjectModel.getMeposeModel().setClasspath(classpathEntries);
+        
         JavaCapabilityConfigurationPage nextPage = (JavaCapabilityConfigurationPage)super.getNextPage();
         nextPage.init(javaProject,defaultOutputDir,classpathEntries,defaulsOverrideExistingClasspath);
         

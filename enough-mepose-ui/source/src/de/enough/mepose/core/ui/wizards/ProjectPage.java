@@ -1,12 +1,6 @@
 package de.enough.mepose.core.ui.wizards;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.OutputStreamWriter;
-
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
@@ -26,10 +20,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.enough.mepose.MeposeCoreUIConstants;
-import de.enough.mepose.core.model.BuildXMLWriter;
+import de.enough.mepose.core.MeposeCoreConstants;
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.core.ui.project.PropertyConstants;
 import de.enough.swt.widgets.StatusGroup;
 import de.enough.utils.Status;
 import de.enough.utils.StatusEvent;
@@ -50,7 +42,7 @@ public class ProjectPage extends WizardPage{
     private Text newProjectNameText;
     private Label newProjectNameLabel;
     private StatusGroup newProjectNameStatusGroup;
-    private boolean isReady = false;
+//    private boolean isReady = false;
     private ProjectPageModel projectPageModel;
     private Group desciptionGroup;
     private Text descriptionText;
@@ -202,32 +194,33 @@ public class ProjectPage extends WizardPage{
 //    }
 
     private void setupProject() throws CoreException {
-        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-        if(newProject == null) {
-            return;
-        }
-        newProject.open(null);
-        String pproperty;
-        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_WTK_HOME);
-        if(pproperty != null) {
-            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_WTK_HOME,new File(pproperty));
-        }
-        
-        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_POLISH_HOME);
-        if(pproperty != null) {
-            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,new File(pproperty));
-        }
-        
-        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_PLATFORMS_SUPPORTED);
-        if(pproperty != null) {
-            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PLATFORMS_SUPPORTED,new File(pproperty));
-        }
-        
-        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_DEVICES_SUPPORTED);
-        if(pproperty != null) {
-            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_DEVICES_SUPPORTED,new File(pproperty));
-        }
-        
+        //TODO: Fill in the project properties within the core plugin.
+//        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+//        if(newProject == null) {
+//            return;
+//        }
+//        newProject.open(null);
+//        String pproperty;
+//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_WTK_HOME);
+//        if(pproperty != null) {
+//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_WTK_HOME,new File(pproperty));
+//        }
+//        
+//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_POLISH_HOME);
+//        if(pproperty != null) {
+//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,new File(pproperty));
+//        }
+//        
+//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_PLATFORMS_SUPPORTED);
+//        if(pproperty != null) {
+//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PLATFORMS_SUPPORTED,new File(pproperty));
+//        }
+//        
+//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_DEVICES_SUPPORTED);
+//        if(pproperty != null) {
+//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_DEVICES_SUPPORTED,new File(pproperty));
+//        }
+//        
     }
 
     private void createProject() throws CoreException {
@@ -256,7 +249,7 @@ public class ProjectPage extends WizardPage{
             return;
         }
         
-        IProjectNature nature = newProject.getNature(MeposeCoreUIConstants.ID_NATURE);
+        IProjectNature nature = newProject.getNature(MeposeCoreConstants.ID_NATURE);
         if(nature != null) {
             // Its already a PolishProject.
             return;
@@ -266,7 +259,7 @@ public class ProjectPage extends WizardPage{
         String[] newNatureIDs = new String[natureIDs.length+1];
         System.arraycopy(natureIDs, 0, newNatureIDs, 0, natureIDs.length);
         // As last element.
-        newNatureIDs[natureIDs.length] = MeposeCoreUIConstants.ID_NATURE;
+        newNatureIDs[natureIDs.length] = MeposeCoreConstants.ID_NATURE;
         
         projectDescription.setNatureIds(newNatureIDs);
         newProject.setDescription(projectDescription, null);
@@ -279,10 +272,10 @@ public class ProjectPage extends WizardPage{
     /*
      * @see de.enough.utils.StatusListener#handleStatusEvent(de.enough.utils.StatusEvent)
      */
-    public void handleStatusEvent(StatusEvent statusEvent) {
-        Status newStatus = statusEvent.getNewStatus();
-        
-    }
+//    public void handleStatusEvent(StatusEvent statusEvent) {
+//        Status newStatus = statusEvent.getNewStatus();
+//        
+//    }
     
     
     

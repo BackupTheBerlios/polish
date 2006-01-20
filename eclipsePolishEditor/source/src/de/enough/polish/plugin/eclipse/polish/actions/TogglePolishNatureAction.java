@@ -5,18 +5,15 @@ package de.enough.polish.plugin.eclipse.polish.actions;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import de.enough.mepose.MeposeCoreUIConstants;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.mepose.core.MeposeCoreConstants;
 
 /**
  * @author rickyn
@@ -55,7 +52,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
                 return;
             }
             try {
-                if(this.selectedProject.hasNature(MeposeCoreUIConstants.ID_NATURE)) {
+                if(this.selectedProject.hasNature(MeposeCoreConstants.ID_NATURE)) {
                     System.out.println("Found a polish nature.");
                     this.projecthasPolishNature = true;
                 }
@@ -111,7 +108,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
     }
     public void addPolishNatureToProject(IProject project) throws CoreException {
         
-        if(project.hasNature(MeposeCoreUIConstants.ID_NATURE)){
+        if(project.hasNature(MeposeCoreConstants.ID_NATURE)){
             System.out.println("ERROR:PolishEditorPlugin.addPolishNatureToProject(...):Project has Polish nature already.");
             return;
         }
@@ -119,14 +116,14 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         String[] ids = description.getNatureIds();
         String[] newIds = new String[ids.length+1];
         System.arraycopy(ids,0,newIds,0,ids.length);
-        newIds[ids.length] = MeposeCoreUIConstants.ID_NATURE;
+        newIds[ids.length] = MeposeCoreConstants.ID_NATURE;
         description.setNatureIds(newIds);
         project.setDescription(description,null);
     }
 
     public void removePolishNatureFromProject(IProject project) throws CoreException{
         
-        if( ! project.hasNature(MeposeCoreUIConstants.ID_NATURE)){
+        if( ! project.hasNature(MeposeCoreConstants.ID_NATURE)){
             System.out.println("ERROR:PolishEditorPlugin.removePolishNatureFromProject(...):Project has no Polish nature.");
             return;
         }
@@ -134,7 +131,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         IProjectDescription description = project.getDescription();
         String[] ids = description.getNatureIds();
         for(int i = 0; i < ids.length; i++) {
-            if(ids[i].equals(MeposeCoreUIConstants.ID_NATURE)) {
+            if(ids[i].equals(MeposeCoreConstants.ID_NATURE)) {
                 String[] newIds = new String[ids.length-1];
                 System.arraycopy(ids,0,newIds,0,i);
                 System.arraycopy(ids,i+1,newIds,i,ids.length-i-1);

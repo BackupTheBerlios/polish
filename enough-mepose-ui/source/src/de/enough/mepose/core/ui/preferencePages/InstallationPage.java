@@ -1,13 +1,13 @@
 package de.enough.mepose.core.ui.preferencePages;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.MeposeCoreConstants;
 import de.enough.mepose.core.ui.propertyPages.PreferencesAdapter;
-import de.enough.utils.ErrorSituation;
 
 /**
  * This class represents a preference page that

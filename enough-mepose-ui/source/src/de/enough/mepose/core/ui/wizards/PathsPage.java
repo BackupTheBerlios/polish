@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.enough.mepose.core.model.MeposeModel;
 import de.enough.swt.widgets.StatusGroup;
 import de.enough.utils.Status;
 
@@ -64,8 +63,10 @@ public class PathsPage extends WizardPage {
     private Text wtkHomeText;
     
     private Text nokiaHomeText;
-    private Text blackberryText;
-    private Text sonyText;
+    private StatusGroup wtkStatusGroup;
+    private StatusGroup nokiaStatusGroup;
+//    private Text blackberryText;
+//    private Text sonyText;
     
     public class VerifyEvent{
         private Object source;
@@ -146,6 +147,30 @@ public class PathsPage extends WizardPage {
         }
     }
     
+    private class BrowsePathSelected extends SelectionAdapter{
+        
+        private Text textfieldToUpdate;
+        private String messageToAsk;
+
+        public BrowsePathSelected(Text textfieldToUpdate, String messageToAsk) {
+            this.textfieldToUpdate = textfieldToUpdate;
+            this.messageToAsk = messageToAsk;
+        }
+        
+        public void widgetSelected(SelectionEvent e) {
+            handleBrowseButtonSelected();
+        }
+        protected void handleBrowseButtonSelected() {
+            DirectoryDialog directoryDialog = new DirectoryDialog(getShell(),SWT.OPEN);
+            directoryDialog.setMessage(this.messageToAsk);
+            String path = directoryDialog.open();
+            if(path == null) {
+                path = "";
+            }
+            this.textfieldToUpdate.setText(path);
+        }
+    }
+    
     protected PathsPage(NewProjectModel newPolishProjectDAO) {
         super("Paths and Locations");
         this.newProjectModel = newPolishProjectDAO;
@@ -157,13 +182,12 @@ public class PathsPage extends WizardPage {
         Composite composite = new Composite(parent,SWT.NONE);
         composite.setLayout(new GridLayout(1,false));
         
-        StatusGroup statusGroup;
         Composite main;
         Button browseButton;
 
-        final StatusGroup wtkStatusGroup = new StatusGroup(composite,SWT.NONE);
-        wtkStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
-        main = wtkStatusGroup.getMainComposite();
+        this.wtkStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.wtkStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.wtkStatusGroup.getMainComposite();
         main.setLayout(new GridLayout(3,false));
         Label wtkLabel = new Label(main,SWT.NONE);
         wtkLabel.setText("WTK Home:");
@@ -172,32 +196,20 @@ public class PathsPage extends WizardPage {
         this.wtkHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
         this.wtkHomeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                String path = wtkHomeText.getText();
-                File file = new File(path);
-                if( ! file.exists() || ! file.isDirectory()) {
-                    wtkStatusGroup.setError("Path is not a directory.");
-                }
-                else {
-                    newProjectModel.getMeposeModel().setWTKHome(file);
-                    wtkStatusGroup.setOK("");
-                }
+                modifyWtkHomeText();
             }
         });
         this.wtkHomeText.setText("");
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
-        browseButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                handleBrowseButtonSelected(wtkHomeText,"Choose the location of your WTK directory");
-            }
-        });
-        
+        browseButton.addSelectionListener(new BrowsePathSelected(this.wtkHomeText,"Choose the location of your WTK directory"));
+                                          
         // ----------------------
         
-        final StatusGroup nokiaStatusGroup = new StatusGroup(composite,SWT.NONE);
-        nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
-        nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
-        main = nokiaStatusGroup.getMainComposite();
+        this.nokiaStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.nokiaStatusGroup.getMainComposite();
         main.setLayout(new GridLayout(3,false));
         Label nokiaLabel = new Label(main,SWT.NONE);
         nokiaLabel.setText("Nokia Home:");
@@ -206,25 +218,13 @@ public class PathsPage extends WizardPage {
         this.nokiaHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         this.nokiaHomeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                String path = nokiaHomeText.getText();
-                File file = new File(path);
-                if( ! file.exists() || ! file.isDirectory()) {
-                    nokiaStatusGroup.setError("Path is not a directory.");
-                }
-                else {
-                    newProjectModel.getMeposeModel().setNokiaHome(file);
-                    nokiaStatusGroup.setOK("");
-                }
+                modifyNokiaHomeText();
             }
         });
         this.nokiaHomeText.setText("");
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
-        browseButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                handleBrowseButtonSelected(nokiaHomeText,"Choose the location of your Nokia directory");
-            }
-        });
+        browseButton.addSelectionListener(new BrowsePathSelected(this.nokiaHomeText,"Choose the location of your Nokia directory"));
         
         // ----------------------------------
         
@@ -232,13 +232,37 @@ public class PathsPage extends WizardPage {
         updateGUIFromModel();
     }
 
-    protected void handleBrowseButtonSelected(Text text, String message) {
-        String path = handleBrowse(message);
-        if(path == null) {
-            path = "";
+    /**
+     * 
+     */
+    protected void modifyNokiaHomeText() {
+        String path = this.nokiaHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.nokiaStatusGroup.setError("Path is not a directory.");
         }
-        text.setText(path);
+        else {
+            this.newProjectModel.getMeposeModel().setNokiaHome(file);
+            this.nokiaStatusGroup.setOK("");
+        }
     }
+
+    /**
+     * 
+     */
+    protected void modifyWtkHomeText() {
+        String path = PathsPage.this.wtkHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.wtkStatusGroup.setError("Path is not a directory.");
+        }
+        else {
+            PathsPage.this.newProjectModel.getMeposeModel().setWTKHome(file);
+            this.wtkStatusGroup.setOK("");
+        }
+    }
+
+    
     
 //    private void createRow(Composite parent,String labelString,final String directoryMessage) {
 //        StatusGroup statusGroup = new StatusGroup(parent,SWT.NONE);
@@ -280,11 +304,7 @@ public class PathsPage extends WizardPage {
         // TODO: Get the other values.
     }
 
-    protected String handleBrowse(String message) {
-        DirectoryDialog directoryDialog = new DirectoryDialog(getShell(),SWT.OPEN);
-        directoryDialog.setMessage(message);
-        return directoryDialog.open();
-    }
+    
 
     public IWizardPage getNextPage() {
         PlatformPage pp = (PlatformPage)super.getNextPage();

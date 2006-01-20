@@ -31,6 +31,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.IOConsole;
 
 /**
  * 
@@ -43,18 +47,36 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
  */
 public class MiDletEmulatorLaunchConfigurationDelegate extends
         LaunchConfigurationDelegate {
-    /*
-     * @see org.eclipse.debug.core.model.ILaunchConfigurationDelegate#launch(org.eclipse.debug.core.ILaunchConfiguration, java.lang.String, org.eclipse.debug.core.ILaunch, org.eclipse.core.runtime.IProgressMonitor)
-     */
+
+    public static final String CONSOLE_TYPE = "j2mepolish.console";
+    
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, IProgressMonitor monitor)
                                                                 throws CoreException {
+        
+       IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+       IConsole[] consoles = consoleManager.getConsoles();
+       IConsole console = null;
+       for (int i = 0; i < consoles.length; i++) {
+           if(CONSOLE_TYPE.equals(consoles[i].getType())){
+               console = consoles[i];
+           }
+       }
+       if(console == null) {
+           console = new IOConsole("J2ME Polish Build",CONSOLE_TYPE,null);
+           consoleManager.addConsoles(new IConsole[] {console});
+       }
+       consoleManager.showConsoleView(console);
        System.out.println("DEBUG:MiDletEmulatorLaunchConfigurationDelegate.launch(...):mode:"+mode);
        AntRunner antRunner = new AntRunner();
-       antRunner.setAntHome("/home/rickyn/eclipse/runtime-workspace/aa");
-       antRunner.setArguments("-Ddevice=\"Generic/midp2\"");
-       antRunner.setBuildFileLocation("/home/rickyn/eclipse/runtime-workspace/aa/build.xml");
-       antRunner.run();
+       antRunner.setAntHome("/home/rickyn/eclipse/runtime-workspace/sandbox.menu");
+//       antRunner.setArguments("-Ddevice=\"Generic/midp2\"");
+       antRunner.setBuildFileLocation("/home/rickyn/eclipse/runtime-workspace/sandbox.menu/build.xml");
+       antRunner.run(monitor);
+       
+//       if(mode.equals("debug")) {
+//           manageDebugger();
+//       }
     }
 
 }

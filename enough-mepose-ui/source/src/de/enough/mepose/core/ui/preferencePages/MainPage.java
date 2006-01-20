@@ -15,7 +15,6 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 import de.enough.mepose.MeposeCoreUIConstants;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
-import de.enough.utils.ErrorSituation;
 
 /**
  * This class represents a preference page that

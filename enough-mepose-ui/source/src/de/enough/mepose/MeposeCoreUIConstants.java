@@ -42,9 +42,6 @@ public interface MeposeCoreUIConstants {
     
     public static final String ID_PLUGIN = "de.enough.mepose.core.ui.plugin";
     
-    public static final String ID_NATURE_QUALIFIER = "PolishNature";
-    public static final String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
-    
     public static final String KEY_IMAGE_LOGO = "logo";
     public static final String KEY_IMAGE_WARNING = "warning";
     public static final String KEY_IMAGE_ERROR = "error";

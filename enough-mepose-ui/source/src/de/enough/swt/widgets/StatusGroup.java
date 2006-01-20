@@ -25,27 +25,16 @@
  */
 package de.enough.swt.widgets;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.WorkbenchPage;
 
 import de.enough.mepose.MeposeCoreUIConstants;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
-import de.enough.utils.Status;
-import de.enough.utils.StatusEvent;
-import de.enough.utils.StatusListener;
 
 /**
  * Do not set the layout of this composite.
@@ -64,8 +53,8 @@ public class StatusGroup extends Composite{
     private Label iconLabel;
     private Label echoLabel;
     private GridData echoAreaGridData;
-    private List statusListeners;
-    private String propertyToWatch;
+//    private List statusListeners;
+//    private String propertyToWatch;
 
     public StatusGroup(Composite parent, int style) {
         super(parent, style);
@@ -87,7 +76,7 @@ public class StatusGroup extends Composite{
         this.echoLabel = new Label(this.echoArea,SWT.NONE);
         this.echoLabel.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
         
-        this.statusListeners = new LinkedList();
+//        this.statusListeners = new LinkedList();
     }
     
     public Composite getMainComposite() {
@@ -101,6 +90,7 @@ public class StatusGroup extends Composite{
     /**
      * Get the underlying Group object. All child objects of the StatusGroup must be child
      * of this Group object.
+     * @return the underlying Group widget. Do not use this thing! Use getMainComposite().
      */
     public Group getGroup() {
         return this.group;
@@ -143,9 +133,9 @@ public class StatusGroup extends Composite{
         }
         image.dispose();
     }
-    public void setPropertyToWatch(String property) {
-        this.propertyToWatch = property;
-    }
+//    public void setPropertyToWatch(String property) {
+//        this.propertyToWatch = property;
+//    }
     
 //    public void setChildrenEnabled(boolean enabled) {
 //        this.group.getChildren();

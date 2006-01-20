@@ -59,7 +59,7 @@ public class NewProjectModel extends PropertyModel{
     public static final String ID_NEWPROJECTMODEL_MEPOSEMODEL = "id.newprojectmodel.meposeModel";
     
     private MeposeModel meposeModel;
-    private boolean canFinish = false;
+//    private boolean canFinish = false;
     
     private List targetDevices = new LinkedList();
     private List targetConfigurations = new LinkedList();
@@ -86,6 +86,7 @@ public class NewProjectModel extends PropertyModel{
         }
         
         setPropertyValue(ID_NEWPROJECTMODEL_MEPOSEMODEL,this.meposeModel);
+        
         
         this.propertiesWithAtLeastOKStatus = new String[] {ID_NEWPROJECTMODEL_PROJECT_INSTANCE};
         checkModelStatus();
