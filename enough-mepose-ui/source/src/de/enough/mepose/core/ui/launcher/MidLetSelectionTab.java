@@ -25,6 +25,7 @@
  */
 package de.enough.mepose.core.ui.launcher;
 
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -62,8 +63,8 @@ public class MidLetSelectionTab extends AbstractLaunchConfigurationTab {
      * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
      */
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-        // TODO rickyn implement setDefaults
-
+        System.out.println("DEBUG:MidLetSelectionTab.setDefaults(...):enter.");
+        configuration.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT,true);
     }
 
     /*

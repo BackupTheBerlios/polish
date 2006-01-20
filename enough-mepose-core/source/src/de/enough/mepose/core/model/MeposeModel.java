@@ -112,6 +112,8 @@ public class MeposeModel extends PropertyModel{
 
     private String supportedDevicesAsString;
 
+    private File jadFile;
+
     
     public MeposeModel() {
         reset();
@@ -128,6 +130,7 @@ public class MeposeModel extends PropertyModel{
         this.mppHome = new File("");
         File polishHomeFile;// = new File("");
         File mppHomeFile;// = new File("");
+        this.jadFile = new File("");
         try {
             polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
         } catch (IOException exception) {
@@ -143,6 +146,9 @@ public class MeposeModel extends PropertyModel{
         
         setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHomeFile);
         setPropertyValue(MeposeModel.ID_MPP_HOME,mppHomeFile);
+        
+        setPolishHome(polishHomeFile);
+        setMppHome(mppHomeFile);
         
         this.classpathEntries = null;
     }
@@ -290,7 +296,7 @@ public class MeposeModel extends PropertyModel{
     }
 
     public void setPolishHome(File file) {
-        if(file != null){
+        if(file == null){
             throw new IllegalArgumentException("setPolishHome(...):parameter 'file' is null contrary to API.");
         }
         this.polishHome = file;
@@ -301,7 +307,7 @@ public class MeposeModel extends PropertyModel{
     }
 
     public void setWTKHome(File file) {
-        if(file != null){
+        if(file == null){
             throw new IllegalArgumentException("setWTKHome(...):parameter 'file' is null contrary to API.");
         }
         this.wtkHome = file;
@@ -317,6 +323,10 @@ public class MeposeModel extends PropertyModel{
      */
     public File getMppHome() {
         return this.mppHome;
+    }
+    
+    public void setMppHome(File mppHome) {
+        this.mppHome = mppHome;
     }
     public void setSupportedDevicesAsString(String configuredDevices2) {
         this.supportedDevicesAsString = configuredDevices2;
@@ -384,7 +394,9 @@ public class MeposeModel extends PropertyModel{
      * @param projectDescription
      */
     public void setProjectDescription(String projectDescription) {
-        assert projectDescription != null : "In method 'MeposeModel.setProjectDescription(...)' parameter 'projectDescription' is null contrary to API.";
+        if(projectDescription == null){
+            throw new IllegalArgumentException("setProjectDescription(...):parameter 'projectDescription' is null contrary to API.");
+        }
         
         this.projectDescription = projectDescription;
     }
@@ -454,5 +466,20 @@ public class MeposeModel extends PropertyModel{
             PropertyChangeListener propertyChangeListener = (PropertyChangeListener) iterator.next();
             propertyChangeListener.propertyChange(event);
         }
+    }
+
+    /**
+     * 
+     */
+    public File getJadFile(File jadFile) {
+        return this.jadFile;
+    }
+    
+    public void setJadFile(File jadFile) {
+        if(jadFile == null){
+            throw new IllegalArgumentException("setJadFile(...):parameter 'jadFile' is null contrary to API.");
+        }
+        
+        this.jadFile = jadFile;
     }
 }

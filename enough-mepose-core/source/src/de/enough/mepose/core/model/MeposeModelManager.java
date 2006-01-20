@@ -50,21 +50,21 @@ public class MeposeModelManager {
     }
     
     public MeposeModel getModel(IProject project) {
-        if(project != null){
+        if(project == null){
             throw new IllegalArgumentException("getModel(...):parameter 'project' is null contrary to API.");
         }
         return (MeposeModel)this.modelByProject.get(project);
     }
     
     public void addModel(IProject project, MeposeModel meposeModel) {
-        if(project != null){
+        if(project == null){
             throw new IllegalArgumentException("addModel(...):parameter 'project' is null contrary to API.");
         }
         this.modelByProject.put(project,meposeModel);
     }
 
     public void removeModel(IProject project) {
-        if(project != null){
+        if(project == null){
             throw new IllegalArgumentException("removeModel(...):parameter 'project' is null contrary to API.");
         }
         this.modelByProject.remove(project);

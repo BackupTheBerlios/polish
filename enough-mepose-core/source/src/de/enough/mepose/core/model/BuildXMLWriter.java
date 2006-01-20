@@ -126,9 +126,13 @@ public class BuildXMLWriter {
      * @param context
      */
     private void fillContext(VelocityContext context) {
-        File polishHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_POLISH_HOME);
-        File mppHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_MPP_HOME);
+//        File polishHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_POLISH_HOME);
+//        File mppHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_MPP_HOME);
+        File polishHome = this.meposeModel.getPolishHome();
+        File mppHome = this.meposeModel.getMppHome();
+        File wtkHome = this.meposeModel.getWTKHome();
         File nokiaHome = this.meposeModel.getNokiaHome();
+       
         String projectDescription = this.meposeModel.getProjectDescription();
         
         context.put("polishHome",polishHome.getAbsolutePath());
@@ -143,6 +147,14 @@ public class BuildXMLWriter {
             }
         }
         context.put("nokiaHome",temp);
+
+        if(nokiaHome.exists()) {
+            temp = wtkHome.getAbsolutePath();
+            if(temp == null || temp.length() <= 0) {
+                temp = null;
+            }
+        }
+        context.put("wtkHome",temp);
     }
     
     public BundleContext getBundleContext() {

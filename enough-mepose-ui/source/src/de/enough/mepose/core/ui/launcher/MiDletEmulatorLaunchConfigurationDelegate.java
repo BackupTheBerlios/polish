@@ -25,7 +25,11 @@
  */
 package de.enough.mepose.core.ui.launcher;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.ant.internal.ui.launchConfigurations.AntProcess;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
@@ -35,6 +39,8 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
+
+import de.enough.polish.ant.PolishBuildListener;
 
 /**
  * 
@@ -48,6 +54,14 @@ import org.eclipse.ui.console.IOConsole;
 public class MiDletEmulatorLaunchConfigurationDelegate extends
         LaunchConfigurationDelegate {
 
+    public class PolishListener implements PolishBuildListener{
+
+        public void notifyBuildEvent(String name, Object data) {
+            System.out.println("DEBUG:PolishListener.notifyBuildEvent(...):name:"+name+".data:"+data);
+        }
+        
+    }
+    
     public static final String CONSOLE_TYPE = "j2mepolish.console";
     
     public void launch(ILaunchConfiguration configuration, String mode,
@@ -70,9 +84,14 @@ public class MiDletEmulatorLaunchConfigurationDelegate extends
        System.out.println("DEBUG:MiDletEmulatorLaunchConfigurationDelegate.launch(...):mode:"+mode);
        AntRunner antRunner = new AntRunner();
        antRunner.setAntHome("/home/rickyn/eclipse/runtime-workspace/sandbox.menu");
+       Map userProperties = new HashMap();
+       userProperties.put("polish.build.listener",new PolishListener().getClass().getName());
+       antRunner.addUserProperties(userProperties);
 //       antRunner.setArguments("-Ddevice=\"Generic/midp2\"");
        antRunner.setBuildFileLocation("/home/rickyn/eclipse/runtime-workspace/sandbox.menu/build.xml");
-       antRunner.run(monitor);
+       AntProcess antProcess = new AntProcess("J2ME Polish Build",launch,new HashMap());
+       antRunner.run(antProcess);
+       antProcess.terminate();
        
 //       if(mode.equals("debug")) {
 //           manageDebugger();

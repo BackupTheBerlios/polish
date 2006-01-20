@@ -10,4 +10,11 @@
             <run class="de.enough.mepose.core.project.PolishNature"></run>
         </runtime>
 	</extension>
+	<extension point="org.eclipse.ui.ide.projectNatureImages">
+ 		<image 
+ 	   		id="de.enough.mepose.core.project.polishNatureImage"
+    		natureId="de.enough.mepose.core.CorePlugin.PolishNature"
+    		icon="icons/nature.png">
+  		</image>
+ 	</extension>
 </plugin>

@@ -4,13 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -170,6 +173,21 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         }
         IFile file = project.getFile("build.xml");
         try {
+            if(file.exists()) {
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(System.currentTimeMillis());
+                StringBuffer sb = new StringBuffer();
+                sb.append(c.get(Calendar.YEAR));
+                sb.append(c.get(Calendar.MONTH));
+                sb.append(c.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+                sb.append(":");
+                sb.append(c.get(Calendar.HOUR));
+                sb.append(c.get(Calendar.MINUTE));
+                sb.append(c.get(Calendar.SECOND));
+                IPath path = new Path("build."+sb.toString()+".xml");
+                file.move(path,true,true,new NullProgressMonitor());
+            }
+            file = project.getFile("build.xml");
             file.create(inputStream,true,null);
         } catch (CoreException exception) {
             System.out.println("DEBUG;PolishNewWizard.createBuildXML(...):could not create file:"+exception);
@@ -177,7 +195,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         }
     }
     
-	public void init(IWorkbench workbench, IStructuredSelection newSelection) {
+    public void init(IWorkbench workbench, IStructuredSelection newSelection) {
 //		this.selection = newSelection;
 //        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
 	}

@@ -55,13 +55,7 @@
  
 	
 	
-	<extension point="org.eclipse.ui.ide.projectNatureImages">
- 		<image 
- 	   		id="de.enough.mepose.core.ui.plugin.javaNatureImage"
-    		natureId="de.enough.mepose.core.ui.plugin.PolishNature"
-    		icon="icons/nature.png">
-  		</image>
- 	</extension>
+	
  <extension
        point="org.eclipse.debug.core.launchConfigurationTypes">
     <launchConfigurationType

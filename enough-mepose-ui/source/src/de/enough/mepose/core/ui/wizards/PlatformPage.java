@@ -447,7 +447,7 @@ public class PlatformPage extends WizardPage {
         
         JavaCapabilityConfigurationPage nextPage = (JavaCapabilityConfigurationPage)super.getNextPage();
         nextPage.init(javaProject,defaultOutputDir,classpathEntries,defaulsOverrideExistingClasspath);
-        
+        this.newProjectModel.setJavaTabReached(true);
         return nextPage;
     }
     

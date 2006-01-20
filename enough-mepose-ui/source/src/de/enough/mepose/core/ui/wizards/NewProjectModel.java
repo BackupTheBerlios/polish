@@ -64,6 +64,8 @@ public class NewProjectModel extends PropertyModel{
     private List targetDevices = new LinkedList();
     private List targetConfigurations = new LinkedList();
     private List targetPlatforms = new LinkedList();
+    
+    private boolean javaTabReached = false;
 
     //    private IProject projectToConvert;
 //    private boolean mayFinish;
@@ -149,7 +151,7 @@ public class NewProjectModel extends PropertyModel{
         }
         boolean hasTargetDevices = deviceTree.getSelectedDevices().length > 0;
         boolean hasProject = getProject() != null;
-        return hasTargetDevices && hasProject;
+        return hasTargetDevices && hasProject && this.javaTabReached;
     }
     
     public IProject getProject() {
@@ -276,6 +278,15 @@ public class NewProjectModel extends PropertyModel{
     public String getProjectDescription() {
         return this.meposeModel.getProjectDescription();
     }
+
+    public boolean isJavaTabReached() {
+        return this.javaTabReached;
+    }
+
+    public void setJavaTabReached(boolean javaTabReached) {
+        this.javaTabReached = javaTabReached;
+    }
+    
     
     
 }
