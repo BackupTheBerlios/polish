@@ -26,7 +26,6 @@
 package de.enough.polish.postcompile.mastercanvas;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
