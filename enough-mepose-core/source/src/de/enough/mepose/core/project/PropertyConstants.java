@@ -1,5 +1,5 @@
 /*
- * Created on Dec 7, 2005 at 2:51:44 PM.
+ * Created on Dec 21, 2005 at 11:23:54 AM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,26 +23,27 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core;
+package de.enough.mepose.core.project;
 
+import org.eclipse.core.runtime.QualifiedName;
+
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.model.MeposeModel;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Dec 7, 2005 - rickyn creation
+ *        Dec 21, 2005 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public interface MeposeCoreConstants {
+public interface PropertyConstants {
 
-    public static final String ID_PLUGIN = "de.enough.mepose.core.CorePlugin";
-    public static final String POLISH_INSTALLATION_DIR = "polish.installation.dir";
-    public static final String WTK_INSTALLATION_DIR = "WTK.installation.dir";
-    public static final String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
-    public static final String ID_TEMPLATE_NAME = "build.xml.template";
-    public static final String ID_NATURE_QUALIFIER = "PolishNature";
-    public static final String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
-
+    public static final QualifiedName QN_WTK_HOME = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_WTK_HOME);
+    public static final QualifiedName QN_POLISH_HOME = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_POLISH_HOME);
+    public static final QualifiedName QN_PLATFORMS_SUPPORTED = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_PLATFORMS_SUPPORTED);
+    public static final QualifiedName QN_DEVICES_SUPPORTED = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_DEVICES_SUPPORTED);;
 }
+

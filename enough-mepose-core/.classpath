@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/ant-nodeps.jar"/>
-	<classpathentry exported="true" sourcepath="/Users/ricky/lib/apache-ant-1.6.3-src.zip" kind="lib" path="lib/ant.jar">
+	<classpathentry kind="lib" path="lib/ant-nodeps.jar"/>
+	<classpathentry sourcepath="/Users/ricky/lib/apache-ant-1.6.3-src.zip" kind="lib" path="lib/ant.jar">
 		<attributes>
 			<attribute value="jar:file:/Users/ricky/lib/apache-ant-1.6.3-doc.zip!/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="j2mepolish124/import/jdom.jar"/>
+	<classpathentry kind="lib" path="j2mepolish124/import/jdom.jar"/>
 	<classpathentry exported="true" sourcepath="lib/enough-j2mepolish-build-src.jar" kind="lib" path="j2mepolish124/import/enough-j2mepolish-build.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin/classes"/>

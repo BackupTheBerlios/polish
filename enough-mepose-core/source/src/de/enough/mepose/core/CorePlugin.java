@@ -1,21 +1,22 @@
 package de.enough.mepose.core;
 
 import java.io.File;
-import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.utils.log4j.Log4JPlugin;
 
 
@@ -31,7 +32,7 @@ public class CorePlugin extends Plugin {
     public QualifiedName ID_DEVICES_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.devices.configured");
     public QualifiedName ID_PLATFORMS_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.platforms.configured");
     
-    
+    private MeposeModelManager meposeModelManager;
 	private static CorePlugin plugin;
 	private ResourceBundle resourceBundle;
     
@@ -43,27 +44,14 @@ public class CorePlugin extends Plugin {
         System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
 		plugin = this;
         Log4JPlugin.init();
-        
-        // TODO:Only for bootstrap testing.
-        //createTestProject();
 	}
 
-//    public void createTestProject() {
-//        String buildxml1_basedir = "/Users/ricky/workspace/enough-polish-demo";
-//        String buildxml1_filename = "build.xml";
-//        this.meposeModel.setProjectPath(buildxml1_basedir);
-//        this.meposeModel.setBuildxml(new File(buildxml1_filename));
-//        this.meposeModel.setEnvironmentToDevice(this.meposeModel.getConfiguredDevices()[0]);
-//    }
-    
 	public void start(BundleContext context) throws Exception {
-        System.out.println("DEBUG:CorePlugin.start(...):enter.");
-//        this.meposeModel = new MeposeModel();
         this.bundleContext = context;
-        URL url = Platform.asLocalURL(context.getBundle().getEntry("/"));
-        File file = new File(url.toURI());
-        System.out.println("DEBUG:CorePlugin.start(...):"+file.isDirectory());
 		super.start(context);
+        
+        createModelMananger();
+        initModelManager();
         
 	}
     
@@ -188,10 +176,10 @@ public class CorePlugin extends Plugin {
                     model.setWTKHome(new File(wtkHome));
                 }
                 if(configuredDevices != null) {
-                    model.setConfiguredDevicesAsString(configuredDevices);
+                    model.setSupportedDevicesAsString(configuredDevices);
                 }
                 if(configuredPlatforms != null) {
-                    model.setPlatformConfiguredAsString(configuredPlatforms);
+                    model.setConfiguredPlatformsAsString(configuredPlatforms);
                 }
                 
                 resource.setSessionProperty(this.ID_MEPOSE_MODEL,model);
@@ -206,4 +194,41 @@ public class CorePlugin extends Plugin {
         return this.bundleContext;
     }
 
+    public MeposeModelManager getMeposeModelManager() {
+        return this.meposeModelManager;
+    }
+    
+    // ###################################################################
+    // Private methods.
+    
+    private void initModelManager() {
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        for (int i = 0; i < projects.length; i++) {
+            IProject project = projects[i];
+            if(project.isOpen() && isMeposeProject(project)) {
+                extractModelFromMeposeProject(project);
+            }
+        }
+    }
+
+    private void extractModelFromMeposeProject(IProject project) {
+        // TODO rickyn implement extractModelFromProject
+        
+    }
+
+    private boolean isMeposeProject(IProject project) {
+        try {
+            return project.getNature(MeposeCoreConstants.ID_NATURE) != null;
+        } catch (CoreException exception) {
+            log("could not determine if mepose nature is set.",exception);
+            return false;
+        }
+    }
+    
+    
+
+    private void createModelMananger() {
+        this.meposeModelManager = new MeposeModelManager();
+    }
+    
 }

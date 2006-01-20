@@ -53,11 +53,7 @@
           project="true"/>
  </extension>
  
-	<extension id="PolishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
-        <runtime>
-            <run class="de.enough.mepose.core.ui.project.PolishNature"></run>
-        </runtime>
-	</extension>
+	
 	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
  		<image 

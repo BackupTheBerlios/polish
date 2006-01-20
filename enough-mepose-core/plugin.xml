@@ -5,5 +5,9 @@
     	point="org.eclipse.core.runtime.preferences">
     	<initializer class="de.enough.mepose.core.preferences.PreferenceInitializer"/>
  	</extension>
-    
+    <extension id="PolishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
+        <runtime>
+            <run class="de.enough.mepose.core.project.PolishNature"></run>
+        </runtime>
+	</extension>
 </plugin>

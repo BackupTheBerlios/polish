@@ -29,7 +29,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +42,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.polish.Device;
@@ -56,11 +56,6 @@ import de.enough.utils.Status;
 
 /**
  * This class encapsulates the concepts of the polish build.xml in an abstract manner.
- * There is always a instance of this class present in the CorePlugin although
- * its fields may not be set.
- * Every project may have a MeposeModel.
- * <br>
- *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
@@ -69,6 +64,14 @@ import de.enough.utils.Status;
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class MeposeModel extends PropertyModel{
+    
+    //TODO: Implement the following scheme:
+    // All setter methods check if API is fullfilled like null parameters.
+    // Then they call some kind of check method.
+    // The check methods may modify the values and checks for dependend values
+    // It also maintains a Status object with the current state like if some error is present or
+    // something is missing.
+    // A StatusManager may be queried if some errors are present. No Status objects means everything ok.
     
     private static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
 
@@ -95,25 +98,27 @@ public class MeposeModel extends PropertyModel{
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
     private File mppHome = new File("");
-
     private AntBox antBox;
     private Environment environment;
     private PolishTask polishTask;
-//    private ErrorSituation errorSituation;
-    
     private List propertyChangeListeners;
-
     private DeviceDatabase deviceDatabase;
-
     private DeviceTree deviceTree;
-
     private String projectDescription = "";
+    private IClasspathEntry[] classpathEntries;
+    private File projectHome = new File("");
+
+    private String configuredPlatformsAsString;
+
+    private String supportedDevicesAsString;
 
     
     public MeposeModel() {
         reset();
     }
     
+    //TODO: Check if all fields are initialized.
+    //TODO: If fields are already set dispose them properly.
     public void reset() {
         this.antBox = new AntBox();
         this.antBox.setAlternativeClassLoader(getClass().getClassLoader());
@@ -121,18 +126,25 @@ public class MeposeModel extends PropertyModel{
         this.projectPath = "";
         this.propertyChangeListeners = new LinkedList();
         this.mppHome = new File("");
-        File polishHomeFile;
-        File mppHomeFile;
+        File polishHomeFile;// = new File("");
+        File mppHomeFile;// = new File("");
         try {
-            polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).toURI());
-            mppHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).toURI());
-        } catch (URISyntaxException exception) {
-            throw new IllegalStateException("No embedded j2me polish found.");
+            polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
         } catch (IOException exception) {
-            throw new IllegalStateException("IO excpetion:"+exception);
+            CorePlugin.log("No embedded j2me polish found.",exception);
+            throw new IllegalStateException("No embedded j2me polish found:"+exception);
         }
+        try {
+            mppHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).getPath());
+        } catch (IOException exception) {
+            CorePlugin.log("No embedded mpp-sdk found.",exception);
+            throw new IllegalStateException("No embedded mpp-sdk found.");
+        }
+        
         setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHomeFile);
         setPropertyValue(MeposeModel.ID_MPP_HOME,mppHomeFile);
+        
+        this.classpathEntries = null;
     }
     
     /**
@@ -153,6 +165,7 @@ public class MeposeModel extends PropertyModel{
         extractTaskFromBuildXML();
     }
 
+    // TODO: Break this method up to have several smaller ones.
     private void extractTaskFromBuildXML() {
         this.antBox.setWorkingDirectory(this.projectPath);
         this.antBox.createProject();
@@ -202,10 +215,11 @@ public class MeposeModel extends PropertyModel{
         this.configuredDevices = this.polishTask.getDevices();
     }
 
+    // TODO: Check if needed anymore.
     /*
      * @see de.enough.polish.plugin.eclipse.core.PolishProject#setEnvironmentToDevice(de.enough.polish.Device)
      */
-    public void setEnvironmentToDevice(Device device) {
+    protected void setEnvironmentToDevice(Device device) {
         if(device == null){
             throw new IllegalArgumentException("ERROR:AntPolishProject.setEnvironmentToDevice(...):Parameter 'device' is null.");
         }
@@ -218,6 +232,10 @@ public class MeposeModel extends PropertyModel{
         this.environment = this.polishTask.getEnvironment();
     }
   
+    /**
+     * 
+     * @return Never null.
+     */
     public AntBox getAntBox() {
         return this.antBox;
     }
@@ -251,6 +269,10 @@ public class MeposeModel extends PropertyModel{
         this.configuredDevices = configuredDevices;
     }
 
+    /**
+     * 
+     * @return Never null.
+     */
     public File getBuildxml() {
         return this.buildxml;
     }
@@ -266,35 +288,12 @@ public class MeposeModel extends PropertyModel{
         }
         this.projectPath = projectPath;
     }
-    
-    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        if(propertyChangeListener == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.addPropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
-        }
-        this.propertyChangeListeners.add(propertyChangeListener);
-    }
-    
-    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        if(propertyChangeListener == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.removePropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
-        }
-        this.propertyChangeListeners.remove(propertyChangeListener);
-    }
-    
-    public void firePropertyChangeEvent(String property,Object oldValue, Object newValue) {
-        if(property == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.firePropertyChangeEvent(...):Parameter 'property' is null.");
-        }
-        PropertyChangeEvent event = new PropertyChangeEvent(this,property,oldValue,newValue);
-        for (Iterator iterator = this.propertyChangeListeners.iterator(); iterator.hasNext(); ) {
-            PropertyChangeListener propertyChangeListener = (PropertyChangeListener) iterator.next();
-            propertyChangeListener.propertyChange(event);
-        }
-    }
 
     public void setPolishHome(File file) {
-        // TODO rickyn implement setPolishHome
-        
+        if(file != null){
+            throw new IllegalArgumentException("setPolishHome(...):parameter 'file' is null contrary to API.");
+        }
+        this.polishHome = file;
     }
 
     public File getPolishHome() {
@@ -302,42 +301,63 @@ public class MeposeModel extends PropertyModel{
     }
 
     public void setWTKHome(File file) {
-        // TODO rickyn implement setWTKHome
-        
+        if(file != null){
+            throw new IllegalArgumentException("setWTKHome(...):parameter 'file' is null contrary to API.");
+        }
+        this.wtkHome = file;
     }
     
     public File getWTKHome() {
         return this.wtkHome;
     }
 
-    public void setConfiguredDevicesAsString(String configuredDevices2) {
-        // TODO rickyn implement setConfiguredDevicesAsString
-        
+    /**
+     * 
+     * @return Never null.
+     */
+    public File getMppHome() {
+        return this.mppHome;
+    }
+    public void setSupportedDevicesAsString(String configuredDevices2) {
+        this.supportedDevicesAsString = configuredDevices2;
     }
 
-    public void setPlatformConfiguredAsString(String configuredPlatforms) {
-        // TODO rickyn implement setPlatformConfiguredAsString
-        
+    public void setConfiguredPlatformsAsString(String configuredPlatformsAsString) {
+        this.configuredPlatformsAsString = configuredPlatformsAsString;
+    }
+    
+    
+
+    public String getConfiguredPlatformsAsString() {
+        return this.configuredPlatformsAsString;
     }
 
+    public String getSupportedDevicesAsString() {
+        return this.supportedDevicesAsString;
+    }
+
+    /**
+     * 
+     * @return May be null.
+     */
     public DeviceDatabase getDeviceDatabase() {
         if(this.deviceDatabase != null) {
             return this.deviceDatabase;
         }
-        File polishHome = (File)getPropertyValue(ID_POLISH_HOME);
-        File projectHome = (File)getPropertyValue(ID_PROJECT_HOME);
-        File wtkHome = (File)getPropertyValue(ID_WTK_HOME);
-        // What to do here?
-        if(polishHome == null||projectHome == null) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No polishHome or projectHome");
-            }
+        //TODO: Look out for places where this property is set instead of the setter method.
+//        File polishHome = (File)getPropertyValue(ID_POLISH_HOME);
+//        File projectHome = (File)getPropertyValue(ID_PROJECT_HOME);
+//        File wtkHome = (File)getPropertyValue(ID_WTK_HOME);
+
+        if(this.polishHome == null||this.projectHome == null) {
+            CorePlugin.log("No polish home set in model");
             return null;
         }
         HashMap properties = new HashMap();
-        properties.put("wtk.home",wtkHome.getAbsolutePath());
+//        properties.put("wtk.home",this.wtkHome.getAbsolutePath());
+        properties.put("mpp.home",this.mppHome.getAbsolutePath());
         try {
-            this.deviceDatabase = new DeviceDatabase(properties,polishHome,projectHome,null,null,new HashMap(),new HashMap());
+            this.deviceDatabase = new DeviceDatabase(properties,this.polishHome,this.projectHome,null,null,new HashMap(),new HashMap());
         } catch (Exception e) {
             System.out.println("ERROR:MeposeModel.getDeviceDatabase(...):"+e);
             e.printStackTrace();
@@ -345,6 +365,7 @@ public class MeposeModel extends PropertyModel{
         return this.deviceDatabase;
     }
 
+    // May be null.
     public DeviceTree getDeviceTree() {
         
         if(this.deviceTree == null && this.deviceDatabase != null) {
@@ -382,7 +403,56 @@ public class MeposeModel extends PropertyModel{
     public File getNokiaHome() {
         return this.nokiaHome;
     }
+
+    /**
+     * @param classpathEntries
+     */
+    public void setClasspath(IClasspathEntry[] classpathEntries) {
+        this.classpathEntries = classpathEntries;
+    }
+    
+    /**
+     * Get the classpath entries for the supported devices.
+     * @return May be null.
+     */
+    public IClasspathEntry[] getClasspathEntries() {
+        return this.classpathEntries;
+    }
+
+    public File getProjectName() {
+        return this.projectHome;
+    }
+
+    public void setProjectName(File projectHome) {
+        this.projectHome = projectHome;
+    }
     
     
+    // ###################################################################
+    // Maintainance.
     
+    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        if(propertyChangeListener == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.addPropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
+        }
+        this.propertyChangeListeners.add(propertyChangeListener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        if(propertyChangeListener == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.removePropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
+        }
+        this.propertyChangeListeners.remove(propertyChangeListener);
+    }
+    
+    public void firePropertyChangeEvent(String property,Object oldValue, Object newValue) {
+        if(property == null){
+            throw new IllegalArgumentException("ERROR:MeposeProject.firePropertyChangeEvent(...):Parameter 'property' is null.");
+        }
+        PropertyChangeEvent event = new PropertyChangeEvent(this,property,oldValue,newValue);
+        for (Iterator iterator = this.propertyChangeListeners.iterator(); iterator.hasNext(); ) {
+            PropertyChangeListener propertyChangeListener = (PropertyChangeListener) iterator.next();
+            propertyChangeListener.propertyChange(event);
+        }
+    }
 }
