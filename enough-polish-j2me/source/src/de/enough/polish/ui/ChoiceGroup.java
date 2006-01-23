@@ -106,7 +106,9 @@ implements Choice
 	//#if ! tmp.suppressSelectCommand && polish.css.view-type
 		private boolean isSelectCommandAdded;
 	//#endif
-
+	//#if polish.css.view-type || polish.css.columns
+		//#define tmp.supportViewType 
+	//#endif	
 	
 
 	/**
@@ -1104,6 +1106,11 @@ implements Choice
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		//#if tmp.supportViewType
+			if (this.view != null) {
+				super.paintContent(x, y, leftBorder, rightBorder, g);
+			}
+		//#endif
 		if (this.isPopup && this.isPopupClosed) {
 			this.popupItem.paintContent(x, y, leftBorder, rightBorder, g);
 		} else {
@@ -1115,6 +1122,11 @@ implements Choice
 	//#ifdef polish.usePopupItem
 	protected void init( int firstLineWidth, int lineWidth ) {
 		super.init(firstLineWidth, lineWidth);
+		//#if tmp.supportViewType
+			if (this.view != null) {
+				return;
+			}
+		//#endif
 		if (this.isPopup && !this.isPopupClosed) {
 			this.backgroundWidth += (this.originalContentWidth - this.contentWidth); 
 			this.backgroundHeight += (this.originalContentHeight - this.contentHeight); 
@@ -1129,6 +1141,11 @@ implements Choice
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		super.initContent(firstLineWidth, lineWidth);
+		//#if tmp.supportViewType
+			if (this.view != null) {
+				return;
+			}
+		//#endif
 		if (this.isPopup) {
 			if (this.popupItem.image == null) {
 				this.popupItem.setImage( createPopupImage() );

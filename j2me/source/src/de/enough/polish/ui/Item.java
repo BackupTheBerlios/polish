@@ -770,6 +770,15 @@ public abstract class Item extends Object
 			return this.label.getText();
 		}
 	}
+	
+	/**
+	 * Retrieves the label item that is used by this item.\
+	 * 
+	 * @return the item or null when no item is used.
+	 */
+	public Item getLabelItem() {
+		return this.label;
+	}
 
 	/**
 	 * Gets the layout directives used for placing the item.
@@ -960,7 +969,7 @@ public abstract class Item extends Object
 				this.colSpan = colSpanInt.intValue();
 			}
 		//#endif	
-
+		
 	}
 	
 	/**
@@ -1553,6 +1562,14 @@ public abstract class Item extends Object
 		//#endif
 		// initialise content by subclass:
 		initContent( firstLineContentWidth, availableContentWidth );
+		if (this.contentWidth == 0 && this.contentHeight == 0) {
+			this.itemWidth = labelWidth;
+			this.itemHeight = labelHeight;
+			this.backgroundHeight = 0;
+			this.backgroundWidth = 0;
+			this.isInitialised = true;
+			return;
+		}
 		this.itemWidth = noneContentWidth + this.contentWidth;
 		//#ifdef polish.css.min-width
 		if (this.itemWidth < this.minimumWidth ) {

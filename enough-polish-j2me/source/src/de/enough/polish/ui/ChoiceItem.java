@@ -168,6 +168,7 @@ public class ChoiceItem extends IconItem
 		this.drawBox = (choiceType == Choice.EXCLUSIVE) || (choiceType == Choice.MULTIPLE);
 		this.choiceType = choiceType;
 		this.isMultiple = (choiceType == Choice.MULTIPLE);
+		this.appearanceMode = INTERACTIVE;
 	}
 	
 	//#ifdef polish.useDynamicStyles
@@ -347,6 +348,17 @@ public class ChoiceItem extends IconItem
 					this.boxColor = color.intValue();
 				}
 			//#endif
+			//#if polish.css.choiceitem-inactive
+				Boolean inactiveBool = style.getBooleanProperty("choiceitem-inactive");
+				if (inactiveBool != null) {
+					if (inactiveBool.booleanValue()) {
+						this.appearanceMode = Item.PLAIN;
+					} else {
+						this.appearanceMode = Item.INTERACTIVE;								
+					}
+				}
+			//#endif
+	
 		} // if draw box
 	}
 	

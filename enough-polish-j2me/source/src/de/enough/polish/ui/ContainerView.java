@@ -44,6 +44,10 @@ import de.enough.polish.util.TextUtil;
 public class ContainerView {
 	//#if polish.css.columns || polish.useTable
 		//#define tmp.useTable
+		//#ifdef polish.css.columns-width.star
+			private int starIndex;
+		//#endif
+			
 	//#endif
 	
 	private static final int NO_COLUMNS = 0;
@@ -57,6 +61,7 @@ public class ContainerView {
 	protected int focusedIndex = -1;
 	/** this field is set automatically, so that subclasses can use it for referencing the parent-container */
 	protected Container parentContainer;
+	/** determines whether any animation of this view should be (re) started at the next possibility. this is set to "true" in each showNotify() method. */
 	protected boolean restartAnimation;
 	protected int paddingVertical;
 	protected int paddingHorizontal;
@@ -76,7 +81,16 @@ public class ContainerView {
 	protected boolean isLayoutRight;
 	
 	protected boolean allowCycling = true;
-
+	
+	//#if polish.css.view-type-left-x-offset
+		protected int leftXOffset;
+	//#endif
+	//#if polish.css.view-type-right-x-offset
+		protected int rightXOffset;
+	//#endif
+	//#if polish.css.view-type-top-y-offset
+		protected int topYOffset;
+	//#endif
 
 
 	/**
@@ -101,6 +115,15 @@ public class ContainerView {
 	protected void initContent( Container parent, int firstLineWidth, int lineWidth ) {
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this );
+		
+		//#if polish.css.view-type-left-x-offset
+			lineWidth -= this.leftXOffset;
+		//#endif
+		//#if polish.css.view-type-right-x-offset
+			lineWidth -= this.rightXOffset;
+		//#endif
+
+		
 		this.parentContainer = parent;
 		Item[] myItems = parent.items;
 
@@ -125,13 +148,17 @@ public class ContainerView {
 				}
 				myContentHeight += height + this.paddingVertical;
 			}
-			if (!hasFocusableItem) {
-				this.appearanceMode = Item.PLAIN;
-			} else {
+			if (hasFocusableItem) {
 				this.appearanceMode = Item.INTERACTIVE;
+			} else {
+				this.appearanceMode = Item.PLAIN;
 			}
-		
-			this.contentHeight = myContentHeight;
+			
+			//#if polish.css.view-type-top-y-offset
+				this.contentHeight = myContentHeight + this.topYOffset;
+			//#else
+				this.contentHeight = myContentHeight;
+			//#endif
 			this.contentWidth = myContentWidth;
 			return;
 		//#ifdef tmp.useTable
@@ -141,7 +168,19 @@ public class ContainerView {
 		//#ifdef tmp.useTable
 			// columns are used
 			boolean isNormalWidthColumns = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
-			if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
+			//#ifdef polish.css.columns-width.star
+				if (this.columnsSetting == STATIC_WIDTH_COLUMNS) {
+					if (this.starIndex != -1) {
+						int combinedWidth = 0;
+						for (int i = 0; i < this.numberOfColumns; i++) {
+							combinedWidth += this.columnsWidths[i];
+						}
+						this.columnsWidths[this.starIndex] = lineWidth - combinedWidth;
+					}
+				} else {
+			//#else
+				//#	if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
+			//#endif
 				int availableColumnWidth;
 				if (isNormalWidthColumns) {
 					// this.columnsSetting == NORMAL_WIDTH_COLUMNS
@@ -160,21 +199,8 @@ public class ContainerView {
 				for (int i = 0; i < this.numberOfColumns; i++) {
 					this.columnsWidths[i] = availableColumnWidth;
 				}
-			} else {
-				int restWidth = 0;
-				int dynamicColumnIndex = -1;
-				for (int i = 0; i < this.numberOfColumns; i++) {
-					int w = this.columnsWidths[i];
-					if (w == -1) {
-						dynamicColumnIndex = i;
-					} else {
-						restWidth += w;
-					}
-				}
-				if (dynamicColumnIndex != -1) {
-					this.columnsWidths[ dynamicColumnIndex ] = lineWidth - restWidth;
-				}
 			}
+				
 			//#if polish.css.colspan
 				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + (myItems.length % 2) + 1 );
 			//#else
@@ -190,9 +216,13 @@ public class ContainerView {
 			}
 			int maxWidth = 0; // important for "equal" columns-width
 			int myContentHeight = 0;
+			boolean hasFocusableItem = false;
 			//System.out.println("starting init of " + myItems.length + " container items.");
 			for (int i=0; i< myItems.length; i++) {
 				Item item = myItems[i];
+				if (item.appearanceMode != Item.PLAIN) {
+					hasFocusableItem = true;
+				}
 				int availableWidth = this.columnsWidths[columnIndex];
 				//#if polish.css.colspan
 					int itemColSpan = item.colSpan;
@@ -214,20 +244,32 @@ public class ContainerView {
 							System.err.println("Warning: colspan " + itemColSpan + " is invalid at column " + columnIndex + " of a table with " + this.numberOfColumns + " columns, now using maximum possible value " + maxColSpan + ".");
 							itemColSpan = maxColSpan;
 						}
+						
 						// adjust the available width only when
 						// each column has an equal size or when
 						// the column widths are static,
 						// otherwise the complete row width
 						// is available anyhow:
 						if (!isNormalWidthColumns) {
-							for (int j = columnIndex + 1; j < columnIndex + itemColSpan; j++) {
-								availableWidth += this.paddingHorizontal + this.columnsWidths[j];
+							if (itemColSpan == maxColSpan) {
+								availableWidth = 0;
+								for (int j = 0; j < columnIndex; j++) {
+									availableWidth += this.paddingHorizontal + this.columnsWidths[j];
+								}
+								availableWidth = lineWidth - availableWidth;
+							} else {
+								for (int j = columnIndex + 1; j < columnIndex + itemColSpan; j++) {
+									availableWidth += this.paddingHorizontal + this.columnsWidths[j];
+								}								
 							}
 							//System.out.println("ContainerView.init(): adjusted availableWidth for item " + i + ": " + availableWidth);
 						}
 					}
 				//#endif
-				//System.out.println("available with: " + availableWidth);
+				//System.out.println( i + ": available with: " + availableWidth + ", item.isInitialized=" + item.isInitialised + ", itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
+				if (item.isInitialised && item.itemWidth > availableWidth) {
+					item.isInitialised = false;
+				}
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
 				int height = item.getItemHeight( availableWidth, availableWidth );
@@ -272,6 +314,11 @@ public class ContainerView {
 					rowIndex++;
 				}
 			} // for each item
+			if (hasFocusableItem) {
+				this.appearanceMode = Item.INTERACTIVE;
+			} else {
+				this.appearanceMode = Item.PLAIN;
+			}
 			//#if polish.css.colspan
 				this.numberOfRows = rowHeightsList.size();
 				//System.out.println("ContainerView.init(): numberOfRows=" + this.numberOfRows + ", rowIndex=" + rowIndex);
@@ -397,6 +444,17 @@ public class ContainerView {
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	protected void paintContent( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		//#if polish.css.view-type-top-y-offset
+			y += this.topYOffset;
+		//#endif
+		//#if polish.css.view-type-left-x-offset
+			x += this.leftXOffset;
+			leftBorder += this.leftXOffset;
+		//#endif
+		//#if polish.css.view-type-right-x-offset
+			rightBorder -= this.rightXOffset;
+		//#endif
+
 		Item[] myItems = this.parentContainer.getItems();
 		
 		int focusedX = x;
@@ -443,7 +501,7 @@ public class ContainerView {
 						focusedY = y;
 						focusedX = x;
 						focusedRightBorder = x + columnWidth;
-						System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
+						//System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
 						// item.getItemHeight( columnWidth, columnWidth );
 					} else {
 						item.paint(x, y, x, x + columnWidth, g);
@@ -556,7 +614,7 @@ public class ContainerView {
 				while( doneSteps <= steps) {
 					doneSteps += item.colSpan;
 					if (doneSteps >= steps) {
-						System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+						//System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 						break;
 					}
 					if (forwardFocus) {
@@ -576,7 +634,7 @@ public class ContainerView {
 						}
 					}
 					item = items[i];
-					System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+					//System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 				}
 				if (doneSteps >= steps && item.colSpan != 1 && i != this.focusedIndex)  {
 					if (forwardFocus) {
@@ -584,10 +642,10 @@ public class ContainerView {
 						if (i < 0) {
 							i = items.length - 1;
 						}
-						System.out.println("forward: Adjusting startIndex to " + i );
+						//System.out.println("forward: Adjusting startIndex to " + i );
 					} else {
 						i = (i + 1) % items.length;
-						System.out.println("backward: Adjusting startIndex to " + i );
+						//System.out.println("backward: Adjusting startIndex to " + i );
 					}
 				}
 			}
@@ -725,8 +783,8 @@ public class ContainerView {
 	 * 
 	 */
 	public void focus(Style focusstyle, int direction) {
-		setStyle( focusstyle );
 		this.isFocused = true;
+		setStyle( focusstyle );
 	}
 
 	
@@ -796,35 +854,24 @@ public class ContainerView {
 								this.columnsSetting = STATIC_WIDTH_COLUMNS;
 								this.columnsWidths = new int[ this.numberOfColumns ];
 								//#ifdef polish.css.columns-width.star
-									int combinedWidth = 0;
-									int starIndex = -1;
+									//int combinedWidth = 0;
+									this.starIndex = -1;
 								//#endif
 								for (int i = 0; i < widths.length; i++) {
 									//#ifdef polish.css.columns-width.star
 										String widthStr = widths[i];
 										if ("*".equals( widthStr )) {
-											starIndex = i;
+											this.starIndex = i;
+											this.columnsWidths[i] = 0;
 										} else {
 											int w = Integer.parseInt( widthStr );
-											combinedWidth += w;
+											//combinedWidth += w;
 											this.columnsWidths[i] = w;
 										}
 									//#else
 										this.columnsWidths[i] = Integer.parseInt( widths[i] );
 									//#endif
 								}
-								//#ifdef polish.css.columns-width.star
-									if (starIndex != -1) {
-										Screen myScreen = getScreen();
-										if (myScreen != null) {
-											this.columnsWidths[starIndex] = 
-												myScreen.getWidth() - combinedWidth;
-										} else {
-											//#debug warn
-											System.out.println("Container: Unable to process '*'-columns-width");
-										}
-									}
-								//#endif
 								this.columnsSetting = STATIC_WIDTH_COLUMNS;
 							}					
 						}
@@ -833,6 +880,25 @@ public class ContainerView {
 				//TODO rob allow definition of the "fill-policy"
 			}
 		//#endif
+		//#if polish.css.view-type-left-x-offset
+			Integer leftXOffsetInt = style.getIntProperty("view-type-left-x-offset");
+			if (leftXOffsetInt != null) {
+				this.leftXOffset = leftXOffsetInt.intValue();
+			}
+		//#endif
+		//#if polish.css.view-type-right-x-offset
+			Integer rightXOffsetInt = style.getIntProperty("view-type-right-x-offset");
+			if (rightXOffsetInt != null) {
+				this.rightXOffset = rightXOffsetInt.intValue();
+			}
+		//#endif
+		//#if polish.css.view-type-top-y-offset
+			Integer topYOffsetInt = style.getIntProperty("view-type-top-y-offset");
+			if (topYOffsetInt != null) {
+				this.topYOffset = topYOffsetInt.intValue();
+			}
+		//#endif
+	
 	}
 	
 	public Background removeParentBackground() {
@@ -966,6 +1032,8 @@ public class ContainerView {
 	 * @return true when the key was handled.
 	 */
 	public boolean handleKeyPressed( int keyCode, int gameAction) {
+		//#debug
+		System.out.println("ContainerView.handleKeypressedU() of container " + this);
 		Item item = getNextItem( keyCode, gameAction );
 		if (item != null) {
 			focusItem(this.focusedIndex, item);
@@ -993,5 +1061,51 @@ public class ContainerView {
 		return false;
 	}
 	//#endif
+	
+	
+	/**
+	 * Scrolls the parent container (or one of its parent containers) so that the given positions relative to the parent's leftXPos/topYPos coordinates are shown as much as possible.
+	 * 
+	 * @param isDownwards true when the bottom is more important than the top
+	 * @param x the x coordinate relative to the parent container's leftXPos
+	 * @param y the y coordinate relative to the parent container's topYPos
+	 * @param width the width of the visible area
+	 * @param height the height of the area that should be as much as possible visible
+	 */
+	protected void scrollRelative( boolean isDownwards, int x, int y, int width, int height ){
+		Container container = this.parentContainer;
+		while (!container.enableScrolling) {
+			Item item = container.parent;
+			if (item instanceof Container) {
+				container = (Container) item;
+			} else {
+				break;
+			}
+		} 
+		if (container.enableScrolling) {
+			container.scroll( isDownwards, this.parentContainer.xLeftPos + x, this.parentContainer.yTopPos + y, width, height );
+		}
+	}
+	
+	protected void scrollTo( int absoluteY ) {
+		//System.out.println("scrollTo: original=" + absoluteY + ", current=" + this.parentContainer.yTopPos + ", difference=" + (absoluteY - this.parentContainer.yTopPos));
+		int difference = absoluteY - this.parentContainer.yTopPos;
+		Container container = this.parentContainer;
+		while (!container.enableScrolling) {
+			Item item = container.parent;
+			if (item instanceof Container) {
+				container = (Container) item;
+			} else {
+				break;
+			}
+		} 
+		if (container.enableScrolling) {
+			container.targetYOffset = container.yOffset + difference;
+		}
+	}
+	
+	protected int getParentYTopPos(){
+		return this.parentContainer.yTopPos;
+	}
 
 }

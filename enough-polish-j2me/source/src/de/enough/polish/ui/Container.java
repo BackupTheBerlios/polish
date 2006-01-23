@@ -75,7 +75,7 @@ public class Container extends Item {
 	protected Style itemStyle;
 	protected Item focusedItem;
 	public int focusedIndex = -1;
-	private boolean enableScrolling;
+	protected boolean enableScrolling;
 	//#if polish.Container.allowCycling != false
 		protected boolean allowCycling = true;
 	//#endif
@@ -406,6 +406,7 @@ public class Container extends Item {
 			//# getScreen().setFocus( item );
 		//#endif
 		
+		
 		if (this.autoFocusEnabled  && !this.isInitialised) {
 			// setting the index for automatically focusing the appropriate item
 			// during the initialisation:
@@ -432,15 +433,6 @@ public class Container extends Item {
 			}
 		}
 		
-		// save style of the to be focused item and focus the item:
-//		int direction;
-//		if (this.focusedIndex == -1) {
-//			direction = 0;
-//		} else if ( index < this.focusedIndex ) {
-//			direction = Canvas.UP;
-//		} else {
-//			direction = Canvas.DOWN;
-//		}
 		this.itemStyle = item.focus( this.focusedStyle, direction );
 		//#ifdef polish.debug.error
 			if (this.itemStyle == null) {
@@ -497,65 +489,122 @@ public class Container extends Item {
 //						itemYTop = this.internalY;
 //					}
 //				}
-				int difference = 0;
-				if (itemYTop == itemYBottom) {
-					//#debug
-					System.out.println("Container: unable to auto-scroll, item.yBottomPos == item.yTopPos");
-				} else if (itemYBottom > this.yBottom) {
-					// this item is too low:
-					difference = this.yBottom - itemYBottom;
-					// #debug
-					//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
-					//if ( itemYTop + difference < this.yTop) {
-					if ( isDownwards && itemYTop + difference < this.yTop) {
-						// #debug
-						//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
-						difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
-					}
-					/*
-					if ( itemYTop + difference < this.internalY) {
-						//#debug
-						System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.internalY=" +  this.internalY + "  to new difference=" + (this.internalY - itemYTop + 10) );
-						difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
-					}
-					*/
-				} else if (itemYTop < this.yTop) {
-					// this item is too high:
-					//#if tmp.useSupportViewType
-						//TODO when colpan is used, the index might need to be higher than anticipated
-						if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
-					//#else
-						//# if (index == 0) {
-					//#endif
-						// scroll to the very top:
-						difference = -1 * this.yOffset;
-					} else {
-						difference = this.yTop - itemYTop + this.focusedTopMargin;
-					}
-					// re-adjust the scrolling in case we scroll up and the previous
-					// item is very large:
-					if ( !isDownwards && itemYBottom + difference > this.yBottom  ) {
-						difference = this.yBottom - itemYBottom;
-					}
-						
-					// #debug
-					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
-				}
-				//#debug
-				System.out.println("Container (" + getClass().getName() + "): difference: " + difference + "  container.yOffset=" + this.yOffset + ", itemY=[" + itemYTop + "-" + itemYBottom + "],  item.internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom  + "   ---- , this.internalY=" +  this.internalY);
-						
-				//#if polish.css.scroll-mode
-					if (!this.scrollSmooth) {
-						this.yOffset += difference;
-					} else {
-				//#endif
-						this.targetYOffset = this.yOffset + difference;
-				//#if polish.css.scroll-mode
-					}
-				//#endif
+//				int difference = 0;
+				scroll( isDownwards, itemYTop, this.xLeftPos, itemYBottom - itemYTop, item.internalWidth );
+//				if (itemYTop == itemYBottom) {
+//					//#debug
+//					System.out.println("Container: unable to auto-scroll, item.yBottomPos == item.yTopPos");
+//				} else if (itemYBottom > this.yBottom) {
+//					// this item is too low:
+//					difference = this.yBottom - itemYBottom;
+//					// #debug
+//					//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+//					//if ( itemYTop + difference < this.yTop) {
+//					if ( isDownwards && itemYTop + difference < this.yTop) {
+//						// #debug
+//						//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
+//						difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
+//					}
+//					/*
+//					if ( itemYTop + difference < this.internalY) {
+//						//#debug
+//						System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.internalY=" +  this.internalY + "  to new difference=" + (this.internalY - itemYTop + 10) );
+//						difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
+//					}
+//					*/
+//				} else if (itemYTop < this.yTop) {
+//					// this item is too high:
+//					//#if tmp.useSupportViewType
+//						//TODO when colpan is used, the index might need to be higher than anticipated
+//						if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
+//					//#else
+//						//# if (index == 0) {
+//					//#endif
+//						// scroll to the very top:
+//						difference = -1 * this.yOffset;
+//					} else {
+//						difference = this.yTop - itemYTop + this.focusedTopMargin;
+//					}
+//					// re-adjust the scrolling in case we scroll up and the previous
+//					// item is very large:
+//					if ( !isDownwards && itemYBottom + difference > this.yBottom  ) {
+//						difference = this.yBottom - itemYBottom;
+//					}
+//						
+//					// #debug
+//					//System.out.println("item too high: difference: " + difference + "  itemYTop=" + itemYTop + "  container.yTop=" + this.yTop  );
+//				}
+//				//#debug
+//				System.out.println("Container (" + getClass().getName() + "): difference: " + difference + "  container.yOffset=" + this.yOffset + ", itemY=[" + itemYTop + "-" + itemYBottom + "],  item.internalY: " + (item.internalY) + " bis " + (item.internalY + item.internalHeight ) + "  contentY:" + this.contentY + "  top:" + this.yTop + " bottom:" + this.yBottom  + "   ---- , this.internalY=" +  this.internalY);
+//						
+//				//#if polish.css.scroll-mode
+//					if (!this.scrollSmooth) {
+//						this.yOffset += difference;
+//					} else {
+//				//#endif
+//						this.targetYOffset = this.yOffset + difference;
+//				//#if polish.css.scroll-mode
+//					}
+//				//#endif
 			}
 		}
 		this.isInitialised = false;
+	}
+	
+	protected void scroll( boolean isDownwards, int x, int itemYTop, int width, int height ) {
+		int difference = 0;
+		int index = this.focusedIndex;
+		int itemYBottom = itemYTop + height;
+		if ( height == 0 || !this.enableScrolling) {
+			return;
+		} else if (itemYBottom > this.yBottom) {
+			// this item is too low:
+			difference = this.yBottom - itemYBottom;
+			// #debug
+			//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+			//if ( itemYTop + difference < this.yTop) {
+			if ( isDownwards && itemYTop + difference < this.yTop) {
+				// #debug
+				//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
+				difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
+			}
+			/*
+			if ( itemYTop + difference < this.internalY) {
+				//#debug
+				System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.internalY=" +  this.internalY + "  to new difference=" + (this.internalY - itemYTop + 10) );
+				difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
+			}
+			*/
+		} else if (itemYTop < this.yTop) {
+			// this item is too high:
+			//#if tmp.useSupportViewType
+				//TODO when colpan is used, the index might need to be higher than anticipated
+				if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
+			//#else
+				//# if (index == 0) {
+			//#endif
+				// scroll to the very top:
+				difference = -1 * this.yOffset;
+			} else {
+				difference = this.yTop - itemYTop + this.focusedTopMargin;
+			}
+			// re-adjust the scrolling in case we scroll up and the previous
+			// item is very large:
+			if ( !isDownwards && itemYBottom + difference > this.yBottom  ) {
+				difference = this.yBottom - itemYBottom;
+			}
+		}
+				
+		//#if polish.css.scroll-mode
+			if (!this.scrollSmooth) {
+				this.yOffset += difference;
+			} else {
+		//#endif
+				this.targetYOffset = this.yOffset + difference;
+		//#if polish.css.scroll-mode
+			}
+		//#endif
+		
 	}
 
 	/* (non-Javadoc)
@@ -1048,68 +1097,6 @@ public class Container extends Item {
 			}
 		//#endif
 		
-//		this.columnsSetting = NO_COLUMNS;
-//		//#ifdef polish.css.columns
-//			Integer columns = style.getIntProperty("columns");
-//			if (columns != null) {
-//				this.numberOfColumns = columns.intValue();
-//				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-//				//#ifdef polish.css.columns-width
-//				String width = style.getProperty("columns-width");
-//				if (width != null) {
-//					if ("equal".equals(width)) {
-//						this.columnsSetting = EQUAL_WIDTH_COLUMNS;
-//					} else if ("normal".equals(width)) {
-//						//this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-//					} else {
-//						// these are pixel settings.
-//						String[] widths = TextUtil.split( width, ',');
-//						if (widths.length != this.numberOfColumns) {
-//							// this is an invalid setting!
-//							this.columnsSetting = NORMAL_WIDTH_COLUMNS;
-//							//#debug warn
-//							System.out.println("Container: Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
-//						} else {
-//							this.columnsSetting = STATIC_WIDTH_COLUMNS;
-//							this.columnsWidths = new int[ this.numberOfColumns ];
-//							//#ifdef polish.css.columns-width.star
-//								int combinedWidth = 0;
-//								int starIndex = -1;
-//							//#endif
-//							for (int i = 0; i < widths.length; i++) {
-//								//#ifdef polish.css.columns-width.star
-//									String widthStr = widths[i];
-//									if ("*".equals( widthStr )) {
-//										starIndex = i;
-//									} else {
-//										int w = Integer.parseInt( widthStr );
-//										combinedWidth += w;
-//										this.columnsWidths[i] = w;
-//									}
-//								//#else
-//									this.columnsWidths[i] = Integer.parseInt( widths[i] );
-//								//#endif
-//							}
-//							//#ifdef polish.css.columns-width.star
-//								if (starIndex != -1) {
-//									Screen myScreen = getScreen();
-//									if (myScreen != null) {
-//										this.columnsWidths[starIndex] = 
-//											myScreen.getWidth() - combinedWidth;
-//									} else {
-//										//#debug warn
-//										System.out.println("Container: Unable to process '*'-columns-width");
-//									}
-//								}
-//							//#endif
-//							this.columnsSetting = STATIC_WIDTH_COLUMNS;
-//						}					
-//					}
-//				}
-//				//#endif
-//				//TODO rob allow definition of the "fill-policy"
-//			}
-//		//#endif
 		//#ifdef polish.css.view-type
 			ContainerView viewType = (ContainerView) style.getObjectProperty("view-type");
 //			if (this instanceof ChoiceGroup) {
@@ -1128,12 +1115,12 @@ public class Container extends Item {
 						}
 						viewType.parentContainer = this;
 						viewType.focusFirstElement = this.autoFocusEnabled;
-						viewType.setStyle(style);
 						//#if polish.Container.allowCycling != false
 							viewType.allowCycling = this.allowCycling;
 						//#else
 							viewType.allowCycling = false;
 						//#endif
+						viewType.setStyle(style);
 						this.view = viewType;
 					} catch (Exception e) {
 						//#debug error
@@ -1152,6 +1139,11 @@ public class Container extends Item {
 						this.view = new ContainerView();  
 						this.view.parentContainer = this;
 						this.view.focusFirstElement = this.autoFocusEnabled;
+						//#if polish.Container.allowCycling != false
+							this.view.allowCycling = this.allowCycling;
+						//#else
+							this.view.allowCycling = false;
+						//#endif
 						this.view.setStyle(style);
 					}
 				}
@@ -1360,6 +1352,20 @@ public class Container extends Item {
 	 */
 	protected void showNotify()
 	{
+		if (this.style != null && !this.isStyleInitialised) {
+			setStyle( this.style );
+		}
+		//#ifdef polish.useDynamicStyles
+			else if (this.style == null) {
+				initStyle();
+			}
+		//#else
+			else if (this.style == null && !this.isStyleInitialised) {
+				//#debug
+				System.out.println("Setting default style for container " + this  );
+				setStyle( StyleSheet.defaultStyle );
+			}
+		//#endif
 		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				this.view.showNotify();
@@ -1368,6 +1374,20 @@ public class Container extends Item {
 		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
+			if (item.style != null && !item.isStyleInitialised) {
+				item.setStyle( item.style );
+			}
+			//#ifdef polish.useDynamicStyles
+				else if (item.style == null) {
+					initStyle();
+				}
+			//#else
+				else if (item.style == null && !item.isStyleInitialised) {
+					//#debug
+					System.out.println("Setting default style for item " + item );
+					item.setStyle( StyleSheet.defaultStyle );
+				}
+			//#endif
 			item.showNotify();
 		}
 	}
