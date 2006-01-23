@@ -1062,9 +1062,26 @@
 		name="view-type-right-x-offset"
 		type="integer"
 		appliesTo="Container, ContainerView, view-type"
-		description="The number of pixels the right border of the a view-type is shifted to the left (inside), negative values move the left border to the right (outside)."
+		description="The number of pixels the right border of the a view-type is shifted to the left (inside), negative values move the right border to the right (outside)."
 		default="0"
 		id="109"
+	/>
+
+	<attribute
+		name="view-type-top-y-offset"
+		type="integer"
+		appliesTo="Container, ContainerView, view-type"
+		description="The number of pixels the top border of the a view-type is shifted downwards, negative values move the top border to the upwards."
+		default="0"
+		id="110"
+	/>
+
+	<attribute
+		name="choiceitem-inactive"
+		type="boolean"
+		appliesTo="ChoiceItem, ChoiceGroup item"
+		description="Can be used to deactivate a specific ChoiceGroup item permanently. This can be useful to integrate explanations, headings etc into an ChoiceGroup."
+		default="false"
 	/>
 
 </attributes>
