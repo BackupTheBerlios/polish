@@ -240,7 +240,7 @@ public class ProjectPage extends WizardPage{
         }
         this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE,project);
         IPath projectLocation = project.getLocation();
-        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PROJECT_HOME,projectLocation.toFile());
+        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PATH_PROJECT_FILE,projectLocation.toFile());
     }
     
     private void addNature() throws CoreException {

@@ -41,21 +41,30 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
+import de.enough.polish.devices.Configuration;
+import de.enough.polish.devices.ConfigurationManager;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceTree;
+import de.enough.polish.devices.Platform;
+import de.enough.polish.devices.PlatformManager;
 import de.enough.utils.AntBox;
+import de.enough.utils.Arrays;
 import de.enough.utils.PropertyModel;
 import de.enough.utils.Status;
 
 /**
  * This class encapsulates the concepts of the polish build.xml in an abstract manner.
+ * It consists of:
+ * <li>Paths (WTKs,polish home,...)
+ * <li>Infos (description, licence)
+ * <li>Supported Config (platforms,configurations,target devices, general classpath)
+ * <li>Current Config (device to run, specific classpath, jar/jad pairs)
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
@@ -65,14 +74,6 @@ import de.enough.utils.Status;
  */
 public class MeposeModel extends PropertyModel{
     
-    //TODO: Implement the following scheme:
-    // All setter methods check if API is fullfilled like null parameters.
-    // Then they call some kind of check method.
-    // The check methods may modify the values and checks for dependend values
-    // It also maintains a Status object with the current state like if some error is present or
-    // something is missing.
-    // A StatusManager may be queried if some errors are present. No Status objects means everything ok.
-    
     private static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
 
 //    public static final String ERROR_NOBUILDXML_FILE = "No build.xml file specified.";
@@ -80,44 +81,78 @@ public class MeposeModel extends PropertyModel{
 //    public static final String ERROR_PARSE_ERROR = "Errors while parsing build.xml";
 //    public static final String ERROR_INVALID_WORKING_DIR = "Working directory is not valid";
     
-    public static final String ID_DEVICES_SUPPORTED = "id.devices.supported";
-    public static final String ID_PLATFORMS_SUPPORTED = "id.platforms.supported";
-    public static final String ID_POLISH_HOME = "id.path.polishhome";
-    // This is a File instance
-    public static final String ID_PROJECT_HOME = "id.path.projecthome";
-    public static final String ID_WTK_HOME = "id.path.wtkhome";
-    public static final String ID_BUILD_WD = "id.build.wd";
-    public static final String ID_BUILDXML = "id.buildxml";
-    public static final String ID_ANT_TASK_POLISH = "id.ant.task.polish";
-    public static final String ID_MPP_HOME = "id.path.mpphome";
+    // ###################################################################
+    // IDs.
     
-    private Device[] configuredDevices;
+    // Ant.
+    public static final String ID_ANT_TASK_POLISH = "id.ant.task.polish";
+    
+    // Paths.
+    public static final String ID_PATH_WORKINGDIRECTORY_BUILD = "id.build.wd";
+    public static final String ID_PATH_BUILDXML_FILE = "id.buildxml";
+    public static final String ID_PATH_PROJECT_FILE = "id.path.projecthome";
+    public static final String ID_PATH_POLISH_FILE = "id.path.polishhome";
+    public static final String ID_PATH_WTK_FILE = "id.path.wtkhome";
+    public static final String ID_PATH_MPP_FILE = "id.path.mpphome";
+    public static final String ID_PATH_NOKIA_FILE = "id.path.nokiahome";
+    
+    // Supported Config.
+    public static final String ID_SUPPORTED_CONFIGURATIONS = "id.supported.configurations";
+    public static final String ID_SUPPORTED_PLATFORMS = "id.supported.platforms";
+    public static final String ID_SUPPORTED_DEVICES = "id.supported.devices";
+
+    // Current Config.
+    public static final String ID_CURRENT_DEVICE = "id.current.device";
+    public static final String ID_CURRENT_JADJARPAIRS = "id.current.jadjarpairs";
+    
+    // Info.
+    public static final String ID_INFO_DESCRIPTION = "id.info.description";
+    
+    
+    // ###################################################################
+    // Fields.
+    
+    // Ant.
+    private AntBox antBox;
     private File buildxml = new File("");
-    private String projectPath;
+    private PolishTask polishTask;
+    private Environment environment;
+
+    // Path.
+    private String projectPath = "";
     private File polishHome = new File("");
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
     private File mppHome = new File("");
-    private AntBox antBox;
-    private Environment environment;
-    private PolishTask polishTask;
-    private List propertyChangeListeners;
-    private DeviceDatabase deviceDatabase;
-    private DeviceTree deviceTree;
-    private String projectDescription = "";
-    private IClasspathEntry[] classpathEntries;
     private File projectHome = new File("");
 
-    private String configuredPlatformsAsString;
+    // Supported Config.
+//    private Device[] configuredDevicesANT = new Device[0];
+    private DeviceDatabase deviceDatabase;
+    private DeviceTree deviceTree;
+    private IClasspathEntry[] classpathEntries;
+    private Configuration[] supportedConfigurations = new Configuration[0];
+    private Platform[] supportedPlatforms = new Platform[0];
+    private Device[] supportedDevices = new Device[0];
 
-    private String supportedDevicesAsString;
-
+    // Current Config.
     private File jadFile;
+    private Device currentDevice;
 
+    // Info.
+    private String projectDescription = "";
+
+    // Internal.
+    private List propertyChangeListeners;
+    
     
     public MeposeModel() {
         reset();
     }
+    
+    
+    // ###################################################################
+    // Methods.
     
     //TODO: Check if all fields are initialized.
     //TODO: If fields are already set dispose them properly.
@@ -132,26 +167,30 @@ public class MeposeModel extends PropertyModel{
         File mppHomeFile;// = new File("");
         this.jadFile = new File("");
         try {
-            polishHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
+            polishHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
         } catch (IOException exception) {
             CorePlugin.log("No embedded j2me polish found.",exception);
             throw new IllegalStateException("No embedded j2me polish found:"+exception);
         }
         try {
-            mppHomeFile  = new File(Platform.asLocalURL(Platform.find(CorePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).getPath());
+            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(CorePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).getPath());
         } catch (IOException exception) {
             CorePlugin.log("No embedded mpp-sdk found.",exception);
             throw new IllegalStateException("No embedded mpp-sdk found.");
         }
         
-        setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHomeFile);
-        setPropertyValue(MeposeModel.ID_MPP_HOME,mppHomeFile);
+        setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
+        setPropertyValue(MeposeModel.ID_PATH_MPP_FILE,mppHomeFile);
         
         setPolishHome(polishHomeFile);
         setMppHome(mppHomeFile);
         
         this.classpathEntries = null;
     }
+    
+    
+    // ###################################################################
+    // Ant.
     
     /**
      * When called initializes the antBox with the given buildxml, creates a antproject, sets
@@ -165,7 +204,7 @@ public class MeposeModel extends PropertyModel{
         }
         this.buildxml = buildxml;
         if( ! this.buildxml.exists()) {
-            setPropertyStatus(ID_BUILDXML,STATUS_BUILDXML_MISSING);
+            setPropertyStatus(ID_PATH_BUILDXML_FILE,STATUS_BUILDXML_MISSING);
             return;
         }
         extractTaskFromBuildXML();
@@ -218,7 +257,7 @@ public class MeposeModel extends PropertyModel{
         this.environment = this.polishTask.getEnvironment();
         firePropertyChangeEvent("environment",oldEnvironment,this.environment);
         this.polishTask.selectDevices();
-        this.configuredDevices = this.polishTask.getDevices();
+//        this.configuredDevicesANT = this.polishTask.getDevices();
     }
 
     // TODO: Check if needed anymore.
@@ -263,18 +302,7 @@ public class MeposeModel extends PropertyModel{
         }
         this.environment = environment;
     }
-
-    public Device[] getConfiguredDevices() {
-        return this.configuredDevices;
-    }
-
-    public void setConfiguredDevices(Device[] configuredDevices) {
-        if(configuredDevices == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.setConfiguredDevices(...):Parameter 'configuredDevices' is null.");
-        }
-        this.configuredDevices = configuredDevices;
-    }
-
+    
     /**
      * 
      * @return Never null.
@@ -283,11 +311,107 @@ public class MeposeModel extends PropertyModel{
         return this.buildxml;
     }
 
+    
+    // ###################################################################
+    // Supported Config methods.
+    
+    public Device[] getSupportedDevices() {
+        return this.deviceTree.getSelectedDevices();
+//        return this.supportedDevices;
+    }
+    
+    public Platform[] getSupportedPlatforms() {
+        return this.supportedPlatforms;
+    }
+
+    public void setSupportedPlatforms(Platform[] supportedPlatforms) {
+        this.supportedPlatforms = supportedPlatforms;
+    }
+
+    public void setSupportedConfigurations(Configuration[] supportedConfigurations) {
+        if(supportedConfigurations == null){
+            throw new IllegalArgumentException("setSupportedConfigurations(...):parameter 'supportedConfigurations' is null contrary to API.");
+        }
+        this.supportedConfigurations = supportedConfigurations;
+    }
+
+    public Configuration[] getSupportedConfigurations() {
+        return this.supportedConfigurations;
+    }
+
+    public void setSupportedDevices(Device[] supportedDevices) {
+        this.supportedDevices = supportedDevices;
+    }
+    
+    /**
+     * @param classpathEntries
+     */
+    public void setClasspath(IClasspathEntry[] classpathEntries) {
+        this.classpathEntries = classpathEntries;
+    }
+    
+    /**
+     * Get the classpath entries for the supported devices.
+     * @return May be null.
+     */
+    public IClasspathEntry[] getClasspathEntries() {
+        return this.classpathEntries;
+    }
+    
+    
+    // ###################################################################
+    // Current methods.
+    
+    public File getJadFile() {
+        return this.jadFile;
+    }
+    
+    public void setJadFile(File jadFile) {
+        if(jadFile == null){
+            throw new IllegalArgumentException("setJadFile(...):parameter 'jadFile' is null contrary to API.");
+        }
+        this.jadFile = jadFile;
+    }
+    
+    /**
+     * 
+     * @return May be null
+     */
+    public Device getCurrentDevice() {
+        return this.currentDevice;
+    }
+
+    public void setCurrentDevice(Device currentDevice) {
+        this.currentDevice = currentDevice;
+    }
+    
+    
+    // ###################################################################
+    // Paths methods.
+    
+    public File getProjectName() {
+        return this.projectHome;
+    }
+
+    public void setProjectName(File projectHome) {
+        this.projectHome = projectHome;
+    }
+    
+    /**
+     * @param nokiaHome
+     */
+    public void setNokiaHome(File nokiaHome) {
+        this.nokiaHome = nokiaHome;
+    }
+
+    public File getNokiaHome() {
+        return this.nokiaHome;
+    }
+    
     public String getProjectPath() {
         return this.projectPath;
     }
    
-
     public void setProjectPath(String projectPath) {
         if(projectPath == null){
             throw new IllegalArgumentException("ERROR:MeposeProject.setProjectPath(...):Parameter 'projectPath' is null.");
@@ -328,24 +452,20 @@ public class MeposeModel extends PropertyModel{
     public void setMppHome(File mppHome) {
         this.mppHome = mppHome;
     }
-    public void setSupportedDevicesAsString(String configuredDevices2) {
-        this.supportedDevicesAsString = configuredDevices2;
-    }
-
-    public void setConfiguredPlatformsAsString(String configuredPlatformsAsString) {
-        this.configuredPlatformsAsString = configuredPlatformsAsString;
-    }
     
     
+//    public Device[] getConfiguredDevices() {
+//        return this.configuredDevicesANT;
+//    }
+//
+//    public void setConfiguredDevices(Device[] configuredDevices) {
+//        if(configuredDevices == null){
+//            throw new IllegalArgumentException("ERROR:MeposeProject.setConfiguredDevices(...):Parameter 'configuredDevices' is null.");
+//        }
+//        this.configuredDevicesANT = configuredDevices;
+//    }
 
-    public String getConfiguredPlatformsAsString() {
-        return this.configuredPlatformsAsString;
-    }
-
-    public String getSupportedDevicesAsString() {
-        return this.supportedDevicesAsString;
-    }
-
+    
     /**
      * 
      * @return May be null.
@@ -386,9 +506,6 @@ public class MeposeModel extends PropertyModel{
         
     }
 
-    public Device[] getSupportedDevices() {
-        return this.deviceTree.getSelectedDevices();
-    }
     
     /**
      * @param projectDescription
@@ -405,39 +522,8 @@ public class MeposeModel extends PropertyModel{
         return this.projectDescription;
     }
 
-    /**
-     * @param nokiaHome
-     */
-    public void setNokiaHome(File nokiaHome) {
-        this.nokiaHome = nokiaHome;
-    }
-
-    public File getNokiaHome() {
-        return this.nokiaHome;
-    }
-
-    /**
-     * @param classpathEntries
-     */
-    public void setClasspath(IClasspathEntry[] classpathEntries) {
-        this.classpathEntries = classpathEntries;
-    }
     
-    /**
-     * Get the classpath entries for the supported devices.
-     * @return May be null.
-     */
-    public IClasspathEntry[] getClasspathEntries() {
-        return this.classpathEntries;
-    }
 
-    public File getProjectName() {
-        return this.projectHome;
-    }
-
-    public void setProjectName(File projectHome) {
-        this.projectHome = projectHome;
-    }
     
     
     // ###################################################################
@@ -468,18 +554,83 @@ public class MeposeModel extends PropertyModel{
         }
     }
 
-    /**
-     * 
-     */
-    public File getJadFile(File jadFile) {
-        return this.jadFile;
-    }
     
-    public void setJadFile(File jadFile) {
-        if(jadFile == null){
-            throw new IllegalArgumentException("setJadFile(...):parameter 'jadFile' is null contrary to API.");
+
+    public Map getStoreableProperties() {
+        Map p = new HashMap();
+        
+        // Paths.
+        p.put(ID_PATH_POLISH_FILE,getPolishHome().toString());
+        p.put(ID_PATH_WTK_FILE,getWTKHome().toString());
+        p.put(ID_PATH_MPP_FILE,getMppHome().toString());
+        p.put(ID_PATH_NOKIA_FILE,getNokiaHome().toString());
+        p.put(ID_PATH_PROJECT_FILE,getProjectName().toString());
+        p.put(ID_PATH_BUILDXML_FILE,getBuildxml().toString());
+//        p.put(ID_PATH_WORKINGDIRECTORY_BUILD)
+        
+        // Supported Config.
+        p.put(ID_SUPPORTED_CONFIGURATIONS,Arrays.arrayToString(getSupportedConfigurations()));
+        p.put(ID_SUPPORTED_PLATFORMS,Arrays.arrayToString(getSupportedPlatforms()));
+        p.put(ID_SUPPORTED_DEVICES,Arrays.arrayToString(getSupportedDevices()));
+        
+        if(getCurrentDevice() != null) {
+            p.put(ID_CURRENT_DEVICE,getCurrentDevice());
         }
         
-        this.jadFile = jadFile;
+        return p;
     }
+
+
+    public void restoreFromProperties(Map p) {
+        
+        
+        // Paths.
+        setPolishHome(new File((String)p.get(ID_PATH_POLISH_FILE)));
+        setWTKHome(new File((String)p.get(ID_PATH_WTK_FILE)));
+        setMppHome(new File((String)p.get(ID_PATH_MPP_FILE)));
+        setNokiaHome(new File((String)p.get(ID_PATH_NOKIA_FILE)));
+        setProjectName(new File((String)p.get(ID_PATH_PROJECT_FILE)));
+        setBuildxml(new File((String)p.get(ID_PATH_BUILDXML_FILE)));
+        
+        DeviceDatabase db = getDeviceDatabase();
+        if(db == null) {
+            throw new IllegalStateException("Device Database not found. Most likely some paths are invalid.");
+        }
+        
+        // Supported Config.
+        String supportedConfigurationsString = (String)p.get(ID_SUPPORTED_CONFIGURATIONS);
+        String[] supportedConfigurationsArray = supportedConfigurationsString.split(",");
+        Configuration[] supportedConfigurations = new Configuration[supportedConfigurationsArray.length];
+        ConfigurationManager cm = db.getConfigurationManager();
+        for (int i = 0; i < supportedConfigurationsArray.length; i++) {
+            String identifier = supportedConfigurationsArray[i];
+            Configuration c = cm.getConfiguration(identifier);
+            supportedConfigurations[i] = c;
+        }
+        setSupportedConfigurations(supportedConfigurations);
+        
+        String supportedPlatformsString = (String)p.get(ID_SUPPORTED_PLATFORMS);
+        String[] supportedPlatformsArray = supportedPlatformsString.split(",");
+        Platform[] supportedPlatforms = new Platform[supportedPlatformsArray.length];
+        PlatformManager pm = db.getPlatformManager();
+        for (int i = 0; i < supportedPlatformsArray.length; i++) {
+            String identifier = supportedPlatformsArray[i];
+            Platform platform = pm.getPlatform(identifier);
+            supportedPlatforms[i] = platform;
+        }
+        setSupportedPlatforms(this.supportedPlatforms);
+        
+        // TODO:
+//        supportedDevices
+    }
+
+    
+    
+    
+    
+    
+    
+    
+
+    
 }

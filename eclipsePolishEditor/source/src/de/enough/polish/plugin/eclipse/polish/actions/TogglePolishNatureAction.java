@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -118,7 +119,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         System.arraycopy(ids,0,newIds,0,ids.length);
         newIds[ids.length] = MeposeCoreConstants.ID_NATURE;
         description.setNatureIds(newIds);
-        project.setDescription(description,null);
+        project.setDescription(description,new NullProgressMonitor());
     }
 
     public void removePolishNatureFromProject(IProject project) throws CoreException{
@@ -136,7 +137,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
                 System.arraycopy(ids,0,newIds,0,i);
                 System.arraycopy(ids,i+1,newIds,i,ids.length-i-1);
                 description.setNatureIds(newIds);
-                project.setDescription(description,null);
+                project.setDescription(description,new NullProgressMonitor());
                 return;
             }
         }

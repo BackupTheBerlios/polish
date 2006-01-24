@@ -84,5 +84,21 @@ public class MeposeModelManager {
         }
         return (MeposeModel)this.modelByProject.get(this.currentProject);
     }
+
+    /**
+     * @param project
+     * @param map
+     */
+    public void addModel(IProject project, Map map) {
+        if(project == null){
+            throw new IllegalArgumentException("addModel(...):parameter 'project' is null contrary to API.");
+        }
+        if(map == null){
+            throw new IllegalArgumentException("addModel(...):parameter 'map' is null contrary to API.");
+        }
+        MeposeModel meposeModel = new MeposeModel();
+        meposeModel.restoreFromProperties(map);
+        addModel(project,meposeModel);
+    }
     
 }

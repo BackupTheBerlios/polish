@@ -1,12 +1,10 @@
 package de.enough.mepose.core;
 
-import java.io.File;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -25,12 +23,12 @@ public class CorePlugin extends Plugin {
     public static final String ID = CorePlugin.class.getName();
     public static Logger logger = Logger.getLogger(CorePlugin.class);
     
-    public QualifiedName ID_MEPOSE_MODEL = new QualifiedName(CorePlugin.class.getName(),"id.meposemodel");
-    public QualifiedName ID_BUILD_XML = new QualifiedName(CorePlugin.class.getName(),"id.buildxml");
-    public QualifiedName ID_POLISH_HOME = new QualifiedName(CorePlugin.class.getName(),"id.polish.home");
-    public QualifiedName ID_WTK_HOME = new QualifiedName(CorePlugin.class.getName(),"id.wtk.home");
-    public QualifiedName ID_DEVICES_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.devices.configured");
-    public QualifiedName ID_PLATFORMS_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.platforms.configured");
+//    public QualifiedName ID_MEPOSE_MODEL = new QualifiedName(CorePlugin.class.getName(),"id.meposemodel");
+//    public QualifiedName ID_BUILD_XML = new QualifiedName(CorePlugin.class.getName(),"id.buildxml");
+//    public QualifiedName ID_POLISH_HOME = new QualifiedName(CorePlugin.class.getName(),"id.polish.home");
+//    public QualifiedName ID_WTK_HOME = new QualifiedName(CorePlugin.class.getName(),"id.wtk.home");
+//    public QualifiedName ID_DEVICES_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.devices.configured");
+//    public QualifiedName ID_PLATFORMS_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.platforms.configured");
     
     private MeposeModelManager meposeModelManager;
 	private static CorePlugin plugin;
@@ -134,61 +132,61 @@ public class CorePlugin extends Plugin {
     }
     
 
-    // TODO: This can be enhanced with a MeposeProjectManager which can deal with several models keyed by name. 
-    public MeposeModel getDefaultMeposeModel() {
-        return this.meposeModel;
-    }
-
-    public void setDefaultMeposeModel(MeposeModel meposeModel) {
-        if(meposeModel == null){
-            throw new IllegalArgumentException("ERROR:CorePlugin.setMeposeProject(...):Parameter 'meposeModel' is null.");
-        }
-        this.meposeModel = meposeModel;
-    }
+//    // TODO: This can be enhanced with a MeposeProjectManager which can deal with several models keyed by name. 
+//    public MeposeModel getDefaultMeposeModel() {
+//        return this.meposeModel;
+//    }
+//
+//    public void setDefaultMeposeModel(MeposeModel meposeModel) {
+//        if(meposeModel == null){
+//            throw new IllegalArgumentException("ERROR:CorePlugin.setMeposeProject(...):Parameter 'meposeModel' is null.");
+//        }
+//        this.meposeModel = meposeModel;
+//    }
     
-    public MeposeModel getMeposeModelFromResource(IResource resource) {
-        MeposeModel model = null;
-        
-        try {
-            model = (MeposeModel)resource.getSessionProperty(this.ID_MEPOSE_MODEL);
-        }
-        catch (CoreException exception) {
-            CorePlugin.log("Could not get SessionProperty:",exception);
-            model = null;
-        }
-        
-        if(model == null) {
-            model = new MeposeModel();
-            try {
-                String buildxml = resource.getPersistentProperty(this.ID_BUILD_XML);
-                String polishHome = resource.getPersistentProperty(this.ID_POLISH_HOME);
-                String wtkHome = resource.getPersistentProperty(this.ID_WTK_HOME);
-                String configuredDevices = resource.getPersistentProperty(this.ID_DEVICES_CONFIGURED);
-                String configuredPlatforms = resource.getPersistentProperty(this.ID_PLATFORMS_CONFIGURED);
-                
-                if(buildxml != null) {
-                    model.setBuildxml(new File(buildxml));
-                }
-                if(polishHome != null) {
-                    model.setPolishHome(new File(polishHome));
-                }
-                if(wtkHome != null) {
-                    model.setWTKHome(new File(wtkHome));
-                }
-                if(configuredDevices != null) {
-                    model.setSupportedDevicesAsString(configuredDevices);
-                }
-                if(configuredPlatforms != null) {
-                    model.setConfiguredPlatformsAsString(configuredPlatforms);
-                }
-                
-                resource.setSessionProperty(this.ID_MEPOSE_MODEL,model);
-            } catch (CoreException exception) {
-                CorePlugin.log("Error with model",exception);
-            }
-        }
-        return model;
-    }
+//    public MeposeModel getMeposeModelFromResource(IResource resource) {
+//        MeposeModel model = null;
+//        
+//        try {
+//            model = (MeposeModel)resource.getSessionProperty(this.ID_MEPOSE_MODEL);
+//        }
+//        catch (CoreException exception) {
+//            CorePlugin.log("Could not get SessionProperty:",exception);
+//            model = null;
+//        }
+//        
+//        if(model == null) {
+//            model = new MeposeModel();
+//            try {
+//                String buildxml = resource.getPersistentProperty(this.ID_BUILD_XML);
+//                String polishHome = resource.getPersistentProperty(this.ID_POLISH_HOME);
+//                String wtkHome = resource.getPersistentProperty(this.ID_WTK_HOME);
+//                String configuredDevices = resource.getPersistentProperty(this.ID_DEVICES_CONFIGURED);
+//                String configuredPlatforms = resource.getPersistentProperty(this.ID_PLATFORMS_CONFIGURED);
+//                
+//                if(buildxml != null) {
+//                    model.setBuildxml(new File(buildxml));
+//                }
+//                if(polishHome != null) {
+//                    model.setPolishHome(new File(polishHome));
+//                }
+//                if(wtkHome != null) {
+//                    model.setWTKHome(new File(wtkHome));
+//                }
+//                if(configuredDevices != null) {
+//                    model.setSupportedDevicesAsString(configuredDevices);
+//                }
+//                if(configuredPlatforms != null) {
+//                    model.setConfiguredPlatformsAsString(configuredPlatforms);
+//                }
+//                
+//                resource.setSessionProperty(this.ID_MEPOSE_MODEL,model);
+//            } catch (CoreException exception) {
+//                CorePlugin.log("Error with model",exception);
+//            }
+//        }
+//        return model;
+//    }
 
     public BundleContext getBundleContext() {
         return this.bundleContext;
@@ -224,8 +222,6 @@ public class CorePlugin extends Plugin {
             return false;
         }
     }
-    
-    
 
     private void createModelMananger() {
         this.meposeModelManager = new MeposeModelManager();

@@ -1,5 +1,5 @@
 /*
- * Created on Dec 21, 2005 at 11:23:54 AM.
+ * Created on Jan 23, 2006 at 6:09:17 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,27 +23,28 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.project;
-
-import org.eclipse.core.runtime.QualifiedName;
-
-import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.model.MeposeModel;
+package de.enough.utils;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Dec 21, 2005 - rickyn creation
+ *        Jan 23, 2006 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public interface PropertyConstants {
-
-    public static final QualifiedName QN_WTK_HOME = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_WTK_HOME);
-    public static final QualifiedName QN_POLISH_HOME = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_POLISH_HOME);
-    public static final QualifiedName QN_PLATFORMS_SUPPORTED = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_PLATFORMS_SUPPORTED);
-    public static final QualifiedName QN_DEVICES_SUPPORTED = new QualifiedName(CorePlugin.class.getName(),MeposeModel.ID_DEVICES_SUPPORTED);;
+public class Arrays {
+    
+    public static String arrayToString(Object[] array) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < array.length-1; i++) {
+            sb.append(array[i]);
+            sb.append(",");
+        }
+        if(array.length >= 1) {
+            sb.append(array[array.length-1]);
+        }
+        return sb.toString();
+    }
 }
-

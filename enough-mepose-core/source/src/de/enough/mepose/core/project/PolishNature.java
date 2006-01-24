@@ -3,9 +3,13 @@
  */
 package de.enough.mepose.core.project;
 
+import java.util.Map;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+
+import de.enough.mepose.core.CorePlugin;
 
 
 
@@ -25,11 +29,14 @@ public class PolishNature implements IProjectNature {
     IProject project;
     
     public void configure() throws CoreException {
-        System.out.println("PolishNature.configure():enter.");
+        ProjectPersistence p = new ProjectPersistence();
+        Map map = p.getMapFromProject(this.project);
+        CorePlugin.getDefault().getMeposeModelManager().addModel(this.project,map);
     }
 
     public void deconfigure() throws CoreException {
         System.out.println("PolishNature.deconfigure():enter.");
+        //TODO:remove properties from the project.
     }
 
     public IProject getProject() {

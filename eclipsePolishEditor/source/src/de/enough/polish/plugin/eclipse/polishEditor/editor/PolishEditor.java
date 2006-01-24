@@ -87,7 +87,6 @@ public class PolishEditor extends CompilationUnitEditor {
         this.propertyChangeListener = new PropertyChangeListener();
         this.occurrencesMarkerManager = new OccurrencesMarkerManager();
         this.defaultOccurrenceMarkerManagerConfiguration = new OccurrencesMarkerManager.DefaultConfiguration();
-        
         }
 
 
@@ -115,7 +114,8 @@ public class PolishEditor extends CompilationUnitEditor {
         polishSourceViewerConfiguration =  new PolishSourceViewerConfiguration(colorManager,preferenceStore,this,IJavaPartitions.JAVA_PARTITIONING);
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
         
-        this.meposeProject = CorePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
+//        this.meposeProject = CorePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
+        this.meposeProject = CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
         
         super.createPartControl(parent);
     }
