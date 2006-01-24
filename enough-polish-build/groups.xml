@@ -137,7 +137,7 @@
 		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="JavaPackage" value="btapi" />		
-		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, displaySetCurrentFlickers, GameCanvasGetGraphicsNotInConstructor" />
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, displaySetCurrentFlickers" />
 	</group>
 	
 	<group>

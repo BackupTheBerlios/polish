@@ -1082,6 +1082,17 @@
 		appliesTo="ChoiceItem, ChoiceGroup item"
 		description="Can be used to deactivate a specific ChoiceGroup item permanently. This can be useful to integrate explanations, headings etc into an ChoiceGroup."
 		default="false"
+		id="111"
+	/>
+	
+	
+	<attribute
+		name="show-dismiss-command"
+		type="boolean"
+		appliesTo="Alert"
+		description="Can be used to deactivate the default Alert.DISMISS command for Alerts that don't have a Alert.FOREVER timeout."
+		default="true"
+		id="112"
 	/>
 
 </attributes>
