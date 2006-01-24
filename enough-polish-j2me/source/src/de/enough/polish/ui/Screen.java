@@ -768,6 +768,7 @@ implements AccessibleCanvas
 	 * @see #paintScreen(Graphics)
 	 */
 	public void paint(Graphics g) {
+		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null));
 		//#if polish.Bugs.losesFullScreen
 			//# super.setFullScreenMode( true );
 		//#endif

@@ -467,21 +467,22 @@ public class Container extends Item {
 				Item nextItem;
 				if ( isDownwards && index < this.itemsList.size() - 1 ) {
 					nextItem = (Item) this.itemsList.get( index + 1 );
-					// #debug
-					//System.err.println("Focusing downwards, nextItem.y = [" + nextItem.yTopPos + "-" + nextItem.yBottomPos + "], focusedItem.y=[" + item.yTopPos + "-" + item.yBottomPos + "], this.yOffset=" + this.yOffset + ", this.targetYOffset=" + this.targetYOffset);
+					//#debug
+					System.err.println("Focusing downwards, nextItem.y = [" + nextItem.yTopPos + "-" + nextItem.yBottomPos + "], focusedItem.y=[" + item.yTopPos + "-" + item.yBottomPos + "], this.yOffset=" + this.yOffset + ", this.targetYOffset=" + this.targetYOffset);
 				} else if ( !isDownwards && index > 0 ) {
 					nextItem = (Item) this.itemsList.get( index - 1 );
-					// #debug
-					//System.err.println("Focusing upwards, nextItem.yTopPos = " + nextItem.yTopPos + ", focusedItem.yTopPos=" + item.yTopPos );
+					//#debug
+					System.err.println("Focusing upwards, nextItem.yTopPos = " + nextItem.yTopPos + ", focusedItem.yTopPos=" + item.yTopPos );
 				} else {
-					// #debug
-					//System.err.println("Focusing last or first item.");
+					//#debug
+					System.err.println("Focusing last or first item.");
 					nextItem = item;
 				}
 
 				
 				int itemYTop = isDownwards ? item.yTopPos : nextItem.yTopPos;
 				int itemYBottom = isDownwards ? nextItem.yBottomPos : item.yBottomPos;
+				
 //				if (itemYBottom - itemYTop > this.yTop - this.yBottom) {
 //					if ( isDownwards ) {
 //						itemYBottom = this.internalY + this.internalHeight;
@@ -490,7 +491,7 @@ public class Container extends Item {
 //					}
 //				}
 //				int difference = 0;
-				scroll( isDownwards, itemYTop, this.xLeftPos, itemYBottom - itemYTop, item.internalWidth );
+				scroll( isDownwards, this.xLeftPos, itemYTop, item.internalWidth, itemYBottom - itemYTop );
 //				if (itemYTop == itemYBottom) {
 //					//#debug
 //					System.out.println("Container: unable to auto-scroll, item.yBottomPos == item.yTopPos");
@@ -552,6 +553,8 @@ public class Container extends Item {
 	}
 	
 	protected void scroll( boolean isDownwards, int x, int itemYTop, int width, int height ) {
+		//#debug
+		System.out.println("scroll: isDownwards=" + isDownwards + ", itemYTop=" + itemYTop + ", Container.yTop=" + this.yTop +  ", itemYBottom=" +  (itemYTop + height) + ", Container.yBottom=" + this.yBottom );
 		int difference = 0;
 		int index = this.focusedIndex;
 		int itemYBottom = itemYTop + height;
@@ -560,12 +563,12 @@ public class Container extends Item {
 		} else if (itemYBottom > this.yBottom) {
 			// this item is too low:
 			difference = this.yBottom - itemYBottom;
-			// #debug
-			//System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+			//#debug
+			System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
 			//if ( itemYTop + difference < this.yTop) {
 			if ( isDownwards && itemYTop + difference < this.yTop) {
-				// #debug
-				//System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
+				//#debug
+				System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
 				difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
 			}
 			/*

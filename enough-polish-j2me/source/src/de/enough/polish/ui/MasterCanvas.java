@@ -140,6 +140,7 @@ public class MasterCanvas
 				this.isInFullScreenMode = true;
 			}
 		//#endif
+		//System.out.println("MC: Painting canvas " + this.currentCanvas );	
 		this.currentCanvas.paint( g );
 	}
 	
@@ -160,6 +161,8 @@ public class MasterCanvas
 					instance.currentDisplayable = null;
 				}
 			}
+			//#debug
+			System.out.println("MasterCanvas: setting native next displayable " + nextDisplayable );
 			display.setCurrent( nextDisplayable );
 			return;
 		}
@@ -171,9 +174,9 @@ public class MasterCanvas
 		
 		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
 		//#if polish.usePolishGui
-		if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
-			((Alert)nextDisplayable).nextDisplayable = instance.currentDisplayable;
-		}
+			if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
+				((Alert)nextDisplayable).nextDisplayable = instance.currentDisplayable;
+			}
 		//#endif
 		instance.currentCanvas = canvas;
 		instance.currentDisplayable = nextDisplayable;
@@ -256,10 +259,11 @@ public class MasterCanvas
 			return;
 		}
 		//#debug
-		System.out.println("MasterCanvas: repaintCanvas");
+		System.out.println("MasterCanvas: repaintCanvas " + canvas + ", MasterCanvas.instance != null: " + ( instance != null) + ", instance == canvas: " +  ( instance == null) );
 		if ( instance != null ) {
 			instance.repaint();
 		} else {
+			//System.out.println("native canvas repaint");
 			canvas.repaint();
 		}
 	}

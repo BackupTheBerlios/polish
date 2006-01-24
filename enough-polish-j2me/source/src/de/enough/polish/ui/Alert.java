@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.Locale;
@@ -234,6 +235,12 @@ implements CommandListener
 
 	//private AlertType alertType;
 	protected Displayable nextDisplayable;
+	
+	//#if polish.css.show-dismiss-command
+		private boolean showDismissCommand = true;
+	//#endif
+
+	private int numberOfCommands;
 
 	/**
 	 * Constructs a new, empty <code>Alert</code> object with the given title. 
@@ -351,7 +358,7 @@ implements CommandListener
 		//#endif
 		//this.alertType = alertType;
 		addCommand( DISMISS_COMMAND );
-		setCommandListener( this );
+		super.setCommandListener( this );
 	}
 	
 	
@@ -363,6 +370,40 @@ implements CommandListener
 	public void addCommand(Command cmd) {
 		super.removeCommand( DISMISS_COMMAND );
 		super.addCommand(cmd);
+		this.numberOfCommands++;
+		if (this.numberOfCommands > 1) {
+			this.timeout = FOREVER;
+		}
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#removeCommand(javax.microedition.lcdui.Command)
+	 */
+	public void removeCommand(Command cmd) {
+		super.removeCommand(cmd);
+		this.numberOfCommands--;
+		if (this.numberOfCommands == 0) {
+			//#if polish.css.show-dismiss-command
+				if (this.showDismissCommand || this.timeout == FOREVER) {
+					super.addCommand( DISMISS_COMMAND );
+				}
+			//#else
+				super.addCommand( DISMISS_COMMAND );
+			//#endif
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setCommandListener(javax.microedition.lcdui.CommandListener)
+	 */
+	public void setCommandListener(CommandListener listener) {
+		if (listener == null) {
+			super.setCommandListener(this);
+		} else {
+			super.setCommandListener(listener);
+		}
 	}
 
 	private void createItem(String alertText, Image alertImage, Style itemStyle) {
@@ -781,14 +822,18 @@ implements CommandListener
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
 	public void showNotify() {
-		super.showNotify();
 		this.showTime = System.currentTimeMillis();
 		if (this.nextDisplayable == null) {
-			this.nextDisplayable = StyleSheet.display.getCurrent();
+			Displayable last = StyleSheet.display.getCurrent();
+			if (last != this) {
+				this.nextDisplayable = last;
+			}
 		}
+		super.showNotify();
 	}
 
 	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
+		//System.out.println("Alert.setCurrent() of " + alert );
 		if (nextDisplayable == null) {
 			//System.out.println("Alert: storing current displayable from display");
 			nextDisplayable = display.getCurrent();
@@ -796,5 +841,24 @@ implements CommandListener
 		alert.nextDisplayable = nextDisplayable;
 		display.setCurrent( alert );
 	}
+	
+	
+	//#if polish.css.show-dismiss-command
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		//#if polish.css.show-dismiss-command
+			Boolean showDismissCommandBool = style.getBooleanProperty("show-dismiss-command");
+			if (showDismissCommandBool != null) {
+				this.showDismissCommand = showDismissCommandBool.booleanValue();
+				if (!this.showDismissCommand && this.timeout != FOREVER) {
+					super.removeCommand(DISMISS_COMMAND);
+				}
+			}
+		//#endif
+	}
+	//#endif
 
 }
