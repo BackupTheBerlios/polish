@@ -58,6 +58,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceTree;
@@ -379,6 +380,9 @@ public class PlatformPage extends WizardPage {
             platformsArray[i] = (Platform)((TreeItem)this.selectedPlatformTreeItems.get(i)).getData();
         }
         
+        this.newProjectModel.getMeposeModel().setSupportedConfigurations(configurationsArray);
+        this.newProjectModel.getMeposeModel().setSupportedPlatforms(platformsArray);
+        
         this.dTree.rebuild(configurationsArray,platformsArray);
         
         this.deviceTree.removeAll();
@@ -424,6 +428,8 @@ public class PlatformPage extends WizardPage {
 
 
     public IWizardPage getNextPage() {
+        
+        
         IProject project = this.newProjectModel.getProject();
         IJavaProject javaProject = JavaCore.create(project);
         
@@ -443,8 +449,10 @@ public class PlatformPage extends WizardPage {
         classpathEntries[libraryEntries.length] = sourceEntry;
         boolean defaulsOverrideExistingClasspath = true;
         
-        this.newProjectModel.getMeposeModel().setClasspath(classpathEntries);
-        
+        MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
+        meposeModel.setSupportedDevices(this.dTree.getSelectedDevices());
+        meposeModel.setClasspath(classpathEntries);
+
         JavaCapabilityConfigurationPage nextPage = (JavaCapabilityConfigurationPage)super.getNextPage();
         nextPage.init(javaProject,defaultOutputDir,classpathEntries,defaulsOverrideExistingClasspath);
         this.newProjectModel.setJavaTabReached(true);

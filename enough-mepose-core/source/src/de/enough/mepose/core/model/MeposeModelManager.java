@@ -53,7 +53,7 @@ public class MeposeModelManager {
     private IProject currentProject;
     private ProjectPersistence persistence;
     
-    public static class PropertyStorer implements PropertyChangeListener{
+    public class PropertyStorer implements PropertyChangeListener{
         private MeposeModel model;
         private ProjectPersistence persistence;
         private IProject project;

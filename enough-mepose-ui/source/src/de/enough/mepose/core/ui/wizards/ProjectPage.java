@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.MeposeCoreConstants;
-import de.enough.mepose.core.model.MeposeModel;
 import de.enough.swt.widgets.StatusGroup;
 import de.enough.utils.Status;
 import de.enough.utils.StatusEvent;
@@ -157,9 +157,8 @@ public class ProjectPage extends WizardPage{
         
         try {
             createProject();
-            setupProject();
+//            setupProject();
             addNature();
-//            createBuildXML();
         }
         catch (CoreException exception) {
             if(logger.isDebugEnabled()) {
@@ -168,32 +167,9 @@ public class ProjectPage extends WizardPage{
             }
         }
         return super.getNextPage();
-//        PlatformPage pp = (PlatformPage)super.getNextPage();
-//        pp.fillGUI();
-//        return pp;
     }
 
-//    private void createBuildXML() {
-//        BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
-//        buildXMLWriter.writeBuildXML(new OutputStreamWriter(byteArrayOutputStream));
-//        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-//        
-//        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-//        if(project == null) {
-//            throw new IllegalStateException("No project instance to generate build.xml in.");
-//        }
-//        IFile file = project.getFile("build.xml");
-//        try {
-//            file.create(inputStream,true,null);
-//        } catch (CoreException exception) {
-//            System.out.println("DEBUG;PolishNewWizard.createBuildXML(...):could not create file:"+exception);
-//            return;
-//        }
-//    }
-
-    private void setupProject() throws CoreException {
+//    private void setupProject() throws CoreException {
         //TODO: Fill in the project properties within the core plugin.
 //        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
 //        if(newProject == null) {
@@ -221,7 +197,7 @@ public class ProjectPage extends WizardPage{
 //            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_DEVICES_SUPPORTED,new File(pproperty));
 //        }
 //        
-    }
+//    }
 
     private void createProject() throws CoreException {
         IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT);
@@ -238,13 +214,17 @@ public class ProjectPage extends WizardPage{
             project.open(null);
             this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT,Boolean.TRUE);
         }
-        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE,project);
+//        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE,project);
         IPath projectLocation = project.getLocation();
-        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PATH_PROJECT_FILE,projectLocation.toFile());
+//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PATH_PROJECT_FILE,projectLocation.toFile());
+        this.newProjectModel.getMeposeModel().setProjectHome(projectLocation.toFile());
+        this.newProjectModel.setProjectInstance(project);
+        CorePlugin.getDefault().getMeposeModelManager().addModel(project,this.newProjectModel.getMeposeModel());
     }
     
     private void addNature() throws CoreException {
-        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+//        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        IProject newProject = this.newProjectModel.getProject();
         if(newProject == null) {
             return;
         }
@@ -258,7 +238,7 @@ public class ProjectPage extends WizardPage{
         String[] natureIDs = projectDescription.getNatureIds();
         String[] newNatureIDs = new String[natureIDs.length+1];
         System.arraycopy(natureIDs, 0, newNatureIDs, 0, natureIDs.length);
-        // As last element.
+        // Set as last element.
         newNatureIDs[natureIDs.length] = MeposeCoreConstants.ID_NATURE;
         
         projectDescription.setNatureIds(newNatureIDs);

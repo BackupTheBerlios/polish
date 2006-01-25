@@ -6,12 +6,14 @@ package de.enough.mepose.core.project;
 import java.io.File;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.devices.Platform;
 
 
 

@@ -2,6 +2,7 @@ package de.enough.mepose.core.ui.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
@@ -107,6 +108,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	protected void doFinish(IProgressMonitor monitor){
         createBuildXML();
         makeJavaProject();
+        
         // Sanity check
         // Create IProject
         // call JavaCapabilityConfigurationPage.createJavaProject
@@ -167,7 +169,8 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         buildXMLWriter.writeBuildXML(writer);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         
-        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+//        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        IProject project = this.newProjectModel.getProject();
         if(project == null) {
             throw new IllegalStateException("No project instance to generate build.xml in.");
         }
@@ -193,6 +196,9 @@ public class PolishNewWizard extends Wizard implements INewWizard {
             System.out.println("DEBUG;PolishNewWizard.createBuildXML(...):could not create file:"+exception);
             return;
         }
+        IPath path = file.getRawLocation();
+        File f = path.toFile();
+        this.newProjectModel.getMeposeModel().setBuildxml(f);
     }
     
     public void init(IWorkbench workbench, IStructuredSelection newSelection) {

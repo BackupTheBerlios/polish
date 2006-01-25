@@ -26,9 +26,6 @@
 package de.enough.mepose.core.ui.wizards;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -46,7 +43,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.enough.swt.widgets.StatusGroup;
-import de.enough.utils.Status;
 
 /**
  * 
@@ -68,84 +64,84 @@ public class PathsPage extends WizardPage {
 //    private Text blackberryText;
 //    private Text sonyText;
     
-    public class VerifyEvent{
-        private Object source;
-        private Object object;
-        private Status oldStatus;
-        private Status newStatus;
-        public VerifyEvent(Object source, Object object, Status oldStatus,Status newStatus) {
-            this.source = source;
-            this.object = object;
-            this.oldStatus = oldStatus;
-            this.newStatus = newStatus;
-        }
-        public Status getNewStatus() {
-            return this.newStatus;
-        }
-        public Object getObject() {
-            return this.object;
-        }
-        public Status getOldStatus() {
-            return this.oldStatus;
-        }
-        public Object getSource() {
-            return this.source;
-        }
-    }
-    
-    public interface VerifierListener{
-        public void handleVerifyEvent(VerifyEvent verifyEvent);
-    }
-    
-    //TODO: A change listener for the input would be handy.
-    public interface Verifier{
-        public void setVerifierDelegate(VerifierDelegate verifierDelegate);
-        public void removeVerifierDelegate();
-        public void addVerifierListener(VerifierListener verifierListener);
-        public void removeVerifierListener(VerifierListener verifierListener);
-        public void verify();
-        
-    }
-    
-    public interface VerifierDelegate{
-        public VerifyEvent verify();
-    }
-    
-    //TODO: Instead of an abstract class having a delegate whould be cooler as
-    // no subclassing is needed.
-    public class AbstractVerifier implements Verifier{
-        private List verifierListeners;
-        private VerifierDelegate verifierDelegate;
-        public AbstractVerifier() {
-            this.verifierListeners = new LinkedList();
-        }
-        public void addVerifierListener(VerifierListener verifierListener) {
-            this.verifierListeners.add(verifierListener);
-        }
-        public void removeVerifierListener(VerifierListener verifierListener) {
-            this.verifierListeners.remove(verifierListener);
-        }
-        protected void fireVerifyEvent(VerifyEvent verifyEvent) {
-            if(verifyEvent == null) {
-                return;
-            }
-            for (Iterator iterator = this.verifierListeners.iterator(); iterator.hasNext(); ) {
-                VerifierListener verifyListener = (VerifierListener) iterator.next();
-                verifyListener.handleVerifyEvent(verifyEvent);
-            }
-        }
-        public void verify() {
-            if(this.verifierDelegate != null) {
-                fireVerifyEvent(this.verifierDelegate.verify());
-            }
-        }
-        public void setVerifierDelegate(VerifierDelegate newVerifierDelegate) {
-            this.verifierDelegate = newVerifierDelegate;
-        }
-        public void removeVerifierDelegate() {
-            this.verifierDelegate = null;
-        }
-    }
+//    public class VerifyEvent{
+//        private Object source;
+//        private Object object;
+//        private Status oldStatus;
+//        private Status newStatus;
+//        public VerifyEvent(Object source, Object object, Status oldStatus,Status newStatus) {
+//            this.source = source;
+//            this.object = object;
+//            this.oldStatus = oldStatus;
+//            this.newStatus = newStatus;
+//        }
+//        public Status getNewStatus() {
+//            return this.newStatus;
+//        }
+//        public Object getObject() {
+//            return this.object;
+//        }
+//        public Status getOldStatus() {
+//            return this.oldStatus;
+//        }
+//        public Object getSource() {
+//            return this.source;
+//        }
+//    }
+//    
+//    public interface VerifierListener{
+//        public void handleVerifyEvent(VerifyEvent verifyEvent);
+//    }
+//    
+//    //TODO: A change listener for the input would be handy.
+//    public interface Verifier{
+//        public void setVerifierDelegate(VerifierDelegate verifierDelegate);
+//        public void removeVerifierDelegate();
+//        public void addVerifierListener(VerifierListener verifierListener);
+//        public void removeVerifierListener(VerifierListener verifierListener);
+//        public void verify();
+//        
+//    }
+//    
+//    public interface VerifierDelegate{
+//        public VerifyEvent verify();
+//    }
+//    
+//    //TODO: Instead of an abstract class having a delegate whould be cooler as
+//    // no subclassing is needed.
+//    public class AbstractVerifier implements Verifier{
+//        private List verifierListeners;
+//        private VerifierDelegate verifierDelegate;
+//        public AbstractVerifier() {
+//            this.verifierListeners = new LinkedList();
+//        }
+//        public void addVerifierListener(VerifierListener verifierListener) {
+//            this.verifierListeners.add(verifierListener);
+//        }
+//        public void removeVerifierListener(VerifierListener verifierListener) {
+//            this.verifierListeners.remove(verifierListener);
+//        }
+//        protected void fireVerifyEvent(VerifyEvent verifyEvent) {
+//            if(verifyEvent == null) {
+//                return;
+//            }
+//            for (Iterator iterator = this.verifierListeners.iterator(); iterator.hasNext(); ) {
+//                VerifierListener verifyListener = (VerifierListener) iterator.next();
+//                verifyListener.handleVerifyEvent(verifyEvent);
+//            }
+//        }
+//        public void verify() {
+//            if(this.verifierDelegate != null) {
+//                fireVerifyEvent(this.verifierDelegate.verify());
+//            }
+//        }
+//        public void setVerifierDelegate(VerifierDelegate newVerifierDelegate) {
+//            this.verifierDelegate = newVerifierDelegate;
+//        }
+//        public void removeVerifierDelegate() {
+//            this.verifierDelegate = null;
+//        }
+//    }
     
     private class BrowsePathSelected extends SelectionAdapter{
         
@@ -308,6 +304,7 @@ public class PathsPage extends WizardPage {
 
     public IWizardPage getNextPage() {
         PlatformPage pp = (PlatformPage)super.getNextPage();
+        updateModelFromGUI();
         pp.fillGUI();
         return pp;
     }

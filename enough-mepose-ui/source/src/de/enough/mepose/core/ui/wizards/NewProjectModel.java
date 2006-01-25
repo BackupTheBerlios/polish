@@ -64,6 +64,7 @@ public class NewProjectModel extends PropertyModel{
     private List targetDevices = new LinkedList();
     private List targetConfigurations = new LinkedList();
     private List targetPlatforms = new LinkedList();
+    private IProject projectInstance;
     
     private boolean javaTabReached = false;
 
@@ -155,7 +156,8 @@ public class NewProjectModel extends PropertyModel{
     }
     
     public IProject getProject() {
-        return (IProject)getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        return this.projectInstance;
+//        return (IProject)getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
     }
     
     public void setTargetDevices(Device[] targetDevices) {
@@ -271,6 +273,10 @@ public class NewProjectModel extends PropertyModel{
         this.meposeModel.setProjectDescription(projectDescription);
     }
 
+    public void setProjectInstance(IProject projectInstance) {
+        this.projectInstance = projectInstance;
+    }
+    
     /**
      * 
      * @return Never null.
