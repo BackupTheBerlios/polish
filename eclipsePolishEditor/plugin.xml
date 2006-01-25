@@ -51,11 +51,7 @@
     <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
         <specification annotationType="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation" colorPreferenceKey="occurrenceIndicationColor" colorPreferenceValue="255,248,147" contributesToHeader="false" highlightPreferenceKey="occurrenceHighlighting" highlightPreferenceValue="true" icon="icons/full/obj16/searchm_obj.gif" isGoToNextNavigationTarget="false" isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget" isGoToPreviousNavigationTarget="false" isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget" label="PolishOccurrenceAnnotation" overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler" overviewRulerPreferenceValue="true" presentationLayer="4" showInNextPrevDropdownToolbarAction="true" showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction" textPreferenceKey="occurrenceIndication" textPreferenceValue="false" verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler" verticalRulerPreferenceValue="false"></specification>
     </extension>
-    <extension id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureExtension" name="Toggle J2ME Polish nature" point="org.eclipse.ui.popupMenus">
-        <objectContribution adaptable="true" id="de.enough.polish.plugin.eclipse.polish.togglePolishNature" objectClass="org.eclipse.core.resources.IProject">
-            <action class="de.enough.polish.plugin.eclipse.polish.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/sample.gif" id="de.enough.polish.plugin.eclipse.polish.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
-        </objectContribution>
-    </extension>
+    
     <extension id="polishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
         <runtime>
             <run class="de.enough.polish.plugin.eclipse.polish.PolishNature"></run>
