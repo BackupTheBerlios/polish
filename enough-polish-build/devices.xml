@@ -5100,7 +5100,7 @@
 		<capability name="Region" value="North America" /> 
         </device> 
  
-        <device> 
+ 	<device> 
 		<identifier>Samsung/SGH-D500</identifier> 
 		<features>hasCommandKeyEvents, hasCamera</features> 
 		<capability name="ScreenSize" value="176x220"/> 
@@ -5121,9 +5121,30 @@
 		<capability name="Frequency" value="900, 1800, 1900" /> 
 		<capability name="CameraResolution" value="1.3 MP" /> 
 		<capability name="Bugs" value="losesFullScreen" /> 
-        </device> 
+	</device> 
+	
+	<device>
+		<identifier>Samsung/SGH-D600</identifier>
+		<features>hasCommandKeys, hasCamera</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="wmapi, mmapi" />
+		<capability name="SoundFormat" value="mmf, midi, midi64, wav" />
+		<capability name="PolyphonicVoices" value="64" />
+		<capability name="ImageFormat" value="png" />
+		<capability name="HeapSize" value="560 kb" />
+		<capability name="MaxJarSize" value="300 kb" />
+		<capability name="StorageSize" value="80 MB" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900, 1800, 1900" />
+		<capability name="CameraResolution" value="1.3 MP" />
+	</device>
+	
  
-        <device> 
+	<device> 
 		<identifier>Samsung/SGH-E100</identifier> 
 		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x160"/> 

@@ -487,6 +487,7 @@ public class PolishTask extends ConditionalTask {
 			callExtensions( device, locale );
 		}
 		finalize( device, locale );
+		notifyPolishBuildListeners( PolishBuildListener.EVENT_BUILD_FINISHED, this.environment );
 		if (this.emulatorSettings != null) {
 			runEmulator( device, locale );
 		}

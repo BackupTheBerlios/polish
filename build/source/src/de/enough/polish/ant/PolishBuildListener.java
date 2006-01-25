@@ -45,7 +45,13 @@ public interface PolishBuildListener {
 	 * The source code directory is given as a java.io.File object.
 	 */
 	public final static String EVENT_PREPROCESS_SOURCE_DIR = "evt.preprocess.sourcedir";
-	
+
+	/**
+	 * Notifies the listener about the end of a device build.
+	 * The environment is given as the data
+	 */
+	public final static String EVENT_BUILD_FINISHED = "evt.build.finished";
+
 	/**
 	 * Notifies the implementation about a build event.
 	 * Refer to the constants defined in this interface for more information about the possible payload/data of events.
