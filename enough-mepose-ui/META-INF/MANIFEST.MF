@@ -18,9 +18,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.core,
  org.eclipse.ant.core,
  org.eclipse.ui.console,
- org.eclipse.ant.ui
+ org.eclipse.ant.ui,
+ org.eclipse.ui.forms,
+ org.eclipse.core.expressions
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose,
+ de.enough.mepose.core.ui.launcher,
  de.enough.mepose.core.ui.plugin,
  de.enough.mepose.core.ui.preferencePages,
  de.enough.mepose.core.ui.propertyPages,

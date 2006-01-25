@@ -25,9 +25,16 @@
  */
 package de.enough.mepose.core.ui.launcher;
 
+import java.io.File;
+
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.core.ui.ErrorHandler;
 
 /**
  * 
@@ -55,6 +62,25 @@ public class MiDletEmulatorLaunchConfigurationTabGroup extends
         setTabs(tabs);
     }
 
+    public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
+        super.setDefaults(configuration);
+        
+    }
+
+    public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+        super.performApply(configuration);
+        MeposeModel model = CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
+        if(model == null) {
+            throw new IllegalStateException("No current MeposeModel set.");
+        }
+        File projectHome = model.getProjectHome();
+        if( ! projectHome.exists()) {
+            ErrorHandler.error("build.xml file not found.","No build.xml file found. Would you like to create a new one?");
+        }
+        
+    }
+    
+    
     
     
 }

@@ -32,6 +32,7 @@ import org.eclipse.ant.core.AntRunner;
 import org.eclipse.ant.internal.ui.launchConfigurations.AntProcess;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
@@ -40,6 +41,9 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 import de.enough.polish.ant.PolishBuildListener;
 
 /**
@@ -82,14 +86,22 @@ public class MiDletEmulatorLaunchConfigurationDelegate extends
        }
        consoleManager.showConsoleView(console);
        System.out.println("DEBUG:MiDletEmulatorLaunchConfigurationDelegate.launch(...):mode:"+mode);
+       
+       MeposeModel model = CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
+       if(model == null) {
+           UIPluginActivator.log("No current meposeModel");
+           return;
+       }
        AntRunner antRunner = new AntRunner();
-       antRunner.setAntHome("/home/rickyn/eclipse/runtime-workspace/sandbox.menu");
+       antRunner.setAntHome(model.getProjectHome().getAbsolutePath());
        Map userProperties = new HashMap();
        userProperties.put("polish.build.listener",new PolishListener().getClass().getName());
        antRunner.addUserProperties(userProperties);
 //       antRunner.setArguments("-Ddevice=\"Generic/midp2\"");
-       antRunner.setBuildFileLocation("/home/rickyn/eclipse/runtime-workspace/sandbox.menu/build.xml");
-       AntProcess antProcess = new AntProcess("J2ME Polish Build",launch,new HashMap());
+       antRunner.setBuildFileLocation(model.getBuildxml().getAbsolutePath());
+       Map map = new HashMap();
+       map.put(DebugPlugin.ATTR_CAPTURE_OUTPUT,"true");
+       AntProcess antProcess = new AntProcess("J2ME Polish Build",launch,map);
        antRunner.run(antProcess);
        antProcess.terminate();
        

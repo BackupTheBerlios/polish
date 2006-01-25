@@ -18,6 +18,7 @@ Eclipse-AutoStart: true
 Export-Package: de.enough.mepose.core,
  de.enough.mepose.core.model,
  de.enough.mepose.core.preferences,
+ de.enough.mepose.core.project,
  de.enough.polish,
  de.enough.polish.ant,
  de.enough.polish.ant.build,

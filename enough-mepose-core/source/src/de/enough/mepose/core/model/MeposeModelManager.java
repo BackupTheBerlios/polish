@@ -25,10 +25,16 @@
  */
 package de.enough.mepose.core.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+
+import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.project.ProjectPersistence;
 
 
 /**
@@ -43,10 +49,34 @@ import org.eclipse.core.resources.IProject;
 public class MeposeModelManager {
 
     private Map modelByProject;
+    private Map projectByModel;
     private IProject currentProject;
-
+    private ProjectPersistence persistence;
+    
+    public static class PropertyStorer implements PropertyChangeListener{
+        private MeposeModel model;
+        private ProjectPersistence persistence;
+        private IProject project;
+        
+        public PropertyStorer(MeposeModel model,ProjectPersistence persistence,IProject project) {
+            this.model = model;
+            this.persistence = persistence;
+            this.project = project;
+        }
+        public void propertyChange(PropertyChangeEvent evt) {
+            try {
+                this.persistence.putMapInProject(this.model.getStoreableProperties(),this.project);
+                System.out.println("DEBUG:PropertyStorer.propertyChange(...):enter.everything stored.");
+            } catch (CoreException exception) {
+                CorePlugin.log("Could not store model in project.exception:"+exception);
+            }
+        }
+    }
+    
     public MeposeModelManager() {
         this.modelByProject = new HashMap();
+        this.projectByModel = new HashMap();
+        this.persistence = new ProjectPersistence();
     }
     
     public MeposeModel getModel(IProject project) {
@@ -61,13 +91,24 @@ public class MeposeModelManager {
             throw new IllegalArgumentException("addModel(...):parameter 'project' is null contrary to API.");
         }
         this.modelByProject.put(project,meposeModel);
+        this.projectByModel.put(meposeModel,project);
+        try {
+            this.persistence.putMapInProject(meposeModel.getStoreableProperties(),project);
+        } catch (CoreException exception) {
+            CorePlugin.log("Could not store properties in project."+exception.getMessage());
+        }
+        new PropertyStorer(meposeModel,this.persistence,project);
     }
 
     public void removeModel(IProject project) {
         if(project == null){
             throw new IllegalArgumentException("removeModel(...):parameter 'project' is null contrary to API.");
         }
-        this.modelByProject.remove(project);
+        MeposeModel model = (MeposeModel)this.modelByProject.remove(project);
+        if(model == null) {
+            CorePlugin.log("No model registered for project.");
+        }
+        this.projectByModel.remove(model);
     }
     
     /**
@@ -101,4 +142,10 @@ public class MeposeModelManager {
         addModel(project,meposeModel);
     }
     
+    public IProject getProject(MeposeModel model) {
+        if(model == null) {
+            return null;
+        }
+        return (IProject)this.projectByModel.get(model);
+    }
 }

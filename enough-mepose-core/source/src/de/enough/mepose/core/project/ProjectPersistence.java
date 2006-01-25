@@ -68,11 +68,17 @@ public class ProjectPersistence {
     public Map getMapFromProject(IProject project) throws CoreException {
        String keysAsString = project.getPersistentProperty(new QualifiedName(ID,CONTAINED_KEYS));
        Map p = new HashMap();
+       if(keysAsString == null) {
+           return p;
+       }
        String[] keys = keysAsString.split(",");
        for (int i = 0; i < keys.length; i++) {
            String key = keys[i];
-        p.put(key,project.getPersistentProperty(new QualifiedName(ID,key)));
-    }
+           String value = project.getPersistentProperty(new QualifiedName(ID,key));
+           p.put(key,value);
+       }
        return p;
     }
+    
+    
 }

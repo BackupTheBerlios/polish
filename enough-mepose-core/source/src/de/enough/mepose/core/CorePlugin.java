@@ -1,5 +1,6 @@
 package de.enough.mepose.core;
 
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -12,8 +13,8 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.model.MeposeModelManager;
+import de.enough.mepose.core.project.ProjectPersistence;
 import de.enough.utils.log4j.Log4JPlugin;
 
 
@@ -33,7 +34,7 @@ public class CorePlugin extends Plugin {
 	private static CorePlugin plugin;
 	private ResourceBundle resourceBundle;
     
-    private MeposeModel meposeModel;
+//    private MeposeModel meposeModel;
     private BundleContext bundleContext;
 
 	public CorePlugin() {
@@ -129,63 +130,6 @@ public class CorePlugin extends Plugin {
             message, null); 
         log(status);
     }
-    
-
-//    // TODO: This can be enhanced with a MeposeProjectManager which can deal with several models keyed by name. 
-//    public MeposeModel getDefaultMeposeModel() {
-//        return this.meposeModel;
-//    }
-//
-//    public void setDefaultMeposeModel(MeposeModel meposeModel) {
-//        if(meposeModel == null){
-//            throw new IllegalArgumentException("ERROR:CorePlugin.setMeposeProject(...):Parameter 'meposeModel' is null.");
-//        }
-//        this.meposeModel = meposeModel;
-//    }
-    
-//    public MeposeModel getMeposeModelFromResource(IResource resource) {
-//        MeposeModel model = null;
-//        
-//        try {
-//            model = (MeposeModel)resource.getSessionProperty(this.ID_MEPOSE_MODEL);
-//        }
-//        catch (CoreException exception) {
-//            CorePlugin.log("Could not get SessionProperty:",exception);
-//            model = null;
-//        }
-//        
-//        if(model == null) {
-//            model = new MeposeModel();
-//            try {
-//                String buildxml = resource.getPersistentProperty(this.ID_BUILD_XML);
-//                String polishHome = resource.getPersistentProperty(this.ID_POLISH_HOME);
-//                String wtkHome = resource.getPersistentProperty(this.ID_WTK_HOME);
-//                String configuredDevices = resource.getPersistentProperty(this.ID_DEVICES_CONFIGURED);
-//                String configuredPlatforms = resource.getPersistentProperty(this.ID_PLATFORMS_CONFIGURED);
-//                
-//                if(buildxml != null) {
-//                    model.setBuildxml(new File(buildxml));
-//                }
-//                if(polishHome != null) {
-//                    model.setPolishHome(new File(polishHome));
-//                }
-//                if(wtkHome != null) {
-//                    model.setWTKHome(new File(wtkHome));
-//                }
-//                if(configuredDevices != null) {
-//                    model.setSupportedDevicesAsString(configuredDevices);
-//                }
-//                if(configuredPlatforms != null) {
-//                    model.setConfiguredPlatformsAsString(configuredPlatforms);
-//                }
-//                
-//                resource.setSessionProperty(this.ID_MEPOSE_MODEL,model);
-//            } catch (CoreException exception) {
-//                CorePlugin.log("Error with model",exception);
-//            }
-//        }
-//        return model;
-//    }
 
     public BundleContext getBundleContext() {
         return this.bundleContext;
@@ -200,19 +144,23 @@ public class CorePlugin extends Plugin {
     
     private void initModelManager() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        ProjectPersistence persistence = new ProjectPersistence();
         for (int i = 0; i < projects.length; i++) {
             IProject project = projects[i];
             if(project.isOpen() && isMeposeProject(project)) {
-                extractModelFromMeposeProject(project);
+                Map map = null;
+                try {
+                    map = persistence.getMapFromProject(project);
+                } catch (CoreException exception) {
+                    log("Could not extract properties from project.project:"+project+".exception:"+exception);
+                    continue;
+                }
+                getMeposeModelManager().addModel(project,map);
             }
         }
     }
 
-    private void extractModelFromMeposeProject(IProject project) {
-        // TODO rickyn implement extractModelFromProject
-        
-    }
-
+    
     private boolean isMeposeProject(IProject project) {
         try {
             return project.getNature(MeposeCoreConstants.ID_NATURE) != null;

@@ -6,17 +6,27 @@
 
 	<extension point="org.eclipse.ui.propertyPages"> 
     		<page
-            class="de.enough.mepose.core.ui.propertyPages.ProjectPropertyPage"
+            class="de.enough.mepose.core.ui.propertyPages.OverviewPage"
             icon="icons/polish_logo_16x16.png"
-            id="de.enough.mepose.core.ui.propertyPages.ProjectPropertyPage"
+            id="de.enough.mepose.core.ui.propertyPages.OverviewPage"
             name="j2ME Polish"
             objectClass="org.eclipse.jdt.core.IJavaProject">
-        		<!-- TODO: We need our own meposenature or polishnature here. -->
         	<filter
            		name="nature"
-             	value="org.eclipse.jdt.core.javanature">
+             	value="de.enough.mepose.core.CorePlugin.PolishNature">
        		</filter>
-        	</page> 
+        	</page>
+      <page
+            category="de.enough.mepose.core.ui.propertyPages.OverviewPage"
+            class="de.enough.mepose.core.ui.propertyPages.AdvDataPage"
+            id="de.enough.mepose.core.ui.propertyPages.AdvDataPage"
+            name="Advanced Data Entry"
+            objectClass="org.eclipse.jdt.core.IJavaProject">
+            <filter
+            	name="nature"
+            	value="de.enough.mepose.core.CorePlugin.PolishNature">
+            </filter>
+      </page>
     	</extension>
  
  <extension
@@ -73,4 +83,9 @@
           type="de.enough.mepose.core.ui.launcher.midletemulator"/>
  </extension>
 
+	<extension point="org.eclipse.ui.popupMenus">
+        <objectContribution adaptable="true" id="de.enough.mepose.core.ui.actions.TogglePolishNature" objectClass="org.eclipse.core.resources.IProject">
+            <action class="de.enough.mepose.core.ui.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/polish_logo_16x16.png" id="de.enough.mepose.core.ui.actions.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
+        </objectContribution>
+    </extension>
 </plugin>
