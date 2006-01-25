@@ -12,6 +12,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -152,6 +153,10 @@ public class UIPluginActivator extends AbstractUIPlugin {
     // Private methods.
     
     private void registerProjectListener() {
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(new ProjectSelected());
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(new ProjectSelected());
+            }
+        });
     }
 }
