@@ -29,16 +29,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
 import org.jdom.JDOMException;
 
 import de.enough.polish.Device;
@@ -162,7 +158,10 @@ public class DeviceTree {
                 normalClasspathSet.add(normalClasspath[j]);
             }
             for (int j = 0; j < bootClasspath.length; j++) {
-                bootClasspathSet.add(bootClasspath[j]);
+                String bootClasspathEntry = bootClasspath[j];
+                if(bootClasspathEntry != null) {
+                    bootClasspathSet.add(bootClasspath[j]);
+                }
             }
         }
         
@@ -187,7 +186,10 @@ public class DeviceTree {
     }
 
     /**
-     * @param fullClasspathArray Must be sorted and non null.
+     * Removes duplicate entires like MIDP-1.1, MIDP-2.0 and keeps the highest
+     * version number (lexically) on the path.
+     * @param paths Must be sorted and non null.
+     * @return filtered classpath entries.
      */
     protected String[] filterPaths(String[] paths) {
         List resultList = new LinkedList();
