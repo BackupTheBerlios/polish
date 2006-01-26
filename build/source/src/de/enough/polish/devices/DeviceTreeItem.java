@@ -25,7 +25,10 @@
  */
 package de.enough.polish.devices;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,10 +53,7 @@ public class DeviceTreeItem {
 	private final Device device;
 	private final List children;
     private DeviceTreeItem parentItem;
-//    private LinkedList selectionListeners;
-//    public interface SelectionListener{
-//        //
-//    }
+    private LinkedList propertyChangeListeners;
     
 	/**
 	 * Creates a new tree item.
@@ -78,7 +78,7 @@ public class DeviceTreeItem {
 		} else {
 			this.name = "Virtual";
 		}
-//        this.selectionListeners = new LinkedList();
+        this.propertyChangeListeners = new LinkedList();
 	}
 	
 	public DeviceTreeItem[] getChildren() {
@@ -89,13 +89,13 @@ public class DeviceTreeItem {
         
         setIsSelectedOnItemOnly(selected);
         
-		DeviceTreeItem[] childs = getChildren();
-		for (int i = 0; i < childs.length; i++) {
-			DeviceTreeItem item = childs[i];
-			item.setIsSelectedOnItemAndChildren(selected);
-		}
-        
-		// Uncheck the parent if we become unchecked as the parent can only be checked
+        DeviceTreeItem[] childs = getChildren();
+        for (int i = 0; i < childs.length; i++) {
+            DeviceTreeItem item = childs[i];
+            item.setIsSelectedOnItemAndChildren(selected);
+        }
+
+        // Uncheck the parent if we become unchecked as the parent can only be checked
         // if every child is checked. 
 		if(selected == false) {
             DeviceTreeItem parent = getParentItem();
@@ -128,6 +128,7 @@ public class DeviceTreeItem {
      */
     private void setIsSelectedOnItemOnly(boolean selected) {
         this.isSelected = selected;
+        fireSelectionChange();
     }
 
     public boolean isSelected() {
@@ -184,20 +185,21 @@ public class DeviceTreeItem {
         this.parentItem = parentItem;
     }
 	
-//    private void fireSelectionChange() {
-//        for (Iterator iterator = this.selectionListeners.iterator(); iterator.hasNext(); ) {
-//            SelectionListener selectionListener = (SelectionListener) iterator.next();
-//            selectionListener.
-//        }
-//    }
-//	
-//    // TODO: Use the generic EventManager.
-//    public void addSelectionListener(SelectionListener selectionListener) {
-//        this.selectionListeners.add(selectionListener);
-//    }
-//    
-//    public void removeSelectionListener(SelectionListener selectionListener) {
-//        this.selectionListeners.remove(selectionListener);
-//    }
+    private void fireSelectionChange() {
+        PropertyChangeEvent event = new PropertyChangeEvent(this,"selection",null,null);
+        for (Iterator iterator = this.propertyChangeListeners.iterator(); iterator.hasNext(); ) {
+            PropertyChangeListener selectionListener = (PropertyChangeListener) iterator.next();
+            selectionListener.propertyChange(event);
+        }
+    }
+
+    // TODO: Use the generic EventManager.
+    public void addSelectionListener(PropertyChangeListener propertyChangeListener) {
+        this.propertyChangeListeners.add(propertyChangeListener);
+    }
+    
+    public void removeSelectionListener(PropertyChangeListener propertyChangeListener) {
+        this.propertyChangeListeners.remove(propertyChangeListener);
+    }
 
 }
