@@ -52,16 +52,8 @@
         <specification annotationType="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation" colorPreferenceKey="occurrenceIndicationColor" colorPreferenceValue="255,248,147" contributesToHeader="false" highlightPreferenceKey="occurrenceHighlighting" highlightPreferenceValue="true" icon="icons/full/obj16/searchm_obj.gif" isGoToNextNavigationTarget="false" isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget" isGoToPreviousNavigationTarget="false" isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget" label="PolishOccurrenceAnnotation" overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler" overviewRulerPreferenceValue="true" presentationLayer="4" showInNextPrevDropdownToolbarAction="true" showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction" textPreferenceKey="occurrenceIndication" textPreferenceValue="false" verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler" verticalRulerPreferenceValue="false"></specification>
     </extension>
     
-    <extension id="polishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
-        <runtime>
-            <run class="de.enough.polish.plugin.eclipse.polish.PolishNature"></run>
-        </runtime>
-    </extension>
     <!-- Caution: IDs from natures are relative to the plugin ID.-->
 
-    <extension point="org.eclipse.ui.ide.projectNatureImages">
-        <image icon="icons/black.gif" id="de.enough.polish.plugin.eclipse.polishEditor.PolishProjectNatureImage" natureId="org.eclipse.ui.ide.projectNatureImages.polishNature"></image>
-    </extension>
     <extension point="org.eclipse.ui.actionSetPartAssociations">
         <actionSetPartAssociation targetID="org.eclipse.jdt.ui.text.java.actionSet.presentation">
             <part id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"></part>

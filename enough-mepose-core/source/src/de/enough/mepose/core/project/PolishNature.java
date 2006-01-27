@@ -6,14 +6,15 @@ package de.enough.mepose.core.project;
 import java.io.File;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.polish.devices.Platform;
 
 
 
@@ -31,6 +32,7 @@ import de.enough.polish.devices.Platform;
 public class PolishNature implements IProjectNature {
 
     IProject project;
+    public static final String ID_BUILDER = CorePlugin.ID + ".PolishBuilder";
     
     public void configure() throws CoreException {
         System.out.println("DEBUG:PolishNature.configure(...):enter.");
@@ -45,12 +47,34 @@ public class PolishNature implements IProjectNature {
         
         computeInitialProperties(map);
         
+        IProjectDescription description = project.getDescription();
+        ICommand[] commands = description.getBuildSpec();
+        ICommand command = description.newCommand();
+        command.setBuilderName(ID_BUILDER);
+        ICommand[] newCommands = new ICommand[commands.length+1];
+        System.arraycopy(commands,0,newCommands,0,commands.length);
+        newCommands[commands.length] = command;
+        description.setBuildSpec(newCommands);
+        this.project.setDescription(description,new NullProgressMonitor());
         CorePlugin.getDefault().getMeposeModelManager().addModel(this.project,map);
     }
 
     public void deconfigure() throws CoreException {
         System.out.println("PolishNature.deconfigure():enter.");
         CorePlugin.getDefault().getMeposeModelManager().removeModel(this.project);
+        
+        IProjectDescription description = this.project.getDescription();
+        ICommand[] commands = description.getBuildSpec();
+        for (int i = 0; i < commands.length; i++) {
+            if(commands[i].getBuilderName().equals(ID_BUILDER)) {
+                ICommand [] newCommands = new ICommand[commands.length-1];
+                System.arraycopy(commands,0,newCommands,0,i);
+                System.arraycopy(commands,i+1,newCommands,i,commands.length-i-1);
+                description.setBuildSpec(newCommands);
+                this.project.setDescription(description,new NullProgressMonitor());
+            }
+        }
+        
         //TODO:remove properties from the project.
     }
 

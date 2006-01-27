@@ -27,8 +27,12 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.util.List;
 
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.jdt.internal.ui.javaeditor.IClassFileEditorInput;
+import org.eclipse.jdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
 import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
@@ -38,7 +42,10 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.MeposeModel;
@@ -115,7 +122,7 @@ public class PolishEditor extends CompilationUnitEditor {
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
         
 //        this.meposeProject = CorePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
-        this.meposeProject = CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
+        this.meposeProject = CorePlugin.getDefault().getMeposeModelManager().getModel(getJavaProject().getProject());
         
         super.createPartControl(parent);
     }
@@ -202,6 +209,23 @@ public class PolishEditor extends CompilationUnitEditor {
         this.deviceEnvironment = deviceEnvironment;
     }
     
-    
+    public IJavaProject getJavaProject() {
+        
+        IJavaElement element= null;
+        IEditorInput input= getEditorInput();
+        IDocumentProvider provider= getDocumentProvider();
+        if (provider instanceof ICompilationUnitDocumentProvider) {
+            ICompilationUnitDocumentProvider cudp= (ICompilationUnitDocumentProvider) provider;
+            element= cudp.getWorkingCopy(input);
+        } else if (input instanceof IClassFileEditorInput) {
+            IClassFileEditorInput cfei= (IClassFileEditorInput) input;
+            element= cfei.getClassFile();
+        }
+        
+        if (element == null)
+            return null;
+        
+        return element.getJavaProject();
+    }
     
 }

@@ -123,8 +123,8 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         IProjectDescription description = project.getDescription();
         String[] ids = description.getNatureIds();
         String[] newIds = new String[ids.length+1];
-        System.arraycopy(ids,0,newIds,0,ids.length);
-        newIds[ids.length] = MeposeCoreConstants.ID_NATURE;
+        newIds[0] = MeposeCoreConstants.ID_NATURE;
+        System.arraycopy(ids,0,newIds,1,ids.length);
         description.setNatureIds(newIds);
         project.setDescription(description,monitor);
     }

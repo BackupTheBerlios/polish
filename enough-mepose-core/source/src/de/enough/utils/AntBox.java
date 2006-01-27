@@ -37,9 +37,10 @@ import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.helper.ProjectHelper2;
+import org.apache.tools.ant.types.Path;
 
 /**
- * 1. Set the build.xml file and a working directory.
+ * 1. Set the build.xml file and a working directory by setBuildxml()/setWorkingDirectory().
  * 2. Call createProject().
  * 3. Configure a target.
  * Beware that this class is written for ant-1.6.3. but eclipse uses 1.6.2.
@@ -64,6 +65,7 @@ public class AntBox {
     private ClassLoader alternativeClassLoader = null;
     private String workingDirectory = "";
     private String previousWorkingDirectory = "";
+    private File toolsLocation;
     
 
     // TODO: Add working directory to argument list as it is a prerequisit.
@@ -92,17 +94,26 @@ public class AntBox {
     }
     
     /**
+     * TODO: put the prerequisits in as parameters to reduce inter method
+     * dependencies. (order of setBuildxml,setWorkingDirectory and createProject)
      * Creates a project configured with the current build.xml file.
+     * @return the new Project instance
      * @throws IllegalStateException if no buildxml file was specified.
      * @throws BuildException 
      */
-    public void createProject() throws BuildException{
+    public Project createProject() throws BuildException{
         if(this.buildxml == null){
             throw new IllegalStateException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
         }
         setWorkingDirectory();
-        
+        this.project = new Project();
         this.project.setCoreLoader(this.alternativeClassLoader);
+        if(this.toolsLocation != null) {
+            System.out.println("DEBUG:AntBox.createProject(...):toolsLocation found.");
+            Path path = new Path(this.project);
+            path.setLocation(this.toolsLocation);
+            this.project.createClassLoader(path);
+        }
         this.project.init();
         this.project.setUserProperty("ant.version", Main.getAntVersion());
         this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
@@ -119,9 +130,16 @@ public class AntBox {
         
         // Restore previous working directory.
         restorePreviousWorkingDirectory();
+        return this.project;
     }
 
+    public File getToolsLocation() {
+        return this.toolsLocation;
+    }
     
+    public void setToolsLocation(File toolsLocation) {
+        this.toolsLocation = toolsLocation;
+    }
     /**
      * This method needs to be called when a target is used in any way. It will replace all UnknownElements tasks
      * with concrete task classes.
@@ -162,7 +180,7 @@ public class AntBox {
     }
 
     /**
-     * @return Returns the project.
+     * @return the project, may be uninitialized if createProject was not called.
      */
     public Project getProject() {
         return this.project;
@@ -264,10 +282,10 @@ public class AntBox {
         return this.workingDirectory;
     }
 
-    public void setWorkingDirectory(String workingDirectory) {
+    public void setWorkingDirectory(File workingDirectory) {
         if(workingDirectory == null){
             throw new IllegalArgumentException("ERROR:AntBox.setUsedWorkingDirectory(...):Parameter 'usedWorkingDirectory' is null.");
         }
-        this.workingDirectory = workingDirectory;
+        this.workingDirectory = workingDirectory.getAbsolutePath();
     }
 }

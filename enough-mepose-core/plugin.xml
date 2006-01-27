@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+   <extension-point id="BuildListeners" name="Build Listener" schema="schema/BuildListeners.exsd"/>
 	<extension
     	point="org.eclipse.core.runtime.preferences">
     	<initializer class="de.enough.mepose.core.preferences.PreferenceInitializer"/>
@@ -17,4 +18,12 @@
     		icon="icons/nature.png">
   		</image>
  	</extension>
+ <extension
+       id="PolishBuilder"
+       name="Polish Builder"
+       point="org.eclipse.core.resources.builders">
+    <builder>
+       <run class="de.enough.mepose.core.project.PolishBuilder"/>
+    </builder>
+ </extension>
 </plugin>

@@ -14,13 +14,17 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.MeposeCoreUIConstants;
 import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.ui.console.BuildListenerConsoleWriter;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -57,6 +61,7 @@ public class UIPluginActivator extends AbstractUIPlugin {
 		super.start(context);
         
         registerProjectListener();
+//        CorePlugin.getDefault().getMeposeModelManager().addBuildListener(new BuildListenerConsoleWriter());
 	}
 
     
@@ -155,7 +160,11 @@ public class UIPluginActivator extends AbstractUIPlugin {
     private void registerProjectListener() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(new ProjectSelected());
+                IWorkbench wb = PlatformUI.getWorkbench();
+                IWorkbenchWindow wbw = wb.getActiveWorkbenchWindow();
+                ISelectionService ss = wbw.getSelectionService();
+                ProjectSelected ps = new ProjectSelected();
+                ss.addSelectionListener(ps);
             }
         });
     }

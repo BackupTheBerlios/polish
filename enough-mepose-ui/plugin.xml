@@ -88,4 +88,8 @@
             <action class="de.enough.mepose.core.ui.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/polish_logo_16x16.png" id="de.enough.mepose.core.ui.actions.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
         </objectContribution>
     </extension>
+ <extension
+       point="de.enough.mepose.core.CorePlugin.BuildListeners">
+    <buildListener class="de.enough.mepose.core.ui.console.BuildListenerConsoleWriter"/>
+ </extension>
 </plugin>

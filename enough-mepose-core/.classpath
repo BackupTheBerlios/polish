@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/ant-nodeps.jar"/>
-	<classpathentry sourcepath="/Users/ricky/lib/apache-ant-1.6.3-src.zip" kind="lib" path="lib/ant.jar">
+	<classpathentry exported="true" sourcepath="/Users/ricky/lib/apache-ant-1.6.3-src.zip" kind="lib" path="lib/ant.jar">
 		<attributes>
 			<attribute value="jar:file:/Users/ricky/lib/apache-ant-1.6.3-doc.zip!/" name="javadoc_location"/>
 		</attributes>

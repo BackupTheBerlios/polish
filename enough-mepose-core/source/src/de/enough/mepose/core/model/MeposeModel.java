@@ -29,17 +29,30 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
+import org.eclipse.ant.core.AntCorePlugin;
+import org.eclipse.ant.core.AntCorePreferences;
+import org.eclipse.ant.core.IAntClasspathEntry;
+import org.eclipse.ant.internal.core.AntPropertyValueProvider;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 
@@ -47,6 +60,7 @@ import de.enough.mepose.core.CorePlugin;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
+import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.ConfigurationManager;
 import de.enough.polish.devices.DeviceDatabase;
@@ -74,7 +88,9 @@ import de.enough.utils.Status;
  */
 public class MeposeModel extends PropertyModel{
     
-    private static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
+    public static final String DEFAULT_DEVICE_NAME = "Generic/Midp2Cldc11";
+
+    public static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
 
 //    public static final String ERROR_NOBUILDXML_FILE = "No build.xml file specified.";
 //    public static final String ERROR_NO_DEVICE = "No device specified.";
@@ -86,7 +102,7 @@ public class MeposeModel extends PropertyModel{
     
     // Ant.
     public static final String ID_ANT_TASK_POLISH = "id.ant.task.polish";
-    private static final String ID_ANT_ENVIRONMENT = "id.ant.environment";
+    public static final String ID_ANT_ENVIRONMENT = "id.ant.environment";
     
     // Paths.
     public static final String ID_PATH_WORKINGDIRECTORY_BUILD = "id.build.wd";
@@ -110,6 +126,8 @@ public class MeposeModel extends PropertyModel{
     public static final String ID_INFO_DESCRIPTION = "id.info.description";
 
     private static final String ID_SUPPORTED_CLASSPATH = "id.supported.classpath";
+
+    private static final Object ID_CURRENT_TARGET_ONLYBUILD = "id.current.target.onlybuild";
 
     
     
@@ -142,12 +160,21 @@ public class MeposeModel extends PropertyModel{
     // Current Config.
     private File jadFile;
     private Device currentDevice;
+    
+    
+    private String currentDeviceName = DEFAULT_DEVICE_NAME;
 
     // Info.
     private String projectDescription = "";
 
     // Internal.
     private List propertyChangeListeners;
+
+    private String buildTargetName = "j2mepolish";
+
+    private List buildListener;
+
+    private ClassLoader antClassLoader;
     
     
     public MeposeModel() {
@@ -162,7 +189,30 @@ public class MeposeModel extends PropertyModel{
     //TODO: If fields are already set dispose them properly.
     public void reset() {
         this.antBox = new AntBox();
-        this.antBox.setAlternativeClassLoader(getClass().getClassLoader());
+        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
+        IAntClasspathEntry[] antClasspathEntries = p.getDefaultAntHomeEntries();
+        
+//        IAntClasspathEntry[] e2 = p.getDefaultAntHomeEntries();
+//        for (int i = 0; i < e2.length; i++) {
+//            System.out.println("DEBUG:MeposeModel.reset(...):e2."+e2[i]);
+//        }
+
+        List antClasspathList = new LinkedList();
+        try {
+            for (int i = 0; i < antClasspathEntries.length; i++) {
+                IAntClasspathEntry entry = antClasspathEntries[i];
+                antClasspathList.add(new URL("file://"+entry.toString()));
+            }
+            antClasspathList.add(new URL("file://"+p.getToolsJarEntry().toString()));
+        } catch (MalformedURLException exception) {
+            CorePlugin.log("No tools.jar found.",exception);
+        }
+        
+        URL[] toolsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
+        ClassLoader eclipseClassLoader = getClass().getClassLoader();
+        this.antClassLoader = new URLClassLoader(toolsUrls,eclipseClassLoader);
+        
+        this.antBox.setAlternativeClassLoader(this.antClassLoader);
         this.buildxml = new File("");
         this.projectHome = new File("");
         this.propertyChangeListeners = new LinkedList();
@@ -182,7 +232,6 @@ public class MeposeModel extends PropertyModel{
             CorePlugin.log("No embedded mpp-sdk found.",exception);
             throw new IllegalStateException("No embedded mpp-sdk found.");
         }
-        
         setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
         setPropertyValue(MeposeModel.ID_PATH_MPP_FILE,mppHomeFile);
         
@@ -190,6 +239,7 @@ public class MeposeModel extends PropertyModel{
         setMppHome(mppHomeFile);
         
         this.classpathEntries = null;
+        this.buildListener = new LinkedList();
     }
     
     
@@ -217,12 +267,11 @@ public class MeposeModel extends PropertyModel{
 
     // TODO: Break this method up to have several smaller ones.
     private void extractTaskFromBuildXML() {
-        this.antBox.setWorkingDirectory(this.projectHome.getAbsolutePath());
+        this.antBox.setWorkingDirectory(this.projectHome);
         this.antBox.setBuildxml(this.buildxml);
-        this.antBox.createProject();
         
         // Configure all targets.
-        Project project = this.antBox.getProject();
+        Project project = this.antBox.createProject();
         Map targetNameToTargetObjectMapping = project.getTargets();
         Collection targetObjectSet = targetNameToTargetObjectMapping.values();
         boolean foundPolishTask = false;
@@ -259,7 +308,12 @@ public class MeposeModel extends PropertyModel{
             //throw new BuildException("No target with a 'PolishTask' was found.");
         }
         Environment oldEnvironment = this.environment;
-        this.polishTask.initProject();
+        try {
+            this.polishTask.initProject();
+        } catch (Exception exception) {
+            // Maybe a ClassNotFoundException if obfuscator is not present.
+            CorePlugin.log("Something went wrong while polishTask.initProject().",exception);
+        }
         this.environment = this.polishTask.getEnvironment();
         firePropertyChangeEvent("environment",oldEnvironment,this.environment);
         this.polishTask.selectDevices();
@@ -408,6 +462,7 @@ public class MeposeModel extends PropertyModel{
             throw new IllegalArgumentException("setCurrentDevice(...):parameter 'currentDevice' is null contrary to API.");
         }
         this.currentDevice = currentDevice;
+        setCurrentDeviceName(this.currentDevice.getIdentifier());
         firePropertyChangeEvent(ID_CURRENT_DEVICE,null,this.currentDevice);
     }
     
@@ -513,6 +568,7 @@ public class MeposeModel extends PropertyModel{
 //        properties.put("wtk.home",this.wtkHome.getAbsolutePath());
         properties.put("mpp.home",this.mppHome.getAbsolutePath());
         try {
+            //TODO: Get the deviceDatabase from the PolishTask instead of creating a new one.
             this.deviceDatabase = new DeviceDatabase(properties,this.polishHome,this.projectHome,null,null,new HashMap(),new HashMap());
         } catch (Exception e) {
             System.out.println("ERROR:MeposeModel.getDeviceDatabase(...):"+e);
@@ -600,10 +656,11 @@ public class MeposeModel extends PropertyModel{
         p.put(ID_SUPPORTED_PLATFORMS,Arrays.arrayToString(getSupportedPlatforms()));
         p.put(ID_SUPPORTED_DEVICES,Arrays.arrayToString(getSupportedDevices()));
         
+        // Current Config.
         if(getCurrentDevice() != null) {
             p.put(ID_CURRENT_DEVICE,getCurrentDevice());
         }
-        
+        p.put(ID_CURRENT_TARGET_ONLYBUILD,getBuildTargetName());
         return p;
     }
 
@@ -673,9 +730,96 @@ public class MeposeModel extends PropertyModel{
 //        supportedDevices
     }
 
+    public void build(String targetName) {
+        if(getBuildxml() == null) {
+            throw new IllegalStateException("No build.xml file specified.");
+        }
+        System.setProperty("java.home","/usr/lib/j2sdk1.5-sun");
+        this.antBox = new AntBox();
+        
+        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
+        IAntClasspathEntry antClasspathEntry = p.getToolsJarEntry();
+        this.antBox.setToolsLocation(new File(antClasspathEntry.toString()));
+        
+        this.antBox.setAlternativeClassLoader(this.antClassLoader);
+        this.antBox.setWorkingDirectory(this.projectHome);
+        this.antBox.setBuildxml(this.buildxml);
+        Project antProject = this.antBox.createProject();
+        //TODO: Do this with an extension point.
+        List list = getBuildListeners();
+        for (Iterator iterator = list.iterator(); iterator.hasNext(); ) {
+            BuildListener aBuildListener = (BuildListener) iterator.next();
+            antProject.addBuildListener(aBuildListener);
+        }
+        
+//        Requirements r = new Requirements();
+//        r.isMet(getDeviceDatabase().getDeviceManager().getDevice(getCurrentDeviceName()));
+//        this.polishTask.addConfiguredDeviceRequirements(r);
+        
+//        antProject.setInheritedProperty("java.home","/usr/lib/j2sdk1.5-sun");
+        antProject.setUserProperty("device",getCurrentDeviceName());
+        antProject.setUserProperty("polish.home",getPolishHome().getAbsolutePath());
+        Vector targets = new Vector();
+        targets.add("clean");
+        targets.add(getBuildTargetName());
+        antProject.executeTargets(targets);
+    }
+
+    private List getBuildListeners() {
+        List list = new LinkedList();
+        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint("de.enough.mepose.core.CorePlugin.BuildListeners");
+        IExtension[] extensions = point.getExtensions();
+        for (int i = 0; i < extensions.length; i++) {
+            
+            IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
+            for (int j = 0; j < configurationElements.length; j++) {
+                try {
+                    Object o = configurationElements[j].createExecutableExtension("class");
+                    BuildListener aBuildListener = (BuildListener)o;
+                    list.add(aBuildListener);
+                } catch (CoreException exception) {
+                    CorePlugin.log("Could not create extensions.",exception);
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * @return the name of the ant target which only builds the sources.
+     */
+    public String getBuildTargetName() {
+        return this.buildTargetName;
+    }
     
+    public void setBuildTargetName(String buildTargetName) {
+        this.buildTargetName = buildTargetName;
+    }
+
+
+    /*
+     * May be out of sync with getCurrentDevice(). It is mostly for bootstrapping
+     * when no DeviceDatabase is present.
+     */
+    public String getCurrentDeviceName() {
+        return this.currentDeviceName;
+    }
+
+
+    public void setCurrentDeviceName(String currentDeviceName) {
+        if(currentDeviceName == null){
+            throw new IllegalArgumentException("setCurrentDeviceName(...):parameter 'currentDeviceName' is null contrary to API.");
+        }
+        this.currentDeviceName = currentDeviceName;
+    }
     
+    public void addBuildListener(BuildListener aBuildListener) {
+        this.buildListener.add(aBuildListener);
+    }
     
+    public void removeBuildListener(BuildListener aBuildListener) {
+        this.buildListener.remove(aBuildListener);
+    }
     
     
     
