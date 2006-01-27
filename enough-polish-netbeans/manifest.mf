@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: de.enough.polish.netbeans
+OpenIDE-Module-Layer: de/enough/polish/netbeans/layer.xml
+OpenIDE-Module-Localizing-Bundle: de/enough/polish/netbeans/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

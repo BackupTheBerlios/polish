@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="Templates">
+        <folder name="Project">
+            <folder name="J2ME">
+                <file name="J2mePolishProjectTemplateProject.zip" url="J2mePolishProjectTemplateProject.zip">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.netbeans.Bundle"/>
+                    <attr name="instantiatingIterator" methodvalue="de.enough.polish.netbeans.J2mePolishProjectTemplateWizardIterator.createIterator"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/de/enough/polish/netbeans/J2mePolishProjectTemplateDescription.html"/>
+                    <attr name="template" boolvalue="true"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
