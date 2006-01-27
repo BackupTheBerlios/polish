@@ -104,13 +104,33 @@ public final class ImageUtil {
 		return scaledRgbData;
 	}
 	
-
+	/**
+	 * Can scale the images unproportional in every new size you want 
+	 * bigger or smaller.
+	 * 
+	 * @param rgbData the original rgbdata
+	 * @param newWidth the new width for the new rgbdata
+	 * @param newHeight the new height for the new rgbdata
+	 * @param oldWidth the width from the oiginal rgbdata
+	 * @param oldHeight the height from the oiginal rgbdata
+	 */
 	public static final int[] scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
 		int[]newrgbData = new int[newWidth*newHeight];
 		scale( rgbData, newWidth,newHeight, oldWidth, oldHeight, newrgbData);
 		return newrgbData;
 	}
-
+	/**
+	 * Can scale the images unproportional in every new size you want 
+	 * bigger or smaller.
+	 * 
+	 * @author Tim Muders
+	 * @param rgbData the original rgbdata
+	 * @param newWidth the new width for the new rgbdata
+	 * @param newHeight the new height for the new rgbdata
+	 * @param oldWidth the width from the oiginal rgbdata
+	 * @param oldHeight the height from the oiginal rgbdata
+	 * @param newrgbData the new rgbdata has to be initialised
+	 */
 	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight,int[] newrgbData){	
 		int currentX = 0,currentY = 0;
 		int oldLenght = rgbData.length;
