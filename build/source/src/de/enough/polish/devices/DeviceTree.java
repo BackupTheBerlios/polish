@@ -29,12 +29,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 import org.jdom.JDOMException;
 
 import de.enough.polish.Device;
@@ -57,6 +61,7 @@ public class DeviceTree {
 	private final DeviceDatabase deviceDatabase;	
 	private DeviceTreeItem[] deviceTreeItems;
 	private DeviceTreeItem[] rootTreeItems;
+	private final Map deviceTreeItemsByIdentifier;
 
 	/**
 	 * Creates a new DeviceTree.
@@ -69,6 +74,7 @@ public class DeviceTree {
 	public DeviceTree( DeviceDatabase deviceDatabase, Configuration[] supportedConfigurations, Platform[] supportedPlatforms ) {
 		super();
 		this.deviceDatabase = deviceDatabase;
+		this.deviceTreeItemsByIdentifier = new HashMap();
 		rebuild( supportedConfigurations, supportedPlatforms );
 	}
 
@@ -90,27 +96,56 @@ public class DeviceTree {
 			DeviceTreeItem item;
 			if (device.isVirtual()) {
                 if(virtualTreeItem == null) {
-                    virtualTreeItem = new DeviceTreeItem( null, null, null );
+                    virtualTreeItem = getItem( null, null, null );
                     rootItemsList.add( virtualTreeItem );
                 }
-				item = new DeviceTreeItem( virtualTreeItem, null, device );
+				item = getItem( virtualTreeItem, null, device );
 				virtualTreeItem.addChild(item);
 			} else {
 				if (device.getVendor() != lastVendor) {
 					lastVendor = device.getVendor();
-					lastVendorItem = new DeviceTreeItem( null, lastVendor, null );
+					lastVendorItem = getItem( null, lastVendor, null );
 					rootItemsList.add( lastVendorItem );
 				}
-				item = new DeviceTreeItem( lastVendorItem, lastVendor, device );
+				item = getItem( lastVendorItem, lastVendor, device );
 				lastVendorItem.addChild( item );
 			}
 			deviceItems[i] = item;
 		}
 		this.deviceTreeItems = deviceItems;
+		// now sort the root items with the "virtual" tree item as the first element:
+		if (virtualTreeItem != null) {
+			DeviceTreeItem[] rootItems = (DeviceTreeItem[]) rootItemsList.toArray( new DeviceTreeItem[ rootItemsList.size() ]);
+			rootItemsList.clear();
+			rootItemsList.add( virtualTreeItem );
+			for (int i = 0; i < rootItems.length; i++) {
+				DeviceTreeItem item = rootItems[i];
+				if ( item != virtualTreeItem ) {
+					rootItemsList.add( item );
+				}
+			}
+		}
 		this.rootTreeItems = (DeviceTreeItem[]) rootItemsList.toArray( new DeviceTreeItem[ rootItemsList.size() ]);
-	
-		
     }
+	
+	private DeviceTreeItem getItem( DeviceTreeItem parent, Vendor vendor, Device device ) {
+		String identifier;
+		if (device != null) {
+			identifier = device.getIdentifier();
+		} else if (vendor != null) {
+			identifier = vendor.getIdentifier();
+		} else {
+			identifier = "___virtual";
+		}
+		DeviceTreeItem item = (DeviceTreeItem) this.deviceTreeItemsByIdentifier.get( identifier );
+		if (item == null) {
+			item = new DeviceTreeItem( parent, vendor, device );
+			this.deviceTreeItemsByIdentifier.put( identifier, item );
+		} else {
+			item.clearChildren();
+		}
+		return item;
+	}
 	
 	public DeviceTreeItem[] getRootItems() {
 		return this.rootTreeItems;
@@ -126,9 +161,28 @@ public class DeviceTree {
 		}
 		Device[] selectedDevices = (Device[]) list.toArray( new Device[ list.size() ] );
 		//Arrays.sort( selectedDevices );
-		return selectedDevices;
-		
+		return selectedDevices;	
 	}
+	
+    public String[] getSelectedDeviceIdentifiers(){
+    	Device[] devices = getSelectedDevices();
+    	String[] identifiers = new String[ devices.length ];
+    	for (int i = 0; i < devices.length; i++) {
+			Device device = devices[i];
+			identifiers[i] = device.getIdentifier();			
+		}
+    	return identifiers;
+    }
+
+    public Map getSelectedDeviceProperties(){
+    	HashMap map  = new HashMap();
+    	return map;
+    }
+
+    public String[] getSelectedDeviceClassPaths(){
+    	return null;
+    }
+
 
     public File[] getClasspathForSelectedDevices() {
         Device[] selectedDevices = getSelectedDevices();
@@ -233,5 +287,24 @@ public class DeviceTree {
         
         return jarName.substring(0,jarName.indexOf(delimiter));
     }
+
+	public int getNumberOfRootItems() {
+		return this.rootTreeItems.length;
+	}
+
+	public int getChildCount(Object parent) {
+		for (int i = 0; i < this.rootTreeItems.length; i++) {
+			DeviceTreeItem item = this.rootTreeItems[i];
+			if (item == parent) {
+				return item.getChildCount();
+			} else {
+				int count = item.getChildCount( parent );
+				if ( count != -1 ) {
+					return count;
+				}
+			}
+		}
+		return 0;
+	}
 
 }

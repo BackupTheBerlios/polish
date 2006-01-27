@@ -118,7 +118,9 @@ public class PlatformManager {
 	 * @return an array with all known Platform
 	 */
 	public Platform[] getPlatforms() {
-		return (Platform[]) this.platformsByIdentifier.values().toArray( new Platform[ this.platformsByIdentifier.size() ] );
+		Platform[] platforms = (Platform[]) this.platformsByIdentifier.values().toArray( new Platform[ this.platformsByIdentifier.size() ] );
+		Arrays.sort( platforms );
+		return platforms;
 	}
 
 	// TODO: This is going to change to another location. Maybe DeviceDatabase.

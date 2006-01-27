@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="import/ant.jar"/>
 	<classpathentry kind="lib" path="import/svgSalamander.jar"/>
 	<classpathentry kind="lib" path="import/enough-bytecode.jar"/>
+	<classpathentry kind="lib" path="import/swing-layout-1.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

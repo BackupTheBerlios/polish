@@ -32,6 +32,7 @@
 	<platform>
 		<identifier>MIDP/1.0</identifier>
 		<features>midp, midp1</features>
+		<description>Mobile Information Device Profile 1.0.</description>
 		<capability name="build.BootClassPath" value="midp-1.0.jar" />
 		<capability name="build.ImplicitGroups" value="midp1" />
 	</platform>
@@ -39,6 +40,7 @@
 	<platform>
 		<identifier>MIDP/2.0</identifier>
 		<features>midp, midp2</features>
+		<description>Mobile Information Device Profile 2.0.</description>
 		<capability name="build.BootClassPath" value="midp-2.0.jar" />
 		<capability name="build.ImplicitGroups" value="midp2" />
 	</platform>
@@ -46,6 +48,7 @@
 	<platform>
 		<identifier>JTWI/1.0</identifier>
 		<parent>MIDP/2.0</parent>
+		<description>Java Technology for the Wireless Industry 1.0 aims to lessen the device fragmentation.</description>
 		<features>jtwi</features>
 		<capability name="build.ImplicitGroups" value="jtwi" />
 	</platform>
@@ -53,6 +56,7 @@
 	<platform>
 		<identifier>BlackBerry</identifier>
 		<features>blackberry, hasCommandKeyEvents</features>
+		<description>BlackBerry provides a platform that supplements CLDC 1.0 and MIDP 2.0 by BlackBerry specific APIs.</description>
 		<capability name="Bugs" value="drawRgbNeedsFullBuffer" />
 		<capability name="key.EscapeKey" value="1769472" />
 		<capability name="key.ReturnKey" value="1769472" />
@@ -76,6 +80,7 @@
 	<platform>
 		<identifier>WIPI/1.2</identifier>
 		<features>wipi1.2</features>
+		<description>The Korean Wireless Internet Platform for Interoperability 1.2 is mostly compatible to MIDP 1.0.</description>
 		<capability name="build.BootClassPath" value="midp-1.0.jar" />
 		<capability name="build.Preverifier" value="none" />
 		<capability name="build.ImplicitGroups" value="wipi, wipi1.2" />
@@ -84,6 +89,7 @@
 	<platform>
 		<identifier>WIPI/2.0</identifier>
 		<features>wipi2.0, midp, midp2</features>
+		<description>The Korean Wireless Internet Platform for Interoperability 2.0 is compatible to MIDP 2.0.</description>
 		<capability name="build.BootClassPath" value="midp-2.0.jar" />
 		<capability name="build.Preverfier" value="none" />
 		<capability name="build.ImplicitGroups" value="wipi, wipi2.0" />
@@ -92,6 +98,7 @@
 	<platform>
 		<identifier>DoJa/1.5</identifier>
 		<features>doja, doja1.5, doja-15</features>
+		<description>The Japanese DoJa or iAppli standard is based on CLDC 1.0.</description>
 		<capability name="build.BootClassPath" value="doja-1.5.jar" />
 		<capability name="build.ImplicitGroups" value="doja, doja1.5" />
 		<capability name="build.ManifestCreator" value="none" />
@@ -102,6 +109,7 @@
 	<platform>
 		<identifier>DoJa/2.5</identifier>
 		<features>doja, doja2.5, doja-25</features>
+		<description>The Japanese DoJa or iAppli standard is based on CLDC 1.0.</description>
 		<capability name="build.BootClassPath" value="doja-2.5.jar" />
 		<capability name="build.ImplicitGroups" value="doja, doja2.5" />
 		<capability name="build.ManifestCreator" value="none" />

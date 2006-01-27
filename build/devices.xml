@@ -33,6 +33,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/midp1</identifier>
 		<features>isVirtual</features>
+		<description>A device that merely supports the MIDP 1.0 and CLDC 1.0 standards.</description>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
@@ -41,6 +42,7 @@
 		supportsPolishGui="false" >
 		<identifier>Generic/PlainMidp1</identifier>
 		<features>isVirtual</features>
+		<description>A device that merely supports the MIDP 1.0 and CLDC 1.0 standards and does not support the J2ME Polish GUI.</description>
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
@@ -49,6 +51,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/midp2</identifier>
 		<features>isVirtual</features>
+		<description>A device that merely supports the MIDP 2.0 and CLDC 1.0 standards.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
@@ -57,6 +60,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/Midp2Cldc11</identifier>
 		<features>isVirtual</features>
+		<description>A device that merely supports the MIDP 2.0 and CLDC 1.1 standards.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 	</device>
@@ -78,6 +82,7 @@
 		supportsPolishGui="false" >
 		<identifier>Generic/PlainMidp2</identifier>
 		<features>isVirtual</features>
+		<description>A device that merely supports the MIDP 2.0 and CLDC 1.0 standards and does not support the J2ME Polish GUI.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 	</device>
@@ -85,6 +90,7 @@
 	<device
 		supportsPolishGui="false" >
 		<identifier>Generic/PlainMidp2Cldc11</identifier>
+		<description>A device that merely supports the MIDP 2.0 and CLDC 1.1 standards and does not support the J2ME Polish GUI.</description>
 		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -95,6 +101,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/jsr185</identifier>
 		<features>isVirtual</features>
+		<description>An JTWI 1.0 compatible device that supports the MIDP 2.0 and CLDC 1.0 standards.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="mmapi, wmapi" />
@@ -105,6 +112,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/jtwi</identifier>
 		<features>isVirtual</features>
+		<description>An JTWI 1.0 compatible device that supports the MIDP 2.0 and CLDC 1.0 standards.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
@@ -116,6 +124,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/JtwiCldc11</identifier>
 		<features>isVirtual</features>
+		<description>An JTWI 1.0 compatible device that supports the MIDP 2.0 and CLDC 1.1 standards.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
@@ -126,6 +135,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/wmapi20</identifier>
 		<features>isVirtual</features>
+		<description>An  device that supports the MIDP 2.0 and CLDC 1.0 standards along with the Wireless Messaging API 2.0.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="mmapi,wmapi2.0,jtwi" />
@@ -136,6 +146,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/DefaultColorPhone</identifier>
 		<features>isVirtual</features>
+		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
@@ -148,6 +159,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/MediaControlSkin</identifier>
 		<features>isVirtual</features>
+		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
@@ -159,6 +171,7 @@
 		supportsPolishGui="true" >
 		<identifier>Generic/QwertyDevice</identifier>
 		<features>isVirtual</features>
+		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
@@ -170,6 +183,7 @@
 		supportsPolishGui="false" >
 		<identifier>Generic/DefaultGrayPhone</identifier>
 		<features>isVirtual</features>
+		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />

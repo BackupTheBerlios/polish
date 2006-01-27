@@ -102,6 +102,7 @@ implements Comparable
 
 	/**
      * Converts new lines, tabs and successive whitespace to a single whitespace.
+     * 
      * @param string the string to strip. May be null.
      * @return the striped string or null if the parameter was null.
      */
@@ -109,12 +110,14 @@ implements Comparable
         if(string == null) {
             return null;
         }
-        return string.replaceAll("\n|\r\n|\t+| +"," ");
+        return string.replaceAll("\\s+|\r\n|\n"," ");
+        //string = string.replaceAll("  "," ").trim();
 //        String temp = string;
 //        temp = temp.replaceAll("\t+"," ");
 //        temp = temp.replaceAll(" +"," ");
 //        return temp;
     }
+    
     /**
 	 * Loads all found capabilities of this component.
 	 * 

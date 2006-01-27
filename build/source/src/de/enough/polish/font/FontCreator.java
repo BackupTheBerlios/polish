@@ -61,6 +61,7 @@ extends SwingApplication
 implements ActionListener
 {
 
+	private static final long serialVersionUID = -8392341822931692366L;
 	private JMenuItem menuSave;
 	private JMenuItem menuQuit;
 	private JMenuItem menuSaveAs;
@@ -362,7 +363,7 @@ implements ActionListener
 	
 	/**
 	 * @param extension
-	 * @return
+	 * @return the file that should be opened
 	 */
 	private File openFile(String extension, boolean open ) {
 		File selectedFile = SwingUtil.openFile( extension, open, this.currentDirectory, this );

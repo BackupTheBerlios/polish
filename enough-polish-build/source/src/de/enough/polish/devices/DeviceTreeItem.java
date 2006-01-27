@@ -48,12 +48,20 @@ import de.enough.polish.Device;
 public class DeviceTreeItem {
 	
 	private boolean isSelected;
+	private boolean isExpanded;
 	private String name;
 	private final Vendor vendor;
 	private final Device device;
-	private final List children;
+	private final List childrenList;
+	private DeviceTreeItem[] children;
     private DeviceTreeItem parentItem;
-    private LinkedList propertyChangeListeners;
+    private Object data;
+//    private LinkedList selectionListeners;
+//    public interface SelectionListener{
+//        //
+//    }
+	private DeviceTreeItemSelectionListener selectionListener;
+	private LinkedList propertyChangeListeners;
     
 	/**
 	 * Creates a new tree item.
@@ -64,7 +72,7 @@ public class DeviceTreeItem {
 	 */
 	public DeviceTreeItem(DeviceTreeItem parentItem, Vendor vendor, Device device ) {
         this.parentItem = parentItem;
-		this.children = new ArrayList();
+		this.childrenList = new ArrayList();
 		this.vendor = vendor;
 		this.device = device;
 		if (device != null) {
@@ -82,8 +90,32 @@ public class DeviceTreeItem {
 	}
 	
 	public DeviceTreeItem[] getChildren() {
-		return (DeviceTreeItem[]) this.children.toArray( new DeviceTreeItem[ this.children.size() ] );
+		if (this.children == null) {
+			this.children = (DeviceTreeItem[]) this.childrenList.toArray( new DeviceTreeItem[ this.childrenList.size() ] );
+		}
+		return this.children;
 	}
+	
+	public int getChildCount() {
+		return this.childrenList.size();
+	}
+
+	public int getChildCount(Object parent) {
+		DeviceTreeItem[] items = getChildren();
+		for (int i = 0; i < items.length; i++) {
+			DeviceTreeItem item = items[i];
+			if ( item == parent ) {
+				return item.getChildCount();
+			} else {
+				int count = item.getChildCount(parent);
+				if (count != -1) {
+					return count;
+				}
+			}
+		}
+		return -1;
+	}
+
 	
 	public void setIsSelected( boolean selected ) {
         
@@ -128,6 +160,9 @@ public class DeviceTreeItem {
      */
     private void setIsSelectedOnItemOnly(boolean selected) {
         this.isSelected = selected;
+        if (this.selectionListener != null) {
+        	this.selectionListener.notifySelected(this, selected);
+        }
         fireSelectionChange();
     }
 
@@ -159,14 +194,29 @@ public class DeviceTreeItem {
 		if (isVendor()) {
 			return this.vendor.getDescription();
 		} else if (isDevice()) {
-			return this.device.getDescription();
+			StringBuffer buffer = new StringBuffer();
+			String text= this.device.getDescription().trim();
+			if (text != null && text.length() > 0) {
+				buffer.append( text );
+			} else {
+				buffer.append( this.device.getIdentifier() );
+			}
+			text = this.device.getSupportedApisAsString();
+			if (text != null && text.length() > 0) {
+				buffer.append("\n");
+				buffer.append("Additional APIs: ").append( text );
+			}
+			buffer.append("\nPlatform:").append( this.device.getCapability("polish.JavaConfiguration") )
+				.append( ", ").append( this.device.getCapability("polish.JavaPlatform") );
+			return buffer.toString();
 		} else {
 			return "Contains virtual devices that represent typical groups of devices.";
 		}
 	}
 	
 	protected void addChild( DeviceTreeItem child ) {
-		this.children.add( child );
+		this.childrenList.add( child );
+		this.children = null;
 	}
 
     /**
@@ -184,6 +234,38 @@ public class DeviceTreeItem {
     public void setParentItem(DeviceTreeItem parentItem) {
         this.parentItem = parentItem;
     }
+    
+    public void setData( Object data ) {
+    	this.data = data;
+    }
+    
+    public Object getData() {
+    	return this.data;
+    }
+    
+    public void setSelectionListener( DeviceTreeItemSelectionListener listener ) {
+    	this.selectionListener = listener;
+    }
+
+	public void clearChildren() {
+		this.childrenList.clear();
+		this.children = null;
+	}
+
+	/**
+	 * @return Returns the isExpanded.
+	 */
+	public boolean isExpanded() {
+		return this.isExpanded;
+	}
+
+	/**
+	 * @param isExpanded The isExpanded to set.
+	 */
+	public void setExpanded(boolean isExpanded) {
+		this.isExpanded = isExpanded;
+	}
+
 	
     private void fireSelectionChange() {
         PropertyChangeEvent event = new PropertyChangeEvent(this,"selection",null,null);

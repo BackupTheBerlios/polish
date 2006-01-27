@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -116,7 +117,9 @@ public class ConfigurationManager {
 	 * @return an array with all known configurations
 	 */
 	public Configuration[] getConfigurations() {
-		return (Configuration[]) this.configurationsByIdentifier.values().toArray( new Configuration[ this.configurationsByIdentifier.size() ] );
+		Configuration[] configs = (Configuration[]) this.configurationsByIdentifier.values().toArray( new Configuration[ this.configurationsByIdentifier.size() ] );
+		Arrays.sort( configs );
+		return configs;
 	}
 
 	/**
