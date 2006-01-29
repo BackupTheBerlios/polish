@@ -1481,7 +1481,7 @@ implements Choice
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
-	protected void defocus(Style originalStyle) {
+	public void defocus(Style originalStyle) {
 		if (this.isPopup) {
 			if (this.isPopupClosed) {
 				this.popupItem.setStyle( originalStyle );

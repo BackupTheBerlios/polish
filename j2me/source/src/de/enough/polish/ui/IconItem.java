@@ -313,12 +313,21 @@ implements ImageConsumer
 		//#ifdef polish.css.icon-image
 			String imageName = style.getProperty("icon-image");
 			if (imageName != null) {
-				if (this.parent instanceof Container) {
-					imageName = ((Container) this.parent).parseIndexUrl( imageName, this );
+				Item item = this;
+				Item container = this.parent;
+				while ((container != null) 
+						&& !(container instanceof Container) 
+						&& (container.parent != null)) 
+				{
+					item = container;
+					container = container.parent;
+				}
+				if (container instanceof Container) {
+					imageName = ((Container) container).parseIndexUrl( imageName, item );
 				}
 				//#if polish.debug.error
 					else if ( imageName.indexOf( "%INDEX%") != -1) {
-						throw new IllegalStateException("IconItem cannot resolve %INDEX% in url since parent is not a container: " + this.parent );
+						throw new IllegalStateException("IconItem cannot resolve %INDEX% in url since parent is not a container: " + container );
 					}
 				//#endif
 				try {
@@ -363,6 +372,17 @@ implements ImageConsumer
 				}
 			//#endif
 		//#endif	
+		//#if polish.css.icon-inactive
+			Boolean inactiveBool = style.getBooleanProperty("icon-inactive");
+			if (inactiveBool != null) {
+				if (inactiveBool.booleanValue()) {
+					this.appearanceMode = Item.PLAIN;
+				} else {
+					this.appearanceMode = Item.INTERACTIVE;								
+				}
+			}
+		//#endif
+
 	}
 
 	/**

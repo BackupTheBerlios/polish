@@ -472,6 +472,9 @@ public abstract class CustomItem extends Item
 	//#else
 		//# private static final int INTERACTION_MODES = KEY_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
 	//#endif
+	//#if polish.css.skip-set-clip
+		protected boolean skipClipping;
+	//#endif
 	/** the font which is set in each paint() method */
 	private static final Font DEFAULT_FONT = Font.getDefaultFont();
 	private int[] visRect_inout = new int[4];
@@ -1229,8 +1232,15 @@ public abstract class CustomItem extends Item
 		int clipY = g.getClipY();
 		this.clipWidth = g.getClipWidth();
 		this.clipHeight = g.getClipHeight();
-		// set the clip-area, so that the implementation cannot paint over the content area:
-		g.clipRect( x, y, this.contentWidth, this.contentHeight );
+		//#if polish.css.skip-set-clip
+			if (!this.skipClipping) {
+		//#endif
+				// set the clip-area, so that the implementation cannot paint over the content area:
+				g.clipRect( x, y, this.contentWidth, this.contentHeight );
+		//#if polish.css.skip-set-clip
+			}
+		//#endif
+
 		// translate the graphics origin:
 		g.translate( x, y );
 		
@@ -1243,8 +1253,15 @@ public abstract class CustomItem extends Item
 		
 		// retranslate the graphics-origin:
 		g.translate( -x, -y );
-		// reset the clip:
-		g.setClip( clipX, clipY, this.clipWidth, this.clipHeight );
+
+		//#if polish.css.skip-set-clip
+			if (!this.skipClipping) {
+		//#endif
+				// reset the clip:
+				g.setClip( clipX, clipY, this.clipWidth, this.clipHeight );
+		//#if polish.css.skip-set-clip
+			}
+		//#endif
 	}
 	
 	/* (non-Javadoc)
@@ -1317,4 +1334,39 @@ public abstract class CustomItem extends Item
 	}
 	//#endif
 
+	protected void setParent( Item item, Item parent ) {
+		item.parent = parent;
+	}
+	
+	protected boolean handleKeyPressed( Item item, int keyCode, int gameAction ) {
+		return item.handleKeyPressed(keyCode, gameAction);
+	}
+
+	protected void defocus( Item item, Style originalStyle ) {
+		item.defocus(originalStyle);
+	}
+
+	protected void setInOutRectangle( Item item, int[] visRect_inout ) {
+		visRect_inout[0] = item.internalX;
+		visRect_inout[1] = item.internalY;
+		visRect_inout[2] = item.internalWidth;
+		visRect_inout[3] = item.internalHeight;
+	}
+
+	//#if polish.css.skip-set-clip	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		//#if polish.css.skip-set-clip
+			Boolean skipClippingBool = style.getBooleanProperty("skip-set-clip");
+			if (skipClippingBool != null) {
+				this.skipClipping = skipClippingBool.booleanValue();
+			}
+		//#endif
+	}
+	//#endif
+	
+	 
 }

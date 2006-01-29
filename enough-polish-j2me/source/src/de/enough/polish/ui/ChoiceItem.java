@@ -348,16 +348,6 @@ public class ChoiceItem extends IconItem
 					this.boxColor = color.intValue();
 				}
 			//#endif
-			//#if polish.css.choiceitem-inactive
-				Boolean inactiveBool = style.getBooleanProperty("choiceitem-inactive");
-				if (inactiveBool != null) {
-					if (inactiveBool.booleanValue()) {
-						this.appearanceMode = Item.PLAIN;
-					} else {
-						this.appearanceMode = Item.INTERACTIVE;								
-					}
-				}
-			//#endif
 	
 		} // if draw box
 	}

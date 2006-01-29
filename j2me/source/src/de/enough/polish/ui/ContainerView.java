@@ -115,7 +115,9 @@ public class ContainerView {
 	protected void initContent( Container parent, int firstLineWidth, int lineWidth ) {
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this );
-		
+		//#if polish.Container.allowCycling != false
+			this.allowCycling = parent.allowCycling;
+		//#endif
 		//#if polish.css.view-type-left-x-offset
 			lineWidth -= this.leftXOffset;
 		//#endif
@@ -320,6 +322,10 @@ public class ContainerView {
 				this.appearanceMode = Item.PLAIN;
 			}
 			//#if polish.css.colspan
+				if (columnIndex != 0) {
+					// last row is not completely filled.
+					rowHeightsList.add( new Integer( maxRowHeight ) );
+				}
 				this.numberOfRows = rowHeightsList.size();
 				//System.out.println("ContainerView.init(): numberOfRows=" + this.numberOfRows + ", rowIndex=" + rowIndex);
 				this.rowsHeights = new int[ this.numberOfRows ];
@@ -555,7 +561,7 @@ public class ContainerView {
 				//#if polish.css.colspan
 					// iterate over all items to find the correct row:
 					int column = 0;
-					for (int i = 0; i < this.focusedIndex; i++) {
+					for (int i = 0; i <= this.focusedIndex; i++) {
 						Item item = myItems[i];
 						column += item.colSpan;
 						if (column >= this.numberOfColumns) {
@@ -599,14 +605,11 @@ public class ContainerView {
 	 * @return the item that has been focused or null, when no item has been focused.
 	 */
 	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items) {
-		//System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps );
-		//TODO include code handling for auto focussing
-		if (this.focusedIndex == -1) {
-			this.focusedIndex = 0;
-		}
+		//#debug
+		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex );
 		//#if polish.css.colspan
 			int i = this.focusedIndex;
-			if (steps != 0) {
+			if ( i != -1 && steps != 0) {
 				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
 				int doneSteps = 0;
 				steps = Math.abs( steps ) + 1;
@@ -620,9 +623,11 @@ public class ContainerView {
 					if (forwardFocus) {
 						i++;
 						if (i == items.length - 1 ) {
+							//System.out.println("reached items.length -1, breaking at -2");
 							i = items.length - 2;
 							break;
-						} else if (i == items.length) {
+						} else if (i >= items.length) {
+							//System.out.println("reached items.length, breaking at -1");
 							i = items.length - 1;
 							break;
 						}
@@ -699,7 +704,11 @@ public class ContainerView {
 	//			System.out.println("shiftFocus: allowCycl=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset );	
 	//		}
 	//	//#endif
-		boolean allowCycle = true;
+		//#if polish.Container.allowCycling != false
+			boolean allowCycle = this.allowCycling;
+		//#else
+			//# boolean allowCycle = false;
+		//#endif
 		Item nextItem = null;
 		while (true) {
 			if (forwardFocus) {

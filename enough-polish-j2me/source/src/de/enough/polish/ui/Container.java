@@ -77,7 +77,7 @@ public class Container extends Item {
 	public int focusedIndex = -1;
 	protected boolean enableScrolling;
 	//#if polish.Container.allowCycling != false
-		protected boolean allowCycling = true;
+		public boolean allowCycling = true;
 	//#endif
 	int yTop;
 	int yBottom;
@@ -366,12 +366,24 @@ public class Container extends Item {
 	/**
 	 * Focuses the specified item.
 	 * 
-	 * @param index the index of the item. The first item has the index 0. 
+	 * @param index the index of the item. The first item has the index 0, 
+	 * 		when -1 is given, the focus will be removed altogether (remember to call defocus( Style ) first in that case). 
 	 * @return true when the specified item could be focused.
 	 * 		   It needs to have an appearanceMode which is not Item.PLAIN to
 	 *         be focusable.
 	 */
 	public boolean focus(int index) {
+		if (index == -1) {
+			this.focusedIndex = -1;
+			this.focusedItem = null;
+			//#ifdef tmp.supportViewType
+				if (this.view != null) {
+					this.view.focusedIndex = -1;
+					this.view.focusedItem = null;
+				}
+			//#endif
+			return false;
+		}
 		Item item = (Item) this.itemsList.get(index );
 		if (item.appearanceMode != Item.PLAIN) {
 			int direction = 0;
@@ -1180,6 +1192,15 @@ public class Container extends Item {
 		}
 		return url;
 	}
+	/**
+	 * Retrieves the position of the specified item.
+	 * 
+	 * @param item the item
+	 * @return the position of the item, or -1 when it is not defined
+	 */
+	public int getPosition( Item item ) {
+		return this.itemsList.indexOf( item );
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
@@ -1279,7 +1300,7 @@ public class Container extends Item {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
-	protected void defocus(Style originalStyle) {
+	public void defocus(Style originalStyle) {
 		if ( this.itemsList.size() == 0 || this.focusedIndex == -1) {
 			super.defocus( originalStyle );
 		} else {
