@@ -350,6 +350,12 @@
 		<class>de.enough.polish.propertyfunctions.DisplayCountryFunction</class>
 	</extension>
 
+	<extension>
+		<type>propertyfunction</type>
+		<name>contenttype</name>
+		<class>de.enough.polish.propertyfunctions.ContentTypeFunction</class>
+	</extension>
+
 	<!-- Preverifier -->
 	
 	<extension>

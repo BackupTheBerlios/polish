@@ -53,9 +53,9 @@ import de.enough.polish.util.StringUtil;
  */
 public class Environment {
 	
-	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[\\w|\\.|\\-|,|\\(|\\)|\\s]+\\s*\\}";
+	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[\\w|\\.|\\-|,|\\(|\\)|\\s|/]+\\s*\\}";
 	protected final static Pattern PROPERTY_PATTERN = Pattern.compile( PROPERTY_PATTERN_STR );
-	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[\\w|\\s|\\.|,]+\\s*\\)";
+	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[\\w|\\s|\\.|/|,]+\\s*\\)";
 	protected final static Pattern FUNCTION_PATTERN = Pattern.compile( FUNCTION_PATTERN_STR );
 	
 	
@@ -386,9 +386,11 @@ public class Environment {
 	}
 
 	/**
-	 * @param property
-	 * @param needsToBeDefined
-	 * @return the found property
+	 * Retrieves the given property.
+	 * 
+	 * @param property the name of the property
+	 * @param needsToBeDefined true when an exception should be thrown when the property is not defined
+	 * @return the found property or null when it is not found
 	 */
 	private String getProperty(String property, boolean needsToBeDefined) {
 		if (property.indexOf('(') == -1) {
@@ -418,11 +420,11 @@ public class Environment {
 				String propertyName = group.substring( propertyNameStart + 1, propertyNameEnd ).trim();
 				String propertyValue = getVariable( propertyName );
 				if (propertyValue == null ) {
-					if (needsToBeDefined) {
-						throw new IllegalArgumentException("The property [" + propertyName + "] is not defined.");
-					} else {
+//					if (needsToBeDefined) {
+//						throw new IllegalArgumentException("The property [" + propertyName + "] is not defined.");
+//					} else {
 						propertyValue = propertyName;
-					}
+//					}
 				}
 				String[] parameters = null;
 				if ( hasParameters ) {
@@ -439,6 +441,10 @@ public class Environment {
 				}
 				if (function == null) {
 					throw new IllegalArgumentException("The property function [" + functionName + "] is not known. Please register it in custom-extensions.xml.");
+				}
+				// now ask the function whether it needs a defined property value:
+				if ( propertyValue == null && function.needsDefinedPropertyValue()) {
+					throw new IllegalArgumentException("The property [" + propertyName + "] is not defined.");
 				}
 				try {
 					String replacement = function.process(propertyValue, parameters, this);

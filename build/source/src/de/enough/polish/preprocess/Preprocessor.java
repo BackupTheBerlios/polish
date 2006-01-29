@@ -1274,7 +1274,11 @@ public class Preprocessor {
 		int startIndex = lines.getCurrentIndex();
 		int insertionIndex = startIndex;
 		final String[] innerLines = (String[]) innerLinesList.toArray( new String[ innerLinesList.size() ] );
-		final String[] values = StringUtil.splitAndTrim( valueStr, ',' );
+		String[] values = StringUtil.splitAndTrim( valueStr, ',' );
+		// maybe the values are separated by spaces:
+		if (values.length == 1) {
+			values = StringUtil.splitAndTrim( valueStr, ' ' );
+		}
 		for (int i = 0; i < values.length; i++) {
 			final String value = values[i];
 			this.environment.addTemporaryVariable( loopVarName, value );

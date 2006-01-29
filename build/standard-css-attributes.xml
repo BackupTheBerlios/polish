@@ -1077,10 +1077,10 @@
 	/>
 
 	<attribute
-		name="choiceitem-inactive"
+		name="icon-inactive"
 		type="boolean"
-		appliesTo="ChoiceItem, ChoiceGroup item"
-		description="Can be used to deactivate a specific ChoiceGroup item permanently. This can be useful to integrate explanations, headings etc into an ChoiceGroup."
+		appliesTo="IconItem, ChoiceItem, ChoiceGroup item, List item"
+		description="Can be used to deactivate a specific ChoiceGroup/List item permanently. This can be useful to integrate explanations, headings etc into an ChoiceGroup/List."
 		default="false"
 		id="111"
 	/>
@@ -1094,5 +1094,15 @@
 		default="true"
 		id="112"
 	/>
+	
+	<attribute
+		name="skip-set-clip"
+		type="boolean"
+		appliesTo="CustomItem"
+		description="Use this to deactivate the setting of the clipping for CustomItems. Usually the clip will be set for the exact content dimensions of the item. Deactivating it can be useful if you need to paint over the content area as well."
+		default="false"
+		id="113"
+	/>
+	
 
 </attributes>

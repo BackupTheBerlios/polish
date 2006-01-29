@@ -75,5 +75,19 @@ public abstract class PropertyFunction extends Extension {
 	 * @return the processed input
 	 */
 	public abstract String process( String input, String[] arguments, Environment env );
+	
+	/**
+	 * A property function can work on the values of properties or on the given input directly.
+	 * This method allows to specify whether the property needs to be defined (that is the
+	 * current target device has a defined value for the given property name) or whether this
+	 * function can work on normal/static values as well.
+	 * 
+	 * The default implementation returns false. Subclasses may override this.
+	 * 
+	 * @return false by default, that is the property function can operate on normal values as well. 
+	 */
+	public boolean needsDefinedPropertyValue() {
+		return false;
+	}
 
 }
