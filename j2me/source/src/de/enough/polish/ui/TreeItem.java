@@ -60,22 +60,18 @@ public class TreeItem
 	 * Creates a new tree item.
 	 * 
 	 * @param label the label of this item
-	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
-	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
 	public TreeItem(String label, int listType) {
-		this( label, listType, null );
+		this( label, null );
 	}
 
 	/**
 	 * Creates a new tree item.
 	 * 
 	 * @param label the label of this item
-	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 * @param style the style
-	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
-	public TreeItem(String label, int listType, Style style) {
+	public TreeItem(String label, Style style) {
 		super(label);
 		this.root = new Container( false, style );
 		//#if polish.Container.allowCycling != false

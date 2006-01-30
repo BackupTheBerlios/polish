@@ -58,7 +58,6 @@ public class ListItem
 	 * Creates a new list item.
 	 * 
 	 * @param label the label of this item
-	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
 	public ListItem(String label ) {
 		this( label, null );
@@ -69,7 +68,6 @@ public class ListItem
 	 * 
 	 * @param label the label of this item
 	 * @param style the style
-	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
 	public ListItem(String label, Style style) {
 		super(label);
