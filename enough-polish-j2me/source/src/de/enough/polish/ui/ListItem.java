@@ -27,6 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 /**
  * <p>Provides a list of items that can be used within a Form.</p>
@@ -52,6 +53,7 @@ public class ListItem
 	private int prefContentWidth;
 	private int prefContentHeight;
 	private final Container container;
+	private int availableWidth;
 
 	/**
 	 * Creates a new list item.
@@ -74,7 +76,69 @@ public class ListItem
 	 */
 	public ListItem(String label, int listType, Style style) {
 		super(label);
-		this.container = new Container( false );
+		this.container = new Container( false, style );
+		//#if polish.Container.allowCycling != false
+			this.container.allowCycling = false;
+		//#endif
+
+	}
+	
+	//#if false
+	public void append( javax.microedition.lcdui.Item item ) {
+		// ignore, only for the users
+	}
+	//#endif
+
+	//#if false
+	public void insert( int position, javax.microedition.lcdui.Item item ) {
+		// ignore, only for the users
+	}
+	//#endif
+
+	//#if false
+	public boolean remove( javax.microedition.lcdui.Item item ) {
+		// ignore, only for the users
+		return false;
+	}
+	//#endif
+
+	public void append( String text, Image image ) {
+		append( text, image, null );
+	}
+
+	public void append( String text, Image image, Style style ) {
+		IconItem item = new IconItem( text, image, style );
+		append( item );
+	}
+
+	public void append( Item item ) {
+		this.container.add(item);
+	}
+
+	public void append( Item item, Style style ) {
+		if (style != null) {
+			item.setStyle( style );
+		}
+		this.container.add(item);
+	}
+
+	public void insert( int position, Item item ) {
+		this.container.add( position, item );
+	}
+
+	public void insert( int position, Item item, Style style ) {
+		if (style != null) {
+			item.setStyle( style );
+		}
+		this.container.add( position, item );
+	}
+
+	public boolean remove( Item item ) {
+		return this.container.remove(item);
+	}
+	
+	public void removeAll() {
+		this.container.clear();
 	}
 
 	/* (non-Javadoc)
@@ -95,21 +159,68 @@ public class ListItem
 	 * @see javax.microedition.lcdui.CustomItem#getPrefContentWidth(int)
 	 */
 	protected int getPrefContentWidth(int maxHeight) {
-		return this.prefContentWidth;
+		// try to use the maximum available width:
+		return Integer.MAX_VALUE;
+		//return this.prefContentWidth;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CustomItem#getPrefContentHeight(int)
 	 */
 	protected int getPrefContentHeight(int maxWidth) {
-		return this.prefContentHeight;
+		this.availableWidth = maxWidth;
+		return this.container.getItemHeight(maxWidth, maxWidth);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CustomItem#paint(javax.microedition.lcdui.Graphics, int, int)
 	 */
 	protected void paint(Graphics g, int w, int h) {
-		this.container.paint( 0, 0, 0, this.prefContentWidth, g );
+		this.container.paint( 0, 0, 0, w, g );
+	}
+
+	protected void hideNotify() {
+		this.container.hideNotify();
+	}
+
+	protected void keyPressed(int keyCode) {
+		int gameAction = getGameAction(keyCode);
+		if (this.container.handleKeyPressed(keyCode, gameAction)) {
+			invalidate();
+		}
+	}
+
+	protected void showNotify() {
+		this.container.showNotify();
+	}
+
+	protected boolean traverse(int direction, int viewWidth, int viewHeight, int[] viewRect_inout) {
+		boolean handled = (this.container.handleKeyPressed(0, direction));
+		if (handled) {
+			viewRect_inout[0] = this.container.internalX;
+			viewRect_inout[1] = this.container.internalY;
+			viewRect_inout[2] = this.container.internalWidth;
+			viewRect_inout[3] = this.container.internalHeight;
+		}
+		return handled;
+	}
+	
+	protected void traverseOut() {
+		this.container.defocus(null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style focusstyle, int direction ) {
+		return this.container.focus(focusstyle, direction);
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle) {
+		this.container.defocus(originalStyle);
 	}
 
 }
