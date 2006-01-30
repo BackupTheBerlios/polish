@@ -61,7 +61,7 @@ public class TreeItem
 	 * 
 	 * @param label the label of this item
 	 */
-	public TreeItem(String label, int listType) {
+	public TreeItem(String label ) {
 		this( label, null );
 	}
 
