@@ -31,6 +31,9 @@ import javax.microedition.lcdui.Image;
 
 /**
  * <p>Provides a list of items that can be used within a Form.</p>
+ * <p>The list item behaves like a normal J2ME Polish container, so 
+ *    you can specify view-types, columns, colspans, etc.
+ * </p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -48,10 +51,6 @@ public class ListItem
  
 {
 	
-	private int minContentWidth;
-	private int minContentHeight;
-	private int prefContentWidth;
-	private int prefContentHeight;
 	private final Container container;
 	private int availableWidth;
 
@@ -59,22 +58,20 @@ public class ListItem
 	 * Creates a new list item.
 	 * 
 	 * @param label the label of this item
-	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
-	public ListItem(String label, int listType) {
-		this( label, listType, null );
+	public ListItem(String label ) {
+		this( label, null );
 	}
 
 	/**
 	 * Creates a new list item.
 	 * 
 	 * @param label the label of this item
-	 * @param listType one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 * @param style the style
 	 * @throws IllegalArgumentException if listType is not one of IMPLICIT, EXCLUSIVE, or MULTIPLE
 	 */
-	public ListItem(String label, int listType, Style style) {
+	public ListItem(String label, Style style) {
 		super(label);
 		this.container = new Container( false, style );
 		//#if polish.Container.allowCycling != false
@@ -84,37 +81,94 @@ public class ListItem
 	}
 	
 	//#if false
+	/**
+	 * Adds the specified item to this list.
+	 * 
+	 * @param item the item that should be added
+	 */
 	public void append( javax.microedition.lcdui.Item item ) {
 		// ignore, only for the users
 	}
 	//#endif
 
 	//#if false
+	/**
+	 * Inserts the specified item into this list.
+	 * 
+	 * @param position the position into which the item should be inserted
+	 * @param item the item that should be added
+	 */
 	public void insert( int position, javax.microedition.lcdui.Item item ) {
 		// ignore, only for the users
 	}
 	//#endif
 
 	//#if false
+	/**
+	 * Removes the specified item from this list.
+	 * 
+	 * @param item the item that should be removed
+	 * @return true when the item was contained in this list.
+	 */
 	public boolean remove( javax.microedition.lcdui.Item item ) {
 		// ignore, only for the users
 		return false;
 	}
 	//#endif
+	
+	/**
+	 * Removes the specified item from this list.
+	 * 
+	 * @param index the index of the item that should be removed
+	 * @return the item that has been at the specified index
+	 */
+	//#if false
+	public javax.microedition.lcdui.Item remove( int index ) {
+		return null;
+	//#else
+		//# public Item remove( int index ) {
+		//# return this.container.remove(index);
+	//#endif
+	}
 
+
+	/**
+	 * Appends the specified text and image to this list.
+	 * 
+	 * @param text the text
+	 * @param image the image
+	 */
 	public void append( String text, Image image ) {
 		append( text, image, null );
 	}
 
+	/**
+	 * Appends the specified text and image to this list and provides it with the given style.
+	 * 
+	 * @param text the text
+	 * @param image the image
+	 * @param style the style
+	 */
 	public void append( String text, Image image, Style style ) {
 		IconItem item = new IconItem( text, image, style );
 		append( item );
 	}
 
+	/**
+	 * Adds the specified item to this list.
+	 * 
+	 * @param item the item that should be added
+	 */
 	public void append( Item item ) {
 		this.container.add(item);
 	}
 
+	/**
+	 * Adds the specified item to this list.
+	 * 
+	 * @param item the item that should be added
+	 * @param style the style
+	 */
 	public void append( Item item, Style style ) {
 		if (style != null) {
 			item.setStyle( style );
@@ -122,10 +176,23 @@ public class ListItem
 		this.container.add(item);
 	}
 
+	/**
+	 * Inserts the specified item into this list.
+	 * 
+	 * @param position the position into which the item should be inserted
+	 * @param item the item that should be added
+	 */
 	public void insert( int position, Item item ) {
 		this.container.add( position, item );
 	}
 
+	/**
+	 * Inserts the specified item into this list and provides it with a style.
+	 * 
+	 * @param position the position into which the item should be inserted
+	 * @param item the item that should be added
+	 * @param style the style
+	 */
 	public void insert( int position, Item item, Style style ) {
 		if (style != null) {
 			item.setStyle( style );
@@ -133,10 +200,19 @@ public class ListItem
 		this.container.add( position, item );
 	}
 
+	/**
+	 * Removes the specified item from this list.
+	 * 
+	 * @param item the item that should be removed
+	 * @return true when the item was contained in this list.
+	 */
 	public boolean remove( Item item ) {
 		return this.container.remove(item);
 	}
 	
+	/**
+	 * Clears this list.
+	 */
 	public void removeAll() {
 		this.container.clear();
 	}
@@ -145,14 +221,14 @@ public class ListItem
 	 * @see javax.microedition.lcdui.CustomItem#getMinContentWidth()
 	 */
 	protected int getMinContentWidth() {
-		return this.minContentWidth;
+		return 0;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CustomItem#getMinContentHeight()
 	 */
 	protected int getMinContentHeight() {
-		return this.minContentHeight;
+		return 0;
 	}
 
 	/* (non-Javadoc)
@@ -182,17 +258,27 @@ public class ListItem
 	protected void hideNotify() {
 		this.container.hideNotify();
 	}
-
-	protected void keyPressed(int keyCode) {
-		int gameAction = getGameAction(keyCode);
-		if (this.container.handleKeyPressed(keyCode, gameAction)) {
-			invalidate();
-		}
-	}
-
+	
 	protected void showNotify() {
 		this.container.showNotify();
 	}
+
+
+	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		return this.container.handleKeyPressed(keyCode, gameAction);
+	}
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected void pointerPressed(int x, int y) {
+		if (this.container.handlePointerPressed(x, y)) {
+			invalidate();
+		}
+	}
+	//#endif
+
 
 	protected boolean traverse(int direction, int viewWidth, int viewHeight, int[] viewRect_inout) {
 		boolean handled = (this.container.handleKeyPressed(0, direction));
