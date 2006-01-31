@@ -26,6 +26,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -110,9 +111,11 @@ public class TreeItem
 	 * @param node the parent node that has been previously added to this tree
 	 * @param text the text 
 	 * @param image the image
+	 * @return the created item
 	 */
-	public void appendToNode( javax.microedition.lcdui.Item node, String text, Image image ) {
+	public javax.microedition.lcdui.Item appendToNode( javax.microedition.lcdui.Item node, String text, Image image ) {
 		// ignore, only for the users
+		return null;
 	}
 	//#endif
 
@@ -136,9 +139,15 @@ public class TreeItem
 	 * 
 	 * @param text the text
 	 * @param image the image
+	 * @return the created item
 	 */
-	public void appendToRoot( String text, Image image ) {
-		appendToRoot( text, image, null );
+	//#if false
+	public javax.microedition.lcdui.Item appendToRoot( String text, Image image ) {
+		return null;
+	//#else
+		//# public Item appendToRoot( String text, Image image ) {
+			//# return appendToRoot( text, image, null );
+	//#endif
 	}
 
 	/**
@@ -147,10 +156,20 @@ public class TreeItem
 	 * @param text the text
 	 * @param image the image
 	 * @param style the style
+	 * @return return the created item
 	 */
-	public void appendToRoot( String text, Image image, Style style ) {
+	//#if false
+	public javax.microedition.lcdui.Item appendToRoot( String text, Image image, Style style ) {
+	//#else
+		//# public Item appendToRoot( String text, Image image, Style style ) {
+	//#endif
 		IconItem item = new IconItem( text, image, style );
 		appendToRoot( item );
+		//#if false
+			return null;
+		//#else
+			//# return item;
+		//#endif
 	}
 
 	/**
@@ -189,9 +208,10 @@ public class TreeItem
 	 * @param node the parent node that has been previously added to this tree
 	 * @param text the text 
 	 * @param image the image
+	 * @return the created item
 	 */
-	public void appendToNode( Item node, String text, Image image ) {
-		appendToNode(node, text, image, null);
+	public Item appendToNode( Item node, String text, Image image ) {
+		return appendToNode(node, text, image, null);
 	}
 
 	/**
@@ -201,10 +221,12 @@ public class TreeItem
 	 * @param text the text 
 	 * @param image the image
 	 * @param style the style
+	 * @return the created item
 	 */
-	public void appendToNode( Item node, String text, Image image, Style style ) {
+	public Item appendToNode( Item node, String text, Image image, Style style ) {
 		IconItem item = new IconItem( text, image);
 		appendToNode( node, item, style );
+		return item;
 	}
 
 	/**
@@ -248,8 +270,8 @@ public class TreeItem
 			for (int i = 0; i < items.length; i++) {
 				Item rootItem = items[i];
 				if ( node == rootItem ) {
-					this.root.set(i, parentNode);
-					rootItem.parent = parentNode;
+					parentContainer.set(i, parentNode);
+					node.parent = parentNode;
 					break;
 				}
 			}
@@ -257,7 +279,7 @@ public class TreeItem
 			parentNode = ((Node)node.parent);
 		}
 		item.parent = parentNode;
-		parentNode.children.add(item);
+		parentNode.addChild(item);
 		this.lastAddedItem = item;
 		
 	}
@@ -327,7 +349,12 @@ public class TreeItem
 
 
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		return this.root.handleKeyPressed(keyCode, gameAction);
+		boolean handled = this.root.handleKeyPressed(keyCode, gameAction);
+		if (handled) {
+			//System.out.println("invalidating through keyPressed...");
+			invalidate();
+		}
+		return handled;
 	}
 
 	//#ifdef polish.hasPointerEvents
@@ -361,6 +388,7 @@ public class TreeItem
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style focusstyle, int direction ) {
+		invalidate();
 		return this.root.focus(focusstyle, direction);
 	}
 	
@@ -368,34 +396,45 @@ public class TreeItem
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style originalStyle) {
+		invalidate();
 		this.root.defocus(originalStyle);
 	}
 	
+	
+	
 	static class Node extends Item {
-		Item root;
-		Container children;
-		boolean isExpanded;
+		private Item root;
+		private Container children;
+		private boolean isExpanded;
 		int xLeftOffset = 10;
+		private Style rootFocusedStyle;
+		private Style rootPlainStyle;
+		private Style childrenPlainStyle;
+		private boolean isChildrenFocused;
 		
 		public Node( Item root ) {
 			super( null, 0, INTERACTIVE, null );
 			this.root = root;
+			this.root.parent = this;
 			this.children = new Container( false );
+			this.children.parent = this;
+		}
+		
+		public void addChild( Item child ) {
+			this.children.add( child );
 		}
 
 		protected void initContent(int firstLineWidth, int lineWidth) {
 			this.root.init(firstLineWidth, lineWidth);
 			if (!this.isExpanded) {
-				// this is easy peasy, just the root needed to be set:
 				this.contentWidth = this.root.itemWidth;
 				this.contentHeight = this.root.itemHeight;
 			} else {
-				// now comes the tricky part...
 				//TODO re-implement drawing of lines when no ContainerView is used 
 				lineWidth -= this.xLeftOffset;
 				this.children.init(lineWidth, lineWidth);
 				this.contentWidth = Math.max( this.root.itemWidth, this.children.itemWidth + this.xLeftOffset);
-				this.contentHeight = Math.max( this.root.itemHeight, this.children.itemHeight );
+				this.contentHeight = this.root.itemHeight + this.paddingVertical + this.children.itemHeight;
 			}
 		}
 
@@ -415,6 +454,99 @@ public class TreeItem
 			return "node";
 		}
 		//#endif
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
+		 */
+		protected boolean handleKeyPressed(int keyCode, int gameAction) {
+			boolean handled = false;
+			if (this.isExpanded) {
+				if (this.isChildrenFocused) {
+					handled = this.children.handleKeyPressed(keyCode, gameAction);
+					if (!handled && gameAction == Canvas.UP) {
+						// focus this root:
+						setExpanded( false );
+						handled = true;
+					} else if (gameAction == Canvas.FIRE) {
+						// leaf selected!
+//					} else {
+//						this.isChildrenFocused = false;
+						// this is done by the unfocus method automagically
+					}
+				} else if (gameAction == Canvas.DOWN && this.children.appearanceMode != PLAIN) {
+					// move focus to children
+					if (this.rootPlainStyle != null) {
+						this.root.defocus(this.rootPlainStyle);
+					}
+					this.children.focus(null, gameAction);
+					this.isChildrenFocused = true;
+					handled = true;
+				}
+
+			}
+			if (!handled && gameAction == Canvas.FIRE ) {
+				setExpanded( !this.isExpanded );
+				handled = true;
+			}
+			return handled;
+		}
+		
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
+		 */
+		protected Style focus(Style focusstyle, int direction ) {
+			//System.out.println("focus " + this );
+			//if ( !this.isExpanded || this.children.size() == 0) {
+				//System.out.println("focus root " + this.root );
+				this.rootFocusedStyle = focusstyle;
+				this.rootPlainStyle  = this.root.focus(focusstyle, direction);
+				return this.rootPlainStyle;
+//			}
+//			this.childrenPlainStyle = this.children.focus(focusstyle, direction); 
+//			return this.childrenPlainStyle;
+		}
+		
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
+		 */
+		protected void defocus(Style originalStyle) {
+			//System.out.println("defocus " + this );
+			if (this.isExpanded && this.isChildrenFocused) {
+				this.children.defocus(originalStyle);
+				this.isChildrenFocused = false;
+			} else {
+				this.root.defocus( originalStyle );
+			}
+		}
+		
+		private void setExpanded( boolean expand ) {
+			if (!expand) {
+				//System.out.println( "defocussing children while contracting" );
+				if (this.isChildrenFocused) {
+					this.children.defocus( null );
+					this.children.focus( -1 );
+					this.isChildrenFocused = false;
+					// move focus to root:
+					if (this.rootFocusedStyle != null) {
+						this.root.focus(this.rootFocusedStyle, Canvas.UP);
+					} else {
+						this.root.focus(this.focusedStyle, Canvas.UP);
+					}
+				}
+			}
+			if (expand != this.isExpanded) {
+				requestInit();
+				this.isExpanded = expand;
+			}
+		}
+		
+		//#if polish.debugEnabled
+		public String toString() {
+			return "Node " + this.root + "/" + super.toString();
+		}
+		//#endif
+
+		
 	}
 
 }

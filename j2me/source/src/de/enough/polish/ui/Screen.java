@@ -237,6 +237,7 @@ implements AccessibleCanvas
 	private int marginRight;
 	private int marginTop;
 	private int marginBottom;
+	protected ScreenStateListener screenStateListener;
 	
 	/**
 	 * Creates a new screen
@@ -1406,6 +1407,9 @@ implements AccessibleCanvas
 				this.keyPressedProcessed = processed;
 			//#endif
 			if (processed) {
+				if (this.screenStateListener != null) {
+					this.screenStateListener.screenStateChanged(this);
+				}
 				repaint();
 			}
 		} catch (Exception e) {

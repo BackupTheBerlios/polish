@@ -260,6 +260,25 @@ public class TabBar extends Item {
 		return true;
 	}
 	//#endif
+
+	/**
+	 * Sets the image for the specified tab.
+	 * 
+	 * @param tabIndex the index of the tab 
+	 * @param image the image
+	 */
+	public void setImage(int tabIndex, Image image) {
+		this.tabs[tabIndex].setImage(image);		
+	}
 	
+	/**
+	 * Sets the text for the specified tab.
+	 * 
+	 * @param tabIndex the index of the tab 
+	 * @param text the text
+	 */
+	public void setText(int tabIndex, String text ) {
+		this.tabs[tabIndex].setAltText(text);		
+	}
 
 }

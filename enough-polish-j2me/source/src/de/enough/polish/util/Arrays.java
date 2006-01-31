@@ -25,74 +25,75 @@
  */
 package de.enough.polish.util;
 
-public class Arrays implements Comparator{
+public final class Arrays implements Comparator { 
+	
+	//TODO: JavaDoc, make sort work, ensure TestArrays testcase works
 
-	public Arrays() {
+	private static final Comparator STRING_COMPARATOR = new Arrays();
+	// instantiation is not allowed
+	private Arrays() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public int compare(Object o1, Object o2) {
 		return o1.toString().compareTo(o2.toString());
 	}
 
-    public Object[] quicksort(Object obj[], int elements)
-    {
-        	int left=0, right=elements-1, top=0;
-        	int sSize = elements/2;
-        	int lStack[] = new int[sSize];
-        	int rStack[] = new int[sSize];
-        	Object tmp;
-        	int i, j, x;
-        	lStack[top] = left; rStack[top] = right;
-            while (top >= 0)
-            {
-                    left = lStack[top];
-                    right = rStack[top];
-                    top--;
-                    while (left < right)
-                    {
-                            i = left;
-                            j = right;
-                            x = (left+right)/2;
-                            while (i <= j)
-                            {    	
-                                    while (this.compare(obj[x],obj[i]) > 0 && i < (elements-1))i++;
-                                    while (this.compare(obj[x],obj[j]) < 0 && j > 0) j--;
-                                    if (i<=j)
-                                    {
-                                            { // SWAP
-                                                    tmp = obj[i];
-                                                    obj[i] = obj[j];
-                                                    obj[j] = tmp;
-                                            }
-                                            i++;
-                                            j--;
-                                    }
-                            }
+    public static void sort(Object[] obj) {
+    	sort( obj, STRING_COMPARATOR );
+    }
 
-                            if (j-left < right-i)
-                            {
-                                    if (i < right)
-                                    {
-                                            top++;
-                                            lStack[top] = i;
-                                            rStack[top] = right;
-                                    }
-                                    right = j;
-                            }
-                            else
-                            {
-                                    if (left < j)
-                                    {
-                                            top++;
-                                            lStack[top] = left;
-                                            rStack[top] = j;
-                                    }
-                                    left = i;
-                            }
+    public static void sort(Object[] obj, Comparator comparator) {
+    	int elements = obj.length / 2;
+    	int left=0, right=elements-1, top=0;
+    	int sSize = elements/2;
+    	int lStack[] = new int[sSize];
+    	int rStack[] = new int[sSize];
+    	Object tmp;
+    	int i, j, x;
+    	lStack[top] = left; rStack[top] = right;
+        while (top >= 0) {
+            left = lStack[top];
+            right = rStack[top];
+            top--;
+            while (left < right) {
+                i = left;
+                j = right;
+                x = (left+right)/2;
+                while (i <= j) {    	
+                    while (comparator.compare(obj[x],obj[i]) > 0 && i < (elements-1)) {
+                    	i++;
                     }
+                    while (comparator.compare(obj[x],obj[j]) < 0 && j > 0) {
+                    	j--;
+                    }
+                    if (i<=j) {
+                        // SWAP
+                        tmp = obj[i];
+                        obj[i] = obj[j];
+                        obj[j] = tmp;
+                        
+                        i++;
+                        j--;
+                    }
+                }
+
+                if (j-left < right-i) {
+                    if (i < right) {
+                        top++;
+                        lStack[top] = i;
+                        rStack[top] = right;
+                    }
+                    right = j;
+                } else {
+                    if (left < j) {
+                        top++;
+                        lStack[top] = left;
+                        rStack[top] = j;
+                    }
+                    left = i;
+                }
             }
-            return obj;
+        }
     }
 }

@@ -44,7 +44,6 @@ public class TabbedForm extends Form {
 	private final TabBar tabBar;
 	private final Container[] tabContainers;
 	private int activeTabIndex;
-	private ScreenStateListener screenStateListener;
 
 	/**
 	 * Creates a new tabbed form without a style.
@@ -219,6 +218,27 @@ public class TabbedForm extends Form {
 			repaint();
 		}
 	}
+	
+	/**
+	 * Sets the image for the specified tab.
+	 * 
+	 * @param tabIndex the index of the tab 
+	 * @param image the image
+	 */
+	public void setTabImage( int tabIndex, Image image ) {
+		this.tabBar.setImage( tabIndex, image );
+	}
+	
+	/**
+	 * Sets the text for the specified tab.
+	 * 
+	 * @param tabIndex the index of the tab 
+	 * @param text the text
+	 */
+	public void setText(int tabIndex, String text ) {
+		this.tabBar.setText( tabIndex, text );	
+	}
+
 
 	//#ifdef polish.useDynamicStyles	
 	/* (non-Javadoc)

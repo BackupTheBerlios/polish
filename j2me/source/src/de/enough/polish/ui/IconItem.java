@@ -517,6 +517,11 @@ implements ImageConsumer
 	}
 	//#endif
 
+	//#if polish.debug.enabled
+		public String toString(){
+			return "IconItem(" + this.text + ")/" + this;
+		}
+	//#endif
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}
