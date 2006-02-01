@@ -28,7 +28,6 @@ package de.enough.polish.util;
 public final class Arrays implements Comparator { 
 	
 	//TODO: JavaDoc, make sort work, ensure TestArrays testcase works
-
 	private static final Comparator STRING_COMPARATOR = new Arrays();
 	// instantiation is not allowed
 	private Arrays() {
@@ -43,36 +42,168 @@ public final class Arrays implements Comparator {
     	sort( obj, STRING_COMPARATOR );
     }
 
+    public static void quicksort(Object[] obj) {
+    	quicksort( obj,obj.length, STRING_COMPARATOR );
+    }
+    
+    public static void iQuick(int array[], int elements)
+    {
+            int left=0, right=elements-1, top=0;
+            int sSize = elements/2;
+            int lStack[] = new int[sSize];
+            int rStack[] = new int[sSize];
+            int tmp;
+            int i, j, x;
+
+            lStack[top] = left; rStack[top] = right;
+
+            while (top >= 0)
+            {
+                    left = lStack[top];
+                    right = rStack[top];
+                    top--;
+
+                    while (left < right)
+                    {
+                            i = left;
+                            j = right;
+                            x = array[(left+right)/2];
+
+                            while (i <= j)
+                            {
+                                while (array[i] < x) i++;
+                                while (array[j] > x) j--;
+
+                                    if (i<=j)
+                                    {
+                                            { // SWAP
+                                                    tmp = array[i];
+                                                    array[i] = array[j];
+                                                    array[j] = tmp;
+                                            }
+                                            i++;
+                                            j--;
+                                    }
+                            }
+
+                            if (j-left < right-i)
+                            {
+                                    if (i < right)
+                                    {
+                                            top++;
+                                            lStack[top] = i;
+                                            rStack[top] = right;
+                                    }
+                                    right = j;
+                            }
+                            else
+                            {
+                                    if (left < j)
+                                    {
+                                            top++;
+                                            lStack[top] = left;
+                                            rStack[top] = j;
+                                    }
+                                    left = i;
+                            }
+                    }
+            }
+    }
+    
+    public static void quicksort(Object obj[], int elements, Comparator comparator)
+    {
+        int left=0, right=elements-1, top=0;
+        int sSize = elements/2;
+        int lStack[] = new int[sSize];
+        int rStack[] = new int[sSize];
+        Object tmp;
+        int i, j, x;
+
+        lStack[top] = left; rStack[top] = right;
+
+        while (top >= 0)
+        {
+                left = lStack[top];
+                right = rStack[top];
+                top--;
+
+                while (left < right)
+                {
+                        i = left;
+                        j = right;
+                        tmp = obj[(left+right)/2];
+
+                        while (i <= j)
+                        {
+                        	while (comparator.compare(tmp,obj[i]) > 0 )i++;
+                            while (comparator.compare(tmp,obj[j]) < 0) j--;
+
+                                if (i<=j)
+                                {
+                                        { // SWAP
+                                                tmp = obj[i];
+                                                obj[i] = obj[j];
+                                                obj[j] = tmp;
+                                        }
+                                        i++;
+                                        j--;
+                                }
+                        }
+
+                        if (j-left < right-i)
+                        {
+                                if (i < right)
+                                {
+                                        top++;
+                                        lStack[top] = i;
+                                        rStack[top] = right;
+                                }
+                                right = j;
+                        }
+                        else
+                        {
+                                if (left < j)
+                                {
+                                        top++;
+                                        lStack[top] = left;
+                                        rStack[top] = j;
+                                }
+                                left = i;
+                        }
+                }
+        }
+    }
+    
+    
     public static void sort(Object[] obj, Comparator comparator) {
-    	int elements = obj.length / 2;
+    	int elements = obj.length;
     	int left=0, right=elements-1, top=0;
     	int sSize = elements/2;
     	int lStack[] = new int[sSize];
     	int rStack[] = new int[sSize];
     	Object tmp;
-    	int i, j, x;
+    	int i = 0, j = 0, x = 0;
     	lStack[top] = left; rStack[top] = right;
         while (top >= 0) {
             left = lStack[top];
             right = rStack[top];
             top--;
-            while (left < right) {
+            do{
                 i = left;
                 j = right;
                 x = (left+right)/2;
                 while (i <= j) {    	
-                    while (comparator.compare(obj[x],obj[i]) > 0 && i < (elements-1)) {
+                    while (comparator.compare(obj[x],obj[i]) >= 0) {
                     	i++;
                     }
-                    while (comparator.compare(obj[x],obj[j]) < 0 && j > 0) {
+                    while (comparator.compare(obj[x],obj[j]) <= 0) {
                     	j--;
                     }
                     if (i<=j) {
                         // SWAP
                         tmp = obj[i];
                         obj[i] = obj[j];
-                        obj[j] = tmp;
-                        
+                        obj[j] = tmp;         
                         i++;
                         j--;
                     }
@@ -93,7 +224,7 @@ public final class Arrays implements Comparator {
                     }
                     left = i;
                 }
-            }
+            }while (left <= right) ;
         }
     }
 }
