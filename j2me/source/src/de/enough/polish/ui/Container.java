@@ -317,14 +317,14 @@ public class Container extends Item {
 		this.itemsList.clear();
 		this.items = new Item[0];
 		if (this.focusedIndex != -1) {
-			this.autoFocusEnabled = true;
+			this.autoFocusEnabled = this.isFocused;
 			//#if polish.Container.clearResetsFocus != false
 				this.autoFocusIndex = 0;
 			//#else
 				this.autoFocusIndex = this.focusedIndex;
 			//#endif			
 			this.focusedIndex = -1;
-			if (this.focusedItem.commands != null) {
+			if (this.focusedItem != null && this.focusedItem.commands != null) {
 				Screen scr = getScreen();
 				if (scr != null) {
 					scr.removeItemCommands(this.focusedItem);

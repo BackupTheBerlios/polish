@@ -9,7 +9,7 @@ import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 
-public class DinnerForOneView extends TableView {
+public class DinnerForOneView extends ContainerView {
 	
 	
 	
@@ -51,7 +51,6 @@ public class DinnerForOneView extends TableView {
 //		this.contentWidth 
 //		this.isAnimationRunning = true;
 
-		System.out.print("column"+this.columns+""+this.contentHeight+":::"+this.contentWidth+"\n");
 		this.parentContainer = parent;
 		Item[] myItems = this.parentContainer.getItems();
 
@@ -70,8 +69,8 @@ public class DinnerForOneView extends TableView {
 				this.startX = x;
 				this.startY = y;
 			}
-			columns = ((columns + 1)) % this.columns;
-			System.out.print("columns"+columns+";\n");
+			//columns = ((columns + 1)) % this.columns;
+			//System.out.print("columns"+columns+";\n");
 			if(columns == 0 && (i+1) != this.myitemslenght){
 				x = 0;
 				myContentHeight += this.paddingVertical+item.getItemHeight(firstLineWidth,lineWidth);

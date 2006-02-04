@@ -72,10 +72,16 @@ public class IconCustomItem extends CustomItem {
 	
 	public void setStyle( Style style ) {
 		this.iconItem.setStyle( style );
-		invalidate();
+		//#if polish.css.focused-style
+			Style focusedStyle = (Style) style.getObjectProperty("focused-style");
+			if (focusedStyle != null) {
+				//# this.focusedStyle = focusedStyle;
+			}
+        //#endif
 		//#if polish.usePolishGui
         	//# this.isStyleInitialised = true;
-        //#endif
+		//#endif
+		invalidate();
 	}
 
 }

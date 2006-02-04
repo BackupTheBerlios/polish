@@ -199,7 +199,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 				this.expandBackground = expandBackgroundBool.booleanValue(); 
 			}
 			if (this.expandBackground) {
-				this.background = style.background;
+				this.background = style.background;				
 			}
 		//#endif
 		super.setStyle(style);
