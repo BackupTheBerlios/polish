@@ -61,6 +61,21 @@ public class Variable {
 	public Variable() {
 		// no values are set here
 	}
+	
+	/**
+	 * Copies all settings from the given variable.
+	 * 
+	 * @param variable the original.
+	 */
+	public Variable(Variable variable) {
+		this.name = variable.name;
+		this.value = variable.value;
+		this.type = variable.type;
+		this.ifCondition = variable.ifCondition;
+		this.unlessCondition = variable.unlessCondition;
+		this.hasPropertiesInFileName = variable.hasPropertiesInFileName;
+		this.fileName = variable.fileName;
+	}
 
 	/**
 	 * Creates a new Varable
@@ -71,6 +86,7 @@ public class Variable {
 		this.name = name;
 		this.value = value;
 	}
+
 
 	/**
 	 * @return the name of this variables

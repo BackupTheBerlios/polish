@@ -61,6 +61,18 @@ public class Attribute extends Variable {
 	}
 
 	/**
+	 * Copies are setings from the given attribute
+	 * 
+	 * @param attribute the original attribute
+	 */
+	public Attribute(Attribute attribute) {
+		super( attribute );
+		this.targetsJad = attribute.targetsJad;
+		this.targetsManifest = attribute.targetsManifest;
+	}
+
+
+	/**
 	 * Creates a new initialised attribute.
 	 * 
 	 * @param name the name of the attribute
@@ -70,6 +82,7 @@ public class Attribute extends Variable {
 		super(name, value);
 	}
 	
+
 	/**
 	 * Sets the target for this attribute.
 	 * 

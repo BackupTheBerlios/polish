@@ -29,6 +29,7 @@ package de.enough.polish.ant.info;
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Attribute;
+import de.enough.polish.Environment;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -352,37 +353,36 @@ public class InfoSetting {
 	/**
 	 * Retrieves all manifest attributes for the JAR file.
 	 * 
-	 * @param variables the variables which might contain more specific attribute values
+	 * @param env the environment
 	 * @return an Attribute array containing all defined attributes for the JAR-Manifest.
 	 */
-	public Attribute[] getManifestAttributes( Map variables ) {
-		return getAttributes( this.manifestAttributes, variables );
+	public Attribute[] getManifestAttributes( Environment env ) {
+		return getAttributes( this.manifestAttributes, env );
 	}
 
 	/**
 	 * Retrieves all attributes for the JAD file.
 	 * 
-	 * @param variables the variables which might contain more specific attribute values
+	 * @param env the environment
 	 * @return an Attribute array containing all defined attributes for the JAD-file.
 	 */
-	public Attribute[] getJadAttributes( Map variables ) {
-		return getAttributes( this.jadAttributes, variables );
+	public Attribute[] getJadAttributes( Environment env ) {
+		return getAttributes( this.jadAttributes, env );
 	}
 	
-	private Attribute[] getAttributes( ArrayList list, Map variables ) {
+	private Attribute[] getAttributes( ArrayList list, Environment env ) {
 		Attribute[] attributes = (Attribute[]) list.toArray( new Attribute[ list.size() ] );
 		ArrayList newList = new ArrayList( attributes.length );
 		
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
-			String variableValue = (String) variables.get( attribute.getName() );
-			if (variableValue != null) {
-				attribute = new Attribute( attribute.getName(), variableValue );
-			} else {
+			String variableValue = env.getVariable( attribute.getName() );
+			if (variableValue == null) { 
 				variableValue = attribute.getValue();
 			}
-			if ( variableValue.length() > 0 ) {
-				newList.add( attribute );
+			variableValue = env.writeProperties(variableValue);
+			if ( variableValue.length() > 0 ) {				
+				newList.add( attribute = new Attribute( attribute.getName(), variableValue ) );
 			}
 		}
 		return (Attribute[]) newList.toArray( new Attribute[ newList.size() ] );

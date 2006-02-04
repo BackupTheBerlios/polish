@@ -38,7 +38,16 @@ import de.enough.polish.ant.build.SignSetting;
 import de.enough.polish.util.ProcessUtil;
 
 /**
- * <p>Signs MIDlets</p>
+ * <p>Signs MIDlets. </p>
+ * <p>You can use the sign task using the &lt;sign&gt; element within the &lt;build&gt; section: 
+ * <pre>
+ * &lt;sign
+ * 	keystore=&quot;midlets.ks=&quot;
+ * 	key==&quot;MyKey=&quot;
+ * 	password=&quot;${pw}=&quot;
+ * /&gt;
+ * </pre>
+ * </p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -67,7 +76,7 @@ public class SignFinalizer extends Finalizer {
 		if (! jadUtil.exists() ) {
 			jadUtil = env.resolveFile("${polish.home}/bin/JadTool.jar");
 			if (!jadUtil.exists()) {
-				throw new BuildException("Unable to sign application: neither ${wtk.home}/bin/JadUtil.jar nor ${polish.home}/bin/JadUtil.jar was found.");
+				throw new BuildException("Unable to sign application: neither ${wtk.home}/bin/JadTool.jar nor ${polish.home}/bin/JadTool.jar was found.\n${wtk.home}=" + env.getVariable("wtk.home") + ", ${polish.home}=" + env.getVariable("polish.home") );
 			}
 		}
 		ArrayList parametersList = new ArrayList();

@@ -130,7 +130,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4>";
+	private static final String VERSION = "1.3<beta4-preview>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -1316,7 +1316,7 @@ public class PolishTask extends ConditionalTask {
 		this.environment.addVariable( "polish.jadPath", jadPath );
 
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment.getVariables() );
+		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute attribute = jadAttributes[i];
 			this.environment.addVariable( attribute.getName(), attribute.getValue() );
@@ -2354,7 +2354,7 @@ public class PolishTask extends ConditionalTask {
 		attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
 
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.environment.getVariables() );
+		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.environment );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute attribute = jadAttributes[i];
 			attributesByName.put( attribute.getName(), attribute );
@@ -2446,7 +2446,7 @@ public class PolishTask extends ConditionalTask {
 		// now create the JAD file:
 		HashMap attributesByName = new HashMap();
 		// add info attributes:
-		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment.getVariables() );
+		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment );
 		for (int i = 0; i < jadAttributes.length; i++) {
 			Attribute var  = jadAttributes[i];
 			attributesByName.put( var.getName(), 

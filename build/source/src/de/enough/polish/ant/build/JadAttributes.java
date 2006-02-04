@@ -95,7 +95,17 @@ public class JadAttributes extends Variables {
 	}
 	
 	public Attribute[] getAttributes( Project antProject, BooleanEvaluator evaluator, Environment environment ){
-		return (Attribute[]) getVariables(antProject, evaluator, environment);
+		Attribute[] attributes = (Attribute[]) getVariables(antProject, evaluator, environment);
+		for (int i = 0; i < attributes.length; i++) {
+			Attribute attribute = attributes[i];
+			String value = environment.writeProperties( attribute.getValue() );
+			if (value != attribute.getValue()) {
+				Attribute newAttribute = new Attribute( attribute );
+				newAttribute.setValue( value );
+				attributes[i] = newAttribute;
+			}
+		}
+		return attributes;
 	}
 	
 	public ArrayList getFilters() {

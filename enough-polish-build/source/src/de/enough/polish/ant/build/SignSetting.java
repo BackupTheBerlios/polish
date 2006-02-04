@@ -31,6 +31,16 @@ import org.apache.tools.ant.BuildException;
 
 /**
  * <p>Is used to configure the automatic signing of MIDlets.</p>
+ * <p>You can use the sign task using the &lt;sign&gt; element within the &lt;build&gt; section: 
+ * <pre>
+ * &lt;sign
+ * 	keystore=&quot;midlets.ks=&quot;
+ * 	key==&quot;MyKey=&quot;
+ * 	password=&quot;${pw}=&quot;
+ * /&gt;
+ * </pre>
+ * </p>
+ * 
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
