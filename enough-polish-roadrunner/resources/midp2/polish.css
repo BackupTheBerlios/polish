@@ -10,3 +10,9 @@
 
 .aboutScreen {
 }
+
+title {
+	text-effect: gradient;
+	text-vertical-gradient-start-color: white;
+	text-vertical-gradient-end-color: highlightedFontColor;
+}

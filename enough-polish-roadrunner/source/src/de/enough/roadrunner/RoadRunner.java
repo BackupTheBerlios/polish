@@ -57,29 +57,34 @@ extends MIDlet
 implements CommandListener
 {
 	
-	private final List mainMenu;
+	private List mainMenu;
 	private final RoadRunnerScreen gameScreen;
-	private final Command startGameCmd = new Command( Locale.get( "cmd.StartGame" ), Command.SCREEN, 8 );
-	private final Command settingsCmd = new Command( Locale.get( "cmd.Settings" ), Command.SCREEN, 9 );
-	private final Command aboutCmd = new Command( Locale.get( "cmd.About" ), Command.SCREEN, 10 );
 	private final Command okCmd = new Command( Locale.get( "cmd.Ok" ), Command.BACK, 2 );
-	private final Command quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
-	//#ifdef polish.i18n.useDynamicTranslations
-		private final Command englishCmd = new Command( "English", Command.SCREEN, 10 );
-		private final Command germanCmd = new Command( "Deutsch", Command.SCREEN, 11 );		
-	//#endif
+	private Command quitCmd; // = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
 	//#ifdef polish.debugEnabled
 		Command debugCmd = new Command("Log", Command.ITEM, 12); 
 	//#endif
 	private Display display;
 	protected boolean enableSound = true;
 	private Form settingsForm;
+	//#ifdef polish.i18n.useDynamicTranslations
+		private int lastSelectedLocaleId;
+		private String[] localesFileNames;
+	//#endif
 
 	/**
 	 * Creates a new implementation.
 	 */
 	public RoadRunner() {
 		super();
+		createMainMenu( 0 );
+		this.gameScreen = new RoadRunnerScreen( this );
+		
+		//#debug info
+		System.out.println("Roadrunner started.");
+	}
+
+	private void createMainMenu(int selectedIndex) {
 		// create the main menu:
 		//#style mainScreen
 		this.mainMenu = new List( "RoadRunner", List.IMPLICIT );
@@ -91,20 +96,15 @@ implements CommandListener
 		this.mainMenu.append( Locale.get( "menu.About"), null);
 		//#style mainMenuItem
 		this.mainMenu.append( Locale.get( "menu.Quit"), null);
-		this.mainMenu.addCommand( this.startGameCmd );
-		this.mainMenu.addCommand( this.settingsCmd );
-		this.mainMenu.addCommand( this.aboutCmd );
+		
+		this.quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
 		this.mainMenu.addCommand( this.quitCmd );
-		//#ifdef polish.i18n.useDynamicTranslations
-			this.mainMenu.addCommand( this.englishCmd );
-			this.mainMenu.addCommand( this.germanCmd );
-		//#endif
 		//#ifdef polish.debugEnabled
 			this.mainMenu.addCommand( this.debugCmd );
 		//#endif
 
 		this.mainMenu.setCommandListener( this );
-		this.gameScreen = new RoadRunnerScreen( this );
+		this.mainMenu.setSelectedIndex(selectedIndex, true);
 	}
 
 	/**
@@ -144,70 +144,97 @@ implements CommandListener
 		System.out.println("processing command " + cmd.getLabel() );
 		if (cmd == List.SELECT_COMMAND) {
 			switch (((List) screen).getSelectedIndex()) {
-				case 0: cmd = this.startGameCmd; break;
-				case 1: cmd = this.settingsCmd; break;
-				case 2: cmd = this.aboutCmd; break;
-				case 3: cmd = this.quitCmd; break;
+				case 0:
+					this.gameScreen.start();
+					this.display.setCurrent( this.gameScreen );
+					break;
+				case 1:
+					showSettings();
+					break;
+				case 2:
+					showAbout();
+					break;
+				case 3: 
+					cmd = this.quitCmd; 
+					break;
 			}
 			//#debug
 			System.out.println("now using command " + cmd.getLabel() );
 		}
-		if (cmd == this.startGameCmd) {
-			this.gameScreen.start();
-			this.display.setCurrent( this.gameScreen );
-		} else if (cmd == this.quitCmd) {
+		if (cmd == this.quitCmd) {
 			notifyDestroyed();
 		} else if (cmd == this.gameScreen.returnCommand) {
 			this.gameScreen.world.gameOver = true;
 			this.display.setCurrent( this.mainMenu );
 		} else if (cmd == this.okCmd) {
+			if (screen == this.settingsForm) {
+				// read settings:
+				ChoiceGroup group = (ChoiceGroup) ((Form) screen).get( 1 );
+				int selectedIndex = group.getSelectedIndex();
+				if (selectedIndex != this.lastSelectedLocaleId) {
+					loadTranslations( this.localesFileNames[ selectedIndex ] );
+					this.lastSelectedLocaleId = selectedIndex;
+				}
+			}
 			this.display.setCurrent( this.mainMenu );
 		} else if (cmd == this.gameScreen.replayCommand) {
 			this.gameScreen.start();
-		} else if (cmd == this.settingsCmd ) {
-			// show settings:
-			if ( this.settingsForm == null ) {
-				//#style settingsScreen
-				this.settingsForm = new Form( Locale.get("title.Settings") );
-				//#style exclusiveChoice
-				ChoiceGroup group = new ChoiceGroup( Locale.get("setting.sound"), ChoiceGroup.EXCLUSIVE );
-				//#style exclusiveChoiceItem, default
-				group.append( Locale.get("setting.sound.off"), null );
-				//#style exclusiveChoiceItem, default
-				group.append( Locale.get("setting.sound.on"), null );
-				//#style exclusiveChoiceItem, default
-				group.append( Locale.get("setting.sound.fxonly"), null );
-				this.settingsForm.append( group );
-				
-				//#style input, default
-				TextField nameField = new TextField( Locale.get("setting.name"), "Lars", 30, TextField.ANY );
-				this.settingsForm.append( nameField );
-				
-				this.settingsForm.addCommand( this.okCmd );
-				this.settingsForm.setCommandListener( this );
-			}
-			
-			this.display.setCurrent( this.settingsForm );
-		} else if (cmd == this.aboutCmd ) {
-			
-			// show about
-			//#style aboutScreen
-			Form aboutForm = new Form( Locale.get("title.About") );
-			//#style .inputFocused, default
-			aboutForm.append( Locale.get("about.text"));
-			
-			aboutForm.addCommand( this.okCmd );
-			aboutForm.setCommandListener( this );
-			
-			this.display.setCurrent( aboutForm );
-			
-		//#ifdef polish.i18n.useDynamicTranslations
-		} else if (cmd == this.englishCmd ) {
-			loadTranslations("/en_US.loc");
-		} else if (cmd == this.germanCmd ) {
-			loadTranslations("/de_DE.loc");
-		//#endif
 		}
+	}
+
+	private void showAbout() {
+		// show about
+		//#style aboutScreen
+		Form aboutForm = new Form( Locale.get("title.About") );
+		//#style .aboutText, focused, default
+		aboutForm.append( Locale.get("about.text"));
+		
+		aboutForm.addCommand( this.okCmd );
+		aboutForm.setCommandListener( this );
+		
+		this.display.setCurrent( aboutForm );
+	}
+
+	private void showSettings() {
+		// show settings:
+		if ( this.settingsForm == null ) {
+			//#style settingsScreen
+			this.settingsForm = new Form( Locale.get("title.Settings") );
+			//#style exclusiveChoice
+			ChoiceGroup group = new ChoiceGroup( Locale.get("setting.sound"), ChoiceGroup.EXCLUSIVE );
+			//#style exclusiveChoiceItem, default
+			group.append( Locale.get("setting.sound.off"), null );
+			//#style exclusiveChoiceItem, default
+			group.append( Locale.get("setting.sound.on"), null );
+			//#style exclusiveChoiceItem, default
+			group.append( Locale.get("setting.sound.fxonly"), null );
+			this.settingsForm.append( group );
+			
+			//#ifdef polish.i18n.useDynamicTranslations
+				 //#style exclusiveChoice
+				group = new ChoiceGroup( Locale.get("setting.language"), ChoiceGroup.EXCLUSIVE );
+				//#= this.localesFileNames = new String[ ${number(polish.SupportedLocales)} ];
+				int i = 0;
+				//#foreach locale in polish.SupportedLocales
+					//#style exclusiveChoiceItem, default
+					//#= group.append( "${ displaylanguage( locale) }", null );
+					//#= this.localesFileNames[i] = "${ localefilename( locale) }";
+					i++;					
+				//#next locale
+				group.setSelectedIndex( this.lastSelectedLocaleId, true );	
+				this.settingsForm.append( group );
+			//#endif
+
+			//#style input, default
+			TextField nameField = new TextField( Locale.get("setting.name"), "Lars", 30, TextField.ANY );
+			this.settingsForm.append( nameField );
+			
+			
+			this.settingsForm.addCommand( this.okCmd );
+			this.settingsForm.setCommandListener( this );
+		}
+		
+		this.display.setCurrent( this.settingsForm );
 	}
 
 	//#ifdef polish.i18n.useDynamicTranslations
@@ -217,11 +244,17 @@ implements CommandListener
 	private void loadTranslations(String url) {
 		try {
 			Locale.loadTranslations(url);
-			this.mainMenu.set( 0, Locale.get( "menu.StartGame"), null);
-			this.mainMenu.set( 1, Locale.get( "menu.Settings"), null);
-			this.mainMenu.set( 2, Locale.get( "menu.About"), null);
-			this.mainMenu.set( 3, Locale.get( "menu.Quit"), null);
-			System.out.println( Locale.get( "message.LanguageChanged", "[<a language>]"));
+//			this.mainMenu.set( 0, Locale.get( "menu.StartGame"), null);
+//			this.mainMenu.set( 1, Locale.get( "menu.Settings"), null);
+//			this.mainMenu.set( 2, Locale.get( "menu.About"), null);
+//			this.mainMenu.set( 3, Locale.get( "menu.Quit"), null);
+//			this.mainMenu.removeCommand( this.quitCmd );
+//			this.quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
+//			this.mainMenu.addCommand( this.quitCmd );
+			createMainMenu( 1 );
+			this.settingsForm = null;
+			String language = Locale.LANGUAGE;
+			System.out.println( Locale.get( "message.LanguageChanged", language));
 		} catch (IOException e) {
 			//#debug error
 			System.out.println("Unable to load translations [" + url + "]" + e );

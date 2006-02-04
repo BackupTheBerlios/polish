@@ -29,7 +29,6 @@ colors {
   * the fonts-section defines fonts for later re-use.
   */
 fonts {
-
 }
 
 /**
@@ -75,6 +74,7 @@ title {
   */
 focused {
 	padding: 5;
+	padding-horizontal: 2;
 	background-color: argb( 150, 20, 121, 8);
 	/*
 	background {
@@ -97,15 +97,16 @@ focused {
 
 
 .menuFocused extends focused {
-	padding: 0;
+	padding: 2;
+	padding-left: 5;
 	background {
-		type: round-rect;
 		color: bgColor;
-		steps: 4;
 		border-color: fontColor;
 		border-width: 2;
 	}
 	font-bitmap: none;
+	text-effect: typewriter;
+	layout: left | expand;
 }
 
 /** 
@@ -133,6 +134,8 @@ focused {
 .exclusiveChoice {
 	view-type: exclusive;
 	exclusiveview-arrow-color: highlightedFontColor;
+	exclusiveview-arrow-position: bothsides;
+	exclusiveview-expand-background: false;
 	layout: expand | center;
 }
 
@@ -147,18 +150,19 @@ focused {
 	left-screen-change-animation-speed: 4;
 }
 
+.aboutText {
+	font {
+		color: highlightedFontColor;
+	}
+	background-color: argb( 150, 20, 121, 8);
+}
+
 .input {
 	font {
 		color: fontColor;
 	}
 	textfield-caret-char: :;
-	focused-style: .inputFocused;
 	layout: expand | center;
-}
-
-.inputFocused extends focused {
-	layout: expand | left;
-	font-bitmap: none;
 }
 
 

@@ -40,6 +40,7 @@ setting.sound.off=no
 setting.sound.on=yes
 setting.sound.fxonly=Only Effects
 setting.name=Your Name: 
+setting.language=Language: 
 
 about.text=Roadrunner is a demonstration game of J2ME Polish: www.j2mepolish.org
 

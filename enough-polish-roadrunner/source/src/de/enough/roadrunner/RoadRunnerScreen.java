@@ -71,12 +71,11 @@ implements Runnable
 		//#if polish.midp2 || (polish.usePolishGui && polish.classes.fullscreen:defined)
 			setTitle( Locale.get("title.GameScreen") );
 		//#endif
-		//#if !(polish.midp2 && polish.vendor.Nokia)
+		// #if !(polish.midp2 && polish.vendor.Nokia)
 			this.addCommand( this.replayCommand );
 			this.addCommand( this.returnCommand );
-		//#endif
+		// #endif
 		this.midlet = midlet;
-		setFullScreenMode( true );
 	}
 
 	/**
@@ -91,9 +90,12 @@ implements Runnable
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		//#if polish.midp2 && polish.vendor.Nokia
-			this.removeCommand( this.replayCommand );
-			this.removeCommand( this.returnCommand );
+		// #if polish.midp2 && polish.vendor.Nokia
+//			this.removeCommand( this.replayCommand );
+//			this.removeCommand( this.returnCommand );
+		// #endif
+		//#if !polish.api.siemens-color-game-api
+		setFullScreenMode( true );
 		//#endif
 		//setFullScreenMode(true);
 		// initialise the game:
@@ -159,7 +161,7 @@ implements Runnable
 				}
 			}
 		} // while !gameOver
-		//#if !polish.vendor.Sony-Ericsson
+		//#if !polish.vendor.Sony-Ericsson and !polish.api.siemens-color-game-api
 			// Sony Ericsson won't switch back to the fullscreen-mode
 			setFullScreenMode(false);
 		//#endif

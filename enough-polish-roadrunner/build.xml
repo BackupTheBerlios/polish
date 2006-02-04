@@ -4,9 +4,10 @@
 	<property file="${user.name}.properties" />
 	<property  name="polish.home" location="../enough-polish-build"/>
 	<property  name="wtk.home" location="/home/enough/dev/WTK2.2"/>
+	<property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
 	<property  name="nokia.home" location="/home/enough/dev/Nokia"/>
 	<property name="blackberry.home" 	location="/home/enough/.wine/fake_windows/Program Files/Research In Motion/BlackBerry JDE 4.0" />
-	<property  name="device" value="Nokia/Series60" />
+	<property  name="device" value="Nokia/Series60E2" />
 
 	<!-- task definitions -->
 	<!-- classpath="import/enough-j2mepolish-build.jar:import/jdom.jar:import/proguard.jar" -->
@@ -40,7 +41,7 @@
 				license="GPL" 
 				name="RoadRunner" 
 				vendorName="Enough Software" 
-				version="1.0.1"
+				version="1.0.20"
 				copyright="Copyright 2004, 2005 Enough Software. All rights reserved." 
 				deleteConfirm="Do you really want to remove Roadrunner?" 
 				description="A frogger clone." 
@@ -63,8 +64,11 @@
 					</and>
 				</or>
 				-->
-				<requirement name="Identifier" value="BlackBerry/7290,Nokia/Series60, Nokia/Series60Midp2, Sony-Ericsson/K700, Generic/midp1, Siemens/S65"/>
+				<requirement name="Identifier" value="${device}"/>
 				<!--
+				<requirement name="Identifier" value="${device}, Siemens/SX1, Generic/PlainMidp1, Nokia/Series60, Nokia/Series60Midp2, Sony-Ericsson/K700, Generic/midp1, Siemens/S65, Samsung/SGH-D500"/>
+				<requirement name="Identifier" value="Sony-Ericsson/K700, Nokia/6630"/>
+				BlackBerry/7290,
 				<requirement name="SoundFormat" value="midi" />
 				<requirement name="Identifier" value="BlackBerry/7290,Sony-Ericsson/K700"/>
 				<requirement name="Identifier" value="Nokia/Series40, Sony-Ericsson/K700, Nokia/Series60, Nokia/Series60Midp2, Motorola/V525"/>
@@ -78,6 +82,8 @@
 	                usePolishGui="true"
 	                sourceDir="source/src"
 					workDir="${dir.work}"
+					abortOnError="true"
+					onError="errorhandling"
 				>
 				<!-- 			polishDir="../enough-polish-j2me/source/src"
 				-->
@@ -85,6 +91,7 @@
 				<midlet class="de.enough.roadrunner.RoadRunner" name="RoadRunner"/>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
+					<variable name="polish.usePolishTitle" value="true" />
 					<variable name="update-url" value="http://www.enough.de/update"/>
 					<variable name="polish.TextField.useDirectInput" value="true" unless="polish.hasPointerEvents" />
 					<variable name="polish.TiledLayer.useBackBuffer" value="true"/>
@@ -114,7 +121,7 @@
 				</jad>
 				-->
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator useDefaultPackage="true" name="ProGuard" unless="test">
+				<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
 					<!--
 					<parameter name="enableFlowObfuscation" value="true" />
 					<parameter name="enableOptimization" value="false" />
@@ -123,14 +130,24 @@
 					-->
 				</obfuscator>
 				<!-- debug settings: only include debug setting when the test-property is true  -->
-				<debug level="error" showLogOnError="true" verbose="false"  if="test" >
-					<filter level="debug" pattern="de.enough.roadrunner.*"/>
+				<!--
+				 if="test"
+				-->
+				<debug level="error" showLogOnError="true" verbose="false" if="test" >
+					<handler name="rms" />
+					<handler name="file" if="polish.api.pdaapi">
+			            <parameter name="preferredRoot" value="E:"/>
+			            <parameter name="useUnqiueName" value="true"/>
+					</handler>
+					<filter level="info" pattern="de.enough.roadrunner.*"/>
 					<filter level="info" pattern="de.enough.polish.ui.*"/>
-					<filter level="debug" class="de.enough.polish.ui.Screen"/>
-					<filter level="debug" class="de.enough.polish.ui.StyleSheet"/>
-					<filter level="debug" pattern="de.enough.polish.ui.game.*"/>
+					<filter level="info" class="de.enough.polish.ui.Screen"/>
 				</debug>
 				<!-- play around with an additional preprocessor: 
+					<filter level="debug" class="de.enough.polish.ui.StyleSheet"/>
+					<filter level="debug" pattern="de.enough.polish.ui.game.*"/>
+					<filter level="debug" package="de.enough.polish.ui.containerviews"/>
+					<filter level="debug" pattern="de.enough.roadrunner.*"/>
 				<preprocessor 
 					class="de.enough.polish.extensions.TestProcessor" 
 					classPath="../enough-polish-extensions/bin/classes" 
@@ -145,8 +162,7 @@
 					defaultexcludes="yes"
 					excludes="readme.txt, *.definition"
 				>
-					<localization defaultLocale="en_US" dynamic="true" locales="en_US, de_DE" if="test" />
-					<localization dynamic="true" locales="en_US, de_DE" unless="test" />
+					<localization defaultLocale="en_US" dynamic="true" locales="en_US, de_DE"/>
 				</resources>
 				<!--
 				<packager
@@ -157,10 +173,14 @@
 				<finalizer name="antcall" target="rename" if="polish.group.Series60E2FP3" />
 			</build>
 			<!-- launch emulator		-->
-			<emulator if="test" enableMemoryMonitor="true" />
+			<emulator if="test" >
+				<parameter name="-Xheapsize" value="50000000" />
+			</emulator>
 	
 		</j2mepolish>
 	</target>
+	
+	
 	
 	<target 
 		name="rename"
@@ -191,6 +211,13 @@
 		name="cleanbuild"
 		depends="clean, j2mepolish"
 	>
+	</target>
+
+	<target 
+		name="errorhandling"
+	>
+		<echo level="error" message="Error enabled: ${j2mepolish.error}"> </echo>
+		<echo level="error" message="${j2mepolish.error.message}"> </echo>
 	</target>
 
 	

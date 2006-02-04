@@ -10,6 +10,6 @@
 }
 
 .aboutScreen {
-	screen-change-animation: verticalShutter;
-	vertical-shutter-screen-change-animation-speed: 8;
+	screen-change-animation: leftShutter;
+	left-shutter-screen-change-animation-speed: 8;
 }
