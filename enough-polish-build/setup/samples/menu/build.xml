@@ -227,12 +227,11 @@
 			<!-- execution of emulator(s) -->
 			<emulator
 				wait="true"
-				trace="class"
 				securityDomain="trusted"
 				enableProfiler="true"
 				enableMemoryMonitor="true"
 				enableNetworkMonitor="true"
-				if="test and not debug"
+				if="debug"
 				>
 				<!--
 				<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
@@ -246,7 +245,7 @@
 				enableProfiler="false"
 				enableMemoryMonitor="false"
 				enableNetworkMonitor="false"
-				if="debug"
+				if="test and not debug"
 				>
 				<!-- this is an example for connecting to a debugger - use the ${polish.debug.port} Ant property
 				     for getting to know the port of the debugger. In this example the 

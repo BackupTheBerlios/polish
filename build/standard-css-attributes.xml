@@ -1104,5 +1104,14 @@
 		id="113"
 	/>
 	
+	<attribute
+		name="ticker-position"
+		type="integer"
+		appliesTo="Ticker, Screen, Form, TabbedForm, FramedForm, List"
+		description="You can specify the position of the ticker on the screen."
+		default="bottom"
+		values="top, bottom"
+		id="114"
+	/>
 
 </attributes>
