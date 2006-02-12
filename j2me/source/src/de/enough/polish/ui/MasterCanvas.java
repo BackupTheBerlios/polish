@@ -140,8 +140,9 @@ public class MasterCanvas
 				this.isInFullScreenMode = true;
 			}
 		//#endif
-		//System.out.println("MC: Painting canvas " + this.currentCanvas );	
-		this.currentCanvas.paint( g );
+		if (this.currentCanvas != null) {	
+			this.currentCanvas.paint( g );
+		}
 	}
 	
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {

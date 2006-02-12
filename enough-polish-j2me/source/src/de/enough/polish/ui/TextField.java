@@ -1669,7 +1669,7 @@ public class TextField extends StringItem
 			}
 			// set the internal information so that big TextBoxes can still be scrolled
 			// correctly:
-			if (this.caretRow > 0) {
+			if (this.textLines != null && this.textLines.length > 0) {
 				this.internalX = 0;
 				this.internalY = this.caretRow * this.rowHeight;
 				this.internalWidth = this.contentWidth;
@@ -1789,7 +1789,7 @@ public class TextField extends StringItem
 	 */
 	public void setStyle(Style style) {
 		//#if tmp.directInput
-			this.caretPositionHasBeenSet = false;
+			//this.caretPositionHasBeenSet = false;
 		//#endif
 		super.setStyle(style);
 		//#ifdef polish.css.textfield-width
@@ -2222,6 +2222,9 @@ public class TextField extends StringItem
 						String fullLine = this.realTextLines[ this.caretRow ];
 						this.originalRowText = fullLine;
 						String line;
+						if (this.isUneditable) {
+							this.caretColumn = fullLine.length();
+						}
 						if (this.caretColumn < fullLine.length()) {
 							line = fullLine.substring(0, this.caretColumn );
 						} else {
@@ -2235,6 +2238,7 @@ public class TextField extends StringItem
 						this.caretPosition -= fullLine.length() - line.length();
 						this.caretRowLastPart = fullLine.substring( this.caretColumn );
 						this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
+						this.internalX = 0;
 						this.internalY = this.caretRow * this.rowHeight;
 						return true;
 					} else if (gameAction == Canvas.DOWN) {
@@ -2258,6 +2262,9 @@ public class TextField extends StringItem
 						
 						String nextLine = this.realTextLines[ this.caretRow ];
 						this.originalRowText = nextLine;
+						if (this.isUneditable) {
+							this.caretColumn = nextLine.length();
+						}
 						String firstPart;
 						if (this.caretColumn < nextLine.length()) {
 							firstPart = nextLine.substring(0, this.caretColumn);

@@ -135,8 +135,9 @@ implements AccessibleCanvas
 	protected int originalScreenHeight;
 	protected final int screenWidth;
 	//#ifndef polish.skipTicker
+		private final static int TICKER_POSITION_TOP = 0;
 		private Ticker ticker;
-		//#polish.Ticker.Position:defined
+		//#if polish.Ticker.Position:defined
 			//#if top == ${ lowercase(polish.Ticker.Position) }
 				//#define tmp.paintTickerAtTop
 			//#else
@@ -169,7 +170,7 @@ implements AccessibleCanvas
 		//#if polish.Screen.FireTriggersOkCommand
 			private Command okCommand;
 		//#endif
-		//#if polish.MenuBar.useExtendedMenuBar ||Êpolish.classes.MenuBar:defined
+		//#if polish.MenuBar.useExtendedMenuBar ||ï¿½polish.classes.MenuBar:defined
 			//#if polish.classes.MenuBar:defined
 				//#= private final ${polish.classes.MenuBar} menuBar;
 			//#else
@@ -470,7 +471,7 @@ implements AccessibleCanvas
 		//#ifndef polish.skipTicker			
 			//#if tmp.paintTickerAtTop
 				this.contentY = y + tickerHeight;
-			//#elif polish.css.tocker-position && !polish.TickerPosition.Defined
+			//#elif polish.css.ticker-position && !polish.TickerPosition.Defined
 				if (this.paintTickerAtTop) {
 					this.contentY = y + tickerHeight;
 				} else {
@@ -747,9 +748,9 @@ implements AccessibleCanvas
 
 		//#ifndef polish.skipTicker
 			//#if polish.css.ticker-position
-				Boolean tickerTopBool = style.getBooleanProperty("ticker-position");
-				if (tickerTopBool != null) {
-					this.paintTickerAtTop = tickerTopBool.booleanValue();
+				Integer tickerPositionInt = style.getIntProperty("ticker-position");
+				if (tickerPositionInt != null) {
+					this.paintTickerAtTop = (tickerPositionInt.intValue() == TICKER_POSITION_TOP);
 				}
 			//#endif
 		//#endif
@@ -883,10 +884,12 @@ implements AccessibleCanvas
 			}
 			//#ifndef polish.skipTicker			
 				//#if tmp.paintTickerAtTop
-					this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
-					tHeight += this.ticker.itemHeight;
-				//#elif polish.css.tocker-position && !polish.TickerPosition.Defined
-					if (this.paintTickerAtTop) {
+					if (this.ticker != null) {
+						this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
+						tHeight += this.ticker.itemHeight;
+					}
+				//#elif polish.css.ticker-position && !polish.TickerPosition.Defined
+					if (this.paintTickerAtTop && this.ticker != null) {
 						this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
 						tHeight += this.ticker.itemHeight;
 					}
@@ -926,7 +929,7 @@ implements AccessibleCanvas
 					if (this.ticker != null) {
 						this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g);
 					}
-				//#elif polish.css.tocker-position && !polish.TickerPosition.Defined
+				//#elif polish.css.ticker-position && !polish.TickerPosition.Defined
 					if (!this.paintTickerAtTop && this.ticker != null) {
 						this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g);
 					}
@@ -1315,6 +1318,8 @@ implements AccessibleCanvas
 	 */
 	public void setPolishTicker( Ticker ticker)
 	{
+		//#debug
+		System.out.println("setting ticker " + ticker);
 		this.ticker = ticker;
 		if (ticker != null) {
 			ticker.screen = this;
