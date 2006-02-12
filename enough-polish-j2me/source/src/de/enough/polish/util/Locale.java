@@ -418,8 +418,11 @@ public final class Locale {
 	public static void loadTranslations( String url ) 
 	throws IOException 
 	{
+		//#debug
+		System.out.println("loading translations from " + url );
 		InputStream is = url.getClass().getResourceAsStream( url );
 		if (is == null) {
+			//System.out.println("!!!!!Cannot find:  " + url );
 			throw new IOException();
 		}
 		loadTranslations( new DataInputStream( is ) );
@@ -433,8 +436,10 @@ public final class Locale {
 		// read plain translations without any parameters:
 		int numberOfPlainTranslations = in.readInt();
 		String[] plainTs = new String[ numberOfPlainTranslations ];
+		//System.out.println("Loading " + numberOfPlainTranslations + " translations...");
 		for (int i = 0; i < numberOfPlainTranslations; i++) {
 			plainTs[i] = in.readUTF();
+			//System.out.println(plainTs[i]);
 		}
 		plainTranslations = plainTs;
 		

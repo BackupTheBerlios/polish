@@ -494,6 +494,19 @@ public class MenuBar extends Item {
 	}
 	//#endif
 	
+	/**
+	 * Used to toggle the opened state of the menu bar
+	 */
+	protected void setOpen( boolean open ) {
+		this.isInitialised = open == this.isOpened;
+		this.isOpened = open;
+		//#if !polish.MenuBar.focusFirstAfterClose
+			if (!open) {
+				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+				this.commandsContainer.focus(0);
+			}
+		//#endif
+	}
 	
 
 
@@ -512,22 +525,19 @@ public class MenuBar extends Item {
 				//#else
 					this.screen.callCommandListener(command);
 				//#endif
-				this.isOpened = false;
-				this.isInitialised = false;
+				setOpen( false );
 				return true;
 			} else if (this.singleLeftCommand != null) {
 				this.screen.callCommandListener(this.singleLeftCommand);
 				return true;
 			} else if (this.commandsList.size() > 0) {
-				this.isOpened = true;
-				this.isInitialised = false;
+				setOpen( true );
 				return true;
 			}
 		} else if (keyCode == RIGHT_SOFT_KEY) {
 			this.isSoftKeyPressed = true;
 			if (this.isOpened) {
-				this.isOpened = false;
-				this.isInitialised = false;
+				setOpen( false );
 				return true;
 			} else if (this.singleRightCommand != null) {
 				this.screen.callCommandListener(this.singleRightCommand);
@@ -541,8 +551,7 @@ public class MenuBar extends Item {
 				int focusedIndex = this.commandsContainer.focusedIndex;
 				Command command = (Command) this.commandsList.get(focusedIndex);
 				this.screen.callCommandListener(command);
-				this.isOpened = false;
-				this.isInitialised = false;
+				setOpen( false );
 				return true;
 			}
 			boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
@@ -567,12 +576,10 @@ public class MenuBar extends Item {
 					//System.out.println("selecting command from opened menu");
 					Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
 					this.screen.callCommandListener(command);
-					this.isOpened = false;
-					this.isInitialised = false;
+					setOpen( false );
 				} else if ( x > rightCommandStartX ) {
 					//System.out.println("closing menu");
-					this.isOpened = false;
-					this.isInitialised = false;
+					setOpen( false );
 				}
 			} else if (this.singleLeftCommand != null 
 					&& x < leftCommandEndX) 
@@ -588,15 +595,13 @@ public class MenuBar extends Item {
 					&& x < leftCommandEndX)
 			{
 				//System.out.println("opening menu");
-				this.isOpened = true;
-				this.isInitialised = false;
+				setOpen( true );
 			}
 			//System.out.println("nothing was clicked...");
 			return true;
 		// okay, y is above the menu bar, so let the commandContainer process the event:
 		} else if (this.isOpened) {
-			this.isOpened = false;
-			this.isInitialised = false;
+			setOpen( false );
 			// a menu-item could have been selected:
 			if (x <= this.commandsContainer.xLeftPos + this.commandsContainerWidth 
 					&& y >= this.commandsContainerY ) 

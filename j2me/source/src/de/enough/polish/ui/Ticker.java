@@ -82,6 +82,12 @@ public class Ticker extends Item
 	private Font font;
 	private int textColor;
 	private int step = 2;
+	//#if polish.css.ticker-left-clip
+		private int tickerLeftClip;
+	//#endif
+	//#if polish.css.ticker-right-clip
+		private int tickerRightClip;
+	//#endif
 
 	/**
 	 * Constructs a new <code>Ticker</code> object, given its initial
@@ -139,9 +145,26 @@ public class Ticker extends Item
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		x -= this.xOffset;
 		//System.out.println("painting ticker at " + x);
+		//#if polish.css.ticker-left-clip || polish.css.ticker-right-clip
+			int clipX = g.getClipX();
+			int clipY = g.getClipY();
+			int clipHeight = g.getClipHeight();
+			int clipWidth = g.getClipWidth();
+			int width = (rightBorder - leftBorder);
+		//#endif
+		//#if polish.css.ticker-left-clip && polish.css.ticker-right-clip
+			g.clipRect( x + this.tickerLeftClip, clipY, width - (this.tickerLeftClip + this.tickerRightClip), clipHeight);
+		//#elif polish.css.ticker-left-clip
+			g.clipRect( x + this.tickerLeftClip, clipY, width - this.tickerLeftClip, clipHeight);
+		//#elif polish.css.ticker-right-clip
+			g.clipRect( x, clipY, width - this.tickerRightClip, clipHeight);
+		//#endif
 		g.setColor( this.textColor );
 		g.setFont( this.font );
 		g.drawString( this.chunk, x, y, Graphics.TOP | Graphics.LEFT );
+		//#if polish.css.ticker-left-clip || polish.css.ticker-right-clip
+			g.setClip(clipX, clipY, clipWidth, clipHeight);
+		//#endif
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -163,6 +186,18 @@ public class Ticker extends Item
 			Integer stepInt = style.getIntProperty("ticker-step");
 			if (stepInt != null) {
 				this.step = stepInt.intValue();
+			}
+		//#endif
+		//#if polish.css.ticker-left-clip
+			Integer tickerLeftClipInt = style.getIntProperty("ticker-left-clip");
+			if (tickerLeftClipInt != null) {
+				this.tickerLeftClip = tickerLeftClipInt.intValue(); 
+			}
+		//#endif
+		//#if polish.css.ticker-right-clip
+			Integer tickerRightClipInt = style.getIntProperty("ticker-right-clip");
+			if (tickerRightClipInt != null) {
+				this.tickerRightClip = tickerRightClipInt.intValue(); 
 			}
 		//#endif
 		super.setStyle(style);

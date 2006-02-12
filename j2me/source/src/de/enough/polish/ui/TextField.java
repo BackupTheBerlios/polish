@@ -783,6 +783,7 @@ public class TextField extends StringItem
 	//#ifdef polish.css.textfield-caret-flash
 		private boolean flashCaret = true;
 	//#endif
+	private boolean isUneditable;
 		
 
 
@@ -901,7 +902,9 @@ public class TextField extends StringItem
 		String currentText = this.isPassword ? this.passwordText : this.text;
 		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, currentText, this.maxSize, this.constraints );
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
-		this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
+		if (!this.isUneditable) {
+			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
+		}
 		this.midpTextBox.setCommandListener( this );	
 	}
 	//#endif
@@ -1240,6 +1243,7 @@ public class TextField extends StringItem
 	public void setConstraints(int constraints)
 	{
 		this.constraints = constraints;
+		this.isUneditable = (constraints & UNEDITABLE) == UNEDITABLE;
 		//#if polish.blackberry
 			long bbStyle = Field.FOCUSABLE | Field.EDITABLE;
 			if ( (constraints & DECIMAL) == DECIMAL) {
@@ -1299,15 +1303,15 @@ public class TextField extends StringItem
 				updateInfo();
 			//#endif
 		//#endif
-		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
-			// deactivate this field:
-			super.setAppearanceMode( Item.PLAIN );
-			if (this.isInitialised && this.isFocused && this.parent instanceof Container) {
-				((Container)this.parent).requestDefocus( this );
-			}
-		} else {
-			super.setAppearanceMode( Item.INTERACTIVE );
-		}
+//		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
+//			// deactivate this field:
+//			super.setAppearanceMode( Item.PLAIN );
+//			if (this.isInitialised && this.isFocused && this.parent instanceof Container) {
+//				((Container)this.parent).requestDefocus( this );
+//			}
+//		} else {
+//			super.setAppearanceMode( Item.INTERACTIVE );
+//		}
 	}
 
 	/**
@@ -1634,14 +1638,16 @@ public class TextField extends StringItem
 					//if (this.textLines != null) {
 					if (this.bitMapFontViewer == null) {
 					//#endif
-						this.caretPosition = this.text.length();
-						this.caretRow = this.realTextLines.length - 1;
+						//this.caretPosition = this.text.length();
+						this.caretRow = 0; //this.realTextLines.length - 1;
 						this.originalRowText = this.realTextLines[ this.caretRow ];
+						this.caretPosition = this.originalRowText.length();
 						this.caretColumn = this.originalRowText.length();
-						this.caretY = this.rowHeight * (this.realTextLines.length - 1);
+						this.caretY = 0; // this.rowHeight * (this.realTextLines.length - 1);
 						this.caretX = this.font.stringWidth( this.originalRowText );
 						//System.out.println(this + ".initContent()/font3: caretX=" + this.caretX);
-						this.textLines[ this.textLines.length -1 ] += " "; 
+						//this.textLines[ this.textLines.length -1 ] += " "; 
+						this.textLines[ 0 ] += " ";
 					//#ifdef polish.css.font-bitmap
 					} else {
 						// a bitmap-font is used:
@@ -1943,6 +1949,10 @@ public class TextField extends StringItem
 
 	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
 	private void updateInfo() {
+		if (this.isUneditable) {
+			// don't show info when this field is not editable
+			return;
+		}
 		//#debug
 		System.out.println("update info: " + this.text );
 		if (this.screen == null) {
@@ -2035,7 +2045,7 @@ public class TextField extends StringItem
 				//#ifdef tmp.directInput
 					synchronized ( this.lock ) {
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric) {
+						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
 							if (this.inputMode == MODE_NUMBERS) {
 								this.inputMode = MODE_LOWERCASE;
 							} else {
@@ -2058,7 +2068,7 @@ public class TextField extends StringItem
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
 					//#else
-					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric) {
+					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
 					//#endif
 						this.inputMode++;
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
@@ -2084,14 +2094,7 @@ public class TextField extends StringItem
 						return true;
 					}
 					int currentLength = (this.text == null ? 0 : this.text.length());
-					//#if false and polish.blackberry
-						//# this.caretChar = Keypad.map( keyCode );
-						insertCharacter();
-						if (true) {
-							return true;
-						}
-					//#else
-					if (this.inputMode == MODE_NUMBERS) {
+					if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
 						if (currentLength < this.maxSize 
 								&& ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 ) ) 
 						{
@@ -2124,9 +2127,10 @@ public class TextField extends StringItem
 						
 					}
 					if ( this.inputMode != MODE_NUMBERS 
-							&& currentLength < this.maxSize && 
-							((keyCode >= Canvas.KEY_NUM0 && 
-							keyCode <= Canvas.KEY_NUM9)
+							&& !this.isUneditable
+							&& currentLength < this.maxSize 
+							&& ((keyCode >= Canvas.KEY_NUM0 
+							&& keyCode <= Canvas.KEY_NUM9)
 							|| (keyCode == Canvas.KEY_POUND ) 
 							|| (keyCode == Canvas.KEY_STAR )) ) 
 					{	
@@ -2178,7 +2182,6 @@ public class TextField extends StringItem
 						}
 						return true;
 					}
-					//#endif
 
 					boolean characterInserted = false;
 					char character = this.caretChar;
@@ -2271,6 +2274,8 @@ public class TextField extends StringItem
 						this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
 						this.internalY = this.caretRow * this.rowHeight;
 						return true;
+					} else if (this.isUneditable) {
+						return false;
 					} else if (gameAction == Canvas.LEFT) {
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFontViewer != null) {
@@ -2590,7 +2595,7 @@ public class TextField extends StringItem
 	public void commandAction(Command cmd, Displayable box) {
 		if (cmd == StyleSheet.CANCEL_CMD) {
 			this.midpTextBox.setString( this.text );
-		} else {
+		} else if (!this.isUneditable) {
 			setString( this.midpTextBox.getString() );
 			if ( this.screen instanceof Form) {
 				notifyStateChanged();

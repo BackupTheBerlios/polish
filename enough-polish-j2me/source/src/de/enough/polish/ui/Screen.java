@@ -136,6 +136,17 @@ implements AccessibleCanvas
 	protected final int screenWidth;
 	//#ifndef polish.skipTicker
 		private Ticker ticker;
+		//#polish.Ticker.Position:defined
+			//#if top == ${ lowercase(polish.Ticker.Position) }
+				//#define tmp.paintTickerAtTop
+			//#else
+				//#define tmp.paintPositionAtBottom
+			//#endif
+		//#elif polish.css.ticker-position
+			private boolean paintTickerAtTop;
+		//#else
+			//#define tmp.paintPositionAtBottom
+		//#endif
 	//#endif
 	protected String cssSelector;
 	private ForwardCommandListener cmdListener;
@@ -155,11 +166,15 @@ implements AccessibleCanvas
 			private Command backCommand;
 		//#endif
 		
-		//#if polish.Screen.FireTriggersOkCommand == true
+		//#if polish.Screen.FireTriggersOkCommand
 			private Command okCommand;
 		//#endif
-		//#if polish.MenuBar.useExtendedMenuBar == true
-			private final MenuBar menuBar;
+		//#if polish.MenuBar.useExtendedMenuBar ||Êpolish.classes.MenuBar:defined
+			//#if polish.classes.MenuBar:defined
+				//#= private final ${polish.classes.MenuBar} menuBar;
+			//#else
+				private final MenuBar menuBar;
+			//#endif
 			//#define tmp.useExternalMenuBar
 		//#else
 			//#ifdef polish.key.LeftSoftKey:defined
@@ -442,16 +457,29 @@ implements AccessibleCanvas
 		height -= this.marginTop + this.marginBottom;
 		int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight; 
 		y += topHeight;
-		int tickerHeight = 0;
 		//#ifndef polish.skipTicker			
+			int tickerHeight = 0;
 			if (this.ticker != null) {
-				tickerHeight = this.ticker.getItemHeight( this.screenWidth, this.screenWidth );
+				tickerHeight = this.ticker.getItemHeight( width, width );
 			} 	
+			height -= topHeight + tickerHeight;
+		//#else
+			height -= topHeight;	
 		//#endif
-		//TODO allow ticker at the top as well	
-		height -= topHeight + tickerHeight;
 		this.contentX = x;
-		this.contentY = y;
+		//#ifndef polish.skipTicker			
+			//#if tmp.paintTickerAtTop
+				this.contentY = y + tickerHeight;
+			//#elif polish.css.tocker-position && !polish.TickerPosition.Defined
+				if (this.paintTickerAtTop) {
+					this.contentY = y + tickerHeight;
+				} else {
+					this.contentY = y;
+				}
+			//#else
+				this.contentY = y;
+			//#endif
+		//#endif
 		this.contentWidth = width;
 		this.contentHeight = height;
 		if (this.container != null) {
@@ -710,7 +738,22 @@ implements AccessibleCanvas
 				this.clipScreenInfo = clipScreenInfoBool.booleanValue();
 			}
 		//#endif	
+		//#if polish.css.menubar-style  && tmp.useExternalMenuBar
+			Style menuBarStyle = (Style) style.getObjectProperty("menubar-style");
+			if (menuBarStyle != null) {
+				this.menuBar.setStyle( menuBarStyle );
+			}
+		//#endif
 
+		//#ifndef polish.skipTicker
+			//#if polish.css.ticker-position
+				Boolean tickerTopBool = style.getBooleanProperty("ticker-position");
+				if (tickerTopBool != null) {
+					this.paintTickerAtTop = tickerTopBool.booleanValue();
+				}
+			//#endif
+		//#endif
+	
 	}
 	
 	/**
@@ -838,6 +881,18 @@ implements AccessibleCanvas
 				this.subTitle.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g );
 				tHeight += this.subTitleHeight;
 			}
+			//#ifndef polish.skipTicker			
+				//#if tmp.paintTickerAtTop
+					this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
+					tHeight += this.ticker.itemHeight;
+				//#elif polish.css.tocker-position && !polish.TickerPosition.Defined
+					if (this.paintTickerAtTop) {
+						this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
+						tHeight += this.ticker.itemHeight;
+					}
+				//#endif
+			//#endif
+
 			int infoItemY = tHeight;
 			//#if polish.clip-screen-info
 				if (this.showInfoItem && this.clipScreenInfo) {			
@@ -846,7 +901,7 @@ implements AccessibleCanvas
 			//#endif
 			// protect the title, ticker and the full-screen-menu area:
 			g.setClip(this.marginLeft, tHeight, sWidth, this.screenHeight - tHeight - this.marginBottom );
-			//g.translate( 0, tHeight );
+
 			// paint content:
 			//System.out.println("starting to paint content of screen");
 			paintScreen( g );
@@ -854,7 +909,6 @@ implements AccessibleCanvas
 			
 
 			
-			//g.translate( 0, - tHeight );
 			// allow painting outside of the screen again:
 			//#ifdef tmp.menuFullScreen
 			 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
@@ -867,12 +921,16 @@ implements AccessibleCanvas
 				this.infoItem.paint( this.marginLeft, infoItemY, this.marginLeft, rightBorder, g );
 			}
  	
-			//#ifndef polish.skipTicker
-			 	if (this.ticker != null) {
-			 		//System.out.println("painting ticker... at 0, " + this.screenHeight );
-			 		//TODO allow to paint ticker at the top of the screen...
-			 		this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g );
-			 	}
+			//#ifndef polish.skipTicker			
+				//#if tmp.paintTickerAtBottom
+					if (this.ticker != null) {
+						this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g);
+					}
+				//#elif polish.css.tocker-position && !polish.TickerPosition.Defined
+					if (!this.paintTickerAtTop && this.ticker != null) {
+						this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g);
+					}
+				//#endif
 			//#endif
 			
 			// paint border:
@@ -1186,10 +1244,11 @@ implements AccessibleCanvas
 			// a very interesting behaviour and should be analysed
 			// at some point...
 			//#ifdef polish.ScreenWidth:defined
-				//#= this.titleHeight = this.title.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
+				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
 			//#else
-				this.titleHeight = this.title.getItemHeight( this.screenWidth, this.screenWidth );
+				int width = this.screenWidth - (this.marginLeft + this.marginRight);
 			//#endif
+			this.titleHeight = this.title.getItemHeight( width, width );			
 		} else {
 			this.title = null;
 			this.titleHeight = 0;
@@ -1370,6 +1429,12 @@ implements AccessibleCanvas
 						} else { 
 							this.menuContainer.handleKeyPressed(keyCode, gameAction);
 						}
+						//#if !polish.MenuBar.focusFirstAfterClose
+							if (!this.menuOpened) {
+								// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+								this.menuContainer.focus(0);
+							}
+						//#endif
 						repaint();
 						return;
 					}
@@ -1798,6 +1863,10 @@ implements AccessibleCanvas
 						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
 							if (this.menuOpened) {
 								this.menuOpened = false;
+								//#if !polish.MenuBar.focusFirstAfterClose
+									// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+									this.menuContainer.focus(0);
+								//#endif
 							} else if (this.menuSingleRightCommand != null) {
 								callCommandListener(this.menuSingleRightCommand );
 							}
@@ -1813,6 +1882,10 @@ implements AccessibleCanvas
 								Command cmd = (Command) this.menuCommands.get( focusedIndex );
 								callCommandListener( cmd );						
 								this.menuOpened = false;
+								//#if !polish.MenuBar.focusFirstAfterClose
+									// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+									this.menuContainer.focus(0);
+								//#endif
 							} else {
 								this.menuOpened = true;
 							}
@@ -1821,6 +1894,10 @@ implements AccessibleCanvas
 						}
 					} else if (this.menuOpened) {
 						this.menuOpened = false;
+						//#if !polish.MenuBar.focusFirstAfterClose
+ 							// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+							this.menuContainer.focus(0);
+						//#endif
 						// a menu-item could have been selected:
 						if (this.menuContainer.handlePointerPressed( x, y )) {
 							int focusedIndex = this.menuContainer.getFocusedIndex();

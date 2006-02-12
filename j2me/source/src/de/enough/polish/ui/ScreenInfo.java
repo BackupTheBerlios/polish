@@ -62,7 +62,7 @@ import javax.microedition.lcdui.Image;
  */
 public class ScreenInfo {
 	
-	public static IconItem item;
+	public static Item item;
 	private static boolean visible = true;
 	private static int itemY;
 	private static int itemX;
@@ -108,7 +108,7 @@ public class ScreenInfo {
 	 * @param text the new text
 	 */
 	public static void setText( String text ) {
-		item.setText( text );
+		((IconItem)item).setText( text );
 		repaint();
 	}
 
@@ -119,7 +119,7 @@ public class ScreenInfo {
 	 * @param style the new style, is ignored when null
 	 */
 	public static void setText( String text, Style style ) {
-		item.setText( text, style );
+		((IconItem)item).setText( text, style );
 		repaint();
 	}
 
@@ -129,7 +129,7 @@ public class ScreenInfo {
 	 * @param image the image, when null is given, no image is painted.
 	 */
 	public static void setImage( Image image ) {
-		item.setImage( image );
+		((IconItem)item).setImage( image );
 		repaint();
 	}
 
@@ -140,7 +140,54 @@ public class ScreenInfo {
 	 * @param style the new style of this item, is ignored when null
 	 */
 	public static void setImage( Image image, Style style ) {
-		item.setImage( image, style );
+		((IconItem)item).setImage( image, style );
+		repaint();
+	}
+	
+	//#if false
+	/**
+	 * Sets the item that is painted on the screen. Warning: read doc!
+	 * You can replace the standard item (it's an IconItem) with this method, you can even set your own
+	 * custom item. You need to rememember that afterexchanging the item with a non IconItem, you cannot
+	 * call setText and setImage anymore.
+	 * (This is a dummy signature that is not used, since it accepts the javax.microedition.lcdui classses, the 
+	 * J2ME Polish build process will automatically convert this call to the correct one).
+	 * 
+	 * 
+	 * @param item the item that is painted on the screen
+	 */
+	public static void setItem( javax.microedition.lcdui.Item newItem ) {
+		// ignore
+	}
+	//#endif
+
+	/**
+	 * Sets the item that is painted on the screen. Warning: read doc!
+	 * You can replace the standard item (it's an IconItem) with this method, you can even set your own
+	 * custom item. You need to rememember that afterexchanging the item with a non IconItem, you cannot
+	 * call setText and setImage anymore.
+	 * 
+	 * @param item the item that is painted on the screen
+	 */
+	public static void setItem( Item newItem ) {
+		item = newItem;
+		repaint();
+	}
+
+	/**
+	 * Sets the item that is painted on the screen. Warning: read doc!
+	 * You can replace the standard item (it's an IconItem) with this method, you can even set your own
+	 * custom item. You need to rememember that afterexchanging the item with a non IconItem, you cannot
+	 * call setText and setImage anymore.
+	 * 
+	 * @param item the item that is painted on the screen
+	 * @param style the new style of this item, is ignored when null
+	 */
+	public static void setItem( Item newItem, Style style ) {
+		if (style != null) {
+			item.setStyle( style );
+		}
+		item = newItem;
 		repaint();
 	}
 
@@ -176,7 +223,7 @@ public class ScreenInfo {
 	 * @param color the new font color.
 	 */
 	public static void setFontColor( int color ) {
-		item.textColor = color;
+		((IconItem)item).textColor = color;
 		repaint();
 	}
 

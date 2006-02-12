@@ -41,7 +41,11 @@ import javax.microedition.lcdui.Image;
  */
 public class TabbedForm extends Form {
 	
-	private final TabBar tabBar;
+	//#if polish.classes.TabBar:defined
+		//#= private final ${polish.classes.TabBar} tabBar;
+	//#else
+		private final TabBar tabBar;
+	//#endif
 	private final Container[] tabContainers;
 	private int activeTabIndex;
 
@@ -67,8 +71,13 @@ public class TabbedForm extends Form {
 	 */
 	public TabbedForm(String title, String[] tabNames, Image[] tabImages, Style style) {
 		super(title, style );
-		//#style tabbar, default
-		this.tabBar = new TabBar( tabNames, tabImages );
+		//#if polish.classes.TabBar:defined
+			//#style tabbar, default
+			//#= this.tabBar = new ${polish.classes.TabBar} ( tabNames, tabImages );
+		//#else
+			//#style tabbar, default
+			this.tabBar = new TabBar( tabNames, tabImages );
+		//#endif
 		int length;
 		if (tabNames != null) {
 			length = tabNames.length;
