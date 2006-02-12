@@ -600,7 +600,7 @@ public class PolishTask extends ConditionalTask {
 			if (preverifyFile != null) {
 				if (preverifyFile.exists()) {
 					this.buildSetting.setPreverify( preverifyFile.getAbsolutePath() );
-				} else {
+				} else if (this.wtkHome != null) {
 					// probably the wtk.home path is wrong:
 					File file = new File( this.wtkHome );
 					if (!file.exists()) {
@@ -1046,8 +1046,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// check if there has been an error at the last run:
-		this.errorLock = new File( this.buildSetting.getWorkDir().getAbsolutePath()
-				+ File.separator + "error.lock");
+		this.errorLock = new File( this.buildSetting.getWorkDir(),  "error.lock");
 		if (this.errorLock.exists()) {
 			this.lastRunFailed = true;
 		} else {
@@ -1431,118 +1430,20 @@ public class PolishTask extends ConditionalTask {
 			device.setSourceDir(targetDir);
 			this.environment.addVariable("polish.sourcedir", targetDir);
 			notifyPolishBuildListeners( PolishBuildListener.EVENT_PREPROCESS_SOURCE_DIR, new File( targetDir ) );
-			// initialise the preprocessor:
+			// initialise the preprocessor (other initialisation is done in the initialized() method):
 			this.preprocessor.setTargetDir( targetDir );
-			// set variables and symbols:
-			/*
-			this.preprocessor.setSymbols( device.getFeatures() );
-			this.preprocessor.setVariables( device.getCapabilities() );
-			this.preprocessor.addVariable( "polish.identifier", device.getIdentifier() );
-			this.preprocessor.addVariable( "polish.name", device.getName() );
-			this.preprocessor.addVariable( "polish.vendor", device.getVendorName() );
-			this.preprocessor.addVariable( "polish.version", this.infoSetting.getVersion() );
-			if (this.useDefaultPackage) {
-				this.preprocessor.addSymbol("polish.useDefaultPackage");
-				this.preprocessor.addVariable("polish.useDefaultPackage", "true");
-			}
-			*/
 			long lastLocaleModification = 0;
 			TranslationManager translationManager = null;
 			// set localization-variables:
 			if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
 				if (locale == null) {
 					locale = this.localizationSetting.getDefaultLocale();
-					//this.preprocessor.addSymbol("polish.i18n.useDynamicTranslations");
 				}
-				/*
-				this.preprocessor.addVariable("polish.locale", locale.toString() );
-				this.preprocessor.addVariable("polish.language", locale.getLanguage() );
-				String country = locale.getCountry();
-				if ( country == null || country.length() == 0 ) {
-					this.preprocessor.removeVariable( "polish.country" );
-				} else {
-					this.preprocessor.addVariable("polish.country", country );
-				}
-				*/
 				// load localized messages, this also sets localized variables automatically:
 				translationManager = this.resourceManager.getTranslationManager(device, locale );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
 			}
-			// set info-variables:
-			/*
-			String jarName = this.infoSetting.getJarName();
-			jarName = PropertyUtil.writeProperties(jarName, this.preprocessor.getVariables());
-			this.preprocessor.addVariable( "polish.jarName", jarName );
-			String jarPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jarName;
-			this.preprocessor.addVariable( "polish.jarPath", jarPath );
-			String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
-			this.preprocessor.addVariable( "polish.jadName", jadName );
-			String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
-			this.preprocessor.addVariable( "polish.jadPath", jadPath );
-			// set conditional variables:
-			BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-			Project antProject = getProject();
-			Variable[] vars = this.variables.getVariables( antProject, evaluator, this.environment );
-			for (int i = 0; i < vars.length; i++) {
-				Variable var = vars[i];
-				this.preprocessor.addVariable(var.getName(), var.getValue() );
-			}
-			*/
-			/*
-			if (this.conditionalVariables != null) {
-				// add variables which fulfill the conditions: 
-				BooleanEvaluator evaluator = this.preprocessor.getBooleanEvaluator();
-				for (int i = 0; i < this.conditionalVariables.length; i++) {
-					Variable var = this.conditionalVariables[i];
-					if (var.isConditionFulfilled( evaluator, getProject() )) {
-						this.preprocessor.addVariable(var.getName(), var.getValue() );
-					}
-				}
-			}
-			*/
-			// now set the full-screen-settings:
-			/*
-			String value = this.preprocessor.getVariable("polish.FullScreen");
-			if (value != null) {
-				if ("menu".equalsIgnoreCase(value)) {
-					this.preprocessor.addSymbol("polish.useMenuFullScreen");
-					this.preprocessor.addSymbol("polish.useFullScreen");					
-				} else if ("yes".equalsIgnoreCase( value ) || "true".equalsIgnoreCase(value)) {
-					this.preprocessor.addSymbol("polish.useFullScreen");					
-				}
-			} else {
-				FullScreenSetting fullScreenSetting = this.buildSetting.getFullScreenSetting();
-				if (fullScreenSetting != null) {
-					if (fullScreenSetting.isMenu()) {
-						this.preprocessor.addSymbol("polish.useMenuFullScreen");
-						this.preprocessor.addSymbol("polish.useFullScreen");
-					} else if (fullScreenSetting.isEnabled()) {
-						this.preprocessor.addSymbol("polish.useFullScreen");
-					}
-				}
-			}
-			// adjust polish.classes.ImageLoader in case the default package is used:
-			if (this.useDefaultPackage) {
-				String imageLoaderClass = this.preprocessor.getVariable("polish.classes.ImageLoader");
-				if (imageLoaderClass != null) {
-					int classStartIndex = imageLoaderClass.lastIndexOf('.');
-					if (classStartIndex != -1) {
-						imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
-						this.preprocessor.addVariable("polish.classes.ImageLoader", imageLoaderClass );
-					}
-				}
-			}
-			// add settings of active postcompilers:
-			// let postcompilers adjust the bootclasspath:
-			if (this.doPostCompile) {
-				PostCompiler[] compilers = getActivePostCompilers();
-				for (int i = 0; i < compilers.length; i++) {
-					PostCompiler postCompiler = compilers[i];
-					postCompiler.addPreprocessingSettings(device, this.preprocessor);
-				}
-			}
-			*/
 			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 			Project antProject = getProject();
 			// add custom preprocessors
@@ -1610,6 +1511,9 @@ public class PolishTask extends ConditionalTask {
 					|| (!targetFile.exists())
 					|| ( lastCssModification > targetFile.lastModified() )
 					|| ( buildXmlLastModified > targetFile.lastModified() );
+				if (this.lastRunFailed) {
+					System.out.println("last run failed, now regenerating the StyleSheet.java code...");
+				}
 				if (cssIsNew) {
 					//System.out.println("CSS is new and the style sheet will be generated.");
 					if (this.styleSheetCode == null) {
@@ -1733,7 +1637,8 @@ public class PolishTask extends ConditionalTask {
 					 || ( buildXmlLastModified > targetLastModified )
 					 || ( this.preprocessor.isInPreprocessQueue( file.getFilePath() ) ); 
 			boolean preprocess = ( saveInAnyCase )
-					 || ( lastCssModification > targetLastModified);
+					 || ( lastCssModification > targetLastModified)
+					 || ( this.lastRunFailed );
 			if (   preprocess ) {
 				// preprocess this file:
 				StringList sourceCode = new StringList( file.getContent() );

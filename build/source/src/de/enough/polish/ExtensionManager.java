@@ -208,11 +208,11 @@ public class ExtensionManager {
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
 	{
 		String name = setting.getName();
-		if (name == null) {
-			name = setting.getClassName();
-			if (name == null) {
+		if (name == null && setting.getClassName() == null) {
+//			name = setting.getClassName();
+//			if (name == null) {
 				throw new IllegalArgumentException("Unable to load extension without name or class-setting. Please check your build.xml file.");
-			}
+//			}
 		}
 		return getExtension(type, name, setting, environment);
 	}
@@ -256,10 +256,11 @@ public class ExtensionManager {
 	 * Retrieves and stores an extension.
 	 * 
 	 * @param type the type of the extension, e.g. "propertyfunction"
-	 * @param name the name of the extensio, e.g. "uppercase"
-	 * @param setting the configuration of the extension, taken from the build.xml
+	 * @param name the name of the extensio, e.g. "uppercase", can be null when the setting is not null
+	 * @param setting the configuration of the extension, taken from the build.xml, can be null when the name is not null
 	 * @param environment the environment settings
 	 * @return the extension, null when the type or the name is not known
+	 * @throws IllegalArgumentException when both name and setting are null
 	 * @throws IllegalAccessException when the extension could not be accesssed
 	 * @throws InstantiationException when the extension could not be loaded
 	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
@@ -267,6 +268,9 @@ public class ExtensionManager {
 	public Extension getExtension( String type, String name, ExtensionSetting setting, Environment environment ) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
 	{
+		if (name == null && setting == null) {
+			throw new IllegalArgumentException("Unable to load extension of type [" + type + "] without specifying a name nor a setting.");
+		}
 		return getExtension(type, name, setting, environment, true);
 	}
 	
@@ -321,27 +325,46 @@ public class ExtensionManager {
 	 * @throws IllegalAccessException when the extension could not be accesssed
 	 * @throws InstantiationException when the extension could not be loaded
 	 * @throws ClassNotFoundException when the extension was not found or when the extension class was not found in the classpath
+	 * @throws IllegalArgumentException when the type is null, or when both name and setting are null
 	 */
 	public Extension getExtension( String type, String name, ExtensionSetting setting, Environment environment, boolean storeExtension ) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException 
 	{
+		if (type == null) {
+			throw new IllegalArgumentException("Unable to load extension without specifying a type.");
+		}
+		if (name == null && setting == null) {
+			throw new IllegalArgumentException("Unable to load extension of type [" + type + "] without specifying neither name nor setting.");
+		}
 		Map store = (Map) this.extensionsByType.get( type );
 		if (store != null) {
-			Extension extension = (Extension) store.get( name );
+			Extension extension;
+			if (name != null) {
+				extension = (Extension) store.get( name );
+			} else {
+				extension = (Extension) store.get( setting );
+			}
 			if (extension != null) {
 				return extension;
 			}
 		}
 		// this extension has not been instantiated so far,
 		// so do it now:
-		ExtensionDefinition definition = getDefinition( type, name );
+		ExtensionDefinition definition = null;
+		if ( name != null) {
+			definition = getDefinition( type, name );
+		}
 		ExtensionTypeDefinition typeDefinition = getTypeDefinition( type );
 		Extension extension = Extension.getInstance( typeDefinition, definition, setting, this.antProject, this, environment );
 		if (store == null) {
 			store = new HashMap();
 			this.extensionsByType.put( type, store );
 		}
-		store.put( name, extension );
+		if (name != null) {
+			store.put( name, extension );
+		} else {
+			store.put( setting, extension );
+		}
 		if (storeExtension) {
 			//System.out.println("Storing  " + type + " " + name  );
 			this.instantiatedExtensions.add( extension );
@@ -394,13 +417,18 @@ public class ExtensionManager {
 	 * @param type the type of the extension, e.g. "propertyfunction"
 	 * @param name the name of the extensio, e.g. "uppercase"
 	 * @return the definition of the extension
+	 * @throws IllegalArgumentException when the either the type is not known or there is no extension with that name registered
 	 */
 	public ExtensionDefinition getDefinition( String type, String name ) {
 		Map store = (Map) this.definitionsByType.get( type );
 		if ( store == null ) {
-			return null;
+			throw new IllegalArgumentException("The extension-type [" + type + "] for the extension [" + name + "] is not known.");
 		} else {
-			return (ExtensionDefinition) store.get( name );
+			ExtensionDefinition definition = (ExtensionDefinition) store.get( name );
+			if (definition == null) {
+				throw new IllegalArgumentException("The extension [" + name + "] of the extension-type [" + type + "] is not registered, please check your custom-extensions.xml file.");
+			}
+			return definition;
 		}
 	}
 	
