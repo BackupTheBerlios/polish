@@ -456,7 +456,9 @@ implements AccessibleCanvas
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
 		height -= this.marginTop + this.marginBottom;
-		int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight; 
+		int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
+		//#debug
+		System.out.println("calculateContentArea: topHeight=" + topHeight);
 		y += topHeight;
 		//#ifndef polish.skipTicker			
 			int tickerHeight = 0;
@@ -471,7 +473,7 @@ implements AccessibleCanvas
 		//#ifndef polish.skipTicker			
 			//#if tmp.paintTickerAtTop
 				this.contentY = y + tickerHeight;
-			//#elif polish.css.ticker-position && !polish.TickerPosition.Defined
+			//#elif polish.css.ticker-position && !polish.TickerPosition:defined
 				if (this.paintTickerAtTop) {
 					this.contentY = y + tickerHeight;
 				} else {
@@ -480,9 +482,13 @@ implements AccessibleCanvas
 			//#else
 				this.contentY = y;
 			//#endif
+		//#else
+			this.contentY = y;
 		//#endif
 		this.contentWidth = width;
 		this.contentHeight = height;
+		//#debug
+		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
 		if (this.container != null) {
 			this.container.setVerticalDimensions( y, y + height );
 		}
@@ -541,7 +547,7 @@ implements AccessibleCanvas
 			//#endif
 		
 			// init components:
-			int	width = this.screenWidth;
+			int	width = this.screenWidth - (this.marginLeft + this.marginRight);
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (!this.menuBar.isInitialised) {
@@ -700,11 +706,18 @@ implements AccessibleCanvas
 			this.titleStyle = (Style) style.getObjectProperty("title-style");
 			if (this.titleStyle != null && this.title != null) {
 				this.title.setStyle(this.titleStyle);
-				//#ifdef polish.ScreenWidth:defined
-					//#= this.titleHeight = this.title.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
-				//#else
-					this.titleHeight = this.title.getItemHeight( getWidth(), getWidth() );
-				//#endif
+				int width = this.screenWidth - (this.marginLeft + this.marginRight);
+				this.titleHeight = this.title.getItemHeight( width, width );
+			} else {
+		//#endif
+		 //#if tmp.usingTitle
+		 	if (this.title != null && this.title.isInitialised) {
+		 		this.title.isInitialised = false;
+				int width = this.screenWidth - (this.marginLeft + this.marginRight);
+				this.titleHeight = this.title.getItemHeight( width, width );
+		 	}
+		 //#endif
+		//#if tmp.usingTitle && polish.css.title-style				
 			}
 		//#endif
 			
@@ -888,7 +901,7 @@ implements AccessibleCanvas
 						this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
 						tHeight += this.ticker.itemHeight;
 					}
-				//#elif polish.css.ticker-position && !polish.TickerPosition.Defined
+				//#elif polish.css.ticker-position && !polish.TickerPosition:defined
 					if (this.paintTickerAtTop && this.ticker != null) {
 						this.ticker.paint( this.marginLeft, tHeight, this.marginLeft, rightBorder, g);
 						tHeight += this.ticker.itemHeight;
@@ -929,7 +942,7 @@ implements AccessibleCanvas
 					if (this.ticker != null) {
 						this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g);
 					}
-				//#elif polish.css.ticker-position && !polish.TickerPosition.Defined
+				//#elif polish.css.ticker-position && !polish.TickerPosition:defined
 					if (!this.paintTickerAtTop && this.ticker != null) {
 						this.ticker.paint( this.marginLeft, this.contentY + this.contentHeight, this.marginLeft, rightBorder, g);
 					}
@@ -1211,15 +1224,15 @@ implements AccessibleCanvas
 	 * <A HREF="../../../javax/microedition/midlet/MIDlet.html#startApp()"><CODE>startApp</CODE></A>
 	 * returns back to the implementation.
 	 * 
-	 * @param s the new title, or null for no title
+	 * @param text the new title, or null for no title
 	 * @param tStyle the new style for the title, is ignored when null
 	 */
-	public void setTitle( String s, Style tStyle)
+	public void setTitle( String text, Style tStyle)
 	{
 		//#debug
-		System.out.println("Setting title " + s );
+		System.out.println("Setting title " + text );
 		//#ifdef tmp.ignoreMotorolaTitleCall
-			if (s == null) {
+			if (text == null) {
 				if (this.ignoreMotorolaTitleCall) {
 					this.ignoreMotorolaTitleCall = false;
 					return;
@@ -1227,9 +1240,9 @@ implements AccessibleCanvas
 				//return;
 			}
 		//#endif
-		if (s != null) {
+		if (text != null) {
 			//#style title, default
-			this.title = new StringItem( null, s );
+			this.title = new StringItem( null, text );
 			this.title.screen = this;
 			if ( tStyle != null ) {
 				this.title.setStyle( tStyle );

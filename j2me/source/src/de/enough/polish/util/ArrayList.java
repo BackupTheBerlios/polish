@@ -163,6 +163,7 @@ public class ArrayList {
 			this.storedObjects[ i-1 ] = this.storedObjects[ i ];
 		}
 		this.size--;
+		this.storedObjects[ this.size ] = null;
 		return removed; 
 	}
 	
@@ -193,6 +194,7 @@ public class ArrayList {
 			this.storedObjects[ i-1 ] = this.storedObjects[ i ];
 		}
 		this.size--;
+		this.storedObjects[ this.size ] = null;
 		return true; 
 	}
 	
@@ -336,5 +338,13 @@ public class ArrayList {
 		this.storedObjects = newStore;
 	}
 
+	/**
+	 * Only used for tests.
+	 * 
+	 * @return the internal array
+	 */
+	protected Object[] getInternalArray() {
+		return this.storedObjects;
+	}
 
 }

@@ -96,6 +96,12 @@ public class ArrayListTest extends TestCase {
 		list.add( this.o1 );
 		list.add( this.o2 );
 		list.add( this.o3 );
+		
+		Object[] objects = list.getInternalArray();
+		assertEquals( this.o1, objects[0] );
+		assertEquals( this.o2, objects[1] );
+		assertEquals( this.o3, objects[2] );
+		
 		// illegal remove:
 		try {
 			list.remove( 3 );
@@ -112,8 +118,19 @@ public class ArrayListTest extends TestCase {
 		// now try remove an element which does not exist in list:
 		assertEquals( false, list.remove( this.o6 ));
 		// now remove the third (and last) element:
+		objects = list.getInternalArray();
+		assertEquals( this.o1, objects[0] );
+		assertEquals( this.o2, objects[1] );
+		assertEquals( this.o3, objects[2] );
+		assertEquals( 3, list.size() );
 		Object o = list.remove( 2 );
 		assertEquals( this.o3, o );
+		assertEquals( 2, list.size() );
+		// check internal array:
+		objects = list.getInternalArray();
+		assertEquals( this.o1, objects[0] );
+		assertEquals( this.o2, objects[1] );
+		assertEquals( null, objects[2] );
 		list.add(this.o3);
 		assertTrue( list.remove( this.o3 ) );
 		list.add( this.o3 );
@@ -133,6 +150,17 @@ public class ArrayListTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			// expected behaviour
 		}
+		
+		list = new ArrayList( 3 );
+		list.add( this.o1 );
+		list.add( this.o2 );
+		list.add( this.o3 );
+		list.remove( this.o1 );
+		objects = list.getInternalArray();
+		assertEquals( this.o2, objects[0] );
+		assertEquals( this.o3, objects[1] );
+		assertEquals( null, objects[2] );
+
 	}
 	
 	public void testInsert(){
@@ -151,7 +179,7 @@ public class ArrayListTest extends TestCase {
 		compareWithArray( list );
 		// invalid insert:
 		try {
-			list.add( 4, this.o6 );
+			list.add( 5, this.o6 );
 			fail("insert should fail for an invalid position.");
 		} catch (IndexOutOfBoundsException e) {
 			// expected behaviour

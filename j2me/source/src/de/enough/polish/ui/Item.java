@@ -1035,6 +1035,12 @@ public abstract class Item extends Object
 			if (this.appearanceMode == PLAIN) {
 				this.appearanceMode = HYPERLINK;
 			}
+			if (this.isFocused) {
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.addCommand( cmd );
+				}
+			}
 			if (this.isInitialised) {
 				repaint();
 			}
@@ -1125,14 +1131,21 @@ public abstract class Item extends Object
 	 * @param cmd - the command to be removed
 	 * @since  MIDP 2.0
 	 */
-	public void removeCommand( Command cmd)
-	{
+	public void removeCommand( Command cmd ) {
 		if (this.commands != null) {
 			if (cmd == this.defaultCommand) {
 				this.defaultCommand = null;
 			}
 			if (this.commands.remove(cmd)) {
-				repaint();
+				if (this.isFocused) {
+					Screen scr = getScreen();
+					if (scr != null) {
+						scr.removeCommand( cmd );
+					}
+				}
+				if (this.isInitialised) {
+					repaint();
+				}
 			}
 		}
 	}
