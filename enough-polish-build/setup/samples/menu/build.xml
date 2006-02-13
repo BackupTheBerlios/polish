@@ -99,6 +99,7 @@
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/real" />
 		<property name="deploy-url" value="" />
+		<property name="resource.dir" value="resources" />
 	</target>
 	 
 	<!-- In this target the J2ME Polish task is used.             -->
@@ -171,7 +172,7 @@
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
-					dir="resources"
+					dir="${resource.dir}"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
@@ -278,6 +279,20 @@
 		description="allows a clean build. You should call [ant cleanbuild] whenever you made changes to devices.xml, vendors.xml or groups.xml"
 		depends="clean, j2mepolish"
 	/>
+
+	<target name="enableBarbie" >
+		<property name="resource.dir" value="resources2" />
+		<property name="dir.work" value="build/barbie" />
+	</target>
+	
+    <target name="barbie" description="launches the application with the barbie design" depends="enableBarbie, test, j2mepolish" />
+
+	<target name="enableFrog" >
+		<property name="resource.dir" value="resources3" />
+		<property name="dir.work" value="build/frog" />
+	</target>
+	
+    <target name="frog" description="launches the application with the frog design" depends="enableFrog, test, j2mepolish" />
 	
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
 
