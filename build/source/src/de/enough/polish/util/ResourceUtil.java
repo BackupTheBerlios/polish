@@ -43,7 +43,7 @@ public final class ResourceUtil {
 	
 	private ClassLoader classLoader;
 	
-	public ResourceUtil( ClassLoader classLoader) {
+	public ResourceUtil( ClassLoader classLoader ) {
 		this.classLoader = classLoader;
 	}
 	

@@ -149,7 +149,7 @@
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="JavaPackage" value="mmapi,wmapi,pdaapi, jtwi" />
 		<capability name="SoundFormat" value="midi, amr, wav" />
 		<capability name="HeapSize" value="20MB" />
 		<capability name="Emulator.Skin" value="DefaultColorPhone" />
@@ -162,7 +162,7 @@
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="JavaPackage" value="mmapi,wmapi, pdaapi, jtwi" />
 		<capability name="SoundFormat" value="midi, amr, wav" />
 		<capability name="Emulator.Skin" value="MediaControlSkin" />
 	</device>	
@@ -174,7 +174,7 @@
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi,wmapi,jtwi" />
+		<capability name="JavaPackage" value="mmapi,wmapi,pdaapi, jtwi" />
 		<capability name="SoundFormat" value="midi, amr, wav" />
 		<capability name="Emulator.Skin" value="QwertyDevice" />
 	</device>	

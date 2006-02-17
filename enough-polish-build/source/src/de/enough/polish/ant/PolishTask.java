@@ -1391,7 +1391,10 @@ public class PolishTask extends ConditionalTask {
 		this.environment.set( "polish.home", this.polishHomeDir );
 		this.environment.set( "polish.apidir", this.buildSetting.getApiDir() );
 		
-		
+		// set the absolute path to polish.home  - this minimizes problems resolving paths
+		// relative to polish.home (since the polish.home can be relative
+		// to the build.xml script).
+		this.environment.addVariable( "polish.home", this.polishHomeDir.getAbsolutePath() );
 		
 		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:
@@ -1511,9 +1514,6 @@ public class PolishTask extends ConditionalTask {
 					|| (!targetFile.exists())
 					|| ( lastCssModification > targetFile.lastModified() )
 					|| ( buildXmlLastModified > targetFile.lastModified() );
-				if (this.lastRunFailed) {
-					System.out.println("last run failed, now regenerating the StyleSheet.java code...");
-				}
 				if (cssIsNew) {
 					//System.out.println("CSS is new and the style sheet will be generated.");
 					if (this.styleSheetCode == null) {
