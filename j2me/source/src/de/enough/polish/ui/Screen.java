@@ -155,6 +155,8 @@ implements AccessibleCanvas
 	protected String cssSelector;
 	private ForwardCommandListener cmdListener;
 	protected Container container;
+	private boolean isLayoutCenter;
+	private boolean isLayoutRight;
 	private boolean isLayoutVCenter;
 	private boolean isLayoutBottom;
 	private boolean isInitialised;
@@ -261,6 +263,7 @@ implements AccessibleCanvas
 		private Image previousScreenImage;
 	//#endif
 	protected ScreenStateListener screenStateListener;
+
 	
 	/**
 	 * Creates a new screen
@@ -464,7 +467,7 @@ implements AccessibleCanvas
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
 		height -= this.marginTop + this.marginBottom;
-		//#if !polish.css.title-position
+		//#if !polish.css.title-position || !tmp.usingTitle
 			int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
 		//#else
 			//# int topHeight = this.subTitleHeight + this.infoHeight;
@@ -676,8 +679,11 @@ implements AccessibleCanvas
 			this.container.setStyle(style, true);
 		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
-		this.isLayoutBottom = ! this.isLayoutVCenter 
+		this.isLayoutBottom = !this.isLayoutVCenter 
 							&& (( style.layout & Item.LAYOUT_BOTTOM ) == Item.LAYOUT_BOTTOM);
+		this.isLayoutCenter = (( style.layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER);
+		this.isLayoutRight = !this.isLayoutCenter
+							&& (( style.layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT);
 		//#if polish.css.scrollindicator-up-image
 			String scrollUpUrl = style.getProperty("scrollindicator-up-image");
 			if (scrollUpUrl != null) {
@@ -1252,6 +1258,16 @@ implements AccessibleCanvas
 			y += ((height - containerHeight) / 2);
 		} else if (this.isLayoutBottom) {
 			y += (height - containerHeight);
+		}
+		int containerWidth = this.container.itemWidth;
+		if (this.isLayoutCenter) {
+			int diff = (width - containerWidth) / 2;
+			x += diff;
+			width -= diff;
+		} else if (this.isLayoutRight) {
+			int diff = width - containerWidth;
+			x += diff;
+			width -= diff;
 		}
 		this.container.paint( x, y, x, x + width, g );
 	}
