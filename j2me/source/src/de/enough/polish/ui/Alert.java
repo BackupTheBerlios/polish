@@ -813,7 +813,8 @@ implements CommandListener
 		}
 		Displayable next = this.nextDisplayable;
 		this.nextDisplayable = null;
-		//System.out.println("Alert: setting nextDisplayable=" + next );
+		//#debug
+		System.out.println("Alert: setting nextDisplayable=" + next );
 		StyleSheet.display.setCurrent( next );
 	}
 	
@@ -833,7 +834,8 @@ implements CommandListener
 	}
 
 	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
-		//System.out.println("Alert.setCurrent() of " + alert );
+		//#debug
+		System.out.println("Alert.setCurrent() of " + alert + " with nextDisplayable=" + nextDisplayable);
 		if (nextDisplayable == null) {
 			//System.out.println("Alert: storing current displayable from display");
 			nextDisplayable = display.getCurrent();

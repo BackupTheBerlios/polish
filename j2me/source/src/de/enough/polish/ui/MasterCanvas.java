@@ -176,7 +176,10 @@ public class MasterCanvas
 		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
 		//#if polish.usePolishGui
 			if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
-				((Alert)nextDisplayable).nextDisplayable = instance.currentDisplayable;
+				Alert alert = (Alert)nextDisplayable;
+				if (alert.nextDisplayable == null) {
+					alert.nextDisplayable = instance.currentDisplayable;
+				}
 			}
 		//#endif
 		instance.currentCanvas = canvas;
