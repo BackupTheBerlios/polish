@@ -62,8 +62,8 @@ public class ShadowTextEffect extends TextEffect {
 	public static final int ORIENTATION_LEFT = 7;
 	
 	public int shadowColor;
-	public int xOffset = 2;
-	public int yOffset = 2;
+	public int xOffset = 1;
+	public int yOffset = 1;
 
 	/**
 	 * Creates a shadow effect.

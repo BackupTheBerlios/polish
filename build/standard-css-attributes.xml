@@ -900,7 +900,7 @@
 		type="integer"
 		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
 		description="Sets the x-orientation in pixels of a shadow for the shadow font-effect."
-		default="2"
+		default="1"
 		id="91"
 	/>
 	
@@ -909,7 +909,7 @@
 		type="integer"
 		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
 		description="Sets the y-orientation in pixels of a shadow for the shadow font-effect."
-		default="2"
+		default="1"
 		id="92"
 	/>
 	
@@ -1109,9 +1109,37 @@
 		type="integer"
 		appliesTo="Ticker, Screen, Form, TabbedForm, FramedForm, List"
 		description="You can specify the position of the ticker on the screen."
-		default="bottom"
+		default="top"
 		values="top, bottom"
 		id="114"
+	/>
+
+	<attribute
+		name="title-position"
+		type="integer"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="You can specify the position of the title on the screen."
+		default="top"
+		values="top, bottom"
+		id="115"
+	/>
+	
+	<attribute
+		name="repaint-previous-screen"
+		type="boolean"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="Specifies whether the previous screen should be repainted whenever the current screen changes, i.e. by user interaction. This makes sense when a translucent background is used for the current screen and the screen contains modifiable or selectable items."
+		default="false"
+		id="116"
+	/>
+	
+	<attribute
+		name="menubar-style"
+		type="style"
+		appliesTo="Screen, Form, List, TextBox"
+		description="The name of the style for the menubar of the corresponding Screen."
+		default="menubar"
+		id="117"
 	/>
 
 </attributes>

@@ -117,6 +117,12 @@ public class MenuBar extends Item {
 	}
 
 	public void addCommand(Command cmd) {
+		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || this.commandsList.contains(cmd)) {
+			// do not add an existing command again...
+			//#debug
+			System.out.println("Ignoring existing command " + cmd.getLabel() );
+			return;
+		}
 		//#debug
 		System.out.println("adding command " + cmd.getLabel() + " (" + cmd + ")");
 		int type = cmd.getCommandType();
@@ -173,6 +179,8 @@ public class MenuBar extends Item {
 				this.singleLeftCommand = null;
 			}  else if (this.commandsList.size() == 0) {
 				// this is the new single left command!
+				//#debug
+				System.out.println("Setting single left command " + cmd.getLabel() );
 				this.singleLeftCommand = cmd;
 				this.singleLeftCommandItem.setText( cmd.getLabel() );
 				if (this.isInitialised) {
@@ -390,6 +398,13 @@ public class MenuBar extends Item {
 				this.contentWidth = 0;
 				this.contentHeight = 0;
 			//#else
+				if (this.singleLeftCommand == null && this.singleRightCommand == null 
+						&& this.commandsList.size() == 0 ) 
+				{
+					this.contentWidth = 0;
+					this.contentHeight = 0;
+					return;
+				}
 				// the menu is closed
 				this.paintScrollIndicator = false;
 				if (this.singleRightCommand != null) {

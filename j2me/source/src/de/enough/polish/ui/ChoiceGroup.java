@@ -1581,7 +1581,7 @@ implements Choice
 				addCommand( MARK_COMMAND );
 				addCommand( UNMARK_COMMAND );
 			//#endif
-		} else {
+		} else if (this.choiceType == EXCLUSIVE){
 			//#if !tmp.suppressSelectCommand
 				//#if polish.css.view-type
 					if (this.view == null) {
