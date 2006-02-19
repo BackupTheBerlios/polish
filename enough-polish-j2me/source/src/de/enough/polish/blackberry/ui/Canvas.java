@@ -1093,15 +1093,15 @@ extends Displayable
 		if ( amount < 0 ) {
 			amount *= -1;
 			if ( status == TrackwheelListener.STATUS_ALT ) {
-				keyCode = KEY_BB_LEFT;
-			} else {
 				keyCode = KEY_BB_UP;
+			} else {
+				keyCode = KEY_BB_LEFT;
 			}
 		} else {
 			if ( status == TrackwheelListener.STATUS_ALT ) {
-				keyCode = KEY_BB_RIGHT;
-			} else {
 				keyCode = KEY_BB_DOWN;
+			} else {
+				keyCode = KEY_BB_RIGHT;
 			}
 		}
 		Screen screen = null;
