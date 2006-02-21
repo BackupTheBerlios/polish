@@ -25,6 +25,15 @@
  */
 package de.enough.polish.util;
 
+/**
+ * Arrays is used for sorting array elements.
+ * When no comparator is specified, the default toString() comparator is used. That comparator
+ * just compares the string values of the elements using the toString() method.
+ * 
+ * @author Tim Muders
+ * @author Robert Virkus
+ *
+ */
 public final class Arrays implements Comparator { 
 	
 	//TODO: JavaDoc, make sort work, ensure TestArrays testcase works
@@ -39,10 +48,51 @@ public final class Arrays implements Comparator {
 	}
 
     public static void sort(Object[] obj) {
-    	sort( obj, STRING_COMPARATOR );
+    		sort( obj, STRING_COMPARATOR );
+    }
+    
+    /**
+     * Sorts the given array using the shell sorting algorithm and the default toString() comparator.
+     * The shell sort is not as fast as the default quicksort, but it
+     * uses less resources and is well suited to sort less than 5,000 entries.
+     * 
+     * @param array the array elements that should be sorted
+     */
+    public static void shellSort( Object[] array ) {
+    		shellSort( array, STRING_COMPARATOR );
     }
 
-    public static void quicksort(Object[] obj) {
+    /**
+     * Sorts the given array using the shell sorting algorithm.
+     * The shell sort is not as fast as the default quicksort, but it
+     * uses less resources and is well suited to sort less than 5,000 entries.
+     * 
+     * @param array the array elements that should be sorted
+     * @param comparator the comparator used for comparing the entries
+     */
+    public static void shellSort(Object[] array, Comparator comparator) {
+    		int i, j, increment;
+    		Object temp;
+    		increment = 3;
+    		while (true) {
+    			for (i=0; i < array.length; i++) {
+    				j = i;
+    				temp = array[i];
+    				while ((j >= increment) && ( comparator.compare( array[j-increment], temp) > 0 ) ) {
+    					array[j] = array[j - increment];
+    					j -= increment;
+    				}
+    				array[j] = temp;
+    			}
+    			if (increment == 1) {
+    				break;
+    			} else {
+    				increment >>=  1;
+    			}
+    		}
+	}
+
+	public static void quicksort(Object[] obj) {
     	quicksort( obj,obj.length, STRING_COMPARATOR );
     }
     

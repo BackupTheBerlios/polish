@@ -33,6 +33,35 @@ public class ArraysTest extends TestCase {
 		super(name);
 	}
 	
+	public void testShellSort() {
+		System.out.println("testing shell sort");
+		String[] j2meObjects = new String[]{ "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim" };
+		String[] j2seObjects = new String[]{ "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim" };
+		Arrays.shellSort( j2meObjects );
+		java.util.Arrays.sort( j2seObjects );
+		assertEquals( j2meObjects.length, j2seObjects.length );
+		for (int i = 0; i < j2meObjects.length; i++) {
+			String j2me = j2meObjects[i];
+			String j2se = j2seObjects[i];
+			assertEquals( j2se, j2me );
+			//System.out.println( j2me );
+		}
+
+	
+		j2meObjects = new String[]{ "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim", "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim", "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim" };
+		j2seObjects = new String[]{ "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim", "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim", "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim" };
+		Arrays.shellSort( j2meObjects );
+		java.util.Arrays.sort( j2seObjects );
+		assertEquals( j2meObjects.length, j2seObjects.length );
+		for (int i = 0; i < j2meObjects.length; i++) {
+			String j2me = j2meObjects[i];
+			String j2se = j2seObjects[i];
+			assertEquals( j2se, j2me );
+			//System.out.println( j2me );
+		}
+	}
+
+	
 	public void testSort() {
 		System.out.println("testing sort");
 		String[] j2meObjects = new String[]{ "abc", "aaa", "aad", "acd", "ddd", "berta", "emil", "alfred", "gerhard", "ricky", "robert", "tim" };
@@ -59,6 +88,6 @@ public class ArraysTest extends TestCase {
 			assertEquals( j2se, j2me );
 			System.out.println( j2me );
 		}
-}
+	}
 
 }

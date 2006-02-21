@@ -2229,6 +2229,18 @@ implements AccessibleCanvas
 		}
 		return null;
 	}
+	
+	/**
+	 * Retrieves the index of the currently focused item.
+	 * 
+	 * @return  the index of the currently focused item, -1 when no item has been selected
+	 */
+	public int getCurrentIndex() {
+		if (this.container != null) {
+			return this.container.focusedIndex;
+		}
+		return -1;
+	}
 		
 	
 //#ifdef polish.Screen.additionalMethods:defined
