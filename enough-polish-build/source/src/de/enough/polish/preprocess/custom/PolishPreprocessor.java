@@ -73,7 +73,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	protected static final Pattern GET_GRAPHICS_PATTERN = Pattern.compile( GET_GRAPHICS_STR );
 	
 	//protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\([\\w|\\.]+\\s*\\)";
-	protected static final String SET_CURRENT_ITEM_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrentItem\\s*\\(.+\\)";
+	protected static final String JAVA_VAR_STR = "[\\w|\\.|_]+";
+	protected static final String GET_DISPLAY_METHOD_STR = "Display\\s*\\.\\s*getDisplay\\s*\\(\\s*" + JAVA_VAR_STR + "\\s*\\)\\s*";
+	protected static final String SET_CURRENT_ITEM_STR = "(" + JAVA_VAR_STR + "|" + GET_DISPLAY_METHOD_STR + ")\\s*\\.\\s*setCurrentItem\\s*\\(.+\\)";
 	protected static final Pattern SET_CURRENT_ITEM_PATTERN = Pattern.compile( SET_CURRENT_ITEM_STR );
 	
 	protected static final String ALERT_CONSTRUCTOR = "new\\s+Alert\\s*\\(\\s*.+\\)" ;
@@ -348,7 +350,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				if (matcher.find()) {
 					String group = matcher.group();
 					//System.out.println("group = [" + group + "]");
-					int parenthesisPos = group.indexOf('(');
+					int parenthesisPos = group.indexOf('(', startPos );
 					String displayVar = group.substring(0, parenthesisPos);
 					int dotPos = displayVar.lastIndexOf('.');
 					displayVar = displayVar.substring( 0, dotPos ).trim();

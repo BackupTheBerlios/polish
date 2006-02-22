@@ -52,8 +52,14 @@ public class PolishPreprocessorTest extends TestCase {
 		String input = "		display.setCurrentItem( item );";
 		Matcher matcher = PolishPreprocessor.SET_CURRENT_ITEM_PATTERN.matcher( input ); 
 		assertTrue( matcher.find() );
+		//System.out.println( matcher.pattern().pattern() );
 		assertEquals( "display.setCurrentItem( item )", matcher.group() );
-		
+
+		input = "Display.getDisplay(midlet).setCurrentItem(m_txtMessage);";
+		matcher = PolishPreprocessor.SET_CURRENT_ITEM_PATTERN.matcher( input ); 
+		assertTrue( matcher.find() );
+		assertEquals( "Display.getDisplay(midlet).setCurrentItem(m_txtMessage)", matcher.group() );
+
 		input = "		this.display.setCurrentItem( this.item );";
 		matcher = PolishPreprocessor.SET_CURRENT_ITEM_PATTERN.matcher( input ); 
 		assertTrue( matcher.find() );
@@ -71,6 +77,7 @@ public class PolishPreprocessorTest extends TestCase {
 				"		this.display.setCurrentItem( this.item );",
 				"		display.setCurrentItem( item );",
 				"		display.setCurrentItem( getMyItem() );",
+				"        Display.getDisplay(midlet).setCurrentItem(m_txtMessage)",
 				"	}"
 		};
 		StringList list = new StringList( lines );
@@ -82,6 +89,7 @@ public class PolishPreprocessorTest extends TestCase {
 		assertEquals(  "		this.item.show( this.display );", lines[1] );
 		assertEquals(  "		item.show( display );", lines[2] );
 		assertEquals(  "		getMyItem().show( display );", lines[3] );
+		assertEquals( "        m_txtMessage.show( Display.getDisplay(midlet) )", lines[4] );
 	}
 	
 	
