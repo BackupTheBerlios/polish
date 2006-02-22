@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
-	<classpathentry output="bin/test" kind="src" path="source/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="/enough-polish-build"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/junit.jar"/>
