@@ -4440,6 +4440,18 @@
 	
 <!-- Research In Motion devices -->
 	<device>
+		<identifier>BlackBerry/8700</identifier>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="FullCanvasSize" value="320x240"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="BitsPerPixel" value="1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+	</device>
+
+	<device>
 		<identifier>BlackBerry/5810</identifier>
 		<capability name="ScreenSize" value="160x160"/>
 		<capability name="BitsPerPixel" value="1"/>

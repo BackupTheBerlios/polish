@@ -147,12 +147,33 @@
 		<name>PDA Optional Packages</name>
 		<description>The PDA Optional Packages API defines one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
-		<names>pdaapi, pda-api, pim-api, fileconnection-api, JSR-75, JSR75</names>
+		<features>pimapi,fileconnectionapi,fileconnection, pim</features>
+		<names>pdaapi, pda-api, JSR-75, JSR75</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
 		<path>import/pdaapi.jar</path>
 	</api>
 	
+	<api>
+		<name>PIM API</name>
+		<description>Package for Personal Information Management (PIM) access.
+		</description>
+		<names>pimapi, pim-api, pim</names>
+		<symbol>pimapi</symbol>
+		<files>j2me-pimapi.jar</files>
+		<path>import/pim.jar</path>
+	</api>
+
+	<api>
+		<name>FileConnection API</name>
+		<description>Package for accessing file systems through the Generic Connection Framework (GCF).
+		</description>
+		<names>fileconnectionapi, fileconnection-api, fcapi, fc-api, fileconnection</names>
+		<symbol>fileconnection</symbol>
+		<files>j2me-fileconnection.jar</files>
+		<path>import/fileconnection.jar</path>
+	</api>
+
 	<api>
 		<name>Motorola Lightweight Windowing Toolkit</name>
 		<description>
