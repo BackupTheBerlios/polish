@@ -1307,11 +1307,12 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		jarName = this.environment.getVariable( "polish.jarName" );
-		String jarPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jarName;
+		String destPath = this.buildSetting.getDestDir( this.environment ).getAbsolutePath() + File.separatorChar;
+		String jarPath = destPath + jarName;
 		this.environment.addVariable( "polish.jarPath", jarPath );
 		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
 		this.environment.addVariable( "polish.jadName", jadName );
-		String jadPath = this.buildSetting.getDestDir().getAbsolutePath() + File.separator + jadName;
+		String jadPath = destPath + jadName;
 		this.environment.addVariable( "polish.jadPath", jadPath );
 
 		// add info attributes:
@@ -2225,7 +2226,7 @@ public class PolishTask extends ConditionalTask {
 
 		// retrieve the name of the jar-file:
 		String jarName = this.environment.getVariable("polish.jarName");
-		File jarFile = new File( this.buildSetting.getDestDir().getAbsolutePath() 
+		File jarFile = new File( this.buildSetting.getDestDir( this.environment ).getAbsolutePath() 
 						+ File.separatorChar + jarName );
 		device.setJarFile( jarFile );
 		String test = this.polishProject.getCapability("polish.license");

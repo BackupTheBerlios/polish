@@ -80,7 +80,7 @@ public class BuildSetting {
 	private boolean doObfuscate;
 	private File workDir;
 	private File apiDir;
-	private File destDir;
+	private String destPath;
 	private File resDir;
 	private String symbols;
 	private String imageLoadStrategy;
@@ -160,7 +160,7 @@ public class BuildSetting {
 		this.antProject = antProject;
 		this.antPropertiesEvaluator = antEvaluator;
 		this.workDir = new File( this.projectBasePath + "build");
-		this.destDir = new File( this.projectBasePath + "dist");
+		this.destPath ="dist";
 		this.apiDir = getFile("import");
 		this.resDir = getFile ("resources");
 		this.sourceSettings = new ArrayList();
@@ -536,22 +536,27 @@ public class BuildSetting {
 	 * 
 	 * @return The destination directory.
 	 */
-	public File getDestDir() {
-		if (! this.destDir.exists()) {
-			this.destDir.mkdirs();
+	public File getDestDir( Environment env ) {
+		String path = env.writeProperties( this.destPath, true );
+		File dir = new File( path );
+		if ( !dir.isAbsolute() ) {
+			dir = new File( this.projectBaseDir, path );
 		}
-		return this.destDir;
+		if (! dir.exists()) {
+			dir.mkdirs();
+		}
+		return dir;
 	}
 	
 	
 	/**
 	 * Sets the destination directory. Defaults to "./dist".
 	 * 
-	 * @param destDir The destination directory.
+	 * @param destPath The destination directory, can contain J2ME Polish variables such as ${polish.vendor} or ${polish.locale}.
 	 */
-	public void setDestDir( File destDir ) {
+	public void setDestDir( String destPath ) {
 		//File newDestDir = getFile( destPath );
-		this.destDir = destDir;
+		this.destPath = destPath;
 	}
 	
 	/**

@@ -56,8 +56,9 @@
 		<capability name="Emulator.Skin.2" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x128_MIDP_Emulator" />
 		<!-- repeat first skin, so that devices can set the primary skin without
 		     loosing the normal emulator skin -->
-		<capability name="Emulator.Skin.3" value="Nokia_S40_DP20_SDK_1_1" />
-		<capability name="Emulator.Skin.4" value="Nokia_S40_DP20_SDK_1_0" />
+		<capability name="Emulator.Skin.3" value="\Devices\S40_SDK_3rd_Edition" />
+		<capability name="Emulator.Skin.4" value="Nokia_S40_DP20_SDK_1_1" />
+		<capability name="Emulator.Skin.5" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
