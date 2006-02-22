@@ -2393,7 +2393,7 @@
 	</device>
 	
 	<device>
-		<identifier>Nokia/6611</identifier>
+		<identifier>Nokia/6111</identifier>
 		<groups>Series40DP3</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS" />
@@ -5643,8 +5643,8 @@
 		<capability name="MaxPngSize" value="20 kb" />
 		<capability name="MaxJpegSize" value="20 kb" />
 		<capability name="MaxSmafSize" value="dynamic" />
-		<capability name="key.LeftSoftKey" value="21" />
-		<capability name="key.RightSoftKey" value="22" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="Bugs" value="needsGCinPaint" />
 	</device>	
 	
@@ -5670,6 +5670,28 @@
 		<capability name="DRM" value="Forward Lock" />
 		<capability name="key.LeftSoftKey" value="21" />
 		<capability name="key.RightSoftKey" value="22" />
+		<capability name="Bugs" value="needsGCinPaint" />
+	</device>	
+	
+	<device>
+		<identifier>Sharp/GX25</identifier>
+		<capability name="ScreenSize" value="120x160"/>
+		<capability name="CanvasSize" value="120x130"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="HeapSize" value="512 kb" />
+		<capability name="MaxJarSize" value="80 kb" />
+		<capability name="StorageSize" value="500 kb" />
+		<capability name="MaxRecordStoreSize" value="50 kb" />
+		<capability name="MaxApplicationQuantity" value="51" />
+		<capability name="ImageFormat" value="jpg, png" />
+		<capability name="SoundFormat" value="smaf, eva" />
+		<capability name="MaxPngSize" value="20 kb" />
+		<capability name="MaxJpegSize" value="20 kb" />
+		<capability name="MaxSmafSize" value="dynamic" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="Bugs" value="needsGCinPaint" />
 	</device>	
 
