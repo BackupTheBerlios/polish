@@ -3,6 +3,7 @@ package javax.microedition.lcdui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import de.enough.polish.runtime.ImageListener;
 import de.enough.polish.runtime.Simulation;
@@ -1533,7 +1534,10 @@ public class Graphics extends Object
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
 	{
-		//TODO implement drawRGB
+		int type = processAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+		BufferedImage image = new BufferedImage( width, height, type );
+		image.setRGB(0, 0, width, height, rgbData, offset, scanlength );
+		this.g.drawImage( image, x, y, width, height, null );
 	}
 
 	/**

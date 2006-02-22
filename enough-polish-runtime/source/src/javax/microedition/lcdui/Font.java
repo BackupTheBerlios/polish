@@ -221,27 +221,32 @@ public final class Font extends Object
 				styleStr = "PLAIN";
 		}
 		Simulation simulation = Simulation.getCurrentSimulation();
+//		if (simulation != null) {
+//			System.out.println("Font-small: " + simulation.getFontSizeSmall());
+//			System.out.println("Font-medium: " + simulation.getFontSizeMedium());
+//			System.out.println("Font-large: " + simulation.getFontSizeLarge());
+//		}
 		String sizeStr;
 		switch (size) {
 			case SIZE_SMALL:
 				if (simulation == null) {
 					sizeStr = "14";
 				} else {
-					sizeStr = "" + simulation.getFontSizeSmall();
+					sizeStr = "" + (simulation.getFontSizeSmall() - 2); // adjust size to compensate for bulky Arial font
 				}
 				break;
 			case SIZE_LARGE:
 				if (simulation == null) {
 					sizeStr = "19";
 				} else {
-					sizeStr  = "" + simulation.getFontSizeLarge();
+					sizeStr  = "" + (simulation.getFontSizeLarge() - 2);
 				}
 				break;
 			default:
 				if (simulation == null) {
 					sizeStr = "15";
 				} else {
-					sizeStr = "" + simulation.getFontSizeMedium();
+					sizeStr = "" + (simulation.getFontSizeMedium() - 2);
 				}
 		}
 		this.awtFont = java.awt.Font.decode( faceStr + "-" + styleStr + "-" + sizeStr );
@@ -492,12 +497,12 @@ public final class Font extends Object
 	 * integer such that <code>(offset + len) &lt;= str.length()</code>.
 	 * </p>
 	 * 
-	 * @param str - the String to be measured
-	 * @param offset - zero-based index of first character in the substring
-	 * @param len - length of the substring
+	 * @param str the String to be measured
+	 * @param offset zero-based index of first character in the substring
+	 * @param len length of the substring
 	 * @return the total advance width
-	 * @throws StringIndexOutOfBoundsException - if offset and length specify an invalid range
-	 * @throws NullPointerException - if str is null
+	 * @throws StringIndexOutOfBoundsException if offset and length specify an invalid range
+	 * @throws NullPointerException if str is null
 	 */
 	public int substringWidth( String str, int offset, int len)
 	{
@@ -505,7 +510,7 @@ public final class Font extends Object
 	}
 
 	/**
-	 * @return
+	 * @return the base AWT font
 	 */
 	public java.awt.Font _getAwtFont() {
 		return this.awtFont;

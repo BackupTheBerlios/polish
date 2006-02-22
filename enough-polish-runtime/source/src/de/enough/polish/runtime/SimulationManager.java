@@ -97,9 +97,9 @@ public class SimulationManager {
 		CapabilityManager capabilityManager = new CapabilityManager( null, open("capabilities.xml"));
 		ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
 		PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
-		VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager);
-		LibraryManager libraryManager = new LibraryManager(configurationSettings, new File( "import" ), wtkHome, open( "apis.xml" ) );
 		DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml"), capabilityManager ); 
+		VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager, groupManager );
+		LibraryManager libraryManager = new LibraryManager(configurationSettings, new File( "import" ), wtkHome, open( "apis.xml" ) );
 		this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, open("devices.xml") );
 		this.devices = this.deviceManager.getDevices();
 	}

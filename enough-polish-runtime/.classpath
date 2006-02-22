@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="/enough-polish-build/import/junit.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/jdom.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/ant.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/btapi.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

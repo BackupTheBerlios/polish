@@ -116,8 +116,16 @@ implements DisplayChangeListener
 			return;
 		}
 		Map configuration = new HashMap();
-		configuration.put("wtk.home", "/home/enough/dev/WTK2.2");
-		configuration.put("polish.home", "/home/enough/J2ME-Polish");
+		String wtkHome = System.getProperty("wtk.home");
+		if (wtkHome == null) {
+			wtkHome = "/home/enough/dev/WTK2.2";
+		}
+		configuration.put("wtk.home",  wtkHome );
+		String polishHome = System.getProperty("polish.home");
+		if (polishHome == null) {
+			polishHome = "/home/enough/J2ME-Polish";
+		}
+		configuration.put("polish.home", polishHome );
 		SwingSimulator simulator = new SwingSimulator( configuration, true );
 		simulator.setVisible(true);
 	}

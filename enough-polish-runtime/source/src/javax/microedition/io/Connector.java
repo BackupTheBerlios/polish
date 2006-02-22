@@ -203,8 +203,12 @@ public class Connector extends Object
 	 * @throws IOException - If some other kind of I/O error occurs.
 	 */
 	public static DataInputStream openDataInputStream(String name) throws IOException{
-        HttpConnection connection = (HttpConnection)open(name);
-        return connection.openDataInputStream();
+		if (name.startsWith("http://")) {
+	        HttpConnection connection = (HttpConnection)open(name);
+	        return connection.openDataInputStream();			
+		} else {
+			throw new ConnectionNotFoundException("Connection not found: " + name );
+		}
 	}
 
 	/**

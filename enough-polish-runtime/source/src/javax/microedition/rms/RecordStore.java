@@ -685,14 +685,14 @@ public class RecordStore extends Object
 	 * @throws RecordStoreException - if a general record store exception occurs
 	 * @throws RecordStoreFullException - if the operation cannot be completed because the record store has no more room
 	 * @throws SecurityException - if the MIDlet has read-only access to the RecordStore
-	 * @see getRecord(int, byte[], int)
+	 * @see #getRecord(int, byte[], int)
 	 */
 	public void setRecord(int recordId, byte[] newData, int offset, int numBytes) throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException, RecordStoreFullException
 	{
 		if (this.isClosed) {
 			throw new RecordStoreNotOpenException();
 		}
-		File file = new File( this.dir, "" + this.nextRecordID );
+		File file = new File( this.dir, "" + recordId );
 		try {
 			FileOutputStream out = new FileOutputStream( file );
 			out.write(newData, offset, numBytes );
@@ -745,8 +745,11 @@ public class RecordStore extends Object
 	 */
 	public RecordEnumeration enumerateRecords( RecordFilter filter, RecordComparator comparator, boolean keepUpdated) throws RecordStoreNotOpenException
 	{
-		return null;
-		//TODO implement enumerateRecords
+		return new RecordEnumerationImpl( this , filter, comparator, keepUpdated );
+	}
+	
+	protected File getDir() {
+		return this.dir;
 	}
 
 }

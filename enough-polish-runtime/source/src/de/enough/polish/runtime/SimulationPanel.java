@@ -185,7 +185,7 @@ implements ActionListener
 			try {
 				this.control = new ConfiguredControl( sim, "/resources/" + this.controlName + ".ctrl");
 				//System.out.println("read control successfully");
-			} catch (IOException e) {
+			} catch (Exception e) {
 				this.control = new DefaultControl( sim );
 				e.printStackTrace();
 			}
