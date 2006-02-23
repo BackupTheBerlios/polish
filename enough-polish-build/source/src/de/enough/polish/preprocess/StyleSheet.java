@@ -93,6 +93,7 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("messagetext", Boolean.TRUE );
 		PSEUDO_CLASSES.put("alert", Boolean.TRUE );
 		PSEUDO_CLASSES.put("alertcontent", Boolean.TRUE );
+		PSEUDO_CLASSES.put("scrollbar", Boolean.TRUE );
 	}
 	private final static CssBlock DEFAULT_STYLE = new CssBlock( 
 			"default {"

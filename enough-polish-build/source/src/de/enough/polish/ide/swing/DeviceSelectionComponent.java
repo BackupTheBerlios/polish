@@ -70,7 +70,7 @@ import de.enough.polish.swing.CheckBoxList;
  */
 public class DeviceSelectionComponent 
 extends JPanel 
-implements DocumentListener, PolishComponentSelectionListener 
+implements DocumentListener, PolishComponentSelectionListener, DeviceSelector 
 {
 	
 	private static final long serialVersionUID = 3962911176522710954L;
@@ -270,14 +270,23 @@ implements DocumentListener, PolishComponentSelectionListener
     	
     }
 
+    /* (non-Javadoc)
+	 * @see de.enough.polish.ide.swing.DeviceSelector#getSelectedDeviceIdentifiers()
+	 */
     public String[] getSelectedDeviceIdentifiers(){
     	return this.deviceTree.getSelectedDeviceIdentifiers();
     }
 
+    /* (non-Javadoc)
+	 * @see de.enough.polish.ide.swing.DeviceSelector#getSelectedDeviceProperties()
+	 */
     public Map getSelectedDeviceProperties(){
     	return this.deviceTree.getSelectedDeviceProperties();
     }
 
+    /* (non-Javadoc)
+	 * @see de.enough.polish.ide.swing.DeviceSelector#getSelectedDeviceClassPaths()
+	 */
     public String[] getSelectedDeviceClassPaths(){
     	return this.deviceTree.getSelectedDeviceClassPaths();
     }

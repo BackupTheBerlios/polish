@@ -230,9 +230,11 @@ public class ResourceManager {
 		// creating resource copier:
 		ResourceCopierSetting[] copierSettings = this.resourceSetting.getCopiers( this.environment.getBooleanEvaluator() );
 		if (copierSettings == null || copierSettings.length == 0 ) {
+			// use default resource copier:
 			ResourceCopier resourceCopier = ResourceCopier.getInstance( null, this.extensionManager, this.environment );
 			resourceCopier.copyResources(device, locale, resources, targetDir);
 		} else {
+			// copy resources using user- or device-defined resource copiers:
 			for (int i = 0; i < copierSettings.length; i++) {
 				ResourceCopierSetting setting = copierSettings[i];
 				ResourceCopier resourceCopier = ResourceCopier.getInstance( setting, this.extensionManager, this.environment );

@@ -1141,5 +1141,69 @@
 		default="menubar"
 		id="117"
 	/>
+	
+	<attribute
+		name="scrollbar-position"
+		type="integer"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="You can specify the position of the scrollbar on the screen after activating it with polish.useScrollBar."
+		default="right"
+		values="right, left"
+		id="118"
+	/>
+	
+	<attribute
+		name="scrollbar-slider-width"
+		type="integer"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="The width of the slider in pixels, is ignored when a slider-image is defined."
+		default="2"
+		id="119"
+	/>
+	
+	<attribute
+		name="scrollbar-slider-color"
+		type="color"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="The color of the slider, is ignored when a slider-image is defined."
+		default="black"
+		id="120"
+	/>
+	
+	<attribute
+		name="scrollbar-slider-image"
+		type="imageurl"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="The URL of image used for the slider."
+		id="121"
+	/>
+	
+	<attribute
+		name="scrollbar-slider-image-repeat"
+		type="boolean"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; is given, the slider image is repeated vertically, if necessary."
+		default="false"
+		id="122"
+	/>
+
+	<attribute
+		name="scrollbar-slider-mode"
+		type="integer"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="The mode of the slider, either &quot;pixel&quot; or &quot;item&quot;. In the &quot;pixel&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of currently selected item is taken into account relative to the number of items. The default mode is &quot;pixel&quot;."
+		default="pixel"
+		values="pixel, item"
+		id="123"
+	/>
+	
+	<attribute
+		name="scrollbar-style"
+		type="style"
+		appliesTo="Screen, Form, List, TextBox"
+		description="The name of the style for the scrollbar of the corresponding Screen."
+		default="scrollbar"
+		id="124"
+	/>
 
 </attributes>

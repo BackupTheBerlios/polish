@@ -79,7 +79,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	protected static final Pattern SET_CURRENT_ITEM_PATTERN = Pattern.compile( SET_CURRENT_ITEM_STR );
 	
 	protected static final String ALERT_CONSTRUCTOR = "new\\s+Alert\\s*\\(\\s*.+\\)" ;
-	protected static final String SET_CURRENT_ALERT_DISPLAYABLE_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrent\\s*\\(\\s*[\\w*|\\.]+\\s*,\\s*[\\w*|\\.]+\\s*\\)";
+	protected static final String SET_CURRENT_ALERT_DISPLAYABLE_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrent\\s*\\(\\s*[\\w*|\\.|\\_|\\(|\\)]+\\s*,\\s*[\\w*|\\.|\\_|\\(|\\)]+\\s*\\)";
 	protected static final Pattern SET_CURRENT_ALERT_DISPLAYABLE_PATTERN = Pattern.compile( SET_CURRENT_ALERT_DISPLAYABLE_STR );
 	
 	private CssAttributesManager cssAttributesManager;

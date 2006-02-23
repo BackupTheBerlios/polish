@@ -734,21 +734,21 @@ implements Comparator
 			System.out.println("Warning: the locale [" + this.locale + "] does not support decimal symbols: " + e.toString() );
 		}
 		if (isFinal) {
-			code.insert( "\tpublic static final char MINUS_SIGN = '" + minusSign + "';");
-			code.insert( "\tpublic static final char ZERO_DIGIT = '" + zeroDigit + "';");
-			code.insert( "\tpublic static final char DECIMAL_SEPARATOR = '" + decimalSeparator + "';");
-			code.insert( "\tpublic static final char MONETARY_DECIMAL_SEPARATOR = '" + monetaryDecimalSeparator + "';");
-			code.insert( "\tpublic static final char GROUPING_SEPARATOR = '" + groupingSeparator + "';");
-			code.insert( "\tpublic static final char PERCENT = '" + percent + "';");
-			code.insert( "\tpublic static final char PERMILL = '" + permill + "';");
-			code.insert( "\tpublic static final String INFINITY = \"" + infinity + "\";");
+			code.insert( "\tpublic static final char MINUS_SIGN = '" + toSourceCode( minusSign ) + "';");
+			code.insert( "\tpublic static final char ZERO_DIGIT = '" + toSourceCode( zeroDigit ) + "';");
+			code.insert( "\tpublic static final char DECIMAL_SEPARATOR = '" + toSourceCode( decimalSeparator ) + "';");
+			code.insert( "\tpublic static final char MONETARY_DECIMAL_SEPARATOR = '" + toSourceCode( monetaryDecimalSeparator ) + "';");
+			code.insert( "\tpublic static final char GROUPING_SEPARATOR = '" + toSourceCode( groupingSeparator ) + "';");
+			code.insert( "\tpublic static final char PERCENT = '" + toSourceCode( percent ) + "';");
+			code.insert( "\tpublic static final char PERMILL = '" + toSourceCode( permill ) + "';");
+			code.insert( "\tpublic static final String INFINITY = \"" + toSourceCode( infinity ) + "\";");
 			if (country.length() > 0) {
 				code.insert( "\tpublic static final String COUNTRY = \"" + this.locale.getCountry() + "\";");
 				code.insert( "\tpublic static final String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
 				Currency currency = format.getCurrency();
 				String currencySymbol = currency.getSymbol(this.locale);
 				String currencyCode = currency.getCurrencyCode();
-				code.insert( "\tpublic static final String CURRENCY_SYMBOL = \"" + currencySymbol + "\";");
+				code.insert( "\tpublic static final String CURRENCY_SYMBOL = \"" + toSourceCode( currencySymbol ) + "\";");
 				code.insert( "\tpublic static final String CURRENCY_CODE = \"" + currencyCode + "\";");
 			} else {
 				// no country is defined:
@@ -758,21 +758,21 @@ implements Comparator
 				code.insert( "\tpublic static final String CURRENCY_CODE = null;");
 			}
 		} else {
-			code.insert( "\tpublic static char MINUS_SIGN = '" + minusSign + "';");
-			code.insert( "\tpublic static char ZERO_DIGIT = '" + zeroDigit + "';");
-			code.insert( "\tpublic static char DECIMAL_SEPARATOR = '" + decimalSeparator + "';");
-			code.insert( "\tpublic static char MONETARY_DECIMAL_SEPARATOR = '" + monetaryDecimalSeparator + "';");
-			code.insert( "\tpublic static char GROUPING_SEPARATOR = '" + groupingSeparator + "';");
-			code.insert( "\tpublic static char PERCENT = '" + percent + "';");
-			code.insert( "\tpublic static char PERMILL = '" + permill + "';");
-			code.insert( "\tpublic static String INFINITY = \"" + infinity + "\";");
+			code.insert( "\tpublic static char MINUS_SIGN = '" + toSourceCode( minusSign ) + "';");
+			code.insert( "\tpublic static char ZERO_DIGIT = '" + toSourceCode( zeroDigit ) + "';");
+			code.insert( "\tpublic static char DECIMAL_SEPARATOR = '" + toSourceCode( decimalSeparator ) + "';");
+			code.insert( "\tpublic static char MONETARY_DECIMAL_SEPARATOR = '" + toSourceCode( monetaryDecimalSeparator ) + "';");
+			code.insert( "\tpublic static char GROUPING_SEPARATOR = '" + toSourceCode( groupingSeparator ) + "';");
+			code.insert( "\tpublic static char PERCENT = '" + toSourceCode( percent ) + "';");
+			code.insert( "\tpublic static char PERMILL = '" + toSourceCode( permill ) + "';");
+			code.insert( "\tpublic static String INFINITY = \"" + toSourceCode( infinity ) + "\";");
 			if (country.length() > 0) {
 				code.insert( "\tpublic static String COUNTRY = \"" + this.locale.getCountry() + "\";");
 				code.insert( "\tpublic static String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
 				Currency currency = format.getCurrency();
 				String currencySymbol = currency.getSymbol(this.locale);
 				String currencyCode = currency.getCurrencyCode();
-				code.insert( "\tpublic static String CURRENCY_SYMBOL = \"" + currencySymbol + "\";");
+				code.insert( "\tpublic static String CURRENCY_SYMBOL = \"" + toSourceCode( currencySymbol ) + "\";");
 				code.insert( "\tpublic static String CURRENCY_CODE = \"" + currencyCode + "\";");
 			} else {
 				// no country is defined:
@@ -784,6 +784,31 @@ implements Comparator
 		}
 	}
 	
+	private String toSourceCode(String s) {
+		StringBuffer buffer = new StringBuffer( s.length() << 1 );
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			appendSourceCode(buffer, c);
+		}
+		return buffer.toString();
+	}
+
+	private String toSourceCode(char c) {
+		StringBuffer buffer = new StringBuffer( 2 );
+		appendSourceCode( buffer, c );
+		return buffer.toString();
+	}
+
+	private void appendSourceCode(StringBuffer buffer, char c) {
+		if (c == '\'') {
+			buffer.append( "\\'");
+		} else if (c == '\\') {
+			buffer.append( "\\\\");
+		} else {
+			buffer.append( c );
+		}
+	}
+
 	/**
 	 * Determines whether dynamic translations should be used.
 	 * Such translations can be changed during runtime.
