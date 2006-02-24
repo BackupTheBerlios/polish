@@ -767,7 +767,11 @@ public class Form extends Screen
 			if (this.stateNotifyQueue == null) {
 				this.stateNotifyQueue = new ArrayList();
 			}
-			this.stateNotifyQueue.add( item );
+			synchronized (this.stateNotifyQueue) {
+				this.stateNotifyQueue.add( item );
+			}
+			//#debug
+			System.out.println("added item " + item + " to stateNotifyQueue with listener " + this.itemStateListener + ", size of queue=" + this.stateNotifyQueue.size() + " to form " + this  );
 		}
 	}
 	
@@ -776,22 +780,36 @@ public class Form extends Screen
 	 */
 	protected void notifyStateListener() {
 		if (this.stateNotifyQueue != null && this.itemStateListener != null) {
+			Item lastItem = null;
 			while (this.stateNotifyQueue.size() > 0) {
-				Item item = (Item) this.stateNotifyQueue.remove(0);
-				this.itemStateListener.itemStateChanged(item);
+				Item item;
+				synchronized (this.stateNotifyQueue) {
+					item = (Item) this.stateNotifyQueue.remove(0);
+				}
+				if (item != lastItem) {
+					//#debug
+					System.out.println("notifying ItemStateListener for item " + item + " and form " + this ); 
+					this.itemStateListener.itemStateChanged(item);
+					lastItem = item;
+				}
 			}
+			//#debug
+			System.out.println("done notifying ItemStateListener."); 
 		}
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#animate()
 	 */
 	public boolean animate() {
+		boolean animated = false;
 		if ( (this.itemStateListener != null) 
 				&& (this.stateNotifyQueue != null) 
 				&& (this.stateNotifyQueue.size() > 0 ) ) {
 			notifyStateListener();
+			animated = true;
 		}
-		return super.animate();
+		return animated | super.animate();
 	}
 }

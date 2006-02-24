@@ -533,6 +533,7 @@ public class MenuBar extends Item {
 			this.isSoftKeyPressed = true;
 			if (this.isOpened) {
 				Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
+				setOpen( false );
 				//#if tmp.useInvisibleMenuBar
 					if (command != this.cancelCommand ) {
 						this.screen.callCommandListener(command);
@@ -540,7 +541,6 @@ public class MenuBar extends Item {
 				//#else
 					this.screen.callCommandListener(command);
 				//#endif
-				setOpen( false );
 				return true;
 			} else if (this.singleLeftCommand != null) {
 				this.screen.callCommandListener(this.singleLeftCommand);
@@ -565,8 +565,8 @@ public class MenuBar extends Item {
 			if (gameAction == Canvas.FIRE) {
 				int focusedIndex = this.commandsContainer.focusedIndex;
 				Command command = (Command) this.commandsList.get(focusedIndex);
-				this.screen.callCommandListener(command);
 				setOpen( false );
+				this.screen.callCommandListener(command);
 				return true;
 			}
 			boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
@@ -589,9 +589,9 @@ public class MenuBar extends Item {
 			if (this.isOpened) {
 				if ( x < leftCommandEndX ) {
 					//System.out.println("selecting command from opened menu");
+					setOpen( false );
 					Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
 					this.screen.callCommandListener(command);
-					setOpen( false );
 				} else if ( x > rightCommandStartX ) {
 					//System.out.println("closing menu");
 					setOpen( false );

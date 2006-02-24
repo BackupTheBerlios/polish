@@ -462,16 +462,18 @@ public class Container extends Item {
 				this.internalX =  item.contentX - this.contentX + item.internalX;
 				this.internalWidth = item.internalWidth;
 				this.internalY = item.contentY - this.contentY + item.internalY;
-				// #debug
-				//System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY);
+				this.internalHeight = item.internalHeight;
+				//#debug
+				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
 				this.internalHeight = item.internalHeight;
 			} else {
 				this.internalX = item.xLeftPos - this.contentX;
 				this.internalWidth = item.itemWidth;
-				this.internalY = item.yTopPos - this.contentY;
-				// #debug
-				//System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY );
+				this.internalY = (item.yTopPos - this.yOffset) - this.contentY;
 				this.internalHeight = item.itemHeight;
+				//#debug
+				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
+				
 			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
@@ -655,6 +657,14 @@ public class Container extends Item {
 				this.contentWidth = this.view.contentWidth;
 				this.contentHeight = this.view.contentHeight;
 				this.appearanceMode = this.view.appearanceMode;
+				//#todo remove workaround for container
+				//TODO remove workaround for container
+				if (this.focusedIndex == 0 && this.focusedItem != null) {
+					this.internalX = 0;
+					this.internalY = 0;
+					this.internalWidth = this.focusedItem.itemWidth;
+					this.internalHeight = this.focusedItem.itemHeight;
+				}
 				return;
 			}
 		//#endif

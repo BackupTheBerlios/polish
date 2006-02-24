@@ -105,6 +105,7 @@ public class AnimationThread extends Thread
 				Screen screen = StyleSheet.currentScreen;
 				if (screen != null ) {
 					if (screen.animate()) {
+						//System.out.println("AnimationThread: screen needs repainting");
 						//#if polish.Bugs.displaySetCurrentFlickers
 							if ( MasterCanvas.instance != null ) {
 								MasterCanvas.instance.repaint();
@@ -127,9 +128,10 @@ public class AnimationThread extends Thread
 				}
 			} catch (InterruptedException e) {
 				// ignore
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				//#debug error
 				System.out.println("unable to animate screen" + e );
+				e.printStackTrace();
 			}
 		}
 	}

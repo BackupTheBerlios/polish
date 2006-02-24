@@ -40,10 +40,33 @@ import javax.microedition.lcdui.Image;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
+ 
+ /*
+ * Last modified on 25.01.2006 by Radu Zah, Butterfly-effected, raduzah@yahoo.com.
+ * 
+ * Problem 1 description: a text that needed more than 20 lines caused an ArrayIndexOutOfBounds exception.
+ * Reason: The lineWidths array had an hardcoded size of 20 elements.
+ * Resolution: Added a method that increases the length of the array by creating a new array with the size of 
+ *	the old array + a grow factor and copies the element to the new array. (See increaseShortArraySize(short src[], byte growFactor))
+ *
+ * Problem 2 description: the RIGHT and HCENTER orientation didn't work correctly, this was more obvious on the RIGHT orientation where 
+ *	the text wasn't aligned on the right.
+ * Reason: on the layout method, the line widths weren't computed correctly (this is why the LEFT orientation didn't have this problem, 
+ * because it doesn't use the lineWidths). The space width wasn't substracted from the current line width even if it was changed to a 
+ * line break and thus it is not displayed.
+ * Resolution: substracted the space width from the current line width when a line break was included. Instead of line 
+ *	<i>currentLineWidth -= lastSpaceWidth;</i> I used <i>currentLineWidth -= (lastSpaceWidth + this.actualCharacterWidths[ this.spaceIndex ]);</i>.
+ *
+ * I added a new method that returns a copy of the usedCharactersWidths array to have a more closer look on how the String 
+ *	is actually displayed. because of this I made the ABSOLUTE_LINE_BREAK and ARTIFICAL_LINE_BREAK constants public.
+ *
+ * Also, I removed the private final short[] originalLineIndeces data member because was never used inside the class and it couldn't been
+ * used from outside since it was private.
+ */
 public class BitMapFontViewer {
 
-	protected final static byte ABSOLUTE_LINE_BREAK = -2;
-	protected final static byte  ARTIFICAL_LINE_BREAK = -3;
+	public final static byte	ABSOLUTE_LINE_BREAK = -2;
+	public final static byte	ARTIFICAL_LINE_BREAK = -3;
 	private final Image image;
 	private final short[] xPositions;
 	private final byte[] usedCharactersWidths;
@@ -56,7 +79,6 @@ public class BitMapFontViewer {
 	private short[] lineWidths;
 	private final int[] indeces;
 	private final byte[] actualCharacterWidths;
-	private final short[] originalLineIndeces;
 	private int orientation;
 
 	/**
@@ -77,7 +99,6 @@ public class BitMapFontViewer {
 		this.actualCharacterWidths = characterWidths;
 		this.spaceIndex = spaceIndex;
 		this.lineWidths = new short[ 20 ];
-		this.originalLineIndeces = new short[ 20 ]; 
 		this.verticalPadding = verticalPadding;
 		this.xPositions = new short[ indeces.length ];
 		this.usedCharactersWidths = new byte[ indeces.length ];
@@ -94,12 +115,13 @@ public class BitMapFontViewer {
 				if (currentLineWidth > maxLineWidth) {
 					maxLineWidth = currentLineWidth;
 				}
-				this.originalLineIndeces[ linesIndex ] = (short) i;
 				this.lineWidths[ linesIndex ] = currentLineWidth;
 				currentLineWidth = 0;
 				// mark the character as absolute line-break:
 				this.usedCharactersWidths[i] = ABSOLUTE_LINE_BREAK;
 				linesIndex++;
+				//now check not to exceed the lineWidths array limit //use a grow factor of 10
+				if (linesIndex >= this.lineWidths.length) this.lineWidths = increaseShortArraySize(this.lineWidths, (byte)10);
 			} else {
 				// this is a normal character
 				this.xPositions[i] = xPositions[ index ];
@@ -229,6 +251,8 @@ public class BitMapFontViewer {
 				}
 				lineStartIndex = (i + 1);
 				lineIndex++;
+				//now check not to exceed the lineWidths array limit //use a grow factor of 10
+				if (lineIndex >= this.lineWidths.length) this.lineWidths = increaseShortArraySize(this.lineWidths, (byte)10);
 				currentLineWidth = 0;
 				continue;
 			} 
@@ -249,8 +273,10 @@ public class BitMapFontViewer {
 					if (lastSpaceWidth > maxLineWidth) {
 						maxLineWidth = (short) lastSpaceWidth;
 					}
-					currentLineWidth -= lastSpaceWidth;
+					currentLineWidth -= (lastSpaceWidth + this.actualCharacterWidths[ this.spaceIndex ]);
 					lineIndex++;
+					//now check not to exceed the lineWidths array limit //use a grow factor of 10
+					if (lineIndex >= this.lineWidths.length) this.lineWidths = increaseShortArraySize(this.lineWidths, (byte)10);
 				// } else {
 					// System.out.println("Unable to break line without any prior space");
 				}
@@ -284,5 +310,32 @@ public class BitMapFontViewer {
 	public int getNumberOfLines() {
 		return this.numberOfLines;
 	}
+	
+	/**
+	 * Increases the size of o short array with a given grow factor. It creates a new array with the size 
+	 * src.length + growFactor and copies the elements of src array into the new array.
+	 * 
+	 * @param src the array that needs a larger size.
+	 * @param growFactor the grow factor.
+	 * @return the increased array.
+	 */
+	private short[] increaseShortArraySize(short src[], byte growFactor)
+	{
+		short dest[] = new short[src.length + growFactor];
+		System.arraycopy(src, 0, dest, 0, src.length);
+		return dest;
+	}
 
+	/**
+	 *	Returns the used character widths. This is usefull to have information about the actual 
+	 *	position of each character. You can modify the array because only a copy is returned.
+	 *
+	 * @return a copy of the internal byte array representing the widths of the included characters
+	 */
+	public byte[] getUsedCharactersWidths()
+	{
+		byte ret[] = new byte[this.usedCharactersWidths.length];
+		System.arraycopy(this.usedCharactersWidths, 0, ret, 0, ret.length);
+		return ret;
+	}
 }

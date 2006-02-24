@@ -306,7 +306,7 @@ public class ContainerView {
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 					columnIndex = 0;
 					//#if polish.css.colspan
-						//System.out.println("ContainerView.init(): adding new row " + rowIndex + " at item " + i);
+						//System.out.println("ContainerView.init(): adding new row " + rowIndex + " with height " + maxRowHeight + ", contentHeight=" + myContentHeight + ", item " + i);
 						rowHeightsList.add( new Integer( maxRowHeight ) );
 					//#else
 						this.rowsHeights[rowIndex] = maxRowHeight;						
@@ -325,6 +325,7 @@ public class ContainerView {
 				if (columnIndex != 0) {
 					// last row is not completely filled.
 					rowHeightsList.add( new Integer( maxRowHeight ) );
+					myContentHeight += maxRowHeight;
 				}
 				this.numberOfRows = rowHeightsList.size();
 				//System.out.println("ContainerView.init(): numberOfRows=" + this.numberOfRows + ", rowIndex=" + rowIndex);

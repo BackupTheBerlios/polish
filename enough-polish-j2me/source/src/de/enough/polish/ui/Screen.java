@@ -103,10 +103,11 @@ public abstract class Screen
 implements AccessibleCanvas
 {
 	private final static int POSITION_TOP = 0;
+	private final static int POSITION_LEFT = 1;
 	
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
-		protected StringItem title;
+		protected Item title;
 		//#ifdef polish.css.title-style
 			private Style titleStyle;
 		//#endif
@@ -152,6 +153,19 @@ implements AccessibleCanvas
 			//#define tmp.paintPositionAtBottom
 		//#endif
 	//#endif
+	//#if polish.useScrollBar || polish.classes.ScrollBar:defined
+		//#define tmp.useScrollBar
+		//#if polish.classes.ScrollBar:defined
+			//#style scrollbar?
+			//#= protected final ${polish.classes.ScrollBar} scrollBar = new ${polish.classes.ScrollBar}();
+		//#else
+			//#style scrollbar?
+			protected final ScrollBar scrollBar = new ScrollBar();
+		//#endif
+		//#if polish.css.scrollbar-position
+			protected boolean paintScrollBarOnRightSide = true;
+		//#endif
+	//#endif
 	protected String cssSelector;
 	private ForwardCommandListener cmdListener;
 	protected Container container;
@@ -175,7 +189,7 @@ implements AccessibleCanvas
 		//#if polish.Screen.FireTriggersOkCommand
 			private Command okCommand;
 		//#endif
-		//#if polish.MenuBar.useExtendedMenuBar ||�polish.classes.MenuBar:defined
+		//#if polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined
 			//#if polish.classes.MenuBar:defined
 				//#= private final ${polish.classes.MenuBar} menuBar;
 			//#else
@@ -463,6 +477,16 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("setContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
 		
+		//#if tmp.useScrollBar
+			if ( this.container != null ) {
+				this.scrollBar.scrollBarHeight = height;
+				int scrollBarWidth = this.scrollBar.getItemWidth(width, width);
+				int containerHeight = this.container.getItemHeight(width - scrollBarWidth, width - scrollBarWidth);
+				if (containerHeight > height) {
+					width -= scrollBarWidth;
+				}
+			}
+		//#endif
 		x += this.marginLeft;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
@@ -771,7 +795,23 @@ implements AccessibleCanvas
 			}
 			
 		//#endif
-		
+		//#if tmp.useScrollBar && polish.css.scrollbar-style
+			Style scrollbarStyle = (Style) style.getObjectProperty("scrollbar-style");
+			if (scrollbarStyle != null) {
+				this.scrollBar.setStyle( scrollbarStyle );
+			}
+		//#endif
+		//#if tmp.useScrollBar && polish.css.scrollbar-position
+			Integer scrollBarPositionInt = style.getIntProperty( "scrollbar-position" );
+			if (scrollBarPositionInt == null && this.scrollBar.style != null) {
+				scrollBarPositionInt = this.scrollBar.style.getIntProperty( "scrollbar-position" );
+			}
+			if (scrollBarPositionInt != null) {
+				this.paintScrollBarOnRightSide = (scrollBarPositionInt.intValue() != POSITION_LEFT);
+			}
+		//#endif
+			
+
 		//#ifdef polish.css.foreground-image
 			String foregroundImageUrl = this.style.getProperty("foreground-image");
 			if (foregroundImageUrl == null) {
@@ -994,7 +1034,16 @@ implements AccessibleCanvas
 			paintScreen( g );
 			//System.out.println("done painting content of screen");
 			
-
+			//#if tmp.useScrollBar
+				if (this.container != null && this.container.itemHeight > this.contentHeight) {
+					// paint scroll bar: - this.container.yOffset
+					System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.yTop=" + this.container.yTop + ", container.yTopPos=" + this.container.yTopPos);
+					
+					int scrollX = sWidth - this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+					//TODO allow scroll bar on the left side
+					this.scrollBar.paint( scrollX, this.contentY, scrollX, rightBorder, g);
+				}
+			//#endif
 			
 			// allow painting outside of the screen again:
 			//#ifdef tmp.menuFullScreen
@@ -1284,7 +1333,7 @@ implements AccessibleCanvas
 		if (this.title == null) {
 			return null;
 		} else {
-			return this.title.getText();
+			return ((StringItem)this.title).getText();
 		}
 	}
 	//#endif
@@ -1369,6 +1418,33 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
+	/**
+	 * Sets a CustomItem as the title for this screen.
+	 * WARNING: You must not call setTitle(String) after calling this method anymore!
+	 * 
+	 * @param item the title CustomItem 
+	 */
+	public void setTitle(CustomItem item) {
+		//#ifdef tmp.usingTitle
+		this.title = item;
+		if (item != null){
+			//#ifdef polish.ScreenWidth:defined
+				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
+			//#else
+				int width = this.screenWidth - (this.marginLeft + this.marginRight);
+			//#endif
+			this.titleHeight = this.title.getItemHeight( width, width );
+			item.screen = this;
+		} else {
+			this.titleHeight = 0;
+		}
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		if (this.isInitialised && isShown()) {
+			repaint();
+		}
+		//#endif
+	}
+
 	/**
 	 * Sets the information which should be shown to the user.
 	 * The info is shown below the title (if any) and can be designed

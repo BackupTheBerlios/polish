@@ -26,10 +26,12 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Command;
+
 /**
- * <p>Is used for registering ScreenStateListeners for J2ME Polish Forms, Lists, etc.</p>
+ * <p>Allows to access J2ME Polish specific features in a standard compliant way.</p>
  * <p>When a ScreenStateListener is registered with a screen, it will get notified when
- *    the screen changes its focus.
+ *    the screen changes its focus or another internal state (like changing a tab in the TabbedForm).
  * </p>
  *
  * <p>Copyright Enough Software 2005</p>
@@ -39,12 +41,12 @@ package de.enough.polish.ui;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class EventRegistry {
+public final class UiAccess {
 
 	/**
 	 * No instantiation is allowd.
 	 */
-	private EventRegistry() {
+	private UiAccess() {
 		super();
 	}
 	
@@ -91,5 +93,67 @@ public final class EventRegistry {
 		return -1;
 	}
 
+	//#if polish.midp2
+	/**
+	 * Sets the title of the screen using a CustomItem.
+	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
+	 * 
+	 * @param screen the screen for which the title should be replaced 
+	 * @param title the element responsible for painting the title.
+	 */
+	public static void setTitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.CustomItem title ) {
+		// this is ignored.
+	}
+	//#endif
 
+	/**
+	 * Sets the title of the screen using a CustomItem.
+	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
+	 * 
+	 * @param screen the screen for which the title should be replaced 
+	 * @param title the element responsible for painting the title.
+	 */
+	public static void setTitle( Screen screen, CustomItem title ) {
+		screen.setTitle( title );
+	}
+
+	/**
+	 * Sets the title of the screen using a CustomItem.
+	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
+	 * 
+	 * @param screen the screen for which the title should be replaced 
+	 * @param title the element responsible for painting the title.
+	 * @param style the style for the title
+	 */
+	public static void setTitle( Screen screen, CustomItem title, Style style ) {
+		if (style != null) {
+			title.setStyle(style);
+		}
+		screen.setTitle( title );
+	}
+
+	/**
+	 * Adds a command to a list item.
+	 * Warning: this method won't add any commands when the J2ME Polish GUI is not activated.
+	 * 
+	 * @param list the list
+	 * @param index the index of the item
+	 * @param command the item command
+	 */
+	public void addItemCommand( javax.microedition.lcdui.List list, int index, Command command ) {
+		// ignore on real lists
+	}
+	
+	/**
+	 * Adds a command to a list item.
+	 * Warning: this method won't add any commands when the J2ME Polish GUI is not activated.
+	 * 
+	 * @param list the list
+	 * @param index the index of the item
+	 * @param command the item command
+	 */
+	public void addItemCommand( List list, int index, Command command ) {
+		Item item = list.getItem(index);
+		item.addCommand(command);
+	}
 }

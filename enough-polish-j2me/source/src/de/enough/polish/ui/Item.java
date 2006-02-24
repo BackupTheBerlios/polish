@@ -661,7 +661,7 @@ public abstract class Item extends Object
 	protected int contentY;
 	// the current positions of an internal element relative to the content origin 
 	// which should be visible:
-	protected int internalX = - 9999;
+	protected int internalX = -9999;
 	protected int internalY;
 	protected int internalWidth;
 	protected int internalHeight;
@@ -1352,7 +1352,11 @@ public abstract class Item extends Object
 	 */
 	public void notifyStateChanged()
 	{
-		Screen scr = getScreen();
+		
+		Screen scr = StyleSheet.currentScreen;
+		if (scr == null) {
+			scr = getScreen();
+		}
 		//#ifndef polish.skipArgumentCheck
 			if ( (!(scr instanceof Form)) || (scr == null)) {
 				//#ifdef polish.verboseDebug

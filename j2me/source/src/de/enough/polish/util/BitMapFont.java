@@ -24,6 +24,11 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
+/*
+ * Modified on 14-Feb-2006 by Radu Zah, raduzah@yahoo.com.
+ * Added the removeInstance method that will remove the font from cache. 
+ * Usefull if you have large fonts and you want to free up some memory.
+ */
 package de.enough.polish.util;
 
 import java.io.ByteArrayOutputStream;
@@ -175,4 +180,12 @@ public final class BitMapFont {
 		return font;
 	}
 
+	/**
+	 * Removes the instance of the specified font from the internal cache.
+	 * 
+	 * @param url the url of the font
+	 */
+	public static void removeInstance(String url) {
+		fontsByUrl.remove( url );
+	}
 }

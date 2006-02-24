@@ -2632,11 +2632,13 @@ public class TextField extends StringItem
 								deleteCurrentChar();
 						//#ifdef tmp.allowDirectInput
 							} else {
-								setString( this.text.substring(0, this.text.length() - 1));
+								String myText = getString();
+								setString( myText.substring(0, myText.length() - 1));
 							}
 						//#endif
 					//#else
-						setString( this.text.substring(0, this.text.length() - 1));
+						String myText = getString();
+						setString( myText.substring(0, myText.length() - 1));
 					//#endif
 				}
 			} else if ( cmd == CLEAR_CMD ) {
