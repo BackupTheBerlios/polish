@@ -23,6 +23,11 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
+ 
+ /*
+ * Fixed the character spacing.
+ * Last modified 29-Ian-2006, Radu Zah, Butterfly-Effected, raduzah@yahoo.com
+ */
 package de.enough.polish.font;
 
 
@@ -77,10 +82,11 @@ extends Container
 implements ActionListener
 {
 
+	private static final long serialVersionUID = 4673338710209425506L;
 	private static final String[] FONT_SIZES = new String[]{ "8", "9", "10", "10.5", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "22", "24", "26", "28", "30", "32", "34", "36" };
 	private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-	private static final String PUNCTUATION = "@©®§€£$&_+-\'\"(),./\\:;?!<>«»°àáâçèêéûÈÉÊ";
+	private static final String PUNCTUATION = "@\u00a9\u00ae\u00a7\u0080\u00a3$&_+-\'\"(),./\\:;?!<>\u00ab\u00bb\u00b0\u00e0\u00e1\u00e2\u00e7\u00e8\u00ea\u00e9\u00fb\u00c8\u00c9\u00ca";
 	private static final String NUMBERS = "0123456789";
 	private static final String SPACE = " "; 
 	private static final String STANDARD_TEXT =  LOWERCASE + SPACE + PUNCTUATION + NUMBERS;
@@ -327,7 +333,7 @@ implements ActionListener
 		for (int i = 0; i < text.length(); i++) {
 			String substring = text.substring( i, i + 1);
 			Rectangle2D bounds = this.derivedFont.getStringBounds(substring, fc);
-			dataOut.writeByte( (int) bounds.getWidth() );
+			dataOut.writeByte( (int) (bounds.getWidth() + this.characterSpacing) );
 		}
 		// write the image itself:
 		ImageIO.write( image, "png", out );
@@ -364,7 +370,7 @@ implements ActionListener
 		FontRenderContext fc = g.getFontRenderContext();
 		Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
 		double height = bounds.getHeight();
-		double width = bounds.getWidth() /*+ (text.length() * this.characterSpacing)*/;
+		double width = bounds.getWidth() + (text.length() * this.characterSpacing);
 		image = new BufferedImage( (int) width, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
 		g = image.createGraphics();
 		Color transparent = new Color( 1, 1, 1, 0 );
