@@ -50,12 +50,14 @@ import javax.microedition.lcdui.Image;
  * 	<li><b>scrollbar-slider-image</b>: The image used for the slider.</li>
  * 	<li><b>scrollbar-slider-image-repeat</b>: Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; is 
  * 							given, the slider image is repeated vertically, if necessary.</li>
- * 	<li><b>scrollbar-slider-mode</b>: The mode of the slider, either &quot;pixel&quot;
- * 							or &quot;item&quot;. In the &quot;pixel&quot; mode the slider represents the
+ * 	<li><b>scrollbar-slider-mode</b>: The mode of the slider, either &quot;area&quot;,
+ * 							&quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the
  *                          position of the current selection relativ to the complete width and height.
  *                          In the &quot;item&quot; mode the index of currently selected item
- *                          is taken into account relative to the number of items. The default mode
- *                          is &quot;pixel&quot;.
+ *                          is taken into account relative to the number of items.
+ *                          In the &quot;page&quot;
+ *                          The default mode is &quot;area&quot;, unless there is no focusable item
+ *                          on the screen, in which case the &quot;page&quot; mode is used.
  * </li>
  * 	<li><b>scrollbar-position</b>: either &quot;left&quot; or &quot;right&quot;.</li>
  * 	<li><b></b>: </li>
@@ -73,7 +75,9 @@ import javax.microedition.lcdui.Image;
  */
 public class ScrollBar extends Item {
 	
+	private static final int MODE_AREA = 0;
 	private static final int MODE_ITEM = 1;
+	private static final int MODE_PAGE = 2;
 	protected int sliderColor;
 	protected int sliderWidth = 2;
 	//#if polish.css.scrollbar-slider-image
@@ -84,7 +88,7 @@ public class ScrollBar extends Item {
 		//#endif
 	//#endif
 	//#if polish.css.scrollbar-slider-mode
-		protected boolean useItemMode;
+		protected int sliderMode;
 	//#endif
 	protected int sliderY;
 	protected int sliderHeight;
@@ -112,15 +116,16 @@ public class ScrollBar extends Item {
 	 * @param screenWidth the width of the screen
 	 * @param screenAvailableHeight the height available for the content within the screen
 	 * @param screenContentHeight the height of the content area of the screen
+	 * @param contentYOffset the y offset for the content in the range of [-(screenContentHeight-screenAvailableHeight)...0]
 	 * @param selectionStart the start of the selection relative to the screenContentHeight
 	 * @param selectionHeight the height of the current selection
 	 * @param focusedIndex the index of currently focused item
 	 * @param numberOfItems the number of available items 
 	 * @return the item width of the scroll bar.
 	 */
-	public int initScrollBar( int screenWidth, int screenAvailableHeight, int screenContentHeight, int selectionStart, int selectionHeight, int focusedIndex, int numberOfItems ) {
+	public int initScrollBar( int screenWidth, int screenAvailableHeight, int screenContentHeight, int contentYOffset, int selectionStart, int selectionHeight, int focusedIndex, int numberOfItems ) {
 		//#debug
-		System.out.println("initScrollBar( screenWidth=" + screenWidth + ", screenAvailableHeight=" + screenAvailableHeight + ", screenContentHeight=" + screenContentHeight + ", selectionStart=" + selectionStart + ", selectionHeight=" + selectionHeight + ", focusedIndex=" + focusedIndex + ", numberOfItems=" + numberOfItems + ")");
+		System.out.println("initScrollBar( screenWidth=" + screenWidth + ", screenAvailableHeight=" + screenAvailableHeight + ", screenContentHeight=" + screenContentHeight + ", contentYOffset=" + contentYOffset + ", selectionStart=" + selectionStart + ", selectionHeight=" + selectionHeight + ", focusedIndex=" + focusedIndex + ", numberOfItems=" + numberOfItems + ")");
 		
 		if ( screenAvailableHeight >= screenContentHeight ) {
 			this.isVisible = false;
@@ -129,17 +134,25 @@ public class ScrollBar extends Item {
 		this.isVisible = true;
 		this.scrollBarHeight = screenAvailableHeight;
 		//#if polish.css.scrollbar-slider-mode
-			if ( this.useItemMode ) {
+			if ( this.sliderMode == MODE_ITEM && focusedIndex != -1) {
+				System.out.println("using item");
 				int chunkPerSlider = (screenAvailableHeight << 8) / numberOfItems; 
 				this.sliderY = (chunkPerSlider * focusedIndex) >>> 8;
 				this.sliderHeight = chunkPerSlider >>> 8;
-			} else {
+			} else if ( this.sliderMode == MODE_AREA && selectionHeight != 0 ) {
+		//#else
+				//# if (selectionHeight != 0) {
 		//#endif
-				this.sliderY = (selectionStart * screenAvailableHeight) / screenContentHeight;
-				this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;
-		//#if polish.css.scrollbar-slider-mode
-			}
-		//#endif
+			// take the currently selected area
+			System.out.println("using area");
+			this.sliderY = (selectionStart * screenAvailableHeight) / screenContentHeight;
+			this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
+		} else {
+			// use the page dimensions:
+			System.out.println("using page");
+			this.sliderY = (-contentYOffset  * screenAvailableHeight) / screenContentHeight;
+			this.sliderHeight = (screenAvailableHeight * screenAvailableHeight) / screenContentHeight;
+		}
 		//#if polish.css.scrollbar-slider-image && polish.css.scrollbar-slider-image-repeat
 			if (this.repeatSliderImage && this.sliderImage != null ) {
 				if (this.sliderHeight > this.sliderImage.getHeight()) {
@@ -258,7 +271,7 @@ public class ScrollBar extends Item {
 		//#if polish.css.scrollbar-slider-mode
 			Integer sliderModeInt = style.getIntProperty("scrollbar-slider-mode");
 			if (sliderModeInt != null) {
-				this.useItemMode = ( sliderModeInt.intValue() ==  MODE_ITEM);
+				this.sliderMode = sliderModeInt.intValue();
 			}
 		//#endif
 	}

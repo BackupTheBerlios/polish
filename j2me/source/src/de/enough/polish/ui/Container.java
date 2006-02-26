@@ -280,6 +280,7 @@ public class Container extends Item {
 			}
 			if (!focusSet) {
 				this.autoFocusEnabled = true;
+				this.focusedItem = null;
 			}
 		} else if (index < this.focusedIndex) {
 			this.focusedIndex--;
@@ -1111,6 +1112,10 @@ public class Container extends Item {
 			this.background = null;
 			this.border = null;
 			this.borderWidth = 0;
+			this.marginTop = 0;
+			this.marginBottom = 0;
+			this.marginLeft = 0;
+			this.marginRight = 0;
 		}
 		//#if polish.css.focused-style
 			this.focusedTopMargin = this.focusedStyle.marginTop + this.focusedStyle.paddingTop;

@@ -1039,7 +1039,7 @@ implements AccessibleCanvas
 					// paint scroll bar: - this.container.yOffset
 					System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.yTop=" + this.container.yTop + ", container.yTopPos=" + this.container.yTopPos);
 					
-					int scrollX = sWidth - this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+					int scrollX = sWidth - this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
 					//TODO allow scroll bar on the left side
 					this.scrollBar.paint( scrollX, this.contentY, scrollX, rightBorder, g);
 				}

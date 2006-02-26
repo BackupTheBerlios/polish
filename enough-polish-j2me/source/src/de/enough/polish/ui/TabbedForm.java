@@ -168,6 +168,25 @@ public class TabbedForm extends Form {
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		tabContainer.set(itemIndex, item);
 	}
+	
+	/**
+	 * Gets the item at given position within the specified tab.  
+	 * The contents of the
+	 * <code>TabbedForm</code> are left unchanged.
+	 * The <code>itemNum</code> parameter must be
+	 * within the range <code>[0..size()-1]</code>, inclusive.
+	 * 
+	 * @param tabIndex the index of the tab,
+	 *        the first tab has the index 0.
+	 * @param itemNum the index of item
+	 * @return the item at the given position
+	 * @throws IndexOutOfBoundsException - if itemNum is invalid
+	 */
+	public Item get(int tabIndex, int itemNum)
+	{
+		Container tabContainer = this.tabContainers[ tabIndex ];
+		return tabContainer.get( itemNum );
+	}
 
 	
 	/**
@@ -180,6 +199,9 @@ public class TabbedForm extends Form {
 	public void delete( int tabIndex, Item item ) {
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		tabContainer.remove( item );
+		if (this.isShown() ) {
+			repaint();
+		}
 	}
 	
 	/**
@@ -192,8 +214,33 @@ public class TabbedForm extends Form {
 	public void delete( int tabIndex, int itemIndex ) {
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		tabContainer.remove( itemIndex );
+		if (this.isShown() ) {
+			repaint();
+		}
+	}
+
+	/**
+	 * Deletes the all items from the specified tab.
+	 * 
+	 * @param tabIndex the index of the tab from which all items should be removed,
+	 *        the first tab has the index 0.
+	 */
+	public void deleteAll( int tabIndex ) {
+		Container tabContainer = this.tabContainers[ tabIndex ];
+		tabContainer.clear();
 	}
 	
+	/**
+	 * Retrieves the number of elements within the specified tab.
+	 * 
+	 * @param tabIndex the tab, the first tab has the index 0
+	 * @return the number of elements within that tab
+	 */
+	public int size( int tabIndex ) {
+		Container tabContainer = this.tabContainers[ tabIndex ];
+		return tabContainer.size();
+	}
+
 	/**
 	 * Focuses the specified tab.
 	 * 
