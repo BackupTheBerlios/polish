@@ -1191,9 +1191,9 @@
 		name="scrollbar-slider-mode"
 		type="integer"
 		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
-		description="The mode of the slider, either &quot;pixel&quot; or &quot;item&quot;. In the &quot;pixel&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of currently selected item is taken into account relative to the number of items. The default mode is &quot;pixel&quot;."
-		default="pixel"
-		values="pixel, item"
+		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;area&quot;, unless there is no focusable item on the screen, in which case the &quot;page&quot; mode is used."
+		default="area"
+		values="area, item, page"
 		id="123"
 	/>
 	
