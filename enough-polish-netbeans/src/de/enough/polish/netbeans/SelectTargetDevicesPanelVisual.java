@@ -1,13 +1,17 @@
 package de.enough.polish.netbeans;
 
+import de.enough.polish.ide.swing.DeviceSelector;
+import de.enough.polish.ide.swing.DirectInvocationHandler;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -78,13 +82,24 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     
     void store(WizardDescriptor d) {
         try {
-            Method method = this.deviceSelectionComponent.getClass().getMethod("getSelectedDeviceIdentifiers", new Class[0]);
-            String[] deviceIdentifiers = (String[]) method.invoke( this.deviceSelectionComponent, new Object[0]);
-            d.putProperty( "polish.DeviceIdentifiers", deviceIdentifiers );
+            DeviceSelector deviceSelector = (DeviceSelector) Proxy.newProxyInstance(
+                DeviceSelector.class.getClassLoader(),
+                new Class[] { DeviceSelector.class },
+                new DirectInvocationHandler(this.deviceSelectionComponent)
+            );
+            Map properties = deviceSelector.getSelectedDeviceProperties();
+            //System.out.println("properties of selected devices: " + properties );
+            String[] deviceIdentifiers = deviceSelector.getSelectedDeviceIdentifiers();
             for (int i = 0; i < deviceIdentifiers.length; i++) {
                 System.out.println( deviceIdentifiers[i]);
             }
-            d.putProperty( "polish.DevicesSelectionComponent", this.deviceSelectionComponent );
+//            Method method = this.deviceSelectionComponent.getClass().getMethod("getSelectedDeviceIdentifiers", new Class[0]);
+//            String[] deviceIdentifiers = (String[]) method.invoke( this.deviceSelectionComponent, new Object[0]);
+//            d.putProperty( "polish.DeviceIdentifiers", deviceIdentifiers );
+//            for (int i = 0; i < deviceIdentifiers.length; i++) {
+//                System.out.println( deviceIdentifiers[i]);
+//            }
+//            d.putProperty( "polish.DevicesSelectionComponent", this.deviceSelectionComponent );
         } catch (Exception e) {
             e.printStackTrace();
             remove( this.deviceSelectionComponent );
