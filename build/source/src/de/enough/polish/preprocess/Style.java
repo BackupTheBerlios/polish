@@ -26,8 +26,6 @@
 package de.enough.polish.preprocess;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Set;
 
 import de.enough.polish.Device;
 
@@ -44,6 +42,12 @@ import de.enough.polish.Device;
  */
 public class Style {
 	
+	private final static Map REFERENCE_ATTRIBUTES = new HashMap();
+	static {
+		REFERENCE_ATTRIBUTES.put("background", Boolean.TRUE );
+		REFERENCE_ATTRIBUTES.put("border", Boolean.TRUE );
+		REFERENCE_ATTRIBUTES.put("font", Boolean.TRUE );
+	}
 	private HashMap properties;
 	private HashMap groupsByName;
 	private ArrayList groupNamesList;
@@ -124,21 +128,34 @@ public class Style {
 				// set the complete group when it is not defined:
 				this.groupsByName.put( groupName, new HashMap( parentGroup ) ); 
 				this.groupNamesList.add( groupName );
-			} else {
+			} else if (targetGroup.get(groupName) == null){
 				//System.out.println("setting only new group-properties of  [" + groupName + "].");
 				// only set the properties which are not defined yet:
 				set = parentGroup.keySet();
 				for (Iterator iter = set.iterator(); iter.hasNext();) {
 					String key = (String) iter.next();
-					if ( (!key.equals(groupName)) && (targetGroup.get(key) == null)) {
+					if ( (targetGroup.get(key) == null) 
+							&& !isReferenceAttribute( groupName, key ) ) 
+						
+					{
 						//System.out.println("setting property [" + key + "] with value [" + parentGroup.get(key) + "]." );
 						targetGroup.put( key, parentGroup.get(key));
-					//} else {
-					//	System.out.println("skipping property key [" + key + "] with value [" +targetGroup.get(key) +"]." );
+//					} else {
+//						System.out.println("skipping property key [" + key + "] with value [" +targetGroup.get(key) +"] for style " + this.selector + ", parent=" + parent.selector );
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Determines whether the given attribute is a reference, currently "font", "background" or "border" 
+	 * @param groupName the name of the group
+	 * @param attributeName the name of the attribute
+	 * @return true when the the given attribute is a reference, currently "font", "background" or "border"
+	 */
+	private boolean isReferenceAttribute(String groupName, String attributeName) {
+		return attributeName.equals(groupName) &&  (REFERENCE_ATTRIBUTES.get( attributeName ) != null);
 	}
 
 	/**
@@ -164,6 +181,12 @@ public class Style {
 				// remove it for border and background:
 				if ("border".equals(groupName) || "background".equals(groupName)) {
 					targetGroup.remove( groupName );
+					// check if the new style definition contains a reference,
+					// in which case all previous definitions should be removed:
+					if ( group.get(groupName) != null) {
+						//System.out.println("clearing style-group " + groupName );
+						targetGroup.clear();
+					}
 				}
 				targetGroup.putAll( group );
 			}

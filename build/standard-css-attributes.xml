@@ -26,6 +26,39 @@
 
 -->
 <attributes>
+
+<!--
+	<attribute
+		name="background"
+		type="object"
+		appliesTo="Item, Screen"
+		description="The background of an item or screen. The dafault background for items is &quot;none&quot;, the default background for screens is a simple white background."
+	>
+		<mapping from="simple"              converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
+		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
+		<mapping from="image"               converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" />
+		<mapping from="roundrect"           converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
+		<mapping from="round-rect"          converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
+		<mapping from="pulsating"           converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" />
+		<mapping from="pulsating-circle"    converter="de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter" />
+		<mapping from="pulsating-circles"   converter="de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter" />
+		<mapping from="circle"              converter="de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter" />
+		<mapping from="opening"             converter="de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter" />
+		<mapping from="round-rect-opening"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
+		<mapping from="opening-round-rect"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
+		<mapping from="round-tab"           converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" />
+		<mapping from="fade-in"             converter="de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter" />
+		<mapping from="ball-games"          converter="de.enough.polish.preprocess.backgrounds.BallBackgroundConverter" />
+		<mapping from="tiger-stripes"       converter="de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter" />
+		<mapping from="smooth-color"        converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" />
+		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
+		<mapping from="snowflakes"          converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
+	</attribute>
+-->
+		<!--
+		<mapping from="" converter="" />
+		-->
+
 	<attribute
 		name="focused-style"
 		type="style"
@@ -381,6 +414,7 @@
 		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-single-line" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
+		<mapping from="horizontal-choice" to="new de.enough.polish.ui.containerviews.HorizontalChoiceView()" />
 		<mapping from="ExclusiveSingleLineView" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="Dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
@@ -1198,12 +1232,179 @@
 	/>
 	
 	<attribute
+		name="scrollbar-slider-up-image"
+		type="imageurl"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="The image used for signaling that the user can scoll upwards. By default nothing is painted."
+		id="124"
+	/>
+
+	<attribute
+		name="scrollbar-slider-down-image"
+		type="imageurl"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		description="The image used for signaling that the user can scoll downwards. By default nothing is painted."
+		id="125"
+	/>
+	
+	<attribute
 		name="scrollbar-style"
 		type="style"
 		appliesTo="Screen, Form, List, TextBox"
 		description="The name of the style for the scrollbar of the corresponding Screen."
 		default="scrollbar"
-		id="124"
+		id="126"
 	/>
+	
+	<attribute
+		name="exclusiveview-roundtrip"
+		type="boolean"
+		appliesTo="ChoiceGroup, EXCLUSIVE ChoiceGroup, List, The exclusive view-type"
+		description="Determines whether the user can continue at the first ChoiceGroup item when he reaches the last item."
+		default="false"
+		id="127"
+	/>
+	
+	<attribute
+		name="exclusiveview-arrow-padding"
+		type="integer"
+		appliesTo="ChoiceGroup, EXCLUSIVE ChoiceGroup, List, The exclusive view-type"
+		description="Sets the horizontal padding between the arrows of the exclusive view type. This overrides the default-horizontal-padding and makes only sense when the arrows are placed on either the left or the right side."
+		default="padding-horizontal"
+		id="128"
+	/>
+	
+	
+	<attribute
+		name="gauge-animation-speed"
+		type="integer"
+		appliesTo="Gauge"
+		description="The speed for the animation in pixels per animation when the infinitive Gauge is in CONTINUOUS_RUNNING mode."
+		default="1"
+		id="129"
+	/>
+
+	<attribute
+		name="gauge-animation-mode"
+		type="integer"
+		appliesTo="Gauge"
+		description="The mode for the animation in pixels per animation when the infinitive Gauge is in CONTINUOUS_RUNNING mode. In the default &quot;leftright&quot; mode the image is running from the left to the right, in the &quot;backandforth&quot; mode the image is moved from the left to the right and back again. This makes only sense if you specify a gauge-image." 
+		default="leftright"
+		values="leftright,backandforth"
+		id="130"
+	/>
+	
+	<attribute
+		name="gauge-inactive-image"
+		type="imageurl"
+		appliesTo="Gauge"
+		description="The image that is used to visualize inactive gauge values. By default such values are not drawn." 
+		id="131"
+	/>
+	
+	<attribute
+		name="include-label"
+		type="boolean"
+		appliesTo="Item"
+		description="Usually the label of an item is rendered separately of the item's content. You can expand the background and border over the label as well using this attribute." 
+		default="false"
+		id="132"
+	/>
+	
+	
+	<attribute
+		name="horizontalview-arrow-color"
+		type="color"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="The color of the arrows."
+		default="black"
+		id="55"
+	/>
+	
+	<attribute
+		name="horizontalview-right-arrow"
+		type="imageurl"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="The URL of the right arrow image."
+		id="56"
+	/>
+
+	<attribute
+		name="horizontalview-left-arrow"
+		type="imageurl"
+		appliesTo="ChoiceGroup, List, The horizontal view-type"
+		description="The URL of the left horizontal-choice image."
+		id="57"
+	/>
+	
+	<attribute
+		name="horizontalview-arrow-position"
+		type="integer"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="The position of the arrows, either on both sides, left or right."
+		default="bothsides"
+		values="bothsides,right,left"
+		id="104"
+	/>
+	
+	<attribute
+		name="horizontalview-expand-background"
+		type="boolean"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="Defines whether the background should be painted under the arrows as well."
+		default="false"
+		id="105"
+	/>
+	
+	<attribute
+		name="horizontalview-roundtrip"
+		type="boolean"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="Determines whether the user can continue at the first ChoiceGroup item when he reaches the last item."
+		default="false"
+		id="127"
+	/>
+	
+	<attribute
+		name="horizontalview-arrow-padding"
+		type="integer"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="Sets the horizontal padding between the arrows of the horizontal view type. This overrides the default-horizontal-padding and makes only sense when the arrows are placed on either the left or the right side."
+		default="padding-horizontal"
+		id="128"
+	/>
+	
+	<attribute
+		name="horizontalview-scroll-mode"
+		type="integer"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="Enables or disables the smooth scrolling mode within the horizontal view-type."
+		default="smooth"
+		values="normal,smooth"
+		id="129"
+	/>
+	
+	
+	
+	
+	<!--
+	
+	<attribute
+		name="fullscreen-background"
+		type="background"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		description="The background that is painted over the last screen. This can be used for dimming previous screens when tbe new screen does have margins." 
+		id="133"
+	/>
+	
+	<attribute
+		name="opened-menu-background"
+		type="background"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		description="The background that is painted over the rest of the screen when the menu is opened. This makes sense only when the &quot;fullscreen&quot; mode is activated." 
+		id="134"
+	/>
+	
+	-->
 
 </attributes>

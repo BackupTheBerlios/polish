@@ -476,6 +476,7 @@
 		<capability name="CameraResolution" value="2 MP" />
 		<capability name="CameraZoom" value="4" />
 		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin" />
+		<capability name="key.ReturnKey" value="-11" />
 	</device>
 
 	<device>
@@ -505,6 +506,7 @@
 		<capability name="CameraResolution" value="2 MP" />
 		<capability name="CameraZoom" value="4" />
 		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin" />
+		<capability name="key.ReturnKey" value="-11" />
 	</device>
 
 	<device>
@@ -533,6 +535,7 @@
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="CameraResolution" value="1.3 MP" />
 		<capability name="CameraZoom" value="4" />
+		<capability name="key.ReturnKey" value="-11" />
 	</device>
 
 	<device>

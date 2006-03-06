@@ -112,13 +112,25 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 		} else {
 			anchor = "Graphics.HCENTER | Graphics.VCENTER";
 		}
+		String xOffsetStr = (String) background.get("x-offset");
+		if (xOffsetStr == null) {
+			xOffsetStr = "0";
+		} else {
+			parseInt("x-offset", xOffsetStr);
+		}
+		String yOffsetStr = (String) background.get("y-offset");
+		if (yOffsetStr == null) {
+			yOffsetStr = "0";
+		} else {
+			parseInt("y-offset", yOffsetStr);
+		}
 		if (repeat == null) {
 			// return default image background:
 			return "new " + BACKGROUNDS_PACKAGE + "ImageBackground( " 
-			+ this.color + ", \"" + imageUrl + "\", " + anchor + " )";
+			+ this.color + ", \"" + imageUrl + "\", " + anchor + ", " + xOffsetStr + ", " + yOffsetStr + " )";
 		} else {
 			return "new " + BACKGROUNDS_PACKAGE + "TiledImageBackground( " 
-			+ this.color + ", \"" + imageUrl + "\", " + repeat + ", " + anchor + ", " + paddingHorizontal + ", " + paddingVertical + ", " + overlap + " )";
+			+ this.color + ", \"" + imageUrl + "\", " + repeat + ", " + anchor + ", " + paddingHorizontal + ", " + paddingVertical + ", " + overlap  + ", " + xOffsetStr + ", " + yOffsetStr + " )";
 		}
 	}
 

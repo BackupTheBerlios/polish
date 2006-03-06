@@ -1309,7 +1309,14 @@ public class Preprocessor {
 		lines.next();
 		String line = lines.getCurrent();
 		if (!this.enableDebug) {
-			return (commentLine( line, line.trim(), lines ));
+			boolean changed  = false;
+			while (line.indexOf(';') == -1) {
+				changed |= commentLine( line, line.trim(), lines );
+				lines.next();
+				line = lines.getCurrent();
+			}
+			return changed | commentLine( line, line.trim(), lines );
+			//return (commentLine( line, line.trim(), lines ));
 		}
 		if (debugLevel == null || "".equals(debugLevel)) {
 			debugLevel = "debug";

@@ -118,6 +118,8 @@
 		<capability name="Emulator.Skin.6" value="Series_60_MIDP_SDK_2_1" />
 		<capability name="Emulator.Skin.7" value="Series_60_MIDP_SDK_2_1_Beta" />
 		<capability name="Emulator.Skin.8" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
+		<capability name="Emulator.Skin.9" value="Nokia_Prototype_SDK_4_0_Beta\devices\Prototype_4_0_Beta_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.10" value="Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
 		<capability name="Emulator.Control" value="Series60" />
 		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi" />
 	</group>

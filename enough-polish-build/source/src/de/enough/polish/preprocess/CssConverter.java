@@ -185,6 +185,7 @@ public class CssConverter extends Converter {
 		Set keys = fonts.keySet();
 		for (Iterator iter = keys.iterator(); iter.hasNext();) {
 			String groupName = (String) iter.next();
+			//System.out.println("processing font " + fonts.get( groupName ) );
 			if ("default".equals(groupName)) {
 				defaultFontDefined = true;
 				HashMap group = (HashMap) fonts.get( groupName );
@@ -950,12 +951,14 @@ public class CssConverter extends Converter {
 				}
 			}
 			return;
+//		} else if (reference != null) {
+//			System.out.println("ignoring reference " + reference + " in style " + style.getSelector());
 		}
-		String type = (String) group.get("type");
+		String type = getAttributeValue("background", "type", group );
 		String originalType = type;
 		if (type == null) {
 			// this should be a simple background:
-			String imageUrl = (String) group.get("image");
+			String imageUrl = getAttributeValue("background", "image", group );
 			if (imageUrl == null || "none".equals(imageUrl)) {
 				// this a simple background:
 				type = "simple";
@@ -1037,7 +1040,7 @@ public class CssConverter extends Converter {
 			return;
 		}
 		// get font color:
-		String fontColor = (String) group.get("color");
+		String fontColor = getAttributeValue( "font", "color", group );
 		if (isStandalone) {
 			String newStatement = STANDALONE_MODIFIER + "int " + groupName + typeName + "Color = "; 
 			if (fontColor != null) {
@@ -1054,9 +1057,9 @@ public class CssConverter extends Converter {
 			}
 		}
 		// get the font:
-		String face = (String) group.get("face");
-		String styleStr = (String) group.get("style");
-		String size = (String) group.get("size");
+		String face = getAttributeValue("font", "face", group);
+		String styleStr = getAttributeValue("font", "style", group);
+		String size = getAttributeValue("font", "size", group);;
 		String newStatement;
 		if (face == null && styleStr == null && size == null) {
 			newStatement = "Font.getDefaultFont()";
@@ -1083,6 +1086,22 @@ public class CssConverter extends Converter {
 		}
 		
 		codeList.add( newStatement  );
+	}
+
+	/**
+	 * Retrieves a attribute value.
+	 * 
+	 * @param groupName the name of the attribute-group, e.g. "font" or "background" 
+	 * @param attributeName the name of the attribute, e.g. "color"
+	 * @param group the attribute group
+	 * @return the value or null when not defined
+	 */
+	protected String getAttributeValue( String groupName, String attributeName, HashMap group) {
+		 String result = (String) group.get(attributeName);
+		 if (result == null) {
+			 result = (String) group.get( groupName + "-" + attributeName );
+		 }
+		return result;
 	}
 
 	/**
