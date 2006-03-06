@@ -167,7 +167,7 @@ implements AccessibleCanvas
 		//#endif
 	//#endif
 	protected String cssSelector;
-	private ForwardCommandListener cmdListener;
+	private ForwardCommandListener forwardCommandListener;
 	protected Container container;
 	private boolean isLayoutCenter;
 	private boolean isLayoutRight;
@@ -186,9 +186,7 @@ implements AccessibleCanvas
 			private Command backCommand;
 		//#endif
 		
-		//#if polish.Screen.FireTriggersOkCommand
-			private Command okCommand;
-		//#endif
+		private Command okCommand;
 		//#if polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined
 			//#if polish.classes.MenuBar:defined
 				//#= private final ${polish.classes.MenuBar} menuBar;
@@ -335,7 +333,7 @@ implements AccessibleCanvas
 			this.container.screen = this;
 		}
 		this.style = style;
-		this.cmdListener = new ForwardCommandListener();
+		this.forwardCommandListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
 			//# super.setCommandListener(this.cmdListener);
 		//#endif
@@ -1608,11 +1606,11 @@ implements AccessibleCanvas
 					if (this.menuOpened) {
 						if (keyCode == RIGHT_SOFT_KEY ) {
 							this.menuOpened = false;
-						} else if ( gameAction == Canvas.FIRE ) {
-							int focusedIndex = this.menuContainer.getFocusedIndex();
-							Command cmd = (Command) this.menuCommands.get( focusedIndex );
-							this.menuOpened = false;
-							callCommandListener( cmd );
+//						} else if ( gameAction == Canvas.FIRE ) {
+//							int focusedIndex = this.menuContainer.getFocusedIndex();
+//							Command cmd = (Command) this.menuCommands.get( focusedIndex );
+//							this.menuOpened = false;
+//							callCommandListener( cmd );
 						} else { 
 							this.menuContainer.handleKeyPressed(keyCode, gameAction);
 						}
@@ -1658,6 +1656,9 @@ implements AccessibleCanvas
 			//#if polish.blackberry
 				this.keyPressedProcessed = processed;
 			//#endif
+			if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
+				callCommandListener(this.okCommand);
+			}
 			if (processed) {
 				if (this.screenStateListener != null) {
 					this.screenStateListener.screenStateChanged(this);
@@ -1742,7 +1743,7 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#setCommandListener(javax.microedition.lcdui.CommandListener)
 	 */
 	public void setCommandListener(CommandListener listener) {
-		this.cmdListener.realCommandListener = listener;
+		this.forwardCommandListener.realCommandListener = listener;
 	}
 	
 	//#ifdef tmp.menuFullScreen
@@ -1753,13 +1754,11 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("adding command [" + cmd.getLabel() + "].");
 		int cmdType = cmd.getCommandType();
-		//#if polish.Screen.FireTriggersOkCommand == true
-			if ( cmdType == Command.OK 
-					&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
-			{
-				this.okCommand = cmd;
-			}
-		//#endif
+		if ( cmdType == Command.OK 
+				&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
+		{
+			this.okCommand = cmd;
+		}
 		//#ifdef polish.key.ReturnKey:defined
 			//#if polish.blackberry
 			if ( cmdType == Command.BACK || cmdType == Command.CANCEL || 
@@ -1859,7 +1858,42 @@ implements AccessibleCanvas
 			}
 		//#endif
 	}
+	//#endif
 	
+	/**
+	 * Adds the given command as a subcommand to the specified parent command.
+	 * 
+	 * @param child the child command
+	 * @param parent the parent command
+	 */
+	public void addSubCommand(Command child, Command parent) {
+		addSubCommand( child, parent, null );
+	}
+	
+	/**
+	 * Adds the given command as a subcommand to the specified parent command.
+	 * 
+	 * @param child the child command
+	 * @param parent the parent command
+	 * @param commandStyle the style for the command
+	 */
+	public void addSubCommand(Command child, Command parent, Style commandStyle) {
+		//#if !tmp.menuFullScreen
+			addCommand( child );
+		//#else
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.addSubCommand( child, parent, commandStyle );
+			//#else
+				
+			//#endif	
+			if (this.isShown()) {
+				repaint();
+			}
+		//#endif
+	}
+
+	
+	//#ifdef tmp.menuFullScreen
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
@@ -1916,6 +1950,7 @@ implements AccessibleCanvas
 	 * Sets the commands of the given item
 	 * 
 	 * @param item the item which has at least one command 
+	 * @see #removeItemCommands(Item)
 	 */
 	protected void setItemCommands( Item item ) {
 		this.focusedItem = item;
@@ -1941,6 +1976,7 @@ implements AccessibleCanvas
 	 * Removes the commands of the given item.
 	 *  
 	 * @param item the item which has at least one command 
+	 * @see #setItemCommands(Item)
 	 */
 	protected void removeItemCommands( Item item ) {
 		if (item.commands != null) {
@@ -1954,7 +1990,9 @@ implements AccessibleCanvas
 				//#endif
 			}
 		}
-		this.focusedItem = null;
+		if (this.focusedItem == item) {
+			this.focusedItem = null;
+		}
 		//#ifdef tmp.useExternalMenuBar
 			if (isShown()) {
 				repaint();
@@ -1971,9 +2009,9 @@ implements AccessibleCanvas
 		//#if polish.ScreenChangeAnimation.forward:defined
 			this.lastTriggeredCommand = cmd;
 		//#endif
-		if (this.cmdListener != null) {
+		if (this.forwardCommandListener != null) {
 			try {
-				this.cmdListener.commandAction(cmd, this );
+				this.forwardCommandListener.commandAction(cmd, this );
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Screen: unable to process command [" + cmd.getLabel() + "]" + e  );
@@ -2231,6 +2269,8 @@ implements AccessibleCanvas
 		public void commandAction(Command cmd, Displayable thisScreen) {
 			//check if the given command is from the currently focused item:
 			Item item = Screen.this.focusedItem;
+			//#debug
+			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + Screen.this.focusedItem + " and screen " + Screen.this );
 			if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
 				if ( item.commands.contains(cmd)) {
 					item.itemCommandListener.commandAction(cmd, item);
@@ -2317,6 +2357,7 @@ implements AccessibleCanvas
 		}
 		return -1;
 	}
+
 		
 	
 //#ifdef polish.Screen.additionalMethods:defined

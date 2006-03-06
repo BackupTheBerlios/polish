@@ -173,7 +173,7 @@ public class MenuBar extends Item {
 			if (this.singleLeftCommand != null) {
 				// add existing left command first:
 				//#style menuitem, menu, default
-				StringItem item = new StringItem( null, this.singleLeftCommand.getLabel(), Item.INTERACTIVE );
+				CommandItem item = new CommandItem( this.singleLeftCommand, this );
 				this.commandsList.add( this.singleLeftCommand );
 				this.commandsContainer.add( item );
 				this.singleLeftCommand = null;
@@ -191,7 +191,7 @@ public class MenuBar extends Item {
 			} 
 		//#endif
 		//#style menuitem, menu, default
-		StringItem item = new StringItem( null, cmd.getLabel(), Item.INTERACTIVE );
+		CommandItem item = new CommandItem( cmd, this );
 		if ( this.commandsList.size() == 0 ) {
 			this.commandsList.add( cmd );
 			this.commandsContainer.add( item );
@@ -467,7 +467,7 @@ public class MenuBar extends Item {
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			//#if tmp.useInvisibleMenuBar
 				// paint menu at the top left corner:
-				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
+				g.setClip(0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY);
 				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.commandsContainerWidth, this.screen.screenWidth, g);
 				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
 			//#else
@@ -532,15 +532,18 @@ public class MenuBar extends Item {
 		if (keyCode == LEFT_SOFT_KEY) {
 			this.isSoftKeyPressed = true;
 			if (this.isOpened) {
-				Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
-				setOpen( false );
+				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				//#if tmp.useInvisibleMenuBar
-					if (command != this.cancelCommand ) {
-						this.screen.callCommandListener(command);
+					if (commandItem.command == this.cancelCommand ) {
+						setOpen( false );
 					}
-				//#else
-					this.screen.callCommandListener(command);
+					//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
 				//#endif
+				boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
+				if (!handled) { // CommandItem returns false when it invokes the command listener
+					setOpen( false );
+				}
+				
 				return true;
 			} else if (this.singleLeftCommand != null) {
 				this.screen.callCommandListener(this.singleLeftCommand);
@@ -562,16 +565,18 @@ public class MenuBar extends Item {
 			if (keyCode != 0) {
 				gameAction = this.screen.getGameAction(keyCode);
 			}
-			if (gameAction == Canvas.FIRE) {
-				int focusedIndex = this.commandsContainer.focusedIndex;
-				Command command = (Command) this.commandsList.get(focusedIndex);
-				setOpen( false );
-				this.screen.callCommandListener(command);
-				return true;
-			}
+//			if (gameAction == Canvas.FIRE) {
+//				int focusedIndex = this.commandsContainer.focusedIndex;
+//				Command command = (Command) this.commandsList.get(focusedIndex);
+//				setOpen( false );
+//				this.screen.callCommandListener(command);
+//				return true;
+//			}
 			boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
 			if (handled) {
 				this.isInitialised = false;
+			} else { // command item is returning false when a command has been triggered
+				setOpen( false );
 			}
 			return handled;
 		}
@@ -713,6 +718,41 @@ public class MenuBar extends Item {
 			animated = animated | this.singleRightCommandItem.animate();
 		}
 		return animated;
+	}
+
+	/**
+	 * Adds the given command as a subcommand to the specified parent command.
+	 * 
+	 * @param parentCommand the parent command
+	 * @param childCommand the child command
+	 * @param commandStyle the style for the command
+	 * @throws IllegalStateException when the parent command has not be added before
+	 */
+	public void addSubCommand(Command childCommand, Command parentCommand, Style commandStyle) {
+		// find parent CommandItem, could be tricky, especially when there are nested commands over several layers
+		int index = this.commandsList.indexOf( parentCommand );
+		CommandItem parentCommandItem = null;
+		if (index != -1) {
+			// found it:
+			parentCommandItem = (CommandItem) this.commandsContainer.get( index );
+		} else {
+			// search through all commands
+			for ( int i=0; i < this.commandsContainer.size(); i++ ) {
+				CommandItem item = (CommandItem) this.commandsContainer.get( i );
+				parentCommandItem = item.getChild( parentCommand );
+				if ( parentCommandItem != null ) {
+					break;
+				}
+			}
+		}
+		if ( parentCommandItem == null ) {
+			throw new IllegalStateException();
+		}
+		parentCommandItem.addChild( childCommand, commandStyle );
+		if (this.isOpened) {
+			this.isInitialised = false;
+			repaint();
+		}
 	}
 
 	

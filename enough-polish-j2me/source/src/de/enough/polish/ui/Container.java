@@ -157,7 +157,7 @@ public class Container extends Item {
 	public void setVerticalDimensions( int yTop, int yBottom ) {
 		this.yTop = yTop + this.marginTop;
 		this.yBottom = yBottom - this.marginBottom;
-		this.enableScrolling = (yTop != -1);
+		this.enableScrolling = (yTop != -1 || yBottom != -1 );
 	}
 	
 	/**
@@ -868,7 +868,7 @@ public class Container extends Item {
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			processed = shiftFocus( true, 0 );
 			//#debug
-			System.out.println("Container(" + this + "): forward shift by one column succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
+			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			if ((!processed) && this.enableScrolling 
 					&&  (this.yBottomPos + this.targetYOffset > this.yBottom)) {
 				// scroll downwards:
@@ -1221,7 +1221,11 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style focusstyle, int direction ) {
-		if ( this.itemsList.size() == 0) {
+		//#if polish.css.include-label
+			if ( this.includeLabel || this.itemsList.size() == 0) {
+		//#else
+			//# if ( this.itemsList.size() == 0) {
+		//#endif
 			return super.focus( this.focusedStyle, direction );
 		} else {
 			if (this.focusedStyle != null) {
@@ -1316,7 +1320,11 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	public void defocus(Style originalStyle) {
-		if ( this.itemsList.size() == 0 || this.focusedIndex == -1) {
+		//#if polish.css.include-label
+			if ( this.includeLabel || this.itemsList.size() == 0 || this.focusedIndex == -1) {
+		//#else
+			//# if ( this.itemsList.size() == 0 || this.focusedIndex == -1) {
+		//#endif
 			super.defocus( originalStyle );
 		} else {
 			this.isFocused = false;

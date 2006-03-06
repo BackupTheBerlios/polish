@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Created on 31-Jan-2006 at 00:04:45.
  * 
@@ -42,6 +41,27 @@ import javax.microedition.lcdui.Command;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class UiAccess {
+	
+	/**
+	 * A constant for setting the input mode of an TextField to lowercase.
+	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
+	 */
+	public static final int MODE_LOWERCASE = 0;
+	/**
+	 * A constant for setting the input mode of an TextField to uppercase for the first character, followed by lowercase characters.
+	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
+	 */
+	public static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
+	/**
+	 * A constant for setting the input mode of an TextField to uppercase.
+	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
+	 */
+	public static final int MODE_UPPERCASE = 2;
+	/**
+	 * A constant for setting the input mode of an TextField to numbers.
+	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
+	 */
+	public static final int MODE_NUMBERS = 3;
 
 	/**
 	 * No instantiation is allowd.
@@ -50,6 +70,7 @@ public final class UiAccess {
 		super();
 	}
 	
+	//#if polish.usePolishGui
 	/**
 	 * Registers a ScreenStateListener to any J2ME Polish screen.
 	 * 
@@ -59,7 +80,9 @@ public final class UiAccess {
 	public static void setScreenStateListener( javax.microedition.lcdui.Screen screen, ScreenStateListener listener ) {
 		// ignore, just for being able to use the ScreenStateListener along with a normal screen.
 	}
+	//#endif
 
+	//#if polish.usePolishGui
 	/**
 	 * Registers a ScreenStateListener to any J2ME Polish screen.
 	 * 
@@ -69,6 +92,7 @@ public final class UiAccess {
 	public static void setScreenStateListener( Screen screen, ScreenStateListener listener ) {
 		screen.screenStateListener = listener;
 	}
+	//#endif
 	
 	/**
 	 * Retrieves the focused index of the specified screen
@@ -80,6 +104,7 @@ public final class UiAccess {
 		return -1;
 	}
 
+	//#if polish.usePolishGui
 	/**
 	 * Retrieves the focused index of the specified screen
 	 * 
@@ -92,6 +117,7 @@ public final class UiAccess {
 		}
 		return -1;
 	}
+	//#endif
 
 	//#if polish.midp2
 	/**
@@ -106,6 +132,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
 	/**
 	 * Sets the title of the screen using a CustomItem.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
@@ -116,7 +143,9 @@ public final class UiAccess {
 	public static void setTitle( Screen screen, CustomItem title ) {
 		screen.setTitle( title );
 	}
+	//#endif
 
+	//#if polish.usePolishGui
 	/**
 	 * Sets the title of the screen using a CustomItem.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
@@ -131,6 +160,7 @@ public final class UiAccess {
 		}
 		screen.setTitle( title );
 	}
+	//#endif
 
 	/**
 	 * Adds a command to a list item.
@@ -140,10 +170,11 @@ public final class UiAccess {
 	 * @param index the index of the item
 	 * @param command the item command
 	 */
-	public void addItemCommand( javax.microedition.lcdui.List list, int index, Command command ) {
+	public static void addItemCommand( javax.microedition.lcdui.List list, int index, Command command ) {
 		// ignore on real lists
 	}
 	
+	//#if polish.usePolishGui
 	/**
 	 * Adds a command to a list item.
 	 * Warning: this method won't add any commands when the J2ME Polish GUI is not activated.
@@ -152,8 +183,479 @@ public final class UiAccess {
 	 * @param index the index of the item
 	 * @param command the item command
 	 */
-	public void addItemCommand( List list, int index, Command command ) {
+	public static void addItemCommand( List list, int index, Command command ) {
 		Item item = list.getItem(index);
 		item.addCommand(command);
 	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the parent for the given child item.
+	 * 
+	 * @param child the child
+	 * @param parent the parent
+	 */
+	public static void setParent( Item child, Item parent ) {
+		child.parent = parent;
+	}
+	//#endif
+	
+	/**
+	 * Sets the parent for the given child item.
+	 * 
+	 * @param child the child
+	 * @param parent the parent
+	 */
+	public static void setParent( Item child, javax.microedition.lcdui.Item parent ) {
+		// ignore
+	}
+
+	/**
+	 * Sets the parent for the given child item.
+	 * 
+	 * @param child the child
+	 * @param parent the parent
+	 */
+	public static void setParent( javax.microedition.lcdui.Item child, javax.microedition.lcdui.Item parent ) {
+		// ignore
+	}
+	
+	/**
+	 * Retrieves the internal x position of the given item.
+	 * When it is equal -9999 this item's internal position is not known.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal x position of this item's currently selected content, -9999 when it is unknown.
+	 */
+	public static int getInternalX( javax.microedition.lcdui.Item item ) {
+		return -9999;
+	}
+
+	/**
+	 * Retrieves the internal y position of the given item.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal y position of this item's currently selected content.
+	 * @see #getInternalX(javax.microedition.lcdui.Item)
+	 */
+	public static int getInternalY( javax.microedition.lcdui.Item item ) {
+		return -1;
+	}
+	
+	/**
+	 * Retrieves the internal width of the given item.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal width of this item's currently selected content.
+	 * @see #getInternalX(javax.microedition.lcdui.Item)
+	 */
+	public static int getInternalWidth( javax.microedition.lcdui.Item item ) {
+		return -1;
+	}
+
+	/**
+	 * Retrieves the internal height of the given item.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal height of this item's currently selected content.
+	 * @see #getInternalX(javax.microedition.lcdui.Item)
+	 */
+	public static int getInternalHeight( javax.microedition.lcdui.Item item ) {
+		return -1;
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the internal x position of the given item.
+	 * When it is equal -9999 this item's internal position is not known.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal x position of this item's currently selected content, -9999 when it is unknown.
+	 */
+	public static int getInternalX( Item item ) {
+		return item.internalX;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the internal y position of the given item.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal y position of this item's currently selected content.
+	 * @see #getInternalX(Item)
+	 */
+	public static int getInternalY( Item item ) {
+		return item.internalY;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the internal width of the given item.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal width of this item's currently selected content.
+	 * @see #getInternalX(Item)
+	 */
+	public static int getInternalWidth( Item item ) {
+		return item.internalWidth;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the internal height of the given item.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 * 
+	 * @param item the item
+	 * @return the internal height of this item's currently selected content.
+	 * @see #getInternalX(Item)
+	 */
+	public static int getInternalHeight( Item item ) {
+		return item.internalHeight;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	public static Style focus( Item item, int direction, Style style ) {
+		return item.focus(style, direction);
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	public static void defocus( Item item, Style style ) {
+		item.defocus(style);
+	}
+	//#endif
+	
+	/**
+	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myItem );
+	 * </pre>
+	 * @param item the item which should get the new style
+	 */
+	public static void setStyle( javax.microedition.lcdui.Item item ) {
+		// ignore
+	}
+
+	/**
+	 * Applies a style to the given screen if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myScreen );
+	 * </pre>
+	 * @param screen the screen which should get the new style
+	 */
+	public static void setStyle( javax.microedition.lcdui.Screen screen ) {
+		// ignore
+	}
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myItem );
+	 * </pre>
+	 * @param item the item which should get the new style
+	 */
+	public static void setStyle( Item item ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the given screen if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myScreen );
+	 * </pre>
+	 * @param screen the screen which should get the new style
+	 */
+	public static void setStyle( Screen screen ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the given item.
+	 * 
+	 * @param item the item which should get the new style
+	 * @param style the style
+	 */
+	public static void setStyle( Item item, Style style ) {
+		item.setStyle( style );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the given screen.
+	 * 
+	 * @param screen the screen which should get the new style
+	 * @param style the style
+	 */
+	public static void setStyle( Screen screen, Style style ) {
+		screen.setStyle( style );
+	}
+	//#endif	
+	//#if polish.usePolishGui
+	public static boolean handleKeyPressed( Item item, int keyCode, int gameAction ) {
+		return item.handleKeyPressed(keyCode, gameAction);
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	public static boolean handlePointerPressed( Item item, int x, int y ) {
+		//#if polish.hasPointerEvents
+			return item.handlePointerPressed(x, y);
+		//#else
+			//# return false;
+		//#endif
+	}
+	//#endif
+	
+	
+	/**
+	 * Sets the caret position in the given text field.
+	 * Please note that this operation requires the direct input mode to work.
+	 * 
+	 * @param field the text f’eld 
+	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
+	 */
+	public static void setCaretPosition( javax.microedition.lcdui.TextField field, int position ) {
+		// ignore
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the caret position in the given text field.
+	 * Please note that this operation requires the direct input mode to work.
+	 * 
+	 * @param field the text f’eld 
+	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
+	 */
+	public static void setCaretPosition( TextField field, int position ) {
+		field.setCaretPosition( position ); 
+	}
+	//#endif
+
+	/**
+	 * Sets the caret position in the given text box.
+	 * Please note that this operation requires the direct input mode to work.
+	 * 
+	 * @param box the text box 
+	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
+	 */
+	public static void setCaretPosition( javax.microedition.lcdui.TextBox box, int position ) {
+		// ignore
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the caret position in the given text box.
+	 * Please note that this operation requires the direct input mode to work.
+	 * 
+	 * @param box the text box 
+	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
+	 */
+	public static void setCaretPosition( TextBox box, int position ) {
+		box.textField.setCaretPosition( position ); 
+	}
+	//#endif
+
+	/**
+	 * Sets the input mode for the given textfield.
+	 * Warning: you have to ensure that the input mode matches the contraints of
+	 * the given TextField.
+	 * 
+	 * @param field the text field 
+	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static void setInputMode( javax.microedition.lcdui.TextField field, int inputMode ) {
+		// ignore
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the input mode for the given textfield.
+	 * Warning: you have to ensure that the input mode matches the contraints of
+	 * the given TextField.
+	 * 
+	 * @param field the text field 
+	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static void setInputMode( TextField field, int inputMode ) {
+		field.setInputMode( inputMode ); 
+	}
+	//#endif
+
+	/**
+	 * Sets the input mode for the given textbox.
+	 * Warning: you have to ensure that the input mode matches the contraints of
+	 * the given TextBox.
+	 * 
+	 * @param box the text box 
+	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static void setInputMode( javax.microedition.lcdui.TextBox box, int inputMode ) {
+		// ignore
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the input mode for the given textbox.
+	 * Warning: you have to ensure that the input mode matches the contraints of
+	 * the given TextBox.
+	 * 
+	 * @param box the text box 
+	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static void setInputMode( TextBox box, int inputMode ) {
+		box.textField.setInputMode( inputMode ); 
+	}
+	//#endif
+	
+	/**
+	 * Retrieves the input mode for the given textfield.
+	 * 
+	 * @param field the text field 
+	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static int getInputMode( javax.microedition.lcdui.TextField field ) {
+		return -1;
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the input mode for the given textfield.
+	 * 
+	 * @param field the text field 
+	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static int getInputMode( TextField field ) {
+		return field.inputMode; 
+	}
+	//#endif
+
+	/**
+	 * Retrieves the input mode for the given textbox.
+	 * 
+	 * @param box the text box 
+	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static int getInputMode( javax.microedition.lcdui.TextBox box ) {
+		return -1;
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the input mode for the given textbox.
+	 * 
+	 * @param box the text box 
+	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @see #MODE_NUMBERS
+	 * @see #MODE_LOWERCASE
+	 * @see #MODE_UPPERCASE
+	 * @see #MODE_FIRST_UPPERCASE
+	 */
+	public static int getInputMode( TextBox box ) {
+		return box.textField.inputMode; 
+	}
+	//#endif
+	
+	/**
+	 * Adds the given command as a subcommand to the defined screen. When the J2ME Polish GUI is not used, this will just add the command to the screen like a normal command.
+	 * 
+	 * @param child the sub command
+	 * @param parent the parent command
+	 * @param screen the screen.
+	 */
+	public static void addSubCommand(  Command child, Command parent, javax.microedition.lcdui.Screen screen  ) {
+		screen.addCommand( child );
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Adds the given command as a subcommand to the defined screen. When the J2ME Polish GUI is not used, this will just add the command to the screen like a normal command.
+	 * 
+	 * @param child the sub command
+	 * @param parent the parent command
+	 * @param screen the screen.
+	 */
+	public static void addSubCommand(  Command child, Command parent, Screen screen  ) {
+		//#style menuitem?
+		addSubCommand( child, parent, screen );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Adds the given command as a subcommand to the defined screen. When the J2ME Polish GUI is not used, this will just add the command to the screen like a normal command.
+	 * 
+	 * @param child the sub command
+	 * @param parent the parent command
+	 * @param screen the screen.
+	 */
+	public static void addSubCommand(  Command child, Command parent, Screen screen, Style style  ) {
+		screen.addSubCommand( child, parent, style );
+	}
+	//#endif
 }

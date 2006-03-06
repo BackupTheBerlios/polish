@@ -85,7 +85,7 @@ package de.enough.polish.ui;
 public class TextBox extends Screen
 {
 	
-	private TextField textField;
+	protected TextField textField;
 
 	/**
 	 * Creates a new <code>TextBox</code> object with the given title

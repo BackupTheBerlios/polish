@@ -41,48 +41,58 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
+//TODO implement horizontal view type:
+/*
+ * 1. set appropriate style when item is unselected
+ * 2. xOffset, xTargetOffset
+ * 3. getNextItem > modify xOffset
+ * 4. Allow checkboxes
+ * 
+ */
+
 /**
- * <p>Shows only the currently selected item of an exclusive ChoiceGroup or an exclusive List.</p>
- * <p>Apply this view by specifying "view-type: exclusive-single-line;" in your polish.css file.</p>
+ * <p>Shows only the currently selected item of an ChoiceGroup or a List.</p>
+ * <p>Apply this view by specifying "view-type: horizontal-choice;" in your polish.css file.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
- *        08-Apr-2005 - rob creation
+ *        02-March-2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ExclusiveSingleLineView extends ContainerView {
+public class HorizontalChoiceView extends ContainerView {
 	
 	
 	private final static int POSITION_BOTH_SIDES = 0; 
 	private final static int POSITION_RIGHT = 1; 
-	private final static int POSITION_LEFT = 2; 
+	private final static int POSITION_LEFT = 2;
+	private static final int SCROLL_SMOOTH = 1; 
+	
 	private int arrowColor;
-	//#ifdef polish.css.exclusiveview-left-arrow
+	//#ifdef polish.css.horizontalview-left-arrow
 		private Image leftArrow;
 		private int leftYOffset;
 	//#endif
-	//#ifdef polish.css.exclusiveview-right-arrow
+	//#ifdef polish.css.horizontalview-right-arrow
 		private Image rightArrow;
 		private int rightYOffset;
 	//#endif
-	//#ifdef polish.css.exclusiveview-arrow-position
+	//#ifdef polish.css.horizontalview-arrow-position
 		private int arrowPosition;
-		//#ifdef polish.css.exclusiveview-arrow-padding
+		//#ifdef polish.css.horizontalview-arrow-padding
 			private int arrowPadding;
 		//#endif
 	//#endif
-	//#ifdef polish.css.exclusiveview-roundtrip
+	//#ifdef polish.css.horizontalview-roundtrip
 		private boolean allowRoundTrip;
 	//#endif
-	//#ifdef polish.css.exclusiveview-expand-background
+	//#ifdef polish.css.horizontalview-expand-background
 		private Background background;
 		private boolean expandBackground;
 	//#endif	
 	private int arrowWidth = 10;
 	private int currentItemIndex;
-	private ChoiceItem currentItem;
 	private int leftArrowStartX;
 	private int leftArrowEndX;
 	private int rightArrowStartX;
@@ -90,13 +100,45 @@ public class ExclusiveSingleLineView extends ContainerView {
 	private int xStart;
 	private Background parentBackground;
 	//private boolean isInitialized;
+	private int xOffset;
+	private int targetXOffset;
+	//#if polish.css.horizontalview-scroll-mode
+		private boolean scrollSmooth = true;	
+	//#endif
 
 	/**
 	 * Creates a new view
 	 */
-	public ExclusiveSingleLineView() {
+	public HorizontalChoiceView() {
 		super();
 	}
+	
+	/**
+	 * Animates this view.
+	 * 
+	 * @return true when the view was actually animated.
+	 */
+	public boolean animate() {
+		//#if polish.css.horizontalview-scroll-mode
+			if (this.scrollSmooth && this.targetXOffset != this.xOffset) {
+		//#else
+			//# if (this.targetXOffset != this.yOffset) {	
+		//#endif
+			int speed = (this.targetXOffset - this.xOffset) / 3;
+			speed += this.targetXOffset > this.xOffset ? 1 : -1;
+			this.xOffset += speed;
+			if ( speed > 0 && this.xOffset > this.targetXOffset) {
+				this.xOffset = this.targetXOffset;
+			} else if (speed < 0 && this.yOffset < this.targetXOffset) {
+				this.xOffset = this.targetXOffset;
+			}
+			// # debug
+			//System.out.println("animate(): adjusting xOffset to " + this.xOffset );
+			return true;
+		}
+		return false;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
@@ -114,21 +156,25 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 			//System.out.println("EXCLUSIVE:   INIT CONTENT WITH NO PARENT BG, now parentBackround != null: " + (this.parentBackground != null));
 		}
+		//TODO allow no selection for MULTIPLE
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
 		if (selectedItemIndex == -1) {
 			selectedItemIndex = 0;
 		}
-		parent.focusedIndex = selectedItemIndex;
+		if ( selectedItemIndex < parent.size() ) {
+			parent.focus (selectedItemIndex, parent.get( selectedItemIndex ), 0);
+		}
+		//parent.focusedIndex = selectedItemIndex;
 		int height = 0;
-		//#if polish.css.exclusiveview-left-arrow || polish.css.exclusiveview-right-arrow
+		//#if polish.css.horizontalview-left-arrow || polish.css.horizontalview-right-arrow
 			int width = 0;
-			//#ifdef polish.css.exclusiveview-left-arrow
+			//#ifdef polish.css.horizontalview-left-arrow
 				if (this.leftArrow != null) {
 					width = this.leftArrow.getWidth();
 					height = this.leftArrow.getHeight();
 				}
 			//#endif
-			//#ifdef polish.css.exclusiveview-right-arrow
+			//#ifdef polish.css.horizontalview-right-arrow
 				if (this.rightArrow != null) {
 					if ( this.rightArrow.getWidth() > width) {
 						width = this.rightArrow.getWidth();
@@ -138,7 +184,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 					}
 				}
 			//#endif
-			//#if polish.css.exclusiveview-left-arrow && polish.css.exclusiveview-right-arrow
+			//#if polish.css.horizontalview-left-arrow && polish.css.horizontalview-right-arrow
 				if (this.rightArrow != null && this.leftArrow != null) {
 					this.arrowWidth = width;
 				} else {
@@ -146,23 +192,23 @@ public class ExclusiveSingleLineView extends ContainerView {
 					if (width > this.arrowWidth) {
 						this.arrowWidth = width;
 					}
-			//#if polish.css.exclusiveview-left-arrow && polish.css.exclusiveview-right-arrow
+			//#if polish.css.horizontalview-left-arrow && polish.css.horizontalview-right-arrow
 				}
 			//#endif
 		//#endif
-		//#if polish.css.exclusiveview-arrow-padding
+		//#if polish.css.horizontalview-arrow-padding
 			int completeArrowWidth = ( this.arrowWidth * 2 ) + this.paddingHorizontal + this.arrowPadding;
 		//#else
 			//# int completeArrowWidth = ( this.arrowWidth + this.paddingHorizontal ) << 1;
 		//#endif
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES) {
 		//#endif
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
 				this.rightArrowStartX = lineWidth - this.arrowWidth;
 				this.rightArrowEndX = lineWidth;
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			} else if (this.arrowPosition == POSITION_RIGHT ){
 				this.leftArrowStartX = lineWidth - completeArrowWidth + this.paddingHorizontal;
 				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
@@ -176,39 +222,67 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 		//#endif
 		lineWidth -= completeArrowWidth;
-		int selectedItemHeight = 0;
-		if (selectedItemIndex < parent.size() ) {
-			ChoiceItem selectedItem = (ChoiceItem) parent.get( selectedItemIndex );
-			selectedItem.drawBox = false;
-			selectedItemHeight = selectedItem.getItemHeight(lineWidth, lineWidth);
-			this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth ) + completeArrowWidth;
-			this.appearanceMode = Item.INTERACTIVE;
-			this.currentItem = selectedItem;
-			this.currentItemIndex = selectedItemIndex;
-		} else {
-			this.appearanceMode = Item.PLAIN;
-			if (this.isLayoutExpand()) {
-				this.contentWidth = lineWidth + completeArrowWidth;
-			} else {
-				this.contentWidth = this.paddingHorizontal + completeArrowWidth;
+		int completeWidth = 0;
+		Item[] items = parent.getItems();
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			//TODO allow drawing of boxes as well
+			((ChoiceItem) item).drawBox = false;
+			int itemHeight = item.getItemHeight(lineWidth, lineWidth);
+			int itemWidth = item.itemWidth;
+			if (itemHeight > height ) {
+				height = itemHeight;
+			}
+			int startX = completeWidth;
+			completeWidth += itemWidth + this.paddingHorizontal;
+			if ( i == selectedItemIndex) {
+				if ( startX + this.xOffset < 0 ) {
+					//#ifdef polish.css.horizontalview-scroll-mode
+						if (this.scrollSmooth) {
+					//#endif
+							this.targetXOffset = -startX;
+					//#ifdef polish.css.horizontalview-scroll-mode
+						} else {
+							this.xOffset = -startX;
+						}
+					//#endif
+				} else if ( completeWidth + this.xOffset > lineWidth ) {
+					//#ifdef polish.css.horizontalview-scroll-mode
+						if (this.scrollSmooth) {
+					//#endif
+							this.targetXOffset = lineWidth - completeWidth;
+					//#ifdef polish.css.horizontalview-scroll-mode
+						} else {
+							this.xOffset = lineWidth - completeWidth;
+							this.xOffset = -startX;
+						}
+					//#endif
+				}
 			}
 		}
-		if (selectedItemHeight > height) {
-			this.contentHeight = selectedItemHeight;
+		this.contentHeight = height;
+		this.contentWidth = lineWidth + completeArrowWidth;
+		
+		if (items.length > 0) {
+			this.appearanceMode = Item.INTERACTIVE;
 		} else {
-			this.contentHeight = height;
+			this.appearanceMode = Item.PLAIN;
+		}
+		if (selectedItemIndex < items.length ) {
+			this.focusedItem = (ChoiceItem) items[ selectedItemIndex ];
+			this.currentItemIndex = selectedItemIndex;
 		}
 		//if ( selectedItem.isFocused ) {
 			//System.out.println("Exclusive Single Line View: contentHeight=" + this.contentHeight);
 		//}
 		//this.isInitialized = true;
 		
-		//#if polish.css.exclusiveview-left-arrow			
+		//#if polish.css.horizontalview-left-arrow			
 			if (this.leftArrow != null) {
 				this.leftYOffset = (this.contentHeight - this.leftArrow.getHeight()) / 2; // always center vertically
 			}
 		//#endif
-		//#if polish.css.exclusiveview-right-arrow
+		//#if polish.css.horizontalview-right-arrow
 			if (this.rightArrow != null) {
 				this.rightYOffset = (this.contentHeight - this.rightArrow.getHeight()) / 2; // always center vertically
 			}
@@ -223,7 +297,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	
 
 	protected void setStyle(Style style) {
-		//#ifdef polish.css.exclusiveview-expand-background
+		//#ifdef polish.css.horizontalview-expand-background
 			Boolean expandBackgroundBool = style.getBooleanProperty("exclusiveview-expand-background");
 			if (expandBackgroundBool != null) {
 				this.expandBackground = expandBackgroundBool.booleanValue(); 
@@ -233,7 +307,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 		//#endif
 		super.setStyle(style);
-		//#ifdef polish.css.exclusiveview-left-arrow
+		//#ifdef polish.css.horizontalview-left-arrow
 			String leftArrowUrl = style.getProperty("exclusiveview-left-arrow");
 			if (leftArrowUrl != null) {
 				try {
@@ -244,7 +318,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 				}
 			}
 		//#endif
-		//#ifdef polish.css.exclusiveview-right-arrow
+		//#ifdef polish.css.horizontalview-right-arrow
 			String rightArrowUrl = style.getProperty("exclusiveview-right-arrow");
 			if (rightArrowUrl != null) {
 				try {
@@ -255,18 +329,18 @@ public class ExclusiveSingleLineView extends ContainerView {
 				}
 			}
 		//#endif
-		//#ifdef polish.css.exclusiveview-arrow-color
+		//#ifdef polish.css.horizontalview-arrow-color
 			Integer colorInt = style.getIntProperty("exclusiveview-arrow-color");
 			if ( colorInt != null ) {
 				this.arrowColor = colorInt.intValue();
 			}
 		//#endif
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			Integer positionInt = style.getIntProperty("exclusiveview-arrow-position");
 			if ( positionInt != null ) {
 				this.arrowPosition = positionInt.intValue();
 			}
-			//#ifdef polish.css.exclusiveview-arrow-padding
+			//#ifdef polish.css.horizontalview-arrow-padding
 				Integer arrowPaddingInt = style.getIntProperty("exclusiveview-arrow-padding");
 				if (arrowPaddingInt != null) {
 					this.arrowPadding = arrowPaddingInt.intValue();
@@ -275,10 +349,16 @@ public class ExclusiveSingleLineView extends ContainerView {
 				}
 			//#endif
 		//#endif
-		//#ifdef polish.css.exclusiveview-roundtrip
+		//#ifdef polish.css.horizontalview-roundtrip
 			Boolean allowRoundTripBool = style.getBooleanProperty("exclusiveview-roundtrip");
 			if (allowRoundTripBool != null) {
 				this.allowRoundTrip = allowRoundTripBool.booleanValue();
+			}
+		//#endif
+		//#ifdef polish.css.horizontalview-scroll-mode
+			Integer scollModeInt = style.getIntProperty("horizontalview-scroll-mode");
+			if (scollModeInt != null) {
+				this.scrollSmooth = (scollModeInt.intValue() == SCROLL_SMOOTH);
 			}
 		//#endif
 
@@ -295,19 +375,19 @@ public class ExclusiveSingleLineView extends ContainerView {
 		System.out.println("ExclusiveView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 		this.xStart = x;
 		int modifiedX = x;
-		//#ifdef polish.css.exclusiveview-expand-background
-			if (this.expandBackground && this.background != null) {
-				this.currentItem.background = null;
+		//#ifdef polish.css.horizontalview-expand-background
+			if (this.expandBackground && this.background != null && this.focusedItem != null) {
+				this.focusedItem.background = null;
 				this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
 			}
 		//#endif
 
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
 		//#endif
 				modifiedX += this.arrowWidth + this.paddingHorizontal;
 				leftBorder += this.arrowWidth + this.paddingHorizontal;
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			} else if (this.arrowPosition == POSITION_LEFT ) {
 				modifiedX += (this.arrowWidth + this.paddingHorizontal) << 1;
 				leftBorder += (this.arrowWidth + this.paddingHorizontal) << 1;
@@ -315,11 +395,11 @@ public class ExclusiveSingleLineView extends ContainerView {
 		//#endif	
 				
 
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
 		//#endif
 				rightBorder -= this.arrowWidth + this.paddingHorizontal;
-		//#ifdef polish.css.exclusiveview-arrow-position
+		//#ifdef polish.css.horizontalview-arrow-position
 			} else if (this.arrowPosition == POSITION_RIGHT ) {
 				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;
 			}
@@ -327,21 +407,47 @@ public class ExclusiveSingleLineView extends ContainerView {
 
 		
 		//#debug
-		System.out.println("ExclusiveView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.currentItem.itemWidth  );
-		if (this.currentItem != null) {
-			this.currentItem.paint(modifiedX, y, leftBorder, rightBorder, g);
+		System.out.println("HorizontalChoiceView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.focusedItem.itemWidth  );
+		
+		
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+		boolean setClip = this.contentWidth > rightBorder - leftBorder;
+		if (setClip) {
+			g.clipRect(modifiedX, clipY, rightBorder - modifiedX, clipHeight );
+		}
+		
+		int itemX = modifiedX + this.xOffset;
+		int focusedX = 0;
+		Item[] items = this.parentContainer.getItems();
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			if ( item == this.focusedItem ) {
+				focusedX = itemX;				
+			} else {
+				item.paint(itemX, y, leftBorder, rightBorder, g);
+			}
+			itemX += item.itemWidth + this.paddingHorizontal;
+		}
+		if (this.focusedItem != null) {
+			this.focusedItem.paint(focusedX, y, leftBorder, rightBorder, g);			
+		}
+		if (setClip) {
+			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
 
 		g.setColor( this.arrowColor );
 		//draw left arrow:
-		//#ifdef polish.css.exclusiveview-roundtrip
+		//#ifdef polish.css.horizontalview-roundtrip
 			if (this.allowRoundTrip || this.currentItemIndex > 0) {
 		//#else
 			//# if (this.currentItemIndex > 0) {
 		//#endif
 			// draw left arrow
 			int startX = x + this.leftArrowStartX;	
-			//#ifdef polish.css.exclusiveview-left-arrow
+			//#ifdef polish.css.horizontalview-left-arrow
 				if (this.leftArrow != null) {
 					//System.out.println("Drawing left IMAGE arrow at " + startX );
 					g.drawImage( this.leftArrow, startX, y + this.leftYOffset, Graphics.LEFT | Graphics.TOP );
@@ -361,20 +467,20 @@ public class ExclusiveSingleLineView extends ContainerView {
 					g.drawLine( startX, y1, x2, y3 );
 					g.drawLine( x2, y, x2, y3 );
 				//#endif
-			//#ifdef polish.css.exclusiveview-left-arrow
+			//#ifdef polish.css.horizontalview-left-arrow
 				}
 			//#endif
 		}
 		
 		// draw right arrow:
-		//#ifdef polish.css.exclusiveview-roundtrip
+		//#ifdef polish.css.horizontalview-roundtrip
 			if (this.allowRoundTrip ||  (this.currentItemIndex < this.parentContainer.size() - 1) ) {
 		//#else
 			//# if (this.currentItemIndex < this.parentContainer.size() - 1) {
 		//#endif
 			// draw right arrow
 			int startX = x + this.rightArrowStartX;	
-			//#ifdef polish.css.exclusiveview-right-arrow
+			//#ifdef polish.css.horizontalview-right-arrow
 				if (this.rightArrow != null) {
 					g.drawImage( this.rightArrow, startX, y + this.rightYOffset, Graphics.LEFT | Graphics.TOP );
 				} else {
@@ -392,7 +498,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 					g.drawLine( x2, y1, startX, y3 );
 					g.drawLine( startX, y, startX, y3 );
 				//#endif
-			//#ifdef polish.css.exclusiveview-right-arrow
+			//#ifdef polish.css.horizontalview-right-arrow
 				}
 			//#endif
 		}
@@ -406,56 +512,54 @@ public class ExclusiveSingleLineView extends ContainerView {
 		System.out.println("ExclusiveSingleLineView: getNextItem()");
 		ChoiceGroup choiceGroup = (ChoiceGroup) this.parentContainer;
 		Item[] items = this.parentContainer.getItems();
-		if (this.currentItem == null) {
+		ChoiceItem currentItem = (ChoiceItem) this.focusedItem;
+		if (currentItem == null) {
 			//#debug warn
-			System.out.println("ExclusiveSingleLineView: getNextItem(): no current item defined, it seems the initContent() has been skipped.");
+			System.out.println("HorizontalChoiceView: getNextItem(): no current item defined, it seems the initContent() has been skipped.");
 			this.currentItemIndex = choiceGroup.getSelectedIndex();
-			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			this.focusedItem = currentItem;
 		}
-		Item lastItem = this.currentItem;
-		//ChoiceItem currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		
+		ChoiceItem nextItem = null;
 	
-		//#ifdef polish.css.exclusiveview-roundtrip
+		//#ifdef polish.css.horizontalview-roundtrip
 			if ( gameAction == Canvas.LEFT && (this.allowRoundTrip || this.currentItemIndex > 0 )) {
 		//#else
 			//# if ( gameAction == Canvas.LEFT && this.currentItemIndex > 0 ) {
 		//#endif
-			this.currentItem.select( false );
+			currentItem.select(false);
 			this.currentItemIndex--;
-			//#ifdef polish.css.exclusiveview-roundtrip
+			//#ifdef polish.css.horizontalview-roundtrip
 				if (this.currentItemIndex < 0) {
 					this.currentItemIndex = items.length - 1;
 				}
 			//#endif
-			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-			this.currentItem.adjustProperties( lastItem );
+			nextItem = (ChoiceItem) items[ this.currentItemIndex ];
+			//nextItem.adjustProperties( lastItem );
 			//this.currentItem.select( true );
 			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
 			choiceGroup.notifyStateChanged();
-			
-			return this.currentItem;
-		//#ifdef polish.css.exclusiveview-roundtrip
+		//#ifdef polish.css.horizontalview-roundtrip
 			} else if ( gameAction == Canvas.RIGHT && (this.allowRoundTrip || this.currentItemIndex < items.length - 1  )) {
 		//#else
 			} else if ( gameAction == Canvas.RIGHT && this.currentItemIndex < items.length - 1 ) {
 		//#endif
-			this.currentItem.select( false );
+			currentItem.select(false);
 			this.currentItemIndex++;
-			//#ifdef polish.css.exclusiveview-roundtrip
+			//#ifdef polish.css.horizontalview-roundtrip
 				if (this.currentItemIndex >= items.length) {
 					this.currentItemIndex = 0;
 				}
 			//#endif
-			this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
-			this.currentItem.adjustProperties( lastItem );
+			nextItem = (ChoiceItem) items[ this.currentItemIndex ];
+			//nextItemItem.adjustProperties( lastItem );
 			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
 			choiceGroup.notifyStateChanged();
-			//this.currentItem.select( true );
-			
-			return this.currentItem;
+			//this.currentItem.select( true );			
 		}
 		// in all other cases there is no next item:
-		return null;
+		return nextItem;
 	}
 
 	//#ifdef polish.hasPointerEvents
@@ -470,22 +574,21 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 */
 	public boolean handlePointerPressed(int x, int y) {
 		Item[] items = this.parentContainer.getItems();
-		this.currentItem.select( false );
 		x -= this.xStart;
 		if (this.currentItemIndex > 0 && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
 			this.currentItemIndex--;
-		} else if ( this.currentItemIndex < items.length - 1 && x >= this.rightArrowStartX && x <= this.rightArrowEndX ) {
-			this.currentItemIndex++;
 		} else  {
 			this.currentItemIndex++;
 			if (this.currentItemIndex >= items.length ) {
 				this.currentItemIndex = 0;
 			}
-		}  
-		this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		}
+		
+		((ChoiceItem)this.focusedItem).select( false );
+		this.focusedItem = (ChoiceItem) items[ this.currentItemIndex ];
 		//this.currentItem.select( true );
 		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
-		this.parentContainer.focus(this.currentItemIndex, this.currentItem, 0);
+		this.parentContainer.focus (this.currentItemIndex, this.focusedItem, 0);
 		return true;
 	}
 	//#endif

@@ -653,7 +653,7 @@ public class TextField extends StringItem
 		private BitMapFontViewer editingCaretViewer;
 		private BitMapFontViewer caretViewer;
 	//#endif
-	private boolean showCaret;
+	protected boolean showCaret;
 	private long lastCaretSwitch;
 	private int originalWidth; // the content width according to the text
 	private int originalHeight; // the content height according to the text
@@ -780,10 +780,10 @@ public class TextField extends StringItem
 	//#elif !tmp.forceDirectInput
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
-	//#ifdef polish.css.textfield-caret-flash
-		private boolean flashCaret = true;
-	//#endif
+	protected boolean flashCaret = true;
 	private boolean isUneditable;
+
+	private boolean doSetCaretPosition;
 		
 
 
@@ -866,31 +866,7 @@ public class TextField extends StringItem
 			}
 		//#endif
 			
-		//#ifndef tmp.suppressCommands
-			// add default text field item-commands:
-			//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
-				//#ifdef polish.i18n.useDynamicTranslations
-					String delLabel = Locale.get("polish.command.delete");
-					if ( delLabel != DELETE_CMD.getLabel()) {
-						DELETE_CMD = new Command( delLabel, Command.CANCEL, 1 );
-					}
-				//#endif
-				this.addCommand(DELETE_CMD);
-			//#endif
-			//#if polish.TextField.suppressClearCommand != true
-				//#ifdef polish.i18n.useDynamicTranslations
-					String clearLabel = Locale.get("polish.command.clear");
-					if ( clearLabel != CLEAR_CMD.getLabel()) {
-						CLEAR_CMD = new Command( clearLabel, Command.ITEM, 2 );
-					}
-				//#endif
-				this.addCommand(CLEAR_CMD);
-			//#endif
-			this.itemCommandListener = this;
-		//#endif
-		//#if tmp.directInput || polish.blackberry
-			setConstraints(constraints);
-		//#endif
+		setConstraints(constraints);
 	}
 	
 	
@@ -969,6 +945,7 @@ public class TextField extends StringItem
 					&& (this.text == null || this.text.length() == 0) ) {
 				this.caretPosition = text.length();
 				this.caretColumn = this.caretPosition;
+				//TODO set caretX and caretY Positions and currentRowStart/currentRowEnd?
 			}
 		//#endif
 		setText(text);
@@ -1205,6 +1182,7 @@ public class TextField extends StringItem
 	 * Gets the current input position.  For some UIs this may block and ask
 	 * the user for the intended caret position, and on other UIs this may
 	 * simply return the current caret position.
+	 * When the direct input mode is used, this method simply returns the current cursor position (= non blocking).
 	 * 
 	 * @return the current caret position, 0 if at the beginning
 	 */
@@ -1228,6 +1206,64 @@ public class TextField extends StringItem
 			return 0;
 		//#endif
 	}
+	
+	/**
+	 * Sets the caret position.
+	 * Please note that this operation requires the direct input mode to work.
+	 * 
+	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
+	 */
+	public void setCaretPosition(int position) {
+		//#if polish.blackberry
+			this.editField.setCursorPosition(position);
+		//#elif tmp.allowDirectInput || tmp.forceDirectInput
+			if ( ! this.isInitialised ) {
+				this.doSetCaretPosition = true;
+				this.caretPosition = position;
+			} else if (this.realTextLines == null ){
+				// ignore position when there is not text present
+			} else {
+				int row = 0;
+				int col = 0;
+				int passedCharacters = 0;
+				String textLine = null;
+				for (int i = 0; i < this.realTextLines.length; i++) {
+					textLine = this.realTextLines[i];
+					passedCharacters += textLine.length();
+					//System.out.println("passedCharacters=" + passedCharacters + ", line=" + textLine );
+					if (passedCharacters >= position ) {
+						row = i;
+						col = textLine.length() - (passedCharacters - position);
+						break;
+					}
+				}
+				//#debug
+				System.out.println("setCaretPosition, position=" + position + ", row=" + row + ", col=" + col );
+				this.caretRow = row;	
+				this.caretColumn = col;
+				
+				textLine = this.textLines[ row ];
+				this.originalRowText = textLine;
+				String firstPart;
+				if (this.caretColumn < textLine.length()) {
+					firstPart = textLine.substring(0, this.caretColumn);
+					this.caretRowLastPart = textLine.substring( this.caretColumn );
+					this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
+				} else {
+					firstPart = textLine;
+					this.caretRowLastPart = "";
+					this.caretRowLastPartWidth =  0;
+				}
+				this.caretRowFirstPart = firstPart;
+				this.caretX = this.font.stringWidth( firstPart );
+				this.internalY = this.caretRow * this.rowHeight;
+				this.caretY = this.internalY;
+				repaint();
+			}
+		//#endif
+	}
+
+
 
 	/**
 	 * Sets the input constraints of the <code>TextField</code>. If
@@ -1303,6 +1339,45 @@ public class TextField extends StringItem
 				updateInfo();
 			//#endif
 		//#endif
+		
+		// set item commands:
+		//#if !tmp.suppressCommands
+			if (this.isFocused) {
+				getScreen().removeItemCommands( this );
+			}
+			removeCommand( DELETE_CMD );
+			// add default text field item-commands:
+			//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+				if (!this.isUneditable) {
+					//#ifdef polish.i18n.useDynamicTranslations
+						String delLabel = Locale.get("polish.command.delete");
+						if ( delLabel != DELETE_CMD.getLabel()) {
+							DELETE_CMD = new Command( delLabel, Command.CANCEL, 1 );
+						}
+					//#endif
+					this.addCommand(DELETE_CMD);
+				}
+			//#endif
+			//#if polish.TextField.suppressClearCommand != true
+				removeCommand( CLEAR_CMD );
+				if (!this.isUneditable) {
+					//#ifdef polish.i18n.useDynamicTranslations
+						String clearLabel = Locale.get("polish.command.clear");
+						if ( clearLabel != CLEAR_CMD.getLabel()) {
+							CLEAR_CMD = new Command( clearLabel, Command.ITEM, 2 );
+						}
+					//#endif
+					this.addCommand(CLEAR_CMD);
+				}
+			//#endif
+			this.itemCommandListener = this;
+			if (this.isFocused) {
+				getScreen().setItemCommands( this );
+			}
+
+		//#endif
+			
+			
 //		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
 //			// deactivate this field:
 //			super.setAppearanceMode( Item.PLAIN );
@@ -1571,6 +1646,7 @@ public class TextField extends StringItem
 				boolean hasBeenInitedBefore = (this.realTextLines != null);
 				int endOfLinePos = 0;
 				int maxPos = this.text.length();
+				int readCharacters = 0;
 				for (int i = 0; i < length; i++) {
 					String line = this.textLines[i];
 					endOfLinePos += line.length();
@@ -1597,7 +1673,29 @@ public class TextField extends StringItem
 							}
 						}
 					}
-					if (i == this.caretRow) {
+					if (this.doSetCaretPosition) {
+						readCharacters += line.length();
+						if (readCharacters >= this.caretPosition) {
+							this.doSetCaretPosition = false;
+							this.caretColumn = line.length() - (readCharacters - this.caretPosition);
+							this.caretRow = i;	
+							this.originalRowText = line;
+							String firstPart;
+							if (this.caretColumn < line.length()) {
+								firstPart = line.substring(0, this.caretColumn);
+								this.caretRowLastPart = line.substring( this.caretColumn );
+								this.caretRowLastPartWidth = this.font.stringWidth( this.caretRowLastPart );
+							} else {
+								firstPart = line;
+								this.caretRowLastPart = "";
+								this.caretRowLastPartWidth =  0;
+							}
+							this.caretRowFirstPart = firstPart;
+							this.caretX = this.font.stringWidth( firstPart );
+							this.internalY = this.caretRow * this.rowHeight;
+							this.caretY = this.internalY;
+						}
+					} else if (i == this.caretRow) {
 						this.originalRowText = line;
 						if (this.caretColumn < 0 ) {
 							this.caretColumn = 0;
@@ -2003,11 +2101,10 @@ public class TextField extends StringItem
 				}
 			}
 		//#endif
-		//#ifdef polish.css.textfield-caret-flash
-			if (!this.flashCaret) {
-				return false;
-			}
-		//#endif
+		if (!this.flashCaret) {
+			//System.out.println("TextField.animate():  flashCaret==false");
+			return false;
+		}
 		if ( currentTime - this.lastCaretSwitch > 500 ) {
 			this.lastCaretSwitch = currentTime;
 			this.showCaret = ! this.showCaret;
@@ -2066,7 +2163,7 @@ public class TextField extends StringItem
 						//# }
 					//#endif
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
 					//#else
 					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
 					//#endif
@@ -2186,7 +2283,10 @@ public class TextField extends StringItem
 					boolean characterInserted = false;
 					char character = this.caretChar;
 					// allow backspace:
-					if (currentLength > 0) {
+					if ( currentLength > 0 ) {
+						if (this.isUneditable) {
+							return false;
+						}
 						//#ifdef polish.key.ClearKey:defined
 							//#= if (keyCode == ${polish.key.ClearKey}) {
 						//#else
@@ -2687,6 +2787,26 @@ public class TextField extends StringItem
 		}
 	}
 	//#endif
+
+	/**
+	 * Sets the input mode for this TextField.
+	 * 
+	 * @param inputMode the input mode
+	 */
+	public void setInputMode(int inputMode) {
+		this.inputMode = inputMode;
+		//#if polish.TextField.showInputInfo != false
+			updateInfo();
+		//#endif
+		if (this.caretChar != this.editingCaretChar) {
+			insertCharacter();
+		}
+		if (inputMode == MODE_FIRST_UPPERCASE) {
+			this.nextCharUppercase = true;
+		} else {
+			this.nextCharUppercase = false;
+		}
+	}
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

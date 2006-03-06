@@ -168,6 +168,8 @@ public class Gauge extends Item
 implements ImageConsumer
 //#endif
 {
+	private static int ANIMATION_MODE_BACKANDFORTH = 1;
+	
 	/**
 	 * A special value used for the maximum value in order to indicate that
 	 * the <code>Gauge</code> has indefinite range.  This value may be
@@ -279,17 +281,26 @@ implements ImageConsumer
 	private int gapWidth = 3;
 	private int gapColor = 0xFFFFFF; // default gap color is white
 	private Image image;
+	private int imageYOffset;
 	private Image indicatorImage;
 	private boolean isIndefinite;
 	private int indefinitePos;
-	//#ifdef polish.midp2
-	private javax.microedition.lcdui.Gauge midpGauge;
-	//#endif
 	private boolean showValue = true;
 	private boolean isValueLeft = true;
 	private int fontColor;
 	private Font font;
 	private int valueWidth;
+
+	//#if polish.css.gauge-animation-speed
+		private int animationSpeed = 1;
+	//#endif
+	//#if polish.css.gauge-animation-mode
+		private int animationMode;
+		private boolean animationDirectionDownwards;
+	//#endif
+	//#if polish.css.gauge-inactive-image
+		private Image inactiveImage;
+	//#endif
 
 	/**
 	 * Creates a new <code>Gauge</code> object with the given
@@ -432,22 +443,6 @@ implements ImageConsumer
 		setValue( initialValue );
 	}
 
-	//#ifdef polish.midp2
-	/**
-	 * Gets the MIDP Gauge class.
-	 * This is used for Gauge elements which are added to an Alert.
-	 * Compare Alert#setIndicator( Gauge ).
-	 * This method is only avaiable on MIDP/2.0 devices.
-	 * 
-	 * @return the MIDP Gauge class.
-	 */
-	public javax.microedition.lcdui.Gauge getMidpGauge() {
-		if (this.midpGauge == null) {
-			this.midpGauge = new javax.microedition.lcdui.Gauge( getLabel(), this.isInteractive, this.maxValue, this.value ); 
-		}
-		return this.midpGauge;
-	}
-	//#endif
 
 	/**
 	 * Sets the current value of this <code>Gauge</code> object.
@@ -514,15 +509,10 @@ implements ImageConsumer
 		if (this.isInitialised) {
 			if (this.isIndefinite) {
 				updateIndefiniteIndicatorImage();
-			} else {
+			} else if (this.image == null){
 				createIndicatorImage();
 			}
 		}
-		//#ifdef polish.midp2
-		if (this.midpGauge != null) {
-			this.midpGauge.setValue( value );
-		}
-		//#endif	
 		if (this.isInitialised) {
 			repaint();
 		}
@@ -701,11 +691,6 @@ implements ImageConsumer
 			//#endif
 		}
 		this.maxValue = maxValue;
-		//#ifdef polish.midp2
-		if (this.midpGauge != null) {
-			this.midpGauge.setMaxValue( maxValue );
-		}
-		//#endif		
 		this.isInitialised = false;
 	}
 
@@ -748,7 +733,29 @@ implements ImageConsumer
 			g.drawString( this.valueString, x, y, Graphics.TOP | Graphics.LEFT );
 			x += this.valueWidth;
 		}
-		g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
+		//#ifdef polish.css.gauge-inactive-image
+			if (this.inactiveImage != null) {
+				g.drawImage(this.inactiveImage, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
+			}
+		//#endif
+		if (this.isIndefinite) {
+			g.drawImage(this.indicatorImage, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );			
+		} else if (this.image != null) {
+			if (this.value != 0) {
+				int width = (this.image.getWidth() * this.value) / this.maxValue;
+				int clipX = g.getClipX();
+				int clipY = g.getClipY();
+				int clipWidth = g.getClipWidth();
+				int clipHeight = g.getClipHeight();
+				
+				g.clipRect(x, clipY, width, clipHeight);
+				g.drawImage(this.image, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
+				
+				g.setClip(clipX, clipY, clipWidth, clipHeight);
+			}
+		} else {
+			g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
+		}
 		if (this.showValue && !this.isValueLeft) {
 			g.setFont( this.font );
 			g.setColor( this.fontColor );
@@ -773,10 +780,18 @@ implements ImageConsumer
 			this.valueWidth = this.font.stringWidth( "" + this.maxValue ) + this.paddingHorizontal;
 		}
 		// setting height:
-		if (this.image != null) {
-			this.contentHeight = this.image.getHeight();
-		} else if (this.preferredHeight > 0 ) {
+		if (this.preferredHeight > 0 ) {
 			this.contentHeight = this.preferredHeight;
+			if (this.image != null) {
+				int imageHeight = this.image.getHeight();
+				if ( (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM ) {
+					this.imageYOffset = this.preferredHeight - imageHeight;
+				} else if ( (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER ) {
+					this.imageYOffset = (this.preferredHeight - imageHeight) / 2;
+				}
+			}
+		} else if (this.image != null) {
+			this.contentHeight = this.image.getHeight();
 		} else {
 			this.contentHeight = 10;
 		}
@@ -801,8 +816,8 @@ implements ImageConsumer
 				if (scr != null) {
 					// register this gauge at the current screen:
 					scr.gauge = this;
-				} else {
-					System.out.println("unable to register gauge");
+					//} else {
+					//System.out.println("unable to register gauge");
 				}
 			}
 			if (this.image != null ) {
@@ -816,7 +831,7 @@ implements ImageConsumer
 			}
 			this.indicatorImage = Image.createImage( this.contentWidth - this.valueWidth, this.contentHeight );
 			updateIndefiniteIndicatorImage();
-		} else { // this is a definite gauge
+		} else if (this.image == null){ // this is a definite gauge
 			createIndicatorImage();
 		}
 	}
@@ -892,6 +907,17 @@ implements ImageConsumer
 				}
 			}
 		//#endif
+		//#ifdef polish.css.gauge-inactive-image
+			String inactiveImageStr = style.getProperty( "gauge-inactive-image");
+			if (inactiveImageStr != null) {
+				try {
+					this.inactiveImage = StyleSheet.getImage( inactiveImageStr, null, false );
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("unable to load gauge-inactive-image [" + inactiveImageStr + "]: " + e );
+				}
+			}
+		//#endif
 		if (this.maxValue != INDEFINITE) {
 			//#ifdef polish.css.gauge-show-value
 				Boolean showValueBool = style.getBooleanProperty("gauge-show-value");
@@ -914,6 +940,18 @@ implements ImageConsumer
 				}
 			//#endif
 		}
+		//#if polish.css.gauge-animation-speed
+			Integer animationSpeedInt = style.getIntProperty( "gauge-animation-speed" );
+			if (animationSpeedInt != null) {
+				this.animationSpeed = animationSpeedInt.intValue();
+			}
+		//#endif
+		//#if polish.css.gauge-animation-mode
+			Integer animationModeInt = style.getIntProperty( "gauge-animation-mode" );
+			if (animationModeInt != null) {
+				this.animationMode = animationModeInt.intValue();
+			}
+		//#endif
 	}
 
 	//#ifdef polish.images.backgroundLoad
@@ -978,13 +1016,44 @@ implements ImageConsumer
 	 */
 	public boolean animate() {
 		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING && this.isInitialised) {
-			this.indefinitePos++;
+			//#if polish.css.gauge-animation-mode
+				if ( this.image != null && this.animationMode == ANIMATION_MODE_BACKANDFORTH ) {
+					if (this.animationDirectionDownwards) {
+						//#if polish.css.gauge-animation-speed
+							this.indefinitePos -= this.animationSpeed;
+						//#else
+							this.indefinitePos--;
+						//#endif
+						if (this.indefinitePos <= 0) {
+							this.indefinitePos = 0;
+							this.animationDirectionDownwards = false;
+						}
+					} else {
+						//#if polish.css.gauge-animation-speed
+							this.indefinitePos += this.animationSpeed;
+						//#else
+							this.indefinitePos++;
+						//#endif
+						if (this.indefinitePos >= this.contentWidth - this.image.getWidth()) {				
+							this.indefinitePos = this.contentWidth - this.image.getWidth();
+							this.animationDirectionDownwards = true;
+						}
+					}
+					updateIndefiniteIndicatorImage();
+					return true;
+				}
+			//#endif
+			//#if polish.css.gauge-animation-speed
+				this.indefinitePos += this.animationSpeed;
+			//#else
+				this.indefinitePos++;
+			//#endif
 			if (this.image == null) {
 				if (this.indefinitePos > (this.chunkWidth + this.gapWidth)) {
 					this.indefinitePos = 0;
 				}
-			} else if (this.indefinitePos > this.maxValue) {
-				this.indefinitePos = 0;
+			} else if (this.indefinitePos > this.maxValue) {				
+				this.indefinitePos = -this.image.getWidth();
 			}
 			updateIndefiniteIndicatorImage();
 			return true;

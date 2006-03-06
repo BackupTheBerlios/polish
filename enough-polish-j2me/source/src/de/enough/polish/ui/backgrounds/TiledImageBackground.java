@@ -53,6 +53,8 @@ import de.enough.polish.ui.StyleSheet;
  * 		<li><b>overlap</b>: defines whether the tiles should overlap over the actual background-area when they don't
  *        fit exactly into the actual background-area. Either "true"/"yes" or "no"/"false". Defaults to false.</li>
  * 		</li>
+ * 		<li><b>x-offset</b>: The number of pixels to move the image horizontally, negative values move it to the left.</li>
+ * 		<li><b>y-offset</b>: The number of pixels to move the image vertically, negative values move it to the top.</li>
  * 		<li><b></b>: </li>
  * </ul>
  * </p>
@@ -84,6 +86,8 @@ implements ImageConsumer
 	private final int paddingHorizontal;
 	private final int paddingVertical;
 	private final boolean overlap;
+	private final int xOffset;
+	private final int yOffset;
 	
 	/**
 	 * Creates a new image background.
@@ -101,6 +105,26 @@ implements ImageConsumer
 	 *        fit exactly into the actual background-area.
 	 */
 	public TiledImageBackground( int color, String imageUrl, int repeatMode, int anchor, int paddingHorizontal, int paddingVertical, boolean overlap ) {
+		this(color, imageUrl, repeatMode, anchor, paddingHorizontal, paddingVertical, overlap, 0, 0 );
+	}
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
+	 * @param repeatMode indicates whether the background image should
+	 *        be repeated, either ImageBackground.REPEAT, REPEAT_X or REPEAT_Y
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * @param paddingHorizontal the horizontal gap between tiles, can be negative for overlapping the tiles
+	 * @param paddingVertical the horizontal gap between tiles, can be negative for overlapping the tiles
+	 * @param overlap defines whether the tiles should overlap over the actual background-area when they don't
+	 *        fit exactly into the actual background-area.
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public TiledImageBackground( int color, String imageUrl, int repeatMode, int anchor, int paddingHorizontal, int paddingVertical, boolean overlap, int xOffset, int yOffset ) {
 		this.paddingHorizontal = paddingHorizontal;
 		this.paddingVertical = paddingVertical;
 		this.color = color;
@@ -108,6 +132,8 @@ implements ImageConsumer
 		this.imageUrl = imageUrl;
 		this.anchor = anchor;
 		this.overlap = overlap;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
 	}
 
 	//#ifdef polish.images.backgroundLoad
@@ -138,6 +164,8 @@ implements ImageConsumer
 			g.setColor( this.color );
 			g.fillRect( x, y, width + 1, height + 1 );
 		}
+		x += this.xOffset;
+		y += this.yOffset;
 		if (this.image != null) {
 			int imgWidth = this.image.getWidth() + this.paddingHorizontal;
 			int imgHeight = this.image.getHeight() + this.paddingVertical;

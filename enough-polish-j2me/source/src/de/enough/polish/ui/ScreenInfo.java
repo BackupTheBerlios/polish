@@ -108,6 +108,8 @@ public class ScreenInfo {
 	 * @param text the new text
 	 */
 	public static void setText( String text ) {
+		//#debug
+		System.out.println("ScreenInfo.setText " + text );
 		((IconItem)item).setText( text );
 		repaint();
 	}
@@ -119,6 +121,8 @@ public class ScreenInfo {
 	 * @param style the new style, is ignored when null
 	 */
 	public static void setText( String text, Style style ) {
+		//#debug
+		System.out.println("ScreenInfo.setText " + text );
 		((IconItem)item).setText( text, style );
 		repaint();
 	}
@@ -154,7 +158,7 @@ public class ScreenInfo {
 	 * J2ME Polish build process will automatically convert this call to the correct one).
 	 * 
 	 * 
-	 * @param item the item that is painted on the screen
+	 * @param newItem the item that is painted on the screen
 	 */
 	public static void setItem( javax.microedition.lcdui.Item newItem ) {
 		// ignore
@@ -167,7 +171,7 @@ public class ScreenInfo {
 	 * custom item. You need to rememember that afterexchanging the item with a non IconItem, you cannot
 	 * call setText and setImage anymore.
 	 * 
-	 * @param item the item that is painted on the screen
+	 * @param newItem the item that is painted on the screen
 	 */
 	public static void setItem( Item newItem ) {
 		item = newItem;
@@ -180,7 +184,7 @@ public class ScreenInfo {
 	 * custom item. You need to rememember that afterexchanging the item with a non IconItem, you cannot
 	 * call setText and setImage anymore.
 	 * 
-	 * @param item the item that is painted on the screen
+	 * @param newItem the item that is painted on the screen
 	 * @param style the new style of this item, is ignored when null
 	 */
 	public static void setItem( Item newItem, Style style ) {
@@ -239,8 +243,12 @@ public class ScreenInfo {
 			return;
 		}
 		if ( positionSet ) {
+			//#debug
+			System.out.println("painting screeninfo " + item + " with set position at " + itemX + ", " + itemY );
 			item.paint( itemX, itemY, itemX, screenWidth, g );
 		} else {
+			//#debug
+			System.out.println("painting screeninfo " + item + " without set position at " + 0 + ", " + titleHeight );
 			item.paint( 0, titleHeight, 0, screenWidth, g );
 		}
 	}

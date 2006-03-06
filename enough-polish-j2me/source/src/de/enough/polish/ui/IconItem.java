@@ -94,7 +94,7 @@ implements ImageConsumer
 	 * @param image the image of this item, null when no image should be displayed
 	 */
 	public IconItem( String text, Image image ) {
-		this( text, image, null );
+		this( null, text, image, null );
 	}
 	
 	/**
@@ -105,12 +105,24 @@ implements ImageConsumer
 	 * @param style the style of this item
 	 */
 	public IconItem( String text, Image image, Style style) {
-		super(null, text, Item.HYPERLINK, style);
+		this( null, text, image, style );
+	}
+
+	/**
+	 * Creates a new icon.
+	 * 
+	 * @param label the label of this item
+	 * @param text the text of this item
+	 * @param image the image of this item, null when no image should be displayed
+	 * @param style the style of this item
+	 */
+	public IconItem( String label, String text, Image image, Style style) {
+		super(label, text, Item.HYPERLINK, style);
 		if (image != null) {
 			setImage( image );
 		}
 	}
-	
+
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#createCssSelector()

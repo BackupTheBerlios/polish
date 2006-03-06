@@ -132,5 +132,38 @@ public class TextUtilTest extends TestCase {
 		assertEquals( "comonohbabycommonhello worldcomonohbabycommon", TextUtil.replace(input, search, replacement));
 		
 	}
+	
+	public void testSplitWithChunks(){
+		String input = "one;two;three";
+		int number = 3;
+		String[] output = TextUtil.split( input, ';', number );
+		assertEquals( number, output.length );
+		assertEquals( "one", output[0] );
+		assertEquals( "two", output[1] );
+		assertEquals( "three", output[2] );
+		
+		
+		input = "one;two;three";
+		number = 2;
+		output = TextUtil.split( input, ';', number );
+		assertEquals( number, output.length );
+		assertEquals( "one", output[0] );
+		assertEquals( "two", output[1] );
+
+		input = "one;two;three";
+		number = 1;
+		output = TextUtil.split( input, ';', number );
+		assertEquals( number, output.length );
+		assertEquals( "one", output[0] );
+
+		input = "one;two;three";
+		number = 4;
+		output = TextUtil.split( input, ';', number );
+		assertEquals( number, output.length );
+		assertEquals( "one", output[0] );
+		assertEquals( "two", output[1] );
+		assertEquals( "three", output[2] );
+		assertEquals( null, output[3] );
+}
 
 }

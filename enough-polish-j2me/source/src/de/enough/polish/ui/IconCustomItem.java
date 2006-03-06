@@ -30,9 +30,24 @@ import javax.microedition.lcdui.CustomItem;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-public class IconCustomItem extends CustomItem {
-
-	private IconItem iconItem;
+/**
+ * Allows to use an image along with text within one icon.
+ * <p><b>Warning:</b> the item will be transformed into a J2ME Polish internal item in the preprocessing
+ *      phase. This does not limit any of the features, but the construct <code>if (item instanceof CustomItem)</code> 
+ *      will always return false if it is an IconCustomItem. Use <code>if (item instanceof IconCustomItem)</code> instead.
+ *      <br />
+ *      This is why this class is final, no subclassing is suported.
+ * </p>
+ * @author robertvirkus
+ *
+ */
+public final class IconCustomItem 
+//#if polish.usePolishGui
+	//# extends IconItem 
+//#else
+	extends CustomItem 
+//#endif
+{
 
 	public IconCustomItem(String label, String text, Image image ) {
 		this(label, text, image, null);
@@ -40,13 +55,9 @@ public class IconCustomItem extends CustomItem {
 
 	public IconCustomItem(String label, String text, Image image, Style style ) {
 		//#if polish.usePolishGui
-			//# super( label, style  );
+			//# super( label, text, image, style  );
 		//#else
 			super( label );
-		//#endif
-		this.iconItem = new IconItem( text, image, style );
-		//#if polish.usePolishGui
-			//# this.iconItem.parent = this;
 		//#endif
 	}
 
@@ -59,29 +70,15 @@ public class IconCustomItem extends CustomItem {
 	}
 
 	protected int getPrefContentWidth(int maxHeight) {
-		return Integer.MAX_VALUE;
+		return 0;
 	}
 
 	protected int getPrefContentHeight(int maxWidth) {
-		return this.iconItem.getItemHeight(maxWidth, maxWidth);
+		return 1;
 	}
 
 	protected void paint(Graphics g, int width, int height) {
-		this.iconItem.paint(0, 0, 0, width, g);
-	}
-	
-	public void setStyle( Style style ) {
-		this.iconItem.setStyle( style );
-		//#if polish.css.focused-style
-			Style focusedStyle = (Style) style.getObjectProperty("focused-style");
-			if (focusedStyle != null) {
-				//# this.focusedStyle = focusedStyle;
-			}
-        //#endif
-		//#if polish.usePolishGui
-        	//# this.isStyleInitialised = true;
-		//#endif
-		invalidate();
+		// do nothing
 	}
 
 }

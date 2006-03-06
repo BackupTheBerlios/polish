@@ -47,6 +47,8 @@ import de.enough.polish.ui.StyleSheet;
  * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
  * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center".
  * 		</li>
+ * 		<li><b>x-offset</b>: The number of pixels to move the image horizontally, negative values move it to the left.</li>
+ * 		<li><b>y-offset</b>: The number of pixels to move the image vertically, negative values move it to the top.</li>
  * 		<li><b></b>: </li>
  * </ul>
  * </p>
@@ -72,7 +74,9 @@ implements ImageConsumer
 	private String imageUrl;
 	private final int anchor;
 	private final boolean doCenter;
-	
+	private final int xOffset;
+	private final int yOffset;
+
 	/**
 	 * Creates a new image background.
 	 * 
@@ -83,9 +87,26 @@ implements ImageConsumer
 	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
 	 */
 	public ImageBackground( int color, String imageUrl, int anchor ) {
+		this(color, imageUrl, anchor, 0, 0 );
+	}
+
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public ImageBackground( int color, String imageUrl, int anchor, int xOffset, int yOffset ) {
 		this.color = color;
 		this.imageUrl = imageUrl;
 		this.anchor = anchor;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
 		this.doCenter = ( anchor == (Graphics.VCENTER | Graphics.HCENTER) );
 	}
 
@@ -117,6 +138,8 @@ implements ImageConsumer
 			g.setColor( this.color );
 			g.fillRect( x, y, width + 1, height + 1 );
 		}
+		x += this.xOffset;
+		y += this.yOffset;
 		if (this.image != null) {
 			if (this.doCenter) {
 				int centerX = x + (width / 2);

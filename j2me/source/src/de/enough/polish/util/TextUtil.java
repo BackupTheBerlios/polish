@@ -48,8 +48,8 @@ public final class TextUtil {
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * Example:
-	 * <value>TextUtil.split("one;two;three", ';')</value> results into the array
-	 * <value>{"one", "two", "three"}</value>.
+	 * <code>TextUtil.split("one;two;three", ';', 3)</code> results into the array
+	 * <code>{"one", "two", "three"}</code>.<br />
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
@@ -78,7 +78,64 @@ public final class TextUtil {
 	}
 	
 	/**
-	 * Splits the given string so it fits on the specified lines.
+	 * Splits the given String around the matches defined by the given delimiter into an array.
+	 * Example:
+	 * <code>TextUtil.split("one;two;three", ';', 3)</code> results into the array
+	 * <code>{"one", "two", "three"}</code>.<br />
+	 * <code>TextUtil.split("one;two;three", ';', 4)</code> results into the array
+	 * <code>{"one", "two", "three", null}</code>.<br />
+	 * <code>TextUtil.split("one;two;three", ';', 2)</code> results into the array
+	 * <code>{"one", "two"}</code>.<br />
+	 * This method is less resource intensive compared to the other split method, since
+	 * no temporary list needs to be created
+	 *
+	 * @param value the String which should be split into an array
+	 * @param delimiter the delimiter which marks the boundaries of the array 
+	 * @param numberOfChunks the number of expected matches
+	 * @return an array with the length of numberOfChunks, when not enough elements are found, the array will contain null elements
+	 */
+	public static String[] split(String value, char delimiter, int numberOfChunks) {
+		char[] valueChars = value.toCharArray();
+		int lastIndex = 0;
+		String[] chunks = new String[ numberOfChunks ];
+		int chunkIndex = 0;
+		for (int i = 0; i < valueChars.length; i++) {
+			char c = valueChars[i];
+			if (c == delimiter) {
+				chunks[ chunkIndex ] = value.substring( lastIndex, i - lastIndex );
+				lastIndex = i + 1;
+				chunkIndex++;
+				if (chunkIndex == numberOfChunks ) {
+					break;
+				}
+			}
+		}
+		if (chunkIndex < numberOfChunks) {
+			// add tail:
+			chunks[chunkIndex] = value.substring( lastIndex, valueChars.length - lastIndex );
+		}
+		return chunks;
+	}
+
+	/**
+	 * Wraps the given string so it fits on the specified lines.
+	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
+	 * are splitted when they do not fit on a single line.
+	 *  
+	 * @param value the string which should be splitted
+	 * @param font the font which is used to display the font
+	 * @param firstLineWidth the allowed width for the first line
+	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
+	 * @return the array containing the substrings
+	 * @deprecated please use wrap instead
+	 * @see #wrap(String, Font, int, int)
+	 */
+	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
+		return wrap(value, font, firstLineWidth, lineWidth);
+	}
+
+	/**
+	 * Wraps the given string so it fits on the specified lines.
 	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
 	 * are splitted when they do not fit on a single line.
 	 *  
@@ -88,7 +145,7 @@ public final class TextUtil {
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @return the array containing the substrings
 	 */
-	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
+	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth ) {
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
@@ -135,12 +192,39 @@ public final class TextUtil {
 			} // for all chars
 		}
 		//#debug
-		System.out.println("Splitted [" + value + "] into " + lines.size() + " rows.");
+		System.out.println("Wrapped [" + value + "] into " + lines.size() + " rows.");
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
 	
 	/**
-	 * Splits the given string so that the substrings fit into the the given line-widths.
+	 * Wraps the given string so that the substrings fit into the the given line-widths.
+	 * It is expected that the specified lineWidth >= firstLineWidth.
+	 * The resulting substrings will be added to the given ArrayList.
+	 * When the complete string fits into the first line, it will be added
+	 * to the list.
+	 * When the string needs to be splited to fit on the lines, it is tried to
+	 * split the string at a gab between words. When this is not possible, the
+	 * given string will be splitted in the middle of the corresponding word. 
+	 * 
+	 * 
+	 * @param value the string which should be splitted
+	 * @param font the font which is used to display the font
+	 * @param completeWidth the complete width of the given string for the specified font.
+	 * @param firstLineWidth the allowed width for the first line
+	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
+	 * @param list the list to which the substrings will be added.
+	 * @deprecated please use wrap instead
+	 * @see #wrap(String, Font, int, int, int, ArrayList)
+	 */
+	public static void split( String value, Font font, 
+			int completeWidth, int firstLineWidth, int lineWidth, 
+			ArrayList list ) 
+	{
+		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list);
+	}
+	
+	/**
+	 * Wraps the given string so that the substrings fit into the the given line-widths.
 	 * It is expected that the specified lineWidth >= firstLineWidth.
 	 * The resulting substrings will be added to the given ArrayList.
 	 * When the complete string fits into the first line, it will be added
@@ -157,7 +241,7 @@ public final class TextUtil {
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param list the list to which the substrings will be added.
 	 */
-	public static void split( String value, Font font, 
+	public static void wrap( String value, Font font, 
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{

@@ -661,9 +661,18 @@ public abstract class Item extends Object
 	protected int contentY;
 	// the current positions of an internal element relative to the content origin 
 	// which should be visible:
+	/** 
+	 * The internal x position of this item's content. 
+	 * When it is equal -9999 this item's internal position is not known.
+	 * The internal position is useful for items that have a large content which
+	 * needs to be scrolled, e.g. containers.  
+	 */
 	protected int internalX = -9999;
+	/** The internal y position of this item's content.  */
 	protected int internalY;
+	/** The internal width of this item's content.  */
 	protected int internalWidth;
+	/** The internal height of this item's content.  */
 	protected int internalHeight;
 	public boolean isFocused;
 	
@@ -693,6 +702,9 @@ public abstract class Item extends Object
 	//#endif
 	//#if polish.css.rowspan
 		protected int rowSpan;
+	//#endif
+	//#if polish.css.include-label
+		protected boolean includeLabel;
 	//#endif
 
 	
@@ -969,6 +981,12 @@ public abstract class Item extends Object
 				this.colSpan = colSpanInt.intValue();
 			}
 		//#endif	
+		//#if polish.css.include-label
+			Boolean includeLabelBool = style.getBooleanProperty("include-label");
+			if (includeLabelBool != null) {
+				this.includeLabel = includeLabelBool.booleanValue();
+			}
+		//#endif
 		
 	}
 	
@@ -1286,7 +1304,7 @@ public abstract class Item extends Object
 	 * passed is not currently present
 	 * on this <code>Item</code>, it is added as if <A HREF="../../../javax/microedition/lcdui/Item.html#addCommand(javax.microedition.lcdui.Command)"><CODE>addCommand(javax.microedition.lcdui.Command)</CODE></A>
 	 * had been called
-	 * before it is made the default <code>Command</code>.</p>
+	 * before it is made the default <code>Command</code>, unless the &quot;polish.Item.suppressDefaultCommand&quot; preprocessing variable is set to &quot;true&quot;.</p>
 	 * 
 	 * <p>If <code>null</code> is passed, the <code>Item</code> is set to
 	 * have no default <code>Command</code>.
@@ -1303,10 +1321,17 @@ public abstract class Item extends Object
 	 */
 	public void setDefaultCommand( Command cmd)
 	{
+		//#if !polish.Item.suppressDefaultCommand
+		if (this.defaultCommand != null && cmd != this.defaultCommand) {
+			addCommand(this.defaultCommand);
+		}
+		//#endif		
 		this.defaultCommand = cmd;
+		//#if !polish.Item.suppressDefaultCommand
 		if (cmd != null) {
 			addCommand(cmd);
 		}
+		//#endif
 	}
 
 	/**
@@ -1393,6 +1418,23 @@ public abstract class Item extends Object
 		this.yTopPos = y;
 		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
 		this.yBottomPos = y + this.itemHeight;
+		
+		// paint background and border when the label should be included in this:
+		//#if polish.css.include-label
+			if (this.includeLabel) {
+				int width = this.itemWidth - this.marginLeft - this.marginRight;
+				int height = this.itemHeight - this.marginTop - this.marginBottom;
+				int bX = x + this.marginLeft;
+				int bY = y + this.marginTop;
+				if ( this.background != null ) {
+					this.background.paint(bX, bY, width, height, g);
+				}
+				if ( this.border != null ) {
+					this.border.paint(bX, bY, width, height, g);
+				}
+			}
+		//#endif
+		
 		// paint label:
 		if (this.label != null) {
 			if (this.useSingleRow) {
@@ -1423,12 +1465,23 @@ public abstract class Item extends Object
 			// the right border (when it starts at x):
 			x += availableWidth - this.itemWidth;
 		}
+		
 		// paint background:
 		x += this.marginLeft;
 		y += this.marginTop;
-		if (this.background != null) {
-			this.background.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
-		}
+		//#if polish.css.include-label
+			if (!this.includeLabel) {
+		//#endif
+				if (this.background != null) {
+					this.background.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
+				}
+				// paint border:
+				if (this.border != null) {
+					this.border.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
+				}
+		//#if polish.css.include-label
+			}
+		//#endif
 		
 		int contX = x + this.borderWidth + this.paddingLeft;
 		int contY = y + this.borderWidth + this.paddingTop;
@@ -1505,12 +1558,7 @@ public abstract class Item extends Object
 		// paint content:
 		this.contentX = contX;
 		this.contentY = contY;
-		paintContent( contX, contY, leftBorder, rightBorder, g );
-				
-		// paint border:
-		if (this.border != null) {
-			this.border.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
-		}
+		paintContent( contX, contY, leftBorder, rightBorder, g );				
 	}
 	
 	/**
@@ -1887,6 +1935,7 @@ public abstract class Item extends Object
 		myScreen.focus( this );
 		display.setCurrent( myScreen );
 	}
+	
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
