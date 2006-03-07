@@ -60,6 +60,11 @@ implements DeviceFilter
 		Requirement requirement = Requirement.getInstance( name, value, type );
 		this.filters.add( requirement );
 	}
+    
+    public void addRequirement( Requirement requirement ) {
+        this.filters.add( requirement );
+    }
+
 	
 	public void addConfiguredAnd( AndRelation andRelation ) {
 		this.filters.add( andRelation );
