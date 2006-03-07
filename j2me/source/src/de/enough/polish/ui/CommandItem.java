@@ -56,13 +56,13 @@ public class CommandItem extends IconItem {
 	private boolean isOpen;
 	private Style originalStyle;
 	private Style focusingStyle;
-	private int indicatorColor = 0xFF8800;
 
 	
 	/**
 	 * Creates a new command item.
 	 * 
 	 * @param command the commmand represented by this item.
+	 * @param parent the parent item
 	 */
 	public CommandItem( Command command, Item parent ) {
 		this( command, parent, null );
@@ -72,6 +72,7 @@ public class CommandItem extends IconItem {
 	 * Creates a new command item.
 	 * 
 	 * @param command the commmand represented by this item.
+	 * @param parent the parent item
 	 * @param style the style for this item
 	 */
 	public CommandItem( Command command, Item parent, Style style ) {
@@ -85,7 +86,6 @@ public class CommandItem extends IconItem {
 	 * Adds a subcommand to this node.
 	 * 
 	 * @param childCommand the child command
-	 * @param childStyle the style for the child command
 	 */
 	public void addChild( Command childCommand ) {
 		addChild( childCommand, null );
@@ -110,7 +110,7 @@ public class CommandItem extends IconItem {
 	/**
 	 * Removes a child from this command item.
 	 * 
-	 * @param command the child that should be removed
+	 * @param childCommand the child that should be removed
 	 * @return true when the child was found
 	 */
 	public boolean removeChild( Command childCommand ) {
@@ -214,6 +214,7 @@ public class CommandItem extends IconItem {
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		//#debug
 		System.out.println( this + " handleKeyPressed, isOpen=" + this.isOpen);
 		if ( this.isOpen ) {
 			if (gameAction == Canvas.LEFT) {
@@ -233,6 +234,7 @@ public class CommandItem extends IconItem {
 			}
 		} else if ( gameAction == Canvas.FIRE ){ // has no children:
 			// fire command action event:
+			//#debug
 			System.out.println( this + " invoking command " + this.command.getLabel() );
 			Screen scr = getScreen();
 			//#if polish.debug.error

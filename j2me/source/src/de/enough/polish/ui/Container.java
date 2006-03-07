@@ -631,6 +631,9 @@ public class Container extends Item {
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
 		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled);
+		int myContentWidth = 0;
+		int myContentHeight = 0;
+		try {
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
@@ -670,8 +673,6 @@ public class Container extends Item {
 			}
 		//#endif
 			
-		int myContentWidth = 0;
-		int myContentHeight = 0;
 		boolean hasFocusableItem = false;
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
@@ -701,9 +702,13 @@ public class Container extends Item {
 		} else {
 			this.appearanceMode = INTERACTIVE;
 		}
-	
+		} catch (ArrayIndexOutOfBoundsException e) {
+			//#debug error
+			System.out.println("Unable to init container " + e );
+		}
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;
+		
 		
 	}
 
@@ -1331,10 +1336,10 @@ public class Container extends Item {
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			//#if tmp.supportViewType
-				if (this.view != null) {
-					this.view.defocus( this.itemStyle );
-					this.isInitialised = false;
-				}
+//				if (this.view != null) {
+//					//this.view.defocus( this.itemStyle );
+//					this.isInitialised = false;
+//				}
 			//#endif
 			this.isFocused = false;
 			// now remove any commands which are associated with this item:

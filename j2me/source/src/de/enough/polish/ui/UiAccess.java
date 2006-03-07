@@ -449,7 +449,7 @@ public final class UiAccess {
 	 * Sets the caret position in the given text field.
 	 * Please note that this operation requires the direct input mode to work.
 	 * 
-	 * @param field the text f’eld 
+	 * @param field the text field 
 	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
 	 */
 	public static void setCaretPosition( javax.microedition.lcdui.TextField field, int position ) {
@@ -461,7 +461,7 @@ public final class UiAccess {
 	 * Sets the caret position in the given text field.
 	 * Please note that this operation requires the direct input mode to work.
 	 * 
-	 * @param field the text f’eld 
+	 * @param field the text field 
 	 * @param position the new caret position,  0 puts the caret at the start of the line, getString().length moves the caret to the end of the input.
 	 */
 	public static void setCaretPosition( TextField field, int position ) {

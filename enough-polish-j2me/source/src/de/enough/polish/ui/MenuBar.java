@@ -440,9 +440,9 @@ public class MenuBar extends Item {
 		}
 		//#if !tmp.useInvisibleMenuBar
 			int availableWidth = lineWidth / 2;
-			if ( ! this.isOpened && this.singleRightCommand == null ) {
-				availableWidth = lineWidth;
-			}
+//			if ( ! this.isOpened && this.singleRightCommand == null ) {
+//				availableWidth = lineWidth;
+//			}
 			//System.out.println("Initialising single commands with a width of " + availableWidth + " lineWidth is " + lineWidth);
 			int height = this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth);
 			if (this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth ) > height) {
@@ -485,16 +485,18 @@ public class MenuBar extends Item {
 				g.setClip(0, this.commandsContainerY, this.screen.screenWidth, this.screen.screenHeight );
 			//#endif
 			// paint menu-bar:
-			this.singleLeftCommandItem.paint(x, y + this.singleLeftCommandY, leftBorder, rightBorder, g);
-			x = rightBorder - this.singleRightCommandItem.itemWidth;
-			this.singleRightCommandItem.paint(x, y + this.singleRightCommandY, leftBorder, rightBorder, g);
+			int centerX = leftBorder + ((rightBorder - leftBorder)/2); 
+			this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandY, leftBorder, centerX, g);			
+			this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandY, centerX, rightBorder, g);
 		} else {
+			int centerX = leftBorder + ((rightBorder - leftBorder)/2); 
 			if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
-				this.singleLeftCommandItem.paint(x, y + this.singleLeftCommandY, leftBorder, rightBorder, g);
+				//System.out.println("painting left command from " + leftBorder + " to " + centerX );
+				this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandY, leftBorder, centerX, g);
 			}
 			if (this.singleRightCommand != null) {
-				x = rightBorder - this.singleRightCommandItem.itemWidth;
-				this.singleRightCommandItem.paint(x, y + this.singleRightCommandY, leftBorder, rightBorder, g);
+				//System.out.println("painting right command from " + centerX + " to " + rightBorder );
+				this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandY, centerX, rightBorder, g);
 			}
 		//#endif
 		}

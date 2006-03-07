@@ -270,6 +270,9 @@ implements AccessibleCanvas
 	private int marginRight;
 	private int marginTop;
 	private int marginBottom;
+	//#if polish.css.separate-menubar
+		private boolean separateMenubar = true;
+	//#endif
 	//#if polish.css.repaint-previous-screen
 		private boolean repaintPreviousScreen;
 		private Image previousScreenImage;
@@ -865,6 +868,12 @@ implements AccessibleCanvas
 				this.repaintPreviousScreen = repaintPreviousScreenBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.separate-menubar
+			Boolean separateMenubarBool = style.getBooleanProperty("separate-menubar");
+			if (separateMenubarBool != null) {
+				this.separateMenubar = separateMenubarBool.booleanValue();
+			}
+		//#endif
 
 	}
 	
@@ -1093,9 +1102,19 @@ implements AccessibleCanvas
 			//#endif
 				
 			// paint menu in full-screen mode:
+			int menuLeftX = 0;
+			int menuRightX = this.screenWidth;
+			int menuY = this.screenHeight; // + this.marginBottom;
+			//#if polish.css.separate-menubar
+				if (!this.separateMenubar) {
+					menuLeftX = this.marginLeft;
+					menuRightX = rightBorder;
+					menuY = this.screenHeight - this.marginBottom;
+				}
+			//#endif
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					this.menuBar.paint(this.marginLeft, this.screenHeight, this.marginLeft, rightBorder, g);
+					this.menuBar.paint(menuLeftX, menuY, menuLeftX, menuRightX, g);
 					if (this.menuBar.isOpened) {
 						this.paintScrollIndicator = this.menuBar.paintScrollIndicator;
 						this.paintScrollIndicatorUp = this.menuBar.canScrollUpwards;

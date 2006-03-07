@@ -114,7 +114,7 @@ public class ContainerView {
 	 */
 	protected void initContent( Container parent, int firstLineWidth, int lineWidth ) {
 		//#debug
-		System.out.println("ContainerView: intialising content for " + this );
+		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
 		//#endif
@@ -451,6 +451,8 @@ public class ContainerView {
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	protected void paintContent( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		//System.out.println("ContainerView: painting content for " + this + " with vertical-padding " + this.paddingVertical );
+		
 		//#if polish.css.view-type-top-y-offset
 			y += this.topYOffset;
 		//#endif
@@ -820,7 +822,7 @@ public class ContainerView {
 	 */
 	protected void setStyle( Style style ) {
 		//#debug
-		System.out.println("Setting style for " + this );
+		System.out.println("Setting style for " + this + " with vertical padding=" + style.paddingVertical  );
 		this.paddingHorizontal = style.paddingHorizontal;
 		this.paddingVertical = style.paddingVertical;
 		this.layout = style.layout;
@@ -856,7 +858,7 @@ public class ContainerView {
 							// these are pixel settings.
 							String[] widths = TextUtil.split( width, ',');
 							if (widths.length != this.numberOfColumns) {
-								// this is an invalid setting!
+								// this is an invalid setting! 
 								this.columnsSetting = NORMAL_WIDTH_COLUMNS;
 								//#debug warn
 								System.out.println("Container: Invalid [columns-width] setting: [" + width + "], the number of widths needs to be the same as with [columns] specified.");
