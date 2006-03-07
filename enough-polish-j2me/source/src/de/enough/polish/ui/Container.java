@@ -645,7 +645,7 @@ public class Container extends Item {
 					//#debug
 					System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
 					this.autoFocusEnabled = false;
-					if (this.autoFocusIndex < myItems.length ) {
+					if (this.autoFocusIndex < myItems.length  && this.autoFocusIndex >= 0 ) {
 						Item item = myItems [ this.autoFocusIndex ];
 						if (item.appearanceMode != Item.PLAIN) {
 							// make sure that the item has applied it's own style first:
