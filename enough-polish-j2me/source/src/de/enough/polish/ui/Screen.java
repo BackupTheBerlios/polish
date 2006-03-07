@@ -980,11 +980,12 @@ implements AccessibleCanvas
 			//#endif
 			int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
 			int rightBorder = this.marginLeft + sWidth;
-			//#ifdef tmp.menuFullScreen
-				int sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
-			//#else
-				//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
-			//#endif
+//			//#ifdef tmp.menuFullScreen
+//				int sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
+//			//#else
+//				//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
+//			//#endif
+			int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
 			// paint background:
 			if (this.background != null) {
 				//System.out.println("Screen (" + this + ": using background...");
@@ -1090,11 +1091,11 @@ implements AccessibleCanvas
 			
 			// paint border:
 			if (this.border != null) {
-				//#ifdef tmp.menuFullScreen
-					this.border.paint(this.marginLeft, this.marginTop, sWidth, this.screenHeight - this.marginBottom - this.marginTop, g);
-				//#else
+//				//#ifdef tmp.menuFullScreen
+//					this.border.paint(this.marginLeft, this.marginTop, sWidth, this.screenHeight - this.marginBottom - this.marginTop, g);
+//				//#else
 					this.border.paint(this.marginLeft, this.marginTop, sWidth, sHeight, g);
-				//#endif
+//				//#endif
 			}
 			
 			//#if polish.ScreenInfo.enable == true
