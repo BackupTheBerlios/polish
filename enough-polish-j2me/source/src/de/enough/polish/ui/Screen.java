@@ -338,7 +338,7 @@ implements AccessibleCanvas
 		this.style = style;
 		this.forwardCommandListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
-			//# super.setCommandListener(this.cmdListener);
+			super.setCommandListener(this.forwardCommandListener);
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			//#style menubar, menu, default
@@ -980,12 +980,12 @@ implements AccessibleCanvas
 			//#endif
 			int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
 			int rightBorder = this.marginLeft + sWidth;
-//			//#ifdef tmp.menuFullScreen
-//				int sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
-//			//#else
-//				//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
-//			//#endif
-			int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
+			//#ifdef tmp.menuFullScreen
+				int sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
+			//#else
+				//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
+			//#endif
+			//int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
 			// paint background:
 			if (this.background != null) {
 				//System.out.println("Screen (" + this + ": using background...");
@@ -1670,9 +1670,11 @@ implements AccessibleCanvas
 			//#if polish.blackberry
 				this.keyPressedProcessed = processed;
 			//#endif
-			if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
-				callCommandListener(this.okCommand);
-			}
+			//#if tmp.menuFullScreen
+				if (!processed && gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
+					callCommandListener(this.okCommand);
+				}
+			//#endif
 			if (processed) {
 				if (this.screenStateListener != null) {
 					this.screenStateListener.screenStateChanged(this);
@@ -1764,16 +1766,14 @@ implements AccessibleCanvas
 	private void openMenu( boolean open ) {
 		if (!open && this.menuOpened) {
 			this.menuContainer.hideNotify();
+			//#if !polish.MenuBar.focusFirstAfterClose
+				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+				this.menuContainer.focus(0);
+			//#endif
 		} else if (open && !this.menuOpened) {
 			this.menuContainer.showNotify();
 		}
 		this.menuOpened = open;
-		//#if !polish.MenuBar.focusFirstAfterClose
-			if (!open) {
-				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-				this.menuContainer.focus(0);
-			}
-		//#endif
 	}
 	//#endif
 
@@ -1782,8 +1782,18 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
+		//#style menuitem, menu, default
+		addCommand( cmd );
+	}
+	//#endif
+	
+	//#ifdef tmp.menuFullScreen
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
+	 */
+	public void addCommand(Command cmd, Style commandStyle ) {
 		//#debug
-		System.out.println("adding command [" + cmd.getLabel() + "].");
+		System.out.println("adding command [" + cmd.getLabel() + "] to screen [" + this + "].");
 		int cmdType = cmd.getCommandType();
 		if ( cmdType == Command.OK 
 				&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
@@ -1830,8 +1840,7 @@ implements AccessibleCanvas
 					if (this.menuSingleRightCommand != null) {
 						// the right menu command is replaced by the new one,
 						// so insert the original one into the options-menu:
-						//#style menuitem, menu, default
-						CommandItem menuItem = new CommandItem( this.menuSingleRightCommand, this.menuContainer );
+						CommandItem menuItem = new CommandItem( this.menuSingleRightCommand, this.menuContainer, commandStyle  );
 						menuItem.screen = this;
 						this.menuContainer.add( menuItem );
 						if (this.menuContainer.size() == 1) {
@@ -1849,8 +1858,7 @@ implements AccessibleCanvas
 					return;
 				}
 			}
-			//#style menuitem, menu, default
-			CommandItem menuItem = new CommandItem( cmd, this.menuContainer );
+			CommandItem menuItem = new CommandItem( cmd, this.menuContainer, commandStyle  );
 			menuItem.screen = this;
 			if ( this.menuCommands.size() == 0 ) {
 				this.menuCommands.add( cmd );
@@ -2064,6 +2072,11 @@ implements AccessibleCanvas
 	 * @param cmd the command wich should be issued to the listener
 	 */
 	protected void callCommandListener( Command cmd ) {
+		//#ifdef tmp.useExternalMenuBar
+			this.menuBar.setOpen(false);
+		//#elif tmp.menuFullScreen
+			openMenu(false);
+		//#endif
 		//#if polish.ScreenChangeAnimation.forward:defined
 			this.lastTriggeredCommand = cmd;
 		//#endif

@@ -30,21 +30,48 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 /**
- * @author robertvirkus
+ * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
  *
+ * <p>Copyright Enough Software 2006</p>
+ * <pre>
+ * history
+ *        27-Feb-2006 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ChoiceTextField 
-extends TextField 
+//#if polish.usePolishGui
+	//# extends TextField 
+//#else
+	extends javax.microedition.lcdui.CustomItem
+//#endif
 {
 
 	public static final int MATCH_STARTS_WITH = 0;
 	public static final int MATCH_INDEX_OF = 1;
 	//public static final int MATCH_STARTS_WITH = 0;
+	
+	//#if !polish.usePolishGui
+	protected Item parent;
+	protected int marginLeft;
+	protected int marginRight;
+	protected int marginTop;
+	protected int marginBottom;
+	protected int paddingVertical;
+	protected int itemWidth;
+	protected int itemHeight;
+	protected int contentWidth;
+	protected int contentHeight;
+	protected int contentY;
+	protected int yTopPos;
+	protected boolean isFocused;
+	//#endif
+
 
 	private final boolean allowFreeTextEntry;
+	private final Container choicesContainer;
 	private String[] choices;
 	private String[] lowerCaseChoices;
-	private final Container choicesContainer;
 	private int numberOfMatches;
 	private boolean isInChoice;
 	private Item[] choiceItems;
@@ -55,13 +82,39 @@ extends TextField
 	private boolean reanableCaretFlashing = true;
 	private int choicesYOffsetAdjustment;
 	private boolean isOpen;
+	private Style choiceItemStyle;
 
+	/**
+	 * Creates a new ChoiceTextField.
+	 * 
+	 * @param label the label
+	 * @param text the current text
+	 * @param maxSize the maximum size for the input
+	 * @param constraints input constraints, TextField.ANY for no constraints
+	 * @param availableChoices a list of available texts for the user
+	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
+	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry) {
 		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, null);
 	}
 	
+	/**
+	 * Creates a new ChoiceTextField.
+	 * 
+	 * @param label the label
+	 * @param text the current text
+	 * @param maxSize the maximum size for the input
+	 * @param constraints input constraints, TextField.ANY for no constraints
+	 * @param availableChoices a list of available texts for the user
+	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
+	 * @param style the style for this item
+	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, Style style) {
-		super(label, text, maxSize, constraints, style);
+		//#if polish.usePolishGui
+			//# super(label, text, maxSize, constraints, style);
+		//#else
+			super( label );
+		//#endif
 		this.choices = availableChoices;
 		if (availableChoices != null) {
 			this.lowerCaseChoices = new String[ availableChoices.length ];
@@ -72,10 +125,11 @@ extends TextField
 			this.choiceItems = new Item[ availableChoices.length ];
 		}
 		this.allowFreeTextEntry = allowFreeTextEntry;
-		//TODO check how to apply different styles to container, also check how to create open/close animations
 		this.choicesContainer = new Container( false );
 		this.choicesContainer.allowCycling = false;
-		this.choicesContainer.parent = this;
+		//#if polish.usePolishGui
+			//# this.choicesContainer.parent = this;
+		//#endif
 	}
 	
 	/**
@@ -94,8 +148,7 @@ extends TextField
 		this.choiceItems = new Item[ choices.length ];
 		for (int i = 0; i < choices.length; i++) {
 			String choiceText = choices[i];
-			// TODO apply style to choice item
-			Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT );
+			Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
 			this.choiceItems[i] = item;
 			this.choicesContainer.add( item );
 		}
@@ -107,6 +160,7 @@ extends TextField
 	/**
 	 * Sets the available choices.
 	 * Use this method in conjunction with an ItemStateListener for using complex rules for creating choices.
+	 * The given items should implement the "toString()" method and return the correct string value for the text field.
 	 * 
 	 * @param choices the new choices, null when no choices are available
 	 */
@@ -157,7 +211,17 @@ extends TextField
 	 * @see de.enough.polish.ui.TextField#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style origStyle) {
-		super.defocus(origStyle);
+		//#if polish.usePolishGui
+			//# super.defocus(origStyle);
+		//#endif
+		if (!this.allowFreeTextEntry && this.numberOfMatches > 0) {
+			Item item = this.choicesContainer.get( 0 );
+			if (item instanceof StringItem) {
+				setString( ((StringItem)item).getText() );
+			} else {
+				setString( item.toString() );
+			}			
+		}
 		this.numberOfMatches = 0;
 		this.choicesContainer.clear();
 		openChoices(false);
@@ -169,7 +233,11 @@ extends TextField
 	 * @see de.enough.polish.ui.TextField#animate()
 	 */
 	public boolean animate() {
-		boolean animated = super.animate();
+		//#if polish.usePolishGui
+			//# boolean animated = super.animate();
+		//#else
+			boolean animated = false;
+		//#endif
 		if (this.numberOfMatches > 0) {
 			animated |= this.choicesContainer.animate();
 		}
@@ -180,19 +248,12 @@ extends TextField
 	 * @see de.enough.polish.ui.TextField#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style focStyle, int direction) {
-		this.originalStyle = super.focus(focStyle, direction);
-		this.focusingStyle = this.style;
+		//#if polish.usePolishGui
+			//# this.originalStyle = super.focus(focStyle, direction);
+			//# this.focusingStyle = this.style;
+		//#endif
 		return this.originalStyle;
 	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextField#initContent(int, int)
-	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
-		// TODO Auto-generated method stub
-		super.initContent(firstLineWidth, lineWidth);
-	}
-	
 	
 
 	/* (non-Javadoc)
@@ -212,7 +273,6 @@ extends TextField
 			
 			if (gameAction == Canvas.FIRE) {
 				// option has been selected!
-				//TODO question: should the item state listener be notified?
 				Item item = this.choicesContainer.getFocusedItem();
 				String choiceText;
 				if ( item instanceof ChoiceItem ) {
@@ -220,8 +280,10 @@ extends TextField
 				} else {
 					choiceText = item.toString();
 				}
-				setString( choiceText );
-				setCaretPosition( choiceText.length() );
+				//#if polish.usePolishGui			
+					//# setString( choiceText );
+					//# setCaretPosition( choiceText.length() );
+				//#endif
 				this.numberOfMatches = 0;
 				this.choicesContainer.clear();
 				openChoices( false );
@@ -233,7 +295,11 @@ extends TextField
 			enterChoices( true );
 			return true;
 		}
-		return super.handleKeyPressed(keyCode, gameAction);
+		//#if polish.usePolishGui
+			//# return super.handleKeyPressed(keyCode, gameAction);
+		//#else
+			return true;
+		//#endif
 	}
 
 	private void enterChoices( boolean enter ) {
@@ -242,21 +308,27 @@ extends TextField
 		if (enter) {
 			this.choicesContainer.focus(0);
 			setStyle( this.originalStyle );
-			this.flashCaret = false;
-			this.showCaret = false;
-			if (!this.isInChoice) {
-				getScreen().removeItemCommands( this );
-			}
+			//#if polish.usePolishGui
+				//# this.flashCaret = false;
+				//# this.showCaret = false;
+				if (!this.isInChoice) {
+					//# getScreen().removeItemCommands( this );
+				}
+			//#endif
 		} else {
 			setStyle( this.focusingStyle );
-			this.flashCaret = this.reanableCaretFlashing;
-			this.showCaret = true;
+			//#if polish.usePolishGui
+				//# this.flashCaret = this.reanableCaretFlashing;
+				//# this.showCaret = true;
+			//#endif
 			this.choicesContainer.yOffset = 0;
 			this.choicesContainer.targetYOffset = 0;
 			// move focus to TextField input again
 			this.choicesContainer.defocus( this.originalStyle );
 			if (this.isInChoice) {
-				getScreen().setItemCommands( this );
+				//#if polish.usePolishGui
+					//# getScreen().setItemCommands( this );
+				//#endif
 			}
 		}
 		this.isInChoice = enter;
@@ -320,8 +392,9 @@ extends TextField
 	 * @see de.enough.polish.ui.TextField#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		//TODO disable cursor when user is within choices
-		super.paintContent(x, y, leftBorder, rightBorder, g);
+		//#if polish.usePolishGui
+			//# super.paintContent(x, y, leftBorder, rightBorder, g);
+		//#endif
 		if ( this.isFocused && this.numberOfMatches > 0 ) {
 			// paint containert
 			y += this.contentHeight + this.paddingVertical;
@@ -340,13 +413,21 @@ extends TextField
 	 * @see de.enough.polish.ui.Item#notifyStateChanged()
 	 */
 	public void notifyStateChanged() {
-		Screen scr = getScreen();
+		//#if polish.usePolishGui
+			//# Screen scr = getScreen();
+		//#else
+			Screen scr = null;
+		//#endif
 		if (scr != null && scr instanceof Form && ((Form)scr).itemStateListener != null ) {
 			// let the external item state listener do the work
 			super.notifyStateChanged();
 		} else {
 			// find out possible matches yourself:
-			String currentText = getString();
+			//#if polish.usePolishGui
+				//# String currentText = getString();
+			//#else
+				String currentText = null;
+			//#endif
 			if (currentText != null) {
 				currentText = currentText.toLowerCase();
 				// cycle through available choices and add the ones resulting in matches.
@@ -359,20 +440,13 @@ extends TextField
 				int foundMatches = 0;
 				for (int i = 0; i < this.lowerCaseChoices.length; i++) {
 					String choice = this.lowerCaseChoices[i];
-					boolean matches;
-					if (this.matchMode == MATCH_STARTS_WITH) {
-						matches = choice.startsWith( currentText );
-					} else {
-						matches = choice.indexOf(currentText) != -1; 
-					}
-					if ( matches ) {
+					if ( matches( currentText, choice ) ) {
 						// found a match!
 						foundMatches++;
 						Item item = this.choiceItems[i];
 						if (item == null) {
 							// create new ChoiceItem (lazy initialisation)
-							//TODO apply style for the choice!
-							item = new ChoiceItem( this.choices[i], null, Choice.IMPLICIT );
+							item = new ChoiceItem( this.choices[i], null, Choice.IMPLICIT, this.choiceItemStyle );
 						}
 						//#debug
 						System.out.println("found match: " + choice);
@@ -385,10 +459,14 @@ extends TextField
 				} else {
 					if ( foundMatches == 0 ) {
 						// re-set the text to the last match:
-						setString( this.lastMatchingText );
+						//#if polish.usePolishGui
+							//# setString( this.lastMatchingText );
+						//#endif
 					} else {
 						// remove all previous matches and remember this text:
-						this.lastMatchingText = getString();
+						//#if polish.usePolishGui
+							//# this.lastMatchingText = getString();
+						//#endif
 						for ( int i = this.numberOfMatches; --i >= 0; ) {
 							this.choicesContainer.remove( 0 );
 						}
@@ -401,18 +479,83 @@ extends TextField
 		}
 	}
 
+	/**
+	 * Checks if the input and the available choice do match.
+	 * 
+	 * @param currentText the current input of the user
+	 * @param choice one of the available choices
+	 * @return true when they match - this depends on this chosen matching, usually the start need to be equal
+	 * @see #setMatchMode(int)
+	 */
+	private boolean matches(String currentText, String choice) {
+		if (this.matchMode == MATCH_STARTS_WITH) {
+			return choice.startsWith( currentText );
+		} else {
+			return choice.indexOf(currentText) != -1; 
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextField#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style) {
-		super.setStyle(style);
+		//#if polish.usePolishGui
+			//# super.setStyle(style);
+		//#endif
 		//#ifdef polish.css.textfield-caret-flash
 			Boolean flashCursorBool = style.getBooleanProperty( "textfield-caret-flash" );
 			if ( flashCursorBool != null ) {
 				this.reanableCaretFlashing = flashCursorBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.choicetextfield-containerstyle
+			Style containerstyle = (Style) style.getObjectProperty("choicetextfield-containerstyle");
+			if (containerstyle != null) {
+				this.choicesContainer.setStyle( containerstyle );
+			}
+		//#endif
+		//#if polish.css.choicetextfield-choicestyle
+			Style choicestyle = (Style) style.getObjectProperty("choicetextfield-choicestyle");
+			if (choicestyle != null) {
+				this.choiceItemStyle = choicestyle;
+			}
+		//#endif
 	}
+
+	//#if !polish.usePolishGui
+	protected int getMinContentWidth() {
+		// only signature for CustomItem
+		return 0;
+	}
+
+	protected int getMinContentHeight() {
+		// only signature for CustomItem
+		return 0;
+	}
+
+	protected int getPrefContentWidth(int arg0) {
+		// only signature for CustomItem
+		return 0;
+	}
+
+	protected int getPrefContentHeight(int arg0) {
+		// only signature for CustomItem
+		return 0;
+	}
+
+	protected void paint(Graphics arg0, int arg1, int arg2) {
+		// only signature for CustomItem
+	}
+	
+	public String getString() {
+		// ignore since implemented by TextField
+		return null;
+	}
+	
+	public void setString( String  input ) {
+		// ignore since implemented by TextField
+	}
+	//#endif
 
 	
 	

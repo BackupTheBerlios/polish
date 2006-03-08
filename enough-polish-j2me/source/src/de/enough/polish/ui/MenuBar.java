@@ -513,21 +513,22 @@ public class MenuBar extends Item {
 	
 	/**
 	 * Used to toggle the opened state of the menu bar
+	 * 
+	 * @param open true when the menu should be opened
 	 */
 	protected void setOpen( boolean open ) {
 		this.isInitialised = (open == this.isOpened);
 		if (!open && this.isOpened) {
 			this.commandsContainer.hideNotify();
+			//#if !polish.MenuBar.focusFirstAfterClose
+				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+				this.commandsContainer.focus(0);
+			//#endif
 		} else if (open && !this.isOpened) {
 			this.commandsContainer.showNotify();
 		}
 		this.isOpened = open;
-		//#if !polish.MenuBar.focusFirstAfterClose
-			if (!open) {
-				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-				this.commandsContainer.focus(0);
-			}
-		//#endif
+		this.isInitialised = false;
 	}
 	
 

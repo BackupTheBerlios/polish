@@ -257,6 +257,7 @@ public class CommandItem extends IconItem {
 	 * @param open true when the children should be visible and the focus is moved to them.
 	 */
 	protected void open(boolean open) {
+		//#debug
 		System.out.println( this + ": opening children: " + open);
 		this.isOpen = open;
 		if ( open ) {

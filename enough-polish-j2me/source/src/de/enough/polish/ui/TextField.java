@@ -664,7 +664,9 @@ public class TextField extends StringItem
 	//#ifndef tmp.suppressCommands
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
-		
+
+	// this is outside of the tmp.directInput block, so that it can be referenced from the UiAccess class
+	int inputMode; // the current input mode		
 	//#if tmp.directInput
 		//#ifdef polish.TextField.InputTimeout:defined
 			//#= private static final int INPUT_TIMEOUT = ${polish.TextField.InputTimeout};  
@@ -680,7 +682,6 @@ public class TextField extends StringItem
 		//#else
 			private static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
-		int inputMode; // the current input mode
 		private boolean nextCharUppercase; // is needed for the FIRST_UPPERCASE-mode
 	
 		private String[] realTextLines; // the displayed lines with spaces (which are otherwise removed)
@@ -2790,23 +2791,27 @@ public class TextField extends StringItem
 
 	/**
 	 * Sets the input mode for this TextField.
+	 * Is ignored when no direct input mode is used.
 	 * 
 	 * @param inputMode the input mode
 	 */
 	public void setInputMode(int inputMode) {
 		this.inputMode = inputMode;
-		//#if polish.TextField.showInputInfo != false
-			updateInfo();
+		//#if tmp.directInput
+			//#if polish.TextField.showInputInfo != false
+				updateInfo();
+			//#endif
+			if (this.caretChar != this.editingCaretChar) {
+				insertCharacter();
+			}
+			if (inputMode == MODE_FIRST_UPPERCASE) {
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
 		//#endif
-		if (this.caretChar != this.editingCaretChar) {
-			insertCharacter();
-		}
-		if (inputMode == MODE_FIRST_UPPERCASE) {
-			this.nextCharUppercase = true;
-		} else {
-			this.nextCharUppercase = false;
-		}
 	}
+	
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
