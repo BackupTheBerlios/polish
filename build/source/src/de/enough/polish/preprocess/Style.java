@@ -388,7 +388,7 @@ public class Style {
 			String[] attributesNames = (String[]) group.keySet().toArray( new String[ group.size() ]);
 			for (int j = 0; j < attributesNames.length; j++) {
 				String attributeName = attributesNames[j];
-				if ("style".equals(attributeName) && !("font".equals(groupName))) {
+				if (attributeName.endsWith("style") && !("font".equals(groupName))) {
 					referencedNames.add( group.get( attributeName ));
 				}
 			}

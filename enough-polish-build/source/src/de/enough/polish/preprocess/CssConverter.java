@@ -655,7 +655,7 @@ public class CssConverter extends Converter {
 							*/
 						}
 					}
-					if (key.endsWith("style")) {
+					if (attributeType == CssAttribute.STYLE || key.endsWith("style")) {
 						value = getStyleReference( value, style, styleSheet );
 					} else if (attributeType == CssAttribute.COLOR || key.endsWith("color")) {
 						value = getColor( value );
@@ -778,6 +778,7 @@ public class CssConverter extends Converter {
 	 * @return the name of the reference style
 	 */
 	protected String getStyleReference(String value, Style parent, StyleSheet styleSheet) {
+		//System.out.println("CssConverter: getting style reference for " + value );
 		String reference = value.toLowerCase();
 		if (value.startsWith("style(")) {
 			reference = reference.substring( 6 );
@@ -802,8 +803,10 @@ public class CssConverter extends Converter {
 		// add it to the list of referenced styles, 
 		// but only when it has not been added before:
 		if (! this.referencedStyles.contains(style)) {
+			//System.out.println("adding style " + style.getSelector() + " to references");
 			this.referencedStyles.add( style );
 		}
+		//System.out.println("CssConverter: resolved style reference for " + value + " is " + (reference + "Style") );
 		return reference + "Style"; //abbreviation;
 	}
 

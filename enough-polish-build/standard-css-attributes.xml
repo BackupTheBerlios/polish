@@ -1318,7 +1318,7 @@
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
 		description="The color of the arrows."
 		default="black"
-		id="55"
+		id="133"
 	/>
 	
 	<attribute
@@ -1326,7 +1326,7 @@
 		type="imageurl"
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
 		description="The URL of the right arrow image."
-		id="56"
+		id="134"
 	/>
 
 	<attribute
@@ -1334,7 +1334,7 @@
 		type="imageurl"
 		appliesTo="ChoiceGroup, List, The horizontal view-type"
 		description="The URL of the left horizontal-choice image."
-		id="57"
+		id="135"
 	/>
 	
 	<attribute
@@ -1344,7 +1344,7 @@
 		description="The position of the arrows, either on both sides, left or right."
 		default="bothsides"
 		values="bothsides,right,left"
-		id="104"
+		id="136"
 	/>
 	
 	<attribute
@@ -1353,7 +1353,7 @@
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
 		description="Defines whether the background should be painted under the arrows as well."
 		default="false"
-		id="105"
+		id="137"
 	/>
 	
 	<attribute
@@ -1362,7 +1362,7 @@
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
 		description="Determines whether the user can continue at the first ChoiceGroup item when he reaches the last item."
 		default="false"
-		id="127"
+		id="138"
 	/>
 	
 	<attribute
@@ -1371,7 +1371,7 @@
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
 		description="Sets the horizontal padding between the arrows of the horizontal view type. This overrides the default-horizontal-padding and makes only sense when the arrows are placed on either the left or the right side."
 		default="padding-horizontal"
-		id="128"
+		id="139"
 	/>
 	
 	<attribute
@@ -1381,7 +1381,7 @@
 		description="Enables or disables the smooth scrolling mode within the horizontal view-type."
 		default="smooth"
 		values="normal,smooth"
-		id="129"
+		id="140"
 	/>
 	
 	<attribute
@@ -1390,9 +1390,24 @@
 		appliesTo="Screen, Form, List, TabbedForm, FramedForm"
 		description="Ensures that the menu is painted at the bottom of the screen without using the margins of the screen. You can apply the screen margins to the menubar as well by setting the &quot;separate-menubar&quot; property to &quot;true&quot;."
 		default="true"
-		id="130"
+		id="141"
 	/>
 	
+	<attribute
+		name="choicetextfield-containerstyle"
+		type="style"
+		appliesTo="ChoiceTextField"
+		description="Defines the style for the menu that contains the possible matches for the curent user input."
+		id="142"
+	/>
+	
+	<attribute
+		name="choicetextfield-choicestyle"
+		type="style"
+		appliesTo="ChoiceTextField"
+		description="Defines the style for single possible matches for the curent user input."
+		id="143"
+	/>
 	
 	
 	<!--
@@ -1402,7 +1417,7 @@
 		type="background"
 		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
 		description="The background that is painted over the last screen. This can be used for dimming previous screens when tbe new screen does have margins." 
-		id="133"
+		id="144"
 	/>
 	
 	<attribute
@@ -1410,7 +1425,7 @@
 		type="background"
 		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
 		description="The background that is painted over the rest of the screen when the menu is opened. This makes sense only when the &quot;fullscreen&quot; mode is activated." 
-		id="134"
+		id="145"
 	/>
 	
 	-->
