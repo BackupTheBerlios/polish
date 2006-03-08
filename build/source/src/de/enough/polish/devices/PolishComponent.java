@@ -57,7 +57,7 @@ implements Comparable
 	protected PolishComponent parent;
 	protected boolean supportsPolishGui;
 	private HashMap features;
-	private HashMap capabilities;
+	protected HashMap capabilities;
 	private String featuresAsString;
 	protected final CapabilityManager capabilityManager;
 	protected final HashMap implicitGroupsByName;

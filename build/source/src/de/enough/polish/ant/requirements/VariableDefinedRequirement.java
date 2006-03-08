@@ -44,7 +44,7 @@ public class VariableDefinedRequirement extends Requirement {
 	private String[] requiredVariables;
 
 	/**
-	 * Creates a new requirement for a device feature.
+	 * Creates a new requirement for a device variable.
 	 * 
 	 * @param value the variables(s) which needs to be defined, e.g. "wap.UserAgen".
 	 *              When there are several variables needed, they need to be seperated by commas.

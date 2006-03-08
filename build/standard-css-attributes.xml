@@ -1384,6 +1384,14 @@
 		id="129"
 	/>
 	
+	<attribute
+		name="separate-menu"
+		type="boolean"
+		appliesTo="Screen, Form, List, TabbedForm, FramedForm"
+		description="Ensures that the menu is painted at the bottom of the screen without using the margins of the screen. You can apply the screen margins to the menubar as well by setting the &quot;separate-menubar&quot; property to &quot;true&quot;."
+		default="true"
+		id="130"
+	/>
 	
 	
 	
