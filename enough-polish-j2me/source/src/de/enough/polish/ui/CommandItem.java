@@ -350,6 +350,19 @@ public class CommandItem extends IconItem {
 		//#endif
 
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#hideNotify()
+	 */
+	protected void hideNotify() {
+		if (this.hasChildren) {
+			this.children.hideNotify();
+			if (this.isOpen) {
+				open( false );
+			}
+		}
+		super.hideNotify();
+	}
 	
 	
 	

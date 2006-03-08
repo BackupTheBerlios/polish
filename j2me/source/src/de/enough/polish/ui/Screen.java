@@ -1601,7 +1601,7 @@ implements AccessibleCanvas
 									&& this.menuContainer != null 
 									&&  this.menuContainer.size() != 0 ) 
 							{
-								this.menuOpened = true;
+								openMenu( true );
 								repaint();
 								return;
 							} else {
@@ -1625,7 +1625,7 @@ implements AccessibleCanvas
 					}
 					if (this.menuOpened) {
 						if (keyCode == RIGHT_SOFT_KEY ) {
-							this.menuOpened = false;
+							openMenu( false );
 //						} else if ( gameAction == Canvas.FIRE ) {
 //							int focusedIndex = this.menuContainer.getFocusedIndex();
 //							Command cmd = (Command) this.menuCommands.get( focusedIndex );
@@ -1634,12 +1634,6 @@ implements AccessibleCanvas
 						} else { 
 							this.menuContainer.handleKeyPressed(keyCode, gameAction);
 						}
-						//#if !polish.MenuBar.focusFirstAfterClose
-							if (!this.menuOpened) {
-								// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-								this.menuContainer.focus(0);
-							}
-						//#endif
 						repaint();
 						return;
 					}
@@ -1765,7 +1759,24 @@ implements AccessibleCanvas
 	public void setCommandListener(CommandListener listener) {
 		this.forwardCommandListener.realCommandListener = listener;
 	}
-	
+
+	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar
+	private void openMenu( boolean open ) {
+		if (!open && this.menuOpened) {
+			this.menuContainer.hideNotify();
+		} else if (open && !this.menuOpened) {
+			this.menuContainer.showNotify();
+		}
+		this.menuOpened = open;
+		//#if !polish.MenuBar.focusFirstAfterClose
+			if (!open) {
+				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+				this.menuContainer.focus(0);
+			}
+		//#endif
+	}
+	//#endif
+
 	//#ifdef tmp.menuFullScreen
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
@@ -1801,6 +1812,7 @@ implements AccessibleCanvas
 				this.menuCommands = new ArrayList( 6, 50 );
 				//#style menu, default
 				 this.menuContainer = new Container( true );
+				 this.menuContainer.screen = this;
 			}
 			if (cmd == this.menuSingleLeftCommand || cmd == this.menuSingleRightCommand || 
 					this.menuCommands.contains(cmd)) {
@@ -1819,7 +1831,8 @@ implements AccessibleCanvas
 						// the right menu command is replaced by the new one,
 						// so insert the original one into the options-menu:
 						//#style menuitem, menu, default
-						StringItem menuItem = new StringItem( null, this.menuSingleRightCommand.getLabel(), Item.HYPERLINK );
+						CommandItem menuItem = new CommandItem( this.menuSingleRightCommand, this.menuContainer );
+						menuItem.screen = this;
 						this.menuContainer.add( menuItem );
 						if (this.menuContainer.size() == 1) {
 							this.menuSingleLeftCommand = this.menuSingleRightCommand;
@@ -1837,7 +1850,8 @@ implements AccessibleCanvas
 				}
 			}
 			//#style menuitem, menu, default
-			StringItem menuItem = new StringItem( null, cmd.getLabel(), Item.HYPERLINK );
+			CommandItem menuItem = new CommandItem( cmd, this.menuContainer );
+			menuItem.screen = this;
 			if ( this.menuCommands.size() == 0 ) {
 				this.menuCommands.add( cmd );
 				this.menuContainer.add( menuItem );
@@ -1887,7 +1901,8 @@ implements AccessibleCanvas
 	 * @param parent the parent command
 	 */
 	public void addSubCommand(Command child, Command parent) {
-		addSubCommand( child, parent, null );
+		//#style menuitem, menu, default
+		addSubCommand( child, parent );
 	}
 	
 	/**
@@ -1904,7 +1919,30 @@ implements AccessibleCanvas
 			//#ifdef tmp.useExternalMenuBar
 				this.menuBar.addSubCommand( child, parent, commandStyle );
 			//#else
-				
+				// find parent CommandItem, could be tricky, especially when there are nested commands over several layers
+				int index = this.menuCommands.indexOf( parent );
+				CommandItem parentCommandItem = null;
+				if (index != -1) {
+					// found it:
+					parentCommandItem = (CommandItem) this.menuContainer.get( index );
+				} else {
+					// search through all commands
+					for ( int i=0; i < this.menuContainer.size(); i++ ) {
+						CommandItem item = (CommandItem) this.menuContainer.get( i );
+						parentCommandItem = item.getChild( parent );
+						if ( parentCommandItem != null ) {
+							break;
+						}
+					}
+				}
+				if ( parentCommandItem == null ) {
+					throw new IllegalStateException();
+				}
+				parentCommandItem.addChild( child, commandStyle );
+				if (this.menuOpened) {
+					this.isInitialised = false;
+					repaint();
+				}				
 			//#endif	
 			if (this.isShown()) {
 				repaint();
@@ -2114,11 +2152,7 @@ implements AccessibleCanvas
 					if (y > this.screenHeight) {
 						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
 							if (this.menuOpened) {
-								this.menuOpened = false;
-								//#if !polish.MenuBar.focusFirstAfterClose
-									// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-									this.menuContainer.focus(0);
-								//#endif
+								openMenu( false );
 							} else if (this.menuSingleRightCommand != null) {
 								callCommandListener(this.menuSingleRightCommand );
 							}
@@ -2130,28 +2164,27 @@ implements AccessibleCanvas
 								this.callCommandListener(this.menuSingleLeftCommand);
 							} else if (this.menuOpened ) {
 								// the "SELECT" command has been clicked:
-								int focusedIndex = this.menuContainer.getFocusedIndex();
-								Command cmd = (Command) this.menuCommands.get( focusedIndex );
-								callCommandListener( cmd );						
-								this.menuOpened = false;
-								//#if !polish.MenuBar.focusFirstAfterClose
-									// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-									this.menuContainer.focus(0);
-								//#endif
+								this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
+//								int focusedIndex = this.menuContainer.getFocusedIndex();
+//								Command cmd = (Command) this.menuCommands.get( focusedIndex );
+//								callCommandListener( cmd );						
+//								this.menuOpened = false;
+//								//#if !polish.MenuBar.focusFirstAfterClose
+//									// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+//									this.menuContainer.focus(0);
+//								//#endif
 							} else {
-								this.menuOpened = true;
+								openMenu( true );
+								//this.menuOpened = true;
 							}
 							repaint();
 							return;
 						}
 					} else if (this.menuOpened) {
-						this.menuOpened = false;
-						//#if !polish.MenuBar.focusFirstAfterClose
- 							// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-							this.menuContainer.focus(0);
-						//#endif
+						openMenu( false );
 						// a menu-item could have been selected:
 						if (this.menuContainer.handlePointerPressed( x, y )) {
+							//TODO add support for pointer events and sub commands
 							int focusedIndex = this.menuContainer.getFocusedIndex();
 							Command cmd = (Command) this.menuCommands.get( focusedIndex );
 							callCommandListener( cmd );						

@@ -515,7 +515,12 @@ public class MenuBar extends Item {
 	 * Used to toggle the opened state of the menu bar
 	 */
 	protected void setOpen( boolean open ) {
-		this.isInitialised = open == this.isOpened;
+		this.isInitialised = (open == this.isOpened);
+		if (!open && this.isOpened) {
+			this.commandsContainer.hideNotify();
+		} else if (open && !this.isOpened) {
+			this.commandsContainer.showNotify();
+		}
 		this.isOpened = open;
 		//#if !polish.MenuBar.focusFirstAfterClose
 			if (!open) {
