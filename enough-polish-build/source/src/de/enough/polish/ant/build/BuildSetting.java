@@ -1508,7 +1508,11 @@ public class BuildSetting {
 			FinalizerSetting finalizerSetting = (FinalizerSetting) iter.next();
 			if (finalizerSetting.isActive( evaluator, this.antProject)) {
 				try {
-					Finalizer finalizer = (Finalizer) manager.getExtension( ExtensionManager.TYPE_FINALIZER, finalizerSetting, environment);
+					// dont't store the finalizer, so that several different "antcall" finalizers are used
+					//boolean storeExtension = false;
+					//System.out.println("getting finalizer " + finalizerSetting.getName() );
+					//Finalizer finalizer = (Finalizer) manager.getExtension( ExtensionManager.TYPE_FINALIZER, null, finalizerSetting, environment, storeExtension );
+					Finalizer finalizer = (Finalizer) manager.getExtension( ExtensionManager.TYPE_FINALIZER, finalizerSetting, environment );
 					list.add( finalizer );
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -339,10 +339,10 @@ public class ExtensionManager {
 		Map store = (Map) this.extensionsByType.get( type );
 		if (store != null) {
 			Extension extension;
-			if (name != null) {
-				extension = (Extension) store.get( name );
-			} else {
+			if (setting != null) {
 				extension = (Extension) store.get( setting );
+			} else {
+				extension = (Extension) store.get( name );
 			}
 			if (extension != null) {
 				return extension;
@@ -360,7 +360,7 @@ public class ExtensionManager {
 			store = new HashMap();
 			this.extensionsByType.put( type, store );
 		}
-		if (name != null) {
+		if (setting != null) {
 			store.put( name, extension );
 		} else {
 			store.put( setting, extension );
