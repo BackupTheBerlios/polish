@@ -337,7 +337,7 @@ implements Runnable, OutputFilter
 	}
 	
 	/**
-	 * Starts the emulator for the given device.
+	 * Returns the emulator for the given device.
 	 *  
 	 * @param setting the setting
 	 * @param device the current device
