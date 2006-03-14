@@ -466,7 +466,6 @@ public class Container extends Item {
 				this.internalHeight = item.internalHeight;
 				//#debug
 				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
-				this.internalHeight = item.internalHeight;
 			} else {
 				this.internalX = item.xLeftPos - this.contentX;
 				this.internalWidth = item.itemWidth;
@@ -474,7 +473,6 @@ public class Container extends Item {
 				this.internalHeight = item.itemHeight;
 				//#debug
 				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
-				
 			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
@@ -731,40 +729,58 @@ public class Container extends Item {
 		//#ifdef tmp.supportViewType
 			if (this.view != null) {
 				this.view.paintContent(x, y, leftBorder, rightBorder, g);
-				return;
+			} else {
+		//#endif
+			Item[] myItems;
+			//synchronized (this.itemsList) {
+				myItems = this.items;
+			//}
+			int focusedX = x;
+			int focusedY = 0;
+			int focusedRightBorder = rightBorder;
+			if (!(this.isLayoutCenter || this.isLayoutRight)) {
+				// adjust the right border:
+				rightBorder = leftBorder + this.contentWidth;
+			}
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
+				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
+				// since after every item a line break will be done.
+				if (i == this.focusedIndex) {
+					focusedY = y;
+					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
+				} else {
+					// the currently focused item is painted last
+					item.paint(x, y, leftBorder, rightBorder, g);
+				}
+				y += item.itemHeight + this.paddingVertical;
+			}
+	
+			
+			// paint the currently focused item:
+			if (this.focusedItem != null) {
+				//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
+				this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+			}
+		//#ifdef tmp.supportViewType
 			}
 		//#endif
-		Item[] myItems;
-		//synchronized (this.itemsList) {
-			myItems = this.items;
-		//}
-		int focusedX = x;
-		int focusedY = 0;
-		int focusedRightBorder = rightBorder;
-		if (!(this.isLayoutCenter || this.isLayoutRight)) {
-			// adjust the right border:
-			rightBorder = leftBorder + this.contentWidth;
-		}
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
-			// since after every item a line break will be done.
-			if (i == this.focusedIndex) {
-				focusedY = y;
-				item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
+		
+		Item item = this.focusedItem;
+		if (item != null) {
+			if (item.internalX != -9999) {
+				this.internalX =  item.contentX - this.contentX + item.internalX;
+				this.internalWidth = item.internalWidth;
+				this.internalY = item.contentY - this.contentY + item.internalY;
+				this.internalHeight = item.internalHeight;
 			} else {
-				// the currently focused item is painted last
-				item.paint(x, y, leftBorder, rightBorder, g);
+				this.internalX = item.xLeftPos - this.contentX;
+				this.internalWidth = item.itemWidth;
+				this.internalY = (item.yTopPos - this.yOffset) - this.contentY;
+				this.internalHeight = item.itemHeight;
 			}
-			y += item.itemHeight + this.paddingVertical;
 		}
 
-		
-		// paint the currently focused item:
-		if (this.focusedItem != null) {
-			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-			this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
-		}
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -787,31 +803,7 @@ public class Container extends Item {
 			Item item = this.focusedItem;
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
 				if (this.enableScrolling && item.internalX != -9999) {
-					if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
-						//#if polish.css.scroll-mode
-							if (!this.scrollSmooth) {
-								this.yOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
-							} else {
-						//#endif
-								this.targetYOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
-						//#if polish.css.scroll-mode
-							}
-						//#endif
-						//#debug
-						System.out.println("Container (" + getClass().getName() + "): lowered yOffset to " + this.yOffset + "/" + this.targetYOffset  );
-					} else if ( item.contentY + item.internalY < this.yTop ) {
-						//#if polish.css.scroll-mode
-							if (!this.scrollSmooth) {
-								this.yOffset += ( this.yTop - (item.contentY + item.internalY  )); 
-							} else {
-						//#endif
-								this.targetYOffset += ( this.yTop - (item.contentY + item.internalY  )); 
-						//#if polish.css.scroll-mode
-							}
-						//#endif
-						//#debug
-						System.out.println("Container (" + getClass().getName() + "): increased yOffset to " + this.yOffset + "/" + this.targetYOffset + ", yTop=" + this.yTop + ", item.class=" + item.getClass().getName() + ", item.contentY=" + item.contentY + ", item.internalY=" + item.internalY );
-					}
+					adjustScrolling(item);
 				}
 				//#debug
 				System.out.println("Container(" + this + "): handleKeyPressed consumed by item " + item.getClass().getName() + "/" + item );
@@ -917,6 +909,83 @@ public class Container extends Item {
 			}
 		}
 		return processed;
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		if (this.itemsList.size() == 0) {
+			return false;
+		}
+		if (this.focusedItem != null) {
+			Item item = this.focusedItem;
+			if ( item.handleKeyReleased( keyCode, gameAction ) ) {
+				if (this.enableScrolling && item.internalX != -9999) {
+					adjustScrolling(item);
+				}
+				//#debug
+				System.out.println("Container(" + this + "): handleKeyReleased consumed by item " + item.getClass().getName() + "/" + item );				
+				return true;
+			}	
+		}
+		return super.handleKeyReleased(keyCode, gameAction);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
+	 */
+	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		if (this.itemsList.size() == 0) {
+			return false;
+		}
+		if (this.focusedItem != null) {
+			Item item = this.focusedItem;
+			if ( item.handleKeyRepeated( keyCode, gameAction ) ) {
+				if (this.enableScrolling && item.internalX != -9999) {
+					adjustScrolling(item);
+				}
+				//#debug
+				System.out.println("Container(" + this + "): handleKeyRepeated consumed by item " + item.getClass().getName() + "/" + item );				
+				return true;
+			}	
+		}
+		return super.handleKeyRepeated(keyCode, gameAction);
+	}
+
+	/**
+	 * Adjusts the scrolling for the given item.
+	 * 
+	 * @param item the item for which the scrolling should be adjusted
+	 */
+	private void adjustScrolling(Item item) {
+		if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
+			//#if polish.css.scroll-mode
+				if (!this.scrollSmooth) {
+					this.yOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+				} else {
+			//#endif
+					this.targetYOffset -= ( item.contentY + item.internalY + item.internalHeight - this.yBottom );
+			//#if polish.css.scroll-mode
+				}
+			//#endif
+			//#debug
+			System.out.println("Container (" + getClass().getName() + "): lowered yOffset to " + this.yOffset + "/" + this.targetYOffset  );
+		} else if ( item.contentY + item.internalY < this.yTop ) {
+			//#if polish.css.scroll-mode
+				if (!this.scrollSmooth) {
+					this.yOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+				} else {
+			//#endif
+					this.targetYOffset += ( this.yTop - (item.contentY + item.internalY  )); 
+			//#if polish.css.scroll-mode
+				}
+			//#endif
+			//#debug
+			System.out.println("Container (" + getClass().getName() + "): increased yOffset to " + this.yOffset + "/" + this.targetYOffset + ", yTop=" + this.yTop + ", item.class=" + item.getClass().getName() + ", item.contentY=" + item.contentY + ", item.internalY=" + item.internalY );
+		}
 	}
 
 	/**

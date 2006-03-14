@@ -2052,8 +2052,8 @@ public class TextField extends StringItem
 			// don't show info when this field is not editable
 			return;
 		}
-		//#debug
-		System.out.println("update info: " + this.text );
+		// # debug
+		// System.out.println("update info: " + this.text );
 		if (this.screen == null) {
 			this.screen = getScreen();
 		}
@@ -2540,6 +2540,35 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
+	//#if !polish.blackberry && tmp.directInput
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
+	 */
+	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("TextField.handleKeyRepeated( " + keyCode + ")");
+		int currentLength = (this.text == null ? 0 : this.text.length());
+		if (currentLength < this.maxSize && 
+				keyCode >= Canvas.KEY_NUM0 && 
+				keyCode <= Canvas.KEY_NUM9) 
+		{	
+			this.lastInputTime = System.currentTimeMillis();
+			this.caretChar = ("" + (keyCode - 48)).charAt(0);
+			this.caretWidth = this.font.charWidth( this.caretChar );
+			//insertCharacter();
+//			String currentText = getString();
+//			String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
+//			setString( newText );
+//			if (getScreen() instanceof Form) {
+//				notifyStateChanged();
+//			}
+			return true;
+		}
+		return super.handleKeyRepeated(keyCode, gameAction);
+	}
+	//#endif
+
+	
 	
 	//#if polish.hasPointerEvents && !tmp.forceDirectInput
 	/**
@@ -2810,8 +2839,7 @@ public class TextField extends StringItem
 				this.nextCharUppercase = false;
 			}
 		//#endif
-	}
-	
+	}	
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

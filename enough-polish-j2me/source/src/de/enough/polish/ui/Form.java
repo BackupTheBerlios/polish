@@ -598,10 +598,8 @@ public class Form extends Screen
 	}
 	
 	/**
-	 * Adds an item consisting of one <code>Image</code> to the
-	 * <code>Form</code>. The effect of
-	 * this method is identical to
-	 * 
+	 * Adds an item consisting of one <code>Image</code> to the <code>Form</code>. 
+	 * The effect of this method is identical to
 	 * <p> <code>
 	 * append(new ImageItem(null, img, ImageItem.LAYOUT_DEFAULT, null))
 	 * </code> </p>

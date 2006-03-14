@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Created on Mar 4, 2006 at 3:17:15 PM.
  * 
@@ -244,6 +245,7 @@ public class CommandItem extends IconItem {
 			}
 			//#endif
 			scr.callCommandListener( this.command );
+			return true;
 		}
 //		if (this.parentItem != null && gameAction == Canvas.LEFT ) {
 //			open( false );

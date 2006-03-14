@@ -176,7 +176,7 @@ implements Runnable, AccessibleCanvas
 			if (this.isInitialized) {
 				g.setColor( this.messageColor );
 				Font font = Font.getDefaultFont();
-				String[] lines = TextUtil.split( this.readyMessage, font, width - 10, width - 10 );
+				String[] lines = TextUtil.wrap( this.readyMessage, font, width - 10, width - 10 );
 				int y = height - ( lines.length * ( font.getHeight() + 1 ) );
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];
@@ -186,7 +186,7 @@ implements Runnable, AccessibleCanvas
 			} else if (this.message != null) {
 				g.setColor( this.messageColor );
 				Font font = Font.getDefaultFont();
-				String[] lines = TextUtil.split( this.message, font, width - 10, width - 10 );
+				String[] lines = TextUtil.wrap( this.message, font, width - 10, width - 10 );
 				int y = height - ( lines.length * ( font.getHeight() + 1 ) );
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];

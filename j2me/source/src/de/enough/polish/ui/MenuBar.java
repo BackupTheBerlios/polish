@@ -547,11 +547,12 @@ public class MenuBar extends Item {
 					}
 					//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
 				//#endif
-				boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
-				if (!handled) { // CommandItem returns false when it invokes the command listener
-					setOpen( false );
-				}
-				
+				commandItem.handleKeyPressed( 0, Canvas.FIRE );
+//				boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
+//				if (!handled) { // CommandItem returns false when it invokes the command listener
+				// this is now done automatically by the Screen class
+//					setOpen( false );
+//				}				
 				return true;
 			} else if (this.singleLeftCommand != null) {
 				this.screen.callCommandListener(this.singleLeftCommand);

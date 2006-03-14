@@ -126,7 +126,9 @@ public class ChoiceTextField
 		}
 		this.allowFreeTextEntry = allowFreeTextEntry;
 		this.choicesContainer = new Container( false );
-		this.choicesContainer.allowCycling = false;
+		//#if polish.Container.allowCycling != false
+			this.choicesContainer.allowCycling = false;
+		//#endif
 		//#if polish.usePolishGui
 			//# this.choicesContainer.parent = this;
 		//#endif
@@ -283,6 +285,8 @@ public class ChoiceTextField
 				//#if polish.usePolishGui			
 					//# setString( choiceText );
 					//# setCaretPosition( choiceText.length() );
+				//#else
+					System.out.println( choiceText ); // just use it so that the IDE won't cry
 				//#endif
 				this.numberOfMatches = 0;
 				this.choicesContainer.clear();

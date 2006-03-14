@@ -1100,14 +1100,14 @@ public abstract class CustomItem extends Item
 	 * <code>KEY_RELEASE</code> bit in the value returned by the
 	 * <code>getInteractionModes</code> method.
 	 * 
-	 * <p>keyReleased() is not suported by the J2ME Polish implementation.</p>
+	 * <p>keyReleased() is suported by the J2ME Polish implementation when the native system forwards keyReleased events to Canvas classes.</p>
 	 * 
 	 * @param keyCode - the key code of the key that has been released
 	 * @see #getInteractionModes()
 	 */
 	protected void keyReleased(int keyCode)
 	{
-		//not supported
+		//do nothing
 	}
 
 	/**
@@ -1116,14 +1116,14 @@ public abstract class CustomItem extends Item
 	 * <code>KEY_REPEAT</code> bit in the value returned by the
 	 * <code>getInteractionModes</code> method.
 	 * 
-	 * <p>keyRepeated() is not suported by the J2ME Polish implementation.</p>
+	 * <p>keyRepeated() is suported by the J2ME Polish implementation when the native system forwards keyRepeated events to Canvas classes.</p>
 	 * 
 	 * @param keyCode - the key code of the key that has been repeated
 	 * @see #getInteractionModes()
 	 */
 	protected void keyRepeated(int keyCode)
 	{
-		//not supported
+		//do nothing
 	}
 
 	/**
@@ -1305,6 +1305,30 @@ public abstract class CustomItem extends Item
 			return true;
 		} else {
 			return super.handleKeyPressed(keyCode, gameAction);
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
+	 */
+	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		keyRepeated( keyCode );
+		if (this.isInitialised == false) {
+			return true;
+		} else {
+			return super.handleKeyRepeated(keyCode, gameAction);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		keyReleased( keyCode );
+		if (this.isInitialised == false) {
+			return true;
+		} else {
+			return super.handleKeyReleased(keyCode, gameAction);
 		}
 	}
 	

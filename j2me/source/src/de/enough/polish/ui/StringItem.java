@@ -409,7 +409,7 @@ public class StringItem extends Item
 				return;
 			}
 		//#endif
-		String[] lines = TextUtil.split(this.text, this.font, firstLineWidth, lineWidth);
+		String[] lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
 		int fontHeight = this.font.getHeight();
 		this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
 		int maxWidth = 0;

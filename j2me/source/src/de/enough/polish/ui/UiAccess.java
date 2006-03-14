@@ -90,7 +90,7 @@ public final class UiAccess {
 	 * @param listener the listener
 	 */
 	public static void setScreenStateListener( Screen screen, ScreenStateListener listener ) {
-		screen.screenStateListener = listener;
+		screen.setScreenStateListener( listener );
 	}
 	//#endif
 	
@@ -201,6 +201,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.usePolishGui
 	/**
 	 * Sets the parent for the given child item.
 	 * 
@@ -210,6 +211,7 @@ public final class UiAccess {
 	public static void setParent( Item child, javax.microedition.lcdui.Item parent ) {
 		// ignore
 	}
+	//#endif
 
 	/**
 	 * Sets the parent for the given child item.
@@ -629,7 +631,9 @@ public final class UiAccess {
 	 * @param screen the screen.
 	 */
 	public static void addSubCommand(  Command child, Command parent, javax.microedition.lcdui.Screen screen  ) {
+		//#if !polish.blackberry
 		screen.addCommand( child );
+		//#endif
 	}
 	
 	//#if polish.usePolishGui
@@ -653,6 +657,7 @@ public final class UiAccess {
 	 * @param child the sub command
 	 * @param parent the parent command
 	 * @param screen the screen.
+	 * @param style the style of the command
 	 */
 	public static void addSubCommand(  Command child, Command parent, Screen screen, Style style  ) {
 		screen.addSubCommand( child, parent, style );

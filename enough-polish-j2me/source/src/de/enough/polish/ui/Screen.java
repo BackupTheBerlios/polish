@@ -1045,9 +1045,11 @@ implements AccessibleCanvas
 			//#if tmp.useScrollBar
 				if (this.container != null && this.container.itemHeight > this.contentHeight) {
 					// paint scroll bar: - this.container.yOffset
+					//#debug
 					System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.yTop=" + this.container.yTop + ", container.yTopPos=" + this.container.yTopPos);
 					
-					int scrollX = sWidth - this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+					int scrollX = sWidth + this.marginLeft 
+								- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
 					//TODO allow scroll bar on the left side
 					this.scrollBar.paint( scrollX, this.contentY, scrollX, rightBorder, g);
 				}
@@ -1137,14 +1139,15 @@ implements AccessibleCanvas
 							this.paintScrollIndicator = false;
 						}
 						g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
-						this.menuContainer.paint(this.marginLeft, y, this.marginLeft, this.menuMaxWidth, g);
+						this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.menuMaxWidth, g);
 					 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 					} 
 					if (this.showTitleOrMenu || this.menuOpened) {
 						// clear menu-bar:
 						if (this.menuBarColor != Item.TRANSPARENT) {
 							g.setColor( this.menuBarColor );
-							g.fillRect(this.marginLeft, this.originalScreenHeight, sWidth,  this.menuBarHeight );
+							//TODO check use menuY instead of this.originalScreenHeight?
+							g.fillRect(menuLeftX, this.originalScreenHeight, menuRightX,  this.menuBarHeight );
 						}
 						if (this.menuContainer != null && this.menuContainer.size() > 0) {
 							String menuText = null;
@@ -1169,20 +1172,20 @@ implements AccessibleCanvas
 									//#endif
 								}
 							}
+							//#ifdef polish.Menu.MarginLeft:defined
+								//#= int menuLeftX += ${polish.Menu.MarginLeft};
+							//#else
+								menuLeftX += 2;
+							//#endif
 							//#ifdef polish.hasPointerEvents
-								this.menuLeftCommandX = 2 + this.menuFont.stringWidth( menuText );
+								this.menuLeftCommandX = menuLeftX + this.menuFont.stringWidth( menuText );
 							//#endif
 							g.setColor( this.menuFontColor );
 							g.setFont( this.menuFont );
-							//#ifdef polish.Menu.MarginLeft:defined
-								//#= int menuX = ${polish.Menu.MarginLeft} + this.marginLeft;
-							//#else
-								int menuX = 2 + this.marginLeft;
-							//#endif
 							//#ifdef polish.Menu.MarginTop:defined
-								//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
+								//#= g.drawString(menuLeftX, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
 							//#else
-								g.drawString(menuText, menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
+								g.drawString(menuText, menuLeftX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
 							//#endif
 							if ( this.menuOpened ) {
 								// draw cancel string:
@@ -1194,17 +1197,17 @@ implements AccessibleCanvas
 									menuText = "Cancel";
 								//#endif
 								//#ifdef polish.Menu.MarginRight:defined
-									//#= menuX = ${polish.Menu.MarginRight}  + this.marginRight;
+									//#= menuRightX -= ${polish.Menu.MarginRight};
 								//#elifdef polish.Menu.MarginLeft:defined
-									menuX = 2 + this.marginRight;
+									menuRightX -= 2;
 								//#endif
 								//#ifdef polish.Menu.MarginTop:defined
-									//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+									//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
 								//#else
-									g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+									g.drawString(menuText, menuRightX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
 								//#endif
 								//#ifdef polish.hasPointerEvents
-									this.menuRightCommandX = this.screenWidth - 2 - this.menuFont.stringWidth( menuText );
+									this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
 								//#endif
 							}
 						}
@@ -1213,18 +1216,17 @@ implements AccessibleCanvas
 							g.setFont( this.menuFont );
 							String menuText = this.menuSingleRightCommand.getLabel();
 							//#ifdef polish.Menu.MarginRight:defined
-								//#= int menuX = ${polish.Menu.MarginRight} + this.marginRight;
-							//#else
-								int menuX = 2 + this.marginRight;
+								//#= menuRightX -= ${polish.Menu.MarginRight};
+							//#elifdef polish.Menu.MarginLeft:defined
+								menuRightX -= 2;
 							//#endif
 							//#ifdef polish.Menu.MarginTop:defined
-								//#= g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+								//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
 							//#else
-								g.drawString(menuText, this.screenWidth - menuX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+								g.drawString(menuText, menuRightX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
 							//#endif
 							//#ifdef polish.hasPointerEvents
-								this.menuRightCommandX = this.screenWidth - menuX 
-									- this.menuFont.stringWidth( menuText );
+								this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
 							//#endif
 						}
 					} // if this.showTitleOrMenu || this.menuOpened
@@ -1697,7 +1699,39 @@ implements AccessibleCanvas
 	 * @param keyCode the code of the key, which is pressed repeatedly
 	 */
 	public void keyRepeated(int keyCode) {
-		keyPressed(keyCode);
+		//#debug
+		System.out.println("keyRepeated(" + keyCode + ")");
+		int gameAction = 0;
+		try {
+			gameAction = getGameAction( keyCode );
+		} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
+			//#debug
+			System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+		}
+		//#if tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				if (this.menuBar.handleKeyRepeated(keyCode, gameAction)) {
+					repaint();
+					return;
+				} else if (this.menuBar.isOpened) {
+					return;
+				}
+			//#else
+				if (this.menuOpened  && this.menuContainer != null ) {
+					if (this.menuContainer.handleKeyRepeated(keyCode, gameAction)) {
+						repaint();
+					}
+					return;
+				}
+
+			//#endif
+		//#endif
+			if (this.container != null) {
+			boolean handled = this.container.handleKeyRepeated( keyCode, gameAction );
+			if ( handled ) {
+				repaint();
+			}
+		}
 	}
 
 	/**
@@ -1706,7 +1740,39 @@ implements AccessibleCanvas
 	 * @param keyCode the code of the key, which has been released
 	 */
 	public void keyReleased(int keyCode) {
-		// ignore
+		//#debug
+		System.out.println("keyReleased(" + keyCode + ")");
+		int gameAction = 0;
+		try {
+			gameAction = getGameAction( keyCode );
+		} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
+			//#debug
+			System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+		}
+		//#if tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				if (this.menuBar.handleKeyReleased(keyCode, gameAction)) {
+					repaint();
+					return;
+				} else if (this.menuBar.isOpened) {
+					return;
+				}
+			//#else
+				if (this.menuOpened  && this.menuContainer != null ) {
+					if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
+						repaint();
+					}
+					return;
+				}
+
+			//#endif
+		//#endif
+		if (this.container != null) {
+			boolean handled = this.container.handleKeyReleased( keyCode, gameAction );
+			if ( handled ) {
+				repaint();
+			}
+		}
 	}
 
 	//#ifdef polish.useDynamicStyles	
@@ -1754,6 +1820,16 @@ implements AccessibleCanvas
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		return this.container.handleKeyPressed(keyCode, gameAction);
 	}
+	
+	/**
+	 * Sets the screen listener for this screen.
+	 * 
+	 * @param listener the listener that is notified whenever the user changes the internal state of this screen.
+	 */
+	public void setScreenStateListener( ScreenStateListener listener ) {
+		this.screenStateListener = listener;
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#setCommandListener(javax.microedition.lcdui.CommandListener)

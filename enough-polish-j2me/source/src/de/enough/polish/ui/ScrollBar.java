@@ -137,7 +137,7 @@ public class ScrollBar extends Item {
 		this.scrollBarHeight = screenAvailableHeight;
 		//#if polish.css.scrollbar-slider-mode
 			if ( this.sliderMode == MODE_ITEM && focusedIndex != -1) {
-				System.out.println("using item");
+				//System.out.println("using item");
 				int chunkPerSlider = (screenAvailableHeight << 8) / numberOfItems; 
 				this.sliderY = (chunkPerSlider * focusedIndex) >>> 8;
 				this.sliderHeight = chunkPerSlider >>> 8;
@@ -146,12 +146,12 @@ public class ScrollBar extends Item {
 				//# if (selectionHeight != 0) {
 		//#endif
 			// take the currently selected area
-			System.out.println("using area");
+			//System.out.println("using area");
 			this.sliderY = (selectionStart * screenAvailableHeight) / screenContentHeight;
 			this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
 		} else {
 			// use the page dimensions:
-			System.out.println("using page");
+			//System.out.println("using page");
 			this.sliderY = (-contentYOffset  * screenAvailableHeight) / screenContentHeight;
 			this.sliderHeight = (screenAvailableHeight * screenAvailableHeight) / screenContentHeight;
 		}

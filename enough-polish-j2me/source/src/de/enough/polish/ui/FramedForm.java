@@ -54,7 +54,6 @@ public class FramedForm extends Form {
 	private boolean expandLeftFrame;
 	
 	private Container currentlyActiveContainer;
-	private ScreenStateListener screenStateListener;
 
 	/**
 	 * Creates a new FramedForm
@@ -369,13 +368,4 @@ public class FramedForm extends Form {
 		return animated;
 	}
 	
-	/**
-	 * Sets the screen listener for this TabbedForm.
-	 * 
-	 * @param listener the listener that is notified whenever the user selects another tab,
-	 */
-	public void setScreenStateListener( ScreenStateListener listener ) {
-		this.screenStateListener = listener;
-	}
-
 }

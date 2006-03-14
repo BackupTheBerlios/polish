@@ -162,4 +162,23 @@ implements ImageConsumer
 		}
 	}
 	
+	/**
+	 * Sets the image for this background.
+	 * 
+	 * @param image the image
+	 */
+	public void setImage( Image image ) {
+		this.image = image;
+		this.isLoaded = (image != null);
+	}
+	
+	/**
+	 * Retrieves the image from this background.
+	 * 
+	 * @return the image
+	 */
+	public Image getImage() {
+		return this.image;
+	}
+
 }

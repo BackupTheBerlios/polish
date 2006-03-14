@@ -1801,6 +1801,40 @@ public abstract class Item extends Object
 		}
 		return false;
 	}
+	
+	/**
+	 * Handles the key-repeated event.
+	 * Please note, that implementation should first try to handle the
+	 * given key-code, before the game-action is processed.
+	 * 
+	 * The default implementation forwards the event to the handleKeyPressed method.
+	 * 
+	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
+	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
+	 * @return true when the key has been handled / recognized
+	 * @see #handleKeyPressed(int, int)
+	 */
+	protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
+		return handleKeyPressed(keyCode, gameAction);
+	}
+	
+	/**
+	 * Handles the key-released event.
+	 * Please note, that implementation should first try to handle the
+	 * given key-code, before the game-action is processed.
+	 * 
+	 * The default does nothing.
+	 * 
+	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
+	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
+	 * @return true when the key has been handled / recognized
+	 * @see #handleKeyPressed(int, int)
+	 */
+	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		return false;
+	}
+
+
 
 	//#ifdef polish.hasPointerEvents
 	/**
