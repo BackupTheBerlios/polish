@@ -27,6 +27,7 @@ package de.enough.polish.io;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * <p>Defines methods for serializing and de-serializing classes.</p>
@@ -49,14 +50,19 @@ public interface Externalizable extends Serializable {
 	 * Stores the internal instance fields to the output stream.
 	 * 
 	 * @param out the output stream to which instance fields should be written
+	 * @throws IOException when writing fails
 	 */
-	public void write( DataOutputStream out );
+	public void write( DataOutputStream out )
+	throws IOException;
 	
 	/**
 	 * Restores the internal instance fields from the given input stream.
 	 * 
 	 * @param in the input stream from which the data is loaded
+	 * @throws IOException when reading fails
 	 */
-	public void read( DataInputStream in );
+	public void read( DataInputStream in )
+	throws IOException;
+	
 
 }
