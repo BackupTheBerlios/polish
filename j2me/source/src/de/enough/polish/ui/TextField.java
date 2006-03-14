@@ -2129,6 +2129,14 @@ public class TextField extends StringItem
 				return false;
 			}
 		//#endif
+		if (gameAction == Canvas.FIRE
+				&& keyCode != Canvas.KEY_NUM5
+				&& this.defaultCommand != null 
+				&& this.itemCommandListener != null) 
+		{
+			this.itemCommandListener.commandAction(this.defaultCommand, this);
+			return true;
+		}
 		// ignore all command keys:
 		//#ifdef polish.hasCommandKeyEvents
 			//#foreach key in polish.keys.CommandKeys
@@ -2555,13 +2563,6 @@ public class TextField extends StringItem
 			this.lastInputTime = System.currentTimeMillis();
 			this.caretChar = ("" + (keyCode - 48)).charAt(0);
 			this.caretWidth = this.font.charWidth( this.caretChar );
-			//insertCharacter();
-//			String currentText = getString();
-//			String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
-//			setString( newText );
-//			if (getScreen() instanceof Form) {
-//				notifyStateChanged();
-//			}
 			return true;
 		}
 		return super.handleKeyRepeated(keyCode, gameAction);
