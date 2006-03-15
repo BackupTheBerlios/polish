@@ -178,16 +178,16 @@ public class MIDletLaunchConfigurationTab
 
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration)
   {
-//    IJavaElement javaElement = getContext();
-//    
-//    if (javaElement != null)
-//      {
-//        initializeJavaProject(javaElement, configuration);
-//      }
-//    else
-//      {
+    IJavaElement javaElement = getContext();
+    
+    if (javaElement != null)
+      {
+        initializeJavaProject(javaElement, configuration);
+      }
+    else
+      {
         configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "menu");
-//      }
+      }
 
     configuration.setAttribute(MIDletLauncherConstants.WORKSPACE, "/home/mkoch/runtime-workspace");
     configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad");
