@@ -34,7 +34,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.core.ui.ErrorHandler;
+import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 
 /**
  * 
@@ -75,7 +75,7 @@ public class MiDletEmulatorLaunchConfigurationTabGroup extends
         }
         File projectHome = model.getProjectHome();
         if( ! projectHome.exists()) {
-            ErrorHandler.error("build.xml file not found.","No build.xml file found. Would you like to create a new one?");
+            UIPluginActivator.log("build.xml file not found.");
         }
         
     }
