@@ -24,7 +24,6 @@ import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.MeposeCoreUIConstants;
 import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.ui.console.BuildListenerConsoleWriter;
 
 /**
  * The main plugin class to be used in the desktop.
