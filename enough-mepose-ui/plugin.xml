@@ -67,7 +67,7 @@
             delegate="de.enough.mepose.launcher.MIDletLaunchConfigurationDelegate"
             id="de.enough.mepose.launcher.launchConfigurationType"
             modes="run, debug"
-            name="MIDlet Emulator"/>
+            name="J2ME Polish MIDlet"/>
 <!--
 			sourcePathComputer="de.enough.mepose.launcher.sourcePathComputer"/>
 -->
@@ -112,6 +112,13 @@
 
 	<extension point="de.enough.mepose.core.CorePlugin.BuildListeners">
 	    <buildListener class="de.enough.mepose.core.ui.console.BuildListenerConsoleWriter"/>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+            configTypeID="de.enough.mepose.launcher.launchConfigurationType"
+            icon="icons/polish_logo_16x16.png"
+            id="de.enough.mepose.launcher.launchConfigurationTypeImage"/>
 	</extension>
 
 </plugin>
