@@ -1,5 +1,8 @@
 package de.enough.mepose.core.ui.plugin;
 
+import de.enough.mepose.MeposeCoreUIConstants;
+import de.enough.mepose.core.CorePlugin;
+
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -16,14 +19,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import de.enough.mepose.MeposeCoreUIConstants;
-import de.enough.mepose.core.CorePlugin;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -166,5 +167,29 @@ public class UIPluginActivator extends AbstractUIPlugin {
                 ss.addSelectionListener(ps);
             }
         });
+    }
+    
+    /**
+     * Returns the active workbench window
+     * 
+     * @return the active workbench window
+     */
+    // Copied from JDIDebugUIPlugin.
+    public static IWorkbenchWindow getActiveWorkbenchWindow()
+    {
+      return getDefault().getWorkbench().getActiveWorkbenchWindow();
+    } 
+    
+    // Copied from JDIDebugUIPlugin.
+    public static IWorkbenchPage getActivePage()
+    {
+      IWorkbenchWindow w = getActiveWorkbenchWindow();
+    
+      if (w != null)
+        {
+          return w.getActivePage();
+        }
+      
+      return null;
     }
 }
