@@ -176,8 +176,6 @@ public class MIDletLaunchConfigurationTab
 
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration)
   {
-    System.out.println("setDefaults");
-    
 //    IJavaElement javaElement = getContext();
 //    
 //    if (javaElement != null)
@@ -202,8 +200,6 @@ public class MIDletLaunchConfigurationTab
 
   public void initializeFrom(ILaunchConfiguration configuration)
   {
-    System.out.println("initializeForm");
-    
     try
       {
         projectName.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "unknown"));
@@ -250,6 +246,6 @@ public class MIDletLaunchConfigurationTab
 
   public String getName()
   {
-    return "AnotherDebugger configuration tab";
+    return "MIDlet";
   }
 }
