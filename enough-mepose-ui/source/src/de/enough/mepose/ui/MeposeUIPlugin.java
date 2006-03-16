@@ -32,7 +32,6 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 	private static MeposeUIPlugin plugin;
 	private ResourceBundle resourceBundle;
     
-    private static final String ID = "de.enough.mepose.core.ui.plugin";
     public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
     private class ProjectSelected implements ISelectionListener{
@@ -118,24 +117,24 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(String message, Throwable e) {
-        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+        IStatus status = new Status(IStatus.ERROR, MeposeUIConstants.ID_PLUGIN, IStatus.ERROR,
             message, e); 
         log(status);
     }
 
     public static void log(Throwable e) {
-        IStatus status = new Status(IStatus.ERROR, ID,IStatus.ERROR,"",e); 
+        IStatus status = new Status(IStatus.ERROR, MeposeUIConstants.ID_PLUGIN, IStatus.ERROR,"",e); 
         log(status);
     }
     
     public static void log(String message) {
-        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+        IStatus status = new Status(IStatus.ERROR, MeposeUIConstants.ID_PLUGIN, IStatus.ERROR,
                                     message, null); 
         log(status);
     }
     
     public static void log(String message,int severity) {
-        IStatus status = new Status(severity, ID, IStatus.ERROR,
+        IStatus status = new Status(severity, MeposeUIConstants.ID_PLUGIN, IStatus.ERROR,
             message, null); 
         log(status);
     }

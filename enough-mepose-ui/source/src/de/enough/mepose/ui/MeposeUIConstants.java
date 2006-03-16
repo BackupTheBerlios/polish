@@ -40,7 +40,7 @@ public interface MeposeUIConstants
 {
     String EXTENSION_ID_INSTALLATIONPAGE = InstallationPage.class.getName();
     
-    String ID_PLUGIN = "de.enough.mepose.core.ui.plugin";
+    String ID_PLUGIN = "de.enough.mepose.ui";
     
     String KEY_IMAGE_LOGO = "logo";
     String KEY_IMAGE_WARNING = "warning";
