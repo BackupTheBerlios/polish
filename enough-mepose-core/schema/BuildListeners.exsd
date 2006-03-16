@@ -3,7 +3,7 @@
 <schema targetNamespace="de.enough.mepose.core">
 <annotation>
       <appInfo>
-         <meta.schema plugin="de.enough.mepose.core" id="BuildListeners" name="Build Listener"/>
+         <meta.schema plugin="de.enough.mepose.core" id="buildListeners" name="Build Listener"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]

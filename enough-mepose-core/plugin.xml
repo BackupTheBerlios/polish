@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="BuildListeners" name="Build Listener" schema="schema/BuildListeners.exsd"/>
+	
+	<extension-point id="buildListeners" name="Build Listener" schema="schema/BuildListeners.exsd"/>
+
 	<extension
     	point="org.eclipse.core.runtime.preferences">
     	<initializer class="de.enough.mepose.core.preferences.PreferenceInitializer"/>
  	</extension>
+
     <extension id="PolishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
         <runtime>
             <run class="de.enough.mepose.core.project.PolishNature"></run>
         </runtime>
 	</extension>
+
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
  		<image 
  	   		id="de.enough.mepose.core.project.polishNatureImage"
@@ -18,12 +22,14 @@
     		icon="icons/nature.png">
   		</image>
  	</extension>
- <extension
-       id="PolishBuilder"
+
+	<extension
+       id="polishBuilder"
        name="Polish Builder"
        point="org.eclipse.core.resources.builders">
-    <builder>
-       <run class="de.enough.mepose.core.project.PolishBuilder"/>
-    </builder>
- </extension>
+    	<builder>
+       		<run class="de.enough.mepose.core.project.PolishBuilder"/>
+	    </builder>
+	</extension>
+
 </plugin>

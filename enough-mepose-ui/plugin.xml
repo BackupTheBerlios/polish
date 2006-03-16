@@ -110,7 +110,7 @@
         </objectContribution>
     </extension>
 
-	<extension point="de.enough.mepose.core.BuildListeners">
+	<extension point="de.enough.mepose.core.buildListeners">
 	    <buildListener class="de.enough.mepose.core.ui.console.BuildListenerConsoleWriter"/>
 	</extension>
 	
