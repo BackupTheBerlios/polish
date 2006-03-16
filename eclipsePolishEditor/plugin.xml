@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?eclipse version="3.0"?>
-<plugin class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin" id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin" name="PolishEditor Plug-in" provider-name="" version="0.5.0">
+<plugin class="de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin" id="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin" name="PolishEditor Plug-in" provider-name="Enough Software" version="0.0.1">
     <runtime>
         <library name="PolishEditor.jar">
             <export name="*"></export>
@@ -20,8 +20,8 @@
         <import plugin="org.eclipse.core.resources"></import>
         <import plugin="org.eclipse.jdt.core"></import>
         <import plugin="org.apache.ant"/>
-        <import plugin="de.enough.mepose.core.CorePlugin"/>
-        <import plugin="de.enough.mepose.core.ui.plugin"/>
+        <import plugin="de.enough.mepose.core"/>
+        <import plugin="de.enough.mepose.ui"/>
     </requires>
     <extension point="org.eclipse.ui.editors">
         <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif" id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" name="Polish Editor"></editor>
@@ -60,7 +60,7 @@
         </actionSetPartAssociation>
     </extension>
     <extension
-          point="de.enough.mepose.core.ui.plugin.preferencePageSummary">
+          point="de.enough.mepose.ui.preferencePageSummary">
        <preferencePageSummary
              pageID="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage"
              shortDescription="Change settings in the Polish Editor"/>
