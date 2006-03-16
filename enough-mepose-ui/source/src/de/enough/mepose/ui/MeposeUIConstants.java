@@ -47,5 +47,5 @@ public interface MeposeUIConstants
     String KEY_IMAGE_ERROR = "error";
     String KEY_IMAGE_OK = "ok";
 
-    String ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY = "de.enough.mepose.core.ui.plugin.preferencePageSummary";
+    String ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY = "de.enough.mepose.ui.preferencePageSummary";
 }

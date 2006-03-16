@@ -94,7 +94,7 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 	}
 
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.core.ui.plugin", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(MeposeUIConstants.ID_PLUGIN, path);
 	}
 
     public ImageDescriptor getImage(String imageKey) {
