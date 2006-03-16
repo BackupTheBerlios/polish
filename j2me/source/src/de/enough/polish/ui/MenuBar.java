@@ -106,6 +106,10 @@ public class MenuBar extends Item {
 		this.commandsList = new ArrayList();
 		//#style menu, default
 		this.commandsContainer = new Container( true );
+		if (this.commandsContainer.style != null) {
+			this.commandsContainer.setStyle( this.commandsContainer.style );
+		}
+		this.commandsContainer.layout |= LAYOUT_SHRINK;
 		this.commandsContainer.screen = screen;
 		this.commandsContainer.parent = this;
 		//#style rightcommand, default

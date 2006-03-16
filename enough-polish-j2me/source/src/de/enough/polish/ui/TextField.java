@@ -878,6 +878,7 @@ public class TextField extends StringItem
 	private void createTextBox() {
 		String currentText = this.isPassword ? this.passwordText : this.text;
 		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, currentText, this.maxSize, this.constraints );
+		//TODO add i18n support
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
 		if (!this.isUneditable) {
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
@@ -2102,7 +2103,7 @@ public class TextField extends StringItem
 				}
 			}
 		//#endif
-		if (!this.flashCaret) {
+		if (!this.flashCaret || this.isUneditable) {
 			//System.out.println("TextField.animate():  flashCaret==false");
 			return false;
 		}
@@ -2556,9 +2557,10 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.handleKeyRepeated( " + keyCode + ")");
 		int currentLength = (this.text == null ? 0 : this.text.length());
-		if (currentLength < this.maxSize && 
-				keyCode >= Canvas.KEY_NUM0 && 
-				keyCode <= Canvas.KEY_NUM9) 
+		if ( !this.isUneditable 
+				&& currentLength < this.maxSize 
+				&& keyCode >= Canvas.KEY_NUM0 
+				&& keyCode <= Canvas.KEY_NUM9) 
 		{	
 			this.lastInputTime = System.currentTimeMillis();
 			this.caretChar = ("" + (keyCode - 48)).charAt(0);
@@ -2780,12 +2782,12 @@ public class TextField extends StringItem
 		}
 	//#endif
 		
-	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry
+	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		//#if polish.blackberry
 			this.editField.focusRemove();
-		//#else
+		//#elif polish.TextField.showInputInfo != false
 			if (this.screen != null) {
 				this.screen.setInfo(null);
 			}

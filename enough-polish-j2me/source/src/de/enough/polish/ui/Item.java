@@ -1412,7 +1412,7 @@ public abstract class Item extends Object
 		if (!this.isInitialised ) { // || availableWidth < this.itemWidth || availableWidth < this.backgroundWidth
 			init( rightBorder - x, availableWidth );
 		}
-		
+		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		// set coordinates of this item:
 		this.xLeftPos = leftBorder;
 		this.yTopPos = y;
@@ -1459,11 +1459,24 @@ public abstract class Item extends Object
 
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
 		if ( this.isLayoutCenter  && availableWidth > this.itemWidth) {
-			x += (availableWidth - this.itemWidth) / 2;
+			int difference = (availableWidth - this.itemWidth) / 2; 
+			x += difference;
+			if (isLayoutShrink) {
+				leftBorder += difference;
+				rightBorder -= difference;
+				System.out.println("item " + this + ": (center) shrinking left border to " + leftBorder + ", right border to " + rightBorder);
+			}
 		} else if ( this.isLayoutRight && availableWidth > this.itemWidth) {
 			// adjust the x-position so that the item is painted up to
 			// the right border (when it starts at x):
 			x += availableWidth - this.itemWidth;
+			if (isLayoutShrink) {
+				leftBorder += availableWidth - this.itemWidth;
+				System.out.println("item " + this + ": (right) shrinking left border to " + leftBorder);
+			}
+		} else if (isLayoutShrink && availableWidth > this.itemWidth) {
+			rightBorder -= availableWidth - this.itemWidth;
+			System.out.println("item " + this + ": (left) shrinking right border to " + rightBorder);
 		}
 		
 		// paint background:

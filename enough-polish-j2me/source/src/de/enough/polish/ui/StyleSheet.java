@@ -90,10 +90,12 @@ public final class StyleSheet {
 	//#else
 		//# public static final Command OK_CMD = new Command("OK", Command.OK, 2 );
 	//#endif
-	//#ifdef polish.command.cancel:defined
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command CANCEL_CMD = new Command(Locale.get("polish.command.cancel"), Command.CANCEL, 2 );
+	//#elifdef polish.command.cancel:defined
 		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
 	//#else
-		public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
+		//# public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
 	//#endif
 
 	//#if polish.ScreenChangeAnimation.allowConfiguration == true

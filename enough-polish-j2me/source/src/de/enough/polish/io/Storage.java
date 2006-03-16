@@ -95,5 +95,15 @@ public interface Storage {
 	public Serializable[] readAll( String name )
 	throws IOException;
 
+	/**
+	 * Retrieves a list of all entries that have been stored in this storage system.
+	 * WARNING: Not all storage implementations might support this.
+	 *  
+	 * @return an array of names of stored objects.
+	 * @throws IOException when the names could not be read
+	 * @throws IllegalStateException whent the storage implementation or configuration does not support a listing of names.
+	 */
+	public String[] list()
+	throws IOException;
 
 }

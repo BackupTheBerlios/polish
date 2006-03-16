@@ -79,7 +79,7 @@ public class ScrollBar extends Item {
 	
 	private static final int MODE_AREA = 0;
 	private static final int MODE_ITEM = 1;
-	private static final int MODE_PAGE = 2;
+	//private static final int MODE_PAGE = 2;
 	protected int sliderColor;
 	protected int sliderWidth = 2;
 	//#if polish.css.scrollbar-slider-image

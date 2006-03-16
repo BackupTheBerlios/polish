@@ -72,6 +72,9 @@ public class ListItem
 	public ListItem(String label, Style style) {
 		super(label);
 		this.container = new Container( false, style );
+		//#if polish.usePolishGui
+			//# this.container.parent = this;
+		//#endif
 		//#if polish.Container.allowCycling != false
 			this.container.allowCycling = false;
 		//#endif

@@ -460,11 +460,13 @@ public final class Locale {
 		short[][] orders = new short[ numberOfMultipleParametersTranslations ][];
 		for (int i = 0; i < numberOfMultipleParametersTranslations; i++) {
 			int numberOfChunks = in.readUnsignedByte();
-			short[] chunkOrders = new short[ numberOfChunks ];
 			String[] chunkValues = new String[ numberOfChunks ];
 			for (int j = 0; j < numberOfChunks; j++) {
-				chunkOrders[j] = (short) in.readUnsignedByte();
 				chunkValues[j] = in.readUTF();
+			}
+			short[] chunkOrders = new short[ numberOfChunks - 1 ];
+			for (int j = 0; j < numberOfChunks-1; j++) {
+				chunkOrders[j] = (short) in.readUnsignedByte();
 			}
 			translationChunks[i] = chunkValues;
 			orders[i] = chunkOrders;

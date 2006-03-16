@@ -91,6 +91,7 @@ public class Container extends Item {
 		protected boolean scrollSmooth = true;	
 	//#endif
 	protected int targetYOffset;
+	public boolean debug;
 
 	
 	/**
@@ -629,6 +630,9 @@ public class Container extends Item {
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
 		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled);
+		if (debug) {
+			System.out.println("init content of container " + this + ": isLayoutShrink=" + ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) );
+		}
 		int myContentWidth = 0;
 		int myContentHeight = 0;
 		try {
@@ -659,24 +663,17 @@ public class Container extends Item {
 				this.contentWidth = this.view.contentWidth;
 				this.contentHeight = this.view.contentHeight;
 				this.appearanceMode = this.view.appearanceMode;
-				//#todo remove workaround for container
-				//TODO remove workaround for container
-				if (this.focusedIndex == 0 && this.focusedItem != null) {
-					this.internalX = 0;
-					this.internalY = 0;
-					this.internalWidth = this.focusedItem.itemWidth;
-					this.internalHeight = this.focusedItem.itemHeight;
-				}
 				return;
 			}
 		//#endif
 			
 		boolean hasFocusableItem = false;
+		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
 			//System.out.println("initalising " + item.getClass().getName() + ":" + i);
-			int width = item.getItemWidth( firstLineWidth, lineWidth );
-			int height = item.getItemHeight( firstLineWidth, lineWidth );
+			int width = item.getItemWidth( lineWidth, lineWidth );
+			int height = item.itemHeight; // no need to call getItemHeight() since the item is now initialised...
 			// now the item should have a style, so it can be safely focused
 			// without loosing the style information:
 			if (item.appearanceMode != PLAIN) {
@@ -687,8 +684,16 @@ public class Container extends Item {
 				System.out.println("Container: autofocusing element " + i);
 				this.autoFocusEnabled = false;
 				focus( i, item, 0 );
-				height = item.getItemHeight( firstLineWidth, lineWidth );
-				width = item.getItemWidth( firstLineWidth, lineWidth );
+				if (!isLayoutShrink) {
+					width = item.getItemWidth( lineWidth, lineWidth );
+					height = item.itemHeight;  // no need to call getItemHeight() since the item is now initialised...
+				} else {
+					height = 0;
+					width = 0;
+				}
+			} else if (isLayoutShrink && i == this.focusedIndex) {
+				width = 0;
+				height = 0;
 			}
 			if (width > myContentWidth) {
 				myContentWidth = width; 
@@ -699,6 +704,22 @@ public class Container extends Item {
 			this.appearanceMode = PLAIN;
 		} else {
 			this.appearanceMode = INTERACTIVE;
+			if (isLayoutShrink && this.focusedItem != null) {
+				Item item = this.focusedItem;
+				System.out.println("container has shrinking layout and contains focuse item " + item);
+				item.isInitialised = false;
+				boolean doExpand = item.isLayoutExpand;
+				if (doExpand) {
+					item.isLayoutExpand = false;
+					int width = item.getItemWidth( lineWidth, lineWidth );
+					if (width > myContentWidth) {
+						myContentWidth = width;
+					}
+					item.isInitialised = false;
+					item.isLayoutExpand = doExpand;
+				}
+				myContentHeight += item.itemHeight;
+			}
 		}
 		} catch (ArrayIndexOutOfBoundsException e) {
 			//#debug error
@@ -715,13 +736,15 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#paintItem(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		if (debug)
+			System.out.println("painting container " + this + " at x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", isLayoutShrink=" + ( (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) + ", itemWidth=" + this.itemWidth + ", availableWidth=" + (rightBorder - leftBorder));
 		// paints all items,
 		// the layout will be done according to this containers'
 		// layout or according to the items layout, when specified.
 		// adjust vertical start for scrolling:
 		//#if polish.debug.debug
 			if (this.yOffset != 0) {
-				//#debug
+				//#debug 
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
 		//#endif
@@ -823,8 +846,7 @@ public class Container extends Item {
 //					focus( this.view.focusedIndex, next, gameAction );
 //					return true;
 //				} else 
-				if (this.enableScrolling) {
-					
+				if (this.enableScrolling) {					
 					if (gameAction == Canvas.UP && this.targetYOffset < 0 ) {
 						//#if polish.Container.ScrollDelta:defined
 							//#= this.targetYOffset += ${polish.Container.ScrollDelta};
@@ -863,7 +885,17 @@ public class Container extends Item {
 		boolean processed = false;
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
-			processed = shiftFocus( true, 0 );
+			if (this.focusedItem != null 
+					&& this.enableScrolling
+					&& this.focusedItem.yBottomPos > this.yBottom) 
+			{
+				if (gameAction == Canvas.RIGHT) {
+					return false;
+				}
+				// keep the focus do scroll downwards
+			} else {
+				processed = shiftFocus( true, 0 );
+			}
 			//#debug
 			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			if ((!processed) && this.enableScrolling 
@@ -886,8 +918,17 @@ public class Container extends Item {
 			}
 		} else if ( (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
 				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
-
-			processed = shiftFocus( false, 0 );
+			if (this.focusedItem != null 
+					&& this.enableScrolling
+					&& this.focusedItem.yTopPos < this.yTop ) 
+			{
+				if (gameAction == Canvas.LEFT) {
+					return false;
+				}
+				// keep the focus do scroll downwards
+			} else {
+				processed = shiftFocus( false, 0 );
+			}
 			if ((!processed) && this.enableScrolling && (this.targetYOffset < 0)) {
 				// scroll upwards:
 				//#if polish.Container.ScrollDelta:defined
@@ -1181,6 +1222,9 @@ public class Container extends Item {
 	 * 		  will be ignored.
 	 */
 	public void setStyle( Style style, boolean ignoreBackground) {
+		if (debug) {
+			System.out.println("setting style for container "+ this);
+		}
 		super.setStyle(style);
 		if (ignoreBackground) {
 			this.background = null;
@@ -1600,6 +1644,17 @@ public class Container extends Item {
 			if (!success) {
 				defocus(this.itemStyle);
 			}
+		}
+	}
+
+	/**
+	 * Requests the initialization of this container and all of its children items.
+	 */
+	public void requestFullInit() {
+		requestInit();
+		for (int i = 0; i < this.itemsList.size(); i++) {
+			Item item = (Item) this.itemsList.get(i);
+			item.isInitialised = false;
 		}
 	}
 

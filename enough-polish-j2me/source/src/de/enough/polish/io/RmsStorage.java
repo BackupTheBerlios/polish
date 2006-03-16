@@ -32,11 +32,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Hashtable;
 
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
+
+import de.enough.polish.util.HashMap;
 
 /**
  * <p>Stores serializable objects in the record store system.</p>
@@ -51,7 +52,7 @@ import javax.microedition.rms.RecordStoreException;
 public class RmsStorage implements Storage {
 	
 	private final RecordStore masterRecordStore;
-	private final Hashtable masterRecordSetIdsByName;
+	private final HashMap masterRecordSetIdsByName;
 	private final int indexRecordId;
 
 	/**
@@ -78,7 +79,7 @@ public class RmsStorage implements Storage {
 		if ( singleRecordStoreName != null ) {
 			try {
 				this.masterRecordStore = RecordStore.openRecordStore(singleRecordStoreName, true);
-				this.masterRecordSetIdsByName = new Hashtable();
+				this.masterRecordSetIdsByName = new HashMap();
 				// now read index record set:
 				RecordEnumeration enumeration = this.masterRecordStore.enumerateRecords( null, null, false );
 				int firstId = Integer.MAX_VALUE;
@@ -150,12 +151,12 @@ public class RmsStorage implements Storage {
 	throws IOException, RecordStoreException
 	{
 		this.masterRecordSetIdsByName.put( name, new Integer( id ) );
-		Enumeration enumeration = this.masterRecordSetIdsByName.keys();
+		Object[] keys = this.masterRecordSetIdsByName.keys();
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
 		out.write( this.masterRecordSetIdsByName.size() );
-		while (enumeration.hasMoreElements() ) {
-			String key = (String)enumeration.nextElement();
+		for (int i = 0; i < keys.length; i++) {
+			String key = (String)keys[i];
 			Integer idInt = (Integer) this.masterRecordSetIdsByName.get( key );
 			out.writeUTF(name);
 			out.writeInt( idInt.intValue() );
@@ -330,5 +331,22 @@ public class RmsStorage implements Storage {
 			throw new IOException( e.toString() ); 
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Storage#list()
+	 */
+	public String[] list() throws IOException {
+		if (this.masterRecordStore == null) {
+			//#if polish.debug.verbose
+				throw new IllegalStateException("need  to use a single-name RmsStorage configuration for being able to list entries.");
+			//#else
+				//# throw new IllegalStateException();
+			//#endif
+		}
+		return (String[]) this.masterRecordSetIdsByName.keys( new String[ this.masterRecordSetIdsByName.size() ]);
+	}
+
+	
+	
 
 }
