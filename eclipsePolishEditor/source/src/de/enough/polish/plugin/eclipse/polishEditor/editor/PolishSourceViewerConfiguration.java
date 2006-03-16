@@ -25,7 +25,14 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
-import org.eclipse.core.resources.IProject;
+import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.DirectiveContentAssistProcessor;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishIndentStrategy;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishJavaAutoIndentStrategy;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
+
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.internal.ui.javaeditor.IClassFileEditorInput;
@@ -46,15 +53,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.model.MeposeModel;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.DirectiveContentAssistProcessor;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishIndentStrategy;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishJavaAutoIndentStrategy;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
 
 
 /**
@@ -209,11 +207,11 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
             compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
             
-            //TODO: Use the CorePlugin to get the environment.
-//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(CorePlugin.getDefault().getDefaultMeposeModel().getEnvironment());
+            //TODO: Use the MepsoePlugin to get the environment.
+//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getDefaultMeposeModel().getEnvironment());
 //            IProject correspondingProject = getProject().getProject();
             MeposeModel meposeModel = this.editor.getMeposeProject();
-//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel().getEnvironment());
+//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel().getEnvironment());
             VariableContentAssistProcessor processor = new VariableContentAssistProcessor(meposeModel.getEnvironment());
             compoundContentAssistProcessor.add(processor);
             this.editor.getMeposeProject().addPropertyChangeListener(processor);

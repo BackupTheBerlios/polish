@@ -25,6 +25,12 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.Environment;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
+
 import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
@@ -45,13 +51,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
-
-import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.model.MeposeModel;
-import de.enough.polish.Environment;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
 
 
@@ -121,8 +120,8 @@ public class PolishEditor extends CompilationUnitEditor {
         polishSourceViewerConfiguration =  new PolishSourceViewerConfiguration(colorManager,preferenceStore,this,IJavaPartitions.JAVA_PARTITIONING);
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
         
-//        this.meposeProject = CorePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
-        this.meposeProject = CorePlugin.getDefault().getMeposeModelManager().getModel(getJavaProject().getProject());
+//        this.meposeProject = MeposePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
+        this.meposeProject = MeposePlugin.getDefault().getMeposeModelManager().getModel(getJavaProject().getProject());
         
         super.createPartControl(parent);
     }
