@@ -28,21 +28,13 @@ package de.enough.mepose.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.tools.ant.BuildListener;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 
 import de.enough.mepose.core.CorePlugin;
 import de.enough.mepose.core.project.ProjectPersistence;
-import de.enough.polish.devices.Platform;
 
 
 /**
