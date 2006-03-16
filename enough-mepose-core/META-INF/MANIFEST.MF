@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Mepose Core Plugin
+Bundle-Name: Mepose Core
 Bundle-SymbolicName: de.enough.mepose.core.CorePlugin; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.0.1
 Bundle-ClassPath: MeposeCore.jar,
  lib/ant.jar,
  lib/ant-nodeps.jar,
@@ -113,3 +113,4 @@ Export-Package: de.enough.mepose.core,
  org.jdom.output,
  org.jdom.transform,
  org.jdom.xpath
+Bundle-Vendor: Enough Software
