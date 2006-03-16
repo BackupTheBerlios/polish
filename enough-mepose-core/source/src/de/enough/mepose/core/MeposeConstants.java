@@ -35,14 +35,13 @@ package de.enough.mepose.core;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public interface MeposeCoreConstants {
-
-    public static final String ID_PLUGIN = "de.enough.mepose.core.CorePlugin";
-    public static final String POLISH_INSTALLATION_DIR = "polish.installation.dir";
-    public static final String WTK_INSTALLATION_DIR = "WTK.installation.dir";
-    public static final String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
-    public static final String ID_TEMPLATE_NAME = "build.xml.template";
-    public static final String ID_NATURE_QUALIFIER = "PolishNature";
-    public static final String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
-
+public interface MeposeConstants
+{
+	String ID_PLUGIN = "de.enough.mepose.core";
+    String POLISH_INSTALLATION_DIR = "polish.installation.dir";
+    String WTK_INSTALLATION_DIR = "WTK.installation.dir";
+    String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
+    String ID_TEMPLATE_NAME = "build.xml.template";
+    String ID_NATURE_QUALIFIER = "PolishNature";
+    String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
 }

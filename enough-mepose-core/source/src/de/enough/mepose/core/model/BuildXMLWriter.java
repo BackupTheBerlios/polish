@@ -40,7 +40,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.MeposeCoreConstants;
+import de.enough.mepose.core.MeposeConstants;
 
 /**
  * 
@@ -67,7 +67,7 @@ public class BuildXMLWriter {
             if(velocityService == null) {
                 return;
             }
-            URL resource = getBundleContext().getBundle().getEntry(MeposeCoreConstants.PATH_BUILD_XML_TEMPLATE);
+            URL resource = getBundleContext().getBundle().getEntry(MeposeConstants.PATH_BUILD_XML_TEMPLATE);
             if(resource == null) {
                 throw new IllegalStateException("No URL for build template found.");
             }
@@ -75,7 +75,7 @@ public class BuildXMLWriter {
             if(resource == null) {
                 throw new IllegalStateException("No build template found.");
             }
-            velocityService.setTemplate(MeposeCoreConstants.ID_TEMPLATE_NAME,buildxmlAsStream);
+            velocityService.setTemplate(MeposeConstants.ID_TEMPLATE_NAME,buildxmlAsStream);
             
             VelocityEngine velocityEngine = velocityService.getNewVelocityEngine();
             velocityEngine.init();
@@ -87,15 +87,15 @@ public class BuildXMLWriter {
 
             try 
             {
-                template = velocityEngine.getTemplate(MeposeCoreConstants.ID_TEMPLATE_NAME);
+                template = velocityEngine.getTemplate(MeposeConstants.ID_TEMPLATE_NAME);
             }
             catch( ResourceNotFoundException rnfe )
             {
-                System.out.println("Example : error : cannot find template " + MeposeCoreConstants.ID_TEMPLATE_NAME );
+                System.out.println("Example : error : cannot find template " + MeposeConstants.ID_TEMPLATE_NAME );
             }
             catch( ParseErrorException pee )
             {
-                System.out.println("Example : Syntax error in template " + MeposeCoreConstants.ID_TEMPLATE_NAME + ":" + pee );
+                System.out.println("Example : Syntax error in template " + MeposeConstants.ID_TEMPLATE_NAME + ":" + pee );
             }
 
             if ( template != null)

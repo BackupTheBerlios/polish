@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.MeposeCoreConstants;
+import de.enough.mepose.core.MeposeConstants;
 import de.enough.swt.widgets.StatusGroup;
 import de.enough.utils.Status;
 import de.enough.utils.StatusEvent;
@@ -229,7 +229,7 @@ public class ProjectPage extends WizardPage{
             return;
         }
         
-        IProjectNature nature = newProject.getNature(MeposeCoreConstants.ID_NATURE);
+        IProjectNature nature = newProject.getNature(MeposeConstants.ID_NATURE);
         if(nature != null) {
             // Its already a PolishProject.
             return;
@@ -239,7 +239,7 @@ public class ProjectPage extends WizardPage{
         String[] newNatureIDs = new String[natureIDs.length+1];
         System.arraycopy(natureIDs, 0, newNatureIDs, 0, natureIDs.length);
         // Set as last element.
-        newNatureIDs[natureIDs.length] = MeposeCoreConstants.ID_NATURE;
+        newNatureIDs[natureIDs.length] = MeposeConstants.ID_NATURE;
         
         projectDescription.setNatureIds(newNatureIDs);
         newProject.setDescription(projectDescription, null);

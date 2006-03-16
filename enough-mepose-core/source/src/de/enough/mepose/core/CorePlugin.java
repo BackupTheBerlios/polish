@@ -20,7 +20,6 @@ import de.enough.utils.log4j.Log4JPlugin;
 
 public class CorePlugin extends Plugin {
 	
-    public static final String ID = CorePlugin.class.getName();
     public static Logger logger = Logger.getLogger(CorePlugin.class);
     
 //    public QualifiedName ID_MEPOSE_MODEL = new QualifiedName(CorePlugin.class.getName(),"id.meposemodel");
@@ -108,24 +107,24 @@ public class CorePlugin extends Plugin {
     }
 
     public static void log(String message, Throwable e) {
-        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+        IStatus status = new Status(IStatus.ERROR, MeposeConstants.ID_PLUGIN, IStatus.ERROR,
             message, e); 
         log(status);
     }
 
     public static void log(Throwable e) {
-        IStatus status = new Status(IStatus.ERROR, ID,IStatus.ERROR,"",e); 
+        IStatus status = new Status(IStatus.ERROR, MeposeConstants.ID_PLUGIN,IStatus.ERROR,"",e); 
         log(status);
     }
     
     public static void log(String message) {
-        IStatus status = new Status(IStatus.ERROR, ID, IStatus.ERROR,
+        IStatus status = new Status(IStatus.ERROR, MeposeConstants.ID_PLUGIN, IStatus.ERROR,
                                     message, null); 
         log(status);
     }
     
     public static void log(String message,int severity) {
-        IStatus status = new Status(severity, ID, IStatus.ERROR,
+        IStatus status = new Status(severity, MeposeConstants.ID_PLUGIN, IStatus.ERROR,
             message, null); 
         log(status);
     }
@@ -162,7 +161,7 @@ public class CorePlugin extends Plugin {
     
     private boolean isMeposeProject(IProject project) {
         try {
-            return project.getNature(MeposeCoreConstants.ID_NATURE) != null;
+            return project.getNature(MeposeConstants.ID_NATURE) != null;
         } catch (CoreException exception) {
             log("could not determine if mepose nature is set.",exception);
             return false;

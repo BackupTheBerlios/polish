@@ -6,7 +6,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import de.enough.mepose.core.CorePlugin;
-import de.enough.mepose.core.MeposeCoreConstants;
+import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.ui.propertyPages.PreferencesAdapter;
 
 /**
@@ -35,10 +35,10 @@ public class InstallationPage
 	
 	public void createFieldEditors() {
         
-	    addField(new DirectoryFieldEditor(MeposeCoreConstants.POLISH_INSTALLATION_DIR, 
+	    addField(new DirectoryFieldEditor(MeposeConstants.POLISH_INSTALLATION_DIR, 
 	                                      "Polish Installation Directory:", getFieldEditorParent()));
 	    
-		addField(new DirectoryFieldEditor(MeposeCoreConstants.WTK_INSTALLATION_DIR, 
+		addField(new DirectoryFieldEditor(MeposeConstants.WTK_INSTALLATION_DIR, 
 		                                  "WTK Installation Directory:", getFieldEditorParent()));
 	}
 
