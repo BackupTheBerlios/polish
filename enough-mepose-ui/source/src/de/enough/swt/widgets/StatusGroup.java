@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
-import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 import de.enough.mepose.ui.MeposeUIConstants;
+import de.enough.mepose.ui.MeposeUIPlugin;
 
 /**
  * Do not set the layout of this composite.
@@ -97,7 +97,7 @@ public class StatusGroup extends Composite{
     }
 
     public void setWarning(String message) {
-        this.iconLabel.setImage(UIPluginActivator.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_WARNING).createImage());
+        this.iconLabel.setImage(MeposeUIPlugin.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_WARNING).createImage());
         if(message == null) {
             message = "";
         }
@@ -105,7 +105,7 @@ public class StatusGroup extends Composite{
     }
     
     public void setError(String message) {
-        this.iconLabel.setImage(UIPluginActivator.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_ERROR).createImage());
+        this.iconLabel.setImage(MeposeUIPlugin.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_ERROR).createImage());
         if(message == null) {
             message = "";
         }
@@ -114,7 +114,7 @@ public class StatusGroup extends Composite{
     
     public void setOK(String message) {
         disposeOldIcon();
-        this.iconLabel.setImage(UIPluginActivator.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_OK).createImage());
+        this.iconLabel.setImage(MeposeUIPlugin.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_OK).createImage());
         if(message == null) {
             message = "";
         }

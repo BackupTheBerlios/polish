@@ -1,7 +1,6 @@
-package de.enough.mepose.core.ui.plugin;
+package de.enough.mepose.ui;
 
 import de.enough.mepose.core.MeposePlugin;
-import de.enough.mepose.ui.MeposeUIConstants;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -29,12 +28,12 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class UIPluginActivator extends AbstractUIPlugin {
-	private static UIPluginActivator plugin;
+public class MeposeUIPlugin extends AbstractUIPlugin {
+	private static MeposeUIPlugin plugin;
 	private ResourceBundle resourceBundle;
     
     private static final String ID = "de.enough.mepose.core.ui.plugin";
-    public static Logger logger = Logger.getLogger(UIPluginActivator.class);
+    public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
     private class ProjectSelected implements ISelectionListener{
         public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -52,7 +51,7 @@ public class UIPluginActivator extends AbstractUIPlugin {
          }
     }    
     
-	public UIPluginActivator() {
+	public MeposeUIPlugin() {
 		super();
 		plugin = this;
 	}
@@ -72,12 +71,12 @@ public class UIPluginActivator extends AbstractUIPlugin {
 		this.resourceBundle = null;
 	}
 
-	public static UIPluginActivator getDefault() {
+	public static MeposeUIPlugin getDefault() {
 		return plugin;
 	}
 
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = UIPluginActivator.getDefault().getResourceBundle();
+		ResourceBundle bundle = MeposeUIPlugin.getDefault().getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {

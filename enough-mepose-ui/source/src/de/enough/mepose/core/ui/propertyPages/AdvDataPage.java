@@ -44,7 +44,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.core.ui.plugin.UIPluginActivator;
+import de.enough.mepose.ui.MeposeUIPlugin;
 
 /**
  * 
@@ -75,13 +75,13 @@ public class AdvDataPage extends PropertyPage {
         IAdaptable adaptable = getElement();
         IProject project = (IProject)adaptable.getAdapter(IProject.class);
         if(project == null) {
-            UIPluginActivator.log("No IProject found.");
+            MeposeUIPlugin.log("No IProject found.");
             return main;
         }
         
         this.model = MeposePlugin.getDefault().getMeposeModelManager().getModel(project);
         if(this.model == null) {
-            UIPluginActivator.log("No model in project.");
+            MeposeUIPlugin.log("No model in project.");
             throw new IllegalStateException("No model in project.");
         }
         Map map = this.model.getStoreableProperties();

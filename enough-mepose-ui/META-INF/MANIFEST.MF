@@ -4,7 +4,7 @@ Bundle-Name: Mepose UI
 Bundle-SymbolicName: de.enough.mepose.ui; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: meposeUI.jar
-Bundle-Activator: de.enough.mepose.core.ui.plugin.UIPluginActivator
+Bundle-Activator: de.enough.mepose.ui.MeposeUIPlugin
 Bundle-Localization: plugin
 Require-Bundle: de.enough.mepose.core,
  org.apache.log4j,
@@ -23,11 +23,11 @@ Require-Bundle: de.enough.mepose.core,
  org.eclipse.ui.console,
  org.eclipse.ui.forms
 Eclipse-AutoStart: true
-Export-Package: de.enough.mepose,
+Export-Package: de.enough.mepose.ui,
  de.enough.mepose.core.ui.launcher,
- de.enough.mepose.core.ui.plugin,
  de.enough.mepose.core.ui.preferencePages,
  de.enough.mepose.core.ui.propertyPages,
  de.enough.mepose.core.ui.wizards,
+ de.enough.mepose.launcher,
  de.enough.swt.widgets
 Bundle-Vendor: Enough Software

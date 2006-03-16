@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
 import de.enough.mepose.core.MeposeConstants;
-import de.enough.mepose.core.ui.plugin.UIPluginActivator;
+import de.enough.mepose.ui.MeposeUIPlugin;
 
 /**
  * @author rickyn
@@ -45,9 +45,9 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
                 }
             });
         } catch (InvocationTargetException exception) {
-            UIPluginActivator.log("Could not run togglePolishNatureAction",exception);
+            MeposeUIPlugin.log("Could not run togglePolishNatureAction",exception);
         } catch (InterruptedException exception) {
-            UIPluginActivator.log("Could not run togglePolishNatureAction",exception);
+            MeposeUIPlugin.log("Could not run togglePolishNatureAction",exception);
         }
     }
 

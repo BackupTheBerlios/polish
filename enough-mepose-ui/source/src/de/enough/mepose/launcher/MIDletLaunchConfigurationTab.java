@@ -1,6 +1,6 @@
 package de.enough.mepose.launcher;
 
-import de.enough.mepose.core.ui.plugin.UIPluginActivator;
+import de.enough.mepose.ui.MeposeUIPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class MIDletLaunchConfigurationTab
    */
   // Copied from JavaLaunchConfigurationTab.
   protected IJavaElement getContext() {
-    IWorkbenchPage page = UIPluginActivator.getActivePage();
+    IWorkbenchPage page = MeposeUIPlugin.getActivePage();
     if (page != null) {
       ISelection selection = page.getSelection();
       if (selection instanceof IStructuredSelection) {

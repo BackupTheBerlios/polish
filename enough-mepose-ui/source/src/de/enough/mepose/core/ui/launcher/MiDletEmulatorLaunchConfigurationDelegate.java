@@ -37,7 +37,7 @@ import org.eclipse.ui.console.IOConsole;
 
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.core.ui.plugin.UIPluginActivator;
+import de.enough.mepose.ui.MeposeUIPlugin;
 import de.enough.polish.ant.PolishBuildListener;
 
 /**
@@ -83,7 +83,7 @@ public class MiDletEmulatorLaunchConfigurationDelegate extends
        
        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
        if(model == null) {
-           UIPluginActivator.log("No current meposeModel");
+           MeposeUIPlugin.log("No current meposeModel");
            return;
        }
 //       AntRunner antRunner = new AntRunner();

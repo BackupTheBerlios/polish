@@ -13,8 +13,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferenceLinkArea;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
-import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 import de.enough.mepose.ui.MeposeUIConstants;
+import de.enough.mepose.ui.MeposeUIPlugin;
 
 /**
  * This class represents a preference page that
@@ -34,7 +34,7 @@ public class MainPage extends PreferencePage implements IWorkbenchPreferencePage
 
 	public MainPage() {
 		setDescription("Overview of J2ME Polish preferences");
-        setImageDescriptor(UIPluginActivator.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_LOGO));
+        setImageDescriptor(MeposeUIPlugin.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_LOGO));
         
     }
 	
