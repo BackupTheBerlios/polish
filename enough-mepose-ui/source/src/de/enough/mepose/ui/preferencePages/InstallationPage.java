@@ -5,8 +5,8 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.ui.propertyPages.PreferencesAdapter;
 
 /**
