@@ -13,8 +13,8 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 
 
