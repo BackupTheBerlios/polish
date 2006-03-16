@@ -55,6 +55,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 
+import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
@@ -765,7 +766,7 @@ public class MeposeModel extends PropertyModel{
 
     private List getBuildListeners() {
         List list = new LinkedList();
-        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint("de.enough.mepose.core.BuildListeners");
+        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint(MeposeConstants.ExtensionPoint_buildListeners);
         IExtension[] extensions = point.getExtensions();
         for (int i = 0; i < extensions.length; i++) {
             

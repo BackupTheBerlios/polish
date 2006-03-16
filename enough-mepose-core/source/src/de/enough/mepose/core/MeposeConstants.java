@@ -37,11 +37,12 @@ package de.enough.mepose.core;
  */
 public interface MeposeConstants
 {
-	String ID_PLUGIN = "de.enough.mepose.core";
+    String ID_PLUGIN = "de.enough.mepose.core";
     String POLISH_INSTALLATION_DIR = "polish.installation.dir";
     String WTK_INSTALLATION_DIR = "WTK.installation.dir";
     String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
     String ID_TEMPLATE_NAME = "build.xml.template";
     String ID_NATURE_QUALIFIER = "PolishNature";
     String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
+    String ExtensionPoint_buildListeners = "de.enough.mepose.core.buildListeners";
 }
