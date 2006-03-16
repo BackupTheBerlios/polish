@@ -41,7 +41,7 @@
             name="Installation"/>
 	</extension>
 	
-	<extension point="de.enough.mepose.core.ui.plugin.preferencePageSummary">
+	<extension point="de.enough.mepose.ui.preferencePageSummary">
     	<preferencePageSummary
             pageID="de.enough.mepose.core.ui.preferencePages.InstallationPage"
             shortDescription="Change settings like paths of the wireless toolkit or the J2ME Polish installation directory"/>
@@ -110,7 +110,7 @@
         </objectContribution>
     </extension>
 
-	<extension point="de.enough.mepose.core.CorePlugin.BuildListeners">
+	<extension point="de.enough.mepose.core.BuildListeners">
 	    <buildListener class="de.enough.mepose.core.ui.console.BuildListenerConsoleWriter"/>
 	</extension>
 	

@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mepose UI
-Bundle-SymbolicName: de.enough.mepose.core.ui.plugin; singleton:=true
+Bundle-SymbolicName: de.enough.mepose.ui; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: meposeUI.jar
 Bundle-Activator: de.enough.mepose.core.ui.plugin.UIPluginActivator
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- de.enough.mepose.core.CorePlugin,
+Require-Bundle: de.enough.mepose.core,
  org.apache.log4j,
  org.eclipse.core.expressions,
  org.eclipse.core.resources,
@@ -20,6 +19,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.debug.ui,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.ui,
+ org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.ui.forms
 Eclipse-AutoStart: true
