@@ -1,7 +1,7 @@
 package de.enough.mepose.core.ui.plugin;
 
-import de.enough.mepose.MeposeCoreUIConstants;
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.ui.MeposeUIConstants;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -147,10 +147,10 @@ public class UIPluginActivator extends AbstractUIPlugin {
     
         protected void initializeImageRegistry(ImageRegistry reg) {
         super.initializeImageRegistry(reg);
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_LOGO,getImageDescriptor("/icons/polish_logo_16x16.png"));
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_OK,getImageDescriptor("/icons/tsk_green.png"));
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_WARNING,getImageDescriptor("/icons/tsk_yellow.png"));
-        reg.put(MeposeCoreUIConstants.KEY_IMAGE_ERROR,getImageDescriptor("/icons/tsk_red.png"));
+        reg.put(MeposeUIConstants.KEY_IMAGE_LOGO,getImageDescriptor("/icons/polish_logo_16x16.png"));
+        reg.put(MeposeUIConstants.KEY_IMAGE_OK,getImageDescriptor("/icons/tsk_green.png"));
+        reg.put(MeposeUIConstants.KEY_IMAGE_WARNING,getImageDescriptor("/icons/tsk_yellow.png"));
+        reg.put(MeposeUIConstants.KEY_IMAGE_ERROR,getImageDescriptor("/icons/tsk_red.png"));
     }
     
     

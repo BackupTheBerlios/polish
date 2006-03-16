@@ -13,8 +13,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferenceLinkArea;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
-import de.enough.mepose.MeposeCoreUIConstants;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
+import de.enough.mepose.ui.MeposeUIConstants;
 
 /**
  * This class represents a preference page that
@@ -34,7 +34,7 @@ public class MainPage extends PreferencePage implements IWorkbenchPreferencePage
 
 	public MainPage() {
 		setDescription("Overview of J2ME Polish preferences");
-        setImageDescriptor(UIPluginActivator.getDefault().getImage(MeposeCoreUIConstants.KEY_IMAGE_LOGO));
+        setImageDescriptor(UIPluginActivator.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_LOGO));
         
     }
 	
@@ -60,7 +60,7 @@ public class MainPage extends PreferencePage implements IWorkbenchPreferencePage
         Composite composite = new Composite(parent,SWT.NONE);
         composite.setLayout(new GridLayout(1,false));
 
-        IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(MeposeCoreUIConstants.ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY);
+        IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(MeposeUIConstants.ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY);
         if(extensionPoint == null) {
             return composite;
         }

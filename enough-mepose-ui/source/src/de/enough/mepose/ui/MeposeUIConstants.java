@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose;
+package de.enough.mepose.ui;
 
 import de.enough.mepose.core.ui.preferencePages.InstallationPage;
 
@@ -36,16 +36,16 @@ import de.enough.mepose.core.ui.preferencePages.InstallationPage;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public interface MeposeCoreUIConstants {
-
-    public static final String EXTENSION_ID_INSTALLATIONPAGE = InstallationPage.class.getName();
+public interface MeposeUIConstants
+{
+    String EXTENSION_ID_INSTALLATIONPAGE = InstallationPage.class.getName();
     
-    public static final String ID_PLUGIN = "de.enough.mepose.core.ui.plugin";
+    String ID_PLUGIN = "de.enough.mepose.core.ui.plugin";
     
-    public static final String KEY_IMAGE_LOGO = "logo";
-    public static final String KEY_IMAGE_WARNING = "warning";
-    public static final String KEY_IMAGE_ERROR = "error";
-    public static final String KEY_IMAGE_OK = "ok";
+    String KEY_IMAGE_LOGO = "logo";
+    String KEY_IMAGE_WARNING = "warning";
+    String KEY_IMAGE_ERROR = "error";
+    String KEY_IMAGE_OK = "ok";
 
-    public static final String ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY = "de.enough.mepose.core.ui.plugin.preferencePageSummary";
+    String ID_EXTPOINT_PREFERENCE_PAGE_SUMMARY = "de.enough.mepose.core.ui.plugin.preferencePageSummary";
 }
