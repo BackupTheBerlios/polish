@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.ui.wizards;
+package de.enough.mepose.ui.wizards;
 
 import java.io.File;
 

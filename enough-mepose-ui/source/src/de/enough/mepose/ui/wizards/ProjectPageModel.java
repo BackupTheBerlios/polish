@@ -1,5 +1,5 @@
 /*
- * Created on Jan 25, 2006 at 5:13:07 PM.
+ * Created on Dec 23, 2005 at 3:43:39 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,28 +23,20 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.ui.actions;
+package de.enough.mepose.ui.wizards;
 
-import org.eclipse.core.expressions.PropertyTester;
+import de.enough.utils.PropertyModel;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Jan 25, 2006 - rickyn creation
+ *        Dec 23, 2005 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class PolishPropertyTester extends PropertyTester {
+public class ProjectPageModel extends PropertyModel {
 
-    /*
-     * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
-     */
-    public boolean test(Object receiver, String property, Object[] args,
-                        Object expectedValue) {
-        // TODO rickyn implement test
-        return false;
-    }
-
+    //
 }

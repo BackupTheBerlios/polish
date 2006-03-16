@@ -1,4 +1,4 @@
-package de.enough.mepose.core.ui.wizards;
+package de.enough.mepose.ui.wizards;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;

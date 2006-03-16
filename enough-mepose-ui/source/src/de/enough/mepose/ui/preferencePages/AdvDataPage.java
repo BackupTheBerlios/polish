@@ -1,5 +1,5 @@
 /*
- * Created on Dec 23, 2005 at 3:43:39 PM.
+ * Created on Jan 24, 2006 at 3:59:05 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,20 +23,28 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.ui.wizards;
+package de.enough.mepose.ui.preferencePages;
 
-import de.enough.utils.PropertyModel;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Dec 23, 2005 - rickyn creation
+ *        Jan 24, 2006 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class ProjectPageModel extends PropertyModel {
+public class AdvDataPage extends FieldEditorPreferencePage {
 
-    //
+    protected AdvDataPage() {
+        super(GRID);
+    }
+
+    protected void createFieldEditors() {
+//        addField(new StringFieldEditor(MeposeCoreConstants.POLISH_INSTALLATION_DIR, 
+//                                          "Polish Installation Directory:", getFieldEditorParent()));
+        
+    }
 }

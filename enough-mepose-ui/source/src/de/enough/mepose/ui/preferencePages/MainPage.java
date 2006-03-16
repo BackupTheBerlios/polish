@@ -1,4 +1,4 @@
-package de.enough.mepose.core.ui.preferencePages;
+package de.enough.mepose.ui.preferencePages;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;

@@ -23,30 +23,22 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.ui.propertyPages;
+package de.enough.mepose.ui.propertyPages;
 
 
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 
 
 public class OverviewPage extends PropertyPage{
 
-    private Text textField;
-    private Composite mainComposite;
+//    private Text textField;
+//    private Composite mainComposite;
 //    private IProjectPropertyPageModel presentationModel;
 //    private PropertyChangeListener propertyChangeListenerForPresentationModel;
     

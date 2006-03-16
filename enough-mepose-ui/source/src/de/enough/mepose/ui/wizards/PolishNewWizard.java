@@ -1,4 +1,4 @@
-package de.enough.mepose.core.ui.wizards;
+package de.enough.mepose.ui.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

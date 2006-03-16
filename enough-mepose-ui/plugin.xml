@@ -6,9 +6,9 @@
 
 	<extension point="org.eclipse.ui.propertyPages"> 
     	<page
-            class="de.enough.mepose.core.ui.propertyPages.OverviewPage"
+            class="de.enough.mepose.ui.propertyPages.OverviewPage"
             icon="icons/polish_logo_16x16.png"
-            id="de.enough.mepose.core.ui.propertyPages.OverviewPage"
+            id="de.enough.mepose.ui.propertyPages.OverviewPage"
             name="j2ME Polish"
             objectClass="org.eclipse.jdt.core.IJavaProject">
         	<filter
@@ -17,9 +17,9 @@
        		</filter>
      	</page>
 		<page
-            category="de.enough.mepose.core.ui.propertyPages.OverviewPage"
-            class="de.enough.mepose.core.ui.propertyPages.AdvDataPage"
-            id="de.enough.mepose.core.ui	.propertyPages.AdvDataPage"
+            category="de.enough.mepose.ui.propertyPages.OverviewPage"
+            class="de.enough.mepose.ui.propertyPages.AdvDataPage"
+            id="de.enough.mepose.ui	.propertyPages.AdvDataPage"
             name="Advanced Data Entry"
             objectClass="org.eclipse.jdt.core.IJavaProject">
             <filter
@@ -31,32 +31,32 @@
  
 	<extension point="org.eclipse.ui.preferencePages">
 	    <page
-            class="de.enough.mepose.core.ui.preferencePages.MainPage"
-            id="de.enough.mepose.core.ui.preferencePages.MainPage"
+            class="de.enough.mepose.ui.preferencePages.MainPage"
+            id="de.enough.mepose.ui.preferencePages.MainPage"
             name="J2ME Polish"/>
 	    <page
-            category="de.enough.mepose.core.ui.preferencePages.MainPage"
-            class="de.enough.mepose.core.ui.preferencePages.InstallationPage"
-            id="de.enough.mepose.core.ui.preferencePages.InstallationPage"
+            category="de.enough.mepose.ui.preferencePages.MainPage"
+            class="de.enough.mepose.ui.preferencePages.InstallationPage"
+            id="de.enough.mepose.ui.preferencePages.InstallationPage"
             name="Installation"/>
 	</extension>
 	
 	<extension point="de.enough.mepose.ui.preferencePageSummary">
     	<preferencePageSummary
-            pageID="de.enough.mepose.core.ui.preferencePages.InstallationPage"
+            pageID="de.enough.mepose.ui.preferencePages.InstallationPage"
             shortDescription="Change settings like paths of the wireless toolkit or the J2ME Polish installation directory"/>
 	</extension>
 
 	<extension point="org.eclipse.ui.newWizards">
 	    <wizard
             category="org.eclipse.jdt.ui.java"
-            class="de.enough.mepose.core.ui.wizards.PolishNewWizard"
+            class="de.enough.mepose.ui.wizards.PolishNewWizard"
             descriptionImage="icons/j2mepolish-logo.gif"
             finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
             hasPages="true"
             helpHref="http://www.j2mepolish.org"
             icon="icons/polish_logo_16x16.png"
-            id="de.enough.mepose.core.ui.wizards.PolishNewWizard"
+            id="de.enough.mepose.ui.wizards.PolishNewWizard"
             name="J2ME Polish Project"
             preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective,org.eclipse.jdt.ui.JavaBrowsingPerspective,org.eclipse.jdt.ui.JavaHierarchyPerspective"
             project="true"/>
@@ -105,13 +105,13 @@
  -->
 
 	<extension point="org.eclipse.ui.popupMenus">
-        <objectContribution adaptable="true" id="de.enough.mepose.core.ui.actions.TogglePolishNature" objectClass="org.eclipse.core.resources.IProject">
-            <action class="de.enough.mepose.core.ui.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/polish_logo_16x16.png" id="de.enough.mepose.core.ui.actions.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
+        <objectContribution adaptable="true" id="de.enough.mepose.ui.actions.TogglePolishNature" objectClass="org.eclipse.core.resources.IProject">
+            <action class="de.enough.mepose.ui.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/polish_logo_16x16.png" id="de.enough.mepose.ui.actions.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
         </objectContribution>
     </extension>
 
 	<extension point="de.enough.mepose.core.buildListeners">
-	    <buildListener class="de.enough.mepose.core.ui.console.BuildListenerConsoleWriter"/>
+	    <buildListener class="de.enough.mepose.ui.console.BuildListenerConsoleWriter"/>
 	</extension>
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">

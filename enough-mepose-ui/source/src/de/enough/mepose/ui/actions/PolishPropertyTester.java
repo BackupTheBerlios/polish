@@ -1,5 +1,5 @@
 /*
- * Created on Jan 24, 2006 at 3:59:05 PM.
+ * Created on Jan 25, 2006 at 5:13:07 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,32 +23,28 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.core.ui.preferencePages;
+package de.enough.mepose.ui.actions;
 
-import org.eclipse.jface.preference.DirectoryFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
-
-import de.enough.mepose.core.MeposeCoreConstants;
+import org.eclipse.core.expressions.PropertyTester;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Jan 24, 2006 - rickyn creation
+ *        Jan 25, 2006 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class AdvDataPage extends FieldEditorPreferencePage {
+public class PolishPropertyTester extends PropertyTester {
 
-    protected AdvDataPage() {
-        super(GRID);
+    /*
+     * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
+     */
+    public boolean test(Object receiver, String property, Object[] args,
+                        Object expectedValue) {
+        // TODO rickyn implement test
+        return false;
     }
 
-    protected void createFieldEditors() {
-//        addField(new StringFieldEditor(MeposeCoreConstants.POLISH_INSTALLATION_DIR, 
-//                                          "Polish Installation Directory:", getFieldEditorParent()));
-        
-    }
 }

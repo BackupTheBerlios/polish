@@ -25,7 +25,7 @@
  */
 package de.enough.mepose.ui;
 
-import de.enough.mepose.core.ui.preferencePages.InstallationPage;
+import de.enough.mepose.ui.preferencePages.InstallationPage;
 
 /**
  * 

@@ -25,9 +25,9 @@ Require-Bundle: de.enough.mepose.core,
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose.ui,
  de.enough.mepose.core.ui.launcher,
- de.enough.mepose.core.ui.preferencePages,
- de.enough.mepose.core.ui.propertyPages,
- de.enough.mepose.core.ui.wizards,
+ de.enough.mepose.ui.preferencePages,
+ de.enough.mepose.ui.propertyPages,
+ de.enough.mepose.ui.wizards,
  de.enough.mepose.launcher,
  de.enough.swt.widgets
 Bundle-Vendor: Enough Software

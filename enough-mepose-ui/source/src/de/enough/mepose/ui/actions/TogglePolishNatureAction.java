@@ -1,7 +1,7 @@
 /*
  * Created on 11.04.2005
  */
-package de.enough.mepose.core.ui.actions;
+package de.enough.mepose.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
