@@ -35,7 +35,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 import de.enough.polish.ant.PolishBuildListener;
@@ -81,7 +81,7 @@ public class MiDletEmulatorLaunchConfigurationDelegate extends
        consoleManager.showConsoleView(console);
        System.out.println("DEBUG:MiDletEmulatorLaunchConfigurationDelegate.launch(...):mode:"+mode);
        
-       MeposeModel model = CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
+       MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
        if(model == null) {
            UIPluginActivator.log("No current meposeModel");
            return;

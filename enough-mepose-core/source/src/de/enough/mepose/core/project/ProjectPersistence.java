@@ -33,7 +33,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.utils.Arrays;
 
 /**
@@ -47,7 +47,7 @@ import de.enough.utils.Arrays;
  */
 public class ProjectPersistence {
 
-    private static final String ID = CorePlugin.class.getName();
+    private static final String ID = MeposePlugin.class.getName();
     public static final String CONTAINED_KEYS = "CONTAINED_KEYS";
     
 //    public static final QualifiedName QN_WTK_HOME = new QualifiedName(ID,MeposeModel.ID_PATH_WTK_FILE);

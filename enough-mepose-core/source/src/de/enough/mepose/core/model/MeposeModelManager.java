@@ -33,7 +33,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.project.ProjectPersistence;
 
 
@@ -68,7 +68,7 @@ public class MeposeModelManager {
                 this.persistence.putMapInProject(this.model.getStoreableProperties(),this.project);
                 System.out.println("DEBUG:PropertyStorer.propertyChange(...):enter.everything stored.");
             } catch (CoreException exception) {
-                CorePlugin.log("Could not store model in project.exception:"+exception);
+                MeposePlugin.log("Could not store model in project.exception:"+exception);
             }
         }
     }
@@ -105,7 +105,7 @@ public class MeposeModelManager {
         try {
             this.persistence.putMapInProject(meposeModel.getStoreableProperties(),project);
         } catch (CoreException exception) {
-            CorePlugin.log("Could not store properties in project."+exception.getMessage());
+            MeposePlugin.log("Could not store properties in project."+exception.getMessage());
         }
         new PropertyStorer(meposeModel,this.persistence,project);
     }
@@ -116,7 +116,7 @@ public class MeposeModelManager {
         }
         MeposeModel model = (MeposeModel)this.modelByProject.remove(project);
         if(model == null) {
-            CorePlugin.log("No model registered for project.");
+            MeposePlugin.log("No model registered for project.");
         }
         this.projectByModel.remove(model);
     }

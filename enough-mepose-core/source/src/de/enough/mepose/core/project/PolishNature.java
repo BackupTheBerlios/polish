@@ -13,7 +13,7 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.model.MeposeModel;
 
@@ -38,7 +38,7 @@ public class PolishNature implements IProjectNature {
     public void configure() throws CoreException {
         System.out.println("DEBUG:PolishNature.configure(...):enter.");
         
-//        if(CorePlugin.getDefault().getMeposeModelManager().getModel(this.project) != null) {
+//        if(MeposePlugin.getDefault().getMeposeModelManager().getModel(this.project) != null) {
             // Everything is fine. We have a model for this project and do not need to configure it.
 //            return;
 //        }
@@ -57,12 +57,12 @@ public class PolishNature implements IProjectNature {
         newCommands[commands.length] = command;
         description.setBuildSpec(newCommands);
         this.project.setDescription(description,new NullProgressMonitor());
-        CorePlugin.getDefault().getMeposeModelManager().addModel(this.project,map);
+        MeposePlugin.getDefault().getMeposeModelManager().addModel(this.project,map);
     }
 
     public void deconfigure() throws CoreException {
         System.out.println("PolishNature.deconfigure():enter.");
-        CorePlugin.getDefault().getMeposeModelManager().removeModel(this.project);
+        MeposePlugin.getDefault().getMeposeModelManager().removeModel(this.project);
         
         IProjectDescription description = this.project.getDescription();
         ICommand[] commands = description.getBuildSpec();

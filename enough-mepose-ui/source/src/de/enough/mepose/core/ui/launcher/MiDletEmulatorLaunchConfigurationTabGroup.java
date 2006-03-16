@@ -32,7 +32,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 
@@ -69,7 +69,7 @@ public class MiDletEmulatorLaunchConfigurationTabGroup extends
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         super.performApply(configuration);
-        MeposeModel model = CorePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
+        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel();
         if(model == null) {
             throw new IllegalStateException("No current MeposeModel set.");
         }

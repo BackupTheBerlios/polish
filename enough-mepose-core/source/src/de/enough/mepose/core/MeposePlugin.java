@@ -18,27 +18,27 @@ import de.enough.mepose.core.project.ProjectPersistence;
 import de.enough.utils.log4j.Log4JPlugin;
 
 
-public class CorePlugin extends Plugin {
+public class MeposePlugin extends Plugin {
 	
-    public static Logger logger = Logger.getLogger(CorePlugin.class);
+    public static Logger logger = Logger.getLogger(MeposePlugin.class);
     
-//    public QualifiedName ID_MEPOSE_MODEL = new QualifiedName(CorePlugin.class.getName(),"id.meposemodel");
-//    public QualifiedName ID_BUILD_XML = new QualifiedName(CorePlugin.class.getName(),"id.buildxml");
-//    public QualifiedName ID_POLISH_HOME = new QualifiedName(CorePlugin.class.getName(),"id.polish.home");
-//    public QualifiedName ID_WTK_HOME = new QualifiedName(CorePlugin.class.getName(),"id.wtk.home");
-//    public QualifiedName ID_DEVICES_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.devices.configured");
-//    public QualifiedName ID_PLATFORMS_CONFIGURED = new QualifiedName(CorePlugin.class.getName(),"id.platforms.configured");
+//    public QualifiedName ID_MEPOSE_MODEL = new QualifiedName(MeposePlugin.class.getName(),"id.meposemodel");
+//    public QualifiedName ID_BUILD_XML = new QualifiedName(MeposePlugin.class.getName(),"id.buildxml");
+//    public QualifiedName ID_POLISH_HOME = new QualifiedName(MeposePlugin.class.getName(),"id.polish.home");
+//    public QualifiedName ID_WTK_HOME = new QualifiedName(MeposePlugin.class.getName(),"id.wtk.home");
+//    public QualifiedName ID_DEVICES_CONFIGURED = new QualifiedName(MeposePlugin.class.getName(),"id.devices.configured");
+//    public QualifiedName ID_PLATFORMS_CONFIGURED = new QualifiedName(MeposePlugin.class.getName(),"id.platforms.configured");
     
     private MeposeModelManager meposeModelManager;
-	private static CorePlugin plugin;
+	private static MeposePlugin plugin;
 	private ResourceBundle resourceBundle;
     
 //    private MeposeModel meposeModel;
     private BundleContext bundleContext;
 
-	public CorePlugin() {
+	public MeposePlugin() {
 		super();
-        System.out.println("DEBUG:CorePlugin.CorePlugin(...):enter.");
+        System.out.println("DEBUG:MeposePlugin.MeposePlugin(...):enter.");
 		plugin = this;
         Log4JPlugin.init();
 	}
@@ -53,20 +53,20 @@ public class CorePlugin extends Plugin {
     
 
 	public void stop(BundleContext context) throws Exception {
-        System.out.println("DEBUG:CorePlugin.stop(...):enter.");
+        System.out.println("DEBUG:MeposePlugin.stop(...):enter.");
 		super.stop(context);
 		plugin = null;
 		this.resourceBundle = null;
 	}
 
 	
-	public static CorePlugin getDefault() {
+	public static MeposePlugin getDefault() {
 		return plugin;
 	}
 
 	
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = CorePlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = MeposePlugin.getDefault().getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
@@ -93,7 +93,7 @@ public class CorePlugin extends Plugin {
 //	 * @return the image descriptor
 //	 */
 //	public static ImageDescriptor getImageDescriptor(String path) {
-//		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.core.CorePlugin", path);
+//		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.core.MeposePlugin", path);
 //	}
     
     // ####################################################################

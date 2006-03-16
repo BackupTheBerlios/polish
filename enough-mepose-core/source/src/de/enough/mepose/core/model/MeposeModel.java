@@ -55,7 +55,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.PolishTask;
@@ -203,7 +203,7 @@ public class MeposeModel extends PropertyModel{
             }
             antClasspathList.add(new URL("file://"+p.getToolsJarEntry().toString()));
         } catch (MalformedURLException exception) {
-            CorePlugin.log("No tools.jar found.",exception);
+            MeposePlugin.log("No tools.jar found.",exception);
         }
         
         URL[] toolsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
@@ -219,15 +219,15 @@ public class MeposeModel extends PropertyModel{
         File mppHomeFile;// = new File("");
         this.jadFile = new File("");
         try {
-            polishHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(CorePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
+            polishHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(MeposePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
         } catch (IOException exception) {
-            CorePlugin.log("No embedded j2me polish found.",exception);
+            MeposePlugin.log("No embedded j2me polish found.",exception);
             throw new IllegalStateException("No embedded j2me polish found:"+exception);
         }
         try {
-            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(CorePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).getPath());
+            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(MeposePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).getPath());
         } catch (IOException exception) {
-            CorePlugin.log("No embedded mpp-sdk found.",exception);
+            MeposePlugin.log("No embedded mpp-sdk found.",exception);
             throw new IllegalStateException("No embedded mpp-sdk found.");
         }
         setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
@@ -281,7 +281,7 @@ public class MeposeModel extends PropertyModel{
             }
             catch(BuildException e) {
                 // configuring the target failed, maybe because the taskdef could not be resolved.
-                CorePlugin.log("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
+                MeposePlugin.log("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
                 continue;
             }
             Task[] tasks = target.getTasks();
@@ -310,7 +310,7 @@ public class MeposeModel extends PropertyModel{
             this.polishTask.initProject();
         } catch (Exception exception) {
             // Maybe a ClassNotFoundException if obfuscator is not present.
-            CorePlugin.log("Something went wrong while polishTask.initProject().",exception);
+            MeposePlugin.log("Something went wrong while polishTask.initProject().",exception);
         }
         this.environment = this.polishTask.getEnvironment();
         firePropertyChangeEvent("environment",oldEnvironment,this.environment);
@@ -559,7 +559,7 @@ public class MeposeModel extends PropertyModel{
 //        File wtkHome = (File)getPropertyValue(ID_WTK_HOME);
 
         if(this.polishHome == null||this.projectHome == null) {
-            CorePlugin.log("No polish home set in model");
+            MeposePlugin.log("No polish home set in model");
             return null;
         }
         HashMap properties = new HashMap();
@@ -765,7 +765,7 @@ public class MeposeModel extends PropertyModel{
 
     private List getBuildListeners() {
         List list = new LinkedList();
-        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint("de.enough.mepose.core.CorePlugin.BuildListeners");
+        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint("de.enough.mepose.core.BuildListeners");
         IExtension[] extensions = point.getExtensions();
         for (int i = 0; i < extensions.length; i++) {
             
@@ -776,7 +776,7 @@ public class MeposeModel extends PropertyModel{
                     BuildListener aBuildListener = (BuildListener)o;
                     list.add(aBuildListener);
                 } catch (CoreException exception) {
-                    CorePlugin.log("Could not create extensions.",exception);
+                    MeposePlugin.log("Could not create extensions.",exception);
                 }
             }
         }

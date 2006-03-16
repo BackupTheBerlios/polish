@@ -34,8 +34,6 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -44,7 +42,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.ui.plugin.UIPluginActivator;
 
@@ -81,7 +79,7 @@ public class AdvDataPage extends PropertyPage {
             return main;
         }
         
-        this.model = CorePlugin.getDefault().getMeposeModelManager().getModel(project);
+        this.model = MeposePlugin.getDefault().getMeposeModelManager().getModel(project);
         if(this.model == null) {
             UIPluginActivator.log("No model in project.");
             throw new IllegalStateException("No model in project.");

@@ -39,7 +39,7 @@ import org.apache.velocity.plugin.VelocityService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
 
 /**
@@ -158,6 +158,6 @@ public class BuildXMLWriter {
     }
     
     public BundleContext getBundleContext() {
-        return CorePlugin.getDefault().getBundleContext();
+        return MeposePlugin.getDefault().getBundleContext();
     }
 }

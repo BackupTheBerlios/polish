@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.swt.widgets.StatusGroup;
 import de.enough.utils.Status;
@@ -219,7 +219,7 @@ public class ProjectPage extends WizardPage{
 //        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PATH_PROJECT_FILE,projectLocation.toFile());
         this.newProjectModel.getMeposeModel().setProjectHome(projectLocation.toFile());
         this.newProjectModel.setProjectInstance(project);
-        CorePlugin.getDefault().getMeposeModelManager().addModel(project,this.newProjectModel.getMeposeModel());
+        MeposePlugin.getDefault().getMeposeModelManager().addModel(project,this.newProjectModel.getMeposeModel());
     }
     
     private void addNature() throws CoreException {

@@ -32,7 +32,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 
 /**
@@ -52,7 +52,7 @@ public class PolishBuilder extends IncrementalProjectBuilder {
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
                                                                             throws CoreException {
         
-        MeposeModel model = CorePlugin.getDefault().getMeposeModelManager().getModel(getProject());
+        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getModel(getProject());
         monitor.beginTask("Building Application",IProgressMonitor.UNKNOWN);
         try {
             model.build(model.getBuildTargetName());

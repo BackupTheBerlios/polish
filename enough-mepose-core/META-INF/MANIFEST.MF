@@ -8,7 +8,7 @@ Bundle-ClassPath: MeposeCore.jar,
  lib/ant-nodeps.jar,
  j2mepolish124/import/enough-j2mepolish-build.jar,
  j2mepolish124/import/enough-j2mepolish-extensions.jar
-Bundle-Activator: de.enough.mepose.core.CorePlugin
+Bundle-Activator: de.enough.mepose.core.MeposePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.apache.log4j,

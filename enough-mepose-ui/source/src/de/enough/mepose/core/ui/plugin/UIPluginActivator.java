@@ -1,7 +1,7 @@
 package de.enough.mepose.core.ui.plugin;
 
 import de.enough.mepose.MeposeCoreUIConstants;
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -48,7 +48,7 @@ public class UIPluginActivator extends AbstractUIPlugin {
             }
         }
         protected void setCurrentProject(IProject project) {
-            CorePlugin.getDefault().getMeposeModelManager().setCurrentProject(project);
+            MeposePlugin.getDefault().getMeposeModelManager().setCurrentProject(project);
          }
     }    
     
@@ -61,7 +61,7 @@ public class UIPluginActivator extends AbstractUIPlugin {
 		super.start(context);
         
         registerProjectListener();
-//        CorePlugin.getDefault().getMeposeModelManager().addBuildListener(new BuildListenerConsoleWriter());
+//        MeposePlugin.getDefault().getMeposeModelManager().addBuildListener(new BuildListenerConsoleWriter());
 	}
 
     

@@ -5,7 +5,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.enough.mepose.core.CorePlugin;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.ui.propertyPages.PreferencesAdapter;
 
@@ -29,7 +29,7 @@ public class InstallationPage
 
 	public InstallationPage() {
 		super(GRID);
-		setPreferenceStore(new PreferencesAdapter(CorePlugin.getDefault().getPluginPreferences()));
+		setPreferenceStore(new PreferencesAdapter(MeposePlugin.getDefault().getPluginPreferences()));
 		setDescription("Installation Paths");
 	}
 	
@@ -53,7 +53,7 @@ public class InstallationPage
 //       
         boolean isPerformOK = super.performOk();
         if(isPerformOK) {
-            CorePlugin.getDefault().savePluginPreferences();
+            MeposePlugin.getDefault().savePluginPreferences();
         }
         return isPerformOK;
     }
