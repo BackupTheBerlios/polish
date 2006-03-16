@@ -766,7 +766,7 @@ public class MeposeModel extends PropertyModel{
 
     private List getBuildListeners() {
         List list = new LinkedList();
-        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint(MeposeConstants.ExtensionPoint_buildListeners);
+        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint(MeposeConstants.ID_BUILD_LISTENERS);
         IExtension[] extensions = point.getExtensions();
         for (int i = 0; i < extensions.length; i++) {
             

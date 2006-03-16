@@ -9,7 +9,7 @@
     	<initializer class="de.enough.mepose.core.preferences.PreferenceInitializer"/>
  	</extension>
 
-    <extension id="PolishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
+    <extension id="polishNature" name="J2ME Polish Nature" point="org.eclipse.core.resources.natures">
         <runtime>
             <run class="de.enough.mepose.core.project.PolishNature"></run>
         </runtime>
@@ -18,7 +18,7 @@
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
  		<image 
  	   		id="de.enough.mepose.core.project.polishNatureImage"
-    		natureId="de.enough.mepose.core.PolishNature"
+    		natureId="de.enough.mepose.core.polishNature"
     		icon="icons/nature.png">
   		</image>
  	</extension>

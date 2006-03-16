@@ -30,10 +30,9 @@ import de.enough.mepose.core.model.MeposeModel;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class PolishNature implements IProjectNature {
-
-    IProject project;
-    public static final String ID_BUILDER = MeposeConstants.ID_PLUGIN + ".PolishBuilder";
+public class PolishNature implements IProjectNature
+{
+	IProject project;
     
     public void configure() throws CoreException {
         System.out.println("DEBUG:PolishNature.configure(...):enter.");
@@ -51,7 +50,7 @@ public class PolishNature implements IProjectNature {
         IProjectDescription description = project.getDescription();
         ICommand[] commands = description.getBuildSpec();
         ICommand command = description.newCommand();
-        command.setBuilderName(ID_BUILDER);
+        command.setBuilderName(MeposeConstants.ID_BUILDER);
         ICommand[] newCommands = new ICommand[commands.length+1];
         System.arraycopy(commands,0,newCommands,0,commands.length);
         newCommands[commands.length] = command;
@@ -67,7 +66,7 @@ public class PolishNature implements IProjectNature {
         IProjectDescription description = this.project.getDescription();
         ICommand[] commands = description.getBuildSpec();
         for (int i = 0; i < commands.length; i++) {
-            if(commands[i].getBuilderName().equals(ID_BUILDER)) {
+            if(commands[i].getBuilderName().equals(MeposeConstants.ID_BUILDER)) {
                 ICommand [] newCommands = new ICommand[commands.length-1];
                 System.arraycopy(commands,0,newCommands,0,i);
                 System.arraycopy(commands,i+1,newCommands,i,commands.length-i-1);

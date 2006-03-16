@@ -13,7 +13,7 @@
             objectClass="org.eclipse.jdt.core.IJavaProject">
         	<filter
            		name="nature"
-             	value="de.enough.mepose.core.PolishNature">
+             	value="de.enough.mepose.core.polishNature">
        		</filter>
      	</page>
 		<page
