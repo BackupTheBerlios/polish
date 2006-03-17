@@ -2,135 +2,151 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-	<extension-point id="preferencePageSummary" name="Perference Page Summary" schema="schema/preferencePageSummary.exsd"/>
+	<extension-point id="preferencePageSummary"
+		name="Perference Page Summary"
+		schema="schema/preferencePageSummary.exsd" />
 
-	<extension point="org.eclipse.ui.propertyPages"> 
-    	<page
-            class="de.enough.mepose.ui.propertyPages.OverviewPage"
-            icon="icons/polish_logo_16x16.png"
-            id="de.enough.mepose.ui.propertyPages.OverviewPage"
-            name="j2ME Polish"
-            objectClass="org.eclipse.jdt.core.IJavaProject">
-        	<filter
-           		name="nature"
-             	value="de.enough.mepose.core.polishNature">
-       		</filter>
-     	</page>
-		<page
-            category="de.enough.mepose.ui.propertyPages.OverviewPage"
-            class="de.enough.mepose.ui.propertyPages.AdvDataPage"
-            id="de.enough.mepose.ui.propertyPages.AdvDataPage"
-            name="Advanced Data Entry"
-            objectClass="org.eclipse.jdt.core.IJavaProject">
-            <filter
-            	name="nature"
-            	value="de.enough.mepose.core.PolishNature">
-            </filter>
-    	</page>
-  	</extension>
- 
-	<extension point="org.eclipse.ui.preferencePages">
-	    <page
-            class="de.enough.mepose.ui.preferencePages.MainPage"
-            id="de.enough.mepose.ui.preferencePages.MainPage"
-            name="J2ME Polish"/>
-	    <page
-            category="de.enough.mepose.ui.preferencePages.MainPage"
-            class="de.enough.mepose.ui.preferencePages.InstallationPage"
-            id="de.enough.mepose.ui.preferencePages.InstallationPage"
-            name="Installation"/>
+	<extension point="org.eclipse.ui.propertyPages">
+		<page class="de.enough.mepose.ui.propertyPages.OverviewPage"
+			icon="icons/polish_logo_16x16.png"
+			id="de.enough.mepose.ui.propertyPages.OverviewPage"
+			name="j2ME Polish" objectClass="org.eclipse.jdt.core.IJavaProject">
+			<filter name="nature"
+				value="de.enough.mepose.core.polishNature" />
+
+		</page>
+		<page category="de.enough.mepose.ui.propertyPages.OverviewPage"
+			class="de.enough.mepose.ui.propertyPages.AdvDataPage"
+			id="de.enough.mepose.ui.propertyPages.AdvDataPage"
+			name="Advanced Data Entry"
+			objectClass="org.eclipse.jdt.core.IJavaProject">
+			<filter name="nature"
+				value="de.enough.mepose.core.PolishNature" />
+
+		</page>
 	</extension>
-	
+
+	<extension point="org.eclipse.ui.preferencePages">
+		<page class="de.enough.mepose.ui.preferencePages.MainPage"
+			id="de.enough.mepose.ui.preferencePages.MainPage" name="J2ME Polish" />
+		<page category="de.enough.mepose.ui.preferencePages.MainPage"
+			class="de.enough.mepose.ui.preferencePages.InstallationPage"
+			id="de.enough.mepose.ui.preferencePages.InstallationPage"
+			name="Installation" />
+	</extension>
+
 	<extension point="de.enough.mepose.ui.preferencePageSummary">
-    	<preferencePageSummary
-            pageID="de.enough.mepose.ui.preferencePages.InstallationPage"
-            shortDescription="Change settings like paths of the wireless toolkit or the J2ME Polish installation directory"/>
+		<preferencePageSummary
+			pageID="de.enough.mepose.ui.preferencePages.InstallationPage"
+			shortDescription="Change settings like paths of the wireless toolkit or the J2ME Polish installation directory" />
 	</extension>
 
 	<extension point="org.eclipse.ui.newWizards">
-	    <wizard
-            category="org.eclipse.jdt.ui.java"
-            class="de.enough.mepose.ui.wizards.PolishNewWizard"
-            descriptionImage="icons/j2mepolish-logo.gif"
-            finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-            hasPages="true"
-            helpHref="http://www.j2mepolish.org"
-            icon="icons/polish_logo_16x16.png"
-            id="de.enough.mepose.ui.wizards.PolishNewWizard"
-            name="J2ME Polish Project"
-            preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective,org.eclipse.jdt.ui.JavaBrowsingPerspective,org.eclipse.jdt.ui.JavaHierarchyPerspective"
-            project="true"/>
- 	</extension>
- 
-	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
-    	<launchConfigurationType
-            delegate="de.enough.mepose.launcher.MIDletLaunchConfigurationDelegate"
-            id="de.enough.mepose.launcher.launchConfigurationType"
-            modes="run, debug"
-            name="J2ME Polish MIDlet"/>
-<!--
+		<wizard category="org.eclipse.jdt.ui.java"
+			class="de.enough.mepose.ui.wizards.PolishNewWizard"
+			descriptionImage="icons/j2mepolish-logo.gif"
+			finalPerspective="org.eclipse.jdt.ui.JavaPerspective" hasPages="true"
+			helpHref="http://www.j2mepolish.org"
+			icon="icons/polish_logo_16x16.png"
+			id="de.enough.mepose.ui.wizards.PolishNewWizard"
+			name="J2ME Polish Project"
+			preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective,org.eclipse.jdt.ui.JavaBrowsingPerspective,org.eclipse.jdt.ui.JavaHierarchyPerspective"
+			project="true" />
+	</extension>
+
+	<extension
+		point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+			delegate="de.enough.mepose.launcher.MIDletLaunchConfigurationDelegate"
+			id="de.enough.mepose.launcher.launchConfigurationType"
+			modes="run, debug" name="J2ME Polish MIDlet" />
+		<!--
 			sourcePathComputer="de.enough.mepose.launcher.sourcePathComputer"/>
--->
+		-->
 	</extension>
 
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
- 		<image 
- 	   		id="de.enough.mepose.ui.javaNatureImage"
-    		natureId="de.enough.mepose.ui.polishNature"
-    		icon="icons/polish_logo_16x16.png">
-  		</image>
+		<image id="de.enough.mepose.ui.javaNatureImage"
+			natureId="de.enough.mepose.ui.polishNature"
+			icon="icons/polish_logo_16x16.png" />
+
 	</extension>
- 
-	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-	    <launchConfigurationTabGroup
-            class="de.enough.mepose.launcher.MIDletLaunchConfigurationTabGroup"
-            description="Configure the runtime of the MIDlet Emulator"
-            id="de.enough.mepose.launcher.launchConfigurationTabGroup"
-            type="de.enough.mepose.launcher.launchConfigurationType"/>
+
+	<extension
+		point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup
+			class="de.enough.mepose.launcher.MIDletLaunchConfigurationTabGroup"
+			description="Configure the runtime of the MIDlet Emulator"
+			id="de.enough.mepose.launcher.launchConfigurationTabGroup"
+			type="de.enough.mepose.launcher.launchConfigurationType" />
 	</extension>
- 
- <!--
- 	<extension point="org.eclipse.debug.core.sourceLocators">
-    	<sourceLocator
-            class="org.eclipse.jdt.internal.launcher.JavaSourceLookupDirector"
-            id="de.enough.mepose.launcher.sourceLookupDirector"
-            name="Mepose source locator"/>
-	</extension>
-	
-	<extension point="org.eclipse.debug.core.sourcePathComputers">
-	    <sourcePathComputer
-            class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
-            id="de.enough.mepose.launcher.sourcePathComputer"/>
-	</extension>
- -->
+
+	<!--
+		<extension point="org.eclipse.debug.core.sourceLocators">
+		<sourceLocator
+		class="org.eclipse.jdt.internal.launcher.JavaSourceLookupDirector"
+		id="de.enough.mepose.launcher.sourceLookupDirector"
+		name="Mepose source locator"/>
+		</extension>
+		
+		<extension point="org.eclipse.debug.core.sourcePathComputers">
+		<sourcePathComputer
+		class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
+		id="de.enough.mepose.launcher.sourcePathComputer"/>
+		</extension>
+	-->
 
 	<extension point="org.eclipse.ui.popupMenus">
-        <objectContribution adaptable="true" id="de.enough.mepose.ui.actions.TogglePolishNature" objectClass="org.eclipse.core.resources.IProject">
-            <action class="de.enough.mepose.ui.actions.TogglePolishNatureAction" enablesFor="1" icon="icons/polish_logo_16x16.png" id="de.enough.mepose.ui.actions.togglePolishNatureAction" label="Toggle J2ME Polish nature"></action>
-        </objectContribution>
-    </extension>
+		<objectContribution adaptable="true"
+			id="de.enough.mepose.ui.actions.TogglePolishNature"
+			objectClass="org.eclipse.core.resources.IProject">
+			<action
+				class="de.enough.mepose.ui.actions.TogglePolishNatureAction"
+				enablesFor="1" icon="icons/polish_logo_16x16.png"
+				id="de.enough.mepose.ui.actions.togglePolishNatureAction"
+				label="Toggle J2ME Polish nature" />
+		</objectContribution>
+	</extension>
 
 	<extension point="de.enough.mepose.core.buildListeners">
-	    <buildListener class="de.enough.mepose.ui.console.BuildListenerConsoleWriter"/>
+		<buildListener
+			class="de.enough.mepose.ui.console.BuildListenerConsoleWriter" />
 	</extension>
-	
-	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+
+	<extension
+		point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
-            configTypeID="de.enough.mepose.launcher.launchConfigurationType"
-            icon="icons/polish_logo_16x16.png"
-            id="de.enough.mepose.launcher.launchConfigurationTypeImage"/>
+			configTypeID="de.enough.mepose.launcher.launchConfigurationType"
+			icon="icons/polish_logo_16x16.png"
+			id="de.enough.mepose.launcher.launchConfigurationTypeImage" />
 	</extension>
 
 	<extension point="org.eclipse.debug.ui.launchShortcuts">
-		<shortcut
-            id="de.enough.mepose.ui.launchShortcut"
-            class="de.enough.mepose.launcher.MIDletLaunchShortcut"
-            label="J2ME Polish MIDlet"
-            icon="icons/polish_logo_16x16.png"
-            modes="run, debug">
-	            <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
-    	        <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
-        </shortcut>
+		<shortcut id="de.enough.mepose.ui.launchShortcut"
+			class="de.enough.mepose.launcher.MIDletLaunchShortcut"
+			label="J2ME Polish MIDlet" icon="icons/polish_logo_16x16.png"
+			modes="run, debug">
+			<contextualLaunch>
+				<contextLabel label="J2ME Polish MIDlet" mode="run" />
+				<enablement />
+			</contextualLaunch>
+		</shortcut>
+	</extension>
+
+	<extension point="org.eclipse.ui.commands">
+		<command name="J2ME Polish MIDlet Launch"
+			description="Launch J2ME MIDlet"
+			categoryId="org.eclipse.debug.ui.category.run"
+			id="de.enough.mepose.ui.launchShortcut.run" />
+	</extension>
+
+	<extension
+ 		point="org.eclipse.ui.bindings">
+ 		<key
+      		sequence="M2+M3+X M"
+      		commandId="de.enough.mepose.ui.launchShortcut.run"
+      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+		</key>
 	</extension>
 
 </plugin>
