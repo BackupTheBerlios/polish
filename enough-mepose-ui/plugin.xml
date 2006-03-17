@@ -80,6 +80,21 @@
 			id="de.enough.mepose.launcher.launchConfigurationTabGroup"
 			type="de.enough.mepose.launcher.launchConfigurationType" />
 	</extension>
+ 
+ <!--
+ 	<extension point="org.eclipse.debug.core.sourceLocators">
+    	<sourceLocator
+            class="org.eclipse.jdt.internal.launcher.JavaSourceLookupDirector"
+            id="de.enough.mepose.launcher.sourceLookupDirector"
+            name="Mepose source locator"/>
+	</extension>
+	
+	<extension point="org.eclipse.debug.core.sourcePathComputers">
+	    <sourcePathComputer
+            class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
+            id="de.enough.mepose.launcher.sourcePathComputer"/>
+	</extension>
+ -->
 
 	<!--
 		<extension point="org.eclipse.debug.core.sourceLocators">
@@ -132,12 +147,32 @@
 			</contextualLaunch>
 		</shortcut>
 	</extension>
+	
+	<extension point="org.eclipse.ui.editorActions">
+ 		<editorContribution
+       	   		id="de.enough.mepose.ui.deviceSelector"
+	    		targetID="org.eclipse.jdt.ui.CompilationUnitEditor">
+		    	<action
+            class="de.enough.mepose.ui.DeviceSelectorActionDelegate"
+            disabledIcon="icons/polish_logo_16x16.png"
+            hoverIcon="icons/polish_logo_16x16.png"
+            icon="icons/polish_logo_16x16.png"
+            id="enough-mepose-ui.action1"
+            label="enough-mepose-ui.action1"
+            style="push"
+            tooltip="No tooltop"/>
+   		</editorContribution>
+	</extension>
 
 	<extension point="org.eclipse.ui.commands">
 		<command name="J2ME Polish MIDlet Launch"
-			description="Launch J2ME MIDlet"
+			description="Run J2ME Polish MIDlet"
 			categoryId="org.eclipse.debug.ui.category.run"
-			id="de.enough.mepose.ui.launchShortcut.run" />
+			id="de.enough.mepose.ui.launchShortcut.run"/>
+		<command name="J2ME Polish MIDlet Debug Launch"
+			description="Debug J2ME Polish MIDlet"
+			categoryId="org.eclipse.debug.ui.category.debug"
+			id="de.enough.mepose.ui.launchShortcut.debug"/>
 	</extension>
 
 	<extension
@@ -145,8 +180,11 @@
  		<key
       		sequence="M2+M3+X M"
       		commandId="de.enough.mepose.ui.launchShortcut.run"
-      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-		</key>
+      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+ 		<key
+      		sequence="M2+M3+D M"
+      		commandId="de.enough.mepose.ui.launchShortcut.debug"
+      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 	</extension>
 
 </plugin>
