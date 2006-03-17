@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -189,7 +191,8 @@ public class MIDletLaunchConfigurationTab
         configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "menu");
       }
 
-    configuration.setAttribute(MIDletLauncherConstants.WORKSPACE, "/home/mkoch/runtime-workspace");
+    IPath workspaceLocation = ResourcesPlugin.getWorkspace().getRoot().findMember("/").getLocation();
+    configuration.setAttribute(MIDletLauncherConstants.WORKSPACE, workspaceLocation.toOSString());
     configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad");
     configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish");
     configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2");
