@@ -24,6 +24,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -173,6 +174,7 @@ public class MIDletLaunchConfigurationTab
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
     
     Composite spare = new Composite(top, SWT.NONE);
+    spare.setLayout(new GridLayout(1,false));
     spare.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
     
     return text;
