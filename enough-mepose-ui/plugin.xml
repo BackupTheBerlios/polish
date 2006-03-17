@@ -77,7 +77,7 @@
  		<image 
  	   		id="de.enough.mepose.ui.javaNatureImage"
     		natureId="de.enough.mepose.ui.polishNature"
-    		icon="icons/nature.png">
+    		icon="icons/polish_logo_16x16.png">
   		</image>
 	</extension>
  
@@ -119,6 +119,18 @@
             configTypeID="de.enough.mepose.launcher.launchConfigurationType"
             icon="icons/polish_logo_16x16.png"
             id="de.enough.mepose.launcher.launchConfigurationTypeImage"/>
+	</extension>
+
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+		<shortcut
+            id="de.enough.mepose.ui.launchShortcut"
+            class="de.enough.mepose.launcher.MIDletLaunchShortcut"
+            label="J2ME Polish MIDlet"
+            icon="icons/polish_logo_16x16.png"
+            modes="run, debug">
+	            <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
+    	        <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+        </shortcut>
 	</extension>
 
 </plugin>
