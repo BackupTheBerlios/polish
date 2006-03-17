@@ -114,3 +114,4 @@ Export-Package: de.enough.mepose.core,
  org.jdom.transform,
  org.jdom.xpath
 Bundle-Vendor: Enough Software
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
