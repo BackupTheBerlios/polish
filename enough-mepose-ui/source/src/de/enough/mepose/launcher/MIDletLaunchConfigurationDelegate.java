@@ -27,6 +27,8 @@ public class MIDletLaunchConfigurationDelegate
     String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
     String workspace = configuration.getAttribute(MIDletLauncherConstants.WORKSPACE, (String) null);
     String jadFile = configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, (String) null);
+    // TODO: Truncate trailing '/' if present.
+    String wtkPath = configuration.getAttribute(MIDletLauncherConstants.WTK_HOME,(String) null);
     
     Map attrMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, (Map) null);
     String hostName = (String) attrMap.get("hostname");
@@ -37,18 +39,18 @@ public class MIDletLaunchConfigurationDelegate
     if (debugMode)
       {
         commandLine= new String[] {
-            "/home/mkoch/local/WTK2.2/bin/emulator",
+            wtkPath + "/bin/emulator",
             "-Xdebug",
-            "-Xdescriptor:dist/" + jadFile,
-            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + port,
+            "-Xdescriptor:" + jadFile,
+            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + port
         };
       }
     else
       {
         commandLine= new String[] {
-            "/home/mkoch/local/WTK2.2/bin/emulator",
-            "-Xdescriptor:dist/Generic-Midp2Cldc11-en_US-example.jad",
-            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + port,
+            wtkPath + "/bin/emulator",
+            "-Xdescriptor:" + jadFile,
+            
         };
       }
 
