@@ -40,7 +40,6 @@ public class MIDletLaunchConfigurationTab
     extends AbstractLaunchConfigurationTab
 {
   private Text projectName;
-  private Text workspace;
   private Text jadFile;
   private Text hostName;
   private Text port;
@@ -108,7 +107,6 @@ public class MIDletLaunchConfigurationTab
     projectName = createTextAttribute(top, "Project");
     projectName.setEditable(false);
 
-    workspace = createDirectoryAttribute(top, "Workspace");
     jadFile = createTextAttribute(top, "JAD file");
     hostName = createTextAttribute(top, "Hostname");
     port = createTextAttribute(top, "Port");
@@ -210,7 +208,6 @@ public class MIDletLaunchConfigurationTab
     try
       {
         projectName.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "unknown"));
-        workspace.setText(configuration.getAttribute(MIDletLauncherConstants.WORKSPACE, "/home/mkoch/runtime-workspace"));
         jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
         polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
         wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
@@ -245,7 +242,6 @@ public class MIDletLaunchConfigurationTab
     attrMap.put("port", port.getText());
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, attrMap);
     
-    configuration.setAttribute(MIDletLauncherConstants.WORKSPACE, workspace.getText());
     configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, jadFile.getText());
     configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, polishHome.getText());
     configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, wtkHome.getText());
