@@ -172,22 +172,22 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
      * 
      * @return the active workbench window
      */
-    // Copied from JDIDebugUIPlugin.
-    public static IWorkbenchWindow getActiveWorkbenchWindow()
-    {
-      return getDefault().getWorkbench().getActiveWorkbenchWindow();
-    } 
-    
-    // Copied from JDIDebugUIPlugin.
-    public static IWorkbenchPage getActivePage()
-    {
-      IWorkbenchWindow w = getActiveWorkbenchWindow();
-    
-      if (w != null)
-        {
-          return w.getActivePage();
-        }
-      
-      return null;
-    }
+//    // Copied from JDIDebugUIPlugin.
+//    public static IWorkbenchWindow getActiveWorkbenchWindow()
+//    {
+//      return getDefault().getWorkbench().getActiveWorkbenchWindow();
+//    } 
+//    
+//    // Copied from JDIDebugUIPlugin.
+//    public static IWorkbenchPage getActivePage()
+//    {
+//      IWorkbenchWindow w = getActiveWorkbenchWindow();
+//    
+//      if (w != null)
+//        {
+//          return w.getActivePage();
+//        }
+//      
+//      return null;
+//    }
 }
