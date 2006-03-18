@@ -1,30 +1,24 @@
 package de.enough.mepose.launcher;
 
-import de.enough.mepose.ui.MeposeUIPlugin;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -32,9 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 public class MIDletLaunchConfigurationTab
     extends AbstractLaunchConfigurationTab
@@ -53,50 +45,50 @@ public class MIDletLaunchConfigurationTab
    * @return Java element context.
    */
   // Copied from JavaLaunchConfigurationTab.
-  protected IJavaElement getContext() {
-    IWorkbenchPage page = MeposeUIPlugin.getActivePage();
-    if (page != null) {
-      ISelection selection = page.getSelection();
-      if (selection instanceof IStructuredSelection) {
-        IStructuredSelection ss = (IStructuredSelection)selection;
-        if (!ss.isEmpty()) {
-          Object obj = ss.getFirstElement();
-          if (obj instanceof IJavaElement) {
-            return (IJavaElement)obj;
-          }
-          if (obj instanceof IResource) {
-            IJavaElement je = JavaCore.create((IResource)obj);
-            if (je == null) {
-              IProject pro = ((IResource)obj).getProject();
-              je = JavaCore.create(pro);
-            }
-            if (je != null) {
-              return je;
-            }
-          }
-        }
-      }
-      IEditorPart part = page.getActiveEditor();
-      if (part != null) {
-        IEditorInput input = part.getEditorInput();
-        return (IJavaElement) input.getAdapter(IJavaElement.class);
-      }
-    }
-    return null;
-  }
+//  protected IJavaElement getContext() {
+//    IWorkbenchPage page = MeposeUIPlugin.getActivePage();
+//    if (page != null) {
+//      ISelection selection = page.getSelection();
+//      if (selection instanceof IStructuredSelection) {
+//        IStructuredSelection ss = (IStructuredSelection)selection;
+//        if (!ss.isEmpty()) {
+//          Object obj = ss.getFirstElement();
+//          if (obj instanceof IJavaElement) {
+//            return (IJavaElement)obj;
+//          }
+//          if (obj instanceof IResource) {
+//            IJavaElement je = JavaCore.create((IResource)obj);
+//            if (je == null) {
+//              IProject pro = ((IResource)obj).getProject();
+//              je = JavaCore.create(pro);
+//            }
+//            if (je != null) {
+//              return je;
+//            }
+//          }
+//        }
+//      }
+//      IEditorPart part = page.getActiveEditor();
+//      if (part != null) {
+//        IEditorInput input = part.getEditorInput();
+//        return (IJavaElement) input.getAdapter(IJavaElement.class);
+//      }
+//    }
+//    return null;
+//  }
 
   /**
    * Set the java project attribute based on the IJavaElement.
    */
   // Copied from JavaLaunchConfigurationTab.
-  protected void initializeJavaProject(IJavaElement javaElement, ILaunchConfigurationWorkingCopy config) {
-    IJavaProject javaProject = javaElement.getJavaProject();
-    String name = null;
-    if (javaProject != null && javaProject.exists()) {
-      name = javaProject.getElementName();
-    }
-    config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, name);
-  } 
+//  protected void initializeJavaProject(IJavaElement javaElement, ILaunchConfigurationWorkingCopy config) {
+//    IJavaProject javaProject = javaElement.getJavaProject();
+//    String name = null;
+//    if (javaProject != null && javaProject.exists()) {
+//      name = javaProject.getElementName();
+//    }
+//    config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, name);
+//  } 
 
   public void createControl(final Composite parent)
   {
@@ -105,7 +97,8 @@ public class MIDletLaunchConfigurationTab
     top.setLayout(new GridLayout(3, false));
     
     projectName = createTextAttribute(top, "Project");
-    projectName.setEditable(false);
+    //TODO: Not userfriendly.
+//    projectName.setEditable(false);
 
     jadFile = createTextAttribute(top, "JAD file");
     hostName = createTextAttribute(top, "Hostname");
@@ -180,22 +173,24 @@ public class MIDletLaunchConfigurationTab
 
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration)
   {
-    IJavaElement javaElement = getContext();
-    
-    if (javaElement != null)
-      {
-        initializeJavaProject(javaElement, configuration);
-      }
-    else
-      {
-        configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "menu");
-      }
+//    IJavaElement javaElement = getContext();
+//    
+//    if (javaElement != null)
+//      {
+//        initializeJavaProject(javaElement, configuration);
+//      }
+//    else
+//      {
+//        configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "menu");
+//      }
 
+    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, getSelectedJavaProjectName());
+    
     IPath workspaceLocation = ResourcesPlugin.getWorkspace().getRoot().findMember("/").getLocation();
     configuration.setAttribute(MIDletLauncherConstants.WORKSPACE, workspaceLocation.toOSString());
-    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad");
-    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish");
-    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2");
+    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, "/path/to/file.jar");
+    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, "/path/to/polish/home");
+    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, "/path/to/wtk/home");
 
     HashMap attrMap = new HashMap();
     attrMap.put("hostname", "localhost");
@@ -203,11 +198,34 @@ public class MIDletLaunchConfigurationTab
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, attrMap);
   }
 
+  protected String getSelectedJavaProjectName() {
+      
+      ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
+      if(! (selection instanceof StructuredSelection)) {
+          return "";
+      }
+      StructuredSelection ss = (StructuredSelection)selection;
+      Object firstElement = ss.getFirstElement();
+      if(firstElement instanceof IProject) {
+          return ((IProject) firstElement).getName();
+      }
+      if(firstElement instanceof IJavaProject) {
+          return ((IJavaProject)firstElement).getProject().getName();
+      }
+      
+      return "";
+  }
+  
   public void initializeFrom(ILaunchConfiguration configuration)
   {
     try
       {
-        projectName.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "unknown"));
+//      projectName.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "unknown"));
+        String projectNameString = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+        if(projectNameString == null) {
+            projectNameString = getSelectedJavaProjectName();
+        }
+        projectName.setText(projectNameString);
         jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
         polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
         wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
@@ -233,7 +251,7 @@ public class MIDletLaunchConfigurationTab
       }
   }
 
-  public void performApply(ILaunchConfigurationWorkingCopy configuration)
+public void performApply(ILaunchConfigurationWorkingCopy configuration)
   {
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName.getText());
     
