@@ -22,7 +22,6 @@
 			objectClass="org.eclipse.jdt.core.IJavaProject">
 			<filter name="nature"
 				value="de.enough.mepose.core.PolishNature" />
-
 		</page>
 	</extension>
 
@@ -57,12 +56,13 @@
 	<extension
 		point="org.eclipse.debug.core.launchConfigurationTypes">
 		<launchConfigurationType
-			delegate="de.enough.mepose.launcher.MIDletLaunchConfigurationDelegate"
-			id="de.enough.mepose.launcher.launchConfigurationType"
-			modes="run, debug" name="J2ME Polish MIDlet" />
-		<!--
-			sourcePathComputer="de.enough.mepose.launcher.sourcePathComputer"/>
-		-->
+        delegate="de.enough.mepose.launcher.MIDletLaunchConfigurationDelegate"
+        id="de.enough.mepose.launcher.launchConfigurationType"
+        modes="run, debug"
+        name="J2ME Polish MIDlet"
+        sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+        sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+        
 	</extension>
 
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
@@ -81,36 +81,7 @@
 			type="de.enough.mepose.launcher.launchConfigurationType" />
 	</extension>
  
- <!--
- 	<extension point="org.eclipse.debug.core.sourceLocators">
-    	<sourceLocator
-            class="org.eclipse.jdt.internal.launcher.JavaSourceLookupDirector"
-            id="de.enough.mepose.launcher.sourceLookupDirector"
-            name="Mepose source locator"/>
-	</extension>
-	
-	<extension point="org.eclipse.debug.core.sourcePathComputers">
-	    <sourcePathComputer
-            class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
-            id="de.enough.mepose.launcher.sourcePathComputer"/>
-	</extension>
- -->
-
-	<!--
-		<extension point="org.eclipse.debug.core.sourceLocators">
-		<sourceLocator
-		class="org.eclipse.jdt.internal.launcher.JavaSourceLookupDirector"
-		id="de.enough.mepose.launcher.sourceLookupDirector"
-		name="Mepose source locator"/>
-		</extension>
-		
-		<extension point="org.eclipse.debug.core.sourcePathComputers">
-		<sourcePathComputer
-		class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
-		id="de.enough.mepose.launcher.sourcePathComputer"/>
-		</extension>
-	-->
-
+ 
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true"
 			id="de.enough.mepose.ui.actions.TogglePolishNature"
@@ -148,6 +119,7 @@
 		</shortcut>
 	</extension>
 	
+	<!-- Delegate not yet present -> errors.
 	<extension point="org.eclipse.ui.editorActions">
  		<editorContribution
        	   		id="de.enough.mepose.ui.deviceSelector"
@@ -163,7 +135,8 @@
             tooltip="No tooltop"/>
    		</editorContribution>
 	</extension>
-
+	-->
+	
 	<extension point="org.eclipse.ui.commands">
 		<command name="J2ME Polish MIDlet Launch"
 			description="Run J2ME Polish MIDlet"
@@ -186,5 +159,29 @@
       		commandId="de.enough.mepose.ui.launchShortcut.debug"
       		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 	</extension>
+	
+ 	<!--
+	<extension
+    	point="org.eclipse.debug.core.sourcePathComputers">
+    	<sourcePathComputer
+        	class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
+        	id="de.enough.mepose.launcher.sourcePathComputer"/>
+	</extension>
+	-->
+
+<!--
+ 	<extension point="org.eclipse.debug.core.sourceLocators">
+    	<sourceLocator
+            class="org.eclipse.jdt.internal.launcher.JavaSourceLookupDirector"
+            id="de.enough.mepose.launcher.sourceLookupDirector"
+            name="Mepose source locator"/>
+	</extension>
+	
+	<extension point="org.eclipse.debug.core.sourcePathComputers">
+	    <sourcePathComputer
+            class="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"
+            id="de.enough.mepose.launcher.sourcePathComputer"/>
+	</extension>
+ -->
 
 </plugin>
