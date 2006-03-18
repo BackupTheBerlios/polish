@@ -11,6 +11,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -19,16 +20,19 @@ import org.eclipse.jdt.launching.JavaRuntime;
 public class MIDletLaunchConfigurationDelegate
     extends AbstractJavaLaunchConfigurationDelegate
 {
-  public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
+    
+  private static final int EMULATOR_STARTUP_TIME = 5000;
+
+public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
     throws CoreException
   {
     boolean debugMode = "debug".equals(mode);
     
-    String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
-    String workspace = configuration.getAttribute(MIDletLauncherConstants.WORKSPACE, (String) null);
-    String jadFile = configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, (String) null);
+    String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+    String workspace = configuration.getAttribute(MIDletLauncherConstants.WORKSPACE,"");
+    String jadFile = configuration.getAttribute(MIDletLauncherConstants.JAD_FILE,"");
     // TODO: Truncate trailing '/' if present.
-    String wtkPath = configuration.getAttribute(MIDletLauncherConstants.WTK_HOME,(String) null);
+    String wtkPath = configuration.getAttribute(MIDletLauncherConstants.WTK_HOME,"");
     
     Map attrMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, (Map) null);
     String hostName = (String) attrMap.get("hostname");
@@ -55,26 +59,23 @@ public class MIDletLaunchConfigurationDelegate
       }
 
     File workingDir = new File(workspace + File.separator + projectName);
-
     Process process = DebugPlugin.exec(commandLine, workingDir);
-
     if (! debugMode)
       {
         return;
       }
     
-    DebugPlugin.newProcess(launch, process, mode);
+    IProcess newProcess = DebugPlugin.newProcess(launch, process, mode);
     
     // Give the emulator some time to start up and open the debugging port. 
     try
       {
-        Thread.sleep(5000);
+        Thread.sleep(EMULATOR_STARTUP_TIME);
       }
     catch (InterruptedException e)
       {
         // Ignore exception here.
       }
-    
     // ---------------------------------------------------------------------------------------------------------------
 
 //    DeviceDatabase deviceDB = new DeviceDatabase(new File("/home/mkoch/J2ME-Polish"));
@@ -166,10 +167,12 @@ public class MIDletLaunchConfigurationDelegate
 
     monitor.done();
     
-    if (process != null)
-      {
-        process.destroy();
-      }
+    //TODO: Way terminate the process right away?
+//    if (process != null)
+//      {
+//        System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):destroying process.");
+//        process.destroy();
+//      }
     
   }
 }
