@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+elementFormDefault="unqualified"
+	attributeFormDefault="unqualified"
+	 -->
+
+<xsd:schema
+	targetNamespace="http://www.enough.de/polish/1.4/"
+	
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:polish="http://www.enough.de/polish/1.4/"
+	xmlns="http://www.enough.de/polish/1.4/">
+
+	<xsd:element name="devices">
+	    <xsd:complexType>
+	      <xsd:sequence>
+			<xsd:element name="device" type="Device" minOccurs="0" maxOccurs="unbounded"/>
+	      </xsd:sequence>
+	    </xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="Device">
+		<xsd:sequence>
+			<xsd:element name="groups" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="features" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="parent" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="identifier" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="capability" minOccurs="10" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="name" type="xsd:string" use="required"/>
+					<xsd:attribute name="value" type="xsd:string" use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="supportsPolishGUI" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<!-- 
+	<xsd:simpleType name="boolean">
+	  <xsd:restriction base="xsd:string">
+	    <xsd:enumeration value="true"/>
+	    <xsd:enumeration value="false"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+
+
+	<xsd:element name="features" type="stringlist"/>
+	<xsd:element name="identifier" type="xsd:string" />
+	-->
+
+</xsd:schema>
