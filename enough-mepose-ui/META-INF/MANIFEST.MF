@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mepose UI
 Bundle-SymbolicName: de.enough.mepose.ui; singleton:=true
-Bundle-Version: 0.0.1
+Bundle-Version: 0.1.0
 Bundle-ClassPath: meposeUI.jar
 Bundle-Activator: de.enough.mepose.ui.MeposeUIPlugin
 Bundle-Localization: plugin
