@@ -10,30 +10,33 @@ elementFormDefault="unqualified"
 	
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:polish="http://www.enough.de/polish/1.4/"
-	xmlns="http://www.enough.de/polish/1.4/">
+	xmlns="http://www.enough.de/polish/1.4/"
+	elementFormDefault="qualified"
+    >
 
 	<xsd:element name="devices">
 	    <xsd:complexType>
 	      <xsd:sequence>
-			<xsd:element name="device" type="Device" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="device" type="polish:Device" minOccurs="0" maxOccurs="unbounded"/>
 	      </xsd:sequence>
 	    </xsd:complexType>
 	</xsd:element>
 
 	<xsd:complexType name="Device">
 		<xsd:sequence>
+			<xsd:element name="identifier" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 			<xsd:element name="groups" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="features" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="parent" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-			<xsd:element name="identifier" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-			<xsd:element name="capability" minOccurs="10" maxOccurs="unbounded">
+			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="capability" minOccurs="0" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:attribute name="name" type="xsd:string" use="required"/>
 					<xsd:attribute name="value" type="xsd:string" use="required"/>
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:sequence>
-		<xsd:attribute name="supportsPolishGUI" type="xsd:string" use="optional"/>
+		<xsd:attribute name="supportsPolishGui" type="xsd:string"/>
 	</xsd:complexType>
 
 	<!-- 
