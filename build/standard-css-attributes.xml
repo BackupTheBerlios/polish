@@ -58,6 +58,68 @@
 		<!--
 		<mapping from="" converter="" />
 		-->
+		
+	<attribute
+		name="layout"
+		appliesTo="Screen,Item"
+		description="The arrangement of the item or screen."
+		type="integer"
+		values="left, horizontal-center, h-center, hcenter, center, right, top, vertical-center, v-center, vcenter, bottom, horizontal-expand, h-expand, hexpand, expand, vertical-expand, v-expand, vexpand, horizontal-shrink, h-shrink, hshrink, vertical-shrink, v-shrink, vshrink, newline-after, newline-before"
+		allowsCombinations="true"
+		isCaseSensitive="false"
+		requiresMapping="true"
+		group="base"
+		default="left | top"
+		>
+		<mapping from="left"               to="Item.LAYOUT_LEFT"     excludes="right, horizontal-center, h-center, hcenter, center" />
+		<mapping from="horizontal-center"  to="Item.LAYOUT_CENTER"   exludes="left, right" />
+		<mapping from="hcenter"            to="Item.LAYOUT_CENTER"   exludes="left, right" />
+		<mapping from="center"             to="Item.LAYOUT_CENTER"   exludes="left, right" />
+		<mapping from="right"              to="Item.LAYOUT_RIGHT"    excludes="left, horizontal-center, h-center, hcenter, center" />
+		<mapping from="top"                to="Item.LAYOUT_TOP"      excludes="bottom, vertical-center, v-center, vcenter" />
+		<mapping from="vertical-center"    to="Item.LAYOUT_VCENTER"  excludes="top, bottom" />
+		<mapping from="v-center"           to="Item.LAYOUT_VCENTER"  excludes="top, bottom" />
+		<mapping from="vcenter"            to="Item.LAYOUT_VCENTER"  excludes="top, bottom" />
+		<mapping from="bottom"             to="Item.LAYOUT_BOTTOM"   excludes="top, vertical-center, v-center, vcenter" />
+		<mapping from="horizontal-expand"  to="Item.LAYOUT_EXPAND"   excludes="horizontal-shrink, h-shrink, hshrink, shrink" />
+		<mapping from="h-expand"           to="Item.LAYOUT_EXPAND"   excludes="horizontal-shrink, h-shrink, hshrink, shrink" />
+		<mapping from="hexpand"            to="Item.LAYOUT_EXPAND"   excludes="horizontal-shrink, h-shrink, hshrink, shrink" />
+		<mapping from="expand"             to="Item.LAYOUT_EXPAND"   excludes="horizontal-shrink, h-shrink, hshrink, shrink" />
+		<mapping from="vertical-expand"    to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
+		<mapping from="v-expand"           to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
+		<mapping from="vexpand"            to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
+		<mapping from="horizontal-expand"  to="Item.LAYOUT_expand"   excludes="horizontal-expand, h-expand, hexpand, expand" />
+		<mapping from="h-shrink"           to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
+		<mapping from="hshrink"            to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
+		<mapping from="shrink"             to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
+		<mapping from="vertical-shrink"    to="Item.LAYOUT_VSHRINK"  excludes="vertical-expand, v-expand, vexpand" />
+		<mapping from="v-shrink"           to="Item.LAYOUT_VSHRINK"  excludes="vertical-expand, v-expand, vexpand" />
+		<mapping from="vshrink"            to="Item.LAYOUT_VSHRINK"  excludes="vertical-expand, v-expand, vexpand" />
+		<mapping from="newline-after"      to="Item.LAYOUT_NEWLINE_AFTER" />
+		<mapping from="newline-before"     to="Item.LAYOUT_NEWLINE_BEFORE" />
+	</attribute>
+	
+    <attribute
+		name="font-style"
+		appliesTo="Screen,Item"
+		description="The font style of an item or screen element."
+		type="integer"
+		values="plain, default, normal, bold, italic, cursive, underlined"
+		allowsCombinations="true"
+		requiresMapping="true"
+		isCaseSensitive="false"
+		group="base"
+		default="plain"
+		>
+		<mapping from="plain"      to="Font.STYLE_PLAIN" excludes="bold" />
+		<mapping from="default"    to="Font.STYLE_PLAIN" excludes="bold" />
+		<mapping from="normal"     to="Font.STYLE_PLAIN" excludes="bold" />
+		<mapping from="bold"       to="Font.STYLE_BOLD"  excludes="plain, normal, default" />
+		<mapping from="italic"     to="Font.STYLE_ITALIC" />
+		<mapping from="cursive"    to="Font.STYLE_ITALIC" />
+		<mapping from="underlined" to="Font.STYLE_UNDERLINED" />
+	</attribute>
+	
 
 	<attribute
 		name="focused-style"

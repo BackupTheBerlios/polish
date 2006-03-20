@@ -29,6 +29,7 @@ import org.apache.tools.ant.BuildException;
 import org.jdom.Element;
 
 import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Maps a short CSS name to any string.</p>
@@ -45,6 +46,10 @@ public class CssMapping {
 	private String from;
 	private String to;
 	private String condition;
+	private String converter;
+	private String[] excludes;
+	
+
 
 	/**
 	 * Creates a new mapping.
@@ -65,7 +70,11 @@ public class CssMapping {
 		if (this.condition == null) {
 			this.condition = definition.getChildTextTrim("condition");
 		}
-		
+		this.converter = definition.getAttributeValue("converter");
+		String excludesStr = definition.getAttributeValue("excludes");
+		if (excludesStr != null) {
+			this.excludes = StringUtil.splitAndTrim( excludesStr, ',');
+		}
 	}
 
 	/**
@@ -88,11 +97,43 @@ public class CssMapping {
 	public String getTo() {
 		return this.to;
 	}
+	
 
-	public void checkCondition( String attributeName, BooleanEvaluator evaluator ) {
+	/**
+	 * @return Returns the converter.
+	 */
+	public String getConverter() {
+		return this.converter;
+	}
+
+	/**
+	 * @return Returns the excludes.
+	 */
+	public String[] getExcludes() {
+		return this.excludes;
+	}
+
+	/**
+	 * Checks whether this attribute mapping has a condion or an exclusion.
+	 * When the condion is not met or there are conflicting values a BuildException will be thrown.
+	 * 
+	 * @param attributeName the name of the attribute
+	 * @param attributeValue the value of the attribute 
+	 * @param evaluator the boolean evaluator
+	 * @throws BuildException when the condion is not met or when there are conflicting values.
+	 */
+	public void checkCondition( String attributeName, String attributeValue, BooleanEvaluator evaluator ) {
 		if (this.condition != null) {
 			if (!evaluator.evaluate(this.condition, "polish.css", 0)) {
-				throw new BuildException( "Invalid CSS: the value [" + this.from + "] of attribute [" + attributeName + "] is invalid for the current device, the condition [" + this.condition + "] is not met. Use this value in appropriate subfolders like \"resources/midp2/polish.css\"."  );
+				throw new BuildException( "Invalid CSS: the value \"" + this.from + "\" of attribute \"" + attributeName + "\" is invalid for the current device, the condition \"" + this.condition + "\" is not met. Use this value in appropriate subfolders like \"resources/midp2/polish.css\"."  );
+			}
+		}
+		if (this.excludes != null) {
+			for (int i = 0; i < this.excludes.length; i++) {
+				String exclude = this.excludes[i];
+				if ( attributeValue.indexOf( exclude ) != -1) {
+					throw new BuildException( "Invalid CSS: the value \"" + this.from + "\" of the attribute \"" + attributeName + "\" conflicts with the value \"" + exclude + "\" - please change your polish.css setting for the value \"" + attributeValue + "\"."  );					
+				}
 			}
 		}
 	}

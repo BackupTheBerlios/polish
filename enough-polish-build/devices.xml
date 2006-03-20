@@ -4532,6 +4532,44 @@
 
 <!-- Samsung devices -->
 	<device> 
+		<identifier>Samsung/SGH-ZM60</identifier> 
+		<features>isDoubleBuffered</features>
+		<groups>jtwi</groups>
+		<capability name="ScreenSize" value="176x205"/>
+		<capability name="CanvasSize" value="176x189"/>
+		<capability name="FullCanvasSize" value="176x205"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPackage" value="mmapi1.1, 3d, wmapi1.1, " />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, wb-amr, raw" />
+		<capability name="PolyphonicVoices" value="64" />
+		<capability name="ImageFormat" value="png, jpeg, jpg, gif, bmp" />
+		<capability name="VideoFormat" value="3gpp" />
+		<capability name="BitsPerPixel" value="16" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="StorageSize" value="50MB" />
+		<capability name="Font.small" value="9" />
+		<capability name="Font.medium" value="12" />
+		<capability name="Font.large" value="14" />
+		<capability name="Property.supports.video.capture" value="true" />
+		<capability name="Property.video.encodings" value="video/H.263" />
+		<capability name="Property.video.snapshot.encodings" value="jpeg, png" />
+		<capability name="Property.supports.audio.capture" value="false" />
+		<capability name="Property.supports.mixing" value="false" />
+		<capability name="Property.microedition.media.version" value="1.1" />
+		<capability name="Property.microedition.jtwi.version" value="1.0" />
+		<capability name="Property.microedition.platform" value="j2me" />
+		<capability name="mmapi.protocol.http" value="audio/x-wav audio/midi audio/x-midi audio/sp-midi audio/mmf audio/x-mmf audio/adpcm audio/amr audio/mpeg audio/x-mpeg audio/aac image/gif video/mpeg video/H.263 video/3gp" />
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
+		<capability name="mmapi.protocol.capture" value="video/H.263" />
+		<capability name="key.LeftSoftKey" value="-6" />
+		<capability name="key.RightSoftKey" value="-7" />
+		<capability name="key.ClearKey" value="-8" />
+		<capability name="Emulator.Control" value="SamsungZM60" />
+	</device>
+
+	<device> 
 		<identifier>Samsung/SGH-D720</identifier> 
 		<groups>Series60E2</groups>
 		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, wb-amr, raw" />

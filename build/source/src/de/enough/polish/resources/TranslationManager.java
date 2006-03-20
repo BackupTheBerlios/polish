@@ -885,17 +885,19 @@ implements Comparator
 			try {
 				int[] orders = translation.getParameterIndices();
 				String[] chunks = translation.getValueChunks();
-				if (orders.length != chunks.length) {
-					throw new IllegalStateException("TranslationManager: unable to save translation file: orders.length != chunks.length, please report this error to j2mepolish@enough.org");
+				if (orders.length != chunks.length - 1) {
+					throw new IllegalStateException("TranslationManager: unable to save translation file: (orders.length != chunks.length - 1) for translation [" + translation.getValue() + "], please report this error to j2mepolish@enough.org");
 				}
 				out.writeByte( chunks.length );
 				for (int j = 0; j < chunks.length; j++) {
 					String chunk = chunks[j];
-					int order = orders[j]; 
-					out.writeByte( order );
 					out.writeUTF( chunk );
 				}
-				out.writeUTF( translation.getValue() );
+				for (int j = 0; j < orders.length; j++) {
+					int order = orders[j]; 
+					out.writeByte( order );
+				}
+				//out.writeUTF( translation.getValue() );
 			} catch (RuntimeException e) {
 				System.err.println("Unable to process translation [" + translation.getKey() + "]: " + e.toString() );
 				throw e;

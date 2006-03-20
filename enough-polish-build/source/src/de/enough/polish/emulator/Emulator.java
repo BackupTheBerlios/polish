@@ -337,7 +337,7 @@ implements Runnable, OutputFilter
 	}
 	
 	/**
-	 * Returns the emulator for the given device.
+	 * Creates the emulator for the given device.
 	 *  
 	 * @param setting the setting
 	 * @param device the current device
@@ -434,13 +434,12 @@ implements Runnable, OutputFilter
 			int c;
 			
 			try {
-				boolean decompilerInstalled = true;
 				while ((c = this.input.read() ) != -1) {
 					if (c == '\n') {
 						String logMessage = log.toString();
 						this.output.println( logMessage );
 						log.delete( startPos,  log.length() );
-						if (decompilerInstalled
+						if (Emulator.this.decompilerInstalled
 								&& (logMessage.indexOf('+') != -1) 
 								&& (logMessage.indexOf("at ") != -1)) {
 							try {
@@ -460,7 +459,7 @@ implements Runnable, OutputFilter
 								}
 							} catch (DecompilerNotInstalledException e) {
 								this.output.println("Unable to translate stacktrace: " + e.getMessage() );
-								decompilerInstalled = false;
+								Emulator.this.decompilerInstalled = false;
 							}
 						}
 					}  else if (c != '\r') {

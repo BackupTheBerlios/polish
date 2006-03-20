@@ -25,16 +25,18 @@
  */
 package de.enough.polish.preprocess;
 
-import de.enough.polish.BooleanEvaluator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.apache.tools.ant.BuildException;
+
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
-
-import org.apache.tools.ant.BuildException;
-
-import java.util.*;
 
 /**
  * <p>Converts CSS files to Java-Code.</p>
@@ -134,6 +136,7 @@ public class CssConverter extends Converter {
 	protected ArrayList referencedStyles;
 	protected AbbreviationsGenerator abbreviationGenerator;
 	protected CssAttributesManager attributesManager;
+	private CssAttribute fontStyleAttribute;
 	
 	/**
 	 * Creates a new CSS converter
@@ -150,6 +153,7 @@ public class CssConverter extends Converter {
 	 */
 	public void setAttributesManager( CssAttributesManager attributesManager ) {
 		this.attributesManager = attributesManager;
+		this.fontStyleAttribute = attributesManager.getAttribute("font-style");
 	}
 	
 
@@ -189,10 +193,10 @@ public class CssConverter extends Converter {
 			if ("default".equals(groupName)) {
 				defaultFontDefined = true;
 				HashMap group = (HashMap) fonts.get( groupName );
-				processFont(group, groupName, null, codeList, styleSheet, true );
+				processFont(group, groupName, null, codeList, styleSheet, true, env );
 			} else {
 				HashMap group = (HashMap) fonts.get( groupName );
-				processFont(group, groupName, null, codeList, styleSheet, true );
+				processFont(group, groupName, null, codeList, styleSheet, true, env );
 			}
 		}
 		
@@ -233,11 +237,10 @@ public class CssConverter extends Converter {
 				throw new BuildException("Encountered invalid license.");
 			}
 		}
-		BooleanEvaluator evaluator = env.getBooleanEvaluator();
 		// add the default style:
 		processDefaultStyle( defaultFontDefined,  
 				defaultBackgroundDefined, defaultBorderDefined,
-				codeList, styleSheet, device, evaluator  );
+				codeList, styleSheet, device, env  );
 		
 		
 		// now add all other static and referenced styles:
@@ -266,7 +269,7 @@ public class CssConverter extends Converter {
 				if ("label".equals(style.getSelector())) {
 					isLabelStyleReferenced = true;
 				}
-				processStyle( style, codeList, styleSheet, device, evaluator );
+				processStyle( style, codeList, styleSheet, device, env );
 			}
 		}
 		codeList.add( STANDALONE_MODIFIER + "String lic=\"" + test +"\";");
@@ -391,8 +394,9 @@ public class CssConverter extends Converter {
 	 * @param codeList the list to which the declarations should be added
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
+	 * @param environment the environment
 	 */
-	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device, BooleanEvaluator evaluator) {
+	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device, Environment environment ) {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
@@ -401,7 +405,7 @@ public class CssConverter extends Converter {
 				codeList.add( STANDALONE_MODIFIER + "int defaultFontColor = 0x000000;");
 				codeList.add( STANDALONE_MODIFIER + "Font defaultFont = Font.getDefaultFont();");
 			} else {
-				processFont(group, "default", copy, codeList, styleSheet, true );
+				processFont(group, "default", copy, codeList, styleSheet, true, environment );
 			}
 		}
 		group = copy.getGroup("background");
@@ -435,7 +439,7 @@ public class CssConverter extends Converter {
 		group.put("border", "default");
 		copy.addGroup("border", group );
 		// now process the rest of the style completely normal:
-		processStyle(copy, codeList, styleSheet, device, evaluator );
+		processStyle(copy, codeList, styleSheet, device, environment );
 	}
 
 
@@ -446,8 +450,9 @@ public class CssConverter extends Converter {
 	 * @param codeList the array list into which generated code is written
 	 * @param styleSheet the parent style sheet
 	 * @param device the device for which the style should be processed
+	 * @param environment the environment
 	 */
-	protected void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device, BooleanEvaluator evaluator ) {
+	protected void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device, Environment environment ) {
 		String styleName = style.getStyleName();
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style:
@@ -492,7 +497,7 @@ public class CssConverter extends Converter {
 				style.addGroup( "font", bitMapFontGroup );
 				//System.out.println("adding bitmap-font " + bitMapFontUrl);
 			}
-			processFont( group, "font", style, codeList, styleSheet, false );
+			processFont( group, "font", style, codeList, styleSheet, false, environment );
 		} else {
 			codeList.add("\t\tdefaultFontColor,\t// font-color is not defined");
 			codeList.add("\t\tdefaultFont,");
@@ -608,10 +613,11 @@ public class CssConverter extends Converter {
 					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attribute != null) {
 						attributeType = attribute.getType();
-						attribute.checkValue( value, evaluator );
-						if (attributeType == CssAttribute.INTEGER && attribute.hasFixValues()) {
-							value = Integer.toString( attribute.getValuePosition(value) );
-						}
+						value = attribute.getValue( value, environment );
+						//attribute.checkValue( value, evaluator );
+//						if (attributeType == CssAttribute.INTEGER && attribute.hasFixValues()) {
+//							value = Integer.toString( attribute.getValuePosition(value) );
+//						}
 					} else {
 						// the attribute is not registered anywhere:
 						System.out.println("Recommendation: It is advised to register the CSS-attribute [" + attributeName + "] in the [custom-css-attributes.xml].");
@@ -658,7 +664,7 @@ public class CssConverter extends Converter {
 					if (attributeType == CssAttribute.STYLE || key.endsWith("style")) {
 						value = getStyleReference( value, style, styleSheet );
 					} else if (attributeType == CssAttribute.COLOR || key.endsWith("color")) {
-						value = getColor( value );
+						value = "new Integer( " + getColor( value ) + ")";
 						attributeType = CssAttribute.COLOR;
 					} else if (key.equals("url")) {
 						value = getUrl( value );
@@ -684,56 +690,37 @@ public class CssConverter extends Converter {
 					} else if (attributeType == CssAttribute.COLOR 
 							|| attributeType == CssAttribute.INTEGER ) 
 					{
-						// check integer value:
-						if (attributeType == CssAttribute.INTEGER ) {
-							try {
-								Integer.parseInt( value );
-							} catch (NumberFormatException e) {
-								throw new BuildException("Invalid CSS: The attribute [" + attributeName + "] needs an integer value. The value [" + value + "] cannot be accepted.");
-							}
-						}
-						valueList.append( "new Integer( ")
-						.append( value )
-						.append(")");
+						valueList.append( value );
 					} else if (attributeType == CssAttribute.BOOLEAN) {
-						if (value.equals("true") || value.equals("yes")) {
-							valueList.append( "Style.TRUE" );
-						} else if (value.equals("false") || value.equals("no")) {
-							valueList.append( "Style.FALSE" );
-						} else {
-							throw new BuildException("Invalid CSS Code: invalid value for the boolean attribute [" + attributeName + "]:  use either [true]/[yes] or [false]/[no].");
-						}
+						valueList.append( value );
 					} else if (attributeType == CssAttribute.OBJECT) {
-						String mappedValue = attribute.getMappingFrom( value );
-						if (mappedValue != null) {
-							 if ("none".equals( mappedValue)) {
-								valueList.append("null");
-							 } else {
-							 	//System.out.println("Using mapped value [" + mappedValue + "] for attribute [" + attribute.getId() + "]");
-							 	valueList.append( mappedValue );
-							 }
-						} else if ("none".equals( value )){
+						//String value = attribute.getMappingFrom( value );
+						 if ("none".equals( value)) {
 							valueList.append("null");
-						} else {
-							if (groupName.equals("view") && key.equals("type") ) {
-								// the value represents a fully qualified class:
-								valueList.append("new ").append( value ).append("()");
-								/*
-								String translatedViewType = (String) VIEW_TYPES.get( value );
-								if (translatedViewType == null ) {
-									// the value represents a full class:
-									valueList.append("new ").append( value ).append("()");
-								} else if ("none".equals( translatedViewType)) {
-									valueList.append("null");
-								} else {
-									// a standard view is used:
-									valueList.append("new ").append( translatedViewType ).append("()");
-								}
-								*/
-							} else {
-								valueList.append( value );
-							}
-						}
+						 } else {
+						 	//System.out.println("Using mapped value [" + mappedValue + "] for attribute [" + attribute.getId() + "]");
+						 	valueList.append( value );
+						 }
+//					} else {
+//							if (groupName.equals("view") && key.equals("type") ) {
+//								// the value represents a fully qualified class:
+//								valueList.append("new ").append( value ).append("()");
+//								/*
+//								String translatedViewType = (String) VIEW_TYPES.get( value );
+//								if (translatedViewType == null ) {
+//									// the value represents a full class:
+//									valueList.append("new ").append( value ).append("()");
+//								} else if ("none".equals( translatedViewType)) {
+//									valueList.append("null");
+//								} else {
+//									// a standard view is used:
+//									valueList.append("new ").append( translatedViewType ).append("()");
+//								}
+//								*/
+//							} else {
+//								valueList.append( value );
+//							}
+//						}
 					} else {
 						throw new BuildException("Error while processing CSS code. Encountered unknown attributes-type [" + attributeType + "]: please report this error to j2mepolish@enough.de.");
 					}
@@ -1007,10 +994,10 @@ public class CssConverter extends Converter {
 	 *        otherwise the font will be embedded in a style instantiation. 
 	 */
 	protected void processFont(HashMap group, String groupName, Style style, 
-			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) 
+			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment environment ) 
 	{
 		//System.out.println("processing font: "  + groupName +  " = " + group.toString() );
-		processFontOrLabel( "Font", group, groupName, style, codeList, styleSheet, isStandalone);
+		processFontOrLabel( "Font", group, groupName, style, codeList, styleSheet, isStandalone, environment);
 	}
 
 	/**
@@ -1026,7 +1013,7 @@ public class CssConverter extends Converter {
 	 *        otherwise the font will be embedded in a style instantiation. 
 	 */
 	protected void processFontOrLabel(String typeName, HashMap group, String groupName, Style style, 
-			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) 
+			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment environment ) 
 	{
 		// check if this is a reference to another font:
 		String reference = (String) group.get(groupName);
@@ -1073,7 +1060,8 @@ public class CssConverter extends Converter {
 				font.setFace(face);
 			}
 			if ( styleStr != null) {
-				font.setStyle(styleStr);
+				font.setStyle( this.fontStyleAttribute.getValue(styleStr, environment) );
+				//font.setStyle(styleStr);
 			}
 			if ( size != null) {
 				font.setSize(size);

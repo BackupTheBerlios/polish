@@ -377,5 +377,22 @@ public class DeviceDatabase {
 		return this.deviceManager.getDevices();
 	}
 	
+	/**
+	 * Retrieves the specified device or null when not found.
+	 * 
+	 * @param identifier the identifier like "Nokia/6630", "Generic/midp2"
+	 * @return the device or null when not found.
+	 */
+	public Device getDevice( String identifier ) {
+		Device[] devices = getDevices();
+		for (int i = 0; i < devices.length; i++) {
+			Device device = devices[i];
+			if (device.identifier.equals( identifier )) {
+				return device;
+			}
+		}
+		return null;
+	}
+	
         
 }

@@ -70,7 +70,7 @@ public class FontConverter extends Converter {
 	}
 	
 	private String face = "FACE_SYSTEM";
-	private String style = "STYLE_PLAIN";
+	private String style = "Font.STYLE_PLAIN";
 	private String size = "SIZE_MEDIUM";
 	
 	/**
@@ -92,7 +92,7 @@ public class FontConverter extends Converter {
 		// first param is the font face:
 		fontCode.append( "Font.getFont( Font.")
 				.append( this.face )
-				.append(", Font.")
+				.append(", ")
 				.append( this.style )
 				.append(", Font.")
 				.append( this.size )
@@ -126,11 +126,12 @@ public class FontConverter extends Converter {
 	 * @param style The style to set.
 	 */
 	public void setStyle(String style) {
-		style = style.toLowerCase();
-		this.style = (String) STYLES.get( style );
-		if (this.style == null) {
-			throw new BuildException("Invalid CSS: the font-style [" + style + "] is not supported. Allowed values are [plain], [bold], [italic] and [underlined].");
-		}
+		this.style = style;
+//		style = style.toLowerCase();
+//		this.style = (String) STYLES.get( style );
+//		if (this.style == null) {
+//			throw new BuildException("Invalid CSS: the font-style [" + style + "] is not supported. Allowed values are [plain], [bold], [italic] and [underlined].");
+//		}
 	}
 
 }
