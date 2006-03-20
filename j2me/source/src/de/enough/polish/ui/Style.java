@@ -47,8 +47,13 @@ public class Style
 	implements ImageConsumer
 //#endif
 {
-	public final static Boolean TRUE = new Boolean( true );
-	public final static Boolean FALSE = new Boolean( false );
+	//#if polish.cldc1.1
+		//# public final static Boolean TRUE = Boolean.TRUE;
+		//# public final static Boolean FALSE = Boolean.FALSE;
+	//#else
+		public final static Boolean TRUE = new Boolean( true );
+		public final static Boolean FALSE = new Boolean( false );
+	//#endif
 	//#ifdef polish.useDynamicStyles
 		/**
 		 * The name of this style. The name is only accessible when

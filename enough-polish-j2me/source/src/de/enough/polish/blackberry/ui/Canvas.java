@@ -1110,12 +1110,12 @@ extends Displayable
 		//# 	screen = (Screen)this;
 		//# }  
 		//#endif
-		for (; --amount >= 0; ) {
+		//for (; --amount >= 0; ) {
 			keyPressed( keyCode );
 			if ( screen != null ) {
 				processed |= screen.keyPressedProcessed;
 			}
-		}
+		//}
 		if (screen != null) {
 			return processed;
 		} else {
