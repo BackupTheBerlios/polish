@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- 
+
+This schema file validates devices.xml with the following command line:
+
+xmlstarlet val -e -s devices.xsd devices.xml
+
+xmlstarlet can be found at http://xmlstar.sourceforge.net/
+
+ -->
+
 <xsd:schema
 	targetNamespace="http://www.enough.de/polish/1.4/"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
