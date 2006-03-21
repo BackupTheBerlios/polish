@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 
-elementFormDefault="unqualified"
-	attributeFormDefault="unqualified"
-	 -->
-
 <xsd:schema
 	targetNamespace="http://www.enough.de/polish/1.4/"
-	
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:polish="http://www.enough.de/polish/1.4/"
 	xmlns="http://www.enough.de/polish/1.4/"
-	elementFormDefault="qualified"
-    >
+	elementFormDefault="qualified">
 
 	<xsd:element name="devices">
 	    <xsd:complexType>
@@ -25,31 +18,23 @@ elementFormDefault="unqualified"
 	<xsd:complexType name="Device">
 		<xsd:sequence>
 			<xsd:element name="identifier" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-			<xsd:element name="groups" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-			<xsd:element name="features" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-			<xsd:element name="parent" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-			<xsd:element name="capability" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:attribute name="name" type="xsd:string" use="required"/>
-					<xsd:attribute name="value" type="xsd:string" use="required"/>
-				</xsd:complexType>
-			</xsd:element>
+			<!-- The unbound property is necessary to allow unordered child elements. Beware that
+			this also alters the set of recognized languages as f.e. several parent are now permitted. -->
+			<xsd:sequence maxOccurs="unbounded">
+				<xsd:element name="parent" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="groups" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="features" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="capability" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="name" type="xsd:string" use="required"/>
+						<xsd:attribute name="value" type="xsd:string" use="required"/>
+						<xsd:attribute name="comment" type="xsd:string" use="optional" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
 		</xsd:sequence>
 		<xsd:attribute name="supportsPolishGui" type="xsd:string"/>
 	</xsd:complexType>
-
-	<!-- 
-	<xsd:simpleType name="boolean">
-	  <xsd:restriction base="xsd:string">
-	    <xsd:enumeration value="true"/>
-	    <xsd:enumeration value="false"/>
-	  </xsd:restriction>
-	</xsd:simpleType>
-
-
-	<xsd:element name="features" type="stringlist"/>
-	<xsd:element name="identifier" type="xsd:string" />
-	-->
 
 </xsd:schema>
