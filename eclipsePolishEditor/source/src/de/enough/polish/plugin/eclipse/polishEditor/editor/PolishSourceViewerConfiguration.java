@@ -210,11 +210,11 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             //TODO: Use the MepsoePlugin to get the environment.
 //            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getDefaultMeposeModel().getEnvironment());
 //            IProject correspondingProject = getProject().getProject();
-            MeposeModel meposeModel = this.editor.getMeposeProject();
+            MeposeModel meposeModel = this.editor.getMeposeModel();
 //            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel().getEnvironment());
             VariableContentAssistProcessor processor = new VariableContentAssistProcessor(meposeModel.getEnvironment());
             compoundContentAssistProcessor.add(processor);
-            this.editor.getMeposeProject().addPropertyChangeListener(processor);
+            this.editor.getMeposeModel().addPropertyChangeListener(processor);
    
             contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
