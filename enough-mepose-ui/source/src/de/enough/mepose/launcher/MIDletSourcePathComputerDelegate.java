@@ -19,6 +19,7 @@ public class MIDletSourcePathComputerDelegate
 													  IProgressMonitor monitor)
 		throws CoreException
 	{
+        System.out.println("DEBUG:MIDletSourcePathComputerDelegate.computeSourceContainers(...):enter.");
 		String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
 		
 		if (projectName == null)
