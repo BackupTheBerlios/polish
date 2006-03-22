@@ -27,12 +27,14 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -42,6 +44,8 @@ import org.eclipse.jdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
 import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -121,9 +125,28 @@ public class PolishEditor extends CompilationUnitEditor {
         setSourceViewerConfiguration(polishSourceViewerConfiguration);
         
 //        this.meposeProject = MeposePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
-        this.meposeProject = MeposePlugin.getDefault().getMeposeModelManager().getModel(getJavaProject().getProject());
+        MeposeModelManager meposeModelManager = MeposePlugin.getDefault().getMeposeModelManager();
+        IProject project = getJavaProject().getProject();
+        this.meposeProject = meposeModelManager.getModel(project);
+        if(this.meposeProject == null) {
+            meposeModelManager.addModel(project,new MeposeModel());
+            this.meposeProject = meposeModelManager.getModel(project);
+        }
         
         super.createPartControl(parent);
+
+        IToolBarManager toolBarManager = getEditorSite().getActionBars().getToolBarManager();
+
+        IContributionItem contributionItem = toolBarManager.find(DeviceDropdownChooserContributionItem.class.getName());
+        DeviceDropdownChooserContributionItem deviceDropdownChooserContributionItem;
+        if(contributionItem == null) {
+            deviceDropdownChooserContributionItem = new DeviceDropdownChooserContributionItem(getMeposeModel());
+            toolBarManager.add(deviceDropdownChooserContributionItem);
+        } 
+        else {
+            deviceDropdownChooserContributionItem = (DeviceDropdownChooserContributionItem)contributionItem;
+            deviceDropdownChooserContributionItem.setMeposeModel(getMeposeModel());
+        }
     }
    
     protected boolean affectsTextPresentation(PropertyChangeEvent event) {
@@ -186,7 +209,7 @@ public class PolishEditor extends CompilationUnitEditor {
     }
 
     
-    public MeposeModel getMeposeProject() {
+    public MeposeModel getMeposeModel() {
         return this.meposeProject;
     }
 
