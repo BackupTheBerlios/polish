@@ -579,8 +579,8 @@ public class MeposeModel extends PropertyModel{
     // May be null.
     public DeviceTree getDeviceTree() {
         
-        if(this.deviceTree == null && this.deviceDatabase != null) {
-            this.deviceTree = new DeviceTree(this.deviceDatabase,null,null);
+        if(this.deviceTree == null && getDeviceDatabase() != null) {
+            this.deviceTree = new DeviceTree(getDeviceDatabase(),null,null);
         }
       
         return this.deviceTree;
