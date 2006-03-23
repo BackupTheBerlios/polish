@@ -11,7 +11,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -65,7 +64,7 @@ public void launch(ILaunchConfiguration configuration, String mode, ILaunch laun
         return;
       }
     
-    IProcess newProcess = DebugPlugin.newProcess(launch, process, mode);
+    DebugPlugin.newProcess(launch, process, mode);
     
     // Give the emulator some time to start up and open the debugging port. 
     try
