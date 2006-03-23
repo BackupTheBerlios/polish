@@ -1,7 +1,5 @@
 package de.enough.mepose.ui;
 
-import de.enough.mepose.core.MeposePlugin;
-
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -18,12 +16,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import de.enough.mepose.core.MeposePlugin;
 
 /**
  * The main plugin class to be used in the desktop.

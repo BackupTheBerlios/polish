@@ -25,13 +25,6 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
-import de.enough.mepose.core.MeposePlugin;
-import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.core.model.MeposeModelManager;
-import de.enough.polish.Environment;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
-
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -55,6 +48,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+
+import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.core.model.MeposeModelManager;
+import de.enough.polish.Environment;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
 
 
