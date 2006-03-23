@@ -29,10 +29,16 @@
 
 -->
 
-<devices
+<!-- 
+These namespaces/schemas will be used soon.
+
 	xmlns="http://www.enough.de/polish/1.4/"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.enough.de/polish/1.4/ http://www.enough.de/polish/1.4/devices.xsd">
+	xsi:schemaLocation="http://www.enough.de/polish/1.4/ http://www.enough.de/polish/1.4/devices.xsd"
+
+ -->
+
+<devices>
 
 <!-- Standard devices -->
 	<device
