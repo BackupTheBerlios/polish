@@ -1,18 +1,15 @@
 package de.enough.mepose.launcher;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
-import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
 import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourcePathComputer;
 
 public class MIDletSourcePathComputer
   extends JavaSourcePathComputer
 {
-  public static final String ID = "anotherDebugger.sourcePathComputer1";
+//  public static final String ID = "anotherDebugger.sourcePathComputer1";
   
   public String getID()
   {
