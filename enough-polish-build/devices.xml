@@ -87,7 +87,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, btapi, pdaapi, 3dapi, svg" />
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, 3dapi, svg" />
 	</device>
 	
 	<device
@@ -1521,6 +1521,7 @@ These namespaces/schemas will be used soon.
 		<identifier>
 			Motorola/i730
 		</identifier>
+		<user-agent>MOTi730</user-agent>
 		<features>hasCamera</features>
 		<capability name="SoftwarePlatform.JavaPlatform"
 					   value="MIDP/2.0" />
@@ -1549,6 +1550,7 @@ These namespaces/schemas will be used soon.
 		<identifier>
 		    Motorola/i50sx, Motorola/i55sr, Motorola/i85s
 		</identifier>
+		<user-agent>MOTi50sx</user-agent>
 		<features>hasCamera</features>
 		<capability name="SoftwarePlatform.JavaPlatform"
 					   value="MIDP/1.0" />
