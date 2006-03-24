@@ -547,7 +547,8 @@ public class Graphics extends Object
 	 * 
 	 * @param x - the x coordinate of the new translation origin
 	 * @param y - the y coordinate of the new translation origin
-	 * @see #getTranslateX(),  #getTranslateY()
+	 * @see #getTranslateX()
+	 * @see #getTranslateY()
 	 */
 	public void translate(int x, int y)
 	{

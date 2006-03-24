@@ -49,11 +49,12 @@ extends FullScreen
 	protected boolean isShown;
 
 	/**
-	 * Gets the title of the <code>Displayable</code>. Returns
+	 * Gets the title of the <code>Displayable</code>. 
+	 * Returns
 	 * <code>null</code> if there is no title.
 	 * 
 	 * @return the title of the instance, or null if no title
-	 * @see setTitle(java.lang.String)
+	 * @see #setTitle(java.lang.String)
 	 * @since  MIDP 2.0
 	 */
 	public String getTitle()
@@ -81,7 +82,7 @@ extends FullScreen
 	 * via a call to <A HREF="../../../javax/microedition/lcdui/Displayable.html#sizeChanged(int, int)"><CODE>sizeChanged()</CODE></A>. </p>
 	 * 
 	 * @param s - the new title, or null for no title
-	 * @see getTitle()
+	 * @see #getTitle()
 	 * @since  MIDP 2.0
 	 */
 	public void setTitle( String s)
@@ -94,7 +95,7 @@ extends FullScreen
 	 * Gets the ticker used by this <code>Displayable</code>.
 	 * 
 	 * @return ticker object used, or null if no ticker is present
-	 * @see setTicker(javax.microedition.lcdui.Ticker)
+	 * @see #setTicker(Ticker)
 	 * @since  MIDP 2.0
 	 */
 	public Ticker getTicker()
@@ -127,7 +128,7 @@ extends FullScreen
 	 * via a call to <A HREF="../../../javax/microedition/lcdui/Displayable.html#sizeChanged(int, int)"><CODE>sizeChanged()</CODE></A>. </p>
 	 * 
 	 * @param ticker - the ticker object used on this screen
-	 * @see getTicker()
+	 * @see #getTicker()
 	 * @since  MIDP 2.0
 	 */
 	public void setTicker( Ticker ticker)

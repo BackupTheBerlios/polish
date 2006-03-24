@@ -1397,6 +1397,16 @@ implements Choice
 		//#debug
 		System.out.println("ChoiceGroup.handlePointerPressed(" + x + ", " + y + ")");
 		//#ifndef polish.usePopupItem
+			boolean processed = super.handlePointerPressed(x, y);
+			if (this.focusedItem != null 
+					&& ( x >= this.focusedItem.xLeftPos ) 
+					&& ( x <= this.focusedItem.xRightPos ) 
+					&& ( y >= this.focusedItem.yTopPos ) 
+					&& ( y <= this.focusedItem.yBottomPos ) ) 
+			{
+				return handleKeyPressed( -1, Canvas.FIRE ) || processed;
+			}
+			//# return processed;
 			super.handlePointerPressed(x, y);
 			//# return handleKeyPressed( -1, Canvas.FIRE ); 
 		//#else

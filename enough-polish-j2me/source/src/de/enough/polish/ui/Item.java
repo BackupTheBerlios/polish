@@ -1464,7 +1464,7 @@ public abstract class Item extends Object
 			if (isLayoutShrink) {
 				leftBorder += difference;
 				rightBorder -= difference;
-				System.out.println("item " + this + ": (center) shrinking left border to " + leftBorder + ", right border to " + rightBorder);
+				//System.out.println("item " + this + ": (center) shrinking left border to " + leftBorder + ", right border to " + rightBorder);
 			}
 		} else if ( this.isLayoutRight && availableWidth > this.itemWidth) {
 			// adjust the x-position so that the item is painted up to
@@ -1472,11 +1472,11 @@ public abstract class Item extends Object
 			x += availableWidth - this.itemWidth;
 			if (isLayoutShrink) {
 				leftBorder += availableWidth - this.itemWidth;
-				System.out.println("item " + this + ": (right) shrinking left border to " + leftBorder);
+				//System.out.println("item " + this + ": (right) shrinking left border to " + leftBorder);
 			}
 		} else if (isLayoutShrink && availableWidth > this.itemWidth) {
 			rightBorder -= availableWidth - this.itemWidth;
-			System.out.println("item " + this + ": (left) shrinking right border to " + rightBorder);
+			//System.out.println("item " + this + ": (left) shrinking right border to " + rightBorder);
 		}
 		
 		// paint background:

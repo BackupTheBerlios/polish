@@ -91,7 +91,6 @@ public class Container extends Item {
 		protected boolean scrollSmooth = true;	
 	//#endif
 	protected int targetYOffset;
-	public boolean debug;
 
 	
 	/**
@@ -326,10 +325,15 @@ public class Container extends Item {
 				this.autoFocusIndex = this.focusedIndex;
 			//#endif			
 			this.focusedIndex = -1;
-			if (this.focusedItem != null && this.focusedItem.commands != null) {
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.removeItemCommands(this.focusedItem);
+			if (this.focusedItem != null) {
+				if (this.focusedItem.commands != null) {
+					Screen scr = getScreen();
+					if (scr != null) {
+						scr.removeItemCommands(this.focusedItem);
+					}
+				}
+				if (this.itemStyle != null) {
+					this.focusedItem.defocus(this.itemStyle);
 				}
 			}
 		}
@@ -630,9 +634,6 @@ public class Container extends Item {
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
 		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled);
-		if (debug) {
-			System.out.println("init content of container " + this + ": isLayoutShrink=" + ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) );
-		}
 		int myContentWidth = 0;
 		int myContentHeight = 0;
 		try {
@@ -706,7 +707,7 @@ public class Container extends Item {
 			this.appearanceMode = INTERACTIVE;
 			if (isLayoutShrink && this.focusedItem != null) {
 				Item item = this.focusedItem;
-				System.out.println("container has shrinking layout and contains focuse item " + item);
+				//System.out.println("container has shrinking layout and contains focuse item " + item);
 				item.isInitialised = false;
 				boolean doExpand = item.isLayoutExpand;
 				if (doExpand) {
@@ -736,8 +737,6 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#paintItem(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		if (debug)
-			System.out.println("painting container " + this + " at x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", isLayoutShrink=" + ( (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) + ", itemWidth=" + this.itemWidth + ", availableWidth=" + (rightBorder - leftBorder));
 		// paints all items,
 		// the layout will be done according to this containers'
 		// layout or according to the items layout, when specified.
@@ -1222,9 +1221,6 @@ public class Container extends Item {
 	 * 		  will be ignored.
 	 */
 	public void setStyle( Style style, boolean ignoreBackground) {
-		if (debug) {
-			System.out.println("setting style for container "+ this);
-		}
 		super.setStyle(style);
 		if (ignoreBackground) {
 			this.background = null;
@@ -1364,8 +1360,8 @@ public class Container extends Item {
 				Item[] myItems = getItems();
 				// focus the first interactive item...
 				if (direction == Canvas.UP || direction == Canvas.LEFT ) {
-					//System.out.println("Container: direction UP");
-					for (int i = myItems.length; --i > 0; ) {
+					//System.out.println("Container: direction UP with " + myItems.length + " items");
+					for (int i = myItems.length; --i >= 0; ) {
 						Item item = myItems[i];
 						if (item.appearanceMode != PLAIN) {
 							newFocusIndex = i;
@@ -1392,7 +1388,7 @@ public class Container extends Item {
 			//#if tmp.supportViewType
 				} else if (this.focusedIndex == -1) {
 					Item[] myItems = getItems();
-					//System.out.println("Container: direction DOWN through view type");
+					//System.out.println("Container: direction DOWN through view type " + this.view);
 					for (int i = 0; i < myItems.length; i++) {
 						Item item = myItems[i];
 						if (item.appearanceMode != PLAIN) {

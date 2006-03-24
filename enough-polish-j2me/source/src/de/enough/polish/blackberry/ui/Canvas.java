@@ -703,7 +703,7 @@ extends Displayable
 	 * </P>
 	 * 
 	 * @param keyCode - the key code of the key that was repeated
-	 * @see hasRepeatEvents()
+	 * @see #hasRepeatEvents()
 	 */
 	protected void keyRepeated(int keyCode)
 	{
@@ -820,7 +820,8 @@ extends Displayable
 	 * @param y - the y coordinate of the rectangle to be repainted
 	 * @param width - the width of the rectangle to be repainted
 	 * @param height - the height of the rectangle to be repainted
-	 * @see Display.callSerially(Runnable),  serviceRepaints()
+	 * @see Display#callSerially(Runnable)
+	 * @see #serviceRepaints()
 	 */
 	public final void repaint(int x, int y, int width, int height)
 	{
@@ -863,7 +864,7 @@ extends Displayable
 	 * painting has completed, avoiding the danger of deadlock.
 	 * </p>
 	 * 
-	 * @see Display.callSerially(Runnable)
+	 * @see Display#callSerially(Runnable)
 	 */
 	public final void serviceRepaints()
 	{

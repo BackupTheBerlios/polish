@@ -663,4 +663,29 @@ public final class UiAccess {
 		screen.addSubCommand( child, parent, style );
 	}
 	//#endif
+	
+	/**
+	 * Checks whether the commands menu of the screen is currently opened.
+	 * Useful when overriding the keyPressed() method.
+	 * 
+	 * @param screen the screen
+	 * @return true when the commands menu is opened.
+	 */
+	public static boolean isMenuOpened( javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+
+	//#if polish.usePolishGui
+	/**
+	 * Checks whether the commands menu of the screen is currently opened.
+	 * Useful when overriding the keyPressed() method.
+	 * 
+	 * @param screen the screen
+	 * @return true when the commands menu is opened.
+	 */
+	public static boolean isMenuOpened( Screen screen ) {
+		return screen.isMenuOpened();
+	}
+	//#endif
+
 }

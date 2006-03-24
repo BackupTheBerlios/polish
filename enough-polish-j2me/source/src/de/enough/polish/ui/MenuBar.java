@@ -524,11 +524,11 @@ public class MenuBar extends Item {
 		this.isInitialised = (open == this.isOpened);
 		if (!open && this.isOpened) {
 			this.commandsContainer.hideNotify();
+		} else if (open && !this.isOpened) {
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
 				this.commandsContainer.focus(0);
 			//#endif
-		} else if (open && !this.isOpened) {
 			this.commandsContainer.showNotify();
 		}
 		this.isOpened = open;

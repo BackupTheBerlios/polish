@@ -289,7 +289,9 @@ public final class Font extends Object
 	 * zero (<code>STYLE_PLAIN</code>).
 	 * 
 	 * @return style of the current font
-	 * @see isPlain(),  isBold(), isItalic()
+	 * @see #isPlain()
+	 * @see #isBold()
+	 * @see #isItalic()
 	 */
 	public int getStyle()
 	{
@@ -320,7 +322,7 @@ public final class Font extends Object
 	 * Returns <code>true</code> if the font is plain.
 	 * 
 	 * @return true if font is plain
-	 * @see getStyle()
+	 * @see #getStyle()
 	 */
 	public boolean isPlain()
 	{
@@ -331,7 +333,7 @@ public final class Font extends Object
 	 * Returns <code>true</code> if the font is bold.
 	 * 
 	 * @return true if font is bold
-	 * @see getStyle()
+	 * @see #getStyle()
 	 */
 	public boolean isBold()
 	{
@@ -342,7 +344,7 @@ public final class Font extends Object
 	 * Returns <code>true</code> if the font is italic.
 	 * 
 	 * @return true if font is italic
-	 * @see getStyle()
+	 * @see #getStyle()
 	 */
 	public boolean isItalic()
 	{
@@ -353,7 +355,7 @@ public final class Font extends Object
 	 * Returns <code>true</code> if the font is underlined.
 	 * 
 	 * @return true if font is underlined
-	 * @see getStyle()
+	 * @see #getStyle()
 	 */
 	public boolean isUnderlined()
 	{

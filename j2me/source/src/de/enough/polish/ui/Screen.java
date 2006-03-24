@@ -1855,11 +1855,11 @@ implements AccessibleCanvas
 	private void openMenu( boolean open ) {
 		if (!open && this.menuOpened) {
 			this.menuContainer.hideNotify();
+		} else if (open && !this.menuOpened) {
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
 				this.menuContainer.focus(0);
 			//#endif
-		} else if (open && !this.menuOpened) {
 			this.menuContainer.showNotify();
 		}
 		this.menuOpened = open;
@@ -1912,9 +1912,8 @@ implements AccessibleCanvas
 				//#style menu, default
 				 this.menuContainer = new Container( true );
 				 this.menuContainer.screen = this;
-				 this.menuContainer.debug = true;
 				 if (this.menuContainer.style != null) {
-					 System.out.println("setting style for menuContainer " + this.menuContainer);
+					 //System.out.println("setting style for menuContainer " + this.menuContainer);
 					 this.menuContainer.setStyle( this.menuContainer.style );
 				 }
 				 this.menuContainer.layout |= Item.LAYOUT_SHRINK;
@@ -2526,6 +2525,22 @@ implements AccessibleCanvas
 		return -1;
 	}
 
+	/**
+	 * Checks whether the commands menu of the screen is currently opened.
+	 * Useful when overriding the keyPressed() method.
+	 * 
+	 * @return true when the commands menu is opened.
+	 */
+	public boolean isMenuOpened() {
+		//#if !tmp.menuFullScreen
+			//# return false;
+		//#elif tmp.useExternalMenuBar
+			//# return this.menuBar.isOpened;
+		//#else
+			return this.menuOpened;
+		//#endif
+
+	}
 		
 	
 //#ifdef polish.Screen.additionalMethods:defined

@@ -434,8 +434,8 @@ implements TrackwheelListener, KeyListener
 	}
 
 	/**
-	 * Gets the current <code>Displayable</code> object for this
-	 * <code>MIDlet</code>.  The
+	 * Gets the current <code>Displayable</code> object for this <code>MIDlet</code>.  
+	 * The
 	 * <code>Displayable</code> object returned may not actually be
 	 * visible on the display
 	 * if the <code>MIDlet</code> is running in the background, or if
@@ -449,7 +449,7 @@ implements TrackwheelListener, KeyListener
 	 * call to <code>setCurrent()</code>. </p>
 	 * 
 	 * @return the MIDlet's current Displayable object
-	 * @see #setCurrent(javax.microedition.lcdui.Displayable)
+	 * @see #setCurrent(Displayable)
 	 */
 	public Displayable getCurrent()
 	{
