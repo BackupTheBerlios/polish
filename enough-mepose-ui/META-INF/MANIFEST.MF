@@ -24,7 +24,6 @@ Require-Bundle: de.enough.mepose.core,
  org.eclipse.ui.forms
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose.ui,
- de.enough.mepose.core.ui.launcher,
  de.enough.mepose.ui.preferencePages,
  de.enough.mepose.ui.propertyPages,
  de.enough.mepose.ui.wizards,
