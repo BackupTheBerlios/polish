@@ -41,6 +41,7 @@ public interface MeposeUIConstants
     String EXTENSION_ID_INSTALLATIONPAGE = InstallationPage.class.getName();
     
     String ID_PLUGIN = "de.enough.mepose.ui";
+    String SOURCE_PATH_COMPUTER_ID = "de.enough.mepose.launcher.sourcePathComputer";
     
     String KEY_IMAGE_LOGO = "logo";
     String KEY_IMAGE_WARNING = "warning";
