@@ -1,5 +1,7 @@
 package de.enough.mepose.launcher;
 
+import de.enough.mepose.ui.MeposeUIConstants;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -9,11 +11,9 @@ import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourcePathComputer;
 public class MIDletSourcePathComputer
   extends JavaSourcePathComputer
 {
-//  public static final String ID = "anotherDebugger.sourcePathComputer1";
-  
   public String getID()
   {
-    return ID;
+    return MeposeUIConstants.SOURCE_PATH_COMPUTER_ID;
   }
   
 	public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration,
