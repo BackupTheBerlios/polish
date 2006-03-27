@@ -96,7 +96,7 @@
 
 	<extension point="de.enough.mepose.core.buildListeners">
 		<buildListener
-			class="de.enough.mepose.ui.console.BuildListenerConsoleWriter" />
+			class="de.enough.mepose.ui.BuildListenerConsoleWriter" />
 	</extension>
 
 	<extension
