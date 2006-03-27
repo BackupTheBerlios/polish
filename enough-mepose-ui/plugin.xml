@@ -119,12 +119,14 @@
 	</extension>
 	
 	<extension point="org.eclipse.ui.commands">
-		<command name="J2ME Polish MIDlet Launch"
-			description="Run J2ME Polish MIDlet"
+		<command
+			name="%launchShortcut.run.name"
+			description="%launchShortcut.run.desc"
 			categoryId="org.eclipse.debug.ui.category.run"
 			id="de.enough.mepose.ui.launchShortcut.run"/>
-		<command name="J2ME Polish MIDlet Debug Launch"
-			description="Debug J2ME Polish MIDlet"
+		<command
+			name="%launchShortcut.debug.name"
+			description="%launchShortcut.debug.desc"
 			categoryId="org.eclipse.debug.ui.category.debug"
 			id="de.enough.mepose.ui.launchShortcut.debug"/>
 	</extension>
@@ -133,10 +135,12 @@
  		point="org.eclipse.ui.bindings">
  		<key
       		sequence="M2+M3+X M"
+      		contextId="org.eclipse.ui.globalScope"
       		commandId="de.enough.mepose.ui.launchShortcut.run"
       		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
  		<key
       		sequence="M2+M3+D M"
+      		contextId="org.eclipse.ui.globalScope"
       		commandId="de.enough.mepose.ui.launchShortcut.debug"
       		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 	</extension>
