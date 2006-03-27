@@ -90,7 +90,8 @@ public class MIDletLaunchConfigurationTab
 //    config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, name);
 //  } 
 
-  public void createControl(final Composite parent){
+  public void createControl(final Composite parent)
+  {
     Composite top = new Composite(parent, SWT.NONE);
     
     top.setLayout(new GridLayout(3, false));
@@ -119,7 +120,7 @@ public class MIDletLaunchConfigurationTab
         {
           public void modifyText(ModifyEvent e)
           {
-            updateLaunchConfigurationDialog();
+            updateLaunchConfiguration();
           }
         });
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -138,7 +139,7 @@ public class MIDletLaunchConfigurationTab
             if (dir != null)
               {
                 text.setText(dir);
-                updateLaunchConfigurationDialog();
+                updateLaunchConfiguration();
               }
           }
         });
@@ -158,7 +159,7 @@ public class MIDletLaunchConfigurationTab
         {
           public void modifyText(ModifyEvent e)
           {
-            updateLaunchConfigurationDialog();
+            updateLaunchConfiguration();
           }
         });
     text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -224,23 +225,24 @@ public class MIDletLaunchConfigurationTab
         if(projectNameString == null) {
             projectNameString = getSelectedJavaProjectName();
         }
-        this.projectName.setText(projectNameString);
-        this.jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
-        this.polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
-        this.wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
+
+        projectName.setText(projectNameString);
+        jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
+        polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
+        wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
 
         Map attrMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, (Map) null);
 
         if (attrMap != null)
           {
-            this.hostName.setText((String) attrMap.get("hostname"));
-            this.port.setText((String) attrMap.get("port"));
+            hostName.setText((String) attrMap.get("hostname"));
+            port.setText((String) attrMap.get("port"));
           }
         else
           {
             // Use default values.
-            this.hostName.setText("localhost");
-            this.port.setText("8000");
+            hostName.setText("localhost");
+            port.setText("8000");
           }
       }
     catch (CoreException e)
@@ -250,18 +252,23 @@ public class MIDletLaunchConfigurationTab
       }
   }
 
-public void performApply(ILaunchConfigurationWorkingCopy configuration)
+  public void performApply(ILaunchConfigurationWorkingCopy configuration)
   {
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, this.projectName.getText());
     
     HashMap attrMap = new HashMap();
-    attrMap.put("hostname", this.hostName.getText());
-    attrMap.put("port", this.port.getText());
+    attrMap.put("hostname", hostName.getText());
+    attrMap.put("port", port.getText());
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, attrMap);
     
-    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, this.jadFile.getText());
-    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, this.polishHome.getText());
-    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, this.wtkHome.getText());
+    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, jadFile.getText());
+    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, polishHome.getText());
+    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, wtkHome.getText());
+  }
+
+  void updateLaunchConfiguration()
+  {
+    updateLaunchConfigurationDialog();
   }
 
   public String getName()
