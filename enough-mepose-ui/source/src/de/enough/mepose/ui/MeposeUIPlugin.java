@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -60,7 +59,7 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
         
         registerProjectListener();
 //        MeposePlugin.getDefault().getMeposeModelManager().addBuildListener(new BuildListenerConsoleWriter());
-	}
+    }
 
     
     
@@ -172,22 +171,22 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
      * 
      * @return the active workbench window
      */
-    // Copied from JDIDebugUIPlugin.
-    public static IWorkbenchWindow getActiveWorkbenchWindow()
-    {
-      return getDefault().getWorkbench().getActiveWorkbenchWindow();
-    } 
-    
-    // Copied from JDIDebugUIPlugin.
-    public static IWorkbenchPage getActivePage()
-    {
-      IWorkbenchWindow w = getActiveWorkbenchWindow();
-    
-      if (w != null)
-        {
-          return w.getActivePage();
-        }
-      
-      return null;
-    }
+//    // Copied from JDIDebugUIPlugin.
+//    public static IWorkbenchWindow getActiveWorkbenchWindow()
+//    {
+//      return getDefault().getWorkbench().getActiveWorkbenchWindow();
+//    } 
+//    
+//    // Copied from JDIDebugUIPlugin.
+//    public static IWorkbenchPage getActivePage()
+//    {
+//      IWorkbenchWindow w = getActiveWorkbenchWindow();
+//    
+//      if (w != null)
+//        {
+//          return w.getActivePage();
+//        }
+//      
+//      return null;
+//    }
 }
