@@ -22,14 +22,14 @@ public class MIDletLaunchConfigurationDelegate
     
   private static final int EMULATOR_STARTUP_TIME = 5000;
 
-public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
+  public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
     throws CoreException
   {
     boolean debugMode = "debug".equals(mode);
     
     String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
-    String workspace = configuration.getAttribute(MIDletLauncherConstants.WORKSPACE,"");
-    String jadFile = configuration.getAttribute(MIDletLauncherConstants.JAD_FILE,"");
+    String workspace = configuration.getAttribute(MIDletLauncherConstants.WORKSPACE, "");
+    String jadFile = configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "");
     // TODO: Truncate trailing '/' if present.
     String wtkPath = configuration.getAttribute(MIDletLauncherConstants.WTK_HOME,"");
     
@@ -53,12 +53,12 @@ public void launch(ILaunchConfiguration configuration, String mode, ILaunch laun
         commandLine= new String[] {
             wtkPath + "/bin/emulator",
             "-Xdescriptor:" + jadFile,
-            
         };
       }
 
     File workingDir = new File(workspace + File.separator + projectName);
     Process process = DebugPlugin.exec(commandLine, workingDir);
+
     if (! debugMode)
       {
         return;
@@ -75,6 +75,7 @@ public void launch(ILaunchConfiguration configuration, String mode, ILaunch laun
       {
         // Ignore exception here.
       }
+
     // ---------------------------------------------------------------------------------------------------------------
 
 //    DeviceDatabase deviceDB = new DeviceDatabase(new File("/home/mkoch/J2ME-Polish"));
