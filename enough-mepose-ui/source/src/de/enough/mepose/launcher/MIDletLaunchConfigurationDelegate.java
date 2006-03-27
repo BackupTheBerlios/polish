@@ -45,7 +45,7 @@ public class MIDletLaunchConfigurationDelegate
             wtkPath + "/bin/emulator",
             "-Xdebug",
             "-Xdescriptor:" + jadFile,
-            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + port
+            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + hostName + ":" + port
         };
       }
     else
