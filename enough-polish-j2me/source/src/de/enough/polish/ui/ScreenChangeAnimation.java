@@ -34,7 +34,50 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
- * <p>Animates two screens for a nice effect.</p>
+ * <p>Paints a transition two screens for a nice effect.</p>
+ * <p>Using a screen change animation is easy:
+ *    <br />
+ *    Use the <code>screen-change-animation</code> CSS attribute for specifying which
+ *    animation you would like to have. You can also finetune some animations. Note
+ *    that some animations have certain conditions like support of the MIDP 2.0 profile.
+ * <pre>
+ * screen-change-animation: left;
+ * left-screen-change-animation-speed: 5;
+ * </pre>
+ * </p>
+ * <p>You can easily implement your own screen change animations by following these
+ *    steps:
+ * </p>
+ * <ol>
+ * 	<li>Extend de.enough.polish.ui.ScreenChangeAnimation</li>
+ *  <li>Implement the animate() method for doing the animation, use the fields lastCanvasImage 
+ *      and nextCanvasImage for your manipulation</li>
+ *  <li>Implement the paint() method and call &quot;this.display.callSerially( this );&quot; 
+ *      at the end of the paint() method.</li>
+ *  <li>Override the show() method if you need to get parameters from the style.</li>
+ *  <li>In case you want to manipulate the RGB data, you also shoudl override the show() method 
+ *      for getting the RGB values once. Consider to override the keyPressed(), keyReleased() and
+ *      keyRepeated() methods as well. 
+ *  </li>
+ * </ol>
+ * <p>You can now use your animation by specifying the <code>screen-change-animation</code> CSS attribute 
+ *    accordingly:
+ * <pre>
+ * screen-change-animation: new com.company.ui.MyScreenChangeAnimation();
+ * </pre>
+ * </p>
+ * <p>You can also ease the usage by registering your animation in ${polish.home}/custom-css-attributes:
+ * <pre>
+ * &lt;attribute name=&quot;screen-change-animation&quot;&gt;
+ * 		&lt;mapping from=&quot;myanimation&quot; to=&quot;com.company.ui.MyScreenChangeAnimation()&quot; /&gt;
+ * &lt;/attribute&gt;
+ * </pre>
+ * </p>
+ * <p>Now your animation is easier to use:
+ * <pre>
+ * screen-change-animation: myanimation;
+ * </pre>
+ * </p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
@@ -42,6 +85,8 @@ import javax.microedition.lcdui.Image;
  *        27-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @see #show(Style, Display, int, int, Image, Image, AccessibleCanvas, Displayable)
+ * @see #animate()
  */
 public abstract class ScreenChangeAnimation
 //#if polish.midp2
@@ -68,6 +113,10 @@ public abstract class ScreenChangeAnimation
 	//#endif
 	protected Displayable nextDisplayable;
 
+	/**
+	 * Creates a new ScreenChangeAnimation.
+	 * All subclasses need to implement the default constructor.
+	 */
 	public ScreenChangeAnimation() {
 		// default constructor
 		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
@@ -75,6 +124,19 @@ public abstract class ScreenChangeAnimation
 		//#endif
 	}
 	
+	/**
+	 * Starts the animation.
+	 * Please note that an animation can be re-used for several screens.
+	 * 
+	 * @param style the associated style.
+	 * @param dsplay the display, which is used for setting this animation
+	 * @param width the screen's width
+	 * @param height the screen's height
+	 * @param lstScreenImage an image of the last screen
+	 * @param nxtScreenImage an image of the next screen
+	 * @param nxtCanvas the next screen that should be displayed when this animation finishes (as an AccessibleCanvas)
+	 * @param nxtDisplayable the next screen that should be displayed when this animation finishes (as a Displayable)
+	 */
 	protected void show( Style style, Display dsplay, final int width, final int height, Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) {
 		this.screenWidth = width;
 		this.screenHeight = height;
@@ -102,12 +164,23 @@ public abstract class ScreenChangeAnimation
 		//thread.start();
 	}
 	
-	
+	/**
+	 * Animates this animation.
+	 * 
+	 * @return true when the animation should continue, when false is returned the animation
+	 *         will be stopped and the next screen will be shown instead.
+	 */
 	protected abstract boolean animate();
 
 	
 	
 	//#if polish.hasPointerEvents
+	/**
+	 * Forwards pointer pressed events to the next screen.
+	 * 
+	 * @param x the horizontal coordinate of the clicked pixel
+	 * @param y the vertical coordinate of the clicked pixel
+	 */
 	public void pointerPressed( int x, int y ) {
 		this.nextCanvas.pointerPressed( x, y );
 		Graphics g = this.nextCanvasImage.getGraphics();
@@ -115,30 +188,67 @@ public abstract class ScreenChangeAnimation
 	}
 	//#endif
 	
+	/**
+	 * Notifies this animation that it will be shown shortly.
+	 * This is ignored by the default implementation.
+	 */
 	public void showNotify() {
 		// ignore
 	}
 	
+	/**
+	 * Notifies this animation that it will be hidden shortly.
+	 * This is ignored by the default implementation.
+	 */
 	public void hideNotify() {
 		// ignore
 	}
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+	/**
+	 * Notifies this animation that the screen space has been changed.
+	 * This is ignored by the default implementation.
+	 */
 	public void sizeChanged( int width, int height ) {
 		// ignore
 	}
 	//#endif
 
+	/**
+	 * Handles key repeat events.
+	 * The default implementation forwards this event to the next screen
+	 * and then updates the nextCanvasImage field.
+	 * 
+	 * @param keyCode the code of the key
+	 * @see #nextCanvasImage
+	 */
 	public void keyRepeated( int keyCode ) {
-		keyPressed( keyCode );
+		this.nextCanvas.keyRepeated( keyCode );
+		Graphics g = this.nextCanvasImage.getGraphics();
+		this.nextCanvas.paint( g );
 	}
 
+	/**
+	 * Handles key released events.
+	 * The default implementation forwards this event to the next screen
+	 * and then updates the nextCanvasImage field.
+	 * 
+	 * @param keyCode the code of the key
+	 * @see #nextCanvasImage
+	 */
 	public void keyReleased( int keyCode ) {
-		// ignore
+		this.nextCanvas.keyReleased( keyCode );
+		Graphics g = this.nextCanvasImage.getGraphics();
+		this.nextCanvas.paint( g );
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
+	/**
+	 * Handles key pressed events.
+	 * The default implementation forwards this event to the next screen
+	 * and then updates the nextCanvasImage field.
+	 * 
+	 * @param keyCode the code of the key
+	 * @see #nextCanvasImage
 	 */
 	public void keyPressed( int keyCode ) {
 		this.nextCanvas.keyPressed( keyCode );
@@ -147,7 +257,9 @@ public abstract class ScreenChangeAnimation
 		//this.nextScreenImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * Runs this animation - subclasses need to ensure to call this.display.callSerially( this ); at the end of the paint method.
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
