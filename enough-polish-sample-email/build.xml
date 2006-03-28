@@ -63,7 +63,9 @@
 			<midlet class="de.enough.polish.sample.email.EmailMidlet" name="MobileMail"/>
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
-				<variable name="update-url" value="http://www.enough.de/update"/>
+				<variable name="polish.TextField.useDirectInput" value="true" />
+				<variable name="polish.Container.allowCycling" value="false" />
+				<variable name="polish.MenuBar.useExtendedMenuBar" value="false" />
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator useDefaultPackage="true" name="ProGuard" unless="test">

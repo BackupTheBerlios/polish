@@ -25,6 +25,8 @@
  */
 package de.enough.polish.sample.email;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -37,6 +39,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.ui.TreeItem;
+import de.enough.polish.ui.UiAccess;
 
 /**
  * <p>Example for using the TreeItem.</p>
@@ -52,6 +55,16 @@ public class EmailMidlet
 extends MIDlet
 implements CommandListener, ItemStateListener
 {
+	private final Command createNewCommand = new Command("New", Command.SCREEN, 1 );
+	private final Command createNewMailCommand = new Command( "E-Mail", Command.SCREEN, 1 );
+	private final Command createNewIMCommand = new Command( "Instant Message", Command.SCREEN, 2 );
+	private final Command exitCommand = new Command( "Exit", Command.EXIT, 10 );
+	private final Command okCommand = new Command( "OK", Command.OK, 1 );
+	private final Command abortCommand = new Command( "Cancel", Command.BACK, 2 );
+
+	private Form mainScreen;
+	private CreateMessageForm createMessageForm;
+	private Display display;
 
 	/**
 	 * Creates a new midlet.
@@ -115,10 +128,15 @@ implements CommandListener, ItemStateListener
 		form.append( tree );
 		form.setCommandListener( this );
 		form.setItemStateListener( this );
-		form.addCommand( new Command("Exit", Command.SCREEN, 1));
+		form.addCommand( this.createNewCommand );
+		form.addCommand( this.exitCommand );
+		UiAccess.addSubCommand( this.createNewMailCommand, this.createNewCommand, form );
+		UiAccess.addSubCommand( this.createNewIMCommand, this.createNewCommand, form );
 		
-		Display display = Display.getDisplay( this );
-		display.setCurrent( form );
+		this.mainScreen = form;
+		
+		this.display = Display.getDisplay( this );
+		this.display.setCurrent( form );
 	}
 
 	/* (non-Javadoc)
@@ -135,14 +153,48 @@ implements CommandListener, ItemStateListener
 		// nothing to clean up
 	}
 
-	public void commandAction(Command arg0, Displayable arg1) {
-		notifyDestroyed();
+	public void commandAction(Command cmd, Displayable disp) {
+		//#debug
+		System.out.println("commandAction with cmd=" + cmd.getLabel() + ", screen=" + disp );
+		if ( disp == this.mainScreen ) {
+			if (cmd == this.exitCommand ) {
+				notifyDestroyed();				
+			} else if (cmd == this.createNewMailCommand) {
+				//#style createMessageForm
+				CreateMessageForm form = new CreateMessageForm( "Create E-Mail");
+				form.setCommandListener( this );
+				form.addCommand( this.okCommand );
+				form.addCommand( this.abortCommand );
+				this.createMessageForm = form;
+				this.display.setCurrent( form );
+			} else if (cmd == this.createNewIMCommand) {
+				//#style createMessageForm
+				CreateMessageForm form = new CreateMessageForm( "Create Instant Message");
+				form.setCommandListener( this );
+				form.addCommand( this.okCommand );
+				form.addCommand( this.abortCommand );
+				this.createMessageForm = form;
+				this.display.setCurrent( form );
+			}
+		} else if (disp == this.createMessageForm ){
+			if (cmd == this.okCommand) {
+				//#debug
+				System.out.println("creating message for " + this.createMessageForm.getReceiver() + " from " + this.createMessageForm.getSender() );
+				Alert alert = new Alert( "Creating New Message", 
+						"Receiver: " + this.createMessageForm.getReceiver() 
+						+ "\nSender: " + this.createMessageForm.getSender(), null, AlertType.INFO );
+				this.createMessageForm = null;
+				this.display.setCurrent( alert, this.mainScreen );
+			} else {
+				//#debug
+				System.out.println("aborting message creation.");
+				this.display.setCurrent( this.mainScreen );
+			}
+		}
 	}
 
 	public void itemStateChanged(Item item) {
 		System.out.println("ItemStateChanged " + item);
-		// TODO enough implement itemStateChanged
-		
 	}
 
 }

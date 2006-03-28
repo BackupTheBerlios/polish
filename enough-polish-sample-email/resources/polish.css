@@ -43,8 +43,6 @@ colors {
 		color: focusedBgColor;
 	}
 	layout: horizontal-expand | horizontal-center | top;
-	columns: 2;
-	columns-width: equal;
 }
 
 .mailTree {
@@ -90,6 +88,57 @@ colors {
 	}
 }
 
+.createMessageForm extends .mailForm {
+}
+
+label {
+	font-size: small;
+	margin: 2;
+	margin-left: 5;
+	layout: left | newline-after;
+}
+
+.addressInput {
+	padding: 3;
+	padding-left: 5;
+	background-color: silver;
+	include-label: true;
+	focused-style: .addressInputFocused;
+	choicetextfield-choicestyle: .addressChoice;
+	choicetextfield-containerstyle: .addressChoicesContainer;
+	layout: left | expand;
+}
+
+.addressInputFocused {
+	padding: 1;
+	padding-left: 3;
+	background-color: white;
+	border-color: black;
+	border-width: 2;
+	layout: left | expand;	
+}
+
+.addressChoice {
+	padding: 2;
+	font-size: small;
+	font-style: plain;
+	font-color: gray;
+	focused-style: .addressChoiceFocused;
+	layout: left | expand;
+}
+
+.addressChoiceFocused {
+	padding: 2;
+	font-size: small;
+	font-style: plain;
+	font-color: red;
+	layout: left | expand;
+}
+
+.addressChoicesContainer {
+	background-color: argb( 210, 255, 255, 255 );
+	layout: left | expand;
+}
 
 /**
   * The focused style is a predefined style which
