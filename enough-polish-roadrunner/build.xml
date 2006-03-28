@@ -170,7 +170,8 @@
 					arguments="cvfM;;${polish.jarPath};;-C;;${polish.packageDir};;."
 				/>
 				-->
-				<finalizer name="antcall" target="rename" if="polish.group.Series60E2FP3" />
+				<finalizer name="antcall" target="rename" unless="test" if="polish.group.Series60E2FP3" />
+				<finalizer name="antcall" target="hello" unless="test" />
 			</build>
 			<!-- launch emulator		-->
 			<emulator if="test" >
@@ -180,6 +181,11 @@
 		</j2mepolish>
 	</target>
 	
+	<target 
+		name="hello"
+	>
+		<echo message="hello ${polish.identifier}" />
+	</target>
 	
 	
 	<target 

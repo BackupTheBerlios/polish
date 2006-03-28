@@ -168,13 +168,15 @@ implements CommandListener
 			this.display.setCurrent( this.mainMenu );
 		} else if (cmd == this.okCmd) {
 			if (screen == this.settingsForm) {
-				// read settings:
-				ChoiceGroup group = (ChoiceGroup) ((Form) screen).get( 1 );
-				int selectedIndex = group.getSelectedIndex();
-				if (selectedIndex != this.lastSelectedLocaleId) {
-					loadTranslations( this.localesFileNames[ selectedIndex ] );
-					this.lastSelectedLocaleId = selectedIndex;
-				}
+				//#if polish.i18n.useDynamicTranslations
+					// read locale settings:
+					ChoiceGroup group = (ChoiceGroup) ((Form) screen).get( 1 );
+					int selectedIndex = group.getSelectedIndex();
+					if (selectedIndex != this.lastSelectedLocaleId) {
+						loadTranslations( this.localesFileNames[ selectedIndex ] );
+						this.lastSelectedLocaleId = selectedIndex;
+					}
+				//#endif
 			}
 			this.display.setCurrent( this.mainMenu );
 		} else if (cmd == this.gameScreen.replayCommand) {
