@@ -113,12 +113,14 @@ public class DeviceManager {
 		
 		HashMap devicesMap = this.devicesByIdentifier;
 		List xmlList = document.getRootElement().getChildren();
+		String lastKnownWorkingDevice = null;
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
 			String identifierStr = definition.getChildTextTrim( "identifier");
 			if (identifierStr == null) {
-				throw new InvalidComponentException("Unable to initialise device. Every device needs to define either its [identifier] or its [name] and [vendor]. Check your [devices.xml].");
+				throw new InvalidComponentException("Unable to initialise device. Every device needs to define its <identifier> element. Check your \"devices.xml\" file. The last known correct definition was " + lastKnownWorkingDevice + ".");
 			}
+			lastKnownWorkingDevice = identifierStr;
 			// one xml definition can contain several device-definitions,
 			// e.g. <identifier>Nokia/3650, Nokia/5550</identifier>
 			String[] identifiers = StringUtil.splitAndTrim(identifierStr,',');
