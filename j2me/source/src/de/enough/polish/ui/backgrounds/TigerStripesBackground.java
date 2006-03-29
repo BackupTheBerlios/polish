@@ -7,7 +7,11 @@ import java.util.Random;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
-
+/**
+ * 
+ * @author Tim Muders
+ *
+ */
 public class TigerStripesBackground extends Background {
 	
 	

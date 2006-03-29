@@ -67,6 +67,7 @@ public final class ImageUtil {
 		}
 	}
 
+	
 	/**
 	 * Scales the rgb data and stores it into the given scaledRgbData array and adds an alpha semi transparency value at the same time.
 	 * 
@@ -119,6 +120,55 @@ public final class ImageUtil {
 		scale( rgbData, newWidth,newHeight, oldWidth, oldHeight, newrgbData);
 		return newrgbData;
 	}
+	
+	/**
+	 * @author Tim Muders
+	 * @param argbArray
+	 * @param topStrechFactor
+	 * @param bottomStrechFactor
+	 */
+	public static final void stretchVertical( int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth ){
+		int heigthTop = (heigth * topStrechFactor)/100;//  /100
+		int heightBottom = (heigth * bottomStrechFactor)/100;//  /100
+		int[] copyArgbArray = argbArray;
+		int procentualScalingHeight = width;
+		if(heigthTop < heightBottom){
+			argbArray = new int[heightBottom * width];
+			if((heightBottom - heigthTop)>1)procentualScalingHeight = width /(heightBottom - heigthTop);
+		}
+		else{
+			argbArray = new int[heigthTop * width];
+			if((heigthTop - heightBottom)>1)procentualScalingHeight = width / (heigthTop - heightBottom);
+		}
+		int column = 0,row = 1,columnWidth = heigthTop;
+		int length = argbArray.length;
+		int oldLength = copyArgbArray.length;
+		for(int i = 0; i < length; i++){
+			column = (column + 1) % columnWidth;
+			if(column == 0){
+				row = row + 1 % procentualScalingHeight;
+				if(row == 0)columnWidth+=procentualScalingHeight;row++;
+			}
+			int verticalShrinkFactorPercent = 100;
+			int horizontalScaleFactorPercent = ((columnWidth*100) / width);
+			int targetArrayIndex = ((column*100)/horizontalScaleFactorPercent)+(width * ((row*100)/verticalShrinkFactorPercent));
+			if(targetArrayIndex >= oldLength)targetArrayIndex = oldLength-1;
+			if(targetArrayIndex < 0)targetArrayIndex = 0;
+			argbArray[i] = copyArgbArray[targetArrayIndex];
+		}
+	} 
+	
+	/**
+	 * @author Tim Muders
+	 * @param argbArray
+	 * @param leftStretchFactor
+	 * @param rightStretchFactor
+	 */
+	public static void stretchHorizontal( int[] argbArray, int leftStretchFactor, int rightStretchFactor ){
+		
+	}
+
+	
 	/**
 	 * Can scale the images unproportional in every new size you want 
 	 * bigger or smaller.
