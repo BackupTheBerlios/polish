@@ -66,9 +66,7 @@ public class HorizontalChoiceView extends ContainerView {
 	
 	private final static int POSITION_BOTH_SIDES = 0; 
 	private final static int POSITION_RIGHT = 1; 
-	private final static int POSITION_LEFT = 2;
-	private static final int SCROLL_SMOOTH = 1; 
-	
+	private final static int POSITION_LEFT = 2; 
 	private int arrowColor;
 	//#ifdef polish.css.horizontalview-left-arrow
 		private Image leftArrow;
@@ -101,10 +99,6 @@ public class HorizontalChoiceView extends ContainerView {
 	private Background parentBackground;
 	//private boolean isInitialized;
 	private int xOffset;
-	private int targetXOffset;
-	//#if polish.css.horizontalview-scroll-mode
-		private boolean scrollSmooth = true;	
-	//#endif
 
 	/**
 	 * Creates a new view
@@ -112,33 +106,6 @@ public class HorizontalChoiceView extends ContainerView {
 	public HorizontalChoiceView() {
 		super();
 	}
-	
-	/**
-	 * Animates this view.
-	 * 
-	 * @return true when the view was actually animated.
-	 */
-	public boolean animate() {
-		//#if polish.css.horizontalview-scroll-mode
-			if (this.scrollSmooth && this.targetXOffset != this.xOffset) {
-		//#else
-			//# if (this.targetXOffset != this.yOffset) {	
-		//#endif
-			int speed = (this.targetXOffset - this.xOffset) / 3;
-			speed += this.targetXOffset > this.xOffset ? 1 : -1;
-			this.xOffset += speed;
-			if ( speed > 0 && this.xOffset > this.targetXOffset) {
-				this.xOffset = this.targetXOffset;
-			} else if (speed < 0 && this.yOffset < this.targetXOffset) {
-				this.xOffset = this.targetXOffset;
-			}
-			// # debug
-			//System.out.println("animate(): adjusting xOffset to " + this.xOffset );
-			return true;
-		}
-		return false;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
@@ -237,26 +204,9 @@ public class HorizontalChoiceView extends ContainerView {
 			completeWidth += itemWidth + this.paddingHorizontal;
 			if ( i == selectedItemIndex) {
 				if ( startX + this.xOffset < 0 ) {
-					//#ifdef polish.css.horizontalview-scroll-mode
-						if (this.scrollSmooth) {
-					//#endif
-							this.targetXOffset = -startX;
-					//#ifdef polish.css.horizontalview-scroll-mode
-						} else {
-							this.xOffset = -startX;
-						}
-					//#endif
+					this.xOffset = -startX; 
 				} else if ( completeWidth + this.xOffset > lineWidth ) {
-					//#ifdef polish.css.horizontalview-scroll-mode
-						if (this.scrollSmooth) {
-					//#endif
-							this.targetXOffset = lineWidth - completeWidth;
-					//#ifdef polish.css.horizontalview-scroll-mode
-						} else {
-							this.xOffset = lineWidth - completeWidth;
-							this.xOffset = -startX;
-						}
-					//#endif
+					this.xOffset = lineWidth - completeWidth;
 				}
 			}
 		}
@@ -298,7 +248,7 @@ public class HorizontalChoiceView extends ContainerView {
 
 	protected void setStyle(Style style) {
 		//#ifdef polish.css.horizontalview-expand-background
-			Boolean expandBackgroundBool = style.getBooleanProperty("exclusiveview-expand-background");
+			Boolean expandBackgroundBool = style.getBooleanProperty("horizontalview-expand-background");
 			if (expandBackgroundBool != null) {
 				this.expandBackground = expandBackgroundBool.booleanValue(); 
 			}
@@ -308,7 +258,7 @@ public class HorizontalChoiceView extends ContainerView {
 		//#endif
 		super.setStyle(style);
 		//#ifdef polish.css.horizontalview-left-arrow
-			String leftArrowUrl = style.getProperty("exclusiveview-left-arrow");
+			String leftArrowUrl = style.getProperty("horizontalview-left-arrow");
 			if (leftArrowUrl != null) {
 				try {
 					this.leftArrow = StyleSheet.getImage( leftArrowUrl, this, false );
@@ -319,7 +269,7 @@ public class HorizontalChoiceView extends ContainerView {
 			}
 		//#endif
 		//#ifdef polish.css.horizontalview-right-arrow
-			String rightArrowUrl = style.getProperty("exclusiveview-right-arrow");
+			String rightArrowUrl = style.getProperty("horizontalview-right-arrow");
 			if (rightArrowUrl != null) {
 				try {
 					this.rightArrow = StyleSheet.getImage( rightArrowUrl, this, false );
@@ -330,18 +280,18 @@ public class HorizontalChoiceView extends ContainerView {
 			}
 		//#endif
 		//#ifdef polish.css.horizontalview-arrow-color
-			Integer colorInt = style.getIntProperty("exclusiveview-arrow-color");
+			Integer colorInt = style.getIntProperty("horizontalview-arrow-color");
 			if ( colorInt != null ) {
 				this.arrowColor = colorInt.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.horizontalview-arrow-position
-			Integer positionInt = style.getIntProperty("exclusiveview-arrow-position");
+			Integer positionInt = style.getIntProperty("horizontalview-arrow-position");
 			if ( positionInt != null ) {
 				this.arrowPosition = positionInt.intValue();
 			}
 			//#ifdef polish.css.horizontalview-arrow-padding
-				Integer arrowPaddingInt = style.getIntProperty("exclusiveview-arrow-padding");
+				Integer arrowPaddingInt = style.getIntProperty("horizontalview-arrow-padding");
 				if (arrowPaddingInt != null) {
 					this.arrowPadding = arrowPaddingInt.intValue();
 //				} else {
@@ -350,15 +300,9 @@ public class HorizontalChoiceView extends ContainerView {
 			//#endif
 		//#endif
 		//#ifdef polish.css.horizontalview-roundtrip
-			Boolean allowRoundTripBool = style.getBooleanProperty("exclusiveview-roundtrip");
+			Boolean allowRoundTripBool = style.getBooleanProperty("horizontalview-roundtrip");
 			if (allowRoundTripBool != null) {
 				this.allowRoundTrip = allowRoundTripBool.booleanValue();
-			}
-		//#endif
-		//#ifdef polish.css.horizontalview-scroll-mode
-			Integer scollModeInt = style.getIntProperty("horizontalview-scroll-mode");
-			if (scollModeInt != null) {
-				this.scrollSmooth = (scollModeInt.intValue() == SCROLL_SMOOTH);
 			}
 		//#endif
 
@@ -372,7 +316,7 @@ public class HorizontalChoiceView extends ContainerView {
 			Graphics g) 
 	{
 		//#debug
-		System.out.println("ExclusiveView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
+		System.out.println("HorizontalView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 		this.xStart = x;
 		int modifiedX = x;
 		//#ifdef polish.css.horizontalview-expand-background

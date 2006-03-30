@@ -668,6 +668,7 @@ public class TextField extends StringItem
 	// this is outside of the tmp.directInput block, so that it can be referenced from the UiAccess class
 	int inputMode; // the current input mode		
 	//#if tmp.directInput
+		private boolean isKeyDown;
 		//#ifdef polish.TextField.InputTimeout:defined
 			//#= private static final int INPUT_TIMEOUT = ${polish.TextField.InputTimeout};  
 		//#else
@@ -778,6 +779,9 @@ public class TextField extends StringItem
 	//#endif
 	//#if polish.blackberry
 		private PolishEditField editField;
+		//#if polish.Bugs.ItemStateListenerCalledTooEarly
+			private long lastFieldChangedEvent;
+		//#endif
 	//#elif !tmp.forceDirectInput
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
@@ -785,6 +789,8 @@ public class TextField extends StringItem
 	private boolean isUneditable;
 
 	private boolean doSetCaretPosition;
+
+
 		
 
 
@@ -895,7 +901,17 @@ public class TextField extends StringItem
 	 */
 	public String getString()
 	{
-		if (this.isPassword) {
+		//#if tmp.directInput
+		if (this.caretChar != this.editingCaretChar) {
+			insertCharacter();
+		}
+		//#endif
+		//#if polish.blackberry
+			if ( this.editField != null ) {
+				return this.editField.getText();
+			}
+		//#endif
+		if ( this.isPassword ) {
 			return this.passwordText;
 		} else {
 			if (this.text == null) {
@@ -924,12 +940,12 @@ public class TextField extends StringItem
 			}
 		//#endif
 		//#if polish.blackberry
-		if (this.editField != null && text != this.text ) {
-			Object bbLock = UiApplication.getEventLock();
-			synchronized (bbLock) {
-				this.editField.setText(text);
+			if (this.editField != null && text != this.text ) {
+				Object bbLock = UiApplication.getEventLock();
+				synchronized (bbLock) {
+					this.editField.setText(text);
+				}
 			}
-		}
 		//#endif
 		if (this.isPassword) {
 			this.passwordText = text;
@@ -2145,10 +2161,19 @@ public class TextField extends StringItem
 			return false;
 		}
 		long currentTime = System.currentTimeMillis();
-		//#ifdef tmp.directInput
+		//#if polish.blackberry && polish.Bugs.ItemStateListenerCalledTooEarly
+			if (this.lastFieldChangedEvent != 0 && currentTime - this.lastFieldChangedEvent > 500) {
+				this.lastFieldChangedEvent = 0;
+				setString( this.editField.getText() );
+				if (getScreen() instanceof Form ) {
+					notifyStateChanged();
+				}
+			}
+		//#endif
+		//#if tmp.directInput && !polish.blackberry
 			synchronized ( this.lock ) {
 				if (this.caretChar != this.editingCaretChar) {
-					if ( (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
+					if ( !this.isKeyDown && (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
 						insertCharacter();
 					}
 				}
@@ -2177,15 +2202,23 @@ public class TextField extends StringItem
 			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
 					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
-					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
+					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) 
+			{
 				return false;
 			}
+		//#elif !polish.blackberry
+			this.isKeyDown = true;
 		//#endif
 		if (gameAction == Canvas.FIRE
 				&& keyCode != Canvas.KEY_NUM5
 				&& this.defaultCommand != null 
 				&& this.itemCommandListener != null) 
 		{
+			//#ifdef tmp.directInput
+				if (this.caretChar != this.editingCaretChar) {
+					insertCharacter();
+				}
+			//#endif
 			this.itemCommandListener.commandAction(this.defaultCommand, this);
 			return true;
 		}
@@ -2571,6 +2604,15 @@ public class TextField extends StringItem
 	}
 	//#endif
 
+	//#if !polish.blackberry && tmp.directInput
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		this.isKeyDown = false;
+		return super.handleKeyReleased( keyCode, gameAction );
+	}
+	//#endif
 	
 	
 	//#if polish.hasPointerEvents && !tmp.forceDirectInput
@@ -2822,10 +2864,14 @@ public class TextField extends StringItem
 	//#if polish.blackberry
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
-			setString( this.editField.getText() );
-			if (getScreen() instanceof Form ) {
-				notifyStateChanged();
-			}
+			//#if polish.Bugs.ItemStateListenerCalledTooEarly
+				this.lastFieldChangedEvent = System.currentTimeMillis();
+			//#else
+				setString( this.editField.getText() );
+				if (getScreen() instanceof Form ) {
+					notifyStateChanged();
+				}
+			//#endif
 		}
 	}
 	//#endif
@@ -2840,7 +2886,9 @@ public class TextField extends StringItem
 		this.inputMode = inputMode;
 		//#if tmp.directInput
 			//#if polish.TextField.showInputInfo != false
-				updateInfo();
+				if (this.isFocused) {
+					updateInfo();
+				}
 			//#endif
 			if (this.caretChar != this.editingCaretChar) {
 				insertCharacter();

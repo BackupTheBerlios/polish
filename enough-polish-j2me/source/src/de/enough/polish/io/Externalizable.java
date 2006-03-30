@@ -64,5 +64,26 @@ public interface Externalizable extends Serializable {
 	public void read( DataInputStream in )
 	throws IOException;
 	
+	/**
+	 * Retrieves the unique serial ID for this class.
+	 * The serial ID needs to be unique because the ID is stored instead of the classname for the serialization.
+	 * Goals:
+	 * - ensure integrity between different versions of Serializable classes
+	 * - use (relatively) short serial IDs instead of classnames for identifying classes
+	 *  
+	 * @return the serial ID.
+	 * @see Serializer#calculateSerialVersionId( Serializable )
+	 * @see Serializer#getClassName( long serialId )
+	 */
+	//public long getSerialVersionId();
+	/*
+	 * Problems with this approach:
+	 * 1. we don't want to re-calculate the serial ID each time we serialize an Externalizable class, this can happen with this method,
+	 *    especially when we have a Serilizer.calculateSerialVersionId. Ideally we would have a static method.
+	 * 2. We need to ensure integrity of serial ID and its classname (classname needs to be mapped)
+	 * 3. Serial ID is required for ensuring the integrity between different versions of the same class - this will be difficult
+	 *    to implement during runtime (however, when the Externalizable is implemented, this should not really be an issue)
+	 */
+	
 
 }

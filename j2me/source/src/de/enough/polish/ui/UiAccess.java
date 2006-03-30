@@ -26,6 +26,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
 
 /**
  * <p>Allows to access J2ME Polish specific features in a standard compliant way.</p>
@@ -346,6 +347,38 @@ public final class UiAccess {
 		item.defocus(style);
 	}
 	//#endif
+	
+	/**
+	 * Sets the focus to the given index of the specified list.
+	 * When the list is not shown, it will be shown in this call.
+	 * When the J2ME Polish GUI is not used, only the list will be shown.
+	 * 
+	 * @param display the display 
+	 * @param list the list
+	 * @param index the index
+	 */
+	public static void setCurrentListIndex( Display display, javax.microedition.lcdui.List list, int index ) {
+		//#if !polish.blackberry && polish.usePolishGui
+			display.setCurrent( list );
+		//#endif
+	}
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets the focus to the given index of the specified list.
+	 * When the list is not shown, it will be shown in this call.
+	 * When the J2ME Polish GUI is not used, only the list will be shown.
+	 * 
+	 * @param display the display 
+	 * @param list the list
+	 * @param index the index
+	 */
+	public static void setCurrentListIndex( Display display, List list, int index ) {
+		Item item = list.getItem( index );
+		item.show( display );
+	}
+	//#endif
+
 	
 	/**
 	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.

@@ -61,7 +61,8 @@ public class MenuBar extends Item {
 	//#endif
 	//#if polish.blackberry && (polish.BlackBerry.useStandardMenuBar != true)
 		//#define tmp.useInvisibleMenuBar
-		private Command cancelCommand;
+		private Command hideCommand;
+		private Command positiveCommand;
 	//#endif
 	private final ArrayList commandsList;
 	private final Container commandsContainer;
@@ -132,8 +133,8 @@ public class MenuBar extends Item {
 		int type = cmd.getCommandType();
 		int priority = cmd.getPriority();
 		//#if tmp.useInvisibleMenuBar
-			if ( this.cancelCommand == null ) {
-				// add cancel command:
+			if ( this.hideCommand == null )	{
+				// add hide command:
 				//#ifdef polish.i18n.useDynamicTranslations
 					String text =  Locale.get("polish.command.hide");
 				//#elifdef polish.command.hide:defined
@@ -141,10 +142,10 @@ public class MenuBar extends Item {
 				//#else
 					//# String text =  "Hide";
 				//#endif
-				this.cancelCommand = new Command( text, Command.CANCEL, 2000 );
-				addCommand( this.cancelCommand );
+				this.hideCommand = new Command( text, Command.CANCEL, 2000 );
+				addCommand( this.hideCommand );
 			}
-			if ( (cmd != this.cancelCommand) && 
+			if ( (cmd != this.hideCommand) && 
 					(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
 			{
 				if ( this.singleRightCommand == null || this.singleRightCommand.getPriority() > priority ) {
@@ -194,6 +195,17 @@ public class MenuBar extends Item {
 				return;
 			} 
 		//#endif
+			
+		//#if tmp.useInvisibleMenuBar
+			if (this.positiveCommand == null 
+					&& type != Command.BACK
+					&& type != Command.CANCEL
+					&& type != Command.EXIT) 
+			{
+				this.positiveCommand = cmd;
+			}
+		//#endif
+	
 		//#style menuitem, menu, default
 		CommandItem item = new CommandItem( cmd, this );
 		if ( this.commandsList.size() == 0 ) {
@@ -234,6 +246,11 @@ public class MenuBar extends Item {
 	public void removeCommand(Command cmd) {
 		//#debug
 		System.out.println("removing command " + cmd.getLabel() + " (" + cmd + ")");
+		//#if tmp.useInvisibleMenuBar
+			if (cmd == this.positiveCommand) {
+				this.positiveCommand = null;
+			}
+		//#endif
 		// 1.case: cmd == this.singleLeftCommand
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
@@ -546,8 +563,9 @@ public class MenuBar extends Item {
 			if (this.isOpened) {
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				//#if tmp.useInvisibleMenuBar
-					if (commandItem.command == this.cancelCommand ) {
+					if (commandItem.command == this.hideCommand ) {
 						setOpen( false );
+						return true;
 					}
 					//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
 				//#endif
@@ -561,6 +579,15 @@ public class MenuBar extends Item {
 			} else if (this.singleLeftCommand != null) {
 				this.screen.callCommandListener(this.singleLeftCommand);
 				return true;
+			//#if tmp.useInvisibleMenuBar
+			} else if ( this.positiveCommand != null 
+					&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3)
+					|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
+			{
+				// invoke positive command:
+				this.screen.callCommandListener(this.positiveCommand);
+				return true;
+			//#endif
 			} else if (this.commandsList.size() > 0) {
 				setOpen( true );
 				return true;
@@ -578,6 +605,13 @@ public class MenuBar extends Item {
 			if (keyCode != 0) {
 				gameAction = this.screen.getGameAction(keyCode);
 			}
+			//#if tmp.useInvisibleMenuBar
+				// handle hide command specifically:
+				if ( ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
+					setOpen( false );
+					return true;
+				}
+			//#endif
 //			if (gameAction == Canvas.FIRE) {
 //				int focusedIndex = this.commandsContainer.focusedIndex;
 //				Command command = (Command) this.commandsList.get(focusedIndex);

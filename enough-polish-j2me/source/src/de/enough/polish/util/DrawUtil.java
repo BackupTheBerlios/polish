@@ -79,6 +79,23 @@ public final class DrawUtil {
 	 * @return an int array with the gradient.
 	 */
 	public static final int[] getGradient( int startColor, int endColor, int steps ) {
+		int[] gradient = new int[ steps ];
+		getGradient(startColor, endColor, gradient);
+		return gradient;
+
+	}
+
+	/**
+	 * Creates a gradient of colors.
+	 * This method is highly optimized and only uses bit-shifting and additions (no multitplication nor devision).
+	 * 
+	 * @param startColor the first color
+	 * @param endColor the last color
+	 * @param gradient the array in which the gradient colors are stored.  
+	 */
+	public static void getGradient(int startColor, int endColor, int[] gradient) {
+		int steps = gradient.length;
+		
 		int startAlpha = startColor >>> 24;
 		int startRed = (startColor >>> 16) & 0x00FF;
 		int startGreen = (startColor >>> 8) & 0x0000FF;
@@ -102,7 +119,6 @@ public final class DrawUtil {
 		startGreen <<= 8;
 		startBlue <<= 8;
 		
-		int[] gradient = new int[ steps ];
 		gradient[0] = startColor;
 		for (int i = 1; i < steps; i++) {
 			startAlpha += stepAlpha;
@@ -115,8 +131,6 @@ public final class DrawUtil {
 				| ( startGreen & 0x0000FF00)
 				| ( startBlue >>> 8);
 				//| (( startBlue >>> 8) & 0x000000FF);
-		}
-		return gradient;
-
+		}	
 	}
 }

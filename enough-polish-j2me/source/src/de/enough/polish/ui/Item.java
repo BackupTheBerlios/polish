@@ -1501,10 +1501,23 @@ public abstract class Item extends Object
 		int originalContentY = contY;
 		
 		// paint before element:
-		//#if polish.useBeforeStyle || polish.useAfterStyle
+		//#if polish.useBeforeStyle || polish.useAfterStyle || polish.css.min-height  || polish.css.max-height
 			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
 			boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
 			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
+		//#endif
+		//#if polish.css.min-height
+			if (this.minimumHeight != 0) {
+				int minHeight = this.minimumHeight - ( 2 * this.borderWidth + this.marginTop + this.marginBottom + this.paddingTop + this.paddingBottom);
+				if ( isVerticalCenter ) {
+//					System.out.println("vertical: adjusting contY by " + ((this.minimumHeight - this.contentHeight) / 2)
+//							+ ", contentHeight=" + this.contentHeight + ", minHeight=" + this.minimumHeight );
+					contY += (minHeight - this.contentHeight) / 2; 
+				} else if ( isBottom ) {
+					//System.out.println("bottom: adjusting contY by " + (this.minimumHeight - this.contentHeight) );
+					contY += (minHeight - this.contentHeight);
+				}
+			}
 		//#endif
 		//#ifdef polish.useBeforeStyle
 			if (this.beforeImage != null) {
@@ -1694,6 +1707,14 @@ public abstract class Item extends Object
 		} else if (this.itemWidth > lineWidth) {
 			this.itemWidth = lineWidth;
 		}
+		if (cHeight + noneContentHeight < this.minimumHeight) {
+			cHeight = this.minimumHeight - noneContentHeight;
+		}
+		//#if polish.css.max-height
+			if (this.maximumHeight != 0 && cHeight + noneContentHeight > this.maximumHeight) {
+				cHeight = this.maximumHeight - noneContentHeight;
+			}
+		//#endif
 		this.itemHeight = cHeight + noneContentHeight;
 		if (this.useSingleRow) {
 			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;

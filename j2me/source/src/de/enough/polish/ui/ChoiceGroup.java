@@ -1407,8 +1407,6 @@ implements Choice
 				return handleKeyPressed( -1, Canvas.FIRE ) || processed;
 			}
 			//# return processed;
-			super.handlePointerPressed(x, y);
-			//# return handleKeyPressed( -1, Canvas.FIRE ); 
 		//#else
 			if (!this.isPopup) {
 				super.handlePointerPressed(x, y);

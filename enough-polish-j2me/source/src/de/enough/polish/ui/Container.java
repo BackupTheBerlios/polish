@@ -461,6 +461,12 @@ public class Container extends Item {
 		boolean isDownwards = index > this.focusedIndex;
 		this.focusedIndex = index;
 		this.focusedItem = item;
+		//#if tmp.supportViewType
+			if ( this.view != null ) {
+				this.view.focusedIndex = index;
+				this.view.focusedItem = item;
+			}
+		//#endif
 		if (this.yTopPos != this.yBottomPos) {
 			// this container has been painted already,
 			// so the dimensions are known.

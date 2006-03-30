@@ -54,6 +54,8 @@ public class FramedForm extends Form {
 	private boolean expandLeftFrame;
 	
 	private Container currentlyActiveContainer;
+	private int originalContentY;
+	private int originalContentX;
 
 	/**
 	 * Creates a new FramedForm
@@ -175,6 +177,8 @@ public class FramedForm extends Form {
 		height = this.contentHeight;
 		this.originalContentWidth = width;
 		this.originalContentHeight = height;
+		this.originalContentY = this.contentY;
+		this.originalContentX = this.contentX;
 		if (this.leftFrame != null) {
 			this.expandLeftFrame = (this.leftFrame.style.layout & Item.LAYOUT_VEXPAND) == Item.LAYOUT_VEXPAND;
 			if (this.expandLeftFrame) {
@@ -199,6 +203,8 @@ public class FramedForm extends Form {
 		if (this.bottomFrame != null ) {
 			height -= this.bottomFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth);
 		}
+		this.container.requestFullInit();
+		this.container.init(width, width);
 		this.contentX = x;
 		this.contentY = y;
 		this.contentWidth = width;
@@ -228,11 +234,11 @@ public class FramedForm extends Form {
 			 		frameStyle.border.paint( frameStyle.marginLeft, frameStyle.marginTop, this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.marginTop - frameStyle.marginBottom, g);
 			 	}
 			}
-			int y = 0;
+			int y = this.originalContentY;
 			if ( (frameStyle.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER ) {
-				y = (this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight) / 2;
+				y += (this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight) / 2;
 			} else if ( (frameStyle.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
-				y = this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight;
+				y += this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight;
 			}
 			this.leftFrame.paint( 0, y, 0, this.contentWidth, g );
 		}
@@ -246,19 +252,19 @@ public class FramedForm extends Form {
 			 		frameStyle.border.paint( this.contentWidth + frameStyle.marginLeft, frameStyle.marginTop, this.rightFrame.backgroundWidth, this.originalContentHeight - frameStyle.marginTop - frameStyle.marginBottom, g);
 			 	}
 			}
-			int y = 0;
+			int y = this.originalContentY;
 			if ( (frameStyle.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER ) {
-				y = (this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight) / 2;
+				y += (this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight) / 2;
 			} else if ( (frameStyle.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
-				y = this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight;
+				y += this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight;
 			}
 			this.rightFrame.paint( this.contentWidth, y, this.contentWidth, this.screenWidth, g );
 		}
 		if (this.topFrame != null ) {
-			this.topFrame.paint( 0, 0, 0, this.screenWidth, g );
+			this.topFrame.paint( this.originalContentX, this.originalContentY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 		if (this.bottomFrame != null ) {
-			this.bottomFrame.paint( 0, this.contentY + this.contentHeight, 0, this.screenWidth, g );
+			this.topFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 	}
 	
@@ -295,7 +301,7 @@ public class FramedForm extends Form {
 				//System.out.println("Changing back to default container");
 				newFrame = this.container;
 			}
-			if (newFrame != null) {
+			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
 				setActiveFrame(newFrame);
 				handled = true;
 			}

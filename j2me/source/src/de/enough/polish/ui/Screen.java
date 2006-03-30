@@ -578,9 +578,6 @@ implements AccessibleCanvas
 					StyleSheet.currentScreen.paint(g);
 				}
 			//#endif
-
-			// register this screen:
-			StyleSheet.currentScreen = this;
 			
 			// inform all root items that they belong to this screen
 			// and that they will be shown soon:
@@ -635,11 +632,16 @@ implements AccessibleCanvas
 				if (this.ticker != null && !this.ticker.isInitialised) {
 					this.ticker.init( width, width );
 				}
-			//#endif		
+			//#endif
+
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("error while calling showNotify" + e );
 		}
+
+		// register this screen:
+		StyleSheet.currentScreen = this;
+
 		//#ifdef polish.Vendor.Siemens
 			this.showNotifyTime = System.currentTimeMillis();
 		//#endif
@@ -1631,7 +1633,12 @@ implements AccessibleCanvas
 					}
 					boolean doReturn = false;
 					if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
-						gameAction = getGameAction( keyCode );
+						try {
+							gameAction = getGameAction( keyCode );
+						} catch (Exception e) { // can happen on certain shitty devices
+							//#debug warn
+							System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+						}
 					} else {
 						//#if polish.blackberry
 							this.keyPressedProcessed = false;
@@ -1658,7 +1665,12 @@ implements AccessibleCanvas
 				//#endif
 			//#endif
 			if (gameAction == -1) {
-				gameAction = getGameAction(keyCode);
+				try {
+					gameAction = getGameAction(keyCode);
+				} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
+					//#debug warn
+					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+				}
 			}
 			//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
 				if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
@@ -1718,7 +1730,7 @@ implements AccessibleCanvas
 		try {
 			gameAction = getGameAction( keyCode );
 		} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-			//#debug
+			//#debug warn
 			System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 		}
 		//#if tmp.menuFullScreen
@@ -1759,7 +1771,7 @@ implements AccessibleCanvas
 		try {
 			gameAction = getGameAction( keyCode );
 		} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-			//#debug
+			//#debug warn
 			System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 		}
 		//#if tmp.menuFullScreen
@@ -1883,6 +1895,13 @@ implements AccessibleCanvas
 	public void addCommand(Command cmd, Style commandStyle ) {
 		//#debug
 		System.out.println("adding command [" + cmd.getLabel() + "] to screen [" + this + "].");
+		//#ifdef tmp.useExternalMenuBar
+			if (this.menuBar == null) {
+				//#debug
+				System.out.println("Ignoring command [" + cmd.getLabel() + "] that is added while Screen is not even initialized.");
+				return;
+			}
+		//#endif
 		int cmdType = cmd.getCommandType();
 		if ( cmdType == Command.OK 
 				&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
@@ -1891,12 +1910,12 @@ implements AccessibleCanvas
 		}
 		//#ifdef polish.key.ReturnKey:defined
 			//#if polish.blackberry
-			if ( cmdType == Command.BACK || cmdType == Command.CANCEL || 
-					(cmdType == Command.EXIT && this.backCommand == null) ) 
+			if ( (cmdType == Command.BACK || cmdType == Command.CANCEL || cmdType == Command.EXIT ) 
+				&& ( this.backCommand == null || this.backCommand.getPriority() < cmd.getPriority() )  ) 
 			{
 				
 			//#else
-				//# if ( cmd.getCommandType() == Command.BACK ) {
+				//# if ( cmdType == Command.BACK && ( this.backCommand == null || this.backCommand.getPriority() < cmd.getPriority() ) ) {
 			//#endif
 				this.backCommand = cmd;
 			}
@@ -2458,15 +2477,23 @@ implements AccessibleCanvas
 	 * @param item the item which is already shown on this screen.
 	 */
 	public void focus(Item item) {
-		int index = this.container.itemsList.indexOf(item);
+		focus( this.container.itemsList.indexOf(item) );
+	}
+	
+	/**
+	 * Focuses the specified item.
+	 * 
+	 * @param index the index of the item which is already shown on this screen.
+	 */
+	public void focus(int index) {
 		if (index != -1) {
 			//#debug
 			System.out.println("Screen: focusing item " + index );
-			this.container.focus( index, item, 0 );
-			return;
+			this.container.focus( index, this.container.get(index), 0 );
+		} else {
+			//#debug warn
+			System.out.println("Screen: unable to focus item (did not find it in the container) " + index);
 		}
-		//#debug warn
-		System.out.println("Screen: unable to focus item (did not find it in the container) " + item);
 	}
 	
 	/**

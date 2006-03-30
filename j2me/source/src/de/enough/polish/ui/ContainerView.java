@@ -576,9 +576,9 @@ public class ContainerView {
 				//#else
 					currentRow = this.focusedIndex / this.numberOfColumns;
 				//#endif
-				if (currentRow < this.numberOfRows - 1) {
+				//if (currentRow < this.numberOfRows - 1) {
 					return shiftFocus( true, this.numberOfColumns - 1, myItems );
-				}
+				//}
 			}
 			return shiftFocus( true, 0, myItems );
 			
@@ -605,6 +605,7 @@ public class ContainerView {
 	 * 		  the previous item should be focused.
 	 * @param steps how many steps forward or backward the search for the next focusable item should be started,
 	 *        0 for the current item, negative values go backwards.
+	 * @param items the items of this view
 	 * @return the item that has been focused or null, when no item has been focused.
 	 */
 	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items) {
@@ -617,7 +618,7 @@ public class ContainerView {
 				int doneSteps = 0;
 				steps = Math.abs( steps ) + 1;
 				Item item = this.parentContainer.items[i];
-				while( doneSteps <= steps) {
+				while( doneSteps <= steps ) {
 					doneSteps += item.colSpan;
 					if (doneSteps >= steps) {
 						//System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
@@ -626,13 +627,27 @@ public class ContainerView {
 					if (forwardFocus) {
 						i++;
 						if (i == items.length - 1 ) {
-							//System.out.println("reached items.length -1, breaking at -2");
-							i = items.length - 2;
-							break;
+							//#if polish.Container.allowCycling == false
+								//# return null;
+							//#else
+								if (!this.allowCycling) {
+									return null;
+								}
+								//System.out.println("reached items.length -1, breaking at -2");
+								i = items.length - 2;
+								break;
+							//#endif
 						} else if (i >= items.length) {
-							//System.out.println("reached items.length, breaking at -1");
-							i = items.length - 1;
-							break;
+							//#if polish.Container.allowCycling == false
+								//# return null;
+							//#else
+								if (!this.allowCycling) {
+									return null;
+								}
+								//System.out.println("reached items.length, breaking at -1");
+								i = items.length - 1;
+								break;
+							//#endif
 						}
 					} else {
 						i--; 
