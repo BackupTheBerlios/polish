@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess;
+package de.enough.polish.preprocess.css;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -475,13 +475,13 @@ implements Comparable
 		}
 	}
 
-	private String getMappingFrom(String value) {
-		CssMapping mapping = getMapping(value);
-		if (mapping != null) {
-			return mapping.getTo();
-		}
-		return null;
-	}
+//	private String getMappingFrom(String value) {
+//		CssMapping mapping = getMapping(value);
+//		if (mapping != null) {
+//			return mapping.getTo();
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * Adds the mappings of the given capability to this one.
@@ -493,6 +493,15 @@ implements Comparable
 		this.mappingsByName.putAll( extension.mappingsByName );
 	}
 
+	
+	/**
+	 * Retrieves the group to which this attribute belongs to.
+	 * 
+	 * @return the group name, can be null.
+	 */
+	public String getGroup() {
+		return this.group;
+	}
 	
 
 }

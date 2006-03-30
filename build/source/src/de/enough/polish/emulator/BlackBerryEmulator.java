@@ -38,8 +38,14 @@ public class BlackBerryEmulator extends Emulator {
 		}
 		File executable = new File( this.blackberryHome, "simulator" + File.separatorChar + dev.getName() + ".bat" );
 		if ( !executable.exists() ) {
-			System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
-			return false;
+			String alternativeName = env.getVariable("polish.Emulator.Skin");
+			if (alternativeName != null) {
+				executable = new File( this.blackberryHome, "simulator" + File.separatorChar + alternativeName + ".bat" );
+			}
+			if ( !executable.exists() ) {
+				System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
+				return false;
+			}
 		}
 		ArrayList argumentsList = new ArrayList();
 		if (File.separatorChar == '/') { // this is a unix environment, try wine:

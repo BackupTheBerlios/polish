@@ -23,9 +23,14 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess;
+package de.enough.polish.preprocess.css;
 
 import org.apache.tools.ant.BuildException;
+
+import de.enough.polish.Environment;
+import de.enough.polish.preprocess.Preprocessor;
+import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.StringList;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -66,29 +71,38 @@ public final class CssReader {
 	 * Reads the given file and adds/supplements all styles.
 	 * 
 	 * @param filePath the name and path of the file which contains the CSS-definitions
+	 * @param preprocessor the preprocessor used for processing the CSS file first
+	 * @param env the environment
 	 * @throws IOException when the file could not be found or not be loaded
 	 */
-	public void add( String filePath ) throws IOException {
-		add( new File(filePath) );
+	public void add( String filePath, Preprocessor preprocessor, Environment env ) throws IOException {
+		add( new File(filePath), preprocessor, env );
 	}
 
 	/**
 	 * Reads the given file and adds/supplements all styles.
 	 * 
 	 * @param file the file which contains the CSS-definitions
+	 * @param preprocessor the preprocessor used for processing the CSS file first
+	 * @param env the environment
 	 * @throws IOException when the file could not be found or not be loaded
 	 */
-	public void add(File file) throws IOException {
+	public void add(File file, Preprocessor preprocessor, Environment env) throws IOException {
 		if (this.styleSheet.lastModified() < file.lastModified() ) {
 			this.styleSheet.setLastModified( file.lastModified() );
 		}
-		BufferedReader in = new BufferedReader(new FileReader(file));
-		String line;
+		String[] lines = FileUtil.readTextFile(file);
+		StringList list = new StringList( lines );
+		preprocessor.preprocess( file.getAbsolutePath(), list );
+		lines = list.getArray();
 		StringBuffer buffer = new StringBuffer();
-		while ((line = in.readLine()) != null) {
-			buffer.append( line );
+		// remove any left preprocessing comments and add the remaining lines to a StringBuffer:
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i];
+			if ( !line.trim().startsWith("//#") ) {
+				buffer.append( line );
+			}
 		}
-		in.close();
 		add( buffer );
 	}
 

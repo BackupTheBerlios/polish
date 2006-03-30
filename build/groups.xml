@@ -112,14 +112,16 @@
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
 		<capability name="Emulator.Skin.2" value="\Devices\Nokia_Prototype_SDK_4_0_Beta\devices\Prototype_4_0_Beta_S60_MIDP_Emulator" />
-		<capability name="Emulator.Skin.3" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S60_MIDP_Emulator" />
-		<capability name="Emulator.Skin.4" value="Nokia_Prototype_SDK_3_0_Beta" />
-		<capability name="Emulator.Skin.5" value="\Devices\Nokia_Prototype_SDK_3_0" />
-		<capability name="Emulator.Skin.6" value="Series_60_MIDP_SDK_2_1" />
-		<capability name="Emulator.Skin.7" value="Series_60_MIDP_SDK_2_1_Beta" />
-		<capability name="Emulator.Skin.8" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
-		<capability name="Emulator.Skin.9" value="Nokia_Prototype_SDK_4_0_Beta\devices\Prototype_4_0_Beta_S60_MIDP_Emulator" />
-		<capability name="Emulator.Skin.10" value="Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.3" value="\Devices\Nokia_Prototype_SDK_4_0_Beta\devices\Prototype_4_0_Beta_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.4" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.5" value="Nokia_Prototype_SDK_3_0_Beta" />
+		<capability name="Emulator.Skin.6" value="\Devices\Nokia_Prototype_SDK_3_0" />
+		<capability name="Emulator.Skin.7" value="Series_60_MIDP_SDK_2_1" />
+		<capability name="Emulator.Skin.8" value="Series_60_MIDP_SDK_2_1_Beta" />
+		<capability name="Emulator.Skin.9" value="Series_60_MIDP_Concept_SDK_Beta_0_3_1_Nokia_edition" />
+		<capability name="Emulator.Skin.10" value="Nokia_Prototype_SDK_4_0_Beta\devices\Prototype_4_0_Beta_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.11" value="Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
+		<capability name="Emulator.Skin.12" value="\Devices\Nokia_Prototype_SDK_2_0" />
 		<capability name="Emulator.Control" value="Series60" />
 		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi" />
 	</group>
@@ -174,6 +176,7 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
+		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK" />
 	</group>
 	
 
@@ -202,6 +205,7 @@
 
 	<group>
 		<name>x55</name>
+		<features>hasCommandKeyEvents</features>
 		<capability name="OS" value="Siemens OS" />		
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
@@ -213,6 +217,7 @@
 	
 	<group>
 		<name>x65</name>
+		<features>hasCommandKeyEvents</features>
 		<capability name="OS" value="Siemens OS" />		
 		<capability name="ScreenSize" value="132x176" />		
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
@@ -228,6 +233,7 @@
 	
 	<group>
 		<name>x75</name>
+		<features>hasCommandKeyEvents</features>
 		<capability name="OS" value="Siemens OS" />		
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />

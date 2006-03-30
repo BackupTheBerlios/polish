@@ -30,9 +30,9 @@ import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
 
-import de.enough.polish.preprocess.BorderConverter;
-import de.enough.polish.preprocess.Style;
-import de.enough.polish.preprocess.StyleSheet;
+import de.enough.polish.preprocess.css.BorderConverter;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.preprocess.css.StyleSheet;
 
 /**
  * <p>Converts CSS code into a CircleBorder instantiation.</p>

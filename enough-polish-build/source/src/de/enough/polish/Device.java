@@ -161,6 +161,8 @@ public class Device extends PolishComponent {
 
 	private Configuration[] configurations;
 
+	private File resourceDir;
+
 
 
 	public Device(String identifier) {
@@ -775,6 +777,14 @@ public class Device extends PolishComponent {
 			}
 		}
 		return false;
+	}
+
+	public void setResourceDir(File resourceDir) {
+		this.resourceDir = resourceDir;
+	}
+	
+	public File getResourceDir() {
+		return this.resourceDir;
 	}
 
 }

@@ -28,9 +28,10 @@ package de.enough.polish.preprocess.backgrounds;
 import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
-import de.enough.polish.preprocess.BackgroundConverter;
-import de.enough.polish.preprocess.Style;
-import de.enough.polish.preprocess.StyleSheet;
+
+import de.enough.polish.preprocess.css.BackgroundConverter;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.preprocess.css.StyleSheet;
 
 public class BallBackgroundConverter extends BackgroundConverter {
 

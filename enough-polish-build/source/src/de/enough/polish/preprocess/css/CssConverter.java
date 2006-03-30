@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess;
+package de.enough.polish.preprocess.css;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +34,7 @@ import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;

@@ -94,15 +94,15 @@ import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.precompile.PreCompiler;
-import de.enough.polish.preprocess.CssAttribute;
-import de.enough.polish.preprocess.CssAttributesManager;
-import de.enough.polish.preprocess.CssConverter;
-import de.enough.polish.preprocess.CssReader;
 import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.DebugManager;
 import de.enough.polish.preprocess.ImportConverter;
 import de.enough.polish.preprocess.Preprocessor;
-import de.enough.polish.preprocess.StyleSheet;
+import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.preprocess.css.CssAttributesManager;
+import de.enough.polish.preprocess.css.CssConverter;
+import de.enough.polish.preprocess.css.CssReader;
+import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
 import de.enough.polish.preverify.CldcPreverifier;
 import de.enough.polish.preverify.Preverifier;
@@ -130,7 +130,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-03-23)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-03-31)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -153,7 +153,6 @@ public class PolishTask extends ConditionalTask {
 	private Obfuscator[] obfuscators;
 	private boolean doObfuscate;
 	private String[] preserveClasses;
-	private StyleSheet styleSheet;
 	private ImportConverter importConverter;
 	private TextFile styleSheetSourceFile;
 	private ResourceUtil resourceUtil;
@@ -463,6 +462,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected void execute(Device device, Locale locale, boolean hasExtensions) {
 		initialize( device, locale );
+		assembleResources( device, locale );
 		preprocess( device, locale );
 		compile( device, locale );
 		postCompile(device, locale);
@@ -563,6 +563,7 @@ public class PolishTask extends ConditionalTask {
 		//e.g. with: <property name="wtk.home" value="c:\Java\wtk-1.0.4"/>
 		this.wtkHome = getProject().getProperty("wtk.home");
 		String mppHome = getProject().getProperty("mpp.home");
+		//System.out.println("wtk.home=" + this.wtkHome + ", mpp.home=" + mppHome ) ;
 
 		if (this.buildSetting.getPreverify() == null) {
 			// no preverify has been set, that's okay when the wtk.home ant-property has been set:
@@ -583,7 +584,7 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			File preverifyFile = null;
-			if (this.wtkHome != null) {
+			if (this.wtkHome != null && ((new File(this.wtkHome)).exists()) ) {
 				String preverifyPath = this.wtkHome + "bin" + File.separator + "preverify";
 				if ( File.separatorChar == '\\') {
 					preverifyPath += ".exe";
@@ -595,7 +596,7 @@ public class PolishTask extends ConditionalTask {
 				}
 				String preverifyPath = mppHome + "osx" + File.separator + "preverify" + File.separator + "preverify";
 				preverifyFile = new File( preverifyPath );
-				//if (preverifyFile.)
+				//System.out.println("preverifyHome=" + preverifyFile.getAbsolutePath() + ", exists=" + preverifyFile.exists() );
 			}
 			if (preverifyFile != null) {
 				if (preverifyFile.exists()) {
@@ -981,15 +982,6 @@ public class PolishTask extends ConditionalTask {
 			File cssFile = new File( resourceSetting.getDir().getAbsolutePath() + File.separatorChar + "polish.css");
 			if (!cssFile.exists()) {
 				log("Unable to find polish.css at [" + cssFile.getAbsolutePath() + "] - you should create this file when you want to make most of the J2ME Polish GUI.", Project.MSG_WARN );
-				this.styleSheet = new StyleSheet();
-			} else {
-				CssReader cssReader = new CssReader();
-				try {
-					cssReader.add(cssFile);
-				} catch (IOException e) {
-					throw new BuildException("Unable to load polish.css: " + e.getMessage(), e );
-				}
-				this.styleSheet = cssReader.getStyleSheet();
 			}
 		}
 		
@@ -1310,7 +1302,12 @@ public class PolishTask extends ConditionalTask {
 		String destPath = this.buildSetting.getDestDir( this.environment ).getAbsolutePath() + File.separatorChar;
 		String jarPath = destPath + jarName;
 		this.environment.addVariable( "polish.jarPath", jarPath );
-		String jadName = jarName.substring(0, jarName.lastIndexOf('.') ) + ".jad";
+		int dotIndex = jarName.lastIndexOf('.');
+		if (dotIndex == -1) {
+			// invalid JAR name
+			throw new BuildException("Invalid JAR name \"" + jarName + "\" defined - check your \"polish.jarName\" setting. Usually a \".jar\" is missing.");
+		}
+		String jadName = jarName.substring(0, dotIndex ) + ".jad";
 		this.environment.addVariable( "polish.jadName", jadName );
 		String jadPath = destPath + jadName;
 		this.environment.addVariable( "polish.jadPath", jadPath );
@@ -1323,7 +1320,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		String copyright = this.infoSetting.getCopyright();
 		if (copyright != null) {
-			this.environment.addVariable( "MIDlet-Copyrigh", copyright );
+			this.environment.addVariable( "MIDlet-Copyright", copyright );
 		}
 				
 		// set support for the J2ME Polish GUI, part 2:
@@ -1337,6 +1334,17 @@ public class PolishTask extends ConditionalTask {
 				this.environment.removeSymbol("polish.usePolishGui");
 			}
 		}
+		
+		// set the temporary build path used for preprocessing, compilation, preverification, etc:
+		String deviceSpecificBuildPath = File.separatorChar + device.getVendorName() 
+				+ File.separatorChar + device.getName();
+		deviceSpecificBuildPath = deviceSpecificBuildPath.replace(' ', '_' );
+		String buildPath = this.buildSetting.getWorkDir().getAbsolutePath() + deviceSpecificBuildPath;
+		if (locale != null) {
+			buildPath += File.separatorChar + locale.toString();
+		}
+		device.setBaseDir( buildPath );
+
 
 		
 		// okay, now initialize extension manager:
@@ -1412,6 +1420,27 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	/**
+	 * Assembles all resources for the specified device and locale and copies them to a tempoary folder.
+	 * This step is done before the preprocessing phase, so the programmer can access values
+	 * like image-widths during the preprocessing step already.
+	 * 
+	 * @param device the device
+	 * @param locale the locale, can be null
+	 */
+	protected void assembleResources( Device device, Locale locale ) {
+		System.out.println("assembling resources for device [" +  device.getIdentifier() + "]." );
+		File resourceDir = new File( device.getBaseDir() + File.separatorChar + "resources" );
+		device.setResourceDir( resourceDir );
+		try {
+			// copy resources:
+			this.resourceManager.copyResources(resourceDir, device, locale);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to assemble resources: " + e.toString(), e );
+		}				
+	}
+	
+	/**
 	 * Preprocesses the source code for all devices.
 	 * 
 	 * @param device The device for which the preprocessing should be done.
@@ -1422,15 +1451,7 @@ public class PolishTask extends ConditionalTask {
 		try {
 
 			this.numberOfChangedFiles = 0;
-			String deviceSpecificBuildPath = File.separatorChar + device.getVendorName() 
-											+ File.separatorChar + device.getName();
-			deviceSpecificBuildPath = deviceSpecificBuildPath.replace(' ', '_' );
-			String targetDir = this.buildSetting.getWorkDir().getAbsolutePath() + deviceSpecificBuildPath;
-			if (locale != null) {
-				targetDir += File.separatorChar + locale.toString();
-			}
-			device.setBaseDir( targetDir );
-			targetDir += File.separatorChar + "source";
+			String targetDir = device.getBaseDir() + File.separatorChar + "source";
 			device.setSourceDir(targetDir);
 			this.environment.addVariable("polish.sourcedir", targetDir);
 			notifyPolishBuildListeners( PolishBuildListener.EVENT_PREPROCESS_SOURCE_DIR, new File( targetDir ) );
@@ -1478,7 +1499,8 @@ public class PolishTask extends ConditionalTask {
 			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;
 			if (usePolishGui) {
-				cssStyleSheet = this.resourceManager.loadStyleSheet( this.styleSheet, device, locale );
+				// read CSS files:
+				cssStyleSheet = this.resourceManager.loadStyleSheet( device, locale, this.preprocessor, this.environment );
 				if (cssStyleSheet.lastModified() > lastLocaleModification) {
 					lastCssModification = cssStyleSheet.lastModified();
 				}
@@ -2215,13 +2237,13 @@ public class PolishTask extends ConditionalTask {
 	protected void jar( Device device, Locale locale ) {
 		File classesDir = new File( device.getClassesDir() );
 		
+		// copy resources to final destination:
 		try {
-			// copy resources:
-			this.resourceManager.copyResources(classesDir, device, locale);
+			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, true );
 		} catch (IOException e) {
 			System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 			e.printStackTrace();
-			throw new BuildException("Unable to assemble resources: " + e.toString(), e );
+			throw new BuildException("Unable to copy resources: " + e.toString(), e );
 		}		
 
 		// retrieve the name of the jar-file:

@@ -27,13 +27,16 @@ package de.enough.polish;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.StringList;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Variable provides the definition of a name-value pair.</p>
@@ -205,7 +208,12 @@ public class Variable {
 			return new Variable[0];
 		}
 		try {
-			HashMap map = FileUtil.readPropertiesFile( file, getDelimiter() );
+			Preprocessor preprocessor = (Preprocessor) environment.get( Preprocessor.ENVIRONMENT_KEY );
+			String[] lines = FileUtil.readTextFile( file );
+			boolean removePreprocessingComments = true;
+			lines = preprocessor.preprocess( file.getAbsolutePath(), new StringList( lines ), removePreprocessingComments );
+			Map map = StringUtil.getProperties( lines, getDelimiter() );
+			//HashMap map = FileUtil.readPropertiesFile( file, getDelimiter() );
 			Object[] keys = map.keySet().toArray();
 			Variable[] variables = createArray( keys.length );
 			for (int i = 0; i < variables.length; i++) {

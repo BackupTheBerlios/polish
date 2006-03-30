@@ -90,25 +90,36 @@ public class SiemensEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
-	public boolean init(Device device, EmulatorSetting setting,
+	public boolean init(Device dev, EmulatorSetting setting,
 			Environment properties, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
 		String siemensHomePath = properties.getVariable("siemens.home");
 		if (siemensHomePath == null) {
-			siemensHomePath = "C:\\siemens\\SMTK";
+			if ( (new File("C:\\siemens\\SMTK_3.X")).exists()) {
+				siemensHomePath = "C:\\siemens\\SMTK_3.X";
+			} else {
+				siemensHomePath = "C:\\siemens\\SMTK";
+			}
 		}
 		File executable = new File( siemensHomePath + "\\bin\\Emulator.exe");
 		if (!executable.exists()) {
-			System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: unable to find Siemens-emulator [" + executable.getAbsolutePath() + "]. Consider to set the ${siemens.home} property in your build.xml");
+			System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: unable to find Siemens-emulator [" + executable.getAbsolutePath() + "]. Consider to set the ${siemens.home} property in your build.xml");
 			return false;
 		}
 		this.siemensHome = siemensHomePath;
-		String skin = device.getCapability("polish.Emulator.Skin");
+		String skin = dev.getCapability("polish.Emulator.Skin");
 		if (skin == null) {
-			device.addDirectCapability("polish.Emulator.Skin", device.getName());
+			dev.addDirectCapability("polish.Emulator.Skin", dev.getName());
 		}
-		if (super.init(device, setting, properties, project, evaluator, wtkHome)) {
+		if (super.init(dev, setting, properties, project, evaluator, wtkHome)) {
+			File directExcecutable = new File( siemensHomePath 
+					+ File.separatorChar + "emulators" 
+					+ File.separatorChar + skin 
+					+ File.separatorChar + "bin/emulator.exe");
+			if (directExcecutable.exists()) {
+				executable = directExcecutable;
+			}
 			this.arguments[0] = executable.getAbsolutePath();
 			return true;
 		} else {

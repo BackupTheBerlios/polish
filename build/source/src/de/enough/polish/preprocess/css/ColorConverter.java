@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preprocess;
+package de.enough.polish.preprocess.css;
 
 import de.enough.polish.util.StringUtil;
 

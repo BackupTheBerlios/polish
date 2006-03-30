@@ -43,6 +43,10 @@ import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.PolishProject;
+import de.enough.polish.preprocess.css.ColorConverter;
+import de.enough.polish.preprocess.css.CssAttributesManager;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
@@ -119,7 +123,7 @@ public class Preprocessor {
 	private TextFileManager textFileManager;
 	private CssAttributesManager cssAttributesManager;
 	private final Environment environment;
-	private final boolean replacePropertiesWithoutDirective;
+	private boolean replacePropertiesWithoutDirective;
 	private boolean isNetBeans;
 
 	/**
@@ -453,6 +457,33 @@ public class Preprocessor {
 	public void reset() {
 		this.ifDirectiveCount = 0;
 	}
+	
+	/**
+	 * Preprocesses the given string array.
+	 * 
+	 * @param resourceName the name of the resource file.
+	 * @param lines the text.
+	 * @return the preprocessed text.
+	 * @throws BuildException when the preprocessing fails.
+	 */
+	public String[] preprocess(String resourceName, StringList list, boolean removePreprocessingComments) {
+		int result = preprocess( resourceName, list );
+		if ( !removePreprocessingComments || result == NOT_CHANGED ) {
+			return list.getArray();
+		} else {
+			String[] lines = list.getArray();
+			ArrayList arrayList = new ArrayList( lines.length );
+			for (int i = 0; i < lines.length; i++) {
+				String line = lines[i];
+				if ( !line.trim().startsWith( "//#" ) ) {
+					arrayList.add( line );
+				}
+			}
+			lines = (String[]) arrayList.toArray( new String[ arrayList.size() ] );
+			return lines;
+		}
+	}
+
 
 	/**
 	 * Preprocesses the given source code.
@@ -1685,6 +1716,25 @@ public class Preprocessor {
 
 	public Environment getEnvironment() {
 		return this.environment;
+	}
+
+	/**
+	 * Determines whether properties should be replaced without using the //#= directive.
+	 * 
+	 * @return Returns true when properties should be replaced without using the //#= directive.
+	 */
+	public boolean replacePropertiesWithoutDirective() {
+		return this.replacePropertiesWithoutDirective;
+	}
+
+	/**
+	 * Specifies whether properties should be replaced without using the //#= directive.
+	 * 
+	 * @param replacePropertiesWithoutDirective true when properties should be replaced without using the //#= directive.
+	 */
+	public void setReplacePropertiesWithoutDirective(
+			boolean replacePropertiesWithoutDirective) {
+		this.replacePropertiesWithoutDirective = replacePropertiesWithoutDirective;
 	}
 
 }

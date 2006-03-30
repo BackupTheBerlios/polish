@@ -4007,6 +4007,23 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 <!-- Siemens devices -->
+
+	<device>
+		<identifier>Siemens/SXG75</identifier>
+		<groups>x75</groups>
+		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="3MB" />
+		<capability name="StorageSize" value="64MB" />
+		<capability name="MaxJarSize" value="350kb" />
+		<capability name="ImageFormat" value="gif,png,jpg" />
+		<capability name="key.ClearKey" value="-12345" />
+		<capability name="Emulator.Skin" value="SXG75" />
+		<capability name="Region" value="Europe, Asia-Pacific, Middle-East" />
+	</device>
+	
+
 	<device>
 		<identifier>Siemens/A56i</identifier>
 		<capability name="ScreenSize" value="101x64"/>
@@ -4489,6 +4506,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8700r" />
 	</device>
 
 	<device>
@@ -4516,6 +4534,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry" />
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
 	</device>
 	
 	<device>

@@ -42,6 +42,7 @@ import de.enough.polish.ExtensionManager;
 import de.enough.polish.ExtensionSetting;
 import de.enough.polish.ExtensionTypeDefinition;
 import de.enough.polish.ant.build.PreprocessorSetting;
+import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.StringList;
 
 /**

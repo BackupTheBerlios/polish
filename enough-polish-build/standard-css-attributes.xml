@@ -475,6 +475,7 @@
 		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
 		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
+		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-single-line" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="horizontal-choice" to="new de.enough.polish.ui.containerviews.HorizontalChoiceView()" />
 		<mapping from="ExclusiveSingleLineView" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
@@ -1469,6 +1470,22 @@
 		appliesTo="ChoiceTextField"
 		description="Defines the style for single possible matches for the curent user input."
 		id="143"
+	/>
+	
+	<attribute
+		name="min-height"
+		type="integer"
+		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		description="The minimum height of an item."
+		id="144"
+	/>
+
+	<attribute
+		name="max-height"
+		type="integer"
+		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		description="The maximum height of an item."
+		id="145"
 	/>
 	
 	

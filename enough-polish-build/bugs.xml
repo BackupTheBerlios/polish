@@ -342,6 +342,20 @@
 		<solution>Use x/y points that are 1 or higher, or use MIDP 2.0 drawRGB instead.</solution>
 	</bug>
 
+	<bug>
+		<name>ItemStateListenerCalledTooEarly</name>
+		<area>ui</area>
+		<description>The item state listener is called too early, e.g. when the user has pressed a key
+		             in a TextField without the key being added to the field already. Subsequent calls
+		             to textField.getString() will then append the pressed key to the field. This
+		             restricts user input to only the first character of a group, e.g. only
+		             'a' instead of 'abc2'.
+		</description>
+		<solution>Use the J2ME Polish GUI and enable the direct input mode for TextFields.
+		          Alternatively wait some time before processing the item state event and
+		          calling textField.getString().
+		</solution>
+	</bug>
 	<!--
 	<bug>
 		<name></name>

@@ -46,8 +46,9 @@ import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
 import de.enough.polish.ant.requirements.SizeMatcher;
-import de.enough.polish.preprocess.CssReader;
-import de.enough.polish.preprocess.StyleSheet;
+import de.enough.polish.preprocess.Preprocessor;
+import de.enough.polish.preprocess.css.CssReader;
+import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.FileUtil;
 
 /**
@@ -553,19 +554,21 @@ public class ResourceManager {
 	/**
 	 * Reads the style sheet for the given device.
 	 * 
-	 * @param baseStyleSheet the base style sheet
 	 * @param device the device
 	 * @param locale the current locale, can be null
+	 * @param preprocessor the preprocessor
+	 * @param env the environment
 	 * @return the style sheet for that device
 	 * @throws IOException when a sub-style sheet could not be loaded.
 	 */
-	public StyleSheet loadStyleSheet(StyleSheet baseStyleSheet, Device device, Locale locale) throws IOException {
+	public StyleSheet loadStyleSheet( Device device, Locale locale, Preprocessor preprocessor, Environment env ) throws IOException {
 		
-		long lastCssModification = baseStyleSheet.lastModified();		
-		CssReader cssReader = new CssReader( baseStyleSheet );
-		
+		long lastCssModification = 0;		
+		CssReader cssReader = new CssReader();
+		boolean replaceWithoutDirective = preprocessor.replacePropertiesWithoutDirective();
+		preprocessor.setReplacePropertiesWithoutDirective( true );
 		File[] resourceDirs = getResourceDirs(device, locale);
-		for (int i = 1; i < resourceDirs.length; i++) { // ignore the basic resource-file:
+		for (int i = 0; i < resourceDirs.length; i++) {
 			File dir = resourceDirs[i];
 			File cssFile = new File( dir.getAbsolutePath() + File.separator + "polish.css");
 			if (cssFile.exists()) {
@@ -573,11 +576,12 @@ public class ResourceManager {
 				if (cssFile.lastModified() > lastCssModification) {
 					lastCssModification = cssFile.lastModified();
 				}
-				cssReader.add( cssFile );
+				cssReader.add( cssFile, preprocessor, env );
 			}
 		}
 		StyleSheet sheet = cssReader.getStyleSheet();
 		sheet.setLastModified(lastCssModification);
+		preprocessor.setReplacePropertiesWithoutDirective( replaceWithoutDirective );
 		return sheet;
 	}
 	

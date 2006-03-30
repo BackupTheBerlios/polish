@@ -26,6 +26,8 @@
 package de.enough.polish.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Provides some usefull String methods.</p>
@@ -240,6 +242,70 @@ public final class StringUtil {
 			return string;
 		}
 		return '"' + string + '"';
+	}
+
+	/**
+	 * Retrieves properties from the given String array.
+	 * 
+	 * @param lines the String array that contains properties
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @return properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static Map getProperties(String[] lines) {
+		Map map = new HashMap();
+		getProperties(lines, '=', '#', map, false );
+		return map;
+	}
+
+	/**
+	 * Retrieves properties from the given String array.
+	 * 
+	 * @param lines the String array that contains properties
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @return properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static Map getProperties(String[] lines, char delimiter ) {
+		Map map = new HashMap();
+		getProperties(lines, delimiter, '#', map, false );
+		return map;
+	}
+
+	/**
+	 * Retrieves properties from the given String array.
+	 * 
+	 * @param lines the String array that contains properties
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static void getProperties(String[] lines, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties ) 
+	{
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i].trim();
+			if (line.length() == 0 || line.charAt(0) == comment) {
+				continue;
+			}
+			int delimiterPos = line.indexOf( delimiter );
+			if (delimiterPos == -1) {
+				if (ignoreInvalidProperties) {
+					continue;
+				} else {
+					throw new IllegalArgumentException("The line [" + line 
+							+ "] contains an invalid property definition: " +
+									"missing separator-character (\"" + delimiter + "\")." );					
+				}
+			}
+			String key = line.substring( 0, delimiterPos ).trim();
+			String value = line.substring( delimiterPos + 1 );
+			properties.put( key, value );
+		}
 	}
 
 

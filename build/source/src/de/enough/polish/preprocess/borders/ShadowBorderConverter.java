@@ -26,6 +26,9 @@
 package de.enough.polish.preprocess.borders;
 
 import de.enough.polish.preprocess.*;
+import de.enough.polish.preprocess.css.BorderConverter;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.preprocess.css.StyleSheet;
 
 import org.apache.tools.ant.BuildException;
 

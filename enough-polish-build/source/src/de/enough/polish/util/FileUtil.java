@@ -481,7 +481,7 @@ public final class FileUtil {
 				} else {
 					throw new IllegalArgumentException("The line [" + line 
 							+ "] contains an invalid property definition: " +
-									"missing separater-character (\"" + delimiter + "\")." );					
+									"missing separator-character (\"" + delimiter + "\")." );					
 				}
 			}
 			String key = line.substring( 0, delimiterPos ).trim();

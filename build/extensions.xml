@@ -356,6 +356,18 @@
 		<class>de.enough.polish.propertyfunctions.ContentTypeFunction</class>
 	</extension>
 
+	<extension>
+		<type>propertyfunction</type>
+		<name>imagewidth</name>
+		<class>de.enough.polish.propertyfunctions.ImageWidthFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>imageheight</name>
+		<class>de.enough.polish.propertyfunctions.ImageHeightFunction</class>
+	</extension>
+	
 	<!-- Preverifier -->
 	
 	<extension>

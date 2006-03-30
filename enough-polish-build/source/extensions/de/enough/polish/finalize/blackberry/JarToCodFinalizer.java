@@ -131,16 +131,19 @@ implements OutputFilter
 				}
 				String[] newEntries = new String[]{
 						"MIDlet-Name: " + env.getVariable("MIDlet-Name"),
+						//"MIDlet-Name: demo",
 						"MIDlet-Version: " + env.getVariable("MIDlet-Version"),
+						//"MIDlet-Version: 1.0",
 						"MIDlet-Vendor: " + env.getVariable("MIDlet-Vendor"),
 						"MIDlet-Jar-URL: " + jarFile.getName(),
 						"MIDlet-Jar-Size: " + jarFile.length(),
+						//"MIDlet-Jar-Size: 0",
 						"MicroEdition-Profile: MIDP-2.0",
 						"MicroEdition-Configuration: CLDC-1.1",
+						//"MIDlet-1: Demo," + iconUrl + ",",
 						"MIDlet-1: " + env.getVariable("MIDlet-Name") + "," + iconUrl + ",",
-						"MIDlet-Icon: " + iconUrl,
-						"RIM-MIDlet-Flags-1: 0",
-						""
+						//"MIDlet-Icon: " + iconUrl,
+						"RIM-MIDlet-Flags-1: 0"
 				};
 
 				File rapcFile = new File( jadFile.getParent(), codName + ".rapc");
