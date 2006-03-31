@@ -161,8 +161,8 @@ public class Device extends PolishComponent {
 
 	private Configuration[] configurations;
 
+    private Device parentDevice;
 	private File resourceDir;
-
 
 
 	public Device(String identifier) {
@@ -170,6 +170,11 @@ public class Device extends PolishComponent {
 		this.identifier = identifier;
 		this.isVirtual = false;
 	}
+    
+    public Device(String identifier, CapabilityManager capabilityManager) {
+        this(identifier);
+        this.capabilityManager = capabilityManager;
+    }
 
 	/**
 	 * Creates a new device.
@@ -219,6 +224,7 @@ public class Device extends PolishComponent {
 			if (parentDevice == null) {
 				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + parentIdentifier + "] is not known. Make sure it is defined before this device.");
 			}
+            this.parentDevice = parentDevice;
 			addComponent( parentDevice );
 		}
 
@@ -472,7 +478,12 @@ public class Device extends PolishComponent {
 	
 	}
 
-	private void addImplicitGroups(PolishComponent component, ArrayList groupNamesList, ArrayList groupsList, DeviceGroupManager groupManager ) {
+    
+	public Device getParentDevice() {
+        return this.parentDevice;
+    }
+
+    private void addImplicitGroups(PolishComponent component, ArrayList groupNamesList, ArrayList groupsList, DeviceGroupManager groupManager ) {
 		String groupsStr = component.getCapability("build.ImplicitGroups");
 		if (groupsStr != null) {
 			String[] localGroupNames = StringUtil.splitAndTrim( groupsStr, ',');
