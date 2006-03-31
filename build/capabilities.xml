@@ -113,5 +113,12 @@
 		<required>no</required>
 		<type>extension</type>
 	</capability>
+	<capability>
+		<identifier>wap.userAgent</identifier>
+		<extension-mode>appendZero</extension-mode>
+		<required>no</required>
+		<description>Defines the user agent string submitted in a wap request. This is a '\1' delimited list.</description>
+		<type>singleValue</type>
+	</capability>
 	
 </capabilities>
