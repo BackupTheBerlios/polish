@@ -59,7 +59,7 @@ implements Comparable
 	private HashMap features;
 	protected HashMap capabilities;
 	private String featuresAsString;
-	protected final CapabilityManager capabilityManager;
+	protected CapabilityManager capabilityManager;
 	protected final HashMap implicitGroupsByName;
 	protected String description;
 	
@@ -372,7 +372,14 @@ implements Comparable
 							return;
 						}
 					}
-				} 
+				}
+                if(capability.appendZeroDelimitedExtension()) {
+                    String existingValue = getCapability(name);
+                    if(existingValue != null) {
+                        String temp = existingValue + '\1' + value;
+                        value = temp;
+                    }
+                }
 				String group = capability.getImplicitGroup();
 				if ( group != null ) {
 					addImplicitGroups( value );
