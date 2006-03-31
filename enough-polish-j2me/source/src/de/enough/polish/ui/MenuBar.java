@@ -349,7 +349,11 @@ public class MenuBar extends Item {
 			this.topY = titleHeight;
 			this.commandsContainer.setVerticalDimensions( titleHeight, screenHeight );
 			//System.out.println("setting vertical dimension: " + topMargin + ", " + (this.screen.screenHeight - topMargin) );
-			this.commandsContainerWidth = (this.screen.screenWidth * 2) / 3;
+			//#if polish.Screen.maxMenuWidthInPercent:defined
+				//#= this.commandsContainerWidth = (this.screen.screenWidth * ${polish.Screen.maxMenuWidthInPercent}) / 100;
+			//#else
+				this.commandsContainerWidth = (this.screen.screenWidth * 2) / 3;
+			//#endif
 			int containerHeight = this.commandsContainer.getItemHeight(this.commandsContainerWidth, this.commandsContainerWidth);
 			this.commandsContainerY = screenHeight - containerHeight - 1;
 			if (this.commandsContainerY < titleHeight) {
