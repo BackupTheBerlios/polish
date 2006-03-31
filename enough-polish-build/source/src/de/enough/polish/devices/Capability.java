@@ -49,6 +49,7 @@ public class Capability {
 	private final String type;
 	private final String implicitGroup;
 	private final String description;
+    private boolean appendZeroDelimitedExtension;
 
 	/**
 	 * Creates a new capability
@@ -67,7 +68,8 @@ public class Capability {
 			throw new InvalidComponentException("Each defined capability need the <identifier> element in capabilities.xml");
 		}
 		this.appendExtensions = "append".equals( definition.getChildTextTrim("extension-mode") );
-		this.group = definition.getChildTextTrim("group");
+		this.appendZeroDelimitedExtension = "appendZero".equals(definition.getChildTextTrim("extension-mode"));
+        this.group = definition.getChildTextTrim("group");
 		this.required = CastUtil.getBoolean( definition.getChildTextTrim("required") );
 		this.type = definition.getChildTextTrim("type");
 		this.implicitGroup = definition.getChildTextTrim("implicit-group");
@@ -115,5 +117,14 @@ public class Capability {
 	public String getDescription() {
 		return this.description;
 	}
+
+
+	/**
+	 * @return true if this capability will concatinate several occurences of a capability definition
+     * with a zero (0x0) as delimiter.
+	 */
+    public boolean appendZeroDelimitedExtension() {
+        return this.appendZeroDelimitedExtension;
+    }
 
 }
