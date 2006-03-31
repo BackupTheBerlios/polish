@@ -156,6 +156,14 @@ public class DeviceManager {
 		return this.devices;
 	}
 
+    public void addDevice(Device device) {
+        Device[] newDevices = new Device[this.devices.length+1];
+        System.arraycopy(this.devices,0,newDevices,0,this.devices.length);
+        newDevices[this.devices.length] = device;
+        this.devices = newDevices;
+        this.devicesByIdentifier.put(device.getIdentifier(),device);
+    }
+    
 	/**
 	 * Retrieves a single device.
 	 * 
