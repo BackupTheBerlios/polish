@@ -171,10 +171,9 @@ public class RmsStorage implements Storage {
 	 * @see de.enough.polish.io.Storage#save(de.enough.polish.io.Serializable, java.lang.String)
 	 */
 	public void save(Serializable object, String name) throws IOException {
-		Externalizable extern = (Externalizable) object;
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
-		Serializer.serialize(extern, out);
+		Serializer.serialize(object, out);
 		byte[] data = byteOut.toByteArray();
 		out.close();
 		byteOut.close();
@@ -187,16 +186,7 @@ public class RmsStorage implements Storage {
 	public void saveAll(Serializable[] objects, String name) throws IOException {
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
-		out.writeInt( objects.length );
-		if (objects.length > 0) {
-			Externalizable extern = (Externalizable) objects[0];
-			// TODO: write version of class?
-			out.writeUTF( extern.getClass().getName() );
-			for (int i = 0; i < objects.length; i++) {
-				extern = (Externalizable) objects[i];
-				extern.write(out);				
-			}
-		}
+		Serializer.serializeArray(objects, out);
 		byte[] data = byteOut.toByteArray();
 		out.close();
 		byteOut.close();
@@ -301,23 +291,7 @@ public class RmsStorage implements Storage {
 			throw new IOException( e.toString() );
 		}
 		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
-		int arraySize = in.readInt();
-		String className = in.readUTF();
-		try {
-			Class externClass = Class.forName(className);
-			Externalizable[] externs = new Externalizable[ arraySize ];
-			for (int i = 0; i < arraySize; i++) {
-				Externalizable extern = (Externalizable) externClass.newInstance();
-				extern.read(in);
-				externs[i] = extern;
-			}
-			in.close();
-			return externs; 
-		} catch (Exception e) {
-			//#debug error
-			System.out.println("Unable to load/initialize class " + className + e );
-			throw new IOException( e.toString() ); 
-		}
+		return Serializer.deserializeArray(in);
 	}
 
 	/* (non-Javadoc)
