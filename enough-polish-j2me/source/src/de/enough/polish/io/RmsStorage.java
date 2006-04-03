@@ -174,9 +174,7 @@ public class RmsStorage implements Storage {
 		Externalizable extern = (Externalizable) object;
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
-		out.writeUTF( extern.getClass().getName() );
-		// TODO: write version of class?
-		extern.write(out);
+		Serializer.serialize(extern, out);
 		byte[] data = byteOut.toByteArray();
 		out.close();
 		byteOut.close();
@@ -270,17 +268,7 @@ public class RmsStorage implements Storage {
 			throw new IOException( e.toString() );
 		}
 		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
-		String className = in.readUTF();
-		try {
-			Externalizable extern = (Externalizable) Class.forName(className).newInstance();
-			extern.read(in);
-			in.close();
-			return extern; 
-		} catch (Exception e) {
-			//#debug error
-			System.out.println("Unable to load/initialize class " + className + e );
-			throw new IOException( e.toString() ); 
-		}
+		return Serializer.deserialize( in );
 	}
 
 	/* (non-Javadoc)
