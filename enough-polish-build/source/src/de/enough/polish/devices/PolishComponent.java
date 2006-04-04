@@ -329,6 +329,8 @@ implements Comparable
 		//boolean debug = (name.indexOf("javapackage") != -1);
 		if (this.capabilityManager != null) {
 			Capability capability = this.capabilityManager.getCapability( name );
+            //TODO: this is the vision.
+//            capability.set(name,value,this.);
 			if ( capability != null ) {
 				if ( capability.appendExtensions() ) {
 					String existingValue = getCapability( name );
