@@ -2332,6 +2332,7 @@ These namespaces/schemas will be used soon.
 
 	
 <!-- Nokia devices -->
+
 	<device>
 		<identifier>Nokia/E70</identifier>
 		<groups>Series60E3</groups>
@@ -2589,6 +2590,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi" />
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="208x208"/>
+		<capability name="CanvasSize" value="208x156"/>
 		<capability name="FullCanvasSize" value="208x208"/>
 		<capability name="VideoFormat" value="3gpp, h.263" />
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3" />
@@ -2606,13 +2608,15 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/8801</identifier>
-		<groups>Series40DP2</groups>
+		<groups></groups>
 		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi" />
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi, nokia-ui" />
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="208x208"/>
+		<capability name="CanvasSize" value="208x156"/>
 		<capability name="FullCanvasSize" value="208x208"/>
 		<capability name="VideoFormat" value="3gpp, h.263" />
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3" />
@@ -6159,6 +6163,28 @@ These namespaces/schemas will be used soon.
 	
 	
 <!-- Qtek devices -->
+	<device>
+		<identifier>Qtek/8310</identifier>
+		<groups></groups>
+		<features>hasCommandKeyEvents, isDoubleBuffered</features>
+		<capability name="os" value="Windows Mobile 2005" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x266"/>
+		<capability name="FullCanvasSize" value="240x266"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="key.LeftSoftKey" value="57345" />
+		<capability name="key.RightSoftKey" value="57346" />
+		<capability name="Font.small" value="16" />
+		<capability name="Font.medium" value="21" />
+		<capability name="Font.large" value="27" />
+		<capability name="mmapi.protocol.http" value="audio/basic, audio/midi, audio/x-wav" />
+		<capability name="mmapi.protocol.https" value="audio/basic, audio/midi, audio/x-wav" />
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq" />
+		<capability name="Property.microedition.platform" value="intent JTE" />
+	</device> 
+
 	<device>
 		<identifier>Qtek/XDAII</identifier>
 		<groups></groups>
