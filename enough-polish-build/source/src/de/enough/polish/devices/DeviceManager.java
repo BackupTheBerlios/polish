@@ -168,11 +168,45 @@ public class DeviceManager {
 	 * Retrieves a single device.
 	 * 
 	 *@param identifier the identifier of the device, eg Nokia/6600
-	 *@return the device or null when it is not known. 
+	 *@return the device or null when it is not known.
 	 */
 	public Device getDevice(String identifier) {
 		return (Device) this.devicesByIdentifier.get( identifier );
 	}
+    
+    /**
+     * This class tries to guess the device identifier by analyzing the fuzzy string
+     * and searches for a vendor and a model. The algorithm is rudimentary but a start.
+     * It checks if the fuzzy name is a regular identifer. After this the string is split into
+     * a vendor and model component. The vendor part is matched against all vendor aliases.
+     * @param fuzzyName
+     * @return the device or null when it is not known.
+     */
+    public Device getDeviceByFuzzyName(String fuzzyName) {
+        // Try the fuzzy name as normal identifier.
+        Device device;
+        device = getDevice(fuzzyName);
+        if(device != null) {
+            return device;
+        }
+        
+        String vendorString;
+        String modelString;
+        
+        String[] components = fuzzyName.split("/");
+        if(components.length != 2) {
+            return null;
+        }
+        vendorString = components[0];
+        modelString = components[1];
+        
+        Vendor vendor = this.vendorManager.getVendor(vendorString);
+        if(vendor == null) {
+            return null;
+        }
+        device = getDevice(vendor.getIdentifier()+"/"+modelString);
+        return device;
+    }
 	
 	public Device[] getVirtualDevices() {
 		return getVirtualDevices( this.devices );
