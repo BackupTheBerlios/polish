@@ -113,6 +113,7 @@
 		<required>no</required>
 		<type>extension</type>
 	</capability>
+	
 	<capability>
 		<identifier>wap.userAgent</identifier>
 		<extension-mode>appendZero</extension-mode>
@@ -120,5 +121,15 @@
 		<description>Defines the user agent string submitted in a wap request. This is a '\1' delimited list.</description>
 		<type>singleValue</type>
 	</capability>
+	
+	<capability>
+		<identifier>vendor.alias</identifier>
+		<extension-mode>append</extension-mode>
+		<required>no</required>
+		<description>An alias name for a given vendor name</description>
+		<type>list</type>
+	</capability>
+	
+	
 	
 </capabilities>
