@@ -112,9 +112,32 @@ public class VendorManager {
 	 * @return The vendor or null of that vendor has not been defined.
 	 */
 	public Vendor getVendor( String name ) {
-		return (Vendor) this.vendors.get( name );
+		Vendor vendor =  (Vendor) this.vendors.get( name );
+        if(vendor == null) {
+            vendor = searchForVendorAlias(name);
+        }
+        return vendor;
 	}
-
+    
+    private Vendor searchForVendorAlias(String vendorString) {
+        Vendor[] allVendors = getVendors();
+        Vendor vendor;
+        for (int i = 0; i < allVendors.length; i++) {
+            vendor = allVendors[i];
+            String aliasesAsString = vendor.getCapability("vendor.alias");
+            if(aliasesAsString == null) {
+                continue;
+            }
+            String[] aliases = StringUtil.splitAndTrim(aliasesAsString,",");
+            for (int j = 0; j < aliases.length; j++) {
+                if(vendorString.equals(aliases[j])) {
+                    return vendor;
+                }
+            }
+        }
+        return null;
+    }
+    
 	/**
 	 * Retrieves all known vendors.
 	 * 
