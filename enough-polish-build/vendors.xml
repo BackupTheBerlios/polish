@@ -67,6 +67,7 @@
 		<capability name="key.ChangeInputModeKey" value="42" />
 		<capability name="TextField.charactersKeyPound" value=" " />		
 		<capability name="Property.imei" value="com.sonyericsson.imei" />
+		<capability name="vendor.alias" value="SonyEricsson" />
 	</vendor>
 	
 	<vendor>
@@ -148,6 +149,8 @@
 	<vendor>
 		<name>Research In Motion</name>
 		<features></features>
+		<capability name="vendor.alias" value="RMI" />
+		<capability name="vendor.alias" value="Research In Motion Ltd." />
 	</vendor>
 
 	<vendor>
@@ -187,6 +190,7 @@
 		<name>Palm</name>
 		<capability name="build.Finalizer" value="jar2prc" />
 		<capability name="Emulator.Class" value="PalmEmulator" />
+		<capability name="vendor.alias" value="PalmOne" />
 	</vendor>
 	
 	<vendor>
@@ -217,6 +221,7 @@
 
 	<vendor>
 		<name>NTT-DoCoMo</name>
+		<capability name="vendor.alias" value="NTT DoCoMo" />
 	</vendor>	
 	
 </vendors>
