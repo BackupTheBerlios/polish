@@ -484,6 +484,14 @@
 	
 	<extension>
 		<type>postcompiler</type>
+		<name>serialization</name>
+		<class>de.enough.polish.postcompile.io.SerializationPostCompiler</class>
+		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<autostart>false</autostart>
+	</extension>
+	
+	<extension>
+		<type>postcompiler</type>
 		<name>antcall</name>
 		<class>de.enough.polish.postcompile.AntCallPostCompiler</class>
 	</extension>
