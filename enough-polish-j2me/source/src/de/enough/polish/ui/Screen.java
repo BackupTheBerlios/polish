@@ -632,9 +632,10 @@ implements AccessibleCanvas
 			//#endif
 			//#ifndef polish.skipTicker
 				if (this.ticker != null && !this.ticker.isInitialised) {
-					this.ticker.init( width, width );
+					this.ticker.init( width, width );					
 				}
 			//#endif
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
 
 		} catch (Exception e) {
 			//#debug error
@@ -1448,8 +1449,8 @@ implements AccessibleCanvas
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		if (this.isInitialised && isShown()) {
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			repaint();
 		}
 	}
@@ -1475,8 +1476,8 @@ implements AccessibleCanvas
 		} else {
 			this.titleHeight = 0;
 		}
-		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		if (this.isInitialised && isShown()) {
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			repaint();
 		}
 		//#endif
