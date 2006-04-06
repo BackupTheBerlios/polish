@@ -43,6 +43,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import de.enough.polish.Device;
+import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.ant.requirements.VariableDefinedRequirement;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.StringUtil;
 
@@ -63,7 +65,9 @@ public class DeviceManager {
 	private Device[] devices;
 	private final ArrayList devicesList;
 	private final HashMap devicesByIdentifier;
+    private final HashMap devicesByUserAgent;
 	private final VendorManager vendorManager;
+    private boolean isUserAgentMappingInitialized;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
@@ -84,8 +88,10 @@ public class DeviceManager {
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		this.devicesByIdentifier = new HashMap();
+        this.devicesByUserAgent = new HashMap();
 		this.devicesList = new ArrayList();
 		this.vendorManager = vendorManager;
+        this.isUserAgentMappingInitialized = false;
 		loadDevices( configuratioManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, devicesIS );
 		devicesIS.close();
 	}
@@ -208,7 +214,63 @@ public class DeviceManager {
         return device;
     }
 	
-	public Device[] getVirtualDevices() {
+    /**
+     * Searches for a device with a given user agent. If it is not found the
+     * user agent is shortend and matched again.
+     * @param userAgent
+     * @return the device corresponding to the given userAgent or null.
+     */
+    public Device getDeviceByUserAgent(String userAgent) {
+        if( ! this.isUserAgentMappingInitialized) {
+            initializeUserAgentMapping();
+            this.isUserAgentMappingInitialized = true;
+        }
+        return (Device)this.devicesByUserAgent.get(userAgent);
+    }
+    
+    private void initializeUserAgentMapping() {
+        String CAPABILITY_WAP_USER_AGENT = "wap.userAgent";
+        Device[] allDevices = getDevices();
+
+        Requirements requirements = new Requirements();
+        requirements.addRequirement(new VariableDefinedRequirement(CAPABILITY_WAP_USER_AGENT));
+        Device[] devicesWithUA = requirements.filterDevices(allDevices);
+        
+        Device cachedDevice;
+        Device currentDevice;
+        String shortendUserAgentId;
+        String currentUserAgentAsString;
+        
+        for (int deviceIndex = 0; deviceIndex < devicesWithUA.length; deviceIndex++) {
+            
+            currentDevice = devicesWithUA[deviceIndex];
+            currentUserAgentAsString = currentDevice.getCapability(CAPABILITY_WAP_USER_AGENT);
+            
+            if(currentUserAgentAsString == null) {
+                // Should not happen as we filtered the devices list for this capability.
+                continue;
+            }
+            String[] currentUserAgents = StringUtil.splitAndTrim(currentUserAgentAsString,'\1');
+            
+            for (int userAgentIndex = 0; userAgentIndex < currentUserAgents.length; userAgentIndex++) {
+                
+                String currentUserAgent = currentUserAgents[userAgentIndex];
+                int lengthOfString = currentUserAgent.length();
+                
+                for (int postfixIndex = 0; postfixIndex < lengthOfString; postfixIndex++) {
+                    shortendUserAgentId = currentUserAgent.substring(0,lengthOfString-postfixIndex);
+                    cachedDevice = (Device)this.devicesByUserAgent.get(shortendUserAgentId);
+                    if(cachedDevice != null) {
+                        // We have already a device with this user agent prefix. Abort.
+                        break;
+                    }
+                    this.devicesByUserAgent.put(shortendUserAgentId,currentDevice);
+                }
+            }
+        }
+    }
+
+    public Device[] getVirtualDevices() {
 		return getVirtualDevices( this.devices );
 	}
 	
