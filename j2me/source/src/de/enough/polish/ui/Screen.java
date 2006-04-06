@@ -416,9 +416,11 @@ implements AccessibleCanvas
 				//#if !polish.Menu.PaddingBottom:defined && !polish.Menu.PaddingTop:defined
 					localMenuBarHeight += 2;
 				//#endif
-				this.scrollIndicatorWidth = localMenuBarHeight;
-				this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-				this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+				//#if !tmp.useScrollBar
+					this.scrollIndicatorWidth = localMenuBarHeight;
+					this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
+					this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight + ", localMenuBarHeight=" + localMenuBarHeight);	
 				//#ifdef polish.Menu.MarginBottom:defined 
 					//#= localMenuBarHeight += ${polish.Menu.MarginBottom};
@@ -433,13 +435,13 @@ implements AccessibleCanvas
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
 			this.screenHeight = this.originalScreenHeight - diff;
 			// set position of scroll indicator:
-		//#elif polish.vendor.Siemens
+		//#elif polish.vendor.Siemens && !tmp.useScrollBar
 			// set the position of scroll indicator for Siemens devices 
 			// on the left side, so that the menu-indicator is visible:
 			this.scrollIndicatorWidth = 12;
 			this.scrollIndicatorX = 0;
 			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
-		//#else
+		//#elif !tmp.useScrollBar
 			// set position of scroll indicator:
 			this.scrollIndicatorWidth = 12;
 			this.scrollIndicatorX = this.screenWidth - this.scrollIndicatorWidth;
@@ -1647,7 +1649,12 @@ implements AccessibleCanvas
 					}
 					if (this.menuOpened) {
 						if (keyCode == RIGHT_SOFT_KEY ) {
-							openMenu( false );
+							int selectedIndex = this.menuContainer.getFocusedIndex();
+							if (!this.menuContainer.handleKeyPressed(0, LEFT)
+									|| selectedIndex != this.menuContainer.getFocusedIndex() ) 
+							{
+								openMenu( false );
+							}
 //						} else if ( gameAction == Canvas.FIRE ) {
 //							int focusedIndex = this.menuContainer.getFocusedIndex();
 //							Command cmd = (Command) this.menuCommands.get( focusedIndex );
@@ -2427,9 +2434,13 @@ implements AccessibleCanvas
 				this.originalScreenHeight = this.screenHeight;
 			//#else
 				this.screenHeight = height;
-				this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+				//#if !tmp.useScrollBar
+					this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+				//#endif
 			//#endif
-			this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
+			//#if !tmp.useScrollBar
+				this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
+			//#endif
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
 		//#endif
 	}

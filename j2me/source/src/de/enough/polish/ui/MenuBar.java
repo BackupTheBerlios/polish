@@ -352,7 +352,7 @@ public class MenuBar extends Item {
 			//#if polish.Screen.maxMenuWidthInPercent:defined
 				//#= this.commandsContainerWidth = (this.screen.screenWidth * ${polish.Screen.maxMenuWidthInPercent}) / 100;
 			//#else
-				this.commandsContainerWidth = (this.screen.screenWidth * 2) / 3;
+				this.commandsContainerWidth = this.screen.screenWidth;
 			//#endif
 			int containerHeight = this.commandsContainer.getItemHeight(this.commandsContainerWidth, this.commandsContainerWidth);
 			this.commandsContainerY = screenHeight - containerHeight - 1;
@@ -599,7 +599,12 @@ public class MenuBar extends Item {
 		} else if (keyCode == RIGHT_SOFT_KEY) {
 			this.isSoftKeyPressed = true;
 			if (this.isOpened) {
-				setOpen( false );
+				int selectedIndex = this.commandsContainer.getFocusedIndex();
+				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
+						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
+				{
+					setOpen( false );
+				}
 				return true;
 			} else if (this.singleRightCommand != null) {
 				this.screen.callCommandListener(this.singleRightCommand);

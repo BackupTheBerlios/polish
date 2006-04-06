@@ -50,9 +50,13 @@ public class CommandItem extends IconItem {
 	private Container children;
 	protected boolean hasChildren;
 	private int childIndicatorWidth = 5;
-	private int childIndicatorHeight;
+	private int childIndicatorYOffset;
+	private int childIndicatorHeight = 5;
 	//#if polish.css.command-child-indicator
 		private Image childIndicator;
+	//#endif
+	//#if polish.css.command-child-indicator-color
+		private int childIndicatorColor = -1;
 	//#endif
 	private boolean isOpen;
 	private Style originalStyle;
@@ -100,12 +104,54 @@ public class CommandItem extends IconItem {
 	 */
 	public void addChild( Command childCommand, Style childStyle ) {
 		if ( this.children == null ) {
-			this.children = new Container( true, this.parent.style );
+			int layer = getLayer();
+			if (layer == 0) {
+				//#style menu1?
+				this.children = new Container( true );
+			} else if (layer == 1) {
+				//#style menu2?
+				this.children = new Container( true );
+			} else if (layer == 2) {
+				//#style menu3?
+				this.children = new Container( true );
+			}
+			if (this.children == null) {
+				this.children = new Container( true, this.parent.style );
+			} else if (this.children.style == null) {
+				this.children.style = this.parent.style;
+			}
 			this.hasChildren = true;
 			this.children.parent = this;
 		}
 		CommandItem child = new CommandItem( childCommand, this, childStyle );
 		this.children.add( child );
+	}
+
+	/**
+	 * Retrieves the layer to which this command item belongs.
+	 * This method is useful for sub commands.
+	 * 
+	 * @return the layer, 0 means this command item belongs to the main commands.
+	 */
+	public int getLayer() {
+		Item parentItem = this.parent;
+		int layer = 0;
+		while (parentItem != null) {
+			while (! (parentItem instanceof CommandItem) ) {
+				//System.out.println("getLayer - skipping parent " + parentItem );
+				parentItem = parentItem.parent;
+				if (parentItem == null) {
+					//System.out.println("getLayer - returning because of null parent ");
+					return layer;
+				}
+			}
+			if (parentItem == null) {
+				return layer;
+			}
+			parentItem = parentItem.parent;
+			layer++;
+		}
+		return layer;
 	}
 	
 	/**
@@ -144,6 +190,8 @@ public class CommandItem extends IconItem {
 			this.contentWidth += this.childIndicatorWidth + this.paddingHorizontal;
 			if ( this.childIndicatorHeight > this.contentHeight ) {
 				this.contentHeight = this.childIndicatorHeight;
+			} else {
+				this.childIndicatorYOffset = (this.contentHeight - this.childIndicatorHeight) / 2;
 			}
 		}
 	}
@@ -160,17 +208,22 @@ public class CommandItem extends IconItem {
 			//rightBorder -= this.childIndicatorWidth;
 			//#if polish.css.command-child-indicator
 				if (this.childIndicator != null) {
-					g.drawImage( this.childIndicator, rightBorder - this.childIndicatorWidth, y, Graphics.TOP | Graphics.RIGHT );
+					g.drawImage( this.childIndicator, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 				} else {
 			//#endif
-					//g.setColor( this.indicatorColor );
+					//#if polish.css.command-child-indicator-color
+						if ( this.childIndicatorColor != -1 ) {
+							g.setColor( this.childIndicatorColor );							
+						}
+					//#endif
 					x = rightBorder - this.childIndicatorWidth;
+					int indicatorY = y + this.childIndicatorYOffset;
 					//#if polish.midp2
-						g.fillTriangle(x, y, rightBorder, y + this.childIndicatorHeight/2, x, y + this.childIndicatorHeight );
+						g.fillTriangle(x, indicatorY, rightBorder, indicatorY + this.childIndicatorHeight/2, x, indicatorY + this.childIndicatorHeight );
 					//#else
-						g.drawLine( x, y, rightBorder, y + this.childIndicatorHeight/2 );
-						g.drawLine( x, y + this.childIndicatorHeight, rightBorder, y + this.childIndicatorHeight/2 );
-						g.drawLine( x, y, x, y + this.childIndicatorHeight );
+						g.drawLine( x, indicatorY, rightBorder, indicatorY + this.childIndicatorHeight/2 );
+						g.drawLine( x, indicatorY + this.childIndicatorHeight, rightBorder, indicatorY + this.childIndicatorHeight/2 );
+						g.drawLine( x, indicatorY, x, indicatorY + this.childIndicatorHeight );
 					//#endif
 			//#if polish.css.command-child-indicator
 				}
@@ -332,6 +385,12 @@ public class CommandItem extends IconItem {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		//#if polish.css.command-child-indicator-color
+			Integer childIndicatorColorInt = style.getIntProperty("command-child-indicator-color");
+			if ( childIndicatorColorInt != null ) {
+				this.childIndicatorColor = childIndicatorColorInt.intValue();
+			}
+		//#endif
 		//#if polish.css.command-child-indicator
 			String childIndicatorUrl = style.getProperty( "command-child-indicator" );
 			if (childIndicatorUrl != null) {
@@ -349,6 +408,18 @@ public class CommandItem extends IconItem {
 				this.childIndicatorWidth = this.font.getHeight();
 				this.childIndicatorHeight = this.childIndicatorWidth;
 		//#if polish.css.command-child-indicator
+			}
+		//#endif
+		//#if polish.css.command-child-indicator-width
+			Integer childIndicatorWidthInt = style.getIntProperty("command-child-indicator-width");
+			if ( childIndicatorWidthInt != null ) {
+				this.childIndicatorWidth = childIndicatorWidthInt.intValue();
+			}
+		//#endif
+		//#if polish.css.command-child-indicator-height
+			Integer childIndicatorHeightInt = style.getIntProperty("command-child-indicator-height");
+			if ( childIndicatorHeightInt != null ) {
+				this.childIndicatorHeight = childIndicatorHeightInt.intValue();
 			}
 		//#endif
 

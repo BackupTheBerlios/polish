@@ -343,6 +343,13 @@ public class TextField extends StringItem
 //#elif polish.blackberry  
 	, FieldChangeListener
 //#endif
+//#if polish.TextField.supportSymbolsEntry && tmp.directInput
+	//#define tmp.supportsSymbolEntry
+	//#if !polish.css.style.textFieldSymbolTable
+		//#abort You need to define the textFieldSymbolTable CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
+	//#endif
+//#endif
+
 {
 	/**
 	 * The user is allowed to enter any text.
@@ -661,13 +668,23 @@ public class TextField extends StringItem
 	private String passwordText;
 	private boolean isPassword;
 	private boolean enableDirectInput;
-	//#ifndef tmp.suppressCommands
+	//#if !tmp.suppressCommands && !tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
 
 	// this is outside of the tmp.directInput block, so that it can be referenced from the UiAccess class
 	int inputMode; // the current input mode		
 	//#if tmp.directInput
+		//#if tmp.supportsSymbolEntry
+			private static List symbolsList;
+			//#ifdef polish.i18n.useDynamicTranslations
+		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 3 );
+			//#elifdef polish.command.entersymbol:defined
+				//#= private static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, 3 );
+			//#else
+				//# private static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, 3 ); 
+			//#endif
+		//#endif
 		private boolean isKeyDown;
 		//#ifdef polish.TextField.InputTimeout:defined
 			//#= private static final int INPUT_TIMEOUT = ${polish.TextField.InputTimeout};  
@@ -1307,7 +1324,11 @@ public class TextField extends StringItem
 		this.constraints = constraints;
 		this.isUneditable = (constraints & UNEDITABLE) == UNEDITABLE;
 		//#if polish.blackberry
-			long bbStyle = Field.FOCUSABLE | Field.EDITABLE;
+			
+			long bbStyle = Field.FOCUSABLE;
+			if (!this.isUneditable) {
+				bbStyle |= Field.EDITABLE;
+			}
 			if ( (constraints & DECIMAL) == DECIMAL) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
 			} else if ((constraints & NUMERIC) == NUMERIC) {
@@ -1402,6 +1423,21 @@ public class TextField extends StringItem
 			}
 
 		//#endif
+			
+		//#if tmp.directInput && tmp.supportsSymbolEntry
+			if (!this.isNumeric) {
+				removeCommand( ENTER_SYMBOL_CMD );
+				if (!this.isUneditable) {
+					//#ifdef polish.i18n.useDynamicTranslations
+						String enterSymbolLabel = Locale.get("polish.command.entersymbol");
+						if ( enterSymbolLabel != ENTER_SYMBOL_CMD.getLabel()) {
+							ENTER_SYMBOL_CMD = new Command( enterSymbolLabel, Command.ITEM, 3 );
+						}
+					//#endif
+					this.addCommand(ENTER_SYMBOL_CMD);
+				}
+			}
+		//#endif	
 			
 			
 //		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
@@ -1806,7 +1842,7 @@ public class TextField extends StringItem
 			column = length;
 		}
 		this.caretColumn = column;
-		boolean endsInLineBreak = (length > 1) && (line.charAt(length-1) == '\n'); 
+		boolean endsInLineBreak = (length >= 1) && (line.charAt(length-1) == '\n'); 
 		if (column == length || ( endsInLineBreak && column == length -1 )) {
 			if ( endsInLineBreak ) {
 				this.caretRowFirstPart = line.substring( 0, length - 1);								
@@ -1828,6 +1864,8 @@ public class TextField extends StringItem
 			//this.caretRowLastPartWidth = this.font.stringWidth(this.caretRowLastPart);;
 		}
 		this.caretX = this.font.stringWidth(this.caretRowFirstPart);
+		//#debug
+		System.out.println("setCaretRow() result: endsInLineBreak=" + endsInLineBreak + ", firstPart=[" + this.caretRowFirstPart + "], lastPart=[" + this.caretRowLastPart + "].");
 	}
 	//#endif
 	
@@ -2796,40 +2834,51 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#ifndef tmp.suppressCommands
+	//#if !tmp.suppressCommands && !tmp.supportsSymbolEntry
 		public void setItemCommandListener(ItemCommandListener l) {
 			this.additionalItemCommandListener = l;
 		}
 	//#endif
 	
-	//#ifndef tmp.suppressCommands
+	//#if !tmp.suppressCommands  && !tmp.supportsSymbolEntry
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
 		public void commandAction(Command cmd, Item item) {
-			if ( cmd == DELETE_CMD ) {
-				if (this.text != null && this.text.length() > 0) {
-					//#ifdef tmp.directInput
-						//#ifdef tmp.allowDirectInput
-							if (this.enableDirectInput) {
+			//#if tmp.supportsSymbolEntry
+//				if (cmd == ENTER_SYMBOL_CMD ) {
+//					if (symbolsList == null) {
+//						//#style textFieldSymbolTable
+//						symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
+//						symbolList.set
+//					}
+//				}
+			//#endif
+			//#ifndef tmp.suppressCommands
+				if ( cmd == DELETE_CMD ) {
+					if (this.text != null && this.text.length() > 0) {
+						//#ifdef tmp.directInput
+							//#ifdef tmp.allowDirectInput
+								if (this.enableDirectInput) {
+							//#endif
+									deleteCurrentChar();
+							//#ifdef tmp.allowDirectInput
+								} else {
+									String myText = getString();
+									setString( myText.substring(0, myText.length() - 1));
+								}
+							//#endif
+						//#else
+							String myText = getString();
+							setString( myText.substring(0, myText.length() - 1));
 						//#endif
-								deleteCurrentChar();
-						//#ifdef tmp.allowDirectInput
-							} else {
-								String myText = getString();
-								setString( myText.substring(0, myText.length() - 1));
-							}
-						//#endif
-					//#else
-						String myText = getString();
-						setString( myText.substring(0, myText.length() - 1));
-					//#endif
+					}
+				} else if ( cmd == CLEAR_CMD ) {
+					setString( null );
+				} else if ( this.additionalItemCommandListener != null ) {
+					this.additionalItemCommandListener.commandAction(cmd, item);
 				}
-			} else if ( cmd == CLEAR_CMD ) {
-				setString( null );
-			} else if ( this.additionalItemCommandListener != null ) {
-				this.additionalItemCommandListener.commandAction(cmd, item);
-			}
+			//#endif
 		}
 	//#endif
 		
