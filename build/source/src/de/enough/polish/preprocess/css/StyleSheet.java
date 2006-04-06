@@ -74,6 +74,9 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("default", Boolean.TRUE );
 		PSEUDO_CLASSES.put("label", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menu", Boolean.TRUE );
+		PSEUDO_CLASSES.put("menu1", Boolean.TRUE );
+		PSEUDO_CLASSES.put("menu2", Boolean.TRUE );
+		PSEUDO_CLASSES.put("menu3", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menuitem", Boolean.TRUE );
 		PSEUDO_CLASSES.put("info", Boolean.TRUE );
 		PSEUDO_CLASSES.put("tabbar", Boolean.TRUE );

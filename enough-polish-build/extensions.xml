@@ -367,6 +367,12 @@
 		<name>imageheight</name>
 		<class>de.enough.polish.propertyfunctions.ImageHeightFunction</class>
 	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>exists</name>
+		<class>de.enough.polish.propertyfunctions.ExistsFunction</class>
+	</extension>
 	
 	<!-- Preverifier -->
 	

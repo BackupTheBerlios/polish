@@ -123,6 +123,28 @@
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/nbproject/project.properties" type="shell" /> 
         </pack>
+        <pack name="Email Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to use subcommands as well as an advanced TextField.</description>
+            <file src="samples/email/source" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="samples/email/resources" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="../setup/samples/email/build.xml" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="../setup/samples/email/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="../setup/samples/email/nbproject" targetdir="$INSTALL_PATH/samples/email"/>
+            <parsable targetfile="$INSTALL_PATH/samples/email/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/email/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/email/nbproject/project.properties" type="shell" /> 
+        </pack>
+        <pack name="FramedForm Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to use the FramedForm.</description>
+            <file src="samples/framedform/source" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="samples/framedform/resources" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="../setup/samples/framedform/build.xml" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="../setup/samples/framedform/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="../setup/samples/framedform/nbproject" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <parsable targetfile="$INSTALL_PATH/samples/framedform/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/framedform/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/framedform/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="MIDP SysInfo" required="no" preselected="yes">
             <description>An application that checks the capabilities of your device. This application is based on Grimo Software's MIDP SysInfo MIDlet and is a co-effort of Grimo Software, Enough Software and Mark Schriejver.</description>
             <file src="samples/sysinfo/source" targetdir="$INSTALL_PATH/samples/sysinfo"/>

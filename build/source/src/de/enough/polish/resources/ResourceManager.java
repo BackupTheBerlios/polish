@@ -224,6 +224,10 @@ public class ResourceManager {
 	public void copyResources( File targetDir, Device device, Locale locale ) 
 	throws IOException 
 	{
+		// create target dir:
+		if (!targetDir.exists()) {
+			targetDir.mkdirs();
+		}
 		// add manual excludes from the user:
 		this.resourceFilter.setAdditionalFilters( this.resourceSetting.getFilters(this.booleanEvaluator));
 		File[] resources = getResources( device, locale );
@@ -274,12 +278,8 @@ public class ResourceManager {
 		Locale[] locales = this.localizationSetting.getSupportedLocales();
 		for (int i = 0; i < locales.length; i++) {
 			Locale locale = locales[i];
-			TranslationManager manager = createTranslationManager( device, 
-					locale, 
-					this.environment, 
-					getResourceDirs(device, locale), 
-					this.localizationSetting );
-			manager.saveTranslations( targetDir, device, locale, this.translationManager );
+			TranslationManager manager = getTranslationManager( device, locale );
+			manager.saveTranslations( targetDir, device, locale );
 		}
 	}
 

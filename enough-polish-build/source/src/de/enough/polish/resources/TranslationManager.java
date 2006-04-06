@@ -829,10 +829,10 @@ implements Comparator
 		return this.localizationSetting.getDefaultLocale();
 	}
 	
-	private void setIdsAndSort( Translation[] translations, TranslationManager manager ) {
+	private void setIdsAndSort( Translation[] translations ) {
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];
-			Translation knownIdTranslation = manager.getTranslation( translation.getKey() );
+			Translation knownIdTranslation = getTranslation( translation.getKey() );
 			if (knownIdTranslation == null) {
 				throw new BuildException("The translation [" + translation.getKey() +"] is not defined in the default locale. You need to define it in that locale as well when you want to use dynamic translations." );
 			}
@@ -849,10 +849,9 @@ implements Comparator
 	 * @param targetDir the target directory
 	 * @param currentDevice the current device
 	 * @param dynamicLocale the locale
-	 * @param manager the manager that knows about the translations
 	 * @throws IOException when a resource could not be copied
 	 */
-	public void saveTranslations(File targetDir, Device currentDevice, Locale dynamicLocale, TranslationManager manager)
+	public void saveTranslations(File targetDir, Device currentDevice, Locale dynamicLocale )
 	throws IOException
 	{
 		File file = new File( targetDir, dynamicLocale.toString() + ".loc" );
@@ -860,7 +859,7 @@ implements Comparator
 		DataOutputStream out = new DataOutputStream( new FileOutputStream( file ) );
 		// plain translations:
 		Translation[] translations = getPlainTranslations();
-		setIdsAndSort( translations, manager );
+		setIdsAndSort( translations );
 		out.writeInt( translations.length );
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];
@@ -869,7 +868,7 @@ implements Comparator
 		}
 		// translations with a single parameter:
 		translations = getSingleParameterTranslations();
-		setIdsAndSort( translations, manager );
+		setIdsAndSort( translations );
 		out.writeInt( translations.length );
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];
@@ -878,7 +877,7 @@ implements Comparator
 		}
 		// translations with a multiple parameters:
 		translations = getMultipleParametersTranslations();
-		setIdsAndSort( translations, manager );
+		setIdsAndSort( translations );
 		out.writeInt( translations.length );
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];

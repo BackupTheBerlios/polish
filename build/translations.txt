@@ -22,3 +22,5 @@ polish.command.hide=Hide
 # is defined in a TextField. This is only
 # used when no direct input mode is activated:
 polish.title.input=Input
+# used for showing a screen for selecting symbols within TextFields:
+polish.command.entersymbol=Add Symbol

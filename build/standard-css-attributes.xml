@@ -1488,6 +1488,37 @@
 		id="145"
 	/>
 	
+	<attribute
+		name="command-child-indicator"
+		type="imageurl"
+		appliesTo="Command, CommandItem"
+		description="The image used for a command to indicate that it has subcommands."
+		id="146"
+	/>
+	
+	<attribute
+		name="command-child-indicator-color"
+		type="color"
+		appliesTo="Command, CommandItem"
+		description="The color for the drawn arrow that is used for a command to indicate that it has subcommands. Only used when the &quot;command-child-indicator&quot; CSS attribute is not set."
+		id="147"
+	/>
+
+	<attribute
+		name="command-child-indicator-width"
+		type="integer"
+		appliesTo="Command, CommandItem"
+		description="The width of the drawn arrow that is used for a command to indicate that it has subcommands. Only used when the &quot;command-child-indicator&quot; CSS attribute is not set."
+		id="148"
+	/>
+
+	<attribute
+		name="command-child-indicator-height"
+		type="integer"
+		appliesTo="Command, CommandItem"
+		description="The height of the drawn arrow that is used for a command to indicate that it has subcommands. Only used when the &quot;command-child-indicator&quot; CSS attribute is not set."
+		id="149"
+	/>
 	
 	<!--
 	

@@ -291,6 +291,26 @@
 			<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+		<!-- copy email sample application -->
+		<mkdir dir="tmp/samples/email/source/src" />
+		<copy todir="tmp/samples/email/source/src">
+			<fileset dir="../enough-polish-sample-email/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/email/" 
+			>
+			<fileset dir="setup/samples/email" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-email" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy framedform sample application -->
+		<mkdir dir="tmp/samples/framedform/source/src" />
+		<copy todir="tmp/samples/framedform/source/src">
+			<fileset dir="../enough-polish-sample-framedform/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/framedform/" 
+			>
+			<fileset dir="setup/samples/framedform" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-framedform" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
 		<!-- copy doja sample application -->
 		<mkdir dir="tmp/samples/doja/source/src" />
 		<copy todir="tmp/samples/doja/source/src">

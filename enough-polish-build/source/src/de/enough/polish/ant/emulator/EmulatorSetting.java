@@ -171,6 +171,10 @@ public class EmulatorSetting extends ExtensionSetting {
 	 * @param trace The trace-options in a comma-separated list
 	 */
 	public void setTrace(String trace) {
+		if ("none".equals(trace)) {
+			this.trace = null;
+			return;
+		}
 		this.trace = trace;
 		this.writePreferencesFile |= (trace != null) && (trace.indexOf(',') != -1);
 	}
