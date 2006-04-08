@@ -721,4 +721,18 @@ public final class UiAccess {
 	}
 	//#endif
 
+    /**
+     * @param form
+     * @param item
+     */
+    public static void focus( javax.microedition.lcdui.Form form, javax.microedition.lcdui.Item item ) {
+        // ignore
+    }
+
+    //#if polish.usePolishGui
+    public static void focus( Form form, Item item ) {
+        form.focus( item );
+    }
+    //#endif
+
 }
