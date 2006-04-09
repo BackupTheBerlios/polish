@@ -53,6 +53,10 @@ public class StringItem extends Item
 		protected BitMapFont bitMapFont;
 		protected BitMapFontViewer bitMapFontViewer;
 	//#endif
+	//#ifdef polish.css.text-wrap
+		protected boolean useSingleLine;
+		protected boolean clipText;
+	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
 		protected int textHorizontalAdjustment;
 	//#endif
@@ -336,6 +340,7 @@ public class StringItem extends Item
 			//#endif
 			g.setFont( this.font );
 			g.setColor( this.textColor );
+			
 			int lineHeight = this.font.getHeight() + this.paddingVertical; 
 			int centerX = 0;
 			if (this.isLayoutCenter) {
@@ -367,6 +372,19 @@ public class StringItem extends Item
 					// left layout (default)
 					//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
 				}
+				//#if polish.css.text-wrap
+					int clipX = 0;
+					int clipY = 0;
+					int clipWidth = 0;
+					int clipHeight = 0;
+					if (this.useSingleLine && this.clipText ) {
+						clipX = g.getClipX();
+						clipY = g.getClipY();
+						clipWidth = g.getClipWidth();
+						clipHeight = g.getClipHeight();
+						g.clipRect( x, y, this.contentWidth, this.contentHeight );
+					}
+				//#endif
 				//#if polish.css.text-effect
 					if (this.textEffect != null) {
 						this.textEffect.drawString( line, this.textColor, lineX, lineY, orientation, g );
@@ -374,6 +392,11 @@ public class StringItem extends Item
 				//#endif
 						g.drawString( line, lineX, lineY, orientation );
 				//#if polish.css.text-effect
+					}
+				//#endif
+					//#if polish.css.text-wrap
+					if (this.useSingleLine && this.clipText ) {
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
 					}
 				//#endif
 				x = leftBorder;
@@ -409,20 +432,36 @@ public class StringItem extends Item
 				return;
 			}
 		//#endif
-		String[] lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
-		int fontHeight = this.font.getHeight();
-		this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
-		int maxWidth = 0;
-		for (int i = 0; i < lines.length; i++) {
-			String line = lines[i];
-			int width = this.font.stringWidth(line);
-			if (width > maxWidth) {
-				maxWidth = width;
+		//#if polish.css.text-wrap
+			if ( this.useSingleLine ) {
+				this.textLines = new String[]{ this.text };
+				int textWidth = this.font.stringWidth(this.text);
+				if (textWidth > lineWidth) {
+					this.clipText = true;
+					this.contentWidth = lineWidth;
+				} else {
+					this.clipText = false;
+					this.contentWidth = textWidth;
+				}
+				this.contentHeight = this.font.getHeight();
+			} else {
+		//#endif
+				String[] lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
+				int fontHeight = this.font.getHeight();
+				this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
+				int maxWidth = 0;
+				for (int i = 0; i < lines.length; i++) {
+					String line = lines[i];
+					int width = this.font.stringWidth(line);
+					if (width > maxWidth) {
+						maxWidth = width;
+					}
+				}
+				this.contentWidth = maxWidth;
+				this.textLines = lines;
+		//#if polish.css.text-wrap
 			}
-		}
-		this.contentWidth = maxWidth;
-		this.textLines = lines;
-		//this.isSingleLine = (lines.length == 1);
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -462,7 +501,12 @@ public class StringItem extends Item
 				this.textEffect = null;
 			}
 		//#endif	
-
+		//#ifdef polish.css.text-wrap
+			Boolean textWrapBool = style.getBooleanProperty("text-wrap");
+			if (textWrapBool != null) {
+				this.useSingleLine = !textWrapBool.booleanValue();
+			}
+		//#endif	
 	}
 
 	//#ifdef polish.useDynamicStyles

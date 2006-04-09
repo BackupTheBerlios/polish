@@ -1519,6 +1519,15 @@
 		description="The height of the drawn arrow that is used for a command to indicate that it has subcommands. Only used when the &quot;command-child-indicator&quot; CSS attribute is not set."
 		id="149"
 	/>
+
+	<attribute
+		name="text-wrap"
+		type="boolean"
+		appliesTo="StringItem, TextField, ListItem, IconItem, Command, CommandItem"
+		description="Determines wether the text should be wrapped (=default) or whether it should be kept on one single line, even when it is larger than the available width."
+		default="true"
+		id="150"
+	/>
 	
 	<!--
 	
