@@ -237,7 +237,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			String leftArrowUrl = style.getProperty("exclusiveview-left-arrow");
 			if (leftArrowUrl != null) {
 				try {
-					this.leftArrow = StyleSheet.getImage( leftArrowUrl, this, false );
+					this.leftArrow = StyleSheet.getImage( leftArrowUrl, this, true );
 				} catch (IOException e) {
 					//#debug error
 					System.out.println("Unable to load left arrow image [" + leftArrowUrl + "]" + e );
@@ -248,7 +248,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			String rightArrowUrl = style.getProperty("exclusiveview-right-arrow");
 			if (rightArrowUrl != null) {
 				try {
-					this.rightArrow = StyleSheet.getImage( rightArrowUrl, this, false );
+					this.rightArrow = StyleSheet.getImage( rightArrowUrl, this, true );
 				} catch (IOException e) {
 					//#debug error
 					System.out.println("Unable to load right arrow image [" + rightArrowUrl + "]" + e );

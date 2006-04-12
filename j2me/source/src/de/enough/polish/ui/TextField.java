@@ -31,17 +31,17 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
-//#if polish.blackberry
-	import net.rim.device.api.ui.Field;
-	import net.rim.device.api.ui.FieldChangeListener;
-import net.rim.device.api.ui.UiApplication;
-	import net.rim.device.api.ui.XYRect;
-	import net.rim.device.api.ui.component.BasicEditField;
-	import de.enough.polish.blackberry.ui.PolishEditField;
-//#endif
-
 import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.Locale;
+
+//#if polish.blackberry
+import de.enough.polish.blackberry.ui.PolishEditField;
+import net.rim.device.api.ui.Field;
+import net.rim.device.api.ui.FieldChangeListener;
+import net.rim.device.api.ui.UiApplication;
+import net.rim.device.api.ui.XYRect;
+import net.rim.device.api.ui.component.BasicEditField;
+//#endif
 
 
 /**
@@ -328,12 +328,18 @@ public class TextField extends StringItem
 	//#define tmp.directInput
 	//#define tmp.allowDirectInput
 //#endif
-//#if !(tmp.forceDirectInput || polish.blackberry)
+//#if polish.TextField.supportSymbolsEntry && tmp.directInput
+	//#define tmp.supportsSymbolEntry
+	//#if !polish.css.style.textFieldSymbolTable
+		//#abort You need to define the \".textFieldSymbolTable\" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
+	//#endif
+//#endif
+//#if !(tmp.forceDirectInput || polish.blackberry) || tmp.supportsSymbolEntry
 	implements CommandListener
 //#endif
 //#if polish.TextField.suppressCommands == true
 	//#define tmp.suppressCommands
-//#elif (tmp.forceDirectInput || polish.blackberry)
+//#elif (tmp.forceDirectInput || polish.blackberry)  && !tmp.supportsSymbolEntry
 	//# implements ItemCommandListener
 //#else
 	, ItemCommandListener
@@ -342,12 +348,6 @@ public class TextField extends StringItem
 	//# implements FieldChangeListener
 //#elif polish.blackberry  
 	, FieldChangeListener
-//#endif
-//#if polish.TextField.supportSymbolsEntry && tmp.directInput
-	//#define tmp.supportsSymbolEntry
-	//#if !polish.css.style.textFieldSymbolTable
-		//#abort You need to define the textFieldSymbolTable CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
-	//#endif
 //#endif
 
 {
@@ -668,7 +668,7 @@ public class TextField extends StringItem
 	private String passwordText;
 	private boolean isPassword;
 	private boolean enableDirectInput;
-	//#if !tmp.suppressCommands && !tmp.supportsSymbolEntry
+	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
 
@@ -677,6 +677,7 @@ public class TextField extends StringItem
 	//#if tmp.directInput
 		//#if tmp.supportsSymbolEntry
 			private static List symbolsList;
+			private static String definedSymbols = "@/\\<>().,-_:\"";
 			//#ifdef polish.i18n.useDynamicTranslations
 		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 3 );
 			//#elifdef polish.command.entersymbol:defined
@@ -684,6 +685,9 @@ public class TextField extends StringItem
 			//#else
 				//# private static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, 3 ); 
 			//#endif
+		//#endif
+  		//#ifdef polish.css.text-wrap
+		  	private int currentXOffset; // used for scrolling to the correct position when text-wrapping is deactivated
 		//#endif
 		private boolean isKeyDown;
 		//#ifdef polish.TextField.InputTimeout:defined
@@ -936,6 +940,47 @@ public class TextField extends StringItem
 			}
 			return this.text;
 		}
+	}
+	
+	/**
+	 * Retrieves the decimal value entered with a dot as the decimal mark.
+	 * <ul>
+	 * <li>When the value has no decimal places it will be returned as it is: 12</li>
+	 * <li>When the value is null, null will be returned: null</li>
+	 * <li>When the value has decimal places, a dot will be used: 12.3</li>
+	 * </ul>
+	 * @return either the formatted value or null, when there was no input.
+	 * @throws IllegalStateException when the TextField is not DECIMAL constrained
+	 */
+	public String getDotSeparatedDecimalString() {
+		//#if tmp.directInput
+			//#if tmp.allowDirectInput
+				if (this.enableDirectInput) {
+			//#endif
+					if (!this.isDecimal) {
+						throw new IllegalStateException();
+					}
+					String value = getString();
+					if ( Locale.DECIMAL_SEPARATOR == '.' || value == null) {
+						return value;
+					} else {
+						return value.replace( Locale.DECIMAL_SEPARATOR, '.');
+					}
+			//#if tmp.allowDirectInput
+				}
+			//#endif
+		//#endif
+		//#if !tmp.forceDirectInput
+				if (( getConstraints() & DECIMAL)!= DECIMAL) {
+					throw new IllegalStateException();
+				}
+				String value = getString();
+				if (value == null) {
+					return null;
+				}
+				return value.replace(',', '.');
+			
+		//#endif
 	}
 
 	/**
@@ -2817,42 +2862,58 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !(polish.blackberry || tmp.forceDirectInput)
+	//#if !(polish.blackberry || tmp.forceDirectInput) || tmp.supportsSymbolEntry
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable box) {
-		if (cmd == StyleSheet.CANCEL_CMD) {
-			this.midpTextBox.setString( this.text );
-		} else if (!this.isUneditable) {
-			setString( this.midpTextBox.getString() );
-			if ( this.screen instanceof Form) {
-				notifyStateChanged();
+		//#if tmp.supportsSymbolEntry
+			int index = symbolsList.getSelectedIndex();
+			this.caretChar = definedSymbols.charAt(index);
+			StyleSheet.currentScreen = this.screen;
+			insertCharacter();
+			StyleSheet.display.setCurrent( this.screen );
+		//#else
+			if (cmd == StyleSheet.CANCEL_CMD) {
+				this.midpTextBox.setString( this.text );
+			} else if (!this.isUneditable) {
+				setString( this.midpTextBox.getString() );
+				if ( this.screen instanceof Form) {
+					notifyStateChanged();
+				}
 			}
-		}
-		StyleSheet.display.setCurrent( this.screen );
+			StyleSheet.display.setCurrent( this.screen );
+		//#endif
 	}
 	//#endif
 	
-	//#if !tmp.suppressCommands && !tmp.supportsSymbolEntry
+	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		public void setItemCommandListener(ItemCommandListener l) {
 			this.additionalItemCommandListener = l;
 		}
 	//#endif
 	
-	//#if !tmp.suppressCommands  && !tmp.supportsSymbolEntry
+	//#if !tmp.suppressCommands  || tmp.supportsSymbolEntry
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
 		public void commandAction(Command cmd, Item item) {
 			//#if tmp.supportsSymbolEntry
-//				if (cmd == ENTER_SYMBOL_CMD ) {
-//					if (symbolsList == null) {
-//						//#style textFieldSymbolTable
-//						symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
-//						symbolList.set
-//					}
-//				}
+				if (cmd == ENTER_SYMBOL_CMD ) {
+					if (this.caretChar != this.editingCaretChar) {
+						insertCharacter();
+					}
+					if (symbolsList == null) {
+						//#style textFieldSymbolTable?
+						symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
+						for (int i = 0; i < definedSymbols.length(); i++) {
+							symbolsList.append( definedSymbols.substring(i, i+1), null );
+						}
+						symbolsList.setCommandListener( this );
+					}
+					StyleSheet.display.setCurrent( symbolsList );
+					return;
+				}
 			//#endif
 			//#ifndef tmp.suppressCommands
 				if ( cmd == DELETE_CMD ) {

@@ -725,6 +725,9 @@ public class Container extends Item {
 					item.isInitialised = false;
 					item.isLayoutExpand = doExpand;
 				}
+				if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
+					myContentWidth = this.minimumWidth;
+				}
 				myContentHeight += item.itemHeight;
 			}
 		}

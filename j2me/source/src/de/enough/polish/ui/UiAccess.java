@@ -656,6 +656,49 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	
+	/**
+	 * Retrieves the decimal value entered with a dot as the decimal mark.
+	 * <ul>
+	 * <li>When the value has no decimal places it will be returned as it is: 12</li>
+	 * <li>When the value is null, null will be returned: null</li>
+	 * <li>When the value has decimal places, a dot will be used: 12.3</li>
+	 * </ul>
+	 * When the J2ME Polish GUI is not used, this method will only detect commas as possible
+	 * alternative decimal marks.
+	 * 
+	 * @param field the text field with a DECIMAL constraint
+	 * @return either the formatted value or null, when there was no input.
+	 * @throws IllegalStateException when the TextField is not DECIMAL constrained
+	 */
+	public static String getDotSeparatedDecimalString( javax.microedition.lcdui.TextField field ) {
+		if (( field.getConstraints() & javax.microedition.lcdui.TextField.DECIMAL)!= javax.microedition.lcdui.TextField.DECIMAL) {
+			throw new IllegalStateException();
+		}
+		String value = field.getString();
+		if (value == null) {
+			return null;
+		}
+		return value.replace(',', '.');
+	}
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the decimal value entered with a dot as the decimal mark.
+	 * <ul>
+	 * <li>When the value has no decimal places it will be returned as it is: 12</li>
+	 * <li>When the value is null, null will be returned: null</li>
+	 * <li>When the value has decimal places, a dot will be used: 12.3</li>
+	 * </ul>
+	 * @param field the text field with a DECIMAL constraint
+	 * @return either the formatted value or null, when there was no input.
+	 * @throws IllegalStateException when the TextField is not DECIMAL constrained
+	 */
+	public static String getDotSeparatedDecimalString( TextField field ) {
+		return field.getDotSeparatedDecimalString(); 
+	}
+	//#endif
+	
 	/**
 	 * Adds the given command as a subcommand to the defined screen. When the J2ME Polish GUI is not used, this will just add the command to the screen like a normal command.
 	 * 

@@ -2466,7 +2466,7 @@ implements AccessibleCanvas
 		 */
 		public void commandAction(Command cmd, Displayable thisScreen) {
 			//check if the given command is from the currently focused item:
-			Item item = Screen.this.focusedItem;
+			Item item = Screen.this.getCurrentItem();
 			//#debug
 			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + Screen.this.focusedItem + " and screen " + Screen.this );
 			if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
@@ -2549,7 +2549,7 @@ implements AccessibleCanvas
 		if (this.container != null) {
 			return this.container.focusedItem;
 		}
-		return null;
+		return this.focusedItem;
 	}
 	
 	/**

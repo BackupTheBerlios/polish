@@ -51,7 +51,7 @@ import de.enough.polish.ui.StyleSheet;
  */
 
 /**
- * <p>Shows only the currently selected item of an ChoiceGroup or a List.</p>
+ * <p>Shows  the available items of an ChoiceGroup or a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal-choice;" in your polish.css file.</p>
  *
  * <p>Copyright Enough Software 2005</p>
@@ -261,7 +261,7 @@ public class HorizontalChoiceView extends ContainerView {
 			String leftArrowUrl = style.getProperty("horizontalview-left-arrow");
 			if (leftArrowUrl != null) {
 				try {
-					this.leftArrow = StyleSheet.getImage( leftArrowUrl, this, false );
+					this.leftArrow = StyleSheet.getImage( leftArrowUrl, this, true );
 				} catch (IOException e) {
 					//#debug error
 					System.out.println("Unable to load left arrow image [" + leftArrowUrl + "]" + e );
@@ -272,7 +272,7 @@ public class HorizontalChoiceView extends ContainerView {
 			String rightArrowUrl = style.getProperty("horizontalview-right-arrow");
 			if (rightArrowUrl != null) {
 				try {
-					this.rightArrow = StyleSheet.getImage( rightArrowUrl, this, false );
+					this.rightArrow = StyleSheet.getImage( rightArrowUrl, this, true );
 				} catch (IOException e) {
 					//#debug error
 					System.out.println("Unable to load right arrow image [" + rightArrowUrl + "]" + e );

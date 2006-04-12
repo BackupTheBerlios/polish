@@ -739,7 +739,11 @@ implements ImageConsumer
 			}
 		//#endif
 		if (this.isIndefinite) {
-			g.drawImage(this.indicatorImage, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );			
+			if (this.image != null) {
+				g.drawImage( this.image, x + this.indefinitePos, y + this.imageYOffset,  Graphics.TOP | Graphics.LEFT );
+			} else {
+				g.drawImage(this.indicatorImage, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
+			}
 		} else if (this.image != null) {
 			if (this.value != 0) {
 				int width = (this.image.getWidth() * this.value) / this.maxValue;
@@ -978,7 +982,12 @@ implements ImageConsumer
 				notifyStateChanged();
 				return true;
 			} else {
-				return false;
+				//#if polish.blackberry
+					//# return false;
+				//#else
+					// silently supress the event and stay in max position:
+					return true;
+				//#endif
 			}			
 		} else if (gameAction == Canvas.LEFT) {
 			if (this.value > 0) {
@@ -986,7 +995,12 @@ implements ImageConsumer
 				notifyStateChanged();
 				return true;
 			} else {
-				return false;
+				//#if polish.blackberry
+					//# return false;
+				//#else
+					// silently supress the event and stay in min position:
+					return true;
+				//#endif
 			}
 		} else {
 			return false;
@@ -1039,7 +1053,7 @@ implements ImageConsumer
 							this.animationDirectionDownwards = true;
 						}
 					}
-					updateIndefiniteIndicatorImage();
+					//updateIndefiniteIndicatorImage();
 					return true;
 				}
 			//#endif
@@ -1052,10 +1066,10 @@ implements ImageConsumer
 				if (this.indefinitePos > (this.chunkWidth + this.gapWidth)) {
 					this.indefinitePos = 0;
 				}
+				updateIndefiniteIndicatorImage();
 			} else if (this.indefinitePos > this.maxValue) {				
 				this.indefinitePos = -this.image.getWidth();
 			}
-			updateIndefiniteIndicatorImage();
 			return true;
 		}
 		return false;
