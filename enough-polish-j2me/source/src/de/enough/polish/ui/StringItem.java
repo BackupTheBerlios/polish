@@ -394,7 +394,7 @@ public class StringItem extends Item
 				//#if polish.css.text-effect
 					}
 				//#endif
-					//#if polish.css.text-wrap
+				//#if polish.css.text-wrap
 					if (this.useSingleLine && this.clipText ) {
 						g.setClip( clipX, clipY, clipWidth, clipHeight );
 					}

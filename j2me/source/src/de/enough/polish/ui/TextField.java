@@ -1586,6 +1586,19 @@ public class TextField extends StringItem
 						centerX = leftBorder + (rightBorder - leftBorder) / 2;
 					}
 					if (this.text != null) {
+				  		//#ifdef polish.css.text-wrap
+							int clipX = 0;
+							int clipY = 0;
+							int clipWidth = 0;
+							int clipHeight = 0;
+							if (this.useSingleLine && this.clipText ) {
+								clipX = g.getClipX();
+								clipY = g.getClipY();
+								clipWidth = g.getClipWidth();
+								clipHeight = g.getClipHeight();
+								g.clipRect( x, y, this.contentWidth, this.contentHeight );
+							}
+						//#endif
 						for (int i = 0; i < this.textLines.length; i++) {
 							if (i == this.caretRow) {
 								if (this.isLayoutRight) {
@@ -1618,6 +1631,13 @@ public class TextField extends StringItem
 									g.drawString( this.caretRowLastPart, leftX, y, Graphics.TOP | Graphics.LEFT );
 								} else {
 									int leftX = x;
+							  		//#ifdef polish.css.text-wrap
+										//if (this.clipText) {
+											if ( leftX + this.caretX + this.caretWidth > rightBorder) {
+												leftX = rightBorder - (this.caretX + this.caretWidth);
+											}
+										//}
+									//#endif
 									g.drawString( this.caretRowFirstPart, leftX, y, Graphics.TOP | Graphics.LEFT );
 									leftX += this.caretX;
 									if (this.showCaret) {
@@ -1648,6 +1668,11 @@ public class TextField extends StringItem
 							x = leftBorder;
 							y += this.rowHeight;
 						} // for each line
+						//#if polish.css.text-wrap
+							if (this.useSingleLine && this.clipText ) {
+								g.setClip( clipX, clipY, clipWidth, clipHeight );
+							}
+						//#endif
 					} else if ( this.showCaret ) {
 						// this.text == null: paint only caret:
 						//#ifdef polish.css.textfield-caret-color

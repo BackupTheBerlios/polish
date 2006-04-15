@@ -52,7 +52,7 @@ public class ListItem
 {
 	
 	private final Container container;
-	private int availableWidth;
+	//private int availableWidth;
 
 	/**
 	 * Creates a new list item.
@@ -245,7 +245,7 @@ public class ListItem
 	 * @see javax.microedition.lcdui.CustomItem#getPrefContentHeight(int)
 	 */
 	protected int getPrefContentHeight(int maxWidth) {
-		this.availableWidth = maxWidth;
+		//this.availableWidth = maxWidth;
 		return this.container.getItemHeight(maxWidth, maxWidth);
 	}
 

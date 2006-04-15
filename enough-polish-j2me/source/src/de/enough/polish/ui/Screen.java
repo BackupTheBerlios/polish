@@ -271,7 +271,11 @@ implements AccessibleCanvas
 	//#endif
 	//#if polish.css.repaint-previous-screen
 		private boolean repaintPreviousScreen;
-		private Image previousScreenImage;
+		//#if polish.Screen.dontBufferPreviousScreen
+			private AccessibleCanvas previousScreen;
+		//#else
+			private Image previousScreenImage;
+		//#endif
 	//#endif
 	protected ScreenStateListener screenStateListener;
 
@@ -566,18 +570,27 @@ implements AccessibleCanvas
 				init();
 			}
 			//#if polish.css.repaint-previous-screen
-				if (this.repaintPreviousScreen && StyleSheet.currentScreen != null) {
-					if (this.previousScreenImage == null) {
-						//#if tmp.fullScreen
-							this.previousScreenImage = Image.createImage( this.screenWidth, this.fullScreenHeight);
-						//#else
-							this.previousScreenImage = Image.createImage( this.screenWidth, this.screenHeight);
-						//#endif
-					}
-					//#debug
-					System.out.println("storing previous screen to image buffer...");
-					Graphics g = this.previousScreenImage.getGraphics();
-					StyleSheet.currentScreen.paint(g);
+				if (this.repaintPreviousScreen) {
+					Displayable currentDisplayable = StyleSheet.display.getCurrent();
+					//#if polish.Screen.dontBufferPreviousScreen
+						if ( currentDisplayable instanceof AccessibleCanvas ) {
+							this.previousScreen = (AccessibleCanvas) currentDisplayable;
+						}
+					//#else
+						if ( currentDisplayable instanceof AccessibleCanvas ) {
+							if (this.previousScreenImage == null) {
+								//#if tmp.fullScreen
+									this.previousScreenImage = Image.createImage( this.screenWidth, this.fullScreenHeight);
+								//#else
+									this.previousScreenImage = Image.createImage( this.screenWidth, this.screenHeight);
+								//#endif
+							}
+							//#debug
+							System.out.println("storing previous screen to image buffer...");
+							Graphics g = this.previousScreenImage.getGraphics();
+							((AccessibleCanvas)currentDisplayable).paint(g);
+						}
+					//#endif
 				}
 			//#endif
 			
@@ -654,6 +667,13 @@ implements AccessibleCanvas
 	 * Unregisters this screen and notifies all items that they will not be shown anymore.
 	 */
 	public void hideNotify() {
+		//#if polish.css.repaint-previous-screen
+			//#if polish.Screen.dontBufferPreviousScreen
+				this.previousScreen = null;
+			//#else
+				this.previousScreenImage = null;
+			//#endif
+		//#endif
 		//#ifdef polish.Vendor.Siemens
 			// Siemens sometimes calls hideNotify directly
 			// after showNotify for some reason.
@@ -977,9 +997,15 @@ implements AccessibleCanvas
 		try {
 		//#endif
 			//#if polish.css.repaint-previous-screen
-				if (this.repaintPreviousScreen && this.previousScreenImage != null) {
-					g.drawImage(this.previousScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-				}
+				//#if polish.Screen.dontBufferPreviousScreen
+					if (this.repaintPreviousScreen && this.previousScreen != null) {
+						this.previousScreen.paint(g);
+					}
+				//#else
+					if (this.repaintPreviousScreen && this.previousScreenImage != null) {
+						g.drawImage(this.previousScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+					}
+				//#endif
 			//#endif
 			int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
 			int rightBorder = this.marginLeft + sWidth;
@@ -2502,6 +2528,9 @@ implements AccessibleCanvas
 			//#debug
 			System.out.println("Screen: focusing item " + index );
 			this.container.focus( index, this.container.get(index), 0 );
+			if (index == 0) {
+				this.container.yOffset = 0;
+			}
 		} else {
 			//#debug warn
 			System.out.println("Screen: unable to focus item (did not find it in the container) " + index);

@@ -672,9 +672,11 @@ public final class UiAccess {
 	 * @throws IllegalStateException when the TextField is not DECIMAL constrained
 	 */
 	public static String getDotSeparatedDecimalString( javax.microedition.lcdui.TextField field ) {
+		//#if polish.midp2
 		if (( field.getConstraints() & javax.microedition.lcdui.TextField.DECIMAL)!= javax.microedition.lcdui.TextField.DECIMAL) {
 			throw new IllegalStateException();
 		}
+		//#endif
 		String value = field.getString();
 		if (value == null) {
 			return null;
@@ -765,17 +767,48 @@ public final class UiAccess {
 	//#endif
 
     /**
-     * @param form
-     * @param item
+     * Focuses the specified item on the given screen.
+     * 
+     * @param screen the screen
+     * @param item the item that should be focused
      */
-    public static void focus( javax.microedition.lcdui.Form form, javax.microedition.lcdui.Item item ) {
+    public static void focus( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item item ) {
         // ignore
     }
 
     //#if polish.usePolishGui
-    public static void focus( Form form, Item item ) {
-        form.focus( item );
+    /**
+     * Focuses the specified item on the given screen.
+     * 
+     * @param screen the screen
+     * @param item the item that should be focused
+     */
+    public static void focus( Screen screen, Item item ) {
+        screen.focus( item );
     }
     //#endif
+    
+    /**
+     * Focuses the specified item on the given screen.
+     * 
+     * @param screen the screen
+     * @param index the index of the item that should be focused, first item has the index 0
+     */
+    public static void focus( javax.microedition.lcdui.Screen screen, int index ) {
+        // ignore
+    }
+
+    //#if polish.usePolishGui
+    /**
+     * Focuses the specified item on the given screen.
+     * 
+     * @param screen the screen
+     * @param index the index of the item that should be focused, first item has the index 0
+     */
+    public static void focus( Screen screen, int index ) {
+        screen.focus( index );
+    }
+    //#endif
+
 
 }
