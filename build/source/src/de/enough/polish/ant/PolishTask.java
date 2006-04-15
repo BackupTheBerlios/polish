@@ -67,6 +67,7 @@ import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.ant.build.JavaExtension;
 import de.enough.polish.ant.build.LibrariesSetting;
 import de.enough.polish.ant.build.LibrarySetting;
+import de.enough.polish.ant.build.LocaleSetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.LogSetting;
 import de.enough.polish.ant.build.Midlet;
@@ -130,7 +131,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-04-06)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-04-11)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -185,7 +186,7 @@ public class PolishTask extends ConditionalTask {
 
 	private ResourceManager resourceManager;
 
-	private Locale[] supportedLocales;
+	private LocaleSetting[] supportedLocales;
 
 	private TranslationPreprocessor translationPreprocessor;
 
@@ -224,6 +225,8 @@ public class PolishTask extends ConditionalTask {
 	
 	private ArrayList polishBuildListenerSettingsList;
 	private PolishBuildListener[] polishBuildListeners;
+
+	private LocaleSetting currentLocaleSetting;
 
 	
 	/**
@@ -328,7 +331,9 @@ public class PolishTask extends ConditionalTask {
 				}
 				if (this.supportedLocales != null) {
 					for (int j = 0; j < this.supportedLocales.length; j++) {
-						Locale locale = this.supportedLocales[j];
+						LocaleSetting localeSetting = this.supportedLocales[j];
+						this.currentLocaleSetting = localeSetting;
+						Locale locale = localeSetting.getLocale();
 						System.out.println("Using locale [" + locale.toString() + "]...");
 						try {
 							execute(device, locale, hasExtensions);
@@ -1005,7 +1010,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// get the resource manager:
 		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), this.extensionManager, this.environment );
-		Locale[] localizations = this.resourceManager.getLocales();
+		LocaleSetting[] localizations = this.resourceManager.getLocales();
 		if (localizations != null) {
 			this.localizationSetting = this.buildSetting.getResourceSetting().getLocalizationSetting();
 			if (this.localizationSetting.isDynamic()) {
@@ -1230,7 +1235,7 @@ public class PolishTask extends ConditionalTask {
 		// set localization-variables:
 		if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
 			if (locale == null) {
-				locale = this.localizationSetting.getDefaultLocale();
+				locale = this.localizationSetting.getDefaultLocale().getLocale();
 				this.environment.addSymbol("polish.i18n.useDynamicTranslations");
 				this.environment.setLocale( locale );
 			}
@@ -1461,11 +1466,12 @@ public class PolishTask extends ConditionalTask {
 			TranslationManager translationManager = null;
 			// set localization-variables:
 			if (locale != null || (this.localizationSetting != null && this.localizationSetting.isDynamic())) {
-				if (locale == null) {
-					locale = this.localizationSetting.getDefaultLocale();
+				LocaleSetting setting = this.currentLocaleSetting;
+				if (setting == null) {
+					setting = this.localizationSetting.getDefaultLocale();
 				}
 				// load localized messages, this also sets localized variables automatically:
-				translationManager = this.resourceManager.getTranslationManager(device, locale );
+				translationManager = this.resourceManager.getTranslationManager(device, setting );
 				this.translationPreprocessor.setTranslationManager( translationManager );
 				lastLocaleModification = translationManager.getLastModificationTime();
 			}

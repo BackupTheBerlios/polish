@@ -21,7 +21,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-example" 
+	name="enough-j2mepolish-framedform" 
 	default="j2mepolish">
 	
 	<!-- extend the default NetBeans build script:           -->
@@ -120,12 +120,12 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info copyright="Copyright 2006 Enough Software. All rights reserved." 
-				description="A TreeItem example." 
+				description="A demonstration of the FramedForm." 
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-framedform.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
 				license="GPL" 
-				name="MobileMail" 
+				name="FramedForm" 
 				vendorName="Enough Software" 
 				version="1.0.4"
 		    />
@@ -137,7 +137,7 @@
 				<requirement name="Name" value="${platform.device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
+				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60E1, Nokia/Series60E2, Generic/midp2, Generic/midp1" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build fullscreen="menu" 

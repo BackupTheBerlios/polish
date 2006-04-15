@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -51,9 +52,11 @@ import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.ant.build.LocaleSetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
+import de.enough.polish.util.Native2Ascii;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
@@ -75,7 +78,7 @@ implements Comparator
 	public static final String ENVIRONMENT_KEY = "polish.TranslationManager";
 	protected final Map translationsByKey;
 	protected final Map preprocessingVariablesByKey;
-	protected final Locale locale;
+	protected final LocaleSetting locale;
 	protected final Device device;
 	protected final LocalizationSetting localizationSetting;
 	protected long lastModificationTime;
@@ -100,7 +103,7 @@ implements Comparator
 	 * @param localizationSetting the localization setting
 	 * @throws IOException when resources could not be loaded
 	 */
-	public TranslationManager(Project project, Device device, Locale locale, Environment environment, File[] resourceDirs, LocalizationSetting localizationSetting )
+	public TranslationManager(Project project, Device device, LocaleSetting locale, Environment environment, File[] resourceDirs, LocalizationSetting localizationSetting )
 	throws IOException
 	{
 		this.project = project;
@@ -156,7 +159,7 @@ implements Comparator
 				environment.addVariable( "polish.DateFormatEmptyText", emptyText );
 			}
 		} else {
-			String language = locale.getLanguage();
+			String language = locale.getLocale().getLanguage();
 			if ("de".equals(language)) {
 				environment.addVariable( "polish.DateFormat", "dmy" );
 				environment.addVariable( "polish.DateFormatSeparator", "." );
@@ -166,7 +169,7 @@ implements Comparator
 				environment.addVariable( "polish.DateFormatSeparator", "." );
 				environment.addVariable( "polish.DateFormatEmptyText", "JJ/MM/AAAA" );
 			} else {
-				String country = locale.getCountry();
+				String country = locale.getLocale().getCountry();
 				if ("US".equals(country)) {
 					environment.addVariable( "polish.DateFormat", "mdy" );
 					environment.addVariable( "polish.DateFormatSeparator", "-" );
@@ -389,16 +392,16 @@ implements Comparator
 			localeFileName = messagesFileName + this.locale.toString();
 		}
 		String languageFileName = null;
-		if (this.locale.getCountry().length() > 0) {
+		if (this.locale.getLocale().getCountry().length() > 0) {
 			// okay, this locale has also a country defined,
 			// so we need to look at the language-resources as well:
 			if (splitPos != -1) {
 				languageFileName = messagesFileName.substring(0, splitPos)
 					+ "_"
-					+ this.locale.getLanguage()
+					+ this.locale.getLocale().getLanguage()
 					+ messagesFileName.substring(splitPos);
 			} else {
-				languageFileName = messagesFileName + this.locale.getLanguage();
+				languageFileName = messagesFileName + this.locale.getLocale().getLanguage();
 			}
 		}
 		for (int i = 0; i < resourceDirs.length; i++) {
@@ -448,12 +451,17 @@ implements Comparator
 	private void readProperties( InputStream in, Map rawTranslations ) 
 	throws FileNotFoundException, IOException 
 	{
+		String encoding = this.locale.getEncoding();
+		//TODO check native2ascii on Mac OS X
+		if ( encoding != null ) {
+			in = Native2Ascii.translateToAscii( in, encoding );				
+		}
 		if (this.isDynamic) {
 			// use the java.util.Properties tool for resolving Unicode escape mechanism.
 			// this is needed because we later store the loaded strings via DataOutputStream.writeUTF()
 			// and the device would show \t instead of a tab and so on.
 			Properties properties = new Properties();
-			properties.load( in );
+			properties.load(  in );
 			rawTranslations.putAll( properties );
 		} else {
 			// just load the properties directly
@@ -701,14 +709,15 @@ implements Comparator
 	 *        the dynamic localization mode is used, the fileds cannot be final.
 	 */
 	private void insertFields(StringList code, boolean isFinal) {
+		Locale loc = this.locale.getLocale();
 		if ( isFinal ) {
-			code.insert( "\tpublic static final String LANGUAGE = \"" + this.locale.getLanguage() + "\";");
-			code.insert( "\tpublic static final String DISPLAY_LANGUAGE = \"" + this.locale.getDisplayLanguage(this.locale) + "\";");
+			code.insert( "\tpublic static final String LANGUAGE = \"" + loc.getLanguage() + "\";");
+			code.insert( "\tpublic static final String DISPLAY_LANGUAGE = \"" + loc.getDisplayLanguage(loc) + "\";");
 		} else {
-			code.insert( "\tpublic static String LANGUAGE = \"" + this.locale.getLanguage() + "\";");
-			code.insert( "\tpublic static String DISPLAY_LANGUAGE = \"" + this.locale.getDisplayLanguage(this.locale) + "\";");
+			code.insert( "\tpublic static String LANGUAGE = \"" + loc.getLanguage() + "\";");
+			code.insert( "\tpublic static String DISPLAY_LANGUAGE = \"" + loc.getDisplayLanguage(loc) + "\";");
 		}
-		String country = this.locale.getCountry();
+		String country = loc.getCountry();
 		char minusSign = '-';
 		char zeroDigit = '0';
 		char decimalSeparator = '.';
@@ -718,7 +727,7 @@ implements Comparator
 		char permill = '\u2030';
 		String infinity = "\u221e";
 		
-		NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
+		NumberFormat format = NumberFormat.getCurrencyInstance( loc );
 		try {
 			DecimalFormat decimalFormat = (DecimalFormat) format;
 			DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
@@ -731,7 +740,7 @@ implements Comparator
 			permill = symbols.getPerMill();
 			infinity = symbols.getInfinity();
 		} catch (Exception e) {
-			System.out.println("Warning: the locale [" + this.locale + "] does not support decimal symbols: " + e.toString() );
+			System.out.println("Warning: the locale [" + loc + "] does not support decimal symbols: " + e.toString() );
 		}
 		if (isFinal) {
 			code.insert( "\tpublic static final char MINUS_SIGN = '" + toSourceCode( minusSign ) + "';");
@@ -743,10 +752,10 @@ implements Comparator
 			code.insert( "\tpublic static final char PERMILL = '" + toSourceCode( permill ) + "';");
 			code.insert( "\tpublic static final String INFINITY = \"" + toSourceCode( infinity ) + "\";");
 			if (country.length() > 0) {
-				code.insert( "\tpublic static final String COUNTRY = \"" + this.locale.getCountry() + "\";");
-				code.insert( "\tpublic static final String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
+				code.insert( "\tpublic static final String COUNTRY = \"" + loc.getCountry() + "\";");
+				code.insert( "\tpublic static final String DISPLAY_COUNTRY = \"" + loc.getDisplayCountry(loc) + "\";");
 				Currency currency = format.getCurrency();
-				String currencySymbol = currency.getSymbol(this.locale);
+				String currencySymbol = currency.getSymbol(loc);
 				String currencyCode = currency.getCurrencyCode();
 				code.insert( "\tpublic static final String CURRENCY_SYMBOL = \"" + toSourceCode( currencySymbol ) + "\";");
 				code.insert( "\tpublic static final String CURRENCY_CODE = \"" + currencyCode + "\";");
@@ -767,10 +776,10 @@ implements Comparator
 			code.insert( "\tpublic static char PERMILL = '" + toSourceCode( permill ) + "';");
 			code.insert( "\tpublic static String INFINITY = \"" + toSourceCode( infinity ) + "\";");
 			if (country.length() > 0) {
-				code.insert( "\tpublic static String COUNTRY = \"" + this.locale.getCountry() + "\";");
-				code.insert( "\tpublic static String DISPLAY_COUNTRY = \"" + this.locale.getDisplayCountry(this.locale) + "\";");
+				code.insert( "\tpublic static String COUNTRY = \"" + loc.getCountry() + "\";");
+				code.insert( "\tpublic static String DISPLAY_COUNTRY = \"" + loc.getDisplayCountry(loc) + "\";");
 				Currency currency = format.getCurrency();
-				String currencySymbol = currency.getSymbol(this.locale);
+				String currencySymbol = currency.getSymbol(loc);
 				String currencyCode = currency.getCurrencyCode();
 				code.insert( "\tpublic static String CURRENCY_SYMBOL = \"" + toSourceCode( currencySymbol ) + "\";");
 				code.insert( "\tpublic static String CURRENCY_CODE = \"" + currencyCode + "\";");
@@ -825,7 +834,7 @@ implements Comparator
 	 * 
 	 * @return the default locale
 	 */
-	public Locale getDefaultLocale() {
+	public LocaleSetting getDefaultLocale() {
 		return this.localizationSetting.getDefaultLocale();
 	}
 	
@@ -848,12 +857,13 @@ implements Comparator
 	 * 
 	 * @param targetDir the target directory
 	 * @param currentDevice the current device
-	 * @param dynamicLocale the locale
+	 * @param dynamicLocaleSetting the locale
 	 * @throws IOException when a resource could not be copied
 	 */
-	public void saveTranslations(File targetDir, Device currentDevice, Locale dynamicLocale )
+	public void saveTranslations(File targetDir, Device currentDevice, LocaleSetting dynamicLocaleSetting )
 	throws IOException
 	{
+		Locale dynamicLocale = dynamicLocaleSetting.getLocale();
 		File file = new File( targetDir, dynamicLocale.toString() + ".loc" );
 		//System.out.println("Writing translations to " + file.getAbsolutePath() );
 		DataOutputStream out = new DataOutputStream( new FileOutputStream( file ) );
@@ -912,7 +922,7 @@ implements Comparator
 		char percent = '%';
 		char permill = '\u2030';
 		String infinity = "\u221e";	
-		NumberFormat format = NumberFormat.getCurrencyInstance(this.locale);
+		NumberFormat format = NumberFormat.getCurrencyInstance( this.locale.getLocale() );
 		try {
 			DecimalFormat decimalFormat = (DecimalFormat) format;
 			DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
@@ -925,7 +935,7 @@ implements Comparator
 			permill = symbols.getPerMill();
 			infinity = symbols.getInfinity();
 		} catch (Exception e) {
-			System.out.println("Warning: the locale [" + this.locale + "] does not support decimal symbols: " + e.toString() );
+			System.out.println("Warning: the locale [" + this.locale.getLocale() + "] does not support decimal symbols: " + e.toString() );
 		}
 		out.writeChar( minusSign );
 		out.writeChar( zeroDigit );
@@ -937,10 +947,11 @@ implements Comparator
 		out.writeUTF( infinity );
 		String country = dynamicLocale.getCountry();
 		out.writeUTF( country );
+		Locale loc = this.locale.getLocale();
 		if (country.length() > 0) {
-			out.writeUTF( this.locale.getDisplayCountry(this.locale) );
+			out.writeUTF( loc.getDisplayCountry(loc) );
 			Currency currency = format.getCurrency();
-			String currencySymbol = currency.getSymbol(this.locale);
+			String currencySymbol = currency.getSymbol(loc);
 			String currencyCode = currency.getCurrencyCode();
 			out.writeUTF( currencySymbol );
 			out.writeUTF( currencyCode );
@@ -953,7 +964,7 @@ implements Comparator
 	/**
 	 * @return the locale associated with this manager
 	 */
-	public Locale getLocale() {
+	public LocaleSetting getLocale() {
 		return this.locale;
 	}
 

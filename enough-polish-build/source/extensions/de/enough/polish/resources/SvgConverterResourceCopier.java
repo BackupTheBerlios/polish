@@ -73,7 +73,6 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 	
 	public SvgConverterResourceCopier() {
 		super();
-		System.out.print("tim\n");
 	}
 	
 	
@@ -169,7 +168,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 	}
 	
 	public void setIconSize( String defaultSize ) {
-		System.out.print("seticonsizeStart\n");
+//		System.out.print("seticonsizeStart\n");
 		if (defaultSize == null) {
 			setDefaultIconWidth( 15 );
 			setDefaultIconHeight( 15 );
@@ -181,7 +180,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 			setDefaultIconWidth( Integer.parseInt(chunks[0]) );
 			setDefaultIconHeight( Integer.parseInt(chunks[1]) );
 		}
-		System.out.print("seticonsizeEnde\n");
+//		System.out.print("seticonsizeEnde\n");
 	}
 	
 	public void setScaleToFit( boolean scaleToFit ) {
@@ -198,21 +197,19 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 		if (file.getName().startsWith("icon")) {
 	  		newWidth = iconSize.width;
 	  		newHeight = iconSize.height; 
-	  		System.out.print("icon\n");
 		} else if(file.getName().startsWith("bg")){
 	    	if(screenSize == null && this.scaleToFit != true){
 	    		  screenSize = new Dimension(128,160);
 	    	}
 			newWidth = screenSize.width;
 			newHeight = screenSize.height; 
-			System.out.print("bg\n");
 	   }	
   		SVGUniverse universe = new SVGUniverse();
   		SVGDiagram diagram = null;	
-  		System.out.print(file.getAbsolutePath()+"\n");
+//  		System.out.print(file.getAbsolutePath()+"\n");
   		URI uri = universe.loadSVG( new FileInputStream( file ), "svgimage" );
-  		System.out.print(file.getAbsolutePath()+"\n");
-  		System.out.print(uri.getPath()+"\n");
+//  		System.out.print(file.getAbsolutePath()+"\n");
+//  		System.out.print(uri.getPath()+"\n");
   		diagram = universe.getDiagram(uri);	 
   		double width = diagram.getWidth();
   		double height = diagram.getHeight();
@@ -232,7 +229,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 //	  		System.out.println("sX: " + sX );
 //	  		System.out.println("sY: " +sY );
 //	  		System.out.println("breite: " + width * sX );
-//	  		System.out.println("höhe: " + height * sY );
+//	  		System.out.println("hï¿½he: " + height * sY );
 		try {
 			diagram.render(g);
 		} catch (SVGException e) {

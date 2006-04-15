@@ -17,7 +17,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-email" 
+	name="enough-j2mepolish-framedform" 
 	default="j2mepolish">
 	
 	<!-- import user specific properties                          -->
@@ -119,9 +119,9 @@
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
 				license="%{J2ME_POLISH_LICENSE}"
-				name="Email"
+				name="FramedForm"
 				version="1.0.0"
-				description="A sample project that shows subcommands and an advanced TextField in action."
+				description="A demonstration of the FramedForm."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-framedform.jar" 
@@ -136,7 +136,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
+				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60E1, Nokia/Series60E2, Generic/midp2, Generic/midp1" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<!-- 

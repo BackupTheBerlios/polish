@@ -356,6 +356,14 @@
 		          calling textField.getString().
 		</solution>
 	</bug>
+	
+	<bug>
+		<name>noTranslucencyWithDrawRgb</name>
+		<area>ui</area>
+		<description>Translucency is not supported with Graphics.drawRGB.</description>
+		<solution>None.</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>

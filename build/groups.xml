@@ -142,6 +142,10 @@
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="JavaPackage" value="btapi" />		
 		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, displaySetCurrentFlickers" />
+		<!--
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor" />
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, displaySetCurrentFlickers" />
+		-->
 	</group>
 	
 	<group>

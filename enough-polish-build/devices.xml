@@ -2110,7 +2110,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
 		<capability name="key.RightSoftKey" value="-22"/>
-		<capability name="Bugs" value="ReducedMessageLength"/>
+		<capability name="Bugs" value="ReducedMessageLength, noTranslucencyWithDrawRgb"/>
 	<capability name="wap.userAgent" value="MOT-V3"/>
 <capability name="wap.userAgent" value="MOT-V3 RAZR/0E.40.3ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-RAZR v3/0B.D2.23R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>

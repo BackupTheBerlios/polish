@@ -25,8 +25,13 @@
  */
 package de.enough.polish.ant.build;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
+import org.apache.tools.ant.BuildException;
+
+import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.StringUtil;
 
@@ -45,9 +50,9 @@ public class LocalizationSetting extends Setting {
 	
 	private String messages = "messages.txt";
 	private boolean includeAllLocales;
-	private Locale[] supportedLocales;
+	private final ArrayList supportedLocales;
 	private boolean dynamic;
-	private Locale defaultLocale;
+	private LocaleSetting defaultLocale;
 	private String preprocessorClassName;
 	private String translationManagerClassName;
 	private String supportedLocalesString;
@@ -58,16 +63,30 @@ public class LocalizationSetting extends Setting {
 	 */
 	public LocalizationSetting() {
 		super();
+		this.supportedLocales = new ArrayList();
+	}
+	
+	public void addConfiguredLocaleSetting( LocaleSetting setting ) {
+		this.supportedLocales.add( setting );
 	}
 	
 	/**
 	 * Retrieves all supported locales.
 	 * This will return null when all found locales should be included.
 	 * 
+	 * @param env the environment
 	 * @return Returns the supported locales.
 	 */
-	public Locale[] getSupportedLocales() {
-		return this.supportedLocales;
+	public LocaleSetting[] getSupportedLocales(Environment env) {
+		BooleanEvaluator evaluator = env.getBooleanEvaluator();
+		ArrayList locales = new ArrayList( this.supportedLocales.size() );
+		for ( int i=0; i<this.supportedLocales.size(); i++ ) {
+			LocaleSetting setting = (LocaleSetting) this.supportedLocales.get(i);
+			if (setting.isActive(evaluator)) {
+				locales.add( setting );
+			}
+		}
+		return (LocaleSetting[]) locales.toArray( new LocaleSetting[ locales.size() ] );
 	}
 	
 	/**
@@ -80,12 +99,11 @@ public class LocalizationSetting extends Setting {
 			this.includeAllLocales = true;
 		} else {
 			String[] localeDefs = StringUtil.splitAndTrim( supportedLocalesStr, ',' );
-			Locale[] locales = new Locale[ localeDefs.length ];
+			//LocaleSetting[] locales = new LocaleSetting[ localeDefs.length ];
 			for (int i = 0; i < localeDefs.length; i++) {
 				String localeDefinition = localeDefs[i];
-				locales[i] = getLocale( localeDefinition );				
+				addConfiguredLocaleSetting( getLocale( localeDefinition ) );				
 			}
-			this.supportedLocales = locales;
 		}
 	}
 	
@@ -152,18 +170,8 @@ public class LocalizationSetting extends Setting {
 	 * @param definition the definition, e.g. "de_DE"
 	 * @return the corresponding locale
 	 */
-	private Locale getLocale( String definition ) {
-		int countryStart = definition.indexOf('_');
-		if (countryStart == -1) {
-			countryStart = definition.indexOf('-');
-		}
-		if (countryStart == -1) {
-			return new Locale( definition );
-		} else {
-			String language = definition.substring( 0, countryStart );
-			String country = definition.substring( countryStart + 1 );
-			return new Locale( language, country );
-		}
+	private LocaleSetting getLocale( String definition ) {
+		return new LocaleSetting( definition );
 	}
 
 	/**
@@ -193,20 +201,22 @@ public class LocalizationSetting extends Setting {
 	 * 
 	 * @return the default locale
 	 */
-	public Locale getDefaultLocale() {
+	public LocaleSetting getDefaultLocale() {
 		if (this.defaultLocale != null) {
 			return this.defaultLocale;
-		} else if (this.supportedLocales.length == 1){
-			return this.supportedLocales[0];
+		} else if (this.supportedLocales.size() == 1){
+			return (LocaleSetting) this.supportedLocales.get(0);
+		} else if (this.supportedLocales.size() == 0){
+			throw new BuildException("No locales are defined - check your <localization> setting.");
 		} else {
 			Locale locale = Locale.getDefault();
-			for (int i = 0; i < this.supportedLocales.length; i++) {
-				Locale supportedLocale = this.supportedLocales[i];
-				if (locale.equals( supportedLocale )) {
-					return locale;
+			for (int i = 0; i < this.supportedLocales.size(); i++) {
+				LocaleSetting supportedLocale = (LocaleSetting) this.supportedLocales.get(i);
+				if (locale.equals( supportedLocale.getLocale() )) {
+					return supportedLocale;
 				}
 			}
-			return this.supportedLocales[0];
+			return (LocaleSetting) this.supportedLocales.get(0);
 		}
 	}
 
@@ -257,15 +267,23 @@ public class LocalizationSetting extends Setting {
 				this.defaultLocale = getDefaultLocale();
 			}
 			buffer.append( this.defaultLocale.toString() );
-			for (int i = 0; i < this.supportedLocales.length; i++) {
-				Locale locale = this.supportedLocales[i];
-				if (!locale.equals( this.defaultLocale )) {
-					buffer.append(",").append( locale.toString() );
+			for (int i = 0; i < this.supportedLocales.size(); i++) {
+				LocaleSetting setting = (LocaleSetting) this.supportedLocales.get(i);
+				if (!setting.getLocale().equals( this.defaultLocale.getLocale() )) {
+					buffer.append(",").append( setting.toString() );
 				}
 			}
 			this.supportedLocalesString = buffer.toString();
 		}
 		return this.supportedLocalesString;
+	}
+
+	public boolean isValid() {
+		if (!this.includeAllLocales && this.supportedLocales.size() == 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }

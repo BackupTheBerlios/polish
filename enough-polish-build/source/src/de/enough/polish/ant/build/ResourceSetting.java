@@ -79,8 +79,8 @@ public class ResourceSetting extends Setting {
 	
 	
 	public void addConfiguredLocalization( LocalizationSetting setting ) {
-		if (setting.includeAllLocales() == false && setting.getSupportedLocales() == null) {
-			throw new BuildException("Invalid <localisation>-element in build.xml: please specify the attribute \"locales\"." );
+		if ( !setting.isValid()) {
+			throw new BuildException("Invalid <localisation>-element in build.xml: please specify the attribute \"locales\" or add <locale> subelements." );
 		}
 		this.localizationSettings.add( setting );
 	}

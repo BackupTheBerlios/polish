@@ -47,7 +47,7 @@
 
 	<configuration>
 		<identifier>CLDC/1.1</identifier>
-		<features>cldc, cldc1.1, hasFloatingPoint</features>
+		<features>cldc, cldc11, cldc1.1, hasFloatingPoint</features>
 		<description>Connected Limited Device Configuration 1.0. Does support floating point calculations and weak references.</description>
 		<capability name="build.BootClassPath" value="cldc-1.1.jar" />
 		<capability name="SupportFloatingPoint" value="true" />
@@ -55,7 +55,7 @@
 	
 	<configuration>
 		<identifier>CDC/1.0</identifier>
-		<features>cdc1.0, hasFloatingPoint, hasJNI</features>
+		<features>cdc, cdc10, cdc1.0, hasFloatingPoint, hasJNI</features>
 		<description>Connected Device Configuration 1.0 is based on J2SE 1.3.</description>
 		<capability name="build.BootClassPath" value="cdc-1.0.jar" />
 		<capability name="SupportFloatingPoint" value="true" />

@@ -42,6 +42,7 @@ import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionManager;
+import de.enough.polish.ant.build.LocaleSetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
@@ -189,9 +190,9 @@ public class ResourceManager {
 				start = messagesFileName.substring(0, splitPos) + "_";
 				end = messagesFileName.substring(splitPos);
 			}
-			Locale[] locales = this.localizationSetting.getSupportedLocales();
+			LocaleSetting[] locales = this.localizationSetting.getSupportedLocales( environment  );
 			for (int i = 0; i < locales.length; i++) {
-				Locale locale = locales[i];
+				Locale locale = locales[i].getLocale();
 				if (splitPos != -1) {
 					this.resourceFilter.addExclude( start + locale.toString() + end );
 					//System.out.println("excluding [" + start + locale.toString() + end + "]");
@@ -275,9 +276,9 @@ public class ResourceManager {
 	private void saveDynamicTranslations(File targetDir, Device device ) 
 	throws IOException 
 	{
-		Locale[] locales = this.localizationSetting.getSupportedLocales();
+		LocaleSetting[] locales = this.localizationSetting.getSupportedLocales( this.environment );
 		for (int i = 0; i < locales.length; i++) {
-			Locale locale = locales[i];
+			LocaleSetting locale = locales[i];
 			TranslationManager manager = getTranslationManager( device, locale );
 			manager.saveTranslations( targetDir, device, locale );
 		}
@@ -480,11 +481,11 @@ public class ResourceManager {
 	 * 
 	 * @return an array of supported locales, can be null
 	 */
-	public Locale[] getLocales() {
+	public LocaleSetting[] getLocales() {
 		if (this.localizationSetting == null) {
 			return null;
 		} else {
-			return this.localizationSetting.getSupportedLocales();
+			return this.localizationSetting.getSupportedLocales( this.environment );
 		}
 	}
 	
@@ -496,7 +497,7 @@ public class ResourceManager {
 	 * @return the translation manager
 	 * @throws IOException when a messages-files could not be read
 	 */
-	public TranslationManager getTranslationManager( Device device, Locale locale ) 
+	public TranslationManager getTranslationManager( Device device, LocaleSetting locale ) 
 	throws IOException
 	{
 		if ( !this.localizationSetting.isDynamic()  
@@ -507,7 +508,7 @@ public class ResourceManager {
 				createTranslationManager( device, 
 						locale, 
 						this.environment, 
-						getResourceDirs(device, locale), 
+						getResourceDirs(device, locale.getLocale()), 
 						this.localizationSetting ); 
 		}
 		// resetting preprocessing variables:
@@ -526,14 +527,14 @@ public class ResourceManager {
 	 * @return an instance of TranslationManager
 	 * @throws IOException when some translation could not be loaded
 	 */
-	protected TranslationManager createTranslationManager(Device device, Locale locale, Environment env, File[] resourceDirs, LocalizationSetting setting) 
+	protected TranslationManager createTranslationManager(Device device, LocaleSetting locale, Environment env, File[] resourceDirs, LocalizationSetting setting) 
 	throws IOException 
 	{
 		String className = this.localizationSetting.getTranslationManagerClassName();
 		if (className != null) {
 			try {
 				Class managerClass = Class.forName( className );
-				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, Locale.class, Environment.class, File[].class, LocalizationSetting.class} );
+				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, LocaleSetting.class, Environment.class, File[].class, LocalizationSetting.class} );
 				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, env, resourceDirs, setting} );
 				return manager;
 			} catch (Exception e) {
@@ -546,7 +547,7 @@ public class ResourceManager {
 				device, 
 				locale, 
 				env, 
-				getResourceDirs(device, locale), 
+				getResourceDirs(device, locale.getLocale()), 
 				this.localizationSetting );
 		}
 	}

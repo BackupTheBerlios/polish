@@ -91,6 +91,29 @@ public final class FileUtil {
 		in.close();
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
+	
+	/**
+	 * Reads a text file.
+	 *  
+	 * @param file the text file
+	 * @param encoding the encoding of the textfile
+	 * @return the lines of the text file
+	 * @throws FileNotFoundException when the file was not found
+	 * @throws IOException when file could not be read.
+	 */
+	public static String[] readTextFile( File file, String encoding ) 
+	throws FileNotFoundException, IOException 
+	{
+		ArrayList lines = new ArrayList();
+		BufferedReader in = new BufferedReader( new InputStreamReader( new FileInputStream(file), encoding ) );
+		String line;
+		while ((line = in.readLine()) != null) {
+			lines.add( line );
+		}
+		in.close();
+		return (String[]) lines.toArray( new String[ lines.size() ] );
+	}
+
 
 	/**
 	 * Writes (and creates) a text file.
@@ -436,7 +459,22 @@ public final class FileUtil {
 	public static void readProperties(InputStream in, char delimiter, Map properties ) 
 	throws IOException 
 	{
-		readProperties( in, delimiter, '#', properties, false );
+		readProperties( in, delimiter, '#', properties, false, null );
+	}
+
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param properties a map containing properties
+	 * @param encoding the encoding of the file
+	 * @throws IOException when reading from the input stream fails
+	 */
+	public static void readProperties(InputStream in, char delimiter, Map properties, String encoding ) 
+	throws IOException 
+	{
+		readProperties( in, delimiter, '#', properties, false, encoding );
 	}
 
 	/**
@@ -468,7 +506,29 @@ public final class FileUtil {
 	public static void readProperties(InputStream in, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties ) 
 	throws IOException 
 	{
-		BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
+		readProperties( in, delimiter, comment, properties, ignoreInvalidProperties, null );
+	}
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @param encoding the encoding of the text file, when null the default charset is used
+	 * @throws IOException when reading from the input stream fails
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static void readProperties(InputStream in, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties, String encoding ) 
+	throws IOException 
+	{
+		BufferedReader reader;
+		if (encoding == null) {
+			reader = new BufferedReader( new InputStreamReader( in ) );
+		} else {
+			reader = new BufferedReader( new InputStreamReader( in, encoding ) );
+		}
 		String line;
 		while ( (line = reader.readLine()) != null) {
 			if (line.length() == 0 || line.charAt(0) == comment) {
