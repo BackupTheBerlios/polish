@@ -88,7 +88,7 @@ public class DeviceManager {
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		this.devicesByIdentifier = new HashMap();
-        this.devicesByUserAgent = new HashMap();
+        this.devicesByUserAgent = new HashMap(10000);
 		this.devicesList = new ArrayList();
 		this.vendorManager = vendorManager;
         this.isUserAgentMappingInitialized = false;
