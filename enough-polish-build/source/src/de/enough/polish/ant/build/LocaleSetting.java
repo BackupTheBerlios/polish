@@ -71,10 +71,6 @@ public class LocaleSetting extends Setting {
 	}
 
 	public void setLocale( String localeDef ) {
-		setLocales( localeDef );
-	}
-
-	public void setLocales( String localeDef ) {
 		this.locales = getLocales( localeDef );
 		this.locale = this.locales[0];
 	}
