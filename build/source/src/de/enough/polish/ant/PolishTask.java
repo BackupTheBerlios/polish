@@ -131,7 +131,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-04-11)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-04-19)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -1239,7 +1239,7 @@ public class PolishTask extends ConditionalTask {
 				this.environment.addSymbol("polish.i18n.useDynamicTranslations");
 				this.environment.setLocale( locale );
 			}
-			this.environment.addVariable("polish.SupportedLocales", this.localizationSetting.getSupportedLocalesAsString() );
+			this.environment.addVariable("polish.SupportedLocales", this.localizationSetting.getSupportedLocalesAsString( this.environment ) );
 			this.environment.addVariable("polish.locale", locale.toString() );
 			this.environment.addVariable("polish.language", locale.getLanguage() );
 			String country = locale.getCountry();

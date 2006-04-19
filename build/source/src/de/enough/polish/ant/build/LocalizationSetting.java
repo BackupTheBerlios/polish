@@ -26,7 +26,9 @@
 package de.enough.polish.ant.build;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 
@@ -51,11 +53,12 @@ public class LocalizationSetting extends Setting {
 	private String messages = "messages.txt";
 	private boolean includeAllLocales;
 	private final ArrayList supportedLocales;
+	private final Map localesByName;
 	private boolean dynamic;
 	private LocaleSetting defaultLocale;
 	private String preprocessorClassName;
 	private String translationManagerClassName;
-	private String supportedLocalesString;
+	
 
 
 	/**
@@ -64,10 +67,37 @@ public class LocalizationSetting extends Setting {
 	public LocalizationSetting() {
 		super();
 		this.supportedLocales = new ArrayList();
+		this.localesByName = new HashMap();
 	}
 	
 	public void addConfiguredLocaleSetting( LocaleSetting setting ) {
+		Locale[] locales = setting.getLocales();
+		if (locales == null) {
+			throw new BuildException("Invalid <localesetting> definition - each <localesetting> requires the \"locale\" attribute.");
+		}
+		if (locales.length == 1) {
+			add( setting );
+			this.supportedLocales.add( setting );			
+		} else {
+			for (int i = 0; i < locales.length; i++) {
+				Locale locale = locales[i];
+				add( new LocaleSetting( locale, setting ) );
+			}
+		}
+	}
+	private void add(LocaleSetting setting) {
+		LocaleSetting existingSetting = (LocaleSetting) this.localesByName.get( setting.getLocale().toString() );
+		if ( existingSetting != null && (setting.getCondition() == null || (existingSetting.getCondition() == null)) ) {
+			throw new BuildException("The locale " + setting.getLocale() + " has been defined several times, at least one time without a condition. Check your <localization> and <localesetting> elements.");
+		}
 		this.supportedLocales.add( setting );
+	}
+
+	public void addConfiguredLocalesetting( LocaleSetting setting ) {
+		addConfiguredLocaleSetting(setting);
+	}
+	public void addConfiguredLocale( LocaleSetting setting ) {
+		addConfiguredLocaleSetting(setting);
 	}
 	
 	/**
@@ -260,22 +290,20 @@ public class LocalizationSetting extends Setting {
 		this.translationManagerClassName = translationManagerClassName;
 	}
 
-	public String getSupportedLocalesAsString() {
-		if (this.supportedLocalesString == null) {
-			StringBuffer buffer = new StringBuffer();
-			if (this.defaultLocale == null) {
-				this.defaultLocale = getDefaultLocale();
-			}
-			buffer.append( this.defaultLocale.toString() );
-			for (int i = 0; i < this.supportedLocales.size(); i++) {
-				LocaleSetting setting = (LocaleSetting) this.supportedLocales.get(i);
-				if (!setting.getLocale().equals( this.defaultLocale.getLocale() )) {
-					buffer.append(",").append( setting.toString() );
-				}
-			}
-			this.supportedLocalesString = buffer.toString();
+	public String getSupportedLocalesAsString( Environment env ) {
+		StringBuffer buffer = new StringBuffer();
+		if (this.defaultLocale == null) {
+			this.defaultLocale = getDefaultLocale();
 		}
-		return this.supportedLocalesString;
+		buffer.append( this.defaultLocale.toString() );
+		LocaleSetting[] settings = getSupportedLocales(env);
+		for (int i = 0; i < settings.length; i++) {
+			LocaleSetting setting = settings[i];
+			if (!setting.getLocale().equals( this.defaultLocale.getLocale() )) {
+				buffer.append(",").append( setting.toString() );
+			}
+		}
+		return buffer.toString();
 	}
 
 	public boolean isValid() {

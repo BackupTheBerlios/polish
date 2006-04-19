@@ -51,6 +51,11 @@ public class Setting extends ConditionalElement {
 		// initialisation is done in the subclass
 	}
 	
+	public Setting(Setting parent) {
+		super( parent );
+		this.variables = parent.variables;
+	}
+
 	/**
 	 * Adds a parameter to this setting.
 	 * 

@@ -530,13 +530,21 @@ public final class FileUtil {
 			reader = new BufferedReader( new InputStreamReader( in, encoding ) );
 		}
 		String line;
+		int index = 0;
 		while ( (line = reader.readLine()) != null) {
+			index++;
 			if (line.length() == 0 || line.charAt(0) == comment) {
 				continue;
 			}
 			int delimiterPos = line.indexOf( delimiter );
 			if (delimiterPos == -1) {
-				if (ignoreInvalidProperties) {
+				if (ignoreInvalidProperties || (index == 1)) { // ("\ufeff".equals(line)) ) {
+					// "\ufeff" is an optional header announcing Big-Endian byte ordering for UTF-8 files.
+					// since there are several BOM signatures, we will ignore all invalid
+					// propery definitions in the first line for now.
+					// For further information: 
+					// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
+					// http://www.unicode.org/unicode/faq/utf_bom.html
 					continue;
 				} else {
 					throw new IllegalArgumentException("The line [" + line 

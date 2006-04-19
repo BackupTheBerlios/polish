@@ -70,6 +70,11 @@ public class ConditionalElement {
 		// initialisation is done via the setter and getter methods.
 	}
 	
+	public ConditionalElement(ConditionalElement parent) {
+		this.ifCondition = parent.ifCondition;
+		this.unlessCondition = parent.unlessCondition;
+	}
+
 	/**
 	 * Sets the ant-property which needs to be defined to allow the execution of this task.
 	 *  

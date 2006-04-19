@@ -28,6 +28,7 @@ package de.enough.polish.ant.build;
 import java.util.Locale;
 
 import de.enough.polish.ant.Setting;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Is used to configure a single locale.</p>
@@ -42,6 +43,7 @@ import de.enough.polish.ant.Setting;
 public class LocaleSetting extends Setting {
 	
 	private Locale locale;
+	private Locale[] locales;
 	private String encoding;
 	private boolean convert;
 
@@ -54,18 +56,35 @@ public class LocaleSetting extends Setting {
 	
 	public LocaleSetting(Locale locale) {
 		this.locale = locale;
+		this.locales = new Locale[]{ locale };
 	}
 
 	public LocaleSetting(String localeDef ) {
-		this.locale = getLocale( localeDef );
+		this.locales = getLocales( localeDef );
+		this.locale = this.locales[0];
+	}
+
+	public LocaleSetting(Locale locale, LocaleSetting setting) {
+		super( setting );
+		this.locale = locale;
+		this.locales = new Locale[]{ locale };
 	}
 
 	public void setLocale( String localeDef ) {
-		this.locale = getLocale( localeDef );
+		setLocales( localeDef );
+	}
+
+	public void setLocales( String localeDef ) {
+		this.locales = getLocales( localeDef );
+		this.locale = this.locales[0];
 	}
 	
 	public Locale getLocale() {
 		return this.locale;
+	}
+
+	public Locale[] getLocales() {
+		return this.locales;
 	}
 
 	/**
@@ -102,18 +121,24 @@ public class LocaleSetting extends Setting {
 	 * @param definition the definition, e.g. "de_DE"
 	 * @return the corresponding locale
 	 */
-	private Locale getLocale( String definition ) {
-		int countryStart = definition.indexOf('_');
-		if (countryStart == -1) {
-			countryStart = definition.indexOf('-');
+	private Locale[] getLocales( String definitionsStr ) {
+		String[] definitions = StringUtil.splitAndTrim(definitionsStr, ',');
+		Locale[] myLocales = new Locale[ definitions.length ];
+		for (int i = 0; i < definitions.length; i++) {
+			String definition = definitions[i];
+			int countryStart = definition.indexOf('_');
+			if (countryStart == -1) {
+				countryStart = definition.indexOf('-');
+			}
+			if (countryStart == -1) {
+				myLocales[i] = new Locale( definition );
+			} else {
+				String language = definition.substring( 0, countryStart );
+				String country = definition.substring( countryStart + 1 );
+				myLocales[i] = new Locale( language, country );
+			}
 		}
-		if (countryStart == -1) {
-			return new Locale( definition );
-		} else {
-			String language = definition.substring( 0, countryStart );
-			String country = definition.substring( countryStart + 1 );
-			return new Locale( language, country );
-		}
+		return myLocales;
 	}
 
 	public String toString() {
