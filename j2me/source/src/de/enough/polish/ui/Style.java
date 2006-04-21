@@ -371,6 +371,17 @@ public class Style
 	}
 	//#endif
 	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this style.
+	 */
+	public void releaseResources() {
+		if (this.background != null) {
+			this.background.releaseResources();
+		}
+		//TODO how to handle before/after images?
+	}
+
+	
 //#ifdef polish.Style.additionalMethods:defined
 	//#include ${polish.Style.additionalMethods}
 //#endif

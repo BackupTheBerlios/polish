@@ -73,5 +73,13 @@ public abstract class Background {
 	 * @param g the Graphics on which the background should be painted.
 	 */
 	public abstract void paint( int x, int y, int width, int height, Graphics g );
+	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
+	 * The default implementation does not do anything.
+	 */
+	public void releaseResources() {
+		// do nothing
+	}
 
 }

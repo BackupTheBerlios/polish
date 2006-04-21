@@ -81,7 +81,7 @@ implements ImageConsumer
 	private final int color;
 	private final int repeatMode;
 	private boolean isLoaded;
-	private String imageUrl;
+	private final String imageUrl;
 	private final int anchor;
 	private final int paddingHorizontal;
 	private final int paddingVertical;
@@ -157,7 +157,6 @@ implements ImageConsumer
 				//#debug error
 				System.out.println( "unable to load image [" + this.imageUrl + "]" +  e );
 			}
-			this.imageUrl = null;
 			this.isLoaded = true;
 		}
 		if (this.color != Item.TRANSPARENT) {
@@ -242,6 +241,14 @@ implements ImageConsumer
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
+	 */
+	public void releaseResources() {
+		this.isLoaded = false;
+		this.image = null;
 	}
 	
 }

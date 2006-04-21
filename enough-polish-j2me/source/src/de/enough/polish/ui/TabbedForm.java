@@ -251,6 +251,9 @@ public class TabbedForm extends Form {
 		System.out.println("Activating tab [" + tabIndex + "].");
 		if (this.container.isInitialised) {
 			this.container.defocus( this.container.style );
+			//#if polish.TabbedForm.releaseResourcesOnTabChange
+				this.container.releaseResources();
+			//#endif
 		}
 		this.activeTabIndex = tabIndex;
 		this.tabBar.setActiveTab(tabIndex);

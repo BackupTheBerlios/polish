@@ -2004,6 +2004,17 @@ public abstract class Item extends Object
 		display.setCurrent( myScreen );
 	}
 	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this item.
+	 * The default implementation releases any background resources.
+	 */
+	public void releaseResources() {
+		if (this.background != null) {
+			this.background.releaseResources();
+		}
+	}
+
+	
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}

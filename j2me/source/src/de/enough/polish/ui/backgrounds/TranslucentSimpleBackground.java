@@ -159,4 +159,14 @@ public class TranslucentSimpleBackground extends Background {
 		//#endif
 	}
 
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
+	 */
+	public void releaseResources() {
+		//#if !polish.api.nokia-ui && polish.midp2
+			// int MIDP/2.0 the buffer is always used:
+			this.buffer = null;
+			this.lastWidth = 0;
+		//#endif
+	}
 }

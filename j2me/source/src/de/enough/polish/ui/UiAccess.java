@@ -27,6 +27,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * <p>Allows to access J2ME Polish specific features in a standard compliant way.</p>
@@ -810,5 +811,37 @@ public final class UiAccess {
     }
     //#endif
 
+    /**
+     * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI.
+     */
+    public static void releaseResources() {
+        //#if polish.usePolishGui
+    		StyleSheet.releaseResources();
+    		Displayable displayable = StyleSheet.display.getCurrent();
+    		if ( displayable instanceof Screen ) {
+    			((Screen)displayable).releaseResources();
+    		}
+        //#endif    	
+    }
+    
+    //#if polish.usePolishGui
+    /**
+     * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI for the specified screen.
+     * 
+     * @param screen the screen for which the resources should be released. 
+     */
+    public static void releaseResources( Screen screen ) {
+    	screen.releaseResources();
+    }
+    //#endif
+
+    /**
+     * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI for the specified screen.
+     * 
+     * @param screen the screen for which the resources should be released. 
+     */
+    public static void releaseResources( javax.microedition.lcdui.Screen screen ) {
+    	// ignore
+    }
 
 }

@@ -71,7 +71,7 @@ implements ImageConsumer
 	private Image image;
 	private final int color;
 	private boolean isLoaded;
-	private String imageUrl;
+	private final String imageUrl;
 	private final int anchor;
 	private final boolean doCenter;
 	private final int xOffset;
@@ -114,7 +114,7 @@ implements ImageConsumer
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)
 	 */
-	public void setImage(String name, Image image) {
+	public void setImage(String url, Image image) {
 		this.image = image;
 	}
 	//#endif
@@ -131,7 +131,6 @@ implements ImageConsumer
 				//#debug error
 				System.out.println( "unable to load image [" + this.imageUrl + "]" + e );
 			}
-			this.imageUrl = null;
 			this.isLoaded = true;
 		}
 		if (this.color != Item.TRANSPARENT) {
@@ -180,5 +179,14 @@ implements ImageConsumer
 	public Image getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
+	 */
+	public void releaseResources() {
+		this.isLoaded = false;
+		this.image = null;
+	}
+
 
 }

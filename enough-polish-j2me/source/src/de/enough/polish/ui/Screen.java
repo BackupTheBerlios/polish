@@ -88,8 +88,11 @@ public abstract class Screen
 //#if polish.Bugs.needsNokiaUiForSystemAlerts && !polish.SystemAlertNotUsed
 	//#define tmp.needsNokiaUiForSystemAlerts
 //#endif
+//#if polish.hasCommandKeyEvents || (polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined)
+	//#define tmp.hasCommandKeyEvents
+//#endif
 //#if polish.useFullScreen
-	//#if (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || polish.hasCommandKeyEvents)
+	//#if (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || tmp.hasCommandKeyEvents)
 		//#define tmp.fullScreen
 		//# extends Canvas
 	//#elif polish.classes.fullscreen:defined
@@ -980,7 +983,9 @@ implements AccessibleCanvas
 			int translateY = g.getTranslateY();
 			if (translateY != 0 && this.screenHeight == this.originalScreenHeight) {
 				this.screenHeight -= translateY;
-				this.scrollIndicatorY -= translateY;
+				//#if !tmp.useScrollBar 
+					this.scrollIndicatorY -= translateY;
+				//#endif
 				//#debug
 				System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
 				if (this.container != null) {
@@ -2609,6 +2614,40 @@ implements AccessibleCanvas
 		//#endif
 
 	}
+	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this item.
+	 * The default implementation does release any background resources.
+	 */
+	public void releaseResources() {
+		if (this.background != null) {
+			this.background.releaseResources();
+		}
+		if (this.container != null) {
+			this.container.releaseResources();
+		}
+		//#ifdef tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.releaseResources();
+			//#else
+				this.menuContainer.releaseResources();
+			//#endif
+		//#endif
+		if (this.gauge != null) {
+			this.gauge.releaseResources();
+		}
+		//#ifdef tmp.usingTitle
+			if (this.title != null) {
+				this.title.releaseResources();
+			}
+		//#endif
+		//#ifndef polish.skipTicker
+			if (this.ticker != null) {
+				this.ticker.releaseResources();
+			}
+		//#endif	
+	}
+
 		
 	
 //#ifdef polish.Screen.additionalMethods:defined

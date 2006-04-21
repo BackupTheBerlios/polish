@@ -26,6 +26,7 @@
 package de.enough.polish.ui;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Timer;
 
@@ -498,6 +499,28 @@ public final class StyleSheet {
 		}
 	}
 	//#endif
+	
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this style sheet.
+	 */
+	public static void releaseResources() {
+		//#if polish.allowImageCaching != false
+		if (imagesByName != null) {
+			imagesByName.clear();
+		}
+		//#endif
+		//#ifdef polish.useDynamicStyles
+			Enumeration enumeration = stylesByName.elements();
+			while (enumeration.hasMoreElements()) {
+				Style style = (Style) enumeration.nextElement();
+				style.releaseResources();
+			}
+		//#endif
+		//#ifdef polish.StyleSheet.releaseResources:defined
+			//#include ${polish.StyleSheet.releaseResources}
+		//#endif
+	}
+
 	
 	
 //#ifdef polish.StyleSheet.additionalMethods:defined

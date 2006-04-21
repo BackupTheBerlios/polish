@@ -534,6 +534,20 @@ implements ImageConsumer
 			return "IconItem(" + this.text + ")/" + this;
 		}
 	//#endif
+		
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this item.
+	 * The default implementation does release any background resources.
+	 */
+	public void releaseResources() {
+		super.releaseResources();
+		//#if polish.midp2 && polish.css.scale-factor
+			this.scaleData = null;
+		//#endif
+		this.image = null;
+		this.isStyleInitialised = false;
+	}
+
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}
