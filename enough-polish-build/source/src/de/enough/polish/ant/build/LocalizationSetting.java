@@ -77,7 +77,6 @@ public class LocalizationSetting extends Setting {
 		}
 		if (locales.length == 1) {
 			add( setting );
-			this.supportedLocales.add( setting );			
 		} else {
 			for (int i = 0; i < locales.length; i++) {
 				Locale locale = locales[i];
@@ -132,7 +131,7 @@ public class LocalizationSetting extends Setting {
 			//LocaleSetting[] locales = new LocaleSetting[ localeDefs.length ];
 			for (int i = 0; i < localeDefs.length; i++) {
 				String localeDefinition = localeDefs[i];
-				addConfiguredLocaleSetting( getLocale( localeDefinition ) );				
+				addConfiguredLocaleSetting( new LocaleSetting( localeDefinition ) );				
 			}
 		}
 	}
@@ -194,15 +193,7 @@ public class LocalizationSetting extends Setting {
 		this.dynamic = dynamic;
 	}
 	
-	/**
-	 * Parses the locale from the given definition
-	 * 
-	 * @param definition the definition, e.g. "de_DE"
-	 * @return the corresponding locale
-	 */
-	private LocaleSetting getLocale( String definition ) {
-		return new LocaleSetting( definition );
-	}
+
 
 	/**
 	 * Sets the default locale.
@@ -222,7 +213,7 @@ public class LocalizationSetting extends Setting {
 	 * @param locale the default locale, e.g. "en_US"
 	 */
 	public void setDefaultLocale( String locale ) {
-		this.defaultLocale = getLocale( locale );
+		this.defaultLocale = new LocaleSetting( locale );
 	}
 	
 	/**

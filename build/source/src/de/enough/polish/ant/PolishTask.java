@@ -131,7 +131,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-04-19)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-04-21)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -982,13 +982,13 @@ public class PolishTask extends ConditionalTask {
 		this.importConverter = new ImportConverter();
 		
 		// init base style sheet:
-		if (this.buildSetting.usePolishGui()) {
-			ResourceSetting resourceSetting = this.buildSetting.getResourceSetting();
-			File cssFile = new File( resourceSetting.getDir().getAbsolutePath() + File.separatorChar + "polish.css");
-			if (!cssFile.exists()) {
-				log("Unable to find polish.css at [" + cssFile.getAbsolutePath() + "] - you should create this file when you want to make most of the J2ME Polish GUI.", Project.MSG_WARN );
-			}
-		}
+//		if (this.buildSetting.usePolishGui()) {
+//			ResourceSetting resourceSetting = this.buildSetting.getResourceSetting();
+//			File cssFile = new File( resourceSetting.getDir().getAbsolutePath(), "polish.css");
+//			if (!cssFile.exists()) {
+//				log("Unable to find polish.css at [" + cssFile.getAbsolutePath() + "] - you should create this file when you want to make most of the J2ME Polish GUI.", Project.MSG_WARN );
+//			}
+//		}
 		
 		// set the names of the midlets:
 		this.midletClassesByName = new HashMap();

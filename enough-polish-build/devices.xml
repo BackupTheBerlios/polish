@@ -7495,7 +7495,7 @@ These namespaces/schemas will be used soon.
 	
 	<device>
 		<identifier>Samsung/SGH-D600</identifier>
-		<features>hasCommandKeys, hasCamera</features>
+		<features>hasCommandKeyEvents, hasCamera</features>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>

@@ -47,6 +47,7 @@ public class RootSetting extends Setting {
 	
 
 	private String dirDefinition;
+	private File dir;
 
 	/**
 	 * Creates a new directory setting.
@@ -55,19 +56,31 @@ public class RootSetting extends Setting {
 		super();
 	}
 	
+	public RootSetting(File dir) {
+		this.dir = dir;
+	}
+
 	public void setDir( String dirDefinition ) {
-		if (dirDefinition == null) {
-			throw new BuildException("Invalid <root> element, no \"dir\" attribute has been defined. Please check your <resources> element in the build.xml script.");
+		if ("".equals( dirDefinition ) ) {
+			throw new BuildException("Invalid <root> element, an empty <root> attribute has been defined. Please check your <root> element(s) in the build.xml script.");
 		}
 		this.dirDefinition = dirDefinition;
 	}
 	
 	public String getDirDefinition() {
-		return this.dirDefinition;
+		if (this.dir != null) {
+			return this.dir.getAbsolutePath();
+		} else {
+			return this.dirDefinition;
+		}
 	}
 	
 	public File resolveDir( Environment env ) {
-		return env.resolveFile(this.dirDefinition);
+		if (this.dir != null) {
+			return this.dir;
+		} else {
+			return env.resolveFile(this.dirDefinition);
+		}
 	}
 
 }

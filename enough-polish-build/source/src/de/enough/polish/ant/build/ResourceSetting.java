@@ -54,7 +54,6 @@ public class ResourceSetting extends Setting {
 
 	private ArrayList localizationSettings;
 	private ArrayList fileSets;
-	private File dir;
 	private boolean useDefaultExcludes = true;
 	private String[] excludes = new String[0];
 	private String baseDir;
@@ -62,6 +61,7 @@ public class ResourceSetting extends Setting {
 	private ArrayList copierSettings;
 	private boolean filterZeroLengthFiles = true;
 	private ArrayList filterSettings;
+	private ArrayList rootSettings;
 
 	/**
 	 * Creates a new empty Resource Setting.
@@ -96,6 +96,16 @@ public class ResourceSetting extends Setting {
 		this.copierSettings.add( setting );
 	}
 	
+	public void addConfiguredRoot( RootSetting setting ) {
+		if (setting.getDirDefinition() == null) {
+			throw new BuildException("Invalid <root> element in build.xml: please specify the \"dir\" attribute.");
+		}
+		if (this.rootSettings == null) {
+			this.rootSettings = new ArrayList();
+		}
+		this.rootSettings.add( setting );
+	}
+	
 	public void addConfiguredFilter( ResourceFilterSetting setting ) {
 		if (setting.getExcludePatterns() == null) {
 			throw new BuildException("Each <filter> element within the <resources> element needs to define one \"excludes\" attribute.");
@@ -110,14 +120,29 @@ public class ResourceSetting extends Setting {
 		if (!dir.exists()) { 
 			throw new BuildException("The specified resources-directory [" + dir.getAbsolutePath() + "] does not exist. Please adjust the \"dir\" attribute of the <resources> element.");
 		}
-		this.dir = dir;
+		addConfiguredRoot( new RootSetting( dir ) );
 	}
 	
-	public File getDir() {
-		if (this.dir == null) {
-			this.dir = new File( this.baseDir + "resources" );
+	public File[] getRootDirectories( Environment env ) {
+		if (this.rootSettings == null) {
+			return new File[]{ 
+				new File( this.baseDir + "resources" )
+			};
 		}
-		return this.dir;
+		RootSetting[] settings = (RootSetting[]) this.rootSettings.toArray( new RootSetting[ this.rootSettings.size() ] );
+		ArrayList rootDirsList = new ArrayList( settings.length );
+		BooleanEvaluator evaluator = env.getBooleanEvaluator();
+		for (int i = 0; i < settings.length; i++) {
+			RootSetting setting = settings[i];
+			if (setting.isActive(evaluator)) {
+				rootDirsList.add( setting.resolveDir(env) );
+			}
+		}
+		File[] rootDirs = (File[]) rootDirsList.toArray( new File[ rootDirsList.size()] );
+		if (rootDirs.length == 0) {
+			throw new BuildException( "Unable to build for device [" + env.getDevice().getIdentifier() + "]: no resource directories fit. Check the conditions of your <root> elements in the build.xml script.");
+		}
+		return rootDirs;
 	}
 	
 	public void setDefaultexcludes( boolean useExcludes ) {

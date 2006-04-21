@@ -68,7 +68,6 @@ public class ResourceManager {
 	private final ResourceSetting resourceSetting;
 	private final Project project;
 	private final BooleanEvaluator booleanEvaluator;
-	private final File resourcesDir;
 	private final Map resourceDirsByDevice;
 	private final ResourceFilter resourceFilter;
 	private final LocalizationSetting localizationSetting;
@@ -83,6 +82,7 @@ public class ResourceManager {
 	private final Environment environment;
 	private final ExtensionManager extensionManager;
 	private boolean filterZeroLengthFiles;
+	private File[] resourceDirectories;
 
 	/**
 	 * Creates a new resource manager.
@@ -103,76 +103,68 @@ public class ResourceManager {
 		this.project = environment.getProject();
 		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
-		File resDir = setting.getDir();
-		if (!resDir.exists()) {
-			System.err.println("Warning: the resources-directory [" + resDir.getAbsolutePath() + "] did not exist, J2ME Polish created it automatically now.");
-			resDir.mkdir();
-		} else if (!resDir.isDirectory()) {
-			throw new BuildException("The resources-directory [" + resDir.getAbsolutePath() + "] is not a directory. Please adjust either your \"resources\"-attribute of the <build>-element or the \"dir\"-attribute of the <resources>-element.");
-		}
-		this.resourcesDir = resDir;
-		
-		// getting all dynamic ScreenSize-directories:
-		File[] resDirFiles = resDir.listFiles();
-		Arrays.sort( resDirFiles );
 		ArrayList dynamicScreenSizeDirsList = new ArrayList();
 		ArrayList dynamicScreenSizeMatchersList = new ArrayList();
-		for (int i = 0; i < resDirFiles.length; i++) {
-			File file = resDirFiles[i];
-			if (file.isDirectory() ) {
-				String name = file.getName();
-				if (name.startsWith("ScreenSize.") 
-						&& ( (name.indexOf('+') != -1) || (name.indexOf('-') != -1)) )  
-				{
-					dynamicScreenSizeDirsList.add( file );
-					String requirement = name.substring( "ScreenSize.".length() );
-					SizeMatcher sizeMatcher = new SizeMatcher( requirement );
-					dynamicScreenSizeMatchersList.add( sizeMatcher );
+		ArrayList dynamicCanvasSizeDirsList = new ArrayList();
+		ArrayList dynamicCanvasSizeMatchersList = new ArrayList();
+		ArrayList dynamicFullCanvasSizeDirsList = new ArrayList();
+		ArrayList dynamicFullCanvasSizeMatchersList = new ArrayList();
+		File[] resDirs = setting.getRootDirectories(environment);
+		this.resourceDirectories = resDirs;
+		for (int i = 0; i < resDirs.length; i++) {
+			File resDir = resDirs[i];
+			if (!resDir.exists()) {
+				System.err.println("Warning: the resources-directory [" + resDir.getAbsolutePath() + "] did not exist, J2ME Polish created it automatically now.");
+				resDir.mkdir();
+			} else if (!resDir.isDirectory()) {
+				throw new BuildException("The resources-directory [" + resDir.getAbsolutePath() + "] is not a directory. Please adjust either your \"resources\"-attribute of the <build>-element or the \"dir\"-attribute of the <resources>-element.");
+			}
+			// getting all dynamic ScreenSize-directories:
+			// getting all dynamic CanvasSize-directories:
+			// getting all dynamic FullCanvasSize-directories:
+			File[] resDirFiles = resDir.listFiles();
+			Arrays.sort( resDirFiles );
+			for (int j = 0; j < resDirFiles.length; j++) {
+				File file = resDirFiles[j];
+				if (file.isDirectory() ) {
+					String name = file.getName();
+					if (name.startsWith("ScreenSize.") 
+							&& ( (name.indexOf('+') != -1) || (name.indexOf('-') != -1)) )  
+					{
+						dynamicScreenSizeDirsList.add( file );
+						String requirement = name.substring( "ScreenSize.".length() );
+						SizeMatcher sizeMatcher = new SizeMatcher( requirement );
+						dynamicScreenSizeMatchersList.add( sizeMatcher );
+					} 
+					else if (name.startsWith("CanvasSize.")
+							&& ( (name.indexOf('+') != -1) || (name.indexOf('-') != -1)) )  
+					{
+						dynamicCanvasSizeDirsList.add( file );
+						String requirement = name.substring( "CanvasSize.".length() );
+						SizeMatcher sizeMatcher = new SizeMatcher( requirement );
+						dynamicCanvasSizeMatchersList.add( sizeMatcher );
+					}
+					else if (name.startsWith("FullCanvasSize.") 
+							&& ( (name.indexOf('+') != -1) || (name.indexOf('-') != -1)) )  
+					{
+						dynamicScreenSizeDirsList.add( file );
+						String requirement = name.substring( "FullCanvasSize.".length() );
+						SizeMatcher sizeMatcher = new SizeMatcher( requirement );
+						dynamicScreenSizeMatchersList.add( sizeMatcher );
+					}
+
 				}
 			}
-		}
+			
+		}		
 		this.dynamicScreenSizeDirs = (File[]) dynamicScreenSizeDirsList.toArray( new File[dynamicScreenSizeDirsList.size()] );
 		this.dynamicScreenSizeMatchers = (SizeMatcher[]) dynamicScreenSizeMatchersList.toArray( new SizeMatcher[dynamicScreenSizeMatchersList.size()] );
 
-		// getting all dynamic CanvasSize-directories:
-		dynamicScreenSizeDirsList = new ArrayList();
-		dynamicScreenSizeMatchersList = new ArrayList();
-		for (int i = 0; i < resDirFiles.length; i++) {
-			File file = resDirFiles[i];
-			if (file.isDirectory() ) {
-				String name = file.getName();
-				if (name.startsWith("CanvasSize.") 
-						&& ( (name.indexOf('+') != -1) || (name.indexOf('-') != -1)) )  
-				{
-					dynamicScreenSizeDirsList.add( file );
-					String requirement = name.substring( "CanvasSize.".length() );
-					SizeMatcher sizeMatcher = new SizeMatcher( requirement );
-					dynamicScreenSizeMatchersList.add( sizeMatcher );
-				}
-			}
-		}
-		this.dynamicCanvasSizeDirs = (File[]) dynamicScreenSizeDirsList.toArray( new File[dynamicScreenSizeDirsList.size()] );
-		this.dynamicCanvasSizeMatchers = (SizeMatcher[]) dynamicScreenSizeMatchersList.toArray( new SizeMatcher[dynamicScreenSizeMatchersList.size()] );
+		this.dynamicCanvasSizeDirs = (File[]) dynamicCanvasSizeDirsList.toArray( new File[dynamicCanvasSizeDirsList.size()] );
+		this.dynamicCanvasSizeMatchers = (SizeMatcher[]) dynamicCanvasSizeMatchersList.toArray( new SizeMatcher[dynamicCanvasSizeMatchersList.size()] );
 
-		// getting all dynamic CanvasSize-directories:
-		dynamicScreenSizeDirsList = new ArrayList();
-		dynamicScreenSizeMatchersList = new ArrayList();
-		for (int i = 0; i < resDirFiles.length; i++) {
-			File file = resDirFiles[i];
-			if (file.isDirectory() ) {
-				String name = file.getName();
-				if (name.startsWith("FullCanvasSize.") 
-						&& ( (name.indexOf('+') != -1) || (name.indexOf('-') != -1)) )  
-				{
-					dynamicScreenSizeDirsList.add( file );
-					String requirement = name.substring( "FullCanvasSize.".length() );
-					SizeMatcher sizeMatcher = new SizeMatcher( requirement );
-					dynamicScreenSizeMatchersList.add( sizeMatcher );
-				}
-			}
-		}
-		this.dynamicFullCanvasSizeDirs = (File[]) dynamicScreenSizeDirsList.toArray( new File[dynamicScreenSizeDirsList.size()] );
-		this.dynamicFullCanvasSizeMatchers = (SizeMatcher[]) dynamicScreenSizeMatchersList.toArray( new SizeMatcher[dynamicScreenSizeMatchersList.size()] );
+		this.dynamicFullCanvasSizeDirs = (File[]) dynamicFullCanvasSizeDirsList.toArray( new File[dynamicFullCanvasSizeDirsList.size()] );
+		this.dynamicFullCanvasSizeMatchers = (SizeMatcher[]) dynamicFullCanvasSizeMatchersList.toArray( new SizeMatcher[dynamicFullCanvasSizeMatchersList.size()] );
 
 		// get localization setting:
 		this.localizationSetting = this.resourceSetting.getLocalizationSetting();
@@ -351,94 +343,98 @@ public class ResourceManager {
 		if (locale != null) {
 			key += locale.toString();
 		}
-		File[] resourceDirectories = (File[]) this.resourceDirsByDevice.get( key );
-		if (resourceDirectories != null) {
-			return resourceDirectories;
+		File[] directories = (File[]) this.resourceDirsByDevice.get( key );
+		if (directories != null) {
+			return directories;
 		}
 		ArrayList dirs = new ArrayList();
-		// first dir is the general resources dir:
-		dirs.add( this.resourcesDir );
-		String resourcePath = this.resourcesDir.getAbsolutePath() + File.separator;
-		// then the vendor specific resources:
-		File resourceDir = new File( resourcePath + device.getVendorName() );
-		if (resourceDir.exists()) {
-			dirs.add( resourceDir );
-		}
-		// now add all dynamic ScreenSize-directories:
-		String screenSize = device.getCapability("polish.ScreenSize");
-		if (screenSize != null) {
-			for (int i = 0; i < this.dynamicScreenSizeDirs.length; i++ ) {
-				SizeMatcher matcher = this.dynamicScreenSizeMatchers[i];
-				if (matcher.matches(screenSize)) {
-					resourceDir = this.dynamicScreenSizeDirs[i];
-					dirs.add( resourceDir );
-				}
-			}
-		}
-		// now add all dynamic CanvasSize-directories:
-		String canvasSize = device.getCapability("polish.CanvasSize");
-		if (canvasSize != null) {
-			for (int i = 0; i < this.dynamicCanvasSizeDirs.length; i++ ) {
-				SizeMatcher matcher = this.dynamicCanvasSizeMatchers[i];
-				if (matcher.matches(canvasSize)) {
-					resourceDir = this.dynamicCanvasSizeDirs[i];
-					dirs.add( resourceDir );
-				}
-			}
-		}
-		// now add all dynamic FullCanvasSize-directories:
-		String fullCanvasSize = device.getCapability("polish.FullCanvasSize");
-		if (fullCanvasSize != null) {
-			for (int i = 0; i < this.dynamicFullCanvasSizeDirs.length; i++ ) {
-				SizeMatcher matcher = this.dynamicFullCanvasSizeMatchers[i];
-				if (matcher.matches(fullCanvasSize)) {
-					resourceDir = this.dynamicFullCanvasSizeDirs[i];
-					dirs.add( resourceDir );
-				}
-			}
-		}
-		// now add all group resource-directories:
-		String[] groups = device.getGroupNames();
-		for (int i = 0; i < groups.length; i++) {
-			String group = groups[i];
-			resourceDir = new File( resourcePath + group );
+		for (int j = 0; j < this.resourceDirectories.length; j++) {
+			File resourcesDir = this.resourceDirectories[j];
+			// first dir is the general resources dir:
+			dirs.add( resourcesDir );
+			//String resourcePath = resourcesDir.getAbsolutePath() + File.separator;
+			// then the vendor specific resources:
+			File resourceDir = new File( resourcesDir, device.getVendorName() );
 			if (resourceDir.exists()) {
 				dirs.add( resourceDir );
 			}
-		}
-		// The last possible resource directory is the directory for the specific device:
-		resourceDir = new File( resourcePath + device.getVendorName() 
-							+ File.separatorChar + device.getName() );
-		if (resourceDir.exists()) {
-			dirs.add( resourceDir );
-		}				
-		if (locale != null) {
-			// now add all locale-specific directories:
-			String languageDirName = null;
-			String localeDirName = locale.toString();
-			if (locale.getCountry().length() > 0) {
-				languageDirName = locale.getLanguage();
-			}
-			resourceDirectories = (File[]) dirs.toArray( new File[ dirs.size() ]);
-			for (int i = 0; i < resourceDirectories.length; i++) {
-				resourceDir = resourceDirectories[i];
-				resourcePath = resourceDir.getAbsolutePath() + File.separator;
-				if (languageDirName != null) {
-					resourceDir = new File( resourcePath + languageDirName );
-					if (resourceDir.exists()) {
+			// now add all dynamic ScreenSize-directories:
+			String screenSize = device.getCapability("polish.ScreenSize");
+			if (screenSize != null) {
+				for (int i = 0; i < this.dynamicScreenSizeDirs.length; i++ ) {
+					SizeMatcher matcher = this.dynamicScreenSizeMatchers[i];
+					if (matcher.matches(screenSize)) {
+						resourceDir = this.dynamicScreenSizeDirs[i];
 						dirs.add( resourceDir );
 					}
 				}
-				resourceDir = new File( resourcePath + localeDirName );
+			}
+			// now add all dynamic CanvasSize-directories:
+			String canvasSize = device.getCapability("polish.CanvasSize");
+			if (canvasSize != null) {
+				for (int i = 0; i < this.dynamicCanvasSizeDirs.length; i++ ) {
+					SizeMatcher matcher = this.dynamicCanvasSizeMatchers[i];
+					if (matcher.matches(canvasSize)) {
+						resourceDir = this.dynamicCanvasSizeDirs[i];
+						dirs.add( resourceDir );
+					}
+				}
+			}
+			// now add all dynamic FullCanvasSize-directories:
+			String fullCanvasSize = device.getCapability("polish.FullCanvasSize");
+			if (fullCanvasSize != null) {
+				for (int i = 0; i < this.dynamicFullCanvasSizeDirs.length; i++ ) {
+					SizeMatcher matcher = this.dynamicFullCanvasSizeMatchers[i];
+					if (matcher.matches(fullCanvasSize)) {
+						resourceDir = this.dynamicFullCanvasSizeDirs[i];
+						dirs.add( resourceDir );
+					}
+				}
+			}
+			// now add all group resource-directories:
+			String[] groups = device.getGroupNames();
+			for (int i = 0; i < groups.length; i++) {
+				String group = groups[i];
+				resourceDir = new File( resourcesDir,  group );
 				if (resourceDir.exists()) {
 					dirs.add( resourceDir );
-				}				
+				}
 			}
+			// The last possible resource directory is the directory for the specific device:
+			resourceDir = new File( resourcesDir, device.getVendorName() 
+								+ File.separatorChar + device.getName() );
+			if (resourceDir.exists()) {
+				dirs.add( resourceDir );
+			}				
+			if (locale != null) {
+				// now add all locale-specific directories:
+				String languageDirName = null;
+				String localeDirName = locale.toString();
+				if (locale.getCountry().length() > 0) {
+					languageDirName = locale.getLanguage();
+				}
+				directories = (File[]) dirs.toArray( new File[ dirs.size() ]);
+				for (int i = 0; i < directories.length; i++) {
+					resourceDir = directories[i];
+					//resourcePath = resourceDir.getAbsolutePath() + File.separator;
+					if (languageDirName != null) {
+						resourceDir = new File( resourcesDir, languageDirName );
+						if (resourceDir.exists()) {
+							dirs.add( resourceDir );
+						}
+					}
+					resourceDir = new File( resourcesDir, localeDirName );
+					if (resourceDir.exists()) {
+						dirs.add( resourceDir );
+					}				
+				}
 
+			}			
 		}
-		resourceDirectories = (File[]) dirs.toArray( new File[ dirs.size() ]);
-		this.resourceDirsByDevice.put( key, resourceDirectories );
-		return resourceDirectories;
+
+		directories = (File[]) dirs.toArray( new File[ dirs.size() ]);
+		this.resourceDirsByDevice.put( key, directories );
+		return directories;
 	}
 
 	/**

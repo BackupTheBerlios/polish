@@ -126,7 +126,7 @@ public class LocaleSetting extends Setting {
 	/**
 	 * Parses the locale from the given definition
 	 * 
-	 * @param definition the definition, e.g. "de_DE"
+	 * @param definitionsStr the definition, e.g. "de_DE, en, fr_CA"
 	 * @return the corresponding locale
 	 */
 	private Locale[] getLocales( String definitionsStr ) {
@@ -150,6 +150,9 @@ public class LocaleSetting extends Setting {
 	}
 
 	public String toString() {
+		if (this.locale == null) {
+			return super.toString();
+		}
 		return this.locale.toString();
 	}
 
