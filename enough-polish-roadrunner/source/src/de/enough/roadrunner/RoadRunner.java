@@ -27,6 +27,7 @@ package de.enough.roadrunner;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -87,7 +88,7 @@ implements CommandListener
 	private void createMainMenu(int selectedIndex) {
 		// create the main menu:
 		//#style mainScreen
-		this.mainMenu = new List( "RoadRunner", List.IMPLICIT );
+		this.mainMenu = new List( "RoadRunner", Choice.IMPLICIT );
 		//#style mainMenuItem
 		this.mainMenu.append( Locale.get( "menu.StartGame"), null);
 		//#style mainMenuItem
@@ -203,7 +204,7 @@ implements CommandListener
 			//#style settingsScreen
 			this.settingsForm = new Form( Locale.get("title.Settings") );
 			//#style exclusiveChoice
-			ChoiceGroup group = new ChoiceGroup( Locale.get("setting.sound"), ChoiceGroup.EXCLUSIVE );
+			ChoiceGroup group = new ChoiceGroup( Locale.get("setting.sound"), Choice.EXCLUSIVE );
 			//#style exclusiveChoiceItem, default
 			group.append( Locale.get("setting.sound.off"), null );
 			//#style exclusiveChoiceItem, default
@@ -214,7 +215,7 @@ implements CommandListener
 			
 			//#ifdef polish.i18n.useDynamicTranslations
 				 //#style exclusiveChoice
-				group = new ChoiceGroup( Locale.get("setting.language"), ChoiceGroup.EXCLUSIVE );
+				group = new ChoiceGroup( Locale.get("setting.language"), Choice.EXCLUSIVE );
 				//#= this.localesFileNames = new String[ ${number(polish.SupportedLocales)} ];
 				int i = 0;
 				//#foreach locale in polish.SupportedLocales
