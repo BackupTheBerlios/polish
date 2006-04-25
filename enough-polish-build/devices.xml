@@ -6308,7 +6308,7 @@ These namespaces/schemas will be used soon.
 		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp"/>
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq"/>
 		<capability name="mmapi.protocol.capture" value="audio/amr, video/3gpp, image/jpeg"/>
-		<capability name="wap.UserAgent" value="SIE-S65/25 UP.Browser/7.0.0.1.c.3 (GUI) MMP/2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="SIE-S65/25 UP.Browser/7.0.0.1.c.3 (GUI) MMP/2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 	<capability name="wap.userAgent" value="SIE-S65/00"/>
 <capability name="wap.userAgent" value="SIE-S65/00 UP.Browser/7.0.0.1.121 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SIE-S65/00 UP.Browser/7.0.0.1.132 (GUI) MMP/2.0"/>
