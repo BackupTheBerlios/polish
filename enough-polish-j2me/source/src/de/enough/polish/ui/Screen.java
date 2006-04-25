@@ -716,7 +716,10 @@ implements AccessibleCanvas
 	 * @param style the style
 	 */
 	public void setStyle(Style style) {
-		//#debug
+		if (style != this.style ) {
+			this.style.releaseResources();
+		}
+	 	//#debug
 		System.out.println("Setting screen-style for " + getClass().getName() );
 		this.style = style;
 		this.background = style.background;
