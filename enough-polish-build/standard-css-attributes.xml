@@ -1529,6 +1529,16 @@
 		id="150"
 	/>
 	
+	<attribute
+		name="gauge-use-image-as-button"
+		type="boolean"
+		appliesTo="Gauge"
+		description="Uses the specified gauge-image as the button and draws it at the current value positition of the gauge. Usually the given image is painted partly from 0 to the gauge's value position."
+		default="false"
+		id="151"
+	/>
+	
+	
 	<!--
 	
 	<attribute
