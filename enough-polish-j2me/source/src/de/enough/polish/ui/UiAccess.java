@@ -825,6 +825,16 @@ public final class UiAccess {
         //#endif    	
     }
     
+    /**
+     * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI when a non-J2ME Polish screen is shown.
+     */
+    public static void releaseResourcesOnScreenChange() {
+        //#if polish.usePolishGui
+    		AnimationThread.releaseResourcesOnScreenChange = true;
+        //#endif    	
+    }
+
+    
     //#if polish.usePolishGui
     /**
      * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI for the specified screen.

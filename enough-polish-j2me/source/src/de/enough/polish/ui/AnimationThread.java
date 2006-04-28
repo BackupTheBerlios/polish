@@ -27,6 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Displayable;
 
 
 //#if polish.blackberry
@@ -75,6 +76,7 @@ public class AnimationThread extends Thread
 	//#else
 		private final static int SLEEP_INTERVAL = 300;
 	//#endif
+	protected static boolean releaseResourcesOnScreenChange;
 	
 	/**
 	 * Creates a new animation thread.
@@ -123,7 +125,17 @@ public class AnimationThread extends Thread
 //							animationCounter = 0;
 //						}
 					}
+					if (releaseResourcesOnScreenChange) {
+						Displayable d = StyleSheet.display.getCurrent();
+						if (d != screen) {
+							StyleSheet.currentScreen = null;
+						}
+					}
 				} else {
+					if (releaseResourcesOnScreenChange) {
+						StyleSheet.releaseResources();
+						releaseResourcesOnScreenChange = false;
+					}
 					sleeptime = SLEEP_INTERVAL;
 				}
 			} catch (InterruptedException e) {
