@@ -281,8 +281,12 @@ implements ImageConsumer
 	private int gapWidth = 3;
 	private int gapColor = 0xFFFFFF; // default gap color is white
 	private Image image;
-	//#if polish.css.gauge-use-image-as-button
+	//#if polish.css.gauge-button-image
 		private boolean useImageAsButton;
+		private int sliderWidth;
+	//#endif
+	//#if polish.css.gauge-slider-image
+		private Image sliderImage;
 	//#endif
 	private int imageYOffset;
 	private Image indicatorImage;
@@ -748,10 +752,19 @@ implements ImageConsumer
 				g.drawImage(this.indicatorImage, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
 			}
 		} else if (this.image != null) {
-			if (this.value != 0) {
-				//#if polish.css.gauge-use-image-as-button
+			//#if polish.css.gauge-button-image
+				if (this.value != 0 || this.useImageAsButton) {
+			//#else
+				//# if (this.value != 0) {
+			//#endif
+				//#if polish.css.gauge-button-image
+					//#if polish.css.gauge-slider-image
+						if (this.sliderImage != null) {
+							g.drawImage(this.sliderImage, x, y + this.contentHeight / 2, Graphics.LEFT | Graphics.VCENTER);
+						}
+					//#endif
 					if (this.useImageAsButton) {
-						int xPos = ((this.contentWidth - this.image.getWidth()) * this.value) / this.maxValue;
+						int xPos = (this.sliderWidth * this.value) / this.maxValue;
 						g.drawImage( this.image, x + xPos, y + this.imageYOffset, Graphics.LEFT | Graphics.TOP );
 					} else {
 				//#endif
@@ -765,7 +778,7 @@ implements ImageConsumer
 						g.drawImage(this.image, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
 						
 						g.setClip(clipX, clipY, clipWidth, clipHeight);
-				//#if polish.css.gauge-use-image-as-button
+				//#if polish.css.gauge-button-image
 					}
 				//#endif
 			}
@@ -818,10 +831,36 @@ implements ImageConsumer
 		if (this.image != null 
 				&& !this.isIndefinite 
 				&& this.preferredWidth == 0 ) {
-			this.contentWidth = this.image.getWidth() + this.valueWidth;
+			//#if polish.css.gauge-button-image
+				if (this.useImageAsButton) {
+				//#if polish.css.gauge-slider-image
+					if (this.sliderImage != null ) {
+						this.contentWidth = this.sliderImage.getWidth() + this.valueWidth;
+						this.sliderWidth = this.sliderImage.getWidth() - this.image.getWidth();
+					} else {
+				//#endif
+						if (this.preferredWidth > 0) {
+							this.contentWidth = this.preferredWidth + this.valueWidth;
+						} else if (this.isLayoutExpand) {
+							this.contentWidth = lineWidth;
+						} else {
+							this.contentWidth = firstLineWidth;
+						}
+						this.sliderWidth = this.contentWidth - (this.valueWidth + this.image.getWidth());
+				//#if polish.css.gauge-slider-image
+					}
+				//#endif
+				} else {
+			//#endif
+					this.contentWidth = this.image.getWidth() + this.valueWidth;
+			//#if polish.css.gauge-button-image
+				}
+			//#endif			
 		} else if (this.preferredWidth > 0) {
 			this.contentWidth = this.preferredWidth + this.valueWidth;
-		} else { //if (this.isLayoutExpand) {
+		} else if (this.isLayoutExpand) {
+			this.contentWidth = lineWidth;
+		} else {
 			this.contentWidth = firstLineWidth;
 		}
 		
@@ -968,10 +1007,27 @@ implements ImageConsumer
 				this.animationMode = animationModeInt.intValue();
 			}
 		//#endif
-		//#if polish.css.gauge-use-image-as-button
-			Boolean useImageAsButtonBool = style.getBooleanProperty("gauge-use-image-as-button");
-			if (useImageAsButtonBool != null) {
-				this.useImageAsButton = useImageAsButtonBool.booleanValue();
+		//#if polish.css.gauge-button-image
+			String buttonImageUrl = style.getProperty("gauge-button-image");
+			if (buttonImageUrl != null) {
+				try {
+					this.image = StyleSheet.getImage( buttonImageUrl, this, false );
+					this.useImageAsButton = true;
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("unable to load gauge-button-image [" + buttonImageUrl + "]: " + e );
+				}
+			}
+		//#endif
+		//#if polish.css.gauge-slider-image
+			String sliderImageUrl = style.getProperty("gauge-slider-image");
+			if (sliderImageUrl != null) {
+				try {
+					this.sliderImage = StyleSheet.getImage( sliderImageUrl, this, false );
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("unable to load gauge-slider-image [" + sliderImageUrl + "]: " + e );
+				}
 			}
 		//#endif
 	}
