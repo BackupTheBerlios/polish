@@ -405,7 +405,7 @@ public class ResourceManager {
 								+ File.separatorChar + device.getName() );
 			if (resourceDir.exists()) {
 				dirs.add( resourceDir );
-			}				
+			}						
 			if (locale != null) {
 				// now add all locale-specific directories:
 				String languageDirName = null;
@@ -418,20 +418,19 @@ public class ResourceManager {
 					resourceDir = directories[i];
 					//resourcePath = resourceDir.getAbsolutePath() + File.separator;
 					if (languageDirName != null) {
-						resourceDir = new File( resourcesDir, languageDirName );
+						resourceDir = new File( resourceDir, languageDirName );
 						if (resourceDir.exists()) {
 							dirs.add( resourceDir );
 						}
 					}
-					resourceDir = new File( resourcesDir, localeDirName );
+					resourceDir = new File( resourceDir, localeDirName );
 					if (resourceDir.exists()) {
 						dirs.add( resourceDir );
 					}				
 				}
 
-			}			
+			}	
 		}
-
 		directories = (File[]) dirs.toArray( new File[ dirs.size() ]);
 		this.resourceDirsByDevice.put( key, directories );
 		return directories;

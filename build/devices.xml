@@ -79,7 +79,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, 3dapi, svg"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, 3dapi, svg, nokia-ui"/>
 	</device>
 	
 	<device supportsPolishGui="false">
