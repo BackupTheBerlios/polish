@@ -1001,7 +1001,7 @@ implements AccessibleCanvas
 			g.translate( -g.getTranslateX(), -g.getTranslateY() );
 			//#= g.setClip( 0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
 		//#endif
-		//#ifdef polish.debug.error
+		//#if polish.debug.error || true
 		try {
 		//#endif
 			//#if polish.css.repaint-previous-screen
@@ -1332,7 +1332,7 @@ implements AccessibleCanvas
 				}
 			//#endif
 		
-		//#ifdef polish.debug.error
+		//#if polish.debug.error || true
 		} catch (RuntimeException e) {
 			//#debug error
 			System.out.println( "unable to paint screen (" + getClass().getName() + "):" + e );
