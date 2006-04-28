@@ -281,6 +281,9 @@ implements ImageConsumer
 	private int gapWidth = 3;
 	private int gapColor = 0xFFFFFF; // default gap color is white
 	private Image image;
+	//#if polish.css.gauge-use-image-as-button
+		private boolean useImageAsButton;
+	//#endif
 	private int imageYOffset;
 	private Image indicatorImage;
 	private boolean isIndefinite;
@@ -746,16 +749,25 @@ implements ImageConsumer
 			}
 		} else if (this.image != null) {
 			if (this.value != 0) {
-				int width = (this.image.getWidth() * this.value) / this.maxValue;
-				int clipX = g.getClipX();
-				int clipY = g.getClipY();
-				int clipWidth = g.getClipWidth();
-				int clipHeight = g.getClipHeight();
-				
-				g.clipRect(x, clipY, width, clipHeight);
-				g.drawImage(this.image, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
-				
-				g.setClip(clipX, clipY, clipWidth, clipHeight);
+				//#if polish.css.gauge-use-image-as-button
+					if (this.useImageAsButton) {
+						int xPos = ((this.contentWidth - this.image.getWidth()) * this.value) / this.maxValue;
+						g.drawImage( this.image, x + xPos, y + this.imageYOffset, Graphics.LEFT | Graphics.TOP );
+					} else {
+				//#endif
+						int width = (this.image.getWidth() * this.value) / this.maxValue;
+						int clipX = g.getClipX();
+						int clipY = g.getClipY();
+						int clipWidth = g.getClipWidth();
+						int clipHeight = g.getClipHeight();
+						
+						g.clipRect(x, clipY, width, clipHeight);
+						g.drawImage(this.image, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
+						
+						g.setClip(clipX, clipY, clipWidth, clipHeight);
+				//#if polish.css.gauge-use-image-as-button
+					}
+				//#endif
 			}
 		} else {
 			g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
@@ -954,6 +966,12 @@ implements ImageConsumer
 			Integer animationModeInt = style.getIntProperty( "gauge-animation-mode" );
 			if (animationModeInt != null) {
 				this.animationMode = animationModeInt.intValue();
+			}
+		//#endif
+		//#if polish.css.gauge-use-image-as-button
+			Boolean useImageAsButtonBool = style.getBooleanProperty("gauge-use-image-as-button");
+			if (useImageAsButtonBool != null) {
+				this.useImageAsButton = useImageAsButtonBool.booleanValue();
 			}
 		//#endif
 	}

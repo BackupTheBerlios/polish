@@ -123,40 +123,41 @@ public final class UiAccess {
 
 	//#if polish.midp2
 	/**
-	 * Sets the title of the screen using a CustomItem.
+	 * Sets the title of the screen using an Item.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
 	 * 
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
 	 */
-	public static void setTitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.CustomItem title ) {
+	public static void setTitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item title ) {
 		// this is ignored.
 	}
 	//#endif
 
 	//#if polish.usePolishGui
 	/**
-	 * Sets the title of the screen using a CustomItem.
+	 * Sets the title of the screen using an Item.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
 	 * 
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
 	 */
-	public static void setTitle( Screen screen, CustomItem title ) {
+	public static void setTitle( Screen screen, Item title ) {
 		screen.setTitle( title );
 	}
 	//#endif
 
 	//#if polish.usePolishGui
 	/**
-	 * Sets the title of the screen using a CustomItem.
+	 * Sets the title of the screen using an Item.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
+	 * This method is meant to be used in conjunction with the //#style preprocessing directive.
 	 * 
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
 	 * @param style the style for the title
 	 */
-	public static void setTitle( Screen screen, CustomItem title, Style style ) {
+	public static void setTitle( Screen screen, Item title, Style style ) {
 		if (style != null) {
 			title.setStyle(style);
 		}

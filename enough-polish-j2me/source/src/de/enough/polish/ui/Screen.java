@@ -1491,12 +1491,12 @@ implements AccessibleCanvas
 	//#endif
 	
 	/**
-	 * Sets a CustomItem as the title for this screen.
+	 * Sets an Item as the title for this screen.
 	 * WARNING: You must not call setTitle(String) after calling this method anymore!
 	 * 
-	 * @param item the title CustomItem 
+	 * @param item the title Item 
 	 */
-	public void setTitle(CustomItem item) {
+	public void setTitle(Item item) {
 		//#ifdef tmp.usingTitle
 		this.title = item;
 		if (item != null){
