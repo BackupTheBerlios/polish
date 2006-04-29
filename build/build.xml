@@ -479,6 +479,9 @@
 		description="creates a floater evaluation version along with the J2ME Polish installer"
 		depends="floater, installer"
 	/>
+	<target name="fullinstaller"
+		depends="fullinstall"
+	/>
 		
 	<target name="webprocessor">
 		<webprocessor 

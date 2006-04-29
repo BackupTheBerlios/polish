@@ -264,7 +264,11 @@ implements OutputFilter
 	 */
 	public void filter(String message, PrintStream output) {
 		if (message.indexOf("Note:") == -1
-			&& message.indexOf("Reading library") == -1
+			&& message.indexOf("Reading program") == -1
+			&& message.indexOf("Reading library") == -1			
+			&& message.indexOf("You might consider") == -1
+			&& message.indexOf("their implementations") == -1
+			&& message.indexOf("Copying resources") == -1
 			) 
 		{
 			output.println( message );

@@ -51,6 +51,7 @@ import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssReader;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Is responsible for the assembling of resources like images and localization messages.</p>
@@ -400,36 +401,62 @@ public class ResourceManager {
 					dirs.add( resourceDir );
 				}
 			}
+			
+			// now add any directories that use specific capabilities or contain preprocessing statements etc:
+			File[] files = resourcesDir.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				if (file.isDirectory()) {
+					// The slash can be a protected character:
+					String name = StringUtil.replace(file.getName(), "%2f", "/");
+					//System.out.println("Considering dir "+ name);
+					if (device.hasFeature(name) 
+						|| this.booleanEvaluator.evaluate(name, "resourceassembling", 0)
+						|| (name.endsWith(".0x0")
+							&& device.getCapability(name.substring(0, name.length() - ".0x0".length()) ) == null ) )
+					{
+						if (!dirs.contains(file)) {
+							//System.out.println("Adding capability or preprocessing dir " + file.getAbsolutePath() );
+							dirs.add( file );
+						}
+					}
+				}
+			}
+			
 			// The last possible resource directory is the directory for the specific device:
 			resourceDir = new File( resourcesDir, device.getVendorName() 
 								+ File.separatorChar + device.getName() );
 			if (resourceDir.exists()) {
 				dirs.add( resourceDir );
-			}						
-			if (locale != null) {
-				// now add all locale-specific directories:
-				String languageDirName = null;
-				String localeDirName = locale.toString();
-				if (locale.getCountry().length() > 0) {
-					languageDirName = locale.getLanguage();
-				}
-				directories = (File[]) dirs.toArray( new File[ dirs.size() ]);
-				for (int i = 0; i < directories.length; i++) {
-					resourceDir = directories[i];
-					//resourcePath = resourceDir.getAbsolutePath() + File.separator;
-					if (languageDirName != null) {
-						resourceDir = new File( resourceDir, languageDirName );
-						if (resourceDir.exists()) {
-							dirs.add( resourceDir );
-						}
+			}
+			
+			
+		}
+		if (locale != null) {
+			// now add all locale-specific directories:
+			ArrayList localizedDirs = new ArrayList( dirs.size() * 2 );
+			String languageDirName = null;
+			String localeDirName = locale.toString();
+			if (locale.getCountry().length() > 0) {
+				languageDirName = locale.getLanguage();
+			}
+			directories = (File[]) dirs.toArray( new File[ dirs.size() ]);
+			for (int i = 0; i < directories.length; i++) {
+				File resourceDir = directories[i];
+				localizedDirs.add( resourceDir );
+				//resourcePath = resourceDir.getAbsolutePath() + File.separator;
+				if (languageDirName != null) {
+					File localizedResourceDir = new File( resourceDir, languageDirName );
+					if (localizedResourceDir.exists()) {
+						localizedDirs.add( localizedResourceDir );
 					}
-					resourceDir = new File( resourceDir, localeDirName );
-					if (resourceDir.exists()) {
-						dirs.add( resourceDir );
-					}				
 				}
-
-			}	
+				File localizedResourceDir = new File( resourceDir, localeDirName );
+				if (localizedResourceDir.exists()) {
+					localizedDirs.add( localizedResourceDir );
+				}				
+			}
+			dirs = localizedDirs;
 		}
 		directories = (File[]) dirs.toArray( new File[ dirs.size() ]);
 		this.resourceDirsByDevice.put( key, directories );

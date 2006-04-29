@@ -1530,14 +1530,20 @@
 	/>
 	
 	<attribute
-		name="gauge-use-image-as-button"
-		type="boolean"
+		name="gauge-button-image"
+		type="imageurl"
 		appliesTo="Gauge"
-		description="Uses the specified gauge-image as the button and draws it at the current value positition of the gauge. Usually the given image is painted partly from 0 to the gauge's value position."
-		default="false"
+		description="Uses the specified image as the button and draws it at the current value positition of the gauge."
 		id="151"
 	/>
 	
+	<attribute
+		name="gauge-slider-image"
+		type="imageurl"
+		appliesTo="Gauge"
+		description="Uses the specified image as the slider, this is useful in combination with the gauge-button-image capability."
+		id="152"
+	/>
 	
 	<!--
 	
