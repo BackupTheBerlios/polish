@@ -182,9 +182,9 @@ public class MasterCanvas
 				}
 			}
 		//#endif
+		canvas.showNotify();
 		instance.currentCanvas = canvas;
 		instance.currentDisplayable = nextDisplayable;
-		canvas.showNotify();
 //		if (nextDisplayable instanceof Alert) {
 //			System.out.println("MasterCanvas: setting Alert " + nextDisplayable + " as next screen!");
 //		}

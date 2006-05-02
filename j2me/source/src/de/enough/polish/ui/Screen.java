@@ -588,8 +588,8 @@ implements AccessibleCanvas
 									this.previousScreenImage = Image.createImage( this.screenWidth, this.screenHeight);
 								//#endif
 							}
-							//#debug
-							System.out.println("storing previous screen to image buffer...");
+							// #debug
+							System.out.println("storing previous screen " + currentDisplayable + " to image buffer...");
 							Graphics g = this.previousScreenImage.getGraphics();
 							((AccessibleCanvas)currentDisplayable).paint(g);
 						}
