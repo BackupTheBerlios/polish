@@ -25,7 +25,7 @@
  */
 package de.enough.polish.util;
 
-import de.enough.polish.example.MathUtil;
+
 
 
 
@@ -128,16 +128,17 @@ public final class ImageUtil {
 				int []newRGB = new int [newHeigth * newWidth];
 				int halfOfWidth = width/2;
 				int halfOfHeigth = heigth/2;
+				int refX,refY,newX,newY,sumXY;
 				for(int x = 0; x < newWidth; x++){
 					for(int y = 0; y < newHeigth; y++){	
-						int refX = x - referenceX;
-						int refY = y - referenceY;
-						int newX = (int)(refX  * cosR + refY * sinR);
-						int newY = (int)(refY * cosR - refX   * sinR);
+						refX = x - referenceX;
+						refY = y - referenceY;
+						newX = (int)(refX  * cosR + refY * sinR);
+						newY = (int)(refY * cosR - refX   * sinR);
 						newX += halfOfWidth;
 						newY += halfOfHeigth;
 						if( newX >= 0 && newX < width && newY >= 0 && newY < heigth ){
-							int sumXY  = newX + newY * width;
+							sumXY  = newX + newY * width;
 							newRGB [x+y*newWidth] = argbArray[sumXY];
 						}else{
 							newRGB [x+y*newWidth] = backgroundColor;
