@@ -1,0 +1,117 @@
+colors {
+	bgColor: white;
+	highlightedBgColor: silver;
+	titleColor: #7272f4;
+	screenBgColor: #7272f4;
+	fontColor: black;
+	focusedFontColor: black;
+	inactiveFontColor: white;
+	menubarColor: #6262d4;
+}
+
+.tabbedForm {
+	padding: 4;
+	layout: hcenter | vcenter;
+	background-color: screenBgColor;
+	background-top: title;
+	menubar-color: menubarColor;
+}
+
+tabbar {
+	background-color: white;
+	layout: expand;
+	padding-bottom: 0;
+	tabbar-scrolling-indicator-color: black;
+}
+
+activetab {
+	background-type: round-tab;
+	background-color: titleColor;
+	background-arc: 8;
+	font-color: black;
+	font-style: bold;
+	padding-left: 10;
+	padding-right: 8;
+}
+
+inactivetab {
+	padding-left: 6;
+	padding-right: 4;
+	margin-left: 2;
+	margin-right: 2;
+	background-type: round-tab;
+	background-color: silver;
+	background-arc: 8;
+	font-color: black;
+}
+
+.settingsChoice {
+	padding: 2;
+	layout: expand | left;
+}
+
+.settingsItem {
+	radiobox-plain: none;
+	radiobox-selected: url( selected.png );
+	padding: 3;
+	padding-horizontal: 5;
+	font-color: fontColor;
+	font-size: small;
+	layout: expand | left;
+	focused-style: .settingsItemFocused;
+}
+
+.settingsItemFocused {
+	padding: 2;
+	padding-horizontal: 5;
+	font-color: fontColor;
+	font-size: small;
+	border-width: 1;
+	border-color: black;
+	layout: expand | left;
+}
+
+
+focused {
+	padding: 2;
+	font-color: focusedFontColor;
+	font-size: small;
+	font-style: bold;
+	layout: expand | left;
+	background-color: highlightedBgColor;
+	label-style: .labelFocused;
+	
+}
+
+title {
+	font-color: titleColor;
+	text-effect: shadow;
+	text-shadow-color: inactiveFontColor;
+	layout: expand | center;	
+}
+
+label {
+	padding-left: 2;
+	font-color: inactiveFontColor;
+	font-size: small;
+	font-style: bold;
+}
+
+.labelFocused extends label {
+	font-color: fontColor;
+}
+
+.input {
+	background-color: white;
+	font-color: fontColor;
+	border-color: black;
+	border-width: 1;
+}
+
+menu {
+	background-color: argb( 200, 255, 255, 255 );
+	min-width: 120;
+	font-style: bold;
+	font-size: small;
+	font-color: fontColor;
+}
