@@ -725,8 +725,7 @@ public final class UiAccess {
 	 * @param screen the screen.
 	 */
 	public static void addSubCommand(  Command child, Command parent, Screen screen  ) {
-		//#style menuitem?
-		addSubCommand( child, parent, screen );
+		screen.addSubCommand( child, parent );
 	}
 	//#endif
 

@@ -26,7 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -250,6 +249,7 @@ public class TabbedForm extends Form {
 		//#debug
 		System.out.println("Activating tab [" + tabIndex + "].");
 		if (this.container.isInitialised) {
+			//System.out.println("defocus of container " + this.container);
 			this.container.defocus( this.container.style );
 			//#if polish.TabbedForm.releaseResourcesOnTabChange
 				this.container.releaseResources();
@@ -258,9 +258,10 @@ public class TabbedForm extends Form {
 		this.activeTabIndex = tabIndex;
 		this.tabBar.setActiveTab(tabIndex);
 		Container tabContainer = this.tabContainers[ tabIndex ];
+		this.container = tabContainer;
 		tabContainer.setVerticalDimensions( this.contentY, this.contentY + this.contentHeight );
 		if (!tabContainer.isInitialised) {
-			tabContainer.init( this.screenWidth, this.screenWidth );
+			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
 		if (tabContainer.appearanceMode != Item.PLAIN) {
 			//#debug
@@ -269,10 +270,6 @@ public class TabbedForm extends Form {
 		}
 		tabContainer.background = null;
 		tabContainer.border = null;
-		this.container = tabContainer;
-		if (this.screenStateListener != null) {
-			this.screenStateListener.screenStateChanged( this );
-		}
 		if (isShown()) {
 			repaint();
 		}
@@ -317,11 +314,9 @@ public class TabbedForm extends Form {
 		}
 		if (focusedItem != null && focusedItem.handleKeyPressed(keyCode, gameAction)) {
 			return true;
-		} else if (gameAction == Canvas.RIGHT && this.activeTabIndex < this.tabContainers.length -1 ) {
-			setActiveTab( ++this.activeTabIndex );
-			return true;
-		} else if (gameAction == Canvas.LEFT && this.activeTabIndex > 0) {
-			setActiveTab( --this.activeTabIndex );
+		} else if ( this.tabBar.handleKeyPressed(keyCode, gameAction)) {
+			setActiveTab( this.tabBar.getNextTab() );
+			notifyScreenStateChanged();
 			return true;
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
@@ -363,6 +358,7 @@ public class TabbedForm extends Form {
 				return false;
 			}
 			setActiveTab( this.tabBar.newActiveTabIndex );
+			notifyScreenStateChanged();
 			return true;
 		} else {
 			return this.container.handlePointerPressed(x, y);

@@ -111,6 +111,7 @@ implements AccessibleCanvas
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
 		protected Item title;
+		private boolean excludeTitleForBackground;
 		//#ifdef polish.css.title-style
 			private Style titleStyle;
 		//#endif
@@ -172,6 +173,7 @@ implements AccessibleCanvas
 		/** the real, complete height of the screen - this includes title, subtitle, content and menubar */
 		protected int fullScreenHeight;
 		protected int menuBarHeight;
+		private boolean excludeMenuBarForBackground;
 		//#ifdef polish.key.ReturnKey:defined
 			private Command backCommand;
 		//#endif
@@ -281,6 +283,7 @@ implements AccessibleCanvas
 		//#endif
 	//#endif
 	protected ScreenStateListener screenStateListener;
+	private boolean isScreenChangeDirtyFlag;
 
 	
 	/**
@@ -381,9 +384,19 @@ implements AccessibleCanvas
 				int availableScreenWidth = this.screenWidth - (this.marginLeft + this.marginRight);
 				this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
 				//#if !tmp.useScrollBar
-					this.scrollIndicatorWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
+					int scrollWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
+					//#if polish.css.scrollindicator-up-image
+						if (this.scrollIndicatorUpImage != null) {
+							scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
+						}
+					//#elif 
+						if (this.scrollIndicatorDownImage != null) {
+							scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
+						}
+					//#endif
+					this.scrollIndicatorWidth = scrollWidth;
 					this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-					this.scrollIndicatorY = this.fullScreenHeight - this.menuBar.marginBottom + 1 - this.scrollIndicatorWidth;
+					this.scrollIndicatorY = (this.fullScreenHeight - (this.menuBar.marginBottom + this.menuBar.paddingBottom + this.menuBar.contentHeight)) + ((this.menuBar.contentHeight - this.scrollIndicatorWidth)/2);
 				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight );	
 				//System.out.println("Screen.init: menuBarHeight=" + this.menuBarHeight + " scrollIndicatorWidth=" + this.scrollIndicatorWidth );
@@ -424,9 +437,19 @@ implements AccessibleCanvas
 					localMenuBarHeight += 2;
 				//#endif
 				//#if !tmp.useScrollBar
-					this.scrollIndicatorWidth = localMenuBarHeight;
+					//# int scrollWidth = localMenuBarHeight;
+					//#if polish.css.scrollindicator-up-image
+						if (this.scrollIndicatorUpImage != null) {
+							scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
+						}
+					//#elif polish.css.scrollindicator-down-image
+						if (this.scrollIndicatorDownImage != null) {
+							scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
+						}
+					//#endif
+					this.scrollIndicatorWidth = scrollWidth;
 					this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-					this.scrollIndicatorY = this.fullScreenHeight - this.scrollIndicatorWidth;
+					this.scrollIndicatorY = (this.fullScreenHeight - localMenuBarHeight) + (localMenuBarHeight -  this.scrollIndicatorWidth)/2;
 				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight + ", localMenuBarHeight=" + localMenuBarHeight);	
 				//#ifdef polish.Menu.MarginBottom:defined 
@@ -445,14 +468,34 @@ implements AccessibleCanvas
 		//#elif polish.vendor.Siemens && !tmp.useScrollBar
 			// set the position of scroll indicator for Siemens devices 
 			// on the left side, so that the menu-indicator is visible:
-			this.scrollIndicatorWidth = 12;
+			//# int scrollWidth = 12;
+			//#if polish.css.scrollindicator-up-image
+				if (this.scrollIndicatorUpImage != null) {
+					scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
+				}
+			//#elif 
+				if (this.scrollIndicatorDownImage != null) {
+					scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
+				}
+			//#endif
+			this.scrollIndicatorWidth = scrollWidth;
 			this.scrollIndicatorX = 0;
-			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+			this.scrollIndicatorY = this.screenHeight - (this.scrollIndicatorWidth + 1);
 		//#elif !tmp.useScrollBar
 			// set position of scroll indicator:
-			this.scrollIndicatorWidth = 12;
+			//# int scrollWidth = 12;
+			//#if polish.css.scrollindicator-up-image
+				if (this.scrollIndicatorUpImage != null) {
+					scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
+				}
+			//#elif 
+				if (this.scrollIndicatorDownImage != null) {
+					scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
+				}
+			//#endif
+			this.scrollIndicatorWidth = scrollWidth;
 			this.scrollIndicatorX = this.screenWidth - this.scrollIndicatorWidth;
-			this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
+			this.scrollIndicatorY = this.screenHeight - (this.scrollIndicatorWidth + 1);
 		//#endif
 			
 		//System.out.println("final: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight );	
@@ -488,7 +531,7 @@ implements AccessibleCanvas
 		x += this.marginLeft;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
-		height -= this.marginTop + this.marginBottom;
+		height -= this.marginTop; // + this.marginBottom;
 		//#if !polish.css.title-position || !tmp.usingTitle
 			int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
 		//#else
@@ -576,11 +619,11 @@ implements AccessibleCanvas
 				if (this.repaintPreviousScreen) {
 					Displayable currentDisplayable = StyleSheet.display.getCurrent();
 					//#if polish.Screen.dontBufferPreviousScreen
-						if ( currentDisplayable instanceof AccessibleCanvas ) {
+						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
 							this.previousScreen = (AccessibleCanvas) currentDisplayable;
 						}
 					//#else
-						if ( currentDisplayable instanceof AccessibleCanvas ) {
+						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas ) {
 							if (this.previousScreenImage == null) {
 								//#if tmp.fullScreen
 									this.previousScreenImage = Image.createImage( this.screenWidth, this.fullScreenHeight);
@@ -738,7 +781,7 @@ implements AccessibleCanvas
 		this.isLayoutCenter = (( style.layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER);
 		this.isLayoutRight = !this.isLayoutCenter
 							&& (( style.layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT);
-		//#if polish.css.scrollindicator-up-image
+		//#if polish.css.scrollindicator-up-image && !tmp.useScrollBar
 			String scrollUpUrl = style.getProperty("scrollindicator-up-image");
 			if (scrollUpUrl != null) {
 				try {
@@ -751,7 +794,7 @@ implements AccessibleCanvas
 				this.scrollIndicatorUpImage = null;
 			}
 		//#endif		
-		//#if polish.css.scrollindicator-down-image
+		//#if polish.css.scrollindicator-down-image && !tmp.useScrollBar
 			String scrollDownUrl = style.getProperty("scrollindicator-down-image");
 			if (scrollDownUrl != null) {
 				try {
@@ -764,7 +807,7 @@ implements AccessibleCanvas
 				this.scrollIndicatorDownImage = null;
 			}
 		//#endif		
-		//#if polish.css.scrollindicator-up-image && polish.css.scrollindicator-down-image
+		//#if polish.css.scrollindicator-up-image && polish.css.scrollindicator-down-image && !tmp.useScrollBar
 			if (this.scrollIndicatorUpImage != null && this.scrollIndicatorDownImage != null) {
 				int height = this.scrollIndicatorUpImage.getHeight() + this.scrollIndicatorDownImage.getHeight();
 				int width = Math.max( this.scrollIndicatorUpImage.getWidth(), this.scrollIndicatorDownImage.getWidth() );
@@ -772,9 +815,9 @@ implements AccessibleCanvas
 				this.scrollIndicatorX = this.screenWidth / 2 - width / 2;
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
-						this.scrollIndicatorY = this.fullScreenHeight - this.menuBar.marginBottom + 1 - height;
+						this.scrollIndicatorY = this.fullScreenHeight - (this.menuBar.marginBottom + 1 + height);
 					//#else
-						this.scrollIndicatorY = this.fullScreenHeight - height - 1;
+						this.scrollIndicatorY = this.fullScreenHeight - (height + 1);
 					//#endif					
 				//#elif polish.vendor.Siemens
 					// set the position of scroll indicator for Siemens devices 
@@ -903,7 +946,22 @@ implements AccessibleCanvas
 				this.separateMenubar = separateMenubarBool.booleanValue();
 			}
 		//#endif
-
+		//#if tmp.menuFullScreen
+			//#if polish.css.background-bottom
+				Integer backgroundBottomInt = style.getIntProperty("background-bottom");
+				if (backgroundBottomInt != null) {
+					this.excludeMenuBarForBackground = backgroundBottomInt.intValue() == 1; 
+				}
+			//#endif
+		//#endif
+		//#ifdef tmp.usingTitle
+			//#if polish.css.background-top	
+				Integer backgroundTopInt = style.getIntProperty("background-top");
+				if (backgroundTopInt != null) {
+					this.excludeTitleForBackground = backgroundTopInt.intValue() == 1; 
+				}
+			//#endif
+		//#endif
 	}
 	
 	/**
@@ -1022,11 +1080,23 @@ implements AccessibleCanvas
 			//#else
 				//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
 			//#endif
-			//int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
 			// paint background:
 			if (this.background != null) {
 				//System.out.println("Screen (" + this + ": using background...");
-				this.background.paint(this.marginLeft, this.marginTop, sWidth, sHeight, g);
+				int backgroundHeight = sHeight;
+				int backgroundY = this.marginTop;
+				//#ifdef tmp.menuFullScreen
+					if (this.excludeMenuBarForBackground) {
+						backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom;
+					}
+				//#endif
+				//#ifdef tmp.usingTitle
+					if (this.excludeTitleForBackground) {
+						backgroundHeight -= this.titleHeight;
+						backgroundY += this.titleHeight;
+					}
+				//#endif
+				this.background.paint(this.marginLeft, backgroundY, sWidth, backgroundHeight, g);
 			} else {
 				//System.out.println("Screen (" + this + ": clearing area...");
 				g.setColor( 0xFFFFFF );
@@ -1074,7 +1144,14 @@ implements AccessibleCanvas
 			//System.out.println("topHeight=" + topHeight + ", contentY=" + contentY);
 			
 			// protect the title, ticker and the full-screen-menu area:
-			g.setClip(this.marginLeft, topHeight, sWidth, this.screenHeight - topHeight - this.marginBottom );
+//			int clipHeight = this.screenHeight - topHeight;
+//			//#if tmp.menuFullScreen
+//				int cHeight = this.fullScreenHeight - topHeight - this.marginBottom;
+//				if (cHeight < clipHeight) {
+//					clipHeight = cHeight;
+//				}
+//			//#endif
+			g.setClip(this.marginLeft, topHeight, sWidth, this.screenHeight - topHeight  );
 
 			// paint content:
 			//System.out.println("starting to paint content of screen");
@@ -1290,7 +1367,7 @@ implements AccessibleCanvas
 					if (this.paintScrollIndicatorUp) {
 						//#if polish.css.scrollindicator-up-image
 							if (this.scrollIndicatorUpImage != null) {
-								g.drawImage(this.scrollIndicatorUpImage, x, y, Graphics.TOP | Graphics.LEFT );
+								g.drawImage(this.scrollIndicatorUpImage, x, y, Graphics.LEFT | Graphics.TOP );
 							} else {
 						//#endif						
 							//#ifdef polish.midp2
@@ -1307,10 +1384,16 @@ implements AccessibleCanvas
 					if (this.paintScrollIndicatorDown) {
 						//#if polish.css.scrollindicator-down-image
 							if (this.scrollIndicatorDownImage != null) {
-								if (this.scrollIndicatorUpImage != null) {
-									y += this.scrollIndicatorUpImage.getHeight() + 1;
-								}
-								g.drawImage(this.scrollIndicatorDownImage, x, y, Graphics.TOP | Graphics.LEFT );
+								//#if polish.css.scrollindicator-down-image
+									if (this.scrollIndicatorUpImage != null) {
+										y += this.scrollIndicatorUpImage.getHeight() + 1;
+									} else {
+										y += halfWidth;
+									}
+								//#else
+									y += halfWidth;
+								//#endif
+								g.drawImage(this.scrollIndicatorDownImage, x, y, Graphics.LEFT | Graphics.TOP );
 							} else {
 						//#endif						
 							//#ifdef polish.midp2
@@ -1547,10 +1630,11 @@ implements AccessibleCanvas
 			int previousContentHeight = this.contentHeight;
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			int differentce = this.contentHeight - previousContentHeight;
-			//System.out.println("ADJUSTING CONTAINER.YOFFSET BY " + differentce + " PIXELS");
+			//System.out.println("ADJUSTING CONTAINER.YOFFSET BY " + differentce + " PIXELS FOR CONTAINER " + this.container );
 			this.container.yOffset += differentce;
 		} else {
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			//System.out.println("!!!NOT ADJUSTING CONTAINER.YOFFSET for container " + this.container );
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight ); 
 		}
 		
 	}
@@ -1745,9 +1829,7 @@ implements AccessibleCanvas
 				}
 			//#endif
 			if (processed) {
-				if (this.screenStateListener != null) {
-					this.screenStateListener.screenStateChanged(this);
-				}
+				notifyScreenStateChanged();
 				repaint();
 			}
 		} catch (Exception e) {
@@ -1756,6 +1838,8 @@ implements AccessibleCanvas
 			//#endif
 			//#debug error
 			System.out.println("keyPressed() threw an exception" + e );
+		} finally {
+			this.isScreenChangeDirtyFlag = false;
 		}
 	}
 	
@@ -1896,6 +1980,16 @@ implements AccessibleCanvas
 	public void setScreenStateListener( ScreenStateListener listener ) {
 		this.screenStateListener = listener;
 	}
+	
+	/**
+	 * Notifies the screen state change listener about a change in this screen.
+	 */
+	public void notifyScreenStateChanged() {
+		if (this.screenStateListener != null && !this.isScreenChangeDirtyFlag) {
+			this.isScreenChangeDirtyFlag = true;
+			this.screenStateListener.screenStateChanged( this );
+		}
+	}
 
 	
 	/* (non-Javadoc)
@@ -1979,8 +2073,10 @@ implements AccessibleCanvas
 				 }
 				 this.menuContainer.layout |= Item.LAYOUT_SHRINK;
 			}
-			if (cmd == this.menuSingleLeftCommand || cmd == this.menuSingleRightCommand || 
-					this.menuCommands.contains(cmd)) {
+			if (cmd == this.menuSingleLeftCommand 
+					|| cmd == this.menuSingleRightCommand 
+					|| this.menuCommands.contains(cmd)) 
+			{
 				// do not add an existing command again...
 				//#debug
 				System.out.println("Ignoring existing command " + cmd.getLabel() );
@@ -2080,6 +2176,8 @@ implements AccessibleCanvas
 		//#if !tmp.menuFullScreen
 			addCommand( child );
 		//#else
+			//#debug
+			System.out.println("Adding subcommand " + child.getLabel() );
 			//#ifdef tmp.useExternalMenuBar
 				this.menuBar.addSubCommand( child, parent, commandStyle );
 			//#else
@@ -2385,6 +2483,7 @@ implements AccessibleCanvas
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				boolean processed = handlePointerPressed( x, y  );
 				if (processed) {
+					notifyScreenStateChanged();
 					repaint();
 				}
 			//#else
@@ -2402,6 +2501,8 @@ implements AccessibleCanvas
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("PointerPressed at " + x + "," + y + " resulted in exception" + e );
+		} finally {
+			this.isScreenChangeDirtyFlag = false;
 		}
 	}
 	//#endif

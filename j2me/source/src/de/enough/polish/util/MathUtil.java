@@ -52,11 +52,11 @@ public final class MathUtil {
 	 * @return the rounded value, x.5 and higher is rounded to x + 1.
 	 * @sine CLDC 1.1
 	 */
-	public static int round( double value ) {
+	public static long round( double value ) {
 		if (value < 0) {
-			return (int) (value - 0.5);
+			return (long) (value - 0.5);
 		} else {
-			return (int) (value + 0.5);			
+			return (long) (value + 0.5);			
 		}
 	}
 	//#endif

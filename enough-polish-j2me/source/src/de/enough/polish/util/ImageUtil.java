@@ -107,7 +107,7 @@ public final class ImageUtil {
 		return scaledRgbData;
 	}
 	
-	
+	//#if polish.cldc1.1
 	/**
 	 * Rotates an RGBimage array.
 	 * 
@@ -118,36 +118,39 @@ public final class ImageUtil {
 	 * @param rotation
 	 * @param referenceX
 	 * @param referenceY
+	 * @param backgroundColor the ARGB color used for the background
 	 * @return
 	 */
 	public static final int[]rotate(int[]argbArray,int width, int heigth,int rotation,int referenceX,int referenceY,int backgroundColor){
-				double cosR = Math.cos(Math.PI*rotation/180);
-				double sinR = Math.sin(Math.PI*rotation/180);		
-				int newWidth = getNewWidth(rotation,width,heigth,cosR,sinR);
-				int newHeigth = getNewHeigth(rotation,width,heigth,cosR,sinR);
-				int []newRGB = new int [newHeigth * newWidth];
-				int halfOfWidth = width/2;
-				int halfOfHeigth = heigth/2;
-				int refX,refY,newX,newY,sumXY;
-				for(int x = 0; x < newWidth; x++){
-					for(int y = 0; y < newHeigth; y++){	
-						refX = x - referenceX;
-						refY = y - referenceY;
-						newX = (int)(refX  * cosR + refY * sinR);
-						newY = (int)(refY * cosR - refX   * sinR);
-						newX += halfOfWidth;
-						newY += halfOfHeigth;
-						if( newX >= 0 && newX < width && newY >= 0 && newY < heigth ){
-							sumXY  = newX + newY * width;
-							newRGB [x+y*newWidth] = argbArray[sumXY];
-						}else{
-							newRGB [x+y*newWidth] = backgroundColor;
-						}
-					}
+		double cosR = Math.cos(Math.PI*rotation/180);
+		double sinR = Math.sin(Math.PI*rotation/180);		
+		int newWidth = getNewWidth(rotation,width,heigth,cosR,sinR);
+		int newHeigth = getNewHeigth(rotation,width,heigth,cosR,sinR);
+		int[] newRGB = new int [newHeigth * newWidth];
+		int halfOfWidth = width/2;
+		int halfOfHeigth = heigth/2;
+		int refX,refY,newX,newY,sumXY;
+		for(int x = 0; x < newWidth; x++){
+			for(int y = 0; y < newHeigth; y++){	
+				refX = x - referenceX;
+				refY = y - referenceY;
+				newX = (int)(refX  * cosR + refY * sinR);
+				newY = (int)(refY * cosR - refX   * sinR);
+				newX += halfOfWidth;
+				newY += halfOfHeigth;
+				if( newX >= 0 && newX < width && newY >= 0 && newY < heigth ){
+					sumXY  = newX + newY * width;
+					newRGB [x+y*newWidth] = argbArray[sumXY];
+				}else{
+					newRGB [x+y*newWidth] = backgroundColor;
 				}
-				return newRGB;
 			}
+		}
+		return newRGB;
+	}
+	//#endif
 	
+	//#if polish.cldc1.1
 	/**
 	 * The new Heigth for an rotated image.
 	 * 
@@ -167,11 +170,11 @@ public final class ImageUtil {
 		else if(rotation == 360 || rotation == 180 || rotation == 0){
 			return heigth;
 		}
-		int pointY1 = MathUtil.round(0 * sinR + 0 * cosR);
-		int pointY2 = MathUtil.round(width *sinR + 0 *cosR);
-		int pointY3 = MathUtil.round(0 *sinR + heigth *cosR);
-		int pointY4 = MathUtil.round(width *sinR + heigth *cosR);
-		int minY = pointY1;
+		long pointY1 = MathUtil.round(0 * sinR + 0 * cosR);
+		long pointY2 = MathUtil.round(width *sinR + 0 *cosR);
+		long pointY3 = MathUtil.round(0 *sinR + heigth *cosR);
+		long pointY4 = MathUtil.round(width *sinR + heigth *cosR);
+		long minY = pointY1;
 		if(pointY2 < minY){
 			minY = pointY2;
 		}
@@ -181,7 +184,7 @@ public final class ImageUtil {
 		if(pointY4 < minY){
 			minY = pointY4;
 		}
-		int maxY = pointY1;
+		long maxY = pointY1;
 		if(pointY2 > maxY){
 			maxY = pointY2;
 		}
@@ -191,10 +194,12 @@ public final class ImageUtil {
 		if(pointY4 > maxY){
 			maxY = pointY4;
 		}
-		return maxY - minY;
+		return (int) (maxY - minY);
 	}
+	//#endif
 	
 	
+	//#if polish.cldc1.1
 	/**
 	 * The New Width for an Rotated Image.
 	 * 
@@ -214,11 +219,11 @@ public final class ImageUtil {
 		else if(rotation == 360 || rotation == 180 || rotation == 0){
 			return width;
 		}
-		int pointX1 = MathUtil.round(0 * cosR - 0 * sinR);
-		int pointX2 = MathUtil.round(width *cosR - 0 *sinR);
-		int pointX3 = MathUtil.round(0 *cosR - heigth *sinR);
-		int pointX4 = MathUtil.round(width *cosR - heigth *sinR);
-		int minX = pointX1;
+		long pointX1 = MathUtil.round(0 * cosR - 0 * sinR);
+		long pointX2 = MathUtil.round(width *cosR - 0 *sinR);
+		long pointX3 = MathUtil.round(0 *cosR - heigth *sinR);
+		long pointX4 = MathUtil.round(width *cosR - heigth *sinR);
+		long minX = pointX1;
 		if(pointX2 < minX){
 			minX = pointX2;
 		}
@@ -228,7 +233,7 @@ public final class ImageUtil {
 		if(pointX4 < minX){
 			minX = pointX4;
 		}
-		int maxX = pointX1;
+		long maxX = pointX1;
 		if(pointX2 > maxX){
 			maxX = pointX2;
 		}
@@ -238,8 +243,9 @@ public final class ImageUtil {
 		if(pointX4 > maxX){
 			maxX = pointX4;
 		}
-		return maxX - minX;
+		return (int) (maxX - minX);
 	}
+	//#endif
 	
 	
 	/**
@@ -252,6 +258,7 @@ public final class ImageUtil {
 	 * @param newHeight the new height for the new rgbdata
 	 * @param oldWidth the width from the oiginal rgbdata
 	 * @param oldHeight the height from the oiginal rgbdata
+	 * @return 
 	 */
 	public static final int[] scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
 		int[]newrgbData = new int[newWidth*newHeight];

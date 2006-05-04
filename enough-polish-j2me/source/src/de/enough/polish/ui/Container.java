@@ -756,6 +756,18 @@ public class Container extends Item {
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
 		//#endif
+		boolean setClipping = (this.yOffset != 0 && this.marginTop != 0);
+		int clipX = 0;
+		int clipY = 0;
+		int clipWidth = 0;
+		int clipHeight = 0;
+		if (setClipping) {
+			clipX = g.getClipX();
+			clipY = g.getClipY();
+			clipWidth = g.getClipWidth();
+			clipHeight = g.getClipHeight();
+			g.clipRect(clipX, y - this.paddingTop, clipWidth, clipHeight - ((y - this.paddingTop) - clipY) );
+		}
 		y += this.yOffset;
 		//#ifdef tmp.supportViewType
 			if (this.view != null) {
@@ -812,6 +824,9 @@ public class Container extends Item {
 			}
 		}
 
+		if (setClipping) {
+			g.setClip(clipX, clipY, clipWidth, clipHeight);
+		}
 	}
 
 	//#ifdef polish.useDynamicStyles
