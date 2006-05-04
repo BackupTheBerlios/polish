@@ -70,6 +70,10 @@ public abstract class ResourceCopier extends Extension {
 		// ignore....
 	}
 	
+//	public void copyFilesAndDirs( Device device, Locale locale, File[] resources, File targetDir ) {
+// problem: in this way any files within directories are not filtered anymore...		
+//	}
+	
 	/**
 	 * Copies all resources for the target device and the target locale to the final resources directory.
 	 * 

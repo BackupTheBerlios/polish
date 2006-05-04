@@ -145,6 +145,17 @@
             <parsable targetfile="$INSTALL_PATH/samples/framedform/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/framedform/nbproject/project.properties" type="shell" /> 
         </pack>
+        <pack name="TabbedForm Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to use the TabbedForm.</description>
+            <file src="samples/tabbedform/source" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="samples/tabbedform/resources" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="../setup/samples/tabbedform/build.xml" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="../setup/samples/tabbedform/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="../setup/samples/tabbedform/nbproject" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedform/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="MIDP SysInfo" required="no" preselected="yes">
             <description>An application that checks the capabilities of your device. This application is based on Grimo Software's MIDP SysInfo MIDlet and is a co-effort of Grimo Software, Enough Software and Mark Schriejver.</description>
             <file src="samples/sysinfo/source" targetdir="$INSTALL_PATH/samples/sysinfo"/>
@@ -159,7 +170,7 @@
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/.classpath" type="shell" /> 
         </pack>
-        <pack name="DoJa Tetris" required="no" preselected="yes">
+        <pack name="DoJa Tetris Sample Application" required="no" preselected="yes">
             <description>A Tetris clone from Sun for DoJa devices.</description>
             <file src="samples/doja/source" targetdir="$INSTALL_PATH/samples/doja"/>
             <file src="samples/doja/resources" targetdir="$INSTALL_PATH/samples/doja"/>

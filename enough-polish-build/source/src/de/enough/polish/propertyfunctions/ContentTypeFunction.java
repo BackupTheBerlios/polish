@@ -77,6 +77,8 @@ public class ContentTypeFunction extends PropertyFunction {
 		addTypes( new String[]{ "video/mpeg4", "video/mpeg-4", "video/mp4", "video/mp4v-es", "video/h263", "video/h263-2000" } );
 		addTypes( new String[]{ "video/3gpp", "video/3gp" } );
 		addTypes( new String[]{ "image/jpeg", "image/jpg" } );
+		addTypes( new String[]{ "image/mng", "image/x-mng" } );
+		addTypes( new String[]{ "video/mng", "video/x-mng" } );
 	}
 	
 	private static final void addTypes( String[] types ) {

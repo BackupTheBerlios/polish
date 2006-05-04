@@ -524,10 +524,24 @@ public class CssConverter extends Converter {
 		group = style.removeGroup("background");
 		if ( group != null ) {
 			processBackground( style.getSelector(), group, style, codeList, styleSheet, false );
+			// ugly hack to preserve background-bottom and background-top values:
+			if ( group.get("bottom") != null || group.get("top") != null) {
+				HashMap newGroup = new HashMap(2);
+				String value = (String) group.get("bottom");
+				if (value != null) {
+					newGroup.put("bottom", value);
+				}
+				value = (String) group.get("top");
+				if (value != null) {
+					newGroup.put("top", value);
+				}
+				style.addGroup("background", newGroup);
+			}
 		} else {
 			codeList.add("\t\tnull,\t// no background");
 		}
-		// process the background:
+
+		// process the border:
 		group = style.removeGroup("border");
 		if ( group != null ) {
 			processBorder( style.getSelector(), group, style, codeList, styleSheet, false );
@@ -679,7 +693,10 @@ public class CssConverter extends Converter {
 							|| attributeType == CssAttribute.IMAGE_URL 
 							|| attributeType == CssAttribute.CHAR) 
 					{
-						if ( "none".equals(value)) {
+						if ( "none".equals(value) && !"plain".equals(key)) {
+							// note: !"plain".equals(key) is an ugly hack for
+							// radiobox-plain and choicebox-plain...
+							// For such cases a converter should really be used instead.
 							valueList.append("null");
 						} else {
 							valueList.append('"')
@@ -702,26 +719,6 @@ public class CssConverter extends Converter {
 						 	//System.out.println("Using mapped value [" + mappedValue + "] for attribute [" + attribute.getId() + "]");
 						 	valueList.append( value );
 						 }
-//					} else {
-//							if (groupName.equals("view") && key.equals("type") ) {
-//								// the value represents a fully qualified class:
-//								valueList.append("new ").append( value ).append("()");
-//								/*
-//								String translatedViewType = (String) VIEW_TYPES.get( value );
-//								if (translatedViewType == null ) {
-//									// the value represents a full class:
-//									valueList.append("new ").append( value ).append("()");
-//								} else if ("none".equals( translatedViewType)) {
-//									valueList.append("null");
-//								} else {
-//									// a standard view is used:
-//									valueList.append("new ").append( translatedViewType ).append("()");
-//								}
-//								*/
-//							} else {
-//								valueList.append( value );
-//							}
-//						}
 					} else {
 						throw new BuildException("Error while processing CSS code. Encountered unknown attributes-type [" + attributeType + "]: please report this error to j2mepolish@enough.de.");
 					}

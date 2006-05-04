@@ -1544,7 +1544,66 @@
 		description="Uses the specified image as the slider, this is useful in combination with the gauge-button-image capability."
 		id="152"
 	/>
+
+	<attribute
+		name="background-bottom"
+		type="integer"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		description="The bottom border of the background for this screen. Usually the background reaches to the very bottom of the screen which includes the menubar. By setting background-bottom: menubar; this background only reaches until the menubar." 
+		id="153"
+		values="bottom,menubar"
+	/>
+
+	<attribute
+		name="background-top"
+		type="integer"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		description="The top border of the background for this screen. Usually the background reaches from the very top of the screen which includes the title. By setting background-top: title; this background starts after the title." 
+		id="154"
+		values="top,title"
+	/>
 	
+	<attribute
+		name="tabbar-left-arrow"
+		type="imageurl"
+		appliesTo="TabBar, TabbedForm"
+		description="The URL of the image used for indicating that there are tabs left of the current selection available." 
+		id="155"
+	/>
+	
+	<attribute
+		name="tabbar-right-arrow"
+		type="imageurl"
+		appliesTo="TabBar, TabbedForm"
+		description="The URL of the image used for indicating that there are tabs right of the current selection available." 
+		id="156"
+	/>
+	
+	<attribute
+		name="tabbar-arrow-y-offset"
+		type="integer"
+		appliesTo="TabBar, TabbedForm"
+		description="The vertical adjustment for the scrolling indicator arrows. Positive values move the indicators torwards the bottom." 
+		id="157"
+	/>
+
+	<attribute
+		name="tabbar-arrow-x-offset"
+		type="integer"
+		appliesTo="TabBar, TabbedForm"
+		description="The horizontal adjustment for the scrolling indicator arrows. Positive values move the indicators torwards the right." 
+		id="157"
+	/>
+
+	<attribute
+		name="tabbar-roundtrip"
+		type="boolean"
+		appliesTo="TabBar, TabbedForm"
+		description="Defines whether the user starts at the first tab after passing the last tab. By default the user cannot pass the last (or the first) tab." 
+		default="false"
+		id="157"
+	/>
+		
 	<!--
 	
 	<attribute

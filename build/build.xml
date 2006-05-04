@@ -311,6 +311,16 @@
 			<fileset dir="setup/samples/framedform" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-sample-framedform" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+		<!-- copy tabbedform sample application -->
+		<mkdir dir="tmp/samples/tabbedform/source/src" />
+		<copy todir="tmp/samples/tabbedform/source/src">
+			<fileset dir="../enough-polish-sample-tabbedform/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/tabbedform/" 
+			>
+			<fileset dir="setup/samples/tabbedform" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-tabbedform" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
 		<!-- copy doja sample application -->
 		<mkdir dir="tmp/samples/doja/source/src" />
 		<copy todir="tmp/samples/doja/source/src">
