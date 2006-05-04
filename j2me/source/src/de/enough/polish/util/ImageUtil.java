@@ -25,6 +25,8 @@
  */
 package de.enough.polish.util;
 
+import de.enough.polish.example.MathUtil;
+
 
 
 /**
@@ -105,10 +107,145 @@ public final class ImageUtil {
 		return scaledRgbData;
 	}
 	
+	
+	/**
+	 * Rotates an RGBimage array.
+	 * 
+	 * @author Tim Muders
+	 * @param argbArray
+	 * @param width
+	 * @param heigth
+	 * @param rotation
+	 * @param referenceX
+	 * @param referenceY
+	 * @return
+	 */
+	public static final int[]rotate(int[]argbArray,int width, int heigth,int rotation,int referenceX,int referenceY,int backgroundColor){
+				double cosR = Math.cos(Math.PI*rotation/180);
+				double sinR = Math.sin(Math.PI*rotation/180);		
+				int newWidth = getNewWidth(rotation,width,heigth,cosR,sinR);
+				int newHeigth = getNewHeigth(rotation,width,heigth,cosR,sinR);
+				int []newRGB = new int [newHeigth * newWidth];
+				int halfOfWidth = width/2;
+				int halfOfHeigth = heigth/2;
+				for(int x = 0; x < newWidth; x++){
+					for(int y = 0; y < newHeigth; y++){	
+						int refX = x - referenceX;
+						int refY = y - referenceY;
+						int newX = (int)(refX  * cosR + refY * sinR);
+						int newY = (int)(refY * cosR - refX   * sinR);
+						newX += halfOfWidth;
+						newY += halfOfHeigth;
+						if( newX >= 0 && newX < width && newY >= 0 && newY < heigth ){
+							int sumXY  = newX + newY * width;
+							newRGB [x+y*newWidth] = argbArray[sumXY];
+						}else{
+							newRGB [x+y*newWidth] = backgroundColor;
+						}
+					}
+				}
+				return newRGB;
+			}
+	
+	/**
+	 * The new Heigth for an rotated image.
+	 * 
+	 * @author Tim Muders
+	 * @param rotation
+	 * @param width
+	 * @param heigth
+	 * @param cosR
+	 * @param sinR
+	 * @return
+	 */
+	public static final int getNewHeigth(int rotation,int width,int heigth,double cosR,double sinR)
+	{
+		if(rotation == -90 || rotation == 90 || rotation == 270 || rotation == -270){
+			return width;
+		}
+		else if(rotation == 360 || rotation == 180 || rotation == 0){
+			return heigth;
+		}
+		int pointY1 = MathUtil.round(0 * sinR + 0 * cosR);
+		int pointY2 = MathUtil.round(width *sinR + 0 *cosR);
+		int pointY3 = MathUtil.round(0 *sinR + heigth *cosR);
+		int pointY4 = MathUtil.round(width *sinR + heigth *cosR);
+		int minY = pointY1;
+		if(pointY2 < minY){
+			minY = pointY2;
+		}
+		if(pointY3 < minY){
+			minY = pointY3;
+		}
+		if(pointY4 < minY){
+			minY = pointY4;
+		}
+		int maxY = pointY1;
+		if(pointY2 > maxY){
+			maxY = pointY2;
+		}
+		if(pointY3 > maxY){
+			maxY = pointY3;
+		}
+		if(pointY4 > maxY){
+			maxY = pointY4;
+		}
+		return maxY - minY;
+	}
+	
+	
+	/**
+	 * The New Width for an Rotated Image.
+	 * 
+	 * @author Tim Muders
+	 * @param rotation
+	 * @param width
+	 * @param heigth
+	 * @param cosR
+	 * @param sinR
+	 * @return
+	 */
+	public static final int getNewWidth(int rotation,int width,int heigth,double cosR,double sinR)
+	{
+		if(rotation == -90 || rotation == 90 || rotation == 270 || rotation == -270){
+			return heigth;
+		}
+		else if(rotation == 360 || rotation == 180 || rotation == 0){
+			return width;
+		}
+		int pointX1 = MathUtil.round(0 * cosR - 0 * sinR);
+		int pointX2 = MathUtil.round(width *cosR - 0 *sinR);
+		int pointX3 = MathUtil.round(0 *cosR - heigth *sinR);
+		int pointX4 = MathUtil.round(width *cosR - heigth *sinR);
+		int minX = pointX1;
+		if(pointX2 < minX){
+			minX = pointX2;
+		}
+		if(pointX3 < minX){
+			minX = pointX3;
+		}
+		if(pointX4 < minX){
+			minX = pointX4;
+		}
+		int maxX = pointX1;
+		if(pointX2 > maxX){
+			maxX = pointX2;
+		}
+		if(pointX3 > maxX){
+			maxX = pointX3;
+		}
+		if(pointX4 > maxX){
+			maxX = pointX4;
+		}
+		return maxX - minX;
+	}
+	
+	
 	/**
 	 * Can scale the images unproportional in every new size you want 
 	 * bigger or smaller.
 	 * 
+	 * @author Tim Muders
 	 * @param rgbData the original rgbdata
 	 * @param newWidth the new width for the new rgbdata
 	 * @param newHeight the new height for the new rgbdata
@@ -126,48 +263,177 @@ public final class ImageUtil {
 	 * @param argbArray
 	 * @param topStrechFactor
 	 * @param bottomStrechFactor
+	 * @param width
+	 * @param heigth
+	 * @return
 	 */
-	public static final void stretchVertical( int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth ){
-		int heigthTop = (heigth * topStrechFactor)/100;//  /100
-		int heightBottom = (heigth * bottomStrechFactor)/100;//  /100
-		int[] copyArgbArray = argbArray;
-		int procentualScalingHeight = width;
-		if(heigthTop < heightBottom){
-			argbArray = new int[heightBottom * width];
-			if((heightBottom - heigthTop)>1)procentualScalingHeight = width /(heightBottom - heigthTop);
+	public static final int[] stretchVertical( int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth ){
+		int newWidthTop = (width * topStrechFactor)/100;
+		int newWidthBottom = (width * bottomStrechFactor)/100;
+		int procentualScalingHeight ;
+		int biggerWidth ;
+		if(newWidthTop < newWidthBottom){
+			procentualScalingHeight = (newWidthBottom - newWidthTop)/heigth;
+			biggerWidth = newWidthBottom;
 		}
 		else{
-			argbArray = new int[heigthTop * width];
-			if((heigthTop - heightBottom)>1)procentualScalingHeight = width / (heigthTop - heightBottom);
+			procentualScalingHeight = (newWidthTop - newWidthBottom)/heigth;
+			biggerWidth = newWidthTop;
 		}
-		int column = 0,row = 1,columnWidth = heigthTop;
-		int length = argbArray.length;
-		int oldLength = copyArgbArray.length;
-		for(int i = 0; i < length; i++){
-			column = (column + 1) % columnWidth;
-			if(column == 0){
-				row = row + 1 % procentualScalingHeight;
-				if(row == 0)columnWidth+=procentualScalingHeight;row++;
-			}
-			int verticalShrinkFactorPercent = 100;
-			int horizontalScaleFactorPercent = ((columnWidth*100) / width);
-			int targetArrayIndex = ((column*100)/horizontalScaleFactorPercent)+(width * ((row*100)/verticalShrinkFactorPercent));
-			if(targetArrayIndex >= oldLength)targetArrayIndex = oldLength-1;
-			if(targetArrayIndex < 0)targetArrayIndex = 0;
-			argbArray[i] = copyArgbArray[targetArrayIndex];
-		}
-	} 
+		int[] newArgbArray = new int[biggerWidth * heigth];
+		return stretchVertical( argbArray, newWidthTop, newWidthBottom,biggerWidth , width, heigth, procentualScalingHeight, newArgbArray );
+	}
 	
 	/**
 	 * @author Tim Muders
 	 * @param argbArray
-	 * @param leftStretchFactor
-	 * @param rightStretchFactor
+	 * @param newWidthTop
+	 * @param newWidthBottom
+	 * @param biggerWidth
+	 * @param width
+	 * @param heigth
+	 * @param procentualScalingHeight
+	 * @param newArgbArray
+	 * @return
 	 */
-	public static void stretchHorizontal( int[] argbArray, int leftStretchFactor, int rightStretchFactor ){
-		
+	public static final int[] stretchVertical( int[] argbArray, int newWidthTop, int newWidthBottom,int biggerWidth , int width, int heigth,int procentualScalingHeight, int[] newArgbArray ){
+		if(procentualScalingHeight == 0)procentualScalingHeight++;
+		int length = newArgbArray.length;
+		int oldLength = argbArray.length;
+		int insideCurrentY = 0;
+		int insideCurrentX = 0, outsideCurrentX = 0;
+		int sum1 = (biggerWidth-newWidthTop)/2;
+		int sum2 = biggerWidth-((biggerWidth-newWidthTop)/2);
+		for(int i = 0; i < length; i++){
+	
+			outsideCurrentX = (outsideCurrentX + 1) % biggerWidth;	
+			if(outsideCurrentX == 0){
+				if(newWidthTop < newWidthBottom){
+					newWidthTop += procentualScalingHeight;
+					sum1 = (biggerWidth-newWidthTop)/2;
+					sum2 = biggerWidth-((biggerWidth-newWidthTop)/2);
+				}
+				else if(newWidthTop > newWidthBottom){
+					newWidthTop -= procentualScalingHeight;
+					sum1 = (biggerWidth-newWidthTop)/2;
+					sum2 = biggerWidth-((biggerWidth-newWidthTop)/2);
+				}
+				insideCurrentY++;
+				insideCurrentX=0;
+			}
+			if(outsideCurrentX >= sum1 && outsideCurrentX < sum2){
+				insideCurrentX = (insideCurrentX + 1) % newWidthTop;
+				newArgbArray[i] = argbArray[scaledPixel(oldLength,width,heigth,newWidthTop,heigth,insideCurrentX,insideCurrentY)];
+			}
+			else{
+				newArgbArray[i] = 000000;
+			}
+		}
+		return newArgbArray;
+	}
+	
+	/**
+	 * @author Tim Muders
+	 * @param oldLength
+	 * @param oldWidth
+	 * @param oldHeigth
+	 * @param newWidth
+	 * @param newHeigth
+	 * @param currentX
+	 * @param currentY
+	 * @return
+	 */
+	public static final int scaledPixel(int oldLength,int oldWidth,int oldHeigth, int newWidth, int newHeigth, int currentX, int currentY){
+			int targetArrayIndex;
+			int verticalShrinkFactorPercent = ((newHeigth*100) / oldHeigth);
+			int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);				
+			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalShrinkFactorPercent));
+			if(targetArrayIndex >= oldLength)targetArrayIndex = oldLength-1;
+			if(targetArrayIndex < 0)targetArrayIndex = 0;
+			return targetArrayIndex;
+	}
+	
+	/**
+	 * @author Tim Muders
+	 * @param argbArray
+	 * @param leftStrechFactor
+	 * @param rightStrechFactor
+	 * @param width
+	 * @param heigth
+	 * @return
+	 */
+	public static final int[] stretchHorizontal( int[] argbArray, int leftStrechFactor, int rightStrechFactor, int width, int heigth ){
+		int newHeigthLeft = (heigth * leftStrechFactor)/100;
+		int newHeigthRight = (heigth * rightStrechFactor)/100;
+		int procentualScalingWidth ;
+		int biggerHeigth ;
+		if(newHeigthLeft < newHeigthRight){
+			procentualScalingWidth = (newHeigthRight - newHeigthLeft)/width;
+			biggerHeigth = newHeigthRight;
+		}
+		else{
+			procentualScalingWidth = (newHeigthLeft - newHeigthRight)/width;
+			biggerHeigth = newHeigthLeft;
+		}
+		int[] newArgbArray = new int[biggerHeigth * width];
+		return stretchHorizontal( argbArray, newHeigthLeft, newHeigthRight,biggerHeigth , width, heigth, procentualScalingWidth, newArgbArray );
 	}
 
+	/**
+	 * @author Tim Muders
+	 * @param argbArray
+	 * @param newLeftHeigth
+	 * @param newRigthHeigth
+	 * @param biggerHeigth
+	 * @param width
+	 * @param heigth
+	 * @param procentualScalingHeight
+	 * @param newArgbArray
+	 * @return
+	 */
+	public static final int[] stretchHorizontal( int[] argbArray, int newLeftHeigth, int newRigthHeigth,int biggerHeigth , int width, int heigth,int procentualScalingHeight, int[] newArgbArray ){
+		if(procentualScalingHeight == 0)procentualScalingHeight++;
+		int length = newArgbArray.length;
+		int oldLength = argbArray.length;
+		// x and y position int the new array
+		int idX = 0, idY = 0;
+		// x and y position of the old array
+		int x = 0, y = 0;
+		//position in the new array
+		int whereIamAt = 0;
+		// Heighth for goal
+		int newHeigth = newLeftHeigth;
+		//start Heigth to goal
+		int startColumn = (biggerHeigth-newHeigth)/2;
+		int endColumn = biggerHeigth-((biggerHeigth-newHeigth)/2);
+
+		for(int i = 0; i < length; i++){
+		
+			if(startColumn <= idY && endColumn >= idY){
+				newArgbArray[whereIamAt] = argbArray[scaledPixel(oldLength,width,heigth,width,newHeigth,x,y)];
+				y = (y + 1) % newHeigth;
+			}
+			else{				
+				newArgbArray[whereIamAt] = 000000;
+			}
+			idY = (idY + 1)% (biggerHeigth) ;
+				whereIamAt = idX+(idY * width);
+				if(idY == 0){
+					idX++;
+					x++;
+					y = 0;
+					if(newLeftHeigth < newRigthHeigth){
+						newHeigth += procentualScalingHeight; 
+					}
+					else if(newLeftHeigth > newRigthHeigth){
+						newHeigth -= procentualScalingHeight; 
+					}
+					startColumn = (biggerHeigth-newHeigth)/2;
+					endColumn = biggerHeigth-((biggerHeigth-newHeigth)/2);
+				}
+		}
+		return newArgbArray;
+	}
 	
 	/**
 	 * Can scale the images unproportional in every new size you want 
