@@ -112,14 +112,14 @@ public final class ImageUtil {
 	 * Rotates the given rgb data and returns the rotated rgb data array.
 	 * 
 	 * @author Tim Muders
-	 * @param argbArray
-	 * @param width
-	 * @param heigth
-	 * @param degree
-	 * @param referenceX
-	 * @param referenceY
+	 * @param argbArray the rgb data to be rotated.
+	 * @param width the width of the rgb data.
+	 * @param heigth the heigth of the rgb data.
+	 * @param degree the degree value of the rotation.
+	 * @param referenceX the x position for the center of rotation.
+	 * @param referenceY the y position for the center of rotation.
 	 * @param backgroundColor the ARGB color used for the background
-	 * @return
+	 * @return the rotated rgb data.
 	 */
 	public static final int[]rotate(int[]argbArray,int width, int heigth,int degree,int referenceX,int referenceY,int backgroundColor){
 		double cosR = Math.cos(Math.PI*degree/180);
@@ -155,12 +155,12 @@ public final class ImageUtil {
 	 * Returns the new heigth for the given degree. The new heigth symbols the heigth for an rotated rgb data array with the same degree rotation.
 	 * 
 	 * @author Tim Muders
-	 * @param degree
-	 * @param width
-	 * @param heigth
-	 * @param cosR
-	 * @param sinR
-	 * @return
+	 * @param degree the degree value of the rotation.
+	 * @param width the width of the rgb source.
+	 * @param heigth the heigth of the rgb source
+	 * @param cosR the cosine of the degree value.
+	 * @param sinR the sine of the degree value.
+	 * @return the new heigth of the rgb data.
 	 */
 	public static final int getNewHeigth(int degree,int width,int heigth,double cosR,double sinR)
 	{
@@ -204,12 +204,12 @@ public final class ImageUtil {
 	 * Returns the new width for the given degree. The new width symbols the width for an rotated rgb data array with the same degree rotation.
 	 * 
 	 * @author Tim Muders
-	 * @param degree
-	 * @param width
-	 * @param heigth
-	 * @param cosR
-	 * @param sinR
-	 * @return
+	 * @param degree the degree value of the rotation.
+	 * @param width the width of the rgb source.
+	 * @param heigth the heigth of the rgb source
+	 * @param cosR the cosine of the degree value.
+	 * @param sinR the sine of the degree value.
+	 * @return the new width of the rgb data.
 	 */
 	public static final int getNewWidth(int degree,int width,int heigth,double cosR,double sinR)
 	{
@@ -257,7 +257,7 @@ public final class ImageUtil {
 	 * @param newHeight the new height for the new rgbdata
 	 * @param oldWidth the width from the oiginal rgbdata
 	 * @param oldHeight the height from the oiginal rgbdata
-	 * @return 
+	 * @return the scaled rgb data.
 	 */
 	public static final int[] scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
 		int[]newrgbData = new int[newWidth*newHeight];
@@ -269,12 +269,12 @@ public final class ImageUtil {
 	 * Stretches the rgb data vertical to the given top and bottom stretch factor and returns the new rgb data array.
 	 * 
 	 * @author Tim Muders
-	 * @param argbArray
-	 * @param topStrechFactor
-	 * @param bottomStrechFactor
-	 * @param width
-	 * @param heigth
-	 * @return
+	 * @param argbArray the rgb data to be stretched.
+	 * @param topStrechFactor the stretch factor of the top.
+	 * @param bottomStrechFactor the stretch factor of the bottom.
+	 * @param width the source width of the rgb data.
+	 * @param heigth the source heigth of the rgb data.
+	 * @return stretched rgb data array.
 	 */
 	public static final int[] stretchVertical( int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth ){
 		int newWidthTop = (width * topStrechFactor)/100;
@@ -298,15 +298,15 @@ public final class ImageUtil {
 	 *  
 	 * 
 	 * @author Tim Muders
-	 * @param argbArray
-	 * @param newWidthTop
-	 * @param newWidthBottom
-	 * @param biggerWidth
-	 * @param width
-	 * @param heigth
-	 * @param procentualScalingHeight
-	 * @param newArgbArray
-	 * @return
+	 * @param argbArray the rgb data to be stretched.
+	 * @param newWidthTop the new top width of the rgb data.
+	 * @param newWidthBottom the new bottom width of the rgb data.
+	 * @param biggerWidth the bigger width of top and bottom width.
+	 * @param width the source width of the rgb data.
+	 * @param heigth the source heigth of the rgb data.
+	 * @param procentualScalingHeight the procentual scaling heigth(biggerWidth - smallerWidth)/heigthOfTheOriginalImage).
+	 * @param newArgbArray the new rgb data where the changes getting in.
+	 * @return return filled the newArgbArray with stretched changes.
 	 */
 	public static final int[] stretchVertical( int[] argbArray, int newWidthTop, int newWidthBottom,int biggerWidth , int width, int heigth,int procentualScalingHeight, int[] newArgbArray ){
 		if(procentualScalingHeight == 0)procentualScalingHeight++;
@@ -348,14 +348,14 @@ public final class ImageUtil {
 	 * Returns the one scaled Pixel for the given new heigth and width. 
 	 * 
 	 * @author Tim Muders
-	 * @param oldLength
-	 * @param oldWidth
-	 * @param oldHeigth
-	 * @param newWidth
-	 * @param newHeigth
-	 * @param currentX
-	 * @param currentY
-	 * @return
+	 * @param oldLength length of the rgb data source.
+	 * @param oldWidth the old width of the rgb data.
+	 * @param oldHeigth the old heigth of the rgb data.
+	 * @param newWidth the new width of the rgb data.
+	 * @param newHeigth the new heigth of the rgb data.
+	 * @param currentX the x position of the pixel to be scaled.
+	 * @param currentY the y position of the pixel to be scaled.
+	 * @return position of the scaled pixel in the old rgb data array.
 	 */
 	public static final int scaledPixel(int oldLength,int oldWidth,int oldHeigth, int newWidth, int newHeigth, int currentX, int currentY){
 			int targetArrayIndex;
@@ -371,12 +371,12 @@ public final class ImageUtil {
 	 * Stretches the rgb data horizontal to the given left and rigth stretch factor and returns the new rgb data array.
 	 * 
 	 * @author Tim Muders
-	 * @param argbArray
-	 * @param leftStrechFactor
-	 * @param rightStrechFactor
-	 * @param width
-	 * @param heigth
-	 * @return
+	 * @param argbArray the rgb data to be stretched.
+	 * @param leftStrechFactor the stretch factor of the left.
+	 * @param rightStrechFactor the stretch factor of the rigth.
+	 * @param width the source width of the rgb data.
+	 * @param heigth the source heigth of the rgb data.
+	 * @return stretched rgb data array.
 	 */
 	public static final int[] stretchHorizontal( int[] argbArray, int leftStrechFactor, int rightStrechFactor, int width, int heigth ){
 		int newHeigthLeft = (heigth * leftStrechFactor)/100;
@@ -400,15 +400,15 @@ public final class ImageUtil {
 	 * 
 	 * 
 	 * @author Tim Muders
-	 * @param argbArray
-	 * @param newLeftHeigth
-	 * @param newRigthHeigth
-	 * @param biggerHeigth
-	 * @param width
-	 * @param heigth
-	 * @param procentualScalingHeight
-	 * @param newArgbArray
-	 * @return
+	 * @param argbArray the rgb data to be stretched.
+	 * @param newLeftHeigth the new left heigth of the rgb data.
+	 * @param newRigthHeigth the new rigth heigth of the rgb data.
+	 * @param biggerHeigth the bigger heigth of left and rigth heigth.
+	 * @param width the source width of the rgb data.
+	 * @param heigth the source heigth of the rgb data.
+	 * @param procentualScalingHeight the procentual scaling heigth(biggerHeigth - smallerSmaller)/widthOfTheOriginalImage).
+	 * @param newArgbArray the new rgb data where the changes getting in.
+	 * @return return the filled newArgbArray with stretched changes.
 	 */
 	public static final int[] stretchHorizontal( int[] argbArray, int newLeftHeigth, int newRigthHeigth,int biggerHeigth , int width, int heigth,int procentualScalingHeight, int[] newArgbArray ){
 		if(procentualScalingHeight == 0)procentualScalingHeight++;
