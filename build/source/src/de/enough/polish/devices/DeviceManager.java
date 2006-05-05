@@ -287,6 +287,10 @@ public class DeviceManager {
 		return virtualDevices;
 	}
 	
+	public Device[] getRealDevices() {
+		return getRealDevices( getDevices() );
+	}
+	
 	public Device[] getRealDevices( Device[] filteredDevices ) {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < filteredDevices.length; i++) {
