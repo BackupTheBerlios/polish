@@ -1601,7 +1601,7 @@
 		appliesTo="TabBar, TabbedForm"
 		description="Defines whether the user starts at the first tab after passing the last tab. By default the user cannot pass the last (or the first) tab." 
 		default="false"
-		id="157"
+		id="158"
 	/>
 		
 	<!--

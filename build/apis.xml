@@ -147,7 +147,7 @@
 		<name>PDA Optional Packages</name>
 		<description>The PDA Optional Packages API defines one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
-		<features>pimapi,fileconnectionapi,fileconnection, pim</features>
+		<features>api.pimapi, api.pim, api.fileconnectionapi, api.fileconnection</features>
 		<names>pdaapi, pda-api, JSR-75, JSR75</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
@@ -159,6 +159,7 @@
 		<description>Package for Personal Information Management (PIM) access.
 		</description>
 		<names>pimapi, pim-api, pim</names>
+		<features>api.pim</features>
 		<symbol>pimapi</symbol>
 		<files>j2me-pimapi.jar</files>
 		<path>import/pim.jar</path>
@@ -169,6 +170,7 @@
 		<description>Package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
 		<names>fileconnectionapi, fileconnection-api, fcapi, fc-api, fileconnection</names>
+		<features>api.fileconnectionapi</features>
 		<symbol>fileconnection</symbol>
 		<files>j2me-fileconnection.jar</files>
 		<path>import/fileconnection.jar</path>
