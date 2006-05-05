@@ -109,23 +109,23 @@ public final class ImageUtil {
 	
 	//#if polish.cldc1.1
 	/**
-	 * Rotates an RGBimage array.
+	 * Rotates the given rgb data and returns the rotated rgb data array.
 	 * 
 	 * @author Tim Muders
 	 * @param argbArray
 	 * @param width
 	 * @param heigth
-	 * @param rotation
+	 * @param degree
 	 * @param referenceX
 	 * @param referenceY
 	 * @param backgroundColor the ARGB color used for the background
 	 * @return
 	 */
-	public static final int[]rotate(int[]argbArray,int width, int heigth,int rotation,int referenceX,int referenceY,int backgroundColor){
-		double cosR = Math.cos(Math.PI*rotation/180);
-		double sinR = Math.sin(Math.PI*rotation/180);		
-		int newWidth = getNewWidth(rotation,width,heigth,cosR,sinR);
-		int newHeigth = getNewHeigth(rotation,width,heigth,cosR,sinR);
+	public static final int[]rotate(int[]argbArray,int width, int heigth,int degree,int referenceX,int referenceY,int backgroundColor){
+		double cosR = Math.cos(Math.PI*degree/180);
+		double sinR = Math.sin(Math.PI*degree/180);		
+		int newWidth = getNewWidth(degree,width,heigth,cosR,sinR);
+		int newHeigth = getNewHeigth(degree,width,heigth,cosR,sinR);
 		int[] newRGB = new int [newHeigth * newWidth];
 		int halfOfWidth = width/2;
 		int halfOfHeigth = heigth/2;
@@ -152,22 +152,22 @@ public final class ImageUtil {
 	
 	//#if polish.cldc1.1
 	/**
-	 * The new Heigth for an rotated image.
+	 * Returns the new heigth for the given degree. The new heigth sybols the heigth for an rotated rgb data array with the same degree rotation.
 	 * 
 	 * @author Tim Muders
-	 * @param rotation
+	 * @param degree
 	 * @param width
 	 * @param heigth
 	 * @param cosR
 	 * @param sinR
 	 * @return
 	 */
-	public static final int getNewHeigth(int rotation,int width,int heigth,double cosR,double sinR)
+	public static final int getNewHeigth(int degree,int width,int heigth,double cosR,double sinR)
 	{
-		if(rotation == -90 || rotation == 90 || rotation == 270 || rotation == -270){
+		if(degree == -90 || degree == 90 || degree == 270 || degree == -270){
 			return width;
 		}
-		else if(rotation == 360 || rotation == 180 || rotation == 0){
+		else if(degree == 360 || degree == 180 || degree == 0){
 			return heigth;
 		}
 		long pointY1 = MathUtil.round(0 * sinR + 0 * cosR);
@@ -201,22 +201,22 @@ public final class ImageUtil {
 	
 	//#if polish.cldc1.1
 	/**
-	 * The New Width for an Rotated Image.
+	 * Returns the new width for the given degree. The new width sybols the width for an rotated rgb data array with the same degree rotation.
 	 * 
 	 * @author Tim Muders
-	 * @param rotation
+	 * @param degree
 	 * @param width
 	 * @param heigth
 	 * @param cosR
 	 * @param sinR
 	 * @return
 	 */
-	public static final int getNewWidth(int rotation,int width,int heigth,double cosR,double sinR)
+	public static final int getNewWidth(int degree,int width,int heigth,double cosR,double sinR)
 	{
-		if(rotation == -90 || rotation == 90 || rotation == 270 || rotation == -270){
+		if(degree == -90 || degree == 90 || degree == 270 || degree == -270){
 			return heigth;
 		}
-		else if(rotation == 360 || rotation == 180 || rotation == 0){
+		else if(degree == 360 || degree == 180 || degree == 0){
 			return width;
 		}
 		long pointX1 = MathUtil.round(0 * cosR - 0 * sinR);
@@ -249,8 +249,7 @@ public final class ImageUtil {
 	
 	
 	/**
-	 * Can scale the images unproportional in every new size you want 
-	 * bigger or smaller.
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original. Returns the scaled rgb data.
 	 * 
 	 * @author Tim Muders
 	 * @param rgbData the original rgbdata
@@ -267,6 +266,8 @@ public final class ImageUtil {
 	}
 	
 	/**
+	 * Stretches the rgb data vertical to the given top and bottom stretch factor and returns the new rgb data array.
+	 * 
 	 * @author Tim Muders
 	 * @param argbArray
 	 * @param topStrechFactor
@@ -293,6 +294,9 @@ public final class ImageUtil {
 	}
 	
 	/**
+	 * Stretches the rgb data vertical to the given top and bottom width and returns the new rgb data array.
+	 *  
+	 * 
 	 * @author Tim Muders
 	 * @param argbArray
 	 * @param newWidthTop
@@ -341,6 +345,8 @@ public final class ImageUtil {
 	}
 	
 	/**
+	 * Returns the one scaled Pixel for the new Heigth and the new Width. 
+	 * 
 	 * @author Tim Muders
 	 * @param oldLength
 	 * @param oldWidth
@@ -362,6 +368,8 @@ public final class ImageUtil {
 	}
 	
 	/**
+	 * Stretches the rgb data horizontal to the given left and rigth stretch factor and returns the new rgb data array.
+	 * 
 	 * @author Tim Muders
 	 * @param argbArray
 	 * @param leftStrechFactor
@@ -388,6 +396,9 @@ public final class ImageUtil {
 	}
 
 	/**
+	 * Stretches the rgb data horizontal to the given left and heigth width and returns the new rgb data array.
+	 * 
+	 * 
 	 * @author Tim Muders
 	 * @param argbArray
 	 * @param newLeftHeigth
@@ -444,8 +455,7 @@ public final class ImageUtil {
 	}
 	
 	/**
-	 * Can scale the images unproportional in every new size you want 
-	 * bigger or smaller.
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original.
 	 * 
 	 * @author Tim Muders
 	 * @param rgbData the original rgbdata
