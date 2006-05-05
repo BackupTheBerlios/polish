@@ -152,7 +152,7 @@ public final class ImageUtil {
 	
 	//#if polish.cldc1.1
 	/**
-	 * Returns the new heigth for the given degree. The new heigth sybols the heigth for an rotated rgb data array with the same degree rotation.
+	 * Returns the new heigth for the given degree. The new heigth symbols the heigth for an rotated rgb data array with the same degree rotation.
 	 * 
 	 * @author Tim Muders
 	 * @param degree
@@ -201,7 +201,7 @@ public final class ImageUtil {
 	
 	//#if polish.cldc1.1
 	/**
-	 * Returns the new width for the given degree. The new width sybols the width for an rotated rgb data array with the same degree rotation.
+	 * Returns the new width for the given degree. The new width symbols the width for an rotated rgb data array with the same degree rotation.
 	 * 
 	 * @author Tim Muders
 	 * @param degree
@@ -345,7 +345,7 @@ public final class ImageUtil {
 	}
 	
 	/**
-	 * Returns the one scaled Pixel for the new Heigth and the new Width. 
+	 * Returns the one scaled Pixel for the given new heigth and width. 
 	 * 
 	 * @author Tim Muders
 	 * @param oldLength
