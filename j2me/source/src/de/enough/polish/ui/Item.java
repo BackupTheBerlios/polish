@@ -1496,9 +1496,9 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
-		int contX = x + this.borderWidth + this.paddingLeft;
-		int contY = y + this.borderWidth + this.paddingTop;
-		int originalContentY = contY;
+		x += this.borderWidth + this.paddingLeft;
+		y += this.borderWidth + this.paddingTop;
+		int originalContentY = y;
 		
 		// paint before element:
 		//#if polish.useBeforeStyle || polish.useAfterStyle || polish.css.min-height  || polish.css.max-height
@@ -1512,16 +1512,16 @@ public abstract class Item extends Object
 				if ( isVerticalCenter ) {
 //					System.out.println("vertical: adjusting contY by " + ((this.minimumHeight - this.contentHeight) / 2)
 //							+ ", contentHeight=" + this.contentHeight + ", minHeight=" + this.minimumHeight );
-					contY += (minHeight - this.contentHeight) / 2; 
+					y += (minHeight - this.contentHeight) / 2; 
 				} else if ( isBottom ) {
 					//System.out.println("bottom: adjusting contY by " + (this.minimumHeight - this.contentHeight) );
-					contY += (minHeight - this.contentHeight);
+					y += (minHeight - this.contentHeight);
 				}
 			}
 		//#endif
 		//#ifdef polish.useBeforeStyle
 			if (this.beforeImage != null) {
-				int beforeY = contY;
+				int beforeY = y;
 				int yAdjustment = this.beforeHeight - this.contentHeight;
 				if ( this.beforeHeight < this.contentHeight) {
 					if (isTop) {
@@ -1535,14 +1535,14 @@ public abstract class Item extends Object
 					if (isTop) {
 						// keep contY
 					} else if (isBottom) {
-						contY += yAdjustment;
+						y += yAdjustment;
 					} else {
-						contY += yAdjustment / 2;
+						y += yAdjustment / 2;
 					}
 					//contY += (this.beforeHeight - this.contentHeight) / 2;
 				}
-				g.drawImage(this.beforeImage, contX, beforeY, Graphics.TOP | Graphics.LEFT );
-				contX += this.beforeWidth;
+				g.drawImage(this.beforeImage, x, beforeY, Graphics.TOP | Graphics.LEFT );
+				x += this.beforeWidth;
 			}
 		//#endif
 		
@@ -1567,9 +1567,9 @@ public abstract class Item extends Object
 						if (isTop) {
 							// keep contY
 						} else if (isBottom) {
-							contY = originalContentY + yAdjustment;
+							y = originalContentY + yAdjustment;
 						} else {
-							contY = originalContentY + yAdjustment / 2;
+							y = originalContentY + yAdjustment / 2;
 						}
 						//contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
 					//#ifdef polish.useBeforeStyle
@@ -1582,9 +1582,9 @@ public abstract class Item extends Object
 		
 
 		// paint content:
-		this.contentX = contX;
-		this.contentY = contY;
-		paintContent( contX, contY, leftBorder, rightBorder, g );				
+		this.contentX = x;
+		this.contentY = y;
+		paintContent( x, y, leftBorder, rightBorder, g );				
 	}
 	
 	/**

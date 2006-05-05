@@ -768,6 +768,7 @@ public class Container extends Item {
 			clipHeight = g.getClipHeight();
 			g.clipRect(clipX, y - this.paddingTop, clipWidth, clipHeight - ((y - this.paddingTop) - clipY) );
 		}
+		x = leftBorder;
 		y += this.yOffset;
 		//#ifdef tmp.supportViewType
 			if (this.view != null) {

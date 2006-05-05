@@ -347,8 +347,8 @@ public class StringItem extends Item
 				//#ifdef polish.css.text-horizontal-adjustment
 					centerX += this.textHorizontalAdjustment;
 				//#endif
-			} else if (!this.isLayoutRight) {
-				x = leftBorder;
+//			} else if (!this.isLayoutRight) {
+//				x = leftBorder;
 			}
 			//#ifdef polish.css.text-horizontal-adjustment
 				x += this.textHorizontalAdjustment;
