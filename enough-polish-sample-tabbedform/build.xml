@@ -90,6 +90,7 @@
 			<!-- debug/log settings: only include debug setting when the test-property is true -->
 			<debug level="error" showLogOnError="true" verbose="true" logTimestamp="true" >
 				<filter level="debug" package="de.enough.polish.sample.tabbedform"/>
+				<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
 			</debug>
 			
 			<resources

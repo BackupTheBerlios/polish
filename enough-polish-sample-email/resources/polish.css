@@ -198,6 +198,13 @@ menu {
 	menubar-color: bgColor;
 }
 
+/** Style for the first layer of subcommands: **/
+menu1 extends menu {
+	background-color: yellow;
+	background-type: simple;
+}
+
+
 /**
   * The menuItem style is a predefined style
   * for the actual commands in a fullscreen-menu.
@@ -214,6 +221,21 @@ menuItem {
 		style: bold;
 	}
 	layout: left;
+	/**
+	 * Yes, it's possible to use preprocessing within CSS files. Use any preprocessing
+	 * variables like polish.midp2 or polish.api.nokia-ui. You can also access resource
+	 * information using these property functions:
+	 * - exists( resourcename ): checks whether a resource is defined for the current target device
+	 * - imagewidth( imagename ): retrieves the width of the given image
+	 * - imageheight( imagename ): retrieves the height of the given image
+	 */
+	//#if ${ exists( arrowRight.png ) }
+		command-child-indicator: url(arrowRight.png);
+	//#else
+		command-child-indicator-color: green;
+		command-child-indicator-width: 8;
+		command-child-indicator-height: 10;
+	//#endif
 }
 
 /**

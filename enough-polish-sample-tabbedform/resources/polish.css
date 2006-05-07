@@ -1,19 +1,25 @@
 colors {
 	bgColor: white;
 	highlightedBgColor: silver;
-	titleColor: #7272f4;
+	titleColor: #6262d4;
+	titleShadowColor: silver;
 	screenBgColor: #7272f4;
 	fontColor: black;
 	focusedFontColor: black;
 	inactiveFontColor: white;
 	menubarColor: #6262d4;
+	activeTabColor: #7272f4; 
+	inactiveTabColor: silver;
 }
 
 .tabbedForm {
 	padding: 4;
 	layout: hcenter | vcenter;
 	background-color: screenBgColor;
+	background-image: url( flames.png );
+	background-anchor: left | bottom;
 	background-top: title;
+	background-bottom: menubar;
 	menubar-color: menubarColor;
 }
 
@@ -22,27 +28,34 @@ tabbar {
 	layout: expand;
 	padding-bottom: 0;
 	tabbar-scrolling-indicator-color: black;
+	tabbar-left-arrow: url( left.png );
+	tabbar-right-arrow: url( right.png );
+	tabbar-arrow-y-offset: 3;
+	tabbar-roundtrip: true;
 }
 
 activetab {
+	padding: 3;
+	padding-left: 10;
+	padding-right: 8;
+	padding-top: 7;
 	background-type: round-tab;
-	background-color: titleColor;
+	background-color: activeTabColor;
 	background-arc: 8;
 	font-color: black;
 	font-style: bold;
-	padding-left: 10;
-	padding-right: 8;
 }
 
 inactivetab {
+	padding: 3;
 	padding-left: 6;
 	padding-right: 4;
 	margin-left: 2;
 	margin-right: 2;
 	background-type: round-tab;
-	background-color: silver;
+	background-color: inactiveTabColor;
 	background-arc: 8;
-	font-color: black;
+	font-color: gray;
 }
 
 .settingsChoice {
@@ -74,27 +87,29 @@ inactivetab {
 
 focused {
 	padding: 2;
+	layout: expand | left;
 	font-color: focusedFontColor;
 	font-size: small;
 	font-style: bold;
-	layout: expand | left;
 	background-color: highlightedBgColor;
-	label-style: .labelFocused;
-	
+	label-style: .labelFocused;	
 }
 
 title {
+	padding-top: 3;
+	padding-bottom: 3;
 	font-color: titleColor;
 	text-effect: shadow;
-	text-shadow-color: inactiveFontColor;
+	text-shadow-color: titleShadowColor;
 	layout: expand | center;	
 }
 
 label {
-	padding-left: 2;
+	padding: 2;
 	font-color: inactiveFontColor;
 	font-size: small;
 	font-style: bold;
+	layout: left;
 }
 
 .labelFocused extends label {
@@ -103,9 +118,18 @@ label {
 
 .input {
 	background-color: white;
-	font-color: fontColor;
 	border-color: black;
 	border-width: 1;
+	font-color: fontColor;
+}
+
+info {
+	margin-right: 10;
+	margin-top: 4;
+	padding: 2;
+	font-size: small;
+	layout: right;
+	background-color: argb( 200, 255, 255, 255 );
 }
 
 menu {

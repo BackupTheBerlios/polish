@@ -148,13 +148,11 @@ implements ScreenStateListener, CommandListener
 	}
 
 	public void screenStateChanged(Screen screen) {
-		//#debug
-		System.out.println("ScreenStateChanged for " + screen );
 		if (screen == this.tabbedForm ) {
 			int tabIndex = this.tabbedForm.getSelectedTab();
 			if (tabIndex != this.lastTabIndex ) {
 				//#debug
-				System.out.println("new tab=" + tabIndex );
+				System.out.println("ScreenStateChanged: new tab=" + tabIndex );
 				if (tabIndex == 0) {
 					this.tabbedForm.removeCommand( this.backCmd );
 					this.tabbedForm.removeCommand( this.parentCmd );
