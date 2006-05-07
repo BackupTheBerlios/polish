@@ -32,6 +32,7 @@ implements DynamicTestView
 	private static final int STEP_MIDDLE_SOFT_KEY = 2;
 	private static final int STEP_CLEAR_KEY = 3; 
 	private static final int STEP_RETURN_KEY = 4; 
+	private static final int STEP_SELECT_KEY = 5; 
 
     private int step;
     private DynamicTest test;
@@ -53,25 +54,8 @@ implements DynamicTestView
 	 * @see com.grimo.me.product.midpsysinfo.InfoCollector#collectInfos(com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet, javax.microedition.lcdui.Display)
 	 */
 	public void collectInfos(MIDPSysInfoMIDlet midlet, Display disp) {
-		this.display = disp;
-		
-        Canvas canvas = new Canvas() {
-            public void paint(Graphics g){
-            	// don't do anything
-            }
-        };
-        
-        addInfo( "Canvas.UP: ", canvas.getKeyName(canvas.getKeyCode(Canvas.UP)));
-        addInfo( "Canvas.LEFT: ", canvas.getKeyName(canvas.getKeyCode(Canvas.LEFT)));
-        addInfo( "Canvas.RIGHT: ", canvas.getKeyName(canvas.getKeyCode(Canvas.RIGHT)));
-        addInfo( "Canvas.DOWN: ", canvas.getKeyName(canvas.getKeyCode(Canvas.DOWN)));
-        addInfo( "Canvas.FIRE: ", canvas.getKeyName(canvas.getKeyCode(Canvas.FIRE)));
-        addInfo( "Canvas.GAME_A: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_A)));
-        addInfo( "Canvas.GAME_B: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_B)));
-        addInfo( "Canvas.GAME_C: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_C)));
-        addInfo( "Canvas.GAME_D: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_D)));
-        
-        
+		this.display = disp;                
+        System.out.println("testing for keys...");
         try {
         	Class.forName("javax.microedition.pki.Certificate");
         	//#if polish.useDefaultPackage
@@ -111,8 +95,10 @@ implements DynamicTestView
         }
         this.test.setView( this );
         this.canvasWidth = this.test.getWidth();
-        this.canvasHeight = this.test.getWidth();
+        this.canvasHeight = this.test.getHeight();
         disp.setCurrent( this.test.getDisplayable() );
+        
+
     }
 
 	/* (non-Javadoc)
@@ -140,6 +126,9 @@ implements DynamicTestView
 			case STEP_RETURN_KEY:
 				message = "Press Return-Key";
 				break;
+			case STEP_SELECT_KEY:
+				message = "Press Select-Key";
+				break;
 			default:
 				message = "Test finished - please wait.";
 		}
@@ -155,7 +144,7 @@ implements DynamicTestView
 	public void keyPressed(int keyCode) {
 		if (keyCode == Canvas.KEY_NUM0) {
 			this.step++;
-			if (this.step > STEP_RETURN_KEY) {
+			if (this.step > STEP_SELECT_KEY) {
 				this.isFinished = true;
 				if (this.view != null) {
 					this.display.setCurrent( this.view );
@@ -181,10 +170,29 @@ implements DynamicTestView
 			case STEP_RETURN_KEY:
 				addInfo( "Return-Key: ", "" + keyCode );
 				break;
+			case STEP_SELECT_KEY:
+				addInfo( "Select-Key: ", "" + keyCode );
+				try {
+					addInfo( "gameAction(Select-Key) == FIRE: ", "" + (((Canvas)this.test).getGameAction( keyCode ) == Canvas.FIRE) );
+				} catch (Exception e) {
+					//#debug error
+					System.out.println("Unable to retrieve game action of Select Key " + keyCode + e );
+				}
+				break;
 		}
 		this.step++;
-		if (this.step > STEP_RETURN_KEY) {
+		if (this.step > STEP_SELECT_KEY) {
 			this.isFinished = true;
+			Canvas canvas = (Canvas) this.test;
+	        addInfo( "Canvas.UP: ", canvas.getKeyName(canvas.getKeyCode(Canvas.UP)));
+	        addInfo( "Canvas.LEFT: ", canvas.getKeyName(canvas.getKeyCode(Canvas.LEFT)));
+	        addInfo( "Canvas.RIGHT: ", canvas.getKeyName(canvas.getKeyCode(Canvas.RIGHT)));
+	        addInfo( "Canvas.DOWN: ", canvas.getKeyName(canvas.getKeyCode(Canvas.DOWN)));
+	        addInfo( "Canvas.FIRE: ", canvas.getKeyName(canvas.getKeyCode(Canvas.FIRE)));
+	        addInfo( "Canvas.GAME_A: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_A)));
+	        addInfo( "Canvas.GAME_B: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_B)));
+	        addInfo( "Canvas.GAME_C: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_C)));
+	        addInfo( "Canvas.GAME_D: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_D)));
 			if (this.view != null) {
 				this.display.setCurrent( this.view );
 			}
