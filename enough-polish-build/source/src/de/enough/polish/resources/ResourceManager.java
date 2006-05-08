@@ -406,7 +406,7 @@ public class ResourceManager {
 			File[] files = resourcesDir.listFiles();
 			for (int i = 0; i < files.length; i++) {
 				File file = files[i];
-				if (file.isDirectory()) {
+				if (file.isDirectory() && !dirs.contains(file)) {
 					// The slash can be a protected character:
 					String name = StringUtil.replace(file.getName(), "%2f", "/");
 					//System.out.println("Considering dir "+ name);
@@ -415,10 +415,8 @@ public class ResourceManager {
 						|| (name.endsWith(".0x0")
 							&& device.getCapability(name.substring(0, name.length() - ".0x0".length()) ) == null ) )
 					{
-						if (!dirs.contains(file)) {
-							//System.out.println("Adding capability or preprocessing dir " + file.getAbsolutePath() );
-							dirs.add( file );
-						}
+						//System.out.println("Adding capability or preprocessing dir " + file.getAbsolutePath() );
+						dirs.add( file );
 					}
 				}
 			}
