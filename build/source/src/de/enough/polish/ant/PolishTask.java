@@ -131,7 +131,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-05-05)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-05-08)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -547,6 +547,19 @@ public class PolishTask extends ConditionalTask {
 					String sourceDirPath = sourceDir.getAbsolutePath();
 					File midletFile = new File( sourceDirPath + File.separator + fileName );
 					if (midletFile.exists()) {
+						if (File.separatorChar == '\\') {
+							// additionally check the case of the MIDlet file
+							// on Windows systems:
+							try {
+								if (!midletFile.getCanonicalPath().endsWith(fileName)) {
+									System.out.println("WARNING: The case of the <midlet> definition \"" + midlet.getClassName() + "\" seems to be wrong, since the source code is in " + midletFile.getCanonicalPath() + ". Check your build.xml script.");
+									continue;
+								}
+							} catch (IOException e) {
+								System.out.println("Warning: unable to get canonical path for file " + midletFile.getAbsolutePath() );
+								e.printStackTrace();
+							}
+						} 
 						midletFound = true;
 						break;
 					}

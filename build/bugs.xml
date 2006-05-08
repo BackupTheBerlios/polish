@@ -363,6 +363,13 @@
 		<description>Translucency is not supported with Graphics.drawRGB.</description>
 		<solution>None.</solution>
 	</bug>
+
+	<bug>
+		<name>usesVideoRam</name>
+		<area>ui</area>
+		<description>A specialized memory section (the video RAM) is used for storing images. Image data is not necissarily gargbage collected from here and images larger thant the video RAM size might be loadable, but cannot be displayed, since they have to be copied into the video RAM first.</description>
+		<solution>Not a bug. Load images that are needed often first.</solution>
+	</bug>
 	
 	<!--
 	<bug>

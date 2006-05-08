@@ -265,6 +265,7 @@
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="ScreenSize" value="128x160" />
+		<capability name="Bugs" value="usesVideoRam" />
 	</group>
 	
 	<group>
@@ -276,6 +277,7 @@
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="Bugs" value="usesVideoRam" />
 	</group>
 	
 	<group>
@@ -284,6 +286,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g" />
+		<capability name="Bugs" value="usesVideoRam" />
 	</group>
 
 	<group>
@@ -295,6 +298,7 @@
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
+		<capability name="Bugs" value="usesVideoRam" />
 	</group>
 
 	<group>
@@ -306,6 +310,7 @@
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
+		<capability name="Bugs" value="usesVideoRam" />
 	</group>
 
 	<group>
@@ -317,6 +322,7 @@
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
+		<capability name="Bugs" value="usesVideoRam" />
 	</group>
 		
 	<group>
