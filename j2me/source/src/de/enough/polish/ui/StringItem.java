@@ -56,6 +56,10 @@ public class StringItem extends Item
 	//#ifdef polish.css.text-wrap
 		protected boolean useSingleLine;
 		protected boolean clipText;
+		protected int xOffset;
+		private int textWidth;
+		private boolean isHorizontalAnimationDirectionRight;
+		private boolean isSkipHorizontalAnimation;
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
 		protected int textHorizontalAdjustment;
@@ -178,18 +182,54 @@ public class StringItem extends Item
 	}
 	
 	
-	//#ifdef polish.css.text-effect
+	//#if polish.css.text-effect || polish.css.text-wrap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
-		if (this.textEffect != null) {
-			animated |= this.textEffect.animate();
-		}
+		//#if polish.css.text-effect 
+			if (this.textEffect != null) {
+				animated |= this.textEffect.animate();
+			}
+		//#endif
+		//#if polish.css.text-wrap
+			if (this.clipText) {
+				if (this.isSkipHorizontalAnimation) {
+					this.isSkipHorizontalAnimation = false;
+				} else {
+					if (this.isHorizontalAnimationDirectionRight) {
+						this.xOffset++;
+						if (this.xOffset >= 0) {
+							this.isHorizontalAnimationDirectionRight = false;
+						}
+					} else {
+						this.xOffset--;
+						if (this.xOffset + this.textWidth < this.contentWidth) {
+							this.isHorizontalAnimationDirectionRight = true;
+						}
+					}
+					animated = true;
+					this.isSkipHorizontalAnimation = true;
+				}
+			}
+		//#endif
 		return animated;
 	}
 	//#endif
+	
+	//#if polish.css.text-wrap
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle) {
+		super.defocus(originalStyle);
+		if (this.clipText) {
+			this.xOffset = 0;
+		}
+	}	
+	//#endif
+
 
 	//#ifdef polish.css.text-effect
 	/* (non-Javadoc)
@@ -386,6 +426,11 @@ public class StringItem extends Item
 						g.clipRect( x, y, this.contentWidth, this.contentHeight );
 					}
 				//#endif
+				//#if polish.css.text-wrap
+					if (this.clipText) {
+						lineX += this.xOffset;
+					}
+				//#endif
 				//#if polish.css.text-effect
 					if (this.textEffect != null) {
 						this.textEffect.drawString( line, this.textColor, lineX, lineY, orientation, g );
@@ -436,13 +481,15 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
 				this.textLines = new String[]{ this.text };
-				int textWidth = this.font.stringWidth(this.text);
-				if (textWidth > lineWidth) {
+				int myTextWidth = this.font.stringWidth(this.text);
+				if (myTextWidth > lineWidth) {
 					this.clipText = true;
+					this.textWidth = myTextWidth;
+					this.isHorizontalAnimationDirectionRight = false;
 					this.contentWidth = lineWidth;
 				} else {
 					this.clipText = false;
-					this.contentWidth = textWidth;
+					this.contentWidth = myTextWidth;
 				}
 				this.contentHeight = this.font.getHeight();
 			} else {

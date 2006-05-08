@@ -91,6 +91,7 @@ public class Container extends Item {
 		protected boolean scrollSmooth = true;	
 	//#endif
 	protected int targetYOffset;
+	protected boolean isFirstPaint;
 
 	
 	/**
@@ -431,6 +432,7 @@ public class Container extends Item {
 			//#debug
 			System.out.println("Container: Setting autofocus-index to " + index );
 			this.autoFocusIndex = index;
+			this.isFirstPaint = true;
 			return;
 		}
 		
@@ -822,6 +824,14 @@ public class Container extends Item {
 				this.internalWidth = item.itemWidth;
 				this.internalY = (item.yTopPos - this.yOffset) - this.contentY;
 				this.internalHeight = item.itemHeight;
+			}
+			if (this.isFirstPaint) {
+				this.isFirstPaint = false;
+				if (this.enableScrolling) {
+					if ( this.contentY + this.internalY + this.internalHeight > this.yBottom ) {
+						scroll( true, this.contentX, this.contentY + this.internalY, this.contentWidth, this.internalHeight );
+					}
+				}
 			}
 		}
 
