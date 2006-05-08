@@ -36,6 +36,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
@@ -362,15 +363,15 @@ implements ActionListener
 		// use dummy buffer for get a render context:
 		BufferedImage image = new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = image.createGraphics();
+		g.setFont(this.derivedFont);
 		if (aa) {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		}else {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
-		FontRenderContext fc = g.getFontRenderContext();
-		Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
-		double height = bounds.getHeight();
-		double width = bounds.getWidth() + (text.length() * this.characterSpacing);
+        FontMetrics fontMetrics = g.getFontMetrics();
+        double height = fontMetrics.getHeight();
+		double width = fontMetrics.stringWidth(text) + (text.length() * this.characterSpacing);
 		image = new BufferedImage( (int) width, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
 		g = image.createGraphics();
 		Color transparent = new Color( 1, 1, 1, 0 );
@@ -384,14 +385,13 @@ implements ActionListener
 		g.setFont( this.derivedFont );
 		g.setColor( this.currentColor );
 		char[] characters = text.toCharArray();
-		int y = (int)-bounds.getY();
+		int y = (int)fontMetrics.getHeight();
 		int x = 0;
+		
 		for (int i = 0; i < characters.length; i++) {
 			g.drawChars(characters, i, 1, x, y );
-			bounds = this.derivedFont.getStringBounds(characters, i, i+1, fc);
-			x += (int) bounds.getWidth() + this.characterSpacing;
+			x += (int) fontMetrics.stringWidth(text.substring(i,i+1)) + this.characterSpacing;
 		}
-		//g.drawString(text,0,(int)-bounds.getY());
 		return image;
 	}
 	
