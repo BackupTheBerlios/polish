@@ -1,0 +1,12 @@
+// $ANTLR 2.7.5 (20050128): presentationWalker.g -> PresentationWalkerTokenTypes.txt$
+PresentationWalker    // output token vocab name
+L_CURLY_BRACKET=4
+R_CURLY_BRACKET=5
+NAME=6
+ARBITRARY_STRING("a string")=7
+WHITESPACE=8
+ML_COMMENT("a multiline comment")=9
+ATTRIBUTE_VALUE_PAIR=10
+STYLE_SECTION=11
+SECTION=12
+STYLE_SHEET=13

@@ -1,7 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project basedir="." default="build.jars" name="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
-    <property name="basews" value="${ws}"></property>
+<project basedir="." default="all" name="de.enough.polish.plugin.eclipse.css.CssEditorPlugin">
+	
+	<property name="path.antlr" location="lib/antlr-2.7.5.jar" />
+	<property name="dir.parser.output" location="source/src/de/enough/polish/plugin/eclipse/css/parser" />
+	
+	
+	<target name="all" depends="generate.parser">
+		<eclipse.refreshLocal resource="eclipsePlugin" depth="infinite"/>
+	</target>
+
+	
+	<target name="generate.parser">
+		<antlr target="misc/cssPolish.g" outputdirectory="${dir.parser.output}" html="">
+			<classpath>
+				<pathelement location="${path.antlr}"/>
+			</classpath>
+		</antlr>
+		<antlr target="misc/presentationWalker.g" outputdirectory="${dir.parser.output}" html="">
+			<classpath>
+				<pathelement location="${path.antlr}"/>
+			</classpath>
+		</antlr>
+	</target>
+	
+	
+	<!-- ################################################################### -->
+	<!-- OLD STUFF -->
+	
+	<property name="basews" value="${ws}"></property>
     <property name="baseos" value="${os}"></property>
     <property name="basearch" value="${arch}"></property>
     <property name="basenl" value="${nl}"></property>
@@ -19,6 +46,9 @@
         </fileset>
     </path>
     <property name="bootclasspath" refid="path_bootclasspath"></property>
+	
+	
+	
     <target depends="properties" name="init">
         <condition property="pluginTemp" value="${buildTempFolder}/plugins">
             <isset property="buildTempFolder"></isset>
