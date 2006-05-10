@@ -54,7 +54,6 @@ public class CssEditorPlugin extends AbstractUIPlugin {
 	private BundleContext bundleContext;
 	
 	private CssEditor editor;
-	
 	public static String ID = "de.enough.polish.plugin.eclipse.css.CssEditorPlugin";
 	
 	

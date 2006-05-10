@@ -64,7 +64,7 @@ public class CssOutlinePage extends ContentOutlinePage {
 		TreeViewer viewer = getTreeViewer();
 		viewer.setContentProvider(cssContentProvider);
 		viewer.setLabelProvider(new CssLabelProvider());
-		viewer.addSelectionChangedListener(this); //TODO: Why do we need this as a listener?
+		viewer.addSelectionChangedListener(this);
 		viewer.setInput(this.cssModel);
 	}
 	

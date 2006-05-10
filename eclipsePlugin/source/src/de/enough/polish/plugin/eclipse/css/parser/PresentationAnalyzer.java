@@ -94,9 +94,6 @@
 //	/*
 //	private void printInfos(Production node) {
 //		if(node.getId() == PolishCssConstants.NAME){
-//			//TODO: We could change the token class to transport the position in addition to
-//			// line and offset.
-//			
 //			Node childNode;
 //			Token childToken;
 //			for(int i = 0; i < node.getChildCount(); i++){
