@@ -488,7 +488,7 @@ implements AccessibleCanvas
 				if (this.scrollIndicatorUpImage != null) {
 					scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
 				}
-			//#elif 
+			//#elif polish.css.scrollindicator-down-image 
 				if (this.scrollIndicatorDownImage != null) {
 					scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
 				}
