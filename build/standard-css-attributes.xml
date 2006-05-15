@@ -1604,6 +1604,14 @@
 		id="158"
 	/>
 		
+	<attribute
+		name="horizontalview-arrows-image"
+		type="imageurl"
+		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		description="The URL of the combined arrows image (showing both arrows to the left and to the right)."
+		id="159"
+	/>
+		
 	<!--
 	
 	<attribute

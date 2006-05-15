@@ -25,9 +25,7 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
@@ -72,11 +70,13 @@ public class SonyEricssonEmulator extends WtkEmulator {
 			this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK1";
 			return skinFolder;
 		} else {
+			System.out.println("Warning: Unable to find Sony-Ericsson emulator in " + skinFolder.getAbsolutePath() );
 			skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK2\\wtklib\\devices\\" + xDevice );
 			if (skinFolder.exists()) {
 				this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK2";
 				return skinFolder;
 			}
+			System.out.println("Warning: Unable to find Sony-Ericsson emulator in " + skinFolder.getAbsolutePath() );
 		}
 		// try to get the emulator from the default WTK:
 		return super.getEmulatorSkin(wtkHome, xDevice);
@@ -85,9 +85,9 @@ public class SonyEricssonEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.WtkEmulator#getEmulatorExcecutable(java.lang.String, java.lang.String)
 	 */
-	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device device) {
+	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev) {
 		if (this.sonyEricssonHome == null || this.sonyWtkHome == null) {
-			return super.getEmulatorExcecutable(wtkHome, xDevice, device);
+			return super.getEmulatorExcecutable(wtkHome, xDevice, dev);
 		}
 		
 		String execPath = this.sonyWtkHome + "\\bin\\emulator.exe";
@@ -99,14 +99,14 @@ public class SonyEricssonEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
-	public boolean init(Device device, EmulatorSetting setting,
+	public boolean init(Device dev, EmulatorSetting setting,
 			Environment properties, Project project, BooleanEvaluator evaluator,
 			String wtkHome) 
 	{
-		String skin = device.getCapability("polish.Emulator.Skin");
+		String skin = dev.getCapability("polish.Emulator.Skin");
 		if (skin == null) {
 			// add default-emulator name:
-			device.addDirectCapability("polish.Emulator.Skin", "SonyEricsson_" + device.getName());
+			dev.addDirectCapability("polish.Emulator.Skin", "SonyEricsson_" + dev.getName());
 		}
 		String sonyHomePath = properties.getVariable("sony-ericsson.home");
 		if (sonyHomePath == null) {
@@ -124,11 +124,11 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		} else {
 			File home = new File( sonyHomePath );
 			if (!home.exists()) {
-				System.err.println("Unable to start emulator for device [" + device.getIdentifier() + "]: Please adjust the ${nokia.home}-property in your build.xml. The path [" + sonyHomePath + "] does not exist.");
+				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the ${nokia.home}-property in your build.xml. The path [" + sonyHomePath + "] does not exist.");
 			}
 		}
 		this.sonyEricssonHome = sonyHomePath;
-		return super.init(device, setting, properties, project, evaluator, wtkHome);
+		return super.init(dev, setting, properties, project, evaluator, wtkHome);
 	}
 
 	/* (non-Javadoc)

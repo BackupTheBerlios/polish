@@ -71,11 +71,11 @@ public class SignFinalizer extends Finalizer {
 	public void finalize(File jadFile, File jarFile, Device device,
 			Locale locale, Environment env) 
 	{
-		// locate the JadUtil:
-		File jadUtil = env.resolveFile("${wtk.home}/bin/JadTool.jar");
-		if (! jadUtil.exists() ) {
-			jadUtil = env.resolveFile("${polish.home}/bin/JadTool.jar");
-			if (!jadUtil.exists()) {
+		// locate the JadTool:
+		File jadTool = env.resolveFile("${wtk.home}/bin/JadTool.jar");
+		if (! jadTool.exists() ) {
+			jadTool = env.resolveFile("${polish.home}/bin/JadTool.jar");
+			if (!jadTool.exists()) {
 				throw new BuildException("Unable to sign application: neither ${wtk.home}/bin/JadTool.jar nor ${polish.home}/bin/JadTool.jar was found.\n${wtk.home}=" + env.getVariable("wtk.home") + ", ${polish.home}=" + env.getVariable("polish.home") );
 			}
 		}
@@ -84,7 +84,7 @@ public class SignFinalizer extends Finalizer {
 		// sign the JAR file:
 		parametersList.add( "java" );
 		parametersList.add( "-jar" );
-		parametersList.add( jadUtil.getAbsolutePath() );
+		parametersList.add( jadTool.getAbsolutePath() );
 		parametersList.add( "-addjarsig" );
 		parametersList.add( "-keypass" );
 		parametersList.add( setting.getPassword() );
@@ -103,17 +103,24 @@ public class SignFinalizer extends Finalizer {
 		try {
 			int result = ProcessUtil.exec( parameters, "sign: ", true );
 			if (result != 0) {
-				throw new BuildException("Unable to sign application: unable to execute JadUtil - JadUtil returned [" + result + "]." );
+				System.out.println("Signing returned " + result + ", paramters were: ");
+				for (int i = 0; i < parameters.length; i++) {
+					String param = parameters[i];
+					System.out.print( quote( param ) );
+					System.out.print( " " );
+				}
+				System.out.println();
+				throw new BuildException("Unable to sign application: unable to execute JadTool - JadTool returned [" + result + "]." );
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException("Unable to sign application: unable to execute JadUtil: " + e.toString() );
+			throw new BuildException("Unable to sign application: unable to execute JadTool: " + e.toString() );
 		}
 		// add the certificate chain:
 		parametersList.clear();
 		parametersList.add( "java" );
 		parametersList.add( "-jar" );
-		parametersList.add( jadUtil.getAbsolutePath() );
+		parametersList.add( jadTool.getAbsolutePath() );
 		parametersList.add( "-addcert" );
 		parametersList.add( "-alias" );
 		parametersList.add( setting.getKey() );
@@ -128,12 +135,19 @@ public class SignFinalizer extends Finalizer {
 		try {
 			int result = ProcessUtil.exec( parameters, "add certificate: ", true );
 			if (result != 0) {
-				throw new BuildException("Unable to sign application: unable to execute JadUtil - JadUtil returned [" + result + "]." );
+				throw new BuildException("Unable to sign application: unable to execute JadTool - JadTool returned [" + result + "]." );
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new BuildException("Unable to sign application: unable to execute JadUtil: " + e.toString() );
+			throw new BuildException("Unable to sign application: unable to execute JadTool: " + e.toString() );
 		}
+	}
+
+	private String quote(String param) {
+		if (param.indexOf(' ') != -1) {
+			return '"' + param + '"';
+		}
+		return param;
 	}
 
 }

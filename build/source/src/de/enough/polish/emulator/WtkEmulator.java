@@ -28,8 +28,6 @@ package de.enough.polish.emulator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -40,7 +38,6 @@ import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.util.ConvertUtil;
-import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.PropertyFileMap;
 
 /**
@@ -116,10 +113,10 @@ public class WtkEmulator extends Emulator {
 	 * 
 	 * @param wtkHome the path to the Wireless Toolkit
 	 * @param xDevice the name of the skin
-	 * @param device the device
+	 * @param dev the device
 	 * @return the file which points to the emulator-application
 	 */
-	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device device ) {
+	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device dev ) {
 		String executable = null;
 		if (File.separatorChar == '/') {
 			executable = wtkHome + "bin/emulator";

@@ -58,6 +58,7 @@ public class LogSetting extends ConditionalElement {
 	private boolean logLineNumber = false;
 	private boolean logMessage = true;
 	private boolean logException = true;
+	private boolean logThread;
 
 	/**
 	 * Creates a new empty debug-setting.
@@ -230,6 +231,15 @@ public class LogSetting extends ConditionalElement {
 	public void setLogTimestamp(boolean logTimestamp) {
 		this.logTimestamp = logTimestamp;
 	}
+	
+	public boolean logThread() {
+		return this.logThread;
+	}
+
+	public void setLogThread(boolean logThread) {
+		this.logThread = logThread;
+	}
+	
 
 
 	public boolean isShowLogOnError() {

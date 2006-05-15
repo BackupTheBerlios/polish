@@ -32,7 +32,6 @@ import de.enough.polish.Attribute;
 import de.enough.polish.Environment;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * <p>Represents the info-section of a polish project.</p>
