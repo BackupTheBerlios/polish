@@ -85,6 +85,7 @@ public class MenuBar extends Item {
 	private Image cancelImage;
 	private int singleLeftCommandY;
 	private int singleRightCommandY;
+	private boolean commandIgnored;
 
 	/**
 	 * Creates a new menu bar\
@@ -126,6 +127,7 @@ public class MenuBar extends Item {
 			// do not add an existing command again...
 			//#debug
 			System.out.println("Ignoring existing command " + cmd.getLabel() );
+			this.commandIgnored = true;
 			return;
 		}
 		//#debug

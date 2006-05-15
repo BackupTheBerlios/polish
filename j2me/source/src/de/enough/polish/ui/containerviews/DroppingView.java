@@ -82,73 +82,50 @@ public class DroppingView extends ContainerView {
 	protected void initContent(Container parent, int firstLineWidth,
 			int lineWidth) 
 	{
-		Item[] myItems = parent.getItems();
-		int myContentWidth = 0;
-		int myContentHeight = 0;
-		boolean hasFocusableItem = false;
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			//System.out.println("initalising " + item.getClass().getName() + ":" + i);
-			int width = item.getItemWidth( firstLineWidth, lineWidth );
-			int height = item.getItemHeight( firstLineWidth, lineWidth );
-			// now the item should have a style, so it can be safely focused
-			// without loosing the style information:
-			if (item.appearanceMode != Item.PLAIN) {
-				hasFocusableItem = true;
-			}
-			if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-				focusItem( i, item );
-				height = item.getItemHeight( firstLineWidth, lineWidth );
-				width = item.getItemWidth( firstLineWidth, lineWidth );
-				this.focusFirstElement = false;
-			}
-			if (width > myContentWidth) {
-				myContentWidth = width; 
-			}
-			myContentHeight += height + this.paddingVertical;
-		}
-		if (!hasFocusableItem) {
-			this.appearanceMode = Item.PLAIN;
-		} else {
-			this.appearanceMode = Item.INTERACTIVE;
-		}
-		this.contentHeight = myContentHeight;
-		this.contentWidth = myContentWidth;
+		super.initContent(parent, firstLineWidth, lineWidth);
+				
 		if (!this.animationInitialised) {
+			Item[] myItems = parent.getItems();
 			this.yAdjustments = new int[ myItems.length ];
 			initAnimation(myItems, this.yAdjustments);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
-	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) 
-	{
-		Item[] myItems = this.parentContainer.getItems();
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
-			// since after every item a line break will be done.
-			int adjustedY = y - this.yAdjustments[i];
-			item.paint(x, adjustedY, leftBorder, rightBorder, g);
-			y += item.itemHeight + this.paddingVertical;
-		}
+	
+	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		int adjustedY = y - this.yAdjustments[ index ];
+		item.paint(x, adjustedY, leftBorder, rightBorder, g);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
-	 */
-	protected Item getNextItem(int keyCode, int gameAction) {
-		if (gameAction == Canvas.DOWN) {
-			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
-		} else if (gameAction == Canvas.UP) {
-			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
-		} else {
-			return null;
-		}
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+//	 */
+//	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
+//			Graphics g) 
+//	{
+//		Item[] myItems = this.parentContainer.getItems();
+//		for (int i = 0; i < myItems.length; i++) {
+//			Item item = myItems[i];
+//			// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
+//			// since after every item a line break will be done.
+//			int adjustedY = y - this.yAdjustments[i];
+//			item.paint(x, adjustedY, leftBorder, rightBorder, g);
+//			y += item.itemHeight + this.paddingVertical;
+//		}
+//	}
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
+//	 */
+//	protected Item getNextItem(int keyCode, int gameAction) {
+//		if (gameAction == Canvas.DOWN) {
+//			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
+//		} else if (gameAction == Canvas.UP) {
+//			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
+//		} else {
+//			return null;
+//		}
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)
@@ -191,10 +168,11 @@ public class DroppingView extends ContainerView {
 	
 	//#ifdef polish.css.droppingview-repeat-animation
 	public void showNotify() {
+		super.showNotify();
 		if (this.repeatAnimation && this.yAdjustments != null) {
 			initAnimation( this.parentContainer.getItems(), this.yAdjustments );
 		}
-	}	
+	}
 	//#endif
 	
 	/**
@@ -221,9 +199,11 @@ public class DroppingView extends ContainerView {
 	 * @return true when the view was really animated.
 	 */
 	public boolean animate() {
+		boolean animated = super.animate();
 		if (this.isAnimationRunning) {
 			boolean startNextPeriode = true;
 			int max = this.currentMaximum;
+			int column = 0;
 			if (this.isDownwardsAnimation) {
 				for (int i = 0; i < this.yAdjustments.length; i++ ) {
 					int y = this.yAdjustments[i] ;
@@ -234,11 +214,15 @@ public class DroppingView extends ContainerView {
 						}
 						startNextPeriode = false;
 					}
-					max += this.damping;
-					if (max > 0) {
-						max = 0;
-					}
 					this.yAdjustments[i] = y;
+					column++;
+					if (column >= this.numberOfColumns ) {
+						max += this.damping;
+						if (max > 0) {
+							max = 0;
+						}
+						column = 0;
+					}
 				}
 			} else {
 				for (int i = 0; i < this.yAdjustments.length; i++ ) {
@@ -250,11 +234,15 @@ public class DroppingView extends ContainerView {
 						} 
 						startNextPeriode = false;
 					}
-					max -= this.damping;
-					if (max < 0) {
-						max = 0;
-					}
 					this.yAdjustments[i] = y;
+					column++;
+					if (column >= this.numberOfColumns ) {
+						max -= this.damping;
+						if (max < 0) {
+							max = 0;
+						}
+						column = 0;
+					}
 				}
 			}
 			if (startNextPeriode) {
@@ -268,7 +256,7 @@ public class DroppingView extends ContainerView {
 			}
 			return true;
 		} else {
-			return false;
+			return animated;
 		}
 	}
 

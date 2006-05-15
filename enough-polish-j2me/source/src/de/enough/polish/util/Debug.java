@@ -85,11 +85,11 @@ implements CommandListener
 	 * @param message the message.
 	 * @param exception the exception or just an ordinary object
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, Object exception ) {
+	public static final void debug( String level, String className, int lineNumber, Object message, Object exception ) {
 		if (exception instanceof Throwable) {
 			debug( level, className, lineNumber, message, (Throwable) exception );
 		} else {
-			debug( level, className, lineNumber, message + exception );
+			debug( level, className, lineNumber, message.toString() + exception );
 		}
 	}
 
@@ -103,8 +103,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the char value
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, char value ) {
-		debug( level, className, lineNumber, message + value );
+	public static final void debug( String level, String className, int lineNumber, Object message, char value ) {
+		debug( level, className, lineNumber, message.toString() + value );
 	}
 
 	/**
@@ -117,8 +117,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the int value
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, int value ) {
-		debug( level, className, lineNumber, message + value );
+	public static final void debug( String level, String className, int lineNumber, Object message, int value ) {
+		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
 	/**
@@ -131,8 +131,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the long value
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, long value ) {
-		debug( level, className, lineNumber, message + value );
+	public static final void debug( String level, String className, int lineNumber, Object message, long value ) {
+		debug( level, className, lineNumber, message.toString() + value );
 	}
 
 	/**
@@ -145,8 +145,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the short value
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, short value ) {
-		debug( level, className, lineNumber, message + value );
+	public static final void debug( String level, String className, int lineNumber, Object message, short value ) {
+		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
 	/**
@@ -159,8 +159,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the byte value
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, byte value ) {
-		debug( level, className, lineNumber, message + value );
+	public static final void debug( String level, String className, int lineNumber, Object message, byte value ) {
+		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
 	//#ifdef polish.cldc1.1
@@ -174,8 +174,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the float value
 	 */
-	//# public static final void debug( String level, String className, int lineNumber, String message, float value ) {
-	//# 	debug( level, className, lineNumber, message + value );
+	//# public static final void debug( String level, String className, int lineNumber, Object message, float value ) {
+	//# 	debug( level, className, lineNumber, message.toString() + value );
 	//# }
 	//#endif
 
@@ -190,8 +190,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the double value
 	 */
-	//# public static final void debug( String level, String className, int lineNumber, String message, double value ) {
-	//# 	debug( level, className, lineNumber, message + value );
+	//# public static final void debug( String level, String className, int lineNumber, Object message, double value ) {
+	//# 	debug( level, className, lineNumber, message.toString() + value );
 	//# }
 	//#endif
 
@@ -205,8 +205,8 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the boolean value
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, boolean value ) {
-		debug( level, className, lineNumber, message + value );
+	public static final void debug( String level, String className, int lineNumber, Object message, boolean value ) {
+		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
 	/**
@@ -217,7 +217,7 @@ implements CommandListener
 	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message ) {
+	public static final void debug( String level, String className, int lineNumber, Object message ) {
 		debug( level, className, lineNumber, message, null );
 	}
 	
@@ -242,7 +242,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param exception the exception
 	 */
-	public static final void debug( String level, String className, int lineNumber, String message, Throwable exception ) {
+	public static final void debug( String level, String className, int lineNumber, Object message, Throwable exception ) {
 		if (suppressMessages) {
 			return;
 		}
@@ -250,7 +250,7 @@ implements CommandListener
 		if (exception != null) {
 			exceptionMessage = exception.toString();
 		}
-		LogEntry logEntry = new LogEntry( className, lineNumber, System.currentTimeMillis(), level, message, exceptionMessage );
+		LogEntry logEntry = new LogEntry( className, lineNumber, System.currentTimeMillis(), level, message.toString(), exceptionMessage );
 		System.out.println( logEntry.toString() );
 		if (exception != null) {
 			exception.printStackTrace();

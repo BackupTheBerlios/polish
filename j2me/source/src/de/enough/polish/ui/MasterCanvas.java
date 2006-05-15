@@ -145,9 +145,15 @@ public class MasterCanvas
 		}
 	}
 	
+	/**
+	 * Sets the current screen/displayable.
+	 * 
+	 * @param display the display
+	 * @param nextDisplayable the screen/displayable that should be shown
+	 */
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
 		//#debug
-		System.out.println("MasterCanvas: setCurrent of " + nextDisplayable.getClass().getName() );
+		System.out.println("MasterCanvas: setCurrent " + nextDisplayable );
 		//if ( nextDisplayable == instance ) {
 		//	display.setCurrent( nextDisplayable );
 		//	return;
@@ -167,12 +173,13 @@ public class MasterCanvas
 			display.setCurrent( nextDisplayable );
 			return;
 		}
+		AccessibleCanvas oldCanvas = null;
 		if ( instance == null ) {
 			instance = new MasterCanvas();
-		} else if ( instance.currentCanvas != null ) {
-			instance.currentCanvas.hideNotify();
+		} else {
+			oldCanvas = instance.currentCanvas;
 		}
-		
+					
 		AccessibleCanvas canvas = ( (AccessibleCanvas) nextDisplayable );
 		//#if polish.usePolishGui
 			if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
@@ -188,6 +195,11 @@ public class MasterCanvas
 //		if (nextDisplayable instanceof Alert) {
 //			System.out.println("MasterCanvas: setting Alert " + nextDisplayable + " as next screen!");
 //		}
+		
+		if ( oldCanvas != null ) {
+			oldCanvas.hideNotify();
+		}
+
 		if ( !instance.isShown() ) {
 			display.setCurrent( instance );
 		} else {
@@ -234,6 +246,8 @@ public class MasterCanvas
 //	}
 	
 	public static Displayable getCurrent( Display display ) {
+		//#debug
+		System.out.println("MasterCanvas: getCurrent");
 		if (instance != null) {
 			return instance.currentDisplayable;
 		} else {

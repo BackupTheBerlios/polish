@@ -631,7 +631,7 @@ implements AccessibleCanvas
 									this.previousScreenImage = Image.createImage( this.screenWidth, this.screenHeight);
 								//#endif
 							}
-							// #debug
+							//#debug
 							System.out.println("storing previous screen " + currentDisplayable + " to image buffer...");
 							Graphics g = this.previousScreenImage.getGraphics();
 							((AccessibleCanvas)currentDisplayable).paint(g);
@@ -1019,7 +1019,7 @@ implements AccessibleCanvas
 	 * @param g the graphics context.
 	 * @see #paintScreen(Graphics)
 	 */
-	public void paint(Graphics g) {
+	public synchronized void paint(Graphics g) {
 		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null));
 		//#if polish.Bugs.losesFullScreen
 			//# super.setFullScreenMode( true );
@@ -1449,8 +1449,8 @@ implements AccessibleCanvas
 		if (containerHeight > height ) {
 			//#if !tmp.useScrollBar
 				this.paintScrollIndicator = true;
-				this.paintScrollIndicatorUp = (this.container.yOffset != 0)
-					&& (this.container.focusedIndex != 0);
+				this.paintScrollIndicatorUp = (this.container.yOffset != 0);
+					//&& (this.container.focusedIndex != 0);
 				this.paintScrollIndicatorDown = ( (this.container.focusedIndex != this.container.size() - 1)
 						 && (this.container.yOffset + containerHeight > height) );
 			//#endif
@@ -2059,6 +2059,11 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd);
 			if (this.isShown()) {
+				if (this.menuBarHeight == 0 && this.isInitialised) {
+					int availableWidth = this.screenWidth - (this.marginLeft + this.marginRight );
+					this.menuBarHeight = this.menuBar.getItemHeight( availableWidth, availableWidth );
+					this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+				}
 				repaint();
 			}
 		//#else
@@ -2624,7 +2629,17 @@ implements AccessibleCanvas
 	 * @param item the item which is already shown on this screen.
 	 */
 	public void focus(Item item) {
-		focus( this.container.itemsList.indexOf(item) );
+		focus( this.container.itemsList.indexOf(item), item, false );
+	}
+	
+	/**
+	 * Focuses the specified item.
+	 * 
+	 * @param item the item which is already shown on this screen.
+	 * @param force true when the item should be focused even when it is inactive (like a label for example)
+	 */
+	public void focus(Item item, boolean force ) {
+		focus( this.container.itemsList.indexOf(item), item, force );
 	}
 	
 	/**
@@ -2633,16 +2648,37 @@ implements AccessibleCanvas
 	 * @param index the index of the item which is already shown on this screen.
 	 */
 	public void focus(int index) {
-		if (index != -1) {
+		focus( index, this.container.get(index), false );
+	}
+	
+	/**
+	 * Focuses the specified item.
+	 * 
+	 * @param index the index of the item which is already shown on this screen.
+	 * @param force true when the item should be focused even when it is inactive (like a label for example)
+	 */
+	public void focus(int index, boolean force) {
+		focus( index, this.container.get(index), force );
+	}
+	
+	/**
+	 * Focuses the specified item.
+	 * 
+	 * @param index the index of the item which is already shown on this screen.
+	 * @param item the item which is already shown on this screen.
+	 * @param force true when the item should be focused even when it is inactive (like a label for example)
+	 */
+	public void focus(int index, Item item, boolean force) {
+		if (index != -1 && item != null && (item.appearanceMode != Item.PLAIN || force ) ) {
 			//#debug
 			System.out.println("Screen: focusing item " + index );
-			this.container.focus( index, this.container.get(index), 0 );
+			this.container.focus( index, item, 0 );
 			if (index == 0) {
 				this.container.yOffset = 0;
 			}
 		} else {
 			//#debug warn
-			System.out.println("Screen: unable to focus item (did not find it in the container) " + index);
+			System.out.println("Screen: unable to focus item (did not find it in the container or is not activatable) " + index);
 		}
 	}
 	

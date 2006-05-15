@@ -167,7 +167,7 @@ public final class Arrays implements Comparator {
         int lStack[] = new int[sSize];
         int rStack[] = new int[sSize];
         Object tmp;
-        int i, j, x;
+        int i, j;
 
         lStack[top] = left; rStack[top] = right;
 

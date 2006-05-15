@@ -76,6 +76,10 @@ public class HorizontalChoiceView extends ContainerView {
 		private Image rightArrow;
 		private int rightYOffset;
 	//#endif
+	//#ifdef polish.css.horizontalview-arrows-image
+		private Image arrowsImage;
+		private int yOffset;
+	//#endif 
 	//#ifdef polish.css.horizontalview-arrow-position
 		private int arrowPosition;
 		//#ifdef polish.css.horizontalview-arrow-padding
@@ -94,7 +98,7 @@ public class HorizontalChoiceView extends ContainerView {
 	private int leftArrowStartX;
 	private int leftArrowEndX;
 	private int rightArrowStartX;
-	private int rightArrowEndX;
+	//private int rightArrowEndX;
 	private int xStart;
 	private Background parentBackground;
 	//private boolean isInitialized;
@@ -163,10 +167,21 @@ public class HorizontalChoiceView extends ContainerView {
 				}
 			//#endif
 		//#endif
-		//#if polish.css.horizontalview-arrow-padding
-			int completeArrowWidth = ( this.arrowWidth * 2 ) + this.paddingHorizontal + this.arrowPadding;
-		//#else
-			//# int completeArrowWidth = ( this.arrowWidth + this.paddingHorizontal ) << 1;
+		int completeArrowWidth;
+		//#if polish.css.horizontalview-arrows-image
+			if (this.arrowsImage != null) {
+				height = this.arrowsImage.getHeight();
+				completeArrowWidth = this.arrowsImage.getWidth();
+				this.arrowWidth = completeArrowWidth / 2;
+			} else {
+		//#endif
+				//#if polish.css.horizontalview-arrow-padding
+					completeArrowWidth = ( this.arrowWidth * 2 ) + this.paddingHorizontal + this.arrowPadding;
+				//#else
+					completeArrowWidth = ( this.arrowWidth + this.paddingHorizontal ) << 1;
+				//#endif
+		//#if polish.css.horizontalview-arrows-image
+			}
 		//#endif
 		//#ifdef polish.css.horizontalview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES) {
@@ -174,18 +189,18 @@ public class HorizontalChoiceView extends ContainerView {
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
 				this.rightArrowStartX = lineWidth - this.arrowWidth;
-				this.rightArrowEndX = lineWidth;
+				//this.rightArrowEndX = lineWidth;
 		//#ifdef polish.css.horizontalview-arrow-position
 			} else if (this.arrowPosition == POSITION_RIGHT ){
 				this.leftArrowStartX = lineWidth - completeArrowWidth + this.paddingHorizontal;
 				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
 				this.rightArrowStartX = lineWidth - this.arrowWidth;
-				this.rightArrowEndX = lineWidth;
+				//this.rightArrowEndX = lineWidth;
 			} else {
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
 				this.rightArrowStartX = this.arrowWidth + this.paddingHorizontal;
-				this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
+				//this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
 			}
 		//#endif
 		lineWidth -= completeArrowWidth;
@@ -227,6 +242,12 @@ public class HorizontalChoiceView extends ContainerView {
 		//}
 		//this.isInitialized = true;
 		
+		//#if polish.css.horizontalview-arrows-image
+			if (this.arrowsImage != null) {
+				int offset = (this.contentHeight - this.arrowsImage.getHeight()) / 2; // always center vertically
+				this.yOffset = offset;
+			}
+		//#endif
 		//#if polish.css.horizontalview-left-arrow			
 			if (this.leftArrow != null) {
 				this.leftYOffset = (this.contentHeight - this.leftArrow.getHeight()) / 2; // always center vertically
@@ -257,6 +278,17 @@ public class HorizontalChoiceView extends ContainerView {
 			}
 		//#endif
 		super.setStyle(style);
+		//#ifdef polish.css.horizontalview-arrows-image
+			String arrowImageUrl = style.getProperty("horizontalview-arrows-image");
+			if (arrowImageUrl != null) {
+				try {
+					this.arrowsImage = StyleSheet.getImage( arrowImageUrl, this, true );
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load left arrow image [" + arrowImageUrl + "]" + e );
+				}
+			}
+		//#endif
 		//#ifdef polish.css.horizontalview-left-arrow
 			String leftArrowUrl = style.getProperty("horizontalview-left-arrow");
 			if (leftArrowUrl != null) {
@@ -365,18 +397,23 @@ public class HorizontalChoiceView extends ContainerView {
 		
 		int itemX = modifiedX + this.xOffset;
 		int focusedX = 0;
+		int cHeight = this.contentHeight;
+		int vOffset = 0;
 		Item[] items = this.parentContainer.getItems();
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			if ( item == this.focusedItem ) {
 				focusedX = itemX;				
 			} else {
-				item.paint(itemX, y, leftBorder, rightBorder, g);
+				//TODO allow explicit setting of top, vcenter and bottom for items (=layout)
+				vOffset = (cHeight - item.itemHeight) / 2;
+				item.paint(itemX, y + vOffset, leftBorder, rightBorder, g);
 			}
 			itemX += item.itemWidth + this.paddingHorizontal;
 		}
 		if (this.focusedItem != null) {
-			this.focusedItem.paint(focusedX, y, leftBorder, rightBorder, g);			
+			vOffset = (cHeight - this.focusedItem.itemHeight) / 2;
+			this.focusedItem.paint(focusedX, y + vOffset, leftBorder, rightBorder, g);			
 		}
 		if (setClip) {
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
@@ -390,13 +427,22 @@ public class HorizontalChoiceView extends ContainerView {
 			//# if (this.currentItemIndex > 0) {
 		//#endif
 			// draw left arrow
-			int startX = x + this.leftArrowStartX;	
+			int startX = x + this.leftArrowStartX;
+			Image image = null;
+			//#if polish.css.horizontalview-arrows-image
+				image = this.arrowsImage;
+				vOffset = this.yOffset;
+			//#endif			
 			//#ifdef polish.css.horizontalview-left-arrow
-				if (this.leftArrow != null) {
-					//System.out.println("Drawing left IMAGE arrow at " + startX );
-					g.drawImage( this.leftArrow, startX, y + this.leftYOffset, Graphics.LEFT | Graphics.TOP );
-				} else {
+				if (image == null) {
+					image = this.leftArrow;
+					vOffset = this.leftYOffset;
+				}
 			//#endif
+			if (image != null) {
+				//System.out.println("Drawing left IMAGE arrow at " + startX );
+				g.drawImage( image, startX, y + vOffset, Graphics.LEFT | Graphics.TOP );
+			} else {
 				//#if polish.midp2
 					//System.out.println("Drawing left triangle arrow at " + startX );
 					g.fillTriangle( 
@@ -411,12 +457,15 @@ public class HorizontalChoiceView extends ContainerView {
 					g.drawLine( startX, y1, x2, y3 );
 					g.drawLine( x2, y, x2, y3 );
 				//#endif
-			//#ifdef polish.css.horizontalview-left-arrow
-				}
-			//#endif
+			}
 		}
 		
 		// draw right arrow:
+		//#if polish.css.horizontalview-arrows-image
+			if (this.arrowsImage != null) {
+				return;
+			}
+		//#endif
 		//#ifdef polish.css.horizontalview-roundtrip
 			if (this.allowRoundTrip ||  (this.currentItemIndex < this.parentContainer.size() - 1) ) {
 		//#else

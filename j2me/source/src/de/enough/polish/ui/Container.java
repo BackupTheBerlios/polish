@@ -574,6 +574,8 @@ public class Container extends Item {
 //					}
 //				//#endif
 			}
+		} else if (this.enableScrolling) {
+			this.isFirstPaint = true;
 		}
 		this.isInitialised = false;
 	}
@@ -630,6 +632,9 @@ public class Container extends Item {
 			} else {
 		//#endif
 				this.targetYOffset = this.yOffset + difference;
+				if (this.focusedItem != null) {
+					this.focusedItem.backgroundYOffset = difference;
+				}
 		//#if polish.css.scroll-mode
 			}
 		//#endif
@@ -829,7 +834,7 @@ public class Container extends Item {
 				this.isFirstPaint = false;
 				if (this.enableScrolling) {
 					if ( this.contentY + this.internalY + this.internalHeight > this.yBottom ) {
-						scroll( true, this.contentX, this.contentY + this.internalY, this.contentWidth, this.internalHeight );
+						scroll( true, this.contentX, this.contentY + this.internalY, this.contentWidth, this.internalHeight + 3 ); // + 3 gives room for a focused border etc
 					}
 				}
 			}
@@ -1519,6 +1524,9 @@ public class Container extends Item {
 				this.yOffset = this.targetYOffset;
 			} else if (speed < 0 && this.yOffset < this.targetYOffset) {
 				this.yOffset = this.targetYOffset;
+			}
+			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
+				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
 			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );

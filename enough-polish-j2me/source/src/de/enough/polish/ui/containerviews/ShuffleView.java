@@ -27,7 +27,6 @@
 package de.enough.polish.ui.containerviews;
 
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Container;
@@ -70,71 +69,52 @@ public class ShuffleView extends ContainerView {
 	protected void initContent(Container parent, int firstLineWidth,
 			int lineWidth) 
 	{
-		Item[] myItems = parent.getItems();
-		int myContentWidth = 0;
-		int myContentHeight = 0;
-		boolean hasFocusableItem = false;
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			//System.out.println("initalising " + item.getClass().getName() + ":" + i);
-			int width = item.getItemWidth( firstLineWidth, lineWidth );
-			int height = item.getItemHeight( firstLineWidth, lineWidth );
-			// now the item should have a style, so it can be safely focused
-			// without loosing the style information:
-			if (item.appearanceMode != Item.PLAIN) {
-				hasFocusableItem = true;
-			}
-			if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-				focusItem( i, item );
-				height = item.getItemHeight( firstLineWidth, lineWidth );
-				width = item.getItemWidth( firstLineWidth, lineWidth );
-				this.focusFirstElement = false;
-			}
-			if (width > myContentWidth) {
-				myContentWidth = width; 
-			}
-			myContentHeight += height + this.paddingVertical;
-		}
-		if (!hasFocusableItem) {
-			this.appearanceMode = Item.PLAIN;
-		} else {
-			this.appearanceMode = Item.INTERACTIVE;
-		}
-		this.contentHeight = myContentHeight;
-		this.contentWidth = myContentWidth;
+		super.initContent(parent, firstLineWidth, lineWidth);
+		
 		if (!this.animationInitialised) {
+			Item[] myItems = parent.getItems();
 			this.xAdjustments = new int[ myItems.length ];
 			initAnimation(myItems, this.xAdjustments);
 		}
 	}
+	
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.ContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) 
-	{
-		Item[] myItems = this.parentContainer.getItems();
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			int xAdjustment = this.xAdjustments[i];
-			item.paint(x - xAdjustment, y, leftBorder - xAdjustment, rightBorder - xAdjustment, g);
-			y += item.itemHeight + this.paddingVertical;
-		}
+	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		int xAdjustment = this.xAdjustments[index];
+		item.paint(x - xAdjustment, y, leftBorder - xAdjustment, rightBorder - xAdjustment, g);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
-	 */
-	protected Item getNextItem(int keyCode, int gameAction) {
-		if (gameAction == Canvas.DOWN) {
-			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
-		} else if (gameAction == Canvas.UP) {
-			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
-		} else {
-			return null;
-		}
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+//	 */
+//	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
+//			Graphics g) 
+//	{
+//		Item[] myItems = this.parentContainer.getItems();
+//		for (int i = 0; i < myItems.length; i++) {
+//			Item item = myItems[i];
+//			int xAdjustment = this.xAdjustments[i];
+//			item.paint(x - xAdjustment, y, leftBorder - xAdjustment, rightBorder - xAdjustment, g);
+//			y += item.itemHeight + this.paddingVertical;
+//		}
+//	}
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
+//	 */
+//	protected Item getNextItem(int keyCode, int gameAction) {
+//		if (gameAction == Canvas.DOWN) {
+//			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
+//		} else if (gameAction == Canvas.UP) {
+//			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
+//		} else {
+//			return null;
+//		}
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)
@@ -159,6 +139,7 @@ public class ShuffleView extends ContainerView {
 	
 	//#ifdef polish.css.shuffleview-repeat-animation
 	public void showNotify() {
+		super.showNotify();
 		if (this.repeatAnimation && this.xAdjustments != null) {
 			initAnimation( this.parentContainer.getItems(), this.xAdjustments );
 		}
@@ -173,9 +154,14 @@ public class ShuffleView extends ContainerView {
 	 */
 	private void initAnimation(Item[] items, int[] xValues) {
 		int factor = 1;
+		int column = 0;
 		for (int i = 0; i < xValues.length; i++ ) {
 			xValues[i] = this.contentWidth * factor;
-			factor *= -1;
+			column++;
+			if (column >= this.numberOfColumns) {
+				factor *= -1;
+				column = 0;
+			}
 		}
 		
 		this.isAnimationRunning = true;

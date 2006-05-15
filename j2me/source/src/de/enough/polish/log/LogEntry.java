@@ -82,6 +82,7 @@ public class LogEntry {
 	 * @param level the level, e.g. "debug" or "info"
 	 * @param message the message
 	 * @param exception the exception message, if any
+	 * @param threadName the name of the current thread, always null on CLDC 1.0 devices
 	 */
 	protected LogEntry( String className, int lineNumber, long time, String level, String message, String exception, String threadName ) {
 		if (className == null) {

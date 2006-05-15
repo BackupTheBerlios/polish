@@ -485,7 +485,8 @@ public class ContainerView {
 						item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
 					} else {
 						// the currently focused item is painted last
-						item.paint(x, y, leftBorder, rightBorder, g);
+						paintItem(item, i, x, y, leftBorder, rightBorder, g);
+						//item.paint(x, y, leftBorder, rightBorder, g);
 					}
 					y += item.itemHeight + this.paddingVertical;
 				}
@@ -513,7 +514,8 @@ public class ContainerView {
 						//System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
 						// item.getItemHeight( columnWidth, columnWidth );
 					} else {
-						item.paint(x, y, x, x + columnWidth, g);
+						paintItem( item, i, x, y, x, x + columnWidth, g );
+						// item.paint(x, y, x, x + columnWidth, g);
 					}
 					x += columnWidth + this.paddingHorizontal;
 					//#if polish.css.colspan
@@ -524,14 +526,9 @@ public class ContainerView {
 			
 					if (columnIndex == this.numberOfColumns) {
 						columnIndex = 0;
-						try {
 						y += this.rowsHeights[ rowIndex ] + this.paddingVertical;
 						x = leftBorder;
 						rowIndex++;
-						} catch (Exception e) {
-							e.printStackTrace();
-							System.out.println( "i=" + i + ", numberOfItems=" + myItems.length);
-						}
 					}
 				}
 			}
@@ -540,8 +537,25 @@ public class ContainerView {
 		// paint the currently focused item:
 		if (this.focusedItem != null) {
 			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-			this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+			paintItem( this.focusedItem, this.focusedIndex, focusedX, focusedY, focusedX, focusedRightBorder, g);
+			//this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 		}
+	}
+	
+	/**
+	 * Paints this item at the specified position.
+	 * Subclasses can override this method for taking advantage of the table support of the basic ContainerView class. 
+	 *  
+	 * @param item the item that needs to be painted
+	 * @param index the index of the item
+	 * @param x the horizontal position of the item
+	 * @param y the vertical position of the item
+	 * @param leftBorder the left border
+	 * @param rightBorder the right border
+	 * @param g the graphics context
+	 */
+	protected void paintItem( Item item, int index,  int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		item.paint(x, y, leftBorder, rightBorder, g);
 	}
 
 	/**
@@ -1134,5 +1148,12 @@ public class ContainerView {
 	protected int getParentYTopPos(){
 		return this.parentContainer.yTopPos;
 	}
+	
+	protected int getItemYTopPos( Item item ){
+		return item.yTopPos;
+	}
 
+	protected int getItemYBottomPos( Item item ){
+		return item.yBottomPos;
+	}
 }

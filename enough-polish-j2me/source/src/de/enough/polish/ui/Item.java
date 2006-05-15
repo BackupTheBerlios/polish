@@ -706,6 +706,8 @@ public abstract class Item extends Object
 	//#if polish.css.include-label
 		protected boolean includeLabel;
 	//#endif
+	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
+	protected int backgroundYOffset;
 
 	
 	protected Item() {
@@ -1425,7 +1427,7 @@ public abstract class Item extends Object
 				int width = this.itemWidth - this.marginLeft - this.marginRight;
 				int height = this.itemHeight - this.marginTop - this.marginBottom;
 				int bX = x + this.marginLeft;
-				int bY = y + this.marginTop;
+				int bY = y + this.marginTop + this.backgroundYOffset;
 				if ( this.background != null ) {
 					this.background.paint(bX, bY, width, height, g);
 				}
@@ -1486,11 +1488,11 @@ public abstract class Item extends Object
 			if (!this.includeLabel) {
 		//#endif
 				if (this.background != null) {
-					this.background.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
+					this.background.paint(x, y + this.backgroundYOffset, this.backgroundWidth, this.backgroundHeight, g);
 				}
 				// paint border:
 				if (this.border != null) {
-					this.border.paint(x, y, this.backgroundWidth, this.backgroundHeight, g);
+					this.border.paint(x, y + this.backgroundYOffset, this.backgroundWidth, this.backgroundHeight, g);
 				}
 		//#if polish.css.include-label
 			}
@@ -1943,6 +1945,7 @@ public abstract class Item extends Object
 	 * @param originalStyle the original style which will be restored.
 	 */
 	protected void defocus( Style originalStyle ) {
+		this.backgroundYOffset = 0;
 		if (originalStyle != null) {
 			setStyle( originalStyle );
 		} else {
