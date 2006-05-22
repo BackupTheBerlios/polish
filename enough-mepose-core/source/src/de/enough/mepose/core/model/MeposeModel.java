@@ -319,10 +319,7 @@ public class MeposeModel extends PropertyModel{
 //        this.configuredDevicesANT = this.polishTask.getDevices();
     }
 
-    // TODO: Check if needed anymore.
-    /*
-     * @see de.enough.polish.plugin.eclipse.core.PolishProject#setEnvironmentToDevice(de.enough.polish.Device)
-     */
+    // TODO: Check if method is needed anymore.
     protected void setEnvironmentToDevice(Device device) {
         if(device == null){
             throw new IllegalArgumentException("ERROR:AntPolishProject.setEnvironmentToDevice(...):Parameter 'device' is null.");
@@ -725,8 +722,7 @@ public class MeposeModel extends PropertyModel{
             }
             setSupportedPlatforms(supportedPlatformsTmp);
         }
-        // TODO:
-//        supportedDevices
+        // TODO: restore supportedDevices, too
     }
 
     public void build(String targetName) {

@@ -40,7 +40,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         try {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true,false,new IRunnableWithProgress() {
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                public void run(IProgressMonitor monitor) {
                     doRun(action, monitor);
                 }
             });

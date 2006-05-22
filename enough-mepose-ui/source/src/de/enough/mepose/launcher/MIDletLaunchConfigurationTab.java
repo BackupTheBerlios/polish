@@ -226,23 +226,23 @@ public class MIDletLaunchConfigurationTab
             projectNameString = getSelectedJavaProjectName();
         }
 
-        projectName.setText(projectNameString);
-        jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
-        polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
-        wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
+        this.projectName.setText(projectNameString);
+        this.jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
+        this.polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
+        this.wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
 
         Map attrMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, (Map) null);
 
         if (attrMap != null)
           {
-            hostName.setText((String) attrMap.get("hostname"));
-            port.setText((String) attrMap.get("port"));
+            this.hostName.setText((String) attrMap.get("hostname"));
+            this.port.setText((String) attrMap.get("port"));
           }
         else
           {
             // Use default values.
-            hostName.setText("localhost");
-            port.setText("8000");
+            this.hostName.setText("localhost");
+            this.port.setText("8000");
           }
       }
     catch (CoreException e)
@@ -257,13 +257,13 @@ public class MIDletLaunchConfigurationTab
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, this.projectName.getText());
     
     HashMap attrMap = new HashMap();
-    attrMap.put("hostname", hostName.getText());
-    attrMap.put("port", port.getText());
+    attrMap.put("hostname", this.hostName.getText());
+    attrMap.put("port", this.port.getText());
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, attrMap);
     
-    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, jadFile.getText());
-    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, polishHome.getText());
-    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, wtkHome.getText());
+    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, this.jadFile.getText());
+    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, this.polishHome.getText());
+    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, this.wtkHome.getText());
   }
 
   void updateLaunchConfiguration()

@@ -180,7 +180,7 @@ public class PropertyModel {
     /**
      * Customize this method to handle specific properties and their valid values.
      * This method may alter the value.
-     * TODO: This is extension through subclassing. Using composition is stronger.
+     * TODO: This is extension through subclassing. Using composition is better.
      * So encapsulte this in an object and ask this object for a status
      * @param property
      * @param value

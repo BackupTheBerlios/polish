@@ -27,12 +27,6 @@ import de.enough.utils.Status;
 import de.enough.utils.StatusEvent;
 import de.enough.utils.StatusListener;
 
-/**
- * The "New" wizard page allows setting the container for the new file as well
- * as the file name. The page will only accept file name without the extension
- * OR with the extension that matches the expected one (mpe).
- */
-
 public class ProjectPage extends WizardPage{
 
     public static final int OK = 10;
@@ -96,8 +90,7 @@ public class ProjectPage extends WizardPage{
         Composite myGroupMainComposite = this.newProjectNameStatusGroup.getMainComposite();
         myGroupMainComposite.setLayout(new GridLayout(2,false));
         
-        Group statusGroupGroup = this.newProjectNameStatusGroup.getGroup();
-        statusGroupGroup.setText("New Project");
+        this.newProjectNameStatusGroup.setLabelText("New Project");
         
         this.newProjectNameLabel = new Label(myGroupMainComposite,SWT.NONE);
         this.newProjectNameLabel.setText("New Project Name:");

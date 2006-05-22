@@ -27,20 +27,7 @@ import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
 
 
-/**
- * This is a sample new wizard. Its role is to create a new file 
- * resource in the provided container. If the container resource
- * (a folder or a project) is selected in the workspace 
- * when the wizard is opened, it will accept it as the target
- * container. The wizard creates one file with the extension
- * "mpe". If a sample multi-page editor (also available
- * as a template) is registered for the same extension, it will
- * be able to open it.
- */
-
 public class PolishNewWizard extends Wizard implements INewWizard {
-//	private FirstWizardPage firstPage;
-//	private WizardPage firstPage;
     
     public static Logger logger = Logger.getLogger(PolishNewWizard.class);
     
@@ -50,9 +37,6 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     private ProjectPage projectPage;
     private JavaCapabilityConfigurationPage javaSettingsPage;
 
-	/**
-	 * Constructor for PolishNewWizard.
-	 */
 	public PolishNewWizard() {
 		super();
 		setNeedsProgressMonitor(true);
@@ -107,50 +91,12 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	
 	protected void doFinish(IProgressMonitor monitor){
         createBuildXML();
+        // Do not hand over the monitor as others are going to call beginTask
+        // which must be called only once.
         makeJavaProject();
-        
-        // Sanity check
-        // Create IProject
-        // call JavaCapabilityConfigurationPage.createJavaProject
-        // generate build.xml
-        
-		// create a sample file
-//		monitor.beginTask("Creating " + fileName, 2);
-//		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-//		IResource resource = root.findMember(new Path(containerName));
-//		if (!resource.exists() || !(resource instanceof IContainer)) {
-//			throwCoreException("Container \"" + containerName + "\" does not exist.");
-//		}
-//		IContainer container = (IContainer) resource;
-//		final IFile file = container.getFile(new Path(fileName));
-//		try {
-//			InputStream stream = openContentStream();
-//			if (file.exists()) {
-//				file.setContents(stream, true, true, monitor);
-//			} else {
-//				file.create(stream, true, monitor);
-//			}
-//			stream.close();
-//		} catch (IOException e) {
-//		}
-//		monitor.worked(1);
-//		monitor.setTaskName("Opening file for editing...");
-//		getShell().getDisplay().asyncExec(new Runnable() {
-//			public void run() {
-//				IWorkbenchPage page =
-//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-////				try {
-//////					IDE.openEditor(page, file, true);
-////				} catch (PartInitException e) {
-////				}
-//			}
-//		});
-//		monitor.worked(1);
 	}
-    /**
-     * 
-     */
-    private void makeJavaProject() {
+
+	private void makeJavaProject() {
         try {
             this.javaSettingsPage.configureJavaProject(null);
         } catch (CoreException exception) {
@@ -202,25 +148,9 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     }
     
     public void init(IWorkbench workbench, IStructuredSelection newSelection) {
-//		this.selection = newSelection;
-//        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT, extractProjectFromSelection(newSelection));
+        //
 	}
     
-//    private IProject extractProjectFromSelection(ISelection projectSelection) {
-//        if (projectSelection != null && projectSelection.isEmpty() == false
-//                && projectSelection instanceof IStructuredSelection) {
-//            IStructuredSelection ssel = (IStructuredSelection) projectSelection;
-//            if (ssel.size() > 1) {
-//                return null;
-//            }
-//            Object obj = ssel.getFirstElement();
-//            if (obj instanceof IJavaProject) {
-//                return (IJavaProject)obj;
-//            }
-//        }
-//        return null;
-//    }
-
     public boolean canFinish() {
 //        this.newProjectModel.getModelStatus().getType() == Status.TYPE_OK;
         return this.newProjectModel.canFinish();
@@ -236,6 +166,8 @@ public class PolishNewWizard extends Wizard implements INewWizard {
                 if(logger.isDebugEnabled()) {
                     logger.error("Could not remove project:"+exception);
                 }
+                MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
+                return false;
             }
         }
         return super.performCancel();

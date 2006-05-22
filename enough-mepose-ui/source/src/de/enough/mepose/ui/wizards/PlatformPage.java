@@ -237,7 +237,7 @@ public class PlatformPage extends WizardPage {
         super("Select Platform");
         this.newProjectModel = newPolishProjectDAO;
         setTitle("Select Target Devices");
-        setDescription("Select the devices you want to support or choose platform and configuration categories.");
+        setDescription("Select the devices you want to support or choose platform and configuration categories");
     }
 
     
@@ -433,6 +433,7 @@ public class PlatformPage extends WizardPage {
         IProject project = this.newProjectModel.getProject();
         IJavaProject javaProject = JavaCore.create(project);
         
+        // Add the default source folder, polish style
         IPath sourcePath = new Path("/"+project.getName()+"/source/src");
         IPath[] inclusionPatterns = new Path[0];
         IPath[] exclusionPatterns = new Path[0];
@@ -440,9 +441,11 @@ public class PlatformPage extends WizardPage {
         IPath specificOutputLocation = null;
         IClasspathEntry sourceEntry = JavaCore.newSourceEntry(sourcePath,inclusionPatterns,exclusionPatterns,specificOutputLocation,classpathAttributes);
         
+        // Add the default classes folder, polish style
         IPath defaultOutputDir = new Path(project.getName()+"/bin/classes");
+        
+        // Add needed libraries.
         IClasspathEntry[] libraryEntries = getLibraryEntries();
-        // Add one entry for the source folder.
         IClasspathEntry[] classpathEntries = new IClasspathEntry[libraryEntries.length+1];
         System.arraycopy(libraryEntries,0,classpathEntries,0,libraryEntries.length);
         // The last entry is the source entry.
@@ -461,13 +464,22 @@ public class PlatformPage extends WizardPage {
     
     private IClasspathEntry[] getLibraryEntries() {
         File[] classpathFiles = this.dTree.getClasspathForSelectedDevices();
-        IClasspathEntry[] classpathEntries = new IClasspathEntry[classpathFiles.length];
+        int numberOfClasspathEntriesForSelectedDevices = classpathFiles.length;
+        int finalNumberOfClasspathEntries = numberOfClasspathEntriesForSelectedDevices+1;
+        IClasspathEntry[] classpathEntries = new IClasspathEntry[finalNumberOfClasspathEntries];
         
-        for (int i = 0; i < classpathFiles.length; i++) {
+        for (int i = 0; i < numberOfClasspathEntriesForSelectedDevices; i++) {
             IPath classpathEntryPath = new Path(classpathFiles[i].getAbsolutePath());
             IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(classpathEntryPath,null,null);
             classpathEntries[i] = classpathEntry;
         }
+        
+        String polishClientJarPathString = this.newProjectModel.getMeposeModel().getPolishHome() + "/import/enough-j2mepolish-client.jar";
+        
+        IPath polishClientJarPath = new Path(polishClientJarPathString);
+        IClasspathEntry polishClientJarEntry = JavaCore.newLibraryEntry(polishClientJarPath,null,null);
+        classpathEntries[finalNumberOfClasspathEntries-1] = polishClientJarEntry;
+        
         return classpathEntries;
     }
     

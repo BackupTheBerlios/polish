@@ -1,7 +1,7 @@
 <!-- This file controls the build process.                    -->
-<!-- The most important target is the j2mepolish-target,      -->
+<!-- The most important target is the j2mepolish target,      -->
 <!-- which controls for what devices the application should   -->
-<!-- be created and so on.                                    -->
+<!-- be created.                                              -->
 <!--                                                          -->
 <!-- Important: when you have no Wireless Toolkit installed   -->
 <!-- you need to define the "preverify"-attribute             -->
@@ -21,25 +21,20 @@
 	name="enough-j2mepolish-example" 
 	default="j2mepolish">
 	
-<!-- The wtk.home property should point to the directory      -->
-<!-- containing the Wireless Toolkit.                         -->
-
-
-<!--
-<property name="wtk.home" value="C:\bla" />
--->
+	
 <!-- The polish.home property should point to the directory   -->
 <!-- containing the J2ME Polish installation.                 -->
 
 <property name="polish.home" value="$polishHome" />
 
-#if ($nokiaHome)
-<property name="nokia.home" value="$nokiaHome" />
-#end
+<!-- The wtk.home property should point to the directory      -->
+<!-- containing the Wireless Toolkit.                         -->
+
 
 #if ($mppHome)
 <property name="wtk.home" value="$wtkHome" />
 #end
+
 
 <!-- The siemens.home, nokia.home and motorola.home-          -->
 <!-- properties can be necessary when their emulators         -->
@@ -56,6 +51,11 @@
 <!-- The directory which contains the Motorola-emulators
 	<property name="motorola.home" value="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
 -->
+
+#if ($nokiaHome)
+<property name="nokia.home" value="$nokiaHome" />
+#end
+	
 	
 <!-- Definition of the J2ME Polish task:                      -->
 
@@ -65,7 +65,7 @@
 
 	
 <!-- build targets, each target can be called via "ant [name]", 
-	 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
+	 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default target -->
 
 <target name="setdeploy" 
 	description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish"
@@ -114,6 +114,7 @@
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 
 		/>
+		
 		<!-- selection of supported devices -->
 		<!-- In the test mode the application is build only for the  -->
 		<!-- Generic/midp1 phone, but when the test-property is set to false, -->
@@ -125,15 +126,8 @@
 			#foreach ($device in $deviceList)
 			<requirement name="Identifier" value="$device.Identifier" />
 			#end
-			<!-- on could use other devices for real builds, e.g. :
-			<or>
-				<and>
-					<requirement name="JavaPackage" value="nokia-ui" />
-					<requirement name="BitsPerPixel" value="16+" />
-				</and>
-			</or>
-			 -->
 		</deviceRequirements>
+		
 	    <!-- build settings -->
 		<!-- 
 		 -->
@@ -146,6 +140,7 @@
 		    
 			<!-- midlets definition -->
 			<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
+			
 			<!-- project-wide variables - used for preprocessing.  -->
 			<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 			<variables includeAntProperties="true" >
@@ -180,6 +175,7 @@
 				<localization locales="de_DE, en_US" unless="test" />
 				<localization locales="en_US" if="test" />
 			</resources>
+			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
 				<!--
@@ -187,15 +183,18 @@
 				<parameter name="optimize" value="false" />
 				-->
 			</obfuscator>
+			
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" showLogOnError="true" verbose="true" level="error">
 				<filter pattern="de.enough.polish.example.*" level="debug" />
 				<filter pattern="de.enough.polish.ui.*" level="warn" />
 			</debug>
+			
 			<!-- user defined JAD attributes can also be used: -->
 			<jad>
 				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
 			</jad>	
+			
 			<!-- this is an example for signing MIDlets with J2ME Polish. -->
 			<!--
 			<java jar="${wtk.home}/bin/JadTool.jar" 

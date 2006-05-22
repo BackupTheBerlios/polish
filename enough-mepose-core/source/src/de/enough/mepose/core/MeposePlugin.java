@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.core.model.MeposeModelManager;
+import de.enough.mepose.core.model.MiDletChangeListener;
 import de.enough.mepose.core.project.ProjectPersistence;
 import de.enough.utils.log4j.Log4JPlugin;
 
@@ -36,6 +37,8 @@ public class MeposePlugin extends Plugin {
 //    private MeposeModel meposeModel;
     private BundleContext bundleContext;
 
+    private MiDletChangeListener miDletChangeListener;
+
 	public MeposePlugin() {
 		super();
         System.out.println("DEBUG:MeposePlugin.MeposePlugin(...):enter.");
@@ -57,6 +60,7 @@ public class MeposePlugin extends Plugin {
 		super.stop(context);
 		plugin = null;
 		this.resourceBundle = null;
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.miDletChangeListener);
 	}
 
 	
@@ -156,6 +160,8 @@ public class MeposePlugin extends Plugin {
                 getMeposeModelManager().addModel(project,map);
             }
         }
+        this.miDletChangeListener = new MiDletChangeListener();
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this.miDletChangeListener);
     }
 
     

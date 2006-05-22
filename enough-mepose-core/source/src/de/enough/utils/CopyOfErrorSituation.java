@@ -126,13 +126,4 @@ public class CopyOfErrorSituation {
         return this.errorTokens.isEmpty();
     }
     
-    /*
-     * Returns a List with success token which should be carried out in the given order to resolve
-     * the whole erroneous situation.
-     * TODO: This is a CSP.
-     */
-//    public List resolveErrorSituation(){
-//        throw new UnsupportedOperationException("ERROR:ErrorSituation.resolveErrorSituation:not implemented jet.");
-//    }
-    
 }

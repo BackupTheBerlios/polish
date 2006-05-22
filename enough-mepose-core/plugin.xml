@@ -23,6 +23,7 @@
   		</image>
  	</extension>
 
+	<!--
 	<extension
        id="polishBuilder"
        name="Polish Builder"
@@ -31,5 +32,6 @@
        		<run class="de.enough.mepose.core.project.PolishBuilder"/>
 	    </builder>
 	</extension>
-
+	-->
+	
 </plugin>

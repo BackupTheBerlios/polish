@@ -171,7 +171,7 @@ public class PathsPage extends WizardPage {
         super("Paths and Locations");
         this.newProjectModel = newPolishProjectDAO;
         setTitle("Paths and Locations");
-        setDescription("Specify where to find the required resources.");
+        setDescription("Specify where to find the required resources");
     }
 
     public void createControl(Composite parent) {

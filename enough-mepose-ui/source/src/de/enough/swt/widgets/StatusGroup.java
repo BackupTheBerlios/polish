@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 
 import de.enough.mepose.ui.MeposeUIConstants;
 import de.enough.mepose.ui.MeposeUIPlugin;
@@ -58,7 +59,7 @@ public class StatusGroup extends Composite{
 
     public StatusGroup(Composite parent, int style) {
         super(parent, style);
-        setLayout(new GridLayout(1,false));
+        super.setLayout(new GridLayout(1,false));
         this.group = new Group(this,SWT.NONE);
         this.group.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
         this.group.setLayout(new GridLayout(1,false));
@@ -79,23 +80,37 @@ public class StatusGroup extends Composite{
 //        this.statusListeners = new LinkedList();
     }
     
+    /**
+     * Call this method to get the main area which sould be the parent of any
+     * widgets which should be within the group.
+     * @return the main area of this StatusGroup. It should be the parent of
+     * a child which is displayed in the group.
+     */
     public Composite getMainComposite() {
         return this.mainArea;
     }
     
     
     
-    // TODO: This is such an ugly API. But we are not allowed to subclass group
-    // and duplicating the API is tiresom.
-    /**
+    // This is such an ugly API. But we are not allowed to subclass group
+    // and duplicating the API is tiresome.
+    /*
      * Get the underlying Group object. All child objects of the StatusGroup must be child
      * of this Group object.
      * @return the underlying Group widget. Do not use this thing! Use getMainComposite().
      */
-    public Group getGroup() {
-        return this.group;
+//    public Group getGroup() {
+//        return this.group;
+//    }
+
+    public void setLayout(Layout layout) {
+        throw new UnsupportedOperationException("It is not possible to set the layout of a StatusGroup object.");
     }
 
+    public void setLabelText(String label) {
+        this.group.setText(label);
+    }
+    
     public void setWarning(String message) {
         this.iconLabel.setImage(MeposeUIPlugin.getDefault().getImage(MeposeUIConstants.KEY_IMAGE_WARNING).createImage());
         if(message == null) {
