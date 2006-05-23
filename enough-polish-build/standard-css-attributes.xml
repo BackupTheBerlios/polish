@@ -74,6 +74,7 @@
 		<mapping from="left"               to="Item.LAYOUT_LEFT"     excludes="right, horizontal-center, h-center, hcenter, center" />
 		<mapping from="horizontal-center"  to="Item.LAYOUT_CENTER"   exludes="left, right" />
 		<mapping from="hcenter"            to="Item.LAYOUT_CENTER"   exludes="left, right" />
+		<mapping from="h-center"            to="Item.LAYOUT_CENTER"   exludes="left, right" />
 		<mapping from="center"             to="Item.LAYOUT_CENTER"   exludes="left, right" />
 		<mapping from="right"              to="Item.LAYOUT_RIGHT"    excludes="left, horizontal-center, h-center, hcenter, center" />
 		<mapping from="top"                to="Item.LAYOUT_TOP"      excludes="bottom, vertical-center, v-center, vcenter" />
@@ -88,7 +89,6 @@
 		<mapping from="vertical-expand"    to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
 		<mapping from="v-expand"           to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
 		<mapping from="vexpand"            to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
-		<mapping from="horizontal-expand"  to="Item.LAYOUT_expand"   excludes="horizontal-expand, h-expand, hexpand, expand" />
 		<mapping from="h-shrink"           to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
 		<mapping from="hshrink"            to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
 		<mapping from="shrink"             to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />

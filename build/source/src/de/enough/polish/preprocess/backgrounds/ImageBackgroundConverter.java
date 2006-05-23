@@ -25,14 +25,13 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import de.enough.polish.preprocess.*;
-import de.enough.polish.preprocess.css.BackgroundConverter;
-import de.enough.polish.preprocess.css.Style;
-import de.enough.polish.preprocess.css.StyleSheet;
+import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
 
-import java.util.HashMap;
+import de.enough.polish.preprocess.css.BackgroundConverter;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.preprocess.css.StyleSheet;
 
 /**
  * <p>Creates the Image- or the BorderedImageBackground.</p>
@@ -74,6 +73,12 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 		// background-attachment,
 		// background-position ???,
 		String imageUrl = (String) background.get("image");
+		if (imageUrl== null) {
+			imageUrl = (String) background.get("background-image");
+			if (imageUrl== null) {
+				throw new BuildException("Invalid CSS: the every image background needs to define the \"image\" CSS attribute - check the " + style.getSelector() + " style.");
+			}
+		}
 		imageUrl = getUrl( imageUrl );
 		String repeat = (String) background.get("repeat");
 		int paddingVertical = 0;

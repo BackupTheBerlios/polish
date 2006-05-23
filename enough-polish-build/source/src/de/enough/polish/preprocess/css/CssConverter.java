@@ -89,33 +89,33 @@ public class CssConverter extends Converter {
 		BORDER_TYPES.put( "right", "de.enough.polish.preprocess.borders.RightBorderConverter");
 		BORDER_TYPES.put( "drop-shadow", "de.enough.polish.preprocess.borders.DropShadowBorderConverter");
 	}
-	private static HashMap LAYOUTS = new HashMap();
-	static {
-		LAYOUTS.put( "default", "Item.LAYOUT_DEFAULT" );
-		LAYOUTS.put( "plain", "Item.LAYOUT_DEFAULT" );
-		LAYOUTS.put( "none", "Item.LAYOUT_DEFAULT" );
-		LAYOUTS.put( "left", "Item.LAYOUT_LEFT" );
-		LAYOUTS.put( "right", "Item.LAYOUT_RIGHT" );
-		LAYOUTS.put( "center", "Item.LAYOUT_CENTER" );
-		LAYOUTS.put( "hcenter", "Item.LAYOUT_CENTER" );
-		LAYOUTS.put( "horizontal-center", "Item.LAYOUT_CENTER" );
-		LAYOUTS.put( "top", "Item.LAYOUT_TOP" );
-		LAYOUTS.put( "bottom", "Item.LAYOUT_BOTTOM" );
-		LAYOUTS.put( "vcenter", "Item.LAYOUT_VCENTER" );
-		LAYOUTS.put( "vertical-center", "Item.LAYOUT_VCENTER" );
-		LAYOUTS.put( "newline-before", "Item.LAYOUT_NEWLINE_BEFORE" );
-		LAYOUTS.put( "newline-after", "Item.LAYOUT_NEWLINE_AFTER" );
-		LAYOUTS.put( "shrink", "Item.LAYOUT_SHRINK" );
-		LAYOUTS.put( "hshrink", "Item.LAYOUT_SHRINK" );
-		LAYOUTS.put( "horizontal-shrink", "Item.LAYOUT_SHRINK" );
-		LAYOUTS.put( "expand", "Item.LAYOUT_EXPAND" );
-		LAYOUTS.put( "hexpand", "Item.LAYOUT_EXPAND" );
-		LAYOUTS.put( "horizontal-expand", "Item.LAYOUT_EXPAND" );
-		LAYOUTS.put( "vshrink", "Item.LAYOUT_VSHRINK" );
-		LAYOUTS.put( "vertical-shrink", "Item.LAYOUT_VSHRINK" );
-		LAYOUTS.put( "vexpand", "Item.LAYOUT_VEXPAND" );
-		LAYOUTS.put( "vertical-expand", "Item.LAYOUT_VEXPAND" );
-	}
+//	private static HashMap LAYOUTS = new HashMap();
+//	static {
+//		LAYOUTS.put( "default", "Item.LAYOUT_DEFAULT" );
+//		LAYOUTS.put( "plain", "Item.LAYOUT_DEFAULT" );
+//		LAYOUTS.put( "none", "Item.LAYOUT_DEFAULT" );
+//		LAYOUTS.put( "left", "Item.LAYOUT_LEFT" );
+//		LAYOUTS.put( "right", "Item.LAYOUT_RIGHT" );
+//		LAYOUTS.put( "center", "Item.LAYOUT_CENTER" );
+//		LAYOUTS.put( "hcenter", "Item.LAYOUT_CENTER" );
+//		LAYOUTS.put( "horizontal-center", "Item.LAYOUT_CENTER" );
+//		LAYOUTS.put( "top", "Item.LAYOUT_TOP" );
+//		LAYOUTS.put( "bottom", "Item.LAYOUT_BOTTOM" );
+//		LAYOUTS.put( "vcenter", "Item.LAYOUT_VCENTER" );
+//		LAYOUTS.put( "vertical-center", "Item.LAYOUT_VCENTER" );
+//		LAYOUTS.put( "newline-before", "Item.LAYOUT_NEWLINE_BEFORE" );
+//		LAYOUTS.put( "newline-after", "Item.LAYOUT_NEWLINE_AFTER" );
+//		LAYOUTS.put( "shrink", "Item.LAYOUT_SHRINK" );
+//		LAYOUTS.put( "hshrink", "Item.LAYOUT_SHRINK" );
+//		LAYOUTS.put( "horizontal-shrink", "Item.LAYOUT_SHRINK" );
+//		LAYOUTS.put( "expand", "Item.LAYOUT_EXPAND" );
+//		LAYOUTS.put( "hexpand", "Item.LAYOUT_EXPAND" );
+//		LAYOUTS.put( "horizontal-expand", "Item.LAYOUT_EXPAND" );
+//		LAYOUTS.put( "vshrink", "Item.LAYOUT_VSHRINK" );
+//		LAYOUTS.put( "vertical-shrink", "Item.LAYOUT_VSHRINK" );
+//		LAYOUTS.put( "vexpand", "Item.LAYOUT_VEXPAND" );
+//		LAYOUTS.put( "vertical-expand", "Item.LAYOUT_VEXPAND" );
+//	}
 	/*
 	 * the mappings are now done in the standard-css-attributes.xml
 	private static final HashMap VIEW_TYPES = new HashMap();
@@ -138,6 +138,7 @@ public class CssConverter extends Converter {
 	protected AbbreviationsGenerator abbreviationGenerator;
 	protected CssAttributesManager attributesManager;
 	private CssAttribute fontStyleAttribute;
+	private CssAttribute layoutAttribute;
 	
 	/**
 	 * Creates a new CSS converter
@@ -155,6 +156,7 @@ public class CssConverter extends Converter {
 	public void setAttributesManager( CssAttributesManager attributesManager ) {
 		this.attributesManager = attributesManager;
 		this.fontStyleAttribute = attributesManager.getAttribute("font-style");
+		this.layoutAttribute = attributesManager.getAttribute("layout");
 	}
 	
 
@@ -475,7 +477,7 @@ public class CssConverter extends Converter {
 		// process the layout:
 		group = style.removeGroup("layout");
 		if ( group != null ) {
-			processLayout( group, style, codeList, styleSheet );
+			processLayout( group, style, codeList, styleSheet, environment );
 		} else {
 			codeList.add("\t\tItem.LAYOUT_DEFAULT,\t// default layout");
 		}
@@ -805,7 +807,7 @@ public class CssConverter extends Converter {
 	 * @param styleSheet the parent style sheet
 	 */
 	protected void processLayout(HashMap group, Style style, ArrayList codeList, 
-			StyleSheet styleSheet) 
+			StyleSheet styleSheet, Environment env) 
 	{
 		String layoutValue = (String) group.get("layout");
 		if (layoutValue == null) {
@@ -813,43 +815,49 @@ public class CssConverter extends Converter {
 			style.addGroup( "layout", group);
 			return;
 		}
-		layoutValue = layoutValue.toLowerCase();
-		String[] layouts;
-		// the layout value can combine several directives, e.g. "vcenter | hcenter"
-		if ( layoutValue.indexOf('|') != -1 ) {
-			layouts = StringUtil.splitAndTrim( layoutValue, '|');
-		} else if ( layoutValue.indexOf('&') != -1 ) {
-				layouts = StringUtil.splitAndTrim( layoutValue, '&');
-		} else if ( layoutValue.indexOf(',') != -1 ) {
-			layouts = StringUtil.splitAndTrim( layoutValue, ',');
-		} else if ( layoutValue.indexOf(" and ") != -1 ) {
-			layouts = StringUtil.splitAndTrim( layoutValue, " and ");
-		} else if ( layoutValue.indexOf(" or ") != -1 ) {
-			layouts = StringUtil.splitAndTrim( layoutValue, " or ");
-		} else {
-			layouts = new String[]{ layoutValue };
-		}
-		// now add definition for each layout:
 		StringBuffer buffer = new StringBuffer();
 		buffer.append( "\t\t" );
-		for (int i = 0; i < layouts.length; i++) {
-			boolean finished = (i == layouts.length -1 );
-			String name = layouts[i];
-			String layout = (String) LAYOUTS.get( name );
-			if (layout == null) {
-				if (layouts.length > 1) {
-					throw new BuildException("Invalid CSS: the layout directive [" + layoutValue + "] contains the invalid layout [" + name +"]. Please use a valid value instead.");
-				} else {
-					throw new BuildException("Invalid CSS: the layout directive [" + name +"] is not valid. Please use a valid value instead.");
-				}
-			}
-			buffer.append( layout );
-			if (!finished) {
-				buffer.append(" | ");
-			}
-		}
+		buffer.append( this.layoutAttribute.getValue(layoutValue, env) );
 		buffer.append(",");
 		codeList.add( buffer.toString() );
+
+//		layoutValue = layoutValue.toLowerCase();
+//		String[] layouts;
+//		// the layout value can combine several directives, e.g. "vcenter | hcenter"
+//		if ( layoutValue.indexOf('|') != -1 ) {
+//			layouts = StringUtil.splitAndTrim( layoutValue, '|');
+//		} else if ( layoutValue.indexOf('&') != -1 ) {
+//				layouts = StringUtil.splitAndTrim( layoutValue, '&');
+//		} else if ( layoutValue.indexOf(',') != -1 ) {
+//			layouts = StringUtil.splitAndTrim( layoutValue, ',');
+//		} else if ( layoutValue.indexOf(" and ") != -1 ) {
+//			layouts = StringUtil.splitAndTrim( layoutValue, " and ");
+//		} else if ( layoutValue.indexOf(" or ") != -1 ) {
+//			layouts = StringUtil.splitAndTrim( layoutValue, " or ");
+//		} else {
+//			layouts = new String[]{ layoutValue };
+//		}
+//		// now add definition for each layout:
+//		StringBuffer buffer = new StringBuffer();
+//		buffer.append( "\t\t" );
+//		for (int i = 0; i < layouts.length; i++) {
+//			boolean finished = (i == layouts.length -1 );
+//			String name = layouts[i];
+//			String layout = (String) LAYOUTS.get( name );
+//			if (layout == null) {
+//				if (layouts.length > 1) {
+//					throw new BuildException("Invalid CSS: the layout directive [" + layoutValue + "] contains the invalid layout [" + name +"]. Please use a valid value instead.");
+//				} else {
+//					throw new BuildException("Invalid CSS: the layout directive [" + name +"] is not valid. Please use a valid value instead.");
+//				}
+//			}
+//			buffer.append( layout );
+//			if (!finished) {
+//				buffer.append(" | ");
+//			}
+//		}
+//		buffer.append(",");
+//		codeList.add( buffer.toString() );
 	}
 
 

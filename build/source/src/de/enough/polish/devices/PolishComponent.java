@@ -447,6 +447,9 @@ implements Comparable
 		name = name.toLowerCase();
 		this.capabilities.put( name, value );
 		this.features.put( name + ":defined", Boolean.TRUE );
+		if ("true".equalsIgnoreCase(value)) {
+			this.features.put( name, Boolean.TRUE );
+		}
 	}
 	
 	/**
@@ -472,6 +475,9 @@ implements Comparable
 		String[] values = StringUtil.splitAndTrim( value, ',' );
 		for (int i = 0; i < values.length; i++) {
 			addDirectFeature( name + "." + values[i] );
+		}
+		if ("true".equalsIgnoreCase(value)) {
+			addDirectFeature( name );
 		}
 	}
 	
