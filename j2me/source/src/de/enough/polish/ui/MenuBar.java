@@ -85,7 +85,6 @@ public class MenuBar extends Item {
 	private Image cancelImage;
 	private int singleLeftCommandY;
 	private int singleRightCommandY;
-	private boolean commandIgnored;
 
 	/**
 	 * Creates a new menu bar\
@@ -127,7 +126,6 @@ public class MenuBar extends Item {
 			// do not add an existing command again...
 			//#debug
 			System.out.println("Ignoring existing command " + cmd.getLabel() );
-			this.commandIgnored = true;
 			return;
 		}
 		//#debug
@@ -633,7 +631,11 @@ public class MenuBar extends Item {
 			boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
 			if (handled) {
 				this.isInitialised = false;
-			} else { // command item is returning false when a command has been triggered
+			} else { 
+//				if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
+//					//#debug error
+//					System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() );
+//				}
 				setOpen( false );
 			}
 			return handled;

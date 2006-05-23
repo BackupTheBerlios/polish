@@ -46,12 +46,16 @@ implements Runnable
 	private PrintStream out;
 	private boolean isShuttingDown;
 	private ArrayList scheduledLogEntries;
+	private boolean isPermanentLogError;
 
 	public FileLogHandler() {
 		super();
 	}
 
 	public void handleLogEntry(LogEntry entry) throws Exception {
+		if (this.isPermanentLogError) {
+			return;
+		}
 		if (this.scheduledLogEntries == null) {
 			this.scheduledLogEntries = new ArrayList( 7 );
 			Thread thread = new Thread( this );
@@ -110,6 +114,7 @@ implements Runnable
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Unable to open file log: " + e );
+				this.isPermanentLogError = true;
 				return;
 			}
 			//this.out.println( roots );

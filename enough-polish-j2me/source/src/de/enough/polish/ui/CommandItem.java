@@ -103,6 +103,8 @@ public class CommandItem extends IconItem {
 	 * @param childStyle the style for the child command
 	 */
 	public void addChild( Command childCommand, Style childStyle ) {
+		boolean inserted = false;
+		CommandItem child = new CommandItem( childCommand, this, childStyle );
 		if ( this.children == null ) {
 			int layer = getLayer();
 			if (layer == 0) {
@@ -122,9 +124,20 @@ public class CommandItem extends IconItem {
 			}
 			this.hasChildren = true;
 			this.children.parent = this;
+		} else {
+			int priority = childCommand.getPriority();
+			for (int i = 0; i < this.children.size(); i++) {
+				CommandItem item = (CommandItem) this.children.get(i);
+				if (item.command.getPriority() > priority ) {
+					this.children.add( i, child );
+					inserted = true;
+					break;
+				}
+			}
 		}
-		CommandItem child = new CommandItem( childCommand, this, childStyle );
-		this.children.add( child );
+		if (!inserted) {
+			this.children.add( child );
+		}
 	}
 
 	/**
@@ -202,7 +215,10 @@ public class CommandItem extends IconItem {
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		// TODO robertvirkus adjust yOffset when childIndicatorHeight > contentHeight
 		super.paintContent(x, y, leftBorder, rightBorder, g);
-
+		
+//		if (this.isFocused) {
+//			System.out.println( this + ": backgroundYOffset=" + this.backgroundYOffset);
+//		}
 		if (this.hasChildren) {
 			// paint child indicator
 			//rightBorder -= this.childIndicatorWidth;
@@ -234,7 +250,7 @@ public class CommandItem extends IconItem {
 				// when there is enough space to the right, open it on the right side, otherwise open it on the left:
 				int clipX = g.getClipX();
 				int clipWidth = g.getClipHeight();
-				int clipY = g.getClipY();
+				int clipY = g.getClipY() - 1;
 				int clipHeight = g.getClipHeight();
 				int availableWidth = (clipWidth * 2) / 3;
 				int childrenWidth = this.children.getItemWidth( availableWidth, availableWidth );

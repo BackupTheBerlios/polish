@@ -586,9 +586,17 @@ public class Container extends Item {
 		int difference = 0;
 		int index = this.focusedIndex;
 		int itemYBottom = itemYTop + height;
+		int yOffsetDiff = 0;
+		//#ifdef polish.css.scroll-mode
+			if (this.scrollSmooth) {
+		//#endif
+				yOffsetDiff = this.targetYOffset - this.yOffset;
+		//#ifdef polish.css.scroll-mode
+			}
+		//#endif
 		if ( height == 0 || !this.enableScrolling) {
 			return;
-		} else if (itemYBottom > this.yBottom) {
+		} else if (itemYBottom + yOffsetDiff > this.yBottom) {
 			// this item is too low:
 			difference = this.yBottom - itemYBottom;
 			//#debug
@@ -606,23 +614,27 @@ public class Container extends Item {
 				difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
 			}
 			*/
-		} else if (itemYTop < this.yTop) {
+		} else if (itemYTop  + yOffsetDiff < this.yTop) {
 			// this item is too high:
 			//#if tmp.useSupportViewType
-				//TODO when colpan is used, the index might need to be higher than anticipated
+				//TODO when colspan is used, the index might need to be higher than anticipated
 				if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
 			//#else
 				//# if (index == 0) {
 			//#endif
 				// scroll to the very top:
 				difference = -1 * this.yOffset;
+				//#debug
+				System.out.println("Scrolling to first item: setting difference to " + difference );
 			} else {
 				difference = this.yTop - itemYTop + this.focusedTopMargin;
 			}
 			// re-adjust the scrolling in case we scroll up and the previous
 			// item is very large:
-			if ( !isDownwards && itemYBottom + difference > this.yBottom  ) {
-				difference = this.yBottom - itemYBottom;
+			if ( !isDownwards && (itemYBottom + yOffsetDiff + difference > this.yBottom  )) {
+				difference = this.yBottom - (itemYBottom + yOffsetDiff);
+				//#debug
+				System.out.println("Scrolling upwards: adjusting difference to " + difference );
 			}
 		}
 				
@@ -793,11 +805,13 @@ public class Container extends Item {
 				// adjust the right border:
 				rightBorder = leftBorder + this.contentWidth;
 			}
+			Item focItem = this.focusedItem;
+			int focIndex = this.focusedIndex;
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
 				// since after every item a line break will be done.
-				if (i == this.focusedIndex) {
+				if (i == focIndex) {
 					focusedY = y;
 					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
 				} else {
@@ -809,9 +823,9 @@ public class Container extends Item {
 	
 			
 			// paint the currently focused item:
-			if (this.focusedItem != null) {
+			if (focItem != null) {
 				//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-				this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+				focItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 			}
 		//#ifdef tmp.supportViewType
 			}
@@ -922,16 +936,27 @@ public class Container extends Item {
 			}
 		//#endif
 		boolean processed = false;
+		int yOffsetDiff = 0;
+		//#ifdef polish.css.scroll-mode
+			if (this.scrollSmooth) {
+		//#endif
+				yOffsetDiff = this.targetYOffset - this.yOffset;
+		//#ifdef polish.css.scroll-mode
+			}
+		//#endif
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
+					&& yOffsetDiff == 0
 					&& this.focusedItem.yBottomPos > this.yBottom) 
 			{
 				if (gameAction == Canvas.RIGHT) {
 					return false;
 				}
 				// keep the focus do scroll downwards
+				//#debug
+				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", yOffsetDiff=" + yOffsetDiff);
 			} else {
 				processed = shiftFocus( true, 0 );
 			}
@@ -959,15 +984,20 @@ public class Container extends Item {
 				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
+					&& yOffsetDiff == 0
 					&& this.focusedItem.yTopPos < this.yTop ) 
 			{
 				if (gameAction == Canvas.LEFT) {
 					return false;
 				}
 				// keep the focus do scroll downwards
+				//#debug
+				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", yOffsetDiff=" + yOffsetDiff + ", focusedItem.yTopPos=" + this.focusedItem.yTopPos + ", this.yTop=" + this.yTop + ", targetYOffset=" + this.targetYOffset);
 			} else {
 				processed = shiftFocus( false, 0 );
 			}
+			//#debug
+			System.out.println("Container(" + this + "): upward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			if ((!processed) && this.enableScrolling && (this.targetYOffset < 0)) {
 				// scroll upwards:
 				//#if polish.Container.ScrollDelta:defined
@@ -975,11 +1005,11 @@ public class Container extends Item {
 				//#else
 					this.targetYOffset += 30;
 				//#endif
-				//#debug
-				System.out.println("Up/Left: Increasing targetYOffset to " + this.targetYOffset);	
 				if (this.targetYOffset > 0) {
 					this.targetYOffset = 0;
 				}
+				//#debug
+				System.out.println("Up/Left: Increasing targetYOffset to " + this.targetYOffset);	
 				processed = true;
 				//#if polish.scroll-mode
 					if (!this.scrollSmooth) {
@@ -1079,8 +1109,11 @@ public class Container extends Item {
 	 */
 	private boolean shiftFocus(boolean forwardFocus, int steps ) {
 		if ( this.items == null ) {
+			//#debug
+			System.out.println("shiftFocus fails: this.items==null");
 			return false;
 		}
+		Item focItem = this.focusedItem;
 		//#if polish.css.colspan
 			int i = this.focusedIndex;
 			if (steps != 0) {
@@ -1172,9 +1205,9 @@ public class Container extends Item {
 				//#if polish.css.scroll-mode
 					}
 				//#endif
-				//#debug
-				System.out.println("shiftFocus: allowCycl=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset );	
 			}
+			//#debug
+			System.out.println("shiftFocus of " + this + ": allowCycle=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );					
 		//#endif
 		while (true) {
 			if (forwardFocus) {
@@ -1184,6 +1217,8 @@ public class Container extends Item {
 						if (allowCycle) {
 							allowCycle = false;
 							i = 0;
+							//#debug
+							System.out.println("allowCycle: Restarting at the beginning");
 						} else {
 							break;
 						}
@@ -1198,6 +1233,8 @@ public class Container extends Item {
 						if (allowCycle) {
 							allowCycle = false;
 							i = this.items.length - 1;
+							//#debug
+							System.out.println("allowCycle: Restarting at the end");
 						} else {
 							break;
 						}
@@ -1211,7 +1248,10 @@ public class Container extends Item {
 				break;
 			}
 		}
-		if (item == null || item.appearanceMode == Item.PLAIN || item == this.focusedItem) {
+		if (item == null || item.appearanceMode == Item.PLAIN || item == focItem) {
+			//#debug
+			System.out.println("got original focused item: " + (item == focItem) + ", item==null:" + (item == null) + ", mode==PLAIN:" + (item == null ? false:(item.appearanceMode == PLAIN)) );
+			
 			return false;
 		}
 		int direction = Canvas.UP;

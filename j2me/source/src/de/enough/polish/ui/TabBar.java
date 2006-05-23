@@ -184,7 +184,7 @@ public class TabBar extends Item {
 		} else if ( this.xOffset + activeTabXPos < scrollerWidth ) {
 			// tab is too much left:
 			this.xOffset = scrollerWidth - activeTabXPos;
-			System.out.println("this.xOffset + activeTabXPos < scrollerWidth ");
+			//System.out.println("this.xOffset + activeTabXPos < scrollerWidth ");
 		} else if ( this.xOffset + activeTabXPos + activeTabWidth > rightBorder ) {
 			// tab is too much right:
 			//#if polish.css.tabbar-roundtrip
@@ -196,8 +196,8 @@ public class TabBar extends Item {
 			//#if polish.css.tabbar-roundtrip
 				}
 			//#endif
-			System.out.println("this.xOffset + activeTabXPos + activeTabWidth > rightBorder");
-			System.out.println("xOffset=" + this.xOffset + ", activeTabXPos=" + activeTabXPos + ", activeTabWidth=" + activeTabWidth + ", rightBorder=" + rightBorder);
+			//System.out.println("this.xOffset + activeTabXPos + activeTabWidth > rightBorder");
+			//System.out.println("xOffset=" + this.xOffset + ", activeTabXPos=" + activeTabXPos + ", activeTabWidth=" + activeTabWidth + ", rightBorder=" + rightBorder);
 		}
 	}
 
