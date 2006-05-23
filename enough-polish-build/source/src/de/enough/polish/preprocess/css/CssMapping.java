@@ -131,8 +131,28 @@ public class CssMapping {
 		if (this.excludes != null) {
 			for (int i = 0; i < this.excludes.length; i++) {
 				String exclude = this.excludes[i];
-				if ( attributeValue.indexOf( exclude ) != -1) {
-					throw new BuildException( "Invalid CSS: the value \"" + this.from + "\" of the attribute \"" + attributeName + "\" conflicts with the value \"" + exclude + "\" - please change your polish.css setting for the value \"" + attributeValue + "\"."  );					
+				int  index = attributeValue.indexOf( exclude );
+				while ( index != -1 ) {
+					// double check that the exclude is really in there, not a similar word:
+					boolean match = true;
+					if (index != 0) {
+						char c = attributeValue.charAt(index - 1);
+						if (c != ' ' && c != '\t' && c != '|' && c != '&' && c != '!' && c != '^' && c != ';') {
+							//System.out.println("not a match for " + exclude + " in " + attributeValue + ", char before is=" + c);
+							match = false;
+						}							
+					}
+					if (index + exclude.length() + 1 < attributeValue.length()) {
+						char c = attributeValue.charAt(index + exclude.length());
+						if (c != ' ' && c != '\t' && c != '|' && c != '&' && c != '!' && c != '^' && c != ';') {
+							//System.out.println("not a match for " + exclude + " in " + attributeValue + ", char after is=" + c);
+							match = false;
+						}							
+					}
+					if (match) {
+						throw new BuildException( "Invalid CSS: the value \"" + this.from + "\" of the attribute \"" + attributeName + "\" conflicts with the value \"" + exclude + "\" - please change your polish.css setting for the value \"" + attributeValue + "\"."  );
+					}
+					index = attributeValue.indexOf( exclude, index + 1 );
 				}
 			}
 		}

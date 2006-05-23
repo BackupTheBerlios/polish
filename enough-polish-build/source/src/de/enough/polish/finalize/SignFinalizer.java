@@ -117,29 +117,31 @@ public class SignFinalizer extends Finalizer {
 			throw new BuildException("Unable to sign application: unable to execute JadTool: " + e.toString() );
 		}
 		// add the certificate chain:
-		parametersList.clear();
-		parametersList.add( "java" );
-		parametersList.add( "-jar" );
-		parametersList.add( jadTool.getAbsolutePath() );
-		parametersList.add( "-addcert" );
-		parametersList.add( "-alias" );
-		parametersList.add( setting.getKey() );
-		parametersList.add( "-keystore" );
-		parametersList.add( setting.getKeystore().getAbsolutePath() );
-		parametersList.add( "-inputjad" );
-		parametersList.add( jadFile.getAbsolutePath() );
-		parametersList.add( "-outputjad" );
-		parametersList.add( jadFile.getAbsolutePath() );
-		System.out.println( "Adding certificate for " + device.getIdentifier() );
-		parameters = (String[]) parametersList.toArray( new String[ parametersList.size() ] );
-		try {
-			int result = ProcessUtil.exec( parameters, "add certificate: ", true );
-			if (result != 0) {
-				throw new BuildException("Unable to sign application: unable to execute JadTool - JadTool returned [" + result + "]." );
+		if (this.extensionSetting != null && !((SignSetting)this.extensionSetting).isSkipCertificate()) { 
+			parametersList.clear();
+			parametersList.add( "java" );
+			parametersList.add( "-jar" );
+			parametersList.add( jadTool.getAbsolutePath() );
+			parametersList.add( "-addcert" );
+			parametersList.add( "-alias" );
+			parametersList.add( setting.getKey() );
+			parametersList.add( "-keystore" );
+			parametersList.add( setting.getKeystore().getAbsolutePath() );
+			parametersList.add( "-inputjad" );
+			parametersList.add( jadFile.getAbsolutePath() );
+			parametersList.add( "-outputjad" );
+			parametersList.add( jadFile.getAbsolutePath() );
+			System.out.println( "Adding certificate for " + device.getIdentifier() );
+			parameters = (String[]) parametersList.toArray( new String[ parametersList.size() ] );
+			try {
+				int result = ProcessUtil.exec( parameters, "add certificate: ", true );
+				if (result != 0) {
+					throw new BuildException("Unable to sign application: unable to execute JadTool - JadTool returned [" + result + "]." );
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to sign application: unable to execute JadTool: " + e.toString() );
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BuildException("Unable to sign application: unable to execute JadTool: " + e.toString() );
 		}
 	}
 

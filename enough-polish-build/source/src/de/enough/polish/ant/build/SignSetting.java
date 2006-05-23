@@ -54,6 +54,7 @@ public class SignSetting extends FinalizerSetting {
 	private File keystore;
 	private String key;
 	private String password;
+	private boolean skipCertificate;
 
 	/**
 	 * Creates a new sign setting
@@ -103,5 +104,19 @@ public class SignSetting extends FinalizerSetting {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	/**
+	 * @return Returns the skipCertificate.
+	 */
+	public boolean isSkipCertificate() {
+		return this.skipCertificate;
+	}
+
+	/**
+	 * @param skipCertificate The skipCertificate to set.
+	 */
+	public void setSkipCertificate(boolean skipCertificate) {
+		this.skipCertificate = skipCertificate;
 	}
 }
