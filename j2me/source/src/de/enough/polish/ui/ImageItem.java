@@ -88,6 +88,8 @@ public class ImageItem extends Item
 	private String altText;
 	private int textColor;
 	private Font font;
+	private int yOffset;
+	private int height = -1;
 
 	/**
 	 * Creates a new <code>ImageItem</code> with the given label, image, layout
@@ -307,6 +309,7 @@ public class ImageItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.image != null) {
+			y += this.yOffset;
 			if (this.isLayoutExpand) {
 				if (this.isLayoutCenter) {
 					g.drawImage( this.image, x + (rightBorder - x)/2 , y, Graphics.TOP | Graphics.HCENTER );
@@ -342,6 +345,9 @@ public class ImageItem extends Item
 			this.contentHeight = 0;
 			this.contentWidth = 0;
 		}
+		if (this.height != -1) {
+			this.contentHeight = this.height;
+		}
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -360,5 +366,17 @@ public class ImageItem extends Item
 		super.setStyle(style);
 		this.textColor = style.fontColor;
 		this.font = style.font;
+		//#if polish.css.image-y-offset
+			Integer yOffsetInt = style.getIntProperty("image-y-offset");
+			if (yOffsetInt != null) {
+				this.yOffset = yOffsetInt.intValue(); 
+			}
+		//#endif
+		//#if polish.css.image-height
+			Integer imageHeightInt = style.getIntProperty("image-height");
+			if (imageHeightInt != null) {
+				this.height = imageHeightInt.intValue(); 
+			}
+		//#endif
 	}
 }

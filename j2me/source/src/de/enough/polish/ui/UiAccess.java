@@ -853,5 +853,21 @@ public final class UiAccess {
     public static void releaseResources( javax.microedition.lcdui.Screen screen ) {
     	// ignore
     }
+    
+    public static void setSubtitle( javax.microedition.lcdui.Screen screen, String subtitle ) {
+    	// ignore
+    }
+
+    public static void setSubtitle( Screen screen, String subtitle ) {
+    	setSubtitle( screen, new StringItem(null, subtitle));
+    }
+
+    public static void setSubtitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item subtitle ) {
+    	// ignore
+    }
+
+    public static void setSubtitle( Screen screen, Item subtitle ) {
+    	screen.setSubTitle(subtitle);
+    }
 
 }

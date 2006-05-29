@@ -1411,7 +1411,7 @@ public abstract class Item extends Object
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
-		if (!this.isInitialised ) { // || availableWidth < this.itemWidth || availableWidth < this.backgroundWidth
+		if (!this.isInitialised || (availableWidth < this.itemWidth )) {
 			init( rightBorder - x, availableWidth );
 		}
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;

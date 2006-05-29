@@ -633,6 +633,7 @@ public class TextField extends StringItem
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
 	//#ifndef tmp.suppressCommands
+		//#message DELETE-COMMAND: ${polish.command.delete} CANCEL:  ${polish.command.cancel} 
 		//#ifdef polish.i18n.useDynamicTranslations
 	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
 		//#elifdef polish.command.delete:defined
