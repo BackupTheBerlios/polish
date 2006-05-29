@@ -89,6 +89,7 @@
 		<mapping from="vertical-expand"    to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
 		<mapping from="v-expand"           to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
 		<mapping from="vexpand"            to="Item.LAYOUT_VEXPAND"  excludes="vertical-shrink, v-shrink, vshrink" />
+		<mapping from="horizontal-shrink"  to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
 		<mapping from="h-shrink"           to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
 		<mapping from="hshrink"            to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
 		<mapping from="shrink"             to="Item.LAYOUT_SHRINK"   excludes="horizontal-expand, h-expand, hexpand, expand" />
@@ -1610,6 +1611,22 @@
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
 		description="The URL of the combined arrows image (showing both arrows to the left and to the right)."
 		id="159"
+	/>
+	
+	<attribute
+		name="image-y-offset"
+		type="integer"
+		appliesTo="ImageItem"
+		description="The y offset for the image of an image item, negative values push the image upwards." 
+		id="160"
+	/>
+	
+	<attribute
+		name="image-height"
+		type="integer"
+		appliesTo="ImageItem"
+		description="The assumed height the image of an image item." 
+		id="161"
 	/>
 		
 	<!--
