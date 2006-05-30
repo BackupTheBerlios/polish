@@ -123,7 +123,7 @@
 		<capability name="Emulator.Skin.11" value="Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
 		<capability name="Emulator.Skin.12" value="\Devices\Nokia_Prototype_SDK_2_0" />
 		<capability name="Emulator.Control" value="Series60" />
-		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi" />
+		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi, displaySetCurrentFlickers" />
 	</group>
 
 	<group>

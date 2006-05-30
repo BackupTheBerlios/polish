@@ -420,7 +420,7 @@ These namespaces/schemas will be used soon.
 <!-- Sony-Ericsson devices -->
 
 	<device>
-		<identifier>Sony-Ericsson/W900</identifier>
+		<identifier>Sony-Ericsson/W900, Sony-Ericsson/W900i</identifier>
 		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
