@@ -536,7 +536,7 @@ public final class UiAccess {
 	 * the given TextField.
 	 * 
 	 * @param field the text field 
-	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -553,7 +553,7 @@ public final class UiAccess {
 	 * the given TextField.
 	 * 
 	 * @param field the text field 
-	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -570,7 +570,7 @@ public final class UiAccess {
 	 * the given TextBox.
 	 * 
 	 * @param box the text box 
-	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -587,7 +587,7 @@ public final class UiAccess {
 	 * the given TextBox.
 	 * 
 	 * @param box the text box 
-	 * @param inputMode the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -602,7 +602,7 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textfield.
 	 * 
 	 * @param field the text field 
-	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -617,7 +617,7 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textfield.
 	 * 
 	 * @param field the text field 
-	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -632,7 +632,7 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textbox.
 	 * 
 	 * @param box the text box 
-	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -647,7 +647,7 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textbox.
 	 * 
 	 * @param box the text box 
-	 * @return the input mode, either UiAcccess.MODE_NUMBERS, UiAcccess.MODE_LOWERCASE, UiAcccess.MODE_UPPERCASE or UiAcccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
@@ -841,7 +841,7 @@ public final class UiAccess {
      * @param screen the screen for which the resources should be released. 
      */
     public static void releaseResources( Screen screen ) {
-    	screen.releaseResources();
+    		screen.releaseResources();
     }
     //#endif
 
@@ -851,23 +851,27 @@ public final class UiAccess {
      * @param screen the screen for which the resources should be released. 
      */
     public static void releaseResources( javax.microedition.lcdui.Screen screen ) {
-    	// ignore
+    		// ignore
     }
     
     public static void setSubtitle( javax.microedition.lcdui.Screen screen, String subtitle ) {
-    	// ignore
+    		// ignore
     }
 
+    //#if polish.usePolishGui
     public static void setSubtitle( Screen screen, String subtitle ) {
-    	setSubtitle( screen, new StringItem(null, subtitle));
+    		setSubtitle( screen, new StringItem(null, subtitle));
     }
+    //#endif
 
     public static void setSubtitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item subtitle ) {
-    	// ignore
+    		// ignore
     }
 
+    //#if polish.usePolishGui
     public static void setSubtitle( Screen screen, Item subtitle ) {
-    	screen.setSubTitle(subtitle);
+    		screen.setSubTitle(subtitle);
     }
+    //#endif
 
 }
