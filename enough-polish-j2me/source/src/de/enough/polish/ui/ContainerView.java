@@ -451,7 +451,7 @@ public class ContainerView {
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	protected void paintContent( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
-		//System.out.println("ContainerView: painting content for " + this + " with vertical-padding " + this.paddingVertical );
+		//System.out.println("ContainerView: painting content for " + this + " with vertical-padding " + this.paddingVertical  + ", screen=" + this.parentContainer.getScreen());
 		
 		//#if polish.css.view-type-top-y-offset
 			y += this.topYOffset;

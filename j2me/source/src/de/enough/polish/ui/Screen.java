@@ -1135,26 +1135,26 @@ implements AccessibleCanvas
 //					//#else
 						sHeight = contHeight + this.titleHeight;
 //					//#endif
-					//System.out.println("isLayoutVerticalShrink - sHeight: from=" + (this.fullScreenHeight - this.marginTop - this.marginBottom) + ", to=" + sHeight + ", contentHeight=" + this.contentHeight);
+					//System.out.println("isLayoutVerticalShrink - sHeight: from=" + (this.fullScreenHeight - this.marginTop - this.marginBottom) + ", to=" + sHeight + ", contentHeight=" + this.contentHeight + ", topBorder=" + topBorder );
 					if (this.isLayoutBottom) {
 //						//#ifdef tmp.menuFullScreen
 //							topBorder = this.fullScreenHeight - (this.marginBottom + sHeight + 1);
 //						//#else
 							topBorder = this.screenHeight - (this.marginBottom + sHeight + 1);
 //						//#endif
-						System.out.println("bottom -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
+						//System.out.println("bottom -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
 					} else if (this.isLayoutVCenter) {
 //						//#ifdef tmp.menuFullScreen
 //							topBorder = (this.fullScreenHeight - (this.marginBottom + this.marginBottom))/2 - sHeight/2;
 //						//#else
 							topBorder = (this.screenHeight - (this.marginBottom + this.marginTop + sHeight))/2;
 //						//#endif						 
+						//System.out.println("vcenter -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
 					}
 				}
 
 				// paint background:
 				if (this.background != null) {
-					//System.out.println("Screen (" + this + ": using background...");
 					int backgroundHeight = sHeight;
 					int backgroundY = topBorder;
 					//#ifdef tmp.menuFullScreen
@@ -1168,11 +1168,25 @@ implements AccessibleCanvas
 							backgroundY += this.titleHeight;
 						}
 					//#endif
+					// System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY);
 					this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
 				} else {
 					//System.out.println("Screen (" + this + ": clearing area...");
+					int backgroundHeight = sHeight;
+					int backgroundY = topBorder;
+					//#ifdef tmp.menuFullScreen
+						if (this.excludeMenuBarForBackground) {
+							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom;
+						}
+					//#endif
+					//#ifdef tmp.usingTitle
+						if (this.excludeTitleForBackground) {
+							backgroundHeight -= this.titleHeight;
+							backgroundY += this.titleHeight;
+						}
+					//#endif
 					g.setColor( 0xFFFFFF );
-					g.fillRect( leftBorder, this.marginTop, sWidth, sHeight );
+					g.fillRect( leftBorder, backgroundY, sWidth, backgroundHeight );
 				}
 				
 				int topHeight = topBorder;
@@ -1935,7 +1949,7 @@ implements AccessibleCanvas
 	 * @param keyCode the code of the key, which is pressed repeatedly
 	 */
 	public void keyRepeated(int keyCode) {
-		synchronized (this.paintLock) {
+		//synchronized (this.paintLock) {
 			//#debug
 			System.out.println("keyRepeated(" + keyCode + ")");
 			int gameAction = 0;
@@ -1969,7 +1983,7 @@ implements AccessibleCanvas
 					repaint();
 				}
 			}
-		}
+		//}
 	}
 
 	/**

@@ -1002,7 +1002,7 @@ public abstract class Item extends Object
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialised) {
+		if (!this.isInitialised || this.itemWidth > lineWidth) {
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemWidth;
@@ -1018,7 +1018,7 @@ public abstract class Item extends Object
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialised) {
+		if (!this.isInitialised || this.itemWidth > lineWidth) {
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemHeight;
@@ -1412,6 +1412,12 @@ public abstract class Item extends Object
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
 		if (!this.isInitialised || (availableWidth < this.itemWidth )) {
+			//#if polish.debug.info
+			if (availableWidth < this.itemWidth ) {
+				//#debug info
+				System.out.println("re-initializing item " + this + " for availableWidth=" + availableWidth + ", itemWidth=" + this.itemWidth);
+			}
+			//#endif
 			init( rightBorder - x, availableWidth );
 		}
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
@@ -1440,7 +1446,7 @@ public abstract class Item extends Object
 		// paint label:
 		if (this.label != null) {
 			if (this.useSingleRow) {
-				this.label.paint( x, y, leftBorder, rightBorder - this.itemWidth, g );
+				this.label.paint( x, y, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
 				x += this.label.itemWidth;
 				leftBorder += this.label.itemWidth;
 			} else {

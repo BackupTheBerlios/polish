@@ -249,7 +249,7 @@ public class CommandItem extends IconItem {
 				// draw children:
 				// when there is enough space to the right, open it on the right side, otherwise open it on the left:
 				int clipX = g.getClipX();
-				int clipWidth = g.getClipHeight();
+				int clipWidth = g.getClipWidth();
 				int clipY = g.getClipY() - 1;
 				int clipHeight = g.getClipHeight();
 				int availableWidth = (clipWidth * 2) / 3;
@@ -259,12 +259,11 @@ public class CommandItem extends IconItem {
 //				System.out.println("drawing children: children-width " + childrenWidth + ", clipWidth=" + clipWidth + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder);
 //				System.out.println("rightBorder + childrenWidth=" + (rightBorder + childrenWidth) + ", clipX + clipWidth=" + ( clipX + clipWidth ));
 //				System.out.println("clipX + clipWidth - childrenWidth=" + (clipX + clipWidth - childrenWidth) + ", (leftBorder + 10)=" + (leftBorder + 10));
-				if ( rightBorder + childrenWidth < clipX + clipWidth ) {
+//				System.out.println("clipX=" + clipX + ", leftBorder - childrenWidth=" + (leftBorder - childrenWidth));
+				if ( rightBorder + childrenWidth < clipX + clipWidth ) {					
 					x = rightBorder;
-					leftBorder = x;
-					rightBorder = leftBorder + childrenWidth;
 				} else if ( clipX + clipWidth - childrenWidth > (leftBorder + 10) ) {
-					x = clipX + clipWidth - childrenWidth;
+					x = clipX + clipWidth - (childrenWidth + 1);
 				} else {
 					x = Math.max( leftBorder - childrenWidth, clipX );
 				}

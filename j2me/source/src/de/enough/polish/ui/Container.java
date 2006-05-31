@@ -644,9 +644,9 @@ public class Container extends Item {
 			} else {
 		//#endif
 				this.targetYOffset = this.yOffset + difference;
-				if (this.focusedItem != null) {
-					this.focusedItem.backgroundYOffset = difference;
-				}
+//				if (this.focusedItem != null) {
+//					this.focusedItem.backgroundYOffset = difference;
+//				}
 		//#if polish.css.scroll-mode
 			}
 		//#endif
@@ -1565,9 +1565,9 @@ public class Container extends Item {
 			} else if (speed < 0 && this.yOffset < this.targetYOffset) {
 				this.yOffset = this.targetYOffset;
 			}
-			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
-				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
-			}
+//			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
+//				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
+//			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
 			animated = true;

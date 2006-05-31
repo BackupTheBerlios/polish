@@ -64,6 +64,23 @@ public class MenuBar extends Item {
 		private Command hideCommand;
 		private Command positiveCommand;
 	//#endif
+	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right
+		//#define tmp.RightOptions
+		//# private final int openOptionsMenuKey = RIGHT_SOFT_KEY;
+		//# private final int selectOptionsMenuKey = RIGHT_SOFT_KEY;
+		//# private final int closeOptionsMenuKey = LEFT_SOFT_KEY;
+	//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == middle
+		//#define tmp.MiddleOptions
+		//# private final int openOptionsMenuKey = MIDDLE_SOFT_KEY;
+		//# private final int selectOptionsMenuKey = LEFT_SOFT_KEY;
+		//# private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
+	//#else
+		//#define tmp.LeftOptions
+		private final int openOptionsMenuKey = LEFT_SOFT_KEY;
+		private final int selectOptionsMenuKey = LEFT_SOFT_KEY;
+		private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
+	//#endif
+	
 	private final ArrayList commandsList;
 	private final Container commandsContainer;
 	protected boolean isOpened;
@@ -148,9 +165,15 @@ public class MenuBar extends Item {
 			if ( (cmd != this.hideCommand) && 
 					(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
 			{
-				if ( this.singleRightCommand == null || this.singleRightCommand.getPriority() > priority ) {
-					this.singleRightCommand = cmd;
-				}
+				//#if tmp.RightOptions
+					if ( this.singleLeftCommand == null || this.singleLeftCommand.getPriority() > priority ) {
+						this.singleLeftCommand = cmd;
+					}
+				//#else
+					if ( this.singleRightCommand == null || this.singleRightCommand.getPriority() > priority ) {
+						this.singleRightCommand = cmd;
+					}
+				//#endif
 			}
 		//#else
 			//#if polish.blackberry
@@ -158,42 +181,83 @@ public class MenuBar extends Item {
 			//#else
 			if (type == Command.BACK || type == Command.CANCEL) {
 			//#endif
-				if (this.singleRightCommand == null) {
+				//#if tmp.RightOptions
+					if (this.singleLeftCommand == null) {
+						this.singleLeftCommand = cmd;
+						this.singleLeftCommandItem.setImage( (Image)null );
+						this.singleLeftCommandItem.setText( cmd.getLabel() );
+						if (this.isInitialised) {
+							this.isInitialised = false;
+							repaint();
+						}
+						return;
+					} else if ( this.singleLeftCommand.getPriority() > priority ) {
+						Command oldLeftCommand = this.singleLeftCommand;
+						this.singleLeftCommand = cmd;
+						this.singleLeftCommandItem.setText( cmd.getLabel() );
+						cmd = oldLeftCommand;
+						priority = oldLeftCommand.getPriority();
+					}
+				//#else
+					if (this.singleRightCommand == null) {
+						this.singleRightCommand = cmd;
+						this.singleRightCommandItem.setImage( (Image)null );
+						this.singleRightCommandItem.setText( cmd.getLabel() );
+						if (this.isInitialised) {
+							this.isInitialised = false;
+							repaint();
+						}
+						return;
+					} else if ( this.singleRightCommand.getPriority() > priority ) {
+						Command oldRightCommand = this.singleRightCommand;
+						this.singleRightCommand = cmd;
+						this.singleRightCommandItem.setText( cmd.getLabel() );
+						cmd = oldRightCommand;
+						priority = oldRightCommand.getPriority();
+					}
+				//#endif
+			}
+			//#if tmp.RightOptions
+				if (this.singleRightCommand != null) {
+					// add existing right command first:
+					//#style menuitem, menu, default
+					CommandItem item = new CommandItem( this.singleRightCommand, this );
+					this.commandsList.add( this.singleRightCommand );
+					this.commandsContainer.add( item );
+					this.singleRightCommand = null;
+				}  else if (this.commandsList.size() == 0) {
+					// this is the new single right command!
+					//#debug
+					System.out.println("Setting single right command " + cmd.getLabel() );
 					this.singleRightCommand = cmd;
-					this.singleRightCommandItem.setImage( (Image)null );
 					this.singleRightCommandItem.setText( cmd.getLabel() );
 					if (this.isInitialised) {
 						this.isInitialised = false;
 						repaint();
 					}
 					return;
-				} else if ( this.singleRightCommand.getPriority() > priority ) {
-					Command oldRightCommand = this.singleRightCommand;
-					this.singleRightCommand = cmd;
-					this.singleRightCommandItem.setText( cmd.getLabel() );
-					cmd = oldRightCommand;
-					priority = oldRightCommand.getPriority();
 				}
-			}
-			if (this.singleLeftCommand != null) {
-				// add existing left command first:
-				//#style menuitem, menu, default
-				CommandItem item = new CommandItem( this.singleLeftCommand, this );
-				this.commandsList.add( this.singleLeftCommand );
-				this.commandsContainer.add( item );
-				this.singleLeftCommand = null;
-			}  else if (this.commandsList.size() == 0) {
-				// this is the new single left command!
-				//#debug
-				System.out.println("Setting single left command " + cmd.getLabel() );
-				this.singleLeftCommand = cmd;
-				this.singleLeftCommandItem.setText( cmd.getLabel() );
-				if (this.isInitialised) {
-					this.isInitialised = false;
-					repaint();
+			//#else
+				if (this.singleLeftCommand != null) {
+					// add existing left command first:
+					//#style menuitem, menu, default
+					CommandItem item = new CommandItem( this.singleLeftCommand, this );
+					this.commandsList.add( this.singleLeftCommand );
+					this.commandsContainer.add( item );
+					this.singleLeftCommand = null;
+				}  else if (this.commandsList.size() == 0) {
+					// this is the new single left command!
+					//#debug
+					System.out.println("Setting single left command " + cmd.getLabel() );
+					this.singleLeftCommand = cmd;
+					this.singleLeftCommandItem.setText( cmd.getLabel() );
+					if (this.isInitialised) {
+						this.isInitialised = false;
+						repaint();
+					}
+					return;
 				}
-				return;
-			} 
+			//#endif
 		//#endif
 			
 		//#if tmp.useInvisibleMenuBar
@@ -206,6 +270,8 @@ public class MenuBar extends Item {
 			}
 		//#endif
 	
+		//#debug
+		System.out.println("Adding command " + cmd.getLabel() + " to the commands list...");
 		//#style menuitem, menu, default
 		CommandItem item = new CommandItem( cmd, this );
 		if ( this.commandsList.size() == 0 ) {
@@ -258,8 +324,32 @@ public class MenuBar extends Item {
 				this.isInitialised = false;
 				repaint();
 			}
-			//System.out.println("remiving single left");
-			return;
+			//#if tmp.RightOptions
+				if (this.singleRightCommand != null) {
+					if ( this.singleRightCommand.getCommandType() == Command.BACK 
+						|| this.singleRightCommand.getCommandType() == Command.CANCEL ) 
+					{
+						this.singleLeftCommand = this.singleRightCommand;
+						this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
+						this.singleRightCommand = null;
+					}
+					if (this.isInitialised) {
+						this.isInitialised = false;
+						repaint();
+					}
+					return;
+				}
+				int newSingleRightCommandIndex = getNextNegativeCommandIndex();
+				if ( newSingleRightCommandIndex != -1 ) {
+					this.singleLeftCommand = (Command) this.commandsList.remove(newSingleRightCommandIndex);
+					this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
+					this.commandsContainer.remove( newSingleRightCommandIndex );
+				}	
+				// don't return here yet, since it could well be that there is only
+				// one remaining item in the commandsList. In such a case the 
+				// single right command is used instead.
+	
+			//#endif
 		}
 		
 		// 2.case: cmd == this.singleRightCommand
@@ -269,47 +359,33 @@ public class MenuBar extends Item {
 			//System.out.println("removing single right command");
 			// check if there is another BACK or CANCEL command and 
 			// select the one with the highest priority:
-			if (this.singleLeftCommand != null) {
-				if ( this.singleLeftCommand.getCommandType()  == Command.BACK 
-					|| this.singleLeftCommand.getCommandType()  == Command.CANCEL ) 
-				{
-					this.singleRightCommand = this.singleLeftCommand;
-					this.singleRightCommandItem.setText( this.singleLeftCommand.getLabel() );
-					this.singleLeftCommand = null;
+			//#if !tmp.RightOptions
+				if (this.singleLeftCommand != null) {
+					if ( this.singleLeftCommand.getCommandType() == Command.BACK 
+						|| this.singleLeftCommand.getCommandType() == Command.CANCEL ) 
+					{
+						this.singleRightCommand = this.singleLeftCommand;
+						this.singleRightCommandItem.setText( this.singleLeftCommand.getLabel() );
+						this.singleLeftCommand = null;
+					}
+					if (this.isInitialised) {
+						this.isInitialised = false;
+						repaint();
+					}
+					return;
 				}
-				if (this.isInitialised) {
-					this.isInitialised = false;
-					repaint();
-				}
-				return;
-			}
-			// there are several commands available, from the which the BACK/CANCEL command
-			// with the highest priority needs to be chosen:
-			Command[] myCommands = (Command[]) this.commandsList.toArray( new Command[ this.commandsList.size() ]);
-			int maxPriority = 1000;
-			int maxPriorityId = -1;
-			for (int i = 0; i < myCommands.length; i++) {
-				Command command = myCommands[i];
-				int type = command.getCommandType();
-				//#if polish.blackberry
-					if ((type == Command.BACK || type == Command.CANCEL || type == Command.EXIT)
-				//#else
-					//# if ((type == Command.BACK || type == Command.CANCEL)
-				//#endif
-						&& command.getPriority() < maxPriority ) 
-				{
-					maxPriority = command.getPriority();
-					maxPriorityId = i;
-				}
-			}
-			if ( maxPriorityId != -1 ) {
-				this.singleRightCommand = (Command) this.commandsList.remove(maxPriorityId);
-				this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
-				this.commandsContainer.remove( maxPriorityId );
-			}
-			// don't return here yet, since it could well be that there is only
-			// one remaining item in the commandsList. In such a case the 
-			// single left command is used instead.
+				int newSingleRightCommandIndex = getNextNegativeCommandIndex();
+				if ( newSingleRightCommandIndex != -1 ) {
+					this.singleRightCommand = (Command) this.commandsList.remove(newSingleRightCommandIndex);
+					this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+					this.commandsContainer.remove( newSingleRightCommandIndex );
+				}	
+				// don't return here yet, since it could well be that there is only
+				// one remaining item in the commandsList. In such a case the 
+				// single left command is used instead.
+
+			//#endif
+
 		}
 		
 		// 3.case: cmd belongs to command collection
@@ -324,10 +400,18 @@ public class MenuBar extends Item {
 		//#if !tmp.useInvisibleMenuBar
 		if (this.commandsList.size() == 1) {
 			//System.out.println("moving only left command to single-left-one");
-			Command command = (Command) this.commandsList.remove( 0 );
-			this.commandsContainer.remove( 0 );
-			this.singleLeftCommand = command;
-			this.singleLeftCommandItem.setText( command.getLabel() );
+			CommandItem item = (CommandItem) this.commandsContainer.get( 0 );
+			if (!item.hasChildren) {
+				Command command = (Command) this.commandsList.remove( 0 );
+				this.commandsContainer.remove( 0 );
+				//#if tmp.RightOptions
+					this.singleRightCommand = command;
+					this.singleRightCommandItem.setText( command.getLabel() );
+				//#else
+					this.singleLeftCommand = command;
+					this.singleLeftCommandItem.setText( command.getLabel() );
+				//#endif
+			}
 		}
 		//#endif
 
@@ -335,6 +419,30 @@ public class MenuBar extends Item {
 			this.isInitialised = false;
 			repaint();
 		}
+	}
+
+	private int getNextNegativeCommandIndex() {
+	
+		// there are several commands available, from the which the BACK/CANCEL command
+		// with the highest priority needs to be chosen:
+		Command[] myCommands = (Command[]) this.commandsList.toArray( new Command[ this.commandsList.size() ]);
+		int maxPriority = 1000;
+		int maxPriorityId = -1;
+		for (int i = 0; i < myCommands.length; i++) {
+			Command command = myCommands[i];
+			int type = command.getCommandType();
+			//#if polish.blackberry
+				if ((type == Command.BACK || type == Command.CANCEL || type == Command.EXIT)
+			//#else
+				//# if ((type == Command.BACK || type == Command.CANCEL)
+			//#endif
+					&& command.getPriority() < maxPriority ) 
+			{
+				maxPriority = command.getPriority();
+				maxPriorityId = i;
+			}
+		}
+		return maxPriorityId;
 	}
 
 	/* (non-Javadoc)
@@ -355,6 +463,9 @@ public class MenuBar extends Item {
 				this.commandsContainerWidth = this.screen.screenWidth;
 			//#endif
 			int containerHeight = this.commandsContainer.getItemHeight(this.commandsContainerWidth, this.commandsContainerWidth);
+			this.commandsContainerWidth = this.commandsContainer.itemWidth;
+			//#debug
+			System.out.println("commandsContainerWidth=" + this.commandsContainerWidth);
 			this.commandsContainerY = screenHeight - containerHeight - 1;
 			if (this.commandsContainerY < titleHeight) {
 				this.commandsContainerY = titleHeight;
@@ -370,49 +481,59 @@ public class MenuBar extends Item {
 				&& (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
 			this.paintScrollIndicator = this.canScrollUpwards || this.canScrollDownwards;
 			//#if !tmp.useInvisibleMenuBar
+				//#if tmp.RightOptions
+					IconItem item = this.singleRightCommandItem;
+				//#else
+					//# IconItem item = this.singleLeftCommandItem;
+				//#endif
 				if (this.selectImage != null) {
-					this.singleLeftCommandItem.setImage( this.selectImage );
+					item.setImage( this.selectImage );
 					if (this.showImageAndText) {
 						//#ifdef polish.i18n.useDynamicTranslations
-							this.singleLeftCommandItem.setText( Locale.get( "polish.command.select" ) ); 
+							item.setText( Locale.get( "polish.command.select" ) ); 
 						//#elifdef polish.command.select:defined
-							//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
+							//#= item.setText( "${polish.command.select}" );
 						//#else
-							this.singleLeftCommandItem.setText( "Select" );
+							item.setText( "Select" );
 						//#endif
 					} else {
-						this.singleLeftCommandItem.setText( null );
+						item.setText( null );
 					}
 				} else {
-					this.singleLeftCommandItem.setImage( (Image)null );
+					item.setImage( (Image)null );
 					//#ifdef polish.i18n.useDynamicTranslations
-						this.singleLeftCommandItem.setText( Locale.get( "polish.command.select" ) ); 
+						item.setText( Locale.get( "polish.command.select" ) ); 
 					//#elifdef polish.command.select:defined
-						//#= this.singleLeftCommandItem.setText( "${polish.command.select}" );
+						//#= item.setText( "${polish.command.select}" );
 					//#else
-						this.singleLeftCommandItem.setText( "Select" );
+						item.setText( "Select" );
 					//#endif
 				}
+				//#if tmp.RightOptions
+					item = this.singleLeftCommandItem;
+				//#else
+					//# item = this.singleRightCommandItem;
+				//#endif
 				if (this.cancelImage != null) {
-					this.singleRightCommandItem.setImage( this.cancelImage );
+					item.setImage( this.cancelImage );
 					if (this.showImageAndText) {
 						//#ifdef polish.i18n.useDynamicTranslations
-							this.singleRightCommandItem.setText( Locale.get( "polish.command.cancel" ) ); 
+							item.setText( Locale.get( "polish.command.cancel" ) ); 
 						//#elifdef polish.command.cancel:defined
-							//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}" );
+							//#= item.setText(  "${polish.command.cancel}" );
 						//#else
-							this.singleRightCommandItem.setText( "Cancel" );
+							item.setText( "Cancel" );
 						//#endif
 					} else {
-						this.singleRightCommandItem.setText( null );
+						item.setText( null );
 					}
 				} else {
 					//#ifdef polish.i18n.useDynamicTranslations
-						this.singleRightCommandItem.setText( Locale.get( "polish.command.cancel" ) ); 
+						item.setText( Locale.get( "polish.command.cancel" ) ); 
 					//#elifdef polish.command.cancel:defined
-						//#= this.singleRightCommandItem.setText(  "${polish.command.cancel}"  );
+						//#= item.setText(  "${polish.command.cancel}"  );
 					//#else
-						this.singleRightCommandItem.setText( "Cancel" );
+						item.setText( "Cancel" );
 					//#endif
 				}
 			//#endif
@@ -432,32 +553,48 @@ public class MenuBar extends Item {
 				}
 				// the menu is closed
 				this.paintScrollIndicator = false;
-				if (this.singleRightCommand != null) {
-					this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+				//#if tmp.RightOptions
+					if (this.singleLeftCommand != null) {
+						this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
+					} else {
+						this.singleLeftCommandItem.setText( null );
+					}
+					this.singleLeftCommandItem.setImage( (Image)null );
+				//#else
+					if (this.singleRightCommand != null) {
+						this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+					} else {
+						this.singleRightCommandItem.setText( null );
+					}
 					this.singleRightCommandItem.setImage( (Image)null );
-				}
+				//#endif
 				if (this.commandsList.size() > 0) {
+					//#if tmp.RightOptions
+						IconItem item = this.singleRightCommandItem;
+					//#else
+						//# IconItem item = this.singleLeftCommandItem;
+					//#endif
 					if (this.optionsImage != null) {
-						this.singleLeftCommandItem.setImage( this.optionsImage );
+						item.setImage( this.optionsImage );
 						if (this.showImageAndText) {
 							//#ifdef polish.i18n.useDynamicTranslations
-								this.singleLeftCommandItem.setText( Locale.get( "polish.command.options" ) ); 
+								item.setText( Locale.get( "polish.command.options" ) ); 
 							//#elifdef polish.command.options:defined
-								//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+								//#= item.setText( "${polish.command.options}" );
 							//#else
-								this.singleLeftCommandItem.setText( "Options" );				
+								item.setText( "Options" );				
 							//#endif
 						} else {
-							this.singleLeftCommandItem.setText( null );
+							item.setText( null );
 						}
 					} else {
-						this.singleLeftCommandItem.setImage( (Image)null );
+						item.setImage( (Image)null );
 						//#ifdef polish.i18n.useDynamicTranslations
-							this.singleLeftCommandItem.setText( Locale.get( "polish.command.options" ) ); 
+							item.setText( Locale.get( "polish.command.options" ) ); 
 						//#elifdef polish.command.options:defined
-							//#= this.singleLeftCommandItem.setText( "${polish.command.options}" );
+							//#= item.setText( "${polish.command.options}" );
 						//#else
-							this.singleLeftCommandItem.setText( "Options" );				
+							item.setText( "Options" );				
 						//#endif
 					}
 				}
@@ -491,12 +628,17 @@ public class MenuBar extends Item {
 			// paint opened menu:
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			//#if tmp.useInvisibleMenuBar
-				// paint menu at the top left corner:
+				// paint menu at the top right corner:
 				g.setClip(0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY);
 				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.commandsContainerWidth, this.screen.screenWidth, g);
 				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
-			//#else
+			//#elif tmp.RightOptions
 				// paint menu at the lower right corner:
+				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
+				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.commandsContainerY, this.screen.screenWidth - this.commandsContainerWidth, this.screen.screenWidth, g);
+				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
+			//#else
+				// paint menu at the lower left corner:
 				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
 				this.commandsContainer.paint(0, this.commandsContainerY, 0, this.commandsContainerWidth , g);
 			//#endif
@@ -514,12 +656,20 @@ public class MenuBar extends Item {
 			this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandY, leftBorder, centerX, g);			
 			this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandY, centerX, rightBorder, g);
 		} else {
-			int centerX = leftBorder + ((rightBorder - leftBorder)/2); 
-			if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
+			int centerX = leftBorder + ((rightBorder - leftBorder)/2);
+			//#if tmp.RightOptions
+				//# if (this.singleLeftCommand != null) {
+			//#else
+				if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
+			//#endif
 				//System.out.println("painting left command from " + leftBorder + " to " + centerX );
 				this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandY, leftBorder, centerX, g);
 			}
-			if (this.singleRightCommand != null) {
+			//#if tmp.RightOptions
+				if (this.commandsContainer.size() > 0 || this.singleRightCommand != null) {
+			//#else
+				//# if (this.singleRightCommand != null) {
+			//#endif
 				//System.out.println("painting right command from " + centerX + " to " + rightBorder );
 				this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandY, centerX, rightBorder, g);
 			}
@@ -562,54 +712,59 @@ public class MenuBar extends Item {
 		//#debug
 		System.out.println("MenuBar: handleKeyPressed(" + keyCode + ", " + gameAction  );
 		this.isSoftKeyPressed = false;
-		if (keyCode == LEFT_SOFT_KEY) {
-			this.isSoftKeyPressed = true;
-			if (this.isOpened) {
-				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
-				//#if tmp.useInvisibleMenuBar
-					if (commandItem.command == this.hideCommand ) {
-						setOpen( false );
-						return true;
-					}
-					//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
-				//#endif
-				commandItem.handleKeyPressed( 0, Canvas.FIRE );
-//				boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
-//				if (!handled) { // CommandItem returns false when it invokes the command listener
-				// this is now done automatically by the Screen class
-//					setOpen( false );
-//				}				
-				return true;
-			} else if (this.singleLeftCommand != null) {
-				this.screen.callCommandListener(this.singleLeftCommand);
-				return true;
+		if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null) {
+			this.isSoftKeyPressed = true;			
+			this.screen.callCommandListener(this.singleLeftCommand);
+			return true;			
+		}
+		if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null) {
+			this.isSoftKeyPressed = true;			
+			this.screen.callCommandListener(this.singleRightCommand);
+			return true;			
+		}
+		if (this.isOpened && keyCode == this.selectOptionsMenuKey) {
+			this.isSoftKeyPressed = true;			
+			CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 			//#if tmp.useInvisibleMenuBar
-			} else if ( this.positiveCommand != null 
-					&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3)
-					|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
-			{
-				// invoke positive command:
-				this.screen.callCommandListener(this.positiveCommand);
-				return true;
+				if (commandItem.command == this.hideCommand ) {
+					setOpen( false );
+					return true;
+				}
+				//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
 			//#endif
-			} else if (this.commandsList.size() > 0) {
+			commandItem.handleKeyPressed( 0, Canvas.FIRE );
+//			boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
+//			if (!handled) { // CommandItem returns false when it invokes the command listener
+			// this is now done automatically by the Screen class
+//				setOpen( false );
+//			}				
+			return true;			
+		}
+		if (keyCode == this.openOptionsMenuKey) {
+			this.isSoftKeyPressed = true;			
+			//#if tmp.useInvisibleMenuBar
+				if ( !this.isOpened && this.positiveCommand != null 
+						&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3)
+						|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
+				{
+					// invoke positive command:
+					this.screen.callCommandListener(this.positiveCommand);
+					return true;
+				} else 
+			//#endif
+			if (this.commandsList.size() > 0) {
 				setOpen( true );
 				return true;
 			}
-		} else if (keyCode == RIGHT_SOFT_KEY) {
+		} else if (keyCode == this.closeOptionsMenuKey && this.isOpened) {
 			this.isSoftKeyPressed = true;
-			if (this.isOpened) {
-				int selectedIndex = this.commandsContainer.getFocusedIndex();
-				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
-						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
-				{
-					setOpen( false );
-				}
-				return true;
-			} else if (this.singleRightCommand != null) {
-				this.screen.callCommandListener(this.singleRightCommand);
-				return true;
+			int selectedIndex = this.commandsContainer.getFocusedIndex();
+			if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
+					|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
+			{
+				setOpen( false );
 			}
+			return true;
 		} else if (this.isOpened){
 			if (keyCode != 0) {
 				gameAction = this.screen.getGameAction(keyCode);
@@ -632,10 +787,10 @@ public class MenuBar extends Item {
 			if (handled) {
 				this.isInitialised = false;
 			} else { 
-//				if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
-//					//#debug error
-//					System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() );
-//				}
+				if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
+					//#debug error
+					System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() );
+				}
 				setOpen( false );
 			}
 			return handled;

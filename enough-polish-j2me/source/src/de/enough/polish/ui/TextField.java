@@ -330,8 +330,8 @@ public class TextField extends StringItem
 //#endif
 //#if polish.TextField.supportSymbolsEntry && tmp.directInput
 	//#define tmp.supportsSymbolEntry
-	//#if !polish.css.style.textFieldSymbolTable
-		//#abort You need to define the \".textFieldSymbolTable\" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
+	//#if !polish.css.style.textFieldSymbolTable && !polish.css.style.textFieldSymbolList 
+		//#abort You need to define the \".textFieldSymbolList\" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
 	//#endif
 //#endif
 //#if !(tmp.forceDirectInput || polish.blackberry) || tmp.supportsSymbolEntry
@@ -678,7 +678,11 @@ public class TextField extends StringItem
 	//#if tmp.directInput
 		//#if tmp.supportsSymbolEntry
 			private static List symbolsList;
-			private static String definedSymbols = "@/\\<>().,-_:\"";
+			//#if polish.TextField.Symbols:defined
+				//#= private static String definedSymbols = "${ escape(polish.TextField.Symbols)}"; 
+			//#else
+				private static String definedSymbols = "@/\\<>().,-_:\"";
+			//#endif
 			//#ifdef polish.i18n.useDynamicTranslations
 		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 3 );
 			//#elifdef polish.command.entersymbol:defined
@@ -2436,8 +2440,23 @@ public class TextField extends StringItem
 							&& ((keyCode >= Canvas.KEY_NUM0 
 							&& keyCode <= Canvas.KEY_NUM9)
 							|| (keyCode == Canvas.KEY_POUND ) 
-							|| (keyCode == Canvas.KEY_STAR )) ) 
+							|| (keyCode == Canvas.KEY_STAR )
+							//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+								//#= || (keyCode == ${polish.key.AddSymbolKey} )
+							//#endif
+							)) 
 					{	
+						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+							//#if false
+								int addSymbolCode = 0;
+							//#else
+								//#= int addSymbolCode = ${polish.key.AddSymbolKey};
+							//#endif
+							if (keyCode == addSymbolCode ) {
+								commandAction( ENTER_SYMBOL_CMD, this );
+								return true;
+							}
+						//#endif
 						String alphabet;
 						if (keyCode == Canvas.KEY_POUND) {
 							alphabet = charactersKeyPound;
@@ -2930,9 +2949,10 @@ public class TextField extends StringItem
 						insertCharacter();
 					}
 					if (symbolsList == null) {
-						//#style textFieldSymbolTable?
+						//#style textFieldSymbolList?, textFieldSymbolTable?
 						symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
 						for (int i = 0; i < definedSymbols.length(); i++) {
+							//#style textFieldSymbolItem?
 							symbolsList.append( definedSymbols.substring(i, i+1), null );
 						}
 						symbolsList.setCommandListener( this );
