@@ -30,6 +30,9 @@
 		<groups>UEI</groups>
 		<features></features>
 		<capability name="key.ChangeInputModeKey" value="35" />
+		<!-- use the star for triggering input of symbols in direct input mode: -->
+		<capability name="key.AddSymbolKey" value="42" />
+		<capability name="MenuBar.OptionsPosition" value="left" />
 	</vendor>
 	
 	<vendor>
@@ -55,6 +58,7 @@
 		<capability name="TextField.charactersKeyStar" value=" " />		
 		<capability name="IconSize" value="15x15" />		
 		<capability name="Property.imsi" value="IMSI" />
+		<capability name="MenuBar.OptionsPosition" value="right" />
 	</vendor>
 	
 	<vendor>
@@ -68,6 +72,8 @@
 		<capability name="TextField.charactersKeyPound" value=" " />		
 		<capability name="Property.imei" value="com.sonyericsson.imei" />
 		<capability name="vendor.alias" value="SonyEricsson" />
+		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="command.options" value="Menu" />
 	</vendor>
 	
 	<vendor>

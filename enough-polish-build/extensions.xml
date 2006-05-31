@@ -334,6 +334,12 @@
 
 	<extension>
 		<type>propertyfunction</type>
+		<name>escape</name>
+		<class>de.enough.polish.propertyfunctions.EscapeFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
 		<name>localefilename</name>
 		<class>de.enough.polish.propertyfunctions.LocaleFileNameFunction</class>
 	</extension>

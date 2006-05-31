@@ -267,6 +267,7 @@ implements Comparator
 	 * @param rawTranslations the translations
 	 */
 	private void processRawTranslations(Map rawTranslations ) {
+		//System.out.println("process raw translations for " + rawTranslations);
 		// the processing is actual done in two steps.
 		// In the first step all variables are set,
 		// in the second steps "ordinary" translations are processed.
@@ -286,20 +287,18 @@ implements Comparator
 			// then add it as a variable to the preprocessor:
 			boolean variableFound = false;
 			if (key.startsWith("polish.")) {
-				//this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			} else if (key.startsWith("var:")) {
 				key = key.substring( "var:".length() );
-				//this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			} else if (key.startsWith("variable:")) {
 				key = key.substring( "variable:".length() );
-				//this.preprocessor.addVariable(key, value );
 				variableFound = true;
 			} else if (key.startsWith("MIDlet-")) {
 				variableFound = true;
 			}
 			if ( variableFound ) {
+				//System.out.println("found variable: [" + key + "=" + value + "]" );
 				this.environment.addVariable(key, value );
 				this.preprocessingVariablesByKey.put( key, value );
 				// create final translation:
@@ -360,24 +359,8 @@ implements Comparator
 		// resources/vendor/locale
 		// resources/group1..n/locale
 		// resources/vendor/device/locale
-		
+
 		Map rawTranslations = new HashMap();
-		// load GUI translations when dynamic translations:
-		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
-		InputStream in = resourceUtil.open( this.environment.getVariable("polish.home"), "translations.txt");
-		readProperties(in, rawTranslations);
-		//System.out.println( this.locale + ": read " + rawTranslations.size() + " translations:");
-		Object[] keys = rawTranslations.keySet().toArray();
-		for (int i = 0; i < keys.length; i++) {
-			String key = (String) keys[i];
-			Object value = this.environment.getVariable( key );
-			if (value != null) {
-				// user-defined variables have priority over these settings:
-				rawTranslations.put( key, value );
-			}
-			//System.out.println(key + "=" + rawTranslations.get( key ));
-		}
-		in.close();
 		
 		// load general resources:
 		String messagesFileName = File.separator + this.localizationSetting.getMessagesFileName();
@@ -437,12 +420,40 @@ implements Comparator
 				readPropertiesFile(messagesFile, rawTranslations );
 			}
 		}
+		
+		// load GUI translations when dynamic translations:
+		Map guiTranslations = new HashMap();
+		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
+		InputStream in = resourceUtil.open( this.environment.getVariable("polish.home"), "translations.txt");
+		readProperties(in, guiTranslations);
+		in.close();
+		//System.out.println( this.locale + ": read " + rawTranslations.size() + " translations:");
+		Object[] keys = guiTranslations.keySet().toArray();
+		for (int i = 0; i < keys.length; i++) {
+			String key = (String) keys[i];
+			if ( (rawTranslations.get(key) != null)
+				||(rawTranslations.get("var:" + key) != null)
+				||(rawTranslations.get("variable:" + key) != null)) {
+				// don't add this translation
+				guiTranslations.remove(key);
+			} else {
+				Object value = this.environment.getVariable( key );
+				if (value != null) {
+					// user-defined variables have priority over these settings:
+					guiTranslations.put( key, value );
+				}
+				//System.out.println(key + "=" + rawTranslations.get( key ));
+			}
+		}
+		rawTranslations.putAll(guiTranslations);
+		
 		return rawTranslations;
 	}
 	
 	private void readPropertiesFile( File messagesFile, Map rawTranslations ) 
 	throws FileNotFoundException, IOException 
 	{
+		//System.out.println("Reading properties from file " + messagesFile.getAbsolutePath() );
 		InputStream in = new FileInputStream( messagesFile );
 		readProperties( in, rawTranslations );
 		in.close();

@@ -158,10 +158,28 @@
 				<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
 					<keep class="de.enough.polish.example.Dummy" />
 				</obfuscator>
-				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug if="test" level="error" showLogOnError="true" verbose="true">
-					<filter level="debug" package="de.enough.polish.sample.mail"/>
-					<filter level="info" pattern="de.enough.polish.ui.*"/>
+				<variables 
+					replacePropertiesWithoutDirective="false"
+					>
+					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />					
+				</variables>
+				<!-- obfuscator settings: do not obfuscate when the test-property is true  
+				-->
+				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">
+					<parameter name="optimize" value="true" />
+				</obfuscator>
+				<!-- debug/log settings: only include debug setting when the test-property is true -->
+				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
+					<filter level="debug" package="de.enough.polish.sample.tabbedform"/>
+					<!--
+					<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
+					<filter level="debug" class="de.enough.polish.ui.Container"/>
+					<filter level="debug" class="de.enough.polish.ui.Screen"/>
+					<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
+					-->
 				</debug>
 				<resources
 					dir="resources"

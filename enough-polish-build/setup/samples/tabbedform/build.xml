@@ -178,10 +178,28 @@
 					<parameter name="optimize" value="false" />
 					-->
 				</obfuscator>
-				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug if="test" showLogOnError="true" verbose="true" level="error">
-					<filter pattern="de.enough.polish.example.*" level="debug" />
-					<filter pattern="de.enough.polish.ui.*" level="warn" />
+				<variables 
+					replacePropertiesWithoutDirective="false"
+					>
+					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />					
+				</variables>
+				<!-- obfuscator settings: do not obfuscate when the test-property is true  
+				-->
+				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">
+					<parameter name="optimize" value="true" />
+				</obfuscator>
+				<!-- debug/log settings: only include debug setting when the test-property is true -->
+				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
+					<filter level="debug" package="de.enough.polish.sample.tabbedform"/>
+					<!--
+					<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
+					<filter level="debug" class="de.enough.polish.ui.Container"/>
+					<filter level="debug" class="de.enough.polish.ui.Screen"/>
+					<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
+					-->
 				</debug>
 				<!-- user defined JAD attributes can also be used: -->
 				<jad>
