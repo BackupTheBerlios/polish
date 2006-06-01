@@ -91,9 +91,6 @@ public class PlatformPage extends WizardPage {
             this.treeItemToDeviceTreeItemMap = new HashMap();
         }
         
-        /**
-         * @param treeItem a TreeItem with a DeviceTreeItem as data member.
-         */
         public void addTreeItem(TreeItem treeItem) {
             DeviceTreeItem deviceTreeItem = (DeviceTreeItem)treeItem.getData();
             deviceTreeItem.addSelectionListener(this);
@@ -384,7 +381,6 @@ public class PlatformPage extends WizardPage {
         this.newProjectModel.getMeposeModel().setSupportedPlatforms(platformsArray);
         
         this.dTree.rebuild(configurationsArray,platformsArray);
-        
         this.deviceTree.removeAll();
         this.newProjectModel.removeAllTargetDevices();
 //        this.selectedDeviceTreeItems.clear();

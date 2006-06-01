@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
 
@@ -94,9 +95,17 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         // Do not hand over the monitor as others are going to call beginTask
         // which must be called only once.
         makeJavaProject();
+        registerMeposeModel();
 	}
 
-	private void makeJavaProject() {
+	/**
+     * 
+     */
+    private void registerMeposeModel() {
+        MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),this.newProjectModel.getMeposeModel());
+    }
+
+    private void makeJavaProject() {
         try {
             this.javaSettingsPage.configureJavaProject(null);
         } catch (CoreException exception) {

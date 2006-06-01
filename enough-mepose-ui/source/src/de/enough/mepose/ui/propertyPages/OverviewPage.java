@@ -37,26 +37,6 @@ import org.eclipse.ui.dialogs.PropertyPage;
 
 public class OverviewPage extends PropertyPage{
 
-//    private Text textField;
-//    private Composite mainComposite;
-//    private IProjectPropertyPageModel presentationModel;
-//    private PropertyChangeListener propertyChangeListenerForPresentationModel;
-    
-//    class PresentationModelListener implements PropertyChangeListener{
-//
-//        /*
-//         * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-//         */
-//        public void propertyChange(PropertyChangeEvent arg0) {
-//            // TODO ricky implement propertyChange
-//            
-//        }
-//        
-//    }
-    
-    /*
-     * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-     */
     protected Control createContents(Composite parent) {
         
         Composite main = new Composite(parent,SWT.NONE);
@@ -89,62 +69,7 @@ public class OverviewPage extends PropertyPage{
 //        return this.mainComposite;
     }
 
-//    private String getDefaultBuildxml() {
-//        String defaultBuildxml = "build.xml";
-//        
-//        IProject project = (IProject)getElement().getAdapter(IProject.class);
-//        if(project == null) {
-//            System.out.println("ERROR:ProjectPropertyPage.getDefaultBuildxml(...):we dont have IProject as element.");
-//            return "";
-//        }
-//        IPath projectPath = project.getLocation();
-//        if(projectPath == null) {
-//            System.out.println("ERRORProjectPropertyPage.getDefaultBuildxml(...):the location of project is null.");
-//            return defaultBuildxml;
-//        }
-//        return projectPath.toString();
-//    }
-//
-//    protected void performApply() {
-//        System.out.println("DEBUG:ProjectPropertyPage.performApply(...):enter.");
-//        super.performApply();
-//    }
-//
-//    public boolean performCancel() {
-//        System.out.println("DEBUG:ProjectPropertyPage.performCancel(...):enter.");
-//        return super.performCancel();
-//    }
-//
-//    protected void performDefaults() {
-//        System.out.println("DEBUG:ProjectPropertyPage.performDefaults(...):enter.");
-//        super.performDefaults();
-//    }
-//
-//    public void performHelp() {
-//        System.out.println("DEBUG:ProjectPropertyPage.performHelp(...):enter.");
-//        super.performHelp();
-//    }
-//
-//    public boolean performOk() {
-//        System.out.println("DEBUG:ProjectPropertyPage.performOk(...):enter.");
-//        return super.performOk();
-//    }
-//
-//    protected void updateApplyButton() {
-//        System.out.println("DEBUG:ProjectPropertyPage.updateApplyButton(...):enter.");
-//        super.updateApplyButton();
-//    }
-//
-//    /*
-//     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-//     */
-//    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//        if(propertyChangeEvent.getPropertyName() == "buildxml") {
-//            return;
-//        }
-//                
-//        
-//    }
+
     
     
 

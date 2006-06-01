@@ -7,21 +7,25 @@
 		schema="schema/preferencePageSummary.exsd" />
 
 	<extension point="org.eclipse.ui.propertyPages">
-		<page class="de.enough.mepose.ui.propertyPages.OverviewPage"
+		<page
+			class="de.enough.mepose.ui.propertyPages.OverviewPage"
 			icon="icons/polish_logo_16x16.png"
 			id="de.enough.mepose.ui.propertyPages.OverviewPage"
-			name="j2ME Polish" objectClass="org.eclipse.jdt.core.IJavaProject">
-			<filter name="nature"
-				value="de.enough.mepose.core.polishNature" />
-
-		</page>
-		<page category="de.enough.mepose.ui.propertyPages.OverviewPage"
-			class="de.enough.mepose.ui.propertyPages.AdvDataPage"
-			id="de.enough.mepose.ui.propertyPages.AdvDataPage"
-			name="Advanced Data Entry"
+			name="j2ME Polish"
 			objectClass="org.eclipse.jdt.core.IJavaProject">
 			<filter name="nature"
-				value="de.enough.mepose.core.PolishNature" />
+				value="de.enough.mepose.core.polishNature" />
+		</page>
+
+		<page
+        category="de.enough.mepose.ui.propertyPages.OverviewPage"
+        class="de.enough.mepose.ui.propertyPages.AdvDataPage"
+        icon="icons/polish_logo_16x16.png"
+        id="de.enough.mepose.ui.propertyPages.AdvDataPage"
+        name="Advanced Data Entry"
+        objectClass="org.eclipse.jdt.core.IJavaProject">
+			<filter name="nature"
+				value="de.enough.mepose.core.polishNature" />
 		</page>
 	</extension>
 
