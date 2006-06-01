@@ -90,6 +90,8 @@ public class PolishEditor extends CompilationUnitEditor {
         
     }
     
+    
+    
     private MeposeModel meposeProject;
     private Environment deviceEnvironment;
     
@@ -137,18 +139,25 @@ public class PolishEditor extends CompilationUnitEditor {
 
         IToolBarManager toolBarManager = getEditorSite().getActionBars().getToolBarManager();
 
-        IContributionItem contributionItem = toolBarManager.find(DeviceDropdownChooserContributionItem.class.getName());
+        IContributionItem contributionItem = getDeviceDropdownChooserContributionItem();
+        
         DeviceDropdownChooserContributionItem deviceDropdownChooserContributionItem;
         if(contributionItem == null) {
             deviceDropdownChooserContributionItem = new DeviceDropdownChooserContributionItem(getMeposeModel());
             toolBarManager.add(deviceDropdownChooserContributionItem);
         } 
-        else {
-            deviceDropdownChooserContributionItem = (DeviceDropdownChooserContributionItem)contributionItem;
-            deviceDropdownChooserContributionItem.setMeposeModel(getMeposeModel());
-        }
+        // Do not set the model explicitly here. The partlistener will handle it.
+//        else {
+//            deviceDropdownChooserContributionItem = (DeviceDropdownChooserContributionItem)contributionItem;
+//            deviceDropdownChooserContributionItem.setMeposeModel(getMeposeModel());
+//        }
     }
    
+    public DeviceDropdownChooserContributionItem getDeviceDropdownChooserContributionItem() {
+        IToolBarManager toolBarManager = getEditorSite().getActionBars().getToolBarManager();
+        return (DeviceDropdownChooserContributionItem)toolBarManager.find(DeviceDropdownChooserContributionItem.class.getName());
+    }
+    
     protected boolean affectsTextPresentation(PropertyChangeEvent event) {
         PolishSourceViewerConfiguration polishSourceViewerConfiguration = (PolishSourceViewerConfiguration)getSourceViewerConfiguration();
         if(polishSourceViewerConfiguration.affectsTextPresentation(event)) {

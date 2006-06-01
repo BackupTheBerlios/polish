@@ -26,6 +26,7 @@
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.DirectiveContentAssistProcessor;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
@@ -66,70 +67,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public class PolishSourceViewerConfiguration extends JavaSourceViewerConfiguration {
-    //TODO: Not needed?! Remove?!
-    
-//    class DocumentListener implements IDocumentListener{
-//
-//        /* (non-Javadoc)
-//         * @see org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.DocumentEvent)
-//         */
-//        public void documentAboutToBeChanged(DocumentEvent event) {
-//            /*
-//             * 
-//             */
-//            
-//        }
-//
-//        /* (non-Javadoc)
-//         * @see org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent)
-//         */
-//        public void documentChanged(DocumentEvent event) {
-//           
-//            IDocument document = event.getDocument();
-//            if( ! (document instanceof IDocumentExtension3)) {
-//                System.out.println("ERROR:DocumentListener.documentChanged():document is not instance of IDocumentExtension3");
-//                return;
-//            }
-//            IDocumentExtension3 documentExtension3 = (IDocumentExtension3) document;
-//            System.out.println("DocumentListener.documentChanged():partions:");
-//            String[] partitions = documentExtension3.getPartitionings();
-//            for(int i = 0; i < partitions.length; i++) {
-//                System.out.print(partitions[i]+" ");
-//            }
-//            System.out.println();
-//            
-//        }
-//        
-//    }
-    
-    
-//    class TextInputListener implements ITextInputListener{
-//
-//        DocumentListener documentListener = new DocumentListener();
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
-//         */
-//        public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
-//            /*
-//             * 
-//             */
-//       }
-//
-//        /* (non-Javadoc)
-//         * @see org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
-//         */
-//        public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-//            System.out.println("PolishEditor.TextInputListener.inputDocumentChanged():enter.newInput:"+newInput);
-//            if(oldInput != null) {
-//                oldInput.removeDocumentListener(this.documentListener);
-//            }
-//            if(newInput != null) {
-//                newInput.addDocumentListener(this.documentListener);
-//            }
-//        }
-//        
-//    }
 
     private PolishSingleLineCommentScanner polishSingleLineCommentScanner;
     private PolishEditor editor;
@@ -149,8 +86,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     
     
     protected RuleBasedScanner getSinglelineCommentScanner() {
-        //System.out.println("PolishSourceViewerConfiguration.getSinglelineCommentScanner():enter.");
-        return this.polishSingleLineCommentScanner;
+        return getPolishSingleLineCommentScanner();
     }
     
     
@@ -188,14 +124,14 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         return super.getAutoEditStrategies(sourceViewer, contentType);
     }
 
-    public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer,
-                                                     String contentType) {
-        System.out.println("ERROR:PolishSourceViewerConfiguration.getAutoIndentStrategy(...):enter. This method cant be called by 3.1.M6?!");
-        if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
-			return new PolishIndentStrategy();
-        // content type used when pasting on the plane. __dftl_partition_content_type
-        return super.getAutoIndentStrategy(sourceViewer, contentType);
-    }
+//    public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer,
+//                                                     String contentType) {
+//        System.out.println("ERROR:PolishSourceViewerConfiguration.getAutoIndentStrategy(...):enter. This method cant be called by 3.1.M6?!");
+//        if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
+//			return new PolishIndentStrategy();
+//        // content type used when pasting on the plane. __dftl_partition_content_type
+//        return super.getAutoIndentStrategy(sourceViewer, contentType);
+//    }
     
     
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
@@ -207,12 +143,9 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
             compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
             
-            //TODO: Use the MepsoePlugin to get the environment.
-//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getDefaultMeposeModel().getEnvironment());
-//            IProject correspondingProject = getProject().getProject();
             MeposeModel meposeModel = this.editor.getMeposeModel();
-//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel().getEnvironment());
-            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(meposeModel.getEnvironment());
+            Environment environment = meposeModel.getEnvironment();
+            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(environment);
             compoundContentAssistProcessor.add(processor);
             this.editor.getMeposeModel().addPropertyChangeListener(processor);
    

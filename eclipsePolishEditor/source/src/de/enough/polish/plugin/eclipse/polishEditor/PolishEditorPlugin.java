@@ -8,14 +8,93 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPageListener;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class PolishEditorPlugin extends AbstractUIPlugin {
-	//The shared instance.
+	
+    
+    /**
+     * 
+     * <br>Copyright Enough Software 2005
+     * <pre>
+     * history
+     *        May 30, 2006 - rickyn creation
+     * </pre>
+     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+     */
+    public class PartFocusListener implements IPartListener {
+
+        /*
+         * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
+         */
+        public void partActivated(IWorkbenchPart part) {
+            if(part instanceof PolishEditor) {
+                System.out.println("DEBUG:PartFocusListener.partActivated(...):setting the new model");
+                PolishEditor polishEditor = (PolishEditor)part;
+                polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
+                polishEditor.getDeviceDropdownChooserContributionItem().layout();
+            }
+        }
+
+        /*
+         * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IWorkbenchPart)
+         */
+        public void partBroughtToTop(IWorkbenchPart part) {
+            // TODO rickyn implement partBroughtToTop
+
+        }
+
+        /*
+         * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
+         */
+        public void partClosed(IWorkbenchPart part) {
+            // TODO rickyn implement partClosed
+
+        }
+
+        /*
+         * @see org.eclipse.ui.IPartListener#partDeactivated(org.eclipse.ui.IWorkbenchPart)
+         */
+        public void partDeactivated(IWorkbenchPart part) {
+            // TODO rickyn implement partDeactivated
+
+        }
+
+        /*
+         * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
+         */
+        public void partOpened(IWorkbenchPart part) {
+            // TODO rickyn implement partOpened
+
+        }
+        
+        protected void updateChooser() {
+            IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if(activeEditor instanceof PolishEditor) {
+                PolishEditor polishEditor = (PolishEditor)activeEditor;
+                polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
+            }
+        }
+
+    }
+
+
+
+    //The shared instance.
 	private static PolishEditorPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
@@ -43,6 +122,7 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	 * @throws Exception
 	 */
 	public void start(BundleContext context) throws Exception {
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new PartFocusListener());
 		super.start(context);
 	}
 

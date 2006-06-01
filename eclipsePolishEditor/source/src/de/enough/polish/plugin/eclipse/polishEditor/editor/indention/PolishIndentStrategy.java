@@ -26,7 +26,7 @@
 package de.enough.polish.plugin.eclipse.polishEditor.editor.indention;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultAutoIndentStrategy;
+import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -39,13 +39,9 @@ import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
 	
-public class PolishIndentStrategy extends DefaultAutoIndentStrategy {
+public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     
     public void customizeDocumentCommand(IDocument document, DocumentCommand documentCommand) {
-        Assert.isNotNull(document);
-        Assert.isNotNull(documentCommand);
-        System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):documentCommand.text:X"+documentCommand.text+"X");
-        System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):documentCommand.length:"+documentCommand.length);
         
 //      Did the User pushed return?
         if (documentCommand.length == 0 && documentCommand.text != null && isLineDelimiter(document,documentCommand.text)) {

@@ -67,7 +67,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
          */
         public void propertyChange(PropertyChangeEvent event) {
             System.out.println("polishScanner.PropertyChangeListener.propertyChange:"+event.getProperty()+".old:"+event.getOldValue().getClass()+".new:"+event.getNewValue().getClass());
-            //TODO: Take care for the token cache.
+            //TODO: Take care of the token cache.
         }
 
     }
@@ -85,7 +85,6 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
 //            IPolishConstants.POLISH_COLOR_FUNCTON_NAME
             };
     
-    //private IPropertyChangeListener propertyChangeListener;
     private TokenStore tokenStore; 
    
     /**
@@ -101,16 +100,10 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         //preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jdt.internal.ui.text.AbstractJavaScanner#getTokenProperties()
-     */
     protected String[] getTokenProperties() {
         return this.tokenProperties;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jdt.internal.ui.text.AbstractJavaScanner#createRules()
-     */
     protected List createRules() {
         setDefaultReturnToken(getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
         //TODO: NEW_COLOR add here.
@@ -142,9 +135,6 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
     // So we have to store our values somewhere else. We get the preferenceStore from PolishEditorPlugin directly :( So we have two stores
     // and this is going to be a manager nightmare. But I do not see another way. Having a writeable chained store is semanticly problematic
     //
-//    public IToken getPolishToken(String tokenName) {
-//        return null;
-//    }
     public boolean affectsBehavior(PropertyChangeEvent event) {
         String property = event.getProperty();
         //System.out.println(property);

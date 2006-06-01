@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.Device;
@@ -87,6 +89,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
      * @see org.eclipse.jface.action.IContributionItem#fill(org.eclipse.swt.widgets.ToolBar, int)
      */
     public void fill(ToolBar parent, int index) {
+        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.fill(...):enter.");
         this.combo = new Combo(parent,SWT.DROP_DOWN|SWT.READ_ONLY);
         updateState();
         this.combo.pack();
@@ -145,7 +148,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     }
 
     public void update() {
-        // TODO rickyn implement update
+        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.update(...):update without parameter.enter.");
     }
 
     public void update(String id) {
@@ -159,6 +162,12 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     }
     
     protected void updateState() {
+        if(this.combo == null) {
+            // I know this is silly but is really happens that this method is called before the actual control is created.
+            // Sad but true :(
+            return;
+        }
+        this.combo.removeAll();
         Device[] supportedDevices = this.meposeModel.getSupportedDevices();
         boolean deviceSelected = false;
         String currentDeviceName = this.meposeModel.getCurrentDeviceName();
@@ -171,10 +180,15 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
             }
         }
         if( ! deviceSelected) {
-            if(supportedDevices.length > 1) {
+            if(supportedDevices.length >= 1) {
                 this.combo.select(0);
             }
         }
+        this.combo.computeSize(SWT.DEFAULT,SWT.DEFAULT,true);
+        this.combo.getParent().layout();
     }
 
+    public void layout() {
+        this.parent.update(true);
+    }
 }
