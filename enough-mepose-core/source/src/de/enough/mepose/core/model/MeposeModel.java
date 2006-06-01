@@ -63,7 +63,9 @@ import de.enough.polish.ant.PolishTask;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.ConfigurationManager;
 import de.enough.polish.devices.DeviceDatabase;
+import de.enough.polish.devices.DeviceManager;
 import de.enough.polish.devices.DeviceTree;
+import de.enough.polish.devices.DeviceTreeItem;
 import de.enough.polish.devices.Platform;
 import de.enough.polish.devices.PlatformManager;
 import de.enough.utils.AntBox;
@@ -148,7 +150,6 @@ public class MeposeModel extends PropertyModel{
     private File projectHome = new File("");
 
     // Supported Config.
-//    private Device[] configuredDevicesANT = new Device[0];
     private DeviceDatabase deviceDatabase;
     private DeviceTree deviceTree;
     private IClasspathEntry[] classpathEntries;
@@ -160,7 +161,6 @@ public class MeposeModel extends PropertyModel{
     private File jadFile;
     private Device currentDevice;
     
-    
     private String currentDeviceName = DEFAULT_DEVICE_NAME;
 
     // Info.
@@ -168,11 +168,8 @@ public class MeposeModel extends PropertyModel{
 
     // Internal.
     private List propertyChangeListeners;
-
     private String buildTargetName = "j2mepolish";
-
     private List buildListener;
-
     private ClassLoader antClassLoader;
     
     
@@ -185,17 +182,12 @@ public class MeposeModel extends PropertyModel{
     // Methods.
     
     //TODO: Check if all fields are initialized.
-    //TODO: If fields are already set dispose them properly.
+    //TODO: If fields are already set dispose them properly before resetting them.
     public void reset() {
         this.antBox = new AntBox();
         AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
         IAntClasspathEntry[] antClasspathEntries = p.getDefaultAntHomeEntries();
         
-//        IAntClasspathEntry[] e2 = p.getDefaultAntHomeEntries();
-//        for (int i = 0; i < e2.length; i++) {
-//            System.out.println("DEBUG:MeposeModel.reset(...):e2."+e2[i]);
-//        }
-
         List antClasspathList = new LinkedList();
         try {
             for (int i = 0; i < antClasspathEntries.length; i++) {
@@ -407,6 +399,19 @@ public class MeposeModel extends PropertyModel{
             throw new IllegalArgumentException("setSupportedDevices(...):parameter 'supportedDevices' is null contrary to API.");
         }
         this.supportedDevices = supportedDevices;
+        DeviceTree deviceTreeTemp = getDeviceTree();
+        if(deviceTreeTemp == null) {
+            return;
+        }
+        DeviceTreeItem[] deviceTreeItems = deviceTreeTemp.getDeviceTreeItems();
+        for (int i = 0; i < deviceTreeItems.length; i++) {
+            for (int j = 0; j < supportedDevices.length; j++) {
+                if(deviceTreeItems[i].getDevice().getIdentifier().equals(supportedDevices[j].getIdentifier())) {
+                    deviceTreeItems[i].setIsSelected(true);
+                    break;
+                }
+            }
+        }
         firePropertyChangeEvent(ID_SUPPORTED_DEVICES,null,this.supportedDevices);
     }
     
@@ -722,7 +727,19 @@ public class MeposeModel extends PropertyModel{
             }
             setSupportedPlatforms(supportedPlatformsTmp);
         }
-        // TODO: restore supportedDevices, too
+        
+        String supportedDevicesString = (String)p.get(ID_SUPPORTED_DEVICES);
+        if(supportedDevicesString != null && ! supportedDevicesString.equals("")) {
+            String[] supportedDevicesArray = supportedDevicesString.split(",");
+            Device[] supportedDevicesTemp = new Device[supportedDevicesArray.length];
+            DeviceManager deviceManager = db.getDeviceManager();
+            for(int i = 0; i < supportedDevicesArray.length; i++) {
+                String identifier = supportedDevicesArray[i];
+                Device device = deviceManager.getDevice(identifier);
+                supportedDevicesTemp[i] = device;
+            }
+            setSupportedDevices(supportedDevicesTemp);
+        }
     }
 
     public void build(String targetName) {
@@ -815,10 +832,5 @@ public class MeposeModel extends PropertyModel{
     public void removeBuildListener(BuildListener aBuildListener) {
         this.buildListener.remove(aBuildListener);
     }
-    
-    
-    
-    
-
     
 }

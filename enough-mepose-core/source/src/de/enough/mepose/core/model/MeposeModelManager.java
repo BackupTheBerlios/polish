@@ -62,6 +62,7 @@ public class MeposeModelManager {
             this.model = model;
             this.persistence = persistence;
             this.project = project;
+            this.model.addPropertyChangeListener(this);
         }
         public void propertyChange(PropertyChangeEvent evt) {
             try {
@@ -86,15 +87,6 @@ public class MeposeModelManager {
         return (MeposeModel)this.modelByProject.get(project);
     }
     
-    
-    
-//    // TODO: Testing. Replace this with an extension point.
-//    public void addBuildListener(BuildListener buildListener) {
-//        for (Iterator iterator = this.projectByModel.keySet().iterator(); iterator.hasNext(); ) {
-//            MeposeModel model = (MeposeModel) iterator.next();
-//            model.addBuildListener(buildListener);
-//        }
-//    }
     
     public void addModel(IProject project, MeposeModel meposeModel) {
         if(project == null){
