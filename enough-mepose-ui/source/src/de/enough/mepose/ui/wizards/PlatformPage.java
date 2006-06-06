@@ -58,6 +58,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import de.enough.mepose.core.model.DeviceDatabaseException;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
@@ -145,7 +146,7 @@ public class PlatformPage extends WizardPage {
 //        }
         
         public void widgetSelected(SelectionEvent e) {
-            assert e.item instanceof TreeItem : "No TreeItem found.";
+//            assert e.item instanceof TreeItem : "No TreeItem found.";
         
             TreeItem item = (TreeItem)e.item;
             Object data = item.getData();
@@ -294,7 +295,13 @@ public class PlatformPage extends WizardPage {
     }
 
     public void fillGUI() {
-        DeviceDatabase deviceDatabase = this.newProjectModel.getMeposeModel().getDeviceDatabase();
+        DeviceDatabase deviceDatabase = null;
+        try {
+            deviceDatabase = this.newProjectModel.getMeposeModel().getDeviceDatabase();
+        } catch (DeviceDatabaseException exception) {
+            // TODO rickyn handle DeviceDatabaseException
+            exception.printStackTrace();
+        }
         if(deviceDatabase == null) {
             if(logger.isDebugEnabled()) {
                 logger.debug("No deviceDatabase.");

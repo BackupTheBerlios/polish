@@ -46,6 +46,13 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
@@ -54,6 +61,7 @@ import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin.PartFocusListener;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
 
@@ -71,6 +79,48 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations
  */
 public class PolishEditor extends CompilationUnitEditor {
     
+    /**
+     * 
+     * <br>Copyright Enough Software 2005
+     * <pre>
+     * history
+     *        May 30, 2006 - rickyn creation
+     * </pre>
+     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+     */
+    public class ChangeMeposeModelFocusListener implements IPartListener {
+
+        public void partActivated(IWorkbenchPart part) {
+            if(part instanceof PolishEditor) {
+                System.out.println("DEBUG:PartFocusListener.partActivated(...):setting the new model");
+                PolishEditor polishEditor = (PolishEditor)part;
+                polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
+            }
+        }
+        public void partBroughtToTop(IWorkbenchPart part) {
+            // TODO rickyn implement partBroughtToTop
+        }
+        public void partClosed(IWorkbenchPart part) {
+            // TODO rickyn implement partClosed
+
+        }
+        public void partDeactivated(IWorkbenchPart part) {
+            // TODO rickyn implement partDeactivated
+
+        }
+        public void partOpened(IWorkbenchPart part) {
+            // TODO rickyn implement partOpened
+
+        }
+        protected void updateChooser() {
+            IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if(activeEditor instanceof PolishEditor) {
+                PolishEditor polishEditor = (PolishEditor)activeEditor;
+                polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
+            }
+        }
+    }
+    
     public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor";
     
     private PropertyChangeListener propertyChangeListener;
@@ -80,9 +130,6 @@ public class PolishEditor extends CompilationUnitEditor {
     
     class PropertyChangeListener implements IPropertyChangeListener{
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-         */
         public void propertyChange(PropertyChangeEvent event) {
             //System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
             handlePreferenceStoreChanged(event);
@@ -145,12 +192,12 @@ public class PolishEditor extends CompilationUnitEditor {
         if(contributionItem == null) {
             deviceDropdownChooserContributionItem = new DeviceDropdownChooserContributionItem(getMeposeModel());
             toolBarManager.add(deviceDropdownChooserContributionItem);
-        } 
-        // Do not set the model explicitly here. The partlistener will handle it.
-//        else {
-//            deviceDropdownChooserContributionItem = (DeviceDropdownChooserContributionItem)contributionItem;
-//            deviceDropdownChooserContributionItem.setMeposeModel(getMeposeModel());
-//        }
+        }
+        getSite().getPage().addPartListener(new ChangeMeposeModelFocusListener());
+//        IWorkbench workbench = PlatformUI.getWorkbench();
+//        IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+//        IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+//        activePage.addPartListener();
     }
    
     public DeviceDropdownChooserContributionItem getDeviceDropdownChooserContributionItem() {

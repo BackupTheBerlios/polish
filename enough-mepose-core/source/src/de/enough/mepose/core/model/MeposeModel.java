@@ -274,7 +274,7 @@ public class MeposeModel extends PropertyModel{
             }
             catch(BuildException e) {
                 // configuring the target failed, maybe because the taskdef could not be resolved.
-                MeposePlugin.log("Error:MeposeProject.setBuildxml():Could not configure target:"+target.getName());
+                MeposePlugin.log("MeposeProject.setBuildxml():Could not configure target:"+target.getName(),e);
                 continue;
             }
             Task[] tasks = target.getTasks();
@@ -551,38 +551,50 @@ public class MeposeModel extends PropertyModel{
     /**
      * 
      * @return May be null.
+     * @throws DeviceDatabaseException 
      */
-    public DeviceDatabase getDeviceDatabase() {
-        if(this.deviceDatabase != null) {
-            return this.deviceDatabase;
+    public DeviceDatabase getDeviceDatabase() throws DeviceDatabaseException {
+        if(this.deviceDatabase == null) {
+            this.deviceDatabase = PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
         }
+        return this.deviceDatabase;
+        
+        
+        
         //TODO: Look out for places where this property is set instead of the setter method.
 //        File polishHome = (File)getPropertyValue(ID_POLISH_HOME);
 //        File projectHome = (File)getPropertyValue(ID_PROJECT_HOME);
 //        File wtkHome = (File)getPropertyValue(ID_WTK_HOME);
 
-        if(this.polishHome == null||this.projectHome == null) {
-            MeposePlugin.log("No polish home set in model");
-            return null;
-        }
-        HashMap properties = new HashMap();
-//        properties.put("wtk.home",this.wtkHome.getAbsolutePath());
-        properties.put("mpp.home",this.mppHome.getAbsolutePath());
-        try {
-            //TODO: Get the deviceDatabase from the PolishTask instead of creating a new one.
-            this.deviceDatabase = new DeviceDatabase(properties,this.polishHome,this.projectHome,null,null,new HashMap(),new HashMap());
-        } catch (Exception e) {
-            System.out.println("ERROR:MeposeModel.getDeviceDatabase(...):"+e);
-            e.printStackTrace();
-        }
-        return this.deviceDatabase;
+//        if(this.polishHome == null||this.projectHome == null) {
+//            MeposePlugin.log("No polish home set in model");
+//            return null;
+//        }
+//        HashMap properties = new HashMap();
+////        properties.put("wtk.home",this.wtkHome.getAbsolutePath());
+//        properties.put("mpp.home",this.mppHome.getAbsolutePath());
+//        try {
+//            //TODO: Get the deviceDatabase from the PolishTask instead of creating a new one.
+//            this.deviceDatabase = new DeviceDatabase(properties,this.polishHome,this.projectHome,null,null,new HashMap(),new HashMap());
+//        } catch (Exception e) {
+//            MeposePlugin.log("Could not get device database",e);
+//        }
+//        return this.deviceDatabase;
     }
 
     // May be null.
     public DeviceTree getDeviceTree() {
         
-        if(this.deviceTree == null && getDeviceDatabase() != null) {
-            this.deviceTree = new DeviceTree(getDeviceDatabase(),null,null);
+        DeviceDatabase deviceDatabase2;
+        try {
+            deviceDatabase2 = getDeviceDatabase();
+        } catch (DeviceDatabaseException exception) {
+            MeposePlugin.log(exception);
+            //TODO: Rethrow the exception.
+            return null;
+        }
+        if(this.deviceTree == null && deviceDatabase2 != null) {
+            this.deviceTree = new DeviceTree(deviceDatabase2,null,null);
         }
       
         return this.deviceTree;
@@ -696,7 +708,12 @@ public class MeposeModel extends PropertyModel{
             setBuildxml(new File(buildXmlTmp));
         }
         
-        DeviceDatabase db = getDeviceDatabase();
+        DeviceDatabase db = null;
+        try {
+            db = getDeviceDatabase();
+        } catch (DeviceDatabaseException exception) {
+            MeposePlugin.log(exception);
+        }
         if(db == null) {
             throw new IllegalStateException("Device Database not found. Most likely some paths are invalid.");
         }
@@ -731,14 +748,18 @@ public class MeposeModel extends PropertyModel{
         String supportedDevicesString = (String)p.get(ID_SUPPORTED_DEVICES);
         if(supportedDevicesString != null && ! supportedDevicesString.equals("")) {
             String[] supportedDevicesArray = supportedDevicesString.split(",");
-            Device[] supportedDevicesTemp = new Device[supportedDevicesArray.length];
+            List supportedDevicesTemp = new LinkedList();
             DeviceManager deviceManager = db.getDeviceManager();
             for(int i = 0; i < supportedDevicesArray.length; i++) {
                 String identifier = supportedDevicesArray[i];
                 Device device = deviceManager.getDevice(identifier);
-                supportedDevicesTemp[i] = device;
+                //TODO: Sometimes the Nokia/6611 is not found although it is in the supportedDevicesString.
+                if(device == null) {
+                    continue;
+                }
+                supportedDevicesTemp.add(device);
             }
-            setSupportedDevices(supportedDevicesTemp);
+            setSupportedDevices((Device[]) supportedDevicesTemp.toArray(new Device[supportedDevicesTemp.size()]));
         }
     }
 
@@ -764,15 +785,12 @@ public class MeposeModel extends PropertyModel{
             antProject.addBuildListener(aBuildListener);
         }
         
-//        Requirements r = new Requirements();
-//        r.isMet(getDeviceDatabase().getDeviceManager().getDevice(getCurrentDeviceName()));
-//        this.polishTask.addConfiguredDeviceRequirements(r);
-        
-//        antProject.setInheritedProperty("java.home","/usr/lib/j2sdk1.5-sun");
-        antProject.setUserProperty("device",getCurrentDeviceName());
+        antProject.setUserProperty("device",getCurrentDevice().getIdentifier());
+//        antProject.setUserProperty("device",getCurrentDeviceName();
         antProject.setUserProperty("polish.home",getPolishHome().getAbsolutePath());
         Vector targets = new Vector();
         targets.add("clean");
+        targets.add("init");
         targets.add(getBuildTargetName());
         antProject.executeTargets(targets);
     }

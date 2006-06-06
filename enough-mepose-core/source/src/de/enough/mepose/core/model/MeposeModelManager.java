@@ -69,7 +69,7 @@ public class MeposeModelManager {
                 this.persistence.putMapInProject(this.model.getStoreableProperties(),this.project);
                 System.out.println("DEBUG:PropertyStorer.propertyChange(...):enter.everything stored.");
             } catch (CoreException exception) {
-                MeposePlugin.log("Could not store model in project.exception:"+exception);
+                MeposePlugin.log("Could not store model in project",exception);
             }
         }
     }

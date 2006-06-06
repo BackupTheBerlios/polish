@@ -1,0 +1,53 @@
+/*
+ * Created on Feb 8, 2006 at 5:02:52 PM.
+ * 
+ * Copyright (c) 2006 Enough Software
+ */
+package de.enough.mepose.core.model;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import de.enough.polish.devices.DeviceDatabase;
+
+/**
+ * 
+ * <br>Copyright Enough Software 2006
+ * <pre>
+ * history
+ *        Feb 8, 2006 - rickyn creation
+ * </pre>
+ * @author Richard Nkrumah, richard.nkrumah@enough.de
+ */
+public class PolishDeviceDatabase {
+
+    private static DeviceDatabase deviceDatabase;
+    
+    private static void init(File polishHome,File projectHome) throws DeviceDatabaseException{
+        Map properties = new HashMap();
+        properties.put("mpp.home","no/path");
+        Map inputStreamsByfileName = new HashMap();
+        inputStreamsByfileName.put("capabilities.xml",PolishDeviceDatabase.class.getResourceAsStream("/capabilities.xml"));
+        inputStreamsByfileName.put("apis.xml",PolishDeviceDatabase.class.getResourceAsStream("/apis.xml"));
+        inputStreamsByfileName.put("configurations.xml",PolishDeviceDatabase.class.getResourceAsStream("/configurations.xml"));
+        inputStreamsByfileName.put("platforms.xml",PolishDeviceDatabase.class.getResourceAsStream("/platforms.xml"));
+        inputStreamsByfileName.put("groups.xml",PolishDeviceDatabase.class.getResourceAsStream("/groups.xml"));
+        inputStreamsByfileName.put("vendors.xml",PolishDeviceDatabase.class.getResourceAsStream("/vendors.xml"));
+        inputStreamsByfileName.put("devices.xml",PolishDeviceDatabase.class.getResourceAsStream("/devices.xml"));
+        try {
+            deviceDatabase = new DeviceDatabase(properties,polishHome,projectHome,null,null,inputStreamsByfileName,new HashMap());
+        } catch (Exception e) {
+            throw new DeviceDatabaseException("Could not create deviceDatabase.",e);
+        }
+    }
+    
+    public static DeviceDatabase getDeviceDatabase(File polishHome,File projectHome) throws DeviceDatabaseException{
+        if(deviceDatabase == null) {
+            init(polishHome,projectHome);
+        }
+        return deviceDatabase;
+    }
+}

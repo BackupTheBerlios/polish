@@ -31,6 +31,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.util.Assert;
 
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 
 /**
@@ -262,20 +263,28 @@ public class PolishDocumentUtils {
         int lastIndexOfLine;
         try {
             IRegion lineInformtation = document.getLineInformationOfOffset(offset);
-            lastIndexOfLine = lineInformtation.getOffset()+lineInformtation.getLength()-1;
+            int lengthOfLineInformation = lineInformtation.getLength();
+            lastIndexOfLine = lineInformtation.getOffset()+lengthOfLineInformation-1;
         } catch (BadLocationException exception) {
-            System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):Parameter out of valid range.");
+            MeposePlugin.log("extractWordAtPosition(...):Parameter out of valid range.",exception);
             return null;
         }
         
         int leftmostIndexOfWord = offset;
         int rightmostIndexOfWord = offset;
         // It makes no sense to catch every exception for itself so we use one big try block.
-        try {
+//        try {
             // search for the left bound.
             for(int i = offset-1; i >= 0; i--) {
                 // As we are advancing forward and we found a invalid char, step one back to the last vaid char.
-                char c = document.getChar(i);
+                char c;
+                try {
+                    c = document.getChar(i);
+                } catch (BadLocationException exception) {
+                    PolishEditorPlugin.log("Wrong position in document.position:"+i,exception);
+                    //TODO: Dont do the handling here. Throw an exception.
+                    return null;
+                }
                 if( ! (Character.isJavaIdentifierPart(c) || c == '.')) {
                     leftmostIndexOfWord = i+1;
                     break;
@@ -284,24 +293,39 @@ public class PolishDocumentUtils {
             }
             
             // If the current char is invalid, the next chars at the right are uninteressting.
-            if( ! Character.isJavaIdentifierPart(document.getChar(offset))) {
+            char character;
+            try {
+                character = document.getChar(offset);
+            } catch (BadLocationException exception) {
+                PolishEditorPlugin.log("Wrong position in document.position:"+offset,exception);
+                //TODO: Dont do the handling here. Throw an exception.
+                return null;
+            }
+            if( ! Character.isJavaIdentifierPart(character)) {
                 rightmostIndexOfWord--;// = offset;
             }
             // We have at least one valid char, look for more.
             else {
                 for(int i = offset+1; i <= lastIndexOfLine;i++) {
-                    if( ! Character.isJavaIdentifierPart(document.getChar(i))) {
+                    try {
+                        character = document.getChar(i);
+                    } catch (BadLocationException exception) {
+                        PolishEditorPlugin.log("Wrong position in document.position:"+i,exception);
+                        //TODO: Dont do the handling here. Throw an exception.
+                        return null;
+                    }
+                    if( ! Character.isJavaIdentifierPart(character)) {
                         rightmostIndexOfWord = i-1;
                         break;
                     }
                     rightmostIndexOfWord = i;
                 }
             }
-        }
-        catch(BadLocationException exception) {
-            System.out.println("ERROR:BlockMarker.extractWordAtPosition(...):BadLocationException:"+exception);
-            return null;
-        }
+//        }
+//        catch(BadLocationException exception) {
+//            PolishEditorPlugin.log(exception);
+//            return null;
+//        }
         return new Position(leftmostIndexOfWord,rightmostIndexOfWord-leftmostIndexOfWord+1);
     }
 }

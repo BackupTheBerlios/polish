@@ -159,9 +159,19 @@ public class ProjectPage extends WizardPage{
                 return null;
             }
         }
+        createStuff();
         return super.getNextPage();
     }
 
+    private void createStuff() {
+        try {
+            this.newProjectModel.getProject().getFolder("resources").create(true,true,null);
+        } catch (CoreException exception) {
+            MeposePlugin.log("Could not create 'resources' folder",exception);
+            return;
+        }
+    }
+    
 //    private void setupProject() throws CoreException {
         //TODO: Fill in the project properties within the core plugin.
 //        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);

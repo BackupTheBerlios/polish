@@ -28,14 +28,14 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.Device;
@@ -51,10 +51,27 @@ import de.enough.polish.Device;
  */
 public class DeviceDropdownChooserContributionItem implements IContributionItem {
 
+    public class NewDeviceSelectionListener implements SelectionListener{
+
+        public void widgetSelected(SelectionEvent e) {
+            System.out.println("DEBUG:NewDeviceSelectionListener.widgetSelected(...):device selected.");
+            Combo comboTemp = (Combo)e.item;
+            Device device = DeviceDropdownChooserContributionItem.this.supportedDevices[comboTemp.getSelectionIndex()];
+            DeviceDropdownChooserContributionItem.this.meposeModel.setCurrentDevice(device);
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // TODO rickyn implement widgetDefaultSelected
+        }
+
+    }
+    
     private IContributionManager parent;
     private boolean visible;
     private Combo combo;
-    private MeposeModel meposeModel;
+    protected MeposeModel meposeModel;
+    protected Device[] supportedDevices;
+    private NewDeviceSelectionListener deviceSelectionListener;
 
     public DeviceDropdownChooserContributionItem(MeposeModel meposeModel) {
         this.meposeModel = meposeModel;
@@ -63,45 +80,37 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     
     public void dispose() {
         System.out.println("DEBUG:DeviceDropdownChooserContributionItem.dispose(...):enter.");
-       this.combo.dispose();
-       this.combo = null;
-       this.meposeModel = null;
-       this.parent = null;
+        if(this.combo != null) {
+            this.combo.dispose();
+        }
+        this.combo = null;
+        this.meposeModel = null;
+        this.parent = null;
     }
 
-    /*
-     * @see org.eclipse.jface.action.IContributionItem#fill(org.eclipse.swt.widgets.Composite)
-     */
-    public void fill(Composite parent) {
+    public void fill(Composite parentToFill) {
         // TODO rickyn implement fill
         
     }
 
-    /*
-     * @see org.eclipse.jface.action.IContributionItem#fill(org.eclipse.swt.widgets.Menu, int)
-     */
-    public void fill(Menu parent, int index) {
+    public void fill(Menu parentToFill, int index) {
         // TODO rickyn implement fill
         
     }
 
-    /*
-     * @see org.eclipse.jface.action.IContributionItem#fill(org.eclipse.swt.widgets.ToolBar, int)
-     */
-    public void fill(ToolBar parent, int index) {
+    public void fill(ToolBar parentToFill, int index) {
         System.out.println("DEBUG:DeviceDropdownChooserContributionItem.fill(...):enter.");
-        this.combo = new Combo(parent,SWT.DROP_DOWN|SWT.READ_ONLY);
-        updateState();
+        this.combo = new Combo(parentToFill,SWT.DROP_DOWN|SWT.READ_ONLY);
+        this.deviceSelectionListener = new NewDeviceSelectionListener();
+        updateState(false);
+        this.combo.addSelectionListener(this.deviceSelectionListener);
         this.combo.pack();
-        ToolItem seperator = new ToolItem(parent,SWT.SEPARATOR);
+        ToolItem seperator = new ToolItem(parentToFill,SWT.SEPARATOR);
         seperator.setWidth(this.combo.getSize().x);
         seperator.setControl(this.combo);
     }
 
-    /*
-     * @see org.eclipse.jface.action.IContributionItem#fill(org.eclipse.swt.widgets.CoolBar, int)
-     */
-    public void fill(CoolBar parent, int index) {
+    public void fill(CoolBar parentToFill, int index) {
         // TODO rickyn implement fill
         
     }
@@ -160,19 +169,30 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
         this.meposeModel = meposeModel;
         updateState();
     }
-    
+
     protected void updateState() {
+        updateState(true);
+    }
+    
+    protected void updateState(boolean updateParent) {
         if(this.combo == null) {
             // I know this is silly but is really happens that this method is called before the actual control is created.
             // Sad but true :(
             return;
         }
         this.combo.removeAll();
-        Device[] supportedDevices = this.meposeModel.getSupportedDevices();
+        this.supportedDevices = this.meposeModel.getSupportedDevices();
         boolean deviceSelected = false;
-        String currentDeviceName = this.meposeModel.getCurrentDeviceName();
-        for (int i = 0; i < supportedDevices.length; i++) {
-            String identifier = supportedDevices[i].getIdentifier();
+        Device currentDevice = this.meposeModel.getCurrentDevice();
+        String currentDeviceName;
+        if(currentDevice != null) {
+            currentDeviceName = currentDevice.getIdentifier();
+        }
+        else {
+            currentDeviceName = "";
+        }
+        for (int i = 0; i < this.supportedDevices.length; i++) {
+            String identifier = this.supportedDevices[i].getIdentifier();
             this.combo.add(identifier);
             if(identifier.equals(currentDeviceName)) {
                 this.combo.select(i);
@@ -180,15 +200,16 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
             }
         }
         if( ! deviceSelected) {
-            if(supportedDevices.length >= 1) {
+            if(this.supportedDevices.length >= 1) {
                 this.combo.select(0);
             }
         }
-        this.combo.computeSize(SWT.DEFAULT,SWT.DEFAULT,true);
-        this.combo.getParent().layout();
+        if(updateParent) {
+            // This will relayout all children of the parent. This will also call
+            // fill so do not call this method with parameter true in the fill
+            // methods.
+            this.parent.update(true);
+        }
     }
 
-    public void layout() {
-        this.parent.update(true);
-    }
 }

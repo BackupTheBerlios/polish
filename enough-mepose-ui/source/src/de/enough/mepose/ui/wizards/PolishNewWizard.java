@@ -98,9 +98,6 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         registerMeposeModel();
 	}
 
-	/**
-     * 
-     */
     private void registerMeposeModel() {
         MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),this.newProjectModel.getMeposeModel());
     }
