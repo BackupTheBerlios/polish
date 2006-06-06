@@ -334,7 +334,7 @@ public class TextField extends StringItem
 		//#abort You need to define the \".textFieldSymbolList\" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
 	//#endif
 //#endif
-//#if !(tmp.forceDirectInput || polish.blackberry) || tmp.supportsSymbolEntry
+//#if !polish.blackberry
 	implements CommandListener
 //#endif
 //#if polish.TextField.suppressCommands == true
@@ -632,8 +632,8 @@ public class TextField extends StringItem
 	 * 
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
+	
 	//#ifndef tmp.suppressCommands
-		//#message DELETE-COMMAND: ${polish.command.delete} CANCEL:  ${polish.command.cancel} 
 		//#ifdef polish.i18n.useDynamicTranslations
 	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
 		//#elifdef polish.command.delete:defined
@@ -704,6 +704,7 @@ public class TextField extends StringItem
 		private static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
 		private static final int MODE_UPPERCASE = 2;
 		static final int MODE_NUMBERS = 3;
+		private static final int MODE_NATIVE = 4;
 		//#ifdef polish.key.ChangeInputModeKey:defined
 			//#= private static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
 		//#else
@@ -808,9 +809,8 @@ public class TextField extends StringItem
 		//#if polish.Bugs.ItemStateListenerCalledTooEarly
 			private long lastFieldChangedEvent;
 		//#endif
-	//#elif !tmp.forceDirectInput
-		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
+	private javax.microedition.lcdui.TextBox midpTextBox;
 	protected boolean flashCaret = true;
 	private boolean isUneditable;
 
@@ -903,7 +903,7 @@ public class TextField extends StringItem
 	}
 	
 	
-	//#if !tmp.forceDirectInput && !polish.blackberry
+	//#if !polish.blackberry
 	/**
 	 * Creates the TextBox used for the actual input mode.
 	 */
@@ -1474,7 +1474,7 @@ public class TextField extends StringItem
 
 		//#endif
 			
-		//#if tmp.directInput && tmp.supportsSymbolEntry
+		//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
 			if (!this.isNumeric) {
 				removeCommand( ENTER_SYMBOL_CMD );
 				if (!this.isUneditable) {
@@ -2250,6 +2250,9 @@ public class TextField extends StringItem
 				case MODE_UPPERCASE:
 					modeStr = "ABC";
 					break;
+				case MODE_NATIVE:
+					modeStr = "T9";
+					break;
 				default:
 					modeStr = "123";
 			}
@@ -2347,6 +2350,12 @@ public class TextField extends StringItem
 			//# if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
+					//#if !polish.blackberry
+					if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
+						showTextBox();
+						return true;
+					}
+					//#endif
 					synchronized ( this.lock ) {
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
@@ -2381,6 +2390,18 @@ public class TextField extends StringItem
 						}
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 							if (this.inputMode > MODE_UPPERCASE) {
+								//#if polish.TextField.allowNativeModeSwitch
+									if (this.inputMode > MODE_NATIVE) {
+										this.inputMode = MODE_LOWERCASE;
+									} else {
+										this.inputMode = MODE_NATIVE;
+									}
+								//#else
+									this.inputMode = MODE_LOWERCASE;
+								//#endif
+							}
+						//#elif polish.TextField.allowNativeModeSwitch
+							if (this.inputMode > MODE_NATIVE) {
 								this.inputMode = MODE_LOWERCASE;
 							}
 						//#else
@@ -2890,7 +2911,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !(polish.blackberry || tmp.forceDirectInput)
+	//#if !polish.blackberry
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -2907,28 +2928,35 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !(polish.blackberry || tmp.forceDirectInput) || tmp.supportsSymbolEntry
+	//#if !polish.blackberry
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable box) {
 		//#if tmp.supportsSymbolEntry
-			int index = symbolsList.getSelectedIndex();
-			this.caretChar = definedSymbols.charAt(index);
-			StyleSheet.currentScreen = this.screen;
-			insertCharacter();
-			StyleSheet.display.setCurrent( this.screen );
-		//#else
-			if (cmd == StyleSheet.CANCEL_CMD) {
-				this.midpTextBox.setString( this.text );
-			} else if (!this.isUneditable) {
-				setString( this.midpTextBox.getString() );
-				if ( this.screen instanceof Form) {
-					notifyStateChanged();
+			if (box instanceof List) {
+				if (cmd != StyleSheet.CANCEL_CMD) {
+					int index = symbolsList.getSelectedIndex();
+					this.caretChar = definedSymbols.charAt(index);
+					StyleSheet.currentScreen = this.screen;
+					insertCharacter();
+				} else {
+					StyleSheet.currentScreen = this.screen;
 				}
+				StyleSheet.display.setCurrent( this.screen );
+				return;
 			}
-			StyleSheet.display.setCurrent( this.screen );
 		//#endif
+		if (cmd == StyleSheet.CANCEL_CMD) {
+			this.midpTextBox.setString( this.text );
+		} else if (!this.isUneditable) {
+			setString( this.midpTextBox.getString() );
+			setCaretPosition( size() );
+			if ( this.screen instanceof Form) {
+				notifyStateChanged();
+			}
+		}
+		StyleSheet.display.setCurrent( this.screen );
 	}
 	//#endif
 	
@@ -2955,6 +2983,8 @@ public class TextField extends StringItem
 							//#style textFieldSymbolItem?
 							symbolsList.append( definedSymbols.substring(i, i+1), null );
 						}
+						//TODO check localization when using dynamic localization
+						symbolsList.addCommand( StyleSheet.CANCEL_CMD );
 						symbolsList.setCommandListener( this );
 					}
 					StyleSheet.display.setCurrent( symbolsList );

@@ -82,6 +82,7 @@ public class Container extends Item {
 	int yTop;
 	int yBottom;
 	protected int yOffset;
+	protected int targetYOffset;
 	private int focusedTopMargin;
 	//#if polish.css.view-type || polish.css.columns
 		//#define tmp.supportViewType 
@@ -90,7 +91,6 @@ public class Container extends Item {
 	//#ifdef polish.css.scroll-mode
 		protected boolean scrollSmooth = true;	
 	//#endif
-	protected int targetYOffset;
 	protected boolean isFirstPaint;
 
 	
@@ -282,6 +282,7 @@ public class Container extends Item {
 			if (!focusSet) {
 				this.autoFocusEnabled = true;
 				this.focusedItem = null;
+				this.focusedIndex = -1;
 			}
 		} else if (index < this.focusedIndex) {
 			this.focusedIndex--;
@@ -337,6 +338,8 @@ public class Container extends Item {
 					this.focusedItem.defocus(this.itemStyle);
 				}
 			}
+			this.focusedItem = null;
+			this.autoFocusEnabled = true;
 		}
 		this.yOffset = 0;
 		this.targetYOffset = 0;
@@ -494,14 +497,14 @@ public class Container extends Item {
 				if ( isDownwards && index < this.itemsList.size() - 1 ) {
 					nextItem = (Item) this.itemsList.get( index + 1 );
 					//#debug
-					System.err.println("Focusing downwards, nextItem.y = [" + nextItem.yTopPos + "-" + nextItem.yBottomPos + "], focusedItem.y=[" + item.yTopPos + "-" + item.yBottomPos + "], this.yOffset=" + this.yOffset + ", this.targetYOffset=" + this.targetYOffset);
+					System.out.println("Focusing downwards, nextItem.y = [" + nextItem.yTopPos + "-" + nextItem.yBottomPos + "], focusedItem.y=[" + item.yTopPos + "-" + item.yBottomPos + "], this.yOffset=" + this.yOffset + ", this.targetYOffset=" + this.targetYOffset);
 				} else if ( !isDownwards && index > 0 ) {
 					nextItem = (Item) this.itemsList.get( index - 1 );
 					//#debug
-					System.err.println("Focusing upwards, nextItem.yTopPos = " + nextItem.yTopPos + ", focusedItem.yTopPos=" + item.yTopPos );
+					System.out.println("Focusing upwards, nextItem.yTopPos = " + nextItem.yTopPos + ", focusedItem.yTopPos=" + item.yTopPos );
 				} else {
 					//#debug
-					System.err.println("Focusing last or first item.");
+					System.out.println("Focusing last or first item.");
 					nextItem = item;
 				}
 
@@ -596,11 +599,11 @@ public class Container extends Item {
 		//#endif
 		if ( height == 0 || !this.enableScrolling) {
 			return;
-		} else if (itemYBottom + yOffsetDiff > this.yBottom) {
+		} else if (itemYBottom + yOffsetDiff > this.yBottom + 1) { //TODO +1 is a quick hack here
 			// this item is too low:
 			difference = this.yBottom - itemYBottom;
 			//#debug
-			System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom );
+			System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom + ", yOffsetDiff=" + yOffsetDiff);
 			//if ( itemYTop + difference < this.yTop) {
 			if ( isDownwards && itemYTop + difference < this.yTop) {
 				//#debug
@@ -644,6 +647,8 @@ public class Container extends Item {
 			} else {
 		//#endif
 				this.targetYOffset = this.yOffset + difference;
+				//#debug
+				System.out.println("scroll: adjusting targetYOffset to " + this.targetYOffset);
 //				if (this.focusedItem != null) {
 //					this.focusedItem.backgroundYOffset = difference;
 //				}
@@ -747,7 +752,7 @@ public class Container extends Item {
 				if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
 					myContentWidth = this.minimumWidth;
 				}
-				myContentHeight += item.itemHeight;
+				myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 			}
 		}
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -755,9 +760,7 @@ public class Container extends Item {
 			System.out.println("Unable to init container " + e );
 		}
 		this.contentHeight = myContentHeight;
-		this.contentWidth = myContentWidth;
-		
-		
+		this.contentWidth = myContentWidth;	
 	}
 
 	

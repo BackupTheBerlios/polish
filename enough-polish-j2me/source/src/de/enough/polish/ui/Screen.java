@@ -1818,15 +1818,18 @@ implements AccessibleCanvas
 					 */
 					//#ifdef tmp.useExternalMenuBar
 						if (this.menuBar.handleKeyPressed(keyCode, 0)) {
+							//System.out.println("menubar handled key " + keyCode );
 							repaint();
 							return;
 						}
 						if (this.menuBar.isSoftKeyPressed) {
+							//System.out.println("menubar detected softkey " + keyCode );
 							//#if polish.blackberry
 								this.keyPressedProcessed = false;
 							//#endif
 							return;
 						}
+						//System.out.println("menubar did not handle " + keyCode );
 					//#else
 						if (keyCode == LEFT_SOFT_KEY) {
 							if ( this.menuSingleLeftCommand != null) {

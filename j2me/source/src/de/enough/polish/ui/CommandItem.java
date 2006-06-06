@@ -252,6 +252,9 @@ public class CommandItem extends IconItem {
 				int clipWidth = g.getClipWidth();
 				int clipY = g.getClipY() - 1;
 				int clipHeight = g.getClipHeight();
+//				g.setColor(0x00FF00);
+//				g.fillRect(clipX, clipY, clipWidth, clipHeight);
+				
 				int availableWidth = (clipWidth * 2) / 3;
 				int childrenWidth = this.children.getItemWidth( availableWidth, availableWidth );
 				int childrenHeight = this.children.itemHeight; // is initialised because of the getItemWidth() call
@@ -267,12 +270,18 @@ public class CommandItem extends IconItem {
 				} else {
 					x = Math.max( leftBorder - childrenWidth, clipX );
 				}
+				//System.out.println("submenu: y=" + y + ", y + childrenHeight=" + (y + childrenHeight) + ", clipY + clipHeight=" + (clipY + clipHeight));
 				if ( y + childrenHeight > clipY + clipHeight ) {
 					y -= (y + childrenHeight) - (clipY + clipHeight);
+					//System.out.println("submenu: adjusted y=" + y + ", clipY=" + clipY);
 					if ( y < clipY ) {
 						y = clipY;
 						this.children.setVerticalDimensions( clipY, clipY + clipHeight );
 					}
+//					g.setColor( 0x00FFFF);
+//					for (int i = 0; i < 15; i++) {
+//						g.drawLine( x - 20,y-i, x+childrenWidth+10, y-i);						
+//					}
 				}
 				this.children.paint( x, y, x, x + childrenWidth, g);
 			}

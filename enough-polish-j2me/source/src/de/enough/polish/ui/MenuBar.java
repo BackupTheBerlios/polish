@@ -712,88 +712,90 @@ public class MenuBar extends Item {
 		//#debug
 		System.out.println("MenuBar: handleKeyPressed(" + keyCode + ", " + gameAction  );
 		this.isSoftKeyPressed = false;
-		if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null) {
-			this.isSoftKeyPressed = true;			
-			this.screen.callCommandListener(this.singleLeftCommand);
-			return true;			
-		}
-		if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null) {
-			this.isSoftKeyPressed = true;			
-			this.screen.callCommandListener(this.singleRightCommand);
-			return true;			
-		}
-		if (this.isOpened && keyCode == this.selectOptionsMenuKey) {
-			this.isSoftKeyPressed = true;			
-			CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
-			//#if tmp.useInvisibleMenuBar
-				if (commandItem.command == this.hideCommand ) {
-					setOpen( false );
-					return true;
-				}
-				//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
-			//#endif
-			commandItem.handleKeyPressed( 0, Canvas.FIRE );
-//			boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
-//			if (!handled) { // CommandItem returns false when it invokes the command listener
-			// this is now done automatically by the Screen class
-//				setOpen( false );
-//			}				
-			return true;			
-		}
-		if (keyCode == this.openOptionsMenuKey) {
-			this.isSoftKeyPressed = true;			
-			//#if tmp.useInvisibleMenuBar
-				if ( !this.isOpened && this.positiveCommand != null 
-						&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3)
-						|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
+		if (this.isOpened) {
+			if (keyCode == this.selectOptionsMenuKey) {
+				this.isSoftKeyPressed = true;			
+				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
+				//#if tmp.useInvisibleMenuBar
+					if (commandItem.command == this.hideCommand ) {
+						setOpen( false );
+						return true;
+					}
+					//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
+				//#endif
+				commandItem.handleKeyPressed( 0, Canvas.FIRE );
+	//			boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
+	//			if (!handled) { // CommandItem returns false when it invokes the command listener
+				// this is now done automatically by the Screen class
+	//				setOpen( false );
+	//			}				
+				return true;			
+			} else  if (keyCode == this.closeOptionsMenuKey) {
+				this.isSoftKeyPressed = true;
+				int selectedIndex = this.commandsContainer.getFocusedIndex();
+				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
+						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
 				{
-					// invoke positive command:
-					this.screen.callCommandListener(this.positiveCommand);
-					return true;
-				} else 
-			//#endif
-			if (this.commandsList.size() > 0) {
-				setOpen( true );
-				return true;
-			}
-		} else if (keyCode == this.closeOptionsMenuKey && this.isOpened) {
-			this.isSoftKeyPressed = true;
-			int selectedIndex = this.commandsContainer.getFocusedIndex();
-			if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
-					|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
-			{
-				setOpen( false );
-			}
-			return true;
-		} else if (this.isOpened){
-			if (keyCode != 0) {
-				gameAction = this.screen.getGameAction(keyCode);
-			}
-			//#if tmp.useInvisibleMenuBar
-				// handle hide command specifically:
-				if ( ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
 					setOpen( false );
+				}
+				//System.out.println("MenuBar is closing due to key " + keyCode);
+				return true;
+			} else {
+				if (keyCode != 0) {
+					gameAction = this.screen.getGameAction(keyCode);
+				}
+				//#if tmp.useInvisibleMenuBar
+					// handle hide command specifically:
+					if ( ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
+						setOpen( false );
+						return true;
+					}
+				//#endif
+//				if (gameAction == Canvas.FIRE) {
+//					int focusedIndex = this.commandsContainer.focusedIndex;
+//					Command command = (Command) this.commandsList.get(focusedIndex);
+//					setOpen( false );
+//					this.screen.callCommandListener(command);
+//					return true;
+//				}
+				boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
+				if (handled) {
+					this.isInitialised = false;
+				} else { 
+					if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
+						//#debug error
+						System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() );
+					}
+					setOpen( false );
+				}
+				return handled;				
+			}
+		} else {
+			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null) {
+				this.isSoftKeyPressed = true;			
+				this.screen.callCommandListener(this.singleLeftCommand);
+				return true;			
+			} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null) {
+				this.isSoftKeyPressed = true;			
+				this.screen.callCommandListener(this.singleRightCommand);
+				return true;			
+			} else if (keyCode == this.openOptionsMenuKey ) {
+				this.isSoftKeyPressed = true;			
+				//#if tmp.useInvisibleMenuBar
+					if ( !this.isOpened && this.positiveCommand != null 
+							&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3)
+							|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
+					{
+						// invoke positive command:
+						this.screen.callCommandListener(this.positiveCommand);
+						return true;
+					} else 
+				//#endif
+				if (this.commandsList.size() > 0) {
+					setOpen( true );
 					return true;
 				}
-			//#endif
-//			if (gameAction == Canvas.FIRE) {
-//				int focusedIndex = this.commandsContainer.focusedIndex;
-//				Command command = (Command) this.commandsList.get(focusedIndex);
-//				setOpen( false );
-//				this.screen.callCommandListener(command);
-//				return true;
-//			}
-			boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
-			if (handled) {
-				this.isInitialised = false;
-			} else { 
-				if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
-					//#debug error
-					System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() );
-				}
-				setOpen( false );
 			}
-			return handled;
 		}
 		return false;
 	}

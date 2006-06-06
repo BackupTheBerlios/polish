@@ -139,6 +139,7 @@ public class ChoiceItem extends IconItem
 		private String selectedImgName;
 		private String plainImgName;
 	//#endif
+	private int yBoxAdjust;
 
 	/**
 	 * Creates a new ChoiceItem.
@@ -222,7 +223,15 @@ public class ChoiceItem extends IconItem
 		if (this.contentHeight < maxHeight) {
 			this.yAdjust = maxHeight - this.contentHeight;
 			this.contentHeight = maxHeight;
+			this.yBoxAdjust = 0;
 		} else {
+			if ((this.layout & LAYOUT_TOP) == LAYOUT_TOP) {
+				this.yBoxAdjust = 0;
+			} else if ((this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) { 
+				this.yBoxAdjust = this.contentHeight - maxHeight;
+			} else {
+				this.yBoxAdjust = (this.contentHeight - maxHeight)/2;
+			}
 			this.yAdjust = 0;
 		}
 		if (this.isSelected) {
@@ -297,7 +306,7 @@ public class ChoiceItem extends IconItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.drawBox) {
 			if ( this.boxImage != null) {
-				g.drawImage( this.boxImage, x, y, Graphics.TOP | Graphics.LEFT );
+				g.drawImage( this.boxImage, x, y + this.yBoxAdjust, Graphics.TOP | Graphics.LEFT );
 			}
 			x += this.boxWidth;
 			leftBorder += this.boxWidth;

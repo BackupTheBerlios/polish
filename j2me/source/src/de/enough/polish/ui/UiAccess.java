@@ -64,6 +64,11 @@ public final class UiAccess {
 	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
 	 */
 	public static final int MODE_NUMBERS = 3;
+	/**
+	 * A constant for setting the input mode of an TextField to it't native input - that's useful for using T9 and similar input helpers.
+	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
+	 */
+	public static final int MODE_NATIVE = 4;
 
 	/**
 	 * No instantiation is allowd.
@@ -536,11 +541,12 @@ public final class UiAccess {
 	 * the given TextField.
 	 * 
 	 * @param field the text field 
-	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASE or UiAccess.MODE_NATIVE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static void setInputMode( javax.microedition.lcdui.TextField field, int inputMode ) {
 		// ignore
@@ -553,11 +559,12 @@ public final class UiAccess {
 	 * the given TextField.
 	 * 
 	 * @param field the text field 
-	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASE or UiAccess.MODE_NATIVE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static void setInputMode( TextField field, int inputMode ) {
 		field.setInputMode( inputMode ); 
@@ -570,11 +577,12 @@ public final class UiAccess {
 	 * the given TextBox.
 	 * 
 	 * @param box the text box 
-	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASE or UiAccess.MODE_NATIVE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static void setInputMode( javax.microedition.lcdui.TextBox box, int inputMode ) {
 		// ignore
@@ -587,11 +595,12 @@ public final class UiAccess {
 	 * the given TextBox.
 	 * 
 	 * @param box the text box 
-	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @param inputMode the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASEor UiAccess.MODE_NATIVE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static void setInputMode( TextBox box, int inputMode ) {
 		box.textField.setInputMode( inputMode ); 
@@ -602,11 +611,12 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textfield.
 	 * 
 	 * @param field the text field 
-	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASEor UiAccess.MODE_NATIVE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static int getInputMode( javax.microedition.lcdui.TextField field ) {
 		return -1;
@@ -617,11 +627,12 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textfield.
 	 * 
 	 * @param field the text field 
-	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASE or UiAccess.MODE_NATIVE
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static int getInputMode( TextField field ) {
 		return field.inputMode; 
@@ -632,11 +643,12 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textbox.
 	 * 
 	 * @param box the text box 
-	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASE or UiAccess.MODE_NATIVE
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static int getInputMode( javax.microedition.lcdui.TextBox box ) {
 		return -1;
@@ -647,11 +659,12 @@ public final class UiAccess {
 	 * Retrieves the input mode for the given textbox.
 	 * 
 	 * @param box the text box 
-	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE or UiAccess.MODE_FIRST_UPPERCASE 
+	 * @return the input mode, either UiAccess.MODE_NUMBERS, UiAcccss.MODE_LOWERCASE, UiAccess.MODE_UPPERCASE, UiAccess.MODE_FIRST_UPPERCASE or UiAccess.MODE_NATIVE 
 	 * @see #MODE_NUMBERS
 	 * @see #MODE_LOWERCASE
 	 * @see #MODE_UPPERCASE
 	 * @see #MODE_FIRST_UPPERCASE
+	 * @see #MODE_NATIVE
 	 */
 	public static int getInputMode( TextBox box ) {
 		return box.textField.inputMode; 

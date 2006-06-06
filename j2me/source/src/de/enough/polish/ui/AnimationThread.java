@@ -26,22 +26,14 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Canvas;
+
 import javax.microedition.lcdui.Displayable;
 
-
-//#if polish.blackberry
-	//# import net.rim.device.api.ui.Keypad;
-	//# import net.rim.device.api.system.Application;
-	//# import net.rim.device.api.system.KeyListener;
-	//# import net.rim.device.api.system.TrackwheelListener;
-//#endif
-
 /**
- * <p>Is used to animate Backgrounds, Borders and Items.</p>
+ * <p>Is used to animate Screens, Backgrounds and Items.</p>
  * <p>
- * 	In either devices.xml, vendors.xml, groups.xml, device.xml or settings.xml
- *  the animation-interval can be specified.
+ * 	You can specify the animation interval in milliseconds in the variables section of
+ *  your build.xml script.
  *  Example:
  *  <pre>
  *  <variables>
@@ -60,10 +52,6 @@ import javax.microedition.lcdui.Displayable;
  * @author Robert Virkus, robert@enough.de
  */
 public class AnimationThread extends Thread
-//#if polish.blackberry
-	// # implements KeyListener, TrackwheelListener
-//#endif
-
 {
 	
 	//#ifdef polish.animationInterval:defined
@@ -147,144 +135,5 @@ public class AnimationThread extends Thread
 			}
 		}
 	}
-	
-	//#if polish.blackberry and false
-	public boolean keyChar(char key, int status, int time) {
-		Screen screen = StyleSheet.currentScreen;		
-		if (screen == null || !screen.isShown()) {
-			return false;
-		}
-		//#debug info
-		System.out.println("keyChar");
-		//#if (polish.TextField.useDirectInput == true)|| polish.css.textfield-direct-input
-			Item item = screen.getCurrentItem();
-			if (item instanceof TextField) {
-				TextField field = (TextField) item;
-				field.caretChar = key;
-				field.insertCharacter();
-				return true;
-			}
-		//#endif
-		return false;
-	}
-
-	public boolean keyDown(int keyCode, int time) {
-		Screen screen = StyleSheet.currentScreen;		
-		if (screen == null || !screen.isShown() ) {
-			return false;
-		}
-		//#debug info
-		System.out.println("keyDown");
-		//#if (polish.TextField.useDirectInput == true)|| polish.css.textfield-direct-input
-			//#if polish.key.MoveLeftKey:defined
-				//#= if ( keyCode == ${polish.key.MoveLeftKey} ) {
-					screen.handleKeyPressed(keyCode,  Canvas.LEFT );
-					//# return screen.keyPressedProcessed;
-				//# }
-			//#endif
-			//#if polish.key.MoveRightKey:defined
-				//#= if ( keyCode == ${polish.key.MoveRightKey} ) { 
-					screen.handleKeyPressed(keyCode,  Canvas.RIGHT );
-					//# return screen.keyPressedProcessed;
-				//# }
-			//#endif
-			//#if polish.key.ReturnKey:defined
-				//#= if ( keyCode == ${polish.key.ReturnKey} ) { 
-					screen.keyPressed( keyCode );
-					//# return screen.keyPressedProcessed;
-				//# }
-			//#endif
-			//#if polish.key.ClearKey:defined
-				//#= if ( keyCode != ${polish.key.ClearKey} ) { 
-			//#endif
-			//#if polish.key.DeleteKey:defined
-				//#= if ( keyCode != ${polish.key.DeleteKey} ) { 
-			//#endif
-			Item item = screen.getCurrentItem();
-			if (item instanceof TextField) {
-				//#debug info
-				System.out.println("keyDown aborted (TextField)");
-				TextField field = (TextField) item;
-				//#if false
-					char c = 'A';
-				//#else
-					//# char c = Keypad.map( keyCode );
-				//#endif
-				if (field.inputMode == TextField.MODE_NUMBERS ) {
-					if ( !Character.isDigit(c) ) {
-						//# c = Keypad.getAltedChar( c );
-						if ( !Character.isDigit(c)) {
-							return false;
-						}
-					}
-					//#debug info
-					System.out.println("Adding numeric char [" + c + "]");
-				}
-				field.lastInputTime = time;
-				synchronized ( field.lock ) {
-					field.caretChar = c;
-					field.insertCharacter();
-				}
-				return true;
-			}
-			//#if polish.key.DeleteKey:defined
-				//# } 
-			//#endif
-			//#if polish.key.ClearKey:defined
-				//# } 
-			//#endif
-		//#endif
-		//screen.lastKeyCode = keyCode;
-		screen.keyPressed( keyCode );
-		return screen.keyPressedProcessed;
-	}
-
-	public boolean keyRepeat(int keyCode, int time) {
-		return keyDown( keyCode, time );
-	}
-
-	public boolean keyStatus(int keyCode, int time) {
-		// ignore
-		return false;
-	}
-
-	public boolean keyUp(int keyCode, int time) {
-		// ignore
-		return false;
-	}
-
-	public boolean trackwheelClick(int status, int time) {
-		Screen screen = StyleSheet.currentScreen;		
-		if (screen == null || !screen.isShown()) {
-			return false;
-		}
-		// invoke the menu
-		//#ifdef polish.key.LeftSoftKey:defined
-			//#= int key = ${polish.key.LeftSoftKey};
-		//#else
-			int key = -6;
-		//#endif
-		screen.keyPressed( key );
-		return screen.keyPressedProcessed;
-	}
-
-	public boolean trackwheelRoll(int amount, int status, int time) {
-		Screen screen = StyleSheet.currentScreen;		
-		if (screen == null || !screen.isShown()) {
-			return false;
-		}
-		if (amount < 0) {
-			screen.keyPressed( screen.getKeyCode( Canvas.UP ) );
-		} else {
-			screen.keyPressed( screen.getKeyCode( Canvas.DOWN ) );
-		}
-		return screen.keyPressedProcessed;
-	}
-
-	public boolean trackwheelUnclick(int status, int time) {
-		// TODO enough implement trackwheelUnclick
-		return false;
-	}
-	//#endif
 
 }
