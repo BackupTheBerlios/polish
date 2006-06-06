@@ -264,7 +264,7 @@ public class FramedForm extends Form {
 			this.topFrame.paint( this.originalContentX, this.originalContentY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 		if (this.bottomFrame != null ) {
-			this.topFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			this.bottomFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 	}
 	
