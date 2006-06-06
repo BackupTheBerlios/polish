@@ -670,8 +670,9 @@ public class MeposeModel extends PropertyModel{
         p.put(ID_SUPPORTED_DEVICES,Arrays.arrayToString(getSupportedDevices()));
         
         // Current Config.
-        if(getCurrentDevice() != null) {
-            p.put(ID_CURRENT_DEVICE,getCurrentDevice());
+        Device currentDevice2 = getCurrentDevice();
+        if(currentDevice2 != null) {
+            p.put(ID_CURRENT_DEVICE,currentDevice2.getIdentifier());
         }
         p.put(ID_CURRENT_TARGET_ONLYBUILD,getBuildTargetName());
         return p;
@@ -760,6 +761,14 @@ public class MeposeModel extends PropertyModel{
                 supportedDevicesTemp.add(device);
             }
             setSupportedDevices((Device[]) supportedDevicesTemp.toArray(new Device[supportedDevicesTemp.size()]));
+        }
+        
+        String currentDeviceString = (String)p.get(ID_CURRENT_DEVICE);
+        if(currentDeviceString != null) {
+            Device device = db.getDeviceManager().getDevice(currentDeviceString);
+            if(device != null) {
+                setCurrentDevice(device);
+            }
         }
     }
 
