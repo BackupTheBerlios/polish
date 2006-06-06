@@ -91,10 +91,10 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	}
 	
 	protected void doFinish(IProgressMonitor monitor){
-        createBuildXML();
+	    makeJavaProject();
         // Do not hand over the monitor as others are going to call beginTask
         // which must be called only once.
-        makeJavaProject();
+	    createBuildXML();
         registerMeposeModel();
 	}
 
