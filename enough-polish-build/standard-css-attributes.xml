@@ -32,7 +32,7 @@
 		name="background"
 		type="object"
 		appliesTo="Item, Screen"
-		description="The background of an item or screen. The dafault background for items is &quot;none&quot;, the default background for screens is a simple white background."
+		description="The background of an item or screen. The default background for items is &quot;none&quot;, the default background for screens is a simple white background."
 	>
 		<mapping from="simple"              converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
 		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />

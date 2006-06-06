@@ -422,20 +422,20 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Sony-Ericsson/W900, Sony-Ericsson/W900i</identifier>
 		<groups>SE-JavaPlatform5</groups>
-		<features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, m3g, btapi, nokia-ui, pdaapi"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g, btapi, nokia-ui, pdaapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="mp3, mp4, m4a, aac, amr, wav, midi, midi40"/>
-		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
-		<capability name="ImageFormat" value="gif, jpeg, png, bmp, wbmp"/>
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, jpeg, png, png1.0, bmp, bmp3, wbmp"/>
 		<capability name="CaptureImageFormat" value="jpeg"/>
-		<capability name="StorageSize" value="32 MB"/>
+		<capability name="StorageSize" value="38 MB"/>
 		<capability name="HeapSize" value="1.5 MB"/>
 		<capability name="VideoHeapSize" value="500 kb"/>
 		<capability name="MaxJarSize" value="dynamic"/>
@@ -444,10 +444,11 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS, UMTS"/>
 		<capability name="Frequency" value="900,1800,1900"/>
 		<capability name="Emulator.Skin" value="SonyEricsson_W900"/>
+		<capability name="Emulator.Skin.2" value="SonyEricsson_W900i"/>
 		<capability name="DebugInterface" value="KDWP"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin"/>
+		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
 		<capability name="key.ReturnKey" value="-11"/>
 	</device>
 

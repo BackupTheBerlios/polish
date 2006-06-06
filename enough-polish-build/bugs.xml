@@ -371,6 +371,13 @@
 		<solution>Not a bug. Load images that are needed often first.</solution>
 	</bug>
 	
+	<bug>
+		<name>NoPermanentBacklight</name>
+		<area>ui</area>
+		<description>The backlight cannot be turned on permanently.</description>
+		<solution>Run a thread for turning the light on every 60 seconds or so.</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>

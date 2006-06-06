@@ -158,6 +158,10 @@
 					You can change the title of the sample application with the "title"-var.
 					-->
 					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<variable name="polish.TextField.allowNativeModeSwitch" value="true" />
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
