@@ -66,7 +66,11 @@ public class MemoryRequirement extends Requirement {
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device, java.lang.String)
 	 */
 	protected boolean isMet(Device device, String property) {
+		try {
 		return this.matcher.matches( property );
+		} catch (BuildException e) {
+			throw new BuildException("Unable to compare memory with device \"" + device.getIdentifier() + "\": " + e.toString() );
+		}
 	}
 
 }
