@@ -19,7 +19,7 @@
 
     <extension id="de.enough.polish.plugin.eclipse.polishEditor.preference.preferencePages" name="J2ME Polish Prefernce Pages" point="org.eclipse.ui.preferencePages">
         <page
-              category="de.enough.mepose.core.ui.preferencePages.MainPage"
+              category="de.enough.mepose.ui.preferencePages.MainPage"
               class="de.enough.polish.plugin.eclipse.polishEditor.preference.PolishRootPage"
               id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage"
               name="Polish Editor"></page>
