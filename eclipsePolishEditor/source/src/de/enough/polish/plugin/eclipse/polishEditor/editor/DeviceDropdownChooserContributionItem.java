@@ -55,7 +55,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
 
         public void widgetSelected(SelectionEvent e) {
             System.out.println("DEBUG:NewDeviceSelectionListener.widgetSelected(...):device selected.");
-            Combo comboTemp = (Combo)e.item;
+            Combo comboTemp = (Combo)e.getSource();
             Device device = DeviceDropdownChooserContributionItem.this.supportedDevices[comboTemp.getSelectionIndex()];
             DeviceDropdownChooserContributionItem.this.meposeModel.setCurrentDevice(device);
         }
