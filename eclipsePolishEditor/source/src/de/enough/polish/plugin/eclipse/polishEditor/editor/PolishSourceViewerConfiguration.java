@@ -25,26 +25,15 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
-import de.enough.mepose.core.model.MeposeModel;
-import de.enough.polish.Environment;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.DirectiveContentAssistProcessor;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishIndentStrategy;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishJavaAutoIndentStrategy;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
-
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.jdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
-import org.eclipse.jdt.internal.ui.text.CompoundContentAssistProcessor;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
-import org.eclipse.jface.text.IAutoIndentStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
@@ -54,6 +43,13 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishIndentStrategy;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishJavaAutoIndentStrategy;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
 
 
 /**
@@ -135,24 +131,48 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     
     
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+        
         System.out.println("DEBUG:PolishSourceViewerConfiguration.getContentAssistant(...):enter.");
         IContentAssistant newIContentAssistant = super.getContentAssistant(sourceViewer);
         if(newIContentAssistant instanceof ContentAssistant) {
             // The cast is a hack to be able to set an processor. The interface itself has no useful methods.
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
-            CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
-            compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
+            //TODO: This stopped working in 3.2. The class is not present any more.
+//            CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
+//            compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
             
+//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getDefaultMeposeModel().getEnvironment());
+//            IProject correspondingProject = getProject().getProject();
             MeposeModel meposeModel = this.editor.getMeposeModel();
-            Environment environment = meposeModel.getEnvironment();
-            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(environment);
-            compoundContentAssistProcessor.add(processor);
+//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel().getEnvironment());
+            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(meposeModel.getEnvironment());
+//            compoundContentAssistProcessor.add(processor);
             this.editor.getMeposeModel().addPropertyChangeListener(processor);
    
-            contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+//            contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }
         return newIContentAssistant;
+        
+        // TODO: Old, prior to 3.2
+//        System.out.println("DEBUG:PolishSourceViewerConfiguration.getContentAssistant(...):enter.");
+//        IContentAssistant newIContentAssistant = super.getContentAssistant(sourceViewer);
+//        if(newIContentAssistant instanceof ContentAssistant) {
+//            // The cast is a hack to be able to set an processor. The interface itself has no useful methods.
+//            ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
+//            //CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
+//            //compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
+//            
+//            MeposeModel meposeModel = this.editor.getMeposeModel();
+//            Environment environment = meposeModel.getEnvironment();
+//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(environment);
+//            compoundContentAssistProcessor.add(processor);
+//            this.editor.getMeposeModel().addPropertyChangeListener(processor);
+//   
+//            contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+//            return contentAssistant;
+//        }
+//        return newIContentAssistant;
     }
     
     protected IJavaProject getProject() {

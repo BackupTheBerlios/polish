@@ -25,6 +25,8 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -236,10 +238,38 @@ public class PolishEditor extends CompilationUnitEditor {
         super.updateOccurrenceAnnotations(selection, astRoot);
     }
     
+    protected void installOccurrencesFinder() {
+        doInstallOccurrencesFinder();
+        try {
+            Method superMethod = getClass().getSuperclass().getMethod("installOccurrencesFinder",null);
+            superMethod.invoke(this,new Object[0]);
+        } catch (SecurityException exception) {
+            // TODO rickyn handle SecurityException
+            exception.printStackTrace();
+        } catch (NoSuchMethodException exception) {
+            // TODO rickyn handle NoSuchMethodException
+            exception.printStackTrace();
+        } catch (IllegalArgumentException exception) {
+            // TODO rickyn handle IllegalArgumentException
+            exception.printStackTrace();
+        } catch (IllegalAccessException exception) {
+            // TODO rickyn handle IllegalAccessException
+            exception.printStackTrace();
+        } catch (InvocationTargetException exception) {
+            // TODO rickyn handle InvocationTargetException
+            exception.printStackTrace();
+        }
+    }
+    
     
     // Use this mechanism to get informed about install and uninstall.
-    protected void installOccurrencesFinder() {
+    protected void installOccurrencesFinder(boolean force) {
         //System.out.println("PolishEditor.installOccurrencesFinder().enter");
+        doInstallOccurrencesFinder();
+        super.installOccurrencesFinder(force);
+    }
+    
+    private void doInstallOccurrencesFinder() {
         ISourceViewer sourceViewer = getSourceViewer();
         if(sourceViewer == null) {
             System.out.println("ERROR:PolishEditor.installOccurrencesFinder():sourceViewer is null.");
@@ -249,8 +279,8 @@ public class PolishEditor extends CompilationUnitEditor {
         this.defaultOccurrenceMarkerManagerConfiguration.setAnnotationModel(sourceViewer.getAnnotationModel());
         this.defaultOccurrenceMarkerManagerConfiguration.setDocument(sourceViewer.getDocument());
         this.occurrencesMarkerManager.configure(this.defaultOccurrenceMarkerManagerConfiguration);
-        super.installOccurrencesFinder();
     }
+    
     protected void uninstallOccurrencesFinder() {
         //System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
         this.occurrencesMarkerManager.removeAnnotations(); // Seems not to work as it complains about beeing not configured.
