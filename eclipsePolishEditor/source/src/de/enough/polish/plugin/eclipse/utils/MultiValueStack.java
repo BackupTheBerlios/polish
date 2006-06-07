@@ -3,7 +3,6 @@
  */
 package de.enough.polish.plugin.eclipse.utils;
 
-import org.eclipse.core.internal.runtime.Assert;
 
 
 class MultiValueStack{
@@ -23,8 +22,6 @@ class MultiValueStack{
     // Destructive Stack operations.
     
     public void pushElement(int element){
-    	Assert.isLegal(elementIsValid(element),"Parameter element is not valid.element:"+element);
-
     	enlargeCapacityForOneMoreElement();
 
     	this.indexOfTopElement++;

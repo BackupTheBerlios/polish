@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.internal.utils.Assert;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
@@ -98,8 +97,6 @@ public class OccurrencesMarkerManager{
     }
 
     public void updateAnnotations(ITextSelection selection, List listOfComments) {
-        Assert.isNotNull(selection);
-        Assert.isNotNull(listOfComments);
         
         if( ! isConfigured()) {
             System.out.println("OccurrencesMarkerManager:updateAnnotations(...):this is not configured.");
@@ -157,12 +154,10 @@ public class OccurrencesMarkerManager{
     }
     
     public void setDocument(IDocument newDocument) {
-        Assert.isNotNull(newDocument);
         this.document = newDocument;
     }
     
     public void setAnnotationModel(IAnnotationModel newAnnotationModel) {
-        Assert.isNotNull(newAnnotationModel);
         this.annotationModel = newAnnotationModel;
     }
     

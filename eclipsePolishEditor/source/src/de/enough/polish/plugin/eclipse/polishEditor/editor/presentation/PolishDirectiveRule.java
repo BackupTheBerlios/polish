@@ -28,7 +28,6 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor.presentation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.internal.runtime.Assert;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
@@ -308,7 +307,6 @@ public class PolishDirectiveRule implements IRule {
     }
 
     private boolean charIsEOLorEOF(int c) {
-        Assert.isNotNull(this.delimiters);
         if(c == ICharacterScanner.EOF) {
             return true;
         }

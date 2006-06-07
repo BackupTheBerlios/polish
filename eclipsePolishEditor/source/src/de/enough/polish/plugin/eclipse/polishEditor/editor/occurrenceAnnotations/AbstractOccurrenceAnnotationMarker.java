@@ -28,7 +28,6 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotation
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.internal.utils.Assert;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.ITextSelection;
@@ -104,12 +103,10 @@ public abstract class AbstractOccurrenceAnnotationMarker implements IOccurrenceA
     }
     
     public void setDocument(IDocument newDocument) {
-        Assert.isNotNull(newDocument);
         this.document= newDocument;
     }
     
     public void setAnnotationModel(IAnnotationModel newAnnotationModel) {
-        Assert.isNotNull(newAnnotationModel);
         this.annotationModel = newAnnotationModel;
     }
     

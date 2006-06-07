@@ -28,7 +28,6 @@ package de.enough.polish.plugin.eclipse.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.internal.runtime.Assert;
 import org.eclipse.jface.text.rules.IToken;
 
 /**
@@ -58,25 +57,19 @@ public class TokenStore {
     }
     
     public void addToken(String colorKey, IToken token) {
-        Assert.isNotNull(colorKey);
-        Assert.isNotNull(token);
         this.colorKeyToTokenMapping.put(colorKey,token);
     }
     
     public void removeToken(String colorKey) {
-        Assert.isNotNull(colorKey);
         this.colorKeyToTokenMapping.remove(colorKey);
     }
     
     public IToken getToken(String colorKey) {
-        Assert.isNotNull(colorKey);
         IToken result = (IToken)this.colorKeyToTokenMapping.get(colorKey);
-        Assert.isNotNull(result);
         return result;
     }
     
     public boolean containsToken(String colorKey) {
-        Assert.isNotNull(colorKey);
         return this.colorKeyToTokenMapping.containsKey(colorKey);
     }
 }
