@@ -266,7 +266,25 @@ public class PolishEditor extends CompilationUnitEditor {
     protected void installOccurrencesFinder(boolean force) {
         //System.out.println("PolishEditor.installOccurrencesFinder().enter");
         doInstallOccurrencesFinder();
-        super.installOccurrencesFinder(force);
+        try {
+            Method superMethod = getClass().getSuperclass().getMethod("installOccurrencesFinder",new Class[] {boolean.class});
+            superMethod.invoke(this,new Object[] {new Boolean(force)});
+        } catch (SecurityException exception) {
+            // TODO rickyn handle SecurityException
+            exception.printStackTrace();
+        } catch (NoSuchMethodException exception) {
+            // TODO rickyn handle NoSuchMethodException
+            exception.printStackTrace();
+        } catch (IllegalArgumentException exception) {
+            // TODO rickyn handle IllegalArgumentException
+            exception.printStackTrace();
+        } catch (IllegalAccessException exception) {
+            // TODO rickyn handle IllegalAccessException
+            exception.printStackTrace();
+        } catch (InvocationTargetException exception) {
+            // TODO rickyn handle InvocationTargetException
+            exception.printStackTrace();
+        }
     }
     
     private void doInstallOccurrencesFinder() {
