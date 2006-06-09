@@ -1,5 +1,5 @@
 /*
- * Created on 22.08.2005 at 10:48:44.
+ * Created on 09.06.2006 at 15:46:23.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -32,16 +32,18 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
+
+
 /**
  * 
  * @author Tim Muders
  *
  */
-public class SmoothColorBackgroundConverter extends BackgroundConverter {
+public class SimpleSmoothColorBackgroundConverter extends BackgroundConverter {
 
 	protected String createNewStatement(HashMap map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
-		String result = "new de.enough.polish.ui.backgrounds.SmoothColorBackground(" 
+		String result = "new de.enough.polish.ui.backgrounds.SimpleSmoothColorBackground(" 
 			+ this.color + ", ";
 		String gradientColor = "0";
 		String gradientColorStr = (String) map.get("gradient-color");

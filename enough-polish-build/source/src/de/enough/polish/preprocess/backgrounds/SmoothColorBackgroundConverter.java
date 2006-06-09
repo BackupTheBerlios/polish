@@ -32,7 +32,11 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
-
+/**
+ * 
+ * @author Tim Muders
+ *
+ */
 public class SmoothColorBackgroundConverter extends BackgroundConverter {
 
 	protected String createNewStatement(HashMap map, Style stlye,
