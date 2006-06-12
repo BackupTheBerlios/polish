@@ -27,6 +27,7 @@
 package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -43,7 +44,9 @@ public class SimpleBackground
 extends Background 
 {
 	
-	private final int color;
+	private int color;
+	private Color colorObj;
+	private boolean isInitialized;
 
 	/**
 	 * Creates a new simple background.
@@ -53,12 +56,29 @@ extends Background
 	public SimpleBackground( int color ) {
 		super();
 		this.color = color;
+		this.isInitialized = true;
+	}
+
+	/**
+	 * Creates a new simple background.
+	 * 
+	 * @param color the color of the background in RGB, e.g. 0xFFDD11 or a dynamic color
+	 */
+	public SimpleBackground( Color color ) {
+		super();
+		this.colorObj = color;
+		this.isInitialized = false;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		if (!this.isInitialized) {
+			this.color = this.colorObj.getColor();
+			this.isInitialized = true;
+			this.colorObj = null;
+		}
 		g.setColor( this.color );
 		g.fillRect( x, y, width + 1, height + 1 );
 	}

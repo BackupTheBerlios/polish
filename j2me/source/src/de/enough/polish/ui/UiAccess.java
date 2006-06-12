@@ -126,6 +126,28 @@ public final class UiAccess {
 	}
 	//#endif
 
+	/**
+	 * Retrieves the focused index of the specified screen
+	 * 
+	 * @param screen the screen
+	 * @return the focused item, null when it is not known
+	 */
+	public static javax.microedition.lcdui.Item getFocusedItem( javax.microedition.lcdui.Screen screen ) {
+		return null;
+	}
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the focused index of the specified screen
+	 * 
+	 * @param screen the screen
+	 * @return the focused item, null when it is not known
+	 */
+	public static Item getFocusedItem( Screen screen ) {
+		return screen.getCurrentItem();
+	}
+	//#endif
+
 	//#if polish.midp2
 	/**
 	 * Sets the title of the screen using an Item.

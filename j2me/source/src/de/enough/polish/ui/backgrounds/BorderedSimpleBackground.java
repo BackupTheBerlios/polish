@@ -27,6 +27,7 @@
 package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -44,8 +45,11 @@ import javax.microedition.lcdui.Graphics;
  */
 public class BorderedSimpleBackground extends Background {
 	
-	private final int color;
-	private final int borderColor; 
+	private int color;
+	private Color colorObj; 
+	private int borderColor;
+	private Color borderColorObj;
+	private boolean isInitialized;
 
 	/**
 	 * Creates a new simple background with a border.
@@ -58,12 +62,34 @@ public class BorderedSimpleBackground extends Background {
 		this.color = color;
 		this.borderColor = borderColor;
 		this.borderWidth = borderWidth;
+		this.isInitialized = true;
+	}
+
+	/**
+	 * Creates a new simple background with a border.
+	 * 
+	 * @param color the color of the background
+	 * @param borderColor the color of the border
+	 * @param borderWidth the width of the border
+	 */
+	public BorderedSimpleBackground( Color color, Color borderColor, int borderWidth) {
+		this.colorObj = color;
+		this.borderColorObj = borderColor;
+		this.borderWidth = borderWidth;
+		this.isInitialized = false;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		if (!this.isInitialized) {
+			this.color = this.colorObj.getColor();
+			this.borderColor = this.borderColorObj.getColor();
+			this.isInitialized = true;
+			this.colorObj = null;
+			this.borderColorObj = null;
+		}
 		g.setColor( this.color );
 		g.fillRect( x, y, width + 1, height + 1 );
 		g.setColor( this.borderColor );

@@ -25,14 +25,13 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import de.enough.polish.preprocess.*;
-import de.enough.polish.preprocess.css.BackgroundConverter;
-import de.enough.polish.preprocess.css.Style;
-import de.enough.polish.preprocess.css.StyleSheet;
+import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
 
-import java.util.HashMap;
+import de.enough.polish.preprocess.css.BackgroundConverter;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.preprocess.css.StyleSheet;
 
 /**
  * <p>Creates a simple background with one color.</p>
@@ -61,14 +60,14 @@ public class SimpleBackgroundConverter extends BackgroundConverter {
 		boolean hasAlphaColor = isAlphaColor(this.color);
 		if (this.hasBorder ) {
 			return "new " + BACKGROUNDS_PACKAGE + "BorderedSimpleBackground( " 
-					+ this.color + ", " + this.borderColor + ", " + this.borderWidth + ")";
+					+ this.colorConstructor + ", " + this.borderColorConstructor + ", " + this.borderWidth + ")";
 		} else {
 			if (hasAlphaColor) {
 				return "new " + BACKGROUNDS_PACKAGE + "TranslucentSimpleBackground( " 
 						+ this.color + ")";
 			} else {
 				return "new " + BACKGROUNDS_PACKAGE + "SimpleBackground( " 
-					+ this.color + ")";
+					+ this.colorConstructor + ")";
 			}
 		}
 	}

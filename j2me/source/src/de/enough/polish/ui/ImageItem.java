@@ -364,7 +364,7 @@ public class ImageItem extends Item
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		this.textColor = style.fontColor;
+		this.textColor = style.getFontColor();
 		this.font = style.font;
 		//#if polish.css.image-y-offset
 			Integer yOffsetInt = style.getIntProperty("image-y-offset");

@@ -104,7 +104,12 @@ public class Style
 	public final Background background;
 	public final Border border;
 	public final Font font;
+	/**
+	 * @deprecated Please use getFontColor() instead
+	 * @see #getFontColor()
+	 */
 	public final int fontColor;
+	private final Color fontColorObj;
 	public final int paddingLeft;
 	public final int paddingTop;
 	public final int paddingRight;
@@ -166,6 +171,71 @@ public class Style
 			, Object[] attributeValues
 			) 
 	{
+		this( marginLeft, marginRight, marginTop, marginBottom,
+				paddingLeft, paddingRight, paddingTop, paddingBottom, paddingVertical, paddingHorizontal,
+				layout,
+				fontColor, null, font,
+				background, border
+				//#ifdef polish.useBeforeStyle
+					, beforeUrl
+				//#endif
+				//#ifdef polish.useAfterStyle
+					, afterUrl
+				//#endif
+				//#ifdef polish.useDynamicStyles
+					, name
+				//#endif
+				, attributeKeys
+				, attributeValues
+		);
+	}
+	
+	/**
+	 * Creates a new Style.
+	 * 
+	 * @param marginLeft the margin in pixels to the next element on the left
+	 * @param marginRight the margin in pixels to the next element on the right
+	 * @param marginTop the margin in pixels to the next element on the top
+	 * @param marginBottom the margin in pixels to the next element on the bottom
+	 * @param paddingLeft the padding between the left border and content in pixels
+	 * @param paddingRight the padding between the right border and content in pixels
+	 * @param paddingTop the padding between the top border and content in pixels
+	 * @param paddingBottom the padding between the bottom border and content in pixels
+	 * @param paddingVertical the vertical padding between internal elements of an item 
+	 * @param paddingHorizontal the horizontal padding between internal elements of an item
+	 * @param layout the layout for this style, e.g. Item.LAYOUT_CENTER
+	 * @param fontColor the color of the font
+	 * @param fontColorObj the color of the font, might be a dynamic color like COLOR_FOREGROUND
+	 * @param font the content-font for this style
+	 * @param background the background for this style
+	 * @param border the border for this style
+	 * @param beforeUrl the URL of the before element. This is inserted before items
+	 *            with this style. 
+	 * @param afterUrl the URL of the after element. This is inserted after items
+	 *            with this style.
+	 * @param name the name of this style. Is only used when dynamic styles are used.
+	 * @param attributeKeys the integer-IDs of any additional attributes. Can be null.
+	 * @param attributeValues the values of any additional attributes. Can be null.
+	 * 			
+	 */
+	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
+			int paddingLeft, int paddingRight, int paddingTop, int paddingBottom, int paddingVertical, int paddingHorizontal,
+			int layout,
+			int fontColor, Color fontColorObj, Font font,  
+			Background background, Border border 
+			//#ifdef polish.useBeforeStyle
+			, String beforeUrl
+			//#endif
+			//#ifdef polish.useAfterStyle
+			, String afterUrl
+			//#endif
+			//#ifdef polish.useDynamicStyles
+			, String name
+			//#endif
+			, short[] attributeKeys
+			, Object[] attributeValues
+			) 
+	{
 		this.marginLeft = marginLeft;
 		this.marginRight = marginRight;
 		this.marginTop = marginTop;
@@ -178,6 +248,7 @@ public class Style
 		this.paddingHorizontal = paddingHorizontal;
 		this.layout = layout;
 		this.fontColor = fontColor;
+		this.fontColorObj = fontColorObj;
 		this.font = font;
 		this.background = background;
 		this.border = border;
@@ -326,7 +397,11 @@ public class Style
 		}
 		for (int i = 0; i < this.attributeKeys.length; i++ ) {
 			if (this.attributeKeys[i] == key) {
-				return (Integer) this.attributeValues[i];
+				Object value = this.attributeValues[i];
+				if (value instanceof Color) {
+					return ((Color)value).getInteger();
+				}
+				return (Integer) value;
 			}
 		}
 		return null;
@@ -379,6 +454,21 @@ public class Style
 			this.background.releaseResources();
 		}
 		//TODO how to handle before/after images?
+	}
+	
+	/**
+	 * Retrieves the font color that should be used.
+	 * The color can be dynamic like Display.COLOR_FOREGROUND and should always be retrieved
+	 * using this method instead of using the public field fontColor.
+	 *  
+	 * @return the color for the font.
+	 */
+	public int getFontColor() {
+		if ( this.fontColorObj != null ) {
+			return this.fontColorObj.getColor();
+		} else {
+			return this.fontColor;
+		}
 	}
 
 	

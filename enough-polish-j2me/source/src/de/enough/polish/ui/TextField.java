@@ -339,8 +339,8 @@ public class TextField extends StringItem
 //#endif
 //#if polish.TextField.suppressCommands == true
 	//#define tmp.suppressCommands
-//#elif (tmp.forceDirectInput || polish.blackberry)  && !tmp.supportsSymbolEntry
-	//# implements ItemCommandListener
+// //#elif (tmp.forceDirectInput || polish.blackberry)  && !tmp.supportsSymbolEntry
+// 	//# implements ItemCommandListener
 //#else
 	, ItemCommandListener
 //#endif
@@ -2323,6 +2323,15 @@ public class TextField extends StringItem
 				return false;
 			}
 		//#elif !polish.blackberry
+			if (this.inputMode == MODE_NATIVE) {
+				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
+						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) 
+				{
+					return false;
+				}
+			}
 			this.isKeyDown = true;
 		//#endif
 		if (gameAction == Canvas.FIRE

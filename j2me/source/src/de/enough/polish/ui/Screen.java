@@ -422,7 +422,7 @@ implements AccessibleCanvas
 					if (colorInt != null) {
 						this.menuBarColor = colorInt.intValue();
 					}
-					this.menuFontColor = menustyle.fontColor;
+					this.menuFontColor = menustyle.getFontColor();
 					if (menustyle.font != null) {
 						this.menuFont = menustyle.font;
 					} else {
@@ -2825,6 +2825,14 @@ implements AccessibleCanvas
 	 */
 	public Item getCurrentItem() {
 		if (this.container != null) {
+			if (this.container.autoFocusEnabled) {
+				Item[] items = this.container.getItems();
+				for (int i = 0; i < items.length; i++) {
+					if (i >= this.container.autoFocusIndex && items[i].appearanceMode != Item.PLAIN) {
+						return items[i];
+					}
+				}
+			}
 			return this.container.focusedItem;
 		}
 		return this.focusedItem;

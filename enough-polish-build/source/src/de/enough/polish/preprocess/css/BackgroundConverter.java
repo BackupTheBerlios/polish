@@ -48,11 +48,14 @@ public abstract class BackgroundConverter extends Converter {
 	protected static final String BACKGROUNDS_PACKAGE = "de.enough.polish.ui.backgrounds.";
 
 	protected String color;
+	protected String colorConstructor;
 	protected String borderWidth;
 	protected String borderColor;
+	protected String borderColorConstructor;
 	protected boolean hasBorder;
 	
 	protected String styleName;
+
 
 	/**
 	 * Creates a new empty background
@@ -99,6 +102,8 @@ public abstract class BackgroundConverter extends Converter {
 		} else {
 			this.color = this.colorConverter.parseColor(this.color);
 		}
+		this.colorConstructor = this.colorConverter.generateColorConstructor( this.color );
+		
 		this.borderWidth = (String) background.get("border-width");
 		if (this.borderWidth != null) {
 			// check if the border with is a correct value:
@@ -112,8 +117,10 @@ public abstract class BackgroundConverter extends Converter {
 			if (this.borderWidth == null) {
 				this.borderWidth = "1";
 			}
+			this.borderColorConstructor = this.colorConverter.generateColorConstructor( this.borderColor );
 		} else if (this.borderWidth != null) {
 			this.borderColor = "0x000000"; // default border color is black
+			this.borderColorConstructor = this.colorConverter.generateColorConstructor( this.borderColor );
 		}
 		if (isStandalone) {
 			codeList.add( STANDALONE_MODIFIER + "Background " + backgroundName + "Background = ");

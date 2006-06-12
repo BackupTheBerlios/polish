@@ -504,6 +504,7 @@ public class CssConverter extends Converter {
 			processFont( group, "font", style, codeList, styleSheet, false, environment );
 		} else {
 			codeList.add("\t\tdefaultFontColor,\t// font-color is not defined");
+			codeList.add("\t\tnull,\t// font-color is not defined");
 			codeList.add("\t\tdefaultFont,");
 		}
 		
@@ -682,7 +683,7 @@ public class CssConverter extends Converter {
 					if (attributeType == CssAttribute.STYLE || key.endsWith("style")) {
 						value = getStyleReference( value, style, styleSheet );
 					} else if (attributeType == CssAttribute.COLOR || key.endsWith("color")) {
-						value = "new Integer( " + getColor( value ) + ")";
+						value = this.colorConverter.generateColorConstructor( value );
 						attributeType = CssAttribute.COLOR;
 					} else if (key.equals("url")) {
 						value = getUrl( value );
@@ -741,6 +742,7 @@ public class CssConverter extends Converter {
 	}
 
 
+	
 	/**
 	 * Retrieves the color value as a decimal integer value.
 	 * 
@@ -749,11 +751,12 @@ public class CssConverter extends Converter {
 	 */
 	protected String getColor(String value) {
 		String color = this.colorConverter.parseColor(value);
-		if (color == ColorConverter.TRANSPARENT ) {
-			return "-1";
-		}
-		//TODO rob this won't work with argb-colors
-		return Integer.decode(color).toString();
+		return color;
+//		if (color == ColorConverter.TRANSPARENT ) {
+//			return "-1";
+//		}
+//		//TODO rob this won't work with argb-colors
+//		return Integer.decode(color).toString();
 	}
 
 
@@ -1032,6 +1035,7 @@ public class CssConverter extends Converter {
 						+ " = " + reference + typeName + ";" );
 			} else {
 				codeList.add( "\t\t" + reference + typeName + "Color," );
+				codeList.add( "\t\tnull," );
 				codeList.add( "\t\t" + reference + typeName + "," );
 			}
 			return;
@@ -1048,7 +1052,10 @@ public class CssConverter extends Converter {
 			codeList.add( newStatement );
 		} else {
 			if (fontColor != null) {
-				codeList.add( "\t\t" + this.colorConverter.parseColor(fontColor) + ",\t// " + groupName + "-color");
+				String color = this.colorConverter.parseColor(fontColor);
+				boolean isDynamic = this.colorConverter.isDynamic(fontColor);
+				codeList.add( "\t\t" + color + ",\t// " + groupName + "-color");
+				codeList.add( "\t\tnew Color(" + color + ", " + isDynamic + "),\t// " + groupName + "-color");
 			} else {
 				codeList.add( "\t\t0x000000,\t// " + groupName + "-color (default is black)");
 			}
@@ -1056,7 +1063,7 @@ public class CssConverter extends Converter {
 		// get the font:
 		String face = getAttributeValue("font", "face", group);
 		String styleStr = getAttributeValue("font", "style", group);
-		String size = getAttributeValue("font", "size", group);;
+		String size = getAttributeValue("font", "size", group);
 		String newStatement;
 		if (face == null && styleStr == null && size == null) {
 			newStatement = "Font.getDefaultFont()";

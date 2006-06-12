@@ -30,8 +30,6 @@ import de.enough.polish.util.StringUtil;
 import org.apache.tools.ant.BuildException;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * <p>Translates colors.</p>
@@ -52,8 +50,11 @@ public class ColorConverter {
 	 * Available colors are red, green, blue, lime, black, white, silver, gray,
 	 * maroon, purple, fuchsia, olive, yellow, navy, teal and aqua. 
 	 */
-	public static final HashMap COLORS = new HashMap();
-	public static final String TRANSPARENT = "Item.TRANSPARENT"; 
+	public static final Map COLORS = new HashMap();
+	/**
+	 * Defines dynamic colors like COLOR_BACKGROUND, COLOR_FOREGROUND, etc which can be used on MIDP/2.0 systems.
+	 */
+	public static final Map DYNAMIC_COLORS = new HashMap();
 	static {
 		COLORS.put("red",  	 	"0xFF0000");
 		COLORS.put("lime",  	"0x00FF00");
@@ -71,6 +72,35 @@ public class ColorConverter {
 		COLORS.put("navy",  	"0x000080");
 		COLORS.put("teal",  	"0x008080");
 		COLORS.put("aqua",  	"0x00FFFF");
+		
+		DYNAMIC_COLORS.put("COLOR_BACKGROUND", "Color.COLOR_BACKGROUND");
+		DYNAMIC_COLORS.put("COLOR_BORDER", "Color.COLOR_BORDER");
+		DYNAMIC_COLORS.put("COLOR_FOREGROUND", "Color.COLOR_FOREGROUND");
+		DYNAMIC_COLORS.put("COLOR_HIGHLIGHTED_BACKGROUND", "Color.COLOR_HIGHLIGHTED_BACKGROUND");
+		DYNAMIC_COLORS.put("COLOR_HIGHLIGHTED_BORDER", "Color.COLOR_HIGHLIGHTED_BORDER");
+		DYNAMIC_COLORS.put("COLOR_HIGHLIGHTED_FOREGROUND", "Color.COLOR_HIGHLIGHTED_FOREGROUND");
+		DYNAMIC_COLORS.put("Display.COLOR_BACKGROUND", "Color.COLOR_BACKGROUND");
+		DYNAMIC_COLORS.put("Display.COLOR_BORDER", "Color.COLOR_BORDER");
+		DYNAMIC_COLORS.put("Display.COLOR_FOREGROUND", "Color.COLOR_FOREGROUND");
+		DYNAMIC_COLORS.put("Display.COLOR_HIGHLIGHTED_BACKGROUND", "Color.COLOR_HIGHLIGHTED_BACKGROUND");
+		DYNAMIC_COLORS.put("Display.COLOR_HIGHLIGHTED_BORDER", "Color.COLOR_HIGHLIGHTED_BORDER");
+		DYNAMIC_COLORS.put("Display.COLOR_HIGHLIGHTED_FOREGROUND", "Color.COLOR_HIGHLIGHTED_FOREGROUND");
+		DYNAMIC_COLORS.put("Color.COLOR_BACKGROUND", "Color.COLOR_BACKGROUND");
+		DYNAMIC_COLORS.put("Color.COLOR_BORDER", "Color.COLOR_BORDER");
+		DYNAMIC_COLORS.put("Color.COLOR_FOREGROUND", "Color.COLOR_FOREGROUND");
+		DYNAMIC_COLORS.put("Color.COLOR_HIGHLIGHTED_BACKGROUND", "Color.COLOR_HIGHLIGHTED_BACKGROUND");
+		DYNAMIC_COLORS.put("Color.COLOR_HIGHLIGHTED_BORDER", "Color.COLOR_HIGHLIGHTED_BORDER");
+		DYNAMIC_COLORS.put("Color.COLOR_HIGHLIGHTED_FOREGROUND", "Color.COLOR_HIGHLIGHTED_FOREGROUND");
+		DYNAMIC_COLORS.put("COLOR_TRANSPARENT", "Color.TRANSPARENT");
+		DYNAMIC_COLORS.put("BACKGROUND_COLOR", "Color.COLOR_BACKGROUND");
+		DYNAMIC_COLORS.put("BORDER_COLOR", "Color.COLOR_BORDER");
+		DYNAMIC_COLORS.put("FOREGROUND_COLOR", "Color.COLOR_FOREGROUND");
+		DYNAMIC_COLORS.put("HIGHLIGHTED_BACKGROUND_COLOR", "Color.COLOR_HIGHLIGHTED_BACKGROUND");
+		DYNAMIC_COLORS.put("HIGHLIGHTED_BORDER_COLOR", "Color.COLOR_HIGHLIGHTED_BORDER");
+		DYNAMIC_COLORS.put("HIGHLIGHTED_FOREGROUND_COLOR", "Color.COLOR_HIGHLIGHTED_FOREGROUND");
+		DYNAMIC_COLORS.put("TRANSPARENT_COLOR", "Color.TRANSPARENT");
+		DYNAMIC_COLORS.put("transparent", "Color.TRANSPARENT");
+		DYNAMIC_COLORS.put("Color.TRANSPARENT", "Color.TRANSPARENT");
 	}
 	
 	private HashMap tempColors;
@@ -97,8 +127,9 @@ public class ColorConverter {
 	 * 		   "Item.TRANSPARENT" when the definition equals "transparent".
 	 */
 	public String parseColor( String definition ) {
-		if ("transparent".equals(definition)) {
-			return TRANSPARENT;
+		String dynamicValue = (String) DYNAMIC_COLORS.get(definition);
+		if (dynamicValue != null) {
+			return dynamicValue;
 		}
 		
 		// the definition could be a color which has been defined earlier:
@@ -115,8 +146,12 @@ public class ColorConverter {
 		
 		// the definition could be a normal hexadecimal value.
 		// In CSS hex-values start with '#':
-		if (definition.startsWith("#")) {
-			value = definition.substring( 1 );
+		if (definition.startsWith("#") || definition.startsWith("0x") ) {
+			if (definition.charAt(0) == '#') {
+				value = definition.substring( 1 );
+			} else {
+				value = definition.substring( 2 );
+			}
 			if (value.length() == 3) {
 				// an allowed shortcut in CSS is to use only one character
 				// for each color, when they are equal otherwise.
@@ -295,7 +330,31 @@ public class ColorConverter {
 	 * @return true when the color has an alpha channel defined.
 	 */
 	public boolean isAlphaColor( String color ) {
-		return (color.length() > "0xRRGGBB".length() && !color.startsWith("0xff"));
+		return (color.startsWith( "0x") 
+				&& color.length() > "0xRRGGBB".length() 
+				&& !color.startsWith("0xff"));
+		
 	}
+
+	/**
+	 * Determines whether the given color is a dynamic one.
+	 * 
+	 * @param value the value, e.g. red or COLOR_BACKGROUND
+	 * @return true when the given value represents a dynamic color like COLOR_BACKGROUND, COLOR_FOREGROUND, etc
+	 */
+	public boolean isDynamic(String value) {
+		return DYNAMIC_COLORS.get(value) != null;
+	}
+	
+	/**
+	 * Generates a new de.enough.polish.ui.Color constructor for the given color value.
+	 * @param value the color value like red or COLOR_FOREGROUND
+	 * @return source code that generates a new Color object
+	 */
+	public String generateColorConstructor(String value) {
+		boolean isDynamic = isDynamic( value );
+		return  "new Color( " + parseColor(value) + ", " + isDynamic + ")";
+	}
+
 	
 }

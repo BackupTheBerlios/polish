@@ -517,7 +517,7 @@ public class StringItem extends Item
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		this.textColor = style.fontColor;
+		this.textColor = style.getFontColor();
 		this.font = style.font;
 		//#ifdef polish.css.font-bitmap
 			String bitMapUrl = style.getProperty("font-bitmap");

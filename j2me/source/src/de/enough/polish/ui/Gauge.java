@@ -983,7 +983,7 @@ implements ImageConsumer
 			if (style.font != null) {
 				this.font = style.font;
 			}
-			this.fontColor = style.fontColor;
+			this.fontColor = style.getFontColor();
 			//#ifdef polish.css.gauge-value-align
 				Integer valuePositionInt =  style.getIntProperty( "gauge-value-align" );
 				if (valuePositionInt != null) {

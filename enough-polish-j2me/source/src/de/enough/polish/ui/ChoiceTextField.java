@@ -294,9 +294,32 @@ public class ChoiceTextField
 				super.notifyStateChanged();
 			}
 			return true;
-		} else if ( gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8 && this.numberOfMatches > 0) {
+		} else if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+				&& this.numberOfMatches > 0) {
 			//System.out.println("focusing choices container");
 			enterChoices( true );
+			return true;
+		} else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+			//if (this.numberOfMatches == 0) {
+				if (this.choices == null) {
+					//#if polish.usePolishGui
+						//# return super.handleKeyPressed(keyCode, gameAction);
+					//#else
+						return true;
+					//#endif
+				}
+				this.choicesContainer.clear();
+				for (int i = 0; i < this.choices.length; i++) {
+					Item item = this.choiceItems[i];
+					if (item == null) {
+						// create new ChoiceItem (lazy initialisation)
+						item = new ChoiceItem( this.choices[i], null, Choice.IMPLICIT, this.choiceItemStyle );
+					}
+					this.choicesContainer.add( item );
+				}
+				this.numberOfMatches = this.choicesContainer.size();
+			//}
+			//enterChoices( true );
 			return true;
 		}
 		//#if polish.usePolishGui
