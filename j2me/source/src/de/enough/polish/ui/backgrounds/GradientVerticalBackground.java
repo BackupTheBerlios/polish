@@ -29,14 +29,16 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
 /**
+ * GradientVerticalBackground generates an nice Backgroundscreen,
+ * with an gradient from the top-color to the bottom-color.
  * 
  * @author Tim Muders
  *
  */
-public class SimpleSmoothColorBackground  extends Background {
+public class GradientVerticalBackground  extends Background {
 	private int color,stripesColor;
 	private final int stroke;
-	public SimpleSmoothColorBackground(int color, int stripesColor,int stroke){
+	public GradientVerticalBackground(int color, int stripesColor,int stroke){
 		this.color = color;
 		this.stripesColor = stripesColor;
 		this.stroke = stroke;
@@ -70,7 +72,7 @@ public class SimpleSmoothColorBackground  extends Background {
 		int startX = x;
 		int startY = y;
 		g.setColor(000000);
-		g.drawRect(x+1,y+1,width,height);
+//		g.drawLine(x+1,y+1,width,height);
 		int red,green, blue,red2,green2,blue2;
 		red = (0x00FF & (this.color >>> 16));	
 		green = (0x0000FF & (this.color >>> 8));
@@ -82,7 +84,7 @@ public class SimpleSmoothColorBackground  extends Background {
 		do{				
 			int sumY = height-(y-startY);
 			g.setColor(red,green,blue);
-			g.drawRect(x,y,sumX,sumY);
+			g.drawLine(x,y,sumX,y);
 			y ++;		
 			red = this.colorValue(red,red2,sumX,sumY);
 			green = this.colorValue(green,green2,sumX,sumY);

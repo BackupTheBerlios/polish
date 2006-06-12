@@ -35,18 +35,23 @@ import de.enough.polish.preprocess.css.StyleSheet;
 
 
 /**
- * 
+ * Converter for de.enough.polish.ui.backgrounds.GradientVerticalBackground.
  * @author Tim Muders
  *
  */
-public class SimpleSmoothColorBackgroundConverter extends BackgroundConverter {
+public class GradientVerticalBackgroundConverter extends BackgroundConverter {
 
 	protected String createNewStatement(HashMap map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
-		String result = "new de.enough.polish.ui.backgrounds.SimpleSmoothColorBackground(" 
-			+ this.color + ", ";
+		String result = "new de.enough.polish.ui.backgrounds.GradientVerticalBackground(" 
+			;
+		String topColor = "0";
+		String topColorStr = (String) map.get("top-color");
+		if ( topColorStr != null ) {
+			topColor = parseColor( topColorStr );			
+		}
 		String gradientColor = "0";
-		String gradientColorStr = (String) map.get("gradient-color");
+		String gradientColorStr = (String) map.get("bottom-color");
 		if ( gradientColorStr != null ) {
 			gradientColor = parseColor( gradientColorStr );			
 		}
@@ -56,7 +61,7 @@ public class SimpleSmoothColorBackgroundConverter extends BackgroundConverter {
 			stroke =  parseInt(strokeStr, strokeStr);			
 		}
 		
-		result += gradientColor +","+stroke +")";
+		result += topColor + ", "+gradientColor +","+stroke +")";
 		
 		return result;
 	}
