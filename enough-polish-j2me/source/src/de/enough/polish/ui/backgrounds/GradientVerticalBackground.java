@@ -36,11 +36,11 @@ import de.enough.polish.ui.Background;
  *
  */
 public class GradientVerticalBackground  extends Background {
-	private int color,stripesColor;
+	private int topcolor,bottomColor;
 	private final int stroke;
-	public GradientVerticalBackground(int color, int stripesColor,int stroke){
-		this.color = color;
-		this.stripesColor = stripesColor;
+	public GradientVerticalBackground(int topColor, int bottomColor,int stroke){
+		this.topcolor = topColor;
+		this.bottomColor = bottomColor;
 		this.stroke = stroke;
 		
 	}
@@ -74,12 +74,12 @@ public class GradientVerticalBackground  extends Background {
 		g.setColor(000000);
 //		g.drawLine(x+1,y+1,width,height);
 		int red,green, blue,red2,green2,blue2;
-		red = (0x00FF & (this.color >>> 16));	
-		green = (0x0000FF & (this.color >>> 8));
-		blue = this.color & (0x000000FF );
-		red2 = (0x00FF & (this.stripesColor >>> 16));
-		green2 = (0x0000FF & (this.stripesColor >>> 8));
-		blue2 = this.stripesColor & (0x000000FF);
+		red = (0x00FF & (this.topcolor >>> 16));	
+		green = (0x0000FF & (this.topcolor >>> 8));
+		blue = this.topcolor & (0x000000FF );
+		red2 = (0x00FF & (this.bottomColor >>> 16));
+		green2 = (0x0000FF & (this.bottomColor >>> 8));
+		blue2 = this.bottomColor & (0x000000FF);
 		int sumX = width-(x-startX);
 		do{				
 			int sumY = height-(y-startY);
