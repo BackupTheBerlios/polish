@@ -42,6 +42,8 @@ import java.io.IOException;
  */
 public final class Serializer {
 	
+	private static final byte VERSION = 1; // version starts at 1 and is then increased up to 127 when incompatible changes occur
+	
 	private Serializer() {
 		// no instantiation allowed
 	}
@@ -50,38 +52,48 @@ public final class Serializer {
 	/**
 	 * Serializes the given object.
 	 * 
-	 * @param serializable the serializable object
+	 * @param serializable the serializable object or null
 	 * @param out the data output stream, into which the object is serialized
 	 * @throws IOException when serialization data could not be written
 	 */
 	public static void serialize( Serializable serializable, DataOutputStream out )
 	throws IOException
 	{
-		Externalizable extern = (Externalizable) serializable;
-		out.writeUTF( extern.getClass().getName() );
-		extern.write( out );		
+		out.writeByte( VERSION );
+		boolean isNull = (serializable == null);
+		out.writeBoolean( isNull );
+		if ( !isNull ) {
+			Externalizable extern = (Externalizable) serializable;
+			out.writeUTF( extern.getClass().getName() );
+			extern.write( out );		
+		}
 	}
 	
 	/**
 	 * Serializes the given array.
 	 * <b>WARNING: </b> The specified array elements need to be of the same type, this is not checked during runtime!
 	 * 
-	 * @param serializables the array with serializable objects of the same type
+	 * @param serializables the array with serializable objects of the same type or null
 	 * @param out the data output stream, into which the objects are serialized
 	 * @throws IOException when serialization data could not be written
 	 */
 	public static void serializeArray( Serializable[] serializables, DataOutputStream out )
 	throws IOException
 	{
-		out.writeInt( serializables.length );
-		if ( serializables.length > 0 ) {
-			Serializable serializable = serializables[0];
-			out.writeUTF( serializable.getClass().getName() );
-			for (int i = 0; i < serializables.length; i++) {
-				Externalizable extern = (Externalizable) serializables[i];
-				out.writeUTF( extern.getClass().getName() );
-				extern.write( out );		
-			}			
+		out.writeByte( VERSION );
+		boolean isNull = (serializables == null);
+		out.writeBoolean( isNull );
+		if ( !isNull ) {
+			out.writeInt( serializables.length );
+			if ( serializables.length > 0 ) {
+				Serializable serializable = serializables[0];
+				out.writeUTF( serializable.getClass().getName() );
+				for (int i = 0; i < serializables.length; i++) {
+					Externalizable extern = (Externalizable) serializables[i];
+					out.writeUTF( extern.getClass().getName() );
+					extern.write( out );		
+				}			
+			}
 		}
 	}
 
@@ -96,6 +108,17 @@ public final class Serializer {
 	public static Serializable deserialize( DataInputStream in )
 	throws IOException
 	{
+		byte version = in.readByte();
+		//#if polish.debug.warn
+			if (version > VERSION) {
+				//#debug warn
+				System.out.println("Warning: trying to deserialize class that has been serialized with a newer version (" + version + ">" + VERSION + ").");
+			}
+		//#endif
+		boolean isNull = in.readBoolean();
+		if (isNull) {
+			return null;
+		}
 		String className = in.readUTF();
 		Externalizable extern = null;
 		try {
@@ -119,6 +142,17 @@ public final class Serializer {
 	public static Serializable[] deserializeArray( DataInputStream in )
 	throws IOException
 	{
+		byte version = in.readByte();
+		//#if polish.debug.warn
+			if (version > VERSION) {
+				//#debug warn
+				System.out.println("Warning: trying to deserialize array that has been serialized with a newer version (" + version + ">" + VERSION + ").");
+			}
+		//#endif
+		boolean isNull = in.readBoolean();
+		if (isNull) {
+			return null;
+		}
 		int length = in.readInt();
 		Serializable[] serializables = new Serializable[ length ];
 		if ( length > 0 ) {
