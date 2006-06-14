@@ -26,5 +26,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.apache.ant,
  de.enough.mepose.core,
- de.enough.mepose.ui
+ de.enough.mepose.ui,
+ de.enough.polish.plugin.eclipse.css.CssEditorPlugin
 Eclipse-AutoStart: true

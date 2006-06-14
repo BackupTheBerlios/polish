@@ -58,6 +58,8 @@ public class NewProjectModel extends PropertyModel{
     public static final String ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT = "id.newprojectmodel.state.created.project";
     public static final String ID_NEWPROJECTMODEL_MEPOSEMODEL = "id.newprojectmodel.meposeModel";
     
+    private boolean generateTemplate;
+    
     private MeposeModel meposeModel;
 //    private boolean canFinish = false;
     
@@ -293,6 +295,12 @@ public class NewProjectModel extends PropertyModel{
         this.javaTabReached = javaTabReached;
     }
     
-    
+    public void setGenerateTemplate(boolean generateTemplate) {
+        this.generateTemplate = generateTemplate;
+    }
+
+    public boolean isGenerateTemplate() {
+        return this.generateTemplate;
+    }
     
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,15 +29,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import de.enough.mepose.core.MeposeConstants;
+import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.model.MeposeModel;
+
 public class MIDletLaunchConfigurationTab
     extends AbstractLaunchConfigurationTab
 {
-  private Text projectName;
-  private Text jadFile;
-  private Text hostName;
-  private Text port;
-  private Text polishHome;
-  private Text wtkHome;
+  private Text projectNameText;
+  private Text jadFileText;
+  private Text hostNameText;
+  private Text portText;
+  private Text polishHomeText;
+  private Text wtkHomeText;
     
   /**
    * Returns the current Java element context from which to initialize
@@ -96,15 +101,15 @@ public class MIDletLaunchConfigurationTab
     
     top.setLayout(new GridLayout(3, false));
     
-    this.projectName = createTextAttribute(top, "Project");
+    this.projectNameText = createTextAttribute(top, "Project");
     //TODO: Not userfriendly.
 //    projectName.setEditable(false);
 
-    this.jadFile = createTextAttribute(top, "JAD file");
-    this.hostName = createTextAttribute(top, "Hostname");
-    this.port = createTextAttribute(top, "Port");
-    this.polishHome = createDirectoryAttribute(top, "Polish Home");
-    this.wtkHome = createDirectoryAttribute(top, "WTK Home");
+    this.jadFileText = createTextAttribute(top, "JAD file");
+    this.hostNameText = createTextAttribute(top, "Hostname");
+    this.portText = createTextAttribute(top, "Port");
+    this.polishHomeText = createDirectoryAttribute(top, "Polish Home");
+    this.wtkHomeText = createDirectoryAttribute(top, "WTK Home");
     
     setControl(top);
   }
@@ -173,24 +178,45 @@ public class MIDletLaunchConfigurationTab
 
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration)
   {
-//    IJavaElement javaElement = getContext();
-//    
-//    if (javaElement != null)
-//      {
-//        initializeJavaProject(javaElement, configuration);
-//      }
-//    else
-//      {
-//        configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "menu");
-//      }
 
-    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, getSelectedJavaProjectName());
-    
+    String projectName = getSelectedJavaProjectName();
+    IProject project = null;
+    if(projectName != null && projectName.length() != 0) {
+        project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+    }
+    MeposeModel model = null;
+    if(project != null) {
+        model = MeposePlugin.getDefault().getMeposeModelManager().getModel(project);
+    }
     IPath workspaceLocation = ResourcesPlugin.getWorkspace().getRoot().findMember("/").getLocation();
+
+    configuration.setAttribute(MeposeConstants.ID_PROJECT_NAME, projectName);
     configuration.setAttribute(MIDletLauncherConstants.WORKSPACE, workspaceLocation.toOSString());
     configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, "/path/to/file.jar");
-    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, "/path/to/polish/home");
-    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, "/path/to/wtk/home");
+    
+    String polishHomePath = null;
+    if(model != null) {
+        polishHomePath = model.getPolishHome().getAbsolutePath();
+    }
+    if(polishHomePath == null || polishHomePath.length() == 0) {
+        polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME);
+    }
+    if(polishHomePath == null || polishHomePath.length() == 0) {
+        polishHomePath = "/path/to/polish/home";
+    }
+    configuration.setAttribute(MeposeConstants.ID_POLISH_HOME, polishHomePath);
+    
+    String wtkHomePath = null;
+    if(model != null) {
+        wtkHomePath = model.getWTKHome().getAbsolutePath();
+    }
+    if(wtkHomePath == null || wtkHomePath.length() == 0) {
+        wtkHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MIDletLauncherConstants.WTK_HOME);
+    }
+    if(wtkHomePath == null || wtkHomePath.length() == 0) {
+        wtkHomePath = "/path/to/wtk/home";
+    }
+    configuration.setAttribute(MeposeConstants.ID_WTK_HOME, wtkHomePath);
 
     HashMap attrMap = new HashMap();
     attrMap.put("hostname", "localhost");
@@ -212,6 +238,9 @@ public class MIDletLaunchConfigurationTab
       if(firstElement instanceof IJavaProject) {
           return ((IJavaProject)firstElement).getProject().getName();
       }
+      if(firstElement instanceof IResource) {
+          return ((IResource)firstElement).getProject().getName();
+      }
       
       return "";
   }
@@ -221,28 +250,28 @@ public class MIDletLaunchConfigurationTab
     try
       {
 //      projectName.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "unknown"));
-        String projectNameString = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+        String projectNameString = configuration.getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
         if(projectNameString == null) {
             projectNameString = getSelectedJavaProjectName();
         }
 
-        this.projectName.setText(projectNameString);
-        this.jadFile.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
-        this.polishHome.setText(configuration.getAttribute(MIDletLauncherConstants.POLISH_HOME, "/home/mkoch/J2ME-Polish"));
-        this.wtkHome.setText(configuration.getAttribute(MIDletLauncherConstants.WTK_HOME, "/home/mkoch/local/WTK2.2"));
+        this.projectNameText.setText(projectNameString);
+        this.jadFileText.setText(configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "Generic-Midp2Cldc11-en_US-example.jad"));
+        this.polishHomeText.setText(configuration.getAttribute(MeposeConstants.ID_POLISH_HOME, "/home/mkoch/J2ME-Polish"));
+        this.wtkHomeText.setText(configuration.getAttribute(MeposeConstants.ID_WTK_HOME, "/home/mkoch/local/WTK2.2"));
 
         Map attrMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, (Map) null);
 
         if (attrMap != null)
           {
-            this.hostName.setText((String) attrMap.get("hostname"));
-            this.port.setText((String) attrMap.get("port"));
+            this.hostNameText.setText((String) attrMap.get("hostname"));
+            this.portText.setText((String) attrMap.get("port"));
           }
         else
           {
             // Use default values.
-            this.hostName.setText("localhost");
-            this.port.setText("8000");
+            this.hostNameText.setText("localhost");
+            this.portText.setText("8000");
           }
       }
     catch (CoreException e)
@@ -254,16 +283,16 @@ public class MIDletLaunchConfigurationTab
 
   public void performApply(ILaunchConfigurationWorkingCopy configuration)
   {
-    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, this.projectName.getText());
+    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, this.projectNameText.getText());
     
     HashMap attrMap = new HashMap();
-    attrMap.put("hostname", this.hostName.getText());
-    attrMap.put("port", this.port.getText());
+    attrMap.put("hostname", this.hostNameText.getText());
+    attrMap.put("port", this.portText.getText());
     configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, attrMap);
     
-    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, this.jadFile.getText());
-    configuration.setAttribute(MIDletLauncherConstants.POLISH_HOME, this.polishHome.getText());
-    configuration.setAttribute(MIDletLauncherConstants.WTK_HOME, this.wtkHome.getText());
+    configuration.setAttribute(MIDletLauncherConstants.JAD_FILE, this.jadFileText.getText());
+    configuration.setAttribute(MeposeConstants.ID_POLISH_HOME, this.polishHomeText.getText());
+    configuration.setAttribute(MeposeConstants.ID_WTK_HOME, this.wtkHomeText.getText());
   }
 
   void updateLaunchConfiguration()

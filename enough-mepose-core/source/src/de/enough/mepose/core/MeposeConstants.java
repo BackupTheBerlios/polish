@@ -37,15 +37,19 @@ package de.enough.mepose.core;
  */
 public interface MeposeConstants
 {
-    String ID_PLUGIN = "de.enough.mepose.core";
-    String POLISH_INSTALLATION_DIR = "polish.installation.dir";
-    String WTK_INSTALLATION_DIR = "WTK.installation.dir";
-    String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
-    String ID_TEMPLATE_NAME = "build.xml.template";
-    String ID_NATURE_QUALIFIER = "polishNature";
-    String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
-    String ID_BUILDER_QUALIFIER = "polishBuilder";
-    String ID_BUILDER = ID_PLUGIN + "." + ID_BUILDER_QUALIFIER;
-    String ID_BUILD_LISTENERS_QUALIFIER = "buildListeners";
-    String ID_BUILD_LISTENERS = ID_PLUGIN + "." + ID_BUILD_LISTENERS_QUALIFIER;
+    public static final String ID_PLUGIN = "de.enough.mepose.core";
+    public static final String POLISH_INSTALLATION_DIR = "polish.installation.dir";
+    public static final String WTK_INSTALLATION_DIR = "WTK.installation.dir";
+    public static final String PATH_BUILD_XML_TEMPLATE = "/templates/build.xml.template";
+    public static final String ID_TEMPLATE_NAME = "build.xml.template";
+    public static final String ID_NATURE_QUALIFIER = "polishNature";
+    public static final String ID_NATURE = ID_PLUGIN + "." + ID_NATURE_QUALIFIER;
+    public static final String ID_BUILDER_QUALIFIER = "polishBuilder";
+    public static final String ID_BUILDER = ID_PLUGIN + "." + ID_BUILDER_QUALIFIER;
+    public static final String ID_BUILD_LISTENERS_QUALIFIER = "buildListeners";
+    public static final String ID_BUILD_LISTENERS = ID_PLUGIN + "." + ID_BUILD_LISTENERS_QUALIFIER;
+    
+    public static final String ID_WTK_HOME = "id.wtk.home";
+    public static final String ID_POLISH_HOME = "id.polish.home";
+    public static final String ID_PROJECT_NAME = "id.project.name";
 }

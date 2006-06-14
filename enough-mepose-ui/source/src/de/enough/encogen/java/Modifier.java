@@ -1,5 +1,5 @@
 /*
- * Created on Dec 23, 2005 at 3:43:39 PM.
+ * Created on Jun 13, 2006 at 4:51:05 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,21 +23,32 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui.wizards;
-
-import de.enough.utils.PropertyModel;
+package de.enough.encogen.java;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Dec 23, 2005 - rickyn creation
+ *        Jun 13, 2006 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class ProjectPageModel extends PropertyModel {
+public class Modifier extends JavaElement {
 
+    private boolean isPublic;
+
+
+
+    public boolean isPublic() {
+        return this.isPublic;
+    }
     
     
+    
+    public String print(Rectangle rectangle) {
+        // TODO rickyn implement print
+        return null;
+    }
+
 }

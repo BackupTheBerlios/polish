@@ -33,6 +33,8 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
     
     public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
+    public static final String ID = "de.enough.mepose.ui";
+    
     private class ProjectSelected implements ISelectionListener{
         public void selectionChanged(IWorkbenchPart part, ISelection selection) {
             if(selection instanceof IStructuredSelection) {

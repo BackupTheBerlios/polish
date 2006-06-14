@@ -25,7 +25,6 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -50,10 +49,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -63,7 +59,6 @@ import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin.PartFocusListener;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.occurrenceAnnotations.OccurrencesMarkerManager;
 
 
@@ -94,7 +89,6 @@ public class PolishEditor extends CompilationUnitEditor {
 
         public void partActivated(IWorkbenchPart part) {
             if(part instanceof PolishEditor) {
-                System.out.println("DEBUG:PartFocusListener.partActivated(...):setting the new model");
                 PolishEditor polishEditor = (PolishEditor)part;
                 polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
             }
@@ -223,14 +217,6 @@ public class PolishEditor extends CompilationUnitEditor {
     
     
     protected void updateOccurrenceAnnotations(ITextSelection selection, CompilationUnit astRoot) {
-        if(selection == null){
-            System.out.println("ERROR:PolishEditor.updateOccurrenceAnnotations(...):Parameter 'selection'is null.");
-            return;
-        }
-        if(astRoot == null){
-            System.out.println("ERROR:PolishEditor.updateOccurrenceAnnotations(...):Parameter 'astRoot' is null.");
-            return;
-        }
         List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
       
         this.occurrencesMarkerManager.updateAnnotations(selection,listOfComments);
@@ -238,59 +224,35 @@ public class PolishEditor extends CompilationUnitEditor {
         super.updateOccurrenceAnnotations(selection, astRoot);
     }
     
+    public Method findMethod(Class start, String methodName, Class[] args) {
+        Method firstDeclared = null;
+        for (Class current = start.getSuperclass(); current != Object.class && firstDeclared == null; current = current.getSuperclass()) {
+            try {
+                firstDeclared = current.getDeclaredMethod(methodName, args);
+            } catch (Exception e) {
+                // totally ignore this... we don't give a shit if the method is not there
+            }
+        }
+        return firstDeclared;
+    }
+    
     protected void installOccurrencesFinder() {
         doInstallOccurrencesFinder();
-        try {
-            Method superMethod = getClass().getSuperclass().getMethod("installOccurrencesFinder",null);
-            superMethod.invoke(this,new Object[0]);
-        } catch (SecurityException exception) {
-            // TODO rickyn handle SecurityException
-            exception.printStackTrace();
-        } catch (NoSuchMethodException exception) {
-            // TODO rickyn handle NoSuchMethodException
-            exception.printStackTrace();
-        } catch (IllegalArgumentException exception) {
-            // TODO rickyn handle IllegalArgumentException
-            exception.printStackTrace();
-        } catch (IllegalAccessException exception) {
-            // TODO rickyn handle IllegalAccessException
-            exception.printStackTrace();
-        } catch (InvocationTargetException exception) {
-            // TODO rickyn handle InvocationTargetException
-            exception.printStackTrace();
-        }
+        super.installOccurrencesFinder();
     }
     
     
     // Use this mechanism to get informed about install and uninstall.
     protected void installOccurrencesFinder(boolean force) {
-        //System.out.println("PolishEditor.installOccurrencesFinder().enter");
         doInstallOccurrencesFinder();
-        try {
-            Method superMethod = getClass().getSuperclass().getMethod("installOccurrencesFinder",new Class[] {boolean.class});
-            superMethod.invoke(this,new Object[] {new Boolean(force)});
-        } catch (SecurityException exception) {
-            // TODO rickyn handle SecurityException
-            exception.printStackTrace();
-        } catch (NoSuchMethodException exception) {
-            // TODO rickyn handle NoSuchMethodException
-            exception.printStackTrace();
-        } catch (IllegalArgumentException exception) {
-            // TODO rickyn handle IllegalArgumentException
-            exception.printStackTrace();
-        } catch (IllegalAccessException exception) {
-            // TODO rickyn handle IllegalAccessException
-            exception.printStackTrace();
-        } catch (InvocationTargetException exception) {
-            // TODO rickyn handle InvocationTargetException
-            exception.printStackTrace();
-        }
+        super.installOccurrencesFinder(force);
     }
     
     private void doInstallOccurrencesFinder() {
         ISourceViewer sourceViewer = getSourceViewer();
         if(sourceViewer == null) {
             System.out.println("ERROR:PolishEditor.installOccurrencesFinder():sourceViewer is null.");
+            PolishEditorPlugin.log("installOccurrencesFinder():sourceViewer is null.");
             return;
         }
         // Reset the Marker Manager, maybe something has changed.
@@ -300,14 +262,10 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     
     protected void uninstallOccurrencesFinder() {
-        //System.out.println("PolishEditor.uninstallOccurrencesFinder().enter");
         this.occurrencesMarkerManager.removeAnnotations(); // Seems not to work as it complains about beeing not configured.
         super.uninstallOccurrencesFinder();
     }
 
-    /**
-     * @return Returns the deviceEnvironment.
-     */
     public Environment getDeviceEnvironment() {
         return this.deviceEnvironment;
     }

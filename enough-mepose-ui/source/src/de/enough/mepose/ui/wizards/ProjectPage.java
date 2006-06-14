@@ -13,8 +13,12 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -32,12 +36,12 @@ public class ProjectPage extends WizardPage{
     public static final int OK = 10;
     public static Logger logger = Logger.getLogger(ProjectPage.class);
     
-    private NewProjectModel newProjectModel;
+    NewProjectModel newProjectModel;
     private Text newProjectNameText;
     private Label newProjectNameLabel;
     private StatusGroup newProjectNameStatusGroup;
 //    private boolean isReady = false;
-    private ProjectPageModel projectPageModel;
+    ProjectPageModel projectPageModel;
     private Group desciptionGroup;
     private Text descriptionText;
     
@@ -113,8 +117,19 @@ public class ProjectPage extends WizardPage{
         this.descriptionText = new Text(this.desciptionGroup,SWT.WRAP);
         this.descriptionText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         
-//		Label someLabel = new Label(container,SWT.NONE);
-//        someLabel.setText("ask the user something");
+        Group generateTemplateGroup = new Group(container,SWT.NONE);
+        generateTemplateGroup.setText("Project Template");
+        generateTemplateGroup.setLayout(new GridLayout(2,false));
+        
+        Label generateTemplatesLabel = new Label(generateTemplateGroup,SWT.NONE);
+        generateTemplatesLabel.setText("Generate template?");
+        
+        Button generateTemplatesButton = new Button(generateTemplateGroup,SWT.CHECK);
+        generateTemplatesButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ProjectPage.this.newProjectModel.setGenerateTemplate(((Button)e.widget).getSelection());
+            }
+        });
         
         setControl(container);
 

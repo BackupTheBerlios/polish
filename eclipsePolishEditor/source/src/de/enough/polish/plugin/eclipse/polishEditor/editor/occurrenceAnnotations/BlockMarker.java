@@ -87,7 +87,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         
         blockDirectiveAsPosition = PolishDocumentUtils.extractDirectiveAtOffset(getDocument(),selection.getOffset());
         if(blockDirectiveAsPosition == null) {
-           System.out.println("DEBUG:BlockMarker.updateAnnotations(...):Nothing to do for BlockMarker.updateAnnotations(...).");
            return;
         }
         

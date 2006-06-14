@@ -255,6 +255,9 @@ public class MiDletChangeListener implements IResourceChangeListener{
         }
         ICompilationUnit compilationUnit = (ICompilationUnit)javaElement;
         IType primaryType = compilationUnit.findPrimaryType();
+        if(primaryType == null) {
+            return null;
+        }
         int flags;
         try {
             flags = primaryType.getFlags();

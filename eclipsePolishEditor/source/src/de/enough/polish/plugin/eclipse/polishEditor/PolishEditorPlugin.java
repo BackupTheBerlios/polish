@@ -9,12 +9,8 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IWindowListener;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -193,7 +189,6 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
         
         String javaKeywordColorString = JavaPlugin.getDefault().getCombinedPreferenceStore().getString(IJavaColorConstants.JAVA_KEYWORD);
         String javaDefaultColorString = JavaPlugin.getDefault().getCombinedPreferenceStore().getString(IJavaColorConstants.JAVA_DEFAULT);
-        
         
         //store.setDefault(IPolishConstants.POLISH_COLOR_DIRECTIVE,javaKeywordColorString);
         store.setDefault(IPolishConstants.POLISH_COLOR_DIRECTIVE,"230,25,25");    

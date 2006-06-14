@@ -51,7 +51,6 @@ import de.enough.polish.plugin.eclipse.utils.TokenStore;
  */
 public class PolishDirectiveRule implements IRule {
 
-   
     private char[][] delimiters;
     
     private Matcher matcher;
@@ -115,8 +114,6 @@ public class PolishDirectiveRule implements IRule {
     public static final int STRING_STATE = 8;
     public static final int POLISH_FUNCTION_STATE = 16;
 
-    private int evalCount = 0;
-
     
     // ####################################################
     // Constructor.
@@ -130,28 +127,11 @@ public class PolishDirectiveRule implements IRule {
     }
     
     public IToken evaluate(ICharacterScanner scanner) {
-        System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):enter.i:"+ ++this.evalCount);
-        int c =  Integer.MIN_VALUE; // Clean initialization.
-        int readCount = 0; // number of times read was called.
+        System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):enter.");
         this.delimiters = scanner.getLegalLineDelimiters();
 
-        // Read the the whole line.
-        StringBuffer wholeCommentLineAsStringBuffer = new StringBuffer(200);
-        c = scanner.read();
-        readCount++;
+        String restOfLine = getRestOfLine(scanner);
         
-        while( ! charIsEOLorEOF(c)) {
-            wholeCommentLineAsStringBuffer.append((char)c);
-            c = scanner.read();
-            readCount++;
-        }
-        
-        String restOfLine = wholeCommentLineAsStringBuffer.toString();
-        
-        //Reset the scanner so length calculation remain correct.
-        for(int i = 0; i < readCount; i++) {
-            scanner.unread();
-        }
         this.matcher.reset(restOfLine);
         
         boolean matcherMatchedSomething;
@@ -160,18 +140,17 @@ public class PolishDirectiveRule implements IRule {
 		if(!matcherMatchedSomething){
 		
 		    // We havent matched anything. The default UNDEFINED token is returned.
-            
-            for(int i = 0; i < readCount;i++) {
+            for(int i = 0; i < restOfLine.length();i++) {
                 scanner.read();
             }
-            
+            System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):undefined.");
 			return Token.UNDEFINED;
 		}
-		// Set the state default to the polish default color.
+//		// Set the state default to the polish default color.
 		this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
-	
-		// Set the defaultToken in regard to the current state.
-		// TODO: This is problematic because both can be active at the same time thus overriding each other.
+//	
+//		// Set the defaultToken in regard to the current state.
+//		// TODO: This is problematic because both can be active at the same time thus overriding each other.
 		if(this.states.isInState(POLISH_STATE)) {
 		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
 		}
@@ -180,39 +159,41 @@ public class PolishDirectiveRule implements IRule {
 		}
 		if(this.states.isInState(JAVA_COMMENT_STATE)) {
 		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT));
+//		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DEFAULT));
 		}
 		if(this.states.isInState(STRING_STATE)) {
 		    this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT,this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING));
 		}
+//		
+//		IToken resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT);
 		
-		IToken resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT);
-		
+        IToken resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_STATE_DEFAULT);
 //		We have something and it is at the offset. Find out what it is.
-		// TODO: Maybe extract the loop, obtain index and value of the symbol and
-		// go on with the result, i.e. make a tokenizer.
-		for(int i = 1; i <= this.matcher.groupCount();i++){
-			String value = this.matcher.group(i);
+		for(int symbolId = 1; symbolId <= this.matcher.groupCount();symbolId++){
+			String value = this.matcher.group(symbolId);
 			
-			// In theory we pass this condition exactly once. the tokenlanguage is LL so only one
+			// In theory we pass this condition exactly once. the directivelanguage is LL so only one
 			// group match. And because we have some groups we do have a group != "", too.
-            	if((value != null) && (value.length() > 0)){ // Arcording to API sometimes "" can be a group. "a*" as an example.
-            	    //System.out.println("AAA group found:"+value+":i:"+i);
+			if((value != null) && (value.length() > 0)){ // Arcording to API sometimes "" can be a group. "a*" as an example.
             	    int lengthOfValue = value.length();
             	    // Set the scanner to the right offset.
 				for(int j = 0; j < lengthOfValue; j++) {
 				    scanner.read();
 				}
 
+                //TODO: Only testing
+                System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):restOfLine:"+restOfLine);
+//                return this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
+//                
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
-				if(i == POLISH_DIRECTIVE_SYMBOL) { 
-				    System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):value:"+value);
+				if(symbolId == POLISH_DIRECTIVE_SYMBOL) { 
 				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(POLISH_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
 				
-				if(i == NAME_SYMBOL) {
+				if(symbolId == NAME_SYMBOL) {
 				    
 				    if(this.states.isInState(POLISH_STATE)) { // Color only names within a polish directive.
 				        // Distinquish between variable and symbol by semantic matching.
@@ -227,13 +208,13 @@ public class PolishDirectiveRule implements IRule {
 				    }
 				    break;
 				}
-				if(i == JAVA_COMMENT_SYMBOL) {
-				  
+				if(symbolId == JAVA_COMMENT_SYMBOL) {
+				    System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):java comment");
 				    this.states.setState(JAVA_COMMENT_STATE);
 				    resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT);
 				    break;
 				}
-				if(i == DOLLAR_LCB_SYMBOL) {
+				if(symbolId == DOLLAR_LCB_SYMBOL) {
 				    
 				    if( ! this.states.isInState(JAVA_COMMENT_STATE)) { // Color in every state except java comments.
 				        this.states.addState(POLISH_FUNCTION_STATE);
@@ -241,7 +222,7 @@ public class PolishDirectiveRule implements IRule {
 				    }
 				    break;
 				}
-				if(i == RCB_SYMBOL) {
+				if(symbolId == RCB_SYMBOL) {
 				   
 				    if( ! this.states.isInState(JAVA_COMMENT_STATE)) {
 				        this.states.removeState(POLISH_FUNCTION_STATE);
@@ -251,27 +232,27 @@ public class PolishDirectiveRule implements IRule {
 				}
 				
 				
-				if(i == POLISH_COMMENT_SYMBOL) {
+				if(symbolId == POLISH_COMMENT_SYMBOL) {
 				    
 				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_CODE_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
-				if(i == POLISH_ASSIGNMENT_SYMBOL) {
+				if(symbolId == POLISH_ASSIGNMENT_SYMBOL) {
 				    
 				    //this.wholeCommentLine = wholeCommentLineAsStringBuffer.toString();
 			        this.states.setState(JAVA_CODE_STATE);
 				    resultToken = this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 				    break;
 				}
-				if(i == JAVA_KEYWORD_SYMBOL) {
+				if(symbolId == JAVA_KEYWORD_SYMBOL) {
 				    if(this.states.isInState(JAVA_CODE_STATE)) {
 				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_KEYWORD);
 				    }
 				    break;
 				}
-				if(i == STRING_SYMBOL) {
+				if(symbolId == STRING_SYMBOL) {
 				    if(this.states.isInState(STRING_STATE) && (!this.states.isInState(JAVA_COMMENT_STATE))) {
 				        this.states.removeState(STRING_STATE);
 				        resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_STRING);
@@ -285,8 +266,6 @@ public class PolishDirectiveRule implements IRule {
 				    }
 				    break;
 				}
-
-				//System.out.println("PolishDirectiveRule.evaluate(...):Symbol not processed:"+value+"X.i:"+i);
 				break;
 			}
  		}
@@ -295,6 +274,25 @@ public class PolishDirectiveRule implements IRule {
 
     
   
+    private String getRestOfLine(ICharacterScanner scanner) {
+//      Read the the whole line.
+        StringBuffer wholeCommentLineStringBuffer = new StringBuffer(200);
+        int readCount = 0;
+        int c = scanner.read();
+        readCount++;
+        
+        while( ! charIsEOLorEOF(c)) {
+            wholeCommentLineStringBuffer.append((char)c);
+            c = scanner.read();
+            readCount++;
+        }
+//      Reset the scanner so length calculation remain correct.
+        for(int i = 0; i < readCount; i++) {
+            scanner.unread();
+        }
+        return wholeCommentLineStringBuffer.toString();
+    }
+
     private boolean isVariableName(String value) {
         // TODO ricky implement isVariableName
         return false;

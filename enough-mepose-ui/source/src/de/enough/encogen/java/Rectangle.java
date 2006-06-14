@@ -1,5 +1,5 @@
 /*
- * Created on Dec 23, 2005 at 3:43:39 PM.
+ * Created on Jun 13, 2006 at 3:52:51 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,21 +23,74 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui.wizards;
-
-import de.enough.utils.PropertyModel;
+package de.enough.encogen.java;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Dec 23, 2005 - rickyn creation
+ *        Jun 13, 2006 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class ProjectPageModel extends PropertyModel {
+public class Rectangle {
 
+    private int x,y,dx,dy;
+
+    public Rectangle(int x, int y, int dx, int dy) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+    }
+
+    public int getDx() {
+        return this.dx;
+    }
+
+    public void setDx(int dx) {
+        this.dx = dx;
+    }
+
+    public int getDy() {
+        return this.dy;
+    }
+
+    public void setDy(int dy) {
+        this.dy = dy;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
     
+    public void addToX(int addDelta) {
+        this.x += addDelta;
+    }
+    
+    public void addToY(int addDelta) {
+        this.y += addDelta;
+    }
+    
+    public void addToDx(int addDelta) {
+        this.dx += addDelta;
+    }
+    
+    public void addToDy(int addDelta) {
+        this.dy += addDelta;
+    }
     
 }

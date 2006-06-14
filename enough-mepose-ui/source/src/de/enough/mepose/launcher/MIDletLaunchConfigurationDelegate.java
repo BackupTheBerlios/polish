@@ -16,6 +16,8 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
 import org.eclipse.jdt.launching.JavaRuntime;
 
+import de.enough.mepose.core.MeposeConstants;
+
 public class MIDletLaunchConfigurationDelegate
     extends AbstractJavaLaunchConfigurationDelegate
 {
@@ -27,11 +29,11 @@ public class MIDletLaunchConfigurationDelegate
   {
     boolean debugMode = "debug".equals(mode);
     
-    String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+    String projectName = configuration.getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
     String workspace = configuration.getAttribute(MIDletLauncherConstants.WORKSPACE, "");
     String jadFile = configuration.getAttribute(MIDletLauncherConstants.JAD_FILE, "");
     // TODO: Truncate trailing '/' if present.
-    String wtkPath = configuration.getAttribute(MIDletLauncherConstants.WTK_HOME,"");
+    String wtkPath = configuration.getAttribute(MeposeConstants.ID_WTK_HOME,"/");
     
     Map attrMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP, (Map) null);
     String hostName = (String) attrMap.get("hostname");

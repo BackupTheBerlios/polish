@@ -1,5 +1,5 @@
 /*
- * Created on Dec 23, 2005 at 3:43:39 PM.
+ * Created on Jun 13, 2006 at 5:43:45 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -23,21 +23,30 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.mepose.ui.wizards;
-
-import de.enough.utils.PropertyModel;
+package de.enough.encogen.java;
 
 /**
  * 
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
- *        Dec 23, 2005 - rickyn creation
+ *        Jun 13, 2006 - rickyn creation
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class ProjectPageModel extends PropertyModel {
+public class CommentStatement extends Statement {
 
-    
-    
+    private String comment;
+
+    public CommentStatement(String comment) {
+        this.comment = comment;
+    }
+
+    public String print(Rectangle rectangle) {
+        StringBuffer result = new StringBuffer();
+        result.append(addSpace(rectangle.getX()));
+        result.append("// ");
+        result.append(this.comment);
+        return result.toString();
+    }
 }

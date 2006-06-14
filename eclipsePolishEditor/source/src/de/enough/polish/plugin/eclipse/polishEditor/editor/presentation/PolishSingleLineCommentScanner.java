@@ -32,6 +32,10 @@ import org.eclipse.jdt.internal.ui.text.AbstractJavaScanner;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.rules.ICharacterScanner;
+import org.eclipse.jface.text.rules.IRule;
+import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
@@ -50,21 +54,8 @@ import de.enough.polish.plugin.eclipse.utils.TokenStore;
  */
 public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
 
-    /**
-     * <p></p>
-     *
-     * <p>Copyright Enough Software 2005</p>
-     * <pre>
-     * history
-     *        Apr 5, 2005 - ricky creation
-     * </pre>
-     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
-     */
     public class PropertyChangeListener implements IPropertyChangeListener {
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-         */
         public void propertyChange(PropertyChangeEvent event) {
             System.out.println("polishScanner.PropertyChangeListener.propertyChange:"+event.getProperty()+".old:"+event.getOldValue().getClass()+".new:"+event.getNewValue().getClass());
             //TODO: Take care of the token cache.
@@ -82,7 +73,6 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
             IPolishConstants.POLISH_COLOR_DEFAULT,
             IPolishConstants.POLISH_COLOR_DIRECTIVE,
             IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,
-//            IPolishConstants.POLISH_COLOR_FUNCTON_NAME
             };
     
     private TokenStore tokenStore; 
@@ -95,9 +85,6 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         super(colorManager,preferenceStore);
         this.tokenStore = new TokenStore();
         initialize(); // This call needed because the super constructor does not call it !
-        
-        //this.propertyChangeListener = new PropertyChangeListener(); //debugging only.
-        //preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
     }
 
     protected String[] getTokenProperties() {
@@ -116,9 +103,10 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
         this.tokenStore.addToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION,getToken(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION));
           
         // The token store is only needed to pass all tokens to the rule in one attempt.
-        PolishDirectiveRule rule = new PolishDirectiveRule(this.tokenStore);
-   
+        IRule rule;
+        rule = new PolishDirectiveRule(this.tokenStore);
         List rules = new ArrayList();
+        //TODO: Only testing. Uncomment it to get it to work again.
         rules.add(rule);
         
         return rules;
@@ -126,7 +114,6 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
     
     
     public void adaptToPreferenceChange(PropertyChangeEvent event) {
-        System.out.println("PolishSingleLineCommentScanner.adaptToPreferenceChange(...):enter.event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
         super.adaptToPreferenceChange(event);
     }
     
@@ -137,7 +124,6 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
     //
     public boolean affectsBehavior(PropertyChangeEvent event) {
         String property = event.getProperty();
-        //System.out.println(property);
         if(property.equals(IPolishConstants.POLISH_COLOR_DIRECTIVE) ||
            property.equals(IPolishConstants.POLISH_COLOR_DEFAULT) ||
            property.equals(IPolishConstants.POLISH_COLOR_FUNCTION_PUNCTATION)) {

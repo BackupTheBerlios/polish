@@ -175,7 +175,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     }
     
     protected void updateState(boolean updateParent) {
-        if(this.combo == null) {
+        if(this.combo == null ||  this.combo.isDisposed()) {
             // I know this is silly but is really happens that this method is called before the actual control is created.
             // Sad but true :(
             return;

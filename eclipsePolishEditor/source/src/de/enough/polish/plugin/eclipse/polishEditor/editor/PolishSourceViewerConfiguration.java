@@ -100,7 +100,6 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     }
     
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
-        System.out.println("PolishSourceViewerConfiguration.handlePropertyChangeEvent(...):enter.");
         // This check is needed because adaptToPreferenceChange cokes on unknown events :(
         if (this.polishSingleLineCommentScanner.affectsBehavior(event))
             this.polishSingleLineCommentScanner.adaptToPreferenceChange(event);
@@ -109,6 +108,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     }
     
     // This is the method for 3.1.
+    //TODO: Debug only. Uncomment it.
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
         String partitioning= getConfiguredDocumentPartitioning(sourceViewer);
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
@@ -131,25 +131,13 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     
     
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-        
-        System.out.println("DEBUG:PolishSourceViewerConfiguration.getContentAssistant(...):enter.");
         IContentAssistant newIContentAssistant = super.getContentAssistant(sourceViewer);
         if(newIContentAssistant instanceof ContentAssistant) {
             // The cast is a hack to be able to set an processor. The interface itself has no useful methods.
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
-            //TODO: This stopped working in 3.2. The class is not present any more.
-//            CompoundContentAssistProcessor compoundContentAssistProcessor = new CompoundContentAssistProcessor();
-//            compoundContentAssistProcessor.add(new DirectiveContentAssistProcessor());
-            
-//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getDefaultMeposeModel().getEnvironment());
-//            IProject correspondingProject = getProject().getProject();
             MeposeModel meposeModel = this.editor.getMeposeModel();
-//            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(MeposePlugin.getDefault().getMeposeModelManager().getCurrentMeposeModel().getEnvironment());
             VariableContentAssistProcessor processor = new VariableContentAssistProcessor(meposeModel.getEnvironment());
-//            compoundContentAssistProcessor.add(processor);
             this.editor.getMeposeModel().addPropertyChangeListener(processor);
-   
-//            contentAssistant.setContentAssistProcessor(compoundContentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }
         return newIContentAssistant;

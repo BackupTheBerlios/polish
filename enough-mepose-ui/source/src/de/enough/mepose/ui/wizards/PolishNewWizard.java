@@ -3,13 +3,16 @@ package de.enough.mepose.ui.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.filters.StringInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +26,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
+import de.enough.encogen.java.ClazzElement;
+import de.enough.encogen.java.CommentStatement;
+import de.enough.encogen.java.ImportElement;
+import de.enough.encogen.java.MethodElement;
+import de.enough.encogen.java.PackageElement;
+import de.enough.encogen.java.Rectangle;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
@@ -90,13 +99,61 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 		return true;
 	}
 	
-	protected void doFinish(IProgressMonitor monitor){
+	protected void doFinish(IProgressMonitor monitor) throws CoreException{
 	    makeJavaProject();
         // Do not hand over the monitor as others are going to call beginTask
         // which must be called only once.
-	    createBuildXML();
+        //TODO: uncomment this. There is a bug somewhere in it.
+//	    createBuildXML();
         registerMeposeModel();
+        generateTemplates();
 	}
+
+    private void generateTemplates(){
+        if( ! this.newProjectModel.isGenerateTemplate()) {
+            return;
+        }
+//      InputStream resourceAsStream = getClass().getResourceAsStream("/resources/simpleTemplate/SimpleMidlet.java");
+//      IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
+//      simpleMidletFile.create(resourceAsStream,true,null);
+        
+        PackageElement packageElement = new PackageElement("de.enough.sample");
+        ImportElement importStatement1 = new ImportElement("javax.microedition.midlet.MIDlet");
+        ImportElement importStatement2 = new ImportElement("javax.microedition.midlet.MIDletStateChangeException");
+        
+        CommentStatement commentStatement = new CommentStatement("TODO: Implement this method.");
+
+        MethodElement methodStartApp = new MethodElement("startApp","void",null,"protected",new String[] {"MIDletStateChangeException"});
+        methodStartApp.addStatement(commentStatement);
+        
+        MethodElement methodPauseApp = new MethodElement("pauseApp","void",null,"protected",null);
+        methodPauseApp.addStatement(commentStatement);
+        
+        MethodElement methodDestroyApp = new MethodElement("destroyApp","void",new String[] {"boolean unconditional"},"protected",new String[] {"MIDletStateChangeException"});
+        methodDestroyApp.addStatement(commentStatement);
+        
+        ClazzElement clazzElement = new ClazzElement();
+        clazzElement.setParent("MIDlet");
+        clazzElement.setClazzName("SimpleMidlet");
+        clazzElement.setPackageElement(packageElement);
+        clazzElement.addImportStatement(importStatement1);
+        clazzElement.addImportStatement(importStatement2);
+        clazzElement.addMethod(methodStartApp);
+        clazzElement.addMethod(methodPauseApp);
+        clazzElement.addMethod(methodDestroyApp);
+        
+        Rectangle rectangle = new Rectangle(0,0,1,1);
+        
+        String result = clazzElement.print(rectangle);
+        
+        IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
+            try {
+                simpleMidletFile.create(new StringInputStream(result),true,null);
+            } catch (CoreException exception) {
+                return;
+            }
+        
+    }
 
     private void registerMeposeModel() {
         MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),this.newProjectModel.getMeposeModel());
@@ -145,7 +202,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
             file = project.getFile("build.xml");
             file.create(inputStream,true,null);
         } catch (CoreException exception) {
-            System.out.println("DEBUG;PolishNewWizard.createBuildXML(...):could not create file:"+exception);
+            System.out.println("DEBUG:PolishNewWizard.createBuildXML(...):could not create file:"+exception);
             return;
         }
         IPath path = file.getRawLocation();
