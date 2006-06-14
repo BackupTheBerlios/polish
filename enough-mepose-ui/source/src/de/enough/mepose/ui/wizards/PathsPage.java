@@ -42,6 +42,8 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.enough.mepose.core.MeposeConstants;
+import de.enough.mepose.core.MeposePlugin;
 import de.enough.swt.widgets.StatusGroup;
 
 /**
@@ -56,11 +58,14 @@ import de.enough.swt.widgets.StatusGroup;
 public class PathsPage extends WizardPage {
 
     private NewProjectModel newProjectModel;
-    private Text wtkHomeText;
     
+    private Text wtkHomeText;
     private Text nokiaHomeText;
+    private Text sonyHomeText;
+
     private StatusGroup wtkStatusGroup;
     private StatusGroup nokiaStatusGroup;
+    private StatusGroup sonyStatusGroup;
 
     
     private class BrowsePathSelected extends SelectionAdapter{
@@ -115,7 +120,9 @@ public class PathsPage extends WizardPage {
                 modifyWtkHomeText();
             }
         });
-        this.wtkHomeText.setText("");
+        String wtkHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_WTK_HOME);
+        this.wtkHomeText.setText(wtkHomePath);
+        
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.wtkHomeText,"Choose the location of your WTK directory"));
@@ -123,7 +130,6 @@ public class PathsPage extends WizardPage {
         // ----------------------
         
         this.nokiaStatusGroup = new StatusGroup(composite,SWT.NONE);
-        this.nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         this.nokiaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         main = this.nokiaStatusGroup.getMainComposite();
         main.setLayout(new GridLayout(3,false));
@@ -137,10 +143,35 @@ public class PathsPage extends WizardPage {
                 modifyNokiaHomeText();
             }
         });
-        this.nokiaHomeText.setText("");
+        String NokiaHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_NOKIA_HOME);
+        this.nokiaHomeText.setText(NokiaHomePath);
+        
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.nokiaHomeText,"Choose the location of your Nokia directory"));
+        
+        // ----------------------
+        
+        this.sonyStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.sonyStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.sonyStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label sonyLabel = new Label(main,SWT.NONE);
+        sonyLabel.setText("Sony Home:");
+        
+        this.sonyHomeText = new Text(main,SWT.NONE);
+        this.sonyHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.sonyHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                modifySonyHomeText();
+            }
+        });
+        String sonyHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_SONY_HOME);
+        this.sonyHomeText.setText(sonyHomePath);
+        
+        browseButton = new Button(main,SWT.NONE);
+        browseButton.setText("Browse for Path");
+        browseButton.addSelectionListener(new BrowsePathSelected(this.sonyHomeText,"Choose the location of your Sony directory"));
         
         // ----------------------------------
         
@@ -160,6 +191,18 @@ public class PathsPage extends WizardPage {
         else {
             this.newProjectModel.getMeposeModel().setNokiaHome(file);
             this.nokiaStatusGroup.setOK("");
+        }
+    }
+    
+    protected void modifySonyHomeText() {
+        String path = this.sonyHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.sonyStatusGroup.setError("Path is not a directory.");
+        }
+        else {
+            this.newProjectModel.getMeposeModel().setSonyHome(file);
+            this.sonyStatusGroup.setOK("");
         }
     }
 
