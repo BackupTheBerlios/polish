@@ -23,13 +23,6 @@ public class MeposePlugin extends Plugin {
 	
     public static Logger logger = Logger.getLogger(MeposePlugin.class);
     
-//    public QualifiedName ID_MEPOSE_MODEL = new QualifiedName(MeposePlugin.class.getName(),"id.meposemodel");
-//    public QualifiedName ID_BUILD_XML = new QualifiedName(MeposePlugin.class.getName(),"id.buildxml");
-//    public QualifiedName ID_POLISH_HOME = new QualifiedName(MeposePlugin.class.getName(),"id.polish.home");
-//    public QualifiedName ID_WTK_HOME = new QualifiedName(MeposePlugin.class.getName(),"id.wtk.home");
-//    public QualifiedName ID_DEVICES_CONFIGURED = new QualifiedName(MeposePlugin.class.getName(),"id.devices.configured");
-//    public QualifiedName ID_PLATFORMS_CONFIGURED = new QualifiedName(MeposePlugin.class.getName(),"id.platforms.configured");
-    
     private MeposeModelManager meposeModelManager;
 	private static MeposePlugin plugin;
 	private ResourceBundle resourceBundle;
@@ -89,20 +82,12 @@ public class MeposePlugin extends Plugin {
 		return this.resourceBundle;
 	}
 
-//	/**
-//	 * Returns an image descriptor for the image file at the given
-//	 * plug-in relative path. It does <it>not</it> use the image registry.
-//	 *
-//	 * @param path the path
-//	 * @return the image descriptor
-//	 */
-//	public static ImageDescriptor getImageDescriptor(String path) {
-//		return AbstractUIPlugin.imageDescriptorFromPlugin("de.enough.mepose.core.MeposePlugin", path);
-//	}
+    
     
     // ####################################################################
     // Logging.
     
+
     public static void log(IStatus status) {
         getDefault().getLog().log(status);
         if (status.getException() != null) {
@@ -177,5 +162,4 @@ public class MeposePlugin extends Plugin {
     private void createModelMananger() {
         this.meposeModelManager = new MeposeModelManager();
     }
-    
 }
