@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.ui.MeposeUIPlugin;
 import de.enough.swt.widgets.StatusGroup;
 import de.enough.utils.Status;
 import de.enough.utils.StatusEvent;
@@ -166,13 +167,16 @@ public class ProjectPage extends WizardPage{
         try {
             createProject();
 //            setupProject();
-            addNature();
         }
         catch (CoreException exception) {
-            if(logger.isDebugEnabled()) {
-                logger.error("could not create project:"+exception);
-                return null;
-            }
+            MeposeUIPlugin.log("Could not create project",exception);
+            return null;
+        }
+        try {
+            addNature();
+        } catch (CoreException exception) {
+            MeposeUIPlugin.log("Could not add nature to project",exception);
+            return null;
         }
         createStuff();
         return super.getNextPage();
@@ -180,6 +184,7 @@ public class ProjectPage extends WizardPage{
 
     private void createStuff() {
         try {
+            // This must be done at this point as the next pages need the resource folder.
             this.newProjectModel.getProject().getFolder("resources").create(true,true,null);
         } catch (CoreException exception) {
             MeposePlugin.log("Could not create 'resources' folder",exception);
