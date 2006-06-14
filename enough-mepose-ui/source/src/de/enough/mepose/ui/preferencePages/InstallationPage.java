@@ -35,16 +35,23 @@ public class InstallationPage
 	
 	public void createFieldEditors() {
         
-	    addField(new DirectoryFieldEditor(MeposeConstants.POLISH_INSTALLATION_DIR, 
-	                                      "Polish Installation Directory:", getFieldEditorParent()));
+        // Not needed yet as we always use the internal polish version.
+	    //addField(new DirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
+	    //                                  "Polish Installation Directory:", getFieldEditorParent()));
 	    
-		addField(new DirectoryFieldEditor(MeposeConstants.WTK_INSTALLATION_DIR, 
-		                                  "WTK Installation Directory:", getFieldEditorParent()));
-	}
+	    addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
+	                                      "WTK Installation Directory:", getFieldEditorParent()));
+	
+	    addField(new DirectoryFieldEditor(MeposeConstants.ID_NOKIA_HOME, 
+	                                      "Nokia Installation Directory:", getFieldEditorParent()));
+	    
+		addField(new DirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
+		                                  "Sony Installation Directory:", getFieldEditorParent()));
+	
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
+    
+    
 	public void init(IWorkbench workbench) {
         // Not needed.
 	}
