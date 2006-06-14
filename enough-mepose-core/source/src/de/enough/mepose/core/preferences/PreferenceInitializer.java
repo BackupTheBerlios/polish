@@ -13,8 +13,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public void initializeDefaultPreferences() {
 		Preferences store = MeposePlugin.getDefault().getPluginPreferences();
-		store.setDefault(MeposeConstants.POLISH_INSTALLATION_DIR,"/");
-		store.setDefault(MeposeConstants.WTK_INSTALLATION_DIR,"/");
+		store.setDefault(MeposeConstants.ID_POLISH_HOME,"/");
+		store.setDefault(MeposeConstants.ID_WTK_HOME,"/");
+		store.setDefault(MeposeConstants.ID_NOKIA_HOME,"/");
+		store.setDefault(MeposeConstants.ID_SONY_HOME,"/");
         
 	}
 

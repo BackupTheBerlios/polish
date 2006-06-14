@@ -113,6 +113,7 @@ public class MeposeModel extends PropertyModel{
     public static final String ID_PATH_WTK_FILE = "id.path.wtkhome";
     public static final String ID_PATH_MPP_FILE = "id.path.mpphome";
     public static final String ID_PATH_NOKIA_FILE = "id.path.nokiahome";
+    public static final String ID_PATH_SONY_FILE = "id.path.sonyhome";
     
     // Supported Config.
     public static final String ID_SUPPORTED_CONFIGURATIONS = "id.supported.configurations";
@@ -146,6 +147,7 @@ public class MeposeModel extends PropertyModel{
     private File polishHome = new File("");
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
+    private File sonyHome = new File("");
     private File mppHome = new File("");
     private File projectHome = new File("");
 
@@ -490,6 +492,14 @@ public class MeposeModel extends PropertyModel{
         return this.nokiaHome;
     }
     
+    public void setSonyHome(File sonyHome) {
+        this.sonyHome = sonyHome;
+    }
+    
+    public File getSonyHome() {
+        return this.sonyHome;
+    }
+    
 //    public String getProjectPath() {
 //        return this.projectPath;
 //    }
@@ -660,6 +670,7 @@ public class MeposeModel extends PropertyModel{
         p.put(ID_PATH_WTK_FILE,getWTKHome().toString());
         p.put(ID_PATH_MPP_FILE,getMppHome().toString());
         p.put(ID_PATH_NOKIA_FILE,getNokiaHome().toString());
+        p.put(ID_PATH_SONY_FILE,getSonyHome().toString());
         p.put(ID_PATH_PROJECT_FILE,getProjectHome().toString());
         p.put(ID_PATH_BUILDXML_FILE,getBuildxml().toString());
 //        p.put(ID_PATH_WORKINGDIRECTORY_BUILD)
@@ -699,6 +710,10 @@ public class MeposeModel extends PropertyModel{
         String nokiaHomeTmp = (String)p.get(ID_PATH_NOKIA_FILE);
         if(nokiaHomeTmp != null) {
             setNokiaHome(new File(nokiaHomeTmp));
+        }
+        String sonyHomeTmp = (String)p.get(ID_PATH_SONY_FILE);
+        if(sonyHomeTmp != null) {
+            setSonyHome(new File(sonyHomeTmp));
         }
         String projectNameTmp = (String)p.get(ID_PATH_PROJECT_FILE);
         if(projectNameTmp != null) {
