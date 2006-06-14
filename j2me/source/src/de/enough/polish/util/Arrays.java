@@ -36,7 +36,6 @@ package de.enough.polish.util;
  */
 public final class Arrays implements Comparator { 
 	
-	//TODO: JavaDoc, make sort work, ensure TestArrays testcase works
 	private static final Comparator STRING_COMPARATOR = new Arrays();
 	// instantiation is not allowed
 	private Arrays() {
@@ -47,6 +46,11 @@ public final class Arrays implements Comparator {
 		return o1.toString().compareTo(o2.toString());
 	}
 
+	/**
+	 * Sorts the objects using the standard shell sort implementation and the toString() comparator.
+	 * 
+	 * @param obj the array of objects that is sorted
+	 */
     public static void sort(Object[] obj) {
     		sort( obj, STRING_COMPARATOR );
     }
@@ -93,7 +97,7 @@ public final class Arrays implements Comparator {
 	}
 
 	public static void quicksort(Object[] obj) {
-    	quicksort( obj,obj.length, STRING_COMPARATOR );
+		quicksort( obj,obj.length, STRING_COMPARATOR );
     }
     
     public static void iQuick(int array[], int elements)
@@ -226,6 +230,8 @@ public final class Arrays implements Comparator {
     
     
     public static void sort(Object[] obj, Comparator comparator) {
+    		shellSort( obj, comparator );
+    		/*
     	int elements = obj.length;
     	int left=0, right=elements-1, top=0;
     	int sSize = elements/2;
@@ -276,5 +282,130 @@ public final class Arrays implements Comparator {
                 }
             }while (left <= right) ;
         }
+        */
     }
+    
+    /**
+     * Compares two given array on equality.
+     * You can test primitive arrays (like int[] or float[]) and Object based arrays.
+     * Ob Object arrays the equals() method is used for comparison.
+     * 
+     * @param array1 the first array
+     * @param array2 the second array
+     * @return true when both arrays contain equal elements
+     * @throws ClassCastException when the arrays do have different types and the first one has a primitive type
+     */
+    public static boolean equals( Object array1, Object array2 )  {
+    		if (array1 instanceof byte[] ) {
+    			byte[] pa1 = (byte[]) array1;
+    			byte[] pa2 = (byte[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+				byte p1 = pa1[i];
+				byte p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		} else if (array1 instanceof short[] ) {
+    			short[] pa1 = (short[]) array1;
+    			short[] pa2 = (short[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+				short p1 = pa1[i];
+				short p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		} else if (array1 instanceof int[] ) {
+    			int[] pa1 = (int[]) array1;
+    			int[] pa2 = (int[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+				int p1 = pa1[i];
+				int p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		} else if (array1 instanceof long[] ) {
+    			long[] pa1 = (long[]) array1;
+    			long[] pa2 = (long[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+    				long p1 = pa1[i];
+    				long p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		} else if (array1 instanceof boolean[] ) {
+    			boolean[] pa1 = (boolean[]) array1;
+    			boolean[] pa2 = (boolean[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+    				boolean p1 = pa1[i];
+    				boolean p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		//#if polish.hasFloatingPoint
+    		} else if (array1 instanceof float[] ) {
+    			float[] pa1 = (float[]) array1;
+    			float[] pa2 = (float[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+    				float p1 = pa1[i];
+    				float p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		} else if (array1 instanceof double[] ) {
+    			double[] pa1 = (double[]) array1;
+    			double[] pa2 = (double[]) array2;
+    			if (pa1.length != pa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < pa1.length; i++) {
+    				double p1 = pa1[i];
+    				double p2 = pa2[i];
+				if (p1 != p2) {
+					return false;
+				}
+			}
+    		//#endif
+    		} else if (array1 instanceof Object[] ) {
+    			Object[] oa1 = (Object[]) array1; 
+    			Object[] oa2 = (Object[]) array2; 
+    			if (oa1.length != oa2.length) {
+    				return false;
+    			}
+    			for (int i = 0; i < oa1.length; i++) {
+    				Object o1 = oa1[i];
+    				Object o2 = oa2[i];
+    				if ( (o1 == null && o2 != null) || (!o1.equals(o2)) ) {
+					return false;
+				}
+			}
+    		} else {
+    			return array1.equals(array2);
+    		}
+    		return true;
+    }
+
 }
