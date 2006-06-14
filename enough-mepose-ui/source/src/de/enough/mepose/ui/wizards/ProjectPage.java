@@ -191,51 +191,26 @@ public class ProjectPage extends WizardPage{
             return;
         }
     }
-    
-//    private void setupProject() throws CoreException {
-        //TODO: Fill in the project properties within the core plugin.
-//        IProject newProject = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-//        if(newProject == null) {
-//            return;
-//        }
-//        newProject.open(null);
-//        String pproperty;
-//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_WTK_HOME);
-//        if(pproperty != null) {
-//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_WTK_HOME,new File(pproperty));
-//        }
-//        
-//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_POLISH_HOME);
-//        if(pproperty != null) {
-//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,new File(pproperty));
-//        }
-//        
-//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_PLATFORMS_SUPPORTED);
-//        if(pproperty != null) {
-//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_PLATFORMS_SUPPORTED,new File(pproperty));
-//        }
-//        
-//        pproperty = newProject.getPersistentProperty(PropertyConstants.QN_DEVICES_SUPPORTED);
-//        if(pproperty != null) {
-//            this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_DEVICES_SUPPORTED,new File(pproperty));
-//        }
-//        
-//    }
 
     private void createProject() throws CoreException {
-        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT);
+//        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_TOCONVERT);
+        IProject project = this.newProjectModel.getProject();
+        
         if(project != null) {
             // Set the project to convert to the new project.
             this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT,Boolean.FALSE);
+            this.newProjectModel.setProjectNewlyCreated(false);
         }
         else {
-            // Make a new project;
             project = ResourcesPlugin.getWorkspace().getRoot().getProject(this.newProjectNameText.getText());
             if( ! project.exists()) {
+                // Make a new project;
                 project.create(new NullProgressMonitor());
+                this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT,Boolean.TRUE);
+                this.newProjectModel.setProjectInstance(project);
+                this.newProjectModel.setProjectNewlyCreated(true);
             }
             project.open(null);
-            this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT,Boolean.TRUE);
         }
 //        this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE,project);
         IPath projectLocation = project.getLocation();

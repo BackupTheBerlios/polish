@@ -35,6 +35,7 @@ import de.enough.encogen.java.Rectangle;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.ui.MeposeUIPlugin;
 
 
 public class PolishNewWizard extends Wizard implements INewWizard {
@@ -220,20 +221,42 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     }
     
     public boolean performCancel() {
-        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-        Boolean projectNewlyCreated = ((Boolean)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT));
-        if(project != null && projectNewlyCreated != null && projectNewlyCreated.booleanValue()) {
-            try {
-                project.delete(true,true,new NullProgressMonitor());
-            } catch (CoreException exception) {
-                if(logger.isDebugEnabled()) {
-                    logger.error("Could not remove project:"+exception);
-                }
-                MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
-                return false;
-            }
+//        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+        IProject project = this.newProjectModel.getProject();
+        if(project == null) {
+            return super.performCancel();
         }
+        removeMeposeModel(project);
+        if( ! this.newProjectModel.isProjectNewlyCreated()) {
+            return super.performCancel();
+        }
+        try {
+            project.delete(true,true,new NullProgressMonitor());
+        } catch (CoreException exception) {
+            MeposeUIPlugin.log("Could not delete project.",exception);
+            MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
+            return false;
+        }
+//        Boolean projectNewlyCreated = ((Boolean)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT));
+//        if(project != null && projectNewlyCreated != null && projectNewlyCreated.booleanValue()) {
+//            try {
+//                project.delete(true,true,new NullProgressMonitor());
+//            } catch (CoreException exception) {
+//                if(logger.isDebugEnabled()) {
+//                    logger.error("Could not remove project:"+exception);
+//                }
+//                MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
+//                return false;
+//            }
+//        }
         return super.performCancel();
+    }
+
+    /**
+     * @param project
+     */
+    private void removeMeposeModel(IProject project) {
+        MeposePlugin.getDefault().getMeposeModelManager().removeModel(project);
     }
     
     

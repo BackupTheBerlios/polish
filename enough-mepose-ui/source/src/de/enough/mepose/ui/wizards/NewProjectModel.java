@@ -60,6 +60,7 @@ public class NewProjectModel extends PropertyModel{
     
     private boolean generateTemplate;
     
+    
     private MeposeModel meposeModel;
 //    private boolean canFinish = false;
     
@@ -69,6 +70,7 @@ public class NewProjectModel extends PropertyModel{
     private IProject projectInstance;
     
     private boolean javaTabReached = false;
+    private boolean projectNewlyCreated = true;
 
     //    private IProject projectToConvert;
 //    private boolean mayFinish;
@@ -118,12 +120,15 @@ public class NewProjectModel extends PropertyModel{
         if(resource != null) {
             if(resource instanceof IProject) {
                 setPropertyValue(ID_NEWPROJECTMODEL_PROJECT_TOCONVERT,resource);
+                setProjectInstance((IProject)resource);
                 return new Status(Status.TYPE_WARNING,"Project exists and will be converted");
             }
             setPropertyValue(ID_NEWPROJECTMODEL_PROJECT_TOCONVERT,null);
+            setProjectInstance((IProject)resource);
             return new Status(Status.TYPE_ERROR,"Resource exists");
         }
         setPropertyValue(ID_NEWPROJECTMODEL_PROJECT_TOCONVERT,null);
+        setProjectInstance((IProject)resource);
         return new Status(Status.TYPE_OK);
     }
 
@@ -302,5 +307,18 @@ public class NewProjectModel extends PropertyModel{
     public boolean isGenerateTemplate() {
         return this.generateTemplate;
     }
+
+    /**
+     * @param projectNewlyCreated
+     */
+    public void setProjectNewlyCreated(boolean projectNewlyCreated) {
+        this.projectNewlyCreated = projectNewlyCreated;
+    }
+
+    public boolean isProjectNewlyCreated() {
+        return this.projectNewlyCreated;
+    }
+    
+    
     
 }
