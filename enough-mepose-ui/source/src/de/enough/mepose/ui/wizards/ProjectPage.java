@@ -1,6 +1,7 @@
 package de.enough.mepose.ui.wizards;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
@@ -185,7 +186,10 @@ public class ProjectPage extends WizardPage{
     private void createStuff() {
         try {
             // This must be done at this point as the next pages need the resource folder.
-            this.newProjectModel.getProject().getFolder("resources").create(true,true,null);
+            IFolder folder = this.newProjectModel.getProject().getFolder("resources");
+            if( ! folder.exists()) {
+                folder.create(true,true,null);
+            }
         } catch (CoreException exception) {
             MeposePlugin.log("Could not create 'resources' folder",exception);
             return;
