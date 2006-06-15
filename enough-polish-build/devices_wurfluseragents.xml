@@ -6308,7 +6308,7 @@ These namespaces/schemas will be used soon.
 		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/x-wav, audio/x-imy audio/midi, audio/x-mid, audio/x-midi, audio/amr, audio/32kadpcm, audio/3gpp, video/mpeg4, video/3gpp"/>
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq"/>
 		<capability name="mmapi.protocol.capture" value="audio/amr, video/3gpp, image/jpeg"/>
-		<capability name="wap.UserAgent" value="SIE-S65/25 UP.Browser/7.0.0.1.c.3 (GUI) MMP/2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="SIE-S65/25 UP.Browser/7.0.0.1.c.3 (GUI) MMP/2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 	<capability name="wap.userAgent" value="SIE-S65/00"/>
 <capability name="wap.userAgent" value="SIE-S65/00 UP.Browser/7.0.0.1.121 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SIE-S65/00 UP.Browser/7.0.0.1.132 (GUI) MMP/2.0"/>
@@ -8609,6 +8609,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="CameraResulution" value="1280x960"/>
 		<capability name="CameraZoom" value="8"/>
+		<!-- rickyn: This is a hack -->
+		<capability name="wap.userAgent" value="Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; 240x320)"/>
 	</device> 
 
 	<device>
@@ -11360,10 +11362,36 @@ These namespaces/schemas will be used soon.
 </device>
 <device supportsPolishGui="false">
 <identifier>SonyEricsson/W900i</identifier>
+<groups>SE-JavaPlatform5</groups>
+		<features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x266"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, m3g, btapi, nokia-ui, pdaapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
+		<capability name="SoundFormat" value="mp3, mp4, m4a, aac, amr, wav, midi, midi40"/>
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
+		<capability name="ImageFormat" value="gif, jpeg, png, bmp, wbmp"/>
+		<capability name="CaptureImageFormat" value="jpeg"/>
+		<capability name="StorageSize" value="32 MB"/>
+		<capability name="HeapSize" value="1.5 MB"/>
+		<capability name="VideoHeapSize" value="500 kb"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="DRM" value="OMA v1.0"/>
+		<capability name="Region" value="global"/>
+		<capability name="Network" value="GSM, GPRS, UMTS"/>
+		<capability name="Frequency" value="900,1800,1900"/>
+		<capability name="Emulator.Skin" value="SonyEricsson_W900"/>
+		<capability name="DebugInterface" value="KDWP"/>
+		<capability name="CameraResolution" value="2 MP"/>
+		<capability name="CameraZoom" value="4"/>
+		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin"/>
+		<capability name="key.ReturnKey" value="-11"/>
 <capability name="wap.userAgent" value="SonyEricssonW900i"/>
 <capability name="wap.userAgent" value="SonyEricssonW900i/R5AA Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="JavaPlatform" value="MIDP/1.0"/>
-<capability name="JavaConfiguration" value="CLDC/1.0"/>
 </device>
 <device supportsPolishGui="false">
 <identifier>Samsung/SGH-E880</identifier>
