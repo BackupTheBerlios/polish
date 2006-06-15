@@ -1,8 +1,6 @@
 package de.enough.polish.runtime.swing;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.accessibility.*;
 
 import java.awt.*;
 import java.awt.event.*;
