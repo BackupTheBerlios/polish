@@ -39,11 +39,11 @@ public class LayeredPaneDemo extends JPanel
         final ImageIcon icon = createImageIcon("images/dukeWaveRed.gif");
 
         //Create and set up the layered pane.
-        layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(300, 310));
-        layeredPane.setBorder(BorderFactory.createTitledBorder(
+        this.layeredPane = new JLayeredPane();
+        this.layeredPane.setPreferredSize(new Dimension(300, 310));
+        this.layeredPane.setBorder(BorderFactory.createTitledBorder(
                                     "Move the Mouse to Move Duke"));
-        layeredPane.addMouseMotionListener(this);
+        this.layeredPane.addMouseMotionListener(this);
 
         //This is the origin of the first label added.
         Point origin = new Point(10, 20);
@@ -53,33 +53,33 @@ public class LayeredPaneDemo extends JPanel
 
         //Add several overlapping, colored labels to the layered pane
         //using absolute positioning/sizing.
-        for (int i = 0; i < layerStrings.length; i++) {
-            JLabel label = createColoredLabel(layerStrings[i],
-                                              layerColors[i], origin);
-            layeredPane.add(label, new Integer(i));
+        for (int i = 0; i < this.layerStrings.length; i++) {
+            JLabel label = createColoredLabel(this.layerStrings[i],
+                                              this.layerColors[i], origin);
+            this.layeredPane.add(label, new Integer(i));
             origin.x += offset;
             origin.y += offset;
         }
 
         //Create and add the Duke label to the layered pane.
-        dukeLabel = new JLabel(icon);
+        this.dukeLabel = new JLabel(icon);
         if (icon != null) {
-            dukeLabel.setBounds(15, 225,
+            this.dukeLabel.setBounds(15, 225,
                                 icon.getIconWidth(),
                                 icon.getIconHeight());
         } else {
             System.err.println("Duke icon not found; using black square instead.");
-            dukeLabel.setBounds(15, 225, 30, 30);
-            dukeLabel.setOpaque(true);
-            dukeLabel.setBackground(Color.BLACK);
+            this.dukeLabel.setBounds(15, 225, 30, 30);
+            this.dukeLabel.setOpaque(true);
+            this.dukeLabel.setBackground(Color.BLACK);
         }
-        layeredPane.add(dukeLabel, new Integer(2), 0);
+        this.layeredPane.add(this.dukeLabel, new Integer(2), 0);
 
         //Add control pane and layered pane to this JPanel.
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(createControlPanel());
         add(Box.createRigidArea(new Dimension(0, 10)));
-        add(layeredPane);
+        add(this.layeredPane);
     }
 
     /** Returns an ImageIcon, or null if the path was invalid. */
@@ -98,8 +98,8 @@ public class LayeredPaneDemo extends JPanel
                                       Color color,
                                       Point origin) {
         JLabel label = new JLabel(text);
-        label.setVerticalAlignment(JLabel.TOP);
-        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setVerticalAlignment(SwingConstants.TOP);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setOpaque(true);
         label.setBackground(color);
         label.setForeground(Color.black);
@@ -110,19 +110,19 @@ public class LayeredPaneDemo extends JPanel
 
     //Create the control pane for the top of the frame.
     private JPanel createControlPanel() {
-        onTop = new JCheckBox("Top Position in Layer");
-        onTop.setSelected(true);
-        onTop.setActionCommand(ON_TOP_COMMAND);
-        onTop.addActionListener(this);
+        this.onTop = new JCheckBox("Top Position in Layer");
+        this.onTop.setSelected(true);
+        this.onTop.setActionCommand(ON_TOP_COMMAND);
+        this.onTop.addActionListener(this);
 
-        layerList = new JComboBox(layerStrings);
-        layerList.setSelectedIndex(2);    //cyan layer
-        layerList.setActionCommand(LAYER_COMMAND);
-        layerList.addActionListener(this);
+        this.layerList = new JComboBox(this.layerStrings);
+        this.layerList.setSelectedIndex(2);    //cyan layer
+        this.layerList.setActionCommand(LAYER_COMMAND);
+        this.layerList.addActionListener(this);
 
         JPanel controls = new JPanel();
-        controls.add(layerList);
-        controls.add(onTop);
+        controls.add(this.layerList);
+        controls.add(this.onTop);
         controls.setBorder(BorderFactory.createTitledBorder(
                                  "Choose Duke's Layer and Position"));
         return controls;
@@ -130,7 +130,7 @@ public class LayeredPaneDemo extends JPanel
 
     //Make Duke follow the cursor.
     public void mouseMoved(MouseEvent e) {
-        dukeLabel.setLocation(e.getX()-XFUDGE, e.getY()-YFUDGE);
+        this.dukeLabel.setLocation(e.getX()-XFUDGE, e.getY()-YFUDGE);
     }
     public void mouseDragged(MouseEvent e) {} //do nothing
 
@@ -139,16 +139,16 @@ public class LayeredPaneDemo extends JPanel
         String cmd = e.getActionCommand();
 
         if (ON_TOP_COMMAND.equals(cmd)) {
-            if (onTop.isSelected())
-                layeredPane.moveToFront(dukeLabel);
+            if (this.onTop.isSelected())
+                this.layeredPane.moveToFront(this.dukeLabel);
             else
-                layeredPane.moveToBack(dukeLabel);
+                this.layeredPane.moveToBack(this.dukeLabel);
 
         } else if (LAYER_COMMAND.equals(cmd)) {
-            int position = onTop.isSelected() ? 0 : 1;
-            layeredPane.setLayer(dukeLabel,
-                                 layerList.getSelectedIndex(),
-                                 position);
+            int position = this.onTop.isSelected() ? 0 : 1;
+            this.layeredPane.setLayer(this.dukeLabel,
+                                      this.layerList.getSelectedIndex(),
+                                      position);
         }
     }
 
