@@ -26,16 +26,19 @@
 
 package de.enough.polish.postcompile.mastercanvas;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import org.apache.tools.ant.BuildException;
-
+import de.enough.bytecode.ASMClassLoader;
+import de.enough.bytecode.DirClassLoader;
 import de.enough.bytecode.MethodInvocationMapping;
 import de.enough.bytecode.MethodMapper;
 import de.enough.polish.Device;
-import de.enough.polish.postcompile.PostCompiler;
-import de.enough.polish.util.FileUtil;
+import de.enough.polish.postcompile.BytecodePostCompiler;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.tools.ant.BuildException;
 
 /**
  * <p>
@@ -53,7 +56,7 @@ import de.enough.polish.util.FileUtil;
  * 
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class MasterCanvasPostCompiler extends PostCompiler
+public class MasterCanvasPostCompiler extends BytecodePostCompiler
 {
   /**
    * Creates a new post compiler
@@ -65,44 +68,15 @@ public class MasterCanvasPostCompiler extends PostCompiler
 
   /*
    * (non-Javadoc)
-   * @see de.enough.polish.postcompile.PostCompiler#postCompile(java.io.File,
-   *      de.enough.polish.Device)
+   * @see de.enough.polish.postcompile.BytecodePostCompiler#postCompile(java.io.File, de.enough.polish.Device, de.enough.bytecode.DirClassLoader, java.util.List)
    */
-  public void postCompile(File classesDir, Device device) throws BuildException
+  public void postCompile(File classesDir, Device device, DirClassLoader loader, List classes) throws BuildException
   {
-    String[] fileNames = FileUtil.filterDirectory(classesDir, ".class", true);
-    ArrayList filesList = new ArrayList(fileNames.length);
-    for (int i = 0; i < fileNames.length; i++)
-      {
-        String fileName = fileNames[i];
-        if (!(fileName.endsWith("StyleSheet.class") || fileName.endsWith("MasterCanvas.class")
-        // || fileName.endsWith("ScreenChangeAnimation.class")
-        // || (fileName.indexOf("screenanimations") != -1)
-        // || fileName.endsWith("Locale.class")
-        // || fileName.endsWith("Debug.class")
-        ))
-          {
-            filesList.add(new File(classesDir, fileName));
-            // } else {
-            // System.out.println("ScreenChanger: skipping class " + fileName);
-          }
-      }
-    File[] files = (File[]) filesList.toArray(new File[filesList.size()]);
-
     try
       {
         System.out.println("MasterCanvas: mapping of Display.setCurrent() for "
-                           + files.length + " class files.");
-        boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
-        String masterCanvasClassName;
-        if (useDefaultPackage)
-          {
-            masterCanvasClassName = "MasterCanvas";
-          }
-        else
-          {
-            masterCanvasClassName = "de/enough/polish/ui/MasterCanvas";
-          }
+                           + classes.size() + " classes.");
+        String masterCanvasClassName = getMasterCanvasClassName();
 
         MethodMapper mapper = new MethodMapper();
         mapper.setClassLoader(device.getClassLoader());
@@ -111,15 +85,8 @@ public class MasterCanvasPostCompiler extends PostCompiler
                                       || this.environment.hasSymbol("polish.ScreenChangeAnimation.forward:defined");
         if (enableScreenEffects)
           {
-            String styleSheetClass;
-            if (useDefaultPackage)
-              {
-                styleSheetClass = "StyleSheet";
-              }
-            else
-              {
-                styleSheetClass = "de/enough/polish/ui/StyleSheet";
-              }
+            String styleSheetClass = getStyleSheetClassName();
+
             mapper.addMapping(new MethodInvocationMapping(true,
                                                           "javax/microedition/lcdui/Display",
                                                           "setCurrent",
@@ -183,7 +150,7 @@ public class MasterCanvasPostCompiler extends PostCompiler
                                                       "repaintCanvas",
                                                       "(Ljavax/microedition/lcdui/Canvas;)V"));
 
-        mapper.doMethodMapping(files);
+        mapper.doMethodMapping(classesDir, classes);
         System.out.println("MasterCanvasPostCompiler finished.");
       }
     catch (Throwable e)
@@ -192,5 +159,73 @@ public class MasterCanvasPostCompiler extends PostCompiler
         throw new BuildException("Unable to map Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ): "
                                  + e.toString(), e);
       }
+  }
+  
+  /* (non-Javadoc)
+   * @see de.enough.polish.postcompile.BytecodePostCompiler#filterClassList(de.enough.bytecode.DirClassLoader, java.util.List)
+   */
+  public List filterClassList(DirClassLoader classLoader, List classes)
+  {
+    Iterator it = classes.iterator();
+    LinkedList list = new LinkedList();
+
+    while (it.hasNext())
+      {
+        String className = (String) it.next();
+        
+        if (className.endsWith("StyleSheet") || className.endsWith("MasterCanvas"))
+            {
+              continue;
+            }
+        
+	      list.add(className);
+      }
+    
+    return list;
+  }
+
+  private String getMasterCanvasClassName()
+  {
+    boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
+    String accessibleCanvasClassName;
+    if ( useDefaultPackage )
+      {
+        accessibleCanvasClassName = "MasterCanvas";
+      }
+    else
+      {
+        accessibleCanvasClassName = "de/enough/polish/ui/MasterCanvas";
+      }
+    return accessibleCanvasClassName;
+  }
+  
+  private String getStyleSheetClassName()
+  {
+    boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
+    String accessibleCanvasClassName;
+    if ( useDefaultPackage )
+      {
+        accessibleCanvasClassName = "StyleSheet";
+      }
+    else
+      {
+        accessibleCanvasClassName = "de/enough/polish/ui/StyleSheet";
+      }
+    return accessibleCanvasClassName;
+  }
+  
+  private String getAccessibleCanvasClassName()
+  {
+    boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
+    String accessibleCanvasClassName;
+    if ( useDefaultPackage )
+      {
+        accessibleCanvasClassName = "AccessibleCanvas";
+      }
+    else
+      {
+        accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
+      }
+    return accessibleCanvasClassName;
   }
 }

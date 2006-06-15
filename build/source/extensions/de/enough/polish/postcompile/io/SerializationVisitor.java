@@ -217,21 +217,14 @@ public class SerializationVisitor
           {
             String type = desc.substring(1, desc.length() - 1); 
 
-            try
+            // TODO: Handle all classes in default package.
+            if (this.loader.inherits("de/enough/polish/io/Serializable", type))
               {
-                // TODO: Handle all classes in default package.
-                if (this.loader.inherits("de/enough/polish/io/Serializable", type))
-                  {
-                    this.fields.put(name, desc);
-                  }
-                else
-                  {
-                    throw new BuildException("Cannot serialize field " + this.className + "." + name);
-                  }
+                this.fields.put(name, desc);
               }
-            catch (ClassNotFoundException e)
+            else
               {
-                System.err.println("WARNING: Cannot check inheritance of " + type);
+                throw new BuildException("Cannot serialize field " + this.className + "." + name);
               }
           }
       }

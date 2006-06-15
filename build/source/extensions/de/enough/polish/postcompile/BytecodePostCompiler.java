@@ -41,7 +41,7 @@ public abstract class BytecodePostCompiler extends PostCompiler
     DirClassLoader loader = DirClassLoader.createClassLoader(classesDir);
     
     // Post compile stuff.
-    postCompile(classesDir, device, loader, filterClassList(classes));
+    postCompile(classesDir, device, loader, filterClassList(loader, classes));
   }
   
   /**
@@ -61,13 +61,14 @@ public abstract class BytecodePostCompiler extends PostCompiler
    * Filters the class list. This can be used to only post compile classes
    * with a given class name schema.
    * 
-   * The default implement jsut returns the given list.
+   * The default implementation just returns the given list.
    * 
+   * @param classLoader class loader to load the classes if needed.
    * @param classes The list of class names to filter
    * 
    * @return The list of classes to post compile
    */
-  public List filterClassList(List classes)
+  public List filterClassList(DirClassLoader classLoader, List classes)
   {
     return classes;
   }
