@@ -30,8 +30,6 @@ import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 
-import sun.security.action.GetPropertyAction;
-
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;

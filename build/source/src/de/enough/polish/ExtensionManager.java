@@ -44,9 +44,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import de.enough.polish.ant.emulator.DebuggerSetting;
 import de.enough.polish.exceptions.InvalidComponentException;
-import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.StringUtil;
 
 

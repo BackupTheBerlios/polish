@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
 import org.jdom.JDOMException;
 
 import de.enough.polish.Device;

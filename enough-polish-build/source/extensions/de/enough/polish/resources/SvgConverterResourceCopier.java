@@ -27,11 +27,9 @@ package de.enough.polish.resources;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -43,11 +41,9 @@ import javax.imageio.ImageIO;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.SVGUniverse;
-import com.kitfox.svg.app.beans.SVGPanel;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.Variable;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 

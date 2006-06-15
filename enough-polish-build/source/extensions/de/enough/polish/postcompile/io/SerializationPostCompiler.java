@@ -1,8 +1,6 @@
 package de.enough.polish.postcompile.io;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,7 +8,6 @@ import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
 
 import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.DirClassLoader;

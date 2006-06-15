@@ -26,7 +26,6 @@
 package de.enough.polish.finalize.blackberry;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.OutputFilter;
 

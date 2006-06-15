@@ -30,7 +30,6 @@ import java.util.EventObject;
 
 import javax.swing.JTree;
 import javax.swing.event.CellEditorListener;
-import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.TreeCellEditor;
 
 import de.enough.polish.ide.swing.DeviceTreeView.DeviceTreeItemCellRenderer;
