@@ -84,11 +84,11 @@ public abstract class Debugger extends Extension {
 	 * of the build.xml script. Several arguments can be defined by separating them with two semicolons (;;).
 	 * Addtionally the "polish.debug.port" settings can be used, this is set by the "port" attribute
 	 * of the &lt;debugger&gt; element.
-	 * The following example sets the same arguments as the default UIEI arguments:
+	 * The following example sets the same arguments as the default UEI arguments:
 	 * <pre>
 	 * &lt;capability 
 	 *     name="polish.debug.commandline"
-	 *     value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port}"
+	 *     value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port},transport=dt_socket"
 	 * /&gt;
 	 * </pre>
 	 * 
@@ -107,7 +107,7 @@ public abstract class Debugger extends Extension {
 			}
 		} else {
 			argsList.add( "-Xdebug" );
-			argsList.add( "-Xrunjdwp:address=" + port );
+			argsList.add( "-Xrunjdwp:address=" + port + ",address=dt_socket" );
 		}
 
 	} 
