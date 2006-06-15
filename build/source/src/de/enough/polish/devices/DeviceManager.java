@@ -65,7 +65,7 @@ public class DeviceManager {
 	private Device[] devices;
 	private final ArrayList devicesList;
 	private final HashMap devicesByIdentifier;
-    private final HashMap devicesByUserAgent;
+    private HashMap devicesByUserAgent;
 	private final VendorManager vendorManager;
     private boolean isUserAgentMappingInitialized;
 
@@ -88,7 +88,7 @@ public class DeviceManager {
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		this.devicesByIdentifier = new HashMap();
-        this.devicesByUserAgent = new HashMap(10000);
+        
 		this.devicesList = new ArrayList();
 		this.vendorManager = vendorManager;
         this.isUserAgentMappingInitialized = false;
@@ -225,10 +225,22 @@ public class DeviceManager {
             initializeUserAgentMapping();
             this.isUserAgentMappingInitialized = true;
         }
-        return (Device)this.devicesByUserAgent.get(userAgent);
+        Object device = null;
+//        device = this.devicesByUserAgent.get(userAgent);
+        int userAgentLength = userAgent.length();
+        String subString;
+        for(int i = userAgentLength; i > 1; i--) {
+            subString = userAgent.substring(0,i);
+            device = this.devicesByUserAgent.get(subString);
+            if(device != null) {
+                break;
+            }
+        }
+        return (Device)device;
     }
     
     private void initializeUserAgentMapping() {
+        this.devicesByUserAgent = new HashMap(10000);
         String CAPABILITY_WAP_USER_AGENT = "wap.userAgent";
         Device[] allDevices = getDevices();
 
@@ -262,6 +274,11 @@ public class DeviceManager {
                     cachedDevice = (Device)this.devicesByUserAgent.get(shortendUserAgentId);
                     if(cachedDevice != null) {
                         // We have already a device with this user agent prefix. Abort.
+                        if(currentUserAgent.equals(shortendUserAgentId)) {
+                            // Perfect matches override everything. This is a problem
+                            // if several perfect matches are present.
+                            this.devicesByUserAgent.put(currentUserAgent,currentDevice);
+                        }
                         break;
                     }
                     this.devicesByUserAgent.put(shortendUserAgentId,currentDevice);
