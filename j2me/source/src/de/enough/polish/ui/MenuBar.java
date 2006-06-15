@@ -972,6 +972,15 @@ public class MenuBar extends Item {
 		}
 	}
 
+	/**
+	 * Removes all commands from this MenuBar.
+	 * This option is only available when the "menu" fullscreen mode is activated.
+	 */
+	public void removeAllCommands() {
+		this.commands.clear();
+		this.commandsContainer.clear();
+	}
+
 	
 	
 	

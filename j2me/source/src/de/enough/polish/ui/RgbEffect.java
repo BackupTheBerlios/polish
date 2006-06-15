@@ -1,8 +1,7 @@
-//#condition polish.usePolishGui
 /*
- * Created on 04-Jan-2004 at 19:37:35.
- *
- * Copyright (c) 2004-2005 Robert Virkus / Enough Software
+ * Created on Jun 14, 2006 at 6:07:17 PM.
+ * 
+ * Copyright (c) 2006 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,41 +25,38 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Graphics;
+import de.enough.polish.util.RgbImage;
 
-import de.enough.polish.io.Serializable;
+
 
 /**
- * <p>Provides an abstract  border.</p>
+ * <p>Applies an effect to an RGB array.</p>
  *
- * <p>copyright Enough Software 2003, 2004</p>
+ * <p>Copyright Enough Software 2006</p>
  * <pre>
  * history
- *        04-Jan-2004 - rob creation
+ *        Jun 14, 2006 - rob creation
  * </pre>
- * @author Robert Virkus, robert@enough.de
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class Border implements Serializable {
-	
-	public int borderWidth;
-
-	/**
-	 * Creates a new border.
-	 * The width of this border is set to the default value 1 here. 
-	 */
-	public Border() {
-		this.borderWidth = 1;
-	}
+public abstract class RgbEffect {
 	
 	/**
-	 * Paints this border.
+	 * Renders the effect on the given RGB array.
+	 * It is explicitely allowed that the effect is returning the given RGB array instead of creating a new one.
 	 * 
-	 * @param x  the horizontal start point
-	 * @param y  the vertical start point
-	 * @param width  the width of the border
-	 * @param height  the height of the border
-	 * @param g  the Graphics on which the border should be painted.
+	 * @param image RgbImage containing an integer array containing the (A)RGB data, on which the effect should be applied.
 	 */
-	public abstract void paint( int x, int y, int width, int height, Graphics g );
+	public abstract void renderEffect( RgbImage image );
 	
+	/**
+	 * Allows the subclasses to acquire necessary settings by querying the CSS style.
+	 * When overriding, methods should call super.setStyle(style) first.
+	 *  
+	 * @param style the style
+	 */
+	public void setStyle( Style style ) {
+		// let subclasses implement this when required
+	}
+
 }

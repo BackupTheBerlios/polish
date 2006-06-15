@@ -28,6 +28,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.io.Serializable;
+
 /**
  * <p>Background is the base class for any backgrounds of widgets or forms.</p>
  *
@@ -37,7 +39,7 @@ import javax.microedition.lcdui.Graphics;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public abstract class Background {
+public abstract class Background implements Serializable {
 	
 	/**
 	 * Defines the width of this Background.

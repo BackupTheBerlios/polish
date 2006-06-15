@@ -278,10 +278,12 @@ public class MasterCanvas
 		}
 		//#debug
 		System.out.println("MasterCanvas: repaintCanvas " + canvas + ", MasterCanvas.instance != null: " + ( instance != null) + ", instance == canvas: " +  ( instance == null) );
-		if ( instance != null ) {
+		if ( !(canvas instanceof AccessibleCanvas) ) {
+			canvas.repaint();
+		} else if ( instance != null ) {
 			instance.repaint();
 		} else {
-			//System.out.println("native canvas repaint");
+			//System.out.println("native canvas repaint");s
 			canvas.repaint();
 		}
 	}

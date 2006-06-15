@@ -28,6 +28,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.io.Serializable;
+
 /**
  * <p>Provides an abstract  border.</p>
  *
@@ -38,7 +40,7 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public abstract class Border {
+public abstract class Border implements Serializable {
 	
 	public int borderWidth;
 

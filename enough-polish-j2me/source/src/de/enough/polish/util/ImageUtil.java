@@ -95,6 +95,17 @@ public final class ImageUtil {
 	}
 
 	
+	/**
+	 * Scales the rgb data and stores it into the given scaledRgbData array and adds an alpha semi transparency value at the same time.
+	 * 
+	 * @param scaledWidth the width of the scaled rgbData
+	 * @param scaledHeight the height of the scaled rgbData
+	 * @param scanlength the length of the given RGB data, usual the same as sourceWidth
+	 * @param sourceWidth the width of the rgbData
+	 * @param sourceHeight the height of the rgbData
+	 * @param rgbData the source rgbData
+	 * @return a new rgbData array that contains the scaled version
+	 */
 	public static int[] scale(int scaledWidth, int scaledHeight, int scanlength, int sourceWidth, int sourceHeight, int[] rgbData) {
 		int scaledRgbData[] = new int[scaledWidth * scaledHeight];
 		for (int y = 0; y < scaledHeight; y++) {
@@ -106,63 +117,153 @@ public final class ImageUtil {
 		}
 		return scaledRgbData;
 	}
-	
-	//#if polish.cldc1.1
+
+	//#if polish.hasFloatingPoint
+	/**
+	 * Rotates the given RGB data image and uses the center as the reference point for the rotation.
+	 * 
+	 * @param image the RGB data image that is going to be rotated. Warning: the RGB data might get replaced
+	 * @param angle the angle for the rotation in degrees (-360..0..360)
+	 */
+	public static void rotate( RgbImage image, int angle ) {
+		rotate( image, angle, image.getWidth()/2, image.getHeight()/2 );
+	}
+	//#endif
+
+	//#if polish.hasFloatingPoint
+	/**
+	 * Rotates the given RGB data image.
+	 * 
+	 * @param image the RGB data image that is going to be rotated. Warning: the RGB data might get replaced
+	 * @param angle the angle for the rotation in degrees (-360..0..360)
+	 * @param referenceX the horizontal reference point for the rotation
+	 * @param referenceY the vertical reference point for the rotation 
+	 */
+	public static void rotate(RgbImage image, int angle, int referenceX, int referenceY ) {
+		int[] rgbData = image.getRgbData();
+		int width = image.getWidth();
+		int height = image.getHeight();
+		double degreeCos = Math.cos(Math.PI*angle/180);
+		double degreeSin = Math.sin(Math.PI*angle/180);
+		int rotatedWidth = getRotatedWidth(angle, width, height, degreeCos, degreeSin);
+		int rotatedHeight = getRotatedHeight(angle, width, height, degreeCos, degreeSin);
+		int[] rotatedRgbData = new int[ rotatedWidth * rotatedHeight ];
+		ImageUtil.rotate(rgbData, width, height, 
+				referenceX, referenceY, 0x00FFFFFF,
+				degreeCos, degreeSin, rotatedRgbData, rotatedWidth, rotatedHeight );
+		image.setRgbData(rotatedRgbData, rotatedWidth);
+	}
+	//#endif
+
+	//#if polish.hasFloatingPoint
 	/**
 	 * Rotates the given rgb data and returns the rotated rgb data array.
 	 * 
-	 * @author Tim Muders
 	 * @param argbArray the rgb data to be rotated.
 	 * @param width the width of the rgb data.
-	 * @param heigth the heigth of the rgb data.
+	 * @param height the heigth of the rgb data.
 	 * @param degree the degree value of the rotation.
+	 * @param backgroundColor the ARGB color used for the background
+	 * @return the rotated rgb data.
+	 */
+	public static final int[] rotate(int[]argbArray, int width, int height, int degree, int backgroundColor) {
+		return rotate(argbArray, width, height, degree, width/2, height/2, backgroundColor);
+	}
+	//#endif
+
+	//#if polish.hasFloatingPoint
+	/**
+	 * Rotates the given rgb data and returns the rotated rgb data array.
+	 * 
+	 * @param sourceRgbData the rgb data to be rotated.
+	 * @param width the width of the rgb data.
+	 * @param height the heigth of the rgb data.
+	 * @param degree the degree value of the rotation.
+	 * @param backgroundColor the ARGB color used for the background
+	 * @return the rotated rgb data.
+	 */
+	public static final int[] rotate(int[] sourceRgbData, int width, int height, int targetRgbData, int degree, double degreeCos,double degreeSin, int backgroundColor) {
+		return rotate(sourceRgbData, width, height, degree, width/2, height/2, backgroundColor);
+	}
+	//#endif
+
+	//#if polish.hasFloatingPoint
+	/**
+	 * Rotates the given rgb data and returns the rotated rgb data array.
+	 * 
+	 * @param sourceRgbData the rgb data to be rotated.
+	 * @param width the width of the source rgb data.
+	 * @param height the heigth of the source rgb data.
+	 * @param degree the angle of the rotation.
 	 * @param referenceX the x position for the center of rotation.
 	 * @param referenceY the y position for the center of rotation.
 	 * @param backgroundColor the ARGB color used for the background
 	 * @return the rotated rgb data.
+	 * @author Tim Muders
 	 */
-	public static final int[]rotate(int[]argbArray,int width, int heigth,int degree,int referenceX,int referenceY,int backgroundColor){
-		double cosR = Math.cos(Math.PI*degree/180);
-		double sinR = Math.sin(Math.PI*degree/180);		
-		int newWidth = getNewWidth(degree,width,heigth,cosR,sinR);
-		int newHeigth = getNewHeigth(degree,width,heigth,cosR,sinR);
-		int[] newRGB = new int [newHeigth * newWidth];
+	public static final int[] rotate(int[] sourceRgbData,int width, int height,int degree,int referenceX,int referenceY,int backgroundColor){
+		double degreeCos = Math.cos(Math.PI*degree/180);
+		double degreeSin = Math.sin(Math.PI*degree/180);		
+		int rotatedWidth = getRotatedWidth(degree,width,height,degreeCos,degreeSin);
+		int rotatedHeight = getRotatedHeight(degree,width,height,degreeCos,degreeSin);
+		int[] rotatedRGB = new int [rotatedHeight * rotatedWidth];
+		rotate(sourceRgbData, width, height, referenceX, referenceY, backgroundColor, degreeCos, degreeSin, rotatedRGB, rotatedWidth, rotatedHeight);
+		return rotatedRGB;
+	}
+	//#endif
+
+	//#if polish.hasFloatingPoint
+	/**
+	 * Rotates the source RGB data and stores it within the target RGB data array.
+	 * 
+	 * @param sourceRgbData the rgb data to be rotated.
+	 * @param width the width of the source rgb data.
+	 * @param height the heigth of the source rgb data.
+	 * @param referenceX the x position for the center of rotation.
+	 * @param referenceY the y position for the center of rotation.
+	 * @param backgroundColor the ARGB color used for the background
+	 * @param degreeCos the cosine of the degree value: Math.cos(Math.PI*degree/180)
+	 * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
+	 * @param rotatedRGB the RGB data array for storing the rotated pixel data
+	 * @param rotatedWidth the width of the rotated rgb data
+	 * @param rotatedHeight the height of the rotated rgb data
+	 */
+	public static void rotate(int[] sourceRgbData, int width, int height, int referenceX, int referenceY, int backgroundColor, double degreeCos, double degreeSin, int[] rotatedRGB, int rotatedWidth, int rotatedHeight) {
 		int halfOfWidth = width/2;
-		int halfOfHeigth = heigth/2;
+		int halfOfHeigth = height/2;
 		int refX,refY,newX,newY,sumXY;
-		for(int x = 0; x < newWidth; x++){
-			for(int y = 0; y < newHeigth; y++){	
+		for(int x = 0; x < rotatedWidth; x++){
+			for(int y = 0; y < rotatedHeight; y++){	
 				refX = x - referenceX;
 				refY = y - referenceY;
-				newX = (int)(refX  * cosR + refY * sinR);
-				newY = (int)(refY * cosR - refX   * sinR);
+				newX = (int)(refX  * degreeCos + refY * degreeSin);
+				newY = (int)(refY * degreeCos - refX  * degreeSin);
 				newX += halfOfWidth;
 				newY += halfOfHeigth;
-				if( newX >= 0 && newX < width && newY >= 0 && newY < heigth ){
+				if( newX >= 0 && newX < width && newY >= 0 && newY < height ){
 					sumXY  = newX + newY * width;
-					newRGB [x+y*newWidth] = argbArray[sumXY];
-				}else{
-					newRGB [x+y*newWidth] = backgroundColor;
+					rotatedRGB [x+y*rotatedWidth] = sourceRgbData[sumXY];
+				} else {
+					rotatedRGB [x+y*rotatedWidth] = backgroundColor;
 				}
 			}
 		}
-		return newRGB;
 	}
 	//#endif
 	
-	//#if polish.cldc1.1
+	//#if polish.hasFloatingPoint
 	/**
-	 * Returns the new heigth for the given degree. The new heigth symbols the heigth for an rotated rgb data array with the same degree rotation.
+	 * Returns the new height for the given degree. The new heigth symbols the heigth for an rotated rgb data array with the same degree rotation.
 	 * 
-	 * @author Tim Muders
 	 * @param degree the degree value of the rotation.
 	 * @param width the width of the rgb source.
 	 * @param heigth the heigth of the rgb source
-	 * @param cosR the cosine of the degree value.
-	 * @param sinR the sine of the degree value.
-	 * @return the new heigth of the rgb data.
+	 * @param degreeCos the cosine of the degree value: Math.cos(Math.PI*degree/180)
+	 * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
+	 * @return the new height of the rgb data.
+	 * @author Tim Muders
 	 */
-	public static final int getNewHeigth(int degree,int width,int heigth,double cosR,double sinR)
+	public static final int getRotatedHeight(int degree, int width, int heigth, double degreeCos, double degreeSin)
 	{
 		if(degree == -90 || degree == 90 || degree == 270 || degree == -270){
 			return width;
@@ -170,10 +271,10 @@ public final class ImageUtil {
 		else if(degree == 360 || degree == 180 || degree == 0){
 			return heigth;
 		}
-		long pointY1 = MathUtil.round(0 * sinR + 0 * cosR);
-		long pointY2 = MathUtil.round(width *sinR + 0 *cosR);
-		long pointY3 = MathUtil.round(0 *sinR + heigth *cosR);
-		long pointY4 = MathUtil.round(width *sinR + heigth *cosR);
+		long pointY1 = MathUtil.round(0 * degreeSin + 0 * degreeCos);
+		long pointY2 = MathUtil.round(width *degreeSin + 0 *degreeCos);
+		long pointY3 = MathUtil.round(0 *degreeSin + heigth *degreeCos);
+		long pointY4 = MathUtil.round(width *degreeSin + heigth *degreeCos);
 		long minY = pointY1;
 		if(pointY2 < minY){
 			minY = pointY2;
@@ -199,19 +300,19 @@ public final class ImageUtil {
 	//#endif
 	
 	
-	//#if polish.cldc1.1
+	//#if polish.hasFloatingPoint
 	/**
 	 * Returns the new width for the given degree. The new width symbols the width for an rotated rgb data array with the same degree rotation.
 	 * 
-	 * @author Tim Muders
 	 * @param degree the degree value of the rotation.
 	 * @param width the width of the rgb source.
 	 * @param heigth the heigth of the rgb source
-	 * @param cosR the cosine of the degree value.
-	 * @param sinR the sine of the degree value.
+	 * @param degreeCos the cosine of the degree value: Math.cos(Math.PI*degree/180)
+	 * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
 	 * @return the new width of the rgb data.
+	 * @author Tim Muders
 	 */
-	public static final int getNewWidth(int degree,int width,int heigth,double cosR,double sinR)
+	public static final int getRotatedWidth(int degree,int width,int heigth,double degreeCos,double degreeSin)
 	{
 		if(degree == -90 || degree == 90 || degree == 270 || degree == -270){
 			return heigth;
@@ -219,10 +320,10 @@ public final class ImageUtil {
 		else if(degree == 360 || degree == 180 || degree == 0){
 			return width;
 		}
-		long pointX1 = MathUtil.round(0 * cosR - 0 * sinR);
-		long pointX2 = MathUtil.round(width *cosR - 0 *sinR);
-		long pointX3 = MathUtil.round(0 *cosR - heigth *sinR);
-		long pointX4 = MathUtil.round(width *cosR - heigth *sinR);
+		long pointX1 = MathUtil.round(0 * degreeCos - 0 * degreeSin);
+		long pointX2 = MathUtil.round(width *degreeCos - 0 *degreeSin);
+		long pointX3 = MathUtil.round(0 *degreeCos - heigth *degreeSin);
+		long pointX4 = MathUtil.round(width *degreeCos - heigth *degreeSin);
 		long minX = pointX1;
 		if(pointX2 < minX){
 			minX = pointX2;

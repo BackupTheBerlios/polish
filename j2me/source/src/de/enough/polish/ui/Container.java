@@ -250,10 +250,6 @@ public class Container extends Item {
 		Item removedItem = (Item) this.itemsList.remove(index);
 		//#debug
 		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
-		Screen scr = getScreen();
-		if (scr != null) {
-			scr.removeItemCommands(removedItem);
-		}
 		// adjust y-positions of following items:
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		for (int i = 0; i < myItems.length; i++) {
@@ -269,6 +265,11 @@ public class Container extends Item {
 		}
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
+			// remove any items:
+			Screen scr = getScreen();
+			if (scr != null) {
+				scr.removeItemCommands(removedItem);
+			}
 			// focus the first possible item:
 			boolean focusSet = false;
 			for (int i = 0; i < myItems.length; i++) {
@@ -1116,6 +1117,7 @@ public class Container extends Item {
 			System.out.println("shiftFocus fails: this.items==null");
 			return false;
 		}
+		//System.out.println("|");
 		Item focItem = this.focusedItem;
 		//#if polish.css.colspan
 			int i = this.focusedIndex;
@@ -1203,7 +1205,7 @@ public class Container extends Item {
 						// there is still space, do
 						// scroll first before cycling to the
 						// last item:
-						allowCycle = (this.targetYOffset == 0);
+						allowCycle = (this.targetYOffset == 0) || (this.targetYOffset == 1);
 					}
 				//#if polish.css.scroll-mode
 					}

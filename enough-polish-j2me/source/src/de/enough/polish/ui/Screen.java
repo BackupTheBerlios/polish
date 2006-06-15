@@ -2263,6 +2263,25 @@ implements AccessibleCanvas
 	//#endif
 	
 	/**
+	 * Removes all commands from this screen.
+	 * This option is only available when the "menu" fullscreen mode is activated.
+	 */
+	public void removeAllCommands() {
+		//#ifdef tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.removeAllCommands();
+			//#else
+				this.menuCommands.clear();
+				this.menuContainer.clear();
+			//#endif
+			if (isShown()) {
+				repaint();
+			}
+		//#endif
+	}
+
+	
+	/**
 	 * Adds the given command as a subcommand to the specified parent command.
 	 * 
 	 * @param child the child command

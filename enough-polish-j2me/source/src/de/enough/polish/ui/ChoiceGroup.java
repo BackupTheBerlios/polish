@@ -1267,7 +1267,7 @@ implements Choice
 			System.out.println("ChoiceGroup: container handled keyPressEvent: " + processed);
 		}
 		if (!processed) {
-			if ( gameAction == Canvas.FIRE ) {
+			if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 ) {
 				if (this.isMultiple) {
 					ChoiceItem item = (ChoiceItem) this.focusedItem;
 					item.toggleSelect();
@@ -1300,6 +1300,7 @@ implements Choice
 				}
 				return true;
 			} else {
+				//#if polish.Container.dontUseNumberKeys != true
 				if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
 					int index = keyCode - Canvas.KEY_NUM1;
 					if (index < this.itemsList.size()) {
@@ -1331,13 +1332,14 @@ implements Choice
 					closePopup();
 					return true;
 				}
+				//#endif
 			}
 		}
 		//#else
 		// no popup item is used by this application:
 		processed = super.handleKeyPressed(keyCode, gameAction);
 		if (!processed) {
-			if ((gameAction == Canvas.FIRE) && (this.focusedIndex != -1)) {
+			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.focusedIndex != -1 ) {
 				if (this.isMultiple) {
 					ChoiceItem item = (ChoiceItem) this.focusedItem;
 					item.toggleSelect();
@@ -1361,6 +1363,7 @@ implements Choice
 					}
 				}
 				return true;
+			//#if polish.Container.dontUseNumberKeys != true
 			} else if ( (keyCode >= Canvas.KEY_NUM1) && (keyCode <= Canvas.KEY_NUM9) ) {
 				int index = keyCode - Canvas.KEY_NUM1;
 				if (index < this.itemsList.size()) {
@@ -1383,6 +1386,7 @@ implements Choice
 					}
 					return true;
 				}
+			//#endif
 			}
 		}
 		//#endif
