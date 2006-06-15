@@ -59,10 +59,17 @@ public class StatusGroup extends Composite{
 
     public StatusGroup(Composite parent, int style) {
         super(parent, style);
-        super.setLayout(new GridLayout(1,false));
+        GridLayout gridLayout;
+        gridLayout = new GridLayout(1,false);
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.horizontalSpacing = 0;
+        gridLayout.verticalSpacing = 0;
+        super.setLayout(gridLayout);
         this.group = new Group(this,SWT.NONE);
         this.group.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-        this.group.setLayout(new GridLayout(1,false));
+        gridLayout = new GridLayout(1,false);
+        this.group.setLayout(gridLayout);
         
         this.mainArea = new Composite(this.group,SWT.NONE);
         this.mainArea.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
