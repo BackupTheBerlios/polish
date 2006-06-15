@@ -27,11 +27,16 @@ package de.enough.polish;
 
 public class Stats{
         private int noPolishDeviceFound = 0;
-        private int actualDeviceFound;
-        private int noActualDeviceFound;
-        private int devicesMapped;
-        private int numberOfPolishDevices;
-        private int missingPolishVendorForWurfleVendor;
+        private int actualDeviceFound = 0;
+        private int noActualDeviceFound = 0;
+        private int devicesMapped = 0;
+        private int numberOfPolishDevices = 0;
+        private int missingPolishVendorForWurfleVendor = 0;
+        private int wurflDeviceAdded = 0;
+        private int noJavaPlatformForWurflDevice = 0;
+        private int noJavaConfigurationForWurflDevice;
+        private int modelNameContainsSlash;
+        
         public void actualDeviceFound(String key) {
             this.actualDeviceFound++;
         }
@@ -59,5 +64,33 @@ public class Stats{
             System.out.println("# of devices mapped:"+this.devicesMapped);
             System.out.println("# of polish devices:"+this.numberOfPolishDevices);
             System.out.println("# of missing wurfle vendors in polish:"+this.missingPolishVendorForWurfleVendor);
+            System.out.println("# of newly added wurfl devices:"+this.wurflDeviceAdded);
+            System.out.println("# of wurfl devices with no javaPlatform:"+this.noJavaPlatformForWurflDevice);
+            System.out.println("# of wurfl devices with no javaConfiguration:"+this.noJavaConfigurationForWurflDevice);
+            System.out.println("# of wurfl devices which contains a slash in the model name:"+this.modelNameContainsSlash);
+        }
+        /**
+         * @param wurflDevice
+         */
+        public void wurflDeviceAdded(WurflDevice wurflDevice) {
+            this.wurflDeviceAdded++;
+        }
+        /**
+         * @param wurflDevice
+         */
+        public void noJavaPlatformForWurflDevice(WurflDevice wurflDevice) {
+            this.noJavaPlatformForWurflDevice ++;
+        }
+        /**
+         * @param wurflDevice
+         */
+        public void noJavaConfigurationForWurflDevice(WurflDevice wurflDevice) {
+            this.noJavaConfigurationForWurflDevice++;
+        }
+        /**
+         * @param wurflDevice
+         */
+        public void modelNameContainsSlash(WurflDevice wurflDevice) {
+            this.modelNameContainsSlash++;
         }
     }

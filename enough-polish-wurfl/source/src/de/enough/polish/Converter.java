@@ -35,7 +35,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,7 +62,7 @@ import de.enough.polish.devices.Vendor;
 import de.enough.polish.devices.VendorManager;
 
 /**
- * 
+ * TODO: Add missing vendors to vendors.xml.
  * <br>Copyright Enough Software 2005
  * <pre>
  * history
@@ -78,6 +77,7 @@ public class Converter {
     private DeviceManager deviceManager;
     private DeviceDatabase deviceDatabase;
     private Stats stats;
+    private boolean optionInsertMissingDevices;
     
     public Converter() throws ConverterException {
         this.wurflTree = WURFLTree.getInstance();
@@ -88,15 +88,174 @@ public class Converter {
             throw new ConverterException("Could not get DeviceDatabase.",exception);
         }
         this.deviceManager = this.deviceDatabase.getDeviceManager();
+        this.optionInsertMissingDevices = false;
     }
     
+    public Stats getStats() {
+        return this.stats;
+    }
+
+
+    public boolean isOptionInsertMissingDevices() {
+        return this.optionInsertMissingDevices;
+    }
+
+
+    public void setOptionInsertMissingDevices(boolean optionInsertMissingDevices) {
+        this.optionInsertMissingDevices = optionInsertMissingDevices;
+    }
     
+    public void convert(InputStream deviceInputStream, OutputStream deviceOutputStream, InputStream vendorsInputStream, OutputStream vendorsOutputStream) throws ConverterException{
+        this.stats = new Stats();
+        WurflDevice wurflDevice = new WurflDevice(this.wurflInfo,this.wurflTree);
+        
+        // Only for the stats. Count all polish device.
+        List<de.enough.polish.Device> list = new LinkedList<de.enough.polish.Device>();
+        de.enough.polish.Device[] allDevices = this.deviceManager.getDevices();
+        for (int i = 0; i < allDevices.length; i++) {
+            if( ! allDevices[i].isVirtual()){
+                list.add(allDevices[i]);
+            }
+        }
+        this.stats.numberOfPolishDevices(list.size());
+        
+        // Setup the polish db.
+        Document polishDb = getDocumentFromXmlStream(deviceInputStream);
+        Document vendorDb = getDocumentFromXmlStream(vendorsInputStream);
+        
+        // Look at every wurfl device.
+        Hashtable<String, Device> devices = this.wurflInfo.getDevices();
+        for (Iterator iterator = devices.keySet().iterator(); iterator.hasNext(); ) {
+            
+            // 1. Get a actual device.
+            String key = (String) iterator.next();
+            Device device = devices.get(key);
+            if( ! device.isActualDevice()) {
+                this.stats.nonActualDeviceFound(key);
+                continue;
+            }
+            this.stats.actualDeviceFound(key);
+            
+            // 2. Get a polish device.
+            wurflDevice.setDevice(device);
+            de.enough.polish.Device polishDevice = getPolishDeviceForWurflDevice(wurflDevice);
+            if(polishDevice == null) {
+                this.stats.noPolishDeviceFoundForWurflKey(key);
+                
+                if(this.optionInsertMissingDevices) {
+                    //TODO: This is the place to introduce stub devices with only an identifer and 
+                    // a user agent. This functionality should be enabled by an option to 
+                    // generate a devices_wurfl.xml with lot of stub devices.
+                    addWurflDeviceToPolishDB(polishDb,vendorDb,wurflDevice);
+                    
+                }
+                
+                continue;
+            }
+            
+            // 3. Incorporate wurfl device in polish database.
+            addWurflUserAgentToPolishDB(polishDb,polishDevice,wurflDevice);
+            this.stats.devicesMapped(polishDevice.getIdentifier(),wurflDevice.getWurfleId());
+        }
+        
+        // 4. Write the database to the output stream.
+        outputDocument(deviceOutputStream, polishDb);
+        outputDocument(vendorsOutputStream, vendorDb);
+        
+    }
+
     protected de.enough.polish.Device getPolishDeviceForWurflDevice(WurflDevice wurfleDevice){
         de.enough.polish.Device device = this.deviceManager.getDeviceByFuzzyName(wurfleDevice.getBrand()+"/"+wurfleDevice.getModel());
         return device;
     }
     
-    protected void addWurflDeviceToDB(Document db, de.enough.polish.Device device, WurflDevice wurflDevice) {
+    protected void addWurflDeviceToPolishDB(Document db, Document vendorDb, WurflDevice wurflDevice) {
+        boolean everythingPresent = true;
+        Vendor vendor = this.deviceDatabase.getVendorManager().getVendor(wurflDevice.getBrand());
+        String vendorString;
+        if(vendor != null) {
+            vendorString = vendor.getIdentifier();
+        }
+        else {
+            vendorString = wurflDevice.getBrand();
+        }
+        
+        String[] models = wurflDevice.getModel().split("/");
+        if(models.length != 1) {
+            this.stats.modelNameContainsSlash(wurflDevice);
+            return;
+        }
+        Element deviceElement = db.createElement("device");
+        deviceElement.setAttribute("supportsPolishGui","false");
+
+        Element identifierElement = db.createElement("identifier");
+        String identifier = vendorString + "/" + wurflDevice.getModel();
+        identifierElement.setTextContent(identifier);
+        deviceElement.appendChild(identifierElement);
+        
+        Element capabilityElement;
+        String[] userAgents = wurflDevice.getUserAgents();
+        for (int i = 0; i < userAgents.length; i++) {
+            capabilityElement = db.createElement("capability");
+            capabilityElement.setAttribute("name","wap.userAgent");
+            capabilityElement.setAttribute("value",userAgents[i]);
+            deviceElement.appendChild(capabilityElement);
+        }
+
+        String javaPlatform = wurflDevice.getJavaPlatform();
+        if(javaPlatform.length() == 0) {
+            this.stats.noJavaPlatformForWurflDevice(wurflDevice);
+            everythingPresent = false;
+        }
+        else {
+            capabilityElement = db.createElement("capability");
+            capabilityElement.setAttribute("name","JavaPlatform");
+            capabilityElement.setAttribute("value",javaPlatform);
+            deviceElement.appendChild(capabilityElement);
+        }
+        
+        String javaConfiguration = wurflDevice.getJavaConfiguration();
+        if(javaConfiguration.length() == 0) {
+            this.stats.noJavaConfigurationForWurflDevice(wurflDevice);
+            everythingPresent = false;
+        }
+        else {
+            capabilityElement = db.createElement("capability");
+            capabilityElement.setAttribute("name","JavaConfiguration");
+            capabilityElement.setAttribute("value",javaConfiguration);
+            deviceElement.appendChild(capabilityElement);
+        }
+        
+        if( ! everythingPresent) {
+            return;
+        }
+        
+        Node devicesNode = db.getElementsByTagName("devices").item(0);
+        devicesNode.appendChild(deviceElement);
+        this.stats.wurflDeviceAdded(wurflDevice);
+        
+        VendorManager vendorManager = this.deviceDatabase.getVendorManager();
+        vendor = vendorManager.getVendor(wurflDevice.getBrand());
+        if(vendor == null) {
+            // Create a new vendor.
+            Node vendors = vendorDb.getElementsByTagName("vendors").item(0);
+            Element vendorElement = vendorDb.createElement("vendor");
+
+            Element nameElement = vendorDb.createElement("name");
+            nameElement.setTextContent(wurflDevice.getBrand());
+            vendorElement.appendChild(nameElement);
+            
+            Element featuresElement = vendorDb.createElement("features");
+            vendorElement.appendChild(featuresElement);
+            
+            vendors.appendChild(vendorElement);
+        }
+        
+        
+        
+    }
+
+    protected void addWurflUserAgentToPolishDB(Document db, de.enough.polish.Device device, WurflDevice wurflDevice) {
         String identifier = device.getIdentifier();
         String[] userAgents = wurflDevice.getUserAgents();
         int numberOfUserAgents = userAgents.length;
@@ -175,68 +334,15 @@ public class Converter {
 //    }
 
 
-    public void convert(InputStream polishDatabase, OutputStream outputStream) throws ConverterException{
-        this.stats = new Stats();
-        WurflDevice wurflDevice = new WurflDevice(this.wurflInfo,this.wurflTree);
-        
-        // Only for the stats. Count all polish device.
-        List<de.enough.polish.Device> list = new LinkedList<de.enough.polish.Device>();
-        de.enough.polish.Device[] allDevices = this.deviceManager.getDevices();
-        for (int i = 0; i < allDevices.length; i++) {
-            if( ! allDevices[i].isVirtual()){
-                list.add(allDevices[i]);
-            }
-        }
-        this.stats.numberOfPolishDevices(list.size());
-        
-        // Setup the polish db.
-        Document dbDocument = getDocument(polishDatabase);
-        
-        // Look at every wurfl device.
-        Hashtable<String, Device> devices = this.wurflInfo.getDevices();
-        for (Iterator iterator = devices.keySet().iterator(); iterator.hasNext(); ) {
-            
-            // 1. Get a actual device.
-            String key = (String) iterator.next();
-            Device device = devices.get(key);
-            if( ! device.isActualDevice()) {
-                this.stats.nonActualDeviceFound(key);
-                continue;
-            }
-            this.stats.actualDeviceFound(key);
-            
-            // 2. Get a polish device.
-            wurflDevice.setDevice(device);
-            de.enough.polish.Device polishDevice = getPolishDeviceForWurflDevice(wurflDevice);
-            if(polishDevice == null) {
-                this.stats.noPolishDeviceFoundForWurflKey(key);
-                //TODO: This is the place to introduce stub devices with only an identifer and 
-                // a user agent. This functionality should be enabled by an option to 
-                // generate a devices_wurfl.xml with lot of stub devices.
-                continue;
-            }
-            
-            // 3. Incorporate wurfl device in polish database.
-            addWurflDeviceToDB(dbDocument,polishDevice,wurflDevice);
-            this.stats.devicesMapped(polishDevice.getIdentifier(),wurflDevice.getWurfleId());
-        }
-        
-        // 4. Write the database to the output stream.
-        outputDocument(outputStream, dbDocument);
-        
-    }
+    
+    
 
 
-    /**
-     * @param polishDatabase
-     * @return
-     * @throws ConverterException
-     */
-    private Document getDocument(InputStream polishDatabase) throws ConverterException {
+    private Document getDocumentFromXmlStream(InputStream xmlStream) throws ConverterException {
         Document dbDocument;
         try {
             DocumentBuilder newDocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            dbDocument = newDocumentBuilder.parse(polishDatabase);
+            dbDocument = newDocumentBuilder.parse(xmlStream);
         } catch (Exception exception) {
             throw new ConverterException("Could not create DOM Document",exception);
         }
@@ -254,18 +360,20 @@ public class Converter {
         DOMSource domSource = new DOMSource(dbDocument);
         StreamResult streamResult = new StreamResult(outputStream);
         TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer serializer;
+        tf.setAttribute("indent-number", 4);
+        Transformer transformer;
         try {
-            serializer = tf.newTransformer();
+            transformer = tf.newTransformer();
         } catch (TransformerConfigurationException exception) {
             throw new ConverterException("Could not create transformer.",exception);
         }
-        serializer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
-        serializer.setOutputProperty(OutputKeys.METHOD,"xml");
-        serializer.setOutputProperty(OutputKeys.INDENT,"yes");
-        serializer.setOutputProperty(OutputKeys.STANDALONE,"yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+        transformer.setOutputProperty(OutputKeys.METHOD,"xml");
+        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+//        serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+//        serializer.setOutputProperty(OutputKeys.STANDALONE,"yes");
         try {
-            serializer.transform(domSource, streamResult);
+          transformer.transform(domSource, streamResult);
         } catch (TransformerException exception) {
             throw new ConverterException("Could not write document to output stream",exception);
         }
@@ -273,45 +381,65 @@ public class Converter {
     
     public static void main(String[] args) {
         
-        final String INPUT_DB = "../enough-polish-build/devices.xml";
-        final String OUTPUT_DB_TMP = "../enough-polish-build/devices_tmp.xml";
-        final String OUTPUT_DB = "../enough-polish-build/devices.xml";
+        final String DEVICE_INPUT_PATH = "../enough-polish-build/devices.xml";
+        final String DEVICE_OUTPUT_PATH_TMP = "../enough-polish-build/devices_tmp.xml";
+        // For normal operation.
+//      final String OUTPUT_DB = "../enough-polish-build/devices.xml";
+        // For an extended devices.xml
+        final String DEVICE_OUTPUT_PATH = "../enough-polish-build/devices_wurfluseragents.xml";
+        
+        final String VENDORS_INPUT_PATH = "../enough-polish-build/vendors.xml";
+        final String VENDORS_OUTPUT_PATH_TMP = "../enough-polish-build/vendors_tmp.xml";
+        final String VENDORS_OUTPUT_PATH = "../enough-polish-build/vendors.xml";
+        
+        
         
         Converter converter;
         try {
             converter = new Converter();
+            converter.setOptionInsertMissingDevices(true);
         } catch (ConverterException exception) {
             System.out.println("Could not create Converter."+exception);
             exception.printStackTrace();
             return;
         }
-        InputStream polishInputStream;
-        OutputStream outputStream;
+        InputStream devicesInputStream;
+        OutputStream deviceOutputStream;
+        
+        InputStream vendorsInputStream;
+        OutputStream vendorsOutputStream;
         try {
-            polishInputStream = new FileInputStream(INPUT_DB);
-            outputStream = new FileOutputStream(OUTPUT_DB_TMP);
+            devicesInputStream = new FileInputStream(DEVICE_INPUT_PATH);
+            deviceOutputStream = new FileOutputStream(DEVICE_OUTPUT_PATH_TMP);
+            vendorsInputStream = new FileInputStream(VENDORS_INPUT_PATH);
+            vendorsOutputStream = new FileOutputStream(VENDORS_OUTPUT_PATH_TMP);
         } catch (FileNotFoundException exception) {
             exception.printStackTrace();
             return;
         }
         try {
-            converter.convert(polishInputStream,outputStream);
+            converter.convert(devicesInputStream,deviceOutputStream,vendorsInputStream,vendorsOutputStream);
         } catch (ConverterException exception) {
             exception.printStackTrace();
             return;
         }
-        FileInputStream input;
-        FileOutputStream output;
+        FileInputStream deviceInputTemp;
+        FileInputStream vendorInputTemp;
+        FileOutputStream deviceOutputTemp;
+        FileOutputStream vendorOutputTemp;
         try {
-            input = new FileInputStream(OUTPUT_DB_TMP);
-            output = new FileOutputStream(OUTPUT_DB);
+            deviceInputTemp = new FileInputStream(DEVICE_OUTPUT_PATH_TMP);
+            deviceOutputTemp = new FileOutputStream(DEVICE_OUTPUT_PATH);
+            vendorInputTemp = new FileInputStream(VENDORS_OUTPUT_PATH_TMP);
+            vendorOutputTemp = new FileOutputStream(VENDORS_OUTPUT_PATH);
         } catch (FileNotFoundException exception) {
             System.out.println("Could not create output file.");
             exception.printStackTrace();
             return;
         }
         try {
-            converter.copyFile(input,output);
+            converter.copyFile(deviceInputTemp,deviceOutputTemp);
+            converter.copyFile(vendorInputTemp,vendorOutputTemp);
         } catch (IOException exception) {
             System.out.println("Could not copy from temp file.");
             exception.printStackTrace();
@@ -330,34 +458,33 @@ public class Converter {
         out.close();
     }
     
-    public Stats getStats() {
-        return this.stats;
-    }
     
-    /**
-     * No longer needed.
-     * @param stats
-     */
-    private void statsVendors(Stats stats) {
-        Converter converter;
-        try {
-            converter = new Converter();
-        } catch (ConverterException exception) {
-            exception.printStackTrace();
-            return;
-        }
-
-        Vector<String> makes = converter.wurflInfo.getMakes();
-        VendorManager vendorManager = converter.deviceDatabase.getVendorManager();
-        Vendor vendor;
-        for (Iterator iterator = makes.iterator(); iterator.hasNext(); ) {
-            String make = (String) iterator.next();
-            vendor = vendorManager.getVendor(make);
-            if(vendor == null) {
-                stats.missingPolishVendorForWurfleVendor(make);
-                System.out.println("missing polish vendor vor wurfl make:"+make);
-            }
-        }
-        
-    }
+    
+    
+//    /**
+//     * No longer needed.
+//     * @param stats
+//     */
+//    private void statsVendors(Stats stats) {
+//        Converter converter;
+//        try {
+//            converter = new Converter();
+//        } catch (ConverterException exception) {
+//            exception.printStackTrace();
+//            return;
+//        }
+//
+//        Vector<String> makes = converter.wurflInfo.getMakes();
+//        VendorManager vendorManager = converter.deviceDatabase.getVendorManager();
+//        Vendor vendor;
+//        for (Iterator iterator = makes.iterator(); iterator.hasNext(); ) {
+//            String make = (String) iterator.next();
+//            vendor = vendorManager.getVendor(make);
+//            if(vendor == null) {
+//                stats.missingPolishVendorForWurfleVendor(make);
+//                System.out.println("missing polish vendor vor wurfl make:"+make);
+//            }
+//        }
+//        
+//    }
 }

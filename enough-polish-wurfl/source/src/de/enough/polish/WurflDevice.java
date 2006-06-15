@@ -90,10 +90,38 @@ public class WurflDevice {
         return list.toArray(new String[list.size()]);
     }
     
+    public String getJavaPlatform() {
+        Capability platform;
+        platform = this.deviceCapabilities.get("j2me_midp_2_0");
+        if("true".equals(platform.getValue())){
+            return "MIDP/2.0";
+        }
+        platform = this.deviceCapabilities.get("j2me_midp_1_0");
+        if("true".equals(platform.getValue())){
+            return "MIDP/1.0";
+        }
+        return "";
+    }
+    
+    public String getJavaConfiguration() {
+        Capability configuration;
+        configuration = this.deviceCapabilities.get("j2me_cldc_1_1");
+        if("true".equals(configuration.getValue())) {
+            return "CLDC/1.1";
+        }
+        configuration = this.deviceCapabilities.get("j2me_cldc_1_0");
+        if("true".equals(configuration.getValue())) {
+            return "CLDC/1.0";
+        }
+        return "";
+    }
+    
+    
+    
     /**
-     * TODO: Verify that a user agents are found.
+     * TODO: Verify that a user agent is found.
      * @param someDevice
-     * @return
+     * @return all wurfl devices which are children of the given device.
      */
     protected Device[] getChildWurflDevices(Device someDevice) {
         TreePath pathToParentDevice;
