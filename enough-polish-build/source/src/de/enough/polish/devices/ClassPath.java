@@ -66,7 +66,7 @@ public class ClassPath {
 		this.libraryManager = libraryManager;
 	}
 
-	private void intialize() {
+	private void initialize() {
 		initBootClassPath();
 		initClassPath();
 		this.isInitalised = true;
@@ -166,21 +166,21 @@ public class ClassPath {
 
 	public String getBootClassPath() {
 		if (!this.isInitalised) {
-			intialize();
+			initialize();
 		}
 		return this.bootClassPath;
 	}
 	
 	public String[] getBootClassPaths() {
 		if (!this.isInitalised) {
-			intialize();
+			initialize();
 		}
 		return this.bootClassPaths;
 	}
 
 	public String getClassPath() {
 		if (!this.isInitalised) {
-			intialize();
+			initialize();
 		}
 		return this.classPath;
 	}
@@ -188,7 +188,7 @@ public class ClassPath {
 
 	public String[] getClassPaths() {
 		if (!this.isInitalised) {
-			intialize();
+			initialize();
 		}
 		return this.classPaths;
 	}
