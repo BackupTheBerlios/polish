@@ -16,7 +16,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -84,25 +83,27 @@ public class ProjectPage extends WizardPage{
 
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.verticalSpacing = 9;
+		GridLayout layout = new GridLayout(1,false);
+		layout.verticalSpacing = 5;
 		container.setLayout(layout);
         
         this.newProjectNameStatusGroup = new StatusGroup(container,SWT.NONE);
-        this.newProjectNameStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+        this.newProjectNameStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         this.newProjectModel.addStatusListener(new SimpleStatusGroupUpdater(this.newProjectNameStatusGroup,NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_NAME));
         
         Composite myGroupMainComposite = this.newProjectNameStatusGroup.getMainComposite();
-        myGroupMainComposite.setLayout(new GridLayout(2,false));
-        
+        layout = new GridLayout(2,false);
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 0;
+        layout.marginLeft = 0;
+        layout.marginHeight = 0;
+        layout.marginRight = 0;
+        layout.marginWidth = 0;
+        myGroupMainComposite.setLayout(layout);
         this.newProjectNameStatusGroup.setLabelText("New Project");
-        
         this.newProjectNameLabel = new Label(myGroupMainComposite,SWT.NONE);
         this.newProjectNameLabel.setText("New Project Name:");
-        
         this.newProjectNameText = new Text(myGroupMainComposite,SWT.NONE);
-//        this.newProjectNameText.setText(this.newProjectOptions.getProjectName());
         this.newProjectNameText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         this.newProjectNameText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -111,17 +112,24 @@ public class ProjectPage extends WizardPage{
         });
         this.newProjectNameText.setFocus();
         
+        // -------------------
+        
         this.desciptionGroup = new Group(container,SWT.NONE);
         this.desciptionGroup.setText("Project Description");
         this.desciptionGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         this.desciptionGroup.setLayout(new GridLayout(1,false));
-        
         this.descriptionText = new Text(this.desciptionGroup,SWT.WRAP);
         this.descriptionText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         
+        // -------------------
+        
         Group generateTemplateGroup = new Group(container,SWT.NONE);
         generateTemplateGroup.setText("Project Template");
-        generateTemplateGroup.setLayout(new GridLayout(2,false));
+        layout = new GridLayout(2,false);
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 5;
+        generateTemplateGroup.setLayout(layout);
+        generateTemplateGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         
         Label generateTemplatesLabel = new Label(generateTemplateGroup,SWT.NONE);
         generateTemplatesLabel.setText("Generate template?");

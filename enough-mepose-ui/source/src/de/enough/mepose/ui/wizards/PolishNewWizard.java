@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.filters.StringInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -149,7 +148,8 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         
         IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
             try {
-                simpleMidletFile.create(new StringInputStream(result),true,null);
+                StringInputStream stringInputStream = new StringInputStream(result);
+                simpleMidletFile.create(stringInputStream,true,null);
             } catch (CoreException exception) {
                 return;
             }
