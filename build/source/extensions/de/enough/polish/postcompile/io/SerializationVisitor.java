@@ -201,12 +201,14 @@ public class SerializationVisitor
 
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
   {
-    // TODO: Handle final fields.
+    // Make final fields non-final.
+    access &= ~ ACC_FINAL;
     
+    // Only do serialication for non-transient fields.
     if ((access & ACC_TRANSIENT) != ACC_TRANSIENT)
       {
-        int index = name.lastIndexOf('/');
-        String fieldName = name.substring(index + 1);
+//        int index = name.lastIndexOf('/');
+//        String fieldName = name.substring(index + 1);
         
         if (isPrimitiveType(desc))
           {
@@ -254,7 +256,7 @@ public class SerializationVisitor
     // TODO: Generate default constructor if needed.
     
     // Generate read method for serialization.
-    if (generateReadMethod)
+    if (this.generateReadMethod)
       {
         MethodVisitor mv = 
           visitMethod(READ_MODIFIERS, READ_NAME, READ_SIGNATURE,
@@ -322,7 +324,7 @@ public class SerializationVisitor
       }
     
     // Generate write method for serialization.
-    if (generateWriteMethod)
+    if (this.generateWriteMethod)
       {
         MethodVisitor mv =
           visitMethod(WRITE_MODIFIERS, WRITE_NAME, WRITE_SIGNATURE,
