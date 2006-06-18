@@ -629,7 +629,7 @@ implements AccessibleCanvas
 							//#if polish.color.overlay:defined
 								//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
 							//#else
-								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAAFFFFFF );
+								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
 							//#endif
 						}
 					//#else
@@ -648,7 +648,7 @@ implements AccessibleCanvas
 							//#if polish.color.overlay:defined
 								//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
 							//#else
-								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAAFFFFFF );
+								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
 							//#endif
 						}
 					//#endif

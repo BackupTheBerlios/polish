@@ -34,6 +34,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 
@@ -102,9 +103,10 @@ public class MenuBar extends Item {
 	private Image cancelImage;
 	private int singleLeftCommandY;
 	private int singleRightCommandY;
+	private Background overlayBackground;
 
 	/**
-	 * Creates a new menu bar\
+	 * Creates a new menu bar
 	 * 
 	 * @param screen the parent screen
 	 */
@@ -625,6 +627,10 @@ public class MenuBar extends Item {
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) 
 	{
 		if (this.isOpened) {
+			// paint overlay background:
+			if (this.overlayBackground != null) {
+				this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY, g );
+			}
 			// paint opened menu:
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			//#if tmp.useInvisibleMenuBar
@@ -859,6 +865,14 @@ public class MenuBar extends Item {
 	
 	
 	public void setStyle(Style style) {
+		if (this.overlayBackground == null) {
+			//#if polish.color.overlay:defined
+				//#= overlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
+			//#else
+				this.overlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+			//#endif
+
+		}
 		//#if tmp.useInvisibleMenuBar
 			this.background = null;
 			this.border = null;
