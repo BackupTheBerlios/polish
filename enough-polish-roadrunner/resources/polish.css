@@ -183,6 +183,8 @@ focused {
 	font-color: fontColor;
 	font-style: bold;
 	font-size: small;
+	text-effect: shadow;
+	text-shadow-color: white;
 	layout: center;
 	checkbox-plain: none;
 	checkbox-selected: url(checked.png);

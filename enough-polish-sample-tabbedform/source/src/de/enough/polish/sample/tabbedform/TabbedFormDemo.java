@@ -25,6 +25,8 @@
  */
 package de.enough.polish.sample.tabbedform;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -56,10 +58,9 @@ extends MIDlet
 implements ScreenStateListener, CommandListener
 {
 
-
 	private Command exitCmd = new Command( Locale.get("cmd.exit"), Command.BACK, 1 );
 	private Command backCmd = new Command( Locale.get("cmd.back"), Command.BACK, 1 );
-	private Command parentCmd = new Command( Locale.get("cmd.modetypes"), Command.SCREEN, 2 );
+	private Command parentCmd = new Command( Locale.get("cmd.modetypes"), Command.SCREEN, 20 );
 	private TabbedForm tabbedForm;
 	private int lastTabIndex;
 
@@ -86,7 +87,7 @@ implements ScreenStateListener, CommandListener
 		};
 		//#style tabbedForm
 		TabbedForm form = new TabbedForm( Locale.get("title.main"), headings, null );
-
+		
 		//#style label
 		StringItem label = new StringItem( null, Locale.get("txt.introduction") );
 		form.append( 0, label );
@@ -103,7 +104,8 @@ implements ScreenStateListener, CommandListener
 		form.append( 1, group );
 		
 		//#style input
-		TextField field = new TextField( Locale.get("label.input"), null, 30, TextField.ANY );
+		TextField field = new TextField( Locale.get("label.input"), "\n", 30, TextField.ANY );
+		UiAccess.setInputMode(field, UiAccess.MODE_NATIVE);
 		form.append( 2, field );
 		
 		form.addCommand( this.exitCmd );
@@ -144,6 +146,11 @@ implements ScreenStateListener, CommandListener
 			this.tabbedForm.setActiveTab( this.lastTabIndex - 1 );
 			// manually call screenStateChanged, so that commands are updated accordingly:
 			screenStateChanged( this.tabbedForm );
+		} else {
+			//#style notificationAlert
+			Alert alert = new Alert( "Notification", "The command \"" + cmd.getLabel() + "\" is currently not supported.", null, AlertType.INFO);
+			Display display = Display.getDisplay( this );
+			display.setCurrent( alert );
 		}
 	}
 
@@ -160,13 +167,34 @@ implements ScreenStateListener, CommandListener
 				} else if (tabIndex == 1 && this.lastTabIndex == 0){
 					this.tabbedForm.removeCommand( this.exitCmd );
 					this.tabbedForm.addCommand( this.backCmd );
+//					for (int i = 0; i < 20; i++) {
+//						this.tabbedForm.addCommand( new Command( getText(i), Command.SCREEN, i % 14 + 2) );								
+//					}
 					this.tabbedForm.addCommand( this.parentCmd );
-					UiAccess.addSubCommand( new Command(Locale.get("cmd.player"), Command.SCREEN, 2), this.parentCmd, this.tabbedForm );
+					UiAccess.addSubCommand( new Command(Locale.get("cmd.player"), Command.SCREEN, 1), this.parentCmd, this.tabbedForm );
 					UiAccess.addSubCommand( new Command(Locale.get("cmd.adversary"), Command.SCREEN, 2), this.parentCmd, this.tabbedForm );
+//					UiAccess.addSubCommand( new Command("hi1 and some longer text", Command.SCREEN, 5), this.parentCmd, this.tabbedForm );
+//					UiAccess.addSubCommand( new Command("hi2 and allaf", Command.SCREEN, 4), this.parentCmd, this.tabbedForm );
+//					UiAccess.addSubCommand( new Command("hi3 whoey! Yes", Command.SCREEN, 3), this.parentCmd, this.tabbedForm );
 				}
 				this.lastTabIndex = tabIndex;
 			}
 		}		
+	}
+
+	protected String getText(int i) {
+		int len  = (i * 2) % 7 + (i * 3) % 13;
+		StringBuffer buffer = new StringBuffer( len + 2);
+		
+		for (int j = 0; j < len; j++) {
+			if (j % 3 == 0) {
+				buffer.append(' ');
+			} else {
+				buffer.append('x');
+			}
+		}
+		buffer.append( i );
+		return buffer.toString();
 	}
 
 }

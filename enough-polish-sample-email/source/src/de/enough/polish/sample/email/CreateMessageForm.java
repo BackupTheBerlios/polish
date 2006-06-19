@@ -27,10 +27,10 @@
 package de.enough.polish.sample.email;
 
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.TextField;
 
 import de.enough.polish.ui.ChoiceTextField;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.TextField;
 
 /**
  * <p>Provides a form for creating a new mail.</p>
@@ -55,6 +55,7 @@ public class CreateMessageForm extends Form  {
 	         
 	private final ChoiceTextField receiver;
 	private final ChoiceTextField sender;
+	private TextField text;
 
 	/**
 	 * Creates a new form for writing an email.
@@ -89,6 +90,9 @@ public class CreateMessageForm extends Form  {
 		//#style addressInput
 		this.sender = new ChoiceTextField( "from: ", null, 255, TextField.EMAILADDR, SENDERS, false );
 		append( this.sender );
+		//#style input, addressInput
+		this.text = new TextField( "message: ", null, 255, TextField.ANY );
+		append( this.text );
 	}
 	//#endif
 	
