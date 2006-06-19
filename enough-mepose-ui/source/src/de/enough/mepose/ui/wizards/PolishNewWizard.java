@@ -3,15 +3,14 @@ package de.enough.mepose.ui.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -104,7 +103,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         // Do not hand over the monitor as others are going to call beginTask
         // which must be called only once.
         //TODO: uncomment this. There is a bug somewhere in it.
-//	    createBuildXML();
+	    createBuildXML();
         registerMeposeModel();
         generateTemplates();
 	}
@@ -117,6 +116,24 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //      IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
 //      simpleMidletFile.create(resourceAsStream,true,null);
         
+        String result = generateSimpleMidlet();
+        
+        IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
+            try {
+                byte[] bytes = result.getBytes("ISO-8859-1");
+                ByteArrayInputStream stringInputStream = new ByteArrayInputStream(bytes);
+                simpleMidletFile.create(stringInputStream,true,null);
+            } catch (CoreException exception) {
+                MeposeUIPlugin.log("Could not create template files.",exception);
+                return;
+            } catch (UnsupportedEncodingException exception) {
+                MeposeUIPlugin.log("Could not encode files.",exception);
+                return;
+            }
+        
+    }
+
+    private String generateSimpleMidlet() {
         PackageElement packageElement = new PackageElement("de.enough.sample");
         ImportElement importStatement1 = new ImportElement("javax.microedition.midlet.MIDlet");
         ImportElement importStatement2 = new ImportElement("javax.microedition.midlet.MIDletStateChangeException");
@@ -145,15 +162,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         Rectangle rectangle = new Rectangle(0,0,1,1);
         
         String result = clazzElement.print(rectangle);
-        
-        IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
-            try {
-                StringInputStream stringInputStream = new StringInputStream(result);
-                simpleMidletFile.create(stringInputStream,true,null);
-            } catch (CoreException exception) {
-                return;
-            }
-        
+        return result;
     }
 
     private void registerMeposeModel() {
