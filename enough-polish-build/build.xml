@@ -81,6 +81,11 @@
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 			<fileset dir="setup" includes="icons/*.*" />
 		</jar>
+		<!-- This source jar is suitable for inclusion as a source location in eclipse -->
+		<jar destfile="dist/enough-j2mepolish-build-src.jar"
+		     basedir="source/src"
+			 index="true">
+		</jar>
 		<!-- create the binary extensions distribution -->
 		<jar destfile="dist/enough-j2mepolish-extensions.jar"
 		     basedir="bin/extensions"
