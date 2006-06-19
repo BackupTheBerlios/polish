@@ -149,6 +149,10 @@ public class DeviceTree {
 		return this.rootTreeItems;
 	}
 	
+    public DeviceTreeItem[] getDeviceTreeItems() {
+        return this.deviceTreeItems;
+    }
+    
 	public Device[] getSelectedDevices() {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < this.deviceTreeItems.length; i++) {
