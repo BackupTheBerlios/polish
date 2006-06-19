@@ -46,6 +46,8 @@ public class ProjectPage extends WizardPage{
     private Group desciptionGroup;
     private Text descriptionText;
     
+    private String projectName;
+    
     private class SimpleStatusGroupUpdater implements StatusListener{
         private StatusGroup statusGroup;
         private String propertyToWatch;
@@ -143,7 +145,7 @@ public class ProjectPage extends WizardPage{
         
         setControl(container);
 
-        checkGUIState();
+        projectNameModified();
 	}
 
 //	private void handleBrowse() {
@@ -158,13 +160,11 @@ public class ProjectPage extends WizardPage{
 //		}
 //	}
 
-	private void checkGUIState() {
-	    projectNameModified();
-    }
-    
     protected void projectNameModified() {
         String newName = this.newProjectNameText.getText();
         this.newProjectModel.setPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_NAME,newName);
+        this.projectName = newName;
+        getContainer().updateButtons();
     }
 
 
@@ -256,7 +256,14 @@ public class ProjectPage extends WizardPage{
     }
 
     public boolean canFlipToNextPage() {
-        return this.projectPageModel.getModelStatus().getType() == Status.TYPE_OK;
+        return isModelValid();
+    }
+
+    private boolean isModelValid() {
+        if(this.projectName != null && this.projectName.length() != 0) {
+            return true;
+        }
+        return false;
     }
 
     /*
