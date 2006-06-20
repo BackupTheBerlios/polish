@@ -43,8 +43,6 @@ public class GradientVerticalBackgroundConverter extends BackgroundConverter {
 
 	protected String createNewStatement(HashMap map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
-		String result = "new de.enough.polish.ui.backgrounds.GradientVerticalBackground(" 
-			;
 		String topColor = "0";
 		String topColorStr = (String) map.get("top-color");
 		if ( topColorStr != null ) {
@@ -58,10 +56,11 @@ public class GradientVerticalBackgroundConverter extends BackgroundConverter {
 		int stroke = 0 ;
 		String strokeStr =  (String)map.get("stroke");
 		if ( strokeStr != null ) {
-			stroke =  parseInt(strokeStr, strokeStr);			
+			stroke =  parseInt( "stroke", strokeStr);			
 		}
 		
-		result += topColor + ", "+gradientColor +","+stroke +")";
+		String result = "new de.enough.polish.ui.backgrounds.GradientVerticalBackground(" 
+			+ topColor + ", "+gradientColor +","+stroke +")";
 		
 		return result;
 	}

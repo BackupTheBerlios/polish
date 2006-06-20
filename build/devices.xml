@@ -197,6 +197,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MppEmulator"/>
 		<capability name="key.LeftSoftKey" value="-6"/>
 		<capability name="key.RightSoftKey" value="-7"/>
+		<capability name="MenuBar.OptionsPosition" value="right" />
 	</device>	
 	
 
