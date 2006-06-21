@@ -972,6 +972,9 @@
 		<mapping from="lighthouse" to="new de.enough.polish.ui.texteffects.LighthouseTextEffect()" />
 		<mapping from="gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()"/>
 		<mapping from="vertical-gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()" />
+		<mapping from="mirror-shadow" to="new de.enough.polish.ui.texteffects.VerticalMirrorTextEffect()" >
+			<condition>polish.midp2</condition>
+		</mapping>
 	</attribute>
 	
 	<attribute
@@ -1628,7 +1631,50 @@
 		description="The assumed height the image of an image item." 
 		id="161"
 	/>
+	
+	<attribute
+		name="text-mirror-color"
+		type="color"
+		appliesTo="StringItem, mirror text-effect"
+		description="The color for the vertically mirrored text, defaults to the given font-color."
+		id="162"
+	/>
+	
+	<attribute
+		name="text-mirror-padding"
+		type="integer"
+		appliesTo="StringItem, mirror text-effect"
+		description="The gap between the text and the mirror-shadow, defaults to 0."
+		default="0"
+		id="163"
+	/>
+
+	<attribute
+		name="text-mirror-steps"
+		type="integer"
+		appliesTo="StringItem, mirror text-effect"
+		description="The number of pixels until the mirror-shadow fades away, defaults to the given font's height."
+		id="164"
+	/>
 		
+	<attribute
+		name="text-mirror-start-translucency"
+		type="integer"
+		appliesTo="StringItem, mirror text-effect"
+		description="The opaqueness of the first row of the shadow in percent: between 0 (fully transparent) and 100 (fully opaque)"
+		default="90"
+		id="165"
+	/>
+
+	<attribute
+		name="text-mirror-end-translucency"
+		type="integer"
+		appliesTo="StringItem, mirror text-effect"
+		description="The opaqueness of the last row of the shadow in percent: between 0 (fully transparent) and 100 (fully opaque)"
+		default="0"
+		id="165"
+	/>
+	
 	<!--
 	
 	<attribute
