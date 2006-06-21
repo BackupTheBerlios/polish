@@ -136,7 +136,7 @@ implements AccessibleCanvas
 	private Item subTitle;
 	protected int subTitleHeight;
 	protected int titleHeight;
-	private Background background;
+	protected Background background;
 	protected Border border;
 	protected Style style;
 	/** the screen height minus the ticker height and the height of the menu bar */
@@ -290,6 +290,26 @@ implements AccessibleCanvas
 	private boolean isScreenChangeDirtyFlag;
 	private final Object paintLock = new Object();
 
+	/**
+	 * Creates a new screen, this constructor can be used together with the //#style directive.
+	 * 
+	 * @param title the title, or null for no title
+	 * @param createDefaultContainer true when the default container should be created.
+	 */
+	public Screen( String title, boolean createDefaultContainer ) {
+		this( title, null, createDefaultContainer );
+	}
+
+	/**
+	 * Creates a new screen, this constructor can be used together with the //#style directive.
+	 * 
+	 * @param title the title, or null for no title
+	 * @param style the style of this screen
+	 * @param createDefaultContainer true when the default container should be created.
+	 */
+	public Screen( String title, boolean createDefaultContainer, Style style ) {
+		this( title, style, createDefaultContainer );
+	}
 
 	/**
 	 * Creates a new screen
@@ -1980,7 +2000,7 @@ implements AccessibleCanvas
 	
 				//#endif
 			//#endif
-				if (this.container != null) {
+			if (this.container != null) {
 				boolean handled = this.container.handleKeyRepeated( keyCode, gameAction );
 				if ( handled ) {
 					repaint();
@@ -2073,6 +2093,9 @@ implements AccessibleCanvas
 	 * @return true when the key-event was processed
 	 */
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
+		if (this.container == null) {
+			return false;
+		}
 		return this.container.handleKeyPressed(keyCode, gameAction);
 	}
 	
@@ -2652,6 +2675,9 @@ implements AccessibleCanvas
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (this.subTitle != null && this.subTitle.handlePointerPressed(x, y)) {
 			return true;
+		}
+		if (this.container == null) {
+			return false;
 		}
 		return this.container.handlePointerPressed(x, y);
 	}

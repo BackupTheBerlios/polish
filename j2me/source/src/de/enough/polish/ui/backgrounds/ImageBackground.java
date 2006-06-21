@@ -109,6 +109,41 @@ implements ImageConsumer
 		this.yOffset = yOffset;
 		this.doCenter = ( anchor == (Graphics.VCENTER | Graphics.HCENTER) );
 	}
+	
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param image the image, must not be null!
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 */
+	public ImageBackground( int color, Image image, int anchor ) {
+		this(color, image, anchor, 0, 0 );
+	}
+
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param image the image, must not be null!
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public ImageBackground( int color, Image image, int anchor, int xOffset, int yOffset ) {
+		this.color = color;
+		this.image = image;
+		this.imageUrl = null;
+		this.isLoaded = true;
+		this.anchor = anchor;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+		this.doCenter = ( anchor == (Graphics.VCENTER | Graphics.HCENTER) );
+	}
 
 	//#ifdef polish.images.backgroundLoad
 	/* (non-Javadoc)
@@ -184,8 +219,10 @@ implements ImageConsumer
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
 	 */
 	public void releaseResources() {
-		this.isLoaded = false;
-		this.image = null;
+		if (this.imageUrl != null) {
+			this.isLoaded = false;
+			this.image = null;
+		}
 	}
 
 

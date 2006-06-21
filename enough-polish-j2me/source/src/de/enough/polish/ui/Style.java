@@ -297,6 +297,7 @@ public class Style
 			getIntProperty( -1 );
 			getBooleanProperty( -1 );
 			getObjectProperty( -1 );
+			getColorProperty( -1 );
 		//#endif
 	}
 	
@@ -334,6 +335,18 @@ public class Style
 	 */
 	public Integer getIntProperty( String propName ) {
 		return new Integer( 0 );
+	}
+	//#endif
+
+	//#ifdef false
+	/**
+	 * Retrieves a non-standard color property of this style.
+	 * 
+	 * @param propName the name of the property
+	 * @return the value of this property as an Color object. If none has been defined, null will be returned.
+	 */
+	public Color getColorProperty( String propName ) {
+		return new Color( 0 );
 	}
 	//#endif
 	
@@ -402,6 +415,23 @@ public class Style
 					return ((Color)value).getInteger();
 				}
 				return (Integer) value;
+			}
+		}
+		return null;
+	}
+		
+	//#ifdef false
+		private Color getColorProperty( int key ) {
+	//#else
+		//# public Color getColorProperty( int key ) {
+	//#endif
+		if (this.attributeKeys == null) {
+			return null;
+		}
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				Object value = this.attributeValues[i];
+				return (Color) value;
 			}
 		}
 		return null;

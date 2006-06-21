@@ -133,4 +133,18 @@ public final class DrawUtil {
 				//| (( startBlue >>> 8) & 0x000000FF);
 		}	
 	}
+	
+	/**
+	 * Retrieves the complementary color to the specified one.
+	 * 
+	 * @param color the original argb color
+	 * @return the complementary color with the same alpha value
+	 */
+	public static int getComplementaryColor( int color ) {
+		return  ( 0xFF000000 & color )
+			| ((255 - (( 0x00FF0000 & color ) >> 16)) << 16)
+			| ((255 - (( 0x0000FF00 & color ) >> 8)) << 8)
+			| (255 - ( 0x000000FF & color ) );				
+	}
+
 }

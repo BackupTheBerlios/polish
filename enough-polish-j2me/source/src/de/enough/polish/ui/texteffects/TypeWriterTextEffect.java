@@ -32,7 +32,9 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.TextEffect;
 
 /**
- * <p>Writes one character after the other.</p>
+ * <p>Writes one character after the other.</p> 
+ * <p>Activate the shadow text effect by specifying <code>text-effect: typewriter;</code> in your polish.css file.
+ * </p>
  * 
  *
  * <p>Copyright Enough Software 2005</p>

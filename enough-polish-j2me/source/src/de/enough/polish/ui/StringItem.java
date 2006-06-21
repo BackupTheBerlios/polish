@@ -354,6 +354,9 @@ public class StringItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.text != null) {
+			//#ifdef polish.css.text-vertical-adjustment
+				y += this.textVerticalAdjustment;
+			//#endif
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
 					if (this.isLayoutCenter) {
@@ -374,9 +377,7 @@ public class StringItem extends Item
 					return;
 				}
 			//#endif
-			//#ifdef polish.css.text-vertical-adjustment
-				y += this.textVerticalAdjustment;
-			//#endif
+				
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			
@@ -392,62 +393,63 @@ public class StringItem extends Item
 			}
 			//#ifdef polish.css.text-horizontal-adjustment
 				x += this.textHorizontalAdjustment;
+				leftBorder += this.textHorizontalAdjustment;
 				rightBorder += this.textHorizontalAdjustment;
 			//#endif
-			for (int i = 0; i < this.textLines.length; i++) {
-				String line = this.textLines[i];
-				int lineX = x;
-				int lineY = y;
-				int orientation;
-				// adjust the painting according to the layout:
-				if (this.isLayoutRight) {
-					lineX = rightBorder;
-					orientation = Graphics.TOP | Graphics.RIGHT;
-					//g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
-				} else if (this.isLayoutCenter) {
-					lineX = centerX;
-					orientation = Graphics.TOP | Graphics.HCENTER;
-					//g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
-				} else {
-					orientation = Graphics.TOP | Graphics.LEFT;
-					// left layout (default)
-					//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
+			//#if polish.css.text-wrap
+				int clipX = 0;
+				int clipY = 0;
+				int clipWidth = 0;
+				int clipHeight = 0;
+				if (this.useSingleLine && this.clipText ) {
+					clipX = g.getClipX();
+					clipY = g.getClipY();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					g.clipRect( x, y, this.contentWidth, this.contentHeight );
 				}
-				//#if polish.css.text-wrap
-					int clipX = 0;
-					int clipY = 0;
-					int clipWidth = 0;
-					int clipHeight = 0;
-					if (this.useSingleLine && this.clipText ) {
-						clipX = g.getClipX();
-						clipY = g.getClipY();
-						clipWidth = g.getClipWidth();
-						clipHeight = g.getClipHeight();
-						g.clipRect( x, y, this.contentWidth, this.contentHeight );
-					}
-				//#endif
-				//#if polish.css.text-wrap
-					if (this.clipText) {
-						lineX += this.xOffset;
-					}
-				//#endif
-				//#if polish.css.text-effect
-					if (this.textEffect != null) {
-						this.textEffect.drawString( line, this.textColor, lineX, lineY, orientation, g );
-					} else {
-				//#endif
+			//#endif
+			//#if polish.css.text-effect
+				if (this.textEffect != null) {
+					this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
+				} else {
+			//#endif
+					for (int i = 0; i < this.textLines.length; i++) {
+						String line = this.textLines[i];
+						int lineX = x;
+						int lineY = y;
+						int orientation;
+						// adjust the painting according to the layout:
+						if (this.isLayoutRight) {
+							lineX = rightBorder;
+							orientation = Graphics.TOP | Graphics.RIGHT;
+							//g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+						} else if (this.isLayoutCenter) {
+							lineX = centerX;
+							orientation = Graphics.TOP | Graphics.HCENTER;
+							//g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
+						} else {
+							orientation = Graphics.TOP | Graphics.LEFT;
+							// left layout (default)
+							//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
+						}	
+						//#if polish.css.text-wrap
+							if (this.clipText) {
+								lineX += this.xOffset;
+							}
+						//#endif
 						g.drawString( line, lineX, lineY, orientation );
-				//#if polish.css.text-effect
+						x = leftBorder;
+						y += lineHeight;
 					}
-				//#endif
-				//#if polish.css.text-wrap
-					if (this.useSingleLine && this.clipText ) {
-						g.setClip( clipX, clipY, clipWidth, clipHeight );
-					}
-				//#endif
-				x = leftBorder;
-				y += lineHeight;
-			}
+			//#if polish.css.text-effect
+				}
+			//#endif
+			//#if polish.css.text-wrap
+				if (this.useSingleLine && this.clipText ) {
+					g.setClip( clipX, clipY, clipWidth, clipHeight );
+				}
+			//#endif
 		}
 	}
 
@@ -578,5 +580,18 @@ public class StringItem extends Item
 	}
 	//#endif
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#releaseResources()
+	 */
+	public void releaseResources() {
+		super.releaseResources();
+		//#ifdef polish.css.text-effect
+			 if ( this.textEffect != null ) {
+				 this.textEffect.releaseResources();
+			 }
+		//#endif
+	}
+
+	
 
 }

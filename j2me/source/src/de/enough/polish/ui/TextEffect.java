@@ -71,6 +71,54 @@ public abstract class TextEffect {
 	
 	/**
 	 * Paints the text and applies the text effect.
+	 * The default implementation calls drawText( String, int, int, int, int, int, Graphics)
+	 * 
+	 * @param textLines the text
+	 * @param textColor the color of the text
+	 * @param x horizontal start coordinate
+	 * @param y vertical start coordinate
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param lineHeight the height of a single text line
+	 * @param maxWidth the width of the longest line
+	 * @param layout the anchor or the text, e.g. Item.LAYOUT_CENTER or Item.LAYOUT_RIGHT
+	 * @param g the graphics context
+	 * @see #drawString( String,int,int,int,int,Graphics)
+	 */
+	public void drawStrings( String[] textLines, int textColor, int x, int y, int leftBorder, int rightBorder, int lineHeight, int maxWidth, int layout, Graphics g ) {
+		boolean isLayoutRight = false;
+		boolean isLayoutCenter = false;
+		int centerX = 0;
+		if ( ( layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER ) {
+			isLayoutCenter = true;
+			centerX = leftBorder + (rightBorder - leftBorder) / 2;
+		} else if ( ( layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT ) {
+			isLayoutRight = true;
+		}
+		for (int i = 0; i < textLines.length; i++) {
+			String line = textLines[i];
+			int lineX = x;
+			int lineY = y;
+			int orientation = 0;
+			// adjust the painting according to the layout:
+			if (isLayoutRight) {
+				lineX = rightBorder;
+				orientation = Graphics.TOP | Graphics.RIGHT;
+			} else if (isLayoutCenter) {
+				lineX = centerX;
+				orientation = Graphics.TOP | Graphics.HCENTER;
+			} else {
+				orientation = Graphics.TOP | Graphics.LEFT;
+			}
+			drawString( line, textColor, lineX, lineY, orientation, g );
+			x = leftBorder;
+			y += lineHeight;
+		}
+		
+	}
+
+	/**
+	 * Paints the text and applies the text effect.
 	 * 
 	 * @param text the text
 	 * @param textColor the color of the text
@@ -80,7 +128,7 @@ public abstract class TextEffect {
 	 * @param g the graphics context
 	 */
 	public abstract void drawString( String text, int textColor, int x, int y, int orientation, Graphics g );
-	
+
 	/**
 	 * Retrieves the left start position for a text.
 	 * 
@@ -144,6 +192,14 @@ public abstract class TextEffect {
 	 */
 	public void hideNotify() {
 		// default implementation is empty
+	}
+
+	/**
+	 * Releases any resources this effect might contain.
+	 * For staying future proof subclasses should call super.releaseResources() first, when overriding this method.
+	 */
+	public void releaseResources() {
+		// do nothing
 	}
 
 }

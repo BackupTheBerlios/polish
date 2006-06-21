@@ -1,7 +1,28 @@
 //#condition polish.usePolishGui
-
-/**
+/*
+ * Created on May 20, 2006 at 7:45:30 PM.
  * 
+ * Copyright (c) 2006 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
  */
 package de.enough.polish.ui.texteffects;
 
@@ -21,7 +42,14 @@ import de.enough.polish.util.DrawUtil;
 
 /**
  * Paints a gradient font where the color changes from top to bottom.
- * 
+ * <p>Activate the shadow text effect by specifying <code>text-effect: vertical-gradient;</code> in your polish.css file.
+ *    You can finetune the effect with following attributes:
+ * </p>
+ * <ul>
+ * 	 <li><b>text-vertical-gradient-start-color</b>: the top color of the gradient, defaults to white.</li>
+ * 	 <li><b>text-vertical-gradient-end-color</b>: the bottom color of the gradient, defaults to black.</li>
+ * 	 <li><b>text-vertical-gradient-steps</b>: the number of steps of the gradient after which the gradient is repeated, defaults to the font-height.</li>
+ * </ul>
  * @author robertvirkus
  *
  */
@@ -42,10 +70,20 @@ public class VerticalGradientTextEffect extends TextEffect {
 	//#endif
 	private boolean useTransparency;
 	
+	/**
+	 * Creates a new gradient text effect.
+	 */
 	public VerticalGradientTextEffect() {
 		// initialization is done upon request.
 	}
 
+	/**
+	 * Creates a new gradient text effect.
+	 * 
+	 * @param startColor the top color
+	 * @param endColor the bottom color
+	 * @param steps the number of steps after which the gradient is repeated
+	 */
 	public VerticalGradientTextEffect(int startColor, int endColor, int steps) {
 		this.colors = DrawUtil.getGradient(startColor, endColor, steps);
 	}

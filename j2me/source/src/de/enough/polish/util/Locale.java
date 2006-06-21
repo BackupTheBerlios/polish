@@ -337,7 +337,6 @@ public final class Locale {
 	
 	/**
 	 * Formats the given calendar to the current locale's format.
-	 * Use this method for best efficiency.
 	 * 
 	 * @param calendar the calendar which holds the date
 	 * @return the locale specific date representation.
@@ -345,6 +344,19 @@ public final class Locale {
 	 */
 	public static String formatDate( Calendar calendar ) {
 		StringBuffer buffer = new StringBuffer(10);
+		formatDate( calendar, buffer );
+		return buffer.toString();
+	}
+
+	/**
+	 * Formats the given calendar to the current locale's format.
+	 * Use this method for best efficiency.
+	 * 
+	 * @param calendar the calendar which holds the date
+	 * @param buffer a StringBuffer, should be at least 10 characters big
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static void formatDate( Calendar calendar, StringBuffer buffer  ) {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get( Calendar.MONTH );
 		int day = calendar.get( Calendar.DAY_OF_MONTH );
@@ -411,7 +423,6 @@ public final class Locale {
 			}
 			buffer.append( day );
 		//#endif	
-		return buffer.toString();
 	}
 
 	//#ifdef polish.i18n.useDynamicTranslations
