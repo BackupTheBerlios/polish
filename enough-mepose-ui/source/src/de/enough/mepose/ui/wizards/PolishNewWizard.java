@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
@@ -24,16 +23,11 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-import de.enough.encogen.java.ClazzElement;
-import de.enough.encogen.java.CommentStatement;
-import de.enough.encogen.java.ImportElement;
-import de.enough.encogen.java.MethodElement;
-import de.enough.encogen.java.PackageElement;
-import de.enough.encogen.java.Rectangle;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
+import de.enough.utils.Status;
 
 
 public class PolishNewWizard extends Wizard implements INewWizard {
@@ -46,7 +40,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
     private ProjectPage projectPage;
     private JavaCapabilityConfigurationPage javaSettingsPage;
 
-	public PolishNewWizard() {
+    public PolishNewWizard() {
 		super();
 		setNeedsProgressMonitor(true);
         this.newProjectModel = new NewProjectModel(new MeposeModel());
@@ -98,72 +92,79 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 		return true;
 	}
 	
-	protected void doFinish(IProgressMonitor monitor) throws CoreException{
+	protected void doFinish(IProgressMonitor monitor){
 	    makeJavaProject();
         // Do not hand over the monitor as others are going to call beginTask
         // which must be called only once.
         //TODO: uncomment this. There is a bug somewhere in it.
-	    createBuildXML();
+//	    createBuildXML();
         registerMeposeModel();
         generateTemplates();
 	}
 
-    private void generateTemplates(){
-        if( ! this.newProjectModel.isGenerateTemplate()) {
-            return;
-        }
-//      InputStream resourceAsStream = getClass().getResourceAsStream("/resources/simpleTemplate/SimpleMidlet.java");
-//      IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
-//      simpleMidletFile.create(resourceAsStream,true,null);
-        
-        String result = generateSimpleMidlet();
-        
-        IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
-            try {
-                byte[] bytes = result.getBytes("ISO-8859-1");
-                ByteArrayInputStream stringInputStream = new ByteArrayInputStream(bytes);
-                simpleMidletFile.create(stringInputStream,true,null);
-            } catch (CoreException exception) {
-                MeposeUIPlugin.log("Could not create template files.",exception);
-                return;
-            } catch (UnsupportedEncodingException exception) {
-                MeposeUIPlugin.log("Could not encode files.",exception);
-                return;
-            }
-        
+    
+    private void generateTemplates() {
+        TemplateGenerator templateGenerator = new TemplateGenerator(this.newProjectModel);
+        templateGenerator.generate();
     }
 
-    private String generateSimpleMidlet() {
-        PackageElement packageElement = new PackageElement("de.enough.sample");
-        ImportElement importStatement1 = new ImportElement("javax.microedition.midlet.MIDlet");
-        ImportElement importStatement2 = new ImportElement("javax.microedition.midlet.MIDletStateChangeException");
-        
-        CommentStatement commentStatement = new CommentStatement("TODO: Implement this method.");
-
-        MethodElement methodStartApp = new MethodElement("startApp","void",null,"protected",new String[] {"MIDletStateChangeException"});
-        methodStartApp.addStatement(commentStatement);
-        
-        MethodElement methodPauseApp = new MethodElement("pauseApp","void",null,"protected",null);
-        methodPauseApp.addStatement(commentStatement);
-        
-        MethodElement methodDestroyApp = new MethodElement("destroyApp","void",new String[] {"boolean unconditional"},"protected",new String[] {"MIDletStateChangeException"});
-        methodDestroyApp.addStatement(commentStatement);
-        
-        ClazzElement clazzElement = new ClazzElement();
-        clazzElement.setParent("MIDlet");
-        clazzElement.setClazzName("SimpleMidlet");
-        clazzElement.setPackageElement(packageElement);
-        clazzElement.addImportStatement(importStatement1);
-        clazzElement.addImportStatement(importStatement2);
-        clazzElement.addMethod(methodStartApp);
-        clazzElement.addMethod(methodPauseApp);
-        clazzElement.addMethod(methodDestroyApp);
-        
-        Rectangle rectangle = new Rectangle(0,0,1,1);
-        
-        String result = clazzElement.print(rectangle);
-        return result;
-    }
+//    private void generateTemplates(){
+//        if( ! this.newProjectModel.isGenerateTemplate()) {
+//            // The user does not want a tempate.
+//            return;
+//        }
+////      InputStream resourceAsStream = getClass().getResourceAsStream("/resources/simpleTemplate/SimpleMidlet.java");
+////      IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
+////      simpleMidletFile.create(resourceAsStream,true,null);
+//        
+//        String result = generateSimpleMidlet();
+//        
+//        IFile simpleMidletFile = this.newProjectModel.getProject().getFile("/source/src/SimpleMidlet.java");
+//            try {
+//                byte[] bytes = result.getBytes("ISO-8859-1");
+//                ByteArrayInputStream stringInputStream = new ByteArrayInputStream(bytes);
+//                simpleMidletFile.create(stringInputStream,true,null);
+//            } catch (CoreException exception) {
+//                MeposeUIPlugin.log("Could not create template files.",exception);
+//                return;
+//            } catch (UnsupportedEncodingException exception) {
+//                MeposeUIPlugin.log("Could not encode files.",exception);
+//                return;
+//            }
+//        
+//    }
+//
+//    private String generateSimpleMidlet() {
+//        PackageElement packageElement = new PackageElement("de.enough.sample");
+//        ImportElement importStatement1 = new ImportElement("javax.microedition.midlet.MIDlet");
+//        ImportElement importStatement2 = new ImportElement("javax.microedition.midlet.MIDletStateChangeException");
+//        
+//        CommentStatement commentStatement = new CommentStatement("TODO: Implement this method.");
+//
+//        MethodElement methodStartApp = new MethodElement("startApp","void",null,"protected",new String[] {"MIDletStateChangeException"});
+//        methodStartApp.addStatement(commentStatement);
+//        
+//        MethodElement methodPauseApp = new MethodElement("pauseApp","void",null,"protected",null);
+//        methodPauseApp.addStatement(commentStatement);
+//        
+//        MethodElement methodDestroyApp = new MethodElement("destroyApp","void",new String[] {"boolean unconditional"},"protected",new String[] {"MIDletStateChangeException"});
+//        methodDestroyApp.addStatement(commentStatement);
+//        
+//        ClazzElement clazzElement = new ClazzElement();
+//        clazzElement.setParent("MIDlet");
+//        clazzElement.setClazzName("SimpleMidlet");
+//        clazzElement.setPackageElement(packageElement);
+//        clazzElement.addImportStatement(importStatement1);
+//        clazzElement.addImportStatement(importStatement2);
+//        clazzElement.addMethod(methodStartApp);
+//        clazzElement.addMethod(methodPauseApp);
+//        clazzElement.addMethod(methodDestroyApp);
+//        
+//        Rectangle rectangle = new Rectangle(0,0,1,1);
+//        
+//        String result = clazzElement.print(rectangle);
+//        return result;
+//    }
 
     private void registerMeposeModel() {
         MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),this.newProjectModel.getMeposeModel());
@@ -193,9 +194,9 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         if(project == null) {
             throw new IllegalStateException("No project instance to generate build.xml in.");
         }
-        IFile file = project.getFile("build.xml");
+        IFile buildXmlFile = project.getFile("build.xml");
         try {
-            if(file.exists()) {
+            if(buildXmlFile.exists()) {
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(System.currentTimeMillis());
                 StringBuffer sb = new StringBuffer();
@@ -207,15 +208,15 @@ public class PolishNewWizard extends Wizard implements INewWizard {
                 sb.append(c.get(Calendar.MINUTE));
                 sb.append(c.get(Calendar.SECOND));
                 IPath path = new Path("build."+sb.toString()+".xml");
-                file.move(path,true,true,new NullProgressMonitor());
+                buildXmlFile.move(path,true,true,new NullProgressMonitor());
             }
-            file = project.getFile("build.xml");
-            file.create(inputStream,true,null);
+            buildXmlFile = project.getFile("build.xml");
+            buildXmlFile.create(inputStream,true,null);
         } catch (CoreException exception) {
             System.out.println("DEBUG:PolishNewWizard.createBuildXML(...):could not create file:"+exception);
             return;
         }
-        IPath path = file.getRawLocation();
+        IPath path = buildXmlFile.getRawLocation();
         File f = path.toFile();
         this.newProjectModel.getMeposeModel().setBuildxml(f);
     }
@@ -246,24 +247,9 @@ public class PolishNewWizard extends Wizard implements INewWizard {
             MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
             return false;
         }
-//        Boolean projectNewlyCreated = ((Boolean)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_STATE_CREATED_PROJECT));
-//        if(project != null && projectNewlyCreated != null && projectNewlyCreated.booleanValue()) {
-//            try {
-//                project.delete(true,true,new NullProgressMonitor());
-//            } catch (CoreException exception) {
-//                if(logger.isDebugEnabled()) {
-//                    logger.error("Could not remove project:"+exception);
-//                }
-//                MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
-//                return false;
-//            }
-//        }
         return super.performCancel();
     }
 
-    /**
-     * @param project
-     */
     private void removeMeposeModel(IProject project) {
         MeposePlugin.getDefault().getMeposeModelManager().removeModel(project);
     }

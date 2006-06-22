@@ -186,26 +186,8 @@ public class MeposeModel extends PropertyModel{
     //TODO: Check if all fields are initialized.
     //TODO: If fields are already set dispose them properly before resetting them.
     public void reset() {
-        this.antBox = new AntBox();
-        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
-        IAntClasspathEntry[] antClasspathEntries = p.getDefaultAntHomeEntries();
-        
-        List antClasspathList = new LinkedList();
-        try {
-            for (int i = 0; i < antClasspathEntries.length; i++) {
-                IAntClasspathEntry entry = antClasspathEntries[i];
-                antClasspathList.add(new URL("file://"+entry.toString()));
-            }
-            antClasspathList.add(new URL("file://"+p.getToolsJarEntry().toString()));
-        } catch (MalformedURLException exception) {
-            MeposePlugin.log("No tools.jar found.",exception);
-        }
-        
-        URL[] toolsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
-        ClassLoader eclipseClassLoader = getClass().getClassLoader();
-        this.antClassLoader = new URLClassLoader(toolsUrls,eclipseClassLoader);
-        
-        this.antBox.setAlternativeClassLoader(this.antClassLoader);
+        resetAntBox();
+
         this.buildxml = new File("");
         this.projectHome = new File("");
         this.propertyChangeListeners = new LinkedList();
@@ -234,12 +216,35 @@ public class MeposeModel extends PropertyModel{
         this.classpathEntries = null;
         this.buildListener = new LinkedList();
     }
+
+    private void resetAntBox() {
+        this.antBox = new AntBox();
+        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
+        IAntClasspathEntry[] antClasspathEntries = p.getDefaultAntHomeEntries();
+        
+        List antClasspathList = new LinkedList();
+        try {
+            for (int i = 0; i < antClasspathEntries.length; i++) {
+                IAntClasspathEntry entry = antClasspathEntries[i];
+                antClasspathList.add(new URL("file://"+entry.toString()));
+            }
+            antClasspathList.add(new URL("file://"+p.getToolsJarEntry().toString()));
+        } catch (MalformedURLException exception) {
+            MeposePlugin.log("No tools.jar found.",exception);
+        }
+        
+        URL[] toolsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
+        ClassLoader eclipseClassLoader = getClass().getClassLoader();
+        this.antClassLoader = new URLClassLoader(toolsUrls,eclipseClassLoader);
+        this.antBox.setAlternativeClassLoader(this.antClassLoader);
+    }
     
     
     // ###################################################################
     // Ant.
     
     /**
+     * TODO: Change the BuildException to a model specific exception.
      * When called initializes the antBox with the given buildxml, creates a antproject, sets
      * 'environment' and gathers the configured devices.
      * @param buildxml 
@@ -263,11 +268,10 @@ public class MeposeModel extends PropertyModel{
         this.antBox.setWorkingDirectory(this.projectHome);
         this.antBox.setBuildxml(this.buildxml);
         
-        // Configure all targets.
+        // Configure all ant targets.
         Project project = this.antBox.createProject();
-        Map targetNameToTargetObjectMapping = project.getTargets();
-        Collection targetObjectSet = targetNameToTargetObjectMapping.values();
-        boolean foundPolishTask = false;
+        Map targetObjectForTargetName = project.getTargets();
+        Collection targetObjectSet = targetObjectForTargetName.values();
         this.polishTask = null;
         for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
             Target target = (Target) iterator.next();
@@ -285,20 +289,19 @@ public class MeposeModel extends PropertyModel{
                 task = tasks[taskIndex];
                     if(task instanceof PolishTask) {
                         this.polishTask = (PolishTask)task;
-                        foundPolishTask = true;
                         setPropertyStatus(ID_ANT_TASK_POLISH,Status.OK);
                         break;
                     }
             }
-            if(foundPolishTask) {
+            if(this.polishTask != null) {
                 break;
             }
         }
         //TODO: Think about alternative error reporting facility instead of boolean return value.
-        if(! foundPolishTask) {
+        if(this.polishTask == null) {
             setPropertyStatus(ID_ANT_TASK_POLISH,new Status(Status.TYPE_ERROR,"Ant task 'polish' not found in build.xml",null));
+            MeposePlugin.log("Ant task 'polish' not found in build.xml");
             return;
-            //throw new BuildException("No target with a 'PolishTask' was found.");
         }
         Environment oldEnvironment = this.environment;
         try {
@@ -309,6 +312,7 @@ public class MeposeModel extends PropertyModel{
         }
         this.environment = this.polishTask.getEnvironment();
         firePropertyChangeEvent("environment",oldEnvironment,this.environment);
+        // Needed for polish initialization.
         this.polishTask.selectDevices();
 //        this.configuredDevicesANT = this.polishTask.getDevices();
     }
@@ -327,10 +331,6 @@ public class MeposeModel extends PropertyModel{
         this.environment = this.polishTask.getEnvironment();
     }
   
-    /**
-     * 
-     * @return Never null.
-     */
     public AntBox getAntBox() {
         return this.antBox;
     }
@@ -354,10 +354,6 @@ public class MeposeModel extends PropertyModel{
         firePropertyChangeEvent(ID_ANT_ENVIRONMENT,null,this.environment);
     }
     
-    /**
-     * 
-     * @return Never null.
-     */
     public File getBuildxml() {
         return this.buildxml;
     }
@@ -417,9 +413,6 @@ public class MeposeModel extends PropertyModel{
         firePropertyChangeEvent(ID_SUPPORTED_DEVICES,null,this.supportedDevices);
     }
     
-    /**
-     * @param classpathEntries
-     */
     public void setClasspath(IClasspathEntry[] classpathEntries) {
         if(classpathEntries == null){
             throw new IllegalArgumentException("setClasspath(...):parameter 'classpathEntries' is null contrary to API.");
@@ -428,10 +421,6 @@ public class MeposeModel extends PropertyModel{
         firePropertyChangeEvent(ID_SUPPORTED_CLASSPATH,null,this.classpathEntries);
     }
     
-    /**
-     * Get the classpath entries for the supported devices.
-     * @return May be null.
-     */
     public IClasspathEntry[] getClasspathEntries() {
         return this.classpathEntries;
     }
@@ -452,10 +441,6 @@ public class MeposeModel extends PropertyModel{
         firePropertyChangeEvent(ID_CURRENT_JADJARPAIRS,null,this.jadFile);
     }
     
-    /**
-     * 
-     * @return May be null
-     */
     public Device getCurrentDevice() {
         return this.currentDevice;
     }
@@ -533,10 +518,6 @@ public class MeposeModel extends PropertyModel{
         return this.wtkHome;
     }
 
-    /**
-     * 
-     * @return Never null.
-     */
     public File getMppHome() {
         return this.mppHome;
     }
@@ -546,16 +527,6 @@ public class MeposeModel extends PropertyModel{
     }
     
     
-//    public Device[] getConfiguredDevices() {
-//        return this.configuredDevicesANT;
-//    }
-//
-//    public void setConfiguredDevices(Device[] configuredDevices) {
-//        if(configuredDevices == null){
-//            throw new IllegalArgumentException("ERROR:MeposeProject.setConfiguredDevices(...):Parameter 'configuredDevices' is null.");
-//        }
-//        this.configuredDevicesANT = configuredDevices;
-//    }
 
     
     /**
@@ -568,28 +539,6 @@ public class MeposeModel extends PropertyModel{
             this.deviceDatabase = PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
         }
         return this.deviceDatabase;
-        
-        
-        
-        //TODO: Look out for places where this property is set instead of the setter method.
-//        File polishHome = (File)getPropertyValue(ID_POLISH_HOME);
-//        File projectHome = (File)getPropertyValue(ID_PROJECT_HOME);
-//        File wtkHome = (File)getPropertyValue(ID_WTK_HOME);
-
-//        if(this.polishHome == null||this.projectHome == null) {
-//            MeposePlugin.log("No polish home set in model");
-//            return null;
-//        }
-//        HashMap properties = new HashMap();
-////        properties.put("wtk.home",this.wtkHome.getAbsolutePath());
-//        properties.put("mpp.home",this.mppHome.getAbsolutePath());
-//        try {
-//            //TODO: Get the deviceDatabase from the PolishTask instead of creating a new one.
-//            this.deviceDatabase = new DeviceDatabase(properties,this.polishHome,this.projectHome,null,null,new HashMap(),new HashMap());
-//        } catch (Exception e) {
-//            MeposePlugin.log("Could not get device database",e);
-//        }
-//        return this.deviceDatabase;
     }
 
     // May be null.
@@ -611,10 +560,6 @@ public class MeposeModel extends PropertyModel{
         
     }
 
-    
-    /**
-     * @param projectDescription
-     */
     public void setProjectDescription(String projectDescription) {
         if(projectDescription == null){
             throw new IllegalArgumentException("setProjectDescription(...):parameter 'projectDescription' is null contrary to API.");
@@ -852,7 +797,7 @@ public class MeposeModel extends PropertyModel{
 
 
     /*
-     * May be out of sync with getCurrentDevice(). It is mostly for bootstrapping
+     * The name may be out of sync with getCurrentDevice(). It is mostly for bootstrapping
      * when no DeviceDatabase is present.
      */
     public String getCurrentDeviceName() {
