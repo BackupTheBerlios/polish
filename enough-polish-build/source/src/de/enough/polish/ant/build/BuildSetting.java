@@ -202,7 +202,7 @@ public class BuildSetting {
 			return;
 		}
 		if (this.midletSetting != null) {
-			throw new BuildException("Please use either <midlets> or <midlet> to define your midlets, or use mutually \"if\" and \"unless\" attributes.!");
+			throw new BuildException("Please use either <midlets> or <midlet> to define your midlets, or use mutually \"if\" and \"unless\" attributes.");
 		}
 		this.midletSetting = setting;
 	}
@@ -478,19 +478,36 @@ public class BuildSetting {
 		return this.debugSetting;
 	}
 	
+	/**
+	 * Retrieves all MIDlet definitions.
+	 * 
+	 * @param environment the environment
+	 * @return all found MIDlet definitios
+	 */
 	public Midlet[] getMidlets(Environment environment) {
-		if (this.midletSetting == null) {
+		Midlet[] midlets = null;
+		if (this.midletSetting != null) {
+			midlets = this.midletSetting.getMidlets( this.antProject, environment );
+		}
+		if (midlets == null || midlets.length == 0) {
+			// try to load MIDlet definitions from the environment:
+			ArrayList list = new ArrayList();
+			int i = 1;
+			String definition;
+			while ( (definition = environment.getVariable("MIDlet-"+i)) != null) {
+				Midlet midlet = new Midlet( definition );
+				midlet.setNumber(i);
+				list.add( midlet );
+				i++;
+			}
+			midlets = (Midlet[]) list.toArray( new Midlet[ list.size() ] );
+		}
+		if (midlets == null) {
 			return new Midlet[ 0 ];
 		}
-		return this.midletSetting.getMidlets( this.antProject, environment );
+		return midlets;
 	}
 
-	public Midlet[] getMidlets() {	
-		if (this.midletSetting == null) {
-			return new Midlet[ 0 ];
-		}
-		return this.midletSetting.getMidlets();
-	}
 
 	/**
 	 * Determines whether debugging is enabled.
@@ -921,6 +938,11 @@ public class BuildSetting {
 		return this.preverify;
 	}
 	
+	/**
+	 * Determines whether the project should get preverified.
+	 * 
+	 * @return true when the project should get preverified.
+	 */
 	public boolean doPreverify() {
 		return this.doPreverify;
 	}

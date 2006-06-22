@@ -618,4 +618,13 @@ public class Environment {
 	public boolean hasVariable(String name) {
 		return (getVariable(name) != null);
 	}
+
+	/**
+	 * Puts all properties of the given map into the internal map without conversion.
+	 * 
+	 * @param properties a map of properties
+	 */
+	public void putAll(Map properties) {
+		this.variables.putAll( properties );
+	}
 }

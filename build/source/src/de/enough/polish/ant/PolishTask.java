@@ -521,59 +521,7 @@ public class PolishTask extends ConditionalTask {
 			log("Nested element [deviceRequirements] is missing, now the project will be optimized for all known devices.");
 		}
 		// check the nested element of <build>:
-		Midlet[] midlets = this.buildSetting.getMidlets(); 
-		if (midlets == null || midlets.length == 0) {
-			// check for main class or iappli class:
-			if ( this.buildSetting.getMainClassSetting() == null
-					&& this.buildSetting.getDojaClassSetting() == null
-					) 
-			{
-				
-				throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>. Alternatively you might use a <iappli> or <main> element for defining the DoJa main class or the BlackBerry main class.");
-			}
-		}
-		// now check if the midlets do exist:
-		SourceSetting[] sources = this.buildSetting.getSourceSettings();
-		//if (!this.buildSetting.useDefaultPackage()) {
-			for (int i = 0; i < midlets.length; i++) {
-				Midlet midlet = midlets[i];
-				String fileName = StringUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
-				boolean midletFound = false;
-				for (int j = 0; j < sources.length; j++) {
-					SourceSetting setting = sources[j]; 
-					File sourceDir = setting.getDir();
-					String sourceDirPath = sourceDir.getAbsolutePath();
-					File midletFile = new File( sourceDirPath + File.separator + fileName );
-					if (midletFile.exists()) {
-						if (File.separatorChar == '\\') {
-							// additionally check the case of the MIDlet file
-							// on Windows systems:
-							try {
-								if (!midletFile.getCanonicalPath().endsWith(fileName)) {
-									System.out.println("WARNING: The case of the <midlet> definition \"" + midlet.getClassName() + "\" seems to be wrong, since the source code is in " + midletFile.getCanonicalPath() + ". Check your build.xml script.");
-									continue;
-								}
-							} catch (IOException e) {
-								System.out.println("Warning: unable to get canonical path for file " + midletFile.getAbsolutePath() );
-								e.printStackTrace();
-							}
-						} 
-						midletFound = true;
-						break;
-					}
-				}
-				if (!midletFound) {
-					String message = "The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.";
-					if ( midlet.getClassName().indexOf('.') != -1) {
-						if (sources.length > 1) {
-							message += "The MIDlet should be in ${src}" + File.separatorChar + fileName + ", where ${src} is one your source folders.";
-						} else {
-							message += "The MIDlet should be in " + sources[0].getDir().toString()  + File.separatorChar + fileName;
-						}
-					}
-					throw new BuildException( message );
-				}
-			}
+
 		//}
 		// check if the ant-property wtk.home or alternatively mpp.home has been set:
 		//e.g. with: <property name="wtk.home" value="c:\Java\wtk-1.0.4"/>
@@ -675,6 +623,61 @@ public class PolishTask extends ConditionalTask {
 		// create environment
 		this.environment = new Environment( this.extensionManager, getProject(), this );
 		this.environment.setBuildSetting( this.buildSetting );
+		
+		
+		Midlet[] midlets = this.buildSetting.getMidlets(this.environment); 
+		if (midlets == null || midlets.length == 0) {
+			// check for main class or iappli class:
+			if ( this.buildSetting.getMainClassSetting() == null
+					&& this.buildSetting.getDojaClassSetting() == null
+					) 
+			{
+				
+				throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>. Alternatively you might use a <iappli> or <main> element for defining the DoJa main class or the BlackBerry main class.");
+			}
+		}
+		// now check if the midlets do exist:
+		SourceSetting[] sources = this.buildSetting.getSourceSettings();
+		//if (!this.buildSetting.useDefaultPackage()) {
+			for (int i = 0; i < midlets.length; i++) {
+				Midlet midlet = midlets[i];
+				String fileName = StringUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
+				boolean midletFound = false;
+				for (int j = 0; j < sources.length; j++) {
+					SourceSetting setting = sources[j]; 
+					File sourceDir = setting.getDir();
+					String sourceDirPath = sourceDir.getAbsolutePath();
+					File midletFile = new File( sourceDirPath + File.separator + fileName );
+					if (midletFile.exists()) {
+						if (File.separatorChar == '\\') {
+							// additionally check the case of the MIDlet file
+							// on Windows systems:
+							try {
+								if (!midletFile.getCanonicalPath().endsWith(fileName)) {
+									System.out.println("WARNING: The case of the <midlet> definition \"" + midlet.getClassName() + "\" seems to be wrong, since the source code is in " + midletFile.getCanonicalPath() + ". Check your build.xml script.");
+									continue;
+								}
+							} catch (IOException e) {
+								System.out.println("Warning: unable to get canonical path for file " + midletFile.getAbsolutePath() );
+								e.printStackTrace();
+							}
+						} 
+						midletFound = true;
+						break;
+					}
+				}
+				if (!midletFound) {
+					String message = "The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.";
+					if ( midlet.getClassName().indexOf('.') != -1) {
+						if (sources.length > 1) {
+							message += "The MIDlet should be in ${src}" + File.separatorChar + fileName + ", where ${src} is one your source folders.";
+						} else {
+							message += "The MIDlet should be in " + sources[0].getDir().toString()  + File.separatorChar + fileName;
+						}
+					}
+					throw new BuildException( message );
+				}
+			}
 		
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 

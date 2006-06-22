@@ -25,9 +25,13 @@
  */
 package de.enough.polish.ant.build;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -35,6 +39,7 @@ import org.apache.tools.ant.Project;
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.ConditionalElement;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -51,6 +56,7 @@ import de.enough.polish.util.StringUtil;
 public class MidletSetting extends ConditionalElement {
 	
 	private final ArrayList midlets;
+	private String propertiesPath;
 
 	public MidletSetting() {
 		this.midlets = new ArrayList();
@@ -67,6 +73,15 @@ public class MidletSetting extends ConditionalElement {
 	}
 	
 	/**
+	 * Sets the path to the properties file that contains MIDlet definitions just like in a JAD file.
+	 * 
+	 * @param path the path to the file
+	 */
+	public void setFile( String path ) {
+		this.propertiesPath = path;
+	}
+	
+	/**
 	 * Gets all the defined midlets in the correct order.
 	 * @param project
 	 * @param environment 
@@ -74,6 +89,19 @@ public class MidletSetting extends ConditionalElement {
 	 * @return All midlets in the correct order, that means Midlet-1 is the first element of the array. 
 	 */
 	public Midlet[] getMidlets(Project project, Environment environment) {
+		if (this.propertiesPath != null) {
+			File propertiesFile = environment.resolveFile(this.propertiesPath);
+			if ( !propertiesFile.exists() ) {
+				throw new BuildException("The \"file\" attribute of the <midlets> element points to the invalid path [" + this.propertiesPath +"].");
+			}
+			try {
+				Map properties = FileUtil.readPropertiesFile(propertiesFile,':');
+				environment.putAll( properties );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to load properties from the \"file\" attribute of the <midlets> element points that points to [" + this.propertiesPath +"]: " + e.toString());
+			}
+		}
 		BooleanEvaluator evaluator = environment.getBooleanEvaluator();
 		ArrayList mids = new ArrayList();
 		Midlet[] midletsArray = (Midlet[]) this.midlets.toArray( new Midlet[ this.midlets.size() ] );

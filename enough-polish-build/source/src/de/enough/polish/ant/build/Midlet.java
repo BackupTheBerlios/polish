@@ -55,6 +55,15 @@ public class Midlet extends Setting {
 		// initialisation is done with the setter and getter methods
 	}
 	
+	/**
+	 * Creates a new midlet definition.
+	 * 
+	 * @param definition the MIDlet definition
+	 * @see #setDefinition(String) 
+	 */
+	public Midlet(String definition) {
+		setDefinition(definition);
+	}
 	
 
 	/**
@@ -159,18 +168,20 @@ public class Midlet extends Setting {
 	}
 
 
-
+	/**
+	 * Sets the definition like "MIDlet-1: TabbedForm,/icon.png,de.enough.polish.sample.tabbedform.TabbedFormDemo" or "TabbedForm,/icon.png,de.enough.polish.sample.tabbedform.TabbedFormDemo"
+	 * 
+	 * @param def the definition of the MIDlet.
+	 */
 	public void setDefinition(String def) {
 		try {
+			String numberStr = null;
 			int colonPos = def.indexOf(':');
-			String numberStr = def.substring( def.indexOf('-') + 1, colonPos);
-			String defValue = def.substring( colonPos + 2 );
-			String[] chunks = StringUtil.splitAndTrim( defValue, ',');
-//			System.out.println("definition=[" + def + "]");
-//			for (int j = 0; j < chunks.length; j++) {
-//				String string = chunks[j];
-//				System.out.println( "  " +  j +"=" + string );
-//			}
+			if (colonPos != -1) {
+				numberStr = def.substring( def.indexOf('-') + 1, colonPos);
+				def = def.substring( colonPos + 2 );
+			}
+			String[] chunks = StringUtil.splitAndTrim( def, ',');
 			
 			String nameStr = chunks[0];
 			String iconStr = chunks[1];
@@ -180,7 +191,9 @@ public class Midlet extends Setting {
 				setIcon(iconStr);
 			}
 			setClass(classNameStr);
-			setNumber( Integer.parseInt( numberStr) );
+			if (numberStr != null) {
+				setNumber( Integer.parseInt( numberStr) );
+			}
 		} catch (Exception e) {
 			throw new BuildException("Invalid MIDlet-definition [" + def + "]");
 		}
