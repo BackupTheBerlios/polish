@@ -25,6 +25,10 @@
  */
 package de.enough.utils;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 
  * <br>Copyright Enough Software 2005
@@ -53,6 +57,8 @@ public class Status {
     private int type;
     private String message;
     private Throwable exception;
+    private Object source;
+    private List subStatus;
     
     public Status() {
         this(TYPE_OK,"",null);
@@ -73,6 +79,7 @@ public class Status {
         this.type = type;
         this.message = message;
         this.exception = exception;
+        this.subStatus = new LinkedList();
     }
     
     /**
@@ -99,10 +106,6 @@ public class Status {
         this.message = message;
     }
     
-    /**
-     * 
-     * @return One of Status.OK,Status.INFO,Status.WARNING,Status.ERROR,
-     */
     public int getType() {
         return this.type;
     }
@@ -111,5 +114,33 @@ public class Status {
         this.type = type;
     }
 
+    public Object getSource() {
+        return this.source;
+    }
 
+    public void setSource(Object source) {
+        this.source = source;
+    }
+
+    public void addSubStatus(Status newSubStatus) {
+        this.subStatus.add(newSubStatus);
+    }
+
+    public boolean isOk() {
+        if(this.type != TYPE_OK) {
+            return false;
+        }
+        for (Iterator iterator = this.subStatus.iterator(); iterator.hasNext(); ) {
+            Status status = (Status) iterator.next();
+            if( ! status.isOk()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public List getSubStatus() {
+        return this.subStatus;
+    }
+    
 }
