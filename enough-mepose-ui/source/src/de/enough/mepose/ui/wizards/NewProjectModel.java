@@ -71,6 +71,8 @@ public class NewProjectModel extends PropertyModel{
     
     private boolean javaTabReached = false;
     private boolean projectNewlyCreated = true;
+    private String templatePackageString = "some.where";
+    private String templateClazzString = "SimpleMidlet";
 
     //    private IProject projectToConvert;
 //    private boolean mayFinish;
@@ -317,6 +319,25 @@ public class NewProjectModel extends PropertyModel{
 
     public boolean isProjectNewlyCreated() {
         return this.projectNewlyCreated;
+    }
+
+    public String getTemplatePackageString() {
+        return this.templatePackageString;
+    }
+
+    public void setTemplatePackageString(String templatePackageString) {
+        if(templatePackageString == null){
+            throw new IllegalArgumentException("setTemplatePackageString(...):parameter 'templatePackageString' is null contrary to API.");
+        }
+        this.templatePackageString = templatePackageString;
+    }
+
+    public String getTemplateClazzString() {
+        return this.templateClazzString;
+    }
+
+    public void setTemplateClazzString(String templateClazzString) {
+        this.templateClazzString = templateClazzString;
     }
     
     
