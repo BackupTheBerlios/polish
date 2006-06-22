@@ -228,8 +228,8 @@ implements CommandListener
 				this.settingsForm.append( group );
 			//#endif
 
-			//#style input, default
-			TextField nameField = new TextField( Locale.get("setting.name"), "Lars", 30, TextField.ANY );
+			//#style input?
+			TextField nameField = new TextField( Locale.get("setting.name"), "Lars\nHenrik\nWerner\nErnie\nBert\nWhatever\nLuis\nGertrud\nPfannie\nBlšdie\nChsi\nMusi\nKusi\nYakuzzi", 1000, TextField.ANY | TextField.UNEDITABLE);
 			this.settingsForm.append( nameField );
 			
 			
