@@ -453,4 +453,41 @@ public class ChoiceItem extends IconItem
 		this.yBottomPos = lastItem.yBottomPos;
 	}
 	
+	/**
+	 * Sets the image representing the "not selected" state of this choice item.
+	 * 
+	 * @param image the image representing the "not selected" state
+	 */
+	public void setPlainImage( Image image ) {
+		this.plain = image;
+	}
+
+	/**
+	 * Gets the image representing the "not selected" state of this choice item.
+	 * 
+	 * @return the image representing the "not selected" state
+	 */
+	public Image getPlainImage() {
+		return this.plain;
+	}
+
+	/**
+	 * Sets the image representing the "selected" state of this choice item.
+	 * 
+	 * @param image the image representing the "selected" state
+	 */
+	public void setSelectedImage( Image image ) {
+		this.selected = image;
+	}
+	
+	/**
+	 * Gets the image representing the "selected" state of this choice item.
+	 * 
+	 * @return the image representing the "selected" state
+	 */
+	public Image getSelectedImage() {
+		return this.selected;
+	}
+
+
 }

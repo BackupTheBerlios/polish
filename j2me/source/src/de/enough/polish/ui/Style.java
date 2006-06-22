@@ -110,16 +110,16 @@ public class Style
 	 */
 	public final int fontColor;
 	private final Color fontColorObj;
-	public final int paddingLeft;
-	public final int paddingTop;
-	public final int paddingRight;
-	public final int paddingBottom;
-	public final int paddingVertical;
-	public final int paddingHorizontal;
-	public final int marginLeft;
-	public final int marginTop;
-	public final int marginRight;
-	public final int marginBottom;
+	public int paddingLeft;
+	public int paddingTop;
+	public int paddingRight;
+	public int paddingBottom;
+	public int paddingVertical;
+	public int paddingHorizontal;
+	public int marginLeft;
+	public int marginTop;
+	public int marginRight;
+	public int marginBottom;
 
 	public final int layout;
 	

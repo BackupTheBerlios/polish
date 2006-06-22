@@ -47,7 +47,13 @@ public class ChoiceTextField
 //#endif
 {
 
+	/** 
+	 * The matching mode that selects choices that start with the same characters as the current input
+	 */
 	public static final int MATCH_STARTS_WITH = 0;
+	/** 
+	 * The matching mode that selects choices that contain the same characters as the current input
+	 */
 	public static final int MATCH_INDEX_OF = 1;
 	//public static final int MATCH_STARTS_WITH = 0;
 	
@@ -68,7 +74,7 @@ public class ChoiceTextField
 	//#endif
 
 
-	private final boolean allowFreeTextEntry;
+	private final boolean isAllowFreeTextEntry;
 	private final Container choicesContainer;
 	private String[] choices;
 	private String[] lowerCaseChoices;
@@ -79,10 +85,13 @@ public class ChoiceTextField
 	private Style originalStyle;
 	private Style focusingStyle;
 	private int matchMode;
-	private boolean reanableCaretFlashing = true;
+	private boolean reenableCaretFlashing = true;
 	private int choicesYOffsetAdjustment;
 	private boolean isOpen;
 	private Style choiceItemStyle;
+	private char appendChoiceDelimiter;
+	private boolean isAppendMode;
+	private int appendDelimiterIndex;
 
 	/**
 	 * Creates a new ChoiceTextField.
@@ -95,7 +104,7 @@ public class ChoiceTextField
 	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
 	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry) {
-		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, null);
+		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, false, ';', null);
 	}
 	
 	/**
@@ -110,6 +119,39 @@ public class ChoiceTextField
 	 * @param style the style for this item
 	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, Style style) {
+		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, false, ';', style );		
+	}
+	
+	/**
+	 * Creates a new ChoiceTextField.
+	 * 
+	 * @param label the label
+	 * @param text the current text
+	 * @param maxSize the maximum size for the input
+	 * @param constraints input constraints, TextField.ANY for no constraints
+	 * @param availableChoices a list of available texts for the user
+	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
+	 * @param appendChoice true when the selected choices should be appended to the text rather than replacing the text
+	 * @param appendChoiceDelimiter the character that separates several selections, e.g. '\n' or ';' 
+	 */
+	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, char appendChoiceDelimiter) {
+		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, appendChoice, appendChoiceDelimiter, null);
+	}
+	
+	/**
+	 * Creates a new ChoiceTextField.
+	 * 
+	 * @param label the label
+	 * @param text the current text
+	 * @param maxSize the maximum size for the input
+	 * @param constraints input constraints, TextField.ANY for no constraints
+	 * @param availableChoices a list of available texts for the user
+	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
+	 * @param appendChoice true when the selected choices should be appended to the text rather than replacing the text
+	 * @param appendChoiceDelimiter the character that separates several selections, e.g. '\n' or ';' 
+	 * @param style the style for this item
+	 */
+	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, char appendChoiceDelimiter, Style style) {
 		//#if polish.usePolishGui
 			//# super(label, text, maxSize, constraints, style);
 		//#else
@@ -124,15 +166,19 @@ public class ChoiceTextField
 			}
 			this.choiceItems = new Item[ availableChoices.length ];
 		}
-		this.allowFreeTextEntry = allowFreeTextEntry;
+		this.isAllowFreeTextEntry = allowFreeTextEntry;
 		this.choicesContainer = new Container( false );
 		//#if polish.Container.allowCycling != false
 			this.choicesContainer.allowCycling = false;
 		//#endif
 		//#if polish.usePolishGui
 			//# this.choicesContainer.parent = this;
-		//#endif
+		//#endif	
+		this.isAppendMode = appendChoice;
+		this.appendChoiceDelimiter = appendChoiceDelimiter;
 	}
+
+
 	
 	/**
 	 * Sets the available choices.
@@ -216,7 +262,7 @@ public class ChoiceTextField
 		//#if polish.usePolishGui
 			//# super.defocus(origStyle);
 		//#endif
-		if (!this.allowFreeTextEntry && this.numberOfMatches > 0) {
+		if (!this.isAllowFreeTextEntry && this.numberOfMatches > 0) {
 			Item item = this.choicesContainer.get( 0 );
 			if (item instanceof StringItem) {
 				setString( ((StringItem)item).getText() );
@@ -263,7 +309,7 @@ public class ChoiceTextField
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#debug
-		System.out.println("keyPressed( keyCode=" + keyCode + ", gameAction=" + gameAction + " )");
+		System.out.println("keyPressed( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + " )");
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
@@ -282,14 +328,29 @@ public class ChoiceTextField
 				} else {
 					choiceText = item.toString();
 				}
-				//#if polish.usePolishGui			
-					//# setString( choiceText );
+				if (this.isAppendMode) {
+					String currentText = getString();
+					if ( (currentText != null) && (currentText.length() > 1) ) {
+						if (this.appendDelimiterIndex != -1) {
+							currentText = currentText.substring( 0, this.appendDelimiterIndex );
+						}	
+						if ( currentText.charAt( currentText.length() - 1) != this.appendChoiceDelimiter ) {
+							choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
+						} else {
+							choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+						}
+					} else {
+						choiceText += this.appendChoiceDelimiter;
+					}
+				}
+				if (!this.isAllowFreeTextEntry) {
+					this.lastMatchingText = choiceText;
+				}
+				//#if polish.usePolishGui	
+					setString( choiceText );
 					//# setCaretPosition( choiceText.length() );
-				//#else
-					System.out.println( choiceText ); // just use it so that the IDE won't cry
 				//#endif
 				this.numberOfMatches = 0;
-				this.choicesContainer.clear();
 				openChoices( false );
 				super.notifyStateChanged();
 			}
@@ -308,18 +369,27 @@ public class ChoiceTextField
 						return true;
 					//#endif
 				}
-				this.choicesContainer.clear();
-				for (int i = 0; i < this.choices.length; i++) {
-					Item item = this.choiceItems[i];
-					if (item == null) {
-						// create new ChoiceItem (lazy initialisation)
-						item = new ChoiceItem( this.choices[i], null, Choice.IMPLICIT, this.choiceItemStyle );
+				if (this.numberOfMatches == this.choices.length) {
+					this.numberOfMatches = 0; // close choices container
+					openChoices( false );
+				} else {
+					this.appendDelimiterIndex = -1;
+//					if (!this.isAllowFreeTextEntry) {
+//						
+//					}
+					this.choicesContainer.clear();
+					for (int i = 0; i < this.choices.length; i++) {
+						Item item = this.choiceItems[i];
+						if (item == null) {
+							// create new ChoiceItem (lazy initialisation)
+							item = new ChoiceItem( this.choices[i], null, Choice.IMPLICIT, this.choiceItemStyle );
+						}
+						this.choicesContainer.add( item );
 					}
-					this.choicesContainer.add( item );
+					this.numberOfMatches = this.choicesContainer.size();
+					openChoices( true );
 				}
-				this.numberOfMatches = this.choicesContainer.size();
 			//}
-			//enterChoices( true );
 			return true;
 		}
 		//#if polish.usePolishGui
@@ -345,7 +415,7 @@ public class ChoiceTextField
 		} else {
 			setStyle( this.focusingStyle );
 			//#if polish.usePolishGui
-				//# this.flashCaret = this.reanableCaretFlashing;
+				//# this.flashCaret = this.reenableCaretFlashing;
 				//# this.showCaret = true;
 			//#endif
 			this.choicesContainer.yOffset = 0;
@@ -364,6 +434,7 @@ public class ChoiceTextField
 	private void openChoices( boolean open ) {
 		//#debug
 		System.out.println("open choices: " + open + ", have been opened already:" + this.isOpen);
+		this.choicesContainer.focus( -1 );
 		if (open) {
 			if (this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;
@@ -401,6 +472,7 @@ public class ChoiceTextField
 				}
 			}			
 		} else {
+			this.choicesContainer.clear();
 			if (this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;
 				parentContainer.targetYOffset += this.choicesYOffsetAdjustment;
@@ -456,12 +528,18 @@ public class ChoiceTextField
 				String currentText = null;
 			//#endif
 			if (currentText != null) {
+				if (this.isAppendMode) {
+					this.appendDelimiterIndex = currentText.lastIndexOf( this.appendChoiceDelimiter );
+					if (this.appendDelimiterIndex != -1) {
+						currentText = currentText.substring( this.appendDelimiterIndex + 1 );
+					}
+				}
 				currentText = currentText.toLowerCase();
 				// cycle through available choices and add the ones resulting in matches.
 				// There is one special case, though: when only one of the available choices
-				// can be used, we need to ensure that there is at least one match, before updating
+				// can be used (=no free text entry alllowed), we need to ensure that there is at least one match, before updating
 				// the choicesContainer:
-				if (this.allowFreeTextEntry) {
+				if (this.isAllowFreeTextEntry) {
 					this.choicesContainer.clear();
 				}
 				int foundMatches = 0;
@@ -481,19 +559,15 @@ public class ChoiceTextField
 					}
 				}
 				// handle case when there are no matches, but only matches are allowed as the input:
-				if ( this.allowFreeTextEntry ) {
+				if ( this.isAllowFreeTextEntry ) {
 					this.numberOfMatches = foundMatches;
 				} else {
 					if ( foundMatches == 0 ) {
 						// re-set the text to the last match:
-						//#if polish.usePolishGui
-							//# setString( this.lastMatchingText );
-						//#endif
+						setString( this.lastMatchingText );
 					} else {
 						// remove all previous matches and remember this text:
-						//#if polish.usePolishGui
-							//# this.lastMatchingText = getString();
-						//#endif
+						this.lastMatchingText = getString();
 						for ( int i = this.numberOfMatches; --i >= 0; ) {
 							this.choicesContainer.remove( 0 );
 						}
@@ -532,7 +606,7 @@ public class ChoiceTextField
 		//#ifdef polish.css.textfield-caret-flash
 			Boolean flashCursorBool = style.getBooleanProperty( "textfield-caret-flash" );
 			if ( flashCursorBool != null ) {
-				this.reanableCaretFlashing = flashCursorBool.booleanValue();
+				this.reenableCaretFlashing = flashCursorBool.booleanValue();
 			}
 		//#endif
 		//#if polish.css.choicetextfield-containerstyle

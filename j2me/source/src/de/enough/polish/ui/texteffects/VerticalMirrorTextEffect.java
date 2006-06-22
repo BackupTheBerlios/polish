@@ -237,8 +237,20 @@ public class VerticalMirrorTextEffect extends TextEffect {
 			}
 		//#endif
 		this.endTranslucency = (endTranslucencyPercent * 255) / 100;	
-
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#releaseResources()
+	 */
+	public void releaseResources() {
+		super.releaseResources();
+		this.lastText = null;
+		this.rgbData = null;
+		this.bufferGraphics = null;
+		this.bufferImage = null;
+	}
+	
+	
 	
 	
 

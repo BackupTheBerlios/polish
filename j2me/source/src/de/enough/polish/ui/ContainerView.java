@@ -574,35 +574,30 @@ public class ContainerView {
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
-				int currentRow = 0;
-				//#if polish.css.colspan
-					// iterate over all items to find the correct row:
-					int column = 0;
-					for (int i = 0; i <= this.focusedIndex; i++) {
-						Item item = myItems[i];
-						column += item.colSpan;
-						if (column >= this.numberOfColumns) {
-							currentRow++;
-							column = 0;
-						}
-					}
-					//System.out.println("currentRow=" + currentRow + ", numberOfRows=" + this.numberOfRows);
-				//#else
-					currentRow = this.focusedIndex / this.numberOfColumns;
-				//#endif
-				//if (currentRow < this.numberOfRows - 1) {
-					return shiftFocus( true, this.numberOfColumns - 1, myItems );
-				//}
+//				int currentRow = 0;
+//				//#if polish.css.colspan
+//					// iterate over all items to find the correct row:
+//					int column = 0;
+//					for (int i = 0; i <= this.focusedIndex; i++) {
+//						Item item = myItems[i];
+//						column += item.colSpan;
+//						if (column >= this.numberOfColumns) {
+//							currentRow++;
+//							column = 0;
+//						}
+//					}
+//					//System.out.println("currentRow=" + currentRow + ", numberOfRows=" + this.numberOfRows);
+//				//#else
+//					currentRow = this.focusedIndex / this.numberOfColumns;
+//				//#endif
+				return shiftFocus( true, this.numberOfColumns - 1, myItems );
 			}
 			return shiftFocus( true, 0, myItems );
 			
 		} else if ( (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
 				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
 			if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
-				int currentRow = this.focusedIndex / this.numberOfColumns;
-				if (currentRow > 0) {
-					return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
-				}
+				return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
 			}
 			return shiftFocus( false, 0, myItems );
 		}
@@ -671,7 +666,7 @@ public class ContainerView {
 						}
 					}
 					item = items[i];
-					//System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+//					System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 				}
 				if (doneSteps >= steps && item.colSpan != 1 && i != this.focusedIndex)  {
 					if (forwardFocus) {
@@ -679,20 +674,25 @@ public class ContainerView {
 						if (i < 0) {
 							i = items.length - 1;
 						}
-						//System.out.println("forward: Adjusting startIndex to " + i );
+//						System.out.println("forward: Adjusting startIndex to " + i );
 					} else {
 						i = (i + 1) % items.length;
-						//System.out.println("backward: Adjusting startIndex to " + i );
+//						System.out.println("backward: Adjusting startIndex to " + i );
 					}
 				}
 			}
 		//#else			
 			//# int i = this.focusedIndex + steps;
-			if (i > this.parentContainer.items.length) {
-				i = this.parentContainer.items.length - 2;
-			}
-			if (i < 0) {
-				i = 1;
+			if (steps != 0) {
+				if (!forwardFocus) {
+					if (i < 0) {
+						i = items.length - 1;
+					}
+	//				System.out.println("forward: Adjusting startIndex to " + i );
+				} else {
+					i = i % items.length;
+	//				System.out.println("backward: Adjusting startIndex to " + i );
+				}
 			}
 		//#endif
 		//TODO check how to integrate cycling in containers

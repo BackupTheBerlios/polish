@@ -331,7 +331,7 @@ public class TextField extends StringItem
 //#if polish.TextField.supportSymbolsEntry && tmp.directInput
 	//#define tmp.supportsSymbolEntry
 	//#if !polish.css.style.textFieldSymbolTable && !polish.css.style.textFieldSymbolList 
-		//#abort You need to define the \".textFieldSymbolList\" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
+		//#abort You need to define the ".textFieldSymbolList" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
 	//#endif
 //#endif
 //#if !polish.blackberry
@@ -1031,6 +1031,9 @@ public class TextField extends StringItem
 				this.caretPosition = text.length();
 				this.caretColumn = this.caretPosition;
 				//TODO set caretX and caretY Positions and currentRowStart/currentRowEnd?
+			} else if ( text != null && this.caretPosition > text.length()) {
+				this.caretPosition = text.length();
+				this.caretColumn = this.caretPosition;
 			}
 		//#endif
 		setText(text);
@@ -2195,6 +2198,9 @@ public class TextField extends StringItem
 				this.nextCharUppercase = false;
 			}
 			nextCharInputHasChanged = (this.nextCharUppercase != nextCharInputHasChanged);
+			if ( this.inputMode == MODE_FIRST_UPPERCASE ) {
+				this.inputMode = MODE_LOWERCASE;
+			}
 		//#endif
 		this.caretChar = this.editingCaretChar;
 		//#ifdef polish.css.font-bitmap
@@ -2360,10 +2366,14 @@ public class TextField extends StringItem
 		//#endif
 				//#ifdef tmp.directInput
 					//#if !polish.blackberry
-					if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
-						showTextBox();
-						return true;
-					}
+						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+						//#= if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  ) {
+						//#else
+						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
+						//#endif
+							showTextBox();
+							return true;
+						}
 					//#endif
 					synchronized ( this.lock ) {
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
@@ -2464,7 +2474,7 @@ public class TextField extends StringItem
 						}
 						
 					}
-					if ( this.inputMode != MODE_NUMBERS 
+					if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
 							&& !this.isUneditable
 							&& currentLength < this.maxSize 
 							&& ((keyCode >= Canvas.KEY_NUM0 
