@@ -50,7 +50,7 @@
 			description="Example for using a TabbedForm." 
 			icon="/icon.png" 
 			infoUrl="http://www.j2mepolish.org" 
-			jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-framedform.jar" 
+			jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-tabbedform.jar" 
 			jarUrl="${deploy-url}${polish.jarName}" 
 			name="TabbedForm" 
 			vendorName="Enough Software" 
@@ -97,7 +97,7 @@
 			<!-- debug/log settings: only include debug setting when the test-property is true -->
 			<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
 				<filter level="debug" package="de.enough.polish.sample.tabbedform"/>
-				<filter level="debug" class="de.enough.polish.ui.Container"/>
+				<filter level="debug" class="de.enough.polish.ui.ContainerView"/>
 				<!--
 				<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
 				<filter level="debug" class="de.enough.polish.ui.Screen"/>

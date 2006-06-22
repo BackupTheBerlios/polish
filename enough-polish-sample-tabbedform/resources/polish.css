@@ -27,6 +27,7 @@ colors {
 	*/
 	scrollindicator-up-image: url( arrowU.png );
 	scrollindicator-down-image: url( arrowD.png );
+	title-style: solidTitle;
 }
 
 tabbar {
@@ -111,6 +112,10 @@ title {
 	text-effect: shadow;
 	text-shadow-color: titleShadowColor;
 	layout: expand | center;	
+}
+
+.solidTitle extends title {
+	background-color: white;
 }
 
 label {
@@ -229,3 +234,4 @@ alertText {
 	font-color: black;
 	background-color: yellow;
 }
+
