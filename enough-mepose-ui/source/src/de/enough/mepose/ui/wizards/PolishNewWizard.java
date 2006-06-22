@@ -97,7 +97,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
         // Do not hand over the monitor as others are going to call beginTask
         // which must be called only once.
         //TODO: uncomment this. There is a bug somewhere in it.
-//	    createBuildXML();
+	    createBuildXML();
         registerMeposeModel();
         generateTemplates();
 	}
