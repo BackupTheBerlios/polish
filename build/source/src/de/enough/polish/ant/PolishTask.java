@@ -129,7 +129,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-06-21)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-06-22)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -782,7 +782,7 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// create device database:
-		this.deviceDatabase = new DeviceDatabase( getProject().getProperties(), this.polishHomeDir, getProject().getBaseDir(),
+		this.deviceDatabase = DeviceDatabase.getInstance( getProject().getProperties(), this.polishHomeDir, getProject().getBaseDir(),
 				this.buildSetting.getApiDir(), this.polishProject, this.buildSetting.getDeviceDatabaseInputStreams(), this.buildSetting.getDeviceDatabaseFiles() );
 		
 		this.libraryManager = this.deviceDatabase.getLibraryManager();

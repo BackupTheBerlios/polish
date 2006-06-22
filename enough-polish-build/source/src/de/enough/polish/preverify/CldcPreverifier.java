@@ -48,6 +48,9 @@ import de.enough.polish.util.ProcessUtil;
  */
 public class CldcPreverifier extends Preverifier {
 
+	/**
+	 * Creates a new un-initialized preverifier
+	 */
 	public CldcPreverifier() {
 		super();
 	}
