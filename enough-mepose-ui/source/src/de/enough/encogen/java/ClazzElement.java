@@ -76,13 +76,22 @@ public class ClazzElement extends JavaElement {
     
     public String print(Rectangle rectangle) {
         StringBuffer result = new StringBuffer();
+        
+        // Print package.
         result.append(this.packageElement.print(rectangle));
         result.append(addEoL());
+        result.append(addEoL());
+
+        // Imports.
         for (Iterator iterator = this.importElements.iterator(); iterator.hasNext(); ) {
             ImportElement importStatement = (ImportElement) iterator.next();
             result.append(importStatement.print(rectangle));
             result.append(addEoL());
         }
+        
+        result.append(addEoL());
+        
+        // public class.
         result.append(addSpace(rectangle.getX()));
         result.append("public class ");
         result.append(this.clazzName);
@@ -94,10 +103,14 @@ public class ClazzElement extends JavaElement {
         
         result.append("{");
         result.append(addEoL());
+        result.append(addEoL());
         rectangle.addToX(5);
         for (Iterator iterator = this.methodElements.iterator(); iterator.hasNext(); ) {
             MethodElement methodElement = (MethodElement) iterator.next();
+            
+            // class methods.
             result.append(methodElement.print(rectangle));
+            result.append(addEoL());
             result.append(addEoL());
         }
         rectangle.addToX(-5);
