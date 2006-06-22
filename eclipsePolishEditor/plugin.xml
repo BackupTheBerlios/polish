@@ -3,20 +3,26 @@
 <?eclipse version="3.0"?>
 <plugin>
       <extension point="org.eclipse.ui.editors">
-        <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif" id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor" name="Polish Editor"></editor>
+        <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
+        contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif"
+        id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
+        name="Polish Editor"
+        default="true">
+        	<contentTypeBinding contentTypeId="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin.j2mepolish"/>
+        </editor>
     </extension>
-    <!--
-    &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;extension
-    		id="PolishDocumentSetupParticipant"
-		name="PolishDocumentSetupParticipant"
-		point="org.eclipse.core.filebuffers.documentSetup"&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
-		
-		&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;participant extensions="java"
-			class="de.enough.polish.plugin.eclipse.polishEditor.PolishDocumentSetupParticipant"&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
-		&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/participant&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
-	&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/extension&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt;
-	-->
 
+    <extension point="org.eclipse.core.runtime.contentTypes">
+        <content-type
+              base-type="org.eclipse.jdt.core.javaSource"
+              default-charset="ISO-8859-1"
+              describer="de.enough.mepose.editor.java.J2MePolishJavaDescriber"
+              file-extensions="java"
+              id="j2mepolish"
+              name="JME Polish Java file"
+              priority="high"/>
+    </extension>
+    
     <extension id="de.enough.polish.plugin.eclipse.polishEditor.preference.preferencePages" name="J2ME Polish Prefernce Pages" point="org.eclipse.ui.preferencePages">
         <page
               category="de.enough.mepose.ui.preferencePages.MainPage"
@@ -24,6 +30,7 @@
               id="de.enough.polish.plugin.eclipse.polishEditor.preferencePage.rootPage"
               name="Polish Editor"></page>
     </extension>
+    
     <extension point="org.eclipse.ui.editors.annotationTypes">
         <type name="de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation"></type>
     </extension>
