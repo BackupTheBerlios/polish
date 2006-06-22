@@ -47,6 +47,10 @@ public class ProjectPage extends WizardPage{
     private Text descriptionText;
     
     private String projectName;
+    private Text packageText;
+    private Text templateClazzText;
+    private Label templateClazzLabel;
+    private Label packageLabel;
     
     private class SimpleStatusGroupUpdater implements StatusListener{
         private StatusGroup statusGroup;
@@ -105,7 +109,7 @@ public class ProjectPage extends WizardPage{
         this.newProjectNameStatusGroup.setLabelText("New Project");
         this.newProjectNameLabel = new Label(myGroupMainComposite,SWT.NONE);
         this.newProjectNameLabel.setText("New Project Name:");
-        this.newProjectNameText = new Text(myGroupMainComposite,SWT.NONE);
+        this.newProjectNameText = new Text(myGroupMainComposite,SWT.BORDER);
         this.newProjectNameText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         this.newProjectNameText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -139,14 +143,54 @@ public class ProjectPage extends WizardPage{
         Button generateTemplatesButton = new Button(generateTemplateGroup,SWT.CHECK);
         generateTemplatesButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                ProjectPage.this.newProjectModel.setGenerateTemplate(((Button)e.widget).getSelection());
+                boolean selectionState = ((Button)e.widget).getSelection();
+                ProjectPage.this.newProjectModel.setGenerateTemplate(selectionState);
+                activateTemplateControls(selectionState);
+            }
+        });
+        
+        this.packageLabel = new Label(generateTemplateGroup,SWT.NONE);
+        this.packageLabel.setText("Package name:");
+        this.packageText = new Text(generateTemplateGroup,SWT.BORDER);
+        this.packageText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.packageText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                packageTextChanged();
+            }
+        });
+        
+        this.templateClazzLabel = new Label(generateTemplateGroup,SWT.NONE);
+        this.templateClazzLabel.setText("Class name:");
+        this.templateClazzText = new Text(generateTemplateGroup,SWT.BORDER);
+        this.templateClazzText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.templateClazzText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                clazzTextChanged();
             }
         });
         
         setControl(container);
 
         projectNameModified();
+        activateTemplateControls(false);
 	}
+
+	protected void packageTextChanged() {
+	    String packageName = this.packageText.getText();
+	    this.newProjectModel.setTemplatePackageString(packageName);
+	}
+	
+    protected void clazzTextChanged() {
+        String clazzName = this.templateClazzText.getText();
+        this.newProjectModel.setTemplateClazzString(clazzName);
+    }
+    
+    protected void activateTemplateControls(boolean doActivate) {
+        this.packageLabel.setEnabled(doActivate);
+        this.packageText.setEnabled(doActivate);
+        this.templateClazzLabel.setEnabled(doActivate);
+        this.templateClazzText.setEnabled(doActivate);
+    }
 
 //	private void handleBrowse() {
 //		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
