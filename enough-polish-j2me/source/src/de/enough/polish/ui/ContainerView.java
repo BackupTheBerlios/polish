@@ -574,22 +574,6 @@ public class ContainerView {
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
-//				int currentRow = 0;
-//				//#if polish.css.colspan
-//					// iterate over all items to find the correct row:
-//					int column = 0;
-//					for (int i = 0; i <= this.focusedIndex; i++) {
-//						Item item = myItems[i];
-//						column += item.colSpan;
-//						if (column >= this.numberOfColumns) {
-//							currentRow++;
-//							column = 0;
-//						}
-//					}
-//					//System.out.println("currentRow=" + currentRow + ", numberOfRows=" + this.numberOfRows);
-//				//#else
-//					currentRow = this.focusedIndex / this.numberOfColumns;
-//				//#endif
 				return shiftFocus( true, this.numberOfColumns - 1, myItems );
 			}
 			return shiftFocus( true, 0, myItems );
@@ -672,7 +656,7 @@ public class ContainerView {
 					if (forwardFocus) {
 						i--;
 						if (i < 0) {
-							i = items.length - 1;
+							i = items.length + i;
 						}
 //						System.out.println("forward: Adjusting startIndex to " + i );
 					} else {
@@ -686,7 +670,7 @@ public class ContainerView {
 			if (steps != 0) {
 				if (!forwardFocus) {
 					if (i < 0) {
-						i = items.length - 1;
+						i = items.length + i;
 					}
 	//				System.out.println("forward: Adjusting startIndex to " + i );
 				} else {
