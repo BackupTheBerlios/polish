@@ -405,7 +405,7 @@ public class StyleSheet {
 					message.append(", ");
 				}
 			}
-			message.append(". Please check your [polish.css] file.");
+			message.append(". Please check your \"polish.css\" file.");
 			throw new BuildException( message.toString() );
 		}
 	}

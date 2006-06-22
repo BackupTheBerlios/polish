@@ -621,7 +621,7 @@ public class CssConverter extends Converter {
 					}
 					short attributesId = styleSheet.getAttributeId(attributeName);
 					if (attributesId == -1) {
-						throw new BuildException("Invalid CSS: The CSS-attribute [" + attributeName + "] is not supported. Please check your [polish.css] file(s).");
+						throw new BuildException("Invalid CSS: The CSS-attribute [" + attributeName + "] is not supported. Please check your \"polish.css\" file(s).");
 					}
 					keyList.append( attributesId );
 					if ( currentAttribute < numberOfAttributes) {
