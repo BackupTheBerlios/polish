@@ -98,10 +98,24 @@ label {
 	layout: left | newline-after;
 }
 
+/**
+  * The element that displays the current input mode, e.g. "abc" or "Abc" or "123"
+  */
+info {
+	layout: right;
+	margin-right: 10;
+	background-color: argb( 170, 255, 255, 255 );
+}
+
 .addressInput {
+	text-wrap: false;
 	padding: 3;
 	padding-left: 5;
-	background-color: silver;
+	padding-vertical: 1;
+	background {
+		type: round-rect;
+		color: silver;
+	}
 	include-label: true;
 	focused-style: .addressInputFocused;
 	choicetextfield-choicestyle: .addressChoice;
@@ -112,9 +126,12 @@ label {
 .addressInputFocused {
 	padding: 1;
 	padding-left: 3;
-	background-color: white;
-	border-color: black;
-	border-width: 2;
+	background {
+		type: round-rect;
+		color: white;
+		border-color: black;
+		border-width: 2;
+	}
 	layout: left | expand;	
 }
 
@@ -183,8 +200,19 @@ title {
 }
 
 /*************   MENU BAR *************/
+
+menubar
+{
+	margin: 0;
+	padding-top: 3;
+	padding: 2;
+	background-color: bgColor;
+}
+
 menu {
 	margin-left: 2;
+	margin-right: 2;
+	min-width: 120;
 	padding: 2;
 	background {
 		type: round-rect;
@@ -202,6 +230,9 @@ menu {
 menu1 extends menu {
 	background-color: yellow;
 	background-type: simple;
+      layout: right;
+      margin-bottom: 4;
+      margin-right: 4;
 }
 
 
@@ -247,6 +278,22 @@ menuItem {
 	background-color: bgColor;
 	font-color: focusedFontColor;
 	layout: left | horizontal-expand;
+}
+
+leftcommand
+{
+	margin: 0;
+        margin-horizontal: 10;
+	padding-top: 3;
+	padding-bottom: 0;
+	font-color: black;
+	font-style: bold;
+	layout: left;
+}
+
+rightcommand extends leftcommand
+{
+	layout: right;
 }
 
 

@@ -84,11 +84,15 @@ public class CreateMessageForm extends Form  {
 		//#else
 			super( title );
 		//#endif
+		boolean allowFreeText = false;
+		boolean appendSelectedChoice = true;
+		char appendDelimiter = ';';
 		//#style addressInput
-		this.receiver = new ChoiceTextField( "to: ", null, 255, TextField.EMAILADDR, RECEIVERS, true );
+		this.receiver = new ChoiceTextField( "to: ", null, 255, TextField.EMAILADDR, RECEIVERS, allowFreeText, appendSelectedChoice, appendDelimiter );
 		append( this.receiver );
+		allowFreeText = false;
 		//#style addressInput
-		this.sender = new ChoiceTextField( "from: ", null, 255, TextField.EMAILADDR, SENDERS, false );
+		this.sender = new ChoiceTextField( "from: ", null, 255, TextField.EMAILADDR, SENDERS, allowFreeText );
 		append( this.sender );
 		//#style input, addressInput
 		this.text = new TextField( "message: ", null, 255, TextField.ANY );
