@@ -515,6 +515,13 @@
 		<classpath>${polish.home}/import/enough-orchestra.jar</classpath>
 	</extension>
 	
+	<extension>
+		<type>postcompiler</type>
+		<name>retrotranslator</name>
+		<class>de.enough.polish.postcompile.retrotranslator.RetrotranslatorPostCompiler</class>
+		<classpath>${polish.home}/lib/retrotranslator-transformer.jar</classpath>
+	</extension>
+
 	<!-- Log Handler -->
 	
 	<extension>

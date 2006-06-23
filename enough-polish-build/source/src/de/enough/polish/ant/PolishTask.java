@@ -129,7 +129,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-06-22)";
+	private static final String VERSION = "1.3<beta4-preview> (2006-06-23)";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -1908,11 +1908,11 @@ public class PolishTask extends ConditionalTask {
 		}
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
 		if (!compiler.isTargetSet()) {
-			compiler.setDirectTarget( this.javacTarget );
+			compiler.setDirectTarget( getJavacTarget() );
 		}
 		// -source == 1.3 is apparently always needed for J2SE 1.5
 		if (!compiler.isSourceSet()) {
-			compiler.setDirectSource( this.sourceCompatibility );
+			compiler.setDirectSource( getJavacSource() );
 		}
 		if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
 			compiler.setDirectDebug(true);
@@ -2002,6 +2002,22 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
+	private String getJavacSource() {
+		String source = this.environment.getVariable("javac.source");
+		if (source == null) {
+			source = this.sourceCompatibility; 
+		}
+		return source;
+	}
+
+	private String getJavacTarget() {
+		String jTarget = this.environment.getVariable("javac.target");
+		if (jTarget == null) {
+			jTarget = this.javacTarget;
+		}
+		return jTarget;
+	}
+
 	/**
 	 * Retrieves all currently active post compilers.
 	 * 
