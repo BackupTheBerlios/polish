@@ -142,6 +142,9 @@ public class Environment {
 		this.variables.put( name, value );
 		this.symbols.put( name + ":defined", Boolean.TRUE );
 		value = value.toLowerCase();
+		if ("true".equals(value)) {
+			this.symbols.put(name, Boolean.TRUE );
+		}
 		String[] individualValues = StringUtil.splitAndTrim( value, ',' );
 		for (int i = 0; i < individualValues.length; i++) {
 			String individualValue = individualValues[i];

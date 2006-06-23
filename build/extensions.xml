@@ -519,7 +519,7 @@
 		<type>postcompiler</type>
 		<name>retrotranslator</name>
 		<class>de.enough.polish.postcompile.retrotranslator.RetrotranslatorPostCompiler</class>
-		<classpath>${polish.home}/lib/retrotranslator-transformer.jar</classpath>
+		<classpath>${polish.home}/lib/retrotranslator-transformer.jar:${polish.home}/lib/retrotranslator-runtime.jar:${polish.home}/lib/backport-util-concurrent.jar</classpath>
 	</extension>
 
 	<!-- Log Handler -->

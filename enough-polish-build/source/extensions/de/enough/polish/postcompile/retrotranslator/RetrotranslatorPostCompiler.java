@@ -78,6 +78,7 @@ public class RetrotranslatorPostCompiler extends PostCompiler {
 		super.initialize(device, locale, env);
 		env.addVariable("javac.source", "1.5");
 		env.addVariable("javac.target", "1.5");
+		env.addVariable("polish.Java5", "true" );
 	}
 
 	/* (non-Javadoc)
