@@ -34,7 +34,6 @@ import java.util.Map;
 import org.apache.tools.ant.BuildException;
 
 import com.rc.retroweaver.RetroWeaver;
-import com.rc.retroweaver.ant.RetroWeaverTask;
 import com.rc.retroweaver.event.WeaveListener;
 
 import de.enough.polish.Device;
@@ -43,7 +42,7 @@ import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.util.StringUtil;
 
 /**
- * <p></p>
+ * <p>Invokes an adjusted version of RetroWeaver for allowing Java 5.0 syntax for J2ME applications.</p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -81,6 +80,7 @@ public class RetroWeaverPostCompiler extends PostCompiler {
 		int version = ( (Integer)versionMap.get( this.target)).intValue();
 		RetroWeaver task = new RetroWeaver( version );
 		task.setStripSignatures( true );
+		task.setAutoboxClass("de/enough/polish/util/Autobox");
 		task.setListener( new WeaveListener() {
 			public void weavingStarted(String msg) {
 				System.out.println(msg);
@@ -102,9 +102,6 @@ public class RetroWeaverPostCompiler extends PostCompiler {
 			e.printStackTrace();
 			throw new BuildException("RetroWeaver was unable to transform bytecode: " + e.toString() );
 		}
-//		task.setSrcDir( classesDir );
-//		task.setTarget( "1.2" );
-//		task.execute();
 	}
 	
 	/* (non-Javadoc)

@@ -28,7 +28,7 @@ package de.enough.polish.postcompile.retrotranslator;
 import java.io.File;
 import java.util.Locale;
 
-import net.sf.retrotranslator.transformer.Retrotranslator;
+//import net.sf.retrotranslator.transformer.Retrotranslator;
 
 import org.apache.tools.ant.BuildException;
 
@@ -38,7 +38,7 @@ import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.util.StringUtil;
 
 /**
- * <p>Transforms Java classes that contain 1.5 syntax into 1.4 class format.</p>
+ * <p>Transforms Java classes that contain 1.5 syntax into 1.4 class format usung Retrotranslator. Since RetroWeaver proved much more powerful, Retrotranslator is currently inactive: DO NOT USE, UNLESS YOU MODIFY THE CODE YOURSELF.</p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -55,20 +55,20 @@ public class RetrotranslatorPostCompiler extends PostCompiler {
 	public void postCompile(File classesDir, Device device)
 			throws BuildException 
 	{
-		File targetDir = new File( classesDir.getParentFile(), "classes14" );
-		targetDir.mkdir();
-		Retrotranslator retrotranslator = new Retrotranslator();
-		retrotranslator.addSrcdir( classesDir );
-		retrotranslator.setDestdir( targetDir );
-		retrotranslator.addClasspath( device.getBootClassPath() );
-		retrotranslator.addClasspath( device.getClassPath() );
-		retrotranslator.setVerify( false );
-		retrotranslator.setStripsign( true );
-		retrotranslator.setVerbose( true );
-		boolean success = retrotranslator.run();
-		System.out.println("Retrotranslator transformed classes successfully: " + success );
+//		File targetDir = new File( classesDir.getParentFile(), "classes14" );
+//		targetDir.mkdir();
+//		Retrotranslator retrotranslator = new Retrotranslator();
+//		retrotranslator.addSrcdir( classesDir );
+//		retrotranslator.setDestdir( targetDir );
+//		retrotranslator.addClasspath( device.getBootClassPath() );
+//		retrotranslator.addClasspath( device.getClassPath() );
+//		retrotranslator.setVerify( false );
+//		retrotranslator.setStripsign( true );
+//		retrotranslator.setVerbose( true );
+//		boolean success = retrotranslator.run();
+//		System.out.println("Retrotranslator transformed classes successfully: " + success );
 		
-		device.setClassesDir( targetDir.getAbsolutePath() );
+//		device.setClassesDir( targetDir.getAbsolutePath() );
 	}
 
 	/* (non-Javadoc)
