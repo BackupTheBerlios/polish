@@ -522,6 +522,13 @@
 		<classpath>${polish.home}/lib/retrotranslator-transformer.jar:${polish.home}/lib/retrotranslator-runtime.jar:${polish.home}/lib/backport-util-concurrent.jar</classpath>
 	</extension>
 
+	<extension>
+		<type>postcompiler</type>
+		<name>retroweaver</name>
+		<class>de.enough.polish.postcompile.retroweaver.RetroWeaverPostCompiler</class>
+		<classpath>${polish.home}/lib/retroweaver-all.jar</classpath>
+	</extension>
+	
 	<!-- Log Handler -->
 	
 	<extension>
