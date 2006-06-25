@@ -80,7 +80,8 @@ public class RetroWeaverPostCompiler extends PostCompiler {
 		int version = ( (Integer)versionMap.get( this.target)).intValue();
 		RetroWeaver task = new RetroWeaver( version );
 		task.setStripSignatures( true );
-		task.setAutoboxClass("de/enough/polish/util/Autobox");
+		task.setAutoboxClass("de.enough.polish.java5.Autobox");
+		task.setEnumClass("de.enough.polish.java5.Enum");
 		task.setListener( new WeaveListener() {
 			public void weavingStarted(String msg) {
 				System.out.println(msg);
