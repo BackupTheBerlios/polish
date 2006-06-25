@@ -47,6 +47,8 @@ import de.enough.polish.util.ArrayList;
  */
 public class CreateMessageForm extends Form  {
 	
+	private enum Weekday { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }; 
+	
 	private final static String[] RECEIVERS = new String[] {
 		"aaron@somewhere.com", "ajax@hype.com", "asynchron@performance.com", "best@j2mepolish.org",
 		"beta@j2mepolish.org", "circus@ms.com", "doing@going.com", "info@enough.de", "j2mepolish@enough.de"		
@@ -74,6 +76,18 @@ public class CreateMessageForm extends Form  {
 		//#endif
 	}
 	
+	private void printDay( Weekday day ) {
+		switch (day) {
+		case MONDAY: System.out.println("mo"); break;
+		case TUESDAY: System.out.println("tu"); break;
+		case WEDNESDAY: System.out.println("we"); break;
+		case THURSDAY: System.out.println("th"); break;
+		case FRIDAY: System.out.println("fr"); break;
+		case SATURDAY: System.out.println("sa"); break;
+		case SUNDAY: System.out.println("su"); break;
+		}
+	}
+	
 	//#if polish.usePolishGui
 	/**
 	 * Creates a new form for writing an email.
@@ -88,8 +102,8 @@ public class CreateMessageForm extends Form  {
 			super( title );
 		//#endif
 		Hashtable<String, Boolean> table = new Hashtable<String, Boolean>();
-		table.put(title,false);
-		
+		table.put(title, true );
+		printDay( Weekday.FRIDAY );
 		boolean allowFreeText = false;
 		boolean appendSelectedChoice = true;
 		char appendDelimiter = ';';
@@ -103,8 +117,9 @@ public class CreateMessageForm extends Form  {
 		//#style input, addressInput
 		this.text = new TextField( "message: ", null, 255, TextField.ANY );
 		append( this.text );
+		boolean hasTitle = table.get( title );
 		//#style label
-		append( "title in table=" + table.get(title));
+		append( "title in table=" + hasTitle );
 	}
 	//#endif
 	
