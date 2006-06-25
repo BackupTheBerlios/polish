@@ -522,11 +522,10 @@ public class ChoiceTextField
 			super.notifyStateChanged();
 		} else {
 			// find out possible matches yourself:
-			//#if polish.usePolishGui
-				//# String currentText = getString();
-			//#else
-				String currentText = null;
-			//#endif
+			if ( this.lowerCaseChoices == null ) {
+				return; // no choices are known
+			}
+			String currentText = getString();
 			if (currentText != null) {
 				if (this.isAppendMode) {
 					this.appendDelimiterIndex = currentText.lastIndexOf( this.appendChoiceDelimiter );
