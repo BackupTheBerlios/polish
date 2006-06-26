@@ -63,85 +63,134 @@ public class PolishDocumentUtils {
     
     /**
      * Returns the position of the directive, if this line is a polish line.
+     * "X//#" will return null and not a empty position.
      * @param document
      * @param currentLine
      * @return Position when directive was found, null otherwise.
      */
     public static Position extractDirectiveFromLine(IDocument document, int currentLine) {
+        
         IRegion lineAsRegion;
+        int offsetOfLine;
         
         try {
-            lineAsRegion = document.getLineInformation(currentLine); 
-            //lineAsString = document.get(lineAsRegion.getOffset(),lineAsRegion.getLength());
+            lineAsRegion = document.getLineInformation(currentLine);
+            offsetOfLine = document.getLineOffset(currentLine);
         }
         catch (BadLocationException exception) {
             System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong currentLine."+exception);
 	        return null;
         }
         
-        int lastIndexInLine = lineAsRegion.getOffset() + lineAsRegion.getLength() -1;
-        char c;
-        int stateOfScanner = 0;
-        int leftmostIndex = 0;
-        int rightmostIndex = 0;
-        boolean directiveFound = false;
-        for(int i = lineAsRegion.getOffset(); i <= lastIndexInLine;i++) {
-            try {
-                c = document.getChar(i);
-                if(stateOfScanner == 0) {
-                    if(Character.isWhitespace(c)) {
-                        continue;
-                    }
-                    stateOfScanner = 1;
-                }
-                if(stateOfScanner == 1) {
-                    if(c == '/') {
-                        stateOfScanner = 2;
-                        continue;
-                    }
-                }
-                if(stateOfScanner == 2) {
-                    if(c == '/') {
-                        stateOfScanner = 3;
-                        continue;
-                    }
-                }
-                if(stateOfScanner == 3) {
-                    if(c == '#') {
-                        stateOfScanner = 4;
-                        continue; 
-                    }
-                }
-                if(stateOfScanner == 4) { // First char of directive found.
-                    directiveFound = true;
-                    leftmostIndex = i;
-                    rightmostIndex = i;
-                    if(Character.isJavaIdentifierPart(c)) {
-                        stateOfScanner = 5;
-                        continue;
-                    }
-                    //directiveFound = false; //the char after # is not valid. abort.
-                    break;
-                }
-                if(stateOfScanner == 5) {
-                    if(Character.isJavaIdentifierPart(c)) {
-                        rightmostIndex = i;
-                        continue;
-                    }
-                    //directiveFound = true; //the char after # is not valid. abort.
-                    rightmostIndex--; //We went to far by one char.
-                    break;
-                }
-            }
-            catch(BadLocationException exception) {
-                System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong offset of char:"+exception);
-    	        return null;
+        String lineAsString;
+        try {
+            lineAsString = document.get(lineAsRegion.getOffset(),lineAsRegion.getLength());
+        } catch (BadLocationException exception) {
+            // TODO rickyn handle BadLocationException
+            exception.printStackTrace();
+            return null;
+        }
+        
+        int indexOf = lineAsString.indexOf("//#");
+        if(indexOf == -1) {
+            // No directive found.
+            return null;
+        }
+        // Are we at the end "X//#"?
+        int directiveOffset = indexOf+3;
+        int lengthOfLine = lineAsString.length();
+        if(directiveOffset >= lengthOfLine) {
+            return null;
+        }
+        
+        // Is the first char valid? "X//#5"?
+        if( ! Character.isJavaIdentifierStart(lineAsString.charAt(directiveOffset))) {
+            return null;
+        }
+        int i = 0;
+        
+        // Look at subsequent characters.
+        // examples: "X//#h", "X//#ha","X//#hallo"
+        for(i = directiveOffset+1;i<lengthOfLine;i++) {
+            if( ! Character.isJavaIdentifierPart(lineAsString.charAt(i))){
+                break;
             }
         }
-        if(directiveFound) {
-            return new Position(leftmostIndex,rightmostIndex-leftmostIndex+1);
-        }
-        return null;
+        return new Position(offsetOfLine+directiveOffset,i-directiveOffset);
+        
+//        try {
+//            String directive;
+//            directive = document.get(offsetOfLine+directiveOffset,i-directiveOffset);
+//        } catch (BadLocationException exception) {
+//            // TODO rickyn handle BadLocationException
+//            exception.printStackTrace();
+//            return null;
+//        }
+//        return directive;
+        
+//        int lastIndexInLine = lineAsRegion.getOffset() + lineAsRegion.getLength() -1;
+//        char c;
+//        int stateOfScanner = 0;
+//        int leftmostIndex = 0;
+//        int rightmostIndex = 0;
+//        boolean directiveFound = false;
+//        for(int i = lineAsRegion.getOffset(); i <= lastIndexInLine;i++) {
+//            try {
+//                c = document.getChar(i);
+//                if(stateOfScanner == 0) {
+//                    if(Character.isWhitespace(c)) {
+//                        continue;
+//                    }
+//                    stateOfScanner = 1;
+//                }
+//                if(stateOfScanner == 1) {
+//                    if(c == '/') {
+//                        stateOfScanner = 2;
+//                        continue;
+//                    }
+//                }
+//                if(stateOfScanner == 2) {
+//                    if(c == '/') {
+//                        stateOfScanner = 3;
+//                        continue;
+//                    }
+//                }
+//                if(stateOfScanner == 3) {
+//                    if(c == '#') {
+//                        stateOfScanner = 4;
+//                        continue; 
+//                    }
+//                }
+//                if(stateOfScanner == 4) { // First char of directive found.
+//                    directiveFound = true;
+//                    leftmostIndex = i;
+//                    rightmostIndex = i;
+//                    if(Character.isJavaIdentifierPart(c)) {
+//                        stateOfScanner = 5;
+//                        continue;
+//                    }
+//                    //directiveFound = false; //the char after # is not valid. abort.
+//                    break;
+//                }
+//                if(stateOfScanner == 5) {
+//                    if(Character.isJavaIdentifierPart(c)) {
+//                        rightmostIndex = i;
+//                        continue;
+//                    }
+//                    //directiveFound = true; //the char after # is not valid. abort.
+//                    rightmostIndex--; //We went to far by one char.
+//                    break;
+//                }
+//            }
+//            catch(BadLocationException exception) {
+//                System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong offset of char:"+exception);
+//    	        return null;
+//            }
+//        }
+//        if(directiveFound) {
+//            return new Position(leftmostIndex,rightmostIndex-leftmostIndex+1);
+//        }
+//        return null;
     }
     
     /**
