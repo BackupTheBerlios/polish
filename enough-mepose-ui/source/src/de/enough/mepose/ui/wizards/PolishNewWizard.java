@@ -104,6 +104,9 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 
     
     private void generateTemplates() {
+        if( ! this.newProjectModel.isGenerateTemplate()) {
+            return;
+        }
         TemplateGenerator templateGenerator = new TemplateGenerator(this.newProjectModel);
         templateGenerator.generate();
     }
