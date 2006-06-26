@@ -82,6 +82,7 @@ public class RetroWeaverPostCompiler extends PostCompiler {
 		task.setStripSignatures( true );
 		task.setAutoboxClass("de.enough.polish.java5.Autobox");
 		task.setEnumClass("de.enough.polish.java5.Enum");
+		task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
 		task.setListener( new WeaveListener() {
 			public void weavingStarted(String msg) {
 				System.out.println(msg);
