@@ -25,8 +25,10 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaElement;
@@ -42,6 +44,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -145,6 +148,7 @@ public class PolishEditor extends CompilationUnitEditor {
         }
 
 
+    
     public void createPartControl(Composite parent){
         
         // This one origins from JavaEditor and is a chain of 4 stores.
@@ -179,6 +183,55 @@ public class PolishEditor extends CompilationUnitEditor {
         }
         
         super.createPartControl(parent);
+
+        // The SemanticHighlightingReconciler is a ReconcileListener which will be called at the editor start
+        // and which will erase everything the normal reconciler has done so far.
+        
+        Field semanticManagerField;
+        System.out.println("");
+        try {
+            semanticManagerField = getClass().getSuperclass().getSuperclass().getDeclaredField("fSemanticManager");
+            semanticManagerField.setAccessible(true);
+            Object semanticManager = semanticManagerField.get(this);
+            
+            Field presenterField = semanticManager.getClass().getDeclaredField("fPresenter");
+            presenterField.setAccessible(true);
+            Object presenter = presenterField.get(semanticManager);
+            
+            Field presentationReconcilerField = presenter.getClass().getDeclaredField("fPresentationReconciler");
+            presentationReconcilerField.setAccessible(true);
+            Object presentationReconciler = presentationReconcilerField.get(presenter);
+            
+            Field damagersField = presentationReconciler.getClass().getSuperclass().getDeclaredField("fDamagers");
+            Field repairersField = presentationReconciler.getClass().getSuperclass().getDeclaredField("fRepairers");
+            damagersField.setAccessible(true);
+            repairersField.setAccessible(true);
+            Map damagers = (Map)damagersField.get(presentationReconciler);
+            Map repairers = (Map)repairersField.get(presentationReconciler);
+            
+            RuleBasedScanner polishLineScanner = ((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getSinglelineCommentScanner();
+            Map[] maps = new Map[] {damagers,repairers};
+            for (int i = 0; i < maps.length; i++) {
+                Map map = maps[i];
+                Object damagerRepairer = map.get("__java_singleline_comment");
+                Field scannerField = damagerRepairer.getClass().getDeclaredField("fScanner");
+                scannerField.setAccessible(true);
+                scannerField.set(damagerRepairer,polishLineScanner);
+            }
+            
+        } catch (SecurityException exception) {
+            // TODO rickyn handle SecurityException
+            exception.printStackTrace();
+        } catch (IllegalArgumentException exception) {
+            // TODO rickyn handle IllegalArgumentException
+            exception.printStackTrace();
+        } catch (NoSuchFieldException exception) {
+            // TODO rickyn handle NoSuchFieldException
+            exception.printStackTrace();
+        } catch (IllegalAccessException exception) {
+            // TODO rickyn handle IllegalAccessException
+            exception.printStackTrace();
+        }
 
         IToolBarManager toolBarManager = getEditorSite().getActionBars().getToolBarManager();
 
