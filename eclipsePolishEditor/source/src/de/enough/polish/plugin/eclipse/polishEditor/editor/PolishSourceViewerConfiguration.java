@@ -136,8 +136,10 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
             // The cast is a hack to be able to set an processor. The interface itself has no useful methods.
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
             MeposeModel meposeModel = this.editor.getMeposeModel();
-            VariableContentAssistProcessor processor = new VariableContentAssistProcessor(meposeModel.getEnvironment());
-            this.editor.getMeposeModel().addPropertyChangeListener(processor);
+            VariableContentAssistProcessor contentAssistProcessor = new VariableContentAssistProcessor(meposeModel);
+            //TODO: Why is this listener needed? In case the environment changes?
+//            this.editor.getMeposeModel().addPropertyChangeListener(contentAssistProcessor);
+            contentAssistant.setContentAssistProcessor(contentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
             return contentAssistant;
         }
         return newIContentAssistant;
