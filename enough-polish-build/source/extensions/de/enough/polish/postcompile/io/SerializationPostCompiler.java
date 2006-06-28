@@ -2,6 +2,7 @@ package de.enough.polish.postcompile.io;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -60,26 +61,62 @@ public class SerializationPostCompiler extends BytecodePostCompiler
         try
           {
             ClassNode classNode = asmLoader.loadClass(className);
-
-            // Stop here if node is an interface. 
-            if ((classNode.access & Opcodes.ACC_INTERFACE) != 0)
-              continue;
-            
-            if (SerializationVisitor.isSerializable(classNode, this.environment)
-                && !SerializationVisitor.isExternalizable(classNode, this.environment))
-              {
-                ClassWriter writer = new ClassWriter(true);
-                SerializationVisitor visitor = 
-                  new SerializationVisitor(writer, asmLoader, this.environment);
-                classNode.accept(visitor);
+            ClassWriter writer = new ClassWriter(true);
+            SerializationVisitor visitor = 
+              new SerializationVisitor(writer, asmLoader, this.environment);
+            classNode.accept(visitor);
                     
-                writeClass(classesDir, className, writer.toByteArray());
-              }
+            writeClass(classesDir, className, writer.toByteArray());
           }
         catch (ClassNotFoundException e)
           {
             System.out.println("Error loading class " + className);
           }
       }
+  }
+  
+  public List filterClassList(DirClassLoader classLoader, List classes)
+  {
+    Iterator it = classes.iterator();
+    LinkedList resultList = new LinkedList();
+    ASMClassLoader asmClassLoader = new ASMClassLoader(classLoader);
+    String serializableClassName = "de.enough.polish.io.Serializable";
+    String externalizableClassName = "de.enough.polish.io.Externalizable";
+    
+    while (it.hasNext())
+      {
+        String className = (String) it.next();
+
+        try
+          {
+            ClassNode classNode = asmClassLoader.loadClass(className);
+            
+            // Continue with next class if node is an interface. 
+            if ((classNode.access & Opcodes.ACC_INTERFACE) != 0)
+              {
+                continue;
+              }
+          }
+        catch (ClassNotFoundException e)
+          {
+            // Continue with next class.
+            continue;
+          }
+        
+        if (asmClassLoader.inherits(serializableClassName, className)
+            && !asmClassLoader.inherits(externalizableClassName, className))
+          {
+            resultList.add(className);
+          }
+      }
+    
+    return resultList;
+  }
+
+  // TODO: This is only for testing yet.
+  public static void main(String[] args)
+  {
+    SerializationPostCompiler postCompiler = new SerializationPostCompiler();
+    postCompiler.postCompile(new File("."), null);
   }
 }
