@@ -46,7 +46,6 @@ public class DirectiveContentAssistProcessor implements IContentAssistProcessor 
     private static ICompletionProposal[] emptyCompletionProposalArray = new ICompletionProposal[0];
     
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        System.out.println("DEBUG:PolishContentAssistProcessor.computeCompletionProposals(...):enter.");
         
         if( ! PolishDocumentUtils.isPolishLine(viewer.getDocument(),offset)) {
             return emptyCompletionProposalArray;

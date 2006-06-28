@@ -25,8 +25,7 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,31 +40,31 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.Environment;
+import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
 // TODO:Find a common superclass.
-public class VariableContentAssistProcessor implements IContentAssistProcessor,PropertyChangeListener {
+public class VariableContentAssistProcessor implements IContentAssistProcessor/*,PropertyChangeListener*/ {
 
     private String errorMessage = null;
     private static ICompletionProposal[] emptyCompletionProposalArray = new ICompletionProposal[0];
-    private Environment deviceEnvironment;
+    private MeposeModel meposeModel;
     
     
-    public VariableContentAssistProcessor(Environment deviceEnvironment) {
+    public VariableContentAssistProcessor(MeposeModel meposeModel) {
         // Having a null environment sould be okay, as it is possible that no build.xml is
         // specified for the editor. No variable completion is possible in this case.
-        this.deviceEnvironment = deviceEnvironment;
+        this.meposeModel = meposeModel;
     }
     
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
                                                             int offset) {
-        System.out.println("DEBUG:PolishVariableAssistProcessor.computeCompletionProposals(...):enter.");
-        
-        if( ! PolishDocumentUtils.isPolishLine(viewer.getDocument(),offset)) {
+        IDocument document = viewer.getDocument();
+        if( ! PolishDocumentUtils.isPolishLine(document,offset)) {
             return emptyCompletionProposalArray;
         }
-        IDocument document = viewer.getDocument();
         
         //int lineInDocument;
         Position startOfVariableAsPosition;
@@ -82,17 +81,19 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor,P
          
         // Check if we have a current device. This is a kludge as it tests domain-specific logic
         // (do we have a device?) with testing a specific data structure.
-        if(this.deviceEnvironment == null) {
-            System.out.println("ERROR:VariableContentAssistProcessor.computeCompletionProposals(...):no environment.");
+        Environment environment = this.meposeModel.getEnvironment();
+        if(environment == null) {
+            PolishEditorPlugin.log("VariableContentAssistProcessor.computeCompletionProposals(...):No environment present.");
             return emptyCompletionProposalArray;
         }
-        Map variableToValueMapping = this.deviceEnvironment.getVariables();
+        Map variableToValueMapping = environment.getVariables();
         for (Iterator iterator = variableToValueMapping.keySet().iterator(); iterator.hasNext(); ) {
             String variableName = (String) iterator.next();
             if(variableName.startsWith(startOfVariableAsString)) {
                 completionProposals.add(new PositionBasedCompletionProposal(variableName+" ",startOfVariableAsPosition,variableName.length()+1,null,null,null,(String)variableToValueMapping.get(variableName)));
             }
         }
+//        Collections.sort(completionProposals);
         return (ICompletionProposal[])completionProposals.toArray(new ICompletionProposal[completionProposals.size()]);
     }
 
@@ -117,20 +118,20 @@ public class VariableContentAssistProcessor implements IContentAssistProcessor,P
         return null;
     }
 
-    /*
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent event) {
-        if(event == null){
-            throw new IllegalArgumentException("ERROR:VariableContentAssistProcessor.propertyChange(...):Parameter 'arg0' is null.");
-        }
-        if( ! "environment".equals(event.getPropertyName())){
-            return;
-        }
-        if( ! (event.getNewValue() instanceof Environment)){
-            return;
-        }
-        this.deviceEnvironment = (Environment)event.getNewValue();
-    }
+//    /*
+//     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+//     */
+//    public void propertyChange(PropertyChangeEvent event) {
+//        if(event == null){
+//            throw new IllegalArgumentException("ERROR:VariableContentAssistProcessor.propertyChange(...):Parameter 'arg0' is null.");
+//        }
+//        if( ! "environment".equals(event.getPropertyName())){
+//            return;
+//        }
+//        if( ! (event.getNewValue() instanceof Environment)){
+//            return;
+//        }
+//        this.deviceEnvironment = (Environment)event.getNewValue();
+//    }
     
 }
