@@ -113,7 +113,7 @@ public class PathsPage extends WizardPage {
         Label wtkLabel = new Label(main,SWT.NONE);
         wtkLabel.setText("WTK Home:");
         
-        this.wtkHomeText = new Text(main,SWT.NONE);
+        this.wtkHomeText = new Text(main,SWT.BORDER);
         this.wtkHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
         this.wtkHomeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -136,7 +136,7 @@ public class PathsPage extends WizardPage {
         Label nokiaLabel = new Label(main,SWT.NONE);
         nokiaLabel.setText("Nokia Home:");
         
-        this.nokiaHomeText = new Text(main,SWT.NONE);
+        this.nokiaHomeText = new Text(main,SWT.BORDER);
         this.nokiaHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         this.nokiaHomeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -159,7 +159,7 @@ public class PathsPage extends WizardPage {
         Label sonyLabel = new Label(main,SWT.NONE);
         sonyLabel.setText("Sony Home:");
         
-        this.sonyHomeText = new Text(main,SWT.NONE);
+        this.sonyHomeText = new Text(main,SWT.BORDER);
         this.sonyHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         this.sonyHomeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
