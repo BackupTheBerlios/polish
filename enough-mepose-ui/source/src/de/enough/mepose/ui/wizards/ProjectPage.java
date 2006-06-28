@@ -149,16 +149,6 @@ public class ProjectPage extends WizardPage{
             }
         });
         
-        this.packageLabel = new Label(generateTemplateGroup,SWT.NONE);
-        this.packageLabel.setText("Package name:");
-        this.packageText = new Text(generateTemplateGroup,SWT.BORDER);
-        this.packageText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
-        this.packageText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                packageTextChanged();
-            }
-        });
-        
         this.templateClazzLabel = new Label(generateTemplateGroup,SWT.NONE);
         this.templateClazzLabel.setText("Class name:");
         this.templateClazzText = new Text(generateTemplateGroup,SWT.BORDER);
@@ -166,6 +156,16 @@ public class ProjectPage extends WizardPage{
         this.templateClazzText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 clazzTextChanged();
+            }
+        });
+
+        this.packageLabel = new Label(generateTemplateGroup,SWT.NONE);
+        this.packageLabel.setText("Package name:");
+        this.packageText = new Text(generateTemplateGroup,SWT.BORDER);
+        this.packageText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.packageText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                packageTextChanged();
             }
         });
         
