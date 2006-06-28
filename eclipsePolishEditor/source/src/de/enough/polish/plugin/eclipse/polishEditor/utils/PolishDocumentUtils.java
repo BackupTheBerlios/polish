@@ -308,6 +308,13 @@ public class PolishDocumentUtils {
         
     }
     
+    /**
+     * Extracts a whitespace delimited word at the given offset.
+     * "abc|" -> 
+     * @param document
+     * @param offset
+     * @return
+     */
     public static Position extractWordAtOffset(IDocument document, int offset) {
         int lastIndexOfLine;
         try {
@@ -316,6 +323,10 @@ public class PolishDocumentUtils {
             lastIndexOfLine = lineInformtation.getOffset()+lengthOfLineInformation-1;
         } catch (BadLocationException exception) {
             MeposePlugin.log("extractWordAtPosition(...):Parameter out of valid range.",exception);
+            return null;
+        }
+        
+        if(offset >= document.getLength()) {
             return null;
         }
         
