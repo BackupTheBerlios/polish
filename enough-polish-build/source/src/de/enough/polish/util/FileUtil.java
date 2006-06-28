@@ -462,6 +462,7 @@ public final class FileUtil {
 		readProperties( in, delimiter, '#', properties, false, null );
 	}
 
+
 	/**
 	 * Reads properties from the given input stream.
 	 * 
@@ -475,6 +476,23 @@ public final class FileUtil {
 	throws IOException 
 	{
 		readProperties( in, delimiter, '#', properties, false, encoding );
+	}
+
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param properties a map containing properties
+	 * @param encoding the encoding of the file
+	 * @param translateToAscii true when the FileUtil should translate the code into ASCII only code (using unicode). 
+	 * @param translateToNative true when escape sequences like \t or \n should be converted to native characters
+	 * @throws IOException when reading from the input stream fails
+	 */
+	public static void readProperties(InputStream in, char delimiter, Map properties, String encoding, boolean translateToAscii, boolean translateToNative ) 
+	throws IOException 
+	{
+		readProperties( in, delimiter, '#', properties, false, encoding, translateToAscii, translateToNative );
 	}
 
 	/**
@@ -523,6 +541,26 @@ public final class FileUtil {
 	public static void readProperties(InputStream in, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties, String encoding ) 
 	throws IOException 
 	{
+		readProperties( in, delimiter, comment, properties, ignoreInvalidProperties, encoding, false, false );
+	}
+
+	/**
+	 * Reads properties from the given input stream.
+	 * 
+	 * @param in the input stream
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @param encoding the encoding of the text file, when null the default charset is used
+	 * @param translateToAscii true when the FileUtil should translate the code into ASCII only code (using unicode). 
+	 * @param translateToNative true when escape sequences like \t or \n should be converted to native characters
+	 * @throws IOException when reading from the input stream fails
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static void readProperties(InputStream in, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties, String encoding, boolean translateToAscii, boolean translateToNative ) 
+	throws IOException 
+	{
 		BufferedReader reader;
 		if (encoding == null) {
 			reader = new BufferedReader( new InputStreamReader( in ) );
@@ -535,6 +573,12 @@ public final class FileUtil {
 			index++;
 			if (line.length() == 0 || line.charAt(0) == comment) {
 				continue;
+			}
+			if ( translateToAscii ) {
+				line = Native2Ascii.nativeToAscii(line);
+			}
+			if (translateToNative) {
+				line = Native2Ascii.asciiToNative(line);
 			}
 			int delimiterPos = line.indexOf( delimiter );
 			if (delimiterPos == -1) {

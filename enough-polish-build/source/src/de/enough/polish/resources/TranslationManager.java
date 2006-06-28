@@ -26,6 +26,7 @@
 package de.enough.polish.resources;
 
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -464,20 +465,23 @@ implements Comparator
 	{
 		String encoding = this.locale.getEncoding();
 		//TODO check native2ascii on Mac OS X
-		if ( encoding != null ) {
-			in = Native2Ascii.translateToAscii( in, encoding );				
-		}
-		if (this.isDynamic) {
-			// use the java.util.Properties tool for resolving Unicode escape mechanism.
-			// this is needed because we later store the loaded strings via DataOutputStream.writeUTF()
-			// and the device would show \t instead of a tab and so on.
-			Properties properties = new Properties();
-			properties.load(  in );
-			rawTranslations.putAll( properties );
-		} else {
+		BufferedReader reader = new BufferedReader( new InputStreamReader(in, encoding));
+//		if ( encoding != null ) {
+//			in = Native2Ascii.translateToAscii( in, encoding );	
+//		}
+//		if (this.isDynamic) {
+//			// use the java.util.Properties tool for resolving Unicode escape mechanism.
+//			// this is needed because we later store the loaded strings via DataOutputStream.writeUTF()
+//			// and the device would show \t instead of a tab and so on.
+//			Properties properties = new Properties();
+//			properties.load( in );
+//			rawTranslations.putAll( properties );
+//		} else {
 			// just load the properties directly
-			FileUtil.readProperties(in, '=', rawTranslations );
-		}
+			boolean translateToAscii = (encoding != null) && !this.isDynamic;
+			boolean translateToNative = this.isDynamic;
+			FileUtil.readProperties(in, '=', rawTranslations, encoding, translateToAscii, translateToNative );
+//		}
 	}
 
 	
