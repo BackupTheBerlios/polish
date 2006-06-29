@@ -571,7 +571,7 @@ public final class FileUtil {
 		int index = 0;
 		while ( (line = reader.readLine()) != null) {
 			index++;
-			if (line.length() == 0 || line.charAt(0) == comment) {
+			if (line.length() == 0 || line.charAt(0) == comment || line.trim().length() == 0) {
 				continue;
 			}
 			if ( translateToAscii ) {
@@ -592,7 +592,7 @@ public final class FileUtil {
 					continue;
 				} else {
 					throw new IllegalArgumentException("The line [" + line 
-							+ "] contains an invalid property definition: " +
+							+ "] in row " + index + " contains an invalid property definition: " +
 									"missing separator-character (\"" + delimiter + "\")." );					
 				}
 			}
