@@ -26,19 +26,23 @@
  */
 package de.enough.polish.ui.backgrounds;
 
-import java.io.IOException;
 import java.util.Random;
 
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+
 import de.enough.polish.ui.Background;
 
 public class XmasSnowBackground extends Background {
 	private boolean isRunning = true,plus = true;
-	private Image imgSnowflake;
+//	private transient Image imgSnowflake;
 	private int[] x,y,z;
 	private int numbers,color,far;
-	private final Random rand = new Random();
+	private transient final Random rand = new Random();
+	
+	public XmasSnowBackground() {
+		// just have rand completed
+	}
+	
 	public XmasSnowBackground(int color, String url, int width, int height, int far, int numbers) {
 		super();
 		this.color = color;
@@ -54,12 +58,12 @@ public class XmasSnowBackground extends Background {
 			this.z[i] = Math.abs( rand.nextInt() % far );
 			i++;
 		}
-		try {
-			this.imgSnowflake = Image.createImage(url);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			this.imgSnowflake = Image.createImage(url);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	public boolean animate() {

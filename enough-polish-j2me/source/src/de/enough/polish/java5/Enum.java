@@ -2,15 +2,13 @@ package de.enough.polish.java5;
 
 import java.util.Hashtable;
 
-import de.enough.polish.io.Serializable;
-
 
 /**
  * A version of the 1.5 java.lang.Enum class for the Java ME VM.
  */
-public class Enum implements Serializable {
+public class Enum {
 
-	private final transient int ordinal;
+	private final int ordinal;
 
 	private final String name;
 
@@ -85,7 +83,7 @@ public class Enum implements Serializable {
 	}
 
 	public String toString() {
-		return name;
+		return this.name;
 	}
 
 	public final int compareTo(Enum e) {
@@ -93,7 +91,7 @@ public class Enum implements Serializable {
 		Class c2 = e.getDeclaringClass();
 
 		if (c1 == c2) {
-			return ordinal - e.ordinal;
+			return this.ordinal - e.ordinal;
 		}
 
 		throw new ClassCastException();
@@ -101,11 +99,11 @@ public class Enum implements Serializable {
 
 
 	public final String name() {
-		return name;
+		return this.name;
 	}
 
 	public final int ordinal() {
-		return ordinal;
+		return this.ordinal;
 	}
 
 	public final Class getDeclaringClass() {
@@ -117,6 +115,10 @@ public class Enum implements Serializable {
 //		} else {
 //			return clazz;
 //		}
+	}
+	
+	public Object clone() {
+		return this;
 	}
 
 }

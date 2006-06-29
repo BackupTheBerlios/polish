@@ -15,13 +15,17 @@ import de.enough.polish.ui.Background;
 public class TigerStripesBackground extends Background {
 	
 	
-	private final int color;
-	private final int stripesColor;
-	private final Random random;
+	private int color;
+	private int stripesColor;
+	private transient final Random random;
 	private int startX,endX, endStartX, endEndX;
 	private int number;
-	private final int maxNumber;
-	private final int minimalAbstand = 6, maximalAbstand = 10;
+	private int maxNumber;
+	private int minimalAbstand = 6, maximalAbstand = 10;
+	
+	public TigerStripesBackground() {
+		this.random = new Random();
+	}
 	
 	public TigerStripesBackground(int color, int stripesColor,int number) {
 		super();
