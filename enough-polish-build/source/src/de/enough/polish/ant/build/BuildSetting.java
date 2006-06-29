@@ -180,9 +180,6 @@ public class BuildSetting {
 		this.defaultJadFilter = new AttributesFilter( DEFAULT_JAD_FILTER_PATTERN );
 		this.defaultManifestFilter = new AttributesFilter( DEFAULT_MANIFEST_FILTER_PATTERN );
 		
-		// set a default resources setting:
-		this.resourceSetting = new ResourceSetting( this.antProject );
-
 	}
 	
 	public void addConfiguredObfuscator( ObfuscatorSetting setting ) {
@@ -349,6 +346,9 @@ public class BuildSetting {
 	}
 	
 	public ResourceSetting createResources() {
+		if (this.resourceSetting != null) {
+			throw new BuildException("Only one <resources> element is allowed within the <build> element, please check your build.xml script. It is also possible that you have used the resDir attribute in combination with the <resources> element - please use only one of both." );
+		}
 		ResourceSetting setting = new ResourceSetting( this.antProject );
 		this.resourceSetting = setting;
 		return setting;

@@ -52,7 +52,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class ResourceSetting extends Setting {
 
-	private ArrayList localizationSettings;
+	private final ArrayList localizationSettings;
 	private ArrayList fileSets;
 	private boolean useDefaultExcludes = true;
 	private String[] excludes = new String[0];

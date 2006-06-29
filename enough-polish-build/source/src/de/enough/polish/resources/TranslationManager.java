@@ -465,7 +465,7 @@ implements Comparator
 	{
 		String encoding = this.locale.getEncoding();
 		//TODO check native2ascii on Mac OS X
-		BufferedReader reader = new BufferedReader( new InputStreamReader(in, encoding));
+//		BufferedReader reader = new BufferedReader( new InputStreamReader(in, encoding));
 //		if ( encoding != null ) {
 //			in = Native2Ascii.translateToAscii( in, encoding );	
 //		}
