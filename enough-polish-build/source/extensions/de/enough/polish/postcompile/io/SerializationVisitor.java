@@ -12,7 +12,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
 
 import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.PrimitiveTypesHelper;
@@ -22,12 +21,11 @@ public class SerializationVisitor
   extends ClassAdapter
   implements Opcodes
 {
-  private static final String POLISH_USE_DEFAULT_PACKAGE = "polish.useDefaultPackage";
-
-  private static final String SERIALIZABLE = "de/enough/polish/io/Serializable";
-  private static final String EXTERNALIZABLE = "de/enough/polish/io/Externalizable";
-  private static final String DATAINPUTSTREAM = "java/io/DataInputStream";
-  private static final String DATAOUTPUTSTREAM = "java/io/DataOutputStream";
+  public static final String POLISH_USE_DEFAULT_PACKAGE = "polish.useDefaultPackage";
+  public static final String SERIALIZABLE = "de/enough/polish/io/Serializable";
+  public static final String EXTERNALIZABLE = "de/enough/polish/io/Externalizable";
+  public static final String DATAINPUTSTREAM = "java/io/DataInputStream";
+  public static final String DATAOUTPUTSTREAM = "java/io/DataOutputStream";
 
   public static int READ_MODIFIERS = Opcodes.ACC_PUBLIC;
   public static final String READ_NAME = "read";
@@ -65,7 +63,7 @@ public class SerializationVisitor
     methodNamesWrite.put("Ljava/lang/String;", "writeUTF(Ljava/lang/String;)V");
   }
 
-  public static String getEnvironmentClassName(String className, Environment env)
+  public static String getClassName(String className, Environment env)
   {
     if (env != null && env.hasSymbol(POLISH_USE_DEFAULT_PACKAGE))
       {
@@ -118,8 +116,8 @@ public class SerializationVisitor
   private String[] rewriteInterfaces(String[] interfaces)
   {
     boolean found = false;
-    String serializable = getEnvironmentClassName(SERIALIZABLE, this.environment);
-    String externalizable = getEnvironmentClassName(EXTERNALIZABLE, this.environment);
+    String serializable = getClassName(SERIALIZABLE, this.environment);
+    String externalizable = getClassName(EXTERNALIZABLE, this.environment);
     
     for (int i = 0; i < interfaces.length; i++)
       {
@@ -160,7 +158,7 @@ public class SerializationVisitor
       {
         String type = desc;
         
-        while (type.charAt(0) == '[')
+        while (PrimitiveTypesHelper.isArrayType(type))
           {
             type = type.substring(1);
           }
@@ -188,7 +186,7 @@ public class SerializationVisitor
           {
             type = type.substring(1, type.length() - 1);
             
-            if (this.loader.inherits(getEnvironmentClassName(SERIALIZABLE, this.environment), type))
+            if (this.loader.inherits(getClassName(SERIALIZABLE, this.environment), type))
               {
                 this.fields.put(name, desc);
               }
@@ -361,7 +359,7 @@ public class SerializationVisitor
             else // if (type.startsWith("L"))
               {
                 mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "de/enough/polish/io/Externalizable", "write", "(Ljava/io/DataOutputStream;)V");
+                mv.visitMethodInsn(INVOKEVIRTUAL, getClassName(EXTERNALIZABLE, this.environment), "write", "(Ljava/io/DataOutputStream;)V");
               }
 
             mv.visitIincInsn(3, 1);
@@ -423,7 +421,7 @@ public class SerializationVisitor
                     mv.visitVarInsn(ALOAD, 0);
                     mv.visitFieldInsn(GETFIELD, this.className, name, desc);
                     mv.visitVarInsn(ALOAD, 1);
-                    mv.visitMethodInsn(INVOKEINTERFACE, "de/enough/polish/io/Externalizable", "write", "(Ljava/io/DataOutputStream;)V");
+                    mv.visitMethodInsn(INVOKEINTERFACE, getClassName(EXTERNALIZABLE, this.environment), "write", "(Ljava/io/DataOutputStream;)V");
                   }
                 
                 mv.visitJumpInsn(GOTO, afterElse);
@@ -451,7 +449,6 @@ public class SerializationVisitor
 
     if (arrayField)
       {
-        // FIXME: The scope of this can be more limited.
         mv.visitLocalVariable("arraySize", "I", null, l0, l2, 2);
         mv.visitLocalVariable("i", "I", null, l0, l2, 3);
       }
@@ -575,7 +572,7 @@ public class SerializationVisitor
               }
             else // if (type.startsWith("L"))
               {
-                mv.visitMethodInsn(INVOKEINTERFACE, "de/enough/polish/io/Externalizable", "read", "(Ljava/io/DataInputStream;)V");
+                mv.visitMethodInsn(INVOKEINTERFACE, getClassName(EXTERNALIZABLE, this.environment), "read", "(Ljava/io/DataInputStream;)V");
               }
 
             if ("I".equals(type))
@@ -669,7 +666,7 @@ public class SerializationVisitor
                     mv.visitVarInsn(ALOAD, 0);
                     mv.visitFieldInsn(GETFIELD, this.className, name, desc);
                     mv.visitVarInsn(ALOAD, 1);
-                    mv.visitMethodInsn(INVOKEINTERFACE, "de/enough/polish/io/Externalizable", "read", "(Ljava/io/DataInputStream;)V");
+                    mv.visitMethodInsn(INVOKEINTERFACE, getClassName(EXTERNALIZABLE, this.environment), "read", "(Ljava/io/DataInputStream;)V");
                   }
                 
                 mv.visitLabel(afterRead);
@@ -690,13 +687,11 @@ public class SerializationVisitor
     
     if (arrayField)
       {
-        // FIXME: The scope of this can be more limited.
         mv.visitLocalVariable("arraySize", "I", null, l0, l2, 2);
         mv.visitLocalVariable("i", "I", null, l0, l2, 3);
       }
     
     mv.visitMaxs(6, 4);
-    
     mv.visitEnd();
   }
 }

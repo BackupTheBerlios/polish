@@ -80,8 +80,8 @@ public class SerializationPostCompiler extends BytecodePostCompiler
     Iterator it = classes.iterator();
     LinkedList resultList = new LinkedList();
     ASMClassLoader asmClassLoader = new ASMClassLoader(classLoader);
-    String serializableClassName = "de.enough.polish.io.Serializable";
-    String externalizableClassName = "de.enough.polish.io.Externalizable";
+    String serializableClassName = SerializationVisitor.getClassName(SerializationVisitor.SERIALIZABLE, getEnvironment());
+    String externalizableClassName = SerializationVisitor.getClassName(SerializationVisitor.EXTERNALIZABLE, getEnvironment());
     
     while (it.hasNext())
       {
