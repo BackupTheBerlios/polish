@@ -127,17 +127,17 @@ public class TranslucentSimpleBackground extends Background {
 			//#endif
 			if (x < 0) {
 				width += x;
-				if (width < 0) {
-					return;
-				}
 				x = 0;
+			}
+			if (width <= 0) {
+				return;
 			}
 			if (y < 0) {
 				height += y;
-				if (height < 0) {
-					return;
-				}
 				y = 0;
+			}
+			if (height <= 0) {
+				return;
 			}
 			//#if polish.Bugs.drawRgbNeedsFullBuffer
 				g.drawRGB(this.buffer, 0, width, x, y, width, height, true);

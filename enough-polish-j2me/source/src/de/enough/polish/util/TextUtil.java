@@ -443,5 +443,23 @@ public final class TextUtil {
     	}
     	return input;
     }
+
+    /**
+     * Retrieves the last index of the given match in the specified text.
+     * 
+     * @param text the text in which the match is given
+     * @param match the match within the text
+     * @return the last index of the match or -1 when the match is not found in the given text
+     * @throws NullPointerException when text or match is null
+     */
+	public static int lastIndexOf(String text, String match) {
+		int lastIndex = -1;
+		int index = text.indexOf( match );
+		while (index != -1) {
+			lastIndex = index;
+			index = text.indexOf( match, lastIndex + 1 );
+		}
+		return lastIndex;
+	}
     
 }

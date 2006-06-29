@@ -29,6 +29,8 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.util.TextUtil;
+
 /**
  * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
  *
@@ -89,9 +91,9 @@ public class ChoiceTextField
 	private int choicesYOffsetAdjustment;
 	private boolean isOpen;
 	private Style choiceItemStyle;
-	private char appendChoiceDelimiter;
+	private String appendChoiceDelimiter;
 	private boolean isAppendMode;
-	private int appendDelimiterIndex;
+	private int appendDelimiterIndex = -1;
 
 	/**
 	 * Creates a new ChoiceTextField.
@@ -104,7 +106,7 @@ public class ChoiceTextField
 	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
 	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry) {
-		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, false, ';', null);
+		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, false, ";", null);
 	}
 	
 	/**
@@ -119,7 +121,7 @@ public class ChoiceTextField
 	 * @param style the style for this item
 	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, Style style) {
-		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, false, ';', style );		
+		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, false, ";", style );		
 	}
 	
 	/**
@@ -134,7 +136,7 @@ public class ChoiceTextField
 	 * @param appendChoice true when the selected choices should be appended to the text rather than replacing the text
 	 * @param appendChoiceDelimiter the character that separates several selections, e.g. '\n' or ';' 
 	 */
-	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, char appendChoiceDelimiter) {
+	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, String appendChoiceDelimiter) {
 		this(label, text, maxSize, constraints, availableChoices, allowFreeTextEntry, appendChoice, appendChoiceDelimiter, null);
 	}
 	
@@ -148,10 +150,10 @@ public class ChoiceTextField
 	 * @param availableChoices a list of available texts for the user
 	 * @param allowFreeTextEntry true when the user should be allowed to enter any text that does not match any existing choice
 	 * @param appendChoice true when the selected choices should be appended to the text rather than replacing the text
-	 * @param appendChoiceDelimiter the character that separates several selections, e.g. '\n' or ';' 
+	 * @param appendChoiceDelimiter the character that separates several selections, e.g. "\n" or ";" or null. 
 	 * @param style the style for this item
 	 */
-	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, char appendChoiceDelimiter, Style style) {
+	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, String appendChoiceDelimiter, Style style) {
 		//#if polish.usePolishGui
 			//# super(label, text, maxSize, constraints, style);
 		//#else
@@ -331,17 +333,22 @@ public class ChoiceTextField
 				if (this.isAppendMode) {
 					String currentText = getString();
 					if ( (currentText != null) && (currentText.length() > 1) ) {
-						if (this.appendDelimiterIndex != -1) {
+						if (this.appendDelimiterIndex != -1 && this.appendDelimiterIndex < currentText.length() ) {
 							currentText = currentText.substring( 0, this.appendDelimiterIndex );
-						}	
-						if ( currentText.charAt( currentText.length() - 1) != this.appendChoiceDelimiter ) {
-							choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
-						} else {
-							choiceText = currentText + choiceText + this.appendChoiceDelimiter;
 						}
-					} else {
+						if (this.appendChoiceDelimiter == null) {
+							choiceText = currentText + choiceText; 
+						} else {
+							if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
+								choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+							} else {
+								choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
+							}
+						}
+					} else if (this.appendChoiceDelimiter != null) {
 						choiceText += this.appendChoiceDelimiter;
 					}
+					this.appendDelimiterIndex = choiceText.length();
 				}
 				if (!this.isAllowFreeTextEntry) {
 					this.lastMatchingText = choiceText;
@@ -520,17 +527,24 @@ public class ChoiceTextField
 		if (scr != null && scr instanceof Form && ((Form)scr).itemStateListener != null ) {
 			// let the external item state listener do the work
 			super.notifyStateChanged();
-		} else {
+		} else {		
 			// find out possible matches yourself:
 			if ( this.lowerCaseChoices == null ) {
 				return; // no choices are known
 			}
+			if (this.isOpen) {
+				this.choicesContainer.focus(-1);
+			}
 			String currentText = getString();
 			if (currentText != null) {
 				if (this.isAppendMode) {
-					this.appendDelimiterIndex = currentText.lastIndexOf( this.appendChoiceDelimiter );
-					if (this.appendDelimiterIndex != -1) {
-						currentText = currentText.substring( this.appendDelimiterIndex + 1 );
+					if (this.appendChoiceDelimiter != null) {
+						this.appendDelimiterIndex = TextUtil.lastIndexOf( currentText, this.appendChoiceDelimiter );
+						if (this.appendDelimiterIndex != -1) {
+							currentText = currentText.substring( this.appendDelimiterIndex + 1 );
+						}
+					} else if (this.appendDelimiterIndex != -1 && this.appendDelimiterIndex < currentText.length()) {
+						currentText = currentText.substring( this.appendDelimiterIndex );
 					}
 				}
 				currentText = currentText.toLowerCase();
@@ -565,10 +579,12 @@ public class ChoiceTextField
 						// re-set the text to the last match:
 						setString( this.lastMatchingText );
 					} else {
-						// remove all previous matches and remember this text:
+						// remove all previous matches and remember this text:						
 						this.lastMatchingText = getString();
 						for ( int i = this.numberOfMatches; --i >= 0; ) {
+							System.out.println("size before removal=" + this.choicesContainer.size() );
 							this.choicesContainer.remove( 0 );
+							System.out.println("size after removal=" + this.choicesContainer.size() );
 						}
 						this.numberOfMatches = foundMatches;
 					}
