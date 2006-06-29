@@ -355,8 +355,8 @@ public class CommandItem extends IconItem {
 			// reset selected command element to the first one in the list:
 			if ( this.children != null ) {
 				this.children.focus( 0 );
-			} else {
-				System.out.println("WHIOA WHOA WHOA NO CHILDREN!!!");
+//			} else {
+//				System.out.println("WHIOA WHOA WHOA NO CHILDREN!!!");
 			}
 		}
 	}
