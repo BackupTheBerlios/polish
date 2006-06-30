@@ -260,14 +260,14 @@
 		<!-- copy menu application -->
 		<mkdir dir="tmp/samples/menu/source/src" />
 		<copy todir="tmp/samples/menu/source/src">
-			<fileset dir="../enough-polish-example-localization/source/src" includes="**/*.java" />
+			<fileset dir="../enough-polish-sample-localization/source/src" includes="**/*.java" />
 		</copy>
 		<copy todir="tmp/samples/menu/" 
 			>
 			<fileset dir="setup/samples/menu" excludes="**/macosx/**" />
-			<fileset dir="../enough-polish-example-localization" includes="resources/**/*.*" excludes="CVS"/>
-			<fileset dir="../enough-polish-example-localization" includes="resources2/**/*.*" excludes="CVS"/>
-			<fileset dir="../enough-polish-example-localization" includes="resources3/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-sample-localization" includes="resources/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-sample-localization" includes="resources2/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-sample-localization" includes="resources3/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy sysinfo application -->
 		<mkdir dir="tmp/samples/sysinfo/source/src" />
