@@ -47,19 +47,19 @@ public interface Storage {
 	 * @param name the name under which the object should be stored
 	 * @throws IOException when serializing or storage fails
 	 */
-	public void save( Serializable object, String name )
+	public void save( Object object, String name )
 	throws IOException;
 	
-	/**
-	 * Serializes the given objects and stores them under the given name.
-	 * All objects need to be of the same class for this operation, since the class information is only stored once.
-	 * 
-	 * @param objects the objects
-	 * @param name the name under which the object should be stored
-	 * @throws IOException when serializing or storage fails
-	 */
-	public void saveAll( Serializable[] objects, String name )
-	throws IOException;
+//	/**
+//	 * Serializes the given objects and stores them under the given name.
+//	 * All objects need to be of the same class for this operation, since the class information is only stored once.
+//	 * 
+//	 * @param objects the objects
+//	 * @param name the name under which the object should be stored
+//	 * @throws IOException when serializing or storage fails
+//	 */
+//	public void saveAll( Serializable[] objects, String name )
+//	throws IOException;
 	
 	/**
 	 * Reads and de-serializes the given object which has been previously saved under the given name.
@@ -68,7 +68,7 @@ public interface Storage {
 	 * @return the initialized object
 	 * @throws IOException when de-serializing or reading fails
 	 */
-	public Serializable read( String name )
+	public Object read( String name )
 	throws IOException;
 	
 	/**
@@ -77,23 +77,24 @@ public interface Storage {
 	 * @param name the name under which the objects have been stored
 	 * @return an enumeration containing all objects
 	 * @throws IOException when de-serializing or reading fails
-	 * @see #saveAll(Serializable[], String)
+	 *
 	 */
+//	@see #saveAll(Serializable[], String)
 	public Enumeration enumerate( String name )
 	throws IOException;
 	
-	/**
-	 * Reads all the objects that have been previously stored under the given name.
-	 * When there are many objects that can be handled singlely the enumerate() method
-	 * is more efficient. 
-	 * 
-	 * @param name the name under which the objects have been stored
-	 * @return an array containing all initialized objects
-	 * @throws IOException when de-serializing or reading fails
-	 * @see #saveAll(Serializable[], String)
-	 */
-	public Serializable[] readAll( String name )
-	throws IOException;
+//	/**
+//	 * Reads all the objects that have been previously stored under the given name.
+//	 * When there are many objects that can be handled singlely the enumerate() method
+//	 * is more efficient. 
+//	 * 
+//	 * @param name the name under which the objects have been stored
+//	 * @return an array containing all initialized objects
+//	 * @throws IOException when de-serializing or reading fails
+//	 * @see #saveAll(Serializable[], String)
+//	 */
+//	public Serializable[] readAll( String name )
+//	throws IOException;
 
 	/**
 	 * Retrieves a list of all entries that have been stored in this storage system.

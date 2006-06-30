@@ -194,7 +194,7 @@ public class StringItem extends Item
 			}
 		//#endif
 		//#if polish.css.text-wrap
-			if (this.clipText) {
+			if (this.useSingleLine && this.clipText) {
 				if (this.isSkipHorizontalAnimation) {
 					this.isSkipHorizontalAnimation = false;
 				} else {

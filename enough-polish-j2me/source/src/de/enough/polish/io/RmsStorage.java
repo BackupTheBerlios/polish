@@ -170,7 +170,7 @@ public class RmsStorage implements Storage {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Storage#save(de.enough.polish.io.Serializable, java.lang.String)
 	 */
-	public void save(Serializable object, String name) throws IOException {
+	public void save(Object object, String name) throws IOException {
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
 		Serializer.serialize(object, out);
@@ -180,18 +180,18 @@ public class RmsStorage implements Storage {
 		saveData( name, data);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.io.Storage#saveAll(de.enough.polish.io.Serializable[], java.lang.String)
-	 */
-	public void saveAll(Serializable[] objects, String name) throws IOException {
-		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream( byteOut );
-		Serializer.serializeArray(objects, out);
-		byte[] data = byteOut.toByteArray();
-		out.close();
-		byteOut.close();
-		saveData( name, data);
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.io.Storage#saveAll(de.enough.polish.io.Serializable[], java.lang.String)
+//	 */
+//	public void saveAll(Serializable[] objects, String name) throws IOException {
+//		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+//		DataOutputStream out = new DataOutputStream( byteOut );
+//		Serializer.serializeArray(objects, out);
+//		byte[] data = byteOut.toByteArray();
+//		out.close();
+//		byteOut.close();
+//		saveData( name, data);
+//	}
 	
 	/**
 	 * Stores the data under the given name.
@@ -238,7 +238,7 @@ public class RmsStorage implements Storage {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Storage#read(java.lang.String)
 	 */
-	public Serializable read(String name) throws IOException {
+	public Object read(String name) throws IOException {
 		byte[] data;
 		try {
 			if (this.masterRecordStore != null) {
@@ -268,31 +268,31 @@ public class RmsStorage implements Storage {
 		throw new IOException("Sorry, not supported - might drop this method altogether");
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.io.Storage#readAll(java.lang.String)
-	 */
-	public Serializable[] readAll(String name) throws IOException {
-		byte[] data;
-		try {
-			if (this.masterRecordStore != null) {
-				int recordId = getRecordSetId(name);
-				if (recordId == -1) {
-					throw new IOException( name + " is unknown");
-				}
-				data = this.masterRecordStore.getRecord(recordId);
-			} else {
-				RecordStore store = RecordStore.openRecordStore(name, false);
-				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
-				data = enumeration.nextRecord();
-				enumeration.destroy();
-				store.closeRecordStore();
-			}
-		} catch (RecordStoreException e) {
-			throw new IOException( e.toString() );
-		}
-		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
-		return Serializer.deserializeArray(in);
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.io.Storage#readAll(java.lang.String)
+//	 */
+//	public Serializable[] readAll(String name) throws IOException {
+//		byte[] data;
+//		try {
+//			if (this.masterRecordStore != null) {
+//				int recordId = getRecordSetId(name);
+//				if (recordId == -1) {
+//					throw new IOException( name + " is unknown");
+//				}
+//				data = this.masterRecordStore.getRecord(recordId);
+//			} else {
+//				RecordStore store = RecordStore.openRecordStore(name, false);
+//				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
+//				data = enumeration.nextRecord();
+//				enumeration.destroy();
+//				store.closeRecordStore();
+//			}
+//		} catch (RecordStoreException e) {
+//			throw new IOException( e.toString() );
+//		}
+//		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
+//		return Serializer.deserializeArray(in);
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Storage#list()

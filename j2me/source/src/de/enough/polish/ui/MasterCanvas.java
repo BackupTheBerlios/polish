@@ -97,7 +97,9 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
-		this.currentCanvas.keyPressed( keyCode );
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.keyPressed( keyCode );
+		}
 	}
 	
 	//#if polish.hasPointerEvents
@@ -105,7 +107,9 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerPressed(int x, int y) {
-		this.currentCanvas.pointerPressed( x, y );
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.pointerPressed( x, y );
+		}
 	}
 	//#endif
 	
@@ -113,7 +117,9 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
 	 */
 	protected void keyRepeated(int keyCode) {
-		this.currentCanvas.keyRepeated( keyCode );
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.keyRepeated( keyCode );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -125,7 +131,9 @@ public class MasterCanvas
 
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
 	protected void sizeChanged(int width, int height) {
-		this.currentCanvas.sizeChanged( width, height );
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.sizeChanged( width, height );
+		}
 	}
 	//#endif
 		
@@ -153,7 +161,7 @@ public class MasterCanvas
 	 */
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
 		//#debug
-		System.out.println("MasterCanvas: setCurrent " + nextDisplayable );
+		System.out.println("MasterCanvas: setCurrent " + nextDisplayable  + ", on display " + display );
 		//if ( nextDisplayable == instance ) {
 		//	display.setCurrent( nextDisplayable );
 		//	return;

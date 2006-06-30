@@ -13,9 +13,8 @@ import javax.microedition.io.ConnectionNotFoundException;
 import de.enough.polish.messaging.MessageConnection;
 
 /**
- * This class is factory for creating new Connection objects.
+ * This class is factory for creating new Connection objects and is only used for Devices that have WMAPI similar APIs but not the WMAPI.
  * 
- * This class is factory for creating new <tt>Connection</tt> objects.
  * <p>
  * The creation of connections is performed dynamically by looking
  * up a protocol implementation class whose name is formed from the
