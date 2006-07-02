@@ -1674,6 +1674,15 @@
 		default="0"
 		id="165"
 	/>
+
+	<attribute
+		name="clock-format"
+		type="string"
+		appliesTo="ClockItem, DigitalClockItem"
+		description="The time format for the DigitalClockItem with following identifiers: hh=hours, mm=minutes, ss=seconds, am or pm=for using the 12 hour system instead of the 24 hour one. Examples: &quot;hh:mm am&quot;, &quot;hh/mm/ss&quot;."
+		default="hh:mm:ss"
+		id="166"
+	/>
 	
 	<!--
 	

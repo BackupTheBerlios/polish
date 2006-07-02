@@ -112,6 +112,17 @@
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/nbproject/project.properties" type="shell" /> 
         </pack>
+        <pack name="Serialization Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to use the serialization framework of J2ME Polish.</description>
+            <file src="samples/serialization/source" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="samples/serialization/resources" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="../setup/samples/serialization/build.xml" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="../setup/samples/serialization/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="../setup/samples/serialization/nbproject" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <parsable targetfile="$INSTALL_PATH/samples/serialization/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/serialization/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/serialization/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="Roadrunner Sample Application" required="no" preselected="yes">
             <description>A sample application that features a well know game principle.</description>
             <file src="samples/roadrunner/source" targetdir="$INSTALL_PATH/samples/roadrunner"/>

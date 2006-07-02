@@ -290,6 +290,16 @@
 			<fileset dir="setup/samples/logviewer" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-logviewer" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+		<!-- copy serialization sample application -->
+		<mkdir dir="tmp/samples/serialization/source/src" />
+		<copy todir="tmp/samples/serialization/source/src">
+			<fileset dir="../enough-polish-sample-serialization/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/serialization/" 
+			>
+			<fileset dir="setup/samples/serialization" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-serialization" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
 		<!-- copy roadrunner sample application -->
 		<mkdir dir="tmp/samples/roadrunner/source/src" />
 		<copy todir="tmp/samples/roadrunner/source/src">
