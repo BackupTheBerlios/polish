@@ -42,10 +42,10 @@ import de.enough.polish.util.TextUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ChoiceTextField 
-//#if polish.usePolishGui
-	//# extends TextField 
+//#if polish.LibraryBuild
+	extends FakeTextFieldCustomItem
 //#else
-	extends javax.microedition.lcdui.CustomItem
+	//# extends TextField 
 //#endif
 {
 
@@ -57,24 +57,6 @@ public class ChoiceTextField
 	 * The matching mode that selects choices that contain the same characters as the current input
 	 */
 	public static final int MATCH_INDEX_OF = 1;
-	//public static final int MATCH_STARTS_WITH = 0;
-	
-	//#if !polish.usePolishGui
-	protected Item parent;
-	protected int marginLeft;
-	protected int marginRight;
-	protected int marginTop;
-	protected int marginBottom;
-	protected int paddingVertical;
-	protected int itemWidth;
-	protected int itemHeight;
-	protected int contentWidth;
-	protected int contentHeight;
-	protected int contentY;
-	protected int yTopPos;
-	protected boolean isFocused;
-	//#endif
-
 
 	private final boolean isAllowFreeTextEntry;
 	private final Container choicesContainer;
@@ -154,11 +136,7 @@ public class ChoiceTextField
 	 * @param style the style for this item
 	 */
 	public ChoiceTextField(String label, String text, int maxSize, int constraints, String[] availableChoices, boolean allowFreeTextEntry, boolean appendChoice, String appendChoiceDelimiter, Style style) {
-		//#if polish.usePolishGui
-			//# super(label, text, maxSize, constraints, style);
-		//#else
-			super( label );
-		//#endif
+		super(label, text, maxSize, constraints, style);
 		this.choices = availableChoices;
 		if (availableChoices != null) {
 			this.lowerCaseChoices = new String[ availableChoices.length ];
@@ -413,18 +391,16 @@ public class ChoiceTextField
 			this.choicesContainer.focus(0);
 			setStyle( this.originalStyle );
 			//#if polish.usePolishGui
-				//# this.flashCaret = false;
-				//# this.showCaret = false;
+				this.flashCaret = false;
+				this.showCaret = false;
 				if (!this.isInChoice) {
 					//# getScreen().removeItemCommands( this );
 				}
 			//#endif
 		} else {
 			setStyle( this.focusingStyle );
-			//#if polish.usePolishGui
-				//# this.flashCaret = this.reenableCaretFlashing;
-				//# this.showCaret = true;
-			//#endif
+			this.flashCaret = this.reenableCaretFlashing;
+			this.showCaret = true;
 			this.choicesContainer.yOffset = 0;
 			this.choicesContainer.targetYOffset = 0;
 			// move focus to TextField input again
@@ -637,44 +613,4 @@ public class ChoiceTextField
 			}
 		//#endif
 	}
-
-	//#if !polish.usePolishGui
-	protected int getMinContentWidth() {
-		// only signature for CustomItem
-		return 0;
-	}
-
-	protected int getMinContentHeight() {
-		// only signature for CustomItem
-		return 0;
-	}
-
-	protected int getPrefContentWidth(int arg0) {
-		// only signature for CustomItem
-		return 0;
-	}
-
-	protected int getPrefContentHeight(int arg0) {
-		// only signature for CustomItem
-		return 0;
-	}
-
-	protected void paint(Graphics arg0, int arg1, int arg2) {
-		// only signature for CustomItem
-	}
-	
-	public String getString() {
-		// ignore since implemented by TextField
-		return null;
-	}
-	
-	public void setString( String  input ) {
-		// ignore since implemented by TextField
-	}
-	//#endif
-
-	
-	
-	
-	
 }

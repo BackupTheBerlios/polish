@@ -468,9 +468,9 @@ public abstract class CustomItem extends Item
 	protected static final int NONE = 0;
 
 	//#ifdef polish.hasPointerEvents
-		private static final int INTERACTION_MODES = KEY_PRESS | POINTER_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
+		private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | POINTER_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
 	//#else
-		//# private static final int INTERACTION_MODES = KEY_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
+		//# private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
 	//#endif
 	//#if polish.css.skip-set-clip
 		protected boolean skipClipping;
@@ -534,7 +534,18 @@ public abstract class CustomItem extends Item
 	}
 
 	/**
-	 * Gets the available interaction modes.  This method is intended to be
+	 * Gets the available interaction modes.
+	 * <p>For J2ME Polish components following modes can be supported supported:
+	 * <pre>
+	 *   KEY_PRESS | KEY_RELEASE | KEY_REPEAT | POINTER_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL
+	 *  </pre></p>
+	 *  <ul>
+	 *    <li><code>POINTER_PRESS</code> is only supported on devices that support pointers.</li>
+	 *    <li><code>KEY_REPEAT</code> events are supported where the native Canvas implementation supports these events.</li>
+	 *    <li><code></code> .</li>
+	 *    <li><code></code> .</li>
+	 *  </ul>
+	 * This method is intended to be
 	 * called by <code>CustomItem</code> subclass code in order
 	 * for it to determine what
 	 * kinds of input are available from this device.  The modes available may
@@ -549,7 +560,20 @@ public abstract class CustomItem extends Item
 	 */
 	protected final int getInteractionModes()
 	{
-		return INTERACTION_MODES;
+		Canvas canvas = getScreen();
+		if (canvas == null) {
+			canvas = StyleSheet.currentScreen;
+		}
+		if (canvas != null) {
+			if (canvas.hasRepeatEvents()) {
+				return INTERACTION_MODES | KEY_REPEAT;			
+			} else {
+				return INTERACTION_MODES;
+			}
+		} else {
+			// assume REPEAT events are supported:
+			return INTERACTION_MODES | KEY_REPEAT;			
+		}
 	}
 
 	/**

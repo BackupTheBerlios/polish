@@ -29,6 +29,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Displayable;
 
+import de.enough.polish.util.ArrayList;
+
 /**
  * <p>Is used to animate Screens, Backgrounds and Items.</p>
  * <p>
@@ -65,6 +67,7 @@ public class AnimationThread extends Thread
 		private final static int SLEEP_INTERVAL = 300;
 	//#endif
 	protected static boolean releaseResourcesOnScreenChange;
+	private static ArrayList animationList;
 	
 	/**
 	 * Creates a new animation thread.
@@ -94,7 +97,18 @@ public class AnimationThread extends Thread
 				Thread.sleep(sleeptime);
 				Screen screen = StyleSheet.currentScreen;
 				if (screen != null ) {
-					if (screen.animate()) {
+					boolean animated = screen.animate();
+					if (animationList != null) {
+						Object[] animationItems = animationList.getInternalArray();
+						for (int i = 0; i < animationItems.length; i++) {
+							Object object = animationItems[i];
+							if (object == null) {
+								break;
+							}
+							animated |= ((Item)object).animate();
+						}
+					}
+					if (animated) {
 						//System.out.println("AnimationThread: screen needs repainting");
 						//#if polish.Bugs.displaySetCurrentFlickers
 							if ( MasterCanvas.instance != null ) {
@@ -135,5 +149,63 @@ public class AnimationThread extends Thread
 			}
 		}
 	}
+
+	/**
+	 * Adds the given item to list of items that should be animated.
+	 * Typically an item adds itself to the list in the showNotify() method and
+	 * then de-registers itself in the hideNotify() method.
+	 *  
+	 * @param item the item that needs to be animated regardless of it's focused state etc.
+	 * @see #removeAnimationItem(Item)
+	 */
+	public static void addAnimationItem( Item item ) {
+		if (animationList == null) {
+			animationList = new ArrayList();
+		}
+		animationList.add( item );
+	}
+
+	//#if polish.LibraryBuild
+	/**
+	 * Adds the given item to list of items that should be animated.
+	 * Typically an item adds itself to the list in the showNotify() method and
+	 * then de-registers itself in the hideNotify() method.
+	 *  
+	 * @param item the item that needs to be animated regardless of it's focused state etc.
+	 * @see #removeAnimationItem(javax.microedition.lcdui.CustomItem)
+	 */
+	public static void addAnimationItem( javax.microedition.lcdui.CustomItem item) {
+		// ignore
+	}
+	//#endif
+
+	/**
+	 * Removes the given item to list of items that should be animated.
+	 * Typically an item adds itself to the list in the showNotify() method and
+	 * then de-registers itself in the hideNotify() method.
+	 *  
+	 * @param item the item that does not need to be animated anymore
+	 * @see #addAnimationItem(Item)
+	 */
+	public static void removeAnimationItem( Item item ) {
+		if (animationList == null) {
+			animationList = new ArrayList();
+		}
+		animationList.add( item );
+	}
+
+	//#if polish.LibraryBuild
+	/**
+	 * Removes the given item to list of items that should be animated.
+	 * Typically an item adds itself to the list in the showNotify() method and
+	 * then de-registers itself in the hideNotify() method.
+	 *  
+	 * @param item the item that does not need to be animated anymore
+	 * @see #addAnimationItem(javax.microedition.lcdui.CustomItem)
+	 */
+	public static void removeAnimationItem( javax.microedition.lcdui.CustomItem item) {
+		// ignore
+	}
+	//#endif
 
 }

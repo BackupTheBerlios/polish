@@ -339,11 +339,16 @@ public class ArrayList {
 	}
 
 	/**
-	 * Only used for tests.
+	 * Retrieves the internal array - use with care!
+	 * This method allows to access stored objects without creating an intermediate
+	 * array. You really should refrain from changing any elements in the returned array
+	 * unless you are 110% sure about what you are doing. It is safe to cycle through this
+	 * array to access it's elements, though. Note that some array positions might contain null.
+	 * Also note that the internal array is changed whenever this list has to be increased.
 	 * 
 	 * @return the internal array
 	 */
-	protected Object[] getInternalArray() {
+	public Object[] getInternalArray() {
 		return this.storedObjects;
 	}
 
