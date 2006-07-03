@@ -1,0 +1,266 @@
+//#condition polish.usePolishGui && polish.hasFloatingPoint
+
+/*
+ * Created on 02-Jul-2006 at 15:19:49.
+ * 
+ * Copyright (c) 2006 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+package de.enough.polish.ui;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.microedition.lcdui.Graphics;
+
+/**
+ * <p>Display the current time in an analog clock. Note that the device needs to support CLDC 1.1. Alternatively you can use the Floater tool for CLDC 1.0 devices.</p>
+ *
+ * <p>Copyright Enough Software 2006</p>
+ * <pre>
+ * history
+ *        02-Jul-2006 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public class AnalogClockItem
+//#if polish.LibraryBuild
+	extends FakeCustomItem
+//#else
+	//# extends Item
+//#endif
+{
+
+	private final Date date;
+	private final Calendar calendar;
+	private boolean includeSeconds = true;
+	private boolean includeAmPm;
+	private String formatStart;
+	private String formatAfterHours;
+	private String formatAfterMinutes;
+	private String formatAfterSeconds;
+	private String formatEnd;
+	private long lastTimeUpdate;
+	
+	// arrays with cosinus and sinus values for every second value (360 / 60)
+	private static double[] cos;
+	private static double[] sin;
+	static {
+		sin = new double[ 60 ];
+		cos = new double[ 60 ];
+		for (int i = 0; i < 60; i++) {
+			double degree = (360D/60D)*i;
+			cos[i] = Math.cos(degree);
+			sin[i] = Math.sin(degree);
+		}		
+	}
+
+	/**
+	 * Creates a new clock.
+	 * 
+	 * @param label the label for the clock
+	 */
+	public AnalogClockItem(String label) {
+		this(label, null );
+	}
+
+	/**
+	 * Creates a new clock.
+	 * 
+	 * @param label the label for the clock
+	 * @param style the style for the clock string etc
+	 */
+	public AnalogClockItem(String label, Style style) {
+		super(label, 0, Item.PLAIN, style);
+		this.date = new Date();
+		this.calendar = Calendar.getInstance();
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#animate()
+	 */
+	public boolean animate() {
+		boolean animated = super.animate();
+		long time = System.currentTimeMillis();
+		if ( (this.includeSeconds 
+				&& time/1000 > this.lastTimeUpdate/1000)
+			|| (!this.includeSeconds 
+					&& time/(1000*60) > this.lastTimeUpdate/(1000*60)) ) 
+		{
+			updateTime( time );
+			animated = true;
+		}
+		return animated;
+	}
+
+	//#ifdef polish.useDynamicStyles
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#createCssSelector()
+	 */
+	protected String createCssSelector() {
+		return "clockitem";
+	}
+	//#endif
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#initContent(int, int)
+	 */
+	protected void initContent(int firstLineWidth, int lineWidth) {
+		if (this.preferredWidth != 0) {
+			this.contentWidth = this.preferredWidth;
+			this.contentHeight = this.preferredHeight;
+		} else {
+			//#if polish.ScreenWidth:defined
+				int width = 0;
+				//#= width = ${polish.ScreenWidth}/2;
+				this.contentWidth = width;
+				this.contentHeight = width;
+			//#else
+				this.contentWidth = 100;
+				this.contentHeight = 100;
+			//#endif
+		}
+		updateTime( System.currentTimeMillis() );
+	}
+
+	private void updateTime( long time ) {
+		this.lastTimeUpdate = time;
+		if (this.formatStart == null) {
+			// setStyle has not been called, so use default:
+			this.formatStart = "";
+			this.formatAfterHours = ":";
+			this.formatAfterMinutes = ":";
+			this.formatAfterSeconds = "";
+			this.formatEnd = "";
+		}
+		StringBuffer buffer = new StringBuffer();
+		this.date.setTime(time);
+		this.calendar.setTime(this.date);
+		buffer.append( this.formatStart );
+		int hour = this.calendar.get( Calendar.HOUR_OF_DAY );
+		boolean isPm = false;
+		if (this.includeAmPm && hour > 12) {
+			hour -= 12;
+			isPm = true;
+		}
+		buffer.append( hour );
+		buffer.append( this.formatAfterHours );
+		buffer.append( this.calendar.get( Calendar.MINUTE ) );
+		buffer.append( this.formatAfterMinutes );
+		if (this.includeSeconds) {
+			buffer.append( this.calendar.get( Calendar.SECOND ) );
+			buffer.append( this.formatAfterSeconds );
+		}
+		if (this.includeAmPm) {
+			if (isPm) {
+				buffer.append( "PM");
+			} else {
+				buffer.append( "AM");
+			}
+		}
+		buffer.append( this.formatEnd );
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		//#if polish.css.clock-format
+			String format = style.getProperty("clock-format");
+			if (format != null) {
+				this.includeAmPm = false;
+				this.includeSeconds = false;
+				this.formatStart = "";
+				this.formatEnd = "";
+				this.formatAfterHours = "";
+				this.formatAfterMinutes = "";
+				this.formatAfterSeconds = "";
+				int hourPos = format.indexOf("hh");
+				if (hourPos != -1) {
+					this.formatStart = format.substring( 0, hourPos );
+				} else {
+					throw new IllegalArgumentException("invalid format: [" + format  + "]: no hh found.");
+				}
+				int minutePos = format.indexOf("mm");
+				if (minutePos != -1) {
+					this.formatAfterHours = format.substring( hourPos + 2, minutePos );
+				} else {
+					throw new IllegalArgumentException("invalid format: [" + format  + "]: no mm found.");
+				}
+				int secondPos = format.indexOf("ss");
+				int amPmPos = format.indexOf("am");
+				if (amPmPos == -1) {
+					amPmPos = format.indexOf("pm");
+				}
+				if (minutePos != -1) {
+					this.includeSeconds = true;
+					this.formatAfterMinutes = format.substring( minutePos + 2, secondPos );
+					if (amPmPos != -1 ) {
+						this.includeAmPm = true;
+						this.formatAfterSeconds = format.substring( secondPos + 2, amPmPos );
+						this.formatEnd = format.substring(amPmPos + 2);
+					} else {
+						this.formatEnd = format.substring(secondPos + 2);
+					}
+				} else {					
+					if (amPmPos != -1 ) {
+						this.includeAmPm = true;
+						this.formatAfterMinutes = format.substring( minutePos + 2, amPmPos );
+						this.formatEnd = format.substring(amPmPos + 2);
+					} else {
+						this.formatEnd = format.substring(minutePos + 2);						
+					}
+				}
+				
+			}
+		//#endif
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#hideNotify()
+	 */
+	protected void hideNotify() {
+		super.hideNotify();
+		AnimationThread.removeAnimationItem( this );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#showNotify()
+	 */
+	protected void showNotify() {
+		super.showNotify();
+		AnimationThread.addAnimationItem( this );
+	}
+
+	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		// TODO enough implement paintContent
+		
+	}
+	
+	
+
+
+}
+ 
