@@ -113,7 +113,17 @@ public class ClassPath {
 					if ( ! lib.exists() ) {
 						lib = new File( pathElement );
 						if ( ! lib.exists() ) {
-							throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.device.identifier + "]: file not found! default-dir=[" + polishHome.getAbsolutePath() + "], api-dir=[" + importFolder.getAbsolutePath() + "].");
+                            
+						    String polishHomeString = "no polish home";
+                            if(polishHome != null) {
+                                polishHomeString = polishHome.getAbsolutePath();
+                            }
+                            String importFolderString = "no import folder";
+                            if(importFolder != null) {
+                                importFolderString = importFolder.getAbsolutePath();
+                            }
+							throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.device.identifier +"]: file not found! default-dir=[" + 
+                                                     polishHomeString + "], api-dir=[" + importFolderString + "].");
 						}
 					}
 				}
