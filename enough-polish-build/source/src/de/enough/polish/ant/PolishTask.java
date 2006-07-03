@@ -632,10 +632,9 @@ public class PolishTask extends ConditionalTask {
 					&& this.buildSetting.getDojaClassSetting() == null
 					) 
 			{
-				
-				throw new BuildException("Midlets need to be defined in the <build>-section with either <midlets> or <midlet>. Alternatively you might use a <iappli> or <main> element for defining the DoJa main class or the BlackBerry main class.");
+				System.err.println("Warning: Midlets should to be defined in the <build>-section with either <midlets> or <midlet>. Alternatively you might use a <iappli> or <main> element for defining the DoJa main class or the BlackBerry main class.");
 			}
-		}
+		} 
 		// now check if the midlets do exist:
 		SourceSetting[] sources = this.buildSetting.getSourceSettings();
 		//if (!this.buildSetting.useDefaultPackage()) {
