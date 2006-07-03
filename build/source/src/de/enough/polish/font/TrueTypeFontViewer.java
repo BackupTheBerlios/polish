@@ -369,8 +369,10 @@ implements ActionListener
 		}else {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
-        FontMetrics fontMetrics = g.getFontMetrics();
-        double height = fontMetrics.getHeight();
+		Font fontToShow = getFont();
+        FontMetrics fontMetrics = g.getFontMetrics(fontToShow);
+
+        double height = (  fontMetrics.getHeight() ); //+ fontMetrics.getMaxDescent() );
 		double width = fontMetrics.stringWidth(text) + (text.length() * this.characterSpacing);
 		image = new BufferedImage( (int) width, (int) height, BufferedImage.TYPE_4BYTE_ABGR);
 		g = image.createGraphics();
@@ -385,7 +387,7 @@ implements ActionListener
 		g.setFont( this.derivedFont );
 		g.setColor( this.currentColor );
 		char[] characters = text.toCharArray();
-		int y = (int)fontMetrics.getHeight();
+		int y = (int) (fontMetrics.getHeight() - fontMetrics.getMaxDescent());
 		int x = 0;
 		
 		for (int i = 0; i < characters.length; i++) {
