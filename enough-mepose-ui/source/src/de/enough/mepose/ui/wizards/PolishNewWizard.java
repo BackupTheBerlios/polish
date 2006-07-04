@@ -27,7 +27,6 @@ import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
-import de.enough.utils.Status;
 
 
 public class PolishNewWizard extends Wizard implements INewWizard {

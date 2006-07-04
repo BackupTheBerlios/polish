@@ -125,7 +125,7 @@ public class BuildXMLWriter {
     /**
      * @param context
      */
-    private void fillContext(VelocityContext context) {
+    protected void fillContext(VelocityContext context) {
 //        File polishHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_POLISH_HOME);
 //        File mppHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_MPP_HOME);
         File polishHome = this.meposeModel.getPolishHome();

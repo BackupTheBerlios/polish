@@ -53,7 +53,6 @@ public class J2MePolishJavaDescriber implements ITextContentDescriber {
 
     public int describe(InputStream contents, IContentDescription description)
                                                                               throws IOException {
-        PolishEditorPlugin.log("entering describe(InputStream,IContentDescriptor).");
         if(description != null) {
             description.setProperty(IContentDescription.CHARSET,"ISO-8859-1");
         }

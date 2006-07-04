@@ -96,9 +96,9 @@ class MultiValueStack{
 		}
 	}
 
-    private boolean elementIsValid(int element) {
-		return (0 < element);
-	}
+//    private boolean elementIsValid(int element) {
+//		return (0 < element);
+//	}
 
     // ####################################################
     // Bit methods.

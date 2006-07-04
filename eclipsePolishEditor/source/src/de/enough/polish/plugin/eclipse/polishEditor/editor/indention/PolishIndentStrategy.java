@@ -32,7 +32,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.jface.util.Assert;
 
 import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;

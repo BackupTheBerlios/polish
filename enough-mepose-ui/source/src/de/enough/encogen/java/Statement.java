@@ -35,5 +35,5 @@ package de.enough.encogen.java;
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
 public abstract class Statement extends JavaElement {
-
+    //
 }
