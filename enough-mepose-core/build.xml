@@ -45,7 +45,7 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<zip destfile="${plugin.destination}/de.enough.mepose.core_0.1.0.jar" basedir="${temp.folder}/de.enough.mepose.core_0.1.0" filesonly="false" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/de.enough.mepose.core_0.3.4.jar" basedir="${temp.folder}/de.enough.mepose.core_0.3.4" filesonly="false" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -61,8 +61,8 @@
 				<pathelement path="${build.result.folder}/../org.apache.log4j/classes/bin"/>
 				<pathelement path="${build.result.folder}/../org.apache.log4j/log4j.jar"/>
 				<pathelement path="../org.apache.log4j/log4j.jar"/>
-				<pathelement path="${build.result.folder}/../org.apache.log4j/bin/"/>
-				<pathelement path="${build.result.folder}/../org.apache.log4j/de.enough.utils.log4jplugin.jar"/>
+				<pathelement path="../org.apache.log4j/@dot"/>
+				<pathelement path="${build.result.folder}/../org.apache.log4j/@dot"/>
 				<pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.runtime.compatibility_3.1.0.jar"/>
 				<pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.update.configurator_3.1.0.jar"/>
 				<pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.resources_3.1.2.jar"/>
@@ -120,11 +120,11 @@
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/de.enough.mepose.core_0.1.0"/>
-		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.1.0" failonerror="true" overwrite="false">
+		<mkdir dir="${destination.temp.folder}/de.enough.mepose.core_0.3.4"/>
+		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.3.4" failonerror="true" overwrite="false">
 			<fileset dir="${build.result.folder}" includes="MeposeCore.jar"			/>
 		</copy>
-		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.1.0" failonerror="true" overwrite="false">
+		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.3.4" failonerror="true" overwrite="false">
 			<fileset dir="${basedir}" includes="MeposeCore.jar,lib/,plugin.xml,META-INF/,templates/,j2mepolish124/,schema/,mpp-sdk/,icons/"			/>
 		</copy>
 	</target>
@@ -133,23 +133,23 @@
 	</target>
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/de.enough.mepose.core_0.1.0"/>
-		<copy file="${build.result.folder}/MeposeCoresrc.zip" todir="${destination.temp.folder}/de.enough.mepose.core_0.1.0" failonerror="false" overwrite="false"/>
-		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.1.0" failonerror="false" overwrite="false">
+		<mkdir dir="${destination.temp.folder}/de.enough.mepose.core_0.3.4"/>
+		<copy file="${build.result.folder}/MeposeCoresrc.zip" todir="${destination.temp.folder}/de.enough.mepose.core_0.3.4" failonerror="false" overwrite="false"/>
+		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.3.4" failonerror="false" overwrite="false">
 			<fileset dir="${basedir}" includes="source/,plugin.xml,build.properties,lib/"			/>
 		</copy>
 	</target>
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/de.enough.mepose.core_0.1.0"/>
-		<copy file="${temp.folder}/MeposeCore.jar.bin.log" todir="${destination.temp.folder}/de.enough.mepose.core_0.1.0" failonerror="false" overwrite="false"/>
+		<mkdir dir="${destination.temp.folder}/de.enough.mepose.core_0.3.4"/>
+		<copy file="${temp.folder}/MeposeCore.jar.bin.log" todir="${destination.temp.folder}/de.enough.mepose.core_0.3.4" failonerror="false" overwrite="false"/>
 	</target>
 
 	<target name="clean" depends="init" description="Clean the plug-in: de.enough.mepose.core of all the zips, jars and logs created.">
 		<delete file="${build.result.folder}/MeposeCore.jar"/>
 		<delete file="${build.result.folder}/MeposeCoresrc.zip"/>
-		<delete file="${plugin.destination}/de.enough.mepose.core_0.1.0.jar"/>
-		<delete file="${plugin.destination}/de.enough.mepose.core_0.1.0.zip"/>
+		<delete file="${plugin.destination}/de.enough.mepose.core_0.3.4.jar"/>
+		<delete file="${plugin.destination}/de.enough.mepose.core_0.3.4.zip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -172,7 +172,7 @@
 		<delete>
 			<fileset dir="${temp.folder}" includes="**/*.bin.log"			/>
 		</delete>
-		<zip destfile="${plugin.destination}/de.enough.mepose.core_0.1.0.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/de.enough.mepose.core_0.3.4.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
