@@ -36,6 +36,9 @@ package de.enough.mepose.core.model;
  */
 public class DeviceDatabaseException extends Exception {
 
+    //TODO: Is this UID acceptable?
+    private static final long serialVersionUID = 1l;
+    
     /**
      * 
      */

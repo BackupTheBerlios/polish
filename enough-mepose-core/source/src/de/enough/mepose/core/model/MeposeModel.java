@@ -736,6 +736,7 @@ public class MeposeModel extends PropertyModel{
         if(getBuildxml() == null) {
             throw new IllegalStateException("No build.xml file specified.");
         }
+        //TODO: Why is this needed.
         System.setProperty("java.home","/usr/lib/j2sdk1.5-sun");
         this.antBox = new AntBox();
         
