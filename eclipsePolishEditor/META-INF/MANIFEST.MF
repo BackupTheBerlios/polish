@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PolishEditor Plug-in
 Bundle-SymbolicName: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin; singleton:=true
-Bundle-Version: 0.0.1
+Bundle-Version: 0.3.1
 Bundle-Activator: de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin
 Bundle-Vendor: Enough Software
 Bundle-Localization: plugin
@@ -26,6 +26,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.apache.ant,
  de.enough.mepose.core,
- de.enough.mepose.ui,
- de.enough.polish.plugin.eclipse.css.CssEditorPlugin
+ de.enough.mepose.ui
 Eclipse-AutoStart: true
+Bundle-ClassPath: .
