@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?eclipse version="3.0"?>
-<plugin class="de.enough.polish.plugin.eclipse.css.CssEditorPlugin" id="de.enough.polish.plugin.eclipse.css.CssEditorPlugin" name="CssEditor Plug-in" provider-name="" version="0.3.3">
+<plugin class="de.enough.polish.plugin.eclipse.css.CssEditorPlugin" id="de.enough.polish.plugin.eclipse.css.CssEditorPlugin" name="CssEditor Plug-in" provider-name="" version="0.3.4">
     <runtime>
         <library name="CssEditor.jar">
             <export name="*"></export>
