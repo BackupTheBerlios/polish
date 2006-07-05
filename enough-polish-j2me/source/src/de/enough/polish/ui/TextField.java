@@ -3004,8 +3004,8 @@ public class TextField extends StringItem
 						}
 						//TODO check localization when using dynamic localization
 						symbolsList.addCommand( StyleSheet.CANCEL_CMD );
-						symbolsList.setCommandListener( this );
 					}
+					symbolsList.setCommandListener( this );
 					StyleSheet.display.setCurrent( symbolsList );
 					return;
 				}

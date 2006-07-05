@@ -126,7 +126,7 @@ public class Color implements Serializable {
 	
 	private final int argb;
 	private final boolean isDynamic;
-	private Integer integer;
+	private transient Integer integer;
 
 	/**
 	 * Creates a new color
