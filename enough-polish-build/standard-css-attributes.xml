@@ -975,6 +975,9 @@
 		<mapping from="mirror-shadow" to="new de.enough.polish.ui.texteffects.VerticalMirrorTextEffect()" >
 			<condition>polish.midp2</condition>
 		</mapping>
+		<mapping from="drop-shadow" to="new de.enough.polish.ui.texteffects.DropShadowTextEffect()" >
+			<condition>polish.midp2</condition>
+		</mapping>
 	</attribute>
 	
 	<attribute
