@@ -1770,10 +1770,4 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		}
 	}
 
-	
-
-//#ifdef polish.Item.additionalMethods:defined
-	//#include ${polish.Item.additionalMethods}
-//#endif
-
 }

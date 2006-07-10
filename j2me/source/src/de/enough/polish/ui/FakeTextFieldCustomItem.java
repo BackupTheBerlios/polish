@@ -2866,9 +2866,5 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		}
 	}
 	*/
-	
-//#ifdef polish.TextField.additionalMethods:defined
-	//#include ${polish.TextField.additionalMethods}
-//#endif
 
 }
