@@ -3701,7 +3701,7 @@ These namespaces/schemas will be used soon.
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr, nrt"/>
 		<capability name="HeapSize" value="512 kb"/>
-		<capability name="MaxJarSize" value="64 kb"/>
+		<capability name="MaxJarSize" value="128 kb"/>
 		<capability name="StorageSize" value="507 kb"/>
 		<capability name="DRM" value="OMA Forward Lock"/>
 		<capability name="Region" value="Europe, Africa, Asia-Pacific, Latin America"/>

@@ -66,6 +66,8 @@ public class LocaleSetting extends Setting {
 
 	public LocaleSetting(Locale locale, LocaleSetting setting) {
 		super( setting );
+		this.encoding = setting.encoding;
+		this.convert = setting.convert;
 		this.locale = locale;
 		this.locales = new Locale[]{ locale };
 	}

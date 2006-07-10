@@ -79,12 +79,16 @@ public class Native2Ascii {
 				new BufferedReader( new InputStreamReader( new FileInputStream( file ) ) ) :
 				new BufferedReader( new InputStreamReader( new FileInputStream( file ), encoding ) );
 		String line;
+//		int i = 1;
 		while ((line = reader.readLine()) != null) {
+//			System.out.print( i + ": [");
 			if (reverse) {
 				System.out.println( asciiToNative(line) );				
 			} else {
 				System.out.println( nativeToAscii(line) );
 			}
+//			System.out.println("]");
+//			i++;
 		}
 		//in.close();	
 	}
