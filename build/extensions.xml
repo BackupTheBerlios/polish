@@ -500,6 +500,8 @@
 		<class>de.enough.polish.postcompile.io.SerializationPostCompiler</class>
 		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
 		<autostart>true</autostart>
+		<!--
+		-->
 	</extension>
 	
 	<extension>

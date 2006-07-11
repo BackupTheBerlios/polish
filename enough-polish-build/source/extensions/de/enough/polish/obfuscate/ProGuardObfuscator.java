@@ -56,6 +56,7 @@ implements OutputFilter
 	
 	private boolean doOptimize;
 	private File proGuardJarFile;
+	private boolean dontObfuscate;
 
 	/**
 	 * Creates a new pro guard obfuscator.
@@ -123,13 +124,17 @@ implements OutputFilter
 		if (!this.doOptimize) {
 			argsList.add( "-dontoptimize" );
 		}
-		argsList.add( "-allowaccessmodification" );
 		argsList.add( "-printmapping" );
 		argsList.add( quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
-		argsList.add( "-overloadaggressively" );
-		argsList.add( "-defaultpackage" );
-		argsList.add( "" );
-		argsList.add( "-dontusemixedcaseclassnames" );
+		if (this.dontObfuscate) {
+			argsList.add( "-dontobfuscate" );			
+		} else {
+			argsList.add( "-allowaccessmodification" );
+			argsList.add( "-overloadaggressively" );
+			argsList.add( "-defaultpackage" );
+			argsList.add( "" );
+			argsList.add( "-dontusemixedcaseclassnames" );			
+		}
 		
 		//System.out.println( argsList );
 		int result = 0;
@@ -287,6 +292,15 @@ implements OutputFilter
 			}
 		}
 		return path;
+	}
+
+
+
+	/**
+	 * @param dontObfuscate The dontObfuscate to set.
+	 */
+	public void setDontObfuscate(boolean dontObfuscate) {
+		this.dontObfuscate = dontObfuscate;
 	}
 
 }
