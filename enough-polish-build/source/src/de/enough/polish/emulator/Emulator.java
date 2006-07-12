@@ -211,6 +211,7 @@ implements Runnable, OutputFilter
 	protected int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File executionDir ) 
 	throws IOException 
 	{
+		System.out.println( "Starting emulator " + arguments[0] );
 		this.decompilerInstalled = true;
 		this.header = info;
 		return ProcessUtil.exec( arguments, info, wait, filter,  executionDir );
