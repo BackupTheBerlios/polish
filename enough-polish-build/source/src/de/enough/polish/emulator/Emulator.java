@@ -27,7 +27,6 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -48,7 +47,6 @@ import de.enough.polish.stacktrace.DecompilerNotInstalledException;
 import de.enough.polish.stacktrace.StackTraceUtil;
 import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Excutes an emulator.</p>
@@ -106,11 +104,6 @@ implements Runnable, OutputFilter
 	 */
 	public abstract String[] getArguments();
 	
-	
-	public String escape(String string) {
-		return StringUtil.escape( string );
-	}
-
 	
 	/**
 	 * Sets the minimum settings.
@@ -414,67 +407,13 @@ implements Runnable, OutputFilter
 		Thread t = new Thread( this );
 		t.start();
 	}
-	
-	
-	class LoggerThread extends Thread {
-		private final InputStream input;
-		private final PrintStream output;
-		private final String logHeader;
 
-		public LoggerThread( InputStream input, PrintStream output, String header ) {
-			this.input = input;
-			this.output = output;
-			this.logHeader = header;
-		}
-		
-		public void run() {
-			StringBuffer log = new StringBuffer( 300 );
-			log.append(this.logHeader);
-			int startPos = this.logHeader.length();
-			int c;
-			
-			try {
-				while ((c = this.input.read() ) != -1) {
-					if (c == '\n') {
-						String logMessage = log.toString();
-						this.output.println( logMessage );
-						log.delete( startPos,  log.length() );
-						if (Emulator.this.decompilerInstalled
-								&& (logMessage.indexOf('+') != -1) 
-								&& (logMessage.indexOf("at ") != -1)) {
-							try {
-								// this seems to be an error message like
-								// "   at de.enough.polish.ClassName(+263)"
-								// so try to use JAD for finding out the source code address:
-								BinaryStackTrace stackTrace = StackTraceUtil.translateStackTrace(logMessage, Emulator.this.classPath, Emulator.this.preprocessedSourcePath, Emulator.this.sourceDirs, Emulator.this.environment);
-								if (stackTrace != null) {
-									boolean showDecompiledStackTrace = true;
-									if (stackTrace.couldBeResolved()) {
-										this.output.println( this.logHeader + stackTrace.getSourceCodeMessage() );
-										showDecompiledStackTrace = false;
-									} 
-									if (showDecompiledStackTrace || Emulator.this.emulatorSetting.showDecompiledStackTrace()){
-										this.output.println( this.logHeader + "Decompiled stack-trace: " + stackTrace.getDecompiledCodeSnippet() );
-									}
-								}
-							} catch (DecompilerNotInstalledException e) {
-								this.output.println("Unable to translate stacktrace: " + e.getMessage() );
-								Emulator.this.decompilerInstalled = false;
-							}
-						}
-					}  else if (c != '\r') {
-						log.append((char) c);
-					}
-				}
-				this.input.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Unable to log: " + e.toString() );
-			}
-		}
-	}
-
-
+	/**
+	 * Filters the given message.
+	 * 
+	 * @param logMessage the message
+	 * @param output the stream to which the message should be written (if not filtered)
+	 */
 	public void filter( String logMessage, PrintStream output ) {
 		output.println( logMessage );
 		if (this.decompilerInstalled
@@ -510,7 +449,9 @@ implements Runnable, OutputFilter
 		DebuggerThread( Debugger debugger  ) {
 			this.debugger  = debugger;
 		}
-		
+		/**
+		 * Reqests the stop of this thread.
+		 */
 		public void cancel() {
 			this.stopRequested = true;
 		}
