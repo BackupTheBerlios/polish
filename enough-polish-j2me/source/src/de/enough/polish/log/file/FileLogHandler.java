@@ -38,6 +38,48 @@ import de.enough.polish.log.LogEntry;
 import de.enough.polish.log.LogHandler;
 import de.enough.polish.util.ArrayList;
 
+/**
+ * <p>Writes log entries into the filesystem.</p>
+ * <p>
+ * Use the loghandler by specifying the following handler in your build.xml script:
+ * <pre>
+ * &lt;debug ...&gt;
+ *    &lt;handler name=&quot;file&quot; />
+ * &lt;/debug&gt;
+ * </pre>
+ * </p>
+ * <p>
+ * You can configure this log handler with following parameters:
+ * </p>
+ * <ul>
+ *   <li><b>preferredRoot</b>: The file root into which the log should be written, e.g. E:</li>
+ *   <li><b>useUnqiueName</b>: Set to true when eacb log should be carry a unique name, this ensures that former logs are not overwritten. 
+ *          J2ME Polish adds the current time in milliseonds to each log-file when this option is activated.</li>
+ *   <li><b>fileName</b>: The name of the log-file, defaults to "j2melog".</li>
+ *   <li><b>flushEachEntry</b>: Set to true for writing each log entry. This allows to read the log even when the application crashes horribly in between. 
+ *          Since the permission is re-checked after each flushing, it is advisable to sign the application for testing.</li>
+ * </ul>
+ * <p>Example:
+ * <pre>
+ * &lt;debug ...&gt;
+ *    &lt;handler name=&quot;file&quot; />
+ *      &lt;-- optional parameters --&gt;
+ *      &lt;parameter name=&quot;preferredRoot&quot; value=&quot;E:&quot; /&gt;
+ *      &lt;parameter name=&quot;useUnqiueName&quot; value=&quot;true&quot; /&gt;
+ *      &lt;parameter name=&quot;fileName&quot; value=&quot;applog&quot; /&gt;
+ *      &lt;parameter name=&quot;flushEachEntry&quot; value=&quot;false&quot; /&gt;
+ *    &lt;/handler&gt;
+ * &lt;/debug&gt;
+ * </pre>
+ * </p>
+ *
+ * <p>Copyright Enough Software 2006</p>
+ * <pre>
+ * history
+ *        Jul 11, 2006 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
 public class FileLogHandler 
 extends LogHandler
 implements Runnable
@@ -48,6 +90,10 @@ implements Runnable
 	private ArrayList scheduledLogEntries;
 	private boolean isPermanentLogError;
 
+	/**
+	 * Creates a new file log handler.
+	 *
+	 */
 	public FileLogHandler() {
 		super();
 	}
@@ -76,6 +122,7 @@ implements Runnable
 	}
 
 	public void run() {
+		FileConnection connection = null;
 		// create the logfile:
 		synchronized ( this ) {
 			String url = null;
@@ -103,7 +150,7 @@ implements Runnable
 				url = "file:///" + root + "j2melog.txt";
 			//#endif
 			try {
-				FileConnection connection = (FileConnection) Connector.open( url, Connector.READ_WRITE );
+				connection = (FileConnection) Connector.open( url, Connector.READ_WRITE );
 				if (!connection.exists()) {
 					//System.out.println("Creating file...");
 					connection.create();
@@ -111,6 +158,10 @@ implements Runnable
 				//System.out.println("opening data output stream...");
 				this.out = new PrintStream( connection.openOutputStream() );
 				this.out.println("time\tlevel\tclass\tline\tmessage\terror");
+				//#if polish.log.file.flushEachEntry == true
+					this.out.close();
+					this.out = null;
+				//#endif
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Unable to open file log: " + e );
@@ -134,7 +185,14 @@ implements Runnable
 					.append( entry.message ).append('\t')
 					.append( entry.exception );
 				try {
+					//#if polish.log.file.flushEachEntry == true
+						this.out = new PrintStream( connection.openOutputStream() );
+					//#endif
 					this.out.println( buffer.toString() );
+					//#if polish.log.file.flushEachEntry == true
+						this.out.close();
+						this.out = null;
+					//#endif
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.err.println("Unable to write log entry: " + e );
