@@ -1687,6 +1687,47 @@
 		id="166"
 	/>
 	
+	<attribute
+		name="text-drop-shadow-size"
+		type="integer"
+		appliesTo="StringItem, DropShadowTextEffect"
+		description="The size of the shadow (in all directions)."
+		default="6"
+		id="167"
+	/>
+	<attribute
+		name="text-drop-shadow-offsetx"
+		type="integer"
+		appliesTo="StringItem, DropShadowTextEffect"
+		description="The x offset of the shadow (negative values are possible)"
+		default="1"
+		id="168"
+	/>
+	<attribute
+		name="text-drop-shadow-offsety"
+		type="integer"
+		appliesTo="StringItem, DropShadowTextEffect"
+		description="The y offset of the shadow (negative values are possible)"
+		default="2"
+		id="169"
+	/>
+	<attribute
+		name="text-drop-shadow-start-color"
+		type="color"
+		appliesTo="StringItem, DropShadowTextEffect"
+		description="The color of the inner shadow. The color must not be fully opaque!"
+		default="#A0909090"
+		id="170"
+	/>
+	<attribute
+		name="text-drop-shadow-end-color"
+		type="color"
+		appliesTo="StringItem, DropShadowTextEffect"
+		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
+		default="#20909090"
+		id="171"
+	/>
+	
 	<!--
 	
 	<attribute
