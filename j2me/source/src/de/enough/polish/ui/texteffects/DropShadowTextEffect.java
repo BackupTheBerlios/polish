@@ -30,20 +30,47 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.DrawUtil;
+
 /**
+ * <p>Paints a dropshadow behind a text, whereas you are able to specify
+ *  the shadows inner and outer color.</p>
+ * <p>Activate the shadow text effect by specifying <code>text-effect: drop-shadow;</code> in your polish.css file.
+ *    You can finetune the effect with following attributes:
+ * </p>
+ * <ul>
+ * 	 <li><b>text-drop-shadow-start-color</b>: the inner color of the shadow, which should be less opaque than the text. </li>
+ * 	 <li><b>text-drop-shadow-end-color</b>: the outer color of the shadow, which should be less than opaque the inner color. </li>
+ * 	 <li><b>text-drop-shadow-offsetx:</b>: use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.</li>
+ * 	 <li><b>text-drop-shadow-offsety:</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.</li>
+ *   <li><b>text-drop-shadow-size:</b>: use this for finetuning the shadow's radius.</li>
+ * </ul>
+ * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
+ * <p>Copyright Enough Software 2006</p>
+ * <pre>
+ * history
+ *        11-Jul-2006
+ * </pre>
  * @author Simon Schmitt
- *
  */
 public class DropShadowTextEffect extends TextEffect {
 	
 	private final static int CLEAR_COLOR = 0xFF000123;
+	private int clearColor;
 	
-	private int startColor = 0xF0909090;
+	private String lastText;
+	private int lastTextColor;
+	private int lastOrientation;
+	int[] localRgbBuffer;
+	
+	private int startColor = 0xA0909090;
 	private int endColor = 0x20909090;
-	private int size=10;
+	private int size=6;
 	private int xOffset=1, yOffset=2;
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -51,16 +78,6 @@ public class DropShadowTextEffect extends TextEffect {
 	public void drawString(String text, int textColor, int x, int y,
 			int orientation, Graphics g) 
 	{
-		// set colors
-		int[] gradient;
-		if (this.size==1)
-			gradient = new int[] {this.startColor};
-		else
-			gradient = DrawUtil.getGradient( this.startColor, this.endColor, this.size );
-
-		// todo: change DrawUtil.getGradient, such that is supports a size of 1
-		
-		
 		// calculate imagesize
 		Font font = g.getFont();
 		int fHeight = font.getHeight();
@@ -70,55 +87,82 @@ public class DropShadowTextEffect extends TextEffect {
 		int iLeft=0, /*iRight=0,*/ iTop=0/*, iBottom=0*/; 
 		
 		// additional Margin for the image because of the shadow
-		iLeft = this.size-this.xOffset<0 ? 0 : this.size-this.xOffset;//min0
+		iLeft = this.size-this.xOffset<0 ? 0 : this.size-this.xOffset;
 		//iRight = this.size+this.xOffset<0 ? 0 : this.size+this.xOffset;
 		iTop = this.size-this.yOffset<0 ? 0 : this.size-this.yOffset;
-		//iBottom = this.size+this.xOffset<0 ? 0 : this.size+this.xOffset;
+		//iBottom = this.size+this.yOffset<0 ? 0 : this.size+this.yOffset;
 		
-		// create Image, Graphics, ARGB-buffer
-		Graphics bufferG;
-		Image midp2ImageBuffer = Image.createImage( fWidth + this.size*2, fHeight + this.size*2); // iLeft+iRight=2*size??
-		bufferG = midp2ImageBuffer.getGraphics();
-		int[] localRgbBuffer = new int[ (fWidth + this.size*2) * (fHeight + this.size*2) ];
+		// offset of an invisble area caused by negative (x,y)
+		int invX=Math.max(0, -(startX-iLeft));
+		int invY=Math.max(0, -(startY-iTop));
 		
-		// draw pseudo transparent Background
-		bufferG.setColor( CLEAR_COLOR );
-		bufferG.fillRect(0,0,fWidth + this.size*2, fHeight + this.size*2);
-		
-		// draw String on Graphics
-		bufferG.setColor( 0xF0F0F0 );
-		//bufferG.setColor( textColor );
-		bufferG.drawString(text,iLeft,iTop, Graphics.LEFT | Graphics.TOP);
-		
-		// get RGB-Data from Image
-		midp2ImageBuffer.getRGB(localRgbBuffer,0,fWidth + this.size*2, 0, 0, fWidth + this.size*2, fHeight + this.size*2);
-		
-		// transform RGB-Data
-		for (int i=0; i<localRgbBuffer.length;i++){
-			//	 perform Transparency
-			if  (localRgbBuffer[i] == CLEAR_COLOR){
-				localRgbBuffer[i] = 0x00000000;
-			}
-		}
-		
-		// walk over the text and look for non-transparent Pixels	
-		for (int ix=-this.size+1; ix<this.size; ix++){
-			for (int iy=-this.size+1; iy<this.size; iy++){
-				//int gColor=gradient[ Math.max(Math.abs(ix),Math.abs(iy))];
-				//int gColor=gradient[(Math.abs(ix)+Math.abs(iy))/2];
-
-				// compute the color and draw all shadowPixels with offset (ix, iy)
-				if ( Math.sqrt(ix*ix+iy*iy)<this.size) {
-					int gColor = gradient[(int)  Math.sqrt(ix*ix+iy*iy) ];
+		// check whether the string has to be rerendered
+		if (lastText!=text || lastTextColor != textColor) {
+			lastText=text;
+			lastTextColor=textColor;
+			
+			// create Image, Graphics, ARGB-buffer
+			Graphics bufferG;
+			Image midp2ImageBuffer = Image.createImage( fWidth + this.size*2, fHeight + this.size*2); // iLeft+iRight=2*size??
+			bufferG = midp2ImageBuffer.getGraphics();
+			localRgbBuffer = new int[ (fWidth + this.size*2) * (fHeight + this.size*2) ];
 				
-					for (int col=iLeft,row; col<fWidth+iLeft; col++) { 
-						for (row=iTop;row<fHeight+iTop-1;row++){
-							
-							// draw if an opaque pixel is found and the destination is less opaque then the shadow
-							if (localRgbBuffer[row*(fWidth + this.size*2) + col]>>>24==0xFF 
-									&& localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]>>>24 < gColor>>>24)
-							{
-								localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]=gColor;
+			// draw pseudo transparent Background
+			bufferG.setColor( CLEAR_COLOR );
+			bufferG.fillRect(0,0,fWidth + this.size*2, fHeight + this.size*2);
+			
+			
+			// draw String on Graphics
+			bufferG.setFont(font);
+			bufferG.setColor( textColor );
+			bufferG.drawString(text,iLeft,iTop, Graphics.LEFT | Graphics.TOP);
+			//bufferG.drawRect(iLeft,iTop,fWidth,fHeight);
+			
+			// get RGB-Data from Image
+			midp2ImageBuffer.getRGB(localRgbBuffer,0,fWidth + this.size*2, 0, 0, fWidth + this.size*2, fHeight + this.size*2);
+			
+			// check clearColor
+			int[] clearColorArray = new int[1]; 
+			midp2ImageBuffer.getRGB(clearColorArray, 0, 1, 0, 0, 1, 1 );
+			this.clearColor = clearColorArray[0];
+			
+			// transform RGB-Data
+			for (int i=0; i<localRgbBuffer.length;i++){
+				//	 perform Transparency
+				if  (localRgbBuffer[i] == this.clearColor){
+					localRgbBuffer[i] = 0x00000000;
+				}
+			}
+			
+			// set colors
+			int[] gradient;
+			if (this.size==1)
+				gradient = new int[] {this.startColor};
+			else
+				gradient = DrawUtil.getGradient( this.startColor, this.endColor, this.size );
+	
+			// todo: change DrawUtil.getGradient, such that is supports a size of 1
+			
+			
+			// walk over the text and look for non-transparent Pixels	
+			for (int ix=-this.size+1; ix<this.size; ix++){
+				for (int iy=-this.size+1; iy<this.size; iy++){
+					//int gColor=gradient[ Math.max(Math.abs(ix),Math.abs(iy))];
+					//int gColor=gradient[(Math.abs(ix)+Math.abs(iy))/2];
+	
+					// compute the color and draw all shadowPixels with offset (ix, iy)
+					if ( Math.sqrt(ix*ix+iy*iy)<this.size) {
+						int gColor = gradient[(int)  Math.sqrt(ix*ix+iy*iy) ];
+					
+						for (int col=iLeft,row; col<fWidth+iLeft; col++) { 
+							for (row=iTop;row<fHeight+iTop-1;row++){
+								
+								// draw if an opaque pixel is found and the destination is less opaque then the shadow
+								if (localRgbBuffer[row*(fWidth + this.size*2) + col]>>>24==0xFF 
+										&& localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]>>>24 < gColor>>>24)
+								{
+									localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]=gColor;
+								}
 							}
 						}
 					}
@@ -127,7 +171,64 @@ public class DropShadowTextEffect extends TextEffect {
 		}
 		
 		// draw RGB-Data
-		g.drawRGB(localRgbBuffer,0,fWidth + this.size*2, startX+2*this.size-iLeft, startY, fWidth + this.size*2, fHeight + this.size*2, true);
+		if (invX==0 && invY==0) {			// if the text is completely visible
+			g.drawRGB(localRgbBuffer,0,fWidth + this.size*2, startX-iLeft, startY-iTop, fWidth + this.size*2, fHeight + this.size*2, true);
+		} else if (invY!=0 && invX==0) {	// if there is just an y offset
+			g.drawRGB(localRgbBuffer,invY*(fWidth + this.size*2),fWidth + this.size*2, startX-iLeft, /*startY-iTop*/0, fWidth + this.size*2, fHeight + this.size*2-invY, true);
+		} else { 							// there is an x and maybe an y offset
+			for (int i=invY; i<fHeight + this.size*2;i++)
+				// draw row by row
+				g.drawRGB(localRgbBuffer,i*(fWidth + this.size*2)+invX,fWidth + this.size*2-invX,0,i-invY,fWidth + this.size*2-invX,1,true);
+		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		//#if polish.css.text-drop-shadow-start-color
+			Color sShadowColorObj = style.getColorProperty( "text-drop-shadow-start-color" );
+			if (sShadowColorObj != null) {
+				this.startColor = sShadowColorObj.getColor();
+			}
+		//#endif
+		//#if polish.css.text-drop-shadow-end-color
+			Color eShadowColorObj = style.getColorProperty( "text-drop-shadow-end-color" );
+			if (eShadowColorObj != null) {
+				this.endColor = eShadowColorObj.getColor();
+			}
+		//#endif
+
+		//#if polish.css.text-drop-shadow-size
+			Integer sizeInt = style.getIntProperty( "text-drop-shadow-size" );
+			if (sizeInt != null) {
+				this.size = sizeInt.intValue();
+			}
+		//#endif
+		//#if polish.css.text-drop-shadow-offsetx
+			Integer oXInt = style.getIntProperty( "text-drop-shadow-offsetx" );
+			if (oXInt != null) {
+				this.xOffset = oXInt.intValue();
+			}
+		//#endif
+		//#if polish.css.text-drop-shadow-offsety
+			Integer oYInt = style.getIntProperty( "text-drop-shadow-offsety" );
+			if (oYInt != null) {
+				this.yOffset = oYInt.intValue();
+			}
+		//#endif
+			
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#releaseResources()
+	 */
+	public void releaseResources() {
+		super.releaseResources();
+		this.lastText = null;
+		this.localRgbBuffer = null;
+	}
+	
 
 }
