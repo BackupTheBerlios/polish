@@ -21,6 +21,7 @@ import de.enough.polish.util.FileUtil;
 public class BlackBerryEmulator extends Emulator {
 
 	private File blackberryHome;
+	private File executionDir;
 	private String[] arguments;
 
 	public boolean init( Device dev, EmulatorSetting setting,
@@ -63,6 +64,7 @@ public class BlackBerryEmulator extends Emulator {
 				return false;
 			}
 		}
+		this.executionDir = executable.getParentFile();
 		
 		ArrayList argumentsList = new ArrayList();
 		if (File.separatorChar == '/') { // this is a unix environment, try wine:
@@ -121,7 +123,7 @@ public class BlackBerryEmulator extends Emulator {
 	 * @see de.enough.polish.emulator.Emulator#getExecutionDir()
 	 */
 	protected File getExecutionDir() {
-		return new File( this.blackberryHome, "simulator" );
+		return this.executionDir;
 	}
 	
 	
