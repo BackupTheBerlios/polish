@@ -1,8 +1,10 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.tools.ant.Project;
 
@@ -35,17 +37,32 @@ public class BlackBerryEmulator extends Emulator {
 			System.err.println("Unable to start blackberry simulator: Ant property \"blackberry.home\" points to an invalid directory: " + this.blackberryHome.getAbsolutePath()  );
 			return false;
 		}
-		File executable = new File( this.blackberryHome, "simulator" + File.separatorChar + dev.getName() + ".bat" );
+		File home = new File( this.blackberryHome, "simulator" );
+		File executable = getExecutable(home, dev, env);
 		if ( !executable.exists() ) {
-			String alternativeName = env.getVariable("polish.Emulator.Skin");
-			if (alternativeName != null) {
-				executable = new File( this.blackberryHome, "simulator" + File.separatorChar + alternativeName + ".bat" );
+			// search for "BlackBerry Device Simulators" folders:
+			File parent = this.blackberryHome.getParentFile();
+			File[] children = parent.listFiles( new DirectoryFilter("BlackBerry Device Simulators") );
+			Arrays.sort( children );
+			for (int i = children.length - 1; i >= 0; i--) {
+				File deviceSimulatorsFolder = children[i];
+				File[] deviceSimlatorsChildren = deviceSimulatorsFolder.listFiles(new DirectoryFilter("Device Simulators"));
+				for (int j = deviceSimlatorsChildren.length -1; j >= 0; j--) {
+					home = deviceSimlatorsChildren[j];
+					executable = getExecutable(home, dev, env);
+					if (executable.exists()) {
+						break;
+					}
+				}
+				if (executable.exists()) {
+					break;
+				}
 			}
-			if ( !executable.exists() ) {
-				System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
-				return false;
-			}
+			
+			System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
+			return false;
 		}
+		
 		ArrayList argumentsList = new ArrayList();
 		if (File.separatorChar == '/') { // this is a unix environment, try wine:
 			argumentsList.add("wine");
@@ -77,6 +94,24 @@ public class BlackBerryEmulator extends Emulator {
 		return true;
 	}
 
+	/**
+	 * Retrieves the executable
+	 * 
+	 * @param dev the device
+	 * @param env the environment
+	 * @return the executable file, which might not exist
+	 */
+	private File getExecutable(File home, Device dev, Environment env) {
+		File executable = new File( home, dev.getName() + ".bat" );
+		if ( !executable.exists() ) {
+			String alternativeName = env.getVariable("polish.Emulator.Skin");
+			if (alternativeName != null) {
+				executable = new File(home, alternativeName + ".bat" );
+			}
+		}
+		return executable;
+	}
+
 	public String[] getArguments() {
 		return this.arguments;
 	}
@@ -90,4 +125,19 @@ public class BlackBerryEmulator extends Emulator {
 	
 	
 
+	class DirectoryFilter implements FileFilter {
+		private final String requiredName;
+		/**
+		 * @param requiredName the name of the dir
+		 */
+		public DirectoryFilter( String requiredName ) {
+			this.requiredName = requiredName;
+		}
+		public boolean accept(File file) {
+			return file.isDirectory() 
+				&& file.getName().startsWith( this.requiredName );
+		}
+	}
+	
+	
 }
