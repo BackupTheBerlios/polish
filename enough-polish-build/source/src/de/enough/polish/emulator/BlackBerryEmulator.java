@@ -57,10 +57,11 @@ public class BlackBerryEmulator extends Emulator {
 				if (executable.exists()) {
 					break;
 				}
+			}			
+			if ( !executable.exists() ) {
+				System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
+				return false;
 			}
-			
-			System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
-			return false;
 		}
 		
 		ArrayList argumentsList = new ArrayList();
