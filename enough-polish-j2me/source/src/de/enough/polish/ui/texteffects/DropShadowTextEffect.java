@@ -65,8 +65,8 @@ public class DropShadowTextEffect extends TextEffect {
 	private int lastTextColor;
 	int[] localRgbBuffer;
 	
-	private int startColor = 0xA0909090;
-	private int endColor = 0x20909090;
+	private int innerColor = 0xA0909090;
+	private int outerColor = 0x20909090;
 	private int size=6;
 	private int xOffset=1, yOffset=2;
 	
@@ -132,11 +132,11 @@ public class DropShadowTextEffect extends TextEffect {
 			}
 			
 			// set colors
-			int[] gradient = DrawUtil.getGradient( this.startColor, this.endColor, this.size );
+			int[] gradient = DrawUtil.getGradient( this.innerColor, this.outerColor, this.size );
 			/*
 			//	TODO: Test several gradients
 			//int[] test
-			gradient=DrawUtil.getTestGradient(this.startColor, this.endColor, this.size );
+			gradient=DrawUtil.getTestGradient(this.innerColor, this.outerColor, this.size );
 			// correct the transparency
 			for (int i=0; i<gradient.length; i++){
 				gradient[i]=(gradient[i] & 0x00FFFFFF) + ((254-i*10)<<24);
@@ -167,31 +167,11 @@ public class DropShadowTextEffect extends TextEffect {
 					}
 				}
 			}
-			
-			/*DrawUtil.applyFilter(new byte[][]
-			   //{{0,6,0},{0,10,0},{0,6,0}},90
-			   //{{0,0,0},{6,10,6},{0,0,0}},100
-			   //{{0,0,0},{6,10,6},{0,0,0}},150
-			   {{1,1,1},{1,1,1},{1,1,1}},100
-			   //{{1,1,1},{1,2,1},{1,1,1}},100
-			   //{{1,1,1},{1,4,1},{1,1,1}},100
-			   //{{1,1,1,1,1}},100
-			   
-			    //{{16,26,16},{26,41,26},{16,26,16}},100
-			    //{{0,0,0},{0,1,0},{0,0,0}},100
-			    //{{1}},100
-			    //{{-10,6,4},{6,8,6},{4,19,4}},300
-               //{{1},{5},{1}},100
-			,localRgbBuffer,fWidth + this.size*2,fHeight + this.size*2);
-			*/
 		}
-		
 		
 		// draw RGB-Data
 		g.drawRGB(localRgbBuffer,invY*(fWidth + this.size*2)+invX,fWidth + this.size*2, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , fWidth + this.size*2-invX, fHeight + this.size*2-invY, true);
 		
-		/*g.setColor( 0xFF000000 );
-		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);*/
 	}
 	
 	/* (non-Javadoc)
@@ -199,16 +179,16 @@ public class DropShadowTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		//#if polish.css.text-drop-shadow-start-color
-			Color sShadowColorObj = style.getColorProperty( "text-drop-shadow-start-color" );
+		//#if polish.css.text-drop-shadow-inner-color
+			Color sShadowColorObj = style.getColorProperty( "text-drop-shadow-inner-color" );
 			if (sShadowColorObj != null) {
-				this.startColor = sShadowColorObj.getColor();
+				this.innerColor = sShadowColorObj.getColor();
 			}
 		//#endif
-		//#if polish.css.text-drop-shadow-end-color
-			Color eShadowColorObj = style.getColorProperty( "text-drop-shadow-end-color" );
+		//#if polish.css.text-drop-shadow-outer-color
+			Color eShadowColorObj = style.getColorProperty( "text-drop-shadow-outer-color" );
 			if (eShadowColorObj != null) {
-				this.endColor = eShadowColorObj.getColor();
+				this.outerColor = eShadowColorObj.getColor();
 			}
 		//#endif
 
