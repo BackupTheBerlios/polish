@@ -57,13 +57,12 @@ import de.enough.polish.util.DrawUtil;
  * @author Simon Schmitt
  */
 public class DropShadowTextEffect extends TextEffect {
-	
+		
 	private final static int CLEAR_COLOR = 0xFF000123;
 	private int clearColor;
 	
 	private String lastText;
 	private int lastTextColor;
-	private int lastOrientation;
 	int[] localRgbBuffer;
 	
 	private int startColor = 0xA0909090;
@@ -106,17 +105,15 @@ public class DropShadowTextEffect extends TextEffect {
 			Image midp2ImageBuffer = Image.createImage( fWidth + this.size*2, fHeight + this.size*2); // iLeft+iRight=2*size??
 			bufferG = midp2ImageBuffer.getGraphics();
 			localRgbBuffer = new int[ (fWidth + this.size*2) * (fHeight + this.size*2) ];
-				
+			
 			// draw pseudo transparent Background
 			bufferG.setColor( CLEAR_COLOR );
 			bufferG.fillRect(0,0,fWidth + this.size*2, fHeight + this.size*2);
-			
 			
 			// draw String on Graphics
 			bufferG.setFont(font);
 			bufferG.setColor( textColor );
 			bufferG.drawString(text,iLeft,iTop, Graphics.LEFT | Graphics.TOP);
-			//bufferG.drawRect(iLeft,iTop,fWidth,fHeight);
 			
 			// get RGB-Data from Image
 			midp2ImageBuffer.getRGB(localRgbBuffer,0,fWidth + this.size*2, 0, 0, fWidth + this.size*2, fHeight + this.size*2);
@@ -135,14 +132,7 @@ public class DropShadowTextEffect extends TextEffect {
 			}
 			
 			// set colors
-			int[] gradient;
-			if (this.size==1)
-				gradient = new int[] {this.startColor};
-			else
-				gradient = DrawUtil.getGradient( this.startColor, this.endColor, this.size );
-	
-			// todo: change DrawUtil.getGradient, such that is supports a size of 1
-			
+			int[] gradient = DrawUtil.getGradient( this.startColor, this.endColor, this.size );
 			
 			// walk over the text and look for non-transparent Pixels	
 			for (int ix=-this.size+1; ix<this.size; ix++){
@@ -168,18 +158,32 @@ public class DropShadowTextEffect extends TextEffect {
 					}
 				}
 			}
+			/*
+			DrawUtil.applyFilter(new byte[][]
+			   //{{0,6,0},{0,10,0},{0,6,0}},90
+			   //{{0,0,0},{6,10,6},{0,0,0}},100
+			   //{{0,0,0},{6,10,6},{0,0,0}},150
+			   //{{1,1,1},{1,1,1},{1,1,1}},100
+			   //{{1,1,1},{1,2,1},{1,1,1}},100
+			   //{{1,1,1},{1,4,1},{1,1,1}},100
+			   {{1,1,1,1,1}},100
+			   
+			    //{{16,26,16},{26,41,26},{16,26,16}},100
+			    //{{0,0,0},{0,1,0},{0,0,0}},100
+			    //{{1}},100
+			    //{{-10,6,4},{6,8,6},{4,19,4}},300
+               //{{1},{5},{1}},100
+			,localRgbBuffer,fWidth + this.size*2,fHeight + this.size*2);
+			*/
 		}
 		
+		
 		// draw RGB-Data
-		if (invX==0 && invY==0) {			// if the text is completely visible
-			g.drawRGB(localRgbBuffer,0,fWidth + this.size*2, startX-iLeft, startY-iTop, fWidth + this.size*2, fHeight + this.size*2, true);
-		} else if (invY!=0 && invX==0) {	// if there is just an y offset
-			g.drawRGB(localRgbBuffer,invY*(fWidth + this.size*2),fWidth + this.size*2, startX-iLeft, /*startY-iTop*/0, fWidth + this.size*2, fHeight + this.size*2-invY, true);
-		} else { 							// there is an x and maybe an y offset
-			for (int i=invY; i<fHeight + this.size*2;i++)
-				// draw row by row
-				g.drawRGB(localRgbBuffer,i*(fWidth + this.size*2)+invX,fWidth + this.size*2-invX,0,i-invY,fWidth + this.size*2-invX,1,true);
-		}
+		g.drawRGB(localRgbBuffer,invY*(fWidth + this.size*2)+invX,fWidth + this.size*2, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , fWidth + this.size*2-invX, fHeight + this.size*2-invY, true);
+		/*
+		g.setColor( 0xFF000000 );
+		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);*/
+		
 	}
 	
 	/* (non-Javadoc)
