@@ -149,16 +149,102 @@ public final class DrawUtil {
 			| ((255 - (( 0x0000FF00 & color ) >> 8)) << 8)
 			| (255 - ( 0x000000FF & color ) );				
 	}
-
+/*
+	public final static int[] getTestGradient(int startColor, int endColor, int steps){
+		int[] gradient=new int[steps];
+		
+		// der Test
+		getSquareGradient(0xFFFFFFFF, 0xFF000000, gradient,1);
+		getSquareGradient(0xFFFFFFFF, 0x00008000, gradient,2);
+		getSquareGradient(0xFFFFFFFF, 0xFF000000, gradient,3);
+		
+		
+		return gradient;
+	}
 	
+	public final static void getSquareGradient(int startColor, int endColor, int[] gradient, int colorComponent){
+		// TODO: size ==1,=?=2
+		
+		// change the numeration
+		if (colorComponent>4) 
+			throw new IllegalArgumentException();
+		
+		colorComponent=4-colorComponent;
+		if (colorComponent==0)
+			colorComponent=4;
+		colorComponent--;
+		
+		// intitalize the quadratic function
+		int partA=(startColor>>>(8*colorComponent)) & COLOR_BIT_MASK;
+		int partB=(endColor>>>(8*colorComponent)) & COLOR_BIT_MASK;
+		float a=(float)(partB-partA)/((gradient.length-1)*(gradient.length-1));
+		
+		System.out.println(" partA:"+ partA + " partB" +partB + " a="+ Float.toString(a));
+		
+		int iSquare=0;
+		for (int i=0; i<gradient.length; i++) {
+			// TODO: kann der Farbbereich überschritten werden?
+			gradient[i]+=(partA+(int)(a*iSquare))<<(8*colorComponent);
+			iSquare+=(i<<1)+1;
+		}
+	}*/
+	/*
+	public final static void changeBrightness(int[] argbData,int alpha,int red, int green, int blue){
+		if (alpha!=0)
+			changeBrightness(argbData,alpha,0);
+		if (red!=0)
+			changeBrightness(argbData,red,1);
+		if (green!=0)
+			changeBrightness(argbData,green,2);
+		if (blue!=0)
+			changeBrightness(argbData,blue,3);
+		
+	}
+	
+	public final static void changeBrightness(int[] argbData, int value, int colorComponent){
+		
+		// change the numeration
+		if (colorComponent>4) 
+			throw new IllegalArgumentException();
+		
+		colorComponent=4-colorComponent;
+		if (colorComponent==0) 
+			colorComponent=4;
+		colorComponent--;
+		
+		int ccVal;
+		int localInvBitMask=~(0xFF<<(8*colorComponent));
+
+		for (int i=0; i<argbData.length; i++){
+			// extract, add and fill the color in
+			ccVal=(argbData[i]>>>(8*colorComponent)) & COLOR_BIT_MASK;
+			ccVal=ccVal+value;
+			ccVal=Math.max(0,Math.min(255,ccVal));
+			argbData[i]=(argbData[i]&localInvBitMask) +(ccVal<<(8*colorComponent));
+		}
+		
+		
+	}*/
 	static int COLOR_BIT_MASK	= 0x000000FF;
+	public static byte[][] FILTER_GAUSSIAN_2 =
+									 {{1,2,1},
+									  {2,4,2},
+									  {1,2,1}};
+	public static byte[][] FILTER_GAUSSIAN_3=
+	       			        {{0,1,2,1,0},
+	       					 {1,3,5,3,1},
+	       					 {2,5,9,5,2},
+	       					 {1,3,5,3,1},
+	       					 {0,1,2,1,0}};
+	
 	/**
 	 * Performs a convolution of an image with a given matrix. 
 	 * @param filterMatrix a matrix, which should have odd rows an colums (not neccessarily a square). The matrix is used for a 2-dimensional convolution. Negative values are possible.  
 	 * @param brightness you can vary the brightness of the image measured in percent. Note that the algorithm tries to keep the original brightness as far as is possible.
 	 * @param argbData the image (RGB+transparency)
-	 * @param width 
-	 * @param height
+	 * @param width of the given Image
+	 * @param height of the given Image
+	 * Be aware that the computation time depends on the size of the matrix.
 	 */
 	public final static void applyFilter(byte[][] filterMatrix, int brightness, int[] argbData, int width, int height) {
 		
