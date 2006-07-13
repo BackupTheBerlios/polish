@@ -530,6 +530,7 @@ public class Form extends Screen
 	 */
 	public int append( Item item, Style itemStyle )
 	{
+		item.screen = this;
 		this.container.add( item );
 		if (itemStyle != null) {
 			item.setStyle( itemStyle );

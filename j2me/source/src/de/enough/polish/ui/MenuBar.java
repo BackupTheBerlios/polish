@@ -144,11 +144,16 @@ public class MenuBar extends Item {
 		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
 			//#debug
-			System.out.println("Ignoring existing command " + cmd.getLabel() );
+			System.out.println( this + ": Ignoring existing command " + cmd.getLabel() + ",  cmd==this.singleRightCommand: " + ( cmd == this.singleRightCommand) + ", cmd==this.singleLeftCommand: " + (cmd == this.singleLeftCommand) + ", this.commandsList.contains(cmd): " + this.commandsList.contains(cmd)  );
+			//#if polish.debug.debug
+				for (int i = 0; i < this.commandsList.size(); i++) {
+					System.out.println(  ((Command)this.commandsList.get(i)).getLabel() );
+				}
+			//#endif
 			return;
 		}
 		//#debug
-		System.out.println("adding command " + cmd.getLabel() + " (" + cmd + ")");
+		System.out.println(this + ": adding command " + cmd.getLabel() + " (" + cmd + ")");
 		int type = cmd.getCommandType();
 		int priority = cmd.getPriority();
 		//#if tmp.useInvisibleMenuBar
@@ -202,6 +207,8 @@ public class MenuBar extends Item {
 					}
 				//#else
 					if (this.singleRightCommand == null) {
+						//#debug
+						System.out.println("Setting single right command " + cmd.getLabel() );
 						this.singleRightCommand = cmd;
 						this.singleRightCommandItem.setImage( (Image)null );
 						this.singleRightCommandItem.setText( cmd.getLabel() );
@@ -216,6 +223,8 @@ public class MenuBar extends Item {
 						this.singleRightCommandItem.setText( cmd.getLabel() );
 						cmd = oldRightCommand;
 						priority = oldRightCommand.getPriority();
+						//#debug
+						System.out.println("exchanging right command " + oldRightCommand.getLabel() );
 					}
 				//#endif
 			}
@@ -242,6 +251,8 @@ public class MenuBar extends Item {
 			//#else
 				if (this.singleLeftCommand != null) {
 					// add existing left command first:
+					//#debug
+					System.out.println("moving single left command " + this.singleLeftCommand.getLabel() + " to commandsContainer");
 					//#style menuitem, menu, default
 					CommandItem item = new CommandItem( this.singleLeftCommand, this );
 					this.commandsList.add( this.singleLeftCommand );
@@ -313,7 +324,7 @@ public class MenuBar extends Item {
 	 */
 	public void removeCommand(Command cmd) {
 		//#debug
-		System.out.println("removing command " + cmd.getLabel() + " (" + cmd + ")");
+		System.out.println(this + ": removing command " + cmd.getLabel() + " (" + cmd + ")");
 		//#if tmp.useInvisibleMenuBar
 			if (cmd == this.positiveCommand) {
 				this.positiveCommand = null;
@@ -735,8 +746,12 @@ public class MenuBar extends Item {
 				// this is now done automatically by the Screen class
 	//				setOpen( false );
 	//			}				
-				return true;			
-			} else  if (keyCode == this.closeOptionsMenuKey) {
+				return true;
+			//#if polish.key.ReturnKey:defined
+				//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
+			//#else
+				} else  if (keyCode == this.closeOptionsMenuKey) {
+			//#endif
 				this.isSoftKeyPressed = true;
 				int selectedIndex = this.commandsContainer.getFocusedIndex();
 				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)

@@ -2432,6 +2432,7 @@ implements AccessibleCanvas
 			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
+				//System.out.println("scren: add ItemCommand " + command.getLabel() );
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.addCommand(command);
 				//#else
