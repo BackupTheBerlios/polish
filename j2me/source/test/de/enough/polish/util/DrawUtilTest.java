@@ -44,6 +44,9 @@ public class DrawUtilTest extends TestCase {
 		assertEquals( 0xFFFFFF, gradient[0] );
 		assertEquals( 0, gradient[1] );
 
+		gradient = DrawUtil.getGradient( 0xFFFFFF, 0x000000, 1);
+		assertEquals( 1, gradient.length );
+		assertEquals( 0xFFFFFF, gradient[0] );
 		
 		for (int i = 0; i < gradient.length; i++) {
 			int color = gradient[i];
