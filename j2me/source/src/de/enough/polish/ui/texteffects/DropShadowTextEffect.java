@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp2
+//#condition polish.usePolishGui && polish.midp2 && polish.cldc1.1
 /*
  * Created on 10.07.2006 at 12:22:13.
  * 
@@ -133,6 +133,15 @@ public class DropShadowTextEffect extends TextEffect {
 			
 			// set colors
 			int[] gradient = DrawUtil.getGradient( this.startColor, this.endColor, this.size );
+			/*
+			//	TODO: Test several gradients
+			//int[] test
+			gradient=DrawUtil.getTestGradient(this.startColor, this.endColor, this.size );
+			// correct the transparency
+			for (int i=0; i<gradient.length; i++){
+				gradient[i]=(gradient[i] & 0x00FFFFFF) + ((254-i*10)<<24);
+				System.out.println("   "+Integer.toHexString(gradient[i]));
+			}*/
 			
 			// walk over the text and look for non-transparent Pixels	
 			for (int ix=-this.size+1; ix<this.size; ix++){
@@ -158,15 +167,15 @@ public class DropShadowTextEffect extends TextEffect {
 					}
 				}
 			}
-			/*
-			DrawUtil.applyFilter(new byte[][]
+			
+			/*DrawUtil.applyFilter(new byte[][]
 			   //{{0,6,0},{0,10,0},{0,6,0}},90
 			   //{{0,0,0},{6,10,6},{0,0,0}},100
 			   //{{0,0,0},{6,10,6},{0,0,0}},150
-			   //{{1,1,1},{1,1,1},{1,1,1}},100
+			   {{1,1,1},{1,1,1},{1,1,1}},100
 			   //{{1,1,1},{1,2,1},{1,1,1}},100
 			   //{{1,1,1},{1,4,1},{1,1,1}},100
-			   {{1,1,1,1,1}},100
+			   //{{1,1,1,1,1}},100
 			   
 			    //{{16,26,16},{26,41,26},{16,26,16}},100
 			    //{{0,0,0},{0,1,0},{0,0,0}},100
@@ -180,10 +189,9 @@ public class DropShadowTextEffect extends TextEffect {
 		
 		// draw RGB-Data
 		g.drawRGB(localRgbBuffer,invY*(fWidth + this.size*2)+invX,fWidth + this.size*2, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , fWidth + this.size*2-invX, fHeight + this.size*2-invY, true);
-		/*
-		g.setColor( 0xFF000000 );
-		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);*/
 		
+		/*g.setColor( 0xFF000000 );
+		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);*/
 	}
 	
 	/* (non-Javadoc)
