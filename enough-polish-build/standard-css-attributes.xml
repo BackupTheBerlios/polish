@@ -976,7 +976,10 @@
 			<condition>polish.midp2</condition>
 		</mapping>
 		<mapping from="drop-shadow" to="new de.enough.polish.ui.texteffects.DropShadowTextEffect()" >
-			<condition>polish.midp2</condition>
+			<condition>polish.midp2 and polish.cldc1.1</condition>
+		</mapping>
+		<mapping from="alien-glow" to="new de.enough.polish.ui.texteffects.AlienGlowTextEffect()" >
+			<condition>polish.midp2 and polish.cldc1.1</condition>
 		</mapping>
 	</attribute>
 	
@@ -1712,7 +1715,7 @@
 		id="169"
 	/>
 	<attribute
-		name="text-drop-shadow-start-color"
+		name="text-drop-shadow-inner-color"
 		type="color"
 		appliesTo="StringItem, DropShadowTextEffect"
 		description="The color of the inner shadow. The color must not be fully opaque!"
@@ -1720,14 +1723,30 @@
 		id="170"
 	/>
 	<attribute
-		name="text-drop-shadow-end-color"
+		name="text-drop-shadow-outer-color"
 		type="color"
 		appliesTo="StringItem, DropShadowTextEffect"
 		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
 		default="#20909090"
 		id="171"
 	/>
-	
+	<attribute
+		name="text-alien-glow-inner-color"
+		type="color"
+		appliesTo="StringItem, AlienGlowTextEffect"
+		description="The inner parts color of the glow."
+		default="#FFFFFFFF"
+		id="172"
+	/>
+	<attribute
+		name="text-alien-glow-outer-color"
+		type="color"
+		appliesTo="StringItem, AlienGlowTextEffect"
+		description="The outer parts color of the glow."
+		default="#FF00FF00"
+		id="173"
+	/>
+
 	<!--
 	
 	<attribute
