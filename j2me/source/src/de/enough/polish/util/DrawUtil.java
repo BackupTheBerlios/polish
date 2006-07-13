@@ -31,7 +31,7 @@ import javax.microedition.lcdui.Graphics;
 
 //#if polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;
-	import com.nokia.mid.ui.DirectUtils;
+import com.nokia.mid.ui.DirectUtils;
 //#endif
 
 /**
@@ -95,7 +95,10 @@ public final class DrawUtil {
 	 */
 	public static void getGradient(int startColor, int endColor, int[] gradient) {
 		int steps = gradient.length;
-		
+		if (steps == 1) {
+			gradient[0] = startColor;
+			return;
+		}
 		int startAlpha = startColor >>> 24;
 		int startRed = (startColor >>> 16) & 0x00FF;
 		int startGreen = (startColor >>> 8) & 0x0000FF;
@@ -147,4 +150,86 @@ public final class DrawUtil {
 			| (255 - ( 0x000000FF & color ) );				
 	}
 
+	
+	static int COLOR_BIT_MASK	= 0x000000FF;
+	/**
+	 * Performs a convolution of an image with a given matrix. 
+	 * @param filterMatrix a matrix, which should have odd rows an colums (not neccessarily a square). The matrix is used for a 2-dimensional convolution. Negative values are possible.  
+	 * @param brightness you can vary the brightness of the image measured in percent. Note that the algorithm tries to keep the original brightness as far as is possible.
+	 * @param argbData the image (RGB+transparency)
+	 * @param width 
+	 * @param height
+	 */
+	public final static void applyFilter(byte[][] filterMatrix, int brightness, int[] argbData, int width, int height) {
+		
+		// check whether the matrix is ok
+		if (filterMatrix.length % 2 !=1 || filterMatrix[0].length % 2 !=1 ){
+			 throw new IllegalArgumentException();
+		}
+		
+		int fhRadius=filterMatrix.length/2+1;
+		int fwRadius=filterMatrix[0].length/2+1;
+		int currentPixel=0;
+		int newTran, newRed, newGreen, newBlue;
+		
+		// compute the bightness 
+		int divisor=0;
+		for (int fCol, fRow=0; fRow < filterMatrix.length; fRow++){
+			for (fCol=0; fCol < filterMatrix[0].length; fCol++){
+				divisor+=filterMatrix[fRow][fCol];
+			}
+		}
+		// TODO: if (divisor==0), because of negativ matrixvalues
+		if (divisor==0) {
+			return; // no brightness
+		}
+		
+		// copy the neccessary imagedata into a small buffer
+		int[] tmpRect=new int[width*(filterMatrix.length)];
+		System.arraycopy(argbData,0, tmpRect,0, width*(filterMatrix.length));
+		
+		for (int fCol, fRow, col, row=fhRadius-1; row+fhRadius<height+1; row++){
+			for (col=fwRadius-1; col+fwRadius<width+1; col++){
+				
+				// perform the convolution
+				newTran=0; newRed=0; newGreen=0; newBlue=0;
+				
+				for (fRow=0; fRow<filterMatrix.length; fRow++){
+					
+					for (fCol=0; fCol<filterMatrix[0].length;fCol++){
+
+						// take the Data from the little buffer and skale the color 
+						currentPixel = tmpRect[fRow*width+col+fCol-fwRadius+1];
+						
+						newTran	+= filterMatrix[fRow][fCol] * ((currentPixel >>> 24) & COLOR_BIT_MASK);
+						newRed	+= filterMatrix[fRow][fCol] * ((currentPixel >>> 16) & COLOR_BIT_MASK);
+						newGreen+= filterMatrix[fRow][fCol] * ((currentPixel >>> 8) & COLOR_BIT_MASK);
+						newBlue	+= filterMatrix[fRow][fCol] * (currentPixel & COLOR_BIT_MASK);
+						
+					}
+				}
+				
+				// calculate the color	
+				newTran = newTran * brightness/100/divisor;
+				newRed  = newRed  * brightness/100/divisor;
+				newGreen= newGreen* brightness/100/divisor;
+				newBlue = newBlue * brightness/100/divisor;
+			
+				newTran =Math.max(0,Math.min(255,newTran));
+				newRed  =Math.max(0,Math.min(255,newRed));
+				newGreen=Math.max(0,Math.min(255,newGreen));
+				newBlue =Math.max(0,Math.min(255,newBlue));
+				argbData[(row)*width+col]=(newTran<<24 | newRed<<16 | newGreen <<8 | newBlue);
+				
+			}
+			
+			// shift the buffer if we are not near the end
+			if (row+fhRadius!=height) { 
+				System.arraycopy(tmpRect,width, tmpRect,0, width*(filterMatrix.length-1));	// shift it back
+				System.arraycopy(argbData,width*(row+fhRadius), tmpRect,width*(filterMatrix.length-1), width);	// add new data
+			}
+		}
+		
+	}
+	
 }
