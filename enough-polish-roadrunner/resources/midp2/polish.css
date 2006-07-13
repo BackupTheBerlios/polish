@@ -13,17 +13,14 @@
 
 title {
 	padding-top: 5;
-	font-color: black;/*#00D000;*/
 	layout: center;
 	font-size: large;
+	text-effect: alien-glow;
 	
-	text-effect: drop-shadow;
-	text-drop-shadow-start-color: #F0FFFFFF /*#A0309030*/;
-	text-drop-shadow-end-color: #2000FF00 /*#80309030*/;
+	font-color: #FF000000;
+	/*text-alien-glow-outer-color: blue;
+	text-alien-glow-inner-color: #FF0000FF;*/
 	
-	text-drop-shadow-size: 5;
-	text-drop-shadow-offsetx: 0;
-	text-drop-shadow-offsety: 0;
 	
 	/*text-effect: gradient;
 	text-vertical-gradient-start-color: white;
