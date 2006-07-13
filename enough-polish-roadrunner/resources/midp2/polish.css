@@ -13,17 +13,17 @@
 
 title {
 	padding-top: 5;
-	font-color: #00D000;
+	font-color: black;/*#00D000;*/
 	layout: center;
 	font-size: large;
 	
 	text-effect: drop-shadow;
-	text-drop-shadow-start-color: #A0309030;
-	text-drop-shadow-end-color: #20309030;
+	text-drop-shadow-start-color: #F0FFFFFF /*#A0309030*/;
+	text-drop-shadow-end-color: #2000FF00 /*#80309030*/;
 	
-	text-drop-shadow-size: 8;
-	text-drop-shadow-offsetx: 1;
-	text-drop-shadow-offsety: 2;
+	text-drop-shadow-size: 5;
+	text-drop-shadow-offsetx: 0;
+	text-drop-shadow-offsety: 0;
 	
 	/*text-effect: gradient;
 	text-vertical-gradient-start-color: white;
