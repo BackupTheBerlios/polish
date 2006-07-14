@@ -82,6 +82,8 @@ public class DropShadowTextEffect extends TextEffect {
 		Font font = g.getFont();
 		int fHeight = font.getHeight();
 		int fWidth = font.stringWidth( text );
+		int newWidth=fWidth + this.size*2;
+		int newHeight=fHeight+ this.size*2;
 		int startX = getLeftX( x, orientation, fWidth );
 		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
 		
@@ -100,13 +102,13 @@ public class DropShadowTextEffect extends TextEffect {
 			
 			// create Image, Graphics, ARGB-buffer
 			Graphics bufferG;
-			Image midp2ImageBuffer = Image.createImage( fWidth + this.size*2, fHeight + this.size*2); // iLeft+iRight=2*size??
+			Image midp2ImageBuffer = Image.createImage( newWidth, newHeight); // iLeft+iRight=2*size??
 			bufferG = midp2ImageBuffer.getGraphics();
-			this.localRgbBuffer = new int[ (fWidth + this.size*2) * (fHeight + this.size*2) ];
+			this.localRgbBuffer = new int[ (newWidth) * (newHeight) ];
 			
 			// draw pseudo transparent Background
 			bufferG.setColor( CLEAR_COLOR );
-			bufferG.fillRect(0,0,fWidth + this.size*2, fHeight + this.size*2);
+			bufferG.fillRect(0,0,newWidth, newHeight);
 			
 			// draw String on Graphics
 			bufferG.setFont(font);
@@ -114,7 +116,7 @@ public class DropShadowTextEffect extends TextEffect {
 			bufferG.drawString(text,iLeft,iTop, Graphics.LEFT | Graphics.TOP);
 			
 			// get RGB-Data from Image
-			midp2ImageBuffer.getRGB(this.localRgbBuffer,0,fWidth + this.size*2, 0, 0, fWidth + this.size*2, fHeight + this.size*2);
+			midp2ImageBuffer.getRGB(this.localRgbBuffer,0,newWidth, 0, 0, newWidth, newHeight);
 			
 			// check clearColor
 			int[] clearColorArray = new int[1]; 
@@ -129,12 +131,16 @@ public class DropShadowTextEffect extends TextEffect {
 				}
 			}
 			
-			DrawUtil.dropShadow(this.localRgbBuffer,fWidth + this.size*2,fHeight + this.size*2,this.xOffset, this.yOffset, this.size,this.innerColor, this.outerColor);
+			DrawUtil.dropShadow(this.localRgbBuffer,newWidth,newHeight,this.xOffset, this.yOffset, this.size,this.innerColor, this.outerColor);
 			
 		}
 		
 		// draw RGB-Data
-		g.drawRGB(this.localRgbBuffer,invY*(fWidth + this.size*2)+invX,fWidth + this.size*2, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , fWidth + this.size*2-invX, fHeight + this.size*2-invY, true);
+		if (newHeight-invY<=0 || newWidth-invX<=0){
+			// bugfix: exit if there is no part of text visible
+			return;
+		}
+		g.drawRGB(this.localRgbBuffer,invY*(newWidth)+invX,newWidth, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , newWidth-invX, newHeight-invY, true);
 		
 	}
 	
