@@ -97,6 +97,11 @@ implements CommandListener
 		//#style mainMenuItem
 		this.mainMenu.append( Locale.get( "menu.Quit"), null);
 		
+		for (int i=0; i < 10; i++ ) {
+			//#style mainMenuItem
+			this.mainMenu.append( "dummy " + (i+1), null);		
+		}
+		
 		this.quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
 		this.mainMenu.addCommand( this.quitCmd );
 		//#ifdef polish.debugEnabled

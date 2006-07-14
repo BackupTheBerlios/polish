@@ -18,11 +18,24 @@ title {
 	text-effect: alien-glow;
 	
 	font-color: #FF000000;
-	/*text-alien-glow-outer-color: blue;
-	text-alien-glow-inner-color: #FF0000FF;*/
+	text-alien-glow-outer-color: blue;
+	text-alien-glow-inner-color: #FF0000FF;
 	
 	
 	/*text-effect: gradient;
 	text-vertical-gradient-start-color: white;
 	text-vertical-gradient-end-color: highlightedFontColor;*/
+}
+
+
+focused {
+	margin: 2;
+    font-bitmap: none;
+	text-effect: alien-glow;
+	font-color: #FF000000;
+	background: none;
+    /*
+	*/
+	/*text-alien-glow-outer-color: blue;
+	text-alien-glow-inner-color: #FF0000FF;*/
 }

@@ -136,7 +136,7 @@
 				<!--
 				 if="test"
 				-->
-				<debug level="error" showLogOnError="true" verbose="false" if="test" >
+				<debug level="error" showLogOnError="true" verbose="true" if="test" >
 					<handler name="rms" if="false"/>
 					<handler name="file" if="polish.api.pdaapi">
 			            <parameter name="preferredRoot" value="E:"/>
@@ -144,6 +144,7 @@
 					</handler>
 					<filter level="info" pattern="de.enough.roadrunner.*"/>
 					<filter level="info" pattern="de.enough.polish.ui.*"/>
+					<filter level="debug" class="de.enough.polish.ui.Container"/>
 					<filter level="info" class="de.enough.polish.ui.Screen"/>
 				</debug>
 				<!-- play around with an additional preprocessor: 
