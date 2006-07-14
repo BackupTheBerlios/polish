@@ -160,9 +160,9 @@ public final class DrawUtil {
 	 * <p>Choosing the same inner and outer color and varying the transparency is recommended.
 	 *  Dropshadow just works for fully opaque pixels.</p>
 	 * 
-	 * @param argbData
-	 * @param width
-	 * @param height
+	 * @param argbData the images ARGB-Array
+	 * @param width the width of the ARGB-Array
+	 * @param height the width of the ARGB-Array
 	 * @param xOffset use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.
 	 * @param yOffset use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.
 	 * @param size use this for finetuning the shadows radius.
