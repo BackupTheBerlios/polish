@@ -46,7 +46,7 @@ import de.enough.polish.util.DrawUtil;
  * 	 <li><b>text-drop-shadow-outer-color</b>: the outer color of the shadow, which should be less than opaque the inner color. </li>
  * 	 <li><b>text-drop-shadow-offsetx:</b>: use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.</li>
  * 	 <li><b>text-drop-shadow-offsety:</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.</li>
- *   <li><b>text-drop-shadow-size:</b>: use this for finetuning the shadow's radius.</li>
+ *   <li><b>text-drop-shadow-size:</b>: use this for finetuning the shadows radius.</li>
  * </ul>
  * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
  * <p>Copyright Enough Software 2006</p>
@@ -84,13 +84,10 @@ public class DropShadowTextEffect extends TextEffect {
 		int fWidth = font.stringWidth( text );
 		int startX = getLeftX( x, orientation, fWidth );
 		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
-		int iLeft=0, /*iRight=0,*/ iTop=0/*, iBottom=0*/; 
 		
 		// additional Margin for the image because of the shadow
-		iLeft = this.size-this.xOffset<0 ? 0 : this.size-this.xOffset;
-		//iRight = this.size+this.xOffset<0 ? 0 : this.size+this.xOffset;
-		iTop = this.size-this.yOffset<0 ? 0 : this.size-this.yOffset;
-		//iBottom = this.size+this.yOffset<0 ? 0 : this.size+this.yOffset;
+		int iLeft = this.size-this.xOffset<0 ? 0 : this.size-this.xOffset;
+		int iTop = this.size-this.yOffset<0 ? 0 : this.size-this.yOffset;
 		
 		// offset of an invisble area caused by negative (x,y)
 		int invX=Math.max(0, -(startX-iLeft));
@@ -132,42 +129,8 @@ public class DropShadowTextEffect extends TextEffect {
 				}
 			}
 			
-			// set colors
-			int[] gradient = DrawUtil.getGradient( this.innerColor, this.outerColor, this.size );
-			/*
-			//	TODO: Test several gradients
-			//int[] test
-			gradient=DrawUtil.getTestGradient(this.innerColor, this.outerColor, this.size );
-			// correct the transparency
-			for (int i=0; i<gradient.length; i++){
-				gradient[i]=(gradient[i] & 0x00FFFFFF) + ((254-i*10)<<24);
-				System.out.println("   "+Integer.toHexString(gradient[i]));
-			}*/
+			DrawUtil.dropShadow(this.localRgbBuffer,fWidth + this.size*2,fHeight + this.size*2,this.xOffset, this.yOffset, this.size,this.innerColor, this.outerColor);
 			
-			// walk over the text and look for non-transparent Pixels	
-			for (int ix=-this.size+1; ix<this.size; ix++){
-				for (int iy=-this.size+1; iy<this.size; iy++){
-					//int gColor=gradient[ Math.max(Math.abs(ix),Math.abs(iy))];
-					//int gColor=gradient[(Math.abs(ix)+Math.abs(iy))/2];
-	
-					// compute the color and draw all shadowPixels with offset (ix, iy)
-					if ( Math.sqrt(ix*ix+iy*iy)<this.size) {
-						int gColor = gradient[(int)  Math.sqrt(ix*ix+iy*iy) ];
-					
-						for (int col=iLeft,row; col<fWidth+iLeft; col++) { 
-							for (row=iTop;row<fHeight+iTop-1;row++){
-								
-								// draw if an opaque pixel is found and the destination is less opaque then the shadow
-								if (this.localRgbBuffer[row*(fWidth + this.size*2) + col]>>>24==0xFF 
-										&& this.localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]>>>24 < gColor>>>24)
-								{
-									this.localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]=gColor;
-								}
-							}
-						}
-					}
-				}
-			}
 		}
 		
 		// draw RGB-Data
