@@ -14,8 +14,24 @@ import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.DrawUtil;
 
 /**
+ * <p>Paints an alien glow text effect, whereas you are able to specify
+ *  the inner and outer color as well as the font-color.</p>
+ * <p>Activate the alien glow text effect by specifying <code>text-effect: alien-glow;</code> in your polish.css file.
+ *    You can finetune the effect with following attributes:
+ * </p>
+ * <ul>
+ * 	 <li><b>alien-glow-inner-color</b>: the inner color of the alien glow, which is usually and by default white. </li>
+ * 	 <li><b>alien-glow-outer-color</b>: the outer color of the alien glow, which is green by default. </li>
+ *   <li><b>font-color:</b>: You should set the font-color black in order to get an nice alien glow effect. </li>
+ * </ul>
+ * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
+ * <p>Copyright Enough Software 2006</p>
+ * <pre>
+ * history
+ *        14-Jul-2006
+ * </pre>
  * @author Simon Schmitt
- *
+ * 
  */
 public class AlienGlowTextEffect extends TextEffect {
 	
@@ -29,15 +45,14 @@ public class AlienGlowTextEffect extends TextEffect {
 	private int innerColor = 0xFFFFFFFF;
 	private int outerColor = 0xFF00FF00;
 	
-	private int radius;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void drawString(String text, int textColor, int x, int y,
 			int orientation, Graphics g) {
-		// TODO ask for a gaussain radius
-		radius=8;
+		
+		final int radius=3+1;
 
 		//calculate imagesize
 		Font font = g.getFont();
@@ -52,34 +67,34 @@ public class AlienGlowTextEffect extends TextEffect {
 		
 		// check whether the string has to be rerendered
 		if (lastText!=text || lastTextColor != textColor) {
-			lastText=text;
-			lastTextColor=textColor;
+			this.lastText=text;
+			this.lastTextColor=textColor;
 			
 			// create Image, Graphics, ARGB-buffer
 			Graphics bufferG;
-			Image midp2ImageBuffer = Image.createImage( fWidth + this.radius*2, fHeight + this.radius*2);
+			Image midp2ImageBuffer = Image.createImage( fWidth + radius*2, fHeight + radius*2);
 			bufferG = midp2ImageBuffer.getGraphics();
-			localRgbBuffer = new int[ (fWidth + this.radius*2) * (fHeight + this.radius*2) ];
+			this.localRgbBuffer = new int[ (fWidth + radius*2) * (fHeight + radius*2) ];
 			
 			// draw pseudo transparent Background
 			bufferG.setColor( CLEAR_COLOR );
-			bufferG.fillRect(0,0,fWidth + this.radius*2, fHeight + this.radius*2);
+			bufferG.fillRect(0,0,fWidth + radius*2, fHeight + radius*2);
 			
 			// draw String on Graphics
 			bufferG.setFont(font);
 			
 			// draw outlineText
-			bufferG.setColor( outerColor );
+			bufferG.setColor( this.outerColor );
 			bufferG.drawString(text,radius-1,radius-1, Graphics.LEFT | Graphics.TOP);
 			bufferG.drawString(text,radius-1,radius+1, Graphics.LEFT | Graphics.TOP);
 			bufferG.drawString(text,radius+1,radius-1, Graphics.LEFT | Graphics.TOP);
 			bufferG.drawString(text,radius+1,radius+1, Graphics.LEFT | Graphics.TOP);
 			
-			bufferG.setColor( innerColor );
+			bufferG.setColor( this.innerColor );
 			bufferG.drawString(text,radius,radius, Graphics.LEFT | Graphics.TOP);
 			
 			// get RGB-Data from Image
-			midp2ImageBuffer.getRGB(localRgbBuffer,0,fWidth + this.radius*2, 0, 0, fWidth + this.radius*2, fHeight + this.radius*2);
+			midp2ImageBuffer.getRGB(this.localRgbBuffer,0,fWidth + radius*2, 0, 0, fWidth + radius*2, fHeight + radius*2);
 			
 			// check clearColor
 			int[] clearColorArray = new int[1]; 
@@ -87,28 +102,30 @@ public class AlienGlowTextEffect extends TextEffect {
 			this.clearColor = clearColorArray[0];
 			
 			// transform RGB-Data
-			for (int i=0; i<localRgbBuffer.length;i++){
+			for (int i=0; i<this.localRgbBuffer.length;i++){
 				//	 perform Transparency
-				if  (localRgbBuffer[i] == this.clearColor){
-					localRgbBuffer[i] = 0x00000000;
+				if  (this.localRgbBuffer[i] == this.clearColor){
+					this.localRgbBuffer[i] = 0x00000000;
 				}
 			}
 			
 			// perform a gaussain convolution, with a 5x5 matrix
 			DrawUtil.applyFilter(
 					DrawUtil.FILTER_GAUSSIAN_3
-					,150,localRgbBuffer,fWidth + this.radius*2,fHeight + this.radius*2);
+					,150,this.localRgbBuffer,fWidth + radius*2,fHeight + radius*2);
 
 		}
 		
-		//TODO: Positionierung überdanekn
 		// draw RGB-Data
-		g.drawRGB(localRgbBuffer, invY * ( fWidth + this.radius*2)+invX ,fWidth + this.radius*2, ( startX-this.radius+invX<=0 ? 0 :startX-this.radius+invX), ( startY-this.radius+invY<=0 ? 0 :startY-this.radius+invY) , fWidth + this.radius*2-invX, fHeight + this.radius*2-invY, true);
+		g.drawRGB(this.localRgbBuffer, invY * ( fWidth + radius*2)+invX ,fWidth + radius*2, ( startX-radius+invX<=0 ? 0 :startX-radius+invX), ( startY-radius+invY<=0 ? 0 :startY-radius+invY) , fWidth + radius*2-invX, fHeight + radius*2-invY, true);
 		
 		g.setColor( textColor );
 		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
+	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		//#if polish.css.text-alien-glow-inner-color
@@ -123,14 +140,6 @@ public class AlienGlowTextEffect extends TextEffect {
 				this.outerColor = eShadowColorObj.getColor();
 			}
 		//#endif
-/*
-		//#if polish.css.text-drop-shadow-size
-			Integer sizeInt = style.getIntProperty( "text-drop-shadow-size" );
-			if (sizeInt != null) {
-				this.size = sizeInt.intValue();
-			}
-		//#endif
-		 */
 			
 	}
 
