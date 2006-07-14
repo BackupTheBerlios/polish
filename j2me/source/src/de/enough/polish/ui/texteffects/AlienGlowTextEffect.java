@@ -40,7 +40,7 @@ public class AlienGlowTextEffect extends TextEffect {
 
 	private String lastText;
 	private int lastTextColor;
-	int[] localRgbBuffer;
+	int[] argbBuffer;
 
 	private int innerColor = 0xFFFFFFFF;
 	private int outerColor = 0xFF00FF00;
@@ -58,6 +58,8 @@ public class AlienGlowTextEffect extends TextEffect {
 		Font font = g.getFont();
 		int fHeight = font.getHeight();
 		int fWidth = font.stringWidth( text );
+		int newWidth=fWidth + radius*2;
+		int newHeight=fHeight+ radius*2;
 		int startX = getLeftX( x, orientation, fWidth );
 		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
 		
@@ -72,13 +74,13 @@ public class AlienGlowTextEffect extends TextEffect {
 			
 			// create Image, Graphics, ARGB-buffer
 			Graphics bufferG;
-			Image midp2ImageBuffer = Image.createImage( fWidth + radius*2, fHeight + radius*2);
+			Image midp2ImageBuffer = Image.createImage( newWidth, newHeight);
 			bufferG = midp2ImageBuffer.getGraphics();
-			this.localRgbBuffer = new int[ (fWidth + radius*2) * (fHeight + radius*2) ];
+			this.argbBuffer = new int[ (newWidth) * (newHeight) ];
 			
 			// draw pseudo transparent Background
 			bufferG.setColor( CLEAR_COLOR );
-			bufferG.fillRect(0,0,fWidth + radius*2, fHeight + radius*2);
+			bufferG.fillRect(0,0,newWidth, newHeight);
 			
 			// draw String on Graphics
 			bufferG.setFont(font);
@@ -94,7 +96,7 @@ public class AlienGlowTextEffect extends TextEffect {
 			bufferG.drawString(text,radius,radius, Graphics.LEFT | Graphics.TOP);
 			
 			// get RGB-Data from Image
-			midp2ImageBuffer.getRGB(this.localRgbBuffer,0,fWidth + radius*2, 0, 0, fWidth + radius*2, fHeight + radius*2);
+			midp2ImageBuffer.getRGB(this.argbBuffer,0,newWidth, 0, 0, newWidth, newHeight);
 			
 			// check clearColor
 			int[] clearColorArray = new int[1]; 
@@ -102,22 +104,26 @@ public class AlienGlowTextEffect extends TextEffect {
 			this.clearColor = clearColorArray[0];
 			
 			// transform RGB-Data
-			for (int i=0; i<this.localRgbBuffer.length;i++){
+			for (int i=0; i<this.argbBuffer.length;i++){
 				//	 perform Transparency
-				if  (this.localRgbBuffer[i] == this.clearColor){
-					this.localRgbBuffer[i] = 0x00000000;
+				if  (this.argbBuffer[i] == this.clearColor){
+					this.argbBuffer[i] = 0x00000000;
 				}
 			}
 			
 			// perform a gaussain convolution, with a 5x5 matrix
 			DrawUtil.applyFilter(
 					DrawUtil.FILTER_GAUSSIAN_3
-					,150,this.localRgbBuffer,fWidth + radius*2,fHeight + radius*2);
+					,150,this.argbBuffer,newWidth,newHeight);
 
 		}
 		
 		// draw RGB-Data
-		g.drawRGB(this.localRgbBuffer, invY * ( fWidth + radius*2)+invX ,fWidth + radius*2, ( startX-radius+invX<=0 ? 0 :startX-radius+invX), ( startY-radius+invY<=0 ? 0 :startY-radius+invY) , fWidth + radius*2-invX, fHeight + radius*2-invY, true);
+		if (newHeight-invY<=0 || newWidth-invX<=0){
+			// bugfix: exit if there is no part of text visible
+			return;
+		}
+		g.drawRGB(this.argbBuffer, invY * ( newWidth)+invX ,newWidth, ( startX-radius+invX<=0 ? 0 :startX-radius+invX), ( startY-radius+invY<=0 ? 0 :startY-radius+invY) , newWidth-invX, newHeight-invY, true);
 		
 		g.setColor( textColor );
 		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);
@@ -150,7 +156,7 @@ public class AlienGlowTextEffect extends TextEffect {
 	public void releaseResources() {
 		super.releaseResources();
 		this.lastText = null;
-		this.localRgbBuffer = null;
+		this.argbBuffer = null;
 	}
 	
 }
