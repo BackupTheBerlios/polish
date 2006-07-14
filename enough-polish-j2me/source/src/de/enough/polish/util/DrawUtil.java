@@ -149,88 +149,71 @@ public final class DrawUtil {
 			| ((255 - (( 0x0000FF00 & color ) >> 8)) << 8)
 			| (255 - ( 0x000000FF & color ) );				
 	}
-/*
-	public final static int[] getTestGradient(int startColor, int endColor, int steps){
-		int[] gradient=new int[steps];
-		
-		// der Test
-		getSquareGradient(0xFFFFFFFF, 0xFF000000, gradient,1);
-		getSquareGradient(0xFFFFFFFF, 0x00008000, gradient,2);
-		getSquareGradient(0xFFFFFFFF, 0xFF000000, gradient,3);
-		
-		
-		return gradient;
-	}
-	
-	public final static void getSquareGradient(int startColor, int endColor, int[] gradient, int colorComponent){
-		// TODO: size ==1,=?=2
-		
-		// change the numeration
-		if (colorComponent>4) 
-			throw new IllegalArgumentException();
-		
-		colorComponent=4-colorComponent;
-		if (colorComponent==0)
-			colorComponent=4;
-		colorComponent--;
-		
-		// intitalize the quadratic function
-		int partA=(startColor>>>(8*colorComponent)) & COLOR_BIT_MASK;
-		int partB=(endColor>>>(8*colorComponent)) & COLOR_BIT_MASK;
-		float a=(float)(partB-partA)/((gradient.length-1)*(gradient.length-1));
-		
-		System.out.println(" partA:"+ partA + " partB" +partB + " a="+ Float.toString(a));
-		
-		int iSquare=0;
-		for (int i=0; i<gradient.length; i++) {
-			// TODO: kann der Farbbereich überschritten werden?
-			gradient[i]+=(partA+(int)(a*iSquare))<<(8*colorComponent);
-			iSquare+=(i<<1)+1;
-		}
-	}*/
-	/*
-	public final static void changeBrightness(int[] argbData,int alpha,int red, int green, int blue){
-		if (alpha!=0)
-			changeBrightness(argbData,alpha,0);
-		if (red!=0)
-			changeBrightness(argbData,red,1);
-		if (green!=0)
-			changeBrightness(argbData,green,2);
-		if (blue!=0)
-			changeBrightness(argbData,blue,3);
-		
-	}
-	
-	public final static void changeBrightness(int[] argbData, int value, int colorComponent){
-		
-		// change the numeration
-		if (colorComponent>4) 
-			throw new IllegalArgumentException();
-		
-		colorComponent=4-colorComponent;
-		if (colorComponent==0) 
-			colorComponent=4;
-		colorComponent--;
-		
-		int ccVal;
-		int localInvBitMask=~(0xFF<<(8*colorComponent));
 
-		for (int i=0; i<argbData.length; i++){
-			// extract, add and fill the color in
-			ccVal=(argbData[i]>>>(8*colorComponent)) & COLOR_BIT_MASK;
-			ccVal=ccVal+value;
-			ccVal=Math.max(0,Math.min(255,ccVal));
-			argbData[i]=(argbData[i]&localInvBitMask) +(ccVal<<(8*colorComponent));
+	
+	/**
+	 * <p>Paints a dropshadow behind a given ARGB-Array, whereas you are able to specify
+	 *  the shadows inner and outer color.</p>
+	 * <p>Note that the dropshadow just works for fully opaque pixels and that it needs 
+	 * a transparent margin to draw the shadow.
+	 * </p>
+	 * <p>Choosing the same inner and outer color and varying the transparency is recommended.
+	 *  Dropshadow just works for fully opaque pixels.</p>
+	 * 
+	 * @param argbData
+	 * @param width
+	 * @param height
+	 * @param xOffset use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.
+	 * @param yOffset use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.
+	 * @param size use this for finetuning the shadows radius.
+	 * @param innerColor the inner color of the shadow, which should be less opaque than the text.
+	 * @param outerColor the outer color of the shadow, which should be less than opaque the inner color.
+	 * 
+	 */
+	public final static void dropShadow(int[] argbData, int width, int height,int xOffset, int yOffset, int size, int innerColor, int outerColor){
+		
+		// additional Margin for the image because of the shadow
+		int iLeft = size-xOffset<0 ? 0 : size-xOffset;
+		int iRight = size+xOffset<0 ? 0 : size+xOffset;
+		int iTop = size-yOffset<0 ? 0 : size-yOffset;
+		int iBottom = size+yOffset<0 ? 0 : size+yOffset;
+		
+		// set colors
+		int[] gradient = DrawUtil.getGradient( innerColor, outerColor, size );
+		
+		// walk over the text and look for non-transparent Pixels	
+		for (int ix=-size+1; ix<size; ix++){
+			for (int iy=-size+1; iy<size; iy++){
+				//int gColor=gradient[ Math.max(Math.abs(ix),Math.abs(iy))];
+				//int gColor=gradient[(Math.abs(ix)+Math.abs(iy))/2];
+
+				// compute the color and draw all shadowPixels with offset (ix, iy)
+				if ( Math.sqrt(ix*ix+iy*iy)<size) {
+					int gColor = gradient[(int)  Math.sqrt(ix*ix+iy*iy) ];
+				
+					for (int col=iLeft,row; col<width/*+iLeft*/-iRight; col++) { 
+						for (row=iTop;row<height-iBottom/*+iTop*/-1;row++){
+							
+							// draw if an opaque pixel is found and the destination is less opaque then the shadow
+							if (argbData[row*(width /*+ size*2*/) + col]>>>24==0xFF 
+									&& argbData[(row+yOffset+iy)*(width /* size*2*/) + col+xOffset+ix]>>>24 < gColor>>>24)
+							{
+								argbData[(row+yOffset+iy)*(width /*+ size*2*/) + col+xOffset+ix]=gColor;
+							}
+						}
+					}
+				}
+			}
 		}
-		
-		
-	}*/
+
+	} 
+	
 	static int COLOR_BIT_MASK	= 0x000000FF;
-	public static byte[][] FILTER_GAUSSIAN_2 =
+	public static byte[][] FILTER_GAUSSIAN_2 = // a small and fast gaussian filtermatrix
 									 {{1,2,1},
 									  {2,4,2},
 									  {1,2,1}};
-	public static byte[][] FILTER_GAUSSIAN_3=
+	public static byte[][] FILTER_GAUSSIAN_3 = // a gaussian filtermatrix
 	       			        {{0,1,2,1,0},
 	       					 {1,3,5,3,1},
 	       					 {2,5,9,5,2},
@@ -286,11 +269,12 @@ public final class DrawUtil {
 
 						// take the Data from the little buffer and skale the color 
 						currentPixel = tmpRect[fRow*width+col+fCol-fwRadius+1];
-						
-						newTran	+= filterMatrix[fRow][fCol] * ((currentPixel >>> 24) & COLOR_BIT_MASK);
-						newRed	+= filterMatrix[fRow][fCol] * ((currentPixel >>> 16) & COLOR_BIT_MASK);
-						newGreen+= filterMatrix[fRow][fCol] * ((currentPixel >>> 8) & COLOR_BIT_MASK);
-						newBlue	+= filterMatrix[fRow][fCol] * (currentPixel & COLOR_BIT_MASK);
+						if (((currentPixel >>> 24) & COLOR_BIT_MASK) != 0) {
+							newTran	+= filterMatrix[fRow][fCol] * ((currentPixel >>> 24) & COLOR_BIT_MASK);
+							newRed	+= filterMatrix[fRow][fCol] * ((currentPixel >>> 16) & COLOR_BIT_MASK);
+							newGreen+= filterMatrix[fRow][fCol] * ((currentPixel >>> 8) & COLOR_BIT_MASK);
+							newBlue	+= filterMatrix[fRow][fCol] * (currentPixel & COLOR_BIT_MASK);
+						}
 						
 					}
 				}
