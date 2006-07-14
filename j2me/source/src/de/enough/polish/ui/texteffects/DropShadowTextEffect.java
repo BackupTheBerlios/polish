@@ -42,8 +42,8 @@ import de.enough.polish.util.DrawUtil;
  *    You can finetune the effect with following attributes:
  * </p>
  * <ul>
- * 	 <li><b>text-drop-shadow-start-color</b>: the inner color of the shadow, which should be less opaque than the text. </li>
- * 	 <li><b>text-drop-shadow-end-color</b>: the outer color of the shadow, which should be less than opaque the inner color. </li>
+ * 	 <li><b>text-drop-shadow-inner-color</b>: the inner color of the shadow, which should be less opaque than the text. </li>
+ * 	 <li><b>text-drop-shadow-outer-color</b>: the outer color of the shadow, which should be less than opaque the inner color. </li>
  * 	 <li><b>text-drop-shadow-offsetx:</b>: use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.</li>
  * 	 <li><b>text-drop-shadow-offsety:</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.</li>
  *   <li><b>text-drop-shadow-size:</b>: use this for finetuning the shadow's radius.</li>
@@ -55,6 +55,7 @@ import de.enough.polish.util.DrawUtil;
  *        11-Jul-2006
  * </pre>
  * @author Simon Schmitt
+ * 
  */
 public class DropShadowTextEffect extends TextEffect {
 		
@@ -96,15 +97,15 @@ public class DropShadowTextEffect extends TextEffect {
 		int invY=Math.max(0, -(startY-iTop));
 		
 		// check whether the string has to be rerendered
-		if (lastText!=text || lastTextColor != textColor) {
-			lastText=text;
-			lastTextColor=textColor;
+		if (this.lastText!=text || this.lastTextColor != textColor) {
+			this.lastText=text;
+			this.lastTextColor=textColor;
 			
 			// create Image, Graphics, ARGB-buffer
 			Graphics bufferG;
 			Image midp2ImageBuffer = Image.createImage( fWidth + this.size*2, fHeight + this.size*2); // iLeft+iRight=2*size??
 			bufferG = midp2ImageBuffer.getGraphics();
-			localRgbBuffer = new int[ (fWidth + this.size*2) * (fHeight + this.size*2) ];
+			this.localRgbBuffer = new int[ (fWidth + this.size*2) * (fHeight + this.size*2) ];
 			
 			// draw pseudo transparent Background
 			bufferG.setColor( CLEAR_COLOR );
@@ -116,7 +117,7 @@ public class DropShadowTextEffect extends TextEffect {
 			bufferG.drawString(text,iLeft,iTop, Graphics.LEFT | Graphics.TOP);
 			
 			// get RGB-Data from Image
-			midp2ImageBuffer.getRGB(localRgbBuffer,0,fWidth + this.size*2, 0, 0, fWidth + this.size*2, fHeight + this.size*2);
+			midp2ImageBuffer.getRGB(this.localRgbBuffer,0,fWidth + this.size*2, 0, 0, fWidth + this.size*2, fHeight + this.size*2);
 			
 			// check clearColor
 			int[] clearColorArray = new int[1]; 
@@ -124,10 +125,10 @@ public class DropShadowTextEffect extends TextEffect {
 			this.clearColor = clearColorArray[0];
 			
 			// transform RGB-Data
-			for (int i=0; i<localRgbBuffer.length;i++){
+			for (int i=0; i<this.localRgbBuffer.length;i++){
 				//	 perform Transparency
-				if  (localRgbBuffer[i] == this.clearColor){
-					localRgbBuffer[i] = 0x00000000;
+				if  (this.localRgbBuffer[i] == this.clearColor){
+					this.localRgbBuffer[i] = 0x00000000;
 				}
 			}
 			
@@ -157,10 +158,10 @@ public class DropShadowTextEffect extends TextEffect {
 							for (row=iTop;row<fHeight+iTop-1;row++){
 								
 								// draw if an opaque pixel is found and the destination is less opaque then the shadow
-								if (localRgbBuffer[row*(fWidth + this.size*2) + col]>>>24==0xFF 
-										&& localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]>>>24 < gColor>>>24)
+								if (this.localRgbBuffer[row*(fWidth + this.size*2) + col]>>>24==0xFF 
+										&& this.localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]>>>24 < gColor>>>24)
 								{
-									localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]=gColor;
+									this.localRgbBuffer[(row+this.yOffset+iy)*(fWidth + this.size*2) + col+this.xOffset+ix]=gColor;
 								}
 							}
 						}
@@ -170,7 +171,7 @@ public class DropShadowTextEffect extends TextEffect {
 		}
 		
 		// draw RGB-Data
-		g.drawRGB(localRgbBuffer,invY*(fWidth + this.size*2)+invX,fWidth + this.size*2, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , fWidth + this.size*2-invX, fHeight + this.size*2-invY, true);
+		g.drawRGB(this.localRgbBuffer,invY*(fWidth + this.size*2)+invX,fWidth + this.size*2, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , fWidth + this.size*2-invX, fHeight + this.size*2-invY, true);
 		
 	}
 	
