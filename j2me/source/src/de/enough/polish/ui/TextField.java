@@ -339,8 +339,8 @@ public class TextField extends StringItem
 //#endif
 //#if polish.TextField.suppressCommands == true
 	//#define tmp.suppressCommands
-// //#elif (tmp.forceDirectInput || polish.blackberry)  && !tmp.supportsSymbolEntry
-// 	//# implements ItemCommandListener
+//#elif polish.blackberry  && !tmp.supportsSymbolEntry
+ 	//# implements ItemCommandListener
 //#else
 	, ItemCommandListener
 //#endif
