@@ -1750,7 +1750,63 @@
 		default="#FF00FF00"
 		id="173"
 	/>
-
+	<attribute
+		name="text-fade-in-color"
+		type="color"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The color, which the text has, if it is faded in."
+		default="#FF000000"
+		id="174"
+	/>
+	<attribute
+		name="text-fade-out-color"
+		type="color"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The color, which the text has, if it is faded out."
+		default="#FF00FF00"
+		id="175"
+	/>
+	
+	<attribute
+		name="text-fade-delay"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The delay (in steps) before the animation starts."
+		default="0"
+		id="176"
+	/>
+	<attribute
+		name="text-fade-duration-in"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The time (in steps), which the text stays faded in."
+		default="10"
+		id="177"
+	/>
+	<attribute
+		name="text-fade-duration-out"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The time (in steps), which the text stays faded out."
+		default="0"
+		id="178"
+	/>
+	<attribute
+		name="text-fade-steps"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The time (in steps), which the fade-effect lasts."
+		default="5"
+		id="179"
+	/>
+	<attribute
+		name="text-fade-mode"
+		type="string"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The fade mode can be fadein, fadeout or loop."
+		default="loop"
+		id="180"
+	/>
 	<!--
 	
 	<attribute
