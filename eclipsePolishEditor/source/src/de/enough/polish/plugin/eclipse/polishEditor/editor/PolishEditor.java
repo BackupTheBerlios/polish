@@ -188,7 +188,6 @@ public class PolishEditor extends CompilationUnitEditor {
         // and which will erase everything the normal reconciler has done so far.
         
         Field semanticManagerField;
-        System.out.println("");
         try {
             semanticManagerField = getClass().getSuperclass().getSuperclass().getDeclaredField("fSemanticManager");
             semanticManagerField.setAccessible(true);
