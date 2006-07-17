@@ -26,15 +26,14 @@ public class FadeTextEffect extends TextEffect {
 	
 	private int steps;	// alle
 	//private int delay=500; // warten am Anfang
-	private int stepsIn=100,stepsOut=100; 
-	private int sWaitTime=50; 
+	private int stepsIn=8,stepsOut=8; 
+	private int sWaitTime=0; 
 	private int mode=FADE_LOOP;
 	
 	private int cColor;
 	private int cStep;
 	
 	private String lastText;
-	private boolean changed;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -51,7 +50,7 @@ public class FadeTextEffect extends TextEffect {
 		if (text==null) {
 			return;
 		}
-		
+		//System.out.println("  drawing");
 		// draw the current state
 		g.setColor(cColor);
 		g.drawString(text,x,y, Graphics.LEFT | Graphics.TOP);
@@ -62,14 +61,17 @@ public class FadeTextEffect extends TextEffect {
 		stepsOut= mode!=FADE_IN ? fadeTime*1000/10:0; 
 		sWaitTime=waitTime*1000/10;*/
 
-		cStep=0; // TODO schöner machen
-		if (mode==FADE_OUT)
-			cStep=sWaitTime;
+		cStep=-1; // TODO schoener machen
+		if (mode==FADE_OUT){
+			cStep+=sWaitTime;
+		}
+		// TODO -=delay
 		
 		steps=stepsIn+stepsOut+sWaitTime*2;
 		
-		gradient = DrawUtil.getGradient(startColor,endColor,steps);
+		gradient = DrawUtil.getGradient(startColor,endColor,Math.max(stepsIn, stepsOut));
 		cColor = ( (mode==FADE_IN | mode==FADE_LOOP) ? startColor : endColor); 
+		
 	}
 	
 	/* (non-Javadoc)
@@ -89,19 +91,7 @@ public class FadeTextEffect extends TextEffect {
 			
 			if (mode!=FADE_BREAK) cStep++;
 			
-			if (cStep<stepsIn){	// fade in
-				cColor=gradient[cStep];	
-			} else if (cStep<stepsIn+sWaitTime){ // TODO ggf. kompensieren, wenn nur FADEOUT
-				// have a break
-				cColor=endColor;
-			} else if( cStep<stepsIn+sWaitTime+stepsOut){ // fade out 
-				cColor=gradient[steps-(stepsIn+sWaitTime+stepsOut-cStep)];
-			} else { 
-				// another break
-				cColor=startColor;
-			}
-			
-			// set counter to zero (in case of a loop) or stop the engine, when we reached the end
+//			 set counter to zero (in case of a loop) or stop the engine, when we reached the end
 			if (cStep==steps){
 				cStep=0;
 				cColor=endColor;
@@ -110,13 +100,37 @@ public class FadeTextEffect extends TextEffect {
 				}
 			}
 			
+			System.out.println("  fadeing "+cStep);
+			
+			if (cStep<stepsIn){	// fade in
+				cColor=gradient[cStep];	
+				System.out.println("  [in] color:"+cStep);
+				return true;
+			} else if (cStep<stepsIn+sWaitTime){ // TODO ggf. kompensieren, wenn nur FADEOUT
+				// have a break
+				if (cColor!=endColor){
+					cColor=endColor;
+					return true;
+				}
+				
+				System.out.println("  color:end color");
+				
+			} else if( cStep<stepsIn+sWaitTime+stepsOut){ // fade out 
+				cColor=gradient[stepsIn+sWaitTime+stepsOut-cStep-1];
+				System.out.println("  [out] color:"+(stepsIn+sWaitTime+stepsOut-cStep-1));
+				return true;
+			} else { 
+				// another break
+				if (cColor!=startColor){
+					cColor=startColor;
+					return true;
+				}
+				System.out.println("  color:start color");
+			}
+			
 		}
 
-		// end if there were no real changes
-		if (!this.changed){
-			return animated;
-		}
-		// please redraw
-		return true;
+		// we had no change
+		return animated;
 	}
 }
