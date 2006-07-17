@@ -38,4 +38,9 @@ focused {
 	*/
 	/*text-alien-glow-outer-color: blue;
 	text-alien-glow-inner-color: #FF0000FF;*/
+	text-effect: fade;
+}
+
+.mainMenuItem {
+	text-effect: fade;
 }
