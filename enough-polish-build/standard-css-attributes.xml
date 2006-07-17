@@ -483,6 +483,7 @@
 		<mapping from="Dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="DinnerForOne" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
+		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<!--
@@ -980,6 +981,9 @@
 		</mapping>
 		<mapping from="alien-glow" to="new de.enough.polish.ui.texteffects.AlienGlowTextEffect()" >
 			<condition>polish.midp2 and polish.cldc1.1</condition>
+		</mapping>
+		<mapping from="fade" to="new de.enough.polish.ui.texteffects.FadeTextEffect()" >
+			<condition>polish.midp2</condition>
 		</mapping>
 	</attribute>
 	
