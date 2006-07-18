@@ -34,7 +34,7 @@ import de.enough.polish.util.DrawUtil;
  * 
  */
 public class AlienGlowTextEffect extends TextEffect {
-	
+
 	private final static int CLEAR_COLOR = 0xFF000123;
 	private int clearColor;
 
