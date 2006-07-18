@@ -1824,7 +1824,7 @@
 		type="color"
 		appliesTo="StringItem, AlienGlowTextEffect"
 		description="The outer parts color of the glow, if the state is faded out."
-		default="#FF00FF00"
+		default="#FF0080FF"
 		id="182"
 	/>
 	<attribute
@@ -1832,7 +1832,7 @@
 		type="color"
 		appliesTo="StringItem, FadeTextEffect"
 		description="The outer parts color of the glow, if the state is faded in."
-		default="#FF000000"
+		default="#FF80FF00"
 		id="183"
 	/>
 	<attribute
@@ -1870,7 +1870,7 @@
 		id="188"
 	/>
 	<attribute
-		name="text-fading-alien-glow-fade-mode"
+		name="text-fading-alien-glow-mode"
 		type="string"
 		appliesTo="StringItem, FadeTextEffect"
 		description="The fade mode can be fadein, fadeout or loop."
