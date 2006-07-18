@@ -985,6 +985,9 @@
 		<mapping from="fade" to="new de.enough.polish.ui.texteffects.FadeTextEffect()" >
 			<condition>polish.midp2</condition>
 		</mapping>
+		<mapping from="fading-alien-glow" to="new de.enough.polish.ui.texteffects.FadingAlienGlowTextEffect()" >
+			<condition>polish.midp2 and polish.cldc1.1</condition>
+		</mapping>
 	</attribute>
 	
 	<attribute
@@ -1766,7 +1769,6 @@
 		default="#FF00FF00"
 		id="175"
 	/>
-	
 	<attribute
 		name="text-fade-delay"
 		type="integer"
@@ -1807,6 +1809,77 @@
 		default="loop"
 		id="180"
 	/>
+	
+	
+	<attribute
+		name="text-fading-alien-glow-inner-color"
+		type="color"
+		appliesTo="StringItem, AlienGlowTextEffect"
+		description="The inner parts color of the glow."
+		default="#FFFFFFFF"
+		id="181"
+	/>
+	<attribute
+		name="text-fading-alien-glow-outer-out-color"
+		type="color"
+		appliesTo="StringItem, AlienGlowTextEffect"
+		description="The outer parts color of the glow, if the state is faded out."
+		default="#FF00FF00"
+		id="182"
+	/>
+	<attribute
+		name="text-fading-alien-glow-outer-in-color"
+		type="color"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The outer parts color of the glow, if the state is faded in."
+		default="#FF000000"
+		id="183"
+	/>
+	<attribute
+		name="text-fading-alien-glow-delay"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The delay (in steps) before the animation starts."
+		default="0"
+		id="184"
+	/>
+	<attribute
+		name="text-fading-alien-glow-duration-in"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The time (in steps), which the text stays faded in."
+		default="10"
+		id="186"
+	/>
+	
+	
+	<attribute
+		name="text-fading-alien-glow-duration-out"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The time (in steps), which the text stays faded out."
+		default="0"
+		id="187"
+	/>
+	<attribute
+		name="text-fading-alien-glow-steps"
+		type="integer"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The time (in steps), which the fade-effect lasts."
+		default="5"
+		id="188"
+	/>
+	<attribute
+		name="text-fading-alien-glow-fade-mode"
+		type="string"
+		appliesTo="StringItem, FadeTextEffect"
+		description="The fade mode can be fadein, fadeout or loop."
+		default="loop"
+		id="189"
+	/>
+	
+	
+	
 	<!--
 	
 	<attribute
