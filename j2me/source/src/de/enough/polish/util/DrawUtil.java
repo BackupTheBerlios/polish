@@ -301,5 +301,127 @@ public final class DrawUtil {
 		}
 		
 	}
+	/**
+	 * This class is used for fadeEffects (FadeTextEffect and FadinAlienGlowEffect).
+	 * The you can set a start and an end color as well as some durations.
+	 * 
+	 * Note: stepsIn has to be the same as  stepsOut or 0!
+	 * 
+	 * @author Simon Schmitt
+	 */
+	public static class FadeUtil{
+		public final int FADE_IN =1;
+		public final int FADE_OUT=2;
+		public final int FADE_LOOP=3;
+		public final int FADE_BREAK=0;
+		
+		public int[] gradient;
+		public boolean changed;
+		
+		public int startColor	=0xFF0080FF;
+		public int endColor	=0xFF80FF00;
+		
+		public int steps;
+		public int delay=0; 				// time till the effect starts
+		public int stepsIn=5,stepsOut=5;  	// fading duration
+		public int sWaitTimeIn=10; 		// time to stay faded in
+		public int sWaitTimeOut=0; 		// time to stay faded out
+		public int mode=this.FADE_LOOP;
+		
+		public int cColor;
+		public int cStep;
+		
+		private void initialize(){
+			//System.out.println(" init");
+
+			this.cStep=0;
+			
+			switch (this.mode){
+			case FADE_OUT:
+				this.stepsIn=0;
+				this.sWaitTimeIn=0;
+				this.cColor=this.endColor;
+				break;
+			case FADE_IN:
+				this.stepsOut=0;
+				this.sWaitTimeOut=0;
+				this.cColor=this.startColor;
+				break;
+			default://loop
+				this.cColor=this.startColor;
+			}
+
+			this.cStep-=this.delay;
+			
+			this.steps= this.stepsIn+this.stepsOut+this.sWaitTimeIn+this.sWaitTimeOut;
+			
+			this.gradient = DrawUtil.getGradient(this.startColor,this.endColor,Math.max(this.stepsIn, this.stepsOut));
+
+			
+		}
+		
+		public boolean step(){
+			this.cStep++;
+			
+			// (re)define everything, if something changed 
+			if (this.gradient==null | this.changed) {
+				initialize();
+			} 
+			this.changed=false;
+			
+			// exit, if no animation is neccessary
+			if (this.mode==this.FADE_BREAK){
+				return false; 
+			}
+			// we have to ensure that a new picture is drawn
+			if (this.cStep<0){
+				return true;
+			}
+			
+			// set counter to zero (in case of a loop) or stop the engine, when we reached the end
+			if (this.cStep==this.steps){
+				this.cStep=0;
+				
+				if (this.mode!=this.FADE_LOOP) {
+					this.mode=this.FADE_BREAK;
+					return true;
+				}
+			}
+			
+			if (this.cStep<this.stepsIn){	
+				// fade in
+				this.cColor=this.gradient[this.cStep];	
+				//System.out.println("  [in] color:"+this.cStep);
+				return true;
+				
+			} else if (this.cStep<this.stepsIn+this.sWaitTimeIn){
+				// have a break
+				if (this.cColor!=this.endColor){
+					this.cColor=this.endColor;
+					return true;
+				}
+				
+				//System.out.println("  color:end color");
+				
+			} else if( this.cStep<this.stepsIn+this.sWaitTimeIn+this.stepsOut){ 
+				// fade out 
+				this.cColor=this.gradient[this.stepsIn+this.sWaitTimeIn+this.stepsOut-this.cStep-1];
+				//System.out.println("  [out] color:"+(this.stepsIn+this.sWaitTimeIn+this.stepsOut-this.cStep-1));
+				return true;
+				
+			} else { 
+				// have another break
+				if (this.cColor!=this.startColor){
+					this.cColor=this.startColor;
+					return true;
+				}
+				//System.out.println("  color:start color");
+			} 
+			
+			// it sees as if we had no change...
+			return false;
+		}
+	}
+
 	
 }
