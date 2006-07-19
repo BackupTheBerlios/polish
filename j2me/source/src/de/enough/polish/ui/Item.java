@@ -1423,9 +1423,9 @@ public abstract class Item extends Object
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		// set coordinates of this item:
 		this.xLeftPos = leftBorder;
-		this.yTopPos = y;
+//		this.yTopPos = y;
 		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
-		this.yBottomPos = y + this.itemHeight;
+//		this.yBottomPos = y + this.itemHeight;
 		
 		// paint background and border when the label should be included in this:
 		//#if polish.css.include-label

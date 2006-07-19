@@ -931,5 +931,31 @@ public final class UiAccess {
     		screen.setSubTitle(subtitle);
     }
     //#endif
+    
+    /**
+     * Scrolls the item to the appropriate position.
+     * 
+     * @param screen the screen
+     * @param yOffset the vertical offset - 0 is the very top.
+     */
+    public static void scroll( javax.microedition.lcdui.Screen screen, int yOffset ) {
+    	// ignore
+    }
+
+    //#if polish.usePolishGui
+    /**
+     * Scrolls the item to the appropriate position.
+     * 
+     * @param screen the screen
+     * @param yOffset the vertical offset - 0 is the very top.
+     */
+    public static void scroll( Screen screen, int yOffset ) {
+    	Container container = screen.container;
+    	if (container != null) {
+    		container.yOffset = yOffset;
+    		container.targetYOffset = yOffset;
+    	}
+    }
+    //#endif
 
 }

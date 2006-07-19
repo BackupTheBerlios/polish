@@ -89,9 +89,10 @@ public class Container extends Item {
 		protected ContainerView view;
 	//#endif
 	//#ifdef polish.css.scroll-mode
-		protected boolean scrollSmooth = true;	
+		protected boolean scrollSmooth = true;
 	//#endif
-	protected boolean isFirstPaint;
+	private boolean isScrollRequired;	
+	//protected boolean isFirstPaint;
 
 	
 	/**
@@ -436,7 +437,7 @@ public class Container extends Item {
 			//#debug
 			System.out.println("Container: Setting autofocus-index to " + index );
 			this.autoFocusIndex = index;
-			this.isFirstPaint = true;
+			//this.isFirstPaint = true;
 			return;
 		}
 		
@@ -464,7 +465,7 @@ public class Container extends Item {
 				System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
 			}
 		//#endif
-		boolean isDownwards = index > this.focusedIndex;
+		boolean isDownwards = (direction == Canvas.DOWN) || (direction == Canvas.RIGHT) || (direction == 0 &&  index > this.focusedIndex);
 		this.focusedIndex = index;
 		this.focusedItem = item;
 		//#if tmp.supportViewType
@@ -473,8 +474,8 @@ public class Container extends Item {
 				this.view.focusedItem = item;
 			}
 		//#endif
-		if (this.yTopPos != this.yBottomPos) {
-			// this container has been painted already,
+		if  (this.isInitialised) { // (this.yTopPos != this.yBottomPos) {
+			// this container has been initialised already,
 			// so the dimensions are known.
 			if (item.internalX != -9999) {
 				this.internalX =  item.contentX - this.contentX + item.internalX;
@@ -486,7 +487,7 @@ public class Container extends Item {
 			} else {
 				this.internalX = item.xLeftPos - this.contentX;
 				this.internalWidth = item.itemWidth;
-				this.internalY = (item.yTopPos - this.yOffset) - this.contentY;
+				this.internalY = item.yTopPos + this.yOffset; // (item.yTopPos - this.yOffset) - this.contentY;
 				this.internalHeight = item.itemHeight;
 				//#debug
 				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.yTopPos=" + item.yTopPos + ", this.contentY=" + this.contentY + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
@@ -545,7 +546,7 @@ public class Container extends Item {
 //					*/
 //				} else if (itemYTop < this.yTop) {
 //					// this item is too high:
-//					//#if tmp.useSupportViewType
+//					//#if tmp.supportViewType
 //						//TODO when colpan is used, the index might need to be higher than anticipated
 //						if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
 //					//#else
@@ -579,77 +580,118 @@ public class Container extends Item {
 //				//#endif
 			}
 		} else if (this.enableScrolling) {
-			this.isFirstPaint = true;
+			this.isScrollRequired = true;
+			
+//		} else if (this.enableScrolling) {
+//			this.isFirstPaint = true;
 		}
 		this.isInitialised = false;
 	}
 	
-	protected void scroll( boolean isDownwards, int x, int itemYTop, int width, int height ) {
+	/**
+	 * Adjusts the yOffset or the targetYOffset so that the given relative values are inside of the visible area.
+	 * 
+	 * @param isDownwards true when the scrolling is downwards
+	 * @param x the relative horizontal position of the area
+	 * @param y the relative vertical position of the area
+	 * @param width the width of the area
+	 * @param height the height of the area
+	 */
+	protected void scroll( boolean isDownwards, int x, int y, int width, int height ) {
 		//#debug
-		System.out.println("scroll: isDownwards=" + isDownwards + ", itemYTop=" + itemYTop + ", Container.yTop=" + this.yTop +  ", itemYBottom=" +  (itemYTop + height) + ", Container.yBottom=" + this.yBottom );
+		System.out.println("scroll: isDownwards=" + isDownwards + ", y=" + y + ", Container.yTop=" + this.yTop +  ", height=" +  height + ", Container.yBottom=" + this.yBottom + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
 		int difference = 0;
-		int index = this.focusedIndex;
-		int itemYBottom = itemYTop + height;
-		int yOffsetDiff = 0;
-		//#ifdef polish.css.scroll-mode
-			if (this.scrollSmooth) {
-		//#endif
-				yOffsetDiff = this.targetYOffset - this.yOffset;
-		//#ifdef polish.css.scroll-mode
-			}
-		//#endif
+//		int index = this.focusedIndex;
+		int target = this.targetYOffset;
+		int current = this.yOffset;
+		// calculate the absolute position from the relative one:
+//		int absoluteY = y + current + this.yTop;
+//		int absoluteYBottom = absoluteY + height;
+//		int yOffsetDiff = 0;
+//		//#ifdef polish.css.scroll-mode
+//			if (this.scrollSmooth) {
+//		//#endif
+//				yOffsetDiff = target - current;
+//		//#ifdef polish.css.scroll-mode
+//			}
+//		//#endif
+		int verticalSpace = this.yBottom - this.yTop; // the available height for this container
 		if ( height == 0 || !this.enableScrolling) {
 			return;
-		} else if (itemYBottom + yOffsetDiff > this.yBottom + 1) { //TODO +1 is a quick hack here
-			// this item is too low:
-			difference = this.yBottom - itemYBottom;
+		} else if ( y + height + target > verticalSpace ) {
+			// the area is too low:
+			difference = verticalSpace - (y + height + target);
 			//#debug
-			System.out.println("item too low: difference: " + difference + "  itemYBottom=" + itemYBottom + "  container.yBottom=" + this.yBottom + ", yOffsetDiff=" + yOffsetDiff);
-			//if ( itemYTop + difference < this.yTop) {
-			if ( isDownwards && itemYTop + difference < this.yTop) {
-				//#debug
-				System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - itemYTop + 10) );
-				difference = this.yTop - itemYTop + 10; // additional pixels for adjusting the focused style above:
+			System.out.println("scroll: item too low: difference: " + difference + "  verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", target=" + target);
+			// check if the top of the area is still visible when scrolling downwards:
+			if ( isDownwards && y + target + difference < 0 ) {
+				difference -= y + target + difference;
 			}
-			/*
-			if ( itemYTop + difference < this.internalY) {
-				//#debug
-				System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.internalY=" +  this.internalY + "  to new difference=" + (this.internalY - itemYTop + 10) );
-				difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
+		} else if ( y + target < 0 ) {
+			// area is too high:
+			difference = - (y + target); 
+			//#debug
+			System.out.println("scroll: item too high: setting difference to " + difference + ", y=" + y + ", target=" + target ); //+ ", focusedTopMargin=" + this.focusedTopMargin );
+			if (!isDownwards && y + height + target + difference > verticalSpace ) {
+				difference += verticalSpace - (y + height + target + difference);
 			}
-			*/
-		} else if (itemYTop  + yOffsetDiff < this.yTop) {
-			// this item is too high:
-			//#if tmp.useSupportViewType
-				//TODO when colspan is used, the index might need to be higher than anticipated
-				if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
-			//#else
-				//# if (index == 0) {
-			//#endif
-				// scroll to the very top:
-				difference = -1 * this.yOffset;
-				//#debug
-				System.out.println("Scrolling to first item: setting difference to " + difference );
-			} else {
-				difference = this.yTop - itemYTop + this.focusedTopMargin;
-			}
-			// re-adjust the scrolling in case we scroll up and the previous
-			// item is very large:
-			if ( !isDownwards && (itemYBottom + yOffsetDiff + difference > this.yBottom  )) {
-				difference = this.yBottom - (itemYBottom + yOffsetDiff);
-				//#debug
-				System.out.println("Scrolling upwards: adjusting difference to " + difference );
-			}
+//			
+//		} else if (absoluteYBottom + yOffsetDiff > this.yBottom + 1) { //TODO +1 is a quick hack here
+//			// this item is too low:
+//			difference = this.yBottom - absoluteYBottom;
+//			//#debug
+//			System.out.println("scroll: item too low: difference: " + difference + "  absoluteYBottom=" + absoluteYBottom + "  container.yBottom=" + this.yBottom + ", yOffsetDiff=" + yOffsetDiff);
+//			//if ( itemYTop + difference < this.yTop) {
+//			if ( isDownwards && absoluteY + difference < this.yTop) {
+//				//#debug
+//				System.out.println("scroll: correcting: difference: " + difference + "  absoluteY=" + absoluteY + "  <  this.yTop=" +  this.yTop + "  to new difference=" + (this.yTop - y + 10) );
+//				difference = this.yTop - absoluteY + 10; // additional pixels for adjusting the focused style above:
+//			}
+//			/*
+//			if ( itemYTop + difference < this.internalY) {
+//				//#debug
+//				System.out.println("correcting: difference: " + difference + "  itemYTop=" + itemYTop + "  <  this.internalY=" +  this.internalY + "  to new difference=" + (this.internalY - itemYTop + 10) );
+//				difference = this.internalY - itemYTop + 10; // additional pixels for adjusting the focused style above:
+//			}
+//			*/
+//		} else if (y + yOffsetDiff < this.yTop) {
+//			// this item is too high:
+//			//#if tmp.supportViewType
+//				//TODO when colspan is used, the index might be lower than anticipated
+//				if ((index == 0) || ( this.view != null && (index < this.view.numberOfColumns) ) ) {
+//			//#else
+//				//# if (index == 0) {
+//			//#endif
+//				// scroll to the very top:
+//				difference = -current;
+//				//#debug
+//				System.out.println("scroll: Scrolling to first item: setting difference to " + difference );
+//			} else {
+//				difference = this.yTop + yOffsetDiff - absoluteY; // + this.focusedTopMargin;
+//				//#debug
+//				System.out.println("scroll: item too high: setting difference to " + difference + ", absoluteY=" + absoluteY + ", yOffsetDiff=" + yOffsetDiff ); //+ ", focusedTopMargin=" + this.focusedTopMargin );
+//			}
+//			// re-adjust the scrolling in case we scroll up and the previous
+//			// item is very large:
+//			if ( !isDownwards && (absoluteYBottom + yOffsetDiff + difference > this.yBottom  )) {
+//				difference = this.yBottom - (absoluteYBottom + yOffsetDiff);
+//				//#debug
+//				System.out.println("scroll: Scrolling upwards: adjusting difference to " + difference );
+//			}
+		} else {
+			//#debug
+			System.out.println("scroll: do nothing");
+			return;
 		}
 				
 		//#if polish.css.scroll-mode
 			if (!this.scrollSmooth) {
-				this.yOffset += difference;
+				this.yOffset = current + difference;
 			} else {
 		//#endif
-				this.targetYOffset = this.yOffset + difference;
+				this.targetYOffset = target + difference;
 				//#debug
-				System.out.println("scroll: adjusting targetYOffset to " + this.targetYOffset);
+				System.out.println("scroll: adjusting targetYOffset to " + this.targetYOffset + ", y=" + y);
 //				if (this.focusedItem != null) {
 //					this.focusedItem.backgroundYOffset = difference;
 //				}
@@ -716,21 +758,35 @@ public class Container extends Item {
 				System.out.println("Container: autofocusing element " + i);
 				this.autoFocusEnabled = false;
 				focus( i, item, 0 );
+				height = item.getItemHeight(lineWidth, lineWidth);
 				if (!isLayoutShrink) {
-					width = item.getItemWidth( lineWidth, lineWidth );
-					height = item.itemHeight;  // no need to call getItemHeight() since the item is now initialised...
+					width = item.itemWidth;  // no need to call getItemWidth() since the item is now initialised...
 				} else {
-					height = 0;
 					width = 0;
 				}
-			} else if (isLayoutShrink && i == this.focusedIndex) {
-				width = 0;
-				height = 0;
-			}
+				if (this.enableScrolling) {
+					//#debug
+					System.out.println("initContent(): scrolling autofocused item");
+					scroll( true, 0, myContentHeight, width, height );
+				}
+			} else if (i == this.focusedIndex) {
+				if (isLayoutShrink) {
+					width = 0;
+				}
+				if (this.isScrollRequired) {
+					//#debug
+					System.out.println("initContent(): scroll is required.");
+					scroll( true, 0, myContentHeight, width, height );
+					this.isScrollRequired = false;
+				}
+			} 
 			if (width > myContentWidth) {
 				myContentWidth = width; 
 			}
+			item.yTopPos = myContentHeight;
+			item.yBottomPos = myContentHeight + height;
 			myContentHeight += height + this.paddingVertical;
+			System.out.println("item.yTopPos=" + item.yTopPos);
 		}
 		if (!hasFocusableItem) {
 			this.appearanceMode = PLAIN;
@@ -753,7 +809,7 @@ public class Container extends Item {
 				if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
 					myContentWidth = this.minimumWidth;
 				}
-				myContentHeight += item.getItemHeight( lineWidth, lineWidth );
+				//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 			}
 		}
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -774,7 +830,7 @@ public class Container extends Item {
 		// layout or according to the items layout, when specified.
 		// adjust vertical start for scrolling:
 		//#if polish.debug.debug
-			if (this.yOffset != 0) {
+			if (this.enableScrolling) {
 				//#debug 
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
@@ -845,17 +901,20 @@ public class Container extends Item {
 			} else {
 				this.internalX = item.xLeftPos - this.contentX;
 				this.internalWidth = item.itemWidth;
-				this.internalY = (item.yTopPos - this.yOffset) - this.contentY;
+				this.internalY = item.yTopPos + this.yOffset; //(item.yTopPos - this.yOffset) - this.contentY;
 				this.internalHeight = item.itemHeight;
 			}
-			if (this.isFirstPaint) {
-				this.isFirstPaint = false;
-				if (this.enableScrolling) {
-					if ( this.contentY + this.internalY + this.internalHeight > this.yBottom ) {
-						scroll( true, this.contentX, this.contentY + this.internalY, this.contentWidth, this.internalHeight + 3 ); // + 3 gives room for a focused border etc
-					}
-				}
-			}
+			// outcommented by rob - 2006-07-13 - now positions are determined in the initContent() method already
+//			if (this.isFirstPaint) {
+//				this.isFirstPaint = false;
+//				if (this.enableScrolling) {
+//					if ( this.contentY + this.internalY + this.internalHeight > this.yBottom ) {
+//						//#debug
+//						System.out.println("first paint, now scrolling...");
+//						scroll( true, this.contentX, this.contentY + this.internalY, this.contentWidth, this.internalHeight + 3 ); // + 3 gives room for a focused border etc
+//					}
+//				}
+//			}
 		}
 
 		if (setClipping) {
@@ -940,47 +999,52 @@ public class Container extends Item {
 			}
 		//#endif
 		boolean processed = false;
-		int yOffsetDiff = 0;
-		//#ifdef polish.css.scroll-mode
+		int availableHeight = this.yBottom - this.yTop;
+		int offset;
+		//#if polish.scroll-mode
 			if (this.scrollSmooth) {
 		//#endif
-				yOffsetDiff = this.targetYOffset - this.yOffset;
-		//#ifdef polish.css.scroll-mode
+				offset = this.targetYOffset;
+		//#if polish.scroll-mode
+			} else {
+				offset = this.yOffset;
 			}
 		//#endif
 		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
-					&& yOffsetDiff == 0
-					&& this.focusedItem.yBottomPos > this.yBottom) 
+					&& offset + this.focusedItem.yBottomPos > availableHeight) 
 			{
 				if (gameAction == Canvas.RIGHT) {
 					return false;
 				}
-				// keep the focus do scroll downwards
+				// keep the focus do scroll downwards:
 				//#debug
-				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", yOffsetDiff=" + yOffsetDiff);
+				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex );
 			} else {
 				processed = shiftFocus( true, 0 );
 			}
 			//#debug
 			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			if ((!processed) && this.enableScrolling 
-					&&  (this.yBottomPos + this.targetYOffset > this.yBottom)) {
+					&&  (offset + this.focusedItem.yBottomPos > availableHeight || offset + this.itemHeight > availableHeight)) {
 				// scroll downwards:
 				//#if polish.Container.ScrollDelta:defined
-					//#= this.targetYOffset -= ${polish.Container.ScrollDelta};
+					//#= offset -= ${polish.Container.ScrollDelta};
 				//#else
-					this.targetYOffset -= 30;
+					offset -= 30;
 				//#endif
 				//#debug
-				System.out.println("Down/Right: Reducing targetYOffset to " + this.targetYOffset);	
+				System.out.println("Down/Right: Reducing (target)YOffset to " + offset);	
 				processed = true;
-				//System.out.println("yBottomPos: " + this.yBottomPos + "  yBottom: " + this.yBottom );
 				//#if polish.scroll-mode
-					if (!this.scrollSmooth) {
-						this.yOffset = this.targetYOffset;
+					if (this.scrollSmooth) {
+				//#endif
+						this.targetYOffset = offset;
+				//#if polish.scroll-mode
+					} else {
+						this.yOffset = offset;
 					}
 				//#endif
 			}
@@ -988,38 +1052,42 @@ public class Container extends Item {
 				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
-					&& yOffsetDiff == 0
-					&& this.focusedItem.yTopPos < this.yTop ) 
+					&& offset + this.focusedItem.yTopPos < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
 				if (gameAction == Canvas.LEFT) {
 					return false;
 				}
-				// keep the focus do scroll downwards
+				// keep the focus do scroll upwards:
 				//#debug
-				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", yOffsetDiff=" + yOffsetDiff + ", focusedItem.yTopPos=" + this.focusedItem.yTopPos + ", this.yTop=" + this.yTop + ", targetYOffset=" + this.targetYOffset);
+				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", focusedItem.yTopPos=" + this.focusedItem.yTopPos + ", this.yTop=" + this.yTop + ", targetYOffset=" + this.targetYOffset);
 			} else {
 				processed = shiftFocus( false, 0 );
 			}
 			//#debug
 			System.out.println("Container(" + this + "): upward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
-			if ((!processed) && this.enableScrolling && (this.targetYOffset < 0)) {
+			if ((!processed) && this.enableScrolling && (offset < 0)) {
 				// scroll upwards:
 				//#if polish.Container.ScrollDelta:defined
-					//#= this.targetYOffset += ${polish.Container.ScrollDelta};
+					//#= offset += ${polish.Container.ScrollDelta};
 				//#else
-					this.targetYOffset += 30;
+					offset += 30;
 				//#endif
-				if (this.targetYOffset > 0) {
-					this.targetYOffset = 0;
+				if (offset > 0) {
+					offset = 0;
 				}
-				//#debug
-				System.out.println("Up/Left: Increasing targetYOffset to " + this.targetYOffset);	
-				processed = true;
 				//#if polish.scroll-mode
-					if (!this.scrollSmooth) {
-						this.yOffset = this.targetYOffset;
+					if (this.scrollSmooth) {
+				//#endif
+						this.targetYOffset = offset;
+				//#if polish.scroll-mode
+					} else {
+						this.yOffset = offset;
 					}
 				//#endif
+
+				//#debug
+				System.out.println("Up/Left: Increasing (target)YOffset to " + offset);	
+				processed = true;
 			}
 		}
 		return processed;
@@ -1557,19 +1625,21 @@ public class Container extends Item {
 	 */
 	public boolean animate() {
 		boolean animated = false;
+		// scroll the container:
+		int target = this.targetYOffset;
+		int current = this.yOffset;
 		//#if polish.css.scroll-mode
-			if (this.scrollSmooth && this.targetYOffset != this.yOffset) {
+			if (this.scrollSmooth && target != current ) {
 		//#else
-			//# if (this.targetYOffset != this.yOffset) {	
+			//# if (target != current) {	
 		//#endif
-			int speed = (this.targetYOffset - this.yOffset) / 3;
-			speed += this.targetYOffset > this.yOffset ? 1 : -1;
-			this.yOffset += speed;
-			if ( speed > 0 && this.yOffset > this.targetYOffset) {
-				this.yOffset = this.targetYOffset;
-			} else if (speed < 0 && this.yOffset < this.targetYOffset) {
-				this.yOffset = this.targetYOffset;
+			int speed = (target - current) / 3;
+			speed += target > current ? 1 : -1;
+			current += speed;
+			if ( ( speed > 0 && current > target) || (speed < 0 && current < target ) ) {
+				current = target;
 			}
+			this.yOffset = current;
 //			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
 //				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
 //			}
