@@ -188,9 +188,14 @@ public final class DrawUtil {
 				//int gColor=gradient[(Math.abs(ix)+Math.abs(iy))/2];
 
 				// compute the color and draw all shadowPixels with offset (ix, iy)
-				if ( Math.sqrt(ix*ix+iy*iy)<size) {
-					int gColor = gradient[(int)  Math.sqrt(ix*ix+iy*iy) ];
-				
+				//#if polish.cldc1.1 
+				int r = (int) Math.sqrt(ix*ix+iy*iy); // TODO: this might be a bit slowly
+				//#elseif polish.cldc1.0 
+				int r = (Math.abs(ix)+Math.abs(iy))/2; // TODO: this looks a bit uncool
+				//#endif
+				if ( r<size) {
+					int gColor = gradient[(int)  r ];
+					
 					for (int col=iLeft,row; col<width/*+iLeft*/-iRight; col++) { 
 						for (row=iTop;row<height-iBottom/*+iTop*/-1;row++){
 							
