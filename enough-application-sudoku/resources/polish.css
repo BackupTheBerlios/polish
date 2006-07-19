@@ -1,0 +1,7 @@
+focused{
+	font-color:green;
+}
+
+.sudokuContainer {
+	columns: 3;
+}

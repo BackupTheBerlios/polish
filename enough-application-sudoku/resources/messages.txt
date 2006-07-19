@@ -1,0 +1,30 @@
+#######################################
+#                                     #
+#   This file contains translations   #
+#   of the application.               #
+#   Keys and values are separated     #
+#   by the equals-sign "=".           #
+#   You can include parameters with   #
+#   the standard {0}, {1} etc         #
+#   mechanism.                        #
+#                                     #
+#######################################
+
+title.StartGame=Start Game
+title.Highscore=Highscore
+title.Settings=Settings
+title.About=About
+title.Help=Help
+title.Exit=Exit
+
+menu.StartGame=Start Game
+menu.Highscore=Highscore
+menu.Settings=Settings
+menu.About=About
+menu.Help=Help
+menu.Exit=Exit
+
+cmd.Ok=Ok
+
+about.text=about text ..sdfjsdf
+help.text=Umlaute für alle
