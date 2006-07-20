@@ -52,11 +52,14 @@ public class SudokuTextField
 		if (this.isUneditable) {
 			return false;
 		}
-		if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9 ) {
+		int minCode = this.minimum + Canvas.KEY_NUM0;
+		if (keyCode >= minCode && keyCode <= Canvas.KEY_NUM9 ) {
 			setString( Integer.toString( keyCode - Canvas.KEY_NUM0 ) );
 			notifyStateChanged();
 			this.flashCaret = false;
 			return true;
+		} else if (keyCode == Canvas.KEY_NUM0 ){
+			setString("");
 		}
 		return false;
 	}

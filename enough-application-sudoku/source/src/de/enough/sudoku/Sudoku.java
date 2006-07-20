@@ -3,6 +3,8 @@
  */
 package de.enough.sudoku;
 
+//import java.lang.ref.Reference;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -15,6 +17,7 @@ import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
@@ -42,13 +45,20 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	private Form gameForm;
 	
 	private Command exit;
-	private Command cmdReturn;
+	private Command cmdBack;
 	private Command cmdStartGame;
+	
+	private Command gameQuit, gamePause, gameHint, gameSolve, gameNew, gameReset,gameContinue;
 	
 	private int[][] nativeBoard=new int[9][9];
 	private int[][] userBoard=new int[9][9];
 	private boolean[][] wrongBoard=new boolean[9][9];
-	private byte[][] lastBoardState=new byte[9][9];
+	private int[][] solvedBoard=new int[9][9];
+	private int hintCount;
+	private boolean autoSolved;
+	
+	//private byte[][] lastBoardState=new byte[9][9];
+	
 	
 	SudokuTextField txtCells[][];
 	HashMap hmIndexCells=new HashMap(9*9);
@@ -70,7 +80,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	private static byte SUDOKUCELLUSER=4;
 	
 	int[][] testBoard={
-	/*{0,0,5,9,2,4,8,0,0},//http://www.orangeminds.com/sudoku/sudoku.asp?board=1#
+	{0,0,5,9,2,4,8,0,0},//http://www.orangeminds.com/sudoku/sudoku.asp?board=1#
 	{0,6,4,0,8,0,1,9,0}, //450ms
 	{0,8,0,0,7,0,0,4,0},
 	{0,9,0,8,5,6,0,7,0},
@@ -79,8 +89,8 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	{0,0,3,7,0,8,6,0,0},
 	{0,0,0,3,0,5,0,0,0},
 	{0,0,0,1,0,2,0,0,0}
-	};*/
-		{1,3,5,9,2,4,8,6,7},
+	};
+		/*{1,3,5,9,2,4,8,6,7},
 		{7,6,0,5,8,3,1,9,2},
 		{2,8,9,6,7,1,5,4,3},
 		{3,9,2,8,5,6,4,7,1},
@@ -89,7 +99,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		{9,2,3,7,4,8,6,1,5},
 		{8,4,1,3,6,5,7,2,9},
 		{6,5,7,1,9,2,3,8,0}
-		};
+		};*/
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
@@ -123,7 +133,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			this.mainMenu.setCommandListener(this);	
 			Display.getDisplay(this).setCurrent(this.mainMenu);
 			
-			this.cmdReturn = new Command( Locale.get( "cmd.Back" ), Command.BACK, 2 );
+			this.cmdBack = new Command( Locale.get( "cmd.Back" ), Command.BACK, 2 );
 			this.cmdStartGame = new Command( Locale.get( "cmd.Start" ), Command.OK, 1 );
 			
 //			 TODO read the settins/highscore etc...
@@ -138,7 +148,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		// check the commands
 		if (cmd == this.exit) {
 			notifyDestroyed();
-		} else if (cmd == this.cmdReturn){
+		} else if (cmd == this.cmdBack){
 			// return to menu
 			this.display.setCurrent(this.mainMenu);
 		}else if (cmd==this.cmdStartGame){
@@ -181,6 +191,26 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			
 			System.out.println("   - something happened");
 		}
+		
+		// check the inGame menu
+		if (screen==this.gameForm){
+			if (cmd==this.gameQuit){
+				// back to the menu
+				this.display.setCurrent(this.mainMenu);
+			} else if (cmd==this.gamePause){
+				// TODO black screen/or about ??
+			} else if (cmd==this.gameHint){
+				// solve the selected cell
+				showHint((Screen) screen);
+			} else if (cmd==this.gameSolve){
+				// TODO solve the whole game and disable highscore entry
+				solveCurrentBoard();
+			} else if (cmd==this.gameReset){
+				fillBoard(this.nativeBoard);
+			} else if (cmd==this.gameNew){
+				showGameSelection();
+			}
+		}
 	}
 	/**
 	 * Handles the Game/Board interaction
@@ -188,24 +218,33 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	public void itemStateChanged(Item item){
 		
 		// catch changes in the Board/TextFields (currentBoard)
+		// TODO: replace by ui.access.getSelItem()...
 		Index index= (Index)this.hmIndexCells.get(item);
+		
 		if (index!=null){
 			
 			String value=this.txtCells[index.row][index.col].getString();
 			
 			// TODO: there is a problem if the user enters the number and the focus is on the right
-			if (value.length()>1){
+			if (value.length()>1 ){
 				// cut the beginning off
 				value= value.substring(value.length()-1, value.length());
-				this.txtCells[index.row][index.col].setString(value);
+				if (!value.equals("0")){
+					this.txtCells[index.row][index.col].setString(value);
+				} else {
+					// TODO this is to slowly the 0 is still visible
+					this.txtCells[index.row][index.col].setString("");
+				}
 			} 
 			
 			if (value.length()==0) {
 				this.userBoard[index.row][index.col]=0;
 			} else {
 				this.userBoard[index.row][index.col]= Integer.parseInt(value);
+				if (this.userBoard[index.row][index.col]==0){
+					this.txtCells[index.row][index.col].setString("");			
+				}
 			}
-				
 			
 			// define the new colors
 			SudokuBoardUtil.checkUserBoard(this.userBoard, this.wrongBoard);
@@ -238,7 +277,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			this.gameSelForm = new Form( Locale.get("title.StartGame") );
 			//this.gameSelForm.append( "" );
 			
-			this.gameSelForm.addCommand( this.cmdReturn );
+			this.gameSelForm.addCommand( this.cmdBack );
 			this.gameSelForm.addCommand( this.cmdStartGame );
 			this.gameSelForm.setCommandListener( this );
 		}
@@ -257,7 +296,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			this.highScoreForm = new Form( Locale.get("title.Highscore") );
 			this.highScoreForm.append( "all winners" );
 			
-			this.highScoreForm.addCommand( this.cmdReturn );
+			this.highScoreForm.addCommand( this.cmdBack );
 			this.highScoreForm.setCommandListener( this );
 		}
 		// show the form
@@ -282,7 +321,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			this.settingstForm = new Form( Locale.get("title.Settings") );
 			this.settingstForm.append( "lots of cool settings" );
 			
-			this.settingstForm.addCommand( this.cmdReturn );
+			this.settingstForm.addCommand( this.cmdBack );
 			this.settingstForm.setCommandListener( this );
 		}
 		// show the Settings
@@ -300,7 +339,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			//#style .aboutText, focused, default
 			this.aboutForm.append( Locale.get("about.text"));
 			
-			this.aboutForm.addCommand( this.cmdReturn );
+			this.aboutForm.addCommand( this.cmdBack );
 			this.aboutForm.setCommandListener( this );
 		}
 		// show the aboutscreen
@@ -317,7 +356,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			this.helpForm = new Form( Locale.get("title.Help") );
 			this.helpForm.append( Locale.get("help.text") );
 			
-			this.helpForm.addCommand( this.cmdReturn );
+			this.helpForm.addCommand( this.cmdBack );
 			this.helpForm.setCommandListener( this );
 		}
 		// show the aboutscreen
@@ -341,7 +380,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
-					this.txtCells[i][j]= new SudokuTextField( 0, 9 ); //new TextField(null,"0"/*+i+","+j*/,2,TextField.NUMERIC | TextField.NON_PREDICTIVE);
+					this.txtCells[i][j]= new SudokuTextField( 1, 9 ); //new TextField(null,"0"/*+i+","+j*/,2,TextField.NUMERIC | TextField.NON_PREDICTIVE);
 					index=new Index(i,j);
 					this.hmIndexCells.put(this.txtCells[i][j], index);
 					//#style .sudokuCell
@@ -349,7 +388,21 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 				}
 			}
 			
-			// TODO quit, pause, hint, solve
+			this.gameQuit = new Command( Locale.get( "cmd.gameQuit" ), Command.EXIT, 2 );
+			this.gamePause = new Command( Locale.get( "cmd.gamePause" ), Command.SCREEN, 2 );
+			this.gameHint = new Command( Locale.get( "cmd.gameHint" ), Command.SCREEN, 2 );
+			this.gameSolve = new Command( Locale.get( "cmd.gameSolve" ), Command.SCREEN, 2 );
+			this.gameReset = new Command( Locale.get( "cmd.gameReset" ), Command.SCREEN, 2 );
+			this.gameNew = new Command( Locale.get( "cmd.gameNew" ), Command.SCREEN, 2 );
+			this.gameContinue = new Command( Locale.get( "cmd.gameContinue" ), Command.SCREEN, 2 );
+			
+			this.gameForm.addCommand(this.gameQuit);
+			this.gameForm.addCommand(this.gamePause);
+			this.gameForm.addCommand(this.gameHint);
+			this.gameForm.addCommand(this.gameSolve);
+			this.gameForm.addCommand(this.gameReset);
+			this.gameForm.addCommand(this.gameNew);
+			this.gameForm.addCommand(this.gameContinue);
 			
 			this.gameForm.setCommandListener( this );
 			this.gameForm.setItemStateListener(this);
@@ -368,9 +421,18 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	}
 	/**
 	 * This function fills the numbers into a the TextFields array
-	 *  They become visible when the board is shown
+	 *  They become visible when the board is shown.
+	 *  
+	 *  It also solves the board such that solvedBoard[][] is properly defined.
 	 */
 	private void fillBoard(int[][] board){
+		// solve the board (it has to be valid!)
+	    SudokuBoardUtil.copyBoard(board,this.solvedBoard);
+	    SudokuBoardUtil.solveBoard(this.solvedBoard, SudokuBoardUtil.SM_SOLVE);
+	    
+	    this.hintCount=0;
+	    this.autoSolved=false;
+		
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				SudokuTextField currentCell = this.txtCells[i][j];
@@ -390,11 +452,17 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			}
 		}
 	}
+	/**
+	 * These functions will syncronise the current state and the display, which
+	 * means that all cells become the value specified by userBoard and the 
+	 * higlighting specified by wrongBoard and nativeBoard
+	 *
+	 */
 	private void refreshBoard(){
 		refreshBoard(false);
 	}
 	private void refreshBoard(boolean refreshData){
-		// do not check first, because this depends on the users settings 
+		// do not check if the board is valid first, because this depends on the users settings 
 		
 		// set the color
 		for (int i = 0; i < 9; i++) {
@@ -451,6 +519,32 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 				}
 			}
 		}
+	}
+	/**
+	 * This function checks whether a hint is alowed and possible. If it is so the 
+	 * hint is given. It looks for the TextField in screen.
+	 */
+	private void showHint(Screen screen){
+		int index= UiAccess.getFocusedIndex(screen);
+		
+		// TODO: check if a hint is legal due to the users settings
+		// look also at autoSolved
+		if (this.autoSolved){
+			return;
+		}
+		
+		if (this.nativeBoard[index/9][index%9]==0){
+			this.txtCells[index/9][index%9].setValue(this.solvedBoard[index/9][index%9]);
+			this.hintCount++;
+		} else{
+			// there will be no hint, but maybe a message...
+		}
+	}
+	private void solveCurrentBoard(){
+		SudokuBoardUtil.copyBoard(this.solvedBoard, this.userBoard);
+		refreshBoard(true);
+		
+		this.autoSolved=true;
 	}
 	
 }

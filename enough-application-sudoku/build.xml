@@ -96,8 +96,7 @@
 					<variable name="polish.usePolishTitle" value="true" />
 					<variable name="update-url" value="http://www.enough.de/update"/>
 					<variable name="polish.TextField.useDirectInput" value="true"  />
-					<variable name="polish.TiledLayer.useBackBuffer" value="true"/>
-					<variable name="polish.TiledLayer.TransparentTileColor" value="0x00FF00"/>
+					<variable name="polish.TextField.suppressCommands" value="true"  />
 					<variable name="polish.TextField.showInputInfo" value="false" />
 					<!--
 					<variable name="polish.TextField.useDirectInput" value="true" unless="polish.hasPointerEvents" />

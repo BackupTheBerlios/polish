@@ -27,5 +27,13 @@ menu.Exit=Exit
 cmd.Start=Start
 cmd.Back=Back
 
+cmd.gameQuit=Ende
+cmd.gamePause=Pause
+cmd.gameHint=Hint
+cmd.gameSolve=Solve Sudoku
+cmd.gameReset=Reset Sudoku
+cmd.gameNew=New Sudoku
+cmd.gameContinue=Continue
+
 about.text=about text ..sdfjsdf
 help.text=Umlaute für alle
