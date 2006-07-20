@@ -489,6 +489,10 @@ public class StringItem extends Item
 					this.textWidth = myTextWidth;
 					this.isHorizontalAnimationDirectionRight = false;
 					this.contentWidth = lineWidth;
+					int numberOfChars = (this.text.length() * lineWidth) / myTextWidth - 1;
+					if (numberOfChars > 1) {
+						this.textLines = new String[] { this.text.substring( 0, numberOfChars ) + ".." };
+					}
 				} else {
 					this.clipText = false;
 					this.contentWidth = myTextWidth;
