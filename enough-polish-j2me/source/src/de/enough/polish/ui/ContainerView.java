@@ -148,6 +148,8 @@ public class ContainerView {
 				if (width > myContentWidth) {
 					myContentWidth = width; 
 				}
+				item.yTopPos = myContentHeight;
+				item.yBottomPos = myContentHeight + item.itemHeight;
 				myContentHeight += height + this.paddingVertical;
 			}
 			if (hasFocusableItem) {
@@ -398,7 +400,9 @@ public class ContainerView {
 						//#else
 							columnIndex++;
 						//#endif
-						
+						item.yTopPos = myContentHeight;
+						item.yBottomPos = myContentHeight + item.itemHeight;
+						System.out.println( i + ": yTopPos=" + item.yTopPos );
 						if (columnIndex == this.numberOfColumns) {
 							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 							columnIndex = 0;

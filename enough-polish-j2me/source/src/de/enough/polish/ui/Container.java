@@ -580,6 +580,8 @@ public class Container extends Item {
 //				//#endif
 			}
 		} else if (this.enableScrolling) {
+			//#debug
+			System.out.println("focus: postpone scrolling to initContent()");
 			this.isScrollRequired = true;
 			
 //		} else if (this.enableScrolling) {
@@ -717,10 +719,12 @@ public class Container extends Item {
 		}
 		//#ifdef tmp.supportViewType
 			if (this.view != null) {
+				boolean requireScrolling = this.isScrollRequired;
 				if (this.autoFocusEnabled) {
 					//#debug
 					System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
 					this.autoFocusEnabled = false;
+					requireScrolling = true;
 					if (this.autoFocusIndex < myItems.length  && this.autoFocusIndex >= 0 ) {
 						Item item = myItems [ this.autoFocusIndex ];
 						if (item.appearanceMode != Item.PLAIN) {
@@ -737,6 +741,13 @@ public class Container extends Item {
 				this.contentWidth = this.view.contentWidth;
 				this.contentHeight = this.view.contentHeight;
 				this.appearanceMode = this.view.appearanceMode;
+				if (requireScrolling && this.enableScrolling && this.focusedItem != null) {
+					//#debug
+					System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
+					Item item = this.focusedItem;
+					scroll( true, item.xLeftPos, item.yTopPos, item.itemWidth, item.itemHeight );
+				}
+
 				return;
 			}
 		//#endif
