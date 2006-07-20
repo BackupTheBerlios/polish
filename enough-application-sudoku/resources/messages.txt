@@ -24,7 +24,8 @@ menu.About=About
 menu.Help=Help
 menu.Exit=Exit
 
-cmd.Ok=Ok
+cmd.Start=Start
+cmd.Back=Back
 
 about.text=about text ..sdfjsdf
 help.text=Umlaute für alle

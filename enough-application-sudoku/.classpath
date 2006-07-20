@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/midp2-cldc11.jar"/>
-	<classpathentry kind="lib" path="/home/jinny/J2ME-Polish/import/enough-j2mepolish-client.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

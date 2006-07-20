@@ -98,6 +98,7 @@
 					<variable name="polish.TextField.useDirectInput" value="true"  />
 					<variable name="polish.TiledLayer.useBackBuffer" value="true"/>
 					<variable name="polish.TiledLayer.TransparentTileColor" value="0x00FF00"/>
+					<variable name="polish.TextField.showInputInfo" value="false" />
 					<!--
 					<variable name="polish.TextField.useDirectInput" value="true" unless="polish.hasPointerEvents" />
 					<variable name="polish.jarName" value="N60E2_RR.jar" if="polish.group.Series60E2" />
