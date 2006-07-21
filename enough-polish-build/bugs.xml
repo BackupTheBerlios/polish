@@ -377,6 +377,13 @@
 		<description>The backlight cannot be turned on permanently.</description>
 		<solution>Run a thread for turning the light on every 60 seconds or so.</solution>
 	</bug>
+
+	<bug>
+		<name>ReservedKeywordSerializable</name>
+		<area>io</area>
+		<description>Classes called Serializable confuse the device</description>
+		<solution>The J2ME polish build process works around this.</solution>
+	</bug>
 	
 	<!--
 	<bug>

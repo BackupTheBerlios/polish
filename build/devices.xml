@@ -6765,6 +6765,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8700r"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
 
 	<device>
@@ -6773,6 +6774,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="1"/>
 		<capability name="JavaPlatform" value="MIDP/1.0, BlackBerry"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
 	
 	<device>
@@ -6782,6 +6784,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
 	
 	<device>
@@ -6804,6 +6807,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="locationapi, wmapi"/>
 		<capability name="SoundFormat" value="vnf"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
 	
 
@@ -6813,9 +6817,10 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="1"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-	<capability name="wap.userAgent" value="BlackBerry5810"/>
-<capability name="wap.userAgent" value="BlackBerry/3.2.1"/>
-</device>
+		<capability name="wap.userAgent" value="BlackBerry5810"/>
+		<capability name="wap.userAgent" value="BlackBerry/3.2.1"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
 
 	<device>
 		<identifier>Research In Motion/BlackBerry 5820</identifier>
@@ -6823,9 +6828,10 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="1"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-	<capability name="wap.userAgent" value="BlackBerry5820"/>
-<capability name="wap.userAgent" value="BlackBerry5820/3.6.0"/>
-</device>
+		<capability name="wap.userAgent" value="BlackBerry5820"/>
+		<capability name="wap.userAgent" value="BlackBerry5820/3.6.0"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
 
 <!-- Samsung devices -->
 	<device> 
