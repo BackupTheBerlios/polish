@@ -64,10 +64,7 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 		}
 		// do not draw if you do not know the color
 		if (this.outerFader.changed){
-			// TODO: this.animate(); auch bei FAdeTextEffect??
 			this.outerFader.step();
-			//this.animate();
-			//return;
 		}
 		
 		if (text==null) {

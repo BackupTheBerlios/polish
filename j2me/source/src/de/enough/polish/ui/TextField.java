@@ -812,7 +812,7 @@ public class TextField extends StringItem
 	//#endif
 	private javax.microedition.lcdui.TextBox midpTextBox;
 	protected boolean flashCaret = true;
-	private boolean isUneditable;
+	protected boolean isUneditable;
 
 	private boolean doSetCaretPosition;
 

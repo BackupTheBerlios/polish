@@ -91,7 +91,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 //#if polish.blackberry and polish.TextField.suppressCommands
 	//# implements FieldChangeListener
 //#elif polish.blackberry  
-	, FieldChangeListener
+	//# , FieldChangeListener
 //#endif
 
 {
@@ -556,7 +556,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	//#endif
 	private javax.microedition.lcdui.TextBox midpTextBox;
 	protected boolean flashCaret = true;
-	private boolean isUneditable;
+	protected boolean isUneditable;
 
 	private boolean doSetCaretPosition;
 
@@ -1145,7 +1145,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				}
 			}
 			this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
-			this.editField.setChangeListener( this );
+			//# this.editField.setChangeListener( this );
 			this._bbField = this.editField;
 		//#elif !tmp.forceDirectInput
 			if (this.midpTextBox != null) {
