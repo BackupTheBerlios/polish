@@ -2,13 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mepose Core
 Bundle-SymbolicName: de.enough.mepose.core; singleton:=true
-Bundle-Version: 0.3.4
+Bundle-Version: 0.3.6
 Bundle-ClassPath: MeposeCore.jar,
  lib/ant.jar,
  lib/ant-nodeps.jar,
- j2mepolish124/import/enough-j2mepolish-build.jar,
- j2mepolish124/import/enough-j2mepolish-extensions.jar,
- j2mepolish124/import/jdom.jar
+ lib/enough-j2mepolish-build.jar,
+ j2mepolish/import/jdom.jar
 Bundle-Activator: de.enough.mepose.core.MeposePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -46,6 +45,7 @@ Export-Package: de.enough.mepose.core,
  de.enough.polish.preprocess,
  de.enough.polish.preprocess.backgrounds,
  de.enough.polish.preprocess.borders,
+ de.enough.polish.preprocess.css,
  de.enough.polish.preprocess.custom,
  de.enough.polish.preverify,
  de.enough.polish.propertyfunctions,

@@ -89,6 +89,8 @@ import de.enough.utils.Status;
  */
 public class MeposeModel extends PropertyModel{
     
+    private static final String PATH_POLISH_HOME = "/j2mepolish";
+
     public static final String DEFAULT_DEVICE_NAME = "Generic/Midp2Cldc11";
 
     public static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
@@ -152,7 +154,7 @@ public class MeposeModel extends PropertyModel{
     private File projectHome = new File("");
 
     // Supported Config.
-    private DeviceDatabase deviceDatabase;
+//    private DeviceDatabase deviceDatabase;
     private DeviceTree deviceTree;
     private IClasspathEntry[] classpathEntries;
     private Configuration[] supportedConfigurations = new Configuration[0];
@@ -196,7 +198,7 @@ public class MeposeModel extends PropertyModel{
         File mppHomeFile;// = new File("");
         this.jadFile = new File("");
         try {
-            polishHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(MeposePlugin.getDefault().getBundle(),new Path("/j2mepolish124"))).getPath());
+            polishHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(MeposePlugin.getDefault().getBundle(),new Path(PATH_POLISH_HOME))).getPath());
         } catch (IOException exception) {
             MeposePlugin.log("No embedded j2me polish found.",exception);
             throw new IllegalStateException("No embedded j2me polish found:"+exception);
@@ -535,10 +537,11 @@ public class MeposeModel extends PropertyModel{
      * @throws DeviceDatabaseException 
      */
     public DeviceDatabase getDeviceDatabase() throws DeviceDatabaseException {
-        if(this.deviceDatabase == null) {
-            this.deviceDatabase = PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
-        }
-        return this.deviceDatabase;
+//        if(this.deviceDatabase == null) {
+//            this.deviceDatabase = PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
+//        }
+//        return this.deviceDatabase;
+        return PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
     }
 
     // May be null.

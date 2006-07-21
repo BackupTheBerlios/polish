@@ -27,6 +27,7 @@ public class PolishDeviceDatabase {
     private static void init(File polishHome,File projectHome) throws DeviceDatabaseException{
         Map properties = new HashMap();
         properties.put("mpp.home","no/path");
+        properties.put("polish.home",polishHome.getAbsolutePath());
         Map inputStreamsByfileName = new HashMap();
         inputStreamsByfileName.put("capabilities.xml",PolishDeviceDatabase.class.getResourceAsStream("/capabilities.xml"));
         inputStreamsByfileName.put("apis.xml",PolishDeviceDatabase.class.getResourceAsStream("/apis.xml"));
@@ -36,7 +37,8 @@ public class PolishDeviceDatabase {
         inputStreamsByfileName.put("vendors.xml",PolishDeviceDatabase.class.getResourceAsStream("/vendors.xml"));
         inputStreamsByfileName.put("devices.xml",PolishDeviceDatabase.class.getResourceAsStream("/devices.xml"));
         try {
-            deviceDatabase = new DeviceDatabase(properties,polishHome,projectHome,null,null,inputStreamsByfileName,new HashMap());
+//            deviceDatabase = new DeviceDatabase(properties,polishHome,projectHome,null,null,inputStreamsByfileName,new HashMap());
+            deviceDatabase = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,inputStreamsByfileName,new HashMap());
         } catch (Exception e) {
             throw new DeviceDatabaseException("Could not create deviceDatabase.",e);
         }

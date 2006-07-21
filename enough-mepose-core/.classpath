@@ -8,8 +8,8 @@
 			<attribute value="jar:file:/Users/ricky/lib/apache-ant-1.6.3-doc.zip!/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="j2mepolish124/import/jdom.jar"/>
-	<classpathentry exported="true" sourcepath="lib/enough-j2mepolish-build-src.jar" kind="lib" path="j2mepolish124/import/enough-j2mepolish-build.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="j2mepolish/import/jdom.jar"/>
+	<classpathentry exported="true" sourcepath="lib/enough-j2mepolish-build-src.jar" kind="lib" path="lib/enough-j2mepolish-build.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

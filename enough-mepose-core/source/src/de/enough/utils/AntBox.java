@@ -27,6 +27,7 @@ package de.enough.utils;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildLogger;
@@ -107,7 +108,8 @@ public class AntBox {
         }
         setWorkingDirectory();
         this.project = new Project();
-        this.project.setCoreLoader(this.alternativeClassLoader);
+        //TODO: Commented for testing only.
+//        this.project.setCoreLoader(this.alternativeClassLoader);
         if(this.toolsLocation != null) {
             System.out.println("DEBUG:AntBox.createProject(...):toolsLocation found.");
             Path path = new Path(this.project);
@@ -227,7 +229,7 @@ public class AntBox {
     }
 
     public void setAlternativeClassLoader(ClassLoader alternativeClassLoader) {
-        // Null is allowed parameter is allowed. Means to use default class loader.
+        // Null as parameter is allowed and means to use the default class loader.
         this.alternativeClassLoader = alternativeClassLoader;
     }
 
@@ -287,5 +289,12 @@ public class AntBox {
             throw new IllegalArgumentException("ERROR:AntBox.setUsedWorkingDirectory(...):Parameter 'usedWorkingDirectory' is null.");
         }
         this.workingDirectory = workingDirectory.getAbsolutePath();
+    }
+
+    public void run() {
+        Vector argumentList = new Vector();
+        argumentList.add("clean");
+        argumentList.add("j2mepolish");
+        this.project.executeTargets(argumentList);
     }
 }
