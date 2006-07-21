@@ -47,7 +47,7 @@ public class J2MePolishJavaDescriber implements ITextContentDescriber {
 
     public int describe(Reader contents, IContentDescription description)
                                                                          throws IOException {
-        PolishEditorPlugin.log("entering describe(Reader,IContentDescriptor).");
+//        PolishEditorPlugin.log("entering describe(Reader,IContentDescriptor).");
         return VALID;
     }
 
