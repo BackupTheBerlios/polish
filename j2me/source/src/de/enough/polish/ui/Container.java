@@ -1039,7 +1039,8 @@ public class Container extends Item {
 			//#debug
 			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			if ((!processed) && this.enableScrolling 
-					&&  (offset + this.focusedItem.yBottomPos > availableHeight || offset + this.itemHeight > availableHeight)) {
+					&&  ( (this.focusedItem != null && offset + this.focusedItem.yBottomPos > availableHeight)
+						|| offset + this.itemHeight > availableHeight)) {
 				// scroll downwards:
 				//#if polish.Container.ScrollDelta:defined
 					//#= offset -= ${polish.Container.ScrollDelta};
