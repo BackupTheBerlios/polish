@@ -30,11 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.tools.ant.Project;
 import org.jdom.JDOMException;
@@ -186,6 +184,13 @@ public class DeviceTree {
     }
 
 
+    /**
+     * This method returns File objects which represents the .jar files which should
+     * be on the classpath for the selected devices.
+     * TODO: The bootclasspath must not be sorted. So the algorithm to find the highest
+     * version will not work if e.g. mmapi1 und mmapi2 are both on the bootclasspath.
+     * @return File objects for the classpath
+     */
     public File[] getClasspathForSelectedDevices() {
         Device[] selectedDevices = getSelectedDevices();
         Environment env = null;
@@ -204,28 +209,28 @@ public class DeviceTree {
             selectedDevice.setEnvironment(env);
         }
         
-        Set normalClasspathSet = new HashSet();
-        Set bootClasspathSet = new HashSet();
+        LinkedList normalClasspathList = new LinkedList();
+        LinkedList bootClasspathList = new LinkedList();
         for (int i = 0; i < selectedDevices.length; i++) {
             Device device = selectedDevices[i];
             String[] normalClasspath = device.getClassPaths();
             String[] bootClasspath = device.getBootClassPaths();
             for (int j = 0; j < normalClasspath.length; j++) {
-                normalClasspathSet.add(normalClasspath[j]);
+                normalClasspathList.addLast(normalClasspath[j]);
             }
             for (int j = 0; j < bootClasspath.length; j++) {
                 String bootClasspathEntry = bootClasspath[j];
                 if(bootClasspathEntry != null) {
-                    bootClasspathSet.add(bootClasspath[j]);
+                    bootClasspathList.addLast(bootClasspath[j]);
                 }
             }
         }
         
-        String[] normalClasspathArray = (String[]) normalClasspathSet.toArray(new String[normalClasspathSet.size()]);
-        String[] bootClasspathArray = (String[]) bootClasspathSet.toArray(new String[bootClasspathSet.size()]);
+        String[] normalClasspathArray = (String[]) normalClasspathList.toArray(new String[normalClasspathList.size()]);
+        String[] bootClasspathArray = (String[]) bootClasspathList.toArray(new String[bootClasspathList.size()]);
         
         Arrays.sort(normalClasspathArray);
-        Arrays.sort(bootClasspathArray);
+//        Arrays.sort(bootClasspathArray);
         
         String[] fullClasspathArray = new String[normalClasspathArray.length+bootClasspathArray.length];
         
@@ -248,7 +253,7 @@ public class DeviceTree {
      * @return filtered classpath entries.
      */
     protected String[] filterPaths(String[] paths) {
-        List resultList = new LinkedList();
+        LinkedList resultList = new LinkedList();
         if(paths.length == 0) {
             return new String[0];
         }
@@ -264,14 +269,35 @@ public class DeviceTree {
             String identifier = extractIdentifier(path);
             
             if( ! identifier.equals(oldIdentifier)) {
-                resultList.add(oldPath);
+                resultList.addLast(oldPath);
                 oldIdentifier = identifier;
             }
             oldPath = path;
         }
         // The last of the platforms is always the highest. But the loop above does not catch this.
-        resultList.add(paths[paths.length-1]);
+        resultList.addLast(paths[paths.length-1]);
+        resultList = removeDuplicateEntries(resultList);
+        
         return (String[]) resultList.toArray(new String[resultList.size()]);
+    }
+
+    /**
+     * Removes duplicate entries from the list.
+     * @param list
+     * @return
+     */
+    private LinkedList removeDuplicateEntries(LinkedList list) {
+        for(int i = 0; i < list.size(); i++) {
+            String element = (String)list.get(i);
+            for(int j = i+1; j < list.size(); j++) {
+                if(list.get(j).equals(element)) {
+                    list.remove(j);
+                    j--; // Adjust the counter as we removed one element and
+                    // dont want to jump over the next element.
+                }
+            }
+        }
+        return list;
     }
 
     /**
