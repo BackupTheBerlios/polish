@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui
+
 /**
  * 
  */
