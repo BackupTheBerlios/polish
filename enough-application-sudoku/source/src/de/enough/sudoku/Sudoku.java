@@ -220,34 +220,21 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		// catch changes in the Board/TextFields (currentBoard)
 		// TODO: replace by ui.access.getSelItem()...
 		Index index= (Index)this.hmIndexCells.get(item);
-		
 		if (index!=null){
 			
-			String value=this.txtCells[index.row][index.col].getString();
+			int value=this.txtCells[index.row][index.col].getValue();
 			
 			// TODO: there is a problem if the user enters the number and the focus is on the right
-			if (value.length()>1 ){
-				// cut the beginning off
-				value= value.substring(value.length()-1, value.length());
-				if (!value.equals("0")){
-					this.txtCells[index.row][index.col].setString(value);
-				} else {
-					// TODO this is to slowly the 0 is still visible
-					this.txtCells[index.row][index.col].setString("");
-				}
-			} 
-			
-			if (value.length()==0) {
+
+			if (value==0 /*|| value.equals("0")*/) {
 				this.userBoard[index.row][index.col]=0;
 			} else {
-				this.userBoard[index.row][index.col]= Integer.parseInt(value);
-				if (this.userBoard[index.row][index.col]==0){
+				this.userBoard[index.row][index.col]= value;
+				/*if (this.userBoard[index.row][index.col]==0){
 					this.txtCells[index.row][index.col].setString("");			
-				}
+				}*/
 			}
 			
-			// define the new colors
-			SudokuBoardUtil.checkUserBoard(this.userBoard, this.wrongBoard);
 			// set the colors
 			refreshBoard();
 			//System.out.println("empty: "+SudokuBoardUtil.countEmptyCells(this.userBoard));
@@ -334,9 +321,8 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	private void showAbout() {
 		// load the about screen
 		if (this.aboutForm==null){			
-			///#style aboutScreen
+			
 			this.aboutForm = new Form( Locale.get("title.About") );
-			//#style .aboutText, focused, default
 			this.aboutForm.append( Locale.get("about.text"));
 			
 			this.aboutForm.addCommand( this.cmdBack );
@@ -440,17 +426,22 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 					// enter the native number and lock the textfield
 					currentCell.setString(""+ board[i][j]);
 					currentCell.setConstraints(TextField.UNEDITABLE);
+					//#style sudokuCellNative
+					UiAccess.setStyle( currentCell );
 					this.userBoard[i][j]= board[i][j];
 				} else {
 					// delete the contend of the textfield
 					currentCell.setConstraints(TextField.NUMERIC);
 					currentCell.setString("");
+					//#style sudokuCellEmpty
+					UiAccess.setStyle( currentCell );
 					this.userBoard[i][j]=0;
 				}
 				this.nativeBoard[i][j]=board[i][j];
 				this.wrongBoard[i][j]=false;
 			}
 		}
+		// TODO set the cursor to a certain position
 	}
 	/**
 	 * These functions will syncronise the current state and the display, which
@@ -462,8 +453,9 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		refreshBoard(false);
 	}
 	private void refreshBoard(boolean refreshData){
-		// do not check if the board is valid first, because this depends on the users settings 
-		
+		//TODO check if the user  wants highlighting/help 
+		SudokuBoardUtil.checkUserBoard(this.userBoard, this.wrongBoard);
+
 		// set the color
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
@@ -471,12 +463,17 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 					this.txtCells[i][j].setString(""+ this.userBoard[i][j]);
 				}
 				
-				// TODO verlassen des Focus setzt die Farbe imemr auf schwarz
+				// TODO verlassen des Focus setzt den Style immer auf emptyCell bzw. das zu letzt ausgewählte
+				// so sind z.B. ehemal gefüllte leere Felder blau(userCell) und von anfang an leere Felder gelb (emptyCell)
+				
+				// TODO use SUDOKUCELLWRONG etc... for starting animations 
 				
 				// find out which color should be assigned and look if it has it jet before
 				if (this.wrongBoard[i][j]){
 					
 					if (this.nativeBoard[i][j]==0){
+						// the use made a mistake
+						
 						/*if (this.lastBoardState[i][j]!=SUDOKUCELLWRONG){
 							this.lastBoardState[i][j]=SUDOKUCELLWRONG;*/
 							
@@ -486,6 +483,8 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 						//}
 						
 					} else{
+						// the cell is a native cell and there was a confilict detected 
+						
 						/*if (this.lastBoardState[i][j]!=SUDOKUCELLCONFLICT){
 							this.lastBoardState[i][j]=SUDOKUCELLCONFLICT;*/
 							
@@ -497,6 +496,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 					
 				} else {
 					if (this.nativeBoard[i][j]!=0){
+						// a normal native cell
 						/*if (this.lastBoardState[i][j]!=SUDOKUCELLNATIVE){
 							this.lastBoardState[i][j]=SUDOKUCELLNATIVE;*/
 							
@@ -505,9 +505,9 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 							//System.out.println("sudokuCellNative");
 						//}
 					} else if (this.userBoard[i][j]==0){
-						//#style .focused
+						//#style sudokuCellEmpty
 						UiAccess.setStyle( this.txtCells[i][j] );
-					}	else {
+					}	else if (this.userBoard[i][j]!=0) {
 						/*if (this.lastBoardState[i][j]!=SUDOKUCELLUSER){
 							this.lastBoardState[i][j]=SUDOKUCELLUSER;*/
 							
@@ -535,13 +535,18 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		
 		if (this.nativeBoard[index/9][index%9]==0){
 			this.txtCells[index/9][index%9].setValue(this.solvedBoard[index/9][index%9]);
+			//TODO hint modus oder vielleicht in native, damit der user es nicht ändern kann
+			this.userBoard[index/9][index%9]=this.solvedBoard[index/9][index%9];
 			this.hintCount++;
+			refreshBoard();
 		} else{
 			// there will be no hint, but maybe a message...
 		}
 	}
 	private void solveCurrentBoard(){
+		// solve colorate and show the board
 		SudokuBoardUtil.copyBoard(this.solvedBoard, this.userBoard);
+		//SudokuBoardUtil.checkUserBoard(this.userBoard, this.wrongBoard);
 		refreshBoard(true);
 		
 		this.autoSolved=true;
