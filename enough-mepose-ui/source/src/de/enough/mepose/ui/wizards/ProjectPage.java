@@ -124,7 +124,7 @@ public class ProjectPage extends WizardPage{
         this.desciptionGroup.setText("Project Description");
         this.desciptionGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         this.desciptionGroup.setLayout(new GridLayout(1,false));
-        this.descriptionText = new Text(this.desciptionGroup,SWT.WRAP);
+        this.descriptionText = new Text(this.desciptionGroup,SWT.WRAP|SWT.BORDER);
         this.descriptionText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
         
         // -------------------
