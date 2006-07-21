@@ -61,7 +61,7 @@ public class SerializationPostCompiler extends BytecodePostCompiler
         try
           {
             ClassNode classNode = asmLoader.loadClass(className);
-            ClassWriter writer = new ClassWriter(true);
+            ClassWriter writer = new ClassWriter(false);
             SerializationVisitor visitor = 
               new SerializationVisitor(writer, asmLoader, this.environment);
             classNode.accept(visitor);
