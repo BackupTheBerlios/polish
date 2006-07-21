@@ -3,6 +3,10 @@
  */
 package de.enough.sudoku;
 
+import java.util.Random;
+
+import javax.microedition.lcdui.Displayable;
+
 /**
  * This class provides all neccessary functions to generate, prepare and solve
  * sudoku boards.
@@ -307,4 +311,186 @@ public final class SudokuBoardUtil {
 			
 		}
 	}
+	
+	/**
+	 *  This function takes an empty bard, which will become filled and permuted. Afterwards the 
+	 *  given amount of cells is deleted.
+	 * @param Board
+	 * @param emptyCells
+	 */
+	public static void generateSudokuBoard(int[][]Board, int emptyCells){
+		// generate a board
+		genValidSudokuBoard(Board);
+		
+		// permute it
+		renameSudokuBoard(Board);
+		shuffleSudokuBoard(Board);
+		
+		// free some cells
+		freeCells(Board, emptyCells);
+	}
+	
+	/**
+	 * This function creates a more or less random (and filled) Sudokuboard, which
+	 * is stored in Board[][]. You should rename, and shuffle the board, in order
+	 * to make it more random-like.
+	 * @param Board: your new (filled) Sudokuboard
+	 */
+	public static void genValidSudokuBoard(int [][] Board){
+		Random rnd = new Random(System.currentTimeMillis());
+		int x,y;
+		do{
+			// clear the board
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
+					Board[i][j]=0;
+				}
+			}
+			// spread 1 to 9 by random
+			for (int i = 1; i < 10; i++) {
+				x= Math.abs(rnd.nextInt())%9;
+				y= Math.abs(rnd.nextInt())%9;
+				Board[x][y]=i;
+				/*if (!validSudokuBoard(Board)){
+					Board[x][y]=0;
+				}*/
+			}
+		// the solution is alway valid, but you should call solveBoard to fill it
+		} while(solveBoard(Board,SM_SOLVE)==0);
+	} 
+	/**
+	 *  This function renames the cells in a Board.
+	 * @param Board
+	 */
+	private static void renameSudokuBoard(int [][] Board){
+		Random rnd=new Random(System.currentTimeMillis());
+		for (int n = 1; n < 10; n++) {
+			// rename number 'n'
+			swapNumbers(Board,n,1+ Math.abs(rnd.nextInt())%9);
+		}
+	}
+	private static void swapNumbers(int[][] Board, int a, int b){
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				if (Board[i][j]==a) {
+					Board[i][j]=b;
+				} else if (Board[i][j]==b) {
+					Board[i][j]=a;
+				}
+			}
+		}
+	}
+	/**
+	 * This function shuffles a given Board
+	 * @param Board 
+	 */
+	private static void shuffleSudokuBoard(int[][]Board){
+		Random rnd=new Random(System.currentTimeMillis());
+		for (int i = 0; i < 30; i++) {
+			swapBlocks(Board, Math.abs(rnd.nextInt())%3, Math.abs(rnd.nextInt())%3, Math.abs(rnd.nextInt()%2));
+		}
+	}
+	/**
+	 * This function swaps tow 9x3 Blocks 
+	 * @param Board The SudokuBoard
+	 * @param a the Nuber (0 to 2) of the first Block
+	 * @param b the Nuber (0 to 2) of the second Block
+	 * @param hv horizontal (0)/vertikal view (1)
+	 */
+	private static void swapBlocks(int[][] Board, int a, int b, int hv){
+		swapLines(Board,3*a,3*b,hv);
+		swapLines(Board,3*a+1,3*b+1,hv);
+		swapLines(Board,3*a+2,3*b+2,hv);
+	}
+	private static void swapLines(int[][] Board, int a, int b, int hv){
+		int tmp;
+		for (int i = 0; i < 9; i++) {
+			tmp=Board[a*(1-hv)+i*hv][i*(1-hv)+a*hv];
+			Board[a*(1-hv)+i*hv][i*(1-hv)+a*hv]=Board[b*(1-hv)+i*hv][i*(1-hv)+b*hv];
+			Board[b*(1-hv)+i*hv][i*(1-hv)+b*hv]=tmp;
+		}
+	}
+	
+	/** This function deletes a given number of cells in a given board such that the
+	 * board has still a uique solution. Be aware that the time increases with the number
+	 * of cells. It is recommended not to choose a number greater than 50.
+	 * 
+	 * @param Board
+	 * @param emptyCells
+	 */
+	private static void freeCells(int[][]Board, int emptyCells){
+		int freedCells=0;
+		int x,y;
+		int tmp;
+		int[][] solveBoard=new int[9][9];
+		int[][] saveBoard=new int[9][9];
+		int undos=0;
+		
+		Random rnd = new Random(System.currentTimeMillis());
+
+		if (emptyCells>50){
+			// TODO we have a big speed problem
+			System.out.println("sie verlangen zu viele leere Zellen (nur schwer zu leisten)");
+		}
+		
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				saveBoard[i][j]=Board[i][j];
+			}
+		}
+		
+		while(freedCells!=emptyCells){
+			System.out.println(" empty"+freedCells);
+			
+			// make a new attepmt if you are stuck
+			if (undos>emptyCells*emptyCells/50+3){ // we need an upper bound!
+				freedCells=0;
+				undos=0;
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 9; j++) {
+						Board[i][j]=saveBoard[i][j];
+					}
+				}
+				System.out.println(" reset");
+			}
+			
+			x= Math.abs(rnd.nextInt())%9;
+			y= Math.abs(rnd.nextInt())%9;
+			
+			// delete a number
+			if (Board[x][y]!=0) {
+				tmp = Board[x][y];
+				Board[x][y]=0;
+				
+				
+				// make a savecopy for the next computation 
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 9; j++) {
+						solveBoard[i][j]=Board[i][j];
+					}
+				}
+				
+				// check if there is still an uniqe solution
+				for (int i = 1; i < 11; i++) {
+					// check if you can find an other solution
+					if (i==10){
+						freedCells++;
+					} else if (i!=tmp){
+						solveBoard[x][y]=i;
+						if (solveBoard(solveBoard, SM_QUICK_SEARCH)!=0){
+							Board[x][y]=tmp;
+							undos++;
+							System.out.println("back:"+undos + " free:"+freedCells);
+							break;
+						} 
+					}
+					
+				}
+				
+			}
+		}
+	/*System.out.println("freedCells:");
+	printBoard(Board);*/
+	}
+
 }
