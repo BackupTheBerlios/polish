@@ -199,7 +199,7 @@ public class MIDletLaunchConfigurationTab
         polishHomePath = model.getPolishHome().getAbsolutePath();
     }
     if(polishHomePath == null || polishHomePath.length() == 0) {
-        polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME);
+        polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_PROJECT_NAME);
     }
     if(polishHomePath == null || polishHomePath.length() == 0) {
         polishHomePath = "/path/to/polish/home";
@@ -249,7 +249,9 @@ public class MIDletLaunchConfigurationTab
   {
     try
       {
+        System.out.println("DEBUG:MIDletLaunchConfigurationTab.initializeFrom(...):enter.");
 //      projectName.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "unknown"));
+        // MeposeConstants.ID_PROJECT_NAME was used here.
         String projectNameString = configuration.getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
         if(projectNameString == null) {
             projectNameString = getSelectedJavaProjectName();
@@ -283,7 +285,9 @@ public class MIDletLaunchConfigurationTab
 
   public void performApply(ILaunchConfigurationWorkingCopy configuration)
   {
-    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, this.projectNameText.getText());
+      System.out.println("DEBUG:MIDletLaunchConfigurationTab.performApply(...):enter.");
+//      configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, this.projectNameText.getText());
+    configuration.setAttribute(MeposeConstants.ID_PROJECT_NAME, this.projectNameText.getText());
     
     HashMap attrMap = new HashMap();
     attrMap.put("hostname", this.hostNameText.getText());
