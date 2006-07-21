@@ -1,5 +1,10 @@
 /**
+ * 	Sudoku Master is a j2me-polish using sudoku game for mobilephones 
  * 
+ *  This particular class handels the interface and user interaction.
+ * 
+ * @author Simon Schmitt
+ *
  */
 package de.enough.sudoku;
 
@@ -17,31 +22,28 @@ import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+//import de.enough.polish.ui.Gauge;
+import javax.microedition.lcdui.Gauge;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
 
-/**
- * 	Sudoku Master is a j2me-polish using sudoku game for mobilephones 
- * 
- *  This particular class handels the interface and user interaction.
- * 
- * @author Simon Schmitt
- *
- */
 /*
  * Färbung/aktuelles update
  */
 public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandListener, ItemStateListener {
 	private Display display;
 	private List mainMenu;
-	private Form gameSelForm;
+	private List gameSelList;
+	//private List gameModeList;
 	private Form aboutForm;
 	private Form settingstForm;
 	private Form highScoreForm;
 	private Form helpForm;
+	private Form waitForm;
 	
+	// TODO cange into GamgeForm
 	private Form gameForm;
 	
 	private Command exit;
@@ -50,6 +52,8 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	
 	private Command gameQuit, gamePause, gameHint, gameSolve, gameNew, gameReset,gameContinue;
 	
+	private Gauge genSudokuGauge;
+	
 	private int[][] nativeBoard=new int[9][9];
 	private int[][] userBoard=new int[9][9];
 	private boolean[][] wrongBoard=new boolean[9][9];
@@ -57,7 +61,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	private int hintCount;
 	private boolean autoSolved;
 	
-	//private byte[][] lastBoardState=new byte[9][9];
+
 	
 	
 	SudokuTextField txtCells[][];
@@ -74,32 +78,24 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		}
 	}
 	
+	// useful for drawing animations/ detecting changes.... 
+	/*private byte[][] lastBoardState=new byte[9][9];
 	private static byte SUDOKUCELLWRONG=1;
 	private static byte SUDOKUCELLCONFLICT=2;
 	private static byte SUDOKUCELLNATIVE=3;
-	private static byte SUDOKUCELLUSER=4;
+	private static byte SUDOKUCELLUSER=4;*/
 	
-	int[][] testBoard={
-	{0,0,5,9,2,4,8,0,0},//http://www.orangeminds.com/sudoku/sudoku.asp?board=1#
-	{0,6,4,0,8,0,1,9,0}, //450ms
-	{0,8,0,0,7,0,0,4,0},
-	{0,9,0,8,5,6,0,7,0},
-	{0,1,6,2,0,7,9,5,0},
-	{0,0,8,0,0,0,2,0,0},
-	{0,0,3,7,0,8,6,0,0},
-	{0,0,0,3,0,5,0,0,0},
-	{0,0,0,1,0,2,0,0,0}
-	};
-		/*{1,3,5,9,2,4,8,6,7},
-		{7,6,0,5,8,3,1,9,2},
-		{2,8,9,6,7,1,5,4,3},
-		{3,9,2,8,5,6,4,7,1},
-		{4,1,6,2,3,7,9,5,8},
-		{5,7,8,4,1,9,2,3,6},
-		{9,2,3,7,4,8,6,1,5},
-		{8,4,1,3,6,5,7,2,9},
-		{6,5,7,1,9,2,3,8,0}
-		};*/
+	// game difficulty
+	private int gameLevel;
+	
+	private static int GAME_LEVEL_EASY=0;
+	private static int GAME_LEVEL_MEDIUM=1;
+	private static int GAME_LEVEL_HARD=2;
+	private static int GAME_LEVEL_MASTER=3;
+
+	private static int[] HINTS = {1000,5,2,0};
+	private static int[] EMPTY_CELLS = {35,40,45,50};
+	private static boolean[] HIGHLIGHTING = {true,true,false,false};
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
@@ -151,20 +147,16 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		} else if (cmd == this.cmdBack){
 			// return to menu
 			this.display.setCurrent(this.mainMenu);
-		}else if (cmd==this.cmdStartGame){
-			// TODO read the settins
-			// launch the Game
-			startGame();
-		}
+		}/*else if (cmd==this.cmdStartGame){
+			
+		}*/
 		
 		//check the list
 		if (cmd==List.SELECT_COMMAND && screen==this.mainMenu){
 			switch (((List) screen).getSelectedIndex()) {
 			case 0:
-				// TODO: ask for dificulty level
+				// ask for dificulty level
 				showGameSelection();
-				//this.gameScreen.start();
-				//this.display.setCurrent( this.gameScreen );
 				break;
 			case 1: 
 				// show the highscore
@@ -188,28 +180,35 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 				notifyDestroyed();
 				break;
 			}
-			
-			System.out.println("   - something happened");
 		}
 		
 		// check the inGame menu
 		if (screen==this.gameForm){
 			if (cmd==this.gameQuit){
 				// back to the menu
-				this.display.setCurrent(this.mainMenu);
+				this.display.setCurrent(this.gameSelList);
 			} else if (cmd==this.gamePause){
 				// TODO black screen/or about ??
 			} else if (cmd==this.gameHint){
 				// solve the selected cell
 				showHint((Screen) screen);
 			} else if (cmd==this.gameSolve){
-				// TODO solve the whole game and disable highscore entry
+				// solve and disable highscore entry
 				solveCurrentBoard();
 			} else if (cmd==this.gameReset){
 				fillBoard(this.nativeBoard);
 			} else if (cmd==this.gameNew){
 				showGameSelection();
 			}
+		}
+		
+		if (cmd==List.SELECT_COMMAND && screen==this.gameSelList){
+			// get the level
+			// TODO ?? legal?
+			gameLevel=((List) screen).getSelectedIndex();
+			
+			// launch the Game
+			startGame();
 		}
 	}
 	/**
@@ -258,18 +257,26 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	 * 	TODO: save the last used state
 	 */
 	private void showGameSelection() {
+//		 TODO read the settins
+		
 		// load the screen
-		if (this.gameSelForm==null){
+		if (this.gameSelList==null){
 			
-			this.gameSelForm = new Form( Locale.get("title.StartGame") );
-			//this.gameSelForm.append( "" );
+			this.gameSelList = new List( Locale.get("title.gameSel") , List.IMPLICIT );
 			
-			this.gameSelForm.addCommand( this.cmdBack );
-			this.gameSelForm.addCommand( this.cmdStartGame );
-			this.gameSelForm.setCommandListener( this );
+			//this.mainMenu = new List( "Sudoku Master");
+			
+			this.gameSelList.append( Locale.get( "gameSel.easy"), null);
+			this.gameSelList.append( Locale.get( "gameSel.medium"), null);
+			this.gameSelList.append( Locale.get( "gameSel.hard"), null);
+			this.gameSelList.append( Locale.get( "gameSel.master"), null);
+			
+			this.gameSelList.addCommand( this.cmdBack );
+			//this.gameSelList.addCommand( this.cmdStartGame );
+			this.gameSelList.setCommandListener( this );
 		}
 		// show the form
-		this.display.setCurrent( this.gameSelForm );
+		this.display.setCurrent( this.gameSelList );
 	}
 	
 	/**
@@ -349,11 +356,34 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		this.display.setCurrent( this.helpForm );
 	}
 	
+	private void showPleaseWait(){
+		// load the please wait screen
+		if (this.waitForm==null){
+			this.waitForm=new Form (Locale.get("title.wait"));
+			//this.waitForm.append(Locale.get("wait.description"));
+			
+			this.genSudokuGauge=new Gauge(Locale.get("wait.description"), false,Gauge.INDEFINITE,Gauge.CONTINUOUS_RUNNING); 
+			
+			this.waitForm.append(this.genSudokuGauge); 
+			
+			//this.waitForm =
+			//this.waitForm.setLabel(Locale.get("wait.description"));
+		}
+		// show the screen
+		this.display.setCurrent(this.waitForm);
+
+		// TODO start the planned GameForm-Thread, which handles the rest (generation and drawing ...)
+	}
 	/**
 	 * intialize if neccessary and ask the user about his prefered game
 	 * 	TODO: save the last used state
 	 */
 	private void startGame() {
+		// TODO show "please wait..."
+		showPleaseWait();
+		
+		// TODO start the planned GameForm-Thread, which handles the rest (generation and drawing ...)
+		
 		// load the screen
 		if (this.gameForm==null){
 			
@@ -397,7 +427,9 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		// TODO: generate the Board
 		int board[][]=new int[9][9];
 		
-		board=testBoard;
+		
+		SudokuBoardUtil.generateSudokuBoard(board, EMPTY_CELLS[this.gameLevel] );
+		//this.hintCount=HINTS[gameLevel]; will be set in fillBoard
 		
 		// fill the board
 		fillBoard(board);
@@ -416,7 +448,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	    SudokuBoardUtil.copyBoard(board,this.solvedBoard);
 	    SudokuBoardUtil.solveBoard(this.solvedBoard, SudokuBoardUtil.SM_SOLVE);
 	    
-	    this.hintCount=0;
+	    this.hintCount=HINTS[this.gameLevel];
 	    this.autoSolved=false;
 		
 		for (int i = 0; i < 9; i++) {
@@ -453,8 +485,10 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 		refreshBoard(false);
 	}
 	private void refreshBoard(boolean refreshData){
-		//TODO check if the user  wants highlighting/help 
-		SudokuBoardUtil.checkUserBoard(this.userBoard, this.wrongBoard);
+		//check if the user  wants highlighting/help 
+		if (HIGHLIGHTING[this.gameLevel]){
+			SudokuBoardUtil.checkUserBoard(this.userBoard, this.wrongBoard);
+		}
 
 		// set the color
 		for (int i = 0; i < 9; i++) {
@@ -527,7 +561,15 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 	private void showHint(Screen screen){
 		int index= UiAccess.getFocusedIndex(screen);
 		
-		// TODO: check if a hint is legal due to the users settings
+		// check if a hint is legal due to the users settings
+		if (this.hintCount==0){
+			if (HINTS[this.gameLevel]==0){
+				// TODO: tell the user that hints are not able in this mode
+				System.out.println(" keine Hints in diesem mode");
+			}
+			return;
+		}
+		
 		// look also at autoSolved
 		if (this.autoSolved){
 			return;
@@ -537,7 +579,7 @@ public class Sudoku extends MIDlet implements javax.microedition.lcdui.CommandLi
 			this.txtCells[index/9][index%9].setValue(this.solvedBoard[index/9][index%9]);
 			//TODO hint modus oder vielleicht in native, damit der user es nicht ändern kann
 			this.userBoard[index/9][index%9]=this.solvedBoard[index/9][index%9];
-			this.hintCount++;
+			this.hintCount--;
 			refreshBoard();
 		} else{
 			// there will be no hint, but maybe a message...
