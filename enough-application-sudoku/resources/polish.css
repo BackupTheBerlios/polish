@@ -1,7 +1,7 @@
 focused{
-	font-color:green;
+	/*font-color:green;*/
 	font-style:bold;
-	background-color: #08080808;
+	background-color: #40000000;
 }
 
 .sudokuContainer {
@@ -18,15 +18,42 @@ focused{
 }
 
 
-.sudokuCellWrong extends .sudokuCell{
+.sudokuCellWrong extends .sudokuCell{ /* the user made a mistake */
+	font-color: red;
+	focused-style: .sudokuCellWrongFocused;
+}
+.sudokuCellWrongFocused extends focused {
 	font-color: red;
 }
-.sudokuCellConflict extends .sudokuCell{
+
+.sudokuCellConflict extends .sudokuCell{ /* a native cell is in conflict with others */
+	font-color: #FF8000FF;
+	focused-style: .sudokuCellConflictFocused;
+}
+.sudokuCellConflictFocused extends focused {
 	font-color: #FF8000FF;
 }
-.sudokuCellNative extends .sudokuCell{
+
+.sudokuCellNative extends .sudokuCell{ /* a normal native cell from the board  */
+	font-color: black;
+	focused-style: .sudokuCellNativeFocused;
+}
+.sudokuCellNativeFocused extends focused {
 	font-color: black;
 }
-.sudokuCellUser extends .sudokuCell{
+
+.sudokuCellUser extends .sudokuCell{ /* cell which were filled by the user */
 	font-color: blue;
+	focused-style: .sudokuCellUserFocused;
+}
+.sudokuCellUserFocused extends focused {
+	font-color: blue;
+}
+
+.sudokuCellEmpty extends .sudokuCellUser{ /* cells which have to be filled by the user */
+	font-color: yellow;
+	focused-style: .sudokuCellEmptyFocused;
+}
+.sudokuCellEmptyFocused extends focused {
+	font-color: yellow;
 }
