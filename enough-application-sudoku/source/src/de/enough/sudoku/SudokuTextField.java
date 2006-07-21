@@ -60,6 +60,8 @@ public class SudokuTextField
 			return true;
 		} else if (keyCode == Canvas.KEY_NUM0 ){
 			setString("");
+			notifyStateChanged();
+			this.flashCaret = false;
 		}
 		return false;
 	}
