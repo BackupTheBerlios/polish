@@ -16,6 +16,8 @@ title.Settings=Settings
 title.About=About
 title.Help=Help
 title.Exit=Exit
+title.gameSel=Select Level
+title.wait=Please Wait
 
 menu.StartGame=Start Game
 menu.Highscore=Highscore
@@ -23,6 +25,13 @@ menu.Settings=Settings
 menu.About=About
 menu.Help=Help
 menu.Exit=Exit
+
+gameSel.easy=Beginner
+gameSel.medium=Advanced
+gameSel.hard=Professional
+gameSel.master=Master
+
+wait.description=I am generating Sudoku a new Sudoku ...
 
 cmd.Start=Start
 cmd.Back=Back
