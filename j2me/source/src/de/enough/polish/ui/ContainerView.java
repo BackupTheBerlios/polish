@@ -402,7 +402,7 @@ public class ContainerView {
 						//#endif
 						item.yTopPos = myContentHeight;
 						item.yBottomPos = myContentHeight + item.itemHeight;
-						System.out.println( i + ": yTopPos=" + item.yTopPos );
+						//System.out.println( i + ": yTopPos=" + item.yTopPos );
 						if (columnIndex == this.numberOfColumns) {
 							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 							columnIndex = 0;

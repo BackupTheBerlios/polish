@@ -797,7 +797,7 @@ public class Container extends Item {
 			item.yTopPos = myContentHeight;
 			item.yBottomPos = myContentHeight + height;
 			myContentHeight += height + this.paddingVertical;
-			System.out.println("item.yTopPos=" + item.yTopPos);
+			//System.out.println("item.yTopPos=" + item.yTopPos);
 		}
 		if (!hasFocusableItem) {
 			this.appearanceMode = PLAIN;
