@@ -269,6 +269,10 @@ public class PolishEditor extends CompilationUnitEditor {
     
     
     protected void updateOccurrenceAnnotations(ITextSelection selection, CompilationUnit astRoot) {
+        if(astRoot == null) {
+            return;
+        }
+        
         List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
       
         this.occurrencesMarkerManager.updateAnnotations(selection,listOfComments);
