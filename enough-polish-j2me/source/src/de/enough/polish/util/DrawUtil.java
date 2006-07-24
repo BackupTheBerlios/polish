@@ -95,8 +95,7 @@ public final class DrawUtil {
 	 */
 	public static void getGradient(int startColor, int endColor, int[] gradient) {
 		int steps = gradient.length;
-		if (steps == 1) {
-			gradient[0] = startColor;
+		if (steps == 0) {
 			return;
 		}
 		int startAlpha = startColor >>> 24;

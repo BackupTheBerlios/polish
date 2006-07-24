@@ -931,7 +931,7 @@ public abstract class Item extends Object
 			Style labStyle = (Style) style.getObjectProperty("label-style");
 			if (labStyle != null) {
 				this.labelStyle = labStyle;
-			} else {
+			} else if (this.labelStyle == null || this.isFocused) {
 				this.labelStyle = StyleSheet.labelStyle;
 			}
 		//#else
