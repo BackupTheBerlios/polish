@@ -26,6 +26,7 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.tools.ant.Project;
 
@@ -33,6 +34,7 @@ import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
+import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Starts the mpowerplayer for emulation.</p>
@@ -69,6 +71,26 @@ public class MppEmulator extends Emulator {
 		if (!playerJar.exists()) {
 			System.err.println("Warning: unable to launch the mpowerplayer emulator - the \"mpp.home\" property in your build.xml script points to the invcalid path [" + mppHome + "]. \"mpp.home\" needs to point to the installation folder of the mpowerplayer SDK (=the folder in which the \"player.jar\" is located).");
 			return false;
+		}
+		String screenWidth = env.getVariable("polish.FullCanvasWidth");
+		String screenHeight = env.getVariable("polish.FullCanvasHeight");
+		if (screenWidth == null) {
+			screenWidth = env.getVariable("polish.ScreenWidth");
+			screenHeight = env.getVariable("polish.ScreenHeight");
+		}
+		if (screenWidth != null && screenHeight != null) {
+			File jadFile = new File( env.getVariable("polish.jadPath") );
+			try {
+				FileUtil.addLines( jadFile, new String[] {
+						"MPP-Width: " + screenWidth,
+						"MPP-Height: " + screenHeight,
+						"MPP-Scale: 1.0"
+				} );
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("Error: Unable to add MPP attributes to JAD file [" + jadFile.getAbsolutePath() + "]: " + e.toString() );
+				return false;
+			}
 		}
 		this.mppPlayerPath = playerJar.getAbsolutePath();
 		return true;

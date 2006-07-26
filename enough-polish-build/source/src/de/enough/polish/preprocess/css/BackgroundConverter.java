@@ -163,6 +163,18 @@ public abstract class BackgroundConverter extends Converter {
 	}
 	
 	/**
+	 * Parse the given stroke setting
+	 * 
+	 * @param name the name of the field
+	 * @param value the float value as a String. 
+	 * @return the resulting stroke value, either "Graphics.SOLID" or "Graphics.DOTTED"
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public String parseStroke( String name, String value) {
+		return parseStroke( this.styleName, "background", name, value );
+	}
+	
+	/**
 	 * Parses the given boolean value.
 	 * 
 	 * @param name the name of the field

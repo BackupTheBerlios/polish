@@ -141,6 +141,7 @@ public class Converter {
 		}
 	}
 	
+	
 	/**
 	 * Parse the given number into a float.
 	 * 
@@ -159,6 +160,24 @@ public class Converter {
 		}
 		
 	}
+	
+	/**
+	 * Parse the given stroke setting
+	 * 
+	 * @param styleName the style name
+	 * @param groupName the name of the group
+	 * @param name the name of the field
+	 * @param value the float value as a String. 
+	 * @return the resulting stroke value, either "Graphics.SOLID" or "Graphics.DOTTED"
+	 * @throws BuildException when the value could not be parsed.
+	 */
+	public String parseStroke( String styleName, String groupName, String name, String value) {
+		if ("dotted".equalsIgnoreCase(value)) {
+			return "Graphics.DOTTED";
+		}
+		return "Graphics.SOLID";
+	}
+
 	
 	/**
 	 * Extracts the correct url from the given resource URL.

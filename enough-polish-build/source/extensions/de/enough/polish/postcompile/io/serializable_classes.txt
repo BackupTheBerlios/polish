@@ -1,0 +1,26 @@
+# classes that can be serialized by de.enough.polish.io.Serializable
+
+# java.lang:
+java.lang.Byte
+java.lang.Short
+java.lang.Integer
+java.lang.Long
+java.lang.Float
+java.lang.Double
+java.lang.Character
+java.lang.String
+java.lang.StringBuffer
+java.lang.Boolean
+
+# java.util:
+java.util.Date
+java.util.Calendar
+java.util.Random
+java.util.Hashtable
+java.util.Stack
+java.util.Vector
+
+# javax.microedition.lcdui:
+javax.microedition.lcdui.Image
+javax.microedition.lcdui.Font
+javax.microedition.lcdui.Command

@@ -1421,9 +1421,9 @@
 		name="horizontalview-arrow-position"
 		type="integer"
 		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
-		description="The position of the arrows, either on both sides, left or right."
+		description="The position of the arrows, either on both sides, left or right. The special value none can be used for deactivating the arrows completely."
 		default="bothsides"
-		values="bothsides,right,left"
+		values="bothsides,right,left,none"
 		id="136"
 	/>
 	

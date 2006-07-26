@@ -43,27 +43,49 @@ public class GradientVerticalBackgroundConverter extends BackgroundConverter {
 
 	protected String createNewStatement(HashMap map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
-		String topColor = "0";
+		String topColor = "0xFFFFFF";
 		String topColorStr = (String) map.get("top-color");
 		if ( topColorStr != null ) {
 			topColor = parseColor( topColorStr );			
 		}
-		String gradientColor = "0";
+		String bottomColor = "0x0000FF";
 		String gradientColorStr = (String) map.get("bottom-color");
 		if ( gradientColorStr != null ) {
-			gradientColor = parseColor( gradientColorStr );			
+			bottomColor = parseColor( gradientColorStr );			
 		}
-		int stroke = 0 ;
+		String stroke = "Graphics.SOLID";
 		String strokeStr =  (String)map.get("stroke");
 		if ( strokeStr != null ) {
-			stroke =  parseInt( "stroke", strokeStr);			
+			stroke =  parseStroke( "stroke", strokeStr);			
 		}
-		
+		int start = 0;
+		int end = 0;
+		boolean isPercent = false;
+		String startStr = (String) map.get("start"); 
+		if (startStr != null) {
+			if (startStr.charAt(startStr.length()-1) == '%') {
+				isPercent = true;
+				start = parseInt( "start", startStr.substring(0, startStr.length() - 1));
+			} else {
+				start = parseInt( "start", startStr);
+			}			
+		}
+		String endStr = (String) map.get("end"); 
+		if (endStr != null) {
+			if (endStr.charAt(endStr.length()-1) == '%') {
+				isPercent = true;
+				end = parseInt( "endStr", endStr.substring(0, endStr.length() - 1));
+			} else {
+				end = parseInt( "end", endStr);
+			}
+			
+		}
+
 		String result = "new de.enough.polish.ui.backgrounds.GradientVerticalBackground(" 
-			+ topColor + ", "+gradientColor +","+stroke +")";
+			+ topColor + ", " + bottomColor + ","+ stroke 
+			+ "," + start + "," + end + "," + isPercent + ")";
 		
 		return result;
 	}
-
 
 }

@@ -635,24 +635,40 @@ public final class FileUtil {
 
 	/**
 	 * Adds the given line to the specified textfile.
+	 * The file is created if necessary.
 	 *   
 	 * @param file the text file
 	 * @param line the line
-	 * @throws IOException
+	 * @throws IOException when adding fails.
 	 */
 	public static void addLine(File file, String line )
 	throws IOException
 	{
+		addLines( file, new String[]{ line } );
+	}
+	
+	/**
+	 * Adds the given line to the specified textfile.
+	 * The file is created if necessary.
+	 *   
+	 * @param file the text file
+	 * @param lines the lines that should be added
+	 * @throws IOException when adding fails.
+	 */
+	public static void addLines(File file, String[] lines) 
+	throws IOException 
+	{
 		if (file.exists()) {
-			String[] lines = readTextFile(file);
-			String[] newLines = new String[ lines.length + 1 ];
-			System.arraycopy( lines, 0, newLines, 0, lines.length );
-			newLines[ lines.length ] = line;
+			String[] oldLines = readTextFile(file);
+			String[] newLines = new String[ oldLines.length + lines.length ];
+			System.arraycopy( oldLines, 0, newLines, 0, oldLines.length );
+			System.arraycopy( lines, 0, newLines, oldLines.length, lines.length );
 			writeTextFile(file, newLines);
 		} else {
-			writeTextFile(file, new String[]{ line } );
+			writeTextFile(file, lines );
 		}
 	}
+
 
 	/**
 	 * Retrieves all files from the given directory

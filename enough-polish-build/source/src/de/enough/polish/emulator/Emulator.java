@@ -387,7 +387,19 @@ implements Runnable, OutputFilter
 		//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
 		boolean okToStart = emulator.init(device, setting, environment, project, evaluator, wtkHome);
 		if (!okToStart) {
-			return null;
+			// use MPP / Mobile Power Player as a backup:
+			if ( environment.getVariable("mpp.home") != null) {
+				emulator = new MppEmulator();
+				emulator.init(null, null, setting, project, extensionManager, environment);
+				// for some reason the environment is not set correctly in the init() method... weird.
+				emulator.environment = environment;
+				emulator.antProject = project;
+				//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
+				okToStart = emulator.init(device, setting, environment, project, evaluator, wtkHome);
+			}
+			if (!okToStart) {			
+				return null;
+			}
 		}
 		emulator.setBasicSettings(device, setting, sourceDirs, environment );
 		//Thread thread = new Thread( emulator );
