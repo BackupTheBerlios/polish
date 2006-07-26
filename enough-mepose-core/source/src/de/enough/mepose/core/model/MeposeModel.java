@@ -54,6 +54,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.osgi.framework.Bundle;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
@@ -197,18 +198,23 @@ public class MeposeModel extends PropertyModel{
         File polishHomeFile;// = new File("");
         File mppHomeFile;// = new File("");
         this.jadFile = new File("");
+        Bundle bundle = MeposePlugin.getDefault().getBundle();
+        URL polishHomeRelativeUrl = org.eclipse.core.runtime.Platform.find(bundle,new Path(PATH_POLISH_HOME));
         try {
-            polishHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(MeposePlugin.getDefault().getBundle(),new Path(PATH_POLISH_HOME))).getPath());
+            URL polishHomeAbsoluteUrl = org.eclipse.core.runtime.Platform.asLocalURL(polishHomeRelativeUrl);
+            String polishHomeAbsoluteUrlString = polishHomeAbsoluteUrl.getPath();
+            polishHomeFile  = new File(polishHomeAbsoluteUrlString);
         } catch (IOException exception) {
             MeposePlugin.log("No embedded j2me polish found.",exception);
             throw new IllegalStateException("No embedded j2me polish found:"+exception);
         }
-        try {
-            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(MeposePlugin.getDefault().getBundle(),new Path("/mpp-sdk"))).getPath());
-        } catch (IOException exception) {
-            MeposePlugin.log("No embedded mpp-sdk found.",exception);
-            throw new IllegalStateException("No embedded mpp-sdk found.");
-        }
+//        try {
+//            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(bundle,new Path("/mpp-sdk"))).getPath());
+            mppHomeFile  = new File("");
+//        } catch (IOException exception) {
+//            MeposePlugin.log("No embedded mpp-sdk found.",exception);
+//            throw new IllegalStateException("No embedded mpp-sdk found.");
+//        }
         setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
         setPropertyValue(MeposeModel.ID_PATH_MPP_FILE,mppHomeFile);
         
@@ -217,6 +223,8 @@ public class MeposeModel extends PropertyModel{
         
         this.classpathEntries = null;
         this.buildListener = new LinkedList();
+        
+        
     }
 
     private void resetAntBox() {
@@ -818,10 +826,12 @@ public class MeposeModel extends PropertyModel{
     
     public void addBuildListener(BuildListener aBuildListener) {
         this.buildListener.add(aBuildListener);
+        this.antBox.getProject().addBuildListener(aBuildListener);
     }
     
     public void removeBuildListener(BuildListener aBuildListener) {
         this.buildListener.remove(aBuildListener);
+        this.antBox.getProject().removeBuildListener(aBuildListener);
     }
     
 }
