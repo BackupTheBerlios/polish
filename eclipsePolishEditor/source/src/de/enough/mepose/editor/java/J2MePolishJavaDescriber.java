@@ -6,8 +6,6 @@ import java.io.Reader;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
-
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 /*
  * Created on Jun 22, 2006 at 2:29:05 PM.
  * 
@@ -47,7 +45,6 @@ public class J2MePolishJavaDescriber implements ITextContentDescriber {
 
     public int describe(Reader contents, IContentDescription description)
                                                                          throws IOException {
-//        PolishEditorPlugin.log("entering describe(Reader,IContentDescriptor).");
         return VALID;
     }
 
@@ -62,5 +59,4 @@ public class J2MePolishJavaDescriber implements ITextContentDescriber {
     public QualifiedName[] getSupportedOptions() {
         return new QualifiedName[0];
     }
-
 }
