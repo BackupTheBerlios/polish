@@ -22,6 +22,8 @@
 	default="j2mepolish">
 	
 	
+<property file="${user.name}.properties" />
+	
 <!-- The polish.home property should point to the directory   -->
 <!-- containing the J2ME Polish installation.                 -->
 
