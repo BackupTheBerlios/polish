@@ -109,7 +109,7 @@ public class AntBox {
         setWorkingDirectory();
         this.project = new Project();
         //TODO: Commented for testing only.
-//        this.project.setCoreLoader(this.alternativeClassLoader);
+        this.project.setCoreLoader(this.alternativeClassLoader);
         if(this.toolsLocation != null) {
             System.out.println("DEBUG:AntBox.createProject(...):toolsLocation found.");
             Path path = new Path(this.project);
