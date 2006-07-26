@@ -12,11 +12,16 @@ import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
+import de.enough.utils.AntBox;
 
 public class MIDletLaunchConfigurationDelegate extends
         AbstractJavaLaunchConfigurationDelegate {
@@ -25,7 +30,7 @@ public class MIDletLaunchConfigurationDelegate extends
 //    private static final int EMULATOR_STARTUP_TIME = 5000;
 
     public void launch(ILaunchConfiguration configuration, String mode,
-                       ILaunch launch, IProgressMonitor monitor)
+                       ILaunch launch, final IProgressMonitor monitor)
                                                                 throws CoreException {
 
         String projectName;
@@ -52,7 +57,17 @@ public class MIDletLaunchConfigurationDelegate extends
             MeposeUIPlugin.log("No buildxml specified in model for project:"+projectName);
             return;
         }
-        model.getAntBox().run();
+        
+//        DefaultLogger log = new DefaultLogger();
+//        log.setErrorPrintStream(System.err);
+//        log.setOutputPrintStream(System.out);
+//        model.getAntBox().getProject().addBuildListener(log);
+        
+        
+        setupConsole();
+        
+        AntBox antBox = model.getAntBox();
+        antBox.run();
         
 //        AntRunner antRunner = new AntRunner();
 //        String buildxmlAbsolutePath = buildxml.getAbsolutePath();
@@ -235,6 +250,22 @@ public class MIDletLaunchConfigurationDelegate extends
         // // process.destroy();
         // // }
         //        
+    }
+
+    /**
+     * 
+     */
+    private void setupConsole() {
+        IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+        IConsole[] consoles = consoleManager.getConsoles();
+        for (int i = 0; i < consoles.length; i++) {
+            IConsole console = consoles[i];
+            if(MeposeUIPlugin.CONSOLE_NAME.equals(console.getName())){
+                consoleManager.showConsoleView(console);
+                ((MessageConsole)console).clearConsole();
+                break;
+            }
+        }
     }
 
     private void showErrorBox(final String title,final String message) {
