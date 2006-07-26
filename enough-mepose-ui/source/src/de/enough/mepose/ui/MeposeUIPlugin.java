@@ -1,9 +1,12 @@
 package de.enough.mepose.ui;
 
+import java.io.PrintStream;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.BuildEvent;
+import org.apache.tools.ant.BuildLogger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -19,22 +22,82 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.model.MeposeModel;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class MeposeUIPlugin extends AbstractUIPlugin {
-	private static MeposeUIPlugin plugin;
+	public  static final String CONSOLE_NAME = "Mepose";
+    
+	public static final int ADD_BUILD_LISTENER = 1;
+    public static final int REMOVE_BUILD_LISTENER = 2;
+
+    private static MeposeUIPlugin plugin;
 	private ResourceBundle resourceBundle;
     
     public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
     public static final String ID = "de.enough.mepose.ui";
+    private BuildLogger meposeConsoleLogger;
+    private MessageConsole meposeConsole;
     
+    private final class MeposeConsoleLogger implements BuildLogger {
+        private MessageConsole messageConsole;
+        private MessageConsoleStream messageStream;
+        private int level = 3;
+        public MeposeConsoleLogger(MessageConsole messageConsole) {
+            this.messageConsole = messageConsole;
+            this.messageStream = this.messageConsole.newMessageStream();
+        }
+        public void setMessageOutputLevel(int arg0) {
+            this.level = arg0;
+        }
+
+        public void setOutputPrintStream(PrintStream arg0) {
+        }
+
+        public void setEmacsMode(boolean arg0) {
+        }
+
+        public void setErrorPrintStream(PrintStream arg0) {
+        }
+
+        public void buildStarted(BuildEvent arg0) {
+        }
+
+        public void buildFinished(BuildEvent arg0) {
+        }
+
+        public void targetStarted(BuildEvent arg0) {
+        }
+
+        public void targetFinished(BuildEvent arg0) {
+        }
+
+        public void taskStarted(BuildEvent arg0) {
+        }
+
+        public void taskFinished(BuildEvent arg0) {
+        }
+
+        public void messageLogged(BuildEvent arg0) {
+            if(arg0.getPriority() <= this.level) {
+                this.messageStream.println(arg0.getMessage());
+            }
+        }
+    }
+
+
     private class ProjectSelected implements ISelectionListener{
         public void selectionChanged(IWorkbenchPart part, ISelection selection) {
             if(selection instanceof IStructuredSelection) {
@@ -54,22 +117,49 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 	public MeposeUIPlugin() {
 		super();
 		plugin = this;
+        
+        
 	}
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-        
         registerProjectListener();
-//        MeposePlugin.getDefault().getMeposeModelManager().addBuildListener(new BuildListenerConsoleWriter());
+        setupConsole();
+        setupConsoleListener();
+
+        updateBuildListener(ADD_BUILD_LISTENER);
     }
 
-    
-    
 	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-		this.resourceBundle = null;
+	    super.stop(context);
+	    plugin = null;
+	    this.resourceBundle = null;
+	    
+	    updateBuildListener(REMOVE_BUILD_LISTENER);
 	}
+
+    // Using the int approach is not type safe.
+    private void updateBuildListener(int action) {
+        MeposeModel[] meposeModel = MeposePlugin.getDefault().getMeposeModelManager().getModels();
+        for (int i = 0; i < meposeModel.length; i++) {
+            if(action == ADD_BUILD_LISTENER) {
+                meposeModel[i].addBuildListener(this.meposeConsoleLogger);
+            } else {
+                meposeModel[i].removeBuildListener(this.meposeConsoleLogger);
+            }
+        }
+    }
+    
+    private void setupConsoleListener() {
+        this.meposeConsoleLogger = new MeposeConsoleLogger(this.meposeConsole);
+    }
+    
+    private void setupConsole() {
+        this.meposeConsole = new MessageConsole(CONSOLE_NAME,null);
+        IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+        consoleManager.addConsoles(new IConsole[] {this.meposeConsole});
+    }
+
 
 	public static MeposeUIPlugin getDefault() {
 		return plugin;
