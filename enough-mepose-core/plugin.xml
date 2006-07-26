@@ -22,7 +22,13 @@
     		icon="icons/nature.png">
   		</image>
  	</extension>
-
+ 	<!--
+ <extension
+       id="polishInstallHandler"
+       point="org.eclipse.update.core.installHandlers">
+    <install-handler class="de.enough.mepose.core.InstallHandler"/>
+ </extension>
+-->
 	<!--
 	<extension
        id="polishBuilder"
