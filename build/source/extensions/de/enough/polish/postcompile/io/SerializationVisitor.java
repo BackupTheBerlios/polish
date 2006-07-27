@@ -1,6 +1,9 @@
 package de.enough.polish.postcompile.io;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -91,15 +94,39 @@ public class SerializationVisitor
     this.loader = loader;
     this.environment = environment;
     this.fields = new HashMap();
+    this.serializableObjectTypes = new HashSet();
     
     InputStream inputStream =
     	getClass().getResourceAsStream("/de/enough/polish/postcompiler/io/serializable_classes.txt");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     
-    // TODO: Read list of types from file.
-    this.serializableObjectTypes = new HashSet();
-    this.serializableObjectTypes.add("java/lang/Integer");
-    this.serializableObjectTypes.add("java/lang/String");
-    this.serializableObjectTypes.add("java/util/Date");
+    try
+      {
+        String line = reader.readLine();
+        
+        while (line != null)
+          {
+            int pos = line.indexOf('#');
+            
+            if (pos >= 0)
+              {
+                line = line.substring(0, pos);
+              }
+            
+            line = line.trim();
+            
+            if (line.length() > 0)
+              {
+                this.serializableObjectTypes.add(line);
+              }
+            
+            line = reader.readLine();
+          }
+      }
+    catch (IOException e)
+      {
+        e.printStackTrace();
+      }
   }
 
   private String[] getSortedFields()
@@ -418,7 +445,7 @@ public class SerializationVisitor
               {
             	String descShort = desc.substring(1, desc.length() - 1);
 
-            	if (! this.loader.inherits(getClassName(SERIALIZABLE, environment), descShort))
+            	if (! this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShort))
             	  {
             		mv.visitVarInsn(ALOAD, 0);
             		mv.visitVarInsn(ALOAD, 1);
@@ -601,7 +628,7 @@ public class SerializationVisitor
               {
             	String descShort = desc.substring(1, desc.length() - 1);
 
-            	if (! this.loader.inherits(getClassName(SERIALIZABLE, environment), descShort))
+            	if (! this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShort))
             	  {
             		mv.visitVarInsn(ALOAD, 0);
                     mv.visitFieldInsn(GETFIELD, this.className, name, desc);
