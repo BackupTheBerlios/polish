@@ -1,8 +1,10 @@
 package de.enough.polish.postcompile.io;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
@@ -49,7 +51,6 @@ public class SerializationVisitor
     methodNamesRead.put("B", "readByte()B");
     methodNamesRead.put("S", "readShort()S");
     methodNamesRead.put("Z", "readBoolean()Z");
-    methodNamesRead.put("Ljava/lang/String;", "readUTF()Ljava/lang/String;");
 
     methodNamesWrite = new HashMap();
     methodNamesWrite.put("C", "writeChar(I)V");
@@ -57,10 +58,9 @@ public class SerializationVisitor
     methodNamesWrite.put("F", "writeFloat(F)V");
     methodNamesWrite.put("I", "writeInt(I)V");
     methodNamesWrite.put("J", "writeLong(J)V");
-    methodNamesWrite.put("B", "write(I)V");
+    methodNamesWrite.put("B", "writeByte(I)V");
     methodNamesWrite.put("S", "writeShort(I)V");
     methodNamesWrite.put("Z", "writeBoolean(Z)V");
-    methodNamesWrite.put("Ljava/lang/String;", "writeUTF(Ljava/lang/String;)V");
   }
 
   public static String getClassName(String className, Environment env)
@@ -82,6 +82,7 @@ public class SerializationVisitor
   private boolean generateDefaultConstructor = true;
   private boolean generateReadMethod = true;
   private boolean generateWriteMethod = true;
+  private HashSet serializableObjectTypes;
 
   public SerializationVisitor(ClassVisitor cv, ASMClassLoader loader,
                               Environment environment)
@@ -90,6 +91,15 @@ public class SerializationVisitor
     this.loader = loader;
     this.environment = environment;
     this.fields = new HashMap();
+    
+    InputStream inputStream =
+    	getClass().getResourceAsStream("/de/enough/polish/postcompiler/io/serializable_classes.txt");
+    
+    // TODO: Read list of types from file.
+    this.serializableObjectTypes = new HashSet();
+    this.serializableObjectTypes.add("java/lang/Integer");
+    this.serializableObjectTypes.add("java/lang/String");
+    this.serializableObjectTypes.add("java/util/Date");
   }
 
   private String[] getSortedFields()
@@ -168,19 +178,6 @@ public class SerializationVisitor
           {
             this.fields.put(name, desc);
           }
-        // Special non-primitive fields.
-        else if (type.equals("Ljava/lang/Boolean;")
-                 || type.equals("Ljava/lang/Byte;")
-                 || type.equals("Ljava/lang/Character;")
-                 || type.equals("Ljava/lang/Double;")
-                 || type.equals("Ljava/lang/Float;")
-                 || type.equals("Ljava/lang/Integer;")
-                 || type.equals("Ljava/lang/Long;")
-                 || type.equals("Ljava/lang/Short;")
-                 || type.equals("Ljava/lang/String;"))
-          {
-            this.fields.put(name, desc);
-          }
         // Non-primitive fields.
         else if (type.startsWith("L"))
           {
@@ -188,7 +185,11 @@ public class SerializationVisitor
             
             if (this.loader.inherits(getClassName(SERIALIZABLE, this.environment), type))
               {
-                this.fields.put(name, desc);
+            	this.fields.put(name, desc);
+              }
+            else if (isSerializableObject(type))
+              {
+            	this.fields.put(name, desc);
               }
             else
               {
@@ -198,6 +199,11 @@ public class SerializationVisitor
       }
     
     return super.visitField(access, name, desc, signature, value);
+  }
+
+  private boolean isSerializableObject(String type)
+  {
+	  return this.serializableObjectTypes.contains(type);
   }
 
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
@@ -230,43 +236,45 @@ public class SerializationVisitor
     super.visitEnd();
   }
 
-  private void generateWriteMethod()
+
+  private void generateDefaultConstructor()
   {
-    if (!this.generateWriteMethod)
+    if (!this.generateDefaultConstructor)
+      {
+        return;
+      }
+    
+    MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "()V", null, new String[0]);
+    mv.visitCode();
+    mv.visitVarInsn(ALOAD, 0);
+    mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "<init>", "()V");
+    mv.visitInsn(RETURN);
+    mv.visitEnd();
+  }
+
+  private void generateReadMethod()
+  {
+    if (!this.generateReadMethod)
       {
         return;
       }
 
-    MethodVisitor mv =
-      super.visitMethod(WRITE_MODIFIERS, WRITE_NAME, WRITE_SIGNATURE,
+    int maxStack = 2;
+    int maxVars = 2;
+    
+    MethodVisitor mv = 
+      super.visitMethod(READ_MODIFIERS, READ_NAME, READ_SIGNATURE,
                         null, new String[] { "java/io/IOException" });
     
     mv.visitCode();
     
-    boolean arrayField = false;
-    
-    Label l0 = new Label();
     String[] fields = getSortedFields();
 
     for (int i = 0; i < fields.length; i++)
       {
-        // Code: instance.field = value;
-        Label label = new Label();
-        
-        if (i == 0)
-          {
-            label = l0;
-          }
-        else
-          {
-            label = new Label();
-          }
-        
         String name = fields[i];
-        String desc = (String) this.fields.get(name);
-        mv.visitLabel(label);
+        String desc = (String) this.fields.get(name); 
         
-        // Array types.
         if (PrimitiveTypesHelper.isArrayType(desc))
           {
             if (PrimitiveTypesHelper.isMultiDimensionalArrayType(desc))
@@ -274,18 +282,217 @@ public class SerializationVisitor
                 throw new RuntimeException("Multidimensional arrays are not supported by the serialization framework");
               }
             
-            arrayField = true;
+            maxStack = Math.max(maxStack, 3);
+            maxVars = Math.max(maxVars, 4);
+            
+            String type = desc.substring(1);
+            
+            if ("D".equals(type) || "J".equals(type))
+              {
+            	maxStack = Math.max(maxStack, 4);
+              }
+
+            Label arrayAfter = new Label();
+            Label arrayLoopBegin = new Label();
+            Label arrayLoopExpression = new Label();
+            
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
+            mv.visitJumpInsn(IFEQ, arrayAfter);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readInt", "()I");
+            mv.visitVarInsn(ISTORE, 2);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ILOAD, 2);
+
+            if (type.startsWith("L"))
+              {
+                mv.visitTypeInsn(ANEWARRAY, type.substring(1, type.length() - 1));
+              }
+            else
+              {
+                mv.visitIntInsn(NEWARRAY, PrimitiveTypesHelper.getPrimitiveArrayType(type));
+              }
+            
+            mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
+            mv.visitInsn(ICONST_0);
+            mv.visitVarInsn(ISTORE, 3);
+            mv.visitJumpInsn(GOTO, arrayLoopExpression);
+            mv.visitLabel(arrayLoopBegin);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+            
+            mv.visitVarInsn(ILOAD, 3);
+
+            String method = (String) methodNamesRead.get(type);
+            
+            if (method != null)
+              {
+                int pos = method.indexOf('(');
+
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, method.substring(0, pos), method.substring(pos)); 
+              }
+            else
+              {
+            	String descShort = type.substring(1, type.length() - 1);
+            	
+            	if ( this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShort))
+            	  {
+                    maxStack = Math.max(maxStack, 4);
+            		
+            		mv.visitTypeInsn(NEW, descShort);
+            		mv.visitInsn(DUP);
+            		mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
+            		mv.visitInsn(AASTORE);
+            		mv.visitVarInsn(ALOAD, 0);
+                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+                    mv.visitVarInsn(ILOAD, 3);
+            		mv.visitInsn(AALOAD);
+                    mv.visitVarInsn(ALOAD, 1);
+            		mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "read", "(Ljava/io/DataInputStream;)V");
+            	  }
+            	else
+            	  {
+            		mv.visitVarInsn(ALOAD, 1);
+            		mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
+            		mv.visitTypeInsn(CHECKCAST, descShort);
+            		mv.visitInsn(AASTORE);
+            	  }
+              }
+
+            if ("I".equals(type))
+              {
+                mv.visitInsn(IASTORE);
+              }
+            else if ("B".equals(type) || "Z".equals(type))
+              {
+                mv.visitInsn(BASTORE);
+              }
+            else if ("C".equals(type))
+              {
+                mv.visitInsn(CASTORE);
+              }
+            else if ("S".equals(type))
+              {
+                mv.visitInsn(SASTORE);
+              }
+            else if ("J".equals(type))
+              {
+                mv.visitInsn(LASTORE);
+              }
+            else if ("F".equals(type))
+              {
+                mv.visitInsn(FASTORE);
+              }
+            else if ("D".equals(type))
+              {
+                mv.visitInsn(DASTORE);
+              }
+
+            mv.visitIincInsn(3, 1);
+            
+            mv.visitLabel(arrayLoopExpression);
+            mv.visitVarInsn(ILOAD, 3);
+            mv.visitVarInsn(ILOAD, 2);
+            mv.visitJumpInsn(IF_ICMPLT, arrayLoopBegin);
+            mv.visitLabel(arrayAfter);
+          }
+        else // non-array types
+          {
+        	if (PrimitiveTypesHelper.isPrimitiveType(desc))
+              {
+            	if ("J".equals(desc) || "D".equals(desc))
+            	  {
+                    maxStack = Math.max(maxStack, 3);
+            	  }
+          	
+                String method = (String) methodNamesRead.get(desc);
+                int pos = method.indexOf('(');
+
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, method.substring(0, pos), method.substring(pos)); 
+                mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
+              }
+            else
+              {
+            	String descShort = desc.substring(1, desc.length() - 1);
+
+            	if (! this.loader.inherits(getClassName(SERIALIZABLE, environment), descShort))
+            	  {
+            		mv.visitVarInsn(ALOAD, 0);
+            		mv.visitVarInsn(ALOAD, 1);
+            		mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
+            		mv.visitTypeInsn(CHECKCAST, descShort);
+            		mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
+            	  }
+            	else
+            	  {
+                    maxStack = Math.max(maxStack, 3);
+            		
+            		Label afterRead = new Label();
+                
+            		mv.visitVarInsn(ALOAD, 1);
+            		mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
+            		mv.visitJumpInsn(IFEQ, afterRead);
+            		mv.visitVarInsn(ALOAD, 0);
+            		mv.visitTypeInsn(NEW, descShort);
+            		mv.visitInsn(DUP);
+            		mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
+            		mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
+                    mv.visitVarInsn(ALOAD, 0);
+                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+                    mv.visitVarInsn(ALOAD, 1);
+                    mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "read", "(Ljava/io/DataInputStream;)V");
+                    mv.visitLabel(afterRead);
+            	  }
+              }
+          }
+      }
+    
+    mv.visitInsn(RETURN);
+    mv.visitMaxs(maxStack, maxVars);
+    mv.visitEnd();
+  }
+
+  private void generateWriteMethod()
+  {
+    if (!this.generateWriteMethod)
+      {
+        return;
+      }
+
+    int maxStack = 2;
+    int maxVars = 2;
+    
+    MethodVisitor mv =
+      super.visitMethod(WRITE_MODIFIERS, WRITE_NAME, WRITE_SIGNATURE,
+                        null, new String[] { "java/io/IOException" });
+    
+    mv.visitCode();
+    
+    String[] fields = getSortedFields();
+
+    for (int i = 0; i < fields.length; i++)
+      {
+        String name = fields[i];
+        String desc = (String) this.fields.get(name);
+        
+        if (PrimitiveTypesHelper.isArrayType(desc))
+          {
+            if (PrimitiveTypesHelper.isMultiDimensionalArrayType(desc))
+              {
+                throw new RuntimeException("Multidimensional arrays are not supported by the serialization framework");
+              }
+            
+            maxVars = Math.max(maxVars, 4);
             String type = desc.substring(1);
             
             Label arrayAfter = new Label();
             Label arrayNonNull = new Label();
             Label arrayLoopBegin = new Label();
             Label arrayLoopExpression = new Label();
-            
-            // Code: output.write(field.length);
-            // Code: for (int i = 0; i < field.length; i++) {
-            // Code:   output.write(field[i]);
-            // Code: }
             
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, this.className, name, desc);
@@ -294,7 +501,6 @@ public class SerializationVisitor
             mv.visitInsn(ICONST_0);
             mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
             mv.visitJumpInsn(GOTO, arrayAfter);
-            
             mv.visitLabel(arrayNonNull);
             mv.visitVarInsn(ALOAD, 1);
             mv.visitInsn(ICONST_1);
@@ -309,9 +515,13 @@ public class SerializationVisitor
             mv.visitInsn(ICONST_0);
             mv.visitVarInsn(ISTORE, 3);
             mv.visitJumpInsn(GOTO, arrayLoopExpression);
-            
             mv.visitLabel(arrayLoopBegin);
-            mv.visitVarInsn(ALOAD, 1);
+
+            if (PrimitiveTypesHelper.isPrimitiveType(type))
+              {
+            	mv.visitVarInsn(ALOAD, 1);
+              }
+            
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, this.className, name, desc);
             mv.visitVarInsn(ILOAD, 3);
@@ -353,31 +563,33 @@ public class SerializationVisitor
             
             if (method != null)
               {
-                int pos = method.indexOf('(');
+                maxStack = Math.max(maxStack, 3);
+            	
+            	int pos = method.indexOf('(');
                 mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, method.substring(0, pos), method.substring(pos));
               }
             else // if (type.startsWith("L"))
               {
                 mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, getClassName(EXTERNALIZABLE, this.environment), "write", "(Ljava/io/DataOutputStream;)V");
+                mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
               }
 
             mv.visitIincInsn(3, 1);
-            
             mv.visitLabel(arrayLoopExpression);
             mv.visitVarInsn(ILOAD, 3);
             mv.visitVarInsn(ILOAD, 2);
             mv.visitJumpInsn(IF_ICMPLT, arrayLoopBegin);
-            
             mv.visitLabel(arrayAfter);
           }
         else
           {
-            // Primitive types.
             if (PrimitiveTypesHelper.isPrimitiveType(desc))
               {
-                // Code: output.writeType(field);
-
+            	if ("J".equals(desc) || "D".equals(desc))
+            	  {
+                    maxStack = Math.max(maxStack, 3);
+            	  }
+            	
                 String method = (String) methodNamesWrite.get(desc);
                 int pos = method.indexOf('(');
 
@@ -388,310 +600,43 @@ public class SerializationVisitor
               }
             else
               {
-                Label caseIfNull = new Label();
-                Label afterElse = new Label();
+            	String descShort = desc.substring(1, desc.length() - 1);
+
+            	if (! this.loader.inherits(getClassName(SERIALIZABLE, environment), descShort))
+            	  {
+            		mv.visitVarInsn(ALOAD, 0);
+                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+                    mv.visitVarInsn(ALOAD, 1);
+            		mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
+            	  }
+            	else
+            	  {
+            		Label caseIfNull = new Label();
+            		Label afterElse = new Label();
           
-                // Code: if (field != null) {
-                // Code:   output.writeBoolean(1);
-                // Code:   ...
-                // Code: } else {
-                // Code:   output.writeBoolean(0);
-                // Code: }
-               
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-                mv.visitJumpInsn(IFNULL, caseIfNull);
-                
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitInsn(ICONST_1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
-
-                if ("Ljava/lang/String;".equals(desc))
-                  {
-                    String method = (String) methodNamesWrite.get(desc);
-                    int pos = method.indexOf('(');
-
-                    mv.visitVarInsn(ALOAD, 1);
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-                    mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, method.substring(0, pos), method.substring(pos));
-                  }
-                else
-                  {
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-                    mv.visitVarInsn(ALOAD, 1);
-                    mv.visitMethodInsn(INVOKEINTERFACE, getClassName(EXTERNALIZABLE, this.environment), "write", "(Ljava/io/DataOutputStream;)V");
-                  }
-                
-                mv.visitJumpInsn(GOTO, afterElse);
-                mv.visitLabel(caseIfNull);
-                
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitInsn(ICONST_0);
-                mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
-                
-                mv.visitLabel(afterElse);
+            		mv.visitVarInsn(ALOAD, 0);
+            		mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+            		mv.visitJumpInsn(IFNULL, caseIfNull);
+            		mv.visitVarInsn(ALOAD, 1);
+            		mv.visitInsn(ICONST_1);
+            		mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
+            		mv.visitVarInsn(ALOAD, 0);
+            		mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+            		mv.visitVarInsn(ALOAD, 1);
+            		mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "write", "(Ljava/io/DataOutputStream;)V");
+            		mv.visitJumpInsn(GOTO, afterElse);
+            		mv.visitLabel(caseIfNull);
+            		mv.visitVarInsn(ALOAD, 1);
+            		mv.visitInsn(ICONST_0);
+            		mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
+            		mv.visitLabel(afterElse);
+            	  }
               }
           }
       }
     
-    // Code: return;
-    Label l1 = new Label();
-    mv.visitLabel(l1);
     mv.visitInsn(RETURN);
-    
-    // Local variable table and stack limits.
-    Label l2 = new Label();
-    mv.visitLabel(l2);
-    mv.visitLocalVariable("this", "L" + this.className + ";", null, l0, l2, 0);
-    mv.visitLocalVariable("output", "L" + DATAOUTPUTSTREAM + ";", null, l0, l2, 1);
-
-    if (arrayField)
-      {
-        mv.visitLocalVariable("arraySize", "I", null, l0, l2, 2);
-        mv.visitLocalVariable("i", "I", null, l0, l2, 3);
-      }
-    
-    mv.visitMaxs(10, 4);
-    mv.visitEnd();
-  }
-
-  private void generateDefaultConstructor()
-  {
-    if (!this.generateDefaultConstructor)
-      {
-        return;
-      }
-    
-    MethodVisitor mv = super.visitMethod(ACC_PUBLIC, "<init>", "()V", null, new String[0]);
-    mv.visitCode();
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "<init>", "()V");
-    mv.visitInsn(RETURN);
-    mv.visitMaxs(1, 1);
-    mv.visitEnd();
-  }
-
-  private void generateReadMethod()
-  {
-    if (!this.generateReadMethod)
-      {
-        return;
-      }
-
-    MethodVisitor mv = 
-      super.visitMethod(READ_MODIFIERS, READ_NAME, READ_SIGNATURE,
-                        null, new String[] { "java/io/IOException" });
-    
-    mv.visitCode();
-    
-    boolean arrayField = false;
-    Label l0 = new Label();
-    String[] fields = getSortedFields();
-
-    for (int i = 0; i < fields.length; i++)
-      {
-        // Code: instance.field = value;
-        
-        Label label;
-        
-        if (i == 0)
-          {
-            label = l0;
-          }
-        else
-          {
-            label = new Label();
-          }
-        
-        String name = fields[i];
-        String desc = (String) this.fields.get(name); 
-        mv.visitLabel(label);
-        
-        if (PrimitiveTypesHelper.isArrayType(desc))
-          {
-            if (PrimitiveTypesHelper.isMultiDimensionalArrayType(desc))
-              {
-                throw new RuntimeException("Multidimensional arrays are not supported by the serialization framework");
-              }
-            
-            arrayField = true;
-            String type = desc.substring(1);
-            
-            Label arrayAfter = new Label();
-            Label arrayLoopBegin = new Label();
-            Label arrayLoopExpression = new Label();
-            
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
-            mv.visitJumpInsn(IFEQ, arrayAfter);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readInt", "()I");
-            mv.visitVarInsn(ISTORE, 2);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ILOAD, 2);
-
-            if (type.startsWith("L"))
-              {
-                mv.visitTypeInsn(ANEWARRAY, type.substring(1, type.length() - 1));
-              }
-            else
-              {
-                mv.visitIntInsn(NEWARRAY, PrimitiveTypesHelper.getPrimitiveArrayType(type));
-              }
-            
-            mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
-            mv.visitInsn(ICONST_0);
-            mv.visitVarInsn(ISTORE, 3);
-            mv.visitJumpInsn(GOTO, arrayLoopExpression);
-            mv.visitLabel(arrayLoopBegin);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-            
-//            mv.visitTypeInsn(NEW, type);
-//            mv.visitInsn(DUP);
-//            mv.visitMethodInsn(INVOKESPECIAL, type, "<init>", "()V");
-//            mv.visitInsn(AASTORE);
-//            mv.visitVarInsn(ALOAD, 0);
-//            mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-//            mv.visitVarInsn(ILOAD, 3);
-//            mv.visitInsn(AALOAD);
-//            mv.visitVarInsn(ALOAD, 1);
-//            mv.visitMethodInsn(INVOKEVIRTUAL, type, "read", "(Ljava/io/DataInputStream;)V");
-            
-            mv.visitVarInsn(ILOAD, 3);
-            mv.visitVarInsn(ALOAD, 1);
-
-            String method = (String) methodNamesRead.get(type);
-            
-            if (method != null)
-              {
-                int pos = method.indexOf('(');
-                mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, method.substring(0, pos), method.substring(pos)); 
-              }
-            else // if (type.startsWith("L"))
-              {
-                mv.visitMethodInsn(INVOKEINTERFACE, getClassName(EXTERNALIZABLE, this.environment), "read", "(Ljava/io/DataInputStream;)V");
-              }
-
-            if ("I".equals(type))
-              {
-                mv.visitInsn(IASTORE);
-              }
-            else if ("B".equals(type) || "Z".equals(type))
-              {
-                mv.visitInsn(BASTORE);
-              }
-            else if ("C".equals(type))
-              {
-                mv.visitInsn(CASTORE);
-              }
-            else if ("S".equals(type))
-              {
-                mv.visitInsn(SASTORE);
-              }
-            else if ("J".equals(type))
-              {
-                mv.visitInsn(LASTORE);
-              }
-            else if ("F".equals(type))
-              {
-                mv.visitInsn(FASTORE);
-              }
-            else if ("D".equals(type))
-              {
-                mv.visitInsn(DASTORE);
-              }
-            else // if (type.startsWith("L"))
-              {
-                mv.visitInsn(AASTORE);
-              }
-
-            mv.visitIincInsn(3, 1);
-            
-            mv.visitLabel(arrayLoopExpression);
-            mv.visitVarInsn(ILOAD, 3);
-            mv.visitVarInsn(ILOAD, 2);
-            mv.visitJumpInsn(IF_ICMPLT, arrayLoopBegin);
-            mv.visitLabel(arrayAfter);
-          }
-        else
-          {
-            if (PrimitiveTypesHelper.isPrimitiveType(desc))
-              {
-                // Code: field = input.readType();
-                
-                String method = (String) methodNamesRead.get(desc);
-                int pos = method.indexOf('(');
-
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, method.substring(0, pos), method.substring(pos)); 
-                mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
-              }
-            else
-              {
-                String descShort = desc.substring(1, desc.length() - 1);
-                Label afterRead = new Label();
-                
-                // Code: boolean nonNull = input.readBoolean();
-                // Code: if (nonNull) {
-                // Code:   field = new Type();
-                // Code:   ...
-                // Code: }
-                
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
-                mv.visitJumpInsn(IFEQ, afterRead);
-                
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitTypeInsn(NEW, descShort);
-                mv.visitInsn(DUP);
-                mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
-                mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
-
-                if ("Ljava/lang/String;".equals(desc))
-                  {
-                    String method = (String) methodNamesRead.get(desc);
-                    int pos = method.indexOf('(');
-
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitVarInsn(ALOAD, 1);
-                    mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, method.substring(0, pos), method.substring(pos)); 
-                    mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
-                  }
-                else
-                  {
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-                    mv.visitVarInsn(ALOAD, 1);
-                    mv.visitMethodInsn(INVOKEINTERFACE, getClassName(EXTERNALIZABLE, this.environment), "read", "(Ljava/io/DataInputStream;)V");
-                  }
-                
-                mv.visitLabel(afterRead);
-              }
-          }
-      }
-    
-    // Code: return;
-    Label l1 = new Label();
-    mv.visitLabel(l1);
-    mv.visitInsn(RETURN);
-    
-    // Local variable table and stack limits.
-    Label l2 = new Label();
-    mv.visitLabel(l2);
-    mv.visitLocalVariable("this", "L" + this.className + ";", null, l0, l2, 0);
-    mv.visitLocalVariable("input", "L" + DATAINPUTSTREAM + ";", null, l0, l2, 1);
-    
-    if (arrayField)
-      {
-        mv.visitLocalVariable("arraySize", "I", null, l0, l2, 2);
-        mv.visitLocalVariable("i", "I", null, l0, l2, 3);
-      }
-    
-    mv.visitMaxs(6, 4);
+    mv.visitMaxs(maxStack, maxVars);
     mv.visitEnd();
   }
 }
