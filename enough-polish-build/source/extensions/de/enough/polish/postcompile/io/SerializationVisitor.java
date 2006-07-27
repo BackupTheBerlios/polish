@@ -236,7 +236,6 @@ public class SerializationVisitor
     super.visitEnd();
   }
 
-
   private void generateDefaultConstructor()
   {
     if (!this.generateDefaultConstructor)
@@ -431,16 +430,16 @@ public class SerializationVisitor
             	  {
                     maxStack = Math.max(maxStack, 3);
             		
-            		Label afterRead = new Label();
+                    Label afterRead = new Label();
                 
-            		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
-            		mv.visitJumpInsn(IFEQ, afterRead);
-            		mv.visitVarInsn(ALOAD, 0);
-            		mv.visitTypeInsn(NEW, descShort);
-            		mv.visitInsn(DUP);
-            		mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
-            		mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
+            		    mv.visitVarInsn(ALOAD, 1);
+            		    mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
+            		    mv.visitJumpInsn(IFEQ, afterRead);
+            		    mv.visitVarInsn(ALOAD, 0);
+            		    mv.visitTypeInsn(NEW, descShort);
+            		    mv.visitInsn(DUP);
+            		    mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
+            		    mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
                     mv.visitVarInsn(ALOAD, 0);
                     mv.visitFieldInsn(GETFIELD, this.className, name, desc);
                     mv.visitVarInsn(ALOAD, 1);
