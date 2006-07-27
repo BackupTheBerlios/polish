@@ -27,10 +27,12 @@ public class SerializationVisitor
   implements Opcodes
 {
   public static final String POLISH_USE_DEFAULT_PACKAGE = "polish.useDefaultPackage";
+  public static final String SERIALIZER = "de/enough/polish/io/Serializer";
   public static final String SERIALIZABLE = "de/enough/polish/io/Serializable";
   public static final String EXTERNALIZABLE = "de/enough/polish/io/Externalizable";
   public static final String DATAINPUTSTREAM = "java/io/DataInputStream";
   public static final String DATAOUTPUTSTREAM = "java/io/DataOutputStream";
+  public static final String IOEXCEPTION = "java/io/IOException";
 
   public static int READ_MODIFIERS = Opcodes.ACC_PUBLIC;
   public static final String READ_NAME = "read";
@@ -290,7 +292,7 @@ public class SerializationVisitor
     
     MethodVisitor mv = 
       super.visitMethod(READ_MODIFIERS, READ_NAME, READ_SIGNATURE,
-                        null, new String[] { "java/io/IOException" });
+                        null, new String[] { IOEXCEPTION });
     
     mv.visitCode();
     
@@ -381,7 +383,7 @@ public class SerializationVisitor
             	else
             	  {
             		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
+            		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
             		mv.visitTypeInsn(CHECKCAST, descShort);
             		mv.visitInsn(AASTORE);
             	  }
@@ -449,7 +451,7 @@ public class SerializationVisitor
             	  {
             		mv.visitVarInsn(ALOAD, 0);
             		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
+            		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
             		mv.visitTypeInsn(CHECKCAST, descShort);
             		mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
             	  }
@@ -494,7 +496,7 @@ public class SerializationVisitor
     
     MethodVisitor mv =
       super.visitMethod(WRITE_MODIFIERS, WRITE_NAME, WRITE_SIGNATURE,
-                        null, new String[] { "java/io/IOException" });
+                        null, new String[] { IOEXCEPTION });
     
     mv.visitCode();
     
@@ -597,7 +599,7 @@ public class SerializationVisitor
             else // if (type.startsWith("L"))
               {
                 mv.visitVarInsn(ALOAD, 1);
-                mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
+                mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
               }
 
             mv.visitIincInsn(3, 1);
@@ -633,7 +635,7 @@ public class SerializationVisitor
             		mv.visitVarInsn(ALOAD, 0);
                     mv.visitFieldInsn(GETFIELD, this.className, name, desc);
                     mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKESTATIC, "de/enough/polish/io/Serializer", "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
+            		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
             	  }
             	else
             	  {
