@@ -24,3 +24,6 @@ java.util.Vector
 javax.microedition.lcdui.Image
 javax.microedition.lcdui.Font
 javax.microedition.lcdui.Command
+
+# later onwards:
+#javax.microedition.lcdui.game.Sprite
