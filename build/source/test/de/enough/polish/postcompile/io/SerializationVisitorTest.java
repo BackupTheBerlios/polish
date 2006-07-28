@@ -48,6 +48,7 @@ public class SerializationVisitorTest
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_constructor");
 
     doTest("de/enough/polish/postcompile/io/TestSerialization_complex1");
+    doTest("de/enough/polish/postcompile/io/TestSerialization_complex2");
   }
 
   private void doTest(String className)
