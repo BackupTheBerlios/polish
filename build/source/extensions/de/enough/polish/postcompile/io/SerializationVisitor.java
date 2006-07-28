@@ -98,7 +98,10 @@ public class SerializationVisitor
     this.environment = environment;
     this.fields = new HashMap();
     this.serializableObjectTypes = new HashSet();
-    
+
+    // TODO: This throws always a NullPointerException. Make this work reliable.
+    if (false)
+      {
     InputStream inputStream =
     	getClass().getResourceAsStream("/de/enough/polish/postcompiler/io/serializable_classes.txt");
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -130,6 +133,29 @@ public class SerializationVisitor
       {
         e.printStackTrace();
       }
+      } // End of broken code.
+    
+      // TODO: Remove these hardcoded entries again when the above code works.
+      this.serializableObjectTypes.add("java/lang/Byte");
+      this.serializableObjectTypes.add("java/lang/Short");
+      this.serializableObjectTypes.add("java/lang/Integer");
+      this.serializableObjectTypes.add("java/lang/Long");
+      this.serializableObjectTypes.add("java/lang/Float");
+      this.serializableObjectTypes.add("java/lang/Double");
+      this.serializableObjectTypes.add("java/lang/Character");
+      this.serializableObjectTypes.add("java/lang/String");
+      this.serializableObjectTypes.add("java/lang/StringBuffer");
+      this.serializableObjectTypes.add("java/lang/Boolean");
+      this.serializableObjectTypes.add("java/util/Date");
+      this.serializableObjectTypes.add("java/util/Calendar");
+      this.serializableObjectTypes.add("java/util/Random");
+      this.serializableObjectTypes.add("java/util/Hashtable");
+      this.serializableObjectTypes.add("java/util/Stack");
+      this.serializableObjectTypes.add("java/util/Vector");
+      this.serializableObjectTypes.add("javax/microedition/lcdui/Image");
+      this.serializableObjectTypes.add("javax/microedition/lcdui/Font");
+      this.serializableObjectTypes.add("javax/microedition/lcdui/Command");
+//      this.serializableObjectTypes.add("javax/microedition/lcdui/game/Sprite");
   }
 
   private String[] getSortedFields()
