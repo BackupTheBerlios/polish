@@ -36,84 +36,90 @@ import de.enough.polish.util.DrawUtil;
  * with an gradient from the top-color to the bottom-color.
  * 
  * @author Tim Muders
- *
+ * @author Robert Virkus refinements 
  */
 public class GradientVerticalBackground  extends Background {
-	private int topColor,bottomColor;
+	private final int topColor;
+	private final int bottomColor;
 	private final int stroke;
+	private final int start;
+	private final int end;
+	private final boolean isPercent;
+
 	private int[] gradient;
-	public GradientVerticalBackground(int topColor, int bottomColor,int stroke){
+	private int lastHeight;
+	private int startLine;
+	private int endLine;
+
+	/**
+	 * Creates a new gradient background
+	 * 
+	 * @param topColor the color at the top of the gradient
+	 * @param bottomColor the color at the bottom of the gradient
+	 * @param stroke the line stroke style
+	 */
+	public GradientVerticalBackground(int topColor, int bottomColor,int stroke) {
+		this( topColor, bottomColor, stroke, 0, 0, false );
+		
+	}
+	
+	/**
+	 * Creates a new gradient background
+	 * 
+	 * @param topColor the color at the top of the gradient
+	 * @param bottomColor the color at the bottom of the gradient
+	 * @param stroke the line stroke style
+	 * @param start the line counted from the top at which the gradient starts, either in pixels or in percent
+	 * @param end the line counted from the top at which the gradient ends, either in pixels or in percent
+	 * @param isPercent true when the start and end settings should be counted in percent
+	 */
+	public GradientVerticalBackground( int topColor, int bottomColor, int stroke, int start, int end, boolean isPercent ) {
 		this.topColor = topColor;
 		this.bottomColor = bottomColor;
 		this.stroke = stroke;
-		
+		this.start = start;
+		this.end = end;
+		this.isPercent = isPercent;
 	}
 	
-	
-	private int colorValue(int value1,int value2,int sumX,int sumY){
-		if(value1 != value2){
-			int woh;
-			if(sumX <= sumY){
-				woh = sumX;
-			}else{
-				woh = sumY;
-			}
-			//#if polish.debug.debug
-				if (woh == 0) {
-					//#debug
-					System.out.println("woh==0, sumX=" + sumX + ", sumY=" + sumY );
-				}
-			//#endif
-			if(value1 < value2){
-				int sum =   (value2-value1 ) / woh;
-				value1+= sum;
-			}
-			else{
-				int sum =   (value1 -value2) / woh;
-				value1-= sum;
-			}
-		}		
-		return value1;
-	}
-	
-	
+	/*
+	 * Paints the screen 
+	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setStrokeStyle(this.stroke);
-		if (this.gradient == null || this.gradient.length != height ) {
-			this.gradient = DrawUtil.getGradient( this.topColor, this.bottomColor, height );
+		int startOffset = this.startLine;
+		int endOffset = this.endLine;
+		if (this.gradient == null || this.lastHeight != height ) {
+			int steps = height;
+			if (this.start != this.end) {
+				steps = this.end - this.start;
+				if (this.isPercent) {
+					this.startLine = (this.start * height) / 100;
+					this.endLine = (this.end * height) / 100;
+					steps = this.endLine - this.startLine;
+				} else {
+					this.startLine = this.start;
+					this.endLine = this.end;
+				}
+				startOffset = this.startLine;
+				endOffset = this.endLine;				
+			} else {
+				this.endLine = height;
+				endOffset = height;
+			}
+			this.gradient = DrawUtil.getGradient( this.topColor, this.bottomColor, steps );
+			this.lastHeight = height;
 		}
-		for (int i = 0; i < this.gradient.length; i++) {
-			int color = this.gradient[i];
-			g.setColor( color );
+		g.setColor( this.topColor );
+		for (int i = 0; i < height; i++) {
+			if (i >= startOffset  && i < endOffset ) {
+				int color = this.gradient[i - startOffset ];
+				g.setColor( color );
+				
+			}
 			g.drawLine( x, y, x + width, y);
 			y++;
 		}
-//		if(height > 0){
-//		int startX = x;
-//		int startY = y;
-//		g.setColor(000000);
-////		g.drawLine(x+1,y+1,width,height);
-//		int red,green, blue,red2,green2,blue2;
-//		red = (0x00FF & (this.topColor >>> 16));	
-//		green = (0x0000FF & (this.topColor >>> 8));
-//		blue = this.topColor & (0x000000FF );
-//		red2 = (0x00FF & (this.bottomColor >>> 16));
-//		green2 = (0x0000FF & (this.bottomColor >>> 8));
-//		blue2 = this.bottomColor & (0x000000FF);
-//		int sumX = width-(x-startX);
-//		do{				
-//			int sumY = height-(y-startY);
-//			g.setColor(red,green,blue);
-//			g.drawLine(x,y,sumX,y);
-//			y ++;		
-//			red = this.colorValue(red,red2,sumX,sumY);
-//			green = this.colorValue(green,green2,sumX,sumY);
-//			blue = this.colorValue(blue,blue2,sumX,sumY);
-//		}
-//		while((red != red2 || green != green2 || blue != blue2) && x <= (width+startX) && y <= (height+startY));
-		
 		g.setStrokeStyle( Graphics.SOLID );
-		
-		//}
 	}
 }

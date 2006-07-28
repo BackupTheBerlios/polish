@@ -882,7 +882,11 @@ public class MenuBar extends Item {
 	public void setStyle(Style style) {
 		if (this.overlayBackground == null) {
 			//#if polish.color.overlay:defined
-				//#= overlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
+				int color = 0;
+				//#= color =  ${polish.color.overlay};
+				if ((color & 0xFF000000) != 0) {
+					this.overlayBackground = new TranslucentSimpleBackground( color );
+				}
 			//#else
 				this.overlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
 			//#endif

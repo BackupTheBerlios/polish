@@ -67,6 +67,7 @@ public class HorizontalChoiceView extends ContainerView {
 	private final static int POSITION_BOTH_SIDES = 0; 
 	private final static int POSITION_RIGHT = 1; 
 	private final static int POSITION_LEFT = 2; 
+	private final static int POSITION_NONE = 3;
 	private int arrowColor;
 	//#ifdef polish.css.horizontalview-left-arrow
 		private Image leftArrow;
@@ -196,11 +197,13 @@ public class HorizontalChoiceView extends ContainerView {
 				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
 				this.rightArrowStartX = lineWidth - this.arrowWidth;
 				//this.rightArrowEndX = lineWidth;
-			} else {
+			} else if (this.arrowPosition == POSITION_RIGHT ) {
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
 				this.rightArrowStartX = this.arrowWidth + this.paddingHorizontal;
 				//this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
+			} else {
+				completeArrowWidth = 0;
 			}
 		//#endif
 		lineWidth -= completeArrowWidth;
@@ -419,6 +422,10 @@ public class HorizontalChoiceView extends ContainerView {
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
 
+		//#ifdef polish.css.horizontalview-arrow-position
+			if (this.arrowPosition != POSITION_NONE ) {
+		//#endif
+
 		g.setColor( this.arrowColor );
 		//draw left arrow:
 		//#ifdef polish.css.horizontalview-roundtrip
@@ -495,6 +502,11 @@ public class HorizontalChoiceView extends ContainerView {
 				}
 			//#endif
 		}
+			
+		//#ifdef polish.css.horizontalview-arrow-position
+			} // if (this.arrowPosition != POSITION_NONE ) {
+		//#endif
+
 	}
 
 	/* (non-Javadoc)
