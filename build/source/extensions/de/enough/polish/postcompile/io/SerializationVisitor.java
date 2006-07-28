@@ -225,28 +225,28 @@ public class SerializationVisitor
     // Only do serialication for non-transient fields.
     if ((access & ACC_TRANSIENT) != ACC_TRANSIENT)
       {
-        String type = desc;
+        String descShot = desc;
         
-        while (PrimitiveTypesHelper.isArrayType(type))
+        while (PrimitiveTypesHelper.isArrayType(descShot))
           {
-            type = type.substring(1);
+            descShot = descShot.substring(1);
           }
         
         // Primitive fields.
-        if (PrimitiveTypesHelper.isPrimitiveType(type))
+        if (PrimitiveTypesHelper.isPrimitiveType(descShot))
           {
             this.fields.put(name, desc);
           }
         // Non-primitive fields.
-        else if (type.startsWith("L"))
+        else if (descShot.startsWith("L"))
           {
-            type = type.substring(1, type.length() - 1);
+            descShot = descShot.substring(1, descShot.length() - 1);
             
-            if (this.loader.inherits(getClassName(SERIALIZABLE, this.environment), type))
+            if (this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShot))
               {
             	this.fields.put(name, desc);
               }
-            else if (isSerializableObject(type))
+            else if (isSerializableObject(descShot))
               {
             	this.fields.put(name, desc);
               }
