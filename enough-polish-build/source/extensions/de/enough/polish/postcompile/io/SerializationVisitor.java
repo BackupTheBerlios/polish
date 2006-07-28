@@ -220,10 +220,14 @@ public class SerializationVisitor
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
   {
     // Make final fields non-final.
-    access &= ~ ACC_FINAL;
+    if ((access & ACC_STATIC) != ACC_STATIC)
+      {
+        access &= ~ ACC_FINAL;
+      }
     
     // Only do serialication for non-transient fields.
-    if ((access & ACC_TRANSIENT) != ACC_TRANSIENT)
+    if ((access & ACC_TRANSIENT) != ACC_TRANSIENT
+        && (access & ACC_STATIC) != ACC_STATIC)
       {
         String descShot = desc;
         
