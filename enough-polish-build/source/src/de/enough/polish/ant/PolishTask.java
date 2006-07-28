@@ -129,7 +129,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "1.3<beta4-preview> (2006-07-12)";
+	private static final String VERSION = "2.0 <beta1>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -1907,10 +1907,12 @@ public class PolishTask extends ConditionalTask {
 		}
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
 		if (!compiler.isTargetSet()) {
+			//System.out.println("setting javac-target " + getJavacTarget() );
 			compiler.setDirectTarget( getJavacTarget() );
 		}
 		// -source == 1.3 is apparently always needed for J2SE 1.5
 		if (!compiler.isSourceSet()) {
+			//System.out.println("setting javac-source " + getJavacSource() );
 			compiler.setDirectSource( getJavacSource() );
 		}
 		if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
