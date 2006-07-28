@@ -81,6 +81,7 @@ public class SerializationVisitor
 
   private String className;
   private String superClassName;
+  private boolean superImplementsSerializable;
   private ASMClassLoader loader;
   private Environment environment; 
   private HashMap fields;
@@ -185,6 +186,9 @@ public class SerializationVisitor
     
     this.className = name;
     this.superClassName = superName;
+    
+    this.superImplementsSerializable =
+      this.loader.inherits(getClassName(SERIALIZABLE, this.environment), superName);
   }
 
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
@@ -277,6 +281,7 @@ public class SerializationVisitor
     mv.visitVarInsn(ALOAD, 0);
     mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "<init>", "()V");
     mv.visitInsn(RETURN);
+    mv.visitMaxs(1, 1);
     mv.visitEnd();
   }
 
@@ -295,6 +300,13 @@ public class SerializationVisitor
                         null, new String[] { IOEXCEPTION });
     
     mv.visitCode();
+    
+    if (this.superImplementsSerializable)
+      {
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "read", "(Ljava/io/DataInputStream;)V");
+      }
     
     String[] fields = getSortedFields();
 
@@ -499,6 +511,13 @@ public class SerializationVisitor
                         null, new String[] { IOEXCEPTION });
     
     mv.visitCode();
+    
+    if (this.superImplementsSerializable)
+      {
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "write", "(Ljava/io/DataOutputStream;)V");
+      }
     
     String[] fields = getSortedFields();
 
