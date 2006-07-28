@@ -40,6 +40,14 @@ public class SerializationVisitorTest
 
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_StringArray");
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_SerializableArray");
+    
+	  doTest("de/enough/polish/postcompile/io/TestSerialization_SerializableInheritance");
+	  doTest("de/enough/polish/postcompile/io/TestSerialization_SerializableInheritance$AbstractSerializable");
+	  doTest("de/enough/polish/postcompile/io/TestSerialization_SerializableInheritance$InnerSerializable");
+
+	  doTest("de/enough/polish/postcompile/io/TestSerialization_constructor");
+
+    doTest("de/enough/polish/postcompile/io/TestSerialization_complex1");
   }
 
   private void doTest(String className)
@@ -50,9 +58,26 @@ public class SerializationVisitorTest
 	  StringWriter result;
 
 	  String expected, postcompiled;
+    
+    String classNameTemplate;
+    int pos = className.indexOf('$');
+    
+    if (pos >= 0)
+      {
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append(className.substring(0, pos));
+        sb.append("_template");
+        sb.append(className.substring(pos));
+        classNameTemplate = sb.toString();
+      }
+    else
+      {
+        classNameTemplate = className + "_template";
+      }
 	  
 	  loader = new ASMClassLoader();
-	  clazz = loader.loadClass(className + "_template");
+	  clazz = loader.loadClass(classNameTemplate);
 	  result = new StringWriter();
 	  clazz.accept(new TraceClassVisitor(new PrintWriter(result)));
 	  expected = result.toString().replace("_template", "");
