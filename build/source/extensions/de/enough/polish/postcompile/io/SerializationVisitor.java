@@ -179,8 +179,11 @@ public class SerializationVisitor
     return result;
   }
 
-  private String[] rewriteInterfaces(String[] interfaces)
+  private String[] rewriteInterfaces(String superName, String[] interfaces)
   {
+    this.superImplementsSerializable =
+      this.loader.inherits(getClassName(SERIALIZABLE, this.environment), superName);
+
     boolean found = false;
     String serializable = getClassName(SERIALIZABLE, this.environment);
     String externalizable = getClassName(EXTERNALIZABLE, this.environment);
@@ -196,6 +199,11 @@ public class SerializationVisitor
     
     if (! found)
       {
+        found = this.superImplementsSerializable;
+      }
+    
+    if (! found)
+      {
         String[] tmp = new String[interfaces.length + 1];
         System.arraycopy(interfaces, 0, tmp, 0, interfaces.length);
         tmp[interfaces.length] = externalizable;
@@ -207,14 +215,15 @@ public class SerializationVisitor
 
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces)
   {
+    // Calling rewriteInterfaces has the side effect that it initializes this.superImplementsSerializable
     super.visit(version, access, name, signature, superName,
-                rewriteInterfaces(interfaces));
+                rewriteInterfaces(superName, interfaces));
     
     this.className = name;
     this.superClassName = superName;
-    
-    this.superImplementsSerializable =
-      this.loader.inherits(getClassName(SERIALIZABLE, this.environment), superName);
+
+//    this.superImplementsSerializable =
+//      this.loader.inherits(getClassName(SERIALIZABLE, this.environment), superName);
   }
 
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
@@ -322,7 +331,7 @@ public class SerializationVisitor
         return;
       }
 
-    int maxStack = 2;
+    int maxStack = 0;
     int maxVars = 2;
     
     MethodVisitor mv = 
@@ -342,6 +351,8 @@ public class SerializationVisitor
 
     for (int i = 0; i < fields.length; i++)
       {
+        maxStack = Math.max(maxStack, 2);
+        
         String name = fields[i];
         String desc = (String) this.fields.get(name); 
         
@@ -533,7 +544,7 @@ public class SerializationVisitor
         return;
       }
 
-    int maxStack = 2;
+    int maxStack = 0;
     int maxVars = 2;
     
     MethodVisitor mv =
@@ -553,6 +564,8 @@ public class SerializationVisitor
 
     for (int i = 0; i < fields.length; i++)
       {
+        maxStack = Math.max(maxStack, 2);
+        
         String name = fields[i];
         String desc = (String) this.fields.get(name);
         
