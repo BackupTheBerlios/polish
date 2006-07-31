@@ -29,7 +29,6 @@ public class TestSerialization_SerializableInheritance_template
   
 	public static class InnerSerializable
 		extends AbstractSerializable
-    implements Externalizable // TODO: Remove this line.
 	{
 		public int i2;
 

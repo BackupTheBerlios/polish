@@ -38,7 +38,10 @@ public class SerializationVisitorTest
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_String");
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_Serializable");
 
-	  doTest("de/enough/polish/postcompile/io/TestSerialization_StringArray");
+	  doTest("de/enough/polish/postcompile/io/TestSerialization_empty");
+	  doTest("de/enough/polish/postcompile/io/TestSerialization_static");
+
+    doTest("de/enough/polish/postcompile/io/TestSerialization_StringArray");
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_SerializableArray");
     
 	  doTest("de/enough/polish/postcompile/io/TestSerialization_SerializableInheritance");
