@@ -38,6 +38,6 @@ import de.enough.utils.PropertyModel;
  */
 public class ProjectPageModel extends PropertyModel {
 
-    
+    //
     
 }

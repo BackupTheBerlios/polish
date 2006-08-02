@@ -36,7 +36,7 @@ import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 
 /**
  * <p></p>
- *
+ * TODO: Rename to IDocumentUtils
  * <p>Copyright Enough Software 2005</p>
  * <pre>
  * history
@@ -86,7 +86,6 @@ public class PolishDocumentUtils {
         try {
             lineAsString = document.get(lineAsRegion.getOffset(),lineAsRegion.getLength());
         } catch (BadLocationException exception) {
-            // TODO rickyn handle BadLocationException
             exception.printStackTrace();
             return null;
         }
@@ -222,8 +221,12 @@ public class PolishDocumentUtils {
     }
     
     public static String makeStringFromPosition(IDocument document, Position position) {
-        Assert.isNotNull(document);
-        Assert.isNotNull(position);
+        if(document == null){
+            throw new IllegalArgumentException("makeStringFromPosition(...):parameter 'document' is null contrary to API.");
+        }
+        if(position == null){
+            throw new IllegalArgumentException("makeStringFromPosition(...):parameter 'position' is null contrary to API.");
+        }
         
         String result;
         try {
@@ -235,41 +238,43 @@ public class PolishDocumentUtils {
         return result;
     }
     
+    //TODO: Not needed as we use simply extractWordAtOffset.
     // Implement interface TokenExtractor with 'IPosition extract(IDocument document,int offset)'
-    public static Position extractVariableAtOffset(IDocument document, int offset) {
-        // bla ${hallo} blubb
-        // hallo > 0
-        Position wordAtOffset = extractWordAtOffset(document, offset);
-        boolean variableFound = false;
-        Position result;
-        
-        // If we do not have word ...
-        if(wordAtOffset == null) {
-            //... consider we are at the beginning of a new directive.
-            wordAtOffset = new Position(offset,0);
-        }
-        try {
-            String prefix = document.get(wordAtOffset.getOffset()-2,2);
-            System.out.println("X"+PolishDocumentUtils.makeStringFromPosition(document,wordAtOffset)+"X");
-            if("${".equals(prefix) || prefix.endsWith("$")) {
-                variableFound = true;
-            }
-            else {
-                // TODO: Look out for comparison operators to the right of the word.
-            }
-        } catch (BadLocationException exception) {
-            variableFound = false;
-        }
-        
-        if(variableFound) {
-            result = wordAtOffset;
-        }
-        else {
-            result = null;
-        }
-        
-        return result;
-    }
+//    public static Position extractVariableAtOffset(IDocument document, int offset) {
+//        // bla ${hallo} blubb
+//        // hallo > 0
+//        Position wordAtOffset = extractWordAtOffset(document, offset);
+//        boolean variableFound = false;
+//        Position result;
+//        
+//        // If we do not have word ...
+//        if(wordAtOffset == null) {
+//            //... consider we are at the beginning of a new directive.
+//            wordAtOffset = new Position(offset,0);
+//        }
+//        try {
+//            String prefix = document.get(wordAtOffset.getOffset()-2,2);
+//            System.out.println("X"+PolishDocumentUtils.makeStringFromPosition(document,wordAtOffset)+"X");
+//            if("${".equals(prefix) || prefix.endsWith("$")) {
+//                variableFound = true;
+//            }
+//            else {
+//                // TODO: Look out for comparison operators to the right of the word.
+//            }
+//        } catch (BadLocationException exception) {
+//            variableFound = false;
+//        }
+//        
+//        if(variableFound) {
+//            result = wordAtOffset;
+//        }
+//        else {
+//            // Return something. Maybe we are at the very beginning of a variable.
+//            result = new Position(offset,0);
+//        }
+//        
+//        return result;
+//    }
     
  
     /**Returns the directive which encloses a given offset.

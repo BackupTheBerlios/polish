@@ -58,12 +58,8 @@ public class PolishDirectiveRule implements IRule {
   
     private TokenStore tokenStore;
     
-    // TODO: A state should be more like a stack instead of a bitfield. Problem with stack approch:
-    // No garantieed poping at EOL. So a reset is needed.
     private States states;
     
-    
-    //TODO: Encapsulate this into a tokenizer
     
     // ####################################################
     // Symbols.

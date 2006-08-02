@@ -64,30 +64,39 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
         }
 
         public void setOutputPrintStream(PrintStream arg0) {
+            //
         }
 
         public void setEmacsMode(boolean arg0) {
+            //
         }
 
         public void setErrorPrintStream(PrintStream arg0) {
+            //
         }
 
         public void buildStarted(BuildEvent arg0) {
+            //
         }
 
         public void buildFinished(BuildEvent arg0) {
+            //
         }
 
         public void targetStarted(BuildEvent arg0) {
+            //
         }
 
         public void targetFinished(BuildEvent arg0) {
+            //
         }
 
         public void taskStarted(BuildEvent arg0) {
+            //
         }
 
         public void taskFinished(BuildEvent arg0) {
+            //
         }
 
         public void messageLogged(BuildEvent arg0) {
