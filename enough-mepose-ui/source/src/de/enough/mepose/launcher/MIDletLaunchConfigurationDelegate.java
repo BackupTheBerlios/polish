@@ -21,6 +21,7 @@ import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
+import de.enough.polish.Device;
 import de.enough.utils.AntBox;
 
 public class MIDletLaunchConfigurationDelegate extends
@@ -67,7 +68,15 @@ public class MIDletLaunchConfigurationDelegate extends
         setupConsole();
         
         AntBox antBox = model.getAntBox();
-        antBox.run();
+        
+        Device currentDevice = model.getCurrentDevice();
+        if(currentDevice == null) {
+            showErrorBox(CAN_NOT_BUILD_PROJECT,"No device selected for build");
+            return;
+        }
+        antBox.setProperty("device",currentDevice.getName());
+        String[] targets = new String[] {"clean","test","j2mepolish"};
+        antBox.run(targets);
         
 //        AntRunner antRunner = new AntRunner();
 //        String buildxmlAbsolutePath = buildxml.getAbsolutePath();
