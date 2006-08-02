@@ -36,6 +36,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -46,7 +47,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
-import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.VariableContentAssistProcessor;
+import de.enough.polish.plugin.eclipse.polishEditor.editor.contentAssist.PolishContentAssist;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishIndentStrategy;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.indention.PolishJavaAutoIndentStrategy;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.presentation.PolishSingleLineCommentScanner;
@@ -108,7 +109,6 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     }
     
     // This is the method for 3.1.
-    //TODO: Debug only. Uncomment it.
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
         String partitioning= getConfiguredDocumentPartitioning(sourceViewer);
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
@@ -133,13 +133,13 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
         IContentAssistant newIContentAssistant = super.getContentAssistant(sourceViewer);
         if(newIContentAssistant instanceof ContentAssistant) {
-            // The cast is a hack to be able to set an processor. The interface itself has no useful methods.
             ContentAssistant contentAssistant = (ContentAssistant)newIContentAssistant;
             MeposeModel meposeModel = this.editor.getMeposeModel();
-            VariableContentAssistProcessor contentAssistProcessor = new VariableContentAssistProcessor(meposeModel);
-            //TODO: Why is this listener needed? In case the environment changes?
-//            this.editor.getMeposeModel().addPropertyChangeListener(contentAssistProcessor);
-            contentAssistant.setContentAssistProcessor(contentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+            IContentAssistProcessor polishContentAssist = new PolishContentAssist(meposeModel);
+//            VariableContentAssistProcessor contentAssistProcessor = new VariableContentAssistProcessor(meposeModel);
+//            contentAssistant.setContentAssistProcessor(contentAssistProcessor,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+            contentAssistant.setContentAssistProcessor(polishContentAssist,IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+            contentAssistant.enablePrefixCompletion(false);
             return contentAssistant;
         }
         return newIContentAssistant;
