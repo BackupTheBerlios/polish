@@ -291,10 +291,15 @@ public class AntBox {
         this.workingDirectory = workingDirectory.getAbsolutePath();
     }
 
-    public void run() {
+    public void run(String[] args) {
         Vector argumentList = new Vector();
-        argumentList.add("clean");
-        argumentList.add("j2mepolish");
+        for (int i = 0; i < args.length; i++) {
+            argumentList.add(args[i]);
+        }
         this.project.executeTargets(argumentList);
+    }
+
+    public void setProperty(String propertyName, String value) {
+        this.project.setProperty(propertyName,value);
     }
 }
