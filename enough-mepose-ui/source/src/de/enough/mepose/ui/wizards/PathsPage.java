@@ -67,6 +67,10 @@ public class PathsPage extends WizardPage {
     private StatusGroup nokiaStatusGroup;
     private StatusGroup sonyStatusGroup;
 
+    private StatusGroup polishStatusGroup;
+
+    private Text polishHomeText;
+
     
     private class BrowsePathSelected extends SelectionAdapter{
         
@@ -173,10 +177,47 @@ public class PathsPage extends WizardPage {
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.sonyHomeText,"Choose the location of your Sony directory"));
         
+        // ----------------------
+        
+        this.polishStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.polishStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.polishStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label polishLabel = new Label(main,SWT.NONE);
+        polishLabel.setText("J2ME Polish Home:");
+        
+        this.polishHomeText = new Text(main,SWT.BORDER);
+        this.polishHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.polishHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                modifyPolishHomeText();
+            }
+
+        });
+        String polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_POLISH_HOME);
+        this.polishHomeText.setText(polishHomePath);
+        
+        browseButton = new Button(main,SWT.NONE);
+        browseButton.setText("Browse for Path");
+        browseButton.addSelectionListener(new BrowsePathSelected(this.polishHomeText,"Choose the location of your J2ME Polish directory"));
+        
         // ----------------------------------
         
         setControl(composite);
         updateGUIFromModel();
+    }
+
+    protected void modifyPolishHomeText() {
+        String path = this.polishHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.polishStatusGroup.setError("Path is not a directory.");
+        }
+        //TODO: Add something to recognize a polish directory.
+        else {
+            this.newProjectModel.getMeposeModel().setPolishHome(file);
+            this.polishStatusGroup.setOK("");
+        }
     }
 
     /**

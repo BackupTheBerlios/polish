@@ -35,19 +35,17 @@ public class InstallationPage
 	
 	public void createFieldEditors() {
         
-        // Not needed yet as we always use the internal polish version.
-	    //addField(new DirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
-	    //                                  "Polish Installation Directory:", getFieldEditorParent()));
-	    
-	    addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
+	    addField(new DirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
+	                                      "J2ME Polish Installation Directory:", getFieldEditorParent()));
+
+        addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
 	                                      "WTK Installation Directory:", getFieldEditorParent()));
 	
 	    addField(new DirectoryFieldEditor(MeposeConstants.ID_NOKIA_HOME, 
 	                                      "Nokia Installation Directory:", getFieldEditorParent()));
 	    
-		addField(new DirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
-		                                  "Sony Installation Directory:", getFieldEditorParent()));
-	
+	    addField(new DirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
+	                                      "Sony Installation Directory:", getFieldEditorParent()));
     }
 
     
