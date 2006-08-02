@@ -24,6 +24,10 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
         
     }
     
+    protected void installOccurrencesFinder() {
+        
+    }
+    
     /*
      * @see org.eclipse.jdt.internal.ui.javaeditor.JavaEditor#getElementAt(int)
      */
