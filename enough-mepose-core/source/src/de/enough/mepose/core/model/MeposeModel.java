@@ -147,7 +147,7 @@ public class MeposeModel extends PropertyModel{
 
     // Path.
 //    private String projectPath = "";
-    private File polishHome = new File("");
+    private File polishHome = new File("/");
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
     private File sonyHome = new File("");
@@ -176,6 +176,8 @@ public class MeposeModel extends PropertyModel{
     private String buildTargetName = "j2mepolish";
     private List buildListener;
     private ClassLoader antClassLoader;
+
+    private Map variables;
     
     
     public MeposeModel() {
@@ -195,19 +197,23 @@ public class MeposeModel extends PropertyModel{
         this.projectHome = new File("");
         this.propertyChangeListeners = new LinkedList();
         this.mppHome = new File("");
-        File polishHomeFile;// = new File("");
+        
         File mppHomeFile;// = new File("");
         this.jadFile = new File("");
-        Bundle bundle = MeposePlugin.getDefault().getBundle();
-        URL polishHomeRelativeUrl = org.eclipse.core.runtime.Platform.find(bundle,new Path(PATH_POLISH_HOME));
-        try {
-            URL polishHomeAbsoluteUrl = org.eclipse.core.runtime.Platform.asLocalURL(polishHomeRelativeUrl);
-            String polishHomeAbsoluteUrlString = polishHomeAbsoluteUrl.getPath();
-            polishHomeFile  = new File(polishHomeAbsoluteUrlString);
-        } catch (IOException exception) {
-            MeposePlugin.log("No embedded j2me polish found.",exception);
-            throw new IllegalStateException("No embedded j2me polish found:"+exception);
-        }
+
+//        File polishHomeFile;// = new File("");
+//        Bundle bundle = MeposePlugin.getDefault().getBundle();
+//        URL polishHomeRelativeUrl = org.eclipse.core.runtime.Platform.find(bundle,new Path(PATH_POLISH_HOME));
+//        try {
+//            URL polishHomeAbsoluteUrl = org.eclipse.core.runtime.Platform.asLocalURL(polishHomeRelativeUrl);
+//            String polishHomeAbsoluteUrlString = polishHomeAbsoluteUrl.getPath();
+//            polishHomeFile  = new File(polishHomeAbsoluteUrlString);
+//        } catch (IOException exception) {
+//            MeposePlugin.log("No embedded j2me polish found.",exception);
+//            throw new IllegalStateException("No embedded j2me polish found:"+exception);
+//        }
+        // Do not use an internal polish home any more. The user has to provide one.
+        
 //        try {
 //            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(bundle,new Path("/mpp-sdk"))).getPath());
             mppHomeFile  = new File("");
@@ -215,15 +221,15 @@ public class MeposeModel extends PropertyModel{
 //            MeposePlugin.log("No embedded mpp-sdk found.",exception);
 //            throw new IllegalStateException("No embedded mpp-sdk found.");
 //        }
-        setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
-        setPropertyValue(MeposeModel.ID_PATH_MPP_FILE,mppHomeFile);
+//        setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
+//        setPropertyValue(MeposeModel.ID_PATH_MPP_FILE,mppHomeFile);
         
-        setPolishHome(polishHomeFile);
         setMppHome(mppHomeFile);
         
         this.classpathEntries = null;
         this.buildListener = new LinkedList();
         
+        this.variables = new HashMap();
         
     }
 
@@ -421,6 +427,21 @@ public class MeposeModel extends PropertyModel{
             }
         }
         firePropertyChangeEvent(ID_SUPPORTED_DEVICES,null,this.supportedDevices);
+        
+        // TODO: This needs to be done as a listener task as the case of a change
+        // in the supported devices must be handled.
+        if(this.environment != null) {
+            this.variables.clear();
+            for (int i = 0; i < supportedDevices.length; i++) {
+                this.environment.initialize(supportedDevices[i],null);
+                this.variables.putAll(this.environment.getSymbols());
+                this.variables.putAll(this.environment.getVariables());
+            }
+        }
+    }
+    
+    public Map getVariables() {
+        return this.variables;
     }
     
     public void setClasspath(IClasspathEntry[] classpathEntries) {
@@ -462,6 +483,7 @@ public class MeposeModel extends PropertyModel{
         this.currentDevice = currentDevice;
         setCurrentDeviceName(this.currentDevice.getIdentifier());
         firePropertyChangeEvent(ID_CURRENT_DEVICE,null,this.currentDevice);
+        this.environment.initialize(currentDevice,null);
     }
     
     
