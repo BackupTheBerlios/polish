@@ -154,7 +154,7 @@ public class RmsStorage implements Storage {
 		Object[] keys = this.masterRecordSetIdsByName.keys();
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
-		out.write( this.masterRecordSetIdsByName.size() );
+		out.writeInt( this.masterRecordSetIdsByName.size() );
 		for (int i = 0; i < keys.length; i++) {
 			String key = (String)keys[i];
 			Integer idInt = (Integer) this.masterRecordSetIdsByName.get( key );
