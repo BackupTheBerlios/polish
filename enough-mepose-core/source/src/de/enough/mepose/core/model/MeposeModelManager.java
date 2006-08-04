@@ -116,11 +116,17 @@ public class MeposeModelManager {
     /**
      * 
      * @param project May be null.
+     * @deprecated
      */
     public void setCurrentProject(IProject project) {
         this.currentProject = project;
     }
     
+    /**
+     * 
+     * @return the current meposeModel
+     * @deprecated
+     */
     public MeposeModel getCurrentMeposeModel() {
         if(this.currentProject == null) {
             return null;
