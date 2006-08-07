@@ -697,4 +697,11 @@
 		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
 	</extension>
 	
+	<extension>
+		<type>finalizer</type>
+		<name>jar2dotnet</name>
+		<class>de.enough.polish.finalize.dotnet.DotNetFinalizer</class>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
+	</extension>
+	
 </extensions>

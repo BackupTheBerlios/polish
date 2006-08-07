@@ -78,6 +78,11 @@
 	</platform>
 
 	<platform>
+		<identifier>DotNetCF1.1</identifier>
+		<capability name="Emulator.Class" value="DotNetCFEmulator" />
+	</platform>
+
+	<platform>
 		<identifier>WIPI/1.2</identifier>
 		<features>wipi1.2</features>
 		<description>The Korean Wireless Internet Platform for Interoperability 1.2 is mostly compatible to MIDP 1.0.</description>
