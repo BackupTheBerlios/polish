@@ -692,16 +692,14 @@
 		<type>finalizer</type>
 		<name>jar2prc</name>
 		<class>de.enough.polish.finalize.palm.JarToPrcFinalizer</class>
-		<!--
-		-->
 		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
 	</extension>
 	
 	<extension>
 		<type>finalizer</type>
 		<name>jar2dotnet</name>
-		<class>de.enough.polish.finalize.dotnet.DotNetFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
+		<class>de.enough.polish.finalize.dotnetcf.DotNetCFFinalizer</class>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar:${polish.home}/import/enough-polish-dotnetcf-1.1.jar</classpath>
 	</extension>
 	
 </extensions>

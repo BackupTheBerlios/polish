@@ -79,6 +79,8 @@
 
 	<platform>
 		<identifier>DotNetCF1.1</identifier>
+		<features>dotNetCF1.1</features>
+		<capability name="build.Finalizer" value="jar2dotnet" />
 		<capability name="Emulator.Class" value="DotNetCFEmulator" />
 	</platform>
 
