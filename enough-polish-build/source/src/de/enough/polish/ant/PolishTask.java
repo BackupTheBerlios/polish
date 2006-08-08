@@ -1656,6 +1656,7 @@ public class PolishTask extends ConditionalTask {
 									boolean isInPolishPackage)
 	throws IOException, BuildException
 	{
+		
 		this.environment.addVariable( "polish.source", sourceDir.getAbsolutePath() );
 		File baseDirectory = new File( targetDir );
 		//System.out.println("current source dir: " + sourceDir + " -  locale: " + locale );

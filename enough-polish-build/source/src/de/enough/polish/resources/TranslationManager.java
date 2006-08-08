@@ -510,6 +510,7 @@ implements Comparator
 	 * @param code the source code of Locale.java
 	 */
 	public void processLocaleCode(StringList code) {
+		System.out.println("processing locale code... ");
 		code.reset();
 		boolean insertionPointFound = false;
 		while (code.next()) {

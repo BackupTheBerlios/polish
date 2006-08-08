@@ -242,7 +242,20 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			// check for ticker:
 			String line = lines.getCurrent();
 
-			
+			// check for comments:
+			String trimmedLine = line.trim();
+			if (trimmedLine.startsWith("//")) {
+				//System.out.println(className + ": ignoring " + line);
+				continue;
+			}
+			if (trimmedLine.startsWith("/*")) {
+				int stopIndex = 0;
+				while ( (stopIndex = line.indexOf("*/")) == -1 && lines.next()) {
+					//System.out.println(className + ": ignoring " + line);
+					line = lines.getCurrent();
+				}
+				line = line.substring( stopIndex );
+			}
 			// check for style-property-usage:
 			int startPos = -1;
 			String methodName = "style.getProperty(";
@@ -355,6 +368,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					String group = matcher.group();
 					//System.out.println("group = [" + group + "]");
 					int parenthesisPos = group.indexOf('(', startPos );
+					if (parenthesisPos == -1) {
+						throw new BuildException( getErrorStart(className, lines) + ": setCurrentItem() method found without opening parentheses: " + line);
+					}
 					String displayVar = group.substring(0, parenthesisPos);
 					int dotPos = displayVar.lastIndexOf('.');
 					displayVar = displayVar.substring( 0, dotPos ).trim();

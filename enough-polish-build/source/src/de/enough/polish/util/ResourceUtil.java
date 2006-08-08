@@ -61,7 +61,7 @@ public final class ResourceUtil {
 	throws FileNotFoundException 
 	{
 		// check if url points to an existing file:
-		File file = new File( baseDir + File.separator + url );
+		File file = new File( baseDir, url );
 		if (file.exists()) {
 			try {
 				return new FileInputStream( file );
