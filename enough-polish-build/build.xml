@@ -4,8 +4,8 @@
 
 	<!-- global properties -->
 	<property file="${user.name}.properties" />
-	<property name="Version" value="1.3-beta4" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 1.3 &lt;Beta 4&gt;! " />
+	<property name="Version" value="2.0-beta1" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Beta 1&gt;! " />
 	<property name="all.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	
@@ -17,7 +17,7 @@
 	
 	<!-- task definitions -->
 	
-	<taskdef name="polish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:import/jdom.jar"/>
+	<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:import/jdom.jar"/>
 	<taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
 	<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
 	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:import/jdom.jar"/>
@@ -560,6 +560,43 @@
 		<delete dir="build" />
 		<delete dir="dist" />
 		<delete dir="tmp" />
+	</target>
+	
+	<target name="generic-dist" depends="init" description="creates a source build ">
+		<delete dir="dist" />
+		<mkdir dir="dist" />
+		<j2mepolish>
+		      <info
+		        license="GPL"
+		        name="Generic"
+		        version="0.1.0"
+		        vendorName="Enough Software"
+		        infoUrl="http://www.enough.de"
+		        jarName="nothing.jar"
+		        jarUrl="${deploy-url}${polish.jarName}"
+		        copyright="Copyright 2006 Enough Software"
+		    />
+			<devicerequirements>
+				<requirement name="Identifier" value="Generic/Midp2Cldc11" />
+			</devicerequirements>
+			<build
+				usePolishGui="always"
+				sourceDir="../enough-polish-j2me/source/src"
+				polishDir="../enough-polish-j2me/source/src"
+				compilerMode="true"
+				>
+				<variables>
+			          <variable name="polish.css.allowAllAttributes" value="true"/>
+					  <variable name="polish.StyleSheet.exclude" value="true"/>
+					  <variable name="polish.LibraryBuild" value="true"/>
+				</variables>
+				<resources>
+					<localization>
+						<locale name="en_US" />
+					</localization>
+				</resources>
+			</build>
+		</j2mepolish>
 	</target>
 
 
