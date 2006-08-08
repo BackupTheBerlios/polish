@@ -53,8 +53,6 @@ public class PictureBrowserItem extends CustomItem {
 		private int paddingHorizontal = 1;
 		private int paddingVertical = 1;
 	//#endif
-	private Font font;
-	private boolean isThumbnailsInitialized; 
 	
 	/**
 	 * Creates a new, <code>PictureBrowserItem</code>.
@@ -106,7 +104,6 @@ public class PictureBrowserItem extends CustomItem {
 	 * @param style the design settings
 	 */
 	public PictureBrowserItem( String label, Image[] thumbnails, String[] urls, int scaleFactor, Style style ){
-		//#endif
 		//#if polish.usePolishGui
 			//# super( label, style );
 		//#else
@@ -135,6 +132,7 @@ public class PictureBrowserItem extends CustomItem {
 			}
 		}
 	}
+	//#endif
 
 	/**
 	 * Retrieves the number of stored thumbnails
@@ -258,7 +256,7 @@ public class PictureBrowserItem extends CustomItem {
 	//#if polish.usePolishGui
 	public void setStyle( Style style ) {
 		//# super.setStyle( style );
-		this.font = style.font;
+		//this.font = style.font;
 		int newSelectedHeight = this.thumbnailHeight * 2 + this.paddingVertical;
 		int newSelectedWidth = this.thumbnailWidth * 2 + this.paddingVertical;
 		if (newSelectedHeight != this.selectedHeight || newSelectedWidth != this.selectedWidth ) {
