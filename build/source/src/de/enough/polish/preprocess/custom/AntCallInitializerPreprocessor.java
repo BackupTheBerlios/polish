@@ -27,9 +27,12 @@ package de.enough.polish.preprocess.custom;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.util.StringList;
@@ -44,33 +47,17 @@ import de.enough.polish.util.StringList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AntCallPreprocessor extends CustomPreprocessor {
+public class AntCallInitializerPreprocessor extends InitializerPreprocessor {
 	
 	private ArrayList properties;
 
 	/**
 	 * Creates a new preprocessor that just calls an Ant target for each processed file. 
 	 */
-	public AntCallPreprocessor() {
+	public AntCallInitializerPreprocessor() {
 		super();
 	}
 	
-	
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.CustomPreprocessor#processClass(de.enough.polish.util.StringList, java.lang.String)
-	 */
-	public void processClass(StringList lines, String className) {
-		String target = this.extensionSetting.getTarget();
-		if ( target == null ) {
-			throw new BuildException( "You need to define the \"target\" attribute in the [antcall] preprocessor." );
-		}
-		if (this.properties == null) {
-			this.properties = new ArrayList();
-		}
-		this.properties.add( new Variable( "polish.classname", className ) );
-		executeAntTarget( target, this.properties );
-	}
 
 	/**
 	 * Sets the parameters for this preprocessor.
@@ -85,5 +72,25 @@ public class AntCallPreprocessor extends CustomPreprocessor {
 			this.properties.add( variable );			
 		}
 	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.custom.InitializerPreprocessor#initializePreprocessing(java.io.File, java.io.File, java.util.Locale, de.enough.polish.Device, de.enough.polish.Environment)
+	 */
+	public void initializePreprocessing(File sourceDir, File resourcesDir, Locale locale, Device device, Environment env) {
+		String target = this.extensionSetting.getTarget();
+		if ( target == null ) {
+			throw new BuildException( "You need to define the \"target\" attribute in the [antcallinit] preprocessor." );
+		}
+		if (this.properties == null) {
+			this.properties = new ArrayList();
+		}
+		this.properties.add( new Variable( "polish.source.dir", sourceDir.getAbsolutePath() ) );
+		this.properties.add( new Variable( "polish.resources.dir", resourcesDir.getAbsolutePath() ) );
+		executeAntTarget( target, this.properties );
+	}
+
+
 
 }

@@ -257,6 +257,12 @@
 		<class>de.enough.polish.preprocess.custom.AntCallPreprocessor</class>
 	</extension>
 	
+	<extension>
+		<type>preprocessor</type>
+		<name>antcallinit</name>
+		<class>de.enough.polish.preprocess.custom.AntCallInitializerPreprocessor</class>
+	</extension>
+
 	
 	<!-- Property Functions -->
 	

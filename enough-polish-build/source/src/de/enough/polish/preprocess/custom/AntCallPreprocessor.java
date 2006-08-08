@@ -72,7 +72,12 @@ public class AntCallPreprocessor extends CustomPreprocessor {
 		executeAntTarget( target, this.properties );
 	}
 
-
+	/**
+	 * Sets the parameters for this preprocessor.
+	 * 
+	 * @param properties the parameters
+	 * @param baseDir the base directory
+	 */
 	public void setParameters( Variable[] properties, File baseDir ) {
 		this.properties = new ArrayList();
 		for (int i = 0; i < properties.length; i++) {

@@ -465,6 +465,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18" />
         <capability name="Font.medium" value="22" />
         <capability name="Font.large" value="26" />
+        <capability name="IconSize" value="16x16, 24x24" />
    		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
 		<capability name="key.ReturnKey" value="-11"/>
 	</device>
