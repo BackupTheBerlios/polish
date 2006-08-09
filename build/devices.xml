@@ -1218,6 +1218,29 @@ These namespaces/schemas will be used soon.
 <!-- Motorola devices -->
 
 	<device>
+		<identifier>Motorola/PEBL</identifier>
+		<features>hasCamera</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="ScreenSize" value="176x220" />       
+		<capability name="ClosedFlipScreenSize" value="96x32"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi 1.1, wmapi1.1, wmapi2.0, bluetooth" />
+		<capability name="SoundFormat" value="amr,mp3,wav,midi,imelody" />
+		<capability name="ImageFormat" value="png, jpeg, bmp, wbmp, gif" />
+		<capability name="JavaProtocol" value="HTTP, Socket, UDP" />
+		<capability name="StorageSize" value="5 MB" />
+		<capability name="MaxRecordStoreSize" value="512kb" />
+		<capability name="HeapSize" value="800kb" />
+		<capability name="CameraZoom" value="8" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-20" />
+		<capability name="key.RightSoftKey" value="-22" />
+    </device>
+
+
+	<device>
 		<identifier>Motorola/I870</identifier>
 		<features> doubleBuffering,hasCamera </features>
 		<capability name="OS" value="Motorola" />
