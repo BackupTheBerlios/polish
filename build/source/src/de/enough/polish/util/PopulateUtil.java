@@ -419,6 +419,7 @@ public final class PopulateUtil {
 				}
 			}
 		}
+        method.setAccessible(true);
 		try {
 			return method.invoke(object, new Object[]{ new Integer( value ) } );
 		} catch (IllegalAccessException e) {
@@ -446,6 +447,7 @@ public final class PopulateUtil {
 				}
 			}
 		}
+        method.setAccessible(true);
 		try {
 			return method.invoke(object, values );
 		} catch (IllegalAccessException e) {
@@ -472,6 +474,7 @@ public final class PopulateUtil {
 				}
 			}
 		}
+        method.setAccessible(true);
 		try {
 			return method.invoke(object, new Object[0] );
 		} catch (IllegalAccessException e) {
