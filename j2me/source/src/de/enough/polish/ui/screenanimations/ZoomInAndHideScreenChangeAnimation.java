@@ -40,7 +40,7 @@ import de.enough.polish.util.ImageUtil;
 /**
  * <p>Magnifies the last screen and gradually resolves it.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        30-May-2005 - rob creation

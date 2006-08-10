@@ -36,7 +36,7 @@ import de.enough.polish.log.LogHandler;
 /**
  * <p>Stores log messages in the record store management system.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        26-Apr-2005 - rob creation

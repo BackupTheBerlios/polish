@@ -13,12 +13,22 @@ import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.DrawUtil;
 
 /**
- * This is a simple fade in/out effect, which supports several parameters. Namely:
- *    time to fade
- *    time to stay faded in
- *    time to stay faded out
- *    colors of (faded in and faded out)
- *    and a delay until the effect starts
+ * <p>This is a simple fade in/out effect.</p>
+ * <p>Activate the fade text effect by specifying <code>text-effect: fade;</code> in your polish.css file.
+ *    You can finetune the effect with following attributes:
+ * </p>
+ * <ul>
+ * 	 <li><b>text-fade-in-color</b>: The color, which the text has, if it is faded in.</li>
+ * 	 <li><b>text-fade-out-color</b>: The color, which the text has, if it is faded out.</li>
+ * 	 <li><b>text-fade-delay</b>: The delay (in animation steps) before the animation starts.</li>
+ * 	 <li><b>text-fade-duration-in</b>: The time (in animation steps), which the text stays faded in.</li>
+ * 	 <li><b>text-fade-duration-out</b>: The time (in animation steps), which the text stays faded out.</li>
+ * 	 <li><b>text-fade-steps</b>: The time (in animation teps), which the fade-effect lasts.</li>
+ * 	 <li><b>text-fade-mode</b>: The fade mode can be fadein, fadeout or loop, default is loop.</li>
+ * </ul>
+ * 
+ *
+ * <p>Copyright Enough Software 2006</p>
  *    
  * @author Simon Schmitt
  *

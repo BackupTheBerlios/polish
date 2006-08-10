@@ -36,7 +36,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Manages and paints the tabs of a tabbed form (or another Screen).</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        23-Jan-2005 - rob creation

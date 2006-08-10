@@ -39,7 +39,7 @@ import de.enough.polish.ui.Border;
 /**
  * <p>Paints a translucent shadow on MIDP 2.0 and Nokia-UI-API devices.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        22-Aug-2005 - rob creation

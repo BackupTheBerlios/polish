@@ -32,7 +32,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Makes the canvas methods available to the J2ME Polish GUI.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        03-Jun-2005 - rob creation

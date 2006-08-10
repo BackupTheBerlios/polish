@@ -34,7 +34,7 @@ package de.enough.polish.util;
  *    is then able to remove the interface definition from the JAR.
  * </p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        01-Dec-2005 - rob creation

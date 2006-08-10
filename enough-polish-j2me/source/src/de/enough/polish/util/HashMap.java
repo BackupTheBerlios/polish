@@ -37,7 +37,7 @@ package de.enough.polish.util;
  *    do not have many collisions (items with the same hash code).
  * </p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        30-Nov-2005 - rob creation

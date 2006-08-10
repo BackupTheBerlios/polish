@@ -37,7 +37,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Is used for only displaying a single canvas for devices that flicker between screen changes.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        03-Jun-2005 - rob creation

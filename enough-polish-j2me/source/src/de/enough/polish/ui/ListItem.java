@@ -35,7 +35,7 @@ import javax.microedition.lcdui.Image;
  *    you can specify view-types, columns, colspans, etc.
  * </p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        16-Feb-2005 - rob creation

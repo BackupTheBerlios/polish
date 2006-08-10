@@ -33,7 +33,7 @@ import de.enough.polish.log.LogHandler;
 /**
  * <p>Forwards log messages to a webserver.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        27-Apr-2005 - rob creation

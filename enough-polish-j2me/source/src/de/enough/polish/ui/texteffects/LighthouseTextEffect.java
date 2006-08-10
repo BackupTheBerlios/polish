@@ -34,9 +34,17 @@ import de.enough.polish.ui.TextEffect;
 
 /**
  * <p>Colorizes each character and its neighbouring characters.</p>
+ * <p>Activate the shadow text effect by specifying <code>text-effect: lighthouse;</code> in your polish.css file.
+ *    You can finetune the effect with following attributes:
+ * </p>
+ * <ul>
+ * 	 <li><b>text-lighthouse-mode</b>: Sets the mode of the lighthouse font-effect, default is &quot;back-and-forth&quot;, other possible modes are left-to-right, right-to-left, back-and-forth-once, left-to-right-once and right-to-left-once.</li>
+ * 	 <li><b>text-lighthouse-color</b>: Sets the main color of the lighthouse font-effect.</li>
+ * 	 <li><b>text-lighthouse-neighbor-color</b>: Sets the color for characters next to the currently main character in the lighthouse font-effect.</li>
+ * </ul>
  * 
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation

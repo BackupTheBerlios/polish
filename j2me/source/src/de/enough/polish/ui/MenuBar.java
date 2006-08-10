@@ -41,7 +41,7 @@ import de.enough.polish.util.Locale;
 /**
  * <p>Provides a more powerful alternative to the build-in menu bar of the Screen-class.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        24-Jan-2005 - rob creation

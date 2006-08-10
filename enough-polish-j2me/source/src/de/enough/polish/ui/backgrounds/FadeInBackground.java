@@ -40,7 +40,7 @@ import de.enough.polish.ui.Background;
  * <p>Fades in the background from fully transparent to the target color, which might also be translucent.</p>
  * <p>This background is only available when the target device supports MIDP 2.0</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        22-Aug-2005 - rob creation

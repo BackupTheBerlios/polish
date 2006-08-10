@@ -33,7 +33,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Paints a background in which the top uses rounded edges, but the bottom uses straight ones. CSS-type is "round-tab"</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
  *        24-Jan-2005 - rob creation
