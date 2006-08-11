@@ -217,15 +217,16 @@ public class MeposeModel extends PropertyModel{
             MeposePlugin.log("No tools.jar found.",exception);
         }
         
-        URL[] antClasspathAsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
-        ClassLoader eclipseClassLoader = getClass().getClassLoader();
+        // We inject the tools.jar classpath element now directly into the eclipse class loader.
+//        URL[] antClasspathAsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
+//        ClassLoader eclipseClassLoader = getClass().getClassLoader();
 //        this.antClassLoader = new URLClassLoader(antClasspathAsUrls,eclipseClassLoader);
-        this.antClassLoader = new AntClassLoader(eclipseClassLoader,false);
-        for (int i = 0; i < antClasspathAsUrls.length; i++) {
-            ((AntClassLoader)this.antClassLoader).addPathElement(antClasspathAsUrls[i].getPath());
-        }
-        //TODO: Commented for testing.
-        this.antBox.setAlternativeClassLoader(this.antClassLoader);
+//        this.antClassLoader = new AntClassLoader(eclipseClassLoader,false);
+//        for (int i = 0; i < antClasspathAsUrls.length; i++) {
+//            ((AntClassLoader)this.antClassLoader).addPathElement(antClasspathAsUrls[i].getPath());
+//        }
+//        //TODO: Commented for testing.
+//        this.antBox.setAlternativeClassLoader(this.antClassLoader);
     }
     
     
@@ -248,7 +249,12 @@ public class MeposeModel extends PropertyModel{
             setPropertyStatus(ID_PATH_BUILDXML_FILE,STATUS_BUILDXML_MISSING);
             return;
         }
-        extractTaskFromBuildXML();
+        try {
+            extractTaskFromBuildXML();
+        } catch (Throwable e) {
+            // Something went wrong.
+            MeposePlugin.log("build.xml could not be set."+e);
+        }
         firePropertyChangeEvent(ID_PATH_BUILDXML_FILE,null,this.buildxml);
     }
 
