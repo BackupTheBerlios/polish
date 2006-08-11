@@ -297,6 +297,12 @@ public class AntBox {
         }
 //        this.project.setCoreLoader(this.alternativeClassLoader);
         this.project.setProperty("ant.executor.class","org.apache.tools.ant.helper.SingleCheckExecutor");
+        
+        //TODO: Do we need this?
+        setWorkingDirectory();
+        this.projectHelper.parse(this.project,this.buildxml);
+        restorePreviousWorkingDirectory();
+        
         this.project.executeTargets(argumentList);
         // This method does not call the executor.
 //        this.project.executeSortedTargets(this.project.topoSort(targetNames, this.project.getTargets(), false));
