@@ -1,21 +1,33 @@
 package de.enough.mepose.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.security.ProtectionDomain;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
+import org.eclipse.ant.core.AntCorePlugin;
+import org.eclipse.ant.core.AntCorePreferences;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.adaptor.EclipseClassLoader;
+import org.eclipse.osgi.framework.adaptor.core.BundleFile;
+import org.eclipse.osgi.framework.adaptor.core.DefaultClassLoader;
 import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.mepose.core.model.MiDletChangeListener;
 import de.enough.mepose.core.project.ProjectPersistence;
+import de.enough.polish.util.PopulateUtil;
 import de.enough.utils.log4j.Log4JPlugin;
 
 
@@ -37,9 +49,40 @@ public class MeposePlugin extends Plugin {
         System.out.println("DEBUG:MeposePlugin.MeposePlugin(...):enter.");
 		plugin = this;
         Log4JPlugin.init();
+        putToolsJarOnClasspath();
 	}
 
-	public void start(BundleContext context) throws Exception {
+    private void putToolsJarOnClasspath() {
+        EclipseClassLoader classLoader = (EclipseClassLoader)getClass().getClassLoader();
+        AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
+
+        File toolsJarFile = new File(antPreferences.getToolsJarEntry().toString());
+        try {
+            BundleFile bundleFile = new BundleFile.ZipBundleFile(toolsJarFile,null);
+            Object toolsJarClasspathEntryObject = PopulateUtil.callMethod("createClassPathEntry",classLoader,new Class[] {BundleFile.class,ProtectionDomain.class},new Object[] {bundleFile,null});
+            Field classpathEntriesField = PopulateUtil.getField(classLoader,"classpathEntries");
+            classpathEntriesField.setAccessible(true);
+            Object classpathEntriesObject = classpathEntriesField.get(classLoader);
+            Object[] classpathEntriesArray = (Object[])classpathEntriesObject;
+//            Object[] newClasspathEntriesArray = new Object[classpathEntriesArray.length+1];
+            Object[] newClasspathEntriesArray = (Object[])Array.newInstance(toolsJarClasspathEntryObject.getClass(),classpathEntriesArray.length+1);
+            System.arraycopy(classpathEntriesArray,0,newClasspathEntriesArray,0,classpathEntriesArray.length);
+            newClasspathEntriesArray[classpathEntriesArray.length] = toolsJarClasspathEntryObject;
+            classpathEntriesField.set(classLoader,newClasspathEntriesArray);
+        } catch (NoSuchMethodException exception) {
+            log("Could not inject tools.jar (1)",exception);
+        } catch (IOException exception) {
+            log("Could not inject tools.jar (2)",exception);
+        } catch (NoSuchFieldException exception) {
+            log("Could not inject tools.jar (3)",exception);
+        } catch (IllegalArgumentException exception) {
+            log("Could not inject tools.jar (4)",exception);
+        } catch (IllegalAccessException exception) {
+            log("Could not inject tools.jar (5)",exception);
+        }
+    }
+
+    public void start(BundleContext context) throws Exception {
         this.bundleContext = context;
 		super.start(context);
         createModelMananger();

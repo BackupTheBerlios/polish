@@ -106,22 +106,20 @@ public class AntBox {
         if(this.buildxml == null){
             throw new IllegalStateException("ERROR:AntBox.createProject():Field 'buildxml' is null.");
         }
+        // Ant has some stong dependencies on the current working directory.
+        // So we set it with a hack (setting global properties) and set it back
+        // if we are done.
         setWorkingDirectory();
         this.project = new Project();
-        //TODO: Commented for testing only.
-        this.project.setCoreLoader(this.alternativeClassLoader);
-        if(this.toolsLocation != null) {
-            System.out.println("DEBUG:AntBox.createProject(...):toolsLocation found.");
-            Path path = new Path(this.project);
-            path.setLocation(this.toolsLocation);
-            this.project.createClassLoader(path);
-        }
+//        this.project.setCoreLoader(this.alternativeClassLoader);
         this.project.init();
         this.project.setUserProperty("ant.version", Main.getAntVersion());
         this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
         
         this.projectHelper.parse(this.project,this.buildxml);
         
+        // The logger is needed as j2me polish will replace this instance with
+        // its own. Without this logger a warning is issued.
         BuildLogger logger = new DefaultLogger();
         logger.setMessageOutputLevel(this.messageOutputLevel);
         logger.setOutputPrintStream(this.outputStream);
@@ -153,6 +151,7 @@ public class AntBox {
             throw new IllegalArgumentException("ERROR:AntBox.configureTarget(...):Parameter 'target' is null.");
         }
         setWorkingDirectory();
+//        target.setIf("test");
         Task[] tasks = target.getTasks();
         for (int i = 0; i < tasks.length; i++) {
             tasks[i].maybeConfigure();
@@ -291,15 +290,30 @@ public class AntBox {
         this.workingDirectory = workingDirectory.getAbsolutePath();
     }
 
-    public void run(String[] args) {
+    public void run(String[] targetNames) {
         Vector argumentList = new Vector();
-        for (int i = 0; i < args.length; i++) {
-            argumentList.add(args[i]);
+        for (int i = 0; i < targetNames.length; i++) {
+            argumentList.add(targetNames[i]);
         }
+//        this.project.setCoreLoader(this.alternativeClassLoader);
+        this.project.setProperty("ant.executor.class","org.apache.tools.ant.helper.SingleCheckExecutor");
         this.project.executeTargets(argumentList);
+        // This method does not call the executor.
+//        this.project.executeSortedTargets(this.project.topoSort(targetNames, this.project.getTargets(), false));
     }
 
     public void setProperty(String propertyName, String value) {
         this.project.setProperty(propertyName,value);
+    }
+
+    /**
+     * @param logger
+     */
+    public void addLogger(BuildLogger logger) {
+        this.project.addBuildListener(logger);
+    }
+    
+    public void removeLoggeR(BuildLogger logger) {
+        this.project.removeBuildListener(logger);
     }
 }

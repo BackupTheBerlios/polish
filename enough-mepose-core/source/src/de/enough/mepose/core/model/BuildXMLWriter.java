@@ -143,6 +143,7 @@ public class BuildXMLWriter {
                 temp = null;
             }
         }
+        context.put("wtkHome",this.meposeModel.getWTKHome().getAbsolutePath());
         context.put("nokiaHome",temp);
     }
     

@@ -28,7 +28,6 @@ package de.enough.mepose.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
@@ -52,9 +52,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.osgi.framework.Bundle;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
@@ -90,8 +88,6 @@ import de.enough.utils.Status;
  */
 public class MeposeModel extends PropertyModel{
     
-    private static final String PATH_POLISH_HOME = "/j2mepolish";
-
     public static final String DEFAULT_DEVICE_NAME = "Generic/Midp2Cldc11";
 
     public static final Status STATUS_BUILDXML_MISSING = new Status(Status.TYPE_ERROR,"build.xml file does not exist.",null);
@@ -114,7 +110,6 @@ public class MeposeModel extends PropertyModel{
     public static final String ID_PATH_PROJECT_FILE = "id.path.projecthome";
     public static final String ID_PATH_POLISH_FILE = "id.path.polishhome";
     public static final String ID_PATH_WTK_FILE = "id.path.wtkhome";
-    public static final String ID_PATH_MPP_FILE = "id.path.mpphome";
     public static final String ID_PATH_NOKIA_FILE = "id.path.nokiahome";
     public static final String ID_PATH_SONY_FILE = "id.path.sonyhome";
     
@@ -151,7 +146,6 @@ public class MeposeModel extends PropertyModel{
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
     private File sonyHome = new File("");
-    private File mppHome = new File("");
     private File projectHome = new File("");
 
     // Supported Config.
@@ -196,35 +190,8 @@ public class MeposeModel extends PropertyModel{
         this.buildxml = new File("");
         this.projectHome = new File("");
         this.propertyChangeListeners = new LinkedList();
-        this.mppHome = new File("");
         
-        File mppHomeFile;// = new File("");
         this.jadFile = new File("");
-
-//        File polishHomeFile;// = new File("");
-//        Bundle bundle = MeposePlugin.getDefault().getBundle();
-//        URL polishHomeRelativeUrl = org.eclipse.core.runtime.Platform.find(bundle,new Path(PATH_POLISH_HOME));
-//        try {
-//            URL polishHomeAbsoluteUrl = org.eclipse.core.runtime.Platform.asLocalURL(polishHomeRelativeUrl);
-//            String polishHomeAbsoluteUrlString = polishHomeAbsoluteUrl.getPath();
-//            polishHomeFile  = new File(polishHomeAbsoluteUrlString);
-//        } catch (IOException exception) {
-//            MeposePlugin.log("No embedded j2me polish found.",exception);
-//            throw new IllegalStateException("No embedded j2me polish found:"+exception);
-//        }
-        // Do not use an internal polish home any more. The user has to provide one.
-        
-//        try {
-//            mppHomeFile  = new File(org.eclipse.core.runtime.Platform.asLocalURL(org.eclipse.core.runtime.Platform.find(bundle,new Path("/mpp-sdk"))).getPath());
-            mppHomeFile  = new File("");
-//        } catch (IOException exception) {
-//            MeposePlugin.log("No embedded mpp-sdk found.",exception);
-//            throw new IllegalStateException("No embedded mpp-sdk found.");
-//        }
-//        setPropertyValue(MeposeModel.ID_PATH_POLISH_FILE,polishHomeFile);
-//        setPropertyValue(MeposeModel.ID_PATH_MPP_FILE,mppHomeFile);
-        
-        setMppHome(mppHomeFile);
         
         this.classpathEntries = null;
         this.buildListener = new LinkedList();
@@ -235,8 +202,8 @@ public class MeposeModel extends PropertyModel{
 
     private void resetAntBox() {
         this.antBox = new AntBox();
-        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
-        IAntClasspathEntry[] antClasspathEntries = p.getDefaultAntHomeEntries();
+        AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
+        IAntClasspathEntry[] antClasspathEntries = antPreferences.getDefaultAntHomeEntries();
         
         List antClasspathList = new LinkedList();
         try {
@@ -244,14 +211,20 @@ public class MeposeModel extends PropertyModel{
                 IAntClasspathEntry entry = antClasspathEntries[i];
                 antClasspathList.add(new URL("file://"+entry.toString()));
             }
-            antClasspathList.add(new URL("file://"+p.getToolsJarEntry().toString()));
+            URL toolsJarUrl = new URL("file://"+antPreferences.getToolsJarEntry().toString());
+            antClasspathList.add(toolsJarUrl);
         } catch (MalformedURLException exception) {
             MeposePlugin.log("No tools.jar found.",exception);
         }
         
-        URL[] toolsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
+        URL[] antClasspathAsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
         ClassLoader eclipseClassLoader = getClass().getClassLoader();
-        this.antClassLoader = new URLClassLoader(toolsUrls,eclipseClassLoader);
+//        this.antClassLoader = new URLClassLoader(antClasspathAsUrls,eclipseClassLoader);
+        this.antClassLoader = new AntClassLoader(eclipseClassLoader,false);
+        for (int i = 0; i < antClasspathAsUrls.length; i++) {
+            ((AntClassLoader)this.antClassLoader).addPathElement(antClasspathAsUrls[i].getPath());
+        }
+        //TODO: Commented for testing.
         this.antBox.setAlternativeClassLoader(this.antClassLoader);
     }
     
@@ -483,7 +456,9 @@ public class MeposeModel extends PropertyModel{
         this.currentDevice = currentDevice;
         setCurrentDeviceName(this.currentDevice.getIdentifier());
         firePropertyChangeEvent(ID_CURRENT_DEVICE,null,this.currentDevice);
-        this.environment.initialize(currentDevice,null);
+        if(this.environment != null) {
+            this.environment.initialize(currentDevice,null);
+        }
     }
     
     
@@ -550,17 +525,6 @@ public class MeposeModel extends PropertyModel{
         return this.wtkHome;
     }
 
-    public File getMppHome() {
-        return this.mppHome;
-    }
-    
-    public void setMppHome(File mppHome) {
-        this.mppHome = mppHome;
-    }
-    
-    
-
-    
     /**
      * 
      * @return May be null.
@@ -646,7 +610,6 @@ public class MeposeModel extends PropertyModel{
         // Paths.
         p.put(ID_PATH_POLISH_FILE,getPolishHome().toString());
         p.put(ID_PATH_WTK_FILE,getWTKHome().toString());
-        p.put(ID_PATH_MPP_FILE,getMppHome().toString());
         p.put(ID_PATH_NOKIA_FILE,getNokiaHome().toString());
         p.put(ID_PATH_SONY_FILE,getSonyHome().toString());
         p.put(ID_PATH_PROJECT_FILE,getProjectHome().toString());
@@ -680,10 +643,6 @@ public class MeposeModel extends PropertyModel{
         String wtkHomeTmp = (String)p.get(ID_PATH_WTK_FILE);
         if(wtkHomeTmp != null) {
             setWTKHome(new File(wtkHomeTmp));
-        }
-        String mppHomeTmp = (String)p.get(ID_PATH_MPP_FILE);
-        if(mppHomeTmp != null) {
-            setMppHome(new File(mppHomeTmp));
         }
         String nokiaHomeTmp = (String)p.get(ID_PATH_NOKIA_FILE);
         if(nokiaHomeTmp != null) {
@@ -769,19 +728,18 @@ public class MeposeModel extends PropertyModel{
         if(getBuildxml() == null) {
             throw new IllegalStateException("No build.xml file specified.");
         }
-        //TODO: Why is this needed.
+        //TODO: Why is this needed?
         System.setProperty("java.home","/usr/lib/j2sdk1.5-sun");
         this.antBox = new AntBox();
         
         AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
-        IAntClasspathEntry antClasspathEntry = p.getToolsJarEntry();
-        this.antBox.setToolsLocation(new File(antClasspathEntry.toString()));
+        IAntClasspathEntry toolsJarEntry = p.getToolsJarEntry();
+        this.antBox.setToolsLocation(new File(toolsJarEntry.toString()));
         
         this.antBox.setAlternativeClassLoader(this.antClassLoader);
         this.antBox.setWorkingDirectory(this.projectHome);
         this.antBox.setBuildxml(this.buildxml);
         Project antProject = this.antBox.createProject();
-        //TODO: Do this with an extension point.
         List list = getBuildListeners();
         for (Iterator iterator = list.iterator(); iterator.hasNext(); ) {
             BuildListener aBuildListener = (BuildListener) iterator.next();
@@ -789,7 +747,6 @@ public class MeposeModel extends PropertyModel{
         }
         
         antProject.setUserProperty("device",getCurrentDevice().getIdentifier());
-//        antProject.setUserProperty("device",getCurrentDeviceName();
         antProject.setUserProperty("polish.home",getPolishHome().getAbsolutePath());
         Vector targets = new Vector();
         targets.add("clean");
