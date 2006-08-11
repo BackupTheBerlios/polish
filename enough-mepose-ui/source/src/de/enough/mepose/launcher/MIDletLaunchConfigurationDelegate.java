@@ -61,14 +61,15 @@ public class MIDletLaunchConfigurationDelegate extends
         
         setupConsole();
         
-        final AntBox antBox = model.getAntBox();
-        
+//        final AntBox antBox = model.getAntBox();
+        final AntBox antBox = new AntBox(model.getBuildxml());
+        antBox.createProject();
         Device currentDevice = model.getCurrentDevice();
         if(currentDevice == null) {
             showErrorBox(CAN_NOT_BUILD_PROJECT,"No device selected for build");
             return;
         }
-        antBox.setProperty("device",currentDevice.getName());
+        antBox.setProperty("device",currentDevice.getIdentifier());
         antBox.setProperty("dir.work","build/test");
         antBox.setProperty("test","true");
 //        final String[] targets = new String[] {"clean","test","j2mepolish"};
