@@ -123,7 +123,7 @@ public class PolishDirectiveRule implements IRule {
     }
     
     public IToken evaluate(ICharacterScanner scanner) {
-        System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):enter.");
+//        System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):enter.");
         this.delimiters = scanner.getLegalLineDelimiters();
 
         String restOfLine = getRestOfLine(scanner);
@@ -139,7 +139,7 @@ public class PolishDirectiveRule implements IRule {
             for(int i = 0; i < restOfLine.length();i++) {
                 scanner.read();
             }
-            System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):undefined.");
+//            System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):undefined.");
 			return Token.UNDEFINED;
 		}
 //		// Set the state default to the polish default color.
@@ -178,7 +178,7 @@ public class PolishDirectiveRule implements IRule {
 				}
 
                 //TODO: Only testing
-                System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):restOfLine:"+restOfLine);
+//                System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):restOfLine:"+restOfLine);
 //                return this.tokenStore.getToken(IPolishConstants.POLISH_COLOR_DIRECTIVE);
 //                
 //				DANGER: Adept this numbers to the pattern array indecies. The groups ids should match the numbers.
@@ -205,7 +205,7 @@ public class PolishDirectiveRule implements IRule {
 				    break;
 				}
 				if(symbolId == JAVA_COMMENT_SYMBOL) {
-				    System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):java comment");
+//				    System.out.println("DEBUG:PolishDirectiveRule.evaluate(...):java comment");
 				    this.states.setState(JAVA_COMMENT_STATE);
 				    resultToken = this.tokenStore.getToken(IJavaColorConstants.JAVA_SINGLE_LINE_COMMENT);
 				    break;

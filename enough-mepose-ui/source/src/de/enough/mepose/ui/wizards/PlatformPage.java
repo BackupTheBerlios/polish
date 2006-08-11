@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import de.enough.mepose.core.model.DeviceDatabaseException;
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.polish.Device;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceTree;
@@ -456,9 +457,9 @@ public class PlatformPage extends WizardPage {
         boolean defaulsOverrideExistingClasspath = true;
         
         MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
-        meposeModel.setSupportedDevices(this.dTree.getSelectedDevices());
+        Device[] selectedDevices = this.dTree.getSelectedDevices();
+        meposeModel.setSupportedDevices(selectedDevices);
         meposeModel.setClasspath(classpathEntries);
-
         JavaCapabilityConfigurationPage nextPage = (JavaCapabilityConfigurationPage)super.getNextPage();
         nextPage.init(javaProject,defaultOutputDir,classpathEntries,defaulsOverrideExistingClasspath);
         this.newProjectModel.setJavaTabReached(true);

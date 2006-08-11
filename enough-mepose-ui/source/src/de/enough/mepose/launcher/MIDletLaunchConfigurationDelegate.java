@@ -59,15 +59,9 @@ public class MIDletLaunchConfigurationDelegate extends
             return;
         }
         
-//        DefaultLogger log = new DefaultLogger();
-//        log.setErrorPrintStream(System.err);
-//        log.setOutputPrintStream(System.out);
-//        model.getAntBox().getProject().addBuildListener(log);
-        
-        
         setupConsole();
         
-        AntBox antBox = model.getAntBox();
+        final AntBox antBox = model.getAntBox();
         
         Device currentDevice = model.getCurrentDevice();
         if(currentDevice == null) {
@@ -75,8 +69,70 @@ public class MIDletLaunchConfigurationDelegate extends
             return;
         }
         antBox.setProperty("device",currentDevice.getName());
-        String[] targets = new String[] {"clean","test","j2mepolish"};
-        antBox.run(targets);
+        antBox.setProperty("dir.work","build/test");
+        antBox.setProperty("test","true");
+//        final String[] targets = new String[] {"clean","test","j2mepolish"};
+        final String[] targets = new String[] {"test","j2mepolish"};
+        antBox.getProject().fireBuildStarted();
+        
+//        DefaultLogger defaultLogger = new DefaultLogger();
+//        antBox.addLogger(defaultLogger);
+        
+//        final Pipe pipe;
+//        try {
+//            pipe = Pipe.open();
+//        } catch (IOException exception) {
+//            showErrorBox(CAN_NOT_BUILD_PROJECT,"Could not open output stream.");
+//            return;
+//        }
+//        SinkChannel sink = pipe.sink();
+        
+//        defaultLogger.setOutputPrintStream(new PrintStream(Channels.newOutputStream(sink)));
+//
+//        
+//        Process process = new Process() {
+//
+//            public OutputStream getOutputStream() {
+//                return new ByteArrayOutputStream(5);
+//            }
+//
+//            public InputStream getInputStream() {
+//                System.out.println("DEBUG:.getInputStream(...):enter.");
+//                return Channels.newInputStream(pipe.source());
+////                return new ByteArrayInputStream("Hallo Welt".getBytes());
+//            }
+//
+//            public InputStream getErrorStream() {
+//                System.out.println("DEBUG:.getErrorStream(...):enter.");
+//                return null;
+//            }
+//
+//            public int waitFor() throws InterruptedException {
+//                return 0;
+//            }
+//
+//            public int exitValue() {
+//                System.out.println("DEBUG:.exitValue(...):enter.");
+//                return 0;
+//            }
+//
+//            public void destroy() {
+//                System.out.println("DEBUG:.destroy(...):enter.");
+//            }
+//            
+//        };
+        
+//        IProcess iProcess = new RuntimeProcess(launch,process,"Mepose build",null);
+
+        
+        Throwable throwable = null;
+        
+        try {
+            antBox.run(targets);
+        } catch (Throwable e) {
+            throwable = e;
+        }
+        antBox.getProject().fireBuildFinished(throwable);
         
 //        AntRunner antRunner = new AntRunner();
 //        String buildxmlAbsolutePath = buildxml.getAbsolutePath();

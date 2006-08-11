@@ -27,6 +27,7 @@ import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
+import de.enough.polish.Device;
 
 
 public class PolishNewWizard extends Wizard implements INewWizard {
@@ -169,7 +170,13 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //    }
 
     private void registerMeposeModel() {
-        MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),this.newProjectModel.getMeposeModel());
+        MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
+        MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),meposeModel);
+////      TODO: Do we ensure somewhere that there must be always at least on device supported?
+        Device[] supportedDevices = meposeModel.getSupportedDevices();
+        if(supportedDevices.length > 0) {
+            meposeModel.setCurrentDevice(supportedDevices[0]);
+        }
     }
 
     private void makeJavaProject() {

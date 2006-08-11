@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildLogger;
+import org.apache.tools.ant.DefaultLogger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -44,69 +45,15 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 
     private static MeposeUIPlugin plugin;
 	private ResourceBundle resourceBundle;
+
+    private MessageConsole meposeConsole;
+
+    private BuildLogger consoleLogger;
     
     public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
     public static final String ID = "de.enough.mepose.ui";
-    private BuildLogger meposeConsoleLogger;
-    private MessageConsole meposeConsole;
     
-    private final class MeposeConsoleLogger implements BuildLogger {
-        private MessageConsole messageConsole;
-        private MessageConsoleStream messageStream;
-        private int level = 3;
-        public MeposeConsoleLogger(MessageConsole messageConsole) {
-            this.messageConsole = messageConsole;
-            this.messageStream = this.messageConsole.newMessageStream();
-        }
-        public void setMessageOutputLevel(int arg0) {
-            this.level = arg0;
-        }
-
-        public void setOutputPrintStream(PrintStream arg0) {
-            //
-        }
-
-        public void setEmacsMode(boolean arg0) {
-            //
-        }
-
-        public void setErrorPrintStream(PrintStream arg0) {
-            //
-        }
-
-        public void buildStarted(BuildEvent arg0) {
-            //
-        }
-
-        public void buildFinished(BuildEvent arg0) {
-            //
-        }
-
-        public void targetStarted(BuildEvent arg0) {
-            //
-        }
-
-        public void targetFinished(BuildEvent arg0) {
-            //
-        }
-
-        public void taskStarted(BuildEvent arg0) {
-            //
-        }
-
-        public void taskFinished(BuildEvent arg0) {
-            //
-        }
-
-        public void messageLogged(BuildEvent arg0) {
-            if(arg0.getPriority() <= this.level) {
-                this.messageStream.println(arg0.getMessage());
-            }
-        }
-    }
-
-
     private class ProjectSelected implements ISelectionListener{
         public void selectionChanged(IWorkbenchPart part, ISelection selection) {
             if(selection instanceof IStructuredSelection) {
@@ -126,7 +73,6 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 	public MeposeUIPlugin() {
 		super();
 		plugin = this;
-        
         
 	}
 
@@ -152,15 +98,21 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
         MeposeModel[] meposeModel = MeposePlugin.getDefault().getMeposeModelManager().getModels();
         for (int i = 0; i < meposeModel.length; i++) {
             if(action == ADD_BUILD_LISTENER) {
-                meposeModel[i].addBuildListener(this.meposeConsoleLogger);
+                meposeModel[i].addBuildListener(this.consoleLogger);
             } else {
-                meposeModel[i].removeBuildListener(this.meposeConsoleLogger);
+                meposeModel[i].removeBuildListener(this.consoleLogger);
             }
         }
     }
     
     private void setupConsoleListener() {
-        this.meposeConsoleLogger = new MeposeConsoleLogger(this.meposeConsole);
+        this.consoleLogger = new DefaultLogger();
+        MessageConsoleStream messageString = this.meposeConsole.newMessageStream();
+        PrintStream printStream = new PrintStream(messageString);
+        this.consoleLogger.setOutputPrintStream(printStream);
+        this.consoleLogger.setErrorPrintStream(printStream);
+        this.consoleLogger.setEmacsMode(true);
+        this.consoleLogger.setMessageOutputLevel(2);
     }
     
     private void setupConsole() {
