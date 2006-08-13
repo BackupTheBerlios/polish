@@ -48,8 +48,16 @@ import de.enough.polish.util.HashMap;
  *        13-Mar-2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the RmsStorage, e.g. RmsStorage<Vector<Note>>.
  */
-public class RmsStorage implements Storage {
+public class RmsStorage
+//#if polish.java5
+	<K>
+	implements Storage<K> 
+//#else
+	//# implements Storage 
+//#endif
+{
 	
 	private final RecordStore masterRecordStore;
 	private final HashMap masterRecordSetIdsByName;
@@ -170,7 +178,12 @@ public class RmsStorage implements Storage {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Storage#save(de.enough.polish.io.Serializable, java.lang.String)
 	 */
-	public void save(Object object, String name) throws IOException {
+	//#if polish.java5
+		public void save(K object, String name) throws IOException {
+	//#else
+		//# public void save(Object object, String name) throws IOException {
+	//#endif
+
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
 		Serializer.serialize(object, out);
@@ -238,7 +251,12 @@ public class RmsStorage implements Storage {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Storage#read(java.lang.String)
 	 */
-	public Object read(String name) throws IOException {
+	//#if polish.java5
+		public K read( String name )
+	//#else
+		//# public Object read( String name )
+	//#endif
+	throws IOException {
 		byte[] data;
 		try {
 			if (this.masterRecordStore != null) {
@@ -258,7 +276,11 @@ public class RmsStorage implements Storage {
 			throw new IOException( e.toString() );
 		}
 		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
-		return Serializer.deserialize( in );
+		//#if polish.java5
+			return (K)Serializer.deserialize( in );
+		//#else
+			//# return Serializer.deserialize( in );
+		//#endif
 	}
 
 	/* (non-Javadoc)

@@ -36,9 +36,14 @@ import java.util.Enumeration;
  * history
  *        13-Mar-2006 - rob creation
  * </pre>
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the Storage subclasses, e.g. RmsStorage<Vector<Note>>.
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface Storage {
+public interface Storage 
+//#if polish.java5
+<K>
+//#endif
+{
 	
 	/**
 	 * Serializes the given object and stores is under the given name.
@@ -47,7 +52,11 @@ public interface Storage {
 	 * @param name the name under which the object should be stored
 	 * @throws IOException when serializing or storage fails
 	 */
-	public void save( Object object, String name )
+	//#if polish.java5
+		public void save(K object, String name)
+	//#else
+		//# public void save(Object object, String name)
+	//#endif
 	throws IOException;
 	
 //	/**
@@ -68,7 +77,11 @@ public interface Storage {
 	 * @return the initialized object
 	 * @throws IOException when de-serializing or reading fails
 	 */
-	public Object read( String name )
+	//#if polish.java5
+		public K read( String name )
+	//#else
+		//# public Object read( String name )
+	//#endif
 	throws IOException;
 	
 	/**

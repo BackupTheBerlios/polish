@@ -44,13 +44,18 @@ package de.enough.polish.util;
  * 	<li><b>addAll(Collection)</b> Add all elements of the collection singlely.</li> 
  * </ul>
  * </p>
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the ArrayList, e.g. ArrayList<Integer> = new ArrayList<Integer>(10); 
  * @author Robert Virkus, robert@enough.de
  * <pre>
  * history
  *        03-Jan-2004 - rob creation
  * </pre>
  */
-public class ArrayList {
+public class ArrayList
+//#if polish.java5
+	<K>
+//#endif
+{
 	private Object[] storedObjects;
 	private int growthFactor;
 	private int size;
@@ -100,7 +105,12 @@ public class ArrayList {
 	 * @throws IllegalArgumentException when the given element is null
 	 * @see #remove(Object)
 	 */
-	public boolean contains( Object element ) {
+	//#if polish.java5
+		public boolean contains( K element ) {
+	//#else
+		//# public boolean contains( Object element ) {
+	//#endif
+	
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain a null element.");
 		}
@@ -120,7 +130,11 @@ public class ArrayList {
 	 * @return the index of the object or -1 when the object is not part of this list.
 	 * @throws IllegalArgumentException when the given element is null
 	 */
-	public int indexOf(Object element) {
+	//#if polish.java5
+		public int indexOf(K element) {
+	//#else
+		//# public int indexOf(Object element) {
+	//#endif
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain a null element.");
 		}
@@ -140,11 +154,19 @@ public class ArrayList {
 	 * @return the element stored at the given position
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
-	public Object get( int index ) {
+		//#if polish.java5
+			public K get( int index ) {
+		//#else
+			//# public Object get( int index ) {
+		//#endif
 		if (index < 0 || index >= this.size ) {
 			throw new IndexOutOfBoundsException("the index [" + index + "] is not valid for this list with the size [" + this.size + "].");
 		}
-		return this.storedObjects[ index ];
+		//#if polish.java5
+			return (K) this.storedObjects[ index ];
+		//#else
+			//# return this.storedObjects[ index ];
+		//#endif
 	}
 		
 	/**
@@ -154,7 +176,11 @@ public class ArrayList {
 	 * @return the element stored at the given position
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
-	public Object remove( int index ) {
+		//#if polish.java5
+			public K remove( int index ) {
+		//#else
+			//# public Object remove( int index ) {
+		//#endif
 		if (index < 0 || index >= this.size ) {
 			throw new IndexOutOfBoundsException("the index [" + index + "] is not valid for this list with the size [" + this.size + "].");
 		}
@@ -164,7 +190,11 @@ public class ArrayList {
 		}
 		this.size--;
 		this.storedObjects[ this.size ] = null;
-		return removed; 
+		//#if polish.java5
+			return (K) removed;
+		//#else
+			//# return removed;
+		//#endif
 	}
 	
 	/**
@@ -175,7 +205,11 @@ public class ArrayList {
 	 * @throws IllegalArgumentException when the given element is null
 	 * @see #contains(Object)
 	 */
-	public boolean remove( Object element ) {
+		//#if polish.java5
+			public boolean remove( K element ) {
+		//#else
+			//# public boolean remove( Object element ) {
+		//#endif
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain null.");
 		}
@@ -216,7 +250,11 @@ public class ArrayList {
 	 * @throws IllegalArgumentException when the given element is null
 	 * @see #add( int, Object )
 	 */
-	public void add( Object element) {
+	//#if polish.java5
+		public void add( K element) {
+	//#else
+		//# public void add( Object element) {
+	//#endif
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain null.");
 		}
@@ -237,7 +275,11 @@ public class ArrayList {
 	 * @throws IllegalArgumentException when the given element is null
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
-	public void add( int index, Object element ) {
+	//#if polish.java5
+		public void add( int index, K element ) {
+	//#else
+		//# public void add( int index, Object element ) {
+	//#endif
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain null.");
 		}
@@ -264,13 +306,21 @@ public class ArrayList {
 	 * @return the replaced element
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
-	public Object set( int index, Object element ) {
+	//#if polish.java5
+		public K set( int index, K element ) {
+	//#else
+		//# public Object set( int index, Object element ) {
+	//#endif
 		if (index < 0 || index >= this.size ) {
 			throw new IndexOutOfBoundsException("the index [" + index + "] is not valid for this list with the size [" + this.size + "].");
 		}
 		Object replaced = this.storedObjects[ index ];
 		this.storedObjects[ index ] = element;
-		return replaced;
+		//#if polish.java5
+			return (K) replaced;
+		//#else
+			//# return replaced;
+		//#endif
 	}
 	
 	/**
