@@ -542,6 +542,13 @@
 		<class>de.enough.polish.postcompile.retroweaver.RetroWeaverPostCompiler</class>
 		<classpath>${polish.home}/lib/retroweaver-all.jar</classpath>
 	</extension>
+
+	<extension>
+		<type>postcompiler</type>
+		<name>java5</name>
+		<class>de.enough.polish.postcompile.java5.Java5PostCompiler</class>
+		<classpath>${polish.home}/lib/retroweaver-all.jar</classpath>
+	</extension>
 	
 	<!-- Log Handler -->
 	
