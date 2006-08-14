@@ -3,7 +3,7 @@
 
 	<property file="${user.name}.properties" />
 	<!-- the device used for test builds:                         -->
-	<property  name="device" value="Nokia/Series60E2" />
+	<property  name="device" value="Nokia/Series60E2FP3" />
 
 
 	<property name="wtk.home" location="/home/enough/dev/WTK2.2" />
