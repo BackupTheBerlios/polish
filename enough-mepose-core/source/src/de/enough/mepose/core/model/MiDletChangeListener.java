@@ -72,6 +72,10 @@ public class MiDletChangeListener implements IResourceChangeListener{
         public static final int CHANGED = IResourceDelta.CHANGED;
         
         public boolean visit(IResourceDelta delta) {
+//            if(delta.getFlags() != 131072) {
+            if(delta.getFlags() != 256) {
+                return true;
+            }
             IResource res = delta.getResource();
             switch (delta.getKind()) {
                case IResourceDelta.ADDED:
@@ -128,8 +132,19 @@ public class MiDletChangeListener implements IResourceChangeListener{
                     break;
             }
             putMidletsIntoPropertiesFile(midletPropertiesFile,midlets);
+            
 //            The following exception occur:
-//            org.eclipse.core.internal.resources.ResourceException: The resource tree is locked for modifications.
+//              org.eclipse.core.internal.resources.ResourceException: The resource tree is locked for modifications.
+//            try {
+//                midletPropertiesResource.touch(null);
+//            } catch (CoreException exception) {
+//                // TODO rickyn handle CoreException
+//                exception.printStackTrace();
+//            }
+            
+            
+//            The following exception occur:
+//          org.eclipse.core.internal.resources.ResourceException: The resource tree is locked for modifications.
 
 //            try {
 //                project.refreshLocal(1,new NullProgressMonitor());
@@ -171,7 +186,7 @@ public class MiDletChangeListener implements IResourceChangeListener{
             value.append(midletItem.getIconPath());
             value.append(",");
             value.append(midletItem.getClassName());
-            properties.put("MiDlet-"+i,value.toString());
+            properties.put("MIDlet-"+i,value.toString());
             i++;
         }
         FileOutputStream outputStream;
