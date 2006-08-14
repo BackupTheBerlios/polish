@@ -199,48 +199,16 @@
 				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
 			</jad>	
 			
-			<!-- this is an example for signing MIDlets with J2ME Polish. -->
-			<!--
-			<java jar="${wtk.home}/bin/JadTool.jar" 
-			    fork="true" 
-			    failonerror="true" 
-			    if="polish.midp2" 
-				unless="test"
-				message="Adding signature for device ${polish.identifier}"
-				>
-				<arg line="-addjarsig"/>
-				<arg line="-keypass ${password}"/>
-				<arg line="-alias SignMIDlet"/>
-				<arg line="-keystore midlets.ks"/>
-				<arg line="-inputjad dist/${polish.jadName}"/>
-				<arg line="-outputjad dist/${polish.jadName}"/>
-				<arg line="-jarfile dist/${polish.jarName}"/>
-			</java>	
-			<java jar="${wtk.home}/bin/JadTool.jar" 
-				fork="true" 
-				failonerror="true" 
-				if="polish.midp2" 
-				unless="test"
-				message="Adding certificate for device ${polish.identifier}"
-				>
-				<arg line="-addcert"/>
-				<arg line="-alias SignMIDlet"/>
-				<arg line="-keystore midlets.ks"/>
-				<arg line="-inputjad dist/${polish.jadName}"/>
-				<arg line="-inputjad dist/${polish.jadName}"/>
-				<arg line="-outputjad dist/${polish.jadName}"/>
-			</java>	
-			-->
+			
 		</build>
 		
 		<!-- execution of emulator(s) -->
 		<emulator
 			wait="true"
-			trace="class"
 			securityDomain="trusted"
-			enableProfiler="true"
-			enableMemoryMonitor="true"
-			enableNetworkMonitor="true"
+			enableProfiler="false"
+			enableMemoryMonitor="false"
+			enableNetworkMonitor="false"
 			if="test"
 			>
 			<!--
@@ -251,7 +219,7 @@
 	</j2mepolish>
 </target>
 
-<target name="emulator" depends="clean,test,j2mepolish" />
+<target name="emulator" depends="test,j2mepolish" />
 
 <target name="clean" 
   		description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml">
