@@ -126,6 +126,7 @@ public class PathsPage extends WizardPage {
         });
         String wtkHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_WTK_HOME);
         this.wtkHomeText.setText(wtkHomePath);
+        modifyWtkHomeText();
         
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
@@ -149,7 +150,7 @@ public class PathsPage extends WizardPage {
         });
         String NokiaHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_NOKIA_HOME);
         this.nokiaHomeText.setText(NokiaHomePath);
-        
+        modifyNokiaHomeText();
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.nokiaHomeText,"Choose the location of your Nokia directory"));
@@ -172,7 +173,7 @@ public class PathsPage extends WizardPage {
         });
         String sonyHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_SONY_HOME);
         this.sonyHomeText.setText(sonyHomePath);
-        
+        modifySonyHomeText();
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.sonyHomeText,"Choose the location of your Sony directory"));
@@ -196,7 +197,7 @@ public class PathsPage extends WizardPage {
         });
         String polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_POLISH_HOME);
         this.polishHomeText.setText(polishHomePath);
-        
+        modifyPolishHomeText();
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.polishHomeText,"Choose the location of your J2ME Polish directory"));
