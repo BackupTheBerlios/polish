@@ -142,7 +142,7 @@ public class MeposeModel extends PropertyModel{
 
     // Path.
 //    private String projectPath = "";
-    private File polishHome = new File("/");
+    private File polishHome = null;
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
     private File sonyHome = new File("");
@@ -509,10 +509,11 @@ public class MeposeModel extends PropertyModel{
 //        this.projectPath = projectPath;
 //    }
 
+    /**
+     * @param file May be null to indicate that there is no polish home specified.
+     */
     public void setPolishHome(File file) {
-        if(file == null){
-            throw new IllegalArgumentException("setPolishHome(...):parameter 'file' is null contrary to API.");
-        }
+        
         this.polishHome = file;
     }
 
@@ -541,7 +542,10 @@ public class MeposeModel extends PropertyModel{
 //            this.deviceDatabase = PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
 //        }
 //        return this.deviceDatabase;
-        return PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
+        if(getPolishHome() != null && getProjectHome() != null) {
+            return PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
+        }
+        return null;
     }
 
     // May be null.
