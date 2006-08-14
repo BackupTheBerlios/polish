@@ -644,10 +644,11 @@ extends Displayable
 	 */
 	public int getGameAction(int keyCode)
 	{
-		
-		switch ( Keypad.key( keyCode ) ) {
+		int key = Keypad.key( keyCode );
+		switch ( key ) {
 		case Keypad.KEY_ENTER: return FIRE;
 		case Keypad.KEY_SPACE: return FIRE;
+		case Keypad.KEY_NEXT: return DOWN;
 		}
 		switch (keyCode) {
 		case KEY_BB_UP: return UP;
@@ -659,6 +660,17 @@ extends Displayable
 		case KEY_NUM6: return RIGHT; // 6
 		case KEY_NUM8: return DOWN; // 8
 		}
+//		//#if polish.key.LeftSoftKey:defined
+//			//#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
+//		//#else
+//			if (keyCode == -6) {
+//				return FIRE;
+//			}
+//		//#endif
+		if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
+			return FIRE;
+		}
+		
 		// #if polish.key.EnterKey:defined
 			// #= if (keyCode == ${polish.key.EnterKey}) { return FIRE; } 
 		// #endif

@@ -1010,7 +1010,11 @@ public class TextField extends StringItem
 			if (this.editField != null && text != this.text ) {
 				Object bbLock = UiApplication.getEventLock();
 				synchronized (bbLock) {
-					this.editField.setText(text);
+                    if (text != null) {
+                        this.editField.setText(text);
+                    } else {
+                        this.editField.setText(""); // setting null triggers an IllegalArgumentException
+                    }
 				}
 			}
 		//#endif

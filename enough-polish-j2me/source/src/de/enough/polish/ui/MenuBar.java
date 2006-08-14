@@ -647,7 +647,7 @@ public class MenuBar extends Item {
 			//#if tmp.useInvisibleMenuBar
 				// paint menu at the top right corner:
 				g.setClip(0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY);
-				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.commandsContainerWidth, this.screen.screenWidth, g);
+				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.screen.screenWidth - this.commandsContainerWidth, this.screen.screenWidth, g);
 				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
 			//#elif tmp.RightOptions
 				// paint menu at the lower right corner:
@@ -979,6 +979,11 @@ public class MenuBar extends Item {
 	 * @throws IllegalStateException when the parent command has not be added before
 	 */
 	public void addSubCommand(Command childCommand, Command parentCommand, Style commandStyle) {
+        //#if tmp.useInvisibleMenuBar
+	        if (parentCommand == this.positiveCommand) {
+	            this.positiveCommand = null;
+	        }
+	    //#endif
 		// find parent CommandItem, could be tricky, especially when there are nested commands over several layers
 		int index = this.commandsList.indexOf( parentCommand );
 		CommandItem parentCommandItem = null;

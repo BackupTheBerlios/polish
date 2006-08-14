@@ -75,6 +75,9 @@ public class TreeItem
 	public TreeItem(String label, Style style) {
 		super(label);
 		this.root = new Container( false, style );
+		//#if polish.usePolishGui
+			//# this.root.parent = this;
+		//#endif
 		//#if polish.Container.allowCycling != false
 			this.root.allowCycling = false;
 		//#endif

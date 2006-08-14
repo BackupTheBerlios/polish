@@ -1821,119 +1821,135 @@ implements AccessibleCanvas
 					this.keyPressedProcessed = true;
 				//#endif
 	
-				//#if tmp.menuFullScreen
-					/*
-					//#ifdef polish.key.ReturnKey:defined
-						//#if  polish.key.ReturnKey == polish.key.ClearKey
-							//#define tmp.checkReturnKeyLater
-						//#else
-							//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
-									callCommandListener( this.backCommand );
-									repaint();
-									//# return;
-							//# }
-						//#endif
-					//#endif
-					 * 
-					 */
-					//#ifdef tmp.useExternalMenuBar
-						if (this.menuBar.handleKeyPressed(keyCode, 0)) {
-							//System.out.println("menubar handled key " + keyCode );
-							repaint();
-							return;
-						}
-						if (this.menuBar.isSoftKeyPressed) {
-							//System.out.println("menubar detected softkey " + keyCode );
-							//#if polish.blackberry
-								this.keyPressedProcessed = false;
-							//#endif
-							return;
-						}
-						//System.out.println("menubar did not handle " + keyCode );
-					//#else
-						if (keyCode == LEFT_SOFT_KEY) {
-							if ( this.menuSingleLeftCommand != null) {
-								callCommandListener( this.menuSingleLeftCommand );
-								return;
-							} else {
-								if (!this.menuOpened 
-										&& this.menuContainer != null 
-										&&  this.menuContainer.size() != 0 ) 
-								{
-									openMenu( true );
-									repaint();
-									return;
-								} else {
-									gameAction = Canvas.FIRE;
-								}
-							}
-						} else if (keyCode == RIGHT_SOFT_KEY) {
-							if (!this.menuOpened && this.menuSingleRightCommand != null) {
-								callCommandListener( this.menuSingleRightCommand );
-								return;
-							}
-						}
-						boolean doReturn = false;
-						if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
-							try {
-								gameAction = getGameAction( keyCode );
-							} catch (Exception e) { // can happen on certain shitty devices
-								//#debug warn
-								System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-							}
-						} else {
-							//#if polish.blackberry
-								this.keyPressedProcessed = false;
-							//#endif
-							doReturn = true;
-						}
-						if (this.menuOpened) {
-							if (keyCode == RIGHT_SOFT_KEY ) {
-								int selectedIndex = this.menuContainer.getFocusedIndex();
-								if (!this.menuContainer.handleKeyPressed(0, LEFT)
-										|| selectedIndex != this.menuContainer.getFocusedIndex() ) 
-								{
-									openMenu( false );
-								}
-	//						} else if ( gameAction == Canvas.FIRE ) {
-	//							int focusedIndex = this.menuContainer.getFocusedIndex();
-	//							Command cmd = (Command) this.menuCommands.get( focusedIndex );
-	//							this.menuOpened = false;
-	//							callCommandListener( cmd );
-							} else { 
-								this.menuContainer.handleKeyPressed(keyCode, gameAction);
-							}
-							repaint();
-							return;
-						}
-						if (doReturn) {
-							return;
-						}
-					//#endif
-				//#endif
-				if (gameAction == -1) {
+
+				//if (gameAction == -1) {
 					try {
 						gameAction = getGameAction(keyCode);
 					} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
 						//#debug warn
 						System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 					}
-				}
+				//}
 				//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
 					if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
 						callCommandListener(this.okCommand);
 						return;
 					}
 				//#endif
-				boolean processed = handleKeyPressed(keyCode, gameAction);
+				boolean processed = false;
+				//#if tmp.menuFullScreen
+					boolean letTheMenuBarProcessKey;
+					//#ifdef tmp.useExternalMenuBar
+						letTheMenuBarProcessKey = this.menuBar.isOpened;
+					//#else
+						letTheMenuBarProcessKey = this.menuOpened;
+					//#endif
+					if (!letTheMenuBarProcessKey) {
+				//#endif
+						processed = handleKeyPressed(keyCode, gameAction);
+				//#if tmp.menuFullScreen
+					}
+				//#endif
+				
 				//#ifdef polish.debug.debug
 					if (!processed) {
 						//#debug
 						System.out.println("unable to handle key [" + keyCode + "].");
 					}
 				//#endif
+				//#if tmp.menuFullScreen
+					if (!processed) {
+						/*
+						//#ifdef polish.key.ReturnKey:defined
+							//#if  polish.key.ReturnKey == polish.key.ClearKey
+								//#define tmp.checkReturnKeyLater
+							//#else
+								//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+										callCommandListener( this.backCommand );
+										repaint();
+										//# return;
+								//# }
+							//#endif
+						//#endif
+						 * 
+						 */
+						//#ifdef tmp.useExternalMenuBar
+							if (this.menuBar.handleKeyPressed(keyCode, 0)) {
+								//System.out.println("menubar handled key " + keyCode );
+								repaint();
+								return;
+							}
+							if (this.menuBar.isSoftKeyPressed) {
+								//System.out.println("menubar detected softkey " + keyCode );
+								//#if polish.blackberry
+									this.keyPressedProcessed = false;
+								//#endif
+								return;
+							}
+							//System.out.println("menubar did not handle " + keyCode );
+						//#else
+							if (keyCode == LEFT_SOFT_KEY) {
+								if ( this.menuSingleLeftCommand != null) {
+									callCommandListener( this.menuSingleLeftCommand );
+									return;
+								} else {
+									if (!this.menuOpened 
+											&& this.menuContainer != null 
+											&&  this.menuContainer.size() != 0 ) 
+									{
+										openMenu( true );
+										repaint();
+										return;
+									} else {
+										gameAction = Canvas.FIRE;
+									}
+								}
+							} else if (keyCode == RIGHT_SOFT_KEY) {
+								if (!this.menuOpened && this.menuSingleRightCommand != null) {
+									callCommandListener( this.menuSingleRightCommand );
+									return;
+								}
+							}
+							boolean doReturn = false;
+							if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
+								try {
+									gameAction = getGameAction( keyCode );
+								} catch (Exception e) { // can happen on certain shitty devices
+									//#debug warn
+									System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+								}
+							} else {
+								//#if polish.blackberry
+									this.keyPressedProcessed = false;
+								//#endif
+								doReturn = true;
+							}
+							if (this.menuOpened) {
+								if (keyCode == RIGHT_SOFT_KEY ) {
+									int selectedIndex = this.menuContainer.getFocusedIndex();
+									if (!this.menuContainer.handleKeyPressed(0, LEFT)
+											|| selectedIndex != this.menuContainer.getFocusedIndex() ) 
+									{
+										openMenu( false );
+									}
+		//						} else if ( gameAction == Canvas.FIRE ) {
+		//							int focusedIndex = this.menuContainer.getFocusedIndex();
+		//							Command cmd = (Command) this.menuCommands.get( focusedIndex );
+		//							this.menuOpened = false;
+		//							callCommandListener( cmd );
+								} else { 
+									this.menuContainer.handleKeyPressed(keyCode, gameAction);
+								}
+								repaint();
+								return;
+							}
+							if (doReturn) {
+								return;
+							}
+						//#endif
+					}
+				//#endif
 				//#if tmp.menuFullScreen && polish.key.ReturnKey:defined
-				// # if  tmp.checkReturnKeyLater
 					if (!processed) {
 						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
 								callCommandListener( this.backCommand );
