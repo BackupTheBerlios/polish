@@ -73,7 +73,7 @@ public class MIDletLaunchConfigurationDelegate extends
         antBox.setProperty("dir.work","build/test");
         antBox.setProperty("test","true");
 //        final String[] targets = new String[] {"clean","test","j2mepolish"};
-        final String[] targets = new String[] {"test","j2mepolish"};
+        final String[] targets = new String[] {"emulator"};
         antBox.getProject().fireBuildStarted();
         
 //        DefaultLogger defaultLogger = new DefaultLogger();
