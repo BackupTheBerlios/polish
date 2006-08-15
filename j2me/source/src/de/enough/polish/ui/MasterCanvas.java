@@ -162,6 +162,10 @@ public class MasterCanvas
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
 		//#debug
 		System.out.println("MasterCanvas: setCurrent " + nextDisplayable  + ", on display " + display );
+		if (nextDisplayable == null) {
+			display.setCurrent( null );
+			return;
+		}
 		//if ( nextDisplayable == instance ) {
 		//	display.setCurrent( nextDisplayable );
 		//	return;

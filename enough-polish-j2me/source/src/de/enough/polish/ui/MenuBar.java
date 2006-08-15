@@ -103,7 +103,9 @@ public class MenuBar extends Item {
 	private Image cancelImage;
 	private int singleLeftCommandY;
 	private int singleRightCommandY;
-	private Background overlayBackground;
+	//#if !polish.Bugs.noTranslucencyWithDrawRgb
+		private Background overlayBackground;
+	//#endif
 
 	/**
 	 * Creates a new menu bar
@@ -639,9 +641,11 @@ public class MenuBar extends Item {
 	{
 		if (this.isOpened) {
 			// paint overlay background:
-			if (this.overlayBackground != null) {
-				this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY, g );
-			}
+			//#if !polish.Bugs.noTranslucencyWithDrawRgb
+				if (this.overlayBackground != null) {
+					this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY, g );
+				}
+			//#endif
 			// paint opened menu:
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			//#if tmp.useInvisibleMenuBar
@@ -880,18 +884,20 @@ public class MenuBar extends Item {
 	
 	
 	public void setStyle(Style style) {
-		if (this.overlayBackground == null) {
-			//#if polish.color.overlay:defined
-				int color = 0;
-				//#= color =  ${polish.color.overlay};
-				if ((color & 0xFF000000) != 0) {
-					this.overlayBackground = new TranslucentSimpleBackground( color );
-				}
-			//#else
-				this.overlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
-			//#endif
-
-		}
+		//#if !polish.Bugs.noTranslucencyWithDrawRgb
+			if (this.overlayBackground == null) {
+				//#if polish.color.overlay:defined
+					int color = 0;
+					//#= color =  ${polish.color.overlay};
+					if ((color & 0xFF000000) != 0) {
+						this.overlayBackground = new TranslucentSimpleBackground( color );
+					}
+				//#else
+					this.overlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+				//#endif
+	
+			}
+		//#endif
 		//#if tmp.useInvisibleMenuBar
 			this.background = null;
 			this.border = null;

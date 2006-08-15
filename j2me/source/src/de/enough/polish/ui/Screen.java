@@ -284,7 +284,9 @@ implements AccessibleCanvas
 		//#else
 			private Image previousScreenImage;
 		//#endif
-		private Background previousScreenOverlayBackground;
+		//#if !polish.Bugs.noTranslucencyWithDrawRgb
+			private Background previousScreenOverlayBackground;
+		//#endif
 	//#endif
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
@@ -646,10 +648,12 @@ implements AccessibleCanvas
 					//#if polish.Screen.dontBufferPreviousScreen
 						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
 							this.previousScreen = (AccessibleCanvas) currentDisplayable;							
-							//#if polish.color.overlay:defined
-								//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
-							//#else
-								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+							//#if !polish.Bugs.noTranslucencyWithDrawRgb
+								//#if polish.color.overlay:defined
+									//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
+								//#else
+									this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+								//#endif
 							//#endif
 						}
 					//#else
@@ -754,9 +758,11 @@ implements AccessibleCanvas
 			//#else
 				this.previousScreenImage = null;
 			//#endif
-			if (this.previousScreenOverlayBackground != null) {
-				this.previousScreenOverlayBackground = null;
-			}
+			//#if !polish.Bugs.noTranslucencyWithDrawRgb
+				if (this.previousScreenOverlayBackground != null) {
+					this.previousScreenOverlayBackground = null;
+				}
+			//#endif
 		//#endif
 		//#ifdef polish.Vendor.Siemens
 			// Siemens sometimes calls hideNotify directly
@@ -1109,12 +1115,16 @@ implements AccessibleCanvas
 					//#if polish.Screen.dontBufferPreviousScreen
 						if (this.repaintPreviousScreen && this.previousScreen != null) {
 							this.previousScreen.paint(g);
-							this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+							//#if !polish.Bugs.noTranslucencyWithDrawRgb
+								this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+							//#endif
 						}
 					//#else
 						if (this.repaintPreviousScreen && this.previousScreenImage != null) {
 							g.drawImage(this.previousScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-							this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+							//#if !polish.Bugs.noTranslucencyWithDrawRgb
+								this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+							//#endif
 						}
 					//#endif
 				//#endif
