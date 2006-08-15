@@ -297,7 +297,10 @@ public class Environment {
 	 *             the full property-name is inserted instead (e.g. "${ property-name }").  
 	 * @throws IllegalArgumentException when a property-value was not found and needsToBeDefined is true.
 	 */
-	public String writeProperties( String input, boolean needsToBeDefined ) {	
+	public String writeProperties( String input, boolean needsToBeDefined ) {
+		if (input == null) {
+			throw new IllegalArgumentException("internal error: input cannot be null.");
+		}
 		Matcher matcher = PROPERTY_PATTERN.matcher( input );
 		boolean propertyFound = matcher.find();
 		if (!propertyFound) {

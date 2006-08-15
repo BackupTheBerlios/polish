@@ -379,9 +379,11 @@ public class InfoSetting {
 			if (variableValue == null) { 
 				variableValue = attribute.getValue();
 			}
-			variableValue = env.writeProperties(variableValue);
-			if ( variableValue.length() > 0 ) {				
-				newList.add( attribute = new Attribute( attribute.getName(), variableValue ) );
+			if (variableValue != null) {
+				variableValue = env.writeProperties(variableValue);
+				if ( variableValue.length() > 0 ) {				
+					newList.add( attribute = new Attribute( attribute.getName(), variableValue ) );
+				}
 			}
 		}
 		return (Attribute[]) newList.toArray( new Attribute[ newList.size() ] );

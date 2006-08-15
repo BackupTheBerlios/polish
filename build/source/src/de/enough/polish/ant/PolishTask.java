@@ -252,7 +252,7 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("The nested element <info> requires the attribute [license] with either \"GPL\" for open source software or the commercial license, which can be obtained at http://www.j2mepolish.org.");
 		}
 		if (setting.getVendorName() == null) {
-			throw new BuildException("The nested element <info> requires the attribute [vendor] which defines the name of the vendor providing the application.");
+			throw new BuildException("The nested element <info> requires the attribute [vendorName] which defines the name of the vendor providing the application.");
 		}
 		if (setting.getVersion() == null) {
 			throw new BuildException("The nested element <info> requires the attribute [version] which defines the version of this application, e.g. \"1.2.3\".");
@@ -1265,8 +1265,10 @@ public class PolishTask extends ConditionalTask {
 		}
 		// set info-variables:
 		String jarName = this.infoSetting.getJarName();
-		jarName = this.environment.writeProperties( jarName, true );
-		this.environment.addVariable( "polish.jarName", jarName );
+		if (jarName != null) {
+			jarName = this.environment.writeProperties( jarName, true );
+			this.environment.addVariable( "polish.jarName", jarName );
+		}
 				
 		// enable the support for the J2ME Polish GUI, part 1: 
 		// check if a preprocessing variable is set for using the Polish GUI:
@@ -1318,18 +1320,20 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		jarName = this.environment.getVariable( "polish.jarName" );
-		String destPath = this.buildSetting.getDestDir( this.environment ).getAbsolutePath() + File.separatorChar;
-		String jarPath = destPath + jarName;
-		this.environment.addVariable( "polish.jarPath", jarPath );
-		int dotIndex = jarName.lastIndexOf('.');
-		if (dotIndex == -1) {
-			// invalid JAR name
-			throw new BuildException("Invalid JAR name \"" + jarName + "\" defined - check your \"polish.jarName\" setting. Usually a \".jar\" is missing.");
+		if (jarName != null) {
+			String destPath = this.buildSetting.getDestDir( this.environment ).getAbsolutePath() + File.separatorChar;
+			String jarPath = destPath + jarName;
+			this.environment.addVariable( "polish.jarPath", jarPath );
+			int dotIndex = jarName.lastIndexOf('.');
+			if (dotIndex == -1) {
+				// invalid JAR name
+				throw new BuildException("Invalid JAR name \"" + jarName + "\" defined - check your \"polish.jarName\" setting. Usually a \".jar\" is missing.");
+			}
+			String jadName = jarName.substring(0, dotIndex ) + ".jad";
+			this.environment.addVariable( "polish.jadName", jadName );
+			String jadPath = destPath + jadName;
+			this.environment.addVariable( "polish.jadPath", jadPath );
 		}
-		String jadName = jarName.substring(0, dotIndex ) + ".jad";
-		this.environment.addVariable( "polish.jadName", jadName );
-		String jadPath = destPath + jadName;
-		this.environment.addVariable( "polish.jadPath", jadPath );
 
 		// add info attributes:
 		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment );
