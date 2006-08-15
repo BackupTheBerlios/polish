@@ -1452,9 +1452,9 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="AnnounceDate" value="2005"/>
-		<capability name="key.LeftSoftKey" value="21"/>
-		<capability name="key.RightSoftKey" value="22"/>
-		<capability name="key.MiddleSoftKey" value="23"/>
+		<capability name="key.LeftSoftKey" value="-21"/>
+		<capability name="key.RightSoftKey" value="-22"/>
+		<capability name="key.MiddleSoftKey" value="-23"/>
 	</device>
 
 	<device>
@@ -6796,7 +6796,6 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="320x240"/>
 		<capability name="FullCanvasSize" value="320x240"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="BitsPerPixel" value="1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
