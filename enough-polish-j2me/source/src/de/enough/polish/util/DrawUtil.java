@@ -52,11 +52,17 @@ public final class DrawUtil {
 			Object o = g; // this cast is needed, otherwise the compiler will complain
 			              // that javax.microedition.lcdui.Graphics can never be casted
 			              // to de.enough.polish.blackberry.ui.Graphics.
-			if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
-				net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
-				graphics.setColor(color);
-				graphics.drawFilledPath( xValues, yValues, null, null);
-			}
+			//#if polish.useDefaultPackage
+				//# net.rim.device.api.ui.Graphics graphics = g.g;
+				//# graphics.setColor(color);
+		  		//# graphics.drawFilledPath( xValues, yValues, null, null);
+			//#else
+				if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
+					net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
+					graphics.setColor(color);
+					graphics.drawFilledPath( xValues, yValues, null, null);
+				}				
+			//#endif
 		//#elif polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			if ((color & 0xFF0000) == 0) {
