@@ -73,7 +73,7 @@ public class MiDletChangeListener implements IResourceChangeListener{
         
         public boolean visit(IResourceDelta delta) {
 //            if(delta.getFlags() != 131072) {
-            if(delta.getFlags() != 256) {
+            if(delta.getFlags() != 256 && delta.getFlags() != 0 && (delta.getKind() != 2 && delta.getFlags() != 131072)) {
                 return true;
             }
             IResource res = delta.getResource();

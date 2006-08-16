@@ -54,7 +54,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     public class NewDeviceSelectionListener implements SelectionListener{
 
         public void widgetSelected(SelectionEvent e) {
-            System.out.println("DEBUG:NewDeviceSelectionListener.widgetSelected(...):device selected.");
+//            System.out.println("DEBUG:NewDeviceSelectionListener.widgetSelected(...):device selected.");
             Combo comboTemp = (Combo)e.getSource();
             Device device = DeviceDropdownChooserContributionItem.this.supportedDevices[comboTemp.getSelectionIndex()];
             DeviceDropdownChooserContributionItem.this.meposeModel.setCurrentDevice(device);
@@ -79,7 +79,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     }
     
     public void dispose() {
-        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.dispose(...):enter.");
+//        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.dispose(...):enter.");
         if(this.combo != null) {
             this.combo.dispose();
         }
@@ -99,7 +99,7 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     }
 
     public void fill(ToolBar parentToFill, int index) {
-        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.fill(...):enter.");
+//        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.fill(...):enter.");
         this.combo = new Combo(parentToFill,SWT.DROP_DOWN|SWT.READ_ONLY);
         this.deviceSelectionListener = new NewDeviceSelectionListener();
         updateState(false);
@@ -152,17 +152,17 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     }
 
     public void setVisible(boolean visible) {
-        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.setVisible(...):visible:"+visible);
+//        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.setVisible(...):visible:"+visible);
         this.visible = visible;
     }
 
     public void update() {
-        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.update(...):update without parameter.enter.");
+//        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.update(...):update without parameter.enter.");
     }
 
     public void update(String id) {
         // TODO rickyn implement update
-        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.update(...):id:"+id);
+//        System.out.println("DEBUG:DeviceDropdownChooserContributionItem.update(...):id:"+id);
     }
     
     public void setMeposeModel(MeposeModel meposeModel) {

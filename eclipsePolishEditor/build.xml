@@ -9,16 +9,20 @@
 
     <property name="javacFailOnError" value="false"></property>
     <property name="javacDebugInfo" value="on"></property>
-    <property name="javacVerbose" value="true"></property>
+    <property name="javacVerbose" value="false"></property>
+    <property name="logExtension" value=".log"></property>
+    <property name="compilerArg" value=""></property>
     <property name="javacSource" value="1.3"></property>
     <property name="javacTarget" value="1.2"></property>
-    <property name="compilerArg" value=""></property>
     <path id="path_bootclasspath">
         <fileset dir="${java.home}/lib">
             <include name="*.jar"></include>
         </fileset>
     </path>
     <property name="bootclasspath" refid="path_bootclasspath"></property>
+    <property name="bundleJavacSource" value="${javacSource}"></property>
+    <property name="bundleJavacTarget" value="${javacTarget}"></property>
+    <property name="bundleBootClasspath" value="${bootclasspath}"></property>
     <target depends="properties" name="init">
         <condition property="pluginTemp" value="${buildTempFolder}/plugins">
             <isset property="buildTempFolder"></isset>
@@ -41,135 +45,162 @@
         <antcall target="gather.bin.parts">
             <param name="destination.temp.folder" value="${temp.folder}/"></param>
         </antcall>
-        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18.jar" filesonly="false" update="false" whenempty="skip"></zip>
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8.jar" filesonly="false" update="false" whenempty="skip"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target depends="init" description="Create jar: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin @dot." name="@dot" unless="@dot">
         <delete dir="${temp.folder}/@dot.bin"></delete>
         <mkdir dir="${temp.folder}/@dot.bin"></mkdir>
+        <path id="@dot.classpath">
+            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.ui/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-ui/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.ui/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-ui/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/bin"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.log4j/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.log4j/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.log4j/log4j.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.log4j/classes/bin"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/j2mepolish/import/enough-j2mepolish-build.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/j2mepolish/import/enough-j2mepolish-build.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/j2mepolish/import/jdom.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/j2mepolish/import/jdom.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant-nodeps.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant-nodeps.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/MeposeCore.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/MeposeCore.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes/"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes/"></pathelement>
+            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
+            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.osgi_3.2.0.v20060601.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.common_3.2.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.jobs_3.2.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/runtime_registry_compatibility.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/@dot"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.registry_3.2.0.v20060601.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.preferences_3.2.0.v20060601.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.0.v20060601.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.swt_3.2.0.v3232o.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.swt.gtk.linux.x86_3.2.0.v3232m.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jface_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.commands_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.workbench_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20060605-1400/@dot"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20060605-1400/compatibility.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/com.ibm.icu_3.4.4.1.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.help_3.2.0.v20060602.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.expressions_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.resources_3.2.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.resources.compatibility_3.2.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility_3.1.100.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.configurator_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ant.core_3.1.100.v20060531.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.variables_3.1.100.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.filesystem_1.0.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.filesystem.linux.x86_1.0.0.v20060603.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.ui_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.console_3.1.100.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jface.text_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.text_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.workbench.texteditor_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.core_3.2.0.v_671.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.team.core_3.2.0.I200606051140.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.search_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.filebuffers_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.ide_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.views_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.core_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.core.linux_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.ui_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.forms_3.2.0.v20060602.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.debug.core_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.debug.ui_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.editors_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.launching_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.debug_3.2.0.v20060605/jdi.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.debug_3.2.0.v20060605/jdimodel.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.debug_3.2.0.v20060605/tools.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.compare_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.team.ui_3.2.0.I200606051140.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.navigator_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.navigator.resources_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.views.properties.tabbed_3.2.0.I20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ltk.core.refactoring_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ltk.ui.refactoring_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.core.manipulation_1.0.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-antlr.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-bcel.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-bsf.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-log4j.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-oro.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-regexp.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-resolver.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-commons-logging.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-commons-net.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-icontract.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-jai.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-javamail.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-jdepend.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-jmf.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-jsch.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-junit.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-launcher.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-netrexx.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-nodeps.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-starteam.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-stylebook.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-swing.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-trax.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-vaj.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-weblogic.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-xalan1.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.ant_1.6.5/lib/ant-xslp.jar"></pathelement>
+            <pathelement path="../enough-mepose-core/lib/ant.jar"></pathelement>
+            <pathelement path="../enough-mepose-core/lib/ant-nodeps.jar"></pathelement>
+            <pathelement path="../enough-mepose-core/j2mepolish/import/jdom.jar"></pathelement>
+            <pathelement path="../enough-mepose-core/j2mepolish/import/enough-j2mepolish-build.jar"></pathelement>
+            <pathelement path="../org.apache.log4j/log4j.jar"></pathelement>
+            <pathelement path="../org.apache.velocity/velocity-1.4.jar"></pathelement>
+            <pathelement path="../org.apache.velocity/velocity-dep-1.4.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt_3.2.0.v20060605-1400.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.intro_3.2.0.v20060601.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.lucene_1.4.103.v20060601/lucene-1.4.3.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.apache.lucene_1.4.103.v20060601/parser.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.help.base_3.2.0.v20060601.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.help.appserver_3.1.100.v20060602.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.cheatsheets_3.2.0.v20060602.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.help.ui_3.2.0.v20060602.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.debug.ui_3.2.0.v20060605.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ant.ui_3.2.0.v20060531.jar"></pathelement>
+            <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui.externaltools_3.1.100.v20060605.jar"></pathelement>
+        </path>
         <!-- compile the source code -->
 
-        <javac bootclasspath="${bootclasspath}" debug="${javacDebugInfo}" destdir="${temp.folder}/@dot.bin" failonerror="${javacFailOnError}" includeAntRuntime="no" source="${javacSource}" target="${javacTarget}" verbose="${javacVerbose}">
-            <compilerarg line="${compilerArg}"></compilerarg>
-            <classpath>
-                <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.ui/@dot"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-ui/@dot"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.ui/bin/"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-ui/bin/"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.velocity/bin"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.velocity/@dot"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.velocity/bin/"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.log4j/@dot"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.log4j/log4j.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../org.apache.log4j/classes/bin"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/j2mepolish/import/enough-j2mepolish-build.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/j2mepolish/import/enough-j2mepolish-build.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/j2mepolish/import/jdom.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/j2mepolish/import/jdom.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant-nodeps.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant-nodeps.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/MeposeCore.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/MeposeCore.jar"></pathelement>
-                <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes/"></pathelement>
-                <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes/"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.runtime_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.osgi_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.help_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.swt_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.swt.gtk.linux.x86_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jface_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.commands_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.workbench_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.workbench.compatibility_3.1.0/compatibility.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.workbench.compatibility_3.1.0/@dot"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.expressions_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.resources_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.resources.linux_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.resources.compatibility_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.runtime.compatibility_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.update.configurator_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ant.core_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.variables_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.ui_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.console_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jface.text_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.text_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.workbench.texteditor_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.core_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.team.core_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.search_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.ide_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.views_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.update.core_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.update.core.linux_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.update.ui_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.forms_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.editors_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.core.filebuffers_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.debug.core_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.debug.ui_3.1.2.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.launching_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.debug_3.1.1/jdi.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.debug_3.1.1/jdimodel.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.debug_3.1.1/tools.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.compare_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ltk.core.refactoring_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ltk.ui.refactoring_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-antlr.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-bcel.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-bsf.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-log4j.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-oro.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-regexp.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-apache-resolver.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-commons-logging.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-commons-net.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-icontract.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-jai.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-javamail.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-jdepend.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-jmf.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-jsch.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-junit.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-launcher.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-netrexx.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-nodeps.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-starteam.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-stylebook.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-swing.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-trax.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-vaj.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-weblogic.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-xalan1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.apache.ant_1.6.5/lib/ant-xslp.jar"></pathelement>
-                <pathelement path="../enough-mepose-core/lib/ant.jar"></pathelement>
-                <pathelement path="../enough-mepose-core/lib/ant-nodeps.jar"></pathelement>
-                <pathelement path="../enough-mepose-core/j2mepolish/import/jdom.jar"></pathelement>
-                <pathelement path="../enough-mepose-core/j2mepolish/import/enough-j2mepolish-build.jar"></pathelement>
-                <pathelement path="../org.apache.log4j/log4j.jar"></pathelement>
-                <pathelement path="../org.apache.log4j/@dot"></pathelement>
-                <pathelement path="../org.apache.velocity/velocity-1.4.jar"></pathelement>
-                <pathelement path="../org.apache.velocity/velocity-dep-1.4.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt_3.1.0.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.intro_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.ui.cheatsheets_3.1.1.jar"></pathelement>
-                <pathelement path="../../../../../opt/eclipse_3.1.2/plugins/org.eclipse.jdt.debug.ui_3.1.2.jar"></pathelement>
-            </classpath>
+        <javac bootclasspath="${bundleBootClasspath}" debug="${javacDebugInfo}" destdir="${temp.folder}/@dot.bin" failonerror="${javacFailOnError}" includeAntRuntime="no" source="${bundleJavacSource}" target="${bundleJavacTarget}" verbose="${javacVerbose}">
+            <compilerarg compiler="${build.compiler}" line="${compilerArg}"></compilerarg>
+            <classpath refid="@dot.classpath"></classpath>
             <src path="source/src/"></src>
+            <compilerarg compiler="org.eclipse.jdt.core.JDTCompilerAdapter" value="@${basedir}/javaCompiler...args"></compilerarg>
+            <compilerarg compiler="org.eclipse.jdt.core.JDTCompilerAdapter" line="-log '${temp.folder}/@dot.bin${logExtension}'"></compilerarg>
         </javac>
         <!-- Copy necessary resources -->
 
         <copy failonerror="true" overwrite="false" todir="${temp.folder}/@dot.bin">
-            <fileset dir="source/src/" excludes="**/*.java, **/package.htm*,null"></fileset>
+            <fileset dir="source/src/" excludes="**/*.java, **/package.htm*"></fileset>
         </copy>
         <mkdir dir="${build.result.folder}"></mkdir>
         <copy failonerror="true" overwrite="false" todir="${build.result.folder}/@dot">
@@ -192,31 +223,31 @@
         <antcall target="src.zip"></antcall>
     </target>
     <target depends="init" if="destination.temp.folder" name="gather.bin.parts">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18"></mkdir>
-        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8"></mkdir>
+        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8">
             <fileset dir="${build.result.folder}/@dot" includes="**"></fileset>
         </copy>
-        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18">
-            <fileset dir="${basedir}" includes="plugin.xml,null,icons/sample.gif,META-INF/,icons/j2mepolish_ovr.gif"></fileset>
+        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8">
+            <fileset dir="${basedir}" includes="plugin.xml,icons/sample.gif,META-INF/,icons/j2mepolish_ovr.gif"></fileset>
         </copy>
     </target>
     <target depends="init" name="build.zips"></target>
     <target depends="init" if="destination.temp.folder" name="gather.sources">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18"></mkdir>
-        <copy failonerror="false" file="${build.result.folder}/src.zip" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18"></copy>
-        <copy failonerror="false" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8"></mkdir>
+        <copy failonerror="false" file="${build.result.folder}/src.zip" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8"></copy>
+        <copy failonerror="false" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8">
             <fileset dir="${basedir}" includes="icons/,lib/,plugin.xml,source/,.project,.classpath,build.properties,build.xml"></fileset>
         </copy>
     </target>
     <target depends="init" if="destination.temp.folder" name="gather.logs">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18"></mkdir>
-        <copy failonerror="false" file="${temp.folder}/@dot.bin.log" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18"></copy>
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8"></mkdir>
+        <copy failonerror="false" file="${temp.folder}/@dot.bin${logExtension}" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8"></copy>
     </target>
     <target depends="init" description="Clean the plug-in: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin of all the zips, jars and logs created." name="clean">
         <delete dir="${build.result.folder}/@dot"></delete>
         <delete file="${build.result.folder}/src.zip"></delete>
-        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18.jar"></delete>
-        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18.zip"></delete>
+        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8.jar"></delete>
+        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8.zip"></delete>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target depends="init" description="Refresh this folder." if="eclipse.running" name="refresh">
@@ -235,9 +266,9 @@
             <param name="destination.temp.folder" value="${temp.folder}/"></param>
         </antcall>
         <delete>
-            <fileset dir="${temp.folder}" includes="**/*.bin.log"></fileset>
+            <fileset dir="${temp.folder}" includes="**/*.bin${logExtension}"></fileset>
         </delete>
-        <zip basedir="${temp.folder}" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.3.18.zip" filesonly="true" update="false" whenempty="skip"></zip>
+        <zip basedir="${temp.folder}" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.5.8.zip" filesonly="true" update="false" whenempty="skip"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
 </project>

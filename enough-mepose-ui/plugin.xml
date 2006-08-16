@@ -57,6 +57,7 @@
 			project="true" />
 	</extension>
 
+	<!-- Old.
 	<extension
 		point="org.eclipse.debug.core.launchConfigurationTypes">
 		<launchConfigurationType
@@ -66,6 +67,17 @@
         name="J2ME Polish MIDlet"
         sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
         sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+	</extension>
+	-->
+	<extension
+		point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+        delegate="de.enough.mepose.launcher.MIDletLaunchConfigurationDelegate"
+        id="de.enough.mepose.launcher.launchConfigurationType"
+        modes="run, debug"
+        name="J2ME Polish MIDlet"
+        sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+        sourcePathComputerId="de.enough.mepose.launcher.MIDletSourcePathComputerDelegate"/>
 	</extension>
 
 	<extension point="org.eclipse.ui.ide.projectNatureImages">

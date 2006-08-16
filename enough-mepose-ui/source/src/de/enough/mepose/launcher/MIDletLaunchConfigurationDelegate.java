@@ -1,6 +1,8 @@
 package de.enough.mepose.launcher;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -8,7 +10,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jdt.launching.IVMConnector;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -25,21 +31,23 @@ import de.enough.polish.Device;
 import de.enough.utils.AntBox;
 
 public class MIDletLaunchConfigurationDelegate extends
-        AbstractJavaLaunchConfigurationDelegate {
+AbstractJavaLaunchConfigurationDelegate {
 
     private static final String CAN_NOT_BUILD_PROJECT = "Can not build project";
-//    private static final int EMULATOR_STARTUP_TIME = 5000;
+//  private static final int EMULATOR_STARTUP_TIME = 5000;
 
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, final IProgressMonitor monitor)
-                                                                throws CoreException {
+    throws CoreException {
+
+        boolean isDebug = "debug".equals(mode);
 
         String projectName;
         projectName = configuration
-                .getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
+        .getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
 
         IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(projectName);
+        .getProject(projectName);
 
         if (project == null) {
             showErrorBox(CAN_NOT_BUILD_PROJECT,"The project '" + projectName + "' does not exists.");
@@ -51,17 +59,17 @@ public class MIDletLaunchConfigurationDelegate extends
             showErrorBox(CAN_NOT_BUILD_PROJECT,"No model found for the project. Maybe the project does not have a Mepose nature.");
             return;
         }
-        
+
         File buildxml = model.getBuildxml();
         if(buildxml == null) {
             showErrorBox(CAN_NOT_BUILD_PROJECT,"Internal error: 1");
             MeposeUIPlugin.log("No buildxml specified in model for project:"+projectName);
             return;
         }
-        
+
         setupConsole();
-        
-//        final AntBox antBox = model.getAntBox();
+
+//      final AntBox antBox = model.getAntBox();
         final AntBox antBox = new AntBox(model.getBuildxml());
         antBox.createProject();
         Device currentDevice = model.getCurrentDevice();
@@ -72,76 +80,146 @@ public class MIDletLaunchConfigurationDelegate extends
         antBox.setProperty("device",currentDevice.getIdentifier());
         antBox.setProperty("dir.work","build/test");
         antBox.setProperty("test","true");
-//        final String[] targets = new String[] {"clean","test","j2mepolish"};
+//      final String[] targets = new String[] {"clean","test","j2mepolish"};
         final String[] targets = new String[] {"emulator"};
         antBox.getProject().fireBuildStarted();
-        
-//        DefaultLogger defaultLogger = new DefaultLogger();
-//        antBox.addLogger(defaultLogger);
-        
-//        final Pipe pipe;
-//        try {
-//            pipe = Pipe.open();
-//        } catch (IOException exception) {
-//            showErrorBox(CAN_NOT_BUILD_PROJECT,"Could not open output stream.");
-//            return;
-//        }
-//        SinkChannel sink = pipe.sink();
-        
-//        defaultLogger.setOutputPrintStream(new PrintStream(Channels.newOutputStream(sink)));
-//
-//        
-//        Process process = new Process() {
-//
-//            public OutputStream getOutputStream() {
-//                return new ByteArrayOutputStream(5);
-//            }
-//
-//            public InputStream getInputStream() {
-//                System.out.println("DEBUG:.getInputStream(...):enter.");
-//                return Channels.newInputStream(pipe.source());
-////                return new ByteArrayInputStream("Hallo Welt".getBytes());
-//            }
-//
-//            public InputStream getErrorStream() {
-//                System.out.println("DEBUG:.getErrorStream(...):enter.");
-//                return null;
-//            }
-//
-//            public int waitFor() throws InterruptedException {
-//                return 0;
-//            }
-//
-//            public int exitValue() {
-//                System.out.println("DEBUG:.exitValue(...):enter.");
-//                return 0;
-//            }
-//
-//            public void destroy() {
-//                System.out.println("DEBUG:.destroy(...):enter.");
-//            }
-//            
-//        };
-        
-//        IProcess iProcess = new RuntimeProcess(launch,process,"Mepose build",null);
 
-        
+//      DefaultLogger defaultLogger = new DefaultLogger();
+//      antBox.addLogger(defaultLogger);
+
+//      final Pipe pipe;
+//      try {
+//      pipe = Pipe.open();
+//      } catch (IOException exception) {
+//      showErrorBox(CAN_NOT_BUILD_PROJECT,"Could not open output stream.");
+//      return;
+//      }
+//      SinkChannel sink = pipe.sink();
+
+//      defaultLogger.setOutputPrintStream(new PrintStream(Channels.newOutputStream(sink)));
+
+
+//      Process process = new Process() {
+
+//      public OutputStream getOutputStream() {
+//      return new ByteArrayOutputStream(5);
+//      }
+
+//      public InputStream getInputStream() {
+//      System.out.println("DEBUG:.getInputStream(...):enter.");
+//      return Channels.newInputStream(pipe.source());
+////    return new ByteArrayInputStream("Hallo Welt".getBytes());
+//      }
+
+//      public InputStream getErrorStream() {
+//      System.out.println("DEBUG:.getErrorStream(...):enter.");
+//      return null;
+//      }
+
+//      public int waitFor() throws InterruptedException {
+//      return 0;
+//      }
+
+//      public int exitValue() {
+//      System.out.println("DEBUG:.exitValue(...):enter.");
+//      return 0;
+//      }
+
+//      public void destroy() {
+//      System.out.println("DEBUG:.destroy(...):enter.");
+//      }
+
+//      };
+
+//      IProcess iProcess = new RuntimeProcess(launch,process,"Mepose build",null);
+
+
         Throwable throwable = null;
-        
+
         try {
             antBox.run(targets);
         } catch (Throwable e) {
             throwable = e;
         }
         antBox.getProject().fireBuildFinished(throwable);
-        
-//        AntRunner antRunner = new AntRunner();
-//        String buildxmlAbsolutePath = buildxml.getAbsolutePath();
-//        antRunner.setBuildFileLocation(buildxmlAbsolutePath);
-//        antRunner.addBuildListener("de.enough.mepose.ui.BuildListenerConsoleWriter");
-//        antRunner.run();
-        
-        
+
+        if(isDebug) {
+            String connectorId =
+                configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_CONNECTOR,
+                                           (String) null);
+            IVMConnector connector = null;
+
+            if (connectorId == null){
+                connector = JavaRuntime.getDefaultVMConnector();
+            } else {
+                connector = JavaRuntime.getVMConnector(connectorId);
+            }
+
+            if (connector == null){
+                abort(MIDletLauncherMessages.ConnectorNotSpecified, null,
+                      IJavaLaunchConfigurationConstants.ERR_CONNECTOR_NOT_AVAILABLE);
+            }
+
+            Map argMap = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_CONNECT_MAP,
+                                                    new HashMap());
+
+            int connectTimeout = JavaRuntime.getPreferences().getInt(JavaRuntime.PREF_CONNECT_TIMEOUT);
+            argMap.put("timeout", "" + connectTimeout);
+            
+            //TODO: Get this value from the tab.
+            argMap.put("port",""+8000);
+            argMap.put("hostname","127.0.0.1");
+            
+            // Check for cancellation.
+            if (monitor.isCanceled()) {
+                return;
+            }
+
+            monitor.worked(1);
+            monitor.subTask(MIDletLauncherMessages.CreatingSourceLocator);
+
+            // Set the default source locator if required.
+            setDefaultSourceLocator(launch, configuration);
+            
+            monitor.worked(1);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException exception) {
+                // TODO rickyn handle InterruptedException
+                exception.printStackTrace();
+            }
+            // Connect to remote VM.
+            connector.connect(argMap, monitor, launch);
+
+            // Check for cancellation.
+            if (monitor.isCanceled()) {
+                IDebugTarget[] debugTargets = launch.getDebugTargets();
+                for (int i = 0; i < debugTargets.length; i++){
+                    IDebugTarget target = debugTargets[i];
+                    if (target.canDisconnect()) {
+                        target.disconnect();
+                    }
+                }
+                return;
+            }
+
+            monitor.done();
+
+            //TODO: Way terminate the process right away?
+            // if (process != null)
+//            process.destroy(); 
+            // {
+            //
+        }
+
+//      AntRunner antRunner = new AntRunner();
+//      String buildxmlAbsolutePath = buildxml.getAbsolutePath();
+//      antRunner.setBuildFileLocation(buildxmlAbsolutePath);
+//      antRunner.addBuildListener("de.enough.mepose.ui.BuildListenerConsoleWriter");
+//      antRunner.run();
+
+
         // boolean debugMode = "debug".equals(mode);
         //        
         // String projectName =

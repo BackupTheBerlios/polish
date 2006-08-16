@@ -202,20 +202,20 @@ public class MeposeModel extends PropertyModel{
 
     private void resetAntBox() {
         this.antBox = new AntBox();
-        AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
-        IAntClasspathEntry[] antClasspathEntries = antPreferences.getDefaultAntHomeEntries();
-        
-        List antClasspathList = new LinkedList();
-        try {
-            for (int i = 0; i < antClasspathEntries.length; i++) {
-                IAntClasspathEntry entry = antClasspathEntries[i];
-                antClasspathList.add(new URL("file://"+entry.toString()));
-            }
-            URL toolsJarUrl = new URL("file://"+antPreferences.getToolsJarEntry().toString());
-            antClasspathList.add(toolsJarUrl);
-        } catch (MalformedURLException exception) {
-            MeposePlugin.log("No tools.jar found.",exception);
-        }
+//        AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
+//        IAntClasspathEntry[] antClasspathEntries = antPreferences.getDefaultAntHomeEntries();
+//        
+//        List antClasspathList = new LinkedList();
+//        try {
+//            for (int i = 0; i < antClasspathEntries.length; i++) {
+//                IAntClasspathEntry entry = antClasspathEntries[i];
+//                antClasspathList.add(new URL("file://"+entry.toString()));
+//            }
+//            URL toolsJarUrl = new URL("file://"+antPreferences.getToolsJarEntry().toString());
+//            antClasspathList.add(toolsJarUrl);
+//        } catch (MalformedURLException exception) {
+//            MeposePlugin.log("No tools.jar found.",exception);
+//        }
         
         // We inject the tools.jar classpath element now directly into the eclipse class loader.
 //        URL[] antClasspathAsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
@@ -513,7 +513,6 @@ public class MeposeModel extends PropertyModel{
      * @param file May be null to indicate that there is no polish home specified.
      */
     public void setPolishHome(File file) {
-        
         this.polishHome = file;
     }
 
@@ -555,12 +554,17 @@ public class MeposeModel extends PropertyModel{
         try {
             deviceDatabase2 = getDeviceDatabase();
         } catch (DeviceDatabaseException exception) {
-            MeposePlugin.log(exception);
             //TODO: Rethrow the exception.
             return null;
         }
         if(this.deviceTree == null && deviceDatabase2 != null) {
-            this.deviceTree = new DeviceTree(deviceDatabase2,null,null);
+            System.out.println("DEBUG:MeposeModel.getDeviceTree(...):create new DeviceTree.polishHome:"+deviceDatabase2.getPolishHome());
+            try {
+                this.deviceTree = new DeviceTree(deviceDatabase2,null,null);
+            }
+            catch(Exception e) {
+                return null;
+            }
         }
       
         return this.deviceTree;
@@ -617,19 +621,36 @@ public class MeposeModel extends PropertyModel{
     public Map getStoreableProperties() {
         Map p = new HashMap();
         
+        File temp;
         // Paths.
-        p.put(ID_PATH_POLISH_FILE,getPolishHome().toString());
-        p.put(ID_PATH_WTK_FILE,getWTKHome().toString());
-        p.put(ID_PATH_NOKIA_FILE,getNokiaHome().toString());
-        p.put(ID_PATH_SONY_FILE,getSonyHome().toString());
-        p.put(ID_PATH_PROJECT_FILE,getProjectHome().toString());
-        p.put(ID_PATH_BUILDXML_FILE,getBuildxml().toString());
+        temp = getPolishHome();
+        p.put(ID_PATH_POLISH_FILE,temp==null?"":temp.toString());
+        temp = getWTKHome();
+        p.put(ID_PATH_WTK_FILE,temp==null?"":temp.toString());
+        temp = getNokiaHome();
+        p.put(ID_PATH_NOKIA_FILE,temp==null?"":temp.toString());
+        temp = getSonyHome();
+        p.put(ID_PATH_SONY_FILE,temp==null?"":temp.toString());
+        temp = getProjectHome();
+        p.put(ID_PATH_PROJECT_FILE,temp==null?"":temp.toString());
+        temp = getBuildxml();
+        p.put(ID_PATH_BUILDXML_FILE,temp==null?"":temp.toString());
 //        p.put(ID_PATH_WORKINGDIRECTORY_BUILD)
         
         // Supported Config.
-        p.put(ID_SUPPORTED_CONFIGURATIONS,Arrays.arrayToString(getSupportedConfigurations()));
-        p.put(ID_SUPPORTED_PLATFORMS,Arrays.arrayToString(getSupportedPlatforms()));
-        p.put(ID_SUPPORTED_DEVICES,Arrays.arrayToString(getSupportedDevices()));
+        Configuration[] supportedConfigurations2 = getSupportedConfigurations();
+        if(supportedConfigurations2 != null) {
+            p.put(ID_SUPPORTED_CONFIGURATIONS,Arrays.arrayToString(supportedConfigurations2));
+        }
+        
+        Platform[] supportedPlatforms2 = getSupportedPlatforms();
+        if(supportedPlatforms2 != null) {
+            p.put(ID_SUPPORTED_PLATFORMS,Arrays.arrayToString(supportedPlatforms2));
+        }
+        Device[] supportedDevices2 = getSupportedDevices();
+        if(supportedDevices2 != null) {
+            p.put(ID_SUPPORTED_DEVICES,Arrays.arrayToString(supportedDevices2));
+        }
         
         // Current Config.
         Device currentDevice2 = getCurrentDevice();
@@ -678,7 +699,10 @@ public class MeposeModel extends PropertyModel{
             MeposePlugin.log(exception);
         }
         if(db == null) {
-            throw new IllegalStateException("Device Database not found. Most likely some paths are invalid.");
+            return;
+            // Return as from here on we initialize things like supported devices.
+            // But this is not possible without a db.
+//            throw new IllegalStateException("Device Database not found. Most likely some paths are invalid.");
         }
         
         // Supported Config.
@@ -687,6 +711,11 @@ public class MeposeModel extends PropertyModel{
             String[] supportedConfigurationsArray = supportedConfigurationsString.split(",");
             Configuration[] supportedConfigurationsTmp = new Configuration[supportedConfigurationsArray.length];
             ConfigurationManager cm = db.getConfigurationManager();
+            // TODO: We can return here only because we know that the whole deviceDatabase is not initialized
+            // and everything from here on is about this db.
+            if(cm == null) {
+                return;
+            }
             for (int i = 0; i < supportedConfigurationsArray.length; i++) {
                 String identifier = supportedConfigurationsArray[i];
                 Configuration c = cm.getConfiguration(identifier);
@@ -700,6 +729,9 @@ public class MeposeModel extends PropertyModel{
             String[] supportedPlatformsArray = supportedPlatformsString.split(",");
             Platform[] supportedPlatformsTmp = new Platform[supportedPlatformsArray.length];
             PlatformManager pm = db.getPlatformManager();
+            if(pm == null) {
+                return;
+            }
             for (int i = 0; i < supportedPlatformsArray.length; i++) {
                 String identifier = supportedPlatformsArray[i];
                 Platform platform = pm.getPlatform(identifier);
@@ -713,6 +745,9 @@ public class MeposeModel extends PropertyModel{
             String[] supportedDevicesArray = supportedDevicesString.split(",");
             List supportedDevicesTemp = new LinkedList();
             DeviceManager deviceManager = db.getDeviceManager();
+            if(deviceManager == null) {
+                return;
+            }
             for(int i = 0; i < supportedDevicesArray.length; i++) {
                 String identifier = supportedDevicesArray[i];
                 Device device = deviceManager.getDevice(identifier);

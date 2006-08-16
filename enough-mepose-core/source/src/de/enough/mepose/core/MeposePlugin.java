@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntCorePreferences;
+import org.eclipse.ant.core.IAntClasspathEntry;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -88,8 +89,13 @@ public class MeposePlugin extends Plugin {
         DefaultClassLoader classLoader = (DefaultClassLoader)getClass().getClassLoader();
 
         AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
-        File toolsJarFile = new File(antPreferences.getToolsJarEntry().toString());
+        IAntClasspathEntry toolsJarEntry = antPreferences.getToolsJarEntry();
         
+        // On MacOS X there is no tools.jar but javac is always on the classpath. See AntPreferencePage for details.
+        if(toolsJarEntry == null) {
+            return;
+        }
+        File toolsJarFile = new File(toolsJarEntry.toString());
         try {
             
             BundleFile bundleFile = new ZipBundleFile(toolsJarFile,null);

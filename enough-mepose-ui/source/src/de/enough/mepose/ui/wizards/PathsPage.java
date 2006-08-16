@@ -292,11 +292,14 @@ public class PathsPage extends WizardPage {
     protected void updateModelFromGUI() {
         String wtkHome = this.wtkHomeText.getText();
         String nokiaHome = this.nokiaHomeText.getText();
+        String polishHome = this.polishHomeText.getText();
 //        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHome);
         File wtkHomeFile = new File((wtkHome==null)?"":wtkHome);
         File nokiaHomeFile = new File((nokiaHome==null)?"":nokiaHome);
+        File polishHomeFile = new File((polishHome==null)?"":polishHome);
         this.newProjectModel.getMeposeModel().setWTKHome(wtkHomeFile);
         this.newProjectModel.getMeposeModel().setNokiaHome(nokiaHomeFile);
+        this.newProjectModel.getMeposeModel().setPolishHome(polishHomeFile);
     }
     
     protected void updateGUIFromModel() {

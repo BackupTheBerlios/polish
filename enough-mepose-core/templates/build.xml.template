@@ -23,6 +23,7 @@
 	
 	
 <property file="${user.name}.properties" />
+<property file="midlet.properties" />
 	
 <!-- The polish.home property should point to the directory   -->
 <!-- containing the J2ME Polish installation.                 -->
@@ -204,7 +205,7 @@
 		
 		<!-- execution of emulator(s) -->
 		<emulator
-			wait="true"
+			wait="false"
 			securityDomain="trusted"
 			enableProfiler="false"
 			enableMemoryMonitor="false"
@@ -214,6 +215,8 @@
 			<!--
 			<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
 			-->
+			<parameter name="-Xdebug" value="" />
+			<parameter name="-Xrunjdwp" value="transport=dt_socket,server=y,suspend=n,address=8000" />
 		</emulator>
 	
 	</j2mepolish>
