@@ -44,6 +44,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.io.RmsStorage;
+import de.enough.polish.sample.serialization.EnumSampleJavaSe.Weekday;
 import de.enough.polish.ui.TreeItem;
 import de.enough.polish.ui.UiAccess;
 
@@ -88,6 +89,31 @@ implements CommandListener
 	// you can use generics for having type safe collections - remember to add the cldc1.1-java5.jar to your project settings of your IDE:
 	private final Vector<Note> notes;
 	private final RmsStorage<Vector<Note>> storage;
+	
+	public enum Weekday {
+		MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+	}
+	
+	public String getLocalizedName( Weekday weekday ) {
+		switch( weekday ) {
+		case MONDAY:
+			return "Montag";	
+		case TUESDAY:
+			return "Dienstag";
+		case WEDNESDAY:
+			return "Mittwoch";
+		case THURSDAY:
+			return "Donnerstag";
+		case FRIDAY:
+			return "Freitag";
+		case SATURDAY:
+			return "Sonnabend";
+		case SUNDAY:
+			return "Sonntag";
+			
+		}
+		throw new IllegalArgumentException(); // should not be possible since an emum is used
+	}
 
 	/**
 	 * Creates a new midlet.
@@ -95,14 +121,16 @@ implements CommandListener
 	public NotesMidlet() {
 		// create main menu / notes list:
 		//#style notesList
-		this.notesList = new List("Notes", List.IMPLICIT );
+		this.notesList = new List(getLocalizedName( Weekday.SATURDAY ), List.IMPLICIT );
 		this.notesList.setCommandListener( this );
 		this.notesList.addCommand( this.createNewCommand );
 		this.notesList.addCommand( this.exitCommand );
 		UiAccess.addSubCommand( this.createNewNoteCommand, this.createNewCommand, this.notesList );
 		UiAccess.addSubCommand( this.createNewReminderCommand, this.createNewCommand, this.notesList );
 		this.notesList.addCommand( this.deleteCommand );
-
+		
+		System.out.println("Wed=" + getLocalizedName( Weekday.WEDNESDAY ));
+		
 		// restore notes from record store:
 		this.storage = new RmsStorage<Vector<Note>>();
 		Vector<Note> vector;
