@@ -31,7 +31,13 @@ public class EnumClassVisitor
 
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
   {
+//    if (name.equals("class$"))
+//      {
+//        System.out.println("Michael: " + name);
+//      }
+
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+    mv = new ThrowableMethodVisitor(mv);
     
     if (this.isEnumClass
         && METHOD_VALUES.equals(name)
