@@ -547,7 +547,7 @@
 		<type>postcompiler</type>
 		<name>java5</name>
 		<class>de.enough.polish.postcompile.java5.Java5PostCompiler</class>
-		<classpath>${polish.home}/lib/retroweaver-all.jar</classpath>
+		<classpath>${polish.home}/lib/retroweaver-all.jar:${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
 	</extension>
 	
 	<!-- Log Handler -->

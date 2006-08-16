@@ -28,17 +28,24 @@ package de.enough.polish.postcompile.java5;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.tree.ClassNode;
 
 import com.rc.retroweaver.RetroWeaver;
 import com.rc.retroweaver.event.WeaveListener;
 
+import de.enough.bytecode.ASMClassLoader;
+import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.postcompile.PostCompiler;
+import de.enough.polish.postcompile.BytecodePostCompiler;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -51,9 +58,11 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Java5PostCompiler extends PostCompiler {
+public class Java5PostCompiler extends BytecodePostCompiler {
 
-	/**
+  static final String CLASS_ENUM = "de/enough/polish/java5/Enum";
+
+  /**
 	 * The class file version number.
 	 */
 	private static final Map versionMap = new HashMap();
@@ -70,44 +79,89 @@ public class Java5PostCompiler extends PostCompiler {
 	
 	private String target = "1.2";
 	protected boolean isVerbose;
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.postcompile.PostCompiler#postCompile(java.io.File, de.enough.polish.Device)
-	 */
-	public void postCompile(File classesDir, Device device)
-	throws BuildException 
-	{
-		int version = ( (Integer)versionMap.get( this.target)).intValue();
-		RetroWeaver task = new RetroWeaver( version );
-		task.setStripSignatures( true );
-		task.setAutoboxClass("de.enough.polish.java5.Autobox");
-		task.setEnumClass("de.enough.polish.java5.Enum");
-		task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
-		task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
-		task.setListener( new WeaveListener() {
-			public void weavingStarted(String msg) {
-				System.out.println(msg);
-			}
 
-			public void weavingCompleted(String msg) {
-				System.out.println(msg);
-			}
+  /* (non-Javadoc)
+   * @see de.enough.polish.postcompile.PostCompiler#postCompile(java.io.File, de.enough.polish.Device)
+   */
+  public void postCompile(File classesDir, Device device, DirClassLoader loader, List classes) throws BuildException
+  {
+    int version = ( (Integer)versionMap.get( this.target)).intValue();
+    RetroWeaver task = new RetroWeaver( version );
+    task.setStripSignatures( true );
+    task.setAutoboxClass("de.enough.polish.java5.Autobox");
+    task.setEnumClass("de.enough.polish.java5.Enum");
+    task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
+    task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
+    task.setListener( new WeaveListener() {
+      public void weavingStarted(String msg) {
+        System.out.println(msg);
+      }
 
-			public void weavingPath(String pPath) {
-				if (Java5PostCompiler.this.isVerbose) {
-					System.out.println("Weaving " + pPath);
-				}
-			}
-		});
-		try {
-			task.weave( classesDir );
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BuildException("Unable to transform bytecode: " + e.toString() );
-		}
-	}
-	
-	/* (non-Javadoc)
+      public void weavingCompleted(String msg) {
+        System.out.println(msg);
+      }
+
+      public void weavingPath(String pPath) {
+        if (Java5PostCompiler.this.isVerbose) {
+          System.out.println("Weaving " + pPath);
+        }
+      }
+    });
+    try {
+      task.weave( classesDir );
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new BuildException("Unable to transform bytecode: " + e.toString() );
+    }
+
+    ASMClassLoader asmLoader = new ASMClassLoader(loader);
+    LinkedList enumClasses = new LinkedList();
+
+    // Find all classes implementing java.lang.Enum.
+    Iterator it = classes.iterator();
+    
+    while (it.hasNext())
+      {
+        String className = (String) it.next();
+        
+        try
+          {
+            ClassNode classNode = asmLoader.loadClass(className);
+            
+            if (CLASS_ENUM.equals(classNode.superName))
+              {
+                enumClasses.add(className);
+              }
+          }
+        catch (ClassNotFoundException e)
+          {
+            System.out.println("Error loading class " + className);
+          }
+      }
+    
+    // Process all enum classes.
+    it = enumClasses.iterator();
+    
+    while (it.hasNext())
+      {
+        String className = (String) it.next();
+        
+        try
+          {
+            ClassNode classNode = asmLoader.loadClass(className);
+            ClassWriter writer = new ClassWriter(true);
+            EnumClassVisitor visitor = new EnumClassVisitor(writer);
+            classNode.accept(visitor);
+            writeClass(classesDir, className, writer.toByteArray());
+          }
+        catch (ClassNotFoundException e)
+          {
+            System.out.println("Error loading class " + className);
+          }
+      }
+  }
+
+  /* (non-Javadoc)
 	 * @see de.enough.polish.Extension#initialize(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
 	public void initialize(Device device, Locale locale, Environment env) {
