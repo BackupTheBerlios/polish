@@ -77,12 +77,17 @@ public abstract class BytecodePostCompiler extends PostCompiler
   {
     try
       {
-        FileOutputStream output = new FileOutputStream(new File(classesDir, className + ".class"));
+    	File target = new File(classesDir, className + ".class");
+    	if (!target.getParentFile().exists()) {
+    		target.getParentFile().mkdirs();
+    	}
+        FileOutputStream output = new FileOutputStream( target );
         output.write(byteArray);
         output.close();
       }
     catch (IOException e)
       {
+    	e.printStackTrace();
         System.err.println("Error writing class " + className);
       }
   }

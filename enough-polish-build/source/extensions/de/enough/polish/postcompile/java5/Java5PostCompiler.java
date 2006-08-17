@@ -46,6 +46,7 @@ import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.postcompile.BytecodePostCompiler;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -88,10 +89,22 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     int version = ( (Integer)versionMap.get( this.target)).intValue();
     RetroWeaver task = new RetroWeaver( version );
     task.setStripSignatures( true );
-    task.setAutoboxClass("de.enough.polish.java5.Autobox");
-    task.setEnumClass("de.enough.polish.java5.Enum");
-    task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
-    task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
+    boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
+    if(!useDefaultPackage) {
+	    task.setAutoboxClass("de.enough.polish.java5.Autobox");
+	    task.setEnumClass("de.enough.polish.java5.Enum");
+	    task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
+	    task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
+	    task.addClassTranslation("java.lang.Iterable", "de.enough.polish.util.Iterable");
+	    task.addClassTranslation("java.util.Iterator", "de.enough.polish.util.Iterator");
+    } else {
+        task.setAutoboxClass("Autobox");
+        task.setEnumClass("Enum");
+        task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
+        task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
+        task.addClassTranslation("java.lang.Iterable", "Iterable");
+        task.addClassTranslation("java.util.Iterator", "Iterator");    	
+    }
     task.setListener( new WeaveListener() {
       public void weavingStarted(String msg) {
         System.out.println(msg);
@@ -107,6 +120,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
         }
       }
     });
+    
     try {
       task.weave( classesDir );
     } catch (IOException e) {
@@ -117,7 +131,15 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     ASMClassLoader asmLoader = new ASMClassLoader(loader);
     LinkedList enumClasses = new LinkedList();
 
-    // Find all classes implementing java.lang.Enum.
+    // we use a new classes directory, so that the user does not need to make a clean build each time he makes a small update
+    File newClassesDir = new File( classesDir.getParentFile(), "classes_12" );
+    if (!newClassesDir.exists()) {
+    	newClassesDir.mkdir();
+    }
+    device.setClassesDir( newClassesDir.getAbsolutePath() );
+
+    // Find all classes implementing java.lang.Enum and copy the remaining classes to the new classes dir:
+    
     Iterator it = classes.iterator();
     
     while (it.hasNext())
@@ -132,11 +154,24 @@ public class Java5PostCompiler extends BytecodePostCompiler {
               {
                 enumClasses.add(className);
               }
+            else
+            {
+            	String packageName = "";
+            	int lastSlashPos = className.lastIndexOf('/');
+            	if (lastSlashPos != -1) {
+            		packageName = className.substring(0, lastSlashPos );
+            	}
+            	FileUtil.copy( new File(classesDir, className + ".class"), new File(newClassesDir, packageName ) );
+            }
           }
         catch (ClassNotFoundException e)
           {
             System.out.println("Error loading class " + className);
           }
+        catch (IOException e)
+        {
+          System.out.println("Error copying class " + className);
+        }
       }
     
     // Process all enum classes.
@@ -152,7 +187,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
             ClassWriter writer = new ClassWriter(true);
             EnumClassVisitor visitor = new EnumClassVisitor(writer);
             classNode.accept(visitor);
-            writeClass(classesDir, className, writer.toByteArray());
+            writeClass(newClassesDir, className, writer.toByteArray());
           }
         catch (ClassNotFoundException e)
           {

@@ -361,7 +361,7 @@
 		<name>noTranslucencyWithDrawRgb</name>
 		<area>ui</area>
 		<description>Translucency is not supported with Graphics.drawRGB.</description>
-		<solution>None.</solution>
+		<solution>Use either fully transparent of fully opaque colors.</solution>
 	</bug>
 
 	<bug>

@@ -59,6 +59,7 @@
 		<capability name="IconSize" value="15x15" />		
 		<capability name="Property.imsi" value="IMSI" />
 		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</vendor>
 	
 	<vendor>
