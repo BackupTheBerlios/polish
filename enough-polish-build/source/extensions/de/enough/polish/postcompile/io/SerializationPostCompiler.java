@@ -1,6 +1,7 @@
 package de.enough.polish.postcompile.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,12 @@ public class SerializationPostCompiler extends BytecodePostCompiler
             classNode.accept(visitor);
                     
             writeClass(classesDir, className, writer.toByteArray());
+          }
+        catch (IOException e)
+          {
+            BuildException be = new BuildException("Error writing class " + className);
+            be.initCause(e);
+            throw be; 
           }
         catch (ClassNotFoundException e)
           {

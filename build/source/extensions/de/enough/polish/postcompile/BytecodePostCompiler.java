@@ -74,21 +74,17 @@ public abstract class BytecodePostCompiler extends PostCompiler
   }
 
   protected void writeClass(File classesDir, String className, byte[] byteArray)
+    throws IOException
   {
-    try
+    File target = new File(classesDir, className + ".class");
+
+    if (!target.getParentFile().exists())
       {
-    	File target = new File(classesDir, className + ".class");
-    	if (!target.getParentFile().exists()) {
-    		target.getParentFile().mkdirs();
-    	}
-        FileOutputStream output = new FileOutputStream( target );
-        output.write(byteArray);
-        output.close();
+        target.getParentFile().mkdirs();
       }
-    catch (IOException e)
-      {
-    	e.printStackTrace();
-        System.err.println("Error writing class " + className);
-      }
+
+    FileOutputStream output = new FileOutputStream( target );
+    output.write(byteArray);
+    output.close();
   }
 }

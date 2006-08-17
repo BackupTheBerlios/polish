@@ -139,7 +139,6 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     device.setClassesDir( newClassesDir.getAbsolutePath() );
 
     // Find all classes implementing java.lang.Enum and copy the remaining classes to the new classes dir:
-    
     Iterator it = classes.iterator();
     
     while (it.hasNext())
@@ -155,23 +154,31 @@ public class Java5PostCompiler extends BytecodePostCompiler {
                 enumClasses.add(className);
               }
             else
-            {
-            	String packageName = "";
-            	int lastSlashPos = className.lastIndexOf('/');
-            	if (lastSlashPos != -1) {
-            		packageName = className.substring(0, lastSlashPos );
-            	}
-            	FileUtil.copy( new File(classesDir, className + ".class"), new File(newClassesDir, packageName ) );
-            }
+              {
+                String packageName = "";
+                int lastSlashPos = className.lastIndexOf('/');
+                
+                if (lastSlashPos != -1)
+                  {
+                    packageName = className.substring(0, lastSlashPos + 1 );
+                  }
+
+                File target = new File(newClassesDir, packageName);
+                target.mkdirs();
+                FileUtil.copy(new File(classesDir, className + ".class"), target);
+              }
           }
         catch (ClassNotFoundException e)
           {
             System.out.println("Error loading class " + className);
           }
         catch (IOException e)
-        {
-          System.out.println("Error copying class " + className);
-        }
+          {
+            e.printStackTrace();
+            BuildException be = new BuildException("Error copying class " + className);
+            be.initCause(e);
+            throw be; 
+          }
       }
     
     // Process all enum classes.
@@ -188,6 +195,12 @@ public class Java5PostCompiler extends BytecodePostCompiler {
             EnumClassVisitor visitor = new EnumClassVisitor(writer);
             classNode.accept(visitor);
             writeClass(newClassesDir, className, writer.toByteArray());
+          }
+        catch (IOException e)
+          {
+            BuildException be = new BuildException("Error writing class " + className);
+            be.initCause(e);
+            throw be; 
           }
         catch (ClassNotFoundException e)
           {
