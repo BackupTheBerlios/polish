@@ -26,26 +26,18 @@
 package de.enough.polish.sample.serialization;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.Calendar;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.List;
-import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.io.RmsStorage;
-import de.enough.polish.sample.serialization.EnumSampleJavaSe.Weekday;
-import de.enough.polish.ui.TreeItem;
 import de.enough.polish.ui.UiAccess;
 
 /**
@@ -94,22 +86,22 @@ implements CommandListener
 		MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 	}
 	
-	public String getLocalizedName( Weekday weekday ) {
+	public String getWeekDayName( Weekday weekday ) {
 		switch( weekday ) {
 		case MONDAY:
-			return "Montag";	
+			return "Monday";	
 		case TUESDAY:
-			return "Dienstag";
+			return "Tuesday";
 		case WEDNESDAY:
-			return "Mittwoch";
+			return "Wednesday";
 		case THURSDAY:
-			return "Donnerstag";
+			return "Thursday";
 		case FRIDAY:
-			return "Freitag";
+			return "Friday";
 		case SATURDAY:
-			return "Sonnabend";
+			return "Saturday";
 		case SUNDAY:
-			return "Sonntag";
+			return "Sonday";
 			
 		}
 		throw new IllegalArgumentException(); // should not be possible since an emum is used
@@ -121,7 +113,7 @@ implements CommandListener
 	public NotesMidlet() {
 		// create main menu / notes list:
 		//#style notesList
-		this.notesList = new List(getLocalizedName( Weekday.SATURDAY ), List.IMPLICIT );
+		this.notesList = new List("Notes (" + getTodayName() + ")" , List.IMPLICIT );
 		this.notesList.setCommandListener( this );
 		this.notesList.addCommand( this.createNewCommand );
 		this.notesList.addCommand( this.exitCommand );
@@ -129,7 +121,6 @@ implements CommandListener
 		UiAccess.addSubCommand( this.createNewReminderCommand, this.createNewCommand, this.notesList );
 		this.notesList.addCommand( this.deleteCommand );
 		
-		System.out.println("Wed=" + getLocalizedName( Weekday.WEDNESDAY ));
 		
 		// restore notes from record store:
 		this.storage = new RmsStorage<Vector<Note>>();
@@ -152,6 +143,22 @@ implements CommandListener
 			vector = new Vector<Note>();
 		}
 		this.notes = vector;				
+	}
+
+	private String getTodayName() {
+		Calendar cal = Calendar.getInstance();
+		// really stupid example for enum, but what the heck:
+		int day = cal.get( Calendar.DAY_OF_WEEK );
+		switch (day) {
+		case 1: return getWeekDayName( Weekday.SUNDAY );
+		case 2: return getWeekDayName( Weekday.MONDAY );
+		case 3: return getWeekDayName( Weekday.TUESDAY );
+		case 4: return getWeekDayName( Weekday.WEDNESDAY );
+		case 5: return getWeekDayName( Weekday.THURSDAY );
+		case 6: return getWeekDayName( Weekday.FRIDAY);
+		case 7: return getWeekDayName( Weekday.SATURDAY);
+		}
+		return "unknown";
 	}
 
 	/* (non-Javadoc)
