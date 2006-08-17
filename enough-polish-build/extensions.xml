@@ -407,42 +407,42 @@
 		<type>obfuscator</type>
 		<name>RetroGuard</name>
 		<class>de.enough.polish.obfuscate.RetroGuardObfuscator</class>
-		<classpath>${polish.home}/import/retroguard.jar</classpath>
+		<classpath>${polish.home}/lib/retroguard.jar</classpath>
 	</extension>
 
 	<extension>
 		<type>obfuscator</type>
 		<name>ProGuard</name>
 		<class>de.enough.polish.obfuscate.ProGuardObfuscator</class>
-		<classpath>${polish.home}/import/proguard.jar</classpath>
+		<classpath>${polish.home}/lib/proguard.jar</classpath>
 	</extension>
 
 	<extension>
 		<type>obfuscator</type>
 		<name>YGuard</name>
 		<class>de.enough.polish.obfuscate.YGuardObfuscator</class>
-		<classpath>${polish.home}/import/yguard-lib.jar</classpath>
+		<classpath>${polish.home}/lib/yguard-lib.jar</classpath>
 	</extension>
 
 	<extension>
 		<type>obfuscator</type>
 		<name>yGuard</name>
 		<class>de.enough.polish.obfuscate.YGuardObfuscator</class>
-		<classpath>${polish.home}/import/yguard-lib.jar</classpath>
+		<classpath>${polish.home}/lib/yguard-lib.jar</classpath>
 	</extension>
 	
 	<extension>
 		<type>obfuscator</type>
 		<name>KlassMaster</name>
 		<class>de.enough.polish.obfuscate.KlassMasterObfuscator</class>
-		<classpath>${polish.home}/import/ZKM.jar:${wtk.home}/wtklib/kenv.zip</classpath>
+		<classpath>${polish.home}/lib/ZKM.jar:${wtk.home}/wtklib/kenv.zip</classpath>
 	</extension>
 
 	<extension>
 		<type>obfuscator</type>
 		<name>Dasho</name>
 		<class>de.enough.polish.obfuscate.DashoObfuscator</class>
-		<classpath>${polish.home}/import/dasho.jar</classpath>
+		<classpath>${polish.home}/lib/dasho.jar</classpath>
 	</extension>
 
 	<extension>
@@ -463,7 +463,7 @@
 		<type>precompiler</type>
 		<name>blackberryimportresolver</name>
 		<class>de.enough.polish.precompile.blackberry.ImportResolver</class>
-		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>		
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>		
 		<autostart>
 			polish.usePolishGui 
 			and polish.blackberry
@@ -477,14 +477,14 @@
 		<type>postcompiler</type>
 		<name>floater</name>
 		<class>de.enough.floater.FloaterPostCompiler</class>
-		<classpath>${polish.home}/import/enough-floater.jar:${polish.home}/import/enough-floater-evaluation.jar</classpath>
+		<classpath>${polish.home}/lib/enough-floater.jar</classpath>
 	</extension>
 	
 	<extension>
 		<type>postcompiler</type>
 		<name>screenchanger</name>
 		<class>de.enough.polish.postcompile.screenchange.ScreenChangerPostCompiler</class>
-		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>
 			polish.usePolishGui 
 			and (polish.css.screen-change-animation or polish.ScreenChangeAnimation.forward:defined) 
@@ -496,7 +496,7 @@
 		<type>postcompiler</type>
 		<name>mastercanvas</name>
 		<class>de.enough.polish.postcompile.mastercanvas.MasterCanvasPostCompiler</class>
-		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>polish.usePolishGui and polish.Bugs.displaySetCurrentFlickers</autostart>
 	</extension>
 	
@@ -504,7 +504,7 @@
 		<type>postcompiler</type>
 		<name>serialization</name>
 		<class>de.enough.polish.postcompile.io.SerializationPostCompiler</class>
-		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>true</autostart>
 	</extension>
 	
@@ -512,7 +512,7 @@
 		<type>postcompiler</type>
 		<name>classrenaming</name>
 		<class>de.enough.polish.postcompile.renaming.ClassRenamingPostCompiler</class>
-		<classpath>${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>true</autostart>
 	</extension>
 	
@@ -526,7 +526,7 @@
 		<type>postcompiler</type>
 		<name>orchestra</name>
 		<class>de.enough.orchestra.OrchestraPostCompiler</class>
-		<classpath>${polish.home}/import/enough-orchestra.jar</classpath>
+		<classpath>${polish.home}/lib/enough-orchestra.jar</classpath>
 	</extension>
 	
 	<extension>
@@ -547,7 +547,7 @@
 		<type>postcompiler</type>
 		<name>java5</name>
 		<class>de.enough.polish.postcompile.java5.Java5PostCompiler</class>
-		<classpath>${polish.home}/lib/retroweaver-all.jar:${polish.home}/import/asm-all.jar:${polish.home}/import/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/retroweaver-all.jar:${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
 	
 	<!-- Log Handler -->
@@ -650,7 +650,7 @@
 		<type>resourcecopier</type>
 		<name>svgconverter</name>
 		<class>de.enough.polish.resources.SvgConverterResourceCopier</class>
-		<classpath>${polish.home}/import/svgSalamander.jar:${polish.home}/import/extensions.jar</classpath>
+		<classpath>${polish.home}/lib/svgSalamander.jar</classpath>
 	</extension>
 	
 
@@ -698,21 +698,21 @@
 		<type>finalizer</type>
 		<name>jar2cod</name>
 		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
 	</extension>
 	
 	<extension>
 		<type>finalizer</type>
 		<name>jar2prc</name>
 		<class>de.enough.polish.finalize.palm.JarToPrcFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
 	</extension>
 	
 	<extension>
 		<type>finalizer</type>
 		<name>jar2dotnet</name>
 		<class>de.enough.polish.finalize.dotnetcf.DotNetCFFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/import/extensions.jar:${polish.home}/import/enough-polish-dotnetcf-1.1.jar</classpath>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar:${polish.home}/lib/enough-polish-dotnetcf-1.1.jar</classpath>
 	</extension>
 	
 </extensions>

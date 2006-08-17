@@ -1,6 +1,6 @@
-<!-- When you are using NetBeans 5, just rename this file     -->
-<!-- to build.xml. You can then use the normal menu items     -->
-<!-- run, debug, build and so forth from within NetBeans.     -->
+<!-- Java 5 Syntax is possible by adding a postcompiler       -->
+<!-- in your build.xml script like shown below:               -->
+<!-- <postcompiler name="java5" />                            -->
 
 <!-- This file controls the build process.                    -->
 <!-- The most important target is the j2mepolish-target,      -->
@@ -21,11 +21,8 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-email" 
+	name="enough-j2mepolish-serialization" 
 	default="j2mepolish">
-	
-	<!-- extend the default NetBeans build script:           -->
-	<import file="nbproject/build-impl.xml"/>
 	
 	<!-- import user specific properties                          -->
 	<property file="${user.name}.properties" />
@@ -36,7 +33,11 @@
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
 	<property name="polish.home" location="%{INSTALL_PATH}" />
-			
+		
+	<!-- the device for the test mode - you can define it on the command-line
+	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
+	<property name="device" value="Nokia/Series60E2"/>
+	
 	<!-- The siemens.home, nokia.home and motorola.home-          -->
 	<!-- properties can be necessary when their emulators         -->
 	<!-- should be started.                                       -->
@@ -98,12 +99,11 @@
 		<property name="dir.work" value="build/test" />
 	</target>
 			
-	<target name="j2mepolish-init"
-		    depends="init"
-		>
+	<target name="init">
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/real" />
 		<property name="deploy-url" value="" />
+		<property name="resource.dir" value="resources" />
 	</target>
 	 
 	<!-- In this target the J2ME Polish task is used.             -->
@@ -114,64 +114,136 @@
 	<!--    3. The build-section controls the actual build        -->
 	<!--       process.                                           -->	
 	<target name="j2mepolish" 
-			depends="j2mepolish-init"
+			depends="init"
 			description="This is the controller for the J2ME build process." 
 			>
 		<j2mepolish>
-		    <!-- general settings -->
-			<info copyright="Copyright 2006 Enough Software. All rights reserved." 
-				description="A TreeItem example." 
-				infoUrl="http://www.enough.de" 
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
-				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
-				name="MobileMail" 
-				vendorName="Enough Software" 
-				version="1.0.4"
-		    />
+		    <!-- general settings, these settings basically form the JAD-attributes. -->
+		    <!-- Have a look at the <jad>-section for setting specialised attributes.
+		         You can also define localized attributes in the resources/messages.txt files -->
+			<info
+				license="%{J2ME_POLISH_LICENSE}"
+				name="TabbedForm"
+				version="1.0.0"
+				description="A demonstration of the Serialization Framework and of the Java 5 Syntax Support."
+				vendorName="Enough Software"
+				infoUrl="http://www.j2mepolish.org"
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serialization.jar" 
+				jarUrl="${deploy-url}${polish.jarName}"
+				copyright="Copyright 2006 Enough Software. All rights reserved."
+			/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->
 			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
 			<!-- the second deviceRequirements will be used instead. -->
-			<deviceRequirements if="test or enableCompilerMode">
-				<requirement name="Name" value="${platform.device}" />
+			<deviceRequirements if="test">
+				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
+				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60E1, Nokia/Series60E2, Generic/midp2, Generic/midp1" />
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu" 
-	                polishDir="../enough-polish-j2me/source/src" 
-	                symbols="polish.skipArgumentCheck" 
-	                usePolishGui="true"
-				>
+			<!-- 
+			 -->
+			<build
+				symbols="ExampleSymbol, AnotherExample"
+				fullscreen="menu"
+				usePolishGui="true"
+				workDir="${dir.work}"
+			>
 				<!-- midlets definition -->
-				<midlet class="de.enough.polish.sample.email.EmailMidlet" name="MobileMail"/>
-				<!-- project-wide variables - used for preprocessing  -->
-				<variables>
+				<midlet class="de.enough.polish.sample.serialization.NotesMidlet" name="Notes"/>
+				<!-- project-wide variables - used for preprocessing.  -->
+				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
+				<variables includeAntProperties="true" >
+					<!-- activate text input over J2ME Polish TextFields (without opening a new TextBox for each input: -->
 					<variable name="polish.TextField.useDirectInput" value="true" />
-					<variable name="polish.Container.allowCycling" value="false" />
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="false" />
+					<!-- activate input of symbols: -->
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<!-- activate switching to the native (e.g.T9) input mode: -->
+					<variable name="polish.TextField.allowNativeModeSwitch" value="true" />
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning -->
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
+					<!-- suppress List-select commands -->
+					<variable name="polish.List.suppressSelectCommand" value="true" />
+					<!--
+					You can also suppress ir rename the Add Symbol command:
+					<variable name="polish.TextField.suppressAddSymbolCommand" value="true" if="polish.key.AddSymbolKey:defined" />
+					<variable name="polish.command.entersymbol" value="Add Symbol" />
+					-->
 				</variables>
-				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
-					<keep class="de.enough.polish.example.Dummy" />
-				</obfuscator>
-				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug if="test" level="error" showLogOnError="true" verbose="true">
-					<filter level="debug" package="de.enough.polish.sample.mail"/>
-					<filter level="info" pattern="de.enough.polish.ui.*"/>
-				</debug>
+				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
-					dir="resources"
+					dir="${resource.dir}"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
+					<!-- add the localization element for created localized
+					     versions of your application: 
+					<localization locales="de_DE, en_US" unless="test" />
+					<localization locales="en_US" if="test" />
+					-->
 				</resources>
+				
+				<!-- activate Java 5 Syntax Support for this project: -->
+				<postcompiler name="java5" />
+				
+				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
+				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
+					<!--
+					You can set additional parameters here, e.g.:
+					<parameter name="optimize" value="false" />
+					-->
+				</obfuscator>
+				<variables 
+					replacePropertiesWithoutDirective="false"
+					>
+					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />					
+				</variables>
+				<!-- obfuscator settings: do not obfuscate when the test-property is true  
+				-->
+				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">
+					<parameter name="optimize" value="true" />
+				</obfuscator>
+				<!-- debug/log settings: only include debug setting when the test-property is true -->
+				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
+					<filter level="debug" package="de.enough.polish.sample.serialization"/>
+					<!--
+					<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
+					<filter level="debug" class="de.enough.polish.ui.Container"/>
+					<filter level="debug" class="de.enough.polish.ui.Screen"/>
+					<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
+					-->
+				</debug>
+				<!-- user defined JAD attributes can also be used: -->
+				<jad>
+					<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
+				</jad>	
 			</build>
 			
 			<!-- execution of emulator(s) -->
+			<emulator
+				wait="true"
+				securityDomain="trusted"
+				enableProfiler="true"
+				enableMemoryMonitor="true"
+				enableNetworkMonitor="true"
+				if="debug"
+				>
+				<!-- this is an example for connecting to a debugger - use the ${polish.debug.port} Ant property
+				     for getting to know the port of the debugger. In this example the 
+				     "connect-debugger" target is also required.
+				-->
+				<!--
+				<debugger name="antcall" target="connect-debugger" port="6001" />
+				-->
+			</emulator>
+                        
 			<emulator
 				wait="true"
 				trace="none"
@@ -181,21 +253,6 @@
 				enableNetworkMonitor="false"
 				if="test and not debug"
 				>
-				<!--
-				<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
-				-->
-			</emulator>
-                        
-			<emulator
-				wait="true"
-				securityDomain="trusted"
-				enableProfiler="false"
-				enableMemoryMonitor="false"
-				enableNetworkMonitor="false"
-				if="debug"
-				>
-				<!-- Attach the emulator to the NetBeans debugger:	-->
-				<debugger name="antcall" target="connect-debugger" port="6001" />
 			</emulator>
 
 		
@@ -222,64 +279,5 @@
 	/>
 	
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
-	
-	<target name="deploy"
-			description="Deploys the applications. Currently empty."
-			depends="j2mepolish"
-	/>
-	        
-
-	        
-	<!-- NetBeans specific build targets: -->
-	        
-	        <target name="run" 
-	                depends="test, j2mepolish"
-	        >
-	        </target>
-
-	        <target name="rebuild" 
-	                depends="clean, j2mepolish"
-	        >
-	        </target>
-
-	        <target name="rebuild-all" 
-	                depends="clean, j2mepolish"
-	        >
-	        </target>
-	        
-	        <target name="jar" 
-	                depends="j2mepolish"
-	        >
-	        </target>
-
-	        <target name="jar-all" 
-	                depends="j2mepolish"
-	        >
-	        </target>
-
-	        <target name="clean-all" 
-	                depends="clean"
-	        >
-	        </target>
-	                
-	        <target name="deploy-all" 
-	                depends="deploy"
-	        >
-	        </target>
-	        
-	        <target name="enable-compiler-mode">
-	            <property name="enableCompilerMode" value="true" />
-	        </target>
-
-	        <target name="compile-single" 
-	                depends="enable-compiler-mode, j2mepolish"
-	        >
-	        </target>
-	        
-	    <target name="connect-debugger">
-	        <property name="jpda.port" value="${polish.debug.port}" />
-	        <antcall target="nbdebug"/>
-	    </target>
-
 
 </project>

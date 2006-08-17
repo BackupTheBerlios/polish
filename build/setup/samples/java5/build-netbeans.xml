@@ -1,3 +1,7 @@
+<!-- Java 5 Syntax is possible by adding a postcompiler       -->
+<!-- in your build.xml script like shown below:               -->
+<!-- <postcompiler name="java5" />                            -->
+
 <!-- When you are using NetBeans 5, just rename this file     -->
 <!-- to build.xml. You can then use the normal menu items     -->
 <!-- run, debug, build and so forth from within NetBeans.     -->
@@ -21,7 +25,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-email" 
+	name="enough-j2mepolish-serializer" 
 	default="j2mepolish">
 	
 	<!-- extend the default NetBeans build script:           -->
@@ -120,12 +124,12 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info copyright="Copyright 2006 Enough Software. All rights reserved." 
-				description="A TreeItem example." 
+				description="A demonstration of the Serialization Framework." 
 				infoUrl="http://www.enough.de" 
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serializer.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
 				license="GPL" 
-				name="MobileMail" 
+				name="FramedForm" 
 				vendorName="Enough Software" 
 				version="1.0.4"
 		    />
@@ -137,7 +141,7 @@
 				<requirement name="Name" value="${platform.device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
+				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60E1, Nokia/Series60E2, Generic/midp2, Generic/midp1" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build fullscreen="menu" 
@@ -146,22 +150,61 @@
 	                usePolishGui="true"
 				>
 				<!-- midlets definition -->
-				<midlet class="de.enough.polish.sample.email.EmailMidlet" name="MobileMail"/>
-				<!-- project-wide variables - used for preprocessing  -->
-				<variables>
+				<midlet class="de.enough.polish.sample.serialization.NotesMidlet" name="Notes"/>
+				<!-- project-wide variables - used for preprocessing.  -->
+				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
+				<variables includeAntProperties="true" >
+					<!-- activate text input over J2ME Polish TextFields (without opening a new TextBox for each input: -->
 					<variable name="polish.TextField.useDirectInput" value="true" />
-					<variable name="polish.Container.allowCycling" value="false" />
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="false" />
+					<!-- activate input of symbols: -->
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<!-- activate switching to the native (e.g.T9) input mode: -->
+					<variable name="polish.TextField.allowNativeModeSwitch" value="true" />
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning -->
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
+					<!-- suppress List-select commands -->
+					<variable name="polish.List.suppressSelectCommand" value="true" />
+					<!--
+					You can also suppress ir rename the Add Symbol command:
+					<variable name="polish.TextField.suppressAddSymbolCommand" value="true" if="polish.key.AddSymbolKey:defined" />
+					<variable name="polish.command.entersymbol" value="Add Symbol" />
+					-->
 				</variables>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
-					<keep class="de.enough.polish.example.Dummy" />
+					<!--
+					You can set additional parameters here, e.g.:
+					<parameter name="optimize" value="false" />
+					-->
 				</obfuscator>
-				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug if="test" level="error" showLogOnError="true" verbose="true">
-					<filter level="debug" package="de.enough.polish.sample.mail"/>
-					<filter level="info" pattern="de.enough.polish.ui.*"/>
+				<variables 
+					replacePropertiesWithoutDirective="false"
+					>
+					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />					
+				</variables>
+				
+				<!-- activate Java 5 Syntax Support for this project: -->
+				<postcompiler name="java5" />
+				
+				<!-- obfuscator settings: do not obfuscate when the test-property is true  
+				-->
+				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">
+					<parameter name="optimize" value="true" />
+				</obfuscator>
+				<!-- debug/log settings: only include debug setting when the test-property is true -->
+				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
+					<filter level="debug" package="de.enough.polish.sample.serializer"/>
+					<!--
+					<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
+					<filter level="debug" class="de.enough.polish.ui.Container"/>
+					<filter level="debug" class="de.enough.polish.ui.Screen"/>
+					<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
+					-->
 				</debug>
 				<resources
 					dir="resources"

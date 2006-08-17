@@ -90,18 +90,20 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     RetroWeaver task = new RetroWeaver( version );
     task.setStripSignatures( true );
     boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
+    boolean isCldc10 = this.environment.hasSymbol("polish.cldc1.0");
+    if (isCldc10) {
+    	task.addClassTranslation("java.lang.NoClassDefFoundError", "java.lang.Throwable");
+    }
+    task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
+    task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
     if(!useDefaultPackage) {
 	    task.setAutoboxClass("de.enough.polish.java5.Autobox");
 	    task.setEnumClass("de.enough.polish.java5.Enum");
-	    task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
-	    task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
 	    task.addClassTranslation("java.lang.Iterable", "de.enough.polish.util.Iterable");
 	    task.addClassTranslation("java.util.Iterator", "de.enough.polish.util.Iterator");
     } else {
         task.setAutoboxClass("Autobox");
         task.setEnumClass("Enum");
-        task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
-        task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
         task.addClassTranslation("java.lang.Iterable", "Iterable");
         task.addClassTranslation("java.util.Iterator", "Iterator");    	
     }

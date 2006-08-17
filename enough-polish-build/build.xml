@@ -4,12 +4,16 @@
 
 	<!-- global properties -->
 	<property file="${user.name}.properties" />
-	<property name="Version" value="2.0-beta1" />
-	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Beta 1&gt;! " />
-	<property name="all.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
-	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater-evaluation.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
+	<property name="device" value="Generic/Midp2Cldc11" />
+	<property name="Version" value="2.0-beta2" />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Beta 2&gt;! " />
+	
+	<property name="all.jars" value="jdom.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.jar,cldc-1.1.jar,cldc-1.1-java5.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
+	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar" />
+	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
+	<property name="polish.home" location="."/>
 	<property name="wtk.home" value="/home/enough/dev/WTK2.2" />
 	<property name="preverify.cmd" value="${wtk.home}/bin/preverify" />
 	<property name="dir.import" location="import" />
@@ -17,12 +21,12 @@
 	
 	<!-- task definitions -->
 	
-	<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:import/jdom.jar"/>
+	<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:lib/jdom.jar"/>
 	<taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
 	<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
-	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:import/jdom.jar"/>
+	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:lib/jdom.jar"/>
 	<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
-	<taskdef resource="proguard/ant/task.properties" classpath="import/proguard.jar" />	
+	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />	
 	
 	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 	
@@ -48,15 +52,19 @@
 	    	packagenames="de.enough.*" 
 	    	sourcepath="source/src:source/extensions" 
 	    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
-	    	doctitle="the polish build framework"
+	    	doctitle="the J2ME Polish build framework"
 	    />
 	</target>
 	
-	
-	<target name="bin-dist" depends="init">
+	<target name="build-init">
 		<delete dir="dist" />
 		<mkdir dir="dist" />
-		
+	</target>
+
+	
+	<target name="build-build" 
+		depends="build-init"
+		description="builds the enough-j2mepolish-build.jar">
 		<!-- create a list of all J2ME source files: -->
 		<indexWriter 
 			target="build/j2mepolish.index.txt"
@@ -80,7 +88,12 @@
 			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt,translations.txt" />
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 			<fileset dir="setup" includes="icons/*.*" />
-		</jar>
+		</jar>	
+	</target>
+
+	<target name="build-build-source" 
+		depends="build-init"
+		description="builds the enough-j2mepolish-build-src.jar">
 		<!-- This source jar is suitable for inclusion as a source location in eclipse -->
 		<jar destfile="dist/enough-j2mepolish-build-src.jar">
 			<fileset dir="source/src">
@@ -90,6 +103,11 @@
 			    <include name="**/*.java"/>
 			</fileset>
 		</jar>
+	</target>
+
+	<target name="build-extension" 
+		depends="build-init"
+		description="builds the enough-j2mepolish-extension.jar">
 		<!-- create the binary extensions distribution -->
 		<jar destfile="dist/enough-j2mepolish-extensions.jar"
 		     basedir="bin/extensions"
@@ -97,28 +115,107 @@
 			 index="true"
 		     >
 		</jar>
-		<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
-		<mkdir dir="../enough-polish-j2me/bin/preverified" />
-		<echo message="Invoking preverifier ${wtk.home}/bin/preverify..." />
-		<exec executable="${wtk.home}/bin/preverify" failonerror="true">
-			<arg line="-classpath"/>
-			<arg line="import/cldc-1.1.jar:import/midp-2.0.jar:import/blackberry-4.0.jar:import/pdaapi.jar:import/mmapi.jar:import/m3g.jar:import/btapi.jar"/>
-			<!-- unix:
-			-->
-			<!-- windows 
-			<arg line="import/blackberry-4.0.jar;import/pdaapi.jar;import/m3g.jar;import/cldc-1.1.jar;import/midp-2.0.jar;import/btapi.jar"/>
-			-->
-			<arg line="-d"/>
-			<arg line="../enough-polish-j2me/bin/preverified"/>
-			<arg line="../enough-polish-j2me/bin/classes"/>
-		</exec>
-		<!-- create the binary J2ME distribution -->
-		<jar destfile="dist/enough-j2mepolish-client.jar"
-		     basedir="../enough-polish-j2me/bin/preverified"
+	</target>
+
+	<target name="build-client" 
+		depends="build-init"
+		description="builds the enough-j2mepolish-client.jar"
+		>
+			<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
+			<mkdir dir="../enough-polish-j2me/bin/preverified" />
+			<echo message="Invoking preverifier ${wtk.home}/bin/preverify..." />
+			<exec executable="${wtk.home}/bin/preverify" failonerror="true">
+				<arg line="-classpath"/>
+				<arg line="import/cldc-1.1.jar:import/midp-2.0.jar:import/blackberry-4.0.jar:import/pdaapi.jar:import/mmapi.jar:import/m3g.jar:import/btapi.jar"/>
+				<!-- unix:
+				-->
+				<!-- windows 
+				<arg line="import/blackberry-4.0.jar;import/pdaapi.jar;import/m3g.jar;import/cldc-1.1.jar;import/midp-2.0.jar;import/btapi.jar"/>
+				-->
+				<arg line="-d"/>
+				<arg line="../enough-polish-j2me/bin/preverified"/>
+				<arg line="../enough-polish-j2me/bin/classes"/>
+			</exec>
+			<!-- create the binary J2ME distribution -->
+			<jar destfile="dist/enough-j2mepolish-client.jar"
+			     basedir="../enough-polish-j2me/bin/preverified"
+				 excludes="**/*.html"
+				 index="true"
+			     >
+			</jar>
+	</target>
+
+	<target name="build-client-java5" 
+		depends="build-init"
+		description="builds the enough-j2mepolish-client-java5.jar"
+		>
+			<mkdir dir="build/java5source" />
+			<mkdir dir="build/java5classes" />
+			<mkdir dir="build/java5resources" />
+		<j2mepolish>
+		    <!-- general settings -->
+			<info 
+				license="GPL"
+				copyright="Copyright 2006 Enough Software. All rights reserved." 
+				description="Used for building versions for Java 5 syntax support." 
+				infoUrl="http://www.j2mepolish.org" 
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-j2mepolish.jar" 
+				jarUrl="${deploy-url}${polish.jarName}" 
+				name="J2ME Polish" 
+				vendorName="Enough Software" 
+				version="2.0.0"
+		    />
+			<!-- selection of supported devices -->
+			<deviceRequirements>
+				<requirement name="Identifier" value="${device}"/>
+			</deviceRequirements>
+		    <!-- build settings -->
+			<build 
+				fullscreen="menu" 
+	            polishDir="../enough-polish-j2me/source/src" 
+	            symbols="polish.Java5" 
+	            usePolishGui="always"
+	            sourceDir="build/java5source"
+				workDir="${dir.work}"
+				compilerMode="true"
+				compilerDestDir="build/java5classes"
+				>
+
+				<!-- project-wide variables - used for preprocessing  -->
+				<variables 
+					replacePropertiesWithoutDirective="false"
+					>
+		            <variable name="polish.css.allowAllAttributes" value="true"/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+				</variables>
+				<resources
+					dir="build/java5resources" 
+					defaultexcludes="yes"
+					excludes="*.db"
+					filterZeroLengthFiles="true"
+				 >
+					<localization locales="en_US" />
+				</resources>
+				<postcompiler name="java5" />
+			</build>
+		</j2mepolish>
+		<!-- now package the compiled classes -->
+		<jar destfile="dist/enough-j2mepolish-client-java5.jar"
+		     basedir="build/java5classes"
 			 excludes="**/*.html"
 			 index="true"
 		     >
 		</jar>
+		
+	</target>
+
+	
+	<target name="bin-dist" 
+		depends="build-build, build-extension, build-client, build-client-java5, build-build-source"
+		description="creates the binary distribution"
+		>
+		
+		
 		<!-- create the update zip file containing the jars -->
 		<zip destfile="dist/j2mepolish-${Version}.zip">
 			<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
@@ -223,40 +320,43 @@
 		</target>
 	
 	<target name="floater"
-		description="creates a new floater evaluation version"
+		description="creates a new floater version"
 		>
 		<ant dir="../enough-floater" target="deploy" ></ant>
 	</target>
-		
-	<target name="installer" 
-			 depends="bin-dist"
-			 description="creates the j2mepolish-installer." 
-		>
-		<taskdef name="izpack" 
-			classpath="${izpack.dir}/lib/compiler.jar"
-			classname="com.izforge.izpack.ant.IzPackTask"/>
-		<taskdef name="webprocessor" 
-			classname="de.enough.webprocessor.WebProcessorTask" 
-			classpath="../enough-webprocessor/bin/classes" />
+	
+	<target name="tmpsetup" 
+		description="cleans ant sets up the temporary folder for all J2ME Polish installation files"
+		depends="bin-dist" >
 		<delete dir="tmp" />
 		<mkdir dir="tmp/import" />
+		<mkdir dir="tmp/lib" />
 		<mkdir dir="tmp/menu" />
 		<mkdir dir="tmp/sysinfo" />
-		<!-- copy the installation files -->
+	</target>
+
+	<target name="copylibs" 
+		description="copies library files" 
+		depends="tmpsetup" >
 		<!-- copy the core files of J2ME Polish -->
 		<copy todir="tmp/" >
 			<fileset dir="." includes="capabilities.xml,platforms.xml,configurations.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
 		</copy>
 		<copy todir="tmp/import">
 			<fileset dir="import" includes="${all.jars}" />
+			<fileset dir="lib" includes="${all.jars}" />
+			<fileset dir="dist" includes="enough-j2mepolish-build.jar,enough-j2mepolish-client.jar,enough-j2mepolish-client-java5.jar"  />
+		</copy>
+		<copy todir="tmp/lib">
+			<fileset dir="import" includes="${all.library.jars}" />
+			<fileset dir="lib" includes="${all.library.jars}" />
 			<fileset dir="dist" includes="*.jar" />
 		</copy>
-		<!-- copy mac os x standalone applications -->
-		<mkdir dir="tmp/macosx" />
-		<copy todir="tmp/macosx" >
-			<fileset dir="setup/macosx" excludes="**/CVS/**" />
-		</copy>
-		<!-- copy sample applications -->
+	</target>
+
+	<target name="copysamples" 
+		description="copies sample projects files" 
+		depends="tmpsetup" >
 		<!-- copy menu application -->
 		<mkdir dir="tmp/samples/menu/source/src" />
 		<copy todir="tmp/samples/menu/source/src">
@@ -299,6 +399,16 @@
 			>
 			<fileset dir="setup/samples/serialization" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-sample-serialization" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy java5 sample application -->
+		<mkdir dir="tmp/samples/java5/source/src" />
+		<copy todir="tmp/samples/java5/source/src">
+			<fileset dir="../enough-polish-sample-java5/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/java5/" 
+			>
+			<fileset dir="setup/samples/java5" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-java5" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy roadrunner sample application -->
 		<mkdir dir="tmp/samples/roadrunner/source/src" />
@@ -350,6 +460,34 @@
 			<fileset dir="setup/samples/doja" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-sample-doja" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+	</target>
+
+	<target name="copyosx" 
+		description="copies mac os x standalone apps" 
+		depends="tmpsetup" >
+		<!-- copy mac os x standalone applications -->
+		<mkdir dir="tmp/macosx" />
+		<copy todir="tmp/macosx" >
+			<fileset dir="setup/macosx" excludes="**/CVS/**" />
+		</copy>
+	</target>
+
+	<target name="copyfiles" 
+		description="copies all library and sample project files" 
+		depends="copylibs, copysamples, copyosx" >
+	</target>
+		
+	<target name="installer" 
+			 depends="bin-dist, copyfiles"
+			 description="creates the j2mepolish-installer." 
+		>
+		<taskdef name="izpack" 
+			classpath="${izpack.dir}/lib/compiler.jar"
+			classname="com.izforge.izpack.ant.IzPackTask"/>
+		<taskdef name="webprocessor" 
+			classname="de.enough.webprocessor.WebProcessorTask" 
+			classpath="../enough-webprocessor/bin/classes" />
+
 		<!-- copy source of J2ME Polish -->
 		<mkdir dir="tmp/j2mepolish-src/build" />
 		<copy todir="tmp/j2mepolish-src/build">

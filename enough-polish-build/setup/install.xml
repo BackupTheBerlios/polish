@@ -10,7 +10,7 @@
         <appname>J2ME-Polish</appname>
         <appversion>${Version}</appversion>
         <authors>
-            <author name="Robert Virkus" email="info@enough.de"/>
+            <author name="Robert Virkus" email="j2mepolish@enough.de"/>
         </authors>
         <url>http://www.j2mepolish.org/</url>
     </info>
@@ -74,8 +74,9 @@
     -->
     <packs>
         <pack name="Base" required="yes">
-            <description>The J2ME Polish library files, which will be copied into the &quot;import&quot;-folder.</description>
+            <description>The J2ME Polish library files, which will be copied into the &quot;lib&quot;- and &quot;import&quot;-folder.</description>
             <file src="import" targetdir="$INSTALL_PATH"/>
+            <file src="lib" targetdir="$INSTALL_PATH"/>
             <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="../custom-css-attributes.xml" targetdir="$INSTALL_PATH"/>
             <file src="../LICENSE.txt" targetdir="$INSTALL_PATH"/>
@@ -123,6 +124,19 @@
             <parsable targetfile="$INSTALL_PATH/samples/serialization/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/serialization/nbproject/project.properties" type="shell" /> 
         </pack>
+        
+        <pack name="Java 5 Syntax Sample Project" required="no" preselected="yes">
+            <description>You can use Java 5 syntax elements like generics, autoboxing and enums with J2ME Polish. This project shows you an example.</description>
+            <file src="samples/java5/source" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="samples/java5/resources" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="../setup/samples/java5/build.xml" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="../setup/samples/java5/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="../setup/samples/java5/nbproject" targetdir="$INSTALL_PATH/samples/java5"/>
+            <parsable targetfile="$INSTALL_PATH/samples/java5/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/java5/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/java5/nbproject/project.properties" type="shell" /> 
+        </pack>
+        
         <pack name="Roadrunner Sample Application" required="no" preselected="yes">
             <description>A sample application that features a well know game principle.</description>
             <file src="samples/roadrunner/source" targetdir="$INSTALL_PATH/samples/roadrunner"/>

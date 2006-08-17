@@ -120,7 +120,7 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info copyright="Copyright 2006 Enough Software. All rights reserved." 
-				description="A demonstration of the FramedForm." 
+				description="A demonstration of the Serialization Framework." 
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serializer.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 

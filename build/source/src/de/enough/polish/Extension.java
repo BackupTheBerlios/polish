@@ -297,7 +297,8 @@ public abstract class Extension {
 		}
 		if (classPath != null) {
 			// add enough-j2mepolish-extensions.jar to the path:
-			String extensionsPath = environment.writeProperties("${polish.home}/import/enough-j2mepolish-extensions.jar:${polish.home}/bin/extensions");
+			String extensionsPath = environment.writeProperties("${polish.home}/lib/enough-j2mepolish-extensions.jar:${polish.home}/bin/extensions");
+			//System.out.println("using classpath=" + classPath );
 			classPath.add( new Path( antProject, extensionsPath ));
 			classLoader = new AntClassLoader(
 	    			classLoader,

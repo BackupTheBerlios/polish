@@ -121,7 +121,7 @@
 				license="%{J2ME_POLISH_LICENSE}"
 				name="TabbedForm"
 				version="1.0.0"
-				description="A demonstration of the TabbedForm."
+				description="A demonstration of the Serialization Framework."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serialization.jar" 
