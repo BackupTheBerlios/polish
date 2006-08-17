@@ -120,9 +120,24 @@ public class Java5PostCompiler extends BytecodePostCompiler {
         }
       }
     });
+    // we use a new classes directory, so that the user does not need to make a clean build each time he makes a small update
+    File newClassesDir = new File( classesDir.getParentFile(), "classes_12" );
+    if (!newClassesDir.exists()) {
+    	newClassesDir.mkdir();
+    }
+    try {
+		FileUtil.copyDirectoryContents( classesDir, newClassesDir, true );
+		loader = DirClassLoader.createClassLoader(newClassesDir);
+	} catch (IOException e) {
+        e.printStackTrace();
+        BuildException be = new BuildException("Unable to copy classes to temporary directory.");
+        be.initCause(e);
+        throw be; 
+	}
+    device.setClassesDir( newClassesDir.getAbsolutePath() );
     
     try {
-      task.weave( classesDir );
+      task.weave( newClassesDir );
     } catch (IOException e) {
       e.printStackTrace();
       throw new BuildException("Unable to transform bytecode: " + e.toString() );
@@ -131,12 +146,6 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     ASMClassLoader asmLoader = new ASMClassLoader(loader);
     LinkedList enumClasses = new LinkedList();
 
-    // we use a new classes directory, so that the user does not need to make a clean build each time he makes a small update
-    File newClassesDir = new File( classesDir.getParentFile(), "classes_12" );
-    if (!newClassesDir.exists()) {
-    	newClassesDir.mkdir();
-    }
-    device.setClassesDir( newClassesDir.getAbsolutePath() );
 
     // Find all classes implementing java.lang.Enum and copy the remaining classes to the new classes dir:
     Iterator it = classes.iterator();
@@ -153,31 +162,10 @@ public class Java5PostCompiler extends BytecodePostCompiler {
               {
                 enumClasses.add(className);
               }
-            else
-              {
-                String packageName = "";
-                int lastSlashPos = className.lastIndexOf('/');
-                
-                if (lastSlashPos != -1)
-                  {
-                    packageName = className.substring(0, lastSlashPos + 1 );
-                  }
-
-                File target = new File(newClassesDir, packageName);
-                target.mkdirs();
-                FileUtil.copy(new File(classesDir, className + ".class"), target);
-              }
           }
         catch (ClassNotFoundException e)
           {
             System.out.println("Error loading class " + className);
-          }
-        catch (IOException e)
-          {
-            e.printStackTrace();
-            BuildException be = new BuildException("Error copying class " + className);
-            be.initCause(e);
-            throw be; 
           }
       }
     
