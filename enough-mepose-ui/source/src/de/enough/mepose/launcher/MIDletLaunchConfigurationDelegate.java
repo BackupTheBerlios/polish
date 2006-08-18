@@ -24,12 +24,18 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.core.model.RuntimeProcess;
+import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
+import org.eclipse.debug.core.sourcelookup.ISourceContainer;
+import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
+import org.eclipse.debug.internal.core.LaunchConfiguration;
 import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
@@ -191,7 +197,24 @@ AbstractJavaLaunchConfigurationDelegate {
         attributes.put(AbstractEclipseBuildLogger.ANT_PROCESS_ID, idStamp);
         antBox.setProperty(AbstractEclipseBuildLogger.ANT_PROCESS_ID,idStamp);
         attributes.put(DebugPlugin.ATTR_CAPTURE_OUTPUT,"true");
+        
+//        MeposeSourceLocator meposeSourceLocator = new MeposeSourceLocator(model);
+//        meposeSourceLocator.initializeParticipants();
+//        launch.setSourceLocator(meposeSourceLocator);
+
+        AbstractSourceLookupDirector sourceLocator = (AbstractSourceLookupDirector)launch.getSourceLocator();
+        ISourceContainer[] sourceContainers = sourceLocator.getSourceContainers();
+        
+        ISourceContainer meposeContainer = new DirectorySourceContainer(new Path(model.getPolishHome()+"/source/src"),true);
+        
+        ISourceContainer[] newSourceContainers = new ISourceContainer[sourceContainers.length+1];
+        System.arraycopy(sourceContainers,0,newSourceContainers,0,sourceContainers.length);
+        newSourceContainers[sourceContainers.length] = meposeContainer;
+        
+        sourceLocator.setSourceContainers(newSourceContainers);
+        
         AntProcess antProcess = new AntProcess("J2ME Polish",launch,attributes);
+        
         
         Throwable throwable = null;
 
@@ -246,7 +269,7 @@ AbstractJavaLaunchConfigurationDelegate {
             monitor.subTask(MIDletLauncherMessages.CreatingSourceLocator);
 
             // Set the default source locator if required.
-            setDefaultSourceLocator(launch, configuration);
+//            setDefaultSourceLocator(launch, configuration);
             
             monitor.worked(1);
 

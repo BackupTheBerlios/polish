@@ -68,6 +68,9 @@
         sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
         sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
 	</extension>
+	
+	de.enough.mepose.launcher.meposeSourceLocator
+	
 	-->
 	<extension
 		point="org.eclipse.debug.core.launchConfigurationTypes">
@@ -160,6 +163,13 @@
       		commandId="de.enough.mepose.ui.launchShortcut.debug"
       		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 	</extension>
+ <extension
+       point="org.eclipse.debug.core.sourceLocators">
+    <sourceLocator
+          class="de.enough.mepose.launcher.MeposeSourceLocator"
+          id="de.enough.mepose.launcher.meposeSourceLocator"
+          name="J2ME Polish Source Locator"/>
+ </extension>
 	
 <!--
 	<extension

@@ -6,7 +6,6 @@ Bundle-Version: 0.6.0
 Bundle-Activator: de.enough.mepose.ui.MeposeUIPlugin
 Bundle-Localization: plugin
 Require-Bundle: de.enough.mepose.core,
- org.apache.log4j,
  org.eclipse.core.expressions,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
@@ -23,7 +22,8 @@ Require-Bundle: de.enough.mepose.core,
  org.eclipse.ui.forms,
  org.eclipse.ant.core,
  org.eclipse.jface.text,
- org.eclipse.ant.ui
+ org.eclipse.ant.ui,
+ de.enough.log4j
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose.ui,
  de.enough.mepose.ui.preferencePages,

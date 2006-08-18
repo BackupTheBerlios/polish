@@ -49,6 +49,8 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
     private MessageConsole meposeConsole;
 
     private BuildLogger consoleLogger;
+
+    private MeposeModel currentModel;
     
     public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
@@ -217,6 +219,17 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
                 ss.addSelectionListener(ps);
             }
         });
+    }
+
+    /**
+     * @return
+     */
+    public MeposeModel getCurrentModel() {
+        return this.currentModel;
+    }
+    
+    public void setMeposeModel(MeposeModel model) {
+        this.currentModel = model;
     }
     
     /**
