@@ -1,16 +1,36 @@
 package de.enough.mepose.launcher;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.channels.Channels;
+import java.nio.channels.Pipe;
+import java.nio.channels.Pipe.SinkChannel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tools.ant.DefaultLogger;
+import org.apache.tools.ant.DemuxInputStream;
+import org.apache.tools.ant.DemuxOutputStream;
+import org.apache.tools.ant.Project;
+import org.eclipse.ant.internal.core.AbstractEclipseBuildLogger;
+import org.eclipse.ant.internal.ui.launchConfigurations.AntProcess;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.RuntimeProcess;
+import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -34,7 +54,10 @@ public class MIDletLaunchConfigurationDelegate extends
 AbstractJavaLaunchConfigurationDelegate {
 
     private static final String CAN_NOT_BUILD_PROJECT = "Can not build project";
+    private InputStream oldIn;
+    private PrintStream oldOut;
 //  private static final int EMULATOR_STARTUP_TIME = 5000;
+    private PrintStream oldErr;
 
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, final IProgressMonitor monitor)
@@ -67,9 +90,11 @@ AbstractJavaLaunchConfigurationDelegate {
             return;
         }
 
-        setupConsole();
+//        setupConsole();
 
 //      final AntBox antBox = model.getAntBox();
+        
+//      Make a new antBox so everything is nicely initialized.
         final AntBox antBox = new AntBox(model.getBuildxml());
         antBox.createProject();
         Device currentDevice = model.getCurrentDevice();
@@ -80,69 +105,111 @@ AbstractJavaLaunchConfigurationDelegate {
         antBox.setProperty("device",currentDevice.getIdentifier());
         antBox.setProperty("dir.work","build/test");
         antBox.setProperty("test","true");
+        if(isDebug) {
+            antBox.setProperty("debug","true");
+        }
+        Project antProject = antBox.getProject();
+        AntProcessBuildLogger antProcessBuildLogger = new AntProcessBuildLogger();
+        antProcessBuildLogger.setEmacsMode(false);
+        
+        try {
+        this.oldIn = System.in;
+        this.oldOut = System.out;
+        this.oldErr = System.err;
+        
+        System.setIn(new DemuxInputStream(antProject));
+        System.setOut(new PrintStream(new DemuxOutputStream(antProject, false)));
+        System.setErr(new PrintStream(new DemuxOutputStream(antProject, true)));
+        
+        antProcessBuildLogger.setErrorPrintStream(System.err);
+        antProcessBuildLogger.setOutputPrintStream(System.out);
+        antBox.addLogger(antProcessBuildLogger);
+        
+        
 //      final String[] targets = new String[] {"clean","test","j2mepolish"};
         final String[] targets = new String[] {"emulator"};
-        antBox.getProject().fireBuildStarted();
 
-//      DefaultLogger defaultLogger = new DefaultLogger();
-//      antBox.addLogger(defaultLogger);
-
-//      final Pipe pipe;
-//      try {
-//      pipe = Pipe.open();
-//      } catch (IOException exception) {
-//      showErrorBox(CAN_NOT_BUILD_PROJECT,"Could not open output stream.");
-//      return;
-//      }
-//      SinkChannel sink = pipe.sink();
-
-//      defaultLogger.setOutputPrintStream(new PrintStream(Channels.newOutputStream(sink)));
-
-
-//      Process process = new Process() {
-
-//      public OutputStream getOutputStream() {
-//      return new ByteArrayOutputStream(5);
-//      }
-
-//      public InputStream getInputStream() {
-//      System.out.println("DEBUG:.getInputStream(...):enter.");
-//      return Channels.newInputStream(pipe.source());
-////    return new ByteArrayInputStream("Hallo Welt".getBytes());
-//      }
-
-//      public InputStream getErrorStream() {
-//      System.out.println("DEBUG:.getErrorStream(...):enter.");
-//      return null;
-//      }
-
-//      public int waitFor() throws InterruptedException {
-//      return 0;
-//      }
-
-//      public int exitValue() {
-//      System.out.println("DEBUG:.exitValue(...):enter.");
-//      return 0;
-//      }
-
-//      public void destroy() {
-//      System.out.println("DEBUG:.destroy(...):enter.");
-//      }
-
+//        DefaultLogger defaultLogger = new DefaultLogger();
+//        antBox.addLogger(defaultLogger);
+//
+//        final Pipe pipe;
+//        try {
+//            pipe = Pipe.open();
+//        } catch (IOException exception) {
+//            showErrorBox(CAN_NOT_BUILD_PROJECT,"Could not open output stream.");
+//            return;
+//        }
+//        SinkChannel sink = pipe.sink();
+//
+//        OutputStream newOutputStream = Channels.newOutputStream(sink);
+//        defaultLogger.setOutputPrintStream(new PrintStream(newOutputStream));
+//        defaultLogger.setErrorPrintStream(new PrintStream(newOutputStream));
+//
+//        Process process = new Process() {
+//
+//        public OutputStream getOutputStream() {
+//            return new ByteArrayOutputStream(5);
+//        }
+//
+//        public InputStream getInputStream() {
+//            System.out.println("DEBUG:.getInputStream(...):enter.");
+////            return Channels.newInputStream(pipe.source());
+//            try {
+//                Thread.sleep(5000);
+//            } catch (InterruptedException exception) {
+//                // TODO rickyn handle InterruptedException
+//                exception.printStackTrace();
+//            }
+//          return new ByteArrayInputStream("Hallo Welt".getBytes());
+//        }
+//
+//        public InputStream getErrorStream() {
+//            System.out.println("DEBUG:.getErrorStream(...):enter.");
+//            return Channels.newInputStream(pipe.source());
+//        }
+//
+//        public int waitFor() throws InterruptedException {
+//            return 0;
+//        }
+//
+//        public int exitValue() {
+//            System.out.println("DEBUG:.exitValue(...):enter.");
+//            return 0;
+//        }
+//
+//        public void destroy() {
+//            System.out.println("DEBUG:.destroy(...):enter.");
+//        }
+//
 //      };
 
 //      IProcess iProcess = new RuntimeProcess(launch,process,"Mepose build",null);
-
-
+        long timeStamp = System.currentTimeMillis();
+        String idStamp = Long.toString(timeStamp);
+        Map attributes= new HashMap();
+        attributes.put(IProcess.ATTR_PROCESS_TYPE, IAntLaunchConfigurationConstants.ID_ANT_PROCESS_TYPE);
+        attributes.put(AbstractEclipseBuildLogger.ANT_PROCESS_ID, idStamp);
+        antBox.setProperty(AbstractEclipseBuildLogger.ANT_PROCESS_ID,idStamp);
+        attributes.put(DebugPlugin.ATTR_CAPTURE_OUTPUT,"true");
+        AntProcess antProcess = new AntProcess("J2ME Polish",launch,attributes);
+        
         Throwable throwable = null;
 
+        boolean error = false;
+        antBox.getProject().fireBuildStarted();
         try {
             antBox.run(targets);
         } catch (Throwable e) {
             throwable = e;
+            error = true;
         }
-        antBox.getProject().fireBuildFinished(throwable);
-
+        antProject.fireBuildFinished(throwable);
+        String property = antBox.getProject().getProperty(AntProcessBuildLogger.BUILD_SUCCESS);
+        error = "false".equals(property);
+        if(error) {
+            return;
+        }
+        
         if(isDebug) {
             String connectorId =
                 configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_CONNECTOR,
@@ -393,7 +460,13 @@ AbstractJavaLaunchConfigurationDelegate {
         // process.");
         // // process.destroy();
         // // }
-        //        
+        //    
+        }
+        finally {
+            System.setIn(this.oldIn);
+            System.setOut(this.oldOut);
+            System.setErr(this.oldErr);
+        }
     }
 
     /**
