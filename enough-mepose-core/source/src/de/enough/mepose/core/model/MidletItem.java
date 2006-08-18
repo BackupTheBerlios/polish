@@ -86,6 +86,12 @@ public class MidletItem {
         return false;
     }
 
+    
+    
+    public int hashCode() {
+        return this.className.hashCode();
+    }
+
     public String getClassName() {
         return this.className;
     }

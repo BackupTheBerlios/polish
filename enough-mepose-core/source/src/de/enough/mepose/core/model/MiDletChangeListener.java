@@ -30,10 +30,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -73,11 +73,36 @@ public class MiDletChangeListener implements IResourceChangeListener{
         
         public boolean visit(IResourceDelta delta) {
 //            if(delta.getFlags() != 131072) {
-            if(delta.getFlags() != 256 && delta.getFlags() != 0 && (delta.getKind() != 2 && delta.getFlags() != 131072)) {
+            
+            int flags = delta.getFlags();
+            int kind = delta.getKind();
+            
+            boolean pass = false;
+            
+            if(kind == ADDED) {
+                pass = true;
+            }
+            
+            if(kind == REMOVED) {
+                pass = true;
+            }
+            
+            if(kind == CHANGED) {
+                if(flags == 131072) {
+                    pass = true;
+                }
+            }
+            
+            if(flags != 256 && flags != 0 && (kind != 2 && flags != 131072)) {
                 return true;
             }
+            
+            if(!pass) {
+                return true;
+            }
+            
             IResource res = delta.getResource();
-            switch (delta.getKind()) {
+            switch (kind) {
                case IResourceDelta.ADDED:
                   handleResource(res,ADDED);
                   break;
@@ -120,7 +145,7 @@ public class MiDletChangeListener implements IResourceChangeListener{
             else {
                 midletPropertiesFile = midletPropertiesResource.getRawLocation().toFile();
             }
-            List midlets = getMidletsFromPropertiesFile(midletPropertiesFile);
+            Set midlets = getMidletsFromPropertiesFile(midletPropertiesFile);
             switch(action) {
                 case ADDED:
                 case CHANGED:
@@ -156,8 +181,7 @@ public class MiDletChangeListener implements IResourceChangeListener{
         }
     }
     
-    protected void removeMidletsFromList(IProject project, List midlets) {
-        MeposePlugin.log("Would remove midlets from properties file.");
+    protected void removeMidletsFromList(IProject project, Set midlets) {
         IJavaProject javaProject = JavaCore.create(project);
         for (Iterator iterator = midlets.iterator(); iterator.hasNext(); ) {
             MidletItem midletItem = (MidletItem) iterator.next();
@@ -175,7 +199,7 @@ public class MiDletChangeListener implements IResourceChangeListener{
         }
     }
     
-    protected void putMidletsIntoPropertiesFile(File midletPropertiesFile,List midlets){
+    protected void putMidletsIntoPropertiesFile(File midletPropertiesFile,Set midlets){
         Properties properties = new Properties();
         int i = 1;
         for (Iterator iterator = midlets.iterator(); iterator.hasNext(); ) {
@@ -210,9 +234,9 @@ public class MiDletChangeListener implements IResourceChangeListener{
         }
     }
     
-    protected List getMidletsFromPropertiesFile(File propertyFile) {
+    protected Set getMidletsFromPropertiesFile(File propertyFile) {
         FileInputStream inputStream;
-        LinkedList result = new LinkedList();
+        Set result = new HashSet();
         try {
             inputStream = new FileInputStream(propertyFile);
         } catch (FileNotFoundException exception) {
