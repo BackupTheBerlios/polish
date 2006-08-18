@@ -127,7 +127,6 @@ public class DeviceDatabase {
 	public void init( Map properties, File polishHomeDir, File projectHomeDir, File apisHomeDir, 
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
-		INSTANCE = this;
 		if (customFilesByFileName == null) {
 			customFilesByFileName = new HashMap();
 		}
@@ -340,14 +339,19 @@ public class DeviceDatabase {
 	 * @param apisHome the default import folder, can be null (in which case ${polish.home}/import is used)
 	 * @param polishProject basic settings, can be null
 	 * @param inputStreamsByFileName the configured input streams, can be null
-	 * @param customFilesByFileName user-defined XLM configuration files, can be null
+	 * @param customFilesByFileName user-defined XML configuration files, can be null
 	 */
 	public static final DeviceDatabase getInstance( Map properties, File polishHome, File projectHome, File apisHome, 
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
 		if (INSTANCE == null) {
-			INSTANCE = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
+            try {
+                INSTANCE = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
 				inputStreamsByFileName, customFilesByFileName);
+            }
+            catch(Throwable t) {
+                return null;
+            }
 		}
 		return INSTANCE;
 	}
