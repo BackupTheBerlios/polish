@@ -104,6 +104,9 @@
         </pack>
         <pack name="Logviewer Sample Application" required="yes">
             <description>A sample application that is used to show log entries that have been previously stored in the recordstore.</description>
+            <file src="../setup/samples/logviewer/.classpath" targetdir="$INSTALL_PATH/samples/logviewer"/>
+            <file src="../setup/samples/logviewer/.project" targetdir="$INSTALL_PATH/samples/logviewer"/>
+            <file src="../setup/samples/logviewer/readme.txt" targetdir="$INSTALL_PATH/samples/readme.txt"/>
             <file src="samples/logviewer/source" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="samples/logviewer/resources" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="../setup/samples/logviewer/build.xml" targetdir="$INSTALL_PATH/samples/logviewer"/>
@@ -112,6 +115,7 @@
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/nbproject/project.properties" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/logviewer/.classpath" type="shell" /> 
         </pack>
         <pack name="Serialization Sample Application" required="no" preselected="yes">
             <description>A sample application that shows how to use the serialization framework of J2ME Polish.</description>
@@ -120,7 +124,10 @@
             <file src="../setup/samples/serialization/build.xml" targetdir="$INSTALL_PATH/samples/serialization"/>
             <file src="../setup/samples/serialization/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/serialization"/>
             <file src="../setup/samples/serialization/nbproject" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="../setup/samples/serialization/.classpath" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="../setup/samples/serialization/.project" targetdir="$INSTALL_PATH/samples/serialization"/>
             <parsable targetfile="$INSTALL_PATH/samples/serialization/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/serialization/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/serialization/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/serialization/nbproject/project.properties" type="shell" /> 
         </pack>
@@ -132,7 +139,10 @@
             <file src="../setup/samples/java5/build.xml" targetdir="$INSTALL_PATH/samples/java5"/>
             <file src="../setup/samples/java5/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/java5"/>
             <file src="../setup/samples/java5/nbproject" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="../setup/samples/java5/.classpath" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="../setup/samples/java5/.project" targetdir="$INSTALL_PATH/samples/java5"/>
             <parsable targetfile="$INSTALL_PATH/samples/java5/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/java5/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/java5/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/java5/nbproject/project.properties" type="shell" /> 
         </pack>
@@ -144,7 +154,10 @@
             <file src="../setup/samples/roadrunner/build.xml" targetdir="$INSTALL_PATH/samples/roadrunner"/>
             <file src="../setup/samples/roadrunner/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/roadrunner"/>
             <file src="../setup/samples/roadrunner/nbproject" targetdir="$INSTALL_PATH/samples/roadrunner"/>
+            <file src="../setup/samples/roadrunner/.classpath" targetdir="$INSTALL_PATH/samples/roadrunner"/>
+            <file src="../setup/samples/roadrunner/.project" targetdir="$INSTALL_PATH/samples/roadrunner"/>
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/roadrunner/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/nbproject/project.properties" type="shell" /> 
         </pack>
@@ -155,7 +168,10 @@
             <file src="../setup/samples/email/build.xml" targetdir="$INSTALL_PATH/samples/email"/>
             <file src="../setup/samples/email/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/email"/>
             <file src="../setup/samples/email/nbproject" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="../setup/samples/email/.classpath" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="../setup/samples/email/.project" targetdir="$INSTALL_PATH/samples/email"/>
             <parsable targetfile="$INSTALL_PATH/samples/email/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/email/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/email/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/email/nbproject/project.properties" type="shell" /> 
         </pack>
@@ -166,7 +182,10 @@
             <file src="../setup/samples/framedform/build.xml" targetdir="$INSTALL_PATH/samples/framedform"/>
             <file src="../setup/samples/framedform/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/framedform"/>
             <file src="../setup/samples/framedform/nbproject" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="../setup/samples/framedform/.classpath" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="../setup/samples/framedform/.project" targetdir="$INSTALL_PATH/samples/framedform"/>
             <parsable targetfile="$INSTALL_PATH/samples/framedform/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/framedform/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/framedform/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/framedform/nbproject/project.properties" type="shell" /> 
         </pack>
@@ -177,7 +196,10 @@
             <file src="../setup/samples/tabbedform/build.xml" targetdir="$INSTALL_PATH/samples/tabbedform"/>
             <file src="../setup/samples/tabbedform/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/tabbedform"/>
             <file src="../setup/samples/tabbedform/nbproject" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="../setup/samples/tabbedform/.classpath" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="../setup/samples/tabbedform/.project" targetdir="$INSTALL_PATH/samples/tabbedform"/>
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedform/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/nbproject/project.properties" type="shell" /> 
         </pack>

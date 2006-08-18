@@ -176,7 +176,7 @@
 	            symbols="polish.Java5" 
 	            usePolishGui="always"
 	            sourceDir="build/java5source"
-				workDir="${dir.work}"
+				workDir="build/tmp"
 				compilerMode="true"
 				compilerDestDir="build/java5classes"
 				>
