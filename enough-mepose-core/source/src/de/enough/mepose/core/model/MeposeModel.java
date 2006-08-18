@@ -28,9 +28,6 @@ package de.enough.mepose.core.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;

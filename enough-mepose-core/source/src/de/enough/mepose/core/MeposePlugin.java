@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -22,7 +21,6 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
 import org.eclipse.osgi.baseadaptor.bundlefile.ZipBundleFile;
-import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
 import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
 import org.osgi.framework.BundleContext;
 
