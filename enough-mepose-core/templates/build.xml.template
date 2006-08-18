@@ -205,20 +205,27 @@
 		
 		<!-- execution of emulator(s) -->
 		<emulator
+			wait="true"
+			securityDomain="trusted"
+			enableProfiler="false"
+			enableMemoryMonitor="false"
+			enableNetworkMonitor="false"
+			if="test and not debug"
+			>
+		</emulator>
+	
+		<emulator
 			wait="false"
 			securityDomain="trusted"
 			enableProfiler="false"
 			enableMemoryMonitor="false"
 			enableNetworkMonitor="false"
-			if="test"
+			if="debug"
 			>
-			<!--
-			<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
-			-->
 			<parameter name="-Xdebug" value="" />
 			<parameter name="-Xrunjdwp" value="transport=dt_socket,server=y,suspend=n,address=8000" />
 		</emulator>
-	
+		
 	</j2mepolish>
 </target>
 
