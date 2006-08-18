@@ -38,7 +38,6 @@ import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.helper.ProjectHelper2;
-import org.apache.tools.ant.types.Path;
 
 /**
  * 1. Set the build.xml file and a working directory by setBuildxml()/setWorkingDirectory().
@@ -303,6 +302,9 @@ public class AntBox {
         this.projectHelper.parse(this.project,this.buildxml);
         restorePreviousWorkingDirectory();
         
+        if (this.messageOutputLevel >= Project.MSG_INFO) {
+            System.out.println("Buildfile: " + this.buildxml);
+        }
         this.project.executeTargets(argumentList);
         // This method does not call the executor.
 //        this.project.executeSortedTargets(this.project.topoSort(targetNames, this.project.getTargets(), false));
@@ -319,7 +321,29 @@ public class AntBox {
         this.project.addBuildListener(logger);
     }
     
-    public void removeLoggeR(BuildLogger logger) {
+    public void removeLogger(BuildLogger logger) {
         this.project.removeBuildListener(logger);
     }
+
+//    /**
+//     * @param string
+//     */
+//    public void addLogger(String string) {
+//        Class forName;
+//        try {
+//            forName = Class.forName(string);
+//        } catch (ClassNotFoundException exception) {
+//            System.out.println("DEBUG:AntBox.setListener(...):logger not found.");
+//            return;
+//        }
+//        try {
+//            Object newInstance = forName.newInstance();
+//        } catch (InstantiationException exception) {
+//            // TODO rickyn handle InstantiationException
+//            exception.printStackTrace();
+//        } catch (IllegalAccessException exception) {
+//            // TODO rickyn handle IllegalAccessException
+//            exception.printStackTrace();
+//        }
+//    }
 }
