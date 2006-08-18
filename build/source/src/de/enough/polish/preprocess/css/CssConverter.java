@@ -230,17 +230,17 @@ public class CssConverter extends Converter {
 			processBorder(groupName, group, null, codeList, styleSheet, true );
 		}
 		String test = env.getVariable("polish.license");
-		if ( "GPL".equals(test) ) {
-			// GPL license is fine.
-		} else if (test == null || test.length() != 12) {
-			throw new BuildException("Encountered invalid license.");
-		} else {
-			try {
-				Long.parseLong(test, 0x10);
-			} catch (Exception e) {
-				throw new BuildException("Encountered invalid license.");
-			}
-		}
+//		if ( "GPL".equals(test) ) {
+//			// GPL license is fine.
+//		} else if (test == null || test.length() != 12) {
+//			throw new BuildException("Encountered invalid license.");
+//		} else {
+//			try {
+//				Long.parseLong(test, 0x10);
+//			} catch (Exception e) {
+//				throw new BuildException("Encountered invalid license.");
+//			}
+//		}
 		// add the default style:
 		processDefaultStyle( defaultFontDefined,  
 				defaultBackgroundDefined, defaultBorderDefined,
