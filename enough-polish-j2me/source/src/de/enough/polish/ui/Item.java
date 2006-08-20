@@ -1693,7 +1693,7 @@ public abstract class Item extends Object
 			this.itemWidth += labelWidth;
 			this.useSingleRow = true;
 			if (this.label != null) {
-				if ( (this.label.layout & LAYOUT_NEWLINE_AFTER) != 0 ) {
+				if ( (this.label.layout & LAYOUT_NEWLINE_AFTER) != 0 || ((this.layout & LAYOUT_NEWLINE_BEFORE) == LAYOUT_NEWLINE_BEFORE )) {
 					this.useSingleRow = false;
 					cHeight += labelHeight;
 				}
