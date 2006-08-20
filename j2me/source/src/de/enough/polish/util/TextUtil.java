@@ -153,7 +153,7 @@ public final class TextUtil {
 		}
 		boolean hasLineBreaks = (value.indexOf('\n') != -1);
 		int completeWidth = font.stringWidth(value);
-		if ( (completeWidth <= firstLineWidth && !hasLineBreaks) || (value.length() <= 1) ) {
+		if ( (completeWidth <= firstLineWidth && !hasLineBreaks) ) { // || (value.length() <= 1) ) {
 			// the given string fits on the first line:
 			//if (hasLineBreaks) {
 			//	return split( "complete/linebreaks:" + completeWidth + "> " + value, '\n');
@@ -164,32 +164,39 @@ public final class TextUtil {
 		// the given string does not fit on the first line:
 		ArrayList lines = new ArrayList();
 		if (!hasLineBreaks) {
-			split( value, font, completeWidth, firstLineWidth, lineWidth, lines );
+			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines );
 		} else {
 			// now the string will be splitted at the line-breaks and
 			// then each line is processed:
 			char[] valueChars = value.toCharArray();
 			int lastIndex = 0;
+			char c =' ';
 			for (int i = 0; i < valueChars.length; i++) {
-				char c = valueChars[i];
+				c = valueChars[i];
 				if (c == '\n' || i == valueChars.length -1 ) {
 					String line = null;
 					if (i == valueChars.length -1) {
 						line = new String( valueChars, lastIndex, (i + 1) - lastIndex );
+						//System.out.println("wrap: adding last line " + line );
 					} else {
 						line = new String( valueChars, lastIndex, i - lastIndex );
+						//System.out.println("wrap: adding " + line );
 					}
 					completeWidth = font.stringWidth(line);
 					if (completeWidth <= firstLineWidth ) {
 						lines.add( line );						
 					} else {
-						TextUtil.split(line, font, completeWidth, firstLineWidth, lineWidth, lines);
+						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines);
 					}
 					lastIndex = i + 1;
 					// after the first line all line widths are the same:
 					firstLineWidth = lineWidth;
 				} // for each line
 			} // for all chars
+			// special case for lines that end with \n: add a further line
+			if (c == '\n') {
+				lines.add("");
+			}
 		}
 		//#debug
 		System.out.println("Wrapped [" + value + "] into " + lines.size() + " rows.");

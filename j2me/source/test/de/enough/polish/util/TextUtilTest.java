@@ -164,6 +164,6 @@ public class TextUtilTest extends TestCase {
 		assertEquals( "two", output[1] );
 		assertEquals( "three", output[2] );
 		assertEquals( null, output[3] );
-}
-
+	}
+		
 }
