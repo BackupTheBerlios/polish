@@ -122,34 +122,44 @@ public class Java5PostCompiler extends BytecodePostCompiler {
         }
       }
     });
-    // we use a new classes directory, so that the user does not need to make a clean build each time he makes a small update
+    
+    // We use a new classes directory, so that the user does not need to make a clean build each time he makes a small update.
     File newClassesDir = new File( classesDir.getParentFile(), "classes_12" );
-    if (!newClassesDir.exists()) {
-    	newClassesDir.mkdir();
-    }
-    try {
-		FileUtil.copyDirectoryContents( classesDir, newClassesDir, true );
-		loader = DirClassLoader.createClassLoader(newClassesDir);
-	} catch (IOException e) {
+
+    if (!newClassesDir.exists())
+      {
+        newClassesDir.mkdir();
+      }
+    
+    try
+      {
+        FileUtil.copyDirectoryContents( classesDir, newClassesDir, true );
+        loader = DirClassLoader.createClassLoader(newClassesDir);
+      }
+    catch (IOException e)
+      {
         e.printStackTrace();
         BuildException be = new BuildException("Unable to copy classes to temporary directory.");
         be.initCause(e);
         throw be; 
-	}
+      }
+    
     device.setClassesDir( newClassesDir.getAbsolutePath() );
     
-    try {
-      task.weave( newClassesDir );
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new BuildException("Unable to transform bytecode: " + e.toString() );
-    }
+    try
+      {
+        task.weave( newClassesDir );
+      }
+    catch (IOException e)
+      {
+        e.printStackTrace();
+        throw new BuildException("Unable to transform bytecode: " + e.toString() );
+      }
 
     ASMClassLoader asmLoader = new ASMClassLoader(loader);
     LinkedList enumClasses = new LinkedList();
 
-
-    // Find all classes implementing java.lang.Enum and copy the remaining classes to the new classes dir:
+    // Find all classes implementing java.lang.Enum.
     Iterator it = classes.iterator();
     
     while (it.hasNext())
@@ -172,7 +182,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
       }
     
     // Process all enum classes.
-    it = enumClasses.iterator();
+    it = classes.iterator();
     
     while (it.hasNext())
       {
@@ -182,7 +192,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
           {
             ClassNode classNode = asmLoader.loadClass(className);
             ClassWriter writer = new ClassWriter(true);
-            EnumClassVisitor visitor = new EnumClassVisitor(writer);
+            Java5ClassVisitor visitor = new Java5ClassVisitor(writer, enumClasses);
             classNode.accept(visitor);
             writeClass(newClassesDir, className, writer.toByteArray());
           }
