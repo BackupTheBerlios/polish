@@ -10,7 +10,7 @@ public class IteratorMethodVisitor
 {
   private static final String CLASS_VECTOR = "java/util/Vector";
   private static final String CLASS_ITERABLEMETHODS = "com/rc/retroweaver/runtime/IterableMethods";
-  private static final String CLASS_ITERATORUTIL = "de/enoug/polish/util/IteratorUtil";
+  private static final String CLASS_ITERATORUTIL = "de/enough/polish/util/IteratorUtil";
   private static final String METHOD_ITERATOR = "iterator";
   private static final String SIGNATURE_ITERATOR = "()Lde/enough/polish/util/Iterator;";
   private static final String SIGNATURE_ITERATOR_STATIC = "(Ljava/lang/Object;)Lde/enough/polish/util/Iterator;";
