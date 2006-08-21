@@ -8,7 +8,7 @@
 	<property name="Version" value="2.0-beta2" />
 	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Beta 2&gt;! " />
 	
-	<property name="all.jars" value="jdom.jar,midp1.jar,midp1-cldc11.jar,midp2.jar,midp2-cldc11.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
+	<property name="all.jars" value="jdom.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar" />
 	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	
