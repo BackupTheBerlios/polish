@@ -38,7 +38,11 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface Iterator {
+public interface Iterator
+//#if polish.java5
+<K>
+//#endif
+{
 	
 	/**
 	 * Determines whether there is a following object in this iterator.
@@ -50,10 +54,10 @@ public interface Iterator {
 	/**
 	 * Returns the next element in the iteration.
 	 * 
-	 * @return the next element in the iteration.]
+	 * @return the next element in the iteration.
 	 * @throws IllegalStateException when all elements have been iterated through.
 	 */
-	public Object next();
+	public K next();
 	
 	/**
 	 * Removes from the underlying collection the last element returned by the iterator (optional operation). This method can be called only once per call to next. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
