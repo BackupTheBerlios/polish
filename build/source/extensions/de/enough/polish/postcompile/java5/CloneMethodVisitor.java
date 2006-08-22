@@ -1,42 +1,55 @@
 package de.enough.polish.postcompile.java5;
 
-import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.Method;
 
 public class CloneMethodVisitor
-    extends MethodAdapter
+    extends GeneratorAdapter
     implements Opcodes
 {
-  private String enumClassName;
-  private String enumArrayDesc;
+  private static final Type TYPE_SYSTEM = Type.getType("Ljava/lang/System;");
   
-  public CloneMethodVisitor(MethodVisitor mv, String enumClassName)
+  private static final Method METHOD_ARRAYCOPY =
+    Method.getMethod("void arraycopy(java.lang.Object, int, java.lang.Object, int, int)");
+  
+  private static final Method METHOD_CLONE =
+    Method.getMethod("java.lang.Object clone()");
+
+  private Type enumType;
+  private Type enumArrayDesc;
+  
+  
+  public CloneMethodVisitor(MethodVisitor mv, int access, String name, String desc, Type enumType)
   {
-    super(mv);
+    super(mv, access, name, desc);
     
-    this.enumClassName = enumClassName;
-    this.enumArrayDesc = "[L" + enumClassName + ";";
+    this.enumType = enumType;
+    this.enumArrayDesc = Type.getType("[" + enumType.toString());
   }
 
   public void visitMethodInsn(int opcode, String owner, String name, String desc)
   {
+    Type type = Type.getType(owner);
+    Method method = new Method(name, desc);
+
     // Rewrite TYPE[].clone() calles.
     if (INVOKEVIRTUAL == opcode
-        && this.enumArrayDesc.equals(owner)
-        && "clone".equals(name)
-        && "()Ljava/lang/Object;".equals(desc))
+        && this.enumArrayDesc.equals(type)
+        && METHOD_CLONE.equals(method))
       {
-        this.mv.visitInsn(DUP);
-        this.mv.visitInsn(ARRAYLENGTH);
-        this.mv.visitInsn(DUP);
-        this.mv.visitTypeInsn(ANEWARRAY, this.enumClassName);
-        this.mv.visitInsn(DUP_X2);
-        this.mv.visitInsn(SWAP);
-        this.mv.visitInsn(ICONST_0);
-        this.mv.visitInsn(DUP_X2);
-        this.mv.visitInsn(SWAP);
-        this.mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V");
+        dup();
+        arrayLength();
+        dup();
+        newArray(this.enumType);
+        dupX2();
+        swap();
+        push(0);
+        dupX2();
+        swap();
+        invokeStatic(TYPE_SYSTEM, METHOD_ARRAYCOPY);
         return;
       }
 

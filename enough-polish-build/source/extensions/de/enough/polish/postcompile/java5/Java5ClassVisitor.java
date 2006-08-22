@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 public class Java5ClassVisitor
     extends ClassAdapter
@@ -37,14 +38,15 @@ public class Java5ClassVisitor
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
   {
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-    mv = new ThrowableMethodVisitor(mv);
-    mv = new IteratorMethodVisitor(mv);
+    mv = new ThrowableMethodVisitor(mv, access, name, desc);
+    mv = new IteratorMethodVisitor(mv, access, name, desc);
     
     if (this.isEnumClass
         && METHOD_VALUES.equals(name)
         && this.signature_values.equals(desc))
       {
-        return new CloneMethodVisitor(mv, this.className);
+        return new CloneMethodVisitor(mv, access, name, desc,
+                                      Type.getType("L" + this.className + ";"));
       }
     
     return mv;

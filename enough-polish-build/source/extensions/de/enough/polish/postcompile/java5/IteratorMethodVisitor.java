@@ -1,42 +1,53 @@
 package de.enough.polish.postcompile.java5;
 
-import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.Method;
 
 public class IteratorMethodVisitor
-    extends MethodAdapter
+    extends GeneratorAdapter
     implements Opcodes
 {
-  private static final String CLASS_VECTOR = "java/util/Vector";
-  private static final String CLASS_ITERABLEMETHODS = "com/rc/retroweaver/runtime/IterableMethods";
-  private static final String CLASS_ITERATORUTIL = "de/enough/polish/util/IteratorUtil";
-  private static final String METHOD_ITERATOR = "iterator";
-  private static final String SIGNATURE_ITERATOR = "()Lde/enough/polish/util/Iterator;";
-  private static final String SIGNATURE_ITERATOR_STATIC = "(Ljava/lang/Object;)Lde/enough/polish/util/Iterator;";
+  private static final Type TYPE_VECTOR =
+    Type.getType("Ljava/util/Vector;");
+  
+  private static final Type TYPE_ITERABLEMETHODS =
+    Type.getType("Lcom/rc/retroweaver/runtime/IterableMethods;");
+  
+  private static final Type TYPE_ITERATORUTIL =
+    Type.getType("Lde/enough/polishutil/IteratorUtil;");
+  
+  private static final Method METHOD_ITERATOR =
+    Method.getMethod("de.enough.polish.util.Iterator iterator()");
 
-  public IteratorMethodVisitor(MethodVisitor mv)
+  private static final Method METHOD_ITERATORUTIL =
+    Method.getMethod("de.enough.polish.util.Iterator iterator(java.lang.Object)");
+
+  public IteratorMethodVisitor(MethodVisitor mv, int access, String name, String desc)
   {
-    super(mv);
+    super(mv, access, name, desc);
   }
 
   public void visitMethodInsn(int opcode, String owner, String name, String desc)
   {
+    Type type = Type.getType("L" + owner + ";");
+    Method method = new Method(name, desc);
+    
     if (INVOKEVIRTUAL == opcode
-        && CLASS_VECTOR.equals(owner)
-        && METHOD_ITERATOR.equals(name)
-        && SIGNATURE_ITERATOR.equals(desc))
+        && TYPE_VECTOR.equals(type)
+        && METHOD_ITERATOR.equals(method))
       {
-        super.visitMethodInsn(INVOKESTATIC, CLASS_ITERATORUTIL, METHOD_ITERATOR, SIGNATURE_ITERATOR_STATIC);
+        invokeStatic(TYPE_ITERATORUTIL, METHOD_ITERATORUTIL);
         return;
       }
     
     if (INVOKESTATIC == opcode
-        && CLASS_ITERABLEMETHODS.equals(owner)
-        && METHOD_ITERATOR.equals(name)
-        && SIGNATURE_ITERATOR_STATIC.equals(desc))
+        && TYPE_ITERABLEMETHODS.equals(type)
+        && METHOD_ITERATORUTIL.equals(method))
       {
-        super.visitMethodInsn(INVOKESTATIC, CLASS_ITERATORUTIL, METHOD_ITERATOR, SIGNATURE_ITERATOR_STATIC);
+        invokeStatic(TYPE_ITERATORUTIL, METHOD_ITERATORUTIL);
         return;
       }
 
