@@ -310,6 +310,19 @@ public class PolishTask extends ConditionalTask {
 				selectDevices();
 				this.isInitialized = true;
 			}
+			// check if there has been an error at the last run:
+			this.errorLock = new File( this.buildSetting.getWorkDir(),  "error.lock");
+			if (this.errorLock.exists()) {
+				this.lastRunFailed = true;
+			} else {
+				this.lastRunFailed = false;
+				try {
+					this.errorLock.createNewFile();
+				} catch (IOException e) {
+					System.err.println("Warning: unable to create temporary lock file: " + e.toString() );
+				}
+			}
+
 			int numberOfDevices = this.devices.length;
 			if (this.buildSetting.isInCompilerMode()) {
 				System.out.println("Using J2ME Polish as compiler...");
@@ -1055,20 +1068,7 @@ public class PolishTask extends ConditionalTask {
 			e.printStackTrace();
 			throw new BuildException("Unable to initialize packager: " + e.toString() );
 		}
-		
-		// check if there has been an error at the last run:
-		this.errorLock = new File( this.buildSetting.getWorkDir(),  "error.lock");
-		if (this.errorLock.exists()) {
-			this.lastRunFailed = true;
-		} else {
-			this.lastRunFailed = false;
-			try {
-				this.errorLock.createNewFile();
-			} catch (IOException e) {
-				System.err.println("Warning: unable to create temporary lock file: " + e.toString() );
-			}
-		}
-		
+				
 		// set J2ME Polish specific logger,
 		// this logger will show the original source-code positions
 		// and remove some verbose logging from ProGuard etc:
