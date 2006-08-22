@@ -80,7 +80,7 @@ extends Background
 			this.colorObj = null;
 		}
 		g.setColor( this.color );
-		g.fillRect( x, y, width + 1, height + 1 );
+		g.fillRect( x, y, width + 1, height );
 	}
 
 }
