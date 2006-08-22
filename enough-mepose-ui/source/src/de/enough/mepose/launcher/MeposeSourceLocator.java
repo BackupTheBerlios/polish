@@ -25,10 +25,8 @@
  */
 package de.enough.mepose.launcher;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.model.ISourceLocator;
-import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
@@ -36,7 +34,6 @@ import org.eclipse.jdt.internal.launching.JavaSourceLookupDirector;
 import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourceLookupParticipant;
 
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.ui.MeposeUIPlugin;
 
 /**
  * 
@@ -86,11 +83,13 @@ public class MeposeSourceLocator extends JavaSourceLookupDirector implements
         if(this.model == null) {
             return sourceContainers;
         }
-        ISourceContainer meposeContainer = new DirectorySourceContainer(new Path(this.model.getPolishHome()+"/source/src"),true);
+        ISourceContainer meposeContainer1 = new DirectorySourceContainer(new Path(this.model.getProjectHome()+"/source/src"),true);
+        ISourceContainer meposeContainer2 = new DirectorySourceContainer(new Path(this.model.getCurrentDevice().getSourceDir()),true);
         
-        ISourceContainer[] newSourceContainers = new ISourceContainer[sourceContainers.length+1];
+        ISourceContainer[] newSourceContainers = new ISourceContainer[sourceContainers.length+2];
         System.arraycopy(sourceContainers,0,newSourceContainers,0,sourceContainers.length);
-        newSourceContainers[sourceContainers.length] = meposeContainer;
+        newSourceContainers[sourceContainers.length] = meposeContainer1;
+        newSourceContainers[sourceContainers.length+1] = meposeContainer2;
 //        setSourceContainers(newSourceContainers);
         
         return newSourceContainers;

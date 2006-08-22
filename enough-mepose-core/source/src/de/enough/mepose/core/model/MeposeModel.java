@@ -198,6 +198,9 @@ public class MeposeModel extends PropertyModel{
 
     private void resetAntBox() {
         this.antBox = new AntBox();
+        
+        // This code was used set a classloader with tools.jar on board. It is not needed
+        // anymore as this injection is done in the MeposePlugin on startup.
 //        AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
 //        IAntClasspathEntry[] antClasspathEntries = antPreferences.getDefaultAntHomeEntries();
 //        
@@ -258,6 +261,7 @@ public class MeposeModel extends PropertyModel{
     private void extractTaskFromBuildXML() {
         this.antBox.setWorkingDirectory(this.projectHome);
         this.antBox.setBuildxml(this.buildxml);
+        this.antBox.setProperty("dir.work","build/test");
         
         // Configure all ant targets.
         Project project = this.antBox.createProject();
@@ -617,20 +621,22 @@ public class MeposeModel extends PropertyModel{
     public Map getStoreableProperties() {
         Map p = new HashMap();
         
-        File temp;
+        File value;
         // Paths.
-        temp = getPolishHome();
-        p.put(ID_PATH_POLISH_FILE,temp==null?"":temp.toString());
-        temp = getWTKHome();
-        p.put(ID_PATH_WTK_FILE,temp==null?"":temp.toString());
-        temp = getNokiaHome();
-        p.put(ID_PATH_NOKIA_FILE,temp==null?"":temp.toString());
-        temp = getSonyHome();
-        p.put(ID_PATH_SONY_FILE,temp==null?"":temp.toString());
-        temp = getProjectHome();
-        p.put(ID_PATH_PROJECT_FILE,temp==null?"":temp.toString());
-        temp = getBuildxml();
-        p.put(ID_PATH_BUILDXML_FILE,temp==null?"":temp.toString());
+        value = getPolishHome();
+        if(value != null) {
+            p.put(ID_PATH_POLISH_FILE,value.toString());
+        }
+        value = getWTKHome();
+        p.put(ID_PATH_WTK_FILE,value==null?"":value.toString());
+        value = getNokiaHome();
+        p.put(ID_PATH_NOKIA_FILE,value==null?"":value.toString());
+        value = getSonyHome();
+        p.put(ID_PATH_SONY_FILE,value==null?"":value.toString());
+        value = getProjectHome();
+        p.put(ID_PATH_PROJECT_FILE,value==null?"":value.toString());
+        value = getBuildxml();
+        p.put(ID_PATH_BUILDXML_FILE,value==null?"":value.toString());
 //        p.put(ID_PATH_WORKINGDIRECTORY_BUILD)
         
         // Supported Config.

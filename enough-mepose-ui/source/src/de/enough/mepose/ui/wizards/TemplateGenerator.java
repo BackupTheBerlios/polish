@@ -58,7 +58,7 @@ public class TemplateGenerator{
         String result = generateSimpleMidlet();
         
         String packageString = this.model.getTemplatePackageString();
-        packageString = packageString.replace(".","/");
+        packageString = packageString.replace('.','/');
         // Thats a nice behavior. substring with
         packageString = packageString.startsWith("/")?packageString.substring(1,packageString.length()):packageString;
         packageString = packageString.endsWith("/")?packageString.substring(0,packageString.length()-1):packageString;

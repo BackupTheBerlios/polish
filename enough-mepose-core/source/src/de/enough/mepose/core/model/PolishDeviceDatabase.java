@@ -42,8 +42,8 @@ public class PolishDeviceDatabase {
 
         try {
 //            deviceDatabase = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,inputStreamsByfileName,new HashMap());
-//            deviceDatabase = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,null,new HashMap());
-            deviceDatabase = DeviceDatabase.getInstance(polishHome);
+            deviceDatabase = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,null,new HashMap());
+//            deviceDatabase = DeviceDatabase.getInstance(polishHome);
         } catch (Exception e) {
             throw new DeviceDatabaseException("Could not create deviceDatabase.",e);
         }

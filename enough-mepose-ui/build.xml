@@ -49,7 +49,7 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<zip destfile="${plugin.destination}/de.enough.mepose.ui_0.6.0.jar" basedir="${temp.folder}/de.enough.mepose.ui_0.6.0" filesonly="false" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/de.enough.mepose.ui_0.6.11.jar" basedir="${temp.folder}/de.enough.mepose.ui_0.6.11" filesonly="false" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -67,14 +67,14 @@
 			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant-nodeps.jar"/>
 			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant.jar"/>
 			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant.jar"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/j2mepolish/import/jdom.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/j2mepolish/import/jdom.jar"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/j2mepolish/import/enough-j2mepolish-build.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/j2mepolish/import/enough-j2mepolish-build.jar"/>
+			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/enough-j2mepolish-build.jar"/>
+			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/enough-j2mepolish-build.jar"/>
+			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/jdom.jar"/>
+			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/jdom.jar"/>
 			<pathelement path="../enough-mepose-core/lib/ant.jar"/>
 			<pathelement path="../enough-mepose-core/lib/ant-nodeps.jar"/>
-			<pathelement path="../enough-mepose-core/j2mepolish/import/jdom.jar"/>
-			<pathelement path="../enough-mepose-core/j2mepolish/import/enough-j2mepolish-build.jar"/>
+			<pathelement path="../enough-mepose-core/lib/enough-j2mepolish-build.jar"/>
+			<pathelement path="../enough-mepose-core/lib/jdom.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.osgi_3.2.0.v20060601.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.common_3.2.0.v20060603.jar"/>
@@ -85,27 +85,15 @@
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.preferences_3.2.0.v20060601.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.0.v20060601.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.log4j/classes/bin"/>
-			<pathelement path="${build.result.folder}/../org.apache.log4j/log4j.jar"/>
-			<pathelement path="../org.apache.log4j/log4j.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.log4j/bin/"/>
-			<pathelement path="${build.result.folder}/../org.apache.log4j/@dot"/>
-			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility_3.1.100.v20060603.jar"/>
-			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.configurator_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.resources_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.resources.compatibility_3.2.0.v20060603.jar"/>
+			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility_3.1.100.v20060603.jar"/>
+			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.configurator_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ant.core_3.1.100.v20060531.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.variables_3.1.100.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.expressions_3.2.0.v20060605-1400.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.filesystem_1.0.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.filesystem.linux.x86_1.0.0.v20060603.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/bin/"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/@dot"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/bin"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"/>
-			<pathelement path="../org.apache.velocity/velocity-1.4.jar"/>
-			<pathelement path="../org.apache.velocity/velocity-dep-1.4.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.jdt.core_3.2.0.v_671.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.text_3.2.0.v20060605-1400.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/com.ibm.icu_3.4.4.1.jar"/>
@@ -113,6 +101,27 @@
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.team.core_3.2.0.I200606051140.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.core_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.core.linux_3.2.0.v20060605.jar"/>
+			<pathelement path="${build.result.folder}/../org.apache.log4j/classes/bin"/>
+			<pathelement path="${build.result.folder}/../de.enough.log4j/classes/bin"/>
+			<pathelement path="${build.result.folder}/../org.apache.log4j/log4j.jar"/>
+			<pathelement path="${build.result.folder}/../de.enough.log4j/log4j.jar"/>
+			<pathelement path="../org.apache.log4j/log4j.jar"/>
+			<pathelement path="${build.result.folder}/../org.apache.log4j/bin/"/>
+			<pathelement path="${build.result.folder}/../de.enough.log4j/bin/"/>
+			<pathelement path="${build.result.folder}/../org.apache.log4j/@dot"/>
+			<pathelement path="${build.result.folder}/../de.enough.log4j/@dot"/>
+			<pathelement path="${build.result.folder}/../org.apache.velocity/bin/"/>
+			<pathelement path="${build.result.folder}/../de.enough.velocity/bin/"/>
+			<pathelement path="${build.result.folder}/../org.apache.velocity/@dot"/>
+			<pathelement path="${build.result.folder}/../de.enough.velocity/@dot"/>
+			<pathelement path="${build.result.folder}/../org.apache.velocity/bin"/>
+			<pathelement path="${build.result.folder}/../de.enough.velocity/bin"/>
+			<pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"/>
+			<pathelement path="${build.result.folder}/../de.enough.velocity/velocity-1.4.jar"/>
+			<pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"/>
+			<pathelement path="${build.result.folder}/../de.enough.velocity/velocity-dep-1.4.jar"/>
+			<pathelement path="../org.apache.velocity/velocity-1.4.jar"/>
+			<pathelement path="../org.apache.velocity/velocity-dep-1.4.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.debug.core_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.debug.ui_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar"/>
@@ -223,11 +232,11 @@
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0"/>
-		<copy todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0" failonerror="true" overwrite="false">
+		<mkdir dir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11"/>
+		<copy todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11" failonerror="true" overwrite="false">
 			<fileset dir="${build.result.folder}/@dot" includes="**"			/>
 		</copy>
-		<copy todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0" failonerror="true" overwrite="false">
+		<copy todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11" failonerror="true" overwrite="false">
 			<fileset dir="${basedir}" includes="plugin.xml,META-INF/,icons/polish_logo_16x16.png,resources/,icons/j2mepolish-logo.gif,icons/sample.gif,icons/tsk_green.png,icons/tsk_yellow.png,icons/tsk_red.png,schema/preferencePageSummary.exsd"			/>
 		</copy>
 	</target>
@@ -236,20 +245,20 @@
 	</target>
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0"/>
-		<copy file="${build.result.folder}/src.zip" todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0" failonerror="false" overwrite="false"/>
+		<mkdir dir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11"/>
+		<copy file="${build.result.folder}/src.zip" todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11" failonerror="false" overwrite="false"/>
 	</target>
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0"/>
-		<copy file="${temp.folder}/@dot.bin${logExtension}" todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.0" failonerror="false" overwrite="false"/>
+		<mkdir dir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11"/>
+		<copy file="${temp.folder}/@dot.bin${logExtension}" todir="${destination.temp.folder}/de.enough.mepose.ui_0.6.11" failonerror="false" overwrite="false"/>
 	</target>
 
 	<target name="clean" depends="init" description="Clean the plug-in: de.enough.mepose.ui of all the zips, jars and logs created.">
 		<delete dir="${build.result.folder}/@dot"/>
 		<delete file="${build.result.folder}/src.zip"/>
-		<delete file="${plugin.destination}/de.enough.mepose.ui_0.6.0.jar"/>
-		<delete file="${plugin.destination}/de.enough.mepose.ui_0.6.0.zip"/>
+		<delete file="${plugin.destination}/de.enough.mepose.ui_0.6.11.jar"/>
+		<delete file="${plugin.destination}/de.enough.mepose.ui_0.6.11.zip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -272,7 +281,7 @@
 		<delete>
 			<fileset dir="${temp.folder}" includes="**/*.bin${logExtension}"			/>
 		</delete>
-		<zip destfile="${plugin.destination}/de.enough.mepose.ui_0.6.0.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/de.enough.mepose.ui_0.6.11.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 

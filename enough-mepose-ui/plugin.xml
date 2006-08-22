@@ -99,7 +99,7 @@
 			type="de.enough.mepose.launcher.launchConfigurationType" />
 	</extension>
  
- 
+ <!--
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true"
 			id="de.enough.mepose.ui.actions.TogglePolishNature"
@@ -111,6 +111,7 @@
 				label="Toggle J2ME Polish nature" />
 		</objectContribution>
 	</extension>
+-->
 
 	<extension point="de.enough.mepose.core.buildListeners">
 		<buildListener

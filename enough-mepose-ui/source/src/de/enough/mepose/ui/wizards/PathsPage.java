@@ -110,6 +110,30 @@ public class PathsPage extends WizardPage {
         Composite main;
         Button browseButton;
 
+        this.polishStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.polishStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.polishStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label polishLabel = new Label(main,SWT.NONE);
+        polishLabel.setText("J2ME Polish Home:");
+        
+        this.polishHomeText = new Text(main,SWT.BORDER);
+        this.polishHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.polishHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                modifyPolishHomeText();
+            }
+
+        });
+        String polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_POLISH_HOME);
+        this.polishHomeText.setText(polishHomePath);
+        modifyPolishHomeText();
+        browseButton = new Button(main,SWT.NONE);
+        browseButton.setText("Browse for Path");
+        browseButton.addSelectionListener(new BrowsePathSelected(this.polishHomeText,"Choose the location of your J2ME Polish directory"));
+        
+//      ----------------------
+        
         this.wtkStatusGroup = new StatusGroup(composite,SWT.NONE);
         this.wtkStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         main = this.wtkStatusGroup.getMainComposite();
@@ -180,27 +204,6 @@ public class PathsPage extends WizardPage {
         
         // ----------------------
         
-        this.polishStatusGroup = new StatusGroup(composite,SWT.NONE);
-        this.polishStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
-        main = this.polishStatusGroup.getMainComposite();
-        main.setLayout(new GridLayout(3,false));
-        Label polishLabel = new Label(main,SWT.NONE);
-        polishLabel.setText("J2ME Polish Home:");
-        
-        this.polishHomeText = new Text(main,SWT.BORDER);
-        this.polishHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
-        this.polishHomeText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                modifyPolishHomeText();
-            }
-
-        });
-        String polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_POLISH_HOME);
-        this.polishHomeText.setText(polishHomePath);
-        modifyPolishHomeText();
-        browseButton = new Button(main,SWT.NONE);
-        browseButton.setText("Browse for Path");
-        browseButton.addSelectionListener(new BrowsePathSelected(this.polishHomeText,"Choose the location of your J2ME Polish directory"));
         
         // ----------------------------------
         
@@ -216,7 +219,6 @@ public class PathsPage extends WizardPage {
         }
         //TODO: Add something to recognize a polish directory.
         else {
-            this.newProjectModel.getMeposeModel().setPolishHome(file);
             this.polishStatusGroup.setOK("");
         }
     }
@@ -231,7 +233,6 @@ public class PathsPage extends WizardPage {
             this.nokiaStatusGroup.setError("Path is not a directory.");
         }
         else {
-            this.newProjectModel.getMeposeModel().setNokiaHome(file);
             this.nokiaStatusGroup.setOK("");
         }
     }
@@ -243,7 +244,6 @@ public class PathsPage extends WizardPage {
             this.sonyStatusGroup.setError("Path is not a directory.");
         }
         else {
-            this.newProjectModel.getMeposeModel().setSonyHome(file);
             this.sonyStatusGroup.setOK("");
         }
     }
@@ -258,7 +258,6 @@ public class PathsPage extends WizardPage {
             this.wtkStatusGroup.setError("Path is not a directory.");
         }
         else {
-            PathsPage.this.newProjectModel.getMeposeModel().setWTKHome(file);
             this.wtkStatusGroup.setOK("");
         }
     }
@@ -293,13 +292,15 @@ public class PathsPage extends WizardPage {
         String wtkHome = this.wtkHomeText.getText();
         String nokiaHome = this.nokiaHomeText.getText();
         String polishHome = this.polishHomeText.getText();
-//        this.newProjectModel.getMeposeModel().setPropertyValue(MeposeModel.ID_POLISH_HOME,polishHome);
+        String sonyHome = this.sonyHomeText.getText();
         File wtkHomeFile = new File((wtkHome==null)?"":wtkHome);
         File nokiaHomeFile = new File((nokiaHome==null)?"":nokiaHome);
         File polishHomeFile = new File((polishHome==null)?"":polishHome);
+        File sonyHomeFile = new File((sonyHome==null)?"":sonyHome);
         this.newProjectModel.getMeposeModel().setWTKHome(wtkHomeFile);
         this.newProjectModel.getMeposeModel().setNokiaHome(nokiaHomeFile);
         this.newProjectModel.getMeposeModel().setPolishHome(polishHomeFile);
+        this.newProjectModel.getMeposeModel().setSonyHome(sonyHomeFile);
     }
     
     protected void updateGUIFromModel() {
