@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -114,7 +113,7 @@ implements CommandListener
 	public NotesMidlet() {
 		// create main menu / notes list:
 		//#style notesList
-		this.notesList = new List("Notes (" + getTodayName() + ")" , Choice.IMPLICIT );
+		this.notesList = new List("Notes (" + getTodayName() + ")" , List.IMPLICIT );
 		this.notesList.setCommandListener( this );
 		this.notesList.addCommand( this.createNewCommand );
 		this.notesList.addCommand( this.exitCommand );
@@ -129,16 +128,24 @@ implements CommandListener
 		try {
 			vector = this.storage.read("notes");
 			// populate list:
-			int size = vector.size();
-			for (int i = 0; i < size; i++) {
-				// Note: no casting necessary
-				Note note = vector.elementAt(i);
+			for (Note note : vector) {
 				//#style notesItem
-				this.notesList.append(note.getText(), null);
+				this.notesList.append(note.getText(), null);				
 			}
-			if (size != 0) {
-				UiAccess.focus( this.notesList, size-1 );
+			if (vector.size() != 0) {
+				UiAccess.focus( this.notesList, vector.size()-1 );
 			}
+//			
+//			int size = vector.size();
+//			for (int i = 0; i < size; i++) {
+//				// Note: no casting necessary
+//				Note note = vector.elementAt(i);
+//				//#style notesItem
+//				this.notesList.append(note.getText(), null);
+//			}
+//			if (size != 0) {
+//				UiAccess.focus( this.notesList, size-1 );
+//			}
 		} catch (IOException e) {
 			// storage does not yet exist
 			vector = new Vector<Note>();
