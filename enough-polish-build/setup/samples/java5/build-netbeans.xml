@@ -145,7 +145,6 @@
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build fullscreen="menu" 
-	                polishDir="../enough-polish-j2me/source/src" 
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 				>
