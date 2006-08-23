@@ -17,7 +17,7 @@ public class IteratorMethodVisitor
     Type.getType("Lcom/rc/retroweaver/runtime/IterableMethods;");
   
   private static final Type TYPE_ITERATORUTIL =
-    Type.getType("Lde/enough/polishutil/IteratorUtil;");
+    Type.getType("Lde/enough/polish/util/IteratorUtil;");
   
   private static final Method METHOD_ITERATOR =
     Method.getMethod("de.enough.polish.util.Iterator iterator()");
