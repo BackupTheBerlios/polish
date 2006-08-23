@@ -933,10 +933,10 @@ public final class UiAccess {
     //#endif
     
     /**
-     * Scrolls the item to the appropriate position.
+     * Scrolls the screen to the given position.
      * 
      * @param screen the screen
-     * @param yOffset the vertical offset - 0 is the very top.
+     * @param yOffset the vertical offset: 0 is the very top, negative values scroll the screen towards the end.
      */
     public static void scroll( javax.microedition.lcdui.Screen screen, int yOffset ) {
     	// ignore
@@ -944,10 +944,10 @@ public final class UiAccess {
 
     //#if polish.usePolishGui
     /**
-     * Scrolls the item to the appropriate position.
+     * Scrolls the screen to the given position.
      * 
      * @param screen the screen
-     * @param yOffset the vertical offset - 0 is the very top.
+     * @param yOffset the vertical offset: 0 is the very top, negative values scroll the screen towards the end.
      */
     public static void scroll( Screen screen, int yOffset ) {
     	Container container = screen.container;

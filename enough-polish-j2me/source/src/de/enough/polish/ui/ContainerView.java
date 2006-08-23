@@ -130,8 +130,10 @@ public class ContainerView {
 		Item[] myItems = parent.items;
 
 		//#ifdef tmp.useTable
-		if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
+			if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
 		//#endif
+			// look at the layout of the parentContainer, since the SHRINK layout can be set outside of the setStyle method as well:
+			boolean isLayoutShrink = (this.parentContainer.layout & Item.LAYOUT_SHRINK) == Item.LAYOUT_SHRINK;
 			int myContentWidth = 0;
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
@@ -145,6 +147,9 @@ public class ContainerView {
 				if (item.appearanceMode != Item.PLAIN) {
 					hasFocusableItem = true;
 				}
+				if (isLayoutShrink && i == this.focusedIndex) {
+					width = 0;
+				}
 				if (width > myContentWidth) {
 					myContentWidth = width; 
 				}
@@ -154,6 +159,21 @@ public class ContainerView {
 			}
 			if (hasFocusableItem) {
 				this.appearanceMode = Item.INTERACTIVE;
+				if (isLayoutShrink && this.focusedItem != null) {
+					Item item = this.focusedItem;
+					//System.out.println("container has shrinking layout and contains focuse item " + item);
+					item.isInitialised = false;
+					boolean doExpand = item.isLayoutExpand;
+					//if (doExpand) {
+						item.isLayoutExpand = false;
+						int width = item.getItemWidth( lineWidth, lineWidth );
+						if (width > myContentWidth) {
+							myContentWidth = width;
+						}
+						item.isInitialised = false;
+						item.isLayoutExpand = doExpand;
+					//}
+				}
 			} else {
 				this.appearanceMode = Item.PLAIN;
 			}
@@ -930,6 +950,11 @@ public class ContainerView {
 	
 	}
 	
+	/**
+	 * Removes the background from the parent container so that the containerview implementation can paint it itself.
+	 * 
+	 * @return the background of the parent, can be null
+	 */
 	public Background removeParentBackground() {
 		if (this.parentContainer == null) {
 			//#debug warn
@@ -941,6 +966,11 @@ public class ContainerView {
 		return bg;
 	}
 	
+	/**
+	 * Removes the border from the parent container so that the containerview implementation can paint it itself.
+	 * 
+	 * @return the border of the parent, can be null
+	 */
 	public Border removeParentBorder() {
 		if (this.parentContainer == null) {
 			//#debug warn
@@ -1042,6 +1072,18 @@ public class ContainerView {
 	}
 	
 	/**
+	 * Called by the system to notify the item that it is now completely
+	 * invisible, when it previously had been at least partially visible.  No
+	 * further <code>paint()</code> calls will be made on this item
+	 * until after a <code>showNotify()</code> has been called again.
+	 * 
+	 * <p>The container implementation calls hideNotify() on the embedded items.</p>
+	 */
+	public void hideNotify() {
+		// subclasses can override this
+	}
+	
+	/**
 	 * Retrieves the screen to which this view belongs to.
 	 * This is necessary since the getScreen()-method of item has only protected
 	 * access. The screen can be useful for setting the title for example. 
@@ -1074,7 +1116,7 @@ public class ContainerView {
 	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles pointer pressed events.
-	 * This is an optional feature that doesn't need to be implemented by subclasses.
+	 * This is an optional feature that doesn't need to be implemented by subclasses, since the parent container already forwards the event to the appropriate item (when this method returns false).
 	 * The default implementation just returns false.
 	 * You only need to implement this method when there are pointer events:
 	 * <pre>
@@ -1144,4 +1186,6 @@ public class ContainerView {
 	protected int getItemYBottomPos( Item item ){
 		return item.yBottomPos;
 	}
+
+
 }

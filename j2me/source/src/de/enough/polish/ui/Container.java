@@ -752,8 +752,8 @@ public class Container extends Item {
 			}
 		//#endif
 			
-		boolean hasFocusableItem = false;
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
+		boolean hasFocusableItem = false;
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
 			//System.out.println("initalising " + item.getClass().getName() + ":" + i);
@@ -1414,7 +1414,6 @@ public class Container extends Item {
 			if (viewType != null) {
 				if (this.view != null && this.view.getClass() == viewType.getClass()) {
 					this.view.focusFirstElement = this.autoFocusEnabled;
-					this.view.setStyle(style);
 					//System.out.println("SET.STYLE / CHOICEGROUP: found OLD view-type (2): " + viewType + " for " + this);
 				} else {
 					//System.out.println("SET.STYLE / CHOICEGROUP: found new view-type (2): " + viewType + " for " + this);
@@ -1429,7 +1428,6 @@ public class Container extends Item {
 						//#else
 							viewType.allowCycling = false;
 						//#endif
-						viewType.setStyle(style);
 						this.view = viewType;
 					} catch (Exception e) {
 						//#debug error
@@ -1453,7 +1451,6 @@ public class Container extends Item {
 						//#else
 							this.view.allowCycling = false;
 						//#endif
-						this.view.setStyle(style);
 					}
 				}
 			}
@@ -1465,6 +1462,11 @@ public class Container extends Item {
 				this.scrollSmooth = (scrollModeInt.intValue() == SCROLL_SMOOTH);
 			}
 		//#endif	
+		//#ifdef tmp.supportViewType
+			if (this.view != null) {
+				this.view.setStyle(style);
+			}
+		//#endif
 	}
 
 	/**
@@ -1733,6 +1735,11 @@ public class Container extends Item {
 	 */
 	protected void hideNotify()
 	{
+		//#ifdef tmp.supportViewType
+			if (this.view != null) {
+				this.view.hideNotify();
+			}
+		//#endif
 		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
@@ -1745,17 +1752,19 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
+		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - this.yOffset ) );
 		// an item within this container was selected:
-		Item[] myItems = getItems();
-		int lastYPos = this.yBottomPos;
-		if ( myItems.length != 0) {
-			Item lastItem = myItems[ myItems.length - 1];
-			if ( lastItem.backgroundHeight > lastItem.itemHeight ) {
-				lastYPos += (lastItem.backgroundHeight - lastItem.itemHeight);
-			}
-		}
-		if (y < this.yTopPos || y > lastYPos 
+		y -= this.yOffset;
+//		int lastYPos = this.yBottomPos;
+//		if ( myItems.length != 0) {
+//			Item lastItem = myItems[ myItems.length - 1];
+//			if ( lastItem.backgroundHeight > lastItem.itemHeight ) {
+//				lastYPos += (lastItem.backgroundHeight - lastItem.itemHeight);
+//			}
+//		}
+		if (y < 0 || y > this.contentHeight 
 			|| x < this.xLeftPos || x > this.xRightPos) {
+			//System.out.println("Container.handlePointerPressed(): out of range, xLeft=" + this.xLeftPos + ", xRight="  + this.xRightPos + ", contentHeight=" + this.contentHeight );
 			return false;
 		}
 		//#ifdef tmp.supportViewType
@@ -1765,16 +1774,19 @@ public class Container extends Item {
 				}
 			}
 		//#endif
+		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
 			if (y < item.yTopPos  || y > item.yBottomPos || x < item.xLeftPos || x > item.xRightPos) {
 				// check for internal positions (e.g. POPUP choice groups can be over this area):
 				if ( item.backgroundHeight > item.itemHeight ) {
 					if ( y > item.yTopPos + item.backgroundHeight && x > item.xLeftPos + item.backgroundWidth ) {
+						//System.out.println("itemOutOfRange(" + i + "): yTop=" + item.yTopPos + ", bottom=" + item.yBottomPos + ", left=" + item.xLeftPos + ", right=" + item.xRightPos );
 						continue;
 					}
 				} else {
 					// this item is not in the range:
+					//System.out.println("itemOutOfRange(" + i + "): yTop=" + item.yTopPos + ", bottom=" + item.yBottomPos + ", left=" + item.xLeftPos + ", right=" + item.xRightPos );
 					continue;					
 				}
 			}

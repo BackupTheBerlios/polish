@@ -833,13 +833,23 @@ public class MenuBar extends Item {
 		//System.out.println("MenuBar: handlePointerPressed( x=" + x + ", y=" + y + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (y > this.screen.screenHeight) {
 			//System.out.println("menubar clicked");
+			boolean isCloseKeySelected;
+			boolean isOpenKeySelected;
+			
+			//#if tmp.RightOptions
+				isCloseKeySelected = x > rightCommandStartX;
+				isOpenKeySelected =  x < leftCommandEndX;
+			//#else
+				isCloseKeySelected = x < leftCommandEndX;
+				isOpenKeySelected = x > rightCommandStartX;
+			//#endif
 			if (this.isOpened) {
-				if ( x < leftCommandEndX ) {
+				if ( isCloseKeySelected ) {
 					//System.out.println("selecting command from opened menu");
 					setOpen( false );
 					Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
 					this.screen.callCommandListener(command);
-				} else if ( x > rightCommandStartX ) {
+				} else if ( isOpenKeySelected ) {
 					//System.out.println("closing menu");
 					setOpen( false );
 				}
@@ -863,20 +873,23 @@ public class MenuBar extends Item {
 			return true;
 		// okay, y is above the menu bar, so let the commandContainer process the event:
 		} else if (this.isOpened) {
-			setOpen( false );
-			// a menu-item could have been selected:
-			if (x <= this.commandsContainer.xLeftPos + this.commandsContainerWidth 
-					&& y >= this.commandsContainerY ) 
-			{
-				
-				//boolean handled = this.commandsContainer.handlePointerPressed( x, y );
-				//System.out.println("handling pointer pressed in open menu at " + x + ", " + y + ": " + handled);
-				this.commandsContainer.handlePointerPressed( x, y );
-				int focusedIndex = this.commandsContainer.getFocusedIndex();
-				Command cmd = (Command) this.commandsList.get( focusedIndex );
-				this.screen.callCommandListener( cmd );						
-				return true;
-			}
+			y -= this.commandsContainerY;
+			boolean handled = this.commandsContainer.handlePointerPressed(x, y);
+			return handled;
+//			setOpen( false );
+//			// a menu-item could have been selected:
+//			if (x <= this.commandsContainer.xLeftPos + this.commandsContainerWidth 
+//					&& y >= this.commandsContainerY ) 
+//			{
+//				
+//				//boolean handled = this.commandsContainer.handlePointerPressed( x, y );
+//				//System.out.println("handling pointer pressed in open menu at " + x + ", " + y + ": " + handled);
+//				this.commandsContainer.handlePointerPressed( x, y );
+//				int focusedIndex = this.commandsContainer.getFocusedIndex();
+//				Command cmd = (Command) this.commandsList.get( focusedIndex );
+//				this.screen.callCommandListener( cmd );						
+//				return true;
+//			}
 		}
 		return false;
 	}

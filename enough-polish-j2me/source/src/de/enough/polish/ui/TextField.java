@@ -1860,10 +1860,11 @@ public class TextField extends StringItem
 						//this.caretPosition = this.text.length();
 						this.caretRow = 0; //this.realTextLines.length - 1;
 						String caretRowText = this.realTextLines[ this.caretRow ];
-						if (caretRowText.charAt( caretRowText.length()-1) == '\n' ) {
-							caretRowText = caretRowText.substring(0, caretRowText.length()-1);
+						int caretRowLength = caretRowText.length();
+						if (caretRowLength > 0 && caretRowText.charAt( caretRowLength-1) == '\n' ) {
+							caretRowText = caretRowText.substring(0, caretRowLength-1);
 						}
-						setCaretRow( caretRowText, caretRowText.length() );						
+						setCaretRow( caretRowText, caretRowLength );						
 						this.caretPosition = this.caretColumn;
 						this.caretY = 0; // this.rowHeight * (this.realTextLines.length - 1);
 						//System.out.println(this + ".initContent()/font3: caretX=" + this.caretX);
@@ -2525,11 +2526,15 @@ public class TextField extends StringItem
 							// insert the last character into the text:
 							if (this.caretChar != this.editingCaretChar) {
 								insertCharacter();
+								if (currentLength + 1 >= this.maxSize) {
+									return true;
+								}
 							}
 							this.characterIndex = 0;
 							this.lastKey = keyCode;
 						}
 						newCharacter = alphabet.charAt( this.characterIndex );
+						//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
 						if ( this.inputMode == MODE_UPPERCASE 
 								|| this.nextCharUppercase ) 
 						{

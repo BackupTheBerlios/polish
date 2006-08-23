@@ -420,6 +420,11 @@ public final class StyleSheet {
 							System.out.println("StyleSheet: Using screen animation of last screen");
 						}
 					}
+					//#if polish.Screen.showScreenChangeAnimationOnlyForScreen
+						if ( nextScreen == null ) {
+							screenAnimation = null;
+						}
+					//#endif
 					if ( screenAnimation == null ) {
 						//#debug
 						System.out.println("StyleSheet: found no screen animation");

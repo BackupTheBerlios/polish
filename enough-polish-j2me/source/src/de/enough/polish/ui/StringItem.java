@@ -435,7 +435,11 @@ public class StringItem extends Item
 						}	
 						//#if polish.css.text-wrap
 							if (this.clipText) {
-								lineX += this.xOffset;
+								// when clipping (and therefore a scrolling animation) is needed,
+								// center and right layouts don't really make sense - this would
+								// start and stop the scrolling at wrong places outside of the clipping area: 
+								orientation = Graphics.TOP | Graphics.LEFT;
+								lineX = x + this.xOffset;
 							}
 						//#endif
 						g.drawString( line, lineX, lineY, orientation );
@@ -489,10 +493,11 @@ public class StringItem extends Item
 					this.textWidth = myTextWidth;
 					this.isHorizontalAnimationDirectionRight = false;
 					this.contentWidth = lineWidth;
-					int numberOfChars = (this.text.length() * lineWidth) / myTextWidth - 1;
-					if (numberOfChars > 1) {
-						this.textLines = new String[] { this.text.substring( 0, numberOfChars ) + ".." };
-					}
+					//TODO do this only when no animation should be used
+//					int numberOfChars = (this.text.length() * lineWidth) / myTextWidth - 1;
+//					if (numberOfChars > 1) {
+//						this.textLines = new String[] { this.text.substring( 0, numberOfChars ) + ".." };
+//					}
 				} else {
 					this.clipText = false;
 					this.contentWidth = myTextWidth;

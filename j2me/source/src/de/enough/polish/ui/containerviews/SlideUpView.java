@@ -1,0 +1,103 @@
+//#condition polish.usePolishGui
+/*
+ * Created on Aug 21, 2006 at 12:48:38 PM.
+ * 
+ * Copyright (c) 2006 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+package de.enough.polish.ui.containerviews;
+
+import javax.microedition.lcdui.Graphics;
+
+import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Border;
+import de.enough.polish.ui.Container;
+import de.enough.polish.ui.ContainerView;
+import de.enough.polish.ui.Item;
+
+/**
+ * <p>Slides the parent container upwards, an animation used for menus for example.</p>
+ *
+ * <p>Copyright Enough Software 2006</p>
+ * <pre>
+ * history
+ *        Aug 21, 2006 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public class SlideUpView extends BackgroundContainerView {
+
+	private boolean isAnimationFinished;
+	private int yOffset;
+	private int minSpeed = 2;
+	private int maxSpeed = -1;
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#animate()
+	 */
+	public boolean animate() {
+		boolean animated = super.animate();
+		if (!this.isAnimationFinished ) {
+			int y = this.yOffset;
+			int speed = Math.max( this.minSpeed, y / 3 );
+			if (this.maxSpeed != -1 && speed > this.maxSpeed) {
+				speed = this.maxSpeed;
+			}
+			//System.out.println("animate: y=" + y + ", speed=" + speed);
+			y -= speed;
+			if (y <= 0) {
+				y = 0;
+				this.isAnimationFinished = true;
+			}
+			this.yOffset = y;
+			animated = true;
+		}
+		return animated;
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
+	 */
+	protected void initContent(Container parent, int firstLineWidth, int lineWidth) {
+		super.initContent(parent, firstLineWidth, lineWidth);
+		if (this.restartAnimation) {
+			this.restartAnimation = false;
+			this.isAnimationFinished = false;
+			this.yOffset = this.contentHeight;			
+		}
+	}
+
+	
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		y += this.yOffset;		
+		super.paintContent(x, y, leftBorder, rightBorder, g);
+	}
+
+
+}

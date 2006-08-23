@@ -1614,6 +1614,8 @@ implements AccessibleCanvas
 	{
 		if (this.title == null) {
 			return null;
+		} else if ( !(this.title instanceof StringItem ) ) {
+			return null;
 		} else {
 			return ((StringItem)this.title).getText();
 		}
@@ -2706,7 +2708,7 @@ implements AccessibleCanvas
 		if (this.container == null) {
 			return false;
 		}
-		return this.container.handlePointerPressed(x, y);
+		return this.container.handlePointerPressed(x, y - this.contentY );
 	}
 	//#endif
 	
