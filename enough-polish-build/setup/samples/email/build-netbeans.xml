@@ -140,8 +140,7 @@
 				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu" 
-	                polishDir="../enough-polish-j2me/source/src" 
+			<build fullscreen="menu"
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 				>
