@@ -484,6 +484,8 @@
 		<mapping from="dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="DinnerForOne" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
+		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
+		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<!--
