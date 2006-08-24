@@ -108,27 +108,31 @@ public class AntBox {
         // Ant has some stong dependencies on the current working directory.
         // So we set it with a hack (setting global properties) and set it back
         // if we are done.
-        setWorkingDirectory();
-        this.project = new Project();
-//        this.project.setCoreLoader(this.alternativeClassLoader);
-        this.project.init();
-        this.project.setUserProperty("ant.version", Main.getAntVersion());
-        this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
-        
-        this.projectHelper.parse(this.project,this.buildxml);
-        
-        // The logger is needed as j2me polish will replace this instance with
-        // its own. Without this logger a warning is issued.
-        BuildLogger logger = new DefaultLogger();
-        logger.setMessageOutputLevel(this.messageOutputLevel);
-        logger.setOutputPrintStream(this.outputStream);
-        logger.setErrorPrintStream(this.errorStream);
-        logger.setEmacsMode(true);
-        
-        this.project.addBuildListener(logger);
-        
-        // Restore previous working directory.
-        restorePreviousWorkingDirectory();
+        try {
+            setWorkingDirectory();
+            this.project = new Project();
+    //        this.project.setCoreLoader(this.alternativeClassLoader);
+            this.project.init();
+            this.project.setUserProperty("ant.version", Main.getAntVersion());
+            this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
+            
+            this.projectHelper.parse(this.project,this.buildxml);
+            
+            // The logger is needed as j2me polish will replace this instance with
+            // its own. Without this logger a warning is issued.
+            BuildLogger logger = new DefaultLogger();
+            logger.setMessageOutputLevel(this.messageOutputLevel);
+            logger.setOutputPrintStream(this.outputStream);
+            logger.setErrorPrintStream(this.errorStream);
+            logger.setEmacsMode(true);
+            
+            this.project.addBuildListener(logger);
+            
+        }
+        finally {
+            // Restore previous working directory.
+            restorePreviousWorkingDirectory();
+        }
         return this.project;
     }
 
