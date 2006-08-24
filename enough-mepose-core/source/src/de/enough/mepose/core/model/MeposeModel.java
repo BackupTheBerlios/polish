@@ -156,8 +156,6 @@ public class MeposeModel extends PropertyModel{
     private File jadFile;
     private Device currentDevice;
     
-    private String currentDeviceName = DEFAULT_DEVICE_NAME;
-
     // Info.
     private String projectDescription = "";
 
@@ -456,11 +454,11 @@ public class MeposeModel extends PropertyModel{
     }
 
     public void setCurrentDevice(Device currentDevice) {
+        System.out.println("DEBUG:MeposeModel.setCurrentDevice(...):enter.currentDevice:"+currentDevice);
         if(currentDevice == null){
             throw new IllegalArgumentException("setCurrentDevice(...):parameter 'currentDevice' is null contrary to API.");
         }
         this.currentDevice = currentDevice;
-        setCurrentDeviceName(this.currentDevice.getIdentifier());
         firePropertyChangeEvent(ID_CURRENT_DEVICE,null,this.currentDevice);
         if(this.environment != null) {
             this.environment.initialize(currentDevice,null);
@@ -831,23 +829,6 @@ public class MeposeModel extends PropertyModel{
     
     public void setBuildTargetName(String buildTargetName) {
         this.buildTargetName = buildTargetName;
-    }
-
-
-    /*
-     * The name may be out of sync with getCurrentDevice(). It is mostly for bootstrapping
-     * when no DeviceDatabase is present.
-     */
-    public String getCurrentDeviceName() {
-        return this.currentDeviceName;
-    }
-
-
-    public void setCurrentDeviceName(String currentDeviceName) {
-        if(currentDeviceName == null){
-            throw new IllegalArgumentException("setCurrentDeviceName(...):parameter 'currentDeviceName' is null contrary to API.");
-        }
-        this.currentDeviceName = currentDeviceName;
     }
     
     public void addBuildListener(BuildListener aBuildListener) {
