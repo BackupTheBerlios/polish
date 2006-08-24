@@ -83,6 +83,8 @@ public class MIDletLaunchConfigurationDelegate extends
         IProject project = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(projectName);
 
+        
+        
         if (project == null) {
             showErrorBox(CAN_NOT_BUILD_PROJECT, "The project '" + projectName
                                                 + "' does not exists.");
@@ -106,16 +108,18 @@ public class MIDletLaunchConfigurationDelegate extends
             return;
         }
 
-        // Make a new antBox so everything is nicely initialized.
-        monitor.subTask("Setting up build environment.");
-        monitor.worked(1);
-        final AntBox antBox = new AntBox(model.getBuildxml());
-        antBox.createProject();
         Device currentDevice = model.getCurrentDevice();
         if (currentDevice == null) {
             showErrorBox(CAN_NOT_BUILD_PROJECT, "No device selected for build");
             return;
         }
+
+        monitor.subTask("Setting up build environment.");
+        monitor.worked(1);
+
+        // Make a new antBox so everything is nicely initialized.
+        final AntBox antBox = new AntBox(model.getBuildxml());
+        antBox.createProject();
         antBox.setProperty("device", currentDevice.getIdentifier());
         antBox.setProperty("dir.work", "build/test");
         antBox.setProperty("test", "true");
