@@ -19,11 +19,22 @@ public class IteratorMethodVisitor
   private static final Type TYPE_ITERATORUTIL =
     Type.getType("Lde/enough/polish/util/IteratorUtil;");
   
+  private static final Type TYPE_ITERATORUTIL_DEFAULT =
+    Type.getType("LIteratorUtil;");
+  
   private static final Method METHOD_ITERATOR =
     Method.getMethod("de.enough.polish.util.Iterator iterator()");
 
+  private static final Method METHOD_ITERATOR_DEFAULT =
+    new Method("iterator", "()LIterator;");
+//    Method.getMethod("Iterator iterator()");
+
   private static final Method METHOD_ITERATORUTIL =
     Method.getMethod("de.enough.polish.util.Iterator iterator(java.lang.Object)");
+  
+  private static final Method METHOD_ITERATORUTIL_DEFAULT =
+    new Method("iterator", "(Ljava/lang/Object;)LIterator;");
+//    Method.getMethod("Iterator iterator(java.lang.Object)");
 
   public IteratorMethodVisitor(MethodVisitor mv, int access, String name, String desc)
   {
@@ -50,7 +61,24 @@ public class IteratorMethodVisitor
         invokeStatic(TYPE_ITERATORUTIL, METHOD_ITERATORUTIL);
         return;
       }
+    
+    // Handle all classses in default package too.
+    if (INVOKEVIRTUAL == opcode
+        && TYPE_VECTOR.equals(type)
+        && METHOD_ITERATOR_DEFAULT.equals(method))
+      {
+        invokeStatic(TYPE_ITERATORUTIL_DEFAULT, METHOD_ITERATORUTIL_DEFAULT);
+        return;
+      }
 
+    if (INVOKESTATIC == opcode
+        && TYPE_ITERABLEMETHODS.equals(type)
+        && METHOD_ITERATORUTIL_DEFAULT.equals(method))
+      {
+        invokeStatic(TYPE_ITERATORUTIL_DEFAULT, METHOD_ITERATORUTIL_DEFAULT);
+        return;
+      }
+    
     super.visitMethodInsn(opcode, owner, name, desc);
   }
 }
