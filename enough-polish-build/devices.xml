@@ -4121,7 +4121,7 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, m3g"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
