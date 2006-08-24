@@ -477,7 +477,9 @@ public class ExtensionManager {
 					extension.initialize(device, locale, environment );
 				} catch ( Exception e ) {
 					e.printStackTrace();
-					System.out.println("Unable to initialize extension " + extensionName );
+					BuildException be = new BuildException("Unable to initialize extension " + extensionName);
+          be.initCause(e);
+          throw be;
 				}
 			}
 		}
