@@ -310,7 +310,7 @@ public class AntBox {
             System.out.println("Buildfile: " + this.buildxml);
         }
         this.project.executeTargets(argumentList);
-        // This method does not call the executor.
+        // This method does not call the executor so we do not use it.
 //        this.project.executeSortedTargets(this.project.topoSort(targetNames, this.project.getTargets(), false));
     }
 
