@@ -69,10 +69,9 @@ public class PolishJavaAutoIndentStrategy extends JavaAutoIndentStrategy {
     }
 
     public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-        System.out.println("DEBUG:PolishJavaAutoIndentStrategy.customizeDocumentCommand(...):enter.");
         //TODO: Problem: In our polish preference store we do not have the properties from the JavaEditor.
         if (c.text.length() > 1 && getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_PASTE)) {
-            System.out.println("DEBUG:PolishJavaAutoIndentStrategy.customizeDocumentCommand(...):try to start polishSmartPaste.");
+//            System.out.println("DEBUG:PolishJavaAutoIndentStrategy.customizeDocumentCommand(...):try to start polishSmartPaste.");
             polishSmartPaste(d, c);
             return;
         }

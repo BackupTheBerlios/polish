@@ -60,11 +60,9 @@ public class MIDletLaunchConfigurationDelegate extends
         AbstractJavaLaunchConfigurationDelegate {
 
     private static final int DELAY = 1000;
-
-    private static final String CAN_NOT_BUILD_PROJECT = "Can not build project";
+    private static final String MSG_CAN_NOT_BUILD_PROJECT = "Can not build project";
 
     private InputStream oldIn;
-
     private PrintStream oldOut;
 
     // private static final int EMULATOR_STARTUP_TIME = 5000;
@@ -86,7 +84,7 @@ public class MIDletLaunchConfigurationDelegate extends
         
         
         if (project == null) {
-            showErrorBox(CAN_NOT_BUILD_PROJECT, "The project '" + projectName
+            showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "The project '" + projectName
                                                 + "' does not exists.");
             return;
         }
@@ -95,14 +93,14 @@ public class MIDletLaunchConfigurationDelegate extends
                 .getModel(project);
         if (model == null) {
             showErrorBox(
-                         CAN_NOT_BUILD_PROJECT,
+                         MSG_CAN_NOT_BUILD_PROJECT,
                          "No model found for the project. Maybe the project does not have a Mepose nature.");
             return;
         }
 
         File buildxml = model.getBuildxml();
         if (buildxml == null) {
-            showErrorBox(CAN_NOT_BUILD_PROJECT, "Internal error: 1");
+            showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "Internal error: 1");
             MeposeUIPlugin.log("No buildxml specified in model for project:"
                                + projectName);
             return;
@@ -110,7 +108,7 @@ public class MIDletLaunchConfigurationDelegate extends
 
         Device currentDevice = model.getCurrentDevice();
         if (currentDevice == null) {
-            showErrorBox(CAN_NOT_BUILD_PROJECT, "No device selected for build");
+            showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "No device selected for build");
             return;
         }
 
@@ -153,13 +151,10 @@ public class MIDletLaunchConfigurationDelegate extends
             String idStamp = Long.toString(timeStamp);
 
             Map attributes = new HashMap();
-            attributes
-                    .put(IProcess.ATTR_PROCESS_TYPE,
-                         IAntLaunchConfigurationConstants.ID_ANT_PROCESS_TYPE);
+            attributes.put(IProcess.ATTR_PROCESS_TYPE,IAntLaunchConfigurationConstants.ID_ANT_PROCESS_TYPE);
             attributes.put(AbstractEclipseBuildLogger.ANT_PROCESS_ID, idStamp);
-            antBox.setProperty(AbstractEclipseBuildLogger.ANT_PROCESS_ID,
-                               idStamp);
             attributes.put(DebugPlugin.ATTR_CAPTURE_OUTPUT, "true");
+            antBox.setProperty(AbstractEclipseBuildLogger.ANT_PROCESS_ID,idStamp);
 
             // MeposeSourceLocator meposeSourceLocator = new
             // MeposeSourceLocator(model);
@@ -183,13 +178,12 @@ public class MIDletLaunchConfigurationDelegate extends
 
             sourceLocator.setSourceContainers(newSourceContainers);
 
-            AntProcess antProcess = new AntProcess("J2ME Polish", launch,
-                                                   attributes);
+            AntProcess antProcess = new AntProcess("J2ME Polish", launch,attributes);
 
             Throwable throwable = null;
 
             boolean error = false;
-            antBox.getProject().fireBuildStarted();
+            antProject.fireBuildStarted();
             monitor.subTask("Executing build.xml");
             monitor.worked(1);
             try {
@@ -199,8 +193,7 @@ public class MIDletLaunchConfigurationDelegate extends
                 error = true;
             }
             antProject.fireBuildFinished(throwable);
-            String property = antBox.getProject()
-                    .getProperty(AntProcessBuildLogger.BUILD_SUCCESS);
+            String property = antBox.getProject().getProperty(AntProcessBuildLogger.BUILD_SUCCESS);
             error = "false".equals(property);
             if (error) {
                 return;
