@@ -152,6 +152,8 @@ public final class ImageUtil {
 				referenceX, referenceY, 0x00FFFFFF,
 				degreeCos, degreeSin, rotatedRgbData, rotatedWidth, rotatedHeight );
 		image.setRgbData(rotatedRgbData, rotatedWidth);
+		image.setWidth(rotatedWidth);
+		image.setHeight(rotatedHeight);
 	}
 	//#endif
 

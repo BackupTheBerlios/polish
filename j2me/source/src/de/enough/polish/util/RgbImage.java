@@ -199,5 +199,13 @@ public class RgbImage {
 			g.drawRGB( this.rgbData, 0, this.width, x, y, this.width, this.height, this.processTransparency );
 		//#endif
 	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
 	
 }
