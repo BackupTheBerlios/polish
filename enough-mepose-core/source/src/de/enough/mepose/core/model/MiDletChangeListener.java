@@ -214,6 +214,15 @@ public class MiDletChangeListener implements IResourceChangeListener{
             properties.put("MIDlet-"+i,value.toString());
             i++;
         }
+        
+        //Remove midlet.properties file.
+        if( ! properties.keys().hasMoreElements()) {
+            if(midletPropertiesFile.exists()) {
+                midletPropertiesFile.delete();
+            }
+            return;
+        }
+        
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(midletPropertiesFile);
