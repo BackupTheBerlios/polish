@@ -1,19 +1,11 @@
 package de.enough.mepose.launcher;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.channels.Channels;
-import java.nio.channels.Pipe;
-import java.nio.channels.Pipe.SinkChannel;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.DemuxInputStream;
 import org.apache.tools.ant.DemuxOutputStream;
 import org.apache.tools.ant.Project;
@@ -25,18 +17,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.ISourceLocator;
-import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
-import org.eclipse.debug.internal.core.LaunchConfiguration;
-import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -44,10 +33,6 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
@@ -64,9 +49,10 @@ public class MIDletLaunchConfigurationDelegate extends
 
     private InputStream oldIn;
     private PrintStream oldOut;
-
+    
     // private static final int EMULATOR_STARTUP_TIME = 5000;
     private PrintStream oldErr;
+    private BuildRunnable buildRunnable;
 
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, final IProgressMonitor monitor)
@@ -180,24 +166,21 @@ public class MIDletLaunchConfigurationDelegate extends
 
             AntProcess antProcess = new AntProcess("J2ME Polish", launch,attributes);
 
-            Throwable throwable = null;
-
-            boolean error = false;
             antProject.fireBuildStarted();
             monitor.subTask("Executing build.xml");
             monitor.worked(1);
-            try {
-                antBox.run(targets);
-            } catch (Throwable e) {
-                throwable = e;
-                error = true;
-            }
-            antProject.fireBuildFinished(throwable);
-            String property = antBox.getProject().getProperty(AntProcessBuildLogger.BUILD_SUCCESS);
-            error = "false".equals(property);
-            if (error) {
-                return;
-            }
+            
+            this.buildRunnable = new BuildRunnable(antBox,targets);
+            Thread thread = new Thread(this.buildRunnable);
+            thread.start();
+            
+            //TODO: Put this in the finally.
+//            antProject.fireBuildFinished(r.get);
+//            String property = antBox.getProject().getProperty(AntProcessBuildLogger.BUILD_SUCCESS);
+//            error = "false".equals(property);
+//            if (error) {
+//                return;
+//            }
 
             if (isDebug) {
                 String connectorId = configuration
@@ -248,7 +231,13 @@ public class MIDletLaunchConfigurationDelegate extends
                 monitor.subTask("Waiting '" + DELAY
                                 + "' for emulator to come up.");
                 try {
-                    Thread.sleep(DELAY);
+                    for(int i = 0;i<4;i++) {
+                        if (monitor.isCanceled()) {
+                            return;
+                        }
+                        Thread.sleep(DELAY);
+                        monitor.worked(1);
+                    }
                 } catch (InterruptedException exception) {
                     // TODO rickyn handle InterruptedException
                     exception.printStackTrace();
@@ -257,51 +246,68 @@ public class MIDletLaunchConfigurationDelegate extends
                 monitor.subTask("Connecting to emulator.");
                 monitor.worked(1);
                 connector.connect(argMap, monitor, launch);
-
-                // Check for cancellation.
-                if (monitor.isCanceled()) {
-                    IDebugTarget[] debugTargets = launch.getDebugTargets();
-                    for (int i = 0; i < debugTargets.length; i++) {
-                        IDebugTarget target = debugTargets[i];
-                        if (target.canDisconnect()) {
-                            target.disconnect();
-                        }
-                    }
-                    return;
-                }
-
-                monitor.done();
-
-                // TODO: Way terminate the process right away?
-                // if (process != null)
-                // process.destroy();
-                // {
-                //
             }
-
+            
+            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled()) {
+                try {
+                    System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):sleeping.");
+                    Thread.sleep(500);
+                } catch (InterruptedException exception) {
+                    // If this thread is interrupted, interrupt the worker, too and finish.
+                    if( ! thread.isInterrupted()) {
+                        thread.interrupt();
+                    }
+                }
+            }
+            if(!thread.isInterrupted()) {
+                thread.interrupt();
+            }
+            if(!antProcess.isCanceled()) {
+                antProcess.terminate();
+            }
+            System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):launch finished.");
         } finally {
+            System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):firing build finish");
+            antProject.fireBuildFinished(this.buildRunnable.getErrorThrowable());
+            removeLaunch(launch);
+            launch.terminate();
             System.setIn(this.oldIn);
             System.setOut(this.oldOut);
             System.setErr(this.oldErr);
+            monitor.done();
         }
     }
 
     /**
-     * 
+     * @param launch
+     * @throws DebugException
      */
-    private void setupConsole() {
-        IConsoleManager consoleManager = ConsolePlugin.getDefault()
-                .getConsoleManager();
-        IConsole[] consoles = consoleManager.getConsoles();
-        for (int i = 0; i < consoles.length; i++) {
-            IConsole console = consoles[i];
-            if (MeposeUIPlugin.CONSOLE_NAME.equals(console.getName())) {
-                consoleManager.showConsoleView(console);
-                ((MessageConsole) console).clearConsole();
-                break;
+    private void removeLaunch(ILaunch launch) throws DebugException {
+        IDebugTarget[] debugTargets = launch.getDebugTargets();
+        for (int i = 0; i < debugTargets.length; i++) {
+            IDebugTarget target = debugTargets[i];
+            if (target.canDisconnect()) {
+                target.disconnect();
             }
         }
     }
+
+//    /**
+//     * 
+//     */
+//    private void setupConsole() {
+//        IConsoleManager consoleManager = ConsolePlugin.getDefault()
+//                .getConsoleManager();
+//        IConsole[] consoles = consoleManager.getConsoles();
+//        for (int i = 0; i < consoles.length; i++) {
+//            IConsole console = consoles[i];
+//            if (MeposeUIPlugin.CONSOLE_NAME.equals(console.getName())) {
+//                consoleManager.showConsoleView(console);
+//                ((MessageConsole) console).clearConsole();
+//                break;
+//            }
+//        }
+//    }
 
     private void showErrorBox(final String title, final String message) {
         Display.getDefault().asyncExec(new Runnable() {
@@ -311,5 +317,36 @@ public class MIDletLaunchConfigurationDelegate extends
                 MessageDialog.openError(activeShell, title, message);
             }
         });
+    }
+    
+    class BuildRunnable implements Runnable{
+
+        private AntBox antBox;
+        private String[] targets;
+        private Throwable throwable;
+        private boolean finished = false;
+        public BuildRunnable(AntBox antBox, String[] targets) {
+            this.antBox = antBox;
+            this.targets = targets;
+        }
+        
+        public void run() {
+            try{
+                this.antBox.run(this.targets);
+                this.finished = true;
+            } catch (final Throwable e) {
+                this.throwable = e;
+            }
+        }
+
+        public boolean isFinished() {
+            return this.finished;
+        }
+        
+        public Throwable getErrorThrowable() {
+            return this.throwable;
+        }
+        
+        
     }
 }
