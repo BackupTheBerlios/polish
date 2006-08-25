@@ -282,7 +282,15 @@ public class MiDletChangeListener implements IResourceChangeListener{
     public void resourceChanged(IResourceChangeEvent event) {
         boolean hasPolishNature = false;
         try {
-            hasPolishNature = event.getResource().getProject().hasNature(PolishNature.ID);
+            IResource resource = event.getResource();
+            if(resource == null) {
+                return;
+            }
+            IProject project = resource.getProject();
+            if(project == null){
+                return;
+            }
+            hasPolishNature = project.hasNature(PolishNature.ID);
         } catch (CoreException exception1) {
             return;
         }
