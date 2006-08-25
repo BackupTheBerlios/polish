@@ -1842,12 +1842,6 @@ implements AccessibleCanvas
 						System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 					}
 				//}
-				//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
-					if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
-						callCommandListener(this.okCommand);
-						return;
-					}
-				//#endif
 				boolean processed = false;
 				//#if tmp.menuFullScreen
 					boolean letTheMenuBarProcessKey;
@@ -1959,6 +1953,12 @@ implements AccessibleCanvas
 								return;
 							}
 						//#endif
+					}
+				//#endif
+				//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
+					if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
+						callCommandListener(this.okCommand);
+						return;
 					}
 				//#endif
 				//#if tmp.menuFullScreen && polish.key.ReturnKey:defined

@@ -1603,7 +1603,7 @@ public abstract class Item extends Object
 	 */
 	protected void init( int firstLineWidth, int lineWidth ) {
 		//#debug
-		System.out.println("intialising item " + this.getClass().getName() );
+		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ")");
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}
@@ -1739,6 +1739,8 @@ public abstract class Item extends Object
 							  - labelHeight;
 		}
 		this.isInitialised = true;
+		//#debug
+		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
 	
 	//#ifdef polish.useDynamicStyles

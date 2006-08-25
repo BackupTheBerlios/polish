@@ -1,4 +1,4 @@
-//condition polish.midp
+//#condition polish.midp
 
 /*
  * Created on Nov 23, 2005 at 2:42:24 PM.
@@ -35,7 +35,7 @@ import com.nokia.mid.ui.DirectUtils;
 //#endif
 
 /**
- * <p>Provides functions for</p>
+ * <p>Provides functions for drawing shadows, polygons, gradients, etc.</p>
  *
  * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>

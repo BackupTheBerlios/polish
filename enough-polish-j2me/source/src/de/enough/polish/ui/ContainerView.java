@@ -164,15 +164,18 @@ public class ContainerView {
 					//System.out.println("container has shrinking layout and contains focuse item " + item);
 					item.isInitialised = false;
 					boolean doExpand = item.isLayoutExpand;
-					//if (doExpand) {
+					int width;
+					if (doExpand) {
 						item.isLayoutExpand = false;
-						int width = item.getItemWidth( lineWidth, lineWidth );
-						if (width > myContentWidth) {
-							myContentWidth = width;
-						}
+						width = item.getItemWidth( lineWidth, lineWidth );
 						item.isInitialised = false;
-						item.isLayoutExpand = doExpand;
-					//}
+						item.isLayoutExpand = true;
+					} else {
+						width = item.itemWidth;
+					}
+					if (width > myContentWidth) {
+						myContentWidth = width;
+					}
 				}
 			} else {
 				this.appearanceMode = Item.PLAIN;
@@ -184,6 +187,7 @@ public class ContainerView {
 				this.contentHeight = myContentHeight;
 			//#endif
 			this.contentWidth = myContentWidth;
+			//System.out.println("ContainerView.initContent(): contentWidth=" + this.contentWidth );
 			return;
 		//#ifdef tmp.useTable
 		}
@@ -487,7 +491,8 @@ public class ContainerView {
 		//#if polish.css.view-type-right-x-offset
 			rightBorder -= this.rightXOffset;
 		//#endif
-
+		//System.out.println("ContainerView.paint(): width=" + (rightBorder - leftBorder ) + ", firstLineWidth=" + (rightBorder - x) + ", contentWidth=" + this.contentWidth + ", parentContentWidth=" + this.parentContainer.contentWidth );
+		
 		Item[] myItems = this.parentContainer.getItems();
 		
 		int focusedX = x;
@@ -498,7 +503,7 @@ public class ContainerView {
 		//#endif
 				if (!(this.isLayoutCenter || this.isLayoutRight)) {
 					// adjust the right border:
-					rightBorder = leftBorder + this.contentWidth;
+					//rightBorder = leftBorder + this.contentWidth;
 				}
 				for (int i = 0; i < myItems.length; i++) {
 					Item item = myItems[i];

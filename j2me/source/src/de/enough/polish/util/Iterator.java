@@ -55,7 +55,7 @@ public interface Iterator
 	 * Returns the next element in the iteration.
 	 * 
 	 * @return the next element in the iteration.
-	 * @throws IllegalStateException when all elements have been iterated through.
+	 * @throws IllegalStateException when all elements have been iterated through (on Non-MIDP platforms just a RuntimeException is raised).
 	 */
 	//#if polish.java5
 	public K next();
@@ -66,7 +66,7 @@ public interface Iterator
 	/**
 	 * Removes from the underlying collection the last element returned by the iterator (optional operation). This method can be called only once per call to next. The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
 	 * 
-	 * @throws IllegalStateException when the map/list does not support this operation.
+	 * @throws IllegalStateException when the map/list does not support this operation (on Non-MIDP platforms just a RuntimeException is raised).
 	 */
 	public void remove();
 

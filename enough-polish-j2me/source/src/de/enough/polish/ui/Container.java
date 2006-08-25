@@ -808,14 +808,17 @@ public class Container extends Item {
 				//System.out.println("container has shrinking layout and contains focuse item " + item);
 				item.isInitialised = false;
 				boolean doExpand = item.isLayoutExpand;
+				int width;
 				if (doExpand) {
 					item.isLayoutExpand = false;
-					int width = item.getItemWidth( lineWidth, lineWidth );
-					if (width > myContentWidth) {
-						myContentWidth = width;
-					}
+					width = item.getItemWidth( lineWidth, lineWidth );
 					item.isInitialised = false;
-					item.isLayoutExpand = doExpand;
+					item.isLayoutExpand = true;
+				} else {
+					width = item.itemWidth;
+				}
+				if (width > myContentWidth) {
+					myContentWidth = width;
 				}
 				if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
 					myContentWidth = this.minimumWidth;

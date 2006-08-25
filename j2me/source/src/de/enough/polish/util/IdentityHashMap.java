@@ -410,7 +410,11 @@ private final class HashMapIterator implements Iterator {
 						return element.key;
 					}
 				}
-				throw new IllegalStateException("no more elements");
+				//#if polish.midp
+					throw new IllegalStateException("no more elements");
+				//#else
+					//# throw new RuntimeException("no more elements");
+				//#endif
 			} else {
 				this.position++;
 				return this.current.key;
@@ -419,7 +423,11 @@ private final class HashMapIterator implements Iterator {
 
 		public void remove() {
 			if (this.current == null) {
-				throw new IllegalStateException("no current element");
+				//#if polish.midp
+					throw new IllegalStateException("no current element");
+				//#else
+					//# throw new RuntimeException("no current element");
+				//#endif
 			}
 			// search for previous element:
 			for (int i = this.lastBucketIndex - 1; i >= 0; i--) {
@@ -443,7 +451,11 @@ private final class HashMapIterator implements Iterator {
 				}
 				
 			}
-			throw new IllegalStateException("unable to locate current element");
+			//#if polish.midp
+				throw new IllegalStateException("unable to locate current element");
+			//#else
+				//# throw new RuntimeException("unable to locate current element");
+			//#endif
 		}
 		
 	}
