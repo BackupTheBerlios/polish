@@ -53,6 +53,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.project.PolishNature;
 
 /**
  * 
@@ -270,6 +271,15 @@ public class MiDletChangeListener implements IResourceChangeListener{
     }
     
     public void resourceChanged(IResourceChangeEvent event) {
+        boolean hasPolishNature = false;
+        try {
+            hasPolishNature = event.getResource().getProject().hasNature(PolishNature.ID);
+        } catch (CoreException exception1) {
+            return;
+        }
+        if(!hasPolishNature) {
+            return;
+        }
         switch (event.getType()) {
            case IResourceChangeEvent.POST_CHANGE:
               try {
