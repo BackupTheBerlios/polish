@@ -32,12 +32,11 @@ public class CloneMethodVisitor
 
   public void visitMethodInsn(int opcode, String owner, String name, String desc)
   {
-    Type type = Type.getType(owner);
     Method method = new Method(name, desc);
 
     // Rewrite TYPE[].clone() calles.
     if (INVOKEVIRTUAL == opcode
-        && this.enumArrayDesc.equals(type)
+        && this.enumArrayDesc.getInternalName().equals(owner)
         && METHOD_CLONE.equals(method))
       {
         dup();
