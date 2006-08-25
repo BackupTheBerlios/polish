@@ -27,7 +27,9 @@ package de.enough.mepose.ui.wizards;
 
 import java.io.File;
 
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -312,6 +314,14 @@ public class PathsPage extends WizardPage {
     
 
     public IWizardPage getNextPage() {
+        // The idea was to display a progress monitor for long running operations
+        // as the user should not fall asleep. But the progress monitor is not usable
+        // this way. Only single shot at the end of the wizard (perfomFinish)
+//        IWizardContainer container = getWizard().getContainer();
+//        if(container instanceof WizardDialog) {
+//            WizardDialog wd = (WizardDialog)container;
+//            wd.get
+//        }
         PlatformPage pp = (PlatformPage)super.getNextPage();
         updateModelFromGUI();
         pp.fillGUI();
