@@ -6051,6 +6051,22 @@ These namespaces/schemas will be used soon.
 </device>
 	
 <!-- Siemens devices -->
+	<device>
+		<identifier>Siemens/SL75</identifier>
+		<groups>x75</groups>
+		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi, webservice, siemens-extension, internationalization"/>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="CanvasSize" value="132x176"/>
+		<capability name="FullCanvasSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.5MB"/>
+		<capability name="StorageSize" value="6MB"/>
+		<capability name="MaxJarSize" value="350kb"/>
+		<capability name="ImageFormat" value="gif,png,jpg"/>
+		<capability name="key.ClearKey" value="-12345"/>
+		<capability name="Emulator.Skin" value="SXG75"/>
+		<capability name="Region" value="Europe, Asia-Pacific, Middle-East"/>
+	</device>
 
 	<device>
 		<identifier>Siemens/SXG75</identifier>

@@ -72,7 +72,7 @@
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"
 	/>
 	
 		
@@ -190,13 +190,6 @@
 				<!-- activate Java 5 Syntax Support for this project: -->
 				<postcompiler name="java5" />
 				
-				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
-					<!--
-					You can set additional parameters here, e.g.:
-					<parameter name="optimize" value="false" />
-					-->
-				</obfuscator>
 				<variables 
 					replacePropertiesWithoutDirective="false"
 					>
