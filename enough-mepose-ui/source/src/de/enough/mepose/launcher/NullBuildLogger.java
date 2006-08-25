@@ -122,26 +122,26 @@ public class NullBuildLogger implements BuildLogger {
      * @see org.apache.tools.ant.BuildLogger#setErrorPrintStream(java.io.PrintStream)
      */
     public void setErrorPrintStream(PrintStream err) {
-        //this build logger logs to "null" unless
-        //the user has explicitly set a logfile to use
-        if (err == System.err) {
-            fErr= null;
-        } else {
+//        //this build logger logs to "null" unless
+//        //the user has explicitly set a logfile to use
+//        if (err == System.err) {
+//            fErr= null;
+//        } else {
             fErr= err;
-        }
+//        }
     }
 
     /**
      * @see org.apache.tools.ant.BuildLogger#setOutputPrintStream(java.io.PrintStream)
      */
     public void setOutputPrintStream(PrintStream output) {
-        //this build logger logs to "null" unless
-        //the user has explicitly set a logfile to use
-        if (output == System.out) {
-            fOut= null;
-        } else {
+//        //this build logger logs to "null" unless
+//        //the user has explicitly set a logfile to use
+//        if (output == System.out) {
+//            fOut= null;
+//        } else {
             fOut= output;
-        }
+//        }
     }
     
     protected void logMessage(String message, int priority) {

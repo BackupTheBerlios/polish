@@ -3,6 +3,7 @@ package de.enough.mepose.launcher;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringReader;
 
 import org.apache.tools.ant.BuildEvent;
@@ -165,6 +166,8 @@ public class AntProcessBuildLogger extends NullBuildLogger {
         }
     }
     
+    
+    
     /**
      * Returns a hyperlink for the given task, or <code>null</code> if unable to
      * parse a valid location for the task. The link is set to exist at the specified
@@ -243,9 +246,9 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 
         String msg = message.toString();
         if (error == null) {
-            logMessage(msg,Project.MSG_VERBOSE);
+            logMessage(msg,Project.MSG_INFO);
         } else {
-            logMessage(msg,Project.MSG_ERR);
+            logMessage(msg,Project.MSG_INFO);
         }
         
         fHandledException= null;
@@ -318,6 +321,26 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 //                    event, Project.MSG_ERR);    
     }
 
+    protected void logMessage(String message, int priority) {
+        if (priority > getMessageOutputLevel()) {
+            return;
+        }
+        
+        if (priority == Project.MSG_ERR) {
+            PrintStream errorPrintStream = getErrorPrintStream();
+            if (errorPrintStream != null) {
+                //user has designated to log to a logfile
+                errorPrintStream.println(message);
+            }
+        } else {
+            PrintStream outputPrintStream = getOutputPrintStream();
+            if (outputPrintStream != null) {
+                //user has designated to log to a logfile
+                outputPrintStream.println(message);
+            } 
+        }
+    }
+    
     /* (non-Javadoc)
      * @see org.apache.tools.ant.BuildListener#targetStarted(org.apache.tools.ant.BuildEvent)
      */
