@@ -10,6 +10,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
+import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 
@@ -28,7 +29,9 @@ import de.enough.mepose.core.model.MeposeModel;
  */
 public class PolishNature implements IProjectNature
 {
-	IProject project;
+	private IProject project;
+    public static final String ID = MeposeConstants.ID_NATURE;
+    
     
     public void configure() throws CoreException {
         System.out.println("DEBUG:PolishNature.configure(...):enter.");
