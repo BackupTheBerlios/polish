@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PolishEditor Plug-in
 Bundle-SymbolicName: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin; singleton:=true
-Bundle-Version: 0.6.19
+Bundle-Version: 0.6.20
 Bundle-Activator: de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin
 Bundle-Vendor: Enough Software
 Bundle-Localization: plugin
