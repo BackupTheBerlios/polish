@@ -16,7 +16,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -26,6 +29,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
+import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -103,7 +107,15 @@ public class MIDletLaunchConfigurationDelegate extends
 
         // Make a new antBox so everything is nicely initialized.
         final AntBox antBox = new AntBox(model.getBuildxml());
-        antBox.createProject();
+        try {
+            antBox.createProject();
+        }
+        catch(Throwable t) {
+            MultiStatus multiStatus = new MultiStatus(MeposeUIPlugin.ID,0,"Could not create ant project.",null);
+            multiStatus.add(new Status(IStatus.ERROR,MeposeUIPlugin.ID,0,t.getClass().getName(),t));
+            throw new CoreException(multiStatus);
+        }
+        
         antBox.setProperty("device", currentDevice.getIdentifier());
         antBox.setProperty("dir.work", "build/test");
         antBox.setProperty("test", "true");
@@ -250,7 +262,6 @@ public class MIDletLaunchConfigurationDelegate extends
             
             while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled()) {
                 try {
-                    System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):sleeping.");
                     Thread.sleep(500);
                 } catch (InterruptedException exception) {
                     // If this thread is interrupted, interrupt the worker, too and finish.
@@ -275,9 +286,11 @@ public class MIDletLaunchConfigurationDelegate extends
             System.setOut(this.oldOut);
             System.setErr(this.oldErr);
             monitor.done();
+            getLaunchManager().removeLaunch(launch);
         }
     }
 
+    
     /**
      * @param launch
      * @throws DebugException
