@@ -154,6 +154,7 @@ public class PolishTask extends ConditionalTask {
 	private String[] preserveClasses;
 	private ImportConverter importConverter;
 	private TextFile styleSheetSourceFile;
+	private TextFile styleCacheSourceFile;
 	private ResourceUtil resourceUtil;
 	private String wtkHome;
 	private HashMap midletClassesByName;
@@ -225,6 +226,9 @@ public class PolishTask extends ConditionalTask {
 	private PolishBuildListener[] polishBuildListeners;
 
 	private LocaleSetting currentLocaleSetting;
+
+	private StringList styleCacheCode;
+
 
 	
 	/**
@@ -864,15 +868,20 @@ public class PolishTask extends ConditionalTask {
 		} else {
 			// the J2ME Polish sources need to be loaded from the jar-file:
 			long lastModificationTime = 0;
-			File jarFile = new File( this.buildSetting.getApiDir().getAbsolutePath() 
-					+ File.separator + "enough-j2mepolish-build.jar");
+			File jarFile = new File( this.polishHomeDir.getAbsolutePath() + File.separator 
+					+  "lib" + File.separator + "enough-j2mepolish-build.jar");
+			if (!jarFile.exists()) {
+				jarFile = new File( this.buildSetting.getApiDir().getAbsolutePath() 
+						+ File.separator + "enough-j2mepolish-build.jar");
+				if (!jarFile.exists()) {
+					jarFile = new File("lib/enough-j2mepolish-build.jar");
+					if (!jarFile.exists()) {
+						jarFile = new File("import/enough-j2mepolish-build.jar");						
+					}
+				}
+			}
 			if (jarFile.exists()) {
 				lastModificationTime = jarFile.lastModified();
-			} else {
-				jarFile = new File("import/enough-j2mepolish-build.jar");
-				if (jarFile.exists()) {
-					lastModificationTime = jarFile.lastModified();
-				}
 			}
 			this.polishSourceDir = new File("src");
 			try {
@@ -1153,6 +1162,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected TextFile[] getTextFiles(File baseDir, String[] fileNames, TextFileManager textFileManager ) 
 	{
+		
 		TextFile[] files = new TextFile[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
@@ -1164,6 +1174,11 @@ public class PolishTask extends ConditionalTask {
 						if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
 							|| 	"de\\enough\\polish\\ui\\StyleSheet.java".equals(fileName)) {
 							this.styleSheetSourceFile = file;
+						}
+					} else if (fileName.endsWith("StyleCache.java")) {
+						if ("de/enough/polish/ui/StyleCache.java".equals(fileName)
+								|| 	"de\\enough\\polish\\ui\\StyleCache.java".equals(fileName)) {
+								this.styleCacheSourceFile = file;
 						}
 					} else if (fileName.endsWith("Locale.java")) {
 						if ("de/enough/polish/util/Locale.java".equals(fileName)
@@ -1201,6 +1216,11 @@ public class PolishTask extends ConditionalTask {
 					if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
 						|| 	"de\\enough\\polish\\ui\\StyleSheet.java".equals(fileName)) {
 						this.styleSheetSourceFile = file;
+					}
+				} else if (fileName.endsWith("StyleCache.java")) {
+					if ("de/enough/polish/ui/StyleCache.java".equals(fileName)
+							|| 	"de\\enough\\polish\\ui\\StyleCache.java".equals(fileName)) {
+							this.styleCacheSourceFile = file;
 					}
 				} else if (fileName.endsWith("Locale.java")) {
 					if ("de/enough/polish/util/Locale.java".equals(fileName)
@@ -1375,6 +1395,11 @@ public class PolishTask extends ConditionalTask {
 		
 		// check if there is an active obfuscator with the "useDefaultPackage" option:
 		this.useDefaultPackage =  "true".equals( this.environment.getVariable("polish.useDefaultPackage"));
+		if (this.useDefaultPackage && this.environment.hasSymbol("polish.api.j2mepolish")) {
+			this.useDefaultPackage = false;
+			this.environment.removeVariable("polish.useDefaultPackage");
+			this.environment.removeSymbol("polish.useDefaultPackage");
+		}
 		this.preprocessor.setUseDefaultPackage( this.useDefaultPackage );
 		// adjust polish.classes.ImageLoader in case the default package is used:
 		if (this.useDefaultPackage) {
@@ -1543,8 +1568,11 @@ public class PolishTask extends ConditionalTask {
 				}
 			} // for each source folder
 			this.preprocessor.notifyPolishPackageStart();
-			// now process the J2ME package files:
-			processSourceDir(this.polishSourceDir, this.polishSourceFiles, locale, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, true);
+			boolean deviceSupportsJ2mePolishApi = this.environment.hasSymbol("polish.api.j2mepolish");
+			if (!deviceSupportsJ2mePolishApi) {
+				// now process the J2ME package files:
+				processSourceDir(this.polishSourceDir, this.polishSourceFiles, locale, device, usePolishGui, targetDir, buildXmlLastModified, lastCssModification, true);
+			}
 			// notify preprocessor about the end of preprocessing:
 			this.preprocessor.notifyDeviceEnd( device, usePolishGui );
 			
@@ -1555,7 +1583,11 @@ public class PolishTask extends ConditionalTask {
 			File baseDirectory = new File( targetDir );
 			if (usePolishGui) {
 				// check if the CSS declarations have changed since the last run:
-				File targetFile =  this.styleSheetSourceFile.getTargetFile( baseDirectory, this.useDefaultPackage );
+				TextFile stylesFile = this.styleSheetSourceFile;
+				if (deviceSupportsJ2mePolishApi) {
+					stylesFile = this.styleCacheSourceFile;
+				}
+				File targetFile =  stylesFile.getTargetFile( baseDirectory, this.useDefaultPackage );
 					//new File( targetDir + File.separatorChar + this.styleSheetSourceFile.getFilePath() );				
 				boolean cssIsNew = this.lastRunFailed
 					|| (!targetFile.exists())
@@ -1563,11 +1595,19 @@ public class PolishTask extends ConditionalTask {
 					|| ( buildXmlLastModified > targetFile.lastModified() );
 				if (cssIsNew) {
 					//System.out.println("CSS is new and the style sheet will be generated.");
-					if (this.styleSheetCode == null) {
+					if (!deviceSupportsJ2mePolishApi && this.styleSheetCode == null) {
 						// the style sheet has not been preprocessed:
-						this.styleSheetCode = new StringList( this.styleSheetSourceFile.getContent() );
+						this.styleSheetCode = new StringList( stylesFile.getContent() );
 						String className = "de.enough.polish.ui.StyleSheet";
 						this.preprocessor.preprocess( className, this.styleSheetCode );
+					} else if (deviceSupportsJ2mePolishApi && this.styleCacheCode == null ){
+						this.styleCacheCode = new StringList( stylesFile.getContent() );
+						String className = "de.enough.polish.ui.StyleCache";
+						this.preprocessor.preprocess( className, this.styleCacheCode );
+					}
+					StringList styleCode = this.styleSheetCode;
+					if (deviceSupportsJ2mePolishApi) {
+						styleCode = this.styleCacheCode;
 					}
 					// now insert the CSS information for this device
 					// into the StyleSheet.java source-code:
@@ -1587,20 +1627,20 @@ public class PolishTask extends ConditionalTask {
 					}
 					cssConverter.setAttributesManager( this.cssAttributesManager );
 					
-					this.styleSheetCode.reset();
-					cssConverter.convertStyleSheet(this.styleSheetCode, 
+					styleCode.reset();
+					cssConverter.convertStyleSheet(styleCode, 
 							this.preprocessor.getStyleSheet(),
 							device,
 							this.preprocessor,
 							this.environment ); 				
 					//this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
-					if (this.useDefaultPackage) {
+					if (!deviceSupportsJ2mePolishApi && this.useDefaultPackage) {
 						this.styleSheetCode.reset();
 						this.importConverter.processImports(true, device.isMidp1(), this.styleSheetCode, device, this.preprocessor);
 						this.styleSheetCode.reset();
 						this.importConverter.removeDirectPackages( this.styleSheetCode, this.preprocessor.getTextFileManager() );
 					}
-					FileUtil.writeTextFile(targetFile, this.styleSheetCode.getArray());
+					FileUtil.writeTextFile(targetFile, styleCode.getArray());
 					this.numberOfChangedFiles++;
 				//} else {
 				//	System.out.println("CSSS is not new - last CSS modification == " + lastCssModification + " <= StyleSheet.java.lastModified() == " + targetFile.lastModified() );
@@ -2054,7 +2094,7 @@ public class PolishTask extends ConditionalTask {
 	protected void precompile(Device device, Locale locale) {
 		// deactivate logging:
 		String className;
-		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+		if (this.useDefaultPackage) {
 			className = "Debug";
 		} else {
 			className = "de.enough.polish.util.Debug";
@@ -2106,7 +2146,7 @@ public class PolishTask extends ConditionalTask {
 	protected void postCompile( Device device, Locale locale ) {
 		// deactivate logging:
 		String className;
-		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+		if (this.useDefaultPackage) {
 			className = "Debug";
 		} else {
 			className = "de.enough.polish.util.Debug";
