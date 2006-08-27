@@ -193,6 +193,34 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
+	/**
+	 * Sets the title of the screen using an Item.
+	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
+	 * 
+	 * @param screen the screen for which the title should be replaced 
+	 * @param title the element responsible for painting the title.
+	 */
+	public static void setTitle( javax.microedition.lcdui.Screen screen, Item title ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets the title of the screen using an Item.
+	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
+	 * This method is meant to be used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * @param screen the screen for which the title should be replaced 
+	 * @param title the element responsible for painting the title.
+	 * @param style the style for the title
+	 */
+	public static void setTitle( javax.microedition.lcdui.Screen screen, Item title, Style style ) {
+		// ignore
+	}
+	//#endif
+
 	/**
 	 * Adds a command to a list item.
 	 * Warning: this method won't add any commands when the J2ME Polish GUI is not activated.
