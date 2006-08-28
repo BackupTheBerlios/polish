@@ -345,13 +345,8 @@ public class DeviceDatabase {
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
 		if (INSTANCE == null) {
-            try {
-                INSTANCE = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
-				inputStreamsByFileName, customFilesByFileName);
-            }
-            catch(Throwable t) {
-                return null;
-            }
+            INSTANCE = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
+			inputStreamsByFileName, customFilesByFileName);
 		}
 		return INSTANCE;
 	}
