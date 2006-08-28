@@ -325,7 +325,11 @@ implements Comparable
 		if (!name.startsWith("polish.")) {
 			name = "polish." + name;
 		}
-
+		String existingValue = getCapability( name );
+		// remove any feature relying on the current value:
+		if (existingValue != null) {
+			this.features.remove( name + "." + existingValue );
+		}
 		//boolean debug = (name.indexOf("javapackage") != -1);
 		if (this.capabilityManager != null) {
 			Capability capability = this.capabilityManager.getCapability( name );
@@ -333,7 +337,6 @@ implements Comparable
 //            capability.set(name,value,this.);
 			if ( capability != null ) {
 				if ( capability.appendExtensions() ) {
-					String existingValue = getCapability( name );
 					//value = value.toLowerCase();
 					//if (debug) {
 					//	System.out.println( this.identifier + ": " + name + ": value = [" + value + "], existingValue = [" + existingValue + "]");
@@ -376,7 +379,6 @@ implements Comparable
 					}
 				}
                 if(capability.appendZeroDelimitedExtension()) {
-                    String existingValue = getCapability(name);
                     if(existingValue != null) {
                         String temp = existingValue + '\1' + value;
                         value = temp;
