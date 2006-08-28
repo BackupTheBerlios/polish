@@ -6624,6 +6624,25 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="layerManagerSetViewWindow"/>	
 	</device>
 	
+		<device>
+		<identifier>Siemens/SL75</identifier>
+		<capability name="ScreenSize" value="132x176"/>
+		<capability name="CanvasSize" value="132x176"/>
+		<capability name="FullCanvasSize" value="132x176"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="JavaPackage" value="mmapi1.1,m3g,pimapi,btapi,wmapi1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="SoundFormat" value="audio/x-tone-seq"/>
+		<capability name="MaxJarSize" value="70kb"/>
+		<capability name="MaxObjectSize" value="16kb"/>		
+		<capability name="HeapSize" value="365 kb"/>
+		<capability name="StorageSize" value="1.6 MB"/>
+		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery"/>
+		<capability name="Emulator.Skin" value="SL55"/>
+		<capability name="Bugs" value="layerManagerSetViewWindow"/>	
+	</device>
+	
 	<device>
 		<identifier>Siemens/ST60</identifier>
 		<features>hasCommandKeyEvents, hasCamera</features>

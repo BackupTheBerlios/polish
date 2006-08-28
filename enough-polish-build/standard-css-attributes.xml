@@ -729,12 +729,13 @@
 		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
-		<!--
+		
 		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CubeScreenChangeAnimation()" />
-		-->
+		<!--
 		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
+		-->
 		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>

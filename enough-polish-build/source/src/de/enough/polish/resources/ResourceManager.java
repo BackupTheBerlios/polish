@@ -365,7 +365,7 @@ public class ResourceManager {
 							|| (name.endsWith(".0x0")
 								&& device.getCapability(name.substring(0, name.length() - ".0x0".length()) ) == null ) )
 						{
-							//System.out.println("Adding capability or preprocessing dir " + file.getAbsolutePath() );
+							//System.out.println("Adding feature (" +  device.hasFeature(name) + ") or preprocessing dir (" + this.booleanEvaluator.evaluate(name, "resourceassembling", 0) + "): " + file.getAbsolutePath() );
 							dirs.add( file );
 						}
 					} catch (BuildException e) {
