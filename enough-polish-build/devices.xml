@@ -6051,22 +6051,7 @@ These namespaces/schemas will be used soon.
 </device>
 	
 <!-- Siemens devices -->
-	<device>
-		<identifier>Siemens/SL75</identifier>
-		<groups>x75</groups>
-		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi, webservice, siemens-extension, internationalization"/>
-		<capability name="ScreenSize" value="132x176"/>
-		<capability name="CanvasSize" value="132x176"/>
-		<capability name="FullCanvasSize" value="132x176"/>
-		<capability name="BitsPerPixel" value="18"/>
-		<capability name="HeapSize" value="2.5MB"/>
-		<capability name="StorageSize" value="6MB"/>
-		<capability name="MaxJarSize" value="350kb"/>
-		<capability name="ImageFormat" value="gif,png,jpg"/>
-		<capability name="key.ClearKey" value="-12345"/>
-		<capability name="Emulator.Skin" value="SXG75"/>
-		<capability name="Region" value="Europe, Asia-Pacific, Middle-East"/>
-	</device>
+
 
 	<device>
 		<identifier>Siemens/SXG75</identifier>
@@ -6623,14 +6608,13 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Skin" value="SL55"/>
 		<capability name="Bugs" value="layerManagerSetViewWindow"/>	
 	</device>
-	
 		<device>
 		<identifier>Siemens/SL75</identifier>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="CanvasSize" value="132x176"/>
 		<capability name="FullCanvasSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="12"/>
-		<capability name="JavaPackage" value="mmapi1.1,m3g,pimapi,btapi,wmapi1.1"/>
+		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi, webservice, siemens-extension, internationalization"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="audio/x-tone-seq"/>
@@ -6639,7 +6623,7 @@ These namespaces/schemas will be used soon.
 		<capability name="HeapSize" value="365 kb"/>
 		<capability name="StorageSize" value="1.6 MB"/>
 		<capability name="DRM" value="OMA-Forward Lock, Separate Delivery, Combined Delivery"/>
-		<capability name="Emulator.Skin" value="SL55"/>
+		<capability name="Emulator.Skin" value="SL75"/>
 		<capability name="Bugs" value="layerManagerSetViewWindow"/>	
 	</device>
 	
