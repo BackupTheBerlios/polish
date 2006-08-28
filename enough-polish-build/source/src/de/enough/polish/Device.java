@@ -748,15 +748,13 @@ public class Device extends PolishComponent {
 			//acl.addPathElement( this.bootClassPath );
 			for ( int i=0; i < bootClassPaths.length; i++ ) {
 				String path = bootClassPaths[i];
-                //REMOVEME
-				//System.out.println("adding bootclasspath [" + path +"]" );
+//				System.out.println("adding bootclasspath [" + path +"]" );
 				acl.addPathElement( path );
 			}
 			String[] classPaths = this.classPath.getClassPaths();
 			for (int i=0; i < classPaths.length; i++ ) {
 				String path = classPaths[i];
-				//REMOVEME
-				//System.out.println("adding classpath [" + path +"]" );
+//				System.out.println("adding classpath [" + path +"]" );
 				acl.addPathElement( path );
 			}
 			acl.addPathElement( this.classesDir );
