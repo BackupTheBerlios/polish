@@ -35,6 +35,9 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.AccessibleCanvas;
+//#if polish.usePolishGui
+	import de.enough.polish.ui.Background;
+//#endif
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -77,6 +80,10 @@ implements Runnable, AccessibleCanvas
 		private final SplashView view;
 	//#endif
 	private String message;
+	//#if polish.usePolishGui
+		private Background background;
+	//#endif
+	private boolean isStarted;
 
 	//#if !polish.classes.SplashView:defined
 	/**
@@ -106,8 +113,6 @@ implements Runnable, AccessibleCanvas
 		this.readyMessage = readyMessage;
 		this.messageColor = messageColor;
 		this.initializer = initializer;
-		Thread thread = new Thread( this );
-		thread.start();
 		//#if false
 			this.view = null;
 		//#endif
@@ -130,8 +135,6 @@ implements Runnable, AccessibleCanvas
 			this.view = view;
 			this.display = display;
 			this.initializer = initializer;
-			Thread thread = new Thread( this );
-			thread.start();
 			//#if false
 				this.image = null;
 				this.backgroundColor = 0;
@@ -152,6 +155,8 @@ implements Runnable, AccessibleCanvas
 		this.message = message;
 		repaint();
 	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
@@ -246,11 +251,40 @@ implements Runnable, AccessibleCanvas
 	//#endif
 	
 	public void showNotify() {
-		// ignore
+		if (this.isStarted) {
+			return;
+		}
+		this.isStarted = true;
+		Thread thread = new Thread( this );
+		thread.start();
 	}
 	
 	public void hideNotify() {
-		// ignore
+		this.isStarted = false;
 	}
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the background.
+	 * Warning: this method is only available when the J2ME Polish GUI is used, check for the polish.usePolishGui preprocessing symbol
+	 * 
+	 * @return the background
+	 */
+	public Background getBackground() {
+		return this.background;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets the background of this splash screen.
+	 * Warning: this method is only available when the J2ME Polish GUI is used, check for the polish.usePolishGui preprocessing symbol
+	 * 
+	 * @param background the background to set
+	 */
+	public void setBackground(Background background) {
+		this.background = background;
+	}
+	//#endif
 
 }
