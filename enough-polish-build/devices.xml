@@ -206,7 +206,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, DotNetCF1.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi,btapi,jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
 		<capability name="key.LeftSoftKey" value="-6"/>
