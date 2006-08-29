@@ -1,4 +1,4 @@
-3<%define inDownloadSection %>
+<%define inDownloadSection %>
 <%set basedir = ../ %>
 <%set title = J2ME Polish: Download J2ME Polish 1.3-beta3 %>
 <%include start.txt %>
@@ -16,11 +16,16 @@
 		<li><b>ScrollIndicator: </b> in some cases the scrollindicator was painted above the menu bar.</li>
 		<li><b>POPUP ChoiceGroups :</b> such ChoiceGroups are now handled correctly when a pointer event occurs while the group is opened. Also horizontal alignments are done correctly now.</li>
 		<li><b>Locale.java: </b> The Locale.java class is now always included.</li>
+		<li><b>CSS: </b> styles that have a complex hierarchy are now correctly inherited thanks to Eugene Markov.</li>
+		<li><b>LogViewer: </b> The logviewer sample application now contains the correct resources.</li>
 
 	</ul>
 
 	<h3 id="improvements13-beta3">Improvements since 1.3-beta2</h3>
 	<ul>
+		</li>
+		<li><b>Smooth Scrolling: </b>Screens are now scrolled &quot;smooth&quot; by default. You can revert to the
+		previous behavior by specifying <code>scroll-mode: normal;</code> in the Screen's style definition in the <i>polish.css</i> file.</li>
 		<li><b>DoJa: </b>J2ME Polish now supports the Japanese <a href="../docs/platform-doja.html">DoJa</a> standard out of the box.</li>
 		<li><b>Resource Assembling: </b> 
 		<ol>
@@ -48,7 +53,7 @@
 Form form = new Form( title );
 </pre>
 		</li>
-		<li><b>NetBeans: </b>J2ME Polish now supports <a href="../docs/install.html#netbeans5">NetBeans 5.x</a> out of the box. Just open any of the provided sample projects, rename the build-netbeans.xml script to build.xml and you're done.</li>
+		<li><b>NetBeans: </b>J2ME Polish now supports <a href="../docs/install.html#netbeans5">NetBeans 5.x</a> out of the box. Just open any of the provided sample projects, rename the build-netbeans.xml script to build.xml and you're done. Also compile errors are now mapped to the original source files rather than the preprocessed ones.</li>
 	</ul>
 	<h3 id="changelog">Changes since 1.2.4</h3>
 	<ul>
@@ -409,27 +414,17 @@ int i = 0;
 
 <h2 id="download">Download</h2>
 	<p>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.3-beta2.jar">I accept the above rules 
-		(download the full installer: 10,765,814 bytes).</a><br/>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.3-beta2.zip">I accept the above rules 
-		(download only the update: 2,274,421 bytes).</a><br/>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.3-beta3.jar">I accept the above rules 
+		(download the full installer: 12,050,890 bytes).</a><br/>
+		<a href="http://download.berlios.de/polish/j2mepolish-1.3-beta3.zip">I accept the above rules 
+		(download only the update: 2,397,487 bytes).</a><br/>
 	   	<a href="../index.html">I do NOT accept the above rules.</a><br />
-		Start the installation by calling <code>java -jar j2mepolish-1.3-beta2.jar</code>
+		Start the installation by calling <code>java -jar j2mepolish-1.3-beta3.jar</code>
 		from the commandline or by double-clicking the file.
 	</p>
 
-	<h2 id="knownissues">Known Issues</h2>
-	<p>
-	There are some known issues with this release which will be fixed within the next time:
-	</p>
-	<ul>
-		<li>Popup CheckBox and Pointer Events: Currently items that lie behind an opened popup checkbox are selected, instead of the options of the popup, when it is selected with a pointer.</li>
-		<li>Public Methods in GameCanvas/Screen Based Classes: when you extend either the GameCanvas on MIDP 1.0 
-		devices or the Screen class, you need to declare the paint() method as well as the keyPressed() and keyRepeated() methods as public (instead of only protected).
-		</li>
-	</ul>
 	<h2 id="installationproblems">Trouble Shooting</h2>
-	<p>The size of the full installer is 10,765,814 bytes.<br/>
+	<p>The size of the full installer is 12,050,890 bytes.<br/>
 	If you have installation problems, please make sure that you have downloaded
 	the complete package. You can start the installation either by double-clicking
 	the file or by calling &quot;java -jar j2mepolish-[version].jar&quot; from the commandline.

@@ -1,0 +1,100 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.mepose %>
+<%set title = J2ME Polish: Mepose %>
+<%set basedir = ../ %>
+<%include start.txt %>
+	
+	<div id="content">
+
+<h1 id="top">Installing Mepose</h1>
+	<%index %>
+<h2 id="installoverview">Overview</h2>
+<p>Installing Mepose, the J2ME Polish Eclipse integration, is pretty much straight forward:</p>
+<ul>
+	<li>Under Help / Software Updates / Find and Install add a new remote site with http://www.j2mepolish.org/eclipse as the URL. Just follow the steps for the installation of Mepose.</li>
+	<li>Open Window Preferences to make 2 adjustments:</li>
+	<ol>
+		<li>Go to the &quot;Debug&quot; panel and uncheck the item &quot;Suspend execution on uncaugt exceptions&quot;.</li>
+		<li>Locate the &quot;Installation&quot; panel within the J2ME Polish menu and enter at least the J2ME Polish installation directory and the WTK installation directory.</li>
+	</ol>
+</ul>
+<p>Detailed information for these necessary steps are given below.</p>
+
+<h2 id="installdetails">Installing Mepose</h2>
+<p>
+You need Eclipse 3.2 to get this thing to work. Lets start.
+</p>
+
+<img src="../images/mepose-install_01_blankWorkspce.png" />
+
+<p>
+Open the update manager from the menu with "Help/Software Updates/Find and Install...".
+</p>
+
+<img src="../images/mepose-install_02_menuOpen.png" />
+
+<p>
+Choose "Search for new features to install" from the dialog.
+</p>
+
+<img src="../images/mepose-install_03_searchFeature.png" />
+
+<p>
+Hit the button "New Remote Site..." and enter a name for the new update site (there are no restrictions on this name) and the URL <a href="http://www.j2mepolish.org/eclipse">http://www.j2mepolish.org/eclipse</a>.
+</p>
+
+<img src="../images/mepose-install_04_enterRemoteSite.png" />
+
+<p>
+Than select the newly created update site and hit "Finish".
+</p>
+
+<img src="../images/mepose-install_05_remoteSiteEntered.png" />
+
+<p>
+Choose the Mepose Feature and click "Next".
+</p>
+
+<img src="../images/mepose-install_06_searchResults.png" />
+
+<p>
+Make a mark that you accept the license agreement and click "Next".
+</p>
+
+<img src="../images/mepose-install_07_licenseAgreement.png" />
+
+<p>
+If you want you can alter now the location the plugin will be installed into. Leave the page by clicking "Finish".
+</p>
+
+<img src="../images/mepose-install_08_startInstallation.png" />
+
+<p>
+Click "Install All" to confirm that you want to install this unsigned feature.
+</p>
+
+<img src="../images/mepose-install_09_verification.png" />
+
+<p>
+The plugin itself is now installed. To set it up go to the preference page.
+</p>
+
+<img src="../images/mepose-install_10_preferencePage.png" />
+
+<p>
+Now make two adjustments. Go to the &quot;Debug&quot; panel and uncheck the item &quot;Suspend execution on uncaugt exceptions&quot;.
+</p>
+
+<img src="../images/mepose-install_11_debugPreferences.png" />
+
+<p>
+Locate the &quot;Installation&quot; panel within the J2ME Polish menu and enter at least the J2ME Polish installation directory and the WTK installation directory.
+</p>
+
+<img src="../images/mepose-install_11_PathPreferences.png" />
+
+<p>
+<em>The installation is done!</em>
+</p>
+
+<%include end.txt %>

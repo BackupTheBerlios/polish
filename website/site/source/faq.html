@@ -97,6 +97,42 @@
 	</p>
 	
 	<h2 id="help">Help</h2>
+	<h3 id="title">Q: My screen title is not designed properly, why?</h3>
+	<p>A: You can design the title in following circumstances:
+	</p>
+	<ul>
+	<li>you target a MIDP 1.0 phone, or</li>
+	<li>you are activating a fullscreen mode in your &lt;build&gt; element of you build.xml script by specifying <code>fullscreen=&quot;yes&quot;</code> or <code>fullscreen=&quot;menu&quot;</code>, or
+	</li>
+	<li>you are targeting a MIDP 2.0 phone and set the &quot;polish.usePolishTitle&quot; preprocessing variable to
+	&quot;true&quot; in your build.xml script:
+<pre>
+&lt;variable name=&quot;polish.usePolishTitle&quot; value=&quot;true&quot; /&gt;
+</pre>
+	</li>
+	</ul>
+	<p>
+	MIDP 2.0 phones support a &quot;native&quot; title. On Nokia phones this title is set above of the
+	actual Canvas area, for example. That's why J2ME Polish is using such native title
+	by default.
+	<br />You can end up with a native title even when you use the &quot;menu&quot; fullscreen mode and
+	target a device with unknown softkey events. Please refer to the next question for details.
+	</p>
+	<h3 id="menubar">Q: My menubar is not designed properly, even though I use the &quot;menu&quot; fullscreen mode. What's wrong?</h3>
+	<p>A: This is usually due to one of the following reasons:
+	</p>
+	<ul>
+	<li>you are targeting a generic phone (like &quot;Generic/midp2&quot;)</li>
+	<li>you are targeting a phone for which the softkey values are unknown</li>
+	</ul>
+	<p>
+	Softkey events are not standardized and also not all phones do trigger key events when a softkey is pressed.
+	Therefore, J2ME Polish uses the &quot;native&quot; menu for best compatibility. The menubar can only be designed 
+	when you target a devic that has know softkeys, e.g. all Nokia or Motorola phones. Please refer to the 
+	<a href="devices-overview.html">device	database</a> for getting to know if your target device has known
+	softkeys. You can also specify the softkeys yourself by setting the &quot;key.LeftSoftKey&quot; and
+	&quot;key.RightSoftKey&quot; capabilites in either devices.xml or custom-devices.xml.
+	</p>
 	<h3 id="mailinglists">Q: Where are the mailing lists?</h3>
 	<p>A: Here:</p>
 	<ul>

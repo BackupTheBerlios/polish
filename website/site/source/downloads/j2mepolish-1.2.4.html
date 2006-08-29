@@ -8,6 +8,10 @@
 	<%index %>
 	<h2 id="improvements123d">Improvements of J2ME Polish 1.2.4</h2>
 	<p>
+	<%ifdef isBetaAvailable %>
+	(Note: there is a <a href="downloads/<%= LatestBetaDownload %>">Beta
+	Version <%= BetaVersion %> available)</a>.
+	<%endif %>
 	</p>
 	<ul>
 	  <li><b>&quot;Term&quot; Device Requirement</b>:
@@ -173,13 +177,19 @@ You can then switch to the German translation by calling <code>Locale.loadTransl
 
 <h2 id="download">Download</h2>
 	<p>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.2.4.jar">I accept the above rules 
+		<a href="http://download2.berlios.de/polish/j2mepolish-1.2.4.jar">I accept the above rules 
 		(download the full installer: 8,232,596 bytes).</a><br/>
-		<a href="http://download.berlios.de/polish/j2mepolish-1.2.4.zip">I accept the above rules 
+		<a href="http://prdownload.berlios.de/polish/j2mepolish-1.2.4.jar">I accept the above rules 
+		(download the full installer from the mirror: 8,232,596 bytes).</a><br/>
+		<a href="http://download2.berlios.de/polish/j2mepolish-1.2.4.zip">I accept the above rules 
 		(download only the update: 910,457 bytes).</a><br/>
 	   	<a href="../index.html">I do NOT accept the above rules.</a><br />
+	<%ifdef isBetaAvailable %>
+	<a href="<%= LatestBetaDownload %>">Download the current beta: <%= BetaVersion %></a>.<br /><br />
+	<%endif %>
 		Start the installation by calling <code>java -jar j2mepolish-1.2.4.jar</code>
 		from the commandline or by double-clicking the file.
+
 	</p>
 
 	<h2 id="installationproblems">Trouble Shooting</h2>

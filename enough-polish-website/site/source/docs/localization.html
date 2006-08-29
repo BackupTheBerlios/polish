@@ -5,7 +5,7 @@
 <%include start.txt %>
 	
 	<div id="content">
-	<h1 id"top">Localization</h1>
+	<h1 id="top">Localization</h1>
 	<%index %>
 <h2 id="concepts">Concepts</h2>
 <p>
@@ -143,7 +143,7 @@ retrieval of the resource in question.
 </p>
 <h3 id="dynamictranslations">Dynamic Translations</h3>
 <p>
-You can also use dynamic translations that can be changed during the runtime of your application. You have to activate dynamic translations by setting the &quot;dynamic&quot;-attribute of the &lt;localization&gt;-element to &quot;true&quot;:
+You can also use dynamic translations that can be changed during the runtime of your application. You have to activate dynamic translations by setting the &quot;dynamic&quot;-attribute of the &lt;localization&gt;-element to &quot;true&quot; and specifying the &quot;defaultLocale&quot;:
 <pre>
 &lt;resources
 	dir=&quot;resources&quot;
@@ -151,7 +151,7 @@ You can also use dynamic translations that can be changed during the runtime of 
 &gt;
 	&lt;localization 
 		dynamic=&quot;true&quot;
-		default=&quot;en&quot;
+		defaultLocale=&quot;en&quot;
 		locales=&quot;de, en, fr_CA&quot; 
 	/&gt;
 &lt;/resources&gt;

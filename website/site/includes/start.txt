@@ -78,6 +78,19 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation &amp; Integration</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.mepose %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/mepose.html">Mepose (Eclipse)</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/mepose-features.html">Features</a>
+				<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
+				<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
+				<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
+				</p>
+				</div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/mepose.html">Mepose (Eclipse)</a></div>
+			<%endif %>
 			<%ifdef inDocumentationSection.optimization %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/optimization.html">Optimization</a></div>
 			<%else %>

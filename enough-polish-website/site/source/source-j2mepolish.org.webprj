@@ -226,5 +226,43 @@
     <item url="polish.swf" uploadstatus="1" />
     <item url="images/rec_pro_sdj_new.gif" uploadstatus="1" />
     <item url="docs/platform-doja.html" uploadstatus="1" />
+    <treestatus>
+      <openfolder url="docs" />
+    </treestatus>
+    <annotations/>
+    <item url="images/enough-software-team-small.png" uploadstatus="1" />
+    <item url="downloads/j2mepolish-2.0-beta1.html" uploadstatus="1" />
+    <item url="images/j2mepolish20.gif" uploadstatus="1" />
+    <item url="images/java5syntax200px.gif" uploadstatus="1" />
+    <item url="images/java5syntax400px.gif" uploadstatus="1" />
+    <item url="docs/java5.html" uploadstatus="1" />
+    <item url="docs/mepose-install.html" />
+    <item url="docs/mepose-running.html" />
+    <item url="docs/mepose-wizard.html" />
+    <item url="images/mepose-install_01_blankWorkspace.png" />
+    <item url="images/mepose-install_02_menuOpen.png" />
+    <item url="images/mepose-install_03_searchFeature.png" />
+    <item url="images/mepose-install_04_enterRemoteSite.png" />
+    <item url="images/mepose-install_05_remoteSiteEntered.png" />
+    <item url="images/mepose-install_06_searchResults.png" />
+    <item url="images/mepose-install_07_licenseAgreement.png" />
+    <item url="images/mepose-install_08_startInstallation.png" />
+    <item url="images/mepose-install_09_verification.png" />
+    <item url="images/mepose-install_10_preferencePage.png" />
+    <item url="images/mepose-install_11_debugPreferences.png" />
+    <item url="images/mepose-install_11_PathPreferences.png" />
+    <item url="images/mepose-run_01_openEditor.png" />
+    <item url="images/mepose-run_02_editorOpened.png" />
+    <item url="images/mepose-run_03_chooseDevice.png" />
+    <item url="images/mepose-run_04_breakpointSet.png" />
+    <item url="images/mepose-run_05_chooseDebug.png" />
+    <item url="images/mepose-run_05_chooseRun.png" />
+    <item url="images/mepose-wizard_01_choose.png" />
+    <item url="images/mepose-wizard_02_projectName.png" />
+    <item url="images/mepose-wizard_03_paths.png" />
+    <item url="images/mepose-wizard_04_deviceSelection.png" />
+    <item url="images/mepose-wizard_05_javaSettings.png" />
+    <item url="docs/mepose.html" />
+    <item url="docs/mepose-features.html" />
   </project>
 </webproject>

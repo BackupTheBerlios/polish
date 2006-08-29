@@ -65,7 +65,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
  	 <td>No</td>
 	 <td>Defines whether the complete screen should be used for devices which support 
 	 a full screen mode. Currently these include all MIDP/2.0 devices as well as devices, 
-	 which support the Nokia-UI API. Possible values are either &quot;no&quot;, &quot;yes&quot; and &quot;menu&quot;. With &quot;yes&quot; the complete screen is used but no commands are supported. With &quot;menu&quot; commands can be used as well. Default setting is &quot;no&quot;.
+	 which support the Nokia-UI API. Possible values are either &quot;no&quot;, &quot;yes&quot; and &quot;menu&quot;. With &quot;yes&quot; the complete screen is used but no commands are supported. With &quot;menu&quot; commands can be used as well. Default setting is &quot;no&quot;. Remember that you need to target a specific device that has known Softkeys for this option. Otherwise always the default (&quot;unpolishable&quot;) commands menu is used.
 	 <br />
 	 Alternatively the preprocessing-variable &quot;polish.FullScreen&quot; can be set. This allows a finer grained
 	 control, since variables can have conditions, e.g.:
