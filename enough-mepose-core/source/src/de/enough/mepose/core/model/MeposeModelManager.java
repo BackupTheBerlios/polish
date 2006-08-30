@@ -156,9 +156,6 @@ public class MeposeModelManager {
         return (IProject)this.projectByModel.get(model);
     }
 
-    /**
-     * @return
-     */
     public MeposeModel[] getModels() {
         return (MeposeModel[]) this.modelByProject.values().toArray(new MeposeModel[this.modelByProject.keySet().size()]);
     }

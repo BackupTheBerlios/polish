@@ -34,23 +34,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
-import org.eclipse.ant.core.AntCorePlugin;
-import org.eclipse.ant.core.AntCorePreferences;
-import org.eclipse.ant.core.IAntClasspathEntry;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.jdt.core.IClasspathEntry;
 
-import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
@@ -163,7 +154,7 @@ public class MeposeModel extends PropertyModel{
     private List propertyChangeListeners;
     private String buildTargetName = "j2mepolish";
     private List buildListener;
-    private ClassLoader antClassLoader;
+//    private ClassLoader antClassLoader;
 
     private Map variables;
     
@@ -454,7 +445,6 @@ public class MeposeModel extends PropertyModel{
     }
 
     public void setCurrentDevice(Device currentDevice) {
-        System.out.println("DEBUG:MeposeModel.setCurrentDevice(...):enter.currentDevice:"+currentDevice);
         if(currentDevice == null){
             throw new IllegalArgumentException("setCurrentDevice(...):parameter 'currentDevice' is null contrary to API.");
         }
@@ -496,17 +486,6 @@ public class MeposeModel extends PropertyModel{
         return this.sonyHome;
     }
     
-//    public String getProjectPath() {
-//        return this.projectPath;
-//    }
-//   
-//    public void setProjectPath(String projectPath) {
-//        if(projectPath == null){
-//            throw new IllegalArgumentException("ERROR:MeposeProject.setProjectPath(...):Parameter 'projectPath' is null.");
-//        }
-//        this.projectPath = projectPath;
-//    }
-
     /**
      * @param file May be null to indicate that there is no polish home specified.
      */
@@ -556,7 +535,6 @@ public class MeposeModel extends PropertyModel{
             return null;
         }
         if(this.deviceTree == null && deviceDatabase2 != null) {
-            System.out.println("DEBUG:MeposeModel.getDeviceTree(...):create new DeviceTree.polishHome:"+deviceDatabase2.getPolishHome());
             try {
                 this.deviceTree = new DeviceTree(deviceDatabase2,null,null);
             }
@@ -769,56 +747,56 @@ public class MeposeModel extends PropertyModel{
         }
     }
 
-    public void build(String targetName) {
-        if(getBuildxml() == null) {
-            throw new IllegalStateException("No build.xml file specified.");
-        }
-        //TODO: Why is this needed?
-        System.setProperty("java.home","/usr/lib/j2sdk1.5-sun");
-        this.antBox = new AntBox();
-        
-        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
-        IAntClasspathEntry toolsJarEntry = p.getToolsJarEntry();
-        this.antBox.setToolsLocation(new File(toolsJarEntry.toString()));
-        
-        this.antBox.setAlternativeClassLoader(this.antClassLoader);
-        this.antBox.setWorkingDirectory(this.projectHome);
-        this.antBox.setBuildxml(this.buildxml);
-        Project antProject = this.antBox.createProject();
-        List list = getBuildListeners();
-        for (Iterator iterator = list.iterator(); iterator.hasNext(); ) {
-            BuildListener aBuildListener = (BuildListener) iterator.next();
-            antProject.addBuildListener(aBuildListener);
-        }
-        
-        antProject.setUserProperty("device",getCurrentDevice().getIdentifier());
-        antProject.setUserProperty("polish.home",getPolishHome().getAbsolutePath());
-        Vector targets = new Vector();
-        targets.add("clean");
-        targets.add("init");
-        targets.add(getBuildTargetName());
-        antProject.executeTargets(targets);
-    }
+//    public void build(String targetName) {
+//        if(getBuildxml() == null) {
+//            throw new IllegalStateException("No build.xml file specified.");
+//        }
+//        //TODO: Why is this needed?
+//        System.setProperty("java.home","/usr/lib/j2sdk1.5-sun");
+//        this.antBox = new AntBox();
+//        
+//        AntCorePreferences p = AntCorePlugin.getPlugin().getPreferences();
+//        IAntClasspathEntry toolsJarEntry = p.getToolsJarEntry();
+//        this.antBox.setToolsLocation(new File(toolsJarEntry.toString()));
+//        
+//        this.antBox.setAlternativeClassLoader(this.antClassLoader);
+//        this.antBox.setWorkingDirectory(this.projectHome);
+//        this.antBox.setBuildxml(this.buildxml);
+//        Project antProject = this.antBox.createProject();
+//        List list = getBuildListeners();
+//        for (Iterator iterator = list.iterator(); iterator.hasNext(); ) {
+//            BuildListener aBuildListener = (BuildListener) iterator.next();
+//            antProject.addBuildListener(aBuildListener);
+//        }
+//        
+//        antProject.setUserProperty("device",getCurrentDevice().getIdentifier());
+//        antProject.setUserProperty("polish.home",getPolishHome().getAbsolutePath());
+//        Vector targets = new Vector();
+//        targets.add("clean");
+//        targets.add("init");
+//        targets.add(getBuildTargetName());
+//        antProject.executeTargets(targets);
+//    }
 
-    private List getBuildListeners() {
-        List list = new LinkedList();
-        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint(MeposeConstants.ID_BUILD_LISTENERS);
-        IExtension[] extensions = point.getExtensions();
-        for (int i = 0; i < extensions.length; i++) {
-            
-            IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
-            for (int j = 0; j < configurationElements.length; j++) {
-                try {
-                    Object o = configurationElements[j].createExecutableExtension("class");
-                    BuildListener aBuildListener = (BuildListener)o;
-                    list.add(aBuildListener);
-                } catch (CoreException exception) {
-                    MeposePlugin.log("Could not create extensions.",exception);
-                }
-            }
-        }
-        return list;
-    }
+//    private List getBuildListeners() {
+//        List list = new LinkedList();
+//        IExtensionPoint point = org.eclipse.core.runtime.Platform.getExtensionRegistry().getExtensionPoint(MeposeConstants.ID_BUILD_LISTENERS);
+//        IExtension[] extensions = point.getExtensions();
+//        for (int i = 0; i < extensions.length; i++) {
+//            
+//            IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
+//            for (int j = 0; j < configurationElements.length; j++) {
+//                try {
+//                    Object o = configurationElements[j].createExecutableExtension("class");
+//                    BuildListener aBuildListener = (BuildListener)o;
+//                    list.add(aBuildListener);
+//                } catch (CoreException exception) {
+//                    MeposePlugin.log("Could not create extensions.",exception);
+//                }
+//            }
+//        }
+//        return list;
+//    }
 
     /**
      * @return the name of the ant target which only builds the sources.

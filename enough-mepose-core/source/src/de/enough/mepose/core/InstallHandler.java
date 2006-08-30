@@ -55,6 +55,7 @@ public class InstallHandler implements IInstallHandler {
                            IInstallHandlerEntry entry, InstallMonitor monitor)
                                                                               throws CoreException {
         System.out.println("DEBUG:InstallHandler.initialize(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -62,6 +63,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void installInitiated() throws CoreException {
         System.out.println("DEBUG:InstallHandler.installInitiated(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -69,6 +71,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void pluginsDownloaded(IPluginEntry[] plugins) throws CoreException {
         System.out.println("DEBUG:InstallHandler.pluginsDownloaded(...):enter.");
+        throw new CoreException(null);
 
     }
 
@@ -79,6 +82,7 @@ public class InstallHandler implements IInstallHandler {
                                         IVerificationListener listener)
                                                                        throws CoreException {
         System.out.println("DEBUG:InstallHandler.nonPluginDataDownloaded(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -87,6 +91,7 @@ public class InstallHandler implements IInstallHandler {
     public void completeInstall(IFeatureContentConsumer consumer)
                                                                  throws CoreException {
         System.out.println("DEBUG:InstallHandler.completeInstall(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -94,6 +99,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void installCompleted(boolean success) throws CoreException {
         System.out.println("DEBUG:InstallHandler.installCompleted(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -101,6 +107,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void configureInitiated() throws CoreException {
         System.out.println("DEBUG:InstallHandler.configureInitiated(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -108,6 +115,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void completeConfigure() throws CoreException {
         System.out.println("DEBUG:InstallHandler.completeConfigure(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -117,6 +125,7 @@ public class InstallHandler implements IInstallHandler {
         System.out.println("DEBUG:InstallHandler.configureCompleted(...):enter.");
         PolishInstaller polishInstaller = new PolishInstaller();
         polishInstaller.start();
+        throw new CoreException(null);
     }
 
     /*
@@ -124,6 +133,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void unconfigureInitiated() throws CoreException {
         System.out.println("DEBUG:InstallHandler.unconfigureInitiated(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -131,6 +141,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void completeUnconfigure() throws CoreException {
         System.out.println("DEBUG:InstallHandler.completeUnconfigure(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -138,6 +149,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void unconfigureCompleted(boolean success) throws CoreException {
         System.out.println("DEBUG:InstallHandler.unconfigureCompleted(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -145,6 +157,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void uninstallInitiated() throws CoreException {
         System.out.println("DEBUG:InstallHandler.uninstallInitiated(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -152,6 +165,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void completeUninstall() throws CoreException {
         System.out.println("DEBUG:InstallHandler.completeUninstall(...):enter.");
+        throw new CoreException(null);
     }
 
     /*
@@ -159,6 +173,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void uninstallCompleted(boolean success) throws CoreException {
         System.out.println("DEBUG:InstallHandler.uninstallCompleted(...):enter.");
+        throw new CoreException(null);
     }
 
 }

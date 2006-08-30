@@ -111,17 +111,6 @@ public class MeposePlugin extends Plugin {
             System.arraycopy(classpathEntriesArray,0,newClasspathEntriesArray,0,classpathEntriesArray.length);
             newClasspathEntriesArray[classpathEntriesArray.length] = toolsJarClasspathEntryObject;
             classpathEntriesField.set(classpathManagerObject,newClasspathEntriesArray);
-            
-            // This does not work.
-//            Field classpathManagerField = PopulateUtil.getField(classLoader,"manager");
-//            Object classpathManagerObject = classpathManagerField.get(classLoader);
-//            Field classpathField = PopulateUtil.getField(classpathManagerObject,"classpath");
-//            Object[] classpathObjectArray = (Object[])classpathField.get(classpathManagerObject);
-//            
-//            Object[] newClasspathObjectArray = (Object[])Array.newInstance(String.class,classpathObjectArray.length+1);
-//            System.arraycopy(newClasspathObjectArray,0,classpathObjectArray,0,classpathObjectArray.length);
-//            newClasspathObjectArray[classpathObjectArray.length] = toolsJarFile.getAbsolutePath();
-//            classpathField.set(classpathManagerObject,newClasspathObjectArray);
         } catch (NoSuchFieldException exception) {
             log("Could not inject tools.jar into bundle classLoader. (1)",exception);
         } catch (IllegalArgumentException exception) {
@@ -241,6 +230,7 @@ public class MeposePlugin extends Plugin {
                 getMeposeModelManager().addModel(project,map);
             }
         }
+        // TODO: This registration should be done somewhere else.
         this.miDletChangeListener = new MiDletChangeListener();
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this.miDletChangeListener);
     }
