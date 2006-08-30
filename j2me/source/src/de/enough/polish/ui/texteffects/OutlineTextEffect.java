@@ -85,6 +85,7 @@ public class OutlineTextEffect extends TextEffect {
 		g.drawString( text, x - 1, y - 1, orientation);
 		g.setColor( this.innerColor );
 		g.drawString( text, x, y, orientation);
+		g.setColor( textColor );
 	}
 
 }

@@ -466,6 +466,7 @@ public final class UiAccess {
 		// ignore
 	}
 
+
 	//#if polish.usePolishGui
 	/**
 	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.
@@ -519,6 +520,90 @@ public final class UiAccess {
 	 */
 	public static void setStyle( Screen screen, Style style ) {
 		screen.setStyle( style );
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Gets the current style of the given item.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#if polish.usePolishGui
+	 * 	Style style = UiAccess.getStyle( myItem );
+	 * 	if (style != null) }
+	 * 		style.background = new SimpleBackground( 0x00FF00 );
+	 *  }
+	 * //#endif
+	 * </pre>
+	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+	 * @param item the item of which the style should be retrieved
+	 */
+	public static Style getStyle( javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Gets the current style of the given screen.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#if polish.usePolishGui
+	 * 	Style style = UiAccess.getStyle( myScreen );
+	 * 	if (style != null) }
+	 * 		style.background = new SimpleBackground( 0x00FF00 );
+	 *  }
+	 * //#endif
+	 * </pre>
+	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+	 * @param screen the screen of which the style should be retrieved
+	 */
+	public static Style getStyle( javax.microedition.lcdui.Screen screen ) {
+		return null;
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Gets the current style of the given item.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#if polish.usePolishGui
+	 * 	Style style = UiAccess.getStyle( myItem );
+	 * 	if (style != null) }
+	 * 		style.background = new SimpleBackground( 0x00FF00 );
+	 *  }
+	 * //#endif
+	 * </pre>
+	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+	 * @param item the item of which the style should be retrieved
+	 */
+	public static Style getStyle( Item item ) {
+		return item.style;
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Gets the current style of the given screen.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#if polish.usePolishGui
+	 * 	Style style = UiAccess.getStyle( myScreen );
+	 * 	if (style != null) }
+	 * 		style.background = new SimpleBackground( 0x00FF00 );
+	 *  }
+	 * //#endif
+	 * </pre>
+	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+	 * @param screen the screen of which the style should be retrieved
+	 */
+	public static Style getStyle( Screen screen ) {
+		return screen.style;
 	}
 	//#endif	
 	//#if polish.usePolishGui
@@ -984,6 +1069,156 @@ public final class UiAccess {
     		container.yOffset = yOffset;
     		container.targetYOffset = yOffset;
     	}
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Retrieves the background of the given screen.
+     * This can be used to dynamically alter the background, e.g. by setting a different image:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   ImageBackground ib = (ImageBackground) UiAccess.getBackground( form );
+     *   ib.setImage( newImage );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param screen the screen
+     */
+    public static Background getBackground( Screen screen ) {
+    	return screen.background;
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Retrieves the background of the given screen.
+     * This can be used to dynamically alter the background, e.g. by setting a different image:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   ImageBackground ib = (ImageBackground) UiAccess.getBackground( form );
+     *   ib.setImage( newImage );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param screen the screen
+     */
+    public static Background getBackground(  javax.microedition.lcdui.Screen screen ) {
+    	return null;
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Sets the background for the given screen.
+     * This can be used to dynamically alter the background:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   SimpleBackground bg = new SimpleBackground( 0x00FF00 );
+     *   UiAccess.setBackground( item, screen );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param screen the screen
+     * @param background - the new background
+     */
+    public static void setBackground( Screen screen, Background background ) {
+    	screen.background = background;
+    	screen.repaint();
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Sets the background for the given screen.
+     * This can be used to dynamically alter the background:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   SimpleBackground bg = new SimpleBackground( 0x00FF00 );
+     *   UiAccess.setBackground( item, screen );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param screen the screen
+     * @param background - the new background
+     */
+    public static void setBackground( javax.microedition.lcdui.Screen screen, Background background ) {
+    	// ignore
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Retrieves the background of the given item.
+     * This can be used to dynamically alter the background, e.g. by setting a different image:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   ImageBackground ib = (ImageBackground) UiAccess.getBackground( item );
+     *   ib.setImage( newImage );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param item the item
+     */
+    public static Background getBackground( Item item ) {
+    	return item.background;
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Retrieves the background of the given item.
+     * This can be used to dynamically alter the background, e.g. by setting a different image:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   ImageBackground ib = (ImageBackground) UiAccess.getBackground( item );
+     *   ib.setImage( newImage );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param item the item
+     */
+    public static Background getBackground(  javax.microedition.lcdui.Item item ) {
+    	return null;
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Sets the background for the given item.
+     * This can be used to dynamically alter the background:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   SimpleBackground bg = new SimpleBackground( 0x00FF00 );
+     *   UiAccess.setBackground( item, screen );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param item the item
+     * @param background - the new background
+     */
+    public static void setBackground( Item item, Background background ) {
+    	item.background = background;
+    	item.repaint();
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Sets the background for the given item.
+     * This can be used to dynamically alter the background:
+     * <pre>
+     * //#if polish.usePolishGui
+     *   SimpleBackground bg = new SimpleBackground( 0x00FF00 );
+     *   UiAccess.setBackground( item, screen );
+     * //#endif
+     * </pre>
+     * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * @param item the item
+     * @param background - the new background
+     */
+    public static void setBackground( javax.microedition.lcdui.Item item, Background background ) {
+    	// ignore
     }
     //#endif
 
