@@ -1,7 +1,6 @@
 package de.enough.mepose.launcher;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
@@ -28,7 +27,6 @@ import org.eclipse.jface.text.Region;
 public class AntProcessBuildLogger extends NullBuildLogger {
     
     public static final String BUILD_SUCCESS = "build.success";
-    private File fBuildFileParent= null;
     private long fStartTime;
 
     /** Line separator */
@@ -252,7 +250,6 @@ public class AntProcessBuildLogger extends NullBuildLogger {
         }
         
         fHandledException= null;
-        fBuildFileParent= null;
 //        logMessage(getTimeString(System.currentTimeMillis() - fStartTime), event, fMessageOutputLevel);
         fProcess= null;
         event.getProject().removeBuildListener(this);

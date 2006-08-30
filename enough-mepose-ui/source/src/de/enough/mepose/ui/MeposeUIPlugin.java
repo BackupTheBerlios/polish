@@ -5,24 +5,12 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.DefaultLogger;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -50,27 +38,27 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 
     private BuildLogger consoleLogger;
 
-    private MeposeModel currentModel;
+//    private MeposeModel currentModel;
     
     public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
     public static final String ID = "de.enough.mepose.ui";
     
-    private class ProjectSelected implements ISelectionListener{
-        public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-            if(selection instanceof IStructuredSelection) {
-                IStructuredSelection s = (IStructuredSelection)selection;
-                Object o = s.getFirstElement();
-                if(o instanceof IJavaProject) {
-                    IJavaProject javaProject = (IJavaProject)o;
-                    setCurrentProject(javaProject.getProject());
-                }
-            }
-        }
-        protected void setCurrentProject(IProject project) {
-            MeposePlugin.getDefault().getMeposeModelManager().setCurrentProject(project);
-         }
-    }    
+//    private class ProjectSelected implements ISelectionListener{
+//        public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+//            if(selection instanceof IStructuredSelection) {
+//                IStructuredSelection s = (IStructuredSelection)selection;
+//                Object o = s.getFirstElement();
+//                if(o instanceof IJavaProject) {
+//                    IJavaProject javaProject = (IJavaProject)o;
+//                    setCurrentProject(javaProject.getProject());
+//                }
+//            }
+//        }
+//        protected void setCurrentProject(IProject project) {
+//            MeposePlugin.getDefault().getMeposeModelManager().setCurrentProject(project);
+//         }
+//    }    
     
 	public MeposeUIPlugin() {
 		super();
@@ -80,7 +68,7 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-        registerProjectListener();
+//        registerProjectListener();
         setupConsole();
         setupConsoleListener();
 
@@ -209,29 +197,26 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
     // ###################################################################
     // Private methods.
     
-    private void registerProjectListener() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                IWorkbench wb = PlatformUI.getWorkbench();
-                IWorkbenchWindow wbw = wb.getActiveWorkbenchWindow();
-                ISelectionService ss = wbw.getSelectionService();
-                ProjectSelected ps = new ProjectSelected();
-                ss.addSelectionListener(ps);
-            }
-        });
-    }
+//    private void registerProjectListener() {
+//        Display.getDefault().asyncExec(new Runnable() {
+//            public void run() {
+//                IWorkbench wb = PlatformUI.getWorkbench();
+//                IWorkbenchWindow wbw = wb.getActiveWorkbenchWindow();
+//                ISelectionService ss = wbw.getSelectionService();
+//                ProjectSelected ps = new ProjectSelected();
+//                ss.addSelectionListener(ps);
+//            }
+//        });
+//    }
 
-    /**
-     * @return
-     */
-    public MeposeModel getCurrentModel() {
-        return this.currentModel;
-    }
-    
-    public void setMeposeModel(MeposeModel model) {
-        this.currentModel = model;
-    }
-    
+//    public MeposeModel getCurrentModel() {
+//        return this.currentModel;
+//    }
+//    
+//    public void setMeposeModel(MeposeModel model) {
+//        this.currentModel = model;
+//    }
+
     /**
      * Returns the active workbench window
      * 

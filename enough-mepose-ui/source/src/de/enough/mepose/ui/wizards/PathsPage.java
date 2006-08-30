@@ -27,9 +27,7 @@ package de.enough.mepose.ui.wizards;
 
 import java.io.File;
 
-import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
