@@ -31,9 +31,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import de.enough.mepose.core.MeposePlugin;
-import de.enough.mepose.core.model.MeposeModel;
-
 /**
  * 
  * <br>Copyright Enough Software 2005
@@ -50,14 +47,14 @@ public class PolishBuilder extends IncrementalProjectBuilder {
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) {
         
-        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getModel(getProject());
-        monitor.beginTask("Building Application",IProgressMonitor.UNKNOWN);
-        try {
-            model.build(model.getBuildTargetName());
-        }
-        finally{
-            monitor.done();
-        }
+//        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getModel(getProject());
+//        monitor.beginTask("Building Application",IProgressMonitor.UNKNOWN);
+//        try {
+//            model.build(model.getBuildTargetName());
+//        }
+//        finally{
+//            monitor.done();
+//        }
         return null;
     }
 

@@ -26,7 +26,7 @@ public class PolishDeviceDatabase {
     
     private static void init(File polishHome,File projectHome) throws DeviceDatabaseException{
         Map properties = new HashMap();
-        properties.put("mpp.home","no/path");
+//        properties.put("mpp.home","no/path");
         properties.put("polish.home",polishHome.getAbsolutePath());
         
 //        Map inputStreamsByfileName = new HashMap();
