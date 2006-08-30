@@ -45,8 +45,8 @@ public class Java5ClassVisitor
         && METHOD_VALUES.equals(name)
         && this.signature_values.equals(desc))
       {
-        return new CloneMethodVisitor(mv, access, name, desc,
-                                      Type.getType("L" + this.className + ";"));
+        mv = new CloneMethodVisitor(mv, access, name, desc,
+                                    Type.getType("L" + this.className + ";"));
       }
     
     return mv;
