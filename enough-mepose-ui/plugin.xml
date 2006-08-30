@@ -47,7 +47,7 @@
 	<extension point="org.eclipse.ui.newWizards">
 		<wizard category="org.eclipse.jdt.ui.java"
 			class="de.enough.mepose.ui.wizards.PolishNewWizard"
-			descriptionImage="icons/j2mepolish-logo.gif"
+			descriptionImage="icons/jongleur1_180x.png"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective" hasPages="true"
 			helpHref="http://www.j2mepolish.org"
 			icon="icons/polish_logo_16x16.png"
