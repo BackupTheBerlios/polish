@@ -29,7 +29,6 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
-import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -48,7 +47,7 @@ import de.enough.utils.AntBox;
 public class MIDletLaunchConfigurationDelegate extends
         AbstractJavaLaunchConfigurationDelegate {
 
-    private static final int DELAY = 1000;
+    private static final int EMULATOR_STARTUP_TIME_TILL_CONNECT_READY = 4000;
     private static final String MSG_CAN_NOT_BUILD_PROJECT = "Can not build project";
 
     private InputStream oldIn;
@@ -176,7 +175,7 @@ public class MIDletLaunchConfigurationDelegate extends
 
             sourceLocator.setSourceContainers(newSourceContainers);
 
-            AntProcess antProcess = new AntProcess("J2ME Polish", launch,attributes);
+            AntProcess antProcess = new MeposeProcess("J2ME Polish", launch,attributes);
 
             antProject.fireBuildStarted();
             monitor.subTask("Executing build.xml");
@@ -194,7 +193,10 @@ public class MIDletLaunchConfigurationDelegate extends
 //                return;
 //            }
 
-            if (isDebug) {
+            if(!isDebug) {
+                monitor.done();
+            }
+            else {
                 String connectorId = configuration
                         .getAttribute(
                                       IJavaLaunchConfigurationConstants.ATTR_VM_CONNECTOR,
@@ -240,14 +242,14 @@ public class MIDletLaunchConfigurationDelegate extends
 
                 monitor.worked(1);
 
-                monitor.subTask("Waiting '" + DELAY
+                monitor.subTask("Waiting '" + EMULATOR_STARTUP_TIME_TILL_CONNECT_READY
                                 + "' for emulator to come up.");
                 try {
                     for(int i = 0;i<4;i++) {
                         if (monitor.isCanceled()) {
                             return;
                         }
-                        Thread.sleep(DELAY);
+                        Thread.sleep(EMULATOR_STARTUP_TIME_TILL_CONNECT_READY);
                         monitor.worked(1);
                     }
                 } catch (InterruptedException exception) {
@@ -258,10 +260,12 @@ public class MIDletLaunchConfigurationDelegate extends
                 monitor.subTask("Connecting to emulator.");
                 monitor.worked(1);
                 connector.connect(argMap, monitor, launch);
+                monitor.done();
             }
             
-            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled()) {
+            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled() &&  ! this.buildRunnable.isFinished()) {
                 try {
+//                    System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):sleeping.");
                     Thread.sleep(500);
                 } catch (InterruptedException exception) {
                     // If this thread is interrupted, interrupt the worker, too and finish.
@@ -270,32 +274,52 @@ public class MIDletLaunchConfigurationDelegate extends
                     }
                 }
             }
+            //TODO: Is this the right place or should this be done in the finally?
             if(!thread.isInterrupted()) {
                 thread.interrupt();
             }
-            if(!antProcess.isCanceled()) {
-                antProcess.terminate();
-            }
+//            if(!antProcess.isCanceled()) {
+//                System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):terminating antProcess.");
+//                antProcess.terminate();
+//            }
             System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):launch finished.");
         } finally {
             System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):firing build finish");
             antProject.fireBuildFinished(this.buildRunnable.getErrorThrowable());
-            removeLaunch(launch);
+            disconnectDebugTargets(launch);
+            terminateProcesses(launch);
             launch.terminate();
             System.setIn(this.oldIn);
             System.setOut(this.oldOut);
             System.setErr(this.oldErr);
             monitor.done();
-            getLaunchManager().removeLaunch(launch);
+            //Do not remove the launch at the end of the game but at the start of a new game.
+//            getLaunchManager().removeLaunch(launch);
         }
     }
 
     
     /**
      * @param launch
+     */
+    private void terminateProcesses(ILaunch launch) {
+        IProcess[] processes = launch.getProcesses();
+        for (int i = 0; i < processes.length; i++) {
+            IProcess process = processes[i];
+            if (process.canTerminate()) {
+                if(process instanceof MeposeProcess) {
+                    ((MeposeProcess)process).terminated();
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @param launch
      * @throws DebugException
      */
-    private void removeLaunch(ILaunch launch) throws DebugException {
+    private void disconnectDebugTargets(ILaunch launch) throws DebugException {
         IDebugTarget[] debugTargets = launch.getDebugTargets();
         for (int i = 0; i < debugTargets.length; i++) {
             IDebugTarget target = debugTargets[i];
@@ -346,10 +370,10 @@ public class MIDletLaunchConfigurationDelegate extends
         public void run() {
             try{
                 this.antBox.run(this.targets);
-                this.finished = true;
             } catch (final Throwable e) {
                 this.throwable = e;
             }
+            this.finished = true;
         }
 
         public boolean isFinished() {
