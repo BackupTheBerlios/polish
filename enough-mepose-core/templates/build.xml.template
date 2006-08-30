@@ -64,7 +64,7 @@
 
 <taskdef name="j2mepolish" 
 	classname="de.enough.polish.ant.PolishTask" 
-	classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar:${polish.home}/import/proguard.jar:${polish.home}/yguard-lib.jar:${wtk.home}/wtklib/kenv.zip"/>
+	classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar:${polish.home}/lib/proguard.jar:${wtk.home}/wtklib/kenv.zip"/>
 
 	
 <!-- build targets, each target can be called via "ant [name]", 
@@ -215,7 +215,7 @@
 		</emulator>
 	
 		<emulator
-			wait="false"
+			wait="true"
 			securityDomain="trusted"
 			enableProfiler="false"
 			enableMemoryMonitor="false"
