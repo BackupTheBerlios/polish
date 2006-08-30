@@ -4,7 +4,7 @@
 <plugin>
       <extension point="org.eclipse.ui.editors">
         <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
-        contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/sample.gif"
+        contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/jongleur1_16x16.png"
         id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
         name="Polish Editor"
         default="true">
