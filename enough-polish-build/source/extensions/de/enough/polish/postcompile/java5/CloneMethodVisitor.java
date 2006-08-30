@@ -36,7 +36,7 @@ public class CloneMethodVisitor
 
     // Rewrite TYPE[].clone() calles.
     if (INVOKEVIRTUAL == opcode
-        && this.enumArrayDesc.getInternalName().equals(owner)
+        && this.enumArrayDesc.getDescriptor().equals(owner)
         && METHOD_CLONE.equals(method))
       {
         dup();
