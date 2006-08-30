@@ -118,11 +118,34 @@ public class MiDletChangeListener implements IResourceChangeListener{
         }
 
         private void handleResource(IResource resource,int action) {
+            if(!isFromJ2mePolishProject(resource)) {
+                return;
+            }
             MidletItem midletItem = generateMiDLetFromResource(resource);
             if(midletItem == null) {
                 return;
             }
             handleMiDlet(midletItem,action);
+        }
+
+        /**
+         * @param resource
+         */
+        private boolean isFromJ2mePolishProject(IResource resource) {
+            boolean hasPolishNature = false;
+            try {
+                if(resource == null) {
+                    return false;
+                }
+                IProject project = resource.getProject();
+                if(project == null){
+                    return false;
+                }
+                hasPolishNature = project.hasNature(PolishNature.ID);
+            } catch (CoreException exception) {
+                return false;
+            }
+            return hasPolishNature;
         }
 
         private void handleMiDlet(MidletItem midletItem,int action) {
@@ -215,14 +238,6 @@ public class MiDletChangeListener implements IResourceChangeListener{
             i++;
         }
         
-        //Remove midlet.properties file.
-        if( ! properties.keys().hasMoreElements()) {
-            if(midletPropertiesFile.exists()) {
-                midletPropertiesFile.delete();
-            }
-            return;
-        }
-        
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(midletPropertiesFile);
@@ -280,23 +295,6 @@ public class MiDletChangeListener implements IResourceChangeListener{
     }
     
     public void resourceChanged(IResourceChangeEvent event) {
-        boolean hasPolishNature = false;
-        try {
-            IResource resource = event.getResource();
-            if(resource == null) {
-                return;
-            }
-            IProject project = resource.getProject();
-            if(project == null){
-                return;
-            }
-            hasPolishNature = project.hasNature(PolishNature.ID);
-        } catch (CoreException exception1) {
-            return;
-        }
-        if(!hasPolishNature) {
-            return;
-        }
         switch (event.getType()) {
            case IResourceChangeEvent.POST_CHANGE:
               try {
