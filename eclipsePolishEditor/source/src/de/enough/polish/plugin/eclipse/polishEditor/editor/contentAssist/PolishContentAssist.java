@@ -30,9 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.jdt.internal.ui.text.template.contentassist.PositionBasedCompletionProposal;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
@@ -43,9 +41,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.polish.Environment;
 import de.enough.polish.plugin.eclipse.polishEditor.IPolishConstants;
-import de.enough.polish.plugin.eclipse.polishEditor.PolishEditorPlugin;
 import de.enough.polish.plugin.eclipse.polishEditor.utils.PolishDocumentUtils;
 
 /**
