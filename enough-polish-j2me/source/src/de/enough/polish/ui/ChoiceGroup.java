@@ -1402,6 +1402,7 @@ implements Choice
 		System.out.println("ChoiceGroup.handlePointerPressed(" + x + ", " + y + ")");
 		//#ifndef polish.usePopupItem
 			boolean processed = super.handlePointerPressed(x, y);
+			y -= this.yOffset + this.marginTop + this.paddingTop;
 			if (this.focusedItem != null 
 					&& ( x >= this.focusedItem.xLeftPos ) 
 					&& ( x <= this.focusedItem.xRightPos ) 
@@ -1421,6 +1422,7 @@ implements Choice
 				focus( this.selectedIndex );
 				this.isPopupClosed = false;
 			} else {
+				y -= this.yOffset + this.marginTop + this.paddingTop;
 				// select item at x,y and close this popup:
 				// an item within this container was selected:
 				Item[] myItems = getItems();

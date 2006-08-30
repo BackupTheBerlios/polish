@@ -1757,7 +1757,7 @@ public class Container extends Item {
 	protected boolean handlePointerPressed(int x, int y) {
 		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - this.yOffset ) );
 		// an item within this container was selected:
-		y -= this.yOffset;
+		y -= this.yOffset + this.marginTop + this.paddingTop;
 //		int lastYPos = this.yBottomPos;
 //		if ( myItems.length != 0) {
 //			Item lastItem = myItems[ myItems.length - 1];
@@ -1794,6 +1794,8 @@ public class Container extends Item {
 				}
 			}
 			// the pressed item has been found:
+			//#debug
+			System.out.println("Container.keyPressed(): found item " + i + "=" + item);
 			if ((item.appearanceMode != Item.PLAIN) && (i != this.focusedIndex)) {
 				// only focus the item when it has not been focused already:
 				focus(i, item, 0);

@@ -1837,6 +1837,8 @@ public abstract class Item extends Object
 	 * @return true when the key has been handled / recognized
 	 */
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
+		//#debug
+		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
 		if ((gameAction == Canvas.FIRE) 
 				&& (this.defaultCommand != null)
 				&& (this.itemCommandListener != null)) {
