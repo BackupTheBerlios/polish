@@ -71,6 +71,14 @@ public class PathsPage extends WizardPage {
 
     private Text polishHomeText;
 
+    private StatusGroup motorolaStatusGroup;
+
+    private Text motorolaHomeText;
+
+    private StatusGroup siemensStatusGroup;
+
+    private Text siemensHomeText;
+
     
     private class BrowsePathSelected extends SelectionAdapter{
         
@@ -155,7 +163,30 @@ public class PathsPage extends WizardPage {
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.wtkHomeText,"Choose the location of your WTK directory"));
-                                          
+                 
+//      ----------------------
+        this.motorolaStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.motorolaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.motorolaStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label motorolaLabel = new Label(main,SWT.NONE);
+        motorolaLabel.setText("Motorola Home:");
+        
+        this.motorolaHomeText = new Text(main,SWT.BORDER);
+        this.motorolaHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.motorolaHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                modifyMotorolaHomeText();
+            }
+        });
+        String motorolaHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_MOTOROLA_HOME);
+        this.motorolaHomeText.setText(motorolaHomePath);
+        modifyMotorolaHomeText();
+        browseButton = new Button(main,SWT.NONE);
+        browseButton.setText("Browse for Path");
+        browseButton.addSelectionListener(new BrowsePathSelected(this.motorolaHomeText,"Choose the location of your Motorola directory"));
+    
+        
         // ----------------------
         
         this.nokiaStatusGroup = new StatusGroup(composite,SWT.NONE);
@@ -181,6 +212,29 @@ public class PathsPage extends WizardPage {
         
         // ----------------------
         
+        this.siemensStatusGroup = new StatusGroup(composite,SWT.NONE);
+        this.siemensStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        main = this.siemensStatusGroup.getMainComposite();
+        main.setLayout(new GridLayout(3,false));
+        Label siemensLabel = new Label(main,SWT.NONE);
+        siemensLabel.setText("Siemens Home:");
+        
+        this.siemensHomeText = new Text(main,SWT.BORDER);
+        this.siemensHomeText.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+        this.siemensHomeText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                modifySiemensHomeText();
+            }
+        });
+        String siemensHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_SIEMENS_HOME);
+        this.siemensHomeText.setText(siemensHomePath);
+        modifySiemensHomeText();
+        browseButton = new Button(main,SWT.NONE);
+        browseButton.setText("Browse for Path");
+        browseButton.addSelectionListener(new BrowsePathSelected(this.siemensHomeText,"Choose the location of your Siemens directory"));
+        
+        // ----------------------
+        
         this.sonyStatusGroup = new StatusGroup(composite,SWT.NONE);
         this.sonyStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         main = this.sonyStatusGroup.getMainComposite();
@@ -202,6 +256,7 @@ public class PathsPage extends WizardPage {
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.sonyHomeText,"Choose the location of your Sony directory"));
         
+            
         // ----------------------
         
         
@@ -211,6 +266,33 @@ public class PathsPage extends WizardPage {
         updateGUIFromModel();
     }
 
+    /**
+     * 
+     */
+    private void modifySiemensHomeText() {
+        String path = this.siemensHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.siemensStatusGroup.setError("Path is not a directory.");
+        }
+        //TODO: Add something to recognize a polish directory.
+        else {
+            this.siemensStatusGroup.setOK("");
+        }
+    }
+
+    private void modifyMotorolaHomeText() {
+        String path = this.motorolaHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.motorolaStatusGroup.setError("Path is not a directory.");
+        }
+        //TODO: Add something to recognize a polish directory.
+        else {
+            this.motorolaStatusGroup.setOK("");
+        }
+    }
+    
     protected void modifyPolishHomeText() {
         String path = this.polishHomeText.getText();
         File file = new File(path);

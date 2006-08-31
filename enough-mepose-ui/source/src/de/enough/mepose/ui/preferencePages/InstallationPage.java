@@ -41,11 +41,20 @@ public class InstallationPage
         addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
 	                                      "WTK Installation Directory:", getFieldEditorParent()));
 	
+        addField(new DirectoryFieldEditor(MeposeConstants.ID_MOTOROLA_HOME, 
+                                          "Motorola Installation Directory:", getFieldEditorParent()));
+        
 	    addField(new DirectoryFieldEditor(MeposeConstants.ID_NOKIA_HOME, 
 	                                      "Nokia Installation Directory:", getFieldEditorParent()));
 	    
-	    addField(new DirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
-	                                      "Sony Installation Directory:", getFieldEditorParent()));
+	    addField(new DirectoryFieldEditor(MeposeConstants.ID_SIEMENS_HOME, 
+	                                      "Siemens Installation Directory:", getFieldEditorParent()));
+
+        addField(new DirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
+	                                      "Sony-Ericsson Installation Directory:", getFieldEditorParent()));
+	    
+        
+        
     }
 
     

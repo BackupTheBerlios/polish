@@ -99,6 +99,8 @@ public class MeposeModel extends PropertyModel{
     public static final String ID_PATH_WTK_FILE = "id.path.wtkhome";
     public static final String ID_PATH_NOKIA_FILE = "id.path.nokiahome";
     public static final String ID_PATH_SONY_FILE = "id.path.sonyhome";
+    public static final String ID_PATH_MOTOROLA_FILE = "id.path.motorolahome";
+    public static final String ID_PATH_SIEMENS_FILE = "id.path.siemenshome";
     
     // Supported Config.
     public static final String ID_SUPPORTED_CONFIGURATIONS = "id.supported.configurations";
@@ -133,6 +135,8 @@ public class MeposeModel extends PropertyModel{
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
     private File sonyHome = new File("");
+    private File motorolaHome = new File("");
+    private File siemensHome = new File("");
     private File projectHome = new File("");
 
     // Supported Config.
@@ -486,6 +490,26 @@ public class MeposeModel extends PropertyModel{
         return this.sonyHome;
     }
     
+    public File getMotorolaHome() {
+        return this.motorolaHome;
+    }
+
+
+    public void setMotorolaHome(File motorolaHome) {
+        this.motorolaHome = motorolaHome;
+    }
+
+
+    public File getSiemensHome() {
+        return this.siemensHome;
+    }
+
+
+    public void setSiemensHome(File siemensHome) {
+        this.siemensHome = siemensHome;
+    }
+
+
     /**
      * @param file May be null to indicate that there is no polish home specified.
      */
@@ -609,6 +633,10 @@ public class MeposeModel extends PropertyModel{
         p.put(ID_PATH_NOKIA_FILE,value==null?"":value.toString());
         value = getSonyHome();
         p.put(ID_PATH_SONY_FILE,value==null?"":value.toString());
+        value = getSiemensHome();
+        p.put(ID_PATH_SIEMENS_FILE,value==null?"":value.toString());
+        value = getMotorolaHome();
+        p.put(ID_PATH_MOTOROLA_FILE,value==null?"":value.toString());
         value = getProjectHome();
         p.put(ID_PATH_PROJECT_FILE,value==null?"":value.toString());
         value = getBuildxml();
@@ -656,6 +684,14 @@ public class MeposeModel extends PropertyModel{
         String nokiaHomeTmp = (String)p.get(ID_PATH_NOKIA_FILE);
         if(nokiaHomeTmp != null) {
             setNokiaHome(new File(nokiaHomeTmp));
+        }
+        String motorolaHomeTmp = (String)p.get(ID_PATH_MOTOROLA_FILE);
+        if(motorolaHomeTmp != null) {
+            setMotorolaHome(new File(motorolaHomeTmp));
+        }
+        String siemensHomeTmp = (String)p.get(ID_PATH_SIEMENS_FILE);
+        if(siemensHomeTmp != null) {
+            setSiemensHome(new File(siemensHomeTmp));
         }
         String sonyHomeTmp = (String)p.get(ID_PATH_SONY_FILE);
         if(sonyHomeTmp != null) {
