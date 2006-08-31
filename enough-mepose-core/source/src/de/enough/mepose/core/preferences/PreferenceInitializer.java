@@ -17,7 +17,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(MeposeConstants.ID_WTK_HOME,"/");
 		store.setDefault(MeposeConstants.ID_NOKIA_HOME,"/");
 		store.setDefault(MeposeConstants.ID_SONY_HOME,"/");
-        
+		store.setDefault(MeposeConstants.ID_MOTOROLA_HOME,"/");
+		store.setDefault(MeposeConstants.ID_SIEMENS_HOME,"/");
 	}
 
 }
