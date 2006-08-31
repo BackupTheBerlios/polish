@@ -31,6 +31,13 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -45,7 +52,7 @@ public class J2MePolishJavaDescriber implements ITextContentDescriber {
 
     public int describe(Reader contents, IContentDescription description)
                                                                          throws IOException {
-        return VALID;
+        return INVALID;
     }
 
     public int describe(InputStream contents, IContentDescription description)
@@ -53,7 +60,43 @@ public class J2MePolishJavaDescriber implements ITextContentDescriber {
         if(description != null) {
             description.setProperty(IContentDescription.CHARSET,"ISO-8859-1");
         }
-        return VALID;
+        
+        if(isInputStreamFromMeposeProject(contents)) {
+            return VALID;
+        }
+        return INVALID;
+    }
+
+    private boolean isInputStreamFromMeposeProject(InputStream contents) {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        if(workbench == null) {
+            return false;
+        }
+        IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+        if(activeWorkbenchWindow == null) {
+            return false;
+        }
+        IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+        if(activePage == null) {
+            return false;
+        }
+        IEditorReference[] editorReferences = activePage.getEditorReferences();
+        if(editorReferences == null) {
+            return false;
+        }
+        for (int i = 0; i < editorReferences.length; i++) {
+            IEditorReference editorReference = editorReferences[i];
+            IEditorInput editorInput;
+            try {
+                editorInput = editorReference.getEditorInput();
+            } catch (PartInitException exception) {
+                return false;
+            }
+            if(editorInput.equals(contents)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public QualifiedName[] getSupportedOptions() {
