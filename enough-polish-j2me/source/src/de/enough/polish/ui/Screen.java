@@ -119,7 +119,7 @@ implements AccessibleCanvas
 		//#if polish.css.title-position
 			private boolean paintTitleAtTop = true;
 		//#endif	
-		//#ifdef polish.Vendor.Motorola
+		//#if polish.Vendor.Motorola || polish.Bugs.ignoreTitleCall
 			//#define tmp.ignoreMotorolaTitleCall
 			private boolean ignoreMotorolaTitleCall = true;
 		//#endif
