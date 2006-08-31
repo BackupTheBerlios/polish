@@ -291,6 +291,8 @@ implements AccessibleCanvas
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
 	private final Object paintLock = new Object();
+	private int containerX;
+	private int containerY;
 
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -1599,6 +1601,8 @@ implements AccessibleCanvas
 			x += diff;
 			width -= diff;
 		}
+		this.containerX = x;
+		this.containerY = y;
 		//System.out.println("content: x=" + x + ", rightBorder=" + (x + width) );
 		this.container.paint( x, y, x, x + width, g );
 	}
@@ -2708,7 +2712,7 @@ implements AccessibleCanvas
 		if (this.container == null) {
 			return false;
 		}
-		return this.container.handlePointerPressed(x, y - this.contentY );
+		return this.container.handlePointerPressed(x, y - this.containerY );
 	}
 	//#endif
 	
