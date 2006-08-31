@@ -602,6 +602,7 @@ public class Container extends Item {
 	protected void scroll( boolean isDownwards, int x, int y, int width, int height ) {
 		//#debug
 		System.out.println("scroll: isDownwards=" + isDownwards + ", y=" + y + ", Container.yTop=" + this.yTop +  ", height=" +  height + ", Container.yBottom=" + this.yBottom + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
+		y += this.marginTop + this.paddingTop;
 		int difference = 0;
 //		int index = this.focusedIndex;
 		int target = this.targetYOffset;
