@@ -232,11 +232,12 @@ public class ResourceManager {
 		Map resourcesByName = new HashMap();
 		
 		// first step: read all resource file-names:
-		File[] resourceDirectories;
-	
-		resourceDirectories = getResourceDirs( device, locale );
-		for (int i = 0; i < resourceDirectories.length; i++) {
-			File dir = resourceDirectories[i];
+		File[] resourceDirs = getResourceDirs( device, locale );
+		for (int i = 0; i < resourceDirs.length; i++) {
+			File dir = resourceDirs[i];
+			if (!dir.exists()) {
+				throw new BuildException("The resource directory [" + dir.getAbsolutePath() + "] does not exist.");
+			}
 			File[] files = dir.listFiles();
 			addFiles(files, resourcesByName);
 		}
