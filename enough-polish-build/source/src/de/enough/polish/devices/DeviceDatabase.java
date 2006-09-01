@@ -49,8 +49,8 @@ import de.enough.polish.PolishProject;
  */
 public class DeviceDatabase {
 
-	private static DeviceDatabase INSTANCE;
-	
+	private static Map instanceByPolishHome = new HashMap();
+    
 	private LibraryManager libraryManager;
 	private DeviceManager deviceManager;
 	private CapabilityManager capabilityManager;
@@ -322,10 +322,10 @@ public class DeviceDatabase {
 	 * Creates a new device database.
 	 * 
 	 * @param polishHome the installation directory of J2ME Polish
-	 * 
+     * @return a DeviceDatabase object.
+     * @throws BuildException thrown when something went wrong.
 	 */
-	public static final  DeviceDatabase getInstance( File polishHome ) 
-	{
+	public static final  DeviceDatabase getInstance( File polishHome ){
 		return getInstance(null, polishHome, null, null, null, null, null );
 	}
 
@@ -334,21 +334,31 @@ public class DeviceDatabase {
 	 * Creates a new device database.
 	 * 
 	 * @param properties configuration settings, like the optional wtk.home key
-	 * @param polishHome the installation directory of J2ME Polish
+	 * @param polishHome the installation directory of J2ME Polish. Must not be null.
 	 * @param projectHome the project's directory
 	 * @param apisHome the default import folder, can be null (in which case ${polish.home}/import is used)
 	 * @param polishProject basic settings, can be null
 	 * @param inputStreamsByFileName the configured input streams, can be null
 	 * @param customFilesByFileName user-defined XML configuration files, can be null
+     * @return a DeviceDatabase object.
+     * @throws BuildException thrown when something went wrong.
 	 */
 	public static final DeviceDatabase getInstance( Map properties, File polishHome, File projectHome, File apisHome, 
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
-		if (INSTANCE == null) {
-            INSTANCE = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
-			inputStreamsByFileName, customFilesByFileName);
-		}
-		return INSTANCE;
+        DeviceDatabase deviceDatabase;
+        String polishHomePath = polishHome.getAbsolutePath();
+        
+        deviceDatabase = (DeviceDatabase)instanceByPolishHome.get(polishHomePath);
+        if(deviceDatabase != null) {
+            return deviceDatabase;
+        }
+        
+        deviceDatabase = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
+		inputStreamsByFileName, customFilesByFileName);
+        instanceByPolishHome.put(polishHomePath,deviceDatabase);
+        
+        return deviceDatabase;
 	}
 
 
