@@ -352,8 +352,7 @@ implements AccessibleCanvas
 					//#endif
 				//#endif
 			//#endif
-			//TODO this.menuBarHeight is 0 during initialisation...
-			this.screenHeight = this.fullScreenHeight; // - this.menuBarHeight;
+			this.screenHeight = this.fullScreenHeight; 
 		//#else
 			this.screenHeight = getHeight();
 		//#endif

@@ -50,7 +50,7 @@ public final class MathUtil {
 	 * 
 	 * @param value the value
 	 * @return the rounded value, x.5 and higher is rounded to x + 1.
-	 * @sine CLDC 1.1
+	 * @since CLDC 1.1
 	 */
 	public static long round( double value ) {
 		if (value < 0) {
@@ -67,7 +67,7 @@ public final class MathUtil {
 	 * 
 	 * @param value the value
 	 * @return the rounded value, x.5 and higher is rounded to x + 1.
-	 * @sine CLDC 1.1
+	 * @since CLDC 1.1
 	 */
 	public static int round( float value ) {
 		if (value < 0) {
