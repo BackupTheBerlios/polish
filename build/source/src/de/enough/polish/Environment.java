@@ -78,6 +78,22 @@ public class Environment {
 
 	/**
 	 * Creates a new empty environment.
+	 */
+	public Environment() {
+	  super();
+	  this.antProject = null;
+	  this.polishTask = null;
+	  this.symbols = new HashMap();
+	  this.variables = new HashMap();
+	  this.exchangeStore = new HashMap();
+	  this.temporarySymbols = new HashMap();
+	  this.temporaryVariables = new HashMap();
+	  this.extensionManager = null;
+	  this.booleanEvaluator = new BooleanEvaluator( this );
+	}
+	
+	/**
+	 * Creates a new empty environment.
 	 * 
 	 * @param extensionsManager the manager for extensions
 	 * @param antProject the project
