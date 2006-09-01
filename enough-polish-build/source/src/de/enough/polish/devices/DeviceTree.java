@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tools.ant.Project;
@@ -284,7 +283,7 @@ public class DeviceTree {
     /**
      * Removes duplicate entries from the list.
      * @param list
-     * @return
+     * @return the instance of the given list with duplicated entries removed.
      */
     private LinkedList removeDuplicateEntries(LinkedList list) {
         for(int i = 0; i < list.size(); i++) {
