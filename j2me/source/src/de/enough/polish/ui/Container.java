@@ -1756,7 +1756,7 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - this.yOffset ) );
+		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - (this.yOffset  + this.marginTop + this.paddingTop )) );
 		// an item within this container was selected:
 		y -= this.yOffset + this.marginTop + this.paddingTop;
 //		int lastYPos = this.yBottomPos;

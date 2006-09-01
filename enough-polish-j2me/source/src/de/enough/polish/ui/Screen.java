@@ -2616,20 +2616,17 @@ implements AccessibleCanvas
 							return;
 						} else if (x <= this.menuLeftCommandX){
 							// assume that the left command has been pressed:
-							if (this.menuSingleLeftCommand != null) {
-								this.callCommandListener(this.menuSingleLeftCommand);
-							} else if (this.menuOpened ) {
+							System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
+							if (this.menuOpened ) {
 								// the "SELECT" command has been clicked:
 								this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
-//								int focusedIndex = this.menuContainer.getFocusedIndex();
-//								Command cmd = (Command) this.menuCommands.get( focusedIndex );
-//								callCommandListener( cmd );						
-//								this.menuOpened = false;
-//								//#if !polish.MenuBar.focusFirstAfterClose
-//									// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-//									this.menuContainer.focus(0);
-//								//#endif
+								openMenu( false );
+								System.out.println("letting menuContainer handle the selection,  open=" + this.menuOpened);
+							} else if (this.menuSingleLeftCommand != null) {								
+								System.out.println("invoking single left command");
+								this.callCommandListener(this.menuSingleLeftCommand);
 							} else {
+								System.out.println("opening menu");
 								openMenu( true );
 								//this.menuOpened = true;
 							}
@@ -2639,22 +2636,23 @@ implements AccessibleCanvas
 					} else if (this.menuOpened) {
 						openMenu( false );
 						// a menu-item could have been selected:
-						if (this.menuContainer.handlePointerPressed( x, y )) {
+						int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
+						if (this.menuContainer.handlePointerPressed( x, y - menuY )) {
 							//TODO add support for pointer events and sub commands
-							int focusedIndex = this.menuContainer.getFocusedIndex();
-							Command cmd = (Command) this.menuCommands.get( focusedIndex );
-							callCommandListener( cmd );						
-						} else {
-							//#ifdef tmp.useTitle
-								//y -= this.titleHeight;
-							//#endif
-							int focusedIndex = this.menuContainer.getFocusedIndex();
-							Item item = this.menuContainer.get( focusedIndex );
-							if (y > item.yTopPos  && y < item.yBottomPos
-									&& x > item.xLeftPos && x < item.xRightPos) {
-								Command cmd = (Command) this.menuCommands.get( focusedIndex );
-								callCommandListener( cmd );	
-							}
+//							int focusedIndex = this.menuContainer.getFocusedIndex();
+//							Command cmd = (Command) this.menuCommands.get( focusedIndex );
+//							callCommandListener( cmd );						
+//						} else {
+//							//#ifdef tmp.useTitle
+//								//y -= this.titleHeight;
+//							//#endif
+//							int focusedIndex = this.menuContainer.getFocusedIndex();
+//							Item item = this.menuContainer.get( focusedIndex );
+//							if (y > item.yTopPos  && y < item.yBottomPos
+//									&& x > item.xLeftPos && x < item.xRightPos) {
+//								Command cmd = (Command) this.menuCommands.get( focusedIndex );
+//								callCommandListener( cmd );	
+//							}
 						}
 						repaint();
 						return;
@@ -2678,6 +2676,7 @@ implements AccessibleCanvas
 			
 			//#ifdef polish.debug.debug
 				if (!processed) {
+					//#debug
 					System.out.println("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
 			//#endif

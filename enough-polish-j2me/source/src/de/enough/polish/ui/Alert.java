@@ -808,7 +808,10 @@ implements CommandListener
 	 */
 	public void commandAction(Command cmd, Displayable thisScreen) {
 		if (this.nextDisplayable == null) {
-			throw new IllegalStateException();
+			//#debug error
+			System.out.println("unablet to handle command " + cmd.getLabel() + ": nextDisplayable == null.");
+			//throw new IllegalStateException();
+			return;
 		}
 		Displayable next = this.nextDisplayable;
 		this.nextDisplayable = null;
@@ -825,7 +828,7 @@ implements CommandListener
 		this.showTime = System.currentTimeMillis();
 		if (this.nextDisplayable == null) {
 			Displayable last = StyleSheet.display.getCurrent();
-			if (last != this) {
+			if (last != this && last != null) {
 				this.nextDisplayable = last;
 			}
 		}

@@ -328,6 +328,8 @@ public class ContainerView {
 				//#else
 					columnIndex++;
 				//#endif
+				item.yTopPos = myContentHeight;
+				item.yBottomPos = myContentHeight + height;
 				if (columnIndex == this.numberOfColumns) {
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 					columnIndex = 0;
