@@ -318,7 +318,7 @@ public class PolishDocumentUtils {
      * "abc|" -> 
      * @param document
      * @param offset
-     * @return
+     * @return may be null
      */
     public static Position extractWordAtOffset(IDocument document, int offset) {
         int lastIndexOfLine;

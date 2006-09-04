@@ -41,7 +41,6 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.IConfiguration;
  * 
  */
 
-// Typo verbessern: Manager.
 public class OccurrencesMarkerManager{
         
     public static class DefaultConfiguration implements IConfiguration{
@@ -96,7 +95,7 @@ public class OccurrencesMarkerManager{
         this.defaultMarkerConfiguration = new AbstractOccurrenceAnnotationMarker.DefaultConfiguration();
     }
 
-    public void updateAnnotations(ITextSelection selection, List listOfComments) {
+    public void updateAnnotations(ITextSelection selection) {
         
         if( ! isConfigured()) {
             System.out.println("OccurrencesMarkerManager:updateAnnotations(...):this is not configured.");
