@@ -27,7 +27,6 @@ package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -88,11 +87,12 @@ public class PolishEditor extends CompilationUnitEditor {
      * </pre>
      * @author Richard Nkrumah, Richard.Nkrumah@enough.de
      */
-    public class ChangeMeposeModelFocusListener implements IPartListener {
+    protected class ChangeMeposeModelFocusListener implements IPartListener {
 
         public void partActivated(IWorkbenchPart part) {
             if(part instanceof PolishEditor) {
                 PolishEditor polishEditor = (PolishEditor)part;
+                //TODO: Dont do this. Put it into the editor extension point as ContributorClass.
                 polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
             }
         }
@@ -120,34 +120,29 @@ public class PolishEditor extends CompilationUnitEditor {
         }
     }
     
-    public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor";
-    
-    private PropertyChangeListener propertyChangeListener;
-
-    protected OccurrencesMarkerManager occurrencesMarkerManager;
-    protected OccurrencesMarkerManager.DefaultConfiguration defaultOccurrenceMarkerManagerConfiguration;
-    
-    class PropertyChangeListener implements IPropertyChangeListener{
-
+    protected class PropertyChangeListener implements IPropertyChangeListener{
+        
         public void propertyChange(PropertyChangeEvent event) {
             //System.out.println("PolishEditor.PropertyChangeListener.propertyChange():event:property:"+event.getProperty()+".event:newValue:"+event.getNewValue());
             handlePreferenceStoreChanged(event);
         }
         
     }
+
+    public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor";
     
-    
-    
-    private MeposeModel meposeProject;
+    protected OccurrencesMarkerManager occurrencesMarkerManager;
+    protected OccurrencesMarkerManager.DefaultConfiguration defaultOccurrenceMarkerManagerConfiguration;
+
+    private PropertyChangeListener propertyChangeListener;
+    private MeposeModel meposeModel;
     private Environment deviceEnvironment;
     
     public PolishEditor() {
         this.propertyChangeListener = new PropertyChangeListener();
         this.occurrencesMarkerManager = new OccurrencesMarkerManager();
         this.defaultOccurrenceMarkerManagerConfiguration = new OccurrencesMarkerManager.DefaultConfiguration();
-        }
-
-
+    }
     
     public void createPartControl(Composite parent){
         
@@ -176,10 +171,10 @@ public class PolishEditor extends CompilationUnitEditor {
 //        this.meposeProject = MeposePlugin.getDefault().getMeposeModelFromResource(((PolishSourceViewerConfiguration)getSourceViewerConfiguration()).getProject().getProject());
         MeposeModelManager meposeModelManager = MeposePlugin.getDefault().getMeposeModelManager();
         IProject project = getJavaProject().getProject();
-        this.meposeProject = meposeModelManager.getModel(project);
-        if(this.meposeProject == null) {
+        this.meposeModel = meposeModelManager.getModel(project);
+        if(this.meposeModel == null) {
             meposeModelManager.addModel(project,new MeposeModel());
-            this.meposeProject = meposeModelManager.getModel(project);
+            this.meposeModel = meposeModelManager.getModel(project);
         }
         
         super.createPartControl(parent);
@@ -273,24 +268,25 @@ public class PolishEditor extends CompilationUnitEditor {
             return;
         }
         
-        List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
+//        List listOfComments = astRoot.getCommentList(); //Maybe the ast doesnt get freed.
       
-        this.occurrencesMarkerManager.updateAnnotations(selection,listOfComments);
+        this.occurrencesMarkerManager.updateAnnotations(selection);
         
         super.updateOccurrenceAnnotations(selection, astRoot);
     }
     
-    public Method findMethod(Class start, String methodName, Class[] args) {
-        Method firstDeclared = null;
-        for (Class current = start.getSuperclass(); current != Object.class && firstDeclared == null; current = current.getSuperclass()) {
-            try {
-                firstDeclared = current.getDeclaredMethod(methodName, args);
-            } catch (Exception e) {
-                // totally ignore this... we don't give a shit if the method is not there
-            }
-        }
-        return firstDeclared;
-    }
+    // Nice method but it is not used.
+//    private Method findMethod(Class start, String methodName, Class[] args) {
+//        Method firstDeclared = null;
+//        for (Class current = start.getSuperclass(); current != Object.class && firstDeclared == null; current = current.getSuperclass()) {
+//            try {
+//                firstDeclared = current.getDeclaredMethod(methodName, args);
+//            } catch (Exception e) {
+//                // totally ignore this... we don't give a shit if the method is not there
+//            }
+//        }
+//        return firstDeclared;
+//    }
     
     protected void installOccurrencesFinder() {
         doInstallOccurrencesFinder();
@@ -307,7 +303,7 @@ public class PolishEditor extends CompilationUnitEditor {
     private void doInstallOccurrencesFinder() {
         ISourceViewer sourceViewer = getSourceViewer();
         if(sourceViewer == null) {
-            System.out.println("ERROR:PolishEditor.installOccurrencesFinder():sourceViewer is null.");
+//            System.out.println("ERROR:PolishEditor.installOccurrencesFinder():sourceViewer is null.");
             PolishEditorPlugin.log("installOccurrencesFinder():sourceViewer is null.");
             return;
         }
@@ -328,26 +324,26 @@ public class PolishEditor extends CompilationUnitEditor {
 
     
     public MeposeModel getMeposeModel() {
-        return this.meposeProject;
+        return this.meposeModel;
     }
 
 
 
-    public void setMeposeProject(MeposeModel meposeProject) {
-        this.meposeProject = meposeProject;
+    public void setMeposeModel(MeposeModel meposeProject) {
+        this.meposeModel = meposeProject;
     }
 
 
 
-    /**
-     * @param deviceEnvironment The deviceEnvironment to set.
-     */
-    public void setDeviceEnvironment(Environment deviceEnvironment) {
-        if(deviceEnvironment == null){
-            throw new IllegalArgumentException("ERROR:PolishEditor.setDeviceEnvironment(...):Parameter 'deviceEnvironment' is null.");
-        }
-        this.deviceEnvironment = deviceEnvironment;
-    }
+//    /**
+//     * @param deviceEnvironment The deviceEnvironment to set.
+//     */
+//    public void setDeviceEnvironment(Environment deviceEnvironment) {
+//        if(deviceEnvironment == null){
+//            throw new IllegalArgumentException("ERROR:PolishEditor.setDeviceEnvironment(...):Parameter 'deviceEnvironment' is null.");
+//        }
+//        this.deviceEnvironment = deviceEnvironment;
+//    }
     
     public IJavaProject getJavaProject() {
         
