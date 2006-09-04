@@ -108,18 +108,19 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
         
     }
     
-    // This is the method for 3.1.
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+        System.out.println("DEBUG:PolishSourceViewerConfiguration.getAutoEditStrategies(...):enter.");
         String partitioning= getConfiguredDocumentPartitioning(sourceViewer);
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
             return new IAutoEditStrategy[] {new PolishIndentStrategy()};
         if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
-            IAutoEditStrategy[] autoEditStrategies= new IAutoEditStrategy[] { new PolishJavaAutoIndentStrategy(partitioning, getProject()) };
+            IAutoEditStrategy[] autoEditStrategies= new IAutoEditStrategy[] { new PolishJavaAutoIndentStrategy(partitioning, getJavaProject()) };
             return autoEditStrategies;
         }
         return super.getAutoEditStrategies(sourceViewer, contentType);
     }
 
+    // This is the method for 3.1.
 //    public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer,
 //                                                     String contentType) {
 //        System.out.println("ERROR:PolishSourceViewerConfiguration.getAutoIndentStrategy(...):enter. This method cant be called by 3.1.M6?!");
@@ -165,7 +166,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
 //        return newIContentAssistant;
     }
     
-    protected IJavaProject getProject() {
+    protected IJavaProject getJavaProject() {
         ITextEditor editor2= getEditor();
         if (editor2 == null)
             return null;
