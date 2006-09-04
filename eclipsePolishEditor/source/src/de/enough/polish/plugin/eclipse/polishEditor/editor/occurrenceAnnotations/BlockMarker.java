@@ -117,7 +117,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
           position = (Position)iterator.next();
           text = PolishDocumentUtils.makeStringFromPosition(getDocument(),position);
           if(text.equals("")) {
-              System.out.println("BlockMarker.updateAnnotations(...):ERROR:cant extract word from position.");
               continue;
           }
           annotation = new Annotation(IPolishConstants.POLISH_ANNOTATION,false,text);
@@ -135,7 +134,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         List positionsOfCorrespondingBlockElements = new LinkedList();
         
         if(startLineIndex < 0 || startLineIndex > maxLineIndex) {
-            System.out.println("ERROR:BlockMarker.findOtherPositionsForIf(...):Parameter startLineIndex out of bounds.");
             return positionsOfCorrespondingBlockElements;
         }
         
@@ -147,9 +145,12 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         for(currentLineIndex = startLineIndex;currentLineIndex >= 0; currentLineIndex--) {
             directiveAsPosition = PolishDocumentUtils.extractDirectiveFromLine(getDocument(),currentLineIndex);
            
+            if(directiveAsPosition == null) {
+                continue;
+            }
+            
             directiveAsString = PolishDocumentUtils.makeStringFromPosition(getDocument(),directiveAsPosition);
             if(directiveAsString == null){
-                System.out.println("ERROR:BlockMarker.findOtherPositionsOfIf(...):Parameter 'directiveAsString' is null.");
                 continue;
             }
             
@@ -197,7 +198,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
             }
             directiveAsString = PolishDocumentUtils.makeStringFromPosition(getDocument(),directiveAsPosition);
             if(directiveAsString == null){
-                System.out.println("ERROR:BlockMarker.findOtherPositionsOfIf(...):Parameter 'directiveAsString' is null.");
                 continue;
             }
             
@@ -242,7 +242,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         List positionsOfCorrespondingBlockElements = new LinkedList();
         
         if(startLineIndex < 0 || startLineIndex > maxLineIndex) {
-            System.out.println("ERROR:BlockMarker.findOtherPositionsForIf(...):Parameter startLineIndex out of bounds.");
             return positionsOfCorrespondingBlockElements;
         }
         
@@ -259,12 +258,14 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
                 continue;
             }
             directiveAsString = PolishDocumentUtils.makeStringFromPosition(getDocument(),directiveAsPosition);
+            if(directiveAsString == null) {
+                continue;
+            }
 //          Use intern to speed comparison up a bit.
             directiveAsString = directiveAsString.intern();
 	        
             if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.IF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_IF)) {
 	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
-	            System.out.println("DEBUG:FOUND IF2");
 	            break;
 	        }
             
@@ -273,12 +274,10 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
 //	            this.state.reset();
 //	            this.state.addState(STATE_SEARCH_FOR_IF);
 //	            this.state.addState(STATE_SEARCH_FOR_ELSE);
-	            System.out.println("DEBUG:FOUND ELSE2");
 	            continue;
 	        }
             if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.ENDIF_DIRECTIVES) && level == 0 && this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
 	            positionsOfCorrespondingBlockElements.add(directiveAsPosition);
-	            System.out.println("DEBUG:FOUND ENDIF2");
 	            this.state.reset();
 	            this.state.addState(STATE_SEARCH_FOR_IF);
 	            this.state.addState(STATE_SEARCH_FOR_ELSE);
@@ -286,13 +285,11 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
 	        }
 //          We found a nested if block.
 	        if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.IF_DIRECTIVES) && level != 0) { 
-	            System.out.println("DEBUG:BlockMarker.findOtherPositionsForEndif(...):levelUp:directiveAsString:"+directiveAsString);
 	            level = level + 1;
 	            continue;
 	        }
 	        // We found a endif in the wrong level.
 	        if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.ENDIF_DIRECTIVES) && ! this.state.isInState(STATE_SEARCH_FOR_ENDIF)) {
-	            System.out.println("DEBUG:BlockMarker.findOtherPositionsForEndif(...):levelDown:directiveAsString:"+directiveAsString);
 	            level = level - 1;
 	            continue;
 	        }
@@ -328,7 +325,6 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
             }
             directiveAsString = PolishDocumentUtils.makeStringFromPosition(getDocument(),directiveAsPosition);
             if(directiveAsString == null){
-                System.out.println("ERROR:BlockMarker.findOtherPositionsOfIf(...):Parameter 'directiveAsString' is null.");
                 continue;
             }
 	        // Use intern to speed comparison up a bit.
