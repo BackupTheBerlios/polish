@@ -72,6 +72,10 @@ public class MiDletChangeListener implements IResourceChangeListener{
         public static final int REMOVED = IResourceDelta.REMOVED;
         public static final int CHANGED = IResourceDelta.CHANGED;
         
+        private boolean resourceUpdated = false;
+        private MeposeModel model;
+        private IProject project;
+        
         public boolean visit(IResourceDelta delta) {
 //            if(delta.getFlags() != 131072) {
             
@@ -137,11 +141,11 @@ public class MiDletChangeListener implements IResourceChangeListener{
                 if(resource == null) {
                     return false;
                 }
-                IProject project = resource.getProject();
-                if(project == null){
+                this.project = resource.getProject();
+                if(this.project == null){
                     return false;
                 }
-                hasPolishNature = project.hasNature(PolishNature.ID);
+                hasPolishNature = this.project.hasNature(PolishNature.ID);
             } catch (CoreException exception) {
                 return false;
             }
@@ -149,15 +153,18 @@ public class MiDletChangeListener implements IResourceChangeListener{
         }
 
         private void handleMiDlet(MidletItem midletItem,int action) {
-            IProject project = midletItem.getResource().getProject();
-            MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getModel(project);
-            if(model == null) {
+            // This is not needed as the project is set in isFromJ2mePolishProject.
+            // But do not rely on method invocation order.
+            this.project = midletItem.getResource().getProject();
+            this.resourceUpdated = true;
+            this.model = MeposePlugin.getDefault().getMeposeModelManager().getModel(this.project);
+            if(this.model == null) {
                 return;
             }
-            IResource midletPropertiesResource = project.findMember("/midlet.properties");
+            IResource midletPropertiesResource = this.project.findMember("/midlet.properties");
             File midletPropertiesFile;
             if(midletPropertiesResource == null) {
-                midletPropertiesFile = new File(project.getLocation().append("/midlet.properties").toOSString());
+                midletPropertiesFile = new File(this.project.getLocation().append("/midlet.properties").toOSString());
                 try {
                     midletPropertiesFile.createNewFile();
                 } catch (IOException exception) {
@@ -174,7 +181,7 @@ public class MiDletChangeListener implements IResourceChangeListener{
                 case ADDED:
                 case CHANGED:
                     midlets.add(midletItem);
-                    removeMidletsFromList(project,midlets);
+                    removeMidletsFromList(this.project,midlets);
                     break;
                 case REMOVED:
                     midlets.remove(midletItem);
@@ -203,6 +210,15 @@ public class MiDletChangeListener implements IResourceChangeListener{
 //            }
             
         }
+
+        public boolean isResourceUpdated() {
+            return this.resourceUpdated;
+        }
+        
+        public IProject getProject() {
+            return this.project;
+        }
+        
     }
     
     protected void removeMidletsFromList(IProject project, Set midlets) {
@@ -296,14 +312,32 @@ public class MiDletChangeListener implements IResourceChangeListener{
     
     public void resourceChanged(IResourceChangeEvent event) {
         switch (event.getType()) {
-           case IResourceChangeEvent.POST_CHANGE:
-              try {
-                    event.getDelta().accept(new DeltaVisitor());
+            case IResourceChangeEvent.POST_CHANGE:
+                DeltaVisitor deltaVisitor = null;
+                try {
+                    deltaVisitor = new DeltaVisitor();
+                    event.getDelta().accept(deltaVisitor);
                 } catch (CoreException exception) {
                     MeposePlugin.log(exception);
                     return;
+                } finally {
+                    if(deltaVisitor == null || ! deltaVisitor.isResourceUpdated()) {
+                        return;
+                    }
+//                    IProject project = deltaVisitor.getProject();
+//                    if(project == null) {
+//                        return;
+//                    }
+//                    ISchedulingRule refreshRule = ResourcesPlugin.getWorkspace().getRuleFactory().refreshRule(project);
+//                    Platform.getJobManager().beginRule(refreshRule,null);
+//                    try {
+//                        project.refreshLocal(IResource.DEPTH_INFINITE,null);
+//                    } catch (CoreException exception) {
+//                        MeposePlugin.log("Could not refresh project. The workspace is most probably out of sync.",exception);
+//                    }
+//                    Platform.getJobManager().endRule(refreshRule);
                 }
-              break;
+                break;
         }
     }
 
