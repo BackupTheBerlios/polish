@@ -13,12 +13,15 @@ import org.eclipse.ant.internal.core.AbstractEclipseBuildLogger;
 import org.eclipse.ant.internal.ui.launchConfigurations.AntProcess;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -56,6 +59,7 @@ public class MIDletLaunchConfigurationDelegate extends
     // private static final int EMULATOR_STARTUP_TIME = 5000;
     private PrintStream oldErr;
     private BuildRunnable buildRunnable;
+    private IProject project;
 
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, final IProgressMonitor monitor)
@@ -67,19 +71,16 @@ public class MIDletLaunchConfigurationDelegate extends
         projectName = configuration
                 .getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
 
-        IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(projectName);
-
-        
-        
-        if (project == null) {
+        this.project = ResourcesPlugin.getWorkspace().getRoot()
+                        .getProject(projectName);
+        if (this.project == null) {
             showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "The project '" + projectName
                                                 + "' does not exists.");
             return;
         }
 
         MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager()
-                .getModel(project);
+                .getModel(this.project);
         if (model == null) {
             showErrorBox(
                          MSG_CAN_NOT_BUILD_PROJECT,
@@ -292,7 +293,11 @@ public class MIDletLaunchConfigurationDelegate extends
             System.setIn(this.oldIn);
             System.setOut(this.oldOut);
             System.setErr(this.oldErr);
+            this.project.touch(new NullProgressMonitor());
+            this.project.refreshLocal(IResource.DEPTH_INFINITE,monitor);
             monitor.done();
+            
+            
             //Do not remove the launch at the end of the game but at the start of a new game.
 //            getLaunchManager().removeLaunch(launch);
         }
