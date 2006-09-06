@@ -2828,7 +2828,11 @@ implements AccessibleCanvas
 	 * @param index the index of the item which is already shown on this screen.
 	 */
 	public void focus(int index) {
-		focus( index, this.container.get(index), false );
+		Item item = null;
+		if (index != -1) {
+			item = this.container.get(index);
+		}
+		focus( index, item, false );
 	}
 	
 	/**
@@ -2838,7 +2842,11 @@ implements AccessibleCanvas
 	 * @param force true when the item should be focused even when it is inactive (like a label for example)
 	 */
 	public void focus(int index, boolean force) {
-		focus( index, this.container.get(index), force );
+		Item item = null;
+		if (index != -1) {
+			item = this.container.get(index);
+		}
+		focus( index, item, force );
 	}
 	
 	/**
@@ -2856,6 +2864,8 @@ implements AccessibleCanvas
 			if (index == 0) {
 				this.container.yOffset = 0;
 			}
+		} else if (index == -1) {
+			this.container.focus( -1 );
 		} else {
 			//#debug warn
 			System.out.println("Screen: unable to focus item (did not find it in the container or is not activatable) " + index);

@@ -166,7 +166,7 @@ public class RmsStorage
 		for (int i = 0; i < keys.length; i++) {
 			String key = (String)keys[i];
 			Integer idInt = (Integer) this.masterRecordSetIdsByName.get( key );
-			out.writeUTF(name);
+			out.writeUTF( key );
 			out.writeInt( idInt.intValue() );
 		}
 		byte[] data = byteOut.toByteArray();
