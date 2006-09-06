@@ -771,7 +771,7 @@ public class MenuBar extends Item {
 				}
 				//#if tmp.useInvisibleMenuBar
 					// handle hide command specifically:
-					if ( ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
+					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
 						setOpen( false );
 						return true;
 					}
