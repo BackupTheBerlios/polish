@@ -235,10 +235,10 @@ public class ResourceManager {
 		File[] resourceDirs = getResourceDirs( device, locale );
 		for (int i = 0; i < resourceDirs.length; i++) {
 			File dir = resourceDirs[i];
-			if (!dir.exists()) {
-				throw new BuildException("The resource directory [" + dir.getAbsolutePath() + "] does not exist.");
-			}
 			File[] files = dir.listFiles();
+			if (files == null) {
+				throw new BuildException("Unable to add files from resource directory " + dir.getAbsolutePath() + ": exists=" + dir.exists() + ", is a directory=" + dir.isDirectory() );				
+			}
 			addFiles(files, resourcesByName);
 		}
 		// also load resources from the filesets:
@@ -248,6 +248,9 @@ public class ResourceManager {
 			File dir = set.getDir(this.project);
 			if (!dir.exists()) {
 				throw new BuildException("The referenced directory [" + dir.getAbsolutePath() + "] of <fileset> does point to a non-existing directory. Please correct the \"dir\"-attribute of the corresponding <fileset>-element.");
+			}
+			if (!dir.isDirectory()) {
+				throw new BuildException("The referenced directory [" + dir.getAbsolutePath() + "] of <fileset> does point to a file which is not a directory. Please correct the \"dir\"-attribute of the corresponding <fileset>-element.");				
 			}
 			DirectoryScanner scanner = set.getDirectoryScanner(this.project);
 			String[] fileNames = scanner.getIncludedFiles();
@@ -300,7 +303,7 @@ public class ResourceManager {
 			//String resourcePath = resourcesDir.getAbsolutePath() + File.separator;
 			// then the vendor specific resources:
 			File resourceDir = new File( resourcesDir, device.getVendorName() );
-			if (resourceDir.exists()) {
+			if (resourceDir.exists()  && resourceDir.isDirectory()) {
 				dirs.add( resourceDir );
 			}
 			// now add all dynamic ScreenSize-directories:
@@ -310,7 +313,7 @@ public class ResourceManager {
 			for (int i = 0; i < groups.length; i++) {
 				String group = groups[i];
 				resourceDir = new File( resourcesDir,  group );
-				if (resourceDir.exists()) {
+				if (resourceDir.exists() && resourceDir.isDirectory()) {
 					dirs.add( resourceDir );
 				}
 			}
@@ -378,7 +381,7 @@ public class ResourceManager {
 			// The last possible resource directory is the directory for the specific device:
 			resourceDir = new File( resourcesDir, device.getVendorName() 
 								+ File.separatorChar + device.getName() );
-			if (resourceDir.exists()) {
+			if (resourceDir.exists() && resourceDir.isDirectory()) {
 				dirs.add( resourceDir );
 			}
 			
@@ -399,12 +402,12 @@ public class ResourceManager {
 				//resourcePath = resourceDir.getAbsolutePath() + File.separator;
 				if (languageDirName != null) {
 					File localizedResourceDir = new File( resourceDir, languageDirName );
-					if (localizedResourceDir.exists()) {
+					if (localizedResourceDir.exists() && resourceDir.isDirectory()) {
 						localizedDirs.add( localizedResourceDir );
 					}
 				}
 				File localizedResourceDir = new File( resourceDir, localeDirName );
-				if (localizedResourceDir.exists()) {
+				if (localizedResourceDir.exists() && resourceDir.isDirectory()) {
 					localizedDirs.add( localizedResourceDir );
 				}				
 			}
