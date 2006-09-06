@@ -670,10 +670,12 @@ implements AccessibleCanvas
 							System.out.println("storing previous screen " + currentDisplayable + " to image buffer...");
 							Graphics g = this.previousScreenImage.getGraphics();
 							((AccessibleCanvas)currentDisplayable).paint(g);
-							//#if polish.color.overlay:defined
-								//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
-							//#else
-								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+							//#if !polish.Bugs.noTranslucencyWithDrawRgb
+								//#if polish.color.overlay:defined
+									//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
+								//#else
+									this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+								//#endif
 							//#endif
 						}
 					//#endif

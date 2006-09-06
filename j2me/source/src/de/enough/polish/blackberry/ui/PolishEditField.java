@@ -25,180 +25,176 @@
  */
 package de.enough.polish.blackberry.ui;
 
+import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.ui.component.EditField;
 
 public class PolishEditField extends EditField {
 
 
-	private boolean isFocused;
+        private boolean isFocused;
+        public boolean processKeyEvents = true;
 
-	public PolishEditField(String label, String text, int numChars, long style) {
-		super(label, text, numChars, style);
-	}
+        public PolishEditField(String label, String text, int numChars, long style) {
+                super(label, text, numChars, style);
+        }
 
-	public void focusAdd( boolean draw ) {
-		//System.out.println("EditField: focusAdd (" + getText() + ")");
-		super.focusAdd( draw );
-		this.isFocused = true;
-	}
+        public void focusAdd( boolean draw ) {
+                //System.out.println("EditField: focusAdd (" + getText() + ")");
+                super.focusAdd( draw );
+                this.isFocused = true;
+        }
 
-	public void focusRemove() {
-		//System.out.println("EditField: focusRemove (" + getText() + ")");
-		super.focusRemove();
-		this.isFocused = false;
-	}
+        public void focusRemove() {
+                //System.out.println("EditField: focusRemove (" + getText() + ")");
+                super.focusRemove();
+                this.isFocused = false;
+        }
 
-	public void layout( int width, int height) {
-		super.layout( width, height );
-	}
-	
-	public void paint( net.rim.device.api.ui.Graphics g ) {
-		if (this.isFocused) {
-			super.paint( g );
-//		} else {
-//			String txt = getText();
-//			if (txt == null) {
-//				txt = "TextField TEST";
-//			}
-//			g.drawText( txt, 120, 0 , DrawStyle.RIGHT | DrawStyle.BOTTOM);			
-		}
-	}
-	
-	
-	public void paint( int x, int y, Graphics g ) {
-		//System.out.println("EditField.paint(): isFocused  (" + getText() + ")");
-		this.isFocused = true;
-		setPosition(x, y);
-		paint( g.g );
-	}
-	
-	//#if false
-	public void paint( int x, int y, javax.microedition.lcdui.Graphics g ) {
-		// just a dummy method which is just needed for IDEs
-	}
-	//#endif
+        public void layout( int width, int height) {
+                super.layout( width, height );
+        }
+        
+        public void paint( net.rim.device.api.ui.Graphics g ) {
+                if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened()) {
+                      super.paint( g );
+              }
+        }
+        
+        
+        public void paint( int x, int y, Graphics g ) {
+                this.isFocused = true;
+                setPosition(x, y);
+                //paint( g.g );
+        }
+        
+        //#if false
+        public void paint( int x, int y, javax.microedition.lcdui.Graphics g ) {
+        	// just a dummy method which is just needed for IDEs
+        }
+        //#endif
 
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.component.EditField#keyDown(int, int)
-//	 */
-//	protected boolean keyDown(int arg0, int arg1) {
-//		System.out.println("EditField: keyDown");
-//		// TODO Auto-generated method stub
-//		return super.keyDown(arg0, arg1);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.component.EditField#keyDown(int, int)
+//       */
+//      protected boolean keyDown(int arg0, int arg1) {
+//              System.out.println("EditField: keyDown");
+//              // TODO Auto-generated method stub
+//              return super.keyDown(arg0, arg1);
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.component.EditField#keyRepeat(int, int)
-//	 */
-//	protected boolean keyRepeat(int arg0, int arg1) {
-//		System.out.println("EditField: keyRepeat");
-//		// TODO Auto-generated method stub
-//		return super.keyRepeat(arg0, arg1);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.component.EditField#keyRepeat(int, int)
+//       */
+//      protected boolean keyRepeat(int arg0, int arg1) {
+//              System.out.println("EditField: keyRepeat");
+//              // TODO Auto-generated method stub
+//              return super.keyRepeat(arg0, arg1);
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.component.EditField#moveFocus(int, int, int)
-//	 */
-//	protected int moveFocus(int arg0, int arg1, int arg2) {
-//		System.out.println("EditField: moveFocus");
-//		// TODO Auto-generated method stub
-//		return super.moveFocus(arg0, arg1, arg2);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.component.EditField#moveFocus(int, int, int)
+//       */
+//      protected int moveFocus(int arg0, int arg1, int arg2) {
+//              System.out.println("EditField: moveFocus");
+//              // TODO Auto-generated method stub
+//              return super.moveFocus(arg0, arg1, arg2);
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#fieldChangeNotify(int)
-//	 */
-//	protected void fieldChangeNotify(int arg0) {
-//		System.out.println("EditField: fieldChangeNotify");
-//		// TODO Auto-generated method stub
-//		super.fieldChangeNotify(arg0);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#fieldChangeNotify(int)
+//       */
+//      protected void fieldChangeNotify(int arg0) {
+//              System.out.println("EditField: fieldChangeNotify");
+//              // TODO Auto-generated method stub
+//              super.fieldChangeNotify(arg0);
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#invalidate()
-//	 */
-//	public void invalidate() {
-//		System.out.println("EditField: invalidate");
-//		// TODO Auto-generated method stub
-//		super.invalidate();
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#invalidate()
+//       */
+//      public void invalidate() {
+//              System.out.println("EditField: invalidate");
+//              // TODO Auto-generated method stub
+//              super.invalidate();
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#invalidate(int, int, int, int)
-//	 */
-//	protected void invalidate(int arg0, int arg1, int arg2, int arg3) {
-//		System.out.println("EditField: invalidate(x,y,w,h)");
-//		// TODO Auto-generated method stub
-//		super.invalidate(arg0, arg1, arg2, arg3);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#invalidate(int, int, int, int)
+//       */
+//      protected void invalidate(int arg0, int arg1, int arg2, int arg3) {
+//              System.out.println("EditField: invalidate(x,y,w,h)");
+//              // TODO Auto-generated method stub
+//              super.invalidate(arg0, arg1, arg2, arg3);
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#onDisplay()
-//	 */
-//	public void onDisplay() {
-//		System.out.println("EditField: onDisplay");
-//		// TODO Auto-generated method stub
-//		super.onDisplay();
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#onDisplay()
+//       */
+//      public void onDisplay() {
+//              System.out.println("EditField: onDisplay");
+//              // TODO Auto-generated method stub
+//              super.onDisplay();
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#onExposed()
-//	 */
-//	public void onExposed() {
-//		System.out.println("EditField: onExposed");
-//		// TODO Auto-generated method stub
-//		super.onExposed();
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#onExposed()
+//       */
+//      public void onExposed() {
+//              System.out.println("EditField: onExposed");
+//              // TODO Auto-generated method stub
+//              super.onExposed();
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#onMenuDismissed()
-//	 */
-//	protected void onMenuDismissed() {
-//		System.out.println("EditField: onMenuDismissed");
-//		// TODO Auto-generated method stub
-//		super.onMenuDismissed();
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#onMenuDismissed()
+//       */
+//      protected void onMenuDismissed() {
+//              System.out.println("EditField: onMenuDismissed");
+//              // TODO Auto-generated method stub
+//              super.onMenuDismissed();
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#onObscured()
-//	 */
-//	protected void onObscured() {
-//		System.out.println("EditField: onObscured");
-//		// TODO Auto-generated method stub
-//		super.onObscured();
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#onObscured()
+//       */
+//      protected void onObscured() {
+//              System.out.println("EditField: onObscured");
+//              // TODO Auto-generated method stub
+//              super.onObscured();
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#onUndisplay()
-//	 */
-//	public void onUndisplay() {
-//		System.out.println("EditField: onUndisplay");
-//		// TODO Auto-generated method stub
-//		super.onUndisplay();
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#onUndisplay()
+//       */
+//      public void onUndisplay() {
+//              System.out.println("EditField: onUndisplay");
+//              // TODO Auto-generated method stub
+//              super.onUndisplay();
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#trackwheelClick(int, int)
-//	 */
-//	protected boolean trackwheelClick(int arg0, int arg1) {
-//		System.out.println("EditField: trackwheelClick");
-//		// TODO Auto-generated method stub
-//		return super.trackwheelClick(arg0, arg1);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#trackwheelClick(int, int)
+//       */
+//      protected boolean trackwheelClick(int arg0, int arg1) {
+//              System.out.println("EditField: trackwheelClick");
+//              // TODO Auto-generated method stub
+//              return super.trackwheelClick(arg0, arg1);
+//      }
 //
-//	/* (non-Javadoc)
-//	 * @see net.rim.device.api.ui.Field#trackwheelUnclick(int, int)
-//	 */
-//	protected boolean trackwheelUnclick(int arg0, int arg1) {
-//		System.out.println("EditField: trackwheelUnclick");
-//		// TODO Auto-generated method stub
-//		return super.trackwheelUnclick(arg0, arg1);
-//	}
+//      /* (non-Javadoc)
+//       * @see net.rim.device.api.ui.Field#trackwheelUnclick(int, int)
+//       */
+//      protected boolean trackwheelUnclick(int arg0, int arg1) {
+//              System.out.println("EditField: trackwheelUnclick");
+//              // TODO Auto-generated method stub
+//              return super.trackwheelUnclick(arg0, arg1);
+//      }
 //
-//	public void onFocus(int direction) {
-//		System.out.println("EditField: onFocus");
-//		super.onFocus( direction );
-//	}
-	
+//      public void onFocus(int direction) {
+//              System.out.println("EditField: onFocus");
+//              super.onFocus( direction );
+//      }
+        
 
 }
