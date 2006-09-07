@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntCorePreferences;
 import org.eclipse.ant.core.IAntClasspathEntry;
@@ -28,12 +27,11 @@ import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.mepose.core.model.MiDletChangeListener;
 import de.enough.mepose.core.project.ProjectPersistence;
 import de.enough.polish.util.PopulateUtil;
-import de.enough.utils.log4j.Log4JPlugin;
 
 
 public class MeposePlugin extends Plugin {
 	
-    public static Logger logger = Logger.getLogger(MeposePlugin.class);
+//    public static Logger logger = Logger.getLogger(MeposePlugin.class);
     
     private MeposeModelManager meposeModelManager;
 	private static MeposePlugin plugin;
@@ -48,7 +46,7 @@ public class MeposePlugin extends Plugin {
 		super();
         System.out.println("DEBUG:MeposePlugin.MeposePlugin(...):enter.");
 		plugin = this;
-        Log4JPlugin.init();
+//        Log4JPlugin.init();
         putToolsJarOnClasspath();
 	}
 

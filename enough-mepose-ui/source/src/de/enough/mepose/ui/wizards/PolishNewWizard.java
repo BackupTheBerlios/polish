@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +31,7 @@ import de.enough.polish.Device;
 
 public class PolishNewWizard extends Wizard implements INewWizard {
     
-    public static Logger logger = Logger.getLogger(PolishNewWizard.class);
+//    public static Logger logger = Logger.getLogger(PolishNewWizard.class);
     
     private NewProjectModel newProjectModel;
     private PathsPage pathsPage;
@@ -222,7 +221,7 @@ public class PolishNewWizard extends Wizard implements INewWizard {
             buildXmlFile = project.getFile("build.xml");
             buildXmlFile.create(inputStream,true,null);
         } catch (CoreException exception) {
-            System.out.println("DEBUG:PolishNewWizard.createBuildXML(...):could not create file:"+exception);
+//            System.out.println("DEBUG:PolishNewWizard.createBuildXML(...):could not create file:"+exception);
             return;
         }
         IPath path = buildXmlFile.getRawLocation();

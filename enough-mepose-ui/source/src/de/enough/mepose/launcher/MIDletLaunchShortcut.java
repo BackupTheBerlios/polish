@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
@@ -66,7 +65,7 @@ public class MIDletLaunchShortcut
 
   public void launch(IEditorPart editor, String mode)
   {
-    IEditorInput input = editor.getEditorInput();
+//    IEditorInput input = editor.getEditorInput();
     // Look for Midlets in the asociated project.
     // showError if it is not present.
   }

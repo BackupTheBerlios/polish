@@ -1,6 +1,5 @@
 package de.enough.mepose.ui.wizards;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -35,7 +34,7 @@ import de.enough.utils.StatusListener;
 public class ProjectPage extends WizardPage{
 
     public static final int OK = 10;
-    public static Logger logger = Logger.getLogger(ProjectPage.class);
+//    public static Logger logger = Logger.getLogger(ProjectPage.class);
     
     NewProjectModel newProjectModel;
     private Text newProjectNameText;
@@ -78,7 +77,7 @@ public class ProjectPage extends WizardPage{
 	public ProjectPage(NewProjectModel newProjectOptions) {
 		super("wizardPage");
         if(newProjectOptions == null){
-            logger.error("Parameter 'newProjectOptions' is null contrary to API.");
+//            logger.error("Parameter 'newProjectOptions' is null contrary to API.");
             return;
         }
         this.newProjectModel = newProjectOptions;

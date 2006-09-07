@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -283,9 +282,9 @@ public class MIDletLaunchConfigurationDelegate extends
 //                System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):terminating antProcess.");
 //                antProcess.terminate();
 //            }
-            System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):launch finished.");
+//            System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):launch finished.");
         } finally {
-            System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):firing build finish");
+//            System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):firing build finish");
             antProject.fireBuildFinished(this.buildRunnable.getErrorThrowable());
             disconnectDebugTargets(launch);
             terminateProcesses(launch);

@@ -171,7 +171,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void setTargetDevices(Device[] targetDevices) {
         if(targetDevices == null){
-            logger.error("Parameter 'targetDevices' is null contrary to API.");
+//            logger.error("Parameter 'targetDevices' is null contrary to API.");
             return;
         }
         this.targetDevices.clear();
@@ -188,7 +188,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void setTargetConfiguration(Configuration[] targetConfigurations) {
         if(targetConfigurations == null){
-            logger.error("Parameter 'targetConfigurations' is null contrary to API.");
+//            logger.error("Parameter 'targetConfigurations' is null contrary to API.");
             return;
         }
         this.targetConfigurations.clear();
@@ -205,7 +205,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void setTargetPlatforms(Platform[] targetPlatforms) {
         if(targetPlatforms == null){
-            logger.error("Parameter 'targetPlatforms' is null contrary to API.");
+//            logger.error("Parameter 'targetPlatforms' is null contrary to API.");
             return;
         }
         this.targetPlatforms.clear();
@@ -222,7 +222,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void addTargetPlatform(Platform newPlatform) {
         if(newPlatform == null){
-            logger.error("Parameter 'newPlatform' is null contrary to API.");
+//            logger.error("Parameter 'newPlatform' is null contrary to API.");
             return;
         }
         this.targetPlatforms.add(newPlatform);
@@ -230,7 +230,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void removeTargetPlatform(Platform deletedPlatform) {
         if(deletedPlatform == null){
-            logger.error("Parameter 'deletedPlatform' is null contrary to API.");
+//            logger.error("Parameter 'deletedPlatform' is null contrary to API.");
             return;
         }
         this.targetPlatforms.remove(deletedPlatform);
@@ -238,7 +238,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void addTargetConfiguration(Configuration newConfiguration) {
         if(newConfiguration == null) {
-            logger.error("Parameter 'newConfiguration' is null contrary to API.");
+//            logger.error("Parameter 'newConfiguration' is null contrary to API.");
             return;
         }
         this.targetConfigurations.add(newConfiguration);
@@ -246,7 +246,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void removeTargetConfiguration(Configuration deletedConfiguration) {
         if(deletedConfiguration == null){
-            logger.error("Parameter 'deletedConfiguration' is null contrary to API.");
+//            logger.error("Parameter 'deletedConfiguration' is null contrary to API.");
             return;
         }
         this.targetConfigurations.remove(deletedConfiguration);
@@ -254,7 +254,7 @@ public class NewProjectModel extends PropertyModel{
     
     public void addTargetDevice(Device newDevice) {
         if(newDevice == null){
-            logger.error("Parameter 'newDevice' is null contrary to API.");
+//            logger.error("Parameter 'newDevice' is null contrary to API.");
             return;
         }
         this.targetDevices.add(newDevice);
@@ -262,7 +262,7 @@ public class NewProjectModel extends PropertyModel{
 
     public void removeTargetDevice(Device deletedDevice) {
         if(deletedDevice == null){
-            logger.error("Parameter 'deletedDevice' is null contrary to API.");
+//            logger.error("Parameter 'deletedDevice' is null contrary to API.");
             return;
         }
         this.targetDevices.remove(deletedDevice);

@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildLogger;
 import org.apache.tools.ant.DefaultLogger;
 import org.eclipse.core.runtime.IStatus;
@@ -40,7 +39,7 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 
 //    private MeposeModel currentModel;
     
-    public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
+//    public static Logger logger = Logger.getLogger(MeposeUIPlugin.class);
 	
     public static final String ID = "de.enough.mepose.ui";
     
@@ -141,7 +140,7 @@ public class MeposeUIPlugin extends AbstractUIPlugin {
 
     public ImageDescriptor getImage(String imageKey) {
         if(imageKey == null){
-            logger.error("Parameter 'imageKey' is null contrary to API.");
+//            logger.error("Parameter 'imageKey' is null contrary to API.");
             return null;
         }
         return getImageRegistry().getDescriptor(imageKey);

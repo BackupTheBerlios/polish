@@ -19,7 +19,7 @@ public class MIDletSourcePathComputer
 	public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration,
 													  IProgressMonitor monitor) throws CoreException{
     
-        System.out.println("DEBUG:MIDletSourcePathComputer.computeSourceContainers(...):enter.");
+//        System.out.println("DEBUG:MIDletSourcePathComputer.computeSourceContainers(...):enter.");
     
         return super.computeSourceContainers(configuration,monitor);
         

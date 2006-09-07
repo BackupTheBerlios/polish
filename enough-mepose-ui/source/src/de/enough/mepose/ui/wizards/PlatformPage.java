@@ -34,7 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -226,7 +225,7 @@ public class PlatformPage extends WizardPage {
         }
     }
     
-    public static Logger logger = Logger.getLogger(PlatformPage.class);
+//    public static Logger logger = Logger.getLogger(PlatformPage.class);
     private DeviceTree dTree;
     private Label descriptionLabel;
     private DeviceSelectionManager deviceSelectionManager;
@@ -323,7 +322,7 @@ public class PlatformPage extends WizardPage {
 
     private void fillConfigurationTree(DeviceDatabase deviceDatabase) {
         if(deviceDatabase == null){
-            logger.error("Parameter 'deviceDatabase' is null contrary to API.");
+//            logger.error("Parameter 'deviceDatabase' is null contrary to API.");
             return;
         }
         
@@ -422,7 +421,7 @@ public class PlatformPage extends WizardPage {
     
     protected void setDeviceDescription(String description) {
         if(description == null){
-            logger.error("Parameter 'description' is null contrary to API.");
+//            logger.error("Parameter 'description' is null contrary to API.");
             return;
         }
         this.descriptionLabel.setText(description);

@@ -31,8 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 /**
  * This class is a generic model to associate a property (a string at the moment)
  * to a value. It maintains the following:
@@ -49,7 +47,7 @@ import org.apache.log4j.Logger;
  */
 public class PropertyModel {
 
-    public static Logger logger = Logger.getLogger(PropertyModel.class);
+//    public static Logger logger = Logger.getLogger(PropertyModel.class);
     
     private Map propertyToValue;
     private Map propertyToDefaultValue;
@@ -211,7 +209,7 @@ public class PropertyModel {
     
     public void setPropertyStatus(String property, Status status) {
         if(property == null || status == null){
-            logger.error("Parameter 'property' or 'status' is null contrary to API.");
+//            logger.error("Parameter 'property' or 'status' is null contrary to API.");
             return;
         }
         this.propertyToValue.put(property,status);
@@ -246,7 +244,7 @@ public class PropertyModel {
 
     public Object getPropertyDefaultValue(String property) {
         if(property == null){
-            logger.error("Parameter 'property' is null contrary to API.");
+//            logger.error("Parameter 'property' is null contrary to API.");
             return null;
         }
         return this.propertyToDefaultValue.get(property);
@@ -254,7 +252,7 @@ public class PropertyModel {
     
     public void setPropertyDefaultValue(String property,Object defaultValue) {
         if(property == null){
-            logger.error("Parameter 'property' is null contrary to API.");
+//            logger.error("Parameter 'property' is null contrary to API.");
             return;
         }
         this.propertyToDefaultValue.put(property,defaultValue);
@@ -266,7 +264,7 @@ public class PropertyModel {
     
     public void setModelStatus(Status status) {
         if(status == null){
-            logger.error("Parameter 'status' is null contrary to API.");
+//            logger.error("Parameter 'status' is null contrary to API.");
             return;
         }
         this.modelStatus = status;

@@ -53,10 +53,10 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
 
     protected void doRun(IAction action,IProgressMonitor monitor) {
         monitor.beginTask("Toggling Polish Nature",IProgressMonitor.UNKNOWN);
-        System.out.println("TogglePolishNatureAction.run(...).enter.");
+//        System.out.println("TogglePolishNatureAction.run(...).enter.");
         if(this.selectedProject != null){
             if( ! this.selectedProject.isOpen()){
-                System.out.println("ERROR:TogglePolishNatureAction.run(...):project not open.");
+//                System.out.println("ERROR:TogglePolishNatureAction.run(...):project not open.");
                 return;
             }
             try {
@@ -95,7 +95,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
      */
     public void selectionChanged(IAction action, ISelection selection) {
         if( ! (selection instanceof IStructuredSelection)){
-            System.out.println("ERROR:TogglePolishNatureAction.selectionChanged(...):Parameter selection has wrong type.selection:class:"+selection.getClass());
+//            System.out.println("ERROR:TogglePolishNatureAction.selectionChanged(...):Parameter selection has wrong type.selection:class:"+selection.getClass());
             return;
         }
         IStructuredSelection structuredSelection = (IStructuredSelection) selection; // What a stupid cast. Who comes up with a malformed interface like ISelection??
@@ -109,7 +109,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
             }
         }
         catch(Exception exception){
-            System.out.println("ERROR:TogglePolishNatureAction.selectionChanged(...):Parameter selection is not an IProject.selection:class:"+exception);
+//            System.out.println("ERROR:TogglePolishNatureAction.selectionChanged(...):Parameter selection is not an IProject.selection:class:"+exception);
             this.selectedProject = null;
         }
        
@@ -117,7 +117,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
     public void addPolishNatureToProject(IProject project,IProgressMonitor monitor) throws CoreException {
         
         if(project.hasNature(MeposeConstants.ID_NATURE)){
-            System.out.println("ERROR:PolishEditorPlugin.addPolishNatureToProject(...):Project has Polish nature already.");
+//            System.out.println("ERROR:PolishEditorPlugin.addPolishNatureToProject(...):Project has Polish nature already.");
             return;
         }
         IProjectDescription description = project.getDescription();
@@ -132,7 +132,7 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
     public void removePolishNatureFromProject(IProject project) throws CoreException{
         
         if( ! project.hasNature(MeposeConstants.ID_NATURE)){
-            System.out.println("ERROR:PolishEditorPlugin.removePolishNatureFromProject(...):Project has no Polish nature.");
+//            System.out.println("ERROR:PolishEditorPlugin.removePolishNatureFromProject(...):Project has no Polish nature.");
             return;
         }
         

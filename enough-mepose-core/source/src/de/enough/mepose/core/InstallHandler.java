@@ -81,7 +81,7 @@ public class InstallHandler implements IInstallHandler {
     public void nonPluginDataDownloaded(INonPluginEntry[] nonPluginData,
                                         IVerificationListener listener)
                                                                        throws CoreException {
-        System.out.println("DEBUG:InstallHandler.nonPluginDataDownloaded(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.nonPluginDataDownloaded(...):enter.");
         throw new CoreException(null);
     }
 
@@ -90,7 +90,7 @@ public class InstallHandler implements IInstallHandler {
      */
     public void completeInstall(IFeatureContentConsumer consumer)
                                                                  throws CoreException {
-        System.out.println("DEBUG:InstallHandler.completeInstall(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.completeInstall(...):enter.");
         throw new CoreException(null);
     }
 
@@ -106,7 +106,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#configureInitiated()
      */
     public void configureInitiated() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.configureInitiated(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.configureInitiated(...):enter.");
         throw new CoreException(null);
     }
 
@@ -114,7 +114,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#completeConfigure()
      */
     public void completeConfigure() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.completeConfigure(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.completeConfigure(...):enter.");
         throw new CoreException(null);
     }
 
@@ -122,7 +122,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#configureCompleted(boolean)
      */
     public void configureCompleted(boolean success) throws CoreException {
-        System.out.println("DEBUG:InstallHandler.configureCompleted(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.configureCompleted(...):enter.");
         PolishInstaller polishInstaller = new PolishInstaller();
         polishInstaller.start();
         throw new CoreException(null);
@@ -132,7 +132,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#unconfigureInitiated()
      */
     public void unconfigureInitiated() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.unconfigureInitiated(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.unconfigureInitiated(...):enter.");
         throw new CoreException(null);
     }
 
@@ -140,7 +140,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#completeUnconfigure()
      */
     public void completeUnconfigure() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.completeUnconfigure(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.completeUnconfigure(...):enter.");
         throw new CoreException(null);
     }
 
@@ -148,7 +148,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#unconfigureCompleted(boolean)
      */
     public void unconfigureCompleted(boolean success) throws CoreException {
-        System.out.println("DEBUG:InstallHandler.unconfigureCompleted(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.unconfigureCompleted(...):enter.");
         throw new CoreException(null);
     }
 
@@ -156,7 +156,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#uninstallInitiated()
      */
     public void uninstallInitiated() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.uninstallInitiated(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.uninstallInitiated(...):enter.");
         throw new CoreException(null);
     }
 
@@ -164,7 +164,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#completeUninstall()
      */
     public void completeUninstall() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.completeUninstall(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.completeUninstall(...):enter.");
         throw new CoreException(null);
     }
 
@@ -172,7 +172,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#uninstallCompleted(boolean)
      */
     public void uninstallCompleted(boolean success) throws CoreException {
-        System.out.println("DEBUG:InstallHandler.uninstallCompleted(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.uninstallCompleted(...):enter.");
         throw new CoreException(null);
     }
 

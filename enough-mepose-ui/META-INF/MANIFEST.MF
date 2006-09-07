@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mepose UI
 Bundle-SymbolicName: de.enough.mepose.ui; singleton:=true
-Bundle-Version: 0.7.1
+Bundle-Version: 0.7.3
 Bundle-Activator: de.enough.mepose.ui.MeposeUIPlugin
 Bundle-Localization: plugin
 Require-Bundle: de.enough.mepose.core,
@@ -22,8 +22,7 @@ Require-Bundle: de.enough.mepose.core,
  org.eclipse.ui.forms,
  org.eclipse.ant.core,
  org.eclipse.jface.text,
- org.eclipse.ant.ui,
- de.enough.log4j
+ org.eclipse.ant.ui
 Eclipse-AutoStart: true
 Export-Package: de.enough.mepose.ui,
  de.enough.mepose.ui.preferencePages,
