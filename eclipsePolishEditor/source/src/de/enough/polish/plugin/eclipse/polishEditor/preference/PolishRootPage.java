@@ -56,7 +56,7 @@ public class PolishRootPage extends FieldEditorPreferencePage implements IWorkbe
     
 
     protected void createFieldEditors() {
-        System.out.println("PolishRootPage.createFieldEditors(...):enter.");
+//        System.out.println("PolishRootPage.createFieldEditors(...):enter.");
         FieldEditor colorDirectiveEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_DIRECTIVE,"Directive Color",getFieldEditorParent());
         FieldEditor colorDefaultEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_DEFAULT,"Default Color",getFieldEditorParent());
         //FieldEditor colorVariableEditor = new ColorFieldEditor(IPolishConstants.POLISH_COLOR_VARIABLE,"Variable Color",getFieldEditorParent());

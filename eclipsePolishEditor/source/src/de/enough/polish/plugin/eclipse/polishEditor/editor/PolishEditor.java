@@ -26,7 +26,6 @@
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;

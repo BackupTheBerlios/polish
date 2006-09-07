@@ -54,7 +54,7 @@ public class PolishDocumentUtils {
             lineAsString = document.get(lineAsRegion.getOffset(),lineAsRegion.getLength());
         }
         catch (BadLocationException exception) {
-            System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong currentLine."+exception);
+//            System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong currentLine."+exception);
             return true;
         }
         return lineAsString.trim().startsWith("//#");
@@ -78,7 +78,7 @@ public class PolishDocumentUtils {
             offsetOfLine = document.getLineOffset(currentLine);
         }
         catch (BadLocationException exception) {
-            System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong currentLine."+exception);
+//            System.out.println("ERROR:PolishDocumentUtils.getDirectiveFromLine(...):wrong currentLine."+exception);
 	        return null;
         }
         
@@ -232,7 +232,7 @@ public class PolishDocumentUtils {
         try {
             result = document.get(position.getOffset(),position.getLength());
         } catch (BadLocationException exception) {
-            System.out.println("ERROR:PolishDocumentUtils.makeStringFromPosition(...):cant extract string from position:"+exception);
+//            System.out.println("ERROR:PolishDocumentUtils.makeStringFromPosition(...):cant extract string from position:"+exception);
             result = "";
         }
         return result;

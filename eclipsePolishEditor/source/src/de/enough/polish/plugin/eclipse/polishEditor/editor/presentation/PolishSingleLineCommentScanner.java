@@ -54,7 +54,7 @@ public class PolishSingleLineCommentScanner extends AbstractJavaScanner {
     public class PropertyChangeListener implements IPropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent event) {
-            System.out.println("polishScanner.PropertyChangeListener.propertyChange:"+event.getProperty()+".old:"+event.getOldValue().getClass()+".new:"+event.getNewValue().getClass());
+//            System.out.println("polishScanner.PropertyChangeListener.propertyChange:"+event.getProperty()+".old:"+event.getOldValue().getClass()+".new:"+event.getNewValue().getClass());
             //TODO: Take care of the token cache.
         }
 

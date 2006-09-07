@@ -56,12 +56,12 @@ public abstract class AbstractOccurrenceAnnotationMarker implements IOccurrenceA
 
         public void configure(Object objectToConfigure) {
             if( ! (objectToConfigure instanceof AbstractOccurrenceAnnotationMarker)) {
-                System.out.println("AbstractOccurrenceAnnotationMarker.DefaultConfiguration.configure(...):parameter is not of type AbstractOccurrenceAnnotationMarker.");
+//                System.out.println("AbstractOccurrenceAnnotationMarker.DefaultConfiguration.configure(...):parameter is not of type AbstractOccurrenceAnnotationMarker.");
                 return;
             }
             AbstractOccurrenceAnnotationMarker occurrenceAnnotationMarker = (AbstractOccurrenceAnnotationMarker)objectToConfigure;
             if( ! isConfigured()) {
-                System.out.println("AbstractOccurrenceAnnotationMarker.DefaultConfiguration.configure(...):can not configure that. this is not configured neither.");
+//                System.out.println("AbstractOccurrenceAnnotationMarker.DefaultConfiguration.configure(...):can not configure that. this is not configured neither.");
                 return;
             }
             

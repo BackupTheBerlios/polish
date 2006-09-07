@@ -109,7 +109,7 @@ public class PolishSourceViewerConfiguration extends JavaSourceViewerConfigurati
     }
     
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-        System.out.println("DEBUG:PolishSourceViewerConfiguration.getAutoEditStrategies(...):enter.");
+//        System.out.println("DEBUG:PolishSourceViewerConfiguration.getAutoEditStrategies(...):enter.");
         String partitioning= getConfiguredDocumentPartitioning(sourceViewer);
         if (IJavaPartitions.JAVA_SINGLE_LINE_COMMENT.equals(contentType))
             return new IAutoEditStrategy[] {new PolishIndentStrategy()};
