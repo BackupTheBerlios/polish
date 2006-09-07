@@ -209,13 +209,16 @@ implements Runnable, AccessibleCanvas
 		try {
 			this.nextScreen = this.initializer.initApp();
 			//#if !polish.classes.SplashView:defined
-				if (this.readyMessage == null) {
+				if (this.readyMessage == null && this.nextScreen != null) {
 					this.display.setCurrent( this.nextScreen );
 					return;
 				}
 			//#endif
 			this.isInitialized = true;
 			repaint();
+			if (this.nextScreen == null) {
+				return;
+			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Unable to call initApp()" + e );
