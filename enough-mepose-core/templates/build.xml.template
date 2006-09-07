@@ -125,6 +125,9 @@
 		<deviceRequirements if="test">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
+		<deviceRequirements if="NOT test AND device:defined">
+			<requirement name="Identifier" value="${device}" />
+		</deviceRequirements>
 		<deviceRequirements unless="test">
 			<or>
 			#foreach ($device in $deviceList)
