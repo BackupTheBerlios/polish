@@ -56,7 +56,7 @@ public class PolishEditField extends EditField {
         }
         
         public void paint( net.rim.device.api.ui.Graphics g ) {
-                if (this.isFocused ) { // && !StyleSheet.currentScreen.isMenuOpened()) {
+                if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened()) {
                       super.paint( g );
               }
         }

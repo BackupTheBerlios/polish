@@ -1195,21 +1195,21 @@ extends Displayable
                 if (nativeFocusedItem instanceof PolishEditField && ((PolishEditField)nativeFocusedItem).processKeyEvents) {
                 	Object o = this;
                      if ( o instanceof Screen ) {
-                                Screen screen = ((Screen)o);
-                                Item item = screen.getCurrentItem();
-                                if (item instanceof TextField ) {
-                                    //System.out.println("TextField in focus, menu open="  + screen.isMenuOpened() );
-                                    if (!screen.isMenuOpened()
-                                        && keyCode != KEY_BB_UP
-                                        && keyCode != KEY_BB_DOWN
-                                        && keyCode != KEY_BB_LEFT
-                                        && keyCode != KEY_BB_RIGHT) {
-                                    		//#debug
-                                            System.out.println("ignoring key for current textfield.");
-                                            return true;
-                                    }
-                                }
+                        Screen screen = ((Screen)o);
+                        Item item = screen.getCurrentItem();
+                        if (item instanceof TextField ) {
+                            //System.out.println("TextField in focus, menu open="  + screen.isMenuOpened() );
+                            if (!screen.isMenuOpened()
+                                && keyCode != KEY_BB_UP
+                                && keyCode != KEY_BB_DOWN
+                                && keyCode != KEY_BB_LEFT
+                                && keyCode != KEY_BB_RIGHT) {
+                            		//#debug
+                                    System.out.println("ignoring key for current textfield.");
+                                    return false;
+                            }
                         }
+                     }
                   }
 
                 switch ( Keypad.map( keyCode, status ) ) {
@@ -1227,9 +1227,9 @@ extends Displayable
                 keyPressed( keyCode );
     			Object o = this;
                 if ( o instanceof Screen ) {
-                        return ((Screen)o).keyPressedProcessed;
+                	return ((Screen)o).keyPressedProcessed;
                 } else { 
-                        return true;
+                	return true;
                 } 
         }
 

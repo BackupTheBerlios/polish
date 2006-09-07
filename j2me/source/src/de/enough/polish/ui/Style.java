@@ -42,10 +42,6 @@ import javax.microedition.lcdui.Image;
  * </pre>
  */
 public class Style
-//#if (polish.useBeforeStyle || polish.useAfterStyle) && polish.images.backgroundLoad
-	//#define tmp.imageConsumer
-	implements ImageConsumer
-//#endif
 {
 	//#if polish.cldc1.1
 		//# public final static Boolean TRUE = Boolean.TRUE;
@@ -61,46 +57,7 @@ public class Style
 		 */
 		public final String name;
 	//#endif
-	//#ifdef polish.useBeforeStyle
-		//#ifdef tmp.imageConsumer
-			private String beforeUrl;
-		//#endif
-		/**
-		 * The width of the before-element. This value can only be
-		 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
-		 */
-		public int beforeWidth;
-		/**
-		 * The height of the before-element. This value can only be
-		 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
-		 */
-		public int beforeHeight;
-		/**
-		 * The before-element. This value can only be
-		 * accessed when the preprocessing-symbol polish.useBeforeStyle is defined.
-		 */
-		public Image before;
-	//#endif
-	//#ifdef polish.useAfterStyle
-		//#ifdef tmp.imageConsumer
-			private String afterUrl;
-		//#endif
-		/**
-		 * The width of the after-element. This value can only be
-		 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
-		 */
-		public int afterWidth;
-		/**
-		 * The height of the after-element. This value can only be
-		 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
-		 */
-		public int afterHeight;
-		/**
-		 * The after-element. This value can only be
-		 * accessed when the preprocessing-symbol polish.useAfterStyle is defined.
-		 */
-		public Image after;
-	//#endif
+
 	public final Background background;
 	public final Border border;
 	public final Font font;
@@ -158,12 +115,6 @@ public class Style
 			int layout,
 			int fontColor, Font font,  
 			Background background, Border border 
-			//#ifdef polish.useBeforeStyle
-			, String beforeUrl
-			//#endif
-			//#ifdef polish.useAfterStyle
-			, String afterUrl
-			//#endif
 			//#ifdef polish.useDynamicStyles
 			, String name
 			//#endif
@@ -176,12 +127,6 @@ public class Style
 				layout,
 				fontColor, null, font,
 				background, border
-				//#ifdef polish.useBeforeStyle
-					, beforeUrl
-				//#endif
-				//#ifdef polish.useAfterStyle
-					, afterUrl
-				//#endif
 				//#ifdef polish.useDynamicStyles
 					, name
 				//#endif
@@ -223,12 +168,6 @@ public class Style
 			int layout,
 			int fontColor, Color fontColorObj, Font font,  
 			Background background, Border border 
-			//#ifdef polish.useBeforeStyle
-			, String beforeUrl
-			//#endif
-			//#ifdef polish.useAfterStyle
-			, String afterUrl
-			//#endif
 			//#ifdef polish.useDynamicStyles
 			, String name
 			//#endif
@@ -252,40 +191,7 @@ public class Style
 		this.font = font;
 		this.background = background;
 		this.border = border;
-		//#ifdef polish.useBeforeStyle
-			if (beforeUrl != null) {
-				try {
-					//#ifdef tmp.imageConsumer
-						this.beforeUrl = beforeUrl;
-					//#endif
-					this.before = StyleSheet.getImage(beforeUrl, this, true);
-				} catch (Exception e) {
-					//#debug error
-					System.out.println("unable to load before-image [" + beforeUrl + "]. " + e );
-				}
-				if (this.before != null) {
-					this.beforeWidth = this.before.getWidth();
-					this.beforeHeight = this.before.getHeight();
-				}
-			}
-		//#endif
-		//#ifdef polish.useAfterStyle
-			if (afterUrl != null) {
-				try {
-					//#ifdef tmp.imageConsumer
-						this.afterUrl = afterUrl;
-					//#endif
-					this.after = StyleSheet.getImage(afterUrl, this, true);
-				} catch (Exception e) {
-					//#debug error
-					System.out.println("unable to load after-image [" + afterUrl + "]. " + e );
-				}
-				if (this.after != null) {
-					this.afterWidth = this.after.getWidth();
-					this.afterHeight = this.after.getHeight();
-				}
-			}
-		//#endif
+
 		//#ifdef polish.useDynamicStyles
 		this.name = name;
 		//#endif
@@ -453,28 +359,6 @@ public class Style
 		return null;
 	}
 	
-	
-	//#ifdef tmp.imageConsumer
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)
-	 */
-	public void setImage(String name, Image image) {
-		//#ifdef polish.useBeforeStyle
-		if (name.equals(this.beforeUrl)) {
-			this.before = image;
-			this.beforeHeight = image.getHeight();
-			this.beforeWidth = image.getWidth();
-		}
-		//#endif
-		//#ifdef polish.useAfterStyle
-		if (name.equals(this.afterUrl)) {
-			this.after = image;
-			this.afterHeight = image.getHeight();
-			this.afterWidth = image.getWidth();
-		}
-		//#endif
-	}
-	//#endif
 	
 	/**
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this style.

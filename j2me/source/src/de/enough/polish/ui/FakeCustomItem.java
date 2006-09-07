@@ -368,13 +368,16 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected int internalHeight;
 	public boolean isFocused;
 	
-	//#ifdef polish.useBeforeStyle
+
+	//#ifdef polish.css.before
+		private String beforeUrl;
 		private int beforeWidth;
 		private int beforeHeight;
 		private Image beforeImage;
 	//#endif
 
-	//#ifdef polish.useAfterStyle
+	//#ifdef polish.css.after
+		private String afterUrl;
 		private int afterWidth;
 		private int afterHeight;
 		private Image afterImage;
@@ -653,26 +656,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		this.marginRight = style.marginRight;
 		this.marginTop = style.marginTop;
 		this.marginBottom = style.marginBottom;
-		//#ifdef polish.useBeforeStyle
-			if (style.before != null) {
-				this.beforeWidth = style.beforeWidth + this.paddingHorizontal;
-				this.beforeHeight = style.beforeHeight;
-			} else {
-				this.beforeWidth = 0;
-				this.beforeHeight = 0;
-			}
-			this.beforeImage = style.before;
-		//#endif
-		//#ifdef polish.useAfterStyle
-			if (style.after != null) {
-				this.afterWidth = style.afterWidth + this.paddingHorizontal;
-				this.afterHeight = style.afterHeight;
-			} else {
-				this.afterWidth = 0;
-				this.afterHeight = 0;
-			}
-			this.afterImage = style.after;
-		//#endif
 		//#ifdef polish.css.label-style
 			Style labStyle = (Style) style.getObjectProperty("label-style");
 			if (labStyle != null) {

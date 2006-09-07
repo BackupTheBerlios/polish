@@ -134,7 +134,7 @@ public class Container extends Item {
 			if (focStyle == null) {
 				focStyle = new Style( 1, 1, 1, 1,
 						0, 0, 0, 0, 0, 0,
-						0, 0x0, null, null, null, null, null, null, null, null
+						0, 0x0, null, null, null, null, null, null
 				);
 			}
 		//#endif
