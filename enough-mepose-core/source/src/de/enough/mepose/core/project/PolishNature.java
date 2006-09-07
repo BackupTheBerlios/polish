@@ -34,7 +34,7 @@ public class PolishNature implements IProjectNature
     
     
     public void configure() throws CoreException {
-        System.out.println("DEBUG:PolishNature.configure(...):enter.");
+//        System.out.println("DEBUG:PolishNature.configure(...):enter.");
         
 //        if(MeposePlugin.getDefault().getMeposeModelManager().getModel(this.project) != null) {
             // Everything is fine. We have a model for this project and do not need to configure it.
@@ -61,7 +61,7 @@ public class PolishNature implements IProjectNature
     }
 
     public void deconfigure() {
-        System.out.println("PolishNature.deconfigure():enter.");
+//        System.out.println("PolishNature.deconfigure():enter.");
         MeposePlugin.getDefault().getMeposeModelManager().removeModel(this.project);
         
 //        IProjectDescription description = this.project.getDescription();

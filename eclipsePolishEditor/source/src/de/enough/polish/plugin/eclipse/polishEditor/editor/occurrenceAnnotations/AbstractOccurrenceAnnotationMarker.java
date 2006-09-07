@@ -141,7 +141,7 @@ public abstract class AbstractOccurrenceAnnotationMarker implements IOccurrenceA
     
     public  void updateAnnotations(ITextSelection selection) {
         if(! isConfigured()) {
-            System.out.println("AbstractOccurrencesMarker.ableToAnnotate():this is not configured.");
+//            System.out.println("AbstractOccurrencesMarker.ableToAnnotate():this is not configured.");
             return;
         }
     }
@@ -152,7 +152,7 @@ public abstract class AbstractOccurrenceAnnotationMarker implements IOccurrenceA
     
     public void removeAnnotations() {
         if( ! isConfigured()) {
-            System.out.println("AbstractOccurrencesMarker.removeAnnotations():this is not configured.");
+//            System.out.println("AbstractOccurrencesMarker.removeAnnotations():this is not configured.");
             return;
         }
         synchronized (getLockObjectForAnnotationModel()) {

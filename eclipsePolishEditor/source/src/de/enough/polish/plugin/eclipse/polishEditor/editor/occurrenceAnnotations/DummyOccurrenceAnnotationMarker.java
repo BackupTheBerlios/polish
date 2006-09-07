@@ -48,11 +48,11 @@ public class DummyOccurrenceAnnotationMarker extends
         return true;
     }
     public void configure(IConfiguration configuration) {
-        System.out.println("DummyOccurrenceAnnotationMarker.configure(...):enter.");
+//        System.out.println("DummyOccurrenceAnnotationMarker.configure(...):enter.");
         super.configure(configuration);
     }
     public void updateAnnotations(ITextSelection selection) {
-        System.out.println("DummyOccurrenceAnnotationMarker.updateAnnotations(...):enter.");
+//        System.out.println("DummyOccurrenceAnnotationMarker.updateAnnotations(...):enter.");
         super.updateAnnotations(selection);
     }
 }

@@ -54,7 +54,7 @@ public class InstallHandler implements IInstallHandler {
     public void initialize(int type, IFeature feature,
                            IInstallHandlerEntry entry, InstallMonitor monitor)
                                                                               throws CoreException {
-        System.out.println("DEBUG:InstallHandler.initialize(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.initialize(...):enter.");
         throw new CoreException(null);
     }
 
@@ -62,7 +62,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#installInitiated()
      */
     public void installInitiated() throws CoreException {
-        System.out.println("DEBUG:InstallHandler.installInitiated(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.installInitiated(...):enter.");
         throw new CoreException(null);
     }
 
@@ -70,7 +70,7 @@ public class InstallHandler implements IInstallHandler {
      * @see org.eclipse.update.core.IInstallHandler#pluginsDownloaded(org.eclipse.update.core.IPluginEntry[])
      */
     public void pluginsDownloaded(IPluginEntry[] plugins) throws CoreException {
-        System.out.println("DEBUG:InstallHandler.pluginsDownloaded(...):enter.");
+//        System.out.println("DEBUG:InstallHandler.pluginsDownloaded(...):enter.");
         throw new CoreException(null);
 
     }

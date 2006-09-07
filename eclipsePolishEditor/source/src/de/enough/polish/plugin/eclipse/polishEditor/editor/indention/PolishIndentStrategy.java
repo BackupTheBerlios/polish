@@ -44,7 +44,7 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         
 //      Did the User pushed return?
         if (documentCommand.length == 0 && documentCommand.text != null && isLineDelimiter(document,documentCommand.text)) {
-            System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):return pressed.");
+//            System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):return pressed.");
             
             Position directiveAsPosition = null;
             String directiveAsString;
@@ -64,15 +64,15 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             
             try {
                 if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.IF_DIRECTIVES)) {
-                    System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):if directive found..");
+//                    System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):if directive found..");
                     indentAtIfDirectiveAfterNewLine(document, documentCommand);
                 }
                 else if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.ELSE_DIRECTIVES)) {
-                    System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):else directive found..");
+//                    System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):else directive found..");
                     indentAtElseDirectiveAfterNewLine(document, documentCommand);
                 }
                 else if(PolishDocumentUtils.isDirectiveInCategory(directiveAsString,IPolishConstants.ENDIF_DIRECTIVES)) {
-                    System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):endif directive found..");
+//                    System.out.println("DEBUG:PolishIndentStrategy.customizeDocumentCommand(...):endif directive found..");
                     indentAtEndifDirectiveAfterNewLine(document, documentCommand);
                 }
                 else {
@@ -88,7 +88,7 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	private void indentAtIfDirectiveAfterNewLine(IDocument document, DocumentCommand command) throws BadLocationException {
 		
 		if (command.offset == -1 || document.getLength() == 0) {
-		    System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):Parameter is invalid:command.offset:"+command.offset+".document.getLength():"+document.getLength());
+//		    System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):Parameter is invalid:command.offset:"+command.offset+".document.getLength():"+document.getLength());
 			return;
 		}
         String indentAsString = getCurrentIndent(document, document.getLineOfOffset(command.offset));
@@ -108,7 +108,7 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	private void indentAtElseDirectiveAfterNewLine(IDocument document, DocumentCommand command) {
 		
 		if (command.offset == -1 || document.getLength() == 0) {
-		    System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):Parameter is invalid:command.offset:"+command.offset+".document.getLength():"+document.getLength());
+//		    System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):Parameter is invalid:command.offset:"+command.offset+".document.getLength():"+document.getLength());
 			return;
 		}
 		 try { 
@@ -117,10 +117,10 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             //shift the else directive to the left by one level.
             if(indentAsString.endsWith("\t")) {
                 newIndentAsString = indentAsString.substring(0,indentAsString.length()-1);
-                System.out.println("old indent:"+indentAsString.length()+".new indent:"+newIndentAsString.length());
+//                System.out.println("old indent:"+indentAsString.length()+".new indent:"+newIndentAsString.length());
             }
             else if(indentAsString.endsWith(" ")) {
-                System.out.println("DEBUG:PolishIndentStrategy.indentAtElseDirectiveAfterNewLine(...):chop of whitespace.");
+//                System.out.println("DEBUG:PolishIndentStrategy.indentAtElseDirectiveAfterNewLine(...):chop of whitespace.");
                 newIndentAsString = indentAsString.replaceFirst(" {1,4}$","");
             }
             
@@ -141,7 +141,8 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             
             
 		} catch (BadLocationException exception) {
-            System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):A BadLocationException occurred. An offset could not be retrieved.command.offset:"+command.offset);
+//            System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):A BadLocationException occurred. An offset could not be retrieved.command.offset:"+command.offset);
+            PolishEditorPlugin.log("A BadLocationException occurred. An offset could not be retrieved.command.offset:"+command.offset,exception);
             return;
         }
 	}
@@ -149,7 +150,7 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 	private void indentAtEndifDirectiveAfterNewLine(IDocument document, DocumentCommand command) {
 		
 		if (command.offset == -1 || document.getLength() == 0) {
-		    System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):Parameter is invalid:command.offset:"+command.offset+".document.getLength():"+document.getLength());
+//		    System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):Parameter is invalid:command.offset:"+command.offset+".document.getLength():"+document.getLength());
 			return;
 		}
 		 try { 
@@ -158,10 +159,10 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             //shift the else directive to the left by one level.
             if(indentAsString.endsWith("\t")) {
                 newIndentAsString = indentAsString.substring(0,indentAsString.length()-1);
-                System.out.println("old indent:"+indentAsString.length()+".new indent:"+newIndentAsString.length());
+//                System.out.println("old indent:"+indentAsString.length()+".new indent:"+newIndentAsString.length());
             }
             else if(indentAsString.endsWith(" ")) {
-                System.out.println("DEBUG:PolishIndentStrategy.indentAtElseDirectiveAfterNewLine(...):chop of whitespace.");
+//                System.out.println("DEBUG:PolishIndentStrategy.indentAtElseDirectiveAfterNewLine(...):chop of whitespace.");
                 newIndentAsString = indentAsString.replaceFirst(" {1,4}$","");
             }
             
@@ -183,7 +184,7 @@ public class PolishIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             
             
 		} catch (BadLocationException exception) {
-            System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):A BadLocationException occurred. An offset could not be retrieved.command.offset:"+command.offset);
+//            System.out.println("ERROR:PolishIndentStrategy.indentAtIfDirectiveAfterNewLine(...):A BadLocationException occurred. An offset could not be retrieved.command.offset:"+command.offset);
             return;
         }
 	}

@@ -306,7 +306,7 @@ public class BlockMarker extends AbstractOccurrenceAnnotationMarker {
         List positionsOfCorrespondingBlockElements = new LinkedList();
         
         if(startLineIndex < 0 || startLineIndex > maxLineIndex) {
-            System.out.println("BlockMarker.findOtherPositionsForIf(...):Parameter startLineIndex out of bounds.");
+//            System.out.println("BlockMarker.findOtherPositionsForIf(...):Parameter startLineIndex out of bounds.");
             return positionsOfCorrespondingBlockElements;
         }
         

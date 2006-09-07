@@ -39,7 +39,7 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
          */
         public void partActivated(IWorkbenchPart part) {
             if(part instanceof PolishEditor) {
-                System.out.println("DEBUG:PartFocusListener.partActivated(...):setting the new model");
+//                System.out.println("DEBUG:PartFocusListener.partActivated(...):setting the new model");
                 PolishEditor polishEditor = (PolishEditor)part;
                 polishEditor.getDeviceDropdownChooserContributionItem().setMeposeModel(polishEditor.getMeposeModel());
             }

@@ -37,6 +37,6 @@ package de.enough.mepose.installer;
 public class PolishInstaller {
 
     public void start() {
-        System.out.println("DEBUG:PolishInstaller.start(...):Installer started.");
+//        System.out.println("DEBUG:PolishInstaller.start(...):Installer started.");
     }
 }

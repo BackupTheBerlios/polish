@@ -54,12 +54,12 @@ public class OccurrencesMarkerManager{
         
         public void configure(Object objectToConfigure) {
             if( ! (objectToConfigure instanceof OccurrencesMarkerManager)) {
-                System.out.println("OccurrencesMarkerManager.DefaultConfiguration.configure(...):can not configure that as it is not of type OccurrencesMarkerManager.");
+//                System.out.println("OccurrencesMarkerManager.DefaultConfiguration.configure(...):can not configure that as it is not of type OccurrencesMarkerManager.");
                 return;
             }
             OccurrencesMarkerManager occurrencesMarkerManager = (OccurrencesMarkerManager)objectToConfigure;
             if( ! isConfigured()) {
-                System.out.println("OccurrencesMarkerManager.DefaultConfiguration.configure(...):this is not configured.");
+//                System.out.println("OccurrencesMarkerManager.DefaultConfiguration.configure(...):this is not configured.");
                 return;
             }
             occurrencesMarkerManager.setAnnotationModel(this.annotationModel);
@@ -98,7 +98,7 @@ public class OccurrencesMarkerManager{
     public void updateAnnotations(ITextSelection selection) {
         
         if( ! isConfigured()) {
-            System.out.println("OccurrencesMarkerManager:updateAnnotations(...):this is not configured.");
+//            System.out.println("OccurrencesMarkerManager:updateAnnotations(...):this is not configured.");
             return;
         }
         // TODO: editor.removeAnnotations(...) aufrufen irgendwo. Drauf achten, dass man es  nicht zu oft aufruft.
@@ -127,7 +127,7 @@ public class OccurrencesMarkerManager{
 //  TODO: Rename to removeAnnotationsAndReset().
     public void removeAnnotations() {
         if( ! isConfigured()) {
-            System.out.println("OccurrencesMarkerManager.removeAnnotations(...):this is not configured.");
+//            System.out.println("OccurrencesMarkerManager.removeAnnotations(...):this is not configured.");
             return;
         }
         for(Iterator iterator = this.listOfMarkers.iterator();iterator.hasNext();) {  
@@ -138,7 +138,7 @@ public class OccurrencesMarkerManager{
     
     public void addMarker(IOccurrenceAnnotationMarker occurrenceAnnotationMarker) {
         	if(occurrenceAnnotationMarker == null){
-        	    System.out.println("OccurencesMarkerManager.addMarker(): Parameter is null.");
+//        	    System.out.println("OccurencesMarkerManager.addMarker(): Parameter is null.");
         	    return;
         	}
         	this.listOfMarkers.add(occurrenceAnnotationMarker);
@@ -146,7 +146,7 @@ public class OccurrencesMarkerManager{
     
     public void removeMarker(IOccurrenceAnnotationMarker occurrenceAnnotationMarker) {
     		if(occurrenceAnnotationMarker != null){
-    		    System.out.println("OccurencesMarkerManager.removeMarker(): Parameter is null.");
+//    		    System.out.println("OccurencesMarkerManager.removeMarker(): Parameter is null.");
     		    return;
     		}
     		this.listOfMarkers.remove(occurrenceAnnotationMarker);   		

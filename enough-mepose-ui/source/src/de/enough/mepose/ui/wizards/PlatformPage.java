@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import de.enough.mepose.core.model.DeviceDatabaseException;
 import de.enough.mepose.core.model.MeposeModel;
+import de.enough.mepose.ui.MeposeUIPlugin;
 import de.enough.polish.Device;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
@@ -132,7 +133,7 @@ public class PlatformPage extends WizardPage {
         getContainer().updateButtons();
     }
     
-    private class DescriptionDumper implements SelectionListener{
+    protected class DescriptionDumper implements SelectionListener{
         
         private void setDescription(String description) {
             setDeviceDescription(description);
@@ -304,9 +305,7 @@ public class PlatformPage extends WizardPage {
             exception.printStackTrace();
         }
         if(deviceDatabase == null) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("No deviceDatabase.");
-            }
+            MeposeUIPlugin.log("No device database found.");
             return;
         }
         

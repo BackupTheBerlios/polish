@@ -91,11 +91,11 @@ public class BuildXMLWriter {
             }
             catch( ResourceNotFoundException rnfe )
             {
-                System.out.println("Example : error : cannot find template " + MeposeConstants.ID_TEMPLATE_NAME );
+                MeposePlugin.log("Could not find template file:"+MeposeConstants.ID_TEMPLATE_NAME);
             }
-            catch( ParseErrorException pee )
+            catch( ParseErrorException parseErrorException )
             {
-                System.out.println("Example : Syntax error in template " + MeposeConstants.ID_TEMPLATE_NAME + ":" + pee );
+                MeposePlugin.log("Syntax error in template " + MeposeConstants.ID_TEMPLATE_NAME + ":" + parseErrorException);
             }
 
             if ( template != null)
@@ -106,7 +106,7 @@ public class BuildXMLWriter {
         }
         catch( Exception e )
         {
-            System.out.println(e);
+            MeposePlugin.log("Could not write build.xml file.",e);
         }
     }
 

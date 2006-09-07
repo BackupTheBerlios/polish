@@ -303,7 +303,6 @@ public class PolishEditor extends CompilationUnitEditor {
     private void doInstallOccurrencesFinder() {
         ISourceViewer sourceViewer = getSourceViewer();
         if(sourceViewer == null) {
-//            System.out.println("ERROR:PolishEditor.installOccurrencesFinder():sourceViewer is null.");
             PolishEditorPlugin.log("installOccurrencesFinder():sourceViewer is null.");
             return;
         }
