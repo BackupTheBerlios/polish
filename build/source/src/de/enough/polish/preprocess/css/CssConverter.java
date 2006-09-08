@@ -314,7 +314,7 @@ public class CssConverter extends Converter {
 		// check if label-style has been defined:
 		if (!isLabelStyleReferenced) {
 			//if (styleSheet.getStyle("label" ) == null) {
-				codeList.add( STANDALONE_MODIFIER + "Style labelStyle = defaultStyle; // no specific label-style has been defined");
+				codeList.add( "\tpublic static Style labelStyle = defaultStyle; // no specific label-style has been defined");
 			/*} else {
 				processStyle( styleSheet.getStyle("label" ), codeList, styleSheet, device );
 			}*/
@@ -370,7 +370,7 @@ public class CssConverter extends Converter {
 		Style focusedStyle = styleSheet.getStyle("focused"); 
 		if (focusedStyle == null) {
 			System.out.println("Warning: CSS-Style [focused] not found, now using the default style instead. If you use Forms or Lists, you should define the style [focused].");
-			codeList.add( STANDALONE_MODIFIER + "Style focusedStyle = defaultStyle;\t// the focused-style is not defined.");
+			codeList.add(  "\tpublic static Style focusedStyle = defaultStyle;\t// the focused-style is not defined.");
 		//} else {
 		//	processStyle( focusedStyle, codeList, styleSheet, device );
 		}
@@ -552,10 +552,6 @@ public class CssConverter extends Converter {
 		} else {
 			codeList.add("\t\tnull\t// no border");
 		}
-		// add the selector of the style, but only when dynamic styles are used:
-		if (styleSheet.containsDynamicStyles()) {
-			codeList.add("\t\t, \"" + style.getSelector() + "\"\t// the selector of this style");
-		}
 		
 		// now add all additional non standard-properties:
 		String[] groupNames = style.getGroupNames();
@@ -711,6 +707,12 @@ public class CssConverter extends Converter {
 		
 		// close the style definition:
 		codeList.add("\t);");
+		
+		// add the selector of the style, but only when dynamic styles are used:
+		if (styleSheet.containsDynamicStyles()) {
+			codeList.add("\t\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
+		}
+
 	}
 
 
