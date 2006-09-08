@@ -1872,6 +1872,7 @@
 		default="5"
 		id="188"
 	/>
+	
 	<attribute
 		name="text-fading-alien-glow-mode"
 		type="string"
@@ -1881,7 +1882,21 @@
 		id="189"
 	/>
 	
+	<attribute
+		name="before"
+		type="imageurl"
+		appliesTo="Item"
+		description="The URL of the image that should be shown before the item in question."
+		id="190"
+	/>
 	
+	<attribute
+		name="after"
+		type="imageurl"
+		appliesTo="Item"
+		description="The URL of the image that should be shown after the item in question."
+		id="191"
+	/>
 	
 	<!--
 	

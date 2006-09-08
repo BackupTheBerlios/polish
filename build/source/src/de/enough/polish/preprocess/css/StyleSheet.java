@@ -119,8 +119,6 @@ public class StyleSheet {
 	private long lastModified;
 
 	private boolean containsDynamicStyles;
-	private boolean containsBeforeStyle;
-	private boolean containsAfterStyle;
 
 	private HashMap cssPreprocessingSymbols;
 	private HashMap cssAttributes;
@@ -170,12 +168,6 @@ public class StyleSheet {
 				this.styles.add( copy );
 			} else {
 				existing.add( original );
-			}
-			if (original.getGroup("before") != null) {
-				this.containsBeforeStyle = true;
-			}
-			if (original.getGroup("after") != null) {
-				this.containsAfterStyle = true;
 			}
 		}
 	}
@@ -559,12 +551,6 @@ public class StyleSheet {
 			} else {
 				style.add( cssBlock );
 			}
-			if (style.getGroup("before") != null) {
-				this.containsBeforeStyle = true;
-			}
-			if (style.getGroup("after") != null) {
-				this.containsAfterStyle = true;
-			}
 		}
 	}
 	
@@ -826,24 +812,6 @@ public class StyleSheet {
 			}
 		}
 		return (Style[]) dynamicStyles.toArray( new Style[ dynamicStyles.size() ] );
-	}
-
-	/**
-	 * Determines whether this sheet contains style which use the before-element.
-	 * 
-	 * @return true when this sheet contains styles which make use of the before element
-	 */
-	public boolean containsAfterStyle() {
-		return this.containsAfterStyle;
-	}
-	
-	/**
-	 * Determines whether this sheet contains style which use the after-element.
-	 * 
-	 * @return true when this sheet contains styles which make use of the after element
-	 */
-	public boolean containsBeforeStyle() {
-		return this.containsBeforeStyle;
 	}
 
 	/**

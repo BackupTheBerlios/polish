@@ -552,34 +552,6 @@ public class CssConverter extends Converter {
 		} else {
 			codeList.add("\t\tnull\t// no border");
 		}
-		// add the URL of the before-image but only when at least one before-element has been defined:
-		if (styleSheet.containsBeforeStyle()) {
-			group = style.removeGroup("before");
-			if (group != null) {
-				String url = getUrl( (String) group.get("before") );
-				if (url != null) {
-					codeList.add("\t\t, \"" + url + "\"\t// URL of the before element" );
-				} else {
-					codeList.add("\t\t, null\t// no before element has been defined");
-				}
-			} else {
-				codeList.add("\t\t, null\t// no before element has been defined");				
-			}
-		}
-		// add the URL of the after-image but only when at least one after-element has been defined:
-		if (styleSheet.containsAfterStyle()) {
-			group = style.removeGroup("after");
-			if (group != null) {
-				String url = getUrl( (String) group.get("after") );
-				if (url != null) {
-					codeList.add("\t\t, \"" + url + "\"\t// URL of the after element" );
-				} else {
-					codeList.add("\t\t, null\t// no after element has been defined");
-				}
-			} else {
-				codeList.add("\t\t, null\t// no after element has been defined");				
-			}
-		}
 		// add the selector of the style, but only when dynamic styles are used:
 		if (styleSheet.containsDynamicStyles()) {
 			codeList.add("\t\t, \"" + style.getSelector() + "\"\t// the selector of this style");

@@ -8630,12 +8630,13 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi"/>
 		<capability name="HeapSize" value="512 kb"/>
-		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi"/>
 		<capability name="CameraResolution" value="vga"/>
 		<capability name="CameraZoom" value="4"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 	
 	<device>
@@ -8645,14 +8646,28 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="HeapSize" value="512 kb"/>
 		<capability name="StorageSize" value="4 MB"/>
 		<capability name="CameraResolution" value="vga"/>
 		<capability name="CameraZoom" value="4"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 
+	<device>
+		<identifier>Sagem/MyX6-2</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="128x142"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
 	<device>
 		<identifier>Sagem/MyX7</identifier>
 		<features>doubleBuffering, hasCamera, hasVideo</features>
@@ -8660,39 +8675,143 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="HeapSize" value="512 kb"/>
 		<capability name="StorageSize" value="4 MB"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 	
-		<device>
+	<device>
 		<identifier>Sagem/My700x</identifier>
 		<features>doubleBuffering, hasCamera, hasVideo, hasCommandKeys</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="FullCanvasSize" value="176x195"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="x-tone-seq"/> 
 		<capability name="PolyphonicVoices" value="40"/> 
-		<capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,pdaapi,btapi,m3g"/> 
+		<capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,pdaapi,m3g"/> 
 		<capability name="HeapSize" value="512 kb"/>
 		<capability name="StorageSize" value="4 MB"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
+	<device>
+		<identifier>Sagem/MyW-7</identifier>
+		<features>doubleBuffering, hasCommandKeys</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x195"/>
+		<capability name="CanvasSize" value="176x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="SoundFormat" value="x-tone-seq"/> 
+		<capability name="PolyphonicVoices" value="40"/> 
+		<capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,m3g"/> 
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 
 	<device>
-		<identifier>Sagem/MyX8</identifier>
+		<identifier>Sagem/MyC5-2</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
+	<device>
+		<identifier>Sagem/MyZ-5</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
+	<device>
+		<identifier>Sagem/My400x</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
+	<device>
+		<identifier>Sagem/My300x</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+
+	<device>
+		<identifier>Sagem/MyC4</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
+	
+	<device>
+		<identifier>Sagem/MyX-8</identifier>
 		<features>doubleBuffering, hasCamera, hasVideo</features>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x260"/>
+		<capability name="FullCanvasSize" value="240x285"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1"/> 
 		<capability name="HeapSize" value="512 kb"/>
 		<capability name="StorageSize" value="4 MB"/>
 		<capability name="CameraResolution" value="1.4 MP"/>
 		<capability name="CameraZoom" value="8"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+	
+	<device>
+		<identifier>Sagem/MyX-4</identifier>
+		<features>doubleBuffering</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1, pdaapi"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 
 	<device>
@@ -8702,10 +8821,11 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="HeapSize" value="512 kb"/>
-		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi-1.1"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 
 	<device>
@@ -8715,13 +8835,31 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="JavaPackage" value="mmapi, mmapi-1.1, wmapi-1.1"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1"/>
 		<capability name="HeapSize" value="512 kb"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="Network" value="GSM, GPRS"/>
 		<capability name="Frequency" value="900, 1800, 1900"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
+	</device>
+
+	<device>
+		<identifier>Sagem/MyV-55</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x142"/>
+		<capability name="CanvasSize" value="128x128"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaPackage" value="mmapi-1.1, wmapi-1.1"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="CameraResolution" value="640x480"/>
+		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
+		<capability name="ImageFormat" value="png, gif, gif87, gif89, jpg, jpeg, bmp"/>
 	</device>
 
 <!-- Sendo devices -->

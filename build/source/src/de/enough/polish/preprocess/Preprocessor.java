@@ -1552,16 +1552,6 @@ public class Preprocessor {
 			} else {
 				this.environment.removeSymbol("polish.useDynamicStyles");
 			}
-			if (styleSheet.containsBeforeStyle()) {
-				this.environment.addSymbol("polish.useBeforeStyle");
-			} else {
-				this.environment.removeSymbol("polish.useBeforeStyle");
-			}
-			if (styleSheet.containsAfterStyle()) {
-				this.environment.addSymbol("polish.useAfterStyle");
-			} else {
-				this.environment.removeSymbol("polish.useAfterStyle");
-			}
 			// now set the CSS-symbols:
 			this.environment.addSymbols( styleSheet.getCssPreprocessingSymbols( device ) );
 			
