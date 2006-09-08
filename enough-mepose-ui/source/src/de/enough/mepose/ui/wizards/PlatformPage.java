@@ -85,7 +85,7 @@ public class PlatformPage extends WizardPage {
     protected List selectedPlatformTreeItems = new LinkedList();
     protected List selectedConfigurationTreeItems = new LinkedList();
     
-    private class DeviceSelectionManager implements PropertyChangeListener,DisposeListener,SelectionListener{
+    protected class DeviceSelectionManager implements PropertyChangeListener,DisposeListener,SelectionListener{
         
         private Map treeItemToDeviceTreeItemMap;
         
@@ -126,10 +126,6 @@ public class PlatformPage extends WizardPage {
         public void widgetDefaultSelected(SelectionEvent e) {
             // not needed.
         }
-    }
-    
-    protected void updateButtons() {
-        getContainer().updateButtons();
     }
     
     protected class DescriptionDumper implements SelectionListener{
@@ -173,7 +169,7 @@ public class PlatformPage extends WizardPage {
         }
     }
     
-    private class DeviceTreeCreator implements SelectionListener{
+    protected class DeviceTreeCreator implements SelectionListener{
         private List listToManage;
         private NewProjectModel newPolishModel;
         public DeviceTreeCreator(NewProjectModel newProjectModel,List listToManage) {
@@ -239,6 +235,9 @@ public class PlatformPage extends WizardPage {
         setDescription("Select the devices you want to support or choose platform and configuration categories");
     }
 
+    protected void updateButtons() {
+        getContainer().updateButtons();
+    }
     
 
     public void createControl(Composite parent) {
