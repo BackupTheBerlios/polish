@@ -50,13 +50,11 @@ public class Style
 		public final static Boolean TRUE = new Boolean( true );
 		public final static Boolean FALSE = new Boolean( false );
 	//#endif
-	//#ifdef polish.useDynamicStyles
-		/**
-		 * The name of this style. The name is only accessible when
-		 * the preprocessing-symbol polish.useDynamicStyles is defined.
-		 */
-		public final String name;
-	//#endif
+	/**
+	 * The name of this style. The name is only accessible when
+	 * the preprocessing-symbol polish.useDynamicStyles is defined.
+	 */
+	public String name;
 
 	public final Background background;
 	public final Border border;
@@ -101,11 +99,6 @@ public class Style
 	 * @param font the content-font for this style
 	 * @param background the background for this style
 	 * @param border the border for this style
-	 * @param beforeUrl the URL of the before element. This is inserted before items
-	 *            with this style. 
-	 * @param afterUrl the URL of the after element. This is inserted after items
-	 *            with this style.
-	 * @param name the name of this style. Is only used when dynamic styles are used.
 	 * @param attributeKeys the integer-IDs of any additional attributes. Can be null.
 	 * @param attributeValues the values of any additional attributes. Can be null.
 	 * 			
@@ -115,9 +108,6 @@ public class Style
 			int layout,
 			int fontColor, Font font,  
 			Background background, Border border 
-			//#ifdef polish.useDynamicStyles
-			, String name
-			//#endif
 			, short[] attributeKeys
 			, Object[] attributeValues
 			) 
@@ -127,9 +117,6 @@ public class Style
 				layout,
 				fontColor, null, font,
 				background, border
-				//#ifdef polish.useDynamicStyles
-					, name
-				//#endif
 				, attributeKeys
 				, attributeValues
 		);
@@ -168,9 +155,6 @@ public class Style
 			int layout,
 			int fontColor, Color fontColorObj, Font font,  
 			Background background, Border border 
-			//#ifdef polish.useDynamicStyles
-			, String name
-			//#endif
 			, short[] attributeKeys
 			, Object[] attributeValues
 			) 
@@ -192,9 +176,6 @@ public class Style
 		this.background = background;
 		this.border = border;
 
-		//#ifdef polish.useDynamicStyles
-		this.name = name;
-		//#endif
 		this.attributeValues = attributeValues;
 		this.attributeKeys = attributeKeys;
 		//#ifdef false
