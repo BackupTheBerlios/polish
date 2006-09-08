@@ -512,7 +512,13 @@ public class ResourceManager {
 			try {
 				Class managerClass = Class.forName( className );
 				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, LocaleSetting.class, Environment.class, File[].class, LocalizationSetting.class} );
-				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ this.project, device, locale, env, resourceDirs, setting} );
+				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ 
+						this.project, 
+						device, 
+						locale, 
+						env, 
+						getResourceDirs(device, locale.getLocale()),
+						setting} );
 				return manager;
 			} catch (Exception e) {
 				//just return a normal translation manager
