@@ -44,6 +44,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -248,9 +249,14 @@ public class PolishEditor extends CompilationUnitEditor {
     }
     
     protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-        PolishSourceViewerConfiguration polishSourceViewerConfiguration = (PolishSourceViewerConfiguration)getSourceViewerConfiguration();
-        if(polishSourceViewerConfiguration.affectsTextPresentation(event)) {
-            return true;
+        // TODO: When linking the editor with the ProjectNaviator, a JavaSourceViewerConfiguration is returned.
+        // WHY?? See bug#50.
+        SourceViewerConfiguration sourceViewerConfiguration = getSourceViewerConfiguration();
+        if(sourceViewerConfiguration instanceof PolishSourceViewerConfiguration) {
+            PolishSourceViewerConfiguration polishSourceViewerConfiguration = (PolishSourceViewerConfiguration)sourceViewerConfiguration;
+            if(polishSourceViewerConfiguration.affectsTextPresentation(event)) {
+                return true;
+            }
         }
         return super.affectsTextPresentation(event);
     }
