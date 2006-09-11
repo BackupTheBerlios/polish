@@ -47,7 +47,7 @@ public interface IPolishConstants {
     String POLISH_POSITION_CATEGORY = "__polish_position_category";
     String POLISH_ANNOTATION = "de.enough.polish.plugin.eclipse.polishEditor.polishAnnotation";
 
-    String[] POLISH_DIRECTIVES = {"if","ifdef","ifndef","else","elif","elifdef","elnifdef","def","endif","=","debug","mdebug","enddebug","style","condition","include","foreach","next"};
+    String[] POLISH_DIRECTIVES = {"if","ifdef","ifndef","else","elif","elifdef","elnifdef","define","endif","=","debug","mdebug","enddebug","style","condition","include","foreach","next","undefine"};
     
     public static final String[] IF_DIRECTIVES = {"if","ifdef","ifndef"};
     public static final String[] ELSE_DIRECTIVES = {"else","elif","elifdef","elifndef"};
