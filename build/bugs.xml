@@ -382,7 +382,18 @@
 		<name>ReservedKeywordSerializable</name>
 		<area>io</area>
 		<description>Classes called Serializable confuse the device</description>
-		<solution>The J2ME polish build process works around this.</solution>
+		<solution>The J2ME polish build process works around this by auto-renaming the de.enough.polish.io.Serializable interface.</solution>
+	</bug>
+	
+	<bug>
+		<name>SingleCapturePlayer</name>
+		<area>multimedia</area>
+		<description>
+			For capturing photos only one single Player instance can be used within an application.
+		</description>
+		<solution>
+			Use only one capture player.
+		</solution>
 	</bug>
 	
 	<!--

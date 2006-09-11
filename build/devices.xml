@@ -262,6 +262,13 @@ These namespaces/schemas will be used soon.
 		<groups>Series60E2FP3</groups>
 	</device>
 
+
+	<device supportsPolishGui="true">
+		<identifier>Nokia/Series60E3</identifier>
+		<features>isVirtual</features>
+		<groups>Series60E3</groups>
+	</device>
+
 	<device supportsPolishGui="false">
 		<identifier>Nokia/Series40</identifier>
 		<features>isVirtual</features>
@@ -3327,6 +3334,29 @@ These namespaces/schemas will be used soon.
 <!-- Nokia devices -->
 
 	<device>
+		<identifier>Nokia/5500</identifier>
+		<groups>Series60E3</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 9.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi2.0, locationapi"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenSize" value="208x208"/>
+		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
+		<capability name="SoundFormat" value="aac, aac+, eaac+, eaac, midi, midi64, amr, nb-amr, mp3, realaudio, wb-amr, wav"/>
+		<capability name="HeapSize" value="dynamic"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="StorageSize" value="10 MB"/>
+		<capability name="DRM" value="OMA DRM v1.0, OMA DRM Forward-Lock"/>
+		<capability name="Region" value="Africa, China, Asia-Pacific, Europe"/>
+		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
+		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="AnnouncementDate" value="2006-06-10"/>
+	</device>
+	
+	<device>
 		<identifier>Nokia/E70</identifier>
 		<groups>Series60E3</groups>
 		<features>hasCamera</features>
@@ -3338,7 +3368,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="352x416"/>
 		<capability name="FullCanvasSize" value="352x416"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
-		<capability name="SoundFormat" value="aac, aac+. midi, midi48, amr, nb-amr, mp3, realaudio, wb-amr, wav"/>
+		<capability name="SoundFormat" value="aac, aac+, midi, midi48, amr, nb-amr, mp3, realaudio, wb-amr, wav"/>
 		<capability name="HeapSize" value="dynamic"/>
 		<capability name="MaxJarSize" value="dynamic"/>
 		<capability name="StorageSize" value="72 MB"/>

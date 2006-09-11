@@ -241,10 +241,11 @@ public class CssConverter extends Converter {
 //				throw new BuildException("Encountered invalid license.");
 //			}
 //		}
+		ArrayList staticCodeList = new ArrayList();
 		// add the default style:
 		processDefaultStyle( defaultFontDefined,  
 				defaultBackgroundDefined, defaultBorderDefined,
-				codeList, styleSheet, device, env  );
+				codeList, staticCodeList, styleSheet, device, env  );
 		
 		
 		// now add all other static and referenced styles:
@@ -273,7 +274,7 @@ public class CssConverter extends Converter {
 				if ("label".equals(style.getSelector())) {
 					isLabelStyleReferenced = true;
 				}
-				processStyle( style, codeList, styleSheet, device, env );
+				processStyle( style, codeList, staticCodeList, styleSheet, device, env );
 			}
 		}
 		codeList.add( STANDALONE_MODIFIER + "String lic=\"" + test +"\";");
@@ -362,6 +363,10 @@ public class CssConverter extends Converter {
 				}
 				codeList.add("\t\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
 			}
+			for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
+				String line  = (String) iter.next();
+				codeList.add( line );
+			}
 			codeList.add("\t}");
 		}
 
@@ -400,7 +405,7 @@ public class CssConverter extends Converter {
 	 * @param device the device for which the style should be processed
 	 * @param environment the environment
 	 */
-	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, StyleSheet styleSheet, Device device, Environment environment ) {
+	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
@@ -443,7 +448,7 @@ public class CssConverter extends Converter {
 		group.put("border", "default");
 		copy.addGroup("border", group );
 		// now process the rest of the style completely normal:
-		processStyle(copy, codeList, styleSheet, device, environment );
+		processStyle(copy, codeList, staticCodeList, styleSheet, device, environment );
 	}
 
 
@@ -456,7 +461,7 @@ public class CssConverter extends Converter {
 	 * @param device the device for which the style should be processed
 	 * @param environment the environment
 	 */
-	protected void processStyle(Style style, ArrayList codeList, StyleSheet styleSheet, Device device, Environment environment ) {
+	protected void processStyle(Style style, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
 		String styleName = style.getStyleName();
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style:
@@ -710,7 +715,7 @@ public class CssConverter extends Converter {
 		
 		// add the selector of the style, but only when dynamic styles are used:
 		if (styleSheet.containsDynamicStyles()) {
-			codeList.add("\t\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
+			staticCodeList.add("\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
 		}
 
 	}
