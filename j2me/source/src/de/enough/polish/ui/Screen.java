@@ -762,9 +762,7 @@ implements AccessibleCanvas
 				this.previousScreenImage = null;
 			//#endif
 			//#if !polish.Bugs.noTranslucencyWithDrawRgb
-				if (this.previousScreenOverlayBackground != null) {
-					this.previousScreenOverlayBackground = null;
-				}
+				this.previousScreenOverlayBackground = null;
 			//#endif
 		//#endif
 		//#ifdef polish.Vendor.Siemens

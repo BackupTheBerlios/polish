@@ -51,7 +51,7 @@ public class Style
 		public final static Boolean FALSE = new Boolean( false );
 	//#endif
 	/**
-	 * The name of this style. The name is only accessible when
+	 * The name of this style. The name is only used when
 	 * the preprocessing-symbol polish.useDynamicStyles is defined.
 	 */
 	public String name;

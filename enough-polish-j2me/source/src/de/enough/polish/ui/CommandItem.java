@@ -341,17 +341,17 @@ public class CommandItem extends IconItem {
 		this.isOpen = open;
 		if ( open ) {
 			// defocus myself:
-			if (this.originalStyle != null) {
-				setStyle( this.originalStyle );
-			} else {
-				//#debug error
-				System.out.println("Unable to defocus parent command " + this );
-			}
+//			if (this.originalStyle != null) {
+//				setStyle( this.originalStyle );
+//			} else {
+//				//#debug error
+//				System.out.println("Unable to defocus parent command " + this );
+//			}
 			// move focus to first child:
 			this.children.focus( this.focusingStyle, 0 );
 		} else {
 			// focus myself:
-			setStyle( this.focusingStyle );
+//			setStyle( this.focusingStyle );
 			// reset selected command element to the first one in the list:
 			if ( this.children != null ) {
 				this.children.focus( 0 );
