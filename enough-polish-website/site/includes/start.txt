@@ -85,6 +85,7 @@
 				<a href="<%= basedir %>docs/mepose-features.html">Features</a>
 				<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
 				<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
+				<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a>
 				<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
 				</p>
 				</div>
@@ -157,6 +158,16 @@
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tools.html">Tools</a></div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/tools.html">Tools</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.java5 %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/java5.html">Java 5 Syntax</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/java5.html">Java 5 Syntax</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.floater %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/floater.html">Floater</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/floater.html">Floater</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.gameengine %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>

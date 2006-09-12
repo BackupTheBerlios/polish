@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-  <project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
+  <project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
     <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
     <author/>
     <email/>
@@ -236,33 +236,43 @@
     <item url="images/java5syntax200px.gif" uploadstatus="1" />
     <item url="images/java5syntax400px.gif" uploadstatus="1" />
     <item url="docs/java5.html" uploadstatus="1" />
-    <item url="docs/mepose-install.html" />
-    <item url="docs/mepose-running.html" />
-    <item url="docs/mepose-wizard.html" />
-    <item url="images/mepose-install_01_blankWorkspace.png" />
-    <item url="images/mepose-install_02_menuOpen.png" />
-    <item url="images/mepose-install_03_searchFeature.png" />
-    <item url="images/mepose-install_04_enterRemoteSite.png" />
-    <item url="images/mepose-install_05_remoteSiteEntered.png" />
-    <item url="images/mepose-install_06_searchResults.png" />
-    <item url="images/mepose-install_07_licenseAgreement.png" />
-    <item url="images/mepose-install_08_startInstallation.png" />
-    <item url="images/mepose-install_09_verification.png" />
-    <item url="images/mepose-install_10_preferencePage.png" />
-    <item url="images/mepose-install_11_debugPreferences.png" />
-    <item url="images/mepose-install_11_PathPreferences.png" />
-    <item url="images/mepose-run_01_openEditor.png" />
-    <item url="images/mepose-run_02_editorOpened.png" />
-    <item url="images/mepose-run_03_chooseDevice.png" />
-    <item url="images/mepose-run_04_breakpointSet.png" />
-    <item url="images/mepose-run_05_chooseDebug.png" />
-    <item url="images/mepose-run_05_chooseRun.png" />
-    <item url="images/mepose-wizard_01_choose.png" />
-    <item url="images/mepose-wizard_02_projectName.png" />
-    <item url="images/mepose-wizard_03_paths.png" />
-    <item url="images/mepose-wizard_04_deviceSelection.png" />
-    <item url="images/mepose-wizard_05_javaSettings.png" />
-    <item url="docs/mepose.html" />
-    <item url="docs/mepose-features.html" />
+    <item url="docs/mepose-install.html" uploadstatus="1" />
+    <item url="docs/mepose-running.html" uploadstatus="1" />
+    <item url="docs/mepose-wizard.html" uploadstatus="1" />
+    <item url="images/mepose-install_02_menuOpen.png" uploadstatus="1" />
+    <item url="images/mepose-install_03_searchFeature.png" uploadstatus="1" />
+    <item url="images/mepose-install_04_enterRemoteSite.png" uploadstatus="1" />
+    <item url="images/mepose-install_05_remoteSiteEntered.png" uploadstatus="1" />
+    <item url="images/mepose-install_06_searchResults.png" uploadstatus="1" />
+    <item url="images/mepose-install_07_licenseAgreement.png" uploadstatus="1" />
+    <item url="images/mepose-install_08_startInstallation.png" uploadstatus="1" />
+    <item url="images/mepose-install_09_verification.png" uploadstatus="1" />
+    <item url="images/mepose-install_10_preferencePage.png" uploadstatus="1" />
+    <item url="images/mepose-install_11_debugPreferences.png" uploadstatus="1" />
+    <item url="images/mepose-run_01_openEditor.png" uploadstatus="1" />
+    <item url="images/mepose-run_03_chooseDevice.png" uploadstatus="1" />
+    <item url="images/mepose-run_04_breakpointSet.png" uploadstatus="1" />
+    <item url="images/mepose-run_05_chooseDebug.png" uploadstatus="1" />
+    <item url="images/mepose-run_05_chooseRun.png" uploadstatus="1" />
+    <item url="images/mepose-wizard_01_choose.png" uploadstatus="1" />
+    <item url="images/mepose-wizard_02_projectName.png" uploadstatus="1" />
+    <item url="images/mepose-wizard_03_paths.png" uploadstatus="1" />
+    <item url="images/mepose-wizard_04_deviceSelection.png" uploadstatus="1" />
+    <item url="images/mepose-wizard_05_javaSettings.png" uploadstatus="1" />
+    <item url="docs/mepose.html" uploadstatus="1" />
+    <item url="docs/mepose-features.html" uploadstatus="1" />
+    <item url="docs/floater.html" uploadstatus="1" />
+    <item url="docs/mepose-convert.html" uploadstatus="1" />
+    <item url="images/floater.png" uploadstatus="1" />
+    <item url="images/mepose-convert_01_useSameName.png" uploadstatus="1" />
+    <item url="images/mepose.png" uploadstatus="1" />
+    <item url="images/mepose-install_02_menuOpen_3.png" uploadstatus="1" />
+    <item url="images/mepose-install_11_pathPreferences.png" uploadstatus="1" />
+    <item url="images/mepose-run_06_emulatorStarted.png" uploadstatus="1" />
+    <item url="images/mepose-run_07_breakpointHit.png" uploadstatus="1" />
+    <item url="images/mepose-features-autocompletion.png" uploadstatus="1" />
+    <item url="images/mepose-features-mark-occurences.png" uploadstatus="1" />
+    <item url="images/mepose-features-syntax-highlighting.png" uploadstatus="1" />
+    <item url="downloads/j2mepolish-2.0-beta2.html" uploadstatus="1" />
   </project>
 </webproject>

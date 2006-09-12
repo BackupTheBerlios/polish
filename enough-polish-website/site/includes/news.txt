@@ -3,6 +3,13 @@
 	<%index %>
 <%endif %>
 
+<p class="newsdate">2006-08-31:</p>
+<h2 id="20-beta1">J2ME Polish 2.0 Beta 2 out now!</h2>
+<p>
+	J2ME Polish 2.0 Beta 2 is now publicly available for <a href="<%= newsbasedir %>downloads/j2mepolish-2.0-beta2.html">download</a>
+	This includes Java 5 support, the Floater tool and Mepose, our Eclipse plug in!
+</p>
+
 <p class="newsdate">2006-07-28:</p>
 <h2 id="20-beta1">J2ME Polish 2.0 Beta 1 available</h2>
 <p>

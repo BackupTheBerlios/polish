@@ -7,7 +7,7 @@
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
 <property name="Version" value="1.2.4" />
-<property name="BetaVersion" value="2.0-beta1" />
+<property name="BetaVersion" value="2.0-beta2" />
 <property name="JavaDocVersion" value="${BetaVersion}" />
 <property name="symbols" value="isBetaAvailable" />
 <!--
@@ -115,5 +115,9 @@
 <target name="website" depends="javadoc, device-export, webprocessor"	>
 		<echo message="www.j2mepolish.org created." />
 </target>
+	
+	<target name="cleanbuild" depends="clean, website" description="Builds a clean website. Remember the chinese tutorial.">
+	</target>
+
 
 </project>
