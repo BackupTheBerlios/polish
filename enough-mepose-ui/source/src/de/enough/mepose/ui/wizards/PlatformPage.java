@@ -315,7 +315,9 @@ public class PlatformPage extends WizardPage {
 //        this.configTree.layout();
         
         this.dTree = this.newProjectModel.getMeposeModel().getDeviceTree();
-        
+        if(this.dTree == null) {
+            throw new IllegalStateException("The directory of J2ME Polish is wrong.");
+        }
         updateDeviceTable();
     }
 
@@ -363,6 +365,9 @@ public class PlatformPage extends WizardPage {
     
     public boolean canFlipToNextPage() {
 //        return this.selectedDeviceTreeItems.size() > 0;
+        if(this.dTree == null) {
+            return false;
+        }
         return this.dTree.getSelectedDevices().length > 0;
     }
 
