@@ -222,7 +222,7 @@ public class PlatformPage extends WizardPage {
     }
     
 //    public static Logger logger = Logger.getLogger(PlatformPage.class);
-    private DeviceTree dTree;
+    private DeviceTree deviceTreeModel;
     private Label descriptionLabel;
     private DeviceSelectionManager deviceSelectionManager;
 
@@ -314,8 +314,8 @@ public class PlatformPage extends WizardPage {
 //        this.deviceTree.layout();
 //        this.configTree.layout();
         
-        this.dTree = this.newProjectModel.getMeposeModel().getDeviceTree();
-        if(this.dTree == null) {
+        this.deviceTreeModel = this.newProjectModel.getMeposeModel().getDeviceTree();
+        if(this.deviceTreeModel == null) {
             throw new IllegalStateException("The directory of J2ME Polish is wrong.");
         }
         updateDeviceTable();
@@ -365,10 +365,10 @@ public class PlatformPage extends WizardPage {
     
     public boolean canFlipToNextPage() {
 //        return this.selectedDeviceTreeItems.size() > 0;
-        if(this.dTree == null) {
+        if(this.deviceTreeModel == null) {
             return false;
         }
-        return this.dTree.getSelectedDevices().length > 0;
+        return this.deviceTreeModel.getSelectedDevices().length > 0;
     }
 
 
@@ -390,12 +390,12 @@ public class PlatformPage extends WizardPage {
         this.newProjectModel.getMeposeModel().setSupportedConfigurations(configurationsArray);
         this.newProjectModel.getMeposeModel().setSupportedPlatforms(platformsArray);
         
-        this.dTree.rebuild(configurationsArray,platformsArray);
+        this.deviceTreeModel.rebuild(configurationsArray,platformsArray);
         this.deviceTree.removeAll();
         this.newProjectModel.removeAllTargetDevices();
 //        this.selectedDeviceTreeItems.clear();
         DeviceTreeItem[] deviceTreeItems;
-        deviceTreeItems = this.dTree.getRootItems();
+        deviceTreeItems = this.deviceTreeModel.getRootItems();
         
         ArrayList nodes = new ArrayList();
         TreeItem treeItem;
@@ -459,7 +459,7 @@ public class PlatformPage extends WizardPage {
         boolean defaulsOverrideExistingClasspath = true;
         
         MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
-        Device[] selectedDevices = this.dTree.getSelectedDevices();
+        Device[] selectedDevices = this.deviceTreeModel.getSelectedDevices();
         meposeModel.setSupportedDevices(selectedDevices);
         meposeModel.setClasspath(classpathEntries);
         JavaCapabilityConfigurationPage nextPage = (JavaCapabilityConfigurationPage)super.getNextPage();
@@ -469,7 +469,7 @@ public class PlatformPage extends WizardPage {
     }
     
     private IClasspathEntry[] getLibraryEntries() {
-        File[] classpathFiles = this.dTree.getClasspathForSelectedDevices();
+        File[] classpathFiles = this.deviceTreeModel.getClasspathForSelectedDevices();
         int numberOfClasspathEntriesForSelectedDevices = classpathFiles.length;
         int finalNumberOfClasspathEntries = numberOfClasspathEntriesForSelectedDevices+1;
         IClasspathEntry[] classpathEntries = new IClasspathEntry[finalNumberOfClasspathEntries];
