@@ -1,5 +1,5 @@
 /*
- * Created on Jun 23, 2005 at 12:13:27 PM.
+ * Created on Sep 7, 2006 at 2:54:40 PM.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -25,28 +25,32 @@
  */
 package de.enough.mepose.ui.propertyPages;
 
-
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.model.MeposeModel;
 
+/**
+ * 
+ * <br>Copyright Enough Software 2005
+ * <pre>
+ * history
+ *        Sep 7, 2006 - rickyn creation
+ * </pre>
+ * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+ */
+public abstract class MeposePropertyPage extends PropertyPage {
 
-public class OverviewPage extends PropertyPage{
-
-    protected Control createContents(Composite parent) {
-        
-        Composite main = new Composite(parent,SWT.NONE);
-        main.setLayout(new GridLayout(1,false));
-        createNoteComposite(null,main,"Overview","Tweak all J2ME Polish settings in this menu.");
-        return main;
+    protected MeposeModel getMeposeModel() {
+        IAdaptable adaptable = getElement();
+        IProject project = (IProject)adaptable.getAdapter(IProject.class);
+        if(project == null) {
+            return null;
+        }
+        MeposeModel meposeModel = MeposePlugin.getDefault().getMeposeModelManager().getModel(project);
+        return meposeModel;
     }
-
-
-    
-    
 
 }

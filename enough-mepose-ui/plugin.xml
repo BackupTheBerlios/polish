@@ -9,7 +9,7 @@
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
 			class="de.enough.mepose.ui.propertyPages.OverviewPage"
-			icon="icons/polish_logo_16x16.png"
+			icon="icons/jongleur2_16x16.png"
 			id="de.enough.mepose.ui.propertyPages.OverviewPage"
 			name="j2ME Polish"
 			objectClass="org.eclipse.jdt.core.IJavaProject">
@@ -20,13 +20,23 @@
 		<page
         category="de.enough.mepose.ui.propertyPages.OverviewPage"
         class="de.enough.mepose.ui.propertyPages.AdvDataPage"
-        icon="icons/polish_logo_16x16.png"
         id="de.enough.mepose.ui.propertyPages.AdvDataPage"
         name="Advanced Data Entry"
         objectClass="org.eclipse.jdt.core.IJavaProject">
 			<filter name="nature"
 				value="de.enough.mepose.core.polishNature" />
 		</page>
+		
+  		<page
+        category="de.enough.mepose.ui.propertyPages.OverviewPage"
+        class="de.enough.mepose.ui.propertyPages.ChooseDevicePage"
+        id="de.enough.mepose.ui.propertyPages.ChooseDevicesPage"
+        name="Choose Devices"
+        objectClass="org.eclipse.jdt.core.IJavaProject">
+     <filter
+           name="nature"
+           value="de.enough.mepose.core.polishNature"/>
+  </page>
 	</extension>
 
 	<extension point="org.eclipse.ui.preferencePages">

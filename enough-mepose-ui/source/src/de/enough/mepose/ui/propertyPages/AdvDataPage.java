@@ -31,18 +31,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
-import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
 
@@ -55,7 +51,7 @@ import de.enough.mepose.ui.MeposeUIPlugin;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class AdvDataPage extends PropertyPage {
+public class AdvDataPage extends MeposePropertyPage {
 
     
     
@@ -69,17 +65,10 @@ public class AdvDataPage extends PropertyPage {
     protected Control createContents(Composite parent) {
         Composite main = new Composite(parent,SWT.NONE);
 //        main.setLayout(new GridLayout(2,false));
-        TableWrapLayout layout = new TableWrapLayout();
-        layout.numColumns = 2;
+//        TableWrapLayout layout = new TableWrapLayout();
+        GridLayout layout = new GridLayout(2,false);
         main.setLayout(layout);
-        IAdaptable adaptable = getElement();
-        IProject project = (IProject)adaptable.getAdapter(IProject.class);
-        if(project == null) {
-            MeposeUIPlugin.log("No IProject found.");
-            return main;
-        }
-        
-        this.model = MeposePlugin.getDefault().getMeposeModelManager().getModel(project);
+        this.model = getMeposeModel();
         if(this.model == null) {
             MeposeUIPlugin.log("No model in project.");
             throw new IllegalStateException("No model in project.");
@@ -92,14 +81,16 @@ public class AdvDataPage extends PropertyPage {
             }
             String value = (String)map.get(key);
             Label label = new Label(main,SWT.NONE);
-//            label.setLayoutData(new TableWrapData(SWT.BEGINNING,SWT.CENTER));
-            label.setLayoutData(new TableWrapData(TableWrapData.LEFT,TableWrapData.MIDDLE));
+            //            label.setLayoutData(new TableWrapData(TableWrapData.LEFT,TableWrapData.MIDDLE));
+            label.setLayoutData(new GridData(SWT.BEGINNING,SWT.CENTER,false,false));
             label.setText(key);
             Text text = new Text(main,SWT.WRAP);
             text.setText(value==null?"":value);
             text.setData(key);
-//            text.setLayoutData(new TableWrapData(SWT.FILL,SWT.CENTER));
-            text.setLayoutData(new TableWrapData(TableWrapData.FILL,TableWrapData.MIDDLE));
+//            text.setLayoutData(new TableWrapData(TableWrapData.FILL,TableWrapData.MIDDLE));
+            GridData gridData = new GridData(SWT.BEGINNING,SWT.CENTER,false,false);
+            gridData.widthHint = 250;
+            text.setLayoutData(gridData);
             this.textList.add(text);
         }
         return main;
