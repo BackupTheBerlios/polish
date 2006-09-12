@@ -125,7 +125,7 @@
 		<deviceRequirements if="test">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
-		<deviceRequirements if="NOT test AND device:defined">
+		<deviceRequirements if="! test && device:defined">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
 		<deviceRequirements unless="test">
