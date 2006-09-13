@@ -27,6 +27,8 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.tools.ant.Project;
 
@@ -107,5 +109,24 @@ public class MppEmulator extends Emulator {
 			this.environment.getVariable("polish.jadPath")
 		};
 	}
+	
+	/**
+	 * Adds the debugging settings to the arguments list.
+	 * By default the UEI arguments -Xdebug and -Xrunjdwp arguments are added by calling debugger.addDebugArguments( List ).
+	 * 
+	 * @param argsList the arguments list
+	 * @param debugger the debugger
+	 */
+	protected void addDebugArguments(ArrayList argsList, Debugger debugger) {
+		ArrayList debugArguments = new ArrayList();
+		super.addDebugArguments( debugArguments, debugger);
+		int index = 1;
+		for (Iterator iter = debugArguments.iterator(); iter.hasNext();) {
+			String arg = (String) iter.next();
+			argsList.add(index, arg);
+			index++;
+		}
+	}
+
 
 }

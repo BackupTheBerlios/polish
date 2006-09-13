@@ -632,6 +632,12 @@
 		<class>de.enough.polish.emulator.AntCallDebugger</class>
 	</extension>
 
+	<extension>
+		<type>debugger</type>
+		<name>default</name>
+		<class>de.enough.polish.emulator.Debugger</class>
+	</extension>
+
 	<!-- Resource Copier -->
 	
 	<extension>

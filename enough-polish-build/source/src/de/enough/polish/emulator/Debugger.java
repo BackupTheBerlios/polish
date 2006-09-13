@@ -88,7 +88,7 @@ public abstract class Debugger extends Extension {
 	 * <pre>
 	 * &lt;capability 
 	 *     name="polish.debug.commandline"
-	 *     value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port},transport=dt_socket"
+	 *     value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port},transport=dt_socket,server=y,suspend=n"
 	 * /&gt;
 	 * </pre>
 	 * 
@@ -97,8 +97,9 @@ public abstract class Debugger extends Extension {
 	 */
 	public void addDebugArguments(Environment env, List argsList) {
 		String line = env.getVariable("polish.debug.commandline");
-		int port = ((DebuggerSetting) this.extensionSetting).getPort();
+		DebuggerSetting setting = ((DebuggerSetting) this.extensionSetting);
 		if ( line != null && line.length() > 1 ) {
+			int port = setting.getPort();
 			env.setVariable("polish.debug.port", "" + port );
 			line = env.writeProperties(line);
 			String[] lines = StringUtil.split( line, ";;" );
@@ -107,7 +108,7 @@ public abstract class Debugger extends Extension {
 			}
 		} else {
 			argsList.add( "-Xdebug" );
-			argsList.add( "-Xrunjdwp:address=" + port + ",address=dt_socket" );
+			argsList.add( setting.getXRunJdwpCommandLine() );
 		}
 
 	} 

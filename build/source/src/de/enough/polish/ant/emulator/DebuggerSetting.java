@@ -29,26 +29,79 @@ import de.enough.polish.ExtensionSetting;
 
 public class DebuggerSetting extends ExtensionSetting {
 	
-	public int port = 4096;
+	private int port = 8000;
+	private String transport = "dt_socket";
+	private boolean isServer = true;
+	private boolean isSuspend = false;
 
 	public DebuggerSetting() {
 		super();
+		this.name="default";
 	}
 
 	/**
-	 * @return Returns debugger the port, this defaults to 4096.
+	 * @return Returns debugger the port, this defaults to 8000.
 	 */
 	public int getPort() {
 		return this.port;
 	}
 
 	/**
-	 * @param port The debugger port. Default port is 4096.
+	 * @param port The debugger port. Default port is 8000.
 	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
 	
+	public void setAddress( int address ){
+		setPort( address );
+	}
 	
+	public void setTransport( String transport ) {
+		this.transport = transport;
+	}
+	
+	public String getTransport() {
+		return this.transport;
+	}
+	
+	public void setServer( String isServerStr ) {
+		this.isServer =
+			"y".equalsIgnoreCase( isServerStr ) 
+			|| "yes".equalsIgnoreCase( isServerStr )
+			|| "true".equalsIgnoreCase( isServerStr );
+	}
+	
+	public boolean isServer() {
+		return this.isServer;
+	}
+	
+	public void setSuspend( String isSuspendStr ) {
+		this.isSuspend =
+			"y".equalsIgnoreCase( isSuspendStr ) 
+			|| "yes".equalsIgnoreCase( isSuspendStr )
+			|| "true".equalsIgnoreCase( isSuspendStr );		
+	}
+	
+	public boolean isSuspend() {
+		return this.isSuspend;
+	}
+	
+	public String getXRunJdwpCommandLine() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("-Xrunjdwp:address="  ).append( this.port )
+			.append( ",transport=").append(this.transport );
+		if (this.isServer) {
+			buffer.append(",server=y");
+		} else {
+			buffer.append(",server=n");			
+		}
+		if (this.isSuspend) {
+			buffer.append(",suspend=y");
+		} else {
+			buffer.append(",suspend=n");						
+		}
+		return buffer.toString();
+	}
 
 }
