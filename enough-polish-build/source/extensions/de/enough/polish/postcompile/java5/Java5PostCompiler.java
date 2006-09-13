@@ -216,7 +216,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
 		super.initialize(device, locale, env);
 		env.addVariable("javac.source", "1.5");
 		env.addVariable("javac.target", "1.5");
-		env.addVariable("polish.Java5", "true" );
+		env.addVariable("polish.java5", "true" );
 	}
 
 	/* (non-Javadoc)
