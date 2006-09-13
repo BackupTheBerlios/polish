@@ -29,8 +29,10 @@
 	<group>
 		<name>UEI</name>
 		<description>Devices belonging to the UEI group provide UEI compatible emulators.</description>
+		<!--
 		<capability name="polish.debug.commandline"
 					value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port}" />
+		-->
 	</group>
 
 	<group>

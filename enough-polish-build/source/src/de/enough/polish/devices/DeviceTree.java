@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tools.ant.Project;
 import org.jdom.JDOMException;
@@ -73,14 +75,23 @@ public class DeviceTree {
 		rebuild( supportedConfigurations, supportedPlatforms );
 	}
 
+    public void rebuild(Configuration[] configurations, Platform[] platforms) {
+        rebuild(configurations,platforms,null);
+    }
+    
 	/**
 	 * Rebuilds this tree.
 	 *  
 	 * @param configurations all configurations that should be supported, can be null (in which case all configurations are supported)
 	 * @param platforms all platforms/profiles that should be supported, can be null (in which case all platforms/profiles are supported)
 	 */
-	public void rebuild(Configuration[] configurations, Platform[] platforms) {
-		Device[] devices = this.deviceDatabase.getDeviceManager().getDevices(configurations, platforms);
+	public void rebuild(Configuration[] configurations, Platform[] platforms,Device[] selectedDevices) {
+	    Set selectedDevicesSet = new HashSet();
+        if(selectedDevices != null) {
+            selectedDevicesSet.addAll(Arrays.asList(selectedDevices));
+        }
+        Device[] devices;
+        devices = this.deviceDatabase.getDeviceManager().getDevices(configurations, platforms);
 		DeviceTreeItem[] deviceItems = new DeviceTreeItem[ devices.length ];
 		ArrayList rootItemsList = new ArrayList();
         DeviceTreeItem virtualTreeItem = null;
@@ -106,6 +117,9 @@ public class DeviceTree {
 				lastVendorItem.addChild( item );
 			}
 			deviceItems[i] = item;
+            if(selectedDevicesSet.contains(item.getDevice())) {
+                item.setIsSelected(true);
+            }
 		}
 		this.deviceTreeItems = deviceItems;
 		// now sort the root items with the "virtual" tree item as the first element:

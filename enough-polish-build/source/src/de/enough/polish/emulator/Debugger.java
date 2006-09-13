@@ -99,6 +99,7 @@ public abstract class Debugger extends Extension {
 		String line = env.getVariable("polish.debug.commandline");
 		DebuggerSetting setting = ((DebuggerSetting) this.extensionSetting);
 		if ( line != null && line.length() > 1 ) {
+            System.out.println("Debugger.addDebugArguments(...): polish.debug.commandline="+ line);
 			int port = setting.getPort();
 			env.setVariable("polish.debug.port", "" + port );
 			line = env.writeProperties(line);

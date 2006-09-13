@@ -635,7 +635,7 @@
 	<extension>
 		<type>debugger</type>
 		<name>default</name>
-		<class>de.enough.polish.emulator.Debugger</class>
+		<class>de.enough.polish.emulator.DefaultDebugger</class>
 	</extension>
 
 	<!-- Resource Copier -->
