@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui && polish.mmapi
 
 /*
  * Created on Sep 8, 2006 at 5:00:10 PM.
