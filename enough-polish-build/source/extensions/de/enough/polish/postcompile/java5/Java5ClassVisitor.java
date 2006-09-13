@@ -25,8 +25,6 @@
  */
 package de.enough.polish.postcompile.java5;
 
-import java.util.List;
-
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -43,12 +41,10 @@ public class Java5ClassVisitor
   private String className;
   private String signature_values;
   // TODO: Use this to determine when to rewrite enum constants.
-  private List enumClasses;
   
-  public Java5ClassVisitor(ClassVisitor cv, List enumClasses)
+  public Java5ClassVisitor(ClassVisitor cv)
   {
     super(cv);
-    this.enumClasses = enumClasses;
   }
 
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces)

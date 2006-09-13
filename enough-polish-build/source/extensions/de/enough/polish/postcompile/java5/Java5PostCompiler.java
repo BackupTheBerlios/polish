@@ -29,13 +29,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 
 import com.rc.retroweaver.RetroWeaver;
@@ -157,7 +157,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
       }
 
     ASMClassLoader asmLoader = new ASMClassLoader(loader);
-    LinkedList enumClasses = new LinkedList();
+    EnumManager manager = EnumManager.getInstance();
 
     // Find all classes implementing java.lang.Enum.
     Iterator it = classes.iterator();
@@ -172,7 +172,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
             
             if (CLASS_ENUM.equals(classNode.superName))
               {
-                enumClasses.add(className);
+                manager.addEnumClass(className);
               }
           }
         catch (ClassNotFoundException e)
@@ -181,7 +181,28 @@ public class Java5PostCompiler extends BytecodePostCompiler {
           }
       }
     
-    // Process all enum classes.
+    // Find all local variables with enum classes as type.
+    it = classes.iterator();
+    
+    while (it.hasNext())
+      {
+        String className = (String) it.next();
+        
+        try
+          {
+            ClassNode classNode = asmLoader.loadClass(className, false);
+            ClassWriter writer = new ClassWriter(true);
+            Type type = Type.getType("L" + className + ";");
+            Java5CollectorClassVisitor stage1visitor = new Java5CollectorClassVisitor(writer, type);
+            classNode.accept(stage1visitor);
+          }
+        catch (ClassNotFoundException e)
+          {
+            System.out.println("Error loading class " + className);
+          }
+      }
+            
+    // Process all classes.
     it = classes.iterator();
     
     while (it.hasNext())
@@ -192,7 +213,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
           {
             ClassNode classNode = asmLoader.loadClass(className);
             ClassWriter writer = new ClassWriter(true);
-            Java5ClassVisitor visitor = new Java5ClassVisitor(writer, enumClasses);
+            Java5ClassVisitor visitor = new Java5ClassVisitor(writer);
             classNode.accept(visitor);
             writeClass(newClassesDir, className, writer.toByteArray());
           }
