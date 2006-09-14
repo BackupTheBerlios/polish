@@ -45,7 +45,7 @@
         <antcall target="gather.bin.parts">
             <param name="destination.temp.folder" value="${temp.folder}/"></param>
         </antcall>
-        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3.jar" filesonly="false" update="false" whenempty="skip"></zip>
+        <zip basedir="${temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6.jar" filesonly="false" update="false" whenempty="skip"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target depends="init" description="Create jar: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin @dot." name="@dot" unless="@dot">
@@ -53,49 +53,34 @@
         <mkdir dir="${temp.folder}/@dot.bin"></mkdir>
         <path id="@dot.classpath">
             <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.ui/@dot"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-ui/@dot"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.ui/bin/"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-ui/bin/"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.velocity/velocity-dep-1.4.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.velocity/velocity-1.4.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.velocity/bin"></pathelement>
-            <pathelement path="${build.result.folder}/../org.apache.velocity/bin"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.velocity/@dot"></pathelement>
-            <pathelement path="${build.result.folder}/../org.apache.velocity/@dot"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.velocity/bin/"></pathelement>
-            <pathelement path="${build.result.folder}/../org.apache.velocity/bin/"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/jdom.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/jdom.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/enough-j2mepolish-build.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/enough-j2mepolish-build.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant-nodeps.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant-nodeps.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/MeposeCore.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../enough-mepose-core/MeposeCore.jar"></pathelement>
-            <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes/"></pathelement>
             <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes/"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
-            <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes/"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/MeposeCore.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/MeposeCore.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant-nodeps.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant-nodeps.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/enough-j2mepolish-build.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/enough-j2mepolish-build.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-core/lib/jdom.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/jdom.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.velocity/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.velocity/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/bin"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.velocity/bin"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.velocity/velocity-1.4.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.velocity/velocity-dep-1.4.jar"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-ui/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.ui/bin/"></pathelement>
+            <pathelement path="${build.result.folder}/../enough-mepose-ui/@dot"></pathelement>
+            <pathelement path="${build.result.folder}/../de.enough.mepose.ui/@dot"></pathelement>
             <pathelement path="../enough-mepose-editor-java/bin/stubs"></pathelement>
             <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar"></pathelement>
             <pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar"></pathelement>
@@ -237,31 +222,31 @@
         <antcall target="src.zip"></antcall>
     </target>
     <target depends="init" if="destination.temp.folder" name="gather.bin.parts">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3"></mkdir>
-        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6"></mkdir>
+        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6">
             <fileset dir="${build.result.folder}/@dot" includes="**"></fileset>
         </copy>
-        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3">
+        <copy failonerror="true" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6">
             <fileset dir="${basedir}" includes="plugin.xml,META-INF/,icons/j2mepolish_ovr.gif,icons/jongleur1_16x16.png"></fileset>
         </copy>
     </target>
     <target depends="init" name="build.zips"></target>
     <target depends="init" if="destination.temp.folder" name="gather.sources">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3"></mkdir>
-        <copy failonerror="false" file="${build.result.folder}/src.zip" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3"></copy>
-        <copy failonerror="false" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3">
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6"></mkdir>
+        <copy failonerror="false" file="${build.result.folder}/src.zip" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6"></copy>
+        <copy failonerror="false" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6">
             <fileset dir="${basedir}" includes="icons/,lib/,plugin.xml,source/,.project,.classpath,build.properties,build.xml"></fileset>
         </copy>
     </target>
     <target depends="init" if="destination.temp.folder" name="gather.logs">
-        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3"></mkdir>
-        <copy failonerror="false" file="${temp.folder}/@dot.bin${logExtension}" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3"></copy>
+        <mkdir dir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6"></mkdir>
+        <copy failonerror="false" file="${temp.folder}/@dot.bin${logExtension}" overwrite="false" todir="${destination.temp.folder}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6"></copy>
     </target>
     <target depends="init" description="Clean the plug-in: de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin of all the zips, jars and logs created." name="clean">
         <delete dir="${build.result.folder}/@dot"></delete>
         <delete file="${build.result.folder}/src.zip"></delete>
-        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3.jar"></delete>
-        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3.zip"></delete>
+        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6.jar"></delete>
+        <delete file="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6.zip"></delete>
         <delete dir="${temp.folder}"></delete>
     </target>
     <target depends="init" description="Refresh this folder." if="eclipse.running" name="refresh">
@@ -282,7 +267,7 @@
         <delete>
             <fileset dir="${temp.folder}" includes="**/*.bin${logExtension}"></fileset>
         </delete>
-        <zip basedir="${temp.folder}" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.3.zip" filesonly="true" update="false" whenempty="skip"></zip>
+        <zip basedir="${temp.folder}" destfile="${plugin.destination}/de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin_0.7.6.zip" filesonly="true" update="false" whenempty="skip"></zip>
         <delete dir="${temp.folder}"></delete>
     </target>
 </project>
