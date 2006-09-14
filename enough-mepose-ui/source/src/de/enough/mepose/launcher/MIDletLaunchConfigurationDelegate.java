@@ -3,7 +3,9 @@ package de.enough.mepose.launcher;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.tools.ant.DemuxInputStream;
@@ -160,20 +162,17 @@ public class MIDletLaunchConfigurationDelegate extends
 
             monitor.subTask("Setting source lookup path.");
             monitor.worked(1);
+            
             AbstractSourceLookupDirector sourceLocator = (AbstractSourceLookupDirector) launch
                     .getSourceLocator();
-            ISourceContainer[] sourceContainers = sourceLocator
-                    .getSourceContainers();
-
-            ISourceContainer meposeContainer =
-                new DirectorySourceContainer(new Path(model.getProjectHome()+"/source/src"),true);
-
-            ISourceContainer[] newSourceContainers = new ISourceContainer[sourceContainers.length + 1];
-            System.arraycopy(sourceContainers, 0, newSourceContainers, 0,
-                             sourceContainers.length);
-            newSourceContainers[sourceContainers.length] = meposeContainer;
-
-            sourceLocator.setSourceContainers(newSourceContainers);
+            ISourceContainer[] sourceContainers = sourceLocator.getSourceContainers();
+            
+            LinkedList sourceContainerList = new LinkedList();
+            sourceContainerList.addAll(Arrays.asList(sourceContainers));
+            createNewSourceContainers(model, sourceContainerList);
+            sourceContainers = (ISourceContainer[]) sourceContainerList.toArray(new ISourceContainer[sourceContainerList.size()]);
+            
+            sourceLocator.setSourceContainers(sourceContainers);
 
             AntProcess antProcess = new MeposeProcess("J2ME Polish", launch,attributes);
 
@@ -299,6 +298,24 @@ public class MIDletLaunchConfigurationDelegate extends
             
             //Do not remove the launch at the end of the game but at the start of a new game.
 //            getLaunchManager().removeLaunch(launch);
+        }
+    }
+
+
+    /**
+     * @param model
+     * @param sourceContainers
+     * @return
+     */
+    private void createNewSourceContainers(MeposeModel model, LinkedList sourceContainers) {
+        ISourceContainer mainSourceContainer =
+            new DirectorySourceContainer(new Path(model.getProjectHome()+"/source/src"),true);
+        sourceContainers.add(mainSourceContainer);
+        
+        String unprocessedBuildPath = model.getSourcePath(model.getCurrentDevice());
+        if(unprocessedBuildPath != null) {
+            ISourceContainer unprocessedBuildContainer = new DirectorySourceContainer(new Path(unprocessedBuildPath),true);
+            sourceContainers.add(unprocessedBuildContainer);
         }
     }
 
