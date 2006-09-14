@@ -69,7 +69,9 @@ public class ChooseDevicePage extends MeposePropertyPage {
     }
 
     public boolean performCancel() {
-        // TODO rickyn implement performCancel
+        if(this.chooseDeviceManager != null) {
+            this.chooseDeviceManager.performCancel();
+        }
         return super.performCancel();
     }
 
@@ -79,7 +81,9 @@ public class ChooseDevicePage extends MeposePropertyPage {
     }
 
     public boolean performOk() {
-        // TODO rickyn implement performOk
+    	if(this.chooseDeviceManager != null{
+    		this.chooseDeviceManager.performOk();
+    	}
         return super.performOk();
     }
 
