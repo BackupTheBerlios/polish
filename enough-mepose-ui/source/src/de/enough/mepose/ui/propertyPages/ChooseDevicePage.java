@@ -81,7 +81,7 @@ public class ChooseDevicePage extends MeposePropertyPage {
     }
 
     public boolean performOk() {
-    	if(this.chooseDeviceManager != null{
+    	if(this.chooseDeviceManager != null){
     		this.chooseDeviceManager.performOk();
     	}
         return super.performOk();

@@ -27,10 +27,10 @@ package de.enough.mepose.widgets;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import de.enough.mepose.core.model.DeviceDatabaseException;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
-import de.enough.mepose.ui.wizards.NewProjectModel;
+import de.enough.polish.Device;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceTree;
@@ -93,7 +93,7 @@ public class ChooseDeviceManager {
     // Model elements.
     
     private MeposeModel model;
-    private DeviceTree deviceTree;
+    private DeviceTree deviceTreeModel;
 
     private DeviceSelectionManager deviceSelectionManager;
     
@@ -138,21 +138,22 @@ public class ChooseDeviceManager {
             // not needed.
         }
         public void reset() {
-            
+            Collection deviceTreeItems = this.treeItemToDeviceTreeItemMap.keySet();
+            for (Iterator iterator = deviceTreeItems.iterator(); iterator.hasNext(); ) {
+                DeviceTreeItem deviceTreeItem = (DeviceTreeItem) iterator.next();
+                deviceTreeItem.removeSelectionListener(this);
+            }
+            this.treeItemToDeviceTreeItemMap.clear();
         }
     }
     
     protected class PlatfAndConfSelectionChangeListener extends SelectionAdapter{
         public void widgetSelected(SelectionEvent e) {
-            fillDeviceTable();
+            fillDeviceTable(null);
         }
     }
     
     protected class DescriptionDumper implements SelectionListener{
-        
-        private void setDescription(String description) {
-            setDescription(description);
-        }
         
         public void widgetSelected(SelectionEvent e) {
             TreeItem item = (TreeItem)e.item;
@@ -169,11 +170,6 @@ public class ChooseDeviceManager {
                 Platform platform = (Platform)item.getData();
                 setDescription(platform.getDescription());
             }
-            // Can not be reached.
-//            else {
-//                setDescription("No description available. Would you like to add an entry to the device database?");
-//            }
-            
         }
         public void widgetDefaultSelected(SelectionEvent e) {
             //
@@ -191,6 +187,11 @@ public class ChooseDeviceManager {
         }
     }
     
+    
+    // #########################################################################
+    // CONSTRUCTOR
+    
+    
     public ChooseDeviceManager(Composite parent, MeposeModel model) {
         this.model = model;
         DeviceDatabase deviceDatabase;
@@ -200,162 +201,15 @@ public class ChooseDeviceManager {
             MeposeUIPlugin.log("Could not get DeviceDatabase from MeposeModel");
             return;
         }
-        this.main = createControls(parent);
-        this.deviceTree = new DeviceTree(deviceDatabase,getSelectedConfigurations(),getSelectedPlatforms());
         this.deviceSelectionManager = new DeviceSelectionManager();
-        fillDeviceTable();
+        this.main = createControls(parent);
+        this.deviceTreeModel = new DeviceTree(deviceDatabase,getSelectedConfigurations(),getSelectedPlatforms());
+        fillDeviceTable(this.model.getSupportedDevices());
     }
 
-    /**
-     * @param parent
-     * @return the complete Composite which contains all gui elements.
-     */
-    private Composite createControls(Composite parent) {
-        Composite top = new Composite(parent,SWT.NONE);
-        
-        top.setLayout(new GridLayout(2,true));
-        
-        Group configGroup = new Group(top,SWT.NONE);
-        configGroup.setText("Configurations");
-        configGroup.setLayout(new GridLayout(1,false));
-        configGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        
-        PlatfAndConfSelectionChangeListener platformAndConfigurationChangeListener = new PlatfAndConfSelectionChangeListener();
-
-        this.configurationsTree = new Tree(configGroup,SWT.CHECK);
-        this.configurationsTree.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        this.configurationsTree.addSelectionListener(platformAndConfigurationChangeListener);
-        
-        Group platformGroup = new Group(top,SWT.NONE);
-        platformGroup.setText("Platforms");
-        platformGroup.setLayout(new GridLayout(1,false));
-        platformGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        
-        this.platformTree = new Tree(platformGroup,SWT.CHECK);
-        this.platformTree.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        this.platformTree.addSelectionListener(platformAndConfigurationChangeListener);
-        
-        Group devicesGroup = new Group(top,SWT.NONE);
-        devicesGroup.setText("Supported Devices");
-        devicesGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
-        devicesGroup.setLayout(new GridLayout(1,false));
-        
-        this.possibleDevicesTree = new Tree(devicesGroup,SWT.CHECK);
-        this.possibleDevicesTree.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-//        DeviceSelectionChangeListener deviceSelectionChangeListener = new DeviceSelectionChangeListener();
-//        this.possibleDevicesTree.addSelectionListener(deviceSelectionChangeListener);
-        DeviceSelectionManager deviceSelectionManager = new DeviceSelectionManager();
-        this.possibleDevicesTree.addSelectionListener(deviceSelectionManager);
-        
-        Group descriptionGroup = new Group(top,SWT.NONE);
-        descriptionGroup.setText("Description");
-        descriptionGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
-        descriptionGroup.setLayout(new GridLayout(1,false));
-        
-        this.descriptionLabel = new Label(descriptionGroup,SWT.WRAP);
-        this.descriptionLabel.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        
-        fillPlatformTree();
-        fillConfigurationTree();
-        //TODO: Make the deviceTree standalone so it does not need so many parameters.
-        // updateDeviceTable needs the deviceTree which is created after this call.
-//        updateDeviceTable();
-        return top;
-    }
     
-    public Control getControl() {
-        return this.main;
-    }
-    
-    // User control cycle management.
-    
-    public void performCancel() {
-        //
-    }
-    
-    public void performOk() {
-        //
-    }
-    
-    public void performReset() {
-        //
-    }
-    
-    // GUI Management
-    
-    protected void updateSelectableDevices() {
-        //
-    }
-    
-    protected void fillConfigurationTree() {
-        TreeItem item;
-        Configuration[] configurations;
-        configurations = getAllConfigurations();
-        for (int i = 0; i < configurations.length; i++) {
-            String identifier = configurations[i].getIdentifier();
-            item = new TreeItem(this.configurationsTree,SWT.NONE);
-            item.setText(identifier);
-            item.setData(configurations[i]);
-            if(identifier.startsWith("CLDC/1.1")) {
-                item.setChecked(true);
-            }
-        }
-        this.configurationsTree.showSelection();
-    }
-
-    protected void fillPlatformTree() {
-        TreeItem item;
-        Platform[] platforms;
-        platforms = getAllPlatforms();
-        for (int i = 0; i < platforms.length; i++) {
-            String identifier = platforms[i].getIdentifier();
-            item = new TreeItem(this.platformTree,SWT.NONE);
-            item.setText(identifier);
-            item.setData(platforms[i]);
-            if(identifier.startsWith("MIDP/2.0")) {
-                item.setChecked(true);
-            }
-//            item.setExpanded(false);
-        }
-        this.platformTree.showSelection();
-    }
-    
-    protected void fillDeviceTable(){
-        
-        this.deviceSelectionManager.reset();
-        
-        Configuration[] selectedConfigurations = getSelectedConfigurations();
-        Platform[] selectedPlatforms = getSelectedPlatforms();
-        this.deviceTree.rebuild(selectedConfigurations,selectedPlatforms);
-        this.possibleDevicesTree.removeAll();
-        DeviceTreeItem[] deviceTreeItems;
-        deviceTreeItems = this.deviceTree.getRootItems();
-        
-        ArrayList nodes = new ArrayList(deviceTreeItems.length);
-        TreeItem treeItem;
-        for (int i = 0; i < deviceTreeItems.length; i++) {
-            treeItem = new TreeItem(this.possibleDevicesTree,SWT.NONE);
-            treeItem.setData(deviceTreeItems[i]);
-            nodes.add(treeItem);
-        }
-        
-        DeviceTreeItem deviceTreeItem;
-
-        for (int i = 0; i < nodes.size();i++) {
-            treeItem = (TreeItem) nodes.get(i);
-            deviceTreeItem = (DeviceTreeItem)treeItem.getData();
-            treeItem.setText(deviceTreeItem.toString());
-            
-            deviceTreeItems = deviceTreeItem.getChildren();
-            for (int j = 0; j < deviceTreeItems.length; j++) {
-                TreeItem childTreeItem = new TreeItem(treeItem,SWT.NONE);
-                childTreeItem.setData(deviceTreeItems[j]);
-                nodes.add(childTreeItem);
-            }
-        }
-    }
-    
-    // Data Management.
+    // #########################################################################
+    // MODEL
     
     protected Configuration[] getAllConfigurations() {
         DeviceDatabase deviceDatabase;
@@ -383,9 +237,10 @@ public class ChooseDeviceManager {
         return deviceDatabase.getPlatformManager().getPlatforms();
     }
     
+    
     /**
      * Its not nice that this method relies on GUI trees. There should be only a
-     * listener which caches the reslults of the selection.
+     * listener which caches the results of the selection.
      * @return all selected platforms
      */
     protected Platform[] getSelectedPlatforms() {
@@ -426,11 +281,178 @@ public class ChooseDeviceManager {
         return configurations;
     }
     
-    protected void checkState() {
-        //
+    protected Device[] getSelectedDevices() {
+        return this.deviceTreeModel.getSelectedDevices();
+    }
+    
+    protected boolean checkState() {
+        Device[] selectedDevices = this.deviceTreeModel.getSelectedDevices();
+        if(selectedDevices == null || selectedDevices.length == 0) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    
+    // #########################################################################
+    // CONTROLLER
+    
+    // User control cycle management.
+    
+    public void performCancel() {
+        this.deviceSelectionManager.reset();
+    }
+    
+    public void performOk() {
+        this.model.setSupportedPlatforms(getSelectedPlatforms());
+        this.model.setSupportedConfigurations(getSelectedConfigurations());
+        this.model.setSupportedDevices(getSelectedDevices());
+        this.model.setDeviceTree(this.deviceTreeModel);
+    }
+    
+    public void performReset() {
+        this.deviceSelectionManager.reset();
+    }
+    
+    
+    // #########################################################################
+    // VIEW
+
+    
+    public Control getControl() {
+        return this.main;
+    }
+    
+    protected void fillConfigurationTree() {
+        TreeItem item;
+        Configuration[] configurations;
+        configurations = getAllConfigurations();
+        for (int i = 0; i < configurations.length; i++) {
+            String identifier = configurations[i].getIdentifier();
+            item = new TreeItem(this.configurationsTree,SWT.NONE);
+            item.setText(identifier);
+            item.setData(configurations[i]);
+            if(identifier.startsWith("CLDC/1.1")) {
+                item.setChecked(true);
+            }
+        }
+        this.configurationsTree.showSelection();
+    }
+
+    protected void fillPlatformTree() {
+        TreeItem item;
+        Platform[] platforms;
+        platforms = getAllPlatforms();
+        for (int i = 0; i < platforms.length; i++) {
+            String identifier = platforms[i].getIdentifier();
+            item = new TreeItem(this.platformTree,SWT.NONE);
+            item.setText(identifier);
+            item.setData(platforms[i]);
+            if(identifier.startsWith("MIDP/2.0")) {
+                item.setChecked(true);
+            }
+//            item.setExpanded(false);
+        }
+        
+        this.platformTree.showSelection();
+    }
+    
+    protected void fillDeviceTable(Device[] devices){
+        
+        this.deviceSelectionManager.reset();
+        
+        Configuration[] selectedConfigurations = getSelectedConfigurations();
+        Platform[] selectedPlatforms = getSelectedPlatforms();
+        this.deviceTreeModel.rebuild(selectedConfigurations,selectedPlatforms,devices);
+        this.possibleDevicesTree.removeAll();
+        DeviceTreeItem[] deviceTreeItems;
+        deviceTreeItems = this.deviceTreeModel.getRootItems();
+        
+        LinkedList nodes = new LinkedList();
+        TreeItem treeItem;
+        for (int i = 0; i < deviceTreeItems.length; i++) {
+            treeItem = new TreeItem(this.possibleDevicesTree,SWT.NONE);
+            treeItem.setData(deviceTreeItems[i]);
+            this.deviceSelectionManager.addTreeItem(treeItem);
+            nodes.add(treeItem);
+        }
+        
+        DeviceTreeItem deviceTreeItem;
+
+        for (int i = 0; i < nodes.size();i++) {
+            treeItem = (TreeItem) nodes.get(i);
+            deviceTreeItem = (DeviceTreeItem)treeItem.getData();
+            treeItem.setText(deviceTreeItem.toString());
+            
+            deviceTreeItems = deviceTreeItem.getChildren();
+            for (int j = 0; j < deviceTreeItems.length; j++) {
+                TreeItem childTreeItem = new TreeItem(treeItem,SWT.NONE);
+                childTreeItem.setData(deviceTreeItems[j]);
+                this.deviceSelectionManager.addTreeItem(childTreeItem);
+                nodes.add(childTreeItem);
+            }
+        }
+    }
+    
+    /**
+     * @param parent
+     * @return the complete Composite which contains all gui elements.
+     */
+    private Composite createControls(Composite parent) {
+        Composite top = new Composite(parent,SWT.NONE);
+        
+        top.setLayout(new GridLayout(2,true));
+        
+        Group configGroup = new Group(top,SWT.NONE);
+        configGroup.setText("Configurations");
+        configGroup.setLayout(new GridLayout(1,false));
+        configGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+        
+        PlatfAndConfSelectionChangeListener platformAndConfigurationChangeListener = new PlatfAndConfSelectionChangeListener();
+        DescriptionDumper descriptionDumper = new DescriptionDumper();
+        this.configurationsTree = new Tree(configGroup,SWT.CHECK);
+        this.configurationsTree.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+        this.configurationsTree.addSelectionListener(platformAndConfigurationChangeListener);
+        this.configurationsTree.addSelectionListener(descriptionDumper);
+        
+        Group platformGroup = new Group(top,SWT.NONE);
+        platformGroup.setText("Platforms");
+        platformGroup.setLayout(new GridLayout(1,false));
+        platformGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+        
+        this.platformTree = new Tree(platformGroup,SWT.CHECK);
+        this.platformTree.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+        this.platformTree.addSelectionListener(platformAndConfigurationChangeListener);
+        this.platformTree.addSelectionListener(descriptionDumper);
+        
+        Group devicesGroup = new Group(top,SWT.NONE);
+        devicesGroup.setText("Supported Devices");
+        devicesGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+        devicesGroup.setLayout(new GridLayout(1,false));
+        
+        this.possibleDevicesTree = new Tree(devicesGroup,SWT.CHECK);
+        this.possibleDevicesTree.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+//        DeviceSelectionChangeListener deviceSelectionChangeListener = new DeviceSelectionChangeListener();
+//        this.possibleDevicesTree.addSelectionListener(deviceSelectionChangeListener);
+        this.possibleDevicesTree.addSelectionListener(this.deviceSelectionManager);
+        this.possibleDevicesTree.addSelectionListener(descriptionDumper);
+        
+        Group descriptionGroup = new Group(top,SWT.NONE);
+        descriptionGroup.setText("Description");
+        descriptionGroup.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+        descriptionGroup.setLayout(new GridLayout(1,false));
+        
+        this.descriptionLabel = new Label(descriptionGroup,SWT.WRAP);
+        this.descriptionLabel.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+        
+        fillPlatformTree();
+        fillConfigurationTree();
+        return top;
     }
     
     protected void setDescription(String description) {
         this.descriptionLabel.setText(description);
     }
+    
 }
