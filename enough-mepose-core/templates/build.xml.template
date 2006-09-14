@@ -125,7 +125,7 @@
 		<deviceRequirements if="test">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
-		<deviceRequirements if="! test && device:defined">
+		<deviceRequirements if="!test and device:defined">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
 		<deviceRequirements unless="test">
@@ -223,10 +223,8 @@
 			enableProfiler="false"
 			enableMemoryMonitor="false"
 			enableNetworkMonitor="false"
-			if="debug"
-			>
-			<parameter name="-Xdebug" value="" />
-			<parameter name="-Xrunjdwp" value="transport=dt_socket,server=y,suspend=n,address=8000" />
+			if="debug">
+			<debugger port="8000" />
 		</emulator>
 		
 	</j2mepolish>
