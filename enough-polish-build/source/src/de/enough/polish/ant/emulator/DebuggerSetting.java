@@ -86,22 +86,5 @@ public class DebuggerSetting extends ExtensionSetting {
 	public boolean isSuspend() {
 		return this.isSuspend;
 	}
-	
-	public String getXRunJdwpCommandLine() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("-Xrunjdwp:address="  ).append( this.port )
-			.append( ",transport=").append(this.transport );
-		if (this.isServer) {
-			buffer.append(",server=y");
-		} else {
-			buffer.append(",server=n");			
-		}
-		if (this.isSuspend) {
-			buffer.append(",suspend=y");
-		} else {
-			buffer.append(",suspend=n");						
-		}
-		return buffer.toString();
-	}
 
 }

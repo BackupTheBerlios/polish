@@ -31,7 +31,7 @@
 		<description>Devices belonging to the UEI group provide UEI compatible emulators.</description>
 		<!--
 		<capability name="polish.debug.commandline"
-					value="-Xdebug;;-Xrunjdwp:address=${polish.debug.port}" />
+					value="-Xdebug;;-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${polish.debug.port}" />
 		-->
 	</group>
 

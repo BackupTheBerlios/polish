@@ -198,6 +198,9 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-6"/>
 		<capability name="key.RightSoftKey" value="-7"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="polish.debug.commandline"
+					value="-Xdebug;;-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${polish.debug.port}" />
+		
 	</device>	
 	
 	<device supportsPolishGui="true">

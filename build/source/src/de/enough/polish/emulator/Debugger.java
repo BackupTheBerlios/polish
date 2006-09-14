@@ -99,7 +99,6 @@ public abstract class Debugger extends Extension {
 		String line = env.getVariable("polish.debug.commandline");
 		DebuggerSetting setting = ((DebuggerSetting) this.extensionSetting);
 		if ( line != null && line.length() > 1 ) {
-            System.out.println("Debugger.addDebugArguments(...): polish.debug.commandline="+ line);
 			int port = setting.getPort();
 			env.setVariable("polish.debug.port", "" + port );
 			line = env.writeProperties(line);
@@ -109,9 +108,26 @@ public abstract class Debugger extends Extension {
 			}
 		} else {
 			argsList.add( "-Xdebug" );
-			argsList.add( setting.getXRunJdwpCommandLine() );
+			argsList.add( getXRunJdwpCommandLine( setting ) );
 		}
 
 	} 
+	
+	public String getXRunJdwpCommandLine( DebuggerSetting setting ) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("-Xrunjdwp:transport=").append(setting.getTransport() );
+		if (setting.isServer()) {
+			buffer.append(",server=y");
+		} else {
+			buffer.append(",server=n");		
+		}
+		if (setting.isSuspend()) {
+			buffer.append(",suspend=y");
+		} else {
+			buffer.append(",suspend=n");		
+		}
+		buffer.append(",address="  ).append( setting.getPort() );
+		return buffer.toString();
+	}
 
 }
