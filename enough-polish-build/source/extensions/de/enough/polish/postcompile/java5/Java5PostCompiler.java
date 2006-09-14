@@ -190,11 +190,16 @@ public class Java5PostCompiler extends BytecodePostCompiler {
         
         try
           {
+            // Load class.
             ClassNode classNode = asmLoader.loadClass(className, false);
+            
+            // Read the class and collect infos about enums.
+            // TODO: Don't use a ClassWriter instance here. The stuff gets dropped
+            // into nirvana anyway.
             ClassWriter writer = new ClassWriter(true);
             Type type = Type.getType("L" + className + ";");
-            Java5CollectorClassVisitor stage1visitor = new Java5CollectorClassVisitor(writer, type);
-            classNode.accept(stage1visitor);
+            Java5CollectorClassVisitor visitor = new Java5CollectorClassVisitor(writer, type);
+            classNode.accept(visitor);
           }
         catch (ClassNotFoundException e)
           {
@@ -211,10 +216,19 @@ public class Java5PostCompiler extends BytecodePostCompiler {
         
         try
           {
+            // Load class.
             ClassNode classNode = asmLoader.loadClass(className);
-            ClassWriter writer = new ClassWriter(true);
-            Java5ClassVisitor visitor = new Java5ClassVisitor(writer);
+            
+            // Transform class. We need to write the transformed classes into another
+            // ClassNode object as some transformations are done in visitEnd() methods
+            // and the changes from there would be lost when writing the class directly. 
+            ClassNode targetNode = new ClassNode();
+            Java5ClassVisitor visitor = new Java5ClassVisitor(targetNode);
             classNode.accept(visitor);
+            
+            // Write class.
+            ClassWriter writer = new ClassWriter(true);
+            targetNode.accept(writer);
             writeClass(newClassesDir, className, writer.toByteArray());
           }
         catch (IOException e)
