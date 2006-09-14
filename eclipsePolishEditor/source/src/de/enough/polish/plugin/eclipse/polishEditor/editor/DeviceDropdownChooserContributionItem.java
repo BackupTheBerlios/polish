@@ -25,6 +25,9 @@
  */
 package de.enough.polish.plugin.eclipse.polishEditor.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.swt.SWT;
@@ -54,9 +57,9 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
     public class NewDeviceSelectionListener implements SelectionListener{
 
         public void widgetSelected(SelectionEvent e) {
-//            System.out.println("DEBUG:NewDeviceSelectionListener.widgetSelected(...):device selected.");
             Combo comboTemp = (Combo)e.getSource();
-            Device device = DeviceDropdownChooserContributionItem.this.supportedDevices[comboTemp.getSelectionIndex()];
+            int selectedIndex = comboTemp.getSelectionIndex();
+            Device device = getDeviceAtIndex(selectedIndex);
             DeviceDropdownChooserContributionItem.this.meposeModel.setCurrentDevice(device);
         }
 
@@ -66,15 +69,29 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
 
     }
     
+    public class SupportedDevicesChangeListener implements PropertyChangeListener{
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            if( ! MeposeModel.ID_SUPPORTED_DEVICES.equals(evt.getPropertyName())){
+                return;
+            }
+            updateState();
+        }
+        
+    }
+    
     private IContributionManager parent;
     private boolean visible;
     private Combo combo;
     protected MeposeModel meposeModel;
     protected Device[] supportedDevices;
     private NewDeviceSelectionListener deviceSelectionListener;
+    private SupportedDevicesChangeListener supportedDevicesChangeListener;
 
     public DeviceDropdownChooserContributionItem(MeposeModel meposeModel) {
         this.meposeModel = meposeModel;
+        this.supportedDevicesChangeListener = new SupportedDevicesChangeListener();
+        this.meposeModel.addPropertyChangeListener(this.supportedDevicesChangeListener);
         this.visible = true;
     }
     
@@ -84,6 +101,9 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
             this.combo.dispose();
         }
         this.combo = null;
+        if(this.meposeModel != null) {
+            this.meposeModel.removePropertyChangeListener(this.supportedDevicesChangeListener);
+        }
         this.meposeModel = null;
         this.parent = null;
     }
@@ -210,6 +230,14 @@ public class DeviceDropdownChooserContributionItem implements IContributionItem 
             // methods.
             this.parent.update(true);
         }
+    }
+    
+    protected Device getDeviceAtIndex(int index) {
+        return this.supportedDevices[index];
+    }
+    
+    protected void setSupportedDevices(Device[] devices) {
+        this.supportedDevices = devices;
     }
 
 }
