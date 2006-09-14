@@ -25,11 +25,18 @@
  */
 package de.enough.mepose.launcher;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.launching.JavaSourceLookupDirector;
 import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourceLookupParticipant;
 
@@ -54,35 +61,50 @@ public class MeposeSourceLocator extends JavaSourceLookupDirector implements
     }
     
     public MeposeSourceLocator() {
-        
+        //
     }
     
     public void setMeposeModel(MeposeModel model) {
         this.model = model;
     }
     
-    /*
-     * @see org.eclipse.debug.core.sourcelookup.ISourceLookupDirector#initializeParticipants()
-     */
     public void initializeParticipants() {
         JavaSourceLookupParticipant javaSourceLookupParticipant = new JavaSourceLookupParticipant();
-//        javaSourceLookupParticipant.init(this);
-//        try {
-//        javaSourceLookupParticipant.sourceContainersChanged(this);
-//        }
-//        catch(Throwable t) {
-//            System.out.println("DEBUG:MeposeSourceLocator.initializeParticipants(...):t:"+t);
-//        }
         addParticipants(new ISourceLookupParticipant[] {javaSourceLookupParticipant});
     }
 
     public synchronized ISourceContainer[] getSourceContainers() {
+        System.out.println("DEBUG:MeposeSourceLocator.getSourceContainers(...):enter.");
         
+        ISourceContainer[] defaultReturnValue;
         ISourceContainer[] sourceContainers = super.getSourceContainers();
+        defaultReturnValue = sourceContainers;
 //        MeposeModel model = MeposeUIPlugin.getDefault().getCurrentModel();
         if(this.model == null) {
-            return sourceContainers;
+            return defaultReturnValue;
         }
+        
+//        String projectPath = this.model.getProjectHome().getAbsolutePath();
+//        IContainer[] locationContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(projectPath));
+//        if(locationContainers == null || locationContainers.length == 0 || locationContainers[0] instanceof IProject) {
+//            return defaultReturnValue;
+//        }
+//        IProject project = (IProject)locationContainers[0];
+//        IJavaProject javaProject = JavaCore.create(project);
+//        IClasspathEntry[] rawClasspath = null;
+//        try {
+//            rawClasspath = javaProject.getRawClasspath();
+//        } catch (JavaModelException exception) {//
+//        }
+//        if(rawClasspath != null) {
+//            for (int i = 0; i < rawClasspath.length; i++) {
+//                IClasspathEntry classpathEntry = rawClasspath[i];
+//                if(classpathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+//                    //
+//                }
+//            }
+//        }
+        
         ISourceContainer meposeContainer1 = new DirectorySourceContainer(new Path(this.model.getProjectHome()+"/source/src"),true);
         ISourceContainer meposeContainer2 = new DirectorySourceContainer(new Path(this.model.getCurrentDevice().getSourceDir()),true);
         
