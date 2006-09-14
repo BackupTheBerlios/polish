@@ -319,6 +319,11 @@ public class MeposeModel extends PropertyModel{
         this.environment = this.polishTask.getEnvironment();
     }
   
+    public String getSourcePath(Device device) {
+        this.polishTask.initialize(device,null);
+        return device.getSourceDir();
+    }
+    
     public AntBox getAntBox() {
         return this.antBox;
     }
@@ -398,10 +403,10 @@ public class MeposeModel extends PropertyModel{
                 }
             }
         }
-        firePropertyChangeEvent(ID_SUPPORTED_DEVICES,null,this.supportedDevices);
         
         // TODO: This needs to be done as a listener task as the case of a change
         // in the supported devices must be handled.
+        //TODO: Remove the old values of devices not present any more.
         if(this.environment != null) {
             this.variables.clear();
             for (int i = 0; i < supportedDevices.length; i++) {
@@ -410,6 +415,7 @@ public class MeposeModel extends PropertyModel{
                 this.variables.putAll(this.environment.getVariables());
             }
         }
+        firePropertyChangeEvent(ID_SUPPORTED_DEVICES,null,this.supportedDevices);
     }
     
     public Map getVariables() {
@@ -853,6 +859,10 @@ public class MeposeModel extends PropertyModel{
     public void removeBuildListener(BuildListener aBuildListener) {
         this.buildListener.remove(aBuildListener);
         this.antBox.getProject().removeBuildListener(aBuildListener);
+    }
+
+    public void setDeviceTree(DeviceTree deviceTreeModel) {
+        this.deviceTree = deviceTreeModel;
     }
     
 }
