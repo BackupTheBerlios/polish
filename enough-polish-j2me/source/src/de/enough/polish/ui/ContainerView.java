@@ -117,6 +117,11 @@ public class ContainerView {
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
+			if (parent.parent == null ||
+					 ( (parent.parent instanceof Container)  && ((Container)parent.parent).getItems().length>1) )
+			{
+				this.allowCycling = false;
+			}
 		//#endif
 		//#if polish.css.view-type-left-x-offset
 			lineWidth -= this.leftXOffset;
@@ -349,12 +354,14 @@ public class ContainerView {
 			} else {
 				this.appearanceMode = Item.PLAIN;
 			}
-			//#if polish.css.colspan
-				if (columnIndex != 0) {
-					// last row is not completely filled.
+			if (columnIndex != 0) {
+				// last row is not completely filled.
+				//#if polish.css.colspan
 					rowHeightsList.add( new Integer( maxRowHeight ) );
-					myContentHeight += maxRowHeight;
-				}
+				//#endif
+				myContentHeight += maxRowHeight;
+			}
+			//#if polish.css.colspan
 				this.numberOfRows = rowHeightsList.size();
 				//System.out.println("ContainerView.init(): numberOfRows=" + this.numberOfRows + ", rowIndex=" + rowIndex);
 				this.rowsHeights = new int[ this.numberOfRows ];
@@ -439,6 +446,10 @@ public class ContainerView {
 						}
 					} // for each item		
 					this.columnsWidths = newMaxColumnWidths;
+				}
+				if (columnIndex != 0) {
+					// last row is not completely filled.
+					myContentHeight += maxRowHeight;
 				}
 			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
 				// Use the maximum used column-width for each column,
@@ -710,7 +721,7 @@ public class ContainerView {
 				}
 			}
 		//#endif
-		//TODO check how to integrate cycling in containers
+		//TODO check how to integrate scrolling-cycling-coordination in containerviews
 	//	//#if polish.Container.allowCycling != false
 	//		boolean allowCycle = this.enableScrolling && this.allowCycling;
 	//		if (allowCycle) {
@@ -817,14 +828,15 @@ public class ContainerView {
 	protected void focusItem( int index, Item item  ) {
 		int direction = 0;
 		if (this.focusedIndex < index ) {
-			direction = Canvas.UP;
+			direction = Canvas.DOWN;
 		} else if (this.focusedIndex == index ) {
 			direction = 0;
 		} else {
-			direction = Canvas.DOWN;
+			direction = Canvas.UP;
 		}
-		this.focusedIndex = index;
-		this.focusedItem = item;
+		// this is done within container.focus() anyhow...
+		// this.focusedIndex = index;
+		// this.focusedItem = item;
 		this.parentContainer.focus(index, item, direction );
 	}
 
@@ -1114,7 +1126,8 @@ public class ContainerView {
 		System.out.println("ContainerView.handleKeypressedU() of container " + this);
 		Item item = getNextItem( keyCode, gameAction );
 		if (item != null) {
-			focusItem(this.focusedIndex, item);
+			// this is done within getNextItem/shiftFocus anyhow
+			//focusItem(this.focusedIndex, item);
 			return true;
 		}
 		return false;

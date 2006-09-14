@@ -143,17 +143,58 @@ public class TabbedForm extends Form {
 	//#endif
 	
 	/**
+	 * Adds the  item  to the first tab of this form.
+	 * 
+	 * @param item the item which should be added.
+	 * @param itemStyle the style for that item
+	 */
+	public int append( Item item, Style itemStyle ) {
+		return append( 0, item, itemStyle );
+	}
+	
+	/**
 	 * Adds the  item  to this form.
 	 * 
 	 * @param tabIndex the index of the tab to which the item should be added,
 	 *        the first tab has the index 0.
 	 * @param item the item which should be added.
+	 * @return the assigned index of the Item within the specified tab
 	 */
-	public void append( int tabIndex, Item item ) {
-		Container tabContainer = this.tabContainers[ tabIndex ];
-		tabContainer.add(item);
+	public int append( int tabIndex, Item item ) {
+		return append( tabIndex, item, null );		
 	}
 
+	/**
+	 * Adds the  item  to this form.
+	 * 
+	 * @param tabIndex the index of the tab to which the item should be added,
+	 *        the first tab has the index 0.
+	 * @param item the item which should be added.
+	 * @return the assigned index of the Item within the specified tab
+	 */
+	public int append( int tabIndex, Item item, Style itemStyle ) {
+		//#if polish.Container.allowCycling != false
+			if (item instanceof Container) {
+				((Container)item).allowCycling = false;
+			}
+		//#endif
+		if (itemStyle != null) {
+			item.setStyle( itemStyle );
+		}
+ 		Container tabContainer = this.tabContainers[ tabIndex ];
+		tabContainer.add(item);
+		return tabContainer.size() - 1;
+	}
+
+	/**
+	 * Changes the item of the first tab.
+	 * 
+	 * @param itemIndex the index of the item in the tab
+	 * @param item the item which should be added.
+	 */
+	public void set( int itemIndex, Item item ) {
+		set( 0, itemIndex, item );
+	}
 
 	/**
 	 * Changes the item of a tab.
@@ -164,6 +205,11 @@ public class TabbedForm extends Form {
 	 * @param item the item which should be added.
 	 */
 	public void set( int tabIndex, int itemIndex, Item item ) {
+		//#if polish.Container.allowCycling != false
+			if (item instanceof Container) {
+				((Container)item).allowCycling = false;
+			}
+		//#endif
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		tabContainer.set(itemIndex, item);
 	}
@@ -309,9 +355,9 @@ public class TabbedForm extends Form {
 	
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		Item focusedItem = this.container.focusedItem;
-		if (focusedItem instanceof Container) {
-			focusedItem = ((Container) focusedItem).focusedItem;
-		}
+//		if (focusedItem instanceof Container) {
+//			focusedItem = ((Container) focusedItem).focusedItem;
+//		}
 		if (focusedItem != null && focusedItem.handleKeyPressed(keyCode, gameAction)) {
 			return true;
 		} else if ( this.tabBar.handleKeyPressed(keyCode, gameAction)) {

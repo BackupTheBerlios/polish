@@ -522,8 +522,8 @@ public class Form extends Screen
 	 * <code>Form</code>, and the size of the <code>Form</code> grows
 	 * by one.
 	 * 
-	 * @param item - the Item to be added.
-	 * @param itemStyle
+	 * @param item the Item to be added.
+	 * @param itemStyle the style for that item
 	 * @return the assigned index of the Item
 	 * @throws IllegalStateException if the item is already owned by a container
 	 * @throws NullPointerException if item is null
