@@ -913,7 +913,6 @@ public abstract class Item extends Object
 		this.marginBottom = style.marginBottom;
 		//#ifdef polish.css.before
 			String beforeUrlStr = style.getProperty("before"); 
-			this.beforeUrl = beforeUrlStr;
 			if (beforeUrlStr != null) {
 				if ( !beforeUrlStr.equals(this.beforeUrl) ) {
 					try {
@@ -932,10 +931,10 @@ public abstract class Item extends Object
 				this.beforeWidth = 0;
 				this.beforeHeight = 0;
 			}
+			this.beforeUrl = beforeUrlStr;
 		//#endif
 		//#ifdef polish.css.after
 			String afterUrlStr = style.getProperty("after");
-			this.afterUrl = afterUrlStr;
 			if (afterUrlStr != null) {
 				if ( !afterUrlStr.equals(this.afterUrl) ) {
 					try {
@@ -954,6 +953,7 @@ public abstract class Item extends Object
 				this.afterHeight = 0;
 				this.afterImage = null;
 			}
+			this.afterUrl = afterUrlStr;
 		//#endif
 		//#ifdef polish.css.label-style
 			Style labStyle = (Style) style.getObjectProperty("label-style");

@@ -407,7 +407,7 @@ public class TabbedForm extends Form {
 			notifyScreenStateChanged();
 			return true;
 		} else {
-			return this.container.handlePointerPressed(x, y);
+			return super.handlePointerPressed(x, y);
 		}
 	}
 	//#endif

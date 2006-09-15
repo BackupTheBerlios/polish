@@ -1236,7 +1236,9 @@ implements AccessibleCanvas
 				//#endif
 				if (this.subTitle != null) {
 					this.subTitle.paint( leftBorder, topHeight, leftBorder, rightBorder, g );
+					this.subTitle.yTopPos = topHeight;
 					topHeight += this.subTitleHeight;
+					this.subTitle.yBottomPos = topHeight;
 				}
 				//#ifndef polish.skipTicker			
 					//#if tmp.paintTickerAtTop

@@ -382,6 +382,9 @@ public class TabBar extends Item {
 
 	//#ifdef polish.hasPointerEvents
 	protected boolean handlePointerPressed(int x, int y) {
+		if (y < this.yTopPos || y > this.yBottomPos) {
+			return false;
+		}
 		//System.out.println( "pointer-pressed: " + x + ", " + y);
 		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding; 
 		if ( this.activeTabIndex > 0 && x <= scrollerWidth ) {
