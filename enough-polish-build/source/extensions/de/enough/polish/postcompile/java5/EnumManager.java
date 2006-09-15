@@ -51,15 +51,29 @@ public class EnumManager
     return singleton;
   }
     
+  private String normalizeClassName(String className)
+  {
+    // TODO: We should perhaps remove '[' from array types too.
+    
+    if (className.charAt(0) == 'L'
+        && className.charAt(className.length() - 1) == ';')
+      {
+        className = className.substring(1, className.length() - 1);
+      }
+    
+    return className;
+  }
+  
   public void addEnumClass(String className)
   {
+    className = normalizeClassName(className);
     this.enumClasses.add(className);
   }
   
   public boolean isEnumClass(String className)
   {
-    return (this.enumClasses.contains(className)
-            || this.enumClasses.contains("L" + className + ";"));
+    className = normalizeClassName(className);
+    return this.enumClasses.contains(className);
   }
 
   public void addLocalVariable(LocalVariableInfo variable)
