@@ -118,6 +118,8 @@ public class MeposeModel extends PropertyModel{
 
     private static final Object ID_CURRENT_TARGET_ONLYBUILD = "id.current.target.onlybuild";
 
+    private static final String ID_PATH_MPP_FILE = "id.path.mpphome";
+
     
     
     // ###################################################################
@@ -138,6 +140,7 @@ public class MeposeModel extends PropertyModel{
     private File motorolaHome = new File("");
     private File siemensHome = new File("");
     private File projectHome = new File("");
+    private File mppHome = new File("");
 
     // Supported Config.
 //    private DeviceDatabase deviceDatabase;
@@ -515,6 +518,15 @@ public class MeposeModel extends PropertyModel{
         this.siemensHome = siemensHome;
     }
 
+    public File getMppHome() {
+        return this.mppHome;
+    }
+
+
+    public void setMppHome(File mppHome) {
+        this.mppHome = mppHome;
+    }
+
 
     /**
      * @param file May be null to indicate that there is no polish home specified.
@@ -643,6 +655,8 @@ public class MeposeModel extends PropertyModel{
         p.put(ID_PATH_SIEMENS_FILE,value==null?"":value.toString());
         value = getMotorolaHome();
         p.put(ID_PATH_MOTOROLA_FILE,value==null?"":value.toString());
+        value = getMppHome();
+        p.put(ID_PATH_MPP_FILE,value==null?"":value.toString());
         value = getProjectHome();
         p.put(ID_PATH_PROJECT_FILE,value==null?"":value.toString());
         value = getBuildxml();
@@ -686,6 +700,10 @@ public class MeposeModel extends PropertyModel{
         String wtkHomeTmp = (String)p.get(ID_PATH_WTK_FILE);
         if(wtkHomeTmp != null) {
             setWTKHome(new File(wtkHomeTmp));
+        }
+        String mppHomeTmp = (String)p.get(ID_PATH_MPP_FILE);
+        if(mppHomeTmp != null) {
+            setMppHome(new File(mppHomeTmp));
         }
         String nokiaHomeTmp = (String)p.get(ID_PATH_NOKIA_FILE);
         if(nokiaHomeTmp != null) {

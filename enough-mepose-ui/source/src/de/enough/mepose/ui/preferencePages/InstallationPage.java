@@ -38,8 +38,14 @@ public class InstallationPage
 	    addField(new DirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
 	                                      "J2ME Polish Installation Directory:", getFieldEditorParent()));
 
-        addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
-	                                      "WTK Installation Directory:", getFieldEditorParent()));
+        if(MeposePlugin.isMacOS()) {
+            addField(new DirectoryFieldEditor(MeposeConstants.ID_MPP_HOME, 
+                                              "MPP Installation Directory:", getFieldEditorParent()));
+        }
+        else {
+            addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
+                                              "WTK Installation Directory:", getFieldEditorParent()));
+        }
 	
         addField(new DirectoryFieldEditor(MeposeConstants.ID_MOTOROLA_HOME, 
                                           "Motorola Installation Directory:", getFieldEditorParent()));

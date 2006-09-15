@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.security.ProtectionDomain;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -50,6 +51,11 @@ public class MeposePlugin extends Plugin {
         putToolsJarOnClasspath();
 	}
 
+    public static boolean isMacOS() {
+        String osname= System.getProperty("os.name").toLowerCase(Locale.US); //$NON-NLS-1$
+        return osname.indexOf("mac") != -1; //$NON-NLS-1$
+   }
+    
     private void putToolsJarOnClasspath() {
         
         

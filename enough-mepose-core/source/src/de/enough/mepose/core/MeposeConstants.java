@@ -57,4 +57,6 @@ public interface MeposeConstants
     public static final String ID_MOTOROLA_HOME = "id.motorola.home";
     public static final String ID_SIEMENS_HOME = "id.siemens.home";
 
+    public static final String ID_MPP_HOME = "id.mpp.home";
+
 }
