@@ -84,6 +84,7 @@ public class PlatformPage extends WizardPage {
     protected Tree platformTree;
     protected List selectedPlatformTreeItems = new LinkedList();
     protected List selectedConfigurationTreeItems = new LinkedList();
+    private boolean isInitialized = false;
     
     protected class DeviceSelectionManager implements PropertyChangeListener,DisposeListener,SelectionListener{
         
@@ -241,7 +242,9 @@ public class PlatformPage extends WizardPage {
     
 
     public void createControl(Composite parent) {
-        
+        if(isInitialized) {
+            return;
+        }
         DescriptionDumper descriptionDumper = new DescriptionDumper();
         
         Composite topComposite = new Composite(parent,SWT.NONE);
@@ -290,7 +293,7 @@ public class PlatformPage extends WizardPage {
         
         this.descriptionLabel = new Label(descriptionGroup,SWT.WRAP);
         this.descriptionLabel.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        
+        this.isInitialized = true;
         setControl(topComposite);
     }
 
