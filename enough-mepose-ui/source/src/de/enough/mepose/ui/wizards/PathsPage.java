@@ -79,6 +79,10 @@ public class PathsPage extends WizardPage {
 
     private Text siemensHomeText;
 
+    private StatusGroup mppStatusGroup;
+
+    private Text mppHomeText;
+
     
     private class BrowsePathSelected extends SelectionAdapter{
         
@@ -142,6 +146,34 @@ public class PathsPage extends WizardPage {
         
 //      ----------------------
         
+        if(MeposePlugin.isMacOS()) {
+            
+            this.mppStatusGroup = new StatusGroup(composite,SWT.NONE);
+            this.mppStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
+            main = this.mppStatusGroup.getMainComposite();
+            main.setLayout(new GridLayout(3,false));
+            Label wtkLabel = new Label(main,SWT.NONE);
+            wtkLabel.setText("WTK Home:");
+            
+            this.mppHomeText = new Text(main,SWT.BORDER);
+            this.mppHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+            this.mppHomeText.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    modifyMppHomeText();
+                }
+            });
+            String mppHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_WTK_HOME);
+            this.mppHomeText.setText(mppHomePath);
+            modifyMppHomeText();
+            
+            browseButton = new Button(main,SWT.NONE);
+            browseButton.setText("Browse for Path");
+            browseButton.addSelectionListener(new BrowsePathSelected(this.wtkHomeText,"Choose the location of your MPP directory"));
+        }
+        else {
+        
+//      ----------------------
+        
         this.wtkStatusGroup = new StatusGroup(composite,SWT.NONE);
         this.wtkStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
         main = this.wtkStatusGroup.getMainComposite();
@@ -163,7 +195,9 @@ public class PathsPage extends WizardPage {
         browseButton = new Button(main,SWT.NONE);
         browseButton.setText("Browse for Path");
         browseButton.addSelectionListener(new BrowsePathSelected(this.wtkHomeText,"Choose the location of your WTK directory"));
-                 
+        
+        }
+        
 //      ----------------------
         this.motorolaStatusGroup = new StatusGroup(composite,SWT.NONE);
         this.motorolaStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
@@ -264,6 +298,21 @@ public class PathsPage extends WizardPage {
         
         setControl(composite);
         updateGUIFromModel();
+    }
+
+    /**
+     * 
+     */
+    private void modifyMppHomeText() {
+        String path = this.mppHomeText.getText();
+        File file = new File(path);
+        if( ! file.exists() || ! file.isDirectory()) {
+            this.mppStatusGroup.setError("Path is not a directory.");
+        }
+        //TODO: Add something to recognize a polish directory.
+        else {
+            this.mppStatusGroup.setOK("");
+        }
     }
 
     /**
@@ -375,20 +424,22 @@ public class PathsPage extends WizardPage {
         String nokiaHome = this.nokiaHomeText.getText();
         String polishHome = this.polishHomeText.getText();
         String sonyHome = this.sonyHomeText.getText();
+        String mppHome = this.mppHomeText.getText();
         File wtkHomeFile = new File((wtkHome==null)?"":wtkHome);
         File nokiaHomeFile = new File((nokiaHome==null)?"":nokiaHome);
         File polishHomeFile = new File((polishHome==null)?"":polishHome);
         File sonyHomeFile = new File((sonyHome==null)?"":sonyHome);
+        File mppHomeFile = new File((mppHome==null)?"":mppHome);
         this.newProjectModel.getMeposeModel().setWTKHome(wtkHomeFile);
         this.newProjectModel.getMeposeModel().setNokiaHome(nokiaHomeFile);
         this.newProjectModel.getMeposeModel().setPolishHome(polishHomeFile);
         this.newProjectModel.getMeposeModel().setSonyHome(sonyHomeFile);
+        this.newProjectModel.getMeposeModel().setMppHome(mppHomeFile);
     }
     
     protected void updateGUIFromModel() {
 //        File polishHomeString = (File)(this.newProjectModel.getMeposeModel().getPropertyValue(MeposeModel.ID_POLISH_HOME));
 //        this.wtkHomeText.setText((polishHomeString == null)?"":polishHomeString.getAbsolutePath());
-        // TODO: Get the other values.
     }
 
     
