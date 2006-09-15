@@ -1484,12 +1484,12 @@ public abstract class Item extends Object
 		}
 		
 		leftBorder += (this.marginLeft + this.borderWidth + this.paddingLeft);
-		//#ifdef polish.useBeforeStyle
+		//#ifdef polish.css.before
 			leftBorder += this.beforeWidth;
 		//#endif
 		//System.out.println( this.style.name + ":  increasing leftBorder by " + (this.marginLeft + this.borderWidth + this.paddingLeft));
 		rightBorder -= (this.marginRight + this.borderWidth + this.paddingRight);
-		//#ifdef polish.useAfterStyle
+		//#ifdef polish.css.after
 			rightBorder -= this.afterWidth;
 		//#endif
 
@@ -1537,7 +1537,7 @@ public abstract class Item extends Object
 		int originalContentY = y;
 		
 		// paint before element:
-		//#if polish.useBeforeStyle || polish.useAfterStyle || polish.css.min-height  || polish.css.max-height
+		//#if polish.css.before || polish.css.after || polish.css.min-height  || polish.css.max-height
 			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
 			boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
 			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
@@ -1555,7 +1555,7 @@ public abstract class Item extends Object
 				}
 			}
 		//#endif
-		//#ifdef polish.useBeforeStyle
+		//#ifdef polish.css.before
 			if (this.beforeImage != null) {
 				int beforeY = y;
 				int yAdjustment = this.beforeHeight - this.contentHeight;
@@ -1583,7 +1583,7 @@ public abstract class Item extends Object
 		//#endif
 		
 		// paint after element:
-		//#ifdef polish.useAfterStyle
+		//#ifdef polish.css.after
 			if (this.afterImage != null) {
 				int afterY = originalContentY;
 				int yAdjustment = this.afterHeight - this.contentHeight;
@@ -1597,7 +1597,7 @@ public abstract class Item extends Object
 					}
 					//afterY += (this.contentHeight - this.afterHeight) / 2;
 				} else {
-					//#ifdef polish.useBeforeStyle
+					//#ifdef polish.css.before
 					if (this.afterHeight > this.beforeHeight) {
 					//#endif
 						if (isTop) {
@@ -1608,7 +1608,7 @@ public abstract class Item extends Object
 							y = originalContentY + yAdjustment / 2;
 						}
 						//contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
-					//#ifdef polish.useBeforeStyle
+					//#ifdef polish.css.before
 					}
 					//#endif
 				}
@@ -1659,10 +1659,10 @@ public abstract class Item extends Object
 		int noneContentWidth =  
 			 	this.marginLeft + this.borderWidth + this.paddingLeft 
 				+ this.paddingRight + this.borderWidth + this.marginRight;
-		//#ifdef polish.useBeforeStyle
+		//#ifdef polish.css.before
 			noneContentWidth += this.beforeWidth;
 		//#endif
-		//#ifdef polish.useAfterStyle
+		//#ifdef polish.css.after
 			noneContentWidth += this.afterWidth;
 		//#endif
 		/*
@@ -1704,12 +1704,12 @@ public abstract class Item extends Object
 		}
 		//#endif
 		int cHeight = this.contentHeight;
-		//#ifdef polish.useBeforeStyle
+		//#ifdef polish.css.before
 			if (this.contentHeight < this.beforeHeight) {
 				cHeight = this.beforeHeight;
 			}
 		//#endif
-		//#ifdef polish.useAfterStyle
+		//#ifdef polish.css.after
 			if (this.contentHeight < this.afterHeight) {
 				cHeight = this.afterHeight;
 			}
