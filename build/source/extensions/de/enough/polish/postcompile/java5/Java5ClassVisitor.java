@@ -27,6 +27,7 @@ package de.enough.polish.postcompile.java5;
 
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -39,8 +40,10 @@ public class Java5ClassVisitor
   
   private boolean isEnumClass;
   private String className;
+  private String classDesc;
   private String signature_values;
   // TODO: Use this to determine when to rewrite enum constants.
+  private int nextEnumValue;
   
   public Java5ClassVisitor(ClassVisitor cv)
   {
@@ -53,12 +56,21 @@ public class Java5ClassVisitor
     
     this.isEnumClass = Java5PostCompiler.CLASS_ENUM.equals(superName);
     this.className = name;
+    this.classDesc = "L" + this.className + ";";
     this.signature_values = "()[L" + this.className + ";"; 
   }
 
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
   {
-    MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+    // We keep only the values() method in enum classes.
+    if (this.isEnumClass
+        && ! "values".equals(name))
+      {
+        return null;
+      }
+   
+    MethodVisitor mv = super.visitMethod(access, name, EnumManager.transform(desc), signature, exceptions);
+    mv = new EnumMethodVisitor(mv, access, name, desc, signature, exceptions, Type.getType(this.classDesc));
     mv = new ThrowableMethodVisitor(mv, access, name, desc);
     mv = new IteratorMethodVisitor(mv, access, name, desc);
     
@@ -71,5 +83,19 @@ public class Java5ClassVisitor
       }
     
     return mv;
+  }
+
+  public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
+  {
+    if (this.isEnumClass)
+      {
+        if (this.classDesc.equals(desc))
+          {
+            return super.visitField(access, name, "I", null,
+                                    Integer.valueOf(this.nextEnumValue++));
+          }
+      }
+    
+    return super.visitField(access, name, desc, signature, value);
   }
 }
