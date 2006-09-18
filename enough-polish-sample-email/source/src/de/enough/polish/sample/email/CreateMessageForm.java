@@ -34,6 +34,7 @@ import javax.microedition.lcdui.TextField;
 import de.enough.polish.ui.ChoiceTextField;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides a form for creating a new mail.</p>
@@ -47,7 +48,7 @@ import de.enough.polish.util.ArrayList;
  */
 public class CreateMessageForm extends Form  {
 	
-	private enum Weekday { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }; 
+//	private enum Weekday { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }; 
 	
 	private final static String[] RECEIVERS = new String[] {
 		"aaron@somewhere.com", "ajax@hype.com", "asynchron@performance.com", "best@j2mepolish.org",
@@ -61,6 +62,7 @@ public class CreateMessageForm extends Form  {
 	private final ChoiceTextField receiver;
 	private final ChoiceTextField sender;
 	private TextField text;
+	private TextField text2;
 
 	/**
 	 * Creates a new form for writing an email.
@@ -76,17 +78,17 @@ public class CreateMessageForm extends Form  {
 		//#endif
 	}
 	
-	private void printDay( Weekday day ) {
-		switch (day) {
-		case MONDAY: System.out.println("mo"); break;
-		case TUESDAY: System.out.println("tu"); break;
-		case WEDNESDAY: System.out.println("we"); break;
-		case THURSDAY: System.out.println("th"); break;
-		case FRIDAY: System.out.println("fr"); break;
-		case SATURDAY: System.out.println("sa"); break;
-		case SUNDAY: System.out.println("su"); break;
-		}
-	}
+//	private void printDay( Weekday day ) {
+//		switch (day) {
+//		case MONDAY: System.out.println("mo"); break;
+//		case TUESDAY: System.out.println("tu"); break;
+//		case WEDNESDAY: System.out.println("we"); break;
+//		case THURSDAY: System.out.println("th"); break;
+//		case FRIDAY: System.out.println("fr"); break;
+//		case SATURDAY: System.out.println("sa"); break;
+//		case SUNDAY: System.out.println("su"); break;
+//		}
+//	}
 	
 	//#if polish.usePolishGui
 	/**
@@ -103,12 +105,13 @@ public class CreateMessageForm extends Form  {
 		//#endif
 		Hashtable<String, Boolean> table = new Hashtable<String, Boolean>();
 		table.put(title, true );
-		printDay( Weekday.FRIDAY );
+		System.out.println( Locale.get("gpsStatus.Longitude.label"));
+//		printDay( Weekday.FRIDAY );
 		boolean allowFreeText = false;
 		boolean appendSelectedChoice = true;
-		char appendDelimiter = ';';
+		String appendDelimiter = ";";
 		//#style addressInput
-		this.receiver = new ChoiceTextField( "to: ", null, 255, TextField.EMAILADDR, RECEIVERS, allowFreeText, appendSelectedChoice, appendDelimiter );
+		this.receiver = new ChoiceTextField( "to: " + Locale.get("gpsStatus.Longitude.label"), null, 255, TextField.EMAILADDR, RECEIVERS, allowFreeText, appendSelectedChoice, appendDelimiter );
 		append( this.receiver );
 		allowFreeText = false;
 		//#style addressInput
@@ -117,6 +120,9 @@ public class CreateMessageForm extends Form  {
 		//#style input, addressInput
 		this.text = new TextField( "message: ", null, 255, TextField.ANY );
 		append( this.text );
+		//#style input, addressInput
+		this.text2 = new TextField( "message2: ", null, 255, TextField.ANY );
+		append( this.text2 );
 		boolean hasTitle = table.get( title );
 		//#style label
 		append( "title in table=" + hasTitle );
