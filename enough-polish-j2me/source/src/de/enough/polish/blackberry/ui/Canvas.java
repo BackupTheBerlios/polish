@@ -1126,7 +1126,10 @@ extends Displayable
             Object o = this;
             if (o instanceof Screen) {
                 screen = (Screen)o;
-                callSuper = !screen.isMenuOpened();
+                Item item = screen.getCurrentItem();
+                callSuper = !screen.isMenuOpened() 
+                        && item != null 
+                        && item._bbField != null;
             }
             boolean processed = false;
             if (callSuper) {
@@ -1136,7 +1139,7 @@ extends Displayable
                     if (screen != null) {
                         Item focusedItem = screen.getCurrentItem();
                         Field nativeFocusedItem = super.getFieldWithFocus();
-                        if ( focusedItem._bbField != nativeFocusedItem) {
+                        if ( focusedItem != null && focusedItem._bbField != nativeFocusedItem) {
                         	//#debug
                             System.out.println("Canvas.trackwheel-roll: super changed the focus.");
                             this.dummyFieldHasFocus = true;
@@ -1165,6 +1168,7 @@ extends Displayable
                                 keyCode = KEY_BB_RIGHT;
                         }
                 }
+                // for loop outcommented, so that only one scroll step within each event is processed
                 //for (; --amount >= 0; ) {
                         keyPressed( keyCode );
                         if ( screen != null ) {
@@ -1184,33 +1188,20 @@ extends Displayable
          * @see net.rim.device.api.ui.Screen#keyDown(int, int)
          */
         protected boolean keyDown(int keyCode, int status) {
-                boolean processed = super.keyDown(keyCode, status);
-                if (processed) {
-                        return true;
+                boolean processFurther = true;
+            	Object o = this;
+            	Screen screen = null;
+                if ( o instanceof Screen ) {
+                   screen = ((Screen)o);
+                   if (!screen.isMenuOpened() && !this.dummyFieldHasFocus) {
+                	   processFurther = super.keyDown(keyCode, status);
+                       if (!processFurther) {
+                           return false;
+	                   }
+                   }
                 }
                 //#debug
                 System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-                
-                Field nativeFocusedItem = super.getFieldWithFocus();
-                if (nativeFocusedItem instanceof PolishEditField && ((PolishEditField)nativeFocusedItem).processKeyEvents) {
-                	Object o = this;
-                     if ( o instanceof Screen ) {
-                        Screen screen = ((Screen)o);
-                        Item item = screen.getCurrentItem();
-                        if (item instanceof TextField ) {
-                            //System.out.println("TextField in focus, menu open="  + screen.isMenuOpened() );
-                            if (!screen.isMenuOpened()
-                                && keyCode != KEY_BB_UP
-                                && keyCode != KEY_BB_DOWN
-                                && keyCode != KEY_BB_LEFT
-                                && keyCode != KEY_BB_RIGHT) {
-                            		//#debug
-                                    System.out.println("ignoring key for current textfield.");
-                                    return false;
-                            }
-                        }
-                     }
-                  }
 
                 switch ( Keypad.map( keyCode, status ) ) {
                 case '0': keyCode = KEY_NUM0; break;
@@ -1225,11 +1216,10 @@ extends Displayable
                 case '9': keyCode = KEY_NUM9; break;
                 }
                 keyPressed( keyCode );
-    			Object o = this;
-                if ( o instanceof Screen ) {
-                	return ((Screen)o).keyPressedProcessed;
+                if ( screen != null ) {
+                	return ! screen.keyPressedProcessed;
                 } else { 
-                	return true;
+                	return true; // consume the key event
                 } 
         }
 
@@ -1241,107 +1231,23 @@ extends Displayable
         }
 
         public void setFocus( Item item ) {
-        Object lock = MIDlet.getEventLock();
-        synchronized (lock) {
-                        if ( item._bbField != null ) {
-                                if ( !item._bbFieldAdded ) {
-                                        item._bbFieldAdded = true;
-                                        add( item._bbField );
-                                        //System.out.println("Canvas.focus(): adding field " + item._bbField );
-                                }
-                                setFocus( item._bbField, 0, 0, 0, 0 );
-                                //System.out.println("Canvas.focus(): focusing field " + item._bbField );
-                                this.dummyFieldHasFocus = false;
-                        } else if (!this.dummyFieldHasFocus) {
-                                this.dummyFieldHasFocus = true;
-                                setFocus( this.dummyField, 0, 0, 0, 0 );
-                                //System.out.println("Canvas.focus(): focusing dummy");
-                        }
+	        Object lock = MIDlet.getEventLock();
+	        synchronized (lock) {
+		        if ( item._bbField != null ) {
+		            if ( !item._bbFieldAdded ) {
+	                    item._bbFieldAdded = true;
+	                    add( item._bbField );
+	                    //System.out.println("Canvas.focus(): adding field " + item._bbField );
+		            }
+		            setFocus( item._bbField, 0, 0, 0, 0 );
+		            //System.out.println("Canvas.focus(): focusing field " + item._bbField );
+		            this.dummyFieldHasFocus = false;
+		        } else if (!this.dummyFieldHasFocus) {
+		            this.dummyFieldHasFocus = true;
+		            setFocus( this.dummyField, 0, 0, 0, 0 );
+		            //System.out.println("Canvas.focus(): focusing dummy");
+		        }
+	        }
         }
-        }
-    
-
-
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onDisplay()
-//       */
-//      protected void onDisplay() {
-//              System.out.println("Canvas " + getClass().getName() + ": onDisplay");
-//              // TODO Auto-generated method stub
-//              super.onDisplay();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onExposed()
-//       */
-//      protected void onExposed() {
-//              System.out.println("Canvas " + getClass().getName() + ": onExposed");
-//              // TODO Auto-generated method stub
-//              super.onExposed();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onFocus(int)
-//       */
-//      protected void onFocus(int arg0) {
-//              System.out.println("Canvas " + getClass().getName() + ": onFocus");
-//              // TODO Auto-generated method stub
-//              super.onFocus(arg0);
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onMenuDismissed()
-//       */
-//      protected void onMenuDismissed() {
-//              System.out.println("Canvas " + getClass().getName() + ": onMenuDismissed");
-//              // TODO Auto-generated method stub
-//              super.onMenuDismissed();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onObscured()
-//       */
-//      protected void onObscured() {
-//              System.out.println("Canvas " + getClass().getName() + ": onObscured");
-//              // TODO Auto-generated method stub
-//              super.onObscured();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onSave()
-//       */
-//      protected boolean onSave() {
-//              System.out.println("Canvas " + getClass().getName() + ": onSave");
-//              // TODO Auto-generated method stub
-//              return super.onSave();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onSavePrompt()
-//       */
-//      protected boolean onSavePrompt() {
-//              System.out.println("Canvas " + getClass().getName() + ": onSavePrompt");
-//              // TODO Auto-generated method stub
-//              return super.onSavePrompt();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onUndisplay()
-//       */
-//      protected void onUndisplay() {
-//              System.out.println("Canvas " + getClass().getName() + ": onUndisplay");
-//              // TODO Auto-generated method stub
-//              super.onUndisplay();
-//      }
-//
-//      /* (non-Javadoc)
-//       * @see net.rim.device.api.ui.Screen#onUnfocus()
-//       */
-//      protected void onUnfocus() {
-//              System.out.println("Canvas " + getClass().getName() + ": onUnfocus");
-//              // TODO Auto-generated method stub
-//              super.onUnfocus();
-//      }
-                
 
 }

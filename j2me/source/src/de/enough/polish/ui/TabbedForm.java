@@ -296,6 +296,7 @@ public class TabbedForm extends Form {
 		System.out.println("Activating tab [" + tabIndex + "].");
 		if (this.container.isInitialised) {
 			//System.out.println("defocus of container " + this.container);
+			this.container.hideNotify();
 			this.container.defocus( this.container.style );
 			//#if polish.TabbedForm.releaseResourcesOnTabChange
 				this.container.releaseResources();
@@ -314,9 +315,15 @@ public class TabbedForm extends Form {
 			System.out.println("Focusing tab [" + tabIndex + "].");
 			tabContainer.focus( tabContainer.style, 0 );
 		}
+        //#if polish.blackberry
+	        else {
+	            //# setFocus( tabContainer );
+	        }
+	    //#endif
 		tabContainer.background = null;
 		tabContainer.border = null;
 		if (isShown()) {
+			tabContainer.showNotify();
 			repaint();
 		}
 	}

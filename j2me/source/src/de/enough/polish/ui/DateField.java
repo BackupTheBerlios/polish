@@ -26,6 +26,13 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.*;
 
+//#if polish.blackberry
+	import net.rim.device.api.ui.Field;
+	import net.rim.device.api.ui.FieldChangeListener;
+import net.rim.device.api.ui.UiApplication;
+	import net.rim.device.api.ui.XYRect;
+	import de.enough.polish.blackberry.ui.PolishDateField;
+//#endif
 import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.Locale;
 
@@ -70,6 +77,9 @@ public class DateField extends StringItem
 	implements ItemCommandListener
 //#else
 	//# implements CommandListener
+//#endif
+//#if polish.blackberry
+	, FieldChangeListener
 //#endif
 {
 	/**
@@ -135,6 +145,9 @@ public class DateField extends StringItem
 		private javax.microedition.lcdui.Form form;
 	//#endif
 
+	//#if polish.blackberry
+		private PolishDateField blackberryDateField;
+	//#endif
 	/**
 	 * Creates a <code>DateField</code> object with the specified
 	 * label and mode. This call
@@ -220,6 +233,15 @@ public class DateField extends StringItem
 			addCommand( TextField.CLEAR_CMD );
 			this.itemCommandListener = this;
 		//#endif
+		//#if polish.blackberry
+			
+			this.blackberryDateField = new PolishDateField( 
+					System.currentTimeMillis(),
+					PolishDateField.getDateFormat( mode, this.timeZone ),
+					PolishDateField.EDITABLE );
+			this.blackberryDateField.setChangeListener( this );
+			this._bbField = this.blackberryDateField;
+		//#endif
 	}
 	
 	
@@ -274,6 +296,18 @@ public class DateField extends StringItem
 	 */
 	public void setDate( Date date)
 	{
+		//#if polish.blackberry
+			if (this.blackberryDateField != null && date != this.date ) {
+				Object bbLock = UiApplication.getEventLock();
+				synchronized (bbLock) {
+	                if (date != null) {
+	                    this.blackberryDateField.setDate( date.getTime() );
+	                } else {
+	                    this.blackberryDateField.setDate( System.currentTimeMillis() );
+	                }
+				}
+			}
+		//#endif
 		if ( date != null && this.inputMode == TIME) {
 			// check if the year-month-day is set to zero (so that the date starts at 1970-01-01)
 			// 1 day =
@@ -537,6 +571,11 @@ public class DateField extends StringItem
 	 */
 	public void setInputMode(int mode)
 	{
+		//#if polish.blackberry
+			if (this.blackberryDateField != null && mode != this.inputMode) {
+				this.blackberryDateField.setInputMode( mode );
+			}
+		//#endif
 		this.inputMode = mode;
 		//#if !tmp.directInput
 		if (this.midpDateField != null) {
@@ -550,8 +589,16 @@ public class DateField extends StringItem
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		super.paintContent(x, y, leftBorder, rightBorder, g);
-		//#if tmp.directInput
+		//#if polish.blackberry
+	    	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
+				this.blackberryDateField.setPaintPosition( x, y );
+			} else {
+				super.paintContent(x, y, leftBorder, rightBorder, g);
+			}
+		//#else
+	    	super.paintContent(x, y, leftBorder, rightBorder, g);
+		//#endif
+		//#if tmp.directInput && !polish.blackberry
 			if ( this.isFocused ) {
 				//#if polish.css.font-bitmap
 					if (this.bitMapFontViewer != null) {
@@ -598,7 +645,7 @@ public class DateField extends StringItem
 					}
 				//#endif
 			}
-		//#else
+		//#elif !polish.blackberry
 			if (this.showCaret) {
 				if (this.text == null) {
 					// when the text is null the appropriate font and color
@@ -648,8 +695,7 @@ public class DateField extends StringItem
 			this.originalHeight = this.contentHeight;
 		}
 		//#if polish.css.font-bitmap && tmp.directInput
-			if (this.bitMapFontViewer != null) {
-			
+			if (this.bitMapFontViewer != null) {			
 				if (this.caretViewer == null) {
 					char editChar = this.text.charAt( 0 );
 					BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
@@ -659,8 +705,19 @@ public class DateField extends StringItem
 					this.fontHeight = viewer.getFontHeight();
 				}
 			}
-	//#endif
-
+		//#endif
+		//#if polish.blackberry
+			if (!this.isFocused) {
+				return;
+			}
+			this.blackberryDateField.setFont( this.font, this.textColor );
+			// allow extra pixels for the cursor:
+			this.blackberryDateField.layout( this.contentWidth+8, this.contentHeight );
+			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
+			XYRect rect = this.blackberryDateField.getExtent();
+			this.contentWidth = rect.width;
+			this.contentHeight = rect.height;
+		//#endif			
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -717,12 +774,20 @@ public class DateField extends StringItem
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		this.showCaret = false;
+		//#if polish.blackberry
+			this.blackberryDateField.focusRemove();
+		//#endif
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected synchronized boolean handleKeyPressed(int keyCode, int gameAction) {
+		//#if polish.blackberry
+			if (true) {
+				return false;
+			}
+		//#endif
 		//#if tmp.directInput
 			// there are several possble situations:
 			// backspace: delete last char, move internal focus left
@@ -1088,6 +1153,17 @@ public class DateField extends StringItem
 			setDate( null );
 		} else if (this.additionalItemCommandListener != null) {
 			this.additionalItemCommandListener.commandAction(c, item);
+		}
+	}
+	//#endif
+
+	//#if polish.blackberry
+	public void fieldChanged(Field field, int context) {
+		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
+			setDate( new Date( this.blackberryDateField.getDate()) );
+			if (getScreen() instanceof Form ) {
+				notifyStateChanged();
+			}
 		}
 	}
 	//#endif

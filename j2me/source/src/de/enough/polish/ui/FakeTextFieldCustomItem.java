@@ -1289,7 +1289,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
 			if (this.isFocused) {
-				this.editField.paint( x, y, g );
+				this.editField.setPaintPosition( x, y );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}

@@ -1549,7 +1549,7 @@ public class TextField extends StringItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
         	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
-				this.editField.paint( x, y, g );
+				this.editField.setPaintPosition( x, y );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
@@ -1767,7 +1767,9 @@ public class TextField extends StringItem
 			if (!this.isFocused) {
 				return;
 			}
-			this.editField.layout( lineWidth, this.contentHeight );
+			this.editField.setFont( this.font, this.textColor );
+			// allow extra pixels for the cursor:
+			this.editField.layout( this.contentWidth+8, this.contentHeight );
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.editField.getExtent();
 			this.contentWidth = rect.width;

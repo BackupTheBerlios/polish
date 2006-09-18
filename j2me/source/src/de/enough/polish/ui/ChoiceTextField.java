@@ -29,6 +29,9 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
+//#if polish.blackberry
+import de.enough.polish.blackberry.ui.PolishEditField;
+//#endif
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -397,6 +400,10 @@ public class ChoiceTextField
 					//# getScreen().removeItemCommands( this );
 				}
 			//#endif
+			//#if polish.blackberry
+				PolishEditField field = (PolishEditField) this._bbField;
+				field.processKeyEvents = false;
+			//#endif
 		} else {
 			setStyle( this.focusingStyle );
 			this.flashCaret = this.reenableCaretFlashing;
@@ -410,6 +417,10 @@ public class ChoiceTextField
 					//# getScreen().setItemCommands( this );
 				//#endif
 			}
+			//#if polish.blackberry
+				PolishEditField field = (PolishEditField) this._bbField;
+				field.processKeyEvents = true;
+			//#endif
 		}
 		this.isInChoice = enter;
 	}
