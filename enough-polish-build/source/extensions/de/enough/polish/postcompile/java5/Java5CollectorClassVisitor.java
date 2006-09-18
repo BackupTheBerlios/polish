@@ -25,8 +25,6 @@
  */
 package de.enough.polish.postcompile.java5;
 
-import java.util.List;
-
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
