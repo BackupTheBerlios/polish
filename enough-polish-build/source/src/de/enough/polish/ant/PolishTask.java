@@ -1960,9 +1960,10 @@ public class PolishTask extends ConditionalTask {
 			//System.out.println("setting javac-source " + getJavacSource() );
 			compiler.setDirectSource( getJavacSource() );
 		}
-		if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
-			compiler.setDirectDebug(true);
-		}
+		//if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
+		// always add debugging settings, since the obfuscator removes them anyhow:
+		compiler.setDirectDebug(true);
+		//}
 		if (!targetDir.exists()) {
 			targetDir.mkdirs();
 		}
