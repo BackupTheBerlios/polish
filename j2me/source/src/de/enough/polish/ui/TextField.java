@@ -2581,7 +2581,7 @@ public class TextField extends StringItem
 					if (this.text == null) {
 						return false;
 					}
-					if (gameAction == Canvas.UP) {
+					if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFontViewer != null) {
 								// a bitmap-font is used
@@ -2603,7 +2603,7 @@ public class TextField extends StringItem
 						this.internalX = 0;
 						this.internalY = this.caretRow * this.rowHeight;
 						return true;
-					} else if (gameAction == Canvas.DOWN) {
+					} else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFontViewer != null) {
 								// a bitmap-font is used
@@ -2630,7 +2630,7 @@ public class TextField extends StringItem
 						return true;
 					} else if (this.isUneditable) {
 						return false;
-					} else if (gameAction == Canvas.LEFT) {
+					} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFontViewer != null) {
 								// a bitmap-font is used
@@ -2660,7 +2660,7 @@ public class TextField extends StringItem
 							this.internalY = this.caretY;
 							return true;
 						}
-					} else if ( gameAction == Canvas.RIGHT ) {
+					} else if ( gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) {
 						//#ifdef polish.debug.debug
 						if (this.isPassword) {
 							//#debug
