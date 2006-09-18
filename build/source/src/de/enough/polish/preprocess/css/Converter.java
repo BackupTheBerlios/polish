@@ -127,6 +127,9 @@ public class Converter {
 	 * 			is given and the given relativeValue is -1.
 	 */
 	public int parseInt(String styleName, String groupName, String name, String value, int relativeValue) {
+		if (value.length() == 0) {
+			throw new BuildException("Unable to parse the field [" + groupName + "-" + name + "] with the value [" + value + "] from the style [" + styleName + "]: this is not an integer value.");
+		}
 		int lastCharPos = value.length() - 1;
 		if (value.charAt( lastCharPos ) == '%') {
 			if (relativeValue == -1) {
