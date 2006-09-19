@@ -2199,7 +2199,7 @@ public class TextField extends StringItem
 			boolean nextCharInputHasChanged = this.nextCharUppercase;
 			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
 					&& insertChar == ' ') 
-				|| ( insertChar == '.' )) 
+				|| ( insertChar == '.' && !this.isEmail)) 
 			{
 				this.nextCharUppercase = true;
 			} else {
