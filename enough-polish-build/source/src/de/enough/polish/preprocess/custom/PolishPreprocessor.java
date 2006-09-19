@@ -258,21 +258,21 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			}
 			// check for style-property-usage:
 			int startPos = -1;
-			String methodName = "style.getProperty(";
+			String methodName = "tyle.getProperty(";
 			startPos = line.indexOf(methodName);
 			if (startPos == -1) {
-				methodName = "style.getIntProperty(";
+				methodName = "tyle.getIntProperty(";
 				startPos = line.indexOf(methodName);
 				if (startPos == -1) {
-					methodName = "style.getBooleanProperty(";
+					methodName = "tyle.getBooleanProperty(";
 					startPos = line.indexOf(methodName);
 				}
 				if (startPos == -1) {
-					methodName = "style.getObjectProperty(";
+					methodName = "tyle.getObjectProperty(";
 					startPos = line.indexOf(methodName);
 				}
 				if (startPos == -1) {
-					methodName = "style.getColorProperty(";
+					methodName = "tyle.getColorProperty(";
 					startPos = line.indexOf(methodName);
 				}
 			}
