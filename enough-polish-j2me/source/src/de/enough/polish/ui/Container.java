@@ -1631,8 +1631,15 @@ public class Container extends Item {
 			}
 			// change the label-style of this container:
 			//#ifdef polish.css.label-style
-				if (this.label != null && this.label.style != this.labelStyle) {
-					this.label.setStyle( this.labelStyle );
+				Style tmpLabelStyle = null;
+				if ( originalStyle != null) {
+					tmpLabelStyle = (Style) originalStyle.getObjectProperty("label-style");
+				}
+				if (tmpLabelStyle == null) {
+					tmpLabelStyle = StyleSheet.labelStyle;
+				}
+				if (this.label != null && tmpLabelStyle != null && this.label.style != tmpLabelStyle) {
+					this.label.setStyle( tmpLabelStyle );
 				}
 			//#endif
 		}

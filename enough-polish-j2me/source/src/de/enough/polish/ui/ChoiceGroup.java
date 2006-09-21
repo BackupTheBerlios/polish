@@ -1509,6 +1509,19 @@ implements Choice
 			if (scr != null) {
 				scr.removeItemCommands(this);
 			}
+			// change the label-style of this container:
+			//#ifdef polish.css.label-style
+				Style tmpLabelStyle = null;
+				if ( originalStyle != null) {
+					tmpLabelStyle = (Style) originalStyle.getObjectProperty("label-style");
+				}
+				if (tmpLabelStyle == null) {
+					tmpLabelStyle = StyleSheet.labelStyle;
+				}
+				if (this.label != null && tmpLabelStyle != null && this.label.style != tmpLabelStyle) {
+					this.label.setStyle( tmpLabelStyle );
+				}
+			//#endif
 		} else {
 			super.defocus(originalStyle);
 		}
@@ -1532,6 +1545,16 @@ implements Choice
 			if (scr != null) {
 				scr.setItemCommands(this);
 			}
+			// change the label-style of this container:
+			//#ifdef polish.css.label-style
+				if (this.label != null) {
+					Style labStyle = (Style) focusStyle.getObjectProperty("label-style");
+					if (labStyle != null) {
+						this.labelStyle = this.label.style;
+						this.label.setStyle( labStyle );
+					}
+				}
+			//#endif
 			return original;
 		} else {
 			return super.focus(focusStyle, direction);

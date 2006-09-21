@@ -1121,6 +1121,7 @@ extends Displayable
          * @see net.rim.device.api.ui.Screen#trackwheelRoll(int, int, int)
          */
         protected boolean trackwheelRoll( int amount, int status, int time ) {
+        	try {
             boolean callSuper = false;
             Screen screen = null;
             Object o = this;
@@ -1133,7 +1134,13 @@ extends Displayable
             }
             boolean processed = false;
             if (callSuper) {
-                processed = super.trackwheelRoll(amount, status, time);
+            	try {
+            		processed = super.trackwheelRoll(amount, status, time);
+         	   } catch (Exception e) {
+        		   //#debug error
+        		   System.out.println("super.trackwheelRoll(" + amount + ", " + status + ", " + time + ") failed" + e );        		   
+        	   }
+            	
             }
                 if (processed) {
                     if (screen != null) {
@@ -1179,7 +1186,12 @@ extends Displayable
                         return processed;
                 } else {
                         return true;
-                }               
+                }
+        	} catch (Exception e) {
+        		//#debug error
+        		System.out.println("error while processing trackwheel roll" + e);
+        		return true;
+        	}
         }
         
         
@@ -1193,11 +1205,19 @@ extends Displayable
             	Screen screen = null;
                 if ( o instanceof Screen ) {
                    screen = ((Screen)o);
-                   if (!screen.isMenuOpened() && !this.dummyFieldHasFocus) {
-                	   processFurther = super.keyDown(keyCode, status);
-                       if (!processFurther) {
-                           return false;
-	                   }
+                   if (keyCode != 1769472 // 1769472 is the escape button 
+                		   && !screen.isMenuOpened() 
+                		   && !this.dummyFieldHasFocus) 
+                   { 
+                	   try {
+                	   processFurther = super.keyDown(keyCode, status);                	   
+	                       if (!processFurther) {
+	                           return false;
+		                   }
+                	   } catch (Exception e) {
+                		   //#debug error
+                		   System.out.println("super.keyDown(" + keyCode + ", " + status + ") failed" + e );
+                	   }
                    }
                 }
                 //#debug
