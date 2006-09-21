@@ -68,35 +68,13 @@ public class MIDletLaunchConfigurationDelegate extends
 
         boolean isDebug = "debug".equals(mode);
 
-        String projectName;
-        projectName = configuration
-                .getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
+        this.project = extractProject(configuration);
 
-        this.project = ResourcesPlugin.getWorkspace().getRoot()
-                        .getProject(projectName);
-        if (this.project == null) {
-            showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "The project '" + projectName
-                                                + "' does not exists.");
-            return;
-        }
+        MeposeModel model = extractModel(configuration);
 
-        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager()
-                .getModel(this.project);
-        if (model == null) {
-            showErrorBox(
-                         MSG_CAN_NOT_BUILD_PROJECT,
-                         "No model found for the project. Maybe the project does not have a Mepose nature.");
-            return;
-        }
+        File buildxml = extractBuildXml(model);
 
-        File buildxml = model.getBuildxml();
-        if (buildxml == null) {
-            showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "Internal error: 1");
-            MeposeUIPlugin.log("No buildxml specified in model for project:"
-                               + projectName);
-            return;
-        }
-
+        // TODO: Alter the behavior: When no current device is set, buid for several devices.
         Device currentDevice = model.getCurrentDevice();
         if (currentDevice == null) {
             showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "No device selected for build");
@@ -107,7 +85,7 @@ public class MIDletLaunchConfigurationDelegate extends
         monitor.worked(1);
 
         // Make a new antBox so everything is nicely initialized.
-        final AntBox antBox = new AntBox(model.getBuildxml());
+        final AntBox antBox = new AntBox(buildxml);
         try {
             antBox.createProject();
         }
@@ -301,22 +279,56 @@ public class MIDletLaunchConfigurationDelegate extends
         }
     }
 
+    /**
+     * @param model
+     * @throws CoreException
+     */
+    private File extractBuildXml(MeposeModel model) throws CoreException {
+        File file = model.getBuildxml();
+        if (file == null) {
+            throw new CoreException(new Status(IStatus.ERROR,MeposeUIPlugin.ID,0,"The project '" + this.project.getName() + "' does not have a build.xml file.",null));
+        }
+        return file;
+    }
 
+    private IProject extractProject(ILaunchConfiguration configuration) throws CoreException{
+        String projectName;
+        projectName = configuration.getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
+
+        IProject tempProject = ResourcesPlugin.getWorkspace().getRoot()
+                        .getProject(projectName);
+        if (tempProject == null) {
+            throw new CoreException(new Status(IStatus.ERROR,MeposeUIPlugin.ID,0,"The project '" + projectName + "' does not exists.",null));
+        }
+        return tempProject;
+    }
+    
+    private MeposeModel extractModel(ILaunchConfiguration configuration) throws CoreException{
+        MeposeModel model = MeposePlugin.getDefault().getMeposeModelManager().getModel(this.project);
+        if (model == null) {
+            throw new CoreException(new Status(IStatus.ERROR,MeposeUIPlugin.ID,0,"No MeposeModel for project '" + this.project.getName() + "'",null));
+        }
+        return model;
+    }
+    
     /**
      * @param model
      * @param sourceContainers
      * @return
      */
     private void createNewSourceContainers(MeposeModel model, LinkedList sourceContainers) {
+        Path path = new Path(model.getProjectHome()+"/source/src");
         ISourceContainer mainSourceContainer =
-            new DirectorySourceContainer(new Path(model.getProjectHome()+"/source/src"),true);
+            new DirectorySourceContainer(path,true);
         sourceContainers.add(mainSourceContainer);
         
-        String unprocessedBuildPath = model.getSourcePath(model.getCurrentDevice());
-        if(unprocessedBuildPath != null) {
-            ISourceContainer unprocessedBuildContainer = new DirectorySourceContainer(new Path(unprocessedBuildPath),true);
-            sourceContainers.add(unprocessedBuildContainer);
-        }
+        Device currentDevice = model.getCurrentDevice();
+        //TODO: How to solve this? The sourcePath of a device is initialized first the build started.
+//        String unprocessedBuildPath = model.getSourcePath(currentDevice);
+//        if(unprocessedBuildPath != null) {
+//            ISourceContainer unprocessedBuildContainer = new DirectorySourceContainer(new Path(unprocessedBuildPath),true);
+//            sourceContainers.add(unprocessedBuildContainer);
+//        }
     }
 
     
