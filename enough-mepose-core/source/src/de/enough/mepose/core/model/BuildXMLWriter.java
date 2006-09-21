@@ -129,22 +129,28 @@ public class BuildXMLWriter {
 //        File polishHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_POLISH_HOME);
 //        File mppHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_MPP_HOME);
         File polishHome = this.meposeModel.getPolishHome();
-        File nokiaHome = this.meposeModel.getNokiaHome();
        
         String projectDescription = this.meposeModel.getProjectDescription();
         
         context.put("polishHome",polishHome.getAbsolutePath());
         context.put("projectDescription",projectDescription);
         context.put("deviceList",this.meposeModel.getSupportedDevices());
-        String temp = null;
-        if(nokiaHome.exists()) {
-            temp = nokiaHome.getAbsolutePath();
-            if(temp == null || temp.length() <= 0) {
-                temp = null;
-            }
+        
+        addPath(context,"nokiaHome",this.meposeModel.getNokiaHome());
+        addPath(context,"sonyHome",this.meposeModel.getSonyHome());
+        addPath(context,"motorolaHome",this.meposeModel.getMotorolaHome());
+        addPath(context,"wtkHome",this.meposeModel.getWTKHome());
+        addPath(context,"mppHome",this.meposeModel.getMppHome());
+        addPath(context,"siemensHome",this.meposeModel.getSiemensHome());
+        
+    }
+
+    private void addPath(VelocityContext context,String propertyName,File path) {
+        String pathString;
+        if(path != null && path.exists()) {
+            pathString = path.getAbsolutePath();
+            context.put(propertyName,pathString);
         }
-        context.put("wtkHome",this.meposeModel.getWTKHome().getAbsolutePath());
-        context.put("nokiaHome",temp);
     }
     
     public BundleContext getBundleContext() {

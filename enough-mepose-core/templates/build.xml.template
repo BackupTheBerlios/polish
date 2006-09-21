@@ -58,6 +58,22 @@
 #if ($nokiaHome)
 <property name="nokia.home" value="$nokiaHome" />
 #end
+
+#if ($sonyHome)
+<property name="sony-ericsson.home" value="$sonyHome" />
+#end
+	
+#if ($motorolaHome)
+<property name="motorola.home" value="$motorolaHome" />
+#end
+	
+#if ($mppHome)
+<property name="mpp.home" value="$mppHome" />
+#end
+	
+#if ($siemensHome)
+<property name="siemens.home" value="$siemensHome" />
+#end
 	
 	
 <!-- Definition of the J2ME Polish task:                      -->

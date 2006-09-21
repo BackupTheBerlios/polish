@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.model.MeposeModel;
 import de.enough.swt.widgets.StatusGroup;
 
 /**
@@ -429,23 +430,34 @@ public class PathsPage extends WizardPage {
         String nokiaHome = this.nokiaHomeText.getText();
         String polishHome = this.polishHomeText.getText();
         String sonyHome = this.sonyHomeText.getText();
+        String siemensHome = this.siemensHomeText.getText();
+        String motorolaHome = this.motorolaHomeText.getText();
+        String wtkHome = null;
+        if(this.wtkHomeText != null) {
+            wtkHome = this.wtkHomeText.getText();
+        }
+        String mppHome = null;
+        if(this.mppHomeText != null) {
+            mppHome = this.mppHomeText.getText();
+        }
         
         File nokiaHomeFile = new File((nokiaHome==null)?"":nokiaHome);
         File polishHomeFile = new File((polishHome==null)?"":polishHome);
         File sonyHomeFile = new File((sonyHome==null)?"":sonyHome);
-        this.newProjectModel.getMeposeModel().setNokiaHome(nokiaHomeFile);
-        this.newProjectModel.getMeposeModel().setPolishHome(polishHomeFile);
-        this.newProjectModel.getMeposeModel().setSonyHome(sonyHomeFile);
-        if(this.wtkHomeText != null){
-            String wtkHome = this.wtkHomeText.getText();
-            File wtkHomeFile = new File((wtkHome==null)?"":wtkHome);
-            this.newProjectModel.getMeposeModel().setWTKHome(wtkHomeFile);
-        }
-        if(this.mppHomeText != null) {
-            String mppHome = this.mppHomeText.getText();
-            File mppHomeFile = new File((mppHome==null)?"":mppHome);
-            this.newProjectModel.getMeposeModel().setMppHome(mppHomeFile);
-        }
+        File siemensHomeFile = new File((siemensHome==null)?"":siemensHome);
+        File motorolaHomeFile = new File((motorolaHome==null)?"":motorolaHome);
+        File wtkHomeFile = new File((wtkHome==null)?"":wtkHome);
+        File mppHomeFile = new File((mppHome==null)?"":mppHome);
+        
+        MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
+        
+        meposeModel.setNokiaHome(nokiaHomeFile);
+        meposeModel.setPolishHome(polishHomeFile);
+        meposeModel.setSonyHome(sonyHomeFile);
+        meposeModel.setWTKHome(wtkHomeFile);
+        meposeModel.setMppHome(mppHomeFile);
+        meposeModel.setSiemensHome(siemensHomeFile);
+        meposeModel.setMotorolaHome(motorolaHomeFile);
     }
     
     protected void updateGUIFromModel() {
