@@ -344,5 +344,12 @@
 		<capability name="ScreenSize" value="208x320" />
 	</group>
 		
+	<group>
+		<name>DotNetCF1.1</name>
+		<capability name="OS" value="Windows Mobile 5.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0, DotNetCF1.1" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi" />
+	</group>
 
 </groups>
