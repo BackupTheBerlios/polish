@@ -52,7 +52,12 @@ public class PolishEditField extends EditField {
         }
 
         public void layout( int width, int height) {
-                super.layout( width, height );
+        	if (height < 0 || width < 0) {
+        		//#debug info
+        		System.out.println("ignoring invalid layout params: width=" + width + ", height=" + height );                
+        		return;
+            }
+            super.layout( width, height );
         }
         
         public void paint( net.rim.device.api.ui.Graphics g ) {
