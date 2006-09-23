@@ -2205,14 +2205,9 @@ implements AccessibleCanvas
 			this.okCommand = cmd;
 		}
 		//#ifdef polish.key.ReturnKey:defined
-			//#if polish.blackberry
 			if ( (cmdType == Command.BACK || cmdType == Command.CANCEL || cmdType == Command.EXIT ) 
 				&& ( this.backCommand == null || this.backCommand.getPriority() < cmd.getPriority() )  ) 
 			{
-				
-			//#else
-				//# if ( cmdType == Command.BACK && ( this.backCommand == null || this.backCommand.getPriority() < cmd.getPriority() ) ) {
-			//#endif
 				this.backCommand = cmd;
 			}
 		//#endif
