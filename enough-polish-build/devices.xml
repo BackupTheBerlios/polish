@@ -1345,6 +1345,20 @@ These namespaces/schemas will be used soon.
 		<capability name="key.RightSoftKey" value="-22" />
     </device>
 
+	<device>
+		<identifier>Motorola/Q</identifier>
+		<features>hasCamera</features>
+		<capability name="OS" value="Motorola" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="320x240" />       
+		<capability name="BitsPerPixel" value="18"/>
+	<capability name="JavaPackage" value="mmapi 1.1, wmapi1.1, wmapi2.0, pdaapi,bluetooth,bluetooth-obex-api" />
+		<capability name="SoundFormat" value="amr,x-amr,mp4,x-mp4,3gpp,mp3,x-mp3,mpeg3,x-mpeg3,mpeg,x-mpeg,mpg,x-mpg,wav,x-wav,midi,x-midi,mid,x-mid,sp-midi,imelody,x-imelodyimy,x-imy,x-tone-seq" />
+		<capability name="ImageFormat" value="png, jpeg, bmp, wbmp, gif" />
+		<capability name="JavaProtocol" value="HTTP, Socket, UDP" />
+    </device>
+
 
 	<device>
 		<identifier>Motorola/I870</identifier>
