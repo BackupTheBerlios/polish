@@ -384,6 +384,16 @@
 		<description>Classes called Serializable confuse the device</description>
 		<solution>The J2ME polish build process works around this by auto-renaming the de.enough.polish.io.Serializable interface.</solution>
 	</bug>
+
+	<bug>
+		<name>ignoreTitleCall</name>
+		<area>ui</area>
+		<description>
+		When going into the fullscreen mode, the JVM calls screen.setTitle(null), which prevents
+		J2ME Polish to run an application in fullscreen while showing the title.
+		</description>
+		<solution>Just ignore the scren.setTitle(null) call after entering the fullscreen mode.</solution>
+	</bug>
 	
 	<bug>
 		<name>SingleCapturePlayer</name>

@@ -71,6 +71,14 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device supportsPolishGui="true">
+		<identifier>Generic/Midp2Cldc11Pointer</identifier>
+		<features>isVirtual, hasPointerEvents</features>
+		<description>A device that merely supports the MIDP 2.0 and CLDC 1.1 standards and has a pointer based user interface.</description>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+
+	<device supportsPolishGui="true">
 		<identifier>Generic/multi</identifier>
 		<description>This device combines several features of different vendors. It can be used
 		             in case you want to use dynamic class loading etc for determing the 
