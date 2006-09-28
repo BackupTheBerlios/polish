@@ -61,7 +61,10 @@ import de.enough.polish.util.StringUtil;
  */
 public class Java5PostCompiler extends BytecodePostCompiler {
 
-  static final String CLASS_ENUM = "de/enough/polish/java5/Enum";
+  private static final String POLISH_USE_DEFAULT_PACKAGE = "polish.useDefaultPackage";
+
+  private static final String CLASS_ENUM = "de/enough/polish/java5/Enum";
+  private static final String CLASS_ENUM_DEFAULT = "Enum";
 
   /**
 	 * The class file version number.
@@ -158,6 +161,9 @@ public class Java5PostCompiler extends BytecodePostCompiler {
 
     ASMClassLoader asmLoader = new ASMClassLoader(loader);
     EnumManager manager = EnumManager.getInstance();
+    
+    String enumClass = (this.environment != null && this.environment.hasSymbol(POLISH_USE_DEFAULT_PACKAGE)
+                        ? CLASS_ENUM_DEFAULT : CLASS_ENUM);
 
     // Find all classes implementing java.lang.Enum.
     Iterator it = classes.iterator();
@@ -170,7 +176,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
           {
             ClassNode classNode = asmLoader.loadClass(className);
             
-            if (CLASS_ENUM.equals(classNode.superName))
+            if (enumClass.equals(classNode.superName))
               {
                 manager.addEnumClass(className);
               }

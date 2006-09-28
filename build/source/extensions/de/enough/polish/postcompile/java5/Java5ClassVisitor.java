@@ -25,6 +25,7 @@
  */
 package de.enough.polish.postcompile.java5;
 
+import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
@@ -42,8 +43,6 @@ public class Java5ClassVisitor
   private String className;
   private String classDesc;
   private String signature_values;
-  // TODO: Use this to determine when to rewrite enum constants.
-  private int nextEnumValue;
   
   public Java5ClassVisitor(ClassVisitor cv)
   {
@@ -54,7 +53,7 @@ public class Java5ClassVisitor
   {
     super.visit(version, access, name, signature, superName, interfaces);
     
-    this.isEnumClass = Java5PostCompiler.CLASS_ENUM.equals(superName);
+    this.isEnumClass = EnumManager.getInstance().isEnumClass(name);
     this.className = name;
     this.classDesc = "L" + this.className + ";";
     this.signature_values = "()[L" + this.className + ";"; 
@@ -87,12 +86,16 @@ public class Java5ClassVisitor
 
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
   {
-    if (this.isEnumClass)
+    if (this.isEnumClass
+        && this.classDesc.equals(desc))
       {
-        if (this.classDesc.equals(desc))
+        String fieldName = this.classDesc + "." + name;
+        desc = "I";
+        value = EnumManager.getInstance().getEnumValue(fieldName);
+        
+        if (value == null)
           {
-            return super.visitField(access, name, "I", null,
-                                    Integer.valueOf(this.nextEnumValue++));
+            throw new BuildException("Value for enum is null");
           }
       }
     

@@ -27,6 +27,7 @@ package de.enough.polish.postcompile.java5;
 
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
@@ -35,11 +36,16 @@ public class Java5CollectorClassVisitor
   extends ClassAdapter
 {
   private Type owner;
+  private EnumManager manager;
+  private boolean isEnumClass;
+  private int nextEnumValue;
   
   public Java5CollectorClassVisitor(ClassVisitor cv, Type owner)
   {
     super(cv);
     this.owner = owner;
+    this.manager = EnumManager.getInstance();
+    this.isEnumClass = this.manager.isEnumClass(this.owner);
   }
 
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
@@ -48,5 +54,18 @@ public class Java5CollectorClassVisitor
     Method method = new Method(name, desc);
     mv = new EnumCollectorMethodVisitor(mv, this.owner, method);
     return mv;
+  }
+
+  public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
+  {
+    if (this.isEnumClass
+        && this.manager.isEnumClass(desc))
+      {
+        String fieldName = this.owner.getDescriptor() + "." + name;
+        this.manager.addEnumValue(fieldName, Integer.valueOf(this.nextEnumValue));
+        this.nextEnumValue++;
+      }
+    
+    return super.visitField(access, name, desc, signature, value);
   }
 }

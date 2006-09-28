@@ -42,12 +42,14 @@ public class EnumMethodVisitor
 {
   private Type owner;
   private Method method;
+  private EnumManager manager;
   
   public EnumMethodVisitor(MethodVisitor mv, int access, String name, String desc, String signature, String[] exceptions, Type owner)
   {
     super(mv, access, name, EnumManager.transform(desc));
     this.owner = owner;
     this.method = new Method(name, desc);
+    this.manager = EnumManager.getInstance();
   }
 
   /* (non-Javadoc)
@@ -55,6 +57,19 @@ public class EnumMethodVisitor
    */
   public void visitFieldInsn(int opcode, String owner, String name, String desc)
   {
+    if (desc.contains("Enum"))
+      System.out.println("Michael: " + desc);
+    
+    if (GETSTATIC == opcode
+        && this.manager.isEnumClass(desc))
+      {
+//        System.out.println("Michael: Hooray");
+        
+        Integer value = (Integer) this.manager.getEnumValue(owner, name);
+        push(value.intValue());
+        return;
+      }
+    
     super.visitFieldInsn(opcode, owner, name, EnumManager.transform(desc));
   }
   

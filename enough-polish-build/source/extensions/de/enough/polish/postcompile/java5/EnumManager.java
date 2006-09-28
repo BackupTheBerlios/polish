@@ -25,19 +25,25 @@
  */
 package de.enough.polish.postcompile.java5;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import org.apache.tools.ant.BuildException;
+import org.objectweb.asm.Type;
 
 public class EnumManager
 {
   private static EnumManager singleton = new EnumManager();
 
   private HashSet enumClasses;
+  private HashMap enumValues;
   private HashSet localVariables;
   
   private EnumManager()
   {
     this.enumClasses = new HashSet();
+    this.enumValues = new HashMap();
     this.localVariables = new HashSet();
   }
 
@@ -75,7 +81,47 @@ public class EnumManager
     className = normalizeClassName(className);
     return this.enumClasses.contains(className);
   }
+  
+  public boolean isEnumClass(Type type)
+  {
+    return isEnumClass(type.getDescriptor());
+  }
+  
+  public void addEnumValue(String name, Object value)
+  {
+    if (this.enumValues.put(name, value) != null)
+      {
+        throw new BuildException("value for enum overwritten: " + name);
+      }
+  }
 
+  public Object getEnumValue(String owner, String name)
+  {
+    return getEnumValue("L" + owner + ";." + name);
+  }
+
+  public Object getEnumValue(String name)
+  {
+    Object value = this.enumValues.get(name);
+
+    if (value == null)
+      {
+        System.out.println("Michael: " + this.enumValues.size());
+        
+        Iterator it = this.enumValues.keySet().iterator();
+        
+        while (it.hasNext())
+          {
+            String key = (String) it.next();
+            System.out.println("Michael: " + key);
+          }
+        
+        throw new BuildException("value for unknown enum requested: " + name);
+      }
+    
+    return value;
+  }
+  
   public void addLocalVariable(LocalVariableInfo variable)
   {
     this.localVariables.add(variable);
