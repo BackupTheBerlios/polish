@@ -9,9 +9,13 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
-	<classpathentry kind="lib" path="lib/asm-all.jar"/>
-	<classpathentry kind="lib" path="lib/enough-bytecode.jar"/>
-	<classpathentry kind="lib" path="lib/enough-floater.jar"/>
+	<classpathentry sourcepath="/asm-2.2/src" kind="lib" path="lib/asm-all.jar">
+		<attributes>
+			<attribute value="http://asm.objectweb.org/current/doc/javadoc/user/" name="javadoc_location"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/enough-bytecode/source/src" kind="lib" path="lib/enough-bytecode.jar"/>
+	<classpathentry sourcepath="/enough-floater/source/src" kind="lib" path="lib/enough-floater.jar"/>
 	<classpathentry kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="lib" path="lib/jode-1.1.2-pre1.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
