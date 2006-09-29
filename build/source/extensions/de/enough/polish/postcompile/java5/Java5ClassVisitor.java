@@ -42,6 +42,7 @@ public class Java5ClassVisitor
   private boolean isEnumClass;
   private String className;
   private String classDesc;
+  private String classArrayDesc;
   private String signature_values;
   
   public Java5ClassVisitor(ClassVisitor cv)
@@ -56,6 +57,7 @@ public class Java5ClassVisitor
     this.isEnumClass = EnumManager.getInstance().isEnumClass(name);
     this.className = name;
     this.classDesc = "L" + this.className + ";";
+    this.classArrayDesc = "[" + this.classDesc;
     this.signature_values = "()[L" + this.className + ";"; 
   }
 
@@ -97,6 +99,12 @@ public class Java5ClassVisitor
           {
             throw new BuildException("Value for enum is null");
           }
+      }
+    
+    if (this.isEnumClass
+        && desc.equals(this.classArrayDesc))
+      {
+        desc = "[I";
       }
     
     return super.visitField(access, name, desc, signature, value);
