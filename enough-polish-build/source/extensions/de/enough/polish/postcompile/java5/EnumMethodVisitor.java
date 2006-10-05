@@ -57,14 +57,9 @@ public class EnumMethodVisitor
    */
   public void visitFieldInsn(int opcode, String owner, String name, String desc)
   {
-    if (desc.contains("Enum"))
-      System.out.println("Michael: " + desc);
-    
     if (GETSTATIC == opcode
         && this.manager.isEnumClass(desc))
       {
-//        System.out.println("Michael: Hooray");
-        
         Integer value = (Integer) this.manager.getEnumValue(owner, name);
         push(value.intValue());
         return;
