@@ -602,7 +602,7 @@ public class Container extends Item {
 	protected void scroll( boolean isDownwards, int x, int y, int width, int height ) {
 		//#debug
 		System.out.println("scroll: isDownwards=" + isDownwards + ", y=" + y + ", Container.yTop=" + this.yTop +  ", height=" +  height + ", Container.yBottom=" + this.yBottom + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
-		y += this.marginTop + this.paddingTop;
+		y += this.paddingTop; // this.marginTop + this.paddingTop; marginTop is already used in setVerticalDimension!
 		int difference = 0;
 //		int index = this.focusedIndex;
 		int target = this.targetYOffset;
@@ -979,6 +979,7 @@ public class Container extends Item {
 //				} else 
 				if (this.enableScrolling) {					
 					if (gameAction == Canvas.UP && this.targetYOffset < 0 ) {
+						// scroll the container view upwards without changing the focused item:
 						//#if polish.Container.ScrollDelta:defined
 							//#= this.targetYOffset += ${polish.Container.ScrollDelta};
 						//#else
@@ -997,6 +998,7 @@ public class Container extends Item {
 					if (gameAction == Canvas.DOWN
 							&& (this.itemHeight + this.targetYOffset > (this.yBottom - this.yTop)) ) 
 					{
+						// scroll the container view downwards without changing the focused item:
 						//#if polish.Container.ScrollDelta:defined
 							//#= this.targetYOffset -= ${polish.Container.ScrollDelta};
 						//#else
@@ -1269,6 +1271,8 @@ public class Container extends Item {
 							// scroll first before cycling to the
 							// first item:
 							allowCycle = (this.yOffset + this.itemHeight <= this.yBottom);
+							// #debug
+							// System.out.println("allowCycle-calculation ( forward non-smoothScroll): targetYOffset=" + this.targetYOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.targetYOffset + this.itemHeight) + ", yBottom=" + this.yBottom);
 						} else {
 							// when you scroll to the top and
 							// there is still space, do
@@ -1278,25 +1282,29 @@ public class Container extends Item {
 						}						
 					} else {
 				//#endif
-					if (forwardFocus) {
-						// when you scroll to the bottom and
-						// there is still space, do
-						// scroll first before cycling to the
-						// first item:
-						allowCycle = (this.targetYOffset + this.itemHeight <= this.yBottom);
-					} else {
-						// when you scroll to the top and
-						// there is still space, do
-						// scroll first before cycling to the
-						// last item:
-						allowCycle = (this.targetYOffset == 0) || (this.targetYOffset == 1);
-					}
+						if (forwardFocus) {
+							// when you scroll to the bottom and
+							// there is still space, do
+							// scroll first before cycling to the
+							// first item:
+							allowCycle = (this.targetYOffset + this.itemHeight <= this.yBottom);
+							// #debug
+							// System.out.println("allowCycle-calculation ( forward smoothScroll): targetYOffset=" + this.targetYOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.targetYOffset + this.itemHeight) + ", yBottom=" + this.yBottom);
+						} else {
+							// when you scroll to the top and
+							// there is still space, do
+							// scroll first before cycling to the
+							// last item:
+							allowCycle = (this.targetYOffset == 0) || (this.targetYOffset == 1);
+						}
 				//#if polish.css.scroll-mode
 					}
 				//#endif
 			}
+			//#if polish.Container.allowCycling != false
 			//#debug
-			System.out.println("shiftFocus of " + this + ": allowCycle=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );					
+			System.out.println("shiftFocus of " + this + ": allowCycle(locale)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
+			//#endif
 		//#endif
 		while (true) {
 			if (forwardFocus) {

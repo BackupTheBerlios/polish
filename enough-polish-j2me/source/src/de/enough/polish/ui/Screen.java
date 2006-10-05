@@ -1373,12 +1373,12 @@ implements AccessibleCanvas
 										&& (this.menuContainer.yOffset + menuHeight > this.originalScreenHeight - topHeight)) ;
 								//#endif
 								y = topHeight; 
-								this.menuContainer.setVerticalDimensions(y, this.originalScreenHeight);
 							//#if !tmp.useScrollBar
 							} else {
 								this.paintScrollIndicator = false;
 							//#endif
 							}
+							this.menuContainer.setVerticalDimensions(topHeight, this.originalScreenHeight);
 							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
