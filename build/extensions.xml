@@ -386,6 +386,12 @@
 		<class>de.enough.polish.propertyfunctions.ExistsFunction</class>
 	</extension>
 	
+	<extension>
+		<type>propertyfunction</type>
+		<name>filesize</name>
+		<class>de.enough.polish.propertyfunctions.FileSizeFunction</class>
+	</extension>
+	
 	<!-- Preverifier -->
 	
 	<extension>

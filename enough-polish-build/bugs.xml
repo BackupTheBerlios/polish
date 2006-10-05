@@ -405,13 +405,64 @@
 			Use only one capture player.
 		</solution>
 	</bug>
+
+	<bug>
+		<name>MaxCommunnicationVolume</name>
+		<area>io</area>
+		<description>
+			The communication volume send in one request and/or response over a connection is limited.
+		</description>
+		<solution>
+			Don't send more than the maximum available volume (use the polish.io.MaxCommunicationVolume property).
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>MaxUrlLength</name>
+		<area>io</area>
+		<description>
+			The length of URLs limited.
+		</description>
+		<solution>
+			Don't send use URLs longer than the maximum allowed length (in bytes!) (use the polish.io.MaxUrlLength property).
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>RmsLimited</name>
+		<area>io, rms</area>
+		<description>
+			The record store system is limited in either the size of a single record store and/or the number of possible recordstores.
+		</description>
+		<solution>
+			Do not store more than the allowed memory in a single recordstore (use the MaxRecordStoreSize property) and do not create more
+			than the number of allowed record stores (MaxRecordStoreNumber property, if this applies to the current device).
+		</solution>
+	</bug>
+
+
+	<bug>
+		<name>SoftKeyMappedToFire</name>
+		<area>ui</area>
+		<description>
+			The softkeys are associated with the Canvas.FIRE game action.
+		</description>
+		<solution>
+			Be careful when processing FIRE game events.
+		</solution>
+	</bug>
+	
 	
 	<!--
 	<bug>
 		<name></name>
 		<area></area>
-		<description></description>
-		<solution></solution>
+		<description>
+			
+		</description>
+		<solution>
+			
+		</solution>
 	</bug>
 	-->
 </bugs>

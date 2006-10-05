@@ -80,6 +80,8 @@
 	<vendor>
 		<name>Samsung</name>
 		<features></features>
+		<capability name="key.LeftSoftKey" value="-6" />
+		<capability name="key.RightSoftKey" value="-7" />
 	</vendor>
 
 	<vendor>

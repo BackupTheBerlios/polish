@@ -71,6 +71,11 @@ public abstract class ManifestCreator extends Extension {
 		if (manifestAttributes == null) {
 			throw new BuildException("No manifest attributes stored.");
 		}
+		for (int i = 0; i < manifestAttributes.length; i++) {
+			Attribute attribute = manifestAttributes[i];
+			attribute.setValue( this.environment.writeProperties( attribute.getValue() ));
+		}
+
 		String encoding = (String) env.get( MANIFEST_ENCODING_KEY );
 		if (encoding == null) {
 			throw new BuildException("No manifest encoding stored.");
