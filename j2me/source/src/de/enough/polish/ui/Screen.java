@@ -1855,6 +1855,16 @@ implements AccessibleCanvas
 					//#else
 						letTheMenuBarProcessKey = this.menuOpened;
 					//#endif
+					//#if polish.Bugs.SoftKeyMappedToFire
+						//#if polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined
+							//#= if (gameAction == FIRE && (keyCode == ${polish.key.LeftSoftKey} || keyCode == ${polish.key.RightSoftKey} )) {
+						//#else
+						if (gameAction == FIRE && (keyCode == -6 || keyCode == -7)) {
+						//#endif
+							letTheMenuBarProcessKey = true;
+							gameAction = 0;
+						}
+					//#endif
 					if (!letTheMenuBarProcessKey) {
 				//#endif
 						processed = handleKeyPressed(keyCode, gameAction);

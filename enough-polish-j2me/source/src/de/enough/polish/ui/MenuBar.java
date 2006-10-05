@@ -65,7 +65,13 @@ public class MenuBar extends Item {
 		private Command hideCommand;
 		private Command positiveCommand;
 	//#endif
-	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right
+	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} == left
+		//#define tmp.RightOptions
+		//#define tmp.OkCommandOnLeft
+		//# private final int openOptionsMenuKey = RIGHT_SOFT_KEY;
+		//# private final int selectOptionsMenuKey = LEFT_SOFT_KEY;
+		//# private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
+	//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == right
 		//#define tmp.RightOptions
 		//# private final int openOptionsMenuKey = RIGHT_SOFT_KEY;
 		//# private final int selectOptionsMenuKey = RIGHT_SOFT_KEY;
@@ -185,12 +191,8 @@ public class MenuBar extends Item {
 				//#endif
 			}
 		//#else
-			//#if polish.blackberry
-				//# if (type == Command.BACK || type == Command.CANCEL || type == Command.EXIT ) {
-			//#else
-			if (type == Command.BACK || type == Command.CANCEL) {
-			//#endif
-				//#if tmp.RightOptions
+			//#if tmp.OkCommandOnLeft
+				if (type == Command.OK || type == Command.ITEM || type == Command.SCREEN) {
 					if (this.singleLeftCommand == null) {
 						this.singleLeftCommand = cmd;
 						this.singleLeftCommandItem.setImage( (Image)null );
@@ -205,31 +207,52 @@ public class MenuBar extends Item {
 						this.singleLeftCommand = cmd;
 						this.singleLeftCommandItem.setText( cmd.getLabel() );
 						cmd = oldLeftCommand;
-						priority = oldLeftCommand.getPriority();
+						priority = oldLeftCommand.getPriority();		
 					}
-				//#else
-					if (this.singleRightCommand == null) {
-						//#debug
-						System.out.println("Setting single right command " + cmd.getLabel() );
-						this.singleRightCommand = cmd;
-						this.singleRightCommandItem.setImage( (Image)null );
-						this.singleRightCommandItem.setText( cmd.getLabel() );
-						if (this.isInitialised) {
-							this.isInitialised = false;
-							repaint();
+				}
+			//#else
+				if (type == Command.BACK || type == Command.CANCEL || type == Command.EXIT ) {
+					//#if tmp.RightOptions
+						if (this.singleLeftCommand == null) {
+							this.singleLeftCommand = cmd;
+							this.singleLeftCommandItem.setImage( (Image)null );
+							this.singleLeftCommandItem.setText( cmd.getLabel() );
+							if (this.isInitialised) {
+								this.isInitialised = false;
+								repaint();
+							}
+							return;
+						} else if ( this.singleLeftCommand.getPriority() > priority ) {
+							Command oldLeftCommand = this.singleLeftCommand;
+							this.singleLeftCommand = cmd;
+							this.singleLeftCommandItem.setText( cmd.getLabel() );
+							cmd = oldLeftCommand;
+							priority = oldLeftCommand.getPriority();
 						}
-						return;
-					} else if ( this.singleRightCommand.getPriority() > priority ) {
-						Command oldRightCommand = this.singleRightCommand;
-						this.singleRightCommand = cmd;
-						this.singleRightCommandItem.setText( cmd.getLabel() );
-						cmd = oldRightCommand;
-						priority = oldRightCommand.getPriority();
-						//#debug
-						System.out.println("exchanging right command " + oldRightCommand.getLabel() );
-					}
-				//#endif
-			}
+					//#else
+						if (this.singleRightCommand == null) {
+							//#debug
+							System.out.println("Setting single right command " + cmd.getLabel() );
+							this.singleRightCommand = cmd;
+							this.singleRightCommandItem.setImage( (Image)null );
+							this.singleRightCommandItem.setText( cmd.getLabel() );
+							if (this.isInitialised) {
+								this.isInitialised = false;
+								repaint();
+							}
+							return;
+						} else if ( this.singleRightCommand.getPriority() > priority ) {
+							Command oldRightCommand = this.singleRightCommand;
+							this.singleRightCommand = cmd;
+							this.singleRightCommandItem.setText( cmd.getLabel() );
+							cmd = oldRightCommand;
+							priority = oldRightCommand.getPriority();
+							//#debug
+							System.out.println("exchanging right command " + oldRightCommand.getLabel() );
+						}
+					//#endif
+				}
+			//#endif
 			//#if tmp.RightOptions
 				if (this.singleRightCommand != null) {
 					// add existing right command first:
@@ -496,8 +519,10 @@ public class MenuBar extends Item {
 				&& (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
 			this.paintScrollIndicator = this.canScrollUpwards || this.canScrollDownwards;
 			//#if !tmp.useInvisibleMenuBar
-				//#if tmp.RightOptions
-					IconItem item = this.singleRightCommandItem;
+				//#if tmp.OkCommandOnLeft
+					IconItem item = this.singleLeftCommandItem;
+				//#elif tmp.RightOptions
+					//# IconItem item = this.singleRightCommandItem;
 				//#else
 					//# IconItem item = this.singleLeftCommandItem;
 				//#endif
@@ -524,33 +549,38 @@ public class MenuBar extends Item {
 						item.setText( "Select" );
 					//#endif
 				}
-				//#if tmp.RightOptions
-					item = this.singleLeftCommandItem;
+				//#if tmp.OkCommandOnLeft
+					this.singleRightCommandItem.setText(null);
+					this.singleRightCommandItem.setImage( (Image)null );
 				//#else
-					//# item = this.singleRightCommandItem;
-				//#endif
-				if (this.cancelImage != null) {
-					item.setImage( this.cancelImage );
-					if (this.showImageAndText) {
+					//#if tmp.RightOptions
+						item = this.singleLeftCommandItem;
+					//#else
+						//# item = this.singleRightCommandItem;
+					//#endif
+					if (this.cancelImage != null) {
+						item.setImage( this.cancelImage );
+						if (this.showImageAndText) {
+							//#ifdef polish.i18n.useDynamicTranslations
+								item.setText( Locale.get( "polish.command.cancel" ) ); 
+							//#elifdef polish.command.cancel:defined
+								//#= item.setText(  "${polish.command.cancel}" );
+							//#else
+								item.setText( "Cancel" );
+							//#endif
+						} else {
+							item.setText( null );
+						}
+					} else {
 						//#ifdef polish.i18n.useDynamicTranslations
 							item.setText( Locale.get( "polish.command.cancel" ) ); 
 						//#elifdef polish.command.cancel:defined
-							//#= item.setText(  "${polish.command.cancel}" );
+							//#= item.setText(  "${polish.command.cancel}"  );
 						//#else
 							item.setText( "Cancel" );
 						//#endif
-					} else {
-						item.setText( null );
 					}
-				} else {
-					//#ifdef polish.i18n.useDynamicTranslations
-						item.setText( Locale.get( "polish.command.cancel" ) ); 
-					//#elifdef polish.command.cancel:defined
-						//#= item.setText(  "${polish.command.cancel}"  );
-					//#else
-						item.setText( "Cancel" );
-					//#endif
-				}
+				//#endif
 			//#endif
 		} else {
 			//#if tmp.useInvisibleMenuBar
