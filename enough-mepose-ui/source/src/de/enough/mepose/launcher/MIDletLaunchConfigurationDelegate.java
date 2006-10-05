@@ -314,7 +314,6 @@ public class MIDletLaunchConfigurationDelegate extends
     /**
      * @param model
      * @param sourceContainers
-     * @return
      */
     private void createNewSourceContainers(MeposeModel model, LinkedList sourceContainers) {
         Path path = new Path(model.getProjectHome()+"/source/src");
