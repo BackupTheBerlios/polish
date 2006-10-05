@@ -983,7 +983,6 @@ public class BuildSetting {
 	 * 		The first midlet is also the first element in the returned array.
 	 */
 	public String[] getMidletInfos( String defaultIcon, boolean useDefaultPackage, Environment environment ) {
-		System.out.println("getMidletInfos:::");
 		Midlet[] midlets = getMidlets( environment );
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
