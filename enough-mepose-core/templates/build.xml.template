@@ -80,7 +80,7 @@
 
 <taskdef name="j2mepolish" 
 	classname="de.enough.polish.ant.PolishTask" 
-	classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar:${polish.home}/lib/proguard.jar:${wtk.home}/wtklib/kenv.zip"/>
+	classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"/>
 
 	
 <!-- build targets, each target can be called via "ant [name]", 
