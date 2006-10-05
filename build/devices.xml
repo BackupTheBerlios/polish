@@ -206,6 +206,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-6"/>
 		<capability name="key.RightSoftKey" value="-7"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="MenuBar.OkPosition" value="left" />
 		<capability name="polish.debug.commandline"
 					value="-Xdebug;;-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${polish.debug.port}" />
 		
@@ -7115,6 +7116,10 @@ These namespaces/schemas will be used soon.
 	<device> 
 		<identifier>Samsung/SGH-D720</identifier> 
 		<groups>Series60E2</groups>
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="CanvasSize" value="176x204"/>
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="NokiaCanvasSize" value="176x208" />
 		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, wb-amr, raw"/>
 		<capability name="PolyphonicVoices" value="64"/>
 		<capability name="ImageFormat" value="png, jpeg, jpg, gif, bmp"/>
@@ -7137,10 +7142,8 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Samsung/SGH-E730</identifier>
 		<parent>Samsung/SGH-D730</parent>
-		<capability name="ScreenSize" value="176x220" />
-		<capability name="CanvasSize" value="176x204"/>
-		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="IconSize" value="16x16"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 
 	<device> 
