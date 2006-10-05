@@ -121,6 +121,25 @@ public class EnumManager
     
     return value;
   }
+
+  public int getNumEnumValues(String classDesc)
+  {
+    int result = 0;
+    classDesc += ".";
+    Iterator it = this.enumValues.keySet().iterator();
+
+    while (it.hasNext())
+      {
+        String key = (String) it.next();
+        
+        if (key.startsWith(classDesc))
+          {
+            result++;
+          }
+      }
+    
+    return result;
+  }
   
   public void addLocalVariable(LocalVariableInfo variable)
   {
