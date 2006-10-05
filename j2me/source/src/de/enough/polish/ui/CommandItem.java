@@ -276,13 +276,13 @@ public class CommandItem extends IconItem {
 					//System.out.println("submenu: adjusted y=" + y + ", clipY=" + clipY);
 					if ( y < clipY ) {
 						y = clipY;
-						this.children.setVerticalDimensions( clipY, clipY + clipHeight );
 					}
 //					g.setColor( 0x00FFFF);
 //					for (int i = 0; i < 15; i++) {
 //						g.drawLine( x - 20,y-i, x+childrenWidth+10, y-i);						
 //					}
 				}
+				this.children.setVerticalDimensions( clipY, clipY + clipHeight );
 				this.children.paint( x, y, x, x + childrenWidth, g);
 			}
 		}
