@@ -988,7 +988,6 @@ public class BuildSetting {
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
 			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon, useDefaultPackage );
-			System.out.println( i + ": " + midletInfos[i]  );
 		}
 		return midletInfos;
 	}
