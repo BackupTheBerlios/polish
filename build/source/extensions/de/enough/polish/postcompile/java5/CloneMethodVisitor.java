@@ -42,7 +42,7 @@ public class CloneMethodVisitor
         dup();
         arrayLength();
         dup();
-        newArray(this.enumType);
+        newArray(Type.INT_TYPE);
         dupX2();
         swap();
         push(0);

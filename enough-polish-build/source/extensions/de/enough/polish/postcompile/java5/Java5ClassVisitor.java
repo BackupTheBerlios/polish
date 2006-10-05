@@ -32,6 +32,8 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.Method;
 
 public class Java5ClassVisitor
     extends ClassAdapter
@@ -44,12 +46,16 @@ public class Java5ClassVisitor
   private String classDesc;
   private String classArrayDesc;
   private String signature_values;
+  private String name_values;
   
   public Java5ClassVisitor(ClassVisitor cv)
   {
     super(cv);
   }
 
+  /* (non-Javadoc)
+   * @see org.objectweb.asm.ClassAdapter#visit(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
+   */
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces)
   {
     super.visit(version, access, name, signature, superName, interfaces);
@@ -61,6 +67,9 @@ public class Java5ClassVisitor
     this.signature_values = "()[L" + this.className + ";"; 
   }
 
+  /* (non-Javadoc)
+   * @see org.objectweb.asm.ClassAdapter#visitMethod(int, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
+   */
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
   {
     // We keep only the values() method in enum classes.
@@ -86,6 +95,9 @@ public class Java5ClassVisitor
     return mv;
   }
 
+  /* (non-Javadoc)
+   * @see org.objectweb.asm.ClassAdapter#visitField(int, java.lang.String, java.lang.String, java.lang.String, java.lang.Object)
+   */
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
   {
     if (this.isEnumClass
@@ -104,9 +116,45 @@ public class Java5ClassVisitor
     if (this.isEnumClass
         && desc.equals(this.classArrayDesc))
       {
+        this.name_values = name;
         desc = "[I";
       }
     
     return super.visitField(access, name, desc, signature, value);
+  }
+
+  public void visitEnd()
+  {
+    if (this.isEnumClass)
+      {
+        if (this.name_values == null)
+          {
+            throw new BuildException("This is not an enum class: " + this.classDesc);
+          }
+        
+        // Generate new <clinit> method.
+        int numValues = EnumManager.getInstance().getNumEnumValues(this.classDesc);
+        Method m = Method.getMethod("void <clinit> ()");
+        MethodVisitor mv = super.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+        GeneratorAdapter mg = new GeneratorAdapter(ACC_STATIC, m, mv);
+        mg.push(numValues);
+        mg.newArray(Type.INT_TYPE);
+    
+        // TODO: This code can be more effective now with a generated for loop.
+        for (int i = 1; i < numValues; i++)
+          {
+            mg.dup();
+            mg.push(i);
+            mg.push(i);
+            mg.arrayStore(Type.INT_TYPE);
+          }
+
+        mg.putStatic(Type.getType(this.classDesc), this.name_values, Type.getType(int[].class));
+        mg.returnValue();
+        mg.endMethod();
+      }
+    
+    // Called super implementation of this method to really close this class.
+    super.visitEnd();
   }
 }
