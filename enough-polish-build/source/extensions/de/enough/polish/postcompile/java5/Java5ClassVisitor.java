@@ -113,8 +113,11 @@ public class Java5ClassVisitor
           }
       }
     
+    // Workaround for bug 64.
     if (this.isEnumClass
-        && desc.equals(this.classArrayDesc))
+        && desc.startsWith("["))
+//    if (this.isEnumClass
+//        && desc.equals(this.classArrayDesc))
       {
         this.name_values = name;
         desc = "[I";
