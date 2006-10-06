@@ -56,6 +56,13 @@ public class EnumManager
 
     return singleton;
   }
+  
+  public void clear()
+  {
+    this.enumClasses.clear();
+    this.enumValues.clear();
+    this.localVariables.clear();
+  }
     
   private String normalizeClassName(String className)
   {
