@@ -109,6 +109,46 @@
 			type="de.enough.mepose.launcher.launchConfigurationType" />
 	</extension>
  
+ <extension point="org.eclipse.ui.popupMenus"> 
+      <objectContribution 
+         id="de.enough.mepose.popupmenus.menu1" 
+         objectClass="org.eclipse.jdt.core.IJavaProject" > 
+         <menu
+            id="de.enough.mepose.popupmenus.menu1" 
+            label="&amp;J2ME Polish"> 
+            <groupMarker name="group1"/> 
+         </menu> 
+         
+         <action
+            id="de.enough.mepose.popupmenus.actions.buildnormal" 
+            label="&amp;Run build.xml"
+            style="push"
+            menubarPath="de.enough.mepose.popupmenus.menu1/group1" 
+            icon="icons/jongleur2_16x16.png"  
+            class="de.enough.mepose.actions.BuildNormalActionDelegate" 
+            enablesFor="1" /> 
+            
+         <action
+            id="de.enough.mepose.popupmenus.actions.buildOneDevice" 
+            label="&amp;Build current device"
+            style="push"
+            menubarPath="de.enough.mepose.popupmenus.menu1/group1" 
+            icon="icons/jongleur2_16x16.png"  
+            class="de.enough.mepose.actions.BuildOneDeviceActionDelegate" 
+            enablesFor="1" />
+            
+         <action
+            id="de.enough.mepose.popupmenus.actions.buildseveralDevices" 
+            label="&amp;Build devices..."
+            style="push"
+            menubarPath="de.enough.mepose.popupmenus.menu1/group1" 
+            icon="icons/jongleur2_16x16.png"  
+            class="de.enough.mepose.actions.BuildSeveralDevicesActionDelegate" 
+            enablesFor="1" /> 
+            
+      </objectContribution> 
+   </extension> 
+ 
  <!--
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true"
