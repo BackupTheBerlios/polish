@@ -164,6 +164,9 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     
     String enumClass = (this.environment != null && this.environment.hasSymbol(POLISH_USE_DEFAULT_PACKAGE)
                         ? CLASS_ENUM_DEFAULT : CLASS_ENUM);
+    
+    // Clear global EnumManager instance.
+    manager.clear();
 
     // Find all classes implementing java.lang.Enum.
     Iterator it = classes.iterator();
