@@ -1402,7 +1402,11 @@ implements Choice
 		System.out.println("ChoiceGroup.handlePointerPressed(" + x + ", " + y + ")");
 		//#ifndef polish.usePopupItem
 			boolean processed = super.handlePointerPressed(x, y);
-			y -= this.yOffset + this.marginTop + this.paddingTop;
+			int labelHeight = 0;
+			if (this.label != null) {
+				labelHeight = this.label.itemHeight; // TODO: what if the label is on the same line???
+			}
+			y -= this.yOffset + this.marginTop + this.paddingTop + labelHeight;
 			if (this.focusedItem != null 
 					&& ( x >= this.focusedItem.xLeftPos ) 
 					&& ( x <= this.focusedItem.xRightPos ) 

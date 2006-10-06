@@ -366,6 +366,9 @@ public class CommandItem extends IconItem {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
+		if (y < this.yTopPos || y > this.yBottomPos || x < this.xLeftPos || x > this.xRightPos ) {
+			return false;
+		}
 		// trigger command or open submenu:
 		return handleKeyPressed( 0, Canvas.FIRE );
 	}

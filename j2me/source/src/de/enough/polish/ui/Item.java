@@ -1924,6 +1924,9 @@ public abstract class Item extends Object
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
+		if (y < this.yTopPos || y > this.yBottomPos || x < this.xLeftPos || x > this.xRightPos ) {
+			return false;
+		}
 		return handleKeyPressed( -1, Canvas.FIRE );
 	}
 	//#endif

@@ -1039,6 +1039,16 @@ public class MenuBar extends Item {
 		if (index != -1) {
 			// found it:
 			parentCommandItem = (CommandItem) this.commandsContainer.get( index );
+		} else if (parentCommand == this.singleLeftCommand ){
+			parentCommandItem = new CommandItem( parentCommand, this );
+			this.commandsContainer.add( parentCommandItem );
+			this.commands.add( parentCommand );
+			this.singleLeftCommand = null;
+		} else if (parentCommand == this.singleRightCommand ){
+			parentCommandItem = new CommandItem( parentCommand, this );
+			this.commandsContainer.add( parentCommandItem );
+			this.commands.add( parentCommand );
+			this.singleRightCommand = null;
 		} else {
 			// search through all commands
 			for ( int i=0; i < this.commandsContainer.size(); i++ ) {

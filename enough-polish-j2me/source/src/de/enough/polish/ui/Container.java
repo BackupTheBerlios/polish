@@ -1773,7 +1773,11 @@ public class Container extends Item {
 	protected boolean handlePointerPressed(int x, int y) {
 		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - (this.yOffset  + this.marginTop + this.paddingTop )) );
 		// an item within this container was selected:
-		y -= this.yOffset + this.marginTop + this.paddingTop;
+		int labelHeight = 0;
+		if (this.label != null) {
+			labelHeight = this.label.itemHeight; // TODO: what if the label is on the same line???
+		}
+		y -= this.yOffset + this.marginTop + this.paddingTop + labelHeight;
 //		int lastYPos = this.yBottomPos;
 //		if ( myItems.length != 0) {
 //			Item lastItem = myItems[ myItems.length - 1];
@@ -1781,6 +1785,15 @@ public class Container extends Item {
 //				lastYPos += (lastItem.backgroundHeight - lastItem.itemHeight);
 //			}
 //		}
+		Item item = this.focusedItem;
+		if (item != null) {
+			// the focused item can extend the parent container, e.g. subcommands, 
+			// so give it a change to process the event itself:
+			boolean processed = item.handlePointerPressed(x, y - item.yTopPos);
+			if (processed) {
+				return true;
+			}
+		}
 		if (y < 0 || y > this.contentHeight 
 			|| x < this.xLeftPos || x > this.xRightPos) {
 			//System.out.println("Container.handlePointerPressed(): out of range, xLeft=" + this.xLeftPos + ", xRight="  + this.xRightPos + ", contentHeight=" + this.contentHeight );
@@ -1795,7 +1808,7 @@ public class Container extends Item {
 		//#endif
 		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
+			item = myItems[i];
 			if (y < item.yTopPos  || y > item.yBottomPos || x < item.xLeftPos || x > item.xRightPos) {
 				// check for internal positions (e.g. POPUP choice groups can be over this area):
 				if ( item.backgroundHeight > item.itemHeight ) {
@@ -1816,15 +1829,16 @@ public class Container extends Item {
 				// only focus the item when it has not been focused already:
 				focus(i, item, 0);
 				// let the item also handle the pointer-pressing event:
-				item.handlePointerPressed( x , y );
+				item.handlePointerPressed( x , y  - item.yTopPos );
 				/*
 				if (!item.handlePointerPressed( x , y )) {
 					// simulate a FIRE keypress event:
 					//handleKeyPressed( -1, Canvas.FIRE );
 				}*/
 				return true;			
-			} else {
-				return item.handlePointerPressed( x , y );
+			// } else {
+				// outcommented, because the focused item already has tried to handle the event above...
+				//return item.handlePointerPressed( x , y );
 						//|| item.handleKeyPressed( -1, Canvas.FIRE ) );
 			}
 		}

@@ -342,6 +342,7 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
+		y -= this.containerY;
 		Container newFrame = null;
 		if (this.container.handlePointerPressed(x, y)) {
 			newFrame = this.container;

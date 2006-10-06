@@ -73,9 +73,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			private int arrowPadding;
 		//#endif
 	//#endif
-	//#ifdef polish.css.exclusiveview-roundtrip
-		private boolean allowRoundTrip;
-	//#endif
+	private boolean allowRoundTrip;
 	//#ifdef polish.css.exclusiveview-expand-background
 		private Background background;
 		private boolean expandBackground;
@@ -469,23 +467,27 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerPressed(int x, int y) {
+		if (y < 0 || y > this.contentHeight ) {
+			return false;
+		}
 		Item[] items = this.parentContainer.getItems();
 		this.currentItem.select( false );
 		x -= this.xStart;
-		if (this.currentItemIndex > 0 && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
-			this.currentItemIndex--;
-		} else if ( this.currentItemIndex < items.length - 1 && x >= this.rightArrowStartX && x <= this.rightArrowEndX ) {
-			this.currentItemIndex++;
-		} else  {
-			this.currentItemIndex++;
-			if (this.currentItemIndex >= items.length ) {
-				this.currentItemIndex = 0;
+		int index = this.currentItemIndex;
+		if ( (index > 0 || this.allowRoundTrip) && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
+			index--;
+			if (index < 0) {
+				index = items.length - 1;
 			}
-		}  
-		this.currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+		} else if (! (x >= this.leftArrowStartX  && x <= this.leftArrowEndX && index > 0)) {
+			index = ( index + 1) % items.length;
+		}
+		this.currentItemIndex = index;
+		this.currentItem = (ChoiceItem) items[ index ];
 		//this.currentItem.select( true );
 		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
 		this.parentContainer.focus(this.currentItemIndex, this.currentItem, 0);
+		this.parentContainer.notifyStateChanged();
 		return true;
 	}
 	//#endif

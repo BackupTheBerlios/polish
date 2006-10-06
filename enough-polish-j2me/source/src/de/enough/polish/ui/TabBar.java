@@ -382,19 +382,26 @@ public class TabBar extends Item {
 
 	//#ifdef polish.hasPointerEvents
 	protected boolean handlePointerPressed(int x, int y) {
-		if (y < this.yTopPos || y > this.yBottomPos) {
+		if (y < this.yTopPos || y > this.yBottomPos || x < this.xLeftPos || x > this.xRightPos ) {
 			return false;
 		}
 		//System.out.println( "pointer-pressed: " + x + ", " + y);
 		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding; 
-		if ( this.activeTabIndex > 0 && x <= scrollerWidth ) {
+		if ( (this.activeTabIndex > 0 || this.allowRoundtrip) && x <= scrollerWidth ) {
 			//System.out.println("left: x <= " + scrollerWidth );
-			this.newActiveTabIndex = this.activeTabIndex - 1;
-		} else if ( this.activeTabIndex < this.tabs.length -1 && x >= this.xRightPos - scrollerWidth) {
+			int index = this.activeTabIndex - 1;
+			if (index < 0) {
+				index = this.tabs.length - 1;
+			}
+			this.newActiveTabIndex = index;
+		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.xRightPos - scrollerWidth) {
 			//System.out.println("right: x >= " + (this.xRightPos - scrollerWidth) );
-			this.newActiveTabIndex = this.activeTabIndex + 1;
+			this.newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.length;
 		} else {
 			int width = this.xOffset;
+			if (this.activeTabIndex > 0 || this.allowRoundtrip) {
+				width += scrollerWidth;
+			}
 			for (int i = 0; i < this.tabs.length; i++) {
 				ImageItem tab = this.tabs[i];
 				if ( x >= width && x <= width + tab.itemWidth) {

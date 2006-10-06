@@ -292,7 +292,7 @@ implements AccessibleCanvas
 	private boolean isScreenChangeDirtyFlag;
 	private final Object paintLock = new Object();
 	private int containerX;
-	private int containerY;
+	protected int containerY;
 
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -2645,23 +2645,8 @@ implements AccessibleCanvas
 						// a menu-item could have been selected:
 						int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
 						if (this.menuContainer.handlePointerPressed( x, y - menuY )) {
-							//TODO add support for pointer events and sub commands
-//							int focusedIndex = this.menuContainer.getFocusedIndex();
-//							Command cmd = (Command) this.menuCommands.get( focusedIndex );
-//							callCommandListener( cmd );						
-//						} else {
-//							//#ifdef tmp.useTitle
-//								//y -= this.titleHeight;
-//							//#endif
-//							int focusedIndex = this.menuContainer.getFocusedIndex();
-//							Item item = this.menuContainer.get( focusedIndex );
-//							if (y > item.yTopPos  && y < item.yBottomPos
-//									&& x > item.xLeftPos && x < item.xRightPos) {
-//								Command cmd = (Command) this.menuCommands.get( focusedIndex );
-//								callCommandListener( cmd );	
-//							}
+							repaint();
 						}
-						repaint();
 						return;
 					}
 				//#endif
