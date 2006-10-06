@@ -26,6 +26,7 @@
 package de.enough.polish.resources;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -46,10 +47,12 @@ import de.enough.polish.ant.build.LocaleSetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.ant.build.ResourceCopierSetting;
 import de.enough.polish.ant.build.ResourceSetting;
+import de.enough.polish.ant.build.RootSetting;
 import de.enough.polish.ant.requirements.SizeMatcher;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssReader;
 import de.enough.polish.preprocess.css.StyleSheet;
+import de.enough.polish.util.DirectoryFileFilter;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -77,7 +80,7 @@ public class ResourceManager {
 	private final Environment environment;
 	private final ExtensionManager extensionManager;
 	private boolean filterZeroLengthFiles;
-	private File[] resourceDirectories;
+	private RootSetting[] resourceDirectories;
 
 	/**
 	 * Creates a new resource manager.
@@ -98,10 +101,10 @@ public class ResourceManager {
 		this.project = environment.getProject();
 		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
-		File[] resDirs = setting.getRootDirectories(environment);
+		RootSetting[] resDirs = setting.getRootDirectories(environment);
 		this.resourceDirectories = resDirs;
 		for (int i = 0; i < resDirs.length; i++) {
-			File resDir = resDirs[i];
+			File resDir = resDirs[i].resolveDir(environment);
 			if (!resDir.exists()) {
 				System.err.println("Warning: the resources-directory [" + resDir.getAbsolutePath() + "] did not exist, J2ME Polish created it automatically now.");
 				resDir.mkdir();
@@ -168,6 +171,7 @@ public class ResourceManager {
 		// add manual excludes from the user:
 		this.resourceFilter.setAdditionalFilters( this.resourceSetting.getFilters(this.booleanEvaluator));
 		File[] resources = getResources( device, locale );
+		RootSetting[] includeSubDirsRoots = getIncludeSubDirsRoots();
 		//FileUtil.copy(resources, targetDir);
 		// creating resource copier:
 		ResourceCopierSetting[] copierSettings = this.resourceSetting.getCopiers( this.environment.getBooleanEvaluator() );
@@ -175,6 +179,10 @@ public class ResourceManager {
 			// use default resource copier:
 			ResourceCopier resourceCopier = ResourceCopier.getInstance( null, this.extensionManager, this.environment );
 			resourceCopier.copyResources(device, locale, resources, targetDir);
+			for (int i = 0; i < includeSubDirsRoots.length; i++) {
+				RootSetting rootSetting = includeSubDirsRoots[i];
+				copyRootWithSubDirs( device, locale, rootSetting.resolveDir( this.environment ), resourceCopier, targetDir );
+			}
 		} else {
 			// copy resources using user- or device-defined resource copiers:
 			for (int i = 0; i < copierSettings.length; i++) {
@@ -202,6 +210,37 @@ public class ResourceManager {
 		}
 	}
 	
+	private void copyRootWithSubDirs(Device device, Locale locale, File root, ResourceCopier resourceCopier, File targetDir) throws IOException {
+		File[] files = root.listFiles();
+		Map resourcesByName = new HashMap( files.length );
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			if (file.isDirectory()) {
+				copyRootWithSubDirs(device, locale, file, resourceCopier, new File( targetDir, file.getName() ) );
+			} else {
+				resourcesByName.put( file.getName(),file );
+			}
+		}
+		files = filterResources(resourcesByName);
+		resourceCopier.copyResources(device, locale, files, targetDir );
+	}
+
+	/**
+	 * Retrieves all resource roots that should add their subdirectories to the JAR file
+	 * 
+	 * @return an (possibly empty) array of resource roots with enabled includeSubDirs option
+	 */
+	private RootSetting[] getIncludeSubDirsRoots() {
+		ArrayList rootsList = new ArrayList( this.resourceDirectories.length );
+		for (int i = 0; i < this.resourceDirectories.length; i++) {
+			RootSetting rootSetting = this.resourceDirectories[i];
+			if (rootSetting.isIncludeSubDirs()) {
+				rootsList.add( rootSetting );
+			}
+		}
+		return (RootSetting[]) rootsList.toArray( new RootSetting[ rootsList.size() ] );
+	}
+
 	/**
 	 * Creates and stores the dynamic translations.
 	 * 
@@ -297,7 +336,11 @@ public class ResourceManager {
 		}
 		ArrayList dirs = new ArrayList();
 		for (int j = 0; j < this.resourceDirectories.length; j++) {
-			File resourcesDir = this.resourceDirectories[j];
+			RootSetting rootSetting = this.resourceDirectories[j];
+			if (rootSetting.isIncludeSubDirs()) {
+				continue;
+			}
+			File resourcesDir = rootSetting.resolveDir( this.environment );
 			// first dir is the general resources dir:
 			dirs.add( resourcesDir );
 			//String resourcePath = resourcesDir.getAbsolutePath() + File.separator;

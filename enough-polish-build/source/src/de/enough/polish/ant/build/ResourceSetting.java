@@ -123,10 +123,10 @@ public class ResourceSetting extends Setting {
 		addConfiguredRoot( new RootSetting( dir ) );
 	}
 	
-	public File[] getRootDirectories( Environment env ) {
+	public RootSetting[] getRootDirectories( Environment env ) {
 		if (this.rootSettings == null) {
-			return new File[]{ 
-				new File( this.baseDir + "resources" )
+			return new RootSetting[]{ 
+				new RootSetting( new File( this.baseDir + "resources" ) )
 			};
 		}
 		RootSetting[] settings = (RootSetting[]) this.rootSettings.toArray( new RootSetting[ this.rootSettings.size() ] );
@@ -135,10 +135,10 @@ public class ResourceSetting extends Setting {
 		for (int i = 0; i < settings.length; i++) {
 			RootSetting setting = settings[i];
 			if (setting.isActive(evaluator)) {
-				rootDirsList.add( setting.resolveDir(env) );
+				rootDirsList.add( setting );
 			}
 		}
-		File[] rootDirs = (File[]) rootDirsList.toArray( new File[ rootDirsList.size()] );
+		RootSetting[] rootDirs = (RootSetting[]) rootDirsList.toArray( new RootSetting[ rootDirsList.size()] );
 		if (rootDirs.length == 0) {
 			throw new BuildException( "Unable to build for device [" + env.getDevice().getIdentifier() + "]: no resource directories fit. Check the conditions of your <root> elements in the build.xml script.");
 		}

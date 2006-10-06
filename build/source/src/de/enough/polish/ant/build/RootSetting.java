@@ -48,6 +48,7 @@ public class RootSetting extends Setting {
 
 	private String dirDefinition;
 	private File dir;
+	private boolean isIncludeSubDirs;
 
 	/**
 	 * Creates a new directory setting.
@@ -56,9 +57,25 @@ public class RootSetting extends Setting {
 		super();
 	}
 	
+	
+	/**
+	 * Creates a new directory setting.
+	 * 
+	 * @param dir the root directory
+	 */
 	public RootSetting(File dir) {
 		this.dir = dir;
 	}
+	
+	/**
+	 * Creates a new directory setting.
+	 * 
+	 * @param dirDefinition the root directory definition that might include runtime variables such as ${polish.vendor}
+	 */
+	public RootSetting(String dirDefinition) {
+		this.dirDefinition = dirDefinition;
+	}
+
 
 	public void setDir( String dirDefinition ) {
 		if ("".equals( dirDefinition ) ) {
@@ -81,6 +98,42 @@ public class RootSetting extends Setting {
 		} else {
 			return env.resolveFile(this.dirDefinition);
 		}
+	}
+
+	/**
+	 * Determines whether the subdirectories should be included in the JAR instead of using the J2ME Polish resource assemmbling mechanism.
+	 * 
+	 * @return true when subdirectories of this root should be included
+	 */
+	public boolean isIncludeSubDirs() {
+		return this.isIncludeSubDirs;
+	}
+
+	/**
+	 * Sets whether the subdirectories should be included in the JAR instead of using the J2ME Polish resource assemmbling mechanism.
+	 * 
+	 * @param include true when subdirectories of this root should be included
+	 */
+	public void setIncludeSubDirs(boolean include) {
+		this.isIncludeSubDirs = include;
+	}
+
+	/**
+	 * Sets whether the subdirectories should be included in the JAR instead of using the J2ME Polish resource assemmbling mechanism.
+	 * 
+	 * @param include true when subdirectories of this root should be included
+	 */
+	public void setIncludeSubdirs(boolean include) {
+		this.isIncludeSubDirs = include;
+	}
+
+	/**
+	 * Sets whether the subdirectories should be included in the JAR instead of using the J2ME Polish resource assemmbling mechanism.
+	 * 
+	 * @param include true when subdirectories of this root should be included
+	 */
+	public void setIncludesubdirs(boolean include) {
+		this.isIncludeSubDirs = include;
 	}
 
 }
