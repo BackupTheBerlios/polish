@@ -8,7 +8,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -87,6 +89,11 @@ public class MIDletLaunchConfigurationTab extends
         }
         if (firstElement instanceof IResource) {
             return ((IResource) firstElement).getProject().getName();
+        }
+        if(firstElement instanceof JarPackageFragmentRoot) {
+            IJavaElement parent = ((JarPackageFragmentRoot)firstElement).getParent();
+            String elementName = parent.getElementName();
+            return elementName;
         }
 
         return "";
