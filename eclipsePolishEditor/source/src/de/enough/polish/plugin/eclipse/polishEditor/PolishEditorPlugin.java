@@ -10,11 +10,14 @@ import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import de.enough.mepose.editor.java.MeposeLayerManager;
 import de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor;
 
 /**
@@ -23,6 +26,36 @@ import de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor;
 public class PolishEditorPlugin extends AbstractUIPlugin {
 	
     
+    /**
+     * 
+     * <br>Copyright Enough Software 2005
+     * <pre>
+     * history
+     *        Sep 29, 2006 - rickyn creation
+     * </pre>
+     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+     */
+    private final class DefaultPartListener implements IPartListener2 {
+        public void partActivated(IWorkbenchPartReference partRef) {
+        }
+        public void partBroughtToTop(IWorkbenchPartReference partRef) {
+        }
+        public void partClosed(IWorkbenchPartReference partRef) {
+        }
+        public void partDeactivated(IWorkbenchPartReference partRef) {
+        }
+        public void partHidden(IWorkbenchPartReference partRef) {
+        }
+        public void partInputChanged(IWorkbenchPartReference partRef) {
+        }
+        public void partOpened(IWorkbenchPartReference partRef) {
+        }
+        public void partVisible(IWorkbenchPartReference partRef) {
+        }
+    }
+
+
+
     /**
      * 
      * <br>Copyright Enough Software 2005
@@ -118,9 +151,16 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+        
+        registerLayerManager();
 	}
 
-	/**
+    private void registerLayerManager() {
+        MeposeLayerManager meposeLayerManager = new MeposeLayerManager();
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new DefaultPartListener());
+    }
+
+    /**
 	 * This method is called when the plug-in is stopped
 	 * @param context
 	 * @throws Exception
