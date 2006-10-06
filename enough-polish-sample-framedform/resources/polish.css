@@ -11,6 +11,7 @@ colors {
 .gradientFramedForm {
 	padding: 2;
 	background-color: screenBgColor;
+	layout: vertical-center | horizontal-center;
 }
 
 rightframe {
@@ -20,7 +21,9 @@ rightframe {
 .colorChoiceGroup {
 	padding: 2;
 	include-label: true;
+	/*
 	layout: expand | center;
+	*/
 	background-color: bgColor;
 
 	view-type: exclusive;
