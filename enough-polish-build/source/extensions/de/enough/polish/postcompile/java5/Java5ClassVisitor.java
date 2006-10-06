@@ -29,6 +29,7 @@ import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -142,16 +143,42 @@ public class Java5ClassVisitor
         GeneratorAdapter mg = new GeneratorAdapter(ACC_STATIC, m, mv);
         mg.push(numValues);
         mg.newArray(Type.INT_TYPE);
-    
-        // TODO: This code can be more effective now with a generated for loop.
-        for (int i = 1; i < numValues; i++)
-          {
-            mg.dup();
-            mg.push(i);
-            mg.push(i);
-            mg.arrayStore(Type.INT_TYPE);
-          }
 
+        if (numValues <= 3)
+          {
+            for (int i = 1; i < numValues; i++)
+              {
+                mg.dup();
+                mg.push(i);
+                mg.push(i);
+                mg.arrayStore(Type.INT_TYPE);
+              }
+          }
+        else
+          {
+            Label labelInitializeField = new Label();
+            Label labelCheck = new Label();
+            Label labelDone = new Label();
+            
+            mg.push(1);
+            mg.storeLocal(0, Type.INT_TYPE);
+            mg.goTo(labelCheck);
+            
+            mg.mark(labelInitializeField);
+            mg.dup();
+            mg.loadLocal(0, Type.INT_TYPE);
+            mg.dup();
+            mg.arrayStore(Type.INT_TYPE);
+            mg.iinc(0, 1);
+            
+            mg.mark(labelCheck);
+            mg.loadLocal(0, Type.INT_TYPE);
+            mg.push(numValues);
+            mg.ifICmp(GeneratorAdapter.LT, labelInitializeField);
+            
+            mg.mark(labelDone);
+          }
+        
         mg.putStatic(Type.getType(this.classDesc), this.name_values, Type.getType(int[].class));
         mg.returnValue();
         mg.endMethod();
