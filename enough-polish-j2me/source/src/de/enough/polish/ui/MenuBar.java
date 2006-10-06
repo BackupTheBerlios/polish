@@ -1042,12 +1042,12 @@ public class MenuBar extends Item {
 		} else if (parentCommand == this.singleLeftCommand ){
 			parentCommandItem = new CommandItem( parentCommand, this );
 			this.commandsContainer.add( parentCommandItem );
-			this.commands.add( parentCommand );
+			this.commandsList.add( parentCommand );
 			this.singleLeftCommand = null;
 		} else if (parentCommand == this.singleRightCommand ){
 			parentCommandItem = new CommandItem( parentCommand, this );
 			this.commandsContainer.add( parentCommandItem );
-			this.commands.add( parentCommand );
+			this.commandsList.add( parentCommand );
 			this.singleRightCommand = null;
 		} else {
 			// search through all commands
