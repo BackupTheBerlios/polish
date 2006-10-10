@@ -27,6 +27,7 @@ package de.enough.polish.resources;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -81,6 +82,8 @@ public class ResourceManager {
 	private final ExtensionManager extensionManager;
 	private boolean filterZeroLengthFiles;
 	private RootSetting[] resourceDirectories;
+	private FileFilter excludeDirFilter = new DirectoryFileFilter(false);
+	private FileFilter includeDirFilter = new DirectoryFileFilter(true);
 
 	/**
 	 * Creates a new resource manager.
@@ -185,11 +188,15 @@ public class ResourceManager {
 			}
 		} else {
 			// copy resources using user- or device-defined resource copiers:
+			File[] subDirs = new File[ includeSubDirsRoots.length ];
+			for (int i = 0; i < subDirs.length; i++) {
+				subDirs[i] = includeSubDirsRoots[i].resolveDir( this.environment );
+			}
 			for (int i = 0; i < copierSettings.length; i++) {
 				ResourceCopierSetting setting = copierSettings[i];
 				ResourceCopier resourceCopier = ResourceCopier.getInstance( setting, this.extensionManager, this.environment );
 				File tempTargetDir;
-				boolean lastRound = i == copierSettings.length - 1; 
+				boolean lastRound = (i == copierSettings.length - 1); 
 				if ( lastRound ) {
 					tempTargetDir = targetDir;
 				} else {
@@ -200,8 +207,13 @@ public class ResourceManager {
 					tempTargetDir.mkdir();
 				}
 				resourceCopier.copyResources(device, locale, resources, tempTargetDir);
+				for (int j = 0; j < subDirs.length; j++) {
+					copyRootWithSubDirs( device, locale, subDirs[j], resourceCopier, tempTargetDir );
+				}
 				if (!lastRound) {
-					resources = tempTargetDir.listFiles();
+					resources = tempTargetDir.listFiles( this.excludeDirFilter  );
+					subDirs = tempTargetDir.listFiles( this.includeDirFilter );
+					
 				}
 			}
 		}
@@ -212,11 +224,13 @@ public class ResourceManager {
 	
 	private void copyRootWithSubDirs(Device device, Locale locale, File root, ResourceCopier resourceCopier, File targetDir) throws IOException {
 		File[] files = root.listFiles();
+		targetDir = new File( targetDir, root.getName() );
+		targetDir.mkdir();
 		Map resourcesByName = new HashMap( files.length );
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if (file.isDirectory()) {
-				copyRootWithSubDirs(device, locale, file, resourceCopier, new File( targetDir, file.getName() ) );
+				copyRootWithSubDirs(device, locale, file, resourceCopier, targetDir );
 			} else {
 				resourcesByName.put( file.getName(),file );
 			}
