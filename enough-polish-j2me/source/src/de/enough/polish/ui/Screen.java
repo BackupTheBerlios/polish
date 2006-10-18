@@ -368,6 +368,7 @@ implements AccessibleCanvas
 		if (createDefaultContainer) {
 			this.container = new Container( true );
 			this.container.screen = this;
+			this.container.isFocused = true;
 		}
 		this.style = style;
 		this.forwardCommandListener = new ForwardCommandListener();
@@ -2167,6 +2168,15 @@ implements AccessibleCanvas
 	 */
 	public void setCommandListener(CommandListener listener) {
 		this.forwardCommandListener.realCommandListener = listener;
+	}
+	
+	/**
+	 * Retrieves the asscociated command listener of this screen (if any).
+	 * 
+	 * @return the command listener or null when none has been registered before.
+	 */
+	public CommandListener getCommandListener() {
+		return this.forwardCommandListener.realCommandListener;
 	}
 
 	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar

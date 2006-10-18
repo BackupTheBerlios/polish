@@ -838,8 +838,8 @@ public class MenuBar extends Item {
 				this.isSoftKeyPressed = true;			
 				//#if tmp.useInvisibleMenuBar
 					if ( !this.isOpened && this.positiveCommand != null 
-							&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3)
-							|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
+							&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3) ) )
+							//|| (this.singleRightCommand == null && this.commandsContainer.size() == 2)) ) 
 					{
 						// invoke positive command:
 						this.screen.callCommandListener(this.positiveCommand);

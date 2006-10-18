@@ -27,6 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
@@ -1220,6 +1221,29 @@ public final class UiAccess {
     public static void setBackground( javax.microedition.lcdui.Item item, Background background ) {
     	// ignore
     }
+    //#endif
+
+    /**
+     * Retrieves the command listener belonging to this screen.
+     * 
+     * @param screen the screen 
+     * @return the associated command listener, always null for javax.microedition.lcdui.Screen objects that have not been converted to J2ME Polish components
+     */
+	public static CommandListener getCommandListener( javax.microedition.lcdui.Screen screen ) {
+		return null;
+	}
+
+
+    //#if polish.usePolishGui
+    /**
+     * Retrieves the command listener belonging to this screen.
+     * 
+     * @param screen the screen 
+     * @return the associated command listener, always null for javax.microedition.lcdui.Screen objects that have not been converted to J2ME Polish components
+     */
+	public static CommandListener getCommandListener( Screen screen ) {
+		return screen.getCommandListener();
+	}
     //#endif
 
 }

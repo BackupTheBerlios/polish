@@ -427,7 +427,9 @@ public class Container extends Item {
 		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index );
 		
 		//#if polish.blackberry
-			//# getScreen().setFocus( item );
+			if (this.isFocused) {
+				//# getScreen().setFocus( item );
+			}
 		//#endif
 		
 		
