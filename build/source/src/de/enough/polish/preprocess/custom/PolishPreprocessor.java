@@ -244,7 +244,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 
 			// check for comments:
 			String trimmedLine = line.trim();
-			if (trimmedLine.startsWith("//")) {
+			if (trimmedLine.startsWith("//") && (! (trimmedLine.length() > 3 && trimmedLine.charAt(2)=='#')) ) {
 				//System.out.println(className + ": ignoring " + line);
 				continue;
 			}
