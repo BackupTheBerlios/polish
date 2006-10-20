@@ -1205,7 +1205,7 @@ extends Displayable
             	Screen screen = null;
                 if ( o instanceof Screen ) {
                    screen = ((Screen)o);
-                   if (keyCode != Keypad.KEY_ESCAPE // 1769472 is the escape button 
+                   if (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE // 1769472 is the escape button 
                 		   && !screen.isMenuOpened() 
                 		   && !this.dummyFieldHasFocus) 
                    { 

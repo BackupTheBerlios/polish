@@ -414,9 +414,13 @@ public class MenuBar extends Item {
 				}
 				int newSingleRightCommandIndex = getNextNegativeCommandIndex();
 				if ( newSingleRightCommandIndex != -1 ) {
-					this.singleRightCommand = (Command) this.commandsList.remove(newSingleRightCommandIndex);
+					//#if tmp.useInvisibleMenuBar
+						this.singleRightCommand = (Command) this.commandsList.get(newSingleRightCommandIndex);
+					//#else
+						this.singleRightCommand = (Command) this.commandsList.remove(newSingleRightCommandIndex);
+						this.commandsContainer.remove( newSingleRightCommandIndex );
+					//#endif
 					this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
-					this.commandsContainer.remove( newSingleRightCommandIndex );
 				}	
 				// don't return here yet, since it could well be that there is only
 				// one remaining item in the commandsList. In such a case the 
