@@ -7,7 +7,7 @@
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
 <property name="Version" value="1.2.4" />
-<property name="BetaVersion" value="2.0-beta2" />
+<property name="BetaVersion" value="2.0-beta3" />
 <property name="JavaDocVersion" value="${BetaVersion}" />
 <property name="symbols" value="isBetaAvailable" />
 <!--

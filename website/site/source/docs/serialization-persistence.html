@@ -1,0 +1,48 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.serialization %>
+<%set title = J2ME Polish: Persistence with Serialization  %>
+<%set basedir = ../ %>
+<%include start.txt %>
+			
+<div id="content">
+	<h1 id="top">Serialization: How to persist serializable classes</h1>
+	<%index %>
+		
+		<p>
+			Use the  <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/RmsStorage.html">RmsStorage</a> to read and save data to the record store in the easiest possible way!
+		</p>
+		
+
+		<h2 id="example">Example</h2>
+		<p>
+<pre>
+import de.enough.polish.io.RmsStorage;
+import java.io.IOException;
+public class AddressBook {
+	Vector contacts;
+	RmsStorage storage;
+	
+	public AddressBook() {
+		<b>this.storage = new RmsStorage();</b>
+		try {
+			<b>this.contacts = 
+				(Vector) this.storage.read( "AddressBook" );
+			</b>
+		} catch (IOException e) {
+			// no address book has been saved before, so create new one:
+			this.contacts = new Vector();
+		}
+		
+		public void save() throws IOException {
+			<b>this.storage.save( this.contacts, "AddressBook" );</b>
+		}
+	}
+}
+</pre>
+		</p>
+		<p>Please refer to the &quot;serializer&quot; sample application in <i>${polish.home}/samples/serializer</i>
+			for the full example how to use these concepts.
+		</p>
+		
+							
+<%include end.txt %>

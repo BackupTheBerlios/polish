@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-  <project usePreviewPrefix="0" previewPrefix="file:file%3A" type="Local" name="source-j2mepolish.org" encoding="iso 8859-1" >
+  <project usePreviewPrefix="0" type="Local" previewPrefix="file:file%3A" name="source-j2mepolish.org" encoding="iso 8859-1" >
     <upload remote_host="ftp.enough.de" remote_port="" remote_path="/" remote_protocol="ftp" user="enough" />
     <author/>
     <email/>
@@ -266,7 +266,6 @@
     <item url="images/floater.png" uploadstatus="1" />
     <item url="images/mepose-convert_01_useSameName.png" uploadstatus="1" />
     <item url="images/mepose.png" uploadstatus="1" />
-    <item url="images/mepose-install_02_menuOpen_3.png" uploadstatus="1" />
     <item url="images/mepose-install_11_pathPreferences.png" uploadstatus="1" />
     <item url="images/mepose-run_06_emulatorStarted.png" uploadstatus="1" />
     <item url="images/mepose-run_07_breakpointHit.png" uploadstatus="1" />
@@ -274,5 +273,9 @@
     <item url="images/mepose-features-mark-occurences.png" uploadstatus="1" />
     <item url="images/mepose-features-syntax-highlighting.png" uploadstatus="1" />
     <item url="downloads/j2mepolish-2.0-beta2.html" uploadstatus="1" />
+    <item url="downloads/j2mepolish-2.0-beta3.html" uploadstatus="1" />
+    <item url="docs/serialization.html" uploadstatus="1" />
+    <item url="docs/serialization-howto.html" uploadstatus="1" />
+    <item url="docs/serialization-persistence.html" uploadstatus="1" />
   </project>
 </webproject>

@@ -149,6 +149,17 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.serialization %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/serialization.html">Serialization</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/serialization-howto.html">How To</a>
+				<a href="<%= basedir %>docs/serialization-persistence.html">Persistence</a>
+				</p>
+				</div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/serialization.html">Serialization</a></div>
+			<%endif %>
 			<%ifdef inDocumentationSection.utilities %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
 			<%else %>
