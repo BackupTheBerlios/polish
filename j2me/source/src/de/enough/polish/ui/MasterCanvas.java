@@ -212,6 +212,15 @@ public class MasterCanvas
 			oldCanvas.hideNotify();
 		}
 
+		//#if polish.css.repaint-previous-screen
+			// de-register an old remaining J2ME Polish screen for situations, in
+			// which an AccessibleCanvas which is not a Screen is shown next.
+			// Otherwise the AnimationThread will continue to animate the old
+			// screen.
+			if (StyleSheet.currentScreen != nextDisplayable &&  (!(nextDisplayable instanceof Screen))  ) {
+				StyleSheet.currentScreen = null;
+			}
+		//#endif
 		if ( !instance.isShown() ) {
 			display.setCurrent( instance );
 		} else {
@@ -295,7 +304,7 @@ public class MasterCanvas
 		} else if ( instance != null ) {
 			instance.repaint();
 		} else {
-			//System.out.println("native canvas repaint");s
+			//System.out.println("native canvas repaint");
 			canvas.repaint();
 		}
 	}
