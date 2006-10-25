@@ -479,9 +479,11 @@ These namespaces/schemas will be used soon.
 	
 	<device>
 		<identifier>Sony-Ericsson/W810i</identifier>
-		<groups></groups>
+		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-		<capability name="ScreenSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g, nokiaui" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
@@ -508,7 +510,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	<device>
 		<identifier>Sony-Ericsson/K800i</identifier>
-		<groups>SE-JavaPlatform5</groups>
+		<groups>SE-JavaPlatform7</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
@@ -533,7 +535,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Skin" value="SonyEricsson_K800"/>
 		<capability name="Emulator.Skin.2" value="SonyEricsson_K800i"/>
 		<capability name="DebugInterface" value="KDWP"/>
-		<capability name="CameraResolution" value="2 MP"/>
+		<capability name="CameraResolution" value="3 MP"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="Font.small" value="18" />
         <capability name="Font.medium" value="22" />
@@ -550,7 +552,7 @@ These namespaces/schemas will be used soon.
 	<device>
 
 		<identifier>Sony-Ericsson/W900, Sony-Ericsson/W900i</identifier>
-		<groups>SE-JavaPlatform5</groups>
+		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
@@ -6207,7 +6209,7 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Siemens/SXG75</identifier>
 		<groups>x75</groups>
-		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi"/>
+		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi, siemens-game, siemens-color-game, siemens-extension"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="3MB"/>

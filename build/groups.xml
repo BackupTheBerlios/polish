@@ -326,6 +326,15 @@
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="Bugs" value="usesVideoRam" />
 	</group>
+
+	<group>
+		<name>SE-JavaPlatform7</name>
+		<capability name="OS" value="Sony-Ericsson OS" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
+		<capability name="Bugs" value="usesVideoRam" />
+	</group>
 		
 	<group>
 		<name>SE-JavaPlatform1Symbian</name>

@@ -129,7 +129,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "2.0 <beta3>";
+	private static final String VERSION = "2.0 <Preview-2006-10-25>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;

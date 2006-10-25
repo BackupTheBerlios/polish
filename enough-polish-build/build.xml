@@ -5,10 +5,10 @@
 	<!-- global properties -->
 	<property file="${user.name}.properties" />
 	<property name="device" value="Generic/Midp2Cldc11" />
-	<property name="Version" value="2.0-beta3" />
-	<property name="BetaVersion" value="2.0-beta3" />
+	<property name="Version" value="2.0-preview-2006-10-25" />
+	<property name="BetaVersion" value="2.0-preview-2006-10-25" />
 
-	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Beta 3&gt;! " />
+	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Preview 2006-10-25&gt;! " />
 	
 	<property name="all.jars" value="jdom.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar" />
@@ -415,12 +415,12 @@
 		<!-- copy roadrunner sample application -->
 		<mkdir dir="tmp/samples/roadrunner/source/src" />
 		<copy todir="tmp/samples/roadrunner/source/src">
-			<fileset dir="../enough-polish-roadrunner/source/src" includes="**/*.java" />
+			<fileset dir="../enough-polish-sample-roadrunner/source/src" includes="**/*.java" />
 		</copy>
 		<copy todir="tmp/samples/roadrunner/" 
 			>
 			<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
-			<fileset dir="../enough-polish-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-sample-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy email sample application -->
 		<mkdir dir="tmp/samples/email/source/src" />
