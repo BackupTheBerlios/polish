@@ -738,7 +738,9 @@ public class Graphics extends Object
 	 * <code>setFont(Font.getDefaultFont())</code>.
 	 * 
 	 * @param font - the specified font
-	 * @see Font,  getFont(), drawString(java.lang.String, int, int, int), drawChars(char[], int, int, int, int, int)
+	 * @see Font#getFont()
+	 * @see #drawString(java.lang.String, int, int, int)
+	 * @see #drawChars(char[], int, int, int, int, int)
 	 */
 	public void setFont( Font font)
 	{
@@ -754,7 +756,8 @@ public class Graphics extends Object
 	 * <code>getClip()</code> call returning an object.
 	 * 
 	 * @return X offset of the current clipping area
-	 * @see clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+	 * @see #setClip(int, int, int, int)
 	 */
 	public int getClipX()
 	{

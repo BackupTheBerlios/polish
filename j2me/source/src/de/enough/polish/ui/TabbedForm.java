@@ -366,6 +366,10 @@ public class TabbedForm extends Form {
 //			focusedItem = ((Container) focusedItem).focusedItem;
 //		}
 		if (focusedItem != null && focusedItem.handleKeyPressed(keyCode, gameAction)) {
+			if (focusedItem.internalX != -9999) {
+				this.container.adjustScrolling( focusedItem );
+			}
+
 			return true;
 		} else if ( this.tabBar.handleKeyPressed(keyCode, gameAction)) {
 			setActiveTab( this.tabBar.getNextTab() );

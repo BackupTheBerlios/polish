@@ -970,7 +970,7 @@ public class Container extends Item {
 				System.out.println("Container(" + this + "): handleKeyPressed consumed by item " + item.getClass().getName() + "/" + item );
 				
 				return true;
-			}	
+			}
 		}
 		// now allow a navigation within the container:
 		//#ifdef tmp.supportViewType
@@ -1167,7 +1167,7 @@ public class Container extends Item {
 	 * 
 	 * @param item the item for which the scrolling should be adjusted
 	 */
-	private void adjustScrolling(Item item) {
+	protected void adjustScrolling(Item item) {
 		if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
 			//#if polish.css.scroll-mode
 				if (!this.scrollSmooth) {
