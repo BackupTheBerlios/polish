@@ -609,6 +609,11 @@ public class Container extends Item {
 //		int index = this.focusedIndex;
 		int target = this.targetYOffset;
 		int current = this.yOffset;
+		//#if polish.css.scroll-mode
+			if (!this.scrollSmooth) {
+				target = current;
+			}
+		//#endif
 		// calculate the absolute position from the relative one:
 //		int absoluteY = y + current + this.yTop;
 //		int absoluteYBottom = absoluteY + height;
@@ -990,7 +995,7 @@ public class Container extends Item {
 						if (this.targetYOffset > 0 ) {
 							this.targetYOffset = 0;
 						}
-						//#if polish.scroll-mode
+						//#if polish.css.scroll-mode
 							if (!this.scrollSmooth) {
 								this.yOffset = this.targetYOffset;
 							}
@@ -1006,7 +1011,7 @@ public class Container extends Item {
 						//#else
 							this.targetYOffset -= 30;
 						//#endif
-						//#if polish.scroll-mode
+						//#if polish.css.scroll-mode
 							if (!this.scrollSmooth) {
 								this.yOffset = this.targetYOffset;
 							}
@@ -1020,11 +1025,11 @@ public class Container extends Item {
 		boolean processed = false;
 		int availableHeight = this.yBottom - this.yTop;
 		int offset;
-		//#if polish.scroll-mode
+		//#if polish.css.scroll-mode
 			if (this.scrollSmooth) {
 		//#endif
 				offset = this.targetYOffset;
-		//#if polish.scroll-mode
+		//#if polish.css.scroll-mode
 			} else {
 				offset = this.yOffset;
 			}
@@ -1058,11 +1063,11 @@ public class Container extends Item {
 				//#debug
 				System.out.println("Down/Right: Reducing (target)YOffset to " + offset);	
 				processed = true;
-				//#if polish.scroll-mode
+				//#if polish.css.scroll-mode
 					if (this.scrollSmooth) {
 				//#endif
 						this.targetYOffset = offset;
-				//#if polish.scroll-mode
+				//#if polish.css.scroll-mode
 					} else {
 						this.yOffset = offset;
 					}
@@ -1095,11 +1100,11 @@ public class Container extends Item {
 				if (offset > 0) {
 					offset = 0;
 				}
-				//#if polish.scroll-mode
+				//#if polish.css.scroll-mode
 					if (this.scrollSmooth) {
 				//#endif
 						this.targetYOffset = offset;
-				//#if polish.scroll-mode
+				//#if polish.css.scroll-mode
 					} else {
 						this.yOffset = offset;
 					}

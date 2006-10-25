@@ -445,7 +445,7 @@ public class ChoiceTextField
 						//#debug
 						System.out.println("Adjusting yOffset of parent by " + yOffsetAdjustment );
 						parentContainer.targetYOffset -= yOffsetAdjustment;
-						//#if polish.scroll-mode
+						//#if polish.css.scroll-mode
 							if (!parentContainer.scrollSmooth) {
 								parentContainer.yOffset = parentContainer.targetYOffset;
 							}
@@ -457,7 +457,7 @@ public class ChoiceTextField
 						 System.out.println("Re-Adjusting yOffset of parent from " + this.choicesYOffsetAdjustment + " over " +  difference + " to " + (this.choicesYOffsetAdjustment - difference ) );
 						this.choicesYOffsetAdjustment -= difference;
 						parentContainer.targetYOffset += difference;
-						//#if polish.scroll-mode
+						//#if polish.css.scroll-mode
 							if (!parentContainer.scrollSmooth) {
 								parentContainer.yOffset = parentContainer.targetYOffset;
 							}

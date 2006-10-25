@@ -65,7 +65,7 @@ public class MenuBar extends Item {
 		private Command hideCommand;
 		private Command positiveCommand;
 	//#endif
-	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} == left
+	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
 		//#define tmp.RightOptions
 		//#define tmp.OkCommandOnLeft
 		//# private final int openOptionsMenuKey = RIGHT_SOFT_KEY;
@@ -1048,11 +1048,25 @@ public class MenuBar extends Item {
 			this.commandsContainer.add( parentCommandItem );
 			this.commandsList.add( parentCommand );
 			this.singleLeftCommand = null;
+			//#if tmp.RightOptions
+				if (this.singleRightCommand != null) {
+					Command cmd = this.singleRightCommand;
+					this.singleRightCommand = null;
+					addCommand( cmd );
+				}
+			//#endif
 		} else if (parentCommand == this.singleRightCommand ){
 			parentCommandItem = new CommandItem( parentCommand, this );
 			this.commandsContainer.add( parentCommandItem );
 			this.commandsList.add( parentCommand );
 			this.singleRightCommand = null;
+			//#if !tmp.RightOptions
+				if (this.singleLeftCommand != null) {
+					Command cmd = this.singleLeftCommand;
+					this.singleLeftCommand = null;
+					addCommand( cmd );
+				}
+			//#endif
 		} else {
 			// search through all commands
 			for ( int i=0; i < this.commandsContainer.size(); i++ ) {

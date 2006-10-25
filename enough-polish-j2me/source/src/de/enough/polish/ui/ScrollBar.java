@@ -147,7 +147,7 @@ public class ScrollBar extends Item {
 		//#endif
 			// take the currently selected area
 			//System.out.println("using area");
-			this.sliderY = (selectionStart * screenAvailableHeight) / screenContentHeight;
+			this.sliderY = ( (selectionStart - contentYOffset) * screenAvailableHeight) / screenContentHeight;
 			this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
 		} else {
 			// use the page dimensions:

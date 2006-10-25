@@ -2465,9 +2465,12 @@ public class TextField extends StringItem
 					}
 					int currentLength = (this.text == null ? 0 : this.text.length());
 					if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
-						if (currentLength < this.maxSize 
-								&& ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 ) ) 
+						if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
 						{
+							if (currentLength >= this.maxSize) {
+								// ignore this key event - also don't forward it to the parent component:
+								return true;
+							}
 							this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
 							//#ifdef polish.css.font-bitmap
 								if (this.bitMapFont != null) {
@@ -2741,10 +2744,14 @@ public class TextField extends StringItem
 			String currentText = this.isPassword ? this.passwordText : this.text;
 			if (this.enableDirectInput) {
 				int currentLength = (this.text == null ? 0 : this.text.length());
-				if (currentLength < this.maxSize && 
-						keyCode >= Canvas.KEY_NUM0 && 
+				if ( 	keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
 				{	
+					if (currentLength >= this.maxSize) {
+						// in numeric mode ignore 2,4,6 and 8 keys, so that they are not processed
+						// by a parent component:
+						return true;
+					}
 					String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
 					setString( newText );
 					if (getScreen() instanceof Form) {

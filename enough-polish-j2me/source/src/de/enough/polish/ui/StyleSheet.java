@@ -136,7 +136,7 @@ public final class StyleSheet {
 				}
 			}
 		//#endif
-		//#ifdef polish.images.directLoad
+		//#if ! polish.images.backgroundLoad
 			// when images should be loaded directly, try to do so now:
 			//#ifdef polish.classes.ImageLoader:defined
 				//#= Image image = ${ classname( polish.classes.ImageLoader ) }.loadImage( url );
