@@ -684,8 +684,12 @@ public class MenuBar extends Item {
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			//#if tmp.useInvisibleMenuBar
 				// paint menu at the top right corner:
-				g.setClip(0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY);
-				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.topY, this.screen.screenWidth - this.commandsContainerWidth, this.screen.screenWidth, g);
+                int contY = this.screen.contentY;
+                g.setClip(0, contY, this.screen.screenWidth , this.screen.screenHeight - contY);
+                if (this.topY > contY) {
+                    contY = this.topY;
+                }
+                this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, contY, this.screen.screenWidth - this.commandsContainerWidth, this.screen.screenWidth, g);
 				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
 			//#elif tmp.RightOptions
 				// paint menu at the lower right corner:
