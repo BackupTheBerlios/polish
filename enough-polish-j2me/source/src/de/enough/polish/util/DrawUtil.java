@@ -31,7 +31,7 @@ import javax.microedition.lcdui.Graphics;
 
 //#if polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;
-import com.nokia.mid.ui.DirectUtils;
+	import com.nokia.mid.ui.DirectUtils;
 //#endif
 
 /**
@@ -46,8 +46,16 @@ import com.nokia.mid.ui.DirectUtils;
  */
 public final class DrawUtil {
 
-
-	public final static void fillPolygon( int[] xValues, int[] yValues, int color, Graphics g ) {
+	/**
+	 * Draws a polygon.
+	 * 
+	 * @param xPoints the x coordinates of the polygon
+	 * @param yPoints the y coordinates of the polygon
+	 * @param color the color of the polygon
+	 * @param g the graphics context
+	 */
+	public static void drawPolygon( int[] xPoints, int[] yPoints, int color, Graphics g )
+    {
 		//#if polish.blackberry && polish.usePolishGui
 			Object o = g; // this cast is needed, otherwise the compiler will complain
 			              // that javax.microedition.lcdui.Graphics can never be casted
@@ -55,20 +63,53 @@ public final class DrawUtil {
 			//#if polish.useDefaultPackage
 				//# net.rim.device.api.ui.Graphics graphics = g.g;
 				//# graphics.setColor(color);
-		  		//# graphics.drawFilledPath( xValues, yValues, null, null);
+				//# graphics.drawPathOutline( xPoints, yPoints, null, null, true);
 			//#else
 				if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
 					net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
 					graphics.setColor(color);
-					graphics.drawFilledPath( xValues, yValues, null, null);
+					graphics.drawPathOutline( xPoints, yPoints, null, null, true);
 				}				
 			//#endif
 		//#elif polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
-			if ((color & 0xFF0000) == 0) {
-				color |= 0xFF0000;
+			if ((color & 0xFF000000) == 0) {
+				color |= 0xFF000000;
 			}
-			dg.fillPolygon(xValues, 0, yValues, 0, xValues.length, color );
+			dg.drawPolygon(xPoints, 0, yPoints, 0, xPoints.length, color );
+        //#else
+        	// use default mechanism
+	        int length = xPoints.length - 1;
+			g.setColor( color );
+	        for(int i = 0; i < length; i++) {
+	            g.drawLine(xPoints[i], yPoints[i], xPoints[i + 1], yPoints[i + 1]);
+	        }
+	        g.drawLine(xPoints[length], yPoints[length], xPoints[0], yPoints[0]);
+        //#endif
+    }
+
+	public final static void fillPolygon( int[] xPoints, int[] yPoints, int color, Graphics g ) {
+		//#if polish.blackberry && polish.usePolishGui
+			Object o = g; // this cast is needed, otherwise the compiler will complain
+			              // that javax.microedition.lcdui.Graphics can never be casted
+			              // to de.enough.polish.blackberry.ui.Graphics.
+			//#if polish.useDefaultPackage
+				//# net.rim.device.api.ui.Graphics graphics = g.g;
+				//# graphics.setColor(color);
+		  		//# graphics.drawFilledPath( xPoints, yPoints, null, null);
+			//#else
+				if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
+					net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
+					graphics.setColor(color);
+					graphics.drawFilledPath( xPoints, yPoints, null, null);
+				}				
+			//#endif
+		//#elif polish.api.nokia-ui
+			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+			if ((color & 0xFF000000) == 0) {
+				color |= 0xFF000000;
+			}
+			dg.fillPolygon(xPoints, 0, yPoints, 0, xPoints.length, color );
 		//#else
 			// ... use default mechanishm
 		//#endif
