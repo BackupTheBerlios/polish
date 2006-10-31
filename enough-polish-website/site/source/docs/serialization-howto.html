@@ -10,10 +10,12 @@
 	
 	<p>
 		You can make your classes serializable in two ways:
-		<ul>
-			<li>Serializable: implement de.enough.polish.io.Serializable and let J2ME Polish handle the necessary conversion fully automatically</li>
-			<li>Externalizable: take full control of the serialization by implementing de.enough.polish.io.Externalizable</li>
-		</ul>
+	</p>
+	<ul>
+		<li>Serializable: implement de.enough.polish.io.Serializable and let J2ME Polish handle the necessary conversion fully automatically</li>
+		<li>Externalizable: take full control of the serialization by implementing de.enough.polish.io.Externalizable</li>
+	</ul>
+	<p>
 		Read on for the gory details.
 	</p>
 	
@@ -49,9 +51,9 @@ private transient String password; // do not serialize this field
 		All the instance fields of your class need to fall into one of the following categories:
 		<ul>
 			<li>The field is a primitive like <code>int</code>, <code>double</code> or <code>boolean</code>.</li>
-			<li>The field is a one-dimensional primitive array (note: multidimesional arrays cannot be automatically serialized)</li>
+			<li>The field is a one-dimensional primitive array (note: multidimensional arrays cannot be automatically serialized)</li>
 			<li>The field is an object which implements <code>Serializable</code> or <code>Externalizable</code></li>
-			<li>The field is a one-dimensional array of objects implementing <code>Serializable</code> or <code>Externalizable</code> (note: multidimesional arrays cannot be automatically serialized)</li>
+			<li>The field is a one-dimensional array of objects implementing <code>Serializable</code> or <code>Externalizable</code> (note: multidimensional arrays cannot be automatically serialized)</li>
 			<li>The field is an object taken from the <code>java.lang</code>, <code>java.util</code> or <code>javax.microedition.lcdui</code> package. At the moment following native classes can be serialized:
 				<ul>
 					<li>java.lang.Byte</li>
@@ -74,7 +76,7 @@ private transient String password; // do not serialize this field
 					<li>javax.microedition.lcdui.Command</li>
 				</ul>
 			</li>
-			<li>The field is a one-dimensional array of one or more of the above mentioned objects  (note: multidimesional arrays cannot be automatically serialized)</li>
+			<li>The field is a one-dimensional array of one or more of the above mentioned objects  (note: multidimensional arrays cannot be automatically serialized)</li>
 		</ul>
 	</p>
 	
