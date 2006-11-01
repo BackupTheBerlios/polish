@@ -24,6 +24,9 @@
  * Commercial licenses are also available, please
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
+ * 
+ * The implementation for filling a polygon on devices without Nokia-UI-API and without the BlackBerry API is based
+ * upon JMicroPolygon: http://sourceforge.net/projects/jmicropolygon which is licensed under the Apache Software License
  */
 package de.enough.polish.util;
 
@@ -38,6 +41,10 @@ import javax.microedition.lcdui.Graphics;
  * <p>Provides functions for drawing shadows, polygons, gradients, etc.</p>
  *
  * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>
+ * The implementation for filling a polygon on devices without Nokia-UI-API and without the BlackBerry API is based
+ * upon JMicroPolygon: http://sourceforge.net/projects/jmicropolygon, which is licensed under the Apache Software License
+ * </p>
  * <pre>
  * history
  *        Nov 23, 2005 - rob creation
@@ -88,6 +95,14 @@ public final class DrawUtil {
         //#endif
     }
 
+	/**
+	 * Draws a filled out polygon.
+	 * 
+	 * @param xPoints the x coordinates of the polygon
+	 * @param yPoints the y coordinates of the polygon
+	 * @param color the color of the polygon
+	 * @param g the graphics context
+	 */
 	public final static void fillPolygon( int[] xPoints, int[] yPoints, int color, Graphics g ) {
 		//#if polish.blackberry && polish.usePolishGui
 			Object o = g; // this cast is needed, otherwise the compiler will complain
@@ -111,8 +126,162 @@ public final class DrawUtil {
 			}
 			dg.fillPolygon(xPoints, 0, yPoints, 0, xPoints.length, color );
 		//#else
-			// ... use default mechanishm
+			// ... use default mechanism by simple triangulation of the polygon. Holes within the polygon are not supported.
+			// This code is based on JMicroPolygon: http://sourceforge.net/projects/jmicropolygon
+			while (xPoints.length > 2) {
+				// a, b & c represents a candidate triangle to draw.
+				// a is the left-most point of the polygon
+				int a = indexOfLeast(xPoints);
+				// b is the point after a
+				int b = (a + 1) % xPoints.length;
+				// c is the point before a
+				int c = (a > 0) ? a - 1 : xPoints.length - 1;
+				// The value leastInternalIndex holds the index of the left-most
+				// polygon point found within the candidate triangle, if any.
+				int leastInternalIndex = -1;
+				boolean leastInternalSet = false;
+				// If only 3 points in polygon, skip the tests
+				if (xPoints.length > 3) {
+					// Check if any of the other points are within the candidate triangle
+					for (int i=0; i<xPoints.length; i++) {
+						if (i != a && i != b && i != c) {
+							if (withinBounds(xPoints[i], yPoints[i],
+											xPoints[a], yPoints[a],
+											xPoints[b], yPoints[b],
+											xPoints[c], yPoints[c])) 
+							{
+								// Is this point the left-most point within the candidate triangle?
+								if (!leastInternalSet || xPoints[i] < xPoints[leastInternalIndex]) 
+								{
+									leastInternalIndex = i;
+									leastInternalSet = true;
+								}
+							}
+						}
+					}
+				}
+				// No internal points found, fill the triangle, and reservoir-dog the polygon
+				if (!leastInternalSet) {
+					g.setColor( color );
+					g.fillTriangle(xPoints[a], yPoints[a], xPoints[b], yPoints[b], xPoints[c], yPoints[c]);
+					int[][] trimmed = trimEar(xPoints, yPoints, a);
+					xPoints = trimmed[0];
+					yPoints = trimmed[1];
+					// Internal points found, split the polygon into two, using the line between
+					// "a" (left-most point of the polygon) and leastInternalIndex (left-most
+					// polygon-point within the candidate triangle) and recurse with each new polygon
+				} else {
+					int[][][] split = split(xPoints, yPoints, a, leastInternalIndex);
+					int[][] poly1 = split[0];
+					int[][] poly2 = split[1];
+					fillPolygon( poly1[0], poly1[1], color, g );
+					fillPolygon( poly2[0], poly2[1], color, g );
+					break;
+				}
+			}
 		//#endif
+	}
+	
+	/**
+	 * Finds the index of the smallest element
+	 * 
+	 * @param elements the elements
+	 * @return the index of the smallest element
+	 */
+	static int indexOfLeast(int[] elements) {
+		int index = 0;
+		int least = elements[0];
+		for (int i=1; i<elements.length; i++) {
+			if (elements[i] < least) {
+				index = i;
+				least = elements[i];
+			}
+		}
+		return index;
+	}
+	
+	/**
+	 * Checks whether the specified point px, py is within the triangle defined by ax, ay, bx, by and cx, cy.
+	 * 
+	 * @param px The x of the point to test
+	 * @param py The y of the point to test
+	 * @param ax The x of the 1st point of the triangle
+	 * @param ay The y of the 1st point of the triangle
+	 * @param bx The x of the 2nd point of the triangle
+	 * @param by The y of the 2nd point of the triangle
+	 * @param cx The x of the 3rd point of the triangle
+	 * @param cy The y of the 3rd point of the triangle
+	 * @return true when the point is within the given triangle
+	 */
+	private static boolean withinBounds(int px, int py,
+								int ax, int ay,
+								int bx, int by,
+								int cx, int cy) 
+	{
+		if (   px < Math.min(ax, Math.min( bx, cx ) )
+				|| px > Math.max(ax, Math.max( bx, cx ) )
+				|| py < Math.min(ay, Math.min( by, cy ) )
+				|| py > Math.max(ay, Math.max( by, cy ) ) ) 
+		{
+			return false;
+		}
+		boolean sameabc = sameSide(px, py, ax, ay, bx, by, cx, cy);
+		boolean samebac = sameSide(px, py, bx, by, ax, ay, cx, cy);
+		boolean samecab = sameSide(px, py, cx, cy, ax, ay, bx, by);
+		return sameabc && samebac && samecab;
+	}
+	
+	private static boolean sameSide (int p1x, int p1y, int p2x, int p2y,
+							int l1x, int l1y, int l2x, int l2y) 
+	{
+		long lhs = ((p1x - l1x) * (l2y - l1y) - (l2x - l1x) * (p1y - l1y));
+		long rhs = ((p2x - l1x) * (l2y - l1y) - (l2x - l1x) * (p2y - l1y));
+		long product = lhs * rhs;
+		boolean result = product >= 0;
+		return result;
+	}
+	
+	private static int[][] trimEar(int[] xPoints, int[] yPoints, int earIndex) {
+		int[] newXPoints = new int[xPoints.length - 1];
+		int[] newYPoints = new int[yPoints.length - 1];
+		int[][] newPoly = new int[2][];
+		newPoly[0] = newXPoints;
+		newPoly[1] = newYPoints;
+		int p = 0;
+		for (int i=0; i<xPoints.length; i++) {
+			if (i != earIndex) {
+				newXPoints[p] = xPoints[i];
+				newYPoints[p] = yPoints[i];
+				p++;
+			}
+		}
+		return newPoly;
+	}
+	
+	private static int[][][] split(int[] xPoints, int[] yPoints, int aIndex, int bIndex) {
+		int firstLen, secondLen;
+		if (bIndex < aIndex) {
+			firstLen = (xPoints.length - aIndex) + bIndex + 1;
+		} else {
+			firstLen = (bIndex - aIndex) + 1;
+		}
+		secondLen = (xPoints.length - firstLen) + 2;
+		int[][] first = new int[2][firstLen];
+		int[][] second = new int[2][secondLen];
+		for (int i=0; i<firstLen; i++) {
+			int index = (aIndex + i) % xPoints.length;
+			first[0][i] = xPoints[index];
+			first[1][i] = yPoints[index];
+		}
+		for (int i=0; i<secondLen; i++) {
+			int index = (bIndex + i) % xPoints.length;
+			second[0][i] = xPoints[index];
+			second[1][i] = yPoints[index];
+		}
+		int[][][] result = new int[2][][];
+		result[0] = first;
+		result[1] = second;
+		return result;
 	}
 	
 	/**
@@ -181,6 +350,37 @@ public final class DrawUtil {
 				| ( startBlue >>> 8);
 				//| (( startBlue >>> 8) & 0x000000FF);
 		}	
+	}
+	
+	/**
+	 * Retrieves the gradient color between the given start and end colors.
+	 * 
+	 * @param startColor the start color
+	 * @param endColor the end color
+	 * @param permille the permille between 0 and 1000 - 0 will return the startColor, 1000 the endColor, 
+	 * 			500 a gradient color directly in the middlet between start and endcolor.
+	 * @return the gradient color
+	 */
+	public static int getGradientColor( int startColor, int endColor, int permille ) {
+		int alpha = startColor >>> 24;
+		int red = (startColor >>> 16) & 0x00FF;
+		int green = (startColor >>> 8) & 0x0000FF;
+		int blue = startColor  & 0x00000FF;
+
+		int diffAlpha = (endColor >>> 24) - alpha;
+		int diffRed   = ( (endColor >>> 16) & 0x00FF ) - red;
+		int diffGreen = ( (endColor >>> 8) & 0x0000FF ) - green;
+		int diffBlue  = ( endColor  & 0x00000FF ) - blue;
+		
+		alpha += (diffAlpha * permille) / 1000;
+		red   += (diffRed   * permille) / 1000;
+		green += (diffGreen * permille) / 1000;
+		blue  += (diffBlue  * permille) / 1000;
+		
+		return (( alpha << 16) & 0xFF000000)
+			| (( red << 8) & 0x00FF0000)
+			| ( green & 0x0000FF00)
+			| ( blue >>> 8);		
 	}
 	
 	/**
