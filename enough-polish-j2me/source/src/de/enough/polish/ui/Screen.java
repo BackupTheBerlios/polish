@@ -661,7 +661,7 @@ implements AccessibleCanvas
 					//#else
 						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas ) {
 							if (this.previousScreenImage == null) {
-								//#if tmp.fullScreen
+								//#if tmp.menuFullScreen
 									this.previousScreenImage = Image.createImage( this.screenWidth, this.fullScreenHeight);
 								//#else
 									this.previousScreenImage = Image.createImage( this.screenWidth, this.screenHeight);
