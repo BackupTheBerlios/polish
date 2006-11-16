@@ -347,17 +347,21 @@ public class DeviceDatabase {
 			PolishProject polishProject, Map inputStreamsByFileName, Map customFilesByFileName ) 
 	{
         DeviceDatabase deviceDatabase;
-        String polishHomePath = polishHome.getAbsolutePath();
-        
-        deviceDatabase = (DeviceDatabase)instanceByPolishHome.get(polishHomePath);
-        if(deviceDatabase != null) {
-            return deviceDatabase;
+        String polishHomePath = null;
+        if (polishHome != null) {
+	        polishHomePath = polishHome.getAbsolutePath();
+	        
+	        deviceDatabase = (DeviceDatabase)instanceByPolishHome.get(polishHomePath);
+	        if(deviceDatabase != null) {
+	            return deviceDatabase;
+	        }
         }
         
         deviceDatabase = new DeviceDatabase( properties, polishHome, projectHome, apisHome, polishProject, 
 		inputStreamsByFileName, customFilesByFileName);
-        instanceByPolishHome.put(polishHomePath,deviceDatabase);
-        
+        if (polishHomePath != null) {
+        	instanceByPolishHome.put(polishHomePath,deviceDatabase);
+        }
         return deviceDatabase;
 	}
 
