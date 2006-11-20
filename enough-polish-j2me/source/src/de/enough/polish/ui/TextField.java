@@ -650,6 +650,10 @@ public class TextField extends StringItem
 		//# protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
 	//#endif
 	
+  	/** valid input characters for local parts of email addresses, apart from 0..9 and a..z. */
+  	private static final String VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS = ".!#$%&'*+-/=?^_`{|}~@";
+  	/** valid input characters for domain names, apart from 0..9 and a..z. */
+  	private static final String VALID_DOMAIN_CHARACTERS = "._-";
 	private int maxSize;
 	private int constraints;
 	//#ifdef polish.css.textfield-caret-color
@@ -2178,6 +2182,30 @@ public class TextField extends StringItem
 //			//#endif
 		}
 		//this.caretX += width;
+		if (this.isEmail) {
+			// check valid input for email addresses:
+			char lowerCaseInsertChar = Character.toLowerCase( insertChar );
+			boolean isValidInput = (insertChar >= '0' && insertChar <= '9')  || ( lowerCaseInsertChar >= 'a' && lowerCaseInsertChar <= 'z' ) ;
+			if (!isValidInput) {
+				boolean isInLocalPart = true; // are we in the first/local part before the '@' in the address?
+				int atPosition = -1;
+				if (myText != null) {
+					atPosition = myText.indexOf('@');
+					isInLocalPart = ( atPosition == -1 )  ||  ( atPosition >= this.caretPosition );
+				}
+				if (isInLocalPart) {
+					isValidInput = ( VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS.indexOf( insertChar ) != -1 ) 
+								&& !( (insertChar == '.') && (myText == null || this.caretPosition == 0) ) // the first char must not be a dot.
+								&& !(atPosition != -1 && insertChar == '@');
+				} else {
+					isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
+				}
+				if (!isValidInput) {
+					return;
+				}
+			}
+			
+		}
 		if (myText == null) {
 			myText = "" + insertChar;
 		} else {
@@ -2189,7 +2217,7 @@ public class TextField extends StringItem
 		//#if polish.TextField.suppressAutoInputModeChange
 			//# boolean nextCharInputHasChanged = false;
 			if ( this.inputMode == MODE_FIRST_UPPERCASE  
-				&& (insertChar == ' ' ||  insertChar == '.' )) 
+				&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2802,7 +2830,7 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.handleKeyRepeated( " + keyCode + ")");
 		int currentLength = (this.text == null ? 0 : this.text.length());
-		if ( !this.isUneditable 
+		if ( !this.isUneditable && !(this.isNumeric || this.inputMode == MODE_NUMBERS)
 				&& currentLength < this.maxSize 
 				&& keyCode >= Canvas.KEY_NUM0 
 				&& keyCode <= Canvas.KEY_NUM9) 

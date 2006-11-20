@@ -308,22 +308,30 @@ public class ChoiceTextField
 				String choiceText;
 				if ( item instanceof ChoiceItem ) {
 					choiceText = ((ChoiceItem) item).getText();
-				} else {
+				} else if (item != null) {
 					choiceText = item.toString();
+				} else {
+					return false;
 				}
 				if (this.isAppendMode) {
 					String currentText = getString();
-					if ( (currentText != null) && (currentText.length() > 1) ) {
+					if ( (currentText != null) ) {
 						if (this.appendDelimiterIndex != -1 && this.appendDelimiterIndex < currentText.length() ) {
 							currentText = currentText.substring( 0, this.appendDelimiterIndex );
 						}
-						if (this.appendChoiceDelimiter == null) {
-							choiceText = currentText + choiceText; 
+						if ( choiceText.startsWith( currentText) ) {
+							if (this.appendChoiceDelimiter != null ) {
+								choiceText += this.appendChoiceDelimiter;
+							}
 						} else {
-							if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
-								choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+							if (this.appendChoiceDelimiter == null) {
+								choiceText = currentText + choiceText; 
 							} else {
-								choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
+								if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
+									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+								} else {
+									choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
+								}
 							}
 						}
 					} else if (this.appendChoiceDelimiter != null) {
@@ -526,6 +534,10 @@ public class ChoiceTextField
 			if (currentText != null) {
 				if (this.isAppendMode) {
 					if (this.appendChoiceDelimiter != null) {
+						int caretPosition = getCaretPosition();
+						if (caretPosition < currentText.length() && caretPosition != -1) {
+							currentText = currentText.substring( 0, caretPosition );
+						}
 						this.appendDelimiterIndex = TextUtil.lastIndexOf( currentText, this.appendChoiceDelimiter );
 						if (this.appendDelimiterIndex != -1) {
 							currentText = currentText.substring( this.appendDelimiterIndex + 1 );

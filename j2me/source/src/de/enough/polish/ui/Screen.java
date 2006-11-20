@@ -293,6 +293,7 @@ implements AccessibleCanvas
 	private final Object paintLock = new Object();
 	private int containerX;
 	protected int containerY;
+	private ArrayList itemCommands;
 
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -2234,13 +2235,16 @@ implements AccessibleCanvas
 	//#endif
 	
 	//#ifdef tmp.menuFullScreen
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
+	/**
+	 * Adds a command to this screen with the specified style.
+	 * 
+	 * @param cmd the command
+	 * @param commandStyle the style for the command
 	 */
 	public void addCommand(Command cmd, Style commandStyle ) {
 		//#debug
 		System.out.println("adding command [" + cmd.getLabel() + "] to screen [" + this + "].");
-		//#ifdef tmp.useExternalMenuBar
+		//#if tmp.useExternalMenuBar && polish.vendor.siemens
 			if (this.menuBar == null) {
 				//#debug
 				System.out.println("Ignoring command [" + cmd.getLabel() + "] that is added while Screen is not even initialized.");
@@ -2507,15 +2511,29 @@ implements AccessibleCanvas
 		this.focusedItem = item;
 		if (item.commands != null) {
 			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
+			// register item commands, so that later onwards only commands that have been actually added
+			// will be removed:
+			if (this.itemCommands == null) {
+				this.itemCommands = new ArrayList( commands.length );
+			}
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
+				// workaround for cases where the very same command has been added to both an item as well as this screen:
 				//System.out.println("scren: add ItemCommand " + command.getLabel() );
 				//#ifdef tmp.useExternalMenuBar
-					this.menuBar.addCommand(command);
+					if  ( !this.menuBar.commandsList.contains( command ) ) {
+						this.menuBar.addCommand(command);
+						this.itemCommands.add( command );
+					}
 				//#else
-					addCommand(command);
+					if ( !this.menuCommands.contains( command) ) {
+						addCommand(command);
+						this.itemCommands.add( command );
+					}
 				//#endif
 			}
+		} else if (this.itemCommands != null) {
+			this.itemCommands.clear();
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (isShown()) {
@@ -2531,8 +2549,10 @@ implements AccessibleCanvas
 	 * @see #setItemCommands(Item)
 	 */
 	protected void removeItemCommands( Item item ) {
-		if (item.commands != null) {
-			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
+		if (item.commands != null && this.itemCommands != null) {
+			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
+			// are listed (not commands that are also present on the screen).
+			Command[] commands = (Command[]) this.itemCommands.toArray( new Command[this.itemCommands.size()] );
 			for (int i = 0; i < commands.length; i++) {
 				Command command = commands[i];
 				//#ifdef tmp.useExternalMenuBar
@@ -2810,6 +2830,7 @@ implements AccessibleCanvas
 	 * @author Robert Virkus, robert@enough.de
 	 */
 	class ForwardCommandListener implements CommandListener {
+		/** the original command listener set by the programmer */
 		public CommandListener realCommandListener;
 
 		/* (non-Javadoc)

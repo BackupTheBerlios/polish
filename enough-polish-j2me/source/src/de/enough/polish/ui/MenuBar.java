@@ -88,7 +88,7 @@ public class MenuBar extends Item {
 		private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
 	//#endif
 	
-	private final ArrayList commandsList;
+	protected final ArrayList commandsList;
 	private final Container commandsContainer;
 	protected boolean isOpened;
 	private Command singleLeftCommand;
