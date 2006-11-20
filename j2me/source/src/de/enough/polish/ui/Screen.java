@@ -805,7 +805,7 @@ implements AccessibleCanvas
 	 * @param style the style
 	 */
 	public void setStyle(Style style) {
-		if (style != this.style ) {
+		if (style != this.style && this.style != null ) {
 			this.style.releaseResources();
 		}
 	 	//#debug
@@ -2044,11 +2044,9 @@ implements AccessibleCanvas
 	
 				//#endif
 			//#endif
-			if (this.container != null) {
-				boolean handled = this.container.handleKeyRepeated( keyCode, gameAction );
-				if ( handled ) {
-					repaint();
-				}
+			boolean handled = handleKeyRepeated( keyCode, gameAction );
+			if ( handled ) {
+				repaint();
 			}
 		//}
 	}
@@ -2086,11 +2084,9 @@ implements AccessibleCanvas
 
 			//#endif
 		//#endif
-		if (this.container != null) {
-			boolean handled = this.container.handleKeyReleased( keyCode, gameAction );
-			if ( handled ) {
-				repaint();
-			}
+		boolean handled = handleKeyReleased( keyCode, gameAction );
+		if ( handled ) {
+			repaint();
 		}
 	}
 
@@ -2142,6 +2138,39 @@ implements AccessibleCanvas
 		}
 		return this.container.handleKeyPressed(keyCode, gameAction);
 	}
+	
+	/**
+	 * Handles the key-repeated event.
+	 * Please note, that implementation should first try to handle the
+	 * given key-code, before the game-action is processed.
+	 * 
+	 * @param keyCode the code of the repeated key, e.g. Canvas.KEY_NUM2
+	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
+	 * @return true when the key-event was processed
+	 */
+	protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
+		if (this.container == null) {
+			return false;
+		}
+		return this.container.handleKeyRepeated(keyCode, gameAction);
+	}
+	
+	/**
+	 * Handles the key-released event.
+	 * Please note, that implementation should first try to handle the
+	 * given key-code, before the game-action is processed.
+	 * 
+	 * @param keyCode the code of the released key, e.g. Canvas.KEY_NUM2
+	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
+	 * @return true when the key-event was processed
+	 */
+	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		if (this.container == null) {
+			return false;
+		}
+		return this.container.handleKeyReleased(keyCode, gameAction);
+	}
+
 	
 	/**
 	 * Sets the screen listener for this screen.
