@@ -4,12 +4,12 @@
 	<field type="staticText" txt="${ VersionMessage } " />
 	<divider alignment="top"/>
 	<field type="staticText" txt="J2ME Polish is suite of tools for creating &quot;polished&quot; J2ME applications. Each tool meets a definite need of J2ME developers: " />
-	<field type="staticText" txt="Build-tools with an integrated device-database, a powerful GUI, a localization framework, a game-engine, a logging framework and a collection of utilities. " />
+	<field type="staticText" txt="Build-tools with an integrated device-database, a powerful GUI, a serialization framework, support for Java 5 syntax, a localization framework, a game-engine, a logging framework and a collection of utilities. " />
 	<field type="staticText" txt="" />
 	<field type="staticText" txt="Find more information about J2ME Polish at www.j2mepolish.org." />
 	<field type="staticText" txt="" />
 	<divider alignment="top"/>
-	<field type="staticText" txt="Copyright 2003, 2004, 2005 Enough Software " />
+	<field type="staticText" txt="Copyright 2003 - 2006 Enough Software " />
 </panel>
 
 

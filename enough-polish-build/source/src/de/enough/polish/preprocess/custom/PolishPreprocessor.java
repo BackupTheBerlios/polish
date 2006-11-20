@@ -296,10 +296,14 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				int id = this.idGenerator.getId(
 						key, this.environment.hasSymbol("polish.css." + key) );
 				// check if this property is used at all:
-				if ( id == -1 ) {
+				//if ( id == -1 ) {
 					//System.out.println("skipping attribute [" + key + "]");
-					continue;
-				}
+					//TODO Problem: when a user does not check for the availalability of the CSS symbol
+					// via if polish.css.name, then this will end with an invalid key!
+					// So we add for now a -1 call, which shouldn't result in any problems
+					// since the css attribute is not used anyhow
+					// continue;
+				//}
 				//System.out.println("got id " + id + " for key " + key);
 				line = StringUtil.replace( line, property, "" + id );
 				//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");

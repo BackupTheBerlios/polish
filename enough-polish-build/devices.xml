@@ -199,7 +199,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi,btapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi, jtwi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
 		<capability name="Emulator.Class" value="MppEmulator"/>
@@ -3974,7 +3974,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/6682DP2</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -4062,7 +4062,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/6680</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -4101,7 +4101,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/6681</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -4270,7 +4270,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/3230</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP1</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -4298,7 +4298,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/6670</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP1</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -4485,7 +4485,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Nokia/6260</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP1</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
@@ -4669,7 +4669,7 @@ These namespaces/schemas will be used soon.
 		
 	<device>
 		<identifier>Nokia/6620</identifier>
-		<groups>Series60</groups>
+		<groups>Series60E2FP1</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
