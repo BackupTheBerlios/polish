@@ -45,14 +45,13 @@ import javax.microedition.lcdui.Image;
  */
 public class TreeItem 
 //#ifdef polish.usePolishGui
-	//# extends CustomItem
+	//# extends Container
 //#else
-	extends javax.microedition.lcdui.CustomItem
+	extends FakeContainerCustomItem
 //#endif
  
 {
 	
-	private final Container root;
 	private int availableWidth;
 	
 	private Item lastAddedItem;
@@ -73,15 +72,8 @@ public class TreeItem
 	 * @param style the style
 	 */
 	public TreeItem(String label, Style style) {
-		super(label);
-		this.root = new Container( false, style );
-		//#if polish.usePolishGui
-			//# this.root.parent = this;
-		//#endif
-		//#if polish.Container.allowCycling != false
-			this.root.allowCycling = false;
-		//#endif
-
+		super( false, style );
+		setLabel( label );
 	}
 	
 	//#if false
@@ -181,10 +173,7 @@ public class TreeItem
 	 * @param item the item that should be added
 	 */
 	public void appendToRoot( Item item ) {
-		this.root.add(item);
-		//#if true
-			//# item.parent = this;
-		//#endif
+		add(item);
 		this.lastAddedItem = item;
 	}
 
@@ -192,16 +181,13 @@ public class TreeItem
 	 * Adds the specified item to this list.
 	 * 
 	 * @param item the item that should be added
-	 * @param style the style
+	 * @param nodeStyle the style
 	 */
-	public void appendToRoot( Item item, Style style ) {
-		if (style != null) {
-			item.setStyle( style );
+	public void appendToRoot( Item item, Style nodeStyle ) {
+		if (nodeStyle != null) {
+			item.setStyle( nodeStyle );
 		}
-		//#if true
-			//# item.parent = this;
-		//#endif
-		this.root.add(item);
+		add(item);
 		this.lastAddedItem = item;
 	}
 	
@@ -247,11 +233,11 @@ public class TreeItem
 	 * 
 	 * @param node the parent node that has been previously added to this tree
 	 * @param item the item that should be added
-	 * @param style the style
+	 * @param nodeStyle the style
 	 */
-	public void appendToNode( Item node, Item item, Style style  ) {
-		if (style != null) {
-			item.setStyle( style );
+	public void appendToNode( Item node, Item item, Style nodeStyle  ) {
+		if (nodeStyle != null) {
+			item.setStyle( nodeStyle );
 		}
 		// find correct Node:
 		Node parentNode;
@@ -260,11 +246,13 @@ public class TreeItem
 			Container parentContainer;
 			//#if false
 				if ( (Object)node.parent == this) {
+					// this is a root item:
+					parentContainer = (Container) ((Object)this);
 			//#else
 				//# if (node.parent == this) {
-			//#endif
 				// this is a root item:
-				parentContainer = this.root;
+				//# parentContainer = this;
+				//#endif
 			} else {
 				parentContainer = (Container) node.parent;
 			}
@@ -287,121 +275,15 @@ public class TreeItem
 		
 	}
 
-	/**
-	 * Removes the specified item from this list.
-	 * 
-	 * @param item the item that should be removed
-	 * @return true when the item was contained in this list.
-	 */
-	public boolean remove( Item item ) {
-		return this.root.remove(item);
-	}
+
 	
 	/**
 	 * Clears this list.
 	 */
 	public void removeAll() {
-		this.root.clear();
+		clear();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CustomItem#getMinContentWidth()
-	 */
-	protected int getMinContentWidth() {
-		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CustomItem#getMinContentHeight()
-	 */
-	protected int getMinContentHeight() {
-		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CustomItem#getPrefContentWidth(int)
-	 */
-	protected int getPrefContentWidth(int maxHeight) {
-		// try to use the maximum available width:
-		return Integer.MAX_VALUE;
-		//return this.prefContentWidth;
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CustomItem#getPrefContentHeight(int)
-	 */
-	protected int getPrefContentHeight(int maxWidth) {
-		this.availableWidth = maxWidth;
-		return this.root.getItemHeight(maxWidth, maxWidth);
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CustomItem#paint(javax.microedition.lcdui.Graphics, int, int)
-	 */
-	protected void paint(Graphics g, int w, int h) {
-		this.root.paint( 0, 0, 0, w, g );
-	}
-
-	protected void hideNotify() {
-		this.root.hideNotify();
-	}
-	
-	protected void showNotify() {
-		this.root.showNotify();
-	}
-
-
-	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		boolean handled = this.root.handleKeyPressed(keyCode, gameAction);
-		if (handled) {
-			//System.out.println("invalidating through keyPressed...");
-			invalidate();
-		}
-		return handled;
-	}
-
-	//#ifdef polish.hasPointerEvents
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
-	 */
-	protected void pointerPressed(int x, int y) {
-		if (this.root.handlePointerPressed(x, y)) {
-			invalidate();
-		}
-	}
-	//#endif
-
-
-	protected boolean traverse(int direction, int viewWidth, int viewHeight, int[] viewRect_inout) {
-		boolean handled = (this.root.handleKeyPressed(0, direction));
-		if (handled) {
-			viewRect_inout[0] = this.root.internalX;
-			viewRect_inout[1] = this.root.internalY;
-			viewRect_inout[2] = this.root.internalWidth;
-			viewRect_inout[3] = this.root.internalHeight;
-		}
-		return handled;
-	}
-	
-	protected void traverseOut() {
-		this.root.defocus(null);
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
-	 */
-	protected Style focus(Style focusstyle, int direction ) {
-		invalidate();
-		return this.root.focus(focusstyle, direction);
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
-	 */
-	protected void defocus(Style originalStyle) {
-		invalidate();
-		this.root.defocus(originalStyle);
-	}
 	
 	
 	

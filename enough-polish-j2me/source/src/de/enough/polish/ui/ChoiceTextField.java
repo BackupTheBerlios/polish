@@ -448,7 +448,7 @@ public class ChoiceTextField
 					System.out.println("choicesHeight " + choicesHeight + ", choicesBottom=" + choicesBottomY + ", parent.yBottom=" + parentContainer.yBottom  );
 					if ( choicesBottomY > parentContainer.yBottom ) {
 						// try to scroll up this item, so that the user sees all matches:
-						int yOffsetAdjustment = Math.min( this.yTopPos - parentContainer.yTop, choicesBottomY - parentContainer.yBottom );
+						int yOffsetAdjustment = Math.min( this.yTopPos, choicesBottomY - parentContainer.yBottom );
 						this.choicesYOffsetAdjustment += yOffsetAdjustment;
 						//#debug
 						System.out.println("Adjusting yOffset of parent by " + yOffsetAdjustment );
@@ -458,7 +458,7 @@ public class ChoiceTextField
 								parentContainer.yOffset = parentContainer.targetYOffset;
 							}
 						//#endif						
-					} else {
+					} else if (this.contentY < parentContainer.yTop) { // scroll down again
 						int newYOffsetAdjustment = Math.max( this.choicesYOffsetAdjustment - ( parentContainer.yBottom - choicesBottomY), 0 );
 						int difference = this.choicesYOffsetAdjustment - newYOffsetAdjustment;
 						//#debug
@@ -477,6 +477,7 @@ public class ChoiceTextField
 			this.choicesContainer.clear();
 			if (this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;
+				if (this.contentY < parentContainer.yTop) {
 				parentContainer.targetYOffset += this.choicesYOffsetAdjustment;
 				this.choicesYOffsetAdjustment = 0;
 				//#if polish.scroll-mode
@@ -484,7 +485,8 @@ public class ChoiceTextField
 						parentContainer.yOffset = parentContainer.targetYOffset;
 					}
 				//#endif
-			}			
+				}
+			}
 		}
 		this.isOpen = open;
 	}

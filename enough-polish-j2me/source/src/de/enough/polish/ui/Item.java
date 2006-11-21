@@ -655,12 +655,12 @@ public abstract class Item extends Object
 	protected boolean isLayoutRight;
 	// the current positions of this item:
 	protected int xLeftPos;
-	protected int yTopPos;
+	protected int yTopPos; // relativ to parent item
 	protected int xRightPos;
-	protected int yBottomPos;
+	protected int yBottomPos; // relative to parent item
 	// the current positions of this item's content:
 	protected int contentX;
-	protected int contentY;
+	protected int contentY; // absolute top vertical position of the content 
 	// the current positions of an internal element relative to the content origin 
 	// which should be visible:
 	/** 
@@ -670,7 +670,7 @@ public abstract class Item extends Object
 	 * needs to be scrolled, e.g. containers.  
 	 */
 	protected int internalX = -9999;
-	/** The internal y position of this item's content.  */
+	/** The internal y position of this item's content, relative to the contentY position.  */
 	protected int internalY;
 	/** The internal width of this item's content.  */
 	protected int internalWidth;
