@@ -2525,11 +2525,14 @@ implements AccessibleCanvas
 						this.menuBar.addCommand(command);
 						this.itemCommands.add( command );
 					}
-				//#else
+				//#elif tmp.menuFullScreen
 					if ( !this.menuCommands.contains( command) ) {
 						addCommand(command);
 						this.itemCommands.add( command );
 					}
+				//#else
+					addCommand(command);
+					this.itemCommands.add( command );
 				//#endif
 			}
 		} else if (this.itemCommands != null) {
