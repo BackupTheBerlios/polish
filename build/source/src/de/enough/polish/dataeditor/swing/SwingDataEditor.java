@@ -408,7 +408,7 @@ implements DataEditorUI, ActionListener
 	 */
 	private void addDataType() {
 		CreateTypeDialog dialog = new CreateTypeDialog( this, "Add a custom type", this.dataManager );
-		dialog.show();
+		dialog.setVisible(true);
 		DataType newType = dialog.getDataType();
 		if (newType != null ) {
 			this.dataManager.addDataType(newType);

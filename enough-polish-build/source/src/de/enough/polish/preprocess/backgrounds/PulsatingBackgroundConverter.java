@@ -25,7 +25,6 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import de.enough.polish.preprocess.*;
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;

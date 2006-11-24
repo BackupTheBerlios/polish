@@ -31,13 +31,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.BooleanEvaluator;

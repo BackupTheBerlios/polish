@@ -31,8 +31,6 @@ import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 
-import com.zelix.de;
-
 import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;

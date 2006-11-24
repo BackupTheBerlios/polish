@@ -26,7 +26,6 @@
 package de.enough.polish.swing;
 
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

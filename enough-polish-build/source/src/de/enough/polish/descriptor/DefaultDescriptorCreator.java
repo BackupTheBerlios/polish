@@ -34,7 +34,6 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.Extension;
 import de.enough.polish.ant.Jad;
 import de.enough.polish.util.FileUtil;
 

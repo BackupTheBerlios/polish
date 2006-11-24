@@ -29,15 +29,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.Variable;
-import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Removes all curly braces from any resource-names before copying them.</p>

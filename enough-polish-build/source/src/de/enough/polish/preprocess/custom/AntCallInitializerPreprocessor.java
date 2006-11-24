@@ -34,8 +34,6 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Variable;
-import de.enough.polish.preprocess.CustomPreprocessor;
-import de.enough.polish.util.StringList;
 
 /**
  * <p>Calls another Ant target in the preprocessing phase.</p>
