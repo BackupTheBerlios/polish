@@ -37,6 +37,7 @@ import javax.microedition.lcdui.Image;
 //#endif
 
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.HashMap;
 
 
 /**
@@ -712,6 +713,8 @@ public abstract class Item extends Object
 	//#endif
 	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
 	protected int backgroundYOffset;
+
+	private HashMap attributes;
 
 	
 	protected Item() {
@@ -2059,6 +2062,31 @@ public abstract class Item extends Object
 		}
 	}
 
+	/**
+	 * Sets an arbitrary attribute for this item.
+	 * 
+	 * @param key the key for the attribute
+	 * @param value the attribute value
+	 */
+	public void setAttribute( Object key, Object value ) {
+		if (this.attributes == null) {
+			this.attributes = new HashMap();
+		}
+		this.attributes.put( key, value );
+	}
+	
+	/**
+	 * Gets an previously added attribute of this item.
+	 * 
+	 * @param key the key of the attribute
+	 * @return the attribute value, null if none has been registered under the given key before
+	 */
+	public Object getAttribute( Object key ) {
+		if (this.attributes == null) {
+			return null;
+		}
+		return this.attributes.get( key );
+	}
 	
 
 //#ifdef polish.Item.additionalMethods:defined

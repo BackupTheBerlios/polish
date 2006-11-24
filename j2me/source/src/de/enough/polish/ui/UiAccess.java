@@ -31,6 +31,8 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
+import de.enough.polish.util.HashMap;
+
 /**
  * <p>Allows to access J2ME Polish specific features in a standard compliant way.</p>
  * <p>When a ScreenStateListener is registered with a screen, it will get notified when
@@ -71,6 +73,7 @@ public final class UiAccess {
 	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
 	 */
 	public static final int MODE_NATIVE = 4;
+	private static HashMap attributes;
 
 	/**
 	 * No instantiation is allowd.
@@ -1245,5 +1248,69 @@ public final class UiAccess {
 		return screen.getCommandListener();
 	}
     //#endif
+
+	
+    //#if polish.usePolishGui
+	/**
+	 * Sets an arbitrary attribute for the given item.
+	 * 
+	 * @parstatic am item the item to which the attribute should be added
+	 * @param key the key for the attribute
+	 * @param value the attribute value
+	 */
+	public void setAttribute( Item item, Object key, Object value ) {
+		item.setAttribute( key, value );
+	}
+    //#endif
+	
+    //#if polish.usePolishGui
+	/**
+	 * Gets an previously added attribute of the specified item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key of the attribute
+	 * @return the attribute value, null if none has been registered under the given key before
+	 */
+	public static  Object getAttribute( Item item, Object key ) {
+		return item.getAttribute( key );
+	}
+    //#endif
+	
+	/**
+	 * Sets an arbitrary attribute for the given item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key for the attribute
+	 * @param value the attribute value
+	 */
+	public static void setAttribute( javax.microedition.lcdui.Item item, Object key, Object value ) {
+		if (attributes == null) {
+			attributes = new HashMap();
+		}
+		HashMap itemAttributes = (HashMap) attributes.get( item );
+		if (itemAttributes == null) {
+			itemAttributes = new HashMap();
+			attributes.put( item, itemAttributes );
+		}
+		itemAttributes.put( key, value );
+	}
+	
+	/**
+	 * Gets an previously added attribute of the specified item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key of the attribute
+	 * @return the attribute value, null if none has been registered under the given key before
+	 */
+	public static Object getAttribute( javax.microedition.lcdui.Item item, Object key ) {
+		if ( attributes == null ) {
+			return null;
+		}
+		HashMap itemAttributes = (HashMap) attributes.get( item );
+		if (itemAttributes == null) {
+			return null;
+		}
+		return itemAttributes.get( key );
+	}
 
 }
