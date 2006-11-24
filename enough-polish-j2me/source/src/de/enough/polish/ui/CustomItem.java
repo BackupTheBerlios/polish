@@ -31,7 +31,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * A CustomItem is customizable by subclassing to introduce new visual and interactive elements into <code>Forms</code>.
  * 
- * <p><b>J2ME Polish Implementation<b>
+ * <p><b>J2ME Polish Implementation</b>
  * <br/>
  * <b>Initialisation</b>
  * J2ME Polish calls the getPrefContentWidth()-method first with an open height (-1).
@@ -45,7 +45,7 @@ import javax.microedition.lcdui.Graphics;
  * or CustomItem.NONE, when the direction is not known).
  * 
  * <br/><br/><b>Interaction Modes</b><br/>
- * The J2MEÂ Polish implementation supports the interaction modes KEY_PRESS,  
+ * The J2ME Polish implementation supports the interaction modes KEY_PRESS,  
  * TRAVERSE_HORIZONTAL and TRAVERSE_VERTICAL.
  * </p>
  * 
