@@ -212,7 +212,7 @@ implements ActionListener
 
 	public static void main(String[] args) {
 		FontCreator creator = new FontCreator();
-		creator.show();
+		creator.setVisible(true);
 	}
 
 	/* (non-Javadoc)
