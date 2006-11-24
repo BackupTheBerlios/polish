@@ -38,6 +38,7 @@ package de.enough.polish.util;
  *        15-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @author Tim Muders, tim.muders@enough.de
  */
 public final class ImageUtil {
 
@@ -201,7 +202,6 @@ public final class ImageUtil {
 	 * @param referenceY the y position for the center of rotation.
 	 * @param backgroundColor the ARGB color used for the background
 	 * @return the rotated rgb data.
-	 * @author Tim Muders
 	 */
 	public static final int[] rotate(int[] sourceRgbData,int width, int height,int degree,int referenceX,int referenceY,int backgroundColor){
 		double degreeCos = Math.cos(Math.PI*degree/180);
@@ -263,7 +263,6 @@ public final class ImageUtil {
 	 * @param degreeCos the cosine of the degree value: Math.cos(Math.PI*degree/180)
 	 * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
 	 * @return the new height of the rgb data.
-	 * @author Tim Muders
 	 */
 	public static final int getRotatedHeight(int degree, int width, int heigth, double degreeCos, double degreeSin)
 	{
@@ -312,7 +311,6 @@ public final class ImageUtil {
 	 * @param degreeCos the cosine of the degree value: Math.cos(Math.PI*degree/180)
 	 * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
 	 * @return the new width of the rgb data.
-	 * @author Tim Muders
 	 */
 	public static final int getRotatedWidth(int degree,int width,int heigth,double degreeCos,double degreeSin)
 	{
@@ -354,7 +352,6 @@ public final class ImageUtil {
 	/**
 	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original. Returns the scaled rgb data.
 	 * 
-	 * @author Tim Muders
 	 * @param rgbData the original rgbdata
 	 * @param newWidth the new width for the new rgbdata
 	 * @param newHeight the new height for the new rgbdata
@@ -371,7 +368,6 @@ public final class ImageUtil {
 	/**
 	 * Stretches the rgb data vertical to the given top and bottom stretch factor and returns the new rgb data array.
 	 * 
-	 * @author Tim Muders
 	 * @param argbArray the rgb data to be stretched.
 	 * @param topStrechFactor the stretch factor of the top.
 	 * @param bottomStrechFactor the stretch factor of the bottom.
@@ -400,7 +396,6 @@ public final class ImageUtil {
 	 * Stretches the rgb data vertical to the given top and bottom width and returns the new rgb data array.
 	 *  
 	 * 
-	 * @author Tim Muders
 	 * @param argbArray the rgb data to be stretched.
 	 * @param newWidthTop the new top width of the rgb data.
 	 * @param newWidthBottom the new bottom width of the rgb data.
@@ -450,7 +445,6 @@ public final class ImageUtil {
 	/**
 	 * Returns the one scaled Pixel for the given new heigth and width. 
 	 * 
-	 * @author Tim Muders
 	 * @param oldLength length of the rgb data source.
 	 * @param oldWidth the old width of the rgb data.
 	 * @param oldHeigth the old heigth of the rgb data.
@@ -473,7 +467,6 @@ public final class ImageUtil {
 	/**
 	 * Stretches the rgb data horizontal to the given left and rigth stretch factor and returns the new rgb data array.
 	 * 
-	 * @author Tim Muders
 	 * @param argbArray the rgb data to be stretched.
 	 * @param leftStrechFactor the stretch factor of the left.
 	 * @param rightStrechFactor the stretch factor of the rigth.
@@ -502,7 +495,6 @@ public final class ImageUtil {
 	 * Stretches the rgb data horizontal to the given left and heigth width and returns the new rgb data array.
 	 * 
 	 * 
-	 * @author Tim Muders
 	 * @param argbArray the rgb data to be stretched.
 	 * @param newLeftHeigth the new left heigth of the rgb data.
 	 * @param newRigthHeigth the new rigth heigth of the rgb data.
@@ -560,7 +552,6 @@ public final class ImageUtil {
 	/**
 	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original.
 	 * 
-	 * @author Tim Muders
 	 * @param rgbData the original rgbdata
 	 * @param newWidth the new width for the new rgbdata
 	 * @param newHeight the new height for the new rgbdata

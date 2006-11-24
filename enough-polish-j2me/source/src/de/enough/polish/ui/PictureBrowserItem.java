@@ -60,7 +60,7 @@ public class PictureBrowserItem extends CustomItem {
 	 * @param label the label
 	 * @param thumbnails the images for the menu
 	 * @param urls the urls for the target image
-	 * @param skaleFactorthe skale factor for the thumbs that are displayed on the side of the item. 
+	 * @param scaleFactor the skale factor for the thumbs that are displayed on the side of the item. 
 	 *        Note that the first given thumb is used for the calculation of the sizes for all images.
 	 *        The complete width off the item are 4*firstimage.getWidth()*scaleFactor/100 + 2*padding-horizontal
 	 */
@@ -98,7 +98,7 @@ public class PictureBrowserItem extends CustomItem {
 	 * @param label the label
 	 * @param thumbnails the images for the menu
 	 * @param urls the urls for the target image
-	 * @param skaleFactorthe skale factor for the thumbs that are displayed on the side of the item. 
+	 * @param scaleFactor the skale factor for the thumbs that are displayed on the side of the item. 
 	 *        Note that the first given thumb is used for the calculation of the sizes for all images.
 	 *        The complete width off the item are 4*firstimage.getWidth()*scaleFactor/100 + 2*padding-horizontal
 	 * @param style the design settings
@@ -313,12 +313,10 @@ public class PictureBrowserItem extends CustomItem {
 	 * @param index - the index where the url is Placed in the String Array urls
 	 * @return the url of that image or null when no URLs have been defined
 	 */
-	public String getUrl(int i) {
+	public String getUrl(int index) {
 		if (this.urls == null) {
 			return null;
 		}
-		return this.urls[i];
+		return this.urls[index];
 	}
-
-
 }

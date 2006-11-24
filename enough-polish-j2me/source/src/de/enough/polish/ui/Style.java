@@ -101,7 +101,6 @@ public class Style
 	 * @param border the border for this style
 	 * @param attributeKeys the integer-IDs of any additional attributes. Can be null.
 	 * @param attributeValues the values of any additional attributes. Can be null.
-	 * 			
 	 */
 	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
 			int paddingLeft, int paddingRight, int paddingTop, int paddingBottom, int paddingVertical, int paddingHorizontal,
@@ -141,14 +140,8 @@ public class Style
 	 * @param font the content-font for this style
 	 * @param background the background for this style
 	 * @param border the border for this style
-	 * @param beforeUrl the URL of the before element. This is inserted before items
-	 *            with this style. 
-	 * @param afterUrl the URL of the after element. This is inserted after items
-	 *            with this style.
-	 * @param name the name of this style. Is only used when dynamic styles are used.
 	 * @param attributeKeys the integer-IDs of any additional attributes. Can be null.
 	 * @param attributeValues the values of any additional attributes. Can be null.
-	 * 			
 	 */
 	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
 			int paddingLeft, int paddingRight, int paddingTop, int paddingBottom, int paddingVertical, int paddingHorizontal,

@@ -111,8 +111,8 @@ public class PolishDateField extends DateField {
 	 * @param dateFormat the format
 	 * @param style the editing style, e.g. Field.EDITABLE
 	 */
-	public PolishDateField(long date, DateFormat format, long style) {
-		super(null, date, format, style);
+	public PolishDateField(long date, DateFormat dateFormat, long style) {
+		super(null, date, dateFormat, style);
 	}
 
 	public void focusAdd( boolean draw ) {

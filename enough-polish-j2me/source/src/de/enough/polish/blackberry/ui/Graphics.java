@@ -605,7 +605,7 @@ public class Graphics extends Object
 	 * Gets the green component of the current color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setColor(int, int, int)
+	 * @see #setColor(int, int, int)
 	 */
 	public int getGreenComponent()
 	{
@@ -616,7 +616,7 @@ public class Graphics extends Object
 	 * Gets the blue component of the current color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setColor(int, int, int)
+	 * @see #setColor(int, int, int)
 	 */
 	public int getBlueComponent()
 	{
@@ -635,7 +635,7 @@ public class Graphics extends Object
 	 * approximates the brightness of that color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setGrayScale(int)
+	 * @see #setGrayScale(int)
 	 */
 	public int getGrayScale()
 	{
@@ -651,7 +651,7 @@ public class Graphics extends Object
 	 * @param green - the green component of the color being set in range 0-255
 	 * @param blue - the blue component of the color being set in range 0-255
 	 * @throws IllegalArgumentException - if any of the color components are outside of range 0-255
-	 * @see getColor()
+	 * @see #getColor()
 	 */
 	public void setColor(int red, int green, int blue)
 	{
@@ -670,7 +670,7 @@ public class Graphics extends Object
 	 * this value is ignored.
 	 * 
 	 * @param RGB - the color being set
-	 * @see getColor()
+	 * @see #getColor()
 	 */
 	public void setColor(int RGB)
 	{
@@ -687,7 +687,7 @@ public class Graphics extends Object
 	 * 
 	 * @param value - the desired grayscale value
 	 * @throws IllegalArgumentException - if the gray value is out of range
-	 * @see getGrayScale()
+	 * @see #getGrayScale()
 	 */
 	public void setGrayScale(int value)
 	{
@@ -772,7 +772,8 @@ public class Graphics extends Object
 	 * <code>getClip()</code> call returning an object.
 	 * 
 	 * @return Y offset of the current clipping area
-	 * @see clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+   * @see #setClip(int, int, int, int)
 	 */
 	public int getClipY()
 	{
@@ -783,7 +784,8 @@ public class Graphics extends Object
 	 * Gets the width of the current clipping area.
 	 * 
 	 * @return width of the current clipping area.
-	 * @see #clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+   * @see #setClip(int, int, int, int)
 	 */
 	public int getClipWidth()
 	{
@@ -794,7 +796,8 @@ public class Graphics extends Object
 	 * Gets the height of the current clipping area.
 	 * 
 	 * @return height of the current clipping area.
-	 * @see #clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+   * @see #setClip(int, int, int, int)
 	 */
 	public int getClipHeight()
 	{
@@ -1130,7 +1133,8 @@ public class Graphics extends Object
 	 * @param y - the y coordinate of the anchor point
 	 * @param anchor - the anchor point for positioning the text; see anchor points
 	 * @throws IllegalArgumentException - if anchor is not a legal value
-	 * @see #drawString(java.lang.String, int, int, int), drawChars(char[], int, int, int, int, int)
+	 * @see #drawString(java.lang.String, int, int, int)
+   * @see #drawChars(char[], int, int, int, int, int)
 	 */
 	public void drawChar(char character, int x, int y, int anchor)
 	{

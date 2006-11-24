@@ -31,9 +31,9 @@ import javax.microedition.lcdui.Graphics;
 /**
  * A CustomItem is customizable by subclassing to introduce new visual and interactive elements into <code>Forms</code>.
  * 
- * <p><b>J2ME Polish Implementation</b>
+ * <p><b>J2ME Polish Implementation</b><br/>
  * <br/>
- * <b>Initialisation</b>
+ * <b>Initialisation</b><br/>
  * J2ME Polish calls the getPrefContentWidth()-method first with an open height (-1).
  * Then the getPrefContentHeight()-method is called with the actual granted width.
  * When the width had to be adjusted, the custom item will be notified again with
