@@ -26,7 +26,6 @@
 
 package de.enough.polish.postcompile.mastercanvas;
 
-import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.DirClassLoader;
 import de.enough.bytecode.MethodInvocationMapping;
 import de.enough.bytecode.MethodMapper;
