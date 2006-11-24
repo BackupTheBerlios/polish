@@ -89,49 +89,49 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
-        jScrollPane1 = new javax.swing.JScrollPane();
+        this.jScrollPane1 = new javax.swing.JScrollPane();
         this.configurationsCheckBoxList = getConfigurationsCheckBoxList();
-        configurationsLabel = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        this.configurationsLabel = new javax.swing.JLabel();
+        this.jScrollPane2 = new javax.swing.JScrollPane();
         this.platformsList = getPlatformsCheckBoxList();
-        platformsLabel = new javax.swing.JLabel();
+        this.platformsLabel = new javax.swing.JLabel();
         this.devicesListScrollPane = new javax.swing.JScrollPane();
         this.deviceTreeView = getDeviceTreeView();
-        devicesLabel = new javax.swing.JLabel();
+        this.devicesLabel = new javax.swing.JLabel();
         this.descriptionLabel = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
+        this.jScrollPane4 = new javax.swing.JScrollPane();
         this.description = new javax.swing.JTextArea();
 
 //        configurationsList.setModel( getConfigurationsModel() );
 //        configurationsList.addListSelectionListener( getConfigurationsModel() );
 //        CheckBoxCellRenderer checkBoxCellRenderer = new CheckBoxCellRenderer();
 //        configurationsList.setCellRenderer( checkBoxCellRenderer );
-        jScrollPane1.setViewportView( getConfigurationsCheckBoxList() );
+        this.jScrollPane1.setViewportView( getConfigurationsCheckBoxList() );
 
-        configurationsLabel.setText( "Configuration:" );
+        this.configurationsLabel.setText( "Configuration:" );
         //org.openide.awt.Mnemonics.setLocalizedText(configurationsLabel, "Configuration:");
 
-        jScrollPane2.setViewportView(platformsList);
+        this.jScrollPane2.setViewportView(this.platformsList);
 
-        platformsLabel.setText( "Profiles/Platforms:" );
+        this.platformsLabel.setText( "Profiles/Platforms:" );
         //org.openide.awt.Mnemonics.setLocalizedText(platformsLabel, "Profiles/Platforms:");
 
-        devicesListScrollPane.setViewportView(deviceTreeView);
+        this.devicesListScrollPane.setViewportView(this.deviceTreeView);
 
-        devicesLabel.setText( "Devices:" );
+        this.devicesLabel.setText( "Devices:" );
         //org.openide.awt.Mnemonics.setLocalizedText(devicesLabel, "Devices:");
 
-        descriptionLabel.setText( "Description:" );
+        this.descriptionLabel.setText( "Description:" );
         //org.openide.awt.Mnemonics.setLocalizedText(descriptionLabel, "Description:");
 
-        description.setBackground(new java.awt.Color(238, 238, 238));
-        description.setColumns(20);
-        description.setEditable(false);
-        description.setLineWrap(true);
-        description.setRows(2);
-        description.setToolTipText("Description of the currently selected device");
-        description.setWrapStyleWord(true);
-        jScrollPane4.setViewportView(description);
+        this.description.setBackground(new java.awt.Color(238, 238, 238));
+        this.description.setColumns(20);
+        this.description.setEditable(false);
+        this.description.setLineWrap(true);
+        this.description.setRows(2);
+        this.description.setToolTipText("Description of the currently selected device");
+        this.description.setWrapStyleWord(true);
+        this.jScrollPane4.setViewportView(this.description);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -140,19 +140,19 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, this.jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(devicesListScrollPane)
+                        .add(this.devicesListScrollPane)
                         .add(layout.createSequentialGroup()
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(configurationsLabel))
+                                .add(this.jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(this.configurationsLabel))
                             .add(25, 25, 25)
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(platformsLabel)
-                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .add(devicesLabel)
-                        .add(descriptionLabel)))
+                                .add(this.platformsLabel)
+                                .add(this.jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(this.devicesLabel)
+                        .add(this.descriptionLabel)))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -160,20 +160,20 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(configurationsLabel)
-                    .add(platformsLabel))
+                    .add(this.configurationsLabel)
+                    .add(this.platformsLabel))
                 .add(4, 4, 4)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(this.jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(this.jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(devicesLabel)
+                .add(this.devicesLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(devicesListScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .add(this.devicesListScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(descriptionLabel)
+                .add(this.descriptionLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(this.jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>
@@ -287,7 +287,7 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 		JFrame frame = new JFrame("Hello World");
 		frame.getContentPane().add(c);
 		frame.pack();
-		frame.show();
+		frame.setVisible(true);
 	}
 
 
