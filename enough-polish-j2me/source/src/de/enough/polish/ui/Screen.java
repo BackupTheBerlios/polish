@@ -150,12 +150,12 @@ implements AccessibleCanvas
 			//#if top == ${ lowercase(polish.Ticker.Position) }
 				//#define tmp.paintTickerAtTop
 			//#else
-				//#define tmp.paintPositionAtBottom
+				//#define tmp.paintTickerAtBottom
 			//#endif
 		//#elif polish.css.ticker-position
 			private boolean paintTickerAtTop;
 		//#else
-			//#define tmp.paintPositionAtBottom
+			//#define tmp.paintTickerAtBottom
 		//#endif
 	//#endif
 	protected String cssSelector;

@@ -468,6 +468,7 @@ public class Container extends Item {
 			}
 		//#endif
 		boolean isDownwards = (direction == Canvas.DOWN) || (direction == Canvas.RIGHT) || (direction == 0 &&  index > this.focusedIndex);
+		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
 		this.focusedIndex = index;
 		this.focusedItem = item;
 		//#if tmp.supportViewType
@@ -513,7 +514,12 @@ public class Container extends Item {
 				}
 
 				
-				int itemYTop = isDownwards ? item.yTopPos : nextItem.yTopPos;
+				int itemYTop;
+				if ( (index == 0) || (isDownwards && index < previousIndex) ) {
+					itemYTop = 0;
+				} else {
+					itemYTop = isDownwards ? item.yTopPos : nextItem.yTopPos;
+				}
 				int itemYBottom = isDownwards ? nextItem.yBottomPos : item.yBottomPos;
 				
 //				if (itemYBottom - itemYTop > this.yTop - this.yBottom) {

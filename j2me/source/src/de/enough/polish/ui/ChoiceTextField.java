@@ -394,6 +394,30 @@ public class ChoiceTextField
 			return true;
 		//#endif
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int x, int y) {
+		int height = this.itemHeight - this.paddingVertical - this.marginBottom;
+		//System.out.println("pointer pressed at y=" + y + ", height=" + height);
+		if (this.isOpen && y > height) {
+			boolean handled = this.choicesContainer.handlePointerPressed(x, y - height);
+			if (handled) {
+				// select the current element:
+				this.isInChoice = true;
+				handleKeyPressed( 0, Canvas.FIRE );
+			}
+			return handled;
+		} else if (this.isOpen) {
+			openChoices( false );
+			return true;
+		} else {
+			return super.handlePointerPressed(x, y);
+		}
+	}
+	//#endif
 
 	private void enterChoices( boolean enter ) {
 		//#debug
