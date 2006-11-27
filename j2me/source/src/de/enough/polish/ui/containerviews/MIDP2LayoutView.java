@@ -68,6 +68,8 @@ public class MIDP2LayoutView extends ContainerView {
         //private Style style;
         private int horizontalOffset = -1;
 
+		private int currentContentHeight;
+
         /**
          * Constructs an instance of <code>MIDP2LayoutView</code>.
          * <p>
@@ -91,6 +93,7 @@ public class MIDP2LayoutView extends ContainerView {
                 this.allRows = new ArrayList();
 
                 boolean hasFocusableItem = false;
+                this.currentContentHeight = 0;
                 for (int i = 0; i < myItems.length; i++) {
                     Item item = myItems[i];
                     if (item.appearanceMode != Item.PLAIN) {
@@ -122,6 +125,8 @@ public class MIDP2LayoutView extends ContainerView {
                 int width = item.getItemWidth(firstLineWidth, lineWidth);
                 int height = item.getItemHeight(firstLineWidth, lineWidth);
                 int layout = item.getLayout();
+                
+                
 
                 if ((Item.LAYOUT_NEWLINE_BEFORE == (layout & Item.LAYOUT_NEWLINE_BEFORE))
                                 || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
@@ -164,8 +169,13 @@ public class MIDP2LayoutView extends ContainerView {
                                 - ((this.currentRow.size() - 1) * this.paddingHorizontal);
                 RowItem[] requiredExpanded = null;
                 int requiredExpandedIndex = 0;
+                int top = this.currentContentHeight;
+                int bottom = top + this.rowHeight;
+                this.currentContentHeight += this.rowHeight;
                 for (int i = 0; i < this.currentRow.size(); i++) {
                     RowItem rowItem = (RowItem) this.currentRow.get(i);
+                    rowItem.item.yTopPos = top;
+                    rowItem.item.yBottomPos = bottom;
                     remainingWidth -= rowItem.width;
                     if (Item.LAYOUT_EXPAND == (rowItem.item.getLayout() & Item.LAYOUT_EXPAND)) {
                         if (requiredExpanded == null) {

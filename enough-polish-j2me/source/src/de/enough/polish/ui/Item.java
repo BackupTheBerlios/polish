@@ -656,9 +656,9 @@ public abstract class Item extends Object
 	protected boolean isLayoutRight;
 	// the current positions of this item:
 	protected int xLeftPos;
-	protected int yTopPos; // relativ to parent item
+	public int yTopPos; // relativ to parent item
 	protected int xRightPos;
-	protected int yBottomPos; // relative to parent item
+	public int yBottomPos; // relative to parent item
 	// the current positions of this item's content:
 	protected int contentX;
 	protected int contentY; // absolute top vertical position of the content 
