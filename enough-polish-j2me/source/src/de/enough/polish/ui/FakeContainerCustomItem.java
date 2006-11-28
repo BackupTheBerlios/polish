@@ -881,7 +881,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		y += this.yOffset;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				this.containerView.paintContent(x, y, leftBorder, rightBorder, g);
+				this.containerView.paintContent( (Item)null, x, y, leftBorder, rightBorder, g);
 			} else {
 		//#endif
 			Item[] myItems;

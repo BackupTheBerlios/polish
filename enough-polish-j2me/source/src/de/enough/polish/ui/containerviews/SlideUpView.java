@@ -79,7 +79,7 @@ public class SlideUpView extends BackgroundContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Container parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
 		super.initContent(parent, firstLineWidth, lineWidth);
 		if (this.restartAnimation) {
 			this.restartAnimation = false;
@@ -94,9 +94,9 @@ public class SlideUpView extends BackgroundContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		y += this.yOffset;		
-		super.paintContent(x, y, leftBorder, rightBorder, g);
+		super.paintContent(parent, x, y, leftBorder, rightBorder, g);
 	}
 
 

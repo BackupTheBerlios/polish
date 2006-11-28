@@ -86,7 +86,7 @@ public class Container extends Item {
 	private int focusedTopMargin;
 	//#if polish.css.view-type || polish.css.columns
 		//#define tmp.supportViewType 
-		protected ContainerView view;
+		protected ContainerView containerView;
 	//#endif
 	//#ifdef polish.css.scroll-mode
 		protected boolean scrollSmooth = true;
@@ -365,14 +365,13 @@ public class Container extends Item {
 	 * Retrieves all items which this container holds.
 	 * The items might not have been intialised.
 	 * 
-	 * @return an array of all items.
+	 * @return an array of all items, can be empty but not null.
 	 */
 	public Item[] getItems() {
-		if (!this.isInitialised) {
-			return (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
-		} else {		
-			return this.items;
+		if (!this.isInitialised || this.items == null) {
+			this.items = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		}
+		return this.items;
 	}
 	
 	/**
@@ -389,9 +388,9 @@ public class Container extends Item {
 			this.focusedIndex = -1;
 			this.focusedItem = null;
 			//#ifdef tmp.supportViewType
-				if (this.view != null) {
-					this.view.focusedIndex = -1;
-					this.view.focusedItem = null;
+				if (this.containerView != null) {
+					this.containerView.focusedIndex = -1;
+					this.containerView.focusedItem = null;
 				}
 			//#endif
 			return false;
@@ -472,9 +471,9 @@ public class Container extends Item {
 		this.focusedIndex = index;
 		this.focusedItem = item;
 		//#if tmp.supportViewType
-			if ( this.view != null ) {
-				this.view.focusedIndex = index;
-				this.view.focusedItem = item;
+			if ( this.containerView != null ) {
+				this.containerView.focusedIndex = index;
+				this.containerView.focusedItem = item;
 			}
 		//#endif
 		if  (this.isInitialised) { // (this.yTopPos != this.yBottomPos) {
@@ -713,9 +712,9 @@ public class Container extends Item {
 //				}
 		//#if polish.css.scroll-mode
 			}
-		//#endif
-		
+		//#endif	
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem( int, int )
@@ -731,8 +730,9 @@ public class Container extends Item {
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 			this.autoFocusIndex = 0;
 		}
-		//#ifdef tmp.supportViewType
-			if (this.view != null) {
+		//#if tmp.supportViewType
+			if (this.containerView != null) {
+				// additional initialization is necessary when a view is used for this container:
 				boolean requireScrolling = this.isScrollRequired;
 				if (this.autoFocusEnabled) {
 					//#debug
@@ -746,26 +746,26 @@ public class Container extends Item {
 							item.getItemHeight( firstLineWidth, lineWidth );
 							// now focus the item:
 							focus( this.autoFocusIndex, item, 0 );
-							this.view.focusedIndex = this.autoFocusIndex;
-							this.view.focusedItem = this.focusedItem;
+							this.containerView.focusedIndex = this.autoFocusIndex;
+							this.containerView.focusedItem = this.focusedItem;
 						}
 					}
 				}
-				this.view.initContent(this, firstLineWidth, lineWidth);
-				this.contentWidth = this.view.contentWidth;
-				this.contentHeight = this.view.contentHeight;
-				this.appearanceMode = this.view.appearanceMode;
+				
+				this.containerView.initContent( this, firstLineWidth, lineWidth);
+				this.appearanceMode = this.containerView.appearanceMode;
+				this.contentWidth = this.containerView.contentWidth;
+				this.contentHeight = this.containerView.contentHeight;
+				
 				if (requireScrolling && this.enableScrolling && this.focusedItem != null) {
 					//#debug
 					System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
 					Item item = this.focusedItem;
 					scroll( true, item.xLeftPos, item.yTopPos, item.itemWidth, item.itemHeight );
 				}
-
-				return;
 			}
 		//#endif
-			
+	
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		boolean hasFocusableItem = false;
 		for (int i = 0; i < myItems.length; i++) {
@@ -878,8 +878,8 @@ public class Container extends Item {
 		x = leftBorder;
 		y += this.yOffset;
 		//#ifdef tmp.supportViewType
-			if (this.view != null) {
-				this.view.paintContent(x, y, leftBorder, rightBorder, g);
+			if (this.containerView != null) {
+				this.containerView.paintContent( this, x, y, leftBorder, rightBorder, g);
 			} else {
 		//#endif
 			Item[] myItems;
@@ -980,8 +980,8 @@ public class Container extends Item {
 		}
 		// now allow a navigation within the container:
 		//#ifdef tmp.supportViewType
-			if (this.view != null) {
-				boolean handled = this.view.handleKeyPressed(keyCode, gameAction);
+			if (this.containerView != null) {
+				boolean handled = this.containerView.handleKeyPressed(keyCode, gameAction);
 				if (handled) {
 					return true;
 				}
@@ -1432,49 +1432,36 @@ public class Container extends Item {
 		//#endif
 		
 		//#ifdef polish.css.view-type
-			ContainerView viewType = (ContainerView) style.getObjectProperty("view-type");
+//			ContainerView viewType =  (ContainerView) style.getObjectProperty("view-type");
 //			if (this instanceof ChoiceGroup) {
 //				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
 //			}
-			if (viewType != null) {
-				if (this.view != null && this.view.getClass() == viewType.getClass()) {
-					this.view.focusFirstElement = this.autoFocusEnabled;
-					//System.out.println("SET.STYLE / CHOICEGROUP: found OLD view-type (2): " + viewType + " for " + this);
-				} else {
-					//System.out.println("SET.STYLE / CHOICEGROUP: found new view-type (2): " + viewType + " for " + this);
-					try {
-						if (viewType.parentContainer != null) {
-							viewType = (ContainerView) viewType.getClass().newInstance();
-						}
-						viewType.parentContainer = this;
-						viewType.focusFirstElement = this.autoFocusEnabled;
-						//#if polish.Container.allowCycling != false
-							viewType.allowCycling = this.allowCycling;
-						//#else
-							viewType.allowCycling = false;
-						//#endif
-						this.view = viewType;
-					} catch (Exception e) {
-						//#debug error
-						System.out.println("Container: Unable to init view-type " + e );
-						viewType = null;
-					}
-				}
+			if (this.view != null) {
+				ContainerView viewType = (ContainerView) this.view; // (ContainerView) style.getObjectProperty("view-type");
+				this.containerView = viewType;
+				this.view = null; // set to null so that this container can control the view completely. This is necessary for scrolling, for example.
+				viewType.parentContainer = this;
+				viewType.focusFirstElement = this.autoFocusEnabled;
+				//#if polish.Container.allowCycling != false
+					viewType.allowCycling = this.allowCycling;
+				//#else
+					viewType.allowCycling = false;
+				//#endif
 			}
 		//#endif
 		//#ifdef polish.css.columns
-			if (this.view == null) {
+			if (this.containerView == null) {
 				Integer columns = style.getIntProperty("columns");
 				if (columns != null) {
 					if (columns.intValue() > 1) {
 						//System.out.println("Container: Using default container view for displaying table");
-						this.view = new ContainerView();  
-						this.view.parentContainer = this;
-						this.view.focusFirstElement = this.autoFocusEnabled;
+						this.containerView = new ContainerView();  
+						this.containerView.parentContainer = this;
+						this.containerView.focusFirstElement = this.autoFocusEnabled;
 						//#if polish.Container.allowCycling != false
-							this.view.allowCycling = this.allowCycling;
+							this.containerView.allowCycling = this.allowCycling;
 						//#else
-							this.view.allowCycling = false;
+							this.containerView.allowCycling = false;
 						//#endif
 					}
 				}
@@ -1488,8 +1475,8 @@ public class Container extends Item {
 			}
 		//#endif	
 		//#ifdef tmp.supportViewType
-			if (this.view != null) {
-				this.view.setStyle(style);
+			if (this.containerView != null) {
+				this.containerView.setStyle(style);
 			}
 		//#endif
 	}
@@ -1538,8 +1525,8 @@ public class Container extends Item {
 				focusstyle = this.focusedStyle;
 			}
 			//#if tmp.supportViewType
-				if (this.view != null) {
-					this.view.focus(focusstyle, direction);
+				if (this.containerView != null) {
+					this.containerView.focus(focusstyle, direction);
 					//this.isInitialised = false; not required
 				}
 			//#endif
@@ -1547,7 +1534,7 @@ public class Container extends Item {
 			int newFocusIndex = this.focusedIndex;
 			//if (this.focusedIndex == -1) {
 			//#if tmp.supportViewType
-				if (this.view != null && false) {
+				if (this.containerView != null && false) {
 			//#endif
 				Item[] myItems = getItems();
 				// focus the first interactive item...
@@ -1700,8 +1687,8 @@ public class Container extends Item {
 			animated |= this.focusedItem.animate();
 		}
 		//#ifdef tmp.supportViewType
-			if ( this.view != null ) {
-				animated |= this.view.animate();
+			if ( this.containerView != null ) {
+				animated |= this.containerView.animate();
 			}
 		//#endif
 		return animated;
@@ -1732,8 +1719,8 @@ public class Container extends Item {
 			}
 		//#endif
 		//#ifdef tmp.supportViewType
-			if (this.view != null) {
-				this.view.showNotify();
+			if (this.containerView != null) {
+				this.containerView.showNotify();
 			}
 		//#endif
 		Item[] myItems = getItems();
@@ -1768,8 +1755,8 @@ public class Container extends Item {
 	protected void hideNotify()
 	{
 		//#ifdef tmp.supportViewType
-			if (this.view != null) {
-				this.view.hideNotify();
+			if (this.containerView != null) {
+				this.containerView.hideNotify();
 			}
 		//#endif
 		Item[] myItems = getItems();
@@ -1813,8 +1800,8 @@ public class Container extends Item {
 			return false;
 		}
 		//#ifdef tmp.supportViewType
-			if (this.view != null) {
-				if ( this.view.handlePointerPressed(x,y) ) {
+			if (this.containerView != null) {
+				if ( this.containerView.handlePointerPressed(x,y) ) {
 					return true;
 				}
 			}

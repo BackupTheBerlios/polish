@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
 import de.enough.polish.ui.ContainerView;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 
 /**
@@ -70,7 +71,7 @@ public class BackgroundContainerView extends ContainerView {
 	 * 
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		int width = rightBorder - leftBorder + this.paddingLeft + this.paddingRight;
 		int height = this.contentHeight + this.paddingTop + this.paddingBottom;
 		if (this.background != null) {
@@ -79,7 +80,7 @@ public class BackgroundContainerView extends ContainerView {
 		if (this.border != null) {
 			this.border.paint(x - this.paddingLeft, y - this.paddingTop, width, height, g);
 		}
-		super.paintContent(x, y, leftBorder, rightBorder, g);
+		super.paintContent(parent, x, y, leftBorder, rightBorder, g);
 	}
 
 	/* (non-Javadoc)

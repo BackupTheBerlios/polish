@@ -716,6 +716,10 @@ public abstract class Item extends Object
 
 	private HashMap attributes;
 
+	//#ifdef polish.css.view-type
+		protected ItemView view;
+	//#endif
+
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -1020,7 +1024,27 @@ public abstract class Item extends Object
 				this.includeLabel = includeLabelBool.booleanValue();
 			}
 		//#endif
-		
+		//#ifdef polish.css.view-type
+			ItemView viewType = (ItemView) style.getObjectProperty("view-type");
+//			if (this instanceof ChoiceGroup) {
+//				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
+//			}
+			if (viewType != null) {
+				if (this.view == null || this.view.getClass() != viewType.getClass()) {
+					try {
+						if (viewType.parentItem != null) {
+							viewType = (ItemView) viewType.getClass().newInstance();
+						}
+						viewType.parentItem = this;
+						this.view = viewType;
+					} catch (Exception e) {
+						//#debug error
+						System.out.println("Container: Unable to init view-type " + e );
+						viewType = null;
+					}
+				}
+			}
+		//#endif		
 	}
 	
 	/**
@@ -1623,14 +1647,28 @@ public abstract class Item extends Object
 		// paint content:
 		this.contentX = x;
 		this.contentY = y;
-		paintContent( x, y, leftBorder, rightBorder, g );				
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
+			} else {
+		//#endif
+				paintContent( x, y, leftBorder, rightBorder, g );				
+		//#ifdef polish.css.view-type
+			}
+		//#endif
 	}
 	
 	/**
 	 * Initialises this item.
+	 * You should always call super.init( firstLineWidth, lineWidth) when overriding this method.
+	 * This method call either ItemView.initContent() or Item.initContent() to initialize the actual content.
+	 * A valid case for overriding would be if additional initialization needs to be done even when an
+	 * ItemView is associated with this Item. Usually implementing initContent() should suffice.
 	 * 
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param lineWidth the maximum width of any following lines
+	 * @see #initContent(int, int)
+	 * @see ItemView#initContent(Item, int, int)
 	 */
 	protected void init( int firstLineWidth, int lineWidth ) {
 		//#debug
@@ -1690,8 +1728,20 @@ public abstract class Item extends Object
 			//# int firstLineContentWidth = firstLineWidth - noneContentWidth;
 			//# int availableContentWidth = lineWidth - noneContentWidth;
 		//#endif
+		
 		// initialise content by subclass:
-		initContent( firstLineContentWidth, availableContentWidth );
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.initContent(this, firstLineContentWidth, availableContentWidth);
+				this.contentWidth = this.view.contentWidth;
+				this.contentHeight = this.view.contentHeight;
+			} else {
+		//#endif
+				initContent( firstLineContentWidth, availableContentWidth );
+		//#ifdef polish.css.view-type
+			}
+		//#endif
+		
 		if (this.contentWidth == 0 && this.contentHeight == 0) {
 			this.itemWidth = labelWidth;
 			this.itemHeight = labelHeight;

@@ -84,10 +84,13 @@ public class MIDP2LayoutView extends ContainerView {
          * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container,
          *      int, int)
          */
-        protected void initContent(Container parent, int firstLineWidth,
+        protected void initContent(Item parent, int firstLineWidth,
                         int lineWidth) 
         {
-                Item[] myItems = parent.getItems();
+        	Container parContainer = (Container) parent;
+        	this.parentContainer = parContainer;
+                Item[] myItems = parContainer.getItems();
+                this.allowCycling = parContainer.allowCycling;
                 this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
                 this.currentRow = new ArrayList();
                 this.allRows = new ArrayList();
@@ -264,7 +267,7 @@ public class MIDP2LayoutView extends ContainerView {
          * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int,
          *      javax.microedition.lcdui.Graphics)
          */
-        protected void paintContent(int x, int y, int leftBorder, int rightBorder,
+        protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
                         Graphics g) 
         {
                 for (int i = 0; i < this.allRows.size(); i++) {

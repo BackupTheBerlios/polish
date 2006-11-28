@@ -57,7 +57,7 @@ public class FixedFocusView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		int clipY = g.getClipY();
 		int clipHeight = g.getClipHeight();
 		int yOffset = 0;
@@ -66,7 +66,7 @@ public class FixedFocusView extends ContainerView {
 			int yBottom = getItemYBottomPos( this.focusedItem );
 			
 		}
-		super.paintContent(x, y + this.yOffset, leftBorder, rightBorder, g);
+		super.paintContent(parent, x, y + this.yOffset, leftBorder, rightBorder, g);
 	}
 
 
@@ -74,7 +74,7 @@ public class FixedFocusView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Container parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
 		super.initContent(parent, firstLineWidth, lineWidth);	
 	}
 

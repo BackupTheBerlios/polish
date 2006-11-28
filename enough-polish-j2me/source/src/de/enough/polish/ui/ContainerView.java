@@ -41,7 +41,9 @@ import de.enough.polish.util.TextUtil;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class ContainerView {
+public class ContainerView 
+extends ItemView 
+{
 	//#if polish.css.columns || polish.useTable
 		//#define tmp.useTable
 		//#ifdef polish.css.columns-width.star
@@ -56,19 +58,13 @@ public class ContainerView {
 	private static final int STATIC_WIDTH_COLUMNS = 3;
 
 	protected int yOffset;
-	protected int contentWidth;
-	protected int contentHeight;
 	protected int focusedIndex = -1;
 	/** this field is set automatically, so that subclasses can use it for referencing the parent-container */
 	protected Container parentContainer;
 	/** determines whether any animation of this view should be (re) started at the next possibility. this is set to "true" in each showNotify() method. */
 	protected boolean restartAnimation;
-	protected int paddingVertical;
-	protected int paddingHorizontal;
-	protected int layout;
 	protected boolean focusFirstElement;
 	protected int appearanceMode;
-	protected boolean isFocused;
 	protected Item focusedItem;
 	
 	// table support:
@@ -77,8 +73,6 @@ public class ContainerView {
 	protected int[] columnsWidths;
 	protected int[] rowsHeights;
 	protected int numberOfRows;
-	protected boolean isLayoutCenter;
-	protected boolean isLayoutRight;
 	
 	protected boolean allowCycling = true;
 	
@@ -112,7 +106,8 @@ public class ContainerView {
 	 * @see #contentWidth
 	 * @see #contentHeight
 	 */
-	protected void initContent( Container parent, int firstLineWidth, int lineWidth ) {
+	protected void initContent( Item parentItem, int firstLineWidth, int lineWidth ) {
+		Container parent = (Container) parentItem;		
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false
@@ -132,7 +127,7 @@ public class ContainerView {
 
 		
 		this.parentContainer = parent;
-		Item[] myItems = parent.items;
+		Item[] myItems = parent.getItems();
 
 		//#ifdef tmp.useTable
 			if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
@@ -491,7 +486,7 @@ public class ContainerView {
 	 * @param rightBorder the right border, nothing must be painted right of this position
 	 * @param g the Graphics on which this item should be painted.
 	 */
-	protected void paintContent( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+	protected void paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		//System.out.println("ContainerView: painting content for " + this + " with vertical-padding " + this.paddingVertical  + ", screen=" + this.parentContainer.getScreen());
 		
 		//#if polish.css.view-type-top-y-offset
@@ -879,22 +874,7 @@ public class ContainerView {
 	protected void setStyle( Style style ) {
 		//#debug
 		System.out.println("Setting style for " + this + " with vertical padding=" + style.paddingVertical  );
-		this.paddingHorizontal = style.paddingHorizontal;
-		this.paddingVertical = style.paddingVertical;
-		this.layout = style.layout;
-		// horizontal styles: center -> right -> left
-		if ( ( this.layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER ) {
-			this.isLayoutCenter = true;
-			this.isLayoutRight = false;
-		} else {
-			this.isLayoutCenter = false;
-			if ( ( this.layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT ) {
-				this.isLayoutRight = true;
-			} else {
-				this.isLayoutRight = false;
-				// meaning: layout == Item.LAYOUT_LEFT
-			}
-		}
+		super.setStyle( style );
 		//this.columnsSetting = NO_COLUMNS;
 		//#ifdef polish.css.columns
 			Integer columns = style.getIntProperty("columns");
@@ -969,37 +949,7 @@ public class ContainerView {
 	
 	}
 	
-	/**
-	 * Removes the background from the parent container so that the containerview implementation can paint it itself.
-	 * 
-	 * @return the background of the parent, can be null
-	 */
-	public Background removeParentBackground() {
-		if (this.parentContainer == null) {
-			//#debug warn
-			System.out.println("Unable to remove parent background when parentContainer field is not set.");
-			return null;
-		}
-		Background bg = this.parentContainer.background;
-		this.parentContainer.background = null;
-		return bg;
-	}
 	
-	/**
-	 * Removes the border from the parent container so that the containerview implementation can paint it itself.
-	 * 
-	 * @return the border of the parent, can be null
-	 */
-	public Border removeParentBorder() {
-		if (this.parentContainer == null) {
-			//#debug warn
-			System.out.println("Unable to remove parent border when parentContainer field is not set.");
-			return null;
-		}
-		Border border = this.parentContainer.border;
-		this.parentContainer.border = null;
-		return border;
-	}
 	
 	/**
 	 * Requests the re-initialization of this container view.
