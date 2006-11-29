@@ -41,7 +41,7 @@
 	<target name="javadoc">
 	    <javadoc 
 	    	destdir="doc" 
-	    	access="public" 
+	    	access="protected" 
 	    	use="true" 
 	    	notree="false" 
 	    	nonavbar="false" 
