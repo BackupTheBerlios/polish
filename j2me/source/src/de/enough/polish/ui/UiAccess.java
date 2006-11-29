@@ -1254,7 +1254,7 @@ public final class UiAccess {
 	/**
 	 * Sets an arbitrary attribute for the given item.
 	 * 
-	 * @parstatic am item the item to which the attribute should be added
+	 * @param item the item to which the attribute should be added
 	 * @param key the key for the attribute
 	 * @param value the attribute value
 	 */
