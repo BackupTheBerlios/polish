@@ -738,11 +738,12 @@ public class Graphics extends Object
 	 * <code>setFont(Font.getDefaultFont())</code>.
 	 * 
 	 * @param font - the specified font
-	 * @see Font#getFont()
+	 * @see Font#getFont(int)
+	 * @see Font#getFont(int, int, int)
 	 * @see #drawString(java.lang.String, int, int, int)
 	 * @see #drawChars(char[], int, int, int, int, int)
 	 */
-	public void setFont( Font font)
+	public void setFont(Font font)
 	{
 		this.font = font;
 		this.g.setFont( font.font );

@@ -100,7 +100,7 @@ extends ItemView
 	 * contentHeight fields. 
 	 * The style of the focused item has already been set.
 	 *  
-	 * @param parent the Container which uses this view, use parent.getItems() for retrieving all items. 
+	 * @param parentItem the Container which uses this view, use parent.getItems() for retrieving all items. 
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param lineWidth the maximum width of any following lines
 	 * @see #contentWidth

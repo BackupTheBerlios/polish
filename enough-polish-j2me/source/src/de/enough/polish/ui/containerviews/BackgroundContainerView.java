@@ -69,7 +69,7 @@ public class BackgroundContainerView extends ContainerView {
 	/**
 	 * Paints the content as well as the background and the border of the parent container.
 	 * 
-	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Item, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		int width = rightBorder - leftBorder + this.paddingLeft + this.paddingRight;
