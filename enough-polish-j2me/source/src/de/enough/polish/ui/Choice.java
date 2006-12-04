@@ -240,8 +240,7 @@ public interface Choice
 	 * is, the user should not need to perform any extra action to traverse
 	 * among and select from the elements.
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>EXCLUSIVE</code>.</P></DL>
-	 * 
+	 * <P>Value <code>1</code> is assigned to <code>EXCLUSIVE</code>.</P>
 	 */
 	public static final int EXCLUSIVE = 1;
 
@@ -249,8 +248,7 @@ public interface Choice
 	 * <code>MULTIPLE</code> is a choice that can have arbitrary number of
 	 * elements selected at a time.
 	 * 
-	 * <P>Value <code>2</code> is assigned to <code>MULTIPLE</code>.</P></DL>
-	 * 
+	 * <P>Value <code>2</code> is assigned to <code>MULTIPLE</code>.</P>
 	 */
 	public static final int MULTIPLE = 2;
 
@@ -260,8 +258,7 @@ public interface Choice
 	 * 
 	 * <P>The <code>IMPLICIT</code> type is not valid for <A HREF="../../../javax/microedition/lcdui/ChoiceGroup.html"><CODE>ChoiceGroup</CODE></A> objects.</P>
 	 * 
-	 * <P>Value <code>3</code> is assigned to <code>IMPLICIT</code>.</P></DL>
-	 * 
+	 * <P>Value <code>3</code> is assigned to <code>IMPLICIT</code>.</P>
 	 */
 	public static final int IMPLICIT = 3;
 
@@ -277,7 +274,6 @@ public interface Choice
 	 * <P>The <code>POPUP</code> type is not valid for <A HREF="../../../javax/microedition/lcdui/List.html"><CODE>List</CODE></A> objects.</P>
 	 * 
 	 * <P>Value <code>4</code> is assigned to <code>POPUP</code>.</P>
-	 * 
 	 * 
 	 * @since MIDP 2.0
 	 */

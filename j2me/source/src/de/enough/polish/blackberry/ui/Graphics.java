@@ -173,7 +173,7 @@ import net.rim.device.api.ui.DrawStyle;
  * Statement (2) draws a rectangle whose left and top
  * edges are within the area filled by statement (1). However, the
  * bottom and right edges lie one pixel outside the filled area.
- * This is counterintuitive, but it preserves the invariant that </P>
+ * This is counterintuitive, but it preserves the invariant that
  * <TABLE BORDER="2">
  * <TR>
  * <TD ROWSPAN="1" COLSPAN="1">
@@ -185,7 +185,7 @@ import net.rim.device.api.ui.DrawStyle;
  * </TD>
  * </TR>
  * </TABLE>
- * has an effect identical to statement (2) above. </p>
+ * has an effect identical to statement (2) above.
  * <p>
  * The exact pixels painted by <code>drawLine()</code> and
  * <code>drawArc()</code> are not
@@ -424,8 +424,7 @@ public class Graphics extends Object
 	 * Constant for centering text and images horizontally
 	 * around the anchor point
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>HCENTER</code>.</P></DL>
-	 * 
+	 * <P>Value <code>1</code> is assigned to <code>HCENTER</code>.</P>
 	 */
 	public static final int HCENTER = 1;
 
@@ -433,8 +432,7 @@ public class Graphics extends Object
 	 * Constant for centering images vertically
 	 * around the anchor point.
 	 * 
-	 * <P>Value <code>2</code> is assigned to <code>VCENTER</code>.</P></DL>
-	 * 
+	 * <P>Value <code>2</code> is assigned to <code>VCENTER</code>.</P>
 	 */
 	public static final int VCENTER = 2;
 
@@ -442,7 +440,7 @@ public class Graphics extends Object
 	 * Constant for positioning the anchor point of text and images
 	 * to the left of the text or image.
 	 * 
-	 * <P>Value <code>4</code> is assigned to <code>LEFT</code>.</P></DL>
+	 * <P>Value <code>4</code> is assigned to <code>LEFT</code>.</P>
 	 * 
 	 */
 	public static final int LEFT = 4;
@@ -451,7 +449,7 @@ public class Graphics extends Object
 	 * Constant for positioning the anchor point of text and images
 	 * to the right of the text or image.
 	 * 
-	 * <P>Value <code>8</code> is assigned to <code>RIGHT</code>.</P></DL>
+	 * <P>Value <code>8</code> is assigned to <code>RIGHT</code>.</P>
 	 * 
 	 */
 	public static final int RIGHT = 8;
@@ -460,7 +458,7 @@ public class Graphics extends Object
 	 * Constant for positioning the anchor point of text and images
 	 * above the text or image.
 	 * 
-	 * <P>Value <code>16</code> is assigned to <code>TOP</code>.</P></DL>
+	 * <P>Value <code>16</code> is assigned to <code>TOP</code>.</P>
 	 * 
 	 */
 	public static final int TOP = 16;
@@ -469,7 +467,7 @@ public class Graphics extends Object
 	 * Constant for positioning the anchor point of text and images
 	 * below the text or image.
 	 * 
-	 * <P>Value <code>32</code> is assigned to <code>BOTTOM</code>.</P></DL>
+	 * <P>Value <code>32</code> is assigned to <code>BOTTOM</code>.</P>
 	 * 
 	 */
 	public static final int BOTTOM = 32;
@@ -477,7 +475,7 @@ public class Graphics extends Object
 	/**
 	 * Constant for positioning the anchor point at the baseline of text.
 	 * 
-	 * <P>Value <code>64</code> is assigned to <code>BASELINE</code>.</P></DL>
+	 * <P>Value <code>64</code> is assigned to <code>BASELINE</code>.</P>
 	 * 
 	 */
 	public static final int BASELINE = 64;
@@ -485,7 +483,7 @@ public class Graphics extends Object
 	/**
 	 * Constant for the <code>SOLID</code> stroke style.
 	 * 
-	 * <P>Value <code>0</code> is assigned to <code>SOLID</code>.</P></DL>
+	 * <P>Value <code>0</code> is assigned to <code>SOLID</code>.</P>
 	 * 
 	 */
 	public static final int SOLID = 0;
@@ -493,7 +491,7 @@ public class Graphics extends Object
 	/**
 	 * Constant for the <code>DOTTED</code> stroke style.
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>DOTTED</code>.</P></DL>
+	 * <P>Value <code>1</code> is assigned to <code>DOTTED</code>.</P>
 	 * 
 	 * 
 	 */

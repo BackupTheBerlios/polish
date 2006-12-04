@@ -63,7 +63,7 @@ public final class Font extends Object
 	 * The plain style constant. This may be combined with the
 	 * other style constants for mixed styles.
 	 * 
-	 * <P>Value <code>0</code> is assigned to <code>STYLE_PLAIN</code>.</P></DL>
+	 * <P>Value <code>0</code> is assigned to <code>STYLE_PLAIN</code>.</P>
 	 * 
 	 */
 	public static final int STYLE_PLAIN = 0;
@@ -72,7 +72,7 @@ public final class Font extends Object
 	 * The bold style constant. This may be combined with the
 	 * other style constants for mixed styles.
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>STYLE_BOLD</code>.</P></DL>
+	 * <P>Value <code>1</code> is assigned to <code>STYLE_BOLD</code>.</P>
 	 * 
 	 */
 	public static final int STYLE_BOLD = 1;
@@ -81,7 +81,7 @@ public final class Font extends Object
 	 * The italicized style constant. This may be combined with
 	 * the other style constants for mixed styles.
 	 * 
-	 * <P>Value <code>2</code> is assigned to <code>STYLE_ITALIC</code>.</P></DL>
+	 * <P>Value <code>2</code> is assigned to <code>STYLE_ITALIC</code>.</P>
 	 * 
 	 */
 	public static final int STYLE_ITALIC = 2;
@@ -90,7 +90,7 @@ public final class Font extends Object
 	 * The underlined style constant. This may be combined with
 	 * the other style constants for mixed styles.
 	 * 
-	 * <P>Value <code>4</code> is assigned to <code>STYLE_UNDERLINED</code>.</P></DL>
+	 * <P>Value <code>4</code> is assigned to <code>STYLE_UNDERLINED</code>.</P>
 	 * 
 	 */
 	public static final int STYLE_UNDERLINED = 4;
@@ -98,7 +98,7 @@ public final class Font extends Object
 	/**
 	 * The &quot;small&quot; system-dependent font size.
 	 * 
-	 * <P>Value <code>8</code> is assigned to <code>STYLE_SMALL</code>.</P></DL>
+	 * <P>Value <code>8</code> is assigned to <code>STYLE_SMALL</code>.</P>
 	 * 
 	 */
 	public static final int SIZE_SMALL = 8;
@@ -106,23 +106,21 @@ public final class Font extends Object
 	/**
 	 * The &quot;medium&quot; system-dependent font size.
 	 * 
-	 * <P>Value <code>0</code> is assigned to <code>STYLE_MEDIUM</code>.</P></DL>
-	 * 
+	 * <P>Value <code>0</code> is assigned to <code>STYLE_MEDIUM</code>.</P>
 	 */
 	public static final int SIZE_MEDIUM = 0;
 
 	/**
 	 * The &quot;large&quot; system-dependent font size.
 	 * 
-	 * <P>Value <code>16</code> is assigned to <code>SIZE_LARGE</code>.</P></DL>
-	 * 
+	 * <P>Value <code>16</code> is assigned to <code>SIZE_LARGE</code>.</P>
 	 */
 	public static final int SIZE_LARGE = 16;
 
 	/**
 	 * The &quot;system&quot; font face.
 	 * 
-	 * <P>Value <code>0</code> is assigned to <code>FACE_SYSTEM</code>.</P></DL>
+	 * <P>Value <code>0</code> is assigned to <code>FACE_SYSTEM</code>.</P>
 	 * 
 	 */
 	public static final int FACE_SYSTEM = 0;
@@ -130,8 +128,7 @@ public final class Font extends Object
 	/**
 	 * The &quot;monospace&quot; font face.
 	 * 
-	 * <P>Value <code>32</code> is assigned to <code>FACE_MONOSPACE</code>.</P></DL>
-	 * 
+	 * <P>Value <code>32</code> is assigned to <code>FACE_MONOSPACE</code>.</P>
 	 */
 	public static final int FACE_MONOSPACE = 32;
 
@@ -139,8 +136,7 @@ public final class Font extends Object
 	 * The &quot;proportional&quot; font face.
 	 * 
 	 * <P>Value <code>64</code> is assigned to
-	 * <code>FACE_PROPORTIONAL</code>.</P></DL>
-	 * 
+	 * <code>FACE_PROPORTIONAL</code>.</P>
 	 */
 	public static final int FACE_PROPORTIONAL = 64;
 
@@ -148,7 +144,6 @@ public final class Font extends Object
 	 * Default font specifier used to draw Item and Screen contents.
 	 * 
 	 * <code>FONT_STATIC_TEXT</code> has the value <code>0</code>.
-	 * 
 	 * 
 	 * @since MIDP 2.0
 	 */
@@ -159,8 +154,6 @@ public final class Font extends Object
 	 * a user.
 	 * 
 	 * <code>FONT_INPUT_TEXT</code> has the value <code>1</code>.
-	 * 
-	 * 
 	 * 
 	 * @since MIDP 2.0
 	 */

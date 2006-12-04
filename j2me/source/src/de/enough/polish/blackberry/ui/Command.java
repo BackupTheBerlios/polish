@@ -140,7 +140,7 @@ package de.enough.polish.blackberry.ui;
  * <IMG SRC="doc-files/command2.gif" width=189 height=260><BR>
  * If the application had three soft buttons, all commands can be mapped
  * to soft buttons:
- * <BR><IMG SRC="doc-files/command3.gif" width=189 height=261></P>
+ * <BR><IMG SRC="doc-files/command3.gif" width=189 height=261>
  * 
  * <p>The application is always responsible for providing the means for the
  * user to progress through different screens. An application may set up a
@@ -165,7 +165,7 @@ public class Command extends Object
 	 * which applies to the currently activated or focused item or element
 	 * contained within this screen.
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>SCREEN</code>.</P></DL>
+	 * <P>Value <code>1</code> is assigned to <code>SCREEN</code>.</P>
 	 * 
 	 */
 	public static final int SCREEN = 1;
@@ -183,7 +183,7 @@ public class Command extends Object
 	 * 
 	 * <P>Value <code>2</code> is assigned to <code>BACK</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A></DL>
+	 * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A>
 	 * 
 	 */
 	public static final int BACK = 2;
@@ -209,7 +209,7 @@ public class Command extends Object
 	 * 
 	 * <P>Value <code>3</code> is assigned to <code>CANCEL</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A></DL>
+	 * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A>
 	 * 
 	 */
 	public static final int CANCEL = 3;
@@ -244,7 +244,7 @@ public class Command extends Object
 	 * <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by the
 	 * application is responsible for showing the help information.
 	 * 
-	 * <P>Value <code>5</code> is assigned to <code>HELP</code>.</P></DL>
+	 * <P>Value <code>5</code> is assigned to <code>HELP</code>.</P>
 	 * 
 	 */
 	public static final int HELP = 5;
@@ -269,7 +269,7 @@ public class Command extends Object
 	 * 
 	 * <P>Value <code>6</code> is assigned to <code>STOP</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../javax/microedition/lcdui/Command.html#CANCEL"><CODE>CANCEL</CODE></A></DL>
+	 * <A HREF="../../../javax/microedition/lcdui/Command.html#CANCEL"><CODE>CANCEL</CODE></A>
 	 * 
 	 */
 	public static final int STOP = 6;
@@ -282,7 +282,7 @@ public class Command extends Object
 	 * will be called, and it should exit the application if it
 	 * is appropriate to do so.
 	 * 
-	 * <P>Value <code>7</code> is assigned to <code>EXIT</code>.</P></DL>
+	 * <P>Value <code>7</code> is assigned to <code>EXIT</code>.</P>
 	 * 
 	 */
 	public static final int EXIT = 7;
@@ -297,7 +297,7 @@ public class Command extends Object
 	 * this information for
 	 * creating context sensitive menus.
 	 * 
-	 * <P>Value <code>8</code> is assigned to <code>ITEM</code>.</P></DL>
+	 * <P>Value <code>8</code> is assigned to <code>ITEM</code>.</P>
 	 * 
 	 * 
 	 */

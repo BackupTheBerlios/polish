@@ -88,8 +88,7 @@ public class DateField extends StringItem
 	 * value. The time
 	 * information of date object is ignored.
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>DATE</code>.</P></DL>
-	 * 
+	 * <P>Value <code>1</code> is assigned to <code>DATE</code>.</P>
 	 */
 	public static final int DATE = 1;
 
@@ -100,8 +99,7 @@ public class DateField extends StringItem
 	 * should be set to the &quot;zero epoch&quot; value of January 1, 1970 and
 	 * should not be accessed.
 	 * 
-	 * <P>Value <code>2</code> is assigned to <code>TIME</code>.</P></DL>
-	 * 
+	 * <P>Value <code>2</code> is assigned to <code>TIME</code>.</P>
 	 */
 	public static final int TIME = 2;
 
@@ -111,9 +109,7 @@ public class DateField extends StringItem
 	 * presents and allows to modify
 	 * both time and date information.
 	 * 
-	 * <P>Value <code>3</code> is assigned to <code>DATE_TIME</code>.</P></DL>
-	 * 
-	 * 
+	 * <P>Value <code>3</code> is assigned to <code>DATE_TIME</code>.</P>
 	 */
 	public static final int DATE_TIME = 3;
 

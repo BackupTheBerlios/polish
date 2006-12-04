@@ -254,7 +254,8 @@ public final class Locale {
 	 * <pre> 
 	 * 		String[] params = new String[]{ "Peter", "Jordan" };
 	 * 		String translation = Locale . get( "titles.boxing", params );
-	 * <pre>
+	 * </pre>
+   *
 	 * @return the translation, e.g. "Peter vs Jordan" or "Peter gegen Jordan"
 	 * @throws NullPointerException when the given parameters are null or if one of the given parameters is null.
 	 */

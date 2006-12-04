@@ -165,9 +165,6 @@ import de.enough.polish.util.Locale;
  * with <A HREF="../../../javax/microedition/lcdui/Displayable.html#setTicker(javax.microedition.lcdui.Ticker)"><CODE>Displayable.setTicker</CODE></A> on an
  * <code>Alert</code>, however it may not be displayed due to
  * implementation restrictions.
- * </P>
- * <HR>
- * 
  * 
  * @since MIDP 1.0
  */
@@ -186,8 +183,7 @@ implements CommandListener
 	 * some explicit action, such as pressing a button, before proceeding to
 	 * the next <code>Displayable</code>.
 	 * 
-	 * <P>Value <code>-2</code> is assigned to <code>FOREVER</code>.</P></DL>
-	 * 
+	 * <P>Value <code>-2</code> is assigned to <code>FOREVER</code>.</P>
 	 */
 	public static final int FOREVER = -2;
 

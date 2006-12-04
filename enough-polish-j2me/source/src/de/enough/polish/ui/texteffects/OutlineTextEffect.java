@@ -39,11 +39,6 @@ import de.enough.polish.ui.TextEffect;
  * </p>
  * <ul>
  * 	 <li><b>text-outline-inner-color</b>: The color with which the outline is filled inside, defaults to white. The outline itself will be painted in the specified font-color.</li>
- * <!--
- * 	 <li><b></b>: </li>
- * 	 <li><b></b>: </li>
- * 	 <li><b></b>: </li>
- * -->
  * </ul>
  *
  * <p>Copyright (c) 2005, 2006 Enough Software</p>

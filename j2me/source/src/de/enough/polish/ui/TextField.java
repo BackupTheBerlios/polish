@@ -317,7 +317,7 @@ import net.rim.device.api.ui.component.BasicEditField;
  * <HR>
  * 
  * @author Robert Virkus, robert@enough.de
- * @author Andrew Barnes, <andy@geni.com.au> basic implementation of direct input
+ * @author Andrew Barnes, andy@geni.com.au basic implementation of direct input
  * @since MIDP 1.0
  */
 public class TextField extends StringItem
@@ -355,15 +355,14 @@ public class TextField extends StringItem
 	 * The user is allowed to enter any text.
 	 * <A HREF="Form.html#linebreak">Line breaks</A> may be entered.
 	 * 
-	 * <P>Constant <code>0</code> is assigned to <code>ANY</code>.</P></DL>
-	 * 
+	 * <P>Constant <code>0</code> is assigned to <code>ANY</code>.</P>
 	 */
 	public static final int ANY = 0;
 
 	/**
 	 * The user is allowed to enter an e-mail address.
 	 * 
-	 * <P>Constant <code>1</code> is assigned to <code>EMAILADDR</code>.</P></DL>
+	 * <P>Constant <code>1</code> is assigned to <code>EMAILADDR</code>.</P>
 	 * 
 	 */
 	public static final int EMAILADDR = 1;
@@ -379,7 +378,7 @@ public class TextField extends StringItem
 	 * impossible to enter negative numbers into a text object whose maximum
 	 * size is <code>1</code>.</P>
 	 * 
-	 * <P>Constant <code>2</code> is assigned to <code>NUMERIC</code>.</P></DL>
+	 * <P>Constant <code>2</code> is assigned to <code>NUMERIC</code>.</P>
 	 * 
 	 */
 	public static final int NUMERIC = 2;
@@ -403,7 +402,7 @@ public class TextField extends StringItem
 	 * <P>Some platforms may provide the capability to initiate voice calls
 	 * using the <A HREF="../../../javax/microedition/midlet/MIDlet.html#platformRequest(java.lang.String)"><CODE>MIDlet.platformRequest</CODE></A> method.</P>
 	 * 
-	 * <P>Constant <code>3</code> is assigned to <code>PHONENUMBER</code>.</P></DL>
+	 * <P>Constant <code>3</code> is assigned to <code>PHONENUMBER</code>.</P>
 	 * 
 	 */
 	public static final int PHONENUMBER = 3;
@@ -411,7 +410,7 @@ public class TextField extends StringItem
 	/**
 	 * The user is allowed to enter a URL.
 	 * 
-	 * <P>Constant <code>4</code> is assigned to <code>URL</code>.</P></DL>
+	 * <P>Constant <code>4</code> is assigned to <code>URL</code>.</P>
 	 * 
 	 */
 	public static final int URL = 4;
@@ -456,7 +455,7 @@ public class TextField extends StringItem
 	 * object.  Applications should account for this when assigning a maximum
 	 * size for the text object.</p>
 	 * 
-	 * <P>Constant <code>5</code> is assigned to <code>DECIMAL</code>.</P>
+	 * <P>Constant <code>5</code> is assigned to <code>DECIMAL</code>.</p>
 	 * 
 	 * 
 	 * @since MIDP 2.0
@@ -500,7 +499,7 @@ public class TextField extends StringItem
 	 * thrown if such a constraint is specified.</p>
 	 * 
 	 * <p>Constant <code>0x10000</code> is assigned to
-	 * <code>PASSWORD</code>.</p></DL>
+	 * <code>PASSWORD</code>.</p>
 	 * 
 	 */
 	public static final int PASSWORD = 0x10000;
@@ -518,7 +517,7 @@ public class TextField extends StringItem
 	 * other input constraints
 	 * by using the bit-wise <code>OR</code> operator (<code>|</code>).
 	 * 
-	 * <p>Constant <code>0x20000</code> is assigned to <code>UNEDITABLE</code>.
+	 * <p>Constant <code>0x20000</code> is assigned to <code>UNEDITABLE</code>.</p>
 	 * 
 	 * 
 	 * @since MIDP 2.0
@@ -627,9 +626,7 @@ public class TextField extends StringItem
 	 * <code>PASSWORD</code> flag.
 	 * 
 	 * <P>Constant <code>0xFFFF</code> is assigned to
-	 * <code>CONSTRAINT_MASK</code>.</P></DL>
-	 * 
-	 * 
+	 * <code>CONSTRAINT_MASK</code>.</P>
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
 	

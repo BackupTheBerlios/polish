@@ -18,7 +18,7 @@ package de.enough.polish.blackberry.midlet;
 public class MIDletStateChangeException extends Exception
 {
 	/**
-	 * Constructs an exception with no specified detail message.</DL>
+	 * Constructs an exception with no specified detail message.
 	 * 
 	 */
 	public MIDletStateChangeException()

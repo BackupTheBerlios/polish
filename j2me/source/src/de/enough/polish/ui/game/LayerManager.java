@@ -89,9 +89,7 @@ public class LayerManager extends Object
 	private boolean isViewWindowSet;
 
 	/**
-	 * Creates a new LayerManager.</DL>
-	 * 
-	 * 
+	 * Creates a new LayerManager.
 	 */
 	public LayerManager()
 	{

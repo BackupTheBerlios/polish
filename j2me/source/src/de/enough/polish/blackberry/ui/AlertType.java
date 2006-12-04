@@ -31,7 +31,7 @@ public class AlertType extends Object
 	 * An <code>INFO</code> <code>AlertType</code> typically
 	 * provides non-threatening information to the
 	 * user. For example, a simple splash screen might be an
-	 * <code>INFO</code> <code>AlertType</code>.</DL>
+	 * <code>INFO</code> <code>AlertType</code>.
 	 * 
 	 */
 	public static final AlertType INFO = new AlertType();
@@ -41,7 +41,7 @@ public class AlertType extends Object
 	 * to warn the user of a potentially
 	 * dangerous operation.
 	 * For example, the warning message may contain the message, &quot;Warning:
-	 * this operation will erase your data.&quot;</DL>
+	 * this operation will erase your data.&quot;
 	 * 
 	 */
 	public static final AlertType WARNING = new AlertType();
@@ -50,7 +50,7 @@ public class AlertType extends Object
 	 * An <code>ERROR</code> <code>AlertType</code> is a hint
 	 * to alert the user to an erroneous operation.
 	 * For example, an error alert might show the message,
-	 * &quot;There is not enough room to install the application.&quot;</DL>
+	 * &quot;There is not enough room to install the application.&quot;
 	 * 
 	 */
 	public static final AlertType ERROR = new AlertType();
@@ -60,7 +60,7 @@ public class AlertType extends Object
 	 * to alert the user to an event for which
 	 * the user has previously requested to be notified.
 	 * For example, the message might say, &quot;Staff meeting in five
-	 * minutes.&quot;</DL>
+	 * minutes.&quot;
 	 * 
 	 */
 	public static final AlertType ALARM = new AlertType();
@@ -69,14 +69,14 @@ public class AlertType extends Object
 	 * A <code>CONFIRMATION</code> <code>AlertType</code> is a
 	 * hint to confirm user actions.
 	 * For example, &quot;Saved!&quot; might be shown to indicate that a Save
-	 * operation has completed.</DL>
+	 * operation has completed.
 	 * 
 	 * 
 	 */
 	public static final AlertType CONFIRMATION = new AlertType();
 
 	/**
-	 * Protected constructor for subclasses.</DL>
+	 * Protected constructor for subclasses.
 	 * 
 	 * 
 	 */

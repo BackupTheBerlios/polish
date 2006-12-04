@@ -318,7 +318,7 @@ extends Displayable
         /**
          * Constant for the <code>UP</code> game action.
          * 
-         * <P>Constant value <code>1</code> is set to <code>UP</code>.</P></DL>
+         * <P>Constant value <code>1</code> is set to <code>UP</code>.</P>
          * 
          */
         public static final int UP = 1;
@@ -326,7 +326,7 @@ extends Displayable
         /**
          * Constant for the <code>DOWN</code> game action.
          * 
-         * <P>Constant value <code>6</code> is set to <code>DOWN</code>.</P></DL>
+         * <P>Constant value <code>6</code> is set to <code>DOWN</code>.</P>
          * 
          */
         public static final int DOWN = 6;
@@ -334,7 +334,7 @@ extends Displayable
         /**
          * Constant for the <code>LEFT</code> game action.
          * 
-         * <P>Constant value <code>2</code> is set to <code>LEFT</code>.</P></DL>
+         * <P>Constant value <code>2</code> is set to <code>LEFT</code>.</P>
          * 
          */
         public static final int LEFT = 2;
@@ -342,7 +342,7 @@ extends Displayable
         /**
          * Constant for the <code>RIGHT</code> game action.
          * 
-         * <P>Constant value <code>5</code> is set to <code>RIGHT</code>.</P></DL>
+         * <P>Constant value <code>5</code> is set to <code>RIGHT</code>.</P>
          * 
          */
         public static final int RIGHT = 5;
@@ -350,7 +350,7 @@ extends Displayable
         /**
          * Constant for the <code>FIRE</code> game action.
          * 
-         * <P>Constant value <code>8</code> is set to <code>FIRE</code>.</P></DL>
+         * <P>Constant value <code>8</code> is set to <code>FIRE</code>.</P>
          * 
          */
         public static final int FIRE = 8;
@@ -358,7 +358,7 @@ extends Displayable
         /**
          * Constant for the general purpose &quot;<code>A</code>&quot; game action.
          * 
-         * <P>Constant value <code>9</code> is set to <code>GAME_A</code>.</P></DL>
+         * <P>Constant value <code>9</code> is set to <code>GAME_A</code>.</P>
          * 
          */
         public static final int GAME_A = 9;
@@ -366,7 +366,7 @@ extends Displayable
         /**
          * Constant for the general purpose &quot;<code>B</code>&quot; game action.
          * 
-         * <P>Constant value <code>10</code> is set to <code>GAME_B</code>.</P></DL>
+         * <P>Constant value <code>10</code> is set to <code>GAME_B</code>.</P>
          * 
          */
         public static final int GAME_B = 10;
@@ -374,7 +374,7 @@ extends Displayable
         /**
          * Constant for the general purpose &quot;<code>C</code>&quot; game action.
          * 
-         * <P>Constant value <code>11</code> is set to <code>GAME_C</code>.</P></DL>
+         * <P>Constant value <code>11</code> is set to <code>GAME_C</code>.</P>
          * 
          */
         public static final int GAME_C = 11;
@@ -382,7 +382,7 @@ extends Displayable
         /**
          * Constant for the general purpose &quot;<code>D</code>&quot; game action.
          * 
-         * <P>Constant value <code>12</code> is set to <code>GAME_D</code>.</P></DL>
+         * <P>Constant value <code>12</code> is set to <code>GAME_D</code>.</P>
          * 
          */
         public static final int GAME_D = 12;
@@ -390,7 +390,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>0</code>.
          * 
-         * <P>Constant value <code>48</code> is set to <code>KEY_NUM0</code>.</P></DL>
+         * <P>Constant value <code>48</code> is set to <code>KEY_NUM0</code>.</P>
          * 
          */
         public static final int KEY_NUM0 = 48;
@@ -398,7 +398,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>1</code>.
          * 
-         * <P>Constant value <code>49</code> is set to <code>KEY_NUM1</code>.</P></DL>
+         * <P>Constant value <code>49</code> is set to <code>KEY_NUM1</code>.</P>
          * 
          */
         public static final int KEY_NUM1 = 49;
@@ -406,7 +406,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>2</code>.
          * 
-         * <P>Constant value <code>50</code> is set to <code>KEY_NUM2</code>.</P></DL>
+         * <P>Constant value <code>50</code> is set to <code>KEY_NUM2</code>.</P>
          * 
          */
         public static final int KEY_NUM2 = 50;
@@ -414,7 +414,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>3</code>.
          * 
-         * <P>Constant value <code>51</code> is set to <code>KEY_NUM3</code>.</P></DL>
+         * <P>Constant value <code>51</code> is set to <code>KEY_NUM3</code>.</P>
          * 
          */
         public static final int KEY_NUM3 = 51;
@@ -422,7 +422,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>4</code>.
          * 
-         * <P>Constant value <code>52</code> is set to <code>KEY_NUM4</code>.</P></DL>
+         * <P>Constant value <code>52</code> is set to <code>KEY_NUM4</code>.</P>
          * 
          */
         public static final int KEY_NUM4 = 52;
@@ -430,7 +430,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>5</code>.
          * 
-         * <P>Constant value <code>53</code> is set to <code>KEY_NUM5</code>.</P></DL>
+         * <P>Constant value <code>53</code> is set to <code>KEY_NUM5</code>.</P>
          * 
          */
         public static final int KEY_NUM5 = 53;
@@ -438,7 +438,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>6</code>.
          * 
-         * <P>Constant value <code>54</code> is set to <code>KEY_NUM6</code>.</P></DL>
+         * <P>Constant value <code>54</code> is set to <code>KEY_NUM6</code>.</P>
          * 
          */
         public static final int KEY_NUM6 = 54;
@@ -446,7 +446,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>7</code>.
          * 
-         * <P>Constant value <code>55</code> is set to <code>KEY_NUM7</code>.</P></DL>
+         * <P>Constant value <code>55</code> is set to <code>KEY_NUM7</code>.</P>
          * 
          */
         public static final int KEY_NUM7 = 55;
@@ -454,7 +454,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>8</code>.
          * 
-         * <P>Constant value <code>56</code> is set to <code>KEY_NUM8</code>.</P></DL>
+         * <P>Constant value <code>56</code> is set to <code>KEY_NUM8</code>.</P>
          * 
          */
         public static final int KEY_NUM8 = 56;
@@ -462,7 +462,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key <code>9</code>.
          * 
-         * <P>Constant value <code>57</code> is set to <code>KEY_NUM09</code>.</P></DL>
+         * <P>Constant value <code>57</code> is set to <code>KEY_NUM09</code>.</P>
          * 
          */
         public static final int KEY_NUM9 = 57;
@@ -470,7 +470,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key &quot;star&quot; (<code>*</code>).
          * 
-         * <P>Constant value <code>42</code> is set to <code>KEY_STAR</code>.</P></DL>
+         * <P>Constant value <code>42</code> is set to <code>KEY_STAR</code>.</P>
          * 
          */
         public static final int KEY_STAR = 42;
@@ -478,7 +478,7 @@ extends Displayable
         /**
          * keyCode for ITU-T key &quot;pound&quot; (<code>#</code>).
          * 
-         * <P>Constant value <code>35</code> is set to <code>KEY_POUND</code>.</P></DL>
+         * <P>Constant value <code>35</code> is set to <code>KEY_POUND</code>.</P>
          * 
          * 
          */
@@ -507,7 +507,7 @@ extends Displayable
 
 
         /**
-         * Constructs a new <code>Canvas</code> object.</DL>
+         * Constructs a new <code>Canvas</code> object.
          * 
          * 
          */
@@ -846,7 +846,7 @@ extends Displayable
         /**
          * Requests a repaint for the entire <code>Canvas</code>. The
          * effect is identical to
-         * <p> <code> repaint(0, 0, getWidth(), getHeight()); </code></DL>
+         * <p><code>repaint(0, 0, getWidth(), getHeight());</code>
          * 
          */
         public final void repaint()
@@ -894,7 +894,7 @@ extends Displayable
          * this method to perform tasks before being shown, such
          * as setting up animations, starting timers, etc.
          * The default implementation of this method in class
-         * <code>Canvas</code> is empty.</DL>
+         * <code>Canvas</code> is empty.
          * 
          */
         protected void showNotify()
@@ -910,7 +910,7 @@ extends Displayable
          * order to pause
          * animations,
          * revoke timers, etc.  The default implementation of this
-         * method in class <code>Canvas</code> is empty.</DL>
+         * method in class <code>Canvas</code> is empty.
          * 
          */
         protected void hideNotify()

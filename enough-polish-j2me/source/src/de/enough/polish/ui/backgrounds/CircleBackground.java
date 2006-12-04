@@ -34,9 +34,9 @@ import de.enough.polish.ui.Background;
  * <p>Paints a circular or elliptical background.</p>
  * <p>Following CSS-attributes are supported:</p>
  * <ul>
- * 	<li><b>type<b>: the type of the background, needs to be "circle".</li>
- * 	<li><b>color<b>: the color of the background, defaults to "white".</li>
- * 	<li><b>diameter<b>: the diameter of the background, when defined
+ * 	<li><b>type</b>: the type of the background, needs to be "circle".</li>
+ * 	<li><b>color</b>: the color of the background, defaults to "white".</li>
+ * 	<li><b>diameter</b>: the diameter of the background, when defined
  * 	always a circle will be painted.</li>
  * </ul>
  *

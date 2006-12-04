@@ -379,8 +379,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>TRAVERSE_HORIZONTAL</code> has the value <code>1</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#traverse(int, int, int, int[])"><CODE>traverse(int, int, int, int[])</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#traverse(int, int, int, int[])"><CODE>traverse(int, int, int, int[])</CODE></A>
 	 */
 	protected static final int TRAVERSE_HORIZONTAL = 1;
 
@@ -390,8 +389,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>TRAVERSE_VERTICAL</code> has the value <code>2</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#traverse(int, int, int, int[])"><CODE>traverse(int, int, int, int[])</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#traverse(int, int, int, int[])"><CODE>traverse(int, int, int, int[])</CODE></A>
 	 */
 	protected static final int TRAVERSE_VERTICAL = 2;
 
@@ -400,8 +398,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>KEY_PRESS</code> has the value <code>4</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#keyPressed(int)"><CODE>keyPressed(int)</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#keyPressed(int)"><CODE>keyPressed(int)</CODE></A>
 	 */
 	protected static final int KEY_PRESS = 4;
 
@@ -410,8 +407,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>KEY_RELEASE</code> has the value <code>8</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#keyReleased(int)"><CODE>keyReleased(int)</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#keyReleased(int)"><CODE>keyReleased(int)</CODE></A>
 	 */
 	protected static final int KEY_RELEASE = 8;
 
@@ -420,8 +416,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>KEY_REPEAT</code> has the value <code>0x10</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#keyRepeated(int)"><CODE>keyRepeated(int)</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#keyRepeated(int)"><CODE>keyRepeated(int)</CODE></A>
 	 */
 	protected static final int KEY_REPEAT = 0x10;
 
@@ -430,8 +425,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>POINTER_PRESS</code> has the value <code>0x20</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#pointerPressed(int, int)"><CODE>pointerPressed(int, int)</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#pointerPressed(int, int)"><CODE>pointerPressed(int, int)</CODE></A>
 	 */
 	protected static final int POINTER_PRESS = 0x20;
 
@@ -440,8 +434,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>POINTER_RELEASE</code> has the value<code> 0x40</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#pointerReleased(int, int)"><CODE>pointerReleased(int, int)</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#pointerReleased(int, int)"><CODE>pointerReleased(int, int)</CODE></A>
 	 */
 	protected static final int POINTER_RELEASE = 0x40;
 
@@ -450,8 +443,7 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>POINTER_DRAG</code> has the value <code>0x80</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#pointerDragged(int, int)"><CODE>pointerDragged(int, int)</CODE></A></DL>
-	 * 
+	 * <A HREF="../../../de/enough/polish/ui/CustomItem.html#pointerDragged(int, int)"><CODE>pointerDragged(int, int)</CODE></A>
 	 */
 	protected static final int POINTER_DRAG = 0x80;
 
@@ -462,8 +454,6 @@ public abstract class CustomItem extends Item
 	 * 
 	 * <p><code>NONE</code> has the value <code>0</code>.</p>
 	 * <DT><B>See Also: </B>
-	 * 
-	 * 
 	 */
 	protected static final int NONE = 0;
 
@@ -723,8 +713,7 @@ public abstract class CustomItem extends Item
 	 * <code>CustomItem</code> is not visible, the
 	 * layout operation may be deferred.  The <code>traverse</code> method
 	 * will be called if the <code>CustomItem</code> contains the current
-	 * traversal location at the time <code>invalidate</code> is called.</DL>
-	 * 
+	 * traversal location at the time <code>invalidate</code> is called.
 	 */
 	protected final void invalidate()
 	{

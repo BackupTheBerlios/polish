@@ -42,7 +42,7 @@ import de.enough.polish.util.ArrayList;
  * 	extends Container
  * //#endif
  * </pre>
- * </pre>
+ *
  * <p>Contains a number of items.</p>
  * <p>Main purpose is to manage all items of a Form or similiar canvases.</p>
  * <p>Containers support following CSS attributes:

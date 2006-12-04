@@ -44,7 +44,7 @@ package de.enough.polish.util;
  * 	<li><b>addAll(Collection)</b> Add all elements of the collection singlely.</li> 
  * </ul>
  * </p>
- * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the ArrayList, e.g. ArrayList<Integer> = new ArrayList<Integer>(10); 
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the ArrayList, e.g. ArrayList&lt;Integer&gt; = new ArrayList&lt;Integer&gt;(10); 
  * @author Robert Virkus, robert@enough.de
  * <pre>
  * history

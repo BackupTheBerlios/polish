@@ -45,17 +45,17 @@ package de.enough.polish.util;
  *       This is a very simple and therefore fast operation, but is not good when there are many
  *       keys that share the same hash code (clustering). This is the default strategy and
  *       can be selecting using the AOHashMap.PROBING_LINEAR constant.
- *   </i>
+ *   </li>
  *   <li><b>quadratic probing</b><br />
  *       in which the interval between probes increases linearly (hence, the indices are described by a quadratic function).
  *       In this strategy the interval start with 3 is increased by one in each step: interval = 3 + step.
  *       You can select this strategy by using the ASHashMap.PROBING_QUADRATIC constanct. 
- *   </i>
+ *   </li>
  *   <li><b>double hashing</b><br />
  *       in which the interval between probes is fixed for each record but is computed by another hash function.
  *       This is the most expensive strategy but has the advantage that there is very little clustering.
  *       You can select this strategy by using the ASHashMap.PROBING_DOUBLE_HASHING constanct. 
- *   </i>
+ *   </li>
  * </ul>
  * <p>In contrast to the java.util.Hashtable (which is available on J2ME platforms),
  *    this implementation is not synchronized and faster.

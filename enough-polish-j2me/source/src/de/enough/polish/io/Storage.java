@@ -36,7 +36,7 @@ import java.util.Enumeration;
  * history
  *        13-Mar-2006 - rob creation
  * </pre>
- * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the Storage subclasses, e.g. RmsStorage<Vector<Note>>.
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the Storage subclasses, e.g. RmsStorage&lt;Vector&lt;Note&gt;&gt;.
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public interface Storage 

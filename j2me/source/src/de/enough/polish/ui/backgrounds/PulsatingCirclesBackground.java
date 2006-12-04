@@ -34,13 +34,13 @@ import de.enough.polish.ui.Background;
  * <p>Paints an animated background filled with several ever-growing circles.</p>
  * <p>Following CSS-attributes are supported:</p>
  * <ul>
- * 	<li><b>type<b>: the type of the background, needs to be "pulsating-circles".</li>
- * 	<li><b>first-color<b>: the first color of a circle.</li>
- * 	<li><b>second-color<b>: the second color of a circle.</li>
- * 	<li><b>min-diameter<b>: the minimum diameter of a circle.</li>
- * 	<li><b>max-diameter<b>: the minimum diameter of a circle.</li>
- * 	<li><b>circles-number<b>: the number of the circles.</li>
- * 	<li><b>step<b>: the number of pixels each circle should grow in every animation.</li>
+ * 	<li><b>type</b>: the type of the background, needs to be "pulsating-circles".</li>
+ * 	<li><b>first-color</b>: the first color of a circle.</li>
+ * 	<li><b>second-color</b>: the second color of a circle.</li>
+ * 	<li><b>min-diameter</b>: the minimum diameter of a circle.</li>
+ * 	<li><b>max-diameter</b>: the minimum diameter of a circle.</li>
+ * 	<li><b>circles-number</b>: the number of the circles.</li>
+ * 	<li><b>step</b>: the number of pixels each circle should grow in every animation.</li>
  * </ul>
  *
  * <p>Copyright Enough Software 2004, 2005</p>

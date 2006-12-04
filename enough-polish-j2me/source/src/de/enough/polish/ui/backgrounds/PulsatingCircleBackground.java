@@ -34,10 +34,10 @@ import de.enough.polish.ui.Background;
  * <p>Paints an animated circular background.</p>
  * <p>Following CSS-attributes are supported:</p>
  * <ul>
- * 	<li><b>type<b>: the type of the background, needs to be "pulsating-circle".</li>
- * 	<li><b>color<b>: the color of the background, defaults to "white".</li>
- * 	<li><b>min-diameter<b>: the minimum diameter of the circle.</li>
- * 	<li><b>max-diameter<b>: the minimum diameter of the circle.</li>
+ * 	<li><b>type</b>: the type of the background, needs to be "pulsating-circle".</li>
+ * 	<li><b>color</b>: the color of the background, defaults to "white".</li>
+ * 	<li><b>min-diameter</b>: the minimum diameter of the circle.</li>
+ * 	<li><b>max-diameter</b>: the minimum diameter of the circle.</li>
  * </ul>
  *
  * <p>Copyright Enough Software 2004, 2005</p>

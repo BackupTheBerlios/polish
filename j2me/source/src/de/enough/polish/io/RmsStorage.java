@@ -48,7 +48,7 @@ import de.enough.polish.util.HashMap;
  *        13-Mar-2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
- * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the RmsStorage, e.g. RmsStorage<Vector<Note>>.
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the RmsStorage, e.g. RmsStorage&lt;Vector&lt;Note&gt;&gt;>.
  */
 public class RmsStorage
 //#if polish.java5

@@ -105,7 +105,7 @@ public abstract class MIDlet extends UiApplication
 	 * If a Runtime exception occurs during <code>pauseApp</code> the
 	 * MIDlet will be destroyed immediately.  Its
 	 * <code>destroyApp</code> will be called allowing
-	 * the MIDlet to cleanup.</DL>
+	 * the MIDlet to cleanup.
 	 * 
 	 */
 	protected abstract void pauseApp();
@@ -153,7 +153,7 @@ public abstract class MIDlet extends UiApplication
 	 * reclamation.
 	 * The <code>MIDlet</code> must have performed the same operations
 	 * (clean up, releasing of resources etc.) it would have if the
-	 * <code>MIDlet.destroyApp()</code> had been called.</DL>
+	 * <code>MIDlet.destroyApp()</code> had been called.
 	 * 
 	 */
 	public final void notifyDestroyed()
@@ -178,7 +178,7 @@ public abstract class MIDlet extends UiApplication
 	 * 
 	 * If the application pauses itself it will need to call
 	 * <code>resumeRequest</code> to request to reenter the
-	 * <code>active</code> state.</DL>
+	 * <code>active</code> state.
 	 * 
 	 */
 	public final void notifyPaused()
@@ -268,7 +268,7 @@ public abstract class MIDlet extends UiApplication
 	 * <code>startApp</code> method.  <p> The application is generally
 	 * in the <em>Paused</em> state when this is called.  Even in the
 	 * paused state the application may handle asynchronous events
-	 * such as timers or callbacks.</DL>
+	 * such as timers or callbacks.
 	 * 
 	 */
 	public final void resumeRequest()

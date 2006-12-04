@@ -64,9 +64,6 @@ import javax.microedition.io.Connection;
  * to be notified of incoming messages. With this technique,
  * a thread does not have to be blocked, waiting to receive messages.
  * </p>
- * <HR>
- * 
- * 
  */
 public class MessageConnection implements Connection
 {
@@ -77,8 +74,7 @@ public class MessageConnection implements Connection
 	 * <code>newMessage()</code>
 	 * methods, then the newly created <code>Message</code>
 	 * will be an instance
-	 * implementing the <code>TextMessage</code> interface.</DL>
-	 * 
+	 * implementing the <code>TextMessage</code> interface.
 	 */
 	public static final String TEXT_MESSAGE = "text";
 
@@ -89,9 +85,7 @@ public class MessageConnection implements Connection
 	 * <code>newMessage()</code>
 	 * methods, then the newly created <code>Message</code>
 	 * will be an instance
-	 * implementing the <code>BinaryMessage</code> interface.</DL>
-	 * 
-	 * 
+	 * implementing the <code>BinaryMessage</code> interface.
 	 */
 	public static final String BINARY_MESSAGE = "binary";
 	
@@ -253,7 +247,7 @@ public class MessageConnection implements Connection
 	 * Registers a <code>MessageListener</code> object that the platform
 	 * can notify when a message has been received on this
 	 * <code>MessageConnection</code>.
-	 * </p>
+	 *c
 	 * <p>If there are incoming messages in the queue of this
 	 * <code>MessageConnection</code> that have not been retrieved by
 	 * the application prior to calling this method, the newly

@@ -199,9 +199,7 @@ public class List extends Screen implements Choice
 	 * 
 	 * <p><code>SELECT_COMMAND</code> is treated as an ordinary
 	 * <code>Command</code> if it is used with other <code>Displayable</code>
-	 * types.</p></DL>
-	 * 
-	 * 
+	 * types.</p>
 	 */
 	//#ifdef polish.i18n.useDynamicTranslations
 		public static Command SELECT_COMMAND = new Command( Locale.get("polish.command.select"), Command.ITEM, 3 );
