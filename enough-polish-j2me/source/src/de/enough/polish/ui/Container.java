@@ -863,7 +863,7 @@ public class Container extends Item {
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
 		//#endif
-		boolean setClipping = (this.yOffset != 0 && this.marginTop != 0);
+		boolean setClipping = (this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
 		int clipX = 0;
 		int clipY = 0;
 		int clipWidth = 0;
