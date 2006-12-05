@@ -81,13 +81,14 @@ public class FramedForm extends Form {
 
 	}
 
-	//#if false
-	public void append( javax.microedition.lcdui.Item item ) {
+	//#if polish.LibraryBuild
+	public int append( javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the append( Item item ) method is called
+		return -1;
 	}
 	//#endif
 
-	//#if false
+	//#if polish.LibraryBuild
 	public void set( int itemNumber, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the append( Item item ) method is called
 	}

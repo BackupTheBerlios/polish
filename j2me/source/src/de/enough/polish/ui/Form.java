@@ -500,6 +500,27 @@ public class Form extends Screen
 		// (western: left to right, eastern: right to left)
 	}
 
+	//#if polish.LibraryBuild
+	/**
+	 * Adds an <code>Item</code> into the <code>Form</code>.  
+	 * The newly
+	 * added <code>Item</code> becomes the last <code>Item</code> in the
+	 * <code>Form</code>, and the size of the <code>Form</code> grows
+	 * by one.
+	 * This method is only provided for being able to add native items as well as custom items to a J2ME Polish form
+	 * within an IDE.
+	 * 
+	 * @param item the Item to be added.
+	 * @return the assigned index of the Item
+	 * @throws IllegalStateException if the item is already owned by a container
+	 * @throws NullPointerException if item is null
+	 */
+	public int append( javax.microedition.lcdui.Item item)
+	{
+		return -1;
+	}
+	//#endif
+
 	/**
 	 * Adds an <code>Item</code> into the <code>Form</code>.  The newly
 	 * added <code>Item</code> becomes the last <code>Item</code> in the

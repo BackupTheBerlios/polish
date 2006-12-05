@@ -28,7 +28,6 @@ package de.enough.polish.ui.texteffects;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Style;
@@ -58,10 +57,7 @@ import de.enough.polish.util.DrawUtil;
  * 
  */
 public class DropShadowTextEffect extends TextEffect {
-		
-	private final static int CLEAR_COLOR = 0xFF000123;
-	private int clearColor;
-	
+			
 	private String lastText;
 	private int lastTextColor;
 	int[] localRgbBuffer;
@@ -100,36 +96,7 @@ public class DropShadowTextEffect extends TextEffect {
 			this.lastText=text;
 			this.lastTextColor=textColor;
 			
-			// create Image, Graphics, ARGB-buffer
-			Graphics bufferG;
-			Image midp2ImageBuffer = Image.createImage( newWidth, newHeight); // iLeft+iRight=2*size??
-			bufferG = midp2ImageBuffer.getGraphics();
-			this.localRgbBuffer = new int[ (newWidth) * (newHeight) ];
-			
-			// draw pseudo transparent Background
-			bufferG.setColor( CLEAR_COLOR );
-			bufferG.fillRect(0,0,newWidth, newHeight);
-			
-			// draw String on Graphics
-			bufferG.setFont(font);
-			bufferG.setColor( textColor );
-			bufferG.drawString(text,iLeft,iTop, Graphics.LEFT | Graphics.TOP);
-			
-			// get RGB-Data from Image
-			midp2ImageBuffer.getRGB(this.localRgbBuffer,0,newWidth, 0, 0, newWidth, newHeight);
-			
-			// check clearColor
-			int[] clearColorArray = new int[1]; 
-			midp2ImageBuffer.getRGB(clearColorArray, 0, 1, 0, 0, 1, 1 );
-			this.clearColor = clearColorArray[0];
-			
-			// transform RGB-Data
-			for (int i=0; i<this.localRgbBuffer.length;i++){
-				//	 perform Transparency
-				if  (this.localRgbBuffer[i] == this.clearColor){
-					this.localRgbBuffer[i] = 0x00000000;
-				}
-			}
+			this.localRgbBuffer = getRgbData(text, textColor, font, iLeft, iTop, newWidth, newHeight );
 			
 			DrawUtil.dropShadow(this.localRgbBuffer,newWidth,newHeight,this.xOffset, this.yOffset, this.size,this.innerColor, this.outerColor);
 			
@@ -143,7 +110,7 @@ public class DropShadowTextEffect extends TextEffect {
 		g.drawRGB(this.localRgbBuffer,invY*(newWidth)+invX,newWidth, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , newWidth-invX, newHeight-invY, true);
 		
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */

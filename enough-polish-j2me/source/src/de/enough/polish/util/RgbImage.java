@@ -207,5 +207,16 @@ public class RgbImage {
 	public void setWidth(int width) {
 		this.width = width;
 	}
+
+	/**
+	 * Fills this image with the given color.
+	 * 
+	 * @param color the color for all pixels
+	 */
+	public void fill(int color) {
+		for (int i = 0; i < this.rgbData.length; i++) {
+			this.rgbData[i] = color;
+		}
+	}
 	
 }

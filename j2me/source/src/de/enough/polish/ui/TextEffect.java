@@ -28,6 +28,9 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
+import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Allows text effects for StringItems, IconItems and ChoiceItems.</p>
@@ -40,6 +43,8 @@ import javax.microedition.lcdui.Graphics;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public abstract class TextEffect {
+
+
 
 	/**
 	 * Creates a new effect
@@ -177,6 +182,112 @@ public abstract class TextEffect {
 			return y - (height - baseLine);
 		}
 	}
+	
+	//#if polish.midp2
+	/**
+	 * Retrieves an RGB integer array in which the text is written on MIDP 2.0 devices.
+	 * NOTE: this method is not available on MIDP 1.0 devices!
+	 * You can determine the height and width of the produced RGB data with this code:
+	 * <pre>
+	 * int[] rgbData = getRgbData(text, textColor, font);
+	 * int height = font.getHeight();
+	 * int width = rgbData.length / height;
+	 * </pre>
+	 * 
+	 * @param text the text
+	 * @param textColor the color of the text
+	 * @param font the font of the text
+	 * @return the RGB data that contains the given text
+	 */
+	public static int[] getRgbData( String text, int textColor, Font font ) {
+		int transparentColor = DrawUtil.getComplementaryColor( textColor );
+		if (transparentColor == textColor ) {
+			transparentColor = 0;
+		}
+		int width = font.stringWidth( text );
+		int height = font.getHeight();
+		return getRgbData( text, textColor, font, 0, 0, width, height, transparentColor );
+		
+	}
+	//#endif
+
+	//#if polish.midp2
+	/**
+	 * Retrieves an RGB integer array in which the text is written on MIDP 2.0 devices.
+	 * NOTE: this method is not available on MIDP 1.0 devices!
+	 * 
+	 * @param text the text
+	 * @param textColor the color of the text
+	 * @param font the font of the text
+	 * @param x the left corner of the text in the created rgb data
+	 * @param y the top corner of the text in the created rgb data
+	 * @param width the desired width of the data array array, e.g. font.stringWidth(text) 
+	 * @param height the desired height of the data array, e.g. font.getHeight()
+	 * @param transparentColor the color that should be used to flag transparent parts, using DrawUtil.getComplementaryColor( textColor ) might be a good idea
+	 * @return the RGB data that contains the given text
+	 * @see DrawUtil#getComplementaryColor(int)
+	 */
+	public static int[] getRgbData(String text, int textColor, Font font, int x, int y, int width, int height ) {
+		int transparentColor = DrawUtil.getComplementaryColor( textColor );
+		if (transparentColor == textColor ) {
+			transparentColor = 0;
+		}
+		return getRgbData( text, textColor, font, x, y, width, height, transparentColor );
+	}
+	//#endif
+		
+	//#if polish.midp2
+	/**
+	 * Retrieves an RGB integer array in which the text is written on MIDP 2.0 devices.
+	 * NOTE: this method is not available on MIDP 1.0 devices!
+	 * 
+	 * @param text the text
+	 * @param textColor the color of the text
+	 * @param font the font of the text
+	 * @param x the left corner of the text in the created rgb data
+	 * @param y the top corner of the text in the created rgb data
+	 * @param width the desired width of the data array array, e.g. font.stringWidth(text) 
+	 * @param height the desired height of the data array, e.g. font.getHeight()
+	 * @param transparentColor the color that should be used to flag transparent parts, using DrawUtil.getComplementaryColor( textColor ) might be a good idea
+	 * @return the RGB data that contains the given text
+	 * @see DrawUtil#getComplementaryColor(int)
+	 */
+	public static int[] getRgbData(String text, int textColor, Font font, int x, int y, int width, int height, int transparentColor) {
+		// create Image, Graphics, ARGB-buffer
+		Graphics bufferG;
+		Image midp2ImageBuffer = Image.createImage( width, height); 
+		bufferG = midp2ImageBuffer.getGraphics();
+		
+		// draw pseudo transparent Background
+		bufferG.setColor( transparentColor );
+		bufferG.fillRect(0,0,width, height);
+		
+		// draw String on Graphics
+		bufferG.setFont(font);
+		bufferG.setColor( textColor );
+		bufferG.drawString(text, x, y, Graphics.LEFT | Graphics.TOP);
+		
+		// get RGB-Data from Image
+		int[] rgbData = new int[ width * height ];
+		midp2ImageBuffer.getRGB( rgbData,0,width, 0, 0, width, height);
+		
+		// check clearColor
+		int[] clearColorArray = new int[1]; 
+		midp2ImageBuffer.getRGB(clearColorArray, 0, 1, 0, 0, 1, 1 );
+		transparentColor = clearColorArray[0];
+		
+		// transform RGB-Data
+		for (int i=0; i<rgbData.length;i++){
+			//	 perform Transparency
+			if  (rgbData[i] == transparentColor){
+				rgbData[i] = 0x00000000;
+			}
+		}
+		
+		return rgbData;
+	}
+	//#endif
+	
 
 	/**
 	 * Notifies this effect that the corresponding item is to be shown.
