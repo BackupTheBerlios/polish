@@ -34,10 +34,11 @@ public class J2mePolishProjectGenerator {
     throws IOException 
     {
         FileUtil.copyDirectoryContents( templateDir, projectDir, false);
-        ProjectManager manager = ProjectManager.getDefault();
-        FileObject projectFileObject = org.openide.filesystems.FileUtil.toFileObject(projectDir);
-        Project project = manager.findProject( projectFileObject );
-        return project;
+        //ProjectManager manager = ProjectManager.getDefault();
+        //FileObject projectFileObject = org.openide.filesystems.FileUtil.toFileObject(projectDir);
+        //Project project = manager.findProject( projectFileObject );
+        //return project;
+        return null;
     }
     
 }

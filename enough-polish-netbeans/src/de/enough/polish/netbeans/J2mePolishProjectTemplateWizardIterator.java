@@ -60,7 +60,7 @@ public class J2mePolishProjectTemplateWizardIterator implements WizardDescriptor
         
         FileObject template = Templates.getTemplate(wiz);
         FileObject dir = FileUtil.toFileObject(dirF);
-        unZipFile(template.getInputStream(), dir);
+        //unZipFile(template.getInputStream(), dir);
         
         // Always open top dir as a project:
         resultSet.add(dir);

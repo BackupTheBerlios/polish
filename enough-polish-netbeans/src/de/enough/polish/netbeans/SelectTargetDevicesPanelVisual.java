@@ -77,7 +77,10 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     
     boolean valid(WizardDescriptor wizardDescriptor) {
         
-
+        if (this.isWrongJ2mePolishHomeError) {
+            wizardDescriptor.putProperty("WizardPanel_errorMessage", "Unable to read selected devices - check your J2ME Polish installation.\nYou will need at least J2ME Polish 2.0 Beta 4 or later.");
+            return false;
+        }
         wizardDescriptor.putProperty("WizardPanel_errorMessage", "");
         return true;
     }
@@ -116,8 +119,11 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     
     void read(WizardDescriptor settings) {
         String polishHome =  (String) settings.getProperty("polish.home");
-        if (polishHome == null) {
+        if (polishHome == null || polishHome.length() == 0) {
             throw new IllegalStateException("No J2ME Polish installation directory has been defined.");
+        }
+        if (polishHome.charAt(0) != '/') {
+                polishHome = '/' + polishHome; 
         }
         if (this.deviceSelectionComponent == null) {
             setLayout( new BorderLayout() );
@@ -132,6 +138,9 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
                         new URL("file://" + polishHome + "/lib/jdom.jar"),
                         new URL("file://" + polishHome + "/lib/ant.jar")
                     };
+                    //System.out.println(polishHome + "/lib/enough-j2mepolish-build.jar exists: " + (new File(polishHome + "/lib/enough-j2mepolish-build.jar").exists()) );
+                    //System.out.println(polishHome + "/lib/jdom.jar exists: " + (new File(polishHome + "/lib/jdom.jar").exists()) );
+                    //System.out.println(polishHome + "/lib/ant.jar exists: " + (new File(polishHome + "/lib/ant.jar").exists()) );
                     URLClassLoader urlClassLoader = new URLClassLoader( urls, getClass().getClassLoader() );
                     Class componentClass = urlClassLoader.loadClass("de.enough.polish.ide.swing.DeviceSelectionComponent");
                     Constructor constructor = componentClass.getConstructor( new Class[]{ String.class } );
@@ -141,10 +150,6 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
                 } catch (Exception ex) {
                     this.isWrongJ2mePolishHomeError = true;
                     ex.printStackTrace();
-                    setLayout( new GridLayout(3, 1));
-                    add( new JLabel("Unable to load device database - check your J2ME Polish installation." )  );
-                    add( new JLabel( "You will need at least J2ME Polish 2.0 Beta 4 or later." ) );
-                    add( new JLabel( "Exception: " + ex.toString() ) ) ;
                 }
             }
         }
