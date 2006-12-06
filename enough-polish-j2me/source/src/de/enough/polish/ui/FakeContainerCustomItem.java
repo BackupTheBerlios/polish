@@ -37,9 +37,9 @@ import de.enough.polish.util.ArrayList;
  * <pre>
  * public class MyContainer
  * //#if false
- * 	extends FakeContainerCustomItem
+ *     extends FakeContainerCustomItem
  * //#else
- * 	extends Container
+ * 	   //# extends Container
  * //#endif
  * </pre>
  *
