@@ -1,6 +1,8 @@
 package de.enough.polish.netbeans;
 
+import de.enough.polish.ide.swing.DeviceSelector;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -118,17 +120,25 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     }
     
     boolean valid(WizardDescriptor wizardDescriptor) {
-        
-
-        
         wizardDescriptor.putProperty("WizardPanel_errorMessage", "");
         return true;
     }
     
-    void store(WizardDescriptor d) {
+    void store(WizardDescriptor settings) {
+        DeviceSelector selector = (DeviceSelector) settings.getProperty("polish.devicesselector");
+        File projectDir = (File) settings.getProperty("projdir");
+        String projectName = (String) settings.getProperty("name");
+        String polishHome =  (String) settings.getProperty("polish.home");
+        File templateDir = new File( polishHome, "samples/menu");
+        try {
+            J2mePolishProjectGenerator.generateProjectFromTemplate("unknown", projectDir, templateDir, selector, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     void read(WizardDescriptor settings) {
+        
 
     }
     

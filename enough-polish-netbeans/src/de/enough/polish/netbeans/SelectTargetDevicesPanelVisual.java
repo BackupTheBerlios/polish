@@ -3,6 +3,7 @@ package de.enough.polish.netbeans;
 import de.enough.polish.ide.swing.DeviceSelector;
 import de.enough.polish.ide.swing.DirectInvocationHandler;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -32,6 +33,7 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     private SelectTargetDevicesWizardPanel panel;
     private int type;
     private JComponent deviceSelectionComponent;
+    private boolean isWrongJ2mePolishHomeError;
     
     /** Creates new form PanelProjectLocationVisual */
     public SelectTargetDevicesPanelVisual(SelectTargetDevicesWizardPanel panel) {
@@ -81,6 +83,10 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     }
     
     void store(WizardDescriptor d) {
+        if (this.isWrongJ2mePolishHomeError) {
+            // store is also called when the user wants to go back
+            return;
+        }
         try {
             DeviceSelector deviceSelector = (DeviceSelector) Proxy.newProxyInstance(
                 DeviceSelector.class.getClassLoader(),
@@ -90,9 +96,8 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
             Map properties = deviceSelector.getSelectedDeviceProperties();
             //System.out.println("properties of selected devices: " + properties );
             String[] deviceIdentifiers = deviceSelector.getSelectedDeviceIdentifiers();
-            for (int i = 0; i < deviceIdentifiers.length; i++) {
-                System.out.println( deviceIdentifiers[i]);
-            }
+            d.putProperty( "polish.devices", properties );
+            d.putProperty( "polish.devicesselector",  deviceSelector );
 //            Method method = this.deviceSelectionComponent.getClass().getMethod("getSelectedDeviceIdentifiers", new Class[0]);
 //            String[] deviceIdentifiers = (String[]) method.invoke( this.deviceSelectionComponent, new Object[0]);
 //            d.putProperty( "polish.DeviceIdentifiers", deviceIdentifiers );
@@ -104,7 +109,7 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
             e.printStackTrace();
             remove( this.deviceSelectionComponent );
             add( new JTextField("Unable to read selected devices - check your J2ME Polish installation." +
-                    "\nYou will need at least J2ME Polish 1.3 Beta 4 or later." +
+                    "\nYou will need at least J2ME Polish 2.0 Beta 4 or later." +
                     "\nException: " + e.toString() ), BorderLayout.CENTER );
         }
     }
@@ -123,9 +128,9 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
             } else {
                 try {
                     URL[] urls = new URL[] {
-                        new URL("file://" + polishHome + "/import/enough-j2mepolish-build.jar"),
-                        new URL("file://" + polishHome + "/import/jdom.jar"),
-                        new URL("file://" + polishHome + "/import/ant.jar")
+                        new URL("file://" + polishHome + "/lib/enough-j2mepolish-build.jar"),
+                        new URL("file://" + polishHome + "/lib/jdom.jar"),
+                        new URL("file://" + polishHome + "/lib/ant.jar")
                     };
                     URLClassLoader urlClassLoader = new URLClassLoader( urls, getClass().getClassLoader() );
                     Class componentClass = urlClassLoader.loadClass("de.enough.polish.ide.swing.DeviceSelectionComponent");
@@ -134,10 +139,12 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
                     this.deviceSelectionComponent = component;
                     add( component, BorderLayout.CENTER );
                 } catch (Exception ex) {
+                    this.isWrongJ2mePolishHomeError = true;
                     ex.printStackTrace();
-                    add( new JTextField("Unable to load device database - check your J2ME Polish installation." +
-                            "\nYou will need at least J2ME Polish 1.3 Beta 4 or later." +
-                            "\nException: " + ex.toString() ), BorderLayout.CENTER );
+                    setLayout( new GridLayout(3, 1));
+                    add( new JLabel("Unable to load device database - check your J2ME Polish installation." )  );
+                    add( new JLabel( "You will need at least J2ME Polish 2.0 Beta 4 or later." ) );
+                    add( new JLabel( "Exception: " + ex.toString() ) ) ;
                 }
             }
         }
@@ -145,6 +152,10 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     
     void validate(WizardDescriptor d) throws WizardValidationException {
         // nothing to validate
+        if (this.isWrongJ2mePolishHomeError) {
+            String message = "Wrong J2ME Polish Location specified. You will need at least J2ME Polish 2.0 Beta 4 or later.";
+            throw new WizardValidationException(this, message, message);
+        }
     }
     
 //    // Implementation of DocumentListener --------------------------------------
