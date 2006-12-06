@@ -157,8 +157,8 @@ public class Container extends Item {
 	 * @param yBottom the end of the screen for this container, -1 when scrolling should not be done.
 	 */
 	public void setVerticalDimensions( int yTop, int yBottom ) {
-		this.yTop = yTop + this.marginTop;
-		this.yBottom = yBottom - this.marginBottom;
+		this.yTop = yTop + this.marginTop + this.paddingTop;
+		this.yBottom = yBottom - (this.marginBottom + this.paddingBottom);
 		this.enableScrolling = (yTop != -1 || yBottom != -1 );
 	}
 	
