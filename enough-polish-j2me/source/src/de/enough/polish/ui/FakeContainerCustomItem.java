@@ -36,11 +36,11 @@ import de.enough.polish.util.ArrayList;
  * <p>Usage:
  * <pre>
  * public class MyContainer
- * //#if false
- *     extends FakeContainerCustomItem
+ * //#if polish.LibraryBuild
+ *               extends FakeContainerCustomItem
  * //#else
- * 	   //# extends Container
- * //#endif
+ *              //# extends StringItem
+ * //#endif      
  * </pre>
  *
  * <p>Contains a number of items.</p>
