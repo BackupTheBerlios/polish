@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import java.io.IOException;
-
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
