@@ -44,11 +44,6 @@ import de.enough.polish.util.RgbImage;
  * 	 <li><b>text-rotating-start-angle</b>: The angle at which the text should be rotated at the beginning of the animation, defaults to 0 degrees.</li>
  * 	 <li><b>text-rotating-end-angle</b>: The angle at which the text should be rotated at the end of the animation, defaults to 360 degrees.</li>
  * 	 <li><b>text-rotating-steps</b>: The number of degrees by which the rotation should be increased in each animation step, defaults to 2 degrees.</li>
- * <!--
- * 	 <li><b></b>: </li>
- * 	 <li><b></b>: </li>
- * 	 <li><b></b>: </li>
- * -->
  * </ul>
  *
  * <p>Copyright Enough Software 2006</p>
