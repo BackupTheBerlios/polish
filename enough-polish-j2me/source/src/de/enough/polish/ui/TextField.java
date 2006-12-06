@@ -648,7 +648,7 @@ public class TextField extends StringItem
 	//#endif
 	
   	/** valid input characters for local parts of email addresses, apart from 0..9 and a..z. */
-  	private static final String VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS = ".!#$%&'*+-/=?^_`{|}~@";
+  	private static final String VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS = ".-_@!#$%&'*+/=?^`{|}~";
   	/** valid input characters for domain names, apart from 0..9 and a..z. */
   	private static final String VALID_DOMAIN_CHARACTERS = "._-";
 	private int maxSize;
@@ -792,6 +792,8 @@ public class TextField extends StringItem
 			private static final String charactersKeyPound = null;
 		//#endif
 		private static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
+		private static final String[] EMAIL_CHARACTERS = new String[]{ VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "0", VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "1", "abc2", "def3", "ghi4", "jkl5", "mno6", "pqrs7", "tuv8", "wxyz9" };
+		private String[] characters;
 		private boolean caretPositionHasBeenSet;
 		private boolean isNumeric;
 		private boolean isDecimal;
@@ -1387,6 +1389,7 @@ public class TextField extends StringItem
 			if (!this.isUneditable) {
 				bbStyle |= Field.EDITABLE;
 			}
+			
 			if ( (constraints & DECIMAL) == DECIMAL) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
 			} else if ((constraints & NUMERIC) == NUMERIC) {
@@ -1414,6 +1417,7 @@ public class TextField extends StringItem
 			}
 		//#endif
 		//#ifdef tmp.directInput
+			this.characters = CHARACTERS;
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
 			}
@@ -1435,6 +1439,7 @@ public class TextField extends StringItem
 			}
 			if ((constraints & EMAILADDR) == EMAILADDR) {
 				this.isEmail = true;
+				this.characters = EMAIL_CHARACTERS;
 			}
 			if ((constraints & INITIAL_CAPS_WORD) == INITIAL_CAPS_WORD) {
 				this.inputMode = MODE_FIRST_UPPERCASE;
@@ -2553,7 +2558,7 @@ public class TextField extends StringItem
 						} else if (keyCode == Canvas.KEY_STAR) {
 							alphabet = charactersKeyStar;
 						} else {
-							alphabet = CHARACTERS[ keyCode - Canvas.KEY_NUM0 ];
+							alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
 						}
 						if (alphabet == null || (alphabet.length() == 0)) {
 							return false;
