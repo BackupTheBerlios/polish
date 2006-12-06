@@ -790,7 +790,7 @@ public class List extends Screen implements Choice
 	 * </TABLE>
 	 * 
 	 * @param cmd - the command to be removed
-	 * @see Displayable#removeCommand(Command) in class Displayable
+	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 * @since  MIDP 2.0
 	 */
 	public void removeCommand( Command cmd)
