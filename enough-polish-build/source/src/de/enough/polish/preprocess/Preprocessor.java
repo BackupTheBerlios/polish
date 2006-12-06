@@ -1166,6 +1166,13 @@ public class Preprocessor {
 		// which is closed by a semicolon:
 		if ( nextLine != null ) {
 			uncommentLine( nextLine, lines );
+			// check for comments at the end of the line, e.g. this.form = new Form(null); // "title" );
+			nextLine = lines.getCurrent();
+			int commentIndex = nextLine.indexOf("//");
+			if (commentIndex != -1) {
+				nextLine = nextLine.substring(0, commentIndex);
+				lines.setCurrent( nextLine );
+			}
 			while ( nextLine.indexOf(';') == -1) {
 				if (!lines.next()) {
 					throw new BuildException(
@@ -1181,6 +1188,13 @@ public class Preprocessor {
 				}
 				nextLine = lines.getCurrent();				
 				uncommentLine( nextLine, lines );
+				// check for comments at the end of the line, e.g. this.form = new Form(null); // "title" );
+				nextLine = lines.getCurrent();
+				commentIndex = nextLine.indexOf("//");
+				if (commentIndex != -1) {
+					nextLine = nextLine.substring(0, commentIndex);
+					lines.setCurrent( nextLine );
+				}
 			}
 			// get uncommented line:
 			nextLine = lines.getCurrent();

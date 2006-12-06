@@ -229,6 +229,18 @@ These namespaces/schemas will be used soon.
 -->
 
 	<device supportsPolishGui="true">
+		<identifier>Nokia/Midp2Cldc11</identifier>
+		<description>A Nokia device without a defined screen/canvas size.</description>
+		<features>isVirtual</features>
+		<groups>Nokia-UI</groups>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi, wmapi"/>
+		<capability name="VideoFormat" value="3gpp"/>
+		<capability name="SoundFormat" value="midi, amr"/>		
+	</device>
+
+	<device supportsPolishGui="true">
 		<identifier>Nokia/Series60, Nokia/Series60E1</identifier>
 		<features>isVirtual</features>
 		<groups>Series60E1</groups>
@@ -7012,7 +7024,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-		<identifier>BlackBerry/Pearl</identifier>
+		<identifier>BlackBerry/Pearl, BlackBerry/8100</identifier>
 		<capability name="ScreenSize" value="240x260"/>
 		<capability name="FullCanvasSize" value="240x260"/>
 		<capability name="BitsPerPixel" value="16"/>

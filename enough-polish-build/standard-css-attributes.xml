@@ -980,16 +980,22 @@
 			<condition>polish.midp2</condition>
 		</mapping>
 		<mapping from="drop-shadow" to="new de.enough.polish.ui.texteffects.DropShadowTextEffect()" >
-			<condition>polish.midp2 and polish.cldc1.1</condition>
+			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
 		</mapping>
 		<mapping from="alien-glow" to="new de.enough.polish.ui.texteffects.AlienGlowTextEffect()" >
-			<condition>polish.midp2 and polish.cldc1.1</condition>
+			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
 		</mapping>
 		<mapping from="fade" to="new de.enough.polish.ui.texteffects.FadeTextEffect()" >
 			<condition>polish.midp2</condition>
 		</mapping>
 		<mapping from="fading-alien-glow" to="new de.enough.polish.ui.texteffects.FadingAlienGlowTextEffect()" >
-			<condition>polish.midp2 and polish.cldc1.1</condition>
+			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
+		</mapping>
+		<mapping from="rotate" to="new de.enough.polish.ui.texteffects.RotateTextEffect()" >
+			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
+		</mapping>
+		<mapping from="rotating" to="new de.enough.polish.ui.texteffects.RotatingTextEffect()" >
+			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
 		</mapping>
 	</attribute>
 	
@@ -1897,6 +1903,43 @@
 		description="The URL of the image that should be shown after the item in question."
 		id="191"
 	/>
+	
+	<attribute
+		name="text-rotate-angle"
+		type="integer"
+		appliesTo="StringItem, RotateTextEffect"
+		description="The angle in degrees between 0 and 360 by which the text should be rotated."
+		default="10"
+		id="192"
+	/>
+	
+	<attribute
+		name="text-rotating-start-angle"
+		type="integer"
+		appliesTo="StringItem, RotatingTextEffect"
+		description="The angle in degrees between 0 and 360 at which the text rotation animation is started."
+		default="0"
+		id="193"
+	/>
+
+	<attribute
+		name="text-rotating-end-angle"
+		type="integer"
+		appliesTo="StringItem, RotatingTextEffect"
+		description="The angle in degrees between 0 and 360 at which the text rotation animation is ended."
+		default="360"
+		id="194"
+	/>
+	
+	<attribute
+		name="text-rotating-steps"
+		type="integer"
+		appliesTo="StringItem, RotatingTextEffect"
+		description="The steps in degrees by which the rotation is increased in each animation phase."
+		default="4"
+		id="195"
+	/>
+	
 	
 	<!--
 	
