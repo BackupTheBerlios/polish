@@ -873,7 +873,8 @@ public class Container extends Item {
 			clipY = g.getClipY();
 			clipWidth = g.getClipWidth();
 			clipHeight = g.getClipHeight();
-			g.clipRect(clipX, y - this.paddingTop, clipWidth, clipHeight - ((y - this.paddingTop) - clipY) );
+			//g.clipRect(clipX, y - this.paddingTop, clipWidth, clipHeight - ((y - this.paddingTop) - clipY) );
+			g.clipRect(clipX, y, clipWidth, clipHeight - (y - clipY) );
 		}
 		x = leftBorder;
 		y += this.yOffset;
