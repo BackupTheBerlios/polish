@@ -76,6 +76,10 @@ public class PolishDateField extends DateField {
 	 * Creates a new date field
 	 *
 	 * @param date the date
+   * @param inputMode the input mode for the date, either
+	 * DateField.DATE, DateField.DATE_TIME or DateField.TIME.
+   *
+   * @see javax.microedition.lcdui.DateField
 	 */
 	public PolishDateField( Date date, int inputMode ) {
 		this( getTime( date ), getDateFormat( inputMode), EDITABLE );
