@@ -3,10 +3,8 @@
 	default="bin-dist">
 
 <!-- global properties -->
+	<property file="${user.name}.properties" />
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
-	<!-- on mac:
-	<property name="izpack.dir" value="/Applications/IzPack" />
-	-->
 
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
