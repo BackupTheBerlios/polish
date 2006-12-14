@@ -1107,8 +1107,9 @@ implements Choice
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if tmp.supportViewType
-			if (this.view != null) {
+			if (this.containerView != null) {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
+				return;
 			}
 		//#endif
 		if (this.isPopup && this.isPopupClosed) {
@@ -1123,7 +1124,7 @@ implements Choice
 	protected void init( int firstLineWidth, int lineWidth ) {
 		super.init(firstLineWidth, lineWidth);
 		//#if tmp.supportViewType
-			if (this.view != null) {
+			if (this.containerView != null) {
 				return;
 			}
 		//#endif
@@ -1142,7 +1143,7 @@ implements Choice
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		super.initContent(firstLineWidth, lineWidth);
 		//#if tmp.supportViewType
-			if (this.view != null) {
+			if (this.containerView != null) {
 				return;
 			}
 		//#endif
@@ -1594,8 +1595,8 @@ implements Choice
 						this.popupBackgroundColor = bgColor.intValue();
 					}
 				//#endif
-				//#if ! tmp.suppressSelectCommand && polish.css.view-type
-					if (!this.isSelectCommandAdded && this.choiceType == EXCLUSIVE && this.view == null) {
+				//#if ! tmp.suppressSelectCommand && tmp.supportViewType
+					if (!this.isSelectCommandAdded && this.choiceType == EXCLUSIVE && this.containerView == null) {
 						if (this.selectCommand != null) {
 							addCommand( this.selectCommand );
 						} else {
@@ -1624,8 +1625,8 @@ implements Choice
 			//#endif
 		} else if (this.choiceType == EXCLUSIVE){
 			//#if !tmp.suppressSelectCommand
-				//#if polish.css.view-type
-					if (this.view == null) {
+				//#if tmp.supportViewType
+					if (this.containerView == null) {
 				//#endif
 					//#ifdef polish.i18n.useDynamicTranslations
 						String cmdLabel = Locale.get("polish.command.select");
@@ -1634,7 +1635,7 @@ implements Choice
 						}
 					//#endif
 					addCommand( List.SELECT_COMMAND );
-				//#if polish.css.view-type
+				//#if tmp.supportViewType
 					}
 				//#endif
 			//#endif

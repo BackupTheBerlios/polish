@@ -163,7 +163,11 @@ public final class DrawUtil {
 				// No internal points found, fill the triangle, and reservoir-dog the polygon
 				if (!leastInternalSet) {
 					g.setColor( color );
-					g.fillTriangle(xPoints[a], yPoints[a], xPoints[b], yPoints[b], xPoints[c], yPoints[c]);
+					//#if polish.midp2
+						g.fillTriangle(xPoints[a], yPoints[a], xPoints[b], yPoints[b], xPoints[c], yPoints[c]);
+					//#else
+						fillTriangle(xPoints[a], yPoints[a], xPoints[b], yPoints[b], xPoints[c], yPoints[c], g );
+					//#endif
 					int[][] trimmed = trimEar(xPoints, yPoints, a);
 					xPoints = trimmed[0];
 					yPoints = trimmed[1];
@@ -182,6 +186,32 @@ public final class DrawUtil {
 		//#endif
 	}
 	
+	/**
+	 * Fills the specified triangle.
+	 * 
+	 * @param x1 the x coordinate of the first vertex of the triangle
+	 * @param y1 the y coordinate of the first vertex of the triangle
+	 * @param x2 the x coordinate of the second vertex of the triangle
+	 * @param y2 the y coordinate of the second vertex of the triangle
+	 * @param x3 the x coordinate of the third vertex of the triangle
+	 * @param y3 the y coordinate of the third vertex of the triangle
+	 * @param g the graphics context
+	 */
+	public static void fillTriangle(int x1,
+            int y1,
+            int x2,
+            int y2,
+            int x3,
+            int y3, Graphics g) 
+	{
+		//#if polish.midp2
+			g.fillTriangle(x1, y1, x2, y2, x3, y3);
+		//#else
+			// draw lines:
+			//TODO robert implement DrawUtil.fillTriangle
+		//#endif
+	}
+
 	/**
 	 * Finds the index of the smallest element
 	 * 

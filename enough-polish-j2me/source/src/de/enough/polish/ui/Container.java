@@ -763,6 +763,7 @@ public class Container extends Item {
 					Item item = this.focusedItem;
 					scroll( true, item.xLeftPos, item.yTopPos, item.itemWidth, item.itemHeight );
 				}
+				return;
 			}
 		//#endif
 	
@@ -880,6 +881,8 @@ public class Container extends Item {
 		y += this.yOffset;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
+				//#debug
+				System.out.println("fowarding paint call to " + this.containerView );
 				this.containerView.paintContent( this, x, y, leftBorder, rightBorder, g);
 			} else {
 		//#endif

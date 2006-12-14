@@ -115,11 +115,12 @@ public class HorizontalChoiceView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Container parent, int firstLineWidth,
+	protected void initContent(Item parentItm, int firstLineWidth,
 			int lineWidth) 
 	{
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
+		Container parent = (Container) parentItm;
 		if (this.isFocused && this.parentBackground == null) {
 			Background bg = parent.background;
 			if (bg != null) {
@@ -347,7 +348,7 @@ public class HorizontalChoiceView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
+	protected void paintContent(Item parentItm, int x, int y, int leftBorder, int rightBorder,
 			Graphics g) 
 	{
 		//#debug

@@ -66,11 +66,12 @@ public class ShuffleView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Container parent, int firstLineWidth,
+	protected void initContent(Item parentItm, int firstLineWidth,
 			int lineWidth) 
 	{
-		super.initContent(parent, firstLineWidth, lineWidth);
+		super.initContent(parentItm, firstLineWidth, lineWidth);
 		
+		Container parent = (Container) parentItm;
 		if (!this.animationInitialised) {
 			Item[] myItems = parent.getItems();
 			this.xAdjustments = new int[ myItems.length ];

@@ -99,11 +99,12 @@ public class ExclusiveSingleLineView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Container parent, int firstLineWidth,
+	protected void initContent(Item parentItm, int firstLineWidth,
 			int lineWidth) 
 	{
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
+		Container parent = (Container) parentItm;
 		if (this.isFocused && this.parentBackground == null) {
 			Background bg = parent.background;
 			if (bg != null) {
@@ -192,8 +193,12 @@ public class ExclusiveSingleLineView extends ContainerView {
 			}
 		}
 		if (selectedItemHeight > height) {
+			//#debug
+			System.out.println("contentHeight = selectedItemHeight; selectedItemHeight > height: " + selectedItemHeight + ">" +  height);
 			this.contentHeight = selectedItemHeight;
 		} else {
+			//#debug
+			System.out.println("contentHeight = height; selectedItemHeight <= height: " + selectedItemHeight + "<=" +  height);
 			this.contentHeight = height;
 		}
 		//if ( selectedItem.isFocused ) {
@@ -286,7 +291,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
+	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
 			Graphics g) 
 	{
 		//#debug
