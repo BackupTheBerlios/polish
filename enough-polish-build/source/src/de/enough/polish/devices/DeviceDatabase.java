@@ -139,6 +139,7 @@ public class DeviceDatabase {
 			wtkHome = new File( wtkHomePath );
 			//throw new BuildException("Unable to initialise device database - found no wtk.home property.");
 		}
+		properties.put("polish.home", polishHomeDir.getAbsolutePath() );
 				
 		try {			
 			// load capability-definitions:

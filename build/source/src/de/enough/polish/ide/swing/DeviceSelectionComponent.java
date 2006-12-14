@@ -39,6 +39,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceTree;
@@ -207,6 +209,7 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
     private javax.swing.JLabel platformsLabel;
     private CheckBoxList platformsList;
     // End of variables declaration
+	private Environment environment;
     
     public void init( String polishHomePath ) {
     	if (polishHomePath == null) {
@@ -215,6 +218,11 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
     	File polishHome = new File( polishHomePath );
     	this.database = new DeviceDatabase( polishHome );
     	this.deviceTree = new DeviceTree( this.database, null, null );
+    	
+    	this.environment = new Environment();
+    	this.environment.set("polish.home", polishHome );
+    	this.environment.addVariable("polish.home", polishHome.getAbsolutePath() );
+    	this.environment.set("polish.apidir", new File( polishHome, "import") );
     	
     }
     
@@ -272,6 +280,18 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
     public Map getSelectedDeviceProperties(){
     	return this.deviceTree.getSelectedDeviceProperties();
     }
+    
+	public Map getDeviceProperties(String identifier) {
+		Device device = this.database.getDevice(identifier);
+		device.setEnvironment( this.environment );
+		Map capabilities = device.getCapabilities();
+		capabilities.putAll( device.getFeatures() );		
+		capabilities.put( "polish.BootClassPath", device.getBootClassPath() );
+		capabilities.put( "polish.ClassPath", device.getClassPath() );
+		capabilities.put( "polish.SupportedApis", device.getSupportedApis() );
+		return capabilities;
+	}
+ 
 
     /* (non-Javadoc)
 	 * @see de.enough.polish.ide.swing.DeviceSelector#getSelectedDeviceClassPaths()
@@ -305,6 +325,7 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 		if (changedComponent instanceof PolishComponentCheckBox) {
 			setDescription(  ((PolishComponentCheckBox) changedComponent).getDescription() );
 		}
+		firePropertyChange("polish.devices.update", 1, 10);
 	}
 	
 	public void setDescription(String text ) {
@@ -343,5 +364,6 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 		}
 		
 	}
-    
+
+   
 }

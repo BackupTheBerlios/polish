@@ -106,7 +106,7 @@
             <description>A sample application that is used to show log entries that have been previously stored in the recordstore.</description>
             <file src="../setup/samples/logviewer/.classpath" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="../setup/samples/logviewer/.project" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="../setup/samples/logviewer/readme.txt" targetdir="$INSTALL_PATH/samples/readme.txt"/>
+            <file src="../setup/samples/logviewer/readme.txt" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="samples/logviewer/source" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="samples/logviewer/resources" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="../setup/samples/logviewer/build.xml" targetdir="$INSTALL_PATH/samples/logviewer"/>

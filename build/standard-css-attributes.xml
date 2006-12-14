@@ -53,6 +53,7 @@
 		<mapping from="smooth-color"        converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" />
 		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
 		<mapping from="snowflakes"          converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
+		<mapping from="web20"          		converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" />
 	</attribute>
 -->
 		<!--

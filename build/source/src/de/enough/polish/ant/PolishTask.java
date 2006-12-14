@@ -129,7 +129,7 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "2.0 <Preview-2006-10-25>";
+	private static final String VERSION = "2.0 <Preview-2006-12-08>";
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
@@ -651,10 +651,10 @@ public class PolishTask extends ConditionalTask {
 			{
 				System.err.println("Warning: Midlets should to be defined in the <build>-section with either <midlets> or <midlet>. Alternatively you might use a <iappli> or <main> element for defining the DoJa main class or the BlackBerry main class.");
 			}
-		} 
-		// now check if the midlets do exist:
-		SourceSetting[] sources = this.buildSetting.getSourceSettings();
-		//if (!this.buildSetting.useDefaultPackage()) {
+		} else {
+			// now check if the midlets do exist:
+			SourceSetting[] sources = this.buildSetting.getSourceSettings();
+			//if (!this.buildSetting.useDefaultPackage()) {
 			for (int i = 0; i < midlets.length; i++) {
 				Midlet midlet = midlets[i];
 				String fileName = StringUtil.replace( midlet.getClassName(), '.', File.separatorChar) + ".java";
@@ -694,6 +694,7 @@ public class PolishTask extends ConditionalTask {
 					throw new BuildException( message );
 				}
 			}
+		}
 		
 		// create debug manager:
 		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
@@ -801,8 +802,10 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// create device database:
+		System.out.println("Loading device database...");
 		this.deviceDatabase = DeviceDatabase.getInstance( getProject().getProperties(), this.polishHomeDir, getProject().getBaseDir(),
 				this.buildSetting.getApiDir(), this.polishProject, this.buildSetting.getDeviceDatabaseInputStreams(), this.buildSetting.getDeviceDatabaseFiles() );
+		System.out.println("  ...done.");
 		
 		this.libraryManager = this.deviceDatabase.getLibraryManager();
 		this.environment.setLibraryManager(this.libraryManager);

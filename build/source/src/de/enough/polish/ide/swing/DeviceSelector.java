@@ -34,5 +34,7 @@ public interface DeviceSelector {
 	public Map getSelectedDeviceProperties();
 
 	public String[] getSelectedDeviceClassPaths();
+	
+	public Map getDeviceProperties( String identifier );
 
 }
