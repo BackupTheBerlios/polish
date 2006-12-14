@@ -103,12 +103,12 @@ implements Choice
 	//#ifndef tmp.suppressAllCommands
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
-	//#if ! tmp.suppressSelectCommand && polish.css.view-type
-		private boolean isSelectCommandAdded;
-	//#endif
 	//#if polish.css.view-type || polish.css.columns
 		//#define tmp.supportViewType 
 	//#endif	
+	//#if ! tmp.suppressSelectCommand && tmp.supportViewType
+		private boolean isSelectCommandAdded;
+	//#endif
 	
 
 	/**
