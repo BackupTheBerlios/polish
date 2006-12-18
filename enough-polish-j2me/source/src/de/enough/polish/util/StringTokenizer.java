@@ -46,7 +46,7 @@ import java.util.NoSuchElementException;
  */
 public class StringTokenizer implements Enumeration {
 
-	private char delimiter;
+	private String delimiters;
 	private char[] inputChars;
 	private String inputText;
 	private int startPosition;
@@ -61,7 +61,19 @@ public class StringTokenizer implements Enumeration {
 	 */
 	public StringTokenizer( String input, char delimiter ) {
 		super();
-		reset(input, delimiter);
+		reset(input, String.valueOf(delimiter));
+	}
+	
+	/**
+	 * Creates a new StringTokenizer.
+	 * 
+	 * @param input the input, e.g. "one;two;three"
+	 * @param delimiters the delimiters, e.g. ";:\t\n"
+	 * @throws NullPointerException when the input is null
+	 */
+	public StringTokenizer( String input, String delimiters ) {
+		super();
+		reset(input, delimiters);
 	}
 	
 	/**
@@ -72,10 +84,21 @@ public class StringTokenizer implements Enumeration {
 	 * @throws NullPointerException when the input is null
 	 */
 	public void reset( String input, char delim ) {
+	  reset(input, String.valueOf(delim));
+	}
+	
+	/**
+	 * Resets this StringTokenizer.
+	 * 
+	 * @param input the input, e.g. "one;two;three"
+   * @param delimiters the delimiters, e.g. ";:\t\n"
+	 * @throws NullPointerException when the input is null
+	 */
+	public void reset( String input, String delimiters ) {
 		this.inputText = input;
-		this.delimiter = delim;
+		this.delimiters = delimiters;
 		this.inputChars = input.toCharArray();
-		updateTokenStartPosition(input, this.inputChars, delim);
+		updateTokenStartPosition(input, this.inputChars, this.delimiters);
 	}
 	
 	
@@ -86,10 +109,10 @@ public class StringTokenizer implements Enumeration {
 	 * @param chars the characters of the input text
 	 * @param delim the delimiter
 	 */
-	protected void updateTokenStartPosition( String input, char[] chars, char delim ) {
+	protected void updateTokenStartPosition( String input, char[] chars, String delimiters ) {
 		while ( this.startPosition < chars.length ) {
 			char c = chars[ this.startPosition ];
-			if (c != delim) {
+			if (delimiters.indexOf(c) == -1) {
 				this.hasMoreTokens =  true;
 				return;
 			}
@@ -119,19 +142,19 @@ public class StringTokenizer implements Enumeration {
 		}
 		int position = this.startPosition + 1;
 		int length = this.inputChars.length;
-		while ( position < length && this.inputChars[ position ] != this.delimiter ) {
+		while ( position < length && this.delimiters.indexOf(this.inputChars[ position ]) == -1 ) {
 			position++;
 		}
 		// System.out.println("nextToken: startPosition=" + this.startPosition + ": [" + this.inputText.substring( this.startPosition ) + "]" + "\n");
 		if (position >= length) {
 			String value = this.inputText.substring( this.startPosition );
 			this.startPosition = position++;
-			updateTokenStartPosition(this.inputText, this.inputChars, this.delimiter);
+			updateTokenStartPosition(this.inputText, this.inputChars, this.delimiters);
 			return value;
 		} else {
 			String value = this.inputText.substring( this.startPosition, position );
 			this.startPosition = position++;
-			updateTokenStartPosition(this.inputText, this.inputChars, this.delimiter);
+			updateTokenStartPosition(this.inputText, this.inputChars, this.delimiters);
 			return value;
 		} 
 	}
@@ -148,10 +171,10 @@ public class StringTokenizer implements Enumeration {
 		int number = 0;
 		int lastPosition = position - 1;
 		//System.out.println("countTokens: input=" + this.inputText + ", startPos=" + this.startPosition);
-		char c = this.delimiter;
+		char c = this.delimiters.charAt(0);
 		while ( position < length  ) {
 			c = this.inputChars[position];
-			if ( c == this.delimiter ) {
+			if ( this.delimiters.indexOf(c) > -1 ) {
 				if ( position > lastPosition + 1) {
 					//System.out.println("increase: position=" + position + ", lastPos=" + lastPosition );
 					number++;
@@ -160,7 +183,7 @@ public class StringTokenizer implements Enumeration {
 			}
 			position++;
 		}
-		if ( c != this.delimiter ) {
+		if ( this.delimiters.indexOf(c) == -1 ) {
 			//System.out.println("increase after loop: position=" + position + ", lastPos=" + lastPosition );
 			number++;
 		}
