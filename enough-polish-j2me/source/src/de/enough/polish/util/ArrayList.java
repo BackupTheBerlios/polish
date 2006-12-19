@@ -356,7 +356,11 @@ public class ArrayList
 	 * @param target the array in which the stored elements should be copied.
 	 * @return the stored elements of this list
 	 */
-	public Object[] toArray( Object[] target ) {
+  //#if polish.java5
+	public K[] toArray( K[] target ) {
+	//#else
+	//# public Object[] toArray( Object[] target ) {
+  //#endif
 		System.arraycopy( this.storedObjects, 0, target, 0, this.size );
 		return target;
 	}
