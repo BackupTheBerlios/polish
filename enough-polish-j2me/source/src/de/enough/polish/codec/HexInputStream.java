@@ -71,6 +71,9 @@ public class HexInputStream extends InputStream {
 
 	/**
 	 * Reads the next byte of data.
+   * 
+   * @return the read byte
+   * @throws IOException if an error occurs
 	 */
 	public int read() throws IOException {
 		// we assume that the characters are encoded as ASCII,
