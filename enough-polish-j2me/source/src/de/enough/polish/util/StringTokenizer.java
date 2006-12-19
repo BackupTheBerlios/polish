@@ -107,7 +107,7 @@ public class StringTokenizer implements Enumeration {
 	 * 
 	 * @param input the input text
 	 * @param chars the characters of the input text
-	 * @param delim the delimiter
+	 * @param delimiters the delimiter characters
 	 */
 	protected void updateTokenStartPosition( String input, char[] chars, String delimiters ) {
 		while ( this.startPosition < chars.length ) {
