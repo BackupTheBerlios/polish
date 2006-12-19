@@ -43,22 +43,36 @@ public class VectorIterator
   private int nextElement;
   private Vector vector;
   
+  /**
+   * Creates a new iterator over a vector.
+   * 
+   * @param vector the vector the iterate.
+   */
   public VectorIterator(Vector vector)
   {
     this.nextElement = 0;
     this.vector = vector;
   }
   
+  /* (non-Javadoc)
+   * @see de.enough.polish.util.Iterator#hasNext()
+   */
   public boolean hasNext()
   {
     return this.nextElement < this.vector.size();
   }
 
+  /* (non-Javadoc)
+   * @see de.enough.polish.util.Iterator#next()
+   */
   public Object next()
   {
     return this.vector.elementAt(this.nextElement++);
   }
 
+  /* (non-Javadoc)
+   * @see de.enough.polish.util.Iterator#remove()
+   */
   public void remove()
   {
     this.vector.removeElementAt(this.nextElement);
