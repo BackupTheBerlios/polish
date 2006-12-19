@@ -60,7 +60,15 @@ focused {
 	padding: 2;
 	font-color: focusedFontColor;
 	layout: expand | center;
-	background-color: highlightedBgColor;
+	background {
+		type: web20;
+		color: highlightedBgColor;
+		circle-anchor: top;
+		circle-color: #A2A2f9;
+		padding: 3;
+		padding-top: 0;
+		padding-bottom: 8;
+	}
 	label-style: .labelFocused;
 }
 
