@@ -66,6 +66,8 @@ public class RotateRgbEffect extends RgbEffect {
 	 * Creates a new rotate effect
 	 * 
 	 * @param angle the angle in degrees by which the RGB data should be rotated
+   * @param referencePointXPercent X-Position of the reference point
+   * @param referencePointYPercent Y-Position of the reference point
 	 */
 	public RotateRgbEffect( int angle, int referencePointXPercent, int referencePointYPercent ) {
 		this.angle = angle;
@@ -73,6 +75,9 @@ public class RotateRgbEffect extends RgbEffect {
 		this.referencePointYPercent = referencePointYPercent;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.RgbEffect#renderEffect(de.enough.polish.util.RgbImage)
+	 */
 	public void renderEffect(RgbImage image) {
 		//#if polish.hasFloatingPoint
 			int referenceX = (image.getWidth() * this.referencePointXPercent) / 100;
