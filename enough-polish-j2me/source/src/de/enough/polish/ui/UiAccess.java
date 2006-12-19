@@ -1271,11 +1271,26 @@ public final class UiAccess {
 	 * @param key the key of the attribute
 	 * @return the attribute value, null if none has been registered under the given key before
 	 */
-	public static  Object getAttribute( Item item, Object key ) {
+	public static Object getAttribute( Item item, Object key ) {
 		return item.getAttribute( key );
 	}
     //#endif
 	
+	//#if polish.usePolishGui
+  /**
+   * Returns a HashMap object with all registered attributes.
+   * 
+   * @param item the item from which the attributes should be retrieved
+   * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+   */
+  public static HashMap getAttibutes( Item item ) {
+    if ( attributes == null ) {
+      return null;
+    }
+    return (HashMap) attributes.get( item );
+  }
+  //#endif
+
 	/**
 	 * Sets an arbitrary attribute for the given item.
 	 * 
@@ -1298,7 +1313,7 @@ public final class UiAccess {
 	/**
 	 * Gets an previously added attribute of the specified item.
 	 * 
-	 * @param item the item to which the attribute should be added
+	 * @param item the item from which the attribute should be retrieved
 	 * @param key the key of the attribute
 	 * @return the attribute value, null if none has been registered under the given key before
 	 */
@@ -1312,5 +1327,18 @@ public final class UiAccess {
 		}
 		return itemAttributes.get( key );
 	}
+  
+  /**
+   * Returns a HashMap object with all registered attributes.
+   * 
+   * @param item the item from which the attributes should be retrieved
+   * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+   */
+  public static HashMap getAttibutes( javax.microedition.lcdui.Item item ) {
+    if ( attributes == null ) {
+      return null;
+    }
+    return (HashMap) attributes.get( item );
+  }
 
 }

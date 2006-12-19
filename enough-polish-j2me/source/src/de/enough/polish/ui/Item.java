@@ -2137,6 +2137,15 @@ public abstract class Item extends Object
 		}
 		return this.attributes.get( key );
 	}
+  
+  /**
+   * Returns a HashMap object with all registered attributes.
+   * 
+   * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+   */
+  public HashMap getAttributes() {
+    return this.attributes;
+  }
 	
 
 //#ifdef polish.Item.additionalMethods:defined
