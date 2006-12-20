@@ -42,8 +42,15 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <code>MIDP2LayoutView</code>.
+ * The <code>MIDP2LayoutView</code> layouts all items in a row instead of placing each item on a new row.
  * <p>
+ * Apply this layout by specifying the view-type in the screen's CSS style:
+ * <pre>
+ * .myForm {
+ *   view-type: midp2;
+ * }
+ * </pre>
+ * </p>
  * 
  * @author Kin Wong
  */

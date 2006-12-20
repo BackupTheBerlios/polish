@@ -419,18 +419,20 @@ public class CommandItem extends IconItem {
 			}
 		//#endif
 		//#if polish.css.command-child-indicator
-			String childIndicatorUrl = style.getProperty( "command-child-indicator" );
-			if (childIndicatorUrl != null) {
-				try {
-					this.childIndicator = StyleSheet.getImage(childIndicatorUrl, this, true);
-					this.childIndicatorWidth = this.childIndicator.getWidth();
-					this.childIndicatorHeight = this.childIndicator.getHeight();
-				} catch (IOException e) {
-					//#debug error
-					System.out.println("Unable to load command-child-indicator[ " + childIndicatorUrl + "] " + e );
+			if (this.hasChildren) {
+				String childIndicatorUrl = style.getProperty( "command-child-indicator" );
+				if (childIndicatorUrl != null) {
+					try {
+						this.childIndicator = StyleSheet.getImage(childIndicatorUrl, this, true);
+						this.childIndicatorWidth = this.childIndicator.getWidth();
+						this.childIndicatorHeight = this.childIndicator.getHeight();
+					} catch (IOException e) {
+						//#debug error
+						System.out.println("Unable to load command-child-indicator[ " + childIndicatorUrl + "] " + e );
+					}
 				}
 			}
-			if (this.childIndicator == null) {
+			if (this.hasChildren && this.childIndicator == null) {
 		//#endif			
 				this.childIndicatorWidth = this.font.getHeight();
 				this.childIndicatorHeight = this.childIndicatorWidth;

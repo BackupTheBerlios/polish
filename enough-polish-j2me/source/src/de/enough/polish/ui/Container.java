@@ -345,6 +345,13 @@ public class Container extends Item {
 		}
 		this.yOffset = 0;
 		this.targetYOffset = 0;
+		if (this.internalX != -9999) {
+			this.internalX = -9999;
+			this.internalY = 0;
+			if ( this.isFocused && this.parent instanceof Container ) {
+				((Container) this.parent).adjustScrolling( this );
+			}
+		}
 		if (this.isInitialised) {
 			this.isInitialised = false;
 			//this.yBottom = this.yTop = 0;
@@ -484,6 +491,7 @@ public class Container extends Item {
 				this.internalWidth = item.internalWidth;
 				this.internalY = item.contentY - this.contentY + item.internalY;
 				this.internalHeight = item.internalHeight;
+				
 				//#debug
 				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
 			} else {
@@ -1178,6 +1186,11 @@ public class Container extends Item {
 	 * @param item the item for which the scrolling should be adjusted
 	 */
 	protected void adjustScrolling(Item item) {
+		if (!this.enableScrolling) {
+			return;
+		}
+		//#debug
+		System.out.println("adjusting scrolling for " + item + ", contentY=" + item.contentX + ", internalY+internalHeight=" + (item.internalY + item.internalHeight) + ", this.yBottom=" + this.yBottom);
 		if ( item.contentY + item.internalY + item.internalHeight > this.yBottom) {
 			//#if polish.css.scroll-mode
 				if (!this.scrollSmooth) {

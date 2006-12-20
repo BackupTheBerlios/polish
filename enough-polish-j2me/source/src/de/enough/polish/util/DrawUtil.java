@@ -207,9 +207,90 @@ public final class DrawUtil {
 		//#if polish.midp2
 			g.fillTriangle(x1, y1, x2, y2, x3, y3);
 		//#else
-			// draw lines:
-			//TODO robert implement DrawUtil.fillTriangle
+			int centerX = getCenter( x1, x2, x3 );
+			int centerY = getCenter( y1, y2, y3 );;
+			boolean isPositionMoved;
+			do {
+				// drawTriangle( x1, y1, x2, y2, x3, y3, g );
+				g.drawLine( x1, y1, x2, y2 );
+				g.drawLine( x2, y2, x3, y3 ); 
+				g.drawLine( x3, y3, x1, y1 );
+				
+				isPositionMoved = false;
+				if (x1 < centerX) {
+					x1++;
+					isPositionMoved = true;
+				} else if (x1 > centerX) {
+					x1--;
+					isPositionMoved = true;
+				}
+				if (x2 < centerX) {
+					x2++;
+					isPositionMoved = true;
+				} else if (x2 > centerX) {
+					x2--;
+					isPositionMoved = true;
+				}
+				if (x3 < centerX) {
+					x3++;
+					isPositionMoved = true;
+				} else if (x3 > centerX) {
+					x3--;
+					isPositionMoved = true;
+				}
+				if (y1 < centerY) {
+					y1++;
+					isPositionMoved = true;
+				} else if (y1 > centerY) {
+					y1--;
+					isPositionMoved = true;
+				}
+				if (y2 < centerY) {
+					y2++;
+					isPositionMoved = true;
+				} else if (y2 > centerY) {
+					y2--;
+					isPositionMoved = true;
+				}
+				if (y3 < centerY) {
+					y3++;
+					isPositionMoved = true;
+				} else if (y3 > centerY) {
+					y3--;
+					isPositionMoved = true;
+				}
+			} while (isPositionMoved);
 		//#endif
+	}
+
+	/**
+	 * Retrieves the center position of all numbers
+	 * @param n1 first number
+	 * @param n2 second number
+	 * @param n3 third number
+	 * @return the center of all numbers: min( n1, n2, n3 ) +  (max( n1, n2, n3 ) - min( n1, n2, n3 )) / 2
+	 */
+	public static int getCenter(int n1, int n2, int n3) {
+		int max = Math.max( n1, Math.max( n2, n3) );
+		int min = Math.min( n1, Math.min( n2, n3 ) );
+		return min + ((max - min) / 2);
+	}
+
+	/**
+	 * Draws the specified triangle.
+	 * 
+	 * @param x1 the x coordinate of the first vertex of the triangle
+	 * @param y1 the y coordinate of the first vertex of the triangle
+	 * @param x2 the x coordinate of the second vertex of the triangle
+	 * @param y2 the y coordinate of the second vertex of the triangle
+	 * @param x3 the x coordinate of the third vertex of the triangle
+	 * @param y3 the y coordinate of the third vertex of the triangle
+	 * @param g the graphics context
+	 */
+	public static void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Graphics g) {
+		g.drawLine( x1, y1, x2, y2 );
+		g.drawLine( x2, y2, x3, y3 ); 
+		g.drawLine( x3, y3, x1, y1 ); 		
 	}
 
 	/**

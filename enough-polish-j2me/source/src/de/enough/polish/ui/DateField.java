@@ -828,13 +828,12 @@ public class DateField extends StringItem
 			}
 
 		//#else
-			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
-					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
+			if ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) || gameAction == Canvas.FIRE ) 
+			{
+				showDateForm();
+			} else {
 				return false;
-			}		
-			showDateForm();
+			}
 		//#endif
 		return true;
 	}

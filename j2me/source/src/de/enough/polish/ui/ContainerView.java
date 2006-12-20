@@ -834,6 +834,25 @@ extends ItemView
 		// this.focusedItem = item;
 		this.parentContainer.focus(index, item, direction );
 	}
+	
+	/**
+	 * Focuses the item with the given index.
+	 * The container will then set the style of the 
+	 * retrieved item. The default implementation just
+	 * sets the internal focusedIndex field along with focusedItem. 
+	 * When this method is overwritten, please do call super.focusItem first
+	 * or set the fields "focusedIndex" and "focusedItem" yourself.
+	 * 
+	 * @param index the index of the item
+	 * @param item the item which should be focused
+	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
+	 */
+	protected void focusItem( int index, Item item, int direction  ) {
+		// this is done within container.focus() anyhow...
+		// this.focusedIndex = index;
+		// this.focusedItem = item;
+		this.parentContainer.focus(index, item, direction );
+	}
 
 	/**
 	 * Sets the focus to this container view.
