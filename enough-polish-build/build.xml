@@ -26,6 +26,7 @@
 	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:lib/jdom.jar"/>
 	<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />	
+	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-4.1.jar:lib/commons-beanutils-core.jar:lib/commons-logging.jar:lib/antlr.jar" />
 	
 	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 	
@@ -737,5 +738,17 @@
 		</j2mepolish>
 	</target>
 
+	<target name="checkstyle">
+		<checkstyle config="checkstyle-config.xml">
+			<!--
+			<fileset dir="source/src" includes="**/*.java"/>
+			-->
+			<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java"/>
+			<formatter type="plain"/>
+			<!--
+			<formatter type="xml" toFile="build/checkstyle_errors.xml"/>
+			-->
+		</checkstyle>
+	</target>
 
 </project>
