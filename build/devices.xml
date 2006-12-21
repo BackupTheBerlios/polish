@@ -7175,7 +7175,7 @@ These namespaces/schemas will be used soon.
 
 	<device> 
 		<identifier>Samsung/SGH-D720</identifier> 
-		<groups>Series60E2</groups>
+		<groups>Series60</groups>
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="CanvasSize" value="176x204"/>
 		<capability name="FullCanvasSize" value="176x220" />
