@@ -40,8 +40,6 @@ import javax.microedition.lcdui.Graphics;
  * 			Is enabled by default.</li>
  * 		<li><b>back-and-forth</b>: true when the animation should run backward when 
  * 			the end-color is reached. Is enabled by default</li>
- * 		<li><b></b>: </li>
- * 		<li><b></b>: </li>
  * </ul>
 *
  * <p>Copyright Enough Software 2004, 2005</p>
@@ -85,6 +83,9 @@ public class PulsatingBackground extends Background {
 		g.fillRect(x, y, width + 1, height + 1);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#animate()
+	 */
 	public boolean animate() {
 		if (this.animationStopped) {
 			return false;

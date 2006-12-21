@@ -208,6 +208,9 @@ public abstract class ScreenChangeAnimation
 	/**
 	 * Notifies this animation that the screen space has been changed.
 	 * This is ignored by the default implementation.
+   * 
+   * @param width the width
+   * @param height the height
 	 */
 	public void sizeChanged( int width, int height ) {
 		// ignore

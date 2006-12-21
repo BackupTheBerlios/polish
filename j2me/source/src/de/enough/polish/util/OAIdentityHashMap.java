@@ -288,6 +288,7 @@ public class OAIdentityHashMap
 	/**
 	 * Remove is not supported by the Open Addressing HashMap.
 	 * @return nothing
+   * @param key the key of the value to remove
 	 * @throws RuntimeException always
 	 */
 	public Object remove( Object key ) {

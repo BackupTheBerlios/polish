@@ -541,7 +541,9 @@ public final class UiAccess {
 	 * //#endif
 	 * </pre>
 	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+   * 
 	 * @param item the item of which the style should be retrieved
+   * @return the style of the item
 	 */
 	public static Style getStyle( javax.microedition.lcdui.Item item ) {
 		return null;
@@ -562,7 +564,9 @@ public final class UiAccess {
 	 * //#endif
 	 * </pre>
 	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+   * 
 	 * @param screen the screen of which the style should be retrieved
+   * @return the style of the screen
 	 */
 	public static Style getStyle( javax.microedition.lcdui.Screen screen ) {
 		return null;
@@ -583,7 +587,9 @@ public final class UiAccess {
 	 * //#endif
 	 * </pre>
 	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+   * 
 	 * @param item the item of which the style should be retrieved
+   * @return the style of the item
 	 */
 	public static Style getStyle( Item item ) {
 		return item.style;
@@ -604,7 +610,9 @@ public final class UiAccess {
 	 * //#endif
 	 * </pre>
 	 * Note: this method is only available when the J2ME Polish GUI is used, so you better check for the polish.usePolishGui prepocessing symbol.
+   * 
 	 * @param screen the screen of which the style should be retrieved
+   * @return the style of the screen
 	 */
 	public static Style getStyle( Screen screen ) {
 		return screen.style;
@@ -1087,7 +1095,9 @@ public final class UiAccess {
      * //#endif
      * </pre>
      * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * 
      * @param screen the screen
+     * @return the background for the screen
      */
     public static Background getBackground( Screen screen ) {
     	return screen.background;
@@ -1105,9 +1115,11 @@ public final class UiAccess {
      * //#endif
      * </pre>
      * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * 
      * @param screen the screen
+     * @return the background for the screen
      */
-    public static Background getBackground(  javax.microedition.lcdui.Screen screen ) {
+    public static Background getBackground( javax.microedition.lcdui.Screen screen ) {
     	return null;
     }
     //#endif
@@ -1162,7 +1174,9 @@ public final class UiAccess {
      * //#endif
      * </pre>
      * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * 
      * @param item the item
+     * @return the background for the item
      */
     public static Background getBackground( Item item ) {
     	return item.background;
@@ -1180,7 +1194,9 @@ public final class UiAccess {
      * //#endif
      * </pre>
      * Note: this method is only available when the J2ME Polish GUI is used! Check for the preprocessing symbold polish.usePolishGui.
+     * 
      * @param item the item
+     * @return the background for the item
      */
     public static Background getBackground(  javax.microedition.lcdui.Item item ) {
     	return null;
@@ -1291,7 +1307,7 @@ public final class UiAccess {
   }
   //#endif
 
-	/**
+  /**
 	 * Sets an arbitrary attribute for the given item.
 	 * 
 	 * @param item the item to which the attribute should be added

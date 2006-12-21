@@ -56,6 +56,8 @@ public class ThinSimpleBackground extends Background {
 	 * @param color the color
 	 * @param maxWidth the maxium width in either pixel or percent (0..100)
 	 * @param isPercent true when the maxWidth parameter represents a percentage value
+   * @param borderWidth the width of the border
+   * @param borderColor the color of the border
 	 */
 	public ThinSimpleBackground( int color, int maxWidth, boolean isPercent, int borderWidth, int borderColor ) {
 		this.color = color;

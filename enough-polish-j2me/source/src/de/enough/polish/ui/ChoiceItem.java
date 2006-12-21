@@ -446,7 +446,7 @@ public class ChoiceItem extends IconItem
 	}
 
 	/**
-	 * @param lastItem
+	 * @param lastItem the item to use the values from for adjustoing
 	 */
 	public void adjustProperties(Item lastItem) {
 		this.yTopPos = lastItem.yTopPos;

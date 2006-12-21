@@ -181,11 +181,14 @@ public final class ImageUtil {
 	 * @param sourceRgbData the rgb data to be rotated.
 	 * @param width the width of the rgb data.
 	 * @param height the heigth of the rgb data.
+   * @param targetRgbData unused
 	 * @param degree the degree value of the rotation.
+	 * @param degreeCos unused
+   * @param degreeSin unused
 	 * @param backgroundColor the ARGB color used for the background
 	 * @return the rotated rgb data.
 	 */
-	public static final int[] rotate(int[] sourceRgbData, int width, int height, int targetRgbData, int degree, double degreeCos,double degreeSin, int backgroundColor) {
+	public static final int[] rotate(int[] sourceRgbData, int width, int height, int targetRgbData, int degree, double degreeCos, double degreeSin, int backgroundColor) {
 		return rotate(sourceRgbData, width, height, degree, width/2, height/2, backgroundColor);
 	}
 	//#endif

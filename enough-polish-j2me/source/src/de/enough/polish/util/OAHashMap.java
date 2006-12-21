@@ -284,6 +284,7 @@ public class OAHashMap
 	
 	/**
 	 * Remove is not supported by the Open Addressing HashMap.
+   * @param key the key of the value to remove
 	 * @return nothing
 	 * @throws RuntimeException always
 	 */

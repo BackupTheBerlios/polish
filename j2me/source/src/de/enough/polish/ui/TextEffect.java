@@ -223,7 +223,6 @@ public abstract class TextEffect {
 	 * @param y the top corner of the text in the created rgb data
 	 * @param width the desired width of the data array array, e.g. font.stringWidth(text) 
 	 * @param height the desired height of the data array, e.g. font.getHeight()
-	 * @param transparentColor the color that should be used to flag transparent parts, using DrawUtil.getComplementaryColor( textColor ) might be a good idea
 	 * @return the RGB data that contains the given text
 	 * @see DrawUtil#getComplementaryColor(int)
 	 */
