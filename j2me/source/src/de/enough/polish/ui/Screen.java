@@ -1981,6 +1981,8 @@ implements AccessibleCanvas
 				//#if tmp.menuFullScreen && polish.key.ReturnKey:defined
 					if (!processed) {
 						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+								//#debug
+								System.out.println("keyPressed: invoking commandListener for " + this.backCommand.getLabel() );
 								callCommandListener( this.backCommand );
 								processed = true;
 						//# }
@@ -2258,9 +2260,11 @@ implements AccessibleCanvas
 			this.okCommand = cmd;
 		}
 		//#ifdef polish.key.ReturnKey:defined
-			if ( (cmdType == Command.BACK || cmdType == Command.CANCEL || cmdType == Command.EXIT ) 
-				&& ( this.backCommand == null || this.backCommand.getPriority() < cmd.getPriority() )  ) 
+			else if ( (cmdType == Command.BACK || cmdType == Command.CANCEL || cmdType == Command.EXIT ) 
+				&& ( this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority() )  ) 
 			{
+				//#debug
+				System.out.println("setting new backcommand=" + cmd.getLabel() + " for screen " + this + " " + getTitle() );
 				this.backCommand = cmd;
 			}
 		//#endif
@@ -2295,7 +2299,7 @@ implements AccessibleCanvas
 				System.out.println("Ignoring existing command " + cmd.getLabel() );
 				return;
 			}
-			if ( (cmdType == Command.BACK || cmdType == Command.CANCEL ) ) 
+			if ( (cmdType == Command.BACK || cmdType == Command.CANCEL || cmdType == Command.EXIT) ) 
 			{
 				if ( (this.menuSingleRightCommand == null)
 						|| (cmd.getPriority() < this.menuSingleRightCommand.getPriority())	)
