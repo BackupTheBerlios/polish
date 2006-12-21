@@ -135,6 +135,12 @@ info {
 	layout: left | expand;	
 }
 
+.textFieldSymbolList {
+	padding: 10;
+	columns: 5;
+	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
+}
+
 .addressChoice {
 	padding: 2;
 	font-size: small;
