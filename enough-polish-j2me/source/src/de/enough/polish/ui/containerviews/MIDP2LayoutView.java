@@ -97,7 +97,9 @@ public class MIDP2LayoutView extends ContainerView {
         	Container parContainer = (Container) parent;
         	this.parentContainer = parContainer;
                 Item[] myItems = parContainer.getItems();
-                this.allowCycling = parContainer.allowCycling;
+            	//#if polish.Container.allowCycling != false
+                	this.allowCycling = parContainer.allowCycling;
+                //#endif
                 this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
                 this.currentRow = new ArrayList();
                 this.allRows = new ArrayList();

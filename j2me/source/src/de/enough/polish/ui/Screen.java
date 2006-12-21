@@ -2849,6 +2849,19 @@ implements AccessibleCanvas
 					item.itemCommandListener.commandAction(cmd, item);
 					return;
 				}
+			} else if (item instanceof Container) {
+				item = ((Container) item).getFocusedItem();
+				while (item != null) {
+					if ((item.itemCommandListener != null) && (item.commands != null) && item.commands.contains(cmd) ) {
+						item.itemCommandListener.commandAction(cmd, item);
+						return;
+					}
+					if (item instanceof Container) {
+						item = ((Container) item).getFocusedItem();						
+					} else {
+						item = null;
+					}
+				}
 			}
 			// now invoke the usual command listener:
 			if (this.realCommandListener != null) {

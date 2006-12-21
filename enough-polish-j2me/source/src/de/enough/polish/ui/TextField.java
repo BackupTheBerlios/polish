@@ -3064,6 +3064,8 @@ public class TextField extends StringItem
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
 		public void commandAction(Command cmd, Item item) {
+			//#debug
+			System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
 			//#if tmp.supportsSymbolEntry
 				if (cmd == ENTER_SYMBOL_CMD ) {
 					if (this.caretChar != this.editingCaretChar) {

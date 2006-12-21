@@ -1231,7 +1231,7 @@ public abstract class Item extends Object
 	 * <code>ItemCommandListener</code>. A <code>null</code> reference
 	 * is allowed and has the effect of removing any existing listener.
 	 * 
-	 * When no listener is registered, J2ME Polish notofies the 
+	 * When no listener is registered, J2ME Polish notifies the 
 	 * command-listener of the current screen, when an item command 
 	 * has been selected.
 	 * 
