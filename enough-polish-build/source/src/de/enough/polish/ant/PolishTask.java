@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -129,7 +131,24 @@ import de.enough.polish.util.TextFileManager;
  */
 public class PolishTask extends ConditionalTask {
 
-	private static final String VERSION = "2.0 <Preview-2006-12-19>";
+  static
+  {
+    String tmp;
+    
+    try
+    {
+      ResourceBundle versions = ResourceBundle.getBundle("version");
+      tmp = versions.getString("VersionName");
+    }
+    catch (MissingResourceException e)
+    {
+      tmp = "<Unknown CVS version>";
+    }
+    
+    VERSION = tmp;
+  }
+  
+	private static final String VERSION;
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;

@@ -5,10 +5,7 @@
 	<!-- global properties -->
 	<property file="${user.name}.properties" />
 	<property name="device" value="Generic/Midp2Cldc11" />
-	<property name="Version" value="2.0-preview-2006-12-19" />
-	<property name="BetaVersion" value="2.0-preview-2006-12-19" />
-
-	<property name="VersionMessage" value="Welcome to J2ME Polish 2.0 &lt;Preview 2006-12-19&gt;! " />
+	<property file="version.properties" />
 	
 	<property name="all.jars" value="jdom.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar,cdc-1.0.jar" />
 	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar" />
@@ -23,7 +20,7 @@
 	
 	<!-- task definitions -->
 	
-	<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath="bin/classes:lib/jdom.jar"/>
+	<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask" classpath=".:bin/classes:lib/jdom.jar"/>
 	<taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
 	<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
 	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:lib/jdom.jar"/>
@@ -87,7 +84,7 @@
 			 excludes="**/*.html"
 			 index="true"
 		     >
-			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt,translations.txt" />
+			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,standard-css-attributes.xml,build/j2mepolish.index.txt,translations.txt,version.properties" />
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 			<fileset dir="setup" includes="icons/*.*" />
 		</jar>	
