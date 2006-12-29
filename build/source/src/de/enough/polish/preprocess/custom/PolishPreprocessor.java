@@ -27,7 +27,9 @@ package de.enough.polish.preprocess.custom;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +42,9 @@ import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
+import de.enough.polish.rmi.RemoteClient;
+import de.enough.polish.sourceparser.JavaSourceClass;
+import de.enough.polish.sourceparser.JavaSourceMethod;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.StringList;
@@ -423,6 +428,55 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				continue;
 			}
 			
+			// check for RemoteClient.open("de.enough.polish.sample.rmi.GameServer", "http://localhost:8080/gameserver/myservice") etc;
+			startPos = line.indexOf("RemoteClient.open");
+			if (startPos != -1) {
+				int parenthesesStart = line.indexOf('(', startPos );
+				int parenthesesEnd = line.indexOf(')', parenthesesStart);
+				if (parenthesesStart == -1 || parenthesesEnd == -1) {
+					throw new BuildException (getErrorStart(className, lines) + ": Invalid RemoteClient.open() usage - please put the complete call on a single line. This line is not valid: " + line );
+				}
+				int commaPos = line.indexOf(',', parenthesesStart);
+				String name = line.substring( parenthesesStart + 1, commaPos ).trim();
+				if (name.length() < 3 || name.charAt(0) != '"' || name.charAt( name.length() -1) != '"') {
+					throw new BuildException (getErrorStart(className, lines) + ": Invalid RemoteClient.open() usage - please specify the name of the interface directly with quotes, e.g. \"RemoteClient.open(\"GameServer\", \"http://localhost/gameserver/myservice\")\" . This line is not valid: " + line );					
+				}
+				name = name.substring( 1, name.length() - 1);
+				String url = line.substring( commaPos + 1, parenthesesEnd ).trim();
+				line = line.substring(0, startPos)
+					+ "new " + name + "RemoteClient(" + url + "); //" + line.substring(startPos);
+				lines.setCurrent(line);
+				continue;
+			}
+			
+			// check for interfaces extending de.enough.polish.rmi.Remote:
+			startPos = line.indexOf("extends Remote");
+			if (startPos != -1 && (
+					(line.length() == startPos + "extends Remote".length())
+					|| ( !Character.isLetterOrDigit( line.charAt(startPos + "extends Remote".length())) )
+					) )
+			{
+				// PROBLEM: this is only called in clean builds and after the interface has changed...
+				//System.out.println("extends Remote: " + className );
+				List rmiClassFiles = (List) this.environment.get( "rmi-classes" );
+				if (rmiClassFiles == null ) {
+					rmiClassFiles = new ArrayList();
+					this.environment.set("rmi-classes", rmiClassFiles);
+			    	this.environment.addSymbol("polish.build.hasRemoteClasses");
+				}
+				File classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
+				rmiClassFiles.add( classFile );
+				try {
+					createRemoteImplementation( className, lines );
+				} catch (IOException e) {
+					e.printStackTrace();
+					BuildException be = new BuildException( getErrorStart(className, lines) + "Unable to read or save interface/class file.");
+					be.initCause(e);
+					throw be;
+				}
+				continue;
+			}
+
 			// check for GameCanvase.getGraphics() on BlackBerry phones:
 			if (this.usesBlackBerry) {
 				startPos = line.indexOf("getGraphics"); 
@@ -448,6 +502,74 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			}
 
 		}
+	}
+
+
+	/**
+	 * Parses the source code of the given interface that extends Remote and generates the client stub implementation.
+	 * 
+	 * @param className the name of the remote interface
+	 * @param lines the source code of the interface
+	 * @throws IOException when the source code could not be written
+	 */
+	protected void createRemoteImplementation(String className, StringList lines) throws IOException {
+		JavaSourceClass sourceClass = new JavaSourceClass( lines.getArray() );
+		String newImplements = sourceClass.getClassName();
+		sourceClass.setClassName(newImplements + "RemoteClient");
+		sourceClass.setImplementedInterfaces( new String[]{ newImplements } );
+		sourceClass.setExtendsStatement("RemoteClient");
+		sourceClass.addImport("de.enough.polish.rmi.RemoteClient");
+		sourceClass.setClass( true );
+		
+		
+		 
+		JavaSourceMethod[] methods = sourceClass.getMethods();
+		for (int i = 0; i < methods.length; i++) {
+			JavaSourceMethod method = methods[i];
+			createRemoteMethodImplementation( method );
+		}
+
+		// add URL constructor:
+		JavaSourceMethod constructor = new JavaSourceMethod( "public", "", sourceClass.getClassName(), new String[]{ "String" }, new String[]{ "url" }, null );
+		constructor.setMethodCode( new String[]{
+				"super( url );"
+		} );
+		sourceClass.addMethod( constructor );
+		File targetDir = new File( this.currentDevice.getSourceDir() + File.separatorChar + sourceClass.getPackageName().replace('.', File.separatorChar) );
+		File targetFile = new File( targetDir, sourceClass.getClassName() + ".java");
+		FileUtil.writeTextFile(targetFile, sourceClass.renderCode() );
+	}
+
+
+
+	private void createRemoteMethodImplementation(JavaSourceMethod method) {
+		//TODO add handling for checked exceptions...
+		ArrayList methodCode = new ArrayList();
+		methodCode.add("String methodName= \"" + method.getName() + "\";" );
+		String methodCall;
+		if (method.getParameterNames() == null) {
+			methodCall = "callMethod( methodName, null );";
+		} else {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("Object[] params = new Object[] { ");
+			String[] paramNames = method.getParameterNames();
+			for (int i = 0; i < paramNames.length; i++) {
+				String paramName = paramNames[i];
+				buffer.append( paramName );
+				if (i != paramNames.length - 1) {
+					buffer.append(", ");
+				}
+			}
+			buffer.append( " };");
+			methodCode.add( buffer.toString() );
+			methodCall = "callMethod( methodName, params );";
+		}
+		if ( "void".equals(method.getReturnType()) ) {
+			methodCode.add( methodCall );
+		} else {
+			methodCode.add( "return (" + method.getReturnType() + ") " + methodCall );
+		}
+		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
 	
 

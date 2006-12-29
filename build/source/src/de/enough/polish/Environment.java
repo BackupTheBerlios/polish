@@ -649,4 +649,21 @@ public class Environment {
 	public void putAll(Map properties) {
 		this.variables.putAll( properties );
 	}
+
+	/**
+	 * Retrieves the project's home dir.
+	 * 
+	 * @return the current project's base directory, the working day when there is no Ant project attached.
+	 */
+	public File getProjectHome() {
+		if (this.antProject != null) {
+			return this.antProject.getBaseDir();
+		} 
+		File home = (File) get("project.home");
+		if (home == null) {
+			home = new File(".");
+			set("project.home", home);
+		}
+		return home;
+	}
 }

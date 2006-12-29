@@ -26,14 +26,22 @@
 package de.enough.polish.obfuscate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
 import de.enough.polish.ExtensionDefinition;
+import de.enough.polish.util.AbbreviationsGenerator;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 
@@ -124,6 +132,53 @@ implements OutputFilter
 		if (!this.doOptimize) {
 			argsList.add( "-dontoptimize" );
 		}
+	    List serializableClassNames = (List) this.environment.get("serializable-classes" );
+	    if (serializableClassNames != null) {
+	    	Map obfuscationMap = new HashMap();
+	    	File mapFile = new File( this.environment.getProjectHome(), ".polishSettings/obfuscation-map.txt" );
+	    	if (mapFile.exists()) {
+	    		try {
+					FileUtil.readPropertiesFile(mapFile, '=', obfuscationMap);
+				} catch (IOException e) {
+					System.out.println("warning: unable to read obfuscation map " + mapFile.getAbsolutePath() + ": " + e.toString() + " - this error is ignored.");
+				}
+	    	}
+	    	AbbreviationsGenerator abbreviationsGenerator = new AbbreviationsGenerator( obfuscationMap, AbbreviationsGenerator.ABBREVIATIONS_ALPHABET_LOWERCASE );
+	    	// add all class names to the map:
+	    	int originalObfuscationMapSize = obfuscationMap.size();
+	    	for (Iterator iter = serializableClassNames.iterator(); iter.hasNext();) {
+				String className = (String) iter.next();
+				abbreviationsGenerator.getAbbreviation(className, true);
+			}
+	    	// store obfuscation map:
+	    	if (obfuscationMap.size() != originalObfuscationMapSize) {
+		    	try {
+					FileUtil.writePropertiesFile(mapFile, obfuscationMap );
+				} catch (IOException e) {
+					BuildException be = new BuildException("Unable to write obfuscation map " + mapFile.getAbsolutePath() + ": " + e.toString() );
+					be.initCause(e);
+					throw be;
+				}
+	    	}
+	    	// create ProGuard specific obfuscation map file:
+	    	String[] keys = (String[]) obfuscationMap.keySet().toArray( new String[ obfuscationMap.size() ] );
+	    	String[] lines = new String[ keys.length ];
+	    	for (int i = 0; i < keys.length; i++) {
+				String key = keys[i];
+				lines[i] = key + " -> "+ obfuscationMap.get( key ) + ":";
+			}
+	    	File pgMapFile = new File( device.getBaseDir(), "input-obfuscation-map.txt" );
+	    	try {
+				FileUtil.writeTextFile( pgMapFile, lines);
+			} catch (IOException e) {
+				BuildException be = new BuildException("Unable to write obfuscation map " + pgMapFile.getAbsolutePath() + ": " + e.toString() );
+				be.initCause(e);
+				throw be;
+			}
+			argsList.add("-applymapping" );
+			argsList.add( quote( pgMapFile.getAbsolutePath() ) );
+	    }
+
 		argsList.add( "-printmapping" );
 		argsList.add( quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
 		if (this.dontObfuscate) {

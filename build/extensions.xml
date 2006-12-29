@@ -727,4 +727,13 @@
 		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar:${polish.home}/lib/enough-polish-dotnetcf-1.1.jar</classpath>
 	</extension>
 	
+	<extension>
+		<type>finalizer</type>
+		<name>rmi</name>
+		<class>de.enough.polish.finalize.rmi.RmiFinalizer</class>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<autostart>polish.build.hasRemoteClasses</autostart>
+	</extension>
+	
+	
 </extensions>

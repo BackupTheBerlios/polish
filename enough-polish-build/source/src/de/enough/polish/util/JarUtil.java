@@ -73,6 +73,22 @@ public final class JarUtil {
 	public static void jar( File sourceDir, File target, boolean compress ) 
 	throws FileNotFoundException, IOException 
 	{
+		jar( sourceDir.listFiles(), sourceDir, target, compress );
+	}
+	
+	/**
+	 * Writes all given files to the specified jar-file.
+	 * 
+	 * @param files all files that should be added to the JAR file
+	 * @param sourceDir The parent directory containing the given files.
+	 * @param target The jar file which should be created
+	 * @param compress True when the jar file should be compressed
+	 * @throws FileNotFoundException when a file could not be found
+	 * @throws IOException when a file could not be read or the jar file could not be written to.
+	 */
+	public static void jar(File[] files, File sourceDir, File target, boolean compress) 
+	throws FileNotFoundException, IOException 
+	{
 		// create target directory if necessary: 
 		if (!target.getParentFile().exists()) {
 			target.getParentFile().mkdirs();
@@ -88,15 +104,15 @@ public final class JarUtil {
 		// create a CRC32 object:
 		CRC32 crc = new CRC32();
 		byte[] buffer = new byte[ 1024 * 1024 ];
-		// read all files from the source directory:
-		File[] fileNames = sourceDir.listFiles();
+		// add all files:
 		int sourceDirLength = sourceDir.getAbsolutePath().length() + 1;
-		for (int i = 0; i < fileNames.length; i++) {
-			File file = fileNames[i];
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
 			addFile( file, out, crc, sourceDirLength, buffer );
 		}
 		out.close();
 	}
+
 
 	/**
 	 * Adds one file to the given jar file.

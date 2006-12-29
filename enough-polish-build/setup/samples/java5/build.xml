@@ -190,14 +190,6 @@
 				<!-- activate Java 5 Syntax Support for this project: -->
 				<postcompiler name="java5" />
 				
-				<variables 
-					replacePropertiesWithoutDirective="false"
-					>
-					<variable name="polish.TextField.useDirectInput" value="true" />
-					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />					
-				</variables>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true  
 				-->
 				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">

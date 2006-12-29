@@ -95,8 +95,8 @@ public abstract class PostCompiler extends Extension {
 	public void execute(Device device, Locale locale, Environment env)
 	throws BuildException 
 	{
-		System.out.println("Invoking postcompiler [" + getClass().getName() + "]...");
-    this.environment = env;
+		//System.out.println("Invoking postcompiler [" + getClass().getName() + "]...");
+		this.environment = env;
 		postCompile( new File( device.getClassesDir() ), device );
 	}
 	

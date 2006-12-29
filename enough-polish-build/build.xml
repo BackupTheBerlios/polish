@@ -117,6 +117,21 @@
 		</jar>
 	</target>
 
+	<target name="build-rmi" 
+		depends="build-init"
+		description="builds the enough-j2mepolish-rmi.jar">
+		<!-- create the binary rmi distribution -->
+		<jar destfile="dist/enough-j2mepolish-rmi.jar"
+		     basedir="bin/classes"
+			 excludes="**/*.html"
+			 includes="de/enough/polish/rmi/*"
+			 index="true"
+		     >
+			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/rmi/*" />
+			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/io/*" />
+		</jar>
+	</target>
+
 	<target name="build-client" 
 		depends="build-init"
 		description="builds the enough-j2mepolish-client.jar"
@@ -211,7 +226,7 @@
 
 	
 	<target name="bin-dist" 
-		depends="build-build, build-extension, build-client, build-client-java5, build-build-source"
+		depends="build-build, build-extension, build-client, build-client-java5, build-rmi, build-build-source"
 		description="creates the binary distribution"
 		>
 		
@@ -399,6 +414,16 @@
 			>
 			<fileset dir="setup/samples/serialization" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-sample-serialization" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy rmi sample application -->
+		<mkdir dir="tmp/samples/rmi/source" />
+		<copy todir="tmp/samples/rmi/source">
+			<fileset dir="../enough-polish-sample-rmi/source" includes="**/*.java,**/*.xml" excludes="**/macosx/**,**/CVS" />
+		</copy>
+		<copy todir="tmp/samples/rmi/" 
+			>
+			<fileset dir="setup/samples/rmi" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../enough-polish-sample-rmi" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
 		<!-- copy java5 sample application -->
 		<mkdir dir="tmp/samples/java5/source/src" />

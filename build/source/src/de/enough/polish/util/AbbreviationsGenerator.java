@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
@@ -50,8 +51,13 @@ public class AbbreviationsGenerator {
 	private int secondCharIndex = -1;
 	private int thirdCharIndex = -1;
 	private int currentAbbreviationLength = 1;
-	private HashMap abbreviations;
-	protected final static char[] ABBREVIATIONS = new char[]{
+	private Map abbreviations;
+	private char[] abbreviationCharacters;
+	
+	/**
+	 * A character array consisting of numbers and A-Z and a-z.
+	 */
+	public final static char[] ABBREVIATIONS_ALPHANUMERICAL = new char[]{
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
 			'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -59,13 +65,28 @@ public class AbbreviationsGenerator {
 			'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'			
 			 };
 
+	/**
+	 * A character array consisting of a-z.
+	 */
+	public final static char[] ABBREVIATIONS_ALPHABET_LOWERCASE = new char[]{
+			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+			'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'			
+			 };
+
+	/**
+	 * A character array consisting of A-Z
+	 */
+	public final static char[] ABBREVIATIONS_ALPHABET_UPPERCASE = new char[]{
+			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+			'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+			 };
+
 	
 	/**
 	 * Creates a new empty generator.
 	 */
 	public AbbreviationsGenerator() {
-		super();
-		this.abbreviations = new HashMap();
+		this(new HashMap(), ABBREVIATIONS_ALPHANUMERICAL);
 	}
 	
 	/**
@@ -73,16 +94,28 @@ public class AbbreviationsGenerator {
 	 * 
 	 * @param abbreviations the known abbreviations
 	 */
-	public AbbreviationsGenerator( HashMap abbreviations ) {
+	public AbbreviationsGenerator( Map abbreviations ) {
+		this(abbreviations, ABBREVIATIONS_ALPHANUMERICAL);
+	}
+	
+	/**
+	 * Creates a new generator.
+	 * 
+	 * @param abbreviations the known abbreviations
+	 * @param abbreviationCharacters characters used for creating the abbreviations
+	 */
+	public AbbreviationsGenerator( Map abbreviations, char[] abbreviationCharacters ) {
+		this.abbreviationCharacters = abbreviationCharacters;
 		setAbbreviationsMap(abbreviations);
 	}
+
 	
 	/**
 	 * Retrieves the map containing all abbreviations.
 	 *  
 	 * @return the map containing all abbreviations.
 	 */
-	public HashMap getAbbreviationsMap() {
+	public Map getAbbreviationsMap() {
 		return this.abbreviations;
 	}
 	
@@ -91,7 +124,7 @@ public class AbbreviationsGenerator {
 	 * 
 	 * @param map a HashMap containing all abbreviations for full keywords 
 	 */
-	public void setAbbreviationsMap( HashMap map ) {
+	public void setAbbreviationsMap( Map map ) {
 		this.abbreviations = map;
 		this.firstCharIndex = -1;
 		this.secondCharIndex = -1;
@@ -123,9 +156,9 @@ public class AbbreviationsGenerator {
 	 * @param abbreviation the abbreviation of the style
 	 * @return the index in the ABBREVIATIONS array
 	 */
-	protected final static int getCharIndex(char c, String abbreviation) {
-		for (int i = 0; i < ABBREVIATIONS.length; i++) {
-			char d = ABBREVIATIONS[i];
+	protected final int getCharIndex(char c, String abbreviation) {
+		for (int i = 0; i < this.abbreviationCharacters.length; i++) {
+			char d = this.abbreviationCharacters[i];
 			if (d == c) {
 				return i;
 			}
@@ -159,48 +192,48 @@ public class AbbreviationsGenerator {
 	public String getNextPropertyAbbreviation() {
 		if (this.firstCharIndex == -1) {
 			this.firstCharIndex = 0;
-			return "" + ABBREVIATIONS[0];
+			return "" + this.abbreviationCharacters[0];
 		}
 		if (this.currentAbbreviationLength == 1) {
-			if (this.firstCharIndex < ABBREVIATIONS.length -1) {
+			if (this.firstCharIndex < this.abbreviationCharacters.length -1) {
 				this.firstCharIndex++;
-				return "" + ABBREVIATIONS[ this.firstCharIndex ];
+				return "" + this.abbreviationCharacters[ this.firstCharIndex ];
 			} else {
 				this.firstCharIndex = 0;
 				this.secondCharIndex = 0;
 				this.currentAbbreviationLength = 2;
-				return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ];
+				return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ];
 			}
 		}
 		if (this.currentAbbreviationLength == 2) {
-			if (this.secondCharIndex < ABBREVIATIONS.length -1) {
+			if (this.secondCharIndex < this.abbreviationCharacters.length -1) {
 				this.secondCharIndex++;
-				return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ];
-			} else if (this.firstCharIndex < ABBREVIATIONS.length -1) {
+				return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ];
+			} else if (this.firstCharIndex < this.abbreviationCharacters.length -1) {
 				this.firstCharIndex++;
 				this.secondCharIndex = 0;
-				return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ];
+				return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ];
 			} else {
 				this.firstCharIndex = 0;
 				this.secondCharIndex = 0;
 				this.thirdCharIndex = 0;
 				this.currentAbbreviationLength = 3;
-				return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ] + ABBREVIATIONS[ this.thirdCharIndex ];				
+				return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ] + this.abbreviationCharacters[ this.thirdCharIndex ];				
 			}
 		}
 		// there are 3 characters available:
-		if (this.thirdCharIndex < ABBREVIATIONS.length -1) {
+		if (this.thirdCharIndex < this.abbreviationCharacters.length -1) {
 			this.thirdCharIndex++;
-			return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ] + ABBREVIATIONS[ this.thirdCharIndex ];							
-		} else if (this.secondCharIndex < ABBREVIATIONS.length -1) {
+			return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ] + this.abbreviationCharacters[ this.thirdCharIndex ];							
+		} else if (this.secondCharIndex < this.abbreviationCharacters.length -1) {
 			this.secondCharIndex++;
 			this.thirdCharIndex = 0;
-			return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ] + ABBREVIATIONS[ this.thirdCharIndex ];							
-		} else if (this.firstCharIndex < ABBREVIATIONS.length -1) {
+			return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ] + this.abbreviationCharacters[ this.thirdCharIndex ];							
+		} else if (this.firstCharIndex < this.abbreviationCharacters.length -1) {
 			this.firstCharIndex++;
 			this.secondCharIndex = 0;
 			this.thirdCharIndex = 0;
-			return "" + ABBREVIATIONS[ this.firstCharIndex ] + ABBREVIATIONS[ this.secondCharIndex ] + ABBREVIATIONS[ this.thirdCharIndex ];							
+			return "" + this.abbreviationCharacters[ this.firstCharIndex ] + this.abbreviationCharacters[ this.secondCharIndex ] + this.abbreviationCharacters[ this.thirdCharIndex ];							
 		} else {
 			// this will never happen in practice - there are more than 
 			// 200.000 possible abbreviations available:

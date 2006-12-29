@@ -1,10 +1,13 @@
 package de.enough.polish.postcompile.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassWriter;
@@ -14,7 +17,10 @@ import org.objectweb.asm.tree.ClassNode;
 import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.postcompile.BytecodePostCompiler;
+import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.JarUtil;
 
 /**
  * This post compiler adds the needed serialization methods for classes
@@ -26,6 +32,9 @@ import de.enough.polish.postcompile.BytecodePostCompiler;
  */
 public class SerializationPostCompiler extends BytecodePostCompiler
 {
+	
+	private List serializableAndExternalizableClassNames;
+	
   /**
    * Weaves the serialization framework into classes implementing
    * de.enough.polish.serialization.Serializable.
@@ -82,14 +91,25 @@ public class SerializationPostCompiler extends BytecodePostCompiler
       }
   }
   
+  /**
+   * Filters the classes so that only Serializable classes are processed which are not Externalizable.
+   * 
+   * @param classLoader class loader to load the classes if needed.
+   * @param classes The list of class names to filter
+   * @return The list of classes to post compile
+   */
   public List filterClassList(DirClassLoader classLoader, List classes)
   {
+	this.serializableAndExternalizableClassNames = new ArrayList();
     Iterator it = classes.iterator();
     LinkedList resultList = new LinkedList();
     ASMClassLoader asmClassLoader = new ASMClassLoader(classLoader);
     String serializableClassName = SerializationVisitor.getClassName(SerializationVisitor.SERIALIZABLE, getEnvironment());
     String externalizableClassName = SerializationVisitor.getClassName(SerializationVisitor.EXTERNALIZABLE, getEnvironment());
     
+    // rmi support:
+    File sourceDir = new File( this.environment.getDevice().getClassesDir() );
+	ArrayList rmiClassFiles = (ArrayList) this.environment.get("rmi-classes");
     while (it.hasNext())
       {
         String className = (String) it.next();
@@ -110,17 +130,28 @@ public class SerializationPostCompiler extends BytecodePostCompiler
             continue;
           }
         
-        if (asmClassLoader.inherits(serializableClassName, className)
-            && !asmClassLoader.inherits(externalizableClassName, className))
+        if (asmClassLoader.inherits(serializableClassName, className))
           {
-            resultList.add(className);
+        	this.serializableAndExternalizableClassNames.add( className.replace('/', '.') );
+        	if (rmiClassFiles != null) {
+        		rmiClassFiles.add( new File( sourceDir, className + ".class" ) );
+        	}
+        	if (!asmClassLoader.inherits(externalizableClassName, className))
+        	{
+        		resultList.add(className);
+        	}
           }
+        
       }
-    
+    this.environment.set("serializable-classes", this.serializableAndExternalizableClassNames );
+    if (rmiClassFiles != null) {
+	    this.environment.set("rmi-classes-dir", sourceDir );
+    }
     return resultList;
   }
-
-  // TODO: This is only for testing yet.
+  
+	 
+// TODO: This is only for testing yet.
   public static void main(String[] args)
   {
     SerializationPostCompiler postCompiler = new SerializationPostCompiler();

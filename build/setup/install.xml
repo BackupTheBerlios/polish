@@ -132,6 +132,21 @@
             <parsable targetfile="$INSTALL_PATH/samples/serialization/nbproject/project.properties" type="shell" /> 
         </pack>
         
+        <pack name="RMI Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to use the RMI (remote method invocation) framework of J2ME Polish.</description>
+            <file src="samples/rmi/source" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="samples/rmi/resources" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="../setup/samples/rmi/build.xml" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="../setup/samples/rmi/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="../setup/samples/rmi/nbproject" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="../setup/samples/rmi/.classpath" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="../setup/samples/rmi/.project" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <parsable targetfile="$INSTALL_PATH/samples/rmi/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/rmi/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/rmi/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/rmi/nbproject/project.properties" type="shell" /> 
+        </pack>
+        
         <pack name="Java 5 Syntax Sample Project" required="no" preselected="yes">
             <description>You can use Java 5 syntax elements like generics, autoboxing and enums with J2ME Polish. This project shows you an example.</description>
             <file src="samples/java5/source" targetdir="$INSTALL_PATH/samples/java5"/>
