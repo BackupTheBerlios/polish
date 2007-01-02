@@ -134,7 +134,7 @@ extends Background
 			break;
 		case Graphics.TOP:
 			int yNew = y + this.paddingTop - (height - (this.paddingBottom + this.paddingTop));
-			System.out.println("height=" + height + ", paddingTop=" + this.paddingTop + ", paddingBottom=" + this.paddingBottom + ", y=" + y + ", yNews=" + yNew);
+			//System.out.println("height=" + height + ", paddingTop=" + this.paddingTop + ", paddingBottom=" + this.paddingBottom + ", y=" + y + ", yNews=" + yNew);
 			//g.fillArc(x + this.paddingLeft, y - (height - (this.paddingBottom + this.paddingTop))<<1, width - (this.paddingLeft + this.paddingRight), (height - (this.paddingTop + this.paddingBottom))<<1, 180, 180 );
 			g.fillArc( x + this.paddingLeft, 
 					   yNew, 

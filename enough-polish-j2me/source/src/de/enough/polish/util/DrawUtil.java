@@ -1,4 +1,4 @@
-//#condition polish.midp
+//#condition polish.midp || polish.usePolishGui
 
 /*
  * Created on Nov 23, 2005 at 2:42:24 PM.

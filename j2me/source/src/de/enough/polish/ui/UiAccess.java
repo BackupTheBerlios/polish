@@ -82,7 +82,7 @@ public final class UiAccess {
 		super();
 	}
 	
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Registers a ScreenStateListener to any J2ME Polish screen.
 	 * 
@@ -106,6 +106,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Retrieves the focused index of the specified screen
 	 * 
@@ -115,6 +116,7 @@ public final class UiAccess {
 	public static int getFocusedIndex( javax.microedition.lcdui.Screen screen ) {
 		return -1;
 	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
@@ -131,6 +133,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Retrieves the focused index of the specified screen
 	 * 
@@ -140,6 +143,7 @@ public final class UiAccess {
 	public static javax.microedition.lcdui.Item getFocusedItem( javax.microedition.lcdui.Screen screen ) {
 		return null;
 	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
@@ -197,7 +201,7 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Sets the title of the screen using an Item.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
@@ -210,7 +214,7 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Sets the title of the screen using an Item.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
@@ -225,6 +229,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Adds a command to a list item.
 	 * Warning: this method won't add any commands when the J2ME Polish GUI is not activated.
@@ -236,6 +241,7 @@ public final class UiAccess {
 	public static void addItemCommand( javax.microedition.lcdui.List list, int index, Command command ) {
 		// ignore on real lists
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -264,7 +270,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Sets the parent for the given child item.
 	 * 
@@ -276,6 +282,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Sets the parent for the given child item.
 	 * 
@@ -285,7 +292,9 @@ public final class UiAccess {
 	public static void setParent( javax.microedition.lcdui.Item child, javax.microedition.lcdui.Item parent ) {
 		// ignore
 	}
+	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Retrieves the internal x position of the given item.
 	 * When it is equal -9999 this item's internal position is not known.
@@ -298,7 +307,9 @@ public final class UiAccess {
 	public static int getInternalX( javax.microedition.lcdui.Item item ) {
 		return -9999;
 	}
+	//#endif
 
+	//#if polish.midp
 	/**
 	 * Retrieves the internal y position of the given item.
 	 * The internal position is useful for items that have a large content which
@@ -311,7 +322,9 @@ public final class UiAccess {
 	public static int getInternalY( javax.microedition.lcdui.Item item ) {
 		return -1;
 	}
+	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Retrieves the internal width of the given item.
 	 * The internal position is useful for items that have a large content which
@@ -324,7 +337,9 @@ public final class UiAccess {
 	public static int getInternalWidth( javax.microedition.lcdui.Item item ) {
 		return -1;
 	}
+	//#endif
 
+	//#if polish.midp
 	/**
 	 * Retrieves the internal height of the given item.
 	 * The internal position is useful for items that have a large content which
@@ -337,6 +352,7 @@ public final class UiAccess {
 	public static int getInternalHeight( javax.microedition.lcdui.Item item ) {
 		return -1;
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -410,6 +426,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Sets the focus to the given index of the specified list.
 	 * When the list is not shown, it will be shown in this call.
@@ -424,6 +441,7 @@ public final class UiAccess {
 			display.setCurrent( list );
 		//#endif
 	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
@@ -442,6 +460,7 @@ public final class UiAccess {
 	//#endif
 
 	
+	//#if polish.midp
 	/**
 	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.
 	 * 
@@ -455,7 +474,9 @@ public final class UiAccess {
 	public static void setStyle( javax.microedition.lcdui.Item item ) {
 		// ignore
 	}
+	//#endif
 
+	//#if polish.midp
 	/**
 	 * Applies a style to the given screen if used in conjunction with the //#style preprocessing directive.
 	 * 
@@ -469,6 +490,7 @@ public final class UiAccess {
 	public static void setStyle( javax.microedition.lcdui.Screen screen ) {
 		// ignore
 	}
+	//#endif
 
 
 	//#if polish.usePolishGui
@@ -527,7 +549,7 @@ public final class UiAccess {
 	}
 	//#endif	
 
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Gets the current style of the given item.
 	 * 
@@ -550,7 +572,7 @@ public final class UiAccess {
 	}
 	//#endif	
 
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Gets the current style of the given screen.
 	 * 
@@ -617,7 +639,8 @@ public final class UiAccess {
 	public static Style getStyle( Screen screen ) {
 		return screen.style;
 	}
-	//#endif	
+	//#endif
+	
 	//#if polish.usePolishGui
 	public static boolean handleKeyPressed( Item item, int keyCode, int gameAction ) {
 		return item.handleKeyPressed(keyCode, gameAction);
@@ -635,6 +658,7 @@ public final class UiAccess {
 	//#endif
 	
 	
+	//#if polish.midp
 	/**
 	 * Sets the caret position in the given text field.
 	 * Please note that this operation requires the direct input mode to work.
@@ -645,6 +669,7 @@ public final class UiAccess {
 	public static void setCaretPosition( javax.microedition.lcdui.TextField field, int position ) {
 		// ignore
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -659,6 +684,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Sets the caret position in the given text box.
 	 * Please note that this operation requires the direct input mode to work.
@@ -669,6 +695,7 @@ public final class UiAccess {
 	public static void setCaretPosition( javax.microedition.lcdui.TextBox box, int position ) {
 		// ignore
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -683,6 +710,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Sets the input mode for the given textfield.
 	 * Warning: you have to ensure that the input mode matches the contraints of
@@ -699,6 +727,7 @@ public final class UiAccess {
 	public static void setInputMode( javax.microedition.lcdui.TextField field, int inputMode ) {
 		// ignore
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -719,6 +748,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Sets the input mode for the given textbox.
 	 * Warning: you have to ensure that the input mode matches the contraints of
@@ -735,6 +765,7 @@ public final class UiAccess {
 	public static void setInputMode( javax.microedition.lcdui.TextBox box, int inputMode ) {
 		// ignore
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -755,6 +786,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Retrieves the input mode for the given textfield.
 	 * 
@@ -769,6 +801,7 @@ public final class UiAccess {
 	public static int getInputMode( javax.microedition.lcdui.TextField field ) {
 		return -1;
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -787,6 +820,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Retrieves the input mode for the given textbox.
 	 * 
@@ -801,6 +835,7 @@ public final class UiAccess {
 	public static int getInputMode( javax.microedition.lcdui.TextBox box ) {
 		return -1;
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -820,6 +855,7 @@ public final class UiAccess {
 	//#endif
 	
 	
+	//#if polish.midp
 	/**
 	 * Retrieves the decimal value entered with a dot as the decimal mark.
 	 * <ul>
@@ -846,6 +882,7 @@ public final class UiAccess {
 		}
 		return value.replace(',', '.');
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -864,6 +901,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Adds the given command as a subcommand to the defined screen. When the J2ME Polish GUI is not used, this will just add the command to the screen like a normal command.
 	 * 
@@ -876,6 +914,7 @@ public final class UiAccess {
 		screen.addCommand( child );
 		//#endif
 	}
+	//#endif
 	
 	//#if polish.usePolishGui
 	/**
@@ -904,6 +943,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
 	/**
 	 * Removes all commands from the given screen
 	 * This option is only available when the "menu" fullscreen mode is activated.
@@ -913,6 +953,7 @@ public final class UiAccess {
 	public static void removeAllCommands(  javax.microedition.lcdui.Screen screen ) {
 		// ignore
 	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
@@ -927,6 +968,7 @@ public final class UiAccess {
 	//#endif
 
 	
+	//#if polish.midp
 	/**
 	 * Checks whether the commands menu of the screen is currently opened.
 	 * Useful when overriding the keyPressed() method.
@@ -937,6 +979,7 @@ public final class UiAccess {
 	public static boolean isMenuOpened( javax.microedition.lcdui.Screen screen ) {
 		return false;
 	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
@@ -951,6 +994,7 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
     /**
      * Focuses the specified item on the given screen.
      * 
@@ -960,6 +1004,7 @@ public final class UiAccess {
     public static void focus( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item item ) {
         // ignore
     }
+    //#endif
 
     //#if polish.usePolishGui
     /**
@@ -973,6 +1018,7 @@ public final class UiAccess {
     }
     //#endif
     
+	//#if polish.midp
     /**
      * Focuses the specified item on the given screen.
      * 
@@ -982,6 +1028,7 @@ public final class UiAccess {
     public static void focus( javax.microedition.lcdui.Screen screen, int index ) {
         // ignore
     }
+    //#endif
 
     //#if polish.usePolishGui
     /**
@@ -1029,6 +1076,7 @@ public final class UiAccess {
     }
     //#endif
 
+	//#if polish.midp
     /**
      * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI for the specified screen.
      * 
@@ -1037,10 +1085,13 @@ public final class UiAccess {
     public static void releaseResources( javax.microedition.lcdui.Screen screen ) {
     		// ignore
     }
+    //#endif
     
+	//#if polish.midp
     public static void setSubtitle( javax.microedition.lcdui.Screen screen, String subtitle ) {
     		// ignore
     }
+    //#endif
 
     //#if polish.usePolishGui
     public static void setSubtitle( Screen screen, String subtitle ) {
@@ -1048,9 +1099,11 @@ public final class UiAccess {
     }
     //#endif
 
+	//#if polish.midp
     public static void setSubtitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item subtitle ) {
     		// ignore
     }
+    //#endif
 
     //#if polish.usePolishGui
     public static void setSubtitle( Screen screen, Item subtitle ) {
@@ -1058,6 +1111,7 @@ public final class UiAccess {
     }
     //#endif
     
+	//#if polish.midp
     /**
      * Scrolls the screen to the given position.
      * 
@@ -1067,6 +1121,7 @@ public final class UiAccess {
     public static void scroll( javax.microedition.lcdui.Screen screen, int yOffset ) {
     	// ignore
     }
+    //#endif
 
     //#if polish.usePolishGui
     /**
@@ -1104,7 +1159,7 @@ public final class UiAccess {
     }
     //#endif
 
-    //#if polish.usePolishGui
+    //#if polish.usePolishGui && polish.midp
     /**
      * Retrieves the background of the given screen.
      * This can be used to dynamically alter the background, e.g. by setting a different image:
@@ -1144,7 +1199,7 @@ public final class UiAccess {
     }
     //#endif
 
-    //#if polish.usePolishGui
+    //#if polish.usePolishGui && polish.midp
     /**
      * Sets the background for the given screen.
      * This can be used to dynamically alter the background:
@@ -1183,7 +1238,7 @@ public final class UiAccess {
     }
     //#endif
 
-    //#if polish.usePolishGui
+    //#if polish.usePolishGui && polish.midp
     /**
      * Retrieves the background of the given item.
      * This can be used to dynamically alter the background, e.g. by setting a different image:
@@ -1223,7 +1278,7 @@ public final class UiAccess {
     }
     //#endif
 
-    //#if polish.usePolishGui
+    //#if polish.usePolishGui && polish.midp
     /**
      * Sets the background for the given item.
      * This can be used to dynamically alter the background:
@@ -1242,6 +1297,7 @@ public final class UiAccess {
     }
     //#endif
 
+	//#if polish.midp
     /**
      * Retrieves the command listener belonging to this screen.
      * 
@@ -1251,6 +1307,7 @@ public final class UiAccess {
 	public static CommandListener getCommandListener( javax.microedition.lcdui.Screen screen ) {
 		return null;
 	}
+	//#endif
 
 
     //#if polish.usePolishGui
@@ -1307,6 +1364,7 @@ public final class UiAccess {
   }
   //#endif
 
+	//#if polish.midp
   /**
 	 * Sets an arbitrary attribute for the given item.
 	 * 
@@ -1325,7 +1383,9 @@ public final class UiAccess {
 		}
 		itemAttributes.put( key, value );
 	}
+	//#endif
 	
+	//#if polish.midp
 	/**
 	 * Gets an previously added attribute of the specified item.
 	 * 
@@ -1343,7 +1403,9 @@ public final class UiAccess {
 		}
 		return itemAttributes.get( key );
 	}
+	//#endif
   
+	//#if polish.midp
   /**
    * Returns a HashMap object with all registered attributes.
    * 
@@ -1356,5 +1418,6 @@ public final class UiAccess {
     }
     return (HashMap) attributes.get( item );
   }
+  //#endif
 
 }

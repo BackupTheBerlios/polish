@@ -497,16 +497,12 @@ public class Graphics extends Object
 	 */
 	public static final int DOTTED = 1;
 	
+	/** the original BlackBerry graphics */
 	public net.rim.device.api.ui.Graphics g;
 
 	//following variables are implicitely defined by getter- or setter-methods:
 	private int translateX;
 	private int translateY;
-	private int color;
-	private int redComponent;
-	private int greenComponent;
-	private int blueComponent;
-	private int grayScale;
 	private Font font;
 	private int strokeStyle;
 	private int clipX;
@@ -1117,7 +1113,7 @@ public class Graphics extends Object
 	 * @throws StringIndexOutOfBoundsException - if offset and length do not specify a valid range within the String str
 	 * @throws IllegalArgumentException - if anchor is not a legal value
 	 * @throws NullPointerException - if str is null
-	 * @see #drawString(String, int, int, int).
+	 * @see #drawString(String, int, int, int)
 	 */
 	public void drawSubstring( String str, int offset, int len, int x, int y, int anchor)
 	{
@@ -1392,7 +1388,7 @@ public class Graphics extends Object
 		} else if ( (anchor & VCENTER) == VCENTER ) {
 			y_dest -= height / 2;
 		}
-		this.g.copyArea( x_src + this.translateX, y_src + this.translateY, width, height, x_src - x_dest + + this.translateX, y_src - y_dest + + this.translateY);
+		this.g.copyArea( x_src + this.translateX, y_src + this.translateY, width, height, x_src - x_dest + this.translateX, y_src - y_dest + this.translateY);
 	}
 
 	/**

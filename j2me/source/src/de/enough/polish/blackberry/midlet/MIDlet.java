@@ -246,15 +246,6 @@ public abstract class MIDlet extends UiApplication
 		String value = (String) this.appProperties.get( key );
 		//#debug
 		System.out.println("got value [" + value + "] for key [" + key + "]");
-		if (value == null) {
-			if ("ClientID".equals( key )) {
-				return "4711";
-			} else if ("UserName".equals( key )) {
-				return "Milosz Weckowski";
-			} else if ("ClientID".equals( key )) {
-				return "4711";
-			}
-		}
 		return value;
 	}
 

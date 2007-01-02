@@ -334,12 +334,12 @@ public class TextField extends StringItem
 		//#abort You need to define the ".textFieldSymbolList" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
 	//#endif
 //#endif
-//#if !polish.blackberry
+//#if !(tmp.forceDirectInput || polish.blackberry || polish.doja)
 	implements CommandListener
 //#endif
 //#if polish.TextField.suppressCommands == true
 	//#define tmp.suppressCommands
-//#elif polish.blackberry  && !tmp.supportsSymbolEntry
+//#elif (tmp.forceDirectInput || polish.blackberry || polish.doja)  && !tmp.supportsSymbolEntry
  	//# implements ItemCommandListener
 //#else
 	, ItemCommandListener
@@ -813,7 +813,9 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 	//#endif
-	private javax.microedition.lcdui.TextBox midpTextBox;
+	//#if !tmp.forceDirectInput
+			private javax.microedition.lcdui.TextBox midpTextBox;
+	//#endif
 	protected boolean flashCaret = true;
 	protected boolean isUneditable;
 
@@ -906,7 +908,7 @@ public class TextField extends StringItem
 	}
 	
 	
-	//#if !polish.blackberry
+	//#if !(polish.blackberry || tmp.forceDirectInput)
 	/**
 	 * Creates the TextBox used for the actual input mode.
 	 */
@@ -1286,8 +1288,10 @@ public class TextField extends StringItem
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {
 				return this.caretPosition;
+			//#if !tmp.forceDirectInput
 			} else if (this.midpTextBox != null) {
 				return this.midpTextBox.getCaretPosition();
+			//#endif
 			}
 			//# return 0;
 		//#elif polish.blackberry
@@ -2423,8 +2427,10 @@ public class TextField extends StringItem
 						//#else
 						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
 						//#endif
-							showTextBox();
-							return true;
+							//#if !(polish.blackberry || tmp.forceDirectInput)
+								showTextBox();
+								return true;
+							//#endif
 						}
 					//#endif
 					synchronized ( this.lock ) {
@@ -3004,7 +3010,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !polish.blackberry
+	//#if !(polish.blackberry || tmp.forceDirectInput)
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -3021,7 +3027,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !polish.blackberry
+	//#if !(polish.blackberry || tmp.forceDirectInput)
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
