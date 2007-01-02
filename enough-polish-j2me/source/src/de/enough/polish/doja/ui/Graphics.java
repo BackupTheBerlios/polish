@@ -919,15 +919,23 @@ public class Graphics extends Object
 	{
 		x += this.translateX;
 		y += this.translateY;
-		this.g.drawArc(x, y, arcWidth, arcHeight, 180, 90 ); // top left
-		this.g.drawArc(x + width - arcWidth, y, arcWidth, arcHeight, 270, 90 ); // top right
-		this.g.drawArc(x, y + height - arcHeight, arcWidth, arcHeight, 90, 90 ); // lower left
-		this.g.drawArc(x + width - arcWidth, y + height - arcHeight, arcWidth, arcHeight, 0, 90 ); // lower right
 				
-		this.g.drawLine(x + arcWidth, y, x + width - arcWidth, y);
-		this.g.drawLine(x, y + arcHeight, x, y + height - arcHeight );
-		this.g.drawLine(x + arcWidth, y + arcHeight, x + width - arcWidth, y + arcHeight);
-		this.g.drawLine(x + width, y + arcHeight, x + width, y + height - arcHeight );
+		// draw top:
+		this.g.drawLine( x + arcWidth, y, x + width - arcWidth, y );
+		// draw bottom:
+		this.g.drawLine( x + arcWidth, y + height, x + width - arcWidth, y  + height );
+		// draw left:
+		this.g.drawLine( x, y + arcHeight, x, y + height - arcHeight );
+		// draw right:
+		this.g.drawLine( x + width, y + arcHeight, x + width, y + height - arcHeight );
+		
+		// fill round corners:
+		arcWidth <<= 1;
+		arcHeight <<= 1;
+		this.g.drawArc(x, y + height - arcHeight, arcWidth, arcHeight, 180, 90 ); // bottom left
+		this.g.drawArc(x + width - arcWidth, y + height - arcHeight, arcWidth, arcHeight, 270, 90 ); // bottom right
+		this.g.drawArc(x, y, arcWidth, arcHeight, 90, 90 ); // top left
+		this.g.drawArc(x + width - arcWidth, y, arcWidth, arcHeight, 0, 90 ); // top right		
 	}
 
 	/**
@@ -947,21 +955,26 @@ public class Graphics extends Object
 	{
 		x += this.translateX;
 		y += this.translateY;
-		this.g.fillArc(x, y, arcWidth, arcHeight, 180, 90 ); // top left
-		this.g.fillArc(x + width - arcWidth, y, arcWidth, arcHeight, 270, 90 ); // top right
-		this.g.fillArc(x, y + height - arcHeight, arcWidth, arcHeight, 90, 90 ); // lower left
-		this.g.fillArc(x + width - arcWidth, y + height - arcHeight, arcWidth, arcHeight, 0, 90 ); // lower right
 				
 		// fill inner rectangle:
-		this.g.fillRect( x + arcWidth, y + arcHeight, width - arcWidth << 1, height - arcHeight << 1 );
+		this.g.fillRect( x + arcWidth, y + arcHeight, width - (arcWidth << 1), height - (arcHeight << 1) );
 		// fill top area:
-		this.g.fillRect( x + arcWidth, y, width - arcWidth << 1, arcHeight );
+		this.g.fillRect( x + arcWidth, y, width - (arcWidth << 1), arcHeight );
 		// fill bottom area:
-		this.g.fillRect( x + arcWidth, y + height - arcHeight, width - arcWidth << 1, arcHeight );
+		this.g.fillRect( x + arcWidth, y + height - arcHeight, width - (arcWidth << 1), arcHeight );
 		// fill left area:
-		this.g.fillRect( x , y + arcHeight, arcWidth, height - arcHeight << 1 );
+		this.g.fillRect( x , y + arcHeight, arcWidth, height - (arcHeight << 1) );
 		// fill right area:
-		this.g.fillRect( x + width - arcWidth, y + arcHeight, arcWidth, height - arcHeight << 1 );
+		this.g.fillRect( x + width - arcWidth, y + arcHeight, arcWidth, height - (arcHeight << 1) );
+		
+		// fill round corners:
+		arcWidth <<= 1;
+		arcHeight <<= 1;
+		this.g.fillArc(x, y + height - arcHeight, arcWidth, arcHeight, 180, 90 ); // bottom left
+		this.g.fillArc(x + width - arcWidth, y + height - arcHeight, arcWidth, arcHeight, 270, 90 ); // bottom right
+		this.g.fillArc(x, y, arcWidth, arcHeight, 90, 90 ); // top left
+		this.g.fillArc(x + width - arcWidth, y, arcWidth, arcHeight, 0, 90 ); // top right
+
 	}
 
 	/**
@@ -1076,10 +1089,13 @@ public class Graphics extends Object
 		} else if (( anchor & HCENTER ) == HCENTER ) {
 			x -= this.font.font.stringWidth( str ) / 2;
 		}
-		if ( (anchor & BOTTOM ) == BOTTOM) {
-			y -= this.font.font.getHeight();
+		if ( (anchor & TOP ) == TOP) {
+			y += this.font.baselinePosition;
+		} else if ( (anchor & BOTTOM ) == BOTTOM) {
+			y +=  (this.font.height - this.font.baselinePosition);
 		} else if ( (anchor & BASELINE ) == BASELINE ) {
-			y -= this.font.getBaselinePosition();
+			// DoJa paints the font at the baseline anyhow
+			//y -= this.font.getBaselinePosition();
 		}
 		this.g.drawString(str, x + this.translateX, y + this.translateY );
 	}

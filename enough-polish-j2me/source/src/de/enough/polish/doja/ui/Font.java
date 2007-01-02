@@ -161,8 +161,8 @@ public final class Font extends Object
 	private final int style;
 	private final int size;
 	private final int face;
-	private final int height;
-	private final int baselinePosition;
+	final int height;
+	final int baselinePosition;
 	
 	protected com.nttdocomo.ui.Font font;
 	
@@ -209,7 +209,7 @@ public final class Font extends Object
 		}
 		if (this.font != null) {
 			this.height = this.font.getHeight();
-			this.baselinePosition = (this.height / 3) * 2; // TODO correct this assumption
+			this.baselinePosition = this.font.getAscent();
 		} else {
 			this.height = 12;
 			this.baselinePosition = 10;

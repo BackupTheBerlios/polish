@@ -957,7 +957,9 @@ extends Displayable
     	 */
     	public void paint(com.nttdocomo.ui.Graphics g) {
     		this.graphics.g = g; 
+    		g.lock();
     		paint( this.graphics );
+    		g.unlock( true ); // force flushing of graphhics
     	}
 
 		/* (non-Javadoc)
