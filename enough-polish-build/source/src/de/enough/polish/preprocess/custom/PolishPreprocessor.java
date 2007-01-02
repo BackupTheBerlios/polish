@@ -90,6 +90,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	private CssAttributesManager cssAttributesManager;
 	private boolean usesBlackBerry;
 	private boolean usesDoJa;
+	private boolean usesDefaultPackage;
 
 	/**
 	 * Creates a new uninitialised PolishPreprocessor 
@@ -142,6 +143,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		Environment env = device.getEnvironment();
 		this.usesBlackBerry = env.hasSymbol("polish.blackberry") && usesPolishGui;
 		this.usesDoJa = env.hasSymbol("polish.doja") && usesPolishGui;
+		this.usesDefaultPackage = env.hasSymbol("polish.useDefaultPackage");
+
 		if (usesPolishGui) {
 			// init ticker setting:
 			this.tickerFile = new File( device.getBaseDir() + File.separatorChar 
@@ -245,7 +248,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			return;
 		}
 		boolean isIllegalStateExceptionClass = false;
-		if (this.usesDoJa) {
+		if (!this.usesDefaultPackage && this.usesDoJa) {
 			isIllegalStateExceptionClass = className.endsWith("IllegalStateException");
 			//System.out.println( "class=" + className + ", isIllegalStateExceptionClass=" + isIllegalStateExceptionClass );
 		}
@@ -324,7 +327,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			}
 			
 			// check for usage of java.lang.IllegalStateException:
-			if (this.usesDoJa && !isIllegalStateExceptionClass) {
+			if (!this.usesDefaultPackage && this.usesDoJa && !isIllegalStateExceptionClass) {
 				startPos = line.indexOf("IllegalStateException");
 				if (startPos != -1) {
 					line = line.substring( 0, startPos ) + "de.enough.polish.doja.lang." + line.substring( startPos );
