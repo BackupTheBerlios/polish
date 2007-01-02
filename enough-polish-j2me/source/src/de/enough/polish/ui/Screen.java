@@ -35,6 +35,8 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import com.nttdocomo.ui.Frame;
+
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
@@ -201,7 +203,9 @@ implements AccessibleCanvas
 				private final static int RIGHT_SOFT_KEY = -7;
 			//#endif
 			private Command menuSingleLeftCommand;
+			private String menuLeftString;
 			private Command menuSingleRightCommand;
+			private String menuRightString;
 			private Container menuContainer;
 			private ArrayList menuCommands;
 			private boolean menuOpened;
@@ -490,7 +494,11 @@ implements AccessibleCanvas
 				//#ifdef polish.Menu.MarginTop:defined 
 					//#= localMenuBarHeight += ${polish.Menu.MarginTop};
 				//#endif
+				//#if polish.doja
+					localMenuBarHeight = 0;
+				//#endif
 				this.menuBarHeight = localMenuBarHeight;
+				updateMenuTexts();
 			//#endif
 			int diff = this.originalScreenHeight - this.screenHeight;
 			this.originalScreenHeight = this.fullScreenHeight - this.menuBarHeight;
@@ -1386,65 +1394,32 @@ implements AccessibleCanvas
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
-						if (this.showTitleOrMenu || this.menuOpened) {
-							// clear menu-bar:
-							if (this.menuBarColor != Item.TRANSPARENT) {
-								g.setColor( this.menuBarColor );
-								//TODO check use menuY instead of this.originalScreenHeight?
-								g.fillRect(menuLeftX, this.originalScreenHeight, menuRightX,  this.menuBarHeight );
-							}
-							if (this.menuContainer != null && this.menuContainer.size() > 0) {
-								String menuText = null;
-								if (this.menuOpened) {
-									//#ifdef polish.i18n.useDynamicTranslations
-										menuText = Locale.get( "polish.command.select" ); 
-									//#elifdef polish.command.select:defined
-										//#= menuText = "${polish.command.select}";
-									//#else
-										menuText = "Select";
-									//#endif
-								} else {
-									if (this.menuSingleLeftCommand != null) {
-										menuText = this.menuSingleLeftCommand.getLabel();
-									} else {
-										//#ifdef polish.i18n.useDynamicTranslations
-											menuText = Locale.get( "polish.command.options" ); 
-										//#elifdef polish.command.options:defined
-											//#= menuText = "${polish.command.options}";
-										//#else
-											menuText = "Options";				
-										//#endif
-									}
+						//#if !polish.doja
+							if (this.showTitleOrMenu || this.menuOpened) {
+								// clear menu-bar:
+								if (this.menuBarColor != Item.TRANSPARENT) {
+									g.setColor( this.menuBarColor );
+									//TODO check use menuY instead of this.originalScreenHeight?
+									g.fillRect(menuLeftX, this.originalScreenHeight, menuRightX,  this.menuBarHeight );
 								}
-								//#ifdef polish.Menu.MarginLeft:defined
-									//#= int menuLeftX += ${polish.Menu.MarginLeft};
-								//#else
-									menuLeftX += 2;
-								//#endif
-								//#ifdef polish.hasPointerEvents
-									this.menuLeftCommandX = menuLeftX + this.menuFont.stringWidth( menuText );
-								//#endif
-								g.setColor( this.menuFontColor );
-								g.setFont( this.menuFont );
-								//#ifdef polish.Menu.MarginTop:defined
-									//#= g.drawString(menuLeftX, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
-								//#else
-									g.drawString(menuText, menuLeftX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
-								//#endif
-								if ( this.menuOpened ) {
-									// draw cancel string:
-									//#ifdef polish.i18n.useDynamicTranslations
-										menuText = Locale.get( "polish.command.cancel" ); 
-									//#elifdef polish.command.cancel:defined
-										//#= menuText = "${polish.command.cancel}";
+								String menuText = this.menuLeftString;
+								if (menuText != null) {
+									//#ifdef polish.Menu.MarginLeft:defined
+										//#= int menuLeftX += ${polish.Menu.MarginLeft};
 									//#else
-										menuText = "Cancel";
+										menuLeftX += 2;
 									//#endif
-									//#ifdef polish.Menu.MarginRight:defined
-										//#= menuRightX -= ${polish.Menu.MarginRight};
-									//#elifdef polish.Menu.MarginLeft:defined
-										menuRightX -= 2;
+									g.setColor( this.menuFontColor );
+									g.setFont( this.menuFont );
+									//#ifdef polish.Menu.MarginTop:defined
+										//#= g.drawString(menuLeftX, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
+									//#else
+										g.drawString(menuText, menuLeftX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
 									//#endif
+									
+								}
+								menuText = this.menuRightString;
+								if (menuText != null) {
 									//#ifdef polish.Menu.MarginTop:defined
 										//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
 									//#else
@@ -1454,26 +1429,8 @@ implements AccessibleCanvas
 										this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
 									//#endif
 								}
-							}
-							if (this.menuSingleRightCommand != null && !this.menuOpened) {
-								g.setColor( this.menuFontColor );
-								g.setFont( this.menuFont );
-								String menuText = this.menuSingleRightCommand.getLabel();
-								//#ifdef polish.Menu.MarginRight:defined
-									//#= menuRightX -= ${polish.Menu.MarginRight};
-								//#elifdef polish.Menu.MarginLeft:defined
-									menuRightX -= 2;
-								//#endif
-								//#ifdef polish.Menu.MarginTop:defined
-									//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
-								//#else
-									g.drawString(menuText, menuRightX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
-								//#endif
-								//#ifdef polish.hasPointerEvents
-									this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
-								//#endif
-							}
-						} // if this.showTitleOrMenu || this.menuOpened
+							} // if this.showTitleOrMenu || this.menuOpened
+						//#endif
 					//#endif
 				//#endif
 						
@@ -1842,14 +1799,12 @@ implements AccessibleCanvas
 				//#endif
 	
 
-				//if (gameAction == -1) {
-					try {
-						gameAction = getGameAction(keyCode);
-					} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-						//#debug warn
-						System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-					}
-				//}
+				try {
+					gameAction = getGameAction(keyCode);
+				} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
+					//#debug warn
+					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+				}
 				boolean processed = false;
 				//#if tmp.menuFullScreen
 					boolean letTheMenuBarProcessKey;
@@ -1935,14 +1890,7 @@ implements AccessibleCanvas
 								}
 							}
 							boolean doReturn = false;
-							if (keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY ) {
-								try {
-									gameAction = getGameAction( keyCode );
-								} catch (Exception e) { // can happen on certain shitty devices
-									//#debug warn
-									System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-								}
-							} else {
+							if (keyCode == LEFT_SOFT_KEY || keyCode == RIGHT_SOFT_KEY ) {
 								//#if polish.blackberry
 									this.keyPressedProcessed = false;
 								//#endif
@@ -2213,6 +2161,84 @@ implements AccessibleCanvas
 	}
 
 	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar
+	private void updateMenuTexts() {
+		String left = null;
+		String right = null;
+		int menuLeftX = 0;
+		int menuRightX = this.screenWidth;
+		//#if polish.css.separate-menubar
+			if (!this.separateMenubar) {
+				menuLeftX = this.marginLeft;
+				menuRightX -= this.marginRight;
+			}
+		//#endif
+		if (this.menuContainer != null && this.menuContainer.size() > 0) {
+			String menuText = null;
+			if (this.menuOpened) {
+				//#ifdef polish.i18n.useDynamicTranslations
+					menuText = Locale.get( "polish.command.select" ); 
+				//#elifdef polish.command.select:defined
+					//#= menuText = "${polish.command.select}";
+				//#else
+					menuText = "Select";
+				//#endif
+			} else {
+				if (this.menuSingleLeftCommand != null) {
+					menuText = this.menuSingleLeftCommand.getLabel();
+				} else {
+					//#ifdef polish.i18n.useDynamicTranslations
+						menuText = Locale.get( "polish.command.options" ); 
+					//#elifdef polish.command.options:defined
+						//#= menuText = "${polish.command.options}";
+					//#else
+						menuText = "Options";				
+					//#endif
+				}
+			}
+			left = menuText;
+			//#ifdef polish.hasPointerEvents
+				this.menuLeftCommandX = menuLeftX + this.menuFont.stringWidth( menuText );
+			//#endif
+			if ( this.menuOpened ) {
+				// set cancel string:
+				//#ifdef polish.i18n.useDynamicTranslations
+					menuText = Locale.get( "polish.command.cancel" ); 
+				//#elifdef polish.command.cancel:defined
+					//#= menuText = "${polish.command.cancel}";
+				//#else
+					menuText = "Cancel";
+				//#endif
+				//#ifdef polish.Menu.MarginRight:defined
+					//#= menuRightX -= ${polish.Menu.MarginRight};
+				//#elifdef polish.Menu.MarginLeft:defined
+					menuRightX -= 2;
+				//#endif
+				right = menuText;
+			}
+		}
+		if (this.menuSingleRightCommand != null && !this.menuOpened) {
+			String menuText = this.menuSingleRightCommand.getLabel();
+			//#ifdef polish.Menu.MarginRight:defined
+				//#= menuRightX -= ${polish.Menu.MarginRight};
+			//#elifdef polish.Menu.MarginLeft:defined
+				menuRightX -= 2;
+			//#endif
+			//#ifdef polish.hasPointerEvents
+				this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
+			//#endif
+			right = menuText;
+		}
+		this.menuLeftString = left;
+		this.menuRightString = right;
+		//#if polish.doja
+			Frame frame = (Frame) ((Object)this);
+			frame.setSoftLabel( Frame.SOFT_KEY_1, left );
+			frame.setSoftLabel( Frame.SOFT_KEY_2, right );
+		//#endif
+	}
+	//#endif
+	
+	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar
 	private void openMenu( boolean open ) {
 		if (!open && this.menuOpened) {
 			this.menuContainer.hideNotify();
@@ -2224,6 +2250,7 @@ implements AccessibleCanvas
 			this.menuContainer.showNotify();
 		}
 		this.menuOpened = open;
+		updateMenuTexts();
 	}
 	//#endif
 

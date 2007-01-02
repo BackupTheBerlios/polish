@@ -839,6 +839,11 @@ public class Graphics extends Object
 	 */
 	public void setClip(int x, int y, int width, int height)
 	{
+		if (width <= 0 || height <= 0) {
+			//#debug
+			System.out.println("setClip: ignoring negative width or height");
+			return;
+		}
 		this.clipX = x;
 		this.clipY = y;
 		this.clipWidth = width;
@@ -876,6 +881,11 @@ public class Graphics extends Object
 	 */
 	public void fillRect(int x, int y, int width, int height)
 	{
+		if (width <= 0 || height <= 0) {
+			//#debug
+			System.out.println("fillRect: ignoring negative width or height");
+			return;
+		}
 		this.g.fillRect(x + this.translateX, y + this.translateY, width, height);
 	}
 
@@ -956,16 +966,25 @@ public class Graphics extends Object
 		x += this.translateX;
 		y += this.translateY;
 				
-		// fill inner rectangle:
-		this.g.fillRect( x + arcWidth, y + arcHeight, width - (arcWidth << 1), height - (arcHeight << 1) );
-		// fill top area:
-		this.g.fillRect( x + arcWidth, y, width - (arcWidth << 1), arcHeight );
-		// fill bottom area:
-		this.g.fillRect( x + arcWidth, y + height - arcHeight, width - (arcWidth << 1), arcHeight );
-		// fill left area:
-		this.g.fillRect( x , y + arcHeight, arcWidth, height - (arcHeight << 1) );
-		// fill right area:
-		this.g.fillRect( x + width - arcWidth, y + arcHeight, arcWidth, height - (arcHeight << 1) );
+		int w, h;
+		w = width - (arcWidth << 1);
+		h = height - (arcHeight << 1);
+		if (w > 0) {
+			// fill top area:
+			this.g.fillRect( x + arcWidth, y, w, arcHeight );
+			// fill bottom area:
+			this.g.fillRect( x + arcWidth, y + height - arcHeight, w, arcHeight );
+			if (h > 0) {
+				// fill inner rectangle:
+				this.g.fillRect( x + arcWidth, y + arcHeight, w, h );				
+			}
+		}
+		if (h > 0) {
+			// fill left area:
+			this.g.fillRect( x , y + arcHeight, arcWidth, h );
+			// fill right area:
+			this.g.fillRect( x + width - arcWidth, y + arcHeight, arcWidth, h );
+		}
 		
 		// fill round corners:
 		arcWidth <<= 1;

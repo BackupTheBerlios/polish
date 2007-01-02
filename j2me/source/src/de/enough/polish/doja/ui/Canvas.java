@@ -497,7 +497,7 @@ extends Displayable
          */
         public boolean isDoubleBuffered()
         {
-            return false;
+            return true;
         }
 
         /**
@@ -966,12 +966,14 @@ extends Displayable
 		 * @see com.nttdocomo.ui.Canvas#processEvent(int, int)
 		 */
 		public void processEvent(int type, int param) {
+			//#debug debug
+			System.out.println("low level event, type=" + type + ", param=" + param );
 			if (type == com.nttdocomo.ui.Display.KEY_PRESSED_EVENT) {
 				keyPressed( translateKeyCode( param ) );
 			} else if (type == com.nttdocomo.ui.Display.KEY_RELEASED_EVENT) {
 				keyReleased( translateKeyCode( param ) );
 			} else {
-				//#debug debug
+				//#debug info
 				System.out.println("unknown low level event, type=" + type + ", param=" + param );
 			}
 		}
