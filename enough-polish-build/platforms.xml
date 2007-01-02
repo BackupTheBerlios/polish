@@ -111,6 +111,9 @@
 		<capability name="build.ManifestCreator" value="none" />
 		<capability name="build.DescriptorCreator" value="doja" />
 		<capability name="Emulator.Class" value="DoJaEmulator" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
+		<capability name="needsManualMenu" value="true" />
 	</platform>
 
 	<platform>
@@ -122,6 +125,9 @@
 		<capability name="build.ManifestCreator" value="none" />
 		<capability name="build.DescriptorCreator" value="doja" />
 		<capability name="Emulator.Class" value="DoJaEmulator" />
+		<capability name="key.LeftSoftKey" value="21" />
+		<capability name="key.RightSoftKey" value="22" />
+		<capability name="needsManualMenu" value="true" />
 	</platform>
 	
 </platforms>
