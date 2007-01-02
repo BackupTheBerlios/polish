@@ -1861,6 +1861,12 @@ public class PolishTask extends ConditionalTask {
 					} else {
 						displayClassName = "de.enough.polish.blackberry.ui.Display";
 					}
+				} else if ( this.environment.hasSymbol("polish.doja")) {
+					if (this.useDefaultPackage) {
+						displayClassName = "Display";
+					} else {
+						displayClassName = "de.enough.polish.doja.ui.Display";
+					}
 				}
 				sourceCode.setCurrent( displayVar + " = " + displayClassName + ".getDisplay( this );"
 						+ line );

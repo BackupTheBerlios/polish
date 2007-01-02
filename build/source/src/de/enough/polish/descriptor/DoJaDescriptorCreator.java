@@ -91,7 +91,13 @@ public class DoJaDescriptorCreator extends DescriptorCreator  {
 		jamEntries.add( "PackageURL = " + value );
 		value = env.resolveVariable("MIDlet-Jar-Size");
 		jamEntries.add( "AppSize = " + value );
-		value = env.resolveVariable("polish.classes.iapplication");
+		if (env.hasSymbol("polish.usePolishGui")) {
+			// the J2ME Polish GUI is used:
+			value = env.resolveVariable("polish.classes.midlet-1");			
+		} else {
+			// traditional DoJa application is being used:
+			value = env.resolveVariable("polish.classes.iapplication");
+		}
 		jamEntries.add( "AppClass = " + value );
 		jamEntries.add( "LastModified = " + getCurrentDate() );
 		addOptionalAttribute("ConfigurationVer", jamEntries, env );
@@ -121,7 +127,7 @@ public class DoJaDescriptorCreator extends DescriptorCreator  {
 	}
 
 	private String getCurrentDate() {
-		SimpleDateFormat format = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
 		return format.format( new Date() );
 	}
 
