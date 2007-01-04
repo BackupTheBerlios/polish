@@ -35,7 +35,9 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+//#if polish.doja
 import com.nttdocomo.ui.Frame;
+//#endif
 
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
