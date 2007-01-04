@@ -3809,6 +3809,34 @@ These namespaces/schemas will be used soon.
 </device>
 
 	<device>
+		<identifier>Nokia/N73</identifier>
+		<groups>Series60E3</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 9.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi, webservice"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
+		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3, aac+, eaac+, realaudio, truetone, wb-amr, wav"/>
+		<capability name="HeapSize" value="dynamic"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="StorageSize" value="42 MB"/>
+		<capability name="DRM" value="OMA DRM v1.0"/>
+		<capability name="Region" value="Americas, Asia-Pacific, Africa, Europe"/>
+		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
+		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="CameraResolution" value="3.2 MP"/>
+		<capability name="AnnouncementDate" value="2005-04-25"/>
+		<capability name="Font.small" value="12" />
+		<capability name="Font.medium" value="16" />
+		<capability name="Font.large" value="21" />
+		<capability name="wap.userAgent" value="NokiaN73"/>
+	</device>
+
+	<device>
 		<identifier>Nokia/8800</identifier>
 		<groups>Series40DP2</groups>
 		<features>hasCamera</features>
