@@ -345,6 +345,12 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device supportsPolishGui="true">
+		<identifier>Nokia/Series40E3</identifier>
+		<features>isVirtual</features>
+		<groups>Series40E3</groups>
+	</device>
+
+	<device supportsPolishGui="true">
 		<identifier>Nokia/Series80</identifier>
 		<features>isVirtual</features>
 		<groups>Series80</groups>
@@ -3433,6 +3439,35 @@ These namespaces/schemas will be used soon.
 
 	
 <!-- Nokia devices -->
+
+    <device>
+    	<identifier>Nokia/6125</identifier>
+		<groups>Series40E3</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="svg, btapi, mmapi1.1, wmapi2.0, pdaapi, m3g"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x115"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
+		<capability name="SoundFormat" value="aac+, eaac+, aac, midi, midi64, mp4, amr, nb-amr, mp3, truetone, wb-amr"/>
+		<capability name="HeapSize" value="2 MB"/>
+		<capability name="MaxJarSize" value="512 kb"/>
+		<capability name="StorageSize" value="11 MB"/>
+		<capability name="DRM" value="OMA DRM v1.0"/>
+		<capability name="Region" value="Africa, Asia-Pacific, China, Europe, Latin America"/>
+		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
+		<capability name="Frequence" value="800, 1900"/>
+		<capability name="CameraResolution" value="2 MP"/>
+		<capability name="AnnouncementDate" value="2006-01-16"/>
+		<capability name="Font.small" value="18" />
+		<capability name="Font.medium" value="22" />
+		<capability name="Font.large" value="26" />
+		<capability name="wap.userAgent" value="Nokia6125"/>
+    </device>
 
 	<device>
 		<identifier>Nokia/6233</identifier>
