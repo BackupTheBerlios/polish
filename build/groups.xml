@@ -87,11 +87,6 @@
 	</group>
 
 	<group>
-		<name>Series40DP3</name>
-		<parent>Series40E3</parent>
-	</group>
-
-	<group>
 		<name>Series40E3</name>
 		<parent>Series40</parent>
 		<capability name="ScreenSize" value="240x320" />
@@ -100,6 +95,11 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, m3gapi" />
+	</group>
+
+	<group>
+		<name>Series40DP3</name>
+		<parent>Series40E3</parent>
 	</group>
 
 	<group>
