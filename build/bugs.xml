@@ -40,6 +40,7 @@
 		g.drawRGB( rgbData, offset, scanlength, x, y, width, height, processAlpha);
 		</solution>
 	</bug>
+
 	<bug>
 		<name>drawRgbNeedsFullBuffer</name>
 		<description>The Graphics.drawRGB(..) method does not accept only one row which
@@ -62,6 +63,7 @@
 		the last position in the corresponding stream.
 		</solution>
 	</bug>
+
 	<bug>
 		<name>fullScreenInPaint</name>
 		<description>Calling the Canvas.setFullScreenMode(boolean) method results
@@ -79,6 +81,7 @@
 		<solution>Call it in every paint() method.
 		</solution>
 	</bug>
+
 	<bug>
 		<name>fullScreenInShowNotify</name>
 		<description>Calling the Canvas.setFullScreenMode(boolean) method results
@@ -88,12 +91,14 @@
 		<solution>Set it the fullscreen mode in the showNotify() method.
 		</solution>
 	</bug>
+
 	<bug>
 		<name>NoSpriteRotation</name>
 		<description>The MIDP/2.0 Sprite Rotation does not work on this device.
 		</description>
 		<area>game, ui</area>
 	</bug>
+
 	<bug>
 		<name>DisplayGetColor</name>
 		<description>The MIDP/2.0 Display-method getColor( int specification ) does not work
@@ -105,6 +110,7 @@
 		screen has been set, so that the UI graphics system has the chance to initialize.
 		</solution>
 	</bug>
+
 	<bug>
 		<name>needsGCinPaint</name>
 		<description>When you encounter a DISCONTINUED error on such a device,
@@ -113,30 +119,35 @@
 		<area>ui</area>
 		<solution>Call the Runtime.getRuntime().gc()-method in your paint(Graphics g)-methods.</solution>
 	</bug>
+
 	<bug>
 		<name>inaccessibleFirstRow</name>
 		<area>ui</area>
 		<description>The first top row of pixels is not accsessible for developers. Painting the whole screen with a fullsize image will result in the last row of pixels out of screen. </description>
 		<solution></solution>
 	</bug>
+
 	<bug>
 		<name>umlautsInSmallFont</name>
 		<area>ui</area>
 		<description>Some special characters are not displayed correctly in small fonts.</description>
 		<solution>Using medium, large or bitmap fonts.</solution>
 	</bug>
+
 	<bug>
 		<name>dateFieldAcceptsNoNullDate</name>
 		<area>ui</area>
 		<description>The javax.microedition.lcdui.DateField must not get a null Date, otherwise it cannot be changed by the user.</description>
 		<solution>Provide a new Date instance with the setDate( java.util.Date ) after creating the DateField or use the J2ME Polish GUI.</solution>
 	</bug>
+
 	<bug>
 		<name>dateFieldBroken</name>
 		<area>ui</area>
 		<description>The javax.microedition.lcdui.DateField always returns the initial value, even when the value has been changed by the user.</description>
 		<solution>Use the J2ME Polish GUI (which assumes a &quot;true&quot; polish.DateField.directInputMode when this error is present from J2ME Polish 1.3 onwards).</solution>
 	</bug>
+
 	<bug>
 		<name>layerManagerSetViewWindow</name>
 		<area>game</area>
@@ -452,6 +463,17 @@
 		</solution>
 	</bug>
 	
+	<bug>
+		<name>HttpIfModifiedSince</name>
+		<area>io</area>
+		<description>
+			When doing HTTP requests and the IF-Modified-Since request header does not contain the current date you get an exception
+			<code>IOException: -33</code>
+		</description>
+		<solution>
+			Set the value of the IF-Modified-Since request header to System.currentTimeMillis().
+		</solution>
+	</bug>
 	
 	<!--
 	<bug>

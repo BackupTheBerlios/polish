@@ -554,7 +554,6 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900,1800,1900,2100" />
 		<capability name="Emulator.Skin" value="SonyEricsson_W810" />
 		<capability name="Emulator.Skin.2" value="SonyEricsson_W800i"/>
-		<capability name="Bugs" value=""/>
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="key.ReturnKey" value="-11" />
 	</device>
@@ -3731,6 +3730,32 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequence" value="850, 900, 1800, 1900"/>
 		<capability name="AnnouncementDate" value="2005-06-13"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
+	</device>
+
+	<device>
+		<identifier>Nokia/N93</identifier>
+		<groups>Series60E3</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 9.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi, webservice, securityandtrustservice, svg, advancedmultimedia"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
+		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, nrt, mp3, aac+, eaac+, realaudio, truetone, wb-amr, wav"/>
+		<capability name="HeapSize" value="dynamic"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="StorageSize" value="50 MB"/>
+		<capability name="DRM" value="OMA DRM v1.0"/>
+		<capability name="Region" value="Americas, Asia-Pacific, China, Africa, Europe"/>
+		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
+		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="CameraResolution" value="3.2 MP"/>
+		<capability name="AnnouncementDate" value="2006-04-25"/>
+		<capability name="Bugs" value="HttpIfModifiedSince"/>
 	</device>
 
 	<device>
