@@ -1,13 +1,11 @@
 package de.enough.polish.postcompile.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassWriter;
@@ -17,10 +15,7 @@ import org.objectweb.asm.tree.ClassNode;
 import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
-import de.enough.polish.Environment;
 import de.enough.polish.postcompile.BytecodePostCompiler;
-import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.JarUtil;
 
 /**
  * This post compiler adds the needed serialization methods for classes
@@ -150,8 +145,7 @@ public class SerializationPostCompiler extends BytecodePostCompiler
     return resultList;
   }
   
-	 
-// TODO: This is only for testing yet.
+  // TODO: This is only for testing yet.
   public static void main(String[] args)
   {
     SerializationPostCompiler postCompiler = new SerializationPostCompiler();
