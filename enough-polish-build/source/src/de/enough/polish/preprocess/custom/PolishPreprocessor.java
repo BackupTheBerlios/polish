@@ -42,7 +42,6 @@ import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
-import de.enough.polish.rmi.RemoteClient;
 import de.enough.polish.sourceparser.JavaSourceClass;
 import de.enough.polish.sourceparser.JavaSourceMethod;
 import de.enough.polish.util.FileUtil;

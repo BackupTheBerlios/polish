@@ -27,7 +27,6 @@ package de.enough.polish.resources;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
