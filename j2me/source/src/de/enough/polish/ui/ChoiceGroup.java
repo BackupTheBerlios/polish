@@ -871,7 +871,7 @@ implements Choice
 		int selectedItems = 0;
 		for (int i = 0; i < myItems.length; i++) {
 			ChoiceItem item = myItems[i];
-			if (item.isSelected) {
+			if (item.isSelected || (this.isImplicit && i == this.focusedIndex) ) {
 				selectedArray_return[i] = true;
 				selectedItems++;
 			} else {
