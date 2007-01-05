@@ -1,13 +1,13 @@
 package de.enough.polish.postcompile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.bytecode.ClassHelper;
 import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
 import de.enough.polish.util.FileUtil;
@@ -76,15 +76,7 @@ public abstract class BytecodePostCompiler extends PostCompiler
   protected void writeClass(File classesDir, String className, byte[] byteArray)
     throws IOException
   {
-    File target = new File(classesDir, className + ".class");
-
-    if (!target.getParentFile().exists())
-      {
-        target.getParentFile().mkdirs();
-      }
-
-    FileOutputStream output = new FileOutputStream( target );
-    output.write(byteArray);
-    output.close();
+    // Write class file.
+    ClassHelper.writeClass(classesDir, className, byteArray);
   }
 }
