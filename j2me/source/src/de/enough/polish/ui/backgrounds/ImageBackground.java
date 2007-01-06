@@ -68,7 +68,7 @@ implements ImageConsumer
 //#endif
 {
 	
-	private transient Image image;
+	private Image image;
 	private final int color;
 	private boolean isLoaded;
 	private final String imageUrl;

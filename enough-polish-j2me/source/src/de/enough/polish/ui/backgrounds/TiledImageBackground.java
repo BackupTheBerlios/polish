@@ -77,7 +77,7 @@ implements ImageConsumer
 	public static final int REPEAT_X = 2;
 	public static final int REPEAT_Y = 3;
 	
-	private transient Image image;
+	private Image image;
 	private final int color;
 	private final int repeatMode;
 	private boolean isLoaded;
