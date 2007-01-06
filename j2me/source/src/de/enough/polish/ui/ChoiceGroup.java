@@ -972,6 +972,10 @@ implements Choice
 	 */
 	public void setSelectedFlags(boolean[] selectedArray)
 	{
+		if (selectedArray == null || selectedArray.length == 0) {
+			// ignore these flags
+			return;
+		}
 		//#ifndef polish.skipArgumentCheck
 			if (selectedArray.length < this.itemsList.size()) {
 				//#ifdef polish.verboseDebug
