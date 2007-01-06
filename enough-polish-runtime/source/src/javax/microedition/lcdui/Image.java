@@ -634,8 +634,9 @@ public class Image extends Object
 	 */
 	public static Image createRGBImage(int[] rgb, int width, int height, boolean processAlpha)
 	{
-		return null;
-		//TODO implement createRGBImage
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image.setRGB(0, 0, width, height, rgb, 0,  width );
+		return new Image( image );
 	}
 
 	/**
@@ -734,7 +735,7 @@ public class Image extends Object
 	 */
 	public void getRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height)
 	{
-		//TODO implement getRGB
+		this.bufferedImage.getRGB( x, y, width, height, rgbData, offset, scanlength );
 	}
 
 	/**
