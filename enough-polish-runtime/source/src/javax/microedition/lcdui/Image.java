@@ -297,8 +297,7 @@ public class Image extends Object
 	 */
 	public static Image createImage( Image source)
 	{
-		return null;
-		//TODO implement createImage
+		return new Image( source.bufferedImage );
 	}
 
 	/**
@@ -339,10 +338,16 @@ public class Image extends Object
 			if (is == null) {
 				throw new IOException("Unable to load image [" + name + "]: resource not found.");
 			}
-			BufferedImage bufferedImage  = ImageIO.read( is );
-			Image image = new Image( bufferedImage );
-			image.url = url;
-			return image;
+			try {
+				BufferedImage bufferedImage  = ImageIO.read( is );
+				Image image = new Image( bufferedImage );
+				image.url = url;
+				return image;
+			} catch (IllegalArgumentException e) {
+				System.err.println("unable to load image " + name + ": " + e.toString() );
+				//e.printStackTrace();
+				throw new IOException( "unable to load image " + name + ": " + e.toString() );
+			}
 		}
 	}
 

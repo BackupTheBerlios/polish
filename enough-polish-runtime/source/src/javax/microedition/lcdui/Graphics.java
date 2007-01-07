@@ -1227,6 +1227,7 @@ public class Graphics extends Object
 	 */
 	public void drawImage( Image img, int x, int y, int anchor)
 	{
+
 		x += this.translateX;
 		y += this.translateY;
 		int horizontalAnchor = anchor & (LEFT | HCENTER | RIGHT);
@@ -1234,6 +1235,7 @@ public class Graphics extends Object
 			case LEFT: 
 				break;
 			case HCENTER:
+				//System.out.println("drawing HCENTER image at x=" + x + ", img.width=" + img.getWidth() + " (" + img.url + ")" );
 				x -= img.getWidth() / 2;
 				break;
 			case RIGHT:

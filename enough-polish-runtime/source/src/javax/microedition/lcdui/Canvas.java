@@ -957,6 +957,8 @@ public abstract class Canvas extends Displayable
 	 * @param g the gragphics used for painting
 	 */
 	public void _paint( Graphics g ) {
+		//System.out.println("Canvas.paint() - screen=" + getWidth() + "x" + getHeight() + ", this=" + this);
+		g.reset();
 		paint( g );
 	}
 
