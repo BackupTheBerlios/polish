@@ -130,4 +130,12 @@
 		<capability name="needsManualMenu" value="true" />
 	</platform>
 	
+	<platform>
+		<identifier>JavaSE/1.0</identifier>
+		<features>JavaSE</features>
+		<description>Includes some classes of the Jave Standard Edition for compilation.</description>
+		<capability name="build.BootClassPath" value="javase-1.0.jar" />
+		<capability name="build.ManifestCreator" value="none" />
+		<capability name="build.DescriptorCreator" value="none" />
+	</platform>
 </platforms>

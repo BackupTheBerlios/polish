@@ -696,6 +696,12 @@
 		<name>antcall</name>
 		<class>de.enough.polish.descriptor.AntCallDescriptorCreator</class>
 	</extension>
+
+	<extension>
+		<type>descriptorcreator</type>
+		<name>none</name>
+		<class>de.enough.polish.descriptor.NoneDescriptorCreator</class>
+	</extension>
 	
 	<!-- Debugger Interfaces -->
 	
