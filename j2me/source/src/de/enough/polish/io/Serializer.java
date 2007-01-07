@@ -25,6 +25,12 @@
  */
 package de.enough.polish.io;
 
+//#if polish.JavaSE
+	import java.awt.image.BufferedImage;
+	import java.lang.reflect.Field;
+	import javax.imageio.ImageIO;
+//#endif
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,11 +43,11 @@ import java.util.Stack;
 import java.util.Vector;
 
 //#if polish.midp
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Font;
+	import javax.microedition.lcdui.Command;
+	import javax.microedition.lcdui.Font;
 //#endif
 //#if polish.midp2
-import javax.microedition.lcdui.Image;
+	import javax.microedition.lcdui.Image;
 //#endif
 
 /**
@@ -78,6 +84,8 @@ public final class Serializer {
 	private static final byte TYPE_STACK = 17;
 	private static final byte TYPE_VECTOR = 18;
 	private static final byte TYPE_IMAGE = 19;
+	private static final byte TYPE_IMAGE_RGB = 0;
+	private static final byte TYPE_IMAGE_BYTES = 1;
 	private static final byte TYPE_FONT = 20;
 	private static final byte TYPE_COMMAND = 21;
 	
@@ -256,16 +264,44 @@ public final class Serializer {
 			//#if polish.midp2
 			} else if (object instanceof Image) {
 				out.writeByte(TYPE_IMAGE);
-				Image image = (Image) object;
-				int width = image.getWidth();
-				int height = image.getHeight();
-				out.writeInt( width );
-				out.writeInt( height );
-				int[] rgb = new int[ width * height ];
-				image.getRGB(rgb, 0, width, 0, 0, width, height);
-				for (int i = 0; i < rgb.length; i++) {
-					out.writeInt( rgb[i] );
-				}
+				//#if polish.JavaSE
+					boolean handled = false;
+					// we are within a Java SE environment. When the J2ME Polish runtime librarby is used, we can 
+					// store the image in PNG format instead of in the much more verbose RGB format:
+					try {
+						Field bufferedImageField = object.getClass().getDeclaredField("bufferedImage");
+						bufferedImageField.setAccessible( true );
+						BufferedImage bufferedImage = (BufferedImage) bufferedImageField.get( object );
+						ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+						ImageIO.write( bufferedImage, "png", byteOut );
+						out.writeByte(TYPE_IMAGE_BYTES);
+						byte[] data = byteOut.toByteArray();
+						out.writeInt( data.length );
+						for (int i = 0; i < data.length; i++) {
+							out.writeByte( data[i] );
+						}
+						handled = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+						//#debug warn
+						System.out.println("Warning: Unable to retrieve bufferedImage field of javax.microedition.lcdui.Image - probably the enough-polish-runtime library is not used.");
+					}
+					if (!handled) {
+				//#endif
+						Image image = (Image) object;
+						out.writeByte(TYPE_IMAGE_RGB);
+						int width = image.getWidth();
+						int height = image.getHeight();
+						out.writeInt( width );
+						out.writeInt( height );
+						int[] rgb = new int[ width * height ];
+						image.getRGB(rgb, 0, width, 0, 0, width, height);
+						for (int i = 0; i < rgb.length; i++) {
+							out.writeInt( rgb[i] );
+						}
+				//#if polish.JavaSE
+					}
+				//#endif
 			//#endif
 			//#if polish.midp
 			} else if (object instanceof Font) {
@@ -428,13 +464,22 @@ public final class Serializer {
 			return vector;
 		//#if polish.midp2
 		case TYPE_IMAGE:
-			int width = in.readInt();
-			int height = in.readInt();
-			int[] rgb = new int[ width * height ];
-			for (int i = 0; i < rgb.length; i++) {
-				rgb[i] = in.readInt();
+			byte subType = in.readByte();
+			if (subType == TYPE_IMAGE_RGB) {
+				int width = in.readInt();
+				int height = in.readInt();
+				int[] rgb = new int[ width * height ];
+				for (int i = 0; i < rgb.length; i++) {
+					rgb[i] = in.readInt();
+				}
+				return Image.createRGBImage(rgb, width, height, true );
+			} else {
+				// this is a bytes based format like png:
+				int bytesLength = in.readInt();
+				byte[] buffer = new byte[ bytesLength ];
+				in.readFully( buffer );
+				return Image.createImage( buffer, 0, bytesLength );
 			}
-			return Image.createRGBImage(rgb, width, height, true );
 		//#endif
 		//#if polish.midp
 		case TYPE_FONT:
