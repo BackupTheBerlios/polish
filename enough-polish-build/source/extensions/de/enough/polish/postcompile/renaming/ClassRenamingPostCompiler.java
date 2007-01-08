@@ -1,12 +1,12 @@
 package de.enough.polish.postcompile.renaming;
 
 import de.enough.bytecode.ASMClassLoader;
+import de.enough.bytecode.ClassHelper;
 import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
 import de.enough.polish.postcompile.BytecodePostCompiler;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,28 +66,26 @@ public class ClassRenamingPostCompiler
           {
             System.out.println("Error loading class " + className);
           }
+        catch (IOException e)
+          {
+            throw new BuildException(e);
+          }
       }
   }
 
   protected void writeClass(File classesDir, String className, byte[] byteArray)
+    throws IOException
   {
-    try
-      {
-        String tmpClassName = className.replace(File.separatorChar, '/');
-        String newClassName = ClassRenamingHelper.doRenaming(tmpClassName, this.renamingMap);
-        newClassName = newClassName.replace('/', File.separatorChar);
-        FileOutputStream output = new FileOutputStream(new File(classesDir, newClassName + ".class"));
-        output.write(byteArray);
-        output.close();
+    String tmpClassName = className.replace(File.separatorChar, '/');
+    String newClassName = ClassRenamingHelper.doRenaming(tmpClassName, this.renamingMap);
+    
+    // Write class file.
+    ClassHelper.writeClass(classesDir, newClassName, byteArray);
 
-        if (! className.equals(newClassName))
-          {
-            new File(classesDir, className + ".class").delete();
-          }
-      }
-    catch (IOException e)
+    // Delete old class file if renamed.
+    if (! className.equals(newClassName))
       {
-        System.err.println("Error writing class " + className);
+        new File(classesDir, className + ".class").delete();
       }
   }
 }
