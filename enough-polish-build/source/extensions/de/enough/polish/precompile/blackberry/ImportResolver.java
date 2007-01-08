@@ -26,10 +26,21 @@
 package de.enough.polish.precompile.blackberry;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.tree.ClassNode;
 
+import de.enough.bytecode.ASMClassLoader;
+import de.enough.bytecode.ClassHelper;
+import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.Device;
+import de.enough.polish.postcompile.renaming.ClassRenamingClassVisitor;
+import de.enough.polish.postcompile.renaming.ClassRenamingHelper;
 import de.enough.polish.precompile.PreCompiler;
 import de.enough.polish.util.FileUtil;
 
@@ -43,24 +54,83 @@ import de.enough.polish.util.FileUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ImportResolver extends PreCompiler {
+public class ImportResolver extends PreCompiler
+{
+  private static final String GRAPHICS_LCDUI = "javax/microedition/lcdui/Graphics";
+  
+  private static final String GRAPHICS_POLISH = "de/enough/polish/blackberry/ui/Graphics";
+  
+  private HashMap renamingMap;
 
-	public ImportResolver() {
-		super();
+	public ImportResolver()
+  {
+    this.renamingMap = new HashMap();
+    this.renamingMap.put(GRAPHICS_LCDUI, GRAPHICS_POLISH);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.precompile.PreCompiler#preCompile(java.io.File, de.enough.polish.Device)
+	 */
 	public void preCompile(File classesDir, Device device)
-	throws BuildException 
+	  throws BuildException 
 	{
-		//System.out.println("ImportResolver.preCompile(): start");
-		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
-		File[] files = new File[ fileNames.length ];
-		for (int i = 0; i < fileNames.length; i++) {
-			String name = fileNames[i];
-			files[i] = new File( classesDir, name );
-			//TODO man-di: implement moving of classes
-		}
+    // Find all classes and put their class names into the classes list.
+    ArrayList classes = new ArrayList();
+    String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
+    
+    for (int i = 0; i < fileNames.length; i++)
+      {
+        // Cut off file extension.
+        String className = fileNames[i].substring(0, fileNames[i].length() - 6);
+        
+        // Add class name to known classes.
+        classes.add(className);
+      }
 
+    // Create classloader for the classesDir.
+    DirClassLoader loader = DirClassLoader.createClassLoader(classesDir);
+
+    ASMClassLoader asmLoader = new ASMClassLoader(loader);
+    Iterator classesIt = classes.iterator();
+
+    while (classesIt.hasNext())
+      {
+        String className = (String) classesIt.next();
+        
+        try
+          {
+            ClassNode classNode = asmLoader.loadClass(className);
+            ClassWriter writer = new ClassWriter(false);
+            ClassRenamingClassVisitor visitor =
+              new ClassRenamingClassVisitor(writer, this.renamingMap);
+            classNode.accept(visitor);
+                    
+            writeClass(classesDir, className, writer.toByteArray());
+          }
+        catch (ClassNotFoundException e)
+          {
+            System.out.println("Error loading class " + className);
+          }
+        catch (IOException e)
+          {
+            throw new BuildException(e);
+          }
+      }
 	}
 
+  protected void writeClass(File classesDir, String className, byte[] byteArray)
+    throws IOException
+  {
+    String tmpClassName = className.replace(File.separatorChar, '/');
+    String newClassName = ClassRenamingHelper.doRenaming(tmpClassName, this.renamingMap);
+    newClassName = newClassName.replace('/', File.separatorChar);
+    
+    // Write class file.
+    ClassHelper.writeClass(classesDir, newClassName, byteArray);
+
+    if (! className.equals(newClassName))
+      {
+        new File(classesDir, className + ".class").delete();
+      }
+  }
 }
