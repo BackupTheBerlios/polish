@@ -26,9 +26,14 @@
 package de.enough.polish.io;
 
 //#if polish.JavaSE
+	// imports for the Java Standard Edition:
 	import java.awt.image.BufferedImage;
 	import java.lang.reflect.Field;
 	import javax.imageio.ImageIO;
+	import java.util.Map;
+	import java.util.HashMap;
+	import java.util.ResourceBundle;
+	import java.util.MissingResourceException;
 //#endif
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -47,7 +52,7 @@ import java.util.Vector;
 	import javax.microedition.lcdui.Font;
 //#endif
 //#if polish.midp2
-	import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Image;
 //#endif
 
 /**
@@ -88,6 +93,28 @@ public final class Serializer {
 	private static final byte TYPE_IMAGE_BYTES = 1;
 	private static final byte TYPE_FONT = 20;
 	private static final byte TYPE_COMMAND = 21;
+	
+	//#if polish.JavaSE
+	private static Map obfuscationDeserializeMap; // for translating class names while deserializing/reading data
+	private static Map obfuscationSerializeMap; // for translating class names while serializing/writing data
+	static {
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("obfuscation-map");
+			Enumeration enumeration = bundle.getKeys();
+			obfuscationDeserializeMap = new HashMap();
+			obfuscationSerializeMap = new HashMap();
+			while (enumeration.hasMoreElements()) {
+				String fullClassName = (String) enumeration.nextElement();
+				String obfuscatedClassName = bundle.getString( fullClassName );
+				System.out.println("full name=" + fullClassName + ", obsucated=" + obfuscatedClassName);
+				obfuscationDeserializeMap.put( obfuscatedClassName, fullClassName );
+				obfuscationSerializeMap.put( fullClassName, obfuscatedClassName );
+			}
+		} catch (MissingResourceException e) {
+			System.out.println("no obfuscation map found.");
+		}		
+	}
+	//#endif
 	
 	private Serializer() {
 		// no instantiation allowed
@@ -158,7 +185,19 @@ public final class Serializer {
 		if ( !isNull ) {
 			if (object instanceof Externalizable) { 
 				out.writeByte(TYPE_EXTERNALIZABLE);
-				out.writeUTF( object.getClass().getName() );
+				//#if polish.JavaSE
+					String className = object.getClass().getName();
+					if (obfuscationSerializeMap != null) {
+						String obfuscatedClassName = (String) obfuscationSerializeMap.get( className );
+						if (obfuscatedClassName != null) {
+							System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  obfuscatedClassName );
+							className = obfuscatedClassName;
+						}
+					}
+					out.writeUTF( className );
+				//#else
+					out.writeUTF( object.getClass().getName() );
+				//#endif
 				((Externalizable)object).write(out);
 			} else if (object instanceof Externalizable[]) { 
 				out.writeByte(TYPE_EXTERNALIZABLE_ARRAY);
@@ -353,6 +392,15 @@ public final class Serializer {
 		switch (type) {
 		case TYPE_EXTERNALIZABLE:
 			String className = in.readUTF();
+			//#if polish.JavaSE
+				if (obfuscationDeserializeMap != null) {
+					String fullClassName = (String) obfuscationDeserializeMap.get( className );
+					if (fullClassName != null) {
+						System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  fullClassName );
+						className = fullClassName;
+					}
+				}
+			//#endif
 			Externalizable extern = null;
 			try {
 				extern = (Externalizable) Class.forName( className ).newInstance();

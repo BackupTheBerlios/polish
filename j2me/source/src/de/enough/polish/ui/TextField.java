@@ -334,22 +334,24 @@ public class TextField extends StringItem
 		//#abort You need to define the ".textFieldSymbolList" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
 	//#endif
 //#endif
-//#if !(tmp.forceDirectInput || polish.blackberry || polish.doja)
-	implements CommandListener
+//#if !(tmp.forceDirectInput || polish.blackberry || polish.doja) || tmp.supportsSymbolEntry
+	//#defineorappend tmp.implements=CommandListener
+	//#define tmp.implementsCommandListener
 //#endif
 //#if polish.TextField.suppressCommands == true
 	//#define tmp.suppressCommands
-//#elif (tmp.forceDirectInput || polish.blackberry || polish.doja)  && !tmp.supportsSymbolEntry
- 	//# implements ItemCommandListener
 //#else
-	, ItemCommandListener
+ 	//#defineorappend tmp.implements=ItemCommandListener
+//#define tmp.implementsItemCommandListener
 //#endif
-//#if polish.blackberry and polish.TextField.suppressCommands
-	//# implements FieldChangeListener
-//#elif polish.blackberry  
-	, FieldChangeListener
+//#if polish.blackberry
+	//#defineorappend tmp.implements=FieldChangeListener
 //#endif
-
+//#if false
+	implements CommandListener, ItemCommandListener, FieldChangeListener
+//#else
+	//#= implements ${tmp.implements}
+//#endif
 {
 	/**
 	 * The user is allowed to enter any text.
@@ -3027,7 +3029,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !(polish.blackberry || tmp.forceDirectInput)
+	//#if tmp.implementsCommandListener
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
@@ -3046,16 +3048,18 @@ public class TextField extends StringItem
 				return;
 			}
 		//#endif
-		if (cmd == StyleSheet.CANCEL_CMD) {
-			this.midpTextBox.setString( this.text );
-		} else if (!this.isUneditable) {
-			setString( this.midpTextBox.getString() );
-			setCaretPosition( size() );
-			if ( this.screen instanceof Form) {
-				notifyStateChanged();
+		//#if !tmp.forceDirectInput
+			if (cmd == StyleSheet.CANCEL_CMD) {
+				this.midpTextBox.setString( this.text );
+			} else if (!this.isUneditable) {
+				setString( this.midpTextBox.getString() );
+				setCaretPosition( size() );
+				if ( this.screen instanceof Form) {
+					notifyStateChanged();
+				}
 			}
-		}
-		StyleSheet.display.setCurrent( this.screen );
+			StyleSheet.display.setCurrent( this.screen );
+		//#endif
 	}
 	//#endif
 	
@@ -3065,7 +3069,7 @@ public class TextField extends StringItem
 		}
 	//#endif
 	
-	//#if !tmp.suppressCommands  || tmp.supportsSymbolEntry
+	//#if tmp.implementsItemCommandListener
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
