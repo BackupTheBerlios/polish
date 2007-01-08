@@ -32,13 +32,14 @@ package de.enough.polish.io;
 	import javax.imageio.ImageIO;
 	import java.util.Map;
 	import java.util.HashMap;
-	import java.util.ResourceBundle;
-	import java.util.MissingResourceException;
+	import java.io.BufferedReader;
 //#endif
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -99,19 +100,29 @@ public final class Serializer {
 	private static Map obfuscationSerializeMap; // for translating class names while serializing/writing data
 	static {
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("obfuscation-map");
-			Enumeration enumeration = bundle.getKeys();
-			obfuscationDeserializeMap = new HashMap();
-			obfuscationSerializeMap = new HashMap();
-			while (enumeration.hasMoreElements()) {
-				String fullClassName = (String) enumeration.nextElement();
-				String obfuscatedClassName = bundle.getString( fullClassName );
-				System.out.println("full name=" + fullClassName + ", obsucated=" + obfuscatedClassName);
-				obfuscationDeserializeMap.put( obfuscatedClassName, fullClassName );
-				obfuscationSerializeMap.put( fullClassName, obfuscatedClassName );
+			InputStream in = Serializer.class.getResourceAsStream( "/obfuscation-map.txt" );
+			if (in != null) {
+				obfuscationDeserializeMap = new HashMap();
+				obfuscationSerializeMap = new HashMap();
+				BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
+				String line;
+				while ( (line = reader.readLine()) != null) {
+					if (line.length() == 0 || line.charAt(0) == '#' || line.trim().length() == 0) {
+						continue;
+					}
+					int splitPos = line.indexOf('=');
+					if (splitPos == -1) {
+						continue;
+					}
+					String fullClassName = line.substring(0, splitPos);
+					String obfuscatedClassName = line.substring( splitPos + 1 );
+					//System.out.println("full name=" + fullClassName + ", obsucated=" + obfuscatedClassName);
+					obfuscationDeserializeMap.put( obfuscatedClassName, fullClassName );
+					obfuscationSerializeMap.put( fullClassName, obfuscatedClassName );
+				}
 			}
-		} catch (MissingResourceException e) {
-			System.out.println("no obfuscation map found.");
+		} catch (IOException e) {
+			System.out.println("unable to read obfuscation map: " + e);
 		}		
 	}
 	//#endif
@@ -190,7 +201,7 @@ public final class Serializer {
 					if (obfuscationSerializeMap != null) {
 						String obfuscatedClassName = (String) obfuscationSerializeMap.get( className );
 						if (obfuscatedClassName != null) {
-							System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  obfuscatedClassName );
+							//System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
 							className = obfuscatedClassName;
 						}
 					}
@@ -396,7 +407,7 @@ public final class Serializer {
 				if (obfuscationDeserializeMap != null) {
 					String fullClassName = (String) obfuscationDeserializeMap.get( className );
 					if (fullClassName != null) {
-						System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  fullClassName );
+						//System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  fullClassName );
 						className = fullClassName;
 					}
 				}
@@ -414,7 +425,7 @@ public final class Serializer {
 		case TYPE_EXTERNALIZABLE_ARRAY:
 			int length = in.readInt();
 			Externalizable[] externalizables = new Externalizable[ length ];
-			Class[] classes = new Class[ Math.max( length, 7 ) ];
+			Class[] classes = new Class[ Math.min( length, 7 ) ];
 			Class currentClass;
 			byte idCounter = 0;
 			for (int i = 0; i < externalizables.length; i++) {

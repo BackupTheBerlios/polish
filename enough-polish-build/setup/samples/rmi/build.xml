@@ -257,12 +257,14 @@
 		<copy file="${polish.home}/lib/enough-j2mepolish-rmi.jar" todir="dist" />
 		<mkdir dir="bin/server" />
 		<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
-		<jar destfile="dist/gameserver.jar" basedir="bin/server" includes="**/*.class" />
+		<unjar src="dist/rmi.jar" dest="bin/server" />
+		<unjar src="dist/enough-j2mepolish-rmi.jar" dest="bin/server" />
+		<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
 	 	<war 
 			destfile="dist/gameserver.war"
 	 		webxml="source/server/web.xml"
 		>
-	 		<lib dir="dist" includes="rmi.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
+	 		<lib dir="dist" includes="gameserver.jar" />
 		</war>
 	</target>
 		

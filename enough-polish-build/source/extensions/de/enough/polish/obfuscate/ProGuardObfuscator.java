@@ -86,7 +86,7 @@ implements OutputFilter
 			if (definition != null) {
 				proguardPath = getEnvironment().writeProperties( definition.getClassPath().toString() );
 			} else {
-				proguardPath = getEnvironment().writeProperties( "${polish.home}/import/proguard.jar" );
+				proguardPath = getEnvironment().writeProperties( "${polish.home}/lib/proguard.jar" );
 			}
 			this.proGuardJarFile = new File( proguardPath );
 			if ( !this.proGuardJarFile.exists() ) {

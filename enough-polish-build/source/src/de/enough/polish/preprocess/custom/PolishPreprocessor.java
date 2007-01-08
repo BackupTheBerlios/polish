@@ -482,10 +482,12 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					this.environment.set("rmi-classes", rmiClassFiles);
 			    	this.environment.addSymbol("polish.build.hasRemoteClasses");
 				}
-				File classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
-				rmiClassFiles.add( classFile );
 				try {
-					createRemoteImplementation( className, lines );
+					boolean extendsRemote = createRemoteImplementation( className, lines );
+					if (extendsRemote) {
+						File classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
+						rmiClassFiles.add( classFile );						
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					BuildException be = new BuildException( getErrorStart(className, lines) + "Unable to read or save interface/class file.");
@@ -529,9 +531,16 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @param className the name of the remote interface
 	 * @param lines the source code of the interface
 	 * @throws IOException when the source code could not be written
+	 * @returnn true when the given source code really extends de.enough.polish.rmi.Remote
 	 */
-	protected void createRemoteImplementation(String className, StringList lines) throws IOException {
+	protected boolean createRemoteImplementation(String className, StringList lines) throws IOException {
 		JavaSourceClass sourceClass = new JavaSourceClass( lines.getArray() );
+		// check if this class really extends Remote:
+		String extendsStatement = sourceClass.getExtendsStatement();
+		if (extendsStatement == null || !("Remote".equals(extendsStatement) || "de.enough.polish.rmi.Remote".equals(extendsStatement)) ) {
+			// this class does not extend Remote:
+			return false;
+		}
 		String newImplements = sourceClass.getClassName();
 		sourceClass.setClassName(newImplements + "RemoteClient");
 		sourceClass.setImplementedInterfaces( new String[]{ newImplements } );
@@ -556,6 +565,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		File targetDir = new File( this.currentDevice.getSourceDir() + File.separatorChar + sourceClass.getPackageName().replace('.', File.separatorChar) );
 		File targetFile = new File( targetDir, sourceClass.getClassName() + ".java");
 		FileUtil.writeTextFile(targetFile, sourceClass.renderCode() );
+		return true;
 	}
 
 

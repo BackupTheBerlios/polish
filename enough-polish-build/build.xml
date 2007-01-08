@@ -127,6 +127,9 @@
 			 includes="de/enough/polish/rmi/*"
 			 index="true"
 		     >
+			<!--
+			<fileset dir="bin/classes" includes="de/enough/polish/util/*" />
+			-->
 			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/rmi/*" />
 			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/io/*" />
 		</jar>

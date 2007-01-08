@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.tools.ant.BuildException;
+
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
@@ -57,17 +59,22 @@ public class RmiFinalizer extends Finalizer {
 		File sourceDir = (File) this.environment.get("rmi-classes-dir" );
 	    List rmiClasses = (List) this.environment.get("rmi-classes" );
 	    if (rmiClasses != null) {
-			File target = new File( device.getJarFile().getParentFile(), "rmi.jar" );
-	    	System.out.println("packaging rmi classes to " + target.getAbsolutePath() );
+			File targetJar = new File( device.getJarFile().getParentFile(), "rmi.jar" );
+	    	System.out.println("packaging rmi classes to " + targetJar.getAbsolutePath() );
 			File[] files = (File[]) rmiClasses.toArray( new File[ rmiClasses.size() ] );
+//	    	File[] files = new File[ rmiClasses.size() + 1 ] ;
+//	    	for (int i = 0; i < files.length - 1; i++) {
+//				files[i] = (File) rmiClasses.get(i);
+//			}
+//	    	files[ files.length - 1 ] =  new File( this.environment.getProjectHome(), ".polishSettings/obfuscation-map.txt" );
 			try {
-				JarUtil.jar( files, sourceDir, target, false );
-			} catch (FileNotFoundException e) {
-				// TODO robertvirkus handle FileNotFoundException
-				e.printStackTrace();
+				JarUtil.jar( files, sourceDir, targetJar, false );
+				File obfuscationMapFile = new File( this.environment.getProjectHome(), ".polishSettings/obfuscation-map.txt" );
+				JarUtil.addToJar( obfuscationMapFile, targetJar, null, false );
 			} catch (IOException e) {
-				// TODO robertvirkus handle IOException
-				e.printStackTrace();
+				BuildException be =  new BuildException("Unable to create " + targetJar.getAbsolutePath() + ": " + e.toString() );
+				be.initCause( e );
+				throw be;
 			}
 	    }
 	}
