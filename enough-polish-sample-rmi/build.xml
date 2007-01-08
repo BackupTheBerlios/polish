@@ -155,7 +155,7 @@
 		<build
 			symbols="ExampleSymbol, AnotherExample"
 			fullscreen="menu"
-			usePolishGui="true"
+			usePolishGui="always"
 			workDir="${dir.work}"
 			polishDir="../enough-polish-j2me/source/src"
 		>
@@ -183,6 +183,8 @@
 				<variable name="polish.Browser.UserAgent" value="MobiViewer 1.0" />
 				<variable name="polish.Browser.MaxRedirects" value="5" />
 				<variable name="polish.Browser.Gzip" value="true" />
+				<variable name="polish.DateField.useDirectInput" value="true" />
+				<variable name="polish.TextField.useDirectInput" value="true" />
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
@@ -209,7 +211,7 @@
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test || polish.blackberry" >
+			<obfuscator name="ProGuard" useDefaultPackage="false" unless="polish.blackberry" >
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />
@@ -257,15 +259,20 @@
 <target name="emulator" depends="test,j2mepolish" />
 
 <target name="build-war" description="builds the server war file for Tomcat or other J2EE/Servlet Containers.">
+	<copy file="${polish.home}/dist/enough-j2mepolish-rmi.jar" todir="dist" />
 	<mkdir dir="bin/server" />
 	<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
-	<jar destfile="dist/gameserver.jar" basedir="bin/server" includes="**/*.class" />
-	<copy file="${polish.home}/dist/enough-j2mepolish-rmi.jar" todir="dist" />
+	<unjar src="dist/rmi.jar" dest="bin/server" />
+	<unjar src="dist/enough-j2mepolish-rmi.jar" dest="bin/server" />
+	<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
  	<war 
 		destfile="dist/gameserver.war"
  		webxml="source/server/web.xml"
 	>
+ 		<!-- 
  		<lib dir="dist" includes="rmi.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
+ 		-->
+ 		<lib dir="dist" includes="gameserver.jar" />
 	</war>
 </target>
 	

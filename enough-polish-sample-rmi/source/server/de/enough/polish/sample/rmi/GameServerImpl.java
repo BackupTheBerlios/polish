@@ -53,8 +53,9 @@ public class GameServerImpl implements GameServer {
 	public GameUser registerUser(String userName, String password)
 	throws RemoteException 
 	{
-		System.out.println("registering user " + userName );
-		return new GameUser( this.random.nextLong() % 9999, userName, this.random.nextInt( 100 ) );
+		GameUser user = new GameUser( this.random.nextLong() % 9999, userName, this.random.nextInt( 100 ) ); 
+		System.out.println("registering user " + user );
+		return user;
 	}
 
 }
