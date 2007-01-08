@@ -38,7 +38,7 @@ import de.enough.polish.ant.Jad;
 import de.enough.polish.util.FileUtil;
 
 /**
- * <p>Writes no JAD file).</p>
+ * <p>Writes no JAD file.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
