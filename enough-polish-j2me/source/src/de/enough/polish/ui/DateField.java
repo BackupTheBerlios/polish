@@ -24,7 +24,11 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
 
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
@@ -36,7 +40,9 @@ import net.rim.device.api.ui.UiApplication;
 import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.Locale;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * A <code>DateField</code> is an editable component for presenting

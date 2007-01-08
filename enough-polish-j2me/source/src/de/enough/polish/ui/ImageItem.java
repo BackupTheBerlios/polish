@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 

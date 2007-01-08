@@ -30,7 +30,13 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Timer;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.tasks.ImageTask;
 import de.enough.polish.util.Locale;
