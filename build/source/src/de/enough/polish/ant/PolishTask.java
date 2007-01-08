@@ -1409,6 +1409,14 @@ public class PolishTask extends ConditionalTask {
 			buildPath += File.separatorChar + locale.toString();
 		}
 		device.setBaseDir( buildPath );
+		this.environment.addVariable("polish.base.dir", buildPath );
+		String sourceDir = buildPath + File.separatorChar + "source";
+		device.setSourceDir(sourceDir);
+		this.environment.addVariable("polish.sourcedir", sourceDir);
+		this.environment.addVariable("polish.source.dir", sourceDir);
+		File resourceDir = new File( buildPath + File.separatorChar + "resources" );
+		device.setResourceDir( resourceDir );
+		this.environment.addVariable("polish.resources.dir", sourceDir);
 
 
 		
@@ -1499,8 +1507,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected void assembleResources( Device device, Locale locale ) {
 		System.out.println("assembling resources for device [" +  device.getIdentifier() + "]." );
-		File resourceDir = new File( device.getBaseDir() + File.separatorChar + "resources" );
-		device.setResourceDir( resourceDir );
+		File resourceDir = device.getResourceDir(); 
 		try {
 			// copy resources:
 			this.resourceManager.copyResources(resourceDir, device, locale);
@@ -1521,9 +1528,8 @@ public class PolishTask extends ConditionalTask {
 		try {
 
 			this.numberOfChangedFiles = 0;
-			String targetDir = device.getBaseDir() + File.separatorChar + "source";
-			device.setSourceDir(targetDir);
-			this.environment.addVariable("polish.sourcedir", targetDir);
+			String targetDir = device.getSourceDir();
+			
 			notifyPolishBuildListeners( PolishBuildListener.EVENT_PREPROCESS_SOURCE_DIR, new File( targetDir ) );
 			// initialise the preprocessor (other initialisation is done in the initialized() method):
 			this.preprocessor.setTargetDir( targetDir );

@@ -94,7 +94,7 @@ public class Preprocessor {
 	public static final int SKIP_REST = 16;
 
 	public static final Pattern DIRECTIVE_PATTERN = 
-		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+|//#abort|//#skiprest)");
+		Pattern.compile("\\s*(//#if\\s+|//#ifdef\\s+|//#ifndef\\s+|//#elif\\s+|//#elifdef\\s+|//#elifndef\\s+|//#else|//#endif|//#include\\s+|//#endinclude|//#style |//#debug|//#mdebug|//#enddebug|//#define\\s+|//#undefine\\s+|//#defineorappend\\s+|//#=\\s+|//#condition\\s+|//#message\\s+|//#todo\\s+|//#foreach\\s+|//#abort|//#skiprest)");
 
 	private DebugManager debugManager;
 	private File destinationDir;
@@ -658,6 +658,9 @@ public class Preprocessor {
 		} else if ("define".equals(command)) {
 			// define never changes the source directly:
 			processDefine( argument, lines, className );
+		} else if ("defineorappend".equals(command)) {
+			// define never changes the source directly:
+			processDefineOrAppend( argument, lines, className );
 		} else if ("undefine".equals(command)) {
 			// undefine never changes the source directly:
 			processUndefine( argument, lines, className );
@@ -1013,6 +1016,35 @@ public class Preprocessor {
 		if (equalsIndex != -1) {
 			String name = argument.substring(0, equalsIndex).trim();
 			String value = argument.substring( equalsIndex + 1).trim();
+			this.environment.addTemporaryVariable(name, value);
+		} else {
+			this.environment.addTemporarySymbol( argument );
+		}
+	}
+
+	/**
+	 * Processes the #defineorappend command.
+	 * 
+	 * @param argument the symbol which needs to be defined
+	 * @param lines the source code
+	 * @param className the name of the source file
+	 * @throws BuildException when the preprocessing fails
+	 */
+	private void processDefineOrAppend(String argument, StringList lines, String className ) 
+	throws BuildException
+	{
+		if (argument.equals("false")) {
+			throw new BuildException( className + " line " + (lines.getCurrentIndex() +1) 
+					+ ": found invalid #define directive: the symbol [false] cannot be defined.");
+		}
+		int equalsIndex = argument.indexOf('=');
+		if (equalsIndex != -1) {
+			String name = argument.substring(0, equalsIndex).trim();
+			String value = argument.substring( equalsIndex + 1).trim();
+			String existingValue = this.environment.getVariable(name);
+			if (existingValue != null) {
+				value = existingValue + ", " + value;
+			}
 			this.environment.addTemporaryVariable(name, value);
 		} else {
 			this.environment.addTemporarySymbol( argument );
