@@ -46,7 +46,7 @@ public class PolishPreprocessorTest extends TestCase {
 	public PolishPreprocessorTest(String name) {
 		super(name);
 	}
-	
+		
 	public void testSetCurrentItem() {
 		
 		String input = "		display.setCurrentItem( item );";

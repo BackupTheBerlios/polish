@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,12 +63,6 @@ import de.enough.polish.util.StringUtil;
  */
 public class PolishPreprocessor extends CustomPreprocessor {
 	
-	private boolean isTickerUsed;
-	private File stylePropertyIdsFile;
-	private File tickerFile;
-	private IntegerIdGenerator idGenerator;
-	private boolean isPopupUsed;
-	private File popupFile;
 	protected static final String SET_TICKER_STR = "([\\.|\\s]|^)setTicker\\s*\\(.+\\)";
 	protected static final String GET_TICKER_STR = "([\\.|\\s]|^)getTicker\\s*\\(\\s*\\)";
 	protected static final Pattern SET_TICKER_PATTERN = Pattern.compile( SET_TICKER_STR );
@@ -86,6 +81,25 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	protected static final String SET_CURRENT_ALERT_DISPLAYABLE_STR = "[\\w|\\.]+\\s*\\.\\s*setCurrent\\s*\\(\\s*[\\w*|\\.|\\_|\\(|\\)]+\\s*,\\s*[\\w*|\\.|\\_|\\(|\\)]+\\s*\\)";
 	protected static final Pattern SET_CURRENT_ALERT_DISPLAYABLE_PATTERN = Pattern.compile( SET_CURRENT_ALERT_DISPLAYABLE_STR );
 	
+	private static final Map PRIMITIVES_BY_NAME = new HashMap();
+	static {
+		PRIMITIVES_BY_NAME.put( "byte", "Byte" );
+		PRIMITIVES_BY_NAME.put( "short", "Short" );
+		PRIMITIVES_BY_NAME.put( "int", "Integer" );
+		PRIMITIVES_BY_NAME.put( "long", "Long" );
+		PRIMITIVES_BY_NAME.put( "float", "Float" );
+		PRIMITIVES_BY_NAME.put( "double", "Double" );
+		PRIMITIVES_BY_NAME.put( "char", "Character" );
+		PRIMITIVES_BY_NAME.put( "boolean", "Boolean" );
+	}
+
+	private boolean isTickerUsed;
+	private File stylePropertyIdsFile;
+	private File tickerFile;
+	private IntegerIdGenerator idGenerator;
+	private boolean isPopupUsed;
+	private File popupFile;
+
 	private CssAttributesManager cssAttributesManager;
 	private boolean usesBlackBerry;
 	private boolean usesDoJa;
@@ -573,24 +587,41 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	private void createRemoteMethodImplementation(JavaSourceMethod method) {
 		//TODO add handling for checked exceptions...
 		ArrayList methodCode = new ArrayList();
-		methodCode.add("String methodName= \"" + method.getName() + "\";" );
+		methodCode.add("String _methodName= \"" + method.getName() + "\";" );
 		String methodCall;
 		if (method.getParameterNames() == null) {
-			methodCall = "callMethod( methodName, null );";
+			methodCall = "callMethod( _methodName, null );";
 		} else {
+			StringBuffer primitivesFlagBuffer = new StringBuffer();
 			StringBuffer buffer = new StringBuffer();
-			buffer.append("Object[] params = new Object[] { ");
+			buffer.append("Object[] _params = new Object[] { ");
 			String[] paramNames = method.getParameterNames();
+			String[] paramTypes = method.getParameterTypes();
 			for (int i = 0; i < paramNames.length; i++) {
 				String paramName = paramNames[i];
-				buffer.append( paramName );
+				String paramType = paramTypes[i];
+				if (isPrimitive( paramType )) {
+					appendPrimitiveWrapper( paramType, paramName, buffer );
+					primitivesFlagBuffer.append('1'); // 1 = this is a primitive
+				} else {
+					// this is a normal object:
+					primitivesFlagBuffer.append('0'); // 0 = this is not a primitive
+					buffer.append( paramName );					
+				}
 				if (i != paramNames.length - 1) {
 					buffer.append(", ");
 				}
 			}
 			buffer.append( " };");
 			methodCode.add( buffer.toString() );
-			methodCall = "callMethod( methodName, params );";
+			// add primitive flags:
+			if (paramNames.length == 0) {
+				primitivesFlagBuffer.append('0');
+			}
+			String reversedFlags = primitivesFlagBuffer.reverse().toString();
+			int primitiveFlags = Integer.parseInt( reversedFlags, 2 );
+			methodCode.add( "long _primitiveFlags = " + primitiveFlags + "; // decimal of binary " + reversedFlags );
+			methodCall = "callMethod( _methodName, _primitiveFlags, _params );";
 		}
 		if ( "void".equals(method.getReturnType()) ) {
 			methodCode.add( methodCall );
@@ -599,6 +630,31 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		}
 		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
+
+	/**
+	 * Determines whether the given type is a primitive one like byte, int, float etc.
+	 * 
+	 * @param paramType the type, for example "int", "String" or similar
+	 * @return true when the given type is primitive
+	 */
+	private boolean isPrimitive(String paramType) {
+		return (PRIMITIVES_BY_NAME.get(paramType) != null);
+	}
+
+
+	/**
+	 * Adds the appropriate wrapper object to the given stringbuffer, for example int x becomes new Integer( x )
+	 * @param paramType the primitive type like "int", "float" etc
+	 * @param paramName the parameter name
+	 * @param buffer the StringBuffer to which the code is added
+	 */
+	private void appendPrimitiveWrapper(String paramType, String paramName, StringBuffer buffer) {
+		String wrapperClassName = (String) PRIMITIVES_BY_NAME.get(paramType);
+		buffer.append("new ").append( wrapperClassName ).append("( ").append( paramName ).append(" )");
+	}
+
+
+
 	
 
 }

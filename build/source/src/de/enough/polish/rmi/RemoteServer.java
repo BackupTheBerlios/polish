@@ -30,6 +30,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.io.Serializer;
 
@@ -44,8 +46,19 @@ import de.enough.polish.io.Serializer;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class RemoteServer {
-	private static final int RMI_VERSION = 100; // = 1.0.0
+	private static final int RMI_VERSION = 101; // = 1.0.1 (with support for primitive paramters)
 	private final Object implementation;
+	private static final Map PRIMITIVES_TYPES_MAP = new HashMap();
+	static {
+		PRIMITIVES_TYPES_MAP.put( Byte.class, Byte.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Short.class, Short.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Integer.class, Integer.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Long.class, Long.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Float.class, Float.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Double.class, Double.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Boolean.class, Boolean.TYPE );
+		PRIMITIVES_TYPES_MAP.put( Character.class, Character.TYPE );
+	}
 
 	/**
 	 * Creates a new server.
@@ -65,15 +78,34 @@ public class RemoteServer {
 			System.out.println("using RMI version=" + version);
 			String methodName = in.readUTF();
 			System.out.println("requested method: " + methodName );
+			long primitivesFlag = 0;
+			if (version > 100) {
+				primitivesFlag = in.readLong();
+				//System.out.println("primitivesFlag=" + primitivesFlag );
+			}
 			Object[] parameters = (Object[]) Serializer.deserialize(in);
 			Class[] signature = null;
+			int flag = 1;
 			if (parameters != null) {
 				signature = new Class[ parameters.length ];
 				for (int i = 0; i < parameters.length; i++) {
 					Object param = parameters[i];
-					signature[i] = param.getClass();
+					// check for primitive wrapper:
+					//System.out.println("primitiveFlag=" + primitivesFlag + ", flag=" + flag + ", (primitiveFlag & flag)=" + (primitivesFlag & flag) );
+					if ( (primitivesFlag & flag) == 0) {
+						// this is a normal class, not a primitive:
+						signature[i] = param.getClass();
+					} else {
+						// this is a primitive
+						Class primitiveType = (Class) PRIMITIVES_TYPES_MAP.get( param.getClass() );
+						if (primitiveType == null) {
+							throw new RemoteException("Invalid primitives flag, please report this error to j2mepolish@enough.de.");
+						}
+						//System.out.println("using primitive type " + primitiveType.getName() );
+						signature[i] = primitiveType;
+					}
+					flag <<= 1;
 				}
-				
 			}
 			// idee: server kšnnte beim ersten call eine int-ID zurŸckgeben, damit der Methoden-Name nicht jedes Mal Ÿbermittelt werden muss und das lookup schneller geht... (ist allerdings potentielles memory leak)
 			Method method = this.implementation.getClass().getMethod( methodName, signature );
@@ -98,6 +130,9 @@ public class RemoteServer {
 			processRemoteException( e, out );
 		} catch (InvocationTargetException e) {
 			// TODO robertvirkus handle InvocationTargetException
+			e.printStackTrace();
+			processRemoteException( e, out );
+		} catch (RemoteException e) {
 			e.printStackTrace();
 			processRemoteException( e, out );
 		} finally {

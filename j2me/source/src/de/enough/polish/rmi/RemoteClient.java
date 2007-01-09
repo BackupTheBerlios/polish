@@ -48,7 +48,7 @@ import de.enough.polish.io.Serializer;
  */
 public class RemoteClient implements Runnable {
 	
-	private static int RMI_VERSION = 100; // = 1.0.0
+	private static int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
 	
 	private final Vector callQueue;
 	private String url;
@@ -80,12 +80,14 @@ public class RemoteClient implements Runnable {
 	 * Calls a remote method.
 	 * 
 	 * @param name the method name
+	 * @param primitiveFlag for each element of the parameters which is originally a primitive the bit will be one: 
+	 *        element n = primitive means that (primitiveFlags & 2^n) != 0 
 	 * @param parameters any parameters, can be null
 	 * @return a return value for methods; void methods return null
 	 * @throws RemoteException when a checked or an unchecked exception has occurred on the server side or the connection failed
 	 */
-	protected Object callMethod( String name, Object[] parameters ) throws RemoteException {
-		RemoteCall call = new RemoteCall( name, parameters );
+	protected Object callMethod( String name, long primitiveFlag, Object[] parameters ) throws RemoteException {
+		RemoteCall call = new RemoteCall( name, primitiveFlag, parameters );
 		this.callQueue.addElement( call );
 		synchronized( this.callQueue) {
 			this.callQueue.notify();
@@ -126,6 +128,7 @@ public class RemoteClient implements Runnable {
 					DataOutputStream out = connection.openDataOutputStream();
 					out.writeInt( RMI_VERSION );
 					out.writeUTF( call.getName() );
+					out.writeLong( call.getPrimitivesFlag() );
 					Serializer.serialize( call.getParameters(), out);
 					// send request and read return values:
 					DataInputStream in = connection.openDataInputStream();

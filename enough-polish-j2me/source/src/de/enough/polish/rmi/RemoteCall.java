@@ -38,6 +38,7 @@ package de.enough.polish.rmi;
  */
 public class RemoteCall {
 	private final String name;
+	private final long primitivesFlag;
 	private final Object[] parameters;
 	private RemoteException raisedException;
 	private Object returnValue;
@@ -46,10 +47,13 @@ public class RemoteCall {
 	 * Creates a new remote call
 	 * 
 	 * @param name the name of the call
+	 * @param primitivesFlag for each element of the parameters which is originally a primitive the bit will be one: 
+	 *        element n = primitive means that (primitiveFlags & 2^n) != 0 
 	 * @param parameters any parameters, can be null
 	 */
-	public RemoteCall( String name, Object[] parameters ) {
+	public RemoteCall( String name, long primitivesFlag, Object[] parameters ) {
 		this.name = name;
+		this.primitivesFlag = primitivesFlag;
 		this.parameters = parameters;
 		
 	}
@@ -87,6 +91,10 @@ public class RemoteCall {
 	 */
 	public String getName() {
 		return this.name;
+	}
+	
+	public long getPrimitivesFlag() {
+		return this.primitivesFlag;
 	}
 
 	/**
