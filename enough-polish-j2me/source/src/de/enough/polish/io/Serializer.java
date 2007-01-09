@@ -196,8 +196,8 @@ public final class Serializer {
 		if ( !isNull ) {
 			if (object instanceof Externalizable) { 
 				out.writeByte(TYPE_EXTERNALIZABLE);
+				String className = object.getClass().getName();
 				//#if polish.JavaSE
-					String className = object.getClass().getName();
 					if (obfuscationSerializeMap != null) {
 						String obfuscatedClassName = (String) obfuscationSerializeMap.get( className );
 						if (obfuscatedClassName != null) {
@@ -205,10 +205,10 @@ public final class Serializer {
 							className = obfuscatedClassName;
 						}
 					}
-					out.writeUTF( className );
-				//#else
-					out.writeUTF( object.getClass().getName() );
 				//#endif
+				//#debug debug
+				System.out.println("serializing " + className + "=" + object);
+				out.writeUTF( className );
 				((Externalizable)object).write(out);
 			} else if (object instanceof Externalizable[]) { 
 				out.writeByte(TYPE_EXTERNALIZABLE_ARRAY);
@@ -231,7 +231,19 @@ public final class Serializer {
 							// this is a class that has not yet been encountered:
 							out.writeByte( 0 );
 							idCounter++;
-							out.writeUTF( currentClass.getName() );
+							String className = currentClass.getName() ;
+							//#if polish.JavaSE
+								if (obfuscationSerializeMap != null) {
+									String obfuscatedClassName = (String) obfuscationSerializeMap.get( className );
+									if (obfuscatedClassName != null) {
+										//System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
+										className = obfuscatedClassName;
+									}
+								}
+							//#endif
+							//#debug debug
+							System.out.println("serializing " + className + "=" + object);
+							out.writeUTF( className );
 							lastClass = currentClass;
 							lastId = idCounter;
 							classNames.put( currentClass, new Byte( lastId ) );
@@ -239,7 +251,6 @@ public final class Serializer {
 					}
 					externalizable.write(out);
 				}
-				((Externalizable)object).write(out);
 			} else if (object instanceof Object[]) { 
 				out.writeByte(TYPE_OBJECT_ARRAY);
 				Object[] objects = (Object[]) object;
@@ -412,6 +423,8 @@ public final class Serializer {
 					}
 				}
 			//#endif
+			//#debug debug
+			System.out.println("deserialize " + className + "...");
 			Externalizable extern = null;
 			try {
 				extern = (Externalizable) Class.forName( className ).newInstance();
@@ -432,6 +445,15 @@ public final class Serializer {
 				int classId = in.readByte();
 				if (classId == 0) { // new class name
 					className = in.readUTF();
+					//#if polish.JavaSE
+						if (obfuscationDeserializeMap != null) {
+							String fullClassName = (String) obfuscationDeserializeMap.get( className );
+							if (fullClassName != null) {
+								//System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  fullClassName );
+								className = fullClassName;
+							}
+						}
+					//#endif
 					try {
 						currentClass = Class.forName( className );
 					} catch (ClassNotFoundException e) {
