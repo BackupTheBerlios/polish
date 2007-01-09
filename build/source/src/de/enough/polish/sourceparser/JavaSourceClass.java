@@ -204,7 +204,7 @@ public class JavaSourceClass {
 							thrownExceptions = StringUtil.splitAndTrim( group.substring(throwsIndex + "throws ".length() ), ',');
 						}
 						
-						JavaSourceMethod method = new JavaSourceMethod( modifier, returnType, methodName, pTypes, pNames, thrownExceptions );
+						JavaSourceMethod method = new JavaSourceMethod( this, modifier, returnType, methodName, pTypes, pNames, thrownExceptions );
 						methods.add( method );
 					} // pattern match found for method
 				}

@@ -45,8 +45,10 @@ public class JavaSourceMethod {
 	private String[] parameterNames;
 	private String[] thrownExceptions;
 	private String[] methodCode;
+	private final JavaSourceClass parentClass;
 	
 	/**
+	 * @param parentClass the class/interface that contains this method. 
 	 * @param modifier 
 	 * @param returnType
 	 * @param name
@@ -54,8 +56,9 @@ public class JavaSourceMethod {
 	 * @param parameterTypes
 	 * @param thrownExceptions
 	 */
-	public JavaSourceMethod(String modifier, String returnType, String name, String[] parameterTypes, String[] parameterNames, String[] thrownExceptions) {
+	public JavaSourceMethod( JavaSourceClass parentClass, String modifier, String returnType, String name, String[] parameterTypes, String[] parameterNames, String[] thrownExceptions) {
 		super();
+		this.parentClass = parentClass;
 		this.modifier = modifier;
 		this.returnType = returnType;
 		this.name = name;
@@ -195,6 +198,32 @@ public class JavaSourceMethod {
 		}
 		code.add("}");
 		
+	}
+	/**
+	 * Checks whether the given exception is thrown by this method.
+	 * 
+	 * @param name the name of the exception
+	 * @return true when this exception is thrown by this method
+	 */
+	public boolean throwsException(String exceptionName) {
+		if (this.thrownExceptions == null) {
+			return false;
+		}
+		for (int i = 0; i < this.thrownExceptions.length; i++) {
+			String thrownException = this.thrownExceptions[i];
+			if (thrownException.equals( exceptionName )) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Retrieves the class or interface to which the method belongs.
+	 * @return the parent class/interface, can be null 
+	 */
+	public JavaSourceClass getSourceClass() {
+		return this.parentClass;
 	}
 	
 }

@@ -25,6 +25,9 @@
  */
 package de.enough.polish.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
@@ -133,9 +136,8 @@ public class AbbreviationsGenerator {
 			return;
 		}
 		// find out the last used abbreviation:
-		Object[] abbreviationsArr = map.values().toArray();
-		Arrays.sort( abbreviationsArr );
-		String lastAbbreviation = (String) abbreviationsArr[ abbreviationsArr.length -1 ];
+		String[] abbreviationsArr = (String[]) map.values().toArray( new String[ map.size() ]);
+		String lastAbbreviation = getLastAbbreviation( abbreviationsArr );
 		//System.out.println("last abbreviation=" + lastAbbreviation);
 		this.currentAbbreviationLength = lastAbbreviation.length();
 		char c = lastAbbreviation.charAt(0);
@@ -148,6 +150,26 @@ public class AbbreviationsGenerator {
 				this.thirdCharIndex = getCharIndex( c, lastAbbreviation );
 			}
 		}
+	}
+
+	/**
+	 * Finds the last abbreviation within the given String array, e.g. is "ab" later than "z".
+	 * 
+	 * @param abbreviationsArr an array of already used abbreviations
+	 * @return the last used abbreviation
+	 */
+	public static String getLastAbbreviation(String[] abbreviationsArr) {
+		Arrays.sort( abbreviationsArr );
+		int lastIndex = 0;
+		int lastLength = 0;
+		for (int i = abbreviationsArr.length - 1; i >= 0 ; i--) {
+			String abbreviation = abbreviationsArr[i];
+			if (abbreviation.length() > lastLength ) {
+				lastLength = abbreviation.length();
+				lastIndex = i;
+			}
+		}
+		return abbreviationsArr[ lastIndex ];
 	}
 
 	/**
@@ -239,6 +261,13 @@ public class AbbreviationsGenerator {
 			// 200.000 possible abbreviations available:
 			throw new IllegalStateException("Too many abbreviations needed - only [" + this.abbreviations.size() + "] different abbreviations are supported." );
 		}
+	}
+	
+	public static void main( String[] args) throws FileNotFoundException, IOException {
+		Map map = FileUtil.readPropertiesFile( new File( args[0]));
+		AbbreviationsGenerator generator = new AbbreviationsGenerator( map, ABBREVIATIONS_ALPHABET_LOWERCASE);
+		String abbreviation = generator.getAbbreviation("DuplicateUserException", true);
+		System.out.println("Generated Abbreviation=" + abbreviation );
 	}
 	
 }

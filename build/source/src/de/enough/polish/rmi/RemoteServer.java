@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializer;
 
 /**
@@ -130,7 +131,7 @@ public class RemoteServer {
 			processRemoteException( e, out );
 		} catch (InvocationTargetException e) {
 			// TODO robertvirkus handle InvocationTargetException
-			e.printStackTrace();
+			System.out.println("InvocationTargetException, cause=" + e.getCause() );
 			processRemoteException( e, out );
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -154,13 +155,16 @@ public class RemoteServer {
 		}
 	}
 
-	private void processRemoteException(Throwable e, DataOutputStream out) {
-		try {
-			out.writeUTF( e.toString() );
+	private void processRemoteException(Throwable e, DataOutputStream out)
+	throws IOException
+	{
+		Throwable cause = e.getCause();
+		if (cause instanceof Externalizable) {
+			out.writeInt( Remote.STATUS_CHECKED_EXCEPTION );
+			Serializer.serialize( cause, out );
+		} else {
 			out.writeInt( Remote.STATUS_UNCHECKED_EXCEPTION );
-		} catch (IOException e1) {
-			// TODO robertvirkus handle IOException
-			e1.printStackTrace();
+			out.writeUTF( e.toString() );
 		}
 	}
 

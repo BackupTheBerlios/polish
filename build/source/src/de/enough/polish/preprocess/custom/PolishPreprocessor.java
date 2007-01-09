@@ -571,7 +571,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		}
 
 		// add URL constructor:
-		JavaSourceMethod constructor = new JavaSourceMethod( "public", "", sourceClass.getClassName(), new String[]{ "String" }, new String[]{ "url" }, null );
+		JavaSourceMethod constructor = new JavaSourceMethod( sourceClass, "public", "", sourceClass.getClassName(), new String[]{ "String" }, new String[]{ "url" }, null );
 		constructor.setMethodCode( new String[]{
 				"super( url );"
 		} );
@@ -585,12 +585,15 @@ public class PolishPreprocessor extends CustomPreprocessor {
 
 
 	private void createRemoteMethodImplementation(JavaSourceMethod method) {
-		//TODO add handling for checked exceptions...
+		if (!(method.throwsException("RemoteException") || method.throwsException("de.enough.polish.rmi.RemoteException")) ) {
+			throw new BuildException("RMI method " + method.getName() + " does not throw RemoteException. Please correct this in your class " + method.getSourceClass().getClassName() );
+		}
+		
 		ArrayList methodCode = new ArrayList();
 		methodCode.add("String _methodName= \"" + method.getName() + "\";" );
 		String methodCall;
 		if (method.getParameterNames() == null) {
-			methodCall = "callMethod( _methodName, null );";
+			methodCall = "callMethod( _methodName, 0, null );";
 		} else {
 			StringBuffer primitivesFlagBuffer = new StringBuffer();
 			StringBuffer buffer = new StringBuffer();
@@ -623,10 +626,29 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			methodCode.add( "long _primitiveFlags = " + primitiveFlags + "; // decimal of binary " + reversedFlags );
 			methodCall = "callMethod( _methodName, _primitiveFlags, _params );";
 		}
+		String[] thrownExceptions = method.getThrownExceptions();
+		boolean hasDeclaredExceptions = thrownExceptions.length > 1;
+		if (hasDeclaredExceptions) {
+			methodCode.add("try {");
+		}
 		if ( "void".equals(method.getReturnType()) ) {
 			methodCode.add( methodCall );
 		} else {
 			methodCode.add( "return (" + method.getReturnType() + ") " + methodCall );
+		}
+		if (hasDeclaredExceptions) {
+			methodCode.add("} catch (RemoteException _e) {");
+			methodCode.add("Throwable _cause = _e.getCause();");
+			for (int i = 0; i < thrownExceptions.length; i++) {
+				String exceptionName = thrownExceptions[i];
+				if (!(exceptionName.equals("RemoteException") || exceptionName.equals("de.enough.polish.rmi.RemoteException"))) {
+					methodCode.add("if (_cause instanceof " + exceptionName + ") {");
+					methodCode.add( "\tthrow (" + exceptionName + ") _cause;");
+					methodCode.add("}");
+				}
+			}
+			methodCode.add("throw _e;");
+			methodCode.add("}");
 		}
 		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
