@@ -77,7 +77,7 @@ public class RemoteServer {
 			}
 			// idee: server könnte beim ersten call eine int-ID zurückgeben, damit der Methoden-Name nicht jedes Mal übermittelt werden muss und das lookup schneller geht... (ist allerdings potentielles memory leak)
 			Method method = this.implementation.getClass().getMethod( methodName, signature );
-			Object returnValue = method.invoke(this.implementation, parameters);
+			Object returnValue = method.invoke(this.implementation, parameters); // for void methods null is returned...
 			out.writeInt( Remote.STATUS_OK );
 			Serializer.serialize(returnValue, out);
 		} catch (SecurityException e) {

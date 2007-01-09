@@ -70,7 +70,9 @@ public class RmiFinalizer extends Finalizer {
 			try {
 				JarUtil.jar( files, sourceDir, targetJar, false );
 				File obfuscationMapFile = new File( this.environment.getProjectHome(), ".polishSettings/obfuscation-map.txt" );
-				JarUtil.addToJar( obfuscationMapFile, targetJar, null, false );
+				if (obfuscationMapFile.exists()) {
+					JarUtil.addToJar( obfuscationMapFile, targetJar, null, false );
+				}
 			} catch (IOException e) {
 				BuildException be =  new BuildException("Unable to create " + targetJar.getAbsolutePath() + ": " + e.toString() );
 				be.initCause( e );
