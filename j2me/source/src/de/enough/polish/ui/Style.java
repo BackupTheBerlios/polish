@@ -181,7 +181,7 @@ public class Style
 		//#endif
 	}
 	
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	/**
 	 * Retrieves a non-standard property of this style.
 	 * 
@@ -193,7 +193,7 @@ public class Style
 	}
 	//#endif
 	
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	/**
 	 * Retrieves a non-standard property of this style.
 	 * 
@@ -206,7 +206,7 @@ public class Style
 	//#endif
 
 
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	/**
 	 * Retrieves a non-standard integer property of this style.
 	 * 
@@ -218,7 +218,7 @@ public class Style
 	}
 	//#endif
 
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	/**
 	 * Retrieves a non-standard color property of this style.
 	 * 
@@ -230,7 +230,7 @@ public class Style
 	}
 	//#endif
 	
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	/**
 	 * Retrieves a non-standard boolean property of this style.
 	 * 
@@ -242,7 +242,7 @@ public class Style
 	}
 	//#endif
 
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		private String getProperty( int key ) {
 	//#else
 		//# public String getProperty( int key ) {
@@ -263,7 +263,7 @@ public class Style
 		return null;
 	}
 		
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		private Object getObjectProperty( int key ) {
 	//#else
 		//# public Object getObjectProperty( int key ) {
@@ -280,7 +280,7 @@ public class Style
 	}
 
 
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		private Integer getIntProperty( int key ) {
 	//#else
 		//# public Integer getIntProperty( int key ) {
@@ -300,7 +300,7 @@ public class Style
 		return null;
 	}
 		
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		private Color getColorProperty( int key ) {
 	//#else
 		//# public Color getColorProperty( int key ) {
@@ -317,7 +317,7 @@ public class Style
 		return null;
 	}
 	
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		private Boolean getBooleanProperty( int key ) {
 	//#else
 		//# public Boolean getBooleanProperty( int key ) {

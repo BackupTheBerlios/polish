@@ -49,7 +49,7 @@ import de.enough.polish.util.Locale;
 public final class StyleCache {
 	
 	
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		public static Style defaultStyle = null;
 		public static Style focusedStyle = null;
 		public static Style labelStyle = null; 

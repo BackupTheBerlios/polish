@@ -620,7 +620,7 @@ implements TrackwheelListener, KeyListener
 		//TODO implement setCurrent
 	}
 	
-	//#if false
+	//#if polish.LibraryBuild
 	public void setCurrent( Screen nextScreen) {
 		// ignore... Screen is a Displayable anyhow
 	}
@@ -661,7 +661,7 @@ implements TrackwheelListener, KeyListener
 	 */
 	public void setCurrentItem( Item item)
 	{
-		//#if true
+		//#if !polish.LibraryBuild
 			//# item.show(this);
 		//#endif
 	}
@@ -902,7 +902,7 @@ implements TrackwheelListener, KeyListener
 			return false;
 		}
 		Screen screen = null;
-		//#if true
+		//#if !polish.LibraryBuild
 			//# if (this.current instanceof Screen) {
 				//# screen = (Screen) this.current;
 			//# }

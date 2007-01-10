@@ -104,6 +104,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	private boolean usesBlackBerry;
 	private boolean usesDoJa;
 	private boolean usesDefaultPackage;
+	private boolean isLibraryBuild;
 
 	/**
 	 * Creates a new uninitialised PolishPreprocessor 
@@ -154,6 +155,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	public void notifyDevice(Device device, boolean usesPolishGui) {
 		super.notifyDevice(device, usesPolishGui);
 		Environment env = device.getEnvironment();
+		this.isLibraryBuild = env.hasSymbol("polish.LibraryBuild");
 		this.usesBlackBerry = env.hasSymbol("polish.blackberry") && usesPolishGui;
 		this.usesDoJa = env.hasSymbol("polish.doja") && usesPolishGui;
 		this.usesDefaultPackage = env.hasSymbol("polish.useDefaultPackage");
@@ -257,11 +259,11 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @see de.enough.polish.preprocess.LineProcessor#processClass(de.enough.polish.util.StringList, java.lang.String)
 	 */
 	public void processClass(StringList lines, String className) {
-		if (!this.isUsingPolishGui) {
+		if (!this.isUsingPolishGui || this.isLibraryBuild) {
 			return;
 		}
 		boolean isIllegalStateExceptionClass = false;
-		if (!this.usesDefaultPackage && this.usesDoJa) {
+		if (this.usesDoJa && !this.usesDefaultPackage) {
 			isIllegalStateExceptionClass = className.endsWith("IllegalStateException");
 			//System.out.println( "class=" + className + ", isIllegalStateExceptionClass=" + isIllegalStateExceptionClass );
 		}

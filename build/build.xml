@@ -139,37 +139,101 @@
 		depends="build-init"
 		description="builds the enough-j2mepolish-client.jar"
 		>
-			<!-- preverify the binary J2ME distribution - otherwise some IDEs complain -->
-			<mkdir dir="../enough-polish-j2me/bin/preverified" />
-			<echo message="Invoking preverifier ${preverify.cmd}..." />
-			<exec executable="${preverify.cmd}" failonerror="true">
-				<arg line="-classpath"/>
-				<arg line="import/cldc-1.1.jar:import/midp-2.0.jar:import/blackberry-4.0.jar:import/pdaapi.jar:import/mmapi.jar:import/m3g.jar:import/btapi.jar:import/doja-2.5.jar"/>
-				<!-- unix:
-				-->
-				<!-- windows 
-				<arg line="import/mmapi.jar;import/blackberry-4.0.jar;import/pdaapi.jar;import/m3g.jar;import/cldc-1.1.jar;import/midp-2.0.jar;import/btapi.jar;import/doja-2.5.jar"/>
-				-->
-				<arg line="-d"/>
-				<arg line="../enough-polish-j2me/bin/preverified"/>
-				<arg line="../enough-polish-j2me/bin/classes"/>
-			</exec>
-			<!-- create the binary J2ME distribution -->
-			<jar destfile="dist/enough-j2mepolish-client.jar"
-			     basedir="../enough-polish-j2me/bin/preverified"
-				 excludes="**/*.html"
-				 index="true"
-			     >
-			</jar>
+		<delete dir="build/tmp" />
+		<mkdir dir="build/clientsource" />
+		<mkdir dir="build/clientclasses" />
+		<mkdir dir="build/clientresources" />
+		<j2mepolish>
+		    <!-- general settings -->
+			<info 
+				license="GPL"
+				copyright="Copyright 2007 Enough Software. All rights reserved." 
+				description="Used for building the enough-j2mepolish-client.jar." 
+				infoUrl="http://www.j2mepolish.org" 
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-j2mepolish.jar" 
+				jarUrl="${deploy-url}${polish.jarName}" 
+				name="J2ME Polish" 
+				vendorName="Enough Software" 
+				version="2.0.0"
+		    />
+			<!-- selection of supported devices -->
+			<deviceRequirements>
+				<requirement name="Identifier" value="${device}"/>
+			</deviceRequirements>
+		    <!-- build settings -->
+			<build 
+				fullscreen="menu" 
+	            polishDir="../enough-polish-j2me/source/src" 
+	            usePolishGui="always"
+	            sourceDir="build/clientsource"
+				workDir="build/tmp"
+				compilerMode="true"
+				compilerDestDir="build/clientclasses"
+				compilerModePreverify="true"
+				>
+	
+				<!-- project-wide variables - used for preprocessing  -->
+				<variables 
+					replacePropertiesWithoutDirective="false"
+					>
+					<variable name="polish.LibraryBuild" value="true" />
+		            <variable name="polish.css.allowAllAttributes" value="true"/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+				</variables>
+				<resources
+					dir="build/clientresources" 
+					defaultexcludes="yes"
+					excludes="*.db"
+					filterZeroLengthFiles="true"
+				 >
+					<localization locales="en_US" />
+				</resources>
+			</build>
+		</j2mepolish>
+		<!-- now package the compiled classes -->
+		<jar destfile="dist/enough-j2mepolish-client.jar"
+		     basedir="build/clientclasses"
+			 excludes="**/*.html"
+			 index="true"
+		     >
+		</jar>
+		<!-- preverify the binary J2ME distribution - otherwise some IDEs complain 
+		<mkdir dir="../enough-polish-j2me/bin/preverified" />
+		<echo message="Invoking preverifier ${preverify.cmd}..." />
+		<exec executable="${preverify.cmd}" failonerror="true">
+			<arg line="-classpath"/>
+			<arg line="import/cldc-1.1.jar:import/midp-2.0.jar:import/blackberry-4.0.jar:import/pdaapi.jar:import/mmapi.jar:import/m3g.jar:import/btapi.jar:import/doja-2.5.jar"/>
+			-->
+			<!-- unix:
+			-->
+			<!-- windows 
+			<arg line="import/mmapi.jar;import/blackberry-4.0.jar;import/pdaapi.jar;import/m3g.jar;import/cldc-1.1.jar;import/midp-2.0.jar;import/btapi.jar;import/doja-2.5.jar"/>
+			-->
+		<!-- 
+			<arg line="-d"/>
+			<arg line="../enough-polish-j2me/bin/preverified"/>
+			<arg line="../enough-polish-j2me/bin/classes"/>
+		</exec>
+		-->
+		<!-- create the binary J2ME distribution -->
+		<!-- 
+		<jar destfile="dist/enough-j2mepolish-client.jar"
+		     basedir="../enough-polish-j2me/bin/preverified"
+			 excludes="**/*.html"
+			 index="true"
+		     >
+		</jar>
+		-->
 	</target>
 
 	<target name="build-client-java5" 
 		depends="build-init"
 		description="builds the enough-j2mepolish-client-java5.jar"
 		>
-			<mkdir dir="build/java5source" />
-			<mkdir dir="build/java5classes" />
-			<mkdir dir="build/java5resources" />
+		<delete dir="build/tmp" />
+		<mkdir dir="build/java5source" />
+		<mkdir dir="build/java5classes" />
+		<mkdir dir="build/java5resources" />
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
@@ -203,6 +267,7 @@
 				<variables 
 					replacePropertiesWithoutDirective="false"
 					>
+					<variable name="polish.LibraryBuild" value="true" />
 		            <variable name="polish.css.allowAllAttributes" value="true"/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				</variables>

@@ -59,7 +59,7 @@ public final class StyleSheet {
 		//private static final Boolean TRUE = new Boolean( true );
 		private static Timer timer;
 	//#endif
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 		public static Style defaultStyle = null;
 		public static Style focusedStyle = null;
 		public static Style labelStyle = null; 

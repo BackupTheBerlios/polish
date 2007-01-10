@@ -304,7 +304,7 @@ implements CommandListener
 	 */
 	public Alert( String title, String alertText, Image alertImage, AlertType alertType)
 	{
-		//#if true
+		//#if !polish.LibraryBuild
 			//#style alert, default
 			//# this( title, alertText, alertImage, alertType );
 		//#else

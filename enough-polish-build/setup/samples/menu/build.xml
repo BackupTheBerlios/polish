@@ -32,7 +32,7 @@
 		
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
-	<property name="device" value="Generic/midp1"/>
+	<property name="device" value="Nokia/Series60E2FP3"/>
 	
 	<!-- The siemens.home, nokia.home and motorola.home-          -->
 	<!-- properties can be necessary when their emulators         -->

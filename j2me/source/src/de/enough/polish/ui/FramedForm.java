@@ -94,13 +94,13 @@ public class FramedForm extends Form {
 	}
 	//#endif
 
-	//#if false
+	//#if polish.LibraryBuild
 	public void append( int frameOrientation, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the addItem( Item item, int frameOrientation ) method is called
 	}
 	//#endif
 	
-	//#if false
+	//#if polish.LibraryBuild
 	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener listener ) {
 		throw new RuntimeException("Unable to use standard ItemStateListener in a framed form.");
 	}

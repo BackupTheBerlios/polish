@@ -71,7 +71,7 @@ public class ListItem
 		setLabel( label );
 	}
 	
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Adds the specified item to this list.
 	 * 
@@ -82,7 +82,7 @@ public class ListItem
 	}
 	//#endif
 
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Inserts the specified item into this list.
 	 * 
@@ -94,7 +94,7 @@ public class ListItem
 	}
 	//#endif
 
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Removes the specified item from this list.
 	 * 

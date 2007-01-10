@@ -148,7 +148,7 @@ public class ScreenInfo {
 		repaint();
 	}
 	
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Sets the item that is painted on the screen. Warning: read doc!
 	 * You can replace the standard item (it's an IconItem) with this method, you can even set your own

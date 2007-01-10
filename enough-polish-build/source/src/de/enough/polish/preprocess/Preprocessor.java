@@ -126,6 +126,7 @@ public class Preprocessor {
 	private boolean replacePropertiesWithoutDirective;
 	private boolean isNetBeans;
 	private boolean isDeviceSupportsJ2mePolishApi;
+	private boolean isLibraryBuild;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -236,6 +237,7 @@ public class Preprocessor {
 	 */
 	public void notifyDevice( Device device, boolean usesPolishGui ) {
 		this.isNetBeans = this.environment.hasVariable("netbeans.home");
+		this.isLibraryBuild = this.environment.hasSymbol("polish.LibraryBuild");
 		this.isDeviceSupportsJ2mePolishApi = this.environment.hasSymbol("polish.api.j2mepolish");
 		if (this.customPreprocessors != null) {
 			for (int i = 0; i < this.customPreprocessors.length; i++) {
@@ -669,7 +671,11 @@ public class Preprocessor {
 		} else if ("include".equals(command)) {
 			changed = processInclude( argument, lines, className );
 		} else if ("style".equals( command) ) {
-			changed = processStyle( argument, lines, className );
+			if (this.isLibraryBuild) {
+				changed = false;
+			} else {
+				changed = processStyle( argument, lines, className );
+			}
 		} else if ("debug".equals( command) ) {
 			changed = processDebug( argument, lines, className );
 		} else if ("mdebug".equals( command) ) {

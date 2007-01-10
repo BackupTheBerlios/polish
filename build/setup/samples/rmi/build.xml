@@ -255,8 +255,10 @@
 	
 	<target name="build-war" description="builds the server war file for Tomcat or other J2EE/Servlet Containers.">
 		<copy file="${polish.home}/lib/enough-j2mepolish-rmi.jar" todir="dist" />
+		<delete dir="bin/server" />
 		<mkdir dir="bin/server" />
 		<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
+		<!-- also add the generated RMI files to the (single) JAR file, so that the obfuscation map can be read easily: -->
 		<unjar src="dist/rmi.jar" dest="bin/server" />
 		<unjar src="dist/enough-j2mepolish-rmi.jar" dest="bin/server" />
 		<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
@@ -267,7 +269,7 @@
 	 		<lib dir="dist" includes="gameserver.jar" />
 		</war>
 	</target>
-		
+	
 	<target name="deploy-war" depends="build-war" >
 		<copy file="dist/gameserver.war" todir="${webapps.home}" />
 	</target>

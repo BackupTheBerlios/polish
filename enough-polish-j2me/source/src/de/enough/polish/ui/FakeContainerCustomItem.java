@@ -140,7 +140,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		this.itemsList = new ArrayList();
 		this.autoFocusEnabled = focusFirstElement;
 		Style focStyle = StyleSheet.focusedStyle;
-		//#if false
+		//#if polish.LibraryBuild
 			// this code is needed for the JUnit tests only:
 			if (focStyle == null) {
 				focStyle = new Style( 1, 1, 1, 1,

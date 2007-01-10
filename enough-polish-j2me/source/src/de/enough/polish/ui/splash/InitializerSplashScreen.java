@@ -76,7 +76,7 @@ implements Runnable, AccessibleCanvas
 		private final int messageColor;
 		private final int backgroundColor;
 	//#endif
-	//#if false
+	//#if polish.LibraryBuild
 		private final SplashView view;
 	//#endif
 	private String message;
@@ -113,7 +113,7 @@ implements Runnable, AccessibleCanvas
 		this.readyMessage = readyMessage;
 		this.messageColor = messageColor;
 		this.initializer = initializer;
-		//#if false
+		//#if polish.LibraryBuild
 			this.view = null;
 		//#endif
 	}

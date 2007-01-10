@@ -604,7 +604,7 @@ public class Display
 		//TODO implement setCurrent
 	}
 	
-	//#if false
+	//#if polish.LibraryBuild
 	public void setCurrent( Screen nextScreen) {
 		// ignore... Screen is a Displayable anyhow
 	}
@@ -645,7 +645,7 @@ public class Display
 	 */
 	public void setCurrentItem( Item item)
 	{
-		//#if true
+		//#if !polish.LibraryBuild
 			//# item.show(this);
 		//#endif
 	}

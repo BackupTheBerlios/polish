@@ -506,6 +506,10 @@ implements Comparator
 	 * @param code the source code of Locale.java
 	 */
 	public void processLocaleCode(StringList code) {
+		if (this.environment.hasSymbol("polish.LibraryBuild")) {
+			// ignore when the J2ME Polish Client library is build:
+			return;
+		}
 		System.out.println("processing locale code... ");
 		code.reset();
 		boolean insertionPointFound = false;

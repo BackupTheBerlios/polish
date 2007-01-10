@@ -1,4 +1,4 @@
-//#condition polish.midp || polish.usePolishGui2
+//#condition polish.midp2 && polish.usePolishGui
 /*
  * Created on 09.01.2006 at 16:56:54.
  * 
@@ -28,31 +28,31 @@ package de.enough.polish.ui;
 
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.CustomItem;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-//#if polish.usePolishGui
-//#endif
 import de.enough.polish.util.ImageUtil;
+
 /**
  * The Picure Browser paints 5 in one row by scaling down the four outer ones and having a suitable large image in the middle.
  * 
  * @author Tim Muders
  *
  */
-public class PictureBrowserItem extends CustomItem {
+public class PictureBrowserItem
+//#if polish.LibraryBuild
+	extends FakeCustomItem
+//#else
+	//# extends Item 
+//#endif
+{
 	private Image[] thumbnails;
 	private int[][] thumbnailsRGBData;
 	private int selectedThumbIndex = 0;
 	private int thumbnailWidth, thumbnailHeight, selectedWidth, selectedHeight;
 	private String[] urls;
 	
-	//#if !polish.usePolishGui
-		private int paddingHorizontal = 1;
-		private int paddingVertical = 1;
-	//#endif
 	
 	/**
 	 * Creates a new, <code>PictureBrowserItem</code>.
@@ -65,33 +65,9 @@ public class PictureBrowserItem extends CustomItem {
 	 *        The complete width off the item are 4*firstimage.getWidth()*scaleFactor/100 + 2*padding-horizontal
 	 */
 	public PictureBrowserItem( String label, Image[] thumbnails, String[] urls, int scaleFactor ){
-		//#style picBrowser?
-		super( label );
-		this.thumbnails = thumbnails;
-		this.urls = urls;
-		Image thumbnail = thumbnails[0];
-		this.thumbnailWidth = (thumbnail.getWidth() * scaleFactor) / 100;
-		this.thumbnailHeight = (thumbnail.getHeight() * scaleFactor) / 100;
-		this.selectedWidth = this.thumbnailWidth*2 + this.paddingVertical;
-		this.selectedHeight = this.thumbnailHeight*2 + this.paddingVertical;
-		int size = this.thumbnailWidth * this.thumbnailHeight;
-		this.thumbnailsRGBData = new int [thumbnails.length][];
-		for(int i = 0; i < thumbnails.length; i++){
-			int w = thumbnails[i].getWidth();
-			int h = thumbnails[i].getHeight();
-			int[] rgbData = new int[w*h];
-			this.thumbnails[i].getRGB(rgbData, 0, w, 0, 0, w, h );
-			if (i == this.selectedThumbIndex){
-				this.thumbnailsRGBData[i] = new int[this.selectedHeight*this.selectedWidth];
-				ImageUtil.scale(rgbData, this.selectedWidth, this.selectedHeight,w,h,this.thumbnailsRGBData[i]);
-			} else {
-				this.thumbnailsRGBData[i] = new int[size];
-				ImageUtil.scale(rgbData, this.thumbnailWidth, this.thumbnailHeight,w,h,this.thumbnailsRGBData[i]);
-			}
-		}
+		this( label, thumbnails, urls, scaleFactor, null );
 	}	
 	
-	//#if polish.usePolishGui
 	/**
 	 * Creates a new, <code>PictureBrowserItem</code>.
 	 * 
@@ -104,11 +80,7 @@ public class PictureBrowserItem extends CustomItem {
 	 * @param style the design settings
 	 */
 	public PictureBrowserItem( String label, Image[] thumbnails, String[] urls, int scaleFactor, Style style ){
-		//#if polish.usePolishGui
-			//# super( label, style );
-		//#else
-			super( label );			
-		//#endif
+		super( label, 0, INTERACTIVE, style );
 		this.thumbnails = thumbnails;
 		this.urls = urls;
 		Image thumbnail = thumbnails[0];
@@ -132,7 +104,6 @@ public class PictureBrowserItem extends CustomItem {
 			}
 		}
 	}
-	//#endif
 
 	/**
 	 * Retrieves the number of stored thumbnails
@@ -143,36 +114,6 @@ public class PictureBrowserItem extends CustomItem {
 		return this.thumbnailsRGBData.length;
 	}
 	
-
-	/**
-	 * 
-	 * @return - the width of the Item
-	 */
-	protected int getMinContentWidth() {
-		return this.thumbnailWidth * 2 + 2 * this.paddingHorizontal + this.selectedWidth;
-	}
-	
-	/**
-	 * 
-	 * @return - the height of the Item
-	 */
-	protected int getMinContentHeight() {
-		return this.thumbnailHeight * 2 + this.paddingVertical;
-	}
-
-	protected int getPrefContentWidth(int availableHeight) {
-		// only when layout== expand:
-//		//#if polish.usePolishGui
-//			//# return Integer.MAX_VALUE
-//		//#else
-//			return getMinContentWidth();
-//		//#endif
-		return getMinContentWidth();
-	}
-
-	protected int getPrefContentHeight(int availableWidth) {
-		return getMinContentHeight();
-	}
 	
 	/**
 	 * Changes the Selected Thumb with the given int i,
@@ -211,26 +152,24 @@ public class PictureBrowserItem extends CustomItem {
 	
 	/* 
 	 * Paints the PictureBrowserItem.
-	 * 
-	 * @param g the graphics context
-	 * @param w the available width
-	 * @param h the available height
+	 *
 	 */
-	protected void paint(Graphics g, int w, int h) { 
-		int translateX = g.getTranslateX(); 
-		int translateY = g.getTranslateY();
-		g.translate(-translateX, -translateY );
+	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+//		int translateX = g.getTranslateX(); 
+//		int translateY = g.getTranslateY();
+//		g.translate(-translateX, -translateY );
 
 		int index = this.selectedThumbIndex - Math.min( 2,  this.thumbnails.length - 1 );
 		if (index < 0) {
 			index = this.thumbnails.length + index;
 		}
 		int number = Math.min( 5, this.thumbnails.length );
-		int x = translateX;
-		int y = translateY;
+//		int x = translateX;
+//		int y = translateY;
+		int originalY = y;
 		for (int i=0; i<number; i++ ) {
 			if (index == this.selectedThumbIndex) {
-				y = translateY;
+				y = originalY;
 				x += this.thumbnailWidth + this.paddingHorizontal;
 				g.drawRGB(this.thumbnailsRGBData[index], 0, this.selectedWidth, x, y, this.selectedWidth, this.selectedHeight, false);
 				x += this.selectedWidth + this.paddingHorizontal;
@@ -243,7 +182,7 @@ public class PictureBrowserItem extends CustomItem {
 				index = 0;
 			}
 		}
-		g.translate(translateX, translateY);  
+//		g.translate(translateX, translateY);  
 
 	}
 
@@ -253,10 +192,8 @@ public class PictureBrowserItem extends CustomItem {
 	 * 
 	 * @param style -  the Font to be painted
 	 */
-	//#if polish.usePolishGui
 	public void setStyle( Style style ) {
-		//# super.setStyle( style );
-		//this.font = style.font;
+		super.setStyle( style );
 		int newSelectedHeight = this.thumbnailHeight * 2 + this.paddingVertical;
 		int newSelectedWidth = this.thumbnailWidth * 2 + this.paddingVertical;
 		if (newSelectedHeight != this.selectedHeight || newSelectedWidth != this.selectedWidth ) {
@@ -266,7 +203,6 @@ public class PictureBrowserItem extends CustomItem {
 			setSelectedThumbIndex( this.selectedThumbIndex );
 		}
 	}
-	//#endif
 	
 	/**
 	 * Changes the Selected Image if interaction:
@@ -274,18 +210,19 @@ public class PictureBrowserItem extends CustomItem {
 	 * Canvas.LEFT.
 	 * 
 	 */
-	protected boolean traverse(int dir,int viewportWidth,int viewportHeight,int[] visRect_inout) {
+//	protected boolean traverse(int dir,int viewportWidth,int viewportHeight,int[] visRect_inout) {
+	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		if(this.thumbnails.length > 1){
-		   if (dir == Canvas.LEFT) {
-		//			   Left
+		   if (gameAction == Canvas.LEFT) {
+			   //			   Left
 			   if(this.selectedThumbIndex == 0) {
 				   this.setSelectedThumbIndex(this.thumbnails.length-1);
 			   } else {
 				   this.setSelectedThumbIndex(this.selectedThumbIndex-1);
 			   }
 			   return true;
-		   } else if (dir == Canvas.RIGHT) {
-		//			   Right
+		   } else if (gameAction == Canvas.RIGHT) {
+			   //			   Right
 			   if(this.selectedThumbIndex < this.thumbnails.length-1) {
 				   this.setSelectedThumbIndex(this.selectedThumbIndex+1);
 			   } else {
@@ -319,4 +256,14 @@ public class PictureBrowserItem extends CustomItem {
 		}
 		return this.urls[index];
 	}
+
+	protected String createCssSelector() {
+		return "picturebrowser";
+	}
+
+	protected void initContent(int firstLineWidth, int lineWidth) {
+		this.contentWidth = this.thumbnailWidth * 2 + 2 * this.paddingHorizontal + this.selectedWidth;
+		this.contentHeight = this.thumbnailHeight * 2 + this.paddingVertical;
+	}
+
 }

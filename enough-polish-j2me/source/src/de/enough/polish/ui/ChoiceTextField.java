@@ -154,7 +154,7 @@ public class ChoiceTextField
 		//#if polish.Container.allowCycling != false
 			this.choicesContainer.allowCycling = false;
 		//#endif
-		//#if polish.usePolishGui
+		//#if polish.usePolishGui && !polish.LibraryBuild
 			//# this.choicesContainer.parent = this;
 		//#endif	
 		this.isAppendMode = appendChoice;
@@ -425,7 +425,7 @@ public class ChoiceTextField
 		if (enter) {
 			this.choicesContainer.focus(0);
 			setStyle( this.originalStyle );
-			//#if polish.usePolishGui
+			//#if polish.usePolishGui && !polish.LibraryBuild
 				this.flashCaret = false;
 				this.showCaret = false;
 				if (!this.isInChoice) {
@@ -445,7 +445,7 @@ public class ChoiceTextField
 			// move focus to TextField input again
 			this.choicesContainer.defocus( this.originalStyle );
 			if (this.isInChoice) {
-				//#if polish.usePolishGui
+				//#if polish.usePolishGui  && !polish.LibraryBuild
 					//# getScreen().setItemCommands( this );
 				//#endif
 			}

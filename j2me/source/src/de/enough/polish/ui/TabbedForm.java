@@ -94,7 +94,7 @@ public class TabbedForm extends Form {
 		setSubTitle( this.tabBar );
 	}
 
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Adds the item  to this form.
 	 * 
@@ -107,7 +107,7 @@ public class TabbedForm extends Form {
 	}
 	//#endif
 
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Changes the item of a tab.
 	 * 
@@ -122,7 +122,7 @@ public class TabbedForm extends Form {
 	//#endif
 
 	
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Deletes the item from this form.
 	 * 
@@ -136,7 +136,7 @@ public class TabbedForm extends Form {
 	//#endif
 	
 	
-	//#if false
+	//#if polish.LibraryBuild
 	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener listener ) {
 		throw new RuntimeException("Unable to use standard ItemStateListener in a tabbed form.");
 	}

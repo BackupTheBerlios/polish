@@ -46,7 +46,7 @@ import javax.microedition.lcdui.Image;
 public class TabBar extends Item {
 
 	private final ImageItem[] tabs;
-	//#if true
+	//#if !polish.LibraryBuild
 		//# private final Style activeStyle;
 		//# private final Style inactiveStyle;
 	//#else
@@ -99,7 +99,7 @@ public class TabBar extends Item {
 			tabNames = new String[ tabImages.length ];
 		}
 		// getting styles:
-		//#if true
+		//#if !polish.LibraryBuild
 			//#style activetab, tab, default
 			//# this.activeStyle = ();
 			//#style inactivetab, tab, default

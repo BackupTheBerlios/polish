@@ -342,13 +342,18 @@ public class TextField extends StringItem
 	//#define tmp.suppressCommands
 //#else
  	//#defineorappend tmp.implements=ItemCommandListener
-//#define tmp.implementsItemCommandListener
+	//#define tmp.implementsItemCommandListener
 //#endif
 //#if polish.blackberry
 	//#defineorappend tmp.implements=FieldChangeListener
 //#endif
-//#if false
-	implements CommandListener, ItemCommandListener, FieldChangeListener
+//#if polish.LibraryBuild
+	//#define tmp.implementsCommandListener
+	//#define tmp.implementsItemCommandListener
+	implements CommandListener, ItemCommandListener
+	//#if polish.blackberry
+		, FieldChangeListener
+	//#endif
 //#else
 	//#= implements ${tmp.implements}
 //#endif

@@ -76,7 +76,7 @@ public class TreeItem
 		setLabel( label );
 	}
 	
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Adds the specified item to this tree.
 	 * 
@@ -87,7 +87,7 @@ public class TreeItem
 	}
 	//#endif
 	
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Adds the specified item to this tree.
 	 * 
@@ -99,7 +99,7 @@ public class TreeItem
 	}
 	//#endif
 
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Adds the specified text/image to this tree.
 	 * 
@@ -115,7 +115,7 @@ public class TreeItem
 	//#endif
 
 
-	//#if false
+	//#if polish.LibraryBuild
 	/**
 	 * Removes the specified item from this list.
 	 * 
@@ -136,7 +136,7 @@ public class TreeItem
 	 * @param image the image
 	 * @return the created item
 	 */
-	//#if false
+	//#if polish.LibraryBuild
 	public javax.microedition.lcdui.Item appendToRoot( String text, Image image ) {
 		return null;
 	//#else
@@ -153,14 +153,14 @@ public class TreeItem
 	 * @param style the style
 	 * @return return the created item
 	 */
-	//#if false
+	//#if polish.LibraryBuild
 	public javax.microedition.lcdui.Item appendToRoot( String text, Image image, Style style ) {
 	//#else
 		//# public Item appendToRoot( String text, Image image, Style style ) {
 	//#endif
 		IconItem item = new IconItem( text, image, style );
 		appendToRoot( item );
-		//#if false
+		//#if polish.LibraryBuild
 			return null;
 		//#else
 			//# return item;
@@ -244,7 +244,7 @@ public class TreeItem
 		if ( !(node.parent instanceof Node) ) {
 			// the item has to be converted into a node:
 			Container parentContainer;
-			//#if false
+			//#if polish.LibraryBuild
 				if ( (Object)node.parent == this) {
 					// this is a root item:
 					parentContainer = (Container) ((Object)this);

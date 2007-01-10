@@ -1656,11 +1656,13 @@ public class PolishTask extends ConditionalTask {
 					cssConverter.setAttributesManager( this.cssAttributesManager );
 					
 					styleCode.reset();
-					cssConverter.convertStyleSheet(styleCode, 
-							this.preprocessor.getStyleSheet(),
-							device,
-							this.preprocessor,
-							this.environment ); 				
+					if (!this.environment.hasSymbol("polish.LibraryBuild") ) {
+						cssConverter.convertStyleSheet(styleCode, 
+								this.preprocessor.getStyleSheet(),
+								device,
+								this.preprocessor,
+								this.environment );
+					}
 					//this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
 					if (!deviceSupportsJ2mePolishApi && this.useDefaultPackage) {
 						this.styleSheetCode.reset();

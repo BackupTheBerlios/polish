@@ -30,7 +30,7 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Graphics;
 
 public class MessageItem 
-//#if true
+//#if !polish.LibraryBuild
 	//# extends CustomItem
 //#else
 	extends javax.microedition.lcdui.CustomItem
@@ -59,7 +59,7 @@ public class MessageItem
 	 * @param style the CSS style
 	 */
 	public MessageItem(String headline, String text, Style style ) {
-		//#if false
+		//#if polish.LibraryBuild
 			super( null );
 		//#else
 			//# super( null, style );
@@ -101,7 +101,7 @@ public class MessageItem
 		this.textItem.background = null;
 		this.textItem.border = null;
 		height += this.textItem.getItemHeight(width, width);
-		//#if true
+		//#if !polish.LibraryBuild
 			//# height += this.paddingVertical;
 		//#endif
 		return height;
@@ -132,7 +132,7 @@ public class MessageItem
 
 	protected void paint(Graphics g, int w, int h) {
 		this.headlineItem.paint( 0, 0, 0, w,  g );
-		//#if true
+		//#if !polish.LibraryBuild
 			//# int y = this.headlineItem.itemHeight + this.paddingVertical;
 		//#else
 			int y = this.headlineItem.itemHeight;

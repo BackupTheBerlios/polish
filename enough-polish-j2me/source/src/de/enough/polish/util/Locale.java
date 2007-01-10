@@ -84,7 +84,7 @@ public final class Locale {
 	// do not change the following line!
 //$$IncludeLocaleDefinitionHere$$//
 	
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	/** The ISO language code, 
 	 * e.g. "en" for English. */
 	public static String LANGUAGE = "en";
@@ -200,7 +200,7 @@ public final class Locale {
 	 * @param key the key, e.g. "labels.StartGame"
 	 * @return the translation, e.g. "Start Game" or "Spiel starten", null when the key was not found
 	 */
-	//#if false
+	//#if polish.LibraryBuild
 	public static final String get( String key ) {
 		int keyId = 0;
 	//#else
@@ -227,7 +227,7 @@ public final class Locale {
 	 * @return the translation, e.g. "Hello Peter!" or "Hallo Peter!", null when the key was not found
 	 * @throws NullPointerException when the given parameter is null.
 	 */
-	//#if false
+	//#if polish.LibraryBuild
 	public static final String get( String key, String parameter ) {
 		int keyId = 0;
 	//#else
@@ -259,12 +259,12 @@ public final class Locale {
 	 * @return the translation, e.g. "Peter vs Jordan" or "Peter gegen Jordan"
 	 * @throws NullPointerException when the given parameters are null or if one of the given parameters is null.
 	 */
-	//#ifdef false
+	//#ifdef polish.LibraryBuild
 	public static final String get( String key, String[] parameters ) {
 	//#else
 		//# public static final String get( int keyId, String[] parameters ) {
 	//#endif
-		//#ifdef false
+		//#ifdef polish.LibraryBuild
 			short keyId = 0;
 		//#endif
 		//#ifdef polish.i18n.useDynamicTranslations
