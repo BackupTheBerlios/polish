@@ -2563,6 +2563,7 @@ implements AccessibleCanvas
 					if ( !this.menuCommands.contains( command) ) {
 						addCommand(command);
 						this.itemCommands.add( command );
+						updateMenuTexts();
 					}
 				//#else
 					addCommand(command);
