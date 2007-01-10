@@ -74,7 +74,7 @@ public class RmsStorage
 	}
 	
 	/**
-	 * Creates a new RmsStorage that uses different record stores for each stored object
+	 * Creates a new RmsStorage that uses a single record store for several stored objects
 	 * 
 	 * @param singleRecordStoreName the name of the record store, when one record store 
 	 *        should be used for all entries - or null when for each name a new record store
