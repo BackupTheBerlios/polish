@@ -19,7 +19,7 @@
         The gui preferences indication.
         Sets the installer window to 800x480. It will be able to change the size.
     -->
-	<guiprefs width="800" height="480" resizable="yes">
+	<guiprefs width="1000" height="700" resizable="yes">
     	<laf name="metouia">
         	<os family="unix" />
         	<os family="windows" />
@@ -40,8 +40,8 @@
     -->
     <resources>
         <res id="HTMLLicencePanel.licence" src="../setup/htmllicense.txt"/>
-	<res id="userInputSpec.xml" src="userInputSpec.xml" />
-	<res id="useNativeLAF" src="../setup/useNativeLAF" />
+		<res id="userInputSpec.xml" src="userInputSpec.xml" />
+		<res id="useNativeLAF" src="../setup/useNativeLAF" />
         <res id="Installer.image" src="../setup/j2mepolish-logo.png" />
     </resources>
     
@@ -50,22 +50,24 @@
         We indicate here which panels we want to use. The order will be respected.
     -->
     <panels>
-	<!-- welcome screen -->
+		<!-- welcome screen -->
         <panel classname="UserInputPanel" />
-	<!-- showing the licensing possibilities -->
+		<!-- showing the licensing possibilities -->
         <panel classname="HTMLLicencePanel" />
-	<!-- choosing the license -->
+		<!-- choosing the license -->
         <panel classname="ChooseLicensePanel" />
-	<!-- where to find the WTK -->
- 	<panel classname="UserInputPanel" />
+		<!-- where to install J2ME Polish -->
+	 	<panel classname="ChooseTargetPanel" />
+		<!-- where to find the WTK -->
+	 	<panel classname="UserInputPanel" />
         <!-- what packages should be installed -->
         <panel classname="PacksPanel" />
-	<!-- where to install J2ME Polish -->
- 	<panel classname="TargetPanel" />
-	<!-- the actual installation -->
+		<!-- where to install J2ME Polish -->
+	 	<panel classname="TargetPanel" />
+		<!-- the actual installation -->
         <panel classname="InstallPanel" />
-	<!-- installation success screen -->
- 	<panel classname="UserInputPanel" />
+		<!-- installation success screen -->
+ 		<panel classname="UserInputPanel" />
     </panels>
     
     <!-- 

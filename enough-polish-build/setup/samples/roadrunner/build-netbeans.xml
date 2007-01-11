@@ -30,48 +30,17 @@
 	<!-- import user specific properties                          -->
 	<property file="${user.name}.properties" />
 	
-	<!-- The wtk.home property should point to the directory      -->
-	<!-- containing the Wireless Toolkit.                         -->
-	<property name="wtk.home" location="%{WTK_HOME}" />
-	<!-- The polish.home property should point to the directory   -->
+	<!-- The polish.home property needs to point to the directory -->
 	<!-- containing the J2ME Polish installation.                 -->
 	<property name="polish.home" location="%{INSTALL_PATH}" />
-			
-	<!-- The siemens.home, nokia.home and motorola.home-          -->
-	<!-- properties can be necessary when their emulators         -->
-	<!-- should be started.                                       -->
-	<!-- The directory which contains the Siemens-SMTK
-		<property name="siemens.home" location="C:\siemens" />
-	-->
-	<!-- The directory which contains the Nokia-emulators
-		<property name="nokia.home" location="C:\Nokia" />
-	-->
-	<!-- The path to the Sony-Ericsson SDK
-		<property name="sony-ericsson.home" location="C:\SonyEricsson\J2ME_SDK" />
-	-->
-	<!-- The directory which contains the Motorola-emulators
-		<property name="motorola.home" location="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
-	-->
-
-	<!-- Palm settings -->
-	<!--
-		The directory which contains the PalmSim.exe simulator:
-		<property name="palm.simulator.home" location="C:\Program Files\Palm\Simulator" />
-	-->
-	<!--
-		The directory which contains the Tools/bin/jartoprc.exe converter:
-		<property name="palm.weme.home" location="C:\Program Files\Palm\WEME57" />
-	-->
-	<!-- BlackBerry settings -->
-	<!--
-		The directory which contains the BlackBerry JDE:
-		<property name="blackberry.home" location="C:\Program Files\Research In Motion/BlackBerry JDE 4.0.2" />
-	-->
+	
+	<!-- import global properties                                 -->
+	<property file="${polish.home}/global.properties" />
 
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"
 	/>
 	
 		
@@ -132,7 +101,7 @@
 				icon="dot.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-roadrunner.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
-				copyright="Copyright 2005 Enough Software. All rights reserved."
+				copyright="Copyright 2005, 2006, 2007 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->

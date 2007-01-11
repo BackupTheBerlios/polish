@@ -21,7 +21,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-serializer" 
+	name="enough-j2mepolish-rmi" 
 	default="j2mepolish">
 	
 	<!-- extend the default NetBeans build script:           -->
@@ -30,50 +30,29 @@
 	<!-- import user specific properties                          -->
 	<property file="${user.name}.properties" />
 	
-	<!-- The wtk.home property should point to the directory      -->
-	<!-- containing the Wireless Toolkit.                         -->
-	<property name="wtk.home" location="%{WTK_HOME}" />
-	<!-- The polish.home property should point to the directory   -->
+	<!-- The polish.home property needs to point to the directory -->
 	<!-- containing the J2ME Polish installation.                 -->
 	<property name="polish.home" location="%{INSTALL_PATH}" />
-			
-	<!-- The siemens.home, nokia.home and motorola.home-          -->
-	<!-- properties can be necessary when their emulators         -->
-	<!-- should be started.                                       -->
-	<!-- The directory which contains the Siemens-SMTK
-		<property name="siemens.home" location="C:\siemens" />
-	-->
-	<!-- The directory which contains the Nokia-emulators
-		<property name="nokia.home" location="C:\Nokia" />
-	-->
-	<!-- The path to the Sony-Ericsson SDK
-		<property name="sony-ericsson.home" location="C:\SonyEricsson\J2ME_SDK" />
-	-->
-	<!-- The directory which contains the Motorola-emulators
-		<property name="motorola.home" location="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
-	-->
+	
+	<!-- import global properties                                 -->
+	<property file="${polish.home}/global.properties" />
 
-	<!-- Palm settings -->
-	<!--
-		The directory which contains the PalmSim.exe simulator:
-		<property name="palm.simulator.home" location="C:\Program Files\Palm\Simulator" />
-	-->
-	<!--
-		The directory which contains the Tools/bin/jartoprc.exe converter:
-		<property name="palm.weme.home" location="C:\Program Files\Palm\WEME57" />
-	-->
-	<!-- BlackBerry settings -->
-	<!--
-		The directory which contains the BlackBerry JDE:
-		<property name="blackberry.home" location="C:\Program Files\Research In Motion/BlackBerry JDE 4.0.2" />
-	-->
+			
+	<!-- the home of the server based web application - is needed in the deploy-war target -->
+	<property name="webapps.home" location="/Users/robertvirkus/Downloads/apache-tomcat-5.5.17/webapps" />
+
 
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"
 	/>
 	
+	<!-- Definition of the present helper task:                      -->
+	<taskdef name="present" 
+		classname="de.enough.polish.ant.PresentTask" 
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar"/>
+
 		
 	<!-- build targets, each target can be called via "ant [name]", 
 		 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
@@ -119,16 +98,17 @@
 			>
 		<j2mepolish>
 		    <!-- general settings -->
-			<info copyright="Copyright 2006 Enough Software. All rights reserved." 
-				description="A demonstration of the Serialization Framework." 
-				infoUrl="http://www.enough.de" 
-				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serializer.jar" 
-				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
-				name="FramedForm" 
-				vendorName="Enough Software" 
-				version="1.0.4"
-		    />
+			<info
+				license="%{J2ME_POLISH_LICENSE}"
+				name="GameMidlet"
+				version="1.0.0"
+				description="A demonstration of the RMI Framework."
+				vendorName="Enough Software"
+				infoUrl="http://www.j2mepolish.org"
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-rmi.jar" 
+				jarUrl="${deploy-url}${polish.jarName}"
+				copyright="Copyright 2007 Enough Software. All rights reserved."
+			/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->
 			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
@@ -145,7 +125,7 @@
 	                usePolishGui="true"
 				>
 				<!-- midlets definition -->
-				<midlet class="de.enough.polish.sample.serialization.NotesMidlet" name="Notes"/>
+				<midlet class="de.enough.polish.sample.rmi.GameMidlet" name="Remote Gaming"/>
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
@@ -231,11 +211,30 @@
 				<!-- Attach the emulator to the NetBeans debugger:	-->
 				<debugger name="antcall" target="connect-debugger" port="6001" />
 			</emulator>
-
-		
 		</j2mepolish>
 	</target>
 	
+	<target name="build-war" description="builds the server war file for Tomcat or other J2EE/Servlet Containers.">
+		<present file="dist/rmi.jar" failMessage="Please run either the j2mepolish or the build-all target first." />
+		<copy file="${polish.home}/lib/enough-j2mepolish-rmi.jar" todir="dist" />
+		<delete dir="bin/server" />
+		<mkdir dir="bin/server" />
+		<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
+		<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
+	 	<war 
+			destfile="dist/gameserver.war"
+	 		webxml="source/server/web.xml"
+		>
+	 		<lib dir="dist" includes="rmi.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
+		</war>
+	</target>
+	
+	<target name="deploy-war" depends="build-war" description="builds and deploys the war file to $webapps.home">
+		<copy file="dist/gameserver.war" todir="${webapps.home}" />
+	</target>
+		
+
+	<target name="build-all" depends="clean,j2mepolish,build-war" description="builds both the client and the server code of the application"/>
 	<target 
 		name="emulator"
 		depends="test,j2mepolish"

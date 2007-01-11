@@ -1,5 +1,5 @@
 ****************************************************
-*** J2ME Polish ${ Version }
+*** J2ME Polish
 ****************************************************
 
 Find more information about J2ME Polish at www.j2mepolish.org
@@ -7,7 +7,7 @@ Find more information about J2ME Polish at www.j2mepolish.org
 The documentation is located in the doc-folder.
 
 To migrate J2ME Polish into existing projects, just copy the file 
-"build.xml" and the "import" folder to the project root. 
+"build.xml" to your project's root folder. 
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -18,19 +18,11 @@ please check http://www.j2mepolish.org.
 
 
 ****************************************************
-*** Sample Application 
+*** Sample Applications
 ****************************************************
 
-If you have installed the sample application, you can now
-build your MIDlet right away. Just call "ant" in the installation
-folder (this folder). J2ME Polish will create the MIDlet files in
-the "dist" folder.
-When you call "ant test j2mepolish" the obfuscation step will
-be skipped and the logging will be enabled.
-
-You can change the design of the sample application by changing
-the file "resources/polish.css". You can check out an entirely
-different design by changing the "resdir"-attribute in the 
-"build.xml" file to "resources2" (instead of "resources").
+You can find sample application in the "${polish.home}/samples folder.
+When you use the command line just call "ant" for building the applications in the appropriate folder
+or call "ant emulator" for building the application and launching the emulator.
 
 Have fun!

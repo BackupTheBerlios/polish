@@ -17,58 +17,31 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-example" 
+	name="enough-j2mepolish-menu" 
 	default="j2mepolish">
 	
 	<!-- import user specific properties                          -->
 	<property file="${user.name}.properties" />
 	
-	<!-- The wtk.home property should point to the directory      -->
-	<!-- containing the Wireless Toolkit.                         -->
-	<property name="wtk.home" location="%{WTK_HOME}" />
-	<!-- The polish.home property should point to the directory   -->
+	<!-- The polish.home property needs to point to the directory -->
 	<!-- containing the J2ME Polish installation.                 -->
 	<property name="polish.home" location="%{INSTALL_PATH}" />
+	
+	<!-- import global properties                                 -->
+	<property file="${polish.home}/global.properties" />
+
+
 		
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Nokia/Series60E2FP3"/>
 	
-	<!-- The siemens.home, nokia.home and motorola.home-          -->
-	<!-- properties can be necessary when their emulators         -->
-	<!-- should be started.                                       -->
-	<!-- The directory which contains the Siemens-SMTK
-		<property name="siemens.home" location="C:\siemens" />
-	-->
-	<!-- The directory which contains the Nokia-emulators
-		<property name="nokia.home" location="C:\Nokia" />
-	-->
-	<!-- The path to the Sony-Ericsson SDK
-		<property name="sony-ericsson.home" location="C:\SonyEricsson\J2ME_SDK" />
-	-->
-	<!-- The directory which contains the Motorola-emulators
-		<property name="motorola.home" location="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
-	-->
 
-	<!-- Palm settings -->
-	<!--
-		The directory which contains the PalmSim.exe simulator:
-		<property name="palm.simulator.home" location="C:\Program Files\Palm\Simulator" />
-	-->
-	<!--
-		The directory which contains the Tools/bin/jartoprc.exe converter:
-		<property name="palm.weme.home" location="C:\Program Files\Palm\WEME57" />
-	-->
-	<!-- BlackBerry settings -->
-	<!--
-		The directory which contains the BlackBerry JDE:
-		<property name="blackberry.home" location="C:\Program Files\Research In Motion/BlackBerry JDE 4.0.2" />
-	-->
 
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"
 	/>
 	
 		
@@ -127,7 +100,7 @@
 				icon="dot.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2005 Enough Software. All rights reserved."
+				copyright="Copyright 2005, 2006, 2007 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?" 
 			/>
 			<!-- selection of supported devices -->
@@ -187,6 +160,14 @@
 						includes="*.mid" 
 						if="polish.audio.midi and not polish.audio.wav" 
 					/>
+					-->
+					<!-- you can also use several root directories for your resource assembling.
+					     This is useful for customizations and for having a cleanly structured 
+					     resources directory (for example seperating images from sounds, etc):
+					<root dir="resources/images" />
+					<root dir="resources/sounds" />
+					<root dir="resources/customer1" if="customer1" />
+					<root dir="resources/customer2" if="customer2" />
 					-->
 					<!-- add the localization element for created localized
 					     versions of your application: -->
