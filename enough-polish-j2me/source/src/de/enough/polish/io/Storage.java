@@ -44,7 +44,6 @@ public interface Storage
 <K>
 //#endif
 {
-	
 	/**
 	 * Serializes the given object and stores is under the given name.
 	 * 
@@ -57,7 +56,7 @@ public interface Storage
 	//#else
 		//# public void save(Object object, String name)
 	//#endif
-	throws IOException;
+		throws IOException;
 	
 //	/**
 //	 * Serializes the given objects and stores them under the given name.
@@ -82,7 +81,7 @@ public interface Storage
 	//#else
 		//# public Object read( String name )
 	//#endif
-	throws IOException;
+		throws IOException;
 	
 	/**
 	 * Enumerates the objects that have been previously stored under the given name.
@@ -94,7 +93,7 @@ public interface Storage
 	 */
 //	@see #saveAll(Serializable[], String)
 	public Enumeration enumerate( String name )
-	throws IOException;
+	  throws IOException;
 	
 //	/**
 //	 * Reads all the objects that have been previously stored under the given name.
@@ -118,6 +117,14 @@ public interface Storage
 	 * @throws IllegalStateException whent the storage implementation or configuration does not support a listing of names.
 	 */
 	public String[] list()
-	throws IOException;
-
+	  throws IOException;
+  
+  /**
+   * Delete the object with the given name.
+   * 
+   * @param name the name under which the object has been stored
+   * @throws IOException when deletion fails
+   */
+  public void delete( String name )
+    throws IOException;
 }

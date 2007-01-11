@@ -330,7 +330,32 @@ public class RmsStorage
 		return (String[]) this.masterRecordSetIdsByName.keys( new String[ this.masterRecordSetIdsByName.size() ]);
 	}
 
-	
-	
-
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Storage#delete(java.lang.String)
+	 */
+	public void delete(String name)
+    throws IOException
+  {
+	  try
+	  {
+	    if (this.masterRecordStore == null)
+	    {
+        RecordStore.deleteRecordStore(name);
+      }
+	    else if (this.masterRecordSetIdsByName != null
+	      && !this.masterRecordSetIdsByName.isEmpty())
+	    {
+	      Integer id = (Integer) this.masterRecordSetIdsByName.get(name);
+        
+        if (id != null)
+        {
+          this.masterRecordStore.deleteRecord(id.intValue());
+        }
+	    }
+    }
+	  catch (RecordStoreException e)
+	  {
+	    throw new IOException(e.toString());
+	  }
+  }
 }
