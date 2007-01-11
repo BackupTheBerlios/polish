@@ -81,7 +81,6 @@ import java.io.IOException;
  * as other things.</p>
  * <HR>
  * 
- * 
  * @since MIDP 1.0
  */
 public class RecordStore extends Object
@@ -89,15 +88,12 @@ public class RecordStore extends Object
 	/**
 	 * Authorization to allow access only to the current MIDlet
 	 * suite. AUTHMODE_PRIVATE has a value of 0.</DL>
-	 * 
 	 */
 	public static final int AUTHMODE_PRIVATE = 0;
 
 	/**
 	 * Authorization to allow access to any MIDlet
 	 * suites. AUTHMODE_ANY has a value of 1.</DL>
-	 * 
-	 * 
 	 */
 	public static final int AUTHMODE_ANY = 1;
 
@@ -112,8 +108,6 @@ public class RecordStore extends Object
 	private String name;
 
 	private long lastModified;
-
-	
 
 	/**
 	 * Deletes the named record store. MIDlet suites are only allowed
@@ -131,7 +125,6 @@ public class RecordStore extends Object
 	 */
 	public static void deleteRecordStore( String recordStoreName) throws RecordStoreException, RecordStoreNotFoundException
 	{
-		
 	}
 
 	/**
@@ -427,7 +420,7 @@ public class RecordStore extends Object
 	 * When a record store is closed, all listeners are removed.
 	 * 
 	 * @param listener - the RecordChangedListener
-	 * @see removeRecordListener(javax.microedition.rms.RecordListener)
+	 * @see javax.microedition.rms.RecordStore#removeRecordListener(javax.microedition.rms.RecordListener)
 	 */
 	public void addRecordListener( RecordListener listener)
 	{
@@ -439,7 +432,7 @@ public class RecordStore extends Object
 	 * is not registered, this method does nothing.
 	 * 
 	 * @param listener - the RecordChangedListener
-	 * @see addRecordListener(javax.microedition.rms.RecordListener)
+	 * @see javax.microedition.rms.Record#addRecordListener(javax.microedition.rms.RecordListener)
 	 */
 	public void removeRecordListener( RecordListener listener)
 	{
@@ -540,7 +533,7 @@ public class RecordStore extends Object
 	 * @throws InvalidRecordIDException - if the recordId is invalid
 	 * @throws RecordStoreException - if a general record store exception occurs
 	 * @throws ArrayIndexOutOfBoundsException - if the record is larger than the buffer supplied
-	 * @see setRecord(int, byte[], int, int)
+	 * @see #setRecord(int, byte[], int, int)
 	 */
 	public int getRecord(int recordId, byte[] buffer, int offset) throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException
 	{
@@ -558,7 +551,7 @@ public class RecordStore extends Object
 	 * @throws RecordStoreNotOpenException - if the record store is not open
 	 * @throws InvalidRecordIDException - if the recordId is invalid
 	 * @throws RecordStoreException - if a general record store exception occurs
-	 * @see setRecord(int, byte[], int, int)
+	 * @see #setRecord(int, byte[], int, int)
 	 */
 	public byte[] getRecord(int recordId) throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException
 	{
@@ -627,12 +620,10 @@ public class RecordStore extends Object
 	 * @param keepUpdated - if true, the enumerator will keep its enumeration current with any changes in the records of the record store. Use with caution as there are possible performance consequences. If false the enumeration will not be kept current and may return recordIds for records that have been deleted or miss records that are added later. It may also return records out of order that have been modified after the enumeration was built. Note that any changes to records in the record store are accurately reflected when the record is later retrieved, either directly or through the enumeration. The thing that is risked by setting this parameter false is the filtering and sorting order of the enumeration when records are modified, added, or deleted.
 	 * @return an enumeration for traversing a set of records in the record store in an optionally specified order
 	 * @throws RecordStoreNotOpenException - if the record store is not open
-	 * @see RecordEnumeration.rebuild()
+	 * @see RecordEnumeration#rebuild()
 	 */
 	public RecordEnumeration enumerateRecords( RecordFilter filter, RecordComparator comparator, boolean keepUpdated) throws RecordStoreNotOpenException
 	{
 		return new RecordEnumerationImpl( this , filter, comparator, keepUpdated );
 	}
-	
-
 }

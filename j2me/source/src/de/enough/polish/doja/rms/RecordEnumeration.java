@@ -154,7 +154,7 @@ public interface RecordEnumeration
 	 * makes a number of changes to the record store, and then wants an
 	 * existing RecordEnumeration to enumerate the new changes.
 	 * 
-	 * @see keepUpdated(boolean)
+	 * @see #keepUpdated(boolean)
 	 */
 	public void rebuild();
 
@@ -166,7 +166,7 @@ public interface RecordEnumeration
 	 * associated with maintaining the enumeration with every change.
 	 * 
 	 * @param keepUpdated - if true, the enumerator will keep its enumeration current with any changes in the records of the record store. Use with caution as there are possible performance consequences. Calling keepUpdated(true) has the same effect as calling RecordEnumeration.rebuild: the enumeration will be updated to reflect the current record set.  If false the enumeration will not be kept current and may return recordIds for records that have been deleted or miss records that are added later. It may also return records out of order that have been modified after the enumeration was built. Note that any changes to records in the record store are accurately reflected when the record is later retrieved, either directly or through the enumeration. The thing that is risked by setting this parameter false is the filtering and sorting order of the enumeration when records are modified, added, or deleted.
-	 * @see rebuild()
+	 * @see #rebuild()
 	 */
 	public void keepUpdated(boolean keepUpdated);
 
