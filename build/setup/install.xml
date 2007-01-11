@@ -58,12 +58,16 @@
         <panel classname="ChooseLicensePanel" />
 		<!-- where to install J2ME Polish -->
 	 	<panel classname="ChooseTargetPanel" />
-		<!-- where to find the WTK -->
+		<!-- setting of global.properties -->
+	 	<panel classname="SetPropertiesPanel" />
+		<!-- where to find the WTK 
 	 	<panel classname="UserInputPanel" />
+	 	-->
         <!-- what packages should be installed -->
         <panel classname="PacksPanel" />
-		<!-- where to install J2ME Polish -->
+		<!-- where to install J2ME Polish
 	 	<panel classname="TargetPanel" />
+	 	 -->
 		<!-- the actual installation -->
         <panel classname="InstallPanel" />
 		<!-- installation success screen -->
@@ -88,7 +92,7 @@
             <parsable targetfile="$INSTALL_PATH/build.xml" type="shell" /> 
             -->
         </pack>
-        <pack name="Menu Sample Application" required="yes">
+        <pack name="Menu Sample Application" required="no" preselected="yes">
             <description>A sample application that shows a simple menu and contains three different CSS designs. This can be used as a master for new projects.</description>
             <file src="samples/menu/source" targetdir="$INSTALL_PATH/samples/menu"/>
             <file src="samples/menu/resources" targetdir="$INSTALL_PATH/samples/menu"/>
@@ -104,7 +108,7 @@
             <parsable targetfile="$INSTALL_PATH/samples/menu/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/menu/nbproject/project.properties" type="shell" /> 
         </pack>
-        <pack name="Logviewer Sample Application" required="yes">
+        <pack name="Logviewer Sample Application" required="no" preselected="yes">
             <description>A sample application that is used to show log entries that have been previously stored in the recordstore.</description>
             <file src="../setup/samples/logviewer/.classpath" targetdir="$INSTALL_PATH/samples/logviewer"/>
             <file src="../setup/samples/logviewer/.project" targetdir="$INSTALL_PATH/samples/logviewer"/>

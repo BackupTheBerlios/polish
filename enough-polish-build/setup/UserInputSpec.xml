@@ -15,6 +15,7 @@
 
 
 <!-- where to find the wireless toolkit -->
+<!--
 <panel order="1">
 	<field type="title" txt="Wireless Toolkit" />
 	<field type="search" variable="WTK_HOME">
@@ -39,9 +40,10 @@
 	<space/>
 	<field type="staticText" txt="Please note: when you enter an invalid location, you need to specify either the wtk.home-property or the preverify-attribute in the build.xml-file. On Mac OS X systems you can alternatively define the mpp.home property that points to the install path of the MPowerPlayer." />
 </panel>
+-->
 
 <!-- installation success panel -->
-<panel order="2">
+<panel order="1">
 	<field type="title" txt="Installation Finished" />
 	<field type="staticText" txt="You have successfully installed J2ME Polish ${ Version }." />
 	<divider alignment="top"/>
