@@ -67,10 +67,11 @@ implements KeyListener, ChangeListener, DocumentListener {
 	public ChooseLicensePanel(InstallerFrame parent, InstallData idata) {
 		super(parent, idata);
 	
+		JPanel subPanel = new JPanel();
 		
 		// The layout
 	    GridBagLayout layout = new GridBagLayout();
-	    setLayout(layout);
+	    subPanel.setLayout(layout);
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.insets = new Insets(0, 0, 0, 0);
 	    constraints.fill = GridBagConstraints.VERTICAL;
@@ -82,7 +83,7 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    constraints.gridx = 0;
 	    constraints.gridy = 0;
 	    layout.setConstraints( title, constraints );
-	    add( title );
+	    subPanel.add( title );
 	    
 	    
 	    JLabel chooseType = new JLabel("Please choose the license for using J2ME Polish:");
@@ -90,14 +91,14 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    constraints.gridx = 0;
 	    constraints.gridy = 1;
 	    layout.setConstraints( chooseType, constraints );
-	    add( chooseType );
+	    subPanel.add( chooseType );
 	    
 	    chooseType = new JLabel("Type:");
 	    constraints.gridwidth = 1;
 	    constraints.gridx = 0;
 	    constraints.gridy = 2;
 	    layout.setConstraints( chooseType, constraints );
-	    add( chooseType );
+	    subPanel.add( chooseType );
 	    
 	    
 	    this.radioBox = new ButtonGroup();
@@ -107,7 +108,7 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    constraints.gridx = 1;
 	    constraints.gridwidth = 2;
 	    layout.setConstraints( radioButton, constraints );
-	    add( radioButton );
+	    subPanel.add( radioButton );
 	    radioButton.addChangeListener( this );
 	    this.gplButton = radioButton;
 	    
@@ -115,7 +116,7 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    this.radioBox.add( radioButton );
 	    constraints.gridy = 3;
 	    layout.setConstraints( radioButton, constraints );
-	    add( radioButton );
+	    subPanel.add( radioButton );
 	    radioButton.addChangeListener( this );
 	    this.evaluationButton = radioButton;
 	    
@@ -123,7 +124,7 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    this.radioBox.add( radioButton );
 	    constraints.gridy = 4;
 	    layout.setConstraints( radioButton, constraints );
-	    add( radioButton );
+	    subPanel.add( radioButton );
 	    radioButton.addChangeListener( this );
 	    this.commercialButton = radioButton;
 	    
@@ -133,14 +134,14 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    constraints.gridwidth = 3;
 	    constraints.gridheight = 2;
 	    layout.setConstraints( licenseLabel, constraints );
-	    add( licenseLabel );
+	    subPanel.add( licenseLabel );
 	    
-	    JLabel keyLabel = new JLabel("License-key: ");
+	    JLabel keyLabel = new JLabel("\nLicense-key: ");
 	    constraints.gridwidth = 1;
 	    constraints.gridx = 0;
 	    constraints.gridy = 7;
 	    layout.setConstraints( keyLabel, constraints );
-	    add( keyLabel );
+	    subPanel.add( keyLabel );
 	    
 	    
 	    this.licenseField = new JTextField( 12 );
@@ -150,8 +151,12 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    constraints.gridwidth = 2;
 	    constraints.gridheight = 1;
 	    layout.setConstraints( this.licenseField, constraints );
-		add( this.licenseField );
+	    subPanel.add( this.licenseField );
+	    
+	    setLayout( new BorderLayout() );
+	    add( subPanel, BorderLayout.NORTH );
 	}
+
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)

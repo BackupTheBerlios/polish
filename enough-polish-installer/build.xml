@@ -40,7 +40,7 @@
 	<mkdir dir="bin/classes" />
 	<!-- compile the classes -->
 	<echo message="compiling" />
-	<javac classpath="import/installer.jar"
+	<javac classpath="import/installer.jar:import/TargetPanel.jar"
 		srcdir="source/src"
 		destdir="bin/classes"
 	/>
@@ -56,6 +56,19 @@
 	<echo message="copying class-file" />
 	<copy file="bin/classes/com/izforge/izpack/panels/ChooseLicensePanel.class" 
 	      todir="${izpack.dir}/bin/panels/ChooseLicensePanel/com/izforge/izpack/panels"/>
+	<echo message="done." />
+	<!-- create and copy the jar file for the ChooseTargetPanel -->
+	<echo message="creating jar" />
+	<jar destfile="${izpack.dir}/bin/panels/ChooseTargetPanel.jar"
+	     basedir="bin/classes"
+		 includes="**/ChooseTargetPanel.class"
+		 index="false"
+	     >
+	</jar>
+	<!-- copy the single ChooseTargetPanel class -->
+	<echo message="copying class-file" />
+	<copy file="bin/classes/com/izforge/izpack/panels/ChooseTargetPanel.class" 
+	      todir="${izpack.dir}/bin/panels/ChooseTargetPanel/com/izforge/izpack/panels"/>
 	<echo message="done." />
 </target>
 			
