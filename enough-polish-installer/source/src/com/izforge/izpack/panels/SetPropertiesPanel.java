@@ -297,15 +297,17 @@ public class SetPropertiesPanel extends IzPanel {
      */
     public void panelDeactivate()
     {
-        // Standard behavior of PathInputPanel.
-        try {
-        	File globalPropertiesFile = new File( this.idata.getInstallPath() + File.separatorChar + "global.properties" );
-        	Map globalProperties = readProperties();
-        	FileUtil.writePropertiesFile(globalPropertiesFile, globalProperties );
-        } catch (Exception e) {
-        	e.printStackTrace();
-        	emitError(this.parent.langpack.getString("installer.error"), "Unable to write global.properties to " + this.idata.getInstallPath() + ": " + e.toString() );
-        }
+    	Map globalProperties = readProperties();
+    	this.idata.setAttribute("global.properties", globalProperties );
+    	
+//        try {
+//        	File globalPropertiesFile = new File( this.idata.getInstallPath() + File.separatorChar + "global.properties" );
+//        	Map globalProperties = readProperties();
+//        	FileUtil.writePropertiesFile(globalPropertiesFile, globalProperties );
+//        } catch (Exception e) {
+//        	e.printStackTrace();
+//        	emitError(this.parent.langpack.getString("installer.error"), "Unable to write global.properties to " + this.idata.getInstallPath() + ": " + e.toString() );
+//        }
     }
 
 	private Map readProperties() {

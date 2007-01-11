@@ -84,7 +84,7 @@ public class ChooseTargetPanel extends IzPanel {
 	    title.setFont( title.getFont().deriveFont( title.getFont().getSize() * 2F ));
 	    subPanel.add( title, BorderLayout.NORTH );
 	    
-	    JTextArea area = new JTextArea( "Please select the selection where you want to install J2ME Polish.\nIf you already have installed a previous J2ME Polish version in this location, the installer will preserve your custom device definitions.\n");
+	    JTextArea area = new JTextArea( "Please select the selection where you want to install J2ME Polish.\nIf you already have installed a previous J2ME Polish version in this location, the installer will preserve your custom device definitions, global.properties and license keys.\n");
 	    area.setEditable( false );
 	    area.setLineWrap( true );
 	    area.setBackground( title.getBackground() );

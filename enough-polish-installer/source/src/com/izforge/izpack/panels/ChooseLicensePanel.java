@@ -128,7 +128,7 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    radioButton.addChangeListener( this );
 	    this.commercialButton = radioButton;
 	    
-	    MultiLineLabel licenseLabel = new MultiLineLabel( "If you use J2ME Polish commercially, please enter your license key here:" );
+	    MultiLineLabel licenseLabel = new MultiLineLabel( "If you use J2ME Polish commercially, please enter your license key here:\n " );
 	    constraints.gridy = 5;
 	    constraints.gridx = 0;
 	    constraints.gridwidth = 3;
