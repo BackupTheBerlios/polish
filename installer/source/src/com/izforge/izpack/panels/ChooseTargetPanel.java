@@ -26,12 +26,19 @@
 package com.izforge.izpack.panels;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -54,10 +61,9 @@ import com.izforge.izpack.installer.IzPanel;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class ChooseTargetPanel extends IzPanel implements ActionListener {
+public class ChooseTargetPanel extends IzPanel {
 	private static final long serialVersionUID = -7966526000206872182L;
-	private JTextField polishHomeField;
-	private JButton polishHomeChooserButton;
+	private FilePropertyPanel polishHomePanel;
 
 	/**
 	 * @param parent
@@ -84,19 +90,8 @@ public class ChooseTargetPanel extends IzPanel implements ActionListener {
 	    area.setBackground( title.getBackground() );
 	    subPanel.add( area, BorderLayout.CENTER );
 	    
-	    JPanel j2mepolishLocationPanel = new JPanel( new BorderLayout() );
-	    // maybe use PathSelectionPanel instead...?
-	    JLabel label = new JLabel("polish.home: ");
-	    label.setToolTipText("The location into which you want to install J2ME Polish.");
-	    j2mepolishLocationPanel.add( label, BorderLayout.WEST );
-	    JTextField textField = new JTextField();
-	    j2mepolishLocationPanel.add( textField, BorderLayout.CENTER );
-	    this.polishHomeField = textField;
-	    JButton button = new JButton( "Choose...");
-	    button.addActionListener( this );
-	    j2mepolishLocationPanel.add( button, BorderLayout.EAST );
-	    this.polishHomeChooserButton = button;
-	    subPanel.add( j2mepolishLocationPanel, BorderLayout.SOUTH );
+	    this.polishHomePanel = new FilePropertyPanel( parent, "polish.home: ", idata.getInstallPath(), "Choose...", true, false );
+	    subPanel.add( this.polishHomePanel, BorderLayout.SOUTH );
 
 	    setLayout( new BorderLayout() );
 	    add( subPanel, BorderLayout.NORTH );
@@ -113,36 +108,9 @@ public class ChooseTargetPanel extends IzPanel implements ActionListener {
     {
         // Resolve the default for chosenPath
         super.panelActivate();
-        this.polishHomeField.setText( this.idata.getInstallPath() );
+        this.polishHomePanel.setValue( this.idata.getInstallPath() );
     }
 
-    /**
-     * Actions-handling method.
-     * 
-     * @param e The event.
-     */
-    public void actionPerformed(ActionEvent e)
-    {
-        Object source = e.getSource();
-        if (source == this.polishHomeChooserButton )
-        {
-        	 // The user wants to browse its filesystem
-
-            // Prepares the file chooser
-            JFileChooser fc = new JFileChooser();
-            fc.setCurrentDirectory(new File(this.polishHomeField.getText()));
-            fc.setMultiSelectionEnabled(false);
-            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fc.addChoosableFileFilter(fc.getAcceptAllFileFilter());
-
-            // Shows it
-            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
-            {
-                String path = fc.getSelectedFile().getAbsolutePath();
-                this.polishHomeField.setText(path);
-            }
-        }
-    }
     
 
     /**
@@ -153,9 +121,11 @@ public class ChooseTargetPanel extends IzPanel implements ActionListener {
     public boolean isValidated()
     {
         // Standard behavior of PathInputPanel.
-    	File installDir = new File( this.polishHomeField.getText() );
+    	File installDir = this.polishHomePanel.getValueFile();
         try {
-        	installDir.mkdirs();
+        	if (!installDir.exists()) {
+        		installDir.mkdirs();
+        	}
         	// check if I can write to the install dir:
         	File testFile = new File( installDir, ".test" );
         	FileOutputStream out = new FileOutputStream( testFile );
@@ -172,5 +142,56 @@ public class ChooseTargetPanel extends IzPanel implements ActionListener {
         this.idata.setInstallPath( installDir.getAbsolutePath() );
         return true;
     }
+    
+    public void panelDeactivate()
+    {
+    	File installDir = this.polishHomePanel.getValueFile();
+    	try {
+        	boolean installDirCreated = false;
+        	if (!installDir.exists()) {
+        		installDir.mkdirs();
+        		installDirCreated = true;
+        	}
+        	// backup:
+        	if (!installDirCreated) {
+        		// check for existing device database customizations, license keys and global.properties:
+        		File backupDir = new File( installDir.getAbsolutePath() + "_Backup" + System.currentTimeMillis() );
+        		backupDir.mkdir();
+        		int backupedFiles = 0;
+        		File[] files = installDir.listFiles();
+        		for (int i = 0; i < files.length; i++) {
+					File file = files[i];
+					if (!file.isDirectory() && file.getName().startsWith("custom-")) {
+						FileUtil.copy( file, backupDir );
+						backupedFiles++;
+					}
+				}
+        		// check license keys:
+        		File licenseKey = new File( installDir, "license.key" );
+        		if (licenseKey.exists()) {
+        			FileUtil.copy( licenseKey, backupDir );
+        			backupedFiles++;
+        		}
+        		// check global.properties:
+        		File globalPropertiesFile = new File( installDir, "global.properties");
+        		if (globalPropertiesFile.exists()) {
+        			Map globalProperties = FileUtil.readPropertiesFile( globalPropertiesFile );
+        			this.idata.setAttribute("global.properties",  globalProperties );
+        		}
+        		if (backupedFiles > 0) {
+        			this.idata.setAttribute("polish.backup",  backupDir );
+        		} else {
+        			backupDir.delete();
+        		}
+        	}
+        } catch (IOException e) {
+        	e.printStackTrace();
+        	emitError(this.parent.langpack.getString("installer.error"), getI18nStringForClass(
+                    "notwritable", "TargetPanel"));
+            return;
+        }
+        this.idata.setInstallPath( installDir.getAbsolutePath() );
+    }
+	
 
 }

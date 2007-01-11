@@ -38,6 +38,8 @@
 <target name="bin-dist" depends="init">
 	<delete dir="bin/classes" />
 	<mkdir dir="bin/classes" />
+	<unjar src="import/TargetPanel.jar" dest="bin/classes"/>
+
 	<!-- compile the classes -->
 	<echo message="compiling" />
 	<javac classpath="import/installer.jar:import/TargetPanel.jar"
@@ -56,12 +58,10 @@
 	<echo message="copying class-file" />
 	<copy file="bin/classes/com/izforge/izpack/panels/ChooseLicensePanel.class" 
 	      todir="${izpack.dir}/bin/panels/ChooseLicensePanel/com/izforge/izpack/panels"/>
-	<echo message="done." />
 	<!-- create and copy the jar file for the ChooseTargetPanel -->
 	<echo message="creating jar" />
 	<jar destfile="${izpack.dir}/bin/panels/ChooseTargetPanel.jar"
 	     basedir="bin/classes"
-		 includes="**/ChooseTargetPanel.class"
 		 index="false"
 	     >
 	</jar>
@@ -69,6 +69,21 @@
 	<echo message="copying class-file" />
 	<copy file="bin/classes/com/izforge/izpack/panels/ChooseTargetPanel.class" 
 	      todir="${izpack.dir}/bin/panels/ChooseTargetPanel/com/izforge/izpack/panels"/>
+	<!-- create and copy the jar file for the SetPropertiesPanel -->
+	<echo message="creating jar" />
+	<jar destfile="${izpack.dir}/bin/panels/SetPropertiesPanel.jar"
+	     basedir="bin/classes"
+		 index="false"
+	     >
+		<fileset dir="source/src/" includes="**/*.properties" />
+		
+	</jar>
+	<!-- copy the single SetPropertiesPanel class -->
+	<echo message="copying class-file" />
+	<copy file="bin/classes/com/izforge/izpack/panels/SetPropertiesPanel.class" 
+	      todir="${izpack.dir}/bin/panels/SetPropertiesPanel/com/izforge/izpack/panels"/>
+	
+	
 	<echo message="done." />
 </target>
 			
