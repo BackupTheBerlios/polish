@@ -420,7 +420,7 @@ public class RecordStore extends Object
 	 * When a record store is closed, all listeners are removed.
 	 * 
 	 * @param listener - the RecordChangedListener
-	 * @see javax.microedition.rms.RecordStore#removeRecordListener(javax.microedition.rms.RecordListener)
+	 * @see #removeRecordListener(de.enough.polish.doja.rms.RecordListener)
 	 */
 	public void addRecordListener( RecordListener listener)
 	{
@@ -432,7 +432,7 @@ public class RecordStore extends Object
 	 * is not registered, this method does nothing.
 	 * 
 	 * @param listener - the RecordChangedListener
-	 * @see javax.microedition.rms.Record#addRecordListener(javax.microedition.rms.RecordListener)
+	 * @see #addRecordListener(de.enough.polish.doja.rms.RecordListener)
 	 */
 	public void removeRecordListener( RecordListener listener)
 	{
