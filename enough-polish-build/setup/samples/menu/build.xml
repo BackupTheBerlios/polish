@@ -91,14 +91,13 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				license="%{J2ME_POLISH_LICENSE}"
 				name="J2ME Polish"
 				version="1.3.4"
-				description="A sample project"
+				description="A simple project that uses localization."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
 				icon="dot.png"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar" 
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-menu.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
 				copyright="Copyright 2005, 2006, 2007 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?" 

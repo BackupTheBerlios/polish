@@ -46,6 +46,7 @@ implements Runnable
 
 	private String password;
 	private boolean isFinished;
+	private Environment environment;
 
 	public SignatureRequester() {
 		// no initialisation
@@ -54,6 +55,7 @@ implements Runnable
 	public int requestSignature( Device device, Locale locale, File jdeHome, File codFile, Environment env ) 
 	throws IOException 
 	{
+		this.environment = env;
 		
 		String certificateDirStr = env.getVariable( "blackberry.certificate.dir" );
 		if (certificateDirStr == null ) {
@@ -124,9 +126,18 @@ implements Runnable
 
 	public void run() {
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		long delay = 2500;
+		String signatureWaitTimeStr = this.environment.getVariable("blackberry.certifcate.inputdelay");
+		if (signatureWaitTimeStr != null) {
+			try {
+				delay = Long.parseLong( signatureWaitTimeStr );
+			} catch (Exception e) {
+				System.out.println("Invalid blackberry.certifcate.inputdelay setting: " + signatureWaitTimeStr + " is not a number: " + e.toString() );
+			}
+		}
 		//while (! this.isFinished ) {
 			try {
-				Thread.sleep( 2500 );
+				Thread.sleep( delay );
 			} catch (InterruptedException e) {
 				// ignore
 			}

@@ -107,7 +107,7 @@ public class ExtensionSetting extends Setting {
 			Variable variable = parameters[i];
 			String varName = variable.getName();
 			if ( parameterName.equals( varName )) {
-				if (environment == null || variable.isConditionFulfilled( environment.getBooleanEvaluator(), environment.getProject() )) {
+				if (environment == null || variable.isConditionFulfilled( environment )) {
 					return variable;
 				}
 			}

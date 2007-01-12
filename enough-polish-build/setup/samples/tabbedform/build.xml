@@ -90,7 +90,6 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				license="%{J2ME_POLISH_LICENSE}"
 				name="TabbedForm"
 				version="1.0.0"
 				description="A demonstration of the TabbedForm."

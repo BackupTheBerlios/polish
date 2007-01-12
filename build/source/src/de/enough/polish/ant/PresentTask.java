@@ -29,6 +29,7 @@ import java.io.File;
 
 import org.apache.tools.ant.BuildException;
 
+
 /**
  * <p>Checks if a file or property is present and stops the build if it is not present.</p>
  *

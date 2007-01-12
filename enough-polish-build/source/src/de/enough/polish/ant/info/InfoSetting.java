@@ -26,7 +26,7 @@
 package de.enough.polish.ant.info;
 
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.Environment;
@@ -95,7 +95,7 @@ public class InfoSetting {
 	private ArrayList jadAttributes;
 	private String vendorName;
 	private String jarName;
-	private String license;
+	private String license = GPL_LICENSE;
 	private String profile;
 	private String configuration;
 	
@@ -499,6 +499,7 @@ public class InfoSetting {
 				throw new BuildException("Invalid license: [" + license +"]. Please use either the GPL license or obtain a commercial license from Enough Software at www.j2mepolish.org.");
 			}
 		}
+		System.out.println("info: the license attribute is no longer supported. Please place your license.key file either to ${project.home} or to ${polish.home}.");
 	}
 	
 	/**

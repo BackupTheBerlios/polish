@@ -26,11 +26,8 @@ package de.enough.polish.ant.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-
 import de.enough.polish.Attribute;
-import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 
@@ -94,8 +91,8 @@ public class JadAttributes extends Variables {
 		return (Attribute[]) list.toArray( new Attribute[ list.size() ] );	
 	}
 	
-	public Attribute[] getAttributes( Project antProject, BooleanEvaluator evaluator, Environment environment ){
-		Attribute[] attributes = (Attribute[]) getVariables(antProject, evaluator, environment);
+	public Attribute[] getAttributes( Environment environment ){
+		Attribute[] attributes = (Attribute[]) getVariables( environment );
 		for (int i = 0; i < attributes.length; i++) {
 			Attribute attribute = attributes[i];
 			String value = environment.writeProperties( attribute.getValue() );

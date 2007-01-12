@@ -26,7 +26,6 @@
 package de.enough.polish.devices;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,18 +34,13 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tools.ant.Project;
-import org.jdom.JDOMException;
-
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.ExtensionManager;
-import de.enough.polish.ant.PolishTask;
 
 /**
  * <p>The DeviceTree structures the device database.</p>
  *
- * <p>Copyright Enough Software 2005</p>
+ * <p>Copyright Enough Software 2006, 2007</p>
  * <pre>
  * history
  *        05-Jan-2006 - rob creation
@@ -207,25 +201,16 @@ public class DeviceTree {
     public File[] getClasspathForSelectedDevices() {
         Device[] selectedDevices = getSelectedDevices();
         Environment env = null;
-        try {
-            env  = new Environment(new ExtensionManager(new Project()),new Project(),new PolishTask());
-        } catch (JDOMException exception) {
-            throw new RuntimeException("Could not create an Environment."+exception);
-        } catch (IOException exception) {
-            throw new RuntimeException("Could not create an Environment."+exception);
-        }
+        env  = new Environment(); // new ExtensionManager(new Project()),new Project(),new PolishTask());
         env.set("polish.home", this.deviceDatabase.getPolishHome());
         env.set("polish.apidir", this.deviceDatabase.getApisHome());
-        
-        for (int i = 0; i < selectedDevices.length; i++) {
-            Device selectedDevice = selectedDevices[i];
-            selectedDevice.setEnvironment(env);
-        }
-        
+                
         LinkedList normalClasspathList = new LinkedList();
         LinkedList bootClasspathList = new LinkedList();
         for (int i = 0; i < selectedDevices.length; i++) {
             Device device = selectedDevices[i];
+            device.setEnvironment(env);
+
             String[] normalClasspath = device.getClassPaths();
             String[] bootClasspath = device.getBootClassPaths();
             for (int j = 0; j < normalClasspath.length; j++) {

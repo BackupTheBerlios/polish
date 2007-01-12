@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;

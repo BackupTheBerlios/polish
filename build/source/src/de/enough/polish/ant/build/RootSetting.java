@@ -27,7 +27,7 @@ package de.enough.polish.ant.build;
 
 import java.io.File;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.Environment;
 import de.enough.polish.ant.Setting;

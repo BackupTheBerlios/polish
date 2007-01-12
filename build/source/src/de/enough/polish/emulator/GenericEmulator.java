@@ -25,9 +25,7 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -60,8 +58,7 @@ public class GenericEmulator extends Emulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device dev, EmulatorSetting setting,
-			Environment env, Project project, BooleanEvaluator evaluator,
-			String wtkHome) 
+			Environment env) 
 	{
 		String execStr = env.getVariable("polish.Emulator.Executable");
 		if (execStr == null) {

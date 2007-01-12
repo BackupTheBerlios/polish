@@ -94,8 +94,7 @@
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serializer.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
-				name="FramedForm" 
+				name="Serializer" 
 				vendorName="Enough Software" 
 				version="1.0.4"
 		    />

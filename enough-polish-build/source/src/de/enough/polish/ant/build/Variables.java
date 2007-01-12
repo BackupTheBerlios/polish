@@ -29,7 +29,7 @@ package de.enough.polish.ant.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
@@ -129,14 +129,14 @@ public class Variables {
 		return this.replacePropertiesWithoutDirective;	
 	}
 	
-	public Variable[] getVariables( Project antProject, BooleanEvaluator evaluator, Environment environment ) {
+	public Variable[] getVariables( Environment environment ) {
 		ArrayList list = new ArrayList();
 		Variable[] variables = getVariables( this.variablesList );
 		for (int i = 0; i < variables.length; i++) {
 			Variable variable = variables[i];
-			if (variable.isConditionFulfilled(evaluator, antProject)) {
+			if (variable.isConditionFulfilled(environment)) {
 				if (variable.containsMultipleVariables()) {
-					Variable[] vars = variable.loadVariables( environment, antProject );
+					Variable[] vars = variable.loadVariables( environment );
 					for (int j = 0; j < vars.length; j++) {
 						Variable var = vars[j];
 						var.setIf( variable.getIfCondition() );
@@ -152,13 +152,12 @@ public class Variables {
 	}
 	
 	public Variable[] getAllVariables( Environment environment ) {
-		Project antProject = environment.getProject(); 
 		ArrayList list = new ArrayList();
 		Variable[] variables = getVariables( this.variablesList );
 		for (int i = 0; i < variables.length; i++) {
 			Variable variable = variables[i];
 			if (variable.containsMultipleVariables()) {
-				Variable[] vars = variable.loadVariables( environment, antProject );
+				Variable[] vars = variable.loadVariables( environment );
 				for (int j = 0; j < vars.length; j++) {
 					Variable var = vars[j];
 					var.setIf( variable.getIfCondition() );

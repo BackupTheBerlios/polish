@@ -28,7 +28,7 @@ package de.enough.polish.emulator;
 import java.io.File;
 import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;

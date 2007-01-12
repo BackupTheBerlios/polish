@@ -21,7 +21,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-serialization" 
+	name="enough-j2mepolish-java5" 
 	default="j2mepolish">
 	
 	<!-- import user specific properties                          -->
@@ -92,13 +92,12 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				license="%{J2ME_POLISH_LICENSE}"
-				name="TabbedForm"
+				name="Java5"
 				version="1.0.0"
 				description="A demonstration of the Serialization Framework and of the Java 5 Syntax Support."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
-				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serialization.jar" 
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-java5.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
 				copyright="Copyright 2006, 2007 Enough Software. All rights reserved."
 			/>

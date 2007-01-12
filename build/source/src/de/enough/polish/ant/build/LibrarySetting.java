@@ -28,7 +28,7 @@ package de.enough.polish.ant.build;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 
 import de.enough.polish.ant.Setting;

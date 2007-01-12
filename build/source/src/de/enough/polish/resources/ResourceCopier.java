@@ -29,8 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
@@ -66,7 +66,6 @@ public abstract class ResourceCopier extends Extension {
 	throws BuildException 
 	{
 		this.environment = env;
-		this.antProject = env.getProject();
 		// ignore....
 	}
 	

@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -22,8 +20,7 @@ public class PalmEmulator extends Emulator {
 	private String[] arguments;
 
 	public boolean init( Device dev, EmulatorSetting setting,
-			Environment env, Project project, BooleanEvaluator evaluator,
-			String wtkHome ) 
+			Environment env ) 
 	{
 		String propertyName = "palm.simulator.home";
 		String palmHomeStr = env.getVariable( propertyName );

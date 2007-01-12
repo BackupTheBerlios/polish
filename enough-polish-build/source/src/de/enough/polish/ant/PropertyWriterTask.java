@@ -30,9 +30,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.Variable;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.PropertyUtil;

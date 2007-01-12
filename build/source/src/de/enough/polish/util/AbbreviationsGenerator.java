@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 /**
  * <p>Creates and stores abbreviations for any String based keys.</p>

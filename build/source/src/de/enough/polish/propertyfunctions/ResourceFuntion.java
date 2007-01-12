@@ -28,7 +28,7 @@ package de.enough.polish.propertyfunctions;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.Environment;
 

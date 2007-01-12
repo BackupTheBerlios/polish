@@ -29,10 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
+import de.enough.polish.BuildException;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Variable;
@@ -127,16 +125,14 @@ public class WtkEmulator extends Emulator {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
+	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, de.enough.polish.Environment)
 	 */
-	public boolean init(Device dev, EmulatorSetting setting,
-			Environment env, Project project,
-			BooleanEvaluator evaluator, String wtkHome) 
+	public boolean init(Device dev, EmulatorSetting setting, Environment env) 
 	{
 		// okay, now create the arguments:
 		ArrayList argumentsList = new ArrayList();
 		
-		Variable[] parameters = getParameters(setting, project, evaluator, env);
+		Variable[] parameters = getParameters(setting, env);
 
 		String xDevice = getParameterValue("-Xdevice", parameters );
 		boolean xDeviceParameterGiven = true;
@@ -144,6 +140,7 @@ public class WtkEmulator extends Emulator {
 			xDeviceParameterGiven = false;
 			xDevice = dev.getCapability("polish.Emulator.Skin");
 		}
+		String wtkHome = env.getVariable("wtk.home");
 		if (xDevice != null) {
 			// test if this emulator exists:
 			File skinFile = getEmulatorSkin(wtkHome, xDevice);

@@ -29,7 +29,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.types.Path;

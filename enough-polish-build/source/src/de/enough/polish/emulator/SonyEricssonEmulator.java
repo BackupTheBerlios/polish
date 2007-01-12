@@ -26,9 +26,7 @@ package de.enough.polish.emulator;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -100,8 +98,7 @@ public class SonyEricssonEmulator extends WtkEmulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device dev, EmulatorSetting setting,
-			Environment properties, Project project, BooleanEvaluator evaluator,
-			String wtkHome) 
+			Environment properties) 
 	{
 		String skin = dev.getCapability("polish.Emulator.Skin");
 		if (skin == null) {
@@ -128,7 +125,7 @@ public class SonyEricssonEmulator extends WtkEmulator {
 			}
 		}
 		this.sonyEricssonHome = sonyHomePath;
-		return super.init(dev, setting, properties, project, evaluator, wtkHome);
+		return super.init(dev, setting, properties);
 	}
 
 	/* (non-Javadoc)

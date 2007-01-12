@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.FileUtil;

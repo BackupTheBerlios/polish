@@ -45,17 +45,16 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
-				license="GPL" 
 				name="RoadRunner" 
 				vendorName="Enough Software" 
 				version="1.0.1"
 				copyright="Copyright 2005, 2006, 2007 Enough Software. All rights reserved." 
-				deleteConfirm="Do you really want to remove Roadrunner?" 
 				description="A frogger clone." 
 				icon="dot.png"
 				infoUrl="http://www.enough.de" 
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-roadrunner.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
+				deleteConfirm="Do you really want to remove Roadrunner?" 
 		    />
 			<!-- selection of supported devices -->
 			<deviceRequirements if="test">

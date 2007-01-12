@@ -26,9 +26,10 @@
 package de.enough.polish;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.tools.ant.AntClassLoader;
+//import org.apache.tools.ant.AntClassLoader;
 import org.jdom.Element;
 
 import de.enough.polish.ant.requirements.MemoryMatcher;
@@ -47,6 +48,7 @@ import de.enough.polish.devices.PolishComponent;
 import de.enough.polish.devices.Vendor;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
+import de.enough.polish.util.PathClassLoader;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -744,20 +746,35 @@ public class Device extends PolishComponent {
 	public ClassLoader getClassLoader() {
 		if (this.classLoader == null) {
 			String[] bootClassPaths = this.classPath.getBootClassPaths();
-			AntClassLoader acl = new AntClassLoader();
+			PathClassLoader acl = new PathClassLoader();
 			//acl.addPathElement( this.bootClassPath );
 			for ( int i=0; i < bootClassPaths.length; i++ ) {
 				String path = bootClassPaths[i];
 //				System.out.println("adding bootclasspath [" + path +"]" );
-				acl.addPathElement( path );
+				try {
+					acl.addPathElement( path );
+				} catch (IOException e) {
+					// TODO robertvirkus handle IOException
+					e.printStackTrace();
+				}
 			}
 			String[] classPaths = this.classPath.getClassPaths();
 			for (int i=0; i < classPaths.length; i++ ) {
 				String path = classPaths[i];
 //				System.out.println("adding classpath [" + path +"]" );
-				acl.addPathElement( path );
+				try {
+					acl.addPathElement( path );
+				} catch (IOException e) {
+					// TODO robertvirkus handle IOException
+					e.printStackTrace();
+				}
 			}
-			acl.addPathElement( this.classesDir );
+			try {
+				acl.addPathElement( this.classesDir );
+			} catch (IOException e) {
+				// TODO robertvirkus handle IOException
+				e.printStackTrace();
+			}
 			//System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );
 			this.classLoader = acl;
 			

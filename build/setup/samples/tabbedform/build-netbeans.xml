@@ -94,8 +94,7 @@
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-tabbedform.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
-				name="FramedForm" 
+				name="TabbedForm" 
 				vendorName="Enough Software" 
 				version="1.0.4"
 		    />

@@ -187,6 +187,8 @@ public class HtmlExporterTask extends Task {
 			
 			// write known issues:
 			writeKnownIssues();
+		} catch (de.enough.polish.BuildException e) {
+			throw new BuildException( e.getMessage() );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("unable to read device database: " + e.getMessage(), e );

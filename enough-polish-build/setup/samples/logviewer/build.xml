@@ -38,7 +38,6 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
-				license="%{J2ME_POLISH_LICENSE}"
 				copyright="Copyright 2005, 2006, 2007 Enough Software. All rights reserved." 
 				description="A log viewer." 
 				jarName="${polish.vendor}-${polish.name}-logviewer.jar" 

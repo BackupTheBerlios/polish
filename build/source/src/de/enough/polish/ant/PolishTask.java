@@ -440,6 +440,9 @@ public class PolishTask extends ConditionalTask {
 				
 				executeErrorTarget( this.buildSetting.getOnError(), null );
 			}
+		} catch (de.enough.polish.BuildException e) {
+			executeErrorTarget( this.buildSetting.getOnError(), e );
+			throw new BuildException( e.getMessage() );
 		} catch (BuildException e) {
 			executeErrorTarget( this.buildSetting.getOnError(), e );
 			//e.printStackTrace();
@@ -647,7 +650,7 @@ public class PolishTask extends ConditionalTask {
 		
 		try {
 			// load extensions:
-			this.extensionManager = new ExtensionManager( getProject(), this.buildSetting.openExtensions() );
+			this.extensionManager = new ExtensionManager(  getProject(), this.buildSetting.openExtensions() );
 			this.extensionManager.loadCustomDefinitions( this.buildSetting.getCustomExtensions() );
 			this.extensionManager.loadCustomDefinitions( new File( this.polishHomeDir, "custom-extensions.xml" ) );
 			this.extensionManager.loadCustomDefinitions( new File( getProject().getBaseDir(), "custom-extensions.xml" ) );
@@ -657,7 +660,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// create environment
-		this.environment = new Environment( this.extensionManager, getProject(), this );
+		this.environment = new Environment( this.extensionManager, getProject().getProperties(), getProject().getBaseDir() );
 		this.environment.setBuildSetting( this.buildSetting );
 		
 		
@@ -1326,7 +1329,7 @@ public class PolishTask extends ConditionalTask {
 		// set conditional variables:
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		Project antProject = getProject();
-		Variable[] vars = this.variables.getVariables( antProject, evaluator, this.environment );
+		Variable[] vars = this.variables.getVariables( this.environment );
 		for (int i = 0; i < vars.length; i++) {
 			Variable var = vars[i];
 			this.environment.addVariable(var.getName(), var.getValue() );
@@ -2193,8 +2196,9 @@ public class PolishTask extends ConditionalTask {
 			Class debugClass = classLoader.loadClass(className);
 			ReflectionUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
 		} catch (Exception e) {
-			System.err.println("Postcompile: Unable to deactivate logging in Debug class: " + e.toString() );
+			//System.err.println("Postcompile: Unable to deactivate logging in Debug class: " + e.toString() );
 			//e.printStackTrace();
+			// ignore - this is just because there is no compiled Debug class yet...
 		}
 		
 		// execute active postcompilers:
@@ -2422,10 +2426,8 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		// add user-defined attributes:
-		Project antProject = getProject();
-		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		if (this.buildSetting.getJadAttributes() != null) {
-			Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes(antProject, evaluator, this.environment);
+			Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes( this.environment);
 			for (int i = 0; i < attributes.length; i++) {
 				Attribute attribute = attributes[i];
 				if ( attribute.targetsManifest() ) {
@@ -2524,10 +2526,8 @@ public class PolishTask extends ConditionalTask {
 		this.environment.setVariable( InfoSetting.MIDLET_JAR_SIZE, "" + size );
 		
 		// add user-defined attributes:
-		Project antProject = getProject();
-		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		if (this.buildSetting.getJadAttributes() != null) {
-			Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes(antProject, evaluator, this.environment);
+			Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes( this.environment );
 			for (int i = 0; i < attributes.length; i++) {
 				Attribute attribute = attributes[i];
 				if ( attribute.targetsJad() ) {
@@ -2636,7 +2636,7 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 				File[] sourceDirs = (File[]) sourceDirsList.toArray( new File[ sourceDirsList.size() ] );
-				Emulator emulator = Emulator.createEmulator(device, emulatorSetting, this.environment, getProject(), evaluator, this.wtkHome, sourceDirs, this.extensionManager );
+				Emulator emulator = Emulator.createEmulator(device, emulatorSetting, this.environment, sourceDirs, this.extensionManager );
 				if (emulator != null) {
 					emulator.execute( device, locale, this.environment );
 					if (this.runningEmulators == null) {

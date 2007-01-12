@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;

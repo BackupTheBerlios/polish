@@ -28,9 +28,7 @@ package de.enough.polish.emulator;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -62,8 +60,7 @@ public class DoJaEmulator extends Emulator {
 	 * @see de.enough.polish.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, de.enough.polish.Environment, org.apache.tools.ant.Project, de.enough.polish.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device device, EmulatorSetting setting,
-			Environment env, Project project, BooleanEvaluator evaluator,
-			String wtkHome) 
+			Environment env) 
 	{
 		File home = resolveDoJaHome( env );
 		if (home == null) {

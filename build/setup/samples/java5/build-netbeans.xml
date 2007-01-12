@@ -25,7 +25,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-serializer" 
+	name="enough-j2mepolish-java5" 
 	default="j2mepolish">
 	
 	<!-- extend the default NetBeans build script:           -->
@@ -94,12 +94,11 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info copyright="Copyright 2006, 2007 Enough Software. All rights reserved." 
-				description="A demonstration of the Serialization Framework." 
+				description="A demonstration of the Java 5 Syntax Support Framework." 
 				infoUrl="http://www.enough.de" 
-				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-serializer.jar" 
+				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-java5.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
-				name="FramedForm" 
+				name="Java5 Sample" 
 				vendorName="Enough Software" 
 				version="1.0.4"
 		    />

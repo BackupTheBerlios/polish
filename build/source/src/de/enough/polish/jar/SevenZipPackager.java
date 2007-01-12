@@ -31,10 +31,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-
-import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Variable;
@@ -97,12 +94,10 @@ implements OutputFilter
 		arguments.add("-tzip"); // use zip compression
 		arguments.add( targetFile.getAbsolutePath() ); // target JAR file
 		// add optional parameters:
-		BooleanEvaluator evaluator = env.getBooleanEvaluator();
-		Project project = env.getProject();
 		if (this.parameters != null) {
 			for (int i = 0; i < this.parameters.length; i++) {
 				Variable parameter = this.parameters[i];
-				if ( parameter.isConditionFulfilled(evaluator, project) ) {
+				if ( parameter.isConditionFulfilled(env) ) {
 					String name = parameter.getName();
 					String value = parameter.getValue();
 					if (name.charAt(0) == '-') {

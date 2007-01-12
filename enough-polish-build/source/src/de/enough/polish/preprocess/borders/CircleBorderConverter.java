@@ -28,7 +28,7 @@ package de.enough.polish.preprocess.borders;
 
 import java.util.HashMap;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.preprocess.css.BorderConverter;
 import de.enough.polish.preprocess.css.Style;

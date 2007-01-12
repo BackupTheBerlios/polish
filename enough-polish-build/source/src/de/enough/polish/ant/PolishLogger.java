@@ -30,6 +30,7 @@ import java.io.PrintStream;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildEvent;
+//import de.enough.polish.BuildException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.BuildLogger;

@@ -29,8 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.CastUtil;
@@ -198,11 +197,10 @@ public class Variable {
 	 * Loads all variable-definitions from the specified file.
 	 * 
 	 * @param environment the environment settings
-	 * @param antProject the Ant project
 	 * @return an array of variable definitions found in the specified file.
 	 */
-	public Variable[] loadVariables(Environment environment, Project antProject ) {
-		File file = getFile( environment, antProject );
+	public Variable[] loadVariables(Environment environment ) {
+		File file = getFile( environment );
 		if (!file.exists()) {
 			System.err.println( getFileNotFoundWarning( file )  );
 			return new Variable[0];
@@ -277,19 +275,11 @@ public class Variable {
 
 	/**
 	 * @param environment
-	 * @param antProject
 	 * @return the file containing variable definitions
 	 */
-	protected File getFile(Environment environment, Project antProject) {
-		String fName = this.fileName;
-		if (this.hasPropertiesInFileName) {
-			fName = environment.writeProperties( fName );
-		}
-		File file = antProject.resolveFile( fName );
-		if ( !file.exists() && !this.hasPropertiesInFileName ) {
-			throw new BuildException("Invalid build.xml:" + getFileNotFoundError( file ) );
-		}
-		return file;
+	protected File getFile(Environment environment) {
+		return environment.resolveFile( this.fileName );
+
 	}
 
 	/**
@@ -300,21 +290,21 @@ public class Variable {
 	 * 			or the specified conditions have been met.
 	 */
 	public boolean isConditionFulfilled( Environment environment ) {
-		return isConditionFulfilled( environment.getBooleanEvaluator(), environment.getProject() );
+		return isConditionFulfilled( environment.getBooleanEvaluator(), null );
 	}
 
 	/**
 	 * Checks if the conditions for this variable are met.
 	 * 
 	 * @param evaluator the boolean evaluator with the settings for the current device
-	 * @param project the Ant project into which this variable is embedded
+	 * @param properties any basic properties like Ant properties
 	 * @return true when no condition has been specified 
 	 * 			or the specified conditions have been met.
 	 */
-	public boolean isConditionFulfilled(BooleanEvaluator evaluator, Project project) {
+	public boolean isConditionFulfilled(BooleanEvaluator evaluator, Map properties) {
 		if (this.ifCondition != null) {
 			// first check if there is an Ant-attribute:
-			String antProperty = project.getProperty( this.ifCondition );
+			String antProperty = properties == null? null : (String) properties.get( this.ifCondition );
 			if (antProperty != null) {
 				boolean success = CastUtil.getBoolean(antProperty );
 				if (!success) {
@@ -329,7 +319,7 @@ public class Variable {
 		}
 		if (this.unlessCondition != null) {
 			// first check if there is an Ant-attribute:
-			String antProperty = project.getProperty( this.unlessCondition );
+			String antProperty = properties == null? null : (String) properties.get( this.unlessCondition );
 			if (antProperty != null) {
 				boolean success = CastUtil.getBoolean(antProperty );
 				if (success) {

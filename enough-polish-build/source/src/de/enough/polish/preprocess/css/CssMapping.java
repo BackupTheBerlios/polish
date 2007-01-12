@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess.css;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.jdom.Element;
 
 import de.enough.polish.BooleanEvaluator;

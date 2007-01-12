@@ -32,7 +32,7 @@ import de.enough.polish.ant.build.LogFilterSetting;
 import de.enough.polish.ant.build.LogHandlerSetting;
 import de.enough.polish.log.LogHandler;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.util.HashMap;
 

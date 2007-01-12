@@ -26,7 +26,7 @@
 package de.enough.polish.ant.info;
 
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.util.ArrayList;
 

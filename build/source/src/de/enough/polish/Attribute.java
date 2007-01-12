@@ -29,9 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -122,11 +119,10 @@ public class Attribute extends Variable {
 	 * Loads all attribute-definitions from the specified file.
 	 * 
 	 * @param environment the environment settings
-	 * @param antProject the Ant project
 	 * @return an array of variable definitions found in the specified file.
 	 */
-	public Attribute[] loadAttributes( Environment environment, Project antProject) {
-		File file = getFile( environment, antProject );
+	public Attribute[] loadAttributes( Environment environment ) {
+		File file = getFile( environment );
 		if ( !file.exists() ) {
 			System.err.println("Warning: unable to load attributes from [" + file.getAbsolutePath() + "]: file not found.");
 			return new Attribute[0];

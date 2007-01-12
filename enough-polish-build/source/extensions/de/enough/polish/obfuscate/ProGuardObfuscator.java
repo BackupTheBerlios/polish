@@ -90,7 +90,7 @@ implements OutputFilter
 			}
 			this.proGuardJarFile = new File( proguardPath );
 			if ( !this.proGuardJarFile.exists() ) {
-				this.proGuardJarFile = new File( getEnvironment().getProject().getBaseDir(), proguardPath );
+				this.proGuardJarFile = new File( getEnvironment().getBaseDir(), proguardPath );
 			}
 		}
 		ArrayList argsList = new ArrayList();

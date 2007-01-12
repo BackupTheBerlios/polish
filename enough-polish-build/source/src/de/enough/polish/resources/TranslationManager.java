@@ -45,9 +45,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.build.LocaleSetting;
@@ -86,8 +85,7 @@ implements Comparator
 	protected IntegerIdGenerator idGeneratorPlain;
 	protected ArrayList singleParameterTranslations;
 	protected ArrayList plainTranslations;
-	protected final Project project;
-	private final Environment environment;
+	protected final Environment environment;
 
 	/**
 	 * Creates a new manager for translations.
@@ -100,10 +98,9 @@ implements Comparator
 	 * @param localizationSetting the localization setting
 	 * @throws IOException when resources could not be loaded
 	 */
-	public TranslationManager(Project project, Device device, LocaleSetting locale, Environment environment, File[] resourceDirs, LocalizationSetting localizationSetting )
+	public TranslationManager(Device device, LocaleSetting locale, Environment environment, File[] resourceDirs, LocalizationSetting localizationSetting )
 	throws IOException
 	{
-		this.project = project;
 		this.localizationSetting = localizationSetting;
 		this.isDynamic = (localizationSetting == null ? false : localizationSetting.isDynamic() );
 		this.locale = locale;

@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess.css;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.Preprocessor;

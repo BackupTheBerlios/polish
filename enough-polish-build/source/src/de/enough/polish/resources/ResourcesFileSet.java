@@ -27,7 +27,7 @@ package de.enough.polish.resources;
 
 import java.io.File;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
@@ -122,18 +122,13 @@ public class ResourcesFileSet extends FileSet {
 
 	private void resolveDir(Project antProject) {
 		String realDirName = this.dirName;
-		if (this.environment == null) {
-			System.err.println("Warning: no environment has been set for ResourcesFileSet.");
+		if (this.environment != null) {
+			this.resolvedDir = this.environment.resolveFile( realDirName );
+		} else if (antProject != null){
+			this.resolvedDir = antProject.resolveFile( realDirName );
 		} else {
-			realDirName = this.environment.writeProperties( realDirName );
+			this.resolvedDir = new File( realDirName );
 		}
-		File file = new File( realDirName );
-		if (file.isAbsolute()) {
-			this.resolvedDir = file;
-		} else {
-			this.resolvedDir = new File( antProject.getBaseDir(), realDirName );
-		}
-		//System.out.println("resolved dir = [" + this.resolvedDir.getAbsolutePath() + "]");
 	}
 
 	/* (non-Javadoc)
@@ -157,6 +152,14 @@ public class ResourcesFileSet extends FileSet {
 		}
 		return this.resolvedDir;
 	}
+	
+	public File getDir() {
+		if (this.resolvedDir == null) {
+			resolveDir( null );
+		}
+		return this.resolvedDir;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.apache.tools.ant.types.AbstractFileSet#getDirectoryScanner(org.apache.tools.ant.Project)

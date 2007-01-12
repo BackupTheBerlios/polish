@@ -94,7 +94,6 @@
 				infoUrl="http://www.enough.de" 
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
 				name="MobileMail" 
 				vendorName="Enough Software" 
 				version="1.0.4"

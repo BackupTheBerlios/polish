@@ -30,9 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -62,8 +60,7 @@ public class MppEmulator extends Emulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, de.enough.polish.Environment, org.apache.tools.ant.Project, de.enough.polish.BooleanEvaluator, java.lang.String)
 	 */
-	public boolean init(Device dev, EmulatorSetting setting, Environment env,
-			Project project, BooleanEvaluator evaluator, String wtkHome) {
+	public boolean init(Device dev, EmulatorSetting setting, Environment env) {
 		String mppHome = env.getVariable("mpp.home");
 		if (mppHome == null) {
 			System.err.println("Warning: unable to launch the mpowerplayer emulator - please specify the \"mpp.home\" property in your build.xml script. \"mpp.home\" needs to point to the installation folder of the mpowerplayer SDK.");

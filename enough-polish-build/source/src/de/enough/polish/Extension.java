@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.CallTarget;
 import org.apache.tools.ant.taskdefs.Property;
@@ -132,7 +132,7 @@ public abstract class Extension {
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		for (int i = 0; i < parameters.length; i++) {
 			Variable parameter = parameters[i];
-			if ( parameter.isConditionFulfilled(evaluator, this.antProject ) ) {
+			if ( parameter.isConditionFulfilled(evaluator, this.antProject.getProperties() ) ) {
 				ReflectionUtil.populate( this, parameter, baseDir );
 			}
 		}
@@ -433,7 +433,7 @@ public abstract class Extension {
 			BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 			for (int i = 0; i < antProperties.length; i++) {
 				Variable property = antProperties[i];
-				if (property.isConditionFulfilled(evaluator, this.antProject)) {
+				if (property.isConditionFulfilled(evaluator, this.antProject.getProperties() )) {
 					String value = property.getValue();
 					if (value == null) {
 						continue;

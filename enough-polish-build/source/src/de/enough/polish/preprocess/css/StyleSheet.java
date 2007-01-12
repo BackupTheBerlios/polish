@@ -28,7 +28,7 @@ package de.enough.polish.preprocess.css;
 import de.enough.polish.Device;
 import de.enough.polish.util.StringUtil;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.util.*;
 import java.util.HashMap;

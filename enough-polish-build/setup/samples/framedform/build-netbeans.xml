@@ -93,7 +93,6 @@
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-framedform.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
-				license="GPL" 
 				name="FramedForm" 
 				vendorName="Enough Software" 
 				version="1.0.4"

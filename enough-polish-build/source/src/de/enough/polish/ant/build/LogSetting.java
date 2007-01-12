@@ -27,7 +27,7 @@ package de.enough.polish.ant.build;
 
 import de.enough.polish.ant.ConditionalElement;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.util.ArrayList;
 

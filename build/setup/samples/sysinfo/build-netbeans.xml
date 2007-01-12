@@ -92,7 +92,6 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				license="GPL"
 				copyright="Copyright 2004, 2005 Grimo Software, Enough Software and Mark Schrijver. All rights reserved." 
 				description="Extracts information from MIDP capable devices." 
 				icon="icon.png" 

@@ -35,9 +35,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
@@ -70,7 +69,6 @@ import de.enough.polish.util.StringUtil;
 public class ResourceManager {
 	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db" };
 	private final ResourceSetting resourceSetting;
-	private final Project project;
 	private final BooleanEvaluator booleanEvaluator;
 	private final Map resourceDirsByDevice;
 	private final ResourceFilter resourceFilter;
@@ -100,7 +98,6 @@ public class ResourceManager {
 		this.resourceSetting = setting;
 		this.extensionManager = manager;
 		this.environment = environment;
-		this.project = environment.getProject();
 		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
 		RootSetting[] resDirs = setting.getRootDirectories(environment);
@@ -297,15 +294,14 @@ public class ResourceManager {
 		ResourcesFileSet[] fileSets = this.resourceSetting.getFileSets(this.booleanEvaluator, this.environment );
 		for (int i = 0; i < fileSets.length; i++) {
 			ResourcesFileSet set = fileSets[i];
-			File dir = set.getDir(this.project);
+			File dir = set.getDir(null);
 			if (!dir.exists()) {
 				throw new BuildException("The referenced directory [" + dir.getAbsolutePath() + "] of <fileset> does point to a non-existing directory. Please correct the \"dir\"-attribute of the corresponding <fileset>-element.");
 			}
 			if (!dir.isDirectory()) {
 				throw new BuildException("The referenced directory [" + dir.getAbsolutePath() + "] of <fileset> does point to a file which is not a directory. Please correct the \"dir\"-attribute of the corresponding <fileset>-element.");				
 			}
-			DirectoryScanner scanner = set.getDirectoryScanner(this.project);
-			String[] fileNames = scanner.getIncludedFiles();
+			String[] fileNames = FileUtil.filterDirectory(dir, null, true );
 			//System.out.println("Adding resources from " + dir.getPath() );
 			addFiles( dir, fileNames, resourcesByName );
 		}
@@ -567,9 +563,8 @@ public class ResourceManager {
 		if (className != null) {
 			try {
 				Class managerClass = Class.forName( className );
-				Constructor constructor = managerClass.getConstructor( new Class[]{ Project.class, Device.class, LocaleSetting.class, Environment.class, File[].class, LocalizationSetting.class} );
+				Constructor constructor = managerClass.getConstructor( new Class[]{  Device.class, LocaleSetting.class, Environment.class, File[].class, LocalizationSetting.class} );
 				TranslationManager manager = (TranslationManager) constructor.newInstance( new Object[]{ 
-						this.project, 
 						device, 
 						locale, 
 						env, 
@@ -582,7 +577,7 @@ public class ResourceManager {
 				throw new BuildException("The translation manager [" + className + "] could not be found, please adjust your <localization>-translationManager-setting.");
 			}
 		} else {
-			return new TranslationManager( this.project,
+			return new TranslationManager( 
 				device, 
 				locale, 
 				env, 

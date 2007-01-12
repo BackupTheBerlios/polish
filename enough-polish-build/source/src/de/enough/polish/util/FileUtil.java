@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -447,6 +448,22 @@ public final class FileUtil {
 		readProperties(in, '=', '#', map, false );
 		return map;
 	}
+	
+	/**
+	 * Reads properties from the given reader.
+	 * 
+	 * @param in the input reader
+	 * @return a map containing all properties that could be read from the reader
+	 * @throws IOException when reading fails
+	 */
+	public static Map readProperties(Reader reader)
+	throws IOException
+	{
+		Map map = new HashMap();
+		readProperties(reader, '=', '#', map, false );
+		return map;
+	}
+
 
 	/**
 	 * Reads properties from the given input stream.
@@ -543,6 +560,27 @@ public final class FileUtil {
 	{
 		readProperties( in, delimiter, comment, properties, ignoreInvalidProperties, encoding, false, false );
 	}
+	
+	/**
+	 * Reads properties from the given reader.
+	 * 
+	 * @param reader the input reader
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @param encoding the encoding of the text file, when null the default charset is used
+	 * @param translateToAscii true when the FileUtil should translate the code into ASCII only code (using unicode). 
+	 * @param translateToNative true when escape sequences like \t or \n should be converted to native characters
+	 * @throws IOException when reading from the input stream fails
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static void readProperties(Reader reader, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties ) 
+	throws IOException 
+	{
+		readProperties( reader, delimiter, comment, properties, ignoreInvalidProperties, false, false );
+	}
+
 
 	/**
 	 * Reads properties from the given input stream.
@@ -561,15 +599,37 @@ public final class FileUtil {
 	public static void readProperties(InputStream in, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties, String encoding, boolean translateToAscii, boolean translateToNative ) 
 	throws IOException 
 	{
-		BufferedReader reader;
+		Reader reader;
 		if (encoding == null) {
-			reader = new BufferedReader( new InputStreamReader( in ) );
+			reader = new  InputStreamReader( in );
 		} else {
-			reader = new BufferedReader( new InputStreamReader( in, encoding ) );
+			reader = new InputStreamReader( in, encoding );
 		}
+		readProperties( reader, delimiter, comment, properties, ignoreInvalidProperties, translateToAscii, translateToNative );
+		in.close();
+	}
+	
+	/**
+	 * Reads properties from the given reader.
+	 * 
+	 * @param reader the input reader
+	 * @param delimiter the character that separates a property-name from a property-value.
+	 * @param comment the char denoting comments
+	 * @param properties a map containing properties
+	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
+	 * @param encoding the encoding of the text file, when null the default charset is used
+	 * @param translateToAscii true when the FileUtil should translate the code into ASCII only code (using unicode). 
+	 * @param translateToNative true when escape sequences like \t or \n should be converted to native characters
+	 * @throws IOException when reading from the input stream fails
+	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
+	 */
+	public static void readProperties(Reader reader, char delimiter, char comment, Map properties, boolean ignoreInvalidProperties, boolean translateToAscii, boolean translateToNative ) 
+	throws IOException 
+	{
+		BufferedReader bufferedReader = new BufferedReader( reader );
 		String line;
 		int index = 0;
-		while ( (line = reader.readLine()) != null) {
+		while ( (line = bufferedReader.readLine()) != null) {
 			index++;
 			if (line.length() == 0 || line.charAt(0) == comment || line.trim().length() == 0) {
 				continue;
@@ -599,9 +659,10 @@ public final class FileUtil {
 			String key = line.substring( 0, delimiterPos ).trim();
 			String value = line.substring( delimiterPos + 1 );
 			properties.put( key, value );
-		}
-		in.close();
+		}	
 	}
+	
+
 
 	/**
 	 * Writes the given textlines into the specified file.
@@ -671,10 +732,10 @@ public final class FileUtil {
 
 
 	/**
-	 * Retrieves all files from the given directory
+	 * Retrieves all files from the given directory 
 	 * 
 	 * @param dir the directory
-	 * @param extension the file extension
+	 * @param extension the file extension, when the extension is null, all files are included
 	 * @param recursive true when subdirectories should also be read.
 	 * @return an String array with the file-names relative to the given directory that do have the given extension
 	 */
@@ -690,6 +751,7 @@ public final class FileUtil {
 	/**
 	 * Retrieves all files from the given directory
 	 * 
+	 * @param path the start path taken from the base directory towards the current one
 	 * @param dir the directory
 	 * @param extension the file extension
 	 * @param recursive true when subdirectories should also be read.
@@ -703,10 +765,11 @@ public final class FileUtil {
 				if (recursive) {
 					filterDirectory(path + name + File.separatorChar, file, extension, recursive, fileNamesList );
 				}
-			} else if (name.endsWith(extension)) {
+			} else if (extension == null || name.endsWith(extension)) {
 				fileNamesList.add( path + name );
 			}
 		}
 	}
+
 	
 }

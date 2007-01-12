@@ -30,7 +30,7 @@ import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.CastUtil;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.awt.Color;
 import java.util.HashMap;

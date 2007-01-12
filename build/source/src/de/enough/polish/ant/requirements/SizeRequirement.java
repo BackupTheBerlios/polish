@@ -28,7 +28,7 @@ package de.enough.polish.ant.requirements;
 import de.enough.polish.Device;
 import de.enough.polish.util.StringUtil;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 /**
  * <p>Selects devices by the size of specific features.</p>

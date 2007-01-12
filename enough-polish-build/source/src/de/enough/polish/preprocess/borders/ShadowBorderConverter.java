@@ -29,7 +29,7 @@ import de.enough.polish.preprocess.css.BorderConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.util.HashMap;
 

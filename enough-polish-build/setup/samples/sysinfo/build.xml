@@ -79,7 +79,6 @@
 		         build for all devices.
 		         -->
 			<info
-				license="GPL"
 				copyright="Copyright 2004, 2005 Grimo Software, Enough Software and Mark Schrijver. All rights reserved." 
 				description="Extracts information from MIDP capable devices." 
 				icon="icon.png" 

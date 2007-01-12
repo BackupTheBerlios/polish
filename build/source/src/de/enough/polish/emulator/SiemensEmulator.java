@@ -25,9 +25,7 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -91,8 +89,7 @@ public class SiemensEmulator extends WtkEmulator {
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, java.util.HashMap, org.apache.tools.ant.Project, de.enough.polish.preprocess.BooleanEvaluator, java.lang.String)
 	 */
 	public boolean init(Device dev, EmulatorSetting setting,
-			Environment properties, Project project, BooleanEvaluator evaluator,
-			String wtkHome) 
+			Environment properties) 
 	{
 		String siemensHomePath = properties.getVariable("siemens.home");
 		if (siemensHomePath == null) {
@@ -112,7 +109,7 @@ public class SiemensEmulator extends WtkEmulator {
 		if (skin == null) {
 			dev.addDirectCapability("polish.Emulator.Skin", dev.getName());
 		}
-		if (super.init(dev, setting, properties, project, evaluator, wtkHome)) {
+		if (super.init(dev, setting, properties)) {
 			File directExcecutable = new File( siemensHomePath 
 					+ File.separatorChar + "emulators" 
 					+ File.separatorChar + skin 

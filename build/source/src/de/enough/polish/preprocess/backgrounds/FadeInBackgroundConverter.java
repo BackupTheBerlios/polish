@@ -27,7 +27,7 @@ package de.enough.polish.preprocess.backgrounds;
 
 import java.util.HashMap;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;

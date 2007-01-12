@@ -28,7 +28,7 @@ package de.enough.polish.ant.requirements;
 import de.enough.polish.Device;
 import de.enough.polish.util.StringUtil;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 /**
  * <p>Selects a device by the supported platform. A platform is for example "MIDP/1.0"</p>

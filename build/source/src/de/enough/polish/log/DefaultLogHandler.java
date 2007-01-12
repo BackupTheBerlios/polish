@@ -28,9 +28,6 @@ package de.enough.polish.log;
 import java.io.File;
 import java.util.Locale;
 
-import org.apache.tools.ant.Project;
-
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionSetting;
@@ -85,12 +82,10 @@ public class DefaultLogHandler extends LogHandler {
 		} else {
 			env.addVariable( "polish.log.handlers", value + "," + getClientLogHandlerClass(env) );
 		}
-		BooleanEvaluator evalutor = env.getBooleanEvaluator();
 		if (this.parameters != null) {
-			Project project = env.getProject();
 			for (int i = 0; i < this.parameters.length; i++) {
 				Variable parameter = this.parameters[i];
-				if (parameter.isConditionFulfilled(evalutor, project)) {
+				if (parameter.isConditionFulfilled(env)) {
 					env.addVariable( "polish.log." + name + "." + parameter.getName(), parameter.getValue() );
 				}
 			}

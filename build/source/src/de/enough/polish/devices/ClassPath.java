@@ -28,7 +28,7 @@ package de.enough.polish.devices;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;

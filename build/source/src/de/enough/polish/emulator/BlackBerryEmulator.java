@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -25,8 +23,7 @@ public class BlackBerryEmulator extends Emulator {
 	private String[] arguments;
 
 	public boolean init( Device dev, EmulatorSetting setting,
-			Environment env, Project project, BooleanEvaluator evaluator,
-			String wtkHome ) 
+			Environment env ) 
 	{
 		String blackberryHomeStr = env.getVariable("blackberry.home");
 		if (blackberryHomeStr == null) {

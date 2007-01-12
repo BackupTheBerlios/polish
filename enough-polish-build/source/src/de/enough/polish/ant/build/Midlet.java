@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ant.build;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.StringUtil;

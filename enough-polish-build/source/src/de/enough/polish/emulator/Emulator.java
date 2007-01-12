@@ -31,7 +31,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
@@ -78,7 +78,7 @@ implements Runnable, OutputFilter
 	 * Creates a new emulator instance.
 	 * The actual initialisation is done in the init-method.
 	 * 
-	 * @see #init(Device, EmulatorSetting, Environment, Project, BooleanEvaluator, String)
+	 * @see #init(Device, EmulatorSetting, Environment)
 	 */
 	public Emulator() {
 		// no initialisation done here
@@ -86,16 +86,13 @@ implements Runnable, OutputFilter
 	
 	/**
 	 * Starts the emulator for the given device.
-	 *  
-	 * @param setting the setting
 	 * @param dev the current device
+	 * @param setting the setting
 	 * @param env all Ant- and polish-properties for the parameter-values
-	 * @param project the ant-project to which this emulator belongs to 
-	 * @param evaluator a boolean evaluator for the parameter-conditions
-	 * @param wtkHome the home directory of the wireless toolkit
+	 *  
 	 * @return true when an emulator could be detected
 	 */
-	public abstract boolean init(Device dev, EmulatorSetting setting, Environment env, Project project, BooleanEvaluator evaluator, String wtkHome );
+	public abstract boolean init(Device dev, EmulatorSetting setting, Environment env );
 	
 	/**
 	 * Retrieves the arguments which are used to start the emulator.
@@ -277,10 +274,10 @@ implements Runnable, OutputFilter
 	 * @param setting the emulator setting
 	 * @param project the Ant project
 	 * @param evalutor the boolean evaluator
-	 * @param properties all Ant- and J2ME Polish-properties.
+	 * @param env all Ant- and J2ME Polish-properties.
 	 * @return an array of initialised parameters.
 	 */
-	protected Variable[] getParameters( EmulatorSetting setting, Project project, BooleanEvaluator evalutor, Environment properties ) {
+	protected Variable[] getParameters( EmulatorSetting setting, Environment env ) {
 		Variable[] parameters = setting.getParameters();
 		if (parameters.length == 0) {
 			return parameters;
@@ -288,12 +285,12 @@ implements Runnable, OutputFilter
 		ArrayList parametersList = new ArrayList( parameters.length );
 		for (int i = 0; i < parameters.length; i++) {
 			Variable variable = parameters[i];
-			if (variable.isConditionFulfilled(evalutor, project)) {
+			if (variable.isConditionFulfilled(env)) {
 				parametersList.add( variable );
 			}
 		}
 		Variable[] params = (Variable[]) parametersList.toArray( new Variable[ parametersList.size() ] );
-		return writeProperties( params, properties );
+		return writeProperties( params, env );
 	}
 	
 	/**
@@ -333,17 +330,14 @@ implements Runnable, OutputFilter
 	/**
 	 * Creates the emulator for the given device.
 	 *  
-	 * @param setting the setting
 	 * @param device the current device
+	 * @param setting the configuration for the emulator
 	 * @param environment the variables for the parameter-values
-	 * @param project the ant-project to which this emulator belongs to 
-	 * @param evaluator a boolean evaluator for the parameter-conditions
-	 * @param wtkHome the home directory of the wireless toolkit
 	 * @param sourceDirs the directories containing the original source files.
 	 * @param extensionManager manager for extensions
 	 * @return true when an emulator could be detected
 	 */
-	public static Emulator createEmulator(Device device, EmulatorSetting setting, Environment environment, Project project, BooleanEvaluator evaluator, String wtkHome, File[] sourceDirs, ExtensionManager extensionManager ) {
+	public static Emulator createEmulator(Device device, EmulatorSetting setting, Environment environment, File[] sourceDirs, ExtensionManager extensionManager ) {
 		
 		String className = setting.getEmulatorClassName();
 		if (className == null) {
@@ -379,23 +373,20 @@ implements Runnable, OutputFilter
 			System.err.println("Unable to instantiate the emulator-class [" + className + "]: " + e.toString() );
 			return null;
 		}
-		environment.addVariables( project.getProperties() );
-		emulator.init(null, null, setting, project, extensionManager, environment);
+		emulator.init(null, null, setting, null, extensionManager, environment); // extension call
 		// for some reason the environment is not set correctly in the init() method... weird.
 		emulator.environment = environment;
-		emulator.antProject = project;
 		//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
-		boolean okToStart = emulator.init(device, setting, environment, project, evaluator, wtkHome);
+		boolean okToStart = emulator.init(device, setting, environment);
 		if (!okToStart) {
 			// use MPP / Mobile Power Player as a backup:
 			if ( environment.getVariable("mpp.home") != null) {
 				emulator = new MppEmulator();
-				emulator.init(null, null, setting, project, extensionManager, environment);
+				emulator.init(null, null, setting, null, extensionManager, environment); // extension call
 				// for some reason the environment is not set correctly in the init() method... weird.
 				emulator.environment = environment;
-				emulator.antProject = project;
 				//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
-				okToStart = emulator.init(device, setting, environment, project, evaluator, wtkHome);
+				okToStart = emulator.init(device, setting, environment);
 			}
 			if (!okToStart) {			
 				return null;

@@ -33,9 +33,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.propertyfunctions.PropertyFunction;
@@ -69,40 +66,37 @@ public class Environment {
 	private final BooleanEvaluator booleanEvaluator;
 	private Locale locale;
 	private Device device;
-	private final Project antProject;
 	private BuildSetting buildSetting;
 	private LibraryManager libraryManager;
-	private final Task polishTask;
 	private final HashMap exchangeStore;
+	private final Map basicProperties;
+	private File baseDir;
 	
 
 	/**
 	 * Creates a new empty environment.
 	 */
 	public Environment() {
-	  super();
-	  this.antProject = null;
-	  this.polishTask = null;
-	  this.symbols = new HashMap();
-	  this.variables = new HashMap();
-	  this.exchangeStore = new HashMap();
-	  this.temporarySymbols = new HashMap();
-	  this.temporaryVariables = new HashMap();
-	  this.extensionManager = null;
-	  this.booleanEvaluator = new BooleanEvaluator( this );
+		super();
+		this.symbols = new HashMap();
+		this.variables = new HashMap();
+		this.exchangeStore = new HashMap();
+		this.temporarySymbols = new HashMap();
+		this.temporaryVariables = new HashMap();
+		this.extensionManager = null;
+		this.booleanEvaluator = new BooleanEvaluator( this );
+		this.basicProperties = null;
 	}
 	
 	/**
 	 * Creates a new empty environment.
 	 * 
 	 * @param extensionsManager the manager for extensions
-	 * @param antProject the project
-	 * @param polishTask the J2ME Polish task that is using this environment
+	 * @param properties basic environment settings
+	 * @param baseDir the base directory like the project's home directory
 	 */
-	public Environment( ExtensionManager extensionsManager, Project antProject, Task polishTask ) {
+	public Environment( ExtensionManager extensionsManager, Map properties, File baseDir ) {
 		super();
-		this.antProject = antProject;
-		this.polishTask = polishTask;
 		this.symbols = new HashMap();
 		this.variables = new HashMap();
 		this.exchangeStore = new HashMap();
@@ -110,7 +104,9 @@ public class Environment {
 		this.temporaryVariables = new HashMap();
 		this.extensionManager = extensionsManager;
 		this.booleanEvaluator = new BooleanEvaluator( this );
-		this.variables.putAll( antProject.getProperties() );
+		this.variables.putAll( properties );
+		this.basicProperties = properties;
+		this.baseDir = baseDir;
 	}
 	
 	public void initialize( Device newDevice, Locale newLocale ) {
@@ -119,8 +115,10 @@ public class Environment {
 		this.symbols.clear();
 		this.symbols.putAll( newDevice.getFeatures() );
 		this.variables.clear();
+		if (this.basicProperties != null) {
+			this.variables.putAll( this.basicProperties );
+		}
 		this.variables.putAll( newDevice.getCapabilities() );
-		this.variables.putAll( this.antProject.getProperties() );
 		this.temporaryVariables.clear();
 		this.temporarySymbols.clear();
 	}
@@ -524,15 +522,6 @@ public class Environment {
 	}
 
 	/**
-	 * Retrieves the Ant project in which the J2ME Polish task runs
-	 *  
-	 * @return the associated Ant project
-	 */
-	public Project getProject() {
-		return this.antProject;
-	}
-
-	/**
 	 * Resolves the path to a file.
 	 * 
 	 * @param url the filepath that can contain properties such as ${polish.home}.
@@ -543,9 +532,13 @@ public class Environment {
 		url = writeProperties( url );
 		File file = new File( url );
 		if (!file.isAbsolute()) {
-			file = new File( this.antProject.getBaseDir(), url );
+			file = new File( this.baseDir, url );
 		}
 		return file;
+	}
+	
+	public File getBaseDir() {
+		return this.baseDir;
 	}
 
 	/**
@@ -576,9 +569,6 @@ public class Environment {
 		return this.symbols;
 	}
 
-	public Task getPolishTask() {
-		return this.polishTask;
-	}
 
 	/**
 	 * Sets any object to this environment.
@@ -653,11 +643,11 @@ public class Environment {
 	/**
 	 * Retrieves the project's home dir.
 	 * 
-	 * @return the current project's base directory, the working day when there is no Ant project attached.
+	 * @return the current project's base directory, the working dir when there is no Ant project attached.
 	 */
 	public File getProjectHome() {
-		if (this.antProject != null) {
-			return this.antProject.getBaseDir();
+		if (this.baseDir != null) {
+			return this.baseDir;
 		} 
 		File home = (File) get("project.home");
 		if (home == null) {

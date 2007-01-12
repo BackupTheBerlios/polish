@@ -27,7 +27,7 @@ package de.enough.polish.ant.requirements;
 
 import de.enough.polish.Device;
 
-import org.apache.tools.ant.BuildException;
+import de.enough.polish.BuildException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
