@@ -120,6 +120,8 @@ public final class Serializer {
 					obfuscationDeserializeMap.put( obfuscatedClassName, fullClassName );
 					obfuscationSerializeMap.put( fullClassName, obfuscatedClassName );
 				}
+			} else {
+				System.out.println("No obfuscation map found.");
 			}
 		} catch (IOException e) {
 			System.out.println("unable to read obfuscation map: " + e);
