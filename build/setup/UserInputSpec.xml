@@ -4,12 +4,12 @@
 	<field type="staticText" txt="${ VersionMessage } " />
 	<divider alignment="top"/>
 	<field type="staticText" txt="J2ME Polish is suite of tools for creating &quot;polished&quot; J2ME applications. Each tool meets a definite need of J2ME developers: " />
-	<field type="staticText" txt="Build-tools with an integrated device-database, a powerful GUI, a serialization framework, support for Java 5 syntax, a localization framework, a game-engine, a logging framework and a collection of utilities. " />
+	<field type="staticText" txt="Build-tools with an integrated device-database, a powerful GUI, a remote method invocation (RMI) framework, a serialization framework, support for Java 5 syntax, a localization framework, a game-engine, a logging framework and a collection of utilities. " />
 	<field type="staticText" txt="" />
-	<field type="staticText" txt="Find more information about J2ME Polish at www.j2mepolish.org." />
+	<field type="staticText" txt="Find more information about J2ME Polish at www.j2mepolish.org. " />
 	<field type="staticText" txt="" />
 	<divider alignment="top"/>
-	<field type="staticText" txt="Copyright 2003 - 2006 Enough Software " />
+	<field type="staticText" txt="Copyright 2003 - 2007 Enough Software " />
 </panel>
 
 
@@ -48,8 +48,8 @@
 	<field type="staticText" txt="You have successfully installed J2ME Polish ${ Version }." />
 	<divider alignment="top"/>
 	<field type="staticText" txt="You can find the documentation in the &quot;doc&quot;-folder." />
-	<field type="staticText" txt="If you have installed the sample application, you can create your first MIDlet by calling Ant either from the command-line or from within your favorite Java IDE. " />
-	<field type="staticText" txt="For migrating J2ME Polish into existing projects, just copy the file &quot;build.xml&quot; and the folder &quot;resources&quot; from the sample application to your project. " />
+	<field type="staticText" txt="If you have installed the sample applications, you can create your first MIDlet by calling Ant either from the command-line or from within your favorite Java IDE. " />
+	<field type="staticText" txt="For migrating J2ME Polish into existing projects, just copy the file &quot;build.xml&quot; and the folder &quot;resources&quot; from one of the sample applications to your project. " />
 	<divider alignment="top"/>
 	<field type="staticText" txt="Remove the installation directory for de-installing J2ME Polish. " />
 </panel>

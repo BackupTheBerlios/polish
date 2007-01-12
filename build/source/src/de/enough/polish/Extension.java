@@ -38,7 +38,7 @@ import org.apache.tools.ant.taskdefs.CallTarget;
 import org.apache.tools.ant.taskdefs.Property;
 import org.apache.tools.ant.types.Path;
 
-import de.enough.polish.util.PopulateUtil;
+import de.enough.polish.util.ReflectionUtil;
 
 /**
  * <p>Provides the common base for any extensions of J2ME Polish.</p>
@@ -133,7 +133,7 @@ public abstract class Extension {
 		for (int i = 0; i < parameters.length; i++) {
 			Variable parameter = parameters[i];
 			if ( parameter.isConditionFulfilled(evaluator, this.antProject ) ) {
-				PopulateUtil.populate( this, parameter, baseDir );
+				ReflectionUtil.populate( this, parameter, baseDir );
 			}
 		}
 	}
@@ -311,7 +311,7 @@ public abstract class Extension {
 		extension.init( typeDefinition, definition, setting, antProject, manager, environment );
 		if (setting != null && setting.hasParameters()) {
 			//System.out.println("Extension [" + className + "]: setting [" + setting.getParameters().length + "] parameters");
-			PopulateUtil.populate( extension, setting.getAllParameters( environment ), antProject.getBaseDir() );
+			ReflectionUtil.populate( extension, setting.getAllParameters( environment ), antProject.getBaseDir() );
 		//} else {
 		//	System.out.println("Extension [" + className + "]: setting no parameters - setting == null: " + (setting == null) );
 		}

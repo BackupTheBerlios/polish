@@ -69,9 +69,11 @@
 	 	<panel classname="TargetPanel" />
 	 	 -->
 		<!-- the actual installation -->
-        <panel classname="InstallPanel" />
-		<!-- installation success screen -->
+        <panel classname="CustomInstallPanel" />
+		<!-- installation success screen 
  		<panel classname="UserInputPanel" />
+ 		-->
+        <panel classname="FinishInstallationPanel" />		
     </panels>
     
     <!-- 

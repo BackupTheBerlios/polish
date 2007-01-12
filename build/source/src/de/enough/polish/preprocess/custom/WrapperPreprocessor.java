@@ -36,7 +36,7 @@ import de.enough.polish.Device;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.Preprocessor;
-import de.enough.polish.util.PopulateUtil;
+import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.StringList;
 
 /**
@@ -92,7 +92,7 @@ public class WrapperPreprocessor extends CustomPreprocessor {
 
     	// set parameters if there are any:
 		if (setting.hasParameters()) {
-			PopulateUtil.populate( this.lineProcessor, setting.getParameters(), project.getBaseDir() );
+			ReflectionUtil.populate( this.lineProcessor, setting.getParameters(), project.getBaseDir() );
 		}
     	
     	// retrives processing method:

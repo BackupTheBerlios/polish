@@ -38,7 +38,7 @@ import org.apache.tools.ant.util.facade.FacadeTaskHelper;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.ant.ConditionalElement;
-import de.enough.polish.util.PopulateUtil;
+import de.enough.polish.util.ReflectionUtil;
 
 /**
  * <p>Allows the setting of any <javac>-settings.</p>
@@ -446,7 +446,7 @@ public class CompilerTask extends Javac {
 			for (int i = 0; i < arguments.length; i++) {
 				ImplementationSpecificArgument argument = arguments[i];
 				try {
-					Field field = PopulateUtil.getField( copy, "facade" );
+					Field field = ReflectionUtil.getField( copy, "facade" );
 					FacadeTaskHelper facade = (FacadeTaskHelper) field.get( copy );
 					facade.addImplementationArgument(argument);
  				} catch (Exception e) {

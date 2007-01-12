@@ -111,7 +111,7 @@ import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
-import de.enough.polish.util.PopulateUtil;
+import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
@@ -2139,7 +2139,7 @@ public class PolishTask extends ConditionalTask {
 		ClassLoader classLoader = device.getClassLoader();
 		try {
 			Class debugClass = classLoader.loadClass(className);
-			PopulateUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
+			ReflectionUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
 		} catch (Exception e) {
 			//System.err.println("Precompile: Unable to deactivate logging in Debug class: " + e.toString() );
 			//e.printStackTrace();
@@ -2191,7 +2191,7 @@ public class PolishTask extends ConditionalTask {
 		ClassLoader classLoader = device.getClassLoader();
 		try {
 			Class debugClass = classLoader.loadClass(className);
-			PopulateUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
+			ReflectionUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
 		} catch (Exception e) {
 			System.err.println("Postcompile: Unable to deactivate logging in Debug class: " + e.toString() );
 			//e.printStackTrace();

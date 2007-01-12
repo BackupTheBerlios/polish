@@ -44,7 +44,7 @@ import de.enough.polish.Variable;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class PopulateUtil {
+public final class ReflectionUtil {
 
 	/**
 	 * Populates the given object with the specified parameter.
