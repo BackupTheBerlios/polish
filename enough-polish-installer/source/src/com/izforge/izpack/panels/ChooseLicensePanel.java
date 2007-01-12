@@ -46,7 +46,7 @@ import com.izforge.izpack.util.MultiLineLabel;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ChooseLicensePanel extends IzPanel 
-implements KeyListener, ChangeListener, DocumentListener {
+implements  ChangeListener {
 	
 	private final static int GPL = 1;
 	private final static int EVALUATION = 2;
@@ -57,8 +57,8 @@ implements KeyListener, ChangeListener, DocumentListener {
 	JRadioButton gplButton;
 	JRadioButton evaluationButton;
 	JRadioButton commercialButton;
-	JTextField licenseField;
-	private int selectedLicense = -1;
+	private JTextArea licenseInformationLabel;
+	private int selectedLicense;
 
 	/**
 	 * @param parent
@@ -128,66 +128,27 @@ implements KeyListener, ChangeListener, DocumentListener {
 	    radioButton.addChangeListener( this );
 	    this.commercialButton = radioButton;
 	    
-	    MultiLineLabel licenseLabel = new MultiLineLabel( "If you use J2ME Polish commercially, please enter your license key here:\n " );
+	    this.licenseInformationLabel = new JTextArea( "Please select a license for more information... " );
+	    this.licenseInformationLabel.setEditable( false );
+	    this.licenseInformationLabel.setLineWrap( true );
+	    this.licenseInformationLabel.setBackground( title.getBackground() );
+
 	    constraints.gridy = 5;
 	    constraints.gridx = 0;
 	    constraints.gridwidth = 3;
 	    constraints.gridheight = 2;
-	    layout.setConstraints( licenseLabel, constraints );
-	    subPanel.add( licenseLabel );
-	    
-	    JLabel keyLabel = new JLabel("\nLicense-key: ");
-	    constraints.gridwidth = 1;
-	    constraints.gridx = 0;
-	    constraints.gridy = 7;
-	    layout.setConstraints( keyLabel, constraints );
-	    subPanel.add( keyLabel );
-	    
-	    
-	    this.licenseField = new JTextField( 12 );
-	    this.licenseField.getDocument().addDocumentListener( this );
-	    constraints.gridy = 7;
-	    constraints.gridx = 1;
-	    constraints.gridwidth = 2;
-	    constraints.gridheight = 1;
-	    layout.setConstraints( this.licenseField, constraints );
-	    subPanel.add( this.licenseField );
+	    constraints.fill=GridBagConstraints.BOTH;
+	    constraints.weightx = 1.0D;
+	    constraints.weightx = 1.0D;
+	    layout.setConstraints( this.licenseInformationLabel, constraints );
+	    subPanel.add( this.licenseInformationLabel );
+	   
 	    
 	    setLayout( new BorderLayout() );
 	    add( subPanel, BorderLayout.NORTH );
 	}
 
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-	 */
-	public void keyTyped(KeyEvent event) {
-		if (this.commercialButton.isSelected()) {
-			String text = this.licenseField.getText();
-			if (text != null && text.length() == KEY_LENGTH) {
-				this.parent.unlockNextButton();
-			} else {
-				this.parent.lockNextButton();
-			}
-			this.licenseField.requestFocus();
-		} else {
-			this.commercialButton.setSelected( true );
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-	 */
-	public void keyPressed(KeyEvent event) {
-		// ignore
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-	 */
-	public void keyReleased(KeyEvent event) {
-		// ignore
-	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
@@ -197,22 +158,19 @@ implements KeyListener, ChangeListener, DocumentListener {
 		if (source == this.commercialButton ) {
 			if (this.commercialButton.isSelected()) {
 				this.selectedLicense = COMMERCIAL;
-				String text = this.licenseField.getText();
-				if (text != null && text.length() == KEY_LENGTH) {
-					this.parent.unlockNextButton();
-				} else {
-					this.parent.lockNextButton();
-					this.licenseField.requestFocus();
-				}
+				this.licenseInformationLabel.setText("When you obtain a commercial license you can use all J2ME Polish components in your commercial application(s) without releasing the source code of your application(s). Please follow the instructions on www.j2mepolish.org for ordering your commercial license.");
+				this.parent.unlockNextButton();
 			}
 		} else if ( source == this.gplButton) {
 			if (this.gplButton.isSelected()) {
 				this.selectedLicense = GPL;
+				this.licenseInformationLabel.setText("When you are using the GNU General Public License (GPL) you can use all features of J2ME Polish when you release the source code of your application(s) under the GPL license as well. You can also use the GPL license for your commercial applications as long as you are only using the build framework of J2ME Polish and not the user interface, the RMI, serializatin, peristence and so forth frameworks.");
 				this.parent.unlockNextButton();
 			}
 		} else if ( source == this.evaluationButton) {
 			if (this.evaluationButton.isSelected()) {
 				this.selectedLicense = EVALUATION;
+				this.licenseInformationLabel.setText("Select evaluation when you are not sure yet what license you want to use for J2ME Polish. You can evaluate J2ME Polish for as long as you wish, unless you are using generated applications in a commercial context already.");
 				this.parent.unlockNextButton();
 			}
 		}
@@ -226,61 +184,22 @@ implements KeyListener, ChangeListener, DocumentListener {
 	  public boolean isValidated()
 	  {
 	  	String licenseText = "GPL";
-	  	boolean isValidated = (this.selectedLicense != -1 );
-	  	if (this.selectedLicense == COMMERCIAL ) {
-	  		licenseText = this.licenseField.getText();
-	  		isValidated = ( licenseText != null && licenseText.length() == KEY_LENGTH ) ;
-	  	}
-	
-		if ( isValidated ) {
-			// now set the license variable:
-			this.idata.setVariable( "J2ME_POLISH_LICENSE", licenseText );
-			return true;
-		} else {
-			this.parent.lockNextButton();
-			return false;
-		}
+		// now set the license variable:
+		this.idata.setVariable( "J2ME_POLISH_LICENSE", licenseText );
+		return true;
 	  }
 
 	  /**  Called when the panel becomes active.  */
 	  public void panelActivate()
 	  {
-		String text = this.licenseField.getText();
-		if ( (text != null && text.length() == KEY_LENGTH ) 
-				|| ((this.selectedLicense != -1)) && (this.selectedLicense != COMMERCIAL )) {
-			this.parent.unlockNextButton();
-		} else {
-			this.parent.lockNextButton();
-		}
+		  super.panelActivate();
+//		String text = this.licenseField.getText();
+//		if ( (text != null && text.length() == KEY_LENGTH ) 
+//				|| ((this.selectedLicense != -1)) && (this.selectedLicense != COMMERCIAL )) {
+//			this.parent.unlockNextButton();
+//		} else {
+//			this.parent.lockNextButton();
+//		}
 	  }
 
-	/* (non-Javadoc)
-	 * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-	 */
-	public void insertUpdate(DocumentEvent event) {
-		changedUpdate( event );
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-	 */
-	public void removeUpdate(DocumentEvent event) {
-		changedUpdate( event );
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
-	 */
-	public void changedUpdate(DocumentEvent event) {
-		if (!this.commercialButton.isSelected()) {
-			this.commercialButton.setSelected( true );
-		}
-		String text = this.licenseField.getText();
-		if (text != null && text.length() == KEY_LENGTH) {
-			this.parent.unlockNextButton();
-		} else {
-			this.parent.lockNextButton();
-		}
-		this.licenseField.requestFocus();
-	}
 }
