@@ -156,6 +156,7 @@ public class SerializationVisitor
       this.serializableObjectTypes.add("javax/microedition/lcdui/Font");
       this.serializableObjectTypes.add("javax/microedition/lcdui/Command");
 //      this.serializableObjectTypes.add("javax/microedition/lcdui/game/Sprite");
+      this.serializableObjectTypes.add("de/enough/polish/blackberry/ui/Image");
   }
 
   private String[] getSortedFields()
