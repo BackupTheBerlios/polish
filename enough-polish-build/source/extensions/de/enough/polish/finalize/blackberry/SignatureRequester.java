@@ -39,6 +39,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ProcessUtil;
+import de.enough.polish.util.StringUtil;
 
 public class SignatureRequester
 implements Runnable
@@ -119,6 +120,7 @@ implements Runnable
 		int result =  ProcessUtil.exec( arguments, "SignatureTool: ", true, null, certificateDir );
 		if (result != 0 && pw != null) {
 			System.err.println("BlackBerry signing failed with result [" + result + "].");
+			System.err.println("Call was: \n" + StringUtil.toString( arguments) );
 		}
 		this.isFinished = true;
 		return result;

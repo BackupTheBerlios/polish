@@ -27,6 +27,8 @@ package de.enough.polish.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -306,6 +308,24 @@ public final class StringUtil {
 			String value = line.substring( delimiterPos + 1 );
 			properties.put( key, value );
 		}
+	}
+
+	/**
+	 * Takes a list and returns a space separated string with the string values of each list element.
+	 * 
+	 * @param arguments a list with objects
+	 * @return all objects in a string
+	 */
+	public static String toString(List arguments) {
+		StringBuffer buffer = new StringBuffer();
+		for (Iterator iter = arguments.iterator(); iter.hasNext();) {
+			String element = iter.next().toString();
+			buffer.append( element );
+			if (iter.hasNext()) {
+				buffer.append(' ');
+			}
+		}
+		return buffer.toString();
 	}
 
 

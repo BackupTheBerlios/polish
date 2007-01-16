@@ -27,3 +27,9 @@ javax.microedition.lcdui.Command
 
 # later onwards:
 #javax.microedition.lcdui.game.Sprite
+
+# J2ME Polish wrapper classes:
+de.enough.polish.blackberry.ui.Image
+de.enough.polish.blackberry.ui.Font
+de.enough.polish.doja.ui.Image
+de.enough.polish.doja.ui.Font
