@@ -74,6 +74,13 @@ public class ImportResolver extends PreCompiler
 	public void preCompile(File classesDir, Device device)
 	  throws BuildException 
 	{
+    // Do nothing if classesDir doesn't exist yet.
+    // This happens when no classes where unpacked to classesDir at this stage.
+    if (!classesDir.exists())
+    {
+      return;
+    }
+
     // Find all classes and put their class names into the classes list.
     ArrayList classes = new ArrayList();
     String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
