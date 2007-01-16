@@ -31,11 +31,6 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.util.ArrayList;
 
-//#if polish.blackberry
-	import de.enough.polish.blackberry.midlet.MIDlet;
-//#endif
-
-
 /**
  * <p>Contains a number of items.</p>
  * <p>Main purpose is to manage all items of a Form or similiar canvases.</p>
@@ -438,12 +433,7 @@ public class Container extends Item {
 		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index );
 		
 		//#if polish.blackberry
-			if (this.isFocused) {
-		        Object lock = MIDlet.getEventLock();
-		        synchronized (lock) {
-		        	//# getScreen().setFocus( item );
-		        }		        
-			}
+        	//# getScreen().setFocus( item );
 		//#endif
 		
 		
