@@ -8,7 +8,7 @@
 	<property file="version.properties" />
 	
 	<property name="all.jars" value="jdom.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar,cdc-1.0.jar" />
-	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar" />
+	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar,ant.jar" />
 	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	
 	<property name="izpack.dir" value="/home/enough/dev/IzPack" />
@@ -436,6 +436,16 @@
 			<fileset dir="dist" includes="*.jar" />
 		</copy>
 	</target>
+	
+	<target name="copyplugins" 
+		description="copies IDE integration files" 
+		depends="tmpsetup" >
+		<!-- copy netbeans integration -->
+		<mkdir dir="tmp/ide/netbeans" />
+		<copy todir="tmp/ide/netbeans">
+			<fileset dir="setup/netbeans" excludes="**/CVS" />
+		</copy>
+	</target>
 
 	<target name="copysamples" 
 		description="copies sample projects files" 
@@ -448,9 +458,9 @@
 		<copy todir="tmp/samples/menu/" 
 			>
 			<fileset dir="setup/samples/menu" excludes="**/macosx/**" />
-			<fileset dir="../enough-polish-sample-localization" includes="resources/**/*.*" excludes="CVS"/>
-			<fileset dir="../enough-polish-sample-localization" includes="resources2/**/*.*" excludes="CVS"/>
-			<fileset dir="../enough-polish-sample-localization" includes="resources3/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-sample-localization" includes="resources/**/*.*" excludes="**/CVS"/>
+			<fileset dir="../enough-polish-sample-localization" includes="resources2/**/*.*" excludes="**/CCVS"/>
+			<fileset dir="../enough-polish-sample-localization" includes="resources3/**/*.*" excludes="**/CCVS"/>
 		</copy>
 		<!-- copy sysinfo application -->
 		<mkdir dir="tmp/samples/sysinfo/source/src" />
@@ -567,7 +577,7 @@
 
 	<target name="copyfiles" 
 		description="copies all library and sample project files" 
-		depends="copylibs, copysamples, copyosx" >
+		depends="copylibs, copyplugins, copysamples, copyosx" >
 	</target>
 		
 	<target name="installer" 

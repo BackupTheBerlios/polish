@@ -82,7 +82,7 @@
     -->
     <packs>
         <pack name="Base" required="yes">
-            <description>The J2ME Polish library files, which will be copied into the &quot;lib&quot;- and &quot;import&quot;-folder.</description>
+            <description>The J2ME Polish core files, which will be copied into the &quot;lib&quot;- and &quot;import&quot;-folder.</description>
             <file src="import" targetdir="$INSTALL_PATH"/>
             <file src="lib" targetdir="$INSTALL_PATH"/>
             <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
@@ -93,6 +93,12 @@
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/build.xml" type="shell" /> 
             -->
+        </pack>
+        <pack name="NetBeans Integration" required="no" preselected="no">
+            <description>A plugin for creating J2ME Polish projects in NetBeans. Please note that you need to specify the netbeans.home property in the previous settings screen and that your NetBeans installation directory needs to be writable for you.
+            The module will be activated the next time you exit NetBeans (so please start NetBeans and exit right away again, NetBeans will automatically relaunch and integrate the J2ME Polish module).
+            </description>
+            <file src="ide/netbeans/de-enough-polish-netbeans.nbm" targetdir="$NETBEANS_INSTALL_HOME"/>
         </pack>
         <pack name="Menu Sample Application" required="no" preselected="yes">
             <description>A sample application that shows a simple menu and contains three different CSS designs. This can be used as a master for new projects.</description>

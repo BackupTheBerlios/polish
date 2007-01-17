@@ -487,6 +487,8 @@
 		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
+		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
+		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<!--
@@ -1941,6 +1943,16 @@
 		id="195"
 	/>
 	
+	<attribute
+		name="carrouselview-remove-text"
+		type="boolean"
+		appliesTo="Container, ContainerView, CarrouselContainerView"
+		description="Text like labels are shown for the focused item ony by default. Set carrouselview-remove-text to false for showing the text for every item."
+		default="true"
+		id="196"
+	/>
+		
+	
 	
 	<!--
 	
@@ -1959,6 +1971,8 @@
 		description="The background that is painted over the rest of the screen when the menu is opened. This makes sense only when the &quot;fullscreen&quot; mode is activated." 
 		id="145"
 	/>
+	
+
 	
 	-->
 
