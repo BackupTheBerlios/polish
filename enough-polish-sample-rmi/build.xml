@@ -130,9 +130,6 @@
 		    	<source dir="source/src" />
 			</sources>
 			
-			<libraries>
-				<library file="../enough-polish-browser/import/tinylinegzip.zip" />
-			</libraries>
 			<!-- midlets definition -->
 			<!-- <midlet class="de.enough.polish.example.MenuMidlet" name="Example" /> -->
 			
