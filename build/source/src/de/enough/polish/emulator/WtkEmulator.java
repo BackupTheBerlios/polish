@@ -103,7 +103,18 @@ public class WtkEmulator extends Emulator {
 	 * @return the file which points to the folder containing the skin
 	 */
 	protected File getEmulatorSkin( String wtkHome, String xDevice ) {
-		return new File(wtkHome + "wtklib/devices/" + xDevice );
+		return getEmulatorSkin ( new File(wtkHome), xDevice );
+	}
+	
+	/**
+	 * Retrieves the folder which contains the emulator skin.
+	 * 
+	 * @param wtkHome the path to the Wireless Toolkit
+	 * @param xDevice the name of the skin
+	 * @return the file which points to the folder containing the skin
+	 */
+	protected File getEmulatorSkin( File wtkHome, String xDevice ) {
+		return new File(wtkHome, "wtklib/devices/" + xDevice );
 	}
 	
 	/**
@@ -115,13 +126,25 @@ public class WtkEmulator extends Emulator {
 	 * @return the file which points to the emulator-application
 	 */
 	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device dev ) {
-		String executable = null;
+		return getEmulatorExcecutable( new File( wtkHome ), xDevice, dev);
+	}
+	
+	/**
+	 * Retrieves the executable for the given device.
+	 * 
+	 * @param wtkHome the path to the Wireless Toolkit
+	 * @param xDevice the name of the skin
+	 * @param dev the device
+	 * @return the file which points to the emulator-application
+	 */
+	protected File getEmulatorExcecutable( File wtkHome, String xDevice, Device dev ) {
+		File executable = null;
 		if (File.separatorChar == '/') {
-			executable = wtkHome + "bin/emulator";
+			executable = new File( wtkHome, "bin/emulator" );
 		} else {
-			executable = wtkHome + "bin/emulator.exe";
+			executable = new File( wtkHome, "bin/emulator.exe" );
 		}
-		return new File( executable );
+		return executable;
 	}
 
 	/* (non-Javadoc)

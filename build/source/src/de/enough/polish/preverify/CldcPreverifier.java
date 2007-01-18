@@ -59,7 +59,7 @@ public class CldcPreverifier extends Preverifier {
 	throws IOException 
 	{
 		ArrayList arguments = new ArrayList();
-		if ( this.preverifyExecutable != null ) {
+		if ( this.preverifyExecutable != null && this.preverifyExecutable.exists() ) {
 			arguments.add( this.preverifyExecutable.getAbsolutePath() );
 		} else {
 			// hope that the "preverify" executable is on the path:

@@ -593,6 +593,7 @@ public class PolishTask extends ConditionalTask {
 					preverifyPath += ".exe";
 				}
 				preverifyFile = new File( preverifyPath );
+//				System.out.println("preverify: " + preverifyPath + ".exists() = " + preverifyFile.exists() );
 			} else if (mppHome != null) {
 				if (!mppHome.endsWith(File.separator)) {
 					mppHome += File.separator;
