@@ -50,12 +50,26 @@ public class GameServerImpl implements GameServer {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.sample.rmi.GameServer#registerUser(java.lang.String, java.lang.String)
 	 */
-	public GameUser registerUser(String userName, String password)
-	throws RemoteException 
+	public GameUser registerUser(long time, String userName, String password)
+	throws RemoteException, DuplicateUserException
 	{
+		if ( (time & 1) == 0) {
+			System.out.println("throwing DuplicateUserException!");
+			throw new DuplicateUserException("It's a dupe!", userName );
+		}
 		GameUser user = new GameUser( this.random.nextLong() % 9999, userName, this.random.nextInt( 100 ) ); 
-		System.out.println("registering user " + user );
+		System.out.println("registering user " + user + ", time=" + time);
 		return user;
+	}
+
+	public GameHighscore storeHighscore(GameHighscore highscore, boolean flag) throws RemoteException {
+		System.out.println("Storing highscore, name=" + highscore.getName() + ", flag=" + flag  );
+		int[] points = highscore.getPoints();
+		for (int i = 0; i < points.length; i++) {
+			System.out.println( i + "=" + points[i]);
+		}
+		return new GameHighscore( highscore.getName() + " (serialized)", highscore.getPoints()  );
+		
 	}
 
 }

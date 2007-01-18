@@ -91,14 +91,23 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 
 	public void run() {
 		try {
-			GameUser response = this.server.registerUser("testuser", "password");
+			GameHighscore highscore = new GameHighscore( "PowerScore", new int[] {1,2,3,4,5,6,7,8,9,10});
+			highscore = this.server.storeHighscore(highscore, true );
+			System.out.println("highscore stored successfully:" + highscore.getName() );
+
+			GameUser response = this.server.registerUser( System.currentTimeMillis(), "testuser", "password");
 			this.form.deleteAll();
 			this.form.setTitle("added user!");
 			this.form.append( response.toString() );
+			
 		} catch (RemoteException e) {
 			//#debug error
 			System.out.println("Unable to access server" + e);
 			this.form.append( e.toString() );
+		} catch (DuplicateUserException e) {
+			e.printStackTrace();
+			System.out.println("Yeah, this is a dupe!");
+			this.form.append( "Dupe=" + e.getDuplicateUserName() );
 		}
 	}
 

@@ -25,6 +25,11 @@
  */
 package de.enough.polish.sample.rmi;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializable;
 
 /**
@@ -37,10 +42,14 @@ import de.enough.polish.io.Serializable;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class GameUser implements Serializable {
+public class GameUser implements Externalizable {
 	private long id;
 	private String userName;
 	private int accountPoints;
+	
+	public GameUser() {
+		
+	}
 	
 	/**
 	 * Creates a new user.
@@ -88,6 +97,18 @@ public class GameUser implements Serializable {
 			.append( ", reference=")
 			.append( super.toString() );
 		return buffer.toString();
+	}
+
+	public void read(DataInputStream in) throws IOException {
+		this.id = in.readLong();
+		this.userName = in.readUTF();
+		this.accountPoints = in.readInt();
+	}
+
+	public void write(DataOutputStream out) throws IOException {
+		out.writeLong( this.id );
+		out.writeUTF( this.userName );
+		out.writeInt( this.accountPoints );
 	}
 	
 

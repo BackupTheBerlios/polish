@@ -31,34 +31,17 @@
 <property name="polish.home" value="../enough-polish-build/" />
 <property name="webapps.home" location="/Users/robertvirkus/Downloads/apache-tomcat-5.5.17/webapps" />
 
-<!-- The wtk.home property should point to the directory      -->
-<!-- containing the Wireless Toolkit.                         -->
-
-
-
-
-<!-- The siemens.home, nokia.home and motorola.home-          -->
-<!-- properties can be necessary when their emulators         -->
-<!-- should be started.                                       -->
-<!-- The directory which contains the Siemens-SMTK
-	<property name="siemens.home" value="C:\siemens" />
--->
-<!-- The directory which contains the Nokia-emulators
-	<property name="nokia.home" value="C:\Nokia" />
--->
-<!-- The path to the Sony-Ericsson SDK
-	<property name="sony-ericsson.home" value="C:\SonyEricsson\J2ME_SDK" />
--->
-<!-- The directory which contains the Motorola-emulators
-	<property name="motorola.home" value="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
--->
-	
-	
 <!-- Definition of the J2ME Polish task:                      -->
 
 <taskdef name="j2mepolish" 
 	classname="de.enough.polish.ant.PolishTask" 
 	classpath="${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"/>
+
+	<!-- Definition of the present helper task:                      -->
+
+	<taskdef name="present" 
+		classname="de.enough.polish.ant.PresentTask" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar"/>
 
 	
 <!-- build targets, each target can be called via "ant [name]", 
@@ -123,28 +106,12 @@
 		</deviceRequirements>
 		<deviceRequirements unless="test">
 			<or>
-						<requirement name="Identifier" value="Generic/DefaultColorPhone" />
-						<requirement name="Identifier" value="Generic/DefaultGrayPhone" />
-						<requirement name="Identifier" value="Generic/JtwiCldc11" />
-						<requirement name="Identifier" value="Generic/MediaControlSkin" />
-						<requirement name="Identifier" value="Generic/Midp2Cldc11" />
 						<requirement name="Identifier" value="Generic/Midp2Cldc11Pointer" />
 						<requirement name="Identifier" value="Generic/MppPhone" />
-						<requirement name="Identifier" value="Generic/PlainMidp2Cldc11" />
-						<requirement name="Identifier" value="Generic/QwertyDevice" />
-						<requirement name="Identifier" value="Generic/multi" />
-						<requirement name="Identifier" value="Nokia/Series40DP2" />
 						<requirement name="Identifier" value="Nokia/Series40DP3" />
-						<requirement name="Identifier" value="Nokia/Series40Midp2" />
 						<requirement name="Identifier" value="Nokia/Series60E2FP2" />
 						<requirement name="Identifier" value="Nokia/Series60E2FP3" />
 						<requirement name="Identifier" value="Nokia/Series60E3" />
-						<requirement name="Identifier" value="Siemens/x65" />
-						<requirement name="Identifier" value="Siemens/x75" />
-						<requirement name="Identifier" value="Sony-Ericsson/JavaPlatform2" />
-						<requirement name="Identifier" value="Sony-Ericsson/JavaPlatform3" />
-						<requirement name="Identifier" value="Sony-Ericsson/JavaPlatform4" />
-						<requirement name="Identifier" value="Sony-Ericsson/JavaPlatform5" />
 						<requirement name="Identifier" value="Sony-Ericsson/JavaPlatform6" />
 						</or>
 		</deviceRequirements>
@@ -179,10 +146,6 @@
 				-->
 				<variable name="update-url" value="http://www.enough.de/update" />
 				<variable name="title" value="J2ME Polish" />
-				<variable name="polish.css.view-type" value="true" />
-				<variable name="polish.Browser.UserAgent" value="MobiViewer 1.0" />
-				<variable name="polish.Browser.MaxRedirects" value="5" />
-				<variable name="polish.Browser.Gzip" value="true" />
 				<variable name="polish.DateField.useDirectInput" value="true" />
 				<variable name="polish.TextField.useDirectInput" value="true" />
 			</variables>
@@ -259,20 +222,17 @@
 <target name="emulator" depends="test,j2mepolish" />
 
 <target name="build-war" description="builds the server war file for Tomcat or other J2EE/Servlet Containers.">
+	<present file="dist/rmi.jar" failMessage="Please run either the j2mepolish or the build-all target first." />
 	<copy file="${polish.home}/dist/enough-j2mepolish-rmi.jar" todir="dist" />
+	<delete dir="bin/server" />
 	<mkdir dir="bin/server" />
 	<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
-	<unjar src="dist/rmi.jar" dest="bin/server" />
-	<unjar src="dist/enough-j2mepolish-rmi.jar" dest="bin/server" />
 	<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
  	<war 
 		destfile="dist/gameserver.war"
  		webxml="source/server/web.xml"
 	>
- 		<!-- 
  		<lib dir="dist" includes="rmi.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
- 		-->
- 		<lib dir="dist" includes="gameserver.jar" />
 	</war>
 </target>
 	

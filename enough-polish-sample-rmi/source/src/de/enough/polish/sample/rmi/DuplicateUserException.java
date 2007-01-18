@@ -1,5 +1,5 @@
 /*
- * Created on Dec 28, 2006 at 2:50:28 AM.
+ * Created on Jan 9, 2007 at 7:17:51 PM.
  * 
  * Copyright (c) 2006 Robert Virkus / Enough Software
  *
@@ -25,22 +25,53 @@
  */
 package de.enough.polish.sample.rmi;
 
-import de.enough.polish.rmi.Remote;
-import de.enough.polish.rmi.RemoteException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
 
 /**
- * <p>Provides access to a remote game server which can be reached via HTTP.</p>
+ * <p></p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
  * history
- *        Dec 28, 2006 - rob creation
+ *        Jan 9, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface GameServer extends Remote {
+public class DuplicateUserException extends Exception implements Externalizable {
+	private String message;
+	private String duplicateUserName;
 
-	public GameUser registerUser( long time, String userName, String password) throws RemoteException, DuplicateUserException;
+	public DuplicateUserException() {
+		 // for serialialization
+	 }
+	 
+	 public DuplicateUserException( String message, String duplicateUserName ) {
+		super( message );
+		this.message = message;
+		this.duplicateUserName = duplicateUserName;
+	 }
+
+	public void read(DataInputStream in) throws IOException {
+		this.message = in.readUTF();
+		this.duplicateUserName = in.readUTF();
+	}
+
+	public void write(DataOutputStream out) throws IOException {
+		out.writeUTF( this.message );
+		out.writeUTF( this.duplicateUserName );
+	}
+
+	public String getDuplicateUserName() {
+		return this.duplicateUserName;
+	}
 	
-	public GameHighscore storeHighscore( GameHighscore highscore, boolean flag ) throws RemoteException;
+	public String getMessage() {
+		return this.message;
+	}
+
 }
+
