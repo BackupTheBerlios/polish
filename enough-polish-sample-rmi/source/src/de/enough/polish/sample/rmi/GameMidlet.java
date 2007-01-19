@@ -100,6 +100,9 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 			this.form.setTitle("added user!");
 			this.form.append( response.toString() );
 			
+			boolean pingSucceeded = this.server.ping( System.currentTimeMillis() );
+			System.out.println("ping succeeded: " + pingSucceeded);
+			
 		} catch (RemoteException e) {
 			//#debug error
 			System.out.println("Unable to access server" + e);

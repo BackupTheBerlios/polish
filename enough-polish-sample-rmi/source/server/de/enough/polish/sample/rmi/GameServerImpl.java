@@ -72,4 +72,12 @@ public class GameServerImpl implements GameServer {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.sample.rmi.GameServer#ping(long)
+	 */
+	public boolean ping(long time) throws RemoteException {
+		System.out.println("ping at client-time of " + time );
+		return true;
+	}
+
 }

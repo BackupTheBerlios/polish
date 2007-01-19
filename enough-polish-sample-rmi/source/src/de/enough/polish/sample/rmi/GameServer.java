@@ -43,4 +43,6 @@ public interface GameServer extends Remote {
 	public GameUser registerUser( long time, String userName, String password) throws RemoteException, DuplicateUserException;
 	
 	public GameHighscore storeHighscore( GameHighscore highscore, boolean flag ) throws RemoteException;
+	
+	public boolean ping( long time ) throws RemoteException;
 }
