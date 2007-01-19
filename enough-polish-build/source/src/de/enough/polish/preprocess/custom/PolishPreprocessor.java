@@ -557,6 +557,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			// this class does not extend Remote:
 			return false;
 		}
+		boolean callSynchronly = "true".equals( this.environment.getVariable("polish.rmi.synchrone") );
 		String newImplements = sourceClass.getClassName();
 		sourceClass.setClassName(newImplements + "RemoteClient");
 		sourceClass.setImplementedInterfaces( new String[]{ newImplements } );
@@ -569,7 +570,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		JavaSourceMethod[] methods = sourceClass.getMethods();
 		for (int i = 0; i < methods.length; i++) {
 			JavaSourceMethod method = methods[i];
-			createRemoteMethodImplementation( method );
+			createRemoteMethodImplementation( method, callSynchronly );
 		}
 
 		// add URL constructor:
@@ -586,16 +587,20 @@ public class PolishPreprocessor extends CustomPreprocessor {
 
 
 
-	private void createRemoteMethodImplementation(JavaSourceMethod method) {
+	private void createRemoteMethodImplementation(JavaSourceMethod method, boolean callSynchronly ) {
 		if (!(method.throwsException("RemoteException") || method.throwsException("de.enough.polish.rmi.RemoteException")) ) {
 			throw new BuildException("RMI method " + method.getName() + " does not throw RemoteException. Please correct this in your class " + method.getSourceClass().getClassName() );
 		}
-		
+		String methodCall;
+		if (callSynchronly) {
+			methodCall = "callMethodSynchrone";
+		} else {
+			methodCall = "callMethodAsynchrone";
+		}
 		ArrayList methodCode = new ArrayList();
 		methodCode.add("String _methodName= \"" + method.getName() + "\";" );
-		String methodCall;
 		if (method.getParameterNames() == null) {
-			methodCall = "callMethod( _methodName, 0, null );";
+			methodCall += "( _methodName, 0, null );";
 		} else {
 			StringBuffer primitivesFlagBuffer = new StringBuffer();
 			StringBuffer buffer = new StringBuffer();
@@ -626,7 +631,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			String reversedFlags = primitivesFlagBuffer.reverse().toString();
 			int primitiveFlags = Integer.parseInt( reversedFlags, 2 );
 			methodCode.add( "long _primitiveFlags = " + primitiveFlags + "; // decimal of binary " + reversedFlags );
-			methodCall = "callMethod( _methodName, _primitiveFlags, _params );";
+			methodCall += "( _methodName, _primitiveFlags, _params );";
 		}
 		String[] thrownExceptions = method.getThrownExceptions();
 		boolean hasDeclaredExceptions = thrownExceptions.length > 1;

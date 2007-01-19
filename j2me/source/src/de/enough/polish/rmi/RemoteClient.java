@@ -37,7 +37,13 @@ import javax.microedition.io.HttpConnection;
 import de.enough.polish.io.Serializer;
 
 /**
- * <p>The base implementation of client code</p>
+ * <p>The remote client is capable of calling any server based method and will decode return values accordingly.</p>
+ * <p>By default the RemoteClient calls methods in an asynchrone way (in a separate thread). If you are calling methods
+ *    from a thread anyhow, you can disable this behavior by setting the "polish.rmi.synchrone" variable to true:
+ * <pre>
+ *    &lt;variable name=&quot;polish.rmi.synchrone&quot; value=&quot;true&quot; /&gt;
+ * </pre>
+ * </p> 
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -77,17 +83,17 @@ public class RemoteClient implements Runnable {
 	}
 	
 	/**
-	 * Calls a remote method.
+	 * Calls a remote method in a separate thread.
 	 * 
 	 * @param name the method name
-	 * @param primitiveFlag for each element of the parameters which is originally a primitive the bit will be one: 
+	 * @param primitivesFlag for each element of the parameters which is originally a primitive the bit will be one: 
 	 *        element n = primitive means that (primitiveFlags & 2^n) != 0 
 	 * @param parameters any parameters, can be null
 	 * @return a return value for methods; void methods return null
 	 * @throws RemoteException when a checked or an unchecked exception has occurred on the server side or the connection failed
 	 */
-	protected Object callMethod( String name, long primitiveFlag, Object[] parameters ) throws RemoteException {
-		RemoteCall call = new RemoteCall( name, primitiveFlag, parameters );
+	protected Object callMethodAsynchrone( String name, long primitivesFlag, Object[] parameters ) throws RemoteException {
+		RemoteCall call = new RemoteCall( name, primitivesFlag, parameters );
 		this.callQueue.addElement( call );
 		synchronized( this.callQueue) {
 			this.callQueue.notify();
@@ -106,7 +112,65 @@ public class RemoteClient implements Runnable {
 		}
 		return call.getReturnValue();
 	}
+	
+	/**
+	 * Calls a remote method in the same thread.
+	 * 
+	 * @param name the method name
+	 * @param primitivesFlag for each element of the parameters which is originally a primitive the bit will be one: 
+	 *        element n = primitive means that (primitiveFlags & 2^n) != 0 
+	 * @param parameters any parameters, can be null
+	 * @return a return value for methods; void methods return null
+	 * @throws RemoteException when a checked or an unchecked exception has occurred on the server side or the connection failed
+	 */
+	protected Object callMethodSynchrone( String name, long primitivesFlag, Object[] parameters ) throws RemoteException {
+		HttpConnection connection = null;
+		try {
+			connection = (HttpConnection) Connector.open( this.url, Connector.READ_WRITE );
+			// write parameters:
+			DataOutputStream out = connection.openDataOutputStream();
+			out.writeInt( RMI_VERSION );
+			out.writeUTF( name );
+			out.writeLong( primitivesFlag );
+			Serializer.serialize( parameters, out);
+			// send request and read return values:
+			DataInputStream in = connection.openDataInputStream();
+			int status = connection.getResponseCode();
+			if (status != HttpConnection.HTTP_OK) {
+				throw new RemoteException("Server responded with response code " + status );
+			} else {
+				// okay, call succeeded at least partially:
+				int remoteCallStatus = in.readInt();
+				switch ( remoteCallStatus ) {
+				case Remote.STATUS_OK:
+					return Serializer.deserialize(in);
+				case Remote.STATUS_CHECKED_EXCEPTION:
+					Throwable exception = (Throwable) Serializer.deserialize(in);
+					throw new RemoteException( exception );
+				case Remote.STATUS_UNCHECKED_EXCEPTION:
+					String message = in.readUTF();
+					throw new RemoteException( message );
+				default:
+					throw new RemoteException( "unknown RMI status: " + remoteCallStatus );
+				}
+			}
+		} catch (IOException e) {
+			// create new RemoteException for this:
+			throw new RemoteException( e.toString() );					
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+		}	
+	}
 
+	/**
+	 * Accesses the server asynchronly. 
+	 */
 	public void run() {
 		while (true) {
 			// wait for a new remote call:
@@ -121,49 +185,14 @@ public class RemoteClient implements Runnable {
 			while ( this.callQueue.size() != 0 ) {
 				RemoteCall call = (RemoteCall) this.callQueue.elementAt(0);
 				this.callQueue.removeElementAt(0);
-				HttpConnection connection = null;
+				Object[] parameters = call.getParameters();
+				long primitivesFlag = call.getPrimitivesFlag();
+				String name = call.getName();
 				try {
-					connection = (HttpConnection) Connector.open( this.url, Connector.READ_WRITE );
-					// write parameters:
-					DataOutputStream out = connection.openDataOutputStream();
-					out.writeInt( RMI_VERSION );
-					out.writeUTF( call.getName() );
-					out.writeLong( call.getPrimitivesFlag() );
-					Serializer.serialize( call.getParameters(), out);
-					// send request and read return values:
-					DataInputStream in = connection.openDataInputStream();
-					int status = connection.getResponseCode();
-					if (status != HttpConnection.HTTP_OK) {
-						call.setRaisedException( new RemoteException("Server responded with response code " + status ) );
-					} else {
-						// okay, call succeeded at least partially:
-						int remoteCallStatus = in.readInt();
-						switch ( remoteCallStatus ) {
-						case Remote.STATUS_OK:
-							call.setReturnValue( Serializer.deserialize(in) );
-							break;
-						case Remote.STATUS_CHECKED_EXCEPTION:
-							Throwable exception = (Throwable) Serializer.deserialize(in);
-							call.setRaisedException( new RemoteException( exception ) );
-							break;
-						case Remote.STATUS_UNCHECKED_EXCEPTION:
-							String message = in.readUTF();
-							call.setRaisedException( new RemoteException( message ) );
-						default:
-							call.setRaisedException( new RemoteException( "unknown RMI status: " + remoteCallStatus ) );
-						}
-					}
-				} catch (IOException e) {
-					// create new RemoteException for this:
-					call.setRaisedException( new RemoteException( e.toString() ) );					
-				} finally {
-					if (connection != null) {
-						try {
-							connection.close();
-						} catch (IOException e) {
-							// ignore
-						}
-					}
+					Object returnValue = callMethodSynchrone(name, primitivesFlag, parameters);
+					call.setReturnValue( returnValue );
+				} catch (RemoteException e) {
+					call.setRaisedException(e);
 				}
 				synchronized( call ) {
 					call.notify();
