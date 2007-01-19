@@ -18,17 +18,12 @@
 package de.enough.polish.util;
 
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,12 +172,12 @@ public class PathClassLoader extends ClassLoader {
         		}
         	} 
         	if (url == null){
-	            while ((pathElementsIndex < pathComponents.size()) && (url == null)) 
+	            while ((this.pathElementsIndex < pathComponents.size()) && (url == null)) 
 	            {
 	                File pathComponent
-	                    = (File) pathComponents.elementAt(pathElementsIndex);
+	                    = (File) pathComponents.elementAt(this.pathElementsIndex);
 	                url = getResourceURL(pathComponent, this.resourceName);
-	                pathElementsIndex++;
+                  this.pathElementsIndex++;
 	            }
         	}
         	if (url == null && this.currentAppendEnumeration != null) {
@@ -221,6 +216,7 @@ public class PathClassLoader extends ClassLoader {
      * The size of buffers to be used in this classloader.
      */
     private static final int BUFFER_SIZE = 8192;
+
     /**
      * Number of array elements in a test array of strings
      */
@@ -278,6 +274,7 @@ public class PathClassLoader extends ClassLoader {
      * context loader.
      */
     private ClassLoader savedContextLoader = null;
+
     /**
      * Whether or not the context loader is currently saved.
      */
@@ -599,7 +596,7 @@ public class PathClassLoader extends ClassLoader {
      *                    Should not be <code>null</code>.
      */
     public void addSystemPackageRoot(String packageRoot) {
-        systemPackages.addElement(packageRoot
+        this.systemPackages.addElement(packageRoot
                                   + (packageRoot.endsWith(".") ? "" : "."));
     }
 
@@ -613,7 +610,7 @@ public class PathClassLoader extends ClassLoader {
      *                    Should not be <code>null</code>.
      */
     public void addLoaderPackageRoot(String packageRoot) {
-        loaderPackages.addElement(packageRoot
+        this.loaderPackages.addElement(packageRoot
                                   + (packageRoot.endsWith(".") ? "" : "."));
     }
 
@@ -733,10 +730,10 @@ public class PathClassLoader extends ClassLoader {
      *         the resource cannot be found.
      */
     private InputStream loadBaseResource(String name) {
-        if (parent == null) {
+        if (this.parent == null) {
             return getSystemResourceAsStream(name);
         } else {
-            return parent.getResourceAsStream(name);
+            return this.parent.getResourceAsStream(name);
         }
     }
 
@@ -766,10 +763,10 @@ public class PathClassLoader extends ClassLoader {
                 }
             } else {
                 // is the zip file in the cache
-                ZipFile zipFile = (ZipFile) zipFiles.get(file);
+                ZipFile zipFile = (ZipFile) this.zipFiles.get(file);
                 if (zipFile == null) {
                     zipFile = new ZipFile(file);
-                    zipFiles.put(file, zipFile);
+                    this.zipFiles.put(file, zipFile);
                 }
                 ZipEntry entry = zipFile.getEntry(resourceName);
                 if (entry != null) {
@@ -803,9 +800,9 @@ public class PathClassLoader extends ClassLoader {
 
         // XXX - shouldn't this always return false in isolated mode?
 
-        boolean useParentFirst = parentFirst;
+        boolean useParentFirst = this.parentFirst;
 
-        for (Enumeration e = systemPackages.elements(); e.hasMoreElements();) {
+        for (Enumeration e = this.systemPackages.elements(); e.hasMoreElements();) {
             String packageName = (String) e.nextElement();
             if (resourceName.startsWith(packageName)) {
                 useParentFirst = true;
@@ -813,7 +810,7 @@ public class PathClassLoader extends ClassLoader {
             }
         }
 
-        for (Enumeration e = loaderPackages.elements(); e.hasMoreElements();) {
+        for (Enumeration e = this.loaderPackages.elements(); e.hasMoreElements();) {
             String packageName = (String) e.nextElement();
             if (resourceName.startsWith(packageName)) {
                 useParentFirst = false;
@@ -853,14 +850,14 @@ public class PathClassLoader extends ClassLoader {
         // we can find the class we want.
         URL url = null;
         if (isParentFirst(name)) {
-            url = (parent == null) ? super.getResource(name)
-                : parent.getResource(name);
+            url = (this.parent == null) ? super.getResource(name)
+                : this.parent.getResource(name);
         }
 
         if (url == null) {
             // try and load from this loader if the parent either didn't find
             // it or wasn't consulted.
-            Enumeration e = pathComponents.elements();
+            Enumeration e = this.pathComponents.elements();
             while (e.hasMoreElements() && url == null) {
                 File pathComponent = (File) e.nextElement();
                 url = getResourceURL(pathComponent, name);
@@ -869,12 +866,12 @@ public class PathClassLoader extends ClassLoader {
 
         if (url == null && !isParentFirst(name)) {
             // this loader was first but it didn't find it - try the parent
-            if (ignoreBase) {
+            if (this.ignoreBase) {
                 url = (getRootLoader() == null) ? null
                     : getRootLoader().getResource(name);
             } else {
-                url = (parent == null) ? super.getResource(name)
-                    : parent.getResource(name);
+                url = (this.parent == null) ? super.getResource(name)
+                    : this.parent.getResource(name);
             }
         }
 
@@ -893,9 +890,9 @@ public class PathClassLoader extends ClassLoader {
     protected Enumeration/*<URL>*/ findResources(String name) throws IOException {
     	ResourceEnumeration/*<URL>*/ mine = new ResourceEnumeration(name);
         Enumeration/*<URL>*/ base;
-        if (parent != null && parent != getParent()) {
+        if (this.parent != null && this.parent != getParent()) {
             // Delegate to the parent:
-            base = parent.getResources(name);
+            base = this.parent.getResources(name);
             // Note: could cause overlaps in case ClassLoader.this.parent has matches.
         } else {
             // ClassLoader.this.parent is already delegated to from
@@ -905,7 +902,7 @@ public class PathClassLoader extends ClassLoader {
         if (isParentFirst(name)) {
             // Normal case.
             mine.preppend( base );
-        } else if (ignoreBase) {
+        } else if (this.ignoreBase) {
             if ( getRootLoader() != null ) {
                 mine.append( getRootLoader().getResources(name));
             }
@@ -945,10 +942,10 @@ public class PathClassLoader extends ClassLoader {
                     }
                 }
             } else {
-                ZipFile zipFile = (ZipFile) zipFiles.get(file);
+                ZipFile zipFile = (ZipFile) this.zipFiles.get(file);
                 if (zipFile == null) {
                     zipFile = new ZipFile(file);
-                    zipFiles.put(file, zipFile);
+                    this.zipFiles.put(file, zipFile);
                 }
 
                 ZipEntry entry = zipFile.getEntry(resourceName);
@@ -1009,7 +1006,7 @@ public class PathClassLoader extends ClassLoader {
             try {
                 theClass = findClass(classname);
             } catch (ClassNotFoundException cnfe) {
-                if (ignoreBase) {
+                if (this.ignoreBase) {
                     throw cnfe;
                 }
                 theClass = findBaseClass(classname);
@@ -1328,10 +1325,10 @@ public class PathClassLoader extends ClassLoader {
      * on this loader's classpath.
      */
     private Class findBaseClass(String name) throws ClassNotFoundException {
-        if (parent == null) {
+        if (this.parent == null) {
             return findSystemClass(name);
         } else {
-            return parent.loadClass(name);
+            return this.parent.loadClass(name);
         }
     }
 
@@ -1340,7 +1337,7 @@ public class PathClassLoader extends ClassLoader {
      * files are closed.
      */
     public synchronized void cleanup() {
-        for (Enumeration e = zipFiles.elements(); e.hasMoreElements();) {
+        for (Enumeration e = this.zipFiles.elements(); e.hasMoreElements();) {
             ZipFile zipFile = (ZipFile) e.nextElement();
             try {
                 zipFile.close();
@@ -1348,7 +1345,7 @@ public class PathClassLoader extends ClassLoader {
                 // ignore
             }
         }
-        zipFiles = new Hashtable();
+        this.zipFiles = new Hashtable();
     }
 
 
