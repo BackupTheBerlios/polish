@@ -103,6 +103,9 @@ public class WtkEmulator extends Emulator {
 	 * @return the file which points to the folder containing the skin
 	 */
 	protected File getEmulatorSkin( String wtkHome, String xDevice ) {
+		if (wtkHome == null) {
+			wtkHome = ".";
+		}
 		return getEmulatorSkin ( new File(wtkHome), xDevice );
 	}
 	
@@ -126,6 +129,9 @@ public class WtkEmulator extends Emulator {
 	 * @return the file which points to the emulator-application
 	 */
 	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device dev ) {
+		if (wtkHome == null) {
+			wtkHome = ".";
+		}
 		return getEmulatorExcecutable( new File( wtkHome ), xDevice, dev);
 	}
 	
