@@ -633,10 +633,14 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		if (hasDeclaredExceptions) {
 			methodCode.add("try {");
 		}
-		if ( "void".equals(method.getReturnType()) ) {
+		String returnType = method.getReturnType();
+		if ( "void".equals( returnType ) ) {
 			methodCode.add( methodCall );
+		} else if ( isPrimitive( returnType )) {
+			addPrimitiveReturnCast( returnType, methodCall, methodCode );
 		} else {
-			methodCode.add( "return (" + method.getReturnType() + ") " + methodCall );
+			// the return value is a normal object:
+			methodCode.add( "return (" + returnType + ") " + methodCall );
 		}
 		if (hasDeclaredExceptions) {
 			methodCode.add("} catch (RemoteException _e) {");
@@ -654,6 +658,43 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		}
 		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
+
+	/**
+	 * Adds a cast for primitive return types.
+	 * 
+	 * @param returnType the primitive return type like int, boolean, etc
+	 * @param methodCall the code for calling the server
+	 * @param methodCode the code to which the primitive cast is added
+	 */
+	private void addPrimitiveReturnCast(String returnType, String methodCall, ArrayList methodCode) {
+		// methodCode.add( "return (" + returnType + ") " + methodCall ) is not working for primitive returns,
+		// required is for example following code for int return types:
+		// methodCode.add( "Object _returnObject = " + methodCall );  
+		// methodCode.add( "return ((" + "Integer" + ") " + _returnObject ).intValue();" );
+
+		methodCode.add( "Object _returnObject = " + methodCall );
+		if ("byte".equals(returnType)) {
+			methodCode.add("return ((Byte) _returnObject ).byteValue();" );
+		} else if ("short".equals(returnType)) {
+			methodCode.add("return ((Short) _returnObject ).shortValue();" );
+		} else if ("int".equals(returnType)) {
+			methodCode.add("return ((Integer) _returnObject ).intValue();" );
+		} else if ("long".equals(returnType)) {
+			methodCode.add("return ((Long) _returnObject ).longValue();" );
+		} else if ("float".equals(returnType)) {
+			methodCode.add("return ((Float) _returnObject ).floatValue();" );
+		} else if ("double".equals(returnType)) {
+			methodCode.add("return ((Double) _returnObject ).doubleValue();" );
+		} else if ("char".equals(returnType)) {
+			methodCode.add("return ((Character) _returnObject ).charValue();" );
+		} else if ("boolean".equals(returnType)) {
+			methodCode.add("return ((Boolean) _returnObject ).booleanValue();" );
+		} else {
+			throw new IllegalArgumentException("return type [" + returnType + "] is not primitive.");
+		}
+	}
+
+
 
 	/**
 	 * Determines whether the given type is a primitive one like byte, int, float etc.

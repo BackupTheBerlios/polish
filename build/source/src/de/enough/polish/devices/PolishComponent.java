@@ -321,11 +321,11 @@ implements Comparable
 		} else if (name.startsWith("HardwarePlatform.")) {
 			name = name.substring( 17 );
 		}
-		String originalName = name;
+//		String originalName = name;
 		name = name.toLowerCase();		
 		if (!name.startsWith("polish.")) {
 			name = "polish." + name;
-			originalName = "polish." + originalName;
+//			originalName = "polish." + originalName;
 		}
 		String existingValue = getCapability( name );
 		// remove any feature relying on the current value:
@@ -408,7 +408,7 @@ implements Comparable
 		}
 		*/
 		addSingleCapability( name, value );
-		addSingleCapability( originalName, value );
+//		addSingleCapability( originalName, value );
 		
 		// when the capability is a size, then also add a height and a width:
 		if (name.endsWith("size") && value.indexOf('x') > 0) {
@@ -449,15 +449,15 @@ implements Comparable
 	 * @param value the value of the capability
 	 */
 	private void addSingleCapability( String name, String value ) {
-		String originalName = name;
+//		String originalName = name;
 		name = name.toLowerCase();
 		this.capabilities.put( name, value );
-		this.capabilities.put( originalName, value );
+//		this.capabilities.put( originalName, value );
 		this.features.put( name + ":defined", Boolean.TRUE );
-		this.features.put( originalName + ":defined", Boolean.TRUE );
+//		this.features.put( originalName + ":defined", Boolean.TRUE );
 		if ("true".equalsIgnoreCase(value)) {
 			this.features.put( name, Boolean.TRUE );
-			this.features.put( originalName, Boolean.TRUE );
+//			this.features.put( originalName, Boolean.TRUE );
 		}
 	}
 	

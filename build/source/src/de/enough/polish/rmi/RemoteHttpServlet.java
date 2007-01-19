@@ -28,6 +28,10 @@ package de.enough.polish.rmi;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -66,6 +70,19 @@ public class RemoteHttpServlet extends HttpServlet {
 		}
 		try {
 			Object implementation = implementationClass.newInstance();
+			try {
+				// check out if there is a configure( java.util.Map ) method:
+				Method configureMethod = implementationClass.getMethod("configure", new Class[]{ Map.class } );
+				configureMethod.invoke( implementation, new Object[]{ convertConfigurationToMap( cfg ) } );
+			} catch (NoSuchMethodException e) {
+				// check out if there is a configure( ServletConfig ) method:
+				try {
+					Method configureMethod = implementationClass.getMethod("configure", new Class[]{ ServletConfig.class } );
+					configureMethod.invoke( implementation, new Object[]{ cfg } );
+				} catch (NoSuchMethodException e1) {
+					System.out.println("Note: if you want to configure your " + implementationClassName + " implementation upon startup, implement public void configure( java.util.Map ) or public void configure( javax.servlet.ServletConfig ).");
+				}
+			}
 			this.remoteServer = new RemoteServer( implementation );
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -73,7 +90,23 @@ public class RemoteHttpServlet extends HttpServlet {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			throw new ServletException("\"polish.rmi.server\" cannot be accessed: " + e.toString() );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServletException("\"polish.rmi.server\" cannot be initialized: " + e.toString() );
 		}
+	}
+
+
+
+	private Map convertConfigurationToMap(ServletConfig cfg) {
+		Map map = new HashMap();
+		Enumeration enumeration = cfg.getInitParameterNames();
+		while (enumeration.hasMoreElements()) {
+			String paramName = (String) enumeration.nextElement();
+			String paramValue = cfg.getInitParameter( paramName );
+			map.put( paramName, paramValue );
+		}
+		return map;
 	}
 
 
