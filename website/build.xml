@@ -116,7 +116,8 @@
 		<echo message="www.j2mepolish.org created." />
 </target>
 	
-	<target name="cleanbuild" depends="clean, website" description="Builds a clean website. Remember the chinese tutorial.">
+	<target name="cleanbuild" depends="clean, website" description="Builds a clean website.">
+		<copy file="tour-cn.html" todir="dist/docs" overwrite="true" />
 	</target>
 
 

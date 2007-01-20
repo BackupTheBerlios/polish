@@ -12,24 +12,179 @@
 	<%endif %>
 	<link rel="Shortcut Icon" href="<%= basedir %>images/favicon.gif" type="image/ico" />
 	<link href="<%= basedir %>enough.css" rel="stylesheet" type="text/css" />
+	<link href="<%= basedir %>mainmenu.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="<%= basedir %>niftycube/niftycube.js"></script>
+	<script type="text/javascript">
+	window.onload=function(){
+		Nifty("pre","tl br big");
+	}
+	</script>
 </head>
 <body>
+<div id="container">
+
 	<!-- header -->
-	<div id="header"> 
+<div id="header-wrap">
+
+
+
+			<div id="header-in">
+
+
+
+				<ul id="nav-top">
+
+					<li><a href="" title="">link</a></li>
+
+					<li><a href="" title="">link</a></li>
+
+					<li><a href="" title="">link</a></li>
+
+					<li><a href="" title="">link</a></li>
+
+				</ul>
+				
+				
 		<img src="<%= basedir %>images/header.png" alt="J2ME Polish" width="750" height="50"/>
 		<a class="imageLink" href="http://www.enough.de">
 			<img class="headerImage" src="<%= basedir %>images/logo-small.png" alt="Enough Software" width="69" height="40" /> 
 		</a>
-	</div> 
+		
+		<!-- main menu -->
+		<div class="menu2">
+
+<ul>
+<li><a class="menu2one" href="<%= basedir %>index.html">Home</a></li>
+</ul>
+<ul>
+<li><a class="menu2two" href="#nogo">Products
+<!--[if IE 7]><!--></a><!--<![endif]-->
+	<table><tr><td>
+	<ul>
+	<li><a href="#nogo">Mobiles</a></li>
+	<li><a href="#nogo">Photoframes</a></li>
+
+	<li><a href="#nogo">Tripods</a></li>
+	<li><a class="drop" href="#nogo">Cameras
+	<!--[if IE 7]><!--></a><!--<![endif]-->
+		<table><tr><td>
+		<ul>
+		<li class="group">Minolta</li>
+		<li><a href="#nogo">SLRs</a></li>
+		<li><a href="#nogo">Compact</a></li>
+
+		<li><a href="#nogo">Digital</a></li>
+		<li><a href="#nogo">Video</a></li>
+		<li class="group">Cannon</li>
+		<li><a href="#nogo">SLRs</a></li>
+		<li><a href="#nogo">Compact</a></li>
+		<li><a href="#nogo">Digital</a></li>
+
+		<li><a href="#nogo">Video</a></li>
+		<li class="group">Nikon</li>
+		<li><a href="#nogo">SLRs</a></li>
+		<li><a href="#nogo">Compact</a></li>
+		<li><a href="#nogo">Digital</a></li>
+		<li><a href="#nogo">Video</a></li>
+
+		<li class="group">Olympus</li>
+		<li><a href="#nogo">SLRs</a></li>
+		<li><a href="#nogo">Compact</a></li>
+		<li><a href="#nogo">Digital</a></li>
+		<li><a href="#nogo">Video</a></li>
+		</ul>
+
+		</td></tr></table>
+	<!--[if lte IE 6]></a><![endif]-->
+	</li>
+	<li><a href="#nogo">Memory cards</a></li>
+	<li><a href="#nogo">Camcorders</a></li>
+	</ul>
+	</td></tr></table>
+<!--[if lte IE 6]></a><![endif]-->
+
+</li>
+<li><a class="menu2three" href="#nogo">Services
+<!--[if IE 7]><!--></a><!--<![endif]-->
+	<table><tr><td>
+	<ul class="scroller">
+	<li><a href="#nogo">Photography</a></li>
+	<li><a href="#nogo">Video editing</a></li>
+	<li><a href="#nogo">Web site Design</a></li>
+	<li><a href="#nogo">Reference guides</a></li>
+
+	<li><a href="#nogo">Photo-editing</a></li>
+	<li><a href="#nogo">Banner design</a></li>
+	<li><a href="#nogo">Web consultancy</a></li>
+	<li><a href="#nogo">Banner Exchange</a></li>
+	</ul>
+	</td></tr></table>
+<!--[if lte IE 6]></a><![endif]-->
+
+</li>
+<li><a class="menu2four" href="<%= basedir %>contact.html">Contact us</a></li>
+<li><a class="menu2five" href="<%= basedir %>atoz.html">Site map</a></li>
+<li><a class="menu2six" href="<%= basedir %>news.html">News
+<!--[if IE 7]><!--></a><!--<![endif]-->
+	<table><tr><td>
+	<ul class="endstop">
+	<li><a href="#nogo">Breaking</a></li>
+	<li><a href="#nogo">Latest</a></li>
+
+	<li><a href="#nogo">May 2006</a></li>
+	<li><a class="drop" href="#nogo">News archives
+	<!--[if IE 7]><!--></a><!--<![endif]-->
+		<table><tr><td>
+		<ul class="left">
+		<li class="group">2006</li>
+		<li><a href="#nogo">April</a></li>
+		<li><a href="#nogo">March</a></li>
+
+		<li><a href="#nogo">February</a></li>
+		<li><a href="#nogo">January</a></li>
+		<li class="group">2005</li>
+		<li><a href="#nogo">December</a></li>
+		<li><a href="#nogo">November</a></li>
+		<li><a href="#nogo">October</a></li>
+
+		<li><a href="#nogo">September</a></li>
+		<li><a href="#nogo">August</a></li>
+		<li><a href="#nogo">July</a></li>
+		<li><a href="#nogo">June</a></li>
+		<li><a href="#nogo">May</a></li>
+		<li><a href="#nogo">April</a></li>
+
+		<li><a href="#nogo">March</a></li>
+		<li><a href="#nogo">February</a></li>
+		<li><a href="#nogo">January</a></li>
+		</ul>
+		</td></tr></table>
+	<!--[if lte IE 6]></a><![endif]-->
+	</li>
+
+	</ul>
+	</td></tr></table>
+<!--[if lte IE 6]></a><![endif]-->
+</li>
+</ul>
+
+</div> <!-- end menu2 -->
+		
+	</div>  <!-- end header-in -->
+</div>  <!-- end header-wrapper -->
+	
+	
 	<!-- end of header -->
+	
+	<div id="content-wrap">
+	
 	<!-- navigation area -->
 	<div id="navigation">
+		<!--
 		<h1>Contents</h1>
-		<%ifdef inOverviewSection %>
-			<div id="currentLink"><a href="<%= basedir %>index.html">Home</a></div>
-		<%else %>
-			<a href="<%= basedir %>index.html">Home</a>
-		<%endif %>
+		-->
+		<div id="navigation-in">
 		<%ifdef inIntroductionSection %>
 			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
 			<%ifdef inIntroductionSection.tour %>
@@ -50,11 +205,6 @@
 			
 		<%else %>
 			<a href="<%= basedir %>docs/introduction.html">Introduction</a>
-		<%endif %>
-		<%ifdef inNewsSection %>
-			<div id="currentLink"><a href="<%= basedir %>news.html">News</a></div>
-		<%else %>
-			<a href="<%= basedir %>news.html">News</a>
 		<%endif %>
 		
 		<%ifndef excludeDownload %>
@@ -159,6 +309,11 @@
 				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/serialization.html">Serialization</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.rmi %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.utilities %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
@@ -305,26 +460,17 @@
 			<a href="<%= basedir %>discussion.html">Discussion</a>
 		<%endif %>
 		
-		<%ifdef inContactSection %>
-			<div id="currentLink"><a href="<%= basedir %>contact.html">Contact</a></div>
-		<%else %>
-			<a href="<%= basedir %>contact.html">Contact</a>
-		<%endif %>
 		<%ifdef inContributorSection %>
 			<div id="currentLink"><a href="<%= basedir %>contributors.html">Contributors</a></div>
 		<%else %>
 			<a href="<%= basedir %>contributors.html">Contributors</a>
 		<%endif %>
-		<%ifdef inIndexSection %>
-			<div id="currentLink"><a href="<%= basedir %>atoz.html">Index</a></div>
-		<%else %>
-			<a href="<%= basedir %>atoz.html">Index</a>
-		<%endif %>
+		
 		
 <!-- Google CSE Search Box Begins -->
 <form id="searchbox_012530021559135704147:-v-bfolxtlc" action="http://google.com/cse">
   <input type="hidden" name="cx" value="012530021559135704147:-v-bfolxtlc" />
-  <input name="q" type="text" size="25" />
+  <input name="q" type="text" size="20" />
   <input type="submit" name="sa" value="Search" />
   <input type="hidden" name="cof" value="FORID:0" />
 </form>
@@ -340,13 +486,20 @@
 			<input type="submit" name="btnG" value="Search">
 		</form>
 		-->
+		<!--
 	<a class="imageLink" href="<%= basedir %>index.html">
 		<img class="navigationImage" alt="j2mepolish" src="<%= basedir %>images/j2mepolish-logo.gif" width="180" height="217"/>
 	</a>
 	<br />
+		-->
 	<a class="imageLink" href="<%= basedir %>book/book.html">
 		<img src="<%= basedir %>images/proj2mepolish.gif" width="125" height="164" alt="Pro J2ME Polish book" />
 	</a>
-		
-	</div> <!-- end of navigation -->
+		</div> <!-- end #navigation-in -->
+	</div> <!-- end of #navigation -->
+	
+			<div id="content">
+				<div id="content-in">
+
+
 	

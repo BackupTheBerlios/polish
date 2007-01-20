@@ -1,0 +1,323 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.rmi %>
+<%set title = J2ME Polish: RMI %>
+<%set basedir = ../ %>
+<%include start.txt %>
+	
+	<h1 id="top">Remote Method Invocation (RMI)</h1>
+	<%index %>
+	
+	<p class="pullquote">
+	Remote Method Invocation (RMI) alllows you to access server side functionality from within your mobile application. Learn in this section how easy and efficiently you can achieve this goal with J2ME&nbsp;Polish! 
+	</p>
+	
+	<p>In this section you will learn how to access and implement server side functionality with J2ME&nbsp;Polish's Remote Method Invocation (RMI) framework.
+	</p>
+	
+	<h2 id="overview">Overview</h2>
+	<p>It's very easy to use the RMI framework - here are the required steps. You will learn about them in detail in the following sections.
+	</p>
+	<ul>
+		<li><b>Define the interface</b>: define a interface that extends <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/rmi/Remote.html">de.enough.polish.rmi.Remote</a> 
+		and that defines the methods that you want to access on the server.</li>
+		<li><b>Use the interface</b>: within your mobile application you can access the remote server by calling 
+		<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/rmi/RemoteClient.html">de.enough.polish.rmi.RemoteClient.open(..)</a>.
+		</li>
+		<li><b>Implement the server</b>: Implement the server by extending 
+		<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/rmi/RemoteHttpServlet.html">de.enough.polish.rmi.RemoteHttpServlet</a>
+		and implementing your server interface.</li>
+		<li><b>Package and deploy</b>: Create a WAR file that contains your servlet and deploy it on your server.</li>
+		<li><b>Build and run your mobile application</b>: Create your application and run it, that's it!</li>
+	</ul>
+	<p>
+	You can also configure and tweak the RMI framework according to your needs. Now let's have a look at the details!
+	</p>
+	
+	<h2 id="definingtheinterface">Defining the Remote Interface</h2>
+	<p>
+	At first you have to agree on an interface between the server and your mobile application. You do this by extending the empty 
+	<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/rmi/Remote.html">de.enough.polish.rmi.Remote</a> interface.
+	Every method that you define needs to throw at least the <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/rmi/RemoteException.html">de.enough.polish.rmi.RemoteException</a>,
+	if you forget this, J2ME Polish will abort the build and notify you. In the following example we are sending a name, 
+	a phone number and a password for registrating a user. When the registration succeeds, the server should return true:
+<pre>
+package com.company.multiplayergame;
+
+import de.enough.polish.rmi.Remote;
+import de.enough.polish.rmi.RemoteException;
+
+/** A simple example for registering a user. */
+public interface GameServer extends Remote {
+
+	/**
+	 * Registers a user on the server.
+	 * @param name the desired login name of the user
+	 * @param msisdn the phone number of the user
+	 * @param password the password
+	 * @return true when the registration succeeds
+	 * @throws RemoteException when the server could not be contacted 
+	 *         or an error occurred during registration
+	 */
+	public boolean registerUser( String name, String msisdn, String password ) 
+	throws RemoteException;
+	
+}
+</pre>
+	</p>
+	<p>
+	In the remote interface you can use any <a href="serialization.html">seriablizable</a> parameters and return values. 
+	This includes normal Java classes like Vector, Image or Date and any classes that either implement 
+	<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/Serializable.html">de.enough.polish.io.Serializable</a>
+	or <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/Externalizable.html">de.enough.polish.io.Externalizable</a>. 
+	You can also throw your own custom exceptions when they implement Externalizable.
+	Please compare the <a href="serialization.html">serialization documentation</a> for learning more details about serialization.
+	<br />
+	In the following example we add real objects and your own custom exception to the mix:
+<pre>
+package com.company.multiplayergame;
+
+import de.enough.polish.rmi.Remote;
+import de.enough.polish.rmi.RemoteException;
+
+/** A more complex example for registering and logging in a user. */
+public interface GameServer extends Remote {
+
+	/**
+	 * Registers a user on the server.
+	 * @param name the desired login name of the user
+	 * @param msisdn the phone number of the user
+	 * @param password the password
+	 * @return a user object when the registration succeeds
+	 * @throws RemoteException when the server could not be contacted 
+	 * @throws RegistrationException when an error occurred during 
+	 *         registration like a duplicate registration
+	 */
+	public GameUser registerUser( String name, String msisdn, String password ) 
+	throws RemoteException, RegistrationException;
+	
+	/**
+	 * Logs in a user on the server.
+	 * @param user the user
+	 * @param password the password
+	 * @return the user with an updated account
+	 * @throws RemoteException when the server could not be 
+	 *         contacted or an error occurred during login
+	 */
+	public GameUser loginUser( GameUser user, String password ) 
+	throws RemoteException;
+
+}
+
+package com.company.multiplayergame;
+
+import de.enough.polish.io.Serializable;
+
+public class GameUser implements Serializable {
+	public String name;
+	public String msisdn;
+	public int account;
+}
+
+
+package com.company.multiplayergame;
+
+import de.enough.polish.io.Externalizable;
+
+public class RegistrationException implements Externalizable {
+	private String message;
+	public RegistrationException() {
+		// this constructor is required by the Externalizable conventions
+	}
+	public RegistrationException( String reason ) {
+		super( reason );
+		this.message = reason;
+	}
+	public void read(DataInputStream in) throws IOException {
+		this.message = in.readUTF();
+	}
+
+	public void write(DataOutputStream out) throws IOException {
+		out.writeUTF( this.message );
+	}	
+}
+
+</pre>
+	</p>
+	
+	<h2 id="usingtheinterface">Using the Remote Interface In Your Mobile Application</h2>
+	<p>
+	You can access the remote server in your mobile application by calling 
+	<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/rmi/RemoteClient.html">de.enough.polish.rmi.RemoteClient.open(..)</a>, which takes
+	two parameters: the first parameter defines the full name of the interface and the second one defines the URL of the service. Please note
+	that the interface name needs to be defined directly within the open call, it is now allowed to give the interface name with a variable.
+	This restriction is necessary, because J2ME Polish is exchanging and modifying this call during the preprocessing phase.
+	<br />
+	For clarification, the following code works:
+	</p>
+<pre>// this code works fine:
+this.server = (GameServer) RemoteClient.open(
+	"com.company.multiplayergame.GameServer", 
+	"http://www.myserver.com/gameserver/myservice" );
+</pre>
+	<p>
+	The following code will not work:
+<pre>// this code will not work!!!
+String myInterfaceName = "com.company.multiplayergame.GameServer";
+this.server = (GameServer) RemoteClient.open(
+	myInterfaceName, 
+	"http://www.myserver.com/gameserver/myservice" );
+</pre>
+	</p>
+	<p>
+	You can now access the server just by calling the methods of the interface. Since the RMI framework accesses the server in a separate thread
+	in the default configuration, you can even access your server in the <code>commandAction()</code> method of your MIDlet without
+	causing a deadlock:
+<pre>// an example for using the instantiated GameServer server within a MIDlet:
+public void commandAction( Command cmd, Displayable disp ) {
+	if (cmd == this.cmdRegisterUser) {
+		try {
+			String name = getRegistrationName();
+			String msisdn = getRegistrationMsisdn();
+			String password = getRegistrationPassword();
+			GameUser user =
+				this.server.registerUser( name, msisdn, password );
+			storeUser( user );
+			showRegistrationSuccessScreen( user );
+		} catch (RegistrationException e) {
+			showRegistrationFailureScreen( e );
+		} catch (RemoteException e) {
+			showCommunicationFailureScreen( e );
+		}
+	}
+}
+</pre>
+	</p>
+	
+	<h2 id="implementingtheinterface">Implementing the Remote Interface In Your Server Application</h2>
+	<p>
+	Now we can realize the server side funtionalities by implementing the defined Remote interface. For simple cases,
+	it is sufficient to extend Object, if you want to access HTTP sessions, you need to extend the 
+	<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/rmi/RemoteHttpServlet.html">de.enough.polish.rmi.RemoteHttpServlet</a>.
+	In the following example we access the HttpSession in the login() method - when a single client fails to login for more than 10 times 
+	in a row, we abort the login process and thow an exception:
+<pre>
+package com.company.multiplayergame;
+
+import de.enough.polish.rmi.RemoteException;
+import de.enough.polish.rmi.RemoteHttpServlet;
+
+/** The server side realization of the remote interface. */
+public class GameServerImpl 
+extends RemoteHttpServlet 
+implements GameServer
+{
+
+	/**
+	 * Registers a user on the server.
+	 * @param name the desired login name of the user
+	 * @param msisdn the phone number of the user
+	 * @param password the password
+	 * @return a user object when the registration succeeds
+	 * @throws RemoteException when the server could not be contacted 
+	 * @throws RegistrationException when an error occurred during 
+	 *         registration like a duplicate registration
+	 */
+	public GameUser registerUser( String name, String msisdn, String password ) 
+	throws RemoteException, RegistrationException
+	{
+		if (userExists(name)) {
+			throw new RegistrationException("the desired user name is already in use: " + name );
+		}
+		if (msisdn == null || msidn.length() &lt; 4) {
+			throw new RegistrationException("invalid phonenumner: " + msisdn );
+		}
+		GameUser user = new GameUser();
+		user.name = name;
+		user.msisdn = msisdn;
+		user.account = getDefaultAccount();
+		return user;
+	}
+	
+	/**
+	 * Logs in a user on the server.
+	 * @param user the user
+	 * @param password the password
+	 * @return the user with an updated account
+	 * @throws RemoteException when the server could not be 
+	 *         contacted or an error occurred during login
+	 */
+	public GameUser loginUser( GameUser user, String password ) 
+	throws RemoteException
+	{
+		HttpSession session = getSession( false );
+		int numberOfLoginTrials = 0;
+		if (session != null) {
+			Integer numberOfLoginTrialsInt = session.getAttribute("login.number");
+			if (numberOfLoginTrialsInt != null) {
+				numberOfLoginTrials = numberOfLoginTrialsInt.intValue();
+				if (numberOfLoginTrials > 10) {
+					throw new RemoteException("too many wrong logins, please try again later.");
+				}
+			}
+		}
+		if (loginSucceeds( user, password ) {
+			user.account = getCurrentAccount( user );
+			if (session != null) {
+				session.removeAttribute("login.number");
+			}
+			return user;
+		} else {
+			if (session == null) {
+				// create a new session:
+				session = getSession( true );
+			}
+			session.setAttribute("login.number", new Integer( numberOfLoginTrials + 1 ) );
+			throw new RemoteException("wrong login data supplied.");
+		}
+	}
+	
+	...
+	
+
+}
+</pre>
+	</p>
+	
+	<h2 id="inittheinterface">Initializing Your Server Application</h2>
+	<p>
+	You can initialize your server application upon startup by overwriting the <code>init(ServletConfig)</code>
+	method. When you do not extend 
+	<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/rmi/RemoteHttpServlet.html">de.enough.polish.rmi.RemoteHttpServlet</a>,
+	you can instead implement the method <code>init(java.util.Map)</code> instead.
+<pre>
+public void init(ServletConfig cfg) throws ServletException {
+	super.init(cfg);
+	String myInitValue = cfg.getInitParameter("cfg.gameserver.MyInitParam");
+	// ... process value etc
+}
+</pre>
+	</p>
+	
+	<h2 id="packageanddeploy">Packaging and Deploying Your Server Application</h2>
+	<p>
+	Use Ant for building a WAR archieve that contains your servlet, the configuration and all serializable classes in an easy and flexible manner.
+	<br />
+	You need following components for the WAR file:
+	</p>
+	<ul>
+		<li><b>web.xml</b>: the configuration and mapping of the servlet.</li>
+		<li><b>enough-j2mepolish-rmi.jar</b>: </li>
+		<li><b></b>: </li>
+		<li><b></b>: </li>
+		<li><b></b>: </li>
+	</ul>
+	
+	
+	<h2 id="sampleapp">RMI Sample Application</h2>
+	<p>
+	There is a sample application that demonstrates the usage of the RMI framework in <i>${polish.home}/samples/rmi</i>.
+	</p>
+	
+</div>
+
+<%include end.txt %>

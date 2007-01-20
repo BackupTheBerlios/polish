@@ -1,38 +1,23 @@
 <%define inOverviewSection %>
 <%set title = J2ME Polish %>
 <%include start.txt %>
-	
-<!--
-	<script language=JavaScript>
--->
-	<!--
-		// maximize the current window, so that the IE shows all columns correctly:
-		//moveTo(0,0);
-		//resizeTo(screen.availWidth,screen.availHeight);
-	-->
-<!--
-	</script>
--->
-	<div id="infoSection">
-	<%include news.txt %>
 
-
-	<p><a href="news.html">more news...</a>.</p>
-	</div>	
-
-	<div id="thincontent">
+	<p class="pullquote">
+	J2ME&nbsp;Polish is <b>the</b> answer to today's challenges in the mobile world. Extremely versatile and powerful, yet easy to use!
+	</p>
 	<h1 id="top">Breaking News</h1>
 		<table>
 		<tr>
 			<td><img alt="J2ME Polish 2.0 is coming!" src="images/j2mepolish20.gif" width="400" height="400"/></td>
-			<td valign="bottom"><i>2006-10-06:</i> J2ME Polish is advancing quickly with many new and great features like the following:</td>
+			<td valign="bottom"><i>2007-01-21:</i> J2ME Polish 2.0 is here. Enjoy these indespensable new features:</td>
 		</tr>
 		</table>
 		<ul>
 			<li><b>Overhauled GUI Library</b>: apply effects everywhere: to texts, screen changes, animations, and more - and all this without adding additional resources to your projects! You can also directly access advanced J2ME Polish features while still programming with the usual javax.microedition.lcdui framework. Did we mention the support of subcommands for your menus?</li>
-			<li><b><a href="docs/serialization.html">Serialization Framework</a></b>: Want to store or transmit data? Just implement <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/Serializable.html">de.enough.polish.io.Serializable</a> 
+			<li><b><a href="docs/serialization-howto.html">Serialization Framework</a></b>: Want to store or transmit data? Just implement <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/Serializable.html">de.enough.polish.io.Serializable</a> 
 			and J2ME Polish takes care of the serialization for you.</li>
-			<li><b>Record Store Storage</b>: Along with the serialization framework we also throw in the <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/RmsStorage.html">RmsStorage</a> that allows you to read and save data in the easiest possible way!</li>
+			<li><b><a href="docs/serialization-persistence.html">Persistence</a></b>: Along with the serialization framework we also throw in the <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/RmsStorage.html">RmsStorage</a> that allows you to read and save data in the easiest possible way!</li>
+			<li><b><a href="docs/rmi.html">Remote Method Invocation</a></b>: a convenient yet higly efficient method for calling server side functionalities!</li>
 			<li><b><a href="docs/mepose.html">IDE Integration</a></b>: With our full blown Eclipse integration and much improved NetBeans support you can concentrate on your work rather than on our tools.</li>
 			<li><b><a href="docs/java5.html">Java 5.0 Support</a></b>: Use Java 5.0 features like enums or generics for your J2ME projects as well!</li>
 			<li><b><a href="docs/floater.html">Floating Point Support</a></b>: Use CLDC 1.1 features like floating point calculations on CLDC 1.0 mobiles as well - J2ME Polish takes care of the necessary conversion.</li>
