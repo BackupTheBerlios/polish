@@ -1,5 +1,27 @@
-/**
+/*
+ * Created on 13-Jan-2007 at 10:12:48.
  * 
+ * Copyright (c) 2007 Michael Koch / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
  */
 package de.enough.polish.io;
 
@@ -16,6 +38,18 @@ import java.util.Date;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
+/**
+ * Provides a <code>HttpConnection</code> that supports HTTP redirects.
+ * This class is compatible to <code>javax.microedition.io.HttpConnection</cpode>.
+ * 
+ * <p>When connecting to an URL and a HTTP redirect is return this class follows
+ * the redirect and uses the following HTTP connection. This works over multiple
+ * levels. By default five redirects are supported. The number of supported redirects
+ * can be tuned by setting the preprocessing variable <code>polish.Browser.MaxRedirects<code>
+ * to some integer value.</p>
+ *
+ * @see HttpConnection
+ */
 public class RedirectHttpConnection
   implements HttpConnection
 {
@@ -32,11 +66,24 @@ public class RedirectHttpConnection
   private ByteArrayOutputStream byteArrayOutputStream;
   private InputStream inputStream;
   
+  /**
+   * Creates a new http connection that understands redirects.
+   * 
+   * @param url the url to connect to
+   */
   public RedirectHttpConnection(String url)
   {
     this.originalUrl = url;
   }
   
+  /**
+   * Creates a new http connection that understands redirects.
+   * 
+   * @param url the url to connect to
+   * @param requestProperties the request properties to be set for each http request
+   * 
+   * @throws IOException if an error occured
+   */
   public RedirectHttpConnection(String url, HashMap requestProperties)
     throws IOException
   {
@@ -53,6 +100,10 @@ public class RedirectHttpConnection
     }
   }
   
+  /**
+   * Makes sure that the http connect got created. This method does redirects until
+   * the final connection is created.
+   */
   private synchronized void ensureConnectionCreated()
   {
     if (this.httpConnection != null)
@@ -322,10 +373,6 @@ public class RedirectHttpConnection
    */
   public void setRequestProperty(String key, String value) throws IOException
   {
-	if (this.requestProperties == null) 
-	{
-		this.requestProperties = new HashMap();
-	}
     //#if polish.Bugs.HttpIfModifiedSince
     if ("if-modified-since".equals(key.toLowerCase()))
     {
@@ -387,7 +434,6 @@ public class RedirectHttpConnection
    */
   public void close() throws IOException
   {
-	ensureConnectionCreated();
     this.httpConnection.close();
   }
 
@@ -397,7 +443,7 @@ public class RedirectHttpConnection
   public DataOutputStream openDataOutputStream() throws IOException
   {
     // TODO: Needs to be synnchronized and the DataOutputStream should only be created once.
-    return new DataOutputStream( openOutputStream() );
+    return new DataOutputStream(this.byteArrayOutputStream);
   }
 
   /* (non-Javadoc)
