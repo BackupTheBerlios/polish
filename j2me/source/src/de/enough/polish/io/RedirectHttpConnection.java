@@ -40,7 +40,7 @@ import javax.microedition.io.HttpConnection;
 
 /**
  * Provides a <code>HttpConnection</code> that supports HTTP redirects.
- * This class is compatible to <code>javax.microedition.io.HttpConnection</cpode>.
+ * This class is compatible to <code>javax.microedition.io.HttpConnection</code>.
  * 
  * <p>When connecting to an URL and a HTTP redirect is return this class follows
  * the redirect and uses the following HTTP connection. This works over multiple
