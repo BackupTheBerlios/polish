@@ -72,15 +72,17 @@ public class RedirectHttpConnection
       {
         tmpHttpConnection = (HttpConnection) Connector.open(url, Connector.READ_WRITE, true);
         tmpHttpConnection.setRequestMethod(this.requestMethod);
-        Object[] keys = this.requestProperties.keys();
-        
-        if (keys != null)
-        {
-          for (int i = 0; i < keys.length; i++)
-          {
-            tmpHttpConnection.setRequestProperty((String) keys[i],
-                                              (String) this.requestProperties.get(keys[i]));
-          }
+        if (this.requestProperties != null) {
+	        Object[] keys = this.requestProperties.keys();
+	        
+	        if (keys != null)
+	        {
+	          for (int i = 0; i < keys.length; i++)
+	          {
+	            tmpHttpConnection.setRequestProperty((String) keys[i],
+	                                              (String) this.requestProperties.get(keys[i]));
+	          }
+	        }
         }
         
         // Send POST data if exists.
@@ -320,6 +322,10 @@ public class RedirectHttpConnection
    */
   public void setRequestProperty(String key, String value) throws IOException
   {
+	if (this.requestProperties == null) 
+	{
+		this.requestProperties = new HashMap();
+	}
     //#if polish.Bugs.HttpIfModifiedSince
     if ("if-modified-since".equals(key.toLowerCase()))
     {
@@ -381,6 +387,7 @@ public class RedirectHttpConnection
    */
   public void close() throws IOException
   {
+	ensureConnectionCreated();
     this.httpConnection.close();
   }
 
@@ -390,7 +397,7 @@ public class RedirectHttpConnection
   public DataOutputStream openDataOutputStream() throws IOException
   {
     // TODO: Needs to be synnchronized and the DataOutputStream should only be created once.
-    return new DataOutputStream(this.byteArrayOutputStream);
+    return new DataOutputStream( openOutputStream() );
   }
 
   /* (non-Javadoc)
