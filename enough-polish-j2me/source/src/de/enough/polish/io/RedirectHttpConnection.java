@@ -45,7 +45,7 @@ import javax.microedition.io.HttpConnection;
  * <p>When connecting to an URL and a HTTP redirect is return this class follows
  * the redirect and uses the following HTTP connection. This works over multiple
  * levels. By default five redirects are supported. The number of supported redirects
- * can be tuned by setting the preprocessing variable <code>polish.Browser.MaxRedirects<code>
+ * can be tuned by setting the preprocessing variable <code>polish.Browser.MaxRedirects</code>
  * to some integer value.</p>
  *
  * @see HttpConnection
