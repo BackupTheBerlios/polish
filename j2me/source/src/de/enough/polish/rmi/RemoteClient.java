@@ -58,6 +58,7 @@ public class RemoteClient implements Runnable {
 	
 	private final Vector callQueue;
 	private String url;
+	private String cookie;
 	
 	/**
 	 * Createsa new client.
@@ -127,6 +128,10 @@ public class RemoteClient implements Runnable {
 		HttpConnection connection = null;
 		try {
 			connection = (HttpConnection) Connector.open( this.url, Connector.READ_WRITE );
+			// add cookie, if present:
+			if (this.cookie != null) {
+				connection.setRequestProperty("cookie", this.cookie );
+			}
 			// write parameters:
 			DataOutputStream out = connection.openDataOutputStream();
 			out.writeInt( RMI_VERSION );
@@ -140,6 +145,18 @@ public class RemoteClient implements Runnable {
 				throw new RemoteException("Server responded with response code " + status );
 			} else {
 				// okay, call succeeded at least partially:
+				// check for cookie:
+				String newCookie = connection.getHeaderField("Set-cookie");
+				if ( newCookie != null) {
+					int semicolonPos = newCookie.indexOf(';');
+					if (semicolonPos != -1) {
+						// a cookie has a session ID and a domain to which it should be sent, e.g. 
+						System.out.println("received cookie = [" + newCookie + "]");
+						newCookie = newCookie.substring(0, semicolonPos );
+					}
+					this.cookie = newCookie;
+				}
+				// check if the remote call succeeded:
 				int remoteCallStatus = in.readInt();
 				switch ( remoteCallStatus ) {
 				case Remote.STATUS_OK:
@@ -161,6 +178,8 @@ public class RemoteClient implements Runnable {
 			if (connection != null) {
 				try {
 					connection.close();
+					// on SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been gargabe collected yet.
+					System.gc();
 				} catch (IOException e) {
 					// ignore
 				}
