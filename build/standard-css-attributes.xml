@@ -491,6 +491,7 @@
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
+		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" />
 		<!--
 		<mapping from="" to="" />
 		-->
@@ -1961,6 +1962,100 @@
 		id="197"
 	/>
 	
+	<attribute
+		name="gauge-tachometer-startvalue"
+		type="int"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="The lowest possible value of this gauge."
+		default="0"
+		id="198"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-section1-start"
+		type="int"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the value at which the first section starts, default is the startvalue (0)."
+		default="0"
+		id="199"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-section2-start"
+		type="int"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the value at which the first section starts, default is the value range divided by 3."
+		id="200"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-section3-start"
+		type="int"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the value at which the first section starts, default is the value range multiplied by 2/3."
+		id="203"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-section1-color"
+		type="color"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the color of the first section, is invisible by default"
+		id="203"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-section2-color"
+		type="color"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the color of the second section, is invisible by default"
+		id="204"
+	/>
+
+	<attribute
+		name="gauge-tachometer-section3-color"
+		type="color"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the color of the third section, is invisible by default"
+		id="205"
+	/>
+
+	<attribute
+		name="gauge-tachometer-outer-color"
+		type="color"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the outer color of the tachometer"
+		default="black"
+		id="206"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-inner-color"
+		type="color"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the inner color of the tachometer"
+		default="white"
+		id="207"
+	/>
+	
+	
+	<attribute
+		name="gauge-tachometer-needle-color"
+		type="color"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="the color of the tachometer needle/pointer/indicator."
+		default="red"
+		id="208"
+	/>
+	
+	<attribute
+		name="gauge-tachometer-factor"
+		type="int"
+		appliesTo="Gauge, gauge-tachometer view-type"
+		description="an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example."
+		default="1"
+		id="209"
+	/>
 	
 	
 	<!--
