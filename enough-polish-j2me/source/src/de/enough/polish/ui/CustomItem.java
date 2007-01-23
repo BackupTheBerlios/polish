@@ -1402,6 +1402,16 @@ public abstract class CustomItem extends Item
 				this.skipClipping = skipClippingBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.customitem-inactive
+			Boolean inactiveBool = style.getBooleanProperty("customitem-inactive");
+			if (inactiveBool != null) {
+				if (inactiveBool.booleanValue()) {
+					this.appearanceMode = Item.PLAIN;
+				} else {
+					this.appearanceMode = Item.INTERACTIVE;								
+				}
+			}
+		//#endif
 	}
 	//#endif
 	

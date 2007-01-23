@@ -1419,5 +1419,36 @@ public final class UiAccess {
     return (HashMap) attributes.get( item );
   }
   //#endif
+  
+
+  //#if polish.midp
+	/**
+	 * Makes the item interactive (accessible) or non-interactive.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * 
+	 * @param item the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible( javax.microedition.lcdui.Item item, boolean isAccessible ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Makes the item interactive (accessible) or non-interactive.
+	 * 
+	 * @param item the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible( Item item, boolean isAccessible ) {
+		if (isAccessible) {
+			item.setAppearanceMode( Item.INTERACTIVE );
+		} else {
+			item.setAppearanceMode( Item.PLAIN );
+		}
+	}
+	//#endif
+
 
 }
