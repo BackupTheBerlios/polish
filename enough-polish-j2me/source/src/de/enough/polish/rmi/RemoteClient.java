@@ -133,6 +133,7 @@ public class RemoteClient implements Runnable {
 			//#else
 				connection = new RedirectHttpConnection( this.url );
 			//#endif
+			connection.setRequestMethod( HttpConnection.POST );
 			// add cookie, if present:
 			if (this.cookie != null) {
 				connection.setRequestProperty("cookie", this.cookie );
