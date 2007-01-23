@@ -57,7 +57,12 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 		// when you are importing the complete package of the remote interface or when you within the same package, you do not
 		// need to specify the fully qualified name, in this example following line would also suffice:
 		// this.server = (GameServer) RemoteClient.open("GameServer", "http://localhost:8080/gameserver/myservice");
-		this.server = (GameServer) RemoteClient.open("de.enough.polish.sample.rmi.GameServer", "http://localhost:8080/gameserver/myservice");
+		//#if cfg.gameserver.url:defined
+			//#= String gameServerUrl = "${cfg.gameserver.url}";
+		//#else
+			String gameServerUrl = "http://localhost:8080/gameserver/myservice";
+		//#endif
+		this.server = (GameServer) RemoteClient.open("de.enough.polish.sample.rmi.GameServer", gameServerUrl );
 		this.form = new Form("RMI");
 		this.form.addCommand( this.cmdRegister );
 		this.form.addCommand( this.cmdQuit );
@@ -110,7 +115,7 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 		} catch (DuplicateUserException e) {
 			e.printStackTrace();
 			System.out.println("Yeah, this is a dupe!");
-			this.form.append( "Dupe=" + e.getDuplicateUserName() );
+			this.form.append( "Dupe=" + e.getDuplicateUserName() + " (" + e.getMessage() + ")");
 		}
 	}
 

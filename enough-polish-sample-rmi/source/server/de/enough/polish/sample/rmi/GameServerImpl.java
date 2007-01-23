@@ -27,7 +27,10 @@ package de.enough.polish.sample.rmi;
 
 import java.util.Random;
 
+import javax.servlet.http.HttpSession;
+
 import de.enough.polish.rmi.RemoteException;
+import de.enough.polish.rmi.RemoteHttpServlet;
 
 /**
  * <p>Implements the actual service</p>
@@ -39,10 +42,16 @@ import de.enough.polish.rmi.RemoteException;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class GameServerImpl implements GameServer {
+public class GameServerImpl
+extends RemoteHttpServlet
+implements GameServer 
+{
 	
 	private Random random;
 
+	/**
+	 * Creates a new Game Server Implementation.
+	 */
 	public GameServerImpl() {
 		this.random = new Random( System.currentTimeMillis() );
 	}
@@ -56,6 +65,20 @@ public class GameServerImpl implements GameServer {
 		if ( (time & 1) == 0) {
 			System.out.println("throwing DuplicateUserException!");
 			throw new DuplicateUserException("It's a dupe!", userName );
+		}
+		HttpSession session = getSession();
+		Integer numberOfTries = (Integer) session.getAttribute("registration.number");
+		if (numberOfTries == null) {
+			session.setAttribute("registration.number", new Integer(1) );
+		} else {
+			if (numberOfTries.intValue() > 4) {
+				System.out.println("Too many registration trials...");
+				session.setAttribute("registration.number", new Integer(1) );
+				throw new DuplicateUserException("too many registrations...", userName );
+			} else {
+				session.setAttribute("registration.number", new Integer( numberOfTries.intValue() + 1 ) );
+			}
+		
 		}
 		GameUser user = new GameUser( this.random.nextLong() % 9999, userName, this.random.nextInt( 100 ) ); 
 		System.out.println("registering user " + user + ", time=" + time);

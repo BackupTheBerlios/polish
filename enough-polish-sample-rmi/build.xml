@@ -104,7 +104,7 @@
 		<deviceRequirements if="!test and device:defined">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
-		<deviceRequirements unless="test">
+		<deviceRequirements unless="test or device:defined">
 			<or>
 						<requirement name="Identifier" value="Generic/Midp2Cldc11Pointer" />
 						<requirement name="Identifier" value="Generic/MppPhone" />
@@ -219,17 +219,17 @@
 <target name="emulator" depends="test,j2mepolish" />
 
 <target name="build-war" description="builds the server war file for Tomcat or other J2EE/Servlet Containers.">
-	<present file="dist/rmi.jar" failMessage="Please run either the j2mepolish or the build-all target first." />
+	<present file="dist/client-rmi-classes.jar" failMessage="Please run either the j2mepolish or the build-all target first." />
 	<copy file="${polish.home}/dist/enough-j2mepolish-rmi.jar" todir="dist" />
 	<delete dir="bin/server" />
 	<mkdir dir="bin/server" />
-	<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
+	<javac srcdir="source/server" destdir="bin/server" classpath="dist/client-rmi-classes.jar:dist/enough-j2mepolish-rmi.jar:${polish.home}/lib/javax.servlet.jar" />
 	<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
  	<war 
 		destfile="dist/gameserver.war"
  		webxml="source/server/web.xml"
 	>
- 		<lib dir="dist" includes="rmi.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
+ 		<lib dir="dist" includes="client-rmi-classes.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
 	</war>
 </target>
 	

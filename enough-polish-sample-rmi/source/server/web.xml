@@ -35,10 +35,11 @@
 
     <servlet>
         <servlet-name>RemoteHttpServlet</servlet-name>
-        <servlet-class>de.enough.polish.rmi.RemoteHttpServlet</servlet-class>
+        <servlet-class>de.enough.polish.sample.rmi.GameServerImpl</servlet-class>
+        <!--  use init-params for configuring your service  -->
 	    <init-param>
-	      <param-name>polish.rmi.server</param-name>
-	      <param-value>de.enough.polish.sample.rmi.GameServerImpl</param-value>
+	      <param-name>cfg.gameserver.MyInitParam</param-name>
+	      <param-value>my game server init value</param-value>
 	    </init-param>
     </servlet>
 
