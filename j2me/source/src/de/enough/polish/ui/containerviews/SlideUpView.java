@@ -28,10 +28,6 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.Background;
-import de.enough.polish.ui.Border;
-import de.enough.polish.ui.Container;
-import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 
 /**
@@ -56,6 +52,11 @@ public class SlideUpView extends BackgroundContainerView {
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
+		if (this.restartAnimation) {
+			this.restartAnimation = false;
+			this.isAnimationFinished = false;
+			this.yOffset = this.contentHeight;			
+		}
 		if (!this.isAnimationFinished ) {
 			int y = this.yOffset;
 			int speed = Math.max( this.minSpeed, y / 3 );
@@ -75,12 +76,14 @@ public class SlideUpView extends BackgroundContainerView {
 	}
 	
 	
-	
+
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
+	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		super.initContent(parent, firstLineWidth, lineWidth);
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
+		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
+		// not sufficient to check this only in the animate method,
+		// since the container is already drawn once before animate() is called
 		if (this.restartAnimation) {
 			this.restartAnimation = false;
 			this.isAnimationFinished = false;
@@ -88,7 +91,6 @@ public class SlideUpView extends BackgroundContainerView {
 		}
 	}
 
-	
 
 
 	/* (non-Javadoc)
@@ -99,5 +101,8 @@ public class SlideUpView extends BackgroundContainerView {
 		super.paintContent(parent, x, y, leftBorder, rightBorder, g);
 	}
 
+
+
+	
 
 }

@@ -100,14 +100,14 @@ extends ItemView
 	 * contentHeight fields. 
 	 * The style of the focused item has already been set.
 	 *  
-	 * @param parentItem the Container which uses this view, use parent.getItems() for retrieving all items. 
+	 * @param parentContainerItem the Container which uses this view, use parent.getItems() for retrieving all items. 
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param lineWidth the maximum width of any following lines
 	 * @see #contentWidth
 	 * @see #contentHeight
 	 */
-	protected void initContent( Item parentItem, int firstLineWidth, int lineWidth ) {
-		Container parent = (Container) parentItem;		
+	protected void initContent( Item parentContainerItem, int firstLineWidth, int lineWidth ) {
+		Container parent = (Container) parentContainerItem;		
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false
@@ -142,8 +142,6 @@ extends ItemView
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
 				int width = item.getItemWidth( firstLineWidth, lineWidth );
 				int height = item.getItemHeight( firstLineWidth, lineWidth );
-				// now the item should have a style, so it can be safely focused
-				// without loosing the style information:
 				if (item.appearanceMode != Item.PLAIN) {
 					hasFocusableItem = true;
 				}
@@ -592,6 +590,8 @@ extends ItemView
 	 * @param g the graphics context
 	 */
 	protected void paintItem( Item item, int index,  int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		//#debug
+		System.out.println("ContainerView: painting item at (" +  x + ", " + y + ") " + item );
 		item.paint(x, y, leftBorder, rightBorder, g);
 	}
 
@@ -816,9 +816,11 @@ extends ItemView
 	 * sets the internal focusedIndex field along with focusedItem. 
 	 * When this method is overwritten, please do call super.focusItem first
 	 * or set the fields "focusedIndex" and "focusedItem" yourself.
+	 * This method figures out the direction and calls focusItem( index, item, direction )
 	 * 
 	 * @param index the index of the item
 	 * @param item the item which should be focused
+	 * @see #focusItem(int, Item, int)
 	 */
 	protected void focusItem( int index, Item item  ) {
 		int direction = 0;
@@ -829,10 +831,7 @@ extends ItemView
 		} else {
 			direction = Canvas.UP;
 		}
-		// this is done within container.focus() anyhow...
-		// this.focusedIndex = index;
-		// this.focusedItem = item;
-		this.parentContainer.focus(index, item, direction );
+		focusItem( index, item, direction );
 	}
 	
 	/**
@@ -848,9 +847,6 @@ extends ItemView
 	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
 	 */
 	protected void focusItem( int index, Item item, int direction  ) {
-		// this is done within container.focus() anyhow...
-		// this.focusedIndex = index;
-		// this.focusedItem = item;
 		this.parentContainer.focus(index, item, direction );
 	}
 

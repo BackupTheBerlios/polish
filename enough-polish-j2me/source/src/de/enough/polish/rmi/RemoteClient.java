@@ -34,6 +34,7 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
+import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.Serializer;
 
 /**
@@ -127,7 +128,11 @@ public class RemoteClient implements Runnable {
 	protected Object callMethodSynchrone( String name, long primitivesFlag, Object[] parameters ) throws RemoteException {
 		HttpConnection connection = null;
 		try {
-			connection = (HttpConnection) Connector.open( this.url, Connector.READ_WRITE );
+			//#if polish.rmi.redirects == false
+				connection = (HttpConnection) Connector.open( this.url, Connector.READ_WRITE );
+			//#else
+				connection = new RedirectHttpConnection( this.url );
+			//#endif
 			// add cookie, if present:
 			if (this.cookie != null) {
 				connection.setRequestProperty("cookie", this.cookie );
@@ -149,9 +154,10 @@ public class RemoteClient implements Runnable {
 				String newCookie = connection.getHeaderField("Set-cookie");
 				if ( newCookie != null) {
 					int semicolonPos = newCookie.indexOf(';');
+					//#debug
+					System.out.println("received cookie = [" + newCookie + "]");
 					if (semicolonPos != -1) {
 						// a cookie has a session ID and a domain to which it should be sent, e.g. 
-						System.out.println("received cookie = [" + newCookie + "]");
 						newCookie = newCookie.substring(0, semicolonPos );
 					}
 					this.cookie = newCookie;

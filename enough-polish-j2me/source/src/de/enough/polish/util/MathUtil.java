@@ -44,7 +44,7 @@ public final class MathUtil {
 		super();
 	}
 	
-	//#if polish.cldc1.1
+	//#if polish.hasFloatingPoint
 	/**
 	 * Rounds the given double value
 	 * 
@@ -61,7 +61,7 @@ public final class MathUtil {
 	}
 	//#endif
 
-	//#if polish.cldc1.1
+	//#if polish.hasFloatingPoint
 	/**
 	 * Rounds the given float value
 	 * 

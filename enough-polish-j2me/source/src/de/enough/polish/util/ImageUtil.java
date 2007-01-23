@@ -315,7 +315,7 @@ public final class ImageUtil {
 	 * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
 	 * @return the new width of the rgb data.
 	 */
-	public static final int getRotatedWidth(int degree,int width,int heigth,double degreeCos,double degreeSin)
+	public static final int getRotatedWidth( int degree,int width,int heigth, double degreeCos, double degreeSin)
 	{
 		if(degree == -90 || degree == 90 || degree == 270 || degree == -270){
 			return heigth;
@@ -323,10 +323,10 @@ public final class ImageUtil {
 		else if(degree == 360 || degree == 180 || degree == 0){
 			return width;
 		}
-		long pointX1 = MathUtil.round(0 * degreeCos - 0 * degreeSin);
-		long pointX2 = MathUtil.round(width *degreeCos - 0 *degreeSin);
-		long pointX3 = MathUtil.round(0 *degreeCos - heigth *degreeSin);
-		long pointX4 = MathUtil.round(width *degreeCos - heigth *degreeSin);
+		long pointX1 = 0; // MathUtil.round(0 * degreeCos - 0 * degreeSin);
+		long pointX2 = MathUtil.round( width * degreeCos ); //MathUtil.round(width * degreeCos - 0 *degreeSin);
+		long pointX3 = MathUtil.round( - heigth * degreeSin); // MathUtil.round(0 *degreeCos - heigth *degreeSin);
+		long pointX4 = MathUtil.round( width * degreeCos - heigth * degreeSin );
 		long minX = pointX1;
 		if(pointX2 < minX){
 			minX = pointX2;
