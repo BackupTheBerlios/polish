@@ -4436,7 +4436,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="nokia-ui, mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, wav, mp3, realaudio, aac"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5297,6 +5297,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="VideoFormat" value="3gpp, mpeg-4, RealVideo"/>
 		<capability name="SoundFormat" value="midi, amr, wav, mp3, aac, RealAudio"/>
 		<capability name="HeapSize" value="dynamic"/>

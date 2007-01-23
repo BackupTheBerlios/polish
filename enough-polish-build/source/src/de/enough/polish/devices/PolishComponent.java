@@ -502,7 +502,7 @@ implements Comparable
 		name = name.toLowerCase();
 		if (!name.startsWith("polish.")) {
 			name = "polish." + name;
-		}
+		} 
 		this.features.put( name, Boolean.TRUE );
 	}
 	

@@ -220,7 +220,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%set basedir = ../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");
-		lines.add("<div id=\"content\">" );
+		//lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">The Known Issues Database</h1>" );
 		lines.add("<%index %>");
 		lines.add( "<p>Some J2ME devices show unexpected behavior - this list provides an overview.</p>");
@@ -269,7 +269,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%set basedir = ../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");
-		lines.add("<div id=\"content\">" );
+//		lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">Known Issue: " + name + "</h1>" );
 		lines.add("<%index %>");
 		lines.add( "<p>Please <a href=\"mailto:j2mepolish@enough.de?subject=Issue-" + name + "\">email</a> us for updates of this known issue.</p>");
@@ -351,7 +351,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%set basedir = ../../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");
-		lines.add("<div id=\"content\">" );
+//		lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">" + device.getIdentifier() + "</h1>" );
 		lines.add("<p>");
 		lines.add("<%index %>");
@@ -792,7 +792,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%set basedir = ../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");
-		lines.add("<div id=\"content\">" );
+//		lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">Device by APIs</h1>" );
 		lines.add( "<p>Following platforms are supported by J2ME devices:</p><ul>");
 		lines.add("<li><a href=\"midp1.html\">MIDP/1.0</a></li>");
@@ -824,7 +824,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%set basedir = ../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");
-		lines.add("<div id=\"content\">" );
+		//lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">Device by APIs</h1>" );
 		lines.add( "<p>Following APIs are supported by J2ME devices:</p><p>");
 		for (int i = 0; i < apiLinks.length; i++) {
@@ -877,7 +877,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%set basedir = ../ %>");
 		lines.add("<%include start.txt %>" );
 		lines.add("");
-		lines.add("<div id=\"content\">" );
+//		lines.add("<div id=\"content\">" );
 		lines.add("<h1 id=\"top\">" + heading + "</h1>" );
 		if (introText != null) {
 			lines.add("<p>" + introText + "</p>");

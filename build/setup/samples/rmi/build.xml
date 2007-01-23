@@ -161,22 +161,12 @@
 					<localization locales="en_US" if="test" />
 					-->
 				</resources>
-				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
-					<!--
-					You can set additional parameters here, e.g.:
-					<parameter name="optimize" value="false" />
-					-->
-				</obfuscator>
+				<!-- obfuscator settings: always obfuscate -->
+				<obfuscator name="ProGuard" useDefaultPackage="true" unless="polish.blackberry" />
 				
-				<!-- obfuscator settings: do not obfuscate when the test-property is true  
-				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">
-					<parameter name="optimize" value="true" />
-				</obfuscator>
-				-->
 				<!-- debug/log settings: only include debug setting when the test-property is true -->
-				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
-					<filter level="debug" package="de.enough.polish.sample.serialization"/>
+				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true"  if="test">
+					<filter level="debug" package="de.enough.polish.sample.rmi"/>
 					<!--
 					<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
 					<filter level="debug" class="de.enough.polish.ui.Container"/>
@@ -231,17 +221,17 @@
 	</target>
 	
 	<target name="build-war" description="builds the server war file for Tomcat or other J2EE/Servlet Containers.">
-		<present file="dist/rmi.jar" failMessage="Please run either the j2mepolish or the build-all target first." />
+		<present file="dist/client-rmi-classes.jar" failMessage="Please run either the j2mepolish or the build-all target first." />
 		<copy file="${polish.home}/lib/enough-j2mepolish-rmi.jar" todir="dist" />
 		<delete dir="bin/server" />
 		<mkdir dir="bin/server" />
-		<javac srcdir="source/server" destdir="bin/server" classpath="dist/rmi.jar:dist/enough-j2mepolish-rmi.jar" />
+		<javac srcdir="source/server" destdir="bin/server" classpath="dist/client-rmi-classes.jar:dist/enough-j2mepolish-rmi.jar" />
 		<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
 	 	<war 
 			destfile="dist/gameserver.war"
 	 		webxml="source/server/web.xml"
 		>
-	 		<lib dir="dist" includes="rmi.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
+	 		<lib dir="dist" includes="client-rmi-classes.jar,enough-j2mepolish-rmi.jar,gameserver.jar" />
 		</war>
 	</target>
 	

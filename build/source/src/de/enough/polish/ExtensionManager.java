@@ -472,7 +472,7 @@ public class ExtensionManager {
 			String[] extensionNames = StringUtil.splitAndTrim(extensions, ',');
 			for (int i = 0; i < extensionNames.length; i++) {
 				String extensionName = extensionNames[i];
-				//System.out.println("Executing device specific finalizer [" + finalizerName + "]" );
+				//System.out.println("Initializing device specific extension [" + extensionName + "] of type [" + type + "]" );
 				try {
 					Extension extension = getTemporaryExtension( type, extensionName, environment );
 					extension.initialize(device, locale, environment );

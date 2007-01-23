@@ -37,11 +37,12 @@ public class ClassRenamingPostCompiler
     if (device.getEnvironment().hasSymbol(RESEVERD_KEYWORD_SERIALIZABLE))
       {
         this.renamingMap.put("de/enough/polish/io/Serializable", "de/enough/polish/io/EnoughSerializable");
+        System.out.println("Renaming de.enough.polish.io.Serializable (reserved keyword)...");
       }
     
     if (this.renamingMap.size() == 0)
       {
-        System.out.println("Nothing to do. Exiting.");
+        //System.out.println("Nothing to do. Exiting.");
         return;
       }
     
@@ -78,8 +79,7 @@ public class ClassRenamingPostCompiler
   {
     String tmpClassName = className.replace(File.separatorChar, '/');
     String newClassName = ClassRenamingHelper.doRenaming(tmpClassName, this.renamingMap);
-    newClassName = newClassName.replace('/', File.separatorChar);
-
+    
     // Write class file.
     ClassHelper.writeClass(classesDir, newClassName, byteArray);
 

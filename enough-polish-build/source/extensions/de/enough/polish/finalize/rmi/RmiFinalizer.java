@@ -59,7 +59,7 @@ public class RmiFinalizer extends Finalizer {
 		File sourceDir = (File) this.environment.get("rmi-classes-dir" );
 	    List rmiClasses = (List) this.environment.get("rmi-classes" );
 	    if (rmiClasses != null) {
-			File targetJar = new File( device.getJarFile().getParentFile(), "rmi.jar" );
+			File targetJar = new File( device.getJarFile().getParentFile(), "client-rmi-classes.jar" );
 	    	System.out.println("packaging rmi classes to " + targetJar.getAbsolutePath() );
 			File[] files = (File[]) rmiClasses.toArray( new File[ rmiClasses.size() ] );
 //	    	File[] files = new File[ rmiClasses.size() + 1 ] ;

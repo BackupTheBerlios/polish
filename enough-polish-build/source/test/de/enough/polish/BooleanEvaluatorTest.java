@@ -28,7 +28,6 @@ package de.enough.polish;
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.util.StringUtil;
 
-import org.apache.tools.ant.BuildException;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
