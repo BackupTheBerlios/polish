@@ -25,6 +25,7 @@
  */
 package de.enough.polish.rmi;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -164,8 +165,13 @@ public class RemoteHttpServlet extends HttpServlet {
 		try {
 			this.requestsByThread.put( thread, request );
 			DataInputStream in = new DataInputStream( request.getInputStream() );
-			DataOutputStream out = new DataOutputStream( response.getOutputStream() );
-			process(in, out);			
+			//DataOutputStream out = new DataOutputStream( response.getOutputStream() );
+			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+			DataOutputStream out = new DataOutputStream( byteOut );
+			process(in, out);
+			byte[] responseData = byteOut.toByteArray();
+			response.setContentLength( responseData.length );
+			response.getOutputStream().write(responseData, 0, responseData.length );
 		} catch (IOException e) {
 			e.printStackTrace();
 			try {
