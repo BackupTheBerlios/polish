@@ -143,8 +143,7 @@ public interface RecordEnumeration
 
 	/**
 	 * Returns the enumeration index to the same state as right
-	 * after the enumeration was created.</DL>
-	 * 
+	 * after the enumeration was created.
 	 */
 	public void reset();
 
@@ -186,8 +185,7 @@ public interface RecordEnumeration
 	 * <code>IllegalStateException</code>. Note that this method is
 	 * used for manually aiding in the minimization of immediate
 	 * resource requirements when this enumeration is no longer
-	 * needed.</DL>
-	 * 
+	 * needed.
 	 */
 	public void destroy();
 

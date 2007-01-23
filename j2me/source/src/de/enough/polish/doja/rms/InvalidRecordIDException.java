@@ -23,13 +23,10 @@ public class InvalidRecordIDException extends RecordStoreException
 
 	/**
 	 * Constructs a new <code>InvalidRecordIDException</code> with no detail
-	 * message.</DL>
-	 * 
-	 * 
+	 * message.
 	 */
 	public InvalidRecordIDException()
 	{
 		super();
 	}
-
 }

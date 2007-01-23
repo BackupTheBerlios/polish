@@ -40,19 +40,18 @@ package de.enough.polish.doja.lang;
 public class IllegalStateException extends RuntimeException {
 
 	/**
-	 * 
+	 * Creates a new <code>IllegalStateException</code> object.
 	 */
 	public IllegalStateException() {
 		super();
 	}
 
 	/**
-	 * @param message
+   * Creates a new <code>IllegalStateException</code> object.
+   * 
+	 * @param message the message string
 	 */
 	public IllegalStateException(String message) {
 		super(message);
 	}
-	
-	
-
 }

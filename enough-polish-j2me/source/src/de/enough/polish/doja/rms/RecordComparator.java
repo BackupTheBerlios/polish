@@ -28,7 +28,7 @@ public interface RecordComparator
 	 * EQUIVALENT means that in terms of search or sort order, the
 	 * two records are the same. This does not necessarily mean that
 	 * the two records are identical.
-	 * <P>The value of EQUIVALENT is 0.</P></DL>
+	 * <P>The value of EQUIVALENT is 0.</P>
 	 * 
 	 */
 	public static final int EQUIVALENT = 0;
@@ -37,7 +37,7 @@ public interface RecordComparator
 	 * FOLLOWS means that the left (first parameter) record <em>follows</em>
 	 * the right (second parameter) record in terms of search or
 	 * sort order.
-	 * <P>The value of FOLLOWS is 1.</P></DL>
+	 * <P>The value of FOLLOWS is 1.</P>
 	 * 
 	 */
 	public static final int FOLLOWS = 1;
@@ -46,7 +46,7 @@ public interface RecordComparator
 	 * PRECEDES means that the left (first parameter) record <em>precedes</em>
 	 * the right (second parameter) record in terms of search or
 	 * sort order.
-	 * <P>The value of PRECEDES is -1.</P></DL>
+	 * <P>The value of PRECEDES is -1.</P>
 	 * 
 	 * 
 	 */

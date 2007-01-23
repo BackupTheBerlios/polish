@@ -26,9 +26,7 @@ public class RecordStoreNotFoundException extends RecordStoreException
 
 	/**
 	 * Constructs a new <code>RecordStoreNotFoundException</code>
-	 * with no detail message.</DL>
-	 * 
-	 * 
+	 * with no detail message.
 	 */
 	public RecordStoreNotFoundException()
 	{

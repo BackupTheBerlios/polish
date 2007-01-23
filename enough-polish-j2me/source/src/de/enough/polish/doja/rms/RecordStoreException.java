@@ -27,9 +27,7 @@ public class RecordStoreException extends Exception
 
 	/**
 	 * Constructs a new <code>RecordStoreException</code> with no detail
-	 * message.</DL>
-	 * 
-	 * 
+	 * message.
 	 */
 	public RecordStoreException()
 	{

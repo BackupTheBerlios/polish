@@ -87,13 +87,13 @@ public class RecordStore extends Object
 {
 	/**
 	 * Authorization to allow access only to the current MIDlet
-	 * suite. AUTHMODE_PRIVATE has a value of 0.</DL>
+	 * suite. AUTHMODE_PRIVATE has a value of 0.
 	 */
 	public static final int AUTHMODE_PRIVATE = 0;
 
 	/**
 	 * Authorization to allow access to any MIDlet
-	 * suites. AUTHMODE_ANY has a value of 1.</DL>
+	 * suites. AUTHMODE_ANY has a value of 1.
 	 */
 	public static final int AUTHMODE_ANY = 1;
 
