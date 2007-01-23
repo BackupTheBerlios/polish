@@ -1952,6 +1952,15 @@
 		id="196"
 	/>
 		
+	<attribute
+		name="customitem-inactive"
+		type="boolean"
+		appliesTo="CustomItem"
+		description="Can be used to deactivate a specific CustomItem permanently. Use this for creating a custom item that cannot be selected by the user."
+		default="false"
+		id="197"
+	/>
+	
 	
 	
 	<!--
