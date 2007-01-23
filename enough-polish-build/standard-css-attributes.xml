@@ -1993,7 +1993,7 @@
 		type="int"
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the value at which the first section starts, default is the value range multiplied by 2/3."
-		id="203"
+		id="201"
 	/>
 	
 	<attribute
@@ -2001,7 +2001,7 @@
 		type="color"
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the color of the first section, is invisible by default"
-		id="203"
+		id="202"
 	/>
 	
 	<attribute
@@ -2009,7 +2009,7 @@
 		type="color"
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the color of the second section, is invisible by default"
-		id="204"
+		id="203"
 	/>
 
 	<attribute
@@ -2017,7 +2017,7 @@
 		type="color"
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the color of the third section, is invisible by default"
-		id="205"
+		id="204"
 	/>
 
 	<attribute
@@ -2026,7 +2026,7 @@
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the outer color of the tachometer"
 		default="black"
-		id="206"
+		id="205"
 	/>
 	
 	<attribute
@@ -2035,7 +2035,7 @@
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the inner color of the tachometer"
 		default="white"
-		id="207"
+		id="206"
 	/>
 	
 	
@@ -2045,7 +2045,7 @@
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="the color of the tachometer needle/pointer/indicator."
 		default="red"
-		id="208"
+		id="207"
 	/>
 	
 	<attribute
@@ -2054,7 +2054,7 @@
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example."
 		default="1"
-		id="209"
+		id="20"
 	/>
 	
 	
