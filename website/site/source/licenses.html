@@ -2,7 +2,6 @@
 <%set title = J2ME Polish: Licensing %>
 <%include start.txt %>
 	
-	<div id="content">
 	<h1 id="top">Licenses</h1>
 	<%index %>
 	
@@ -22,47 +21,62 @@
 		<tr><th>License&nbsp;&nbsp;</th>
 		<th>Explanation&nbsp;&nbsp;</th>
 		<th>Price (excluding VAT)</th></tr>
-	<tr><td>Developer Seat</td>
-	    <td>A license for one developer. When two programmers of your
-		company work with J2ME Polish commercially, you need to obtain 2 developer
-		seat-licenses. Additionally you need to obtain either a Single, Runtime
-		or Enterprise License.</td>
-	    <td>99,- Euro</td>
-	</tr>
 	<tr><td>Single License</td>
 	    <td>Develop one application and sell as many copies as you want of that
-	    application.</td>
-	    <td>199,- Euro</td>
-	</tr>
-	<tr><td>Runtime License</td>
-	    <td>Develop as many applications as you want, but only sell
-	    up to 100 copies of those applications altogether.</td>
-	    <td>199,- Euro</td>
+	    application. You can also sell several design variations, customizations and device ports of your application.
+		<br />
+		Further features:
+		<ul>
+			<li>2 months free support via email</li>
+			<li>All updates included within the same major version (2.x)</li>
+			<li>Feature requests of licensees enjoy high priority</li>
+		</ul>
+		</td>
+	    <td>990.00 Euro</td>
 	</tr>
 	<tr><td>Enterprise License</td>
-	    <td>Develop and sell as many applications as you want.</td>
-	    <td>2990,- Euro</td>
+	    <td>Develop any number of mobile applications with J2ME Polish with any number of developers.
+		<br />
+		Further features:
+		<ul>
+			<li>6 months free support via email and phone</li>
+			<li>Free updates and bugfixes for at least 12 months following the purchase, along with all updates within the same major version (2.x).</li>
+			<li>Up to one man-week of feature requests are implemented for free within specified time-frames</li>
+			<li>Option to continue support for fix monthly rates of 500.00 Euro</li>
+			<li>IP Indemnification - licensees are indemnified of any IP claims related to J2ME Polish</li>
+			<li>Feature requests of enterprise licensees enjoy highest priority</li>
+		</ul>
+		</td>
+	    <td>14,990.00 Euro</td>
+	</tr>
+	<tr><td>J2ME Polish Developer Program</td>
+	    <td>In the J2ME Polish Developer Program you can use J2ME Polish completely free when you allow us to market your application as well. The profits resulting from the marketing are shared between the developer (60%) and Enough Software (40%). Each (J2ME Polish'ed) application needs to be registered with the J2ME Polish Developer Program, any updates need to be forwarded to Enough Software.
+		<br />
+		Further features:
+		<ul>
+			<li>Develop commercial applications for free</li>
+			<li>Each (J2ME Polish'ed) application needs to be registered with the J2ME Polish Developer Program, any updates need to be forwarded to Enough Software</li>
+			<li>We are going to market the application on a revenue share basis (60% developer,40% Enough Software)</li>
+			<li>The developer can market the application independently of Enough Software as well</li>
+			<li>Optional: Enough Software can certify and sign the application</li>
+		</ul>
+		</td>
+	    <td>Free!</td>
 	</tr>
 	</table>
-	<p>The Single-, Runtime- and Enterprise-licenses include upgrades up to the next 
+	<p>The Single-License includes upgrades up to the next 
 	major-release and support for one month after the purchase.</p>
 	<p>Please read the full license-conditions carefully:</p>
 	<ul>
-		<li><a href="licensing/commercial-license.html">Conditions for international customers</a></li>
-		<li><a href="licensing/commercial-license.de.html">Conditions for Germany and German-speaking countries</a></li>
+		<li><a href="licensing/commercial-license20.html">Conditions for international customers</a></li>
+		<li><a href="licensing/commercial-license20.de.html">Conditions for Germany and German-speaking countries</a></li>
 	</ul>
 	
 	<p>If you have a question regarding the licensing of J2ME Polish,
 	please get in touch with Robert Virkus, <a href="mailto:j2mepolish@enough.de">j2mepolish@enough.de.</a></p>
-	<h2 id="example">License Example</h2>
-	<p>When 3 programmers of your company work with J2ME Polish and you develop
-	a game which you will sell about 6.000 times, you would want to obtain
-	3 developer seats and the Single License:<br />
-	<code>3 x 99,- Euro + 199,- Euro = 496,- Euro</code>.
-	</p>
 	<h2 id="whycommercial">Why do I need a commercial license?</h2>
-	<p>When you develop applications with J2ME Polish, specific APIs are weaved into
-	your application during the build process, i.e. the GUI classes, the game-engine classes, 
+	<p>When you develop applications with J2ME Polish, specific APIs are woven into
+	your application during the build process, i.e. the GUI classes, the serialization classes, the game-engine classes, 
 	the localization classes, the logging classes, etc. Since your application then uses these classes
 	you effectively link agains the J2ME Polish library. The GNU GPL license requires you to
 	publish your completely source code solely under the GNU GPL again. That's why the alternative
@@ -75,9 +89,12 @@
 	</p>
 	<ul>
 	 <li>The J2ME Polish GUI</li>
+	 <li>The Serialization Framework</li>
+	 <li>The Remote Method Invocation (RMI) Framework</li>
+	 <li>The Persistence Framework</li>
 	 <li>The Game Engine / MIDP/2.0 compatible game-API</li>
 	 <li>The Logging Framework</li>
-	 <li>The Localization classes</li>
+	 <li>The Localization Framework</li>
 	 <li>The BitMapFont classes</li>
 	 <li>Any utility classes</li>
 	</ul>
@@ -85,7 +102,7 @@
 	</p>
 	<p>You can use the building framework along with the device database, the preprocessing, the 
 	resource assembling and so on for building commercial J2ME applications 
-	without ackquiring a commercial license.
+	without acquiring a commercial license.
 	</p>
 	<p>
 	You can also extend J2ME Polish by using the extension points (that are all based on
@@ -95,7 +112,7 @@
 	</p>
 	<p>
 	The device database itself is also licensed under the GPL, so if you want to use the database for
-	something different than building your applications, you need my written consent first (or publish your
+	something different than building your applications, you need our written consent first (or publish your
 	project under the GPL again).
 	</p>
 	<h2 id="security">Security of Investments</h2>
@@ -106,8 +123,10 @@
 	</p>
 	<h2 id="order">Order</h2>
 	<p>
-	Please use this <a href="order/Order-Form.pdf">PDF form</a> for placing your 
+	Please use this <a href="order/Order-Form20.pdf">PDF form</a> for placing your 
 	order via fax. You will receive your license key along with an invoice
 	as soon as possible. 
 	<p>
+	
+	
 <%include end.txt %>

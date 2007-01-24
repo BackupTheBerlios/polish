@@ -18,6 +18,7 @@
 	<script type="text/javascript">
 	window.onload=function(){
 		Nifty("pre","tl br big");
+		//Nifty("header-in","tl tr big");
 	}
 	</script>
 </head>
@@ -32,7 +33,7 @@
 			<div id="header-in">
 
 
-
+				<!--
 				<ul id="nav-top">
 
 					<li><a href="" title="">link</a></li>
@@ -44,12 +45,16 @@
 					<li><a href="" title="">link</a></li>
 
 				</ul>
+				-->
 				
 				
 		<img src="<%= basedir %>images/header.png" alt="J2ME Polish" width="750" height="50"/>
 		<a class="imageLink" href="http://www.enough.de">
 			<img class="headerImage" src="<%= basedir %>images/logo-small.png" alt="Enough Software" width="69" height="40" /> 
 		</a>
+	
+		</div>  <!-- end header-in -->
+	
 		
 		<!-- main menu -->
 		<div class="menu2">
@@ -58,75 +63,74 @@
 <li><a class="menu2one" href="<%= basedir %>index.html">Home</a></li>
 </ul>
 <ul>
+
+<li><a class="menu2three" href="#nogo">Company
+<!--[if IE 7]><!--></a><!--<![endif]-->
+	<table><tr><td>
+	<ul class="scroller">
+	<li><a href="#nogo">Enough Software</a></li>
+	<li><a href="#nogo">Business Units</a></li>
+	<li><a href="#nogo">Management</a></li>
+	<li><a href="#nogo">Jobs</a></li>
+	</ul>
+	</td></tr></table>
+<!--[if lte IE 6]></a><![endif]-->
+
 <li><a class="menu2two" href="#nogo">Products
 <!--[if IE 7]><!--></a><!--<![endif]-->
 	<table><tr><td>
 	<ul>
-	<li><a href="#nogo">Mobiles</a></li>
-	<li><a href="#nogo">Photoframes</a></li>
-
-	<li><a href="#nogo">Tripods</a></li>
-	<li><a class="drop" href="#nogo">Cameras
+	<li><a href="#nogo">J2ME Polish</a></li>
+	<li><a href="#nogo">OTA Delivery Platform</a></li>
+	<li><a class="drop" href="#nogo">Applications&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>
 	<!--[if IE 7]><!--></a><!--<![endif]-->
 		<table><tr><td>
 		<ul>
-		<li class="group">Minolta</li>
-		<li><a href="#nogo">SLRs</a></li>
-		<li><a href="#nogo">Compact</a></li>
-
-		<li><a href="#nogo">Digital</a></li>
-		<li><a href="#nogo">Video</a></li>
-		<li class="group">Cannon</li>
-		<li><a href="#nogo">SLRs</a></li>
-		<li><a href="#nogo">Compact</a></li>
-		<li><a href="#nogo">Digital</a></li>
-
-		<li><a href="#nogo">Video</a></li>
-		<li class="group">Nikon</li>
-		<li><a href="#nogo">SLRs</a></li>
-		<li><a href="#nogo">Compact</a></li>
-		<li><a href="#nogo">Digital</a></li>
-		<li><a href="#nogo">Video</a></li>
-
-		<li class="group">Olympus</li>
-		<li><a href="#nogo">SLRs</a></li>
-		<li><a href="#nogo">Compact</a></li>
-		<li><a href="#nogo">Digital</a></li>
-		<li><a href="#nogo">Video</a></li>
+		<li><a href="#nogo">Mobay</a></li>
+		<li><a href="#nogo">Mobile Dictionary</a></li>
+		<li><a href="#nogo">SMS Compressor</a></li>
+		<li><a href="#nogo">Mobile Shop</a></li>
+		<li><a href="#nogo">Mobile Diet</a></li>
 		</ul>
-
 		</td></tr></table>
 	<!--[if lte IE 6]></a><![endif]-->
 	</li>
-	<li><a href="#nogo">Memory cards</a></li>
-	<li><a href="#nogo">Camcorders</a></li>
 	</ul>
 	</td></tr></table>
 <!--[if lte IE 6]></a><![endif]-->
-
 </li>
+
 <li><a class="menu2three" href="#nogo">Services
 <!--[if IE 7]><!--></a><!--<![endif]-->
 	<table><tr><td>
 	<ul class="scroller">
-	<li><a href="#nogo">Photography</a></li>
-	<li><a href="#nogo">Video editing</a></li>
-	<li><a href="#nogo">Web site Design</a></li>
-	<li><a href="#nogo">Reference guides</a></li>
+	<li><a href="#nogo">Consulting</a></li>
+	<li><a href="#nogo">Development</a></li>
+	<li><a href="#nogo">Porting</a></li>
+	<li><a href="#nogo">Optimizations</a></li>
+	</ul>
+	</td></tr></table>
+<!--[if lte IE 6]></a><![endif]-->
 
-	<li><a href="#nogo">Photo-editing</a></li>
-	<li><a href="#nogo">Banner design</a></li>
-	<li><a href="#nogo">Web consultancy</a></li>
-	<li><a href="#nogo">Banner Exchange</a></li>
+<li><a class="menu2three" href="#nogo">Support
+<!--[if IE 7]><!--></a><!--<![endif]-->
+	<table><tr><td>
+	<ul class="scroller">
+	<li><a href="#nogo">Contact</a></li>
+	<li><a href="#nogo">Discussion Forums</a></li>
+	<li><a href="#nogo">Developer Blog</a></li>
+	<li><a href="#nogo">Support Options</a></li>
+	<li><a href="<%= basedir %>atoz.html">Site Map</a></li>
 	</ul>
 	</td></tr></table>
 <!--[if lte IE 6]></a><![endif]-->
 
 </li>
-<li><a class="menu2four" href="<%= basedir %>contact.html">Contact us</a></li>
-<li><a class="menu2five" href="<%= basedir %>atoz.html">Site map</a></li>
+<li><a class="menu2four" href="<%= basedir %>shop.html">Shop</a></li>
 <li><a class="menu2six" href="<%= basedir %>news.html">News
+
 <!--[if IE 7]><!--></a><!--<![endif]-->
+<!--
 	<table><tr><td>
 	<ul class="endstop">
 	<li><a href="#nogo">Breaking</a></li>
@@ -134,7 +138,9 @@
 
 	<li><a href="#nogo">May 2006</a></li>
 	<li><a class="drop" href="#nogo">News archives
+-->
 	<!--[if IE 7]><!--></a><!--<![endif]-->
+<!--
 		<table><tr><td>
 		<ul class="left">
 		<li class="group">2006</li>
@@ -160,22 +166,25 @@
 		<li><a href="#nogo">January</a></li>
 		</ul>
 		</td></tr></table>
+-->
 	<!--[if lte IE 6]></a><![endif]-->
+<!--
 	</li>
 
 	</ul>
 	</td></tr></table>
+-->
 <!--[if lte IE 6]></a><![endif]-->
 </li>
 </ul>
 
 </div> <!-- end menu2 -->
 		
-	</div>  <!-- end header-in -->
+	
+	
 </div>  <!-- end header-wrapper -->
-	
-	
 	<!-- end of header -->
+	
 	
 	<div id="content-wrap">
 	
@@ -218,11 +227,13 @@
 		
 		<%ifdef inDocumentationSection %>
 			<div id="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
+			<!--
 			<%ifdef inDocumentationSection.articles %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/articles.html">Articles</a></div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/articles.html">Articles</a></div>
 			<%endif %>
+			-->
 			<%ifdef inDocumentationSection.install %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation &amp; Integration</a></div>
 			<%else %>
@@ -474,7 +485,9 @@
   <input type="submit" name="sa" value="Search" />
   <input type="hidden" name="cof" value="FORID:0" />
 </form>
+<!--
 <script type="text/javascript" src="http://google.com/coop/cse/brand?form=searchbox_012530021559135704147%3A-v-bfolxtlc"></script>
+-->
 <!-- Google CSE Search Box Ends -->
 		<!-- search form: -->
 		<!--

@@ -9,63 +9,90 @@ way to fit your requirements.
 =================================================================== */
 
 /* common styling */
+/*
 .menu2 {
-float:left; width:100%; font-family: helvetica, verdana, arial, sans-serif; font-size:11px; border-top:1px solid #c00;
-background:#ddd url(images/menu2.gif) repeat-x; 
-margin:0 0 0 0; /* for this demo only */ 
-pading: 0 0 0 0;
+	float:left; width:100%; 
+	font-family: helvetica, verdana, arial, sans-serif; 
+	font-size: 90%;
+	border-top:1px solid #c00;
+	background:#ddd url(images/menu2.gif) repeat-x; 
+	margin: 8px 0;
+	margin-top: -13px;
+	pading: 0 0 0 0;
+	padding-top: 2px;
 }
 .menu2 ul {
-padding:0;margin:0;list-style-type:none;
+	padding:0;
+	margin:0;list-style-type:none;
 }
+
 .menu2 ul li {
-float:left; position:relative;
+	float:left; position:relative;
 }
-.menu2 ul li.group {display:block; text-indent:10px; background:#666; color:#ff0; width:152px; padding:4px 0;}
+
+
+.menu2 ul li.group {display:block; text-indent:10px; background:#666; color:#fff; width:152px; padding:4px 0;}
 
 .menu2 ul li a, .menu2 ul li a:visited {
 float:left; display:block; text-decoration:none; color:#444; padding:0px 16px; line-height:25px; height:30px;
 }
 
-.menu2 ul li:hover {width:auto;}
-
+.menu2 ul li:hover {width:auto; height: 30px;}
+.menu2 ul li:hover ul li:hover a:hover {height: 20px; text-decoration:none;}
 .menu2 ul li a:hover {background:#aaa url(images/sub2a.gif); color:#c00;}
 
 .menu2 ul li:hover a {background:#aaa url(images/sub2a.gif); color:#c00;}
 
 .menu2 ul li ul {
-display: none;
+	display: none;
 }
 .menu2 table {
-margin:0; border-collapse:collapse; font-size:11px; position:absolute; top:0; left:0;
+	margin:0; border-collapse:collapse;
+	position:absolute; top:0; left:0;
 }
-
+*/
 /* specific to non IE browsers */
+/*
 .menu2 ul li:hover ul {
 display:block; position:absolute;top:29px; background:#aaa; margin-top:1px; left:0; width:152px;
 }
 
 .menu2 ul li:hover ul.scroller {
-height:138px; width:172px; overflow:auto;}
+	height:138px;
+	width:172px; overflow:auto;
+}
 
 .menu2 ul li:hover ul.endstop {
-left:-90px;
+	left:-90px;
 }
 .menu2 ul li:hover ul li ul {
 display: none;
 }
 .menu2 ul li:hover ul li a {
-display:block; background:#aaa; color:#fff;height:auto;line-height:15px;padding:4px 16px; width:120px;
+	display:block; background:#aaa; 
+	color:#fff;
+	height:auto;
+	line-height: 100%;
+	padding:4px 16px; 
+	width:120px;
 }
+*/
+/*
 .menu2 ul li:hover ul li a.drop {
 background:#888;
 }
+*/
+/*
 .menu2 ul li:hover ul li a:hover {
-color:#ff0; background: #888;
+	color:#fff; background: #888;
 }
+*/
+/*
 .menu2 ul li:hover ul li a:hover.drop {
-background: #888; color:#ff0;
+background: #888; color:#fff;
 }
+*/
+/*
 .menu2 ul li:hover ul li:hover ul {
 display:block; position:absolute; left:153px; top:-70px; color:#000; left:152px; height:138px; width:172px; overflow:auto; background:#888;
 }
@@ -76,11 +103,14 @@ display:block; position:absolute; left:153px; top:-70px; color:#000; left:152px;
 .menu2 ul li:hover ul li:hover ul.left {
 left:-172px;
 }
-.menu2 ul li:hover ul li:hover ul li a:hover {background:#666; color:#0ff;}
+.menu2 ul li:hover ul li:hover ul li a:hover {
+	background:#666; 
+	}
 
-
+*/
 
 /* specific to IE5.5 and IE6 browsers */
+/*
 .menu2 ul li a:hover ul {
 display:block;position:absolute;top:30px; t\op:29px; background:#aaa;left:0; marg\in-top:1px;
 }
@@ -100,10 +130,10 @@ background:#888; padding-bottom:5px;
 visibility:hidden; position:absolute; height:0; width:0;
 }
 .menu2 ul li a:hover ul li a:hover {
-color:#ff0; background: #888;
+color:#fff; background: #888;
 }
 .menu2 ul li a:hover ul li a:hover.drop {
- background: #888; color:#ff0;
+ background: #888; color:#fff;
 }
 .menu2 ul li a:hover ul li a:hover ul {
 visibility:visible; position:absolute; top:-69px; t\op:-70px; color:#000; left:152px; height:138px; width:170px; overflow:auto; background:#888;
@@ -115,3 +145,183 @@ left:-170px;
 
 
 .left {clear:both;}
+
+*/
+
+
+
+/* ================================================================ 
+This copyright notice must be untouched at all times.
+
+The original version of this stylesheet and the associated (x)html
+is available at http://www.cssplay.co.uk/menus/final_drop2.html
+Copyright (c) 2005-2007 Stu Nicholls. All rights reserved.
+This stylesheet and the assocaited (x)html may be modified in any 
+way to fit your requirements.
+=================================================================== */
+/* style the outer div to give it width */
+.menu2 {
+	float:left; width:100%; 
+	font-family: helvetica, verdana, arial, sans-serif; 
+	font-size: 90%;
+	border-top:1px solid #c00;
+	background:#ddd url(images/menu2.gif) repeat-x; 
+	margin: 8px 0;
+	margin-top: -13px;
+	pading: 0 0 0 0;
+	padding-top: 2px;
+	/*
+	*/
+
+}
+/* remove all the bullets, borders and padding from the default list styling */
+.menu2 ul {
+	padding:0;
+	margin:0;
+	list-style-type:none;
+}
+.menu2 ul ul {
+	width:150px;
+}
+/* float the list to make it horizontal and a relative positon so that you can control the dropdown menu positon */
+.menu2 li {
+	float:left;
+	width:100px;
+	position:relative;
+}
+/* style the links for the top level */
+.menu2 a, .menu2 a:visited {
+	display:block;
+	text-decoration:none; 
+	height:30px;
+	color:#333; 
+	border:1px solid #eee; 
+	/*
+	font-size:11px;
+	width:139px; 
+	border-width:1px 1px 0 0; 
+	background:#758279; 
+	padding: 1px;
+	*/
+	padding-left:10px; 
+	line-height:29px;
+}
+/* a hack so that IE5.5 faulty box model is corrected */
+* html .menu2 a, * html .menu2 a:visited {
+	width:100px;
+	w\idth:89px;
+}
+/* add background for hovered top level menu link: 
+.menu2 {
+*/
+	
+
+/* style the second level background */
+.menu2 ul ul a.drop, .menu2 ul ul a.drop:visited {
+	background: #ddd;
+}
+/* style the second level hover */
+.menu2 ul ul a.drop:hover{
+	background: #666  url(images/sub2a.gif);
+}
+.menu2 ul ul :hover > a.drop {
+	background: #666 url(images/sub2a.gif);
+}
+/* style the third level background */
+.menu2 ul ul ul a, .menu2 ul ul ul a:visited {
+	background:	#ddd;
+}
+/* style the third level hover */
+.menu2 ul ul ul a:hover {
+	background: #666 url(images/sub2a.gif);
+}
+.menu2 ul ul ul :hover > a {
+	background:#666 url(images/sub2a.gif);
+}
+
+/* hide the sub levels and give them a positon absolute so that they take up no room */
+.menu2 ul ul {
+	visibility:hidden;
+	position:absolute;
+	height:0;
+	top:31px;
+	left:0; 
+	width:150px;
+}
+/* another hack for IE5.5 */
+* html .menu2 ul ul {
+	top:30px;
+	t\op:31px;
+}
+
+/* position the third level flyout menu */
+.menu2 ul ul ul{
+	left:150px; 
+	top:0;
+	width:150px;
+}
+/* position the third level flyout menu for a left flyout */
+.menu2 ul ul ul.left {
+	left:-150px;
+}
+
+/* style the table so that it takes no part in the layout - required for IE to work */
+.menu2 table {position:absolute; top:0; left:0;}
+
+/* style the second level links */
+.menu2 ul ul a, .menu2 ul ul a:visited {
+	background:#ddd; 
+	color:#333; 
+	height:auto; 
+	line-height:1em; 
+	padding:5px 10px; 
+	width:129px
+}
+/* yet another hack for IE5.5 */
+* html .menu2 ul ul a{
+	width:150px;
+	w\idth:129px;
+}
+
+
+/* style the top level hover */
+.menu2 a:hover, .menu2 ul ul a:hover{
+	color:#a00; 
+	background:#666 url(images/sub2a.gif);
+	text-decoration: none;
+	/*
+	padding: 0px;
+	padding-left:10px; 
+	*/
+}
+.menu2 :hover > a, .menu2 ul ul :hover > a {
+	color:#a00;
+	background:#666 url(images/sub2a.gif);
+	text-decoration: none;
+	/*
+	padding: 0px;
+	padding-left:10px; 	
+	*/
+}
+
+/* make the second level visible when hover on first level list OR link */
+.menu2 ul li:hover ul,
+.menu2 ul a:hover ul{
+	visibility:visible; 
+}
+/* keep the third level hidden when you hover on first level list OR link */
+.menu2 ul :hover ul ul{
+	visibility:hidden;
+}
+/* keep the fourth level hidden when you hover on second level list OR link */
+.menu2 ul :hover ul :hover ul ul{
+	visibility:hidden;
+}
+/* make the third level visible when you hover over second level list OR link */
+.menu2 ul :hover ul :hover ul{ 
+	visibility:visible;
+}
+/* make the fourth level visible when you hover over third level list OR link */
+.menu2 ul :hover ul :hover ul :hover ul { 
+	visibility:visible;
+}
