@@ -805,6 +805,7 @@ public class TextField extends StringItem
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
+		protected char emailSeparatorChar = ';';
 
 		private String caretRowFirstPart;
 		private String caretRowLastPart;
@@ -2232,16 +2233,33 @@ public class TextField extends StringItem
 			boolean isValidInput = (insertChar >= '0' && insertChar <= '9')  || ( lowerCaseInsertChar >= 'a' && lowerCaseInsertChar <= 'z' ) ;
 			if (!isValidInput) {
 				boolean isInLocalPart = true; // are we in the first/local part before the '@' in the address?
+				
+				String emailAddressText = myText;
 				int atPosition = -1;
-				if (myText != null) {
-					atPosition = myText.indexOf('@');
+				int relativeCaretPosition = this.caretPosition;
+				if (emailAddressText != null) {
+					// extract single email address part when there are several email addresses (this can 
+					// only happen when a ChoiceTextField is used)
+					int separatorPosition;
+					while ( (separatorPosition = emailAddressText.indexOf(this.emailSeparatorChar)) != -1 ) {
+						if (separatorPosition < this.caretPosition) {
+							emailAddressText = emailAddressText.substring( separatorPosition + 1);
+							relativeCaretPosition -= separatorPosition;
+						} else {
+							emailAddressText = emailAddressText.substring( 0, separatorPosition );
+							break;
+						}
+					}
+					// check for the '@' sign as the separator between local part and domain name:
+					atPosition = emailAddressText.indexOf('@');
 					isInLocalPart = ( atPosition == -1 )  ||  ( atPosition >= this.caretPosition );
 				}
 				if (isInLocalPart) {
+					boolean isAtFirstChar = (emailAddressText == null || relativeCaretPosition == 0);
 					isValidInput = ( VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS.indexOf( insertChar ) != -1 ) 
-								&& !( (insertChar == '.') && (myText == null || this.caretPosition == 0) ) // the first char must not be a dot.
+								&& !( (insertChar == '.') && isAtFirstChar) // the first char must not be a dot.
 								&& !(atPosition != -1 && insertChar == '@') // it's not allowed to enter two @ characters
-								&& !(insertChar == '@' && (myText == null || this.caretPosition == 0) ); // the first character must not be the '@' sign
+								&& !(insertChar == '@' &&  isAtFirstChar ); // the first character must not be the '@' sign
 				} else {
 					isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
 				}

@@ -79,6 +79,9 @@ public class ChoiceTextField
 	private String appendChoiceDelimiter;
 	private boolean isAppendMode;
 	private int appendDelimiterIndex = -1;
+	private boolean choiceTriggerEnabled;
+	private char choiceTrigger;
+	private boolean choiceTriggerAllowInputBeforeTrigger;
 
 	/**
 	 * Creates a new ChoiceTextField.
@@ -159,6 +162,23 @@ public class ChoiceTextField
 		//#endif	
 		this.isAppendMode = appendChoice;
 		this.appendChoiceDelimiter = appendChoiceDelimiter;
+		if (appendChoiceDelimiter != null && appendChoiceDelimiter.length() > 0) {
+			this.emailSeparatorChar = appendChoiceDelimiter.charAt(0);
+		}
+	}
+	
+	/**
+	 * Enables that available choices should (only) be shown after the specified character is entered.
+	 * This method automatically enables the append mode.
+	 * 
+	 * @param choiceTrigger the trigger for showing choice
+	 * @param allowChoicesBeforeTrigger true when the user should be able to add choices before he has entered the trigger character
+	 */
+	public void setChoiceTrigger( char choiceTrigger, boolean allowChoicesBeforeTrigger  ) {
+		this.isAppendMode = true;
+		this.choiceTriggerEnabled = true;
+		this.choiceTrigger = choiceTrigger;
+		this.choiceTriggerAllowInputBeforeTrigger = allowChoicesBeforeTrigger;
 	}
 
 
@@ -327,7 +347,9 @@ public class ChoiceTextField
 							if (this.appendChoiceDelimiter == null) {
 								choiceText = currentText + choiceText; 
 							} else {
-								if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
+								if ( this.choiceTriggerEnabled) {
+									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+								} else if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
 									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
 								} else {
 									choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
@@ -357,13 +379,17 @@ public class ChoiceTextField
 			enterChoices( true );
 			return true;
 		} else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+			// open all available choices:
+			if (this.choiceTriggerEnabled && !this.choiceTriggerAllowInputBeforeTrigger) {
+				String currentText = getString();
+				if (currentText == null || currentText.length() == 0 || currentText.charAt( currentText.length() -1 ) != this.choiceTrigger) {
+					return super.handleKeyPressed(keyCode, gameAction);
+				}
+
+			}
 			//if (this.numberOfMatches == 0) {
 				if (this.choices == null) {
-					//#if polish.usePolishGui
-						//# return super.handleKeyPressed(keyCode, gameAction);
-					//#else
-						return true;
-					//#endif
+					return super.handleKeyPressed(keyCode, gameAction);
 				}
 				if (this.numberOfMatches == this.choices.length) {
 					this.numberOfMatches = 0; // close choices container
@@ -388,11 +414,7 @@ public class ChoiceTextField
 			//}
 			return true;
 		}
-		//#if polish.usePolishGui
-			//# return super.handleKeyPressed(keyCode, gameAction);
-		//#else
-			return true;
-		//#endif
+		return super.handleKeyPressed(keyCode, gameAction);
 	}
 	
 	//#ifdef polish.hasPointerEvents
@@ -571,6 +593,13 @@ public class ChoiceTextField
 					} else if (this.appendDelimiterIndex != -1 && this.appendDelimiterIndex < currentText.length()) {
 						currentText = currentText.substring( this.appendDelimiterIndex );
 					}
+				}
+				if (this.choiceTriggerEnabled && currentText.length() > 0) {
+					int lastChar = currentText.charAt( currentText.length() - 1);
+					if (lastChar == this.choiceTrigger && !this.isOpen) {
+						handleKeyPressed(0, Canvas.FIRE );
+					} 
+					return;
 				}
 				currentText = currentText.toLowerCase();
 				// cycle through available choices and add the ones resulting in matches.

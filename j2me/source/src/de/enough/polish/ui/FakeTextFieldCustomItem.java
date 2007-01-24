@@ -532,6 +532,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
+		protected char emailSeparatorChar = ';';
 
 		private String caretRowFirstPart;
 		private String caretRowLastPart;
