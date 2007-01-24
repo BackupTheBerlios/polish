@@ -78,7 +78,7 @@ implements CommandListener, ItemStateListener
 	 */
 	protected void startApp() throws MIDletStateChangeException {
 		//#style mailForm
-		Form form = new Form("MobileMail");
+		Form form = new Form("MobileMail 0.1");
 		
 //		ListItem list = new ListItem( null );
 //		list.append("Write new mail", null);
