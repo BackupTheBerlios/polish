@@ -94,6 +94,14 @@ public final class Serializer {
 	private static final byte TYPE_IMAGE_BYTES = 1;
 	private static final byte TYPE_FONT = 20;
 	private static final byte TYPE_COMMAND = 21;
+	private static final byte TYPE_BYTE_ARRAY = 22;
+	private static final byte TYPE_SHORT_ARRAY = 23;
+	private static final byte TYPE_INT_ARRAY = 24;
+	private static final byte TYPE_LONG_ARRAY = 25;
+	private static final byte TYPE_FLOAT_ARRAY = 26;
+	private static final byte TYPE_DOUBLE_ARRAY = 27;
+	private static final byte TYPE_CHAR_ARRAY = 28;
+	private static final byte TYPE_BOOLEAN_ARRAY = 29;
 	
 	//#if polish.JavaSE
 	private static Map obfuscationDeserializeMap; // for translating class names while deserializing/reading data
@@ -133,54 +141,7 @@ public final class Serializer {
 		// no instantiation allowed
 	}
 	
-	
-//	/**
-//	 * Serializes the given object.
-//	 * 
-//	 * @param serializable the serializable object or null
-//	 * @param out the data output stream, into which the object is serialized
-//	 * @throws IOException when serialization data could not be written
-//	 */
-//	public static void serialize( Serializable serializable, DataOutputStream out )
-//	throws IOException
-//	{
-//		out.writeByte( VERSION );
-//		boolean isNull = (serializable == null);
-//		out.writeBoolean( isNull );
-//		if ( !isNull ) {
-//			Externalizable extern = (Externalizable) serializable;
-//			out.writeUTF( extern.getClass().getName() );
-//			extern.write( out );		
-//		}
-//	}
-	
-//	/**
-//	 * Serializes the given array.
-//	 * <b>WARNING: </b> The specified array elements need to be of the same type, this is not checked during runtime!
-//	 * 
-//	 * @param serializables the array with serializable objects of the same type or null
-//	 * @param out the data output stream, into which the objects are serialized
-//	 * @throws IOException when serialization data could not be written
-//	 */
-//	public static void serializeArray( Serializable[] serializables, DataOutputStream out )
-//	throws IOException
-//	{
-//		out.writeByte( VERSION );
-//		boolean isNull = (serializables == null);
-//		out.writeBoolean( isNull );
-//		if ( !isNull ) {
-//			out.writeInt( serializables.length );
-//			if ( serializables.length > 0 ) {
-//				Serializable serializable = serializables[0];
-//				out.writeUTF( serializable.getClass().getName() );
-//				for (int i = 0; i < serializables.length; i++) {
-//					Externalizable extern = (Externalizable) serializables[i];
-//					out.writeUTF( extern.getClass().getName() );
-//					extern.write( out );		
-//				}			
-//			}
-//		}
-//	}
+
 	/**
 	 * Serializes an Object like java.lang.Integer, java.util.Date, javax.microedition.lcdui.Image etc.
 	 * 
@@ -380,6 +341,69 @@ public final class Serializer {
 				out.writeInt( command.getPriority() );
 				out.writeUTF( command.getLabel() );
 			//#endif
+			} else if (object instanceof byte[]) {
+				out.writeByte(TYPE_BOOLEAN_ARRAY);
+				byte[] numbers = (byte[]) object;
+				out.writeInt( numbers.length );
+				out.write( numbers, 0, numbers.length );
+			} else if (object instanceof short[]) {
+				out.writeByte(TYPE_SHORT_ARRAY);
+				short[] numbers = (short[]) object;
+				out.writeInt( numbers.length );
+				for (int i = 0; i < numbers.length; i++) {
+					short number = numbers[i];
+					out.writeShort( number );
+				}
+			} else if (object instanceof int[]) {
+				out.writeByte(TYPE_INT_ARRAY);
+				int[] numbers = (int[]) object;
+				out.writeInt( numbers.length );
+				for (int i = 0; i < numbers.length; i++) {
+					int number = numbers[i];
+					out.writeInt( number );
+				}
+			} else if (object instanceof long[]) {
+				out.writeByte(TYPE_LONG_ARRAY);
+				long[] numbers = (long[]) object;
+				out.writeInt( numbers.length );
+				for (int i = 0; i < numbers.length; i++) {
+					long number = numbers[i];
+					out.writeLong( number );
+				}
+			//#if polish.hasFloatingPoint
+			} else if (object instanceof float[]) {
+				out.writeByte(TYPE_FLOAT_ARRAY);
+				float[] numbers = (float[]) object;
+				out.writeInt( numbers.length );
+				for (int i = 0; i < numbers.length; i++) {
+					float number = numbers[i];
+					out.writeFloat( number );
+				}
+			} else if (object instanceof double[]) {
+				out.writeByte(TYPE_DOUBLE_ARRAY);
+				double[] numbers = (double[]) object;
+				out.writeInt( numbers.length );
+				for (int i = 0; i < numbers.length; i++) {
+					double number = numbers[i];
+					out.writeDouble( number );
+				}
+			//#endif
+			} else if (object instanceof char[]) {
+				out.writeByte(TYPE_CHAR_ARRAY);
+				char[] characters = (char[]) object;
+				out.writeInt( characters.length );
+				for (int i = 0; i < characters.length; i++) {
+					char c = characters[i];
+					out.writeChar( c );
+				}
+			} else if (object instanceof boolean[]) {
+				out.writeByte(TYPE_BOOLEAN_ARRAY);
+				boolean[] bools = (boolean[]) object;
+				out.writeInt( bools.length );
+				for (int i = 0; i < bools.length; i++) {
+					boolean b = bools[i];
+					out.writeBoolean( b );
+				}
 			} else {
 				throw new IOException("Cannot serialize " + object.getClass().getName() );
 			}
@@ -576,54 +600,66 @@ public final class Serializer {
 			String label = in.readUTF();
 			return new Command( label, cmdType, priority );
 		//#endif
+		case TYPE_BYTE_ARRAY:
+			length = in.readInt();
+			byte[] byteNumbers = new byte[ length ];
+			in.readFully( byteNumbers );
+			return byteNumbers;
+		case TYPE_SHORT_ARRAY:
+			length = in.readInt();
+			short[] shortNumbers = new short[ length ];
+			for (int i = 0; i < length; i++) {
+				shortNumbers[i] = in.readShort();
+			}
+			return shortNumbers;
+		case TYPE_INT_ARRAY:
+			length = in.readInt();
+			int[] intNumbers = new int[ length ];
+			for (int i = 0; i < length; i++) {
+				intNumbers[i] = in.readInt();
+			}
+			return intNumbers;
+		case TYPE_LONG_ARRAY:
+			length = in.readInt();
+			long[] longNumbers = new long[ length ];
+			for (int i = 0; i < length; i++) {
+				longNumbers[i] = in.readLong();
+			}
+			return longNumbers;
+		//#if polish.hasFloatingPoint
+		case TYPE_FLOAT_ARRAY:
+			length = in.readInt();
+			float[] floatNumbers = new float[ length ];
+			for (int i = 0; i < length; i++) {
+				floatNumbers[i] = in.readFloat();
+			}
+			return floatNumbers;
+		case TYPE_DOUBLE_ARRAY:
+			length = in.readInt();
+			double[] doubleNumbers = new double[ length ];
+			for (int i = 0; i < length; i++) {
+				doubleNumbers[i] = in.readDouble();
+			}
+			return doubleNumbers;
+		//#endif
+		case TYPE_CHAR_ARRAY:
+			length = in.readInt();
+			char[] characters = new char[ length ];
+			for (int i = 0; i < length; i++) {
+				characters[i] = in.readChar();
+			}
+			return characters;
+		case TYPE_BOOLEAN_ARRAY:
+			length = in.readInt();
+			boolean[] bools = new boolean[ length ];
+			for (int i = 0; i < length; i++) {
+				bools[i] = in.readBoolean();
+			}
+			return bools;
 		default: 
 			throw new IOException("Unknown type: " + type );
 		}
 	}
-	
-//	/**
-//	 * Deserializes an object array from the given stream.
-//	 * 
-//	 * @return the serializable object
-//	 * @param in the data input stream, from which the object is deserialized
-//	 * @throws IOException when serialization data could not be read or the Serializable class could not get instantiated
-//	 */
-//	public static Serializable[] deserializeArray( DataInputStream in )
-//	throws IOException
-//	{
-//		byte version = in.readByte();
-//		//#if polish.debug.warn
-//			if (version > VERSION) {
-//				//#debug warn
-//				System.out.println("Warning: trying to deserialize array that has been serialized with a newer version (" + version + ">" + VERSION + ").");
-//			}
-//		//#endif
-//		boolean isNull = in.readBoolean();
-//		if (isNull) {
-//			return null;
-//		}
-//		int length = in.readInt();
-//		Serializable[] serializables = new Serializable[ length ];
-//		if ( length > 0 ) {
-//			String className = in.readUTF();
-//			try {
-//				Class serialClass = Class.forName( className );
-//				for (int i = 0; i < serializables.length; i++) {
-//					Externalizable extern = (Externalizable) serialClass.newInstance();
-//					extern.read( in );
-//					serializables[i] = extern;
-//				}
-//			} catch (IOException e) {
-//				//#debug error 
-//				System.out.println("Unable to deserlize array of \"" + className + "\"" + e );
-//				throw e;
-//			} catch (Exception e) {
-//				//#debug error 
-//				System.out.println("Unable to deserlize array of \"" + className + "\"" + e );
-//				throw new IOException( e.toString() );
-//			}
-//		}
-//		return serializables;
-//	}
+
 
 }
