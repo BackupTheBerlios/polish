@@ -1,0 +1,45 @@
+/*********************************************************************************
+ *                                                                               *
+ *  Contains default styles for several J2ME Polish components                   *
+ *                                                                               *
+ *********************************************************************************/
+ 
+.textFieldSymbolList {
+	inherit: false;
+	padding: 10;
+	columns: 5;
+	columns-width: equal;
+	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
+	background-color: white;
+	repaint-previous-screen: true;
+	focused-style: .textFieldSymbolListFocused;
+}
+
+.textFieldSymbolItem {
+	inherit: false;
+	margin: 1;
+	padding: 2;
+	font {
+		color: gray;
+		size: medium;
+		style: bold;
+	}
+	layout: center;
+}
+
+.textFieldSymbolListFocused {
+	inherit: false;
+	margin: 0;
+	padding: 2;
+	font {
+		color: black;
+		size: medium;
+		style: bold;
+	}
+	border {
+		type: bottom;
+		color: #A00;
+	}
+	layout: center;
+}
+

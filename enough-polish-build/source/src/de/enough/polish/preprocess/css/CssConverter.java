@@ -90,51 +90,7 @@ public class CssConverter extends Converter {
 		BORDER_TYPES.put( "right", "de.enough.polish.preprocess.borders.RightBorderConverter");
 		BORDER_TYPES.put( "drop-shadow", "de.enough.polish.preprocess.borders.DropShadowBorderConverter");
 	}
-//	private static HashMap LAYOUTS = new HashMap();
-//	static {
-//		LAYOUTS.put( "default", "Item.LAYOUT_DEFAULT" );
-//		LAYOUTS.put( "plain", "Item.LAYOUT_DEFAULT" );
-//		LAYOUTS.put( "none", "Item.LAYOUT_DEFAULT" );
-//		LAYOUTS.put( "left", "Item.LAYOUT_LEFT" );
-//		LAYOUTS.put( "right", "Item.LAYOUT_RIGHT" );
-//		LAYOUTS.put( "center", "Item.LAYOUT_CENTER" );
-//		LAYOUTS.put( "hcenter", "Item.LAYOUT_CENTER" );
-//		LAYOUTS.put( "horizontal-center", "Item.LAYOUT_CENTER" );
-//		LAYOUTS.put( "top", "Item.LAYOUT_TOP" );
-//		LAYOUTS.put( "bottom", "Item.LAYOUT_BOTTOM" );
-//		LAYOUTS.put( "vcenter", "Item.LAYOUT_VCENTER" );
-//		LAYOUTS.put( "vertical-center", "Item.LAYOUT_VCENTER" );
-//		LAYOUTS.put( "newline-before", "Item.LAYOUT_NEWLINE_BEFORE" );
-//		LAYOUTS.put( "newline-after", "Item.LAYOUT_NEWLINE_AFTER" );
-//		LAYOUTS.put( "shrink", "Item.LAYOUT_SHRINK" );
-//		LAYOUTS.put( "hshrink", "Item.LAYOUT_SHRINK" );
-//		LAYOUTS.put( "horizontal-shrink", "Item.LAYOUT_SHRINK" );
-//		LAYOUTS.put( "expand", "Item.LAYOUT_EXPAND" );
-//		LAYOUTS.put( "hexpand", "Item.LAYOUT_EXPAND" );
-//		LAYOUTS.put( "horizontal-expand", "Item.LAYOUT_EXPAND" );
-//		LAYOUTS.put( "vshrink", "Item.LAYOUT_VSHRINK" );
-//		LAYOUTS.put( "vertical-shrink", "Item.LAYOUT_VSHRINK" );
-//		LAYOUTS.put( "vexpand", "Item.LAYOUT_VEXPAND" );
-//		LAYOUTS.put( "vertical-expand", "Item.LAYOUT_VEXPAND" );
-//	}
-	/*
-	 * the mappings are now done in the standard-css-attributes.xml
-	private static final HashMap VIEW_TYPES = new HashMap();
-	static {
-		VIEW_TYPES.put( "shuffle", "de.enough.polish.ui.containerviews.ShuffleView");
-		VIEW_TYPES.put( "ShuffleView", "de.enough.polish.ui.containerviews.ShuffleView");
-		VIEW_TYPES.put( "dropping", "de.enough.polish.ui.containerviews.DroppingView");
-		VIEW_TYPES.put( "DroppingView", "de.enough.polish.ui.containerviews.DroppingView");
-		VIEW_TYPES.put( "midp2", "de.enough.polish.ui.containerviews.MIDP2LayoutView");
-		VIEW_TYPES.put( "midp2layout", "de.enough.polish.ui.containerviews.MIDP2LayoutView");
-		VIEW_TYPES.put( "exclusive", "de.enough.polish.ui.containerviews.ExclusiveSingleLineView");
-		VIEW_TYPES.put( "exclusive-single-line", "de.enough.polish.ui.containerviews.ExclusiveSingleLineView");
-		VIEW_TYPES.put( "ExclusiveSingleLineView", "de.enough.polish.ui.containerviews.ExclusiveSingleLineView");
-		VIEW_TYPES.put( "Dinner", "de.enough.polish.ui.containerviews.DinnerForOneView");
-		VIEW_TYPES.put( "plain", "none");
-		VIEW_TYPES.put( "normal", "none");
-	}
-	*/
+
 	protected ArrayList referencedStyles;
 	protected AbbreviationsGenerator abbreviationGenerator;
 	protected CssAttributesManager attributesManager;
@@ -594,7 +550,11 @@ public class CssConverter extends Converter {
 					}
 					short attributesId = styleSheet.getAttributeId(attributeName);
 					if (attributesId == -1) {
-						throw new BuildException("Invalid CSS: The CSS-attribute [" + attributeName + "] is not supported. Please check your \"polish.css\" file(s).");
+						// the CSS attribute is nowhere used in the preprocessing code,
+						// now check if it has been registerd in css-attributes.xml/custom-css-attributes.xml:
+						if (this.attributesManager.getAttribute( attributeName ) == null) {
+							throw new BuildException("Invalid CSS: The CSS-attribute [" + attributeName + "] is not supported. Please check your \"polish.css\" file(s).");
+						}
 					}
 					keyList.append( attributesId );
 					if ( currentAttribute < numberOfAttributes) {

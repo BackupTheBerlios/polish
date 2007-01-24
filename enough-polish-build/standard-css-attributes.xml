@@ -2054,8 +2054,19 @@
 		appliesTo="Gauge, gauge-tachometer view-type"
 		description="an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example."
 		default="1"
-		id="20"
+		id="208"
 	/>
+	
+	<attribute
+		name="inherit"
+		type="boolean"
+		appliesTo="Item, Screen"
+		description="Defines if a style that extends this style should inherit all attributes."
+		default="true"
+		id="209"
+	/>
+	
+	
 	
 	
 	<!--

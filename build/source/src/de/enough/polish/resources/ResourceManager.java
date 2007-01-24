@@ -28,6 +28,7 @@ package de.enough.polish.resources;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +54,7 @@ import de.enough.polish.preprocess.css.CssReader;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.DirectoryFileFilter;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -597,11 +599,23 @@ public class ResourceManager {
 	 * @throws IOException when a sub-style sheet could not be loaded.
 	 */
 	public StyleSheet loadStyleSheet( Device device, Locale locale, Preprocessor preprocessor, Environment env ) throws IOException {
-		
+	
 		long lastCssModification = 0;		
 		CssReader cssReader = new CssReader();
 		boolean replaceWithoutDirective = preprocessor.replacePropertiesWithoutDirective();
 		preprocessor.setReplacePropertiesWithoutDirective( true );
+		// load default.css file first:
+		File defaultCssFile = env.resolveFile("${polish.home}/default.css");
+		if (defaultCssFile.exists()) {
+			cssReader.add( defaultCssFile, preprocessor, env );			
+		} else {
+			InputStream in = getClass().getResourceAsStream("/default.css");
+			if (in == null) {
+				System.out.println("Warning: unable to load default.css from either ${polish.home} or ${polish.home}/lib/enough-j2mepolish-build.jar! You might need to define additional styles when using specific components.");
+			} else {
+				cssReader.add( in, "default.css", preprocessor, env );
+			}
+		}
 		File[] resourceDirs = getResourceDirs(device, locale);
 		for (int i = 0; i < resourceDirs.length; i++) {
 			File dir = resourceDirs[i];

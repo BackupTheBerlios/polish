@@ -105,15 +105,49 @@ public final class FileUtil {
 	public static String[] readTextFile( File file, String encoding ) 
 	throws FileNotFoundException, IOException 
 	{
+		return readTextFile( new FileInputStream(file), encoding );
+	}
+	
+	/**
+	 * Reads the text from the given input stream in the default encoding.
+	 * 
+	 * @param in the input stream
+	 * @return the text contained in the stream
+	 * @throws IOException when stream could not be read.
+	 */
+	public static String[] readTextFile(InputStream in) 
+	throws IOException
+	{
+		return readTextFile( in, null );
+	}
+
+	/**
+	 * Reads the text from the given input stream in the default encoding.
+	 * 
+	 * @param in the input stream
+	 * @param encoding the encoding of the textfile
+	 * @return the text contained in the stream
+	 * @throws IOException when stream could not be read.
+	 */
+	public static String[] readTextFile(InputStream in, String encoding) 
+	throws IOException
+	{
 		ArrayList lines = new ArrayList();
-		BufferedReader in = new BufferedReader( new InputStreamReader( new FileInputStream(file), encoding ) );
+		BufferedReader bufferedIn;
+		if (encoding != null) {
+			bufferedIn = new BufferedReader( new InputStreamReader( in, encoding ) );
+		} else {
+			bufferedIn = new BufferedReader( new InputStreamReader( in ) );
+		}
 		String line;
-		while ((line = in.readLine()) != null) {
+		while ((line = bufferedIn.readLine()) != null) {
 			lines.add( line );
 		}
+		bufferedIn.close();
 		in.close();
 		return (String[]) lines.toArray( new String[ lines.size() ] );
 	}
+
 
 
 	/**

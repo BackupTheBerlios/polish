@@ -914,7 +914,7 @@ public class PolishTask extends ConditionalTask {
 				String[] fileNames = this.resourceUtil.readTextFile( ".", "build/j2mepolish.index.txt");
 				this.polishSourceFiles = getTextFiles( "src", fileNames, lastModificationTime, textFileManager );
 			} catch (IOException e) {
-				throw new BuildException("Unable to load the J2ME source files from enough-j2mepolish-build.jar: " + e.getMessage(), e );
+				throw new BuildException("Unable to load the J2ME source files from enough-j2mepolish-build.jar, if you want to use J2ME Polish client sources directly set the \"polishDir\" attribute of the <build> element in your build.xml script (" + e.getMessage() + ").", e );
 			}
 		}
 		
@@ -923,7 +923,7 @@ public class PolishTask extends ConditionalTask {
 			SourceSetting setting = this.sourceSettings[i];
 			File dir = setting.getDir();
 			if (!dir.exists()) {
-				throw new BuildException("The source-directory [" + dir.getAbsolutePath() + "] does not exist. Please check your settings in the [sourceDir] attribute of the <build> element.");
+				throw new BuildException("The source-directory [" + dir.getAbsolutePath() + "] does not exist. Please check your settings in the \"sourceDir\" attribute of the <build> element.");
 			}
 			//this.sourceDirs[i] = dir; 
 			dirScanner.setBasedir(dir);
@@ -931,7 +931,7 @@ public class PolishTask extends ConditionalTask {
 			this.sourceFiles[i] = getTextFiles( dir,  dirScanner.getIncludedFiles(), textFileManager );
 		}
 		if (this.buildSetting.usePolishGui() && this.styleSheetSourceFile == null) {
-			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the [polishDir] attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
+			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the \"polishDir\" attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
 		}
 		
 		// load third party binary libraries, if any.

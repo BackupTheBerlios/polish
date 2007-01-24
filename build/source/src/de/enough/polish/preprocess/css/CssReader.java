@@ -90,10 +90,38 @@ public final class CssReader {
 	public void add(File file, Preprocessor preprocessor, Environment env) throws IOException {
 		if (this.styleSheet.lastModified() < file.lastModified() ) {
 			this.styleSheet.setLastModified( file.lastModified() );
-		}
+		}		
 		String[] lines = FileUtil.readTextFile(file);
+		add( lines, file.getAbsolutePath(), preprocessor, env );
+	}
+	
+	/**
+	 * Reads the given file and adds/supplements all styles.
+	 * 
+	 * @param in the InputStream which contains the CSS-definitions
+	 * @param path the path of the file that contains the CSS definitions
+	 * @param preprocessor the preprocessor used for processing the CSS file first
+	 * @param env the environment
+	 * @throws IOException when the file could not be found or not be loaded
+	 */
+	public void add(InputStream in, String path, Preprocessor preprocessor, Environment env) throws IOException {
+		String[] lines = FileUtil.readTextFile( in );
+		add( lines, path, preprocessor, env );
+	}
+
+	
+	/**
+	 * Adds the styles given in the defined text
+	 * 
+	 * @param lines the CSS-definitions
+	 * @param path the path of the file that contains the CSS definitions
+	 * @param preprocessor the preprocessor used for processing the CSS file first
+	 * @param env the environment
+	 * @throws IOException when the file could not be found or not be loaded
+	 */
+	public void add(String[] lines, String path, Preprocessor preprocessor, Environment env) throws IOException {
 		StringList list = new StringList( lines );
-		preprocessor.preprocess( file.getAbsolutePath(), list );
+		preprocessor.preprocess( path, list );
 		lines = list.getArray();
 		StringBuffer buffer = new StringBuffer();
 		// remove any left preprocessing comments and add the remaining lines to a StringBuffer:
@@ -105,6 +133,7 @@ public final class CssReader {
 		}
 		add( buffer );
 	}
+
 
 	/**
 	 * Adds the contents of a CSS file.

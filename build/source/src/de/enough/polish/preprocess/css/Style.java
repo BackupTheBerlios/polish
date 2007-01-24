@@ -164,6 +164,14 @@ public class Style {
 	 * @param cssBlock the CSS declarations
 	 */
 	public void add(CssBlock cssBlock) {
+		// check if this style disallows inheritance - in that case all former CSS attribute are forgotten.
+		// this is done when the basic style has defined "inherit: false;"
+		 Map inheritGroup = this.getGroup("inherit");
+		boolean disallowInheritance = (inheritGroup != null) && ("false".equals(inheritGroup.get("inerhit")));
+		if (disallowInheritance) {
+			this.groupsByName.clear();
+			this.groupNamesList.clear();
+		}
 		this.properties.putAll( cssBlock.getDeclarationsMap() );
 		String[] groupNames = cssBlock.getGroupNames();
 		for (int i = 0; i < groupNames.length; i++) {
