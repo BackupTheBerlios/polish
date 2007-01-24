@@ -1041,16 +1041,22 @@ public class TextField extends StringItem
 			}
 		}
 		//#ifdef tmp.directInput
-			if (this.caretPosition == 0 && (text != null) 
-					&& (this.text == null || this.text.length() == 0) ) {
+			if (text == null) {
+				this.caretPosition = 0;
+			} else if (this.caretPosition == 0  
+					&& (this.text == null || this.text.length() == 0) ) 
+			{
 				this.caretPosition = text.length();
 				this.caretColumn = this.caretPosition;
 				//System.out.println("TextField.setString(): setting caretPosition to " + this.caretPosition + " for text [" + text + "]");
 				//TODO set caretX and caretY Positions and currentRowStart/currentRowEnd?
-			} else if ( text != null && this.caretPosition > text.length()) {
+			} else if ( this.caretPosition > text.length()) {
 				this.caretPosition = text.length();
 				this.caretColumn = this.caretPosition;
 			}
+		//#endif
+		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+			updateDeleteCommand( text );
 		//#endif
 		setText(text);
 		//#ifdef tmp.directInput
@@ -1059,6 +1065,31 @@ public class TextField extends StringItem
 			}
 		//#endif
 	}
+	
+	//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+	private void updateDeleteCommand(String newText) {
+			// remove delete command when the caret is before the first character,
+			// add it when it is after the first character:
+			Screen scr = getScreen();
+			if ( scr != null && !this.isUneditable ) {
+				if ( newText == null 
+					//#ifdef tmp.directInput
+						|| this.caretPosition == 0
+					//#else
+						|| newText.length() == 0 
+					//#endif
+				) {
+					scr.removeCommand( DELETE_CMD );
+				} else if ((this.text == null || this.text.length() == 0)
+					//#ifdef tmp.directInput
+						|| this.caretPosition == 1
+					//#endif						
+				) {
+					scr.addCommand( DELETE_CMD );
+				}
+			}
+	}
+	//#endif		
 
 	
 	/**
@@ -1469,7 +1500,7 @@ public class TextField extends StringItem
 			removeCommand( DELETE_CMD );
 			// add default text field item-commands:
 			//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
-				if (!this.isUneditable) {
+				if (!this.isUneditable)  {
 					//#ifdef polish.i18n.useDynamicTranslations
 						String delLabel = Locale.get("polish.command.delete");
 						if ( delLabel != DELETE_CMD.getLabel()) {
@@ -2664,6 +2695,9 @@ public class TextField extends StringItem
 						this.caretPosition -= previousCaretRowFirstLength + (this.originalRowText.length() - this.caretColumn);
 						this.internalX = 0;
 						this.internalY = this.caretRow * this.rowHeight;
+						//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							updateDeleteCommand( this.text );
+						//#endif
 						return true;
 					} else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
 						//#ifdef polish.css.font-bitmap
@@ -2689,6 +2723,9 @@ public class TextField extends StringItem
 						setCaretRow( nextLine, this.caretColumn );
 						this.caretPosition += (lastCaretRowLastPartLength + this.caretColumn );
 						this.internalY = this.caretRow * this.rowHeight;
+						//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							updateDeleteCommand( this.text );
+						//#endif
 						return true;
 					} else if (this.isUneditable) {
 						return false;
@@ -2704,6 +2741,9 @@ public class TextField extends StringItem
 							this.caretPosition--;
 							this.caretColumn--;
 							setCaretRow( this.originalRowText, this.caretColumn );
+							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+								updateDeleteCommand( this.text );
+							//#endif
 							return true;
 						} else if ( this.caretRow > 0) {
 							// this is just a visual line-break:
@@ -2720,6 +2760,9 @@ public class TextField extends StringItem
 							//System.out.println(this + ".handleKeyPressed()/font4: caretX=" + this.caretX);
 							this.caretY -= this.rowHeight;
 							this.internalY = this.caretY;
+							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+								updateDeleteCommand( this.text );
+							//#endif
 							return true;
 						}
 					} else if ( gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) {
@@ -2746,6 +2789,9 @@ public class TextField extends StringItem
 							this.caretColumn++;
 							this.caretPosition++;
 							setCaretRow( this.originalRowText, this.caretColumn );
+							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+								updateDeleteCommand( this.text );
+							//#endif
 							return true;
 						} else if (this.caretRow < this.realTextLines.length - 1) {
 							//System.out.println("right in not the last row");
@@ -2763,6 +2809,9 @@ public class TextField extends StringItem
 							}
 							this.caretY += this.rowHeight;
 							this.internalY = this.caretY;
+							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+								updateDeleteCommand( this.text );
+							//#endif
 							return true;
 						} else if (characterInserted) {
 							//System.out.println("right after character insertion");
@@ -2771,6 +2820,9 @@ public class TextField extends StringItem
 							this.caretRowFirstPart += character;
 							this.caretColumn++;
 							this.caretPosition++;
+							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+								updateDeleteCommand( this.text );
+							//#endif
 							return true;
 						}
 					}
@@ -2844,16 +2896,23 @@ public class TextField extends StringItem
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("TextField.handleKeyRepeated( " + keyCode + ")");
-		int currentLength = (this.text == null ? 0 : this.text.length());
-		if ( !this.isUneditable && !(this.isNumeric || this.inputMode == MODE_NUMBERS)
-				&& currentLength < this.maxSize 
-				&& keyCode >= Canvas.KEY_NUM0 
-				&& keyCode <= Canvas.KEY_NUM9) 
-		{	
-			this.lastInputTime = System.currentTimeMillis();
-			this.caretChar = ("" + (keyCode - 48)).charAt(0);
-			this.caretWidth = this.font.charWidth( this.caretChar );
-			return true;
+		if (keyCode >= Canvas.KEY_NUM0 
+				&& keyCode <= Canvas.KEY_NUM9 ) 
+		{
+			// ignore repeat events when the current input mode is numbers:
+			if ( this.isNumeric || this.inputMode == MODE_NUMBERS ) {
+				return false;
+			}
+			int currentLength = (this.text == null ? 0 : this.text.length());
+			if ( !this.isUneditable
+					&& currentLength < this.maxSize ) 
+			{	
+				// enter number character:
+				this.lastInputTime = System.currentTimeMillis();
+				this.caretChar = ("" + (keyCode - 48)).charAt(0);
+				this.caretWidth = this.font.charWidth( this.caretChar );
+				return true;
+			}
 		}
 		return super.handleKeyRepeated(keyCode, gameAction);
 	}
@@ -3142,18 +3201,24 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
+	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || !(polish.TextField.suppressDeleteCommand || polish.blackberry) 
 	protected Style focus(Style focStyle, int direction) {
-		//#ifdef tmp.allowDirectInput
-			if (this.enableDirectInput) {
+		//#if tmp.directInput && (polish.TextField.showInputInfo != false)
+			//#ifdef tmp.allowDirectInput
+				if (this.enableDirectInput) {
+			//#endif
+					//#if polish.TextField.showInputInfo != false
+						updateInfo();
+					//#endif
+			//#ifdef tmp.allowDirectInput
+				}
+			//#endif
 		//#endif
-				//#if polish.TextField.showInputInfo != false
-					updateInfo();
-				//#endif
-		//#ifdef tmp.allowDirectInput
-			}
+		Style unfocusedStyle = super.focus(focStyle, direction);
+		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+			updateDeleteCommand( this.text );
 		//#endif
-		return super.focus(focStyle, direction);
+		return unfocusedStyle;
 	}
 	//#endif
 

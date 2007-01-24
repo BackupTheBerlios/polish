@@ -1175,7 +1175,11 @@ public class Container extends Item {
 				return true;
 			}	
 		}
-		return super.handleKeyRepeated(keyCode, gameAction);
+		return false;
+		// note: in previous versions a keyRepeat event was just re-asigned to a keyPressed event. However, this resulted
+		// in non-logical behavior when an item wants to ignore keyRepeast events and only press "real" keyPressed events.
+		// So now events are ignored by containers when they are ignored by their currently focused item...
+		//return super.handleKeyRepeated(keyCode, gameAction);
 	}
 
 	/**
