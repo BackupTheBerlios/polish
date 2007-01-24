@@ -2240,7 +2240,8 @@ public class TextField extends StringItem
 				if (isInLocalPart) {
 					isValidInput = ( VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS.indexOf( insertChar ) != -1 ) 
 								&& !( (insertChar == '.') && (myText == null || this.caretPosition == 0) ) // the first char must not be a dot.
-								&& !(atPosition != -1 && insertChar == '@');
+								&& !(atPosition != -1 && insertChar == '@') // it's not allowed to enter two @ characters
+								&& !(insertChar == '@' && (myText == null || this.caretPosition == 0) ); // the first character must not be the '@' sign
 				} else {
 					isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
 				}
