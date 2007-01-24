@@ -2470,6 +2470,9 @@ implements AccessibleCanvas
 					throw new IllegalStateException();
 				}
 				parentCommandItem.addChild( child, commandStyle );
+				if (parent == this.menuSingleLeftCommand) {
+					this.menuSingleLeftCommand = null;
+				}
 				if (this.menuOpened) {
 					this.isInitialised = false;
 					repaint();

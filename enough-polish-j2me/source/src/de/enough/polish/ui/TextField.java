@@ -636,14 +636,15 @@ public class TextField extends StringItem
 	 * <code>CONSTRAINT_MASK</code>.</P>
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
-	
+		
 	//#ifndef tmp.suppressCommands
+		// the delete command is a Command.ITEM type, because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
 		//#ifdef polish.i18n.useDynamicTranslations
-	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
+	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, 1 );
 		//#elifdef polish.command.delete:defined
-			//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, 1 );
+			//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 1 );
 		//#else
-			//# protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
+			//# protected static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 1 ); 
 		//#endif
 	//#endif
 	//#ifdef polish.i18n.useDynamicTranslations
@@ -689,7 +690,7 @@ public class TextField extends StringItem
 			//#if polish.TextField.Symbols:defined
 				//#= private static String definedSymbols = "${ escape(polish.TextField.Symbols)}"; 
 			//#else
-				private static String definedSymbols = "@/\\<>().,-_:\"";
+				private static String definedSymbols = "@/\\<>(){}.,+-*:_\"#$%";
 			//#endif
 			//#ifdef polish.i18n.useDynamicTranslations
 		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 3 );
@@ -805,7 +806,6 @@ public class TextField extends StringItem
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
-		protected char emailSeparatorChar = ';';
 
 		private String caretRowFirstPart;
 		private String caretRowLastPart;
@@ -815,6 +815,7 @@ public class TextField extends StringItem
 		
 		protected final Object lock;
 	//#endif
+	protected char emailSeparatorChar = ';';
 	//#if polish.blackberry
 		private PolishEditField editField;
 		//#if polish.Bugs.ItemStateListenerCalledTooEarly
